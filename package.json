@@ -1,0 +1,85 @@
+{
+  "name": "browser-extension",
+  "license": "GPL-3.0-only",
+  "version": "0.0.1",
+  "dependencies": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.19.3",
+    "@babel/preset-env": "7.19.3",
+    "@babel/preset-react": "7.18.6",
+    "@babel/preset-typescript": "7.18.6",
+    "@babel/register": "7.5.5",
+    "@lavamoat/allow-scripts": "2.0.3",
+    "@lavamoat/preinstall-always-fail": "1.0.0",
+    "@types/chrome": "0.0.197",
+    "@types/react": "18.0.21",
+    "@types/react-dom": "18.0.6",
+    "@typescript-eslint/eslint-plugin": "5.38.1",
+    "@typescript-eslint/parser": "5.38.1",
+    "babel-plugin-react-transform": "3.0.0",
+    "babelify": "10.0.0",
+    "browserify": "17.0.0",
+    "eslint": "8.24.0",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-import-resolver-typescript": "2.5.0",
+    "eslint-plugin-import": "2.22.1",
+    "eslint-plugin-prettier": "4.2.1",
+    "eslint-plugin-react": "7.23.1",
+    "husky": "8.0.1",
+    "install": "0.13.0",
+    "lint-staged": "13.0.3",
+    "prettier": "2.7.1",
+    "serve": "14.0.1",
+    "tsify": "5.0.4",
+    "typescript": "4.8.4",
+    "uglify": "0.1.5",
+    "watchify": "4.0.0"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ]
+  },
+  "scripts": {
+    "prepare": "husky install",
+    "setup": "yarn install && yarn allow-scripts",
+    "lint": "eslint src --ext .ts,.tsx",
+    "build:bg": "./scripts/bundle.sh src/scripts/background.ts build/background.js",
+    "watch:bg": "./scripts/watch.sh src/scripts/background.ts build/background.js",
+    "build:contentscript": "./scripts/bundle.sh src/scripts/contentscript.ts build/contentscript.js",
+    "watch:contentscript": "./scripts/watch.sh src/scripts/contentscript.ts build/contentscript.js",
+    "build:popup": "./scripts/bundle.sh src/scripts/popup.ts build/popup.js",
+    "watch:popup": "./scripts/watch.sh src/scripts/popup.ts build/popup.js",
+    "build:provider": "./scripts/bundle.sh src/scripts/provider.ts build/provider.js",
+    "watch:provider": "./scripts/watch.sh src/scripts/provider.ts build/provider.js",
+    "build": "yarn build:bg && yarn build:contentscript && yarn build:popup && yarn build:provider",
+    "watch": "yarn watch:bg & yarn watch:contentscript & yarn watch:popup & yarn watch:provider"
+  },
+  "resolutions": {
+    "minimatch": "3.0.4",
+    "minimist": "1.2.6",
+    "set-value": "2.0.1",
+    "grunt": "1.5.3",
+    "lodash": "4.17.21",
+    "underscore": "1.12.1",
+    "underscore.string": "3.3.5",
+    "uglify-js": "2.6.0",
+    "clean-css": "4.1.11"
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "@lavamoat/preinstall-always-fail": false,
+      "@babel/register>core-js": false
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --cache"
+    ]
+  }
+}
