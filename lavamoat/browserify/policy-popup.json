@@ -47,7 +47,8 @@
         "reportError": true,
         "self": true,
         "setTimeout": true,
-        "top": true
+        "top": true,
+        "window": true
       },
       "packages": {
         "browserify>process": true,
