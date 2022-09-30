@@ -2,7 +2,9 @@
 
 BUILD=$1
 
-declare -a FILES=("background" "contentscript" "popup" "provider")
+### We can't enable lavamoat in the contentscript and provider bc of unsafe-eval
+### declare -a FILES=("background" "contentscript" "popup" "provider")
+declare -a FILES=("background" "popup")
 
 ## now loop through the above array
 for FILE in "${FILES[@]}"

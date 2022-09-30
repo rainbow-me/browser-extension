@@ -90,6 +90,7 @@
           _,
           sendResponse
         ) {
+          console.log('Received message', request);
           try {
             let response = null;
             switch (request.method) {
@@ -100,6 +101,7 @@
                 response = [DEFAULT_ACCOUNT];
                 break;
             }
+            console.log('responding message', response);
             sendResponse({ result: response });
           } catch (e) {
             sendResponse({ result: null, error: e });
