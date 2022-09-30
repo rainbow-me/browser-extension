@@ -32,6 +32,7 @@
     "install": "0.13.0",
     "lavamoat-browserify": "15.3.0",
     "lint-staged": "13.0.3",
+    "patch-package": "6.4.7",
     "prettier": "2.7.1",
     "serve": "14.0.1",
     "tsify": "5.0.4",
@@ -76,7 +77,9 @@
   "lavamoat": {
     "allowScripts": {
       "@lavamoat/preinstall-always-fail": false,
-      "@babel/register>core-js": false
+      "@babel/register>core-js": false,
+      "browserify-hmr>socket.io>engine.io>ws>bufferutil": false,
+      "browserify-hmr>socket.io>engine.io>ws>utf-8-validate": false
     }
   },
   "lint-staged": {
