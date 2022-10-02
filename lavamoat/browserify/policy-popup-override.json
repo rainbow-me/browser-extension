@@ -1,9 +1,0 @@
-{
-  "resources": {
-    "react-dom": {
-      "globals": {
-        "window": true
-      }
-    }
-  }
-}

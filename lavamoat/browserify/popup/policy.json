@@ -1,0 +1,21 @@
+{
+  "resources": {
+    "browserify>process": {
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      }
+    },
+    "browserify>timers-browserify": {
+      "globals": {
+        "clearInterval": true,
+        "clearTimeout": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>process": true
+      }
+    }
+  }
+}

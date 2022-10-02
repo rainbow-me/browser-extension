@@ -1,0 +1,14 @@
+{
+  "resources": {
+    "webpack>loader-runner": {
+      "packages": {
+        "ts-loader": true
+      }
+    },
+    "ts-loader": {
+      "packages": {
+        "typescript": true
+      }
+    }
+  }
+}

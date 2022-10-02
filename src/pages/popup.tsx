@@ -1,9 +1,7 @@
-'use strict';
-
 import React, { useCallback, useEffect, useState } from 'react';
-import Storage from '../utils/storage';
+import { Storage } from '../utils/storage';
 
-export default function Popup() {
+export function Popup() {
   const [status, setStatus] = useState(0);
 
   const switchInjection = useCallback(async () => {
@@ -23,7 +21,7 @@ export default function Popup() {
 
   return (
     <div>
-      <h1>Rainbowwww</h1>
+      <h1>Rainbow Rocks!</h1>
       Injecting? <div id="injection-status">{status ? 'YES' : 'NO'}</div>
       <button id="injection-button" onClick={switchInjection}>
         TURN {status ? 'OFF' : 'ON'}

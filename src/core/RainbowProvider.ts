@@ -1,8 +1,8 @@
 import { random } from '../utils/misc';
 
-type CallbackFunctionWithArgs = (...args: unknown[]) => void;
+type CallbackFunctionWithArgs = (...args: any[]) => void;
 
-export default class RainbowProvider {
+export class RainbowProvider {
   isReady = true;
   _isConnected = false;
   _initialized = false;
@@ -12,10 +12,10 @@ export default class RainbowProvider {
   isRainbow = true;
   networkVersion = '1';
   chainId = '0x1';
-  selectedAddress: string = undefined;
+  selectedAddress: string | undefined = undefined;
   _metamask = {
     isUnlocked: () => {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         resolve(this._isUnlocked);
       });
     },
@@ -38,21 +38,21 @@ export default class RainbowProvider {
   enable = () => Promise.resolve();
   send = (
     { method, params }: { method: string; params: object },
-    callback: CallbackFunctionWithArgs
+    callback: CallbackFunctionWithArgs,
   ) => this._request({ method, params }, callback);
   sendAsync = (
     { method, params }: { method: string; params: object },
-    callback: CallbackFunctionWithArgs
+    callback: CallbackFunctionWithArgs,
   ) => this._request({ method, params }, callback);
   _request = (
     { method, params }: { method: string; params: object },
-    cb?: CallbackFunctionWithArgs
+    cb?: CallbackFunctionWithArgs,
   ) => {
     let response: Array<string> = [];
     return new Promise((resolve, reject) => {
       switch (method) {
         case 'eth_accounts':
-          if (this.isConnected()) {
+          if (this.isConnected() && this.selectedAddress) {
             response = [this.selectedAddress];
           } else {
             response = [];
@@ -87,7 +87,7 @@ export default class RainbowProvider {
                 }
                 resolve(response.result);
               }
-            }
+            },
           );
       }
     });
@@ -96,13 +96,13 @@ export default class RainbowProvider {
 
   _sendMessage = (
     { method, params }: { method: string; params: object },
-    cb?: CallbackFunctionWithArgs
+    cb?: CallbackFunctionWithArgs,
   ) => {
     const id = random();
-    this._callbacks[id.toString()] = cb;
+    if (cb) this._callbacks[id.toString()] = cb;
     window.postMessage(
       { type: 'TO_RAINBOW_PROVIDER', id, payload: { method, params } },
-      '*'
+      '*',
     );
   };
 }

@@ -1,4 +1,4 @@
-import RainbowProvider from '../core/RainbowProvider';
+import { RainbowProvider } from '../core/RainbowProvider';
 
 declare global {
   interface Window {
@@ -8,7 +8,7 @@ declare global {
 }
 
 const provider = new RainbowProvider();
-window.addEventListener('message', event => {
+window.addEventListener('message', (event) => {
   if (event.source != window) {
     return;
   }

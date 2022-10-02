@@ -1,3 +1,5 @@
+export {};
+
 chrome.runtime.onInstalled.addListener(async () => {
   // Page we want to show after installation
   const tab = await chrome.tabs.create({ url: 'https://rainbow.me/' });

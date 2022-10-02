@@ -7,11 +7,6 @@
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@babel/core": "7.19.3",
-    "@babel/preset-env": "7.19.3",
-    "@babel/preset-react": "7.18.6",
-    "@babel/preset-typescript": "7.18.6",
-    "@babel/register": "7.5.5",
     "@lavamoat/allow-scripts": "2.0.3",
     "@lavamoat/preinstall-always-fail": "1.0.0",
     "@types/chrome": "0.0.197",
@@ -19,46 +14,39 @@
     "@types/react-dom": "18.0.6",
     "@typescript-eslint/eslint-plugin": "5.38.1",
     "@typescript-eslint/parser": "5.38.1",
-    "babelify": "10.0.0",
     "browserify": "17.0.0",
-    "browserify-hmr": "0.4.1",
     "eslint": "8.24.0",
     "eslint-config-prettier": "8.5.0",
-    "eslint-import-resolver-typescript": "2.5.0",
-    "eslint-plugin-import": "2.22.1",
+    "eslint-config-rainbow": "4.2.0",
+    "eslint-plugin-import": "2.26.0",
+    "eslint-plugin-jest": "27.0.4",
     "eslint-plugin-prettier": "4.2.1",
-    "eslint-plugin-react": "7.23.1",
+    "globby": "11.0.4",
     "husky": "8.0.1",
+    "jest": "29.1.2",
+    "lavamoat": "6.3.0",
     "lavamoat-browserify": "15.3.0",
     "lint-staged": "13.0.3",
     "patch-package": "6.4.7",
     "prettier": "2.7.1",
-    "tsify": "5.0.4",
+    "ts-loader": "9.4.1",
     "typescript": "4.8.4",
-    "watchify": "4.0.0"
-  },
-  "babel": {
-    "presets": [
-      "@babel/preset-env",
-      "@babel/preset-react"
-    ]
+    "webpack": "5.74.0",
+    "webpack-cli": "4.10.0"
   },
   "scripts": {
+    "build": "yarn build:webpack && yarn build:lavamoat",
+    "build:webpack": "lavamoat ./scripts/webpack.js --policy ./lavamoat/build-webpack/policy.json --override ./lavamoat/build-webpack/policy-override.json",
+    "build:lavamoat": "lavamoat ./scripts/lavamoat.js --policy ./lavamoat/build-lavamoat/policy.json --override ./lavamoat/build-lavamoat/policy-override.json",
+    "dev": "webpack --watch",
+    "generate-policies": "yarn generate-policies:build:webpack && yarn generate-policies:build:lavamoat && yarn generate-policies:browserify",
+    "generate-policies:browserify": "yarn build:webpack && GENERATE_POLICY=true lavamoat ./scripts/lavamoat.js --policy ./lavamoat/build-lavamoat/policy.json --override ./lavamoat/build-lavamoat/policy-override.json",
+    "generate-policies:build:webpack": "lavamoat ./scripts/webpack.js --autopolicy --policy ./lavamoat/build-webpack/policy.json --override ./lavamoat/build-webpack/policy-override.json",
+    "generate-policies:build:lavamoat": "lavamoat ./scripts/lavamoat.js --autopolicy --policy ./lavamoat/build-lavamoat/policy.json --override ./lavamoat/build-lavamoat/policy-override.json",
+    "lint": "eslint . --cache",
+    "postinstall": "yarn patch-package",
     "prepare": "husky install",
-    "setup": "yarn install && yarn allow-scripts",
-    "lint": "eslint src --ext .ts,.tsx",
-    "lavamoat": "./scripts/lavamoat.sh",
-    "build:lavamoat": "./scripts/lavamoat.sh true",
-    "build:bg": "./scripts/bundle.sh src/scripts/background.ts build/background.js",
-    "watch:bg": "./scripts/watch.sh src/scripts/background.ts build/background.js",
-    "build:contentscript": "./scripts/bundle.sh src/scripts/contentscript.ts build/contentscript.js",
-    "watch:contentscript": "./scripts/watch.sh src/scripts/contentscript.ts build/contentscript.js",
-    "build:popup": "./scripts/bundle.sh src/scripts/popup.ts build/popup.js",
-    "watch:popup": "./scripts/watch.sh src/scripts/popup.ts build/popup.js true",
-    "build:provider": "./scripts/bundle.sh src/scripts/provider.ts build/provider.js",
-    "watch:provider": "./scripts/watch.sh src/scripts/provider.ts build/provider.js",
-    "build": "yarn build:bg && yarn build:contentscript && yarn build:popup && yarn build:provider",
-    "watch": "yarn watch:bg & yarn watch:contentscript & yarn watch:popup & yarn watch:provider"
+    "setup": "yarn install && yarn allow-scripts"
   },
   "resolutions": {
     "minimatch": "3.0.4",
@@ -68,21 +56,18 @@
     "lodash": "4.17.21",
     "underscore": "1.12.1",
     "underscore.string": "3.3.5",
-    "uglify-js": "2.6.0",
     "clean-css": "4.1.11"
   },
   "lavamoat": {
     "allowScripts": {
       "@lavamoat/preinstall-always-fail": false,
-      "@babel/register>core-js": false,
       "browserify-hmr>socket.io>engine.io>ws>bufferutil": false,
       "browserify-hmr>socket.io>engine.io>ws>utf-8-validate": false
     }
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "prettier --write",
-      "eslint --cache"
+      "yarn lint --fix"
     ]
   }
 }
