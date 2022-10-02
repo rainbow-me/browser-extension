@@ -1,3 +1,4 @@
+# These patches are required for LavaMoat Node compat
 diff --git a/node_modules/webpack/lib/Compiler.js b/node_modules/webpack/lib/Compiler.js
 index 2d59a1a..9e23b9a 100644
 --- a/node_modules/webpack/lib/Compiler.js

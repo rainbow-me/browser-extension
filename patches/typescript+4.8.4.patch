@@ -1,3 +1,4 @@
+# These patches are required for LavaMoat Node compat
 diff --git a/node_modules/typescript/lib/typescript.js b/node_modules/typescript/lib/typescript.js
 index c0f6f3a..94a12b6 100644
 --- a/node_modules/typescript/lib/typescript.js
