@@ -23,6 +23,7 @@
     "setup": "yarn install && yarn allow-scripts && yarn patch-package && yarn policy"
   },
   "dependencies": {
+    "@vanilla-extract/css": "1.9.1",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
@@ -34,7 +35,9 @@
     "@types/react-dom": "18.0.6",
     "@typescript-eslint/eslint-plugin": "5.38.1",
     "@typescript-eslint/parser": "5.38.1",
+    "@vanilla-extract/webpack-plugin": "2.2.0",
     "browserify": "17.0.0",
+    "css-loader": "6.7.1",
     "eslint": "8.24.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-config-rainbow": "4.2.0",
@@ -48,6 +51,7 @@
     "lavamoat": "6.3.0",
     "lavamoat-browserify": "15.3.0",
     "lint-staged": "13.0.3",
+    "mini-css-extract-plugin": "2.6.1",
     "patch-package": "6.4.7",
     "prettier": "2.7.1",
     "ts-loader": "9.4.1",
@@ -69,7 +73,8 @@
     "allowScripts": {
       "@lavamoat/preinstall-always-fail": false,
       "browserify-hmr>socket.io>engine.io>ws>bufferutil": false,
-      "browserify-hmr>socket.io>engine.io>ws>utf-8-validate": false
+      "browserify-hmr>socket.io>engine.io>ws>utf-8-validate": false,
+      "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>esbuild": false
     }
   },
   "lint-staged": {

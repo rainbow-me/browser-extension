@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Storage } from '../utils/storage';
 
+import { title } from './popup.css';
+
 export function Popup() {
   const [status, setStatus] = useState(0);
 
@@ -21,7 +23,7 @@ export function Popup() {
 
   return (
     <div>
-      <h1>Rainbow Rocks!</h1>
+      <h1 className={title}>Rainbow Rocks!</h1>
       Injecting? <div id="injection-status">{status ? 'YES' : 'NO'}</div>
       <button id="injection-button" onClick={switchInjection}>
         TURN {status ? 'OFF' : 'ON'}

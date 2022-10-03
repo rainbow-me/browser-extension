@@ -4,6 +4,7 @@ const config = require('../webpack.config');
 
 // Statically require packages that are loaded dynamically in webpack
 // so we can generate LavaMoat policies for them.
+require('css-loader');
 require('loader-runner');
 require('html-webpack-plugin');
 require('ts-loader');

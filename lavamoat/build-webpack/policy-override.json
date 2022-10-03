@@ -1,13 +1,48 @@
 {
   "resources": {
+    "@vanilla-extract/webpack-plugin": {
+      "builtin": {
+        "path": true
+      },
+      "packages": {
+        "@vanilla-extract/webpack-plugin>loader-utils": true,
+        "eslint>debug": true,
+        "eslint>chalk": true
+      }
+    },
+    "@vanilla-extract/webpack-plugin>loader-utils": {
+      "builtin": {
+        "path": true
+      },
+      "packages": {
+        "@vanilla-extract/webpack-plugin>loader-utils>json5": true,
+        "@vanilla-extract/webpack-plugin>loader-utils>emojis-list": true
+      }
+    },
+    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration": {
+      "packages": {
+        "$root$": true
+      }
+    },
+    "mini-css-extract-plugin": {
+      "globals": {
+        "Buffer": true
+      }
+    },
     "webpack": {
       "packages": {
-        "ts-loader": true,
-        "html-webpack-plugin": true
+        "@vanilla-extract/webpack-plugin": true,
+        "css-loader": true,
+        "mini-css-extract-plugin": true,
+        "html-webpack-plugin": true,
+        "ts-loader": true
       }
     },
     "webpack>loader-runner": {
       "packages": {
+        "@vanilla-extract/webpack-plugin": true,
+        "css-loader": true,
+        "mini-css-extract-plugin": true,
         "ts-loader": true,
         "html-webpack-plugin": true
       }
