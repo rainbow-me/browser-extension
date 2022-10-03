@@ -1,0 +1,292 @@
+# These patches are required for LavaMoat Node compat
+diff --git a/node_modules/deep-object-diff/cjs/added.js b/node_modules/deep-object-diff/cjs/added.js
+index 8e65782..5a4e6a0 100644
+--- a/node_modules/deep-object-diff/cjs/added.js
++++ b/node_modules/deep-object-diff/cjs/added.js
+@@ -12,7 +12,7 @@ const addedDiff = (lhs, rhs) => {
+   const l = lhs;
+   const r = rhs;
+   return Object.keys(r).reduce((acc, key) => {
+-    if ((0, _utils.hasOwnProperty)(l, key)) {
++    if ((0, _utils.hasOwnProperty_)(l, key)) {
+       const difference = addedDiff(l[key], r[key]);
+       if ((0, _utils.isObject)(difference) && (0, _utils.isEmpty)(difference)) return acc;
+       acc[key] = difference;
+diff --git a/node_modules/deep-object-diff/cjs/arrayDiff.js b/node_modules/deep-object-diff/cjs/arrayDiff.js
+index 8dc5a82..f94f13c 100644
+--- a/node_modules/deep-object-diff/cjs/arrayDiff.js
++++ b/node_modules/deep-object-diff/cjs/arrayDiff.js
+@@ -15,7 +15,7 @@ const diff = (lhs, rhs) => {
+   const l = lhs;
+   const r = rhs;
+   const deletedValues = Object.keys(l).reduce((acc, key) => {
+-    return (0, _utils.hasOwnProperty)(r, key) ? acc : { ...acc,
++    return (0, _utils.hasOwnProperty_)(r, key) ? acc : { ...acc,
+       [key]: undefined
+     };
+   }, {});
+@@ -27,10 +27,10 @@ const diff = (lhs, rhs) => {
+ 
+   if (Array.isArray(r) && Array.isArray(l)) {
+     const deletedValues = l.reduce((acc, item, index) => {
+-      return (0, _utils.hasOwnProperty)(r, index) ? acc.concat(item) : acc.concat(undefined);
++      return (0, _utils.hasOwnProperty_)(r, index) ? acc.concat(item) : acc.concat(undefined);
+     }, []);
+     return r.reduce((acc, rightItem, index) => {
+-      if (!(0, _utils.hasOwnProperty)(deletedValues, index)) {
++      if (!(0, _utils.hasOwnProperty_)(deletedValues, index)) {
+         return acc.concat(rightItem);
+       }
+ 
+@@ -47,7 +47,7 @@ const diff = (lhs, rhs) => {
+   }
+ 
+   return Object.keys(r).reduce((acc, key) => {
+-    if (!(0, _utils.hasOwnProperty)(l, key)) return { ...acc,
++    if (!(0, _utils.hasOwnProperty_)(l, key)) return { ...acc,
+       [key]: r[key]
+     }; // return added r key
+ 
+diff --git a/node_modules/deep-object-diff/cjs/deleted.js b/node_modules/deep-object-diff/cjs/deleted.js
+index c66607c..fcbb635 100644
+--- a/node_modules/deep-object-diff/cjs/deleted.js
++++ b/node_modules/deep-object-diff/cjs/deleted.js
+@@ -12,7 +12,7 @@ const deletedDiff = (lhs, rhs) => {
+   const l = lhs;
+   const r = rhs;
+   return Object.keys(l).reduce((acc, key) => {
+-    if ((0, _utils.hasOwnProperty)(r, key)) {
++    if ((0, _utils.hasOwnProperty_)(r, key)) {
+       const difference = deletedDiff(l[key], r[key]);
+       if ((0, _utils.isObject)(difference) && (0, _utils.isEmpty)(difference)) return acc;
+       acc[key] = difference;
+diff --git a/node_modules/deep-object-diff/cjs/diff.js b/node_modules/deep-object-diff/cjs/diff.js
+index 72d1764..35522d9 100644
+--- a/node_modules/deep-object-diff/cjs/diff.js
++++ b/node_modules/deep-object-diff/cjs/diff.js
+@@ -15,7 +15,7 @@ const diff = (lhs, rhs) => {
+   const l = lhs;
+   const r = rhs;
+   const deletedValues = Object.keys(l).reduce((acc, key) => {
+-    if (!(0, _utils.hasOwnProperty)(r, key)) {
++    if (!(0, _utils.hasOwnProperty_)(r, key)) {
+       acc[key] = undefined;
+     }
+ 
+@@ -28,7 +28,7 @@ const diff = (lhs, rhs) => {
+   }
+ 
+   return Object.keys(r).reduce((acc, key) => {
+-    if (!(0, _utils.hasOwnProperty)(l, key)) {
++    if (!(0, _utils.hasOwnProperty_)(l, key)) {
+       acc[key] = r[key]; // return added r key
+ 
+       return acc;
+diff --git a/node_modules/deep-object-diff/cjs/preserveArray.js b/node_modules/deep-object-diff/cjs/preserveArray.js
+index 4a6b7b2..0d63998 100644
+--- a/node_modules/deep-object-diff/cjs/preserveArray.js
++++ b/node_modules/deep-object-diff/cjs/preserveArray.js
+@@ -19,7 +19,7 @@ const preserve = (diff, left, right) => {
+       const array = [...getLargerArray(leftArray, rightArray)];
+       return { ...acc,
+         [key]: array.reduce((acc2, item, index) => {
+-          if ((0, _utils.hasOwnProperty)(diff[key], index)) {
++          if ((0, _utils.hasOwnProperty_)(diff[key], index)) {
+             acc2[index] = preserve(diff[key][index], leftArray[index], rightArray[index]); // diff recurse and check for nested arrays
+ 
+             return acc2;
+diff --git a/node_modules/deep-object-diff/cjs/updated.js b/node_modules/deep-object-diff/cjs/updated.js
+index 778d16d..445bbad 100644
+--- a/node_modules/deep-object-diff/cjs/updated.js
++++ b/node_modules/deep-object-diff/cjs/updated.js
+@@ -19,7 +19,7 @@ const updatedDiff = (lhs, rhs) => {
+   }
+ 
+   return Object.keys(r).reduce((acc, key) => {
+-    if ((0, _utils.hasOwnProperty)(l, key)) {
++    if ((0, _utils.hasOwnProperty_)(l, key)) {
+       const difference = updatedDiff(l[key], r[key]); // If the difference is empty, and the lhs is an empty object or the rhs is not an empty object
+ 
+       if ((0, _utils.isEmptyObject)(difference) && !(0, _utils.isDate)(difference) && ((0, _utils.isEmptyObject)(l[key]) || !(0, _utils.isEmptyObject)(r[key]))) return acc; // return no diff
+diff --git a/node_modules/deep-object-diff/cjs/utils.js b/node_modules/deep-object-diff/cjs/utils.js
+index fe38f93..391e617 100644
+--- a/node_modules/deep-object-diff/cjs/utils.js
++++ b/node_modules/deep-object-diff/cjs/utils.js
+@@ -3,7 +3,7 @@
+ Object.defineProperty(exports, "__esModule", {
+   value: true
+ });
+-exports.isObject = exports.isEmptyObject = exports.isEmpty = exports.isDate = exports.hasOwnProperty = void 0;
++exports.isObject = exports.isEmptyObject = exports.isEmpty = exports.isDate = exports.hasOwnProperty_ = void 0;
+ 
+ const isDate = d => d instanceof Date;
+ 
+@@ -17,9 +17,9 @@ const isObject = o => o != null && typeof o === 'object';
+ 
+ exports.isObject = isObject;
+ 
+-const hasOwnProperty = (o, ...args) => Object.prototype.hasOwnProperty.call(o, ...args);
++const hasOwnProperty_ = (o, ...args) => Object.prototype.hasOwnProperty.call(o, ...args);
+ 
+-exports.hasOwnProperty = hasOwnProperty;
++exports.hasOwnProperty_ = hasOwnProperty_;
+ 
+ const isEmptyObject = o => isObject(o) && isEmpty(o);
+ 
+diff --git a/node_modules/deep-object-diff/mjs/added.js b/node_modules/deep-object-diff/mjs/added.js
+index 85e955f..164372e 100644
+--- a/node_modules/deep-object-diff/mjs/added.js
++++ b/node_modules/deep-object-diff/mjs/added.js
+@@ -1,4 +1,4 @@
+-import { isEmpty, isObject, hasOwnProperty } from './utils.js';
++import { isEmpty, isObject, hasOwnProperty_ } from './utils.js';
+ 
+ const addedDiff = (lhs, rhs) => {
+ 
+@@ -8,7 +8,7 @@ const addedDiff = (lhs, rhs) => {
+   const r = rhs;
+ 
+   return Object.keys(r).reduce((acc, key) => {
+-    if (hasOwnProperty(l, key)) {
++    if (hasOwnProperty_(l, key)) {
+       const difference = addedDiff(l[key], r[key]);
+ 
+       if (isObject(difference) && isEmpty(difference)) return acc;
+diff --git a/node_modules/deep-object-diff/mjs/arrayDiff.js b/node_modules/deep-object-diff/mjs/arrayDiff.js
+index 17ad61f..e450109 100644
+--- a/node_modules/deep-object-diff/mjs/arrayDiff.js
++++ b/node_modules/deep-object-diff/mjs/arrayDiff.js
+@@ -1,4 +1,4 @@
+-import { isDate, isEmpty, isObject, hasOwnProperty } from './utils.js';
++import { isDate, isEmpty, isObject, hasOwnProperty_ } from './utils.js';
+ 
+ const diff = (lhs, rhs) => {
+   if (lhs === rhs) return {}; // equal return no diff
+@@ -9,7 +9,7 @@ const diff = (lhs, rhs) => {
+   const r = rhs;
+ 
+   const deletedValues = Object.keys(l).reduce((acc, key) => {
+-    return hasOwnProperty(r, key) ? acc : { ...acc, [key]: undefined };
++    return hasOwnProperty_(r, key) ? acc : { ...acc, [key]: undefined };
+   }, {});
+ 
+   if (isDate(l) || isDate(r)) {
+@@ -19,11 +19,11 @@ const diff = (lhs, rhs) => {
+ 
+   if (Array.isArray(r) && Array.isArray(l)) {
+     const deletedValues = l.reduce((acc, item, index) => {
+-      return hasOwnProperty(r, index) ? acc.concat(item) : acc.concat(undefined);
++      return hasOwnProperty_(r, index) ? acc.concat(item) : acc.concat(undefined);
+     }, []);
+ 
+     return r.reduce((acc, rightItem, index) => {
+-      if (!hasOwnProperty(deletedValues, index)) {
++      if (!hasOwnProperty_(deletedValues, index)) {
+         return acc.concat(rightItem);
+       }
+ 
+@@ -40,7 +40,7 @@ const diff = (lhs, rhs) => {
+   }
+ 
+   return Object.keys(r).reduce((acc, key) => {
+-    if (!hasOwnProperty(l, key)) return { ...acc, [key]: r[key] }; // return added r key
++    if (!hasOwnProperty_(l, key)) return { ...acc, [key]: r[key] }; // return added r key
+ 
+     const difference = diff(l[key], r[key]);
+ 
+diff --git a/node_modules/deep-object-diff/mjs/deleted.js b/node_modules/deep-object-diff/mjs/deleted.js
+index 74eb87e..a5f8619 100644
+--- a/node_modules/deep-object-diff/mjs/deleted.js
++++ b/node_modules/deep-object-diff/mjs/deleted.js
+@@ -1,4 +1,4 @@
+-import { isEmpty, isObject, hasOwnProperty } from './utils.js';
++import { isEmpty, isObject, hasOwnProperty_ } from './utils.js';
+ 
+ const deletedDiff = (lhs, rhs) => {
+   if (lhs === rhs || !isObject(lhs) || !isObject(rhs)) return {};
+@@ -7,7 +7,7 @@ const deletedDiff = (lhs, rhs) => {
+   const r = rhs;
+ 
+   return Object.keys(l).reduce((acc, key) => {
+-    if (hasOwnProperty(r, key)) {
++    if (hasOwnProperty_(r, key)) {
+       const difference = deletedDiff(l[key], r[key]);
+ 
+       if (isObject(difference) && isEmpty(difference)) return acc;
+diff --git a/node_modules/deep-object-diff/mjs/diff.js b/node_modules/deep-object-diff/mjs/diff.js
+index dc7353c..65bf6c8 100644
+--- a/node_modules/deep-object-diff/mjs/diff.js
++++ b/node_modules/deep-object-diff/mjs/diff.js
+@@ -1,4 +1,4 @@
+-import { isDate, isEmptyObject, isObject, hasOwnProperty } from './utils.js';
++import { isDate, isEmptyObject, isObject, hasOwnProperty_ } from './utils.js';
+ 
+ const diff = (lhs, rhs) => {
+   if (lhs === rhs) return {}; // equal return no diff
+@@ -9,7 +9,7 @@ const diff = (lhs, rhs) => {
+   const r = rhs;
+ 
+   const deletedValues = Object.keys(l).reduce((acc, key) => {
+-    if (!hasOwnProperty(r, key)) {
++    if (!hasOwnProperty_(r, key)) {
+       acc[key] = undefined;
+       
+     }
+@@ -23,7 +23,7 @@ const diff = (lhs, rhs) => {
+   }
+ 
+   return Object.keys(r).reduce((acc, key) => {
+-    if (!hasOwnProperty(l, key)){
++    if (!hasOwnProperty_(l, key)){
+       acc[key] = r[key]; // return added r key
+       return acc;
+     } 
+diff --git a/node_modules/deep-object-diff/mjs/preserveArray.js b/node_modules/deep-object-diff/mjs/preserveArray.js
+index 90bf54b..fc11b66 100644
+--- a/node_modules/deep-object-diff/mjs/preserveArray.js
++++ b/node_modules/deep-object-diff/mjs/preserveArray.js
+@@ -1,4 +1,4 @@
+-import { isObject, hasOwnProperty } from './utils.js';
++import { isObject, hasOwnProperty_ } from './utils.js';
+ 
+ const getLargerArray = (l, r) => l.length > r.length ? l : r;
+ 
+@@ -16,7 +16,7 @@ const preserve = (diff, left, right) => {
+       return {
+         ...acc,
+         [key]: array.reduce((acc2, item, index) => {
+-          if (hasOwnProperty(diff[key], index)) {
++          if (hasOwnProperty_(diff[key], index)) {
+             acc2[index] = preserve(diff[key][index], leftArray[index], rightArray[index]); // diff recurse and check for nested arrays
+             return acc2;
+           }
+diff --git a/node_modules/deep-object-diff/mjs/updated.js b/node_modules/deep-object-diff/mjs/updated.js
+index ce81249..edbbe5b 100644
+--- a/node_modules/deep-object-diff/mjs/updated.js
++++ b/node_modules/deep-object-diff/mjs/updated.js
+@@ -1,4 +1,4 @@
+-import { isDate, isEmptyObject, isObject, hasOwnProperty } from './utils.js';
++import { isDate, isEmptyObject, isObject, hasOwnProperty_ } from './utils.js';
+ 
+ const updatedDiff = (lhs, rhs) => {
+   if (lhs === rhs) return {};
+@@ -14,7 +14,7 @@ const updatedDiff = (lhs, rhs) => {
+   }
+ 
+   return Object.keys(r).reduce((acc, key) => {
+-    if (hasOwnProperty(l, key)) {
++    if (hasOwnProperty_(l, key)) {
+       const difference = updatedDiff(l[key], r[key]);
+ 
+       // If the difference is empty, and the lhs is an empty object or the rhs is not an empty object
+diff --git a/node_modules/deep-object-diff/mjs/utils.js b/node_modules/deep-object-diff/mjs/utils.js
+index 282c5d1..c0df636 100644
+--- a/node_modules/deep-object-diff/mjs/utils.js
++++ b/node_modules/deep-object-diff/mjs/utils.js
+@@ -1,5 +1,5 @@
+ export const isDate = d => d instanceof Date;
+ export const isEmpty = o => Object.keys(o).length === 0;
+ export const isObject = o => o != null && typeof o === 'object';
+-export const hasOwnProperty = (o, ...args) => Object.prototype.hasOwnProperty.call(o, ...args)
++export const hasOwnProperty_ = (o, ...args) => Object.prototype.hasOwnProperty.call(o, ...args)
+ export const isEmptyObject = (o) => isObject(o) && isEmpty(o);
