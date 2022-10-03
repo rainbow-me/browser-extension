@@ -36,17 +36,24 @@
     "webpack-cli": "4.10.0"
   },
   "scripts": {
+    "// Generates a LavaMoat secured build": "",
     "build": "yarn build:webpack && yarn build:lavamoat",
+    "// Generates modules via Webpack (without LavaMoat protected modules)": "",
     "build:webpack": "lavamoat ./scripts/webpack.js --policy ./lavamoat/build-webpack/policy.json --override ./lavamoat/build-webpack/policy-override.json",
-    "build:lavamoat": "lavamoat ./scripts/lavamoat.js --policy ./lavamoat/build-lavamoat/policy.json --override ./lavamoat/build-lavamoat/policy-override.json",
+    "// Generates LavaMoat secured modules from the Webpack build": "",
+    "build:lavamoat": "lavamoat ./scripts/lavamoat-browserify.js --policy ./lavamoat/build-lavamoat/policy.json --override ./lavamoat/build-lavamoat/policy-override.json",
     "dev": "webpack --watch",
-    "generate-policies": "yarn generate-policies:build:webpack && yarn generate-policies:build:lavamoat && yarn generate-policies:browserify",
-    "generate-policies:browserify": "yarn build:webpack && GENERATE_POLICY=true lavamoat ./scripts/lavamoat.js --policy ./lavamoat/build-lavamoat/policy.json --override ./lavamoat/build-lavamoat/policy-override.json",
-    "generate-policies:build:webpack": "lavamoat ./scripts/webpack.js --autopolicy --policy ./lavamoat/build-webpack/policy.json --override ./lavamoat/build-webpack/policy-override.json",
-    "generate-policies:build:lavamoat": "lavamoat ./scripts/lavamoat.js --autopolicy --policy ./lavamoat/build-lavamoat/policy.json --override ./lavamoat/build-lavamoat/policy-override.json",
     "lint": "eslint . --cache",
+    "// Generates LavaMoat policies for everything that is protected w/ LavaMoat": "",
+    "policy": "yarn policy:build:webpack && yarn policy:build:lavamoat && yarn policy:browserify",
+    "// Generates a LavaMoat policy for the output of the Webpack bundle": "",
+    "policy:bundle": "yarn build:webpack && GENERATE_POLICY=true lavamoat ./scripts/lavamoat-browserify.js --policy ./lavamoat/build-lavamoat/policy.json --override ./lavamoat/build-lavamoat/policy-override.json",
+    "// Generates a LavaMoat policy for the Webpack build script": "",
+    "policy:build:webpack": "lavamoat ./scripts/webpack.js --autopolicy --policy ./lavamoat/build-webpack/policy.json --override ./lavamoat/build-webpack/policy-override.json",
+    "// Generates a LavaMoat policy for the Lavamoat Browserify script": "",
+    "policy:build:lavamoat": "lavamoat ./scripts/lavamoat-browserify.js --autopolicy --policy ./lavamoat/build-lavamoat/policy.json --override ./lavamoat/build-lavamoat/policy-override.json",
     "prepare": "husky install",
-    "setup": "yarn install && yarn patch-package && yarn generate-policies && yarn allow-scripts"
+    "setup": "yarn install && yarn patch-package && yarn policy && yarn allow-scripts"
   },
   "resolutions": {
     "minimatch": "3.0.4",
