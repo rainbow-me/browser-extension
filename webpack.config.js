@@ -33,6 +33,6 @@ module.exports = {
   output: {
     clean: true,
     filename: '[name].js',
-    path: join(__dirname, 'build/bundle'),
+    path: join(__dirname, 'build'),
   },
 };

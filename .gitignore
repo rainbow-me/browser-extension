@@ -9,4 +9,8 @@ yarn-error.log
 
 .eslintcache
 
-build/bundle
+build/background.js
+build/contentscript.js
+build/popup.html
+build/popup.js
+build/provider.js

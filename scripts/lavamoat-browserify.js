@@ -13,7 +13,7 @@ const ignore = ['**/contentscript.js', '**/provider.js'];
 const isGeneratingPolicy = Boolean(process.env.GENERATE_POLICY);
 
 (async () => {
-  const paths = await globby(['build/bundle/*.js'], { ignore });
+  const paths = await globby(['build/*.js'], { ignore });
 
   paths.forEach((path_) => {
     const name = path.parse(path_).name;

@@ -15,17 +15,17 @@
       "512": "images/icon-16@32x.png"
     },
     "default_title": "Rainbow",
-    "default_popup": "bundle/popup.html"
+    "default_popup": "popup.html"
   },
   "author": "https://rainbow.me",
   "background": {
-    "service_worker": "bundle/background.js"
+    "service_worker": "background.js"
   },
   "content_scripts": [
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
       "js": [
-        "bundle/contentscript.js"
+        "contentscript.js"
       ],
       "run_at": "document_start",
       "all_frames": true
@@ -60,7 +60,7 @@
   ],
   "short_name": "Rainbow",
   "web_accessible_resources": [{
-    "resources": ["bundle/provider.js"],
+    "resources": ["provider.js"],
     "matches": ["<all_urls>"]
   }]
 }
