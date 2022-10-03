@@ -108,7 +108,7 @@
         "Buffer": true
       },
       "packages": {
-        "browserify>browser-pack>combine-source-map>inline-source-map>source-map": true
+        "browserify>browser-pack>combine-source-map>source-map": true
       }
     },
     "browserify>browser-resolve": {

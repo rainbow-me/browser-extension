@@ -9,14 +9,14 @@ require('lavamoat-browserify');
 require('lavamoat-core');
 require('lavamoat-tofu');
 
+const ignore = ['**/contentscript.js', '**/provider.js'];
 const isGeneratingPolicy = Boolean(process.env.GENERATE_POLICY);
 
 (async () => {
-  const paths = await globby(['build/*.js']);
+  const paths = await globby(['build/bundle/*.js'], { ignore });
 
   paths.forEach((path_) => {
     const name = path.parse(path_).name;
-    if (['contentscript', 'provider'].includes(name)) return;
     const browserifyInstance = browserify(path_)
       .plugin('lavamoat-browserify', {
         policy: `./lavamoat/browserify/${name}/policy.json`,
