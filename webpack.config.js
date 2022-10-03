@@ -1,3 +1,4 @@
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { join } = require('path');
 
 module.exports = {
@@ -17,11 +18,18 @@ module.exports = {
       },
     ],
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      chunks: ['popup'],
+      template: './src/popup.html',
+      filename: 'popup.html',
+    }),
+  ],
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
     filename: '[name].js',
-    path: join(__dirname, 'build'),
+    path: join(__dirname, 'build/bundle'),
   },
 };

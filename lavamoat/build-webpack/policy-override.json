@@ -2,7 +2,13 @@
   "resources": {
     "webpack>loader-runner": {
       "packages": {
-        "ts-loader": true
+        "ts-loader": true,
+        "html-webpack-plugin": true
+      }
+    },
+    "html-webpack-plugin": {
+      "builtin": {
+        "url": true
       }
     },
     "ts-loader": {
