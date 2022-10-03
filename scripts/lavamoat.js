@@ -30,6 +30,7 @@ const isGeneratingPolicy = Boolean(process.env.GENERATE_POLICY);
         .once('finish', () => {
           fs.unlinkSync(path_);
           fs.renameSync(`${path_}.tmp`, path_);
+          console.log(`[LavaMoat 🔥🔒]: ${path_} secured successfully.`);
         });
     }
   });

@@ -453,6 +453,8 @@
         "setTimeout": true
       },
       "packages": {
+        "html-webpack-plugin": true,
+        "ts-loader": true,
         "webpack>@webassemblyjs/ast": true,
         "webpack>@webassemblyjs/wasm-edit": true,
         "webpack>@webassemblyjs/wasm-parser": true,
@@ -777,6 +779,7 @@
       },
       "packages": {
         "lint-staged>execa>merge-stream": true,
+        "webpack>terser-webpack-plugin": true,
         "webpack>terser-webpack-plugin>jest-worker>supports-color": true
       }
     },

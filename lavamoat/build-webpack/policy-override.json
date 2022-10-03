@@ -1,5 +1,11 @@
 {
   "resources": {
+    "webpack": {
+      "packages": {
+        "ts-loader": true,
+        "html-webpack-plugin": true
+      }
+    },
     "webpack>loader-runner": {
       "packages": {
         "ts-loader": true,
@@ -14,6 +20,11 @@
     "ts-loader": {
       "packages": {
         "typescript": true
+      }
+    },
+    "webpack>terser-webpack-plugin>jest-worker": {
+      "packages": {
+        "webpack>terser-webpack-plugin": true
       }
     }
   }

@@ -8,9 +8,10 @@ require('loader-runner');
 require('html-webpack-plugin');
 require('ts-loader');
 require('typescript');
+require('terser-webpack-plugin');
 
-webpack(config).run((err) => {
+webpack(config).run((err, stats) => {
   if (err) throw err;
-  console.log('done!');
+  console.log(stats.toString());
   process.exit(0);
 });
