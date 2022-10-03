@@ -1,8 +1,8 @@
-import Storage from '../utils/storage';
+import { Storage } from '../utils/storage';
 
 window.addEventListener(
   'message',
-  event => {
+  (event) => {
     if (event.source != window) {
       return;
     }
@@ -18,13 +18,13 @@ window.addEventListener(
                 id: event.data.id,
                 payload: response,
               },
-              '*'
+              '*',
             );
           });
       }
     }
   },
-  false
+  false,
 );
 
 function injectCode(src: string) {

@@ -11,11 +11,11 @@
 
 ## General
 
-The extension is built using [React](https://reactjs.org/) and [Typescript](https://www.typescriptlang.org/) and is bundled using [Browserify](https://browserify.org/).
+The extension is built using [React](https://reactjs.org/) and [Typescript](https://www.typescriptlang.org/) and is bundled using [Webpack](https://webpack.js.org/), then secured using [LavaMoat Browserify](https://github.com/LavaMoat/lavamoat).
 
 ## Setup
 
-1. Run `nvm use 16` to force Node.js v16.
+1. Run `nvm use 14` to force Node.js v14.
 
 2. Install all project dependencies with `yarn setup`
 

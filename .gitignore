@@ -6,3 +6,11 @@
 node_modules/
 npm-debug.log
 yarn-error.log
+
+.eslintcache
+
+build/background.js
+build/contentscript.js
+build/popup.html
+build/popup.js
+build/provider.js

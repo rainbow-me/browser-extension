@@ -1,0 +1,30 @@
+{
+  "resources": {
+    "browserify": {
+      "packages": {
+        "lavamoat-browserify": true
+      }
+    },
+    "lavamoat-browserify": {
+      "builtin": {
+        "fs": true,
+        "path": true
+      },
+      "packages": {
+        "lavamoat>lavamoat-core": true,
+        "lavamoat>json-stable-stringify": true
+      }
+    },
+    "lavamoat>lavamoat-core": {
+      "builtin": {
+        "events": true,
+        "fs": true,
+        "path": true
+      },
+      "packages": {
+        "lavamoat>lavamoat-core>fromentries": true,
+        "lavamoat>json-stable-stringify": true
+      }
+    }
+  }
+}
