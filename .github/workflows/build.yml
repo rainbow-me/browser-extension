@@ -34,7 +34,7 @@ jobs:
       - name: Install deps via Yarn
         run: yarn setup
       - name: Audit CI
-        run:  yarn audit-ci --moderate --config audit-ci.json
+        run:  yarn audit:ci
 
   lint:
     runs-on: ubuntu-latest

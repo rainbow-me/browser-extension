@@ -19,7 +19,7 @@ jobs:
       - name: Check for frozen lockfile
         run: yarn check-lockfile
       - name: Audit CI
-        run:  yarn audit-ci --moderate --config audit-ci.json
+        run:  yarn audit:ci
       - name: Lint
         run: yarn lint
       - name: Build the extension with LavaMoat
