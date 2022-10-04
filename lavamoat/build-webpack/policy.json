@@ -558,7 +558,7 @@
         "process.platform": true
       },
       "packages": {
-        "browserify>browser-pack>combine-source-map>source-map": true
+        "html-webpack-plugin>html-minifier-terser>clean-css>source-map": true
       }
     },
     "html-webpack-plugin>html-minifier-terser>he": {

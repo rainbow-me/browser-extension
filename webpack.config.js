@@ -5,7 +5,6 @@ const { join } = require('path');
 const { ProgressPlugin } = require('webpack');
 
 module.exports = {
-  mode: 'production',
   entry: {
     background: './src/scripts/background.ts',
     contentscript: './src/scripts/contentscript.ts',
