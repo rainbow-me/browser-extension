@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { VanillaExtractPlugin } = require('@vanilla-extract/webpack-plugin');
 const { join } = require('path');
@@ -38,6 +39,9 @@ module.exports = {
       chunks: ['popup'],
       template: './src/popup.html',
       filename: 'popup.html',
+    }),
+    new CopyPlugin({
+      patterns: [{ from: 'static', to: './' }],
     }),
     new MiniCssExtractPlugin(),
     new ProgressPlugin(),
