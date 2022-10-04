@@ -7179,8 +7179,9 @@ webpack-cli@4.10.0:
     rechoir "^0.7.0"
     webpack-merge "^5.7.3"
 
-"webpack-extension-reloader@file:./external/webpack-extension-reloader":
+webpack-extension-reloader@rainbow-me/webpack-extension-reloader#23fc3ed1f59f295702d459ad58aec90d6f0a3551:
   version "1.1.4"
+  resolved "https://codeload.github.com/rainbow-me/webpack-extension-reloader/tar.gz/23fc3ed1f59f295702d459ad58aec90d6f0a3551"
   dependencies:
     "@types/webpack" "^4.41.0"
     "@types/webpack-sources" "^0.1.5"
