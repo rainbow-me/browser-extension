@@ -3,7 +3,7 @@ name: CI
 on: [pull_request, workflow_dispatch]
 
 jobs:
-  install-dep:
+  install-deps:
     runs-on: ubuntu-latest
     concurrency: 
       group: ${{ github.workflow }}-${{ github.ref }}
