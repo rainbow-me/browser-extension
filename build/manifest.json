@@ -51,6 +51,7 @@
     "permissions": [
       "activeTab",
       "alarms",
+      "contextMenus",
       "clipboardWrite",
       "notifications",
       "scripting",
