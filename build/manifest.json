@@ -51,10 +51,12 @@
     "permissions": [
       "activeTab",
       "alarms",
+      "contextMenus",
       "clipboardWrite",
       "notifications",
       "scripting",
       "storage",
+      "tabs",
       "unlimitedStorage",
       "webRequest"
     ],

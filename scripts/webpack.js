@@ -11,7 +11,7 @@ require('ts-loader');
 require('typescript');
 require('terser-webpack-plugin');
 
-webpack(config).run((err, stats) => {
+webpack({ ...config, mode: 'production' }).run((err, stats) => {
   if (err) throw err;
   console.log(stats.toString());
   process.exit(0);
