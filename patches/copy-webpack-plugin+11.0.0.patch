@@ -1,0 +1,42 @@
+diff --git a/node_modules/copy-webpack-plugin/dist/index.js b/node_modules/copy-webpack-plugin/dist/index.js
+index a55f5af..188249c 100644
+--- a/node_modules/copy-webpack-plugin/dist/index.js
++++ b/node_modules/copy-webpack-plugin/dist/index.js
+@@ -14,6 +14,7 @@ const globParent = require("glob-parent");
+ 
+ const fastGlob = require("fast-glob"); // @ts-ignore
+ 
++const globby = require("globby");
+ 
+ const {
+   version
+@@ -691,29 +692,11 @@ class CopyPlugin {
+     compiler.hooks.thisCompilation.tap(pluginName, compilation => {
+       const logger = compilation.getLogger("copy-webpack-plugin");
+       const cache = compilation.getCache("CopyWebpackPlugin");
+-      /**
+-       * @type {typeof import("globby").globby}
+-       */
+ 
+-      let globby;
+       compilation.hooks.processAssets.tapAsync({
+         name: "copy-webpack-plugin",
+         stage: compiler.webpack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONAL
+       }, async (unusedAssets, callback) => {
+-        if (typeof globby === "undefined") {
+-          try {
+-            // @ts-ignore
+-            ({
+-              globby
+-            } = await import("globby"));
+-          } catch (error) {
+-            callback(
+-            /** @type {Error} */
+-            error);
+-            return;
+-          }
+-        }
+-
+         logger.log("starting to add additional assets...");
+         const copiedResultMap = new Map();
+         /**

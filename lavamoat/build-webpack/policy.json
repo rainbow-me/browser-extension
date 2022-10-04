@@ -204,6 +204,94 @@
         "util.deprecate": true
       }
     },
+    "copy-webpack-plugin": {
+      "builtin": {
+        "crypto.createHash": true,
+        "path.basename": true,
+        "path.dirname": true,
+        "path.extname": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.normalize": true,
+        "path.posix.join": true,
+        "path.relative": true,
+        "path.resolve": true,
+        "path.sep": true
+      },
+      "packages": {
+        "copy-webpack-plugin>globby": true,
+        "copy-webpack-plugin>schema-utils": true,
+        "copy-webpack-plugin>serialize-javascript": true,
+        "eslint>glob-parent": true,
+        "globby>fast-glob": true,
+        "lint-staged>normalize-path": true
+      }
+    },
+    "copy-webpack-plugin>globby": {
+      "builtin": {
+        "fs.Stats": true,
+        "fs.readFile": true,
+        "fs.readFileSync": true,
+        "fs.statSync": true,
+        "path.dirname": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.posix.join": true,
+        "path.relative": true,
+        "stream.Transform": true,
+        "util.promisify": true
+      },
+      "globals": {
+        "process.cwd": true
+      },
+      "packages": {
+        "globby>array-union": true,
+        "globby>dir-glob": true,
+        "globby>fast-glob": true,
+        "globby>ignore": true,
+        "globby>merge2": true,
+        "globby>slash": true
+      }
+    },
+    "copy-webpack-plugin>schema-utils": {
+      "packages": {
+        "copy-webpack-plugin>schema-utils>ajv": true,
+        "copy-webpack-plugin>schema-utils>ajv-formats": true,
+        "copy-webpack-plugin>schema-utils>ajv-keywords": true
+      }
+    },
+    "copy-webpack-plugin>schema-utils>ajv": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "copy-webpack-plugin>schema-utils>ajv>json-schema-traverse": true,
+        "eslint>ajv>uri-js": true,
+        "eslint>fast-deep-equal": true
+      }
+    },
+    "copy-webpack-plugin>schema-utils>ajv-formats": {
+      "packages": {
+        "copy-webpack-plugin>schema-utils>ajv": true
+      }
+    },
+    "copy-webpack-plugin>schema-utils>ajv-keywords": {
+      "globals": {
+        "Buffer": true
+      },
+      "packages": {
+        "copy-webpack-plugin>schema-utils>ajv": true,
+        "eslint>fast-deep-equal": true
+      }
+    },
+    "copy-webpack-plugin>serialize-javascript": {
+      "globals": {
+        "URL": true
+      },
+      "packages": {
+        "browserify>crypto-browserify>randombytes": true
+      }
+    },
     "css-loader": {
       "builtin": {
         "path": true,
@@ -484,9 +572,156 @@
         "util.promisify": true
       }
     },
+    "eslint>glob-parent": {
+      "builtin": {
+        "os.platform": true,
+        "path.posix.dirname": true
+      },
+      "packages": {
+        "eslint>is-glob": true
+      }
+    },
+    "eslint>is-glob": {
+      "packages": {
+        "eslint>is-glob>is-extglob": true
+      }
+    },
     "eslint>strip-ansi": {
       "packages": {
         "eslint>strip-ansi>ansi-regex": true
+      }
+    },
+    "external:../node_modules/uglify-js/tools/node.js": {
+      "builtin": {
+        "fs.readFileSync": true
+      },
+      "globals": {
+        "AST_Node": true,
+        "OutputStream": true,
+        "process.env": true
+      }
+    },
+    "globby>dir-glob": {
+      "builtin": {
+        "path.extname": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.posix.join": true
+      },
+      "globals": {
+        "process.cwd": true
+      },
+      "packages": {
+        "globby>dir-glob>path-type": true
+      }
+    },
+    "globby>dir-glob>path-type": {
+      "builtin": {
+        "fs": true,
+        "util.promisify": true
+      }
+    },
+    "globby>fast-glob": {
+      "builtin": {
+        "fs.lstat": true,
+        "fs.lstatSync": true,
+        "fs.readdir": true,
+        "fs.readdirSync": true,
+        "fs.stat": true,
+        "fs.statSync": true,
+        "os.cpus": true,
+        "path.basename": true,
+        "path.resolve": true,
+        "stream.PassThrough": true,
+        "stream.Readable": true
+      },
+      "globals": {
+        "process.cwd": true
+      },
+      "packages": {
+        "globby>fast-glob>@nodelib/fs.stat": true,
+        "globby>fast-glob>@nodelib/fs.walk": true,
+        "globby>fast-glob>glob-parent": true,
+        "globby>merge2": true,
+        "ts-loader>micromatch": true
+      }
+    },
+    "globby>fast-glob>@nodelib/fs.stat": {
+      "builtin": {
+        "fs.lstat": true,
+        "fs.lstatSync": true,
+        "fs.stat": true,
+        "fs.statSync": true
+      }
+    },
+    "globby>fast-glob>@nodelib/fs.walk": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "path.sep": true,
+        "stream.Readable": true
+      },
+      "globals": {
+        "setImmediate": true
+      },
+      "packages": {
+        "globby>fast-glob>@nodelib/fs.walk>@nodelib/fs.scandir": true,
+        "globby>fast-glob>@nodelib/fs.walk>fastq": true
+      }
+    },
+    "globby>fast-glob>@nodelib/fs.walk>@nodelib/fs.scandir": {
+      "builtin": {
+        "fs.lstat": true,
+        "fs.lstatSync": true,
+        "fs.readdir": true,
+        "fs.readdirSync": true,
+        "fs.stat": true,
+        "fs.statSync": true,
+        "path.sep": true
+      },
+      "globals": {
+        "process.versions.node": true
+      },
+      "packages": {
+        "globby>fast-glob>@nodelib/fs.stat": true,
+        "globby>fast-glob>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel": true
+      }
+    },
+    "globby>fast-glob>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel": {
+      "packages": {
+        "globby>fast-glob>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel>queue-microtask": true
+      }
+    },
+    "globby>fast-glob>@nodelib/fs.walk>@nodelib/fs.scandir>run-parallel>queue-microtask": {
+      "globals": {
+        "queueMicrotask": true,
+        "setTimeout": true
+      }
+    },
+    "globby>fast-glob>@nodelib/fs.walk>fastq": {
+      "packages": {
+        "globby>fast-glob>@nodelib/fs.walk>fastq>reusify": true
+      }
+    },
+    "globby>fast-glob>glob-parent": {
+      "builtin": {
+        "os.platform": true,
+        "path.posix.dirname": true
+      },
+      "packages": {
+        "eslint>is-glob": true
+      }
+    },
+    "globby>ignore": {
+      "globals": {
+        "process": true
+      }
+    },
+    "globby>merge2": {
+      "builtin": {
+        "stream.PassThrough": true
+      },
+      "globals": {
+        "process.nextTick": true
       }
     },
     "html-webpack-plugin": {
@@ -677,7 +912,7 @@
       },
       "packages": {
         "browserify>concat-stream>buffer-from": true,
-        "jest>@jest/core>jest-runner>source-map-support>source-map": true
+        "webpack-extension-reloader>@types/webpack>source-map": true
       }
     },
     "jest>@jest/core>jest-snapshot>@babel/generator": {
@@ -1359,10 +1594,12 @@
       },
       "packages": {
         "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>esbuild": true,
+        "copy-webpack-plugin>serialize-javascript": true,
+        "external:../node_modules/uglify-js/package.json": true,
+        "external:../node_modules/uglify-js/tools/node.js": true,
         "webpack>schema-utils": true,
         "webpack>terser-webpack-plugin>@jridgewell/trace-mapping": true,
         "webpack>terser-webpack-plugin>jest-worker": true,
-        "webpack>terser-webpack-plugin>serialize-javascript": true,
         "webpack>terser-webpack-plugin>terser": true
       }
     },
@@ -1418,14 +1655,6 @@
       },
       "packages": {
         "eslint>chalk>supports-color>has-flag": true
-      }
-    },
-    "webpack>terser-webpack-plugin>serialize-javascript": {
-      "globals": {
-        "URL": true
-      },
-      "packages": {
-        "browserify>crypto-browserify>randombytes": true
       }
     },
     "webpack>terser-webpack-plugin>terser": {
