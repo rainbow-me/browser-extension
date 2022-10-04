@@ -1,0 +1,3 @@
+[submodule "external/webpack-extension-reloader"]
+	path = external/webpack-extension-reloader
+	url = git@github.com:rainbow-me/webpack-extension-reloader.git

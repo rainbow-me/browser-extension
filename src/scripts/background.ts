@@ -1,10 +1,12 @@
 export {};
 
-chrome.runtime.onInstalled.addListener(async () => {
-  // Page we want to show after installation
-  const tab = await chrome.tabs.create({ url: 'https://rainbow.me/' });
-  console.log(`Created tab ${tab.id}`);
-});
+if (process.env.NODE_ENV !== 'development') {
+  chrome.runtime.onInstalled.addListener(async () => {
+    // Page we want to show after installation
+    const tab = await chrome.tabs.create({ url: 'https://rainbow.me/' });
+    console.log(`Created tab ${tab.id}`);
+  });
+}
 
 const DEFAULT_ACCOUNT = '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
 const DEFAULT_CHAIN_ID = '0x1';

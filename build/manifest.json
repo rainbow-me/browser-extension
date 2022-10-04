@@ -55,6 +55,7 @@
       "notifications",
       "scripting",
       "storage",
+      "tabs",
       "unlimitedStorage",
       "webRequest"
     ],
