@@ -10,15 +10,10 @@ jobs:
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v3
-
-      - name: Set up github keys
-        run: git config core.sshCommand "ssh -i ~/.ssh/id_ed25519 -F /dev/null"
-
       - uses: actions/setup-node@v2
         with:
-          node-version: 16
+          node-version: 14
           cache: 'yarn'
-
       - name: Install deps via Yarn
         run: yarn setup
 
@@ -31,6 +26,13 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
     steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+          cache: 'yarn'
+      - name: Install deps via Yarn
+        run: yarn setup
       - name: Audit CI
         run:  yarn audit-ci --moderate --config audit-ci.json
 
@@ -41,6 +43,13 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
     steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+          cache: 'yarn'
+      - name: Install deps via Yarn
+        run: yarn setup
       - name: Lint
         run: yarn lint
 
@@ -51,5 +60,12 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
     steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14
+          cache: 'yarn'
+      - name: Install deps via Yarn
+        run: yarn setup
       - name: Build the extension with LavaMoat
         run: yarn build
