@@ -1,6 +1,6 @@
 import { random } from '../utils/misc';
 
-type CallbackFunctionWithArgs = (...args: any[]) => void;
+type CallbackFunctionWithArgs = (...args: unknown[]) => void;
 
 export class RainbowProvider {
   isReady = true;
@@ -65,6 +65,8 @@ export class RainbowProvider {
           console.log('calling method from request ', { method, params });
           this._sendMessage(
             { method, params },
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             (response: { error: Error; result: Array<string> | string }) => {
               console.log('response from request ', response);
               if (response.error) {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const ExtensionReloader = require('webpack-extension-reloader');
 const { resolve } = require('path');
 

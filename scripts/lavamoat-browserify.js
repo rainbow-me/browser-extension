@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const browserify = require('browserify');
 const globby = require('globby');
 const fs = require('fs');
