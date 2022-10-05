@@ -63,7 +63,7 @@
     "webpack-extension-reloader": "file:./external/webpack-extension-reloader"
   },
   "resolutions": {
-    "copy-webpack-plugin/globby": "11.1.0",
+    "globby": "11.1.0",
     "minimatch": "3.0.4",
     "minimist": "1.2.6",
     "set-value": "2.0.1",
