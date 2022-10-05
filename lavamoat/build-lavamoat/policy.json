@@ -1,5 +1,27 @@
 {
   "resources": {
+    "audit-ci>JSONStream": {
+      "globals": {
+        "Buffer": true
+      },
+      "packages": {
+        "audit-ci>JSONStream>jsonparse": true,
+        "audit-ci>JSONStream>through": true
+      }
+    },
+    "audit-ci>JSONStream>jsonparse": {
+      "globals": {
+        "Buffer": true
+      }
+    },
+    "audit-ci>JSONStream>through": {
+      "builtin": {
+        "stream": true
+      },
+      "globals": {
+        "process.nextTick": true
+      }
+    },
     "browserify": {
       "builtin": {
         "events.EventEmitter": true,
@@ -38,28 +60,6 @@
         "lavamoat>resolve": true
       }
     },
-    "browserify>JSONStream": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "browserify>JSONStream>jsonparse": true,
-        "browserify>JSONStream>through": true
-      }
-    },
-    "browserify>JSONStream>jsonparse": {
-      "globals": {
-        "Buffer": true
-      }
-    },
-    "browserify>JSONStream>through": {
-      "builtin": {
-        "stream": true
-      },
-      "globals": {
-        "process.nextTick": true
-      }
-    },
     "browserify>browser-pack": {
       "builtin": {
         "fs.readFileSync": true,
@@ -71,7 +71,7 @@
         "process.cwd": true
       },
       "packages": {
-        "browserify>JSONStream": true,
+        "audit-ci>JSONStream": true,
         "browserify>browser-pack>combine-source-map": true,
         "browserify>browser-pack>umd": true,
         "browserify>defined": true,
@@ -900,7 +900,7 @@
         "setTimeout": true
       },
       "packages": {
-        "browserify>JSONStream": true,
+        "audit-ci>JSONStream": true,
         "browserify>browser-pack>combine-source-map": true,
         "browserify>browser-pack>umd": true,
         "lavamoat-browserify>@lavamoat/lavapack>through2": true,

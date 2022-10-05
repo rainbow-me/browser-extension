@@ -23,7 +23,7 @@ export function Index() {
 
   return (
     <div>
-      <h1 className={title}>Rainbow Rocks!</h1>
+      <h1 className={title}>Rainbow Rocks!!!</h1>
       Injecting? <div id="injection-status">{status ? 'YES' : 'NO'}</div>
       <button id="injection-button" onClick={switchInjection}>
         TURN {status ? 'OFF' : 'ON'}

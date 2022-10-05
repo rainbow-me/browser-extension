@@ -189,6 +189,20 @@
         "console.warn": true
       }
     },
+    "audit-ci>semver": {
+      "globals": {
+        "console.error": true,
+        "process": true
+      },
+      "packages": {
+        "audit-ci>semver>lru-cache": true
+      }
+    },
+    "audit-ci>semver>lru-cache": {
+      "packages": {
+        "audit-ci>semver>lru-cache>yallist": true
+      }
+    },
     "browserify>concat-stream>buffer-from": {
       "globals": {
         "Buffer": true
@@ -302,14 +316,14 @@
         "Buffer.from": true
       },
       "packages": {
+        "audit-ci>semver": true,
         "css-loader>icss-utils": true,
         "css-loader>postcss": true,
         "css-loader>postcss-modules-extract-imports": true,
         "css-loader>postcss-modules-local-by-default": true,
         "css-loader>postcss-modules-scope": true,
         "css-loader>postcss-modules-values": true,
-        "css-loader>postcss-value-parser": true,
-        "ts-loader>semver": true
+        "css-loader>postcss-value-parser": true
       }
     },
     "css-loader>postcss": {
@@ -1133,9 +1147,9 @@
         "process.stdout": true
       },
       "packages": {
+        "audit-ci>semver": true,
         "eslint>chalk": true,
         "ts-loader>micromatch": true,
-        "ts-loader>semver": true,
         "typescript": true,
         "webpack": true
       }
@@ -1175,20 +1189,6 @@
       "globals": {
         "process.platform": true,
         "process.version.slice": true
-      }
-    },
-    "ts-loader>semver": {
-      "globals": {
-        "console.error": true,
-        "process": true
-      },
-      "packages": {
-        "ts-loader>semver>lru-cache": true
-      }
-    },
-    "ts-loader>semver>lru-cache": {
-      "packages": {
-        "ts-loader>semver>lru-cache>yallist": true
       }
     },
     "typescript": {
