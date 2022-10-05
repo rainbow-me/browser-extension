@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Storage } from '../utils/storage';
+import { Storage } from '~/utils/storage';
 
 import { title } from './popup.css';
 

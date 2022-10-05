@@ -1,4 +1,4 @@
-import { RainbowProvider } from '../core/RainbowProvider';
+import { RainbowProvider } from '~/core/RainbowProvider';
 
 declare global {
   interface Window {
