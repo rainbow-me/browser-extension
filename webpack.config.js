@@ -3,15 +3,15 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { VanillaExtractPlugin } = require('@vanilla-extract/webpack-plugin');
-const { join } = require('path');
+const { join, resolve } = require('path');
 const { ProgressPlugin } = require('webpack');
 
 module.exports = {
   entry: {
-    background: './src/scripts/background.ts',
-    contentscript: './src/scripts/contentscript.ts',
-    popup: './src/scripts/popup.ts',
-    provider: './src/scripts/provider.ts',
+    background: './src/entries/background/index.ts',
+    contentscript: './src/entries/content/index.ts',
+    popup: './src/entries/popup/index.ts',
+    provider: './src/entries/content/provider.ts',
   },
   module: {
     rules: [
@@ -37,7 +37,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       chunks: ['popup'],
-      template: './src/popup.html',
+      template: './src/entries/popup/index.html',
       filename: 'popup.html',
     }),
     new CopyPlugin({
@@ -48,6 +48,9 @@ module.exports = {
     new VanillaExtractPlugin(),
   ],
   resolve: {
+    alias: {
+      '~': resolve(__dirname, 'src/'),
+    },
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
