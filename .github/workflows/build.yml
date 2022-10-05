@@ -1,4 +1,4 @@
-name: CI (Parallel)
+name: CI
 
 on: [pull_request, workflow_dispatch]
 
@@ -16,56 +16,11 @@ jobs:
           cache: 'yarn'
       - name: Install deps via Yarn
         run: yarn setup
-
       - name: Check for frozen lockfile
         run: yarn check-lockfile
-  audit:
-    runs-on: ubuntu-latest
-    needs: [install-deps]
-    concurrency: 
-      group: ${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 14
-          cache: 'yarn'
-      - name: Install deps via Yarn
-        run: yarn setup
       - name: Audit CI
         run:  yarn audit:ci
-
-  lint:
-    runs-on: ubuntu-latest
-    needs: [install-deps]
-    concurrency: 
-      group: ${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 14
-          cache: 'yarn'
-      - name: Install deps via Yarn
-        run: yarn setup
       - name: Lint
         run: yarn lint
-
-  build:
-    runs-on: ubuntu-latest
-    needs: [install-deps]
-    concurrency: 
-      group: ${{ github.workflow }}-${{ github.ref }}
-      cancel-in-progress: true
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
-        with:
-          node-version: 14
-          cache: 'yarn'
-      - name: Install deps via Yarn
-        run: yarn setup
       - name: Build the extension with LavaMoat
         run: yarn build
