@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const webpack = require('webpack');
-const { join } = require('path');
 const config = require('../webpack.config');
 
 // Statically require packages that are loaded dynamically in webpack
