@@ -1,4 +1,4 @@
-import { random } from '~/utils/misc';
+import { random } from '~/core/utils/misc';
 
 type CallbackFunctionWithArgs = (...args: any[]) => void;
 

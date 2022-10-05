@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Storage } from '~/utils/storage';
+import { Storage } from '~/core/storage';
 
-import { title } from './popup.css';
+import { title } from './index.css';
 
-export function Popup() {
+export function Index() {
   const [status, setStatus] = useState(0);
 
   const switchInjection = useCallback(async () => {

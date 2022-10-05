@@ -1,4 +1,4 @@
-import { Storage } from '~/utils/storage';
+import { Storage } from '~/core/storage';
 
 window.addEventListener(
   'message',
