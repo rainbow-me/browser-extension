@@ -2,14 +2,14 @@ import * as React from 'react';
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import { WagmiConfig } from 'wagmi';
 import { Index } from './pages';
-import { Storage } from '~/core/storage';
+import { storage } from '~/core/storage';
 import { createWagmiClient } from '~/core/wagmi';
 
 const asyncStoragePersister = createAsyncStoragePersister({
   storage: {
-    getItem: async (key) => (await Storage.get(key)) as string,
-    setItem: Storage.set,
-    removeItem: Storage.remove,
+    getItem: storage.get,
+    setItem: storage.set,
+    removeItem: storage.remove,
   },
 });
 

@@ -1,25 +1,12 @@
-export class Storage {
-  static set(key: string, value: unknown) {
-    return new Promise<void>((resolve) => {
-      chrome.storage.local.set({ [key]: value }, function () {
-        resolve();
-      });
-    });
-  }
-
-  static get(key: string) {
-    return new Promise((resolve) => {
-      chrome.storage.local.get(key, function (result) {
-        resolve(result[key]);
-      });
-    });
-  }
-
-  static remove(key: string) {
-    return new Promise<void>((resolve) => {
-      chrome.storage.local.remove(key, function () {
-        resolve();
-      });
-    });
-  }
-}
+export const storage = {
+  async set(key: string, value: unknown) {
+    await chrome.storage.local.set({ [key]: value });
+  },
+  async get(key: string) {
+    const result = await chrome.storage.local.get(key);
+    return result[key];
+  },
+  async remove(key: string) {
+    await chrome.storage.local.remove(key);
+  },
+};
