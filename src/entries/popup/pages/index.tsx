@@ -29,7 +29,6 @@ export function Index() {
       Injecting? <Box id="injection-status">{status ? 'YES' : 'NO'}</Box>
       <Box
         as="button"
-        padding="10px"
         id="injection-button"
         onClick={switchInjection}
         className={styles.button}
