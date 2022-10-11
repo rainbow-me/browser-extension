@@ -29,6 +29,7 @@
   },
   "dependencies": {
     "@vanilla-extract/css": "1.9.1",
+    "eventemitter3": "4.0.7",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },

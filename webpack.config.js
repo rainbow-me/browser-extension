@@ -11,13 +11,20 @@ module.exports = {
     background: './src/entries/background/index.ts',
     contentscript: './src/entries/content/index.ts',
     popup: './src/entries/popup/index.ts',
-    provider: './src/entries/content/provider.ts',
+    inpage: './src/entries/inpage/index.ts',
   },
   module: {
     rules: [
       {
         test: /\.tsx?$/,
-        use: 'ts-loader',
+        use: [
+          {
+            loader: 'ts-loader',
+            options: {
+              transpileOnly: true,
+            },
+          },
+        ],
         exclude: /node_modules/,
       },
       {

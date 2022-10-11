@@ -62,7 +62,7 @@
   ],
   "short_name": "Rainbow",
   "web_accessible_resources": [{
-    "resources": ["provider.js"],
+    "resources": ["inpage.js"],
     "matches": ["<all_urls>"]
   }]
 }
