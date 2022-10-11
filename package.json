@@ -28,9 +28,14 @@
     "audit:ci": "yarn audit-ci --moderate --config audit-ci.jsonc"
   },
   "dependencies": {
+    "@tanstack/query-async-storage-persister": "4.0.10",
+    "@tanstack/react-query": "4.0.10",
+    "@tanstack/react-query-persist-client": "4.0.10",
     "@vanilla-extract/css": "1.9.1",
+    "ethers": "5.7.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "wagmi": "0.6.8"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "2.0.3",
@@ -87,7 +92,10 @@
       "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>esbuild": false,
       "webpack-extension-reloader>webpack>watchpack>chokidar>fsevents": false,
       "webpack-extension-reloader>ws>bufferutil": false,
-      "webpack-extension-reloader>ws>utf-8-validate": false
+      "webpack-extension-reloader>ws>utf-8-validate": false,
+      "wagmi>@coinbase/wallet-sdk>@solana/web3.js>bigint-buffer": false,
+      "wagmi>@coinbase/wallet-sdk>@solana/web3.js>secp256k1": false,
+      "wagmi>@coinbase/wallet-sdk>keccak": false
     }
   },
   "lint-staged": {

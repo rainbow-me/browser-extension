@@ -1,4 +1,6 @@
-export {};
+import { createWagmiClient } from '~/core/wagmi';
+
+createWagmiClient();
 
 chrome.runtime.onInstalled.addListener(async () => {
   if (process.env.NODE_ENV === 'development') {

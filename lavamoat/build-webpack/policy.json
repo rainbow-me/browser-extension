@@ -462,22 +462,14 @@
         "path.extname": true
       },
       "packages": {
-        "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
         "jest>@jest/core>jest-snapshot>@babel/types": true,
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
         "lavamoat>lavamoat-tofu>@babel/traverse": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-environment-visitor": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration": true
-      }
-    },
-    "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-module-imports": {
-      "builtin": {
-        "assert": true
-      },
-      "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/types": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration": true,
+        "wagmi>@coinbase/wallet-sdk>eth-block-tracker>@babel/plugin-transform-runtime>@babel/helper-module-imports": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": {
@@ -1213,6 +1205,14 @@
       },
       "packages": {
         "jest>@jest/core>jest-runner>source-map-support": true
+      }
+    },
+    "wagmi>@coinbase/wallet-sdk>eth-block-tracker>@babel/plugin-transform-runtime>@babel/helper-module-imports": {
+      "builtin": {
+        "assert": true
+      },
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/types": true
       }
     },
     "webpack": {
