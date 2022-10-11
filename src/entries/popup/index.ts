@@ -3,7 +3,7 @@ import './global.css';
 import { createElement } from 'react';
 import ReactDOM from 'react-dom';
 
-import { Index } from './pages';
+import { App } from './App';
 
 const domContainer = document.querySelector('#app');
-ReactDOM.render(createElement(Index), domContainer);
+ReactDOM.render(createElement(App), domContainer);
