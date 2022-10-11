@@ -28,10 +28,12 @@
     "audit:ci": "yarn audit-ci --moderate --config audit-ci.jsonc"
   },
   "dependencies": {
-    "clsx": "1.2.1",
-    "@radix-ui/react-polymorphic": "^0.0.14",
+    "@capsizecss/core": "3.0.0",
+    "@radix-ui/react-polymorphic": "0.0.14",
     "@vanilla-extract/css": "1.9.1",
     "@vanilla-extract/sprinkles": "1.5.0",
+    "clsx": "1.2.1",
+    "lodash": "4.17.21",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
@@ -39,6 +41,7 @@
     "@lavamoat/allow-scripts": "2.0.3",
     "@lavamoat/preinstall-always-fail": "1.0.0",
     "@types/chrome": "0.0.197",
+    "@types/lodash": "4.14.186",
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
     "@typescript-eslint/eslint-plugin": "5.38.1",
@@ -54,6 +57,7 @@
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-jest": "27.0.4",
     "eslint-plugin-prettier": "4.2.1",
+    "file-loader": "6.2.0",
     "globby": "11.0.4",
     "html-webpack-plugin": "5.5.0",
     "husky": "8.0.1",

@@ -7,11 +7,9 @@ export const title = style({
 
 export const button = style([
   boxStyles({
-    padding: '10px',
+    padding: '16px',
   }),
   {
-    background: 'black',
-    color: 'white',
     borderRadius: 999,
   },
 ]);

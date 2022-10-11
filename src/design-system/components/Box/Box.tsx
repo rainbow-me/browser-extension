@@ -7,14 +7,27 @@ import {
   resetBase,
   resetElements,
 } from '../../styles/core.css';
+import { backgroundColors, BackgroundColor } from '../../styles/designTokens';
+import {
+  BackgroundContextProvider,
+  useBackgroundContext,
+} from './BackgroundContext';
 
 type PolymorphicBox = Polymorphic.ForwardRefComponent<
   'div',
-  BoxStyles & { className?: ClassValue }
+  Omit<BoxStyles, 'background'> & {
+    background?:
+      | BackgroundColor
+      | { light: BackgroundColor; dark: BackgroundColor };
+    className?: ClassValue;
+  }
 >;
 
 export const Box = forwardRef(
   ({ as: Component = 'div', className, ...props }, ref) => {
+    const backgroundContext = useBackgroundContext();
+    const background = props.background;
+
     const boxStyleOptions: BoxStyles = {};
     const restProps: Record<string, unknown> = {};
 
@@ -27,7 +40,7 @@ export const Box = forwardRef(
       }
     }
 
-    return (
+    const el = (
       <Component
         ref={ref}
         className={clsx(
@@ -39,12 +52,34 @@ export const Box = forwardRef(
               }`
             : null,
           boxStyles(boxStyleOptions),
+          background
+            ? [
+                backgroundColors[
+                  typeof background === 'string' ? background : background.light
+                ][backgroundContext.lightTheme].setColorContext === 'light'
+                  ? 'lightTheme-lightContext'
+                  : 'lightTheme-darkContext',
+                backgroundColors[
+                  typeof background === 'string' ? background : background.dark
+                ][backgroundContext.darkTheme].setColorContext === 'light'
+                  ? 'darkTheme-lightContext'
+                  : 'darkTheme-darkContext',
+              ]
+            : null,
           className,
         )}
         // Since Box is a primitive component, it needs to spread props
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...restProps}
       />
+    );
+
+    return props.background ? (
+      <BackgroundContextProvider background={props.background}>
+        {el}
+      </BackgroundContextProvider>
+    ) : (
+      el
     );
   },
 ) as PolymorphicBox;

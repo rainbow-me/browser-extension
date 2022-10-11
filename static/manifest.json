@@ -24,19 +24,14 @@
   "content_scripts": [
     {
       "matches": ["file://*/*", "http://*/*", "https://*/*"],
-      "js": [
-        "contentscript.js"
-      ],
+      "js": ["contentscript.js"],
       "run_at": "document_start",
       "all_frames": true
     }
   ],
   "default_locale": "en",
   "description": "Rainbow Wallet",
-  "host_permissions": [
-    "http://localhost:8545/",
-    "https://*.alchemy.io/"
-  ],
+  "host_permissions": ["http://localhost:8545/", "https://*.alchemy.io/"],
   "icons": {
     "16": "images/icon-16.png",
     "19": "images/icon-19.png",
@@ -61,8 +56,10 @@
     "webRequest"
   ],
   "short_name": "Rainbow",
-  "web_accessible_resources": [{
-    "resources": ["provider.js"],
-    "matches": ["<all_urls>"]
-  }]
+  "web_accessible_resources": [
+    {
+      "resources": ["provider.js", "*.woff2"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
