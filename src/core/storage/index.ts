@@ -1,4 +1,4 @@
-export const storage = {
+export const Storage = {
   async set(key: string, value: unknown) {
     await chrome.storage.local.set({ [key]: value });
   },

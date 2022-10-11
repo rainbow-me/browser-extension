@@ -1,4 +1,4 @@
-import { storage } from '~/core/storage';
+import { Storage } from '~/core/storage';
 
 window.addEventListener(
   'message',
@@ -44,7 +44,7 @@ function injectCode(src: string) {
 }
 
 const init = async function () {
-  const shouldInject = (await storage.get('inject')) === true;
+  const shouldInject = (await Storage.get('inject')) === true;
   if (shouldInject) {
     injectCode(chrome.runtime.getURL('/provider.js'));
   }

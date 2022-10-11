@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useBalance } from 'wagmi';
-import { storage } from '~/core/storage';
+import { Storage } from '~/core/storage';
 
 import { title } from './index.css';
 
@@ -12,15 +12,15 @@ export function Index() {
   });
 
   const switchInjection = useCallback(async () => {
-    const shouldInject = (await storage.get('inject')) === true;
+    const shouldInject = (await Storage.get('inject')) === true;
     const newVal = !shouldInject;
-    storage.set('inject', newVal);
+    Storage.set('inject', newVal);
     setStatus(newVal ? 1 : 0);
   }, []);
 
   useEffect(() => {
     const init = async () => {
-      const shouldInject = (await storage.get('inject')) === true;
+      const shouldInject = (await Storage.get('inject')) === true;
       setStatus(shouldInject ? 1 : 0);
     };
     init();
