@@ -9,6 +9,7 @@ interface TextProps {
   color?: TextStyles['color'];
   size: TextStyles['fontSize'];
   weight: TextStyles['fontWeight'];
+  testId?: string;
 }
 
 export function Text({
@@ -18,6 +19,7 @@ export function Text({
   color = 'label',
   size,
   weight,
+  testId,
 }: TextProps) {
   return (
     <Box
@@ -29,6 +31,7 @@ export function Text({
         fontWeight: weight,
         textAlign: align,
       })}
+      testId={testId}
     >
       {children}
     </Box>

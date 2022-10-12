@@ -17,11 +17,12 @@ type PolymorphicBox = Polymorphic.ForwardRefComponent<
       | BackgroundColor
       | { light: BackgroundColor; dark: BackgroundColor };
     className?: ClassValue;
+    testId?: string;
   }
 >;
 
 export const Box = forwardRef(
-  ({ as: Component = 'div', className, ...props }, ref) => {
+  ({ as: Component = 'div', className, testId, ...props }, ref) => {
     const { lightThemeColorContext, darkThemeColorContext } = useColorContext();
     const background = props.background;
 
@@ -73,6 +74,7 @@ export const Box = forwardRef(
             : null,
           className,
         )}
+        data-testid={testId}
         // Since Box is a primitive component, it needs to spread props
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...restProps}

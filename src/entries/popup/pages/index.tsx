@@ -35,7 +35,7 @@ export function Index() {
       </Text>
       <Text size="17pt" weight="bold" color="labelSecondary">
         Injecting?{' '}
-        <Box as="span" id="injection-status">
+        <Box as="span" testId="injection-status">
           {status ? 'YES' : 'NO'}
         </Box>
       </Text>
