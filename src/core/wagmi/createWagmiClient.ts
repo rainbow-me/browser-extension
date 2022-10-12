@@ -13,6 +13,7 @@ export function createWagmiClient({
   persister,
 }: { persister?: Persister } = {}) {
   return createClient({
+    autoConnect: true,
     connectors: [new RainbowConnector({ chains })],
     persister,
     provider,
