@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useBalance } from 'wagmi';
+import { useAccount, useBalance } from 'wagmi';
 import { Storage } from '~/core/storage';
 import { Box } from '~/design-system';
 import * as styles from './index.css';
@@ -7,8 +7,9 @@ import * as styles from './index.css';
 export function Index() {
   const [status, setStatus] = useState(0);
 
+  const { address } = useAccount();
   const { data: balance } = useBalance({
-    addressOrName: '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4',
+    addressOrName: address,
   });
 
   const switchInjection = useCallback(async () => {

@@ -1,7 +1,7 @@
 import { providerRequestTransport } from '~/core/transports';
 
-const DEFAULT_ACCOUNT = '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
-const DEFAULT_CHAIN_ID = '0x1';
+export const DEFAULT_ACCOUNT = '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
+export const DEFAULT_CHAIN_ID = '0x1';
 
 /**
  * Handles RPC requests from the provider.
