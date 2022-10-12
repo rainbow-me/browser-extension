@@ -8,10 +8,7 @@ import {
   resetElements,
 } from '../../styles/core.css';
 import { backgroundColors, BackgroundColor } from '../../styles/designTokens';
-import {
-  BackgroundContextProvider,
-  useBackgroundContext,
-} from './BackgroundContext';
+import { ColorContextProvider, useColorContext } from './ColorContext';
 
 type PolymorphicBox = Polymorphic.ForwardRefComponent<
   'div',
@@ -25,14 +22,16 @@ type PolymorphicBox = Polymorphic.ForwardRefComponent<
 
 export const Box = forwardRef(
   ({ as: Component = 'div', className, ...props }, ref) => {
-    const backgroundContext = useBackgroundContext();
+    const { lightThemeColorContext, darkThemeColorContext } = useColorContext();
     const background = props.background;
 
+    let hasBoxStyles = false;
     const boxStyleOptions: BoxStyles = {};
     const restProps: Record<string, unknown> = {};
 
     for (const key in props) {
       if (boxStyles.properties.has(key as keyof BoxStyles)) {
+        hasBoxStyles = true;
         boxStyleOptions[key as keyof BoxStyles] =
           props[key as keyof typeof props];
       } else {
@@ -51,17 +50,23 @@ export const Box = forwardRef(
                   : ''
               }`
             : null,
-          boxStyles(boxStyleOptions),
+          hasBoxStyles ? boxStyles(boxStyleOptions) : null,
+
+          // Look up whether the chosen background color is light or dark and
+          // apply the correct color context classes so descendent elements use
+          // the appropriate light or dark theme values. We need to look up the
+          // color context from React context because the parent background color
+          // may be light even though the user is in dark mode and vice versa.
           background
             ? [
                 backgroundColors[
                   typeof background === 'string' ? background : background.light
-                ][backgroundContext.lightTheme].setColorContext === 'light'
+                ][lightThemeColorContext].setColorContext === 'light'
                   ? 'lightTheme-lightContext'
                   : 'lightTheme-darkContext',
                 backgroundColors[
                   typeof background === 'string' ? background : background.dark
-                ][backgroundContext.darkTheme].setColorContext === 'light'
+                ][darkThemeColorContext].setColorContext === 'light'
                   ? 'darkTheme-lightContext'
                   : 'darkTheme-darkContext',
               ]
@@ -75,9 +80,9 @@ export const Box = forwardRef(
     );
 
     return props.background ? (
-      <BackgroundContextProvider background={props.background}>
+      <ColorContextProvider background={props.background}>
         {el}
-      </BackgroundContextProvider>
+      </ColorContextProvider>
     ) : (
       el
     );

@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useBalance } from 'wagmi';
 import { Storage } from '~/core/storage';
 import { Box, Text } from '~/design-system';
-import * as styles from './index.css';
 
 export function Index() {
   const [status, setStatus] = useState(0);
@@ -41,48 +40,12 @@ export function Index() {
         </Box>
       </Text>
       <Box
-        background="surfaceSecondary"
-        display="flex"
-        flexDirection="column"
-        gap="12px"
-        padding="12px"
-      >
-        <Text size="17pt" weight="bold">
-          Surface Secondary
-        </Text>
-        <Box background="surfaceSecondaryElevated" padding="12px">
-          <Text size="17pt" weight="bold">
-            Surface Secondary Elevated
-          </Text>
-        </Box>
-        <Box background="fill" padding="12px">
-          <Text size="17pt" weight="bold">
-            Fill
-          </Text>
-        </Box>
-      </Box>
-      <Box
-        background="yellow"
-        display="flex"
-        flexDirection="column"
-        gap="12px"
-        padding="12px"
-      >
-        <Text size="17pt" weight="bold">
-          Yellow
-        </Text>
-        <Box background="fill" padding="12px">
-          <Text size="17pt" weight="bold">
-            Fill
-          </Text>
-        </Box>
-      </Box>
-      <Box
         as="button"
         id="injection-button"
         background="surfaceSecondary"
         onClick={switchInjection}
-        className={styles.button}
+        padding="16px"
+        style={{ borderRadius: 999 }}
       >
         <Text color="labelSecondary" size="17pt" weight="bold">
           TURN {status ? 'OFF' : 'ON'}

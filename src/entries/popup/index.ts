@@ -5,23 +5,23 @@ import ReactDOM from 'react-dom';
 
 import { App } from './App';
 
-const darkMode = '(prefers-color-scheme: dark)';
-
-const setRootTheme = (isDark: boolean) => {
-  if (isDark) {
-    document.documentElement.classList.add('darkTheme');
-    document.documentElement.classList.remove('lightTheme');
-  } else {
-    document.documentElement.classList.add('lightTheme');
-    document.documentElement.classList.remove('darkTheme');
-  }
+const setTheme = (theme: 'dark' | 'light') => {
+  document.documentElement.classList.remove('lightTheme', 'darkTheme');
+  document.documentElement.classList.add(
+    theme === 'dark' ? 'darkTheme' : 'lightTheme',
+  );
 };
 
-setRootTheme(window.matchMedia(darkMode).matches);
+const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+setTheme(darkModeMediaQuery.matches ? 'dark' : 'light');
 
-window
-  .matchMedia(darkMode)
-  .addEventListener('change', ({ matches }) => setRootTheme(matches));
+// Update the theme if the user changes their OS preference
+darkModeMediaQuery.addEventListener('change', ({ matches: isDark }) => {
+  setTheme(isDark ? 'dark' : 'light');
+});
+
+// Set the initial color contexts to match their respective themes
+document.body.classList.add('lightTheme-lightContext', 'darkTheme-darkContext');
 
 const domContainer = document.querySelector('#app');
 ReactDOM.render(createElement(App), domContainer);
