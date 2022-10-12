@@ -1,7 +1,7 @@
+import { createWagmiClient } from '~/core/wagmi';
 import { handleInstallExtension } from './handlers/handleInstallExtension';
 import { handleProviderRequest } from './handlers/handleProviderRequest';
-import { createWagmiClient } from '~/core/wagmi';
 
+createWagmiClient();
 handleInstallExtension();
 handleProviderRequest();
-createWagmiClient();
