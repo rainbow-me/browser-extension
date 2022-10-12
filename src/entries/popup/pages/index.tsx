@@ -26,19 +26,28 @@ export function Index() {
   }, []);
 
   return (
-    <Box display="flex" flexDirection="column" gap="12px" padding="12px">
-      <Text as="h1" size="26pt" weight="bold">
+    <Box display="flex" flexDirection="column" gap="20px" padding="20px">
+      <Text as="h1" size="20pt" weight="bold">
         Rainbow Rocks!!!
       </Text>
-      <Text size="17pt" weight="bold" color="labelSecondary">
-        Balance: {balance?.formatted}
-      </Text>
-      <Text size="17pt" weight="bold" color="labelSecondary">
-        Injecting?{' '}
-        <Box as="span" testId="injection-status">
-          {status ? 'YES' : 'NO'}
+      <Box display="flex" flexDirection="column" gap="12px">
+        <Text size="17pt" weight="bold" color="labelSecondary">
+          Balance: {balance?.formatted}
+        </Text>
+        <Box display="flex" flexDirection="row" gap="8px">
+          <Text size="17pt" weight="bold" color="labelTertiary">
+            Injecting?
+          </Text>
+          <Text
+            size="17pt"
+            weight="bold"
+            color={status ? 'green' : 'red'}
+            testId="injection-status"
+          >
+            {status ? 'YES' : 'NO'}
+          </Text>
         </Box>
-      </Text>
+      </Box>
       <Box
         as="button"
         id="injection-button"
@@ -47,7 +56,7 @@ export function Index() {
         padding="16px"
         style={{ borderRadius: 999 }}
       >
-        <Text color="labelSecondary" size="17pt" weight="bold">
+        <Text color="labelSecondary" size="15pt" weight="bold">
           TURN {status ? 'OFF' : 'ON'}
         </Text>
       </Box>
