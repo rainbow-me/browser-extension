@@ -37,6 +37,7 @@
         "@vanilla-extract/webpack-plugin>loader-utils": true,
         "eslint>chalk": true,
         "eslint>debug": true,
+        "file-loader>loader-utils": true,
         "webpack": true
       }
     },
@@ -1563,6 +1564,7 @@
       "packages": {
         "@vanilla-extract/webpack-plugin": true,
         "css-loader": true,
+        "file-loader": true,
         "html-webpack-plugin": true,
         "mini-css-extract-plugin": true,
         "ts-loader": true
