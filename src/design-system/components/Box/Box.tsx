@@ -7,19 +7,32 @@ import {
   resetBase,
   resetElements,
 } from '../../styles/core.css';
+import { backgroundColors, BackgroundColor } from '../../styles/designTokens';
+import { ColorContextProvider, useColorContext } from './ColorContext';
 
 type PolymorphicBox = Polymorphic.ForwardRefComponent<
   'div',
-  BoxStyles & { className?: ClassValue }
+  Omit<BoxStyles, 'background'> & {
+    background?:
+      | BackgroundColor
+      | { light: BackgroundColor; dark: BackgroundColor };
+    className?: ClassValue;
+    testId?: string;
+  }
 >;
 
 export const Box = forwardRef(
-  ({ as: Component = 'div', className, ...props }, ref) => {
+  ({ as: Component = 'div', className, testId, ...props }, ref) => {
+    const { lightThemeColorContext, darkThemeColorContext } = useColorContext();
+    const background = props.background;
+
+    let hasBoxStyles = false;
     const boxStyleOptions: BoxStyles = {};
     const restProps: Record<string, unknown> = {};
 
     for (const key in props) {
       if (boxStyles.properties.has(key as keyof BoxStyles)) {
+        hasBoxStyles = true;
         boxStyleOptions[key as keyof BoxStyles] =
           props[key as keyof typeof props];
       } else {
@@ -27,7 +40,7 @@ export const Box = forwardRef(
       }
     }
 
-    return (
+    const el = (
       <Component
         ref={ref}
         className={clsx(
@@ -38,13 +51,42 @@ export const Box = forwardRef(
                   : ''
               }`
             : null,
-          boxStyles(boxStyleOptions),
+          hasBoxStyles ? boxStyles(boxStyleOptions) : null,
+
+          // Look up whether the chosen background color is light or dark and
+          // apply the correct color context classes so descendent elements use
+          // the appropriate light or dark theme values. We need to look up the
+          // color context from React context because the parent background color
+          // may be light even though the user is in dark mode and vice versa.
+          background
+            ? [
+                backgroundColors[
+                  typeof background === 'string' ? background : background.light
+                ][lightThemeColorContext].setColorContext === 'light'
+                  ? 'lightTheme-lightContext'
+                  : 'lightTheme-darkContext',
+                backgroundColors[
+                  typeof background === 'string' ? background : background.dark
+                ][darkThemeColorContext].setColorContext === 'light'
+                  ? 'darkTheme-lightContext'
+                  : 'darkTheme-darkContext',
+              ]
+            : null,
           className,
         )}
+        data-testid={testId}
         // Since Box is a primitive component, it needs to spread props
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...restProps}
       />
+    );
+
+    return props.background ? (
+      <ColorContextProvider background={props.background}>
+        {el}
+      </ColorContextProvider>
+    ) : (
+      el
     );
   },
 ) as PolymorphicBox;

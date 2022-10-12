@@ -2,8 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useBalance } from 'wagmi';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
 import { Storage } from '~/core/storage';
-import { Box } from '~/design-system';
-import * as styles from './index.css';
+import { Box, Text } from '~/design-system';
 
 export function Index() {
   const [status, setStatus] = useState(0);
@@ -31,24 +30,45 @@ export function Index() {
   }, []);
 
   return (
-    <Box display="flex" flexDirection="column" gap="12px" padding="12px">
-      <Box as="h1" className={styles.title}>
+    <Box display="flex" flexDirection="column" gap="24px" padding="20px">
+      <Text as="h1" size="20pt" weight="bold">
         Rainbow Rocks!!!
+      </Text>
+      <Box display="flex" flexDirection="column" gap="16px">
+        <Text size="17pt" weight="bold" color="labelSecondary">
+          Balance: {balance?.formatted}
+        </Text>
+        {firstTransactionTimestamp && (
+          <Text size="17pt" weight="bold" color="labelTertiary">
+            First transaction on:{' '}
+            {new Date(firstTransactionTimestamp).toString()}
+          </Text>
+        )}
       </Box>
-      <Box>Balance: {balance?.formatted}</Box>
-      {firstTransactionTimestamp && (
-        <Box>
-          First transaction on: {new Date(firstTransactionTimestamp).toString()}
-        </Box>
-      )}
-      Injecting? <Box id="injection-status">{status ? 'YES' : 'NO'}</Box>
+      <Box display="flex" flexDirection="row" gap="8px">
+        <Text size="17pt" weight="bold" color="labelTertiary">
+          Injecting?
+        </Text>
+        <Text
+          size="17pt"
+          weight="bold"
+          color={status ? 'green' : 'red'}
+          testId="injection-status"
+        >
+          {status ? 'YES' : 'NO'}
+        </Text>
+      </Box>
       <Box
         as="button"
         id="injection-button"
+        background="surfaceSecondary"
         onClick={switchInjection}
-        className={styles.button}
+        padding="16px"
+        style={{ borderRadius: 999 }}
       >
-        TURN {status ? 'OFF' : 'ON'}
+        <Text color="labelSecondary" size="15pt" weight="bold">
+          TURN {status ? 'OFF' : 'ON'}
+        </Text>
       </Box>
     </Box>
   );
