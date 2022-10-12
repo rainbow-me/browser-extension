@@ -42,6 +42,9 @@ export function Index() {
       >
         TURN {status ? 'OFF' : 'ON'}
       </Box>
+      <Box as="button" onClick={Storage.clear} className={styles.button}>
+        CLEAR STORAGE
+      </Box>
     </Box>
   );
 }
