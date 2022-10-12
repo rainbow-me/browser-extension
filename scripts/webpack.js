@@ -7,6 +7,7 @@ const config = require('../webpack.config');
 require('css-loader');
 require('loader-runner');
 require('html-webpack-plugin');
+require('file-loader');
 require('ts-loader');
 require('typescript');
 require('terser-webpack-plugin');

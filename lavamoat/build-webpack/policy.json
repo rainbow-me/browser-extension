@@ -592,6 +592,41 @@
         "eslint>strip-ansi>ansi-regex": true
       }
     },
+    "file-loader": {
+      "builtin": {
+        "path": true
+      },
+      "packages": {
+        "file-loader>loader-utils": true,
+        "webpack>schema-utils": true
+      }
+    },
+    "file-loader>loader-utils": {
+      "builtin": {
+        "crypto.createHash": true,
+        "path.basename": true,
+        "path.parse": true,
+        "path.posix.isAbsolute": true,
+        "path.relative": true,
+        "path.sep": true,
+        "path.win32.isAbsolute": true
+      },
+      "globals": {
+        "Buffer.from": true,
+        "WebAssembly.Instance": true,
+        "WebAssembly.Module": true
+      },
+      "packages": {
+        "file-loader>loader-utils>big.js": true,
+        "file-loader>loader-utils>emojis-list": true,
+        "file-loader>loader-utils>json5": true
+      }
+    },
+    "file-loader>loader-utils>big.js": {
+      "globals": {
+        "define": true
+      }
+    },
     "file-loader>loader-utils>json5": {
       "globals": {
         "console.warn": true
