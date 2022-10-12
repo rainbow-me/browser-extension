@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useBalance } from 'wagmi';
+import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
 import { Storage } from '~/core/storage';
 
 import { title } from './index.css';
@@ -9,6 +10,9 @@ export function Index() {
 
   const { data: balance } = useBalance({
     addressOrName: '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4',
+  });
+  const { data: firstTransactionTimestamp } = useFirstTransactionTimestamp({
+    address: '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4',
   });
 
   const switchInjection = useCallback(async () => {
@@ -30,6 +34,11 @@ export function Index() {
     <div>
       <h1 className={title}>Rainbow Rocks!!!</h1>
       <div>Balance: {balance?.formatted}</div>
+      {firstTransactionTimestamp && (
+        <div>
+          First transaction on: {new Date(firstTransactionTimestamp).toString()}
+        </div>
+      )}
       Injecting? <div id="injection-status">{status ? 'YES' : 'NO'}</div>
       <button id="injection-button" onClick={switchInjection}>
         TURN {status ? 'OFF' : 'ON'}
