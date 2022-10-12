@@ -1,10 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useBalance } from 'wagmi';
 import { Storage } from '~/core/storage';
 import { Box, Text } from '~/design-system';
 import * as styles from './index.css';
 
 export function Index() {
   const [status, setStatus] = useState(0);
+
+  const { data: balance } = useBalance({
+    addressOrName: '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4',
+  });
 
   const switchInjection = useCallback(async () => {
     const shouldInject = (await Storage.get('inject')) === true;
@@ -25,6 +30,9 @@ export function Index() {
     <Box display="flex" flexDirection="column" gap="12px" padding="12px">
       <Text as="h1" size="26pt" weight="bold">
         Rainbow Rocks!!!
+      </Text>
+      <Text size="17pt" weight="bold" color="labelSecondary">
+        Balance: {balance?.formatted}
       </Text>
       <Text size="17pt" weight="bold" color="labelSecondary">
         Injecting?{' '}
