@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { VanillaExtractPlugin } = require('@vanilla-extract/webpack-plugin');
 const { join, resolve } = require('path');
@@ -11,7 +12,7 @@ module.exports = {
     background: './src/entries/background/index.ts',
     contentscript: './src/entries/content/index.ts',
     popup: './src/entries/popup/index.ts',
-    provider: './src/entries/content/provider.ts',
+    inpage: './src/entries/inpage/index.ts',
   },
   module: {
     rules: [
@@ -47,6 +48,7 @@ module.exports = {
     ],
   },
   plugins: [
+    new Dotenv({ allowEmptyValues: true }),
     new HtmlWebpackPlugin({
       chunks: ['popup'],
       template: './src/entries/popup/index.html',

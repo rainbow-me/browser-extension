@@ -383,6 +383,37 @@
         "process.platform": true
       }
     },
+    "dotenv-webpack": {
+      "builtin": {
+        "fs": true
+      },
+      "globals": {
+        "console.log": true,
+        "console.warn": true,
+        "process.env": true,
+        "process.exit": true
+      },
+      "packages": {
+        "dotenv-webpack>dotenv-defaults": true,
+        "webpack": true
+      }
+    },
+    "dotenv-webpack>dotenv-defaults": {
+      "packages": {
+        "dotenv-webpack>dotenv-defaults>dotenv": true
+      }
+    },
+    "dotenv-webpack>dotenv-defaults>dotenv": {
+      "builtin": {
+        "fs.readFileSync": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "console.log": true,
+        "process.cwd": true,
+        "process.env": true
+      }
+    },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": {
       "builtin": {
         "assert": true,

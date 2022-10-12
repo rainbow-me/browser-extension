@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useBalance } from 'wagmi';
+import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
 import { Storage } from '~/core/storage';
 import { Box, Text } from '~/design-system';
 
@@ -8,6 +9,9 @@ export function Index() {
 
   const { data: balance } = useBalance({
     addressOrName: '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4',
+  });
+  const { data: firstTransactionTimestamp } = useFirstTransactionTimestamp({
+    address: '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4',
   });
 
   const switchInjection = useCallback(async () => {
@@ -26,27 +30,33 @@ export function Index() {
   }, []);
 
   return (
-    <Box display="flex" flexDirection="column" gap="20px" padding="20px">
+    <Box display="flex" flexDirection="column" gap="24px" padding="20px">
       <Text as="h1" size="20pt" weight="bold">
         Rainbow Rocks!!!
       </Text>
-      <Box display="flex" flexDirection="column" gap="12px">
+      <Box display="flex" flexDirection="column" gap="16px">
         <Text size="17pt" weight="bold" color="labelSecondary">
           Balance: {balance?.formatted}
         </Text>
-        <Box display="flex" flexDirection="row" gap="8px">
+        {firstTransactionTimestamp && (
           <Text size="17pt" weight="bold" color="labelTertiary">
-            Injecting?
+            First transaction on:{' '}
+            {new Date(firstTransactionTimestamp).toString()}
           </Text>
-          <Text
-            size="17pt"
-            weight="bold"
-            color={status ? 'green' : 'red'}
-            testId="injection-status"
-          >
-            {status ? 'YES' : 'NO'}
-          </Text>
-        </Box>
+        )}
+      </Box>
+      <Box display="flex" flexDirection="row" gap="8px">
+        <Text size="17pt" weight="bold" color="labelTertiary">
+          Injecting?
+        </Text>
+        <Text
+          size="17pt"
+          weight="bold"
+          color={status ? 'green' : 'red'}
+          testId="injection-status"
+        >
+          {status ? 'YES' : 'NO'}
+        </Text>
       </Box>
       <Box
         as="button"

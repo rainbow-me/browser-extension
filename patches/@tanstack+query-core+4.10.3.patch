@@ -1,0 +1,108 @@
+diff --git a/node_modules/@tanstack/query-core/build/lib/queryObserver.esm.js b/node_modules/@tanstack/query-core/build/lib/queryObserver.esm.js
+index ac1de8d..d70536b 100644
+--- a/node_modules/@tanstack/query-core/build/lib/queryObserver.esm.js
++++ b/node_modules/@tanstack/query-core/build/lib/queryObserver.esm.js
+@@ -344,7 +344,8 @@ class QueryObserver extends Subscribable {
+     const result = {
+       status,
+       fetchStatus,
+-      isLoading,
++      isLoading: isLoading && fetchStatus === 'fetching',
++      isIdle: isLoading && fetchStatus === 'idle',
+       isSuccess: status === 'success',
+       isError,
+       isInitialLoading: isLoading && isFetching,
+diff --git a/node_modules/@tanstack/query-core/build/lib/queryObserver.js b/node_modules/@tanstack/query-core/build/lib/queryObserver.js
+index 4c04a92..abd5203 100644
+--- a/node_modules/@tanstack/query-core/build/lib/queryObserver.js
++++ b/node_modules/@tanstack/query-core/build/lib/queryObserver.js
+@@ -348,7 +348,8 @@ class QueryObserver extends subscribable.Subscribable {
+     const result = {
+       status,
+       fetchStatus,
+-      isLoading,
++      isLoading: isLoading && fetchStatus === 'fetching',
++      isIdle: isLoading && fetchStatus === 'idle',
+       isSuccess: status === 'success',
+       isError,
+       isInitialLoading: isLoading && isFetching,
+diff --git a/node_modules/@tanstack/query-core/build/lib/types.d.ts b/node_modules/@tanstack/query-core/build/lib/types.d.ts
+index 18885fb..bb404d2 100644
+--- a/node_modules/@tanstack/query-core/build/lib/types.d.ts
++++ b/node_modules/@tanstack/query-core/build/lib/types.d.ts
+@@ -224,6 +224,7 @@ export interface QueryObserverBaseResult<TData = unknown, TError = unknown> {
+     isFetched: boolean;
+     isFetchedAfterMount: boolean;
+     isFetching: boolean;
++    isIdle: boolean;
+     isLoading: boolean;
+     isLoadingError: boolean;
+     isInitialLoading: boolean;
+@@ -243,7 +244,8 @@ export interface QueryObserverLoadingResult<TData = unknown, TError = unknown> e
+     data: undefined;
+     error: null;
+     isError: false;
+-    isLoading: true;
++    isIdle: boolean;
++    isLoading: boolean;
+     isLoadingError: false;
+     isRefetchError: false;
+     isSuccess: false;
+@@ -253,6 +255,7 @@ export interface QueryObserverLoadingErrorResult<TData = unknown, TError = unkno
+     data: undefined;
+     error: TError;
+     isError: true;
++    isIdle: false;
+     isLoading: false;
+     isLoadingError: true;
+     isRefetchError: false;
+@@ -263,6 +266,7 @@ export interface QueryObserverRefetchErrorResult<TData = unknown, TError = unkno
+     data: TData;
+     error: TError;
+     isError: true;
++    isIdle: false;
+     isLoading: false;
+     isLoadingError: false;
+     isRefetchError: true;
+@@ -273,6 +277,7 @@ export interface QueryObserverSuccessResult<TData = unknown, TError = unknown> e
+     data: TData;
+     error: null;
+     isError: false;
++    isIdle: false;
+     isLoading: false;
+     isLoadingError: false;
+     isRefetchError: false;
+@@ -293,7 +298,8 @@ export interface InfiniteQueryObserverLoadingResult<TData = unknown, TError = un
+     data: undefined;
+     error: null;
+     isError: false;
+-    isLoading: true;
++    isIdle: boolean;
++    isLoading: boolean;
+     isLoadingError: false;
+     isRefetchError: false;
+     isSuccess: false;
+@@ -303,6 +309,7 @@ export interface InfiniteQueryObserverLoadingErrorResult<TData = unknown, TError
+     data: undefined;
+     error: TError;
+     isError: true;
++    isIdle: false;
+     isLoading: false;
+     isLoadingError: true;
+     isRefetchError: false;
+@@ -313,6 +320,7 @@ export interface InfiniteQueryObserverRefetchErrorResult<TData = unknown, TError
+     data: InfiniteData<TData>;
+     error: TError;
+     isError: true;
++    isIdle: false;
+     isLoading: false;
+     isLoadingError: false;
+     isRefetchError: true;
+@@ -323,6 +331,7 @@ export interface InfiniteQueryObserverSuccessResult<TData = unknown, TError = un
+     data: InfiniteData<TData>;
+     error: null;
+     isError: false;
++    isIdle: false;
+     isLoading: false;
+     isLoadingError: false;
+     isRefetchError: false;
