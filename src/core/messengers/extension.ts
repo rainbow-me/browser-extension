@@ -13,7 +13,7 @@ import { createMessenger } from './internal/createMessenger';
  * @see https://www.notion.so/rainbowdotme/Cross-script-Messaging-141de5115294435f95e31b87abcf4314#2af765a8378c4f08a1663d9bfcb60ad9
  */
 export const extensionMessenger = createMessenger({
-  available: Boolean(typeof chrome !== 'undefined' && chrome.runtime),
+  available: Boolean(typeof chrome !== 'undefined' && chrome.runtime?.id),
   name: 'extensionMessenger',
   async send(topic, payload) {
     const { response, error } = await chrome.runtime.sendMessage({
