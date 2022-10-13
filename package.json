@@ -34,7 +34,9 @@
     "@tanstack/react-query": "4.10.3",
     "@tanstack/react-query-persist-client": "4.10.3",
     "@vanilla-extract/css": "1.9.1",
+    "@vanilla-extract/dynamic": "2.0.2",
     "@vanilla-extract/sprinkles": "1.5.0",
+    "chroma-js": "2.4.2",
     "clsx": "1.2.1",
     "lodash": "4.17.21",
     "ethers": "5.7.1",
@@ -46,6 +48,7 @@
   "devDependencies": {
     "@lavamoat/allow-scripts": "2.0.3",
     "@lavamoat/preinstall-always-fail": "1.0.0",
+    "@types/chroma-js": "2.1.4",
     "@types/chrome": "0.0.197",
     "@types/lodash": "4.14.186",
     "@types/react": "18.0.21",

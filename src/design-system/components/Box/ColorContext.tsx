@@ -1,9 +1,18 @@
-import React, { createContext, ReactNode, useContext, useMemo } from 'react';
+import React, {
+  createContext,
+  CSSProperties,
+  ReactNode,
+  useContext,
+  useMemo,
+} from 'react';
+import chroma from 'chroma-js';
+import { accentColorVar } from '../../styles/core.css';
 import {
   BackgroundColor,
   backgroundColors,
   ColorContext,
 } from '../../styles/designTokens';
+import { assignInlineVars } from '@vanilla-extract/dynamic';
 
 export interface ColorContextValue {
   lightThemeColorContext: ColorContext;
@@ -19,10 +28,17 @@ export function useColorContext() {
   return useContext(ColorContext);
 }
 
+const AccentColorContext = createContext<ColorContext>('dark');
+
+export function useAccentColorContext() {
+  return useContext(AccentColorContext);
+}
+
 interface ColorContextProviderProps {
   background:
+    | 'accent'
     | BackgroundColor
-    | { light: BackgroundColor; dark: BackgroundColor };
+    | { light: 'accent' | BackgroundColor; dark: 'accent' | BackgroundColor };
   children: ReactNode;
 }
 
@@ -31,16 +47,26 @@ export function ColorContextProvider({
   children,
 }: ColorContextProviderProps) {
   const parentContext = useColorContext();
+  const accentColorContext = useAccentColorContext();
+
+  const lightThemeBackgroundColor =
+    typeof background === 'string' ? background : background.light;
+  const darkThemeBackgroundColor =
+    typeof background === 'string' ? background : background.dark;
 
   const lightThemeColorContext =
-    backgroundColors[
-      typeof background === 'string' ? background : background.light
-    ][parentContext.lightThemeColorContext].setColorContext;
+    lightThemeBackgroundColor === 'accent'
+      ? accentColorContext
+      : backgroundColors[lightThemeBackgroundColor][
+          parentContext.lightThemeColorContext
+        ].setColorContext;
 
   const darkThemeColorContext =
-    backgroundColors[
-      typeof background === 'string' ? background : background.dark
-    ][parentContext.darkThemeColorContext].setColorContext;
+    darkThemeBackgroundColor === 'accent'
+      ? accentColorContext
+      : backgroundColors[darkThemeBackgroundColor][
+          parentContext.darkThemeColorContext
+        ].setColorContext;
 
   const value = useMemo<ColorContextValue>(
     () => ({ lightThemeColorContext, darkThemeColorContext }),
@@ -49,5 +75,36 @@ export function ColorContextProvider({
 
   return (
     <ColorContext.Provider value={value}>{children}</ColorContext.Provider>
+  );
+}
+
+interface AccentColorContextProviderProps {
+  color: string;
+  children: ReactNode | ((args: { style: CSSProperties }) => ReactNode);
+}
+
+export function AccentColorProvider({
+  color,
+  children,
+}: AccentColorContextProviderProps) {
+  const { value, style } = useMemo<{
+    value: ColorContext;
+    style: CSSProperties;
+  }>(
+    () => ({
+      value: chroma.contrast(color, '#fff') > 2.125 ? 'dark' : 'light',
+      style: assignInlineVars({ color: accentColorVar }, { color }),
+    }),
+    [color],
+  );
+
+  return (
+    <AccentColorContext.Provider value={value}>
+      {typeof children === 'function' ? (
+        children({ style })
+      ) : (
+        <div style={style}>{children}</div>
+      )}
+    </AccentColorContext.Provider>
   );
 }
