@@ -8,14 +8,19 @@ import {
   resetElements,
 } from '../../styles/core.css';
 import { backgroundColors, BackgroundColor } from '../../styles/designTokens';
-import { ColorContextProvider, useColorContext } from './ColorContext';
+import {
+  ColorContextProvider,
+  useAccentColorContext,
+  useColorContext,
+} from './ColorContext';
 
 type PolymorphicBox = Polymorphic.ForwardRefComponent<
   'div',
   Omit<BoxStyles, 'background'> & {
     background?:
+      | 'accent'
       | BackgroundColor
-      | { light: BackgroundColor; dark: BackgroundColor };
+      | { light: 'accent' | BackgroundColor; dark: 'accent' | BackgroundColor };
     className?: ClassValue;
     testId?: string;
   }
@@ -23,9 +28,6 @@ type PolymorphicBox = Polymorphic.ForwardRefComponent<
 
 export const Box = forwardRef(
   ({ as: Component = 'div', className, testId, ...props }, ref) => {
-    const { lightThemeColorContext, darkThemeColorContext } = useColorContext();
-    const background = props.background;
-
     let hasBoxStyles = false;
     const boxStyleOptions: BoxStyles = {};
     const restProps: Record<string, unknown> = {};
@@ -39,6 +41,15 @@ export const Box = forwardRef(
         restProps[key] = props[key as keyof typeof props];
       }
     }
+
+    const { lightThemeColorContext, darkThemeColorContext } = useColorContext();
+    const accentColorContext = useAccentColorContext();
+    const background = props.background;
+
+    const lightThemeBackgroundColor =
+      typeof background === 'string' ? background : background?.light ?? null;
+    const darkThemeBackgroundColor =
+      typeof background === 'string' ? background : background?.dark ?? null;
 
     const el = (
       <Component
@@ -58,16 +69,21 @@ export const Box = forwardRef(
           // the appropriate light or dark theme values. We need to look up the
           // color context from React context because the parent background color
           // may be light even though the user is in dark mode and vice versa.
-          background
+          lightThemeBackgroundColor && darkThemeBackgroundColor
             ? [
-                backgroundColors[
-                  typeof background === 'string' ? background : background.light
-                ][lightThemeColorContext].setColorContext === 'light'
+                (lightThemeBackgroundColor === 'accent'
+                  ? accentColorContext
+                  : backgroundColors[lightThemeBackgroundColor][
+                      lightThemeColorContext
+                    ].setColorContext) === 'light'
                   ? 'lightTheme-lightContext'
                   : 'lightTheme-darkContext',
-                backgroundColors[
-                  typeof background === 'string' ? background : background.dark
-                ][darkThemeColorContext].setColorContext === 'light'
+
+                (darkThemeBackgroundColor === 'accent'
+                  ? accentColorContext
+                  : backgroundColors[darkThemeBackgroundColor][
+                      darkThemeColorContext
+                    ].setColorContext) === 'light'
                   ? 'darkTheme-lightContext'
                   : 'darkTheme-darkContext',
               ]

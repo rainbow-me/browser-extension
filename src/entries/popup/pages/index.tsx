@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useBalance } from 'wagmi';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
 import { Storage } from '~/core/storage';
-import { Box, Text } from '~/design-system';
+import { AccentColorProvider, Box, Text } from '~/design-system';
 
 export function Index() {
   const [status, setStatus] = useState(0);
@@ -45,6 +45,28 @@ export function Index() {
           </Text>
         )}
       </Box>
+      <Box display="flex" flexDirection="column" gap="16px">
+        <Box background="accent" padding="12px" style={{ borderRadius: 999 }}>
+          <Text size="17pt" weight="bold" align="center">
+            Default accent background
+          </Text>
+        </Box>
+        <Text size="17pt" weight="bold" color="accent" align="center">
+          Default accent foreground
+        </Text>
+      </Box>
+      <AccentColorProvider color="#FFB266">
+        <Box display="flex" flexDirection="column" gap="16px">
+          <Box background="accent" padding="12px" style={{ borderRadius: 999 }}>
+            <Text size="17pt" weight="bold" align="center">
+              Custom accent background
+            </Text>
+          </Box>
+          <Text size="17pt" weight="bold" color="accent" align="center">
+            Custom accent foreground
+          </Text>
+        </Box>
+      </AccentColorProvider>
       <Box display="flex" flexDirection="row" gap="8px">
         <Text size="17pt" weight="bold" color="labelTertiary">
           Injecting?

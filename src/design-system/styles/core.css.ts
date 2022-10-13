@@ -4,6 +4,7 @@ import {
   globalFontFace,
   createThemeContract,
   assignVars,
+  createVar,
 } from '@vanilla-extract/css';
 import { defineProperties, createSprinkles } from '@vanilla-extract/sprinkles';
 import { createStyleObject as capsize } from '@capsizecss/core';
@@ -88,17 +89,21 @@ export const resetElements = {
   ul: list,
 };
 
+export const accentColorVar = createVar();
+
+const semanticColorVars = createThemeContract({
+  backgroundColors: mapValues(backgroundColors, () => null),
+  foregroundColors: mapValues(foregroundColors, () => null),
+});
+
 globalStyle('html.lightTheme', {
   backgroundColor: backgroundColors.surfacePrimary.light.color,
+  vars: { [accentColorVar]: backgroundColors.blue.light.color },
 });
 
 globalStyle('html.darkTheme', {
   backgroundColor: backgroundColors.surfacePrimary.dark.color,
-});
-
-const vars = createThemeContract({
-  backgroundColors: mapValues(backgroundColors, () => null),
-  foregroundColors: mapValues(foregroundColors, () => null),
+  vars: { [accentColorVar]: backgroundColors.blue.dark.color },
 });
 
 globalStyle(
@@ -107,7 +112,7 @@ globalStyle(
     'html.darkTheme .darkTheme-lightContext > *',
   ].join(', '),
   {
-    vars: assignVars(vars, {
+    vars: assignVars(semanticColorVars, {
       backgroundColors: mapValues(backgroundColors, ({ light }) => light.color),
       foregroundColors: mapValues(foregroundColors, ({ light }) => light),
     }),
@@ -120,7 +125,7 @@ globalStyle(
     'html.lightTheme .lightTheme-darkContext > *',
   ].join(', '),
   {
-    vars: assignVars(vars, {
+    vars: assignVars(semanticColorVars, {
       backgroundColors: mapValues(backgroundColors, ({ dark }) => dark.color),
       foregroundColors: mapValues(foregroundColors, ({ dark }) => dark),
     }),
@@ -173,7 +178,10 @@ const boxColorProperties = defineProperties({
   },
   defaultCondition: ['light', 'dark'],
   properties: {
-    background: vars.backgroundColors,
+    background: {
+      accent: accentColorVar,
+      ...semanticColorVars.backgroundColors,
+    },
   },
 });
 
@@ -214,7 +222,10 @@ function fontSize(fontSize: number, lineHeight: number | `${number}%`) {
 
 const textProperties = defineProperties({
   properties: {
-    color: pick(vars.foregroundColors, textColors),
+    color: {
+      accent: accentColorVar,
+      ...pick(semanticColorVars.foregroundColors, textColors),
+    },
     fontFamily: { rounded: 'SFRounded' },
     fontSize: {
       '11pt': fontSize(11, 14),
