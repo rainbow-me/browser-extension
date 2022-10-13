@@ -10,7 +10,7 @@ require('lavamoat-browserify');
 require('lavamoat-core');
 require('lavamoat-tofu');
 
-const ignore = ['**/contentscript.js', '**/provider.js'];
+const ignore = ['**/contentscript.js', '**/inpage.js'];
 const isGeneratingPolicy = Boolean(process.env.GENERATE_POLICY);
 
 (async () => {
