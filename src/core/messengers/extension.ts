@@ -24,27 +24,27 @@ export const extensionMessenger = createMessenger({
     return response;
   },
   reply(topic, callback) {
-    const listener = async (
+    const listener = (
       message: { topic: string; payload: any },
       sender: chrome.runtime.MessageSender,
       sendResponse: (response: any) => void,
     ) => {
       if (topic !== '*' && message.topic !== topic) return;
-      try {
-        const response = await callback(message.payload, {
-          sender,
-          topic: message.topic,
+      callback(message.payload, {
+        sender,
+        topic: message.topic,
+      })
+        .then((response) => sendResponse({ response }))
+        .catch((error_) => {
+          // Errors do not serialize properly over `chrome.runtime.sendMessage`, so
+          // we are manually serializing it to an object.
+          const error: Record<string, unknown> = {};
+          for (const key of Object.getOwnPropertyNames(error_)) {
+            error[key] = (<Error>error_)[<keyof Error>key];
+          }
+          sendResponse({ error });
         });
-        sendResponse({ response });
-      } catch (error_) {
-        // Errors do not serialize properly over `chrome.runtime.sendMessage`, so
-        // we are manually serializing it to an object.
-        const error: Record<string, unknown> = {};
-        for (const key of Object.getOwnPropertyNames(error_)) {
-          error[key] = (<Error>error_)[<keyof Error>key];
-        }
-        sendResponse({ error });
-      }
+      return true;
     };
     chrome.runtime.onMessage.addListener(listener);
     return () => chrome.runtime.onMessage.removeListener(listener);
