@@ -42,6 +42,7 @@ export const windowMessenger = createMessenger({
       if (sender != window) return;
       if (!event.data.topic) return;
       if (topic !== '*' && event.data.topic !== `> ${topic}`) return;
+      if (topic === '*' && event.data.topic.startsWith('<')) return;
 
       let error;
       let response;
