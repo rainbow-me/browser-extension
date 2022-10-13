@@ -1,19 +1,11 @@
 import * as React from 'react';
-import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import { useAccount, useConnect, WagmiConfig } from 'wagmi';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { Index } from './pages';
-import { Storage } from '~/core/storage';
 import { createWagmiClient } from '~/core/wagmi';
+import { persistOptions, queryClient } from '~/core/react-query';
 
-const asyncStoragePersister = createAsyncStoragePersister({
-  storage: {
-    getItem: Storage.get,
-    setItem: Storage.set,
-    removeItem: Storage.remove,
-  },
-});
-
-const wagmiClient = createWagmiClient({ persister: asyncStoragePersister });
+const wagmiClient = createWagmiClient({ persist: true });
 
 export function Routes() {
   const { isConnected } = useAccount();
@@ -35,8 +27,13 @@ export function Routes() {
 
 export function App() {
   return (
-    <WagmiConfig client={wagmiClient}>
-      <Routes />
-    </WagmiConfig>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={persistOptions}
+    >
+      <WagmiConfig client={wagmiClient}>
+        <Routes />
+      </WagmiConfig>
+    </PersistQueryClientProvider>
   );
 }

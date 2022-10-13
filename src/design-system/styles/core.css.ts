@@ -1,6 +1,27 @@
-import { style } from '@vanilla-extract/css';
+import {
+  style,
+  globalStyle,
+  globalFontFace,
+  createThemeContract,
+  assignVars,
+} from '@vanilla-extract/css';
 import { defineProperties, createSprinkles } from '@vanilla-extract/sprinkles';
-import { space, negativeSpace, positionSpace } from './designTokens';
+import { createStyleObject as capsize } from '@capsizecss/core';
+import mapValues from 'lodash/mapValues';
+import pick from 'lodash/pick';
+import {
+  space,
+  negativeSpace,
+  positionSpace,
+  backgroundColors,
+  foregroundColors,
+  textColors,
+} from './designTokens';
+import SFRoundedRegular from './fonts/subset-SFRounded-Regular.woff2';
+import SFRoundedMedium from './fonts/subset-SFRounded-Medium.woff2';
+import SFRoundedSemibold from './fonts/subset-SFRounded-Semibold.woff2';
+import SFRoundedBold from './fonts/subset-SFRounded-Bold.woff2';
+import SFRoundedHeavy from './fonts/subset-SFRounded-Heavy.woff2';
 
 export const resetBase = style({
   margin: 0,
@@ -67,7 +88,46 @@ export const resetElements = {
   ul: list,
 };
 
-const boxProperties = defineProperties({
+globalStyle('html.lightTheme', {
+  backgroundColor: backgroundColors.surfacePrimary.light.color,
+});
+
+globalStyle('html.darkTheme', {
+  backgroundColor: backgroundColors.surfacePrimary.dark.color,
+});
+
+const vars = createThemeContract({
+  backgroundColors: mapValues(backgroundColors, () => null),
+  foregroundColors: mapValues(foregroundColors, () => null),
+});
+
+globalStyle(
+  [
+    'html.lightTheme .lightTheme-lightContext > *',
+    'html.darkTheme .darkTheme-lightContext > *',
+  ].join(', '),
+  {
+    vars: assignVars(vars, {
+      backgroundColors: mapValues(backgroundColors, ({ light }) => light.color),
+      foregroundColors: mapValues(foregroundColors, ({ light }) => light),
+    }),
+  },
+);
+
+globalStyle(
+  [
+    'html.darkTheme .darkTheme-darkContext > *',
+    'html.lightTheme .lightTheme-darkContext > *',
+  ].join(', '),
+  {
+    vars: assignVars(vars, {
+      backgroundColors: mapValues(backgroundColors, ({ dark }) => dark.color),
+      foregroundColors: mapValues(foregroundColors, ({ dark }) => dark),
+    }),
+  },
+);
+
+const boxBaseProperties = defineProperties({
   properties: {
     alignItems: ['stretch', 'flex-start', 'center', 'flex-end'],
     bottom: positionSpace,
@@ -106,5 +166,87 @@ const boxProperties = defineProperties({
   },
 });
 
-export const boxStyles = createSprinkles(boxProperties);
+const boxColorProperties = defineProperties({
+  conditions: {
+    light: { selector: 'html.lightTheme &' },
+    dark: { selector: 'html.darkTheme &' },
+  },
+  defaultCondition: ['light', 'dark'],
+  properties: {
+    background: vars.backgroundColors,
+  },
+});
+
+export const boxStyles = createSprinkles(boxBaseProperties, boxColorProperties);
 export type BoxStyles = Parameters<typeof boxStyles>[0];
+
+[
+  [SFRoundedRegular, 400],
+  [SFRoundedMedium, 500],
+  [SFRoundedSemibold, 600],
+  [SFRoundedBold, 700],
+  [SFRoundedHeavy, 800],
+].forEach(([fontPath, fontWeight]) => {
+  globalFontFace('SFRounded', {
+    src: `url('${fontPath}') format('woff2')`,
+    fontWeight,
+    fontStyle: 'normal',
+    fontDisplay: 'auto',
+  });
+});
+
+const fontMetrics = {
+  capHeight: 1443,
+  ascent: 1950,
+  descent: -494,
+  lineGap: 0,
+  unitsPerEm: 2048,
+};
+
+function fontSize(fontSize: number, lineHeight: number | `${number}%`) {
+  const leading =
+    typeof lineHeight === 'number'
+      ? lineHeight
+      : (fontSize * parseInt(lineHeight)) / 100;
+
+  return capsize({ fontMetrics, fontSize, leading });
+}
+
+const textProperties = defineProperties({
+  properties: {
+    color: pick(vars.foregroundColors, textColors),
+    fontFamily: { rounded: 'SFRounded' },
+    fontSize: {
+      '11pt': fontSize(11, 14),
+      '12pt': fontSize(12, 16),
+      '13pt': fontSize(13, 18),
+      '13pt / 135%': fontSize(13, '135%'),
+      '13pt / 150%': fontSize(13, '150%'),
+      '15pt': fontSize(15, 20),
+      '15pt / 135%': fontSize(15, '135%'),
+      '15pt / 150%': fontSize(15, '150%'),
+      '17pt': fontSize(17, 22),
+      '17pt / 135%': fontSize(17, '135%'),
+      '17pt / 150%': fontSize(17, '150%'),
+      '20pt': fontSize(20, 24),
+      '20pt / 135%': fontSize(20, '135%'),
+      '20pt / 150%': fontSize(20, '150%'),
+      '22pt': fontSize(22, 28),
+      '26pt': fontSize(26, 32),
+      '30pt': fontSize(30, 37),
+      '34pt': fontSize(34, 41),
+      '44pt': fontSize(44, 52),
+    },
+    fontWeight: {
+      regular: 400,
+      medium: 500,
+      semibold: 600,
+      bold: 700,
+      heavy: 800,
+    },
+    textAlign: ['left', 'center', 'right'],
+  },
+});
+
+export const textStyles = createSprinkles(textProperties);
+export type TextStyles = Parameters<typeof textStyles>[0];

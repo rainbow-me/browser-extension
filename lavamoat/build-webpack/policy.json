@@ -37,6 +37,7 @@
         "@vanilla-extract/webpack-plugin>loader-utils": true,
         "eslint>chalk": true,
         "eslint>debug": true,
+        "file-loader>loader-utils": true,
         "webpack": true
       }
     },
@@ -65,7 +66,7 @@
         "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>find-up": true,
         "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>javascript-stringify": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
-        "html-webpack-plugin>lodash": true
+        "lodash": true
       }
     },
     "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript": {
@@ -182,11 +183,6 @@
       "packages": {
         "@vanilla-extract/webpack-plugin>loader-utils>emojis-list": true,
         "@vanilla-extract/webpack-plugin>loader-utils>json5": true
-      }
-    },
-    "@vanilla-extract/webpack-plugin>loader-utils>json5": {
-      "globals": {
-        "console.warn": true
       }
     },
     "audit-ci>semver": {
@@ -387,6 +383,37 @@
         "process.platform": true
       }
     },
+    "dotenv-webpack": {
+      "builtin": {
+        "fs": true
+      },
+      "globals": {
+        "console.log": true,
+        "console.warn": true,
+        "process.env": true,
+        "process.exit": true
+      },
+      "packages": {
+        "dotenv-webpack>dotenv-defaults": true,
+        "webpack": true
+      }
+    },
+    "dotenv-webpack>dotenv-defaults": {
+      "packages": {
+        "dotenv-webpack>dotenv-defaults>dotenv": true
+      }
+    },
+    "dotenv-webpack>dotenv-defaults>dotenv": {
+      "builtin": {
+        "fs.readFileSync": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "console.log": true,
+        "process.cwd": true,
+        "process.env": true
+      }
+    },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": {
       "builtin": {
         "assert": true,
@@ -402,7 +429,6 @@
         "process": true
       },
       "packages": {
-        "@vanilla-extract/webpack-plugin>loader-utils>json5": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@ampproject/remapping": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-compilation-targets": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms": true,
@@ -411,6 +437,7 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>gensync": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>semver": true,
         "eslint>debug": true,
+        "file-loader>loader-utils>json5": true,
         "jest>@jest/core>jest-snapshot>@babel/generator": true,
         "jest>@jest/core>jest-snapshot>@babel/types": true,
         "lavamoat-browserify>convert-source-map": true,
@@ -597,6 +624,46 @@
         "eslint>strip-ansi>ansi-regex": true
       }
     },
+    "file-loader": {
+      "builtin": {
+        "path": true
+      },
+      "packages": {
+        "file-loader>loader-utils": true,
+        "webpack>schema-utils": true
+      }
+    },
+    "file-loader>loader-utils": {
+      "builtin": {
+        "crypto.createHash": true,
+        "path.basename": true,
+        "path.parse": true,
+        "path.posix.isAbsolute": true,
+        "path.relative": true,
+        "path.sep": true,
+        "path.win32.isAbsolute": true
+      },
+      "globals": {
+        "Buffer.from": true,
+        "WebAssembly.Instance": true,
+        "WebAssembly.Module": true
+      },
+      "packages": {
+        "file-loader>loader-utils>big.js": true,
+        "file-loader>loader-utils>emojis-list": true,
+        "file-loader>loader-utils>json5": true
+      }
+    },
+    "file-loader>loader-utils>big.js": {
+      "globals": {
+        "define": true
+      }
+    },
+    "file-loader>loader-utils>json5": {
+      "globals": {
+        "console.warn": true
+      }
+    },
     "globby>dir-glob": {
       "builtin": {
         "path.extname": true,
@@ -745,8 +812,8 @@
       },
       "packages": {
         "html-webpack-plugin>html-minifier-terser": true,
-        "html-webpack-plugin>lodash": true,
         "html-webpack-plugin>pretty-error": true,
+        "lodash": true,
         "webpack>tapable": true
       }
     },
@@ -802,11 +869,6 @@
         "url.parse": true
       }
     },
-    "html-webpack-plugin>lodash": {
-      "globals": {
-        "define": true
-      }
-    },
     "html-webpack-plugin>pretty-error": {
       "builtin": {
         "path": true
@@ -815,8 +877,8 @@
         "console.error": true
       },
       "packages": {
-        "html-webpack-plugin>lodash": true,
-        "html-webpack-plugin>pretty-error>renderkid": true
+        "html-webpack-plugin>pretty-error>renderkid": true,
+        "lodash": true
       }
     },
     "html-webpack-plugin>pretty-error>renderkid": {
@@ -830,10 +892,10 @@
       },
       "packages": {
         "eslint>strip-ansi": true,
-        "html-webpack-plugin>lodash": true,
         "html-webpack-plugin>pretty-error>renderkid>css-select": true,
         "html-webpack-plugin>pretty-error>renderkid>dom-converter": true,
-        "html-webpack-plugin>pretty-error>renderkid>htmlparser2": true
+        "html-webpack-plugin>pretty-error>renderkid>htmlparser2": true,
+        "lodash": true
       }
     },
     "html-webpack-plugin>pretty-error>renderkid>css-select": {
@@ -1060,6 +1122,11 @@
     "lint-staged>execa>merge-stream": {
       "builtin": {
         "stream.PassThrough": true
+      }
+    },
+    "lodash": {
+      "globals": {
+        "define": true
       }
     },
     "mini-css-extract-plugin": {
@@ -1528,6 +1595,7 @@
       "packages": {
         "@vanilla-extract/webpack-plugin": true,
         "css-loader": true,
+        "file-loader": true,
         "html-webpack-plugin": true,
         "mini-css-extract-plugin": true,
         "ts-loader": true
