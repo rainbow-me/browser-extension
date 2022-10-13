@@ -1,7 +1,7 @@
 import './global.css';
 
 import { createElement } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import { App } from './App';
 
@@ -23,5 +23,6 @@ darkModeMediaQuery.addEventListener('change', ({ matches: isDark }) => {
 // Set the initial color contexts to match their respective themes
 document.body.classList.add('lightTheme-lightContext', 'darkTheme-darkContext');
 
-const domContainer = document.querySelector('#app');
-ReactDOM.render(createElement(App), domContainer);
+const domContainer = document.querySelector('#app') as Element;
+const root = createRoot(domContainer);
+root.render(createElement(App));
