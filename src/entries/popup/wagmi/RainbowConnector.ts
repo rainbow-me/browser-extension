@@ -73,8 +73,8 @@ export class RainbowConnector extends Connector<
   }
 
   async getChainId() {
-    const provider = await this.getProvider();
-    return normalizeChainId(provider.chainId);
+    // TODO: retrive chain from background state properly...
+    return 1;
   }
 
   async getProvider() {
