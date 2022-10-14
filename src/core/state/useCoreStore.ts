@@ -1,20 +1,17 @@
 import create from 'zustand';
 import { persist } from 'zustand/middleware';
 import { persistStorage } from './persistStorage';
+import {
+  CurrentAddressSliceState,
+  currentAddressSlice,
+} from './slices/currentAddressSlice';
 
-export interface CoreState {
-  currentAddress?: string;
-}
+export type CoreStoreState = CurrentAddressSliceState;
 
-export interface CoreAction {
-  setCurrentAddress: (address: string) => void;
-}
-
-export const useCoreStore = create<CoreState & CoreAction>()(
+export const useCoreStore = create<CoreStoreState>()(
   persist(
-    (set) => ({
-      currentAddress: undefined,
-      setCurrentAddress: (newAddress) => set({ currentAddress: newAddress }),
+    (...props) => ({
+      ...currentAddressSlice(...props),
     }),
     { name: 'store:core', getStorage: () => persistStorage },
   ),
