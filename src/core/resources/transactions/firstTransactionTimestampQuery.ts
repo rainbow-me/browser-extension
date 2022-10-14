@@ -41,7 +41,7 @@ async function firstTransactionTimestampQueryFunction({
   const response = await fetch(url);
   const parsedResponse = await response.json();
   const timestamp = parsedResponse.result[0]?.timeStamp;
-  return timestamp ? timestamp * 1000 : undefined;
+  return timestamp ? timestamp * 1000 : null;
 }
 
 type FirstTransactionTimestampResult = QueryFunctionResult<
