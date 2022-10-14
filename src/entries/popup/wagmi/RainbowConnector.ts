@@ -34,18 +34,18 @@ export class RainbowConnector extends Connector<
     this.#provider = new RainbowProvider();
   }
 
-  async connect({ chainId = this.chains[0].id } = {}) {
+  async connect({ chainId: chainId_ = this.chains[0].id } = {}) {
     const [provider, account] = await Promise.all([
       this.getProvider(),
       this.getAccount(),
     ]);
+    const chainId = normalizeChainId(provider.chainId) ?? chainId_;
 
     // TODO: Hook event listeners up properly, and get them
     // to listen for changes in account/chain from the background
     // script.
-    provider.on('accountsChanged', this.onAccountsChanged);
-    provider.on('chainChanged', this.onChainChanged);
-    provider.on('disconnect', this.onDisconnect);
+    // - when account changes, invoke `this.onAccountsChanged`
+    // - when chain changes, invoke `this.onChainChanged`
 
     return {
       account,
@@ -60,9 +60,7 @@ export class RainbowConnector extends Connector<
     const provider = await this.getProvider();
     if (!provider?.removeListener) return;
 
-    provider.removeListener('accountsChanged', this.onAccountsChanged);
-    provider.removeListener('chainChanged', this.onChainChanged);
-    provider.removeListener('disconnect', this.onDisconnect);
+    // TODO: Remove event listeners from `connect`.
   }
 
   async isAuthorized() {
