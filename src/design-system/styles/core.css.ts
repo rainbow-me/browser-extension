@@ -1,3 +1,4 @@
+import { themeClasses, rootThemeClasses } from './themeClasses';
 import {
   style,
   globalStyle,
@@ -96,20 +97,20 @@ const semanticColorVars = createThemeContract({
   foregroundColors: mapValues(foregroundColors, () => null),
 });
 
-globalStyle('html.lightTheme', {
+globalStyle(`html.${rootThemeClasses.lightTheme}`, {
   backgroundColor: backgroundColors.surfacePrimary.light.color,
   vars: { [accentColorVar]: backgroundColors.blue.light.color },
 });
 
-globalStyle('html.darkTheme', {
+globalStyle(`html.${rootThemeClasses.darkTheme}`, {
   backgroundColor: backgroundColors.surfacePrimary.dark.color,
   vars: { [accentColorVar]: backgroundColors.blue.dark.color },
 });
 
 globalStyle(
   [
-    'html.lightTheme .lightTheme-lightContext > *',
-    'html.darkTheme .darkTheme-lightContext > *',
+    `html.${rootThemeClasses.lightTheme} .${themeClasses.lightTheme.lightContext} > *`,
+    `html.${rootThemeClasses.darkTheme} .${themeClasses.darkTheme.lightContext} > *`,
   ].join(', '),
   {
     vars: assignVars(semanticColorVars, {
@@ -121,8 +122,8 @@ globalStyle(
 
 globalStyle(
   [
-    'html.darkTheme .darkTheme-darkContext > *',
-    'html.lightTheme .lightTheme-darkContext > *',
+    `html.${rootThemeClasses.lightTheme} .${themeClasses.lightTheme.darkContext} > *`,
+    `html.${rootThemeClasses.darkTheme} .${themeClasses.darkTheme.darkContext} > *`,
   ].join(', '),
   {
     vars: assignVars(semanticColorVars, {
@@ -173,8 +174,8 @@ const boxBaseProperties = defineProperties({
 
 const boxColorProperties = defineProperties({
   conditions: {
-    light: { selector: 'html.lightTheme &' },
-    dark: { selector: 'html.darkTheme &' },
+    light: { selector: `html.${rootThemeClasses.lightTheme} &` },
+    dark: { selector: `html.${rootThemeClasses.darkTheme} &` },
   },
   defaultCondition: ['light', 'dark'],
   properties: {
