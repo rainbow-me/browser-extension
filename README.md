@@ -15,7 +15,7 @@ The extension is built using [React](https://reactjs.org/) and [Typescript](http
 
 ## Setup
 
-1. Run `nvm use 14` to force Node.js v14.
+1. Run `nvm install v14.20.1 && nvm use` to force Node.js v14.
 
 2. Install all project dependencies with `yarn setup`
 
