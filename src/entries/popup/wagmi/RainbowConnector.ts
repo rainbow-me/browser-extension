@@ -1,8 +1,9 @@
 import { providers } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 import { Chain, Connector } from 'wagmi';
+
+import { ChainIdHex, RainbowProvider } from '~/core/providers';
 import { DEFAULT_ACCOUNT } from '~/entries/background/handlers/handleProviderRequest';
-import { ChainIdHex, RainbowProvider } from '../providers';
 
 function normalizeChainId(chainId: ChainIdHex | number | bigint) {
   if (typeof chainId === 'string') return Number(BigInt(chainId));

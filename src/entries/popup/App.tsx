@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { WagmiConfig } from 'wagmi';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { Index } from './pages';
+
 import { createWagmiClient } from '~/core/wagmi';
 import { persistOptions, queryClient } from '~/core/react-query';
-import { RainbowConnector } from '~/core/wagmi/RainbowConnector';
+
 import { useForceConnect } from './hooks/useForceConnect';
+import { Index } from './pages';
+import { RainbowConnector } from './wagmi/RainbowConnector';
 
 const wagmiClient = createWagmiClient({
   autoConnect: true,
