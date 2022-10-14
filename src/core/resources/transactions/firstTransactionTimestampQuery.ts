@@ -12,7 +12,7 @@ import {
 // Query Types
 
 export type FirstTransactionTimestampArgs = {
-  address: string;
+  address?: string;
 };
 
 // ///////////////////////////////////////////////

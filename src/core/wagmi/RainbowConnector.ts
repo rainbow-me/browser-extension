@@ -42,6 +42,9 @@ export class RainbowConnector extends Connector<
     const signer = await this.getSigner();
     const address = await signer.getAddress();
 
+    // TODO: Hook event listeners up properly, and get them
+    // to listen for changes in account/chain from the background
+    // script.
     provider.on('accountsChanged', this.onAccountsChanged);
     provider.on('chainChanged', this.onChainChanged);
     provider.on('disconnect', this.onDisconnect);
@@ -69,7 +72,7 @@ export class RainbowConnector extends Connector<
   }
 
   async getAccount() {
-    // TODO: handle this properly...
+    // TODO: retrive account from background state properly...
     return getAddress(DEFAULT_ACCOUNT);
   }
 

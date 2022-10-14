@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useAccount, useBalance } from 'wagmi';
+import { chain, useAccount, useBalance } from 'wagmi';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
 import { Storage } from '~/core/storage';
 import { AccentColorProvider, Box, Text } from '~/design-system';
@@ -8,11 +8,16 @@ export function Index() {
   const [status, setStatus] = useState(0);
 
   const { address } = useAccount();
-  const { data: balance } = useBalance({
+  const { data: mainnetBalance } = useBalance({
     addressOrName: address,
+    chainId: chain.mainnet.id,
+  });
+  const { data: polygonBalance } = useBalance({
+    addressOrName: address,
+    chainId: chain.polygon.id,
   });
   const { data: firstTransactionTimestamp } = useFirstTransactionTimestamp({
-    address: '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4',
+    address,
   });
 
   const switchInjection = useCallback(async () => {
@@ -37,7 +42,10 @@ export function Index() {
       </Text>
       <Box display="flex" flexDirection="column" gap="16px">
         <Text size="17pt" weight="bold" color="labelSecondary">
-          Balance: {balance?.formatted}
+          Mainnet Balance: {mainnetBalance?.formatted}
+        </Text>
+        <Text size="17pt" weight="bold" color="labelSecondary">
+          Polygon Balance: {polygonBalance?.formatted}
         </Text>
         {firstTransactionTimestamp && (
           <Text size="17pt" weight="bold" color="labelTertiary">

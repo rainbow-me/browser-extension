@@ -1,21 +1,20 @@
 import * as React from 'react';
-import { useAccount, useConnect, WagmiConfig } from 'wagmi';
+import { WagmiConfig } from 'wagmi';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { Index } from './pages';
 import { createWagmiClient } from '~/core/wagmi';
 import { persistOptions, queryClient } from '~/core/react-query';
+import { RainbowConnector } from '~/core/wagmi/RainbowConnector';
+import { useForceConnect } from './hooks/useForceConnect';
 
-const wagmiClient = createWagmiClient({ persist: true });
+const wagmiClient = createWagmiClient({
+  autoConnect: true,
+  connectors: ({ chains }) => [new RainbowConnector({ chains })],
+  persist: true,
+});
 
 export function Routes() {
-  const { isConnected } = useAccount();
-  const { connect, connectors, isError, error } = useConnect();
-
-  React.useEffect(() => {
-    if (!isConnected) {
-      connect({ connector: connectors[0] });
-    }
-  }, [connect, connectors, isConnected]);
+  const { error, isConnected, isError } = useForceConnect();
 
   return (
     <div>
