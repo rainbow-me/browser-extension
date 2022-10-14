@@ -34,12 +34,12 @@ export class RainbowConnector extends Connector<
     this.#provider = new RainbowProvider();
   }
 
-  async connect({ chainId: chainId_ = this.chains[0].id } = {}) {
-    const [provider, account] = await Promise.all([
+  async connect() {
+    const [provider, account, chainId] = await Promise.all([
       this.getProvider(),
       this.getAccount(),
+      this.getChainId(),
     ]);
-    const chainId = normalizeChainId(provider.chainId) ?? chainId_;
 
     // TODO: Hook event listeners up properly, and get them
     // to listen for changes in account/chain from the background
