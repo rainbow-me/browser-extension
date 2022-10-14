@@ -25,7 +25,12 @@
     "// Installs deps, runs allowed scripts, patches packages and generates lavamoat policies": "",
     "setup": "yarn install && yarn allow-scripts && yarn patch-package && yarn policy",
     "// runs audit against dep. tree": "",
-    "audit:ci": "yarn audit-ci --moderate --config audit-ci.jsonc"
+    "audit:ci": "yarn audit-ci --moderate --config audit-ci.jsonc",
+    "// Runs e2e": "",
+    "test:mac:chrome": "BROWSER=chrome OS=mac jest",
+    "test:mac:brave": "BROWSER=brave OS=mac jest",
+    "test:mac": "yarn test:mac:chrome && yarn test:mac:brave",
+    "test": "yarn test:mac"
   },
   "dependencies": {
     "@capsizecss/core": "3.0.0",
