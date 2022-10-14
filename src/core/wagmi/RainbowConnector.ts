@@ -2,14 +2,10 @@ import { providers } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 import { Chain, Connector } from 'wagmi';
 import { DEFAULT_ACCOUNT } from '~/entries/background/handlers/handleProviderRequest';
-import { RainbowProvider } from '../providers';
+import { ChainIdHex, RainbowProvider } from '../providers';
 
-function normalizeChainId(chainId: string | number | bigint) {
-  if (typeof chainId === 'string')
-    return Number.parseInt(
-      chainId,
-      chainId.trim().substring(0, 2) === '0x' ? 16 : 10,
-    );
+function normalizeChainId(chainId: ChainIdHex | number | bigint) {
+  if (typeof chainId === 'string') return Number(BigInt(chainId));
   if (typeof chainId === 'bigint') return Number(chainId);
   return chainId;
 }
@@ -38,9 +34,10 @@ export class RainbowConnector extends Connector<
   }
 
   async connect({ chainId = this.chains[0].id } = {}) {
-    const provider = await this.getProvider();
-    const signer = await this.getSigner();
-    const address = await signer.getAddress();
+    const [provider, account] = await Promise.all([
+      this.getProvider(),
+      this.getAccount(),
+    ]);
 
     // TODO: Hook event listeners up properly, and get them
     // to listen for changes in account/chain from the background
@@ -50,7 +47,7 @@ export class RainbowConnector extends Connector<
     provider.on('disconnect', this.onDisconnect);
 
     return {
-      account: address,
+      account,
       chain: { id: chainId, unsupported: false },
       provider: new providers.Web3Provider(
         <providers.ExternalProvider>provider,
@@ -101,7 +98,7 @@ export class RainbowConnector extends Connector<
     else this.emit('change', { account: getAddress(<string>accounts[0]) });
   };
 
-  protected onChainChanged = (chainId: number | string) => {
+  protected onChainChanged = (chainId: number | ChainIdHex) => {
     const id = normalizeChainId(chainId);
     const unsupported = this.isChainUnsupported(id);
     this.emit('change', { chain: { id, unsupported } });
