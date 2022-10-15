@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useBalance } from 'wagmi';
+import { chain, useAccount, useBalance } from 'wagmi';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
 import { Storage } from '~/core/storage';
 import { AccentColorProvider, ThemeProvider, Box, Text } from '~/design-system';
@@ -7,11 +7,17 @@ import { AccentColorProvider, ThemeProvider, Box, Text } from '~/design-system';
 export function Index() {
   const [status, setStatus] = useState(0);
 
-  const { data: balance } = useBalance({
-    addressOrName: '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4',
+  const { address } = useAccount();
+  const { data: mainnetBalance } = useBalance({
+    addressOrName: address,
+    chainId: chain.mainnet.id,
+  });
+  const { data: polygonBalance } = useBalance({
+    addressOrName: address,
+    chainId: chain.polygon.id,
   });
   const { data: firstTransactionTimestamp } = useFirstTransactionTimestamp({
-    address: '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4',
+    address,
   });
 
   const switchInjection = useCallback(async () => {
@@ -36,7 +42,10 @@ export function Index() {
       </Text>
       <Box display="flex" flexDirection="column" gap="16px">
         <Text size="17pt" weight="bold" color="labelSecondary">
-          Balance: {balance?.formatted}
+          Mainnet Balance: {mainnetBalance?.formatted}
+        </Text>
+        <Text size="17pt" weight="bold" color="labelSecondary">
+          Polygon Balance: {polygonBalance?.formatted}
         </Text>
         {firstTransactionTimestamp && (
           <Text size="17pt" weight="bold" color="labelTertiary">
@@ -106,6 +115,17 @@ export function Index() {
       >
         <Text color="labelSecondary" size="15pt" weight="bold">
           TURN {status ? 'OFF' : 'ON'}
+        </Text>
+      </Box>
+      <Box
+        as="button"
+        background="surfaceSecondary"
+        onClick={Storage.clear}
+        padding="16px"
+        style={{ borderRadius: 999 }}
+      >
+        <Text color="labelSecondary" size="15pt" weight="bold">
+          CLEAR STORAGE
         </Text>
       </Box>
     </Box>

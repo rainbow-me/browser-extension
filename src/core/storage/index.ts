@@ -1,4 +1,7 @@
 export const Storage = {
+  async clear() {
+    await chrome.storage.local.clear();
+  },
   async set(key: string, value: unknown) {
     await chrome.storage.local.set({ [key]: value });
   },
