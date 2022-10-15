@@ -13,7 +13,7 @@ import { queryClient } from '../react-query';
 import { Storage } from '../storage';
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [chain.mainnet, chain.polygon],
+  [chain.mainnet, chain.polygon, chain.arbitrum, chain.optimism],
   [
     alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY }),
     infuraProvider({ apiKey: process.env.INFURA_API_KEY }),
