@@ -13,6 +13,7 @@ import {
   ColorContext,
 } from '../../styles/designTokens';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
+import { themeClasses } from '../../styles/themeClasses';
 
 export interface ColorContextValue {
   lightThemeColorContext: ColorContext;
@@ -106,5 +107,35 @@ export function AccentColorProvider({
         <div style={style}>{children}</div>
       )}
     </AccentColorContext.Provider>
+  );
+}
+
+interface ThemeProviderProps {
+  theme: ColorContext;
+  children: ReactNode | ((args: { className: string }) => ReactNode);
+}
+
+const lightContextClasses = `${themeClasses.lightTheme.lightContext} ${themeClasses.darkTheme.lightContext}`;
+const darkContextClasses = `${themeClasses.lightTheme.darkContext} ${themeClasses.darkTheme.darkContext}`;
+
+export function ThemeProvider({ theme, children }: ThemeProviderProps) {
+  const className = theme === 'dark' ? darkContextClasses : lightContextClasses;
+
+  return (
+    <ColorContext.Provider
+      value={useMemo(
+        () => ({
+          lightThemeColorContext: theme,
+          darkThemeColorContext: theme,
+        }),
+        [theme],
+      )}
+    >
+      {typeof children === 'function' ? (
+        children({ className })
+      ) : (
+        <div className={className}>{children}</div>
+      )}
+    </ColorContext.Provider>
   );
 }

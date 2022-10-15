@@ -8,6 +8,7 @@ import {
   resetElements,
 } from '../../styles/core.css';
 import { backgroundColors, BackgroundColor } from '../../styles/designTokens';
+import { themeClasses } from '../../styles/themeClasses';
 import {
   ColorContextProvider,
   useAccentColorContext,
@@ -76,16 +77,16 @@ export const Box = forwardRef(
                   : backgroundColors[lightThemeBackgroundColor][
                       lightThemeColorContext
                     ].setColorContext) === 'light'
-                  ? 'lightTheme-lightContext'
-                  : 'lightTheme-darkContext',
+                  ? themeClasses.lightTheme.lightContext
+                  : themeClasses.lightTheme.darkContext,
 
                 (darkThemeBackgroundColor === 'accent'
                   ? accentColorContext
                   : backgroundColors[darkThemeBackgroundColor][
                       darkThemeColorContext
                     ].setColorContext) === 'light'
-                  ? 'darkTheme-lightContext'
-                  : 'darkTheme-darkContext',
+                  ? themeClasses.darkTheme.lightContext
+                  : themeClasses.darkTheme.darkContext,
               ]
             : null,
           className,

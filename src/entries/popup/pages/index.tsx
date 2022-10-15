@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { chain, useAccount, useBalance } from 'wagmi';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
 import { Storage } from '~/core/storage';
-import { AccentColorProvider, Box, Text } from '~/design-system';
+import { AccentColorProvider, ThemeProvider, Box, Text } from '~/design-system';
 
 export function Index() {
   const [status, setStatus] = useState(0);
@@ -76,6 +76,22 @@ export function Index() {
           </Text>
         </Box>
       </AccentColorProvider>
+      <Box display="flex" flexDirection="column" gap="16px">
+        <ThemeProvider theme="dark">
+          <Box padding="12px" background="surfacePrimary">
+            <Text size="17pt" weight="bold" color="label" align="center">
+              Dark theme via ThemeProvider
+            </Text>
+          </Box>
+        </ThemeProvider>
+        <ThemeProvider theme="light">
+          <Box padding="12px" background="surfacePrimary">
+            <Text size="17pt" weight="bold" color="label" align="center">
+              Light theme via ThemeProvider
+            </Text>
+          </Box>
+        </ThemeProvider>
+      </Box>
       <Box display="flex" flexDirection="row" gap="8px">
         <Text size="17pt" weight="bold" color="labelTertiary">
           Injecting?
