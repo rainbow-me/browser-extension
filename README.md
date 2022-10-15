@@ -1,56 +1,76 @@
 # 🌈  Browser Extension
 
-
 > the Ethereum wallet that lives in your browser!
 
-📲️ [Available on the iOS App Store.](https://apps.apple.com/us/app/rainbow-ethereum-wallet/id1457119021)
-
-🤖 [Android Beta available on Google Play Store](https://play.google.com/store/apps/details?id=me.rainbow)
+👉 [Available on the Chrome Web Store](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 
 🐦️ [Follow us on Twitter](https://twitter.com/rainbowdotme)
 
-## General
+## Prerequisites
 
-The extension is built using [React](https://reactjs.org/) and [Typescript](https://www.typescriptlang.org/) and is bundled using [Webpack](https://webpack.js.org/), then secured using [LavaMoat Browserify](https://github.com/LavaMoat/lavamoat).
+- [Yarn](https://classic.yarnpkg.com/en/docs/install)
+- [nvm](https://github.com/nvm-sh/nvm)
 
-## Setup
+## Getting started
 
-1. Run `nvm use 14` to force Node.js v14.
+### 1. Set up Node
 
-2. Install all project dependencies with `yarn setup`
+```bash
+nvm install
+# or
+nvm use
+```
 
+### 2. Install project dependencies
 
-3. Set up your .env file, use our env.example as a guide.
+```bash
+yarn setup
+```
 
-   **_Note that some features are currently not accessible, we are working with our Data Providers in order to provide open source API Keys!_**
+### 3. Set up your .env file
 
-   Here are some resources to generate your own API keys:
+Run `touch .env`, head to the `browser-extension-env` repository, and copy + paste the variables into your `.env`
 
-   - Etherscan: https://etherscan.io/apis
-   - Infura: https://infura.io/
-   - ETH Gas Station: https://docs.ethgasstation.info/
-   - Imgix: https://www.imgix.com/
+### 4. Install the ["Extensions Reloader" extension](https://chrome.google.com/webstore/detail/extensions-reloader/fimgfedafeadlieiabdeeaodndnlbhid?hl=en)
 
-4. Install this chrome extension https://chrome.google.com/webstore/detail/extensions-reloader/fimgfedafeadlieiabdeeaodndnlbhid?hl=en
+This extension will force reload the extension (webpack should do this automatically, but you can use this extension as a last resort).
 
-### Running the extension
+## Importing the extension
 
+### 1. Build the extension
 
-1. Build the extension with `yarn build`
+```bash
+yarn build
+```
 
-2. Go to `chrome://extensions/` and enable `Developer mode`
+### 2. Enable Developer Mode in Chrome
 
-3. Click on `Load unpacked` and select the `build` folder
+Go to `chrome://extensions/` and enable `Developer mode`.
 
+### 3. Import the extension
 
-### Development 
+Click on `Load unpacked` and select the `build` folder.
+
+## Development 
+
+### 1. Start the development build
+
+Run `yarn dev` to build your changes in "watch" mode.
+
+### 2. Make changes to the code
+
+Any changes to your code will trigger an update to the extension.
+
+> Tip: You can press Option + Shift + R to reload the extension (on Mac) or Ctrl + Shift + R (on Windows) - This is done via the extension reloader chrome extension from the step 4 of the setup scenario.
+
+## Playgrounds
+
+You can run a development build as a "playground". The following playgrounds are available:
+
+- **`yarn playground` (Default)**: A generic playground to test out stuff.
+- **`yarn playground:ds` (Design System)**: A playground to view & demo Design System components.
    
 
-1. Do steps 1 to 3 from the `Running the extension` section
-2. Run `yarn watch` to start the development server
-3. Make changes to the code, the build will be automatically updated
-4. Hit Option + Shift + R to reload the extension (on Mac) or Ctrl + Shift + R (on Windows) - This is done via the extension reloader chrome extension from the step 4 of the setup scenario.
+## Testing
 
-
-### Testing
 TBD
