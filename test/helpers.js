@@ -26,12 +26,23 @@ async function querySelector(driver, selector) {
 }
 
 async function initDriverWithOptions(opts) {
-  const args = ['load-extension=build/', '--log-level=0', '--enable-logging'];
+  let args = ['load-extension=build/'];
   if (opts.os === 'mac') {
-    args.push('--auto-open-devtools-for-tabs');
+    args = args.concat([
+      '--log-level=0',
+      '--enable-logging',
+      '--auto-open-devtools-for-tabs',
+    ]);
   } else if (opts.os === 'linux') {
-    args.push('--disable-dev-shm-usage');
+    args = args.concat([
+      '--headless',
+      '--disable-gpu',
+      '--no-sandbox',
+      '--disable-dev-shm-usage',
+    ]);
   }
+
+  console.log(`Launching ${opts.browser} with args:`, args);
 
   const options = new chrome.Options().addArguments(args);
   options.setAcceptInsecureCerts(true);
