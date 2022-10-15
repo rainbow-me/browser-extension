@@ -27,7 +27,7 @@
     "// runs audit against dep. tree": "",
     "audit:ci": "yarn audit-ci --moderate --config audit-ci.jsonc",
     "// Runs e2e": "",
-    "test:linux:chrome": "BROWSER=chrome OS=linux jest",
+    "test:linux:chrome": "BROWSER=chrome OS=linux CHROMIUM_BIN=$(which chrome) jest",
     "test:mac:chrome": "BROWSER=chrome OS=mac jest",
     "test:mac:brave": "BROWSER=brave OS=mac jest",
     "test:mac": "yarn test:mac:chrome && yarn test:mac:brave",
