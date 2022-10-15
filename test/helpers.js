@@ -26,12 +26,10 @@ async function querySelector(driver, selector) {
 }
 
 async function initDriverWithOptions(opts) {
-  const args = [
-    'load-extension=build/',
-    '--auto-open-devtools-for-tabs',
-    '--log-level=0',
-    '--enable-logging',
-  ];
+  const args = ['load-extension=build/', '--log-level=0', '--enable-logging'];
+  if (opts.os === 'mac') {
+    args.push('--auto-open-devtools-for-tabs');
+  }
 
   const options = new chrome.Options().addArguments(args);
   options.setAcceptInsecureCerts(true);
