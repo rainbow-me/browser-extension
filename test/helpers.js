@@ -29,6 +29,8 @@ async function initDriverWithOptions(opts) {
   const args = ['load-extension=build/', '--log-level=0', '--enable-logging'];
   if (opts.os === 'mac') {
     args.push('--auto-open-devtools-for-tabs');
+  } else if (opts.os === 'linux') {
+    args.push('--disable-dev-shm-usage');
   }
 
   const options = new chrome.Options().addArguments(args);
