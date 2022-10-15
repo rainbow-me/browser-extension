@@ -24,3 +24,8 @@ jobs:
         run: yarn lint
       - name: Build the extension with LavaMoat
         run: yarn build
+      - uses: browser-actions/setup-chrome@latest
+        with:
+          chrome-version: 'stable'
+      - name: Run e2e
+        run: yarn test:ci
