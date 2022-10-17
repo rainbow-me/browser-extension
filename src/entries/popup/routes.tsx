@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { createMemoryRouter } from 'react-router-dom';
+import { createHashRouter } from 'react-router-dom';
 
 import { Index } from './pages';
 
-export const routes = createMemoryRouter([{ path: '/', element: <Index /> }]);
+export const routes = createHashRouter([{ path: '/', element: <Index /> }]);
