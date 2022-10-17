@@ -27,7 +27,9 @@
     "// Installs deps, runs allowed scripts, patches packages and generates lavamoat policies": "",
     "setup": "yarn install && yarn allow-scripts && yarn patch-package && yarn policy",
     "// runs audit against dep. tree": "",
-    "audit:ci": "yarn audit-ci --moderate --config audit-ci.jsonc"
+    "audit:ci": "yarn audit-ci --moderate --config audit-ci.jsonc",
+    "zip": "cd build/ && zip ../rainbowbx.zip *",
+    "bundle": "yarn build && yarn zip"
   },
   "dependencies": {
     "@capsizecss/core": "3.0.0",
