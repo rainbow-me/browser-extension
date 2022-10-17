@@ -5,5 +5,5 @@ import { useCoreStore } from '~/core/state/';
 handleInstallExtension();
 handleProviderRequest();
 
-// Listen to all events from core store
-const unsubscribe = useCoreStore.subscribe(console.log);
+// Get data from core store persisted
+console.log(useCoreStore.getState());
