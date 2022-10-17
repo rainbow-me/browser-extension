@@ -8,6 +8,9 @@ import { persistOptions, queryClient } from '~/core/react-query';
 import { useForceConnect } from './hooks/useForceConnect';
 import { Index } from './pages';
 import { RainbowConnector } from './wagmi/RainbowConnector';
+import { PlaygroundComponents } from './pages/_playgrounds';
+
+const playground = process.env.PLAYGROUND;
 
 const wagmiClient = createWagmiClient({
   autoConnect: true,
@@ -33,7 +36,7 @@ export function App() {
       persistOptions={persistOptions}
     >
       <WagmiConfig client={wagmiClient}>
-        <Routes />
+        {playground ? PlaygroundComponents[playground] : <Routes />}
       </WagmiConfig>
     </PersistQueryClientProvider>
   );

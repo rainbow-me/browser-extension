@@ -3,6 +3,7 @@ const ExtensionReloader = require('webpack-extension-reloader');
 const { resolve } = require('path');
 
 const config = require('./webpack.config');
+const { EnvironmentPlugin } = require('webpack');
 
 module.exports = {
   ...config,
@@ -10,6 +11,7 @@ module.exports = {
   devtool: false,
   plugins: [
     ...config.plugins,
+    new EnvironmentPlugin(['PLAYGROUND']),
     new ExtensionReloader({
       manifest: resolve(__dirname, './build/manifest.json'),
       reloadPage: true,
