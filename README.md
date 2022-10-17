@@ -47,7 +47,7 @@ The extension is built using [React](https://reactjs.org/) and [Typescript](http
    
 
 1. Do steps 1 to 3 from the `Running the extension` section
-2. Run `yarn watch` to start the development server
+2. Run `yarn dev` to start the development server
 3. Make changes to the code, the build will be automatically updated
 4. Hit Option + Shift + R to reload the extension (on Mac) or Ctrl + Shift + R (on Windows) - This is done via the extension reloader chrome extension from the step 4 of the setup scenario.
 
