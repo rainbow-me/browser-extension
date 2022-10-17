@@ -11,7 +11,11 @@ module.exports = {
   devtool: false,
   plugins: [
     ...config.plugins,
-    new EnvironmentPlugin(['PLAYGROUND']),
+    new EnvironmentPlugin({
+      PLAYGROUND: process.env.PLAYGROUND
+        ? JSON.stringify(process.env.PLAYGROUND)
+        : null,
+    }),
     new ExtensionReloader({
       manifest: resolve(__dirname, './build/manifest.json'),
       reloadPage: true,
