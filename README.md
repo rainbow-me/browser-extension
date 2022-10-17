@@ -69,7 +69,6 @@ You can run a development build as a "playground". The following playgrounds are
 
 - **`yarn playground` (Default)**: A generic playground to test out stuff.
 - **`yarn playground:ds` (Design System)**: A playground to view & demo Design System components.
-   
 
 ## Testing
 
