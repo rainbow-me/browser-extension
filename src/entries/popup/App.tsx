@@ -5,29 +5,18 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 import { createWagmiClient } from '~/core/wagmi';
 import { persistOptions, queryClient } from '~/core/react-query';
 
-import { useForceConnect } from './hooks/useForceConnect';
-import { Index } from './pages';
 import { RainbowConnector } from './wagmi/RainbowConnector';
 import { PlaygroundComponents } from './pages/_playgrounds';
 
 const playground = process.env.PLAYGROUND;
+import { RouterProvider } from 'react-router-dom';
+import { routes } from './routes';
 
 const wagmiClient = createWagmiClient({
   autoConnect: true,
   connectors: ({ chains }) => [new RainbowConnector({ chains })],
   persist: true,
 });
-
-export function Routes() {
-  const { error, isConnected, isError } = useForceConnect();
-
-  return (
-    <div>
-      {isError && <div>error connecting. {error?.message}</div>}
-      {isConnected && <Index />}
-    </div>
-  );
-}
 
 export function App() {
   return (
@@ -37,6 +26,7 @@ export function App() {
     >
       <WagmiConfig client={wagmiClient}>
         {playground ? PlaygroundComponents[playground] : <Routes />}
+        <RouterProvider router={routes} />
       </WagmiConfig>
     </PersistQueryClientProvider>
   );
