@@ -30,5 +30,7 @@ jobs:
           chrome-version: 'stable'
       - name: Run e2e
         uses: GabrielBB/xvfb-action@v1
-        run:
-          yarn test:ci
+        with:
+          run: yarn test:ci
+
+          
