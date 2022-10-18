@@ -29,10 +29,10 @@
     "// runs audit against dep. tree": "",
     "audit:ci": "yarn audit-ci --moderate --config audit-ci.jsonc",
     "// Runs e2e": "",
-    "test:mac:chrome": "BROWSER=chrome OS=mac vitest run",
-    "test:mac:brave": "BROWSER=brave OS=mac vitest run",
-    "test:mac": "yarn test:mac:chrome && yarn test:mac:brave",
-    "test": "yarn test:mac"
+    "e2e:mac:chrome": "BROWSER=chrome OS=mac vitest run e2e/ --config ./e2e/vitest.config.ts",
+    "e2e:mac:brave": "BROWSER=brave OS=mac vitest run e2e/ --config ./e2e/vitest.config.ts",
+    "e2e:mac": "yarn e2e:mac:chrome && yarn e2e:mac:brave",
+    "e2e": "yarn e2e:mac"
   },
   "dependencies": {
     "@capsizecss/core": "3.0.0",
