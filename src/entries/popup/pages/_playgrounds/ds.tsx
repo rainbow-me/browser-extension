@@ -1,6 +1,7 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, ReactNode } from 'react';
 import {
   AccentColorProvider,
+  Bleed,
   Box,
   Inline,
   Inset,
@@ -9,9 +10,28 @@ import {
   ThemeProvider,
 } from '~/design-system';
 
-function Placeholder({ width, height }: { width?: number; height?: number }) {
+function Placeholder({
+  highlight,
+  width,
+  height,
+  children,
+}: {
+  highlight?: boolean;
+  width?: number | string;
+  height?: number | string;
+  children?: ReactNode;
+}) {
   return (
-    <Box style={{ background: 'rgba(125, 125, 125, .75)', width, height }} />
+    <Box
+      background={highlight ? 'accent' : undefined}
+      style={{
+        background: highlight ? undefined : 'rgba(125, 125, 125, .75)',
+        width,
+        height,
+      }}
+    >
+      {children}
+    </Box>
   );
 }
 
@@ -97,6 +117,136 @@ export function DesignSystem() {
                   </Box>
                 </ThemeProvider>
               </Stack>
+
+              <SectionHeading>Inset</SectionHeading>
+              <ExampleHeading>Space</ExampleHeading>
+              <Placeholder>
+                <Inset space="24px">
+                  <Placeholder highlight height={24} />
+                </Inset>
+              </Placeholder>
+              <ExampleHeading>Horizontal</ExampleHeading>
+              <Placeholder>
+                <Inset horizontal="24px">
+                  <Placeholder highlight height={24} />
+                </Inset>
+              </Placeholder>
+              <ExampleHeading>Vertical</ExampleHeading>
+              <Placeholder>
+                <Inset vertical="24px">
+                  <Placeholder highlight height={24} />
+                </Inset>
+              </Placeholder>
+              <ExampleHeading>Top</ExampleHeading>
+              <Placeholder>
+                <Inset top="24px">
+                  <Placeholder highlight height={24} />
+                </Inset>
+              </Placeholder>
+              <ExampleHeading>Bottom</ExampleHeading>
+              <Placeholder>
+                <Inset bottom="24px">
+                  <Placeholder highlight height={24} />
+                </Inset>
+              </Placeholder>
+              <ExampleHeading>Left</ExampleHeading>
+              <Placeholder>
+                <Inset left="24px">
+                  <Placeholder highlight height={24} />
+                </Inset>
+              </Placeholder>
+              <ExampleHeading>Right</ExampleHeading>
+              <Placeholder>
+                <Inset right="24px">
+                  <Placeholder highlight height={24} />
+                </Inset>
+              </Placeholder>
+
+              <SectionHeading>Bleed</SectionHeading>
+              <ExampleHeading>Space</ExampleHeading>
+              <Placeholder>
+                <Inset space="24px">
+                  <Stack space="24px">
+                    <Placeholder height={24} />
+                    <Bleed space="24px">
+                      <Placeholder height={24} highlight />
+                    </Bleed>
+                    <Placeholder height={24} />
+                  </Stack>
+                </Inset>
+              </Placeholder>
+              <ExampleHeading>Horizontal</ExampleHeading>
+              <Placeholder>
+                <Inset space="24px">
+                  <Stack space="24px">
+                    <Placeholder height={24} />
+                    <Bleed horizontal="24px">
+                      <Placeholder height={24} highlight />
+                    </Bleed>
+                    <Placeholder height={24} />
+                  </Stack>
+                </Inset>
+              </Placeholder>
+              <ExampleHeading>Vertical</ExampleHeading>
+              <Placeholder>
+                <Inset space="24px">
+                  <Stack space="24px">
+                    <Placeholder height={24} />
+                    <Bleed vertical="24px">
+                      <Placeholder height={24} highlight />
+                    </Bleed>
+                    <Placeholder height={24} />
+                  </Stack>
+                </Inset>
+              </Placeholder>
+              <ExampleHeading>Top</ExampleHeading>
+              <Placeholder>
+                <Inset space="24px">
+                  <Stack space="24px">
+                    <Placeholder height={24} />
+                    <Bleed top="24px">
+                      <Placeholder height={24} highlight />
+                    </Bleed>
+                    <Placeholder height={24} />
+                  </Stack>
+                </Inset>
+              </Placeholder>
+              <ExampleHeading>Bottom</ExampleHeading>
+              <Placeholder>
+                <Inset space="24px">
+                  <Stack space="24px">
+                    <Placeholder height={24} />
+                    <Bleed bottom="24px">
+                      <Placeholder height={24} highlight />
+                    </Bleed>
+                    <Placeholder height={24} />
+                  </Stack>
+                </Inset>
+              </Placeholder>
+              <ExampleHeading>Left</ExampleHeading>
+              <Placeholder>
+                <Inset space="24px">
+                  <Stack space="24px">
+                    <Placeholder height={24} />
+                    <Bleed left="24px">
+                      <Placeholder height={24} highlight />
+                    </Bleed>
+                    <Placeholder height={24} />
+                  </Stack>
+                </Inset>
+              </Placeholder>
+              <ExampleHeading>Right</ExampleHeading>
+              <Placeholder>
+                <Inset space="24px">
+                  <Stack space="24px">
+                    <Placeholder height={24} />
+                    <Bleed right="24px">
+                      <Placeholder height={24} highlight />
+                    </Bleed>
+                    <Placeholder height={24} />
+                  </Stack>
+                </Inset>
+              </Placeholder>
 
               <SectionHeading>Stack - horizontal alignment</SectionHeading>
               <ExampleHeading>Default</ExampleHeading>
