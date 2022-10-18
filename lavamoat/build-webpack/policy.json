@@ -24,25 +24,7 @@
         "AhoCorasick": "write"
       }
     },
-    "@vanilla-extract/webpack-plugin": {
-      "builtin": {
-        "path": true
-      },
-      "globals": {
-        "console.warn": true,
-        "process.env.NODE_ENV": true
-      },
-      "packages": {
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration": true,
-        "@vanilla-extract/webpack-plugin>loader-utils": true,
-        "eslint>chalk": true,
-        "eslint>debug": true,
-        "file-loader>loader-utils": true,
-        "vitest>debug": true,
-        "webpack": true
-      }
-    },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration": {
       "builtin": {
         "crypto": true,
         "fs.promises.readFile": true,
@@ -60,22 +42,22 @@
         "$root$": true,
         "@vanilla-extract/css": true,
         "@vanilla-extract/css>outdent": true,
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript": true,
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>@vanilla-extract/babel-plugin-debug-ids": true,
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>esbuild": true,
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>eval": true,
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>find-up": true,
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>javascript-stringify": true,
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript": true,
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/babel-plugin-debug-ids": true,
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": true,
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>eval": true,
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up": true,
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>javascript-stringify": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
         "lodash": true
       }
     },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript": {
       "packages": {
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript>@babel/helper-plugin-utils": true
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript>@babel/helper-plugin-utils": true
       }
     },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>@vanilla-extract/babel-plugin-debug-ids": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/babel-plugin-debug-ids": {
       "globals": {
         "process.env.NODE_ENV": true
       },
@@ -83,7 +65,7 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true
       }
     },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>esbuild": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": {
       "builtin": {
         "child_process.execFileSync": true,
         "child_process.spawn": true,
@@ -117,7 +99,7 @@
         "process.platform": true
       }
     },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>eval": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>eval": {
       "builtin": {
         "vm.Script": true
       },
@@ -128,10 +110,10 @@
         "process": true
       },
       "packages": {
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>eval>require-like": true
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>eval>require-like": true
       }
     },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>eval>require-like": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>eval>require-like": {
       "builtin": {
         "module": true,
         "path.dirname": true
@@ -140,18 +122,18 @@
         "process.mainModule": true
       }
     },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>find-up": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up": {
       "builtin": {
         "path.dirname": true,
         "path.parse": true,
         "path.resolve": true
       },
       "packages": {
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>find-up>locate-path": true,
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path": true,
         "eslint>find-up>path-exists": true
       }
     },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>find-up>locate-path": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path": {
       "builtin": {
         "fs.lstat": true,
         "fs.lstatSync": true,
@@ -164,17 +146,40 @@
         "process.cwd": true
       },
       "packages": {
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>find-up>locate-path>p-locate": true
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path>p-locate": true
       }
     },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>find-up>locate-path>p-locate": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path>p-locate": {
       "packages": {
         "jest>@jest/core>jest-runner>p-limit": true
       }
     },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>javascript-stringify": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>javascript-stringify": {
       "globals": {
         "Buffer": true
+      }
+    },
+    "@vanilla-extract/webpack-plugin": {
+      "builtin": {
+        "path": true
+      },
+      "globals": {
+        "console.warn": true,
+        "process.env.NODE_ENV": true
+      },
+      "packages": {
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration": true,
+        "@vanilla-extract/webpack-plugin>loader-utils": true,
+        "eslint>chalk": true,
+        "eslint>debug": true,
+        "file-loader>loader-utils": true,
+        "vitest>debug": true,
+        "webpack": true
+      }
+    },
+    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration": {
+      "packages": {
+        "$root$": true
       }
     },
     "@vanilla-extract/webpack-plugin>loader-utils": {
@@ -769,6 +774,11 @@
         "process.nextTick": true
       }
     },
+    "happy-dom>he": {
+      "globals": {
+        "define": true
+      }
+    },
     "html-webpack-plugin": {
       "builtin": {
         "console.assert": true,
@@ -807,8 +817,8 @@
         "document": true
       },
       "packages": {
+        "happy-dom>he": true,
         "html-webpack-plugin>html-minifier-terser>clean-css": true,
-        "html-webpack-plugin>html-minifier-terser>he": true,
         "html-webpack-plugin>html-minifier-terser>relateurl": true,
         "vitest>vite>terser": true
       }
@@ -839,11 +849,6 @@
       },
       "packages": {
         "html-webpack-plugin>html-minifier-terser>clean-css>source-map": true
-      }
-    },
-    "html-webpack-plugin>html-minifier-terser>he": {
-      "globals": {
-        "define": true
       }
     },
     "html-webpack-plugin>html-minifier-terser>relateurl": {
@@ -1674,7 +1679,7 @@
         "process.stdout.write": true
       },
       "packages": {
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>esbuild": true,
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": true,
         "copy-webpack-plugin>serialize-javascript": true,
         "vitest>vite>terser": true,
         "webpack>schema-utils": true,

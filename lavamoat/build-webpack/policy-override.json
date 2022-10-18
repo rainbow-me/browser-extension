@@ -1,5 +1,10 @@
 {
   "resources": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration": {
+      "packages": {
+        "$root$": true
+      }
+    },
     "@vanilla-extract/webpack-plugin": {
       "builtin": {
         "path": true

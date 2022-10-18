@@ -1,11 +1,9 @@
-import { mergeConfig } from 'vite';
 import { defineConfig } from 'vitest/config';
-import baseConfig from '../vitest.config';
 
-const e2eConfig = defineConfig({
+export default defineConfig({
   test: {
+    include: ['./**/*.test.ts'],
     testTimeout: 20_000,
+    watch: false,
   },
 });
-
-export default mergeConfig(baseConfig, e2eConfig);
