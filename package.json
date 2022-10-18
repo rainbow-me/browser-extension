@@ -28,6 +28,10 @@
     "setup": "yarn install && yarn allow-scripts && yarn patch-package && yarn policy",
     "// runs audit against dep. tree": "",
     "audit:ci": "yarn audit-ci --moderate --config audit-ci.jsonc",
+    "// Generates a zip file based on the build folder ready to upload to the chrome web store": "",
+    "zip": "cd build/ && zip ../rainbowbx.zip *",
+    "// Build and zip": "",
+    "bundle": "yarn build && yarn zip",
     "// Runs e2e": "",
     "test:linux:chrome": "BROWSER=chrome OS=linux CHROMIUM_BIN=$(which chrome) jest",
     "test:mac:chrome": "BROWSER=chrome OS=mac jest",
@@ -52,7 +56,7 @@
     "lodash": "4.17.21",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "wagmi": "0.6.8"
+    "wagmi": "0.7.5"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "2.0.3",
