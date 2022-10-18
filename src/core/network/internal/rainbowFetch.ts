@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import merge from 'deepmerge';
 
 export const RAINBOW_FETCH_ERROR = 'rainbowFetchError';
@@ -14,6 +15,7 @@ export async function rainbowFetch(
   url: RequestInfo,
   opts: RainbowFetchRequestOpts,
 ) {
+  // eslint-disable-next-line no-param-reassign
   opts = {
     headers: {},
     method: 'get',
