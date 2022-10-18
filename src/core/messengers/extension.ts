@@ -1,4 +1,4 @@
-import { CallbackOptions, createMessenger } from './internal/createMessenger';
+import { CallbackFunction, createMessenger } from './internal/createMessenger';
 
 type SendResponseArgs<TResponse, TError> =
   | {
@@ -35,10 +35,7 @@ export const extensionMessenger = createMessenger({
   },
   reply<TPayload, TResponse>(
     topic: string,
-    callback: (
-      payload: TPayload,
-      callbackOptions: CallbackOptions,
-    ) => Promise<TResponse>,
+    callback: CallbackFunction<TPayload, TResponse>,
   ) {
     const listener = (
       message: { topic: string; payload: TPayload },
