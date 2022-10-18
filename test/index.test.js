@@ -31,7 +31,7 @@ beforeAll(async () => {
 
 afterAll(async () => driver.quit());
 
-it('Should opens the popup', async () => {
+it('Should open the popup', async () => {
   await driver.get(rootURL + '/popup.html');
 });
 

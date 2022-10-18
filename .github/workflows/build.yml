@@ -30,7 +30,9 @@ jobs:
           chrome-version: 'stable'
       - name: Run e2e
         uses: GabrielBB/xvfb-action@v1
-        with:
-          run: yarn test:ci
+      - run: |
+          export DISPLAY=:99
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+          yarn test:e2e:ci
 
           
