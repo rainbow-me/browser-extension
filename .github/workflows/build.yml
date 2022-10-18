@@ -38,5 +38,14 @@ jobs:
       - name: Run e2e
         run: |
           yarn test:ci
+      - name: Pack extension
+        run: yarn zip
+      - name: Pull request artifacts
+        uses: gavv/pull-request-artifacts@v1.0.0
+        with:
+          commit: ${{ github.event.pull_request.head.sha }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: |
+            rainbowbx.zip
 
           
