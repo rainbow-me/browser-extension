@@ -3,6 +3,11 @@ export type CallbackOptions = {
   topic: string;
 };
 
+export type CallbackFunction<TPayload, TResponse> = (
+  payload: TPayload,
+  callbackOptions: CallbackOptions,
+) => Promise<TResponse>;
+
 export type Source = 'background' | 'content' | 'inpage' | 'popup';
 
 export type Messenger = {
@@ -14,10 +19,7 @@ export type Messenger = {
   ) => Promise<TResponse>;
   reply: <TPayload, TResponse>(
     topic: string,
-    callback: (
-      payload: TPayload,
-      callbackOptions: CallbackOptions,
-    ) => Promise<TResponse>,
+    callback: CallbackFunction<TPayload, TResponse>,
   ) => () => void;
 };
 

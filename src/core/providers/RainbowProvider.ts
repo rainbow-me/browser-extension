@@ -16,6 +16,7 @@ export type RequestResponse =
   | {
       id: number;
       error?: never;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       result: any;
     };
 
@@ -83,11 +84,13 @@ export class RainbowProvider extends EventEmitter {
   }
 
   /** @deprecated – This method is deprecated in favor of `request`. */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async sendAsync(args: RequestArguments) {
     // TODO – deprecated, but we still may need it to be compatible with older dapps.
   }
 
   /** @deprecated – This method is deprecated in favor of `request`. */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async send(args: RequestArguments) {
     // TODO – deprecated, but we still may need it to be compatible with older dapps.
   }
