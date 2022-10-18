@@ -62,15 +62,19 @@ it('should be able to turn ON injection', async () => {
 });
 
 it('should be able to connect to rainbowkit', async () => {
+  console.log('Opening rainbowkit');
   await driver.get('https://rainbowkit.com');
 
+  console.log('Clicking connect wallet');
   const button = await findElementByText(driver, 'Connect Wallet');
   expect(button).toBeTruthy();
   await button.click();
 
+  console.log('Modal opening');
   const modalTitle = await findElementByText(driver, 'Connect a Wallet');
   expect(modalTitle).toBeTruthy();
 
+  console.log('Finding MetaMask button');
   const buttons = await driver.findElements(By.css('button'));
   let mmButton = null;
   for (let i = 0; i < buttons.length; i++) {
@@ -81,9 +85,11 @@ it('should be able to connect to rainbowkit', async () => {
     }
   }
 
+  console.log('Clicking MetaMask button');
   expect(await mmButton.getText()).toEqual('MetaMask');
   await mmButton.click();
 
+  console.log('Clicking top button');
   // This sucks but I don't have another way of selecting the button
   // Rainbowkit doesn't have any attribute that helps us to select it
   // Also I think this will break if there's a redeployment
@@ -95,6 +101,8 @@ it('should be able to connect to rainbowkit', async () => {
   expect(topButton).toBeTruthy();
   await topButton.click();
 
+  console.log('Checking ENS LABEL');
   const ensLabel = await querySelector(driver, '[id="rk_profile_title"]');
   expect(ensLabel).toBeTruthy();
+  console.log('Done');
 });
