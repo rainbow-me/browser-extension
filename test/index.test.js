@@ -35,10 +35,10 @@ it('Should opens the popup', async () => {
   await driver.get(rootURL + '/popup.html');
 });
 
-it('should have an h1 saying "Rainbow Rocks!!!"', async () => {
+it('should have an h1 saying "Rainbow"', async () => {
   const h1 = await querySelector(driver, 'h1');
   const actual = await h1.getText();
-  const expected = 'Rainbow Rocks!!!';
+  const expected = 'Rainbow';
   expect(actual).toEqual(expected);
 });
 
