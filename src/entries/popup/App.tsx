@@ -12,7 +12,7 @@ import { Index } from './pages';
 import { RainbowConnector } from './wagmi/RainbowConnector';
 import { PlaygroundComponents } from './pages/_playgrounds';
 
-const playground = process.env.PLAYGROUND;
+const playground = process.env.PLAYGROUND as 'default' | 'ds';
 
 const wagmiClient = createWagmiClient({
   autoConnect: true,

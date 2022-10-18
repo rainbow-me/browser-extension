@@ -1,9 +1,7 @@
 import { handleInstallExtension } from './handlers/handleInstallExtension';
 import { handleProviderRequest } from './handlers/handleProviderRequest';
-import { useCoreStore } from '~/core/state/';
+import { handleCoreStoreChange } from './handlers/handleCoreStoreChange';
 
 handleInstallExtension();
 handleProviderRequest();
-
-// Get data from core store persisted
-console.log(useCoreStore.getState());
+handleCoreStoreChange();
