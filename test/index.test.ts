@@ -2,19 +2,20 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable jest/expect-expect */
 
-require('chromedriver');
-require('geckodriver');
-const { By } = require('selenium-webdriver');
-const {
+import 'chromedriver';
+import 'geckodriver';
+import { By, WebDriver, WebElement } from 'selenium-webdriver';
+import { afterAll, beforeAll, expect, it } from 'vitest';
+import {
   querySelector,
   delay,
   getExtensionIdByName,
   initDriverWithOptions,
   findElementByText,
-} = require('./helpers');
+} from './helpers';
 
 let rootURL = 'chrome-extension://';
-let driver;
+let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
@@ -35,10 +36,10 @@ it('Should opens the popup', async () => {
   await driver.get(rootURL + '/popup.html');
 });
 
-it('should have an h1 saying "Rainbow Rocks!!!"', async () => {
+it('should have an h1 saying "Rainbow"', async () => {
   const h1 = await querySelector(driver, 'h1');
   const actual = await h1.getText();
-  const expected = 'Rainbow Rocks!!!';
+  const expected = 'Rainbow';
   expect(actual).toEqual(expected);
 });
 
@@ -70,7 +71,7 @@ it('should be able to connect to rainbowkit', async () => {
   expect(modalTitle).toBeTruthy();
 
   const buttons = await driver.findElements(By.css('button'));
-  let mmButton = null;
+  let mmButton: WebElement | null = null;
   for (let i = 0; i < buttons.length; i++) {
     const button = buttons[i];
     if ((await button.getText()) === 'MetaMask') {
@@ -79,6 +80,7 @@ it('should be able to connect to rainbowkit', async () => {
     }
   }
 
+  if (!mmButton) throw new Error('mmButton not found');
   expect(await mmButton.getText()).toEqual('MetaMask');
   await mmButton.click();
 
