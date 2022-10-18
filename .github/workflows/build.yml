@@ -33,6 +33,6 @@ jobs:
           /usr/bin/sudo apt-get install -y xvfb
           export DISPLAY=:99
           sudo xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
-          yarn test:e2e:ci
+          yarn test:ci
 
           
