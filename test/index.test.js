@@ -19,6 +19,8 @@ let driver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
+jest.retryTimes(10);
+
 beforeAll(async () => {
   driver = await initDriverWithOptions({
     browser,
