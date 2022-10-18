@@ -55,6 +55,7 @@
     "lodash": "4.17.21",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "socket.io-client": "4.5.3",
     "wagmi": "0.7.5"
   },
   "devDependencies": {
