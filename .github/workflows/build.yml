@@ -16,16 +16,19 @@ jobs:
           cache: 'yarn'
       - name: Install deps via Yarn
         run: yarn setup
-      - name: Check for frozen lockfile
-        run: yarn check-lockfile
-      - name: Audit CI
-        run:  yarn audit:ci
-      - name: Lint
-        run: yarn lint
+      # - name: Check for frozen lockfile
+      #   run: yarn check-lockfile
+      # - name: Audit CI
+      #   run:  yarn audit:ci
+      # - name: Lint
+      #   run: yarn lint
+      # 
       - name: Build the extension with LavaMoat
         run: yarn build
       - uses: browser-actions/setup-chrome@latest
         with:
           chrome-version: 'stable'
       - name: Run e2e
-        run: yarn test:ci
+        uses: GabrielBB/xvfb-action@v1
+        run:
+          yarn test:ci
