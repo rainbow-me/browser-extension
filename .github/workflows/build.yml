@@ -3,7 +3,7 @@ name: CI
 on: [pull_request, workflow_dispatch]
 
 jobs:
-  build:
+  busild:
     runs-on: ubuntu-latest
     concurrency: 
       group: ${{ github.workflow }}-${{ github.ref }}
@@ -29,10 +29,10 @@ jobs:
         with:
           chrome-version: 'stable'
       - name: Run e2e
-        uses: GabrielBB/xvfb-action@v1
-      - run: |
+        run: |
+          /usr/bin/sudo apt-get install -y xvfb
           export DISPLAY=:99
-          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+          sudo xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
           yarn test:e2e:ci
 
           
