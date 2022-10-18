@@ -31,7 +31,7 @@
     "// Generates a zip file based on the build folder ready to upload to the chrome web store": "",
     "zip": "cd build/ && zip ../rainbowbx.zip *",
     "// Build and zip": "",
-    "bundle": "yarn build && yarn zip"
+    "bundle": "yarn build && yarn zip",
     "// Runs e2e": "",
     "test:mac:chrome": "BROWSER=chrome OS=mac jest",
     "test:mac:brave": "BROWSER=brave OS=mac jest",
