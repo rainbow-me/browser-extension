@@ -19,7 +19,7 @@ let driver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
-jest.retryTimes(10);
+// jest.retryTimes(10);
 
 beforeAll(async () => {
   driver = await initDriverWithOptions({
@@ -37,10 +37,10 @@ it('Should open the popup', async () => {
   await driver.get(rootURL + '/popup.html');
 });
 
-it('should have an h1 saying "Rainbow Rocks!!!"', async () => {
+it('should have an h1 saying "Rainbow"', async () => {
   const h1 = await querySelector(driver, 'h1');
   const actual = await h1.getText();
-  const expected = 'Rainbow Rocks!!!';
+  const expected = 'Rainbow';
   expect(actual).toEqual(expected);
 });
 

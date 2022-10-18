@@ -30,15 +30,13 @@ jobs:
       - uses: browser-actions/setup-chrome@latest
         with:
           chrome-version: 'stable'
-      # - name: Run e2e
-      #   run: |
-      #     /usr/bin/sudo apt-get install -y xvfb
-      #     xvfb-run --auto-servernum yarn test:ci
-      - name: Setup xvfb (Linux)
+      - name: Setup xvfb
         run: |
           sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
           # start xvfb in the background
           sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
+      - name: Run e2e
+        run: |
           yarn test:ci
 
           
