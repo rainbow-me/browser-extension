@@ -32,8 +32,8 @@
     "test": "vitest",
     "test:watch": "vitest --watch",
     "// Runs e2e": "",
-    "e2e:mac:chrome": "BROWSER=chrome OS=mac vitest run e2e/ --config ./e2e/vitest.config.ts",
-    "e2e:mac:brave": "BROWSER=brave OS=mac vitest run e2e/ --config ./e2e/vitest.config.ts",
+    "e2e:mac:chrome": "BROWSER=chrome OS=mac vitest e2e/ --config ./e2e/vitest.config.ts",
+    "e2e:mac:brave": "BROWSER=brave OS=mac vitest e2e/ --config ./e2e/vitest.config.ts",
     "e2e:mac": "yarn e2e:mac:chrome && yarn e2e:mac:brave",
     "e2e": "yarn e2e:mac"
   },
