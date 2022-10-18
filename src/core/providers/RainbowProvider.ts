@@ -1,6 +1,8 @@
 import { EventEmitter } from 'eventemitter3';
 import { providerRequestTransport } from '../transports';
 
+export type ChainIdHex = `0x${string}`;
+
 export type RequestArguments = {
   method: string;
   params?: Array<unknown>;
@@ -25,7 +27,7 @@ export type RequestResponse =
  * @link https://eips.ethereum.org/EIPS/eip-1102
  */
 export class RainbowProvider extends EventEmitter {
-  chainId = '0x1';
+  chainId: ChainIdHex = '0x1';
   connected = false;
   isRainbow = true;
   isReady = true;
@@ -71,7 +73,7 @@ export class RainbowProvider extends EventEmitter {
         break;
       }
       case 'eth_chainId': {
-        this.chainId = response.result as string;
+        this.chainId = <ChainIdHex>response.result;
         this.networkVersion = parseInt(this.chainId, 16).toString();
         break;
       }
