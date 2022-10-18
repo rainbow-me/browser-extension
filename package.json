@@ -27,7 +27,12 @@
     "// Installs deps, runs allowed scripts, patches packages and generates lavamoat policies": "",
     "setup": "yarn install && yarn allow-scripts && yarn patch-package && yarn policy",
     "// runs audit against dep. tree": "",
-    "audit:ci": "yarn audit-ci --moderate --config audit-ci.jsonc"
+    "audit:ci": "yarn audit-ci --moderate --config audit-ci.jsonc",
+    "// Runs e2e": "",
+    "test:mac:chrome": "BROWSER=chrome OS=mac jest",
+    "test:mac:brave": "BROWSER=brave OS=mac jest",
+    "test:mac": "yarn test:mac:chrome && yarn test:mac:brave",
+    "test": "yarn test:mac"
   },
   "dependencies": {
     "@capsizecss/core": "3.0.0",
@@ -61,6 +66,7 @@
     "@vanilla-extract/webpack-plugin": "2.2.0",
     "audit-ci": "6.3.0",
     "browserify": "17.0.0",
+    "chromedriver": "106.0.1",
     "copy-webpack-plugin": "11.0.0",
     "css-loader": "6.7.1",
     "dotenv-webpack": "8.0.1",
@@ -71,16 +77,18 @@
     "eslint-plugin-jest": "27.0.4",
     "eslint-plugin-prettier": "4.2.1",
     "file-loader": "6.2.0",
+    "geckodriver": "3.1.0",
     "globby": "11.0.4",
     "html-webpack-plugin": "5.5.0",
     "husky": "8.0.1",
-    "jest": "29.1.2",
+    "jest": "29.2.0",
     "lavamoat": "6.3.0",
     "lavamoat-browserify": "15.3.0",
     "lint-staged": "13.0.3",
     "mini-css-extract-plugin": "2.6.1",
     "patch-package": "6.4.7",
     "prettier": "2.7.1",
+    "selenium-webdriver": "4.5.0",
     "ts-loader": "9.4.1",
     "typescript": "4.8.4",
     "webpack": "5.74.0",
@@ -110,7 +118,11 @@
       "webpack-extension-reloader>ws>utf-8-validate": false,
       "wagmi>@coinbase/wallet-sdk>@solana/web3.js>bigint-buffer": false,
       "wagmi>@coinbase/wallet-sdk>@solana/web3.js>secp256k1": false,
-      "wagmi>@coinbase/wallet-sdk>keccak": false
+      "wagmi>@coinbase/wallet-sdk>keccak": false,
+      "chromedriver": true,
+      "geckodriver": true,
+      "selenium-webdriver>ws>bufferutil": false,
+      "selenium-webdriver>ws>utf-8-validate": false
     }
   },
   "lint-staged": {
