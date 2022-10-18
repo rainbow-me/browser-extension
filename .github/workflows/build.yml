@@ -3,7 +3,9 @@ name: CI
 on: [pull_request, workflow_dispatch]
 
 jobs:
-  busild:
+  build:
+    env:
+      DISPLAY: :0
     runs-on: ubuntu-latest
     concurrency: 
       group: ${{ github.workflow }}-${{ github.ref }}
@@ -28,9 +30,14 @@ jobs:
       - uses: browser-actions/setup-chrome@latest
         with:
           chrome-version: 'stable'
-      - name: Run e2e
+      # - name: Run e2e
+      #   run: |
+      #     /usr/bin/sudo apt-get install -y xvfb
+      #     xvfb-run --auto-servernum yarn test:ci
+      - name: Setup xvfb (Linux)
         run: |
-          /usr/bin/sudo apt-get install -y xvfb
-          xvfb-run --auto-servernum yarn test:ci
+          sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
+          # start xvfb in the background
+          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
 
           
