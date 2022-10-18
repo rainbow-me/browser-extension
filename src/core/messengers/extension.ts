@@ -1,4 +1,14 @@
-import { createMessenger } from './internal/createMessenger';
+import { CallbackOptions, createMessenger } from './internal/createMessenger';
+
+type SendResponseArgs<TResponse, TError> =
+  | {
+      response: TResponse;
+      error?: never;
+    }
+  | {
+      response?: never;
+      error: TError;
+    };
 
 /**
  * Creates an "extension messenger" that can be used to communicate between
@@ -23,11 +33,19 @@ export const extensionMessenger = createMessenger({
     if (error) throw new Error(error.message);
     return response;
   },
-  reply(topic, callback) {
+  reply<TPayload, TResponse>(
+    topic: string,
+    callback: (
+      payload: TPayload,
+      callbackOptions: CallbackOptions,
+    ) => Promise<TResponse>,
+  ) {
     const listener = (
-      message: { topic: string; payload: any },
+      message: { topic: string; payload: TPayload },
       sender: chrome.runtime.MessageSender,
-      sendResponse: (response: any) => void,
+      sendResponse: (
+        response: SendResponseArgs<TResponse, Record<string, unknown>>,
+      ) => void,
     ) => {
       if (topic !== '*' && message.topic !== topic) return;
       callback(message.payload, {
