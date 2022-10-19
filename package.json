@@ -39,7 +39,6 @@
     "test:mac:chrome": "BROWSER=chrome OS=mac jest",
     "test:mac:brave": "BROWSER=brave OS=mac jest",
     "test:mac": "yarn test:mac:chrome && yarn test:mac:brave",
-    "test:ci": "yarn test:linux:chrome && yarn test:linux:brave",
     "test": "yarn test:mac"
   },
   "dependencies": {
