@@ -12,7 +12,8 @@
     "dev": "webpack --config ./webpack.config.dev.js --watch",
     "playground": "PLAYGROUND=default webpack --config ./webpack.config.dev.js --watch",
     "playground:ds": "PLAYGROUND=ds webpack --config ./webpack.config.dev.js --watch",
-    "lint": "eslint . --cache",
+    "lint": "eslint . --cache --max-warnings 0",
+    "typecheck": "tsc --noEmit",
     "// Generates LavaMoat policies for everything that is protected w/ LavaMoat": "",
     "policy": "yarn policy:build:webpack && yarn policy:build:lavamoat && yarn policy:bundle",
     "// Generates a LavaMoat policy for the output of the Webpack bundle": "",
@@ -28,6 +29,10 @@
     "setup": "yarn install && yarn allow-scripts && yarn patch-package && yarn policy",
     "// runs audit against dep. tree": "",
     "audit:ci": "yarn audit-ci --moderate --config audit-ci.jsonc",
+    "// Generates a zip file based on the build folder ready to upload to the chrome web store": "",
+    "zip": "cd build/ && zip ../rainbowbx.zip *",
+    "// Build and zip": "",
+    "bundle": "yarn build && yarn zip",
     "// Runs e2e": "",
     "test:mac:chrome": "BROWSER=chrome OS=mac jest",
     "test:mac:brave": "BROWSER=brave OS=mac jest",
@@ -45,6 +50,7 @@
     "@vanilla-extract/sprinkles": "1.5.0",
     "chroma-js": "2.4.2",
     "clsx": "1.2.1",
+    "deepmerge": "4.2.2",
     "ethers": "5.7.1",
     "eventemitter3": "4.0.7",
     "framer-motion": "7.6.1",
@@ -52,7 +58,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-router-dom": "6.4.2",
-    "wagmi": "0.6.8"
+    "socket.io-client": "4.5.3",
+    "wagmi": "0.7.5"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "2.0.3",
