@@ -10,3 +10,4 @@ export { Inline } from './components/Inline/Inline';
 export { Inset } from './components/Inset/Inset';
 export { Stack } from './components/Stack/Stack';
 export { Text } from './components/Text/Text';
+export { Separator } from './components/Separator/Separator';

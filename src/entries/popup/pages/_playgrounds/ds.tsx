@@ -5,6 +5,7 @@ import {
   Box,
   Inline,
   Inset,
+  Separator,
   Stack,
   Text,
   ThemeProvider,
@@ -117,6 +118,59 @@ export function DesignSystem() {
                   </Box>
                 </ThemeProvider>
               </Stack>
+
+              <SectionHeading>Menu styles</SectionHeading>
+              <Box
+                padding="4px"
+                background="surfaceMenu"
+                borderColor="separator"
+                borderRadius="16px"
+                borderWidth="1px"
+                backdropFilter="blur(26px)"
+              >
+                <Box
+                  borderRadius="12px"
+                  background="accent"
+                  padding="12px"
+                  borderWidth="1px"
+                  borderColor="buttonStrokeSecondary"
+                >
+                  <Text size="15pt" weight="bold">
+                    List Item 1
+                  </Text>
+                </Box>
+                <Box borderRadius="12px" padding="12px">
+                  <Text size="15pt" weight="bold">
+                    List Item 2
+                  </Text>
+                </Box>
+                <Inset vertical="4px" horizontal="12px">
+                  <Separator color="separatorSecondary" />
+                </Inset>
+                <Box borderRadius="12px" padding="12px">
+                  <Text size="15pt" weight="bold">
+                    List Item 3
+                  </Text>
+                </Box>
+              </Box>
+
+              <SectionHeading>Separator - Weight</SectionHeading>
+              <ExampleHeading>default</ExampleHeading>
+              <Separator />
+              <ExampleHeading>1px</ExampleHeading>
+              <Separator strokeWeight="1px" />
+              <ExampleHeading>2px</ExampleHeading>
+              <Separator strokeWeight="2px" />
+
+              <SectionHeading>Separator - Color</SectionHeading>
+              <ExampleHeading>default</ExampleHeading>
+              <Separator />
+              <ExampleHeading>separator</ExampleHeading>
+              <Separator color="separator" />
+              <ExampleHeading>separatorSecondary</ExampleHeading>
+              <Separator color="separatorSecondary" />
+              <ExampleHeading>separatorTertiary</ExampleHeading>
+              <Separator color="separatorTertiary" />
 
               <SectionHeading>Inset</SectionHeading>
               <ExampleHeading>Space</ExampleHeading>
