@@ -13,7 +13,7 @@ const BINARY_PATHS = {
   },
   linux: {
     chrome: process.env.CHROMIUM_BIN,
-    brave: '/usr/bin/brave',
+    brave: '/usr/bin/brave-browser',
   },
 };
 
