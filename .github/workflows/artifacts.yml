@@ -14,6 +14,6 @@ jobs:
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-            prefix: "Here the packed extension for this build:"
+            prefix: "Here's the packed extension for this build:"
             format: name
             addTo: pull
