@@ -27,7 +27,7 @@ export function Settings() {
           padding="16px"
           style={{ borderRadius: 999, width: '100%' }}
         >
-          <Text color="labelSecondary" size="15pt" weight="bold">
+          <Text color="labelSecondary" size="14pt" weight="bold">
             Home
           </Text>
         </Box>

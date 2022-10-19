@@ -26,14 +26,14 @@ export function Default() {
           Rainbow Rocks!!!
         </Text>
         <Stack space="16px">
-          <Text size="17pt" weight="bold" color="labelSecondary">
+          <Text size="14pt" weight="bold" color="labelSecondary">
             Mainnet Balance: {mainnetBalance?.formatted}
           </Text>
-          <Text size="17pt" weight="bold" color="labelSecondary">
+          <Text size="14pt" weight="bold" color="labelSecondary">
             Polygon Balance: {polygonBalance?.formatted}
           </Text>
           {firstTransactionTimestamp && (
-            <Text size="17pt" weight="bold" color="labelTertiary">
+            <Text size="14pt" weight="bold" color="labelTertiary">
               First transaction on:{' '}
               {new Date(firstTransactionTimestamp).toString()}
             </Text>
@@ -47,7 +47,7 @@ export function Default() {
           padding="16px"
           style={{ borderRadius: 999 }}
         >
-          <Text color="labelSecondary" size="15pt" weight="bold">
+          <Text color="labelSecondary" size="14pt" weight="bold">
             CLEAR STORAGE
           </Text>
         </Box>
