@@ -30,11 +30,12 @@ export const handleProviderRequest = () =>
         case 'wallet_addEthereumChain':
         case 'wallet_switchEthereumChain':
         case 'eth_requestAccounts': {
-          const eeee = await coreProviderTransport.send({
+          const requestResponse = await coreProviderTransport.send({
             method,
             id,
             params,
           });
+          if (requestResponse.error) throw requestResponse.error;
           const account = backgroundStore.getState().currentAccount;
           response = [account];
           break;

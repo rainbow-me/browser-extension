@@ -5,16 +5,7 @@ export const setupRPCHub = () => {
   coreProviderTransport.reply(async ({ method, id, params }, meta) => {
     console.log('---', meta.sender, method, params);
     try {
-      const response = null;
-      switch (method) {
-        default: {
-          rpcHub.addUnapprovedMessage(method);
-
-          // TODO: handle other methods
-        }
-      }
-      console.log('responding message', response);
-
+      const response = await rpcHub.waitUnapprovedMesagges(method);
       return { id, result: response };
     } catch (error) {
       return { id, error: <Error>error };

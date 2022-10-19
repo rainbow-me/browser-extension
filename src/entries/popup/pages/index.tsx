@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Box, Text } from '~/design-system';
 import { InjectToggle } from '../components/InjectToggle';
 import { motion } from 'framer-motion';
+import { ApproveMessage } from '../components/ApproveMessage';
 
 export function Index() {
   return (
@@ -33,6 +34,7 @@ export function Index() {
           </Text>
         </Box>
       </Link>
+      <ApproveMessage />
     </Box>
   );
 }
