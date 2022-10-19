@@ -440,7 +440,7 @@ export const negativeSpace = {
   '-104px': -104,
 } as const;
 
-const spaceToNegativeSpace: Record<
+export const spaceToNegativeSpace: Record<
   keyof typeof space,
   keyof typeof negativeSpace
 > = {
