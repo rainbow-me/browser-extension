@@ -85,7 +85,6 @@ it('should be able to connect to bx test dapp', async () => {
   expect(topButton).toBeTruthy();
   await topButton.click();
 
-  console.log('Checking ENS LABEL');
   const ensLabel = await querySelector(driver, '[id="rk_profile_title"]');
   expect(ensLabel).toBeTruthy();
 });
