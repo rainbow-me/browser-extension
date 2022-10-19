@@ -1,5 +1,4 @@
 import create from 'zustand/vanilla';
-import createHook from 'zustand';
 import { persist } from 'zustand/middleware';
 import { persistStorage } from './persistStorage';
 import { boolSlice, BoolSliceState } from './slices/boolSlice';
@@ -19,5 +18,3 @@ export const coreStore = create<CoreStoreState>()(
     { name: 'store:core', getStorage: () => persistStorage },
   ),
 );
-
-export const useCoreStore = createHook(coreStore);

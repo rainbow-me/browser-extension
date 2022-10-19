@@ -1,17 +1,13 @@
 import React from 'react';
 import { chain, useAccount, useBalance } from 'wagmi';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
-import { useCoreStore } from '~/core/state';
 import { Storage } from '~/core/storage';
 import { Box, Text } from '~/design-system';
 import { InjectToggle } from '../../components/InjectToggle';
 
 export function Default() {
   const { address } = useAccount();
-  const [value, toggleValue] = useCoreStore((state) => [
-    state.value,
-    state.toggleValue,
-  ]);
+
   const { data: mainnetBalance } = useBalance({
     addressOrName: address,
     chainId: chain.mainnet.id,
@@ -42,9 +38,6 @@ export function Default() {
             {new Date(firstTransactionTimestamp).toString()}
           </Text>
         )}
-        <Text size="17pt" weight="bold" color="labelSecondary">
-          Value: {value ? 'TRUE' : 'FALSE'}
-        </Text>
       </Box>
       <InjectToggle />
       <Box
@@ -56,18 +49,6 @@ export function Default() {
       >
         <Text color="labelSecondary" size="15pt" weight="bold">
           CLEAR STORAGE
-        </Text>
-      </Box>
-
-      <Box
-        as="button"
-        background="surfaceSecondary"
-        onClick={() => toggleValue()}
-        padding="16px"
-        style={{ borderRadius: 999 }}
-      >
-        <Text color="labelSecondary" size="15pt" weight="bold">
-          Toggle value
         </Text>
       </Box>
     </Box>
