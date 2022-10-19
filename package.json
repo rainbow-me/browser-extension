@@ -35,10 +35,11 @@
     "bundle": "yarn build && yarn zip",
     "// Runs e2e": "",
     "test:linux:chrome": "BROWSER=chrome OS=linux CHROMIUM_BIN=$(which chrome) jest",
+    "test:linux:brave": "BROWSER=brave OS=linux jest",
     "test:mac:chrome": "BROWSER=chrome OS=mac jest",
     "test:mac:brave": "BROWSER=brave OS=mac jest",
     "test:mac": "yarn test:mac:chrome && yarn test:mac:brave",
-    "test:ci": "yarn test:linux:chrome",
+    "test:ci": "yarn test:linux:chrome && test:linux:brave",
     "test": "yarn test:mac"
   },
   "dependencies": {
