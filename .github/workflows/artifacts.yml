@@ -1,7 +1,7 @@
 name: Link Artifacts
 on:
   workflow_run:
-    workflows: [App]
+    workflows: [CI]
     types: [completed]
 
 jobs:
