@@ -18,13 +18,14 @@ jobs:
           cache: 'yarn'
       - name: Install deps via Yarn
         run: yarn setup
-      # - name: Check for frozen lockfile
-      #   run: yarn check-lockfile
-      # - name: Audit CI
-      #   run:  yarn audit:ci
-      # - name: Lint
-      #   run: yarn lint
-      # 
+      - name: Check for frozen lockfile
+        run: yarn check-lockfile
+      - name: Audit CI
+        run:  yarn audit:ci
+      - name: Lint
+        run: yarn lint
+      - name: Check types
+        run: yarn typecheck
       - name: Build the extension with LavaMoat
         run: yarn build
       - uses: browser-actions/setup-chrome@latest
@@ -45,6 +46,7 @@ jobs:
         with:
           commit: ${{ github.event.pull_request.head.sha }}
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+          artifacts-branch: ${{ github.head_ref }}
           artifacts: |
             rainbowbx.zip
 

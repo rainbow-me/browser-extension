@@ -62,19 +62,15 @@ it('should be able to turn ON injection', async () => {
 });
 
 it('should be able to connect to rainbowkit', async () => {
-  console.log('Opening rainbowkit');
   await driver.get('https://bx-test-dapp.vercel.app/');
 
-  console.log('Clicking connect wallet');
   const button = await findElementByText(driver, 'Connect Wallet');
   expect(button).toBeTruthy();
   await button.click();
 
-  console.log('Modal opening');
   const modalTitle = await findElementByText(driver, 'Connect a Wallet');
   expect(modalTitle).toBeTruthy();
 
-  console.log('Finding MetaMask button');
   const buttons = await driver.findElements(By.css('button'));
   let mmButton = null;
   for (let i = 0; i < buttons.length; i++) {
@@ -85,9 +81,6 @@ it('should be able to connect to rainbowkit', async () => {
     }
   }
 
-  console.log('found metamask button?', mmButton);
-
-  console.log('Clicking MetaMask button');
   expect(await mmButton.getText()).toEqual('MetaMask');
   await mmButton.click();
 
