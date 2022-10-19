@@ -1,1 +1,2 @@
-export { useCoreStore, coreStore } from './coreStore';
+export { backgroundStore } from './backgroundStore';
+export { usePopupStore } from './popupStore';

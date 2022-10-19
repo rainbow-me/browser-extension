@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand';
-import { CoreStoreState } from '../coreStore';
+import { CoreStoreState } from '../backgroundStore';
 
 export interface CurrentAddressSliceState {
   currentAddress?: string;

@@ -1,10 +1,10 @@
-import { coreStore } from '~/core/state';
-import { coreStoreTransport } from '~/core/transports';
+import { backgroundStore } from '~/core/state';
+import { backgroundStoreTransport } from '~/core/transports';
 
 /**
- * Handles coreStore state changes
+ * Sends state changes from the backgroundStore to any other context that might want it.
  */
 export const handleCoreStoreChange = () =>
-  coreStore.subscribe((state) => {
-    coreStoreTransport.send(state);
+  backgroundStore.subscribe((state) => {
+    backgroundStoreTransport.send(state);
   });
