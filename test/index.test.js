@@ -4,7 +4,6 @@
 
 require('chromedriver');
 require('geckodriver');
-const { By } = require('selenium-webdriver');
 const {
   querySelector,
   delay,
@@ -61,7 +60,7 @@ it('should be able to turn ON injection', async () => {
   expect(actual).toEqual(expected);
 });
 
-it('should be able to connect to rainbowkit', async () => {
+it('should be able to connect to bx test dapp', async () => {
   await driver.get('https://bx-test-dapp.vercel.app/');
 
   const button = await findElementByText(driver, 'Connect Wallet');
@@ -71,36 +70,22 @@ it('should be able to connect to rainbowkit', async () => {
   const modalTitle = await findElementByText(driver, 'Connect a Wallet');
   expect(modalTitle).toBeTruthy();
 
-  const buttons = await driver.findElements(By.css('button'));
-  let mmButton = null;
-  for (let i = 0; i < buttons.length; i++) {
-    const button = buttons[i];
-    if ((await button.getText()) === 'MetaMask') {
-      mmButton = button;
-      break;
-    }
-  }
+  const mmButton = await querySelector(
+    driver,
+    '[data-testid="rk-wallet-option-metaMask"]',
+  );
 
-  expect(await mmButton.getText()).toEqual('MetaMask');
   await mmButton.click();
 
-  // Temp disabled this on CI until we update rainbowkit on the test dapp
-  if (!process.env.CI) {
-    // This sucks but I don't have another way of selecting the button
-    // Rainbowkit doesn't have any attribute that helps us to select it
-    // Also I think this will break if there's a redeployment
-    const topButton = await querySelector(
-      driver,
-      '.iekbcc0.iekbcc9.ju367v4.ju367v9x.ju367vn.ju367vec.ju367vfo.ju367va.ju367v11.ju367v1c.ju367v8o._12cbo8i3.ju367v8m._12cbo8i4._12cbo8i6:last-child',
-    );
+  const topButton = await querySelector(
+    driver,
+    '[data-testid="rk-account-button"]',
+  );
 
-    // eslint-disable-next-line jest/no-conditional-expect
-    expect(topButton).toBeTruthy();
-    await topButton.click();
+  expect(topButton).toBeTruthy();
+  await topButton.click();
 
-    console.log('Checking ENS LABEL');
-    const ensLabel = await querySelector(driver, '[id="rk_profile_title"]');
-    // eslint-disable-next-line jest/no-conditional-expect
-    expect(ensLabel).toBeTruthy();
-  }
+  console.log('Checking ENS LABEL');
+  const ensLabel = await querySelector(driver, '[id="rk_profile_title"]');
+  expect(ensLabel).toBeTruthy();
 });
