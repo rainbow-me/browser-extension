@@ -1,3 +1,4 @@
+import { requestSlice } from '~/core/state/slices/requestsSlice';
 import {
   coreProviderTransport,
   providerRequestTransport,
@@ -5,7 +6,7 @@ import {
 
 export const DEFAULT_ACCOUNT = '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
 export const DEFAULT_CHAIN_ID = '0x1';
-import { backgroundStore } from '../storage/sessions';
+import { backgroundStore } from '../storage';
 
 /**
  * Handles RPC requests from the provider.

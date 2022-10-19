@@ -5,11 +5,18 @@ import {
   sessionsSlice,
   SessionsSliceState,
 } from '~/core/state/slices/sessionsSlice';
+import {
+  RequestsSliceState,
+  requestSlice,
+} from '~/core/state/slices/requestsSlice';
 
-export const backgroundStore = create<SessionsSliceState>()(
+export type BackgrounStorage = SessionsSliceState & RequestsSliceState;
+
+export const backgroundStore = create<BackgrounStorage>()(
   persist(
     (...props) => ({
       ...sessionsSlice(...props),
+      ...requestSlice(...props),
     }),
     { name: 'store:background', getStorage: () => persistStorage },
   ),

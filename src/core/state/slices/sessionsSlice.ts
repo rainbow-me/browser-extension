@@ -1,4 +1,5 @@
 import { StateCreator } from 'zustand';
+import { BackgrounStorage } from '~/entries/background/storage';
 
 interface Sessions {
   [host: string]: {
@@ -25,7 +26,7 @@ export interface SessionsSliceState {
 }
 
 export const sessionsSlice: StateCreator<
-  SessionsSliceState,
+  BackgrounStorage,
   [['zustand/persist', unknown]],
   [],
   SessionsSliceState
