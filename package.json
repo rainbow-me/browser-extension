@@ -53,9 +53,11 @@
     "deepmerge": "4.2.2",
     "ethers": "5.7.1",
     "eventemitter3": "4.0.7",
+    "framer-motion": "7.6.1",
     "lodash": "4.17.21",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-router-dom": "6.4.2",
     "socket.io-client": "4.5.3",
     "wagmi": "0.7.5"
   },
