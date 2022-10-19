@@ -1,6 +1,6 @@
 import { bridgeMessenger } from '../messengers';
 import { createTransport } from './internal/createTransport';
-import { CoreStoreState } from '../state/useCoreStore';
+import { CoreStoreState } from '../state/coreStore';
 
 type coreStorePayload = CoreStoreState;
 type coreStoreResponse = void;
