@@ -1681,7 +1681,10 @@
       "packages": {
         "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": true,
         "copy-webpack-plugin>serialize-javascript": true,
+<<<<<<< HEAD
         "vitest>vite>terser": true,
+=======
+>>>>>>> 0082032 (update socketIo version, add socket types, create ws objects)
         "webpack>schema-utils": true,
         "webpack>terser-webpack-plugin>@jridgewell/trace-mapping": true,
         "webpack>terser-webpack-plugin>jest-worker": true
