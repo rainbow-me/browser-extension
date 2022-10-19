@@ -624,16 +624,6 @@
         "eslint>strip-ansi>ansi-regex": true
       }
     },
-    "external:../node_modules/uglify-js/tools/node.js": {
-      "builtin": {
-        "fs.readFileSync": true
-      },
-      "globals": {
-        "AST_Node": true,
-        "OutputStream": true,
-        "process.env": true
-      }
-    },
     "file-loader": {
       "builtin": {
         "path": true
@@ -1663,8 +1653,6 @@
       "packages": {
         "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>esbuild": true,
         "copy-webpack-plugin>serialize-javascript": true,
-        "external:../node_modules/uglify-js/package.json": true,
-        "external:../node_modules/uglify-js/tools/node.js": true,
         "webpack>schema-utils": true,
         "webpack>terser-webpack-plugin>@jridgewell/trace-mapping": true,
         "webpack>terser-webpack-plugin>jest-worker": true,

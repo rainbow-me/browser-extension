@@ -1,6 +1,6 @@
-import { themeClasses, rootThemeClasses } from './themeClasses';
+import { rootThemeClasses } from './themeClasses';
 
-export function initTheming() {
+export function initThemingCritical() {
   const setTheme = (theme: 'dark' | 'light') => {
     document.documentElement.classList.remove(
       ...Object.values(rootThemeClasses),
@@ -17,10 +17,4 @@ export function initTheming() {
   darkModeMediaQuery.addEventListener('change', ({ matches: isDark }) => {
     setTheme(isDark ? 'dark' : 'light');
   });
-
-  // Set the initial color contexts to match their respective themes
-  document.body.classList.add(
-    themeClasses.lightTheme.lightContext,
-    themeClasses.darkTheme.darkContext,
-  );
 }
