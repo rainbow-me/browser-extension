@@ -28,8 +28,12 @@ export const handleProviderRequest = () =>
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
     console.log(meta.sender, method);
 
-    const { addApprovedHost, currentAddress, addPendingRequest } =
-      backgroundStore.getState();
+    const {
+      addApprovedHost,
+      currentAddress,
+      addPendingRequest,
+      removePendingRequest,
+    } = backgroundStore.getState();
 
     try {
       let response = null;
@@ -49,7 +53,7 @@ export const handleProviderRequest = () =>
         case 'personal_sign':
         case 'eth_signTypedData':
         case 'eth_signTypedData_v3':
-        case 'eth_signTypedData_v4':
+        case 'eth_signTypedData_v4': {
           addPendingRequest({
             method,
             id,
@@ -57,17 +61,18 @@ export const handleProviderRequest = () =>
           });
           openWindow();
           // Wait for response from the popup.
-          await new Promise((resolve, reject) =>
+          const approved = await new Promise((resolve) =>
             // eslint-disable-next-line no-promise-executor-return
             extensionMessenger.reply(`message:${id}`, async (payload) =>
-              payload
-                ? resolve(payload)
-                : reject(
-                    new UserRejectedRequestError('User rejected the request.'),
-                  ),
+              resolve(payload),
             ),
           );
+          removePendingRequest();
+          if (!approved) {
+            throw new UserRejectedRequestError('User rejected the request.');
+          }
           break;
+        }
         case 'wallet_addEthereumChain':
         case 'wallet_switchEthereumChain':
         case 'eth_requestAccounts': {
@@ -84,18 +89,17 @@ export const handleProviderRequest = () =>
           });
           openWindow();
           // Wait for response from the popup.
-          await new Promise((resolve, reject) =>
+          const approved = await new Promise((resolve) =>
             // eslint-disable-next-line no-promise-executor-return
             extensionMessenger.reply(`message:${id}`, async (payload) =>
-              payload
-                ? resolve(payload)
-                : reject(
-                    new UserRejectedRequestError('User rejected the request.'),
-                  ),
+              resolve(payload),
             ),
           );
-
-          if (!approvedHost && meta.sender.origin) {
+          removePendingRequest();
+          if (!approved) {
+            throw new UserRejectedRequestError('User rejected the request.');
+          }
+          if (approved && meta.sender.origin) {
             addApprovedHost(meta.sender.origin);
           }
           response = [currentAddress];

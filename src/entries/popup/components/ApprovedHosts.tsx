@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react';
-import { backgroundStore } from '~/core/state';
 import { Storage } from '~/core/storage';
 import { Box, Text } from '~/design-system';
 
@@ -16,10 +15,7 @@ export function ApprovedHosts() {
     })();
   }, []);
 
-  const clearApprovedHosts = useCallback(() => {
-    Storage.set('approvedHosts', []);
-    backgroundStore.getState().clearApprovedHosts();
-  }, []);
+  const clearApprovedHosts = useCallback(() => null, []);
 
   return (
     <>

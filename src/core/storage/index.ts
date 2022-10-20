@@ -21,7 +21,6 @@ export const Storage = {
     }) => {
       const newValue = changes[key]?.newValue;
       const oldValue = changes[key]?.oldValue;
-      if (!newValue) return;
       callback(newValue, oldValue);
     };
     chrome.storage.local.onChanged.addListener(listener);

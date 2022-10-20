@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 import { extensionMessenger } from '~/core/messengers';
-import { backgroundStore } from '~/core/state';
 import { NotificationWindow } from '~/core/state/slices/notificationWindowSlice';
 import { PendingRequest } from '~/core/state/slices/pendingRequestsSlice';
 import { Storage } from '~/core/storage';
@@ -32,15 +31,11 @@ export function ApproveMessage() {
 
   const approveRequest = useCallback(() => {
     extensionMessenger.send(`message:${pendingRequest?.id}`, true);
-    backgroundStore.getState().removePendingRequest();
-    Storage.set('pendingRequest', {});
     if (window?.id) chrome.windows.remove(window.id);
   }, [pendingRequest?.id, window?.id]);
 
   const rejectRequest = useCallback(() => {
     extensionMessenger.send(`message:${pendingRequest?.id}`, false);
-    backgroundStore.getState().removePendingRequest();
-    Storage.set('pendingRequest', {});
     if (window?.id) chrome.windows.remove(window.id);
   }, [pendingRequest?.id, window?.id]);
 
