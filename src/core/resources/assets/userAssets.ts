@@ -9,7 +9,7 @@ import {
 } from '~/core/react-query';
 import { refractionAddressWs, refractionAddressMessages } from '~/core/network';
 import { useEffect } from 'react';
-import { useAddressSocket } from '~/entries/popup/hooks/useAddressSocket';
+import { AddressAssetsReceivedMessage } from '~/core/network/refractionAddressWs';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 
@@ -42,30 +42,36 @@ async function userAssetsQueryFunction({
     },
     scope: ['assets'],
   });
-  return [];
+  // continue to display last message's data while waiting for listener to populate query cache
+  return queryClient.getQueryData(
+    userAssetsQueryKey({ address, currency }),
+  ) as AddressAssetsReceivedMessage;
 }
 
 type UserAssetsResult = QueryFunctionResult<typeof userAssetsQueryFunction>;
 
+function parseUserAssets(message: AddressAssetsReceivedMessage) {
+  const data = message?.payload?.assets || {};
+  // do transforms here
+  return data;
+}
+
 // ///////////////////////////////////////////////
 // Query Hook
 
+// This should be refactored to use wagmi.useAccount
 export function useUserAssets(
   { address, currency = 'usd' }: UserAssetsArgs,
   config: QueryConfig<UserAssetsResult, Error, UserAssetsQueryKey> = {},
 ) {
-  useAddressSocket({ address, currency });
   useEffect(() => {
     refractionAddressWs.on(
       refractionAddressMessages.ADDRESS_ASSETS.RECEIVED,
-      (message) => {
+      (message: AddressAssetsReceivedMessage) => {
         console.log(refractionAddressMessages.ADDRESS_ASSETS.RECEIVED, message);
         queryClient.setQueryData(
           userAssetsQueryKey({ address, currency }),
-          Object.values(message?.payload?.assets).map((item) => ({
-            symbol: item?.asset?.symbol,
-            quantity: item?.quantity,
-          })),
+          parseUserAssets(message),
         );
       },
     );

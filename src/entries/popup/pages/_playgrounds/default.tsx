@@ -6,6 +6,8 @@ import { usePopupStore } from '~/core/state';
 import { Storage } from '~/core/storage';
 import { Box, Text, Inset, Stack } from '~/design-system';
 import { InjectToggle } from '../../components/InjectToggle';
+import { useAccountSwitcher } from '../../hooks/useAccountSwitcher';
+import { useBalances } from '../../hooks/useBalances';
 
 const HOWIE_WALLET = '0xB5447de7399e1fADBc13a1b4E14bdAD3B1c2D577';
 
@@ -13,7 +15,13 @@ export function Default() {
   const { address } = useAccount();
   const [currentAddress] = usePopupStore((state) => [state.currentAddress]);
   const [currentCurrency, setCurrentCurrency] = useState<string>('usd');
+  useAccountSwitcher({ address: currentAddress });
+
   const { data: userAssets } = useUserAssets({
+    address: currentAddress,
+    currency: currentCurrency,
+  });
+  const balances = useBalances({
     address: currentAddress,
     currency: currentCurrency,
   });
@@ -28,7 +36,6 @@ export function Default() {
   const { data: firstTransactionTimestamp } = useFirstTransactionTimestamp({
     address,
   });
-
   return (
     <Inset space="20px">
       <Stack space="24px">
@@ -92,7 +99,7 @@ export function Default() {
           </Text>
         </Box>
         <Text size="15pt" weight="medium">
-          {JSON.stringify(userAssets)}
+          {JSON.stringify(balances)}
         </Text>
       </Stack>
     </Inset>
