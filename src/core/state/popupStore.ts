@@ -15,6 +15,6 @@ export const usePopupStore = create<PopupStoreState>()(
     (...props) => ({
       ...currentAddressSlice(...props),
     }),
-    { name: 'store:background', getStorage: () => persistStorage },
+    { name: 'store:popup', getStorage: () => persistStorage },
   ),
 );

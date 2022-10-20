@@ -1,7 +1,7 @@
 import { handleInstallExtension } from './handlers/handleInstallExtension';
 import { handleProviderRequest } from './handlers/handleProviderRequest';
-import { handleCoreStoreChange } from './handlers/handleCoreStoreChange';
+import { handleBackgroundStoreChange } from './handlers/handleBackgroundStoreChange';
 
 handleInstallExtension();
 handleProviderRequest();
-handleCoreStoreChange();
+handleBackgroundStoreChange();

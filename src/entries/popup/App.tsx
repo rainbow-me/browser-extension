@@ -4,8 +4,6 @@ import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client
 
 import { createWagmiClient } from '~/core/wagmi';
 import { persistOptions, queryClient } from '~/core/react-query';
-import { useCoreStore } from '~/core/state';
-import { extensionMessenger } from '~/core/messengers';
 
 import { useForceConnect } from './hooks/useForceConnect';
 import { Index } from './pages';
@@ -30,10 +28,6 @@ export function Routes() {
     </div>
   );
 }
-
-useCoreStore.subscribe(async (state) => {
-  await extensionMessenger.send('coreStore', state);
-});
 
 export function App() {
   return (
