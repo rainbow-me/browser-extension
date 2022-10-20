@@ -39,8 +39,6 @@ export function ApproveMessage() {
     if (window?.id) chrome.windows.remove(window.id);
   }, [pendingRequest?.id, window?.id]);
 
-  if (!pendingRequest) return null;
-
   return (
     <>
       <Box padding="16px" style={{ borderRadius: 999 }}>
@@ -51,7 +49,7 @@ export function ApproveMessage() {
       </Box>
       <Box
         as="button"
-        id="injection-button"
+        id="accept-button"
         background="surfaceSecondary"
         onClick={approveRequest}
         padding="16px"
@@ -63,14 +61,14 @@ export function ApproveMessage() {
       </Box>
       <Box
         as="button"
-        id="injection-button"
+        id="reject-button"
         background="surfaceSecondary"
         onClick={rejectRequest}
         padding="16px"
         style={{ borderRadius: 999 }}
       >
         <Text color="labelSecondary" size="14pt" weight="bold">
-          DECLINE
+          REJECT
         </Text>
       </Box>
     </>

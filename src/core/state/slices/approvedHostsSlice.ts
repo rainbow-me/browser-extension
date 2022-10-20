@@ -16,7 +16,7 @@ export const approvedHostsSlice: StateCreator<
 > = (set, get) => ({
   approvedHosts: [],
   addApprovedHost: (host) =>
-    set(({ approvedHosts }) => ({
+    set(({ approvedHosts }: { approvedHosts: string[] }) => ({
       approvedHosts: approvedHosts.concat([host]),
     })),
   isApprovedHost: (host) => {

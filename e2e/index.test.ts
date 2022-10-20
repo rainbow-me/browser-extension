@@ -60,7 +60,7 @@ it('should be able to turn ON injection', async () => {
   expect(actual).toEqual(expected);
 });
 
-it('should be able to connect to bx test dapp', async () => {
+it.skip('should be able to connect to bx test dapp', async () => {
   await driver.get('https://bx-test-dapp.vercel.app/');
 
   const button = await findElementByText(driver, 'Connect Wallet');
