@@ -117,7 +117,7 @@ export function Index() {
                   {balance && (
                     <Inline alignVertical="center">
                       <SFSymbol symbol="eth" size={14} />
-                      <Text size="17pt" weight="bold">
+                      <Text size="16pt" weight="bold">
                         {parseFloat(balance?.formatted).toFixed(4)}
                       </Text>
                     </Inline>
@@ -215,7 +215,7 @@ function Tab({
             )}
             <Text
               color={active ? 'label' : 'labelTertiary'}
-              size="15pt"
+              size="16pt"
               weight="semibold"
             >
               {text}

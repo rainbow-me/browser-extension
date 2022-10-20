@@ -23,11 +23,11 @@ export function InjectToggle() {
   return (
     <>
       <Box display="flex" flexDirection="row" gap="8px">
-        <Text size="17pt" weight="bold" color="labelTertiary">
+        <Text size="14pt" weight="bold" color="labelTertiary">
           Injecting?
         </Text>
         <Text
-          size="17pt"
+          size="14pt"
           weight="bold"
           color={status ? 'green' : 'red'}
           testId="injection-status"
@@ -43,7 +43,7 @@ export function InjectToggle() {
         padding="16px"
         style={{ borderRadius: 999 }}
       >
-        <Text color="labelSecondary" size="15pt" weight="bold">
+        <Text color="labelSecondary" size="14pt" weight="bold">
           TURN {status ? 'OFF' : 'ON'}
         </Text>
       </Box>

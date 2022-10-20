@@ -11,7 +11,7 @@ export function ClearStorage() {
       padding="16px"
       style={{ borderRadius: 999 }}
     >
-      <Text color="labelSecondary" size="15pt" weight="bold">
+      <Text color="labelSecondary" size="16pt" weight="bold">
         CLEAR STORAGE
       </Text>
     </Box>

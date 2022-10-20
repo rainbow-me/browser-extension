@@ -3,15 +3,16 @@ import { HashRouter } from 'react-router-dom';
 import { WagmiConfig } from 'wagmi';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 
-import { createWagmiClient } from '~/core/wagmi';
 import { persistOptions, queryClient } from '~/core/react-query';
+import { initializeSentry } from '~/core/sentry';
+import { createWagmiClient } from '~/core/wagmi';
+import { Box } from '~/design-system';
 
 import { RainbowConnector } from './wagmi/RainbowConnector';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { Routes } from './Routes';
-import { Box } from '~/design-system';
 
-const playground = process.env.PLAYGROUND;
+const playground = process.env.PLAYGROUND as 'default' | 'ds';
 
 const wagmiClient = createWagmiClient({
   autoConnect: true,
@@ -20,6 +21,10 @@ const wagmiClient = createWagmiClient({
 });
 
 export function App() {
+  React.useEffect(() => {
+    initializeSentry();
+  }, []);
+
   return (
     <PersistQueryClientProvider
       client={queryClient}

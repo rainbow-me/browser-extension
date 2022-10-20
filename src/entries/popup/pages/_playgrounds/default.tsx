@@ -1,12 +1,18 @@
 import React from 'react';
 import { chain, useAccount, useBalance } from 'wagmi';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
+import { usePopupStore } from '~/core/state';
 import { Text, Inset, Stack } from '~/design-system';
 import { ClearStorage } from '../../components/_dev/ClearStorage';
 import { InjectToggle } from '../../components/_dev/InjectToggle';
 
 export function Default() {
   const { address } = useAccount();
+
+  const [currentAddress] = usePopupStore((state) => [state.currentAddress]);
+
+  console.log(currentAddress);
+
   const { data: mainnetBalance } = useBalance({
     addressOrName: address,
     chainId: chain.mainnet.id,
@@ -26,14 +32,14 @@ export function Default() {
           Rainbow Rocks!!!
         </Text>
         <Stack space="16px">
-          <Text size="17pt" weight="bold" color="labelSecondary">
+          <Text size="14pt" weight="bold" color="labelSecondary">
             Mainnet Balance: {mainnetBalance?.formatted}
           </Text>
-          <Text size="17pt" weight="bold" color="labelSecondary">
+          <Text size="14pt" weight="bold" color="labelSecondary">
             Polygon Balance: {polygonBalance?.formatted}
           </Text>
           {firstTransactionTimestamp && (
-            <Text size="17pt" weight="bold" color="labelTertiary">
+            <Text size="14pt" weight="bold" color="labelTertiary">
               First transaction on:{' '}
               {new Date(firstTransactionTimestamp).toString()}
             </Text>
