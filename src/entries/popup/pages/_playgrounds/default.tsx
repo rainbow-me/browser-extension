@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { chain, useAccount, useBalance } from 'wagmi';
 import { useUserAssets } from '~/core/resources/assets';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
@@ -6,24 +6,24 @@ import { usePopupStore } from '~/core/state';
 import { Storage } from '~/core/storage';
 import { Box, Text, Inset, Stack } from '~/design-system';
 import { InjectToggle } from '../../components/InjectToggle';
-import { useAccountSwitcher } from '../../hooks/useAccountSwitcher';
 
 const HOWIE_WALLET = '0xB5447de7399e1fADBc13a1b4E14bdAD3B1c2D577';
 
 export function Default() {
   const { address } = useAccount();
-  const [currentAddress] = usePopupStore((state) => [state.currentAddress]);
-  const [currentCurrency, setCurrentCurrency] = useState<string>('usd');
-  useAccountSwitcher({ address: currentAddress });
+  const [
+    currentAddress,
+    setCurrentAddress,
+    currentCurrency,
+    setCurrentCurrency,
+  ] = usePopupStore((state) => [
+    state.currentAddress,
+    state.setCurrentAddress,
+    state.currentCurrency,
+    state.setCurrentCurrency,
+  ]);
 
-  const { data: userAssets } = useUserAssets({
-    address: currentAddress,
-    currency: currentCurrency,
-  });
-  const balances = useBalances({
-    address: currentAddress,
-    currency: currentCurrency,
-  });
+  const { data: userAssets } = useUserAssets();
   const { data: mainnetBalance } = useBalance({
     addressOrName: address,
     chainId: chain.mainnet.id,
@@ -35,6 +35,7 @@ export function Default() {
   const { data: firstTransactionTimestamp } = useFirstTransactionTimestamp({
     address,
   });
+
   return (
     <Inset space="20px">
       <Stack space="24px">
@@ -71,16 +72,16 @@ export function Default() {
           as="button"
           background="surfaceSecondary"
           onClick={() => {
-            if (testAddress !== HOWIE_WALLET) {
-              setTestAddress(HOWIE_WALLET);
+            if (currentAddress !== HOWIE_WALLET) {
+              setCurrentAddress(HOWIE_WALLET);
             } else {
-              setTestAddress(address || '');
+              setCurrentAddress(address || '');
             }
           }}
           padding="16px"
           style={{ borderRadius: 999 }}
         >
-          <Text color="labelSecondary" size="15pt" weight="bold">
+          <Text color="labelSecondary" size="16pt" weight="bold">
             Change Address
           </Text>
         </Box>
@@ -88,18 +89,26 @@ export function Default() {
           as="button"
           background="surfaceSecondary"
           onClick={() => {
-            setCurrentCurrency('gbp');
+            const newCurrency = currentCurrency === 'usd' ? 'gbp' : 'usd';
+            setCurrentCurrency(newCurrency);
           }}
           padding="16px"
           style={{ borderRadius: 999 }}
         >
-          <Text color="labelSecondary" size="15pt" weight="bold">
-            {`CURRENT CURRENCY: ${currentCurrency.toUpperCase()} | CHANGE`}
+          <Text color="labelSecondary" size="16pt" weight="bold">
+            {`CURRENT CURRENCY: ${currentCurrency?.toUpperCase()} | CHANGE`}
           </Text>
         </Box>
-        <Text size="15pt" weight="medium">
-          {JSON.stringify(userAssets)}
-        </Text>
+        {Object.values(userAssets || {}).map((item, i) => (
+          <Text
+            color="labelSecondary"
+            size="16pt"
+            weight="bold"
+            key={`${item?.asset?.address}${i}`}
+          >
+            {`${item?.asset?.name}: ${item?.asset?.price?.value}`}
+          </Text>
+        ))}
       </Stack>
     </Inset>
   );

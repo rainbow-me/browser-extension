@@ -2,14 +2,13 @@ import { useQuery } from '@tanstack/react-query';
 
 import {
   createQueryKey,
-  queryClient,
   QueryConfig,
   QueryFunctionArgs,
   QueryFunctionResult,
 } from '~/core/react-query';
 import { refractionAddressWs, refractionAddressMessages } from '~/core/network';
-import { useEffect } from 'react';
 import { AddressAssetsReceivedMessage } from '~/core/network/refractionAddressWs';
+import { usePopupStore } from '~/core/state';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 
@@ -34,7 +33,9 @@ type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;
 
 async function userAssetsQueryFunction({
   queryKey: [{ address, currency }],
-}: QueryFunctionArgs<typeof userAssetsQueryKey>) {
+}: QueryFunctionArgs<
+  typeof userAssetsQueryKey
+>): Promise<AddressAssetsReceivedMessage> {
   refractionAddressWs.emit('get', {
     payload: {
       address,
@@ -42,10 +43,23 @@ async function userAssetsQueryFunction({
     },
     scope: ['assets'],
   });
-  // continue to display last message's data while waiting for listener to populate query cache
-  return queryClient.getQueryData(
-    userAssetsQueryKey({ address, currency }),
-  ) as AddressAssetsReceivedMessage;
+  return new Promise((resolve) => {
+    const timeout = setTimeout(() => {
+      refractionAddressWs.removeEventListener(
+        refractionAddressMessages.ADDRESS_ASSETS.RECEIVED,
+        resolver,
+      );
+      resolve({});
+    }, 10000);
+    const resolver = (message: AddressAssetsReceivedMessage) => {
+      clearTimeout(timeout);
+      resolve(parseUserAssets(message));
+    };
+    refractionAddressWs.on(
+      refractionAddressMessages.ADDRESS_ASSETS.RECEIVED,
+      resolver,
+    );
+  });
 }
 
 type UserAssetsResult = QueryFunctionResult<typeof userAssetsQueryFunction>;
@@ -61,23 +75,14 @@ function parseUserAssets(message: AddressAssetsReceivedMessage) {
 
 // This should be refactored to use wagmi.useAccount
 export function useUserAssets(
-  { address, currency = 'usd' }: UserAssetsArgs,
   config: QueryConfig<UserAssetsResult, Error, UserAssetsQueryKey> = {},
 ) {
-  useEffect(() => {
-    refractionAddressWs.on(
-      refractionAddressMessages.ADDRESS_ASSETS.RECEIVED,
-      (message: AddressAssetsReceivedMessage) => {
-        console.log(refractionAddressMessages.ADDRESS_ASSETS.RECEIVED, message);
-        queryClient.setQueryData(
-          userAssetsQueryKey({ address, currency }),
-          parseUserAssets(message),
-        );
-      },
-    );
-  }, [address, currency]);
+  const [currentAddress, currentCurrency] = usePopupStore((state) => [
+    state.currentAddress,
+    state.currentCurrency,
+  ]);
   return useQuery(
-    userAssetsQueryKey({ address, currency }),
+    userAssetsQueryKey({ address: currentAddress, currency: currentCurrency }),
     userAssetsQueryFunction,
     {
       ...config,

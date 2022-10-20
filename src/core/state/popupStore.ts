@@ -5,8 +5,13 @@ import {
   CurrentAddressSliceState,
   currentAddressSlice,
 } from './slices/currentAddressSlice';
+import {
+  CurrentCurrencySliceState,
+  currentCurrencySlice,
+} from './slices/currentCurrencySlice';
 
-export type PopupStoreState = CurrentAddressSliceState;
+export type PopupStoreState = CurrentAddressSliceState &
+  CurrentCurrencySliceState;
 
 // The usePopupStore hook is to be used exclusively for global state that is
 // needed in the popup.ts context of the app.
@@ -14,6 +19,7 @@ export const usePopupStore = create<PopupStoreState>()(
   persist(
     (...props) => ({
       ...currentAddressSlice(...props),
+      ...currentCurrencySlice(...props),
     }),
     { name: 'store:popup', getStorage: () => persistStorage },
   ),
