@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand';
-import { BackgrounStorage } from '~/entries/background/storage';
+import { BackgroundStoreState } from '../backgroundStore';
 
 interface Sessions {
   [host: string]: {
@@ -25,36 +25,36 @@ export interface SessionsSliceState {
   ) => void;
 }
 
-export const sessionsSlice: StateCreator<
-  BackgrounStorage,
-  [['zustand/persist', unknown]],
-  [],
-  SessionsSliceState
-> = (set, get) => ({
-  sessions: {},
-  currentAccount: '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4',
-  setSessions: (sessions: Sessions) => set({ sessions }),
-  getSession: (host: string) => {
-    const sessions = get().sessions;
-    return sessions[host];
-  },
-  createSession: (host: string, accountAdddress: string, chainId: string) => {
-    const sessions = get().sessions;
-    const newSessions = {
-      [host]: {
-        accountAdddress,
-        chainId,
-      },
-      ...sessions,
-    };
-    set({ sessions: newSessions });
-  },
-  updateSession: (host: string, accountAdddress: string, chainId: string) => {
-    const sessions = get().sessions;
-    const newSessions = {
-      ...sessions,
-      [host]: { accountAdddress, chainId },
-    };
-    set({ sessions: newSessions });
-  },
-});
+// export const sessionsSlice: StateCreator<
+//   BackgroundStoreState,
+//   [['zustand/persist', unknown]],
+//   [],
+//   SessionsSliceState
+// > = (set, get) => ({
+//   sessions: {},
+//   currentAccount: '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4',
+//   setSessions: (sessions: Sessions) => set({ sessions }),
+//   getSession: (host: string) => {
+//     const sessions = get().sessions;
+//     return sessions[host];
+//   },
+//   createSession: (host: string, accountAdddress: string, chainId: string) => {
+//     const sessions = get().sessions;
+//     const newSessions = {
+//       [host]: {
+//         accountAdddress,
+//         chainId,
+//       },
+//       ...sessions,
+//     };
+//     set({ sessions: newSessions });
+//   },
+//   updateSession: (host: string, accountAdddress: string, chainId: string) => {
+//     const sessions = get().sessions;
+//     const newSessions = {
+//       ...sessions,
+//       [host]: { accountAdddress, chainId },
+//     };
+//     set({ sessions: newSessions });
+//   },
+// });

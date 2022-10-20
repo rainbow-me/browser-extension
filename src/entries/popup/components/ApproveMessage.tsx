@@ -1,39 +1,34 @@
 import React, { useCallback, useState } from 'react';
-import { rpcHub } from '~/core/rpc-hub';
+import { bridgeMessenger } from '~/core/messengers';
+import { backgroundStore } from '~/core/state';
+import { PendingRequest } from '~/core/state/slices/pendingRequestsSlice';
+import { backgroundStoreTransport } from '~/core/transports';
 import { Box, Text } from '~/design-system';
-import { backgroundStore } from '~/entries/background/storage';
 
 export function ApproveMessage() {
-  // const [pendingRequests, setPendingRequests] = useState<PendingRequest[]>([]);
-  // backgroundStore.subscribe((state) => {
-  //   setPendingRequests(state.pendingRequests);
-  // });
-  const pendingRequests = backgroundStore.getState().pendingRequests;
-  console.log('pendingRequests', pendingRequests);
-  const pendingRequest = pendingRequests?.[0] || null;
-  // rpcHub.on('unapprovedMessage', (message) => {
-  //   console.log('POP UP unapprovedMessage', message);
-  //   setMessage(message);
-  // });
+  const [pendingRequest, setPendingRequests] = useState<PendingRequest | null>(
+    backgroundStore.getState().pendingRequests,
+  );
+  backgroundStoreTransport.reply(async (state) => {
+    setPendingRequests(state.pendingRequests);
+  });
 
   const approveRequest = useCallback(() => {
-    rpcHub.emit('unapprovedMessage::approved', pendingRequest);
-    backgroundStore.getState().removePendingRequest(pendingRequest?.id);
+    bridgeMessenger.send(`message:${pendingRequest?.id}`, true);
   }, [pendingRequest]);
 
   const rejectRequest = useCallback(() => {
-    rpcHub.emit('unapprovedMessage::rejected', pendingRequest);
-    console.log('removing pendingRequest', pendingRequest);
-    backgroundStore.getState().removePendingRequest(pendingRequest?.id);
+    bridgeMessenger.send(`message:${pendingRequest?.id}`, false);
   }, [pendingRequest]);
 
-  if (!pendingRequests.length) return null;
+  if (!pendingRequest) return null;
 
   return (
     <>
       <Box padding="16px" style={{ borderRadius: 999 }}>
         <Text color="labelSecondary" size="15pt" weight="bold">
-          RPC METHOD: {pendingRequest?.method} + {pendingRequests.length}
+          RPC METHOD: {pendingRequest?.method} +{' '}
+          {JSON.stringify(pendingRequest)}
         </Text>
       </Box>
       <Box

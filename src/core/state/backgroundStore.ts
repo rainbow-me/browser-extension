@@ -5,8 +5,13 @@ import {
   CurrentAddressSliceState,
   currentAddressSlice,
 } from './slices/currentAddressSlice';
+import {
+  pendingRequestSlice,
+  PendingRequestsSliceState,
+} from './slices/pendingRequestsSlice';
 
-export type BackgroundStoreState = CurrentAddressSliceState;
+export type BackgroundStoreState = CurrentAddressSliceState &
+  PendingRequestsSliceState;
 
 // The backgroundStore instance is to be used exclusively for global state that
 // is needed in the background, content, inpage contexts of the app
@@ -16,6 +21,7 @@ export const backgroundStore = create<BackgroundStoreState>()(
   persist(
     (...props) => ({
       ...currentAddressSlice(...props),
+      ...pendingRequestSlice(...props),
     }),
     { name: 'store:background', getStorage: () => persistStorage },
   ),

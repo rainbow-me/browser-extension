@@ -1,4 +1,4 @@
-import { backgroundStore } from '~/core/state';
+import { backgroundStore } from '~/core/state/backgroundStore';
 import { backgroundStoreTransport } from '~/core/transports';
 
 /**

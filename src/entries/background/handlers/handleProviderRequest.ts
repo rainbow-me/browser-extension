@@ -1,4 +1,5 @@
-import { requestSlice } from '~/core/state/slices/requestsSlice';
+import { bridgeMessenger, extensionMessenger } from '~/core/messengers';
+import { backgroundStore } from '~/core/state';
 import {
   coreProviderTransport,
   providerRequestTransport,
@@ -6,14 +7,14 @@ import {
 
 export const DEFAULT_ACCOUNT = '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
 export const DEFAULT_CHAIN_ID = '0x1';
-import { backgroundStore } from '../storage';
 
 /**
  * Handles RPC requests from the provider.
  */
 export const handleProviderRequest = () =>
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
-    console.log(meta.sender, method);
+    console.log('-----', meta.sender, method);
+    console.log('-- send', 'topic123');
     try {
       let response = null;
       switch (method) {
@@ -31,13 +32,25 @@ export const handleProviderRequest = () =>
         case 'wallet_addEthereumChain':
         case 'wallet_switchEthereumChain':
         case 'eth_requestAccounts': {
-          const requestResponse = await coreProviderTransport.send({
+          backgroundStore.getState().addPendingRequest({
             method,
             id,
             params,
           });
-          if (requestResponse.error) throw requestResponse.error;
-          const account = backgroundStore.getState().currentAccount;
+          console.log('-- send', `message:${id}`);
+
+          const requestResponse = await extensionMessenger.send(
+            `message:${id}`,
+            {
+              method,
+              id,
+              params,
+            },
+          );
+          console.log('-- requestResponse', requestResponse);
+
+          // if (requestResponse?.error) throw requestResponse.error;
+          const account = backgroundStore.getState().currentAddress;
           response = [account];
           break;
         }

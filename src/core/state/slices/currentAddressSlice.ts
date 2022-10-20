@@ -12,6 +12,6 @@ export const currentAddressSlice: StateCreator<
   [],
   CurrentAddressSliceState
 > = (set) => ({
-  currentAddress: undefined,
+  currentAddress: '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4',
   setCurrentAddress: (newAddress) => set({ currentAddress: newAddress }),
 });
