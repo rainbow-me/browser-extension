@@ -16,6 +16,11 @@
       "packages": {
         "browserify>process": true
       }
+    },
+    "framer-motion>@emotion/is-prop-valid": {
+      "packages": {
+        "framer-motion>@emotion/is-prop-valid>@emotion/memoize": true
+      }
     }
   }
 }

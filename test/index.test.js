@@ -4,7 +4,6 @@
 
 require('chromedriver');
 require('geckodriver');
-const { By } = require('selenium-webdriver');
 const {
   querySelector,
   delay,
@@ -19,6 +18,8 @@ let driver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
+jest.retryTimes(5);
+
 beforeAll(async () => {
   driver = await initDriverWithOptions({
     browser,
@@ -31,7 +32,7 @@ beforeAll(async () => {
 
 afterAll(async () => driver.quit());
 
-it('Should opens the popup', async () => {
+it('Should open the popup', async () => {
   await driver.get(rootURL + '/popup.html');
 });
 
@@ -59,8 +60,8 @@ it('should be able to turn ON injection', async () => {
   expect(actual).toEqual(expected);
 });
 
-it('should be able to connect to rainbowkit', async () => {
-  await driver.get('https://rainbowkit.com');
+it('should be able to connect to bx test dapp', async () => {
+  await driver.get('https://bx-test-dapp.vercel.app/');
 
   const button = await findElementByText(driver, 'Connect Wallet');
   expect(button).toBeTruthy();
@@ -69,25 +70,16 @@ it('should be able to connect to rainbowkit', async () => {
   const modalTitle = await findElementByText(driver, 'Connect a Wallet');
   expect(modalTitle).toBeTruthy();
 
-  const buttons = await driver.findElements(By.css('button'));
-  let mmButton = null;
-  for (let i = 0; i < buttons.length; i++) {
-    const button = buttons[i];
-    if ((await button.getText()) === 'MetaMask') {
-      mmButton = button;
-      break;
-    }
-  }
+  const mmButton = await querySelector(
+    driver,
+    '[data-testid="rk-wallet-option-metaMask"]',
+  );
 
-  expect(await mmButton.getText()).toEqual('MetaMask');
   await mmButton.click();
 
-  // This sucks but I don't have another way of selecting the button
-  // Rainbowkit doesn't have any attribute that helps us to select it
-  // Also I think this will break if there's a redeployment
   const topButton = await querySelector(
     driver,
-    '.iekbcc0.iekbcc9.ju367v4.ju367v9x.ju367vn.ju367vec.ju367vfo.ju367va.ju367v11.ju367v1c.ju367v8o._12cbo8i3.ju367v8m._12cbo8i4._12cbo8i6:last-child',
+    '[data-testid="rk-account-button"]',
   );
 
   expect(topButton).toBeTruthy();

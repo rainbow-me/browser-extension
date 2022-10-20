@@ -2,7 +2,7 @@ import React from 'react';
 import { chain, useAccount, useBalance } from 'wagmi';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
 import { Storage } from '~/core/storage';
-import { Box, Text } from '~/design-system';
+import { Box, Text, Inset, Stack } from '~/design-system';
 import { InjectToggle } from '../../components/InjectToggle';
 
 export function Default() {
@@ -20,36 +20,38 @@ export function Default() {
   });
 
   return (
-    <Box display="flex" flexDirection="column" gap="24px" padding="20px">
-      <Text as="h1" size="20pt" weight="bold">
-        Rainbow Rocks!!!
-      </Text>
-      <Box display="flex" flexDirection="column" gap="16px">
-        <Text size="17pt" weight="bold" color="labelSecondary">
-          Mainnet Balance: {mainnetBalance?.formatted}
+    <Inset space="20px">
+      <Stack space="24px">
+        <Text as="h1" size="20pt" weight="bold">
+          Rainbow Rocks!!!
         </Text>
-        <Text size="17pt" weight="bold" color="labelSecondary">
-          Polygon Balance: {polygonBalance?.formatted}
-        </Text>
-        {firstTransactionTimestamp && (
-          <Text size="17pt" weight="bold" color="labelTertiary">
-            First transaction on:{' '}
-            {new Date(firstTransactionTimestamp).toString()}
+        <Stack space="16px">
+          <Text size="17pt" weight="bold" color="labelSecondary">
+            Mainnet Balance: {mainnetBalance?.formatted}
           </Text>
-        )}
-      </Box>
-      <InjectToggle />
-      <Box
-        as="button"
-        background="surfaceSecondary"
-        onClick={Storage.clear}
-        padding="16px"
-        style={{ borderRadius: 999 }}
-      >
-        <Text color="labelSecondary" size="15pt" weight="bold">
-          CLEAR STORAGE
-        </Text>
-      </Box>
-    </Box>
+          <Text size="17pt" weight="bold" color="labelSecondary">
+            Polygon Balance: {polygonBalance?.formatted}
+          </Text>
+          {firstTransactionTimestamp && (
+            <Text size="17pt" weight="bold" color="labelTertiary">
+              First transaction on:{' '}
+              {new Date(firstTransactionTimestamp).toString()}
+            </Text>
+          )}
+        </Stack>
+        <InjectToggle />
+        <Box
+          as="button"
+          background="surfaceSecondary"
+          onClick={Storage.clear}
+          padding="16px"
+          style={{ borderRadius: 999 }}
+        >
+          <Text color="labelSecondary" size="15pt" weight="bold">
+            CLEAR STORAGE
+          </Text>
+        </Box>
+      </Stack>
+    </Inset>
   );
 }

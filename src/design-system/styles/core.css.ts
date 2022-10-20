@@ -139,6 +139,7 @@ const boxBaseProperties = defineProperties({
     bottom: positionSpace,
     display: ['none', 'flex', 'block', 'inline'],
     flexDirection: ['row', 'column'],
+    flexWrap: ['wrap'],
     gap: space,
     justifyContent: [
       'stretch',
