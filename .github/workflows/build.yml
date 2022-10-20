@@ -45,10 +45,10 @@ jobs:
           sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
       - name: Run e2e (Chrome)
         run: |
-          yarn test:linux:chrome
+          yarn e2e:linux:chrome
       - name: Run e2e (Brave)
         run: |
-          yarn test:linux:brave
+          yarn e2e:linux:brave
       - name: Pack extension
         run: yarn zip
       - name: Upload artifacts
