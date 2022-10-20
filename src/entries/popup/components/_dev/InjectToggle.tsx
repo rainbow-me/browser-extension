@@ -38,7 +38,7 @@ export function InjectToggle() {
       <Box
         as="button"
         id="injection-button"
-        background="surfaceSecondary"
+        background="accent"
         onClick={switchInjection}
         padding="16px"
         style={{ borderRadius: 999 }}

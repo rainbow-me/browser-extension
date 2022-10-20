@@ -120,6 +120,7 @@ export type ContextualColorValue<Value> = {
 export type BackgroundColor =
   | 'surfacePrimary'
   | 'surfacePrimaryElevated'
+  | 'surfacePrimaryElevatedSecondary'
   | 'surfaceSecondary'
   | 'surfaceSecondaryElevated'
   | 'fill'
@@ -157,7 +158,17 @@ export const backgroundColors: Record<
       setColorContext: 'light',
     },
     dark: {
-      color: globalColors.white10,
+      color: '#191A1C',
+      setColorContext: 'dark',
+    },
+  },
+  surfacePrimaryElevatedSecondary: {
+    light: {
+      color: 'rgba(245, 245, 247, 0.68)',
+      setColorContext: 'light',
+    },
+    dark: {
+      color: 'rgba(36, 37, 41, 0.4)',
       setColorContext: 'dark',
     },
   },
@@ -303,6 +314,7 @@ export type ForegroundColor =
   | 'scrimTertiary'
   | 'separator'
   | 'separatorSecondary'
+  | 'separatorTertiary'
   | 'buttonStroke'
   | 'buttonStrokeSecondary'
   | 'shadowNear'
@@ -356,6 +368,10 @@ export const foregroundColors: Record<
   separatorSecondary: {
     light: globalColors.grey20,
     dark: 'rgba(245, 248, 255, 0.06)',
+  },
+  separatorTertiary: {
+    light: 'rgba(9, 17, 31, 0.02)',
+    dark: 'rgba(245, 248, 255, 0.02)',
   },
   buttonStroke: {
     light: 'rgba(0, 0, 0, 0.05)',

@@ -97,6 +97,8 @@ const semanticColorVars = createThemeContract({
   foregroundColors: mapValues(foregroundColors, () => null),
 });
 
+export const foregroundColorVars = semanticColorVars.foregroundColors;
+
 globalStyle(`html.${rootThemeClasses.lightTheme}`, {
   backgroundColor: backgroundColors.surfacePrimary.light.color,
   vars: { [accentColorVar]: backgroundColors.blue.light.color },
@@ -141,6 +143,9 @@ const boxBaseProperties = defineProperties({
     flexDirection: ['row', 'column'],
     flexWrap: ['wrap'],
     gap: space,
+    height: {
+      full: '100%',
+    },
     justifyContent: [
       'stretch',
       'flex-start',

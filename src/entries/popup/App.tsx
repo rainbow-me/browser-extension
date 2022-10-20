@@ -9,6 +9,7 @@ import { persistOptions, queryClient } from '~/core/react-query';
 import { RainbowConnector } from './wagmi/RainbowConnector';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { Routes } from './Routes';
+import { Box } from '~/design-system';
 
 const playground = process.env.PLAYGROUND;
 
@@ -28,9 +29,11 @@ export function App() {
         {playground ? (
           PlaygroundComponents[playground]
         ) : (
-          <HashRouter>
-            <Routes />
-          </HashRouter>
+          <Box id="main" background="surfacePrimaryElevated">
+            <HashRouter>
+              <Routes />
+            </HashRouter>
+          </Box>
         )}
       </WagmiConfig>
     </PersistQueryClientProvider>
