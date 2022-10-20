@@ -135,12 +135,12 @@ export function DesignSystem() {
                   borderWidth="1px"
                   borderColor="buttonStrokeSecondary"
                 >
-                  <Text size="15pt" weight="bold">
+                  <Text size="14pt" weight="bold">
                     List Item 1
                   </Text>
                 </Box>
                 <Box borderRadius="12px" padding="12px">
-                  <Text size="15pt" weight="bold">
+                  <Text size="14pt" weight="bold">
                     List Item 2
                   </Text>
                 </Box>
@@ -148,7 +148,7 @@ export function DesignSystem() {
                   <Separator color="separatorSecondary" />
                 </Inset>
                 <Box borderRadius="12px" padding="12px">
-                  <Text size="15pt" weight="bold">
+                  <Text size="14pt" weight="bold">
                     List Item 3
                   </Text>
                 </Box>
