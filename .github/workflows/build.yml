@@ -49,13 +49,11 @@ jobs:
       - name: Run e2e (Brave)
         run: |
           yarn e2e:linux:brave
-      - name: Pack extension
-        run: yarn zip
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
           name: rainbowbx-${{ github.sha }}.zip
-          path: rainbowbx.zip
+          path: build/
 
 
           
