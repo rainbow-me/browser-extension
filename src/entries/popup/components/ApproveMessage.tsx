@@ -7,17 +7,15 @@ import { Storage } from '~/core/storage';
 import { Box, Text } from '~/design-system';
 
 export function ApproveMessage() {
-  const [pendingRequest, setPendingRequests] = useState<PendingRequest | null>(
-    backgroundStore.getState().pendingRequests,
-  );
+  const [pendingRequest, setPendingRequest] = useState<PendingRequest | null>();
   const [window, setWindow] = useState<NotificationWindow | null>();
 
   React.useEffect(() => {
     (async () => {
-      const pendingRequests = await Storage.get('pendingRequests');
-      setPendingRequests(pendingRequests);
+      const pendingRequest = await Storage.get('pendingRequest');
+      setPendingRequest(pendingRequest);
 
-      const unlisten = Storage.listen('pendingRequests', setPendingRequests);
+      const unlisten = Storage.listen('pendingRequests', setPendingRequest);
       return unlisten;
     })();
   }, []);
@@ -32,13 +30,19 @@ export function ApproveMessage() {
     })();
   }, []);
 
+  console.log('pendingRequest', pendingRequest);
   const approveRequest = useCallback(() => {
     extensionMessenger.send(`message:${pendingRequest?.id}`, true);
+    backgroundStore.getState().removePendingRequest();
+    Storage.remove('pendingRequests');
     if (window?.id) chrome.windows.remove(window.id);
   }, [pendingRequest?.id, window?.id]);
 
   const rejectRequest = useCallback(() => {
     extensionMessenger.send(`message:${pendingRequest?.id}`, false);
+    backgroundStore.getState().removePendingRequest();
+
+    Storage.remove('pendingRequests');
     if (window?.id) chrome.windows.remove(window.id);
   }, [pendingRequest?.id, window?.id]);
 
@@ -47,7 +51,7 @@ export function ApproveMessage() {
   return (
     <>
       <Box padding="16px" style={{ borderRadius: 999 }}>
-        <Text color="labelSecondary" size="15pt" weight="bold">
+        <Text color="labelSecondary" size="14pt" weight="bold">
           RPC METHOD: {pendingRequest?.method} +{' '}
           {JSON.stringify(pendingRequest)}
         </Text>
@@ -60,7 +64,7 @@ export function ApproveMessage() {
         padding="16px"
         style={{ borderRadius: 999 }}
       >
-        <Text color="labelSecondary" size="15pt" weight="bold">
+        <Text color="labelSecondary" size="14pt" weight="bold">
           ACCEPT
         </Text>
       </Box>
@@ -72,7 +76,7 @@ export function ApproveMessage() {
         padding="16px"
         style={{ borderRadius: 999 }}
       >
-        <Text color="labelSecondary" size="15pt" weight="bold">
+        <Text color="labelSecondary" size="14pt" weight="bold">
           DECLINE
         </Text>
       </Box>

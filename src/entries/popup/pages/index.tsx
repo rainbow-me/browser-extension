@@ -4,6 +4,7 @@ import { Box, Text } from '~/design-system';
 import { InjectToggle } from '../components/InjectToggle';
 import { motion } from 'framer-motion';
 import { ApproveMessage } from '../components/ApproveMessage';
+import { ApprovedHosts } from '../components/ApprovedHosts';
 
 export function Index() {
   return (
@@ -35,6 +36,7 @@ export function Index() {
         </Box>
       </Link>
       <ApproveMessage />
+      <ApprovedHosts />
     </Box>
   );
 }
