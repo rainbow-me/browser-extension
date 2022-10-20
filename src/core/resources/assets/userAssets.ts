@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import {
   createQueryKey,
+  queryClient,
   QueryConfig,
   QueryFunctionArgs,
   QueryFunctionResult,
@@ -49,7 +50,10 @@ async function userAssetsQueryFunction({
         refractionAddressMessages.ADDRESS_ASSETS.RECEIVED,
         resolver,
       );
-      resolve({});
+      resolve(
+        queryClient.getQueryData(userAssetsQueryKey({ address, currency })) ||
+          {},
+      );
     }, 10000);
     const resolver = (message: AddressAssetsReceivedMessage) => {
       clearTimeout(timeout);
