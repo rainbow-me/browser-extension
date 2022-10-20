@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { Storage } from '~/core/storage';
 import { Box, Text } from '~/design-system';
 
@@ -14,8 +14,6 @@ export function ApprovedHosts() {
       return unlisten;
     })();
   }, []);
-
-  const clearApprovedHosts = useCallback(() => null, []);
 
   return (
     <>
@@ -33,19 +31,6 @@ export function ApprovedHosts() {
           </Box>
         );
       })}
-
-      <Box
-        as="button"
-        id="injection-button"
-        background="surfaceSecondary"
-        onClick={clearApprovedHosts}
-        padding="16px"
-        style={{ borderRadius: 999 }}
-      >
-        <Text color="labelSecondary" size="14pt" weight="bold">
-          CLEAR APPROVED HOSTS
-        </Text>
-      </Box>
     </>
   );
 }

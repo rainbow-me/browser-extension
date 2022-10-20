@@ -9,7 +9,6 @@ export interface PendingRequest {
 
 export interface PendingRequestsSliceState {
   pendingRequest: PendingRequest | null;
-  getPendingRequest: () => PendingRequest | null;
   addPendingRequest: (request: PendingRequest) => void;
   removePendingRequest: () => void;
 }
@@ -19,9 +18,8 @@ export const pendingRequestSlice: StateCreator<
   [['zustand/persist', unknown]],
   [],
   PendingRequestsSliceState
-> = (set, get) => ({
+> = (set) => ({
   pendingRequest: null,
-  getPendingRequest: () => get().pendingRequest,
   addPendingRequest: (request) =>
     set(() => ({
       pendingRequest: request,

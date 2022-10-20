@@ -1,7 +1,7 @@
 import { UserRejectedRequestError } from 'wagmi';
 import { extensionMessenger } from '~/core/messengers';
 import { backgroundStore } from '~/core/state';
-import { Storage } from '~/core/storage';
+import { PendingRequest } from '~/core/state/slices/pendingRequestsSlice';
 import { providerRequestTransport } from '~/core/transports';
 
 export const DEFAULT_ACCOUNT = '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
@@ -17,10 +17,26 @@ const openWindow = async () => {
   backgroundStore.getState().setCurrentWindow(window);
 };
 
-const isApprovedHost = async (host: string) => {
-  const approvedHosts = await Storage.get('approvedHosts');
-  return approvedHosts.includes(host);
+const extensionMessengerRequestApproval = async (request: PendingRequest) => {
+  const { addPendingRequest, removePendingRequest } =
+    backgroundStore.getState();
+  // Add pending request to global background state.
+  addPendingRequest(request);
+  openWindow();
+  // Wait for response from the popup.
+  const approved = await new Promise((resolve) =>
+    // eslint-disable-next-line no-promise-executor-return
+    extensionMessenger.reply(`message:${request.id}`, async (payload) =>
+      resolve(payload),
+    ),
+  );
+  removePendingRequest();
+  if (!approved) {
+    throw new UserRejectedRequestError('User rejected the request.');
+  }
+  return approved;
 };
+
 /**
  * Handles RPC requests from the provider.
  */
@@ -28,12 +44,8 @@ export const handleProviderRequest = () =>
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
     console.log(meta.sender, method);
 
-    const {
-      addApprovedHost,
-      currentAddress,
-      addPendingRequest,
-      removePendingRequest,
-    } = backgroundStore.getState();
+    const { addApprovedHost, isApprovedHost, currentAddress } =
+      backgroundStore.getState();
 
     try {
       let response = null;
@@ -43,7 +55,7 @@ export const handleProviderRequest = () =>
           response = DEFAULT_CHAIN_ID;
           break;
         case 'eth_accounts': {
-          const approvedHost = await isApprovedHost(meta.sender.origin || '');
+          const approvedHost = await isApprovedHost(meta.sender.origin);
           response = approvedHost ? [currentAddress] : [];
           break;
         }
@@ -54,58 +66,32 @@ export const handleProviderRequest = () =>
         case 'eth_signTypedData':
         case 'eth_signTypedData_v3':
         case 'eth_signTypedData_v4': {
-          addPendingRequest({
+          await extensionMessengerRequestApproval({
             method,
             id,
             params,
           });
-          openWindow();
-          // Wait for response from the popup.
-          const approved = await new Promise((resolve) =>
-            // eslint-disable-next-line no-promise-executor-return
-            extensionMessenger.reply(`message:${id}`, async (payload) =>
-              resolve(payload),
-            ),
-          );
-          removePendingRequest();
-          if (!approved) {
-            throw new UserRejectedRequestError('User rejected the request.');
-          }
           break;
         }
         case 'wallet_addEthereumChain':
         case 'wallet_switchEthereumChain':
         case 'eth_requestAccounts': {
-          const approvedHost = await isApprovedHost(meta.sender.origin || '');
+          const approvedHost = await isApprovedHost(meta.sender.origin);
           if (approvedHost) {
             response = [currentAddress];
             break;
           }
-          // Add pending request to global background state.
-          addPendingRequest({
+          await extensionMessengerRequestApproval({
             method,
             id,
             params,
           });
-          openWindow();
-          // Wait for response from the popup.
-          const approved = await new Promise((resolve) =>
-            // eslint-disable-next-line no-promise-executor-return
-            extensionMessenger.reply(`message:${id}`, async (payload) =>
-              resolve(payload),
-            ),
-          );
-          removePendingRequest();
-          if (!approved) {
-            throw new UserRejectedRequestError('User rejected the request.');
-          }
-          if (approved && meta.sender.origin) {
+          if (meta.sender.origin) {
             addApprovedHost(meta.sender.origin);
           }
           response = [currentAddress];
           break;
         }
-
         default: {
           // TODO: handle other methods
         }
