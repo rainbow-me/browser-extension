@@ -1,4 +1,5 @@
 import React from 'react';
+import source from '~/design-system/docs/utils/source.macro';
 
 import { Docs as DocsType } from '../../docs/types';
 import { Text } from '../Text/Text';
@@ -19,7 +20,7 @@ const docs: DocsType = {
   examples: [
     {
       name: 'basic',
-      Example: () => <Box />,
+      Example: () => source(<Box />),
     },
   ],
 };
