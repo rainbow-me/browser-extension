@@ -122,6 +122,7 @@ export type BackgroundColor =
   | 'surfacePrimaryElevated'
   | 'surfaceSecondary'
   | 'surfaceSecondaryElevated'
+  | 'surfaceMenu'
   | 'fill'
   | 'fillSecondary'
   | 'blue'
@@ -178,6 +179,16 @@ export const backgroundColors: Record<
     },
     dark: {
       color: globalColors.blueGrey100,
+      setColorContext: 'dark',
+    },
+  },
+  surfaceMenu: {
+    light: {
+      color: globalColors.white80,
+      setColorContext: 'light',
+    },
+    dark: {
+      color: 'rgba(53, 54, 58, 0.8)',
       setColorContext: 'dark',
     },
   },
@@ -303,6 +314,7 @@ export type ForegroundColor =
   | 'scrimTertiary'
   | 'separator'
   | 'separatorSecondary'
+  | 'separatorTertiary'
   | 'buttonStroke'
   | 'buttonStrokeSecondary'
   | 'shadowNear'
@@ -357,6 +369,10 @@ export const foregroundColors: Record<
     light: globalColors.grey20,
     dark: 'rgba(245, 248, 255, 0.06)',
   },
+  separatorTertiary: {
+    light: 'rgba(9, 17, 31, 0.02)',
+    dark: 'rgba(245, 248, 255, 0.02)',
+  },
   buttonStroke: {
     light: 'rgba(0, 0, 0, 0.05)',
     dark: 'rgba(255, 255, 255, 0.03)',
@@ -395,6 +411,19 @@ export const textColors = selectForegroundColors(
   'yellow',
 );
 export type TextColor = typeof textColors[number];
+
+export const strokeColors = selectForegroundColors(
+  'buttonStroke',
+  'buttonStrokeSecondary',
+);
+export type StrokeColor = typeof strokeColors[number];
+
+export const separatorColors = selectForegroundColors(
+  'separator',
+  'separatorSecondary',
+  'separatorTertiary',
+);
+export type SeparatorColor = typeof separatorColors[number];
 
 export const space = {
   '2px': 2,
@@ -476,3 +505,21 @@ export type PositionSpace = keyof typeof positionSpace;
 export function negateSpace(space: Space): NegativeSpace {
   return spaceToNegativeSpace[space];
 }
+
+export const strokeWeights = {
+  '1px': 1,
+  '2px': 2,
+};
+export type StrokeWeight = keyof typeof strokeWeights;
+
+export const radii = {
+  round: 9999,
+  '3px': 3,
+  '6px': 6,
+  '12px': 12,
+  '14px': 14,
+  '16px': 16,
+  '20px': 20,
+  '24px': 24,
+};
+export type Radius = keyof typeof radii;

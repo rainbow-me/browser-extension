@@ -18,6 +18,10 @@ import {
   backgroundColors,
   foregroundColors,
   textColors,
+  strokeWeights,
+  radii,
+  separatorColors,
+  strokeColors,
 } from './designTokens';
 import SFRoundedRegular from './fonts/subset-SFRounded-Regular.woff2';
 import SFRoundedMedium from './fonts/subset-SFRounded-Medium.woff2';
@@ -92,7 +96,7 @@ export const resetElements = {
 
 export const accentColorVar = createVar();
 
-const semanticColorVars = createThemeContract({
+export const semanticColorVars = createThemeContract({
   backgroundColors: mapValues(backgroundColors, () => null),
   foregroundColors: mapValues(foregroundColors, () => null),
 });
@@ -136,6 +140,12 @@ globalStyle(
 const boxBaseProperties = defineProperties({
   properties: {
     alignItems: ['stretch', 'flex-start', 'center', 'flex-end'],
+    backdropFilter: ['blur(26px)'],
+    borderRadius: radii,
+    borderWidth: mapValues(strokeWeights, (borderWidth) => ({
+      borderStyle: 'solid',
+      borderWidth,
+    })),
     bottom: positionSpace,
     display: ['none', 'flex', 'block', 'inline'],
     flexDirection: ['row', 'column'],
@@ -184,6 +194,10 @@ const boxColorProperties = defineProperties({
       accent: accentColorVar,
       ...semanticColorVars.backgroundColors,
     },
+    borderColor: pick(semanticColorVars.foregroundColors, [
+      ...separatorColors,
+      ...strokeColors,
+    ] as const),
   },
 });
 
