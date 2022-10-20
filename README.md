@@ -67,9 +67,13 @@ Any changes to your code will trigger an update to the extension.
 
 You can run a development build as a "playground". The following playgrounds are available:
 
-- **`yarn playground` (Default)**: A generic playground to test out stuff.
-- **`yarn playground:ds` (Design System)**: A playground to view & demo Design System components.
+- `yarn playground` **(Default)**: A generic playground to test out stuff.
+- `yarn playground:ds` **(Design System)**: A playground to view & demo Design System components.
 
 ## Testing
 
-TBD
+To run the Browser Extension test suites:
+
+- `yarn e2e` – runs end-to-end tests against Chrome & Brave browsers.
+- `yarn test` – runs unit/integration tests.
+  - `yarn test:watch` – run tests in watch mode.
