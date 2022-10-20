@@ -17,6 +17,11 @@ const openWindow = async () => {
   backgroundStore.getState().setCurrentWindow(window);
 };
 
+/**
+ * Uses extensionMessenger to send messages to popup for the user to approve or reject
+ * @param {PendingRequest} request
+ * @returns {boolean}
+ */
 const extensionMessengerRequestApproval = async (request: PendingRequest) => {
   const { addPendingRequest, removePendingRequest } =
     backgroundStore.getState();
@@ -96,6 +101,7 @@ export const handleProviderRequest = () =>
           // TODO: handle other methods
         }
       }
+      console.log('responding message', response);
 
       return { id, result: response };
     } catch (error) {
