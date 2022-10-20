@@ -18,6 +18,6 @@ export class KeychainManager {
     this.keyrings = [];
   }
 
-  unlock() {}
-  restore() {}
+  // unlock() {}
+  // restore() {}
 }

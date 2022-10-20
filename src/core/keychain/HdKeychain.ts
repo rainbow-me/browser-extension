@@ -1,13 +1,27 @@
-import { Transaction, Wallet } from 'ethers';
-import { Bytes } from 'ethers/lib/utils';
+import { Signer, Transaction, Wallet } from 'ethers';
+import { Bytes, HDNode } from 'ethers/lib/utils';
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { Address } from 'wagmi';
-import { BaseKeychain, PrivateKey } from './baseKeychain';
+import { IKeychain, PrivateKey } from './baseKeychain';
 
-export class HDKeychain extends BaseKeychain {
-  constructor(options: Array<PrivateKey>) {
-    super();
-    this.type = 'KeyPairKeychain';
+interface HdKeychainOptions {
+  mnemonic: string;
+  hdPath?: string;
+  accountsEnabled: number;
+}
+
+export class HdKeychain implements IKeychain {
+  type: string;
+  _wallets: Wallet[] | Signer[];
+  _mnemonic?: string | null;
+  _accountsEnabled: number;
+  _hdPath: string;
+  constructor(options: HdKeychainOptions) {
+    this.type = 'HdKeychain';
+    this._wallets = [];
+    this._mnemonic = null;
+    this._accountsEnabled = 0;
+    this._hdPath = `m/44'/60'/0'/0`;
     this.deserialize(options);
   }
 
@@ -18,18 +32,41 @@ export class HDKeychain extends BaseKeychain {
     ) as Wallet;
   }
 
-  async serialize(): Promise<PrivateKey[]> {
-    return this._wallets.map((wallet) => (wallet as Wallet).privateKey);
+  async serialize(): Promise<HdKeychainOptions> {
+    return {
+      mnemonic: this._mnemonic as string,
+      accountsEnabled: this._accountsEnabled,
+      hdPath: this._hdPath,
+    };
   }
 
-  async deserialize(privateKeys: Array<PrivateKey> = []) {
-    this._wallets = privateKeys.map((pkey: PrivateKey) => new Wallet(pkey));
+  async deserialize(opts: HdKeychainOptions) {
+    if (opts.accountsEnabled && !opts.mnemonic) {
+      throw new Error(
+        'mnemonic is required if accountsEnabled is greater than 0',
+      );
+    }
+    if (opts.hdPath) this._hdPath = opts.hdPath;
+
+    if (opts.mnemonic) {
+      this._mnemonic = opts.mnemonic;
+    } else {
+      this._mnemonic = Wallet.createRandom().mnemonic.phrase as string;
+    }
+    if (opts.accountsEnabled) {
+      const results = [];
+      for (let i = 0; i < opts.accountsEnabled; i++) {
+        results.push(this.addAccount(i));
+      }
+      await Promise.all(results);
+    }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async addAccountAtIndex(_index: number): Promise<Array<Wallet>> {
-    const wallet = Wallet.createRandom();
-    return [wallet];
+  async addAccount(_index: number): Promise<Array<Wallet>> {
+    const hdNode = HDNode.fromMnemonic(this._mnemonic as string);
+    const wallet = hdNode.derivePath(`${this._hdPath}/${_index}`);
+    this._wallets.push(new Wallet(wallet.privateKey));
+    return this._wallets as Wallet[];
   }
 
   getAccounts(): Promise<Array<Address>> {

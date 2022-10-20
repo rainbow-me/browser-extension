@@ -1,13 +1,16 @@
-import { Transaction, Wallet } from 'ethers';
+import { Signer, Transaction, Wallet } from 'ethers';
 import { Bytes } from 'ethers/lib/utils';
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { Address } from 'wagmi';
-import { BaseKeychain, PrivateKey } from './baseKeychain';
+import { IKeychain, PrivateKey } from './baseKeychain';
 
-export class KeyPairKeychain extends BaseKeychain {
-  constructor(options: Array<PrivateKey>) {
-    super();
+export class KeyPairKeychain implements IKeychain {
+  type: string;
+  _wallets: Wallet[] | Signer[];
+
+  constructor(options: PrivateKey) {
     this.type = 'KeyPairKeychain';
+    this._wallets = [];
     this.deserialize(options);
   }
 
@@ -22,12 +25,12 @@ export class KeyPairKeychain extends BaseKeychain {
     return this._wallets.map((wallet) => (wallet as Wallet).privateKey);
   }
 
-  async deserialize(privateKeys: Array<PrivateKey> = []) {
-    this._wallets = privateKeys.map((pkey: PrivateKey) => new Wallet(pkey));
+  async deserialize(privateKey: PrivateKey) {
+    this._wallets = [new Wallet(privateKey)];
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async addAccountAtIndex(_index: number): Promise<Array<Wallet>> {
+  async addAccount(_index: number): Promise<Array<Wallet>> {
     const wallet = Wallet.createRandom();
     return [wallet];
   }

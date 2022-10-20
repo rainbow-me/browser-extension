@@ -9,46 +9,22 @@ import { SigningKey } from 'ethers/lib/utils';
 
 export type PrivateKey = BytesLike | ExternallyOwnedAccount | SigningKey;
 
-export class BaseKeychain {
-  type = 'BaseKeychain';
+export interface IKeychain {
+  type: string;
   _wallets: Wallet[] | Signer[];
 
-  constructor() {
-    this._wallets = [];
-  }
-
-  serialize(): Promise<unknown> {
-    return Promise.resolve();
-  }
-
-  deserialize(options: unknown) {
-    return Promise.resolve();
-  }
-
-  addAccountAtIndex(_index: number): Promise<Array<Wallet>> {
-    return Promise.resolve([]);
-  }
-
-  getAccounts(): Promise<Array<Address>> {
-    return Promise.resolve([]);
-  }
-
+  serialize(): Promise<unknown>;
+  deserialize(options: unknown): Promise<void>;
+  addAccount(_index: number): Promise<Array<Wallet>>;
+  getAccounts(): Promise<Array<Address>>;
   signTransaction(
     address: Address,
     transaction: TransactionRequest,
-  ): Promise<Transaction['hash']> {
-    return Promise.resolve('');
-  }
+  ): Promise<Transaction['hash']>;
 
-  signMessage(address: Address, data: Bytes | string): Promise<string> {
-    return Promise.resolve('');
-  }
+  signMessage(address: Address, data: Bytes | string): Promise<string>;
 
-  exportAccount(address: Address): Promise<PrivateKey> {
-    return Promise.resolve('');
-  }
+  exportAccount(address: Address): Promise<PrivateKey>;
 
-  rremoveAccount(address: Address): Promise<void> {
-    return Promise.resolve();
-  }
+  removeAccount(address: Address): Promise<void>;
 }
