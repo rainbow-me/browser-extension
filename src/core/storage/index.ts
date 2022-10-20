@@ -12,4 +12,19 @@ export const Storage = {
   async remove(key: string) {
     await chrome.storage.local.remove(key);
   },
+  async listen<TValue = any>(
+    key: string,
+    callback: (newValue: TValue, oldValue: TValue) => void,
+  ) {
+    const listener = (changes: {
+      [key: string]: chrome.storage.StorageChange;
+    }) => {
+      const newValue = changes[key]?.newValue;
+      const oldValue = changes[key]?.oldValue;
+      if (!newValue) return;
+      callback(newValue, oldValue);
+    };
+    chrome.storage.local.onChanged.addListener(listener);
+    return () => chrome.storage.local.onChanged.removeListener(listener);
+  },
 };

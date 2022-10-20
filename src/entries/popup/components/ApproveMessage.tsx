@@ -1,24 +1,31 @@
 import React, { useCallback, useState } from 'react';
-import { bridgeMessenger } from '~/core/messengers';
+import { extensionMessenger } from '~/core/messengers';
 import { backgroundStore } from '~/core/state';
 import { PendingRequest } from '~/core/state/slices/pendingRequestsSlice';
-import { backgroundStoreTransport } from '~/core/transports';
+import { Storage } from '~/core/storage';
 import { Box, Text } from '~/design-system';
 
 export function ApproveMessage() {
   const [pendingRequest, setPendingRequests] = useState<PendingRequest | null>(
     backgroundStore.getState().pendingRequests,
   );
-  backgroundStoreTransport.reply(async (state) => {
-    setPendingRequests(state.pendingRequests);
-  });
+
+  React.useEffect(() => {
+    (async () => {
+      const pendingRequests = await Storage.get('pendingRequests');
+      setPendingRequests(pendingRequests);
+
+      const unlisten = Storage.listen('pendingRequests', setPendingRequests);
+      return unlisten;
+    })();
+  }, []);
 
   const approveRequest = useCallback(() => {
-    bridgeMessenger.send(`message:${pendingRequest?.id}`, true);
+    extensionMessenger.send(`message:${pendingRequest?.id}`, true);
   }, [pendingRequest]);
 
   const rejectRequest = useCallback(() => {
-    bridgeMessenger.send(`message:${pendingRequest?.id}`, false);
+    extensionMessenger.send(`message:${pendingRequest?.id}`, false);
   }, [pendingRequest]);
 
   if (!pendingRequest) return null;

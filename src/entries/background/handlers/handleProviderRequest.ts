@@ -1,9 +1,7 @@
-import { bridgeMessenger, extensionMessenger } from '~/core/messengers';
+import { extensionMessenger } from '~/core/messengers';
 import { backgroundStore } from '~/core/state';
-import {
-  coreProviderTransport,
-  providerRequestTransport,
-} from '~/core/transports';
+import { Storage } from '~/core/storage';
+import { providerRequestTransport } from '~/core/transports';
 
 export const DEFAULT_ACCOUNT = '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
 export const DEFAULT_CHAIN_ID = '0x1';
@@ -32,20 +30,19 @@ export const handleProviderRequest = () =>
         case 'wallet_addEthereumChain':
         case 'wallet_switchEthereumChain':
         case 'eth_requestAccounts': {
+          // Add pending request to global background state.
           backgroundStore.getState().addPendingRequest({
             method,
             id,
             params,
           });
-          console.log('-- send', `message:${id}`);
 
-          const requestResponse = await extensionMessenger.send(
-            `message:${id}`,
-            {
-              method,
-              id,
-              params,
-            },
+          // Wait for response from the popup.
+          const requestResponse = await new Promise((resolve) =>
+            // eslint-disable-next-line no-promise-executor-return
+            extensionMessenger.reply(`message:${id}`, async (payload) =>
+              resolve(payload),
+            ),
           );
           console.log('-- requestResponse', requestResponse);
 
