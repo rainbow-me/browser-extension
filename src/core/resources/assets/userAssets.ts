@@ -10,7 +10,9 @@ import {
 import { refractionAddressWs, refractionAddressMessages } from '~/core/network';
 import { AddressAssetsReceivedMessage } from '~/core/network/refractionAddressWs';
 import { usePopupStore } from '~/core/state';
+import { useAccount } from 'wagmi';
 
+const USER_ASSETS_TIMEOUT_DURATION = 10000;
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 
 // ///////////////////////////////////////////////
@@ -54,7 +56,7 @@ async function userAssetsQueryFunction({
         queryClient.getQueryData(userAssetsQueryKey({ address, currency })) ||
           {},
       );
-    }, 10000);
+    }, USER_ASSETS_TIMEOUT_DURATION);
     const resolver = (message: AddressAssetsReceivedMessage) => {
       clearTimeout(timeout);
       resolve(parseUserAssets(message));
@@ -81,12 +83,10 @@ function parseUserAssets(message: AddressAssetsReceivedMessage) {
 export function useUserAssets(
   config: QueryConfig<UserAssetsResult, Error, UserAssetsQueryKey> = {},
 ) {
-  const [currentAddress, currentCurrency] = usePopupStore((state) => [
-    state.currentAddress,
-    state.currentCurrency,
-  ]);
+  const { address } = useAccount();
+  const [currentCurrency] = usePopupStore((state) => [state.currentCurrency]);
   return useQuery(
-    userAssetsQueryKey({ address: currentAddress, currency: currentCurrency }),
+    userAssetsQueryKey({ address, currency: currentCurrency }),
     userAssetsQueryFunction,
     {
       ...config,

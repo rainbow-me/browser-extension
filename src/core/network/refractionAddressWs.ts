@@ -1,6 +1,5 @@
 import { createWebSocketClient } from './internal/createWebSocketClient';
 
-// TODO: move these types to a new home
 export enum Network {
   arbitrum = 'arbitrum',
   goerli = 'goerli',

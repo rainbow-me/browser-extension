@@ -1,5 +1,5 @@
 import { StateCreator } from 'zustand';
-import { PopupStoreState } from '../popupStore';
+import { BackgroundStoreState } from '../backgroundStore';
 
 export interface CurrentAddressSliceState {
   currentAddress?: string;
@@ -7,7 +7,7 @@ export interface CurrentAddressSliceState {
 }
 
 export const currentAddressSlice: StateCreator<
-  PopupStoreState,
+  BackgroundStoreState,
   [['zustand/persist', unknown]],
   [],
   CurrentAddressSliceState

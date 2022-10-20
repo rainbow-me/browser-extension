@@ -7,18 +7,9 @@ import { Storage } from '~/core/storage';
 import { Box, Text, Inset, Stack } from '~/design-system';
 import { InjectToggle } from '../../components/InjectToggle';
 
-const HOWIE_WALLET = '0xB5447de7399e1fADBc13a1b4E14bdAD3B1c2D577';
-
 export function Default() {
   const { address } = useAccount();
-  const [
-    currentAddress,
-    setCurrentAddress,
-    currentCurrency,
-    setCurrentCurrency,
-  ] = usePopupStore((state) => [
-    state.currentAddress,
-    state.setCurrentAddress,
+  const [currentCurrency, setCurrentCurrency] = usePopupStore((state) => [
     state.currentCurrency,
     state.setCurrentCurrency,
   ]);
@@ -66,23 +57,6 @@ export function Default() {
         >
           <Text color="labelSecondary" size="14pt" weight="bold">
             CLEAR STORAGE
-          </Text>
-        </Box>
-        <Box
-          as="button"
-          background="surfaceSecondary"
-          onClick={() => {
-            if (currentAddress !== HOWIE_WALLET) {
-              setCurrentAddress(HOWIE_WALLET);
-            } else {
-              setCurrentAddress(address || '');
-            }
-          }}
-          padding="16px"
-          style={{ borderRadius: 999 }}
-        >
-          <Text color="labelSecondary" size="16pt" weight="bold">
-            Change Address
           </Text>
         </Box>
         <Box
