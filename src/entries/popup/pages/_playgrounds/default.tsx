@@ -7,7 +7,6 @@ import { Storage } from '~/core/storage';
 import { Box, Text, Inset, Stack } from '~/design-system';
 import { InjectToggle } from '../../components/InjectToggle';
 import { useAccountSwitcher } from '../../hooks/useAccountSwitcher';
-import { useBalances } from '../../hooks/useBalances';
 
 const HOWIE_WALLET = '0xB5447de7399e1fADBc13a1b4E14bdAD3B1c2D577';
 
@@ -99,7 +98,7 @@ export function Default() {
           </Text>
         </Box>
         <Text size="15pt" weight="medium">
-          {JSON.stringify(balances)}
+          {JSON.stringify(userAssets)}
         </Text>
       </Stack>
     </Inset>
