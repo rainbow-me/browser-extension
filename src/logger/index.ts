@@ -1,7 +1,7 @@
 import format from 'date-fns/format';
 import * as Sentry from '@sentry/browser';
 import { DebugContext } from './debugContext';
-
+import { severityLevelFromString } from '@sentry/utils';
 const { LOG_LEVEL, LOG_DEBUG } = process.env;
 
 export enum LogLevel {
@@ -141,10 +141,10 @@ export const sentryTransport: Transport = (
    */
   if (typeof message === 'string') {
     const severity = {
-      [LogLevel.Debug]: Sentry.Severity.Debug,
-      [LogLevel.Info]: Sentry.Severity.Info,
-      [LogLevel.Warn]: Sentry.Severity.Warning,
-      [LogLevel.Error]: Sentry.Severity.Error,
+      [LogLevel.Debug]: severityLevelFromString('debug'),
+      [LogLevel.Info]: severityLevelFromString('info'),
+      [LogLevel.Warn]: severityLevelFromString('warning'),
+      [LogLevel.Error]: severityLevelFromString('error'),
     }[level];
 
     Sentry.addBreadcrumb({
@@ -234,13 +234,13 @@ export class Logger {
   protected transport(
     level: LogLevel,
     message: string | RainbowError,
-    metadata: Metadata,
+    metadata: Metadata = {},
   ) {
     if (!this.enabled) return;
     if (!enabledLogLevels[this.level].includes(level)) return;
 
     for (const transport of this.transports) {
-      transport(level, message, metadata);
+      transport(level, message, metadata || {});
     }
   }
 }
