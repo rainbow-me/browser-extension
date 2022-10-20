@@ -85,7 +85,12 @@ export function Index() {
                     }}
                   />
                 </Box>
-                <Text color="label" size="20pt" weight="heavy">
+                <Text
+                  color="label"
+                  size="20pt"
+                  weight="heavy"
+                  testId="account-name"
+                >
                   {ensName ?? truncateAddress(address || '0x')}
                 </Text>
                 <Inline space="12px">

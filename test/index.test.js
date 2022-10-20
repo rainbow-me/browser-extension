@@ -35,10 +35,10 @@ it('Should opens the popup', async () => {
   await driver.get(rootURL + '/popup.html');
 });
 
-it('should have an h1 saying "Rainbow"', async () => {
-  const h1 = await querySelector(driver, 'h1');
-  const actual = await h1.getText();
-  const expected = 'Rainbow';
+it('should display account name', async () => {
+  const label = await querySelector(driver, '[data-testid="account-name"]');
+  const actual = await label.getText();
+  const expected = '0x70c1...43C4';
   expect(actual).toEqual(expected);
 });
 
