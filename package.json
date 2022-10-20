@@ -124,7 +124,7 @@
   "resolutions": {
     "globby": "11.1.0",
     "eslint-import-resolver-typescript": "2.7.1",
-    "minimatch": "3.0.4",
+    "minimatch": "3.0.5",
     "minimist": "1.2.6",
     "set-value": "2.0.1",
     "grunt": "1.5.3",
