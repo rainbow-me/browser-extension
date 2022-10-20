@@ -9,6 +9,7 @@ import { persistOptions, queryClient } from '~/core/react-query';
 import { RainbowConnector } from './wagmi/RainbowConnector';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { Routes } from './Routes';
+import { initializeSentry } from '~/core/sentry';
 
 const playground = process.env.PLAYGROUND as 'default' | 'ds';
 
@@ -19,6 +20,10 @@ const wagmiClient = createWagmiClient({
 });
 
 export function App() {
+  React.useEffect(() => {
+    initializeSentry();
+  }, []);
+
   return (
     <PersistQueryClientProvider
       client={queryClient}
