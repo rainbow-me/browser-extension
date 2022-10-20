@@ -3,7 +3,7 @@
     "extension_pages": "script-src 'self'; object-src 'self'; frame-ancestors 'none';"
   },
   "version": "1",
-  "minimum_chrome_version": "66",
+  "minimum_chrome_version": "88",
   "action": {
     "default_icon": {
       "16": "images/icon-16.png",
