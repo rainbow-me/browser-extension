@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
  * This template follows the patterns described in the Async State RFC:
  * https://www.notion.so/rainbowdotme/Async-State-RFC-711800896f9a458889fc4ffad4de271a

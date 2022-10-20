@@ -12,8 +12,8 @@ const BINARY_PATHS = {
     brave: '/Applications/Brave Browser.app/Contents/MacOS/Brave Browser',
   },
   linux: {
-    chrome: '/usr/bin/google-chrome',
-    brave: '/usr/bin/brave',
+    chrome: process.env.CHROMIUM_BIN,
+    brave: '/usr/bin/brave-browser-stable',
   },
 };
 

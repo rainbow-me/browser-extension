@@ -2,6 +2,7 @@ import { resolve } from 'path';
 import { defineConfig } from 'vitest/config';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 
+// eslint-disable-next-line import/no-default-export
 export default defineConfig({
   plugins: [vanillaExtractPlugin()],
   test: {
