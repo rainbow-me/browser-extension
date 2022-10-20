@@ -19,6 +19,10 @@ const wagmiClient = createWagmiClient({
   persist: true,
 });
 
+useCoreStore.subscribe(async (state) => {
+  await extensionMessenger.send('coreStore', state);
+});
+
 export function App() {
   React.useEffect(() => {
     initializeSentry();
