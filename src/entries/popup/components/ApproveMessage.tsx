@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { extensionMessenger } from '~/core/messengers';
 import { backgroundStore } from '~/core/state';
+import { NotificationWindow } from '~/core/state/slices/notificationWindowSlice';
 import { PendingRequest } from '~/core/state/slices/pendingRequestsSlice';
 import { Storage } from '~/core/storage';
 import { Box, Text } from '~/design-system';
@@ -9,6 +10,7 @@ export function ApproveMessage() {
   const [pendingRequest, setPendingRequests] = useState<PendingRequest | null>(
     backgroundStore.getState().pendingRequests,
   );
+  const [window, setWindow] = useState<NotificationWindow | null>();
 
   React.useEffect(() => {
     (async () => {
@@ -20,13 +22,25 @@ export function ApproveMessage() {
     })();
   }, []);
 
+  React.useEffect(() => {
+    (async () => {
+      const window = await Storage.get('currentWindow');
+      setWindow(window);
+
+      const unlisten = Storage.listen('currentWindow', setWindow);
+      return unlisten;
+    })();
+  }, []);
+
   const approveRequest = useCallback(() => {
     extensionMessenger.send(`message:${pendingRequest?.id}`, true);
-  }, [pendingRequest]);
+    if (window?.id) chrome.windows.remove(window.id);
+  }, [pendingRequest?.id, window?.id]);
 
   const rejectRequest = useCallback(() => {
     extensionMessenger.send(`message:${pendingRequest?.id}`, false);
-  }, [pendingRequest]);
+    if (window?.id) chrome.windows.remove(window.id);
+  }, [pendingRequest?.id, window?.id]);
 
   if (!pendingRequest) return null;
 

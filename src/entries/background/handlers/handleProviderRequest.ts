@@ -37,6 +37,14 @@ export const handleProviderRequest = () =>
             params,
           });
 
+          const window = await chrome.windows.create({
+            url: chrome.runtime.getURL('popup.html'),
+            type: 'popup',
+            height: 600,
+            width: 360,
+          });
+          backgroundStore.getState().setCurrentWindow(window);
+
           // Wait for response from the popup.
           const requestResponse = await new Promise((resolve) =>
             // eslint-disable-next-line no-promise-executor-return

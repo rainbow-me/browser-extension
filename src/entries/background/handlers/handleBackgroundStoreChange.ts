@@ -5,6 +5,7 @@ import { Storage } from '~/core/storage';
  * Sends state changes from the backgroundStore to any other context that might want it.
  */
 export const handleCoreStoreChange = () =>
-  backgroundStore.subscribe(({ pendingRequests }) => {
+  backgroundStore.subscribe(({ currentWindow, pendingRequests }) => {
     Storage.set('pendingRequests', pendingRequests);
+    Storage.set('currentWindow', currentWindow);
   });

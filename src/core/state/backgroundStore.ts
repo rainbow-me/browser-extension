@@ -9,9 +9,14 @@ import {
   pendingRequestSlice,
   PendingRequestsSliceState,
 } from './slices/pendingRequestsSlice';
+import {
+  notificationWindowSlice,
+  NotificationWindowsSliceState,
+} from './slices/notificationWindowSlice';
 
 export type BackgroundStoreState = CurrentAddressSliceState &
-  PendingRequestsSliceState;
+  PendingRequestsSliceState &
+  NotificationWindowsSliceState;
 
 // The backgroundStore instance is to be used exclusively for global state that
 // is needed in the background, content, inpage contexts of the app
@@ -22,6 +27,7 @@ export const backgroundStore = create<BackgroundStoreState>()(
     (...props) => ({
       ...currentAddressSlice(...props),
       ...pendingRequestSlice(...props),
+      ...notificationWindowSlice(...props),
     }),
     { name: 'store:background', getStorage: () => persistStorage },
   ),
