@@ -31,13 +31,7 @@ export const handleProviderRequest = () =>
             .getState()
             .isApprovedHost(meta.sender.origin || '');
           const account = backgroundStore.getState().currentAddress;
-          console.log(
-            '-- send eth_accounts isApprovedHost',
-            isApprovedHost,
-            meta.sender.origin,
-          );
           response = isApprovedHost ? [account] : [];
-          console.log('-- send eth_accounts response', response);
           break;
         }
         case 'eth_chainId':

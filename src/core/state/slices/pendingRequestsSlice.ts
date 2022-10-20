@@ -4,10 +4,7 @@ import { BackgroundStoreState } from '../backgroundStore';
 export interface PendingRequest {
   method: string;
   id: number;
-  params: {
-    id: number;
-    method: string;
-  };
+  params?: unknown[];
 }
 
 export interface PendingRequestsSliceState {
