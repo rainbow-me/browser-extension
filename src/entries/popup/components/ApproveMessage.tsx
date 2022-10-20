@@ -15,7 +15,7 @@ export function ApproveMessage() {
       const pendingRequest = await Storage.get('pendingRequest');
       setPendingRequest(pendingRequest);
 
-      const unlisten = Storage.listen('pendingRequests', setPendingRequest);
+      const unlisten = Storage.listen('pendingRequest', setPendingRequest);
       return unlisten;
     })();
   }, []);
@@ -30,19 +30,17 @@ export function ApproveMessage() {
     })();
   }, []);
 
-  console.log('pendingRequest', pendingRequest);
   const approveRequest = useCallback(() => {
     extensionMessenger.send(`message:${pendingRequest?.id}`, true);
     backgroundStore.getState().removePendingRequest();
-    Storage.remove('pendingRequests');
+    Storage.set('pendingRequest', {});
     if (window?.id) chrome.windows.remove(window.id);
   }, [pendingRequest?.id, window?.id]);
 
   const rejectRequest = useCallback(() => {
     extensionMessenger.send(`message:${pendingRequest?.id}`, false);
     backgroundStore.getState().removePendingRequest();
-
-    Storage.remove('pendingRequests');
+    Storage.set('pendingRequest', {});
     if (window?.id) chrome.windows.remove(window.id);
   }, [pendingRequest?.id, window?.id]);
 

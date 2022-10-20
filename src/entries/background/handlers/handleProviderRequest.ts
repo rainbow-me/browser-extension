@@ -1,6 +1,7 @@
 import { UserRejectedRequestError } from 'wagmi';
 import { extensionMessenger } from '~/core/messengers';
 import { backgroundStore } from '~/core/state';
+import { Storage } from '~/core/storage';
 import { providerRequestTransport } from '~/core/transports';
 
 export const DEFAULT_ACCOUNT = '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
@@ -15,28 +16,33 @@ const openWindow = async () => {
   });
   backgroundStore.getState().setCurrentWindow(window);
 };
+
+const isApprovedHost = async (host: string) => {
+  const approvedHosts = await Storage.get('approvedHosts');
+  return approvedHosts.includes(host);
+};
 /**
  * Handles RPC requests from the provider.
  */
 export const handleProviderRequest = () =>
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
     console.log(meta.sender, method);
-    console.log('- handleProviderRequest', 'id:', id, 'method:', method);
+
+    const { addApprovedHost, currentAddress, addPendingRequest } =
+      backgroundStore.getState();
+
     try {
       let response = null;
 
       switch (method) {
-        case 'eth_accounts': {
-          const isApprovedHost = backgroundStore
-            .getState()
-            .isApprovedHost(meta.sender.origin || '');
-          const account = backgroundStore.getState().currentAddress;
-          response = isApprovedHost ? [account] : [];
-          break;
-        }
         case 'eth_chainId':
           response = DEFAULT_CHAIN_ID;
           break;
+        case 'eth_accounts': {
+          const approvedHost = await isApprovedHost(meta.sender.origin || '');
+          response = approvedHost ? [currentAddress] : [];
+          break;
+        }
         case 'eth_sendTransaction':
         case 'eth_signTransaction':
         case 'eth_sign':
@@ -44,7 +50,7 @@ export const handleProviderRequest = () =>
         case 'eth_signTypedData':
         case 'eth_signTypedData_v3':
         case 'eth_signTypedData_v4':
-          backgroundStore.getState().addPendingRequest({
+          addPendingRequest({
             method,
             id,
             params,
@@ -65,16 +71,13 @@ export const handleProviderRequest = () =>
         case 'wallet_addEthereumChain':
         case 'wallet_switchEthereumChain':
         case 'eth_requestAccounts': {
-          const account = backgroundStore.getState().currentAddress;
-          const isApprovedHost = backgroundStore
-            .getState()
-            .isApprovedHost(meta.sender.origin || '');
-          if (isApprovedHost) {
-            response = [account];
+          const approvedHost = await isApprovedHost(meta.sender.origin || '');
+          if (approvedHost) {
+            response = [currentAddress];
             break;
           }
           // Add pending request to global background state.
-          backgroundStore.getState().addPendingRequest({
+          addPendingRequest({
             method,
             id,
             params,
@@ -92,10 +95,10 @@ export const handleProviderRequest = () =>
             ),
           );
 
-          if (!isApprovedHost && meta.sender.origin) {
-            backgroundStore.getState().addApprovedHost(meta.sender.origin);
+          if (!approvedHost && meta.sender.origin) {
+            addApprovedHost(meta.sender.origin);
           }
-          response = [account];
+          response = [currentAddress];
           break;
         }
 

@@ -17,10 +17,10 @@ export function ApprovedHosts() {
   }, []);
 
   const clearApprovedHosts = useCallback(() => {
+    Storage.set('approvedHosts', []);
     backgroundStore.getState().clearApprovedHosts();
-    Storage.remove('approvedHosts');
   }, []);
-  console.log('approvedHosts', approvedHosts);
+
   return (
     <>
       <Box padding="16px" style={{ borderRadius: 999 }}>
