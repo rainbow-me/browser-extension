@@ -1,12 +1,18 @@
 import React from 'react';
 import { chain, useAccount, useBalance } from 'wagmi';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
+import { usePopupStore } from '~/core/state';
 import { Storage } from '~/core/storage';
 import { Box, Text, Inset, Stack } from '~/design-system';
 import { InjectToggle } from '../../components/InjectToggle';
 
 export function Default() {
   const { address } = useAccount();
+
+  const [currentAddress] = usePopupStore((state) => [state.currentAddress]);
+
+  console.log(currentAddress);
+
   const { data: mainnetBalance } = useBalance({
     addressOrName: address,
     chainId: chain.mainnet.id,
