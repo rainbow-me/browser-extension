@@ -43,6 +43,7 @@
   },
   "dependencies": {
     "@capsizecss/core": "3.0.0",
+    "@metamask/browser-passworder": "3.0.0",
     "@radix-ui/react-polymorphic": "0.0.14",
     "@tanstack/query-async-storage-persister": "4.10.3",
     "@tanstack/react-query": "4.10.3",
