@@ -9,10 +9,9 @@ import { InjectToggle } from '../../components/InjectToggle';
 export function Default() {
   const { address } = useAccount();
 
-  const [currentAddress, setCurrentAddress] = usePopupStore((state) => [
-    state.currentAddress,
-    state.setCurrentAddress,
-  ]);
+  const [currentAddress] = usePopupStore((state) => [state.currentAddress]);
+
+  console.log(currentAddress);
 
   const { data: mainnetBalance } = useBalance({
     addressOrName: address,
