@@ -1,10 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Box, Text } from '~/design-system';
-import { InjectToggle } from '../components/InjectToggle';
 import { motion } from 'framer-motion';
 
-export function Index() {
+export function Settings() {
   return (
     <Box
       as={motion.div}
@@ -12,16 +11,16 @@ export function Index() {
       flexDirection="column"
       gap="24px"
       padding="20px"
-      initial={{ opacity: 0, x: -window.innerWidth }}
+      initial={{ opacity: 0, x: window.innerWidth }}
       animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -window.innerWidth }}
+      exit={{ opacity: 0, x: window.innerWidth }}
       transition={{ type: 'tween', duration: 0.2 }}
     >
       <Text as="h1" size="20pt" weight="bold">
-        Rainbow
+        Settings
       </Text>
-      <InjectToggle />
-      <Link to="settings">
+
+      <Link to="/">
         <Box
           as="button"
           background="surfaceSecondary"
@@ -29,7 +28,7 @@ export function Index() {
           style={{ borderRadius: 999, width: '100%' }}
         >
           <Text color="labelSecondary" size="14pt" weight="bold">
-            Settings
+            Home
           </Text>
         </Box>
       </Link>

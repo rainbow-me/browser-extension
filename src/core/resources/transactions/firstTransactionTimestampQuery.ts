@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { etherscanHttp } from '~/core/network';
 
 import {
   createQueryKey,
@@ -37,10 +38,16 @@ type FirstTransactionTimestampQueryKey = ReturnType<
 async function firstTransactionTimestampQueryFunction({
   queryKey: [{ address }],
 }: QueryFunctionArgs<typeof firstTransactionTimestampQueryKey>) {
-  const url = `https://api.etherscan.io/api?module=account&action=txlist&address=${address}&startblock=0&endblock=99999999&sort=asc&page=1&offset=1&apikey=${process.env.ETHERSCAN_API_KEY}`;
-  const response = await fetch(url);
-  const parsedResponse = await response.json();
-  const timestamp = parsedResponse.result[0]?.timeStamp;
+  if (!address) return undefined;
+  const parsedResponse = await etherscanHttp.get('/', {
+    params: {
+      module: 'account',
+      action: 'txlist',
+      address,
+      sort: 'asc',
+    },
+  });
+  const timestamp = parsedResponse.data.result[0]?.timeStamp;
   return timestamp ? timestamp * 1000 : null;
 }
 
