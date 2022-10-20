@@ -12,7 +12,7 @@ export const Storage = {
   async remove(key: string) {
     await chrome.storage.local.remove(key);
   },
-  async listen<TValue = any>(
+  async listen<TValue = unknown>(
     key: string,
     callback: (newValue: TValue, oldValue: TValue) => void,
   ) {

@@ -13,10 +13,15 @@ import {
   notificationWindowSlice,
   NotificationWindowsSliceState,
 } from './slices/notificationWindowSlice';
+import {
+  approvedHostsSlice,
+  ApprovedHostsSliceState,
+} from './slices/approvedHostsSlice';
 
 export type BackgroundStoreState = CurrentAddressSliceState &
   PendingRequestsSliceState &
-  NotificationWindowsSliceState;
+  NotificationWindowsSliceState &
+  ApprovedHostsSliceState;
 
 // The backgroundStore instance is to be used exclusively for global state that
 // is needed in the background, content, inpage contexts of the app
@@ -28,6 +33,7 @@ export const backgroundStore = create<BackgroundStoreState>()(
       ...currentAddressSlice(...props),
       ...pendingRequestSlice(...props),
       ...notificationWindowSlice(...props),
+      ...approvedHostsSlice(...props),
     }),
     { name: 'store:background', getStorage: () => persistStorage },
   ),

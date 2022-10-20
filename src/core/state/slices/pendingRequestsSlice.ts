@@ -4,14 +4,17 @@ import { BackgroundStoreState } from '../backgroundStore';
 export interface PendingRequest {
   method: string;
   id: number;
-  params: any;
+  params: {
+    id: number;
+    method: string;
+  };
 }
 
 export interface PendingRequestsSliceState {
-  pendingRequests: PendingRequest | null;
-  getPendingRequests: () => PendingRequest | null;
+  pendingRequest: PendingRequest | null;
+  getPendingRequest: () => PendingRequest | null;
   addPendingRequest: (request: PendingRequest) => void;
-  removePendingRequest: (id: number) => void;
+  removePendingRequest: () => void;
 }
 
 export const pendingRequestSlice: StateCreator<
@@ -20,14 +23,14 @@ export const pendingRequestSlice: StateCreator<
   [],
   PendingRequestsSliceState
 > = (set, get) => ({
-  pendingRequests: null,
-  getPendingRequests: () => get().pendingRequests,
+  pendingRequest: null,
+  getPendingRequest: () => get().pendingRequest,
   addPendingRequest: (request) =>
     set(() => ({
-      pendingRequests: request,
+      pendingRequest: request,
     })),
   removePendingRequest: () =>
     set(() => ({
-      pendingRequests: null,
+      pendingRequest: null,
     })),
 });
