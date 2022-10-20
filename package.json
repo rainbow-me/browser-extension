@@ -30,7 +30,7 @@
     "// runs audit against dep. tree": "",
     "audit:ci": "yarn audit-ci --moderate --config audit-ci.jsonc",
     "// Generates a zip file based on the build folder ready to upload to the chrome web store": "",
-    "zip": "cd build/ && zip ../rainbowbx.zip *",
+    "zip": "cd build/ && zip -r ../rainbowbx.zip *",
     "// Build and zip": "",
     "bundle": "yarn build && yarn zip",
     "// Runs e2e": "",
@@ -44,6 +44,8 @@
   "dependencies": {
     "@capsizecss/core": "3.0.0",
     "@radix-ui/react-polymorphic": "0.0.14",
+    "@sentry/browser": "7.16.0",
+    "@sentry/tracing": "7.16.0",
     "@tanstack/query-async-storage-persister": "4.10.3",
     "@tanstack/react-query": "4.10.3",
     "@tanstack/react-query-persist-client": "4.10.3",
@@ -52,6 +54,7 @@
     "@vanilla-extract/sprinkles": "1.5.0",
     "chroma-js": "2.4.2",
     "clsx": "1.2.1",
+    "date-fns": "2.29.3",
     "deepmerge": "4.2.2",
     "ethers": "5.7.1",
     "eventemitter3": "4.0.7",
@@ -61,7 +64,8 @@
     "react-dom": "18.2.0",
     "react-router-dom": "6.4.2",
     "socket.io-client": "4.5.3",
-    "wagmi": "0.7.5"
+    "wagmi": "0.7.5",
+    "zustand": "4.1.2"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "2.0.3",

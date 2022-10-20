@@ -38,7 +38,7 @@ function Placeholder({
 
 function SectionHeading({ children }: { children: string }) {
   return (
-    <Text size="17pt" weight="bold" color="labelSecondary">
+    <Text size="14pt" weight="bold" color="label">
       {children}
     </Text>
   );
@@ -46,7 +46,7 @@ function SectionHeading({ children }: { children: string }) {
 
 function ExampleHeading({ children }: { children: string }) {
   return (
-    <Text size="15pt" weight="medium" color="labelTertiary">
+    <Text size="14pt" weight="medium" color="labelSecondary">
       {children}
     </Text>
   );
@@ -68,11 +68,11 @@ export function DesignSystem() {
                   padding="12px"
                   style={{ borderRadius: 999 }}
                 >
-                  <Text size="17pt" weight="bold" align="center">
+                  <Text size="14pt" weight="bold" align="center">
                     Default accent background
                   </Text>
                 </Box>
-                <Text size="17pt" weight="bold" color="accent" align="center">
+                <Text size="14pt" weight="bold" color="accent" align="center">
                   Default accent foreground
                 </Text>
               </Stack>
@@ -83,11 +83,11 @@ export function DesignSystem() {
                     padding="12px"
                     style={{ borderRadius: 999 }}
                   >
-                    <Text size="17pt" weight="bold" align="center">
+                    <Text size="14pt" weight="bold" align="center">
                       Custom accent background
                     </Text>
                   </Box>
-                  <Text size="17pt" weight="bold" color="accent" align="center">
+                  <Text size="14pt" weight="bold" color="accent" align="center">
                     Custom accent foreground
                   </Text>
                 </Stack>
@@ -96,7 +96,7 @@ export function DesignSystem() {
                 <ThemeProvider theme="dark">
                   <Box padding="12px" background="surfacePrimary">
                     <Text
-                      size="17pt"
+                      size="14pt"
                       weight="bold"
                       color="label"
                       align="center"
@@ -108,7 +108,7 @@ export function DesignSystem() {
                 <ThemeProvider theme="light">
                   <Box padding="12px" background="surfacePrimary">
                     <Text
-                      size="17pt"
+                      size="14pt"
                       weight="bold"
                       color="label"
                       align="center"
