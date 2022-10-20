@@ -58,10 +58,10 @@ export function Index() {
               <Stack alignHorizontal="center" space="16px">
                 {/* TODO: Convert to <Avatar> */}
                 <Box
+                  borderRadius="round"
                   style={{
                     height: '60px',
                     width: '60px',
-                    borderRadius: '30px',
                     overflow: 'hidden',
                     position: 'relative',
                   }}
@@ -158,11 +158,11 @@ function ActionButton({
     <Stack alignHorizontal="center" space="10px">
       <Box
         background="accent"
+        borderRadius="round"
         display="flex"
         alignItems="center"
         justifyContent="center"
         style={{
-          borderRadius: '36px',
           width: '36px',
           height: '36px',
         }}
