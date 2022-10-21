@@ -120,6 +120,7 @@ export type ContextualColorValue<Value> = {
 export type BackgroundColor =
   | 'surfacePrimary'
   | 'surfacePrimaryElevated'
+  | 'surfacePrimaryElevatedSecondary'
   | 'surfaceSecondary'
   | 'surfaceSecondaryElevated'
   | 'surfaceMenu'
@@ -158,7 +159,17 @@ export const backgroundColors: Record<
       setColorContext: 'light',
     },
     dark: {
-      color: globalColors.white10,
+      color: '#191A1C',
+      setColorContext: 'dark',
+    },
+  },
+  surfacePrimaryElevatedSecondary: {
+    light: {
+      color: 'rgba(245, 245, 247, 0.68)',
+      setColorContext: 'light',
+    },
+    dark: {
+      color: 'rgba(36, 37, 41, 0.4)',
       setColorContext: 'dark',
     },
   },
