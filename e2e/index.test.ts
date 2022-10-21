@@ -60,8 +60,9 @@ it('should be able to turn ON injection', async () => {
   expect(actual).toEqual(expected);
 });
 
-it.skip('should be able to connect to bx test dapp', async () => {
+it('should be able to connect to bx test dapp', async () => {
   await driver.get('https://bx-test-dapp.vercel.app/');
+  const dappHandler = await driver.getWindowHandle();
 
   const button = await findElementByText(driver, 'Connect Wallet');
   expect(button).toBeTruthy();
@@ -76,6 +77,14 @@ it.skip('should be able to connect to bx test dapp', async () => {
   );
 
   await mmButton.click();
+
+  await driver.switchTo().newWindow('tab');
+
+  await driver.get(rootURL + '/popup.html');
+
+  await driver.findElement({ id: 'accept-button' }).click();
+
+  await driver.switchTo().window(dappHandler);
 
   const topButton = await querySelector(
     driver,
