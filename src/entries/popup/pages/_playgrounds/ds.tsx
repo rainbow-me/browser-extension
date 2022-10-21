@@ -119,6 +119,76 @@ export function DesignSystem() {
                 </ThemeProvider>
               </Stack>
 
+              <SectionHeading>Shadows</SectionHeading>
+              {(['12px', '18px', '24px', '30px'] as const).map((shadowSize) => (
+                <Box
+                  key={shadowSize}
+                  display="flex"
+                  flexDirection="row"
+                  gap="12px"
+                >
+                  <Box
+                    boxShadow={shadowSize}
+                    background="surfacePrimaryElevated"
+                    padding="12px"
+                    borderRadius="round"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    style={{ flexGrow: 1, flexShrink: 1 }}
+                  >
+                    <Text size="14pt" weight="semibold" align="center">
+                      {shadowSize}
+                    </Text>
+                  </Box>
+                  <Box
+                    boxShadow={`${shadowSize} accent`}
+                    background="accent"
+                    padding="12px"
+                    borderRadius="round"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    <Text size="14pt" weight="semibold" align="center">
+                      accent
+                    </Text>
+                  </Box>
+                  <Box style={{ flexGrow: 1, flexShrink: 1 }}>
+                    <AccentColorProvider color="#FFB266">
+                      <Box
+                        boxShadow={`${shadowSize} accent`}
+                        background="accent"
+                        padding="12px"
+                        borderRadius="round"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        style={{ flexGrow: 1, flexShrink: 1 }}
+                      >
+                        <Text size="14pt" weight="semibold" align="center">
+                          accent
+                        </Text>
+                      </Box>
+                    </AccentColorProvider>
+                  </Box>
+                  <Box
+                    boxShadow={`${shadowSize} purple`}
+                    background="purple"
+                    padding="12px"
+                    borderRadius="round"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                    style={{ flexGrow: 1, flexShrink: 1 }}
+                  >
+                    <Text size="14pt" weight="semibold" align="center">
+                      purple
+                    </Text>
+                  </Box>
+                </Box>
+              ))}
+
               <SectionHeading>Menu styles</SectionHeading>
               <Box
                 padding="4px"
