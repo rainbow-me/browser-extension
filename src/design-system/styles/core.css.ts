@@ -99,6 +99,14 @@ export const resetElements = {
   ul: list,
 };
 
+// The accent color needs to be stored as separate variables
+// for HSL so that we can dynamically alter the opacity, most
+// notably for use with shadow colors,
+// i.e. hsl(var(--h), var(--s), var(--l), 0.2)
+// We're using HSL rather than RGB since it's a more useful
+// color space to work with, giving you more natural control
+// over the different aspects of the color like updating
+// the saturation in isolation without changing the hue.
 export const accentColorHslVars = createThemeContract({
   hue: null,
   saturation: null,
@@ -242,7 +250,7 @@ export const shadowVars = createThemeContract(
   mapValues(shadowTokens, () => null),
 );
 
-export const shadows = Object.keys(shadowVars) as Shadow[];
+export const shadows = Object.keys(shadowVars) as (keyof typeof shadowVars)[];
 
 globalStyle(`html.${rootThemeClasses.lightTheme}`, {
   backgroundColor: backgroundColors.surfacePrimary.light.color,
