@@ -75,17 +75,23 @@ it('should be able to connect to bx test dapp', async () => {
     driver,
     '[data-testid="rk-wallet-option-metaMask"]',
   );
-
+  // wait for dapp
+  await delay(500);
   await mmButton.click();
 
-  await driver.switchTo().newWindow('tab');
+  // wait for window handlers to update
+  await delay(100);
+  const handlers = await driver.getAllWindowHandles();
 
-  await driver.get(rootURL + '/popup.html');
+  const popupHandler =
+    handlers.find((handler) => handler !== dappHandler) || '';
 
+  await driver.switchTo().window(popupHandler);
+  // wait for extension to load
+  await delay(500);
   await driver.findElement({ id: 'accept-button' }).click();
 
   await driver.switchTo().window(dappHandler);
-
   const topButton = await querySelector(
     driver,
     '[data-testid="rk-account-button"]',
