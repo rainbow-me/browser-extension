@@ -1,26 +1,30 @@
-import { Signer, Transaction, Wallet } from 'ethers';
-import { Bytes, HDNode } from 'ethers/lib/utils';
-import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { Signer, Wallet } from 'ethers';
+import { HDNode } from 'ethers/lib/utils';
 import { Address } from 'wagmi';
-import { IKeychain, PrivateKey } from './baseKeychain';
+import { IKeychain, PrivateKey } from '../iKeychain';
 
-interface HdKeychainOptions {
+export interface SerializedHdKeychain {
   mnemonic: string;
   hdPath?: string;
-  accountsEnabled: number;
+  accountsEnabled?: number;
+  type: string;
+  imported?: boolean;
 }
 
 export class HdKeychain implements IKeychain {
   type: string;
+  imported: boolean;
   _wallets: Wallet[] | Signer[];
   _mnemonic?: string | null;
   _accountsEnabled: number;
   _hdPath: string;
-  constructor(options: HdKeychainOptions) {
-    this.type = 'HdKeychain';
+
+  constructor(options: SerializedHdKeychain) {
+    this.type = 'HDKeychain';
+    this.imported = false;
     this._wallets = [];
     this._mnemonic = null;
-    this._accountsEnabled = 0;
+    this._accountsEnabled = 1;
     this._hdPath = `m/44'/60'/0'/0`;
     this.deserialize(options);
   }
@@ -32,41 +36,49 @@ export class HdKeychain implements IKeychain {
     ) as Wallet;
   }
 
-  async serialize(): Promise<HdKeychainOptions> {
+  getSigner(address: Address): Signer {
+    const wallet = this._getWalletForAddress(address);
+    return wallet;
+  }
+
+  async serialize(): Promise<SerializedHdKeychain> {
     return {
+      imported: this.imported,
       mnemonic: this._mnemonic as string,
       accountsEnabled: this._accountsEnabled,
       hdPath: this._hdPath,
+      type: this.type,
     };
   }
 
-  async deserialize(opts: HdKeychainOptions) {
-    if (opts.accountsEnabled && !opts.mnemonic) {
-      throw new Error(
-        'mnemonic is required if accountsEnabled is greater than 0',
-      );
-    }
+  async deserialize(opts: SerializedHdKeychain) {
     if (opts.hdPath) this._hdPath = opts.hdPath;
+    if (opts.imported) this.imported = opts.imported;
+    if (opts.accountsEnabled) this._accountsEnabled = opts.accountsEnabled;
 
     if (opts.mnemonic) {
       this._mnemonic = opts.mnemonic;
     } else {
       this._mnemonic = Wallet.createRandom().mnemonic.phrase as string;
     }
-    if (opts.accountsEnabled) {
-      const results = [];
-      for (let i = 0; i < opts.accountsEnabled; i++) {
-        results.push(this.addAccount(i));
-      }
-      await Promise.all(results);
+    const results = [];
+    for (let i = 0; i < this._accountsEnabled; i++) {
+      results.push(this._addAccount(i));
     }
+    await Promise.all(results);
+  }
+  async addNewAccount(): Promise<Array<Wallet>> {
+    await this._addAccount(this._accountsEnabled);
+    this._accountsEnabled += 1;
+    return this._wallets as Wallet[];
   }
 
-  async addAccount(_index: number): Promise<Array<Wallet>> {
+  async _addAccount(_index: number): Promise<Wallet> {
     const hdNode = HDNode.fromMnemonic(this._mnemonic as string);
-    const wallet = hdNode.derivePath(`${this._hdPath}/${_index}`);
-    this._wallets.push(new Wallet(wallet.privateKey));
-    return this._wallets as Wallet[];
+    const derivedWallet = hdNode.derivePath(`${this._hdPath}/${_index}`);
+    const wallet = new Wallet(derivedWallet.privateKey);
+    this._wallets.push(wallet);
+    return wallet;
   }
 
   getAccounts(): Promise<Array<Address>> {
@@ -76,27 +88,18 @@ export class HdKeychain implements IKeychain {
     return Promise.resolve(addresses);
   }
 
-  async signTransaction(
-    address: Address,
-    transaction: TransactionRequest,
-  ): Promise<Transaction['hash']> {
-    const wallet = this._getWalletForAddress(address);
-    return wallet.signTransaction(transaction);
-  }
-
-  async signMessage(address: Address, data: Bytes | string): Promise<string> {
-    const wallet = this._getWalletForAddress(address);
-    return wallet.signMessage(data);
-  }
-
   async exportAccount(address: Address): Promise<PrivateKey> {
     const wallet = this._getWalletForAddress(address);
     return wallet.privateKey;
   }
 
+  async exportKeychain(): Promise<string> {
+    return this._mnemonic as string;
+  }
+
   async removeAccount(address: Address): Promise<void> {
     const filteredList = this._wallets.filter(
-      (wallet) => (wallet as Wallet).address !== address.toLowerCase(),
+      (wallet) => (wallet as Wallet).address !== address,
     );
     if (filteredList.length !== this._wallets.length) {
       this._wallets = filteredList;
