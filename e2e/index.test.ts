@@ -88,7 +88,7 @@ it('should be able to connect to bx test dapp', async () => {
 
   await driver.switchTo().window(popupHandler);
   // wait for extension to load
-  await delay(500);
+  await delay(2000);
   await driver.findElement({ id: 'accept-button' }).click();
 
   await driver.switchTo().window(dappHandler);
