@@ -6,7 +6,7 @@ import React, {
   useMemo,
 } from 'react';
 import chroma from 'chroma-js';
-import { accentColorHslVars, boxStyles } from '../../styles/core.css';
+import { accentColorHslVars } from '../../styles/core.css';
 import {
   BackgroundColor,
   backgroundColors,
@@ -84,7 +84,7 @@ interface AccentColorContextProviderProps {
   color: string;
   children:
     | ReactNode
-    | ((args: { style: CSSProperties; className: string }) => ReactNode);
+    | ((args: { className: string; style: CSSProperties }) => ReactNode);
 }
 
 export function AccentColorProvider({
@@ -112,15 +112,14 @@ export function AccentColorProvider({
     // inside an AccentColorProvider with a different color.
     themeClasses.lightTheme[`${lightThemeColorContext}Context`],
     themeClasses.darkTheme[`${darkThemeColorContext}Context`],
-    boxStyles({ width: 'full' }),
   ].join(' ');
 
   return (
     <AccentColorContext.Provider value={value}>
       {typeof children === 'function' ? (
-        children({ style, className })
+        children({ className, style })
       ) : (
-        <div style={style} className={className}>
+        <div className={className} style={style}>
           {children}
         </div>
       )}

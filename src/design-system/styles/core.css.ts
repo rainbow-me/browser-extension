@@ -335,9 +335,6 @@ const boxBaseProperties = defineProperties({
     position: ['relative', 'absolute', 'fixed'],
     right: positionSpace,
     top: positionSpace,
-    width: {
-      full: '100%',
-    },
   },
   shorthands: {
     padding: ['paddingTop', 'paddingBottom', 'paddingLeft', 'paddingRight'],

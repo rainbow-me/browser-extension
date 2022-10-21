@@ -149,6 +149,7 @@ export function DesignSystem() {
                     display="flex"
                     alignItems="center"
                     justifyContent="center"
+                    style={{ flexGrow: 1, flexShrink: 1 }}
                   >
                     <Text size="14pt" weight="semibold" align="center">
                       accent
