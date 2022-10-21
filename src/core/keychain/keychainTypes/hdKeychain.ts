@@ -20,7 +20,7 @@ export class HdKeychain implements IKeychain {
   _hdPath: string;
 
   constructor(options: SerializedHdKeychain) {
-    this.type = 'HDKeychain';
+    this.type = 'HdKeychain';
     this.imported = false;
     this._wallets = [];
     this._mnemonic = null;

@@ -34,6 +34,11 @@ class KeychainManager {
     this._rehydrate();
   }
 
+  async updatePassword(password: string) {
+    this.state.password = password;
+    await this._persist();
+  }
+
   async addNewKeychain(type: string, opts: unknown) {
     let keychain;
     switch (type) {
@@ -44,6 +49,7 @@ class KeychainManager {
         throw new Error('Keychain type not recognized.');
     }
     this.state.keychains.push(keychain as Keychain);
+    this.state.isUnlocked = true;
     await this._persist();
   }
 
@@ -83,13 +89,13 @@ class KeychainManager {
     const newState = {
       password: null,
       isUnlocked: false,
-      keyrings: [],
+      keychains: [],
     };
     this.state = {
       ...this.state,
       ...newState,
     };
-    await this._persist();
+    await this._memorize();
   }
 
   async unlock(password: string) {
@@ -103,9 +109,9 @@ class KeychainManager {
     this.state.password = password;
     this.state.isUnlocked = true;
     await Promise.all(
-      vault.map((serializedKeychain) =>
-        this._restoreKeychain(serializedKeychain),
-      ),
+      vault.map((serializedKeychain) => {
+        return this._restoreKeychain(serializedKeychain);
+      }),
     );
     await this._persist();
   }

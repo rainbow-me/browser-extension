@@ -3,7 +3,7 @@ import { BytesLike, Signer, Wallet } from 'ethers';
 import { Address } from 'wagmi';
 import { Mnemonic, SigningKey } from 'ethers/lib/utils';
 
-export type PrivateKey = BytesLike | SigningKey;
+export type PrivateKey = string;
 
 export interface IKeychain {
   type: string;
