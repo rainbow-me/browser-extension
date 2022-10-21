@@ -19,6 +19,7 @@ export const Storage = {
     const listener = (changes: {
       [key: string]: chrome.storage.StorageChange;
     }) => {
+      if (!changes[key]) return;
       const newValue = changes[key]?.newValue;
       const oldValue = changes[key]?.oldValue;
       callback(newValue, oldValue);
