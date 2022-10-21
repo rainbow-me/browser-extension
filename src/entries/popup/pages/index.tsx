@@ -30,9 +30,10 @@ export function Index() {
 
   return (
     <AccentColorProvider color={color || 'white'}>
-      {({ style }) => (
+      {({ className, style }) => (
         /* TODO: Convert to <Rows> */
         <Box
+          className={className}
           style={{
             ...style,
             display: 'flex',
