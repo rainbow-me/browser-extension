@@ -160,6 +160,7 @@ function ActionButton({
       <Box
         background="accent"
         borderRadius="round"
+        boxShadow="12px accent"
         display="flex"
         alignItems="center"
         justifyContent="center"
