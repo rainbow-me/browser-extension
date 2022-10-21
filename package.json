@@ -63,6 +63,8 @@
     "eventemitter3": "4.0.7",
     "framer-motion": "7.6.1",
     "lodash": "4.17.21",
+    "make-color-more-chill": "0.2.2",
+    "node-vibrant": "3.1.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-router-dom": "6.4.2",
@@ -117,7 +119,8 @@
     "vitest": "0.24.3",
     "webpack": "5.74.0",
     "webpack-cli": "4.10.0",
-    "webpack-extension-reloader": "rainbow-me/webpack-extension-reloader#23fc3ed1f59f295702d459ad58aec90d6f0a3551"
+    "webpack-extension-reloader": "rainbow-me/webpack-extension-reloader#23fc3ed1f59f295702d459ad58aec90d6f0a3551",
+    "worker-loader": "3.0.8"
   },
   "resolutions": {
     "globby": "11.1.0",
@@ -156,7 +159,7 @@
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
-      "yarn lint --fix"
+      "yarn lint --fix --ignore-pattern '!*.d.ts'"
     ]
   }
 }

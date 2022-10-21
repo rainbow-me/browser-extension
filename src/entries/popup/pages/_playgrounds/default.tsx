@@ -3,9 +3,9 @@ import { chain, useAccount, useBalance } from 'wagmi';
 import { useUserAssets } from '~/core/resources/assets';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
 import { usePopupStore } from '~/core/state';
-import { Storage } from '~/core/storage';
-import { Box, Text, Inset, Stack } from '~/design-system';
-import { InjectToggle } from '../../components/InjectToggle';
+import { Text, Inset, Stack, Box } from '~/design-system';
+import { ClearStorage } from '../../components/_dev/ClearStorage';
+import { InjectToggle } from '../../components/_dev/InjectToggle';
 
 export function Default() {
   const { address } = useAccount();
@@ -14,7 +14,8 @@ export function Default() {
     state.setCurrentCurrency,
   ]);
 
-  const { data: userAssets } = useUserAssets();
+  const { data: userAssets, ...rest } = useUserAssets();
+  console.log('test', userAssets, rest);
   const { data: mainnetBalance } = useBalance({
     addressOrName: address,
     chainId: chain.mainnet.id,
@@ -48,17 +49,7 @@ export function Default() {
           )}
         </Stack>
         <InjectToggle />
-        <Box
-          as="button"
-          background="surfaceSecondary"
-          onClick={Storage.clear}
-          padding="16px"
-          style={{ borderRadius: 999 }}
-        >
-          <Text color="labelSecondary" size="14pt" weight="bold">
-            CLEAR STORAGE
-          </Text>
-        </Box>
+        <ClearStorage />
         <Box
           as="button"
           background="surfaceSecondary"
