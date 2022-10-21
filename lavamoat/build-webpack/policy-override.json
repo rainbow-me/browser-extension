@@ -1,5 +1,10 @@
 {
   "resources": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration": {
+      "packages": {
+        "$root$": true
+      }
+    },
     "@vanilla-extract/webpack-plugin": {
       "builtin": {
         "path": true
@@ -8,7 +13,8 @@
         "@vanilla-extract/webpack-plugin>loader-utils": true,
         "file-loader>loader-utils": true,
         "eslint>debug": true,
-        "eslint>chalk": true
+        "eslint>chalk": true,
+        "vitest>debug": true
       }
     },
     "@vanilla-extract/webpack-plugin>loader-utils": {

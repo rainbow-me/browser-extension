@@ -1,5 +1,14 @@
 {
   "resources": {
+    "browserify>buffer": {
+      "globals": {
+        "console": true
+      },
+      "packages": {
+        "browserify>buffer>base64-js": true,
+        "browserify>buffer>ieee754": true
+      }
+    },
     "browserify>process": {
       "globals": {
         "clearTimeout": true,

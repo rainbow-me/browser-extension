@@ -1,8 +1,8 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { By, until, Builder } = require('selenium-webdriver');
-const chrome = require('selenium-webdriver/chrome');
+import { By, until, Builder } from 'selenium-webdriver';
+import chrome from 'selenium-webdriver/chrome';
 
 const waitUntilTime = 20000;
 
@@ -17,7 +17,7 @@ const BINARY_PATHS = {
   },
 };
 
-async function querySelector(driver, selector) {
+export async function querySelector(driver, selector) {
   const el = await driver.wait(
     until.elementLocated(By.css(selector)),
     waitUntilTime,
@@ -25,7 +25,7 @@ async function querySelector(driver, selector) {
   return await driver.wait(until.elementIsVisible(el), waitUntilTime);
 }
 
-async function initDriverWithOptions(opts) {
+export async function initDriverWithOptions(opts) {
   const args = [
     'load-extension=build/',
     '--auto-open-devtools-for-tabs',
@@ -33,13 +33,12 @@ async function initDriverWithOptions(opts) {
     '--enable-logging',
   ];
 
-  const options = new chrome.Options().addArguments(args);
+  const options = new chrome.Options()
+    .setChromeBinaryPath(BINARY_PATHS[opts.os][opts.browser])
+    .addArguments(...args);
   options.setAcceptInsecureCerts(true);
-  options.setChromeBinaryPath(BINARY_PATHS[opts.os][opts.browser]);
 
-  const service = new chrome.ServiceBuilder()
-    .setStdio('inherit')
-    .enableChromeLogging();
+  const service = new chrome.ServiceBuilder().setStdio('inherit');
 
   return await new Builder()
     .setChromeService(service)
@@ -48,7 +47,7 @@ async function initDriverWithOptions(opts) {
     .build();
 }
 
-async function getExtensionIdByName(driver, extensionName) {
+export async function getExtensionIdByName(driver, extensionName) {
   await driver.get('chrome://extensions');
   return await driver.executeScript(`
       const extensions = document.querySelector("extensions-manager").shadowRoot
@@ -65,24 +64,15 @@ async function getExtensionIdByName(driver, extensionName) {
     `);
 }
 
-async function delay(ms) {
+export async function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function findElementByText(driver, text) {
+export async function findElementByText(driver, text) {
   return driver.findElement(By.xpath("//*[contains(text(),'" + text + "')]"));
 }
 
-async function waitAndClick(element, driver) {
+export async function waitAndClick(element, driver) {
   await driver.wait(until.elementIsVisible(element), waitUntilTime);
   return element.click();
 }
-
-module.exports = {
-  delay,
-  findElementByText,
-  waitAndClick,
-  getExtensionIdByName,
-  initDriverWithOptions,
-  querySelector,
-};

@@ -45,17 +45,15 @@ jobs:
           sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
       - name: Run e2e (Chrome)
         run: |
-          yarn test:linux:chrome
+          yarn e2e:linux:chrome
       - name: Run e2e (Brave)
         run: |
-          yarn test:linux:brave
-      - name: Pack extension
-        run: yarn zip
+          yarn e2e:linux:brave
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
           name: rainbowbx-${{ github.sha }}.zip
-          path: rainbowbx.zip
+          path: build/
 
 
           
