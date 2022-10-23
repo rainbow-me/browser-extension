@@ -24,24 +24,7 @@
         "AhoCorasick": "write"
       }
     },
-    "@vanilla-extract/webpack-plugin": {
-      "builtin": {
-        "path": true
-      },
-      "globals": {
-        "console.warn": true,
-        "process.env.NODE_ENV": true
-      },
-      "packages": {
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration": true,
-        "@vanilla-extract/webpack-plugin>loader-utils": true,
-        "eslint>chalk": true,
-        "eslint>debug": true,
-        "file-loader>loader-utils": true,
-        "webpack": true
-      }
-    },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration": {
       "builtin": {
         "crypto": true,
         "fs.promises.readFile": true,
@@ -59,22 +42,22 @@
         "$root$": true,
         "@vanilla-extract/css": true,
         "@vanilla-extract/css>outdent": true,
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript": true,
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>@vanilla-extract/babel-plugin-debug-ids": true,
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>esbuild": true,
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>eval": true,
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>find-up": true,
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>javascript-stringify": true,
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript": true,
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/babel-plugin-debug-ids": true,
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": true,
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>eval": true,
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up": true,
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>javascript-stringify": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true,
         "lodash": true
       }
     },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript": {
       "packages": {
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript>@babel/helper-plugin-utils": true
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@babel/plugin-syntax-typescript>@babel/helper-plugin-utils": true
       }
     },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>@vanilla-extract/babel-plugin-debug-ids": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>@vanilla-extract/babel-plugin-debug-ids": {
       "globals": {
         "process.env.NODE_ENV": true
       },
@@ -82,7 +65,7 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": true
       }
     },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>esbuild": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": {
       "builtin": {
         "child_process.execFileSync": true,
         "child_process.spawn": true,
@@ -116,7 +99,7 @@
         "process.platform": true
       }
     },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>eval": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>eval": {
       "builtin": {
         "vm.Script": true
       },
@@ -127,10 +110,10 @@
         "process": true
       },
       "packages": {
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>eval>require-like": true
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>eval>require-like": true
       }
     },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>eval>require-like": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>eval>require-like": {
       "builtin": {
         "module": true,
         "path.dirname": true
@@ -139,18 +122,18 @@
         "process.mainModule": true
       }
     },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>find-up": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up": {
       "builtin": {
         "path.dirname": true,
         "path.parse": true,
         "path.resolve": true
       },
       "packages": {
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>find-up>locate-path": true,
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path": true,
         "eslint>find-up>path-exists": true
       }
     },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>find-up>locate-path": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path": {
       "builtin": {
         "fs.lstat": true,
         "fs.lstatSync": true,
@@ -163,17 +146,40 @@
         "process.cwd": true
       },
       "packages": {
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>find-up>locate-path>p-locate": true
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path>p-locate": true
       }
     },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>find-up>locate-path>p-locate": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>find-up>locate-path>p-locate": {
       "packages": {
         "jest>@jest/core>jest-runner>p-limit": true
       }
     },
-    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>javascript-stringify": {
+    "@vanilla-extract/vite-plugin>@vanilla-extract/integration>javascript-stringify": {
       "globals": {
         "Buffer": true
+      }
+    },
+    "@vanilla-extract/webpack-plugin": {
+      "builtin": {
+        "path": true
+      },
+      "globals": {
+        "console.warn": true,
+        "process.env.NODE_ENV": true
+      },
+      "packages": {
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration": true,
+        "@vanilla-extract/webpack-plugin>loader-utils": true,
+        "eslint>chalk": true,
+        "eslint>debug": true,
+        "file-loader>loader-utils": true,
+        "vitest>debug": true,
+        "webpack": true
+      }
+    },
+    "@vanilla-extract/webpack-plugin>@vanilla-extract/integration": {
+      "packages": {
+        "$root$": true
       }
     },
     "@vanilla-extract/webpack-plugin>loader-utils": {
@@ -436,14 +442,14 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>gensync": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>semver": true,
-        "eslint>debug": true,
         "file-loader>loader-utils>json5": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator": true,
-        "jest>@jest/core>jest-snapshot>@babel/types": true,
         "lavamoat-browserify>convert-source-map": true,
         "lavamoat>@babel/code-frame": true,
         "lavamoat>lavamoat-tofu>@babel/parser": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse": true
+        "lavamoat>lavamoat-tofu>@babel/traverse": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/generator": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
+        "vitest>debug": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@ampproject/remapping": {
@@ -491,31 +497,31 @@
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
-        "jest>@jest/core>jest-snapshot>@babel/types": true,
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
         "lavamoat>lavamoat-tofu>@babel/traverse": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-environment-visitor": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
         "wagmi>@coinbase/wallet-sdk>eth-block-tracker>@babel/plugin-transform-runtime>@babel/helper-module-imports": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": {
       "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/types": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers": {
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
-        "jest>@jest/core>jest-snapshot>@babel/types": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse": true
+        "lavamoat>lavamoat-tofu>@babel/traverse": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": {
       "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/types": true,
         "lavamoat>@babel/code-frame": true,
-        "lavamoat>lavamoat-tofu>@babel/parser": true
+        "lavamoat>lavamoat-tofu>@babel/parser": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>semver": {
@@ -572,25 +578,6 @@
     "eslint>chalk>supports-color>has-flag": {
       "globals": {
         "process.argv": true
-      }
-    },
-    "eslint>debug": {
-      "builtin": {
-        "tty.isatty": true,
-        "util.deprecate": true,
-        "util.format": true,
-        "util.inspect": true
-      },
-      "globals": {
-        "console": true,
-        "document": true,
-        "localStorage": true,
-        "navigator": true,
-        "process": true
-      },
-      "packages": {
-        "eslint>chalk>supports-color": true,
-        "eslint>debug>ms": true
       }
     },
     "eslint>eslint-scope>esrecurse": {
@@ -787,6 +774,11 @@
         "process.nextTick": true
       }
     },
+    "happy-dom>he": {
+      "globals": {
+        "define": true
+      }
+    },
     "html-webpack-plugin": {
       "builtin": {
         "console.assert": true,
@@ -825,10 +817,10 @@
         "document": true
       },
       "packages": {
+        "happy-dom>he": true,
         "html-webpack-plugin>html-minifier-terser>clean-css": true,
-        "html-webpack-plugin>html-minifier-terser>he": true,
         "html-webpack-plugin>html-minifier-terser>relateurl": true,
-        "webpack>terser-webpack-plugin>terser": true
+        "vitest>vite>terser": true
       }
     },
     "html-webpack-plugin>html-minifier-terser>clean-css": {
@@ -857,11 +849,6 @@
       },
       "packages": {
         "html-webpack-plugin>html-minifier-terser>clean-css>source-map": true
-      }
-    },
-    "html-webpack-plugin>html-minifier-terser>he": {
-      "globals": {
-        "define": true
       }
     },
     "html-webpack-plugin>html-minifier-terser>relateurl": {
@@ -973,16 +960,6 @@
         "webpack-extension-reloader>@types/webpack>source-map": true
       }
     },
-    "jest>@jest/core>jest-snapshot>@babel/generator": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true,
-        "jest>@jest/core>jest-snapshot>@babel/types": true
-      }
-    },
     "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": {
       "globals": {
         "define": true
@@ -1001,17 +978,6 @@
     "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": {
       "globals": {
         "Buffer.isBuffer": true
-      }
-    },
-    "jest>@jest/core>jest-snapshot>@babel/types": {
-      "globals": {
-        "console.trace": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
-      },
-      "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-string-parser": true,
-        "jest>@jest/core>jest-snapshot>@babel/types>to-fast-properties": true,
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
       }
     },
     "lavamoat-browserify>convert-source-map": {
@@ -1091,32 +1057,53 @@
         "console.trace": true
       },
       "packages": {
-        "eslint>debug": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator": true,
-        "jest>@jest/core>jest-snapshot>@babel/types": true,
         "lavamoat>@babel/code-frame": true,
         "lavamoat>lavamoat-tofu>@babel/parser": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/generator": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-environment-visitor": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true,
+        "vitest>debug": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/generator": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
+        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
       }
     },
     "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name": {
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
-        "jest>@jest/core>jest-snapshot>@babel/types": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
       }
     },
     "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables": {
       "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/types": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
       }
     },
     "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration": {
       "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/types": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": {
+      "globals": {
+        "console.trace": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/types>to-fast-properties": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types>@babel/helper-string-parser": true
       }
     },
     "lint-staged>execa>merge-stream": {
@@ -1274,12 +1261,53 @@
         "jest>@jest/core>jest-runner>source-map-support": true
       }
     },
+    "vitest>debug": {
+      "builtin": {
+        "tty.isatty": true,
+        "util.deprecate": true,
+        "util.format": true,
+        "util.inspect": true
+      },
+      "globals": {
+        "console": true,
+        "document": true,
+        "localStorage": true,
+        "navigator": true,
+        "process": true
+      },
+      "packages": {
+        "eslint>chalk>supports-color": true,
+        "vitest>debug>ms": true
+      }
+    },
+    "vitest>vite>terser": {
+      "globals": {
+        "Buffer.from": true,
+        "atob": true,
+        "btoa": true,
+        "console.log": true,
+        "console.warn": true,
+        "define": true,
+        "process": true
+      },
+      "packages": {
+        "vitest>vite>terser>@jridgewell/source-map": true,
+        "webpack>acorn": true
+      }
+    },
+    "vitest>vite>terser>@jridgewell/source-map": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
+      }
+    },
     "wagmi>@coinbase/wallet-sdk>eth-block-tracker>@babel/plugin-transform-runtime>@babel/helper-module-imports": {
       "builtin": {
         "assert": true
       },
       "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/types": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
       }
     },
     "webpack": {
@@ -1651,12 +1679,12 @@
         "process.stdout.write": true
       },
       "packages": {
-        "@vanilla-extract/webpack-plugin>@vanilla-extract/integration>esbuild": true,
+        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": true,
         "copy-webpack-plugin>serialize-javascript": true,
+        "vitest>vite>terser": true,
         "webpack>schema-utils": true,
         "webpack>terser-webpack-plugin>@jridgewell/trace-mapping": true,
-        "webpack>terser-webpack-plugin>jest-worker": true,
-        "webpack>terser-webpack-plugin>terser": true
+        "webpack>terser-webpack-plugin>jest-worker": true
       }
     },
     "webpack>terser-webpack-plugin>@jridgewell/trace-mapping": {
@@ -1711,28 +1739,6 @@
       },
       "packages": {
         "eslint>chalk>supports-color>has-flag": true
-      }
-    },
-    "webpack>terser-webpack-plugin>terser": {
-      "globals": {
-        "Buffer.from": true,
-        "atob": true,
-        "btoa": true,
-        "console.log": true,
-        "console.warn": true,
-        "define": true,
-        "process": true
-      },
-      "packages": {
-        "webpack>acorn": true,
-        "webpack>terser-webpack-plugin>terser>@jridgewell/source-map": true
-      }
-    },
-    "webpack>terser-webpack-plugin>terser>@jridgewell/source-map": {
-      "globals": {
-        "Buffer": true,
-        "TextDecoder": true,
-        "define": true
       }
     },
     "webpack>watchpack": {

@@ -9,7 +9,7 @@ const docs: DocsType = {
   meta: { name: 'Box', category: 'Content' },
   description: (
     <>
-      <Text size="17pt" weight="semibold">
+      <Text size="16pt" weight="semibold">
         Renders an individual `div` element with quick access to the standard
         padding and negative margin scales, as well as other common layout
         properties. Ideally you&apos;re not supposed to need this component much
@@ -25,4 +25,5 @@ const docs: DocsType = {
   ],
 };
 
+// eslint-disable-next-line import/no-default-export
 export default docs;

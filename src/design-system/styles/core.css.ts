@@ -18,6 +18,10 @@ import {
   backgroundColors,
   foregroundColors,
   textColors,
+  strokeWeights,
+  radii,
+  separatorColors,
+  strokeColors,
 } from './designTokens';
 import SFRoundedRegular from './fonts/subset-SFRounded-Regular.woff2';
 import SFRoundedMedium from './fonts/subset-SFRounded-Medium.woff2';
@@ -92,10 +96,12 @@ export const resetElements = {
 
 export const accentColorVar = createVar();
 
-const semanticColorVars = createThemeContract({
+export const semanticColorVars = createThemeContract({
   backgroundColors: mapValues(backgroundColors, () => null),
   foregroundColors: mapValues(foregroundColors, () => null),
 });
+
+export const foregroundColorVars = semanticColorVars.foregroundColors;
 
 globalStyle(`html.${rootThemeClasses.lightTheme}`, {
   backgroundColor: backgroundColors.surfacePrimary.light.color,
@@ -136,11 +142,20 @@ globalStyle(
 const boxBaseProperties = defineProperties({
   properties: {
     alignItems: ['stretch', 'flex-start', 'center', 'flex-end'],
+    backdropFilter: ['blur(26px)'],
+    borderRadius: radii,
+    borderWidth: mapValues(strokeWeights, (borderWidth) => ({
+      borderStyle: 'solid',
+      borderWidth,
+    })),
     bottom: positionSpace,
     display: ['none', 'flex', 'block', 'inline'],
     flexDirection: ['row', 'column'],
     flexWrap: ['wrap'],
     gap: space,
+    height: {
+      full: '100%',
+    },
     justifyContent: [
       'stretch',
       'flex-start',
@@ -184,6 +199,10 @@ const boxColorProperties = defineProperties({
       accent: accentColorVar,
       ...semanticColorVars.backgroundColors,
     },
+    borderColor: pick(semanticColorVars.foregroundColors, [
+      ...separatorColors,
+      ...strokeColors,
+    ] as const),
   },
 });
 
@@ -213,13 +232,20 @@ const fontMetrics = {
   unitsPerEm: 2048,
 };
 
-function fontSize(fontSize: number, lineHeight: number | `${number}%`) {
+function defineType(
+  fontSize: number,
+  lineHeight: number | `${number}%`,
+  letterSpacing: number,
+) {
   const leading =
     typeof lineHeight === 'number'
       ? lineHeight
       : (fontSize * parseInt(lineHeight)) / 100;
 
-  return capsize({ fontMetrics, fontSize, leading });
+  return {
+    ...capsize({ fontMetrics, fontSize, leading }),
+    letterSpacing,
+  };
 }
 
 const textProperties = defineProperties({
@@ -230,25 +256,20 @@ const textProperties = defineProperties({
     },
     fontFamily: { rounded: 'SFRounded' },
     fontSize: {
-      '11pt': fontSize(11, 14),
-      '12pt': fontSize(12, 16),
-      '13pt': fontSize(13, 18),
-      '13pt / 135%': fontSize(13, '135%'),
-      '13pt / 150%': fontSize(13, '150%'),
-      '15pt': fontSize(15, 20),
-      '15pt / 135%': fontSize(15, '135%'),
-      '15pt / 150%': fontSize(15, '150%'),
-      '17pt': fontSize(17, 22),
-      '17pt / 135%': fontSize(17, '135%'),
-      '17pt / 150%': fontSize(17, '150%'),
-      '20pt': fontSize(20, 24),
-      '20pt / 135%': fontSize(20, '135%'),
-      '20pt / 150%': fontSize(20, '150%'),
-      '22pt': fontSize(22, 28),
-      '26pt': fontSize(26, 32),
-      '30pt': fontSize(30, 37),
-      '34pt': fontSize(34, 41),
-      '44pt': fontSize(44, 52),
+      '11pt': defineType(11, 13, 0.56),
+      '12pt': defineType(12, 15, 0.52),
+      '14pt': defineType(14, 19, 0.48),
+      '14pt / 135%': defineType(14, '135%', 0.48),
+      '14pt / 155%': defineType(14, '150%', 0.48),
+      '16pt': defineType(16, 21, 0.35),
+      '16pt / 135%': defineType(16, '135%', 0.35),
+      '16pt / 155%': defineType(16, '150%', 0.35),
+      '20pt': defineType(20, 25, 0.36),
+      '20pt / 135%': defineType(20, '135%', 0.36),
+      '20pt / 150%': defineType(20, '150%', 0.36),
+      '23pt': defineType(23, 29, 0.35),
+      '26pt': defineType(26, 32, 0.36),
+      '32pt': defineType(32, 40, 0.41),
     },
     fontWeight: {
       regular: 400,

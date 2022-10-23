@@ -2,23 +2,23 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable jest/expect-expect */
 
-require('chromedriver');
-require('geckodriver');
-const {
+import 'chromedriver';
+import 'geckodriver';
+import { WebDriver } from 'selenium-webdriver';
+import { afterAll, beforeAll, expect, it } from 'vitest';
+import {
   querySelector,
   delay,
   getExtensionIdByName,
   initDriverWithOptions,
   findElementByText,
-} = require('./helpers');
+} from './helpers';
 
 let rootURL = 'chrome-extension://';
-let driver;
+let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
-
-jest.retryTimes(5);
 
 beforeAll(async () => {
   driver = await initDriverWithOptions({
@@ -36,10 +36,10 @@ it('Should open the popup', async () => {
   await driver.get(rootURL + '/popup.html');
 });
 
-it('should have an h1 saying "Rainbow"', async () => {
-  const h1 = await querySelector(driver, 'h1');
-  const actual = await h1.getText();
-  const expected = 'Rainbow';
+it('should display account name', async () => {
+  const label = await querySelector(driver, '[data-testid="account-name"]');
+  const actual = await label.getText();
+  const expected = '0x70c1...43C4';
   expect(actual).toEqual(expected);
 });
 

@@ -165,11 +165,11 @@
         "setImmediate": true
       },
       "packages": {
+        "browserify>concat-stream>readable-stream>isarray": true,
         "browserify>concat-stream>readable-stream>safe-buffer": true,
         "browserify>concat-stream>readable-stream>string_decoder": true,
         "browserify>inherits": true,
         "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>process-nextick-args": true,
         "browserify>readable-stream>util-deprecate": true
       }
@@ -210,11 +210,11 @@
         "setImmediate": true
       },
       "packages": {
+        "browserify>duplexer2>readable-stream>isarray": true,
         "browserify>duplexer2>readable-stream>safe-buffer": true,
         "browserify>duplexer2>readable-stream>string_decoder": true,
         "browserify>inherits": true,
         "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>process-nextick-args": true,
         "browserify>readable-stream>util-deprecate": true
       }
@@ -319,10 +319,10 @@
       },
       "packages": {
         "browserify>inherits": true,
+        "browserify>labeled-stream-splicer>stream-splicer>readable-stream>isarray": true,
         "browserify>labeled-stream-splicer>stream-splicer>readable-stream>safe-buffer": true,
         "browserify>labeled-stream-splicer>stream-splicer>readable-stream>string_decoder": true,
         "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>process-nextick-args": true,
         "browserify>readable-stream>util-deprecate": true
       }
@@ -392,10 +392,10 @@
       },
       "packages": {
         "browserify>inherits": true,
+        "browserify>module-deps>readable-stream>isarray": true,
         "browserify>module-deps>readable-stream>safe-buffer": true,
         "browserify>module-deps>readable-stream>string_decoder": true,
         "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>process-nextick-args": true,
         "browserify>readable-stream>util-deprecate": true
       }
@@ -432,10 +432,10 @@
       },
       "packages": {
         "browserify>inherits": true,
+        "browserify>module-deps>stream-combiner2>readable-stream>isarray": true,
         "browserify>module-deps>stream-combiner2>readable-stream>safe-buffer": true,
         "browserify>module-deps>stream-combiner2>readable-stream>string_decoder": true,
         "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>process-nextick-args": true,
         "browserify>readable-stream>util-deprecate": true
       }
@@ -492,10 +492,10 @@
       },
       "packages": {
         "browserify>inherits": true,
+        "browserify>read-only-stream>readable-stream>isarray": true,
         "browserify>read-only-stream>readable-stream>safe-buffer": true,
         "browserify>read-only-stream>readable-stream>string_decoder": true,
         "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>process-nextick-args": true,
         "browserify>readable-stream>util-deprecate": true
       }
@@ -592,9 +592,9 @@
       "packages": {
         "browserify>inherits": true,
         "browserify>readable-stream>core-util-is": true,
-        "browserify>readable-stream>isarray": true,
         "browserify>readable-stream>process-nextick-args": true,
         "browserify>readable-stream>util-deprecate": true,
+        "browserify>through2>readable-stream>isarray": true,
         "browserify>through2>readable-stream>safe-buffer": true,
         "browserify>through2>readable-stream>string_decoder": true
       }
@@ -616,9 +616,9 @@
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": {
       "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/types": true,
         "lavamoat>@babel/code-frame": true,
-        "lavamoat>lavamoat-tofu>@babel/parser": true
+        "lavamoat>lavamoat-tofu>@babel/parser": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
       }
     },
     "eslint-plugin-import>is-core-module": {
@@ -645,25 +645,6 @@
     "eslint>chalk>supports-color>has-flag": {
       "globals": {
         "process.argv": true
-      }
-    },
-    "eslint>debug": {
-      "builtin": {
-        "tty.isatty": true,
-        "util.deprecate": true,
-        "util.format": true,
-        "util.inspect": true
-      },
-      "globals": {
-        "console": true,
-        "document": true,
-        "localStorage": true,
-        "navigator": true,
-        "process": true
-      },
-      "packages": {
-        "eslint>chalk>supports-color": true,
-        "eslint>debug>ms": true
       }
     },
     "eslint>is-glob": {
@@ -820,16 +801,6 @@
         "process.nextTick": true
       }
     },
-    "jest>@jest/core>jest-snapshot>@babel/generator": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true,
-        "jest>@jest/core>jest-snapshot>@babel/types": true
-      }
-    },
     "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": {
       "globals": {
         "define": true
@@ -848,17 +819,6 @@
     "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": {
       "globals": {
         "Buffer.isBuffer": true
-      }
-    },
-    "jest>@jest/core>jest-snapshot>@babel/types": {
-      "globals": {
-        "console.trace": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
-      },
-      "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-string-parser": true,
-        "jest>@jest/core>jest-snapshot>@babel/types>to-fast-properties": true,
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
       }
     },
     "lavamoat-browserify": {
@@ -1159,32 +1119,53 @@
         "console.trace": true
       },
       "packages": {
-        "eslint>debug": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator": true,
-        "jest>@jest/core>jest-snapshot>@babel/types": true,
         "lavamoat>@babel/code-frame": true,
         "lavamoat>lavamoat-tofu>@babel/parser": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/generator": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-environment-visitor": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>globals": true,
+        "vitest>debug": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/generator": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
+        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
       }
     },
     "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name": {
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
-        "jest>@jest/core>jest-snapshot>@babel/types": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
       }
     },
     "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables": {
       "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/types": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
       }
     },
     "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration": {
       "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/types": true
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
+      }
+    },
+    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": {
+      "globals": {
+        "console.trace": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/types>to-fast-properties": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types>@babel/helper-string-parser": true
       }
     },
     "lavamoat>resolve": {
@@ -1261,6 +1242,25 @@
       "globals": {
         "process.platform": true,
         "process.version.slice": true
+      }
+    },
+    "vitest>debug": {
+      "builtin": {
+        "tty.isatty": true,
+        "util.deprecate": true,
+        "util.format": true,
+        "util.inspect": true
+      },
+      "globals": {
+        "console": true,
+        "document": true,
+        "localStorage": true,
+        "navigator": true,
+        "process": true
+      },
+      "packages": {
+        "eslint>chalk>supports-color": true,
+        "vitest>debug>ms": true
       }
     },
     "webpack-cli>webpack-merge>clone-deep>is-plain-object": {

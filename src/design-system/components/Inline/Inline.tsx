@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import { BoxStyles } from '~/design-system/styles/core.css';
 import { Space } from '../../styles/designTokens';
 import { Box } from '../Box/Box';
 
@@ -21,6 +22,7 @@ interface InlineProps {
   space?: Space;
   alignHorizontal?: AlignHorizontal;
   alignVertical?: AlignVertical;
+  height?: BoxStyles['height'];
   wrap?: boolean;
   children?: ReactNode;
 }
@@ -29,6 +31,7 @@ export function Inline({
   children,
   alignHorizontal = 'left',
   alignVertical,
+  height,
   wrap = true,
   space,
 }: InlineProps) {
@@ -36,6 +39,7 @@ export function Inline({
     <Box
       display="flex"
       flexDirection="row"
+      height={height}
       alignItems={alignVertical && alignVerticalToAlignItems[alignVertical]}
       justifyContent={alignHorizontalToJustifyContent[alignHorizontal]}
       flexWrap={wrap ? 'wrap' : undefined}
