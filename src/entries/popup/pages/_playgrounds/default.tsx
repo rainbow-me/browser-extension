@@ -12,8 +12,14 @@ export function Default() {
   const { address } = useAccount();
   const { currentCurrency, setCurrentCurrency } = useCurrentCurrencyStore();
 
-  const { data: userAssets } = useUserAssets();
-  const { data: transactions } = useTransactions();
+  const { data: userAssets } = useUserAssets({
+    address,
+    currency: currentCurrency,
+  });
+  const { data: transactions } = useTransactions({
+    address,
+    currency: currentCurrency,
+  });
   const { data: mainnetBalance } = useBalance({
     addressOrName: address,
     chainId: chain.mainnet.id,

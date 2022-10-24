@@ -12,7 +12,6 @@ import {
   TransactionsReceivedMessage,
   ZerionTransaction,
 } from '~/core/network/refractionAddressWs';
-import { useAccount } from 'wagmi';
 import { isL2Network } from '~/core/utils/web3';
 import {
   convertRawAmountToNativeDisplay,
@@ -29,7 +28,6 @@ import {
   Network,
 } from '~/core/types';
 import { capitalize } from 'lodash';
-import { useCurrentCurrencyStore } from '~/core/state/currentCurrency';
 
 const TRANSACTIONS_TIMEOUT_DURATION = 10000;
 const TRANSACTIONS_REFETCH_INTERVAL = 60000;
@@ -308,7 +306,7 @@ function parseTransaction({
       };
       const priceUnit =
         internalTxn.price ?? internalTxn?.asset?.price?.value ?? 0;
-      const valueUnit = internalTxn.value || 0;
+      const valueUnit = internalTxn?.value || 0;
       const nativeDisplay = convertRawAmountToNativeDisplay(
         valueUnit,
         updatedAsset.decimals,
@@ -390,12 +388,11 @@ function parseTransactions(
 // Query Hook
 
 export function useTransactions(
+  { address, currency }: TransactionsArgs,
   config: QueryConfig<TransactionsResult, Error, TransactionsQueryKey> = {},
 ) {
-  const { address } = useAccount();
-  const { currentCurrency } = useCurrentCurrencyStore();
   return useQuery(
-    transactionsQueryKey({ address, currency: currentCurrency }),
+    transactionsQueryKey({ address, currency }),
     transactionsQueryFunction,
     {
       ...config,

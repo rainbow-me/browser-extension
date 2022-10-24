@@ -6,11 +6,9 @@ import {
   QueryFunctionArgs,
   QueryFunctionResult,
 } from '~/core/react-query';
-import { useAccount } from 'wagmi';
 
 import { refractionAddressWs, refractionAddressMessages } from '~/core/network';
 import { AddressAssetsReceivedMessage } from '~/core/network/refractionAddressWs';
-import { useCurrentCurrencyStore } from '~/core/state/currentCurrency';
 
 const USER_ASSETS_TIMEOUT_DURATION = 10000;
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
@@ -84,12 +82,11 @@ function parseUserAssets(message: AddressAssetsReceivedMessage) {
 // Query Hook
 
 export function useUserAssets(
+  { address, currency }: UserAssetsArgs,
   config: QueryConfig<UserAssetsResult, Error, UserAssetsQueryKey> = {},
 ) {
-  const { address } = useAccount();
-  const { currentCurrency } = useCurrentCurrencyStore();
   return useQuery(
-    userAssetsQueryKey({ address, currency: currentCurrency }),
+    userAssetsQueryKey({ address, currency }),
     userAssetsQueryFunction,
     {
       ...config,
