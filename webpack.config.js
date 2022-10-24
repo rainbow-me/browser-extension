@@ -5,7 +5,7 @@ const Dotenv = require('dotenv-webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { VanillaExtractPlugin } = require('@vanilla-extract/webpack-plugin');
 const { join, resolve } = require('path');
-const { ProgressPlugin } = require('webpack');
+const { ProgressPlugin, ProvidePlugin } = require('webpack');
 
 module.exports = {
   entry: {
@@ -64,10 +64,19 @@ module.exports = {
     new MiniCssExtractPlugin(),
     new ProgressPlugin(),
     new VanillaExtractPlugin(),
+    // Work around for Buffer is undefined:
+    // https://github.com/webpack/changelog-v5/issues/10
+    new ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+    }),
   ],
   resolve: {
     alias: {
       '~': resolve(__dirname, 'src/'),
+    },
+    fallback: {
+      stream: require.resolve('stream-browserify'),
+      buffer: require.resolve('buffer'),
     },
     extensions: ['.tsx', '.ts', '.js'],
   },

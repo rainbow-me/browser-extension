@@ -49,6 +49,9 @@ jobs:
       - name: Run e2e (Brave)
         run: |
           yarn e2e:linux:brave
+      - name: Run unit tests
+        run: |
+          yarn test
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:
