@@ -32,7 +32,7 @@ export interface ZerionAsset {
   name: string;
   symbol: string;
   decimals: number;
-  type: AssetType;
+  type?: AssetType;
   icon_url?: string;
   price?: ZerionAssetPrice;
 }
