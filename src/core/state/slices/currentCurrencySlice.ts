@@ -1,9 +1,10 @@
 import { StateCreator } from 'zustand';
 import { PopupStoreState } from '../popupStore';
+import { SupportedCurrencyKey } from '~/core/references';
 
 export interface CurrentCurrencySliceState {
-  currentCurrency?: string;
-  setCurrentCurrency: (address: string) => void;
+  currentCurrency?: SupportedCurrencyKey;
+  setCurrentCurrency: (address: SupportedCurrencyKey) => void;
 }
 
 export const currentCurrencySlice: StateCreator<
@@ -12,6 +13,7 @@ export const currentCurrencySlice: StateCreator<
   [],
   CurrentCurrencySliceState
 > = (set) => ({
-  currentCurrency: 'usd',
-  setCurrentCurrency: (newCurrency) => set({ currentCurrency: newCurrency }),
+  currentCurrency: 'USD',
+  setCurrentCurrency: (newCurrency: SupportedCurrencyKey) =>
+    set({ currentCurrency: newCurrency }),
 });

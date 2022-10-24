@@ -10,7 +10,7 @@ export enum Network {
 
 export interface ZerionAssetPrice {
   value: number;
-  relative_change_24h: number | null;
+  relative_change_24h?: number;
   changed_at: number;
 }
 
@@ -32,9 +32,9 @@ export interface ZerionAsset {
   name: string;
   symbol: string;
   decimals: number;
-  type: AssetType | null;
-  icon_url?: string | null;
-  price?: ZerionAssetPrice | null;
+  type: AssetType;
+  icon_url?: string;
+  price?: ZerionAssetPrice;
 }
 
 /**
@@ -58,6 +58,108 @@ export interface AddressAssetsReceivedMessage {
         quantity: string;
       };
     };
+  };
+  meta?: MessageMeta;
+}
+
+export enum TransactionType {
+  authorize = 'authorize',
+  borrow = 'borrow',
+  cancel = 'cancel',
+  contract_interaction = 'contract interaction',
+  deployment = 'deployment',
+  deposit = 'deposit',
+  dropped = 'dropped',
+  execution = 'execution',
+  purchase = 'purchase', // Rainbow-specific type
+  receive = 'receive',
+  repay = 'repay',
+  send = 'send',
+  trade = 'trade',
+  withdraw = 'withdraw',
+}
+
+export enum ProtocolType {
+  aave = 'aave',
+  bancor = 'bancor',
+  compound = 'compound',
+  curve = 'curve',
+  disperse_app = 'disperse_app',
+  dsr = 'dsr',
+  dydx = 'dydx',
+  fulcrum = 'fulcrum',
+  iearn = 'iearn',
+  kyber = 'kyber',
+  maker = 'maker',
+  maker_dss = 'maker_dss',
+  one_inch = 'one_inch',
+  pool_together = 'pool_together',
+  ray = 'ray',
+  rainbow = 'rainbow',
+  set = 'set',
+  socket = 'socket',
+  synthetix = 'synthetix',
+  uniswap = 'uniswap',
+  zrx_stacking = 'zrx_stacking',
+  zrx_staking = 'zrx_staking',
+}
+
+export enum TransactionDirection {
+  in = 'in',
+  out = 'out',
+  self = 'self',
+}
+
+interface ZerionTransactionFee {
+  price: number;
+  value: number;
+}
+
+interface ZerionTransactionMeta {
+  action?: string;
+  application?: string;
+  asset?: ZerionAsset;
+}
+
+export enum ZerionTransactionStatus {
+  confirmed = 'confirmed',
+  failed = 'failed',
+  pending = 'pending',
+}
+
+export interface ZerionTransactionChange {
+  address_from: string;
+  address_to: string;
+  asset: ZerionAsset;
+  price?: number;
+  value?: number;
+  direction: TransactionDirection;
+}
+
+export interface ZerionTransaction {
+  address_from: string;
+  address_to: string;
+  block_number: number;
+  changes: ZerionTransactionChange[];
+  contract: string;
+  direction: TransactionDirection;
+  fee: ZerionTransactionFee;
+  hash: string;
+  id: string;
+  meta: ZerionTransactionMeta;
+  mined_at: number;
+  nonce: number;
+  protocol: ProtocolType;
+  status: ZerionTransactionStatus;
+  type: TransactionType;
+}
+
+/**
+ * A message from the Zerion API indicating that transaction data was received.
+ */
+export interface TransactionsReceivedMessage {
+  payload?: {
+    transactions?: ZerionTransaction[];
   };
   meta?: MessageMeta;
 }
