@@ -6,12 +6,13 @@ import 'chromedriver';
 import 'geckodriver';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
+
 import {
-  querySelector,
   delay,
+  findElementByText,
   getExtensionIdByName,
   initDriverWithOptions,
-  findElementByText,
+  querySelector,
 } from './helpers';
 
 let rootURL = 'chrome-extension://';

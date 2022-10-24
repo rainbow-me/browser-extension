@@ -1,4 +1,5 @@
 import { EventEmitter } from 'eventemitter3';
+
 import { providerRequestTransport } from '../transports';
 
 export type ChainIdHex = `0x${string}`;

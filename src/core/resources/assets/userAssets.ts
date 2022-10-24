@@ -1,15 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
+import { useAccount } from 'wagmi';
+
+import { refractionAddressMessages, refractionAddressWs } from '~/core/network';
+import { AddressAssetsReceivedMessage } from '~/core/network/refractionAddressWs';
 import {
-  createQueryKey,
-  queryClient,
   QueryConfig,
   QueryFunctionArgs,
   QueryFunctionResult,
+  createQueryKey,
+  queryClient,
 } from '~/core/react-query';
-import { useAccount } from 'wagmi';
-
-import { refractionAddressWs, refractionAddressMessages } from '~/core/network';
-import { AddressAssetsReceivedMessage } from '~/core/network/refractionAddressWs';
 import { useCurrentCurrencyStore } from '~/core/state/currentCurrency';
 
 const USER_ASSETS_TIMEOUT_DURATION = 10000;

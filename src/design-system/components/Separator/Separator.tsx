@@ -1,6 +1,8 @@
 import React from 'react';
-import { strokeWeights, StrokeWeight } from '../../styles/designTokens';
+
+import { StrokeWeight, strokeWeights } from '../../styles/designTokens';
 import { Box } from '../Box/Box';
+
 import * as styles from './Separator.css';
 
 interface SeparatorProps {

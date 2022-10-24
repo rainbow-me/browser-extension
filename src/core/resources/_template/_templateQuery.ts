@@ -19,11 +19,11 @@
 import { useQuery } from '@tanstack/react-query';
 
 import {
-  createQueryKey,
-  queryClient,
   QueryConfig,
   QueryFunctionArgs,
   QueryFunctionResult,
+  createQueryKey,
+  queryClient,
 } from '~/core/react-query';
 
 // ///////////////////////////////////////////////

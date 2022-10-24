@@ -13,9 +13,9 @@ import {
 import { foregroundColorVars } from '~/design-system/styles/core.css';
 
 import { SFSymbol, SFSymbolProps } from '../components/SFSymbol';
-import { useDominantColor } from '../hooks/useDominantColor';
-import { InjectToggle } from '../components/_dev/InjectToggle';
 import { ClearStorage } from '../components/_dev/ClearStorage';
+import { InjectToggle } from '../components/_dev/InjectToggle';
+import { useDominantColor } from '../hooks/useDominantColor';
 
 export function Index() {
   const { address } = useAccount();

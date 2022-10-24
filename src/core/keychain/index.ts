@@ -1,6 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import Encryptor from '@metamask/browser-passworder';
 import { Address } from 'wagmi';
+
 import { HdKeychain, SerializedHdKeychain } from './keychainTypes/hdKeychain';
 import {
   KeyPairKeychain,

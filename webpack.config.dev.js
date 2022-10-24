@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const ExtensionReloader = require('webpack-extension-reloader');
 const { resolve } = require('path');
 
-const config = require('./webpack.config');
 const { EnvironmentPlugin } = require('webpack');
+const ExtensionReloader = require('webpack-extension-reloader');
+
+const config = require('./webpack.config');
 
 module.exports = {
   ...config,

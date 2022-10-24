@@ -1,15 +1,16 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister';
 import {
-  configureChains,
-  chain,
-  createClient,
-  CreateClientConfig,
   Chain,
+  CreateClientConfig,
+  chain,
+  configureChains,
+  createClient,
   createStorage,
 } from 'wagmi';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
+
 import { queryClient } from '../react-query';
 import { Storage } from '../storage';
 
