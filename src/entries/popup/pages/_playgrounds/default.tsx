@@ -2,20 +2,16 @@ import React from 'react';
 import { chain, useAccount, useBalance } from 'wagmi';
 import { useUserAssets } from '~/core/resources/assets';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
-import { usePopupStore } from '~/core/state';
+import { useCurrentCurrencyStore } from '~/core/state/currentCurrency';
 import { Text, Inset, Stack, Box } from '~/design-system';
 import { ClearStorage } from '../../components/_dev/ClearStorage';
 import { InjectToggle } from '../../components/_dev/InjectToggle';
 
 export function Default() {
   const { address } = useAccount();
-  const [currentCurrency, setCurrentCurrency] = usePopupStore((state) => [
-    state.currentCurrency,
-    state.setCurrentCurrency,
-  ]);
+  const { currentCurrency, setCurrentCurrency } = useCurrentCurrencyStore();
 
-  const { data: userAssets, ...rest } = useUserAssets();
-  console.log('test', userAssets, rest);
+  const { data: userAssets } = useUserAssets();
   const { data: mainnetBalance } = useBalance({
     addressOrName: address,
     chainId: chain.mainnet.id,
