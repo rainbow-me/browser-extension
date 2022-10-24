@@ -1,7 +1,7 @@
 import { ethers, Wallet } from 'ethers';
 import { expect, test } from 'vitest';
 import { keychainManager } from '.';
-import { PrivateKey } from './iKeychain';
+import { PrivateKey } from './IKeychain';
 
 let privateKey = '';
 

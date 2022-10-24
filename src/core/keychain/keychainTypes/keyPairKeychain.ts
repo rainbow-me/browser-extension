@@ -2,7 +2,7 @@
 import { Signer, Wallet } from 'ethers';
 import { Mnemonic } from 'ethers/lib/utils';
 import { Address } from 'wagmi';
-import { IKeychain, PrivateKey } from '../iKeychain';
+import { IKeychain, PrivateKey } from '../IKeychain';
 
 export interface SerializedKeypairKeychain {
   type: string;
@@ -11,32 +11,32 @@ export interface SerializedKeypairKeychain {
 
 export class KeyPairKeychain implements IKeychain {
   type: string;
-  _wallets: Wallet[] | Signer[];
+  #wallets: Wallet[] | Signer[];
 
   constructor(options: SerializedKeypairKeychain) {
     this.type = 'KeyPairKeychain';
-    this._wallets = [];
+    this.#wallets = [];
     this.deserialize(options);
   }
 
-  _getWalletForAddress(): Wallet {
-    return this._wallets[0] as Wallet;
+  #getWalletForAddress(): Wallet {
+    return this.#wallets[0] as Wallet;
   }
 
   getSigner(address: Address): Signer {
-    const wallet = this._getWalletForAddress();
+    const wallet = this.#getWalletForAddress();
     return wallet;
   }
 
   async serialize(): Promise<SerializedKeypairKeychain> {
     return {
-      privateKey: (this._wallets[0] as Wallet).privateKey as PrivateKey,
+      privateKey: (this.#wallets[0] as Wallet).privateKey as PrivateKey,
       type: this.type,
     };
   }
 
   async deserialize(opts: SerializedKeypairKeychain) {
-    this._wallets = [new Wallet(opts.privateKey)];
+    this.#wallets = [new Wallet(opts.privateKey)];
   }
 
   async addNewAccount(): Promise<Array<Wallet>> {
@@ -44,14 +44,14 @@ export class KeyPairKeychain implements IKeychain {
   }
 
   getAccounts(): Promise<Array<Address>> {
-    const addresses = this._wallets.map(
+    const addresses = this.#wallets.map(
       (wallet) => (wallet as Wallet).address as Address,
     );
     return Promise.resolve(addresses);
   }
 
   async exportAccount(address: Address): Promise<PrivateKey> {
-    const wallet = this._getWalletForAddress();
+    const wallet = this.#getWalletForAddress();
     return wallet.privateKey;
   }
 
@@ -60,6 +60,6 @@ export class KeyPairKeychain implements IKeychain {
   }
 
   async removeAccount(address: Address): Promise<void> {
-    this._wallets = [];
+    this.#wallets = [];
   }
 }
