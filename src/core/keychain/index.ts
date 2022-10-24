@@ -31,12 +31,12 @@ class KeychainManager {
       vault: '',
     };
     this.encryptor = Encryptor;
-    this._rehydrate();
+    this.#rehydrate();
   }
 
   async updatePassword(password: string) {
     this.state.password = password;
-    await this._persist();
+    await this.#persist();
   }
 
   async addNewKeychain(type: string, opts: unknown) {
@@ -50,11 +50,11 @@ class KeychainManager {
     }
     this.state.keychains.push(keychain as Keychain);
     this.state.isUnlocked = true;
-    await this._persist();
+    await this.#persist();
   }
 
   async importKeychain(opts: SerializedKeypairKeychain | SerializedHdKeychain) {
-    return this._restoreKeychain({ ...opts, imported: true });
+    return this.#restoreKeychain({ ...opts, imported: true });
   }
 
   async exportAccount(address: Address) {
@@ -69,7 +69,7 @@ class KeychainManager {
 
   async addNewAccount(selectedKeychain: Keychain) {
     await selectedKeychain.addNewAccount();
-    await this._persist();
+    await this.#persist();
   }
 
   async removeAccount(address: Address) {
@@ -77,12 +77,10 @@ class KeychainManager {
       const accounts = await this.state.keychains[i].getAccounts();
       if (accounts.includes(address)) {
         await this.state.keychains[i].removeAccount(address);
-        if (this.state.keychains[i]._wallets.length === 0) {
-          await this._removeEmptyKeychains();
-        }
+        await this.#removeEmptyKeychainsIfNeeded();
       }
     }
-    await this._persist();
+    await this.#persist();
   }
 
   async lock() {
@@ -95,7 +93,7 @@ class KeychainManager {
       ...this.state,
       ...newState,
     };
-    await this._memorize();
+    await this.#memorize();
   }
 
   async unlock(password: string) {
@@ -110,10 +108,10 @@ class KeychainManager {
     this.state.isUnlocked = true;
     await Promise.all(
       vault.map((serializedKeychain) => {
-        return this._restoreKeychain(serializedKeychain);
+        return this.#restoreKeychain(serializedKeychain);
       }),
     );
-    await this._persist();
+    await this.#persist();
   }
 
   async getAccounts() {
@@ -145,7 +143,7 @@ class KeychainManager {
     return keychain.getSigner(address);
   }
 
-  async _restoreKeychain(
+  async #restoreKeychain(
     opts: SerializedKeypairKeychain | SerializedHdKeychain,
   ) {
     let keychain;
@@ -160,16 +158,16 @@ class KeychainManager {
         throw new Error('Keychain type not recognized.');
     }
     this.state.keychains.push(keychain as Keychain);
-    await this._persist();
+    await this.#persist();
   }
 
-  _persist() {
-    return Promise.all([this._memorize(), this._save()]);
+  #persist() {
+    return Promise.all([this.#memorize(), this.#save()]);
   }
 
-  async _rehydrate() {
+  async #rehydrate() {
     // Attempt to read from memory first
-    const memState = await this._getLastMemorizedState();
+    const memState = await this.#getLastMemorizedState();
     // If it's there, the keychain manager is already unlocked
     if (memState) {
       this.state = {
@@ -179,19 +177,19 @@ class KeychainManager {
     }
 
     // Also ttempt to read from storage for future unlocks
-    const storageState = await this._getLastStorageState();
+    const storageState = await this.#getLastStorageState();
     if (storageState) {
       this.state.vault = storageState.vault;
     }
   }
 
-  _memorize() {
+  #memorize() {
     // This is all the keychains - password decrypted
     // IMPORTANT: Should never be stored in the fs!!!
     return chrome.storage.session.set({ keychainManager: this.state });
   }
 
-  async _removeEmptyKeychains() {
+  async #removeEmptyKeychainsIfNeeded() {
     const nonEmptyKeychains = [];
     for (let i = 0; i < this.state.keychains.length; i++) {
       const accounts = await this.state.keychains[i].getAccounts();
@@ -203,7 +201,7 @@ class KeychainManager {
     this.state.keychains = nonEmptyKeychains;
   }
 
-  async _save() {
+  async #save() {
     // Remove any potential empty keychains
     // Serialize all the keychains
     const serializedKeychains = await Promise.all(
@@ -223,11 +221,11 @@ class KeychainManager {
     return chrome.storage.local.set({ vault: this.state.vault });
   }
 
-  _getLastStorageState() {
+  #getLastStorageState() {
     return chrome.storage.local.get('vault');
   }
 
-  _getLastMemorizedState() {
+  #getLastMemorizedState() {
     return chrome.storage.session.get('keychainManager');
   }
 }
