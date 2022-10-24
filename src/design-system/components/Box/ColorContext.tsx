@@ -6,13 +6,14 @@ import React, {
   useMemo,
 } from 'react';
 import chroma from 'chroma-js';
-import { accentColorVar } from '../../styles/core.css';
+import { accentColorHslVars } from '../../styles/core.css';
 import {
   BackgroundColor,
   backgroundColors,
   ColorContext,
 } from '../../styles/designTokens';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
+import { hslObjectForColor } from '../../styles/hslObjectForColor';
 import { themeClasses } from '../../styles/themeClasses';
 
 export interface ColorContextValue {
@@ -83,30 +84,46 @@ export function ColorContextProvider({
 
 interface AccentColorContextProviderProps {
   color: string;
-  children: ReactNode | ((args: { style: CSSProperties }) => ReactNode);
+  children:
+    | ReactNode
+    | ((args: { className: string; style: CSSProperties }) => ReactNode);
 }
 
 export function AccentColorProvider({
   color,
   children,
 }: AccentColorContextProviderProps) {
+  const { lightThemeColorContext, darkThemeColorContext } = useColorContext();
+
   const { value, style } = useMemo<{
     value: ColorContext;
     style: CSSProperties;
   }>(
     () => ({
       value: chroma.contrast(color, '#fff') > 2.125 ? 'dark' : 'light',
-      style: assignInlineVars({ color: accentColorVar }, { color }),
+      style: assignInlineVars(accentColorHslVars, hslObjectForColor(color)),
     }),
     [color],
   );
 
+  const className = [
+    // These color context classes need to be re-applied so
+    // that the themed CSS variables are re-evaluated using
+    // the new accent color, e.g. if we don't do this, the
+    // "accent" shadow color will always be blue, even when
+    // inside an AccentColorProvider with a different color.
+    themeClasses.lightTheme[`${lightThemeColorContext}Context`],
+    themeClasses.darkTheme[`${darkThemeColorContext}Context`],
+  ].join(' ');
+
   return (
     <AccentColorContext.Provider value={value}>
       {typeof children === 'function' ? (
-        children({ style })
+        children({ className, style })
       ) : (
-        <div style={style}>{children}</div>
+        <div className={className} style={style}>
+          {children}
+        </div>
       )}
     </AccentColorContext.Provider>
   );

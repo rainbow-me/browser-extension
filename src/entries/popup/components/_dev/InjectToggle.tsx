@@ -39,11 +39,12 @@ export function InjectToggle() {
         as="button"
         id="injection-button"
         background="accent"
+        boxShadow="24px accent"
         onClick={switchInjection}
         padding="16px"
         style={{ borderRadius: 999 }}
       >
-        <Text color="labelSecondary" size="14pt" weight="bold">
+        <Text color="label" size="14pt" weight="bold">
           TURN {status ? 'OFF' : 'ON'}
         </Text>
       </Box>

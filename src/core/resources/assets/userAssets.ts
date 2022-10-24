@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-
 import {
   createQueryKey,
   queryClient,
@@ -7,10 +6,11 @@ import {
   QueryFunctionArgs,
   QueryFunctionResult,
 } from '~/core/react-query';
+import { useAccount } from 'wagmi';
+
 import { refractionAddressWs, refractionAddressMessages } from '~/core/network';
 import { AddressAssetsReceivedMessage } from '~/core/network/refractionAddressWs';
-import { usePopupStore } from '~/core/state';
-import { useAccount } from 'wagmi';
+import { useCurrentCurrencyStore } from '~/core/state/currentCurrency';
 
 const USER_ASSETS_TIMEOUT_DURATION = 10000;
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
@@ -84,7 +84,7 @@ export function useUserAssets(
   config: QueryConfig<UserAssetsResult, Error, UserAssetsQueryKey> = {},
 ) {
   const { address } = useAccount();
-  const [currentCurrency] = usePopupStore((state) => [state.currentCurrency]);
+  const { currentCurrency } = useCurrentCurrencyStore();
   return useQuery(
     userAssetsQueryKey({ address, currency: currentCurrency }),
     userAssetsQueryFunction,
