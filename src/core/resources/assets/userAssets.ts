@@ -42,7 +42,7 @@ async function userAssetsQueryFunction({
   refractionAddressWs.emit('get', {
     payload: {
       address,
-      currency,
+      currency: currency?.toLowerCase(),
     },
     scope: ['assets'],
   });
@@ -59,6 +59,10 @@ async function userAssetsQueryFunction({
     }, USER_ASSETS_TIMEOUT_DURATION);
     const resolver = (message: AddressAssetsReceivedMessage) => {
       clearTimeout(timeout);
+      refractionAddressWs.removeEventListener(
+        refractionAddressMessages.ADDRESS_ASSETS.RECEIVED,
+        resolver,
+      );
       resolve(parseUserAssets(message));
     };
     refractionAddressWs.on(
@@ -79,7 +83,6 @@ function parseUserAssets(message: AddressAssetsReceivedMessage) {
 // ///////////////////////////////////////////////
 // Query Hook
 
-// This should be refactored to use wagmi.useAccount
 export function useUserAssets(
   config: QueryConfig<UserAssetsResult, Error, UserAssetsQueryKey> = {},
 ) {
