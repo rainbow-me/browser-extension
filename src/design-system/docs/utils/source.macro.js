@@ -1,4 +1,5 @@
 /* eslint-disable import/no-commonjs */
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { default: generate } = require('@babel/generator');
 const { createMacro } = require('babel-plugin-macros');
 
@@ -15,7 +16,7 @@ module.exports = createMacro(({ babel: { types: t }, references }) => {
       t.objectExpression([
         t.objectProperty(t.identifier('code'), code),
         t.objectProperty(t.identifier('value'), value),
-      ])
+      ]),
     );
   });
 });

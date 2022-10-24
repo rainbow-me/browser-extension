@@ -1,28 +1,29 @@
 import React from 'react';
-import source from '~/design-system/docs/utils/source.macro';
 
-import { Docs as DocsType } from '../../docs/types';
+import { Code } from '../../docs/components/Code';
+import { Docs } from '../../docs/types';
 import { Text } from '../Text/Text';
-import { Box } from './Box';
+import { background, padding, margin, borderRadius } from './Box.examples';
 
-const docs: DocsType = {
-  meta: { name: 'Box', category: 'Content' },
+const docs: Docs = {
+  name: 'Box',
+  category: 'Layout',
   description: (
     <>
-      <Text size="16pt" weight="semibold">
-        Renders an individual `div` element with quick access to the standard
-        padding and negative margin scales, as well as other common layout
-        properties. Ideally you&apos;re not supposed to need this component much
-        unless you&apos;re building a design system component.
+      <Text size="20pt" weight="medium">
+        Renders an individual <Code>div</Code> element with quick access to the
+        standard padding and negative margin scales, as well as other common
+        layout properties.
+      </Text>
+      <Text size="20pt" weight="medium">
+        <Code>Box</Code> is a low-level primitive that should only be used when
+        building design system components, or when other layout primitives (such
+        as: <Code>Rows</Code>, <Code>Inline</Code>, <Code>Columns</Code>, etc)
+        are not sufficient.
       </Text>
     </>
   ),
-  examples: [
-    {
-      name: 'basic',
-      Example: () => source(<Box />),
-    },
-  ],
+  examples: [background, padding, margin, borderRadius],
 };
 
 // eslint-disable-next-line import/no-default-export

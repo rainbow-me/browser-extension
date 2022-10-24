@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { BoxStyles } from '~/design-system/styles/core.css';
+import { BoxStyles } from '../../styles/core.css';
 import { Space } from '../../styles/designTokens';
 import { Box } from '../Box/Box';
 

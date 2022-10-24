@@ -1,0 +1,132 @@
+import { kebabCase, startCase } from 'lodash';
+import { Box } from '../../../components/Box/Box';
+import { Inset } from '../../../components/Inset/Inset';
+import { Separator } from '../../../components/Separator/Separator';
+import { Stack } from '../../../components/Stack/Stack';
+import { Text } from '../../../components/Text/Text';
+import { CodePreview } from '../../components/CodePreview';
+import * as docs from '../../docs';
+import { Example } from '../../types';
+
+function getDoc({
+  component,
+  category,
+}: {
+  component: string;
+  category: string;
+}) {
+  return Object.values(docs).find(
+    ({ default: doc }) =>
+      doc.name?.toLowerCase() === startCase(component).toLowerCase() &&
+      doc.category.toLowerCase() === startCase(category).toLowerCase(),
+  )?.default;
+}
+
+export async function getStaticPaths() {
+  const paths = Object.values(docs).map(({ default: doc }) => ({
+    params: {
+      category: kebabCase(doc.category),
+      component: kebabCase(doc.name),
+    },
+  }));
+  return {
+    paths,
+    fallback: false,
+  };
+}
+
+export async function getStaticProps({ params }: any) {
+  const { category, component } = params;
+  const doc = getDoc({ component, category });
+  return {
+    props: {
+      component: doc?.name || null,
+      category: doc?.category || null,
+    },
+  };
+}
+
+export default function Component({ component, category }: any) {
+  const doc = getDoc({ component, category });
+  return (
+    <Stack space="44px">
+      <Text as="h1" size="32pt" weight="bold">
+        {doc?.name}
+      </Text>
+      {doc?.description}
+      {doc?.examples && (
+        <>
+          <Separator strokeWeight="2px" />
+          {doc?.examples?.map(
+            (
+              {
+                name,
+                description,
+                enablePlayroom,
+                enableCodeSnippet,
+                wrapper,
+                showFrame,
+                examples,
+                Example,
+              },
+              index,
+            ) => (
+              <>
+                {index !== 0 && <Separator strokeWeight="2px" />}
+                <ExamplePreview
+                  Example={Example}
+                  description={description}
+                  enableCodeSnippet={enableCodeSnippet}
+                  enablePlayroom={enablePlayroom}
+                  examples={examples}
+                  key={index}
+                  name={name}
+                  showFrame={showFrame}
+                  wrapper={wrapper}
+                />
+              </>
+            ),
+          )}
+        </>
+      )}
+    </Stack>
+  );
+}
+
+function ExamplePreview({
+  name,
+  description,
+  enableCodeSnippet = true,
+  showFrame = false,
+  enablePlayroom = true,
+  wrapper,
+  examples,
+  Example,
+}: Example) {
+  return (
+    <Stack space="44px">
+      <Text as="h2" size="26pt" weight="bold">
+        {name}
+      </Text>
+      {description && (
+        <Box style={{ paddingBottom: '8px' }}>
+          <Stack space="44px">{description}</Stack>
+        </Box>
+      )}
+      {Example && (
+        <CodePreview
+          Example={Example}
+          enableCodeSnippet={enableCodeSnippet}
+          enablePlayroom={enablePlayroom}
+          showFrame={showFrame}
+          wrapper={wrapper}
+        />
+      )}
+      {examples?.map((example, i) => (
+        <Inset key={i} vertical="12px">
+          <ExamplePreview {...example} />
+        </Inset>
+      ))}
+    </Stack>
+  );
+}

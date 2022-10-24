@@ -1,7 +1,11 @@
 import { rootThemeClasses } from './themeClasses';
 
-export function initThemingCritical() {
-  const setTheme = (theme: 'dark' | 'light') => {
+type Theme = 'dark' | 'light';
+
+export function initThemingCritical({
+  defaultTheme,
+}: { defaultTheme?: Theme } = {}) {
+  const setTheme = (theme: Theme) => {
     document.documentElement.classList.remove(
       ...Object.values(rootThemeClasses),
     );
@@ -9,6 +13,11 @@ export function initThemingCritical() {
       rootThemeClasses[theme === 'dark' ? 'darkTheme' : 'lightTheme'],
     );
   };
+
+  if (defaultTheme) {
+    setTheme(defaultTheme);
+    return;
+  }
 
   const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
   setTheme(darkModeMediaQuery.matches ? 'dark' : 'light');

@@ -7,16 +7,13 @@ import Document, {
 } from 'next/document';
 import * as React from 'react';
 
-// @ts-expect-error
+// @ts-expect-error – js module
 import initThemingCritical from 'raw-loader!../public/initThemingCritical.mjs';
-// @ts-expect-error
+// @ts-expect-error – js module
 import initThemingBody from 'raw-loader!../public/initThemingBody.mjs';
 
 function ThemingScript({ source }: { source: string }) {
-  const code = source.replace(
-    /export \{ (.) as .* \}/,
-    '$1()',
-  );
+  const code = source.replace(/export \{ (.) as .* \}/, '$1()');
   return (
     <script
       dangerouslySetInnerHTML={{
