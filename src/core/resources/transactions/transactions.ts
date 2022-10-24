@@ -12,7 +12,6 @@ import {
   TransactionsReceivedMessage,
   ZerionTransaction,
 } from '~/core/network/refractionAddressWs';
-import { usePopupStore } from '~/core/state';
 import { useAccount } from 'wagmi';
 import { isL2Network } from '~/core/utils/web3';
 import {
@@ -384,7 +383,6 @@ function parseTransactions(
       }),
     )
     .flat();
-  console.log('PARSED TRANSACTION: ', parsedTransactions);
   return parsedTransactions;
 }
 
