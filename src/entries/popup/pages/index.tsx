@@ -30,9 +30,10 @@ export function Index() {
 
   return (
     <AccentColorProvider color={color || 'white'}>
-      {({ style }) => (
+      {({ className, style }) => (
         /* TODO: Convert to <Rows> */
         <Box
+          className={className}
           style={{
             ...style,
             display: 'flex',
@@ -159,6 +160,7 @@ function ActionButton({
       <Box
         background="accent"
         borderRadius="round"
+        boxShadow="12px accent"
         display="flex"
         alignItems="center"
         justifyContent="center"

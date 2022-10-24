@@ -7,11 +7,12 @@ export function ClearStorage() {
     <Box
       as="button"
       background="accent"
+      boxShadow="24px accent"
       onClick={Storage.clear}
       padding="16px"
       style={{ borderRadius: 999 }}
     >
-      <Text color="labelSecondary" size="16pt" weight="bold">
+      <Text color="label" size="16pt" weight="bold">
         CLEAR STORAGE
       </Text>
     </Box>
