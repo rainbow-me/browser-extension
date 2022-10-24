@@ -65,16 +65,18 @@ export function Default() {
         <Text color="label" size="20pt" weight="bold">
           Assets:
         </Text>
-        {Object.values(userAssets || {}).map((item, i) => (
-          <Text
-            color="labelSecondary"
-            size="16pt"
-            weight="medium"
-            key={`${item?.asset?.address}${i}`}
-          >
-            {`${item?.asset?.name}: ${item?.asset?.price?.value}`}
-          </Text>
-        ))}
+        {Object.values(userAssets || {})
+          .filter((item) => item?.asset?.price?.value)
+          .map((item, i) => (
+            <Text
+              color="labelSecondary"
+              size="16pt"
+              weight="medium"
+              key={`${item?.asset?.address}${i}`}
+            >
+              {`${item?.asset?.name}: ${item?.asset?.price?.value}`}
+            </Text>
+          ))}
         <Text color="label" size="20pt" weight="bold">
           Transactions:
         </Text>

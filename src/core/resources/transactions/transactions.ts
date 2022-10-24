@@ -19,7 +19,7 @@ import {
   convertRawAmountToNativeDisplay,
   convertRawAmountToBalance,
 } from '~/core/utils/numbers';
-import { SupportedCurrencyKey } from '~/core/references';
+import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
 import {
   ProtocolType,
   RainbowTransaction,
@@ -34,7 +34,6 @@ import { useCurrentCurrencyStore } from '~/core/state/currentCurrency';
 
 const TRANSACTIONS_TIMEOUT_DURATION = 10000;
 const TRANSACTIONS_REFETCH_INTERVAL = 60000;
-const ETH_ADDRESS = 'eth';
 
 // ///////////////////////////////////////////////
 // Query Types
