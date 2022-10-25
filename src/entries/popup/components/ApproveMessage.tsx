@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { extensionMessenger } from '~/core/messengers';
-import { NotificationWindow } from '~/core/state/slices/notificationWindowSlice';
-import { PendingRequest } from '~/core/state/slices/pendingRequestsSlice';
+import { NotificationWindow } from '~/core/state/notificationWindow';
+import { PendingRequest } from '~/core/state/pendingRequestStore';
 import { Storage } from '~/core/storage';
 import { Box, Text } from '~/design-system';
 

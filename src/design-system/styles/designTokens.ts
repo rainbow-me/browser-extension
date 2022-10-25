@@ -436,6 +436,20 @@ export const separatorColors = selectForegroundColors(
 );
 export type SeparatorColor = typeof separatorColors[number];
 
+export const shadowColors = [
+  'accent',
+  ...selectForegroundColors(
+    'blue',
+    'green',
+    'red',
+    'purple',
+    'pink',
+    'orange',
+    'yellow',
+  ),
+] as const;
+export type ShadowColor = typeof shadowColors[number];
+
 export const space = {
   '2px': 2,
   '3px': 3,

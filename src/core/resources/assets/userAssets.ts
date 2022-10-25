@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-
 import {
   createQueryKey,
   queryClient,
@@ -7,10 +6,9 @@ import {
   QueryFunctionArgs,
   QueryFunctionResult,
 } from '~/core/react-query';
+
 import { refractionAddressWs, refractionAddressMessages } from '~/core/network';
-import { AddressAssetsReceivedMessage } from '~/core/network/refractionAddressWs';
-import { usePopupStore } from '~/core/state';
-import { useAccount } from 'wagmi';
+import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
 
 const USER_ASSETS_TIMEOUT_DURATION = 10000;
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
@@ -42,7 +40,7 @@ async function userAssetsQueryFunction({
   refractionAddressWs.emit('get', {
     payload: {
       address,
-      currency,
+      currency: currency?.toLowerCase(),
     },
     scope: ['assets'],
   });
@@ -59,6 +57,10 @@ async function userAssetsQueryFunction({
     }, USER_ASSETS_TIMEOUT_DURATION);
     const resolver = (message: AddressAssetsReceivedMessage) => {
       clearTimeout(timeout);
+      refractionAddressWs.removeEventListener(
+        refractionAddressMessages.ADDRESS_ASSETS.RECEIVED,
+        resolver,
+      );
       resolve(parseUserAssets(message));
     };
     refractionAddressWs.on(
@@ -79,14 +81,12 @@ function parseUserAssets(message: AddressAssetsReceivedMessage) {
 // ///////////////////////////////////////////////
 // Query Hook
 
-// This should be refactored to use wagmi.useAccount
 export function useUserAssets(
+  { address, currency }: UserAssetsArgs,
   config: QueryConfig<UserAssetsResult, Error, UserAssetsQueryKey> = {},
 ) {
-  const { address } = useAccount();
-  const [currentCurrency] = usePopupStore((state) => [state.currentCurrency]);
   return useQuery(
-    userAssetsQueryKey({ address, currency: currentCurrency }),
+    userAssetsQueryKey({ address, currency }),
     userAssetsQueryFunction,
     {
       ...config,

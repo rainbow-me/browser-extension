@@ -1,6 +1,10 @@
 name: CI
 
-on: [pull_request, workflow_dispatch]
+on:
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -49,6 +53,9 @@ jobs:
       - name: Run e2e (Brave)
         run: |
           yarn e2e:linux:brave
+      - name: Run unit tests
+        run: |
+          yarn test
       - name: Upload artifacts
         uses: actions/upload-artifact@v1
         with:

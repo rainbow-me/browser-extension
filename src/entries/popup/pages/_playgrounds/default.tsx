@@ -2,20 +2,24 @@ import React from 'react';
 import { chain, useAccount, useBalance } from 'wagmi';
 import { useUserAssets } from '~/core/resources/assets';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
-import { usePopupStore } from '~/core/state';
+import { useCurrentCurrencyStore } from '~/core/state/currentCurrency';
+import { useTransactions } from '~/core/resources/transactions/transactions';
 import { Text, Inset, Stack, Box } from '~/design-system';
 import { ClearStorage } from '../../components/_dev/ClearStorage';
 import { InjectToggle } from '../../components/_dev/InjectToggle';
 
 export function Default() {
   const { address } = useAccount();
-  const [currentCurrency, setCurrentCurrency] = usePopupStore((state) => [
-    state.currentCurrency,
-    state.setCurrentCurrency,
-  ]);
+  const { currentCurrency, setCurrentCurrency } = useCurrentCurrencyStore();
 
-  const { data: userAssets, ...rest } = useUserAssets();
-  console.log('test', userAssets, rest);
+  const { data: userAssets } = useUserAssets({
+    address,
+    currency: currentCurrency,
+  });
+  const { data: transactions } = useTransactions({
+    address,
+    currency: currentCurrency,
+  });
   const { data: mainnetBalance } = useBalance({
     addressOrName: address,
     chainId: chain.mainnet.id,
@@ -54,7 +58,7 @@ export function Default() {
           as="button"
           background="surfaceSecondary"
           onClick={() => {
-            const newCurrency = currentCurrency === 'usd' ? 'gbp' : 'usd';
+            const newCurrency = currentCurrency !== 'USD' ? 'USD' : 'GBP';
             setCurrentCurrency(newCurrency);
           }}
           padding="16px"
@@ -64,16 +68,36 @@ export function Default() {
             {`CURRENT CURRENCY: ${currentCurrency?.toUpperCase()} | CHANGE`}
           </Text>
         </Box>
-        {Object.values(userAssets || {}).map((item, i) => (
-          <Text
-            color="labelSecondary"
-            size="16pt"
-            weight="bold"
-            key={`${item?.asset?.address}${i}`}
-          >
-            {`${item?.asset?.name}: ${item?.asset?.price?.value}`}
-          </Text>
-        ))}
+        <Text color="label" size="20pt" weight="bold">
+          Assets:
+        </Text>
+        {Object.values(userAssets || {})
+          .filter((item) => item?.asset?.price?.value)
+          .map((item, i) => (
+            <Text
+              color="labelSecondary"
+              size="16pt"
+              weight="medium"
+              key={`${item?.asset?.address}${i}`}
+            >
+              {`${item?.asset?.name}: ${item?.asset?.price?.value}`}
+            </Text>
+          ))}
+        <Text color="label" size="20pt" weight="bold">
+          Transactions:
+        </Text>
+        {transactions?.map((tx) => {
+          return (
+            <Text
+              color="labelSecondary"
+              size="16pt"
+              weight="medium"
+              key={tx?.hash}
+            >
+              {`${tx?.title} ${tx?.name}: ${tx.native?.display}`}
+            </Text>
+          );
+        })}
       </Stack>
     </Inset>
   );

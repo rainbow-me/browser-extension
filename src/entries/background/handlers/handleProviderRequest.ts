@@ -1,7 +1,14 @@
 import { UserRejectedRequestError } from 'wagmi';
 import { extensionMessenger } from '~/core/messengers';
-import { backgroundStore } from '~/core/state';
-import { PendingRequest } from '~/core/state/slices/pendingRequestsSlice';
+import {
+  notificationWindowStore,
+  useApprovedHostsStore,
+  useCurrentAddressStore,
+} from '~/core/state';
+import {
+  PendingRequest,
+  pendingRequestStore,
+} from '~/core/state/pendingRequestStore';
 import { providerRequestTransport } from '~/core/transports';
 
 export const DEFAULT_ACCOUNT = '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
@@ -14,7 +21,7 @@ const openWindow = async () => {
     height: 600,
     width: 360,
   });
-  backgroundStore.getState().setCurrentWindow(window);
+  notificationWindowStore.getState().setCurrentWindow(window);
 };
 
 /**
@@ -24,7 +31,7 @@ const openWindow = async () => {
  */
 const extensionMessengerRequestApproval = async (request: PendingRequest) => {
   const { addPendingRequest, removePendingRequest } =
-    backgroundStore.getState();
+    pendingRequestStore.getState();
   // Add pending request to global background state.
   addPendingRequest(request);
   openWindow();
@@ -49,9 +56,8 @@ export const handleProviderRequest = () =>
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
     console.log(meta.sender, method);
 
-    const { addApprovedHost, isApprovedHost, currentAddress } =
-      backgroundStore.getState();
-
+    const { addApprovedHost, isApprovedHost } = useApprovedHostsStore();
+    const { currentAddress } = useCurrentAddressStore();
     try {
       let response = null;
 

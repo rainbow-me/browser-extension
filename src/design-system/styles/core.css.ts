@@ -5,10 +5,10 @@ import {
   globalFontFace,
   createThemeContract,
   assignVars,
-  createVar,
 } from '@vanilla-extract/css';
 import { defineProperties, createSprinkles } from '@vanilla-extract/sprinkles';
 import { createStyleObject as capsize } from '@capsizecss/core';
+import chroma from 'chroma-js';
 import mapValues from 'lodash/mapValues';
 import pick from 'lodash/pick';
 import {
@@ -22,7 +22,12 @@ import {
   radii,
   separatorColors,
   strokeColors,
+  ShadowColor,
+  shadowColors,
+  ForegroundColor,
+  ColorContext,
 } from './designTokens';
+import { hslObjectForColor } from './hslObjectForColor';
 import SFRoundedRegular from './fonts/subset-SFRounded-Regular.woff2';
 import SFRoundedMedium from './fonts/subset-SFRounded-Medium.woff2';
 import SFRoundedSemibold from './fonts/subset-SFRounded-Semibold.woff2';
@@ -94,7 +99,29 @@ export const resetElements = {
   ul: list,
 };
 
-export const accentColorVar = createVar();
+// The accent color needs to be stored as separate variables
+// for HSL so that we can dynamically alter the opacity, most
+// notably for use with shadow colors,
+// i.e. hsl(var(--h), var(--s), var(--l), 0.2)
+// We're using HSL rather than RGB since it's a more useful
+// color space to work with, giving you more natural control
+// over the different aspects of the color like updating
+// the saturation in isolation without changing the hue.
+export const accentColorHslVars = createThemeContract({
+  hue: null,
+  saturation: null,
+  lightness: null,
+});
+
+const getAccentColorAsHsl = ({ alpha }: { alpha?: number } = {}) =>
+  `hsl(${[
+    accentColorHslVars.hue,
+    accentColorHslVars.saturation,
+    accentColorHslVars.lightness,
+    ...(alpha !== undefined ? [alpha] : []),
+  ].join(', ')})`;
+
+export const accentColorAsHsl = getAccentColorAsHsl();
 
 export const semanticColorVars = createThemeContract({
   backgroundColors: mapValues(backgroundColors, () => null),
@@ -103,14 +130,142 @@ export const semanticColorVars = createThemeContract({
 
 export const foregroundColorVars = semanticColorVars.foregroundColors;
 
+interface ShadowDefinition {
+  dark: string;
+  light: string;
+}
+
+type ShadowSize = '12px' | '18px' | '24px' | '30px';
+type Shadow = ShadowSize | `${ShadowSize} ${ShadowColor}`;
+
+function coloredShadows<Size extends ShadowSize>(
+  size: Size,
+  getShadowForColor: (color: ShadowColor) => ShadowDefinition,
+): Record<`${Size} ${ShadowColor}`, ShadowDefinition> {
+  return Object.assign(
+    {},
+    ...shadowColors.map((color) => ({
+      [`${size} ${color}`]: getShadowForColor(color),
+    })),
+  );
+}
+
+function getShadowColor(
+  color: 'accent' | ForegroundColor,
+  theme: ColorContext,
+  alpha: number,
+) {
+  return color === 'accent'
+    ? getAccentColorAsHsl({ alpha })
+    : chroma(foregroundColors[color][theme]).alpha(alpha).css();
+}
+
+const shadowTokens: Record<Shadow, ShadowDefinition> = {
+  '12px': {
+    light: [
+      `0 4px 12px ${getShadowColor('shadowFar', 'light', 0.02)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'light', 0.02)}`,
+    ].join(', '),
+    dark: [
+      `0 4px 12px ${getShadowColor('shadowFar', 'dark', 0.2)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'dark', 0.02)}`,
+    ].join(', '),
+  },
+  ...coloredShadows('12px', (color) => ({
+    light: [
+      `0 4px 12px ${getShadowColor(color, 'light', 0.2)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'light', 0.02)}`,
+    ].join(', '),
+    dark: [
+      `0 4px 12px ${getShadowColor('shadowFar', 'dark', 0.2)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'dark', 0.02)}`,
+    ].join(', '),
+  })),
+
+  '18px': {
+    light: [
+      `0 6px 18px ${getShadowColor('shadowFar', 'light', 0.08)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'light', 0.02)}`,
+    ].join(', '),
+    dark: [
+      `0 6px 18px ${getShadowColor('shadowFar', 'dark', 0.24)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'dark', 0.02)}`,
+    ].join(', '),
+  },
+  ...coloredShadows('18px', (color) => ({
+    light: [
+      `0 6px 18px ${getShadowColor(color, 'light', 0.24)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'light', 0.02)}`,
+    ].join(', '),
+    dark: [
+      `0 6px 18px ${getShadowColor('shadowFar', 'dark', 0.24)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'dark', 0.02)}`,
+    ].join(', '),
+  })),
+
+  '24px': {
+    light: [
+      `0 8px 24px ${getShadowColor('shadowFar', 'light', 0.12)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'light', 0.02)}`,
+    ].join(', '),
+    dark: [
+      `0 8px 24px ${getShadowColor('shadowFar', 'dark', 0.32)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'dark', 0.02)}`,
+    ].join(', '),
+  },
+  ...coloredShadows('24px', (color) => ({
+    light: [
+      `0 8px 24px ${getShadowColor(color, 'light', 0.32)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'light', 0.02)}`,
+    ].join(', '),
+    dark: [
+      `0 8px 24px ${getShadowColor('shadowFar', 'dark', 0.32)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'dark', 0.02)}`,
+    ].join(', '),
+  })),
+
+  '30px': {
+    light: [
+      `0 10px 30px ${getShadowColor('shadowFar', 'light', 0.16)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'light', 0.02)}`,
+    ].join(', '),
+    dark: [
+      `0 10px 30px ${getShadowColor('shadowFar', 'dark', 0.4)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'dark', 0.02)}`,
+    ].join(', '),
+  },
+  ...coloredShadows('30px', (color) => ({
+    light: [
+      `0 10px 30px ${getShadowColor(color, 'light', 0.4)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'light', 0.02)}`,
+    ].join(', '),
+    dark: [
+      `0 10px 30px ${getShadowColor('shadowFar', 'dark', 0.4)}`,
+      `0 2px 6px ${getShadowColor('shadowNear', 'dark', 0.02)}`,
+    ].join(', '),
+  })),
+};
+
+export const shadowVars = createThemeContract(
+  mapValues(shadowTokens, () => null),
+);
+
+export const shadows = Object.keys(shadowVars) as (keyof typeof shadowVars)[];
+
 globalStyle(`html.${rootThemeClasses.lightTheme}`, {
   backgroundColor: backgroundColors.surfacePrimary.light.color,
-  vars: { [accentColorVar]: backgroundColors.blue.light.color },
+  vars: assignVars(
+    accentColorHslVars,
+    hslObjectForColor(backgroundColors.blue.light.color),
+  ),
 });
 
 globalStyle(`html.${rootThemeClasses.darkTheme}`, {
   backgroundColor: backgroundColors.surfacePrimary.dark.color,
-  vars: { [accentColorVar]: backgroundColors.blue.dark.color },
+  vars: assignVars(
+    accentColorHslVars,
+    hslObjectForColor(backgroundColors.blue.dark.color),
+  ),
 });
 
 globalStyle(
@@ -119,10 +274,16 @@ globalStyle(
     `html.${rootThemeClasses.darkTheme} .${themeClasses.darkTheme.lightContext} > *`,
   ].join(', '),
   {
-    vars: assignVars(semanticColorVars, {
-      backgroundColors: mapValues(backgroundColors, ({ light }) => light.color),
-      foregroundColors: mapValues(foregroundColors, ({ light }) => light),
-    }),
+    vars: {
+      ...assignVars(semanticColorVars, {
+        backgroundColors: mapValues(backgroundColors, (x) => x.light.color),
+        foregroundColors: mapValues(foregroundColors, (x) => x.light),
+      }),
+      ...assignVars(
+        shadowVars,
+        mapValues(shadowTokens, (x) => x.light),
+      ),
+    },
   },
 );
 
@@ -132,10 +293,16 @@ globalStyle(
     `html.${rootThemeClasses.darkTheme} .${themeClasses.darkTheme.darkContext} > *`,
   ].join(', '),
   {
-    vars: assignVars(semanticColorVars, {
-      backgroundColors: mapValues(backgroundColors, ({ dark }) => dark.color),
-      foregroundColors: mapValues(foregroundColors, ({ dark }) => dark),
-    }),
+    vars: {
+      ...assignVars(semanticColorVars, {
+        backgroundColors: mapValues(backgroundColors, (x) => x.dark.color),
+        foregroundColors: mapValues(foregroundColors, (x) => x.dark),
+      }),
+      ...assignVars(
+        shadowVars,
+        mapValues(shadowTokens, (x) => x.dark),
+      ),
+    },
   },
 );
 
@@ -196,13 +363,14 @@ const boxColorProperties = defineProperties({
   defaultCondition: ['light', 'dark'],
   properties: {
     background: {
-      accent: accentColorVar,
+      accent: accentColorAsHsl,
       ...semanticColorVars.backgroundColors,
     },
     borderColor: pick(semanticColorVars.foregroundColors, [
       ...separatorColors,
       ...strokeColors,
     ] as const),
+    boxShadow: shadowVars,
   },
 });
 
@@ -251,7 +419,7 @@ function defineType(
 const textProperties = defineProperties({
   properties: {
     color: {
-      accent: accentColorVar,
+      accent: accentColorAsHsl,
       ...pick(semanticColorVars.foregroundColors, textColors),
     },
     fontFamily: { rounded: 'SFRounded' },
