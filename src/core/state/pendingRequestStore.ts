@@ -1,23 +1,26 @@
 import create from 'zustand';
+import { ProviderRequestPayload } from '../transports/providerRequestTransport';
 import { createStore } from './internal/createStore';
 
-export interface PendingRequest {
-  method: string;
-  id: number;
-  params?: unknown[];
-}
-
 export interface PendingRequestsStore {
-  pendingRequest: PendingRequest | null;
-  addPendingRequest: (request: PendingRequest) => void;
-  removePendingRequest: () => void;
+  pendingRequests: ProviderRequestPayload[];
+  addPendingRequest: (request: ProviderRequestPayload) => void;
+  removePendingRequest: (id: number) => void;
 }
 
 export const pendingRequestStore = createStore<PendingRequestsStore>(
-  (set) => ({
-    pendingRequest: null,
-    addPendingRequest: (newRequest) => set({ pendingRequest: newRequest }),
-    removePendingRequest: () => set({ pendingRequest: null }),
+  (set, get) => ({
+    pendingRequests: [],
+    addPendingRequest: (newRequest) => {
+      const pendingRequests = get().pendingRequests;
+      set({ pendingRequests: pendingRequests.concat([newRequest]) });
+    },
+    removePendingRequest: (id) => {
+      const pendingRequests = get().pendingRequests;
+      set({
+        pendingRequests: pendingRequests.filter((request) => request.id !== id),
+      });
+    },
   }),
   {
     persist: {

@@ -1,11 +1,9 @@
 import { UserRejectedRequestError } from 'wagmi';
 import { extensionMessenger } from '~/core/messengers';
 import { approvedHostsStore, notificationWindowStore } from '~/core/state';
-import {
-  PendingRequest,
-  pendingRequestStore,
-} from '~/core/state/pendingRequestStore';
+import { pendingRequestStore } from '~/core/state/pendingRequestStore';
 import { providerRequestTransport } from '~/core/transports';
+import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 
 export const DEFAULT_ACCOUNT = '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
 export const DEFAULT_CHAIN_ID = '0x1';
@@ -26,7 +24,9 @@ const openWindow = async () => {
  * @param {PendingRequest} request
  * @returns {boolean}
  */
-const extensionMessengerRequestApproval = async (request: PendingRequest) => {
+const extensionMessengerRequestApproval = async (
+  request: ProviderRequestPayload,
+) => {
   const { addPendingRequest, removePendingRequest } =
     pendingRequestStore.getState();
   // Add pending request to global background state.
@@ -39,7 +39,7 @@ const extensionMessengerRequestApproval = async (request: PendingRequest) => {
       resolve(payload),
     ),
   );
-  removePendingRequest();
+  removePendingRequest(request.id);
   if (!approved) {
     throw new UserRejectedRequestError('User rejected the request.');
   }

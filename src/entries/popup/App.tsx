@@ -27,7 +27,7 @@ export function App() {
     initializeSentry();
   }, []);
 
-  const { pendingRequest } = usePendingRequestStore();
+  const { pendingRequests } = usePendingRequestStore();
 
   return (
     <PersistQueryClientProvider
@@ -39,7 +39,7 @@ export function App() {
           PlaygroundComponents[playground]
         ) : (
           <Box id="main" background="surfacePrimaryElevated">
-            {pendingRequest ? (
+            {pendingRequests[0] ? (
               <ApproveMessage />
             ) : (
               <HashRouter>

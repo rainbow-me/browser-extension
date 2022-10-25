@@ -5,9 +5,10 @@ import { usePendingRequestStore } from '~/core/state/pendingRequestStore';
 import { Box, Text } from '~/design-system';
 
 export function ApproveMessage() {
-  const { pendingRequest } = usePendingRequestStore();
+  const { pendingRequests } = usePendingRequestStore();
   const { window } = useNotificationWindowStore();
 
+  const pendingRequest = pendingRequests[0];
   const approveRequest = useCallback(() => {
     extensionMessenger.send(`message:${pendingRequest?.id}`, true);
     if (window?.id) chrome.windows.remove(window.id);
