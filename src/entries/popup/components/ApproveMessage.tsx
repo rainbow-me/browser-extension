@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { extensionMessenger } from '~/core/messengers';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
-import { usePendingRequestStore } from '~/core/state/pendingRequestStore';
+import { usePendingRequestStore } from '~/core/state/pendingRequest';
 import { Box, Text } from '~/design-system';
 
 export function ApproveMessage() {

@@ -12,7 +12,7 @@ import { RainbowConnector } from './wagmi/RainbowConnector';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { Routes } from './Routes';
 import { ApproveMessage } from './components/ApproveMessage';
-import { usePendingRequestStore } from '~/core/state/pendingRequestStore';
+import { usePendingRequestStore } from '~/core/state/pendingRequest';
 
 const playground = process.env.PLAYGROUND as 'default' | 'ds';
 
