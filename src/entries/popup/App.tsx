@@ -11,6 +11,8 @@ import { Box } from '~/design-system';
 import { RainbowConnector } from './wagmi/RainbowConnector';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { Routes } from './Routes';
+import { ApproveMessage } from './components/ApproveMessage';
+import { usePendingRequestStore } from '~/core/state/pendingRequest';
 
 const playground = process.env.PLAYGROUND as 'default' | 'ds';
 
@@ -25,6 +27,8 @@ export function App() {
     initializeSentry();
   }, []);
 
+  const { pendingRequests } = usePendingRequestStore();
+
   return (
     <PersistQueryClientProvider
       client={queryClient}
@@ -35,9 +39,13 @@ export function App() {
           PlaygroundComponents[playground]
         ) : (
           <Box id="main" background="surfacePrimaryElevated">
-            <HashRouter>
-              <Routes />
-            </HashRouter>
+            {pendingRequests[0] ? (
+              <ApproveMessage />
+            ) : (
+              <HashRouter>
+                <Routes />
+              </HashRouter>
+            )}
           </Box>
         )}
       </WagmiConfig>
