@@ -31,7 +31,6 @@ const extensionMessengerRequestApproval = async (request: PendingRequest) => {
     pendingRequestStore.getState();
   // Add pending request to global background state.
   addPendingRequest(request);
-  console.log('adding pending rquests', request);
   openWindow();
   // Wait for response from the popup.
   const approved = await new Promise((resolve) =>
@@ -40,7 +39,6 @@ const extensionMessengerRequestApproval = async (request: PendingRequest) => {
       resolve(payload),
     ),
   );
-  console.log('removePendingRequest', request);
   removePendingRequest();
   if (!approved) {
     throw new UserRejectedRequestError('User rejected the request.');
