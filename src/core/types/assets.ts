@@ -6,6 +6,7 @@ export interface ZerionAssetPrice {
 
 export enum AssetType {
   arbitrum = 'arbitrum',
+  bsc = 'bsc',
   compound = 'compound',
   eth = 'eth',
   nft = 'nft',

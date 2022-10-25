@@ -8,6 +8,7 @@ import { ChainName } from '~/core/types/chains';
 export const isL2Chain = (chain: ChainName): boolean => {
   switch (chain) {
     case ChainName.arbitrum:
+    case ChainName.bsc:
     case ChainName.optimism:
     case ChainName.polygon:
       return true;
