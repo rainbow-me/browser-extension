@@ -1,33 +1,12 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { extensionMessenger } from '~/core/messengers';
-import { NotificationWindow } from '~/core/state/notificationWindow';
-import { PendingRequest } from '~/core/state/pendingRequestStore';
-import { Storage } from '~/core/storage';
+import { useNotificationWindowStore } from '~/core/state/notificationWindow';
+import { usePendingRequestStore } from '~/core/state/pendingRequestStore';
 import { Box, Text } from '~/design-system';
 
 export function ApproveMessage() {
-  const [pendingRequest, setPendingRequest] = useState<PendingRequest | null>();
-  const [window, setWindow] = useState<NotificationWindow | null>();
-
-  React.useEffect(() => {
-    (async () => {
-      const pendingRequest = await Storage.get('pendingRequest');
-      setPendingRequest(pendingRequest);
-
-      const unlisten = Storage.listen('pendingRequest', setPendingRequest);
-      return unlisten;
-    })();
-  }, []);
-
-  React.useEffect(() => {
-    (async () => {
-      const window = await Storage.get('currentWindow');
-      setWindow(window);
-
-      const unlisten = Storage.listen('currentWindow', setWindow);
-      return unlisten;
-    })();
-  }, []);
+  const { pendingRequest } = usePendingRequestStore();
+  const { window } = useNotificationWindowStore();
 
   const approveRequest = useCallback(() => {
     extensionMessenger.send(`message:${pendingRequest?.id}`, true);

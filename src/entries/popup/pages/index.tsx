@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useAccount, useBalance, useEnsAvatar, useEnsName } from 'wagmi';
-
 import { truncateAddress } from '~/core/utils/truncateAddress';
 import {
   AccentColorProvider,

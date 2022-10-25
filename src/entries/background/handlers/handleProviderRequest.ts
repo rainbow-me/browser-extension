@@ -1,10 +1,6 @@
 import { UserRejectedRequestError } from 'wagmi';
 import { extensionMessenger } from '~/core/messengers';
-import {
-  notificationWindowStore,
-  useApprovedHostsStore,
-  useCurrentAddressStore,
-} from '~/core/state';
+import { approvedHostsStore, notificationWindowStore } from '~/core/state';
 import {
   PendingRequest,
   pendingRequestStore,
@@ -15,13 +11,14 @@ export const DEFAULT_ACCOUNT = '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
 export const DEFAULT_CHAIN_ID = '0x1';
 
 const openWindow = async () => {
+  const { setWindow } = notificationWindowStore.getState();
   const window = await chrome.windows.create({
     url: chrome.runtime.getURL('popup.html'),
     type: 'popup',
     height: 600,
     width: 360,
   });
-  notificationWindowStore.getState().setCurrentWindow(window);
+  setWindow(window);
 };
 
 /**
@@ -34,6 +31,7 @@ const extensionMessengerRequestApproval = async (request: PendingRequest) => {
     pendingRequestStore.getState();
   // Add pending request to global background state.
   addPendingRequest(request);
+  console.log('adding pending rquests', request);
   openWindow();
   // Wait for response from the popup.
   const approved = await new Promise((resolve) =>
@@ -42,6 +40,7 @@ const extensionMessengerRequestApproval = async (request: PendingRequest) => {
       resolve(payload),
     ),
   );
+  console.log('removePendingRequest', request);
   removePendingRequest();
   if (!approved) {
     throw new UserRejectedRequestError('User rejected the request.');
@@ -56,8 +55,8 @@ export const handleProviderRequest = () =>
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
     console.log(meta.sender, method);
 
-    const { addApprovedHost, isApprovedHost } = useApprovedHostsStore();
-    const { currentAddress } = useCurrentAddressStore();
+    const { addApprovedHost, isApprovedHost } = approvedHostsStore.getState();
+
     try {
       let response = null;
 
@@ -67,7 +66,7 @@ export const handleProviderRequest = () =>
           break;
         case 'eth_accounts': {
           const approvedHost = await isApprovedHost(meta.sender.origin);
-          response = approvedHost ? [currentAddress] : [];
+          response = approvedHost ? [DEFAULT_ACCOUNT] : [];
           break;
         }
         case 'eth_sendTransaction':
@@ -89,7 +88,7 @@ export const handleProviderRequest = () =>
         case 'eth_requestAccounts': {
           const approvedHost = await isApprovedHost(meta.sender.origin);
           if (approvedHost) {
-            response = [currentAddress];
+            response = [DEFAULT_ACCOUNT];
             break;
           }
           await extensionMessengerRequestApproval({
@@ -100,7 +99,7 @@ export const handleProviderRequest = () =>
           if (meta.sender.origin) {
             addApprovedHost(meta.sender.origin);
           }
-          response = [currentAddress];
+          response = [DEFAULT_ACCOUNT];
           break;
         }
         default: {
