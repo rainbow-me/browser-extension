@@ -1,6 +1,6 @@
 import { globalFontFace, globalStyle } from '@vanilla-extract/css';
 import { backgroundColors } from '../../styles/designTokens';
-import { rootThemeClasses } from '../../styles/themeClasses';
+import { rootThemeClasses } from '../../styles/theme';
 
 globalStyle('html, body', {
   boxSizing: 'border-box',

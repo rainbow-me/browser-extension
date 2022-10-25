@@ -1,11 +1,10 @@
-import { rootThemeClasses } from './themeClasses';
-
-type Theme = 'dark' | 'light';
+import { ColorContext } from './designTokens';
+import { getTheme, rootThemeClasses } from './theme';
 
 export function initThemingCritical({
   defaultTheme,
-}: { defaultTheme?: Theme } = {}) {
-  const setTheme = (theme: Theme) => {
+}: { defaultTheme?: ColorContext } = {}) {
+  const setTheme = (theme: ColorContext) => {
     document.documentElement.classList.remove(
       ...Object.values(rootThemeClasses),
     );
@@ -14,16 +13,17 @@ export function initThemingCritical({
     );
   };
 
-  if (defaultTheme) {
-    setTheme(defaultTheme);
-    return;
-  }
-
   const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-  setTheme(darkModeMediaQuery.matches ? 'dark' : 'light');
 
-  // Update the theme if the user changes their OS preference
-  darkModeMediaQuery.addEventListener('change', ({ matches: isDark }) => {
-    setTheme(isDark ? 'dark' : 'light');
-  });
+  const { savedTheme, systemTheme } = getTheme();
+  const theme = savedTheme || defaultTheme || systemTheme;
+
+  if (theme) setTheme(theme);
+
+  if (!savedTheme) {
+    // Update the theme if the user changes their OS preference
+    darkModeMediaQuery.addEventListener('change', ({ matches: isDark }) => {
+      setTheme(isDark ? 'dark' : 'light');
+    });
+  }
 }

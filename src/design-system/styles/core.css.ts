@@ -1,4 +1,4 @@
-import { themeClasses, rootThemeClasses } from './themeClasses';
+import { themeClasses, rootThemeClasses } from './theme';
 import {
   style,
   globalStyle,

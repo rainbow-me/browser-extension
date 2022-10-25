@@ -3,7 +3,13 @@ import React from 'react';
 import { Code } from '../../docs/components/Code';
 import { Docs } from '../../docs/types';
 import { Text } from '../Text/Text';
-import { background, padding, margin, borderRadius } from './Box.examples';
+import {
+  background,
+  padding,
+  margin,
+  borderRadius,
+  shadows,
+} from './Box.examples';
 
 const docs: Docs = {
   name: 'Box',
@@ -23,7 +29,7 @@ const docs: Docs = {
       </Text>
     </>
   ),
-  examples: [background, padding, margin, borderRadius],
+  examples: [background, padding, margin, borderRadius, shadows],
 };
 
 // eslint-disable-next-line import/no-default-export

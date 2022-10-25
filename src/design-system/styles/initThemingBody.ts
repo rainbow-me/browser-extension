@@ -1,4 +1,4 @@
-import { themeClasses } from './themeClasses';
+import { themeClasses } from './theme';
 
 export function initThemingBody() {
   // Set the initial color contexts to match their respective themes

@@ -14,7 +14,7 @@ import {
 } from '../../styles/designTokens';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
 import { hslObjectForColor } from '../../styles/hslObjectForColor';
-import { themeClasses } from '../../styles/themeClasses';
+import { themeClasses } from '../../styles/theme';
 
 export interface ColorContextValue {
   lightThemeColorContext: ColorContext;

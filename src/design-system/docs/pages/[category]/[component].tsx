@@ -64,6 +64,7 @@ export default function Component({ component, category }: any) {
                 description,
                 enablePlayroom,
                 enableCodeSnippet,
+                showThemes,
                 wrapper,
                 showFrame,
                 examples,
@@ -82,6 +83,7 @@ export default function Component({ component, category }: any) {
                   key={index}
                   name={name}
                   showFrame={showFrame}
+                  showThemes={showThemes}
                   wrapper={wrapper}
                 />
               </>
@@ -97,17 +99,25 @@ function ExamplePreview({
   name,
   description,
   enableCodeSnippet = true,
+  level = 0,
   showFrame = false,
   enablePlayroom = true,
+  showThemes,
   wrapper,
   examples,
   Example,
-}: Example) {
+}: Example & { level?: number }) {
   return (
     <Stack space="44px">
-      <Text as="h2" size="26pt" weight="bold">
-        {name}
-      </Text>
+      {name && (
+        <Text
+          as={level > 0 ? 'h3' : 'h2'}
+          size={level > 0 ? '23pt' : '26pt'}
+          weight="bold"
+        >
+          {name}
+        </Text>
+      )}
       {description && (
         <Box style={{ paddingBottom: '8px' }}>
           <Stack space="44px">{description}</Stack>
@@ -119,12 +129,13 @@ function ExamplePreview({
           enableCodeSnippet={enableCodeSnippet}
           enablePlayroom={enablePlayroom}
           showFrame={showFrame}
+          showThemes={showThemes}
           wrapper={wrapper}
         />
       )}
       {examples?.map((example, i) => (
         <Inset key={i} vertical="12px">
-          <ExamplePreview {...example} />
+          <ExamplePreview {...example} level={level + 1} />
         </Inset>
       ))}
     </Stack>

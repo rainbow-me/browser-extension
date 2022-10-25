@@ -3,7 +3,7 @@ import { Source } from './utils/source.macro';
 
 export type Docs = {
   name?: string;
-  category: 'Color' | 'Layout';
+  category: 'Color' | 'Layout' | 'Tokens';
   description?: JSX.Element | JSX.Element[];
   examples?: Example[];
 };
@@ -14,8 +14,9 @@ export type Example = {
   description?: JSX.Element | JSX.Element[];
   Example?: () => Source<React.ReactElement>;
   examples?: Example[];
-  name: string;
+  name?: string;
   showFrame?: boolean;
+  showThemes?: boolean | 'toggle'
   subTitle?: string;
   wrapper?: (children: React.ReactNode) => React.ReactNode;
 };

@@ -8,7 +8,7 @@ module.exports = {
   components: './.playroom/components.ts',
   exampleCode: ``,
   frameComponent: './.playroom/FrameComponent.js',
-  iframeSandbox: 'allow-scripts',
+  iframeSandbox: 'allow-scripts allow-same-origin',
   openBrowser: false,
   outputPath: './out/playroom',
   paramType: 'search',

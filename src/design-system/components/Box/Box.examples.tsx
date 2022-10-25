@@ -25,6 +25,7 @@ export const background: Example = {
       </Text>
     </>
   ),
+  showThemes: 'toggle',
   Example: () =>
     source(
       <>
@@ -141,7 +142,6 @@ export const padding: Example = {
 
 export const margin: Example = {
   name: 'Margin',
-  showFrame: true,
   description: (
     <Text size="20pt" weight="medium">
       To apply margin to the bounds of Box, pass the <Code>margin</Code> prop.
@@ -152,32 +152,46 @@ export const margin: Example = {
   Example: () =>
     source(
       <Stack space="12px">
-        <Box background="surfacePrimary" margin="-20px">
-          <Placeholder />
-        </Box>
-        <Inset vertical="20px">
-          <Box background="surfacePrimary" marginX="-20px">
+        <Box background="surfacePrimary">
+          <Box margin="-20px">
             <Placeholder />
           </Box>
-        </Inset>
-        <Box background="surfacePrimary" marginY="-20px">
-          <Placeholder />
         </Box>
         <Inset vertical="20px">
-          <Box background="surfacePrimary" marginLeft="-20px">
-            <Placeholder />
+          <Box background="surfacePrimary">
+            <Box marginX="-20px">
+              <Placeholder />
+            </Box>
           </Box>
         </Inset>
-        <Box background="surfacePrimary" marginRight="-20px">
-          <Placeholder />
+        <Box background="surfacePrimary">
+          <Box marginY="-20px">
+            <Placeholder />
+          </Box>
         </Box>
         <Inset vertical="20px">
-          <Box background="surfacePrimary" marginTop="-20px">
-            <Placeholder />
+          <Box background="surfacePrimary">
+            <Box marginLeft="-20px">
+              <Placeholder />
+            </Box>
           </Box>
         </Inset>
-        <Box background="surfacePrimary" marginBottom="-20px">
-          <Placeholder />
+        <Box background="surfacePrimary">
+          <Box marginRight="-20px">
+            <Placeholder />
+          </Box>
+        </Box>
+        <Inset top="20px">
+          <Box background="surfacePrimary" paddingTop="2px">
+            <Box marginTop="-20px">
+              <Placeholder />
+            </Box>
+          </Box>
+        </Inset>
+        <Box background="surfacePrimary">
+          <Box marginBottom="-20px">
+            <Placeholder />
+          </Box>
         </Box>
       </Stack>,
     ),
@@ -192,65 +206,111 @@ export const borderRadius: Example = {
       directional or specific corners as seen below.
     </Text>
   ),
+  showFrame: true,
   Example: () =>
     source(
-      <Stack space="24px">
-        <Box
-          background="fillSecondary"
-          borderColor="separator"
-          borderWidth="1px"
-          borderRadius="round"
-          padding="32px"
-        />
-        <Box
-          background="fillSecondary"
-          borderColor="separator"
-          borderWidth="1px"
-          borderRadius="3px"
-          padding="32px"
-        />
-        <Box
-          background="fillSecondary"
-          borderColor="separator"
-          borderWidth="1px"
-          borderRadius="6px"
-          padding="32px"
-        />
-        <Box
-          background="fillSecondary"
-          borderColor="separator"
-          borderWidth="1px"
-          borderRadius="12px"
-          padding="32px"
-        />
-        <Box
-          background="fillSecondary"
-          borderColor="separator"
-          borderWidth="1px"
-          borderRadius="14px"
-          padding="32px"
-        />
-        <Box
-          background="fillSecondary"
-          borderColor="separator"
-          borderWidth="1px"
-          borderRadius="16px"
-          padding="32px"
-        />
-        <Box
-          background="fillSecondary"
-          borderColor="separator"
-          borderWidth="1px"
-          borderRadius="20px"
-          padding="32px"
-        />
-        <Box
-          background="fillSecondary"
-          borderColor="separator"
-          borderWidth="1px"
-          borderRadius="24px"
-          padding="32px"
-        />
-      </Stack>,
+      <Inset space="16px">
+        <Stack space="24px">
+          <Box as={Placeholder} borderRadius="round" />
+          <Box as={Placeholder} borderRadius="3px" />
+          <Box as={Placeholder} borderRadius="6px" />
+          <Box as={Placeholder} borderRadius="12px" />
+          <Box as={Placeholder} borderRadius="14px" />
+          <Box as={Placeholder} borderRadius="16px" />
+          <Box as={Placeholder} borderRadius="20px" />
+          <Box as={Placeholder} borderRadius="24px" />
+        </Stack>
+      </Inset>,
     ),
+};
+
+export const shadows: Example = {
+  name: 'Shadows',
+  description: (
+    <Text size="20pt" weight="medium">
+      To apply a shadow, a size & optional shadow color (e.g.{' '}
+      <Code>30px accent</Code>) can be supplied to the <Code>boxShadow</Code>{' '}
+      prop.
+    </Text>
+  ),
+  examples: [
+    {
+      name: 'Sizes',
+      showThemes: 'toggle',
+      Example: () =>
+        source(
+          <Stack space="24px">
+            <Box
+              background="surfacePrimaryElevated"
+              padding="24px"
+              boxShadow="12px"
+            />
+            <Box
+              background="surfacePrimaryElevated"
+              padding="24px"
+              boxShadow="18px"
+            />
+            <Box
+              background="surfacePrimaryElevated"
+              padding="24px"
+              boxShadow="24px"
+            />
+            <Box
+              background="surfacePrimaryElevated"
+              padding="24px"
+              boxShadow="30px"
+            />
+          </Stack>,
+        ),
+    },
+    {
+      name: 'Colors',
+      showThemes: 'toggle',
+      Example: () =>
+        source(
+          <Stack space="24px">
+            <Box
+              background="surfacePrimaryElevated"
+              padding="24px"
+              boxShadow="12px accent"
+            />
+            <Box
+              background="surfacePrimaryElevated"
+              padding="24px"
+              boxShadow="12px blue"
+            />
+            <Box
+              background="surfacePrimaryElevated"
+              padding="24px"
+              boxShadow="12px green"
+            />
+            <Box
+              background="surfacePrimaryElevated"
+              padding="24px"
+              boxShadow="12px orange"
+            />
+            <Box
+              background="surfacePrimaryElevated"
+              padding="24px"
+              boxShadow="12px pink"
+            />
+            <Box
+              background="surfacePrimaryElevated"
+              padding="24px"
+              boxShadow="12px purple"
+            />
+            <Box
+              background="surfacePrimaryElevated"
+              padding="24px"
+              boxShadow="12px red"
+            />
+            <Box
+              background="surfacePrimaryElevated"
+              padding="24px"
+              boxShadow="12px yellow"
+            />
+          </Stack>,
+        ),
+    },
+  ],
 };

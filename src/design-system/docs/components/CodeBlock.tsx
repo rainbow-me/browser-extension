@@ -3,6 +3,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import useClipboard from 'react-use-clipboard';
 
 import { Box } from '../../components/Box/Box';
+import { ThemeProvider } from '../../components/Box/ColorContext';
 import { Text } from '../../components/Text/Text';
 import { codeTheme } from '../utils/codeTheme';
 
@@ -11,7 +12,7 @@ export const CodeBlock = ({ code }: { code: string }) => {
   const isMultipleLines = code.includes('\n');
 
   return (
-    <Box>
+    <ThemeProvider theme="dark">
       <Box
         background="surfaceSecondaryElevated"
         borderRadius="16px"
@@ -47,6 +48,6 @@ export const CodeBlock = ({ code }: { code: string }) => {
           {code}
         </SyntaxHighlighter>
       </Box>
-    </Box>
+    </ThemeProvider>
   );
 };

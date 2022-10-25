@@ -15,10 +15,10 @@ export default function Index() {
           designer would describe them.
         </Text>
         <Text size="20pt" weight="medium">
-          You ideally shouldn't have to write a bunch of low-level styling or
-          manually adjust padding and margins on individual components to create
-          visual balance. To achieve this, we need to start at the foundations
-          and build up in layers.
+          You ideally shouldn&apos;t have to write a bunch of low-level styling
+          or manually adjust padding and margins on individual components to
+          create visual balance. To achieve this, we need to start at the
+          foundations and build up in layers.
         </Text>
         <Text size="20pt" weight="medium">
           These docs are not currently intended to be exhaustive, instead
