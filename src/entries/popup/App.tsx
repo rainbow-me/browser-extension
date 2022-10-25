@@ -12,8 +12,7 @@ import { RainbowConnector } from './wagmi/RainbowConnector';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { Routes } from './Routes';
 import { ApproveMessage } from './components/ApproveMessage';
-import { Storage } from '~/core/storage';
-import { PendingRequest } from '~/core/state/pendingRequestStore';
+import { usePendingRequestStore } from '~/core/state/pendingRequestStore';
 
 const playground = process.env.PLAYGROUND as 'default' | 'ds';
 
@@ -27,17 +26,8 @@ export function App() {
   React.useEffect(() => {
     initializeSentry();
   }, []);
-  const [pendingRequest, setPendingRequest] =
-    React.useState<PendingRequest | null>();
-  React.useEffect(() => {
-    (async () => {
-      const pendingRequest = await Storage.get('pendingRequest');
-      setPendingRequest(pendingRequest);
 
-      const unlisten = Storage.listen('pendingRequest', setPendingRequest);
-      return unlisten;
-    })();
-  }, []);
+  const { pendingRequest } = usePendingRequestStore();
 
   return (
     <PersistQueryClientProvider
