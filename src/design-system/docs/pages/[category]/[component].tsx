@@ -1,4 +1,4 @@
-import { kebabCase, startCase } from 'lodash';
+import { kebabCase, camelCase } from 'lodash';
 import { Box } from '../../../components/Box/Box';
 import { Inset } from '../../../components/Inset/Inset';
 import { Separator } from '../../../components/Separator/Separator';
@@ -17,8 +17,8 @@ function getDoc({
 }) {
   return Object.values(docs).find(
     ({ default: doc }) =>
-      doc.name?.toLowerCase() === startCase(component).toLowerCase() &&
-      doc.category.toLowerCase() === startCase(category).toLowerCase(),
+      doc.name?.toLowerCase() === camelCase(component).toLowerCase() &&
+      doc.category.toLowerCase() === camelCase(category).toLowerCase(),
   )?.default;
 }
 

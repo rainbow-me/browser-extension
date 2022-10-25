@@ -101,7 +101,8 @@ function MobileHeader({ onToggleSidebar }: { onToggleSidebar: () => void }) {
 
 const categoryOrder: [string, string[]][] = [
   ['Layout', ['Box']],
-  ['Tokens', ['Color']],
+  ['Contexts', []],
+  ['Tokens', []],
 ];
 
 const docsByCategory = Object.values(docs).reduce(

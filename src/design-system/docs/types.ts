@@ -3,7 +3,7 @@ import { Source } from './utils/source.macro';
 
 export type Docs = {
   name?: string;
-  category: 'Color' | 'Layout' | 'Tokens';
+  category: 'Contexts' | 'Layout' | 'Tokens';
   description?: JSX.Element | JSX.Element[];
   examples?: Example[];
 };
