@@ -16,7 +16,7 @@ export type Example = {
   examples?: Example[];
   name?: string;
   showFrame?: boolean;
-  showThemes?: boolean | 'toggle'
+  showThemes?: boolean | 'toggle';
   subTitle?: string;
   wrapper?: (children: React.ReactNode) => React.ReactNode;
 };
