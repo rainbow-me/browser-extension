@@ -60,8 +60,9 @@ it('should be able to turn ON injection', async () => {
   expect(actual).toEqual(expected);
 });
 
-it.skip('should be able to connect to bx test dapp', async () => {
+it('should be able to connect to bx test dapp', async () => {
   await driver.get('https://bx-test-dapp.vercel.app/');
+  const dappHandler = await driver.getWindowHandle();
 
   const button = await findElementByText(driver, 'Connect Wallet');
   expect(button).toBeTruthy();
@@ -74,9 +75,23 @@ it.skip('should be able to connect to bx test dapp', async () => {
     driver,
     '[data-testid="rk-wallet-option-metaMask"]',
   );
-
+  // wait for dapp
+  await delay(500);
   await mmButton.click();
 
+  // wait for window handlers to update
+  await delay(100);
+  const handlers = await driver.getAllWindowHandles();
+
+  const popupHandler =
+    handlers.find((handler) => handler !== dappHandler) || '';
+
+  await driver.switchTo().window(popupHandler);
+  // wait for extension to load
+  await delay(2000);
+  await driver.findElement({ id: 'accept-button' }).click();
+
+  await driver.switchTo().window(dappHandler);
   const topButton = await querySelector(
     driver,
     '[data-testid="rk-account-button"]',
