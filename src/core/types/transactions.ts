@@ -1,13 +1,7 @@
 import { BigNumberish } from 'ethers';
+import { ChainName } from '~/core/types/chains';
+import { ZerionAsset } from './assets';
 
-export enum Network {
-  arbitrum = 'arbitrum',
-  optimism = 'optimism',
-  polygon = 'polygon',
-  mainnet = 'mainnet',
-}
-
-// TRANSACTIONS: //
 export interface RainbowTransaction {
   address?: string;
   balance?: {
@@ -29,7 +23,7 @@ export interface RainbowTransaction {
     amount: string;
     display: string;
   };
-  network: Network;
+  chain: ChainName;
   nonce?: number;
   pending?: boolean;
   protocol?: ProtocolType;
@@ -47,6 +41,45 @@ export interface RainbowTransaction {
   type?: TransactionType;
   value?: BigNumberish; // for pending tx
 }
+
+export interface ZerionTransaction {
+  address_from: string;
+  address_to: string;
+  block_number: number;
+  changes: ZerionTransactionChange[];
+  contract: string;
+  direction: TransactionDirection;
+  fee: ZerionTransactionFee;
+  hash: string;
+  id: string;
+  meta: ZerionTransactionMeta;
+  mined_at: number;
+  nonce: number;
+  protocol: ProtocolType;
+  status: ZerionTransactionStatus;
+  type: TransactionType;
+}
+
+interface ZerionTransactionFee {
+  price: number;
+  value: number;
+}
+
+interface ZerionTransactionMeta {
+  action?: string;
+  application?: string;
+  asset?: ZerionAsset;
+}
+
+export interface ZerionTransactionChange {
+  address_from: string;
+  address_to: string;
+  asset: ZerionAsset;
+  price?: number;
+  value?: number;
+  direction: TransactionDirection;
+}
+
 export enum ZerionTransactionStatus {
   confirmed = 'confirmed',
   failed = 'failed',

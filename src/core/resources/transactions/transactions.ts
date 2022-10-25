@@ -8,11 +8,8 @@ import {
   QueryFunctionResult,
 } from '~/core/react-query';
 import { refractionAddressWs, refractionAddressMessages } from '~/core/network';
-import {
-  TransactionsReceivedMessage,
-  ZerionTransaction,
-} from '~/core/network/refractionAddressWs';
-import { isL2Network } from '~/core/utils/web3';
+import { TransactionsReceivedMessage } from '~/core/types/refraction';
+import { isL2Chain } from '~/core/utils/chains';
 import {
   convertRawAmountToNativeDisplay,
   convertRawAmountToBalance,
@@ -25,8 +22,9 @@ import {
   TransactionStatus,
   TransactionType,
   ZerionTransactionStatus,
-  Network,
-} from '~/core/types';
+  ZerionTransaction,
+} from '~/core/types/transactions';
+import { ChainName } from '~/core/types/chains';
 import { capitalize } from 'lodash';
 
 const TRANSACTIONS_TIMEOUT_DURATION = 10000;
@@ -237,13 +235,13 @@ export const getDescription = ({
 type ParseTransactionArgs = {
   tx: ZerionTransaction;
   currency: SupportedCurrencyKey;
-  network: Network;
+  chain: ChainName;
 };
 
 const parseTransactionWithEmptyChanges = ({
   tx,
   currency,
-  network,
+  chain,
 }: ParseTransactionArgs): RainbowTransaction => {
   const methodName = 'Signed'; // let's ask BE to grab this for us: https://github.com/rainbow-me/rainbow/blob/develop/src/handlers/transactions.ts#L79
   const updatedAsset = {
@@ -263,7 +261,7 @@ const parseTransactionWithEmptyChanges = ({
 
   return {
     address: ETH_ADDRESS,
-    balance: isL2Network(network)
+    balance: isL2Chain(chain)
       ? { amount: '', display: '-' }
       : convertRawAmountToBalance(valueUnit, updatedAsset),
     description: methodName || 'Signed',
@@ -272,7 +270,7 @@ const parseTransactionWithEmptyChanges = ({
     minedAt: tx.mined_at,
     name: methodName || 'Signed',
     native: nativeDisplay,
-    network,
+    chain,
     nonce: tx.nonce,
     pending: false,
     protocol: tx.protocol,
@@ -287,7 +285,7 @@ const parseTransactionWithEmptyChanges = ({
 function parseTransaction({
   tx,
   currency,
-  network,
+  chain,
 }: ParseTransactionArgs): RainbowTransaction | RainbowTransaction[] {
   if (tx.changes.length) {
     return tx.changes.map((internalTxn, index) => {
@@ -344,10 +342,8 @@ function parseTransaction({
         hash: `${tx.hash}-${index}`,
         minedAt: tx.mined_at,
         name: updatedAsset.name,
-        native: isL2Network(network)
-          ? { amount: '', display: '' }
-          : nativeDisplay,
-        network,
+        native: isL2Chain(chain) ? { amount: '', display: '' } : nativeDisplay,
+        chain,
         nonce: tx.nonce,
         pending: false,
         protocol: tx.protocol,
@@ -363,7 +359,7 @@ function parseTransaction({
   return parseTransactionWithEmptyChanges({
     tx,
     currency,
-    network,
+    chain,
   });
 }
 
@@ -377,7 +373,7 @@ function parseTransactions(
       parseTransaction({
         tx,
         currency,
-        network: (message?.meta?.chain_id as Network) ?? Network.mainnet,
+        chain: (message?.meta?.chain_id as ChainName) ?? ChainName.mainnet,
       }),
     )
     .flat();

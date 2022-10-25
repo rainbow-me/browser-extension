@@ -8,7 +8,7 @@ import {
 } from '~/core/react-query';
 
 import { refractionAddressWs, refractionAddressMessages } from '~/core/network';
-import { AddressAssetsReceivedMessage } from '~/core/network/refractionAddressWs';
+import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
 
 const USER_ASSETS_TIMEOUT_DURATION = 10000;
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
