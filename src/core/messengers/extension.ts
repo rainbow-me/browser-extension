@@ -1,15 +1,5 @@
 import { CallbackFunction, createMessenger } from './internal/createMessenger';
 
-type SendResponseArgs<TResponse, TError> =
-  | {
-      response: TResponse;
-      error?: never;
-    }
-  | {
-      response?: never;
-      error: TError;
-    };
-
 /**
  * Creates an "extension messenger" that can be used to communicate between
  * scripts where `chrome.runtime` is defined.
@@ -25,39 +15,79 @@ type SendResponseArgs<TResponse, TError> =
 export const extensionMessenger = createMessenger({
   available: Boolean(typeof chrome !== 'undefined' && chrome.runtime?.id),
   name: 'extensionMessenger',
-  async send(topic, payload) {
-    const { response, error } = await chrome.runtime.sendMessage({
-      topic,
-      payload,
+  async send<TPayload, TResponse>(
+    topic: string,
+    payload: TPayload,
+    { id }: { id?: number | string } = {},
+  ) {
+    return new Promise<TResponse>((resolve, reject) => {
+      const listener = (response: {
+        topic: string;
+        id: number | string;
+        payload: { response: TResponse; error: Error };
+      }) => {
+        if (response.topic !== `< ${topic}`) return;
+        if (typeof id !== 'undefined' && response.id !== id) return;
+        if (!response.payload) return;
+
+        chrome.runtime.onMessage.removeListener(listener);
+
+        const { response: response_, error } = response.payload;
+        if (error) reject(new Error(error.message));
+        resolve(response_);
+      };
+      chrome.runtime.onMessage.addListener(listener);
+
+      chrome.runtime.sendMessage({
+        topic: `> ${topic}`,
+        payload,
+        id,
+      });
     });
-    if (error) throw new Error(error.message);
-    return response;
   },
   reply<TPayload, TResponse>(
     topic: string,
     callback: CallbackFunction<TPayload, TResponse>,
   ) {
     const listener = (
-      message: { topic: string; payload: TPayload },
+      message: { topic: string; payload: TPayload; id: number },
       sender: chrome.runtime.MessageSender,
-      sendResponse: (
-        response: SendResponseArgs<TResponse, Record<string, unknown>>,
-      ) => void,
     ) => {
-      if (topic !== '*' && message.topic !== topic) return;
-      callback(message.payload, {
-        sender,
-        topic: message.topic,
-      })
-        .then((response) => sendResponse({ response }))
-        .catch((error_) => {
-          // Errors do not serialize properly over `chrome.runtime.sendMessage`, so
-          // we are manually serializing it to an object.
-          const error: Record<string, unknown> = {};
-          for (const key of Object.getOwnPropertyNames(error_)) {
-            error[key] = (<Error>error_)[<keyof Error>key];
-          }
-          sendResponse({ error });
+      if (topic !== '*' && message.topic !== `> ${topic}`) return;
+      if (topic === '*' && message.topic.startsWith('<')) return;
+
+      const repliedTopic = message.topic.replace('>', '<');
+
+      chrome.tabs
+        .query({ active: true, lastFocusedWindow: true })
+        .then(([tab]) => {
+          if (!tab.id) throw new Error('No active tab.');
+          callback(message.payload, {
+            id: message.id,
+            sender,
+            topic: message.topic,
+          })
+            .then((response) =>
+              // @ts-expect-error – `tab.id` is defined
+              chrome.tabs.sendMessage(tab.id, {
+                topic: repliedTopic,
+                payload: { response },
+                id: message.id,
+              }),
+            )
+            .catch((error_) => {
+              // Errors do not serialize properly over `chrome.runtime.sendMessage`, so
+              // we are manually serializing it to an object.
+              const error: Record<string, unknown> = {};
+              for (const key of Object.getOwnPropertyNames(error_)) {
+                error[key] = (<Error>error_)[<keyof Error>key];
+              }
+              chrome.runtime.sendMessage({
+                topic: repliedTopic,
+                payload: { error },
+                id: message.id,
+              });
+            });
         });
       return true;
     };
