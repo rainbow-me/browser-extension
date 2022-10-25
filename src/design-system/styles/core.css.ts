@@ -346,11 +346,11 @@ const boxBaseProperties = defineProperties({
   },
   shorthands: {
     padding: ['paddingTop', 'paddingBottom', 'paddingLeft', 'paddingRight'],
-    paddingX: ['paddingLeft', 'paddingRight'],
-    paddingY: ['paddingTop', 'paddingBottom'],
+    paddingHorizontal: ['paddingLeft', 'paddingRight'],
+    paddingVertical: ['paddingTop', 'paddingBottom'],
     margin: ['marginTop', 'marginBottom', 'marginLeft', 'marginRight'],
-    marginX: ['marginLeft', 'marginRight'],
-    marginY: ['marginTop', 'marginBottom'],
+    marginHorizontal: ['marginLeft', 'marginRight'],
+    marginVertical: ['marginTop', 'marginBottom'],
     placeItems: ['justifyContent', 'alignItems'],
   },
 });
