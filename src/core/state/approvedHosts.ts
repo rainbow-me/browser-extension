@@ -2,21 +2,21 @@ import create from 'zustand';
 import { createStore } from './internal/createStore';
 
 export interface ApprovedHostsStore {
-  approvedHosts: string[];
-  isApprovedHost: (host?: string) => boolean;
-  addApprovedHost: (host: string) => void;
+  approvedHosts: { url: string }[];
+  isApprovedHost: (hostUrl?: string) => boolean;
+  addApprovedHost: (hostUrl: string) => void;
   clearApprovedHosts: () => void;
 }
 export const approvedHostsStore = createStore<ApprovedHostsStore>(
   (set, get) => ({
     approvedHosts: [],
-    isApprovedHost: (host) => {
+    isApprovedHost: (hostUrl) => {
       const approvedHosts = get().approvedHosts;
-      return !!host && approvedHosts.includes(host);
+      return !!hostUrl && !!approvedHosts.find((host) => host.url === hostUrl);
     },
-    addApprovedHost: (host) => {
+    addApprovedHost: (hostUrl) => {
       const approvedHosts = get().approvedHosts;
-      set({ approvedHosts: approvedHosts.concat([host]) });
+      set({ approvedHosts: approvedHosts.concat([{ url: hostUrl }]) });
     },
     clearApprovedHosts: () => set({ approvedHosts: [] }),
   }),
