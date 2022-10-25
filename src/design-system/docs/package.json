@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "yarn build:theme-script && next dev",
     "dev:playroom": "playroom start",
-    "build": "yarn build:theme-script && next build",
+    "build": "yarn build:theme-script && yarn build:docs && yarn build:playroom",
+    "build:docs": "next build && next export",
+    "build:playroom": "playroom build",
     "build:theme-script": "tsup ../styles/initThemingCritical.ts -d public/ --format esm --minify && tsup ../styles/initThemingBody.ts -d public/ --format esm --minify",
     "start": "next start",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"

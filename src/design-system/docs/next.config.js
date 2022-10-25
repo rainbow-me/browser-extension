@@ -7,6 +7,10 @@ const nextConfig = {
   experimental: {
     externalDir: true,
   },
+  exportTrailingSlash: true,
+  images: {
+    unoptimized: true
+  },
   typescript: {
     ignoreBuildErrors: true,
   },

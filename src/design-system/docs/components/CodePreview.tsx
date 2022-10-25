@@ -106,7 +106,7 @@ export const CodePreview = ({
                   href={`${
                     process.env.NODE_ENV === 'production' &&
                     typeof window !== 'undefined'
-                      ? `${window.location.href}playroom`
+                      ? `${window.location.origin}/playroom`
                       : 'http://localhost:9000/'
                   }?code=${lzString.compressToEncodedURIComponent(
                     JSON.stringify({ code: playroomCode }),

@@ -422,7 +422,7 @@ const textProperties = defineProperties({
       accent: accentColorAsHsl,
       ...pick(semanticColorVars.foregroundColors, textColors),
     },
-    fontFamily: { rounded: 'SFRounded' },
+    fontFamily: { rounded: 'SFRounded, system-ui' },
     fontSize: {
       '11pt': defineType(11, 13, 0.56),
       '12pt': defineType(12, 15, 0.52),

@@ -3,7 +3,8 @@ import { getTheme, rootThemeClasses } from './theme';
 
 export function initThemingCritical({
   defaultTheme,
-}: { defaultTheme?: ColorContext } = {}) {
+  enableSaved = true,
+}: { defaultTheme?: ColorContext; enableSaved?: boolean } = {}) {
   const setTheme = (theme: ColorContext) => {
     document.documentElement.classList.remove(
       ...Object.values(rootThemeClasses),
@@ -16,9 +17,13 @@ export function initThemingCritical({
   const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
   const { savedTheme, systemTheme } = getTheme();
-  const theme = savedTheme || defaultTheme || systemTheme;
+  const theme =
+    (enableSaved ? savedTheme : undefined) ||
+    defaultTheme ||
+    systemTheme ||
+    'dark';
 
-  if (theme) setTheme(theme);
+  setTheme(theme);
 
   if (!savedTheme) {
     // Update the theme if the user changes their OS preference

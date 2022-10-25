@@ -4,7 +4,7 @@ import { initThemingBody, initThemingCritical } from './components';
 
 export default ({ children, themeName }) => {
   useEffect(() => {
-    initThemingCritical({ defaultTheme: themeName });
+    initThemingCritical({ defaultTheme: themeName, enableSaved: false });
     initThemingBody()
   }, [])
   return (

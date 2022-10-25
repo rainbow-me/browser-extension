@@ -27,9 +27,9 @@ export function getTheme(): {
   const systemTheme =
     // eslint-disable-next-line no-nested-ternary
     typeof window !== 'undefined'
-      ? window.matchMedia('(prefers-color-scheme: dark)').matches
-        ? 'dark'
-        : 'light'
+      ? window.matchMedia('(prefers-color-scheme: light)').matches
+        ? 'light'
+        : 'dark'
       : null;
   return { savedTheme, systemTheme };
 }
