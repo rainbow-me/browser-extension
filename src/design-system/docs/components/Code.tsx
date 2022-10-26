@@ -8,7 +8,7 @@ export const Code = ({ children }: { children: ReactNode }) => (
     className={fontStyle}
     background="fillSecondary"
     borderRadius="6px"
-    paddingX="4px"
+    paddingHorizontal="4px"
   >
     {children}
   </Box>

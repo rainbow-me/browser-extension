@@ -118,10 +118,10 @@ export const padding: Example = {
         <Box background="surfacePrimaryElevated" padding="20px">
           <Placeholder />
         </Box>
-        <Box background="surfacePrimaryElevated" paddingX="20px">
+        <Box background="surfacePrimaryElevated" paddingHorizontal="20px">
           <Placeholder />
         </Box>
-        <Box background="surfacePrimaryElevated" paddingY="20px">
+        <Box background="surfacePrimaryElevated" paddingVertical="20px">
           <Placeholder />
         </Box>
         <Box background="surfacePrimaryElevated" paddingLeft="20px">
@@ -159,13 +159,13 @@ export const margin: Example = {
         </Box>
         <Inset vertical="20px">
           <Box background="surfacePrimary">
-            <Box marginX="-20px">
+            <Box marginHorizontal="-20px">
               <Placeholder />
             </Box>
           </Box>
         </Inset>
         <Box background="surfacePrimary">
-          <Box marginY="-20px">
+          <Box marginVertical="-20px">
             <Placeholder />
           </Box>
         </Box>

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box } from '../components/Box/Box';
-import { Inline } from '../components/Inline/Inline';
 import { Stack } from '../components/Stack/Stack';
 import { Text } from '../components/Text/Text';
 import { Code } from '../docs/components/Code';
