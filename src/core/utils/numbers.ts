@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import currency from 'currency.js';
 import { isNil } from 'lodash';
+
 import { supportedCurrencies } from '~/core/references';
 
 type BigNumberish = number | string | BigNumber;

@@ -1,31 +1,31 @@
 import { useQuery } from '@tanstack/react-query';
+import { capitalize } from 'lodash';
 
+import { refractionAddressMessages, refractionAddressWs } from '~/core/network';
 import {
-  createQueryKey,
-  queryClient,
   QueryConfig,
   QueryFunctionArgs,
   QueryFunctionResult,
+  createQueryKey,
+  queryClient,
 } from '~/core/react-query';
-import { refractionAddressWs, refractionAddressMessages } from '~/core/network';
-import { TransactionsReceivedMessage } from '~/core/types/refraction';
-import { isL2Chain } from '~/core/utils/chains';
-import {
-  convertRawAmountToNativeDisplay,
-  convertRawAmountToBalance,
-} from '~/core/utils/numbers';
 import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
+import { ChainName } from '~/core/types/chains';
+import { TransactionsReceivedMessage } from '~/core/types/refraction';
 import {
   ProtocolType,
   RainbowTransaction,
   TransactionDirection,
   TransactionStatus,
   TransactionType,
-  ZerionTransactionStatus,
   ZerionTransaction,
+  ZerionTransactionStatus,
 } from '~/core/types/transactions';
-import { ChainName } from '~/core/types/chains';
-import { capitalize } from 'lodash';
+import { isL2Chain } from '~/core/utils/chains';
+import {
+  convertRawAmountToBalance,
+  convertRawAmountToNativeDisplay,
+} from '~/core/utils/numbers';
 
 const TRANSACTIONS_TIMEOUT_DURATION = 10000;
 const TRANSACTIONS_REFETCH_INTERVAL = 60000;

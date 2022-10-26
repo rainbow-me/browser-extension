@@ -1,18 +1,19 @@
+import { assignInlineVars } from '@vanilla-extract/dynamic';
+import chroma from 'chroma-js';
 import React, {
-  createContext,
   CSSProperties,
   ReactNode,
+  createContext,
   useContext,
   useMemo,
 } from 'react';
-import chroma from 'chroma-js';
+
 import { accentColorHslVars } from '../../styles/core.css';
 import {
   BackgroundColor,
-  backgroundColors,
   ColorContext,
+  backgroundColors,
 } from '../../styles/designTokens';
-import { assignInlineVars } from '@vanilla-extract/dynamic';
 import { hslObjectForColor } from '../../styles/hslObjectForColor';
 import { themeClasses } from '../../styles/themeClasses';
 

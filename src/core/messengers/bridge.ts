@@ -1,4 +1,5 @@
 import { detectScriptType } from '../utils/detectScriptType';
+
 import { extensionMessenger } from './extension';
 import { createMessenger } from './internal/createMessenger';
 import { windowMessenger } from './window';

@@ -1,6 +1,7 @@
 import React from 'react';
+
+import { TextStyles, textStyles } from '../../styles/core.css';
 import { Box } from '../Box/Box';
-import { textStyles, TextStyles } from '../../styles/core.css';
 
 interface TextProps {
   align?: TextStyles['textAlign'];

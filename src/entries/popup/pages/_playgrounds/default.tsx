@@ -1,10 +1,12 @@
 import React from 'react';
 import { chain, useAccount, useBalance } from 'wagmi';
+
 import { useUserAssets } from '~/core/resources/assets';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
-import { useCurrentCurrencyStore } from '~/core/state/currentCurrency';
 import { useTransactions } from '~/core/resources/transactions/transactions';
-import { Text, Inset, Stack, Box } from '~/design-system';
+import { useCurrentCurrencyStore } from '~/core/state/currentCurrency';
+import { Box, Inset, Stack, Text } from '~/design-system';
+
 import { ClearStorage } from '../../components/_dev/ClearStorage';
 import { InjectToggle } from '../../components/_dev/InjectToggle';
 

@@ -1,5 +1,5 @@
-import { ChainName } from '~/core/types/chains';
 import { ZerionAsset } from '~/core/types/assets';
+import { ChainName } from '~/core/types/chains';
 import { ZerionTransaction } from '~/core/types/transactions';
 
 /**
