@@ -1,14 +1,23 @@
-import { CallbackFunction, createMessenger } from './internal/createMessenger';
+import {
+  CallbackFunction,
+  createMessenger,
+  ReplyMessage,
+  SendMessage,
+} from './internal/createMessenger';
+import { isValidReply } from './internal/isValidReply';
+import { isValidSend } from './internal/isValidSend';
 
 /**
  * Creates an "extension messenger" that can be used to communicate between
  * scripts where `chrome.runtime` is defined.
  *
- * Compatibile entries:
- * - ✅ Background
- * - ✅ Popup
- * - ✅ Content Script
- * - ❌ Inpage
+ * Compatible connections:
+ * - ❌ Popup <-> Inpage
+ * - ❌ Background <-> Inpage
+ * - ✅ Background <-> Popup
+ * - ❌ Popup <-> Content Script
+ * - ❌ Background <-> Content Script
+ * - ❌ Content Script <-> Inpage
  *
  * @see https://www.notion.so/rainbowdotme/Cross-script-Messaging-141de5115294435f95e31b87abcf4314#2af765a8378c4f08a1663d9bfcb60ad9
  */
@@ -21,18 +30,12 @@ export const extensionMessenger = createMessenger({
     { id }: { id?: number | string } = {},
   ) {
     return new Promise<TResponse>((resolve, reject) => {
-      const listener = (response: {
-        topic: string;
-        id: number | string;
-        payload: { response: TResponse; error: Error };
-      }) => {
-        if (response.topic !== `< ${topic}`) return;
-        if (typeof id !== 'undefined' && response.id !== id) return;
-        if (!response.payload) return;
+      const listener = (message: ReplyMessage<TResponse>) => {
+        if (!isValidReply<TResponse>({ id, message, topic })) return;
 
         chrome.runtime.onMessage.removeListener(listener);
 
-        const { response: response_, error } = response.payload;
+        const { response: response_, error } = message.payload;
         if (error) reject(new Error(error.message));
         resolve(response_);
       };
@@ -50,44 +53,37 @@ export const extensionMessenger = createMessenger({
     callback: CallbackFunction<TPayload, TResponse>,
   ) {
     const listener = (
-      message: { topic: string; payload: TPayload; id: number },
+      message: SendMessage<TPayload>,
       sender: chrome.runtime.MessageSender,
     ) => {
-      if (topic !== '*' && message.topic !== `> ${topic}`) return;
-      if (topic === '*' && message.topic.startsWith('<')) return;
+      if (!isValidSend({ message, topic })) return;
 
       const repliedTopic = message.topic.replace('>', '<');
 
-      chrome.tabs
-        .query({ active: true, lastFocusedWindow: true })
-        .then(([tab]) => {
-          if (!tab.id) throw new Error('No active tab.');
-          callback(message.payload, {
+      callback(message.payload, {
+        id: message.id,
+        sender,
+        topic: message.topic,
+      })
+        .then((response) =>
+          chrome.runtime.sendMessage({
+            topic: repliedTopic,
+            payload: { response },
             id: message.id,
-            sender,
-            topic: message.topic,
-          })
-            .then((response) =>
-              // @ts-expect-error – `tab.id` is defined
-              chrome.tabs.sendMessage(tab.id, {
-                topic: repliedTopic,
-                payload: { response },
-                id: message.id,
-              }),
-            )
-            .catch((error_) => {
-              // Errors do not serialize properly over `chrome.runtime.sendMessage`, so
-              // we are manually serializing it to an object.
-              const error: Record<string, unknown> = {};
-              for (const key of Object.getOwnPropertyNames(error_)) {
-                error[key] = (<Error>error_)[<keyof Error>key];
-              }
-              chrome.runtime.sendMessage({
-                topic: repliedTopic,
-                payload: { error },
-                id: message.id,
-              });
-            });
+          }),
+        )
+        .catch((error_) => {
+          // Errors do not serialize properly over `chrome.runtime.sendMessage`, so
+          // we are manually serializing it to an object.
+          const error: Record<string, unknown> = {};
+          for (const key of Object.getOwnPropertyNames(error_)) {
+            error[key] = (<Error>error_)[<keyof Error>key];
+          }
+          chrome.runtime.sendMessage({
+            topic: repliedTopic,
+            payload: { error },
+            id: message.id,
+          });
         });
       return true;
     };

@@ -4,7 +4,7 @@ export type CallbackOptions = {
   /** The topic provided. */
   topic: string;
   /** An optional scoped identifier. */
-  id?: number;
+  id?: number | string;
 };
 
 export type CallbackFunction<TPayload, TResponse> = (
@@ -36,6 +36,18 @@ export type Messenger = {
     topic: string,
     callback: CallbackFunction<TPayload, TResponse>,
   ) => () => void;
+};
+
+export type SendMessage<TPayload> = {
+  topic: string;
+  payload: TPayload;
+  id?: number | string;
+};
+
+export type ReplyMessage<TResponse> = {
+  topic: string;
+  id: number | string;
+  payload: { response: TResponse; error: Error };
 };
 
 /**

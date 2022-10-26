@@ -9,30 +9,42 @@ A **Messenger** abstracts the native messaging APIs (such as: `window.postMessag
 - There are three main types of messengers:
   - `windowMessenger`: A messenger that abstracts that `window` messaging API `window.postMessage` / `window.addEventListener('message')`.
   - `extensionMessenger`: A messenger that abstracts the chrome runtime messaging API (`chrome.runtime.sendMessage` / `chrome.runtime.onMessage`).
+  - `tabMessenger`: A messenger that abstracts the chrome tab messaging API (`chrome.tabs.sendMessage` / `chrome.runtime.onMessage`).
   - `bridgeMessenger`: A messenger to bridge between scripts that do not have a direct/scoped messenger.
 
 ## Example usage
 
 `popup.ts`
+
 ```tsx
 import { extensionMessenger } from '~/core/messengers';
 
 async function example() {
-	const result = await extensionMessenger.send('ping', { foo: 'bar' });
-	console.log(result) // "pong and bar"
+  const result = await extensionMessenger.send('ping', { foo: 'bar' });
+  console.log(result); // "pong and bar"
 }
 ```
 
 `background.ts`
+
 ```tsx
 import { extensionMessenger } from '~/core/messengers';
 
-extensionMessenger.reply('ping', args => {
+extensionMessenger.reply('ping', (args) => {
   return `pong and ${args.foo}`;
-})
+});
 ```
 
-> Note: `extensionMessenger`, `windowMessenger` & `bridgeMessenger` share the same APIs.
+> Note: `extensionMessenger`, `tabMessenger`, `windowMessenger` & `bridgeMessenger` share the same APIs.
+
+## What messenger do I use?!
+
+| From / To      | Popup                | Background           | Content Script    | Inpage            |
+| -------------- | -------------------- | -------------------- | ----------------- | ----------------- |
+| Popup          | -                    | `extensionMessenger` | `tabMessenger`    | `bridgeMessenger` |
+| Background     | `extensionMessenger` | -                    | `tabMessenger`    | `bridgeMessenger` |
+| Content Script | `tabMessenger`       | `tabMessenger`       | -                 | `windowMessenger` |
+| Inpage         | `bridgeMessenger`    | `bridgeMessenger`    | `windowMessenger` | -                 |
 
 ## API
 
@@ -69,15 +81,22 @@ The payload to send to the `reply` handler.
 #### Example
 
 `inpage.ts`
+
 ```tsx
 import { extensionMessenger } from '~/core/messengers';
 
-const response = await bridgeMessenger.send('providerRequest', { id, method, payload }, { id })
+const response = await bridgeMessenger.send(
+  'providerRequest',
+  { id, method, payload },
+  { id },
+);
 ```
 
 ### reply
 
 Replies to a message sent via `send`.
+
+> Note: you can also use `reply` as an event handler too.
 
 #### Arguments
 
@@ -95,10 +114,24 @@ A scoped topic that was sent from `send`.
 #### Example
 
 `background.ts`
+
 ```tsx
 import { extensionMessenger } from '~/core/messengers';
 
-const response = await bridgeMessenger.reply('providerRequest', ({ id, method, params }, meta) => {
-  // handle provider request
-})
+const response = await bridgeMessenger.reply(
+  'providerRequest',
+  ({ id, method, params }, meta) => {
+    // handle provider request
+  },
+);
 ```
+
+## FAQ
+
+### Why do we have `extensionMessenger` and `tabMessenger`
+
+While sending messages [using `chrome.runtime.sendMessage`](https://developer.chrome.com/docs/extensions/reference/runtime/#method-sendMessage) works fine from the content script (on a browser tab) to the background script (where it is handled via `chrome.runtime.onMessage.addListener`), unfortunately, [we can't send messages if we reverse the direction](https://developer.chrome.com/docs/extensions/reference/runtime/#method-sendMessage) (background to content script).
+
+This is because we can only send messages to the content script by **targetting a browser tab**. This is achieved via [`chrome.tabs.sendMessage` with a provided tab ID](https://developer.chrome.com/docs/extensions/reference/tabs/#method-sendMessage).
+
+Currently, `extensionMessenger` is an abstraction over "global" chrome messaging `chrome.runtime.sendMessage`, while `tabMessenger` is an abstraction over `chrome.tabs.sendMessage`. They both work very similarly internally, however the main difference is that `tabMessenger` also queries for the current active browser tab before it sends off the message.
