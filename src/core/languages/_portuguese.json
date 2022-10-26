@@ -1,5 +1,8 @@
 {
   "test": {
     "salute": "ola!"
+  },
+  "label": {
+    "toggle": "Alternar"
   }
 }

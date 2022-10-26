@@ -74,9 +74,9 @@ export function Default() {
             onClick={() => {
               // set a random language
               setCurrentLanguage(
-                [Language.EN, Language.ES, Language.FR, Language.PR][
-                  Math.round(Math.random() * 10) % 4
-                ],
+                [Language.EN, Language.ES, Language.FR, Language.PR].filter(
+                  (lang) => lang !== currentLanguage,
+                )[Math.round(Math.random() * 10) % 3],
               );
             }}
             padding="16px"

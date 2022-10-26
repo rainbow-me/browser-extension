@@ -1,5 +1,8 @@
 {
   "test": {
     "salute": "bonjour!"
+  },
+  "label": {
+    "toggle": "Cabillot"
   }
 }

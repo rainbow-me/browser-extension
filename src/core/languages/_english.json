@@ -1,5 +1,8 @@
 {
   "test": {
     "salute": "hello!"
+  },
+  "label": {
+    "toggle": "Toggle"
   }
 }
