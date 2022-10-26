@@ -1,7 +1,7 @@
 import typescript from 'prettier/parser-typescript';
 import prettier from 'prettier/standalone';
 
-import { Example } from '../types';
+import { Example } from '../createDocs';
 
 function prettify(code: string) {
   return prettier

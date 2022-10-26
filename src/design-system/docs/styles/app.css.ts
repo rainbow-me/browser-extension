@@ -1,6 +1,11 @@
 import { style } from '@vanilla-extract/css';
 import { semanticColorVars } from '../../styles/core.css';
 
+export const page = style({
+  maxWidth: '1200px',
+  margin: '0 auto',
+});
+
 export const desktopSidebar = style({
   height: '100%',
   position: 'fixed',

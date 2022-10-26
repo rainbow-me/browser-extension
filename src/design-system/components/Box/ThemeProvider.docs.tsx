@@ -1,12 +1,12 @@
 import React from 'react';
+import { createDocs } from '../../docs/createDocs';
 import source from '../../docs/utils/source.macro';
-import { Docs } from '../../docs/types';
 import { Text } from '../Text/Text';
 import { Stack } from '../Stack/Stack';
 import { ThemeProvider } from './ColorContext';
 import { Box } from './Box';
 
-const themeProvider: Docs = {
+const themeProvider = createDocs({
   name: 'ThemeProvider',
   category: 'Contexts',
   examples: [
@@ -40,7 +40,7 @@ const themeProvider: Docs = {
         ),
     },
   ],
-};
+});
 
 // eslint-disable-next-line import/no-default-export
 export default themeProvider;

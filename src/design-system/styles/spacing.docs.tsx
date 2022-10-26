@@ -3,24 +3,25 @@ import { Box } from '../components/Box/Box';
 import { Stack } from '../components/Stack/Stack';
 import { Text } from '../components/Text/Text';
 import { Code } from '../docs/components/Code';
-import { Docs } from '../docs/types';
+import { Paragraph } from '../docs/components/Paragraph';
+import { createDocs } from '../docs/createDocs';
 import source from '../docs/utils/source.macro';
 import { Space, space } from './designTokens';
 
-const spacing: Docs = {
+const spacing = createDocs({
   name: 'Spacing',
   category: 'Tokens',
   description: (
     <>
-      <Text size="20pt" weight="medium">
+      <Paragraph>
         Spacing values can be applied to the <Code>space</Code> prop and
         directional (<Code>left</Code>, <Code>right</Code>, <Code>top</Code>,{' '}
         <Code>bottom</Code>) props on components that support space.
-      </Text>
-      <Text size="20pt" weight="medium">
+      </Paragraph>
+      <Paragraph>
         The <Code>Box</Code> primitive also supports these values on the{' '}
         <Code>padding</Code>, <Code>margin</Code> and <Code>gap</Code> props.
-      </Text>
+      </Paragraph>
     </>
   ),
   examples: [
@@ -47,7 +48,7 @@ const spacing: Docs = {
         ),
     },
   ],
-};
+});
 
 // eslint-disable-next-line import/no-default-export
 export default spacing;

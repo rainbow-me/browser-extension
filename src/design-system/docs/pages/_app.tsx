@@ -12,25 +12,39 @@ import { Inset } from '../../components/Inset/Inset';
 import { Stack } from '../../components/Stack/Stack';
 import { semanticColorVars } from '../../styles/core.css';
 import * as docs from '../docs';
-import { Docs } from '../types';
+import { Docs } from '../createDocs';
 import { useTheme } from '../hooks/useTheme';
 import SunIcon from '../icons/SunIcon';
 import MoonIcon from '../icons/MoonIcon';
 import * as styles from '../styles/app.css';
+import Head from 'next/head';
+
+const sidebarOrder: [Docs['category'], string[]][] = [
+  ['Layout', ['Box']],
+  ['Components', []],
+  ['Contexts', []],
+  ['Tokens', []],
+];
 
 function App({ Component, pageProps }: AppProps) {
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   return (
-    <Box style={{ maxWidth: '1200px', margin: '0 auto' }}>
-      <DesktopSidebar />
-      {showMobileSidebar && (
-        <MobileSidebar onHideSidebar={() => setShowMobileSidebar(false)} />
-      )}
-      <MobileHeader onToggleSidebar={() => setShowMobileSidebar((x) => !x)} />
-      <Content>
-        <Component {...pageProps} />
-      </Content>
-    </Box>
+    <>
+      <Head>
+        <title>Rainbow Design System</title>
+        <link href="/rainbow-icon@128w.png" rel="icon" />
+      </Head>
+      <Box className={styles.page}>
+        <DesktopSidebar />
+        {showMobileSidebar && (
+          <MobileSidebar onHideSidebar={() => setShowMobileSidebar(false)} />
+        )}
+        <MobileHeader onToggleSidebar={() => setShowMobileSidebar((x) => !x)} />
+        <Content>
+          <Component {...pageProps} />
+        </Content>
+      </Box>
+    </>
   );
 }
 
@@ -100,14 +114,11 @@ function MobileHeader({ onToggleSidebar }: { onToggleSidebar: () => void }) {
 // ////////////////////////////////////////////////////////////////
 // Sidebar
 
-const categoryOrder: [string, string[]][] = [
-  ['Layout', ['Box']],
-  ['Contexts', []],
-  ['Tokens', []],
-];
-
 const docsByCategory = Object.values(docs).reduce(
-  (currentCategories: { [key: string]: Docs[] }, { default: doc }) => {
+  (
+    currentCategories: { [key: string]: Docs[] },
+    { default: doc }: { default: Docs },
+  ) => {
     return {
       ...currentCategories,
       [doc.category]: [...(currentCategories[doc.category] || []), doc],
@@ -116,7 +127,7 @@ const docsByCategory = Object.values(docs).reduce(
   {},
 );
 
-const orderedDocsByCategory: [string, Docs[]][] = categoryOrder.map((order) => {
+const orderedDocsByCategory: [string, Docs[]][] = sidebarOrder.map((order) => {
   const [category, subCategoryNames] = order;
   const subCategories = uniqBy(
     [
@@ -190,7 +201,6 @@ export function SidebarItems({ onSelect }: { onSelect?: () => void }) {
                 href={`/${kebabCase(category)}/${kebabCase(name)}`}
                 passHref
               >
-                {/* TODO: <Link> */}
                 <Box as="a" onClick={onSelect} style={{ cursor: 'pointer' }}>
                   <Text size="20pt" weight="semibold">
                     {name}

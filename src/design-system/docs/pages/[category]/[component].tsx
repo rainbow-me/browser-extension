@@ -6,20 +6,19 @@ import { Stack } from '../../../components/Stack/Stack';
 import { Text } from '../../../components/Text/Text';
 import { CodePreview } from '../../components/CodePreview';
 import * as docs from '../../docs';
-import { Example } from '../../types';
+import { Docs, Example } from '../../createDocs';
 
-function getDoc({
-  component,
-  category,
-}: {
+type Params = {
   component: string;
   category: string;
-}) {
+};
+
+function getDoc({ component, category }: Params) {
   return Object.values(docs).find(
     ({ default: doc }) =>
       doc.name?.toLowerCase() === camelCase(component).toLowerCase() &&
       doc.category.toLowerCase() === camelCase(category).toLowerCase(),
-  )?.default;
+  )?.default as Docs;
 }
 
 export async function getStaticPaths() {
@@ -35,7 +34,7 @@ export async function getStaticPaths() {
   };
 }
 
-export async function getStaticProps({ params }: any) {
+export async function getStaticProps({ params }: { params: Params }) {
   const { category, component } = params;
   const doc = getDoc({ component, category });
   return {
@@ -46,7 +45,7 @@ export async function getStaticProps({ params }: any) {
   };
 }
 
-export default function Component({ component, category }: any) {
+export default function Component({ component, category }: Params) {
   const doc = getDoc({ component, category });
   return (
     <Stack space="44px">

@@ -1,18 +1,18 @@
 import React from 'react';
 
-import { Docs } from '../../docs/types';
-import { Text } from '../Text/Text';
 import { Code } from '../../docs/components/Code';
+import { Paragraph } from '../../docs/components/Paragraph';
 import { TextInline } from '../../docs/components/TextInline';
 import { TextLink } from '../../docs/components/TextLink';
+import { createDocs } from '../../docs/createDocs';
 import * as examples from './Bleed.examples';
 
-const bleed: Docs = {
+const bleed = createDocs({
   name: 'Bleed',
   category: 'Layout',
   description: (
     <>
-      <Text size="20pt" weight="medium">
+      <Paragraph>
         Renders a{' '}
         <TextInline highlight>container with negative margins</TextInline>{' '}
         allowing content to{' '}
@@ -22,11 +22,11 @@ const bleed: Docs = {
         into the surrounding layout. This effectively works as the opposite of{' '}
         <Code>Inset</Code> and is designed to support visually breaking out of a
         parent container without having to refactor the entire component tree.
-      </Text>
-      <Text size="20pt" weight="medium">
+      </Paragraph>
+      <Paragraph>
         If there is only a single child node, no space or separators will be
         rendered.
-      </Text>
+      </Paragraph>
     </>
   ),
   examples: [
@@ -39,7 +39,7 @@ const bleed: Docs = {
     examples.bottom,
     examples.allSides,
   ],
-};
+});
 
 // eslint-disable-next-line import/no-default-export
 export default bleed;

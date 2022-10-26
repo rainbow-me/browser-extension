@@ -6,7 +6,8 @@ import { Stack } from '../components/Stack/Stack';
 import { Text } from '../components/Text/Text';
 import { Code } from '../docs/components/Code';
 import { CodePreview } from '../docs/components/CodePreview';
-import { Docs } from '../docs/types';
+import { Paragraph } from '../docs/components/Paragraph';
+import { createDocs } from '../docs/createDocs';
 import source from '../docs/utils/source.macro';
 import { accentColorAsHsl, semanticColorVars } from './core.css';
 import {
@@ -21,20 +22,20 @@ import {
   textColors,
 } from './designTokens';
 
-const docs: Docs = {
+const docs = createDocs({
   category: 'Tokens',
   name: 'Color',
   description: (
     <>
-      <Text size="20pt" weight="medium">
+      <Paragraph>
         Color is modeled based on why something should be a certain color,
         defined with semantic names that allow them to adjust based on context.
         This makes it trivial to re-use components in different environments
         without having to manually adjust foreground colors.
-      </Text>
-      <Text size="20pt" weight="medium">
+      </Paragraph>
+      <Paragraph>
         For example, let&apos;s assume we have the following piece of text:
-      </Text>
+      </Paragraph>
       <CodePreview
         Example={() =>
           source(
@@ -46,14 +47,14 @@ const docs: Docs = {
         disableActions
         showCode
       />
-      <Text size="20pt" weight="medium">
+      <Paragraph>
         By default, this text will either be dark or light based on whether the
         app is in light mode or dark mode.
-      </Text>
-      <Text size="20pt" weight="medium">
+      </Paragraph>
+      <Paragraph>
         Now, imagine that this text was nested inside of a dark container across
         both light and dark modes:
-      </Text>
+      </Paragraph>
       <CodePreview
         Example={() =>
           source(
@@ -74,14 +75,14 @@ const docs: Docs = {
         disableActions
         showCode
       />
-      <Text size="20pt" weight="medium">
+      <Paragraph>
         Typically in this scenario we&apos;d need to alter the text color so
         that it has sufficient contrast against the background. However, when
         setting a background with <Code>Box</Code>, the color mode is
         automatically configured for nested elements based on whether the
         background is dark or light, meaning that foreground colors usually
         won&apos;t need to be changed.
-      </Text>
+      </Paragraph>
     </>
   ),
   examples: [
@@ -140,7 +141,7 @@ const docs: Docs = {
       ],
     },
   ],
-};
+});
 
 // eslint-disable-next-line import/no-default-export
 export default docs;

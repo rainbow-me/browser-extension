@@ -1,13 +1,12 @@
 import React from 'react';
 import { Placeholder } from '../../docs/components/Placeholder';
-
-import { Example } from '../../docs/types';
+import { createExample } from '../../docs/createDocs';
 import source from '../../docs/utils/source.macro';
 import { Inset } from '../Inset/Inset';
 import { Stack } from '../Stack/Stack';
 import { Bleed } from './Bleed';
 
-export const basicUsage: Example = {
+export const basicUsage = createExample({
   name: 'Basic usage',
   showFrame: true,
   Example: () =>
@@ -22,9 +21,9 @@ export const basicUsage: Example = {
         </Stack>
       </Inset>,
     ),
-};
+});
 
-export const horizontal: Example = {
+export const horizontal = createExample({
   name: 'Horizontal',
   showFrame: true,
   Example: () =>
@@ -39,9 +38,9 @@ export const horizontal: Example = {
         </Stack>
       </Inset>,
     ),
-};
+});
 
-export const vertical: Example = {
+export const vertical = createExample({
   name: 'Vertical',
   showFrame: true,
   Example: () =>
@@ -56,9 +55,9 @@ export const vertical: Example = {
         </Stack>
       </Inset>,
     ),
-};
+});
 
-export const right: Example = {
+export const right = createExample({
   name: 'Right',
   showFrame: true,
   Example: () =>
@@ -73,9 +72,9 @@ export const right: Example = {
         </Stack>
       </Inset>,
     ),
-};
+});
 
-export const left: Example = {
+export const left = createExample({
   name: 'Left',
   showFrame: true,
   Example: () =>
@@ -90,9 +89,9 @@ export const left: Example = {
         </Stack>
       </Inset>,
     ),
-};
+});
 
-export const top: Example = {
+export const top = createExample({
   name: 'Top',
   showFrame: true,
   Example: () =>
@@ -107,9 +106,9 @@ export const top: Example = {
         </Stack>
       </Inset>,
     ),
-};
+});
 
-export const bottom: Example = {
+export const bottom = createExample({
   name: 'Bottom',
   showFrame: true,
   Example: () =>
@@ -124,9 +123,9 @@ export const bottom: Example = {
         </Stack>
       </Inset>,
     ),
-};
+});
 
-export const allSides: Example = {
+export const allSides = createExample({
   name: 'All sides',
   showFrame: true,
   Example: () =>
@@ -141,4 +140,4 @@ export const allSides: Example = {
         </Stack>
       </Inset>,
     ),
-};
+});

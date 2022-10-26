@@ -8,7 +8,7 @@ import { Stack } from '../../components/Stack/Stack';
 import ChevronDownIcon from '../icons/ChevronDownIcon';
 import ChevronUpIcon from '../icons/ChevronUpIcon';
 import PlayIcon from '../icons/PlayIcon';
-import { Example } from '../types';
+import { Example } from '../createDocs';
 import { getSourceFromExample } from '../utils/getSourceFromExample';
 import { Source } from '../utils/source.macro';
 import { Button } from './Button';
@@ -34,12 +34,12 @@ export const CodePreview = ({
 }: {
   disableActions?: boolean;
   enableCodeSnippet?: boolean;
-  showCode?: boolean;
   enablePlayroom?: boolean;
+  Example: () => Source<React.ReactElement>;
+  showCode?: boolean;
   showFrame?: boolean;
   showThemes?: Example['showThemes'];
   wrapper?: Example['wrapper'];
-  Example: () => Source<React.ReactElement>;
 }) => {
   const { theme: defaultTheme } = useTheme();
 
@@ -125,15 +125,15 @@ export const CodePreview = ({
 
 function Preview({
   defaultTheme,
-  onChangeTheme,
   element,
+  onChangeTheme,
   showFrame,
   theme,
   wrapper = (children) => children,
 }: {
   defaultTheme?: ColorContext;
-  onChangeTheme?: (theme: ColorContext) => void;
   element?: React.ReactElement;
+  onChangeTheme?: (theme: ColorContext) => void;
   showFrame: boolean;
   theme?: ColorContext;
   wrapper: Example['wrapper'];

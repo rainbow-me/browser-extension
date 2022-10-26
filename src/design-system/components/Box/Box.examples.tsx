@@ -1,28 +1,29 @@
 import React from 'react';
 
+import { Paragraph } from '../../docs/components/Paragraph';
+import { createExample } from '../../docs/createDocs';
 import { Code } from '../../docs/components/Code';
 import { Placeholder } from '../../docs/components/Placeholder';
-import { Example } from '../../docs/types';
 import source from '../../docs/utils/source.macro';
 import { Inset } from '../Inset/Inset';
 import { Stack } from '../Stack/Stack';
 import { Text } from '../Text/Text';
 import { Box } from './Box';
 
-export const background: Example = {
+export const background = createExample({
   name: 'Background',
   description: (
     <>
-      <Text size="20pt" weight="medium">
+      <Paragraph>
         To apply a background color, pass the <Code>background</Code> prop. If
         this prop is provided, the foreground color compatible children (e.g.
         <Code>Text</Code>) will render a foreground color that has sufficient
         contrast with the background color of <Code>Box</Code>.
-      </Text>
-      <Text size="20pt" weight="medium">
+      </Paragraph>
+      <Paragraph>
         Below, you can see that the text color of <Code>surfacePrimary</Code> is
         dark, however, for <Code>accent</Code> it is light.
-      </Text>
+      </Paragraph>
     </>
   ),
   showThemes: 'toggle',
@@ -101,16 +102,16 @@ export const background: Example = {
         </Box>
       </>,
     ),
-};
+});
 
-export const padding: Example = {
+export const padding = createExample({
   name: 'Padding',
   description: (
-    <Text size="20pt" weight="medium">
+    <Paragraph>
       To apply padding to the bounds of Box, pass the <Code>padding</Code> prop.
       The system also supports margin a particular direction or side, as seen
       below.
-    </Text>
+    </Paragraph>
   ),
   Example: () =>
     source(
@@ -138,16 +139,16 @@ export const padding: Example = {
         </Box>
       </Stack>,
     ),
-};
+});
 
-export const margin: Example = {
+export const margin = createExample({
   name: 'Margin',
   description: (
-    <Text size="20pt" weight="medium">
+    <Paragraph>
       To apply margin to the bounds of Box, pass the <Code>margin</Code> prop.
       The system also supports margin a particular direction or side, as seen
       below.
-    </Text>
+    </Paragraph>
   ),
   Example: () =>
     source(
@@ -195,16 +196,16 @@ export const margin: Example = {
         </Box>
       </Stack>,
     ),
-};
+});
 
-export const borderRadius: Example = {
+export const borderRadius = createExample({
   name: 'Border radius',
   description: (
-    <Text size="20pt" weight="medium">
+    <Paragraph>
       To apply a border radius, supply the <Code>borderRadius</Code> prop with a
       numerical pixel value. The system also supports border radius on
       directional or specific corners as seen below.
-    </Text>
+    </Paragraph>
   ),
   showFrame: true,
   Example: () =>
@@ -222,16 +223,16 @@ export const borderRadius: Example = {
         </Stack>
       </Inset>,
     ),
-};
+});
 
-export const shadows: Example = {
+export const shadows = createExample({
   name: 'Shadows',
   description: (
-    <Text size="20pt" weight="medium">
+    <Paragraph>
       To apply a shadow, a size & optional shadow color (e.g.{' '}
       <Code>30px accent</Code>) can be supplied to the <Code>boxShadow</Code>{' '}
       prop.
-    </Text>
+    </Paragraph>
   ),
   examples: [
     {
@@ -313,4 +314,4 @@ export const shadows: Example = {
         ),
     },
   ],
-};
+});

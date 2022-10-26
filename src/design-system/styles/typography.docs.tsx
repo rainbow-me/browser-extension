@@ -1,28 +1,28 @@
 import React from 'react';
 import { Stack } from '../components/Stack/Stack';
 import { Text } from '../components/Text/Text';
-
-import { Docs } from '../docs/types';
+import { Paragraph } from '../docs/components/Paragraph';
+import { createDocs } from '../docs/createDocs';
 import source from '../docs/utils/source.macro';
 
-const typography: Docs = {
+const typography = createDocs({
   name: 'Typography',
   category: 'Tokens',
   description: (
     <>
-      <Text size="20pt" weight="medium">
+      <Paragraph>
         A major problem when trying to build a component system is that native
         text nodes contain additional space above capital letters and below the
         baseline. This is completely different to how designers think about
         typography and ends up creating a lot of extra work during development
         to fix unbalanced spacing.
-      </Text>
-      <Text size="20pt" weight="medium">
+      </Paragraph>
+      <Paragraph>
         To correct for this, we use a library called Capsize (with a thin
         wrapper adapting it to React Native) which applies negative margins
         above and below text nodes, ensuring that their space in the layout is
         aligned with the actual glyphs on screen.
-      </Text>
+      </Paragraph>
     </>
   ),
   examples: [
@@ -318,7 +318,7 @@ const typography: Docs = {
       ],
     },
   ],
-};
+});
 
 // eslint-disable-next-line import/no-default-export
 export default typography;

@@ -1,7 +1,7 @@
 import { borderRadius } from '../components/Box/Box.examples';
-import { Docs } from '../docs/types';
+import { createDocs } from '../docs/createDocs';
 
-const radii: Docs = {
+const radii = createDocs({
   name: 'Radii',
   category: 'Tokens',
   description: borderRadius.description,
@@ -10,7 +10,7 @@ const radii: Docs = {
       Example: borderRadius.Example,
     },
   ],
-};
+});
 
 // eslint-disable-next-line import/no-default-export
 export default radii;

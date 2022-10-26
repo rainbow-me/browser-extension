@@ -6,47 +6,49 @@ import { Box } from '../../components/Box/Box';
 import { ThemeProvider } from '../../components/Box/ColorContext';
 import { Text } from '../../components/Text/Text';
 import { codeTheme } from '../utils/codeTheme';
+import { Button } from './Button';
 
 export const CodeBlock = ({ code }: { code: string }) => {
-  const [isCopied, setCopied] = useClipboard(code, { successDuration: 5000 });
-  const isMultipleLines = code.includes('\n');
+  const [isCopied, setCopied] = useClipboard(code, { successDuration: 2000 });
 
   return (
     <ThemeProvider theme="dark">
-      <Box
-        background="surfaceSecondaryElevated"
-        borderRadius="16px"
-        padding="24px"
-        style={{ position: 'relative', fontSize: '18px', overflowX: 'scroll' }}
-      >
+      <Box position="relative">
         <Box
           position="absolute"
           style={{
+            cursor: 'default',
             right: '16px',
-            ...(isMultipleLines
-              ? {
-                  top: '16px',
-                }
-              : {}),
+            top: '0px',
           }}
         >
-          <Box onClick={setCopied}>
+          <Button onClick={setCopied} size="small">
             <Text size="16pt" weight="semibold">
               {isCopied ? 'Copied!' : 'Copy'}
             </Text>
-          </Box>
+          </Button>
         </Box>
-        <SyntaxHighlighter
-          language="tsx"
-          CodeTag={(props) => (
-            <code {...props} style={{ fontFamily: 'SFMono', fontSize: 16 }}>
-              {props.children}
-            </code>
-          )}
-          style={codeTheme as any}
+        <Box
+          background="surfaceSecondaryElevated"
+          borderRadius="16px"
+          padding="24px"
+          style={{
+            fontSize: '18px',
+            overflowX: 'scroll',
+          }}
         >
-          {code}
-        </SyntaxHighlighter>
+          <SyntaxHighlighter
+            language="tsx"
+            CodeTag={(props) => (
+              <code {...props} style={{ fontFamily: 'SFMono', fontSize: 16 }}>
+                {props.children}
+              </code>
+            )}
+            style={codeTheme as any}
+          >
+            {code}
+          </SyntaxHighlighter>
+        </Box>
       </Box>
     </ThemeProvider>
   );
