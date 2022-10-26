@@ -13,9 +13,12 @@ export class KeyPairKeychain implements IKeychain {
   type: string;
   #wallets: Wallet[] | Signer[];
 
-  constructor(options: SerializedKeypairKeychain) {
+  constructor() {
     this.type = 'KeyPairKeychain';
     this.#wallets = [];
+  }
+
+  init(options: SerializedKeypairKeychain) {
     this.deserialize(options);
   }
 
