@@ -17,14 +17,15 @@ import { createMessenger } from './internal/createMessenger';
 export const windowMessenger = createMessenger({
   available: typeof window !== 'undefined',
   name: 'windowMessenger',
-  async send(topic, payload) {
+  async send(topic, payload, { id } = {}) {
     // Since the window messenger cannot reply asynchronously, we must include the direction in our message ('> {topic}')...
-    window.postMessage({ topic: `> ${topic}`, payload }, '*');
+    window.postMessage({ topic: `> ${topic}`, payload, id }, '*');
     // ... and also set up an event listener to listen for the response ('< {topic}').
     return new Promise((resolve, reject) => {
       const listener = (event: MessageEvent) => {
         if (event.source != window) return;
         if (event.data.topic !== `< ${topic}`) return;
+        if (typeof id !== 'undefined' && event.data.id !== id) return;
         if (!event.data.payload) return;
 
         window.removeEventListener('message', listener);
@@ -50,6 +51,7 @@ export const windowMessenger = createMessenger({
         response = await callback(event.data.payload, {
           topic: event.data.topic,
           sender,
+          id: event.data.id,
         });
       } catch (error_) {
         error = error_;
@@ -59,6 +61,7 @@ export const windowMessenger = createMessenger({
       window.postMessage({
         topic: repliedTopic,
         payload: { error, response },
+        id: event.data.id,
       });
     };
     window.addEventListener('message', listener, false);

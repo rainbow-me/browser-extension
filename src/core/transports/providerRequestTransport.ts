@@ -5,7 +5,7 @@ import {
 } from '../providers/RainbowProvider';
 import { createTransport } from './internal/createTransport';
 
-type ProviderRequestPayload = RequestArguments & { id: number };
+export type ProviderRequestPayload = RequestArguments & { id: number };
 type ProviderResponse = RequestResponse;
 
 /**

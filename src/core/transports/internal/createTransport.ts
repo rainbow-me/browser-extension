@@ -20,8 +20,8 @@ export function createTransport<TPayload, TResponse>({
     );
   }
   return {
-    async send(payload: TPayload) {
-      return messenger.send<TPayload, TResponse>(topic, payload);
+    async send(payload: TPayload, { id }: { id: number }) {
+      return messenger.send<TPayload, TResponse>(topic, payload, { id });
     },
     async reply(
       callback: (
