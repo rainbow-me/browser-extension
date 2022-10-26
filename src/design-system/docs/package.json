@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "yarn build:theme-script && NEXT_TELEMETRY_DISABLED=1 next dev",
+    "dev": "NEXT_TELEMETRY_DISABLED=1 yarn build:theme-script && next dev",
     "dev:playroom": "playroom start",
     "build": "yarn build:theme-script && yarn build:docs && yarn build:playroom",
     "build:docs": "NEXT_TELEMETRY_DISABLED=1 next build && next export",
