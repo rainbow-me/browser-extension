@@ -1,12 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import {
-  refractionAddressMessages,
-  refractionAddressMessages,
-  refractionAddressWs,
-  refractionAddressWs,
-} from '~/core/network';
-import { AddressAssetsReceivedMessage } from '~/core/network/refractionAddressWs';
+import { refractionAddressMessages, refractionAddressWs } from '~/core/network';
 import {
   QueryConfig,
   QueryFunctionArgs,
