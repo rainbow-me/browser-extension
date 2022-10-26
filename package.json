@@ -159,7 +159,8 @@
       "selenium-webdriver>ws>bufferutil": false,
       "selenium-webdriver>ws>utf-8-validate": false,
       "vitest>vite>esbuild": false,
-      "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": false
+      "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": false,
+      "msw": false
     }
   },
   "lint-staged": {
