@@ -1,4 +1,4 @@
-import { ChainName } from '../types/chains';
+import { ChainName } from '~/core/types/chains';
 
 export { supportedCurrencies } from './supportedCurrencies';
 export type {
