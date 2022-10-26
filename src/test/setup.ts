@@ -1,4 +1,6 @@
-import { vi } from 'vitest';
+import { vi, afterAll, afterEach, beforeAll } from 'vitest';
+import { setupServer } from 'msw/node';
+import { rest } from 'msw';
 
 vi.stubGlobal('chrome', {
   storage: {
@@ -50,3 +52,32 @@ vi.mock('@metamask/browser-passworder', () => {
 
   return { default: Encryptor };
 });
+
+export const restHandlers = [
+  rest.all('https://aha.rainbow.me/', (req, res, ctx) => {
+    const address = req.url.searchParams.get('address') || '';
+    const shouldReturnTrue =
+      address.toLowerCase() === '0x70997970c51812dc3a010c7d01b50e0d17dc79c8';
+    {
+      return res(
+        ctx.status(200),
+        ctx.json({
+          data: {
+            addresses: { [address.toLowerCase()]: shouldReturnTrue },
+          },
+        }),
+      );
+    }
+  }),
+];
+
+const server = setupServer(...restHandlers);
+
+// Start server before all tests
+beforeAll(() => server.listen({ onUnhandledRequest: 'bypass' }));
+
+//  Close server after all tests
+afterAll(() => server.close());
+
+// Reset handlers after each test `important for test isolation`
+afterEach(() => server.resetHandlers());
