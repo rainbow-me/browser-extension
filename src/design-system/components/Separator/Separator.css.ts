@@ -1,6 +1,7 @@
 import { styleVariants } from '@vanilla-extract/css';
-import { SeparatorColor, separatorColors } from './../../styles/designTokens';
+
 import { semanticColorVars } from './../../styles/core.css';
+import { SeparatorColor, separatorColors } from './../../styles/designTokens';
 
 const colors = Object.assign(
   {},

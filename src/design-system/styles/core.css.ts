@@ -1,38 +1,39 @@
-import { themeClasses, rootThemeClasses } from './themeClasses';
-import {
-  style,
-  globalStyle,
-  globalFontFace,
-  createThemeContract,
-  assignVars,
-} from '@vanilla-extract/css';
-import { defineProperties, createSprinkles } from '@vanilla-extract/sprinkles';
 import { createStyleObject as capsize } from '@capsizecss/core';
+import {
+  assignVars,
+  createThemeContract,
+  globalFontFace,
+  globalStyle,
+  style,
+} from '@vanilla-extract/css';
+import { createSprinkles, defineProperties } from '@vanilla-extract/sprinkles';
 import chroma from 'chroma-js';
 import mapValues from 'lodash/mapValues';
 import pick from 'lodash/pick';
+
 import {
-  space,
-  negativeSpace,
-  positionSpace,
+  ColorContext,
+  ForegroundColor,
+  ShadowColor,
   backgroundColors,
   foregroundColors,
-  textColors,
-  strokeWeights,
+  negativeSpace,
+  positionSpace,
   radii,
   separatorColors,
-  strokeColors,
-  ShadowColor,
   shadowColors,
-  ForegroundColor,
-  ColorContext,
+  space,
+  strokeColors,
+  strokeWeights,
+  textColors,
 } from './designTokens';
-import { hslObjectForColor } from './hslObjectForColor';
-import SFRoundedRegular from './fonts/subset-SFRounded-Regular.woff2';
-import SFRoundedMedium from './fonts/subset-SFRounded-Medium.woff2';
-import SFRoundedSemibold from './fonts/subset-SFRounded-Semibold.woff2';
 import SFRoundedBold from './fonts/subset-SFRounded-Bold.woff2';
 import SFRoundedHeavy from './fonts/subset-SFRounded-Heavy.woff2';
+import SFRoundedMedium from './fonts/subset-SFRounded-Medium.woff2';
+import SFRoundedRegular from './fonts/subset-SFRounded-Regular.woff2';
+import SFRoundedSemibold from './fonts/subset-SFRounded-Semibold.woff2';
+import { hslObjectForColor } from './hslObjectForColor';
+import { rootThemeClasses, themeClasses } from './themeClasses';
 
 export const resetBase = style({
   margin: 0,

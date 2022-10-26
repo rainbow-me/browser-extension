@@ -3,6 +3,7 @@ import {
   RequestArguments,
   RequestResponse,
 } from '../providers/RainbowProvider';
+
 import { createTransport } from './internal/createTransport';
 
 export type ProviderRequestPayload = RequestArguments & { id: number };

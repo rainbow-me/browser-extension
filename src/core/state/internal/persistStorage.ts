@@ -1,4 +1,5 @@
 import { StateStorage } from 'zustand/middleware';
+
 import { Storage } from '~/core/storage';
 
 export const persistStorage: StateStorage = {

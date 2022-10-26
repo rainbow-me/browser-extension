@@ -1,7 +1,8 @@
+import { motion } from 'framer-motion';
 import React from 'react';
 import { Link } from 'react-router-dom';
+
 import { Box, Text } from '~/design-system';
-import { motion } from 'framer-motion';
 
 export function Settings() {
   return (

@@ -1,4 +1,4 @@
-import { themeClasses, rootThemeClasses } from './themeClasses';
+import { rootThemeClasses, themeClasses } from './themeClasses';
 
 export function initTheming() {
   const setTheme = (theme: 'dark' | 'light') => {
