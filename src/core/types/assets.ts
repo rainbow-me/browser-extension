@@ -27,3 +27,12 @@ export interface ZerionAsset {
   icon_url?: string;
   price?: ZerionAssetPrice;
 }
+
+export interface RainbowPrice {
+  change: string;
+  price: { amount?: number; display: string };
+}
+
+export interface RainbowPrices {
+  [id: string]: RainbowPrice;
+}

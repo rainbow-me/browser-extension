@@ -36,3 +36,15 @@ export interface TransactionsReceivedMessage {
   };
   meta?: MessageMeta;
 }
+
+/**
+ * A message from the Zerion API indicating that asset price data was received
+ */
+export interface AssetPricesReceivedMessage {
+  payload?: {
+    prices?: {
+      [id: string]: ZerionAsset;
+    };
+  };
+  meta?: MessageMeta;
+}
