@@ -3,13 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "yarn build:theme-script && next dev",
+    "dev": "yarn build:theme-script && NEXT_TELEMETRY_DISABLED=1 next dev",
     "dev:playroom": "playroom start",
     "build": "yarn build:theme-script && yarn build:docs && yarn build:playroom",
-    "build:docs": "next build && next export",
+    "build:docs": "NEXT_TELEMETRY_DISABLED=1 next build && next export",
     "build:playroom": "playroom build",
     "build:theme-script": "tsup ../styles/initThemingCritical.ts -d public/ --format esm --minify && tsup ../styles/initThemingBody.ts -d public/ --format esm --minify",
-    "start": "next start",
+    "start": "NEXT_TELEMETRY_DISABLED=1 next start",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "dependencies": {
@@ -26,6 +26,7 @@
     "url-loader": "4.1.1"
   },
   "devDependencies": {
+    "@lavamoat/preinstall-always-fail": "1.0.0",
     "@types/babel-plugin-macros": "2.8.5",
     "@types/node": "18.11.2",
     "@types/react": "18.0.21",
