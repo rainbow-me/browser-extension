@@ -1,7 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import { useAccount } from 'wagmi';
 
-import { refractionAddressMessages, refractionAddressWs } from '~/core/network';
+import {
+  refractionAddressMessages,
+  refractionAddressMessages,
+  refractionAddressWs,
+  refractionAddressWs,
+} from '~/core/network';
 import { AddressAssetsReceivedMessage } from '~/core/network/refractionAddressWs';
 import {
   QueryConfig,
@@ -10,7 +14,7 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { useCurrentCurrencyStore } from '~/core/state/currentCurrency';
+import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
 
 const USER_ASSETS_TIMEOUT_DURATION = 10000;
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
@@ -42,7 +46,7 @@ async function userAssetsQueryFunction({
   refractionAddressWs.emit('get', {
     payload: {
       address,
-      currency,
+      currency: currency?.toLowerCase(),
     },
     scope: ['assets'],
   });
@@ -59,6 +63,10 @@ async function userAssetsQueryFunction({
     }, USER_ASSETS_TIMEOUT_DURATION);
     const resolver = (message: AddressAssetsReceivedMessage) => {
       clearTimeout(timeout);
+      refractionAddressWs.removeEventListener(
+        refractionAddressMessages.ADDRESS_ASSETS.RECEIVED,
+        resolver,
+      );
       resolve(parseUserAssets(message));
     };
     refractionAddressWs.on(
@@ -79,14 +87,12 @@ function parseUserAssets(message: AddressAssetsReceivedMessage) {
 // ///////////////////////////////////////////////
 // Query Hook
 
-// This should be refactored to use wagmi.useAccount
 export function useUserAssets(
+  { address, currency }: UserAssetsArgs,
   config: QueryConfig<UserAssetsResult, Error, UserAssetsQueryKey> = {},
 ) {
-  const { address } = useAccount();
-  const { currentCurrency } = useCurrentCurrencyStore();
   return useQuery(
-    userAssetsQueryKey({ address, currency: currentCurrency }),
+    userAssetsQueryKey({ address, currency }),
     userAssetsQueryFunction,
     {
       ...config,

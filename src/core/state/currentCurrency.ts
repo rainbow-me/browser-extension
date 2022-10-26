@@ -1,15 +1,17 @@
 import create from 'zustand';
 
+import { SupportedCurrencyKey } from '../references';
+
 import { createStore } from './internal/createStore';
 
 export interface CurrentCurrencyState {
-  currentCurrency: string;
-  setCurrentCurrency: (address: string) => void;
+  currentCurrency: SupportedCurrencyKey;
+  setCurrentCurrency: (address: SupportedCurrencyKey) => void;
 }
 
 export const currentCurrencyStore = createStore<CurrentCurrencyState>(
   (set) => ({
-    currentCurrency: 'usd',
+    currentCurrency: 'USD',
     setCurrentCurrency: (newCurrency) => set({ currentCurrency: newCurrency }),
   }),
   {

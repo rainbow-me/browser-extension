@@ -23,15 +23,15 @@ const messenger = extensionMessenger.available
 export const bridgeMessenger = createMessenger({
   available: messenger.available,
   name: 'bridgeMessenger',
-  async send(topic, payload) {
+  async send(topic, payload, { id } = {}) {
     // The background script cannot send messages to the content script via
     // `chrome.runtime.sendMessage`, so we must use `chrome.tabs.sendMessage` instead.
     if (!windowMessenger.available) {
       const [activeTab] = await chrome.tabs.query({ active: true });
       if (!activeTab.id) throw new Error('No active tab.');
-      return chrome.tabs.sendMessage(activeTab.id, { topic, payload });
+      return chrome.tabs.sendMessage(activeTab.id, { topic, payload, id });
     }
-    return messenger.send(topic, payload);
+    return messenger.send(topic, payload, { id });
   },
   reply(topic, callback) {
     return messenger.reply(topic, callback);
@@ -46,26 +46,31 @@ export function setupBridgeMessengerRelay() {
   }
 
   // e.g. inpage -> content script -> background
-  windowMessenger.reply<unknown, unknown>('*', async (payload, { topic }) => {
-    if (!topic) return;
+  windowMessenger.reply<unknown, unknown>(
+    '*',
+    async (payload, { topic, id }) => {
+      if (!topic) return;
 
-    const topic_ = topic.replace('> ', '');
-    const response = await extensionMessenger.send<unknown, unknown>(
-      topic_,
-      payload,
-    );
-    return response;
-  });
+      const topic_ = topic.replace('> ', '');
+      const response = await extensionMessenger.send<unknown, unknown>(
+        topic_,
+        payload,
+        { id },
+      );
+      return response;
+    },
+  );
 
   // e.g. background -> content script -> inpage
   extensionMessenger.reply<unknown, unknown>(
     '*',
-    async (payload, { topic }) => {
+    async (payload, { topic, id }) => {
       if (!topic) return;
 
       const response = await windowMessenger.send<unknown, unknown>(
         topic,
         payload,
+        { id },
       );
       return response;
     },
