@@ -1,21 +1,22 @@
 import '../styles/global.css';
-import { semanticColorVars } from '../../styles/core.css';
+import clsx from 'clsx';
 import { kebabCase, uniqBy } from 'lodash';
 import type { AppProps } from 'next/app';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 
 import { Box } from '../../components/Box/Box';
 import { Text } from '../../components/Text/Text';
 import { Inset } from '../../components/Inset/Inset';
 import { Stack } from '../../components/Stack/Stack';
+import { semanticColorVars } from '../../styles/core.css';
 import * as docs from '../docs';
 import { Docs } from '../types';
 import { useTheme } from '../hooks/useTheme';
 import SunIcon from '../icons/SunIcon';
 import MoonIcon from '../icons/MoonIcon';
 import * as styles from '../styles/app.css';
-import { useState } from 'react';
 
 function App({ Component, pageProps }: AppProps) {
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
@@ -209,7 +210,7 @@ export function SidebarItems({ onSelect }: { onSelect?: () => void }) {
 
 function Content({ children }: { children: React.ReactNode }) {
   return (
-    <Box className={`${styles.content} ${styles.container}`}>
+    <Box className={clsx(styles.content, styles.container)}>
       <Inset top="52px" bottom="80px">
         {children}
       </Inset>
