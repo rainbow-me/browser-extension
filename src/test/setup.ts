@@ -1,6 +1,6 @@
-import { vi, afterAll, afterEach, beforeAll } from 'vitest';
-import { setupServer } from 'msw/node';
 import { rest } from 'msw';
+import { setupServer } from 'msw/node';
+import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 
 vi.stubGlobal('chrome', {
   storage: {
