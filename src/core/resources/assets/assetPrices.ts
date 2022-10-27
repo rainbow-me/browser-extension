@@ -1,20 +1,20 @@
 import { useQuery } from '@tanstack/react-query';
+
+import { refractionAssetsMessages, refractionAssetsWs } from '~/core/network';
 import {
-  createQueryKey,
-  queryClient,
   QueryConfig,
   QueryFunctionArgs,
   QueryFunctionResult,
+  createQueryKey,
+  queryClient,
 } from '~/core/react-query';
-
-import { refractionAssetsWs, refractionAssetsMessages } from '~/core/network';
-import { AssetPricesReceivedMessage } from '~/core/types/refraction';
+import { SupportedCurrencyKey } from '~/core/references';
 import { RainbowPrices, ZerionAsset } from '~/core/types/assets';
+import { AssetPricesReceivedMessage } from '~/core/types/refraction';
 import {
   convertAmountToNativeDisplay,
   convertAmountToPercentageDisplay,
 } from '~/core/utils/numbers';
-import { SupportedCurrencyKey } from '~/core/references';
 
 const ASSET_PRICES_TIMEOUT_DURATION = 10000;
 const ASSET_PRICES_REFETCH_INTERVAL = 60000;
