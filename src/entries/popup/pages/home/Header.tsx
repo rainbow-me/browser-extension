@@ -137,18 +137,19 @@ function NavigationBar({
 }) {
   const { address } = useAccount();
   const { data: balance } = useBalance({ addressOrName: address });
+  const symbol = balance?.symbol as SupportedCurrencyKey;
 
-  let displayBalance = balance?.symbol
+  let displayBalance = symbol
     ? convertAmountToNativeDisplay(
         convertRawAmountToBalance(
           // @ts-expect-error – TODO: fix this
           balance?.value.hex || balance.value.toString(),
-          supportedCurrencies[balance.symbol as SupportedCurrencyKey],
+          supportedCurrencies[symbol],
         ).amount,
-        balance.symbol as SupportedCurrencyKey,
+        symbol,
       )
     : '';
-  if (balance?.symbol === 'ETH') {
+  if (symbol === 'ETH') {
     // Our font set doesn't seem to like the ether symbol, so we have to omit it and use
     // an icon instead.
     displayBalance = displayBalance.replace('Ξ', '');
