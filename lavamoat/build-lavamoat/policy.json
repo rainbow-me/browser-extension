@@ -6,20 +6,12 @@
       },
       "packages": {
         "audit-ci>JSONStream>jsonparse": true,
-        "audit-ci>JSONStream>through": true
+        "msw>inquirer>through": true
       }
     },
     "audit-ci>JSONStream>jsonparse": {
       "globals": {
         "Buffer": true
-      }
-    },
-    "audit-ci>JSONStream>through": {
-      "builtin": {
-        "stream": true
-      },
-      "globals": {
-        "process.nextTick": true
       }
     },
     "browserify": {
@@ -629,24 +621,6 @@
         "browserify>has": true
       }
     },
-    "eslint>chalk>supports-color": {
-      "builtin": {
-        "os.release": true,
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true
-      },
-      "packages": {
-        "eslint>chalk>supports-color>has-flag": true
-      }
-    },
-    "eslint>chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
-      }
-    },
     "eslint>is-glob": {
       "packages": {
         "eslint>is-glob>is-extglob": true
@@ -718,8 +692,8 @@
       "packages": {
         "globby>fast-glob>@nodelib/fs.stat": true,
         "globby>fast-glob>@nodelib/fs.walk": true,
-        "globby>fast-glob>glob-parent": true,
         "globby>merge2": true,
+        "msw>chokidar>glob-parent": true,
         "ts-loader>micromatch": true
       }
     },
@@ -777,15 +751,6 @@
     "globby>fast-glob>@nodelib/fs.walk>fastq": {
       "packages": {
         "globby>fast-glob>@nodelib/fs.walk>fastq>reusify": true
-      }
-    },
-    "globby>fast-glob>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path.posix.dirname": true
-      },
-      "packages": {
-        "eslint>is-glob": true
       }
     },
     "globby>ignore": {
@@ -1207,31 +1172,66 @@
         "process.platform": true
       }
     },
+    "msw>chalk>supports-color": {
+      "builtin": {
+        "os.release": true,
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true
+      },
+      "packages": {
+        "msw>chalk>supports-color>has-flag": true
+      }
+    },
+    "msw>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
+      }
+    },
+    "msw>chokidar>braces": {
+      "packages": {
+        "msw>chokidar>braces>fill-range": true
+      }
+    },
+    "msw>chokidar>braces>fill-range": {
+      "builtin": {
+        "util.inspect": true
+      },
+      "packages": {
+        "msw>chokidar>braces>fill-range>to-regex-range": true
+      }
+    },
+    "msw>chokidar>braces>fill-range>to-regex-range": {
+      "packages": {
+        "msw>chokidar>braces>fill-range>to-regex-range>is-number": true
+      }
+    },
+    "msw>chokidar>glob-parent": {
+      "builtin": {
+        "os.platform": true,
+        "path.posix.dirname": true
+      },
+      "packages": {
+        "eslint>is-glob": true
+      }
+    },
+    "msw>inquirer>through": {
+      "builtin": {
+        "stream": true
+      },
+      "globals": {
+        "process.nextTick": true
+      }
+    },
     "ts-loader>micromatch": {
       "builtin": {
         "util.inspect": true
       },
       "packages": {
-        "ts-loader>micromatch>braces": true,
+        "msw>chokidar>braces": true,
         "ts-loader>micromatch>picomatch": true
-      }
-    },
-    "ts-loader>micromatch>braces": {
-      "packages": {
-        "ts-loader>micromatch>braces>fill-range": true
-      }
-    },
-    "ts-loader>micromatch>braces>fill-range": {
-      "builtin": {
-        "util.inspect": true
-      },
-      "packages": {
-        "ts-loader>micromatch>braces>fill-range>to-regex-range": true
-      }
-    },
-    "ts-loader>micromatch>braces>fill-range>to-regex-range": {
-      "packages": {
-        "ts-loader>micromatch>braces>fill-range>to-regex-range>is-number": true
       }
     },
     "ts-loader>micromatch>picomatch": {
@@ -1259,7 +1259,7 @@
         "process": true
       },
       "packages": {
-        "eslint>chalk>supports-color": true,
+        "msw>chalk>supports-color": true,
         "vitest>debug>ms": true
       }
     },

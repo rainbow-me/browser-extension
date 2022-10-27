@@ -2,6 +2,8 @@ import { Signer, Wallet } from 'ethers';
 import { HDNode } from 'ethers/lib/utils';
 import { Address } from 'wagmi';
 
+import { hasPreviousTransactions } from '~/core/utils/ethereum';
+
 import { IKeychain, PrivateKey } from '../IKeychain';
 
 export interface SerializedHdKeychain {
@@ -10,6 +12,7 @@ export interface SerializedHdKeychain {
   accountsEnabled?: number;
   type: string;
   imported?: boolean;
+  autodiscover?: boolean;
 }
 
 export class HdKeychain implements IKeychain {
@@ -20,14 +23,17 @@ export class HdKeychain implements IKeychain {
   #accountsEnabled: number;
   #hdPath: string;
 
-  constructor(options: SerializedHdKeychain) {
+  constructor() {
     this.type = 'HdKeychain';
     this.imported = false;
     this.#wallets = [];
     this.#mnemonic = null;
     this.#accountsEnabled = 1;
     this.#hdPath = `m/44'/60'/0'/0`;
-    this.deserialize(options);
+  }
+
+  init(options: SerializedHdKeychain) {
+    return this.deserialize(options);
   }
 
   #getWalletForAddress(address: Address): Wallet {
@@ -62,21 +68,41 @@ export class HdKeychain implements IKeychain {
     } else {
       this.#mnemonic = Wallet.createRandom().mnemonic.phrase as string;
     }
-    const results = [];
-    for (let i = 0; i < this.#accountsEnabled; i++) {
-      results.push(this.#addAccount(i));
+
+    // If we didn't explicit add a new account, we need attempt to autodiscover the rest
+    if (opts.autodiscover) {
+      // Autodiscover accounts
+      let empty = false;
+      while (!empty) {
+        const { address } = this.#deriveWallet(this.#accountsEnabled);
+        // eslint-disable-next-line no-await-in-loop
+        const hasBeenUsed = await hasPreviousTransactions(address as Address);
+        if (hasBeenUsed) {
+          this.#accountsEnabled = this.#accountsEnabled + 1;
+        } else {
+          empty = true;
+        }
+      }
     }
-    await Promise.all(results);
+
+    for (let i = 0; i < this.#accountsEnabled; i++) {
+      this.#addAccount(i);
+    }
   }
   async addNewAccount(): Promise<Array<Wallet>> {
-    await this.#addAccount(this.#accountsEnabled);
+    this.#addAccount(this.#accountsEnabled);
     this.#accountsEnabled += 1;
     return this.#wallets as Wallet[];
   }
 
-  async #addAccount(index: number): Promise<Wallet> {
+  #deriveWallet(index: number): HDNode {
     const hdNode = HDNode.fromMnemonic(this.#mnemonic as string);
     const derivedWallet = hdNode.derivePath(`${this.#hdPath}/${index}`);
+    return derivedWallet;
+  }
+
+  #addAccount(index: number): Wallet {
+    const derivedWallet = this.#deriveWallet(index);
     const wallet = new Wallet(derivedWallet.privateKey);
     this.#wallets.push(wallet);
     return wallet;
