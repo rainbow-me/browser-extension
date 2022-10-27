@@ -27,15 +27,15 @@ function Tab({
     /* TODO: Convert to <Rows> */
     <Box
       onClick={onClick}
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
       style={{
         cursor: 'default',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
       }}
     >
       {/* TODO: Convert to <Row> */}
-      <Box style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+      <Box display="flex" alignItems="center" style={{ flex: 1 }}>
         <Inset horizontal="2px">
           <Inline alignVertical="center" space="4px">
             {symbol && (
@@ -56,7 +56,7 @@ function Tab({
         </Inset>
       </Box>
       {/* TODO: Convert to <Row> */}
-      <Box style={{ display: 'flex', alignItems: 'flex-end', height: '12px' }}>
+      <Box display="flex" alignItems="flex-end" style={{ height: '12px' }}>
         {active && (
           <Box
             background="accent"
