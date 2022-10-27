@@ -1,7 +1,7 @@
 import {
   CallbackFunction,
-  createMessenger,
   SendMessage,
+  createMessenger,
 } from './internal/createMessenger';
 import { isValidReply } from './internal/isValidReply';
 import { isValidSend } from './internal/isValidSend';
