@@ -1,6 +1,7 @@
-import { ChainName } from '~/core/types/chains';
-import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { Address } from 'wagmi';
+
+import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
+import { ChainName } from '~/core/types/chains';
 
 /**
  * @desc Checks if the given chain is a Layer 2.

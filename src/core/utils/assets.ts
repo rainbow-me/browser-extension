@@ -1,5 +1,6 @@
 import { SupportedCurrencyKey } from '../references';
 import { ZerionAssetPrice } from '../types/assets';
+
 import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountToNativeDisplay,
