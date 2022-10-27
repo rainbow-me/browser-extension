@@ -6,7 +6,7 @@ import { pendingRequestStore } from '~/core/state/pendingRequest';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 
-export const DEFAULT_ACCOUNT = '0x6acbe090725d8b1cd59fe5f3e0c9c3685ebb77af';
+export const DEFAULT_ACCOUNT = '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
 export const DEFAULT_CHAIN_ID = '0x1';
 
 const openWindow = async () => {
