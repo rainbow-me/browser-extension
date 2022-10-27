@@ -1,7 +1,9 @@
-import format from 'date-fns/format';
 import * as Sentry from '@sentry/browser';
-import { DebugContext } from './debugContext';
 import { severityLevelFromString } from '@sentry/utils';
+import format from 'date-fns/format';
+
+import { DebugContext } from './debugContext';
+
 const { LOG_LEVEL, LOG_DEBUG } = process.env;
 
 export enum LogLevel {

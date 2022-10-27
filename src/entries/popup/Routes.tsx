@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { Route, Routes as RRRoutes, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import * as React from 'react';
+import { Routes as RRRoutes, Route, useLocation } from 'react-router-dom';
 
 import { Index } from './pages';
 import { Settings } from './pages/settings';

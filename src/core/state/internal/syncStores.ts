@@ -1,5 +1,7 @@
 import { Storage } from '~/core/storage';
+
 import * as stores from '../index';
+
 import { StoreWithPersist } from './createStore';
 
 async function syncStore({ store }: { store: StoreWithPersist<unknown> }) {

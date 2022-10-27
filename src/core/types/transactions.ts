@@ -1,5 +1,7 @@
 import { BigNumberish } from 'ethers';
+
 import { ChainName } from '~/core/types/chains';
+
 import { ZerionAsset } from './assets';
 
 export interface RainbowTransaction {

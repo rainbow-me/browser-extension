@@ -1,14 +1,16 @@
-import React, { forwardRef } from 'react';
 import type * as Polymorphic from '@radix-ui/react-polymorphic';
 import clsx, { ClassValue } from 'clsx';
+import React, { forwardRef } from 'react';
+
 import {
-  boxStyles,
   BoxStyles,
+  boxStyles,
   resetBase,
   resetElements,
 } from '../../styles/core.css';
-import { backgroundColors, BackgroundColor } from '../../styles/designTokens';
+import { BackgroundColor, backgroundColors } from '../../styles/designTokens';
 import { themeClasses } from '../../styles/themeClasses';
+
 import {
   ColorContextProvider,
   useAccentColorContext,

@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const browserify = require('browserify');
-const globby = require('globby');
 const fs = require('fs');
 const path = require('path');
+
+const browserify = require('browserify');
+const globby = require('globby');
 
 // Statically require packages that are loaded dynamically in browserify
 // so we can generate LavaMoat policies for them.

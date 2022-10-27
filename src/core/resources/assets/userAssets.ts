@@ -1,13 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
+
+import { refractionAddressMessages, refractionAddressWs } from '~/core/network';
 import {
-  createQueryKey,
-  queryClient,
   QueryConfig,
   QueryFunctionArgs,
   QueryFunctionResult,
+  createQueryKey,
+  queryClient,
 } from '~/core/react-query';
-
-import { refractionAddressWs, refractionAddressMessages } from '~/core/network';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
 
 const USER_ASSETS_TIMEOUT_DURATION = 10000;
