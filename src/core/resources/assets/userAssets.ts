@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import _ from 'lodash';
+import { mapValues } from 'lodash';
+import { Address } from 'wagmi';
 
 import { refractionAddressMessages, refractionAddressWs } from '~/core/network';
 import {
@@ -34,7 +35,7 @@ const USER_ASSETS_REFETCH_INTERVAL = 60000;
 // Query Types
 
 export type UserAssetsArgs = {
-  address?: string;
+  address?: Address;
   currency: SupportedCurrencyKey;
 };
 
@@ -88,13 +89,14 @@ async function userAssetsQueryFunction({
 }
 
 type UserAssetsResult = QueryFunctionResult<typeof userAssetsQueryFunction>;
+
 export const parseUserAsset = ({
   address,
   asset,
   currency,
   quantity,
 }: {
-  address: string;
+  address: Address;
   asset: ZerionAsset;
   currency: SupportedCurrencyKey;
   quantity: string;
@@ -149,9 +151,9 @@ function parseUserAssets(
   message: AddressAssetsReceivedMessage,
   currency: SupportedCurrencyKey,
 ) {
-  return _.mapValues(message?.payload?.assets || {}, (assetData, address) =>
+  return mapValues(message?.payload?.assets || {}, (assetData, address) =>
     parseUserAsset({
-      address,
+      address: address as Address,
       asset: assetData?.asset,
       currency,
       quantity: assetData?.quantity,
