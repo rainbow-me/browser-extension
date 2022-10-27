@@ -55,6 +55,10 @@ export interface ZerionAsset {
   price?: ZerionAssetPrice;
 }
 
+export interface ZerionL2Asset extends ZerionAsset {
+  network: ChainName;
+}
+
 export interface RainbowPrice {
   change: string;
   price: { amount?: number; display: string };

@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { mapValues } from 'lodash';
 import { Address } from 'wagmi';
 
-import { refractionAddressMessages, refractionAddressWs } from '~/core/network';
+import { refractionAddressWs } from '~/core/network';
 import {
   QueryConfig,
   QueryFunctionArgs,
@@ -14,10 +14,10 @@ import { SupportedCurrencyKey } from '~/core/references';
 import {
   AssetType,
   ParsedAddressAsset,
-  ZerionAsset,
+  ZerionL2Asset,
 } from '~/core/types/assets';
 import { ChainName } from '~/core/types/chains';
-import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
+import { AddressL2AssetsReceivedMessage } from '~/core/types/refraction';
 import {
   getNativeAssetBalance,
   getNativeAssetPrice,
@@ -28,33 +28,36 @@ import {
   convertRawAmountToDecimalFormat,
 } from '~/core/utils/numbers';
 
-import { useUserL2Assets } from './userL2Assets';
-
-const USER_ASSETS_TIMEOUT_DURATION = 10000;
-const USER_ASSETS_REFETCH_INTERVAL = 60000;
+const USER_L2_ASSETS_TIMEOUT_DURATION = 10000;
+const USER_L2_ASSETS_REFETCH_INTERVAL = 60000;
 
 // ///////////////////////////////////////////////
 // Query Types
 
-export type UserAssetsArgs = {
+export type UserL2AssetsArgs = {
   address?: Address;
+  chain: ChainName;
   currency: SupportedCurrencyKey;
 };
 
 // ///////////////////////////////////////////////
 // Query Key
 
-const userAssetsQueryKey = ({ address, currency }: UserAssetsArgs) =>
-  createQueryKey('userAssets', { address, currency }, { persisterVersion: 1 });
+const userL2AssetsQueryKey = ({ address, chain, currency }: UserL2AssetsArgs) =>
+  createQueryKey(
+    'userL2Assets',
+    { address, chain, currency },
+    { persisterVersion: 1 },
+  );
 
-type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;
+type UserL2AssetsQueryKey = ReturnType<typeof userL2AssetsQueryKey>;
 
 // ///////////////////////////////////////////////
 // Query Function
 
-async function userAssetsQueryFunction({
-  queryKey: [{ address, currency }],
-}: QueryFunctionArgs<typeof userAssetsQueryKey>): Promise<
+async function userL2AssetsQueryFunction({
+  queryKey: [{ address, chain, currency }],
+}: QueryFunctionArgs<typeof userL2AssetsQueryKey>): Promise<
   Record<string, ParsedAddressAsset>
 > {
   refractionAddressWs.emit('get', {
@@ -62,36 +65,28 @@ async function userAssetsQueryFunction({
       address,
       currency: currency?.toLowerCase(),
     },
-    scope: ['assets'],
+    scope: [`${chain}-assets`],
   });
+  const event = `received address ${chain}-assets`;
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
-      refractionAddressWs.removeListener(
-        refractionAddressMessages.ADDRESS_ASSETS.RECEIVED,
-        resolver,
-      );
+      refractionAddressWs.removeEventListener(event, resolver);
       resolve(
-        queryClient.getQueryData(userAssetsQueryKey({ address, currency })) ||
-          {},
+        queryClient.getQueryData(
+          userL2AssetsQueryKey({ address, chain, currency }),
+        ) || {},
       );
-    }, USER_ASSETS_TIMEOUT_DURATION);
-    const resolver = (message: AddressAssetsReceivedMessage) => {
-      console.log('message in resolver: ', message);
+    }, USER_L2_ASSETS_TIMEOUT_DURATION);
+    const resolver = (message: AddressL2AssetsReceivedMessage) => {
       clearTimeout(timeout);
-      refractionAddressWs.removeListener(
-        refractionAddressMessages.ADDRESS_ASSETS.RECEIVED,
-        resolver,
-      );
-      resolve(parseUserAssets(message, currency));
+      refractionAddressWs.removeEventListener(event, resolver);
+      resolve(parseUserL2Assets(message, currency));
     };
-    refractionAddressWs.on(
-      refractionAddressMessages.ADDRESS_ASSETS.RECEIVED,
-      resolver,
-    );
+    refractionAddressWs.on(event, resolver);
   });
 }
 
-type UserAssetsResult = QueryFunctionResult<typeof userAssetsQueryFunction>;
+type UserL2AssetsResult = QueryFunctionResult<typeof userL2AssetsQueryFunction>;
 
 export const parseUserAsset = ({
   address,
@@ -100,7 +95,7 @@ export const parseUserAsset = ({
   quantity,
 }: {
   address: Address;
-  asset: ZerionAsset;
+  asset: ZerionL2Asset;
   currency: SupportedCurrencyKey;
   quantity: string;
 }): ParsedAddressAsset => {
@@ -126,7 +121,7 @@ export const parseUserAsset = ({
         symbol: asset?.symbol,
       }),
     },
-    chainName,
+    chainName: asset?.network,
     isNativeAsset: isNativeAsset(address, chainName),
     name: asset?.name,
     native: {
@@ -150,10 +145,11 @@ export const parseUserAsset = ({
   return parsedAsset;
 };
 
-function parseUserAssets(
-  message: AddressAssetsReceivedMessage,
+function parseUserL2Assets(
+  message: AddressL2AssetsReceivedMessage,
   currency: SupportedCurrencyKey,
 ) {
+  console.log('L2 MESSAGE OBJECT: ', message);
   return mapValues(message?.payload?.assets || {}, (assetData, address) =>
     parseUserAsset({
       address: address as Address,
@@ -167,22 +163,16 @@ function parseUserAssets(
 // ///////////////////////////////////////////////
 // Query Hook
 
-export function useUserAssets(
-  { address, currency }: UserAssetsArgs,
-  config: QueryConfig<UserAssetsResult, Error, UserAssetsQueryKey> = {},
+export function useUserL2Assets(
+  { address, chain, currency }: UserL2AssetsArgs,
+  config: QueryConfig<UserL2AssetsResult, Error, UserL2AssetsQueryKey> = {},
 ) {
-  const { data: polygonAssets } = useUserL2Assets({
-    address,
-    chain: ChainName.polygon,
-    currency,
-  });
-  console.log('polygon assets: ', polygonAssets);
   return useQuery(
-    userAssetsQueryKey({ address, currency }),
-    userAssetsQueryFunction,
+    userL2AssetsQueryKey({ address, chain, currency }),
+    userL2AssetsQueryFunction,
     {
       ...config,
-      refetchInterval: USER_ASSETS_REFETCH_INTERVAL,
+      refetchInterval: USER_L2_ASSETS_REFETCH_INTERVAL,
     },
   );
 }

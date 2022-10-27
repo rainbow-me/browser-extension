@@ -1,4 +1,4 @@
-import { ZerionAsset } from '~/core/types/assets';
+import { ZerionAsset, ZerionL2Asset } from '~/core/types/assets';
 import { ChainName } from '~/core/types/chains';
 import { ZerionTransaction } from '~/core/types/transactions';
 
@@ -20,6 +20,21 @@ export interface AddressAssetsReceivedMessage {
     assets?: {
       [id: string]: {
         asset: ZerionAsset;
+        quantity: string;
+      };
+    };
+  };
+  meta?: MessageMeta;
+}
+
+/**
+ * A message from the Zerion API indicating that assets were received.
+ */
+export interface AddressL2AssetsReceivedMessage {
+  payload?: {
+    assets?: {
+      [id: string]: {
+        asset: ZerionL2Asset;
         quantity: string;
       };
     };
