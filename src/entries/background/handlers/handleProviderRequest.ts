@@ -1,10 +1,12 @@
 import { UserRejectedRequestError } from 'wagmi';
 
-import { extensionMessenger } from '~/core/messengers';
+import { initializeMessenger } from '~/core/messengers';
 import { approvedHostsStore, notificationWindowStore } from '~/core/state';
 import { pendingRequestStore } from '~/core/state/pendingRequest';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+
+const popupMessenger = initializeMessenger({ connect: 'popup' });
 
 export const DEFAULT_ACCOUNT = '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
 export const DEFAULT_CHAIN_ID = '0x1';
@@ -36,7 +38,7 @@ const extensionMessengerRequestApproval = async (
   // Wait for response from the popup.
   const approved = await new Promise((resolve) =>
     // eslint-disable-next-line no-promise-executor-return
-    extensionMessenger.reply(`message:${request.id}`, async (payload) =>
+    popupMessenger.reply(`message:${request.id}`, async (payload) =>
       resolve(payload),
     ),
   );
