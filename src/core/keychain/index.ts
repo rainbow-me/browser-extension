@@ -44,7 +44,8 @@ class KeychainManager {
     let keychain;
     switch (type) {
       case 'HdKeychain':
-        keychain = new HdKeychain(opts as SerializedHdKeychain);
+        keychain = new HdKeychain();
+        await keychain.init(opts as SerializedHdKeychain);
         break;
       default:
         throw new Error('Keychain type not recognized.');
@@ -55,7 +56,11 @@ class KeychainManager {
   }
 
   async importKeychain(opts: SerializedKeypairKeychain | SerializedHdKeychain) {
-    return this.#restoreKeychain({ ...opts, imported: true });
+    return this.#restoreKeychain({
+      ...opts,
+      imported: true,
+      autodiscover: true,
+    });
   }
 
   async exportAccount(address: Address) {
@@ -150,10 +155,12 @@ class KeychainManager {
     let keychain;
     switch (opts.type) {
       case 'HdKeychain':
-        keychain = new HdKeychain(opts as SerializedHdKeychain);
+        keychain = new HdKeychain();
+        await keychain.init(opts as SerializedHdKeychain);
         break;
       case 'KeyPairKeychain':
-        keychain = new KeyPairKeychain(opts as SerializedKeypairKeychain);
+        keychain = new KeyPairKeychain();
+        await keychain.init(opts as SerializedKeypairKeychain);
         break;
       default:
         throw new Error('Keychain type not recognized.');

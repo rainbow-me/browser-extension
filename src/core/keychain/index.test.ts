@@ -101,3 +101,32 @@ test('should be able to unlock the vault', async () => {
   expect(keychainManager.state.password).toBe('password');
   expect(keychainManager.state.keychains.length).toBe(1);
 });
+
+test('should be able to autodiscover accounts when importing a seed phrase', async () => {
+  let accounts = await keychainManager.getAccounts();
+  expect(keychainManager.state.keychains.length).toBe(1);
+  await keychainManager.importKeychain({
+    type: 'HdKeychain',
+    mnemonic: 'test test test test test test test test test test test junk',
+  });
+  expect(keychainManager.state.keychains.length).toBe(2);
+
+  accounts = await keychainManager.getAccounts();
+  expect(accounts.length).toBeGreaterThan(2);
+  expect(accounts[1]).equal('0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266');
+  expect(accounts[2]).toBe('0x70997970C51812dc3A010C7d01b50e0d17dc79C8');
+
+  const privateKey1 = (await keychainManager.exportAccount(
+    accounts[1],
+  )) as PrivateKey;
+  const privateKey2 = (await keychainManager.exportAccount(
+    accounts[2],
+  )) as PrivateKey;
+
+  expect(privateKey1).equal(
+    '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
+  );
+  expect(privateKey2).equal(
+    '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d',
+  );
+});
