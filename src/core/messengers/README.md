@@ -12,15 +12,21 @@ A **Messenger** abstracts the native messaging APIs (such as: `window.postMessag
   - `tabMessenger`: A messenger that abstracts the chrome tab messaging API (`chrome.tabs.sendMessage` / `chrome.runtime.onMessage`).
   - `bridgeMessenger`: A messenger to bridge between scripts that do not have a direct/scoped messenger.
 
-## Example usage
+## Getting started
+
+Luckily, you don't have to waste time figuring out which messenger you should use as we provide you with an `initializeMessenger` function which will provide you with a messenger based on the script you want to connect to.
 
 `popup.ts`
 
 ```tsx
-import { extensionMessenger } from '~/core/messengers';
+import { initializeMessenger } from '~/core/messengers';
+
+// We want to initialize a connection with the background script.
+// Internally provides an `extensionMessenger`.
+const messenger = initializeMessenger({ connect: 'background' });
 
 async function example() {
-  const result = await extensionMessenger.send('ping', { foo: 'bar' });
+  const result = await messenger.send('ping', { foo: 'bar' });
   console.log(result); // "pong and bar"
 }
 ```
@@ -28,16 +34,20 @@ async function example() {
 `background.ts`
 
 ```tsx
-import { extensionMessenger } from '~/core/messengers';
+import { initializeMessenger } from '~/core/messengers';
 
-extensionMessenger.reply('ping', (args) => {
+// We want to initialize a connection with the popup script.
+// Internally provides an `extensionMessenger`.
+const messenger = initializeMessenger({ connect: 'popup' });
+
+messenger.reply('ping', (args) => {
   return `pong and ${args.foo}`;
 });
 ```
 
-> Note: `extensionMessenger`, `tabMessenger`, `windowMessenger` & `bridgeMessenger` share the same APIs.
+## Messenger compatibility
 
-## What messenger do I use?!
+You probably don't need to worry much about this table as we have the `initializeMessenger` function, but it's here to reference anyway.
 
 | From / To      | Popup                | Background           | Content Script    | Inpage            |
 | -------------- | -------------------- | -------------------- | ----------------- | ----------------- |

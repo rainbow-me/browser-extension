@@ -1,4 +1,4 @@
-import { bridgeMessenger } from '../messengers';
+import { bridgeMessenger } from '../messengers/internal/bridge';
 import {
   RequestArguments,
   RequestResponse,

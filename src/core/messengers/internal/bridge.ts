@@ -1,6 +1,6 @@
-import { detectScriptType } from '../utils/detectScriptType';
+import { detectScriptType } from '../../utils/detectScriptType';
 
-import { createMessenger } from './internal/createMessenger';
+import { createMessenger } from './createMessenger';
 import { tabMessenger } from './tab';
 import { windowMessenger } from './window';
 
