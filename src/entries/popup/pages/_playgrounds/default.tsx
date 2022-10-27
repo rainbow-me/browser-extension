@@ -80,15 +80,15 @@ export function Default() {
           Assets:
         </Text>
         {Object.values(userAssets || {})
-          .filter((item) => item?.asset?.price?.value)
-          .map((item, i) => (
+          .filter((asset) => asset?.price?.value)
+          .map((asset, i) => (
             <Text
               color="labelSecondary"
               size="16pt"
               weight="medium"
-              key={`${item?.asset?.address}${i}`}
+              key={`${asset?.address}${i}`}
             >
-              {`${item?.asset?.name}: ${item?.asset?.price?.value}`}
+              {`NAME: ${asset?.name} NATIVE PRICE: ${asset?.native?.price?.display} NATIVE BALANCE: ${asset?.native?.balance?.display} PRICE: ${asset?.price?.value} BALANCE: ${asset?.balance?.display}`}
             </Text>
           ))}
         <Text color="label" size="20pt" weight="bold">

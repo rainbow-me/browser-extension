@@ -1,3 +1,30 @@
+import { ChainName } from '~/core/types/chains';
+
+export interface ParsedAddressAsset {
+  address: string;
+  balance: {
+    amount: string;
+    display: string;
+  };
+  chainName: ChainName;
+  isNativeAsset: boolean;
+  name: string;
+  native: {
+    balance: {
+      amount: string;
+      display: string;
+    };
+    price?: {
+      change: string;
+      amount: number;
+      display: string;
+    };
+  };
+  price?: ZerionAssetPrice;
+  symbol: string;
+  type: string;
+  uniqueId: string;
+}
 export interface ZerionAssetPrice {
   value: number;
   relative_change_24h?: number;
