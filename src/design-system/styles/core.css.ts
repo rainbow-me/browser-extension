@@ -5,6 +5,7 @@ import {
   globalFontFace,
   createThemeContract,
   assignVars,
+  createVar,
 } from '@vanilla-extract/css';
 import { defineProperties, createSprinkles } from '@vanilla-extract/sprinkles';
 import { createStyleObject as capsize } from '@capsizecss/core';
@@ -306,6 +307,8 @@ globalStyle(
   },
 );
 
+export const gapVar = createVar();
+
 const boxBaseProperties = defineProperties({
   properties: {
     alignItems: ['stretch', 'flex-start', 'center', 'flex-end'],
@@ -319,7 +322,13 @@ const boxBaseProperties = defineProperties({
     display: ['none', 'flex', 'block', 'inline'],
     flexDirection: ['row', 'column'],
     flexWrap: ['wrap'],
-    gap: space,
+    flexBasis: ['0'],
+    flexGrow: ['0', '1'],
+    flexShrink: ['0', '1'],
+    gap: mapValues(space, (gap) => ({
+      gap,
+      vars: { [gapVar]: `${gap}px` },
+    })),
     height: {
       full: '100%',
     },
@@ -343,6 +352,9 @@ const boxBaseProperties = defineProperties({
     position: ['relative', 'absolute', 'fixed'],
     right: positionSpace,
     top: positionSpace,
+    width: {
+      full: '100%',
+    },
   },
   shorthands: {
     padding: ['paddingTop', 'paddingBottom', 'paddingLeft', 'paddingRight'],
