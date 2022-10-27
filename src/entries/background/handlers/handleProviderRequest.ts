@@ -1,4 +1,5 @@
 import { UserRejectedRequestError } from 'wagmi';
+
 import { extensionMessenger } from '~/core/messengers';
 import { approvedHostsStore, notificationWindowStore } from '~/core/state';
 import { pendingRequestStore } from '~/core/state/pendingRequest';

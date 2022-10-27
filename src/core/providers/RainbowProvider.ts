@@ -1,4 +1,5 @@
 import { EventEmitter } from 'eventemitter3';
+
 import { providerRequestTransport } from '../transports';
 
 export type ChainIdHex = `0x${string}`;
@@ -58,11 +59,14 @@ export class RainbowProvider extends EventEmitter {
     // eslint-disable-next-line no-plusplus
     const id = this.#requestId++;
 
-    const response = await providerRequestTransport.send({
-      id,
-      method,
-      params,
-    });
+    const response = await providerRequestTransport.send(
+      {
+        id,
+        method,
+        params,
+      },
+      { id },
+    );
 
     if (response.id !== id) return;
     if (response.error) throw response.error;

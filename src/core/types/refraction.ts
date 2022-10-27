@@ -1,5 +1,5 @@
-import { ChainName } from '~/core/types/chains';
 import { ZerionAsset } from '~/core/types/assets';
+import { ChainName } from '~/core/types/chains';
 import { ZerionTransaction } from '~/core/types/transactions';
 
 /**
@@ -33,6 +33,18 @@ export interface AddressAssetsReceivedMessage {
 export interface TransactionsReceivedMessage {
   payload?: {
     transactions?: ZerionTransaction[];
+  };
+  meta?: MessageMeta;
+}
+
+/**
+ * A message from the Zerion API indicating that asset price data was received
+ */
+export interface AssetPricesReceivedMessage {
+  payload?: {
+    prices?: {
+      [id: string]: ZerionAsset;
+    };
   };
   meta?: MessageMeta;
 }

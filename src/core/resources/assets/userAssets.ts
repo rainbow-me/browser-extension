@@ -1,14 +1,32 @@
 import { useQuery } from '@tanstack/react-query';
+import { mapValues } from 'lodash';
+import { Address } from 'wagmi';
+
+import { refractionAddressMessages, refractionAddressWs } from '~/core/network';
 import {
-  createQueryKey,
-  queryClient,
   QueryConfig,
   QueryFunctionArgs,
   QueryFunctionResult,
+  createQueryKey,
+  queryClient,
 } from '~/core/react-query';
-
-import { refractionAddressWs, refractionAddressMessages } from '~/core/network';
+import { SupportedCurrencyKey } from '~/core/references';
+import {
+  AssetType,
+  ParsedAddressAsset,
+  ZerionAsset,
+} from '~/core/types/assets';
+import { ChainName } from '~/core/types/chains';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
+import {
+  getNativeAssetBalance,
+  getNativeAssetPrice,
+} from '~/core/utils/assets';
+import { isL2Chain, isNativeAsset } from '~/core/utils/chains';
+import {
+  convertAmountToBalanceDisplay,
+  convertRawAmountToDecimalFormat,
+} from '~/core/utils/numbers';
 
 const USER_ASSETS_TIMEOUT_DURATION = 10000;
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
@@ -17,8 +35,8 @@ const USER_ASSETS_REFETCH_INTERVAL = 60000;
 // Query Types
 
 export type UserAssetsArgs = {
-  address?: string;
-  currency?: string;
+  address?: Address;
+  currency: SupportedCurrencyKey;
 };
 
 // ///////////////////////////////////////////////
@@ -34,9 +52,9 @@ type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;
 
 async function userAssetsQueryFunction({
   queryKey: [{ address, currency }],
-}: QueryFunctionArgs<
-  typeof userAssetsQueryKey
->): Promise<AddressAssetsReceivedMessage> {
+}: QueryFunctionArgs<typeof userAssetsQueryKey>): Promise<
+  Record<string, ParsedAddressAsset>
+> {
   refractionAddressWs.emit('get', {
     payload: {
       address,
@@ -61,7 +79,7 @@ async function userAssetsQueryFunction({
         refractionAddressMessages.ADDRESS_ASSETS.RECEIVED,
         resolver,
       );
-      resolve(parseUserAssets(message));
+      resolve(parseUserAssets(message, currency));
     };
     refractionAddressWs.on(
       refractionAddressMessages.ADDRESS_ASSETS.RECEIVED,
@@ -72,10 +90,75 @@ async function userAssetsQueryFunction({
 
 type UserAssetsResult = QueryFunctionResult<typeof userAssetsQueryFunction>;
 
-function parseUserAssets(message: AddressAssetsReceivedMessage) {
-  const data = message?.payload?.assets || {};
-  // do transforms here
-  return data;
+export const parseUserAsset = ({
+  address,
+  asset,
+  currency,
+  quantity,
+}: {
+  address: Address;
+  asset: ZerionAsset;
+  currency: SupportedCurrencyKey;
+  quantity: string;
+}): ParsedAddressAsset => {
+  const type =
+    asset.type === AssetType.uniswap ||
+    asset.type === AssetType.uniswapV2 ||
+    asset.type === AssetType.arbitrum ||
+    asset.type === AssetType.bsc ||
+    asset.type === AssetType.optimism ||
+    asset.type === AssetType.polygon
+      ? asset.type
+      : AssetType.token;
+  const chainName = (isL2Chain(type) ? type : ChainName.mainnet) as ChainName;
+  const uniqueId =
+    chainName === ChainName.mainnet ? address : `${address}_${chainName}`;
+  const amount = convertRawAmountToDecimalFormat(quantity, asset?.decimals);
+  const parsedAsset = {
+    address,
+    balance: {
+      amount,
+      display: convertAmountToBalanceDisplay(amount, {
+        decimals: asset?.decimals,
+        symbol: asset?.symbol,
+      }),
+    },
+    chainName,
+    isNativeAsset: isNativeAsset(address, chainName),
+    name: asset?.name,
+    native: {
+      balance: getNativeAssetBalance({
+        currency,
+        decimals: asset?.decimals,
+        priceUnit: asset?.price?.value || 0,
+        value: amount,
+      }),
+      price: getNativeAssetPrice({
+        currency,
+        priceData: asset?.price,
+      }),
+    },
+    price: asset?.price,
+    symbol: asset?.symbol,
+    type,
+    uniqueId,
+  };
+
+  return parsedAsset;
+};
+
+function parseUserAssets(
+  message: AddressAssetsReceivedMessage,
+  currency: SupportedCurrencyKey,
+) {
+  return mapValues(message?.payload?.assets || {}, (assetData, address) =>
+    parseUserAsset({
+      address: address as Address,
+      asset: assetData?.asset,
+      currency,
+      quantity: assetData?.quantity,
+    }),
+  );
 }
 
 // ///////////////////////////////////////////////

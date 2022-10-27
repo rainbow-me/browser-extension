@@ -57,8 +57,8 @@
     "@vanilla-extract/css-utils": "0.1.2",
     "@vanilla-extract/dynamic": "2.0.2",
     "@vanilla-extract/sprinkles": "1.5.0",
-    "buffer": "6.0.3",
     "bignumber.js": "9.0.1",
+    "buffer": "6.0.3",
     "chroma-js": "2.4.2",
     "clsx": "1.2.1",
     "currency.js": "2.0.4",
@@ -74,9 +74,9 @@
     "react-dom": "18.2.0",
     "react-flatten-children": "1.1.2",
     "react-router-dom": "6.4.2",
-    "zustand": "4.1.2",
     "socket.io-client": "2.3.1",
-    "wagmi": "0.7.5"
+    "wagmi": "0.7.5",
+    "zustand": "4.1.2"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "2.0.3",
@@ -117,6 +117,7 @@
     "lavamoat-browserify": "15.3.0",
     "lint-staged": "13.0.3",
     "mini-css-extract-plugin": "2.6.1",
+    "msw": "0.47.4",
     "patch-package": "6.4.7",
     "prettier": "2.7.1",
     "selenium-webdriver": "4.5.0",
@@ -160,7 +161,8 @@
       "selenium-webdriver>ws>bufferutil": false,
       "selenium-webdriver>ws>utf-8-validate": false,
       "vitest>vite>esbuild": false,
-      "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": false
+      "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": false,
+      "msw": false
     }
   },
   "lint-staged": {

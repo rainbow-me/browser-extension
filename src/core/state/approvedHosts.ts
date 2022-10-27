@@ -1,4 +1,5 @@
 import create from 'zustand';
+
 import { createStore } from './internal/createStore';
 
 export interface ApprovedHostsStore {

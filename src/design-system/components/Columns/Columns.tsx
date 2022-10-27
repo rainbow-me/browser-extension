@@ -1,7 +1,9 @@
 import React, { ReactNode } from 'react';
 import flattenChildren from 'react-flatten-children';
+
 import { Space } from '../../styles/designTokens';
 import { Box } from '../Box/Box';
+
 import * as styles from './Columns.css';
 
 const alignHorizontalToJustifyContent = {

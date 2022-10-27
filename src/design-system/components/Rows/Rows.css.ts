@@ -1,5 +1,6 @@
 import { styleVariants } from '@vanilla-extract/css';
 import { calc } from '@vanilla-extract/css-utils';
+
 import { gapVar } from './../../styles/core.css';
 
 const rowHeights = {

@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+
 import { extensionMessenger } from '~/core/messengers';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
 import { usePendingRequestStore } from '~/core/state/pendingRequest';
@@ -9,14 +10,21 @@ export function ApproveMessage() {
   const { window } = useNotificationWindowStore();
 
   const pendingRequest = pendingRequests[0];
+
   const approveRequest = useCallback(() => {
     extensionMessenger.send(`message:${pendingRequest?.id}`, true);
-    if (window?.id) chrome.windows.remove(window.id);
+    // Wait until the message propagates to the background provider.
+    setTimeout(() => {
+      if (window?.id) chrome.windows.remove(window.id);
+    }, 50);
   }, [pendingRequest?.id, window?.id]);
 
   const rejectRequest = useCallback(() => {
     extensionMessenger.send(`message:${pendingRequest?.id}`, false);
-    if (window?.id) chrome.windows.remove(window.id);
+    // Wait until the message propagates to the background provider.
+    setTimeout(() => {
+      if (window?.id) chrome.windows.remove(window.id);
+    }, 50);
   }, [pendingRequest?.id, window?.id]);
 
   return (
