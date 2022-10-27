@@ -74,6 +74,7 @@ type UserAssetsResult = QueryFunctionResult<typeof userAssetsQueryFunction>;
 
 function parseUserAssets(message: AddressAssetsReceivedMessage) {
   const data = message?.payload?.assets || {};
+  console.log('user assets received: ', data);
   // do transforms here
   return data;
 }

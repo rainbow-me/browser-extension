@@ -1,10 +1,12 @@
 import React from 'react';
 import { chain, useAccount, useBalance } from 'wagmi';
 
-import { useUserAssets } from '~/core/resources/assets';
+import { ETH_ADDRESS } from '~/core/references';
+import { useAssetPrices, useUserAssets } from '~/core/resources/assets';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
 import { useTransactions } from '~/core/resources/transactions/transactions';
 import { useCurrentCurrencyStore } from '~/core/state/currentCurrency';
+import { RainbowTransaction } from '~/core/types/transactions';
 import { Box, Inset, Stack, Text } from '~/design-system';
 
 import { ClearStorage } from '../../components/_dev/ClearStorage';
@@ -16,6 +18,10 @@ export function Default() {
 
   const { data: userAssets } = useUserAssets({
     address,
+    currency: currentCurrency,
+  });
+  const { data: assetPrices } = useAssetPrices({
+    assetAddresses: Object.keys(userAssets || {}).concat(ETH_ADDRESS),
     currency: currentCurrency,
   });
   const { data: transactions } = useTransactions({
@@ -88,7 +94,7 @@ export function Default() {
         <Text color="label" size="20pt" weight="bold">
           Transactions:
         </Text>
-        {transactions?.map((tx) => {
+        {transactions?.map((tx: RainbowTransaction) => {
           return (
             <Text
               color="labelSecondary"
@@ -97,6 +103,21 @@ export function Default() {
               key={tx?.hash}
             >
               {`${tx?.title} ${tx?.name}: ${tx.native?.display}`}
+            </Text>
+          );
+        })}
+        <Text color="label" size="20pt" weight="bold">
+          Prices:
+        </Text>
+        {Object.values(assetPrices || {}).map((price, i) => {
+          return (
+            <Text
+              color="labelSecondary"
+              size="16pt"
+              weight="medium"
+              key={`prices-${i}`}
+            >
+              {`${price?.price?.display}: ${price?.change}`}
             </Text>
           );
         })}
