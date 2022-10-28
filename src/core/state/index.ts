@@ -12,6 +12,6 @@ export {
   notificationWindowStore,
   useNotificationWindowStore,
 } from './notificationWindow';
-export { dappSessionsStore, useDappSessionsStore } from './dappSessions';
+export { appSessionsStore, useAppSessionsStore } from './appSessions';
 export { pendingRequestStore, usePendingRequestStore } from './pendingRequest';
 export { syncStores } from './internal/syncStores';

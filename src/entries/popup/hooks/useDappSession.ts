@@ -1,10 +1,10 @@
 import * as React from 'react';
 
-import { useDappSessionsStore } from '~/core/state';
-import { EthereumAddress } from '~/core/state/dappSessions';
+import { useAppSessionsStore } from '~/core/state';
+import { EthereumAddress } from '~/core/state/appSessions';
 
 export function useDappSession({ host }: { host: string }) {
-  const { updateSessionAddress, updateSessionChainId } = useDappSessionsStore();
+  const { updateSessionAddress, updateSessionChainId } = useAppSessionsStore();
 
   const updateDappSessionAddress = React.useCallback(
     (address: EthereumAddress) => {
