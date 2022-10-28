@@ -5,22 +5,21 @@ import { Address } from 'wagmi';
 import {
   addNewAccount,
   createWallet,
-  deleteWallet,
   exportAccount,
   exportKeychain,
   getAccounts,
-  getSigner,
   importWallet,
+  removeAccount,
   sendTransaction,
   signMessage,
   signTypedData,
 } from '~/core/keychain';
-import { extensionMessenger } from '~/core/messengers';
+import { initializeMessenger } from '~/core/messengers';
 import { EthereumWalletSeed } from '~/core/utils/ethereum';
 
 type WalletActionArguments = {
-  action_name: string;
-  args: unknown;
+  action: string;
+  payload: unknown;
 };
 
 export type SendTransactionArguments = {
@@ -42,36 +41,57 @@ type SignTypedDataMsg = {
   value: Record<string, unknown>;
 };
 
+const messenger = initializeMessenger({ connect: 'popup' });
+
 /**
  * Handles wallet related requests
  */
 export const handleWallets = () =>
-  extensionMessenger.reply(
+  messenger.reply(
     'wallet_action',
-    async ({ action_name, args }: WalletActionArguments): Promise<unknown> => {
-      switch (action_name) {
-        case 'create':
-          return await createWallet();
-        case 'import':
-          return await importWallet(args as EthereumWalletSeed);
-        case 'add':
-          return await addNewAccount(args as Address);
-        case 'delete':
-          return await deleteWallet(args as Address);
-        case 'get_accounts':
-          return await getAccounts();
-        case 'export_keychain':
-          return await exportKeychain(args as Address);
-        case 'export_account':
-          return await exportAccount(args as Address);
-        case 'send_transaction':
-          return await sendTransaction(args as SendTransactionArguments);
-        case 'sign_message':
-          return await signMessage(args as SignMessageArguments);
-        case 'sign_type_data':
-          return await signTypedData(args as SignTypedDataArguments);
-        default:
-          throw new Error('Wallet action not recognized.');
+    async ({ action, payload }: WalletActionArguments) => {
+      try {
+        let response = null;
+        switch (action) {
+          case 'create':
+            response = await createWallet();
+            break;
+          case 'import':
+            response = await importWallet(payload as EthereumWalletSeed);
+            break;
+          case 'add':
+            response = await addNewAccount(payload as Address);
+            break;
+          case 'remove':
+            response = await removeAccount(payload as Address);
+            break;
+          case 'get_accounts':
+            response = await getAccounts();
+            break;
+          case 'export_wallet':
+            response = await exportKeychain(payload as Address);
+            break;
+          case 'export_account':
+            response = await exportAccount(payload as Address);
+            break;
+          case 'send_transaction':
+            response = await sendTransaction(
+              payload as SendTransactionArguments,
+            );
+            break;
+          case 'sign_message':
+            response = await signMessage(payload as SignMessageArguments);
+            break;
+          case 'sign_type_data':
+            response = await signTypedData(payload as SignTypedDataArguments);
+            break;
+          default: {
+            // TODO: handle other methods
+          }
+        }
+        return { result: response };
+      } catch (error) {
+        return { action, error: <Error>error };
       }
     },
   );

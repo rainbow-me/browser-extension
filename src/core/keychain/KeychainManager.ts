@@ -10,7 +10,7 @@ import {
   SerializedKeypairKeychain,
 } from './keychainTypes/keyPairKeychain';
 
-type Keychain = KeyPairKeychain | HdKeychain;
+export type Keychain = KeyPairKeychain | HdKeychain;
 
 interface KeychainManagerState {
   keychains: Keychain[];
@@ -37,7 +37,7 @@ class KeychainManager {
     this.#rehydrate();
   }
 
-  async updatePassword(password: string) {
+  async setPassword(password: string) {
     this.state.password = password;
     await this.#persist();
   }

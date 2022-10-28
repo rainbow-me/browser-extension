@@ -12,12 +12,36 @@ import { KeychainType } from '../types/keychainTypes';
 import { EthereumWalletType } from '../types/walletTypes';
 import { EthereumWalletSeed, identifyWalletType } from '../utils/ethereum';
 
-import { keychainManager } from './KeychainManager';
+import { Keychain, keychainManager } from './KeychainManager';
+
+export const setVaultPassword = async (password: string) => {
+  return keychainManager.setPassword(password);
+};
+
+export const unlockVault = (password: string) => {
+  return keychainManager.unlock(password);
+};
+
+export const lockVault = () => {
+  return keychainManager.lock();
+};
+
+export const isVaultUnlocked = (): boolean => {
+  return keychainManager.state.isUnlocked;
+};
+
+export const getVaultPassword = (): string | null => {
+  return keychainManager.state.password;
+};
+
+export const getKeychains = (): Keychain[] => {
+  return keychainManager.state.keychains;
+};
 
 export const createWallet = async (): Promise<Address> => {
   const keychain = await keychainManager.addNewKeychain();
-  const address = (await keychain.getAccounts())[0];
-  return address;
+  const accounts = await keychain.getAccounts();
+  return accounts[0];
 };
 
 export const importWallet = async (
@@ -36,7 +60,7 @@ export const importWallet = async (
     case EthereumWalletType.privateKey: {
       const keychain = await keychainManager.importKeychain({
         type: KeychainType.KeyPairKeychain,
-        mnemonic: secret,
+        privateKey: secret,
       });
       const address = (await keychain.getAccounts())[0];
       return address;
@@ -57,7 +81,7 @@ export const addNewAccount = async (
   return newAccount;
 };
 
-export const deleteWallet = async (address: Address): Promise<void> => {
+export const removeAccount = async (address: Address): Promise<void> => {
   return keychainManager.removeAccount(address);
 };
 
