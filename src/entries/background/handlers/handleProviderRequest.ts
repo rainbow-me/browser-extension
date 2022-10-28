@@ -100,7 +100,7 @@ export const handleProviderRequest = ({
             id,
             params,
           });
-          addSession(host, DEFAULT_ACCOUNT, chain.mainnet);
+          addSession(host, DEFAULT_ACCOUNT, chain.mainnet.id);
           response = [DEFAULT_ACCOUNT];
           break;
         }
