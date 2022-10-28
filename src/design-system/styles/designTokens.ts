@@ -546,5 +546,6 @@ export const radii = {
   '16px': 16,
   '20px': 20,
   '24px': 24,
+  '30px': 30,
 };
 export type Radius = keyof typeof radii;
