@@ -44,6 +44,16 @@ it('should display account name', async () => {
   expect(actual).toEqual(expected);
 });
 
+it('should shuffle account', async () => {
+  await delay(5000);
+  await driver.findElement({ id: 'account-name-shuffle' }).click();
+  await delay(5000);
+  const label = await querySelector(driver, '[data-testid="account-name"]');
+  const actual = await label.getText();
+  const expected = 'estebanmino.eth';
+  expect(actual).toEqual(expected);
+});
+
 it('should be able to turn ON injection', async () => {
   let label = await querySelector(driver, '[data-testid="injection-status"]');
   let actual = await label.getText();
