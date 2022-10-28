@@ -3,6 +3,8 @@ import { getAddress } from 'ethers/lib/utils';
 import { Chain, Connector } from 'wagmi';
 
 import { ChainIdHex, RainbowProvider } from '~/core/providers';
+import { currentAddressStore, currentChainIdStore } from '~/core/state';
+import { DEFAULT_ACCOUNT } from '~/entries/background/handlers/handleProviderRequest';
 
 function normalizeChainId(chainId: ChainIdHex | number | bigint) {
   if (typeof chainId === 'string') return Number(BigInt(chainId));
@@ -40,11 +42,11 @@ export class RainbowConnector extends Connector<
       this.getChainId(),
     ]);
 
-    // TODO: Hook event listeners up properly, and get them
-    // to listen for changes in account/chain from the background
-    // script.
-    // - when account changes, invoke `this.onAccountsChanged`
-    // - when chain changes, invoke `this.onChainChanged`
+    currentAddressStore.subscribe((state) => {
+      if (state.currentAddress) {
+        this.onAccountsChanged([state.currentAddress]);
+      }
+    });
 
     return {
       account,
@@ -67,13 +69,13 @@ export class RainbowConnector extends Connector<
   }
 
   async getAccount() {
-    // TODO: retrive account from background state properly...
-    return getAddress('0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4');
+    const currentAddress = currentAddressStore.getState().currentAddress;
+    return currentAddress || getAddress(DEFAULT_ACCOUNT);
   }
 
   async getChainId() {
-    // TODO: retrive chain from background state properly...
-    return 1;
+    const currentChainId = currentChainIdStore.getState().currentChainId;
+    return currentChainId || 1;
   }
 
   async getProvider() {
