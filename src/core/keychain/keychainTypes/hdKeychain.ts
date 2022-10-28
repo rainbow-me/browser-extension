@@ -19,55 +19,55 @@ export interface SerializedHdKeychain {
 export class HdKeychain implements IKeychain {
   type: string;
   imported: boolean;
-  #wallets: Wallet[] | Signer[];
-  #mnemonic?: string | null;
-  #accountsEnabled: number;
-  #hdPath: string;
+  _wallets: Wallet[] | Signer[];
+  _mnemonic?: string | null;
+  _accountsEnabled: number;
+  _hdPath: string;
 
   constructor() {
     this.type = KeychainType.HdKeychain;
     this.imported = false;
-    this.#wallets = [];
-    this.#mnemonic = null;
-    this.#accountsEnabled = 1;
-    this.#hdPath = `m/44'/60'/0'/0`;
+    this._wallets = [];
+    this._mnemonic = null;
+    this._accountsEnabled = 1;
+    this._hdPath = `m/44'/60'/0'/0`;
   }
 
   init(options: SerializedHdKeychain) {
     return this.deserialize(options);
   }
 
-  #getWalletForAddress(address: Address): Wallet {
-    return this.#wallets.find(
+  _getWalletForAddress(address: Address): Wallet {
+    return this._wallets.find(
       (wallet) =>
         (wallet as Wallet).address.toLowerCase() === address.toLowerCase(),
     ) as Wallet;
   }
 
   getSigner(address: Address): Signer {
-    const wallet = this.#getWalletForAddress(address);
+    const wallet = this._getWalletForAddress(address);
     return wallet;
   }
 
   async serialize(): Promise<SerializedHdKeychain> {
     return {
       imported: this.imported,
-      mnemonic: this.#mnemonic as string,
-      accountsEnabled: this.#accountsEnabled,
-      hdPath: this.#hdPath,
+      mnemonic: this._mnemonic as string,
+      accountsEnabled: this._accountsEnabled,
+      hdPath: this._hdPath,
       type: this.type,
     };
   }
 
   async deserialize(opts: SerializedHdKeychain) {
-    if (opts?.hdPath) this.#hdPath = opts.hdPath;
+    if (opts?.hdPath) this._hdPath = opts.hdPath;
     if (opts?.imported) this.imported = opts.imported;
-    if (opts?.accountsEnabled) this.#accountsEnabled = opts.accountsEnabled;
+    if (opts?.accountsEnabled) this._accountsEnabled = opts.accountsEnabled;
 
     if (opts?.mnemonic) {
-      this.#mnemonic = opts.mnemonic;
+      this._mnemonic = opts.mnemonic;
     } else {
-      this.#mnemonic = Wallet.createRandom().mnemonic.phrase as string;
+      this._mnemonic = Wallet.createRandom().mnemonic.phrase as string;
     }
 
     // If we didn't explicit add a new account, we need attempt to autodiscover the rest
@@ -75,62 +75,62 @@ export class HdKeychain implements IKeychain {
       // Autodiscover accounts
       let empty = false;
       while (!empty) {
-        const { address } = this.#deriveWallet(this.#accountsEnabled);
+        const { address } = this._deriveWallet(this._accountsEnabled);
         // eslint-disable-next-line no-await-in-loop
         const hasBeenUsed = await hasPreviousTransactions(address as Address);
         if (hasBeenUsed) {
-          this.#accountsEnabled = this.#accountsEnabled + 1;
+          this._accountsEnabled = this._accountsEnabled + 1;
         } else {
           empty = true;
         }
       }
     }
 
-    for (let i = 0; i < this.#accountsEnabled; i++) {
-      this.#addAccount(i);
+    for (let i = 0; i < this._accountsEnabled; i++) {
+      this._addAccount(i);
     }
   }
   async addNewAccount(): Promise<Array<Wallet>> {
-    this.#addAccount(this.#accountsEnabled);
-    this.#accountsEnabled += 1;
-    return this.#wallets as Wallet[];
+    this._addAccount(this._accountsEnabled);
+    this._accountsEnabled += 1;
+    return this._wallets as Wallet[];
   }
 
-  #deriveWallet(index: number): HDNode {
-    const hdNode = HDNode.fromMnemonic(this.#mnemonic as string);
-    const derivedWallet = hdNode.derivePath(`${this.#hdPath}/${index}`);
+  _deriveWallet(index: number): HDNode {
+    const hdNode = HDNode.fromMnemonic(this._mnemonic as string);
+    const derivedWallet = hdNode.derivePath(`${this._hdPath}/${index}`);
     return derivedWallet;
   }
 
-  #addAccount(index: number): Wallet {
-    const derivedWallet = this.#deriveWallet(index);
+  _addAccount(index: number): Wallet {
+    const derivedWallet = this._deriveWallet(index);
     const wallet = new Wallet(derivedWallet.privateKey);
-    this.#wallets.push(wallet);
+    this._wallets.push(wallet);
     return wallet;
   }
 
   getAccounts(): Promise<Array<Address>> {
-    const addresses = this.#wallets.map(
+    const addresses = this._wallets.map(
       (wallet) => (wallet as Wallet).address as Address,
     );
     return Promise.resolve(addresses);
   }
 
   async exportAccount(address: Address): Promise<PrivateKey> {
-    const wallet = this.#getWalletForAddress(address);
+    const wallet = this._getWalletForAddress(address);
     return wallet.privateKey;
   }
 
   async exportKeychain(): Promise<string> {
-    return this.#mnemonic as string;
+    return this._mnemonic as string;
   }
 
   async removeAccount(address: Address): Promise<void> {
-    const filteredList = this.#wallets.filter(
+    const filteredList = this._wallets.filter(
       (wallet) => (wallet as Wallet).address !== address,
     );
-    if (filteredList.length !== this.#wallets.length) {
-      this.#wallets = filteredList;
+    if (filteredList.length !== this._wallets.length) {
+      this._wallets = filteredList;
     } else {
       throw new Error('Account not found');
     }

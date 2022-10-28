@@ -14,35 +14,35 @@ export interface SerializedKeypairKeychain {
 
 export class KeyPairKeychain implements IKeychain {
   type: string;
-  #wallets: Wallet[] | Signer[];
+  _wallets: Wallet[] | Signer[];
 
   constructor() {
     this.type = KeychainType.KeyPairKeychain;
-    this.#wallets = [];
+    this._wallets = [];
   }
 
   init(options: SerializedKeypairKeychain) {
     this.deserialize(options);
   }
 
-  #getWalletForAddress(): Wallet {
-    return this.#wallets[0] as Wallet;
+  _getWalletForAddress(): Wallet {
+    return this._wallets[0] as Wallet;
   }
 
   getSigner(address: Address): Signer {
-    const wallet = this.#getWalletForAddress();
+    const wallet = this._getWalletForAddress();
     return wallet;
   }
 
   async serialize(): Promise<SerializedKeypairKeychain> {
     return {
-      privateKey: (this.#wallets[0] as Wallet).privateKey as PrivateKey,
+      privateKey: (this._wallets[0] as Wallet).privateKey as PrivateKey,
       type: this.type,
     };
   }
 
   async deserialize(opts: SerializedKeypairKeychain) {
-    this.#wallets = [new Wallet(opts.privateKey)];
+    this._wallets = [new Wallet(opts.privateKey)];
   }
 
   async addNewAccount(): Promise<Array<Wallet>> {
@@ -50,14 +50,14 @@ export class KeyPairKeychain implements IKeychain {
   }
 
   getAccounts(): Promise<Array<Address>> {
-    const addresses = this.#wallets.map(
+    const addresses = this._wallets.map(
       (wallet) => (wallet as Wallet).address as Address,
     );
     return Promise.resolve(addresses);
   }
 
   async exportAccount(address: Address): Promise<PrivateKey> {
-    const wallet = this.#getWalletForAddress();
+    const wallet = this._getWalletForAddress();
     return wallet.privateKey;
   }
 
@@ -66,6 +66,6 @@ export class KeyPairKeychain implements IKeychain {
   }
 
   async removeAccount(address: Address): Promise<void> {
-    this.#wallets = [];
+    this._wallets = [];
   }
 }
