@@ -14,6 +14,7 @@ import { truncateAddress } from '~/core/utils/truncateAddress';
 import { Box, Inline, Inset, Stack, Text } from '~/design-system';
 
 import { Avatar } from '../../components/Avatar/Avatar';
+import { PageHeader } from '../../components/PageHeader';
 import { SFSymbol, SFSymbolProps } from '../../components/SFSymbol/SFSymbol';
 import { Tabs } from '../../components/Tabs/Tabs';
 import { useAvatar } from '../../hooks/useAvatar';
@@ -37,13 +38,25 @@ export function Header({
         height: '260px',
       }}
     >
-      <Inset top="36px">
-        <Stack alignHorizontal="center" space="16px">
-          <AvatarSection />
-          <NameSection />
-          <ActionButtonsSection />
-        </Stack>
-      </Inset>
+      <Box>
+        <PageHeader
+          title=""
+          leftRoute="connected"
+          leftSymbol="appBadgeCheckmark"
+          rightSymbol="ellipsis"
+          rightRoute="settings"
+          mainPage
+        />
+      </Box>
+      <Box marginTop="-44px">
+        <Inset>
+          <Stack alignHorizontal="center" space="16px">
+            <AvatarSection />
+            <NameSection />
+            <ActionButtonsSection />
+          </Stack>
+        </Inset>
+      </Box>
       <Inset horizontal="20px">
         <NavigationBar activeTab={activeTab} onSelectTab={onSelectTab} />
       </Inset>

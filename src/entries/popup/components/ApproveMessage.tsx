@@ -10,7 +10,6 @@ const backgroundMessenger = initializeMessenger({ connect: 'background' });
 export function ApproveMessage() {
   const { pendingRequests } = usePendingRequestStore();
   const { window } = useNotificationWindowStore();
-
   const pendingRequest = pendingRequests[0];
 
   const approveRequest = useCallback(() => {
