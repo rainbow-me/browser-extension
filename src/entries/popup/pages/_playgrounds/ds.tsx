@@ -1,11 +1,15 @@
-import React, { Fragment, ReactNode } from 'react';
+import React, { Fragment, ReactElement, ReactNode, cloneElement } from 'react';
 
 import {
   AccentColorProvider,
   Bleed,
   Box,
+  Column,
+  Columns,
   Inline,
   Inset,
+  Row,
+  Rows,
   Separator,
   Stack,
   Text,
@@ -26,6 +30,9 @@ function Placeholder({
   return (
     <Box
       background={highlight ? 'accent' : undefined}
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
       style={{
         background: highlight ? undefined : 'rgba(125, 125, 125, .75)',
         width,
@@ -50,6 +57,16 @@ function ExampleHeading({ children }: { children: string }) {
     <Text size="14pt" weight="medium" color="labelSecondary">
       {children}
     </Text>
+  );
+}
+
+function repeat(times: number, element: ReactElement) {
+  return (
+    <>
+      {Array.from({ length: times }, (_, index) =>
+        cloneElement(element, { key: index }),
+      )}
+    </>
   );
 }
 
@@ -243,6 +260,767 @@ export function DesignSystem() {
               <Separator color="separatorSecondary" />
               <ExampleHeading>separatorTertiary</ExampleHeading>
               <Separator color="separatorTertiary" />
+
+              <SectionHeading>Columns - Auto width</SectionHeading>
+              <ExampleHeading>default</ExampleHeading>
+              <Columns space="12px">
+                <Placeholder>
+                  <Text size="14pt" weight="bold">
+                    Lorem ipsum.
+                  </Text>
+                </Placeholder>
+                <Placeholder>
+                  <Text size="14pt" weight="bold">
+                    Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+                    Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+                  </Text>
+                </Placeholder>
+              </Columns>
+              <Columns space="12px">
+                <Placeholder>
+                  <Text size="14pt" weight="bold">
+                    Lorem ipsum.
+                  </Text>
+                </Placeholder>
+                <Placeholder>
+                  <Text size="14pt" weight="bold">
+                    Lorem ipsum.
+                  </Text>
+                </Placeholder>
+                <Placeholder>
+                  <Text size="14pt" weight="bold">
+                    Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+                    Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+                  </Text>
+                </Placeholder>
+              </Columns>
+              <Columns space="12px">
+                <Placeholder>
+                  <Text size="14pt" weight="bold">
+                    Lorem ipsum.
+                  </Text>
+                </Placeholder>
+                <Placeholder>
+                  <Text size="14pt" weight="bold">
+                    Lorem ipsum.
+                  </Text>
+                </Placeholder>
+                <Placeholder>
+                  <Text size="14pt" weight="bold">
+                    Lorem ipsum.
+                  </Text>
+                </Placeholder>
+                <Placeholder>
+                  <Text size="14pt" weight="bold">
+                    Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+                    Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet.
+                  </Text>
+                </Placeholder>
+              </Columns>
+              <SectionHeading>Columns - Width</SectionHeading>
+              <Columns space="12px">
+                <Column width="content">
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      content
+                    </Text>
+                  </Placeholder>
+                </Column>
+                <Placeholder>
+                  <Text size="14pt" weight="bold">
+                    default
+                  </Text>
+                </Placeholder>
+              </Columns>
+              <Columns space="12px">
+                <Column width="1/2">
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      1/2
+                    </Text>
+                  </Placeholder>
+                </Column>
+                <Placeholder>
+                  <Text size="14pt" weight="bold">
+                    default
+                  </Text>
+                </Placeholder>
+              </Columns>
+              <Columns space="12px">
+                <Column width="1/2">
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      1/2
+                    </Text>
+                  </Placeholder>
+                </Column>
+                {repeat(
+                  2,
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      default
+                    </Text>
+                  </Placeholder>,
+                )}
+              </Columns>
+              <Columns space="12px">
+                {repeat(
+                  2,
+                  <Column width="1/2">
+                    <Placeholder>
+                      <Text size="14pt" weight="bold">
+                        1/2
+                      </Text>
+                    </Placeholder>
+                  </Column>,
+                )}
+              </Columns>
+              <Columns space="12px">
+                <Column width="1/3">
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      1/3
+                    </Text>
+                  </Placeholder>
+                </Column>
+                <Placeholder>
+                  <Text size="14pt" weight="bold">
+                    default
+                  </Text>
+                </Placeholder>
+              </Columns>
+              <Columns space="12px">
+                <Column width="1/3">
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      1/3
+                    </Text>
+                  </Placeholder>
+                </Column>
+                {repeat(
+                  2,
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      default
+                    </Text>
+                  </Placeholder>,
+                )}
+              </Columns>
+              <Columns space="12px">
+                {repeat(
+                  3,
+                  <Column width="1/3">
+                    <Placeholder>
+                      <Text size="14pt" weight="bold">
+                        1/3
+                      </Text>
+                    </Placeholder>
+                  </Column>,
+                )}
+              </Columns>
+              <Columns space="12px">
+                <Column width="1/3">
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      1/3
+                    </Text>
+                  </Placeholder>
+                </Column>
+                <Column width="2/3">
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      2/3
+                    </Text>
+                  </Placeholder>
+                </Column>
+              </Columns>
+              <Columns space="12px">
+                <Column width="1/4">
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      1/4
+                    </Text>
+                  </Placeholder>
+                </Column>
+                <Placeholder>
+                  <Text size="14pt" weight="bold">
+                    default
+                  </Text>
+                </Placeholder>
+              </Columns>
+              <Columns space="12px">
+                <Column width="1/4">
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      1/4
+                    </Text>
+                  </Placeholder>
+                </Column>
+                {repeat(
+                  3,
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      default
+                    </Text>
+                  </Placeholder>,
+                )}
+              </Columns>
+              <Columns space="12px">
+                {repeat(
+                  4,
+                  <Column width="1/4">
+                    <Placeholder>
+                      <Text size="14pt" weight="bold">
+                        1/4
+                      </Text>
+                    </Placeholder>
+                  </Column>,
+                )}
+              </Columns>
+              <Columns space="12px">
+                {repeat(
+                  2,
+                  <Column width="1/4">
+                    <Placeholder>
+                      <Text size="14pt" weight="bold">
+                        1/4
+                      </Text>
+                    </Placeholder>
+                  </Column>,
+                )}
+                <Column width="1/2">
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      1/2
+                    </Text>
+                  </Placeholder>
+                </Column>
+              </Columns>
+              <Columns space="12px">
+                <Column width="1/4">
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      1/4
+                    </Text>
+                  </Placeholder>
+                </Column>
+                <Column width="3/4">
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      3/4
+                    </Text>
+                  </Placeholder>
+                </Column>
+              </Columns>
+              <Columns space="12px">
+                <Column width="1/5">
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      1/5
+                    </Text>
+                  </Placeholder>
+                </Column>
+                <Placeholder>
+                  <Text size="14pt" weight="bold">
+                    default
+                  </Text>
+                </Placeholder>
+              </Columns>
+              <Columns space="12px">
+                <Column width="1/5">
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      1/5
+                    </Text>
+                  </Placeholder>
+                </Column>
+                {repeat(
+                  4,
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      default
+                    </Text>
+                  </Placeholder>,
+                )}
+              </Columns>
+              <Columns space="12px">
+                {repeat(
+                  5,
+                  <Column width="1/5">
+                    <Placeholder>
+                      <Text size="14pt" weight="bold">
+                        1/5
+                      </Text>
+                    </Placeholder>
+                  </Column>,
+                )}
+              </Columns>
+              <Columns space="12px">
+                <Column width="1/5">
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      1/5
+                    </Text>
+                  </Placeholder>
+                </Column>
+                {repeat(
+                  2,
+                  <Column width="2/5">
+                    <Placeholder>
+                      <Text size="14pt" weight="bold">
+                        2/5
+                      </Text>
+                    </Placeholder>
+                  </Column>,
+                )}
+              </Columns>
+              <Columns space="12px">
+                {repeat(
+                  2,
+                  <Column width="1/5">
+                    <Placeholder>
+                      <Text size="14pt" weight="bold">
+                        1/5
+                      </Text>
+                    </Placeholder>
+                  </Column>,
+                )}
+                <Column width="3/5">
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      3/5
+                    </Text>
+                  </Placeholder>
+                </Column>
+              </Columns>
+              <Columns space="12px">
+                <Column width="1/5">
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      1/5
+                    </Text>
+                  </Placeholder>
+                </Column>
+                <Column width="4/5">
+                  <Placeholder>
+                    <Text size="14pt" weight="bold">
+                      4/5
+                    </Text>
+                  </Placeholder>
+                </Column>
+              </Columns>
+              <SectionHeading>Columns - Vertical alignment</SectionHeading>
+              <ExampleHeading>top</ExampleHeading>
+              <Columns space="12px" alignVertical="top">
+                <Placeholder height={30} />
+                <Placeholder height={60} />
+              </Columns>
+              <ExampleHeading>center</ExampleHeading>
+              <Columns space="12px" alignVertical="center">
+                <Placeholder height={30} />
+                <Placeholder height={60} />
+              </Columns>
+              <ExampleHeading>bottom</ExampleHeading>
+              <Columns space="12px" alignVertical="bottom">
+                <Placeholder height={30} />
+                <Placeholder height={60} />
+              </Columns>
+              <SectionHeading>Columns - Horizontal alignment</SectionHeading>
+              <ExampleHeading>left</ExampleHeading>
+              <Columns space="12px" alignHorizontal="left">
+                {repeat(
+                  2,
+                  <Column width="1/4">
+                    <Placeholder>
+                      <Text size="14pt" weight="bold">
+                        1/4
+                      </Text>
+                    </Placeholder>
+                  </Column>,
+                )}
+              </Columns>
+              <ExampleHeading>center</ExampleHeading>
+              <Columns space="12px" alignHorizontal="center">
+                {repeat(
+                  2,
+                  <Column width="1/4">
+                    <Placeholder>
+                      <Text size="14pt" weight="bold">
+                        1/4
+                      </Text>
+                    </Placeholder>
+                  </Column>,
+                )}
+              </Columns>
+              <ExampleHeading>right</ExampleHeading>
+              <Columns space="12px" alignHorizontal="right">
+                {repeat(
+                  2,
+                  <Column width="1/4">
+                    <Placeholder>
+                      <Text size="14pt" weight="bold">
+                        1/4
+                      </Text>
+                    </Placeholder>
+                  </Column>,
+                )}
+              </Columns>
+
+              <SectionHeading>Rows - Height</SectionHeading>
+              <Box style={{ height: 160 }}>
+                <Rows space="12px">
+                  <Row height="content">
+                    <Placeholder width="100%">
+                      <Text size="14pt" weight="bold" align="center">
+                        content
+                      </Text>
+                    </Placeholder>
+                  </Row>
+                  <Placeholder height="100%" width="100%">
+                    <Text size="14pt" weight="bold" align="center">
+                      default
+                    </Text>
+                  </Placeholder>
+                </Rows>
+              </Box>
+              <Columns space="12px">
+                <Box style={{ height: 160 }}>
+                  <Rows space="12px">
+                    {repeat(
+                      4,
+                      <Placeholder height="100%" width="100%">
+                        <Text size="14pt" weight="bold" align="center">
+                          default
+                        </Text>
+                      </Placeholder>,
+                    )}
+                  </Rows>
+                </Box>
+                <Box style={{ height: 160 }}>
+                  <Rows space="12px">
+                    <Row height="1/2">
+                      <Placeholder height="100%" width="100%">
+                        <Text size="14pt" weight="bold" align="center">
+                          1/2
+                        </Text>
+                      </Placeholder>
+                    </Row>
+                    {repeat(
+                      2,
+                      <Placeholder height="100%" width="100%">
+                        <Text size="14pt" weight="bold" align="center">
+                          default
+                        </Text>
+                      </Placeholder>,
+                    )}
+                  </Rows>
+                </Box>
+                <Box style={{ height: 160 }}>
+                  <Rows space="12px">
+                    {repeat(
+                      2,
+                      <Row height="1/2">
+                        <Placeholder height="100%" width="100%">
+                          <Text size="14pt" weight="bold" align="center">
+                            1/2
+                          </Text>
+                        </Placeholder>
+                      </Row>,
+                    )}
+                  </Rows>
+                </Box>
+              </Columns>
+              <Columns space="12px">
+                <Box style={{ height: 240 }}>
+                  <Rows space="12px">
+                    {repeat(
+                      6,
+                      <Placeholder height="100%" width="100%">
+                        <Text size="14pt" weight="bold" align="center">
+                          default
+                        </Text>
+                      </Placeholder>,
+                    )}
+                  </Rows>
+                </Box>
+                <Box style={{ height: 240 }}>
+                  <Rows space="12px">
+                    <Row height="1/3">
+                      <Placeholder height="100%" width="100%">
+                        <Text size="14pt" weight="bold" align="center">
+                          1/3
+                        </Text>
+                      </Placeholder>
+                    </Row>
+                    <Placeholder height="100%" width="100%">
+                      <Text size="14pt" weight="bold" align="center">
+                        default
+                      </Text>
+                    </Placeholder>
+                  </Rows>
+                </Box>
+                <Box style={{ height: 240 }}>
+                  <Rows space="12px">
+                    {repeat(
+                      3,
+                      <Row height="1/3">
+                        <Placeholder height="100%" width="100%">
+                          <Text size="14pt" weight="bold" align="center">
+                            1/3
+                          </Text>
+                        </Placeholder>
+                      </Row>,
+                    )}
+                  </Rows>
+                </Box>
+                <Box style={{ height: 240 }}>
+                  <Rows space="12px">
+                    <Row height="1/3">
+                      <Placeholder height="100%" width="100%">
+                        <Text size="14pt" weight="bold" align="center">
+                          1/3
+                        </Text>
+                      </Placeholder>
+                    </Row>
+                    <Row height="2/3">
+                      <Placeholder height="100%" width="100%">
+                        <Text size="14pt" weight="bold" align="center">
+                          2/3
+                        </Text>
+                      </Placeholder>
+                    </Row>
+                  </Rows>
+                </Box>
+              </Columns>
+              <Columns space="12px">
+                <Box style={{ height: 320 }}>
+                  <Rows space="12px">
+                    {repeat(
+                      8,
+                      <Placeholder height="100%" width="100%">
+                        <Text size="14pt" weight="bold" align="center">
+                          default
+                        </Text>
+                      </Placeholder>,
+                    )}
+                  </Rows>
+                </Box>
+                <Box style={{ height: 320 }}>
+                  <Rows space="12px">
+                    <Row height="1/4">
+                      <Placeholder height="100%" width="100%">
+                        <Text size="14pt" weight="bold" align="center">
+                          1/4
+                        </Text>
+                      </Placeholder>
+                    </Row>
+                    <Placeholder height="100%" width="100%">
+                      <Text size="14pt" weight="bold" align="center">
+                        default
+                      </Text>
+                    </Placeholder>
+                  </Rows>
+                </Box>
+                <Box style={{ height: 320 }}>
+                  <Rows space="12px">
+                    {repeat(
+                      4,
+                      <Row height="1/4">
+                        <Placeholder height="100%" width="100%">
+                          <Text size="14pt" weight="bold" align="center">
+                            1/4
+                          </Text>
+                        </Placeholder>
+                      </Row>,
+                    )}
+                  </Rows>
+                </Box>
+                <Box style={{ height: 320 }}>
+                  <Rows space="12px">
+                    <Row height="1/4">
+                      <Placeholder height="100%" width="100%">
+                        <Text size="14pt" weight="bold" align="center">
+                          1/4
+                        </Text>
+                      </Placeholder>
+                    </Row>
+                    <Row height="3/4">
+                      <Placeholder height="100%" width="100%">
+                        <Text size="14pt" weight="bold" align="center">
+                          3/4
+                        </Text>
+                      </Placeholder>
+                    </Row>
+                  </Rows>
+                </Box>
+              </Columns>
+              <Columns space="12px">
+                <Box style={{ height: 420 }}>
+                  <Rows space="12px">
+                    {repeat(
+                      10,
+                      <Placeholder height="100%" width="100%">
+                        <Text size="14pt" weight="bold" align="center">
+                          default
+                        </Text>
+                      </Placeholder>,
+                    )}
+                  </Rows>
+                </Box>
+                <Box style={{ height: 420 }}>
+                  <Rows space="12px">
+                    <Row height="1/5">
+                      <Placeholder height="100%" width="100%">
+                        <Text size="14pt" weight="bold" align="center">
+                          1/5
+                        </Text>
+                      </Placeholder>
+                    </Row>
+                    {repeat(
+                      2,
+                      <Row height="2/5">
+                        <Placeholder height="100%" width="100%">
+                          <Text size="14pt" weight="bold" align="center">
+                            2/5
+                          </Text>
+                        </Placeholder>
+                      </Row>,
+                    )}
+                  </Rows>
+                </Box>
+                <Box style={{ height: 420 }}>
+                  <Rows space="12px">
+                    <Row height="2/5">
+                      <Placeholder height="100%" width="100%">
+                        <Text size="14pt" weight="bold" align="center">
+                          2/5
+                        </Text>
+                      </Placeholder>
+                    </Row>
+                    <Row height="3/5">
+                      <Placeholder height="100%" width="100%">
+                        <Text size="14pt" weight="bold" align="center">
+                          3/5
+                        </Text>
+                      </Placeholder>
+                    </Row>
+                  </Rows>
+                </Box>
+                <Box style={{ height: 420 }}>
+                  <Rows space="12px">
+                    <Row height="4/5">
+                      <Placeholder height="100%" width="100%">
+                        <Text size="14pt" weight="bold" align="center">
+                          4/5
+                        </Text>
+                      </Placeholder>
+                    </Row>
+                    <Row height="1/5">
+                      <Placeholder height="100%" width="100%">
+                        <Text size="14pt" weight="bold" align="center">
+                          1/5
+                        </Text>
+                      </Placeholder>
+                    </Row>
+                  </Rows>
+                </Box>
+              </Columns>
+
+              <SectionHeading>Rows - Horizontal alignment</SectionHeading>
+              <ExampleHeading>left</ExampleHeading>
+              <Box style={{ height: 120 }}>
+                <Rows space="12px" alignHorizontal="left">
+                  <Placeholder width={50} height="100%" />
+                  <Placeholder width={70} height="100%" />
+                  <Placeholder width={90} height="100%" />
+                </Rows>
+              </Box>
+              <ExampleHeading>center</ExampleHeading>
+              <Box style={{ height: 120 }}>
+                <Rows space="12px" alignHorizontal="center">
+                  <Placeholder width={50} height="100%" />
+                  <Placeholder width={70} height="100%" />
+                  <Placeholder width={90} height="100%" />
+                </Rows>
+              </Box>
+              <ExampleHeading>right</ExampleHeading>
+              <Box style={{ height: 120 }}>
+                <Rows space="12px" alignHorizontal="right">
+                  <Placeholder width={50} height="100%" />
+                  <Placeholder width={70} height="100%" />
+                  <Placeholder width={90} height="100%" />
+                </Rows>
+              </Box>
+
+              <SectionHeading>Rows - Vertical alignment</SectionHeading>
+              <ExampleHeading>top</ExampleHeading>
+              <Placeholder>
+                <Box style={{ height: 200 }}>
+                  <Rows space="12px" alignVertical="top">
+                    {repeat(
+                      2,
+                      <Row height="1/4">
+                        <Placeholder height="100%" width="100%">
+                          <Text size="14pt" weight="bold" align="center">
+                            1/4
+                          </Text>
+                        </Placeholder>
+                      </Row>,
+                    )}
+                  </Rows>
+                </Box>
+              </Placeholder>
+              <ExampleHeading>center</ExampleHeading>
+              <Placeholder>
+                <Box style={{ height: 200 }}>
+                  <Rows space="12px" alignVertical="center">
+                    {repeat(
+                      2,
+                      <Row height="1/4">
+                        <Placeholder height="100%" width="100%">
+                          <Text size="14pt" weight="bold" align="center">
+                            1/4
+                          </Text>
+                        </Placeholder>
+                      </Row>,
+                    )}
+                  </Rows>
+                </Box>
+              </Placeholder>
+              <ExampleHeading>bottom</ExampleHeading>
+              <Placeholder>
+                <Box style={{ height: 200 }}>
+                  <Rows space="12px" alignVertical="bottom">
+                    {repeat(
+                      2,
+                      <Row height="1/4">
+                        <Placeholder height="100%" width="100%">
+                          <Text size="14pt" weight="bold" align="center">
+                            1/4
+                          </Text>
+                        </Placeholder>
+                      </Row>,
+                    )}
+                  </Rows>
+                </Box>
+              </Placeholder>
+              <ExampleHeading>justify</ExampleHeading>
+              <Placeholder>
+                <Box style={{ height: 200 }}>
+                  <Rows space="12px" alignVertical="justify">
+                    {repeat(
+                      2,
+                      <Row height="1/4">
+                        <Placeholder height="100%" width="100%">
+                          <Text size="14pt" weight="bold" align="center">
+                            1/4
+                          </Text>
+                        </Placeholder>
+                      </Row>,
+                    )}
+                  </Rows>
+                </Box>
+              </Placeholder>
 
               <SectionHeading>Inset</SectionHeading>
               <ExampleHeading>Space</ExampleHeading>

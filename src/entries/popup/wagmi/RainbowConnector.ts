@@ -3,7 +3,6 @@ import { getAddress } from 'ethers/lib/utils';
 import { Chain, Connector } from 'wagmi';
 
 import { ChainIdHex, RainbowProvider } from '~/core/providers';
-import { DEFAULT_ACCOUNT } from '~/entries/background/handlers/handleProviderRequest';
 
 function normalizeChainId(chainId: ChainIdHex | number | bigint) {
   if (typeof chainId === 'string') return Number(BigInt(chainId));
@@ -69,7 +68,7 @@ export class RainbowConnector extends Connector<
 
   async getAccount() {
     // TODO: retrive account from background state properly...
-    return getAddress(DEFAULT_ACCOUNT);
+    return getAddress('0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4');
   }
 
   async getChainId() {
