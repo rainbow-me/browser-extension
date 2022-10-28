@@ -12,13 +12,16 @@ export interface SerializedKeypairKeychain {
   privateKey: PrivateKey;
 }
 
+const privates = new WeakMap();
+
 export class KeyPairKeychain implements IKeychain {
   type: string;
-  _wallets: Wallet[] | Signer[];
 
   constructor() {
     this.type = KeychainType.KeyPairKeychain;
-    this._wallets = [];
+    privates.set(this, {
+      wallets: [],
+    });
   }
 
   init(options: SerializedKeypairKeychain) {
@@ -26,7 +29,7 @@ export class KeyPairKeychain implements IKeychain {
   }
 
   _getWalletForAddress(): Wallet {
-    return this._wallets[0] as Wallet;
+    return privates.get(this).wallets[0] as Wallet;
   }
 
   getSigner(address: Address): Signer {
@@ -36,13 +39,14 @@ export class KeyPairKeychain implements IKeychain {
 
   async serialize(): Promise<SerializedKeypairKeychain> {
     return {
-      privateKey: (this._wallets[0] as Wallet).privateKey as PrivateKey,
+      privateKey: (privates.get(this).wallets[0] as Wallet)
+        .privateKey as PrivateKey,
       type: this.type,
     };
   }
 
   async deserialize(opts: SerializedKeypairKeychain) {
-    this._wallets = [new Wallet(opts.privateKey)];
+    privates.get(this).wallets = [new Wallet(opts.privateKey)];
   }
 
   async addNewAccount(): Promise<Array<Wallet>> {
@@ -50,9 +54,9 @@ export class KeyPairKeychain implements IKeychain {
   }
 
   getAccounts(): Promise<Array<Address>> {
-    const addresses = this._wallets.map(
-      (wallet) => (wallet as Wallet).address as Address,
-    );
+    const addresses = privates
+      .get(this)
+      .wallets.map((wallet: Wallet) => (wallet as Wallet).address as Address);
     return Promise.resolve(addresses);
   }
 
@@ -66,6 +70,6 @@ export class KeyPairKeychain implements IKeychain {
   }
 
   async removeAccount(address: Address): Promise<void> {
-    this._wallets = [];
+    privates.get(this).wallets = [];
   }
 }
