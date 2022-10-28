@@ -5,10 +5,13 @@ import { chain, useEnsAvatar, useEnsName } from 'wagmi';
 import { initializeMessenger } from '~/core/messengers';
 import { useAppSessionsStore } from '~/core/state';
 import { Box, Inline, Inset, Stack, Text } from '~/design-system';
-import { DEFAULT_ACCOUNT } from '~/entries/background/handlers/handleProviderRequest';
+import {
+  DEFAULT_ACCOUNT,
+  DEFAULT_ACCOUNT_2,
+} from '~/entries/background/handlers/handleProviderRequest';
 
 import { PageHeader } from '../components/PageHeader';
-import { useDappSession } from '../hooks/useDappSession';
+import { useAppSession } from '../hooks/useAppSession';
 
 const messenger = initializeMessenger({ connect: 'inpage' });
 
@@ -35,12 +38,12 @@ export function ConnectedApps() {
 
       {/* TODO: Convert to <Row> */}
       <Box>
-        {appSessions.map((dappSession, i) => (
+        {Object.keys(appSessions).map((key, i) => (
           <ConnectedApp
             key={i}
-            host={dappSession.host}
-            address={dappSession.address}
-            chainId={dappSession.chainId}
+            host={appSessions[key].host}
+            address={appSessions[key].address}
+            chainId={appSessions[key].chainId}
           />
         ))}
       </Box>
@@ -76,33 +79,31 @@ function ConnectedApp({
 }) {
   const { data: ensName } = useEnsName({ address });
   const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
-  const { updateDappSessionChainId, updateDappSessionAddress } = useDappSession(
-    { host },
-  );
+  const { updateAppSessionChainId, updateAppSessionAddress } = useAppSession({
+    host,
+  });
 
   const shuffleChainId = React.useCallback(() => {
-    updateDappSessionChainId(
+    // TODO: handle chain switching correctly
+    updateAppSessionChainId(
       chainId === chain.mainnet.id ? chain.arbitrum.id : chain.mainnet.id,
     );
     messenger.send(
       `chainChanged:${host}`,
       chainId === chain.mainnet.id ? chain.arbitrum.id : chain.mainnet.id,
     );
-  }, [chainId, host, updateDappSessionChainId]);
+  }, [chainId, host, updateAppSessionChainId]);
 
   const shuffleAddress = React.useCallback(() => {
-    updateDappSessionAddress(
-      address === DEFAULT_ACCOUNT
-        ? '0x5B570F0F8E2a29B7bCBbfC000f9C7b78D45b7C35'
-        : DEFAULT_ACCOUNT,
+    // TODO: handle account switching correctly
+    updateAppSessionAddress(
+      address === DEFAULT_ACCOUNT ? DEFAULT_ACCOUNT_2 : DEFAULT_ACCOUNT,
     );
     messenger.send(
       `accountsChanged:${host}`,
-      address === DEFAULT_ACCOUNT
-        ? '0x5B570F0F8E2a29B7bCBbfC000f9C7b78D45b7C35'
-        : DEFAULT_ACCOUNT,
+      address === DEFAULT_ACCOUNT ? DEFAULT_ACCOUNT_2 : DEFAULT_ACCOUNT,
     );
-  }, [address, host, updateDappSessionAddress]);
+  }, [address, host, updateAppSessionAddress]);
 
   return (
     <Box>

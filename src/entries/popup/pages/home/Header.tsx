@@ -6,12 +6,17 @@ import {
   SupportedCurrencyKey,
   supportedCurrencies,
 } from '~/core/references/supportedCurrencies';
+import { useCurrentAddressStore } from '~/core/state';
 import {
   convertAmountToNativeDisplay,
   convertRawAmountToBalance,
 } from '~/core/utils/numbers';
 import { truncateAddress } from '~/core/utils/truncateAddress';
 import { Box, Inline, Inset, Stack, Text } from '~/design-system';
+import {
+  DEFAULT_ACCOUNT,
+  DEFAULT_ACCOUNT_2,
+} from '~/entries/background/handlers/handleProviderRequest';
 
 import { Avatar } from '../../components/Avatar/Avatar';
 import { PageHeader } from '../../components/PageHeader';
@@ -86,11 +91,22 @@ function AvatarSection() {
 function NameSection() {
   const { address } = useAccount();
   const { data: ensName } = useEnsName({ address });
+
+  const { setCurrentAddress } = useCurrentAddressStore();
+
+  // TODO: handle account switching correctly
+  const shuffleAccount = React.useCallback(() => {
+    setCurrentAddress(
+      address === DEFAULT_ACCOUNT ? DEFAULT_ACCOUNT_2 : DEFAULT_ACCOUNT,
+    );
+  }, [address, setCurrentAddress]);
   return (
     <Inline alignVertical="center" space="4px">
-      <Text color="label" size="20pt" weight="heavy" testId="account-name">
-        {ensName ?? truncateAddress(address || '0x')}
-      </Text>
+      <Box as="button" onClick={shuffleAccount}>
+        <Text color="label" size="20pt" weight="heavy" testId="account-name">
+          {ensName ?? truncateAddress(address || '0x')}
+        </Text>
+      </Box>
       <Link to="/wallets">
         <SFSymbol color="labelTertiary" size={20} symbol="chevronDown" />
       </Link>
