@@ -4,5 +4,9 @@
   },
   "label": {
     "toggle": "Cabillot"
+  },
+  "connected_apps": {
+    "title": "Connected Apps :)",
+    "disconnect": "Disconnect All :)"
   }
 }
