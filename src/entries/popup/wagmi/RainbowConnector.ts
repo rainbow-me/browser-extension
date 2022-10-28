@@ -48,6 +48,12 @@ export class RainbowConnector extends Connector<
       }
     });
 
+    currentChainIdStore.subscribe((state) => {
+      if (state.currentChainId) {
+        this.onChainChanged(state.currentChainId);
+      }
+    });
+
     return {
       account,
       chain: { id: chainId, unsupported: false },
