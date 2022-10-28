@@ -13,5 +13,5 @@ export {
   useNotificationWindowStore,
 } from './notificationWindow';
 export { appSessionsStore, useAppSessionsStore } from './appSessions';
-export { pendingRequestStore, usePendingRequestStore } from './pendingRequest';
+export { pendingRequestStore, usePendingRequestStore } from './requests';
 export { syncStores } from './internal/syncStores';

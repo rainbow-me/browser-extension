@@ -2,7 +2,7 @@ import { UserRejectedRequestError, chain } from 'wagmi';
 
 import { Messenger } from '~/core/messengers';
 import { appSessionsStore, notificationWindowStore } from '~/core/state';
-import { pendingRequestStore } from '~/core/state/pendingRequest';
+import { pendingRequestStore } from '~/core/state/requests';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 

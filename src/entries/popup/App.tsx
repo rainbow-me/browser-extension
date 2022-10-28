@@ -7,7 +7,7 @@ import { changeI18nLanguage } from '~/core/languages';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry } from '~/core/sentry';
 import { useCurrentLanguageStore } from '~/core/state';
-import { usePendingRequestStore } from '~/core/state/pendingRequest';
+import { usePendingRequestStore } from '~/core/state/requests';
 import { createWagmiClient } from '~/core/wagmi';
 import { Box } from '~/design-system';
 

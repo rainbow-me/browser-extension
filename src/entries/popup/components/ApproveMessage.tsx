@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import { initializeMessenger } from '~/core/messengers';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
-import { usePendingRequestStore } from '~/core/state/pendingRequest';
+import { usePendingRequestStore } from '~/core/state/requests';
 import { Box, Text } from '~/design-system';
 
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
