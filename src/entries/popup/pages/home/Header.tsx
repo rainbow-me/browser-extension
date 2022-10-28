@@ -102,7 +102,7 @@ function NameSection() {
   }, [address, setCurrentAddress]);
   return (
     <Inline alignVertical="center" space="4px">
-      <Box as="button" onClick={shuffleAccount}>
+      <Box as="button" onClick={shuffleAccount} id="account-name-shuffle">
         <Text color="label" size="20pt" weight="heavy" testId="account-name">
           {ensName ?? truncateAddress(address || '0x')}
         </Text>
