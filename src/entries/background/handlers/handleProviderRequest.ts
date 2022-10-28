@@ -1,7 +1,7 @@
-import { UserRejectedRequestError } from 'wagmi';
+import { UserRejectedRequestError, chain } from 'wagmi';
 
 import { Messenger } from '~/core/messengers';
-import { approvedHostsStore, notificationWindowStore } from '~/core/state';
+import { dappSessionsStore, notificationWindowStore } from '~/core/state';
 import { pendingRequestStore } from '~/core/state/pendingRequest';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -59,9 +59,9 @@ export const handleProviderRequest = ({
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
     console.log(meta.sender, method);
 
-    const { addApprovedHost, isApprovedHost } = approvedHostsStore.getState();
+    const { isActiveSession, addSession } = dappSessionsStore.getState();
     const host = new URL(meta.sender.url || '').host;
-    const approvedHost = isApprovedHost(host);
+    const approvedHost = isActiveSession(host);
 
     try {
       let response = null;
@@ -100,7 +100,7 @@ export const handleProviderRequest = ({
             id,
             params,
           });
-          addApprovedHost(host);
+          addSession(host, DEFAULT_ACCOUNT, chain.mainnet);
           response = [DEFAULT_ACCOUNT];
           break;
         }

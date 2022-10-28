@@ -8,6 +8,6 @@ export {
   notificationWindowStore,
   useNotificationWindowStore,
 } from './notificationWindow';
-export { approvedHostsStore, useApprovedHostsStore } from './approvedHosts';
+export { dappSessionsStore, useDappSessionsStore } from './dappSessions';
 export { pendingRequestStore, usePendingRequestStore } from './pendingRequest';
 export { syncStores } from './internal/syncStores';
