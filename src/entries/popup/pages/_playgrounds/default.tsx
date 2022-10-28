@@ -6,13 +6,13 @@ import { useAssetPrices, useUserAssets } from '~/core/resources/assets';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
 import { useTransactions } from '~/core/resources/transactions/transactions';
 import { useCurrentCurrencyStore } from '~/core/state/currentCurrency';
+import { useCurrentLanguageStore } from '~/core/state/currentLanguage';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { Box, Inset, Stack, Text } from '~/design-system';
 
+import { Language, i18n } from '../../../../core/languages';
 import { ClearStorage } from '../../components/_dev/ClearStorage';
 import { InjectToggle } from '../../components/_dev/InjectToggle';
-import { i18n, Language } from '../../../../core/languages';
-import { useCurrentLanguageStore } from '~/core/state/currentLanguage';
 
 export function Default() {
   const { address } = useAccount();

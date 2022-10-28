@@ -1,8 +1,9 @@
 import { I18n } from 'i18n-js';
+
 import en from './_english.json';
-import es from './_spanish.json';
 import fr from './_french.json';
 import pr from './_portuguese.json';
+import es from './_spanish.json';
 
 enum Language {
   ES = 'es',
