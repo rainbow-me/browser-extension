@@ -2,6 +2,7 @@ import { Signer, Wallet } from 'ethers';
 import { HDNode } from 'ethers/lib/utils';
 import { Address } from 'wagmi';
 
+import { KeychainType } from '~/core/types/keychainTypes';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
 
 import { IKeychain, PrivateKey } from '../IKeychain';
@@ -24,7 +25,7 @@ export class HdKeychain implements IKeychain {
   #hdPath: string;
 
   constructor() {
-    this.type = 'HdKeychain';
+    this.type = KeychainType.HdKeychain;
     this.imported = false;
     this.#wallets = [];
     this.#mnemonic = null;
@@ -59,18 +60,18 @@ export class HdKeychain implements IKeychain {
   }
 
   async deserialize(opts: SerializedHdKeychain) {
-    if (opts.hdPath) this.#hdPath = opts.hdPath;
-    if (opts.imported) this.imported = opts.imported;
-    if (opts.accountsEnabled) this.#accountsEnabled = opts.accountsEnabled;
+    if (opts?.hdPath) this.#hdPath = opts.hdPath;
+    if (opts?.imported) this.imported = opts.imported;
+    if (opts?.accountsEnabled) this.#accountsEnabled = opts.accountsEnabled;
 
-    if (opts.mnemonic) {
+    if (opts?.mnemonic) {
       this.#mnemonic = opts.mnemonic;
     } else {
       this.#mnemonic = Wallet.createRandom().mnemonic.phrase as string;
     }
 
     // If we didn't explicit add a new account, we need attempt to autodiscover the rest
-    if (opts.autodiscover) {
+    if (opts?.autodiscover) {
       // Autodiscover accounts
       let empty = false;
       while (!empty) {

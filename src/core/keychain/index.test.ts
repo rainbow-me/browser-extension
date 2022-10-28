@@ -1,14 +1,15 @@
 import { Wallet, ethers } from 'ethers';
 import { expect, test } from 'vitest';
 
-import { PrivateKey } from './IKeychain';
+import { KeychainType } from '../types/keychainTypes';
 
-import { keychainManager } from '.';
+import { PrivateKey } from './IKeychain';
+import { keychainManager } from './KeychainManager';
 
 let privateKey = '';
 
 test('should be able to create an HD wallet', async () => {
-  await keychainManager.addNewKeychain('HdKeychain', {});
+  await keychainManager.addNewKeychain();
   const accounts = await keychainManager.getAccounts();
   expect(accounts.length).toBe(1);
   expect(ethers.utils.isAddress(accounts[0])).toBe(true);
@@ -66,7 +67,8 @@ test('should be able to remove empty keychains', async () => {
 
 test('should be able to import a wallet using a seed phrase', async () => {
   let accounts = await keychainManager.getAccounts();
-  await keychainManager.addNewKeychain('HdKeychain', {
+  await keychainManager.importKeychain({
+    type: KeychainType.HdKeychain,
     mnemonic:
       'edge caught toy sniff enemy upon genre van tunnel make disorder home',
   });
@@ -106,7 +108,7 @@ test('should be able to autodiscover accounts when importing a seed phrase', asy
   let accounts = await keychainManager.getAccounts();
   expect(keychainManager.state.keychains.length).toBe(1);
   await keychainManager.importKeychain({
-    type: 'HdKeychain',
+    type: KeychainType.HdKeychain,
     mnemonic: 'test test test test test test test test test test test junk',
   });
   expect(keychainManager.state.keychains.length).toBe(2);

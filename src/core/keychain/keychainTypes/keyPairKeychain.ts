@@ -3,6 +3,8 @@ import { Signer, Wallet } from 'ethers';
 import { Mnemonic } from 'ethers/lib/utils';
 import { Address } from 'wagmi';
 
+import { KeychainType } from '~/core/types/keychainTypes';
+
 import { IKeychain, PrivateKey } from '../IKeychain';
 
 export interface SerializedKeypairKeychain {
@@ -15,7 +17,7 @@ export class KeyPairKeychain implements IKeychain {
   #wallets: Wallet[] | Signer[];
 
   constructor() {
-    this.type = 'KeyPairKeychain';
+    this.type = KeychainType.KeyPairKeychain;
     this.#wallets = [];
   }
 
