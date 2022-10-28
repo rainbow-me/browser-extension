@@ -6,15 +6,18 @@ import { useAssetPrices, useUserAssets } from '~/core/resources/assets';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
 import { useTransactions } from '~/core/resources/transactions/transactions';
 import { useCurrentCurrencyStore } from '~/core/state/currentCurrency';
+import { useCurrentLanguageStore } from '~/core/state/currentLanguage';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { Box, Inset, Stack, Text } from '~/design-system';
 
+import { Language, i18n } from '../../../../core/languages';
 import { ClearStorage } from '../../components/_dev/ClearStorage';
 import { InjectToggle } from '../../components/_dev/InjectToggle';
 
 export function Default() {
   const { address } = useAccount();
   const { currentCurrency, setCurrentCurrency } = useCurrentCurrencyStore();
+  const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
 
   const { data: userAssets } = useUserAssets({
     address,
@@ -59,6 +62,30 @@ export function Default() {
               {new Date(firstTransactionTimestamp).toString()}
             </Text>
           )}
+          <Text color="labelSecondary" size="16pt" weight="bold">
+            LANGUAGE (from state): {currentLanguage}
+          </Text>
+          <Text color="labelSecondary" size="16pt" weight="bold">
+            LANGUAGE SALUTE (from i18n): {i18n.t('test.salute')}
+          </Text>
+          <Box
+            as="button"
+            background="surfaceSecondary"
+            onClick={() => {
+              // set a random language
+              setCurrentLanguage(
+                [Language.EN, Language.ES, Language.FR, Language.PR].filter(
+                  (lang) => lang !== currentLanguage,
+                )[Math.round(Math.random() * 10) % 3],
+              );
+            }}
+            padding="16px"
+            style={{ borderRadius: 999 }}
+          >
+            <Text color="labelSecondary" size="16pt" weight="bold">
+              CHANGE LANGUAGE
+            </Text>
+          </Box>
         </Stack>
         <InjectToggle />
         <ClearStorage />
