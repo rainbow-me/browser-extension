@@ -3,7 +3,7 @@ import * as React from 'react';
 import { chain, useEnsAvatar, useEnsName } from 'wagmi';
 
 import { initializeMessenger } from '~/core/messengers';
-import { useDappSessionsStore } from '~/core/state';
+import { useAppSessionsStore } from '~/core/state';
 import { Box, Inline, Inset, Stack, Text } from '~/design-system';
 import { DEFAULT_ACCOUNT } from '~/entries/background/handlers/handleProviderRequest';
 
@@ -13,7 +13,7 @@ import { useDappSession } from '../hooks/useDappSession';
 const messenger = initializeMessenger({ connect: 'inpage' });
 
 export function ConnectedApps() {
-  const { dappSessions, clearSessions } = useDappSessionsStore();
+  const { appSessions, clearSessions } = useAppSessionsStore();
 
   return (
     /* TODO: Convert to <Rows> */
@@ -35,10 +35,10 @@ export function ConnectedApps() {
 
       {/* TODO: Convert to <Row> */}
       <Box>
-        {dappSessions.map((dappSession, i) => (
+        {appSessions.map((dappSession, i) => (
           <ConnectedApp
             key={i}
-            host={dappSession.url}
+            host={dappSession.host}
             address={dappSession.address}
             chainId={dappSession.chainId}
           />
