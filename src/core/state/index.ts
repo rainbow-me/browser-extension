@@ -1,9 +1,13 @@
-export { currentAddressStore, useCurrentAddressStore } from './currentAddress';
-export { currentChainIdStore, useCurrentChainIdStore } from './currentChainId';
 export {
+  currentAddressStore,
+  useCurrentAddressStore,
+  currentChainIdStore,
+  useCurrentChainIdStore,
   currentCurrencyStore,
   useCurrentCurrencyStore,
-} from './currentCurrency';
+  currentLanguageStore,
+  useCurrentLanguageStore,
+} from './currentSettings';
 export {
   notificationWindowStore,
   useNotificationWindowStore,

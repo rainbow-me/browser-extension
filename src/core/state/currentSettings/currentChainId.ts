@@ -1,6 +1,6 @@
 import create from 'zustand';
 
-import { createStore } from './internal/createStore';
+import { createStore } from '../internal/createStore';
 
 export interface CurrentChainIdState {
   currentChainId: number | null;
