@@ -2,7 +2,6 @@ import { ethers } from 'ethers';
 import { expect, test } from 'vitest';
 
 import { PrivateKey } from './IKeychain';
-import { keychainManager } from './KeychainManager';
 
 import {
   addNewAccount,
@@ -11,13 +10,13 @@ import {
   exportKeychain,
   getAccounts,
   getKeychains,
-  getVaultPassword,
   importWallet,
   isVaultUnlocked,
   lockVault,
   removeAccount,
   setVaultPassword,
   unlockVault,
+  verifyPassword,
 } from '.';
 
 let privateKey = '';
@@ -90,20 +89,18 @@ test('[keychain/index] :: should be able to import a wallet using a seed phrase'
 
 test('[keychain/index] :: should be able to update the password of the vault', async () => {
   await setVaultPassword('password');
-  expect(keychainManager.state.password).toBe('password');
+  expect(await verifyPassword('password')).toBe(true);
 });
 
 test('[keychain/index] :: should be able to lock the vault', async () => {
   await lockVault();
   expect(isVaultUnlocked()).toBe(false);
-  expect(getVaultPassword()).toBe(null);
   expect(getKeychains().length).toBe(0);
 });
 
 test('[keychain/index] :: should be able to unlock the vault', async () => {
   await unlockVault('password');
   expect(isVaultUnlocked()).toBe(true);
-  expect(getVaultPassword()).toBe('password');
   expect(getKeychains().length).toBe(1);
 });
 

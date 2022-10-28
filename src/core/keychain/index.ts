@@ -17,21 +17,32 @@ import { Keychain, keychainManager } from './KeychainManager';
 export const setVaultPassword = async (password: string) => {
   return keychainManager.setPassword(password);
 };
+export const verifyPassword = (password: string) => {
+  return keychainManager.verifyPassword(password);
+};
 
-export const unlockVault = (password: string) => {
-  return keychainManager.unlock(password);
+export const unlockVault = async (password: string) => {
+  try {
+    await keychainManager.unlock(password);
+    return keychainManager.state.isUnlocked;
+  } catch (e) {
+    return false;
+  }
+};
+
+export const wipeVault = async () => {
+  return keychainManager.wipe();
 };
 
 export const lockVault = () => {
   return keychainManager.lock();
 };
+export const hasVault = () => {
+  return !!keychainManager.state.vault;
+};
 
 export const isVaultUnlocked = (): boolean => {
   return keychainManager.state.isUnlocked;
-};
-
-export const getVaultPassword = (): string | null => {
-  return keychainManager.state.password;
 };
 
 export const getKeychains = (): Keychain[] => {

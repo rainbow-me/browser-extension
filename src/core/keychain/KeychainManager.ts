@@ -14,7 +14,6 @@ export type Keychain = KeyPairKeychain | HdKeychain;
 
 interface KeychainManagerState {
   keychains: Keychain[];
-  password: string | null;
   isUnlocked: boolean;
   vault: string;
 }
@@ -31,13 +30,13 @@ class KeychainManager {
   constructor() {
     this.state = {
       keychains: [],
-      password: '',
       isUnlocked: false,
       vault: '',
     };
     this.encryptor = Encryptor;
 
     privates.set(this, {
+      password: '',
       persist: () => {
         return Promise.all([
           privates.get(this).memorize(),
@@ -112,7 +111,7 @@ class KeychainManager {
         // Encrypt the serialized keychains
         if (serializedKeychains.length > 0) {
           this.state.vault = await this.encryptor.encrypt(
-            this.state.password as string,
+            privates.get(this).password as string,
             serializedKeychains,
           );
         } else {
@@ -135,8 +134,13 @@ class KeychainManager {
   }
 
   async setPassword(password: string) {
-    this.state.password = password;
+    privates.get(this).password = password;
+    this.state.isUnlocked = true;
     await privates.get(this).persist();
+  }
+
+  verifyPassword(password: string) {
+    return privates.get(this).password === password;
   }
 
   async addNewKeychain(opts?: unknown): Promise<Keychain> {
@@ -157,11 +161,13 @@ class KeychainManager {
   }
 
   async exportAccount(address: Address) {
+    // TODO - This should verify the password first
     const keychain = await this.getKeychain(address);
     return await keychain.exportAccount(address);
   }
 
   async exportKeychain(address: Address) {
+    // TODO - This should verify the password first
     const keychain = await this.getKeychain(address);
     return await keychain.exportKeychain();
   }
@@ -186,7 +192,6 @@ class KeychainManager {
 
   async lock() {
     const newState = {
-      password: null,
       isUnlocked: false,
       keychains: [],
     };
@@ -194,7 +199,22 @@ class KeychainManager {
       ...this.state,
       ...newState,
     };
+    privates.get(this).password = null;
     await privates.get(this).memorize();
+  }
+
+  async wipe() {
+    // TODO - This should verify the password first since it's a destructive action
+    this.state = {
+      isUnlocked: false,
+      keychains: [],
+      vault: '',
+    };
+
+    privates.get(this).password = null;
+
+    await chrome.storage.local.set({ vault: null });
+    await chrome.storage.session.set({ keychainManager: null });
   }
 
   async unlock(password: string) {
@@ -205,7 +225,7 @@ class KeychainManager {
       password,
       this.state.vault,
     );
-    this.state.password = password;
+    privates.get(this).password = password;
     this.state.isUnlocked = true;
     await Promise.all(
       vault.map((serializedKeychain) => {

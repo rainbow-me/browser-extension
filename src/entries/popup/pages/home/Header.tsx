@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import { useAccount, useBalance, useEnsName } from 'wagmi';
 
 import {
@@ -77,7 +78,9 @@ function NameSection() {
       <Text color="label" size="20pt" weight="heavy" testId="account-name">
         {ensName ?? truncateAddress(address || '0x')}
       </Text>
-      <SFSymbol color="labelTertiary" size={20} symbol="chevronDown" />
+      <Link to="/wallets">
+        <SFSymbol color="labelTertiary" size={20} symbol="chevronDown" />
+      </Link>
     </Inline>
   );
 }

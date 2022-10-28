@@ -87,20 +87,18 @@ test('[keychain/KeychainManager] :: should be able to get the signer of a specif
 
 test('[keychain/KeychainManager] :: should be able to update the password of the vault', async () => {
   await keychainManager.setPassword('password');
-  expect(keychainManager.state.password).toBe('password');
+  expect(await keychainManager.verifyPassword('password')).toBe(true);
 });
 
 test('[keychain/KeychainManager] :: should be able to lock the vault', async () => {
   await keychainManager.lock();
   expect(keychainManager.state.isUnlocked).toBe(false);
-  expect(keychainManager.state.password).toBe(null);
   expect(keychainManager.state.keychains.length).toBe(0);
 });
 
 test('[keychain/KeychainManager] :: should be able to unlock the vault', async () => {
   await keychainManager.unlock('password');
   expect(keychainManager.state.isUnlocked).toBe(true);
-  expect(keychainManager.state.password).toBe('password');
   expect(keychainManager.state.keychains.length).toBe(1);
 });
 

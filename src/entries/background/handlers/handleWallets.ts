@@ -8,12 +8,20 @@ import {
   exportAccount,
   exportKeychain,
   getAccounts,
+  hasVault,
   importWallet,
+  isVaultUnlocked,
+  lockVault,
   removeAccount,
   sendTransaction,
+  setVaultPassword,
   signMessage,
   signTypedData,
+  unlockVault,
+  verifyPassword,
+  wipeVault,
 } from '~/core/keychain';
+import { keychainManager } from '~/core/keychain/KeychainManager';
 import { initializeMessenger } from '~/core/messengers';
 import { EthereumWalletSeed } from '~/core/utils/ethereum';
 
@@ -50,11 +58,49 @@ export const handleWallets = () =>
   messenger.reply(
     'wallet_action',
     async ({ action, payload }: WalletActionArguments) => {
+      console.debug(keychainManager);
       try {
         let response = null;
         switch (action) {
+          case 'status':
+            response = {
+              hasVault: await hasVault(),
+              unlocked: await isVaultUnlocked(),
+            };
+            break;
+          case 'lock':
+            response = await lockVault();
+            break;
+          case 'set_password':
+            if (!hasVault()) {
+              response = await setVaultPassword(payload as string);
+            } else {
+              throw new Error('Vault already exists');
+            }
+            break;
+          case 'update_password': {
+            const { oldPassword, newPassword } = payload as {
+              oldPassword: string;
+              newPassword: string;
+            };
+
+            if (verifyPassword(oldPassword)) {
+              response = await setVaultPassword(newPassword);
+            } else {
+              throw new Error('Incorrect password');
+            }
+
+            break;
+          }
+          case 'wipe':
+            response = await wipeVault();
+            break;
+          case 'unlock':
+            response = await unlockVault(payload as string);
+            break;
           case 'create':
             response = await createWallet();
+            console.log('Created wallet', response);
             break;
           case 'import':
             response = await importWallet(payload as EthereumWalletSeed);
@@ -91,6 +137,7 @@ export const handleWallets = () =>
         }
         return { result: response };
       } catch (error) {
+        console.log('Error handling wallet action', action, error);
         return { action, error: <Error>error };
       }
     },
