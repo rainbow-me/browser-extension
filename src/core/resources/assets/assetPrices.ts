@@ -114,9 +114,14 @@ function parseAssetPrices(
 // ///////////////////////////////////////////////
 // Query Hook
 
-export function useAssetPrices(
+export function useAssetPrices<TSelectData = AssetPricesResult>(
   { assetAddresses, currency }: AssetPricesArgs,
-  config: QueryConfig<AssetPricesResult, Error, AssetPricesQueryKey> = {},
+  config: QueryConfig<
+    AssetPricesResult,
+    Error,
+    TSelectData,
+    AssetPricesQueryKey
+  > = {},
 ) {
   return useQuery(
     assetPricesQueryKey({ assetAddresses, currency }),

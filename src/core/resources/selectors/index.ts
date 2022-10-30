@@ -1,0 +1,1 @@
+export { selectUserAssetsList } from './assets';

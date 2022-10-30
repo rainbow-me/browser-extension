@@ -383,9 +383,14 @@ function parseTransactions(
 // ///////////////////////////////////////////////
 // Query Hook
 
-export function useTransactions(
+export function useTransactions<TSelectData = TransactionsResult>(
   { address, currency }: TransactionsArgs,
-  config: QueryConfig<TransactionsResult, Error, TransactionsQueryKey> = {},
+  config: QueryConfig<
+    TransactionsResult,
+    Error,
+    TSelectData,
+    TransactionsQueryKey
+  > = {},
 ) {
   return useQuery(
     transactionsQueryKey({ address, currency }),
