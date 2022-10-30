@@ -45,26 +45,7 @@ export const userAssetsByChainQueryKey = ({
 type UserAssetsByChainQueryKey = ReturnType<typeof userAssetsByChainQueryKey>;
 
 // ///////////////////////////////////////////////
-// Query Function
-
-export async function getAssetByChain(
-  { address, chain, currency }: UserAssetsByChainArgs,
-  resolver: (res: (value: unknown) => void) => () => void,
-) {
-  const isMainnet = chain === ChainName.mainnet;
-  const scope = [`${isMainnet ? '' : chain + '-'}assets`];
-  const event = `received address ${scope[0]}`;
-  refractionAddressWs.emit('get', {
-    payload: {
-      address,
-      currency: currency?.toLowerCase(),
-    },
-    scope,
-  });
-  return new Promise((resolve) => {
-    refractionAddressWs.on(event, resolver(resolve));
-  });
-}
+// Query Fetcher
 
 export async function fetchUserAssetsByChain<
   TSelectData = UserAssetsByChainResult,
@@ -83,6 +64,9 @@ export async function fetchUserAssetsByChain<
     config,
   );
 }
+
+// ///////////////////////////////////////////////
+// Query Function
 
 export async function userAssetsByChainQueryFunction({
   queryKey: [{ address, chain, currency }],

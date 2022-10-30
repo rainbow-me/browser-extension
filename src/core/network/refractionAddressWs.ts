@@ -23,6 +23,10 @@ export const refractionAddressMessages = {
 
 export const refractionAddressWs = createWebSocketClient({
   baseUrl: `${process.env.DATA_ENDPOINT}/address`,
+<<<<<<< HEAD
+=======
+  headers: { origin: process.env.DATA_ORIGIN || '' },
+>>>>>>> 1da5be0 (clean up)
   query: {
     api_token: process.env.DATA_API_KEY,
   },
