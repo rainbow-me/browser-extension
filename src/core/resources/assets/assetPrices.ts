@@ -59,7 +59,7 @@ async function assetPricesQueryFunction({
   });
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
-      refractionAssetsWs.removeEventListener(
+      refractionAssetsWs.removeListener(
         refractionAssetsMessages.ASSETS.RECEIVED,
         resolver,
       );
@@ -71,7 +71,7 @@ async function assetPricesQueryFunction({
     }, ASSET_PRICES_TIMEOUT_DURATION);
     const resolver = (message: AssetPricesReceivedMessage) => {
       clearTimeout(timeout);
-      refractionAssetsWs.removeEventListener(
+      refractionAssetsWs.removeListener(
         refractionAssetsMessages.ASSETS.RECEIVED,
         resolver,
       );

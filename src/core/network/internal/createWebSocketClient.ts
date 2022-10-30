@@ -1,17 +1,20 @@
-import io from 'socket.io-client';
+import { ManagerOptions, io } from 'socket.io-client';
 
 export function createWebSocketClient({
   baseUrl,
   headers,
+  path,
   query,
 }: {
   baseUrl: string;
-  headers?: SocketIOClient.ConnectOpts['transportOptions'];
-  query?: SocketIOClient.ConnectOpts['query'];
+  headers: ManagerOptions['extraHeaders'];
+  path: ManagerOptions['path'];
+  query?: ManagerOptions['query'];
 }) {
   return io(baseUrl, {
-    extraHeaders: headers,
     query,
+    extraHeaders: headers,
+    path,
     transports: ['websocket'],
-  } as SocketIOClient.ConnectOpts);
+  });
 }
