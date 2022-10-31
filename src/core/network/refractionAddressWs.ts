@@ -22,9 +22,7 @@ export const refractionAddressMessages = {
 };
 
 export const refractionAddressWs = createWebSocketClient({
-  baseUrl: 'https://refraction.api.p.rainbow.me',
-  headers: { origin: process.env.DATA_ORIGIN || '' },
-  path: '/address',
+  baseUrl: `${process.env.DATA_ENDPOINT}/address`,
   query: {
     api_token: process.env.DATA_API_KEY,
   },
