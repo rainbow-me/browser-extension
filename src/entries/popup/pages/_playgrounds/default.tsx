@@ -2,8 +2,8 @@ import React from 'react';
 import { chain, useAccount, useBalance } from 'wagmi';
 
 import { ETH_ADDRESS } from '~/core/references';
+import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { useAssetPrices, useUserAssets } from '~/core/resources/assets';
-import { selectUserAssetsList } from '~/core/resources/selectors';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
 import { useTransactions } from '~/core/resources/transactions/transactions';
 import { useCurrentCurrencyStore } from '~/core/state/currentCurrency';

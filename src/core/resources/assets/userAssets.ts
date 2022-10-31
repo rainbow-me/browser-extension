@@ -44,7 +44,10 @@ async function userAssetsQueryFunctionByChain({
 }): Promise<ParsedAssetsDictByChain> {
   const queries = [];
   const getResultsForChain = async (chain: ChainName) => {
-    const results = await fetchUserAssetsByChain({ address, chain, currency });
+    const results = await fetchUserAssetsByChain(
+      { address, chain, currency },
+      { cacheTime: 0 },
+    );
     return {
       [chain]: results,
     };
