@@ -17,10 +17,6 @@ export const refractionAssetsMessages = {
 
 export const refractionAssetsWs = createWebSocketClient({
   baseUrl: `${process.env.DATA_ENDPOINT}/assets`,
-<<<<<<< HEAD
-=======
-  headers: { origin: process.env.DATA_ORIGIN || '' },
->>>>>>> 1da5be0 (clean up)
   query: {
     api_token: process.env.DATA_API_KEY,
   },
