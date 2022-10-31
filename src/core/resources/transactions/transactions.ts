@@ -67,10 +67,6 @@ async function transactionsQueryFunction({
   });
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
-      refractionAddressWs.removeListener(
-        refractionAddressMessages.ADDRESS_TRANSACTIONS.RECEIVED,
-        resolver,
-      );
       resolve(
         queryClient.getQueryData(transactionsQueryKey({ address, currency })) ||
           [],
@@ -78,13 +74,9 @@ async function transactionsQueryFunction({
     }, TRANSACTIONS_TIMEOUT_DURATION);
     const resolver = (message: TransactionsReceivedMessage) => {
       clearTimeout(timeout);
-      refractionAddressWs.removeListener(
-        refractionAddressMessages.ADDRESS_TRANSACTIONS.RECEIVED,
-        resolver,
-      );
       resolve(parseTransactions(message, currency));
     };
-    refractionAddressWs.on(
+    refractionAddressWs.once(
       refractionAddressMessages.ADDRESS_TRANSACTIONS.RECEIVED,
       resolver,
     );

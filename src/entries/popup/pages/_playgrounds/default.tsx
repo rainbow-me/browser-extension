@@ -28,7 +28,9 @@ export function Default() {
     { select: selectUserAssetsList },
   );
   const { data: assetPrices } = useAssetPrices({
-    assetAddresses: Object.keys(userAssets || {}).concat(ETH_ADDRESS),
+    assetAddresses: userAssets
+      ?.map((asset) => asset?.address)
+      .concat(ETH_ADDRESS),
     currency: currentCurrency,
   });
   const { data: transactions } = useTransactions({

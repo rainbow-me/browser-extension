@@ -59,10 +59,6 @@ async function assetPricesQueryFunction({
   });
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
-      refractionAssetsWs.removeListener(
-        refractionAssetsMessages.ASSETS.RECEIVED,
-        resolver,
-      );
       resolve(
         queryClient.getQueryData(
           assetPricesQueryKey({ assetAddresses, currency }),
@@ -71,13 +67,9 @@ async function assetPricesQueryFunction({
     }, ASSET_PRICES_TIMEOUT_DURATION);
     const resolver = (message: AssetPricesReceivedMessage) => {
       clearTimeout(timeout);
-      refractionAssetsWs.removeListener(
-        refractionAssetsMessages.ASSETS.RECEIVED,
-        resolver,
-      );
       resolve(parseAssetPrices(message, currency));
     };
-    refractionAssetsWs.on(refractionAssetsMessages.ASSETS.RECEIVED, resolver);
+    refractionAssetsWs.once(refractionAssetsMessages.ASSETS.RECEIVED, resolver);
   });
 }
 

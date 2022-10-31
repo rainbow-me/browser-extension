@@ -85,7 +85,6 @@ export async function userAssetsByChainQueryFunction({
   });
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
-      refractionAddressWs.removeEventListener(event, resolver);
       resolve(
         queryClient.getQueryData(
           userAssetsByChainQueryKey({ address, chain, currency }),
@@ -94,10 +93,9 @@ export async function userAssetsByChainQueryFunction({
     }, USER_ASSETS_TIMEOUT_DURATION);
     const resolver = (message: AddressAssetsReceivedMessage) => {
       clearTimeout(timeout);
-      refractionAddressWs.removeEventListener(event, resolver);
       resolve(parseUserAssetsByChain(message, currency));
     };
-    refractionAddressWs.on(event, resolver);
+    refractionAddressWs.once(event, resolver);
   });
 }
 
