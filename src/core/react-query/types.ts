@@ -23,8 +23,13 @@ export type QueryFunctionResult<FnType extends (...args: any) => any> =
 // to the React Query hook. So we are picking out the only the
 // configuration the consumer needs. I think these options are
 // reasonable.
-export type QueryConfig<TData, TError, TQueryKey extends QueryKey> = Pick<
-  UseQueryOptions<TData, TError, TData, TQueryKey>,
+export type QueryConfig<
+  TQueryFnData,
+  TError,
+  TData,
+  TQueryKey extends QueryKey,
+> = Pick<
+  UseQueryOptions<TQueryFnData, TError, TData, TQueryKey>,
   | 'cacheTime'
   | 'enabled'
   | 'refetchInterval'

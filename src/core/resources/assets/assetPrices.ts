@@ -59,10 +59,6 @@ async function assetPricesQueryFunction({
   });
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
-      refractionAssetsWs.removeListener(
-        refractionAssetsMessages.ASSETS.RECEIVED,
-        resolver,
-      );
       resolve(
         queryClient.getQueryData(
           assetPricesQueryKey({ assetAddresses, currency }),
@@ -71,13 +67,9 @@ async function assetPricesQueryFunction({
     }, ASSET_PRICES_TIMEOUT_DURATION);
     const resolver = (message: AssetPricesReceivedMessage) => {
       clearTimeout(timeout);
-      refractionAssetsWs.removeListener(
-        refractionAssetsMessages.ASSETS.RECEIVED,
-        resolver,
-      );
       resolve(parseAssetPrices(message, currency));
     };
-    refractionAssetsWs.on(refractionAssetsMessages.ASSETS.RECEIVED, resolver);
+    refractionAssetsWs.once(refractionAssetsMessages.ASSETS.RECEIVED, resolver);
   });
 }
 
@@ -114,9 +106,14 @@ function parseAssetPrices(
 // ///////////////////////////////////////////////
 // Query Hook
 
-export function useAssetPrices(
+export function useAssetPrices<TSelectData = AssetPricesResult>(
   { assetAddresses, currency }: AssetPricesArgs,
-  config: QueryConfig<AssetPricesResult, Error, AssetPricesQueryKey> = {},
+  config: QueryConfig<
+    AssetPricesResult,
+    Error,
+    TSelectData,
+    AssetPricesQueryKey
+  > = {},
 ) {
   return useQuery(
     assetPricesQueryKey({ assetAddresses, currency }),

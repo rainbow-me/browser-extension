@@ -63,6 +63,7 @@ export async function fetchFirstTransactionTimestamp(
   config: QueryConfig<
     FirstTransactionTimestampResult,
     Error,
+    FirstTransactionTimestampResult,
     FirstTransactionTimestampQueryKey
   > = {},
 ) {
@@ -81,6 +82,7 @@ export function useFirstTransactionTimestamp(
   config: QueryConfig<
     FirstTransactionTimestampResult,
     Error,
+    FirstTransactionTimestampResult,
     FirstTransactionTimestampQueryKey
   > = {},
 ) {
