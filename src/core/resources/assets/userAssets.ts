@@ -64,7 +64,7 @@ async function userAssetsQueryFunction({
   });
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
-      refractionAddressWs.removeEventListener(
+      refractionAddressWs.removeListener(
         refractionAddressMessages.ADDRESS_ASSETS.RECEIVED,
         resolver,
       );
@@ -74,8 +74,9 @@ async function userAssetsQueryFunction({
       );
     }, USER_ASSETS_TIMEOUT_DURATION);
     const resolver = (message: AddressAssetsReceivedMessage) => {
+      console.log('message in resolver: ', message);
       clearTimeout(timeout);
-      refractionAddressWs.removeEventListener(
+      refractionAddressWs.removeListener(
         refractionAddressMessages.ADDRESS_ASSETS.RECEIVED,
         resolver,
       );

@@ -75,7 +75,7 @@
     "react-dom": "18.2.0",
     "react-flatten-children": "1.1.2",
     "react-router-dom": "6.4.2",
-    "socket.io-client": "2.3.1",
+    "socket.io-client": "4.5.3",
     "wagmi": "0.7.5",
     "zustand": "4.1.2"
   },
@@ -90,7 +90,6 @@
     "@types/react": "18.0.21",
     "@types/react-dom": "18.0.6",
     "@types/selenium-webdriver": "4.1.5",
-    "@types/socket.io-client": "1.4.36",
     "@typescript-eslint/eslint-plugin": "5.38.1",
     "@typescript-eslint/parser": "5.38.1",
     "@vanilla-extract/vite-plugin": "3.6.1",
@@ -140,10 +139,7 @@
     "lodash": "4.17.21",
     "underscore": "1.12.1",
     "underscore.string": "3.3.5",
-    "clean-css": "4.1.11",
-    "socket.io-parser": "3.3.2",
-    "socket.io-client/engine.io-client/ws": "6.2.2",
-    "socket.io-client/engine.io-client/xmlhttprequest-ssl": "1.6.2"
+    "clean-css": "4.1.11"
   },
   "lavamoat": {
     "allowScripts": {

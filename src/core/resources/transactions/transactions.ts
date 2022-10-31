@@ -67,7 +67,7 @@ async function transactionsQueryFunction({
   });
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
-      refractionAddressWs.removeEventListener(
+      refractionAddressWs.removeListener(
         refractionAddressMessages.ADDRESS_TRANSACTIONS.RECEIVED,
         resolver,
       );
@@ -78,7 +78,7 @@ async function transactionsQueryFunction({
     }, TRANSACTIONS_TIMEOUT_DURATION);
     const resolver = (message: TransactionsReceivedMessage) => {
       clearTimeout(timeout);
-      refractionAddressWs.removeEventListener(
+      refractionAddressWs.removeListener(
         refractionAddressMessages.ADDRESS_TRANSACTIONS.RECEIVED,
         resolver,
       );
