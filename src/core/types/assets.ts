@@ -1,3 +1,5 @@
+import { Address } from 'wagmi';
+
 import { ChainName } from '~/core/types/chains';
 
 export interface ParsedAddressAsset {
@@ -25,6 +27,11 @@ export interface ParsedAddressAsset {
   type: string;
   uniqueId: string;
 }
+
+export type ParsedAssetsDict = Record<Address, ParsedAddressAsset>;
+
+export type ParsedAssetsDictByChain = Record<ChainName, ParsedAssetsDict>;
+
 export interface ZerionAssetPrice {
   value: number;
   relative_change_24h?: number;
@@ -53,6 +60,7 @@ export interface ZerionAsset {
   type?: AssetType;
   icon_url?: string;
   price?: ZerionAssetPrice;
+  network?: ChainName;
 }
 
 export interface RainbowPrice {

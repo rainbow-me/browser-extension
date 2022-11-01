@@ -1,10 +1,21 @@
-import { SupportedCurrencyKey } from '../references';
-import { ZerionAssetPrice } from '../types/assets';
+import { Address } from 'wagmi';
 
+import { SupportedCurrencyKey } from '~/core/references';
+import {
+  AssetType,
+  ParsedAddressAsset,
+  ZerionAsset,
+  ZerionAssetPrice,
+} from '~/core/types/assets';
+import { ChainName } from '~/core/types/chains';
+
+import { isNativeAsset } from './chains';
 import {
   convertAmountAndPriceToNativeDisplay,
+  convertAmountToBalanceDisplay,
   convertAmountToNativeDisplay,
   convertAmountToPercentageDisplay,
+  convertRawAmountToDecimalFormat,
 } from './numbers';
 
 const get24HrChange = (priceData?: ZerionAssetPrice) => {
@@ -41,3 +52,51 @@ export const getNativeAssetBalance = ({
 }) => {
   return convertAmountAndPriceToNativeDisplay(value, priceUnit, currency);
 };
+
+export function parseAsset({
+  address,
+  asset,
+  currency,
+  quantity,
+}: {
+  address: Address;
+  asset: ZerionAsset;
+  currency: SupportedCurrencyKey;
+  quantity: string;
+}): ParsedAddressAsset {
+  const chainName = asset?.network ?? ChainName.mainnet;
+  const uniqueId =
+    chainName === ChainName.mainnet ? address : `${address}_${chainName}`;
+  const amount = convertRawAmountToDecimalFormat(quantity, asset?.decimals);
+  const parsedAsset = {
+    address,
+    balance: {
+      amount,
+      display: convertAmountToBalanceDisplay(amount, {
+        decimals: asset?.decimals,
+        symbol: asset?.symbol,
+      }),
+    },
+    chainName,
+    isNativeAsset: isNativeAsset(address, chainName),
+    name: asset?.name,
+    native: {
+      balance: getNativeAssetBalance({
+        currency,
+        decimals: asset?.decimals,
+        priceUnit: asset?.price?.value || 0,
+        value: amount,
+      }),
+      price: getNativeAssetPrice({
+        currency,
+        priceData: asset?.price,
+      }),
+    },
+    price: asset?.price,
+    symbol: asset?.symbol,
+    type: asset?.type ?? AssetType.token,
+    uniqueId,
+  };
+
+  return parsedAsset;
+}

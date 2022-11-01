@@ -1,12 +1,17 @@
-export { currentAddressStore, useCurrentAddressStore } from './currentAddress';
 export {
+  currentAddressStore,
+  useCurrentAddressStore,
+  currentChainIdStore,
+  useCurrentChainIdStore,
   currentCurrencyStore,
   useCurrentCurrencyStore,
-} from './currentCurrency';
+  currentLanguageStore,
+  useCurrentLanguageStore,
+} from './currentSettings';
 export {
   notificationWindowStore,
   useNotificationWindowStore,
 } from './notificationWindow';
-export { approvedHostsStore, useApprovedHostsStore } from './approvedHosts';
-export { pendingRequestStore, usePendingRequestStore } from './pendingRequest';
+export { appSessionsStore, useAppSessionsStore } from './appSessions';
+export { pendingRequestStore, usePendingRequestStore } from './requests';
 export { syncStores } from './internal/syncStores';

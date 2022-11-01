@@ -1,7 +1,7 @@
 import { Address } from 'wagmi';
 import create from 'zustand';
 
-import { createStore } from './internal/createStore';
+import { createStore } from '../internal/createStore';
 
 export interface CurrentAddressState {
   currentAddress: Address | null;
