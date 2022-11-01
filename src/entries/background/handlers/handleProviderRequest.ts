@@ -61,7 +61,7 @@ export const handleProviderRequest = ({
 
     const { isActiveSession, addSession } = appSessionsStore.getState();
     const host = new URL(meta.sender.url || '').host;
-    const approvedHost = isActiveSession(host);
+    const approvedHost = isActiveSession({ host });
 
     try {
       let response = null;

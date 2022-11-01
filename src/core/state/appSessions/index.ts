@@ -4,64 +4,81 @@ import create from 'zustand';
 import { createStore } from '../internal/createStore';
 
 export interface AppSessionsStore {
-  appSessions: { host: string; address: Address; chainId: number }[];
-  isActiveSession: (host?: string) => boolean;
+  appSessions: Record<
+    string,
+    { host: string; address: Address; chainId: number }
+  >;
+  isActiveSession: ({ host }: { host: string }) => boolean;
   addSession: (host: string, address: Address, chainId: number) => void;
-  removeSession: (host: string) => void;
-  updateSessionChainId: (host: string, chainId: number) => void;
-  updateSessionAddress: (host: string, address: Address) => void;
+  removeSession: ({ host }: { host: string }) => void;
+  updateSessionChainId: ({
+    host,
+    chainId,
+  }: {
+    host: string;
+    chainId: number;
+  }) => void;
+  updateSessionAddress: ({
+    host,
+    address,
+  }: {
+    host: string;
+    address: Address;
+  }) => void;
   clearSessions: () => void;
 }
 
 export const appSessionsStore = createStore<AppSessionsStore>(
   (set, get) => ({
-    appSessions: [],
-    isActiveSession: (host) => {
+    appSessions: {},
+    isActiveSession: ({ host }) => {
       const appSessions = get().appSessions;
-      return !!host && !!appSessions.find((session) => session.host === host);
+      return !!host && !!appSessions[host];
     },
     addSession: (host, address, chainId) => {
       const appSessions = get().appSessions;
-      const existingSession = appSessions.find(
-        (session) => session.host === host,
-      );
+      const existingSession = appSessions[host];
+      if (!existingSession) {
+        appSessions[host] = { host, address, chainId };
+      }
       set({
-        appSessions: existingSession
-          ? appSessions
-          : appSessions.concat([{ host, address, chainId }]),
+        appSessions,
       });
     },
-    removeSession: (host) => {
+    removeSession: ({ host }) => {
       const appSessions = get().appSessions;
+      delete appSessions[host];
       set({
-        appSessions: appSessions.filter((session) => session.host !== host),
+        appSessions,
       });
     },
-    updateSessionChainId: (host, chainId) => {
+    updateSessionChainId: ({ host, chainId }) => {
       const appSessions = get().appSessions;
-      const newSessions = appSessions.map((session) => {
-        if (session.host === host) {
-          return { ...session, chainId };
-        }
-        return session;
-      });
+      const newSessions = {
+        ...appSessions,
+        [host]: {
+          ...appSessions[host],
+          chainId,
+        },
+      };
       set({
         appSessions: newSessions,
       });
     },
-    updateSessionAddress: (host, address) => {
+    updateSessionAddress: ({ host, address }) => {
       const appSessions = get().appSessions;
-      const newSessions = appSessions.map((session) => {
-        if (session.host === host) {
-          return { ...session, address };
-        }
-        return session;
-      });
+      const newSessions = {
+        ...appSessions,
+        [host]: {
+          ...appSessions[host],
+          address,
+        },
+      };
       set({
         appSessions: newSessions,
       });
     },
-    clearSessions: () => set({ appSessions: [] }),
+    clearSessions: () => set({ appSessions: {} }),
   }),
   {
     persist: {
