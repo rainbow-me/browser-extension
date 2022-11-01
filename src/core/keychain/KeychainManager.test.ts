@@ -7,6 +7,7 @@ import { PrivateKey } from './IKeychain';
 import { keychainManager } from './KeychainManager';
 
 let privateKey = '';
+let password = '';
 
 test('[keychain/KeychainManager] :: should be able to create an HD wallet', async () => {
   await keychainManager.addNewKeychain();
@@ -26,7 +27,10 @@ test('[keychain/KeychainManager] :: should be able to add an account', async () 
 
 test('[keychain/KeychainManager] :: should be able to export a private key for an account', async () => {
   const accounts = await keychainManager.getAccounts();
-  privateKey = (await keychainManager.exportAccount(accounts[1])) as PrivateKey;
+  privateKey = (await keychainManager.exportAccount(
+    accounts[1],
+    password,
+  )) as PrivateKey;
   expect(ethers.utils.isBytesLike(privateKey)).toBe(true);
 });
 
@@ -39,7 +43,10 @@ test('[keychain/KeychainManager] :: should be able to remove an account from an 
 
 test('[keychain/KeychainManager] :: should be able to export the seed phrase for an HD wallet', async () => {
   const accounts = await keychainManager.getAccounts();
-  const seedPhrase = await keychainManager.exportKeychain(accounts[0]);
+  const seedPhrase = await keychainManager.exportKeychain(
+    accounts[0],
+    password,
+  );
   expect(seedPhrase.split(' ').length).toBe(12);
 });
 
@@ -86,8 +93,9 @@ test('[keychain/KeychainManager] :: should be able to get the signer of a specif
 });
 
 test('[keychain/KeychainManager] :: should be able to update the password of the vault', async () => {
-  await keychainManager.setPassword('password');
-  expect(await keychainManager.verifyPassword('password')).toBe(true);
+  password = 'newPassword';
+  await keychainManager.setPassword(password);
+  expect(await keychainManager.verifyPassword(password)).toBe(true);
 });
 
 test('[keychain/KeychainManager] :: should be able to lock the vault', async () => {
@@ -97,7 +105,7 @@ test('[keychain/KeychainManager] :: should be able to lock the vault', async () 
 });
 
 test('[keychain/KeychainManager] :: should be able to unlock the vault', async () => {
-  await keychainManager.unlock('password');
+  await keychainManager.unlock(password);
   expect(keychainManager.state.isUnlocked).toBe(true);
   expect(keychainManager.state.keychains.length).toBe(1);
 });
@@ -118,9 +126,11 @@ test('[keychain/KeychainManager] :: should be able to autodiscover accounts when
 
   const privateKey1 = (await keychainManager.exportAccount(
     accounts[1],
+    password,
   )) as PrivateKey;
   const privateKey2 = (await keychainManager.exportAccount(
     accounts[2],
+    password,
   )) as PrivateKey;
 
   expect(privateKey1).equal(

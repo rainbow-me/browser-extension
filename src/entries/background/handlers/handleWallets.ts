@@ -18,7 +18,6 @@ import {
   signMessage,
   signTypedData,
   unlockVault,
-  verifyPassword,
   wipeVault,
 } from '~/core/keychain';
 import { keychainManager } from '~/core/keychain/KeychainManager';
@@ -71,29 +70,18 @@ export const handleWallets = () =>
           case 'lock':
             response = await lockVault();
             break;
-          case 'set_password':
-            if (!hasVault()) {
-              response = await setVaultPassword(payload as string);
-            } else {
-              throw new Error('Vault already exists');
-            }
-            break;
           case 'update_password': {
-            const { oldPassword, newPassword } = payload as {
-              oldPassword: string;
+            const { password, newPassword } = payload as {
+              password: string;
               newPassword: string;
             };
 
-            if (verifyPassword(oldPassword)) {
-              response = await setVaultPassword(newPassword);
-            } else {
-              throw new Error('Incorrect password');
-            }
+            response = await setVaultPassword(password, newPassword);
 
             break;
           }
           case 'wipe':
-            response = await wipeVault();
+            response = await wipeVault(payload as string);
             break;
           case 'unlock':
             response = await unlockVault(payload as string);
@@ -114,12 +102,22 @@ export const handleWallets = () =>
           case 'get_accounts':
             response = await getAccounts();
             break;
-          case 'export_wallet':
-            response = await exportKeychain(payload as Address);
+          case 'export_wallet': {
+            const { address, password } = payload as {
+              address: Address;
+              password: string;
+            };
+            response = await exportKeychain(address, password);
             break;
-          case 'export_account':
-            response = await exportAccount(payload as Address);
+          }
+          case 'export_account': {
+            const { address, password } = payload as {
+              address: Address;
+              password: string;
+            };
+            response = await exportAccount(address, password);
             break;
+          }
           case 'send_transaction':
             response = await sendTransaction(
               payload as SendTransactionArguments,

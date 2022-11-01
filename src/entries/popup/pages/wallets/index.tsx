@@ -28,22 +28,37 @@ function PasswordForm({
   title,
   action,
   onSubmit,
+  onPasswordChanged,
 }: {
   title: string;
   action: string;
   onSubmit: () => void;
+  onPasswordChanged: (pwd: string) => void;
 }) {
   const [password, setPassword] = useState<string>('');
   const [errorMsg, setErrorMsg] = useState<string>('');
   const handlePasswordChange = useCallback(
     (event: { target: { value: React.SetStateAction<string> } }) => {
       setPassword(event.target.value);
+      onPasswordChanged(event.target.value as string);
     },
-    [setPassword],
+    [onPasswordChanged],
   );
 
   const unlock = useCallback(async () => {
-    const result = await walletAction(action, password);
+    let params:
+      | string
+      | {
+          password: string;
+          newPassword?: string;
+        } = password;
+    if (action === 'update_password') {
+      params = {
+        password: '',
+        newPassword: password,
+      };
+    }
+    const result = await walletAction(action, params);
     if (action === 'unlock' && !result) {
       setErrorMsg('Incorrect password');
     } else {
@@ -60,7 +75,7 @@ function PasswordForm({
       <input
         type="password"
         value={password}
-        placeholder={action === 'set_password' ? 'New password' : 'Password'}
+        placeholder={action === 'update_password' ? 'New password' : 'Password'}
         onChange={handlePasswordChange}
         style={{ borderRadius: 999, padding: '10px', fontSize: '11pt' }}
       />
@@ -73,7 +88,7 @@ function PasswordForm({
         style={{ borderRadius: 999 }}
       >
         <Text color="label" size="14pt" weight="bold">
-          {action === 'set_password' ? 'Set Password' : 'Unlock'}
+          {action === 'update_password' ? 'Set Password' : 'Unlock'}
         </Text>
       </Box>
 
@@ -263,6 +278,7 @@ export function Wallets() {
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [accounts, setAccounts] = useState<Address[]>([]);
   const [secret, setSecret] = useState<EthereumWalletSeed>('');
+  const [password, setPassword] = useState<string>('');
   const [isUnlocked, setIsUnlocked] = useState<boolean>(true);
   const [isNewUser, setIsNewUser] = useState<boolean>(true);
 
@@ -270,6 +286,10 @@ export function Wallets() {
     const accounts = (await walletAction('get_accounts', {})) as Address[];
     console.log('got accounts', accounts);
     return accounts;
+  }, []);
+
+  const updatePassword = useCallback((pwd: string) => {
+    setPassword(pwd);
   }, []);
 
   const updateState = useCallback(async () => {
@@ -345,17 +365,29 @@ export function Wallets() {
     return address;
   }, [accounts, updateState]);
 
-  const exportWallet = useCallback(async (address: Address) => {
-    const seed = (await walletAction('export_wallet', address)) as Address[];
-    console.log('export_wallet', seed);
-    return seed;
-  }, []);
+  const exportWallet = useCallback(
+    async (address: Address) => {
+      const seed = (await walletAction('export_wallet', {
+        address,
+        password,
+      })) as Address[];
+      console.log('export_wallet', seed);
+      return seed;
+    },
+    [password],
+  );
 
-  const exportAccount = useCallback(async (address: Address) => {
-    const pkey = (await walletAction('export_account', address)) as Address[];
-    console.log('export_account', pkey);
-    return pkey;
-  }, []);
+  const exportAccount = useCallback(
+    async (address: Address) => {
+      const pkey = (await walletAction('export_account', {
+        address,
+        password,
+      })) as Address[];
+      console.log('export_account', pkey);
+      return pkey;
+    },
+    [password],
+  );
 
   const switchAddress = useCallback((address: Address) => {
     setSelectedAddress(address);
@@ -420,7 +452,8 @@ export function Wallets() {
   ) : (
     <PasswordForm
       title={isNewUser ? 'Set a password to protect your wallet' : 'Login'}
-      action={isNewUser ? 'set_password' : 'unlock'}
+      action={isNewUser ? 'update_password' : 'unlock'}
+      onPasswordChanged={updatePassword}
       onSubmit={updateState}
     />
   );

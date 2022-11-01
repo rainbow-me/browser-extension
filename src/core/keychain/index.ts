@@ -12,10 +12,16 @@ import { KeychainType } from '../types/keychainTypes';
 import { EthereumWalletType } from '../types/walletTypes';
 import { EthereumWalletSeed, identifyWalletType } from '../utils/ethereum';
 
-import { Keychain, keychainManager } from './KeychainManager';
+import { keychainManager } from './KeychainManager';
 
-export const setVaultPassword = async (password: string) => {
-  return keychainManager.setPassword(password);
+export const setVaultPassword = async (
+  password: string,
+  newPassword: string,
+) => {
+  if (!verifyPassword(password)) {
+    throw new Error('Invalid password');
+  }
+  return keychainManager.setPassword(newPassword);
 };
 export const verifyPassword = (password: string) => {
   return keychainManager.verifyPassword(password);
@@ -30,8 +36,8 @@ export const unlockVault = async (password: string) => {
   }
 };
 
-export const wipeVault = async () => {
-  return keychainManager.wipe();
+export const wipeVault = async (password: string) => {
+  return keychainManager.wipe(password);
 };
 
 export const lockVault = () => {
@@ -43,10 +49,6 @@ export const hasVault = () => {
 
 export const isVaultUnlocked = (): boolean => {
   return keychainManager.state.isUnlocked;
-};
-
-export const getKeychains = (): Keychain[] => {
-  return keychainManager.state.keychains;
 };
 
 export const createWallet = async (): Promise<Address> => {
@@ -96,6 +98,9 @@ export const removeAccount = async (address: Address): Promise<void> => {
   return keychainManager.removeAccount(address);
 };
 
+export const getWallets = async () => {
+  return keychainManager.getWallets();
+};
 export const getAccounts = async (): Promise<Address[]> => {
   return keychainManager.getAccounts();
 };
@@ -104,12 +109,18 @@ export const getSigner = async (address: Address): Promise<Signer> => {
   return keychainManager.getSigner(address);
 };
 
-export const exportKeychain = async (address: Address): Promise<string> => {
-  return keychainManager.exportKeychain(address);
+export const exportKeychain = async (
+  address: Address,
+  password: string,
+): Promise<string> => {
+  return keychainManager.exportKeychain(address, password);
 };
 
-export const exportAccount = async (address: Address): Promise<string> => {
-  return keychainManager.exportAccount(address);
+export const exportAccount = async (
+  address: Address,
+  password: string,
+): Promise<string> => {
+  return keychainManager.exportAccount(address, password);
 };
 
 export const sendTransaction = async ({

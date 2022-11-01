@@ -84,6 +84,7 @@ class KeychainManager {
           default:
             throw new Error('Keychain type not recognized.');
         }
+        await this.checkForDuplicateInKeychain(keychain);
         this.state.keychains.push(keychain as Keychain);
         await privates.get(this).persist();
         return keychain;
@@ -143,9 +144,22 @@ class KeychainManager {
     return privates.get(this).password === password;
   }
 
+  async checkForDuplicateInKeychain(keychain: Keychain) {
+    const existingAccounts = await this.getAccounts();
+    const newAccounts = await keychain.getAccounts();
+    for (let i = 0; i < newAccounts.length; i++) {
+      if (existingAccounts.includes(newAccounts[i])) {
+        throw new Error(`Duplicate account ${newAccounts[i]}`);
+      }
+    }
+
+    return;
+  }
+
   async addNewKeychain(opts?: unknown): Promise<Keychain> {
     const keychain = new HdKeychain();
     await keychain.init(opts as SerializedHdKeychain);
+    await this.checkForDuplicateInKeychain(keychain);
     this.state.keychains.push(keychain as Keychain);
     this.state.isUnlocked = true;
     await privates.get(this).persist();
@@ -160,15 +174,19 @@ class KeychainManager {
     });
   }
 
-  async exportAccount(address: Address) {
-    // TODO - This should verify the password first
+  async exportAccount(address: Address, password: string) {
     const keychain = await this.getKeychain(address);
+    if (!this.verifyPassword(password)) {
+      throw new Error('Wrong password');
+    }
     return await keychain.exportAccount(address);
   }
 
-  async exportKeychain(address: Address) {
-    // TODO - This should verify the password first
+  async exportKeychain(address: Address, password: string) {
     const keychain = await this.getKeychain(address);
+    if (!this.verifyPassword(password)) {
+      throw new Error('Wrong password');
+    }
     return await keychain.exportKeychain();
   }
 
@@ -203,8 +221,10 @@ class KeychainManager {
     await privates.get(this).memorize();
   }
 
-  async wipe() {
-    // TODO - This should verify the password first since it's a destructive action
+  async wipe(password: string) {
+    if (!this.verifyPassword(password)) {
+      throw new Error('Wrong password');
+    }
     this.state = {
       isUnlocked: false,
       keychains: [],
@@ -246,6 +266,24 @@ class KeychainManager {
     }, []);
 
     return addresses;
+  }
+
+  async getWallets() {
+    const keychains = this.state.keychains || [];
+
+    const keychainArrays = [];
+    for (let i = 0; i < keychains.length; i++) {
+      const accounts = await keychains[i].getAccounts();
+      keychainArrays.push({
+        type: keychains[i].type,
+        accounts,
+        imported:
+          keychains[i].type === KeychainType.HdKeychain
+            ? (keychains[i] as HdKeychain).imported
+            : false,
+      });
+    }
+    return keychainArrays;
   }
 
   async getKeychain(address: Address) {
