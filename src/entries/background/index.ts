@@ -7,6 +7,7 @@ import { handleInstallExtension } from './handlers/handleInstallExtension';
 import { handleProviderRequest } from './handlers/handleProviderRequest';
 
 const messenger = initializeMessenger({ connect: 'popup' });
+
 initializeSentry();
 createWagmiClient();
 handleInstallExtension();
