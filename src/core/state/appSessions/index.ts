@@ -1,15 +1,15 @@
+import { Address } from 'wagmi';
 import create from 'zustand';
 
 import { createStore } from '../internal/createStore';
 
-export type EthereumAddress = `0x${string}`;
 export interface AppSessionsStore {
-  appSessions: { host: string; address: EthereumAddress; chainId: number }[];
+  appSessions: { host: string; address: Address; chainId: number }[];
   isActiveSession: (host?: string) => boolean;
-  addSession: (host: string, address: EthereumAddress, chainId: number) => void;
+  addSession: (host: string, address: Address, chainId: number) => void;
   removeSession: (host: string) => void;
   updateSessionChainId: (host: string, chainId: number) => void;
-  updateSessionAddress: (host: string, address: EthereumAddress) => void;
+  updateSessionAddress: (host: string, address: Address) => void;
   clearSessions: () => void;
 }
 
