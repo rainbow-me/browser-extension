@@ -9,7 +9,15 @@ export interface AppSessionsStore {
     { host: string; address: Address; chainId: number }
   >;
   isActiveSession: ({ host }: { host: string }) => boolean;
-  addSession: (host: string, address: Address, chainId: number) => void;
+  addSession: ({
+    host,
+    address,
+    chainId,
+  }: {
+    host: string;
+    address: Address;
+    chainId: number;
+  }) => void;
   removeSession: ({ host }: { host: string }) => void;
   updateSessionChainId: ({
     host,
@@ -35,7 +43,7 @@ export const appSessionsStore = createStore<AppSessionsStore>(
       const appSessions = get().appSessions;
       return !!host && !!appSessions[host];
     },
-    addSession: (host, address, chainId) => {
+    addSession: ({ host, address, chainId }) => {
       const appSessions = get().appSessions;
       const existingSession = appSessions[host];
       if (!existingSession) {

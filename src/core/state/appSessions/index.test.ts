@@ -11,7 +11,11 @@ const ADDRESS_2 = '0x321';
 test('should be able to add session but not duplicate it', async () => {
   const { appSessions, addSession } = appSessionsStore.getState();
   expect(appSessions).toStrictEqual({});
-  addSession(UNISWAP_HOST, ADDRESS_1, chain.mainnet.id);
+  addSession({
+    host: UNISWAP_HOST,
+    address: ADDRESS_1,
+    chainId: chain.mainnet.id,
+  });
   expect(appSessionsStore.getState().appSessions).toStrictEqual({
     [UNISWAP_HOST]: {
       host: UNISWAP_HOST,
@@ -19,7 +23,11 @@ test('should be able to add session but not duplicate it', async () => {
       chainId: chain.mainnet.id,
     },
   });
-  addSession(UNISWAP_HOST, ADDRESS_2, chain.arbitrum.id);
+  addSession({
+    host: UNISWAP_HOST,
+    address: ADDRESS_2,
+    chainId: chain.arbitrum.id,
+  });
   expect(appSessionsStore.getState().appSessions).toStrictEqual({
     [UNISWAP_HOST]: {
       host: UNISWAP_HOST,
@@ -27,7 +35,11 @@ test('should be able to add session but not duplicate it', async () => {
       chainId: chain.mainnet.id,
     },
   });
-  addSession(OPENSEA_HOST, ADDRESS_2, chain.arbitrum.id);
+  addSession({
+    host: OPENSEA_HOST,
+    address: ADDRESS_2,
+    chainId: chain.arbitrum.id,
+  });
   expect(appSessionsStore.getState().appSessions).toStrictEqual({
     [UNISWAP_HOST]: {
       host: UNISWAP_HOST,
@@ -63,7 +75,11 @@ test('should be able to clear all sessions', async () => {
 test('should be able to check if host has an active session', async () => {
   const { addSession, isActiveSession } = appSessionsStore.getState();
   expect(appSessionsStore.getState().appSessions).toStrictEqual({});
-  addSession(UNISWAP_HOST, ADDRESS_1, chain.mainnet.id);
+  addSession({
+    host: UNISWAP_HOST,
+    address: ADDRESS_1,
+    chainId: chain.mainnet.id,
+  });
   const activeSession = isActiveSession({ host: UNISWAP_HOST });
   expect(activeSession).toBe(true);
 });
