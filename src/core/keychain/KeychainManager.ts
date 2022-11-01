@@ -231,7 +231,7 @@ class KeychainManager {
       vault: '',
     };
 
-    privates.get(this).password = null;
+    privates.get(this).password = '';
 
     await chrome.storage.local.set({ vault: null });
     await chrome.storage.session.set({ keychainManager: null });

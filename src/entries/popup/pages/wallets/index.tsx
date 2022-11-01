@@ -284,7 +284,6 @@ export function Wallets() {
 
   const getAccounts = useCallback(async () => {
     const accounts = (await walletAction('get_accounts', {})) as Address[];
-    console.log('got accounts', accounts);
     return accounts;
   }, []);
 
@@ -305,23 +304,19 @@ export function Wallets() {
       unlocked: boolean;
       hasVault: boolean;
     };
-    console.log('got status: ', { unlocked, hasVault });
     setIsUnlocked(unlocked);
     setIsNewUser(!hasVault);
   }, [getAccounts]);
 
   const createWallet = useCallback(async () => {
     const address = (await walletAction('create', {})) as Address;
-    console.log('created wallet with address', address);
     setSelectedAddress(address);
     await updateState();
     return address;
   }, [updateState]);
 
   const importWallet = useCallback(async () => {
-    console.log('secret', secret);
     const address = (await walletAction('import', secret)) as Address;
-    console.log('imported wallet with address', address);
     setSelectedAddress(address);
     await updateState();
     setSecret('');
@@ -331,7 +326,6 @@ export function Wallets() {
   const removeAccount = useCallback(
     async (address: Address) => {
       await walletAction('remove', address);
-      console.log('removed account', address);
       await updateState();
     },
     [updateState],
@@ -347,19 +341,16 @@ export function Wallets() {
   const lock = useCallback(async () => {
     await walletAction('lock', {});
     await updateState();
-    console.log('locked');
   }, [updateState]);
 
   const wipe = useCallback(async () => {
-    await walletAction('wipe', {});
+    await walletAction('wipe', password);
     await updateState();
-    console.log('wiped');
-  }, [updateState]);
+  }, [password, updateState]);
 
   const addAccount = useCallback(async () => {
     const silbing = accounts[0];
     const address = (await walletAction('add', silbing)) as Address;
-    console.log('add account with address', address);
     setSelectedAddress(address);
     await updateState();
     return address;
@@ -371,7 +362,6 @@ export function Wallets() {
         address,
         password,
       })) as Address[];
-      console.log('export_wallet', seed);
       return seed;
     },
     [password],
@@ -383,7 +373,6 @@ export function Wallets() {
         address,
         password,
       })) as Address[];
-      console.log('export_account', pkey);
       return pkey;
     },
     [password],

@@ -14,6 +14,7 @@ export interface SerializedHdKeychain {
   type: string;
   imported?: boolean;
   autodiscover?: boolean;
+  accountsDeleted?: Array<number>;
 }
 
 const privates = new WeakMap();
@@ -30,6 +31,7 @@ export class HdKeychain implements IKeychain {
       wallets: [],
       mnemonic: null,
       accountsEnabled: 1,
+      accountsDeleted: [],
       hdPath: "m/44'/60'/0'/0",
       getWalletForAddress: (address: Address): Wallet => {
         return privates
@@ -75,6 +77,7 @@ export class HdKeychain implements IKeychain {
       accountsEnabled: privates.get(this).accountsEnabled,
       hdPath: privates.get(this).hdPath,
       type: this.type,
+      accountsDeleted: privates.get(this).accountsDeleted,
     };
   }
 
@@ -111,7 +114,10 @@ export class HdKeychain implements IKeychain {
     }
 
     for (let i = 0; i < privates.get(this).accountsEnabled; i++) {
-      privates.get(this).addAccount(i);
+      // Do not re-add deleted accounts
+      if (!opts?.accountsDeleted?.includes(i)) {
+        privates.get(this).addAccount(i);
+      }
     }
   }
   async addNewAccount(): Promise<Array<Wallet>> {
@@ -137,15 +143,19 @@ export class HdKeychain implements IKeychain {
   }
 
   async removeAccount(address: Address): Promise<void> {
+    const accounts = await this.getAccounts();
+    const accountToDeleteIndex = accounts.indexOf(address);
+    if (accountToDeleteIndex === -1) {
+      throw new Error('Account not found');
+    }
+
     const filteredList = privates
       .get(this)
       .wallets.filter(
         (wallet: Wallet) => (wallet as Wallet).address !== address,
       );
-    if (filteredList.length !== privates.get(this).wallets.length) {
-      privates.get(this).wallets = filteredList;
-    } else {
-      throw new Error('Account not found');
-    }
+
+    privates.get(this).wallets = filteredList;
+    privates.get(this).accountsDeleted.push(accountToDeleteIndex);
   }
 }

@@ -75,7 +75,6 @@ export const handleWallets = () =>
               password: string;
               newPassword: string;
             };
-
             response = await setVaultPassword(password, newPassword);
 
             break;
@@ -88,7 +87,6 @@ export const handleWallets = () =>
             break;
           case 'create':
             response = await createWallet();
-            console.log('Created wallet', response);
             break;
           case 'import':
             response = await importWallet(payload as EthereumWalletSeed);
