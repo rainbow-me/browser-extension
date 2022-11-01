@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { Language, i18n } from '~/core/languages';
-import { useCurrentLanguageStore } from '~/core/state/currentLanguage';
+import { useCurrentLanguageStore } from '~/core/state';
 import { Box, Text } from '~/design-system';
 
 export function Settings() {
