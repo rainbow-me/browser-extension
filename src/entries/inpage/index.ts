@@ -6,7 +6,9 @@ declare global {
     ethereum?: RainbowProvider;
   }
 }
+
 const messenger = initializeMessenger({ connect: 'popup' });
+
 const provider = new RainbowProvider({ messenger });
 window.ethereum = provider;
 
