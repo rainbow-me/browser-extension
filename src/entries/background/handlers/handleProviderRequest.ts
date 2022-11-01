@@ -1,12 +1,10 @@
 import { UserRejectedRequestError } from 'wagmi';
 
-import { initializeMessenger } from '~/core/messengers';
+import { Messenger } from '~/core/messengers';
 import { approvedHostsStore, notificationWindowStore } from '~/core/state';
 import { pendingRequestStore } from '~/core/state/pendingRequest';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-
-const popupMessenger = initializeMessenger({ connect: 'popup' });
 
 export const DEFAULT_ACCOUNT = '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
 export const DEFAULT_CHAIN_ID = '0x1';
@@ -27,7 +25,8 @@ const openWindow = async () => {
  * @param {PendingRequest} request
  * @returns {boolean}
  */
-const extensionMessengerRequestApproval = async (
+const messengerRequestApproval = async (
+  messenger: Messenger,
   request: ProviderRequestPayload,
 ) => {
   const { addPendingRequest, removePendingRequest } =
@@ -38,7 +37,7 @@ const extensionMessengerRequestApproval = async (
   // Wait for response from the popup.
   const approved = await new Promise((resolve) =>
     // eslint-disable-next-line no-promise-executor-return
-    popupMessenger.reply(`message:${request.id}`, async (payload) =>
+    messenger.reply(`message:${request.id}`, async (payload) =>
       resolve(payload),
     ),
   );
@@ -52,11 +51,17 @@ const extensionMessengerRequestApproval = async (
 /**
  * Handles RPC requests from the provider.
  */
-export const handleProviderRequest = () =>
+export const handleProviderRequest = ({
+  messenger,
+}: {
+  messenger: Messenger;
+}) =>
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
     console.log(meta.sender, method);
 
     const { addApprovedHost, isApprovedHost } = approvedHostsStore.getState();
+    const host = new URL(meta.sender.url || '').host;
+    const approvedHost = isApprovedHost(host);
 
     try {
       let response = null;
@@ -66,7 +71,6 @@ export const handleProviderRequest = () =>
           response = DEFAULT_CHAIN_ID;
           break;
         case 'eth_accounts': {
-          const approvedHost = await isApprovedHost(meta.sender.origin);
           response = approvedHost ? [DEFAULT_ACCOUNT] : [];
           break;
         }
@@ -77,7 +81,7 @@ export const handleProviderRequest = () =>
         case 'eth_signTypedData':
         case 'eth_signTypedData_v3':
         case 'eth_signTypedData_v4': {
-          await extensionMessengerRequestApproval({
+          await messengerRequestApproval(messenger, {
             method,
             id,
             params,
@@ -87,19 +91,16 @@ export const handleProviderRequest = () =>
         case 'wallet_addEthereumChain':
         case 'wallet_switchEthereumChain':
         case 'eth_requestAccounts': {
-          const approvedHost = await isApprovedHost(meta.sender.origin);
           if (approvedHost) {
             response = [DEFAULT_ACCOUNT];
             break;
           }
-          await extensionMessengerRequestApproval({
+          await messengerRequestApproval(messenger, {
             method,
             id,
             params,
           });
-          if (meta.sender.origin) {
-            addApprovedHost(meta.sender.origin);
-          }
+          addApprovedHost(host);
           response = [DEFAULT_ACCOUNT];
           break;
         }

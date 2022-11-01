@@ -1,5 +1,6 @@
 import { EventEmitter } from 'eventemitter3';
 
+import { Messenger } from '../messengers';
 import { providerRequestTransport } from '../transports';
 
 export type ChainIdHex = `0x${string}`;
@@ -39,6 +40,17 @@ export class RainbowProvider extends EventEmitter {
 
   #isUnlocked = true;
   #requestId = 0;
+
+  constructor({ messenger }: { messenger?: Messenger } = {}) {
+    super();
+    const host = window.location.host;
+    messenger?.reply(`accountsChanged:${host}`, async (address) => {
+      this.emit('accountsChanged', [address]);
+    });
+    messenger?.reply(`chainChanged:${host}`, async (chainId: number) => {
+      this.emit('chainChanged', chainId);
+    });
+  }
 
   /**
    * @deprecated – This method is deprecated in favor of the RPC method `eth_requestAccounts`.
