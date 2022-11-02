@@ -123,7 +123,7 @@ it('should be able to go back to extension and switch account and chain', async 
   console.log('wat 4');
   await driver.findElement({ id: 'suffle-chain-id-button' }).click();
   console.log('wat 5');
-  await driver.findElement({ id: 'suffle-address-button' }).click();
+  // await driver.findElement({ id: 'suffle-address-button' }).click();
   console.log('wat 6');
   await driver.get('https://bx-test-dapp.vercel.app/');
   console.log('wat 7');
