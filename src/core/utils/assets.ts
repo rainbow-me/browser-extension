@@ -80,6 +80,7 @@ export function parseAsset({
     chainName,
     isNativeAsset: isNativeAsset(address, chainName),
     name: asset?.name,
+    mainnetAddress: asset?.mainnet_address,
     native: {
       balance: getNativeAssetBalance({
         currency,

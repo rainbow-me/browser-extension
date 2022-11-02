@@ -93,6 +93,7 @@ export async function userAssetsByChainQueryFunction({
     }, USER_ASSETS_TIMEOUT_DURATION);
     const resolver = (message: AddressAssetsReceivedMessage) => {
       clearTimeout(timeout);
+      console.log('MESSAGE: ', message);
       resolve(parseUserAssetsByChain(message, currency));
     };
     refractionAddressWs.once(event, resolver);

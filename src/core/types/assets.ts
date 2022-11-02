@@ -22,6 +22,7 @@ export interface ParsedAddressAsset {
       display: string;
     };
   };
+  mainnetAddress?: string;
   price?: ZerionAssetPrice;
   symbol: string;
   type: string;
@@ -53,7 +54,9 @@ export enum AssetType {
 }
 
 export interface ZerionAsset {
-  asset_code: string;
+  asset_code: Address;
+  implementations?: Record<string, { address: Address; decimals: number }>;
+  mainnet_address?: Address;
   name: string;
   symbol: string;
   decimals: number;
