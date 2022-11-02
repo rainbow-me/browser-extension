@@ -3,6 +3,7 @@ import { UserRejectedRequestError, chain } from 'wagmi';
 import { Messenger } from '~/core/messengers';
 import {
   appSessionsStore,
+  currentAddressStore,
   notificationWindowStore,
   pendingRequestStore,
 } from '~/core/state';
@@ -63,19 +64,20 @@ export const handleProviderRequest = ({
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
     console.log(meta.sender, method);
 
-    const { isActiveSession, addSession } = appSessionsStore.getState();
+    const { getActiveSession, addSession } = appSessionsStore.getState();
+    const { currentAddress } = currentAddressStore.getState();
     const host = new URL(meta.sender.url || '').host;
-    const approvedHost = isActiveSession({ host });
+    const activeSession = getActiveSession({ host });
 
     try {
       let response = null;
 
       switch (method) {
         case 'eth_chainId':
-          response = DEFAULT_CHAIN_ID;
+          response = activeSession ? activeSession.chainId : DEFAULT_CHAIN_ID;
           break;
         case 'eth_accounts': {
-          response = approvedHost ? [DEFAULT_ACCOUNT] : [];
+          response = activeSession ? [activeSession.address] : [];
           break;
         }
         case 'eth_sendTransaction':
@@ -95,8 +97,8 @@ export const handleProviderRequest = ({
         case 'wallet_addEthereumChain':
         case 'wallet_switchEthereumChain':
         case 'eth_requestAccounts': {
-          if (approvedHost) {
-            response = [DEFAULT_ACCOUNT];
+          if (activeSession) {
+            response = [activeSession.address];
             break;
           }
           await messengerRequestApproval(messenger, {
@@ -106,10 +108,10 @@ export const handleProviderRequest = ({
           });
           addSession({
             host,
-            address: DEFAULT_ACCOUNT,
+            address: currentAddress || DEFAULT_ACCOUNT,
             chainId: chain.mainnet.id,
           });
-          response = [DEFAULT_ACCOUNT];
+          response = [currentAddress || DEFAULT_ACCOUNT];
           break;
         }
         default: {
