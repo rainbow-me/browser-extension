@@ -119,6 +119,7 @@ it('should be able to go back to extension and switch account and chain', async 
   await driver.findElement({ id: 'page-header-left-action' }).click();
   await driver.findElement({ id: 'suffle-chain-id-button' }).click();
   await driver.findElement({ id: 'suffle-address-button' }).click();
+  await delay(500);
   await driver.get('https://bx-test-dapp.vercel.app/');
   // wait for dapp to load new account and network
   await delay(2000);
