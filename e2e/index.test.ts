@@ -114,39 +114,22 @@ it('should be able to connect to bx test dapp', async () => {
 });
 
 it('should be able to go back to extension and switch account and chain', async () => {
-  console.log('wat 1');
   await driver.get(rootURL + '/popup.html');
-  console.log('wat 2');
   await delay(2000);
-  console.log('wat 3');
   await driver.findElement({ id: 'page-header-left-action' }).click();
-  console.log('wat 4');
   await driver.findElement({ id: 'suffle-chain-id-button' }).click();
-  console.log('wat 5');
   await driver.findElement({ id: 'suffle-address-button' }).click();
-  console.log('wat 6');
   await driver.get('https://bx-test-dapp.vercel.app/');
-  console.log('wat 7');
   // wait for dapp to load new account and network
-  console.log('wat 8');
-  await delay(1000);
-  console.log('wat 9');
+  await delay(2000);
   const expectedNetwork = 'Network: Arbitrum One - arbitrum';
-  console.log('wat 1');
   const network = await querySelector(driver, '[id="network"]');
-  console.log('wat 2');
   const actualNetwork = await network.getText();
-  console.log('wat 3');
   expect(actualNetwork).toEqual(expectedNetwork);
-  console.log('wat 4');
 
   const expectedAccountAddress =
     'Account: 0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
-  console.log('wat 5');
   const accountAddress = await querySelector(driver, '[id="accountAddress"]');
-  console.log('wat 6');
   const actualAccountAddress = await accountAddress.getText();
-  console.log('wat 7');
   expect(actualAccountAddress).toEqual(expectedAccountAddress);
-  console.log('wat 8');
 });
