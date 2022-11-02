@@ -79,7 +79,7 @@ export function PageHeader({
       paddingHorizontal="10px"
     >
       <Inline alignVertical="center" height="full" alignHorizontal="justify">
-        <Link to={leftRoute || ''}>
+        <Link id="page-header-left-action" to={leftRoute || ''}>
           <HeaderActionButton symbol={leftSymbol} mainPage={mainPage} />
         </Link>
 

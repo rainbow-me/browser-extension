@@ -45,12 +45,10 @@ it('should display account name', async () => {
 });
 
 it('should shuffle account', async () => {
-  await delay(5000);
   await driver.findElement({ id: 'account-name-shuffle' }).click();
-  await delay(5000);
   const label = await querySelector(driver, '[data-testid="account-name"]');
   const actual = await label.getText();
-  const expected = 'estebanmino.eth';
+  const expected = '0x5B57...7C35';
   expect(actual).toEqual(expected);
 });
 
@@ -113,4 +111,25 @@ it('should be able to connect to bx test dapp', async () => {
 
   const ensLabel = await querySelector(driver, '[id="rk_profile_title"]');
   expect(ensLabel).toBeTruthy();
+});
+
+it('should be able to go back to extension and switch account and chain ', async () => {
+  await driver.get(rootURL + '/popup.html');
+  await delay(1000);
+  await driver.findElement({ id: 'page-header-left-action' }).click();
+  await driver.findElement({ id: 'suffle-chain-id-button' }).click();
+  await driver.findElement({ id: 'suffle-address-button' }).click();
+  await driver.get('https://bx-test-dapp.vercel.app/');
+  // wait for dapp to load new account and network
+  await delay(1000);
+  const expectedNetwork = 'Network: Arbitrum One - arbitrum';
+  const network = await querySelector(driver, '[id="network"]');
+  const actualNetwork = await network.getText();
+  expect(actualNetwork).toEqual(expectedNetwork);
+
+  const expectedAccountAddress =
+    'Account: 0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
+  const accountAddress = await querySelector(driver, '[id="accountAddress"]');
+  const actualAccountAddress = await accountAddress.getText();
+  expect(actualAccountAddress).toEqual(expectedAccountAddress);
 });

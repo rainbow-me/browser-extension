@@ -73,15 +73,19 @@ test('should be able to clear all sessions', async () => {
 });
 
 test('should be able to check if host has an active session', async () => {
-  const { addSession, isActiveSession } = appSessionsStore.getState();
+  const { addSession, getActiveSession } = appSessionsStore.getState();
   expect(appSessionsStore.getState().appSessions).toStrictEqual({});
   addSession({
     host: UNISWAP_HOST,
     address: ADDRESS_1,
     chainId: chain.mainnet.id,
   });
-  const activeSession = isActiveSession({ host: UNISWAP_HOST });
-  expect(activeSession).toBe(true);
+  const activeSession = getActiveSession({ host: UNISWAP_HOST });
+  expect(activeSession).toStrictEqual({
+    host: UNISWAP_HOST,
+    address: ADDRESS_1,
+    chainId: chain.mainnet.id,
+  });
 });
 
 test('should be able to update session chain id', async () => {
