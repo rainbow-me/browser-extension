@@ -5,6 +5,7 @@ import { chain, useEnsAvatar, useEnsName } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
 import { useAppSessionsStore } from '~/core/state';
+import { getConnectedAppIcon } from '~/core/utils/connectedApps';
 import { Box, Inline, Inset, Stack, Text } from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 import {
@@ -126,13 +127,7 @@ function ConnectedApp({
             overflow: 'hidden',
           }}
         >
-          <img
-            src={
-              'https://raw.githubusercontent.com/rainbow-me/rainbow/develop/src/assets/dappLogos/rainbowkit.com.jpg'
-            }
-            width="100%"
-            height="100%"
-          />
+          <img src={getConnectedAppIcon(host)} width="100%" height="100%" />
         </Box>
         <Box>
           <Stack space="8px">
