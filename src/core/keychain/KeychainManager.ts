@@ -55,7 +55,7 @@ class KeychainManager {
           };
         }
 
-        // Also ttempt to read from storage for future unlocks
+        // Also attempt to read from storage for future unlocks
         const storageState = await privates.get(this).getLastStorageState();
         if (storageState) {
           this.state.vault = storageState.vault;
