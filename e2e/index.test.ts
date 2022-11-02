@@ -115,7 +115,7 @@ it('should be able to connect to bx test dapp', async () => {
 
 it('should be able to go back to extension and switch account and chain ', async () => {
   await driver.get(rootURL + '/popup.html');
-  await delay(1000);
+  await delay(2000);
   await driver.findElement({ id: 'page-header-left-action' }).click();
   await driver.findElement({ id: 'suffle-chain-id-button' }).click();
   await driver.findElement({ id: 'suffle-address-button' }).click();
