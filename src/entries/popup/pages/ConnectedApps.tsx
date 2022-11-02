@@ -22,7 +22,6 @@ export function ConnectedApps() {
   const { appSessions, clearSessions } = useAppSessionsStore();
 
   return (
-    /* TODO: Convert to <Rows> */
     <Box
       as={motion.div}
       display="flex"
@@ -38,18 +37,24 @@ export function ConnectedApps() {
         leftRoute="/"
         leftSymbol="arrowLeft"
       />
-
-      <Rows>
-        {Object.keys(appSessions).map((key, i) => (
-          <Row key={i}>
-            <ConnectedApp
-              host={appSessions[key].host}
-              address={appSessions[key].address}
-              chainId={appSessions[key].chainId}
-            />
-          </Row>
-        ))}
-      </Rows>
+      <Box
+        style={{
+          flex: 1,
+          overflow: 'scroll',
+        }}
+      >
+        <Rows alignVertical="top">
+          {Object.keys(appSessions).map((key, i) => (
+            <Row height="content" key={i}>
+              <ConnectedApp
+                host={appSessions[key].host}
+                address={appSessions[key].address}
+                chainId={appSessions[key].chainId}
+              />
+            </Row>
+          ))}
+        </Rows>
+      </Box>
 
       <Box
         as="button"
