@@ -113,7 +113,7 @@ it('should be able to connect to bx test dapp', async () => {
   expect(ensLabel).toBeTruthy();
 });
 
-it('should be able to go back to extension and switch account and chain ', async () => {
+it.skip('should be able to go back to extension and switch account and chain', async () => {
   await driver.get(rootURL + '/popup.html');
   await delay(2000);
   await driver.findElement({ id: 'page-header-left-action' }).click();
