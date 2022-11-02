@@ -116,6 +116,12 @@ function ConnectedApp({
     );
   }, [address, host, updateAppSessionAddress]);
 
+  const shuffleSession = React.useCallback(() => {
+    // TODO: handle account switching correctly
+    shuffleAddress();
+    shuffleChainId();
+  }, [shuffleAddress, shuffleChainId]);
+
   return (
     <Inset horizontal="20px" vertical="8px">
       <Inline space="8px">
@@ -130,7 +136,7 @@ function ConnectedApp({
         >
           <img src={getConnectedAppIcon(host)} width="100%" height="100%" />
         </Box>
-        <Box>
+        <Box as="button" id="suffle-session-button" onClick={shuffleSession}>
           <Stack space="8px">
             <Text size="14pt" weight="semibold">
               {host}
@@ -139,9 +145,6 @@ function ConnectedApp({
               <Box
                 background="fill"
                 borderRadius="30px"
-                as="button"
-                id="suffle-chain-id-button"
-                onClick={shuffleChainId}
                 style={{
                   width: '16px',
                   height: '16px',
@@ -158,11 +161,7 @@ function ConnectedApp({
                   />
                 )}
               </Box>
-              <Box
-                as="button"
-                id="suffle-address-button"
-                onClick={shuffleAddress}
-              >
+              <Box>
                 <Text color="labelTertiary" size="12pt" weight="semibold">
                   {truncateAddress(address)}
                 </Text>
