@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import * as React from 'react';
-import { Address, chain, useEnsAvatar, useEnsName } from 'wagmi';
+import { Address, chain, useEnsAvatar } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
@@ -88,7 +88,7 @@ function ConnectedApp({
   address: Address;
   chainId: number;
 }) {
-  const { data: ensName } = useEnsName({ address });
+  // const { data: ensName } = useEnsName({ address });
   const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
   const { updateAppSessionChainId, updateAppSessionAddress } = useAppSession({
     host,
@@ -164,7 +164,7 @@ function ConnectedApp({
                 onClick={shuffleAddress}
               >
                 <Text color="labelTertiary" size="12pt" weight="semibold">
-                  {ensName || truncateAddress(address)}
+                  {truncateAddress(address)}
                 </Text>
               </Box>
             </Inline>
