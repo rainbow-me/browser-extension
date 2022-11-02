@@ -6,6 +6,7 @@ import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
 import { useAppSessionsStore } from '~/core/state';
 import { getConnectedAppIcon } from '~/core/utils/connectedApps';
+import { truncateAddress } from '~/core/utils/truncateAddress';
 import { Box, Inline, Inset, Stack, Text } from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 import {
@@ -163,7 +164,7 @@ function ConnectedApp({
                 onClick={shuffleAddress}
               >
                 <Text color="labelTertiary" size="12pt" weight="semibold">
-                  {ensName}
+                  {ensName || truncateAddress(address)}
                 </Text>
               </Box>
             </Inline>
