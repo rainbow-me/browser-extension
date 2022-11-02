@@ -139,7 +139,8 @@
     "lodash": "4.17.21",
     "underscore": "1.12.1",
     "underscore.string": "3.3.5",
-    "clean-css": "4.1.11"
+    "clean-css": "4.1.11",
+    "@xmldom/xmldom": "0.8.4"
   },
   "lavamoat": {
     "allowScripts": {

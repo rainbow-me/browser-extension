@@ -16,7 +16,7 @@ The keychain manager is responsible for:
 - `exportKeychain` - Export an entire keychain by returning its secret
 - `exportAccount` - Exports the private key for a selected account
 - `removeAccount` - Removes the selected account from its own keychain
-- `updatePassword` - Updates the password to encrypt the vault
+- `setPassword` - Sets the password to encrypt the vault
 - `lock`  - Encrypts all the serialized keychains from memory using the password (we call this the "vault"), persists on the fs and removes it from memory.
 - `unlock` - Decrypts the "vault" and loads all the keychains 
 - `getSigner` - Returns an [ethers signer](https://docs.ethers.io/v5/api/signer/) for that specific address

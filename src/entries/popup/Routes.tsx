@@ -4,6 +4,7 @@ import { Routes as RRRoutes, Route, useLocation } from 'react-router-dom';
 
 import { Home } from './pages/home';
 import { Settings } from './pages/settings';
+import { Wallets } from './pages/wallets';
 
 export function Routes() {
   const location = useLocation();
@@ -12,6 +13,7 @@ export function Routes() {
       <RRRoutes location={location} key={location.pathname}>
         <Route path="/" element={<Home />} />
         <Route path="settings" element={<Settings />} />
+        <Route path="wallets" element={<Wallets />} />
       </RRRoutes>
     </AnimatePresence>
   );
