@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { chain, useAccount, useBalance } from 'wagmi';
 
 import { ETH_ADDRESS } from '~/core/references';
@@ -11,6 +11,16 @@ import { RainbowTransaction } from '~/core/types/transactions';
 import { Box, Inset, Stack, Text } from '~/design-system';
 
 import { Language, i18n } from '../../../../core/languages';
+import {
+  Menu,
+  MenuContent,
+  MenuItemIndicator,
+  MenuLabel,
+  MenuRadioGroup,
+  MenuRadioItem,
+  MenuSeparator,
+  MenuTrigger,
+} from '../../components/Menu/Menu';
 import { ClearStorage } from '../../components/_dev/ClearStorage';
 import { InjectToggle } from '../../components/_dev/InjectToggle';
 
@@ -18,6 +28,7 @@ export function Default() {
   const { address } = useAccount();
   const { currentCurrency, setCurrentCurrency } = useCurrentCurrencyStore();
   const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
+  const [selectedNetwork, setSelectedNetwork] = useState('ethereum');
 
   const { data: userAssets } = useUserAssets(
     {
@@ -92,6 +103,50 @@ export function Default() {
             </Text>
           </Box>
         </Stack>
+        <Menu>
+          <MenuTrigger asChild>
+            <Box
+              as="button"
+              background="surfaceSecondary"
+              padding="16px"
+              style={{ borderRadius: 999 }}
+            >
+              <Text color="labelSecondary" size="14pt" weight="bold">
+                Menu
+              </Text>
+            </Box>
+          </MenuTrigger>
+
+          <MenuContent>
+            <MenuSeparator />
+            <MenuLabel>Networks</MenuLabel>
+            <MenuRadioGroup
+              value={selectedNetwork}
+              onValueChange={setSelectedNetwork}
+            >
+              <MenuRadioItem value="ethereum">
+                <Text color="label" size="14pt" weight="bold">
+                  Ethereum
+                </Text>
+                <MenuItemIndicator style={{ marginLeft: 'auto' }}>
+                  <Text color="labelSecondary" size="11pt" weight="bold">
+                    Selected
+                  </Text>
+                </MenuItemIndicator>
+              </MenuRadioItem>
+              <MenuRadioItem value="optimism">
+                <Text color="label" size="14pt" weight="bold">
+                  Optimism
+                </Text>
+                <MenuItemIndicator style={{ marginLeft: 'auto' }}>
+                  <Text color="labelSecondary" size="11pt" weight="bold">
+                    Selected
+                  </Text>
+                </MenuItemIndicator>
+              </MenuRadioItem>
+            </MenuRadioGroup>
+          </MenuContent>
+        </Menu>
         <InjectToggle />
         <ClearStorage />
         <Box

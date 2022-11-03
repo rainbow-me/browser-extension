@@ -47,6 +47,7 @@
   "dependencies": {
     "@capsizecss/core": "3.0.0",
     "@metamask/browser-passworder": "3.0.0",
+    "@radix-ui/react-dropdown-menu": "2.0.1",
     "@radix-ui/react-polymorphic": "0.0.14",
     "@sentry/browser": "7.16.0",
     "@sentry/tracing": "7.16.0",
