@@ -62,9 +62,9 @@ export const MenuItem = (props: MenuItemProps) => {
   return (
     <Box
       as={DropdownMenuPrimitive.Item}
-      paddingY="12px"
-      paddingX="8px"
-      marginX="-8px"
+      paddingVertical="12px"
+      paddingHorizontal="8px"
+      marginHorizontal="-8px"
       style={{
         display: 'flex',
         alignItems: 'center',
@@ -90,9 +90,9 @@ export const MenuRadioItem = (props: MenuRadioItemProps) => {
     <Box
       as={DropdownMenuPrimitive.RadioItem}
       value={value}
-      paddingY="12px"
-      paddingX="8px"
-      marginX="-8px"
+      paddingVertical="12px"
+      paddingHorizontal="8px"
+      marginHorizontal="-8px"
       alignItems="center"
       style={{
         display: 'flex',
