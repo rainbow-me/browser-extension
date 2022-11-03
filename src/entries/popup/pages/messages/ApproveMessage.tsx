@@ -27,7 +27,7 @@ export function ApproveMessage() {
   );
 
   const rejectRequest = useCallback(() => {
-    backgroundMessenger.send(`message:${pendingRequest?.id}`, false);
+    backgroundMessenger.send(`message:${pendingRequest?.id}`, null);
     // Wait until the message propagates to the background provider.
     setTimeout(() => {
       if (window?.id) chrome.windows.remove(window.id);
