@@ -1,0 +1,18 @@
+import { Address } from 'wagmi';
+
+import { UniqueId } from '../types/assets';
+import { ChainName } from '../types/chains';
+
+export function truncateAddress(address: Address) {
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+}
+
+export function deriveAddressAndChainWithUniqueId(uniqueId: UniqueId) {
+  const fragments = uniqueId.split('_');
+  const address = fragments[0] as Address;
+  const chain = fragments[1] as ChainName;
+  return {
+    address,
+    chain,
+  };
+}

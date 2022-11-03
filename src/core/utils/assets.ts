@@ -4,6 +4,7 @@ import { SupportedCurrencyKey } from '~/core/references';
 import {
   AssetType,
   ParsedAddressAsset,
+  UniqueId,
   ZerionAsset,
   ZerionAssetPrice,
 } from '~/core/types/assets';
@@ -65,8 +66,7 @@ export function parseAsset({
   quantity: string;
 }): ParsedAddressAsset {
   const chainName = asset?.network ?? ChainName.mainnet;
-  const uniqueId =
-    chainName === ChainName.mainnet ? address : `${address}_${chainName}`;
+  const uniqueId: UniqueId = `${address}_${chainName}`;
   const amount = convertRawAmountToDecimalFormat(quantity, asset?.decimals);
   const parsedAsset = {
     address,
