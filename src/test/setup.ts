@@ -15,6 +15,11 @@ vi.stubGlobal('chrome', {
       remove: vi.fn(),
     },
   },
+  runtime: {},
+});
+
+vi.stubGlobal('window.location', {
+  pathname: 'popup.html',
 });
 
 vi.stubGlobal('crypto', {

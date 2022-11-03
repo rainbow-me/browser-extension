@@ -4,5 +4,9 @@
   },
   "label": {
     "toggle": "Toggle"
+  },
+  "connected_apps": {
+    "title": "Connected Apps",
+    "disconnect": "Disconnect All"
   }
 }

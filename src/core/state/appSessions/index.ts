@@ -3,21 +3,16 @@ import create from 'zustand';
 
 import { createStore } from '../internal/createStore';
 
+interface AppSession {
+  host: string;
+  chainId: number;
+  address: Address;
+}
+
 export interface AppSessionsStore {
-  appSessions: Record<
-    string,
-    { host: string; address: Address; chainId: number }
-  >;
-  isActiveSession: ({ host }: { host: string }) => boolean;
-  addSession: ({
-    host,
-    address,
-    chainId,
-  }: {
-    host: string;
-    address: Address;
-    chainId: number;
-  }) => void;
+  appSessions: Record<string, AppSession>;
+  getActiveSession: ({ host }: { host: string }) => AppSession | null;
+  addSession: ({ host, address, chainId }: AppSession) => void;
   removeSession: ({ host }: { host: string }) => void;
   updateSessionChainId: ({
     host,
@@ -39,9 +34,9 @@ export interface AppSessionsStore {
 export const appSessionsStore = createStore<AppSessionsStore>(
   (set, get) => ({
     appSessions: {},
-    isActiveSession: ({ host }) => {
+    getActiveSession: ({ host }) => {
       const appSessions = get().appSessions;
-      return !!host && !!appSessions[host];
+      return appSessions[host] || null;
     },
     addSession: ({ host, address, chainId }) => {
       const appSessions = get().appSessions;

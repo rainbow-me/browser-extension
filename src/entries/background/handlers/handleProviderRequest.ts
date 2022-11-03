@@ -1,12 +1,17 @@
 import { UserRejectedRequestError, chain } from 'wagmi';
 
 import { Messenger } from '~/core/messengers';
-import { appSessionsStore, notificationWindowStore } from '~/core/state';
-import { pendingRequestStore } from '~/core/state/requests';
+import {
+  appSessionsStore,
+  currentAddressStore,
+  notificationWindowStore,
+  pendingRequestStore,
+} from '~/core/state';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 
 export const DEFAULT_ACCOUNT = '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
+export const DEFAULT_ACCOUNT_2 = '0x5B570F0F8E2a29B7bCBbfC000f9C7b78D45b7C35';
 export const DEFAULT_CHAIN_ID = '0x1';
 
 const openWindow = async () => {
@@ -59,19 +64,20 @@ export const handleProviderRequest = ({
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
     console.log(meta.sender, method);
 
-    const { isActiveSession, addSession } = appSessionsStore.getState();
+    const { getActiveSession, addSession } = appSessionsStore.getState();
+    const { currentAddress } = currentAddressStore.getState();
     const host = new URL(meta.sender.url || '').host;
-    const approvedHost = isActiveSession({ host });
+    const activeSession = getActiveSession({ host });
 
     try {
       let response = null;
 
       switch (method) {
         case 'eth_chainId':
-          response = DEFAULT_CHAIN_ID;
+          response = activeSession ? activeSession.chainId : DEFAULT_CHAIN_ID;
           break;
         case 'eth_accounts': {
-          response = approvedHost ? [DEFAULT_ACCOUNT] : [];
+          response = activeSession ? [activeSession.address] : [];
           break;
         }
         case 'eth_sendTransaction':
@@ -91,8 +97,8 @@ export const handleProviderRequest = ({
         case 'wallet_addEthereumChain':
         case 'wallet_switchEthereumChain':
         case 'eth_requestAccounts': {
-          if (approvedHost) {
-            response = [DEFAULT_ACCOUNT];
+          if (activeSession) {
+            response = [activeSession.address];
             break;
           }
           await messengerRequestApproval(messenger, {
@@ -102,10 +108,10 @@ export const handleProviderRequest = ({
           });
           addSession({
             host,
-            address: DEFAULT_ACCOUNT,
+            address: currentAddress || DEFAULT_ACCOUNT,
             chainId: chain.mainnet.id,
           });
-          response = [DEFAULT_ACCOUNT];
+          response = [currentAddress || DEFAULT_ACCOUNT];
           break;
         }
         default: {
