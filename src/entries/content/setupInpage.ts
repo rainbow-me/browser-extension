@@ -1,8 +1,8 @@
-import { Storage } from '~/core/storage';
+// import { Storage } from '~/core/storage';
 
 export async function setupInpage() {
-  const shouldInject = (await Storage.get('inject')) === true;
-  if (!shouldInject) return;
+  // const shouldInject = (await Storage.get('inject')) === true;
+  // if (!shouldInject) return;
 
   const script = document.createElement('script');
   script.src = chrome.runtime.getURL('/inpage.js');

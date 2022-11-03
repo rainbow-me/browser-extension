@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 
 import { initializeMessenger } from '~/core/messengers';
-import { useCurrentAddressStore, useCurrentChainIdStore } from '~/core/state';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { Box, Text } from '~/design-system';
@@ -9,30 +8,27 @@ import { Box, Text } from '~/design-system';
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export function ApproveMessage() {
-  const { pendingRequests } = usePendingRequestStore();
-  const { currentAddress } = useCurrentAddressStore();
-  const { currentChainId } = useCurrentChainIdStore();
+  const { pendingRequests, removePendingRequest } = usePendingRequestStore();
   const { window } = useNotificationWindowStore();
   const pendingRequest = pendingRequests[0];
 
   const approveRequest = useCallback(() => {
-    backgroundMessenger.send(`message:${pendingRequest?.id}`, {
-      address: currentAddress,
-      chainId: currentChainId,
-    });
+    backgroundMessenger.send(`message:${pendingRequest?.id}`, true);
+    removePendingRequest(pendingRequest?.id);
     // Wait until the message propagates to the background provider.
     setTimeout(() => {
       if (window?.id) chrome.windows.remove(window.id);
     }, 50);
-  }, [currentAddress, currentChainId, pendingRequest?.id, window?.id]);
+  }, [pendingRequest?.id, window?.id, removePendingRequest]);
 
   const rejectRequest = useCallback(() => {
-    backgroundMessenger.send(`message:${pendingRequest?.id}`, null);
+    backgroundMessenger.send(`message:${pendingRequest?.id}`, false);
+    removePendingRequest(pendingRequest?.id);
     // Wait until the message propagates to the background provider.
     setTimeout(() => {
       if (window?.id) chrome.windows.remove(window.id);
     }, 50);
-  }, [pendingRequest?.id, window?.id]);
+  }, [pendingRequest?.id, window?.id, removePendingRequest]);
 
   return (
     <>
