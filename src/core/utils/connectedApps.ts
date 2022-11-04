@@ -200,7 +200,7 @@ const DisplayDappNames = {
   },
   'uniswap.org': {
     name: 'Uniswap',
-    uri: null,
+    uri: buildAssetUrl('uniswap.org'),
   },
   'walletconnect.org': {
     name: 'WalletConnect',
@@ -240,7 +240,7 @@ export const isDappAuthenticated = (url: string) => {
 
 export const dappLogoOverride = (url: string) => {
   const hostname = getDappHostname(url) as keyof typeof DisplayDappNames;
-  return DisplayDappNames[hostname]?.uri;
+  return DisplayDappNames[hostname]?.uri || getConnectedAppIcon(hostname);
 };
 
 export const getDappHostname = (url: string) => {

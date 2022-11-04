@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Address, chain, useEnsAvatar, useEnsName } from 'wagmi';
 
 import { useCurrentAddressStore } from '~/core/state';
@@ -36,7 +36,7 @@ import { SFSymbol } from '../../components/SFSymbol/SFSymbol';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 
 interface ApproveRequestProps {
-  approveRequest: () => void;
+  approveRequest: (payload: { address: Address; chainId: number }) => void;
   rejectRequest: () => void;
   request: ProviderRequestPayload;
 }
@@ -164,6 +164,13 @@ export function ApproveRequestAccounts({
     supportedChains[chain.mainnet.network],
   );
   const [selectedWallet, setSelectedWallet] = useState<Address>(currentAddress);
+
+  const onApproveRequest = useCallback(() => {
+    approveRequest({
+      address: selectedWallet,
+      chainId: selectedNetwork.chainId,
+    });
+  }, [approveRequest, selectedNetwork.chainId, selectedWallet]);
 
   return (
     <Rows alignVertical="justify">
@@ -342,7 +349,7 @@ export function ApproveRequestAccounts({
                   id="accept-button"
                   background="accent"
                   width="full"
-                  onClick={approveRequest}
+                  onClick={onApproveRequest}
                   padding="16px"
                   borderRadius="round"
                   boxShadow="24px accent"
