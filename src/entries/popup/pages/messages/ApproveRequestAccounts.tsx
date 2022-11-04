@@ -1,6 +1,7 @@
 import React from 'react';
 import { useEnsAvatar, useEnsName } from 'wagmi';
 
+import { ChainType } from '~/core/references';
 import { useCurrentAddressStore } from '~/core/state';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { getConnectedAppIcon } from '~/core/utils/connectedApps';
@@ -15,6 +16,7 @@ import {
   Text,
 } from '~/design-system';
 
+import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
 import { SFSymbol } from '../../components/SFSymbol/SFSymbol';
 
 interface ApproveRequestProps {
@@ -89,8 +91,8 @@ export function ApproveRequestAccounts({
                   background="fill"
                   borderRadius="30px"
                   style={{
-                    width: '16px',
-                    height: '16px',
+                    width: '18px',
+                    height: '18px',
                     overflow: 'hidden',
                   }}
                 >
@@ -123,16 +125,24 @@ export function ApproveRequestAccounts({
                 weight="semibold"
                 color="labelQuaternary"
               >
-                Wallet
-              </Text>
-              <Text
-                align="right"
-                size="14pt"
-                weight="semibold"
-                color="labelSecondary"
-              >
                 Network
               </Text>
+              <Inline alignVertical="center" space="4px">
+                <ChainBadge chainType={ChainType.arbitrum} size={'small'} />
+                <Text
+                  align="right"
+                  size="14pt"
+                  weight="semibold"
+                  color="labelSecondary"
+                >
+                  Network
+                </Text>
+                <SFSymbol
+                  color="labelTertiary"
+                  size={14}
+                  symbol="chevronDownCircle"
+                />
+              </Inline>
             </Stack>
           </Column>
         </Columns>

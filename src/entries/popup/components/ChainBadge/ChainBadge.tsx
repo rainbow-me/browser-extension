@@ -32,7 +32,7 @@ const networkBadges = {
   [ChainType.arbitrum]: ArbitrumBadge,
 };
 
-export function ChainIcon({ chainType, size = 'small' }: ChainIconProps) {
+const ChainBadge = ({ chainType, size = 'small' }: ChainIconProps) => {
   const { iconSize } = sizeConfigs[size];
 
   return (
@@ -45,4 +45,6 @@ export function ChainIcon({ chainType, size = 'small' }: ChainIconProps) {
       />
     </Box>
   );
-}
+};
+
+export { ChainBadge };
