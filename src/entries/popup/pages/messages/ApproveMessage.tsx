@@ -5,6 +5,8 @@ import { useNotificationWindowStore } from '~/core/state/notificationWindow';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { Box, Text } from '~/design-system';
 
+import { ApproveRequestAccounts } from './ApproveRequestAccounts';
+
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export function ApproveMessage() {
@@ -29,6 +31,16 @@ export function ApproveMessage() {
       if (window?.id) chrome.windows.remove(window.id);
     }, 50);
   }, [pendingRequest?.id, window?.id, removePendingRequest]);
+
+  if (pendingRequest.method === 'eth_requestAccounts') {
+    return (
+      <ApproveRequestAccounts
+        approveRequest={approveRequest}
+        rejectRequest={rejectRequest}
+        request={pendingRequest}
+      />
+    );
+  }
 
   return (
     <>

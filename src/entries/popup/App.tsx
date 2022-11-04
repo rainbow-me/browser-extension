@@ -12,8 +12,8 @@ import { createWagmiClient } from '~/core/wagmi';
 import { Box } from '~/design-system';
 
 import { Routes } from './Routes';
-import { ApproveMessage } from './components/ApproveMessage';
 import { PlaygroundComponents } from './pages/_playgrounds';
+import { ApproveMessage } from './pages/messages/ApproveMessage';
 import { RainbowConnector } from './wagmi/RainbowConnector';
 
 const playground = process.env.PLAYGROUND as 'default' | 'ds';

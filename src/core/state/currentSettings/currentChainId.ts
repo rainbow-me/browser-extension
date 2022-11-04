@@ -4,7 +4,7 @@ import create from 'zustand';
 import { createStore } from '../internal/createStore';
 
 export interface CurrentChainIdState {
-  currentChainId: number | null;
+  currentChainId: number;
   setCurrentChainId: (chainId: number) => void;
 }
 

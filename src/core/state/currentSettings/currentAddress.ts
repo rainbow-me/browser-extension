@@ -6,7 +6,7 @@ import { DEFAULT_ACCOUNT } from '~/entries/background/handlers/handleProviderReq
 import { createStore } from '../internal/createStore';
 
 export interface CurrentAddressState {
-  currentAddress: Address | null;
+  currentAddress: Address;
   setCurrentAddress: (address: Address) => void;
 }
 
