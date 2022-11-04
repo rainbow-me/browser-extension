@@ -167,9 +167,9 @@ export function ApproveRequestAccounts({
                 <ChainBadge chainId={chain.arbitrum.id} size={'small'} />
                 <Text
                   align="right"
-                  size="14pt"
+                  size="12pt"
                   weight="semibold"
-                  color="labelSecondary"
+                  color="labelQuaternary"
                 >
                   Network
                 </Text>
