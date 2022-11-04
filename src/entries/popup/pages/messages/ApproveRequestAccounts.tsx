@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { chain, useEnsAvatar, useEnsName } from 'wagmi';
+import { Address, chain, useEnsAvatar, useEnsName } from 'wagmi';
 
 import { useCurrentAddressStore } from '~/core/state';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -15,6 +15,11 @@ import {
   Stack,
   Text,
 } from '~/design-system';
+import { TextStyles } from '~/design-system/styles/core.css';
+import {
+  DEFAULT_ACCOUNT,
+  DEFAULT_ACCOUNT_2,
+} from '~/entries/background/handlers/handleProviderRequest';
 
 import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
 import {
@@ -65,14 +70,49 @@ const supportedChains: { [key: string]: SelectedNetwork } = {
   },
 };
 
+// TODO hook up real wallets
+const wallets: Address[] = [DEFAULT_ACCOUNT, DEFAULT_ACCOUNT_2];
+
+const EnsAvatar = ({ address }: { address: Address }) => {
+  const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
+  return (
+    <Box
+      background="fill"
+      borderRadius="30px"
+      style={{
+        width: '18px',
+        height: '18px',
+        overflow: 'hidden',
+      }}
+    >
+      {ensAvatar && (
+        /* TODO: Convert to <Image> & Imgix/Cloudinary */
+        <img src={ensAvatar} width="100%" height="100%" loading="lazy" />
+      )}
+    </Box>
+  );
+};
+
+const EnsName = ({
+  address,
+  color = 'label',
+}: {
+  address: Address;
+  color: TextStyles['color'];
+}) => {
+  const { data: ensName } = useEnsName({ address });
+  return (
+    <Text color={color} size="14pt" weight="semibold">
+      {ensName || truncateAddress(address)}
+    </Text>
+  );
+};
 export function ApproveRequestAccounts({
   approveRequest,
   rejectRequest,
   request,
 }: ApproveRequestProps) {
   const { currentAddress } = useCurrentAddressStore();
-  const { data: ensAvatar } = useEnsAvatar({ addressOrName: currentAddress });
-  const { data: ensName } = useEnsName({ address: currentAddress });
   const { appHostName, appLogo, appName } = useAppMetadata({
     url: request?.meta?.sender?.url || '',
   });
@@ -80,6 +120,52 @@ export function ApproveRequestAccounts({
   const [selectedNetwork, setSelectedNetwork] = useState<SelectedNetwork>(
     supportedChains[chain.mainnet.network],
   );
+  const [selectedWallet, setSelectedWallet] = useState<Address>(currentAddress);
+
+  const walletSelector = useMemo(() => {
+    return (
+      <Menu>
+        <MenuTrigger asChild>
+          <Box>
+            <Inline alignVertical="center" space="4px">
+              <EnsAvatar address={selectedWallet} />
+              <EnsName color="labelSecondary" address={selectedWallet} />
+
+              <SFSymbol
+                color="labelSecondary"
+                size={14}
+                symbol="chevronDownCircle"
+              />
+            </Inline>
+          </Box>
+        </MenuTrigger>
+
+        <MenuContent>
+          <MenuLabel>Switch Wallets</MenuLabel>
+          <MenuSeparator />
+          <MenuRadioGroup
+            value={selectedWallet}
+            onValueChange={(wallet) => setSelectedWallet(wallet as Address)}
+          >
+            {wallets.map((wallet, i) => {
+              return (
+                <MenuRadioItem key={i} value={wallet}>
+                  <Inline space="8px" alignVertical="center">
+                    <EnsAvatar address={wallet} />
+                    <EnsName color="label" address={wallet} />
+                  </Inline>
+
+                  <MenuItemIndicator style={{ marginLeft: 'auto' }}>
+                    <SFSymbol symbol="checkMark" size={11} />
+                  </MenuItemIndicator>
+                </MenuRadioItem>
+              );
+            })}
+          </MenuRadioGroup>
+        </MenuContent>
+      </Menu>
+    );
+  }, [selectedWallet]);
 
   const networkselector = useMemo(() => {
     return (
@@ -208,41 +294,7 @@ export function ApproveRequestAccounts({
                   <Text size="12pt" weight="semibold" color="labelQuaternary">
                     Wallet
                   </Text>
-                  <Box>
-                    <Inline alignVertical="center" space="4px">
-                      <Box
-                        background="fill"
-                        borderRadius="30px"
-                        style={{
-                          width: '18px',
-                          height: '18px',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        {ensAvatar && (
-                          /* TODO: Convert to <Image> & Imgix/Cloudinary */
-                          <img
-                            src={ensAvatar}
-                            width="100%"
-                            height="100%"
-                            loading="lazy"
-                          />
-                        )}
-                      </Box>
-                      <Text
-                        size="14pt"
-                        weight="semibold"
-                        color="labelSecondary"
-                      >
-                        {ensName || truncateAddress(currentAddress)}
-                      </Text>
-                      <SFSymbol
-                        color="labelSecondary"
-                        size={14}
-                        symbol="chevronDownCircle"
-                      />
-                    </Inline>
-                  </Box>
+                  {walletSelector}
                 </Stack>
               </Column>
               <Column>
