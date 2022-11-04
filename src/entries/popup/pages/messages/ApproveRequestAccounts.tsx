@@ -1,14 +1,8 @@
-import React from 'react';
-import { useEnsAvatar, useEnsName } from 'wagmi';
+import React, { useMemo, useState } from 'react';
+import { chain, useEnsAvatar, useEnsName } from 'wagmi';
 
-import { ChainType } from '~/core/references';
 import { useCurrentAddressStore } from '~/core/state';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import {
-  dappLogoOverride,
-  dappNameOverride,
-  getDappHostname,
-} from '~/core/utils/connectedApps';
 import { truncateAddress } from '~/core/utils/truncateAddress';
 import {
   Box,
@@ -23,13 +17,53 @@ import {
 } from '~/design-system';
 
 import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
+import {
+  Menu,
+  MenuContent,
+  MenuItemIndicator,
+  MenuLabel,
+  MenuRadioGroup,
+  MenuRadioItem,
+  MenuSeparator,
+  MenuTrigger,
+} from '../../components/Menu/Menu';
 import { SFSymbol } from '../../components/SFSymbol/SFSymbol';
+import { useAppMetadata } from '../../hooks/useAppMetadata';
 
 interface ApproveRequestProps {
   approveRequest: () => void;
   rejectRequest: () => void;
   request: ProviderRequestPayload;
 }
+
+interface SelectedNetwork {
+  network: string;
+  chainId: number;
+  name: string;
+}
+
+const supportedChains: { [key: string]: SelectedNetwork } = {
+  [chain.mainnet.network]: {
+    network: chain.mainnet.network,
+    chainId: chain.mainnet.id,
+    name: chain.mainnet.name,
+  },
+  [chain.optimism.network]: {
+    network: chain.optimism.network,
+    chainId: chain.optimism.id,
+    name: chain.optimism.name,
+  },
+  [chain.polygon.network]: {
+    network: chain.polygon.network,
+    chainId: chain.polygon.id,
+    name: chain.polygon.name,
+  },
+  [chain.arbitrum.network]: {
+    network: chain.arbitrum.network,
+    chainId: chain.arbitrum.id,
+    name: chain.arbitrum.name,
+  },
+};
 
 export function ApproveRequestAccounts({
   approveRequest,
@@ -39,13 +73,69 @@ export function ApproveRequestAccounts({
   const { currentAddress } = useCurrentAddressStore();
   const { data: ensAvatar } = useEnsAvatar({ addressOrName: currentAddress });
   const { data: ensName } = useEnsName({ address: currentAddress });
+  const { appHostName, appLogo, appName } = useAppMetadata({
+    url: request?.meta?.sender?.url || '',
+  });
 
-  const meta = request?.meta;
-  const url = meta?.sender.url || '';
+  const [selectedNetwork, setSelectedNetwork] = useState<SelectedNetwork>(
+    supportedChains[chain.mainnet.network],
+  );
 
-  const hostName = getDappHostname(url);
-  const logo = dappLogoOverride(url);
-  const name = dappNameOverride(url);
+  const networkselector = useMemo(() => {
+    return (
+      <Menu>
+        <MenuTrigger asChild>
+          <Box>
+            <Inline alignHorizontal="right" alignVertical="center" space="4px">
+              <ChainBadge chainId={selectedNetwork.chainId} size={'small'} />
+              <Text
+                align="right"
+                size="14pt"
+                weight="semibold"
+                color="labelSecondary"
+              >
+                {selectedNetwork.name}
+              </Text>
+              <SFSymbol
+                color="labelSecondary"
+                size={14}
+                symbol="chevronDownCircle"
+              />
+            </Inline>
+          </Box>
+        </MenuTrigger>
+
+        <MenuContent>
+          <MenuLabel>Switch Networks</MenuLabel>
+          <MenuSeparator />
+          <MenuRadioGroup
+            value={selectedNetwork.network}
+            onValueChange={(network) =>
+              setSelectedNetwork(supportedChains[network])
+            }
+          >
+            {Object.keys(supportedChains).map((chain, i) => {
+              const { network, chainId, name } = supportedChains[chain];
+              return (
+                <MenuRadioItem key={i} value={network}>
+                  <Inline space="8px" alignVertical="center">
+                    <ChainBadge chainId={chainId} size="small" />
+                    <Text color="label" size="14pt" weight="semibold">
+                      {name}
+                    </Text>
+                  </Inline>
+
+                  <MenuItemIndicator style={{ marginLeft: 'auto' }}>
+                    <SFSymbol symbol="checkMark" size={11} />
+                  </MenuItemIndicator>
+                </MenuRadioItem>
+              );
+            })}
+          </MenuRadioGroup>
+        </MenuContent>
+      </Menu>
+    );
+  }, [selectedNetwork.chainId, selectedNetwork.name, selectedNetwork.network]);
 
   return (
     <Rows alignVertical="justify">
@@ -70,17 +160,24 @@ export function ApproveRequestAccounts({
                 borderRadius="18px"
                 alignItems="center"
               >
-                {logo ? <img src={logo} width="100%" height="100%" /> : null}
+                {appLogo ? (
+                  <img src={appLogo} width="100%" height="100%" />
+                ) : null}
               </Box>
             </Inline>
 
             <Stack space="32px">
-              <Text align="center" color="label" size="20pt" weight="semibold">
-                {name} wants to connect to your wallet
+              <Text
+                size="20pt"
+                weight="semibold"
+                color="labelSecondary"
+                align="center"
+              >
+                {appName} wants to connect to your wallet
               </Text>
 
               <Text align="center" color="accent" size="20pt" weight="bold">
-                {hostName}
+                {appHostName}
               </Text>
             </Stack>
             <Inline alignHorizontal="center">
@@ -95,8 +192,8 @@ export function ApproveRequestAccounts({
               size="14pt"
               weight="regular"
             >
-              Allow {name} to view your wallets address, balance, activity and
-              request approval for transactions.
+              Allow {appName} to view your wallets address, balance, activity
+              and request approval for transactions.
             </Text>
           </Stack>
         </Box>
@@ -158,26 +255,8 @@ export function ApproveRequestAccounts({
                   >
                     Network
                   </Text>
-                  <Inline
-                    alignHorizontal="right"
-                    alignVertical="center"
-                    space="4px"
-                  >
-                    <ChainBadge chainType={ChainType.arbitrum} size={'small'} />
-                    <Text
-                      align="right"
-                      size="14pt"
-                      weight="semibold"
-                      color="labelSecondary"
-                    >
-                      Network
-                    </Text>
-                    <SFSymbol
-                      color="labelSecondary"
-                      size={14}
-                      symbol="chevronDownCircle"
-                    />
-                  </Inline>
+
+                  {networkselector}
                 </Stack>
               </Column>
             </Columns>
@@ -194,7 +273,7 @@ export function ApproveRequestAccounts({
                   boxShadow="24px accent"
                 >
                   <Text color="label" size="14pt" weight="bold">
-                    Connect to {name}
+                    Connect to {appName}
                   </Text>
                 </Box>
               </Row>

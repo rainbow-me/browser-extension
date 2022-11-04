@@ -1,6 +1,6 @@
 import React from 'react';
+import { chain } from 'wagmi';
 
-import { ChainType } from '~/core/references';
 import { Box } from '~/design-system';
 
 import ArbitrumBadge from '../../../../assets/badges/arbitrumBadge.png';
@@ -21,24 +21,24 @@ const sizeConfigs = {
 };
 
 interface ChainIconProps {
-  chainType: keyof typeof ChainType;
+  chainId: number;
   size: 'large' | 'medium' | 'small';
 }
 
 const networkBadges = {
-  [ChainType.ethereum]: EthereumBadge,
-  [ChainType.polygon]: PolygonBadge,
-  [ChainType.optimism]: OptimismBadge,
-  [ChainType.arbitrum]: ArbitrumBadge,
+  [chain.mainnet.id]: EthereumBadge,
+  [chain.polygon.id]: PolygonBadge,
+  [chain.optimism.id]: OptimismBadge,
+  [chain.arbitrum.id]: ArbitrumBadge,
 };
 
-const ChainBadge = ({ chainType, size = 'small' }: ChainIconProps) => {
+const ChainBadge = ({ chainId, size = 'small' }: ChainIconProps) => {
   const { iconSize } = sizeConfigs[size];
 
   return (
     <Box style={{ height: iconSize, width: iconSize }}>
       <img
-        src={networkBadges[chainType]}
+        src={networkBadges[chainId]}
         width="100%"
         height="100%"
         loading="lazy"

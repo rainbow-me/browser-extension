@@ -2,6 +2,7 @@ import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import React, { CSSProperties, ReactNode } from 'react';
 
 import { Box, Text } from '~/design-system';
+import { TextStyles } from '~/design-system/styles/core.css';
 
 import { menuItemStyles } from './Menu.css';
 
@@ -21,10 +22,11 @@ export function MenuContent(props: MenuContentProps) {
           backgroundColor: 'rgba(53, 54, 58, 0.8);',
           width: 204,
           backdropFilter: 'blur(26px)',
-          padding: '12px',
           boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
           borderRadius: '16px',
         }}
+        paddingHorizontal="12px"
+        paddingVertical="4px"
         align="start"
       >
         {children}
@@ -35,18 +37,14 @@ export function MenuContent(props: MenuContentProps) {
 
 interface MenuLabelProps {
   children: ReactNode;
+  align?: TextStyles['textAlign'];
 }
 
 export const MenuLabel = (props: MenuLabelProps) => {
-  const { children } = props;
+  const { children, align = 'center' } = props;
   return (
-    <Box
-      as={DropdownMenuPrimitive.Label}
-      paddingTop="12px"
-      paddingBottom="4px"
-      style={{ display: 'flex' }}
-    >
-      <Text color="labelTertiary" size="11pt" weight="bold">
+    <Box as={DropdownMenuPrimitive.Label} paddingTop="8px" paddingBottom="12px">
+      <Text color="label" size="14pt" weight="bold" align={align}>
         {children}
       </Text>
     </Box>
