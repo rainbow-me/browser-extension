@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Address, chain, useEnsAvatar, useEnsName } from 'wagmi';
 
 import { useCurrentAddressStore } from '~/core/state';
@@ -107,6 +107,49 @@ const EnsName = ({
     </Text>
   );
 };
+
+interface SwitchMenuProps {
+  title: string;
+  selectedValue: string;
+  onValueChange: (value: string) => void;
+  renderMenuTrigger: React.ReactNode;
+  renderMenuItem: (item: string) => React.ReactNode;
+  menuItemIndicator: React.ReactNode;
+  menuItems: string[];
+}
+
+const SwitchMenu = ({
+  title,
+  selectedValue,
+  onValueChange,
+  renderMenuTrigger,
+  menuItems,
+  renderMenuItem,
+  menuItemIndicator,
+}: SwitchMenuProps) => {
+  return (
+    <Menu>
+      <MenuTrigger asChild>{renderMenuTrigger}</MenuTrigger>
+      <MenuContent>
+        <MenuLabel>{title}</MenuLabel>
+        <MenuSeparator />
+        <MenuRadioGroup value={selectedValue} onValueChange={onValueChange}>
+          {menuItems.map((item, i) => {
+            return (
+              <MenuRadioItem key={i} value={item}>
+                {renderMenuItem(item)}
+                <MenuItemIndicator style={{ marginLeft: 'auto' }}>
+                  {menuItemIndicator}
+                </MenuItemIndicator>
+              </MenuRadioItem>
+            );
+          })}
+        </MenuRadioGroup>
+      </MenuContent>
+    </Menu>
+  );
+};
+
 export function ApproveRequestAccounts({
   approveRequest,
   rejectRequest,
@@ -121,107 +164,6 @@ export function ApproveRequestAccounts({
     supportedChains[chain.mainnet.network],
   );
   const [selectedWallet, setSelectedWallet] = useState<Address>(currentAddress);
-
-  const walletSelector = useMemo(() => {
-    return (
-      <Menu>
-        <MenuTrigger asChild>
-          <Box>
-            <Inline alignVertical="center" space="4px">
-              <EnsAvatar address={selectedWallet} />
-              <EnsName color="labelSecondary" address={selectedWallet} />
-
-              <SFSymbol
-                color="labelSecondary"
-                size={14}
-                symbol="chevronDownCircle"
-              />
-            </Inline>
-          </Box>
-        </MenuTrigger>
-
-        <MenuContent>
-          <MenuLabel>Switch Wallets</MenuLabel>
-          <MenuSeparator />
-          <MenuRadioGroup
-            value={selectedWallet}
-            onValueChange={(wallet) => setSelectedWallet(wallet as Address)}
-          >
-            {wallets.map((wallet, i) => {
-              return (
-                <MenuRadioItem key={i} value={wallet}>
-                  <Inline space="8px" alignVertical="center">
-                    <EnsAvatar address={wallet} />
-                    <EnsName color="label" address={wallet} />
-                  </Inline>
-
-                  <MenuItemIndicator style={{ marginLeft: 'auto' }}>
-                    <SFSymbol symbol="checkMark" size={11} />
-                  </MenuItemIndicator>
-                </MenuRadioItem>
-              );
-            })}
-          </MenuRadioGroup>
-        </MenuContent>
-      </Menu>
-    );
-  }, [selectedWallet]);
-
-  const networkselector = useMemo(() => {
-    return (
-      <Menu>
-        <MenuTrigger asChild>
-          <Box>
-            <Inline alignHorizontal="right" alignVertical="center" space="4px">
-              <ChainBadge chainId={selectedNetwork.chainId} size={'small'} />
-              <Text
-                align="right"
-                size="14pt"
-                weight="semibold"
-                color="labelSecondary"
-              >
-                {selectedNetwork.name}
-              </Text>
-              <SFSymbol
-                color="labelSecondary"
-                size={14}
-                symbol="chevronDownCircle"
-              />
-            </Inline>
-          </Box>
-        </MenuTrigger>
-
-        <MenuContent>
-          <MenuLabel>Switch Networks</MenuLabel>
-          <MenuSeparator />
-          <MenuRadioGroup
-            value={selectedNetwork.network}
-            onValueChange={(network) =>
-              setSelectedNetwork(supportedChains[network])
-            }
-          >
-            {Object.keys(supportedChains).map((chain, i) => {
-              const { network, chainId, name } = supportedChains[chain];
-              return (
-                <MenuRadioItem key={i} value={network}>
-                  <Inline space="8px" alignVertical="center">
-                    <ChainBadge chainId={chainId} size="small" />
-                    <Text color="label" size="14pt" weight="semibold">
-                      {name}
-                    </Text>
-                  </Inline>
-
-                  <MenuItemIndicator style={{ marginLeft: 'auto' }}>
-                    <SFSymbol symbol="checkMark" size={11} />
-                  </MenuItemIndicator>
-                </MenuRadioItem>
-              );
-            })}
-          </MenuRadioGroup>
-        </MenuContent>
-      </Menu>
-    );
-  }, [selectedNetwork.chainId, selectedNetwork.name, selectedNetwork.network]);
 
   return (
     <Rows alignVertical="justify">
@@ -294,7 +236,40 @@ export function ApproveRequestAccounts({
                   <Text size="12pt" weight="semibold" color="labelQuaternary">
                     Wallet
                   </Text>
-                  {walletSelector}
+                  <SwitchMenu
+                    title={'Switch Wallets'}
+                    renderMenuTrigger={
+                      <Box>
+                        <Inline alignVertical="center" space="4px">
+                          <EnsAvatar address={selectedWallet} />
+                          <EnsName
+                            color="labelSecondary"
+                            address={selectedWallet}
+                          />
+
+                          <SFSymbol
+                            color="labelSecondary"
+                            size={14}
+                            symbol="chevronDownCircle"
+                          />
+                        </Inline>
+                      </Box>
+                    }
+                    menuItemIndicator={
+                      <SFSymbol symbol="checkMark" size={11} />
+                    }
+                    renderMenuItem={(wallet) => (
+                      <Inline space="8px" alignVertical="center">
+                        <EnsAvatar address={wallet as Address} />
+                        <EnsName color="label" address={wallet as Address} />
+                      </Inline>
+                    )}
+                    menuItems={wallets}
+                    selectedValue={selectedWallet}
+                    onValueChange={(value) =>
+                      setSelectedWallet(value as Address)
+                    }
+                  />
                 </Stack>
               </Column>
               <Column>
@@ -308,7 +283,55 @@ export function ApproveRequestAccounts({
                     Network
                   </Text>
 
-                  {networkselector}
+                  <SwitchMenu
+                    title={'Switch Networks'}
+                    renderMenuTrigger={
+                      <Box>
+                        <Inline
+                          alignHorizontal="right"
+                          alignVertical="center"
+                          space="4px"
+                        >
+                          <ChainBadge
+                            chainId={selectedNetwork.chainId}
+                            size={'small'}
+                          />
+                          <Text
+                            align="right"
+                            size="14pt"
+                            weight="semibold"
+                            color="labelSecondary"
+                          >
+                            {selectedNetwork.name}
+                          </Text>
+                          <SFSymbol
+                            color="labelSecondary"
+                            size={14}
+                            symbol="chevronDownCircle"
+                          />
+                        </Inline>
+                      </Box>
+                    }
+                    menuItemIndicator={
+                      <SFSymbol symbol="checkMark" size={11} />
+                    }
+                    renderMenuItem={(chain) => {
+                      const { chainId, name } = supportedChains[chain];
+                      return (
+                        <Inline space="8px" alignVertical="center">
+                          <ChainBadge chainId={chainId} size="small" />
+                          <Text color="label" size="14pt" weight="semibold">
+                            {name}
+                          </Text>
+                        </Inline>
+                      );
+                    }}
+                    menuItems={Object.keys(supportedChains)}
+                    selectedValue={selectedNetwork.network}
+                    onValueChange={(network) =>
+                      setSelectedNetwork(supportedChains[network])
+                    }
+                  />
                 </Stack>
               </Column>
             </Columns>
