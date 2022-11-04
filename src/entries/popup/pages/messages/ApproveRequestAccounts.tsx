@@ -98,7 +98,6 @@ const EnsName = ({
     </Text>
   );
 };
-
 export function ApproveRequestAccounts({
   approveRequest,
   rejectRequest,
