@@ -30,6 +30,12 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
+        test: /\.(jpg|png)$/,
+        use: {
+          loader: 'url-loader',
+        },
+      },
+      {
         test: /\.woff2?$/,
         use: 'file-loader',
         exclude: /node_modules/,
