@@ -1,10 +1,13 @@
 import React from 'react';
 import { chain } from 'wagmi';
 
+<<<<<<< HEAD
 import ArbitrumBadge from 'static/assets/badges/arbitrumBadge.png';
 import EthereumBadge from 'static/assets/badges/ethereumBadge.png';
 import OptimismBadge from 'static/assets/badges/optimismBadge.png';
 import PolygonBadge from 'static/assets/badges/polygonBadge.png';
+=======
+>>>>>>> 0973fe1 (useappdata hook and network selector)
 import { Box } from '~/design-system';
 
 const sizeConfigs = {
