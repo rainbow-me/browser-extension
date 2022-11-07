@@ -62,10 +62,12 @@ export const handleWallets = () =>
         let response = null;
         switch (action) {
           case 'status':
+            console.log('getting status');
             response = {
               hasVault: await hasVault(),
               unlocked: await isVaultUnlocked(),
             };
+            console.log('got status', response);
             break;
           case 'lock':
             response = await lockVault();

@@ -11,6 +11,7 @@ import { Box, Column, Columns, Separator, Text } from '~/design-system';
 const messenger = initializeMessenger({ connect: 'background' });
 
 const walletAction = async (action: string, payload: unknown) => {
+  console.log('sent action', { action, payload });
   const { result }: { result: unknown } = await messenger.send(
     'wallet_action',
     {
@@ -18,6 +19,7 @@ const walletAction = async (action: string, payload: unknown) => {
       payload,
     },
   );
+  console.log('got action', { action, payload, result });
   return result;
 };
 
@@ -297,14 +299,14 @@ export function Wallets() {
   const updateState = useCallback(async () => {
     const accounts = await getAccounts();
     setAccounts(accounts);
-    if (accounts?.length > 0 && !address) {
+    if (accounts.length > 0 && !accounts.includes(address as Address)) {
       setCurrentAddress(accounts[0]);
     }
-
     const { unlocked, hasVault } = (await walletAction('status', {})) as {
       unlocked: boolean;
       hasVault: boolean;
     };
+    console.log({ unlocked, hasVault });
     setIsUnlocked(unlocked);
     setIsNewUser(!hasVault);
   }, [address, getAccounts, setCurrentAddress]);
@@ -439,6 +441,8 @@ export function Wallets() {
       {isUnlocked && <Wipe onWipe={wipe} />}
     </Fragment>
   );
+
+  console.log('STATE', { accounts, address, ensName, isUnlocked, isNewUser });
 
   const content = isUnlocked ? (
     <LoggedIn />
