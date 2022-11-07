@@ -91,6 +91,7 @@ export async function userAssetsByChainQueryFunction({
       );
     }, USER_ASSETS_TIMEOUT_DURATION);
     const resolver = (message: AddressAssetsReceivedMessage) => {
+      console.log('ASSETS MESSAGE: ', message);
       clearTimeout(timeout);
       resolve(parseUserAssetsByChain(message, currency));
     };

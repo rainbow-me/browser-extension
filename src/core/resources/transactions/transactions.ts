@@ -27,7 +27,7 @@ import {
   convertRawAmountToNativeDisplay,
 } from '~/core/utils/numbers';
 
-const TRANSACTIONS_TIMEOUT_DURATION = 10000;
+const TRANSACTIONS_TIMEOUT_DURATION = 35000;
 const TRANSACTIONS_REFETCH_INTERVAL = 60000;
 
 // ///////////////////////////////////////////////
