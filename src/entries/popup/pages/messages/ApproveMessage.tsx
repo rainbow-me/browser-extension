@@ -11,30 +11,28 @@ import { ApproveRequestAccounts } from './ApproveRequestAccounts';
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export function ApproveMessage() {
-  const { pendingRequests, removePendingRequest } = usePendingRequestStore();
+  const { pendingRequests } = usePendingRequestStore();
   const { window } = useNotificationWindowStore();
   const pendingRequest = pendingRequests[0];
 
   const approveRequest = useCallback(
     (payload: { address: Address; chainId: number }) => {
       backgroundMessenger.send(`message:${pendingRequest?.id}`, payload);
-      removePendingRequest(pendingRequest?.id);
       // Wait until the message propagates to the background provider.
       setTimeout(() => {
         if (window?.id) chrome.windows.remove(window.id);
       }, 50);
     },
-    [pendingRequest?.id, window?.id, removePendingRequest],
+    [pendingRequest?.id, window?.id],
   );
 
   const rejectRequest = useCallback(() => {
     backgroundMessenger.send(`message:${pendingRequest?.id}`, false);
-    removePendingRequest(pendingRequest?.id);
     // Wait until the message propagates to the background provider.
     setTimeout(() => {
       if (window?.id) chrome.windows.remove(window.id);
     }, 50);
-  }, [pendingRequest?.id, window?.id, removePendingRequest]);
+  }, [pendingRequest?.id, window?.id]);
 
   if (pendingRequest.method === 'eth_requestAccounts') {
     return (
