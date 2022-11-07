@@ -451,13 +451,13 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>gensync": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>semver": true,
+        "file-loader>loader-utils>json5": true,
         "lavamoat-browserify>convert-source-map": true,
         "lavamoat>@babel/code-frame": true,
         "lavamoat>lavamoat-tofu>@babel/parser": true,
         "lavamoat>lavamoat-tofu>@babel/traverse": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/generator": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
-        "url-loader>loader-utils>json5": true,
         "vitest>debug": true
       }
     },
@@ -588,8 +588,39 @@
         "path": true
       },
       "packages": {
-        "url-loader>loader-utils": true,
+        "file-loader>loader-utils": true,
         "webpack>schema-utils": true
+      }
+    },
+    "file-loader>loader-utils": {
+      "builtin": {
+        "crypto.createHash": true,
+        "path.basename": true,
+        "path.parse": true,
+        "path.posix.isAbsolute": true,
+        "path.relative": true,
+        "path.sep": true,
+        "path.win32.isAbsolute": true
+      },
+      "globals": {
+        "Buffer.from": true,
+        "WebAssembly.Instance": true,
+        "WebAssembly.Module": true
+      },
+      "packages": {
+        "file-loader>loader-utils>big.js": true,
+        "file-loader>loader-utils>emojis-list": true,
+        "file-loader>loader-utils>json5": true
+      }
+    },
+    "file-loader>loader-utils>big.js": {
+      "globals": {
+        "define": true
+      }
+    },
+    "file-loader>loader-utils>json5": {
+      "globals": {
+        "console.warn": true
       }
     },
     "globby>dir-glob": {
@@ -1228,37 +1259,6 @@
       },
       "packages": {
         "jest>@jest/core>jest-runner>source-map-support": true
-      }
-    },
-    "url-loader>loader-utils": {
-      "builtin": {
-        "crypto.createHash": true,
-        "path.basename": true,
-        "path.parse": true,
-        "path.posix.isAbsolute": true,
-        "path.relative": true,
-        "path.sep": true,
-        "path.win32.isAbsolute": true
-      },
-      "globals": {
-        "Buffer.from": true,
-        "WebAssembly.Instance": true,
-        "WebAssembly.Module": true
-      },
-      "packages": {
-        "url-loader>loader-utils>big.js": true,
-        "url-loader>loader-utils>emojis-list": true,
-        "url-loader>loader-utils>json5": true
-      }
-    },
-    "url-loader>loader-utils>big.js": {
-      "globals": {
-        "define": true
-      }
-    },
-    "url-loader>loader-utils>json5": {
-      "globals": {
-        "console.warn": true
       }
     },
     "vitest>debug": {
