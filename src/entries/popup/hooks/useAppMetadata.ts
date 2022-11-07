@@ -1,3 +1,4 @@
+import { CallbackOptions } from '~/core/messengers/internal/createMessenger';
 import {
   dappLogoOverride,
   dappNameOverride,
@@ -5,13 +6,14 @@ import {
 } from '~/core/utils/connectedApps';
 
 interface AppMetadata {
-  url: string;
+  meta?: CallbackOptions;
 }
 
-export function useAppMetadata({ url }: AppMetadata) {
+export function useAppMetadata({ meta }: AppMetadata) {
+  const url = meta?.sender.url || '';
   const appHostName = getDappHostname(url);
   const appLogo = dappLogoOverride(url);
-  const appName = dappNameOverride(url);
+  const appName = dappNameOverride(url) || meta?.sender?.tab?.title;
 
   return {
     appHostName,

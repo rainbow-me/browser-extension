@@ -158,7 +158,7 @@ export function ApproveRequestAccounts({
 }: ApproveRequestProps) {
   const { currentAddress } = useCurrentAddressStore();
   const { appHostName, appLogo, appName } = useAppMetadata({
-    url: request?.meta?.sender?.url || '',
+    meta: request?.meta,
   });
 
   const [selectedNetwork, setSelectedNetwork] = useState<SelectedNetwork>(
