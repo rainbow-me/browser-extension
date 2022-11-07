@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
-import { Address } from 'wagmi';
 
 import { initializeMessenger } from '~/core/messengers';
+import { useCurrentAddressStore, useCurrentChainIdStore } from '~/core/state';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { Box, Text } from '~/design-system';
@@ -12,19 +12,21 @@ const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export function ApproveMessage() {
   const { pendingRequests } = usePendingRequestStore();
+  const { currentAddress } = useCurrentAddressStore();
+  const { currentChainId } = useCurrentChainIdStore();
   const { window } = useNotificationWindowStore();
   const pendingRequest = pendingRequests[0];
 
-  const approveRequest = useCallback(
-    (payload: { address: Address; chainId: number }) => {
-      backgroundMessenger.send(`message:${pendingRequest?.id}`, payload);
-      // Wait until the message propagates to the background provider.
-      setTimeout(() => {
-        if (window?.id) chrome.windows.remove(window.id);
-      }, 50);
-    },
-    [pendingRequest?.id, window?.id],
-  );
+  const approveRequest = useCallback(() => {
+    backgroundMessenger.send(`message:${pendingRequest?.id}`, {
+      address: currentAddress,
+      chainId: currentChainId,
+    });
+    // Wait until the message propagates to the background provider.
+    setTimeout(() => {
+      if (window?.id) chrome.windows.remove(window.id);
+    }, 50);
+  }, [currentAddress, currentChainId, pendingRequest?.id, window?.id]);
 
   const rejectRequest = useCallback(() => {
     backgroundMessenger.send(`message:${pendingRequest?.id}`, null);
