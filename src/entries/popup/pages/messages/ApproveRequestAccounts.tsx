@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Address, chain, useEnsAvatar, useEnsName } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { truncateAddress } from '~/core/utils/truncateAddress';
@@ -208,7 +209,7 @@ export function ApproveRequestAccounts({
                 color="labelSecondary"
                 align="center"
               >
-                {appName} wants to connect to your wallet
+                {appName} {i18n.t('approve_request_accounts.wallet_info_title')}
               </Text>
 
               <Text align="center" color="accent" size="20pt" weight="bold">
@@ -227,8 +228,9 @@ export function ApproveRequestAccounts({
               size="14pt"
               weight="regular"
             >
-              Allow {appName} to view your wallets address, balance, activity
-              and request approval for transactions.
+              {i18n.t('approve_request_accounts.wallet_info_description', {
+                appName,
+              })}
             </Text>
           </Stack>
         </Box>
@@ -241,10 +243,10 @@ export function ApproveRequestAccounts({
               <Column>
                 <Stack space="8px">
                   <Text size="12pt" weight="semibold" color="labelQuaternary">
-                    Wallet
+                    {i18n.t('approve_request_accounts.wallet')}
                   </Text>
                   <SwitchMenu
-                    title={'Switch Wallets'}
+                    title={i18n.t('approve_request_accounts.switch_wallets')}
                     renderMenuTrigger={
                       <Box>
                         <Inline alignVertical="center" space="4px">
@@ -287,11 +289,11 @@ export function ApproveRequestAccounts({
                     weight="semibold"
                     color="labelQuaternary"
                   >
-                    Network
+                    {i18n.t('approve_request_accounts.network')}
                   </Text>
 
                   <SwitchMenu
-                    title={'Switch Networks'}
+                    title={i18n.t('approve_request_accounts.switch_networks')}
                     renderMenuTrigger={
                       <Box>
                         <Inline
@@ -355,7 +357,7 @@ export function ApproveRequestAccounts({
                   boxShadow="24px accent"
                 >
                   <Text color="label" size="14pt" weight="bold">
-                    Connect to {appName}
+                    {i18n.t('approve_request_accounts.connect', { appName })}
                   </Text>
                 </Box>
               </Row>
@@ -369,7 +371,7 @@ export function ApproveRequestAccounts({
                   borderRadius="round"
                 >
                   <Text color="labelSecondary" size="14pt" weight="bold">
-                    Cancel
+                    {i18n.t('approve_request_accounts.cancel')}
                   </Text>
                 </Box>
               </Row>

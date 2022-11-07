@@ -8,5 +8,15 @@
   "connected_apps": {
     "title": "Apps Conectadas",
     "disconnect": "Desconectar Todas"
+  },
+  "approve_request_accounts": {
+    "wallet_info_title": "se quiere conectar a tu billetera",
+    "wallet_info_description": "Permitir a %{appName} ver tus billeteras, balance, actividad y pedir autorización para transacciones.",
+    "wallet": "Billetera",
+    "network": "Red",
+    "switch_networks": "Cambiar Redes",
+    "switch_wallets": "Cambiar Billeteras",
+    "connect": "Conectar a %{appName}",
+    "cancel": "Cancelar"
   }
 }

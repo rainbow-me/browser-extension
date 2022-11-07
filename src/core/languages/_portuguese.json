@@ -8,5 +8,15 @@
   "connected_apps": {
     "title": "Connected Apps :)",
     "disconnect": "Disconnect All :)"
+  },
+  "approve_request_accounts": {
+    "wallet_info_title": "wants to connect to your wallet :)",
+    "wallet_info_description": "Allow %{appName} to view your wallets address, balance, activity and request approval for transactions. :)",
+    "wallet": "Wallet :)",
+    "network": "Network :)",
+    "switch_networks": "Switch Networks :)",
+    "switch_wallets": "Switch Wallets :)",
+    "connect": "Connect to %{appName} :)",
+    "cancel": "Cancel :)"
   }
 }
