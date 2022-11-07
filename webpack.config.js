@@ -80,6 +80,7 @@ module.exports = {
   resolve: {
     alias: {
       '~': resolve(__dirname, 'src/'),
+      static: resolve(__dirname, 'static/'),
     },
     fallback: {
       stream: require.resolve('stream-browserify'),

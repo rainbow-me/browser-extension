@@ -1,12 +1,11 @@
 import React from 'react';
 import { chain } from 'wagmi';
 
+import ArbitrumBadge from 'static/assets/badges/arbitrumBadge.png';
+import EthereumBadge from 'static/assets/badges/ethereumBadge.png';
+import OptimismBadge from 'static/assets/badges/optimismBadge.png';
+import PolygonBadge from 'static/assets/badges/polygonBadge.png';
 import { Box } from '~/design-system';
-
-import ArbitrumBadge from '../../../../assets/badges/arbitrumBadge.png';
-import EthereumBadge from '../../../../assets/badges/ethereumBadge.png';
-import OptimismBadge from '../../../../assets/badges/optimismBadge.png';
-import PolygonBadge from '../../../../assets/badges/polygonBadge.png';
 
 const sizeConfigs = {
   large: {
