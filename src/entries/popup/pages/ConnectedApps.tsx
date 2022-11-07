@@ -163,7 +163,7 @@ function ConnectedApp({
               </Box>
               <Box>
                 <Text color="labelTertiary" size="12pt" weight="semibold">
-                  {ensName || truncateAddress(address)} {chainId}
+                  {ensName || truncateAddress(address)}
                 </Text>
               </Box>
             </Inline>
