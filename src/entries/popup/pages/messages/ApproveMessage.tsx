@@ -44,26 +44,6 @@ export function ApproveMessage() {
     );
   }
 
-  if (pendingRequest.method === 'eth_requestAccounts') {
-    return (
-      <ApproveRequestAccounts
-        approveRequest={approveRequest}
-        rejectRequest={rejectRequest}
-        request={pendingRequest}
-      />
-    );
-  }
-
-  if (pendingRequest.method === 'eth_requestAccounts') {
-    return (
-      <ApproveRequestAccounts
-        approveRequest={approveRequest}
-        rejectRequest={rejectRequest}
-        request={pendingRequest}
-      />
-    );
-  }
-
   return (
     <>
       <Box padding="16px" style={{ borderRadius: 999 }}>
