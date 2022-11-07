@@ -1,3 +1,4 @@
+import { chain } from 'wagmi';
 import create from 'zustand';
 
 import { createStore } from '../internal/createStore';
@@ -9,7 +10,7 @@ export interface CurrentChainIdState {
 
 export const currentChainIdStore = createStore<CurrentChainIdState>(
   (set) => ({
-    currentChainId: null,
+    currentChainId: chain.mainnet.id,
     setCurrentChainId: (newChainId) => set({ currentChainId: newChainId }),
   }),
   {
