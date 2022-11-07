@@ -114,7 +114,7 @@ interface SwitchMenuProps {
   selectedValue: string;
   onValueChange: (value: string) => void;
   renderMenuTrigger: React.ReactNode;
-  renderMenuItem: (item: string) => React.ReactNode;
+  renderMenuItem: (item: string, i: number) => React.ReactNode;
   menuItemIndicator: React.ReactNode;
   menuItems: string[];
 }
@@ -138,7 +138,7 @@ const SwitchMenu = ({
           {menuItems.map((item, i) => {
             return (
               <MenuRadioItem key={i} value={item}>
-                {renderMenuItem(item)}
+                {renderMenuItem(item, i)}
                 <MenuItemIndicator style={{ marginLeft: 'auto' }}>
                   {menuItemIndicator}
                 </MenuItemIndicator>
@@ -248,7 +248,7 @@ export function ApproveRequestAccounts({
                   <SwitchMenu
                     title={i18n.t('approve_request_accounts.switch_wallets')}
                     renderMenuTrigger={
-                      <Box>
+                      <Box id={'switch-wallet-menu'}>
                         <Inline alignVertical="center" space="4px">
                           <EnsAvatar address={selectedWallet} />
                           <EnsName
@@ -267,11 +267,13 @@ export function ApproveRequestAccounts({
                     menuItemIndicator={
                       <SFSymbol symbol="checkMark" size={11} />
                     }
-                    renderMenuItem={(wallet) => (
-                      <Inline space="8px" alignVertical="center">
-                        <EnsAvatar address={wallet as Address} />
-                        <EnsName color="label" address={wallet as Address} />
-                      </Inline>
+                    renderMenuItem={(wallet, i) => (
+                      <Box id={`switch-wallet-item-${i}`}>
+                        <Inline space="8px" alignVertical="center">
+                          <EnsAvatar address={wallet as Address} />
+                          <EnsName color="label" address={wallet as Address} />
+                        </Inline>
+                      </Box>
                     )}
                     menuItems={wallets}
                     selectedValue={selectedWallet}
@@ -295,7 +297,7 @@ export function ApproveRequestAccounts({
                   <SwitchMenu
                     title={i18n.t('approve_request_accounts.switch_networks')}
                     renderMenuTrigger={
-                      <Box>
+                      <Box id={'switch-network-menu'}>
                         <Inline
                           alignHorizontal="right"
                           alignVertical="center"
@@ -324,15 +326,17 @@ export function ApproveRequestAccounts({
                     menuItemIndicator={
                       <SFSymbol symbol="checkMark" size={11} />
                     }
-                    renderMenuItem={(chain) => {
+                    renderMenuItem={(chain, i) => {
                       const { chainId, name } = supportedChains[chain];
                       return (
-                        <Inline space="8px" alignVertical="center">
-                          <ChainBadge chainId={chainId} size="small" />
-                          <Text color="label" size="14pt" weight="semibold">
-                            {name}
-                          </Text>
-                        </Inline>
+                        <Box id={`switch-network-item-${i}`}>
+                          <Inline space="8px" alignVertical="center">
+                            <ChainBadge chainId={chainId} size="small" />
+                            <Text color="label" size="14pt" weight="semibold">
+                              {name}
+                            </Text>
+                          </Inline>
+                        </Box>
                       );
                     }}
                     menuItems={Object.keys(supportedChains)}
