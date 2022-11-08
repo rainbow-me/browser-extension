@@ -22,4 +22,3 @@ export const NATIVE_ASSETS_PER_CHAIN = {
   [ChainName.optimism]: OPTIMISM_ETH_ADDRESS,
   [ChainName.polygon]: MATIC_POLYGON_ADDRESS,
 };
-export { ChainType } from './chainType';
