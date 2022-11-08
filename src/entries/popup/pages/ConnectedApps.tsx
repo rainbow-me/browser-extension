@@ -9,10 +9,6 @@ import { getConnectedAppIcon } from '~/core/utils/connectedApps';
 import { truncateAddress } from '~/core/utils/truncateAddress';
 import { Box, Inline, Inset, Stack, Text } from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
-import {
-  DEFAULT_ACCOUNT,
-  DEFAULT_ACCOUNT_2,
-} from '~/entries/background/handlers/handleProviderRequest';
 
 import { PageHeader } from '../components/PageHeader';
 import { SFSymbol } from '../components/SFSymbol/SFSymbol';
@@ -91,7 +87,7 @@ function ConnectedApp({
 }) {
   const { data: ensName } = useEnsName({ address });
   const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
-  const { updateAppSessionChainId, updateAppSessionAddress } = useAppSession({
+  const { updateAppSessionChainId } = useAppSession({
     host,
   });
 
@@ -103,29 +99,13 @@ function ConnectedApp({
     [host, updateAppSessionChainId],
   );
 
-  const shuffleAddress = React.useCallback(() => {
-    // TODO: handle account switching correctly
-    updateAppSessionAddress(
-      address === DEFAULT_ACCOUNT ? DEFAULT_ACCOUNT_2 : DEFAULT_ACCOUNT,
-    );
-    messenger.send(
-      `accountsChanged:${host}`,
-      address === DEFAULT_ACCOUNT ? DEFAULT_ACCOUNT_2 : DEFAULT_ACCOUNT,
-    );
-  }, [address, host, updateAppSessionAddress]);
-
-  const shuffleSession = React.useCallback(() => {
-    // TODO: handle account switching correctly
-    shuffleAddress();
-  }, [shuffleAddress]);
-
   return (
     <SwitchNetworkMenu
       title={i18n.t('connected_apps.switch_networks')}
       onValueChange={shuffleChainId}
       selectedValue={String(chainId)}
       renderMenuTrigger={
-        <Box>
+        <Box as="button" id="switch-network-menu">
           <Inset horizontal="20px" vertical="8px">
             <Inline space="8px">
               <Box
@@ -143,11 +123,7 @@ function ConnectedApp({
                   height="100%"
                 />
               </Box>
-              <Box
-                as="button"
-                id="suffle-session-button"
-                onClick={shuffleSession}
-              >
+              <Box>
                 <Stack space="8px">
                   <Text size="14pt" weight="semibold">
                     {host}
