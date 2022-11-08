@@ -52,7 +52,7 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
   return (
     <Menu>
       <MenuTrigger asChild>
-        <Box>{children}</Box>
+        <Box position="relative">{children}</Box>
       </MenuTrigger>
       <MenuContent>
         <Inset top="8px" bottom="12px">
@@ -113,7 +113,7 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
   return (
     <Menu>
       <MenuTrigger asChild>
-        <Box>{children}</Box>
+        <Box position="relative">{children}</Box>
       </MenuTrigger>
       <MenuContent>
         <Stack space="4px">
@@ -177,11 +177,9 @@ export function HomePageHeader({
       paddingHorizontal="10px"
     >
       <Inline alignVertical="center" height="full" alignHorizontal="justify">
-        <Box as="button">
-          <HeaderLeftMenu>
-            <HeaderActionButton symbol={leftSymbol} />
-          </HeaderLeftMenu>
-        </Box>
+        <HeaderLeftMenu>
+          <HeaderActionButton symbol={leftSymbol} />
+        </HeaderLeftMenu>
 
         <Box>
           <Text size="14pt" weight="heavy">
