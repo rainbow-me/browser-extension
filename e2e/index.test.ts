@@ -123,8 +123,9 @@ it('should be able to connect to bx test dapp', async () => {
 
 it('should be able to go back to extension and switch account and chain', async () => {
   await driver.get(rootURL + '/popup.html');
-  await delay(2000);
+  await delay(500);
   await driver.findElement({ id: 'page-header-left-action' }).click();
+  await delay(500);
   await driver.findElement({ id: 'suffle-session-button' }).click();
   await delay(500);
   await driver.get('https://bx-test-dapp.vercel.app/');
