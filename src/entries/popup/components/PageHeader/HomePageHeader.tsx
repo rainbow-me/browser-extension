@@ -53,7 +53,7 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
   const [host, setHost] = React.useState('');
   const { appSessions } = useAppSessionsStore();
 
-  chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
+  chrome?.tabs?.query({ active: true, lastFocusedWindow: true }, (tabs) => {
     const url = tabs[0].url;
     if (url) {
       const host = new URL(url).host;
