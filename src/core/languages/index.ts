@@ -1,22 +1,14 @@
 import { I18n } from 'i18n-js';
 
 import en from './_english.json';
-import fr from './_french.json';
-import pr from './_portuguese.json';
-import es from './_spanish.json';
 
 enum Language {
-  ES = 'es',
   EN = 'en',
-  FR = 'fr',
-  PR = 'pr',
+  ES = 'es',
 }
 
 const i18n = new I18n({
   en,
-  es,
-  fr,
-  pr,
 });
 
 // Configure languages

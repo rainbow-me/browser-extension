@@ -2,12 +2,12 @@ import { motion } from 'framer-motion';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { Language, i18n } from '~/core/languages';
+import { i18n } from '~/core/languages';
 import { useCurrentLanguageStore } from '~/core/state';
 import { Box, Text } from '~/design-system';
 
 export function Settings() {
-  const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
+  const { currentLanguage } = useCurrentLanguageStore();
   return (
     <Box
       as={motion.div}
@@ -38,16 +38,10 @@ export function Settings() {
           background="surfaceSecondary"
           padding="16px"
           style={{ borderRadius: 999 }}
-          onClick={() =>
-            setCurrentLanguage(
-              [Language.EN, Language.ES, Language.FR, Language.PR].filter(
-                (lang) => lang !== currentLanguage,
-              )[Math.round(Math.random() * 10) % 3],
-            )
-          }
+          disabled
         >
           <Text color="labelSecondary" size="14pt" weight="bold">
-            {i18n.t('label.toggle')}
+            {i18n.t('label.toggle')} (disabled for now)
           </Text>
         </Box>
       </Box>
