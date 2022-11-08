@@ -1,4 +1,5 @@
 import { bridgeMessenger } from '../messengers/internal/bridge';
+import { CallbackOptions } from '../messengers/internal/createMessenger';
 import {
   RequestArguments,
   RequestResponse,
@@ -6,7 +7,10 @@ import {
 
 import { createTransport } from './internal/createTransport';
 
-export type ProviderRequestPayload = RequestArguments & { id: number };
+export type ProviderRequestPayload = RequestArguments & {
+  id: number;
+  meta?: CallbackOptions;
+};
 type ProviderResponse = RequestResponse;
 
 /**

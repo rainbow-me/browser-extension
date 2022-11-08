@@ -18,7 +18,7 @@ const openWindow = async () => {
   const window = await chrome.windows.create({
     url: chrome.runtime.getURL('popup.html'),
     type: 'popup',
-    height: 600,
+    height: 625,
     width: 360,
   });
   setWindow(window);
@@ -29,7 +29,7 @@ const openWindow = async () => {
  * @param {PendingRequest} request
  * @returns {boolean}
  */
-const messengerRequestApproval = async (
+const messengerRequestAccountsApproval = async (
   messenger: Messenger,
   request: ProviderRequestPayload,
 ) => {
@@ -97,12 +97,13 @@ export const handleProviderRequest = ({
             response = [activeSession.address];
             break;
           }
-          const { address, chainId } = await messengerRequestApproval(
+          const { address, chainId } = await messengerRequestAccountsApproval(
             messenger,
             {
               method,
               id,
               params,
+              meta,
             },
           );
           addSession({
