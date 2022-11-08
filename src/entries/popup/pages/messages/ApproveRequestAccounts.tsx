@@ -21,11 +21,10 @@ import {
   DEFAULT_ACCOUNT,
   DEFAULT_ACCOUNT_2,
 } from '~/entries/background/handlers/handleProviderRequest';
-
-import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
-import { SFSymbol } from '../../components/SFSymbol/SFSymbol';
-import { SwitchMenu } from '../../components/SwitchMenu/SwitchMenu';
-import { useAppMetadata } from '../../hooks/useAppMetadata';
+import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
+import { SFSymbol } from '~/entries/popup/components/SFSymbol/SFSymbol';
+import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
+import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 
 interface ApproveRequestProps {
   approveRequest: (payload: { address: Address; chainId: number }) => void;
