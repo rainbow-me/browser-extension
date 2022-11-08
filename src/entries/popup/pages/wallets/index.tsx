@@ -1,3 +1,4 @@
+import { uuid4 } from '@sentry/utils';
 import { motion } from 'framer-motion';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -11,15 +12,14 @@ import { Box, Column, Columns, Separator, Text } from '~/design-system';
 const messenger = initializeMessenger({ connect: 'background' });
 
 const walletAction = async (action: string, payload: unknown) => {
-  console.log('sent action', { action, payload });
   const { result }: { result: unknown } = await messenger.send(
     'wallet_action',
     {
       action,
       payload,
     },
+    { id: uuid4() },
   );
-  console.log('got action', { action, payload, result });
   return result;
 };
 
@@ -306,7 +306,6 @@ export function Wallets() {
       unlocked: boolean;
       hasVault: boolean;
     };
-    console.log({ unlocked, hasVault });
     setIsUnlocked(unlocked);
     setIsNewUser(!hasVault);
   }, [address, getAccounts, setCurrentAddress]);
@@ -347,7 +346,8 @@ export function Wallets() {
   }, [updateState]);
 
   const wipe = useCallback(async () => {
-    await walletAction('wipe', password);
+    const pwd = password || prompt('Enter password');
+    await walletAction('wipe', pwd);
     await updateState();
   }, [password, updateState]);
 
@@ -361,9 +361,10 @@ export function Wallets() {
 
   const exportWallet = useCallback(
     async (address: Address) => {
+      const pwd = password || prompt('Enter password');
       const seed = (await walletAction('export_wallet', {
         address,
-        password,
+        password: pwd,
       })) as Address[];
       return seed;
     },
@@ -372,9 +373,11 @@ export function Wallets() {
 
   const exportAccount = useCallback(
     async (address: Address) => {
+      const pwd = password || prompt('Enter password');
+
       const pkey = (await walletAction('export_account', {
         address,
-        password,
+        password: pwd,
       })) as Address[];
       return pkey;
     },
@@ -426,6 +429,8 @@ export function Wallets() {
 
       <Separator />
 
+      {address && <AddAccount onAddAccount={addAccount} />}
+
       <ImportWallet
         secret={secret}
         onSecretChange={handleSecretChange}
@@ -434,15 +439,11 @@ export function Wallets() {
 
       <Separator />
 
-      {address && <AddAccount onAddAccount={addAccount} />}
-
       {isUnlocked && <Lock onLock={lock} />}
 
       {isUnlocked && <Wipe onWipe={wipe} />}
     </Fragment>
   );
-
-  console.log('STATE', { accounts, address, ensName, isUnlocked, isNewUser });
 
   const content = isUnlocked ? (
     <LoggedIn />
