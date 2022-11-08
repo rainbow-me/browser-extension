@@ -124,8 +124,10 @@ it('should be able to connect to bx test dapp', async () => {
 it('should be able to go back to extension and switch account and chain', async () => {
   await driver.get(rootURL + '/popup.html');
   await delay(500);
-  await driver.findElement({ id: 'page-header-left-action' }).click();
+  await driver.findElement({ id: 'home-page-header-left' }).click();
   await delay(500);
+  await driver.findElement({ id: 'home-page-header-connected-apps' }).click();
+
   await driver.findElement({ id: 'switch-network-menu' }).click();
   await driver.findElement({ id: 'switch-network-item-2' }).click();
 

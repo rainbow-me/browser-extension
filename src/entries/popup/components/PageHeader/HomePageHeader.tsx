@@ -65,7 +65,9 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
   return (
     <Menu>
       <MenuTrigger asChild>
-        <Box position="relative">{children}</Box>
+        <Box position="relative" id="home-page-header-left">
+          {children}
+        </Box>
       </MenuTrigger>
       <MenuContent>
         <Inset top="8px" bottom="12px">
@@ -85,7 +87,11 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
                   height="100%"
                 />
               </Box>
-              <Box>
+              <Box
+                id={`home-page-header-host-${
+                  isConnectedToCurrentHost ? host : 'not-connected'
+                }`}
+              >
                 <Rows space="8px">
                   <Row>
                     <Text size="14pt" weight="bold">
@@ -113,7 +119,7 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
         <Stack space="4px">
           <MenuSeparator />
           <Inset top="8px" bottom="8px">
-            <Link to={'/connected'}>
+            <Link id="home-page-header-connected-apps" to={'/connected'}>
               <Inline alignVertical="center" space="8px">
                 <SFSymbol size={12} symbol="squareOnSquareDashed" />
                 <Text size="14pt" weight="bold">
