@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import * as React from 'react';
-import { Address, chain, useEnsAvatar, useEnsName } from 'wagmi';
+import { Address, useEnsAvatar, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
@@ -16,6 +16,7 @@ import {
 
 import { PageHeader } from '../components/PageHeader';
 import { SFSymbol } from '../components/SFSymbol/SFSymbol';
+import { SwitchNetworkMenu } from '../components/SwitchMenu/SwitchNetworkMenu';
 import { useAppSession } from '../hooks/useAppSession';
 
 const messenger = initializeMessenger({ connect: 'inpage' });
@@ -94,16 +95,13 @@ function ConnectedApp({
     host,
   });
 
-  const shuffleChainId = React.useCallback(() => {
-    // TODO: handle chain switching correctly
-    updateAppSessionChainId(
-      chainId === chain.mainnet.id ? chain.arbitrum.id : chain.mainnet.id,
-    );
-    messenger.send(
-      `chainChanged:${host}`,
-      chainId === chain.mainnet.id ? chain.arbitrum.id : chain.mainnet.id,
-    );
-  }, [chainId, host, updateAppSessionChainId]);
+  const shuffleChainId = React.useCallback(
+    (chainId: string) => {
+      updateAppSessionChainId(Number(chainId));
+      messenger.send(`chainChanged:${host}`, chainId);
+    },
+    [host, updateAppSessionChainId],
+  );
 
   const shuffleAddress = React.useCallback(() => {
     // TODO: handle account switching correctly
@@ -119,57 +117,73 @@ function ConnectedApp({
   const shuffleSession = React.useCallback(() => {
     // TODO: handle account switching correctly
     shuffleAddress();
-    shuffleChainId();
-  }, [shuffleAddress, shuffleChainId]);
+  }, [shuffleAddress]);
 
   return (
-    <Inset horizontal="20px" vertical="8px">
-      <Inline space="8px">
-        <Box
-          background="fill"
-          borderRadius="12px"
-          style={{
-            width: '36px',
-            height: '36px',
-            overflow: 'hidden',
-          }}
-        >
-          <img src={getConnectedAppIcon(host)} width="100%" height="100%" />
-        </Box>
-        <Box as="button" id="suffle-session-button" onClick={shuffleSession}>
-          <Stack space="8px">
-            <Text size="14pt" weight="semibold">
-              {host}
-            </Text>
-            <Inline space="4px" alignVertical="center">
+    <SwitchNetworkMenu
+      title={i18n.t('connected_apps.switch_networks')}
+      onValueChange={shuffleChainId}
+      selectedValue={String(chainId)}
+      renderMenuTrigger={
+        <Box>
+          <Inset horizontal="20px" vertical="8px">
+            <Inline space="8px">
               <Box
                 background="fill"
-                borderRadius="30px"
+                borderRadius="12px"
                 style={{
-                  width: '16px',
-                  height: '16px',
+                  width: '36px',
+                  height: '36px',
                   overflow: 'hidden',
                 }}
               >
-                {ensAvatar && (
-                  /* TODO: Convert to <Image> & Imgix/Cloudinary */
-                  <img
-                    src={ensAvatar}
-                    width="100%"
-                    height="100%"
-                    loading="lazy"
-                  />
-                )}
+                <img
+                  src={getConnectedAppIcon(host)}
+                  width="100%"
+                  height="100%"
+                />
               </Box>
-              <Box>
-                <Text color="labelTertiary" size="12pt" weight="semibold">
-                  {ensName || truncateAddress(address)}
-                </Text>
+              <Box
+                as="button"
+                id="suffle-session-button"
+                onClick={shuffleSession}
+              >
+                <Stack space="8px">
+                  <Text size="14pt" weight="semibold">
+                    {host}
+                  </Text>
+                  <Inline space="4px" alignVertical="center">
+                    <Box
+                      background="fill"
+                      borderRadius="30px"
+                      style={{
+                        width: '16px',
+                        height: '16px',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      {ensAvatar && (
+                        /* TODO: Convert to <Image> & Imgix/Cloudinary */
+                        <img
+                          src={ensAvatar}
+                          width="100%"
+                          height="100%"
+                          loading="lazy"
+                        />
+                      )}
+                    </Box>
+                    <Box>
+                      <Text color="labelTertiary" size="12pt" weight="semibold">
+                        {ensName || truncateAddress(address)}
+                      </Text>
+                    </Box>
+                  </Inline>
+                </Stack>
               </Box>
             </Inline>
-          </Stack>
+          </Inset>
         </Box>
-      </Inline>
-    </Inset>
+      }
+    />
   );
 }
