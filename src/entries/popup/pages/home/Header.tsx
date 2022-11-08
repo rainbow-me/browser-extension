@@ -46,10 +46,8 @@ export function Header({
       <Box>
         <HomePageHeader
           title=""
-          leftRoute="connected"
           leftSymbol="appBadgeCheckmark"
           rightSymbol="ellipsis"
-          rightRoute="settings"
           mainPage
         />
       </Box>

@@ -83,7 +83,7 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
                 </Rows>
               </Box>
             </Inline>
-            <SFSymbol size={12} symbol="activity" />
+            <SFSymbol size={6} symbol="circleFill" />
           </Inline>
         </Inset>
 
@@ -91,7 +91,7 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
           <MenuSeparator />
           <Inset top="8px" bottom="8px">
             <Inline alignVertical="center" space="8px">
-              <SFSymbol size={12} symbol="activity" />
+              <SFSymbol size={12} symbol="squareOnSquareDashed" />
               <Text size="14pt" weight="bold">
                 All connected apps
               </Text>
@@ -115,7 +115,7 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
         <Stack space="4px">
           <Inset top="8px" bottom="8px">
             <Inline alignVertical="center" space="8px">
-              <SFSymbol size={12} symbol="activity" />
+              <SFSymbol size={12} symbol="gearshapeFill" />
               <Text size="14pt" weight="bold">
                 Settings
               </Text>
@@ -123,7 +123,7 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
           </Inset>
           <Inset top="8px" bottom="8px">
             <Inline alignVertical="center" space="8px">
-              <SFSymbol size={12} symbol="activity" />
+              <SFSymbol size={12} symbol="qrcode" />
               <Text size="14pt" weight="bold">
                 My QR Code
               </Text>
@@ -135,7 +135,7 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
           <Box>
             <Inset top="8px" bottom="8px">
               <Inline alignVertical="center" space="8px">
-                <SFSymbol size={12} symbol="activity" />
+                <SFSymbol size={12} symbol="personCropCircleFill" />
                 <Text size="14pt" weight="bold">
                   Rainbow Profile
                 </Text>
@@ -143,7 +143,7 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
             </Inset>
             <Inset top="8px" bottom="8px">
               <Inline alignVertical="center" space="8px">
-                <SFSymbol size={12} symbol="activity" />
+                <SFSymbol size={12} symbol="binocularsFill" />
                 <Text size="14pt" weight="bold">
                   View on Explorer
                 </Text>
