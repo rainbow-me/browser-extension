@@ -51,6 +51,7 @@ const HeaderActionButton = ({ symbol }: { symbol: Symbols }) => {
 
 const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
   const [host, setHost] = React.useState('');
+  const { appSessions } = useAppSessionsStore();
 
   chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
     const url = tabs[0].url;
@@ -59,8 +60,6 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
       setHost(host);
     }
   });
-
-  const { appSessions } = useAppSessionsStore();
   const isConnectedToCurrentHost = appSessions?.[host];
 
   return (
