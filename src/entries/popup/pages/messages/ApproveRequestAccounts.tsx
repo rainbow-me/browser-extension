@@ -144,22 +144,6 @@ export function ApproveRequestAccounts({
               <Text align="center" color="accent" size="20pt" weight="bold">
                 {appHostName}
               </Text>
-              <Inline alignVertical="center" space="4px">
-                <ChainBadge chainId={chain.arbitrum.id} size={'small'} />
-                <Text
-                  align="right"
-                  size="12pt"
-                  weight="semibold"
-                  color="labelQuaternary"
-                >
-                  Network
-                </Text>
-                <SFSymbol
-                  color="labelTertiary"
-                  size={14}
-                  symbol="chevronDownCircle"
-                />
-              </Inline>
             </Stack>
             <Inline alignHorizontal="center">
               <Box style={{ width: '186px' }}>
