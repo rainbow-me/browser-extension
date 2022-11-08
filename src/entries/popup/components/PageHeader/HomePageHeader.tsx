@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
+import { useAppSessionsStore } from '~/core/state';
 import { getConnectedAppIcon } from '~/core/utils/connectedApps';
 import { Box, Inline, Inset, Row, Rows, Stack, Text } from '~/design-system';
 
@@ -49,6 +50,19 @@ const HeaderActionButton = ({ symbol }: { symbol: Symbols }) => {
 };
 
 const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
+  const [host, setHost] = React.useState('');
+
+  chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
+    const url = tabs[0].url;
+    if (url) {
+      const host = new URL(url).host;
+      setHost(host);
+    }
+  });
+
+  const { appSessions } = useAppSessionsStore();
+  const isConnectedToCurrentHost = appSessions?.[host];
+
   return (
     <Menu>
       <MenuTrigger asChild>
@@ -62,10 +76,12 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
                 style={{
                   height: 14,
                   width: 14,
+                  borderRadius: 3.5,
+                  overflow: 'hidden',
                 }}
               >
                 <img
-                  src={getConnectedAppIcon('uniswap.org')}
+                  src={getConnectedAppIcon(host)}
                   width="100%"
                   height="100%"
                 />
@@ -74,18 +90,24 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
                 <Rows space="8px">
                   <Row>
                     <Text size="14pt" weight="bold">
-                      Page
+                      {host}
                     </Text>
                   </Row>
-                  <Row>
-                    <Text size="11pt" weight="bold">
-                      {i18n.t('page_header.not_connected')}
-                    </Text>
-                  </Row>
+                  {!isConnectedToCurrentHost && (
+                    <Row>
+                      <Text size="11pt" weight="bold">
+                        {i18n.t('page_header.not_connected')}
+                      </Text>
+                    </Row>
+                  )}
                 </Rows>
               </Box>
             </Inline>
-            <SFSymbol size={6} symbol="circleFill" />
+            <SFSymbol
+              size={6}
+              color={isConnectedToCurrentHost ? 'green' : undefined}
+              symbol="circleFill"
+            />
           </Inline>
         </Inset>
 
