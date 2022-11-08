@@ -1,9 +1,8 @@
-import { UserRejectedRequestError, chain } from 'wagmi';
+import { Address, UserRejectedRequestError } from 'wagmi';
 
 import { Messenger } from '~/core/messengers';
 import {
   appSessionsStore,
-  currentAddressStore,
   notificationWindowStore,
   pendingRequestStore,
 } from '~/core/state';
@@ -40,17 +39,20 @@ const messengerRequestApproval = async (
   addPendingRequest(request);
   openWindow();
   // Wait for response from the popup.
-  const approved = await new Promise((resolve) =>
-    // eslint-disable-next-line no-promise-executor-return
-    messenger.reply(`message:${request.id}`, async (payload) =>
-      resolve(payload),
-    ),
-  );
+  const payload: { address: Address; chainId: number } | null =
+    await new Promise((resolve) =>
+      // eslint-disable-next-line no-promise-executor-return
+      messenger.reply(
+        `message:${request.id}`,
+        async (payload: { address: Address; chainId: number } | null) =>
+          resolve(payload),
+      ),
+    );
   removePendingRequest(request.id);
-  if (!approved) {
+  if (!payload) {
     throw new UserRejectedRequestError('User rejected the request.');
   }
-  return approved;
+  return payload;
 };
 
 /**
@@ -65,7 +67,6 @@ export const handleProviderRequest = ({
     console.log(meta.sender, method);
 
     const { getActiveSession, addSession } = appSessionsStore.getState();
-    const { currentAddress } = currentAddressStore.getState();
     const host = new URL(meta.sender.url || '').host;
     const activeSession = getActiveSession({ host });
 
@@ -87,11 +88,6 @@ export const handleProviderRequest = ({
         case 'eth_signTypedData':
         case 'eth_signTypedData_v3':
         case 'eth_signTypedData_v4': {
-          await messengerRequestApproval(messenger, {
-            method,
-            id,
-            params,
-          });
           break;
         }
         case 'wallet_addEthereumChain':
@@ -101,17 +97,20 @@ export const handleProviderRequest = ({
             response = [activeSession.address];
             break;
           }
-          await messengerRequestApproval(messenger, {
-            method,
-            id,
-            params,
-          });
+          const { address, chainId } = await messengerRequestApproval(
+            messenger,
+            {
+              method,
+              id,
+              params,
+            },
+          );
           addSession({
             host,
-            address: currentAddress || DEFAULT_ACCOUNT,
-            chainId: chain.mainnet.id,
+            address,
+            chainId,
           });
-          response = [currentAddress || DEFAULT_ACCOUNT];
+          response = [address];
           break;
         }
         default: {
