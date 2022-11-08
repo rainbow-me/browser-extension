@@ -10,6 +10,14 @@
     "disconnect": "Desconectar Todas",
     "switch_networks": "Cambiar Redes"
   },
+  "page_header": {
+    "settings": "Configuraciones",
+    "qr_code": "Mi Código QR",
+    "rainbow_profile": "Perfil Rainbow",
+    "view_on_explorer": "Ver en Explorador",
+    "not_connected": "No conectado",
+    "all_connected_apps": "Todas las apps conectadas"
+  },
   "approve_request_accounts": {
     "wallet_info_title": "se quiere conectar a tu billetera",
     "wallet_info_description": "Permitir a %{appName} ver tus billeteras, balance, actividad y pedir autorización para transacciones.",

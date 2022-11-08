@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
+import { i18n } from '~/core/languages';
 import { getConnectedAppIcon } from '~/core/utils/connectedApps';
 import { Box, Inline, Inset, Row, Rows, Stack, Text } from '~/design-system';
 
@@ -78,7 +79,7 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
                   </Row>
                   <Row>
                     <Text size="11pt" weight="bold">
-                      Not connected
+                      {i18n.t('page_header.not_connected')}
                     </Text>
                   </Row>
                 </Rows>
@@ -95,7 +96,7 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
               <Inline alignVertical="center" space="8px">
                 <SFSymbol size={12} symbol="squareOnSquareDashed" />
                 <Text size="14pt" weight="bold">
-                  All connected apps
+                  {i18n.t('page_header.all_connected_apps')}
                 </Text>
               </Inline>
             </Link>
@@ -121,7 +122,7 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
               <Inline alignVertical="center" space="8px">
                 <SFSymbol size={12} symbol="gearshapeFill" />
                 <Text size="14pt" weight="bold">
-                  Settings
+                  {i18n.t('page_header.settings')}
                 </Text>
               </Inline>
             </Link>
@@ -130,7 +131,7 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
             <Inline alignVertical="center" space="8px">
               <SFSymbol size={12} symbol="qrcode" />
               <Text size="14pt" weight="bold">
-                My QR Code
+                {i18n.t('page_header.qr_code')}
               </Text>
             </Inline>
           </Inset>
@@ -142,7 +143,7 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
               <Inline alignVertical="center" space="8px">
                 <SFSymbol size={12} symbol="personCropCircleFill" />
                 <Text size="14pt" weight="bold">
-                  Rainbow Profile
+                  {i18n.t('page_header.rainbow_profile')}
                 </Text>
               </Inline>
             </Inset>
@@ -150,7 +151,7 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
               <Inline alignVertical="center" space="8px">
                 <SFSymbol size={12} symbol="binocularsFill" />
                 <Text size="14pt" weight="bold">
-                  View on Explorer
+                  {i18n.t('page_header.view_on_explorer')}
                 </Text>
               </Inline>
             </Inset>

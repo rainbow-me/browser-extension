@@ -10,6 +10,14 @@
     "disconnect": "Disconnect All :)",
     "switch_networks": "Switch Networks :)"
   },
+  "page_header": {
+    "settings": "Settings :)",
+    "qr_code": "My QR Code :)",
+    "rainbow_profile": "Rainbow Profile :)",
+    "view_on_explorer": "View on Explorer :)",
+    "not_connected": "Not connected :)",
+    "all_connected_apps": "All connected apps :)"
+  },
   "approve_request_accounts": {
     "wallet_info_title": "wants to connect to your wallet :)",
     "wallet_info_description": "Allow %{appName} to view your wallets address, balance, activity and request approval for transactions. :)",
