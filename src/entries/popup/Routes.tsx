@@ -8,7 +8,10 @@ import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/Animated
 import { ConnectedApps } from './pages/ConnectedApps';
 import { Home } from './pages/home';
 import { Send } from './pages/send';
-import { Settings } from './pages/settings';
+import { Currency } from './pages/settings/currency';
+import { Main as SettingsMain } from './pages/settings/main';
+import { Privacy } from './pages/settings/privacy';
+import { Transactions } from './pages/settings/transactions';
 import { Sign } from './pages/sign';
 import { Wallets } from './pages/wallets';
 
@@ -44,7 +47,31 @@ export function Routes() {
             navbar
             title={i18n.t('settings.title')}
           >
-            <Settings />
+            <SettingsMain />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/privacy',
+        element: (
+          <AnimatedRoute direction="horizontal" navbar title="Privacy">
+            <Privacy />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/transactions',
+        element: (
+          <AnimatedRoute direction="horizontal" navbar title="Transactions">
+            <Transactions />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/currency',
+        element: (
+          <AnimatedRoute direction="horizontal" navbar title="Currency">
+            <Currency />
           </AnimatedRoute>
         ),
       },
