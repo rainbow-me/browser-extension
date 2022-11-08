@@ -19,7 +19,7 @@ import {
 } from '~/entries/background/handlers/handleProviderRequest';
 
 import { Avatar } from '../../components/Avatar/Avatar';
-import { PageHeader } from '../../components/PageHeader';
+import { HomePageHeader } from '../../components/PageHeader/HomePageHeader';
 import { SFSymbol, SFSymbolProps } from '../../components/SFSymbol/SFSymbol';
 import { Tabs } from '../../components/Tabs/Tabs';
 import { useAvatar } from '../../hooks/useAvatar';
@@ -44,7 +44,7 @@ export function Header({
       }}
     >
       <Box>
-        <PageHeader
+        <HomePageHeader
           title=""
           leftRoute="connected"
           leftSymbol="appBadgeCheckmark"

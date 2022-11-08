@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import { Box, Inline, Text } from '~/design-system';
 
-import { SFSymbol, Symbols } from './SFSymbol/SFSymbol';
+import { SFSymbol, Symbols } from '../SFSymbol/SFSymbol';
 
 interface PageHeaderProps {
   title: string;
