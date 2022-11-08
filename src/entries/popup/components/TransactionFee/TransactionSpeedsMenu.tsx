@@ -10,15 +10,15 @@ import {
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
 import {
-  Menu,
-  MenuContent,
-  MenuItemIndicator,
-  MenuLabel,
-  MenuRadioGroup,
-  MenuRadioItem,
-  MenuSeparator,
-  MenuTrigger,
-} from '../Menu/Menu';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItemIndicator,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../DropdownMenu/DropdownMenu';
 
 const speeds: GasSpeed[] = ['urgent', 'fast', 'normal'];
 
@@ -39,7 +39,7 @@ export const SwitchSpeedMenuSelector = ({
   return (
     <>
       {chain.mainnet.id === chainId ? (
-        <MenuRadioItem value={'custom'}>
+        <DropdownMenuRadioItem value={'custom'}>
           <Box width="full" id={`switch-network-item-${0}`}>
             <Inline
               space="8px"
@@ -63,11 +63,11 @@ export const SwitchSpeedMenuSelector = ({
               />
             </Inline>
           </Box>
-        </MenuRadioItem>
+        </DropdownMenuRadioItem>
       ) : null}
       {speeds.map((speed, i) => {
         return (
-          <MenuRadioItem value={speed} key={i}>
+          <DropdownMenuRadioItem value={speed} key={i}>
             <Box id={`switch-network-item-${i}`}>
               <Inline space="8px" alignVertical="center">
                 <Text weight="semibold" size="14pt">
@@ -83,10 +83,10 @@ export const SwitchSpeedMenuSelector = ({
                 </Stack>
               </Inline>
             </Box>
-            <MenuItemIndicator style={{ marginLeft: 'auto' }}>
+            <DropdownMenuItemIndicator style={{ marginLeft: 'auto' }}>
               <Symbol weight="medium" symbol="checkmark" size={11} />
-            </MenuItemIndicator>
-          </MenuRadioItem>
+            </DropdownMenuItemIndicator>
+          </DropdownMenuRadioItem>
         );
       })}
     </>
@@ -140,12 +140,12 @@ export const SwitchTransactionSpeedMenu = ({
   );
   if (!editable) return menuTrigger;
   return (
-    <Menu>
-      <MenuTrigger asChild>{menuTrigger}</MenuTrigger>
-      <MenuContent>
-        <MenuLabel>{i18n.t('transaction_fee.title')}</MenuLabel>
-        <MenuSeparator />
-        <MenuRadioGroup
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>{menuTrigger}</DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>{i18n.t('transaction_fee.title')}</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuRadioGroup
           value={selectedSpeed}
           onValueChange={(speed) => onSpeedChanged(speed as GasSpeed)}
         >
@@ -153,8 +153,8 @@ export const SwitchTransactionSpeedMenu = ({
             chainId={chainId}
             gasFeeParamsBySpeed={gasFeeParamsBySpeed}
           />
-        </MenuRadioGroup>
-      </MenuContent>
-    </Menu>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

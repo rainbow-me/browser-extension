@@ -4,13 +4,13 @@ import React, { CSSProperties, ReactNode } from 'react';
 import { Box, Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 
-import { menuItemStyles } from './Menu.css';
+import { dropdownMenuItemStyles } from './DropdownMenu.css';
 
-interface MenuContentProps {
+interface DropdownMenuContentProps {
   children: ReactNode;
 }
 
-export function MenuContent(props: MenuContentProps) {
+export function DropdownMenuContent(props: DropdownMenuContentProps) {
   const { children } = props;
   return (
     <DropdownMenuPrimitive.Portal>
@@ -35,12 +35,12 @@ export function MenuContent(props: MenuContentProps) {
   );
 }
 
-interface MenuLabelProps {
+interface DropdownMenuLabelProps {
   children: ReactNode;
   align?: TextStyles['textAlign'];
 }
 
-export const MenuLabel = (props: MenuLabelProps) => {
+export const DropdownMenuLabel = (props: DropdownMenuLabelProps) => {
   const { children, align = 'center' } = props;
   return (
     <Box as={DropdownMenuPrimitive.Label} paddingTop="8px" paddingBottom="12px">
@@ -51,11 +51,11 @@ export const MenuLabel = (props: MenuLabelProps) => {
   );
 };
 
-interface MenuItemProps {
+interface DropdownMenuItemProps {
   children: ReactNode;
 }
 
-export const MenuItem = (props: MenuItemProps) => {
+export const DropdownMenuItem = (props: DropdownMenuItemProps) => {
   const { children } = props;
   return (
     <Box
@@ -69,19 +69,19 @@ export const MenuItem = (props: MenuItemProps) => {
         borderRadius: '12px',
         outline: 'none',
       }}
-      className={menuItemStyles}
+      className={dropdownMenuItemStyles}
     >
       {children}
     </Box>
   );
 };
 
-interface MenuRadioItemProps {
+interface DropdownMenuRadioItemProps {
   children: ReactNode;
   value: string;
 }
 
-export const MenuRadioItem = (props: MenuRadioItemProps) => {
+export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
   const { children, value } = props;
   return (
     <Box
@@ -96,14 +96,14 @@ export const MenuRadioItem = (props: MenuRadioItemProps) => {
         borderRadius: '12px',
         outline: 'none',
       }}
-      className={menuItemStyles}
+      className={dropdownMenuItemStyles}
     >
       {children}
     </Box>
   );
 };
 
-export const MenuSeparator = () => (
+export const DropdownMenuSeparator = () => (
   <Box
     as={DropdownMenuPrimitive.Separator}
     style={{
@@ -113,13 +113,15 @@ export const MenuSeparator = () => (
   />
 );
 
-interface MenuItemIndicatorProps {
+interface DropdownMenuItemIndicatorProps {
   children: ReactNode;
   style?: CSSProperties;
   className?: string;
 }
 
-export const MenuItemIndicator = (props: MenuItemIndicatorProps) => {
+export const DropdownMenuItemIndicator = (
+  props: DropdownMenuItemIndicatorProps,
+) => {
   const { children, style, className } = props;
   return (
     <Box
@@ -132,9 +134,12 @@ export const MenuItemIndicator = (props: MenuItemIndicatorProps) => {
   );
 };
 
-export const Menu = (props: DropdownMenuPrimitive.DropdownMenuProps) => (
+export const DropdownMenu = (
+  props: DropdownMenuPrimitive.DropdownMenuProps,
+) => (
   // eslint-disable-next-line react/jsx-props-no-spreading
   <DropdownMenuPrimitive.Root {...props} modal={false} />
 );
-export const MenuTrigger = DropdownMenuPrimitive.Trigger;
-export const MenuRadioGroup = DropdownMenuPrimitive.RadioGroup;
+
+export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
+export const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;
