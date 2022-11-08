@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 
 import { getConnectedAppIcon } from '~/core/utils/connectedApps';
 import { Box, Inline, Inset, Row, Rows, Stack, Text } from '~/design-system';
@@ -90,12 +91,14 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
         <Stack space="4px">
           <MenuSeparator />
           <Inset top="8px" bottom="8px">
-            <Inline alignVertical="center" space="8px">
-              <SFSymbol size={12} symbol="squareOnSquareDashed" />
-              <Text size="14pt" weight="bold">
-                All connected apps
-              </Text>
-            </Inline>
+            <Link to={'/connected'}>
+              <Inline alignVertical="center" space="8px">
+                <SFSymbol size={12} symbol="squareOnSquareDashed" />
+                <Text size="14pt" weight="bold">
+                  All connected apps
+                </Text>
+              </Inline>
+            </Link>
           </Inset>
         </Stack>
 
@@ -114,12 +117,14 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
       <MenuContent>
         <Stack space="4px">
           <Inset top="8px" bottom="8px">
-            <Inline alignVertical="center" space="8px">
-              <SFSymbol size={12} symbol="gearshapeFill" />
-              <Text size="14pt" weight="bold">
-                Settings
-              </Text>
-            </Inline>
+            <Link to={'/settings'}>
+              <Inline alignVertical="center" space="8px">
+                <SFSymbol size={12} symbol="gearshapeFill" />
+                <Text size="14pt" weight="bold">
+                  Settings
+                </Text>
+              </Inline>
+            </Link>
           </Inset>
           <Inset top="8px" bottom="8px">
             <Inline alignVertical="center" space="8px">
@@ -171,14 +176,11 @@ export function HomePageHeader({
       paddingHorizontal="10px"
     >
       <Inline alignVertical="center" height="full" alignHorizontal="justify">
-        {/* <Link id="page-header-left-action" to={leftRoute || ''}> */}
-        {/*  */}
         <Box as="button">
           <HeaderLeftMenu>
             <HeaderActionButton symbol={leftSymbol} />
           </HeaderLeftMenu>
         </Box>
-        {/* </Link> */}
 
         <Box>
           <Text size="14pt" weight="heavy">
