@@ -23,7 +23,7 @@ export function ApproveMessage() {
         if (window?.id) chrome.windows.remove(window.id);
       }, 50);
     },
-    [pendingRequest?.id, window.id],
+    [pendingRequest?.id, window?.id],
   );
 
   const rejectRequest = useCallback(() => {
