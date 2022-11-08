@@ -126,18 +126,20 @@ it('should be able to go back to extension and switch account and chain', async 
   await delay(500);
   await driver.findElement({ id: 'page-header-left-action' }).click();
   await delay(500);
-  await driver.findElement({ id: 'suffle-session-button' }).click();
+  await driver.findElement({ id: 'switch-network-menu' }).click();
+  await driver.findElement({ id: 'switch-network-item-2' }).click();
+
   await delay(500);
   await driver.get('https://bx-test-dapp.vercel.app/');
   // wait for dapp to load new account and network
   await delay(2000);
-  const expectedNetwork = 'Network: Ethereum - homestead';
+  const expectedNetwork = 'Network: Polygon - matic';
   const network = await querySelector(driver, '[id="network"]');
   const actualNetwork = await network.getText();
   expect(actualNetwork).toEqual(expectedNetwork);
 
   const expectedAccountAddress =
-    'Account: 0x5B570F0F8E2a29B7bCBbfC000f9C7b78D45b7C35';
+    'Account: 0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
   const accountAddress = await querySelector(driver, '[id="accountAddress"]');
   const actualAccountAddress = await accountAddress.getText();
   expect(actualAccountAddress).toEqual(expectedAccountAddress);

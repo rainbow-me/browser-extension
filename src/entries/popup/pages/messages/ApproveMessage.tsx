@@ -27,12 +27,22 @@ export function ApproveMessage() {
   );
 
   const rejectRequest = useCallback(() => {
-    backgroundMessenger.send(`message:${pendingRequest?.id}`, false);
+    backgroundMessenger.send(`message:${pendingRequest?.id}`, null);
     // Wait until the message propagates to the background provider.
     setTimeout(() => {
       if (window?.id) chrome.windows.remove(window.id);
     }, 50);
   }, [pendingRequest?.id, window?.id]);
+
+  if (pendingRequest.method === 'eth_requestAccounts') {
+    return (
+      <ApproveRequestAccounts
+        approveRequest={approveRequest}
+        rejectRequest={rejectRequest}
+        request={pendingRequest}
+      />
+    );
+  }
 
   if (pendingRequest.method === 'eth_requestAccounts') {
     return (

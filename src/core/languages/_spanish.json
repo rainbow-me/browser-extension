@@ -7,7 +7,8 @@
   },
   "connected_apps": {
     "title": "Apps Conectadas",
-    "disconnect": "Desconectar Todas"
+    "disconnect": "Desconectar Todas",
+    "switch_networks": "Cambiar Redes"
   },
   "approve_request_accounts": {
     "wallet_info_title": "se quiere conectar a tu billetera",

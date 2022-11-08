@@ -24,6 +24,10 @@ import {
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { SFSymbol } from '~/entries/popup/components/SFSymbol/SFSymbol';
 import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
+import {
+  SwitchNetworkMenu,
+  supportedChains,
+} from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 
 interface ApproveRequestProps {
@@ -37,29 +41,6 @@ interface SelectedNetwork {
   chainId: number;
   name: string;
 }
-
-const supportedChains: { [key: string]: SelectedNetwork } = {
-  [chain.mainnet.network]: {
-    network: chain.mainnet.network,
-    chainId: chain.mainnet.id,
-    name: chain.mainnet.name,
-  },
-  [chain.optimism.network]: {
-    network: chain.optimism.network,
-    chainId: chain.optimism.id,
-    name: chain.optimism.name,
-  },
-  [chain.polygon.network]: {
-    network: chain.polygon.network,
-    chainId: chain.polygon.id,
-    name: chain.polygon.name,
-  },
-  [chain.arbitrum.network]: {
-    network: chain.arbitrum.network,
-    chainId: chain.arbitrum.id,
-    name: chain.arbitrum.name,
-  },
-};
 
 // TODO hook up real wallets
 const wallets: Address[] = [DEFAULT_ACCOUNT, DEFAULT_ACCOUNT_2];
@@ -110,7 +91,7 @@ export function ApproveRequestAccounts({
   });
 
   const [selectedNetwork, setSelectedNetwork] = useState<SelectedNetwork>(
-    supportedChains[chain.mainnet.network],
+    supportedChains[chain.mainnet.id],
   );
   const [selectedWallet, setSelectedWallet] = useState<Address>(currentAddress);
 
@@ -163,6 +144,22 @@ export function ApproveRequestAccounts({
               <Text align="center" color="accent" size="20pt" weight="bold">
                 {appHostName}
               </Text>
+              <Inline alignVertical="center" space="4px">
+                <ChainBadge chainId={chain.arbitrum.id} size={'small'} />
+                <Text
+                  align="right"
+                  size="12pt"
+                  weight="semibold"
+                  color="labelQuaternary"
+                >
+                  Network
+                </Text>
+                <SFSymbol
+                  color="labelTertiary"
+                  size={14}
+                  symbol="chevronDownCircle"
+                />
+              </Inline>
             </Stack>
             <Inline alignHorizontal="center">
               <Box style={{ width: '186px' }}>
@@ -242,7 +239,7 @@ export function ApproveRequestAccounts({
                     {i18n.t('approve_request_accounts.network')}
                   </Text>
 
-                  <SwitchMenu
+                  <SwitchNetworkMenu
                     title={i18n.t('approve_request_accounts.switch_networks')}
                     renderMenuTrigger={
                       <Box id={'switch-network-menu'}>
@@ -271,26 +268,9 @@ export function ApproveRequestAccounts({
                         </Inline>
                       </Box>
                     }
-                    menuItemIndicator={
-                      <SFSymbol symbol="checkMark" size={11} />
-                    }
-                    renderMenuItem={(chain, i) => {
-                      const { chainId, name } = supportedChains[chain];
-                      return (
-                        <Box id={`switch-network-item-${i}`}>
-                          <Inline space="8px" alignVertical="center">
-                            <ChainBadge chainId={chainId} size="small" />
-                            <Text color="label" size="14pt" weight="semibold">
-                              {name}
-                            </Text>
-                          </Inline>
-                        </Box>
-                      );
-                    }}
-                    menuItems={Object.keys(supportedChains)}
-                    selectedValue={selectedNetwork.network}
-                    onValueChange={(network) =>
-                      setSelectedNetwork(supportedChains[network])
+                    selectedValue={String(selectedNetwork.chainId)}
+                    onValueChange={(chainId) =>
+                      setSelectedNetwork(supportedChains[chainId])
                     }
                   />
                 </Stack>
