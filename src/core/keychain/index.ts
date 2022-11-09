@@ -85,7 +85,6 @@ export const importWallet = async (
       });
       const address = (await keychain.getAccounts())[0];
       return address;
-      break;
     }
     default:
       throw new Error('Wallet type not recognized.');

@@ -413,61 +413,6 @@ export function Wallets() {
 
   // const signTypedData = useCallback(() => {}, []);
 
-  const LoggedIn = () => (
-    <Fragment>
-      {address && (
-        <Fragment>
-          <Text as="h1" size="16pt" weight="bold" align="center">
-            {' '}
-            Selected Address:
-          </Text>
-          <Text as="h1" size="20pt" weight="bold" align="center">
-            {' '}
-            {ensName || shortAddress(address)}
-          </Text>
-        </Fragment>
-      )}
-      <Separator />
-
-      <WalletList
-        accounts={accounts}
-        onSwitchAddress={switchAddress}
-        onExportWallet={exportWallet}
-        onExportAccount={exportAccount}
-        onRemoveAccount={removeAccount}
-      />
-
-      <CreateWallet onCreateWallet={createWallet} />
-
-      <Separator />
-
-      {address && <AddAccount onAddAccount={addAccount} />}
-
-      <ImportWallet
-        secret={secret}
-        onSecretChange={handleSecretChange}
-        onImportWallet={importWallet}
-      />
-
-      <Separator />
-
-      {isUnlocked && <Lock onLock={lock} />}
-
-      {isUnlocked && <Wipe onWipe={wipe} />}
-    </Fragment>
-  );
-
-  const content = isUnlocked ? (
-    <LoggedIn />
-  ) : (
-    <PasswordForm
-      title={isNewUser ? 'Set a password to protect your wallet' : 'Login'}
-      action={isNewUser ? 'update_password' : 'unlock'}
-      onPasswordChanged={updatePassword}
-      onSubmit={updateState}
-    />
-  );
-
   return (
     <Box
       as={motion.div}
@@ -502,7 +447,56 @@ export function Wallets() {
           </Text>
         </Column>
       </Columns>
-      {content}
+      {isUnlocked ? (
+        <Fragment>
+          {address && (
+            <Fragment>
+              <Text as="h1" size="16pt" weight="bold" align="center">
+                {' '}
+                Selected Address:
+              </Text>
+              <Text as="h1" size="20pt" weight="bold" align="center">
+                {' '}
+                {ensName || shortAddress(address)}
+              </Text>
+            </Fragment>
+          )}
+          <Separator />
+
+          <WalletList
+            accounts={accounts}
+            onSwitchAddress={switchAddress}
+            onExportWallet={exportWallet}
+            onExportAccount={exportAccount}
+            onRemoveAccount={removeAccount}
+          />
+
+          <CreateWallet onCreateWallet={createWallet} />
+
+          <Separator />
+
+          {address && <AddAccount onAddAccount={addAccount} />}
+
+          <ImportWallet
+            secret={secret}
+            onSecretChange={handleSecretChange}
+            onImportWallet={importWallet}
+          />
+
+          <Separator />
+
+          {isUnlocked && <Lock onLock={lock} />}
+
+          {isUnlocked && <Wipe onWipe={wipe} />}
+        </Fragment>
+      ) : (
+        <PasswordForm
+          title={isNewUser ? 'Set a password to protect your wallet' : 'Login'}
+          action={isNewUser ? 'update_password' : 'unlock'}
+          onPasswordChanged={updatePassword}
+          onSubmit={updateState}
+        />
+      )}
     </Box>
   );
 }
