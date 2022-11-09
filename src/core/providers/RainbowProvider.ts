@@ -58,8 +58,8 @@ export class RainbowProvider extends EventEmitter {
     messenger?.reply(`disconnect:${host}`, async () => {
       this.emit('disconnect');
     });
-    messenger?.reply(`connect:${host}`, async () => {
-      this.emit('connect');
+    messenger?.reply(`connect:${host}`, async (connectionInfo) => {
+      this.emit('connect', connectionInfo);
     });
   }
 
