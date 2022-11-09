@@ -45,6 +45,7 @@ it('should display account name', async () => {
 });
 
 it('should shuffle account', async () => {
+  await delay(500);
   await driver.findElement({ id: 'account-name-shuffle' }).click();
   const label = await querySelector(driver, '[data-testid="account-name"]');
   const actual = await label.getText();
@@ -123,9 +124,11 @@ it('should be able to connect to bx test dapp', async () => {
 
 it('should be able to go back to extension and switch account and chain', async () => {
   await driver.get(rootURL + '/popup.html');
+  await delay(1000);
+  await driver.findElement({ id: 'home-page-header-left' }).click();
   await delay(500);
-  await driver.findElement({ id: 'page-header-left-action' }).click();
-  await delay(500);
+  await driver.findElement({ id: 'home-page-header-connected-apps' }).click();
+
   await driver.findElement({ id: 'switch-network-menu' }).click();
   await driver.findElement({ id: 'switch-network-item-2' }).click();
 
