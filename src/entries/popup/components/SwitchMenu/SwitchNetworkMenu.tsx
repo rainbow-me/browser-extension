@@ -72,7 +72,12 @@ export const SwitchNetworkMenuDisconnect = ({
   onDisconnect: () => void;
 }) => {
   return (
-    <Box style={{ cursor: 'pointer' }} as="button" onClick={onDisconnect}>
+    <Box
+      id="switch-network-menu-disconnect"
+      style={{ cursor: 'pointer' }}
+      as="button"
+      onClick={onDisconnect}
+    >
       <Inset vertical="8px">
         <Inline alignVertical="center" space="8px">
           <Box style={{ width: 18, height: 18 }}>
