@@ -1,9 +1,12 @@
-import { TransactionResponse } from '@ethersproject/abstract-provider';
+import {
+  Provider,
+  TransactionRequest,
+  TransactionResponse,
+} from '@ethersproject/abstract-provider';
 import { Signer } from 'ethers';
 import { Address } from 'wagmi';
 
 import {
-  SendTransactionArguments,
   SignMessageArguments,
   SignTypedDataArguments,
 } from '~/entries/background/handlers/handleWallets';
@@ -11,6 +14,7 @@ import {
 import { KeychainType } from '../types/keychainTypes';
 import { EthereumWalletType } from '../types/walletTypes';
 import { EthereumWalletSeed, identifyWalletType } from '../utils/ethereum';
+import { createWagmiClient } from '../wagmi';
 
 import { keychainManager } from './KeychainManager';
 
@@ -128,12 +132,16 @@ export const exportAccount = async (
   return keychainManager.exportAccount(address, password);
 };
 
-export const sendTransaction = async ({
-  address,
-  txData,
-}: SendTransactionArguments): Promise<TransactionResponse> => {
-  const signer = await keychainManager.getSigner(address);
-  return signer.sendTransaction(txData);
+export const sendTransaction = async (
+  txPayload: TransactionRequest,
+): Promise<TransactionResponse> => {
+  if (typeof txPayload.from === 'undefined') {
+    throw new Error('Missing from address');
+  }
+  const signer = await keychainManager.getSigner(txPayload.from as Address);
+  const wagmiClient = await createWagmiClient();
+  const wallet = signer.connect(wagmiClient.webSocketProvider as Provider);
+  return wallet.sendTransaction(txPayload);
 };
 
 export const signMessage = async ({

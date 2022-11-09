@@ -29,10 +29,6 @@ type WalletActionArguments = {
   payload: unknown;
 };
 
-export type SendTransactionArguments = {
-  address: Address;
-  txData: TransactionRequest;
-};
 export type SignMessageArguments = {
   address: Address;
   msgData: string | Bytes;
@@ -117,9 +113,9 @@ export const handleWallets = () =>
             break;
           }
           case 'send_transaction':
-            response = await sendTransaction(
-              payload as SendTransactionArguments,
-            );
+            console.log('received send_transaction', payload);
+            response = await sendTransaction(payload as TransactionRequest);
+            console.log('send transaction response', response);
             break;
           case 'sign_message':
             response = await signMessage(payload as SignMessageArguments);

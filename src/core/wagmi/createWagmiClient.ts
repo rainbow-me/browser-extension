@@ -29,6 +29,10 @@ const { chains, provider, webSocketProvider } = configureChains(
   ],
 );
 
+console.log('INITIALIZING WAGMI CLIENT', {
+  provider,
+});
+
 const asyncStoragePersister = createAsyncStoragePersister({
   key: 'rainbow.wagmi',
   storage: {
