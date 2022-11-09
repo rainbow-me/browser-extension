@@ -91,7 +91,7 @@ function ConnectedApp({
     host,
   });
 
-  const shuffleChainId = React.useCallback(
+  const changeChainId = React.useCallback(
     (chainId: string) => {
       updateAppSessionChainId(Number(chainId));
       messenger.send(`chainChanged:${host}`, chainId);
@@ -106,8 +106,7 @@ function ConnectedApp({
 
   return (
     <SwitchNetworkMenu
-      title={i18n.t('connected_apps.switch_networks')}
-      onValueChange={shuffleChainId}
+      onValueChange={changeChainId}
       selectedValue={String(chainId)}
       onDisconnect={disconnect}
       renderMenuTrigger={

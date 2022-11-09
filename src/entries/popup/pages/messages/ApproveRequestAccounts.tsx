@@ -228,7 +228,6 @@ export function ApproveRequestAccounts({
                   </Text>
 
                   <SwitchNetworkMenu
-                    title={i18n.t('approve_request_accounts.switch_networks')}
                     renderMenuTrigger={
                       <Box id={'switch-network-menu'}>
                         <Inline

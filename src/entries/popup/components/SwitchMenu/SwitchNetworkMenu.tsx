@@ -85,7 +85,7 @@ export const SwitchNetworkMenuDisconnect = ({
             </Inline>
           </Box>
           <Text size="14pt" weight="bold">
-            {i18n.t('page_header.disconnect')}
+            {i18n.t('menu.network.disconnect')}
           </Text>
         </Inline>
       </Inset>
@@ -94,7 +94,6 @@ export const SwitchNetworkMenuDisconnect = ({
 };
 
 interface SwitchNetworkMenuProps {
-  title: string;
   selectedValue: string;
   onValueChange: (value: string) => void;
   renderMenuTrigger: React.ReactNode;
@@ -108,7 +107,6 @@ interface SelectedNetwork {
 }
 
 export const SwitchNetworkMenu = ({
-  title,
   selectedValue,
   onValueChange,
   renderMenuTrigger,
@@ -118,7 +116,7 @@ export const SwitchNetworkMenu = ({
     <Menu>
       <MenuTrigger asChild>{renderMenuTrigger}</MenuTrigger>
       <MenuContent>
-        <MenuLabel>{title}</MenuLabel>
+        <MenuLabel>{i18n.t('menu.network.title')}</MenuLabel>
         <MenuSeparator />
         <MenuRadioGroup value={selectedValue} onValueChange={onValueChange}>
           <SwitchNetworkMenuSelector />

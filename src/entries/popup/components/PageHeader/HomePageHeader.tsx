@@ -131,7 +131,7 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
                   {!isConnectedToCurrentHost && (
                     <Row>
                       <Text size="11pt" weight="bold">
-                        {i18n.t('page_header.not_connected')}
+                        {i18n.t('menu.home_header_left.not_connected')}
                       </Text>
                     </Row>
                   )}
@@ -152,7 +152,7 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
               <Stack space="12px">
                 <MenuSeparator />
                 <Text color="label" size="14pt" weight="semibold">
-                  {'Networks'}
+                  {i18n.t('header.home_header_left.networks')}
                 </Text>
               </Stack>
 
@@ -184,7 +184,7 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
                     </Inline>
                   </Box>
                   <Text size="14pt" weight="bold">
-                    {i18n.t('page_header.all_connected_apps')}
+                    {i18n.t('menu.home_header_left.all_connected_apps')}
                   </Text>
                 </Inline>
               </Link>
@@ -218,7 +218,7 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
               <Inline alignVertical="center" space="8px">
                 <SFSymbol size={12} symbol="gearshapeFill" />
                 <Text size="14pt" weight="bold">
-                  {i18n.t('page_header.settings')}
+                  {i18n.t('menu.home_header_rightt.settings')}
                 </Text>
               </Inline>
             </Link>
@@ -227,7 +227,7 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
             <Inline alignVertical="center" space="8px">
               <SFSymbol size={12} symbol="qrcode" />
               <Text size="14pt" weight="bold">
-                {i18n.t('page_header.qr_code')}
+                {i18n.t('menu.home_header_right.qr_code')}
               </Text>
             </Inline>
           </Inset>
@@ -239,7 +239,7 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
               <Inline alignVertical="center" space="8px">
                 <SFSymbol size={12} symbol="personCropCircleFill" />
                 <Text size="14pt" weight="bold">
-                  {i18n.t('page_header.rainbow_profile')}
+                  {i18n.t('menu.home_header_right.rainbow_profile')}
                 </Text>
               </Inline>
             </Inset>
@@ -247,7 +247,7 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
               <Inline alignVertical="center" space="8px">
                 <SFSymbol size={12} symbol="binocularsFill" />
                 <Text size="14pt" weight="bold">
-                  {i18n.t('page_header.view_on_explorer')}
+                  {i18n.t('menu.home_header_right.view_on_explorer')}
                 </Text>
               </Inline>
             </Inset>
