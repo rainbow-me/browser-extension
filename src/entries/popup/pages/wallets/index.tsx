@@ -1,4 +1,5 @@
 import { uuid4 } from '@sentry/utils';
+import { fetchEnsAddress } from '@wagmi/core';
 import { motion } from 'framer-motion';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -6,7 +7,7 @@ import { Address, useAccount, useEnsName } from 'wagmi';
 
 import { initializeMessenger } from '~/core/messengers';
 import { useCurrentAddressStore } from '~/core/state';
-import { EthereumWalletSeed } from '~/core/utils/ethereum';
+import { EthereumWalletSeed, isENSAddressFormat } from '~/core/utils/ethereum';
 import { Box, Column, Columns, Separator, Text } from '~/design-system';
 
 const messenger = initializeMessenger({ connect: 'background' });
@@ -318,7 +319,18 @@ export function Wallets() {
   }, [setCurrentAddress, updateState]);
 
   const importWallet = useCallback(async () => {
-    const address = (await walletAction('import', secret)) as Address;
+    let seed = secret;
+    if (isENSAddressFormat(secret)) {
+      try {
+        seed = (await fetchEnsAddress({ name: secret })) as Address;
+      } catch (e) {
+        console.log('error', e);
+        alert('Invalid ENS name');
+        return;
+      }
+    }
+
+    const address = (await walletAction('import', seed)) as Address;
     setCurrentAddress(address);
     await updateState();
     setSecret('');
@@ -401,61 +413,6 @@ export function Wallets() {
 
   // const signTypedData = useCallback(() => {}, []);
 
-  const LoggedIn = () => (
-    <Fragment>
-      {address && (
-        <Fragment>
-          <Text as="h1" size="16pt" weight="bold" align="center">
-            {' '}
-            Selected Address:
-          </Text>
-          <Text as="h1" size="20pt" weight="bold" align="center">
-            {' '}
-            {ensName || shortAddress(address)}
-          </Text>
-        </Fragment>
-      )}
-      <Separator />
-
-      <WalletList
-        accounts={accounts}
-        onSwitchAddress={switchAddress}
-        onExportWallet={exportWallet}
-        onExportAccount={exportAccount}
-        onRemoveAccount={removeAccount}
-      />
-
-      <CreateWallet onCreateWallet={createWallet} />
-
-      <Separator />
-
-      {address && <AddAccount onAddAccount={addAccount} />}
-
-      <ImportWallet
-        secret={secret}
-        onSecretChange={handleSecretChange}
-        onImportWallet={importWallet}
-      />
-
-      <Separator />
-
-      {isUnlocked && <Lock onLock={lock} />}
-
-      {isUnlocked && <Wipe onWipe={wipe} />}
-    </Fragment>
-  );
-
-  const content = isUnlocked ? (
-    <LoggedIn />
-  ) : (
-    <PasswordForm
-      title={isNewUser ? 'Set a password to protect your wallet' : 'Login'}
-      action={isNewUser ? 'update_password' : 'unlock'}
-      onPasswordChanged={updatePassword}
-      onSubmit={updateState}
-    />
-  );
-
   return (
     <Box
       as={motion.div}
@@ -490,7 +447,56 @@ export function Wallets() {
           </Text>
         </Column>
       </Columns>
-      {content}
+      {isUnlocked ? (
+        <Fragment>
+          {address && (
+            <Fragment>
+              <Text as="h1" size="16pt" weight="bold" align="center">
+                {' '}
+                Selected Address:
+              </Text>
+              <Text as="h1" size="20pt" weight="bold" align="center">
+                {' '}
+                {ensName || shortAddress(address)}
+              </Text>
+            </Fragment>
+          )}
+          <Separator />
+
+          <WalletList
+            accounts={accounts}
+            onSwitchAddress={switchAddress}
+            onExportWallet={exportWallet}
+            onExportAccount={exportAccount}
+            onRemoveAccount={removeAccount}
+          />
+
+          <CreateWallet onCreateWallet={createWallet} />
+
+          <Separator />
+
+          {address && <AddAccount onAddAccount={addAccount} />}
+
+          <ImportWallet
+            secret={secret}
+            onSecretChange={handleSecretChange}
+            onImportWallet={importWallet}
+          />
+
+          <Separator />
+
+          {isUnlocked && <Lock onLock={lock} />}
+
+          {isUnlocked && <Wipe onWipe={wipe} />}
+        </Fragment>
+      ) : (
+        <PasswordForm
+          title={isNewUser ? 'Set a password to protect your wallet' : 'Login'}
+          action={isNewUser ? 'update_password' : 'unlock'}
+          onPasswordChanged={updatePassword}
+          onSubmit={updateState}
+        />
+      )}
     </Box>
   );
 }
