@@ -10,7 +10,7 @@ import { truncateAddress } from '~/core/utils/truncateAddress';
 import { Box, Inline, Inset, Stack, Text } from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 
-import { PageHeader } from '../components/PageHeader';
+import { PageHeader } from '../components/PageHeader/PageHeader';
 import { SFSymbol } from '../components/SFSymbol/SFSymbol';
 import { SwitchNetworkMenu } from '../components/SwitchMenu/SwitchNetworkMenu';
 import { useAppSession } from '../hooks/useAppSession';

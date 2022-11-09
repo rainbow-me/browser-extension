@@ -36,7 +36,6 @@ function AvatarContent({
 }) {
   return (
     <Box
-      position="absolute"
       display="flex"
       alignItems="center"
       justifyContent="center"
@@ -76,7 +75,6 @@ function AvatarSkeleton() {
   return (
     <Box
       background="surfaceSecondaryElevated"
-      position="absolute"
       top="0"
       left="0"
       right="0"
