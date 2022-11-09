@@ -3,10 +3,9 @@ import { Link } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
-import { useAppSessionsStore } from '~/core/state';
-import { getConnectedAppIcon } from '~/core/utils/connectedApps';
 import { Box, Inline, Inset, Row, Rows, Stack, Text } from '~/design-system';
 
+import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
 import {
   Menu,
@@ -58,20 +57,17 @@ const HeaderActionButton = ({ symbol }: { symbol: Symbols }) => {
 };
 
 const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
-  const [host, setHost] = React.useState('');
-  const { appSessions } = useAppSessionsStore();
-
+  const [url, setUrl] = React.useState('');
+  const { host, appLogo } = useAppMetadata({ url });
   const { updateAppSessionChainId, disconnectAppSession, appSession } =
     useAppSession({ host });
 
   chrome?.tabs?.query({ active: true, lastFocusedWindow: true }, (tabs) => {
     const url = tabs[0].url;
     if (url) {
-      const host = new URL(url).host;
-      setHost(host);
+      setUrl(url);
     }
   });
-  const isConnectedToCurrentHost = appSessions?.[host];
 
   const changeChainId = React.useCallback(
     (chainId: string) => {
@@ -85,7 +81,7 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
     disconnectAppSession();
     messenger.send(`disconnect:${host}`, null);
   }, [disconnectAppSession, host]);
-
+  console.log('--- appSession', appSession);
   return (
     <Menu>
       <MenuTrigger asChild>
@@ -111,15 +107,11 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
                   overflow: 'hidden',
                 }}
               >
-                <img
-                  src={getConnectedAppIcon(host)}
-                  width="100%"
-                  height="100%"
-                />
+                <img src={appLogo} width="100%" height="100%" />
               </Box>
               <Box
                 id={`home-page-header-host-${
-                  isConnectedToCurrentHost ? host : 'not-connected'
+                  appSession ? host : 'not-connected'
                 }`}
               >
                 <Rows space="8px">
@@ -128,7 +120,7 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
                       {host}
                     </Text>
                   </Row>
-                  {!isConnectedToCurrentHost && (
+                  {!appSession && (
                     <Row>
                       <Text size="11pt" weight="bold">
                         {i18n.t('menu.home_header_left.not_connected')}
@@ -140,14 +132,14 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
             </Inline>
             <SFSymbol
               size={6}
-              color={isConnectedToCurrentHost ? 'green' : undefined}
+              color={appSession ? 'green' : undefined}
               symbol="circleFill"
             />
           </Inline>
         </Inset>
 
         <Stack space="4px">
-          {isConnectedToCurrentHost ? (
+          {appSession ? (
             <>
               <Stack space="12px">
                 <MenuSeparator />

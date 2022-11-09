@@ -8,6 +8,7 @@ import {
 } from '~/core/state';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import { getDappHost } from '~/core/utils/connectedApps';
 import { addHexPrefix } from '~/core/utils/ethereum';
 import { convertStringToHex } from '~/core/utils/numbers';
 
@@ -69,7 +70,7 @@ export const handleProviderRequest = ({
     console.log(meta.sender, method);
 
     const { getActiveSession, addSession } = appSessionsStore.getState();
-    const host = new URL(meta.sender.url || '').host;
+    const host = getDappHost(meta.sender.url || '');
     const activeSession = getActiveSession({ host });
 
     try {
