@@ -7,11 +7,12 @@ import { usePendingRequestStore } from '~/core/state/requests';
 import { Box, Text } from '~/design-system';
 
 import { ApproveRequestAccounts } from './ApproveRequestAccounts';
+import { ApproveSignMessage } from './ApproveSignMessage';
 
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export function ApproveMessage() {
-  const { pendingRequests } = usePendingRequestStore();
+  const { pendingRequests, removePendingRequest } = usePendingRequestStore();
   const { window } = useNotificationWindowStore();
   const pendingRequest = pendingRequests[0];
 
@@ -28,15 +29,33 @@ export function ApproveMessage() {
 
   const rejectRequest = useCallback(() => {
     backgroundMessenger.send(`message:${pendingRequest?.id}`, false);
+    removePendingRequest(pendingRequest?.id);
     // Wait until the message propagates to the background provider.
     setTimeout(() => {
       if (window?.id) chrome.windows.remove(window.id);
     }, 50);
-  }, [pendingRequest?.id, window?.id]);
+  }, [pendingRequest?.id, removePendingRequest, window?.id]);
 
+  console.log('------ pendingRequest.method', pendingRequest.method);
   if (pendingRequest.method === 'eth_requestAccounts') {
     return (
       <ApproveRequestAccounts
+        approveRequest={approveRequest}
+        rejectRequest={rejectRequest}
+        request={pendingRequest}
+      />
+    );
+  }
+
+  if (
+    pendingRequest.method === 'eth_sign' ||
+    pendingRequest.method === 'personal_sign' ||
+    pendingRequest.method === 'eth_signTypedData' ||
+    pendingRequest.method === 'eth_signTypedData_v3' ||
+    pendingRequest.method === 'eth_signTypedData_v4'
+  ) {
+    return (
+      <ApproveSignMessage
         approveRequest={approveRequest}
         rejectRequest={rejectRequest}
         request={pendingRequest}
