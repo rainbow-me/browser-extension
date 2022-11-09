@@ -1,9 +1,11 @@
+import { uuid4 } from '@sentry/utils';
 import { motion } from 'framer-motion';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Address } from 'wagmi';
+import { Address, useAccount, useEnsName } from 'wagmi';
 
 import { initializeMessenger } from '~/core/messengers';
+import { useCurrentAddressStore } from '~/core/state';
 import { EthereumWalletSeed } from '~/core/utils/ethereum';
 import { Box, Column, Columns, Separator, Text } from '~/design-system';
 
@@ -16,6 +18,7 @@ const walletAction = async (action: string, payload: unknown) => {
       action,
       payload,
     },
+    { id: uuid4() },
   );
   return result;
 };
@@ -275,12 +278,14 @@ const WalletList = ({
 };
 
 export function Wallets() {
-  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [accounts, setAccounts] = useState<Address[]>([]);
   const [secret, setSecret] = useState<EthereumWalletSeed>('');
   const [password, setPassword] = useState<string>('');
   const [isUnlocked, setIsUnlocked] = useState<boolean>(true);
   const [isNewUser, setIsNewUser] = useState<boolean>(true);
+  const { address } = useAccount();
+  const { data: ensName } = useEnsName({ address });
+  const { setCurrentAddress } = useCurrentAddressStore();
 
   const getAccounts = useCallback(async () => {
     const accounts = (await walletAction('get_accounts', {})) as Address[];
@@ -294,34 +299,31 @@ export function Wallets() {
   const updateState = useCallback(async () => {
     const accounts = await getAccounts();
     setAccounts(accounts);
-    if (accounts?.length > 0) {
-      setSelectedAddress(accounts[0]);
-    } else {
-      setSelectedAddress(null);
+    if (accounts.length > 0 && !accounts.includes(address as Address)) {
+      setCurrentAddress(accounts[0]);
     }
-
     const { unlocked, hasVault } = (await walletAction('status', {})) as {
       unlocked: boolean;
       hasVault: boolean;
     };
     setIsUnlocked(unlocked);
     setIsNewUser(!hasVault);
-  }, [getAccounts]);
+  }, [address, getAccounts, setCurrentAddress]);
 
   const createWallet = useCallback(async () => {
     const address = (await walletAction('create', {})) as Address;
-    setSelectedAddress(address);
+    setCurrentAddress(address);
     await updateState();
     return address;
-  }, [updateState]);
+  }, [setCurrentAddress, updateState]);
 
   const importWallet = useCallback(async () => {
     const address = (await walletAction('import', secret)) as Address;
-    setSelectedAddress(address);
+    setCurrentAddress(address);
     await updateState();
     setSecret('');
     return address;
-  }, [secret, updateState]);
+  }, [secret, setCurrentAddress, updateState]);
 
   const removeAccount = useCallback(
     async (address: Address) => {
@@ -344,23 +346,25 @@ export function Wallets() {
   }, [updateState]);
 
   const wipe = useCallback(async () => {
-    await walletAction('wipe', password);
+    const pwd = password || prompt('Enter password');
+    await walletAction('wipe', pwd);
     await updateState();
   }, [password, updateState]);
 
   const addAccount = useCallback(async () => {
     const silbing = accounts[0];
     const address = (await walletAction('add', silbing)) as Address;
-    setSelectedAddress(address);
+    setCurrentAddress(address);
     await updateState();
     return address;
-  }, [accounts, updateState]);
+  }, [accounts, setCurrentAddress, updateState]);
 
   const exportWallet = useCallback(
     async (address: Address) => {
+      const pwd = password || prompt('Enter password');
       const seed = (await walletAction('export_wallet', {
         address,
-        password,
+        password: pwd,
       })) as Address[];
       return seed;
     },
@@ -369,18 +373,23 @@ export function Wallets() {
 
   const exportAccount = useCallback(
     async (address: Address) => {
+      const pwd = password || prompt('Enter password');
+
       const pkey = (await walletAction('export_account', {
         address,
-        password,
+        password: pwd,
       })) as Address[];
       return pkey;
     },
     [password],
   );
 
-  const switchAddress = useCallback((address: Address) => {
-    setSelectedAddress(address);
-  }, []);
+  const switchAddress = useCallback(
+    (_address: Address) => {
+      setCurrentAddress(_address);
+    },
+    [setCurrentAddress],
+  );
 
   useEffect(() => {
     updateState();
@@ -394,7 +403,7 @@ export function Wallets() {
 
   const LoggedIn = () => (
     <Fragment>
-      {selectedAddress && (
+      {address && (
         <Fragment>
           <Text as="h1" size="16pt" weight="bold" align="center">
             {' '}
@@ -402,7 +411,7 @@ export function Wallets() {
           </Text>
           <Text as="h1" size="20pt" weight="bold" align="center">
             {' '}
-            {shortAddress(selectedAddress)}
+            {ensName || shortAddress(address)}
           </Text>
         </Fragment>
       )}
@@ -420,6 +429,8 @@ export function Wallets() {
 
       <Separator />
 
+      {address && <AddAccount onAddAccount={addAccount} />}
+
       <ImportWallet
         secret={secret}
         onSecretChange={handleSecretChange}
@@ -427,8 +438,6 @@ export function Wallets() {
       />
 
       <Separator />
-
-      {selectedAddress && <AddAccount onAddAccount={addAccount} />}
 
       {isUnlocked && <Lock onLock={lock} />}
 
