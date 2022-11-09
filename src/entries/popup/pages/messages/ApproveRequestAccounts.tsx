@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { Address, chain, useEnsAvatar, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { initializeMessenger } from '~/core/messengers';
 import { useCurrentAddressStore } from '~/core/state';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { truncateAddress } from '~/core/utils/truncateAddress';
@@ -80,6 +81,8 @@ const EnsName = ({
   );
 };
 
+const messenger = initializeMessenger({ connect: 'inpage' });
+
 export function ApproveRequestAccounts({
   approveRequest,
   rejectRequest,
@@ -100,7 +103,8 @@ export function ApproveRequestAccounts({
       address: selectedWallet,
       chainId: selectedNetwork.chainId,
     });
-  }, [approveRequest, selectedNetwork.chainId, selectedWallet]);
+    messenger.send(`connect:${appHostName}`, {});
+  }, [appHostName, approveRequest, selectedNetwork.chainId, selectedWallet]);
 
   return (
     <Rows alignVertical="justify">

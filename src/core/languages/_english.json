@@ -16,7 +16,8 @@
     "rainbow_profile": "Rainbow Profile",
     "view_on_explorer": "View on Explorer",
     "not_connected": "Not connected",
-    "all_connected_apps": "All connected apps"
+    "all_connected_apps": "All connected apps",
+    "disconnect": "Disconnect"
   },
   "approve_request_accounts": {
     "wallet_info_title": "wants to connect to your wallet",

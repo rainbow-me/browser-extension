@@ -2,18 +2,24 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
+import { initializeMessenger } from '~/core/messengers';
 import { useAppSessionsStore } from '~/core/state';
 import { getConnectedAppIcon } from '~/core/utils/connectedApps';
 import { Box, Inline, Inset, Row, Rows, Stack, Text } from '~/design-system';
 
+import { useAppSession } from '../../hooks/useAppSession';
+import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
   Menu,
   MenuContent,
   MenuItemIndicator,
+  MenuRadioGroup,
+  MenuRadioItem,
   MenuSeparator,
   MenuTrigger,
 } from '../Menu/Menu';
 import { SFSymbol, Symbols } from '../SFSymbol/SFSymbol';
+import { supportedChains } from '../SwitchMenu/SwitchNetworkMenu';
 
 interface HomePageHeaderProps {
   title: string;
@@ -21,6 +27,7 @@ interface HomePageHeaderProps {
   rightSymbol: Symbols;
   mainPage?: boolean;
 }
+const messenger = initializeMessenger({ connect: 'inpage' });
 
 const HeaderActionButton = ({ symbol }: { symbol: Symbols }) => {
   return (
@@ -53,6 +60,9 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
   const [host, setHost] = React.useState('');
   const { appSessions } = useAppSessionsStore();
 
+  const { updateAppSessionChainId, disconnectAppSession, appSession } =
+    useAppSession({ host });
+
   chrome?.tabs?.query({ active: true, lastFocusedWindow: true }, (tabs) => {
     const url = tabs[0].url;
     if (url) {
@@ -61,6 +71,19 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
     }
   });
   const isConnectedToCurrentHost = appSessions?.[host];
+
+  const shuffleChainId = React.useCallback(
+    (chainId: string) => {
+      updateAppSessionChainId(Number(chainId));
+      messenger.send(`chainChanged:${host}`, chainId);
+    },
+    [host, updateAppSessionChainId],
+  );
+
+  const disconnect = React.useCallback(() => {
+    disconnectAppSession();
+    messenger.send(`disconnect:${host}`, null);
+  }, [disconnectAppSession, host]);
 
   return (
     <Menu>
@@ -123,17 +146,81 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
         </Inset>
 
         <Stack space="4px">
-          <MenuSeparator />
-          <Inset top="8px" bottom="8px">
-            <Link id="home-page-header-connected-apps" to={'/connected'}>
-              <Inline alignVertical="center" space="8px">
-                <SFSymbol size={12} symbol="squareOnSquareDashed" />
-                <Text size="14pt" weight="bold">
-                  {i18n.t('page_header.all_connected_apps')}
-                </Text>
-              </Inline>
-            </Link>
-          </Inset>
+          <Stack space="12px">
+            <MenuSeparator />
+            <Text color="label" size="14pt" weight="semibold">
+              {'Networks'}
+            </Text>
+          </Stack>
+
+          <Box>
+            <MenuRadioGroup
+              value={`${appSession?.chainId}`}
+              onValueChange={shuffleChainId}
+            >
+              {Object.keys(supportedChains).map((chain, i) => {
+                const { chainId, name } = supportedChains[chain];
+                return (
+                  <MenuRadioItem value={chain} key={i}>
+                    <Box
+                      style={{
+                        cursor: 'pointer',
+                      }}
+                      id={`switch-network-item-${i}`}
+                    >
+                      <Inline space="8px" alignVertical="center">
+                        <ChainBadge chainId={chainId} size="small" />
+                        <Text color="label" size="14pt" weight="semibold">
+                          {name}
+                        </Text>
+                      </Inline>
+                    </Box>
+                  </MenuRadioItem>
+                );
+              })}
+            </MenuRadioGroup>
+            <Box style={{ cursor: 'pointer' }} as="button" onClick={disconnect}>
+              <Inset vertical="8px">
+                <Inline alignVertical="center" space="8px">
+                  <Box style={{ width: 18, height: 18 }}>
+                    <Inline
+                      height="full"
+                      alignVertical="center"
+                      alignHorizontal="center"
+                    >
+                      <SFSymbol size={12} symbol="xmark" />
+                    </Inline>
+                  </Box>
+                  <Text size="14pt" weight="bold">
+                    {i18n.t('page_header.disconnect')}
+                  </Text>
+                </Inline>
+              </Inset>
+            </Box>
+          </Box>
+
+          <Stack space="4px">
+            <MenuSeparator />
+
+            <Inset vertical="8px">
+              <Link id="home-page-header-connected-apps" to={'/connected'}>
+                <Inline alignVertical="center" space="8px">
+                  <Box style={{ width: 18, height: 18 }}>
+                    <Inline
+                      height="full"
+                      alignVertical="center"
+                      alignHorizontal="center"
+                    >
+                      <SFSymbol size={14} symbol="squareOnSquareDashed" />
+                    </Inline>
+                  </Box>
+                  <Text size="14pt" weight="bold">
+                    {i18n.t('page_header.all_connected_apps')}
+                  </Text>
+                </Inline>
+              </Link>
+            </Inset>
+          </Stack>
         </Stack>
 
         <MenuItemIndicator style={{ marginLeft: 'auto' }}>o</MenuItemIndicator>
