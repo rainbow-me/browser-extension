@@ -218,7 +218,7 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
               <Inline alignVertical="center" space="8px">
                 <SFSymbol size={12} symbol="gearshapeFill" />
                 <Text size="14pt" weight="bold">
-                  {i18n.t('menu.home_header_rightt.settings')}
+                  {i18n.t('menu.home_header_right.settings')}
                 </Text>
               </Inline>
             </Link>
