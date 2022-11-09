@@ -19,9 +19,9 @@ const Menu = ({ children, description, header }: MenuProps) => {
         </Box>
       )}
       <Box
-        // background="card (Deprecated)"
+        background="surfaceSecondary"
         borderRadius="16px"
-        // shadow="21px light (Deprecated)"
+        boxShadow="12px"
         width="full"
       >
         <Stack

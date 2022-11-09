@@ -1,104 +1,96 @@
+// import { motion } from 'framer-motion';
 import { motion } from 'framer-motion';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-import { Language, i18n } from '~/core/languages';
-import { useCurrentLanguageStore } from '~/core/state';
 import { Box, Text } from '~/design-system';
 
+import { Menu } from '../../components/Menu/Menu';
+import { MenuContainer } from '../../components/Menu/MenuContainer';
+import { MenuItem } from '../../components/Menu/MenuItem';
+import { SFSymbol } from '../../components/SFSymbol/SFSymbol';
+import { menuTransition } from '../../utils/animation';
+
 export function Main() {
-  const { currentLanguage, setCurrentLanguage } = useCurrentLanguageStore();
+  const navigate = useNavigate();
   return (
     <Box
       as={motion.div}
-      display="flex"
-      flexDirection="column"
-      gap="24px"
-      padding="20px"
-      initial={{ opacity: 0, x: window.innerWidth }}
+      initial={{ opacity: 0, x: -16 }}
       animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: window.innerWidth }}
-      transition={{ type: 'tween', duration: 0.2 }}
+      transition={menuTransition}
     >
-      <Text as="h1" size="20pt" weight="bold">
-        Settings
-      </Text>
+      <MenuContainer testID="settings-menu-container">
+        <Menu>
+          <MenuItem
+            hasSfSymbol
+            leftComponent={<SFSymbol symbol="send" />}
+            hasRightArrow
+            testID="test"
+            onPress={() => navigate('/settings/privacy')}
+            titleComponent={<MenuItem.Title text="Privacy & Security" />}
+          />
+        </Menu>
+        <Menu>
+          <MenuItem
+            hasRightArrow
+            testID="test"
+            leftComponent={<SFSymbol symbol="send" />}
+            onPress={() => navigate('/settings/transactions')}
+            titleComponent={<MenuItem.Title text="Transactions" />}
+          />
+          <MenuItem
+            hasRightArrow
+            testID="test"
+            leftComponent={<SFSymbol symbol="send" />}
+            onPress={() => navigate('/settings/currency')}
+            titleComponent={<MenuItem.Title text="Currency" />}
+          />
+          <MenuItem
+            hasChevron
+            testID="test"
+            leftComponent={<SFSymbol symbol="send" />}
+            titleComponent={<MenuItem.Title text="Theme" />}
+          />
+          <MenuItem
+            testID="test"
+            leftComponent={<SFSymbol symbol="send" />}
+            titleComponent={<MenuItem.Title text="Contacts" />}
+          />
+        </Menu>
+        <Menu>
+          <MenuItem
+            testID="test"
+            leftComponent={<SFSymbol symbol="send" />}
+            titleComponent={<MenuItem.Title text="Share Rainbow" />}
+          />
+          <MenuItem
+            testID="test"
+            leftComponent={<SFSymbol symbol="send" />}
+            titleComponent={<MenuItem.Title text="Learn about Ethereum" />}
+          />
+          <MenuItem
+            testID="test"
+            leftComponent={<SFSymbol symbol="send" />}
+            titleComponent={<MenuItem.Title text="Follow us on Twitter" />}
+          />
+          <MenuItem
+            testID="test"
+            leftComponent={<SFSymbol symbol="send" />}
+            titleComponent={<MenuItem.Title text="Feedback & Support" />}
+          />
+        </Menu>
+      </MenuContainer>
       <Box
-        display="flex"
-        flexDirection="row"
+        padding="20px"
         alignItems="center"
-        justifyContent="space-between"
+        justifyContent="center"
+        style={{ textAlign: 'center' }}
       >
-        <Text size="14pt" weight="bold">
-          Language: {currentLanguage}
+        <Text size="12pt" weight="semibold" color="labelTertiary">
+          1.2.34 (56)
         </Text>
-        <Box
-          as="button"
-          background="surfaceSecondary"
-          padding="16px"
-          style={{ borderRadius: 999 }}
-          onClick={() =>
-            setCurrentLanguage(
-              [Language.EN, Language.ES, Language.FR, Language.PR].filter(
-                (lang) => lang !== currentLanguage,
-              )[Math.round(Math.random() * 10) % 3],
-            )
-          }
-        >
-          <Text color="labelSecondary" size="14pt" weight="bold">
-            {i18n.t('label.toggle')}
-          </Text>
-        </Box>
       </Box>
-
-      <Link to="privacy">
-        <Box
-          as="button"
-          background="surfaceSecondary"
-          padding="16px"
-          style={{ borderRadius: 999, width: '100%' }}
-        >
-          <Text color="labelSecondary" size="14pt" weight="bold">
-            Privacy & Security &gt;
-          </Text>
-        </Box>
-      </Link>
-      <Link to="transactions">
-        <Box
-          as="button"
-          background="surfaceSecondary"
-          padding="16px"
-          style={{ borderRadius: 999, width: '100%' }}
-        >
-          <Text color="labelSecondary" size="14pt" weight="bold">
-            Transactions &gt;
-          </Text>
-        </Box>
-      </Link>
-      <Link to="currency">
-        <Box
-          as="button"
-          background="surfaceSecondary"
-          padding="16px"
-          style={{ borderRadius: 999, width: '100%' }}
-        >
-          <Text color="labelSecondary" size="14pt" weight="bold">
-            Currency &gt;
-          </Text>
-        </Box>
-      </Link>
-      <Link to="/">
-        <Box
-          as="button"
-          background="surfaceSecondary"
-          padding="16px"
-          style={{ borderRadius: 999, width: '100%' }}
-        >
-          <Text color="labelSecondary" size="14pt" weight="bold">
-            Home
-          </Text>
-        </Box>
-      </Link>
     </Box>
   );
 }

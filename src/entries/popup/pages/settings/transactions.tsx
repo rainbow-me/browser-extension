@@ -2,26 +2,18 @@ import { motion } from 'framer-motion';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-// import { i18n } from '~/core/languages';
 import { Box, Text } from '~/design-system';
+
+import { menuTransition } from '../../utils/animation';
 
 export function Transactions() {
   return (
     <Box
       as={motion.div}
-      display="flex"
-      flexDirection="column"
-      gap="24px"
-      padding="20px"
-      initial={{ opacity: 0, x: window.innerWidth }}
+      initial={{ opacity: 0, x: 16 }}
       animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: window.innerWidth }}
-      transition={{ type: 'tween', duration: 0.2 }}
+      transition={menuTransition}
     >
-      <Text as="h1" size="20pt" weight="bold">
-        Transactions
-      </Text>
-
       <Link to="/settings">
         <Box
           as="button"
