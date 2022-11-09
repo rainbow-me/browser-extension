@@ -146,58 +146,66 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
         </Inset>
 
         <Stack space="4px">
-          <Stack space="12px">
-            <MenuSeparator />
-            <Text color="label" size="14pt" weight="semibold">
-              {'Networks'}
-            </Text>
-          </Stack>
+          {isConnectedToCurrentHost ? (
+            <>
+              <Stack space="12px">
+                <MenuSeparator />
+                <Text color="label" size="14pt" weight="semibold">
+                  {'Networks'}
+                </Text>
+              </Stack>
 
-          <Box>
-            <MenuRadioGroup
-              value={`${appSession?.chainId}`}
-              onValueChange={shuffleChainId}
-            >
-              {Object.keys(supportedChains).map((chain, i) => {
-                const { chainId, name } = supportedChains[chain];
-                return (
-                  <MenuRadioItem value={chain} key={i}>
-                    <Box
-                      style={{
-                        cursor: 'pointer',
-                      }}
-                      id={`switch-network-item-${i}`}
-                    >
-                      <Inline space="8px" alignVertical="center">
-                        <ChainBadge chainId={chainId} size="small" />
-                        <Text color="label" size="14pt" weight="semibold">
-                          {name}
-                        </Text>
-                      </Inline>
-                    </Box>
-                  </MenuRadioItem>
-                );
-              })}
-            </MenuRadioGroup>
-            <Box style={{ cursor: 'pointer' }} as="button" onClick={disconnect}>
-              <Inset vertical="8px">
-                <Inline alignVertical="center" space="8px">
-                  <Box style={{ width: 18, height: 18 }}>
-                    <Inline
-                      height="full"
-                      alignVertical="center"
-                      alignHorizontal="center"
-                    >
-                      <SFSymbol size={12} symbol="xmark" />
+              <Box>
+                <MenuRadioGroup
+                  value={`${appSession?.chainId}`}
+                  onValueChange={shuffleChainId}
+                >
+                  {Object.keys(supportedChains).map((chain, i) => {
+                    const { chainId, name } = supportedChains[chain];
+                    return (
+                      <MenuRadioItem value={chain} key={i}>
+                        <Box
+                          style={{
+                            cursor: 'pointer',
+                          }}
+                          id={`switch-network-item-${i}`}
+                        >
+                          <Inline space="8px" alignVertical="center">
+                            <ChainBadge chainId={chainId} size="small" />
+                            <Text color="label" size="14pt" weight="semibold">
+                              {name}
+                            </Text>
+                          </Inline>
+                        </Box>
+                      </MenuRadioItem>
+                    );
+                  })}
+                </MenuRadioGroup>
+                <Box
+                  style={{ cursor: 'pointer' }}
+                  as="button"
+                  onClick={disconnect}
+                >
+                  <Inset vertical="8px">
+                    <Inline alignVertical="center" space="8px">
+                      <Box style={{ width: 18, height: 18 }}>
+                        <Inline
+                          height="full"
+                          alignVertical="center"
+                          alignHorizontal="center"
+                        >
+                          <SFSymbol size={12} symbol="xmark" />
+                        </Inline>
+                      </Box>
+                      <Text size="14pt" weight="bold">
+                        {i18n.t('page_header.disconnect')}
+                      </Text>
                     </Inline>
-                  </Box>
-                  <Text size="14pt" weight="bold">
-                    {i18n.t('page_header.disconnect')}
-                  </Text>
-                </Inline>
-              </Inset>
-            </Box>
-          </Box>
+                  </Inset>
+                </Box>
+              </Box>
+            </>
+          ) : null}
 
           <Stack space="4px">
             <MenuSeparator />
