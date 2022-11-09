@@ -152,7 +152,7 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
               <Stack space="12px">
                 <MenuSeparator />
                 <Text color="label" size="14pt" weight="semibold">
-                  {i18n.t('header.home_header_left.networks')}
+                  {i18n.t('menu.home_header_left.networks')}
                 </Text>
               </Stack>
 
