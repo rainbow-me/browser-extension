@@ -1,6 +1,7 @@
 import React, { Fragment, ReactNode, useCallback, useMemo } from 'react';
 import { useAccount } from 'wagmi';
 
+import { selectTransactionsByDate } from '~/core/resources/_selectors';
 import { useTransactions } from '~/core/resources/transactions/transactions';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { UniqueId } from '~/core/types/assets';
@@ -10,7 +11,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '~/core/types/transactions';
-import { Box, Inline, Row, Rows, Text } from '~/design-system';
+import { Box, Column, Columns, Inline, Inset, Text } from '~/design-system';
 import { ForegroundColor } from '~/design-system/styles/designTokens';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import {
@@ -21,13 +22,29 @@ import {
 export function Activity() {
   const { address } = useAccount();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { data: transactions = [] } = useTransactions({ address, currency });
-  console.log('TRANSACTION: ', transactions);
+  const { data: transactionsByDate = {} } = useTransactions(
+    { address, currency },
+    { select: selectTransactionsByDate },
+  );
   return (
-    <Box marginTop="-20px">
-      {transactions.map((tx, i) => (
-        <ActivityRow key={`${tx?.hash}-${i}`} transaction={tx} />
-      ))}
+    <Box marginTop={'-20px'}>
+      {Object.keys(transactionsByDate).map((dateKey) => {
+        const transactions = transactionsByDate[dateKey];
+        return (
+          <Fragment key={dateKey}>
+            <Inset horizontal="28px" top="16px" bottom="8px">
+              <Box>
+                <Text size="14pt" weight={'semibold'} color={'labelTertiary'}>
+                  {dateKey}
+                </Text>
+              </Box>
+            </Inset>
+            {transactions.map((tx, i) => (
+              <ActivityRow key={`${tx?.hash}-${i}`} transaction={tx} />
+            ))}
+          </Fragment>
+        );
+      })}
     </Box>
   );
 }
@@ -70,6 +87,11 @@ const titleIcons: {
     color: 'labelTertiary',
     type: 'icon',
   },
+};
+
+// TODO: create truncation component
+const truncateString = (txt = '', maxLength = 22) => {
+  return `${txt?.slice(0, maxLength)}${txt.length > maxLength ? '...' : ''}`;
 };
 
 function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
@@ -149,55 +171,75 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
 
   const titleIconConfig = getTitleIcon();
 
-  const leftColumn = useMemo(
+  const topRow = useMemo(
     () => (
-      <Fragment>
-        <Rows>
-          <Row>
+      <Columns>
+        <Column width="content">
+          <Box paddingVertical="4px">
             <Inline space={titleIconConfig?.space}>
               {titleIconConfig?.icon}
               <Text color={getTitleColor()} size="12pt" weight="semibold">
-                {title}
+                {truncateString(title, 14)}
               </Text>
             </Inline>
-          </Row>
-        </Rows>
-        <Text size="14pt" weight="semibold">
-          {name}
-        </Text>
-      </Fragment>
+          </Box>
+        </Column>
+        <Column>
+          <Box paddingVertical="4px">
+            <Text
+              size="12pt"
+              weight="semibold"
+              align="right"
+              color="labelTertiary"
+            >
+              {truncateString(balance?.display, 20)}
+            </Text>
+          </Box>
+        </Column>
+      </Columns>
     ),
-    [getTitleColor, name, title, titleIconConfig?.icon, titleIconConfig?.space],
+    [
+      balance?.display,
+      getTitleColor,
+      title,
+      titleIconConfig?.icon,
+      titleIconConfig?.space,
+    ],
   );
 
-  const rightColumn = useMemo(
+  const bottomRow = useMemo(
     () => (
-      <Fragment>
-        <Text size="12pt" weight="semibold" align="right" color="labelTertiary">
-          {/* TODO: create truncation component to handle all cases */}
-          {`${balance?.display?.slice(0, 22)}${
-            (balance?.display?.length || 0) > 22 ? '...' : ''
-          }`}
-        </Text>
-        <Text
-          size="14pt"
-          weight="semibold"
-          align="right"
-          color={getNativeDisplayColor()}
-        >
-          {getNativeDisplay()}
-        </Text>
-      </Fragment>
+      <Columns>
+        <Column width="content">
+          <Box paddingVertical="4px">
+            <Text size="14pt" weight="semibold">
+              {truncateString(name, 16)}
+            </Text>
+          </Box>
+        </Column>
+        <Column>
+          <Box paddingVertical="4px">
+            <Text
+              size="14pt"
+              weight="semibold"
+              align="right"
+              color={getNativeDisplayColor()}
+            >
+              {getNativeDisplay()}
+            </Text>
+          </Box>
+        </Column>
+      </Columns>
     ),
-    [balance?.display, getNativeDisplay, getNativeDisplayColor],
+    [getNativeDisplay, getNativeDisplayColor, name],
   );
 
   return (
     <CoinRow
       uniqueId={uniqueId as UniqueId}
       symbol={symbolToDisplay}
-      leftColumn={leftColumn}
-      rightColumn={rightColumn}
+      topRow={topRow}
+      bottomRow={bottomRow}
     />
   );
 }

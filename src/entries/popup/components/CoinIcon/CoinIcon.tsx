@@ -87,6 +87,7 @@ function CoinIconWrapper({
           width: '36px',
           height: '36px',
           overflow: 'hidden',
+          marginRight: '8px',
         }}
       >
         {children}

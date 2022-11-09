@@ -1,11 +1,11 @@
-import React, { Fragment, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useAccount } from 'wagmi';
 
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { UniqueId } from '~/core/types/assets';
-import { Box, Text } from '~/design-system';
+import { Box, Column, Columns, Text } from '~/design-system';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 
@@ -41,44 +41,54 @@ function AssetRow({ uniqueId }: AssetRowProps) {
   const balanceDisplay = asset?.balance?.display;
   const nativeBalanceDisplay = asset?.native?.balance?.display;
 
-  const leftColumn = useMemo(
+  const topRow = useMemo(
     () => (
-      <Fragment>
-        <Text size="14pt" weight="semibold">
-          {name}
-        </Text>
-        <Text color="labelTertiary" size="12pt" weight="semibold">
-          {balanceDisplay}
-        </Text>
-      </Fragment>
+      <Columns>
+        <Column width="content">
+          <Box paddingVertical="4px">
+            <Text size="14pt" weight="semibold">
+              {name}
+            </Text>
+          </Box>
+        </Column>
+        <Column>
+          <Box paddingVertical="4px">
+            <Text size="14pt" weight="semibold" align="right">
+              {nativeBalanceDisplay}
+            </Text>
+          </Box>
+        </Column>
+      </Columns>
     ),
-    [balanceDisplay, name],
+    [name, nativeBalanceDisplay],
   );
 
-  const rightColumn = useMemo(
+  const bottomRow = useMemo(
     () => (
-      <Fragment>
-        <Text size="14pt" weight="semibold">
-          {nativeBalanceDisplay}
-        </Text>
-        <Text
-          color={priceChangeColor}
-          size="12pt"
-          weight="semibold"
-          align="right"
-        >
-          {priceChangeDisplay}
-        </Text>
-      </Fragment>
+      <Columns>
+        <Column width="content">
+          <Box paddingVertical="4px">
+            <Text color="labelTertiary" size="12pt" weight="semibold">
+              {balanceDisplay}
+            </Text>
+          </Box>
+        </Column>
+        <Column>
+          <Box paddingVertical="4px">
+            <Text
+              color={priceChangeColor}
+              size="12pt"
+              weight="semibold"
+              align="right"
+            >
+              {priceChangeDisplay}
+            </Text>
+          </Box>
+        </Column>
+      </Columns>
     ),
-    [nativeBalanceDisplay, priceChangeColor, priceChangeDisplay],
+    [balanceDisplay, priceChangeColor, priceChangeDisplay],
   );
 
-  return (
-    <CoinRow
-      leftColumn={leftColumn}
-      rightColumn={rightColumn}
-      uniqueId={uniqueId}
-    />
-  );
+  return <CoinRow topRow={topRow} bottomRow={bottomRow} uniqueId={uniqueId} />;
 }

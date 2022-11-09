@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 
 import { UniqueId } from '~/core/types/assets';
-import { Box, Inline, Inset, Stack } from '~/design-system';
+import { Box, Column, Columns, Inset, Row, Rows } from '~/design-system';
 import { transparentAccentColorAsHsl } from '~/design-system/styles/core.css';
 
 import { useHover } from '../../hooks/useHover';
@@ -25,13 +25,13 @@ function RowHighlightWrapper({ children }: { children: ReactNode }) {
 }
 
 export function CoinRow({
-  leftColumn,
-  rightColumn,
+  topRow,
+  bottomRow,
   symbol,
   uniqueId,
 }: {
-  leftColumn: ReactNode;
-  rightColumn: ReactNode;
+  topRow: ReactNode;
+  bottomRow: ReactNode;
   symbol?: string;
   uniqueId: UniqueId;
 }) {
@@ -39,23 +39,21 @@ export function CoinRow({
     <Box style={{ height: '52px' }}>
       <RowHighlightWrapper>
         <Inset horizontal="20px" vertical="8px">
-          <Box
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
-          >
-            <Inline space="8px">
-              <CoinIcon symbol={symbol} uniqueId={uniqueId} />
-              <Box display="flex" style={{ alignItems: 'center' }}>
-                <Stack space="8px">{leftColumn}</Stack>
-              </Box>
-            </Inline>
-            <Box display="flex" style={{ alignItems: 'center' }}>
-              <Stack space="8px">{rightColumn}</Stack>
-            </Box>
-          </Box>
+          <Rows>
+            <Row>
+              <Columns alignVertical="center">
+                <Column width="content">
+                  <CoinIcon symbol={symbol} uniqueId={uniqueId} />
+                </Column>
+                <Column>
+                  <Rows>
+                    <Row>{topRow}</Row>
+                    <Row>{bottomRow}</Row>
+                  </Rows>
+                </Column>
+              </Columns>
+            </Row>
+          </Rows>
         </Inset>
       </RowHighlightWrapper>
     </Box>

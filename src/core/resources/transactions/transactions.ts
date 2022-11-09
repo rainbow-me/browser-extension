@@ -62,6 +62,7 @@ async function transactionsQueryFunction({
     payload: {
       address,
       currency: currency.toLowerCase(),
+      transactions_limit: 250,
     },
     scope: ['transactions'],
   });

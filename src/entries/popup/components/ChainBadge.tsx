@@ -63,8 +63,8 @@ export const ChainBadge = React.memo(function ChainBadge({
         style={{
           alignItems: 'center',
           position: 'absolute',
-          left: -60,
-          top: 14,
+          top: -22,
+          left: -15,
         }}
       >
         <img src={source} style={imageStyles} />
