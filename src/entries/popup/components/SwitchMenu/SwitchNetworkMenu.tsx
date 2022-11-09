@@ -8,7 +8,6 @@ import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
   Menu,
   MenuContent,
-  MenuItemIndicator,
   MenuLabel,
   MenuRadioGroup,
   MenuRadioItem,
@@ -40,7 +39,61 @@ export const supportedChains: { [key: string]: SelectedNetwork } = {
   },
 };
 
-interface SwitchMenuProps {
+export const SwitchNetworkMenuSelector = () => {
+  return (
+    <>
+      {Object.keys(supportedChains).map((chain, i) => {
+        const { chainId, name } = supportedChains[chain];
+        return (
+          <MenuRadioItem value={chain} key={i}>
+            <Box
+              style={{
+                cursor: 'pointer',
+              }}
+              id={`switch-network-item-${i}`}
+            >
+              <Inline space="8px" alignVertical="center">
+                <ChainBadge chainId={chainId} size="small" />
+                <Text color="label" size="14pt" weight="semibold">
+                  {name}
+                </Text>
+              </Inline>
+            </Box>
+          </MenuRadioItem>
+        );
+      })}
+    </>
+  );
+};
+
+export const SwitchNetworkMenuDisconnect = ({
+  onDisconnect,
+}: {
+  onDisconnect: () => void;
+}) => {
+  return (
+    <Box style={{ cursor: 'pointer' }} as="button" onClick={onDisconnect}>
+      <Inset vertical="8px">
+        <Inline alignVertical="center" space="8px">
+          <Box style={{ width: 18, height: 18 }}>
+            <Inline
+              height="full"
+              alignVertical="center"
+              alignHorizontal="center"
+            >
+              <SFSymbol size={12} symbol="xmark" />
+            </Inline>
+          </Box>
+          <Text size="14pt" weight="bold">
+            {i18n.t('page_header.disconnect')}
+          </Text>
+        </Inline>
+      </Inset>
+    </Box>
+  );
+};
+
+interface SwitchNetworkMenuProps {
   title: string;
   selectedValue: string;
   onValueChange: (value: string) => void;
@@ -60,7 +113,7 @@ export const SwitchNetworkMenu = ({
   onValueChange,
   renderMenuTrigger,
   onDisconnect,
-}: SwitchMenuProps) => {
+}: SwitchNetworkMenuProps) => {
   return (
     <Menu>
       <MenuTrigger asChild>{renderMenuTrigger}</MenuTrigger>
@@ -68,44 +121,10 @@ export const SwitchNetworkMenu = ({
         <MenuLabel>{title}</MenuLabel>
         <MenuSeparator />
         <MenuRadioGroup value={selectedValue} onValueChange={onValueChange}>
-          {Object.keys(supportedChains).map((chain, i) => {
-            const { chainId, name } = supportedChains[chain];
-            return (
-              <MenuRadioItem key={i} value={chain}>
-                <Box id={`switch-network-item-${i}`}>
-                  <Inline space="8px" alignVertical="center">
-                    <ChainBadge chainId={chainId} size="small" />
-                    <Text color="label" size="14pt" weight="semibold">
-                      {name}
-                    </Text>
-                  </Inline>
-                </Box>
-                <MenuItemIndicator style={{ marginLeft: 'auto' }}>
-                  <SFSymbol symbol="checkMark" size={11} />
-                </MenuItemIndicator>
-              </MenuRadioItem>
-            );
-          })}
+          <SwitchNetworkMenuSelector />
         </MenuRadioGroup>
         {onDisconnect ? (
-          <Box style={{ cursor: 'pointer' }} as="button" onClick={onDisconnect}>
-            <Inset vertical="8px">
-              <Inline alignVertical="center" space="8px">
-                <Box style={{ width: 18, height: 18 }}>
-                  <Inline
-                    height="full"
-                    alignVertical="center"
-                    alignHorizontal="center"
-                  >
-                    <SFSymbol size={12} symbol="xmark" />
-                  </Inline>
-                </Box>
-                <Text size="14pt" weight="bold">
-                  {i18n.t('page_header.disconnect')}
-                </Text>
-              </Inline>
-            </Inset>
-          </Box>
+          <SwitchNetworkMenuDisconnect onDisconnect={onDisconnect} />
         ) : null}
       </MenuContent>
     </Menu>

@@ -17,8 +17,10 @@ import {
   MenuTrigger,
 } from '../Menu/Menu';
 import { SFSymbol, Symbols } from '../SFSymbol/SFSymbol';
-
-import { NetworkSelector } from './NetworkSelector';
+import {
+  SwitchNetworkMenuDisconnect,
+  SwitchNetworkMenuSelector,
+} from '../SwitchMenu/SwitchNetworkMenu';
 
 interface HomePageHeaderProps {
   title: string;
@@ -159,30 +161,9 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
                   value={`${appSession?.chainId}`}
                   onValueChange={changeChainId}
                 >
-                  <NetworkSelector />
+                  <SwitchNetworkMenuSelector />
                 </MenuRadioGroup>
-                <Box
-                  style={{ cursor: 'pointer' }}
-                  as="button"
-                  onClick={disconnect}
-                >
-                  <Inset vertical="8px">
-                    <Inline alignVertical="center" space="8px">
-                      <Box style={{ width: 18, height: 18 }}>
-                        <Inline
-                          height="full"
-                          alignVertical="center"
-                          alignHorizontal="center"
-                        >
-                          <SFSymbol size={12} symbol="xmark" />
-                        </Inline>
-                      </Box>
-                      <Text size="14pt" weight="bold">
-                        {i18n.t('page_header.disconnect')}
-                      </Text>
-                    </Inline>
-                  </Inset>
-                </Box>
+                <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
               </Box>
             </>
           ) : null}
