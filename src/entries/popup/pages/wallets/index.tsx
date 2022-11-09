@@ -1,4 +1,5 @@
 import { uuid4 } from '@sentry/utils';
+import { fetchEnsAddress } from '@wagmi/core';
 import { motion } from 'framer-motion';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -6,7 +7,7 @@ import { Address, useAccount, useEnsName } from 'wagmi';
 
 import { initializeMessenger } from '~/core/messengers';
 import { useCurrentAddressStore } from '~/core/state';
-import { EthereumWalletSeed } from '~/core/utils/ethereum';
+import { EthereumWalletSeed, isENSAddressFormat } from '~/core/utils/ethereum';
 import { Box, Column, Columns, Separator, Text } from '~/design-system';
 
 const messenger = initializeMessenger({ connect: 'background' });
@@ -318,7 +319,18 @@ export function Wallets() {
   }, [setCurrentAddress, updateState]);
 
   const importWallet = useCallback(async () => {
-    const address = (await walletAction('import', secret)) as Address;
+    let seed = secret;
+    if (isENSAddressFormat(secret)) {
+      try {
+        seed = (await fetchEnsAddress({ name: secret })) as Address;
+      } catch (e) {
+        console.log('error', e);
+        alert('Invalid ENS name');
+        return;
+      }
+    }
+
+    const address = (await walletAction('import', seed)) as Address;
     setCurrentAddress(address);
     await updateState();
     setSecret('');

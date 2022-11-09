@@ -21,6 +21,30 @@ export const isHexStringIgnorePrefix = (value: string): boolean => {
   return isHexString(updatedValue);
 };
 
+export const isENSAddressFormat = (name: string) => {
+  const validTLDs = ['eth', 'xyz', 'luxe', 'kred', 'reverse', 'addr', 'test'];
+  const parts = !!name && name.split('.');
+
+  if (
+    !parts ||
+    parts.length === 1 ||
+    !parts[parts.length - 1] ||
+    !validTLDs.includes(parts[parts.length - 1].toLowerCase())
+  ) {
+    return false;
+  }
+  return true;
+};
+
+/**
+ * @desc Checks if a string is a valid private key.
+ * @param value The string.
+ * @return Whether or not the string is a valid private key string.
+ */
+export const isValidPrivateKey = (value: string): boolean => {
+  return isHexStringIgnorePrefix(value) && addHexPrefix(value).length === 66;
+};
+
 /**
  * @desc Adds an "0x" prefix to a string if one is not present.
  * @param value The starting string.
@@ -32,10 +56,7 @@ export const addHexPrefix = (value: string): string =>
 export const identifyWalletType = (
   walletSeed: EthereumWalletSeed,
 ): EthereumWalletType => {
-  if (
-    isHexStringIgnorePrefix(walletSeed) &&
-    addHexPrefix(walletSeed).length === 66
-  ) {
+  if (isValidPrivateKey(walletSeed)) {
     return EthereumWalletType.privateKey;
   }
   // 12 or 24 words seed phrase

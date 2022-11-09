@@ -50,6 +50,24 @@ test('[keychain/KeychainManager] :: should be able to export the seed phrase for
   expect(seedPhrase.split(' ').length).toBe(12);
 });
 
+test('[keychain/KeychainManager] :: should be able to add a read only wallet using an address', async () => {
+  await keychainManager.importKeychain({
+    type: 'ReadOnlyKeychain',
+    address: '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4',
+  });
+  const accounts = await keychainManager.getAccounts();
+  expect(accounts.length).toBe(2);
+  expect(ethers.utils.isAddress(accounts[1])).toBe(true);
+  expect(accounts[1]).toBe('0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4');
+});
+
+test('[keychain/KeychainManager] :: should be able to remove an account from a ReadOnly keychain...', async () => {
+  let accounts = await keychainManager.getAccounts();
+  await keychainManager.removeAccount(accounts[1]);
+  accounts = await keychainManager.getAccounts();
+  expect(accounts.length).toBe(1);
+});
+
 test('[keychain/KeychainManager] :: should be able to import a wallet using a private key', async () => {
   await keychainManager.importKeychain({ type: 'KeyPairKeychain', privateKey });
   const accounts = await keychainManager.getAccounts();

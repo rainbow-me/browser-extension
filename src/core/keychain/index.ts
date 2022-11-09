@@ -78,9 +78,15 @@ export const importWallet = async (
       const address = (await keychain.getAccounts())[0];
       return address;
     }
-    case EthereumWalletType.readOnly:
-      throw new Error('Read-only wallets are not supported yet');
+    case EthereumWalletType.readOnly: {
+      const keychain = await keychainManager.importKeychain({
+        type: KeychainType.ReadOnlyKeychain,
+        address: secret as Address,
+      });
+      const address = (await keychain.getAccounts())[0];
+      return address;
       break;
+    }
     default:
       throw new Error('Wallet type not recognized.');
   }

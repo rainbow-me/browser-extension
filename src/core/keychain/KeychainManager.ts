@@ -9,8 +9,12 @@ import {
   KeyPairKeychain,
   SerializedKeypairKeychain,
 } from './keychainTypes/keyPairKeychain';
+import {
+  ReadOnlyKeychain,
+  SerializedReadOnlyKeychain,
+} from './keychainTypes/readOnlyKeychain';
 
-export type Keychain = KeyPairKeychain | HdKeychain;
+export type Keychain = KeyPairKeychain | HdKeychain | ReadOnlyKeychain;
 
 interface KeychainManagerState {
   keychains: Keychain[];
@@ -18,7 +22,10 @@ interface KeychainManagerState {
   vault: string;
 }
 
-type SerializedKeychain = SerializedHdKeychain | SerializedKeypairKeychain;
+type SerializedKeychain =
+  | SerializedHdKeychain
+  | SerializedKeypairKeychain
+  | SerializedReadOnlyKeychain;
 type DecryptedVault = SerializedKeychain[];
 
 const privates = new WeakMap();
@@ -80,6 +87,10 @@ class KeychainManager {
           case KeychainType.KeyPairKeychain:
             keychain = new KeyPairKeychain();
             await keychain.init(opts as SerializedKeypairKeychain);
+            break;
+          case KeychainType.ReadOnlyKeychain:
+            keychain = new ReadOnlyKeychain();
+            await keychain.init(opts as unknown as SerializedReadOnlyKeychain);
             break;
           default:
             throw new Error('Keychain type not recognized.');
@@ -166,7 +177,12 @@ class KeychainManager {
     return keychain;
   }
 
-  async importKeychain(opts: SerializedKeypairKeychain | SerializedHdKeychain) {
+  async importKeychain(
+    opts:
+      | SerializedKeypairKeychain
+      | SerializedHdKeychain
+      | SerializedReadOnlyKeychain,
+  ): Promise<Keychain> {
     return privates.get(this).restoreKeychain({
       ...opts,
       imported: true,
