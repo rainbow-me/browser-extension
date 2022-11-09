@@ -65,7 +65,13 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
   return (
     <Menu>
       <MenuTrigger asChild>
-        <Box position="relative" id="home-page-header-left">
+        <Box
+          position="relative"
+          style={{
+            cursor: 'pointer',
+          }}
+          id="home-page-header-left"
+        >
           {children}
         </Box>
       </MenuTrigger>
@@ -140,7 +146,14 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
   return (
     <Menu>
       <MenuTrigger asChild>
-        <Box position="relative">{children}</Box>
+        <Box
+          position="relative"
+          style={{
+            cursor: 'pointer',
+          }}
+        >
+          {children}
+        </Box>
       </MenuTrigger>
       <MenuContent>
         <Stack space="4px">
