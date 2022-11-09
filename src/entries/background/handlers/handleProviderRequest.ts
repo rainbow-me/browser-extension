@@ -32,7 +32,7 @@ const openWindow = async () => {
  * @param {PendingRequest} request
  * @returns {boolean}
  */
-const messengerRequestAccountsApproval = async (
+const messengerProviderRequest = async (
   messenger: Messenger,
   request: ProviderRequestPayload,
 ) => {
@@ -42,15 +42,12 @@ const messengerRequestAccountsApproval = async (
   addPendingRequest(request);
   openWindow();
   // Wait for response from the popup.
-  const payload: { address: Address; chainId: number } | null =
-    await new Promise((resolve) =>
-      // eslint-disable-next-line no-promise-executor-return
-      messenger.reply(
-        `message:${request.id}`,
-        async (payload: { address: Address; chainId: number } | null) =>
-          resolve(payload),
-      ),
-    );
+  const payload: unknown | null = await new Promise((resolve) =>
+    // eslint-disable-next-line no-promise-executor-return
+    messenger.reply(`message:${request.id}`, async (payload) =>
+      resolve(payload),
+    ),
+  );
   removePendingRequest(request.id);
   if (!payload) {
     throw new UserRejectedRequestError('User rejected the request.');
@@ -93,6 +90,14 @@ export const handleProviderRequest = ({
         case 'eth_signTypedData':
         case 'eth_signTypedData_v3':
         case 'eth_signTypedData_v4': {
+          {
+            await messengerProviderRequest(messenger, {
+              method,
+              id,
+              params,
+              meta,
+            });
+          }
           break;
         }
         case 'wallet_addEthereumChain':
@@ -102,7 +107,7 @@ export const handleProviderRequest = ({
             response = [activeSession.address];
             break;
           }
-          const { address, chainId } = await messengerRequestAccountsApproval(
+          const { address, chainId } = (await messengerProviderRequest(
             messenger,
             {
               method,
@@ -110,7 +115,7 @@ export const handleProviderRequest = ({
               params,
               meta,
             },
-          );
+          )) as { address: Address; chainId: number };
           addSession({
             host,
             address,
