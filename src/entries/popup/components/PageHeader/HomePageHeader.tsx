@@ -8,18 +8,17 @@ import { getConnectedAppIcon } from '~/core/utils/connectedApps';
 import { Box, Inline, Inset, Row, Rows, Stack, Text } from '~/design-system';
 
 import { useAppSession } from '../../hooks/useAppSession';
-import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
   Menu,
   MenuContent,
   MenuItemIndicator,
   MenuRadioGroup,
-  MenuRadioItem,
   MenuSeparator,
   MenuTrigger,
 } from '../Menu/Menu';
 import { SFSymbol, Symbols } from '../SFSymbol/SFSymbol';
-import { supportedChains } from '../SwitchMenu/SwitchNetworkMenu';
+
+import { NetworkSelector } from './NetworkSelector';
 
 interface HomePageHeaderProps {
   title: string;
@@ -72,7 +71,7 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
   });
   const isConnectedToCurrentHost = appSessions?.[host];
 
-  const shuffleChainId = React.useCallback(
+  const changeChainId = React.useCallback(
     (chainId: string) => {
       updateAppSessionChainId(Number(chainId));
       messenger.send(`chainChanged:${host}`, chainId);
@@ -158,28 +157,9 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
               <Box>
                 <MenuRadioGroup
                   value={`${appSession?.chainId}`}
-                  onValueChange={shuffleChainId}
+                  onValueChange={changeChainId}
                 >
-                  {Object.keys(supportedChains).map((chain, i) => {
-                    const { chainId, name } = supportedChains[chain];
-                    return (
-                      <MenuRadioItem value={chain} key={i}>
-                        <Box
-                          style={{
-                            cursor: 'pointer',
-                          }}
-                          id={`switch-network-item-${i}`}
-                        >
-                          <Inline space="8px" alignVertical="center">
-                            <ChainBadge chainId={chainId} size="small" />
-                            <Text color="label" size="14pt" weight="semibold">
-                              {name}
-                            </Text>
-                          </Inline>
-                        </Box>
-                      </MenuRadioItem>
-                    );
-                  })}
+                  <NetworkSelector />
                 </MenuRadioGroup>
                 <Box
                   style={{ cursor: 'pointer' }}

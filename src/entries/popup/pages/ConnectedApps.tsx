@@ -87,7 +87,7 @@ function ConnectedApp({
 }) {
   const { data: ensName } = useEnsName({ address });
   const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
-  const { updateAppSessionChainId } = useAppSession({
+  const { updateAppSessionChainId, disconnectAppSession } = useAppSession({
     host,
   });
 
@@ -99,13 +99,26 @@ function ConnectedApp({
     [host, updateAppSessionChainId],
   );
 
+  const disconnect = React.useCallback(() => {
+    disconnectAppSession();
+    messenger.send(`disconnect:${host}`, null);
+  }, [disconnectAppSession, host]);
+
   return (
     <SwitchNetworkMenu
       title={i18n.t('connected_apps.switch_networks')}
       onValueChange={shuffleChainId}
       selectedValue={String(chainId)}
+      onDisconnect={disconnect}
       renderMenuTrigger={
-        <Box as="button" id="switch-network-menu">
+        <Box
+          as="button"
+          id="switch-network-menu"
+          width="full"
+          style={{
+            cursor: 'pointer',
+          }}
+        >
           <Inset horizontal="20px" vertical="8px">
             <Inline space="8px">
               <Box
