@@ -4,17 +4,24 @@ import { Address } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { Box, Column, Columns, Row, Rows, Stack, Text } from '~/design-system';
 
-import { SelectedNetwork } from '../RequestAccounts';
+import { BottomSwitchNetwork, BottomSwitchWallet } from '../BottomButtons';
 
-import { BottomNetwork, BottomWallet } from './BottomButtons';
-export const SignBottomButtons = ({
+import { SelectedNetwork } from '.';
+
+export const RequestAccountsActions = ({
   selectedWallet,
+  setSelectedWallet,
   selectedNetwork,
+  setSelectedNetwork,
   onApproveRequest,
   onRejectRequest,
+  appName,
 }: {
+  appName?: string;
   selectedWallet: Address;
+  setSelectedWallet: (value: Address) => void;
   selectedNetwork: SelectedNetwork;
+  setSelectedNetwork: (value: SelectedNetwork) => void;
   onApproveRequest: () => void;
   onRejectRequest: () => void;
 }) => {
@@ -23,31 +30,16 @@ export const SignBottomButtons = ({
       <Stack space="24px">
         <Columns alignVertical="center" alignHorizontal="justify">
           <Column>
-            <Stack space="8px">
-              <Text size="12pt" weight="semibold" color="labelQuaternary">
-                {i18n.t('approve_request.wallet')}
-              </Text>
-              <BottomWallet
-                selectedWallet={selectedWallet}
-                displaySymbol={false}
-              />
-            </Stack>
+            <BottomSwitchWallet
+              selectedWallet={selectedWallet}
+              setSelectedWallet={setSelectedWallet}
+            />
           </Column>
           <Column>
-            <Stack space="8px">
-              <Text
-                align="right"
-                size="12pt"
-                weight="semibold"
-                color="labelQuaternary"
-              >
-                {i18n.t('approve_request.network')}
-              </Text>
-              <BottomNetwork
-                selectedNetwork={selectedNetwork}
-                displaySymbol={false}
-              />
-            </Stack>
+            <BottomSwitchNetwork
+              selectedNetwork={selectedNetwork}
+              setSelectedNetwork={setSelectedNetwork}
+            />
           </Column>
         </Columns>
         <Rows space="8px">
@@ -63,7 +55,7 @@ export const SignBottomButtons = ({
               boxShadow="24px accent"
             >
               <Text color="label" size="14pt" weight="bold">
-                {'Sign Message'}
+                {i18n.t('approve_request.connect', { appName })}
               </Text>
             </Box>
           </Row>

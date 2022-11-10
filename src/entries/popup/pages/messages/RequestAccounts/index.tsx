@@ -8,8 +8,8 @@ import { Row, Rows, Separator } from '~/design-system';
 import { supportedChains } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 
-import { ApproveBottomButtons } from './BottomButtons/ApproveBottomButtons';
-import { AccountRequestInfo } from './RequestInfo/AccountRequestInfo';
+import { RequestAccountsActions } from './RequestAccountsActions';
+import { RequestAccountsInfo } from './RequestAccountsInfo';
 
 interface ApproveRequestProps {
   approveRequest: (payload: { address: Address; chainId: number }) => void;
@@ -51,7 +51,7 @@ export const ApproveRequestAccounts = ({
   return (
     <Rows alignVertical="justify">
       <Row height="content">
-        <AccountRequestInfo
+        <RequestAccountsInfo
           appHostName={appHostName}
           appLogo={appLogo}
           appName={appName}
@@ -59,7 +59,7 @@ export const ApproveRequestAccounts = ({
         <Separator color="separatorTertiary" />
       </Row>
       <Row height="content">
-        <ApproveBottomButtons
+        <RequestAccountsActions
           selectedWallet={selectedWallet}
           setSelectedWallet={setSelectedWallet}
           selectedNetwork={selectedNetwork}

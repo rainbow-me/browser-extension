@@ -4,11 +4,10 @@ import { ProviderRequestPayload } from '~/core/transports/providerRequestTranspo
 import { Row, Rows } from '~/design-system';
 import { supportedChains } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
+import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
-import { useAppSession } from '../../hooks/useAppSession';
-
-import { SignBottomButtons } from './BottomButtons/SignBottomButtons';
-import { SignInfo } from './RequestInfo/SignInfo';
+import { SignMessageActions } from './SignMessageActions';
+import { SignInfo } from './SignMessageInfo';
 
 interface ApproveRequestProps {
   approveRequest: () => void;
@@ -40,7 +39,7 @@ export function SignMessage({
         <SignInfo request={request} />
       </Row>
       <Row height="content">
-        <SignBottomButtons
+        <SignMessageActions
           selectedWallet={selectedWallet}
           selectedNetwork={selectedNetwork}
           onApproveRequest={approveRequest}

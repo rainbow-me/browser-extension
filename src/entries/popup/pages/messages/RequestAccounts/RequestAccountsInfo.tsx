@@ -3,7 +3,7 @@ import React from 'react';
 import { i18n } from '~/core/languages';
 import { Box, Inline, Separator, Stack, Text } from '~/design-system';
 
-export const AccountRequestInfo = ({
+export const RequestAccountsInfo = ({
   appHostName,
   appName,
   appLogo,
