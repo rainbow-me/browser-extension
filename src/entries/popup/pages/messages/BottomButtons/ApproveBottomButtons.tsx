@@ -19,15 +19,14 @@ import {
   DEFAULT_ACCOUNT_2,
 } from '~/entries/background/handlers/handleProviderRequest';
 
-import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
-import { SFSymbol } from '../../components/SFSymbol/SFSymbol';
-import { SwitchMenu } from '../../components/SwitchMenu/SwitchMenu';
+import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
+import { SFSymbol } from '../../../components/SFSymbol/SFSymbol';
+import { SwitchMenu } from '../../../components/SwitchMenu/SwitchMenu';
 import {
   SwitchNetworkMenu,
   supportedChains,
-} from '../../components/SwitchMenu/SwitchNetworkMenu';
-
-import { SelectedNetwork } from './ApproveRequestAccounts';
+} from '../../../components/SwitchMenu/SwitchNetworkMenu';
+import { SelectedNetwork } from '../ApproveRequestAccounts';
 
 // TODO hook up real wallets
 const wallets: Address[] = [DEFAULT_ACCOUNT, DEFAULT_ACCOUNT_2];
