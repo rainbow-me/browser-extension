@@ -46,7 +46,7 @@ export const ApproveBottomButtons = ({
           <Row>
             <Box
               as="button"
-              id="accept-button"
+              id="accept-request-button"
               background="accent"
               width="full"
               onClick={onApproveRequest}
@@ -62,7 +62,7 @@ export const ApproveBottomButtons = ({
           <Row>
             <Box
               as="button"
-              id="reject-button"
+              id="reject-request-button"
               onClick={onRejectRequest}
               width="full"
               padding="16px"
