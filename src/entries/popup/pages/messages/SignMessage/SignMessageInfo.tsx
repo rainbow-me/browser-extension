@@ -10,7 +10,7 @@ interface SignMessageProps {
   request: ProviderRequestPayload;
 }
 
-export function SignInfo({ request }: SignMessageProps) {
+export function SignMessageInfo({ request }: SignMessageProps) {
   const { appHostName, appLogo } = useAppMetadata({
     meta: request?.meta,
   });

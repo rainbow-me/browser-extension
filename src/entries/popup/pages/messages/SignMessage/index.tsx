@@ -7,7 +7,7 @@ import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
 import { SignMessageActions } from './SignMessageActions';
-import { SignInfo } from './SignMessageInfo';
+import { SignMessageInfo } from './SignMessageInfo';
 
 interface ApproveRequestProps {
   approveRequest: () => void;
@@ -36,7 +36,7 @@ export function SignMessage({
   return (
     <Rows alignVertical="justify">
       <Row height="content">
-        <SignInfo request={request} />
+        <SignMessageInfo request={request} />
       </Row>
       <Row height="content">
         <SignMessageActions
