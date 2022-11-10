@@ -6,22 +6,15 @@ import { Box, Column, Columns, Row, Rows, Stack, Text } from '~/design-system';
 
 import { SelectedNetwork } from '../ApproveRequestAccounts';
 
-import { BottomSwicthNetwork, BottomSwitchWallet } from './BottomButtons';
-
-export const ApproveBottomButtons = ({
+import { BottomNetwork, BottomWallet } from './BottomButtons';
+export const SignBottomButtons = ({
   selectedWallet,
-  setSelectedWallet,
   selectedNetwork,
-  setSelectedNetwork,
   onApproveRequest,
   onRejectRequest,
-  appName,
 }: {
-  appName?: string;
   selectedWallet: Address;
-  setSelectedWallet: (value: Address) => void;
   selectedNetwork: SelectedNetwork;
-  setSelectedNetwork: (value: SelectedNetwork) => void;
   onApproveRequest: () => void;
   onRejectRequest: () => void;
 }) => {
@@ -34,9 +27,9 @@ export const ApproveBottomButtons = ({
               <Text size="12pt" weight="semibold" color="labelQuaternary">
                 {i18n.t('approve_request_accounts.wallet')}
               </Text>
-              <BottomSwitchWallet
+              <BottomWallet
                 selectedWallet={selectedWallet}
-                setSelectedWallet={setSelectedWallet}
+                displaySymbol={false}
               />
             </Stack>
           </Column>
@@ -50,10 +43,9 @@ export const ApproveBottomButtons = ({
               >
                 {i18n.t('approve_request_accounts.network')}
               </Text>
-
-              <BottomSwicthNetwork
+              <BottomNetwork
                 selectedNetwork={selectedNetwork}
-                setSelectedNetwork={setSelectedNetwork}
+                displaySymbol={false}
               />
             </Stack>
           </Column>
@@ -71,7 +63,7 @@ export const ApproveBottomButtons = ({
               boxShadow="24px accent"
             >
               <Text color="label" size="14pt" weight="bold">
-                {i18n.t('approve_request_accounts.connect', { appName })}
+                {'Sign Message'}
               </Text>
             </Box>
           </Row>

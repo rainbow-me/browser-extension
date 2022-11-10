@@ -8,8 +8,8 @@ import { Row, Rows, Separator } from '~/design-system';
 import { supportedChains } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 
-import { ApproveAppRequest } from './ApproveAppRequest';
 import { ApproveBottomButtons } from './BottomButtons/ApproveBottomButtons';
+import { AccountRequestInfo } from './RequestInfo/AccountRequestInfo';
 
 interface ApproveRequestProps {
   approveRequest: (payload: { address: Address; chainId: number }) => void;
@@ -51,7 +51,7 @@ export function ApproveRequestAccounts({
   return (
     <Rows alignVertical="justify">
       <Row height="content">
-        <ApproveAppRequest
+        <AccountRequestInfo
           appHostName={appHostName}
           appLogo={appLogo}
           appName={appName}
