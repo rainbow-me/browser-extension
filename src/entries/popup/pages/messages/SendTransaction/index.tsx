@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { Row, Rows } from '~/design-system';
@@ -31,6 +31,8 @@ export function SendTransaction({
   const { appSession } = useAppSession({ host: appHost });
   const selectedWallet = appSession.address;
 
+  const onAcceptRequest = useCallback(() => approveRequest(), [approveRequest]);
+
   return (
     <Rows alignVertical="justify">
       <Row height="content">
@@ -40,7 +42,7 @@ export function SendTransaction({
         <SendTransactionActions
           appHost={appHost}
           selectedWallet={selectedWallet}
-          onAcceptRequest={approveRequest}
+          onAcceptRequest={onAcceptRequest}
           onRejectRequest={rejectRequest}
         />
       </Row>

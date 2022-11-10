@@ -172,6 +172,28 @@ it('should be able to accept a signing request', async () => {
   await driver.switchTo().window(dappHandler);
 });
 
+it('should be able to accept a transaction request', async () => {
+  // TODO send tx, we're not signing anything yet
+  const dappHandler = await driver.getWindowHandle();
+  await delay(1000);
+
+  const button = await querySelector(driver, '[id="sendTx"]');
+  expect(button).toBeTruthy();
+  await button.click();
+  await delay(100);
+
+  const handlers = await driver.getAllWindowHandles();
+
+  const popupHandler =
+    handlers.find((handler) => handler !== dappHandler) || '';
+
+  await driver.switchTo().window(popupHandler);
+  await delay(2000);
+
+  await driver.findElement({ id: 'accept-request-button' }).click();
+  await delay(2000);
+});
+
 it('should be able to disconnect from connected dapps', async () => {
   await driver.get(rootURL + '/popup.html');
   await delay(1000);
