@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, Inset, Stack } from '~/design-system';
+import { Box, Stack } from '~/design-system';
 
 interface MenuContainerProps {
   children: React.ReactNode;
@@ -8,11 +8,9 @@ interface MenuContainerProps {
 }
 const MenuContainer = ({ children, testID }: MenuContainerProps) => {
   return (
-    <Inset>
-      <Box paddingHorizontal="20px" testId={testID}>
-        <Stack space="20px">{children}</Stack>
-      </Box>
-    </Inset>
+    <Box paddingHorizontal="20px" testId={testID}>
+      <Stack space="20px">{children}</Stack>
+    </Box>
   );
 };
 

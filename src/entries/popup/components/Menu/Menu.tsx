@@ -25,7 +25,7 @@ const Menu = ({ children, description, header }: MenuProps) => {
         width="full"
       >
         <Stack
-        // separator={<Separator color="separator" />}
+        // TODO: add separator
         >
           {children}
         </Stack>

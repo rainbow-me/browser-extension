@@ -9,8 +9,6 @@ import { useTransactions } from '~/core/resources/transactions/transactions';
 import { useCurrentCurrencyStore, useCurrentLanguageStore } from '~/core/state';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { Box, Inset, Stack, Text } from '~/design-system';
-
-import { i18n } from '../../../../core/languages';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,7 +18,9 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../../components/DropdownMenu/DropdownMenu';
+} from '~/entries/popup/components/DropdownMenu/DropdownMenu';
+
+import { i18n } from '../../../../core/languages';
 import { ClearStorage } from '../../components/_dev/ClearStorage';
 
 export function Default() {

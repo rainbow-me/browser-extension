@@ -1,6 +1,5 @@
 import React from 'react';
 
-// import { ButtonPressAnimation } from '../../animations';
 import { Box, Inline, Stack, Text } from '~/design-system';
 
 import { SFSymbol } from '../SFSymbol/SFSymbol';
@@ -14,11 +13,9 @@ interface TextIconProps {
 }
 
 const TextIcon = ({ icon }: TextIconProps) => (
-  <Box>
-    <Text color="label" size="16pt" weight="semibold">
-      {icon}
-    </Text>
-  </Box>
+  <Text color="label" size="16pt" weight="semibold">
+    {icon}
+  </Text>
 );
 
 interface SelectionProps {
@@ -121,9 +118,9 @@ const MenuItem = ({
   return disabled ? (
     <Item />
   ) : (
-    // <ButtonPressAnimation onPress={onPress} scaleTo={0.96} testID={testID}>
+    // TODO: <animate>
     <Item />
-    // </ButtonPressAnimation>
+    // TODO: </animate>
   );
 };
 
