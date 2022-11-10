@@ -44,7 +44,7 @@ export const AccountRequestInfo = ({
             color="labelSecondary"
             align="center"
           >
-            {appName} {i18n.t('approve_request_accounts.wallet_info_title')}
+            {appName} {i18n.t('approve_request.wallet_info_title')}
           </Text>
 
           <Text align="center" color="accent" size="20pt" weight="bold">
@@ -58,7 +58,7 @@ export const AccountRequestInfo = ({
         </Inline>
 
         <Text align="center" color="labelTertiary" size="14pt" weight="regular">
-          {i18n.t('approve_request_accounts.wallet_info_description', {
+          {i18n.t('approve_request.wallet_info_description', {
             appName,
           })}
         </Text>

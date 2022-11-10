@@ -4,7 +4,7 @@ import { Address } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { Box, Column, Columns, Row, Rows, Stack, Text } from '~/design-system';
 
-import { SelectedNetwork } from '../ApproveRequestAccounts';
+import { SelectedNetwork } from '../RequestAccounts';
 
 import { BottomSwitchNetwork, BottomSwitchWallet } from './BottomButtons';
 
@@ -55,7 +55,7 @@ export const ApproveBottomButtons = ({
               boxShadow="24px accent"
             >
               <Text color="label" size="14pt" weight="bold">
-                {i18n.t('approve_request_accounts.connect', { appName })}
+                {i18n.t('approve_request.connect', { appName })}
               </Text>
             </Box>
           </Row>
@@ -69,7 +69,7 @@ export const ApproveBottomButtons = ({
               borderRadius="round"
             >
               <Text color="labelSecondary" size="14pt" weight="bold">
-                {i18n.t('approve_request_accounts.cancel')}
+                {i18n.t('approve_request.cancel')}
               </Text>
             </Box>
           </Row>

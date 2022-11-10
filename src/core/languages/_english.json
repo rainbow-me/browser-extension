@@ -26,7 +26,7 @@
       "view_on_explorer": "View on Explorer"
     }
   },
-  "approve_request_accounts": {
+  "approve_request": {
     "wallet_info_title": "wants to connect to your wallet",
     "wallet_info_description": "Allow %{appName} to view your wallets address, balance, activity and request approval for transactions.",
     "wallet": "Wallet",

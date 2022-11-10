@@ -5,11 +5,11 @@ import { getRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box, Inline, Inset, Separator, Stack, Text } from '~/design-system';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 
-interface ApproveSignMessageProps {
+interface SignMessageProps {
   request: ProviderRequestPayload;
 }
 
-export function SignInfo({ request }: ApproveSignMessageProps) {
+export function SignInfo({ request }: SignMessageProps) {
   const { appHostName, appLogo } = useAppMetadata({
     meta: request?.meta,
   });

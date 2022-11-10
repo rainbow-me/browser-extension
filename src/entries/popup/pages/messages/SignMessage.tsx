@@ -22,7 +22,7 @@ export interface SelectedNetwork {
   name: string;
 }
 
-export function ApproveSignMessage({
+export function SignMessage({
   approveRequest,
   rejectRequest,
   request,

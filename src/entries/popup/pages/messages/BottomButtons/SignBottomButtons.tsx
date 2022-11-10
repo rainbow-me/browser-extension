@@ -4,7 +4,7 @@ import { Address } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { Box, Column, Columns, Row, Rows, Stack, Text } from '~/design-system';
 
-import { SelectedNetwork } from '../ApproveRequestAccounts';
+import { SelectedNetwork } from '../RequestAccounts';
 
 import { BottomNetwork, BottomWallet } from './BottomButtons';
 export const SignBottomButtons = ({
@@ -25,7 +25,7 @@ export const SignBottomButtons = ({
           <Column>
             <Stack space="8px">
               <Text size="12pt" weight="semibold" color="labelQuaternary">
-                {i18n.t('approve_request_accounts.wallet')}
+                {i18n.t('approve_request.wallet')}
               </Text>
               <BottomWallet
                 selectedWallet={selectedWallet}
@@ -41,7 +41,7 @@ export const SignBottomButtons = ({
                 weight="semibold"
                 color="labelQuaternary"
               >
-                {i18n.t('approve_request_accounts.network')}
+                {i18n.t('approve_request.network')}
               </Text>
               <BottomNetwork
                 selectedNetwork={selectedNetwork}
@@ -77,7 +77,7 @@ export const SignBottomButtons = ({
               borderRadius="round"
             >
               <Text color="labelSecondary" size="14pt" weight="bold">
-                {i18n.t('approve_request_accounts.cancel')}
+                {i18n.t('approve_request.cancel')}
               </Text>
             </Box>
           </Row>
