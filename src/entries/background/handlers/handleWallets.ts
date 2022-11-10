@@ -42,6 +42,7 @@ type SignTypedDataMsg = {
   domain: TypedDataDomain;
   types: Record<string, Array<TypedDataField>>;
   value: Record<string, unknown>;
+  primaryType?: string;
 };
 
 const messenger = initializeMessenger({ connect: 'popup' });
@@ -118,7 +119,7 @@ export const handleWallets = () =>
           case 'sign_message':
             response = await signMessage(payload as SignMessageArguments);
             break;
-          case 'sign_type_data':
+          case 'sign_typed_data':
             response = await signTypedData(payload as SignTypedDataArguments);
             break;
           default: {

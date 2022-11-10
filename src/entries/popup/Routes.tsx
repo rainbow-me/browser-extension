@@ -6,6 +6,7 @@ import { ConnectedApps } from './pages/ConnectedApps';
 import { Home } from './pages/home';
 import { Send } from './pages/send';
 import { Settings } from './pages/settings';
+import { Sign } from './pages/sign';
 import { Wallets } from './pages/wallets';
 
 export function Routes() {
@@ -17,6 +18,7 @@ export function Routes() {
         <Route path="settings" element={<Settings />} />
         <Route path="wallets" element={<Wallets />} />
         <Route path="send" element={<Send />} />
+        <Route path="sign" element={<Sign />} />
         <Route path="connected" element={<ConnectedApps />} />
       </RRRoutes>
     </AnimatePresence>

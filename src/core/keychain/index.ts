@@ -1,9 +1,15 @@
 import {
-  Provider,
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
-import { Signer } from 'ethers';
+import {
+  MessageTypeProperty,
+  SignTypedDataVersion,
+  TypedMessage,
+  signTypedData as signTypedDataSigUtil,
+} from '@metamask/eth-sig-util';
+import { toBuffer } from 'ethereumjs-util';
+import { Signer, Wallet } from 'ethers';
 import { Address } from 'wagmi';
 
 import {
@@ -13,10 +19,19 @@ import {
 
 import { KeychainType } from '../types/keychainTypes';
 import { EthereumWalletType } from '../types/walletTypes';
-import { EthereumWalletSeed, identifyWalletType } from '../utils/ethereum';
+import {
+  EthereumWalletSeed,
+  addHexPrefix,
+  identifyWalletType,
+} from '../utils/ethereum';
 import { createWagmiClient } from '../wagmi';
 
 import { keychainManager } from './KeychainManager';
+
+interface TypedDataTypes {
+  EIP712Domain: MessageTypeProperty[];
+  [additionalProperties: string]: MessageTypeProperty[];
+}
 
 export const setVaultPassword = async (
   password: string,
@@ -139,8 +154,8 @@ export const sendTransaction = async (
     throw new Error('Missing from address');
   }
   const signer = await keychainManager.getSigner(txPayload.from as Address);
-  const wagmiClient = await createWagmiClient();
-  const wallet = signer.connect(wagmiClient.webSocketProvider as Provider);
+  const { provider } = await createWagmiClient();
+  const wallet = signer.connect(provider);
   return wallet.sendTransaction(txPayload);
 };
 
@@ -151,12 +166,32 @@ export const signMessage = async ({
   const signer = await keychainManager.getSigner(address);
   return signer.signMessage(msgData);
 };
+
 export const signTypedData = async ({
   address,
   msgData,
 }: SignTypedDataArguments): Promise<string> => {
-  const signer = await keychainManager.getSigner(address);
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  return signer._signTypedData(msgData.domain, msgData.types, msgData.value);
+  const signer = (await keychainManager.getSigner(address)) as Wallet;
+
+  const pkeyBuffer = toBuffer(addHexPrefix(signer.privateKey));
+  const parsedData = msgData;
+
+  // There are 3 types of messages
+  // v1 => basic data types
+  // v3 =>  has type / domain / primaryType
+  // v4 => same as v3 but also supports which supports arrays and recursive structs.
+  // Because v4 is backwards compatible with v3, we're supporting only v4
+
+  let version = 'v1';
+  if (
+    typeof parsedData === 'object' &&
+    (parsedData.types || parsedData.primaryType || parsedData.domain)
+  ) {
+    version = 'v4';
+  }
+  return signTypedDataSigUtil({
+    data: parsedData as unknown as TypedMessage<TypedDataTypes>,
+    privateKey: pkeyBuffer,
+    version: version.toUpperCase() as SignTypedDataVersion,
+  });
 };
