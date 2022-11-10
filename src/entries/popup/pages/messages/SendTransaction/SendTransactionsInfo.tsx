@@ -19,65 +19,67 @@ export function SendTransactionInfo({ request }: SignMessageProps) {
   return (
     <Box background="surfacePrimaryElevatedSecondary">
       <Inset top="40px" bottom="16px">
-        <Inset bottom="8px">
-          <Stack space="16px">
-            <Inline alignHorizontal="center">
-              <Box
-                style={{
-                  width: 32,
-                  height: 32,
-                  overflow: 'scroll',
-                }}
-                borderRadius="18px"
-                alignItems="center"
-              >
-                {appLogo ? (
-                  <img src={appLogo} width="100%" height="100%" />
-                ) : null}
-              </Box>
-            </Inline>
-            <Stack space="12px">
-              <Text
-                align="center"
-                size="20pt"
-                weight="semibold"
-                color="labelSecondary"
-              >
-                {appHostName}
-              </Text>
-              <Text align="center" size="20pt" weight="semibold">
-                {i18n.t('approve_request.transaction_request')}
-              </Text>
-            </Stack>
-          </Stack>
-        </Inset>
-
-        <Inset vertical="64px" horizontal="50px">
-          <Stack space="16px" alignHorizontal="center">
-            <Text align="center" size="32pt" weight="heavy" color="label">
-              $759.32
-            </Text>
-            <Box background="surfacePrimaryElevated" borderRadius="18px">
-              <Inset vertical="6px" left="8px" right="10px">
-                <Inline
-                  space="4px"
-                  alignVertical="center"
-                  alignHorizontal="center"
+        <Stack space="10px">
+          <Inset bottom="8px">
+            <Stack space="16px">
+              <Inline alignHorizontal="center">
+                <Box
+                  style={{
+                    width: 32,
+                    height: 32,
+                    overflow: 'scroll',
+                  }}
+                  borderRadius="18px"
+                  alignItems="center"
                 >
-                  <ChainBadge chainId={chain.mainnet.id} size={'small'} />
-                  <Text size="14pt" weight="semibold" color="label">
-                    759.32
-                  </Text>
-                </Inline>
-              </Inset>
-            </Box>
-          </Stack>
-        </Inset>
+                  {appLogo ? (
+                    <img src={appLogo} width="100%" height="100%" />
+                  ) : null}
+                </Box>
+              </Inline>
+              <Stack space="12px">
+                <Text
+                  align="center"
+                  size="20pt"
+                  weight="semibold"
+                  color="labelSecondary"
+                >
+                  {appHostName}
+                </Text>
+                <Text align="center" size="20pt" weight="semibold">
+                  {i18n.t('approve_request.transaction_request')}
+                </Text>
+              </Stack>
+            </Stack>
+          </Inset>
 
-        {
-          // TODO gas component
-        }
-        <Box style={{ height: 32 }} />
+          <Inset vertical="64px" horizontal="50px">
+            <Stack space="16px" alignHorizontal="center">
+              <Text align="center" size="32pt" weight="heavy" color="label">
+                $759.32
+              </Text>
+              <Box background="surfacePrimaryElevated" borderRadius="18px">
+                <Inset vertical="6px" left="8px" right="10px">
+                  <Inline
+                    space="4px"
+                    alignVertical="center"
+                    alignHorizontal="center"
+                  >
+                    <ChainBadge chainId={chain.mainnet.id} size={'small'} />
+                    <Text size="14pt" weight="semibold" color="label">
+                      759.32
+                    </Text>
+                  </Inline>
+                </Inset>
+              </Box>
+            </Stack>
+          </Inset>
+
+          {
+            // TODO gas component
+          }
+          <Box style={{ height: 32 }} />
+        </Stack>
       </Inset>
       <Separator color="separatorTertiary" />
     </Box>

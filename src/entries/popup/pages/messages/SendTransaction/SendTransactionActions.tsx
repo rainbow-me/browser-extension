@@ -2,7 +2,7 @@ import React from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { Box, Column, Columns, Row, Rows, Stack } from '~/design-system';
+import { Column, Columns, Inset, Row, Rows, Stack } from '~/design-system';
 
 import {
   AcceptRequestButton,
@@ -21,7 +21,7 @@ export const SendTransactionActions = ({
   onRejectRequest: () => void;
 }) => {
   return (
-    <Box padding="20px">
+    <Inset vertical="20px" horizontal="20px">
       <Stack space="24px">
         <Columns alignVertical="center" alignHorizontal="justify">
           <Column>
@@ -46,6 +46,6 @@ export const SendTransactionActions = ({
           </Row>
         </Rows>
       </Stack>
-    </Box>
+    </Inset>
   );
 };
