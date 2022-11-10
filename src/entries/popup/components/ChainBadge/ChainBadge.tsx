@@ -15,7 +15,7 @@ const sizeConfigs = {
     iconSize: 45,
   },
   small: {
-    iconSize: 18,
+    iconSize: 16,
   },
 };
 

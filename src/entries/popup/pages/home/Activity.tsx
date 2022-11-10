@@ -5,7 +5,7 @@ import { selectTransactionsByDate } from '~/core/resources/_selectors';
 import { useTransactions } from '~/core/resources/transactions/transactions';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { UniqueId } from '~/core/types/assets';
-import { ChainName } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 import {
   RainbowTransaction,
   TransactionStatus,
@@ -106,9 +106,7 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
   const isContractInteraction =
     status === TransactionStatus.contract_interaction;
   const symbolToDisplay = isContractInteraction ? 'contract' : symbol;
-  const uniqueId = `${isContractInteraction ? '' : address}_${
-    ChainName.mainnet
-  }`;
+  const uniqueId = `${isContractInteraction ? '' : address}_${ChainId.mainnet}`;
 
   const getNativeDisplay = useCallback(() => {
     const isDebit = sending || sendingViaSwap;

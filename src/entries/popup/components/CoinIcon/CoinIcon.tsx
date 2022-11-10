@@ -5,15 +5,15 @@ import * as CoinIconsImages from 'react-coin-icon/lib/pngs';
 import { Address } from 'wagmi';
 
 import { ParsedAddressAsset, UniqueId } from '~/core/types/assets';
-import { ChainName } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 import { deriveAddressAndChainWithUniqueId } from '~/core/utils/address';
-import { Box, Text } from '~/design-system';
+import { Bleed, Box, Text } from '~/design-system';
 import { useCloudinaryAssetIcon } from '~/entries/popup/hooks/useCloudinaryAssetIcon';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { colors } from '~/entries/popup/utils/emojiAvatarBackgroundColors';
 import { pseudoRandomArrayItemFromString } from '~/entries/popup/utils/pseudoRandomArrayItemFromString';
 
-import { ChainBadge } from '../ChainBadge';
+import { ChainBadge } from '../ChainBadge/ChainBadge';
 
 export function CoinIcon({
   symbol,
@@ -40,12 +40,13 @@ export function CoinIcon({
         onError={() => setShowImage(false)}
       />
     ) : null;
+  console.log('CHAIN: ', chain);
   return (
-    <CoinIconWrapper chain={chain}>
+    <CoinIconWrapper chainId={chain}>
       {IconImage || (
         <FallbackCoinIcon
           address={address}
-          chain={chain}
+          chainId={chain}
           mainnetAddress={mainnetAddress}
         >
           <Box
@@ -72,10 +73,10 @@ export function CoinIcon({
 }
 
 function CoinIconWrapper({
-  chain,
+  chainId,
   children,
 }: {
-  chain: ChainName;
+  chainId: ChainId;
   children: React.ReactNode;
 }) {
   return (
@@ -84,32 +85,35 @@ function CoinIconWrapper({
         background="fill"
         borderRadius="round"
         style={{
-          width: '36px',
-          height: '36px',
+          width: 36,
+          height: 36,
           overflow: 'hidden',
           marginRight: '8px',
         }}
       >
         {children}
       </Box>
-
-      <ChainBadge chain={chain} />
+      {chainId !== ChainId.mainnet && (
+        <Bleed top="12px" left="6px">
+          <ChainBadge chainId={chainId} size="small" />
+        </Bleed>
+      )}
     </React.Fragment>
   );
 }
 
 function FallbackCoinIcon({
   address,
-  chain,
+  chainId,
   mainnetAddress,
   children,
 }: {
   address: Address;
-  chain: ChainName;
+  chainId: ChainId;
   mainnetAddress?: Address;
   children: React.ReactNode;
 }) {
-  const imageUrl = useCloudinaryAssetIcon({ address, chain, mainnetAddress });
+  const imageUrl = useCloudinaryAssetIcon({ address, chainId, mainnetAddress });
   return (
     <React.Fragment>
       {imageUrl && <img src={imageUrl} width="100%" height="100%" />}

@@ -32,7 +32,7 @@ module.exports = {
       {
         test: /\.(woff2|png)?$/,
         use: 'file-loader',
-        exclude: /node_modules/,
+        // exclude: /node_modules/,
       },
       {
         test: /\.worker.js$/,
@@ -50,10 +50,10 @@ module.exports = {
           },
         ],
       },
-      {
-        test: /\.png$/,
-        use: 'file-loader',
-      },
+      // {
+      //   test: /\.png$/,
+      //   use: 'file-loader',
+      // },
     ],
   },
   plugins: [

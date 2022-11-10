@@ -11,9 +11,4 @@ interface StaticImageData {
   width: number;
   blurDataURL?: string;
 }
-
-declare module '*.png' {
-  const content: StaticImageData;
-
-  export default content?.src;
-}
+declare module '*.png';

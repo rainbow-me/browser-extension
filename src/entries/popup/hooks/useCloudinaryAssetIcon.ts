@@ -1,21 +1,21 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Address } from 'wagmi';
 
-import { ChainName } from '~/core/types/chains';
-import { isL2Chain } from '~/core/utils/chains';
+import { ChainId } from '~/core/types/chains';
+import { chainNameFromChainId, isL2Chain } from '~/core/utils/chains';
 
 const imagesCache: { [key: string]: string } = {};
 export function useCloudinaryAssetIcon({
   address,
-  chain,
+  chainId,
   mainnetAddress,
 }: {
   address: Address;
-  chain: ChainName;
+  chainId: ChainId;
   mainnetAddress?: Address;
 }) {
   const [image, setImage] = useState<string>();
-  const url = getCloudinaryUrl({ address, chain, mainnetAddress });
+  const url = getCloudinaryUrl({ address, chainId, mainnetAddress });
   const fetchImage = useCallback(async () => {
     if (!address?.length) return;
     if (imagesCache[url]) {
@@ -40,15 +40,16 @@ export function useCloudinaryAssetIcon({
 
 function getCloudinaryUrl({
   address,
-  chain,
+  chainId,
   mainnetAddress,
 }: {
   address?: Address;
-  chain: ChainName;
+  chainId: ChainId;
   mainnetAddress?: Address;
 }) {
+  const chainName = chainNameFromChainId(chainId);
   if (!address && !mainnetAddress) return '';
   return `https://rainbowme-res.cloudinary.com/image/upload/assets/${
-    !mainnetAddress && isL2Chain(chain) ? chain : 'ethereum'
+    !mainnetAddress && isL2Chain(chainName) ? chainName : 'ethereum'
   }/${mainnetAddress ?? address}.png`;
 }

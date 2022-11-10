@@ -10,7 +10,7 @@ import {
 } from '~/core/types/assets';
 import { ChainName } from '~/core/types/chains';
 
-import { isNativeAsset } from './chains';
+import { chainIdFromChainName, isNativeAsset } from './chains';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountToBalanceDisplay,
@@ -66,7 +66,8 @@ export function parseAsset({
   quantity: string;
 }): ParsedAddressAsset {
   const chainName = asset?.network ?? ChainName.mainnet;
-  const uniqueId: UniqueId = `${address}_${chainName}`;
+  const chainId = chainIdFromChainName(chainName);
+  const uniqueId: UniqueId = `${address}_${chainId}`;
   const amount = convertRawAmountToDecimalFormat(quantity, asset?.decimals);
   const parsedAsset = {
     address,
@@ -77,6 +78,7 @@ export function parseAsset({
         symbol: asset?.symbol,
       }),
     },
+    chainId,
     chainName,
     isNativeAsset: isNativeAsset(address, chainName),
     name: asset?.name,

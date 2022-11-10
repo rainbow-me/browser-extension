@@ -1,17 +1,16 @@
 import React from 'react';
 
+import ArbitrumBadge from 'static/assets/badges/arbitrumBadge.png';
+import OptimismBadge from 'static/assets/badges/optimismBadge.png';
+import PolygonBadge from 'static/assets/badges/polygonBadge.png';
+import ArbitrumBadgeDark from 'static/images/badges/arbitrumBadgeDark.png';
+import BscBadge from 'static/images/badges/bscBadge.png';
+import BscBadgeDark from 'static/images/badges/bscBadgeDark.png';
+import OptimismBadgeDark from 'static/images/badges/optimismBadgeDark.png';
+import PolygonBadgeDark from 'static/images/badges/polygonBadgeDark.png';
 import { ChainName } from '~/core/types/chains';
 import { Box } from '~/design-system';
 import { useAccentColorContext } from '~/design-system/components/Box/ColorContext';
-
-import ArbitrumBadge from '../../../../static/images/badges/arbitrumBadge.png';
-import ArbitrumBadgeDark from '../../../../static/images/badges/arbitrumBadgeDark.png';
-import BscBadge from '../../../../static/images/badges/bscBadge.png';
-import BscBadgeDark from '../../../../static/images/badges/bscBadgeDark.png';
-import OptimismBadge from '../../../../static/images/badges/optimismBadge.png';
-import OptimismBadgeDark from '../../../../static/images/badges/optimismBadgeDark.png';
-import PolygonBadge from '../../../../static/images/badges/polygonBadge.png';
-import PolygonBadgeDark from '../../../../static/images/badges/polygonBadgeDark.png';
 
 const AssetIconsByTheme: {
   [key in ChainName]?: {
