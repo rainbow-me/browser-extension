@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import { getRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box, Inline, Inset, Separator, Stack, Text } from '~/design-system';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
@@ -15,6 +16,11 @@ export function SendTransactionInfo({ request }: SignMessageProps) {
   const { appHostName, appLogo } = useAppMetadata({
     meta: request?.meta,
   });
+
+  const { value } = useMemo(() => {
+    const { value } = getRequestDisplayDetails(request);
+    return { value };
+  }, [request]);
 
   return (
     <Box background="surfacePrimaryElevatedSecondary">
@@ -56,7 +62,7 @@ export function SendTransactionInfo({ request }: SignMessageProps) {
           <Inset vertical="64px" horizontal="50px">
             <Stack space="16px" alignHorizontal="center">
               <Text align="center" size="32pt" weight="heavy" color="label">
-                $759.32
+                {value}
               </Text>
               <Box background="surfacePrimaryElevated" borderRadius="18px">
                 <Inset vertical="6px" left="8px" right="10px">
@@ -67,7 +73,7 @@ export function SendTransactionInfo({ request }: SignMessageProps) {
                   >
                     <ChainBadge chainId={chain.mainnet.id} size={'small'} />
                     <Text size="14pt" weight="semibold" color="label">
-                      759.32
+                      {value}
                     </Text>
                   </Inline>
                 </Inset>

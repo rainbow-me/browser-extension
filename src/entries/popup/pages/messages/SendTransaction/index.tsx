@@ -38,6 +38,7 @@ export function SendTransaction({
       </Row>
       <Row height="content">
         <SendTransactionActions
+          appHost={appHost}
           selectedWallet={selectedWallet}
           onAcceptRequest={approveRequest}
           onRejectRequest={rejectRequest}

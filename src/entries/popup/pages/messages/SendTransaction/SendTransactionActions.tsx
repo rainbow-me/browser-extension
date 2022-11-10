@@ -12,10 +12,12 @@ import {
 } from '../BottomButtons';
 
 export const SendTransactionActions = ({
+  appHost,
   selectedWallet,
   onAcceptRequest,
   onRejectRequest,
 }: {
+  appHost: string;
   selectedWallet: Address;
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
@@ -28,7 +30,7 @@ export const SendTransactionActions = ({
             <BottomDisplayWallet selectedWallet={selectedWallet} />
           </Column>
           <Column>
-            <WalletBalance />
+            <WalletBalance appHost={appHost} />
           </Column>
         </Columns>
         <Rows space="8px">
