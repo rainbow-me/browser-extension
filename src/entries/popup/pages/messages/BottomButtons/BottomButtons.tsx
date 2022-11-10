@@ -17,7 +17,7 @@ import {
   SwitchNetworkMenu,
   supportedChains,
 } from '../../../components/SwitchMenu/SwitchNetworkMenu';
-import { SelectedNetwork } from '../ApproveRequestAccounts';
+import { SelectedNetwork } from '../RequestAccounts';
 
 const wallets: Address[] = [DEFAULT_ACCOUNT, DEFAULT_ACCOUNT_2];
 
@@ -90,10 +90,10 @@ export const BottomSwitchWallet = ({
   return (
     <Stack space="8px">
       <Text size="12pt" weight="semibold" color="labelQuaternary">
-        {i18n.t('approve_request_accounts.wallet')}
+        {i18n.t('approve_request.wallet')}
       </Text>
       <SwitchMenu
-        title={i18n.t('approve_request_accounts.switch_wallets')}
+        title={i18n.t('approve_request.switch_wallets')}
         renderMenuTrigger={
           <BottomWallet selectedWallet={selectedWallet} displaySymbol />
         }
@@ -155,11 +155,11 @@ export const BottomSwitchNetwork = ({
   return (
     <Stack space="8px">
       <Text align="right" size="12pt" weight="semibold" color="labelQuaternary">
-        {i18n.t('approve_request_accounts.network')}
+        {i18n.t('approve_request.network')}
       </Text>
 
       <SwitchNetworkMenu
-        title={i18n.t('approve_request_accounts.switch_networks')}
+        title={i18n.t('approve_request.switch_networks')}
         renderMenuTrigger={
           <BottomNetwork selectedNetwork={selectedNetwork} displaySymbol />
         }

@@ -18,7 +18,7 @@ interface ApproveRequestProps {
 
 const messenger = initializeMessenger({ connect: 'inpage' });
 
-export const ApproveRequestAccounts = ({
+export const RequestAccounts = ({
   approveRequest,
   rejectRequest,
   request,

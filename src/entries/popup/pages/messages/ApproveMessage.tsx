@@ -6,7 +6,7 @@ import { useNotificationWindowStore } from '~/core/state/notificationWindow';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { Box, Text } from '~/design-system';
 
-import { ApproveRequestAccounts } from './RequestAccounts';
+import { RequestAccounts } from './RequestAccounts';
 import { SignMessage } from './SignMessage';
 
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
@@ -39,7 +39,7 @@ export const ApproveMessage = () => {
 
   if (pendingRequest.method === 'eth_requestAccounts') {
     return (
-      <ApproveRequestAccounts
+      <RequestAccounts
         approveRequest={approveRequest}
         rejectRequest={rejectRequest}
         request={pendingRequest}
