@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import { getRequestDisplayDetails } from '~/core/utils/signMessages';
 import {
   Box,
   Inline,
@@ -41,10 +42,12 @@ export function ApproveSignMessage({
   const { appSession } = useAppSession({ host: appHost });
   const selectedNetwork = supportedChains[appSession.chainId];
   const selectedWallet = appSession.address;
-  console.log('-- request', request);
 
-  // const requestAddress = request.params[0];
-  // const requestMessage = request.params[1];
+  const message = useMemo(() => {
+    const { message } = getRequestDisplayDetails(request);
+    return message;
+  }, [request]);
+
   return (
     <Rows alignVertical="justify">
       <Row height="content">
@@ -98,7 +101,7 @@ export function ApproveSignMessage({
               >
                 <Inset horizontal="20px" vertical="20px">
                   <Text weight="regular" color="label" size="14pt">
-                    {'requestMessage'}
+                    {message}
                   </Text>
                 </Inset>
               </Box>
