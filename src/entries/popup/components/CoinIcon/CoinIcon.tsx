@@ -40,7 +40,6 @@ export function CoinIcon({
         onError={() => setShowImage(false)}
       />
     ) : null;
-  console.log('CHAIN: ', chain);
   return (
     <CoinIconWrapper chainId={chain}>
       {IconImage || (
