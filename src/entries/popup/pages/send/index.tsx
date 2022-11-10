@@ -40,7 +40,6 @@ export const Send = () => {
   }, []);
 
   const handleSend = useCallback(async () => {
-    console.log('send', toAddress, amount);
     let receiver = toAddress;
     if (isENSAddressFormat(toAddress)) {
       try {

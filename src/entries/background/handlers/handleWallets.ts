@@ -113,9 +113,7 @@ export const handleWallets = () =>
             break;
           }
           case 'send_transaction':
-            console.log('received send_transaction', payload);
             response = await sendTransaction(payload as TransactionRequest);
-            console.log('send transaction response', response);
             break;
           case 'sign_message':
             response = await signMessage(payload as SignMessageArguments);
