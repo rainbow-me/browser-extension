@@ -164,7 +164,8 @@
       "selenium-webdriver>ws>utf-8-validate": false,
       "vitest>vite>esbuild": false,
       "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": false,
-      "msw": false
+      "msw": false,
+      "ethereumjs-util>ethereum-cryptography>secp256k1": false
     }
   },
   "lint-staged": {
