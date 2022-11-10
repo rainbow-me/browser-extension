@@ -10,7 +10,7 @@ interface SignMessageProps {
   request: ProviderRequestPayload;
 }
 
-export function SignMessageInfo({ request }: SignMessageProps) {
+export const SignMessageInfo = ({ request }: SignMessageProps) => {
   const { appHostName, appLogo } = useAppMetadata({
     url: request?.meta?.sender?.url || '',
   });
@@ -80,4 +80,4 @@ export function SignMessageInfo({ request }: SignMessageProps) {
       <Separator color="separatorTertiary" />
     </Box>
   );
-}
+};
