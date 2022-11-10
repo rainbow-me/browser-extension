@@ -17,7 +17,7 @@ export function ApproveMessage() {
   const pendingRequest = pendingRequests[0];
 
   const approveRequest = useCallback(
-    (payload: { address: Address; chainId: number }) => {
+    (payload?: { address: Address; chainId: number }) => {
       backgroundMessenger.send(`message:${pendingRequest?.id}`, payload);
       // Wait until the message propagates to the background provider.
       setTimeout(() => {
@@ -36,7 +36,6 @@ export function ApproveMessage() {
     }, 50);
   }, [pendingRequest?.id, removePendingRequest, window?.id]);
 
-  console.log('------ pendingRequest.method', pendingRequest.method);
   if (pendingRequest.method === 'eth_requestAccounts') {
     return (
       <ApproveRequestAccounts

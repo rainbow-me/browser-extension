@@ -9,7 +9,7 @@ import { supportedChains } from '~/entries/popup/components/SwitchMenu/SwitchNet
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 
 import { ApproveAppRequest } from './ApproveAppRequest';
-import { ApproveBottomButtons } from './ApproveBottomButtons';
+import { ApproveBottomButtons } from './BottomButtons/ApproveBottomButtons';
 
 interface ApproveRequestProps {
   approveRequest: (payload: { address: Address; chainId: number }) => void;
@@ -35,7 +35,6 @@ export function ApproveRequestAccounts({
     url: request?.meta?.sender?.url || '',
     title: request?.meta?.sender?.tab?.title,
   });
-
   const [selectedNetwork, setSelectedNetwork] = useState<SelectedNetwork>(
     supportedChains[chain.mainnet.id],
   );

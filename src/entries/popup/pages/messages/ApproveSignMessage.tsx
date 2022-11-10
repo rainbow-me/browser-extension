@@ -1,7 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { Address, chain } from 'wagmi';
+import React from 'react';
 
-import { useCurrentAddressStore } from '~/core/state';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import {
   Box,
@@ -16,10 +14,12 @@ import {
 import { supportedChains } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 
-import { ApproveBottomButtons } from './ApproveBottomButtons';
+import { useAppSession } from '../../hooks/useAppSession';
+
+import { SignBottomButtons } from './BottomButtons/BottomButtons';
 
 interface ApproveRequestProps {
-  approveRequest: (payload: { address: Address; chainId: number }) => void;
+  approveRequest: () => void;
   rejectRequest: () => void;
   request: ProviderRequestPayload;
 }
@@ -35,23 +35,16 @@ export function ApproveSignMessage({
   rejectRequest,
   request,
 }: ApproveRequestProps) {
-  const { currentAddress } = useCurrentAddressStore();
-  const { appHostName, appLogo, appName } = useAppMetadata({
-    meta: request?.meta,
+  const { appHostName, appLogo, appHost } = useAppMetadata({
+    url: request?.meta?.sender?.url || '',
   });
+  const { appSession } = useAppSession({ host: appHost });
+  const selectedNetwork = supportedChains[appSession.chainId];
+  const selectedWallet = appSession.address;
+  console.log('-- request', request);
 
-  const [selectedNetwork, setSelectedNetwork] = useState<SelectedNetwork>(
-    supportedChains[chain.mainnet.id],
-  );
-  const [selectedWallet, setSelectedWallet] = useState<Address>(currentAddress);
-
-  const onApproveRequest = useCallback(() => {
-    approveRequest({
-      address: selectedWallet,
-      chainId: selectedNetwork.chainId,
-    });
-  }, [approveRequest, selectedNetwork.chainId, selectedWallet]);
-
+  // const requestAddress = request.params[0];
+  // const requestMessage = request.params[1];
   return (
     <Rows alignVertical="justify">
       <Row height="content">
@@ -63,7 +56,7 @@ export function ApproveSignMessage({
                   style={{
                     width: 32,
                     height: 32,
-                    overflow: 'hidden',
+                    overflow: 'scroll',
                   }}
                   borderRadius="18px"
                   alignItems="center"
@@ -101,11 +94,11 @@ export function ApproveSignMessage({
               <Box
                 background="surfacePrimaryElevated"
                 borderRadius="12px"
-                style={{ height: 189 }}
+                style={{ height: 189, overflow: 'hidden' }}
               >
                 <Inset horizontal="20px" vertical="20px">
                   <Text weight="regular" color="label" size="14pt">
-                    {'Wen token'}
+                    {'requestMessage'}
                   </Text>
                 </Inset>
               </Box>
@@ -115,14 +108,11 @@ export function ApproveSignMessage({
         </Box>
       </Row>
       <Row height="content">
-        <ApproveBottomButtons
+        <SignBottomButtons
           selectedWallet={selectedWallet}
-          setSelectedWallet={setSelectedWallet}
           selectedNetwork={selectedNetwork}
-          setSelectedNetwork={setSelectedNetwork}
-          onApproveRequest={onApproveRequest}
+          onApproveRequest={approveRequest}
           onRejectRequest={rejectRequest}
-          appName={appName}
         />
       </Row>
     </Rows>
