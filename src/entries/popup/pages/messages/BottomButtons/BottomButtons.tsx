@@ -28,10 +28,9 @@ import {
 } from '../../../components/SwitchMenu/SwitchNetworkMenu';
 import { SelectedNetwork } from '../ApproveRequestAccounts';
 
-// TODO hook up real wallets
 const wallets: Address[] = [DEFAULT_ACCOUNT, DEFAULT_ACCOUNT_2];
 
-const EnsAvatar = ({ address }: { address: Address }) => {
+export const EnsAvatar = ({ address }: { address: Address }) => {
   const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
   return (
     <Box
@@ -51,7 +50,7 @@ const EnsAvatar = ({ address }: { address: Address }) => {
   );
 };
 
-const EnsName = ({
+export const EnsName = ({
   address,
   color = 'label',
 }: {
@@ -66,7 +65,7 @@ const EnsName = ({
   );
 };
 
-const BottomWallet = ({
+export const BottomWallet = ({
   selectedWallet,
   displaySymbol = false,
 }: {
@@ -90,7 +89,7 @@ const BottomWallet = ({
   );
 };
 
-const BottomSwitchWallet = ({
+export const BottomSwitchWallet = ({
   selectedWallet,
   setSelectedWallet,
 }: {
@@ -124,7 +123,7 @@ const BottomSwitchWallet = ({
   );
 };
 
-const BottomNetwork = ({
+export const BottomNetwork = ({
   selectedNetwork,
   displaySymbol = false,
 }: {
@@ -155,7 +154,7 @@ const BottomNetwork = ({
   );
 };
 
-const BottomSwicthNetwork = ({
+export const BottomSwicthNetwork = ({
   selectedNetwork,
   setSelectedNetwork,
 }: {
@@ -230,86 +229,6 @@ export const BottomButtons = ({
             >
               <Text color="label" size="14pt" weight="bold">
                 {i18n.t('approve_request_accounts.connect', { appName })}
-              </Text>
-            </Box>
-          </Row>
-          <Row>
-            <Box
-              as="button"
-              id="reject-button"
-              onClick={onRejectRequest}
-              width="full"
-              padding="16px"
-              borderRadius="round"
-            >
-              <Text color="labelSecondary" size="14pt" weight="bold">
-                {i18n.t('approve_request_accounts.cancel')}
-              </Text>
-            </Box>
-          </Row>
-        </Rows>
-      </Stack>
-    </Box>
-  );
-};
-
-export const SignBottomButtons = ({
-  selectedWallet,
-  selectedNetwork,
-  onApproveRequest,
-  onRejectRequest,
-}: {
-  selectedWallet: Address;
-  selectedNetwork: SelectedNetwork;
-  onApproveRequest: () => void;
-  onRejectRequest: () => void;
-}) => {
-  return (
-    <Box padding="20px">
-      <Stack space="24px">
-        <Columns alignVertical="center" alignHorizontal="justify">
-          <Column>
-            <Stack space="8px">
-              <Text size="12pt" weight="semibold" color="labelQuaternary">
-                {i18n.t('approve_request_accounts.wallet')}
-              </Text>
-              <BottomWallet
-                selectedWallet={selectedWallet}
-                displaySymbol={false}
-              />
-            </Stack>
-          </Column>
-          <Column>
-            <Stack space="8px">
-              <Text
-                align="right"
-                size="12pt"
-                weight="semibold"
-                color="labelQuaternary"
-              >
-                {i18n.t('approve_request_accounts.network')}
-              </Text>
-              <BottomNetwork
-                selectedNetwork={selectedNetwork}
-                displaySymbol={false}
-              />
-            </Stack>
-          </Column>
-        </Columns>
-        <Rows space="8px">
-          <Row>
-            <Box
-              as="button"
-              id="accept-button"
-              background="accent"
-              width="full"
-              onClick={onApproveRequest}
-              padding="16px"
-              borderRadius="round"
-              boxShadow="24px accent"
-            >
-              <Text color="label" size="14pt" weight="bold">
-                {'Sign Message'}
               </Text>
             </Box>
           </Row>
