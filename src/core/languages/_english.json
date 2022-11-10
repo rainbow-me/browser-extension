@@ -37,6 +37,9 @@
     "cancel": "Cancel",
     "message_signing_request": "Message Signing Request",
     "message": "Message",
-    "sign_message": "Sign Message"
+    "sign_message": "Sign Message",
+    "balance": "Balance",
+    "send_transaction": "Send Transaction",
+    "transaction_request": "Transaction Request"
   }
 }
