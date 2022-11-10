@@ -6,7 +6,7 @@ import { Box, Column, Columns, Row, Rows, Stack, Text } from '~/design-system';
 
 import { SelectedNetwork } from '../ApproveRequestAccounts';
 
-import { BottomSwicthNetwork, BottomSwitchWallet } from './BottomButtons';
+import { BottomSwitchNetwork, BottomSwitchWallet } from './BottomButtons';
 
 export const ApproveBottomButtons = ({
   selectedWallet,
@@ -30,32 +30,16 @@ export const ApproveBottomButtons = ({
       <Stack space="24px">
         <Columns alignVertical="center" alignHorizontal="justify">
           <Column>
-            <Stack space="8px">
-              <Text size="12pt" weight="semibold" color="labelQuaternary">
-                {i18n.t('approve_request_accounts.wallet')}
-              </Text>
-              <BottomSwitchWallet
-                selectedWallet={selectedWallet}
-                setSelectedWallet={setSelectedWallet}
-              />
-            </Stack>
+            <BottomSwitchWallet
+              selectedWallet={selectedWallet}
+              setSelectedWallet={setSelectedWallet}
+            />
           </Column>
           <Column>
-            <Stack space="8px">
-              <Text
-                align="right"
-                size="12pt"
-                weight="semibold"
-                color="labelQuaternary"
-              >
-                {i18n.t('approve_request_accounts.network')}
-              </Text>
-
-              <BottomSwicthNetwork
-                selectedNetwork={selectedNetwork}
-                setSelectedNetwork={setSelectedNetwork}
-              />
-            </Stack>
+            <BottomSwitchNetwork
+              selectedNetwork={selectedNetwork}
+              setSelectedNetwork={setSelectedNetwork}
+            />
           </Column>
         </Columns>
         <Rows space="8px">
