@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Box } from '~/design-system';
+
 import {
   Menu,
   MenuContent,
@@ -32,7 +34,9 @@ export const SwitchMenu = ({
 }: SwitchMenuProps) => {
   return (
     <Menu>
-      <MenuTrigger asChild>{renderMenuTrigger}</MenuTrigger>
+      <MenuTrigger asChild>
+        {<Box style={{ cursor: 'pointer' }}>{renderMenuTrigger}</Box>}
+      </MenuTrigger>
       <MenuContent>
         <MenuLabel>{title}</MenuLabel>
         <MenuSeparator />

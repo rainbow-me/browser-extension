@@ -3,16 +3,7 @@ import { Address, useEnsAvatar, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { truncateAddress } from '~/core/utils/truncateAddress';
-import {
-  Box,
-  Column,
-  Columns,
-  Inline,
-  Row,
-  Rows,
-  Stack,
-  Text,
-} from '~/design-system';
+import { Box, Inline, Stack, Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 import {
   DEFAULT_ACCOUNT,
@@ -154,7 +145,7 @@ export const BottomNetwork = ({
   );
 };
 
-export const BottomSwicthNetwork = ({
+export const BottomSwitchNetwork = ({
   selectedNetwork,
   setSelectedNetwork,
 }: {
@@ -178,76 +169,5 @@ export const BottomSwicthNetwork = ({
         }
       />
     </Stack>
-  );
-};
-
-export const BottomButtons = ({
-  selectedWallet,
-  setSelectedWallet,
-  selectedNetwork,
-  setSelectedNetwork,
-  onApproveRequest,
-  onRejectRequest,
-  appName,
-}: {
-  appName?: string;
-  selectedWallet: Address;
-  setSelectedWallet: (value: Address) => void;
-  selectedNetwork: SelectedNetwork;
-  setSelectedNetwork: (value: SelectedNetwork) => void;
-  onApproveRequest: () => void;
-  onRejectRequest: () => void;
-}) => {
-  return (
-    <Box padding="20px">
-      <Stack space="24px">
-        <Columns alignVertical="center" alignHorizontal="justify">
-          <Column>
-            <BottomSwitchWallet
-              selectedWallet={selectedWallet}
-              setSelectedWallet={setSelectedWallet}
-            />
-          </Column>
-          <Column>
-            <BottomSwicthNetwork
-              selectedNetwork={selectedNetwork}
-              setSelectedNetwork={setSelectedNetwork}
-            />
-          </Column>
-        </Columns>
-        <Rows space="8px">
-          <Row>
-            <Box
-              as="button"
-              id="accept-button"
-              background="accent"
-              width="full"
-              onClick={onApproveRequest}
-              padding="16px"
-              borderRadius="round"
-              boxShadow="24px accent"
-            >
-              <Text color="label" size="14pt" weight="bold">
-                {i18n.t('approve_request_accounts.connect', { appName })}
-              </Text>
-            </Box>
-          </Row>
-          <Row>
-            <Box
-              as="button"
-              id="reject-button"
-              onClick={onRejectRequest}
-              width="full"
-              padding="16px"
-              borderRadius="round"
-            >
-              <Text color="labelSecondary" size="14pt" weight="bold">
-                {i18n.t('approve_request_accounts.cancel')}
-              </Text>
-            </Box>
-          </Row>
-        </Rows>
-      </Stack>
-    </Box>
   );
 };

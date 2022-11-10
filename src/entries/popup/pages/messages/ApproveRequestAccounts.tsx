@@ -25,11 +25,11 @@ export interface SelectedNetwork {
 
 const messenger = initializeMessenger({ connect: 'inpage' });
 
-export function ApproveRequestAccounts({
+export const ApproveRequestAccounts = ({
   approveRequest,
   rejectRequest,
   request,
-}: ApproveRequestProps) {
+}: ApproveRequestProps) => {
   const { currentAddress } = useCurrentAddressStore();
   const { appHostName, appLogo, appName } = useAppMetadata({
     url: request?.meta?.sender?.url || '',
@@ -71,4 +71,4 @@ export function ApproveRequestAccounts({
       </Row>
     </Rows>
   );
-}
+};

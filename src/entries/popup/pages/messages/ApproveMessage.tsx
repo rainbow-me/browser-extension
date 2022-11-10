@@ -11,7 +11,7 @@ import { ApproveSignMessage } from './ApproveSignMessage';
 
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
-export function ApproveMessage() {
+export const ApproveMessage = () => {
   const { pendingRequests, removePendingRequest } = usePendingRequestStore();
   const { window } = useNotificationWindowStore();
   const pendingRequest = pendingRequests[0];
@@ -84,4 +84,4 @@ export function ApproveMessage() {
       </Box>
     </>
   );
-}
+};
