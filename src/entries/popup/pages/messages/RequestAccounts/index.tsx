@@ -40,7 +40,7 @@ export const ApproveRequestAccounts = ({
   );
   const [selectedWallet, setSelectedWallet] = useState<Address>(currentAddress);
 
-  const onApproveRequest = useCallback(() => {
+  const onAcceptRequest = useCallback(() => {
     approveRequest({
       address: selectedWallet,
       chainId: selectedNetwork.chainId,
@@ -64,7 +64,7 @@ export const ApproveRequestAccounts = ({
           setSelectedWallet={setSelectedWallet}
           selectedNetwork={selectedNetwork}
           setSelectedNetwork={setSelectedNetwork}
-          onApproveRequest={onApproveRequest}
+          onAcceptRequest={onAcceptRequest}
           onRejectRequest={rejectRequest}
           appName={appName}
         />

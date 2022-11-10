@@ -2,20 +2,25 @@ import React from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { Box, Column, Columns, Row, Rows, Stack, Text } from '~/design-system';
+import { Box, Column, Columns, Row, Rows, Stack } from '~/design-system';
 
-import { BottomNetwork, BottomWallet } from '../BottomButtons';
+import {
+  AcceptRequestButton,
+  BottomDisplayNetwork,
+  BottomDisplayWallet,
+  RejectRequestButton,
+} from '../BottomButtons';
 import { SelectedNetwork } from '../RequestAccounts';
 
 export const SignMessageActions = ({
   selectedWallet,
   selectedNetwork,
-  onApproveRequest,
+  onAcceptRequest,
   onRejectRequest,
 }: {
   selectedWallet: Address;
   selectedNetwork: SelectedNetwork;
-  onApproveRequest: () => void;
+  onAcceptRequest: () => void;
   onRejectRequest: () => void;
 }) => {
   return (
@@ -23,63 +28,24 @@ export const SignMessageActions = ({
       <Stack space="24px">
         <Columns alignVertical="center" alignHorizontal="justify">
           <Column>
-            <Stack space="8px">
-              <Text size="12pt" weight="semibold" color="labelQuaternary">
-                {i18n.t('approve_request.wallet')}
-              </Text>
-              <BottomWallet
-                selectedWallet={selectedWallet}
-                displaySymbol={false}
-              />
-            </Stack>
+            <BottomDisplayWallet selectedWallet={selectedWallet} />
           </Column>
           <Column>
-            <Stack space="8px">
-              <Text
-                align="right"
-                size="12pt"
-                weight="semibold"
-                color="labelQuaternary"
-              >
-                {i18n.t('approve_request.network')}
-              </Text>
-              <BottomNetwork
-                selectedNetwork={selectedNetwork}
-                displaySymbol={false}
-              />
-            </Stack>
+            <BottomDisplayNetwork selectedNetwork={selectedNetwork} />
           </Column>
         </Columns>
         <Rows space="8px">
           <Row>
-            <Box
-              as="button"
-              id="accept-request-button"
-              background="accent"
-              width="full"
-              onClick={onApproveRequest}
-              padding="16px"
-              borderRadius="round"
-              boxShadow="24px accent"
-            >
-              <Text color="label" size="14pt" weight="bold">
-                {'Sign Message'}
-              </Text>
-            </Box>
+            <AcceptRequestButton
+              onClick={onAcceptRequest}
+              label={i18n.t('approve_request.sign_message')}
+            />
           </Row>
           <Row>
-            <Box
-              as="button"
-              id="reject-request-button"
+            <RejectRequestButton
               onClick={onRejectRequest}
-              width="full"
-              padding="16px"
-              borderRadius="round"
-            >
-              <Text color="labelSecondary" size="14pt" weight="bold">
-                {i18n.t('approve_request.cancel')}
-              </Text>
-            </Box>
+              label={i18n.t('approve_request.cancel')}
+            />
           </Row>
         </Rows>
       </Stack>

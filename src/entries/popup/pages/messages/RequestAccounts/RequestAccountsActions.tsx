@@ -2,9 +2,14 @@ import React from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { Box, Column, Columns, Row, Rows, Stack, Text } from '~/design-system';
+import { Box, Column, Columns, Row, Rows, Stack } from '~/design-system';
 
-import { BottomSwitchNetwork, BottomSwitchWallet } from '../BottomButtons';
+import {
+  AcceptRequestButton,
+  BottomSwitchNetwork,
+  BottomSwitchWallet,
+  RejectRequestButton,
+} from '../BottomButtons';
 
 import { SelectedNetwork } from '.';
 
@@ -13,7 +18,7 @@ export const RequestAccountsActions = ({
   setSelectedWallet,
   selectedNetwork,
   setSelectedNetwork,
-  onApproveRequest,
+  onAcceptRequest,
   onRejectRequest,
   appName,
 }: {
@@ -22,7 +27,7 @@ export const RequestAccountsActions = ({
   setSelectedWallet: (value: Address) => void;
   selectedNetwork: SelectedNetwork;
   setSelectedNetwork: (value: SelectedNetwork) => void;
-  onApproveRequest: () => void;
+  onAcceptRequest: () => void;
   onRejectRequest: () => void;
 }) => {
   return (
@@ -44,34 +49,16 @@ export const RequestAccountsActions = ({
         </Columns>
         <Rows space="8px">
           <Row>
-            <Box
-              as="button"
-              id="accept-request-button"
-              background="accent"
-              width="full"
-              onClick={onApproveRequest}
-              padding="16px"
-              borderRadius="round"
-              boxShadow="24px accent"
-            >
-              <Text color="label" size="14pt" weight="bold">
-                {i18n.t('approve_request.connect', { appName })}
-              </Text>
-            </Box>
+            <AcceptRequestButton
+              onClick={onAcceptRequest}
+              label={i18n.t('approve_request.connect', { appName })}
+            />
           </Row>
           <Row>
-            <Box
-              as="button"
-              id="reject-request-button"
+            <RejectRequestButton
               onClick={onRejectRequest}
-              width="full"
-              padding="16px"
-              borderRadius="round"
-            >
-              <Text color="labelSecondary" size="14pt" weight="bold">
-                {i18n.t('approve_request.cancel')}
-              </Text>
-            </Box>
+              label={i18n.t('approve_request.cancel')}
+            />
           </Row>
         </Rows>
       </Stack>

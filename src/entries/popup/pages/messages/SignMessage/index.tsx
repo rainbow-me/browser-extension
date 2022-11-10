@@ -42,7 +42,7 @@ export function SignMessage({
         <SignMessageActions
           selectedWallet={selectedWallet}
           selectedNetwork={selectedNetwork}
-          onApproveRequest={approveRequest}
+          onAcceptRequest={approveRequest}
           onRejectRequest={rejectRequest}
         />
       </Row>

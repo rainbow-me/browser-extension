@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 
+import { i18n } from '~/core/languages';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { getRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box, Inline, Inset, Separator, Stack, Text } from '~/design-system';
@@ -48,7 +49,7 @@ export function SignInfo({ request }: SignMessageProps) {
               {appHostName}
             </Text>
             <Text align="center" size="20pt" weight="semibold">
-              {'Message Signing Request'}
+              {i18n.t('approve_request.message_signing_request')}
             </Text>
           </Stack>
         </Stack>
@@ -59,7 +60,7 @@ export function SignInfo({ request }: SignMessageProps) {
             weight="semibold"
             color="labelSecondary"
           >
-            {'Message'}
+            {i18n.t('approve_request.message')}
           </Text>
         </Inset>
         <Inset horizontal="20px">

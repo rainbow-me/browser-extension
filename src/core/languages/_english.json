@@ -34,6 +34,9 @@
     "switch_networks": "Switch Networks",
     "switch_wallets": "Switch Wallets",
     "connect": "Connect to %{appName}",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "message_signing_request": "Message Signing Request",
+    "message": "Message",
+    "sign_message": "Sign Message"
   }
 }

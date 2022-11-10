@@ -80,6 +80,21 @@ export const BottomWallet = ({
   );
 };
 
+export const BottomDisplayWallet = ({
+  selectedWallet,
+}: {
+  selectedWallet: Address;
+}) => {
+  return (
+    <Stack space="8px">
+      <Text size="12pt" weight="semibold" color="labelQuaternary">
+        {i18n.t('approve_request.wallet')}
+      </Text>
+      <BottomWallet selectedWallet={selectedWallet} displaySymbol={false} />
+    </Stack>
+  );
+};
+
 export const BottomSwitchWallet = ({
   selectedWallet,
   setSelectedWallet,
@@ -145,6 +160,21 @@ export const BottomNetwork = ({
   );
 };
 
+export const BottomDisplayNetwork = ({
+  selectedNetwork,
+}: {
+  selectedNetwork: SelectedNetwork;
+}) => {
+  return (
+    <Stack space="8px">
+      <Text align="right" size="12pt" weight="semibold" color="labelQuaternary">
+        {i18n.t('approve_request.network')}
+      </Text>
+      <BottomNetwork selectedNetwork={selectedNetwork} displaySymbol={false} />
+    </Stack>
+  );
+};
+
 export const BottomSwitchNetwork = ({
   selectedNetwork,
   setSelectedNetwork,
@@ -169,5 +199,53 @@ export const BottomSwitchNetwork = ({
         }
       />
     </Stack>
+  );
+};
+
+export const AcceptRequestButton = ({
+  onClick,
+  label,
+}: {
+  onClick: () => void;
+  label: string;
+}) => {
+  return (
+    <Box
+      as="button"
+      id="accept-request-button"
+      background="accent"
+      width="full"
+      onClick={onClick}
+      padding="16px"
+      borderRadius="round"
+      boxShadow="24px accent"
+    >
+      <Text color="label" size="14pt" weight="bold">
+        {label}
+      </Text>
+    </Box>
+  );
+};
+
+export const RejectRequestButton = ({
+  onClick,
+  label,
+}: {
+  onClick: () => void;
+  label: string;
+}) => {
+  return (
+    <Box
+      as="button"
+      id="reject-request-button"
+      onClick={onClick}
+      width="full"
+      padding="16px"
+      borderRadius="round"
+    >
+      <Text color="labelSecondary" size="14pt" weight="bold">
+        {label}
+      </Text>
+    </Box>
   );
 };
