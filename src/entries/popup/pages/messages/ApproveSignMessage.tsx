@@ -55,39 +55,64 @@ export function ApproveSignMessage({
   return (
     <Rows alignVertical="justify">
       <Row height="content">
-        <Inset top="40px" bottom="12px">
-          <Stack space="16px">
-            <Inline alignHorizontal="center">
-              <Box
-                style={{
-                  width: 32,
-                  height: 32,
-                  overflow: 'hidden',
-                }}
-                borderRadius="18px"
-                alignItems="center"
-              >
-                {appLogo ? (
-                  <img src={appLogo} width="100%" height="100%" />
-                ) : null}
-              </Box>
-            </Inline>
-            <Stack space="12px">
+        <Box background="surfacePrimaryElevatedSecondary">
+          <Inset top="40px" bottom="20px">
+            <Stack space="16px">
+              <Inline alignHorizontal="center">
+                <Box
+                  style={{
+                    width: 32,
+                    height: 32,
+                    overflow: 'hidden',
+                  }}
+                  borderRadius="18px"
+                  alignItems="center"
+                >
+                  {appLogo ? (
+                    <img src={appLogo} width="100%" height="100%" />
+                  ) : null}
+                </Box>
+              </Inline>
+              <Stack space="12px">
+                <Text
+                  align="center"
+                  size="20pt"
+                  weight="semibold"
+                  color="labelSecondary"
+                >
+                  {appHostName}
+                </Text>
+                <Text align="center" size="20pt" weight="semibold">
+                  {'Message Signing Request'}
+                </Text>
+              </Stack>
+            </Stack>
+            <Inset horizontal="20px" top="32px" bottom="12px">
               <Text
-                align="center"
-                size="20pt"
+                align="left"
+                size="14pt"
                 weight="semibold"
                 color="labelSecondary"
               >
-                {appHostName}
+                {'Message'}
               </Text>
-              <Text align="center" size="20pt" weight="semibold">
-                {'Message Signing Request'}
-              </Text>
-            </Stack>
-          </Stack>
-        </Inset>
-        <Separator color="separatorTertiary" />
+            </Inset>
+            <Inset horizontal="20px">
+              <Box
+                background="surfacePrimaryElevated"
+                borderRadius="12px"
+                style={{ height: 189 }}
+              >
+                <Inset horizontal="20px" vertical="20px">
+                  <Text weight="regular" color="label" size="14pt">
+                    {'Wen token'}
+                  </Text>
+                </Inset>
+              </Box>
+            </Inset>
+          </Inset>
+          <Separator color="separatorTertiary" />
+        </Box>
       </Row>
       <Row height="content">
         <ApproveBottomButtons
