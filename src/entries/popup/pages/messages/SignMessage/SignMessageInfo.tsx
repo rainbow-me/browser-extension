@@ -12,7 +12,7 @@ interface SignMessageProps {
 
 export function SignMessageInfo({ request }: SignMessageProps) {
   const { appHostName, appLogo } = useAppMetadata({
-    meta: request?.meta,
+    url: request?.meta?.sender?.url || '',
   });
 
   const message = useMemo(() => {

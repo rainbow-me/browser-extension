@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { Row, Rows } from '~/design-system';
@@ -33,6 +33,8 @@ export function SignMessage({
   const selectedNetwork = supportedChains[appSession.chainId];
   const selectedWallet = appSession.address;
 
+  const onAcceptRequest = useCallback(() => approveRequest(), [approveRequest]);
+
   return (
     <Rows alignVertical="justify">
       <Row height="content">
@@ -42,7 +44,7 @@ export function SignMessage({
         <SignMessageActions
           selectedWallet={selectedWallet}
           selectedNetwork={selectedNetwork}
-          onAcceptRequest={approveRequest}
+          onAcceptRequest={onAcceptRequest}
           onRejectRequest={rejectRequest}
         />
       </Row>

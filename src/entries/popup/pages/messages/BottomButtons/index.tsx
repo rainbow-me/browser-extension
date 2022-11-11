@@ -189,7 +189,6 @@ export const BottomSwitchNetwork = ({
       </Text>
 
       <SwitchNetworkMenu
-        title={i18n.t('approve_request.switch_networks')}
         renderMenuTrigger={
           <BottomNetwork selectedNetwork={selectedNetwork} displaySymbol />
         }

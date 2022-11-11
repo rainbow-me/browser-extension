@@ -159,7 +159,7 @@ it('should be able to accept a signing request', async () => {
   await driver.findElement({ id: 'switch-network-menu' }).click();
   await driver.findElement({ id: 'switch-network-item-0' }).click();
 
-  await delay(500);
+  await delay(1000);
   await driver.get('https://bx-test-dapp.vercel.app/');
 
   // TODO check if the signature is correct, we're not signing anything yet
@@ -179,6 +179,7 @@ it('should be able to accept a signing request', async () => {
   await delay(2000);
 
   await driver.findElement({ id: 'accept-request-button' }).click();
+  await driver.switchTo().window(dappHandler);
 });
 
 it('should be able to disconnect from connected dapps', async () => {
