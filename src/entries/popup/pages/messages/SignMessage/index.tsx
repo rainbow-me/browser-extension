@@ -21,7 +21,7 @@ export function SignMessage({
   request,
 }: ApproveRequestProps) {
   const { appHost } = useAppMetadata({
-    url: request?.meta?.sender?.url || '',
+    url: request?.meta?.sender?.url,
   });
   const { appSession } = useAppSession({ host: appHost });
   const { chains } = useNetwork();

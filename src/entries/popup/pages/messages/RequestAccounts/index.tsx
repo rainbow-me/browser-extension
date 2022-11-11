@@ -25,7 +25,7 @@ export const RequestAccounts = ({
 }: ApproveRequestProps) => {
   const { currentAddress } = useCurrentAddressStore();
   const { appHostName, appLogo, appName } = useAppMetadata({
-    url: request?.meta?.sender?.url || '',
+    url: request?.meta?.sender?.url,
     title: request?.meta?.sender?.tab?.title,
   });
   const [selectedNetwork, setSelectedNetwork] = useState<Chain>(chain.mainnet);
