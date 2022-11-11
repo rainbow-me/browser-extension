@@ -26,7 +26,7 @@ export function SendTransaction({
   request,
 }: ApproveRequestProps) {
   const { appHost } = useAppMetadata({
-    meta: request?.meta,
+    url: request?.meta?.sender?.url || '',
   });
   const { appSession } = useAppSession({ host: appHost });
   const selectedWallet = appSession.address;

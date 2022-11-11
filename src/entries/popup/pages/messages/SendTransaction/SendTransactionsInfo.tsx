@@ -14,7 +14,7 @@ interface SignMessageProps {
 
 export function SendTransactionInfo({ request }: SignMessageProps) {
   const { appHostName, appLogo } = useAppMetadata({
-    meta: request?.meta,
+    url: request?.meta?.sender?.url || '',
   });
 
   const { value } = useMemo(() => {

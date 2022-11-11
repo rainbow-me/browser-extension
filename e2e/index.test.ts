@@ -191,6 +191,7 @@ it('should be able to accept a transaction request', async () => {
   await delay(2000);
 
   await driver.findElement({ id: 'accept-request-button' }).click();
+  await delay(2000);
   await driver.switchTo().window(dappHandler);
 });
 
