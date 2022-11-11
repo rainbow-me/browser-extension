@@ -9,7 +9,7 @@ import {
   BottomSwitchNetwork,
   BottomSwitchWallet,
   RejectRequestButton,
-} from '../BottomButtons';
+} from '../BottomActions';
 
 export const RequestAccountsActions = ({
   selectedWallet,

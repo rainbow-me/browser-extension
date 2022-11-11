@@ -9,7 +9,7 @@ import {
   BottomDisplayWallet,
   RejectRequestButton,
   WalletBalance,
-} from '../BottomButtons';
+} from '../BottomActions';
 
 export const SendTransactionActions = ({
   appHost,
