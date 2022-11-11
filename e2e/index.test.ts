@@ -61,6 +61,8 @@ it('should shuffle account', async () => {
 
 it('should be able to connect to bx test dapp', async () => {
   await driver.get('https://bx-test-dapp.vercel.app/');
+  await delay(2000);
+
   const dappHandler = await driver.getWindowHandle();
 
   const button = await findElementByText(driver, 'Connect Wallet');
@@ -113,6 +115,12 @@ it('should be able to connect to bx test dapp', async () => {
 
 it('should be able to go back to extension and switch account and chain', async () => {
   await driver.get(rootURL + '/popup.html');
+  await driver.findElement({ id: 'injection-button' }).click();
+  // Wait till the DOM re-renders
+  await delay(1000);
+  await driver.findElement({ id: 'injection-button' }).click();
+  // Wait till the DOM re-renders
+  await delay(1000);
   await delay(1000);
   await driver.findElement({ id: 'home-page-header-left' }).click();
   await delay(500);
@@ -140,7 +148,13 @@ it('should be able to go back to extension and switch account and chain', async 
 it('should be able to accept a signing request', async () => {
   // switch session to mainnet
   await driver.get(rootURL + '/popup.html');
-  await delay(1000);
+  await delay(500);
+  await driver.findElement({ id: 'injection-button' }).click();
+  // Wait till the DOM re-renders
+  await delay(500);
+  await driver.findElement({ id: 'injection-button' }).click();
+  // Wait till the DOM re-renders
+  await delay(500);
   await driver.findElement({ id: 'home-page-header-left' }).click();
   await delay(500);
   await driver.findElement({ id: 'home-page-header-connected-apps' }).click();
@@ -151,6 +165,7 @@ it('should be able to accept a signing request', async () => {
 
   await delay(1000);
   await driver.get('https://bx-test-dapp.vercel.app/');
+  await delay(2000);
 
   // TODO check if the signature is correct, we're not signing anything yet
   const dappHandler = await driver.getWindowHandle();
@@ -172,9 +187,9 @@ it('should be able to accept a signing request', async () => {
   await delay(500);
   await driver.switchTo().window(dappHandler);
 
-  await delay(500);
+  await delay(1000);
 
-  const buttonSend = await querySelector(driver, '[id="sendtx"]');
+  const buttonSend = await querySelector(driver, '[id="sendTx"]');
   expect(buttonSend).toBeTruthy();
   await buttonSend.click();
   await delay(500);
