@@ -158,7 +158,7 @@ it('should be able to accept a signing request', async () => {
   const button = await querySelector(driver, '[id="signTypedData"]');
   expect(button).toBeTruthy();
   await button.click();
-  await delay(100);
+  await delay(500);
 
   const handlers = await driver.getAllWindowHandles();
 
@@ -168,11 +168,28 @@ it('should be able to accept a signing request', async () => {
   await driver.switchTo().window(popupHandler);
   await delay(2000);
 
+  // await driver.findElement({ id: 'accept-request-button' }).click();
+  // await delay(500);
+  // await driver.switchTo().window(dappHandler);
+
+  // const buttonSend = await querySelector(driver, '[id="sendtx"]');
+  // expect(buttonSend).toBeTruthy();
+  // await buttonSend.click();
+  // await delay(500);
+
+  // const handlers2 = await driver.getAllWindowHandles();
+
+  // const popupHandler2 =
+  //   handlers2.find((handler) => handler !== dappHandler) || '';
+
+  // await driver.switchTo().window(popupHandler2);
+  // await delay(2000);
+
   await driver.findElement({ id: 'accept-request-button' }).click();
   await driver.switchTo().window(dappHandler);
 });
 
-it('should be able to accept a transaction request', async () => {
+it.skip('should be able to accept a transaction request', async () => {
   // TODO send tx, we're not signing anything yet
   const dappHandler = await driver.getWindowHandle();
   await delay(1000);
