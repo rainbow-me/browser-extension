@@ -147,3 +147,20 @@ it('should be able to go back to extension and switch account and chain', async 
   const actualAccountAddress = await accountAddress.getText();
   expect(actualAccountAddress).toEqual(expectedAccountAddress);
 });
+
+it('should be able to disconnect from connected dapps', async () => {
+  await driver.get(rootURL + '/popup.html');
+  await delay(1000);
+  await driver.findElement({ id: 'home-page-header-left' }).click();
+  await delay(500);
+  await driver.findElement({ id: 'home-page-header-connected-apps' }).click();
+
+  await driver.findElement({ id: 'switch-network-menu' }).click();
+  await driver.findElement({ id: 'switch-network-menu-disconnect' }).click();
+
+  await driver.get('https://bx-test-dapp.vercel.app/');
+  // wait for dapp to load new account and network
+  await delay(1000);
+  const button = await findElementByText(driver, 'Connect Wallet');
+  expect(button).toBeTruthy();
+});

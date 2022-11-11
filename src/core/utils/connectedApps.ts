@@ -228,6 +228,8 @@ const DisplayDappNames = {
   },
 };
 
+export const getDappHost = (url: string) => new URL(url).host;
+
 export const dappNameOverride = (url: string) => {
   const hostname = getDappHostname(url) as keyof typeof DisplayDappNames;
   return DisplayDappNames?.[hostname]?.name;

@@ -4,7 +4,12 @@ import { Address } from 'wagmi';
 import { useAppSessionsStore } from '~/core/state';
 
 export function useAppSession({ host }: { host: string }) {
-  const { updateSessionAddress, updateSessionChainId } = useAppSessionsStore();
+  const {
+    updateSessionAddress,
+    updateSessionChainId,
+    removeSession,
+    appSessions,
+  } = useAppSessionsStore();
 
   const updateAppSessionAddress = React.useCallback(
     (address: Address) => {
@@ -20,5 +25,20 @@ export function useAppSession({ host }: { host: string }) {
     [host, updateSessionChainId],
   );
 
-  return { updateAppSessionAddress, updateAppSessionChainId };
+  const appSession = React.useMemo(
+    () => appSessions[host],
+    [appSessions, host],
+  );
+
+  const disconnectAppSession = React.useCallback(
+    () => removeSession({ host }),
+    [host, removeSession],
+  );
+
+  return {
+    updateAppSessionAddress,
+    updateAppSessionChainId,
+    disconnectAppSession,
+    appSession,
+  };
 }
