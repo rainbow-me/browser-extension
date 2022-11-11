@@ -168,22 +168,24 @@ it('should be able to accept a signing request', async () => {
   await driver.switchTo().window(popupHandler);
   await delay(2000);
 
-  // await driver.findElement({ id: 'accept-request-button' }).click();
-  // await delay(500);
-  // await driver.switchTo().window(dappHandler);
+  await driver.findElement({ id: 'accept-request-button' }).click();
+  await delay(500);
+  await driver.switchTo().window(dappHandler);
 
-  // const buttonSend = await querySelector(driver, '[id="sendtx"]');
-  // expect(buttonSend).toBeTruthy();
-  // await buttonSend.click();
-  // await delay(500);
+  await delay(500);
 
-  // const handlers2 = await driver.getAllWindowHandles();
+  const buttonSend = await querySelector(driver, '[id="sendtx"]');
+  expect(buttonSend).toBeTruthy();
+  await buttonSend.click();
+  await delay(500);
 
-  // const popupHandler2 =
-  //   handlers2.find((handler) => handler !== dappHandler) || '';
+  const handlers2 = await driver.getAllWindowHandles();
 
-  // await driver.switchTo().window(popupHandler2);
-  // await delay(2000);
+  const popupHandler2 =
+    handlers2.find((handler) => handler !== dappHandler) || '';
+
+  await driver.switchTo().window(popupHandler2);
+  await delay(2000);
 
   await driver.findElement({ id: 'accept-request-button' }).click();
   await driver.switchTo().window(dappHandler);
