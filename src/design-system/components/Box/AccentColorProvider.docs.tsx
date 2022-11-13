@@ -1,10 +1,12 @@
 import React from 'react';
+
 import { createDocs } from '../../docs/createDocs';
 import source from '../../docs/utils/source.macro';
-import { Text } from '../Text/Text';
 import { Stack } from '../Stack/Stack';
-import { AccentColorProvider } from './ColorContext';
+import { Text } from '../Text/Text';
+
 import { Box } from './Box';
+import { AccentColorProvider } from './ColorContext';
 
 const accentColorProvider = createDocs({
   name: 'AccentColorProvider',

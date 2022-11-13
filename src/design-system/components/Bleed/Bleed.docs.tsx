@@ -5,6 +5,7 @@ import { Paragraph } from '../../docs/components/Paragraph';
 import { TextInline } from '../../docs/components/TextInline';
 import { TextLink } from '../../docs/components/TextLink';
 import { createDocs } from '../../docs/createDocs';
+
 import * as examples from './Bleed.examples';
 
 const bleed = createDocs({

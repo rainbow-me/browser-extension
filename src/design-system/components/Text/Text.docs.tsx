@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { Code } from '../../docs/components/Code';
-import { TextInline } from '../../docs/components/TextInline';
 import { Paragraph } from '../../docs/components/Paragraph';
+import { TextInline } from '../../docs/components/TextInline';
 import { createDocs } from '../../docs/createDocs';
 import typographyDocs from '../../styles/typography.docs';
 

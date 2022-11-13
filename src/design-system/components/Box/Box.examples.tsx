@@ -1,13 +1,14 @@
 import React from 'react';
 
-import { Paragraph } from '../../docs/components/Paragraph';
-import { createExample } from '../../docs/createDocs';
 import { Code } from '../../docs/components/Code';
+import { Paragraph } from '../../docs/components/Paragraph';
 import { Placeholder } from '../../docs/components/Placeholder';
+import { createExample } from '../../docs/createDocs';
 import source from '../../docs/utils/source.macro';
 import { Inset } from '../Inset/Inset';
 import { Stack } from '../Stack/Stack';
 import { Text } from '../Text/Text';
+
 import { Box } from './Box';
 
 export const background = createExample({

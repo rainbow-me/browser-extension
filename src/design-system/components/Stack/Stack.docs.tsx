@@ -1,9 +1,10 @@
 import React from 'react';
 
 import { Code } from '../../docs/components/Code';
+import { Paragraph } from '../../docs/components/Paragraph';
 import { TextInline } from '../../docs/components/TextInline';
 import { createDocs } from '../../docs/createDocs';
-import { Paragraph } from '../../docs/components/Paragraph';
+
 import {
   basicUsage,
   nested,

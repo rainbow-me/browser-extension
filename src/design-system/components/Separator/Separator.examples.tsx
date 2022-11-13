@@ -1,9 +1,10 @@
 import React from 'react';
 
-import source from '../../docs/utils/source.macro';
 import { createExample } from '../../docs/createDocs';
-import { Separator } from './Separator';
+import source from '../../docs/utils/source.macro';
 import { Stack } from '../Stack/Stack';
+
+import { Separator } from './Separator';
 
 export const basic = createExample({
   name: 'Basic',

@@ -9,11 +9,12 @@ import { CodePreview } from '../docs/components/CodePreview';
 import { Paragraph } from '../docs/components/Paragraph';
 import { createDocs } from '../docs/createDocs';
 import source from '../docs/utils/source.macro';
+
 import { accentColorAsHsl, semanticColorVars } from './core.css';
 import {
   BackgroundColor,
-  backgroundColors,
   ForegroundColor,
+  backgroundColors,
   genericColors,
   scrimColors,
   separatorColors,

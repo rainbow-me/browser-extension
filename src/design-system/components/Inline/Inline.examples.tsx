@@ -1,7 +1,9 @@
 import React from 'react';
+
 import { Placeholder } from '../../docs/components/Placeholder';
 import { createExample } from '../../docs/createDocs';
 import source from '../../docs/utils/source.macro';
+
 import { Inline } from './Inline';
 
 export const basicUsage = createExample({

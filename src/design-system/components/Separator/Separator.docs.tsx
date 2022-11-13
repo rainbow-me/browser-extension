@@ -1,4 +1,5 @@
 import { createDocs } from '../../docs/createDocs';
+
 import { basic, colors, weights } from './Separator.examples';
 
 const separator = createDocs({

@@ -1,11 +1,12 @@
 import React from 'react';
 
-import { createExample } from '../../docs/createDocs';
 import { Paragraph } from '../../docs/components/Paragraph';
 import { Placeholder } from '../../docs/components/Placeholder';
+import { createExample } from '../../docs/createDocs';
 import source from '../../docs/utils/source.macro';
 import { Inset } from '../Inset/Inset';
 import { Text } from '../Text/Text';
+
 import { Stack } from './Stack';
 
 export const basicUsage = createExample({

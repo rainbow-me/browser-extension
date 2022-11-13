@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Box } from '../components/Box/Box';
 import { Stack } from '../components/Stack/Stack';
 import { Text } from '../components/Text/Text';
@@ -6,6 +7,7 @@ import { Code } from '../docs/components/Code';
 import { Paragraph } from '../docs/components/Paragraph';
 import { createDocs } from '../docs/createDocs';
 import source from '../docs/utils/source.macro';
+
 import { Space, space } from './designTokens';
 
 const spacing = createDocs({

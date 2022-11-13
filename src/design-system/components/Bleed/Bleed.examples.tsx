@@ -1,9 +1,11 @@
 import React from 'react';
+
 import { Placeholder } from '../../docs/components/Placeholder';
 import { createExample } from '../../docs/createDocs';
 import source from '../../docs/utils/source.macro';
 import { Inset } from '../Inset/Inset';
 import { Stack } from '../Stack/Stack';
+
 import { Bleed } from './Bleed';
 
 export const basicUsage = createExample({

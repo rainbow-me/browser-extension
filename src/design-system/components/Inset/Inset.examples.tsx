@@ -1,8 +1,10 @@
 import React from 'react';
+
 import { Paragraph } from '../../docs/components/Paragraph';
 import { Placeholder } from '../../docs/components/Placeholder';
 import { createExample } from '../../docs/createDocs';
 import source from '../../docs/utils/source.macro';
+
 import { Inset } from './Inset';
 
 export const basicUsage = createExample({

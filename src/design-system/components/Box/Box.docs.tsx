@@ -1,13 +1,14 @@
 import React from 'react';
 
-import { createDocs } from '../../docs/createDocs';
 import { Code } from '../../docs/components/Code';
 import { Paragraph } from '../../docs/components/Paragraph';
+import { createDocs } from '../../docs/createDocs';
+
 import {
   background,
-  padding,
-  margin,
   borderRadius,
+  margin,
+  padding,
   shadows,
 } from './Box.examples';
 

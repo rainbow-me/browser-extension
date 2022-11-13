@@ -1,10 +1,12 @@
 import React from 'react';
+
 import { createDocs } from '../../docs/createDocs';
 import source from '../../docs/utils/source.macro';
-import { Text } from '../Text/Text';
 import { Stack } from '../Stack/Stack';
-import { ThemeProvider } from './ColorContext';
+import { Text } from '../Text/Text';
+
 import { Box } from './Box';
+import { ThemeProvider } from './ColorContext';
 
 const themeProvider = createDocs({
   name: 'ThemeProvider',
