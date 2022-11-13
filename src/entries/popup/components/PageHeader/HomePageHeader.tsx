@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { initializeMessenger } from '~/core/messengers';
 import { Box, Inline, Inset, Row, Rows, Stack, Text } from '~/design-system';
 
 import { useAppMetadata } from '../../hooks/useAppMetadata';
@@ -27,7 +26,6 @@ interface HomePageHeaderProps {
   rightSymbol: Symbols;
   mainPage?: boolean;
 }
-const messenger = initializeMessenger({ connect: 'inpage' });
 
 const HeaderActionButton = ({ symbol }: { symbol: Symbols }) => {
   return (
@@ -72,15 +70,13 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
   const changeChainId = React.useCallback(
     (chainId: string) => {
       updateAppSessionChainId(Number(chainId));
-      messenger.send(`chainChanged:${host}`, chainId);
     },
-    [host, updateAppSessionChainId],
+    [updateAppSessionChainId],
   );
 
   const disconnect = React.useCallback(() => {
     disconnectAppSession();
-    messenger.send(`disconnect:${host}`, null);
-  }, [disconnectAppSession, host]);
+  }, [disconnectAppSession]);
   console.log('--- appSession', appSession);
   return (
     <Menu>
