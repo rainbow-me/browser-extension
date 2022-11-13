@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Address, chain, useEnsAvatar, useEnsName } from 'wagmi';
+import { Address, Chain, chain, useEnsAvatar, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
@@ -25,22 +25,13 @@ import {
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { SFSymbol } from '~/entries/popup/components/SFSymbol/SFSymbol';
 import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
-import {
-  SwitchNetworkMenu,
-  supportedChains,
-} from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
+import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 
 interface ApproveRequestProps {
   approveRequest: (payload: { address: Address; chainId: number }) => void;
   rejectRequest: () => void;
   request: ProviderRequestPayload;
-}
-
-interface SelectedNetwork {
-  network: string;
-  chainId: number;
-  name: string;
 }
 
 // TODO hook up real wallets
@@ -94,18 +85,16 @@ export function ApproveRequestAccounts({
     title: request?.meta?.sender?.tab?.title,
   });
 
-  const [selectedNetwork, setSelectedNetwork] = useState<SelectedNetwork>(
-    supportedChains[chain.mainnet.id],
-  );
+  const [selectedNetwork, setSelectedNetwork] = useState<Chain>(chain.mainnet);
   const [selectedWallet, setSelectedWallet] = useState<Address>(currentAddress);
 
   const onApproveRequest = useCallback(() => {
     approveRequest({
       address: selectedWallet,
-      chainId: selectedNetwork.chainId,
+      chainId: selectedNetwork.id,
     });
     messenger.send(`connect:${appHostName}`, {});
-  }, [appHostName, approveRequest, selectedNetwork.chainId, selectedWallet]);
+  }, [appHostName, approveRequest, selectedNetwork.id, selectedWallet]);
 
   return (
     <Rows alignVertical="justify">
@@ -229,7 +218,9 @@ export function ApproveRequestAccounts({
                   </Text>
 
                   <SwitchNetworkMenu
-                    renderMenuTrigger={
+                    chainId={selectedNetwork.id}
+                    onChainChanged={(_, chain) => setSelectedNetwork(chain)}
+                    triggerComponent={
                       <Box id={'switch-network-menu'}>
                         <Inline
                           alignHorizontal="right"
@@ -237,7 +228,7 @@ export function ApproveRequestAccounts({
                           space="4px"
                         >
                           <ChainBadge
-                            chainId={selectedNetwork.chainId}
+                            chainId={selectedNetwork.id}
                             size={'small'}
                           />
                           <Text
@@ -255,10 +246,6 @@ export function ApproveRequestAccounts({
                           />
                         </Inline>
                       </Box>
-                    }
-                    selectedValue={String(selectedNetwork.chainId)}
-                    onValueChange={(chainId) =>
-                      setSelectedNetwork(supportedChains[chainId])
                     }
                   />
                 </Stack>
