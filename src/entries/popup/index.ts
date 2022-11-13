@@ -4,7 +4,8 @@ import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { syncStores } from '~/core/state';
-import { initThemingCritical, initThemingBody } from '~/design-system';
+import { initThemingBody, initThemingCritical } from '~/design-system';
+
 import { App } from './App';
 
 initThemingCritical();

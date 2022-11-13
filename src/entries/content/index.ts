@@ -1,4 +1,5 @@
-import { setupBridgeMessengerRelay } from '~/core/messengers/bridge';
+import { setupBridgeMessengerRelay } from '~/core/messengers/internal/bridge';
+
 import { setupInpage } from './setupInpage';
 
 setupBridgeMessengerRelay();

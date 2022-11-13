@@ -19,11 +19,11 @@
 import { useQuery } from '@tanstack/react-query';
 
 import {
-  createQueryKey,
-  queryClient,
   QueryConfig,
   QueryFunctionArgs,
   QueryFunctionResult,
+  createQueryKey,
+  queryClient,
 } from '~/core/react-query';
 
 // ///////////////////////////////////////////////
@@ -70,6 +70,7 @@ export async function prefetchTemplateResource(
   config: QueryConfig<
     TemplateResourceResult,
     Error,
+    TemplateResourceResult,
     TemplateResourceQueryKey
   > = {},
 ) {
@@ -88,6 +89,7 @@ export async function fetchTemplateResource(
   config: QueryConfig<
     TemplateResourceResult,
     Error,
+    TemplateResourceResult,
     TemplateResourceQueryKey
   > = {},
 ) {
@@ -106,6 +108,7 @@ export function useTemplateResource(
   config: QueryConfig<
     TemplateResourceResult,
     Error,
+    TemplateResourceResult,
     TemplateResourceQueryKey
   > = {},
 ) {

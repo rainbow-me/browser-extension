@@ -1,6 +1,8 @@
 import create from 'zustand';
-import { SupportedCurrencyKey } from '../references';
-import { createStore } from './internal/createStore';
+
+import { SupportedCurrencyKey } from '~/core/references';
+
+import { createStore } from '../internal/createStore';
 
 export interface CurrentCurrencyState {
   currentCurrency: SupportedCurrencyKey;

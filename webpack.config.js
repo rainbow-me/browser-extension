@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { join, resolve } = require('path');
+
+const { VanillaExtractPlugin } = require('@vanilla-extract/webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const Dotenv = require('dotenv-webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { VanillaExtractPlugin } = require('@vanilla-extract/webpack-plugin');
-const { join, resolve } = require('path');
 const { ProgressPlugin, ProvidePlugin } = require('webpack');
 
 module.exports = {
@@ -29,7 +30,7 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.woff2?$/,
+        test: /\.(woff2|png)?$/,
         use: 'file-loader',
         exclude: /node_modules/,
       },
@@ -73,6 +74,7 @@ module.exports = {
   resolve: {
     alias: {
       '~': resolve(__dirname, 'src/'),
+      static: resolve(__dirname, 'static/'),
     },
     fallback: {
       stream: require.resolve('stream-browserify'),

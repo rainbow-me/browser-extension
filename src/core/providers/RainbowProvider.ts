@@ -1,5 +1,9 @@
 import { EventEmitter } from 'eventemitter3';
+
+import { Messenger } from '../messengers';
 import { providerRequestTransport } from '../transports';
+import { addHexPrefix } from '../utils/ethereum';
+import { convertStringToHex } from '../utils/numbers';
 
 export type ChainIdHex = `0x${string}`;
 
@@ -38,6 +42,26 @@ export class RainbowProvider extends EventEmitter {
 
   #isUnlocked = true;
   #requestId = 0;
+
+  constructor({ messenger }: { messenger?: Messenger } = {}) {
+    super();
+    const host = window.location.host;
+    messenger?.reply(`accountsChanged:${host}`, async (address) => {
+      this.emit('accountsChanged', [address]);
+    });
+    messenger?.reply(`chainChanged:${host}`, async (chainId: number) => {
+      this.emit(
+        'chainChanged',
+        addHexPrefix(convertStringToHex(String(chainId))),
+      );
+    });
+    messenger?.reply(`disconnect:${host}`, async () => {
+      this.emit('disconnect');
+    });
+    messenger?.reply(`connect:${host}`, async (connectionInfo) => {
+      this.emit('connect', connectionInfo);
+    });
+  }
 
   /**
    * @deprecated – This method is deprecated in favor of the RPC method `eth_requestAccounts`.

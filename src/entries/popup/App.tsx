@@ -1,18 +1,20 @@
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import * as React from 'react';
 import { HashRouter } from 'react-router-dom';
 import { WagmiConfig } from 'wagmi';
-import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 
+import { changeI18nLanguage } from '~/core/languages';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry } from '~/core/sentry';
+import { useCurrentLanguageStore } from '~/core/state';
+import { usePendingRequestStore } from '~/core/state/requests';
 import { createWagmiClient } from '~/core/wagmi';
 import { Box } from '~/design-system';
 
-import { RainbowConnector } from './wagmi/RainbowConnector';
-import { PlaygroundComponents } from './pages/_playgrounds';
 import { Routes } from './Routes';
-import { ApproveMessage } from './components/ApproveMessage';
-import { usePendingRequestStore } from '~/core/state/pendingRequest';
+import { PlaygroundComponents } from './pages/_playgrounds';
+import { ApproveMessage } from './pages/messages/ApproveMessage';
+import { RainbowConnector } from './wagmi/RainbowConnector';
 
 const playground = process.env.PLAYGROUND as 'default' | 'ds';
 
@@ -23,8 +25,12 @@ const wagmiClient = createWagmiClient({
 });
 
 export function App() {
+  const { currentLanguage } = useCurrentLanguageStore();
+
   React.useEffect(() => {
     initializeSentry();
+    changeI18nLanguage(currentLanguage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const { pendingRequests } = usePendingRequestStore();
@@ -38,7 +44,11 @@ export function App() {
         {playground ? (
           PlaygroundComponents[playground]
         ) : (
-          <Box id="main" background="surfacePrimaryElevated">
+          <Box
+            id="main"
+            style={{ overflow: 'auto' }}
+            background="surfacePrimaryElevated"
+          >
             {pendingRequests[0] ? (
               <ApproveMessage />
             ) : (

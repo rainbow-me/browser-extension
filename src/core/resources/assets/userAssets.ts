@@ -1,24 +1,27 @@
 import { useQuery } from '@tanstack/react-query';
+import { Address } from 'wagmi';
+
+import { refractionAddressWs } from '~/core/network';
 import {
-  createQueryKey,
-  queryClient,
   QueryConfig,
   QueryFunctionArgs,
   QueryFunctionResult,
+  createQueryKey,
 } from '~/core/react-query';
+import { SupportedCurrencyKey } from '~/core/references';
+import { ParsedAssetsDictByChain } from '~/core/types/assets';
+import { ChainName } from '~/core/types/chains';
 
-import { refractionAddressWs, refractionAddressMessages } from '~/core/network';
-import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
+import { fetchUserAssetsByChain } from './userAssetsByChain';
 
-const USER_ASSETS_TIMEOUT_DURATION = 10000;
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 
 // ///////////////////////////////////////////////
 // Query Types
 
 export type UserAssetsArgs = {
-  address?: string;
-  currency?: string;
+  address?: Address;
+  currency: SupportedCurrencyKey;
 };
 
 // ///////////////////////////////////////////////
@@ -32,11 +35,33 @@ type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;
 // ///////////////////////////////////////////////
 // Query Function
 
+async function userAssetsQueryFunctionByChain({
+  address,
+  currency,
+}: {
+  address?: Address;
+  currency: SupportedCurrencyKey;
+}): Promise<ParsedAssetsDictByChain> {
+  const queries = [];
+  const getResultsForChain = async (chain: ChainName) => {
+    const results = await fetchUserAssetsByChain(
+      { address, chain, currency },
+      { cacheTime: 0 },
+    );
+    return {
+      [chain]: results,
+    };
+  };
+  for (const chain in ChainName) {
+    queries.push(getResultsForChain(chain as ChainName));
+  }
+  const results = await Promise.all(queries);
+  return Object.assign({}, ...results);
+}
+
 async function userAssetsQueryFunction({
   queryKey: [{ address, currency }],
-}: QueryFunctionArgs<
-  typeof userAssetsQueryKey
->): Promise<AddressAssetsReceivedMessage> {
+}: QueryFunctionArgs<typeof userAssetsQueryKey>) {
   refractionAddressWs.emit('get', {
     payload: {
       address,
@@ -44,46 +69,22 @@ async function userAssetsQueryFunction({
     },
     scope: ['assets'],
   });
-  return new Promise((resolve) => {
-    const timeout = setTimeout(() => {
-      refractionAddressWs.removeEventListener(
-        refractionAddressMessages.ADDRESS_ASSETS.RECEIVED,
-        resolver,
-      );
-      resolve(
-        queryClient.getQueryData(userAssetsQueryKey({ address, currency })) ||
-          {},
-      );
-    }, USER_ASSETS_TIMEOUT_DURATION);
-    const resolver = (message: AddressAssetsReceivedMessage) => {
-      clearTimeout(timeout);
-      refractionAddressWs.removeEventListener(
-        refractionAddressMessages.ADDRESS_ASSETS.RECEIVED,
-        resolver,
-      );
-      resolve(parseUserAssets(message));
-    };
-    refractionAddressWs.on(
-      refractionAddressMessages.ADDRESS_ASSETS.RECEIVED,
-      resolver,
-    );
-  });
+  return await userAssetsQueryFunctionByChain({ address, currency });
 }
 
 type UserAssetsResult = QueryFunctionResult<typeof userAssetsQueryFunction>;
 
-function parseUserAssets(message: AddressAssetsReceivedMessage) {
-  const data = message?.payload?.assets || {};
-  // do transforms here
-  return data;
-}
-
 // ///////////////////////////////////////////////
 // Query Hook
 
-export function useUserAssets(
+export function useUserAssets<TSelectResult = UserAssetsResult>(
   { address, currency }: UserAssetsArgs,
-  config: QueryConfig<UserAssetsResult, Error, UserAssetsQueryKey> = {},
+  config: QueryConfig<
+    UserAssetsResult,
+    Error,
+    TSelectResult,
+    UserAssetsQueryKey
+  > = {},
 ) {
   return useQuery(
     userAssetsQueryKey({ address, currency }),

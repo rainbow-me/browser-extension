@@ -1,11 +1,19 @@
-import { UserRejectedRequestError } from 'wagmi';
-import { extensionMessenger } from '~/core/messengers';
-import { approvedHostsStore, notificationWindowStore } from '~/core/state';
-import { pendingRequestStore } from '~/core/state/pendingRequest';
+import { Address, UserRejectedRequestError } from 'wagmi';
+
+import { Messenger } from '~/core/messengers';
+import {
+  appSessionsStore,
+  notificationWindowStore,
+  pendingRequestStore,
+} from '~/core/state';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import { getDappHost } from '~/core/utils/connectedApps';
+import { addHexPrefix } from '~/core/utils/ethereum';
+import { convertStringToHex } from '~/core/utils/numbers';
 
 export const DEFAULT_ACCOUNT = '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
+export const DEFAULT_ACCOUNT_2 = '0x5B570F0F8E2a29B7bCBbfC000f9C7b78D45b7C35';
 export const DEFAULT_CHAIN_ID = '0x1';
 
 const openWindow = async () => {
@@ -13,7 +21,7 @@ const openWindow = async () => {
   const window = await chrome.windows.create({
     url: chrome.runtime.getURL('popup.html'),
     type: 'popup',
-    height: 600,
+    height: 625,
     width: 360,
   });
   setWindow(window);
@@ -24,7 +32,8 @@ const openWindow = async () => {
  * @param {PendingRequest} request
  * @returns {boolean}
  */
-const extensionMessengerRequestApproval = async (
+const messengerRequestAccountsApproval = async (
+  messenger: Messenger,
   request: ProviderRequestPayload,
 ) => {
   const { addPendingRequest, removePendingRequest } =
@@ -33,38 +42,48 @@ const extensionMessengerRequestApproval = async (
   addPendingRequest(request);
   openWindow();
   // Wait for response from the popup.
-  const approved = await new Promise((resolve) =>
-    // eslint-disable-next-line no-promise-executor-return
-    extensionMessenger.reply(`message:${request.id}`, async (payload) =>
-      resolve(payload),
-    ),
-  );
+  const payload: { address: Address; chainId: number } | null =
+    await new Promise((resolve) =>
+      // eslint-disable-next-line no-promise-executor-return
+      messenger.reply(
+        `message:${request.id}`,
+        async (payload: { address: Address; chainId: number } | null) =>
+          resolve(payload),
+      ),
+    );
   removePendingRequest(request.id);
-  if (!approved) {
+  if (!payload) {
     throw new UserRejectedRequestError('User rejected the request.');
   }
-  return approved;
+  return payload;
 };
 
 /**
  * Handles RPC requests from the provider.
  */
-export const handleProviderRequest = () =>
+export const handleProviderRequest = ({
+  messenger,
+}: {
+  messenger: Messenger;
+}) =>
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
     console.log(meta.sender, method);
 
-    const { addApprovedHost, isApprovedHost } = approvedHostsStore.getState();
+    const { getActiveSession, addSession } = appSessionsStore.getState();
+    const host = getDappHost(meta.sender.url || '');
+    const activeSession = getActiveSession({ host });
 
     try {
       let response = null;
 
       switch (method) {
         case 'eth_chainId':
-          response = DEFAULT_CHAIN_ID;
+          response = activeSession
+            ? addHexPrefix(convertStringToHex(String(activeSession.chainId)))
+            : DEFAULT_CHAIN_ID;
           break;
         case 'eth_accounts': {
-          const approvedHost = await isApprovedHost(meta.sender.origin);
-          response = approvedHost ? [DEFAULT_ACCOUNT] : [];
+          response = activeSession ? [activeSession.address] : [];
           break;
         }
         case 'eth_sendTransaction':
@@ -74,30 +93,30 @@ export const handleProviderRequest = () =>
         case 'eth_signTypedData':
         case 'eth_signTypedData_v3':
         case 'eth_signTypedData_v4': {
-          await extensionMessengerRequestApproval({
-            method,
-            id,
-            params,
-          });
           break;
         }
         case 'wallet_addEthereumChain':
         case 'wallet_switchEthereumChain':
         case 'eth_requestAccounts': {
-          const approvedHost = await isApprovedHost(meta.sender.origin);
-          if (approvedHost) {
-            response = [DEFAULT_ACCOUNT];
+          if (activeSession) {
+            response = [activeSession.address];
             break;
           }
-          await extensionMessengerRequestApproval({
-            method,
-            id,
-            params,
+          const { address, chainId } = await messengerRequestAccountsApproval(
+            messenger,
+            {
+              method,
+              id,
+              params,
+              meta,
+            },
+          );
+          addSession({
+            host,
+            address,
+            chainId,
           });
-          if (meta.sender.origin) {
-            addApprovedHost(meta.sender.origin);
-          }
-          response = [DEFAULT_ACCOUNT];
+          response = [address];
           break;
         }
         default: {

@@ -1,3 +1,6 @@
+import { Address } from 'wagmi';
+
+import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { ChainName } from '~/core/types/chains';
 
 /**
@@ -5,7 +8,7 @@ import { ChainName } from '~/core/types/chains';
  * @param chain The chain name to check.
  * @return Whether or not the chain is an L2 network.
  */
-export const isL2Chain = (chain: ChainName): boolean => {
+export const isL2Chain = (chain: string): boolean => {
   switch (chain) {
     case ChainName.arbitrum:
     case ChainName.bsc:
@@ -16,3 +19,9 @@ export const isL2Chain = (chain: ChainName): boolean => {
       return false;
   }
 };
+
+export function isNativeAsset(address: Address, chain: ChainName) {
+  return (
+    NATIVE_ASSETS_PER_CHAIN[chain]?.toLowerCase() === address?.toLowerCase()
+  );
+}

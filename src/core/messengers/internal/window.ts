@@ -1,16 +1,22 @@
-import { createMessenger } from './internal/createMessenger';
+import {
+  CallbackFunction,
+  SendMessage,
+  createMessenger,
+} from './createMessenger';
+import { isValidReply } from './isValidReply';
+import { isValidSend } from './isValidSend';
 
 /**
  * Creates a "window messenger" that can be used to communicate between
  * scripts where `window` is defined.
  *
- * Compatibile entries:
- * - ❌ Background
- * - ⚠️ Popup
- * - ✅ Content Script
- * - ✅ Inpage
- *
- * ⚠️ = The Popup & Content Script/Inpage entries have differing `window` instances!
+ * Compatible connections:
+ * - ❌ Popup <-> Inpage
+ * - ❌ Background <-> Inpage
+ * - ❌ Background <-> Popup
+ * - ❌ Popup <-> Content Script
+ * - ❌ Background <-> Content Script
+ * - ✅ Content Script <-> Inpage
  *
  * @see https://www.notion.so/rainbowdotme/Cross-script-Messaging-141de5115294435f95e31b87abcf4314#2af765a8378c4f08a1663d9bfcb60ad9
  */
@@ -23,10 +29,8 @@ export const windowMessenger = createMessenger({
     // ... and also set up an event listener to listen for the response ('< {topic}').
     return new Promise((resolve, reject) => {
       const listener = (event: MessageEvent) => {
+        if (!isValidReply({ id, message: event.data, topic })) return;
         if (event.source != window) return;
-        if (event.data.topic !== `< ${topic}`) return;
-        if (typeof id !== 'undefined' && event.data.id !== id) return;
-        if (!event.data.payload) return;
 
         window.removeEventListener('message', listener);
 
@@ -37,13 +41,15 @@ export const windowMessenger = createMessenger({
       window.addEventListener('message', listener);
     });
   },
-  reply(topic, callback) {
-    const listener = async (event: MessageEvent) => {
+  reply<TPayload, TResponse>(
+    topic: string,
+    callback: CallbackFunction<TPayload, TResponse>,
+  ) {
+    const listener = async (event: MessageEvent<SendMessage<TPayload>>) => {
+      if (!isValidSend({ message: event.data, topic })) return;
+
       const sender = event.source;
       if (sender != window) return;
-      if (!event.data.topic) return;
-      if (topic !== '*' && event.data.topic !== `> ${topic}`) return;
-      if (topic === '*' && event.data.topic.startsWith('<')) return;
 
       let error;
       let response;

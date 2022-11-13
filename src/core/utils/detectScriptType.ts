@@ -6,9 +6,11 @@ export function detectScriptType() {
   const hasWindow = typeof window !== 'undefined';
 
   if (hasChromeRuntime && hasWindow) {
-    return window.location.href.startsWith('chrome-extension://')
-      ? 'popup'
-      : 'contentScript';
+    if (window.location.pathname.includes('background')) return 'background';
+    if (window.location.pathname.includes('contentscript'))
+      return 'contentScript';
+    if (window.location.pathname.includes('popup')) return 'popup';
+    return 'contentScript';
   }
   if (hasChromeRuntime && !hasWindow) return 'background';
   if (!hasChromeRuntime && hasWindow) return 'inpage';

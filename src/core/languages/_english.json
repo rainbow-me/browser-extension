@@ -1,0 +1,39 @@
+{
+  "test": {
+    "salute": "hello!"
+  },
+  "label": {
+    "toggle": "Toggle"
+  },
+  "connected_apps": {
+    "title": "Connected Apps",
+    "disconnect": "Disconnect All"
+  },
+  "menu": {
+    "network": {
+      "title": "Switch Networks",
+      "disconnect": "Disconnect"
+    },
+    "home_header_left": {
+      "all_connected_apps": "All connected apps",
+      "not_connected": "Not connected",
+      "networks": "Networks"
+    },
+    "home_header_right": {
+      "settings": "Settings",
+      "qr_code": "My QR Code",
+      "rainbow_profile": "Rainbow Profile",
+      "view_on_explorer": "View on Explorer"
+    }
+  },
+  "approve_request_accounts": {
+    "wallet_info_title": "wants to connect to your wallet",
+    "wallet_info_description": "Allow %{appName} to view your wallets address, balance, activity and request approval for transactions.",
+    "wallet": "Wallet",
+    "network": "Network",
+    "switch_networks": "Switch Networks",
+    "switch_wallets": "Switch Wallets",
+    "connect": "Connect to %{appName}",
+    "cancel": "Cancel"
+  }
+}

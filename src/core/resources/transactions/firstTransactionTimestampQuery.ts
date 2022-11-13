@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { etherscanHttp } from '~/core/network';
 
+import { etherscanHttp } from '~/core/network';
 import {
-  createQueryKey,
-  queryClient,
   QueryConfig,
   QueryFunctionArgs,
   QueryFunctionResult,
+  createQueryKey,
+  queryClient,
 } from '~/core/react-query';
 
 // ///////////////////////////////////////////////
@@ -63,6 +63,7 @@ export async function fetchFirstTransactionTimestamp(
   config: QueryConfig<
     FirstTransactionTimestampResult,
     Error,
+    FirstTransactionTimestampResult,
     FirstTransactionTimestampQueryKey
   > = {},
 ) {
@@ -81,6 +82,7 @@ export function useFirstTransactionTimestamp(
   config: QueryConfig<
     FirstTransactionTimestampResult,
     Error,
+    FirstTransactionTimestampResult,
     FirstTransactionTimestampQueryKey
   > = {},
 ) {

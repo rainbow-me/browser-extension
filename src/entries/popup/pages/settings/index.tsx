@@ -1,9 +1,13 @@
+import { motion } from 'framer-motion';
 import React from 'react';
 import { Link } from 'react-router-dom';
+
+import { i18n } from '~/core/languages';
+import { useCurrentLanguageStore } from '~/core/state';
 import { Box, Text } from '~/design-system';
-import { motion } from 'framer-motion';
 
 export function Settings() {
+  const { currentLanguage } = useCurrentLanguageStore();
   return (
     <Box
       as={motion.div}
@@ -19,6 +23,28 @@ export function Settings() {
       <Text as="h1" size="20pt" weight="bold">
         Settings
       </Text>
+
+      <Box
+        display="flex"
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+      >
+        <Text size="14pt" weight="bold">
+          Language: {currentLanguage}
+        </Text>
+        <Box
+          as="button"
+          background="surfaceSecondary"
+          padding="16px"
+          style={{ borderRadius: 999 }}
+          disabled
+        >
+          <Text color="labelSecondary" size="14pt" weight="bold">
+            {i18n.t('label.toggle')} (disabled for now)
+          </Text>
+        </Box>
+      </Box>
 
       <Link to="/">
         <Box

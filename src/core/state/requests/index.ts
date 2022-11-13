@@ -1,6 +1,7 @@
 import create from 'zustand';
-import { ProviderRequestPayload } from '../transports/providerRequestTransport';
-import { createStore } from './internal/createStore';
+
+import { ProviderRequestPayload } from '../../transports/providerRequestTransport';
+import { createStore } from '../internal/createStore';
 
 export interface PendingRequestsStore {
   pendingRequests: ProviderRequestPayload[];

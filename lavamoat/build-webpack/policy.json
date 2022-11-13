@@ -235,12 +235,21 @@
         "path.sep": true
       },
       "packages": {
+        "copy-webpack-plugin>glob-parent": true,
         "copy-webpack-plugin>globby": true,
         "copy-webpack-plugin>schema-utils": true,
         "copy-webpack-plugin>serialize-javascript": true,
-        "eslint>glob-parent": true,
         "globby>fast-glob": true,
         "lint-staged>normalize-path": true
+      }
+    },
+    "copy-webpack-plugin>glob-parent": {
+      "builtin": {
+        "os.platform": true,
+        "path.posix.dirname": true
+      },
+      "packages": {
+        "eslint>is-glob": true
       }
     },
     "copy-webpack-plugin>globby": {
@@ -548,36 +557,8 @@
     },
     "eslint>chalk": {
       "packages": {
-        "eslint>chalk>ansi-styles": true,
-        "eslint>chalk>supports-color": true
-      }
-    },
-    "eslint>chalk>ansi-styles": {
-      "packages": {
-        "eslint>chalk>ansi-styles>color-convert": true
-      }
-    },
-    "eslint>chalk>ansi-styles>color-convert": {
-      "packages": {
-        "eslint>chalk>ansi-styles>color-convert>color-name": true
-      }
-    },
-    "eslint>chalk>supports-color": {
-      "builtin": {
-        "os.release": true,
-        "tty.isatty": true
-      },
-      "globals": {
-        "process.env": true,
-        "process.platform": true
-      },
-      "packages": {
-        "eslint>chalk>supports-color>has-flag": true
-      }
-    },
-    "eslint>chalk>supports-color>has-flag": {
-      "globals": {
-        "process.argv": true
+        "msw>chalk>ansi-styles": true,
+        "msw>chalk>supports-color": true
       }
     },
     "eslint>eslint-scope>esrecurse": {
@@ -590,15 +571,6 @@
         "fs.access": true,
         "fs.accessSync": true,
         "util.promisify": true
-      }
-    },
-    "eslint>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path.posix.dirname": true
-      },
-      "packages": {
-        "eslint>is-glob": true
       }
     },
     "eslint>is-glob": {
@@ -691,8 +663,8 @@
       "packages": {
         "globby>fast-glob>@nodelib/fs.stat": true,
         "globby>fast-glob>@nodelib/fs.walk": true,
-        "globby>fast-glob>glob-parent": true,
         "globby>merge2": true,
+        "msw>chokidar>glob-parent": true,
         "ts-loader>micromatch": true
       }
     },
@@ -750,15 +722,6 @@
     "globby>fast-glob>@nodelib/fs.walk>fastq": {
       "packages": {
         "globby>fast-glob>@nodelib/fs.walk>fastq>reusify": true
-      }
-    },
-    "globby>fast-glob>glob-parent": {
-      "builtin": {
-        "os.platform": true,
-        "path.posix.dirname": true
-      },
-      "packages": {
-        "eslint>is-glob": true
       }
     },
     "globby>ignore": {
@@ -1163,6 +1126,61 @@
         "mini-css-extract-plugin>schema-utils>ajv": true
       }
     },
+    "msw>chalk>ansi-styles": {
+      "packages": {
+        "msw>chalk>ansi-styles>color-convert": true
+      }
+    },
+    "msw>chalk>ansi-styles>color-convert": {
+      "packages": {
+        "msw>chalk>ansi-styles>color-convert>color-name": true
+      }
+    },
+    "msw>chalk>supports-color": {
+      "builtin": {
+        "os.release": true,
+        "tty.isatty": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.platform": true
+      },
+      "packages": {
+        "msw>chalk>supports-color>has-flag": true
+      }
+    },
+    "msw>chalk>supports-color>has-flag": {
+      "globals": {
+        "process.argv": true
+      }
+    },
+    "msw>chokidar>braces": {
+      "packages": {
+        "msw>chokidar>braces>fill-range": true
+      }
+    },
+    "msw>chokidar>braces>fill-range": {
+      "builtin": {
+        "util.inspect": true
+      },
+      "packages": {
+        "msw>chokidar>braces>fill-range>to-regex-range": true
+      }
+    },
+    "msw>chokidar>braces>fill-range>to-regex-range": {
+      "packages": {
+        "msw>chokidar>braces>fill-range>to-regex-range>is-number": true
+      }
+    },
+    "msw>chokidar>glob-parent": {
+      "builtin": {
+        "os.platform": true,
+        "path.posix.dirname": true
+      },
+      "packages": {
+        "eslint>is-glob": true
+      }
+    },
     "ts-loader": {
       "builtin": {
         "console.Console": true,
@@ -1195,26 +1213,8 @@
         "util.inspect": true
       },
       "packages": {
-        "ts-loader>micromatch>braces": true,
+        "msw>chokidar>braces": true,
         "ts-loader>micromatch>picomatch": true
-      }
-    },
-    "ts-loader>micromatch>braces": {
-      "packages": {
-        "ts-loader>micromatch>braces>fill-range": true
-      }
-    },
-    "ts-loader>micromatch>braces>fill-range": {
-      "builtin": {
-        "util.inspect": true
-      },
-      "packages": {
-        "ts-loader>micromatch>braces>fill-range>to-regex-range": true
-      }
-    },
-    "ts-loader>micromatch>braces>fill-range>to-regex-range": {
-      "packages": {
-        "ts-loader>micromatch>braces>fill-range>to-regex-range>is-number": true
       }
     },
     "ts-loader>micromatch>picomatch": {
@@ -1276,7 +1276,7 @@
         "process": true
       },
       "packages": {
-        "eslint>chalk>supports-color": true,
+        "msw>chalk>supports-color": true,
         "vitest>debug>ms": true
       }
     },
@@ -1392,6 +1392,7 @@
       "packages": {
         "@vanilla-extract/webpack-plugin": true,
         "css-loader": true,
+        "file-loader": true,
         "html-webpack-plugin": true,
         "mini-css-extract-plugin": true,
         "ts-loader": true,
@@ -1738,7 +1739,7 @@
         "process.platform": true
       },
       "packages": {
-        "eslint>chalk>supports-color>has-flag": true
+        "msw>chalk>supports-color>has-flag": true
       }
     },
     "webpack>watchpack": {

@@ -1,6 +1,6 @@
 import { Signer, Wallet } from 'ethers';
-import { Address } from 'wagmi';
 import { Mnemonic } from 'ethers/lib/utils';
+import { Address } from 'wagmi';
 
 export type PrivateKey = string;
 

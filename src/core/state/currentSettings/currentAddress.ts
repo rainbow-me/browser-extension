@@ -1,15 +1,18 @@
 import { Address } from 'wagmi';
 import create from 'zustand';
-import { createStore } from './internal/createStore';
+
+import { DEFAULT_ACCOUNT } from '~/entries/background/handlers/handleProviderRequest';
+
+import { createStore } from '../internal/createStore';
 
 export interface CurrentAddressState {
-  currentAddress: Address | null;
+  currentAddress: Address;
   setCurrentAddress: (address: Address) => void;
 }
 
 export const currentAddressStore = createStore<CurrentAddressState>(
   (set) => ({
-    currentAddress: null,
+    currentAddress: DEFAULT_ACCOUNT,
     setCurrentAddress: (newAddress) => set({ currentAddress: newAddress }),
   }),
   {

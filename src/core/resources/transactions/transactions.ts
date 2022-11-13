@@ -1,31 +1,31 @@
 import { useQuery } from '@tanstack/react-query';
+import { capitalize } from 'lodash';
 
+import { refractionAddressMessages, refractionAddressWs } from '~/core/network';
 import {
-  createQueryKey,
-  queryClient,
   QueryConfig,
   QueryFunctionArgs,
   QueryFunctionResult,
+  createQueryKey,
+  queryClient,
 } from '~/core/react-query';
-import { refractionAddressWs, refractionAddressMessages } from '~/core/network';
-import { TransactionsReceivedMessage } from '~/core/types/refraction';
-import { isL2Chain } from '~/core/utils/chains';
-import {
-  convertRawAmountToNativeDisplay,
-  convertRawAmountToBalance,
-} from '~/core/utils/numbers';
 import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
+import { ChainName } from '~/core/types/chains';
+import { TransactionsReceivedMessage } from '~/core/types/refraction';
 import {
   ProtocolType,
   RainbowTransaction,
   TransactionDirection,
   TransactionStatus,
   TransactionType,
-  ZerionTransactionStatus,
   ZerionTransaction,
+  ZerionTransactionStatus,
 } from '~/core/types/transactions';
-import { ChainName } from '~/core/types/chains';
-import { capitalize } from 'lodash';
+import { isL2Chain } from '~/core/utils/chains';
+import {
+  convertRawAmountToBalance,
+  convertRawAmountToNativeDisplay,
+} from '~/core/utils/numbers';
 
 const TRANSACTIONS_TIMEOUT_DURATION = 10000;
 const TRANSACTIONS_REFETCH_INTERVAL = 60000;
@@ -67,10 +67,6 @@ async function transactionsQueryFunction({
   });
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
-      refractionAddressWs.removeEventListener(
-        refractionAddressMessages.ADDRESS_TRANSACTIONS.RECEIVED,
-        resolver,
-      );
       resolve(
         queryClient.getQueryData(transactionsQueryKey({ address, currency })) ||
           [],
@@ -78,13 +74,9 @@ async function transactionsQueryFunction({
     }, TRANSACTIONS_TIMEOUT_DURATION);
     const resolver = (message: TransactionsReceivedMessage) => {
       clearTimeout(timeout);
-      refractionAddressWs.removeEventListener(
-        refractionAddressMessages.ADDRESS_TRANSACTIONS.RECEIVED,
-        resolver,
-      );
       resolve(parseTransactions(message, currency));
     };
-    refractionAddressWs.on(
+    refractionAddressWs.once(
       refractionAddressMessages.ADDRESS_TRANSACTIONS.RECEIVED,
       resolver,
     );
@@ -383,9 +375,14 @@ function parseTransactions(
 // ///////////////////////////////////////////////
 // Query Hook
 
-export function useTransactions(
+export function useTransactions<TSelectData = TransactionsResult>(
   { address, currency }: TransactionsArgs,
-  config: QueryConfig<TransactionsResult, Error, TransactionsQueryKey> = {},
+  config: QueryConfig<
+    TransactionsResult,
+    Error,
+    TSelectData,
+    TransactionsQueryKey
+  > = {},
 ) {
   return useQuery(
     transactionsQueryKey({ address, currency }),
