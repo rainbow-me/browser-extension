@@ -40,27 +40,14 @@ export class RainbowProvider extends EventEmitter {
   networkVersion = '1';
   selectedAddress: string | undefined;
 
+  #messenger?: Messenger;
   #isUnlocked = true;
   #requestId = 0;
 
   constructor({ messenger }: { messenger?: Messenger } = {}) {
     super();
-    const host = window.location.host;
-    messenger?.reply(`accountsChanged:${host}`, async (address) => {
-      this.emit('accountsChanged', [address]);
-    });
-    messenger?.reply(`chainChanged:${host}`, async (chainId: number) => {
-      this.emit(
-        'chainChanged',
-        addHexPrefix(convertStringToHex(String(chainId))),
-      );
-    });
-    messenger?.reply(`disconnect:${host}`, async () => {
-      this.emit('disconnect');
-    });
-    messenger?.reply(`connect:${host}`, async (connectionInfo) => {
-      this.emit('connect', connectionInfo);
-    });
+    this.#messenger = messenger;
+    this.#addEventListeners();
   }
 
   /**
@@ -120,5 +107,24 @@ export class RainbowProvider extends EventEmitter {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async send(args: RequestArguments) {
     // TODO – deprecated, but we still may need it to be compatible with older dapps.
+  }
+
+  #addEventListeners() {
+    const host = window.location.host;
+    this.#messenger?.reply(`accountsChanged:${host}`, async (address) => {
+      this.emit('accountsChanged', [address]);
+    });
+    this.#messenger?.reply(`chainChanged:${host}`, async (chainId: number) => {
+      this.emit(
+        'chainChanged',
+        addHexPrefix(convertStringToHex(String(chainId))),
+      );
+    });
+    this.#messenger?.reply(`disconnect:${host}`, async () => {
+      this.emit('disconnect');
+    });
+    this.#messenger?.reply(`connect:${host}`, async (connectionInfo) => {
+      this.emit('connect', connectionInfo);
+    });
   }
 }
