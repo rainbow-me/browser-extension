@@ -19,10 +19,13 @@ import {
 } from '~/entries/background/handlers/handleProviderRequest';
 
 import { Avatar } from '../../components/Avatar/Avatar';
-import { HomePageHeader } from '../../components/PageHeader/HomePageHeader';
+import { PageHeader } from '../../components/PageHeader/PageHeader';
 import { SFSymbol, SFSymbolProps } from '../../components/SFSymbol/SFSymbol';
 import { Tabs } from '../../components/Tabs/Tabs';
 import { useAvatar } from '../../hooks/useAvatar';
+
+import { MoreMenu } from './MoreMenu';
+import { NetworkMenu } from './NetworkMenu';
 
 import { Tab } from '.';
 
@@ -39,19 +42,26 @@ export function Header({
       display="flex"
       flexDirection="column"
       justifyContent="space-between"
+      position="relative"
       style={{
         height: '260px',
       }}
     >
-      <Box>
-        <HomePageHeader
-          title=""
-          leftSymbol="appBadgeCheckmark"
-          rightSymbol="ellipsis"
-          mainPage
+      <Box position="absolute" width="full">
+        <PageHeader
+          leftComponent={
+            <NetworkMenu>
+              <PageHeader.SymbolButton symbol="appBadgeCheckmark" />
+            </NetworkMenu>
+          }
+          rightComponent={
+            <MoreMenu>
+              <PageHeader.SymbolButton symbol="ellipsis" />
+            </MoreMenu>
+          }
         />
       </Box>
-      <Box marginTop="-44px">
+      <Box paddingTop="28px">
         <Inset>
           <Stack alignHorizontal="center" space="16px">
             <AvatarSection />
