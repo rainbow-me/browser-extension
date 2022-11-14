@@ -82,6 +82,7 @@
     "zustand": "4.1.2"
   },
   "devDependencies": {
+    "@foundry-rs/hardhat-anvil": "0.1.7",
     "@lavamoat/allow-scripts": "2.0.3",
     "@lavamoat/preinstall-always-fail": "1.0.0",
     "@testing-library/react": "13.4.0",
@@ -163,7 +164,12 @@
       "selenium-webdriver>ws>utf-8-validate": false,
       "vitest>vite>esbuild": false,
       "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": false,
-      "msw": false
+      "msw": false,
+      "@foundry-rs/hardhat-anvil>hardhat>@ethereumjs/vm>core-js-pure": false,
+      "@foundry-rs/hardhat-anvil>hardhat>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "@foundry-rs/hardhat-anvil>hardhat>ethereumjs-util>ethereum-cryptography>secp256k1": false,
+      "@foundry-rs/hardhat-anvil>hardhat>ws>bufferutil": false,
+      "@foundry-rs/hardhat-anvil>hardhat>ws>utf-8-validate": false
     }
   },
   "lint-staged": {

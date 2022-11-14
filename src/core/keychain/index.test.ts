@@ -1,3 +1,5 @@
+import { exec } from 'child_process';
+
 import {
   MessageTypes,
   SignTypedDataVersion,
@@ -6,7 +8,7 @@ import {
 } from '@metamask/eth-sig-util';
 import { ethers } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
-import { expect, test } from 'vitest';
+import { afterAll, expect, test } from 'vitest';
 
 import { PrivateKey } from './IKeychain';
 
@@ -217,7 +219,6 @@ test('[keychain/index] :: should be able to sign typed data messages ', async ()
     address: accounts[0],
     msgData,
   });
-  console.log('signature', signature);
   expect(ethers.utils.isHexString(signature)).toBe(true);
 
   const recoveredAddress = recoverTypedSignature({
@@ -228,13 +229,26 @@ test('[keychain/index] :: should be able to sign typed data messages ', async ()
   expect(getAddress(recoveredAddress)).eq(getAddress(accounts[0]));
 });
 
-// test('[keychain/index] :: should be able to send transactions', async () => {
-//   const accounts = await getAccounts();
-//   const txHash = await sendTransaction({
-//     from: accounts[0],
-//     to: accounts[1],
-//     value: ethers.utils.parseEther('0.001'),
-//   });
+test('[keychain/index] :: should be able to send transactions', async () => {
+  await exec('anvil');
+  const accounts = await getAccounts();
+  const provider = new ethers.providers.StaticJsonRpcProvider(
+    'http://127.0.0.1:8545',
+  );
+  await provider.ready;
+  const tx = {
+    from: accounts[1],
+    to: accounts[2],
+    value: ethers.utils.parseEther('0.001'),
+  };
+  const result = await sendTransaction(tx, provider);
+  expect(ethers.utils.isHexString(result.hash)).toBe(true);
+});
 
-//   expect(ethers.utils.isHexString(txHash)).toBe(true);
-// });
+afterAll(async () => {
+  try {
+    await exec('kill $(lsof -t -i:8545)');
+  } catch (e) {
+    // failed to kill anvil
+  }
+});

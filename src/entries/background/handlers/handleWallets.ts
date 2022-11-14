@@ -1,4 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { getProvider } from '@wagmi/core';
 import { Bytes, TypedDataDomain, TypedDataField } from 'ethers';
 import { Address } from 'wagmi';
 
@@ -114,9 +115,14 @@ export const handleWallets = () =>
             response = await exportAccount(address, password);
             break;
           }
-          case 'send_transaction':
-            response = await sendTransaction(payload as TransactionRequest);
+          case 'send_transaction': {
+            const provider = getProvider();
+            response = await sendTransaction(
+              payload as TransactionRequest,
+              provider,
+            );
             break;
+          }
           case 'sign_message':
             response = await signMessage(payload as SignMessageArguments);
             break;

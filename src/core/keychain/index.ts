@@ -1,4 +1,5 @@
 import {
+  Provider,
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
@@ -8,7 +9,6 @@ import {
   TypedMessage,
   signTypedData as signTypedDataSigUtil,
 } from '@metamask/eth-sig-util';
-import { getProvider } from '@wagmi/core';
 import { Signer, Wallet } from 'ethers';
 import { Address } from 'wagmi';
 
@@ -148,12 +148,12 @@ export const exportAccount = async (
 
 export const sendTransaction = async (
   txPayload: TransactionRequest,
+  provider: Provider,
 ): Promise<TransactionResponse> => {
   if (typeof txPayload.from === 'undefined') {
     throw new Error('Missing from address');
   }
   const signer = await keychainManager.getSigner(txPayload.from as Address);
-  const provider = getProvider();
   const wallet = signer.connect(provider);
   return wallet.sendTransaction(txPayload);
 };
