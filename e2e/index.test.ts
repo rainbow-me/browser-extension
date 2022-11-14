@@ -148,13 +148,8 @@ it('should be able to go back to extension and switch account and chain', async 
 it('should be able to accept a signing request', async () => {
   // switch session to mainnet
   await driver.get(rootURL + '/popup.html');
-  await delay(500);
-  await driver.findElement({ id: 'injection-button' }).click();
-  // Wait till the DOM re-renders
-  await delay(500);
-  await driver.findElement({ id: 'injection-button' }).click();
-  // Wait till the DOM re-renders
-  await delay(500);
+  await delay(1000);
+
   await driver.findElement({ id: 'home-page-header-left' }).click();
   await delay(500);
   await driver.findElement({ id: 'home-page-header-connected-apps' }).click();
@@ -185,24 +180,6 @@ it('should be able to accept a signing request', async () => {
 
   await driver.findElement({ id: 'accept-request-button' }).click();
   await delay(500);
-  await driver.switchTo().window(dappHandler);
-
-  await delay(1000);
-
-  const buttonSend = await querySelector(driver, '[id="sendTx"]');
-  expect(buttonSend).toBeTruthy();
-  await buttonSend.click();
-  await delay(500);
-
-  const handlers2 = await driver.getAllWindowHandles();
-
-  const popupHandler2 =
-    handlers2.find((handler) => handler !== dappHandler) || '';
-
-  await driver.switchTo().window(popupHandler2);
-  await delay(2000);
-
-  await driver.findElement({ id: 'accept-request-button' }).click();
   await driver.switchTo().window(dappHandler);
 });
 
