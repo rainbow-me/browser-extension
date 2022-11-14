@@ -155,6 +155,7 @@ it('should be able to accept a signing request', async () => {
   await driver.findElement({ id: 'home-page-header-left' }).click();
   await delay(500);
   await driver.findElement({ id: 'home-page-header-connected-apps' }).click();
+  await delay(500);
 
   await driver.findElement({ id: 'switch-network-menu' }).click();
   await driver.findElement({ id: 'switch-network-item-0' }).click();
