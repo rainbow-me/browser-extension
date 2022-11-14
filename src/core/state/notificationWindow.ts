@@ -6,7 +6,7 @@ export type NotificationWindow = chrome.windows.Window;
 
 export interface NotificationWindowsState {
   window: NotificationWindow | null;
-  setWindow: (window: NotificationWindow) => void;
+  setWindow: (window: NotificationWindow | null) => void;
 }
 
 export const notificationWindowStore = createStore<NotificationWindowsState>(

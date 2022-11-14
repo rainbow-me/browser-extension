@@ -56,9 +56,9 @@ const HeaderActionButton = ({ symbol }: { symbol: Symbols }) => {
 
 const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
   const [url, setUrl] = React.useState('');
-  const { host, appLogo } = useAppMetadata({ url });
+  const { appHost, appLogo } = useAppMetadata({ url });
   const { updateAppSessionChainId, disconnectAppSession, appSession } =
-    useAppSession({ host });
+    useAppSession({ host: appHost });
 
   chrome?.tabs?.query({ active: true, lastFocusedWindow: true }, (tabs) => {
     const url = tabs[0].url;
@@ -77,7 +77,9 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
   const disconnect = React.useCallback(() => {
     disconnectAppSession();
   }, [disconnectAppSession]);
+
   console.log('--- appSession', appSession);
+
   return (
     <Menu>
       <MenuTrigger asChild>
@@ -107,13 +109,13 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
               </Box>
               <Box
                 id={`home-page-header-host-${
-                  appSession ? host : 'not-connected'
+                  appSession ? appHost : 'not-connected'
                 }`}
               >
                 <Rows space="8px">
                   <Row>
                     <Text size="14pt" weight="bold">
-                      {host}
+                      {appHost}
                     </Text>
                   </Row>
                   {!appSession && (
