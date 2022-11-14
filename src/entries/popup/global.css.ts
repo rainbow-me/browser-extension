@@ -7,6 +7,7 @@ globalStyle('html, body', {
 
 globalStyle('html, body, #main', {
   minWidth: '360px',
+  minHeight: '600px',
 });
 
 globalStyle('*', {
