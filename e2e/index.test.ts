@@ -81,7 +81,7 @@ it('should be able to connect to bx test dapp', async () => {
   await waitAndClick(mmButton, driver);
 
   // wait for window handlers to update
-  await delay(100);
+  await delay(200);
   const handlers = await driver.getAllWindowHandles();
 
   const popupHandler =
@@ -152,7 +152,7 @@ it('should be able to accept a signing request', async () => {
   const button = await querySelector(driver, '[id="signTypedData"]');
   expect(button).toBeTruthy();
   await waitAndClick(button, driver);
-  await delay(100);
+  await delay(200);
   const handlers = await driver.getAllWindowHandles();
 
   const popupHandler =
@@ -160,19 +160,19 @@ it('should be able to accept a signing request', async () => {
 
   await driver.switchTo().window(popupHandler);
   await findElementAndClick('accept-request-button', driver);
+  await delay(500);
   await driver.switchTo().window(dappHandler);
 });
 
-it.skip('should be able to accept a transaction request', async () => {
+it('should be able to accept a transaction request', async () => {
   // TODO send tx, we're not signing anything yet
-  // await goToTestApp(driver);
-  // TODO check if the signature is correct, we're not signing anything yet
+  await delay(1000);
   const dappHandler = await driver.getWindowHandle();
 
   const button = await querySelector(driver, '[id="sendTx"]');
   expect(button).toBeTruthy();
   await waitAndClick(button, driver);
-  await delay(100);
+  await delay(200);
   const handlers = await driver.getAllWindowHandles();
 
   const popupHandler =
