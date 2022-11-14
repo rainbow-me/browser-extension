@@ -243,6 +243,10 @@ test('[keychain/index] :: should be able to send transactions', async () => {
   };
   const result = await sendTransaction(tx, provider);
   expect(ethers.utils.isHexString(result.hash)).toBe(true);
+  const receipt = await result.wait();
+  expect(receipt.status).toBe(1);
+  expect(receipt.blockNumber).toBeGreaterThan(0);
+  expect(receipt.confirmations).toBeGreaterThan(0);
 });
 
 afterAll(async () => {
