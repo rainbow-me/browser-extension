@@ -1,8 +1,4 @@
-import { Storage } from '~/core/storage';
-
-export async function handleSetupInpage() {
-  const shouldInject = (await Storage.get('inject')) === true;
-  if (!shouldInject) return;
+export function handleSetupInpage() {
   chrome.scripting.registerContentScripts([
     {
       id: 'inpage',
