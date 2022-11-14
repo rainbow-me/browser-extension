@@ -256,7 +256,7 @@ export const shadowVars = createThemeContract(
 export const shadows = Object.keys(shadowVars) as (keyof typeof shadowVars)[];
 
 globalStyle(`html.${rootThemeClasses.lightTheme}`, {
-  backgroundColor: backgroundColors.surfacePrimary.light.color,
+  backgroundColor: backgroundColors.surfacePrimaryElevated.light.color,
   vars: assignVars(
     accentColorHslVars,
     hslObjectForColor(backgroundColors.blue.light.color),
@@ -264,7 +264,7 @@ globalStyle(`html.${rootThemeClasses.lightTheme}`, {
 });
 
 globalStyle(`html.${rootThemeClasses.darkTheme}`, {
-  backgroundColor: backgroundColors.surfacePrimary.dark.color,
+  backgroundColor: backgroundColors.surfacePrimaryElevated.dark.color,
   vars: assignVars(
     accentColorHslVars,
     hslObjectForColor(backgroundColors.blue.dark.color),
@@ -351,7 +351,7 @@ const boxBaseProperties = defineProperties({
     paddingLeft: space,
     paddingRight: space,
     paddingTop: space,
-    position: ['relative', 'absolute', 'fixed'],
+    position: ['relative', 'absolute', 'fixed', 'sticky'],
     right: positionSpace,
     top: positionSpace,
     width: {

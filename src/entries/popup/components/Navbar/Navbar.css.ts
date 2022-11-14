@@ -1,6 +1,6 @@
 import { boxStyles } from '~/design-system';
 
-export const pageHeaderButtonStyles = {
+export const navbarButtonStyles = {
   default: boxStyles({
     background: 'surfaceSecondaryElevated',
     borderColor: 'buttonStroke',

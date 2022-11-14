@@ -52,13 +52,7 @@ export const NetworkMenu = ({ children }: { children: React.ReactNode }) => {
   return (
     <Menu>
       <MenuTrigger asChild>
-        <Box
-          position="relative"
-          style={{
-            cursor: 'pointer',
-          }}
-          id="home-page-header-left"
-        >
+        <Box position="relative" id="home-page-header-left">
           {children}
         </Box>
       </MenuTrigger>
