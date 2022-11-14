@@ -13,7 +13,7 @@ import { SupportedCurrencyKey } from '~/core/references';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainName } from '~/core/types/chains';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
-import { parseAsset } from '~/core/utils/assets';
+import { parseAddressAsset } from '~/core/utils/assets';
 
 const USER_ASSETS_TIMEOUT_DURATION = 10000;
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
@@ -108,7 +108,7 @@ function parseUserAssetsByChain(
 ) {
   return Object.values(message?.payload?.assets || {}).reduce(
     (dict, assetData) => {
-      const parsedAsset = parseAsset({
+      const parsedAsset = parseAddressAsset({
         address: assetData?.asset?.asset_code,
         asset: assetData?.asset,
         currency,

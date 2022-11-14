@@ -1,36 +1,36 @@
 import { capitalize, upperCase } from 'lodash';
-import React from 'react';
+import React, { Fragment, ReactNode } from 'react';
 // @ts-expect-error // no declaration for this yet
 import * as CoinIconsImages from 'react-coin-icon/lib/pngs';
 import { Address } from 'wagmi';
 
-import { ParsedAddressAsset, UniqueId } from '~/core/types/assets';
+import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { deriveAddressAndChainWithUniqueId } from '~/core/utils/address';
-import { Bleed, Box, Text } from '~/design-system';
+import { AccentColorProvider, Bleed, Box, Text } from '~/design-system';
 import { useCloudinaryAssetIcon } from '~/entries/popup/hooks/useCloudinaryAssetIcon';
-import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
-import { colors } from '~/entries/popup/utils/emojiAvatarBackgroundColors';
+import { colors as emojiColors } from '~/entries/popup/utils/emojiAvatarBackgroundColors';
 import { pseudoRandomArrayItemFromString } from '~/entries/popup/utils/pseudoRandomArrayItemFromString';
 
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 
 export function CoinIcon({
+  asset,
   symbol,
-  uniqueId,
 }: {
+  asset?: ParsedAsset | ParsedAddressAsset;
   symbol?: string;
-  uniqueId: UniqueId;
 }) {
-  const asset = useUserAsset(uniqueId) || ({} as ParsedAddressAsset);
   const [showImage, setShowImage] = React.useState(true);
   const sym = asset?.symbol || symbol || '';
 
   const localImage = CoinIconsImages[capitalize(sym)];
   const formattedSymbol = formatSymbol(sym, 36);
   const fontSize = buildFallbackFontSize(formattedSymbol, 36);
-  const { mainnetAddress } = asset;
-  const { address, chain } = deriveAddressAndChainWithUniqueId(uniqueId);
+  const mainnetAddress = asset?.mainnetAddress;
+  const address = (asset?.address || '') as Address;
+  const chain = asset?.chainId || ChainId.mainnet;
+  const shadowColor = asset?.colors?.primary;
+
   const IconImage =
     localImage && showImage ? (
       <img
@@ -41,7 +41,7 @@ export function CoinIcon({
       />
     ) : null;
   return (
-    <CoinIconWrapper chainId={chain}>
+    <CoinIconWrapper shadowColor={shadowColor} chainId={chain}>
       {IconImage || (
         <FallbackCoinIcon
           address={address}
@@ -54,7 +54,7 @@ export function CoinIcon({
             style={{
               backgroundColor: pseudoRandomArrayItemFromString<string>(
                 address || '',
-                colors,
+                emojiColors,
               ),
               height: 36,
               width: 36,
@@ -71,33 +71,68 @@ export function CoinIcon({
   );
 }
 
+function ShadowWrapper({
+  children,
+  color,
+}: {
+  children: ReactNode;
+  color?: string;
+}) {
+  if (color) {
+    return (
+      <AccentColorProvider color={color}>
+        <Box
+          boxShadow={'24px accent'}
+          background="fill"
+          borderRadius="round"
+          style={{
+            width: 36,
+            height: 36,
+            overflow: 'hidden',
+            marginRight: '8px',
+          }}
+        >
+          {children}
+        </Box>
+      </AccentColorProvider>
+    );
+  }
+
+  // this feels kludgy but idk how to conditionally add boxShadow w/o props spread
+  return (
+    <Box
+      background="fill"
+      borderRadius="round"
+      style={{
+        width: 36,
+        height: 36,
+        overflow: 'hidden',
+        marginRight: '8px',
+      }}
+    >
+      {children}
+    </Box>
+  );
+}
+
 function CoinIconWrapper({
   chainId,
   children,
+  shadowColor,
 }: {
   chainId: ChainId;
   children: React.ReactNode;
+  shadowColor?: string;
 }) {
   return (
-    <React.Fragment>
-      <Box
-        background="fill"
-        borderRadius="round"
-        style={{
-          width: 36,
-          height: 36,
-          overflow: 'hidden',
-          marginRight: '8px',
-        }}
-      >
-        {children}
-      </Box>
+    <Fragment>
+      <ShadowWrapper color={shadowColor}>{children}</ShadowWrapper>
       {chainId !== ChainId.mainnet && (
         <Bleed top="12px" left="6px">
           <ChainBadge chainId={chainId} size="extraSmall" />
         </Bleed>
       )}
-    </React.Fragment>
+    </Fragment>
   );
 }
 

@@ -90,5 +90,5 @@ function AssetRow({ uniqueId }: AssetRowProps) {
     [balanceDisplay, priceChangeColor, priceChangeDisplay],
   );
 
-  return <CoinRow topRow={topRow} bottomRow={bottomRow} uniqueId={uniqueId} />;
+  return <CoinRow asset={asset} topRow={topRow} bottomRow={bottomRow} />;
 }

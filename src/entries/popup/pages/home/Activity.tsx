@@ -1,11 +1,10 @@
-import React, { Fragment, ReactNode, useCallback, useMemo } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import React, { ReactNode, useCallback, useMemo, useRef } from 'react';
 import { useAccount } from 'wagmi';
 
 import { selectTransactionsByDate } from '~/core/resources/_selectors';
 import { useTransactions } from '~/core/resources/transactions/transactions';
 import { useCurrentCurrencyStore } from '~/core/state';
-import { UniqueId } from '~/core/types/assets';
-import { ChainId } from '~/core/types/chains';
 import {
   RainbowTransaction,
   TransactionStatus,
@@ -26,25 +25,51 @@ export function Activity() {
     { address, currency },
     { select: selectTransactionsByDate },
   );
+  const listData = useMemo(
+    () =>
+      Object.keys(transactionsByDate).reduce((listData, dateKey) => {
+        return [...listData, dateKey, ...transactionsByDate[dateKey]];
+      }, [] as (string | RainbowTransaction)[]),
+    [transactionsByDate],
+  );
+  const containerRef = useRef<HTMLDivElement>(null);
+  const activityRowVirtualizer = useVirtualizer({
+    count: listData.length,
+    getScrollElement: () => containerRef.current,
+    estimateSize: (i) => (typeof listData[i] === 'string' ? 34 : 52),
+  });
   return (
-    <Box marginTop={'-20px'}>
-      {Object.keys(transactionsByDate).map((dateKey) => {
-        const transactions = transactionsByDate[dateKey];
-        return (
-          <Fragment key={dateKey}>
-            <Inset horizontal="28px" top="16px" bottom="8px">
-              <Box>
-                <Text size="14pt" weight={'semibold'} color={'labelTertiary'}>
-                  {dateKey}
-                </Text>
-              </Box>
-            </Inset>
-            {transactions.map((tx, i) => (
-              <ActivityRow key={`${tx?.hash}-${i}`} transaction={tx} />
-            ))}
-          </Fragment>
-        );
-      })}
+    <Box
+      marginTop={'-20px'}
+      ref={containerRef}
+      width="full"
+      style={{
+        overflow: 'auto',
+      }}
+    >
+      <Box
+        width="full"
+        style={{
+          height: `${activityRowVirtualizer.getTotalSize()}px`,
+          position: 'relative',
+        }}
+      >
+        {activityRowVirtualizer.getVirtualItems().map(({ index }) => {
+          const item = listData[index];
+          if (typeof item === 'string') {
+            return (
+              <Inset key={index} horizontal="28px" top="16px" bottom="8px">
+                <Box>
+                  <Text size="14pt" weight={'semibold'} color={'labelTertiary'}>
+                    {item}
+                  </Text>
+                </Box>
+              </Inset>
+            );
+          }
+          return <ActivityRow key={index} transaction={item} />;
+        })}
+      </Box>
     </Box>
   );
 }
@@ -95,7 +120,7 @@ const truncateString = (txt = '', maxLength = 22) => {
 };
 
 function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
-  const { address, balance, name, native, status, symbol, title, type } =
+  const { asset, balance, name, native, status, symbol, title, type } =
     transaction;
   const isTrade = type === TransactionType.trade;
   const receiving = type === TransactionType.receive;
@@ -105,8 +130,6 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
   const failed = status === TransactionStatus.failed;
   const isContractInteraction =
     status === TransactionStatus.contract_interaction;
-  const symbolToDisplay = isContractInteraction ? 'contract' : symbol;
-  const uniqueId = `${isContractInteraction ? '' : address}_${ChainId.mainnet}`;
 
   const getNativeDisplay = useCallback(() => {
     const isDebit = sending || sendingViaSwap;
@@ -177,7 +200,7 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
             <Inline space={titleIconConfig?.space}>
               {titleIconConfig?.icon}
               <Text color={getTitleColor()} size="12pt" weight="semibold">
-                {truncateString(title, 14)}
+                {truncateString(title, 20)}
               </Text>
             </Inline>
           </Box>
@@ -234,8 +257,8 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
 
   return (
     <CoinRow
-      uniqueId={uniqueId as UniqueId}
-      symbol={symbolToDisplay}
+      asset={asset}
+      symbol={symbol}
       topRow={topRow}
       bottomRow={bottomRow}
     />

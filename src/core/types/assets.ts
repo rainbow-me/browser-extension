@@ -2,21 +2,17 @@ import { Address } from 'wagmi';
 
 import { ChainId, ChainName } from '~/core/types/chains';
 
-export interface ParsedAddressAsset {
+export interface ParsedAsset {
   address: Address;
-  balance: {
-    amount: string;
-    display: string;
-  };
   chainId: ChainId;
   chainName: ChainName;
+  colors?: {
+    primary: string;
+    fallback?: string;
+  };
   isNativeAsset: boolean;
   name: string;
   native: {
-    balance: {
-      amount: string;
-      display: string;
-    };
     price?: {
       change: string;
       amount: number;
@@ -28,6 +24,24 @@ export interface ParsedAddressAsset {
   symbol: string;
   type: string;
   uniqueId: UniqueId;
+}
+
+export interface ParsedAddressAsset extends ParsedAsset {
+  balance: {
+    amount: string;
+    display: string;
+  };
+  native: {
+    balance: {
+      amount: string;
+      display: string;
+    };
+    price?: {
+      change: string;
+      amount: number;
+      display: string;
+    };
+  };
 }
 
 export type ParsedAssetsDict = Record<string, ParsedAddressAsset>;
@@ -56,6 +70,10 @@ export enum AssetType {
 
 export interface ZerionAsset {
   asset_code: Address;
+  colors?: {
+    primary: string;
+    fallback: string;
+  };
   implementations?: Record<string, { address: Address; decimals: number }>;
   mainnet_address?: Address;
   name: string;

@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { UniqueId } from '~/core/types/assets';
+import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
 import { Box, Column, Columns, Inset, Row, Rows } from '~/design-system';
 import { transparentAccentColorAsHsl } from '~/design-system/styles/core.css';
 
@@ -25,25 +25,25 @@ function RowHighlightWrapper({ children }: { children: ReactNode }) {
 }
 
 export function CoinRow({
+  asset,
+  symbol,
   topRow,
   bottomRow,
-  symbol,
-  uniqueId,
 }: {
+  asset?: ParsedAsset | ParsedAddressAsset;
+  symbol?: string;
   topRow: ReactNode;
   bottomRow: ReactNode;
-  symbol?: string;
-  uniqueId: UniqueId;
 }) {
   return (
     <Box style={{ height: '52px' }}>
       <RowHighlightWrapper>
-        <Inset horizontal="20px" vertical="8px">
+        <Inset horizontal="12px" vertical="8px">
           <Rows>
             <Row>
               <Columns alignVertical="center">
                 <Column width="content">
-                  <CoinIcon symbol={symbol} uniqueId={uniqueId} />
+                  <CoinIcon asset={asset} symbol={symbol} />
                 </Column>
                 <Column>
                   <Rows>
