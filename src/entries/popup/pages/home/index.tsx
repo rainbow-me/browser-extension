@@ -20,10 +20,21 @@ import { Tokens } from './Tokens';
 
 export type Tab = 'tokens' | 'activity';
 
+const COLLAPSED_HEADER_TOP_OFFSET = 172;
+
 export function Home() {
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
+
   const [activeTab, setActiveTab] = React.useState<Tab>('tokens');
+  const onSelectTab = React.useCallback((tab: Tab) => {
+    // If we are already in a state where the header is collapsed,
+    // then ensure we are scrolling to the top when we change tab.
+    if (window.scrollY > COLLAPSED_HEADER_TOP_OFFSET) {
+      window.scrollTo({ top: COLLAPSED_HEADER_TOP_OFFSET });
+    }
+    setActiveTab(tab);
+  }, []);
 
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>
@@ -34,7 +45,7 @@ export function Home() {
         >
           <TopNav />
           <Header />
-          <TabBar activeTab={activeTab} setActiveTab={setActiveTab} />
+          <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
           <Separator color="separatorTertiary" strokeWeight="1px" />
           <Content>
             {activeTab === 'tokens' && <Tokens />}
