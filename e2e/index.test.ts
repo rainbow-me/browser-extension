@@ -165,8 +165,7 @@ it('should be able to accept a signing request', async () => {
 
 it.skip('should be able to accept a transaction request', async () => {
   // TODO send tx, we're not signing anything yet
-  await goToTestApp(driver);
-
+  // await goToTestApp(driver);
   // TODO check if the signature is correct, we're not signing anything yet
   const dappHandler = await driver.getWindowHandle();
 
