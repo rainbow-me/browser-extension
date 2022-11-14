@@ -230,7 +230,6 @@ test('[keychain/index] :: should be able to sign typed data messages ', async ()
 });
 
 test('[keychain/index] :: should be able to send transactions', async () => {
-  await exec('anvil');
   const accounts = await getAccounts();
   const provider = new ethers.providers.StaticJsonRpcProvider(
     'http://127.0.0.1:8545',
