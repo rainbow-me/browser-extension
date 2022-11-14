@@ -1,4 +1,11 @@
+import {
+  MessageTypes,
+  SignTypedDataVersion,
+  TypedMessage,
+  recoverTypedSignature,
+} from '@metamask/eth-sig-util';
 import { ethers } from 'ethers';
+import { getAddress } from 'ethers/lib/utils';
 import { expect, test } from 'vitest';
 
 import { PrivateKey } from './IKeychain';
@@ -14,7 +21,10 @@ import {
   isVaultUnlocked,
   lockVault,
   removeAccount,
+  sendTransaction,
   setVaultPassword,
+  signMessage,
+  signTypedData,
   unlockVault,
   verifyPassword,
 } from '.';
@@ -109,6 +119,7 @@ test('[keychain/index] :: should be able to unlock the vault', async () => {
 
 test('[keychain/index] :: should be able to autodiscover accounts when importing a seed phrase', async () => {
   let accounts = await getAccounts();
+  // Hardhat default seed
   await importWallet(
     'test test test test test test test test test test test junk',
   );
@@ -134,3 +145,96 @@ test('[keychain/index] :: should be able to autodiscover accounts when importing
     '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d',
   );
 });
+
+test('[keychain/index] :: should be able to sign personal messages', async () => {
+  const msg = 'Hello World';
+  const accounts = await getAccounts();
+  const signature = await signMessage({
+    address: accounts[0],
+    msgData: msg,
+  });
+
+  expect(ethers.utils.isHexString(signature)).toBe(true);
+  const recoveredAddress = ethers.utils.verifyMessage(msg, signature);
+  expect(getAddress(recoveredAddress)).eq(getAddress(accounts[0]));
+});
+
+test('[keychain/index] :: should be able to sign typed data messages ', async () => {
+  const msgData = {
+    domain: {
+      chainId: 1,
+      name: 'Ether Mail',
+      verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+      version: '1',
+    },
+    message: {
+      contents: 'Hello, Bob!',
+      attachedMoneyInEth: 4.2,
+      from: {
+        name: 'Cow',
+        wallets: [
+          '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+          '0xDeaDbeefdEAdbeefdEadbEEFdeadbeEFdEaDbeeF',
+        ],
+      },
+      to: [
+        {
+          name: 'Bob',
+          wallets: [
+            '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+            '0xB0BdaBea57B0BDABeA57b0bdABEA57b0BDabEa57',
+            '0xB0B0b0b0b0b0B000000000000000000000000000',
+          ],
+        },
+      ],
+    },
+    primaryType: 'Mail',
+    types: {
+      EIP712Domain: [
+        { name: 'name', type: 'string' },
+        { name: 'version', type: 'string' },
+        { name: 'chainId', type: 'uint256' },
+        { name: 'verifyingContract', type: 'address' },
+      ],
+      Group: [
+        { name: 'name', type: 'string' },
+        { name: 'members', type: 'Person[]' },
+      ],
+      Mail: [
+        { name: 'from', type: 'Person' },
+        { name: 'to', type: 'Person[]' },
+        { name: 'contents', type: 'string' },
+      ],
+      Person: [
+        { name: 'name', type: 'string' },
+        { name: 'wallets', type: 'address[]' },
+      ],
+    },
+  };
+
+  const accounts = await getAccounts();
+  const signature = await signTypedData({
+    address: accounts[0],
+    msgData,
+  });
+  console.log('signature', signature);
+  expect(ethers.utils.isHexString(signature)).toBe(true);
+
+  const recoveredAddress = recoverTypedSignature({
+    data: msgData as unknown as TypedMessage<MessageTypes>,
+    signature,
+    version: SignTypedDataVersion.V4,
+  });
+  expect(getAddress(recoveredAddress)).eq(getAddress(accounts[0]));
+});
+
+// test('[keychain/index] :: should be able to send transactions', async () => {
+//   const accounts = await getAccounts();
+//   const txHash = await sendTransaction({
+//     from: accounts[0],
+//     to: accounts[1],
+//     value: ethers.utils.parseEther('0.001'),
+//   });
+
+//   expect(ethers.utils.isHexString(txHash)).toBe(true);
+// });

@@ -41,8 +41,9 @@ export type SignTypedDataArguments = {
 type SignTypedDataMsg = {
   domain: TypedDataDomain;
   types: Record<string, Array<TypedDataField>>;
-  value: Record<string, unknown>;
+  value?: Record<string, unknown>;
   primaryType?: string;
+  message?: unknown;
 };
 
 const messenger = initializeMessenger({ connect: 'popup' });
