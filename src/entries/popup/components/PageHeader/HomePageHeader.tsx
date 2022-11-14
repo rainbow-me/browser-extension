@@ -2,18 +2,23 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { useAppSessionsStore } from '~/core/state';
-import { getConnectedAppIcon } from '~/core/utils/connectedApps';
 import { Box, Inline, Inset, Row, Rows, Stack, Text } from '~/design-system';
 
+import { useAppMetadata } from '../../hooks/useAppMetadata';
+import { useAppSession } from '../../hooks/useAppSession';
 import {
   Menu,
   MenuContent,
   MenuItemIndicator,
+  MenuRadioGroup,
   MenuSeparator,
   MenuTrigger,
 } from '../Menu/Menu';
 import { SFSymbol, Symbols } from '../SFSymbol/SFSymbol';
+import {
+  SwitchNetworkMenuDisconnect,
+  SwitchNetworkMenuSelector,
+} from '../SwitchMenu/SwitchNetworkMenu';
 
 interface HomePageHeaderProps {
   title: string;
@@ -50,22 +55,41 @@ const HeaderActionButton = ({ symbol }: { symbol: Symbols }) => {
 };
 
 const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
-  const [host, setHost] = React.useState('');
-  const { appSessions } = useAppSessionsStore();
+  const [url, setUrl] = React.useState('');
+  const { appHost, appLogo } = useAppMetadata({ url });
+  const { updateAppSessionChainId, disconnectAppSession, appSession } =
+    useAppSession({ host: appHost });
 
   chrome?.tabs?.query({ active: true, lastFocusedWindow: true }, (tabs) => {
     const url = tabs[0].url;
     if (url) {
-      const host = new URL(url).host;
-      setHost(host);
+      setUrl(url);
     }
   });
-  const isConnectedToCurrentHost = appSessions?.[host];
+
+  const changeChainId = React.useCallback(
+    (chainId: string) => {
+      updateAppSessionChainId(Number(chainId));
+    },
+    [updateAppSessionChainId],
+  );
+
+  const disconnect = React.useCallback(() => {
+    disconnectAppSession();
+  }, [disconnectAppSession]);
+
+  console.log('--- appSession', appSession);
 
   return (
     <Menu>
       <MenuTrigger asChild>
-        <Box position="relative" id="home-page-header-left">
+        <Box
+          position="relative"
+          style={{
+            cursor: 'pointer',
+          }}
+          id="home-page-header-left"
+        >
           {children}
         </Box>
       </MenuTrigger>
@@ -81,27 +105,23 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
                   overflow: 'hidden',
                 }}
               >
-                <img
-                  src={getConnectedAppIcon(host)}
-                  width="100%"
-                  height="100%"
-                />
+                <img src={appLogo} width="100%" height="100%" />
               </Box>
               <Box
                 id={`home-page-header-host-${
-                  isConnectedToCurrentHost ? host : 'not-connected'
+                  appSession ? appHost : 'not-connected'
                 }`}
               >
                 <Rows space="8px">
                   <Row>
                     <Text size="14pt" weight="bold">
-                      {host}
+                      {appHost}
                     </Text>
                   </Row>
-                  {!isConnectedToCurrentHost && (
+                  {!appSession && (
                     <Row>
                       <Text size="11pt" weight="bold">
-                        {i18n.t('page_header.not_connected')}
+                        {i18n.t('menu.home_header_left.not_connected')}
                       </Text>
                     </Row>
                   )}
@@ -110,24 +130,56 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
             </Inline>
             <SFSymbol
               size={6}
-              color={isConnectedToCurrentHost ? 'green' : undefined}
+              color={appSession ? 'green' : undefined}
               symbol="circleFill"
             />
           </Inline>
         </Inset>
 
         <Stack space="4px">
-          <MenuSeparator />
-          <Inset top="8px" bottom="8px">
-            <Link id="home-page-header-connected-apps" to={'/connected'}>
-              <Inline alignVertical="center" space="8px">
-                <SFSymbol size={12} symbol="squareOnSquareDashed" />
-                <Text size="14pt" weight="bold">
-                  {i18n.t('page_header.all_connected_apps')}
+          {appSession ? (
+            <>
+              <Stack space="12px">
+                <MenuSeparator />
+                <Text color="label" size="14pt" weight="semibold">
+                  {i18n.t('menu.home_header_left.networks')}
                 </Text>
-              </Inline>
-            </Link>
-          </Inset>
+              </Stack>
+
+              <Box>
+                <MenuRadioGroup
+                  value={`${appSession?.chainId}`}
+                  onValueChange={changeChainId}
+                >
+                  <SwitchNetworkMenuSelector />
+                </MenuRadioGroup>
+                <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
+              </Box>
+            </>
+          ) : null}
+
+          <Stack space="4px">
+            <MenuSeparator />
+
+            <Inset vertical="8px">
+              <Link id="home-page-header-connected-apps" to={'/connected'}>
+                <Inline alignVertical="center" space="8px">
+                  <Box style={{ width: 18, height: 18 }}>
+                    <Inline
+                      height="full"
+                      alignVertical="center"
+                      alignHorizontal="center"
+                    >
+                      <SFSymbol size={14} symbol="squareOnSquareDashed" />
+                    </Inline>
+                  </Box>
+                  <Text size="14pt" weight="bold">
+                    {i18n.t('menu.home_header_left.all_connected_apps')}
+                  </Text>
+                </Inline>
+              </Link>
+            </Inset>
+          </Stack>
         </Stack>
 
         <MenuItemIndicator style={{ marginLeft: 'auto' }}>o</MenuItemIndicator>
@@ -140,7 +192,14 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
   return (
     <Menu>
       <MenuTrigger asChild>
-        <Box position="relative">{children}</Box>
+        <Box
+          position="relative"
+          style={{
+            cursor: 'pointer',
+          }}
+        >
+          {children}
+        </Box>
       </MenuTrigger>
       <MenuContent>
         <Stack space="4px">
@@ -149,7 +208,7 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
               <Inline alignVertical="center" space="8px">
                 <SFSymbol size={12} symbol="gearshapeFill" />
                 <Text size="14pt" weight="bold">
-                  {i18n.t('page_header.settings')}
+                  {i18n.t('menu.home_header_right.settings')}
                 </Text>
               </Inline>
             </Link>
@@ -158,7 +217,7 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
             <Inline alignVertical="center" space="8px">
               <SFSymbol size={12} symbol="qrcode" />
               <Text size="14pt" weight="bold">
-                {i18n.t('page_header.qr_code')}
+                {i18n.t('menu.home_header_right.qr_code')}
               </Text>
             </Inline>
           </Inset>
@@ -170,7 +229,7 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
               <Inline alignVertical="center" space="8px">
                 <SFSymbol size={12} symbol="personCropCircleFill" />
                 <Text size="14pt" weight="bold">
-                  {i18n.t('page_header.rainbow_profile')}
+                  {i18n.t('menu.home_header_right.rainbow_profile')}
                 </Text>
               </Inline>
             </Inset>
@@ -178,7 +237,7 @@ const HeaderRighttMenu = ({ children }: { children: React.ReactNode }) => {
               <Inline alignVertical="center" space="8px">
                 <SFSymbol size={12} symbol="binocularsFill" />
                 <Text size="14pt" weight="bold">
-                  {i18n.t('page_header.view_on_explorer')}
+                  {i18n.t('menu.home_header_right.view_on_explorer')}
                 </Text>
               </Inline>
             </Inset>

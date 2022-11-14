@@ -3,7 +3,6 @@ import * as React from 'react';
 import { Address, useEnsAvatar, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { initializeMessenger } from '~/core/messengers';
 import { useAppSessionsStore } from '~/core/state';
 import { getConnectedAppIcon } from '~/core/utils/connectedApps';
 import { truncateAddress } from '~/core/utils/truncateAddress';
@@ -14,8 +13,6 @@ import { PageHeader } from '../components/PageHeader/PageHeader';
 import { SFSymbol } from '../components/SFSymbol/SFSymbol';
 import { SwitchNetworkMenu } from '../components/SwitchMenu/SwitchNetworkMenu';
 import { useAppSession } from '../hooks/useAppSession';
-
-const messenger = initializeMessenger({ connect: 'inpage' });
 
 export function ConnectedApps() {
   const { appSessions, clearSessions } = useAppSessionsStore();
@@ -87,25 +84,35 @@ function ConnectedApp({
 }) {
   const { data: ensName } = useEnsName({ address });
   const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
-  const { updateAppSessionChainId } = useAppSession({
+  const { updateAppSessionChainId, disconnectAppSession } = useAppSession({
     host,
   });
 
-  const shuffleChainId = React.useCallback(
+  const changeChainId = React.useCallback(
     (chainId: string) => {
       updateAppSessionChainId(Number(chainId));
-      messenger.send(`chainChanged:${host}`, chainId);
     },
-    [host, updateAppSessionChainId],
+    [updateAppSessionChainId],
   );
+
+  const disconnect = React.useCallback(() => {
+    disconnectAppSession();
+  }, [disconnectAppSession]);
 
   return (
     <SwitchNetworkMenu
-      title={i18n.t('connected_apps.switch_networks')}
-      onValueChange={shuffleChainId}
+      onValueChange={changeChainId}
       selectedValue={String(chainId)}
+      onDisconnect={disconnect}
       renderMenuTrigger={
-        <Box as="button" id="switch-network-menu">
+        <Box
+          as="button"
+          id="switch-network-menu"
+          width="full"
+          style={{
+            cursor: 'pointer',
+          }}
+        >
           <Inset horizontal="20px" vertical="8px">
             <Inline space="8px">
               <Box
