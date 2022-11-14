@@ -119,7 +119,9 @@ export const SwitchNetworkMenu = ({
 }: SwitchNetworkMenuProps) => {
   return (
     <Menu>
-      <MenuTrigger asChild>{renderMenuTrigger}</MenuTrigger>
+      <MenuTrigger asChild>
+        {<Box style={{ cursor: 'pointer' }}>{renderMenuTrigger}</Box>}
+      </MenuTrigger>
       <MenuContent>
         <MenuLabel>{i18n.t('menu.network.title')}</MenuLabel>
         <MenuSeparator />
