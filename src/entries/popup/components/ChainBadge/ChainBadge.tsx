@@ -15,13 +15,16 @@ const sizeConfigs = {
     iconSize: 45,
   },
   small: {
+    iconSize: 18,
+  },
+  extraSmall: {
     iconSize: 16,
   },
 };
 
 interface ChainIconProps {
   chainId: number;
-  size: 'large' | 'medium' | 'small';
+  size: 'large' | 'medium' | 'small' | 'extraSmall';
 }
 
 const networkBadges = {
@@ -35,7 +38,15 @@ const ChainBadge = ({ chainId, size = 'small' }: ChainIconProps) => {
   const { iconSize } = sizeConfigs[size];
 
   return (
-    <Box style={{ height: iconSize, width: iconSize }}>
+    <Box
+      boxShadow={'12px green'}
+      borderRadius="round"
+      style={{
+        height: iconSize,
+        width: iconSize,
+        borderRadius: iconSize,
+      }}
+    >
       <img
         src={networkBadges[chainId]}
         width="100%"

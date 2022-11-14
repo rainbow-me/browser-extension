@@ -94,7 +94,7 @@ function CoinIconWrapper({
       </Box>
       {chainId !== ChainId.mainnet && (
         <Bleed top="12px" left="6px">
-          <ChainBadge chainId={chainId} size="small" />
+          <ChainBadge chainId={chainId} size="extraSmall" />
         </Bleed>
       )}
     </React.Fragment>
