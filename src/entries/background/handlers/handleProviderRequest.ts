@@ -17,12 +17,18 @@ export const DEFAULT_ACCOUNT_2 = '0x5B570F0F8E2a29B7bCBbfC000f9C7b78D45b7C35';
 export const DEFAULT_CHAIN_ID = '0x1';
 
 const openWindow = async () => {
-  const { setWindow } = notificationWindowStore.getState();
+  const { setWindow, window: stateWindow } = notificationWindowStore.getState();
+  if (stateWindow) return;
   const window = await chrome.windows.create({
     url: chrome.runtime.getURL('popup.html'),
     type: 'popup',
     height: 625,
     width: 360,
+  });
+  chrome.windows.onRemoved.addListener((id) => {
+    if (id === window.id) {
+      setWindow(null);
+    }
   });
   setWindow(window);
 };

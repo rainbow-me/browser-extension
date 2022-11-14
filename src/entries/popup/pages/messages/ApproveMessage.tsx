@@ -12,7 +12,7 @@ import { SignMessage } from './SignMessage';
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export const ApproveMessage = () => {
-  const { pendingRequests, removePendingRequest } = usePendingRequestStore();
+  const { pendingRequests } = usePendingRequestStore();
   const { window } = useNotificationWindowStore();
   const pendingRequest = pendingRequests[0];
 
@@ -21,20 +21,21 @@ export const ApproveMessage = () => {
       backgroundMessenger.send(`message:${pendingRequest?.id}`, payload);
       // Wait until the message propagates to the background provider.
       setTimeout(() => {
-        if (window?.id) chrome.windows.remove(window.id);
+        if (window?.id && pendingRequests.length <= 1)
+          chrome.windows.remove(window.id);
       }, 50);
     },
-    [pendingRequest?.id, window?.id],
+    [pendingRequest?.id, pendingRequests.length, window?.id],
   );
 
   const rejectRequest = useCallback(() => {
     backgroundMessenger.send(`message:${pendingRequest?.id}`, false);
-    removePendingRequest(pendingRequest?.id);
     // Wait until the message propagates to the background provider.
     setTimeout(() => {
-      if (window?.id) chrome.windows.remove(window.id);
+      if (window?.id && pendingRequests.length <= 1)
+        chrome.windows.remove(window.id);
     }, 50);
-  }, [pendingRequest?.id, removePendingRequest, window?.id]);
+  }, [pendingRequest?.id, pendingRequests.length, window?.id]);
 
   if (pendingRequest.method === 'eth_requestAccounts') {
     return (
