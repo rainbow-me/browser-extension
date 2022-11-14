@@ -85,7 +85,7 @@
     "@lavamoat/preinstall-always-fail": "1.0.0",
     "@testing-library/react": "13.4.0",
     "@types/chroma-js": "2.1.4",
-    "@types/chrome": "0.0.197",
+    "@types/chrome": "0.0.200",
     "@types/lodash": "4.14.186",
     "@types/node": "18.11.0",
     "@types/react": "18.0.21",
