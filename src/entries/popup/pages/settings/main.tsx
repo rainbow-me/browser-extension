@@ -25,7 +25,6 @@ export function Main() {
             hasSfSymbol
             leftComponent={<SFSymbol symbol="send" />}
             hasRightArrow
-            testID="test"
             onPress={() => navigate('/settings/privacy')}
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.privacy_and_security')} />
@@ -35,7 +34,6 @@ export function Main() {
         <Menu>
           <MenuItem
             hasRightArrow
-            testID="test"
             leftComponent={<SFSymbol symbol="send" />}
             onPress={() => navigate('/settings/transactions')}
             titleComponent={
@@ -44,7 +42,6 @@ export function Main() {
           />
           <MenuItem
             hasRightArrow
-            testID="test"
             leftComponent={<SFSymbol symbol="send" />}
             onPress={() => navigate('/settings/currency')}
             titleComponent={
@@ -53,12 +50,10 @@ export function Main() {
           />
           <MenuItem
             hasChevron
-            testID="test"
             leftComponent={<SFSymbol symbol="send" />}
             titleComponent={<MenuItem.Title text={i18n.t('settings.theme')} />}
           />
           <MenuItem
-            testID="test"
             leftComponent={<SFSymbol symbol="send" />}
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.contacts')} />
@@ -67,29 +62,25 @@ export function Main() {
         </Menu>
         <Menu>
           <MenuItem
-            testID="test"
-            leftComponent={<SFSymbol symbol="send" />}
+            leftComponent={<MenuItem.TextIcon icon="🌈" isEmoji />}
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.share_rainbow')} />
             }
           />
           <MenuItem
-            testID="test"
-            leftComponent={<SFSymbol symbol="send" />}
+            leftComponent={<MenuItem.TextIcon icon="🧠" isEmoji />}
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.learn_about_ethereum')} />
             }
           />
           <MenuItem
-            testID="test"
-            leftComponent={<SFSymbol symbol="send" />}
+            leftComponent={<MenuItem.TextIcon icon="🐦" isEmoji />}
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.follow_us_on_twitter')} />
             }
           />
           <MenuItem
-            testID="test"
-            leftComponent={<SFSymbol symbol="send" />}
+            leftComponent={<MenuItem.TextIcon icon="💬" isEmoji />}
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.feedback_and_support')} />
             }

@@ -17,6 +17,12 @@
     "follow_us_on_twitter": "Follow us on Twitter",
     "feedback_and_support": "Feedback & Support"
   },
+  "privacy_and_security": {
+    "hide_asset_balances": "Hide asset balances",
+    "auto_hide_balances_under_1": " Auto-hide balances under $1",
+    "change_password": "Change Password",
+    "auto_lock_timer": "Auto-Lock Timer"
+  },
   "connected_apps": {
     "title": "Connected Apps",
     "disconnect": "Disconnect All"

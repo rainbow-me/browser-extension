@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Box, Inline, Stack, Text } from '~/design-system';
+import { TextStyles } from '~/design-system/styles/core.css';
 
 import { SFSymbol } from '../SFSymbol/SFSymbol';
 
@@ -13,7 +14,7 @@ interface TextIconProps {
 }
 
 const TextIcon = ({ icon }: TextIconProps) => (
-  <Text color="label" size="16pt" weight="semibold">
+  <Text color="label" size="20pt" weight="semibold">
     {icon}
   </Text>
 );
@@ -29,18 +30,20 @@ const Selection = ({ children }: SelectionProps) => (
 );
 
 interface TitleProps {
+  color?: TextStyles['color'];
   text: string;
   weight?: 'regular' | 'medium' | 'semibold' | 'bold' | 'heavy';
   disabled?: boolean;
   isLink?: boolean;
 }
 
-const Title = ({ text, weight = 'semibold', disabled }: TitleProps) => (
-  <Text
-    color={disabled ? 'labelSecondary' : 'label'}
-    size="14pt"
-    weight={weight}
-  >
+const Title = ({
+  text,
+  weight = 'semibold',
+  disabled,
+  color = 'label',
+}: TitleProps) => (
+  <Text color={disabled ? 'labelSecondary' : color} size="14pt" weight={weight}>
     {text}
   </Text>
 );

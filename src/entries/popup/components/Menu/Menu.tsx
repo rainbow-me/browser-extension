@@ -19,7 +19,7 @@ const Menu = ({ children, description, header }: MenuProps) => {
         </Box>
       )}
       <Box
-        background="surfaceSecondary"
+        background="surfaceSecondaryElevated"
         borderRadius="16px"
         boxShadow="12px"
         width="full"
