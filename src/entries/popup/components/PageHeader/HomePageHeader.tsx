@@ -58,9 +58,9 @@ const HeaderActionButton = ({ symbol }: { symbol: Symbols }) => {
 
 const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
   const [url, setUrl] = React.useState('');
-  const { host, appLogo } = useAppMetadata({ url });
+  const { appHost, appLogo } = useAppMetadata({ url });
   const { updateAppSessionChainId, disconnectAppSession, appSession } =
-    useAppSession({ host });
+    useAppSession({ host: appHost });
 
   chrome?.tabs?.query({ active: true, lastFocusedWindow: true }, (tabs) => {
     const url = tabs[0].url;
@@ -72,16 +72,16 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
   const changeChainId = React.useCallback(
     (chainId: string) => {
       updateAppSessionChainId(Number(chainId));
-      messenger.send(`chainChanged:${host}`, chainId);
+      messenger.send(`chainChanged:${appHost}`, chainId);
     },
-    [host, updateAppSessionChainId],
+    [appHost, updateAppSessionChainId],
   );
 
   const disconnect = React.useCallback(() => {
     disconnectAppSession();
-    messenger.send(`disconnect:${host}`, null);
-  }, [disconnectAppSession, host]);
-  console.log('--- appSession', appSession);
+    messenger.send(`disconnect:${appHost}`, null);
+  }, [disconnectAppSession, appHost]);
+
   return (
     <Menu>
       <MenuTrigger asChild>
@@ -111,13 +111,13 @@ const HeaderLeftMenu = ({ children }: { children: React.ReactNode }) => {
               </Box>
               <Box
                 id={`home-page-header-host-${
-                  appSession ? host : 'not-connected'
+                  appSession ? appHost : 'not-connected'
                 }`}
               >
                 <Rows space="8px">
                   <Row>
                     <Text size="14pt" weight="bold">
-                      {host}
+                      {appHost}
                     </Text>
                   </Row>
                   {!appSession && (

@@ -26,7 +26,7 @@
       "view_on_explorer": "View on Explorer"
     }
   },
-  "approve_request_accounts": {
+  "approve_request": {
     "wallet_info_title": "wants to connect to your wallet",
     "wallet_info_description": "Allow %{appName} to view your wallets address, balance, activity and request approval for transactions.",
     "wallet": "Wallet",
@@ -34,6 +34,9 @@
     "switch_networks": "Switch Networks",
     "switch_wallets": "Switch Wallets",
     "connect": "Connect to %{appName}",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "message_signing_request": "Message Signing Request",
+    "message": "Message",
+    "sign_message": "Sign Message"
   }
 }
