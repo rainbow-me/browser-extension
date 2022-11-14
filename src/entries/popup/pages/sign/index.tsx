@@ -41,8 +41,6 @@ export const Sign = () => {
       console.log('not json string, falling back to personal sign');
     }
 
-    console.log('sending message', action, { address, msgData });
-
     try {
       const { result }: { result: string } = await messenger.send(
         'wallet_action',
@@ -55,7 +53,6 @@ export const Sign = () => {
         },
         { id: uuid4() },
       );
-      console.log('GOT RESULT', result);
       if (result) {
         const actualAddress =
           action === 'sign_typed_data'
