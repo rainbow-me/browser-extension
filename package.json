@@ -66,7 +66,6 @@
     "currency.js": "2.0.4",
     "date-fns": "2.29.3",
     "deepmerge": "4.2.2",
-    "ethereumjs-util": "7.1.5",
     "ethers": "5.7.1",
     "eventemitter3": "4.0.7",
     "framer-motion": "7.6.1",
@@ -164,8 +163,7 @@
       "selenium-webdriver>ws>utf-8-validate": false,
       "vitest>vite>esbuild": false,
       "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": false,
-      "msw": false,
-      "ethereumjs-util>ethereum-cryptography>secp256k1": false
+      "msw": false
     }
   },
   "lint-staged": {

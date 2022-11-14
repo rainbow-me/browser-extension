@@ -5,8 +5,8 @@ import {
   recoverTypedSignature,
 } from '@metamask/eth-sig-util';
 import { uuid4 } from '@sentry/utils';
-import { toChecksumAddress } from 'ethereumjs-util';
 import { ethers } from 'ethers';
+import { getAddress } from 'ethers/lib/utils';
 import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -66,7 +66,7 @@ export const Sign = () => {
               })
             : ethers.utils.verifyMessage(msgData, result);
 
-        if (toChecksumAddress(actualAddress) === address) {
+        if (getAddress(actualAddress) === address) {
           alert(`Message signed succesfully: ${result}`);
           setSignature(result);
         } else {

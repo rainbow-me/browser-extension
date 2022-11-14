@@ -8,7 +8,7 @@ import {
   TypedMessage,
   signTypedData as signTypedDataSigUtil,
 } from '@metamask/eth-sig-util';
-import { toBuffer } from 'ethereumjs-util';
+import { getProvider } from '@wagmi/core';
 import { Signer, Wallet } from 'ethers';
 import { Address } from 'wagmi';
 
@@ -24,7 +24,6 @@ import {
   addHexPrefix,
   identifyWalletType,
 } from '../utils/ethereum';
-import { createWagmiClient } from '../wagmi';
 
 import { keychainManager } from './KeychainManager';
 
@@ -154,7 +153,7 @@ export const sendTransaction = async (
     throw new Error('Missing from address');
   }
   const signer = await keychainManager.getSigner(txPayload.from as Address);
-  const { provider } = await createWagmiClient();
+  const provider = getProvider();
   const wallet = signer.connect(provider);
   return wallet.sendTransaction(txPayload);
 };
@@ -173,7 +172,10 @@ export const signTypedData = async ({
 }: SignTypedDataArguments): Promise<string> => {
   const signer = (await keychainManager.getSigner(address)) as Wallet;
 
-  const pkeyBuffer = toBuffer(addHexPrefix(signer.privateKey));
+  const pkeyBuffer = Buffer.from(
+    addHexPrefix(signer.privateKey).substring(2),
+    'hex',
+  );
   const parsedData = msgData;
 
   // There are 3 types of messages
