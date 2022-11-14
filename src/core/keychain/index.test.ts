@@ -247,7 +247,7 @@ test('[keychain/index] :: should be able to send transactions', async () => {
   expect(receipt.status).toBe(1);
   expect(receipt.blockNumber).toBeGreaterThan(0);
   expect(receipt.confirmations).toBeGreaterThan(0);
-});
+}, 10000);
 
 afterAll(async () => {
   try {
