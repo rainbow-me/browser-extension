@@ -7,10 +7,6 @@ import { SFSymbol } from '../SFSymbol/SFSymbol';
 
 interface TextIconProps {
   icon: string;
-  disabled?: boolean;
-  isLink?: boolean;
-  colorOverride?: string;
-  isEmoji?: boolean;
 }
 
 const TextIcon = ({ icon }: TextIconProps) => (
@@ -32,18 +28,10 @@ const Selection = ({ children }: SelectionProps) => (
 interface TitleProps {
   color?: TextStyles['color'];
   text: string;
-  weight?: 'regular' | 'medium' | 'semibold' | 'bold' | 'heavy';
-  disabled?: boolean;
-  isLink?: boolean;
 }
 
-const Title = ({
-  text,
-  weight = 'semibold',
-  disabled,
-  color = 'label',
-}: TitleProps) => (
-  <Text color={disabled ? 'labelSecondary' : color} size="14pt" weight={weight}>
+const Title = ({ text }: TitleProps) => (
+  <Text color="labelSecondary" size="14pt" weight="semibold">
     {text}
   </Text>
 );
@@ -53,13 +41,9 @@ interface LabelProps {
   warn?: boolean;
 }
 
-const Label = ({ text, warn }: LabelProps) => {
+const Label = ({ text }: LabelProps) => {
   return (
-    <Text
-      color={warn ? 'orange' : 'labelSecondary'}
-      size="14pt"
-      weight="semibold"
-    >
+    <Text color="labelSecondary" size="14pt" weight="medium">
       {text}
     </Text>
   );

@@ -42,9 +42,7 @@ export function Currency() {
         <Menu>
           {currencies.map((currency) => (
             <MenuItem
-              leftComponent={
-                <MenuItem.TextIcon icon={currency.emoji} isEmoji />
-              }
+              leftComponent={<MenuItem.TextIcon icon={currency.emoji} />}
               key={currency.name}
               hasSfSymbol
               titleComponent={<MenuItem.Title text={currency.name} />}

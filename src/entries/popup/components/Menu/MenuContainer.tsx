@@ -8,7 +8,7 @@ interface MenuContainerProps {
 }
 const MenuContainer = ({ children, testID }: MenuContainerProps) => {
   return (
-    <Box paddingHorizontal="20px" testId={testID}>
+    <Box testId={testID}>
       <Stack space="20px">{children}</Stack>
     </Box>
   );

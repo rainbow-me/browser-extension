@@ -62,25 +62,25 @@ export function Main() {
         </Menu>
         <Menu>
           <MenuItem
-            leftComponent={<MenuItem.TextIcon icon="🌈" isEmoji />}
+            leftComponent={<MenuItem.TextIcon icon="🌈" />}
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.share_rainbow')} />
             }
           />
           <MenuItem
-            leftComponent={<MenuItem.TextIcon icon="🧠" isEmoji />}
+            leftComponent={<MenuItem.TextIcon icon="🧠" />}
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.learn_about_ethereum')} />
             }
           />
           <MenuItem
-            leftComponent={<MenuItem.TextIcon icon="🐦" isEmoji />}
+            leftComponent={<MenuItem.TextIcon icon="🐦" />}
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.follow_us_on_twitter')} />
             }
           />
           <MenuItem
-            leftComponent={<MenuItem.TextIcon icon="💬" isEmoji />}
+            leftComponent={<MenuItem.TextIcon icon="💬" />}
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.feedback_and_support')} />
             }
