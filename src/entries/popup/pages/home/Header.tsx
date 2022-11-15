@@ -1,5 +1,6 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
 import { Box, Inline, Inset, Stack, Text } from '~/design-system';

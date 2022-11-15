@@ -18,6 +18,11 @@ globalStyle('*::-webkit-scrollbar', {
   display: 'none',
 });
 
+globalStyle('a', {
+  textDecoration: 'none',
+  cursor: 'default',
+});
+
 globalStyle('div[data-radix-popper-content-wrapper]', {
   zIndex: '999 !important',
 });
