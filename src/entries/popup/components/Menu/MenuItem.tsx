@@ -73,44 +73,36 @@ const MenuItem = ({
   disabled,
   hasChevron,
   testID,
-}: MenuItemProps) => {
-  const Item = () => (
-    <Box
-      justifyContent="center"
-      paddingHorizontal="16px"
-      paddingVertical="16px"
-      testId={disabled ? testID : undefined}
-      width="full"
-      onClick={onPress}
-      style={{
-        cursor: disabled ? 'default' : 'pointer',
-      }}
-    >
-      <Inline alignHorizontal="justify" alignVertical="center">
-        <Inline alignVertical="center" space="16px">
-          {leftComponent && <Box alignItems="center">{leftComponent}</Box>}
-          <Stack space="8px">
-            {titleComponent}
-            {labelComponent}
-          </Stack>
-        </Inline>
-        <Inline alignVertical="center" space="8px">
-          {rightComponent}
-          {hasRightArrow && <SFSymbol symbol="chevronRight" size={12} />}
-          {hasChevron && <SFSymbol symbol="chevronUpChevronDown" size={12} />}
-        </Inline>
+}: MenuItemProps) => (
+  <Box
+    justifyContent="center"
+    paddingHorizontal="16px"
+    paddingVertical="16px"
+    testId={disabled ? testID : undefined}
+    width="full"
+    onClick={onPress}
+    style={{
+      cursor: disabled ? 'default' : 'pointer',
+    }}
+  >
+    <Inline alignHorizontal="justify" alignVertical="center">
+      <Inline alignVertical="center" space="16px">
+        {leftComponent && <Box alignItems="center">{leftComponent}</Box>}
+        <Stack space="8px">
+          {titleComponent}
+          {labelComponent}
+        </Stack>
       </Inline>
-    </Box>
-  );
-
-  return disabled ? (
-    <Item />
-  ) : (
-    // TODO: <animate>
-    <Item />
-    // TODO: </animate>
-  );
-};
+      <Inline alignVertical="center" space="8px">
+        {rightComponent}
+        {hasRightArrow && (
+          <SFSymbol symbol="chevronRight" size={12} color="label" />
+        )}
+        {hasChevron && <SFSymbol symbol="chevronUpChevronDown" size={12} />}
+      </Inline>
+    </Inline>
+  </Box>
+);
 
 MenuItem.Label = Label;
 MenuItem.Selection = Selection;

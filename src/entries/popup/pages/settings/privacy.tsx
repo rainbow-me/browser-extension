@@ -18,63 +18,80 @@ export function Privacy() {
       animate={{ opacity: 1, x: 0 }}
       transition={menuTransition}
     >
-      <MenuContainer testID="settings-menu-container">
-        <Menu>
-          <MenuItem
-            hasSfSymbol
-            leftComponent={<SFSymbol symbol="send" />}
-            titleComponent={
-              <MenuItem.Title
-                text={i18n.t('privacy_and_security.hide_asset_balances')}
-              />
-            }
-          />
-          <MenuItem
-            hasSfSymbol
-            titleComponent={
-              <MenuItem.Title
-                text={i18n.t('privacy_and_security.auto_hide_balances_under_1')}
-              />
-            }
-          />
-        </Menu>
-        <Menu>
-          <MenuItem
-            hasSfSymbol
-            hasRightArrow
-            titleComponent={
-              <MenuItem.Title
-                text={i18n.t('privacy_and_security.change_password')}
-              />
-            }
-          />
-          <MenuItem
-            hasSfSymbol
-            hasRightArrow
-            titleComponent={
-              <MenuItem.Title
-                text={i18n.t('privacy_and_security.auto_lock_timer')}
-              />
-            }
-          />
-        </Menu>
-        <Menu>
-          <MenuItem
-            hasSfSymbol
-            hasRightArrow
-            titleComponent={
-              <MenuItem.Title color="red" text="View Private Key" />
-            }
-          />
-          <MenuItem
-            hasSfSymbol
-            hasRightArrow
-            titleComponent={
-              <MenuItem.Title color="red" text="View Secret Recovery Phrase" />
-            }
-          />
-        </Menu>
-      </MenuContainer>
+      <PageHeader
+        title="Privacy & Security"
+        leftRoute="/settings"
+        leftSymbol="arrowLeft"
+      />
+      <Box paddingHorizontal="20px">
+        <MenuContainer testID="settings-menu-container">
+          <Menu>
+            <MenuItem
+              hasSfSymbol
+              leftComponent={<SFSymbol symbol="send" />}
+              titleComponent={
+                <MenuItem.Title
+                  text={i18n.t('privacy_and_security.hide_asset_balances')}
+                />
+              }
+            />
+            <MenuItem
+              hasSfSymbol
+              titleComponent={
+                <MenuItem.Title
+                  text={i18n.t(
+                    'privacy_and_security.auto_hide_balances_under_1',
+                  )}
+                />
+              }
+            />
+          </Menu>
+          <Menu>
+            <MenuItem
+              hasSfSymbol
+              hasRightArrow
+              titleComponent={
+                <MenuItem.Title
+                  text={i18n.t('privacy_and_security.change_password')}
+                />
+              }
+            />
+            <MenuItem
+              hasSfSymbol
+              hasRightArrow
+              titleComponent={
+                <MenuItem.Title
+                  text={i18n.t('privacy_and_security.auto_lock_timer')}
+                />
+              }
+            />
+          </Menu>
+          <Menu>
+            <MenuItem
+              hasSfSymbol
+              hasRightArrow
+              titleComponent={
+                <MenuItem.Title
+                  color="red"
+                  text={i18n.t('privacy_and_security.view_private_key')}
+                />
+              }
+            />
+            <MenuItem
+              hasSfSymbol
+              hasRightArrow
+              titleComponent={
+                <MenuItem.Title
+                  color="red"
+                  text={i18n.t(
+                    'privacy_and_security.view_secret_recovery_phrase',
+                  )}
+                />
+              }
+            />
+          </Menu>
+        </MenuContainer>
+      </Box>
     </Box>
   );
 }

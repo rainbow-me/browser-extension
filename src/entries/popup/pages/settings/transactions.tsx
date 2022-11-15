@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import React from 'react';
 
+import { i18n } from '~/core/languages';
 import { Box } from '~/design-system';
 import { menuTransition } from '~/entries/popup/utils/animation';
 
@@ -16,19 +17,30 @@ export function Transactions() {
       animate={{ opacity: 1, x: 0 }}
       transition={menuTransition}
     >
-      <MenuContainer testID="settings-menu-container">
-        <Menu>
-          <MenuItem
-            hasSfSymbol
-            hasChevron
-            titleComponent={<MenuItem.Title text="Default Speed" />}
-          />
-          <MenuItem
-            hasSfSymbol
-            titleComponent={<MenuItem.Title text="Use Flashbots" />}
-          />
-        </Menu>
-      </MenuContainer>
+      <PageHeader
+        title="Transactions"
+        leftRoute="/settings"
+        leftSymbol="arrowLeft"
+      />
+      <Box paddingHorizontal="20px">
+        <MenuContainer testID="settings-menu-container">
+          <Menu>
+            <MenuItem
+              hasSfSymbol
+              hasChevron
+              titleComponent={
+                <MenuItem.Title text={i18n.t('transactions.default_speed')} />
+              }
+            />
+            <MenuItem
+              hasSfSymbol
+              titleComponent={
+                <MenuItem.Title text={i18n.t('transactions.use_flashbots')} />
+              }
+            />
+          </Menu>
+        </MenuContainer>
+      </Box>
     </Box>
   );
 }

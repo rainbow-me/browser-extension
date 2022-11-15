@@ -19,74 +19,87 @@ export function Main() {
       animate={{ opacity: 1, x: 0 }}
       transition={menuTransition}
     >
-      <MenuContainer testID="settings-menu-container">
-        <Menu>
-          <MenuItem
-            hasSfSymbol
-            leftComponent={<SFSymbol symbol="send" />}
-            hasRightArrow
-            onPress={() => navigate('/settings/privacy')}
-            titleComponent={
-              <MenuItem.Title text={i18n.t('settings.privacy_and_security')} />
-            }
-          />
-        </Menu>
-        <Menu>
-          <MenuItem
-            hasRightArrow
-            leftComponent={<SFSymbol symbol="send" />}
-            onPress={() => navigate('/settings/transactions')}
-            titleComponent={
-              <MenuItem.Title text={i18n.t('settings.transactions')} />
-            }
-          />
-          <MenuItem
-            hasRightArrow
-            leftComponent={<SFSymbol symbol="send" />}
-            onPress={() => navigate('/settings/currency')}
-            titleComponent={
-              <MenuItem.Title text={i18n.t('settings.currency')} />
-            }
-          />
-          <MenuItem
-            hasChevron
-            leftComponent={<SFSymbol symbol="send" />}
-            titleComponent={<MenuItem.Title text={i18n.t('settings.theme')} />}
-          />
-          <MenuItem
-            leftComponent={<SFSymbol symbol="send" />}
-            titleComponent={
-              <MenuItem.Title text={i18n.t('settings.contacts')} />
-            }
-          />
-        </Menu>
-        <Menu>
-          <MenuItem
-            leftComponent={<MenuItem.TextIcon icon="🌈" />}
-            titleComponent={
-              <MenuItem.Title text={i18n.t('settings.share_rainbow')} />
-            }
-          />
-          <MenuItem
-            leftComponent={<MenuItem.TextIcon icon="🧠" />}
-            titleComponent={
-              <MenuItem.Title text={i18n.t('settings.learn_about_ethereum')} />
-            }
-          />
-          <MenuItem
-            leftComponent={<MenuItem.TextIcon icon="🐦" />}
-            titleComponent={
-              <MenuItem.Title text={i18n.t('settings.follow_us_on_twitter')} />
-            }
-          />
-          <MenuItem
-            leftComponent={<MenuItem.TextIcon icon="💬" />}
-            titleComponent={
-              <MenuItem.Title text={i18n.t('settings.feedback_and_support')} />
-            }
-          />
-        </Menu>
-      </MenuContainer>
+      <PageHeader title="Settings" leftRoute="/" leftSymbol="arrowLeft" />
+      <Box paddingHorizontal="20px">
+        <MenuContainer testID="settings-menu-container">
+          <Menu>
+            <MenuItem
+              hasSfSymbol
+              leftComponent={<SFSymbol symbol="send" />}
+              hasRightArrow
+              onPress={() => navigate('/settings/privacy')}
+              titleComponent={
+                <MenuItem.Title
+                  text={i18n.t('settings.privacy_and_security')}
+                />
+              }
+            />
+          </Menu>
+          <Menu>
+            <MenuItem
+              hasRightArrow
+              leftComponent={<SFSymbol symbol="send" />}
+              onPress={() => navigate('/settings/transactions')}
+              titleComponent={
+                <MenuItem.Title text={i18n.t('settings.transactions')} />
+              }
+            />
+            <MenuItem
+              hasRightArrow
+              leftComponent={<SFSymbol symbol="send" />}
+              onPress={() => navigate('/settings/currency')}
+              titleComponent={
+                <MenuItem.Title text={i18n.t('settings.currency')} />
+              }
+            />
+            <MenuItem
+              hasChevron
+              leftComponent={<SFSymbol symbol="send" />}
+              titleComponent={
+                <MenuItem.Title text={i18n.t('settings.theme')} />
+              }
+            />
+            <MenuItem
+              leftComponent={<SFSymbol symbol="send" />}
+              titleComponent={
+                <MenuItem.Title text={i18n.t('settings.contacts')} />
+              }
+            />
+          </Menu>
+          <Menu>
+            <MenuItem
+              leftComponent={<MenuItem.TextIcon icon="🌈" />}
+              titleComponent={
+                <MenuItem.Title text={i18n.t('settings.share_rainbow')} />
+              }
+            />
+            <MenuItem
+              leftComponent={<MenuItem.TextIcon icon="🧠" />}
+              titleComponent={
+                <MenuItem.Title
+                  text={i18n.t('settings.learn_about_ethereum')}
+                />
+              }
+            />
+            <MenuItem
+              leftComponent={<MenuItem.TextIcon icon="🐦" />}
+              titleComponent={
+                <MenuItem.Title
+                  text={i18n.t('settings.follow_us_on_twitter')}
+                />
+              }
+            />
+            <MenuItem
+              leftComponent={<MenuItem.TextIcon icon="💬" />}
+              titleComponent={
+                <MenuItem.Title
+                  text={i18n.t('settings.feedback_and_support')}
+                />
+              }
+            />
+          </Menu>
+        </MenuContainer>
+      </Box>
       <Box
         padding="20px"
         alignItems="center"

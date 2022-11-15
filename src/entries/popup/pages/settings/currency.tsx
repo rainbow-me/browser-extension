@@ -38,18 +38,25 @@ export function Currency() {
       animate={{ opacity: 1, x: 0 }}
       transition={menuTransition}
     >
-      <MenuContainer testID="settings-menu-container">
-        <Menu>
-          {currencies.map((currency) => (
-            <MenuItem
-              leftComponent={<MenuItem.TextIcon icon={currency.emoji} />}
-              key={currency.name}
-              hasSfSymbol
-              titleComponent={<MenuItem.Title text={currency.name} />}
-            />
-          ))}
-        </Menu>
-      </MenuContainer>
+      <PageHeader
+        title="Currency"
+        leftRoute="/settings"
+        leftSymbol="arrowLeft"
+      />
+      <Box paddingHorizontal="20px">
+        <MenuContainer testID="settings-menu-container">
+          <Menu>
+            {currencies.map((currency) => (
+              <MenuItem
+                leftComponent={<MenuItem.TextIcon icon={currency.emoji} />}
+                key={currency.name}
+                hasSfSymbol
+                titleComponent={<MenuItem.Title text={currency.name} />}
+              />
+            ))}
+          </Menu>
+        </MenuContainer>
+      </Box>
     </Box>
   );
 }
