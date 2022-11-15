@@ -38,7 +38,10 @@ it('Should open the popup', async () => {
 });
 
 it('should display account name', async () => {
-  const label = await querySelector(driver, '[data-testid="account-name"]');
+  const label = await querySelector(
+    driver,
+    '[data-testid="header"] [data-testid="account-name"]',
+  );
   const actual = await label.getText();
   const expected = '0x70c1...43C4';
   expect(actual).toEqual(expected);
@@ -47,7 +50,10 @@ it('should display account name', async () => {
 it('should shuffle account', async () => {
   await delay(500);
   await driver.findElement({ id: 'account-name-shuffle' }).click();
-  const label = await querySelector(driver, '[data-testid="account-name"]');
+  const label = await querySelector(
+    driver,
+    '[data-testid="header"] [data-testid="account-name"]',
+  );
   const actual = await label.getText();
   const expected = '0x5B57...7C35';
   expect(actual).toEqual(expected);

@@ -31,6 +31,7 @@ export function Header() {
       justifyContent="space-between"
       position="relative"
       paddingTop="44px"
+      testId="header"
     >
       <Inset>
         <Stack alignHorizontal="center" space="16px">
