@@ -125,13 +125,20 @@ function NameSection() {
 function ActionButtonsSection() {
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
+  const handleCopy = React.useCallback(() => {
+    navigator.clipboard.writeText(address as string);
+  }, [address]);
   return (
     <Box style={{ height: 56 }}>
       {avatar?.color && (
         <Inline space="12px">
-          <ActionButton symbol="copy" text="Copy" />
+          <Link onClick={handleCopy} to={''}>
+            <ActionButton symbol="copy" text="Copy" />
+          </Link>
           <ActionButton symbol="swap" text="Swap" />
-          <ActionButton symbol="send" text="Send" />
+          <Link to="/send">
+            <ActionButton symbol="send" text="Send" />
+          </Link>
         </Inline>
       )}
     </Box>

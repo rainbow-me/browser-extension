@@ -53,23 +53,6 @@ it('should shuffle account', async () => {
   expect(actual).toEqual(expected);
 });
 
-it('should be able to turn ON injection', async () => {
-  let label = await querySelector(driver, '[data-testid="injection-status"]');
-  let actual = await label.getText();
-  let expected = 'NO';
-  expect(actual).toEqual(expected);
-
-  await driver.findElement({ id: 'injection-button' }).click();
-  // Wait till the DOM re-renders
-  await delay(1000);
-
-  label = await querySelector(driver, '[data-testid="injection-status"]');
-  actual = await label.getText();
-  expected = 'YES';
-
-  expect(actual).toEqual(expected);
-});
-
 it('should be able to connect to bx test dapp', async () => {
   await driver.get('https://bx-test-dapp.vercel.app/');
   const dappHandler = await driver.getWindowHandle();

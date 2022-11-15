@@ -408,20 +408,23 @@ function selectForegroundColors<
   return colors;
 }
 
-export const textColors = selectForegroundColors(
-  'label',
-  'labelSecondary',
-  'labelTertiary',
-  'labelQuaternary',
+export const genericColors = selectForegroundColors(
   'blue',
   'green',
-  'red',
-  'purple',
-  'pink',
   'orange',
+  'pink',
+  'purple',
+  'red',
   'yellow',
 );
-export type TextColor = typeof textColors[number];
+export type GenericColor = typeof genericColors[number];
+
+export const scrimColors = selectForegroundColors(
+  'scrim',
+  'scrimSecondary',
+  'scrimTertiary',
+);
+export type ScrimColor = typeof scrimColors[number];
 
 export const strokeColors = selectForegroundColors(
   'buttonStroke',
@@ -436,19 +439,17 @@ export const separatorColors = selectForegroundColors(
 );
 export type SeparatorColor = typeof separatorColors[number];
 
-export const shadowColors = [
-  'accent',
-  ...selectForegroundColors(
-    'blue',
-    'green',
-    'red',
-    'purple',
-    'pink',
-    'orange',
-    'yellow',
-  ),
-] as const;
+export const shadowColors = ['accent', ...genericColors] as const;
 export type ShadowColor = typeof shadowColors[number];
+
+export const textColors = selectForegroundColors(
+  'label',
+  'labelSecondary',
+  'labelTertiary',
+  'labelQuaternary',
+  ...genericColors,
+);
+export type TextColor = typeof textColors[number];
 
 export const space = {
   '2px': 2,
