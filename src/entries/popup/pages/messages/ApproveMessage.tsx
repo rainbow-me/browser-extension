@@ -1,3 +1,4 @@
+import { uuid4 } from '@sentry/utils';
 import React, { useCallback } from 'react';
 import { Address } from 'wagmi';
 
@@ -5,6 +6,7 @@ import { initializeMessenger } from '~/core/messengers';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { SignMethods } from '~/core/types/signMethods';
+import { WalletActions } from '~/core/types/walletActions';
 import { Box, Text } from '~/design-system';
 
 import { RequestAccounts } from './RequestAccounts';
@@ -19,8 +21,17 @@ export const ApproveMessage = () => {
   const pendingRequest = pendingRequests[0];
 
   const approveRequest = useCallback(
-    (payload?: { address: Address; chainId: number }) => {
-      backgroundMessenger.send(`message:${pendingRequest?.id}`, payload);
+    async (payload?: { address: Address; chainId: number }) => {
+      const { result }: { result: unknown } = await backgroundMessenger.send(
+        WalletActions.action,
+        {
+          action: WalletActions.personal_sign,
+          payload,
+        },
+        { id: uuid4() },
+      );
+
+      backgroundMessenger.send(`message:${pendingRequest?.id}`, { result });
       // Wait until the message propagates to the background provider.
       setTimeout(() => {
         if (window?.id && pendingRequests.length <= 1)

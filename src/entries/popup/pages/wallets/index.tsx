@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Address, useAccount, useEnsName } from 'wagmi';
 
 import { useCurrentAddressStore } from '~/core/state';
+import { WalletActions } from '~/core/types/walletActions';
 import { EthereumWalletSeed, isENSAddressFormat } from '~/core/utils/ethereum';
 import { Box, Column, Columns, Separator, Text } from '~/design-system';
 
@@ -21,7 +22,7 @@ function PasswordForm({
   onPasswordChanged,
 }: {
   title: string;
-  action: string;
+  action: keyof typeof WalletActions;
   onSubmit: () => void;
   onPasswordChanged: (pwd: string) => void;
 }) {
@@ -58,7 +59,9 @@ function PasswordForm({
       <input
         type="password"
         value={password}
-        placeholder={action === 'update_password' ? 'New password' : 'Password'}
+        placeholder={
+          action === WalletActions.update_password ? 'New password' : 'Password'
+        }
         onChange={handlePasswordChange}
         style={{ borderRadius: 999, padding: '10px', fontSize: '11pt' }}
       />
@@ -71,7 +74,7 @@ function PasswordForm({
         style={{ borderRadius: 999 }}
       >
         <Text color="label" size="14pt" weight="bold">
-          {action === 'update_password' ? 'Set Password' : 'Unlock'}
+          {action === WalletActions.update_password ? 'Set Password' : 'Unlock'}
         </Text>
       </Box>
 
@@ -453,7 +456,9 @@ export function Wallets() {
       ) : (
         <PasswordForm
           title={isNewUser ? 'Set a password to protect your wallet' : 'Login'}
-          action={isNewUser ? 'update_password' : 'unlock'}
+          action={
+            isNewUser ? WalletActions.update_password : WalletActions.unlock
+          }
           onPasswordChanged={updatePassword}
           onSubmit={updateState}
         />

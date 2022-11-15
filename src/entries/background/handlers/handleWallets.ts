@@ -23,6 +23,7 @@ import {
 } from '~/core/keychain';
 import { keychainManager } from '~/core/keychain/KeychainManager';
 import { initializeMessenger } from '~/core/messengers';
+import { WalletActions } from '~/core/types/walletActions';
 import { EthereumWalletSeed } from '~/core/utils/ethereum';
 
 type WalletActionArguments = {
@@ -54,22 +55,22 @@ const messenger = initializeMessenger({ connect: 'popup' });
  */
 export const handleWallets = () =>
   messenger.reply(
-    'wallet_action',
+    WalletActions.action,
     async ({ action, payload }: WalletActionArguments) => {
       console.debug(keychainManager);
       try {
         let response = null;
         switch (action) {
-          case 'status':
+          case WalletActions.status:
             response = {
               hasVault: await hasVault(),
               unlocked: await isVaultUnlocked(),
             };
             break;
-          case 'lock':
+          case WalletActions.lock:
             response = await lockVault();
             break;
-          case 'update_password': {
+          case WalletActions.update_password: {
             const { password, newPassword } = payload as {
               password: string;
               newPassword: string;
@@ -78,28 +79,28 @@ export const handleWallets = () =>
 
             break;
           }
-          case 'wipe':
+          case WalletActions.wipe:
             response = await wipeVault(payload as string);
             break;
-          case 'unlock':
+          case WalletActions.unlock:
             response = await unlockVault(payload as string);
             break;
-          case 'create':
+          case WalletActions.create:
             response = await createWallet();
             break;
-          case 'import':
+          case WalletActions.import:
             response = await importWallet(payload as EthereumWalletSeed);
             break;
-          case 'add':
+          case WalletActions.add:
             response = await addNewAccount(payload as Address);
             break;
-          case 'remove':
+          case WalletActions.remove:
             response = await removeAccount(payload as Address);
             break;
-          case 'get_accounts':
+          case WalletActions.get_accounts:
             response = await getAccounts();
             break;
-          case 'export_wallet': {
+          case WalletActions.export_wallet: {
             const { address, password } = payload as {
               address: Address;
               password: string;
@@ -107,7 +108,7 @@ export const handleWallets = () =>
             response = await exportKeychain(address, password);
             break;
           }
-          case 'export_account': {
+          case WalletActions.export_account: {
             const { address, password } = payload as {
               address: Address;
               password: string;
@@ -115,7 +116,7 @@ export const handleWallets = () =>
             response = await exportAccount(address, password);
             break;
           }
-          case 'send_transaction': {
+          case WalletActions.send_transaction: {
             const provider = getProvider();
             response = await sendTransaction(
               payload as TransactionRequest,
@@ -123,10 +124,10 @@ export const handleWallets = () =>
             );
             break;
           }
-          case 'personal_sign':
+          case WalletActions.personal_sign:
             response = await signMessage(payload as SignMessageArguments);
             break;
-          case 'sign_typed_data':
+          case WalletActions.sign_typed_data:
             response = await signTypedData(payload as SignTypedDataArguments);
             break;
           default: {

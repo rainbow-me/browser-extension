@@ -11,6 +11,7 @@ import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
+import { WalletActions } from '~/core/types/walletActions';
 import { Box, Column, Columns, Row, Rows, Text } from '~/design-system';
 
 import { personalSign, signTypedData } from '../../handlers/wallet';
@@ -31,17 +32,17 @@ export const Sign = () => {
   const handleSign = useCallback(async () => {
     if (!address) return;
     let msgData = message;
-    let action = 'personal_sign';
+    let action = WalletActions.personal_sign;
     let result: string;
     setSigning(true);
     try {
       msgData = JSON.parse(message);
-      action = 'sign_typed_data';
+      action = WalletActions.sign_typed_data;
     } catch (e) {
       console.log('not json string, falling back to personal sign');
     } finally {
       result =
-        action === 'personal_sign'
+        action === WalletActions.personal_sign
           ? await personalSign(msgData, address)
           : await signTypedData(msgData, address);
     }
@@ -49,7 +50,7 @@ export const Sign = () => {
     try {
       if (result) {
         const actualAddress =
-          action === 'sign_typed_data'
+          action === WalletActions.sign_typed_data
             ? recoverTypedSignature({
                 data: msgData as unknown as TypedMessage<MessageTypes>,
                 signature: result,
