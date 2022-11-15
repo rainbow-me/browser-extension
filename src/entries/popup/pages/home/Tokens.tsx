@@ -9,8 +9,6 @@ import { Box, Column, Columns, Text } from '~/design-system';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 
-import { InjectToggle } from '../../components/_dev/InjectToggle';
-
 export function Tokens() {
   const { address } = useAccount();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
@@ -20,7 +18,6 @@ export function Tokens() {
   );
   return (
     <Box marginTop="-20px">
-      <InjectToggle />
       {assets?.map((asset, i) => (
         <AssetRow key={`${asset?.uniqueId}-${i}`} uniqueId={asset?.uniqueId} />
       ))}
