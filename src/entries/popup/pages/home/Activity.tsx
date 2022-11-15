@@ -258,7 +258,7 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
   return (
     <CoinRow
       asset={asset}
-      symbol={symbol}
+      fallbackText={symbol}
       topRow={topRow}
       bottomRow={bottomRow}
     />

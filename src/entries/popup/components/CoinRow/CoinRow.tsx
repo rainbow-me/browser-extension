@@ -26,12 +26,12 @@ function RowHighlightWrapper({ children }: { children: ReactNode }) {
 
 export function CoinRow({
   asset,
-  symbol,
+  fallbackText,
   topRow,
   bottomRow,
 }: {
   asset?: ParsedAsset | ParsedAddressAsset;
-  symbol?: string;
+  fallbackText?: string;
   topRow: ReactNode;
   bottomRow: ReactNode;
 }) {
@@ -43,7 +43,7 @@ export function CoinRow({
             <Row>
               <Columns alignVertical="center">
                 <Column width="content">
-                  <CoinIcon asset={asset} symbol={symbol} />
+                  <CoinIcon asset={asset} fallbackText={fallbackText} />
                 </Column>
                 <Column>
                   <Rows>

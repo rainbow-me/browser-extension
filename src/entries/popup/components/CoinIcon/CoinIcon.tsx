@@ -15,13 +15,13 @@ import { ChainBadge } from '../ChainBadge/ChainBadge';
 
 export function CoinIcon({
   asset,
-  symbol,
+  fallbackText,
 }: {
   asset?: ParsedAsset | ParsedAddressAsset;
-  symbol?: string;
+  fallbackText?: string;
 }) {
   const [showImage, setShowImage] = React.useState(true);
-  const sym = asset?.symbol || symbol || '';
+  const sym = asset?.symbol || fallbackText || '';
 
   const localImage = CoinIconsImages[capitalize(sym)];
   const formattedSymbol = formatSymbol(sym, 36);
