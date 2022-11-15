@@ -98,7 +98,6 @@ function ShadowWrapper({
     );
   }
 
-  // this feels kludgy but idk how to conditionally add boxShadow w/o props spread
   return (
     <Box
       background="fill"
