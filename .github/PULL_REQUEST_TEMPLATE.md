@@ -1,5 +1,3 @@
-**⚠️⚠️⚠️ ENSURE YOU HAVE TESTED THE CHANGES IN A LAVAMOAT BUNDLE VIA `yarn build` ⚠️⚠️⚠️**
-
 Fixes RNBW-####
 Figma link (if any):
 
