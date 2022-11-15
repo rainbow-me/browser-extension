@@ -80,11 +80,12 @@ export const handleProviderRequest = ({
       let response = null;
 
       switch (method) {
-        case 'eth_chainId':
+        case 'eth_chainId': {
           response = activeSession
             ? addHexPrefix(convertStringToHex(String(activeSession.chainId)))
             : DEFAULT_CHAIN_ID;
           break;
+        }
         case 'eth_accounts': {
           response = activeSession ? [activeSession.address] : [];
           break;
@@ -97,7 +98,7 @@ export const handleProviderRequest = ({
         case 'eth_signTypedData_v3':
         case 'eth_signTypedData_v4': {
           {
-            await messengerProviderRequest(messenger, {
+            response = await messengerProviderRequest(messenger, {
               method,
               id,
               params,

@@ -1,4 +1,5 @@
 import { isAddress, isHexString } from 'ethers/lib/utils';
+import { Address } from 'wagmi';
 
 import { supportedCurrencies } from '../references';
 import { ProviderRequestPayload } from '../transports/providerRequestTransport';
@@ -24,18 +25,25 @@ export const getRequestDisplayDetails = (payload: ProviderRequestPayload) => {
     }
     case SignMethods.ethSign: {
       const message = payload?.params?.[1] as string;
-      return { message };
+      const address = payload?.params?.[0] as Address;
+      return { message, msgData: message, address };
     }
     case SignMethods.personalSign: {
-      let message = payload?.params?.[0] as string;
+      console.log('PERSONAL SIGNNNN payload?.params', payload?.params);
+      let message = payload?.params?.[2] as string;
+      const address = payload?.params?.[1] as Address;
       try {
         if (isHexString(message)) {
           message = convertHexToString(message);
         }
+        // const stripped = normalizedMsg.substring(2);
+        // const buff = Buffer.from(stripped, 'hex');
+        // msg = buff.toString('utf8');
       } catch (error) {
         // TODO error handling
       }
-      return { message };
+      console.log('---- message', message);
+      return { message, msgData: message, address };
     }
     default: {
       // There's a lot of inconsistency in the parameter order for this method
@@ -49,10 +57,17 @@ export const getRequestDisplayDetails = (payload: ProviderRequestPayload) => {
           const firstParamIsAddresss = isAddress(
             (payload?.params?.[0] as string) ?? '',
           );
-          const data = (
-            firstParamIsAddresss ? payload?.params?.[1] : payload?.params?.[0]
-          ) as string;
-          return { message: JSON.stringify(data) };
+          const data = payload?.params?.[
+            firstParamIsAddresss ? 1 : 0
+          ] as string;
+          const address = payload?.params?.[
+            firstParamIsAddresss ? 0 : 1
+          ] as Address;
+          return {
+            message: JSON.stringify(data),
+            msgData: data,
+            address,
+          };
         }
       }
     }

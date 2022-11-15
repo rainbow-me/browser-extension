@@ -1,12 +1,9 @@
-import { uuid4 } from '@sentry/utils';
 import React, { useCallback } from 'react';
-import { Address } from 'wagmi';
 
 import { initializeMessenger } from '~/core/messengers';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { SignMethods } from '~/core/types/signMethods';
-import { WalletActions } from '~/core/types/walletActions';
 import { Box, Text } from '~/design-system';
 
 import { RequestAccounts } from './RequestAccounts';
@@ -21,24 +18,15 @@ export const ApproveMessage = () => {
   const pendingRequest = pendingRequests[0];
 
   const approveRequest = useCallback(
-    async (payload?: { address: Address; chainId: number }) => {
-      const { result }: { result: unknown } = await backgroundMessenger.send(
-        WalletActions.action,
-        {
-          action: WalletActions.personal_sign,
-          payload,
-        },
-        { id: uuid4() },
-      );
-
-      backgroundMessenger.send(`message:${pendingRequest?.id}`, { result });
+    async (payload?: unknown) => {
+      backgroundMessenger.send(`message:${pendingRequest?.id}`, payload);
       // Wait until the message propagates to the background provider.
       setTimeout(() => {
         if (window?.id && pendingRequests.length <= 1)
-          chrome.windows.remove(window.id);
+          chrome.windows.remove(window?.id);
       }, 50);
     },
-    [pendingRequest?.id, pendingRequests.length, window?.id],
+    [pendingRequest, pendingRequests.length, window?.id],
   );
 
   const rejectRequest = useCallback(() => {
