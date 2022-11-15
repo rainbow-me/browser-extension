@@ -22,7 +22,6 @@ import {
   MenuTrigger,
 } from '../../components/Menu/Menu';
 import { ClearStorage } from '../../components/_dev/ClearStorage';
-import { InjectToggle } from '../../components/_dev/InjectToggle';
 
 export function Default() {
   const { address } = useAccount();
@@ -129,7 +128,6 @@ export function Default() {
             </MenuRadioGroup>
           </MenuContent>
         </Menu>
-        <InjectToggle />
         <ClearStorage />
         <Box
           as="button"
