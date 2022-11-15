@@ -15,20 +15,20 @@ import {
   backgroundColors,
 } from '../../styles/designTokens';
 import { hslObjectForColor } from '../../styles/hslObjectForColor';
-import { themeClasses } from '../../styles/themeClasses';
+import { themeClasses } from '../../styles/theme';
 
 export interface ColorContextValue {
   lightThemeColorContext: ColorContext;
   darkThemeColorContext: ColorContext;
 }
 
-const ColorContext = createContext<ColorContextValue>({
+const ColorContextContext = createContext<ColorContextValue>({
   lightThemeColorContext: 'light',
   darkThemeColorContext: 'dark',
 });
 
 export function useColorContext() {
-  return useContext(ColorContext);
+  return useContext(ColorContextContext);
 }
 
 const AccentColorContext = createContext<ColorContext>('dark');
@@ -77,7 +77,9 @@ export function ColorContextProvider({
   );
 
   return (
-    <ColorContext.Provider value={value}>{children}</ColorContext.Provider>
+    <ColorContextContext.Provider value={value}>
+      {children}
+    </ColorContextContext.Provider>
   );
 }
 
@@ -140,7 +142,7 @@ export function ThemeProvider({ theme, children }: ThemeProviderProps) {
   const className = theme === 'dark' ? darkContextClasses : lightContextClasses;
 
   return (
-    <ColorContext.Provider
+    <ColorContextContext.Provider
       value={useMemo(
         () => ({
           lightThemeColorContext: theme,
@@ -154,6 +156,6 @@ export function ThemeProvider({ theme, children }: ThemeProviderProps) {
       ) : (
         <div className={className}>{children}</div>
       )}
-    </ColorContext.Provider>
+    </ColorContextContext.Provider>
   );
 }

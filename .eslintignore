@@ -1,2 +1,3 @@
 build/
+docs/
 .env.d.ts

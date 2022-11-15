@@ -34,7 +34,7 @@ import SFRoundedMedium from './fonts/subset-SFRounded-Medium.woff2';
 import SFRoundedRegular from './fonts/subset-SFRounded-Regular.woff2';
 import SFRoundedSemibold from './fonts/subset-SFRounded-Semibold.woff2';
 import { hslObjectForColor } from './hslObjectForColor';
-import { rootThemeClasses, themeClasses } from './themeClasses';
+import { rootThemeClasses, themeClasses } from './theme';
 
 export const resetBase = style({
   margin: 0,
@@ -435,7 +435,7 @@ const textProperties = defineProperties({
       accent: accentColorAsHsl,
       ...pick(semanticColorVars.foregroundColors, textColors),
     },
-    fontFamily: { rounded: 'SFRounded' },
+    fontFamily: { rounded: 'SFRounded, system-ui' },
     fontSize: {
       '11pt': defineType(11, 13, 0.56),
       '12pt': defineType(12, 15, 0.52),

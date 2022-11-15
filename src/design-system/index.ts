@@ -1,4 +1,5 @@
-export { initTheming } from './styles/initTheming';
+export { initThemingCritical } from './styles/initThemingCritical';
+export { initThemingBody } from './styles/initThemingBody';
 export {
   AccentColorProvider,
   ThemeProvider,

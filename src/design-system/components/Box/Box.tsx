@@ -9,7 +9,7 @@ import {
   resetElements,
 } from '../../styles/core.css';
 import { BackgroundColor, backgroundColors } from '../../styles/designTokens';
-import { themeClasses } from '../../styles/themeClasses';
+import { themeClasses } from '../../styles/theme';
 
 import {
   ColorContextProvider,
