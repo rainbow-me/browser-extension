@@ -53,23 +53,6 @@ it('should shuffle account', async () => {
   expect(actual).toEqual(expected);
 });
 
-it('should be able to turn ON injection', async () => {
-  let label = await querySelector(driver, '[data-testid="injection-status"]');
-  let actual = await label.getText();
-  let expected = 'NO';
-  expect(actual).toEqual(expected);
-
-  await driver.findElement({ id: 'injection-button' }).click();
-  // Wait till the DOM re-renders
-  await delay(1000);
-
-  label = await querySelector(driver, '[data-testid="injection-status"]');
-  actual = await label.getText();
-  expected = 'YES';
-
-  expect(actual).toEqual(expected);
-});
-
 it('should be able to connect to bx test dapp', async () => {
   await driver.get('https://bx-test-dapp.vercel.app/');
   const dappHandler = await driver.getWindowHandle();
@@ -107,7 +90,7 @@ it('should be able to connect to bx test dapp', async () => {
   await driver.findElement({ id: 'switch-network-menu' }).click();
   await driver.findElement({ id: 'switch-network-item-1' }).click();
 
-  await driver.findElement({ id: 'accept-button' }).click();
+  await driver.findElement({ id: 'accept-request-button' }).click();
 
   await driver.switchTo().window(dappHandler);
   const topButton = await querySelector(
@@ -146,6 +129,41 @@ it('should be able to go back to extension and switch account and chain', async 
   const accountAddress = await querySelector(driver, '[id="accountAddress"]');
   const actualAccountAddress = await accountAddress.getText();
   expect(actualAccountAddress).toEqual(expectedAccountAddress);
+});
+
+it('should be able to accept a signing request', async () => {
+  // switch session to mainnet
+  await driver.get(rootURL + '/popup.html');
+  await delay(1000);
+  await driver.findElement({ id: 'home-page-header-left' }).click();
+  await delay(500);
+  await driver.findElement({ id: 'home-page-header-connected-apps' }).click();
+  await delay(500);
+
+  await driver.findElement({ id: 'switch-network-menu' }).click();
+  await driver.findElement({ id: 'switch-network-item-0' }).click();
+
+  await delay(1000);
+  await driver.get('https://bx-test-dapp.vercel.app/');
+
+  // TODO check if the signature is correct, we're not signing anything yet
+  const dappHandler = await driver.getWindowHandle();
+
+  const button = await querySelector(driver, '[id="signTypedData"]');
+  expect(button).toBeTruthy();
+  await button.click();
+  await delay(100);
+
+  const handlers = await driver.getAllWindowHandles();
+
+  const popupHandler =
+    handlers.find((handler) => handler !== dappHandler) || '';
+
+  await driver.switchTo().window(popupHandler);
+  await delay(2000);
+
+  await driver.findElement({ id: 'accept-request-button' }).click();
+  await driver.switchTo().window(dappHandler);
 });
 
 it('should be able to disconnect from connected dapps', async () => {

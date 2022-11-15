@@ -407,12 +407,6 @@ export function Wallets() {
     updateState();
   }, [updateState]);
 
-  // const sendTransaction = useCallback(() => {}, []);
-
-  // const signMessage = useCallback(() => {}, []);
-
-  // const signTypedData = useCallback(() => {}, []);
-
   return (
     <Box
       as={motion.div}

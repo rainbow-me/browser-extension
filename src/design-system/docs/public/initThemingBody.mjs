@@ -1,0 +1,1 @@
+var e={lightTheme:{lightContext:"lt-lc",darkContext:"lt-dc"},darkTheme:{lightContext:"dt-lc",darkContext:"dt-dc"}};function l(){document.body.classList.add(e.lightTheme.lightContext,e.darkTheme.darkContext)}export{l as initThemingBody};

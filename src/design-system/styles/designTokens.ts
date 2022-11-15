@@ -408,20 +408,23 @@ function selectForegroundColors<
   return colors;
 }
 
-export const textColors = selectForegroundColors(
-  'label',
-  'labelSecondary',
-  'labelTertiary',
-  'labelQuaternary',
+export const genericColors = selectForegroundColors(
   'blue',
   'green',
-  'red',
-  'purple',
-  'pink',
   'orange',
+  'pink',
+  'purple',
+  'red',
   'yellow',
 );
-export type TextColor = typeof textColors[number];
+export type GenericColor = typeof genericColors[number];
+
+export const scrimColors = selectForegroundColors(
+  'scrim',
+  'scrimSecondary',
+  'scrimTertiary',
+);
+export type ScrimColor = typeof scrimColors[number];
 
 export const strokeColors = selectForegroundColors(
   'buttonStroke',
@@ -436,19 +439,17 @@ export const separatorColors = selectForegroundColors(
 );
 export type SeparatorColor = typeof separatorColors[number];
 
-export const shadowColors = [
-  'accent',
-  ...selectForegroundColors(
-    'blue',
-    'green',
-    'red',
-    'purple',
-    'pink',
-    'orange',
-    'yellow',
-  ),
-] as const;
+export const shadowColors = ['accent', ...genericColors] as const;
 export type ShadowColor = typeof shadowColors[number];
+
+export const textColors = selectForegroundColors(
+  'label',
+  'labelSecondary',
+  'labelTertiary',
+  'labelQuaternary',
+  ...genericColors,
+);
+export type TextColor = typeof textColors[number];
 
 export const space = {
   '2px': 2,
@@ -464,6 +465,7 @@ export const space = {
   '28px': 28,
   '32px': 32,
   '36px': 36,
+  '40px': 40,
   '44px': 44,
   '52px': 52,
   '60px': 60,
@@ -486,6 +488,7 @@ export const negativeSpace = {
   '-28px': -28,
   '-32px': -32,
   '-36px': -36,
+  '-40px': -40,
   '-44px': -44,
   '-52px': -52,
   '-60px': -60,
@@ -511,6 +514,7 @@ export const spaceToNegativeSpace: Record<
   '28px': '-28px',
   '32px': '-32px',
   '36px': '-36px',
+  '40px': '-40px',
   '44px': '-44px',
   '52px': '-52px',
   '60px': '-60px',

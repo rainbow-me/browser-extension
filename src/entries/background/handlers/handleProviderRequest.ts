@@ -17,12 +17,18 @@ export const DEFAULT_ACCOUNT_2 = '0x5B570F0F8E2a29B7bCBbfC000f9C7b78D45b7C35';
 export const DEFAULT_CHAIN_ID = '0x1';
 
 const openWindow = async () => {
-  const { setWindow } = notificationWindowStore.getState();
+  const { setWindow, window: stateWindow } = notificationWindowStore.getState();
+  if (stateWindow) return;
   const window = await chrome.windows.create({
     url: chrome.runtime.getURL('popup.html'),
     type: 'popup',
     height: 625,
     width: 360,
+  });
+  chrome.windows.onRemoved.addListener((id) => {
+    if (id === window.id) {
+      setWindow(null);
+    }
   });
   setWindow(window);
 };
@@ -32,7 +38,7 @@ const openWindow = async () => {
  * @param {PendingRequest} request
  * @returns {boolean}
  */
-const messengerRequestAccountsApproval = async (
+const messengerProviderRequest = async (
   messenger: Messenger,
   request: ProviderRequestPayload,
 ) => {
@@ -42,15 +48,12 @@ const messengerRequestAccountsApproval = async (
   addPendingRequest(request);
   openWindow();
   // Wait for response from the popup.
-  const payload: { address: Address; chainId: number } | null =
-    await new Promise((resolve) =>
-      // eslint-disable-next-line no-promise-executor-return
-      messenger.reply(
-        `message:${request.id}`,
-        async (payload: { address: Address; chainId: number } | null) =>
-          resolve(payload),
-      ),
-    );
+  const payload: unknown | null = await new Promise((resolve) =>
+    // eslint-disable-next-line no-promise-executor-return
+    messenger.reply(`message:${request.id}`, async (payload) =>
+      resolve(payload),
+    ),
+  );
   removePendingRequest(request.id);
   if (!payload) {
     throw new UserRejectedRequestError('User rejected the request.');
@@ -93,6 +96,14 @@ export const handleProviderRequest = ({
         case 'eth_signTypedData':
         case 'eth_signTypedData_v3':
         case 'eth_signTypedData_v4': {
+          {
+            await messengerProviderRequest(messenger, {
+              method,
+              id,
+              params,
+              meta,
+            });
+          }
           break;
         }
         case 'wallet_addEthereumChain':
@@ -102,7 +113,7 @@ export const handleProviderRequest = ({
             response = [activeSession.address];
             break;
           }
-          const { address, chainId } = await messengerRequestAccountsApproval(
+          const { address, chainId } = (await messengerProviderRequest(
             messenger,
             {
               method,
@@ -110,7 +121,7 @@ export const handleProviderRequest = ({
               params,
               meta,
             },
-          );
+          )) as { address: Address; chainId: number };
           addSession({
             host,
             address,
