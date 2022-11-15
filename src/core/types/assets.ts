@@ -44,7 +44,7 @@ export interface ParsedAddressAsset extends ParsedAsset {
   };
 }
 
-export type ParsedAssetsDict = Record<string, ParsedAddressAsset>;
+export type ParsedAssetsDict = Record<UniqueId, ParsedAddressAsset>;
 
 export type ParsedAssetsDictByChain = Record<ChainId, ParsedAssetsDict>;
 

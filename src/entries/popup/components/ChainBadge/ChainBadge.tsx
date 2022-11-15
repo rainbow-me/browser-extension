@@ -39,7 +39,6 @@ const ChainBadge = ({ chainId, size = 'small' }: ChainIconProps) => {
 
   return (
     <Box
-      boxShadow={'12px green'}
       borderRadius="round"
       style={{
         height: iconSize,
