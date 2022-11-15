@@ -6,11 +6,12 @@ import { TextStyles } from '~/design-system/styles/core.css';
 import { SFSymbol } from '../SFSymbol/SFSymbol';
 
 interface TextIconProps {
+  color?: TextStyles['color'];
   icon: string;
 }
 
-const TextIcon = ({ icon }: TextIconProps) => (
-  <Text color="label" size="20pt" weight="semibold">
+const TextIcon = ({ icon, color = 'label' }: TextIconProps) => (
+  <Text color={color} size="20pt" weight="semibold">
     {icon}
   </Text>
 );
