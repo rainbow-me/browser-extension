@@ -72,6 +72,13 @@ You can run a development build as a "playground". The following playgrounds are
 
 ## Testing
 
+### 1. Install foundry
+
+Run `curl -L https://foundry.paradigm.xyz | bash` to install foundry.
+You'll need to restart the terminal.
+
+
+### 2. Run the tests
 To run the Browser Extension test suites:
 
 - `yarn e2e` – runs end-to-end tests against Chrome & Brave browsers.
