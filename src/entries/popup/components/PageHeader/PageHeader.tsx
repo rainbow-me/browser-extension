@@ -1,98 +1,98 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 
-import { Box, Inline, Text } from '~/design-system';
+import { Box, Text } from '~/design-system';
 
-import { SFSymbol, Symbols } from '../SFSymbol/SFSymbol';
+import { SFSymbol, SFSymbolProps } from '../SFSymbol/SFSymbol';
 
-interface PageHeaderProps {
-  title: string;
-  leftRoute?: string;
-  rightRoute?: string;
-  leftSymbol?: Symbols;
-  rightSymbol?: Symbols;
-  mainPage?: boolean;
-}
+import { pageHeaderButtonStyles } from './PageHeader.css';
 
-const HeaderActionButton = ({
-  symbol,
-  mainPage,
-}: {
-  symbol?: Symbols;
-  mainPage: boolean;
-}) => {
-  const Wrapper = ({ children }: { children: React.ReactNode }) =>
-    mainPage && symbol ? (
-      <Box
-        style={{
-          height: '32px',
-          width: '32px',
-        }}
-        background="surfaceSecondaryElevated"
-        borderRadius="round"
-        boxShadow="30px accent"
-        borderColor="buttonStroke"
-        borderWidth="1px"
-      >
-        {children}
-      </Box>
-    ) : (
-      <Box
-        style={{
-          height: '32px',
-          width: '32px',
-        }}
-      >
-        {children}
-      </Box>
-    );
-
-  return (
-    <Wrapper>
-      <Inline
-        space="4px"
-        height="full"
-        alignHorizontal="center"
-        alignVertical="center"
-      >
-        <Inline alignHorizontal="center" alignVertical="center">
-          {symbol ? <SFSymbol symbol={symbol} size={14} /> : null}
-        </Inline>
-      </Inline>
-    </Wrapper>
-  );
+type PageHeaderProps = {
+  leftComponent?: React.ReactElement;
+  rightComponent?: React.ReactElement;
+  title?: string;
 };
 
 export function PageHeader({
+  leftComponent,
+  rightComponent,
   title,
-  leftRoute,
-  rightRoute,
-  leftSymbol,
-  rightSymbol,
-  mainPage = false,
 }: PageHeaderProps) {
   return (
     <Box
-      style={{
-        height: '62px',
-      }}
-      paddingHorizontal="10px"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      padding="16px"
+      width="full"
+      position="relative"
+      style={{ height: 64 }}
     >
-      <Inline alignVertical="center" height="full" alignHorizontal="justify">
-        <Link id="page-header-left-action" to={leftRoute || ''}>
-          <HeaderActionButton symbol={leftSymbol} mainPage={mainPage} />
-        </Link>
-
-        <Box>
+      {leftComponent && (
+        <Box position="absolute" left="0" top="0" padding="16px" height="full">
+          {leftComponent}
+        </Box>
+      )}
+      {title && (
+        <Box style={{ textAlign: 'center' }}>
           <Text size="14pt" weight="heavy">
             {title}
           </Text>
         </Box>
-
-        <Link to={rightRoute || ''}>
-          <HeaderActionButton symbol={rightSymbol} mainPage={mainPage} />
-        </Link>
-      </Inline>
+      )}
+      {rightComponent && (
+        <Box position="absolute" right="0" top="0" padding="16px" height="full">
+          {rightComponent}
+        </Box>
+      )}
     </Box>
+  );
+}
+
+PageHeader.BackButton = PageHeaderBackButton;
+PageHeader.SymbolButton = PageHeaderSymbolButton;
+
+type PageHeaderButtonProps = {
+  children: React.ReactNode;
+  variant?: 'default' | 'ghost';
+};
+
+// TODO: Refactor to use generic DS Button.
+export function PageHeaderButton({
+  children,
+  variant = 'default',
+}: PageHeaderButtonProps) {
+  return (
+    <Box
+      className={pageHeaderButtonStyles[variant]}
+      borderRadius="round"
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      style={{ width: 32, height: 32 }}
+    >
+      {children}
+    </Box>
+  );
+}
+
+type PageHeaderSymbolButtonProps = {
+  symbol: SFSymbolProps['symbol'];
+};
+
+export function PageHeaderSymbolButton({
+  symbol,
+}: PageHeaderSymbolButtonProps) {
+  return (
+    <PageHeaderButton>
+      <SFSymbol color="labelSecondary" symbol={symbol} size={17} />
+    </PageHeaderButton>
+  );
+}
+
+export function PageHeaderBackButton() {
+  return (
+    <PageHeaderButton variant="ghost">
+      <SFSymbol color="labelSecondary" symbol="arrowLeft" size={15} />
+    </PageHeaderButton>
   );
 }

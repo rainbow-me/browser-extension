@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import { Address, useEnsAvatar, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -30,8 +31,11 @@ export function ConnectedApps() {
     >
       <PageHeader
         title={i18n.t('connected_apps.title')}
-        leftRoute="/"
-        leftSymbol="arrowLeft"
+        leftComponent={
+          <Link to="/">
+            <PageHeader.BackButton />
+          </Link>
+        }
       />
       <Box
         style={{
