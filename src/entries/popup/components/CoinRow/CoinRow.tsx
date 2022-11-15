@@ -2,22 +2,15 @@ import React, { ReactNode } from 'react';
 
 import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
 import { Box, Column, Columns, Inset, Row, Rows } from '~/design-system';
-import { transparentAccentColorAsHsl } from '~/design-system/styles/core.css';
 
-import { useHover } from '../../hooks/useHover';
 import { CoinIcon } from '../CoinIcon/CoinIcon';
 
+import { rowHighlightWrapperStyle } from './CoinRow.css';
+
 function RowHighlightWrapper({ children }: { children: ReactNode }) {
-  const [hoverRef, isHovered] = useHover<HTMLDivElement>();
   return (
     <Inset horizontal="8px">
-      <Box
-        ref={hoverRef}
-        borderRadius="12px"
-        style={{
-          backgroundColor: isHovered ? transparentAccentColorAsHsl : undefined,
-        }}
-      >
+      <Box borderRadius="12px" className={rowHighlightWrapperStyle}>
         {children}
       </Box>
     </Inset>
