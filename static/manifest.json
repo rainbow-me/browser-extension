@@ -31,7 +31,7 @@
   ],
   "default_locale": "en",
   "description": "Rainbow is a fun, simple, and secure Ethereum wallet that makes managing your assets a joy.",
-  "host_permissions": ["http://localhost:8545/", "https://*.alchemy.io/"],
+  "host_permissions": ["file://*/*", "http://*/*", "https://*/*"],
   "icons": {
     "16": "images/icon-16.png",
     "19": "images/icon-19.png",

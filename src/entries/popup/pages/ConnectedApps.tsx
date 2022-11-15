@@ -3,7 +3,6 @@ import * as React from 'react';
 import { Address, useEnsAvatar, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { initializeMessenger } from '~/core/messengers';
 import { useAppSessionsStore } from '~/core/state';
 import { getConnectedAppIcon } from '~/core/utils/connectedApps';
 import { truncateAddress } from '~/core/utils/truncateAddress';
@@ -14,8 +13,6 @@ import { PageHeader } from '../components/PageHeader/PageHeader';
 import { SFSymbol } from '../components/SFSymbol/SFSymbol';
 import { SwitchNetworkMenu } from '../components/SwitchMenu/SwitchNetworkMenu';
 import { useAppSession } from '../hooks/useAppSession';
-
-const messenger = initializeMessenger({ connect: 'inpage' });
 
 export function ConnectedApps() {
   const { appSessions, clearSessions } = useAppSessionsStore();
@@ -94,15 +91,13 @@ function ConnectedApp({
   const changeChainId = React.useCallback(
     (chainId: number) => {
       updateAppSessionChainId(chainId);
-      messenger.send(`chainChanged:${host}`, chainId);
     },
-    [host, updateAppSessionChainId],
+    [updateAppSessionChainId],
   );
 
   const disconnect = React.useCallback(() => {
     disconnectAppSession();
-    messenger.send(`disconnect:${host}`, null);
-  }, [disconnectAppSession, host]);
+  }, [disconnectAppSession]);
 
   return (
     <SwitchNetworkMenu

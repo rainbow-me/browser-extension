@@ -1,4 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { getProvider } from '@wagmi/core';
 import { Bytes, TypedDataDomain, TypedDataField } from 'ethers';
 import { Address } from 'wagmi';
 
@@ -29,10 +30,6 @@ type WalletActionArguments = {
   payload: unknown;
 };
 
-export type SendTransactionArguments = {
-  address: Address;
-  txData: TransactionRequest;
-};
 export type SignMessageArguments = {
   address: Address;
   msgData: string | Bytes;
@@ -45,7 +42,9 @@ export type SignTypedDataArguments = {
 type SignTypedDataMsg = {
   domain: TypedDataDomain;
   types: Record<string, Array<TypedDataField>>;
-  value: Record<string, unknown>;
+  value?: Record<string, unknown>;
+  primaryType?: string;
+  message?: unknown;
 };
 
 const messenger = initializeMessenger({ connect: 'popup' });
@@ -116,15 +115,18 @@ export const handleWallets = () =>
             response = await exportAccount(address, password);
             break;
           }
-          case 'send_transaction':
+          case 'send_transaction': {
+            const provider = getProvider();
             response = await sendTransaction(
-              payload as SendTransactionArguments,
+              payload as TransactionRequest,
+              provider,
             );
             break;
+          }
           case 'sign_message':
             response = await signMessage(payload as SignMessageArguments);
             break;
-          case 'sign_type_data':
+          case 'sign_typed_data':
             response = await signTypedData(payload as SignTypedDataArguments);
             break;
           default: {

@@ -20,4 +20,5 @@
     },
   },
   "include": ["src", ".env.d.ts"],
+  "exclude": ["design-system/docs"]
 }

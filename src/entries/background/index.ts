@@ -5,6 +5,7 @@ import { createWagmiClient } from '~/core/wagmi';
 
 import { handleInstallExtension } from './handlers/handleInstallExtension';
 import { handleProviderRequest } from './handlers/handleProviderRequest';
+import { handleSetupInpage } from './handlers/handleSetupInpage';
 import { handleWallets } from './handlers/handleWallets';
 
 const messenger = initializeMessenger({ connect: 'popup' });
@@ -13,5 +14,6 @@ initializeSentry();
 createWagmiClient();
 handleInstallExtension();
 handleProviderRequest({ messenger });
+handleSetupInpage();
 handleWallets();
 syncStores();
