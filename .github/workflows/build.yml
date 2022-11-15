@@ -53,6 +53,17 @@ jobs:
       - name: Run e2e (Brave)
         run: |
           yarn e2e:linux:brave
+      - name: Install rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
+          profile: minimal
+          override: true
+      - name: Install Anvil
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
       - name: Run unit tests
         run: |
           yarn test
