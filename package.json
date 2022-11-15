@@ -34,8 +34,8 @@
     "// Build and zip": "",
     "bundle": "yarn build && yarn zip",
     "// Runs tests": "",
-    "test": "vitest",
-    "test:watch": "vitest --watch",
+    "test": "anvil & vitest",
+    "test:watch": "anvil & vitest --watch",
     "// Runs e2e": "",
     "e2e:linux:chrome": "BROWSER=chrome OS=linux CHROMIUM_BIN=$(which chrome) vitest e2e/ --config ./e2e/vitest.config.ts",
     "e2e:linux:brave": "BROWSER=brave OS=linux vitest e2e/ --config ./e2e/vitest.config.ts",
@@ -47,6 +47,7 @@
   "dependencies": {
     "@capsizecss/core": "3.0.0",
     "@metamask/browser-passworder": "3.0.0",
+    "@metamask/eth-sig-util": "5.0.1",
     "@radix-ui/react-dropdown-menu": "2.0.1",
     "@radix-ui/react-polymorphic": "0.0.14",
     "@sentry/browser": "7.16.0",
@@ -81,6 +82,7 @@
     "zustand": "4.1.2"
   },
   "devDependencies": {
+    "@foundry-rs/hardhat-anvil": "0.1.7",
     "@lavamoat/allow-scripts": "2.0.3",
     "@lavamoat/preinstall-always-fail": "1.0.0",
     "@testing-library/react": "13.4.0",
@@ -162,7 +164,12 @@
       "selenium-webdriver>ws>utf-8-validate": false,
       "vitest>vite>esbuild": false,
       "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": false,
-      "msw": false
+      "msw": false,
+      "@foundry-rs/hardhat-anvil>hardhat>@ethereumjs/vm>core-js-pure": false,
+      "@foundry-rs/hardhat-anvil>hardhat>ethereumjs-util>ethereum-cryptography>keccak": false,
+      "@foundry-rs/hardhat-anvil>hardhat>ethereumjs-util>ethereum-cryptography>secp256k1": false,
+      "@foundry-rs/hardhat-anvil>hardhat>ws>bufferutil": false,
+      "@foundry-rs/hardhat-anvil>hardhat>ws>utf-8-validate": false
     }
   },
   "lint-staged": {
