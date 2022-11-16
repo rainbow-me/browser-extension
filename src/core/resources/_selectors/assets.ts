@@ -18,7 +18,7 @@ export function selectUserAssetsList(assets: ParsedAssetsDictByChain) {
 }
 
 // selector generators
-export function createSelectUserAssetWithUniqueId(uniqueId: UniqueId) {
+export function selectUserAssetWithUniqueId(uniqueId: UniqueId) {
   return (assets: ParsedAssetsDictByChain) => {
     const { chain } = deriveAddressAndChainWithUniqueId(uniqueId);
     return assets?.[chain]?.[uniqueId];

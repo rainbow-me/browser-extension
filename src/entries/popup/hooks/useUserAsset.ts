@@ -1,6 +1,6 @@
 import { useAccount } from 'wagmi';
 
-import { createSelectUserAssetWithUniqueId } from '~/core/resources/_selectors/assets';
+import { selectUserAssetWithUniqueId } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { UniqueId } from '~/core/types/assets';
@@ -14,7 +14,7 @@ export function useUserAsset(uniqueId: UniqueId) {
       currency,
     },
     {
-      select: createSelectUserAssetWithUniqueId(uniqueId),
+      select: selectUserAssetWithUniqueId(uniqueId),
     },
   );
   return asset;

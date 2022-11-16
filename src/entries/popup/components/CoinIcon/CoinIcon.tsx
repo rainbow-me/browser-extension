@@ -6,12 +6,19 @@ import { Address } from 'wagmi';
 
 import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { AccentColorProvider, Bleed, Box, Text } from '~/design-system';
+import { AccentColorProvider, Bleed, Box } from '~/design-system';
 import { useCloudinaryAssetIcon } from '~/entries/popup/hooks/useCloudinaryAssetIcon';
 import { colors as emojiColors } from '~/entries/popup/utils/emojiAvatarBackgroundColors';
 import { pseudoRandomArrayItemFromString } from '~/entries/popup/utils/pseudoRandomArrayItemFromString';
 
 import { ChainBadge } from '../ChainBadge/ChainBadge';
+
+import {
+  fallbackTextStyleExtraLarge,
+  fallbackTextStyleLarge,
+  fallbackTextStyleMedium,
+  fallbackTextStyleSmall,
+} from './CoinIcon.css';
 
 export function CoinIcon({
   asset,
@@ -25,7 +32,6 @@ export function CoinIcon({
 
   const localImage = CoinIconsImages[capitalize(sym)];
   const formattedSymbol = formatSymbol(sym, 36);
-  const fontSize = buildFallbackFontSize(formattedSymbol, 36);
   const mainnetAddress = asset?.mainnetAddress;
   const address = (asset?.address || '') as Address;
   const chain = asset?.chainId || ChainId.mainnet;
@@ -61,9 +67,9 @@ export function CoinIcon({
               display: 'flex',
             }}
           >
-            <Text color="label" weight="bold" size={fontSize} align="center">
+            <Box as={'p'} className={getFallbackTextStyle(sym)}>
               {upperCase(formattedSymbol)}
-            </Text>
+            </Box>
           </Box>
         </FallbackCoinIcon>
       )}
@@ -155,12 +161,12 @@ function FallbackCoinIcon({
   );
 }
 
-function buildFallbackFontSize(symbol: string, width: number) {
-  if (!symbol) return undefined;
-  else if (width < 30 || symbol.length > 4) return '7pt';
-  else if (symbol.length === 4) return '8pt';
-  else if (symbol.length === 1 || symbol.length === 2) return '12pt';
-  return '11pt';
+function getFallbackTextStyle(text: string) {
+  if (!text) return undefined;
+  else if (text.length > 4) return fallbackTextStyleSmall;
+  else if (text.length === 4) return fallbackTextStyleMedium;
+  else if (text.length === 3) return fallbackTextStyleLarge;
+  return fallbackTextStyleExtraLarge;
 }
 
 const _cache: Record<string, string> = {};
