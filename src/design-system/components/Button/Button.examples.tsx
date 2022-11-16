@@ -388,7 +388,7 @@ export const widths = createExample({
         <Button color="accent" height="44px" variant="raised">
           Button
         </Button>
-        <Button color="accent" height="36px" variant="flat" width="fit">
+        <Button color="accent" height="44px" variant="flat" width="full">
           Button
         </Button>
       </Stack>,

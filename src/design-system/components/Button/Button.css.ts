@@ -1,4 +1,4 @@
-import { style, styleVariants } from '@vanilla-extract/css';
+import { styleVariants } from '@vanilla-extract/css';
 
 import { accentColorHslVars } from '../../styles/core.css';
 import { ButtonColor, globalColors } from '../../styles/designTokens';
@@ -23,16 +23,6 @@ export type ButtonHeight = keyof typeof buttonHeights;
 export const heightStyles = styleVariants(buttonHeights, (height) => [
   { height },
 ]);
-
-export const interactionStyles = style({
-  transition: '0.125s ease',
-  ':hover': {
-    transform: 'scale(1.05)',
-  },
-  ':active': {
-    transform: 'scale(0.95)',
-  },
-});
 
 export const tintedStyles = styleVariants<
   Record<ButtonColor, { background?: string }>

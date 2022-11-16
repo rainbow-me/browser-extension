@@ -334,6 +334,7 @@ const boxBaseProperties = defineProperties({
       vars: { [gapVar]: `${gap}px` },
     })),
     height: {
+      fit: 'fit-content',
       full: '100%',
     },
     justifyContent: [

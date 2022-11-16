@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import React from 'react';
 
 import { BoxStyles, ShadowSize, TextStyles } from '../../styles/core.css';
@@ -11,12 +12,7 @@ import { Box } from '../Box/Box';
 import { Inline } from '../Inline/Inline';
 import { Text } from '../Text/Text';
 
-import {
-  ButtonHeight,
-  heightStyles,
-  interactionStyles,
-  tintedStyles,
-} from './Button.css';
+import { ButtonHeight, heightStyles, tintedStyles } from './Button.css';
 
 export type ButtonProps = {
   children: string | React.ReactNode;
@@ -185,7 +181,7 @@ export function Button({
   icon,
   onClick,
   variant,
-  width = 'full',
+  width = 'fit',
 }: ButtonProps) {
   const { boxShadow } = stylesForHeightAndVariant({
     color,
@@ -199,39 +195,46 @@ export function Button({
 
   return (
     <Box
-      as="button"
-      alignItems="center"
-      background={background}
-      borderRadius="round"
-      borderColor={borderColor}
-      borderWidth={borderWidth}
-      boxShadow={boxShadow}
-      className={[
-        heightStyles[height],
-        interactionStyles,
-        variant === 'tinted' && tintedStyles[color || 'accent'],
-      ]}
-      display="flex"
-      onClick={onClick}
-      position="relative"
-      justifyContent="center"
-      paddingHorizontal={paddingHorizontal}
+      as={motion.div}
+      whileHover={{ scale: 1.04 }}
+      whileTap={{ scale: 0.96 }}
+      transition={{ type: 'spring', mass: 0.1, stiffness: 500, damping: 20 }}
       width={width}
     >
-      {typeof children === 'string' ? (
-        <Inline alignVertical="center" space={gap}>
-          {icon && (
+      <Box
+        as="button"
+        alignItems="center"
+        background={background}
+        borderRadius="round"
+        borderColor={borderColor}
+        borderWidth={borderWidth}
+        boxShadow={boxShadow}
+        className={[
+          heightStyles[height],
+          variant === 'tinted' && tintedStyles[color || 'accent'],
+        ]}
+        display="flex"
+        onClick={onClick}
+        position="relative"
+        justifyContent="center"
+        paddingHorizontal={paddingHorizontal}
+        width={width}
+      >
+        {typeof children === 'string' ? (
+          <Inline alignVertical="center" space={gap}>
+            {icon && (
+              <Text color={textColor} size={textSize} weight="bold">
+                {icon}
+              </Text>
+            )}
             <Text color={textColor} size={textSize} weight="bold">
-              {icon}
+              {children}
             </Text>
-          )}
-          <Text color={textColor} size={textSize} weight="bold">
-            {children}
-          </Text>
-        </Inline>
-      ) : (
-        children
-      )}
+          </Inline>
+        ) : (
+          children
+        )}
+      </Box>
     </Box>
   );
 }
