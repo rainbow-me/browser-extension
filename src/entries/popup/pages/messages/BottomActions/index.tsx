@@ -1,11 +1,8 @@
-import { uuid4 } from '@sentry/utils';
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import { Address, Chain, useBalance, useEnsAvatar, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { initializeMessenger } from '~/core/messengers';
 import { SupportedCurrencyKey, supportedCurrencies } from '~/core/references';
-import { WalletActions } from '~/core/types/walletActions';
 import {
   convertAmountToNativeDisplay,
   convertRawAmountToBalance,
@@ -18,6 +15,7 @@ import {
   DEFAULT_ACCOUNT_2,
 } from '~/entries/background/handlers/handleProviderRequest';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
+import { useBackgroundAccounts } from '~/entries/popup/hooks/useBackgroundAccounts';
 
 import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
 import { SFSymbol } from '../../../components/SFSymbol/SFSymbol';
@@ -98,23 +96,6 @@ export const BottomDisplayWallet = ({
   );
 };
 
-const messenger = initializeMessenger({ connect: 'background' });
-
-const walletAction = async (
-  action: keyof typeof WalletActions,
-  payload: unknown,
-) => {
-  const { result }: { result: unknown } = await messenger.send(
-    WalletActions.action,
-    {
-      action,
-      payload,
-    },
-    { id: uuid4() },
-  );
-  return result;
-};
-
 export const BottomSwitchWallet = ({
   selectedWallet,
   setSelectedWallet,
@@ -122,20 +103,7 @@ export const BottomSwitchWallet = ({
   selectedWallet: Address;
   setSelectedWallet: (selected: Address) => void;
 }) => {
-  const [accounts, setAccounts] = useState<Address[]>([]);
-  const getAccounts = useCallback(async () => {
-    const accounts = (await walletAction(
-      WalletActions.get_accounts,
-      {},
-    )) as Address[];
-    setAccounts(accounts);
-    return accounts;
-  }, []);
-
-  useEffect(() => {
-    getAccounts();
-  }, [getAccounts]);
-
+  const { accounts } = useBackgroundAccounts();
   const wallets: Address[] = [
     DEFAULT_ACCOUNT as Address,
     DEFAULT_ACCOUNT_2 as Address,
