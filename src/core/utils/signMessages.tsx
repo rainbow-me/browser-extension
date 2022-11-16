@@ -54,15 +54,18 @@ export const getRequestDisplayDetails = (payload: ProviderRequestPayload) => {
           const firstParamIsAddresss = isAddress(
             (payload?.params?.[0] as string) ?? '',
           );
-          const data = payload?.params?.[
-            firstParamIsAddresss ? 1 : 0
-          ] as string;
+          const data = payload?.params?.[firstParamIsAddresss ? 1 : 0];
           const address = payload?.params?.[
             firstParamIsAddresss ? 0 : 1
           ] as Address;
+          let msgData = data;
+          try {
+            msgData = JSON.parse(data as string);
+            // eslint-disable-next-line no-empty
+          } catch (e) {}
           return {
             message: JSON.stringify(data),
-            msgData: data,
+            msgData,
             address,
           };
         }
