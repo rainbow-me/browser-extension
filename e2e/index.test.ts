@@ -68,17 +68,16 @@ it('should be able create a new wallet', async () => {
   await driver.get(rootURL + '/popup.html');
   await delay(1000);
   await driver.findElement({ id: 'account-name-link-to-wallet' }).click();
-  await delay(100);
+  await delay(300);
   await driver
     .findElement({ id: 'wallet-password-input' })
     .sendKeys('password');
-  await delay(100);
+  await delay(300);
   await driver.findElement({ id: 'wallet-password-submit' }).click();
-  await delay(100);
+  await delay(300);
   await driver.findElement({ id: 'wallet-create-button' }).click();
-  await delay(100);
+  await delay(300);
   await driver.findElement({ id: 'wallets-go-back' }).click();
-  await delay(100);
 });
 
 it('should be able to connect to bx test dapp', async () => {
