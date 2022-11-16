@@ -4,10 +4,10 @@ import React, { Fragment, ReactNode } from 'react';
 import * as CoinIconsImages from 'react-coin-icon/lib/pngs';
 import { Address } from 'wagmi';
 
+import { useCloudinaryAssetIcon } from '~/core/resources/cloudinary';
 import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { AccentColorProvider, Bleed, Box } from '~/design-system';
-import { useCloudinaryAssetIcon } from '~/entries/popup/hooks/useCloudinaryAssetIcon';
 import { colors as emojiColors } from '~/entries/popup/utils/emojiAvatarBackgroundColors';
 import { pseudoRandomArrayItemFromString } from '~/entries/popup/utils/pseudoRandomArrayItemFromString';
 
@@ -152,13 +152,17 @@ function FallbackCoinIcon({
   mainnetAddress?: Address;
   children: React.ReactNode;
 }) {
-  const imageUrl = useCloudinaryAssetIcon({ address, chainId, mainnetAddress });
-  return (
-    <React.Fragment>
-      {imageUrl && <img src={imageUrl} width="100%" height="100%" />}
-      {!imageUrl && children}
-    </React.Fragment>
-  );
+  const { data: imageUrl } = useCloudinaryAssetIcon({
+    address,
+    chainId,
+    mainnetAddress,
+  });
+
+  if (imageUrl) {
+    return <img src={imageUrl} width="100%" height="100%" />;
+  }
+
+  return <Fragment>{children}</Fragment>;
 }
 
 function getFallbackTextStyle(text: string) {
