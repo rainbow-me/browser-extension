@@ -102,42 +102,42 @@ const docs = createDocs({
           enableCodeSnippet: false,
           enablePlayroom: false,
           showThemes: true,
-          Example: () => source(<ForegroundColors colors={genericColors} />),
+          Example: () => source(<Palette colors={genericColors} />),
         },
         {
           name: 'Text',
           enableCodeSnippet: false,
           enablePlayroom: false,
           showThemes: true,
-          Example: () => source(<ForegroundColors colors={textColors} />),
+          Example: () => source(<Palette colors={textColors} />),
         },
         {
           name: 'Scrim',
           enableCodeSnippet: false,
           enablePlayroom: false,
           showThemes: true,
-          Example: () => source(<ForegroundColors colors={scrimColors} />),
+          Example: () => source(<Palette colors={scrimColors} />),
         },
         {
           name: 'Separator',
           enableCodeSnippet: false,
           enablePlayroom: false,
           showThemes: true,
-          Example: () => source(<ForegroundColors colors={separatorColors} />),
+          Example: () => source(<Palette colors={separatorColors} />),
         },
         {
           name: 'Shadow',
           enableCodeSnippet: false,
           enablePlayroom: false,
           showThemes: true,
-          Example: () => source(<ForegroundColors colors={shadowColors} />),
+          Example: () => source(<Palette colors={shadowColors} />),
         },
         {
           name: 'Stroke',
           enableCodeSnippet: false,
           enablePlayroom: false,
           showThemes: true,
-          Example: () => source(<ForegroundColors colors={strokeColors} />),
+          Example: () => source(<Palette colors={strokeColors} />),
         },
       ],
     },
@@ -175,10 +175,10 @@ function BackgroundColors() {
   );
 }
 
-function ForegroundColors({
+function Palette({
   colors,
 }: {
-  colors: readonly ('accent' | ForegroundColor)[];
+  colors: readonly ('accent' | ForegroundColor | BackgroundColor)[];
 }) {
   return (
     <Inline space="10px">
@@ -191,7 +191,12 @@ function ForegroundColors({
                 backgroundColor:
                   color === 'accent'
                     ? accentColorAsHsl
-                    : semanticColorVars.foregroundColors[color],
+                    : semanticColorVars.foregroundColors[
+                        color as ForegroundColor
+                      ] ||
+                      semanticColorVars.backgroundColors[
+                        color as BackgroundColor
+                      ],
                 width: '100px',
                 height: '60px',
               }}
