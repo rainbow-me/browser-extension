@@ -1,55 +1,43 @@
 import React from 'react';
-import { Address, Chain } from 'wagmi';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { Box, Column, Columns, Row, Rows, Stack } from '~/design-system';
+import { Column, Columns, Inset, Row, Rows, Stack } from '~/design-system';
 
 import {
   AcceptRequestButton,
-  BottomSwitchNetwork,
-  BottomSwitchWallet,
+  BottomDisplayWallet,
   RejectRequestButton,
+  WalletBalance,
 } from '../BottomActions';
 
-export const RequestAccountsActions = ({
+export const SendTransactionActions = ({
+  appHost,
   selectedWallet,
-  setSelectedWallet,
-  selectedNetwork,
-  setSelectedNetwork,
   onAcceptRequest,
   onRejectRequest,
-  appName,
 }: {
-  appName?: string;
+  appHost: string;
   selectedWallet: Address;
-  setSelectedWallet: (value: Address) => void;
-  selectedNetwork: Chain;
-  setSelectedNetwork: (value: Chain) => void;
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
 }) => {
   return (
-    <Box padding="20px">
+    <Inset vertical="20px" horizontal="20px">
       <Stack space="24px">
         <Columns alignVertical="center" alignHorizontal="justify">
           <Column>
-            <BottomSwitchWallet
-              selectedWallet={selectedWallet}
-              setSelectedWallet={setSelectedWallet}
-            />
+            <BottomDisplayWallet selectedWallet={selectedWallet} />
           </Column>
           <Column>
-            <BottomSwitchNetwork
-              selectedNetwork={selectedNetwork}
-              setSelectedNetwork={setSelectedNetwork}
-            />
+            <WalletBalance appHost={appHost} />
           </Column>
         </Columns>
         <Rows space="8px">
           <Row>
             <AcceptRequestButton
               onClick={onAcceptRequest}
-              label={i18n.t('approve_request.connect', { appName })}
+              label={i18n.t('approve_request.send_transaction')}
             />
           </Row>
           <Row>
@@ -60,6 +48,6 @@ export const RequestAccountsActions = ({
           </Row>
         </Rows>
       </Stack>
-    </Box>
+    </Inset>
   );
 };

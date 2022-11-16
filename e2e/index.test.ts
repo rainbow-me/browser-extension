@@ -9,10 +9,14 @@ import { afterAll, beforeAll, expect, it } from 'vitest';
 
 import {
   delay,
+  findElementAndClick,
   findElementByText,
   getExtensionIdByName,
+  goToPopup,
+  goToTestApp,
   initDriverWithOptions,
   querySelector,
+  waitAndClick,
 } from './helpers';
 
 let rootURL = 'chrome-extension://';
@@ -60,12 +64,12 @@ it('should shuffle account', async () => {
 });
 
 it('should be able to connect to bx test dapp', async () => {
-  await driver.get('https://bx-test-dapp.vercel.app/');
+  await goToTestApp(driver);
   const dappHandler = await driver.getWindowHandle();
 
   const button = await findElementByText(driver, 'Connect Wallet');
   expect(button).toBeTruthy();
-  await button.click();
+  await waitAndClick(button, driver);
 
   const modalTitle = await findElementByText(driver, 'Connect a Wallet');
   expect(modalTitle).toBeTruthy();
@@ -74,29 +78,26 @@ it('should be able to connect to bx test dapp', async () => {
     driver,
     '[data-testid="rk-wallet-option-metaMask"]',
   );
-  // wait for dapp
-  await delay(500);
-  await mmButton.click();
+  await waitAndClick(mmButton, driver);
 
   // wait for window handlers to update
-  await delay(100);
+  await delay(200);
   const handlers = await driver.getAllWindowHandles();
 
   const popupHandler =
     handlers.find((handler) => handler !== dappHandler) || '';
 
   await driver.switchTo().window(popupHandler);
-  // wait for extension to load
-  await delay(2000);
 
   // switch account
-  await driver.findElement({ id: 'switch-wallet-menu' }).click();
-  await driver.findElement({ id: 'switch-wallet-item-0' }).click();
+  await findElementAndClick('switch-wallet-menu', driver);
+  await findElementAndClick('switch-wallet-item-0', driver);
   // switch network
-  await driver.findElement({ id: 'switch-network-menu' }).click();
-  await driver.findElement({ id: 'switch-network-item-1' }).click();
+  await delay(500);
+  await findElementAndClick('switch-network-menu', driver);
+  await findElementAndClick('switch-network-item-1', driver);
 
-  await driver.findElement({ id: 'accept-request-button' }).click();
+  await findElementAndClick('accept-request-button', driver);
 
   await driver.switchTo().window(dappHandler);
   const topButton = await querySelector(
@@ -105,26 +106,23 @@ it('should be able to connect to bx test dapp', async () => {
   );
 
   expect(topButton).toBeTruthy();
-  await topButton.click();
+  await waitAndClick(topButton, driver);
 
   const ensLabel = await querySelector(driver, '[id="rk_profile_title"]');
   expect(ensLabel).toBeTruthy();
 });
 
 it('should be able to go back to extension and switch account and chain', async () => {
-  await driver.get(rootURL + '/popup.html');
-  await delay(1000);
-  await driver.findElement({ id: 'home-page-header-left' }).click();
-  await delay(500);
-  await driver.findElement({ id: 'home-page-header-connected-apps' }).click();
+  await goToPopup(driver, rootURL);
+  await findElementAndClick('home-page-header-left', driver);
+  await findElementAndClick('home-page-header-connected-apps', driver);
+  await delay(100);
+  await findElementAndClick('switch-network-menu', driver);
+  await findElementAndClick('switch-network-item-2', driver);
 
-  await driver.findElement({ id: 'switch-network-menu' }).click();
-  await driver.findElement({ id: 'switch-network-item-2' }).click();
-
-  await delay(500);
-  await driver.get('https://bx-test-dapp.vercel.app/');
+  await goToTestApp(driver);
   // wait for dapp to load new account and network
-  await delay(2000);
+  await delay(1000);
   const expectedNetwork = 'Network: Polygon - matic';
   const network = await querySelector(driver, '[id="network"]');
   const actualNetwork = await network.getText();
@@ -139,52 +137,64 @@ it('should be able to go back to extension and switch account and chain', async 
 
 it('should be able to accept a signing request', async () => {
   // switch session to mainnet
-  await driver.get(rootURL + '/popup.html');
-  await delay(1000);
-  await driver.findElement({ id: 'home-page-header-left' }).click();
-  await delay(500);
-  await driver.findElement({ id: 'home-page-header-connected-apps' }).click();
-  await delay(500);
+  await goToPopup(driver, rootURL);
+  await findElementAndClick('home-page-header-left', driver);
+  await findElementAndClick('home-page-header-connected-apps', driver);
+  await delay(100);
+  await findElementAndClick('switch-network-menu', driver);
+  await findElementAndClick('switch-network-item-0', driver);
 
-  await driver.findElement({ id: 'switch-network-menu' }).click();
-  await driver.findElement({ id: 'switch-network-item-0' }).click();
-
-  await delay(1000);
-  await driver.get('https://bx-test-dapp.vercel.app/');
+  await delay(500);
+  await goToTestApp(driver);
 
   // TODO check if the signature is correct, we're not signing anything yet
   const dappHandler = await driver.getWindowHandle();
 
   const button = await querySelector(driver, '[id="signTypedData"]');
   expect(button).toBeTruthy();
-  await button.click();
-  await delay(100);
-
+  await waitAndClick(button, driver);
+  await delay(200);
   const handlers = await driver.getAllWindowHandles();
 
   const popupHandler =
     handlers.find((handler) => handler !== dappHandler) || '';
 
   await driver.switchTo().window(popupHandler);
-  await delay(2000);
+  await findElementAndClick('accept-request-button', driver);
+  await delay(500);
+  await driver.switchTo().window(dappHandler);
+});
 
-  await driver.findElement({ id: 'accept-request-button' }).click();
+it('should be able to accept a transaction request', async () => {
+  // TODO send tx, we're not signing anything yet
+  await delay(1000);
+  const dappHandler = await driver.getWindowHandle();
+
+  const button = await querySelector(driver, '[id="sendTx"]');
+  expect(button).toBeTruthy();
+  await waitAndClick(button, driver);
+  await delay(200);
+  const handlers = await driver.getAllWindowHandles();
+
+  const popupHandler =
+    handlers.find((handler) => handler !== dappHandler) || '';
+
+  await driver.switchTo().window(popupHandler);
+  await findElementAndClick('accept-request-button', driver);
   await driver.switchTo().window(dappHandler);
 });
 
 it('should be able to disconnect from connected dapps', async () => {
-  await driver.get(rootURL + '/popup.html');
-  await delay(1000);
-  await driver.findElement({ id: 'home-page-header-left' }).click();
+  await goToPopup(driver, rootURL);
+  await findElementAndClick('home-page-header-left', driver);
+  await findElementAndClick('home-page-header-connected-apps', driver);
   await delay(500);
-  await driver.findElement({ id: 'home-page-header-connected-apps' }).click();
+  await findElementAndClick('switch-network-menu', driver);
+  await findElementAndClick('switch-network-menu-disconnect', driver);
 
-  await driver.findElement({ id: 'switch-network-menu' }).click();
-  await driver.findElement({ id: 'switch-network-menu-disconnect' }).click();
-
-  await driver.get('https://bx-test-dapp.vercel.app/');
+  await goToTestApp(driver);
   // wait for dapp to load new account and network
-  await delay(1000);
+  await delay(500);
   const button = await findElementByText(driver, 'Connect Wallet');
   expect(button).toBeTruthy();
 });

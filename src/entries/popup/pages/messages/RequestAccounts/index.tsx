@@ -18,14 +18,14 @@ interface ApproveRequestProps {
 
 const messenger = initializeMessenger({ connect: 'inpage' });
 
-export const ApproveRequestAccounts = ({
+export const RequestAccounts = ({
   approveRequest,
   rejectRequest,
   request,
 }: ApproveRequestProps) => {
   const { currentAddress } = useCurrentAddressStore();
   const { appHostName, appLogo, appName } = useAppMetadata({
-    url: request?.meta?.sender?.url || '',
+    url: request?.meta?.sender?.url,
     title: request?.meta?.sender?.tab?.title,
   });
   const [selectedNetwork, setSelectedNetwork] = useState<Chain>(chain.mainnet);

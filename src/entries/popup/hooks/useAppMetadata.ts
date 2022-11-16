@@ -6,7 +6,7 @@ import {
 } from '~/core/utils/connectedApps';
 
 interface AppMetadata {
-  url: string;
+  url?: string;
   title?: string;
 }
 
