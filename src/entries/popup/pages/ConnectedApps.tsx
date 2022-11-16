@@ -93,8 +93,8 @@ function ConnectedApp({
   });
 
   const changeChainId = React.useCallback(
-    (chainId: string) => {
-      updateAppSessionChainId(Number(chainId));
+    (chainId: number) => {
+      updateAppSessionChainId(chainId);
     },
     [updateAppSessionChainId],
   );
@@ -105,10 +105,10 @@ function ConnectedApp({
 
   return (
     <SwitchNetworkMenu
-      onValueChange={changeChainId}
-      selectedValue={String(chainId)}
+      onChainChanged={changeChainId}
+      chainId={chainId}
       onDisconnect={disconnect}
-      renderMenuTrigger={
+      triggerComponent={
         <Box as="button" id="switch-network-menu" width="full">
           <Inset horizontal="20px" vertical="8px">
             <Inline space="8px">

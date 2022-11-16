@@ -1,5 +1,5 @@
 import React from 'react';
-import { Address, useEnsAvatar, useEnsName } from 'wagmi';
+import { Address, Chain, useEnsAvatar, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { truncateAddress } from '~/core/utils/truncateAddress';
@@ -13,11 +13,7 @@ import {
 import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
 import { SFSymbol } from '../../../components/SFSymbol/SFSymbol';
 import { SwitchMenu } from '../../../components/SwitchMenu/SwitchMenu';
-import {
-  SwitchNetworkMenu,
-  supportedChains,
-} from '../../../components/SwitchMenu/SwitchNetworkMenu';
-import { SelectedNetwork } from '../RequestAccounts';
+import { SwitchNetworkMenu } from '../../../components/SwitchMenu/SwitchNetworkMenu';
 
 const wallets: Address[] = [DEFAULT_ACCOUNT, DEFAULT_ACCOUNT_2];
 
@@ -133,13 +129,13 @@ export const BottomNetwork = ({
   selectedNetwork,
   displaySymbol = false,
 }: {
-  selectedNetwork: SelectedNetwork;
+  selectedNetwork: Chain;
   displaySymbol: boolean;
 }) => {
   return (
-    <Box id={'switch-network-menu'}>
+    <Box id="switch-network-menu">
       <Inline alignHorizontal="right" alignVertical="center" space="4px">
-        <ChainBadge chainId={selectedNetwork.chainId} size={'small'} />
+        <ChainBadge chainId={selectedNetwork.id} size={'small'} />
         <Text
           align="right"
           size="14pt"
@@ -163,7 +159,7 @@ export const BottomNetwork = ({
 export const BottomDisplayNetwork = ({
   selectedNetwork,
 }: {
-  selectedNetwork: SelectedNetwork;
+  selectedNetwork: Chain;
 }) => {
   return (
     <Stack space="8px">
@@ -179,8 +175,8 @@ export const BottomSwitchNetwork = ({
   selectedNetwork,
   setSelectedNetwork,
 }: {
-  selectedNetwork: SelectedNetwork;
-  setSelectedNetwork: (network: SelectedNetwork) => void;
+  selectedNetwork: Chain;
+  setSelectedNetwork: (network: Chain) => void;
 }) => {
   return (
     <Stack space="8px">
@@ -189,12 +185,10 @@ export const BottomSwitchNetwork = ({
       </Text>
 
       <SwitchNetworkMenu
-        renderMenuTrigger={
+        chainId={selectedNetwork.id}
+        onChainChanged={(_, chain) => setSelectedNetwork(chain)}
+        triggerComponent={
           <BottomNetwork selectedNetwork={selectedNetwork} displaySymbol />
-        }
-        selectedValue={String(selectedNetwork.chainId)}
-        onValueChange={(chainId) =>
-          setSelectedNetwork(supportedChains[chainId])
         }
       />
     </Stack>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Address } from 'wagmi';
+import { Address, Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { Box, Column, Columns, Row, Rows, Stack } from '~/design-system';
@@ -10,7 +10,6 @@ import {
   BottomDisplayWallet,
   RejectRequestButton,
 } from '../BottomButtons';
-import { SelectedNetwork } from '../RequestAccounts';
 
 export const SignMessageActions = ({
   selectedWallet,
@@ -19,7 +18,7 @@ export const SignMessageActions = ({
   onRejectRequest,
 }: {
   selectedWallet: Address;
-  selectedNetwork: SelectedNetwork;
+  selectedNetwork: Chain;
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
 }) => {
