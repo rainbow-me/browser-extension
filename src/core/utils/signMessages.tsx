@@ -50,7 +50,6 @@ export const getRequestDisplayDetails = (payload: ProviderRequestPayload) => {
       // and data as the second one it's safer to verify that
       // and switch order if needed to ensure max compatibility with dapps
       if (isSignTypedData(payload.method)) {
-        console.log('SIGN TYPED DATA payload?.params', payload?.params);
         if (payload?.params?.length && payload?.params?.[0]) {
           const firstParamIsAddresss = isAddress(
             (payload?.params?.[0] as string) ?? '',
