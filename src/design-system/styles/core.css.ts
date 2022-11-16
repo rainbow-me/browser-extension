@@ -13,10 +13,11 @@ import mapValues from 'lodash/mapValues';
 import pick from 'lodash/pick';
 
 import {
+  BackgroundColor,
   ColorContext,
-  ForegroundColor,
   ShadowColor,
   backgroundColors,
+  buttonColors,
   foregroundColors,
   negativeSpace,
   positionSpace,
@@ -51,6 +52,7 @@ const list = style({ listStyle: 'none' });
 const table = style({ borderCollapse: 'collapse', borderSpacing: 0 });
 const appearanceNone = style({ appearance: 'none' });
 const backgroundTransparent = style({ backgroundColor: 'transparent' });
+const button = style([backgroundTransparent, { cursor: 'default' }]);
 const field = [appearanceNone, backgroundTransparent];
 
 const quotes = style({
@@ -93,7 +95,7 @@ const input = style([
 export const resetElements = {
   a,
   blockquote: quotes,
-  button: backgroundTransparent,
+  button,
   input,
   ol: list,
   q: quotes,
@@ -138,8 +140,8 @@ interface ShadowDefinition {
   light: string;
 }
 
-type ShadowSize = '12px' | '18px' | '24px' | '30px';
-type Shadow = ShadowSize | `${ShadowSize} ${ShadowColor}`;
+export type ShadowSize = '12px' | '18px' | '24px' | '30px';
+export type Shadow = ShadowSize | `${ShadowSize} ${ShadowColor}`;
 
 function coloredShadows<Size extends ShadowSize>(
   size: Size,
@@ -154,13 +156,13 @@ function coloredShadows<Size extends ShadowSize>(
 }
 
 function getShadowColor(
-  color: 'accent' | ForegroundColor,
+  color: 'accent' | BackgroundColor,
   theme: ColorContext,
   alpha: number,
 ) {
   return color === 'accent'
     ? getAccentColorAsHsl({ alpha })
-    : chroma(foregroundColors[color][theme]).alpha(alpha).css();
+    : chroma(backgroundColors[color][theme].color).alpha(alpha).css();
 }
 
 const shadowTokens: Record<Shadow, ShadowDefinition> = {
@@ -347,6 +349,7 @@ const boxBaseProperties = defineProperties({
     marginLeft: negativeSpace,
     marginRight: negativeSpace,
     marginTop: negativeSpace,
+    opacity: ['0.1'],
     paddingBottom: space,
     paddingLeft: space,
     paddingRight: space,
@@ -355,6 +358,7 @@ const boxBaseProperties = defineProperties({
     right: positionSpace,
     top: positionSpace,
     width: {
+      fit: 'fit-content',
       full: '100%',
     },
   },
@@ -380,10 +384,16 @@ const boxColorProperties = defineProperties({
       accent: accentColorAsHsl,
       ...semanticColorVars.backgroundColors,
     },
-    borderColor: pick(semanticColorVars.foregroundColors, [
-      ...separatorColors,
-      ...strokeColors,
-    ] as const),
+    borderColor: {
+      accent: accentColorAsHsl,
+      white: 'white',
+      ...pick(semanticColorVars.foregroundColors, [
+        'label',
+        ...buttonColors,
+        ...separatorColors,
+        ...strokeColors,
+      ] as const),
+    },
     boxShadow: shadowVars,
   },
 });
