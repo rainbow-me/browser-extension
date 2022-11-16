@@ -187,7 +187,7 @@ it('should be able to disconnect from connected dapps', async () => {
   await goToPopup(driver, rootURL);
   await findElementAndClick('home-page-header-left', driver);
   await findElementAndClick('home-page-header-connected-apps', driver);
-  await delay(100);
+  await delay(500);
   await findElementAndClick('switch-network-menu', driver);
   await findElementAndClick('switch-network-menu-disconnect', driver);
 
