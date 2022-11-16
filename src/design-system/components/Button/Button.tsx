@@ -24,6 +24,7 @@ export type ButtonProps = {
   // TODO: support SF symbols
   icon?: string;
   onClick?: () => void;
+  width?: 'fit' | 'full';
 } & (
   | {
       color: ButtonColor;
@@ -151,12 +152,18 @@ const stylesForVariant = ({
     borderWidth?: BoxStyles['borderWidth'];
   }
 > => ({
-  raised: { background: color },
+  raised: {
+    background: color,
+    borderColor: 'buttonStroke',
+    borderWidth: '1px',
+  },
   flat: {
     background: color,
+    borderColor: 'buttonStroke',
+    borderWidth: '1px',
   },
   tinted: {
-    textColor: color,
+    textColor: color as TextColor,
   },
   stroked: {
     borderColor: color,
@@ -164,7 +171,7 @@ const stylesForVariant = ({
     textColor: 'labelSecondary',
   },
   transparent: {
-    textColor: color,
+    textColor: color as TextColor,
   },
   white: {
     background: 'white',
@@ -178,6 +185,7 @@ export function Button({
   icon,
   onClick,
   variant,
+  width = 'full',
 }: ButtonProps) {
   const { boxShadow } = stylesForHeightAndVariant({
     color,
@@ -208,7 +216,7 @@ export function Button({
       position="relative"
       justifyContent="center"
       paddingHorizontal={paddingHorizontal}
-      width="fit"
+      width={width}
     >
       {typeof children === 'string' ? (
         <Inline alignVertical="center" space={gap}>

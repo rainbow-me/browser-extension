@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Code } from '../../docs/components/Code';
+import { Paragraph } from '../../docs/components/Paragraph';
 import { createExample } from '../../docs/createDocs';
 import source from '../../docs/utils/source.macro';
 import { Button } from '../Button/Button';
@@ -11,7 +13,7 @@ export const basic = createExample({
   showThemes: true,
   Example: () =>
     source(
-      <Inline space="10px">
+      <Inline space="10px" wrap={false}>
         <Button color="accent" height="36px" variant="raised">
           Button
         </Button>
@@ -40,7 +42,7 @@ export const colors = createExample({
   Example: () =>
     source(
       <Stack space="20px">
-        <Inline space="10px">
+        <Inline space="10px" wrap={false}>
           <Button color="accent" height="36px" variant="raised">
             Button
           </Button>
@@ -57,7 +59,7 @@ export const colors = createExample({
             Button
           </Button>
         </Inline>
-        <Inline space="10px">
+        <Inline space="10px" wrap={false}>
           <Button color="blue" height="36px" variant="raised">
             Button
           </Button>
@@ -74,7 +76,7 @@ export const colors = createExample({
             Button
           </Button>
         </Inline>
-        <Inline space="10px">
+        <Inline space="10px" wrap={false}>
           <Button color="green" height="36px" variant="raised">
             Button
           </Button>
@@ -91,7 +93,7 @@ export const colors = createExample({
             Button
           </Button>
         </Inline>
-        <Inline space="10px">
+        <Inline space="10px" wrap={false}>
           <Button color="orange" height="36px" variant="raised">
             Button
           </Button>
@@ -108,7 +110,7 @@ export const colors = createExample({
             Button
           </Button>
         </Inline>
-        <Inline space="10px">
+        <Inline space="10px" wrap={false}>
           <Button color="pink" height="36px" variant="raised">
             Button
           </Button>
@@ -125,7 +127,7 @@ export const colors = createExample({
             Button
           </Button>
         </Inline>
-        <Inline space="10px">
+        <Inline space="10px" wrap={false}>
           <Button color="purple" height="36px" variant="raised">
             Button
           </Button>
@@ -142,7 +144,7 @@ export const colors = createExample({
             Button
           </Button>
         </Inline>
-        <Inline space="10px">
+        <Inline space="10px" wrap={false}>
           <Button color="red" height="36px" variant="raised">
             Button
           </Button>
@@ -159,7 +161,7 @@ export const colors = createExample({
             Button
           </Button>
         </Inline>
-        <Inline space="10px">
+        <Inline space="10px" wrap={false}>
           <Button color="yellow" height="36px" variant="raised">
             Button
           </Button>
@@ -176,6 +178,85 @@ export const colors = createExample({
             Button
           </Button>
         </Inline>
+        <Inline space="10px" wrap={false}>
+          <Button color="fill" height="36px" variant="raised">
+            Button
+          </Button>
+          <Button color="fill" height="36px" variant="flat">
+            Button
+          </Button>
+          <Button color="fill" height="36px" variant="stroked">
+            Button
+          </Button>
+        </Inline>
+        <Inline space="10px" wrap={false}>
+          <Button color="fillSecondary" height="36px" variant="raised">
+            Button
+          </Button>
+          <Button color="fillSecondary" height="36px" variant="flat">
+            Button
+          </Button>
+          <Button color="fillSecondary" height="36px" variant="stroked">
+            Button
+          </Button>
+        </Inline>
+        <Inline space="10px" wrap={false}>
+          <Button color="surfacePrimaryElevated" height="36px" variant="raised">
+            Button
+          </Button>
+          <Button color="surfacePrimaryElevated" height="36px" variant="flat">
+            Button
+          </Button>
+          <Button
+            color="surfacePrimaryElevated"
+            height="36px"
+            variant="stroked"
+          >
+            Button
+          </Button>
+        </Inline>
+        <Inline space="10px" wrap={false}>
+          <Button
+            color="surfacePrimaryElevatedSecondary"
+            height="36px"
+            variant="raised"
+          >
+            Button
+          </Button>
+          <Button
+            color="surfacePrimaryElevatedSecondary"
+            height="36px"
+            variant="flat"
+          >
+            Button
+          </Button>
+          <Button
+            color="surfacePrimaryElevatedSecondary"
+            height="36px"
+            variant="stroked"
+          >
+            Button
+          </Button>
+        </Inline>
+        <Inline space="10px" wrap={false}>
+          <Button
+            color="surfaceSecondaryElevated"
+            height="36px"
+            variant="raised"
+          >
+            Button
+          </Button>
+          <Button color="surfaceSecondaryElevated" height="36px" variant="flat">
+            Button
+          </Button>
+          <Button
+            color="surfaceSecondaryElevated"
+            height="36px"
+            variant="stroked"
+          >
+            Button
+          </Button>
+        </Inline>
       </Stack>,
     ),
 });
@@ -186,7 +267,7 @@ export const sizes = createExample({
   Example: () =>
     source(
       <Stack space="20px">
-        <Inline space="10px">
+        <Inline space="10px" wrap={false}>
           <Button color="accent" height="44px" variant="raised">
             Button
           </Button>
@@ -206,7 +287,7 @@ export const sizes = createExample({
             Button
           </Button>
         </Inline>
-        <Inline space="10px">
+        <Inline space="10px" wrap={false}>
           <Button color="accent" height="36px" variant="raised">
             Button
           </Button>
@@ -226,7 +307,7 @@ export const sizes = createExample({
             Button
           </Button>
         </Inline>
-        <Inline space="10px">
+        <Inline space="10px" wrap={false}>
           <Button color="accent" height="32px" variant="raised">
             Button
           </Button>
@@ -246,7 +327,7 @@ export const sizes = createExample({
             Button
           </Button>
         </Inline>
-        <Inline space="10px">
+        <Inline space="10px" wrap={false}>
           <Button color="accent" height="28px" variant="raised">
             Button
           </Button>
@@ -266,7 +347,7 @@ export const sizes = createExample({
             Button
           </Button>
         </Inline>
-        <Inline space="10px">
+        <Inline space="10px" wrap={false}>
           <Button color="accent" height="24px" variant="raised">
             Button
           </Button>
@@ -290,12 +371,36 @@ export const sizes = createExample({
     ),
 });
 
+export const widths = createExample({
+  name: 'Widths',
+  description: (
+    <>
+      <Paragraph>
+        A button can either span the width of the container via{' '}
+        <Code>full</Code>, or span the width of its content via <Code>fit</Code>
+        .
+      </Paragraph>
+    </>
+  ),
+  Example: () =>
+    source(
+      <Stack space="10px">
+        <Button color="accent" height="44px" variant="raised">
+          Button
+        </Button>
+        <Button color="accent" height="36px" variant="flat" width="fit">
+          Button
+        </Button>
+      </Stack>,
+    ),
+});
+
 export const emojis = createExample({
   name: 'Emojis',
   showThemes: true,
   Example: () =>
     source(
-      <Inline space="10px">
+      <Inline space="10px" wrap={false}>
         <Button color="accent" icon="🤡" height="44px" variant="raised">
           Button
         </Button>

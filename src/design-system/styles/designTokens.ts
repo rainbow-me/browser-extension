@@ -343,6 +343,11 @@ function selectBackgroundAsForeground(
 export const buttonColors = [
   'accent',
   ...selectBackgroundColors(
+    'fill',
+    'fillSecondary',
+    'surfacePrimaryElevated',
+    'surfacePrimaryElevatedSecondary',
+    'surfaceSecondaryElevated',
     'blue',
     'green',
     'orange',
@@ -357,6 +362,11 @@ export type ButtonColor = typeof buttonColors[number];
 export const shadowColors = [
   'accent',
   ...selectBackgroundColors(
+    'fill',
+    'fillSecondary',
+    'surfacePrimaryElevated',
+    'surfacePrimaryElevatedSecondary',
+    'surfaceSecondaryElevated',
     'blue',
     'green',
     'orange',
