@@ -182,6 +182,7 @@ export const colors = createExample({
 
 export const sizes = createExample({
   name: 'Sizes',
+  showThemes: 'toggle',
   Example: () =>
     source(
       <Stack space="20px">

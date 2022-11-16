@@ -1,4 +1,3 @@
-import mapValues from 'lodash/mapValues';
 import React from 'react';
 
 import { BoxStyles, ShadowSize, TextStyles } from '../../styles/core.css';
@@ -36,107 +35,139 @@ export type ButtonProps = {
     }
 );
 
-const gapForHeight: Record<ButtonProps['height'], Space> = {
-  '24px': '6px',
-  '28px': '6px',
-  '32px': '6px',
-  '36px': '6px',
-  '44px': '8px',
-};
+const shadowValue = (size: ShadowSize, color?: ButtonColor) =>
+  color ? (`${size} ${color}` as const) : size;
 
-const paddingHorizontalForHeight: Record<
+const stylesForHeight: Record<
   ButtonProps['height'],
-  BoxStyles['paddingHorizontal']
+  {
+    gap?: Space;
+    paddingHorizontal?: BoxStyles['paddingHorizontal'];
+    textSize?: TextStyles['fontSize'];
+  }
 > = {
-  '24px': '10px',
-  '28px': '10px',
-  '32px': '12px',
-  '36px': '16px',
-  '44px': '24px',
+  '44px': {
+    gap: '8px',
+    paddingHorizontal: '24px',
+    textSize: '16pt',
+  },
+  '36px': {
+    gap: '6px',
+    paddingHorizontal: '16px',
+    textSize: '16pt',
+  },
+  '32px': {
+    gap: '6px',
+    paddingHorizontal: '12px',
+    textSize: '14pt',
+  },
+  '28px': {
+    gap: '6px',
+    paddingHorizontal: '10px',
+    textSize: '14pt',
+  },
+  '24px': {
+    gap: '6px',
+    paddingHorizontal: '10px',
+    textSize: '11pt',
+  },
 };
 
-const shadowSizesForHeight: Record<ButtonProps['height'], ShadowSize> = {
-  '24px': '12px',
-  '28px': '12px',
-  '32px': '24px',
-  '36px': '24px',
-  '44px': '30px',
-};
-const shadowValueForHeight = ({
+const stylesForHeightAndVariant = ({
   color,
 }: {
-  color: ButtonProps['color'];
-}): Record<keyof typeof shadowSizesForHeight, BoxStyles['boxShadow']> =>
-  mapValues(shadowSizesForHeight, (size) =>
-    color ? (`${size} ${color}` as const) : (`${size}` as const),
-  );
+  color?: ButtonColor;
+}): Record<
+  ButtonHeight,
+  Record<
+    ButtonProps['variant'],
+    {
+      boxShadow?: BoxStyles['boxShadow'];
+    }
+  >
+> => ({
+  '44px': {
+    raised: { boxShadow: shadowValue('30px', color) },
+    flat: {},
+    tinted: {},
+    stroked: {},
+    transparent: {},
+    white: {
+      boxShadow: shadowValue('30px', color),
+    },
+  },
+  '36px': {
+    raised: { boxShadow: shadowValue('24px', color) },
+    flat: {},
+    tinted: {},
+    stroked: {},
+    transparent: {},
+    white: {
+      boxShadow: shadowValue('24px', color),
+    },
+  },
+  '32px': {
+    raised: { boxShadow: shadowValue('24px', color) },
+    flat: {},
+    tinted: {},
+    stroked: {},
+    transparent: {},
+    white: {
+      boxShadow: shadowValue('24px', color),
+    },
+  },
+  '28px': {
+    raised: { boxShadow: shadowValue('12px', color) },
+    flat: {},
+    tinted: {},
+    stroked: {},
+    transparent: {},
+    white: {
+      boxShadow: shadowValue('12px', color),
+    },
+  },
+  '24px': {
+    raised: { boxShadow: shadowValue('12px', color) },
+    flat: {},
+    tinted: {},
+    stroked: {},
+    transparent: {},
+    white: {
+      boxShadow: shadowValue('12px', color),
+    },
+  },
+});
 
-const buttonStylesForVariant = ({
-  color = 'accent',
-  boxShadow,
+const stylesForVariant = ({
+  color,
 }: {
-  color?: ButtonProps['color'];
-  boxShadow: BoxStyles['boxShadow'];
+  color: ButtonColor;
 }): Record<
   ButtonProps['variant'],
   {
     background?: 'accent' | BackgroundColor;
-    boxShadow?: BoxStyles['boxShadow'];
-    borderWidth?: BoxStyles['borderWidth'];
+    textColor?: 'accent' | TextColor;
     borderColor?: BoxStyles['borderColor'];
+    borderWidth?: BoxStyles['borderWidth'];
   }
 > => ({
-  raised: {
-    background: color,
-    boxShadow,
-  },
+  raised: { background: color },
   flat: {
     background: color,
   },
-  tinted: {},
+  tinted: {
+    textColor: color,
+  },
   stroked: {
     borderColor: color,
     borderWidth: '2px',
+    textColor: 'labelSecondary',
+  },
+  transparent: {
+    textColor: color,
   },
   white: {
     background: 'white',
-    boxShadow,
-  },
-  transparent: {},
-});
-
-const fontSizesForHeight: Record<
-  ButtonProps['height'],
-  TextStyles['fontSize']
-> = {
-  '24px': '11pt',
-  '28px': '14pt',
-  '32px': '14pt',
-  '36px': '16pt',
-  '44px': '16pt',
-};
-
-const textStylesForVariant = ({
-  color = 'accent',
-}: {
-  color?: ButtonProps['color'];
-}): Record<
-  ButtonProps['variant'],
-  {
-    color?: 'accent' | TextColor;
-  }
-> => ({
-  raised: {},
-  flat: {},
-  tinted: {
-    color,
-  },
-  white: {},
-  stroked: {
-    color: 'labelSecondary',
-  },
-  transparent: {
-    color,
   },
 });
 
@@ -148,24 +179,29 @@ export function Button({
   onClick,
   variant,
 }: ButtonProps) {
-  const boxShadow = shadowValueForHeight({ color })[height];
-  const buttonStyles = buttonStylesForVariant({ color, boxShadow })[variant];
-  const paddingHorizontal = paddingHorizontalForHeight[height];
-  const fontSize = fontSizesForHeight[height];
-  const textStyles = textStylesForVariant({ color })[variant];
+  const { boxShadow } = stylesForHeightAndVariant({
+    color,
+  })[height][variant];
+
+  const { background, borderColor, borderWidth, textColor } = stylesForVariant({
+    color: color ?? 'accent',
+  })[variant];
+
+  const { gap, paddingHorizontal, textSize } = stylesForHeight[height];
+
   return (
     <Box
       as="button"
       alignItems="center"
-      background={buttonStyles.background}
+      background={background}
       borderRadius="round"
-      borderColor={buttonStyles.borderColor}
-      borderWidth={buttonStyles.borderWidth}
-      boxShadow={buttonStyles.boxShadow}
+      borderColor={borderColor}
+      borderWidth={borderWidth}
+      boxShadow={boxShadow}
       className={[
         heightStyles[height],
-        variant === 'tinted' && tintedStyles[color || 'accent'],
         interactionStyles,
+        variant === 'tinted' && tintedStyles[color || 'accent'],
       ]}
       display="flex"
       onClick={onClick}
@@ -175,13 +211,13 @@ export function Button({
       width="fit"
     >
       {typeof children === 'string' ? (
-        <Inline alignVertical="center" space={gapForHeight[height]}>
+        <Inline alignVertical="center" space={gap}>
           {icon && (
-            <Text color={textStyles.color} size={fontSize} weight="bold">
+            <Text color={textColor} size={textSize} weight="bold">
               {icon}
             </Text>
           )}
-          <Text color={textStyles.color} size={fontSize} weight="bold">
+          <Text color={textColor} size={textSize} weight="bold">
             {children}
           </Text>
         </Inline>

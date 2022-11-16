@@ -40,14 +40,14 @@ export const interactionStyles = style({
 
 export const tintedStyles = styleVariants({
   accent: {
-    background: `${getAccentColorAsHsl({ alpha: 0.1 })} !important`,
+    background: getAccentColorAsHsl({ alpha: 0.1 }),
   },
   ...(buttonColors.reduce((styles, color) => {
     if (color === 'accent') return styles;
 
     return {
       ...styles,
-      [color]: { background: `${globalColors[`${color}A10`]} !important` },
+      [color]: { background: globalColors[`${color}A10`] },
     };
   }, {}) as Record<Exclude<ButtonColor, 'accent'>, { background: string }>),
 });
