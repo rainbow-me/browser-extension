@@ -1,4 +1,4 @@
-import { isAddress, isHexString } from 'ethers/lib/utils';
+import { getAddress, isAddress, isHexString } from 'ethers/lib/utils';
 import { Address } from 'wagmi';
 
 import { supportedCurrencies } from '../references';
@@ -26,7 +26,7 @@ export const getRequestDisplayDetails = (payload: ProviderRequestPayload) => {
     case SignMethods.ethSign: {
       const message = payload?.params?.[1] as string;
       const address = payload?.params?.[0] as Address;
-      return { message, msgData: message, address };
+      return { message, msgData: message, address: getAddress(address) };
     }
     case SignMethods.personalSign: {
       let message = payload?.params?.[0] as string;
@@ -40,7 +40,7 @@ export const getRequestDisplayDetails = (payload: ProviderRequestPayload) => {
       } catch (error) {
         // TODO error handling
       }
-      return { message, msgData: message, address };
+      return { message, msgData: message, address: getAddress(address) };
     }
     default: {
       // There's a lot of inconsistency in the parameter order for this method
@@ -50,6 +50,7 @@ export const getRequestDisplayDetails = (payload: ProviderRequestPayload) => {
       // and data as the second one it's safer to verify that
       // and switch order if needed to ensure max compatibility with dapps
       if (isSignTypedData(payload.method)) {
+        console.log('SIGN TYPED DATA payload?.params', payload?.params);
         if (payload?.params?.length && payload?.params?.[0]) {
           const firstParamIsAddresss = isAddress(
             (payload?.params?.[0] as string) ?? '',
@@ -66,7 +67,7 @@ export const getRequestDisplayDetails = (payload: ProviderRequestPayload) => {
           return {
             message: JSON.stringify(data),
             msgData,
-            address,
+            address: getAddress(address),
           };
         }
       }
