@@ -35,7 +35,7 @@ export const SwitchMenu = ({
   return (
     <Menu>
       <MenuTrigger asChild>
-        {<Box style={{ cursor: 'pointer' }}>{renderMenuTrigger}</Box>}
+        <Box style={{ cursor: 'default' }}>{renderMenuTrigger}</Box>
       </MenuTrigger>
       <MenuContent>
         <MenuLabel>{title}</MenuLabel>

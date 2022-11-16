@@ -1,11 +1,10 @@
 import React, { useCallback, useState } from 'react';
-import { Address, chain } from 'wagmi';
+import { Address, Chain, chain } from 'wagmi';
 
 import { initializeMessenger } from '~/core/messengers';
 import { useCurrentAddressStore } from '~/core/state';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { Row, Rows, Separator } from '~/design-system';
-import { supportedChains } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 
 import { RequestAccountsActions } from './RequestAccountsActions';
@@ -15,12 +14,6 @@ interface ApproveRequestProps {
   approveRequest: (payload: { address: Address; chainId: number }) => void;
   rejectRequest: () => void;
   request: ProviderRequestPayload;
-}
-
-export interface SelectedNetwork {
-  network: string;
-  chainId: number;
-  name: string;
 }
 
 const messenger = initializeMessenger({ connect: 'inpage' });
@@ -35,18 +28,16 @@ export const ApproveRequestAccounts = ({
     url: request?.meta?.sender?.url || '',
     title: request?.meta?.sender?.tab?.title,
   });
-  const [selectedNetwork, setSelectedNetwork] = useState<SelectedNetwork>(
-    supportedChains[chain.mainnet.id],
-  );
+  const [selectedNetwork, setSelectedNetwork] = useState<Chain>(chain.mainnet);
   const [selectedWallet, setSelectedWallet] = useState<Address>(currentAddress);
 
   const onAcceptRequest = useCallback(() => {
     approveRequest({
       address: selectedWallet,
-      chainId: selectedNetwork.chainId,
+      chainId: selectedNetwork.id,
     });
     messenger.send(`connect:${appHostName}`, {});
-  }, [appHostName, approveRequest, selectedNetwork.chainId, selectedWallet]);
+  }, [appHostName, approveRequest, selectedNetwork.id, selectedWallet]);
 
   return (
     <Rows alignVertical="justify">

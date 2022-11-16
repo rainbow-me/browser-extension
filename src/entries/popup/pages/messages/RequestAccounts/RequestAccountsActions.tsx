@@ -1,5 +1,5 @@
 import React from 'react';
-import { Address } from 'wagmi';
+import { Address, Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { Box, Column, Columns, Row, Rows, Stack } from '~/design-system';
@@ -10,8 +10,6 @@ import {
   BottomSwitchWallet,
   RejectRequestButton,
 } from '../BottomButtons';
-
-import { SelectedNetwork } from '.';
 
 export const RequestAccountsActions = ({
   selectedWallet,
@@ -25,8 +23,8 @@ export const RequestAccountsActions = ({
   appName?: string;
   selectedWallet: Address;
   setSelectedWallet: (value: Address) => void;
-  selectedNetwork: SelectedNetwork;
-  setSelectedNetwork: (value: SelectedNetwork) => void;
+  selectedNetwork: Chain;
+  setSelectedNetwork: (value: Chain) => void;
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
 }) => {

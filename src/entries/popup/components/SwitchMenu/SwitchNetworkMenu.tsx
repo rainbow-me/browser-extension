@@ -1,5 +1,5 @@
 import React from 'react';
-import { chain } from 'wagmi';
+import { Chain, useNetwork } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { Box, Inline, Inset, Text } from '~/design-system';
@@ -16,36 +16,14 @@ import {
 } from '../Menu/Menu';
 import { SFSymbol } from '../SFSymbol/SFSymbol';
 
-export const supportedChains: { [key: string]: SelectedNetwork } = {
-  [chain.mainnet.id]: {
-    network: chain.mainnet.network,
-    chainId: chain.mainnet.id,
-    name: chain.mainnet.name,
-  },
-  [chain.optimism.id]: {
-    network: chain.optimism.network,
-    chainId: chain.optimism.id,
-    name: chain.optimism.name,
-  },
-  [chain.polygon.id]: {
-    network: chain.polygon.network,
-    chainId: chain.polygon.id,
-    name: chain.polygon.name,
-  },
-  [chain.arbitrum.id]: {
-    network: chain.arbitrum.network,
-    chainId: chain.arbitrum.id,
-    name: chain.arbitrum.name,
-  },
-};
-
 export const SwitchNetworkMenuSelector = () => {
+  const { chains } = useNetwork();
   return (
     <>
-      {Object.keys(supportedChains).map((chain, i) => {
-        const { chainId, name } = supportedChains[chain];
+      {chains.map((chain, i) => {
+        const { id: chainId, name } = chain;
         return (
-          <MenuRadioItem value={chain} key={i}>
+          <MenuRadioItem value={String(chainId)} key={i}>
             <Box
               style={{
                 cursor: 'pointer',
@@ -99,33 +77,36 @@ export const SwitchNetworkMenuDisconnect = ({
 };
 
 interface SwitchNetworkMenuProps {
-  selectedValue: string;
-  onValueChange: (value: string) => void;
-  renderMenuTrigger: React.ReactNode;
+  chainId: Chain['id'];
+  onChainChanged: (chainId: Chain['id'], chain: Chain) => void;
   onDisconnect?: () => void;
-}
-
-interface SelectedNetwork {
-  network: string;
-  chainId: number;
-  name: string;
+  triggerComponent: React.ReactNode;
 }
 
 export const SwitchNetworkMenu = ({
-  selectedValue,
-  onValueChange,
-  renderMenuTrigger,
+  chainId,
+  onChainChanged,
   onDisconnect,
+  triggerComponent,
 }: SwitchNetworkMenuProps) => {
+  const { chains } = useNetwork();
   return (
     <Menu>
       <MenuTrigger asChild>
-        {<Box style={{ cursor: 'pointer' }}>{renderMenuTrigger}</Box>}
+        <Box style={{ cursor: 'default' }}>{triggerComponent}</Box>
       </MenuTrigger>
       <MenuContent>
         <MenuLabel>{i18n.t('menu.network.title')}</MenuLabel>
         <MenuSeparator />
-        <MenuRadioGroup value={selectedValue} onValueChange={onValueChange}>
+        <MenuRadioGroup
+          value={String(chainId)}
+          onValueChange={(chainId) => {
+            const chain = chains.find(
+              ({ id }) => String(id) === chainId,
+            ) as Chain;
+            onChainChanged(chain?.id, chain);
+          }}
+        >
           <SwitchNetworkMenuSelector />
         </MenuRadioGroup>
         {onDisconnect ? (
