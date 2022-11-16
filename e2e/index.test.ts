@@ -93,6 +93,7 @@ it('should be able to connect to bx test dapp', async () => {
   await findElementAndClick('switch-wallet-menu', driver);
   await findElementAndClick('switch-wallet-item-0', driver);
   // switch network
+  await delay(500);
   await findElementAndClick('switch-network-menu', driver);
   await findElementAndClick('switch-network-item-1', driver);
 
