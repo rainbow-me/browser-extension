@@ -11,18 +11,18 @@ interface TextIconProps {
 }
 
 const TextIcon = ({ icon, color = 'label' }: TextIconProps) => (
-  <Text color={color} size="20pt" weight="semibold">
+  <Text color={color} size="18pt" weight="semibold">
     {icon}
   </Text>
 );
 
 interface SelectionProps {
-  children: React.ReactNode;
+  text: string;
 }
 
-const Selection = ({ children }: SelectionProps) => (
-  <Text color="labelSecondary" size="16pt" weight="semibold">
-    {children}
+const Selection = ({ text }: SelectionProps) => (
+  <Text color="labelTertiary" size="14pt" weight="medium">
+    {text}
   </Text>
 );
 
@@ -32,14 +32,13 @@ interface TitleProps {
 }
 
 const Title = ({ text }: TitleProps) => (
-  <Text color="labelSecondary" size="14pt" weight="semibold">
+  <Text color="label" size="14pt" weight="medium">
     {text}
   </Text>
 );
 
 interface LabelProps {
   text: string;
-  warn?: boolean;
 }
 
 const Label = ({ text }: LabelProps) => {
@@ -87,7 +86,11 @@ const MenuItem = ({
   >
     <Inline alignHorizontal="justify" alignVertical="center">
       <Inline alignVertical="center" space="16px">
-        {leftComponent && <Box alignItems="center">{leftComponent}</Box>}
+        {leftComponent && (
+          <Box alignItems="center" justifyContent="center">
+            {leftComponent}
+          </Box>
+        )}
         <Stack space="8px">
           {titleComponent}
           {labelComponent}
@@ -96,9 +99,15 @@ const MenuItem = ({
       <Inline alignVertical="center" space="8px">
         {rightComponent}
         {hasRightArrow && (
-          <SFSymbol symbol="chevronRight" size={12} color="label" />
+          <SFSymbol symbol="chevronRight" size={12} color="labelTertiary" />
         )}
-        {hasChevron && <SFSymbol symbol="chevronUpChevronDown" size={12} />}
+        {hasChevron && (
+          <SFSymbol
+            symbol="chevronUpChevronDown"
+            size={12}
+            color="labelTertiary"
+          />
+        )}
       </Inline>
     </Inline>
   </Box>

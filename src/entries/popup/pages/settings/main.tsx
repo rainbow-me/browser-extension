@@ -25,7 +25,9 @@ export function Main() {
           <Menu>
             <MenuItem
               hasSfSymbol
-              leftComponent={<SFSymbol symbol="send" />}
+              leftComponent={
+                <SFSymbol symbol="lockFill" color="blue" size={18} />
+              }
               hasRightArrow
               onPress={() => navigate('/settings/privacy')}
               titleComponent={
@@ -38,7 +40,7 @@ export function Main() {
           <Menu>
             <MenuItem
               hasRightArrow
-              leftComponent={<SFSymbol symbol="send" />}
+              leftComponent={<SFSymbol symbol="boltFill" color="red" />}
               onPress={() => navigate('/settings/transactions')}
               titleComponent={
                 <MenuItem.Title text={i18n.t('settings.transactions')} />
@@ -46,21 +48,31 @@ export function Main() {
             />
             <MenuItem
               hasRightArrow
-              leftComponent={<SFSymbol symbol="send" />}
+              leftComponent={<SFSymbol symbol="send" color="green" />}
               onPress={() => navigate('/settings/currency')}
+              rightComponent={<MenuItem.Selection text="Euro" />}
               titleComponent={
                 <MenuItem.Title text={i18n.t('settings.currency')} />
               }
             />
             <MenuItem
               hasChevron
-              leftComponent={<SFSymbol symbol="send" />}
+              leftComponent={
+                <SFSymbol symbol="moonStars" color="purple" size={18} />
+              }
+              rightComponent={<MenuItem.Selection text="System" />}
               titleComponent={
                 <MenuItem.Title text={i18n.t('settings.theme')} />
               }
             />
             <MenuItem
-              leftComponent={<SFSymbol symbol="send" />}
+              leftComponent={
+                <SFSymbol
+                  symbol="personTextRectangleFill"
+                  color="blue"
+                  size={18}
+                />
+              }
               titleComponent={
                 <MenuItem.Title text={i18n.t('settings.contacts')} />
               }
@@ -72,12 +84,26 @@ export function Main() {
               titleComponent={
                 <MenuItem.Title text={i18n.t('settings.share_rainbow')} />
               }
+              rightComponent={
+                <SFSymbol
+                  symbol="arrowUpRightCircle"
+                  color="labelTertiary"
+                  size={14}
+                />
+              }
             />
             <MenuItem
               leftComponent={<MenuItem.TextIcon icon="🧠" />}
               titleComponent={
                 <MenuItem.Title
                   text={i18n.t('settings.learn_about_ethereum')}
+                />
+              }
+              rightComponent={
+                <SFSymbol
+                  symbol="arrowUpRightCircle"
+                  color="labelTertiary"
+                  size={14}
                 />
               }
             />
@@ -88,12 +114,26 @@ export function Main() {
                   text={i18n.t('settings.follow_us_on_twitter')}
                 />
               }
+              rightComponent={
+                <SFSymbol
+                  symbol="arrowUpRightCircle"
+                  color="labelTertiary"
+                  size={14}
+                />
+              }
             />
             <MenuItem
               leftComponent={<MenuItem.TextIcon icon="💬" />}
               titleComponent={
                 <MenuItem.Title
                   text={i18n.t('settings.feedback_and_support')}
+                />
+              }
+              rightComponent={
+                <SFSymbol
+                  symbol="arrowUpRightCircle"
+                  color="labelTertiary"
+                  size={14}
                 />
               }
             />
