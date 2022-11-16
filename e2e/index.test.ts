@@ -4,6 +4,7 @@
 
 import 'chromedriver';
 import 'geckodriver';
+import { ethers } from 'ethers';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 
@@ -178,6 +179,17 @@ it('should be able to accept a signing request', async () => {
   await driver.findElement({ id: 'accept-request-button' }).click();
 
   await driver.switchTo().window(dappHandler);
+
+  const button2 = await querySelector(driver, '[id="signTx"]');
+  expect(button2).toBeTruthy();
+
+  const signatureElement = await querySelector(
+    driver,
+    '[id="signTxSignature"]',
+  );
+  const signatureElementText = await signatureElement.getText();
+  const signature = signatureElementText.replace('sign message data sig: ', '');
+  expect(ethers.utils.isHexString(signature)).toBe(true);
 });
 
 it('should be able to accept a typed data signing request', async () => {
@@ -217,6 +229,17 @@ it('should be able to accept a transaction request', async () => {
   await driver.switchTo().window(popupHandler);
   await findElementAndClick('accept-request-button', driver);
   await driver.switchTo().window(dappHandler);
+
+  const signatureElement = await querySelector(
+    driver,
+    '[id="signTypedDataSignature"]',
+  );
+  const signatureElementText = await signatureElement.getText();
+  const signature = signatureElementText.replace(
+    'typed message data sig: ',
+    '',
+  );
+  expect(ethers.utils.isHexString(signature)).toBe(true);
 });
 
 it('should be able to disconnect from connected dapps', async () => {
