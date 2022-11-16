@@ -1,8 +1,11 @@
-import React from 'react';
+import { uuid4 } from '@sentry/utils';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Address, Chain, useBalance, useEnsAvatar, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { initializeMessenger } from '~/core/messengers';
 import { SupportedCurrencyKey, supportedCurrencies } from '~/core/references';
+import { WalletActions } from '~/core/types/walletActions';
 import {
   convertAmountToNativeDisplay,
   convertRawAmountToBalance,
@@ -20,8 +23,6 @@ import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
 import { SFSymbol } from '../../../components/SFSymbol/SFSymbol';
 import { SwitchMenu } from '../../../components/SwitchMenu/SwitchMenu';
 import { SwitchNetworkMenu } from '../../../components/SwitchMenu/SwitchNetworkMenu';
-
-const wallets: Address[] = [DEFAULT_ACCOUNT, DEFAULT_ACCOUNT_2];
 
 export const EnsAvatar = ({ address }: { address: Address }) => {
   const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
@@ -97,6 +98,23 @@ export const BottomDisplayWallet = ({
   );
 };
 
+const messenger = initializeMessenger({ connect: 'background' });
+
+const walletAction = async (
+  action: keyof typeof WalletActions,
+  payload: unknown,
+) => {
+  const { result }: { result: unknown } = await messenger.send(
+    WalletActions.action,
+    {
+      action,
+      payload,
+    },
+    { id: uuid4() },
+  );
+  return result;
+};
+
 export const BottomSwitchWallet = ({
   selectedWallet,
   setSelectedWallet,
@@ -104,6 +122,25 @@ export const BottomSwitchWallet = ({
   selectedWallet: Address;
   setSelectedWallet: (selected: Address) => void;
 }) => {
+  const [accounts, setAccounts] = useState<Address[]>([]);
+  const getAccounts = useCallback(async () => {
+    const accounts = (await walletAction(
+      WalletActions.get_accounts,
+      {},
+    )) as Address[];
+    setAccounts(accounts);
+    return accounts;
+  }, []);
+
+  useEffect(() => {
+    getAccounts();
+  }, [getAccounts]);
+
+  const wallets: Address[] = [
+    DEFAULT_ACCOUNT as Address,
+    DEFAULT_ACCOUNT_2 as Address,
+  ].concat(accounts);
+
   return (
     <Stack space="8px">
       <Text size="12pt" weight="semibold" color="labelQuaternary">

@@ -57,6 +57,7 @@ function PasswordForm({
         {title}
       </Text>
       <input
+        id="wallet-password-input"
         type="password"
         value={password}
         placeholder={
@@ -72,6 +73,7 @@ function PasswordForm({
         onClick={handleSubmitPassword}
         padding="16px"
         style={{ borderRadius: 999 }}
+        id="wallet-password-submit"
       >
         <Text color="label" size="14pt" weight="bold">
           {action === WalletActions.update_password ? 'Set Password' : 'Unlock'}
@@ -100,6 +102,7 @@ const CreateWallet = ({ onCreateWallet }: { onCreateWallet: () => void }) => {
         onClick={onCreateWallet}
         padding="16px"
         style={{ borderRadius: 999 }}
+        id="wallet-create-button"
       >
         <Text color="label" size="14pt" weight="bold">
           Create Wallet
@@ -392,7 +395,7 @@ export function Wallets() {
     >
       <Columns space="12px">
         <Column width="1/3">
-          <Link to="/">
+          <Link id="wallets-go-back" to="/">
             <Box as="button" style={{ borderRadius: 999, width: '100%' }}>
               <Text
                 color="labelSecondary"

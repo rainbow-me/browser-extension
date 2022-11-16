@@ -38,12 +38,16 @@ export function AccountName({
   return (
     <Inline alignVertical="center" space="4px">
       {includeAvatar && <Avatar imageUrl={ensAvatar || ''} size={16} />}
-      <Box as="button" onClick={shuffleAccount} id="account-name-shuffle">
+      <Box
+        as="button"
+        onClick={shuffleAccount}
+        id="name-section-shuffle-account"
+      >
         <Text color="label" size={size} weight="heavy" testId="account-name">
           {ensName ?? truncateAddress(address || '0x')}
         </Text>
       </Box>
-      <Link to="/wallets">
+      <Link id="account-name-link-to-wallet" to="/wallets">
         <SFSymbol color="labelTertiary" size={20} symbol="chevronDown" />
       </Link>
     </Inline>

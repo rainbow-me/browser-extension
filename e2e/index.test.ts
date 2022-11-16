@@ -53,7 +53,7 @@ it('should display account name', async () => {
 
 it('should shuffle account', async () => {
   await delay(500);
-  await driver.findElement({ id: 'account-name-shuffle' }).click();
+  await driver.findElement({ id: 'name-section-shuffle-account' }).click();
   const label = await querySelector(
     driver,
     '[data-testid="header"] [data-testid="account-name"]',
@@ -61,6 +61,23 @@ it('should shuffle account', async () => {
   const actual = await label.getText();
   const expected = '0x5B57...7C35';
   expect(actual).toEqual(expected);
+});
+
+it('should be able create a new wallet', async () => {
+  await driver.get(rootURL + '/popup.html');
+  await delay(1000);
+  await driver.findElement({ id: 'account-name-link-to-wallet' }).click();
+  await delay(100);
+  await driver
+    .findElement({ id: 'wallet-password-input' })
+    .sendKeys('password');
+  await delay(100);
+  await driver.findElement({ id: 'wallet-password-submit' }).click();
+  await delay(100);
+  await driver.findElement({ id: 'wallet-create-button' }).click();
+  await delay(100);
+  await driver.findElement({ id: 'wallets-go-back' }).click();
+  await delay(100);
 });
 
 it('should be able to connect to bx test dapp', async () => {
@@ -92,6 +109,10 @@ it('should be able to connect to bx test dapp', async () => {
   // switch account
   await findElementAndClick('switch-wallet-menu', driver);
   await findElementAndClick('switch-wallet-item-0', driver);
+
+  await findElementAndClick('switch-wallet-item', driver);
+  await findElementAndClick('switch-wallet-item-2', driver);
+
   // switch network
   await delay(500);
   await findElementAndClick('switch-network-menu', driver);
@@ -128,11 +149,10 @@ it('should be able to go back to extension and switch account and chain', async 
   const actualNetwork = await network.getText();
   expect(actualNetwork).toEqual(expectedNetwork);
 
-  const expectedAccountAddress =
-    'Account: 0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
+  const expectedAccountAddress = 'Account: 0x';
   const accountAddress = await querySelector(driver, '[id="accountAddress"]');
   const actualAccountAddress = await accountAddress.getText();
-  expect(actualAccountAddress).toEqual(expectedAccountAddress);
+  expect(actualAccountAddress.includes(expectedAccountAddress)).toBe(true);
 });
 
 it('should be able to accept a signing request', async () => {
