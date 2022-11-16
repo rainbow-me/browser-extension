@@ -133,7 +133,7 @@ export const BottomNetwork = ({
   displaySymbol: boolean;
 }) => {
   return (
-    <Box id={'switch-network-menu'}>
+    <Box id="switch-network-menu">
       <Inline alignHorizontal="right" alignVertical="center" space="4px">
         <ChainBadge chainId={selectedNetwork.id} size={'small'} />
         <Text
