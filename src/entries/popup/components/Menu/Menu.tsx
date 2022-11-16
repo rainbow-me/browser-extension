@@ -68,7 +68,6 @@ export const MenuItem = (props: MenuItemProps) => {
         alignItems: 'center',
         borderRadius: '12px',
         outline: 'none',
-        cursor: 'pointer',
       }}
       className={menuItemStyles}
     >
@@ -96,7 +95,6 @@ export const MenuRadioItem = (props: MenuRadioItemProps) => {
         display: 'flex',
         borderRadius: '12px',
         outline: 'none',
-        cursor: 'pointer',
       }}
       className={menuItemStyles}
     >
@@ -134,6 +132,9 @@ export const MenuItemIndicator = (props: MenuItemIndicatorProps) => {
   );
 };
 
-export const Menu = DropdownMenuPrimitive.Root;
+export const Menu = (props: DropdownMenuPrimitive.DropdownMenuProps) => (
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  <DropdownMenuPrimitive.Root {...props} modal={false} />
+);
 export const MenuTrigger = DropdownMenuPrimitive.Trigger;
 export const MenuRadioGroup = DropdownMenuPrimitive.RadioGroup;

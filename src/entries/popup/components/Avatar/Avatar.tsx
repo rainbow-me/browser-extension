@@ -2,23 +2,29 @@ import * as React from 'react';
 
 import { Box, Text } from '~/design-system';
 
-function Avatar({ imageUrl }: { imageUrl?: string }) {
+function Avatar({ imageUrl, size }: { imageUrl?: string; size: number }) {
   return (
-    <AvatarWrapper>
+    <AvatarWrapper size={size}>
       {imageUrl && <AvatarImage imageUrl={imageUrl} />}
       <AvatarSkeleton />
     </AvatarWrapper>
   );
 }
 
-function AvatarWrapper({ children }: { children: React.ReactNode }) {
+function AvatarWrapper({
+  children,
+  size,
+}: {
+  children: React.ReactNode;
+  size: number;
+}) {
   return (
     <Box
       borderRadius="round"
       position="relative"
       style={{
-        height: '60px',
-        width: '60px',
+        height: size,
+        width: size,
         overflow: 'hidden',
       }}
     >

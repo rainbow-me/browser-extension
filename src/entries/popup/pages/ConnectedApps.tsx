@@ -10,7 +10,7 @@ import { truncateAddress } from '~/core/utils/truncateAddress';
 import { Box, Inline, Inset, Stack, Text } from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 
-import { PageHeader } from '../components/PageHeader/PageHeader';
+import { Navbar } from '../components/Navbar/Navbar';
 import { SFSymbol } from '../components/SFSymbol/SFSymbol';
 import { SwitchNetworkMenu } from '../components/SwitchMenu/SwitchNetworkMenu';
 import { useAppSession } from '../hooks/useAppSession';
@@ -29,11 +29,11 @@ export function ConnectedApps() {
       transition={{ type: 'tween', duration: 0.2 }}
       height="full"
     >
-      <PageHeader
+      <Navbar
         title={i18n.t('connected_apps.title')}
         leftComponent={
           <Link to="/">
-            <PageHeader.BackButton />
+            <Navbar.BackButton />
           </Link>
         }
       />
@@ -109,14 +109,7 @@ function ConnectedApp({
       chainId={chainId}
       onDisconnect={disconnect}
       triggerComponent={
-        <Box
-          as="button"
-          id="switch-network-menu"
-          width="full"
-          style={{
-            cursor: 'pointer',
-          }}
-        >
+        <Box as="button" id="switch-network-menu" width="full">
           <Inset horizontal="20px" vertical="8px">
             <Inline space="8px">
               <Box
