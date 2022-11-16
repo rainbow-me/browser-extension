@@ -156,18 +156,33 @@ it('should be able to go back to extension and switch account and chain', async 
 });
 
 it('should be able to accept a signing request', async () => {
-  // switch session to mainnet
-  await goToPopup(driver, rootURL);
-  await findElementAndClick('home-page-header-left', driver);
-  await findElementAndClick('home-page-header-connected-apps', driver);
-  await delay(100);
-  await findElementAndClick('switch-network-menu', driver);
-  await findElementAndClick('switch-network-item-0', driver);
-
   await delay(500);
   await goToTestApp(driver);
-
   // TODO check if the signature is correct, we're not signing anything yet
+  await delay(1000);
+  const dappHandler = await driver.getWindowHandle();
+
+  const button = await querySelector(driver, '[id="signTx"]');
+  expect(button).toBeTruthy();
+  await button.click();
+  await delay(100);
+
+  const handlers = await driver.getAllWindowHandles();
+
+  const popupHandler =
+    handlers.find((handler) => handler !== dappHandler) || '';
+
+  await driver.switchTo().window(popupHandler);
+  await delay(2000);
+
+  await driver.findElement({ id: 'accept-request-button' }).click();
+
+  await driver.switchTo().window(dappHandler);
+});
+
+it('should be able to accept a typed data signing request', async () => {
+  // TODO check if the signature is correct, we're not signing anything yet
+  await delay(1000);
   const dappHandler = await driver.getWindowHandle();
 
   const button = await querySelector(driver, '[id="signTypedData"]');
