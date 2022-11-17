@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, Stack } from '~/design-system';
+import { Box, Separator, Stack } from '~/design-system';
 
 interface MenuProps {
   children: React.ReactNode;
@@ -17,7 +17,11 @@ const Menu = ({ children }: MenuProps) => {
       width="full"
     >
       <Stack
-      // TODO: add separator
+        separator={
+          <Box paddingHorizontal="16px">
+            <Separator color="separatorTertiary" />
+          </Box>
+        }
       >
         {children}
       </Stack>
