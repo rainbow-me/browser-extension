@@ -11,7 +11,7 @@ const getAccentColorAsHsl = ({ alpha }: { alpha?: number } = {}) =>
     ...(alpha !== undefined ? [alpha] : []),
   ].join(', ')})`;
 
-const buttonHeights = {
+export const buttonHeights = {
   '44px': 44,
   '36px': 36,
   '32px': 32,
