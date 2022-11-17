@@ -54,27 +54,19 @@ it('should display account name', async () => {
 
 it('should be able create a new wallet', async () => {
   await goToPopup(driver, rootURL);
-  await driver.findElement({ id: 'account-name-link-to-wallet' }).click();
-  // await findElementAndClick('account-name-link-to-wallet', driver);
+  await findElementAndClick({ id: 'account-name-link-to-wallet', driver });
   await delayTime('medium');
   await driver
     .findElement({ id: 'wallet-password-input' })
     .sendKeys('password');
-  await delayTime('medium');
-
   await findElementAndClick({ id: 'wallet-password-submit', driver });
-  await delayTime('medium');
-
   await findElementAndClick({ id: 'wallet-create-button', driver });
-  await delayTime('medium');
-
   await findElementAndClick({ id: 'wallets-go-back', driver });
-  await delayTime('medium');
 });
 
 it('should shuffle account', async () => {
   await delayTime('long');
-  await driver.findElement({ id: 'name-section-shuffle-account' }).click();
+  await findElementAndClick({ id: 'account-name-shuffle-account', driver });
   const label = await querySelector(
     driver,
     '[data-testid="header"] [data-testid="account-name"]',
@@ -85,7 +77,6 @@ it('should shuffle account', async () => {
 
   const isCorrectName =
     accountName === expectedAddress || accountName === expectedName;
-
   expect(isCorrectName).toBeTruthy();
 });
 
@@ -107,7 +98,7 @@ it('should be able to connect to bx test dapp', async () => {
   await waitAndClick(mmButton, driver);
 
   // wait for window handlers to update
-  await delayTime('short');
+  await delayTime('medium');
   const handlers = await driver.getAllWindowHandles();
 
   const popupHandler =
@@ -115,16 +106,23 @@ it('should be able to connect to bx test dapp', async () => {
 
   await driver.switchTo().window(popupHandler);
 
+  await delayTime('medium');
   // switch account
   await findElementAndClick({ id: 'switch-wallet-menu', driver });
+  await delayTime('medium');
+
   await findElementAndClick({ id: 'switch-wallet-item-2', driver });
 
   await delayTime('medium');
   // switch network
   await findElementAndClick({ id: 'switch-network-menu', driver });
+  await delayTime('medium');
+
   await findElementAndClick({ id: 'switch-network-item-1', driver });
 
+  await delayTime('medium');
   await findElementAndClick({ id: 'accept-request-button', driver });
+  await delayTime('medium');
 
   await driver.switchTo().window(dappHandler);
   const topButton = await querySelector(

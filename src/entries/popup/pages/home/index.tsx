@@ -1,11 +1,9 @@
-import { motion, useScroll, useTransform } from 'framer-motion';
 import * as React from 'react';
 import { useAccount } from 'wagmi';
 
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
 
-import { AccountName } from '../../components/AccountName/AccountName';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { useAvatar } from '../../hooks/useAvatar';
 import { MainLayout } from '../../layouts/MainLayout';
@@ -58,9 +56,6 @@ export function Home() {
 }
 
 function TopNav() {
-  const { scrollYProgress } = useScroll({ offset: ['0px', '64px'] });
-  const opacity = useTransform(scrollYProgress, [0, 1, 1], [0, 0, 1]);
-
   return (
     <StickyHeader
       background="surfacePrimaryElevatedSecondary"
@@ -77,11 +72,6 @@ function TopNav() {
           <MoreMenu>
             <Navbar.SymbolButton symbol="ellipsis" />
           </MoreMenu>
-        }
-        titleComponent={
-          <motion.div style={{ opacity }}>
-            <AccountName includeAvatar size="16pt" />
-          </motion.div>
         }
       />
     </StickyHeader>

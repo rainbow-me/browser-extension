@@ -41,7 +41,7 @@ export function AccountName({
       <Box
         as="button"
         onClick={shuffleAccount}
-        id="name-section-shuffle-account"
+        id="account-name-shuffle-account"
       >
         <Text color="label" size={size} weight="heavy" testId="account-name">
           {ensName ?? truncateAddress(address || '0x')}
