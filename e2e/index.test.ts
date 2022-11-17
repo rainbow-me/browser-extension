@@ -92,7 +92,6 @@ it('should be able to connect to bx test dapp', async () => {
   await findElementAndClick({ id: 'switch-wallet-menu', driver });
   await findElementAndClick({ id: 'switch-wallet-item-0', driver });
   // switch network
-  await delay(500);
   await findElementAndClick({ id: 'switch-network-menu', driver });
   await findElementAndClick({ id: 'switch-network-item-1', driver });
 
@@ -115,13 +114,10 @@ it('should be able to go back to extension and switch account and chain', async 
   await goToPopup(driver, rootURL);
   await findElementAndClick({ id: 'home-page-header-left', driver });
   await findElementAndClick({ id: 'home-page-header-connected-apps', driver });
-  await delay(100);
   await findElementAndClick({ id: 'switch-network-menu', driver });
   await findElementAndClick({ id: 'switch-network-item-2', driver });
 
   await goToTestApp(driver);
-  // wait for dapp to load new account and network
-  await delay(1000);
   const expectedNetwork = 'Network: Polygon - matic';
   const network = await querySelector(driver, '[id="network"]');
   const actualNetwork = await network.getText();
@@ -139,11 +135,9 @@ it('should be able to accept a signing request', async () => {
   await goToPopup(driver, rootURL);
   await findElementAndClick({ id: 'home-page-header-left', driver });
   await findElementAndClick({ id: 'home-page-header-connected-apps', driver });
-  await delay(100);
   await findElementAndClick({ id: 'switch-network-menu', driver });
   await findElementAndClick({ id: 'switch-network-item-0', driver });
 
-  await delay(500);
   await goToTestApp(driver);
 
   // TODO check if the signature is correct, we're not signing anything yet
@@ -160,7 +154,6 @@ it('should be able to accept a signing request', async () => {
 
   await driver.switchTo().window(popupHandler);
   await findElementAndClick({ id: 'accept-request-button', driver });
-  await delay(500);
   await driver.switchTo().window(dappHandler);
 });
 
@@ -187,13 +180,10 @@ it('should be able to disconnect from connected dapps', async () => {
   await goToPopup(driver, rootURL);
   await findElementAndClick({ id: 'home-page-header-left', driver });
   await findElementAndClick({ id: 'home-page-header-connected-apps', driver });
-  await delay(500);
   await findElementAndClick({ id: 'switch-network-menu', driver });
   await findElementAndClick({ id: 'switch-network-menu-disconnect', driver });
 
   await goToTestApp(driver);
-  // wait for dapp to load new account and network
-  await delay(500);
   const button = await findElementByText(driver, 'Connect Wallet');
   expect(button).toBeTruthy();
 });
