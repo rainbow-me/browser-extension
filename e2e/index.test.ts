@@ -9,6 +9,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 
 import {
+  delay,
   delayTime,
   findElementAndClick,
   findElementByText,
@@ -52,24 +53,34 @@ it('should display account name', async () => {
   expect(actual).toEqual(expected);
 });
 
-it.skip('should be able create a new wallet', async () => {
+it('should be able create a new wallet', async () => {
+  console.log('----- 1');
   await goToPopup(driver, rootURL);
+  console.log('----- 2');
   await delayTime('medium');
+  console.log('----- 3');
   await findElementAndClick({
     id: 'header-account-name-link-to-wallet',
     driver,
   });
+  console.log('----- 4');
   await delayTime('medium');
   await driver
     .findElement({ id: 'wallet-password-input' })
     .sendKeys('password');
+  console.log('----- 5');
   await delayTime('medium');
   await findElementAndClick({ id: 'wallet-password-submit', driver });
+  console.log('----- 6');
   await delayTime('medium');
+  console.log('----- 7');
   await findElementAndClick({ id: 'wallet-create-button', driver });
   await delayTime('medium');
+  console.log('----- 8');
   await findElementAndClick({ id: 'wallets-go-back', driver });
   await delayTime('medium');
+  console.log('----- 9');
+  await delay(4000);
 });
 
 it('should shuffle account', async () => {
@@ -88,7 +99,7 @@ it('should shuffle account', async () => {
 
   const isCorrectName =
     accountName === expectedAddress || accountName === expectedName;
-  expect(isCorrectName).toBeFalsy();
+  expect(isCorrectName).toBeTruthy();
 });
 
 it('should be able to connect to bx test dapp', async () => {
