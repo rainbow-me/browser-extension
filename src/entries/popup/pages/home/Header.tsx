@@ -1,41 +1,28 @@
+import { motion, useScroll, useTransform } from 'framer-motion';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import { useAccount, useBalance, useEnsName } from 'wagmi';
+import { useAccount } from 'wagmi';
 
-import {
-  SupportedCurrencyKey,
-  supportedCurrencies,
-} from '~/core/references/supportedCurrencies';
-import { useCurrentAddressStore } from '~/core/state';
-import {
-  convertAmountToNativeDisplay,
-  convertRawAmountToBalance,
-} from '~/core/utils/numbers';
-import { truncateAddress } from '~/core/utils/truncateAddress';
 import { Box, Inline, Inset, Stack, Text } from '~/design-system';
-import {
-  DEFAULT_ACCOUNT,
-  DEFAULT_ACCOUNT_2,
-} from '~/entries/background/handlers/handleProviderRequest';
 
+import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
-import { PageHeader } from '../../components/PageHeader/PageHeader';
 import { SFSymbol, SFSymbolProps } from '../../components/SFSymbol/SFSymbol';
-import { Tabs } from '../../components/Tabs/Tabs';
 import { useAvatar } from '../../hooks/useAvatar';
 
-import { MoreMenu } from './MoreMenu';
-import { NetworkMenu } from './NetworkMenu';
+export function Header() {
+  const { scrollYProgress: progress } = useScroll({ offset: ['0px', '64px'] });
+  const scaleValue = useTransform(progress, [0, 1], [1, 0.3]);
+  const opacityValue = useTransform(progress, [0, 1], [1, 0]);
 
-import { Tab } from '.';
+  const { scrollYProgress: blurProgress } = useScroll({
+    offset: ['10px', '60px'],
+  });
+  const blurValue = useTransform(
+    blurProgress,
+    (out) => `blur(${10 ** out - 1}px)`,
+  );
 
-export function Header({
-  activeTab,
-  onSelectTab,
-}: {
-  activeTab: Tab;
-  onSelectTab: (tab: Tab) => void;
-}) {
   return (
     <Box
       background="surfacePrimaryElevatedSecondary"
@@ -43,36 +30,33 @@ export function Header({
       flexDirection="column"
       justifyContent="space-between"
       position="relative"
-      style={{
-        height: '260px',
-      }}
+      paddingTop="44px"
+      testId="header"
     >
-      <Box position="absolute" width="full">
-        <PageHeader
-          leftComponent={
-            <NetworkMenu>
-              <PageHeader.SymbolButton symbol="appBadgeCheckmark" />
-            </NetworkMenu>
-          }
-          rightComponent={
-            <MoreMenu>
-              <PageHeader.SymbolButton symbol="ellipsis" />
-            </MoreMenu>
-          }
-        />
-      </Box>
-      <Box paddingTop="28px">
-        <Inset>
-          <Stack alignHorizontal="center" space="16px">
+      <Inset>
+        <Stack alignHorizontal="center" space="16px">
+          <Box
+            as={motion.div}
+            display="flex"
+            justifyContent="center"
+            position="absolute"
+            width="full"
+            style={{
+              filter: blurValue,
+              opacity: opacityValue,
+              scale: scaleValue,
+              transformOrigin: 'bottom',
+              zIndex: 1,
+              top: -28,
+            }}
+          >
             <AvatarSection />
-            <NameSection />
-            <ActionButtonsSection />
-          </Stack>
-        </Inset>
-      </Box>
-      <Inset horizontal="20px">
-        <NavigationBar activeTab={activeTab} onSelectTab={onSelectTab} />
+          </Box>
+          <AccountName />
+          <ActionButtonsSection />
+        </Stack>
       </Inset>
+      <Box style={{ minHeight: 32 }} />
     </Box>
   );
 }
@@ -81,7 +65,7 @@ function AvatarSection() {
   const { address } = useAccount();
   const { avatar, isFetched } = useAvatar({ address });
   return (
-    <Avatar.Wrapper>
+    <Avatar.Wrapper size={60}>
       {isFetched ? (
         <>
           {avatar?.imageUrl ? (
@@ -93,32 +77,6 @@ function AvatarSection() {
       ) : null}
       <Avatar.Skeleton />
     </Avatar.Wrapper>
-  );
-}
-
-function NameSection() {
-  const { address } = useAccount();
-  const { data: ensName } = useEnsName({ address });
-
-  const { setCurrentAddress } = useCurrentAddressStore();
-
-  // TODO: handle account switching correctly
-  const shuffleAccount = React.useCallback(() => {
-    setCurrentAddress(
-      address === DEFAULT_ACCOUNT ? DEFAULT_ACCOUNT_2 : DEFAULT_ACCOUNT,
-    );
-  }, [address, setCurrentAddress]);
-  return (
-    <Inline alignVertical="center" space="4px">
-      <Box as="button" onClick={shuffleAccount} id="account-name-shuffle">
-        <Text color="label" size="20pt" weight="heavy" testId="account-name">
-          {ensName ?? truncateAddress(address || '0x')}
-        </Text>
-      </Box>
-      <Link to="/wallets">
-        <SFSymbol color="labelTertiary" size={20} symbol="chevronDown" />
-      </Link>
-    </Inline>
   );
 }
 
@@ -172,79 +130,5 @@ function ActionButton({
         {text}
       </Text>
     </Stack>
-  );
-}
-
-function NavigationBar({
-  activeTab,
-  onSelectTab,
-}: {
-  activeTab: Tab;
-  onSelectTab: (tab: Tab) => void;
-}) {
-  const { address } = useAccount();
-  const { data: balance } = useBalance({ addressOrName: address });
-  const symbol = balance?.symbol as SupportedCurrencyKey;
-
-  let displayBalance = symbol
-    ? convertAmountToNativeDisplay(
-        convertRawAmountToBalance(
-          // @ts-expect-error – TODO: fix this
-          balance?.value.hex || balance.value.toString(),
-          supportedCurrencies[symbol],
-        ).amount,
-        symbol,
-      )
-    : '';
-  if (symbol === 'ETH') {
-    // Our font set doesn't seem to like the ether symbol, so we have to omit it and use
-    // an icon instead.
-    displayBalance = displayBalance.replace('Ξ', '');
-  }
-
-  return (
-    /* TODO: Convert to <Columns> */
-    <Box
-      display="flex"
-      justifyContent="space-between"
-      style={{ height: '34px' }}
-    >
-      <Box>
-        <Tabs>
-          <Tabs.Tab
-            active={activeTab === 'tokens'}
-            onClick={() => onSelectTab('tokens')}
-            symbol="tokens"
-            text="Tokens"
-          />
-          <Tabs.Tab
-            active={activeTab === 'activity'}
-            onClick={() => onSelectTab('activity')}
-            symbol="activity"
-            text="Activity"
-          />
-        </Tabs>
-      </Box>
-      <Inset top="4px">
-        {balance && (
-          <Inline alignVertical="center">
-            {balance?.symbol === 'ETH' && (
-              <SFSymbol
-                color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
-                symbol="eth"
-                size={14}
-              />
-            )}
-            <Text
-              color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
-              size="16pt"
-              weight="bold"
-            >
-              {displayBalance}
-            </Text>
-          </Inline>
-        )}
-      </Inset>
-    </Box>
   );
 }

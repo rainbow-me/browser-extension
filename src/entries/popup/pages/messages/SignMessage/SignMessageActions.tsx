@@ -9,7 +9,7 @@ import {
   BottomDisplayNetwork,
   BottomDisplayWallet,
   RejectRequestButton,
-} from '../BottomButtons';
+} from '../BottomActions';
 
 export const SignMessageActions = ({
   selectedWallet,

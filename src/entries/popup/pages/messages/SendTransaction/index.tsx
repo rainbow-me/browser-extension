@@ -1,13 +1,12 @@
 import React, { useCallback } from 'react';
-import { chain, useNetwork } from 'wagmi';
 
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { Row, Rows } from '~/design-system';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
-import { SignMessageActions } from './SignMessageActions';
-import { SignMessageInfo } from './SignMessageInfo';
+import { SendTransactionActions } from './SendTransactionActions';
+import { SendTransactionInfo } from './SendTransactionsInfo';
 
 interface ApproveRequestProps {
   approveRequest: () => void;
@@ -15,7 +14,13 @@ interface ApproveRequestProps {
   request: ProviderRequestPayload;
 }
 
-export function SignMessage({
+export interface SelectedNetwork {
+  network: string;
+  chainId: number;
+  name: string;
+}
+
+export function SendTransaction({
   approveRequest,
   rejectRequest,
   request,
@@ -24,10 +29,6 @@ export function SignMessage({
     url: request?.meta?.sender?.url,
   });
   const { appSession } = useAppSession({ host: appHost });
-  const { chains } = useNetwork();
-
-  const selectedNetwork =
-    chains.find(({ id }) => id === appSession.chainId) ?? chain.mainnet;
   const selectedWallet = appSession.address;
 
   const onAcceptRequest = useCallback(() => approveRequest(), [approveRequest]);
@@ -35,12 +36,12 @@ export function SignMessage({
   return (
     <Rows alignVertical="justify">
       <Row height="content">
-        <SignMessageInfo request={request} />
+        <SendTransactionInfo request={request} />
       </Row>
       <Row height="content">
-        <SignMessageActions
+        <SendTransactionActions
+          appHost={appHost}
           selectedWallet={selectedWallet}
-          selectedNetwork={selectedNetwork}
           onAcceptRequest={onAcceptRequest}
           onRejectRequest={rejectRequest}
         />

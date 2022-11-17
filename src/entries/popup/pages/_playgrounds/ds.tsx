@@ -4,6 +4,7 @@ import {
   AccentColorProvider,
   Bleed,
   Box,
+  Button,
   Column,
   Columns,
   Inline,
@@ -1381,6 +1382,9 @@ export function DesignSystem() {
           <Symbol symbol="binoculars.fill" size="32pt" weight="bold" />
           <Symbol symbol="checkmark" size="32pt" weight="bold" />
         </Inline>
+        <Button color="accent" height="44px" variant="raised">
+          Button
+        </Button>
       </Stack>
     </Box>
   );

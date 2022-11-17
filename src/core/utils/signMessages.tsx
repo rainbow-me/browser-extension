@@ -1,9 +1,11 @@
 import { isAddress, isHexString } from 'ethers/lib/utils';
 
+import { supportedCurrencies } from '../references';
 import { ProviderRequestPayload } from '../transports/providerRequestTransport';
 import { SignMethods } from '../types/signMethods';
+import { RainbowTransaction } from '../types/transactions';
 
-import { convertHexToString } from './numbers';
+import { convertHexToString, convertRawAmountToBalance } from './numbers';
 
 export const isSignTypedData = (method: string) =>
   method.startsWith(SignMethods.ethSignTypedData);
@@ -11,8 +13,15 @@ export const isSignTypedData = (method: string) =>
 export const getRequestDisplayDetails = (payload: ProviderRequestPayload) => {
   switch (payload.method) {
     case SignMethods.ethSendTransaction:
-    case SignMethods.ethSignTransaction:
-      return {};
+    case SignMethods.ethSignTransaction: {
+      const tx = payload?.params?.[0] as RainbowTransaction;
+      const value = convertRawAmountToBalance(
+        tx?.value?.toString() ?? 0,
+        supportedCurrencies['ETH'],
+      ).amount;
+
+      return { value };
+    }
     case SignMethods.ethSign: {
       const message = payload?.params?.[1] as string;
       return { message };

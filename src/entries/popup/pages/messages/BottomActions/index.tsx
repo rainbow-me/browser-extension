@@ -1,7 +1,12 @@
 import React from 'react';
-import { Address, Chain, useEnsAvatar, useEnsName } from 'wagmi';
+import { Address, Chain, useBalance, useEnsAvatar, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { SupportedCurrencyKey, supportedCurrencies } from '~/core/references';
+import {
+  convertAmountToNativeDisplay,
+  convertRawAmountToBalance,
+} from '~/core/utils/numbers';
 import { truncateAddress } from '~/core/utils/truncateAddress';
 import { Box, Inline, Stack, Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
@@ -9,6 +14,7 @@ import {
   DEFAULT_ACCOUNT,
   DEFAULT_ACCOUNT_2,
 } from '~/entries/background/handlers/handleProviderRequest';
+import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
 import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
 import { SFSymbol } from '../../../components/SFSymbol/SFSymbol';
@@ -191,6 +197,48 @@ export const BottomSwitchNetwork = ({
           <BottomNetwork selectedNetwork={selectedNetwork} displaySymbol />
         }
       />
+    </Stack>
+  );
+};
+
+export const WalletBalance = ({ appHost }: { appHost: string }) => {
+  const { appSession } = useAppSession({ host: appHost });
+  const { data: balance } = useBalance({
+    addressOrName: appSession.address,
+    chainId: appSession.chainId,
+  });
+  const symbol = balance?.symbol as SupportedCurrencyKey;
+
+  let displayBalance = symbol
+    ? convertAmountToNativeDisplay(
+        convertRawAmountToBalance(
+          // @ts-expect-error – TODO: fix this
+          balance?.value.hex || balance.value.toString(),
+          supportedCurrencies[symbol],
+        ).amount,
+        symbol,
+      )
+    : '';
+  if (symbol === 'ETH') {
+    // Our font set doesn't seem to like the ether symbol, so we have to omit it and use
+    // an icon instead.
+    displayBalance = displayBalance.replace('Ξ', '');
+  }
+
+  return (
+    <Stack space="8px">
+      <Text align="right" size="12pt" weight="semibold" color="labelQuaternary">
+        {i18n.t('approve_request.balance')}
+      </Text>
+
+      <Inline alignVertical="center" alignHorizontal="right">
+        {balance?.symbol === 'ETH' && (
+          <SFSymbol color="labelTertiary" symbol="eth" size={12} />
+        )}
+        <Text color="labelSecondary" size="14pt" weight="bold">
+          {displayBalance}
+        </Text>
+      </Inline>
     </Stack>
   );
 };
