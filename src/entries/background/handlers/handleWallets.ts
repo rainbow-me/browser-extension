@@ -123,7 +123,7 @@ export const handleWallets = () =>
             );
             break;
           }
-          case 'sign_message':
+          case 'personal_sign':
             response = await signMessage(payload as SignMessageArguments);
             break;
           case 'sign_typed_data':
