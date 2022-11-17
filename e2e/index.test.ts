@@ -62,7 +62,6 @@ it('should shuffle account', async () => {
   const expectedAddress = '0x70c1...43C4';
   const expectedName = 'djweth.eth';
 
-  // ENS sometimes takes a while to resolve
   const isCorrectName =
     accountName === expectedAddress || accountName === expectedName;
   expect(isCorrectName).toBeTruthy();
