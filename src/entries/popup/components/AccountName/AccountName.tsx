@@ -15,12 +15,14 @@ import { SFSymbol } from '../SFSymbol/SFSymbol';
 
 type AccountNameProps = {
   includeAvatar?: boolean;
+  id?: string;
   size?: '16pt' | '20pt';
 };
 
 export function AccountName({
   includeAvatar = false,
   size = '20pt',
+  id,
 }: AccountNameProps) {
   const { address } = useAccount();
   const { data: ensName } = useEnsName({ address });
@@ -38,7 +40,11 @@ export function AccountName({
   return (
     <Inline alignVertical="center" space="4px">
       {includeAvatar && <Avatar imageUrl={ensAvatar || ''} size={16} />}
-      <Box as="button" onClick={shuffleAccount} id="account-name-shuffle">
+      <Box
+        as="button"
+        onClick={shuffleAccount}
+        id={`${id ?? ''}-account-name-shuffle`}
+      >
         <Text color="label" size={size} weight="heavy" testId="account-name">
           {ensName ?? truncateAddress(address || '0x')}
         </Text>

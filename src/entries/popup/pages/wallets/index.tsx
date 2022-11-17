@@ -1,28 +1,14 @@
-import { uuid4 } from '@sentry/utils';
 import { fetchEnsAddress } from '@wagmi/core';
 import { motion } from 'framer-motion';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Address, useAccount, useEnsName } from 'wagmi';
 
-import { initializeMessenger } from '~/core/messengers';
 import { useCurrentAddressStore } from '~/core/state';
 import { EthereumWalletSeed, isENSAddressFormat } from '~/core/utils/ethereum';
 import { Box, Column, Columns, Separator, Text } from '~/design-system';
 
-const messenger = initializeMessenger({ connect: 'background' });
-
-const walletAction = async (action: string, payload: unknown) => {
-  const { result }: { result: unknown } = await messenger.send(
-    'wallet_action',
-    {
-      action,
-      payload,
-    },
-    { id: uuid4() },
-  );
-  return result;
-};
+import * as wallet from '../../handlers/wallet';
 
 const shortAddress = (address: string) => {
   return `${address?.substring(0, 6)}...${address?.substring(38, 42)}`;
@@ -49,20 +35,13 @@ function PasswordForm({
     [onPasswordChanged],
   );
 
-  const unlock = useCallback(async () => {
-    let params:
-      | string
-      | {
-          password: string;
-          newPassword?: string;
-        } = password;
+  const handleSubmitPassword = useCallback(async () => {
+    let result: boolean;
     if (action === 'update_password') {
-      params = {
-        password: '',
-        newPassword: password,
-      };
+      result = await wallet.updatePassword('', password);
+    } else {
+      result = await wallet.unlock(password);
     }
-    const result = await walletAction(action, params);
     if (action === 'unlock' && !result) {
       setErrorMsg('Incorrect password');
     } else {
@@ -87,7 +66,7 @@ function PasswordForm({
         as="button"
         background="accent"
         boxShadow="24px accent"
-        onClick={unlock}
+        onClick={handleSubmitPassword}
         padding="16px"
         style={{ borderRadius: 999 }}
       >
@@ -288,31 +267,23 @@ export function Wallets() {
   const { data: ensName } = useEnsName({ address });
   const { setCurrentAddress } = useCurrentAddressStore();
 
-  const getAccounts = useCallback(async () => {
-    const accounts = (await walletAction('get_accounts', {})) as Address[];
-    return accounts;
-  }, []);
-
   const updatePassword = useCallback((pwd: string) => {
     setPassword(pwd);
   }, []);
 
   const updateState = useCallback(async () => {
-    const accounts = await getAccounts();
+    const accounts = await wallet.getAccounts();
     setAccounts(accounts);
     if (accounts.length > 0 && !accounts.includes(address as Address)) {
       setCurrentAddress(accounts[0]);
     }
-    const { unlocked, hasVault } = (await walletAction('status', {})) as {
-      unlocked: boolean;
-      hasVault: boolean;
-    };
+    const { unlocked, hasVault } = await wallet.getStatus();
     setIsUnlocked(unlocked);
     setIsNewUser(!hasVault);
-  }, [address, getAccounts, setCurrentAddress]);
+  }, [address, setCurrentAddress]);
 
   const createWallet = useCallback(async () => {
-    const address = (await walletAction('create', {})) as Address;
+    const address = await wallet.create();
     setCurrentAddress(address);
     await updateState();
     return address;
@@ -330,7 +301,7 @@ export function Wallets() {
       }
     }
 
-    const address = (await walletAction('import', seed)) as Address;
+    const address = (await wallet.importWithSecret(seed)) as Address;
     setCurrentAddress(address);
     await updateState();
     setSecret('');
@@ -339,7 +310,7 @@ export function Wallets() {
 
   const removeAccount = useCallback(
     async (address: Address) => {
-      await walletAction('remove', address);
+      await wallet.remove(address);
       await updateState();
     },
     [updateState],
@@ -353,19 +324,19 @@ export function Wallets() {
   );
 
   const lock = useCallback(async () => {
-    await walletAction('lock', {});
+    await wallet.lock();
     await updateState();
   }, [updateState]);
 
   const wipe = useCallback(async () => {
     const pwd = password || prompt('Enter password');
-    await walletAction('wipe', pwd);
+    await wallet.wipe(pwd as string);
     await updateState();
   }, [password, updateState]);
 
   const addAccount = useCallback(async () => {
     const silbing = accounts[0];
-    const address = (await walletAction('add', silbing)) as Address;
+    const address = await wallet.add(silbing);
     setCurrentAddress(address);
     await updateState();
     return address;
@@ -374,10 +345,8 @@ export function Wallets() {
   const exportWallet = useCallback(
     async (address: Address) => {
       const pwd = password || prompt('Enter password');
-      const seed = (await walletAction('export_wallet', {
-        address,
-        password: pwd,
-      })) as Address[];
+      const seed = await wallet.exportWallet(address, pwd as string);
+      console.log('seed', seed);
       return seed;
     },
     [password],
@@ -387,10 +356,8 @@ export function Wallets() {
     async (address: Address) => {
       const pwd = password || prompt('Enter password');
 
-      const pkey = (await walletAction('export_account', {
-        address,
-        password: pwd,
-      })) as Address[];
+      const pkey = await wallet.exportAccount(address, pwd as string);
+      console.log('pkey', pkey);
       return pkey;
     },
     [password],
