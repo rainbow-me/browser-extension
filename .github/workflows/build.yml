@@ -35,10 +35,12 @@ jobs:
           repository: 'rainbow-me/browser-extension-env'
           token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
           path: tmp
-      - name: Copy .env
-        run: cp tmp/.env .env
+      - name: Copy dotenv
+        run: cp tmp/dotenv .env
       - name: Build the extension with LavaMoat
         run: yarn build
+      - name: Clean up dotenv
+        run: rm -rf tmp && rm .env
       - uses: browser-actions/setup-chrome@latest
         with:
           chrome-version: 'stable'
