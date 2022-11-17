@@ -10,9 +10,9 @@ interface SignMessageProps {
   request: ProviderRequestPayload;
 }
 
-export function SignMessageInfo({ request }: SignMessageProps) {
+export const SignMessageInfo = ({ request }: SignMessageProps) => {
   const { appHostName, appLogo } = useAppMetadata({
-    url: request?.meta?.sender?.url || '',
+    url: request?.meta?.sender?.url,
   });
 
   const message = useMemo(() => {
@@ -23,36 +23,39 @@ export function SignMessageInfo({ request }: SignMessageProps) {
   return (
     <Box background="surfacePrimaryElevatedSecondary">
       <Inset top="40px" bottom="20px">
-        <Stack space="16px">
-          <Inline alignHorizontal="center">
-            <Box
-              style={{
-                width: 32,
-                height: 32,
-                overflow: 'scroll',
-              }}
-              borderRadius="18px"
-              alignItems="center"
-            >
-              {appLogo ? (
-                <img src={appLogo} width="100%" height="100%" />
-              ) : null}
-            </Box>
-          </Inline>
-          <Stack space="12px">
-            <Text
-              align="center"
-              size="20pt"
-              weight="semibold"
-              color="labelSecondary"
-            >
-              {appHostName}
-            </Text>
-            <Text align="center" size="20pt" weight="semibold">
-              {i18n.t('approve_request.message_signing_request')}
-            </Text>
+        <Inset bottom="8px">
+          <Stack space="16px">
+            <Inline alignHorizontal="center">
+              <Box
+                style={{
+                  width: 32,
+                  height: 32,
+                  overflow: 'hidden',
+                }}
+                borderRadius="18px"
+                alignItems="center"
+              >
+                {appLogo ? (
+                  <img src={appLogo} width="100%" height="100%" />
+                ) : null}
+              </Box>
+            </Inline>
+            <Stack space="12px">
+              <Text
+                align="center"
+                size="20pt"
+                weight="semibold"
+                color="labelSecondary"
+              >
+                {appHostName}
+              </Text>
+              <Text align="center" size="20pt" weight="semibold">
+                {i18n.t('approve_request.message_signing_request')}
+              </Text>
+            </Stack>
           </Stack>
-        </Stack>
+        </Inset>
+
         <Inset horizontal="20px" top="32px" bottom="12px">
           <Text
             align="left"
@@ -63,6 +66,7 @@ export function SignMessageInfo({ request }: SignMessageProps) {
             {i18n.t('approve_request.message')}
           </Text>
         </Inset>
+
         <Inset horizontal="20px">
           <Box
             background="surfacePrimaryElevated"
@@ -80,4 +84,4 @@ export function SignMessageInfo({ request }: SignMessageProps) {
       <Separator color="separatorTertiary" />
     </Box>
   );
-}
+};

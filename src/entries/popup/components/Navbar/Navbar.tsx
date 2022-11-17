@@ -4,19 +4,21 @@ import { Box, Text } from '~/design-system';
 
 import { SFSymbol, SFSymbolProps } from '../SFSymbol/SFSymbol';
 
-import { pageHeaderButtonStyles } from './PageHeader.css';
+import { navbarButtonStyles } from './Navbar.css';
 
-type PageHeaderProps = {
+type NavbarProps = {
   leftComponent?: React.ReactElement;
   rightComponent?: React.ReactElement;
   title?: string;
+  titleComponent?: React.ReactElement;
 };
 
-export function PageHeader({
+export function Navbar({
   leftComponent,
   rightComponent,
   title,
-}: PageHeaderProps) {
+  titleComponent,
+}: NavbarProps) {
   return (
     <Box
       display="flex"
@@ -25,19 +27,21 @@ export function PageHeader({
       padding="16px"
       width="full"
       position="relative"
-      style={{ height: 64 }}
+      height="full"
     >
       {leftComponent && (
         <Box position="absolute" left="0" top="0" padding="16px" height="full">
           {leftComponent}
         </Box>
       )}
-      {title && (
+      {title ? (
         <Box style={{ textAlign: 'center' }}>
           <Text size="14pt" weight="heavy">
             {title}
           </Text>
         </Box>
+      ) : (
+        titleComponent
       )}
       {rightComponent && (
         <Box position="absolute" right="0" top="0" padding="16px" height="full">
@@ -48,22 +52,22 @@ export function PageHeader({
   );
 }
 
-PageHeader.BackButton = PageHeaderBackButton;
-PageHeader.SymbolButton = PageHeaderSymbolButton;
+Navbar.BackButton = NavbarBackButton;
+Navbar.SymbolButton = NavbarSymbolButton;
 
-type PageHeaderButtonProps = {
+type NavbarButtonProps = {
   children: React.ReactNode;
   variant?: 'default' | 'ghost';
 };
 
 // TODO: Refactor to use generic DS Button.
-export function PageHeaderButton({
+export function NavbarButton({
   children,
   variant = 'default',
-}: PageHeaderButtonProps) {
+}: NavbarButtonProps) {
   return (
     <Box
-      className={pageHeaderButtonStyles[variant]}
+      className={navbarButtonStyles[variant]}
       borderRadius="round"
       display="flex"
       alignItems="center"
@@ -75,24 +79,22 @@ export function PageHeaderButton({
   );
 }
 
-type PageHeaderSymbolButtonProps = {
+type NavbarSymbolButtonProps = {
   symbol: SFSymbolProps['symbol'];
 };
 
-export function PageHeaderSymbolButton({
-  symbol,
-}: PageHeaderSymbolButtonProps) {
+export function NavbarSymbolButton({ symbol }: NavbarSymbolButtonProps) {
   return (
-    <PageHeaderButton>
+    <NavbarButton>
       <SFSymbol color="labelSecondary" symbol={symbol} size={17} />
-    </PageHeaderButton>
+    </NavbarButton>
   );
 }
 
-export function PageHeaderBackButton() {
+export function NavbarBackButton() {
   return (
-    <PageHeaderButton variant="ghost">
+    <NavbarButton variant="ghost">
       <SFSymbol color="labelSecondary" symbol="arrowLeft" size={15} />
-    </PageHeaderButton>
+    </NavbarButton>
   );
 }

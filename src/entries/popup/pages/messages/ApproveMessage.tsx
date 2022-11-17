@@ -4,9 +4,11 @@ import { Address } from 'wagmi';
 import { initializeMessenger } from '~/core/messengers';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
 import { usePendingRequestStore } from '~/core/state/requests';
+import { SignMethods } from '~/core/types/signMethods';
 import { Box, Text } from '~/design-system';
 
-import { ApproveRequestAccounts } from './RequestAccounts';
+import { RequestAccounts } from './RequestAccounts';
+import { SendTransaction } from './SendTransaction';
 import { SignMessage } from './SignMessage';
 
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
@@ -39,7 +41,7 @@ export const ApproveMessage = () => {
 
   if (pendingRequest.method === 'eth_requestAccounts') {
     return (
-      <ApproveRequestAccounts
+      <RequestAccounts
         approveRequest={approveRequest}
         rejectRequest={rejectRequest}
         request={pendingRequest}
@@ -56,6 +58,15 @@ export const ApproveMessage = () => {
   ) {
     return (
       <SignMessage
+        approveRequest={approveRequest}
+        rejectRequest={rejectRequest}
+        request={pendingRequest}
+      />
+    );
+  }
+  if (pendingRequest.method === SignMethods.ethSendTransaction) {
+    return (
+      <SendTransaction
         approveRequest={approveRequest}
         rejectRequest={rejectRequest}
         request={pendingRequest}

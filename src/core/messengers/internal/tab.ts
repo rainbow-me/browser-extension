@@ -11,11 +11,13 @@ let activeTab: chrome.tabs.Tab;
 
 function getActiveTabs() {
   if (!chrome.tabs) return Promise.resolve([]);
-  return chrome.tabs.query({ active: true }).then(([tab]) => {
-    if (!tab.url?.startsWith('http') && activeTab) return [activeTab];
-    activeTab = tab;
-    return [tab];
-  });
+  return chrome.tabs
+    .query({ active: true, lastFocusedWindow: true })
+    .then(([tab]) => {
+      if (!tab?.url?.startsWith('http') && activeTab) return [activeTab];
+      activeTab = tab;
+      return [tab];
+    });
 }
 
 function sendMessage<TPayload>(

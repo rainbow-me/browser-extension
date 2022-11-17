@@ -76,3 +76,20 @@ export async function waitAndClick(element, driver) {
   await driver.wait(until.elementIsVisible(element), waitUntilTime);
   return element.click();
 }
+
+export async function findElementAndClick(id, driver) {
+  const element = await driver.findElement({
+    id,
+  });
+  await waitAndClick(element, driver);
+}
+
+export async function goToTestApp(driver) {
+  await driver.get('https://bx-test-dapp.vercel.app/');
+  await delay(500);
+}
+
+export async function goToPopup(driver, rootURL) {
+  await driver.get(rootURL + '/popup.html');
+  await delay(500);
+}

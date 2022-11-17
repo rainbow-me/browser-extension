@@ -6,10 +6,23 @@ globalStyle('html, body', {
 });
 
 globalStyle('html, body, #main', {
-  width: '360px',
-  height: '600px',
+  minWidth: '360px',
+  minHeight: '600px',
 });
 
 globalStyle('*', {
   transition: 'background 0.1s ease',
+});
+
+globalStyle('*::-webkit-scrollbar', {
+  display: 'none',
+});
+
+globalStyle('a', {
+  textDecoration: 'none',
+  cursor: 'default',
+});
+
+globalStyle('div[data-radix-popper-content-wrapper]', {
+  zIndex: '999 !important',
 });

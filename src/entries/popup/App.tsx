@@ -44,11 +44,7 @@ export function App() {
         {playground ? (
           PlaygroundComponents[playground]
         ) : (
-          <Box
-            id="main"
-            style={{ overflow: 'auto' }}
-            background="surfacePrimaryElevated"
-          >
+          <Box id="main" background="surfacePrimaryElevated">
             {pendingRequests[0] ? (
               <ApproveMessage />
             ) : (

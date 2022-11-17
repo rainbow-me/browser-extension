@@ -17,14 +17,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   return (
     <Menu>
       <MenuTrigger asChild>
-        <Box
-          position="relative"
-          style={{
-            cursor: 'pointer',
-          }}
-        >
-          {children}
-        </Box>
+        <Box position="relative">{children}</Box>
       </MenuTrigger>
       <MenuContent>
         <Stack space="4px">
