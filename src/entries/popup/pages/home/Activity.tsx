@@ -58,7 +58,7 @@ export function Activity() {
           const item = listData[index];
           if (typeof item === 'string') {
             return (
-              <Inset key={index} horizontal="28px" top="16px" bottom="8px">
+              <Inset key={index} horizontal="20px" top="16px" bottom="8px">
                 <Box>
                   <Text size="14pt" weight={'semibold'} color={'labelTertiary'}>
                     {item}
