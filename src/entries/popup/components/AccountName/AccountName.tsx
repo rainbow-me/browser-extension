@@ -14,6 +14,7 @@ import { Avatar } from '../Avatar/Avatar';
 import { SFSymbol } from '../SFSymbol/SFSymbol';
 
 type AccountNameProps = {
+  id?: string;
   includeAvatar?: boolean;
   size?: '16pt' | '20pt';
 };
@@ -21,6 +22,7 @@ type AccountNameProps = {
 export function AccountName({
   includeAvatar = false,
   size = '20pt',
+  id,
 }: AccountNameProps) {
   const { address } = useAccount();
   const { data: ensName } = useEnsName({ address });
@@ -41,13 +43,16 @@ export function AccountName({
       <Box
         as="button"
         onClick={shuffleAccount}
-        id="account-name-shuffle-account"
+        id={`${id ? `${id}-` : ''}account-name-shuffle-account`}
       >
         <Text color="label" size={size} weight="heavy" testId="account-name">
           {ensName ?? truncateAddress(address || '0x')}
         </Text>
       </Box>
-      <Link id="account-name-link-to-wallet" to="/wallets">
+      <Link
+        id={`${id ? `${id}-` : ''}account-name-link-to-wallet`}
+        to="/wallets"
+      >
         <SFSymbol color="labelTertiary" size={20} symbol="chevronDown" />
       </Link>
     </Inline>

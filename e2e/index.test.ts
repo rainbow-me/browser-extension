@@ -54,7 +54,10 @@ it('should display account name', async () => {
 
 it('should be able create a new wallet', async () => {
   await goToPopup(driver, rootURL);
-  await findElementAndClick({ id: 'account-name-link-to-wallet', driver });
+  await findElementAndClick({
+    id: 'header-account-name-link-to-wallet',
+    driver,
+  });
   await delayTime('medium');
   await driver
     .findElement({ id: 'wallet-password-input' })
@@ -66,7 +69,10 @@ it('should be able create a new wallet', async () => {
 
 it('should shuffle account', async () => {
   await delayTime('long');
-  await findElementAndClick({ id: 'account-name-shuffle-account', driver });
+  await findElementAndClick({
+    id: 'header-account-name-shuffle-account',
+    driver,
+  });
   const label = await querySelector(
     driver,
     '[data-testid="header"] [data-testid="account-name"]',
