@@ -38,7 +38,7 @@ beforeAll(async () => {
 afterAll(async () => driver.quit());
 
 it('Should open the popup', async () => {
-  await driver.get(rootURL + '/popup.html');
+  await goToPopup(driver, rootURL);
 });
 
 it('should display account name', async () => {
@@ -52,8 +52,7 @@ it('should display account name', async () => {
 });
 
 it('should shuffle account', async () => {
-  await delay(500);
-  await driver.findElement({ id: 'account-name-shuffle' }).click();
+  await findElementAndClick({ id: 'header-account-name-shuffle', driver });
   const label = await querySelector(
     driver,
     '[data-testid="header"] [data-testid="account-name"]',
@@ -90,14 +89,14 @@ it('should be able to connect to bx test dapp', async () => {
   await driver.switchTo().window(popupHandler);
 
   // switch account
-  await findElementAndClick('switch-wallet-menu', driver);
-  await findElementAndClick('switch-wallet-item-0', driver);
+  await findElementAndClick({ id: 'switch-wallet-menu', driver });
+  await findElementAndClick({ id: 'switch-wallet-item-0', driver });
   // switch network
   await delay(500);
-  await findElementAndClick('switch-network-menu', driver);
-  await findElementAndClick('switch-network-item-1', driver);
+  await findElementAndClick({ id: 'switch-network-menu', driver });
+  await findElementAndClick({ id: 'switch-network-item-1', driver });
 
-  await findElementAndClick('accept-request-button', driver);
+  await findElementAndClick({ id: 'accept-request-button', driver });
 
   await driver.switchTo().window(dappHandler);
   const topButton = await querySelector(
@@ -114,11 +113,11 @@ it('should be able to connect to bx test dapp', async () => {
 
 it('should be able to go back to extension and switch account and chain', async () => {
   await goToPopup(driver, rootURL);
-  await findElementAndClick('home-page-header-left', driver);
-  await findElementAndClick('home-page-header-connected-apps', driver);
+  await findElementAndClick({ id: 'home-page-header-left', driver });
+  await findElementAndClick({ id: 'home-page-header-connected-apps', driver });
   await delay(100);
-  await findElementAndClick('switch-network-menu', driver);
-  await findElementAndClick('switch-network-item-2', driver);
+  await findElementAndClick({ id: 'switch-network-menu', driver });
+  await findElementAndClick({ id: 'switch-network-item-2', driver });
 
   await goToTestApp(driver);
   // wait for dapp to load new account and network
@@ -138,11 +137,11 @@ it('should be able to go back to extension and switch account and chain', async 
 it('should be able to accept a signing request', async () => {
   // switch session to mainnet
   await goToPopup(driver, rootURL);
-  await findElementAndClick('home-page-header-left', driver);
-  await findElementAndClick('home-page-header-connected-apps', driver);
+  await findElementAndClick({ id: 'home-page-header-left', driver });
+  await findElementAndClick({ id: 'home-page-header-connected-apps', driver });
   await delay(100);
-  await findElementAndClick('switch-network-menu', driver);
-  await findElementAndClick('switch-network-item-0', driver);
+  await findElementAndClick({ id: 'switch-network-menu', driver });
+  await findElementAndClick({ id: 'switch-network-item-0', driver });
 
   await delay(500);
   await goToTestApp(driver);
@@ -160,7 +159,7 @@ it('should be able to accept a signing request', async () => {
     handlers.find((handler) => handler !== dappHandler) || '';
 
   await driver.switchTo().window(popupHandler);
-  await findElementAndClick('accept-request-button', driver);
+  await findElementAndClick({ id: 'accept-request-button', driver });
   await delay(500);
   await driver.switchTo().window(dappHandler);
 });
@@ -180,17 +179,17 @@ it('should be able to accept a transaction request', async () => {
     handlers.find((handler) => handler !== dappHandler) || '';
 
   await driver.switchTo().window(popupHandler);
-  await findElementAndClick('accept-request-button', driver);
+  await findElementAndClick({ id: 'accept-request-button', driver });
   await driver.switchTo().window(dappHandler);
 });
 
 it('should be able to disconnect from connected dapps', async () => {
   await goToPopup(driver, rootURL);
-  await findElementAndClick('home-page-header-left', driver);
-  await findElementAndClick('home-page-header-connected-apps', driver);
+  await findElementAndClick({ id: 'home-page-header-left', driver });
+  await findElementAndClick({ id: 'home-page-header-connected-apps', driver });
   await delay(500);
-  await findElementAndClick('switch-network-menu', driver);
-  await findElementAndClick('switch-network-menu-disconnect', driver);
+  await findElementAndClick({ id: 'switch-network-menu', driver });
+  await findElementAndClick({ id: 'switch-network-menu-disconnect', driver });
 
   await goToTestApp(driver);
   // wait for dapp to load new account and network

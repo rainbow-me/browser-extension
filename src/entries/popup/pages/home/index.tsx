@@ -80,7 +80,7 @@ function TopNav() {
         }
         titleComponent={
           <motion.div style={{ opacity }}>
-            <AccountName includeAvatar size="16pt" />
+            <AccountName id="topNav" includeAvatar size="16pt" />
           </motion.div>
         }
       />

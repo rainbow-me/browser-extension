@@ -77,7 +77,8 @@ export async function waitAndClick(element, driver) {
   return element.click();
 }
 
-export async function findElementAndClick(id, driver) {
+export async function findElementAndClick({ id, driver }) {
+  await delay(200);
   const element = await driver.findElement({
     id,
   });
