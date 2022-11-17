@@ -58,12 +58,17 @@ it('should be able create a new wallet', async () => {
     id: 'header-account-name-link-to-wallet',
     driver,
   });
+  await delayTime('medium');
   await driver
     .findElement({ id: 'wallet-password-input' })
     .sendKeys('password');
+  await delayTime('medium');
   await findElementAndClick({ id: 'wallet-password-submit', driver });
+  await delayTime('medium');
   await findElementAndClick({ id: 'wallet-create-button', driver });
+  await delayTime('medium');
   await findElementAndClick({ id: 'wallets-go-back', driver });
+  await delayTime('medium');
 });
 
 it('should shuffle account', async () => {
@@ -109,7 +114,7 @@ it('should be able to connect to bx test dapp', async () => {
 
   // switch account
   await findElementAndClick({ id: 'switch-wallet-menu', driver });
-  await findElementAndClick({ id: 'switch-wallet-item-0', driver });
+  await findElementAndClick({ id: 'switch-wallet-item-2', driver });
   // switch network
   await findElementAndClick({ id: 'switch-network-menu', driver });
   await findElementAndClick({ id: 'switch-network-item-1', driver });
@@ -145,6 +150,7 @@ it('should be able to go back to extension and switch account and chain', async 
   const expectedAccountAddress = 'Account: 0x';
   const accountAddress = await querySelector(driver, '[id="accountAddress"]');
   const actualAccountAddress = await accountAddress.getText();
+  console.log('------ accountAddress', accountAddress);
   expect(actualAccountAddress.includes(expectedAccountAddress)).toBe(true);
 });
 
