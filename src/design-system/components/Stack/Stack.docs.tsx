@@ -31,5 +31,4 @@ const stack = createDocs({
   examples: [basicUsage, nested, withCenterAlignment, withText],
 });
 
-// eslint-disable-next-line import/no-default-export
 export default stack;

@@ -3,6 +3,7 @@ module.exports = {
   extends: ['rainbow', 'plugin:prettier/recommended'],
   root: true,
   rules: {
+    'import/no-default-export': 'off',
     'import/order': [
       'error',
       {
