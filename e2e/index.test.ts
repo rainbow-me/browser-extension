@@ -66,7 +66,7 @@ it('should be able create a new wallet', async () => {
 });
 
 it('should shuffle account', async () => {
-  await delayTime('medium');
+  await delayTime('long');
   await driver.findElement({ id: 'name-section-shuffle-account' }).click();
   await delayTime('medium');
   const label = await querySelector(
