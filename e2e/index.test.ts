@@ -60,9 +60,9 @@ it('should be able create a new wallet', async () => {
   await driver
     .findElement({ id: 'wallet-password-input' })
     .sendKeys('password');
-  await findElementAndClick('wallet-password-submit', driver);
-  await findElementAndClick('wallet-create-button', driver);
-  await findElementAndClick('wallets-go-back', driver);
+  await findElementAndClick({ id: 'wallet-password-submit', driver });
+  await findElementAndClick({ id: 'wallet-create-button', driver });
+  await findElementAndClick({ id: 'wallets-go-back', driver });
 });
 
 it('should shuffle account', async () => {
@@ -105,15 +105,15 @@ it('should be able to connect to bx test dapp', async () => {
   await driver.switchTo().window(popupHandler);
 
   // switch account
-  await findElementAndClick('switch-wallet-menu', driver);
-  await findElementAndClick('switch-wallet-item-2', driver);
+  await findElementAndClick({ id: 'switch-wallet-menu', driver });
+  await findElementAndClick({ id: 'switch-wallet-item-2', driver });
 
   await delayTime('medium');
   // switch network
-  await findElementAndClick('switch-network-menu', driver);
-  await findElementAndClick('switch-network-item-1', driver);
+  await findElementAndClick({ id: 'switch-network-menu', driver });
+  await findElementAndClick({ id: 'switch-network-item-1', driver });
 
-  await findElementAndClick('accept-request-button', driver);
+  await findElementAndClick({ id: 'accept-request-button', driver });
 
   await driver.switchTo().window(dappHandler);
   const topButton = await querySelector(
@@ -130,10 +130,10 @@ it('should be able to connect to bx test dapp', async () => {
 
 it('should be able to go back to extension and switch account and chain', async () => {
   await goToPopup(driver, rootURL);
-  await findElementAndClick('home-page-header-left', driver);
-  await findElementAndClick('home-page-header-connected-apps', driver);
-  await findElementAndClick('switch-network-menu', driver);
-  await findElementAndClick('switch-network-item-2', driver);
+  await findElementAndClick({ id: 'home-page-header-left', driver });
+  await findElementAndClick({ id: 'home-page-header-connected-apps', driver });
+  await findElementAndClick({ id: 'switch-network-menu', driver });
+  await findElementAndClick({ id: 'switch-network-item-2', driver });
 
   await goToTestApp(driver);
   const expectedNetwork = 'Network: Polygon - matic';
@@ -164,7 +164,7 @@ it('should be able to accept a signing request', async () => {
   await driver.switchTo().window(popupHandler);
 
   // await driver.findElement({ id: 'accept-request-button' }).click();
-  await findElementAndClick('accept-request-button', driver);
+  await findElementAndClick({ id: 'accept-request-button', driver });
 
   await driver.switchTo().window(dappHandler);
 
@@ -195,7 +195,7 @@ it('should be able to accept a typed data signing request', async () => {
     handlers.find((handler) => handler !== dappHandler) || '';
 
   await driver.switchTo().window(popupHandler);
-  await findElementAndClick('accept-request-button', driver);
+  await findElementAndClick({ id: 'accept-request-button', driver });
   await delayTime('long');
   await driver.switchTo().window(dappHandler);
 });
@@ -215,7 +215,7 @@ it('should be able to accept a transaction request', async () => {
     handlers.find((handler) => handler !== dappHandler) || '';
 
   await driver.switchTo().window(popupHandler);
-  await findElementAndClick('accept-request-button', driver);
+  await findElementAndClick({ id: 'accept-request-button', driver });
   await driver.switchTo().window(dappHandler);
 
   const signatureElement = await querySelector(
@@ -232,10 +232,10 @@ it('should be able to accept a transaction request', async () => {
 
 it('should be able to disconnect from connected dapps', async () => {
   await goToPopup(driver, rootURL);
-  await findElementAndClick('home-page-header-left', driver);
-  await findElementAndClick('home-page-header-connected-apps', driver);
-  await findElementAndClick('switch-network-menu', driver);
-  await findElementAndClick('switch-network-menu-disconnect', driver);
+  await findElementAndClick({ id: 'home-page-header-left', driver });
+  await findElementAndClick({ id: 'home-page-header-connected-apps', driver });
+  await findElementAndClick({ id: 'switch-network-menu', driver });
+  await findElementAndClick({ id: 'switch-network-menu-disconnect', driver });
   await goToTestApp(driver);
   const button = await findElementByText(driver, 'Connect Wallet');
   expect(button).toBeTruthy();
