@@ -114,11 +114,15 @@ it('should be able to connect to bx test dapp', async () => {
   await driver.switchTo().window(popupHandler);
 
   // switch account
+  await delayTime('medium');
   await findElementAndClick({ id: 'switch-wallet-menu', driver });
+  await delayTime('medium');
   await findElementAndClick({ id: 'switch-wallet-item-2', driver });
 
   // switch network
+  await delayTime('medium');
   await findElementAndClick({ id: 'switch-network-menu', driver });
+  await delayTime('medium');
   await findElementAndClick({ id: 'switch-network-item-1', driver });
 
   await findElementAndClick({ id: 'accept-request-button', driver });
