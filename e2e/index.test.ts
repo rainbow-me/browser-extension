@@ -87,6 +87,7 @@ it('should shuffle account', async () => {
 });
 
 it('should be able to connect to bx test dapp', async () => {
+  await delayTime('long');
   await goToTestApp(driver);
   const dappHandler = await driver.getWindowHandle();
 
@@ -114,7 +115,7 @@ it('should be able to connect to bx test dapp', async () => {
 
   // switch account
   await findElementAndClick({ id: 'switch-wallet-menu', driver });
-  await findElementAndClick({ id: 'switch-wallet-item-2', driver });
+  await findElementAndClick({ id: 'switch-wallet-item-1', driver });
   // switch network
   await findElementAndClick({ id: 'switch-network-menu', driver });
   await findElementAndClick({ id: 'switch-network-item-1', driver });
@@ -154,7 +155,7 @@ it('should be able to go back to extension and switch account and chain', async 
   expect(actualAccountAddress.includes(expectedAccountAddress)).toBe(true);
 });
 
-it('should be able to accept a signing request', async () => {
+it.skip('should be able to accept a signing request', async () => {
   await goToTestApp(driver);
 
   const dappHandler = await driver.getWindowHandle();
@@ -187,7 +188,7 @@ it('should be able to accept a signing request', async () => {
   expect(ethers.utils.isHexString(signature)).toBe(true);
 });
 
-it('should be able to accept a typed data signing request', async () => {
+it.skip('should be able to accept a typed data signing request', async () => {
   // TODO check if the signature is correct, we're not signing anything yet
   await delayTime('long');
   const dappHandler = await driver.getWindowHandle();
@@ -206,7 +207,7 @@ it('should be able to accept a typed data signing request', async () => {
   await driver.switchTo().window(dappHandler);
 });
 
-it('should be able to accept a transaction request', async () => {
+it.skip('should be able to accept a transaction request', async () => {
   // TODO send tx, we're not signing anything yet
   await delayTime('long');
   const dappHandler = await driver.getWindowHandle();
