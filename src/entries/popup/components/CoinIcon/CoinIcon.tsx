@@ -1,9 +1,9 @@
-import { capitalize, upperCase } from 'lodash';
+import { upperCase } from 'lodash';
 import React, { Fragment, ReactNode } from 'react';
-// @ts-expect-error // no declaration for this yet
-import * as CoinIconsImages from 'react-coin-icon/lib/pngs';
 import { Address } from 'wagmi';
 
+import EthIcon from 'static/assets/ethIcon.png';
+import { ETH_ADDRESS } from '~/core/references';
 import { useCloudinaryAssetIcon } from '~/core/resources/cloudinary';
 import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -27,52 +27,38 @@ export function CoinIcon({
   asset?: ParsedAsset | ParsedAddressAsset;
   fallbackText?: string;
 }) {
-  const [showImage, setShowImage] = React.useState(true);
   const sym = asset?.symbol || fallbackText || '';
 
-  const localImage = CoinIconsImages[capitalize(sym)];
   const formattedSymbol = formatSymbol(sym, 36);
   const mainnetAddress = asset?.mainnetAddress;
   const address = (asset?.address || '') as Address;
   const chain = asset?.chainId || ChainId.mainnet;
   const shadowColor = asset?.colors?.primary;
-
-  const IconImage =
-    localImage && showImage ? (
-      <img
-        src={localImage}
-        width="100%"
-        height="100%"
-        onError={() => setShowImage(false)}
-      />
-    ) : null;
   return (
     <CoinIconWrapper shadowColor={shadowColor} chainId={chain}>
-      {IconImage || (
-        <FallbackCoinIcon
-          address={address}
-          chainId={chain}
-          mainnetAddress={mainnetAddress}
+      <CloudinaryCoinIcon
+        address={address}
+        chainId={chain}
+        mainnetAddress={mainnetAddress}
+      >
+        <Box
+          justifyContent="center"
+          flexDirection="column"
+          style={{
+            backgroundColor: pseudoRandomArrayItemFromString<string>(
+              address || '',
+              emojiColors,
+            ),
+            height: 36,
+            width: 36,
+            display: 'flex',
+          }}
         >
-          <Box
-            justifyContent="center"
-            flexDirection="column"
-            style={{
-              backgroundColor: pseudoRandomArrayItemFromString<string>(
-                address || '',
-                emojiColors,
-              ),
-              height: 36,
-              width: 36,
-              display: 'flex',
-            }}
-          >
-            <Box as={'p'} className={getFallbackTextStyle(sym)}>
-              {upperCase(formattedSymbol)}
-            </Box>
+          <Box as={'p'} className={getFallbackTextStyle(sym)}>
+            {upperCase(formattedSymbol)}
           </Box>
-        </FallbackCoinIcon>
-      )}
+        </Box>
+      </CloudinaryCoinIcon>
     </CoinIconWrapper>
   );
 }
@@ -141,7 +127,7 @@ function CoinIconWrapper({
   );
 }
 
-function FallbackCoinIcon({
+function CloudinaryCoinIcon({
   address,
   chainId,
   mainnetAddress,
@@ -157,9 +143,15 @@ function FallbackCoinIcon({
     chainId,
     mainnetAddress,
   });
+  let src = imageUrl;
+  const eth = ETH_ADDRESS as Address;
 
-  if (imageUrl) {
-    return <img src={imageUrl} width="100%" height="100%" />;
+  if (address === eth || mainnetAddress === eth) {
+    src = EthIcon;
+  }
+
+  if (src) {
+    return <img src={src} width="100%" height="100%" />;
   }
 
   return <Fragment>{children}</Fragment>;
