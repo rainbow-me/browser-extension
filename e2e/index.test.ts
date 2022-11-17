@@ -63,9 +63,13 @@ it('should be able create a new wallet', async () => {
   await driver
     .findElement({ id: 'wallet-password-input' })
     .sendKeys('password');
+  await delayTime('medium');
   await findElementAndClick({ id: 'wallet-password-submit', driver });
+  await delayTime('medium');
   await findElementAndClick({ id: 'wallet-create-button', driver });
+  await delayTime('medium');
   await findElementAndClick({ id: 'wallets-go-back', driver });
+  await delayTime('medium');
 });
 
 it('should shuffle account', async () => {
