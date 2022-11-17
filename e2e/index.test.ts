@@ -57,9 +57,15 @@ it('should shuffle account', async () => {
     driver,
     '[data-testid="header"] [data-testid="account-name"]',
   );
-  const actual = await label.getText();
-  const expected = '0x5B57...7C35';
-  expect(actual).toEqual(expected);
+
+  const accountName = await label.getText();
+  const expectedAddress = '0x70c1...43C4';
+  const expectedName = 'djweth.eth';
+
+  // ENS sometimes takes a while to resolve
+  const isCorrectName =
+    accountName === expectedAddress || accountName === expectedName;
+  expect(isCorrectName).toBeTruthy();
 });
 
 it('should be able to connect to bx test dapp', async () => {
