@@ -68,14 +68,18 @@ it('should be able create a new wallet', async () => {
 it('should shuffle account', async () => {
   await delayTime('long');
   await driver.findElement({ id: 'name-section-shuffle-account' }).click();
-  await delayTime('medium');
   const label = await querySelector(
     driver,
     '[data-testid="header"] [data-testid="account-name"]',
   );
-  const actual = await label.getText();
-  const expected = 'djweth.eth';
-  expect(actual).toEqual(expected);
+  const accountName = await label.getText();
+  const expectedAddress = '0x70c1...43C4';
+  const expectedName = 'djweth.eth';
+
+  const isCorrectName =
+    accountName === expectedAddress || accountName === expectedName;
+
+  expect(isCorrectName).toBeTruthy();
 });
 
 it('should be able to connect to bx test dapp', async () => {
