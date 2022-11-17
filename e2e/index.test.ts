@@ -54,6 +54,7 @@ it('should display account name', async () => {
 
 it('should be able create a new wallet', async () => {
   await goToPopup(driver, rootURL);
+  await delayTime('medium');
   await findElementAndClick({
     id: 'header-account-name-link-to-wallet',
     driver,
@@ -112,23 +113,15 @@ it('should be able to connect to bx test dapp', async () => {
 
   await driver.switchTo().window(popupHandler);
 
-  await delayTime('medium');
   // switch account
   await findElementAndClick({ id: 'switch-wallet-menu', driver });
-  await delayTime('medium');
-
   await findElementAndClick({ id: 'switch-wallet-item-2', driver });
 
-  await delayTime('medium');
   // switch network
   await findElementAndClick({ id: 'switch-network-menu', driver });
-  await delayTime('medium');
-
   await findElementAndClick({ id: 'switch-network-item-1', driver });
 
-  await delayTime('medium');
   await findElementAndClick({ id: 'accept-request-button', driver });
-  await delayTime('medium');
 
   await driver.switchTo().window(dappHandler);
   const topButton = await querySelector(

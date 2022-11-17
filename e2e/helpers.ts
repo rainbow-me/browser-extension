@@ -73,6 +73,7 @@ export async function findElementByText(driver, text) {
 }
 
 export async function waitAndClick(element, driver) {
+  await delay(200);
   await driver.wait(until.elementIsVisible(element), waitUntilTime);
   return element.click();
 }
