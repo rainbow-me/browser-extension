@@ -9,7 +9,6 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 
 import {
-  delay,
   delayTime,
   findElementAndClick,
   findElementByText,
@@ -54,41 +53,21 @@ it('should display account name', async () => {
 });
 
 it('should be able create a new wallet', async () => {
-  console.log('----- 1');
   await goToPopup(driver, rootURL);
-  console.log('----- 2');
-  await delayTime('medium');
-  console.log('----- 3');
   await findElementAndClick({
     id: 'header-account-name-link-to-wallet',
     driver,
   });
-  console.log('----- 4');
-  await delayTime('medium');
   await driver
     .findElement({ id: 'wallet-password-input' })
     .sendKeys('password');
-  console.log('----- 5');
-  await delayTime('medium');
   await findElementAndClick({ id: 'wallet-password-submit', driver });
-  console.log('----- 6');
-  await delayTime('medium');
-  console.log('----- 7');
   await findElementAndClick({ id: 'wallet-create-button', driver });
-  await delayTime('medium');
-  console.log('----- 8');
   await findElementAndClick({ id: 'wallets-go-back', driver });
-  await delayTime('medium');
-  console.log('----- 9');
-  await delay(4000);
 });
 
 it('should shuffle account', async () => {
-  await delayTime('long');
-  await findElementAndClick({
-    id: 'header-account-name-shuffle-account',
-    driver,
-  });
+  await findElementAndClick({ id: 'header-account-name-shuffle', driver });
   const label = await querySelector(
     driver,
     '[data-testid="header"] [data-testid="account-name"]',
@@ -129,15 +108,10 @@ it('should be able to connect to bx test dapp', async () => {
   await driver.switchTo().window(popupHandler);
 
   // switch account
-  await delayTime('medium');
   await findElementAndClick({ id: 'switch-wallet-menu', driver });
-  await delayTime('medium');
-  await findElementAndClick({ id: 'switch-wallet-item-1', driver });
-
+  await findElementAndClick({ id: 'switch-wallet-item-0', driver });
   // switch network
-  await delayTime('medium');
   await findElementAndClick({ id: 'switch-network-menu', driver });
-  await delayTime('medium');
   await findElementAndClick({ id: 'switch-network-item-1', driver });
 
   await findElementAndClick({ id: 'accept-request-button', driver });
@@ -223,7 +197,6 @@ it('should be able to accept a typed data signing request', async () => {
 
   await driver.switchTo().window(popupHandler);
   await findElementAndClick({ id: 'accept-request-button', driver });
-  await delayTime('long');
   await driver.switchTo().window(dappHandler);
 });
 

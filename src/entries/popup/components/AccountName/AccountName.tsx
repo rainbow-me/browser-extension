@@ -14,8 +14,8 @@ import { Avatar } from '../Avatar/Avatar';
 import { SFSymbol } from '../SFSymbol/SFSymbol';
 
 type AccountNameProps = {
-  id?: string;
   includeAvatar?: boolean;
+  id?: string;
   size?: '16pt' | '20pt';
 };
 
@@ -43,7 +43,7 @@ export function AccountName({
       <Box
         as="button"
         onClick={shuffleAccount}
-        id={`${id ? `${id}-` : ''}account-name-shuffle-account`}
+        id={`${id ?? ''}-account-name-shuffle`}
       >
         <Text color="label" size={size} weight="heavy" testId="account-name">
           {ensName ?? truncateAddress(address || '0x')}
