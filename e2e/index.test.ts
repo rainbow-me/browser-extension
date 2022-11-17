@@ -115,7 +115,7 @@ it('should be able to connect to bx test dapp', async () => {
 
   // switch account
   await findElementAndClick({ id: 'switch-wallet-menu', driver });
-  await findElementAndClick({ id: 'switch-wallet-item-1', driver });
+  await findElementAndClick({ id: 'switch-wallet-item-0', driver });
   // switch network
   await findElementAndClick({ id: 'switch-network-menu', driver });
   await findElementAndClick({ id: 'switch-network-item-1', driver });
