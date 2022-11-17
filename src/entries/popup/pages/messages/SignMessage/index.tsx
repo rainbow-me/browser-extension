@@ -39,7 +39,7 @@ export function SignMessage({
     switch (request.method) {
       case 'eth_sign':
       case 'personal_sign':
-        return WalletActions.sign_message;
+        return WalletActions.personal_sign;
       case 'eth_signTypedData':
       case 'eth_signTypedData_v3':
       case 'eth_signTypedData_v4':
