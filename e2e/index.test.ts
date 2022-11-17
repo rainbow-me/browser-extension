@@ -47,7 +47,7 @@ it('should display account name', async () => {
     '[data-testid="header"] [data-testid="account-name"]',
   );
   const actual = await label.getText();
-  const expected = '0x70c1...43C4';
+  const expected = 'djweth.eth';
   expect(actual).toEqual(expected);
 });
 
