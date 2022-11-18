@@ -3,7 +3,6 @@ import React, { useCallback } from 'react';
 import { initializeMessenger } from '~/core/messengers';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
 import { usePendingRequestStore } from '~/core/state/requests';
-import { RPCMethods } from '~/core/types/rpcMethods';
 import { Box, Text } from '~/design-system';
 
 import { RequestAccounts } from './RequestAccounts';
@@ -39,7 +38,7 @@ export const ApproveMessage = () => {
   }, [pendingRequest?.id, pendingRequests.length, window?.id]);
 
   switch (pendingRequest.method) {
-    case RPCMethods.eth_requestAccounts:
+    case 'eth_requestAccounts':
       return (
         <RequestAccounts
           approveRequest={approveRequest}
@@ -47,11 +46,11 @@ export const ApproveMessage = () => {
           request={pendingRequest}
         />
       );
-    case RPCMethods.eth_sign:
-    case RPCMethods.personal_sign:
-    case RPCMethods.eth_signTypedData:
-    case RPCMethods.eth_signTypedData_v3:
-    case RPCMethods.eth_signTypedData_v4:
+    case 'eth_sign':
+    case 'personal_sign':
+    case 'eth_signTypedData':
+    case 'eth_signTypedData_v3':
+    case 'eth_signTypedData_v4':
       return (
         <SignMessage
           approveRequest={approveRequest}
@@ -59,7 +58,7 @@ export const ApproveMessage = () => {
           request={pendingRequest}
         />
       );
-    case RPCMethods.eth_sendTransaction:
+    case 'eth_sendTransaction':
       return (
         <SendTransaction
           approveRequest={approveRequest}

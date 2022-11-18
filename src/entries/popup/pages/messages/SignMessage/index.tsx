@@ -20,7 +20,9 @@ interface ApproveRequestProps {
   request: ProviderRequestPayload;
 }
 
-const getWalletActionMethod = (method: keyof typeof RPCMethods) => {
+const getWalletActionMethod = (
+  method: RPCMethods,
+): WalletActions.personal_sign | WalletActions.sign_typed_data | undefined => {
   switch (method) {
     case 'eth_sign':
     case 'personal_sign':
@@ -48,7 +50,7 @@ export function SignMessage({
   const selectedWallet = appSession.address;
 
   const onAcceptRequest = useCallback(async () => {
-    const walletAction = getWalletActionMethod(request.method);
+    const walletAction = getWalletActionMethod(request?.method);
     const requestPayload = getSigningRequestDisplayDetails(request);
     if (!requestPayload) return;
     let result = null;

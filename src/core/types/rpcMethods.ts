@@ -1,4 +1,4 @@
-export enum RPCMethods {
+export enum rpcMethods {
   eth_chainId = 'eth_chainId',
   eth_accounts = 'eth_accounts',
   eth_sendTransaction = 'eth_sendTransaction',
@@ -12,3 +12,5 @@ export enum RPCMethods {
   wallet_switchEthereumChain = 'wallet_switchEthereumChain',
   eth_requestAccounts = 'eth_requestAccounts',
 }
+
+export type RPCMethods = keyof typeof rpcMethods;
