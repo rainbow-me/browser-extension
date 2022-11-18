@@ -3,7 +3,10 @@
 
 import * as React from 'react';
 
-import { foregroundColorVars } from '~/design-system/styles/core.css';
+import {
+  accentColorAsHsl,
+  foregroundColorVars,
+} from '~/design-system/styles/core.css';
 import { ForegroundColor } from '~/design-system/styles/designTokens';
 
 const symbols = {
@@ -87,7 +90,7 @@ const symbols = {
 export type Symbols = keyof typeof symbols;
 
 export type SFSymbolProps = {
-  color?: ForegroundColor;
+  color?: 'accent' | ForegroundColor;
   symbol: Symbols;
   size?: number;
 };
@@ -101,7 +104,12 @@ export function SFSymbol({
     <svg
       viewBox={symbols[symbol].viewBox}
       fill="none"
-      style={{ color: foregroundColorVars[color], width: size, height: size }}
+      style={{
+        color:
+          color === 'accent' ? accentColorAsHsl : foregroundColorVars[color],
+        width: size,
+        height: size,
+      }}
       xmlns="http://www.w3.org/2000/svg"
     >
       <path d={symbols[symbol].path} fill="currentColor" />
