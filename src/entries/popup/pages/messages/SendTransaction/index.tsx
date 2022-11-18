@@ -1,3 +1,5 @@
+import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { getAddress } from 'ethers/lib/utils';
 import React, { useCallback } from 'react';
 
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -5,11 +7,13 @@ import { Row, Rows } from '~/design-system';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
+import * as wallet from '../../../handlers/wallet';
+
 import { SendTransactionActions } from './SendTransactionActions';
 import { SendTransactionInfo } from './SendTransactionsInfo';
 
 interface ApproveRequestProps {
-  approveRequest: () => void;
+  approveRequest: (payload: unknown) => void;
   rejectRequest: () => void;
   request: ProviderRequestPayload;
 }
@@ -31,7 +35,15 @@ export function SendTransaction({
   const { appSession } = useAppSession({ host: appHost });
   const selectedWallet = appSession.address;
 
-  const onAcceptRequest = useCallback(() => approveRequest(), [approveRequest]);
+  const onAcceptRequest = useCallback(async () => {
+    const txRequest = request?.params?.[0] as TransactionRequest;
+    const result = await wallet.sendTransaction({
+      from: getAddress(txRequest?.from ?? ''),
+      to: getAddress(txRequest?.to ?? ''),
+      value: txRequest.value,
+    });
+    approveRequest(result);
+  }, [approveRequest, request]);
 
   return (
     <Rows alignVertical="justify">
