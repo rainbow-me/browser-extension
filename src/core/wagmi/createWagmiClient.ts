@@ -22,8 +22,8 @@ const noopStorage = {
 const { chains, provider, webSocketProvider } = configureChains(
   [chain.mainnet, chain.optimism, chain.polygon, chain.arbitrum],
   [
-    alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY }),
-    infuraProvider({ apiKey: process.env.INFURA_API_KEY }),
+    alchemyProvider({ apiKey: undefined }),
+    infuraProvider({ apiKey: undefined }),
   ],
 );
 

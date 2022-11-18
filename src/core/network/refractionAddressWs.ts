@@ -27,3 +27,7 @@ export const refractionAddressWs = createWebSocketClient({
     api_token: process.env.DATA_API_KEY,
   },
 });
+
+refractionAddressWs.on('disconnect', (reason) => {
+  console.log('REASON: ', reason);
+});
