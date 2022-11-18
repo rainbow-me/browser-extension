@@ -8,6 +8,7 @@ import {
 } from '~/core/state';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import { RPCMethods } from '~/core/types/rpcMethods';
 import { getDappHost } from '~/core/utils/connectedApps';
 import { addHexPrefix } from '~/core/utils/ethereum';
 import { convertStringToHex } from '~/core/utils/numbers';
@@ -73,30 +74,30 @@ export const handleProviderRequest = ({
     console.log(meta.sender, method);
 
     const { getActiveSession, addSession } = appSessionsStore.getState();
-    const host = getDappHost(meta.sender.url || '');
+    const host = getDappHost(meta?.sender?.url || '');
     const activeSession = getActiveSession({ host });
 
     try {
       let response = null;
 
       switch (method) {
-        case 'eth_chainId': {
+        case RPCMethods.eth_chainId: {
           response = activeSession
             ? addHexPrefix(convertStringToHex(String(activeSession.chainId)))
             : DEFAULT_CHAIN_ID;
           break;
         }
-        case 'eth_accounts': {
+        case RPCMethods.eth_accounts: {
           response = activeSession ? [activeSession.address] : [];
           break;
         }
-        case 'eth_sendTransaction':
-        case 'eth_signTransaction':
-        case 'eth_sign':
-        case 'personal_sign':
-        case 'eth_signTypedData':
-        case 'eth_signTypedData_v3':
-        case 'eth_signTypedData_v4': {
+        case RPCMethods.eth_sendTransaction:
+        case RPCMethods.eth_signTransaction:
+        case RPCMethods.eth_sign:
+        case RPCMethods.personal_sign:
+        case RPCMethods.eth_signTypedData:
+        case RPCMethods.eth_signTypedData_v3:
+        case RPCMethods.eth_signTypedData_v4: {
           {
             response = await messengerProviderRequest(messenger, {
               method,
@@ -107,9 +108,9 @@ export const handleProviderRequest = ({
           }
           break;
         }
-        case 'wallet_addEthereumChain':
-        case 'wallet_switchEthereumChain':
-        case 'eth_requestAccounts': {
+        case RPCMethods.wallet_addEthereumChain:
+        case RPCMethods.wallet_switchEthereumChain:
+        case RPCMethods.eth_requestAccounts: {
           if (activeSession) {
             response = [activeSession.address];
             break;
