@@ -49,7 +49,10 @@ export function AccountName({
           {ensName ?? truncateAddress(address || '0x')}
         </Text>
       </Box>
-      <Link to="/wallets">
+      <Link
+        id={`${id ? `${id}-` : ''}account-name-link-to-wallet`}
+        to="/wallets"
+      >
         <SFSymbol color="labelTertiary" size={20} symbol="chevronDown" />
       </Link>
     </Inline>

@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { Address, useAccount, useEnsName } from 'wagmi';
 
 import { useCurrentAddressStore } from '~/core/state';
+import { WalletActions } from '~/core/types/walletActions';
 import { EthereumWalletSeed, isENSAddressFormat } from '~/core/utils/ethereum';
 import { Box, Column, Columns, Separator, Text } from '~/design-system';
 
@@ -21,7 +22,7 @@ function PasswordForm({
   onPasswordChanged,
 }: {
   title: string;
-  action: string;
+  action: keyof typeof WalletActions;
   onSubmit: () => void;
   onPasswordChanged: (pwd: string) => void;
 }) {
@@ -56,9 +57,12 @@ function PasswordForm({
         {title}
       </Text>
       <input
+        id="wallet-password-input"
         type="password"
         value={password}
-        placeholder={action === 'update_password' ? 'New password' : 'Password'}
+        placeholder={
+          action === WalletActions.update_password ? 'New password' : 'Password'
+        }
         onChange={handlePasswordChange}
         style={{ borderRadius: 999, padding: '10px', fontSize: '11pt' }}
       />
@@ -69,9 +73,10 @@ function PasswordForm({
         onClick={handleSubmitPassword}
         padding="16px"
         style={{ borderRadius: 999 }}
+        id="wallet-password-submit"
       >
         <Text color="label" size="14pt" weight="bold">
-          {action === 'update_password' ? 'Set Password' : 'Unlock'}
+          {action === WalletActions.update_password ? 'Set Password' : 'Unlock'}
         </Text>
       </Box>
 
@@ -97,6 +102,7 @@ const CreateWallet = ({ onCreateWallet }: { onCreateWallet: () => void }) => {
         onClick={onCreateWallet}
         padding="16px"
         style={{ borderRadius: 999 }}
+        id="wallet-create-button"
       >
         <Text color="label" size="14pt" weight="bold">
           Create Wallet
@@ -389,7 +395,7 @@ export function Wallets() {
     >
       <Columns space="12px">
         <Column width="1/3">
-          <Link to="/">
+          <Link id="wallets-go-back" to="/">
             <Box as="button" style={{ borderRadius: 999, width: '100%' }}>
               <Text
                 color="labelSecondary"
@@ -453,7 +459,9 @@ export function Wallets() {
       ) : (
         <PasswordForm
           title={isNewUser ? 'Set a password to protect your wallet' : 'Login'}
-          action={isNewUser ? 'update_password' : 'unlock'}
+          action={
+            isNewUser ? WalletActions.update_password : WalletActions.unlock
+          }
           onPasswordChanged={updatePassword}
           onSubmit={updateState}
         />

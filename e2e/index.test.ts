@@ -4,11 +4,12 @@
 
 import 'chromedriver';
 import 'geckodriver';
+import { ethers } from 'ethers';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 
 import {
-  delay,
+  delayTime,
   findElementAndClick,
   findElementByText,
   getExtensionIdByName,
@@ -51,6 +52,20 @@ it('should display account name', async () => {
   expect(actual).toEqual(expected);
 });
 
+it.skip('should be able create a new wallet', async () => {
+  await goToPopup(driver, rootURL);
+  await findElementAndClick({
+    id: 'header-account-name-link-to-wallet',
+    driver,
+  });
+  await driver
+    .findElement({ id: 'wallet-password-input' })
+    .sendKeys('password');
+  await findElementAndClick({ id: 'wallet-password-submit', driver });
+  await findElementAndClick({ id: 'wallet-create-button', driver });
+  await findElementAndClick({ id: 'wallets-go-back', driver });
+});
+
 it('should shuffle account', async () => {
   await findElementAndClick({ id: 'header-account-name-shuffle', driver });
   const label = await querySelector(
@@ -63,6 +78,7 @@ it('should shuffle account', async () => {
 });
 
 it('should be able to connect to bx test dapp', async () => {
+  await delayTime('long');
   await goToTestApp(driver);
   const dappHandler = await driver.getWindowHandle();
 
@@ -75,12 +91,12 @@ it('should be able to connect to bx test dapp', async () => {
 
   const mmButton = await querySelector(
     driver,
-    '[data-testid="rk-wallet-option-metaMask"]',
+    '[data-testid="rk-wallet-option-rainbow"]',
   );
   await waitAndClick(mmButton, driver);
 
   // wait for window handlers to update
-  await delay(200);
+  await delayTime('medium');
   const handlers = await driver.getAllWindowHandles();
 
   const popupHandler =
@@ -123,30 +139,53 @@ it('should be able to go back to extension and switch account and chain', async 
   const actualNetwork = await network.getText();
   expect(actualNetwork).toEqual(expectedNetwork);
 
-  const expectedAccountAddress =
-    'Account: 0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4';
+  const expectedAccountAddress = 'Account: 0x';
   const accountAddress = await querySelector(driver, '[id="accountAddress"]');
   const actualAccountAddress = await accountAddress.getText();
-  expect(actualAccountAddress).toEqual(expectedAccountAddress);
+  expect(actualAccountAddress.includes(expectedAccountAddress)).toBe(true);
 });
 
-it('should be able to accept a signing request', async () => {
-  // switch session to mainnet
-  await goToPopup(driver, rootURL);
-  await findElementAndClick({ id: 'home-page-header-left', driver });
-  await findElementAndClick({ id: 'home-page-header-connected-apps', driver });
-  await findElementAndClick({ id: 'switch-network-menu', driver });
-  await findElementAndClick({ id: 'switch-network-item-0', driver });
-
+it.skip('should be able to accept a signing request', async () => {
   await goToTestApp(driver);
 
+  const dappHandler = await driver.getWindowHandle();
+  const button = await querySelector(driver, '[id="signTx"]');
+  expect(button).toBeTruthy();
+  await button.click();
+  await delayTime('short');
+
+  const handlers = await driver.getAllWindowHandles();
+
+  const popupHandler =
+    handlers.find((handler) => handler !== dappHandler) || '';
+
+  await driver.switchTo().window(popupHandler);
+
+  await findElementAndClick({ id: 'accept-request-button', driver });
+
+  await driver.switchTo().window(dappHandler);
+
+  const button2 = await querySelector(driver, '[id="signTx"]');
+  expect(button2).toBeTruthy();
+
+  const signatureElement = await querySelector(
+    driver,
+    '[id="signTxSignature"]',
+  );
+  const signatureElementText = await signatureElement.getText();
+  const signature = signatureElementText.replace('sign message data sig: ', '');
+  expect(ethers.utils.isHexString(signature)).toBe(true);
+});
+
+it.skip('should be able to accept a typed data signing request', async () => {
   // TODO check if the signature is correct, we're not signing anything yet
+  await delayTime('long');
   const dappHandler = await driver.getWindowHandle();
 
   const button = await querySelector(driver, '[id="signTypedData"]');
   expect(button).toBeTruthy();
   await waitAndClick(button, driver);
-  await delay(200);
+  await delayTime('short');
   const handlers = await driver.getAllWindowHandles();
 
   const popupHandler =
@@ -157,15 +196,15 @@ it('should be able to accept a signing request', async () => {
   await driver.switchTo().window(dappHandler);
 });
 
-it('should be able to accept a transaction request', async () => {
+it.skip('should be able to accept a transaction request', async () => {
   // TODO send tx, we're not signing anything yet
-  await delay(1000);
+  await delayTime('long');
   const dappHandler = await driver.getWindowHandle();
 
   const button = await querySelector(driver, '[id="sendTx"]');
   expect(button).toBeTruthy();
   await waitAndClick(button, driver);
-  await delay(200);
+  await delayTime('short');
   const handlers = await driver.getAllWindowHandles();
 
   const popupHandler =
@@ -174,6 +213,17 @@ it('should be able to accept a transaction request', async () => {
   await driver.switchTo().window(popupHandler);
   await findElementAndClick({ id: 'accept-request-button', driver });
   await driver.switchTo().window(dappHandler);
+
+  const signatureElement = await querySelector(
+    driver,
+    '[id="signTypedDataSignature"]',
+  );
+  const signatureElementText = await signatureElement.getText();
+  const signature = signatureElementText.replace(
+    'typed message data sig: ',
+    '',
+  );
+  expect(ethers.utils.isHexString(signature)).toBe(true);
 });
 
 it('should be able to disconnect from connected dapps', async () => {
@@ -182,7 +232,6 @@ it('should be able to disconnect from connected dapps', async () => {
   await findElementAndClick({ id: 'home-page-header-connected-apps', driver });
   await findElementAndClick({ id: 'switch-network-menu', driver });
   await findElementAndClick({ id: 'switch-network-menu-disconnect', driver });
-
   await goToTestApp(driver);
   const button = await findElementByText(driver, 'Connect Wallet');
   expect(button).toBeTruthy();
