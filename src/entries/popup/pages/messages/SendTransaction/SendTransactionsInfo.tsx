@@ -3,7 +3,7 @@ import { chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { getRequestDisplayDetails } from '~/core/utils/signMessages';
+import { getTransactionRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box, Inline, Inset, Separator, Stack, Text } from '~/design-system';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
@@ -18,7 +18,7 @@ export function SendTransactionInfo({ request }: SignMessageProps) {
   });
 
   const { value } = useMemo(() => {
-    const { value } = getRequestDisplayDetails(request);
+    const { value } = getTransactionRequestDisplayDetails(request);
     return { value };
   }, [request]);
 

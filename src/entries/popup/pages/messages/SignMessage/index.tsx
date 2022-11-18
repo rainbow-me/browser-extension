@@ -51,7 +51,7 @@ export function SignMessage({
   const onAcceptRequest = useCallback(async () => {
     const walletAction = getWalletActionMethod(request?.method);
     const requestPayload = getSigningRequestDisplayDetails(request);
-    if (!requestPayload) return;
+    if (!requestPayload.msgData || !requestPayload.address) return;
     let result = null;
     if (walletAction === 'personal_sign') {
       result = await wallet.personalSign(
