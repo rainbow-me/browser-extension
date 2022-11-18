@@ -127,6 +127,7 @@ const getAccentColorAsHsl = ({ alpha }: { alpha?: number } = {}) =>
   ].join(', ')})`;
 
 export const accentColorAsHsl = getAccentColorAsHsl();
+export const transparentAccentColorAsHsl = getAccentColorAsHsl({ alpha: 0.1 });
 
 export const semanticColorVars = createThemeContract({
   backgroundColors: mapValues(backgroundColors, () => null),

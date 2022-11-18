@@ -32,7 +32,6 @@ module.exports = {
       {
         test: /\.(woff2|png)?$/,
         use: 'file-loader',
-        exclude: /node_modules/,
       },
       {
         test: /\.worker.js$/,
