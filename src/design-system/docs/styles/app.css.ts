@@ -8,6 +8,8 @@ export const page = style({
 
 export const desktopSidebar = style({
   height: '100%',
+  overflowY: 'scroll',
+  paddingBottom: '100px',
   position: 'fixed',
   width: '260px',
   '@media': {
