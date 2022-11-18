@@ -21,7 +21,7 @@ jobs:
           node-version: "14.20.1"
           cache: 'yarn'
       - name: Install deps via Yarn
-        run: yarn setup
+        run: yarn setup:ci
       - name: Check for frozen lockfile
         run: yarn check-lockfile
       - name: Audit CI
@@ -39,8 +39,8 @@ jobs:
         run: cp tmp/dotenv .env
       - name: Build the extension with LavaMoat
         run: yarn build
-      - name: Clean up dotenv
-        run: rm -rf tmp && rm .env
+      # - name: Clean up dotenv
+      #   run: rm -rf tmp && rm .env
       - name: Run e2e (Chrome)
         run: |
           yarn e2e:mac:chrome
