@@ -30,6 +30,13 @@ jobs:
         run: yarn lint
       - name: Check types
         run: yarn typecheck
+      - uses: actions/checkout@v3
+        with:
+          repository: 'rainbow-me/browser-extension-env'
+          token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+          path: tmp
+      - name: Copy dotenv
+        run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Build the extension with LavaMoat
         run: yarn build
       - uses: browser-actions/setup-chrome@latest

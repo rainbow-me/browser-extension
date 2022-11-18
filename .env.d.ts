@@ -4,10 +4,13 @@ declare global {
       ALCHEMY_API_KEY: string;
       INFURA_API_KEY: string;
       ETHERSCAN_API_KEY: string;
+      SENTRY_DSN: string;
+      DATA_API_KEY: string;
+      DATA_ENDPOINT: string;
+      DATA_ORIGIN: string;
       PLAYGROUND: 'default' | 'ds';
       LOG_LEVEL: 'debug' | 'info' | 'warn' | 'error';
       LOG_DEBUG: string;
-      SENTRY_DSN: string;
     }
   }
 }

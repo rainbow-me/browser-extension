@@ -1,5 +1,4 @@
 import { initializeMessenger } from '~/core/messengers';
-import { initializeSentry } from '~/core/sentry';
 import { syncStores } from '~/core/state';
 import { createWagmiClient } from '~/core/wagmi';
 
@@ -10,7 +9,6 @@ import { handleWallets } from './handlers/handleWallets';
 
 const messenger = initializeMessenger({ connect: 'popup' });
 
-initializeSentry();
 createWagmiClient();
 handleInstallExtension();
 handleProviderRequest({ messenger });
