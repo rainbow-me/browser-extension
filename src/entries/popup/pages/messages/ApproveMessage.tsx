@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { initializeMessenger } from '~/core/messengers';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
 import { usePendingRequestStore } from '~/core/state/requests';
-import { SignMethods } from '~/core/types/signMethods';
+import { RPCMethods } from '~/core/types/rpcMethods';
 import { Box, Text } from '~/design-system';
 
 import { RequestAccounts } from './RequestAccounts';
@@ -38,61 +38,57 @@ export const ApproveMessage = () => {
     }, 50);
   }, [pendingRequest?.id, pendingRequests.length, window?.id]);
 
-  if (pendingRequest.method === 'eth_requestAccounts') {
-    return (
-      <RequestAccounts
-        approveRequest={approveRequest}
-        rejectRequest={rejectRequest}
-        request={pendingRequest}
-      />
-    );
+  switch (pendingRequest.method) {
+    case RPCMethods.eth_requestAccounts:
+      return (
+        <RequestAccounts
+          approveRequest={approveRequest}
+          rejectRequest={rejectRequest}
+          request={pendingRequest}
+        />
+      );
+    case RPCMethods.eth_sign:
+    case RPCMethods.personal_sign:
+    case RPCMethods.eth_signTypedData:
+    case RPCMethods.eth_signTypedData_v3:
+    case RPCMethods.eth_signTypedData_v4:
+      return (
+        <SignMessage
+          approveRequest={approveRequest}
+          rejectRequest={rejectRequest}
+          request={pendingRequest}
+        />
+      );
+    case RPCMethods.eth_sendTransaction:
+      return (
+        <SendTransaction
+          approveRequest={approveRequest}
+          rejectRequest={rejectRequest}
+          request={pendingRequest}
+        />
+      );
+    default:
+      return (
+        <>
+          <Box padding="16px" style={{ borderRadius: 999 }}>
+            <Text color="labelSecondary" size="14pt" weight="bold">
+              RPC METHOD: {pendingRequest?.method} +{' '}
+              {JSON.stringify(pendingRequest)}
+            </Text>
+          </Box>
+          <Box
+            as="button"
+            id="reject-button"
+            background="surfaceSecondary"
+            onClick={rejectRequest}
+            padding="16px"
+            style={{ borderRadius: 999 }}
+          >
+            <Text color="labelSecondary" size="14pt" weight="bold">
+              REJECT
+            </Text>
+          </Box>
+        </>
+      );
   }
-
-  if (
-    pendingRequest.method === 'eth_sign' ||
-    pendingRequest.method === 'personal_sign' ||
-    pendingRequest.method === 'eth_signTypedData' ||
-    pendingRequest.method === 'eth_signTypedData_v3' ||
-    pendingRequest.method === 'eth_signTypedData_v4'
-  ) {
-    return (
-      <SignMessage
-        approveRequest={approveRequest}
-        rejectRequest={rejectRequest}
-        request={pendingRequest}
-      />
-    );
-  }
-  if (pendingRequest.method === SignMethods.ethSendTransaction) {
-    return (
-      <SendTransaction
-        approveRequest={approveRequest}
-        rejectRequest={rejectRequest}
-        request={pendingRequest}
-      />
-    );
-  }
-
-  return (
-    <>
-      <Box padding="16px" style={{ borderRadius: 999 }}>
-        <Text color="labelSecondary" size="14pt" weight="bold">
-          RPC METHOD: {pendingRequest?.method} +{' '}
-          {JSON.stringify(pendingRequest)}
-        </Text>
-      </Box>
-      <Box
-        as="button"
-        id="reject-button"
-        background="surfaceSecondary"
-        onClick={rejectRequest}
-        padding="16px"
-        style={{ borderRadius: 999 }}
-      >
-        <Text color="labelSecondary" size="14pt" weight="bold">
-          REJECT
-        </Text>
-      </Box>
-    </>
-  );
 };

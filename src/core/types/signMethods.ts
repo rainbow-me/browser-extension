@@ -4,5 +4,6 @@ export enum SignMethods {
   ethSendTransaction = 'eth_sendTransaction',
   ethSignTransaction = 'eth_signTransaction',
   ethSignTypedData = 'eth_signTypedData',
+  ethSignTypedDatav3 = 'eth_signTypedData_v3',
   ethSignTypedDatav4 = 'eth_signTypedData_v4',
 }
