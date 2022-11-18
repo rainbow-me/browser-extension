@@ -21,7 +21,7 @@ jobs:
           node-version: "14.20.1"
           cache: 'yarn'
       - name: Install deps via Yarn
-        run: yarn setup:ci
+        run: yarn setup
       - name: Check for frozen lockfile
         run: yarn check-lockfile
       - name: Audit CI
