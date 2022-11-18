@@ -36,7 +36,7 @@ jobs:
           token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
           path: tmp
       - name: Copy dotenv
-        run: cp tmp/dotenv .env
+        run: cp tmp/dotenv .env && cat .env
       - name: Build the extension with LavaMoat
         run: yarn build
       - name: Clean up dotenv
