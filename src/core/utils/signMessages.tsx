@@ -4,18 +4,25 @@ import { Address } from 'wagmi';
 import { supportedCurrencies } from '../references';
 import { ProviderRequestPayload } from '../transports/providerRequestTransport';
 import { RPCMethod } from '../types/rpcMethods';
-import { SignMethods } from '../types/signMethods';
 import { RainbowTransaction } from '../types/transactions';
 
 import { convertRawAmountToBalance } from './numbers';
 
-export const isSignTypedData = (method: RPCMethod) =>
-  method.startsWith(SignMethods.ethSignTypedData);
+export const isSignTypedData = (method: RPCMethod) => {
+  switch (method) {
+    case 'eth_signTypedData':
+    case 'eth_signTypedData_v3':
+    case 'eth_signTypedData_v4':
+      return true;
+    default:
+      return false;
+  }
+};
 
 export const getRequestDisplayDetails = (payload: ProviderRequestPayload) => {
   switch (payload.method) {
-    case SignMethods.ethSendTransaction:
-    case SignMethods.ethSignTransaction: {
+    case 'eth_sendTransaction':
+    case 'eth_signTransaction': {
       const tx = payload?.params?.[0] as RainbowTransaction;
       const value = convertRawAmountToBalance(
         tx?.value?.toString() ?? 0,
@@ -24,12 +31,12 @@ export const getRequestDisplayDetails = (payload: ProviderRequestPayload) => {
 
       return { value };
     }
-    case SignMethods.ethSign: {
+    case 'eth_sign': {
       const message = payload?.params?.[1] as string;
       const address = payload?.params?.[0] as Address;
       return { message, msgData: message, address: getAddress(address) };
     }
-    case SignMethods.personalSign: {
+    case 'personal_sign': {
       let message = payload?.params?.[0] as string;
       const address = payload?.params?.[1] as Address;
       try {
@@ -80,12 +87,12 @@ export const getSigningRequestDisplayDetails = (
   payload: ProviderRequestPayload,
 ) => {
   switch (payload.method) {
-    case SignMethods.ethSign: {
+    case 'eth_sign': {
       const message = payload?.params?.[1] as string;
       const address = payload?.params?.[0] as Address;
       return { message, msgData: message, address: getAddress(address) };
     }
-    case SignMethods.personalSign: {
+    case 'personal_sign': {
       let message = payload?.params?.[0] as string;
       const address = payload?.params?.[1] as Address;
       try {
