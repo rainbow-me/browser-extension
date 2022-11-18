@@ -5,7 +5,6 @@ import { WagmiConfig } from 'wagmi';
 
 import { changeI18nLanguage } from '~/core/languages';
 import { persistOptions, queryClient } from '~/core/react-query';
-import { initializeSentry } from '~/core/sentry';
 import { useCurrentLanguageStore } from '~/core/state';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { createWagmiClient } from '~/core/wagmi';
@@ -28,7 +27,6 @@ export function App() {
   const { currentLanguage } = useCurrentLanguageStore();
 
   React.useEffect(() => {
-    initializeSentry();
     changeI18nLanguage(currentLanguage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
