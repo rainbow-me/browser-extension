@@ -72,8 +72,9 @@ export const ApproveMessage = () => {
         <>
           <Box padding="16px" style={{ borderRadius: 999 }}>
             <Text color="labelSecondary" size="14pt" weight="bold">
-              RPC METHOD: {pendingRequest?.method} +{' '}
-              {JSON.stringify(pendingRequest)}
+              {`RPC METHOD ${String(pendingRequest?.method)} ${JSON.stringify(
+                pendingRequest,
+              )}`}
             </Text>
           </Box>
           <Box
