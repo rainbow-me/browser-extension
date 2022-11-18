@@ -1,4 +1,5 @@
 export const globalColors = {
+  greenA10: 'rgba(29, 184, 71, 0.1)',
   green10: '#EAFCE8',
   green20: '#CDFACD',
   green30: '#A6F5AC',
@@ -10,6 +11,7 @@ export const globalColors = {
   green90: '#005723',
   green100: '#003816',
 
+  blueA10: 'rgba(14, 118, 253, 0.1)',
   blue10: '#EDF9FF',
   blue20: '#D1EDFF',
   blue30: '#A3D7FF',
@@ -21,6 +23,7 @@ export const globalColors = {
   blue90: '#053085',
   blue100: '#001E59',
 
+  purpleA10: 'rgba(95, 90, 250, 0.1)',
   purple10: '#F7F5FF',
   purple20: '#E7E0FF',
   purple30: '#C6B8FF',
@@ -32,6 +35,7 @@ export const globalColors = {
   purple90: '#38228F',
   purple100: '#2C0D6B',
 
+  pinkA10: 'rgba(255, 92, 160, 0.1)',
   pink10: '#FFF0FA',
   pink20: '#FFD6F1',
   pink30: '#FFB8E2',
@@ -43,6 +47,7 @@ export const globalColors = {
   pink90: '#851B53',
   pink100: '#570040',
 
+  redA10: 'rgba(250, 66, 60, 0.1)',
   red10: '#FFF0F0',
   red20: '#FFD4D1',
   red30: '#FFACA3',
@@ -54,6 +59,7 @@ export const globalColors = {
   red90: '#7A1714',
   red100: '#520907',
 
+  orangeA10: 'rgba(255, 128, 31, 0.1)',
   orange10: '#FFF6EB',
   orange20: '#FFE7CC',
   orange30: '#FFCF99',
@@ -65,6 +71,7 @@ export const globalColors = {
   orange90: '#703B12',
   orange100: '#3D1E0A',
 
+  yellowA10: 'rgba(250, 203, 15, 0.1)',
   yellow10: '#FFFBE0',
   yellow20: '#FFF5C2',
   yellow30: '#FFEE99',
@@ -126,13 +133,16 @@ export type BackgroundColor =
   | 'surfaceMenu'
   | 'fill'
   | 'fillSecondary'
+  | 'white'
   | 'blue'
   | 'green'
   | 'red'
   | 'purple'
   | 'pink'
   | 'orange'
-  | 'yellow';
+  | 'yellow'
+  | 'shadowNear'
+  | 'shadowFar';
 
 export type BackgroundColorValue = {
   color: string;
@@ -223,6 +233,16 @@ export const backgroundColors: Record<
       setColorContext: 'dark',
     },
   },
+  white: {
+    light: {
+      color: globalColors.white100,
+      setColorContext: 'light',
+    },
+    dark: {
+      color: globalColors.white100,
+      setColorContext: 'light',
+    },
+  },
   blue: {
     light: {
       color: globalColors.blue60,
@@ -293,7 +313,21 @@ export const backgroundColors: Record<
       setColorContext: 'light',
     },
   },
+  shadowNear: {
+    dark: { color: globalColors.grey100, setColorContext: 'dark' },
+    light: { color: globalColors.grey100, setColorContext: 'dark' },
+  },
+  shadowFar: {
+    dark: { color: globalColors.grey100, setColorContext: 'dark' },
+    light: { color: '#25292E', setColorContext: 'dark' },
+  },
 };
+
+function selectBackgroundColors<
+  SelectedColors extends readonly BackgroundColor[],
+>(...colors: SelectedColors): SelectedColors {
+  return colors;
+}
 
 function selectBackgroundAsForeground(
   backgroundName: BackgroundColor,
@@ -305,6 +339,44 @@ function selectBackgroundAsForeground(
     light: bg.light.color,
   };
 }
+
+export const buttonColors = [
+  'accent',
+  ...selectBackgroundColors(
+    'fill',
+    'fillSecondary',
+    'surfacePrimaryElevated',
+    'surfacePrimaryElevatedSecondary',
+    'surfaceSecondaryElevated',
+    'blue',
+    'green',
+    'orange',
+    'pink',
+    'purple',
+    'red',
+    'yellow',
+  ),
+] as const;
+export type ButtonColor = typeof buttonColors[number];
+
+export const shadowColors = [
+  'accent',
+  ...selectBackgroundColors(
+    'fill',
+    'fillSecondary',
+    'surfacePrimaryElevated',
+    'surfacePrimaryElevatedSecondary',
+    'surfaceSecondaryElevated',
+    'blue',
+    'green',
+    'orange',
+    'pink',
+    'purple',
+    'red',
+    'yellow',
+  ),
+] as const;
+export type ShadowColor = typeof shadowColors[number];
 
 export type ForegroundColor =
   | 'label'
@@ -327,9 +399,7 @@ export type ForegroundColor =
   | 'separatorSecondary'
   | 'separatorTertiary'
   | 'buttonStroke'
-  | 'buttonStrokeSecondary'
-  | 'shadowNear'
-  | 'shadowFar';
+  | 'buttonStrokeSecondary';
 
 export const foregroundColors: Record<
   ForegroundColor,
@@ -392,14 +462,6 @@ export const foregroundColors: Record<
     light: globalColors.white20,
     dark: globalColors.white20,
   },
-  shadowNear: {
-    dark: globalColors.grey100,
-    light: globalColors.grey100,
-  },
-  shadowFar: {
-    dark: globalColors.grey100,
-    light: '#25292E',
-  },
 };
 
 function selectForegroundColors<
@@ -438,9 +500,6 @@ export const separatorColors = selectForegroundColors(
   'separatorTertiary',
 );
 export type SeparatorColor = typeof separatorColors[number];
-
-export const shadowColors = ['accent', ...genericColors] as const;
-export type ShadowColor = typeof shadowColors[number];
 
 export const textColors = selectForegroundColors(
   'label',

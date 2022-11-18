@@ -4,6 +4,7 @@ import {
   AccentColorProvider,
   Bleed,
   Box,
+  Button,
   Column,
   Columns,
   Inline,
@@ -1374,6 +1375,9 @@ export function DesignSystem() {
             </Stack>
           </Inset>
         </Box>
+        <Button color="accent" height="44px" variant="raised">
+          Button
+        </Button>
       </Stack>
     </Box>
   );
