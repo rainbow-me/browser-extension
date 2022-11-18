@@ -1,4 +1,4 @@
-export enum WalletActions {
+export enum walletActions {
   action = 'wallet_action',
   status = 'status',
   lock = 'lock',
@@ -16,3 +16,4 @@ export enum WalletActions {
   personal_sign = 'personal_sign',
   sign_typed_data = 'sign_typed_data',
 }
+export type WalletAction = keyof typeof walletActions;

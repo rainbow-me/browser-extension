@@ -3,7 +3,6 @@ import { chain, useNetwork } from 'wagmi';
 
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { RPCMethod } from '~/core/types/rpcMethods';
-import { WalletActions } from '~/core/types/walletActions';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Row, Rows } from '~/design-system';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
@@ -22,15 +21,15 @@ interface ApproveRequestProps {
 
 const getWalletActionMethod = (
   method: RPCMethod,
-): WalletActions.personal_sign | WalletActions.sign_typed_data | undefined => {
+): 'personal_sign' | 'sign_typed_data' | undefined => {
   switch (method) {
     case 'eth_sign':
     case 'personal_sign':
-      return WalletActions.personal_sign;
+      return 'personal_sign';
     case 'eth_signTypedData':
     case 'eth_signTypedData_v3':
     case 'eth_signTypedData_v4':
-      return WalletActions.sign_typed_data;
+      return 'sign_typed_data';
   }
 };
 
@@ -54,12 +53,12 @@ export function SignMessage({
     const requestPayload = getSigningRequestDisplayDetails(request);
     if (!requestPayload) return;
     let result = null;
-    if (walletAction === WalletActions.personal_sign) {
+    if (walletAction === 'personal_sign') {
       result = await wallet.personalSign(
         requestPayload.msgData,
         requestPayload.address,
       );
-    } else if (walletAction === WalletActions.sign_typed_data) {
+    } else if (walletAction === 'sign_typed_data') {
       result = await wallet.signTypedData(
         requestPayload.msgData,
         requestPayload.address,
