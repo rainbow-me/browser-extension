@@ -3,12 +3,13 @@ import { Address } from 'wagmi';
 
 import { supportedCurrencies } from '../references';
 import { ProviderRequestPayload } from '../transports/providerRequestTransport';
+import { RPCMethod } from '../types/rpcMethods';
 import { SignMethods } from '../types/signMethods';
 import { RainbowTransaction } from '../types/transactions';
 
 import { convertRawAmountToBalance } from './numbers';
 
-export const isSignTypedData = (method: string) =>
+export const isSignTypedData = (method: RPCMethod) =>
   method.startsWith(SignMethods.ethSignTypedData);
 
 export const getRequestDisplayDetails = (payload: ProviderRequestPayload) => {

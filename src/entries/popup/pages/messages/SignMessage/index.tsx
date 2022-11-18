@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { chain, useNetwork } from 'wagmi';
 
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { RPCMethods } from '~/core/types/rpcMethods';
+import { RPCMethod } from '~/core/types/rpcMethods';
 import { WalletActions } from '~/core/types/walletActions';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Row, Rows } from '~/design-system';
@@ -21,7 +21,7 @@ interface ApproveRequestProps {
 }
 
 const getWalletActionMethod = (
-  method: RPCMethods,
+  method: RPCMethod,
 ): WalletActions.personal_sign | WalletActions.sign_typed_data | undefined => {
   switch (method) {
     case 'eth_sign':

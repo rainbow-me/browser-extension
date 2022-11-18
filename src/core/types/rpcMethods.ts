@@ -13,4 +13,4 @@ export enum rpcMethods {
   eth_requestAccounts = 'eth_requestAccounts',
 }
 
-export type RPCMethods = keyof typeof rpcMethods;
+export type RPCMethod = keyof typeof rpcMethods;
