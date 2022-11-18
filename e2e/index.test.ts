@@ -161,7 +161,6 @@ it.skip('should be able to accept a signing request', async () => {
 
   await driver.switchTo().window(popupHandler);
 
-  // await driver.findElement({ id: 'accept-request-button' }).click();
   await findElementAndClick({ id: 'accept-request-button', driver });
 
   await driver.switchTo().window(dappHandler);
