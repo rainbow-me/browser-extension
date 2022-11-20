@@ -1,3 +1,5 @@
+import { SFSymbolName } from '../symbols/generated/types';
+
 export const globalColors = {
   greenA10: 'rgba(29, 184, 71, 0.1)',
   green10: '#EAFCE8',
@@ -510,6 +512,15 @@ export const textColors = selectForegroundColors(
 );
 export type TextColor = typeof textColors[number];
 
+export const fontWeights = {
+  regular: 400,
+  medium: 500,
+  semibold: 600,
+  bold: 700,
+  heavy: 800,
+} as const;
+export type FontWeight = keyof typeof fontWeights;
+
 export const space = {
   '2px': 2,
   '3px': 3,
@@ -605,6 +616,30 @@ export const strokeWeights = {
   '2px': 2,
 };
 export type StrokeWeight = keyof typeof strokeWeights;
+
+function selectSymbolNames<SymbolName extends readonly SFSymbolName[]>(
+  ...symbolNames: SymbolName
+): SymbolName {
+  return symbolNames;
+}
+
+// Note: Don't forget to generate the symbols with `yarn ds:generate-symbols`!
+export const symbolNames = selectSymbolNames(
+  'chevron.down',
+  'chevron.down.circle',
+  'arrow.left',
+  'app.badge.checkmark',
+  'ellipsis',
+  'xmark',
+  'checkmark',
+  'square.on.square.dashed',
+  'gearshape.fill',
+  'qrcode',
+  'person.crop.circle.fill',
+  'binoculars.fill',
+  'circle.fill',
+);
+export type SymbolName = typeof symbolNames[number];
 
 export const radii = {
   round: 9999,

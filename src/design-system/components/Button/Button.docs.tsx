@@ -8,5 +8,4 @@ const button = createDocs({
   examples: [basic, colors, sizes, widths, emojis],
 });
 
-// eslint-disable-next-line import/no-default-export
 export default button;

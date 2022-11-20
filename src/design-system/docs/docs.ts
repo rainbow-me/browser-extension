@@ -8,6 +8,7 @@ export * as InlineDocs from '../components/Inline/Inline.docs';
 export * as InsetDocs from '../components/Inset/Inset.docs';
 export * as RadiiDocs from '../styles/radii.docs';
 export * as SeparatorDocs from '../components/Separator/Separator.docs';
+export * as SymbolDocs from '../components/Symbol/Symbol.docs';
 export * as ShadowsDocs from '../styles/shadows.docs';
 export * as SpacingDocs from '../styles/spacing.docs';
 export * as StackDocs from '../components/Stack/Stack.docs';
