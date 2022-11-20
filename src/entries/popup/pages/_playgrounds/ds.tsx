@@ -5,7 +5,10 @@ import {
   Bleed,
   Box,
   Button,
+<<<<<<< HEAD
   ButtonSymbol,
+=======
+>>>>>>> master
   Column,
   Columns,
   Inline,

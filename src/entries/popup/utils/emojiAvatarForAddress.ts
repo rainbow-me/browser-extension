@@ -1,28 +1,4 @@
-const colors = [
-  '#FC5C54',
-  '#FFD95A',
-  '#E95D72',
-  '#6A87C8',
-  '#5FD0F3',
-  '#75C06B',
-  '#FFDD86',
-  '#5FC6D4',
-  '#FF949A',
-  '#FF8024',
-  '#9BA1A4',
-  '#EC66FF',
-  '#FF8CBC',
-  '#FF9A23',
-  '#C5DADB',
-  '#A8CE63',
-  '#71ABFF',
-  '#FFE279',
-  '#B6B1B6',
-  '#FF6780',
-  '#A575FF',
-  '#4D82FF',
-  '#FFB35A',
-] as const;
+import { colors } from './emojiAvatarBackgroundColors';
 
 const avatars = [
   { color: colors[0], emoji: '🌶' },

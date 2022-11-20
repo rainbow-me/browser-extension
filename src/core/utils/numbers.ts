@@ -240,7 +240,7 @@ export const handleSignificantDecimals = (
 ): string => {
   let dec;
   if (lessThan(new BigNumber(value).abs(), 1)) {
-    dec = new BigNumber(value).toFixed().slice(2).search(/[^0]/g) + buffer;
+    dec = new BigNumber(value).toFixed()?.slice?.(2).search(/[^0]/g) + buffer;
     dec = Math.min(decimals, 8);
   } else {
     dec = Math.min(decimals, buffer);

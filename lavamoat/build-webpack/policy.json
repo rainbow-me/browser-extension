@@ -624,6 +624,16 @@
         "eslint>strip-ansi>ansi-regex": true
       }
     },
+    "external:../node_modules/uglify-js/tools/node.js": {
+      "builtin": {
+        "fs.readFileSync": true
+      },
+      "globals": {
+        "AST_Node": true,
+        "OutputStream": true,
+        "process.env": true
+      }
+    },
     "file-loader": {
       "builtin": {
         "path": true

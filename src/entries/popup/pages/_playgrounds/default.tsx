@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { chain, useAccount, useBalance } from 'wagmi';
+import { Address, chain, useAccount, useBalance } from 'wagmi';
 
 import { ETH_ADDRESS } from '~/core/references';
 import { selectUserAssetsList } from '~/core/resources/_selectors';
@@ -39,7 +39,7 @@ export function Default() {
   const { data: assetPrices } = useAssetPrices({
     assetAddresses: userAssets
       ?.map((asset) => asset?.address)
-      .concat(ETH_ADDRESS),
+      .concat(ETH_ADDRESS as Address),
     currency: currentCurrency,
   });
   const { data: transactions } = useTransactions({

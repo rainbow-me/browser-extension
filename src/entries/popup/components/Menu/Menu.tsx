@@ -19,7 +19,7 @@ export function MenuContent(props: MenuContentProps) {
         style={{
           // All WIP styles
           border: '1px solid rgba(245, 248, 255, 0.03)',
-          backgroundColor: 'rgba(53, 54, 58, 0.8);',
+          backgroundColor: 'rgba(53, 54, 58, 0.8)',
           width: 204,
           backdropFilter: 'blur(26px)',
           boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',

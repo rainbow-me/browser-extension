@@ -1,7 +1,11 @@
-import React, { useCallback } from 'react';
+import { uuid4 } from '@sentry/utils';
+import React, { useCallback, useMemo } from 'react';
 import { chain, useNetwork } from 'wagmi';
 
+import { initializeMessenger } from '~/core/messengers';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import { WalletActions } from '~/core/types/walletActions';
+import { getRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Row, Rows } from '~/design-system';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
@@ -10,10 +14,11 @@ import { SignMessageActions } from './SignMessageActions';
 import { SignMessageInfo } from './SignMessageInfo';
 
 interface ApproveRequestProps {
-  approveRequest: () => void;
+  approveRequest: (payload: unknown) => void;
   rejectRequest: () => void;
   request: ProviderRequestPayload;
 }
+const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export function SignMessage({
   approveRequest,
@@ -30,7 +35,29 @@ export function SignMessage({
     chains.find(({ id }) => id === appSession.chainId) ?? chain.mainnet;
   const selectedWallet = appSession.address;
 
-  const onAcceptRequest = useCallback(() => approveRequest(), [approveRequest]);
+  const action = useMemo(() => {
+    switch (request.method) {
+      case 'eth_sign':
+      case 'personal_sign':
+        return WalletActions.personal_sign;
+      case 'eth_signTypedData':
+      case 'eth_signTypedData_v3':
+      case 'eth_signTypedData_v4':
+        return WalletActions.sign_typed_data;
+    }
+  }, [request.method]);
+
+  const onAcceptRequest = useCallback(async () => {
+    const { result }: { result: unknown } = await backgroundMessenger.send(
+      WalletActions.action,
+      {
+        action,
+        payload: getRequestDisplayDetails(request),
+      },
+      { id: uuid4() },
+    );
+    approveRequest(result);
+  }, [action, approveRequest, request]);
 
   return (
     <Rows alignVertical="justify">

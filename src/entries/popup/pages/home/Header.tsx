@@ -52,7 +52,7 @@ export function Header() {
           >
             <AvatarSection />
           </Box>
-          <AccountName />
+          <AccountName id="header" />
           <ActionButtonsSection />
         </Stack>
       </Inset>

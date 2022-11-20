@@ -73,11 +73,13 @@ export async function findElementByText(driver, text) {
 }
 
 export async function waitAndClick(element, driver) {
+  await delay(200);
   await driver.wait(until.elementIsVisible(element), waitUntilTime);
   return element.click();
 }
 
-export async function findElementAndClick(id, driver) {
+export async function findElementAndClick({ id, driver }) {
+  await delay(200);
   const element = await driver.findElement({
     id,
   });
@@ -86,10 +88,21 @@ export async function findElementAndClick(id, driver) {
 
 export async function goToTestApp(driver) {
   await driver.get('https://bx-test-dapp.vercel.app/');
-  await delay(500);
+  await delay(1000);
 }
 
 export async function goToPopup(driver, rootURL) {
   await driver.get(rootURL + '/popup.html');
   await delay(500);
+}
+
+export async function delayTime(time: 'short' | 'medium' | 'long') {
+  switch (time) {
+    case 'short':
+      return await delay(200);
+    case 'medium':
+      return await delay(500);
+    case 'long':
+      return await delay(1000);
+  }
 }

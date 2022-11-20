@@ -15,13 +15,12 @@ import {
   DEFAULT_ACCOUNT_2,
 } from '~/entries/background/handlers/handleProviderRequest';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
+import { useBackgroundAccounts } from '~/entries/popup/hooks/useBackgroundAccounts';
 
 import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
 import { SFSymbol } from '../../../components/SFSymbol/SFSymbol';
 import { SwitchMenu } from '../../../components/SwitchMenu/SwitchMenu';
 import { SwitchNetworkMenu } from '../../../components/SwitchMenu/SwitchNetworkMenu';
-
-const wallets: Address[] = [DEFAULT_ACCOUNT, DEFAULT_ACCOUNT_2];
 
 export const EnsAvatar = ({ address }: { address: Address }) => {
   const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
@@ -104,6 +103,12 @@ export const BottomSwitchWallet = ({
   selectedWallet: Address;
   setSelectedWallet: (selected: Address) => void;
 }) => {
+  const { accounts } = useBackgroundAccounts();
+  const wallets: Address[] = [
+    DEFAULT_ACCOUNT as Address,
+    DEFAULT_ACCOUNT_2 as Address,
+  ].concat(accounts);
+
   return (
     <Stack space="8px">
       <Text size="12pt" weight="semibold" color="labelQuaternary">
