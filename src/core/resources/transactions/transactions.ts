@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { capitalize } from 'lodash';
+import { Address } from 'wagmi';
 
 import { refractionAddressMessages, refractionAddressWs } from '~/core/network';
 import {
@@ -21,13 +22,14 @@ import {
   ZerionTransaction,
   ZerionTransactionStatus,
 } from '~/core/types/transactions';
+import { parseAsset } from '~/core/utils/assets';
 import { isL2Chain } from '~/core/utils/chains';
 import {
   convertRawAmountToBalance,
   convertRawAmountToNativeDisplay,
 } from '~/core/utils/numbers';
 
-const TRANSACTIONS_TIMEOUT_DURATION = 10000;
+const TRANSACTIONS_TIMEOUT_DURATION = 35000;
 const TRANSACTIONS_REFETCH_INTERVAL = 60000;
 
 // ///////////////////////////////////////////////
@@ -62,6 +64,7 @@ async function transactionsQueryFunction({
     payload: {
       address,
       currency: currency.toLowerCase(),
+      transactions_limit: 250,
     },
     scope: ['transactions'],
   });
@@ -281,25 +284,20 @@ function parseTransaction({
 }: ParseTransactionArgs): RainbowTransaction | RainbowTransaction[] {
   if (tx.changes.length) {
     return tx.changes.map((internalTxn, index) => {
-      const address: string =
-        internalTxn?.asset?.asset_code?.toLowerCase() ?? '';
-      const updatedAsset: {
-        address: string;
-        decimals: number;
-        name: string;
-        symbol: string;
-      } = {
+      const address = (internalTxn?.asset?.asset_code?.toLowerCase() ??
+        '0x') as Address;
+      const decimals = internalTxn?.asset?.decimals || 0;
+      const parsedAsset = parseAsset({
         address,
-        decimals: internalTxn?.asset?.decimals,
-        name: internalTxn?.asset?.name,
-        symbol: (internalTxn?.asset?.symbol ?? '').toUpperCase(),
-      };
+        asset: internalTxn?.asset,
+        currency,
+      });
       const priceUnit =
         internalTxn.price ?? internalTxn?.asset?.price?.value ?? 0;
       const valueUnit = internalTxn?.value || 0;
       const nativeDisplay = convertRawAmountToNativeDisplay(
         valueUnit,
-        updatedAsset.decimals,
+        decimals,
         priceUnit,
         currency,
       );
@@ -319,28 +317,29 @@ function parseTransaction({
       });
 
       const description = getDescription({
-        name: updatedAsset.name,
+        name: parsedAsset?.name,
         status,
         type: tx.type,
       });
       return {
         address:
-          updatedAsset.address.toLowerCase() === ETH_ADDRESS
+          parsedAsset.address.toLowerCase() === ETH_ADDRESS
             ? ETH_ADDRESS
-            : updatedAsset.address,
-        balance: convertRawAmountToBalance(valueUnit, updatedAsset),
+            : parsedAsset.address,
+        asset: parsedAsset,
+        balance: convertRawAmountToBalance(valueUnit, { decimals }),
         description,
         from: internalTxn.address_from ?? tx.address_from,
         hash: `${tx.hash}-${index}`,
         minedAt: tx.mined_at,
-        name: updatedAsset.name,
+        name: parsedAsset.name,
         native: isL2Chain(chain) ? { amount: '', display: '' } : nativeDisplay,
         chain,
         nonce: tx.nonce,
         pending: false,
         protocol: tx.protocol,
         status,
-        symbol: updatedAsset.symbol,
+        symbol: parsedAsset.symbol,
         title,
         to: internalTxn.address_to ?? tx.address_to,
         type: tx.type,

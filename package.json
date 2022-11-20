@@ -60,6 +60,7 @@
     "@tanstack/query-async-storage-persister": "4.10.3",
     "@tanstack/react-query": "4.10.3",
     "@tanstack/react-query-persist-client": "4.10.3",
+    "@tanstack/react-virtual": "3.0.0-beta.22",
     "@vanilla-extract/css": "1.9.1",
     "@vanilla-extract/css-utils": "0.1.2",
     "@vanilla-extract/dynamic": "2.0.2",
@@ -156,7 +157,8 @@
     "underscore.string": "3.3.5",
     "clean-css": "4.1.11",
     "@xmldom/xmldom": "0.8.4",
-    "loader-utils": "2.0.4"
+    "loader-utils": "2.0.4",
+    "nth-check": "2.0.1"
   },
   "lavamoat": {
     "allowScripts": {

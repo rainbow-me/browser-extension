@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { Address } from 'wagmi';
 
 import { initializeMessenger } from '~/core/messengers';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
@@ -19,15 +18,15 @@ export const ApproveMessage = () => {
   const pendingRequest = pendingRequests[0];
 
   const approveRequest = useCallback(
-    (payload?: { address: Address; chainId: number }) => {
+    async (payload?: unknown) => {
       backgroundMessenger.send(`message:${pendingRequest?.id}`, payload);
       // Wait until the message propagates to the background provider.
       setTimeout(() => {
         if (window?.id && pendingRequests.length <= 1)
-          chrome.windows.remove(window.id);
+          chrome.windows.remove(window?.id);
       }, 50);
     },
-    [pendingRequest?.id, pendingRequests.length, window?.id],
+    [pendingRequest, pendingRequests.length, window?.id],
   );
 
   const rejectRequest = useCallback(() => {

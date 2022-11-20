@@ -11,6 +11,7 @@ import {
 import { SupportedCurrencyKey } from '~/core/references';
 import { ParsedAssetsDictByChain } from '~/core/types/assets';
 import { ChainName } from '~/core/types/chains';
+import { chainIdFromChainName } from '~/core/utils/chains';
 
 import { fetchUserAssetsByChain } from './userAssetsByChain';
 
@@ -49,7 +50,7 @@ async function userAssetsQueryFunctionByChain({
       { cacheTime: 0 },
     );
     return {
-      [chain]: results,
+      [chainIdFromChainName(chain)]: results,
     };
   };
   for (const chain in ChainName) {

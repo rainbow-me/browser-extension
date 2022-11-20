@@ -1,10 +1,11 @@
 import React from 'react';
-import { chain } from 'wagmi';
 
 import ArbitrumBadge from 'static/assets/badges/arbitrumBadge.png';
+import BscBadge from 'static/assets/badges/bscBadge.png';
 import EthereumBadge from 'static/assets/badges/ethereumBadge.png';
 import OptimismBadge from 'static/assets/badges/optimismBadge.png';
 import PolygonBadge from 'static/assets/badges/polygonBadge.png';
+import { ChainId } from '~/core/types/chains';
 import { Box } from '~/design-system';
 
 const sizeConfigs = {
@@ -17,25 +18,45 @@ const sizeConfigs = {
   small: {
     iconSize: 18,
   },
+  extraSmall: {
+    iconSize: 16,
+  },
 };
 
 interface ChainIconProps {
-  chainId: number;
-  size: 'large' | 'medium' | 'small';
+  chainId: ChainId;
+  shadow?: boolean;
+  size: 'large' | 'medium' | 'small' | 'extraSmall';
 }
 
 const networkBadges = {
-  [chain.mainnet.id]: EthereumBadge,
-  [chain.polygon.id]: PolygonBadge,
-  [chain.optimism.id]: OptimismBadge,
-  [chain.arbitrum.id]: ArbitrumBadge,
+  [ChainId.mainnet]: EthereumBadge,
+  [ChainId.polygon]: PolygonBadge,
+  [ChainId.optimism]: OptimismBadge,
+  [ChainId.arbitrum]: ArbitrumBadge,
+  [ChainId.bsc]: BscBadge,
 };
 
-const ChainBadge = ({ chainId, size = 'small' }: ChainIconProps) => {
+const ChainBadge = ({
+  chainId,
+  shadow = false,
+  size = 'small',
+}: ChainIconProps) => {
   const { iconSize } = sizeConfigs[size];
-
+  let boxShadow;
+  if (shadow) {
+    boxShadow = '0px 4px 12px 0px rgba(0, 0, 0, 0.3)';
+  }
   return (
-    <Box style={{ height: iconSize, width: iconSize }}>
+    <Box
+      borderRadius="round"
+      style={{
+        height: iconSize,
+        width: iconSize,
+        borderRadius: iconSize,
+        boxShadow,
+      }}
+    >
       <img
         src={networkBadges[chainId]}
         width="100%"

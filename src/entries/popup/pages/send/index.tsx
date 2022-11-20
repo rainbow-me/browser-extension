@@ -1,5 +1,3 @@
-import { TransactionResponse } from '@ethersproject/abstract-provider';
-import { uuid4 } from '@sentry/utils';
 import { Address, fetchEnsAddress } from '@wagmi/core';
 import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
@@ -7,7 +5,6 @@ import React, { ChangeEvent, useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
-import { initializeMessenger } from '~/core/messengers';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 import {
   Box,
@@ -19,7 +16,7 @@ import {
   Text,
 } from '~/design-system';
 
-const messenger = initializeMessenger({ connect: 'background' });
+import { sendTransaction } from '../../handlers/wallet';
 
 export const Send = () => {
   const [toAddress, setToAddress] = useState('');
@@ -53,18 +50,11 @@ export const Send = () => {
     setSending(true);
 
     try {
-      const { result }: { result: TransactionResponse } = await messenger.send(
-        'wallet_action',
-        {
-          action: 'send_transaction',
-          payload: {
-            from: address,
-            to: receiver,
-            value: ethers.utils.parseEther(amount),
-          },
-        },
-        { id: uuid4() },
-      );
+      const result = await sendTransaction({
+        from: address,
+        to: receiver,
+        value: ethers.utils.parseEther(amount),
+      });
 
       if (result) {
         alert(`Transaction sent successfully: ${JSON.stringify(result.hash)}`);
