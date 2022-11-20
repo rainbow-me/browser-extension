@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { mapValues } from 'lodash';
 import { Address } from 'wagmi';
 
 import { refractionAddressWs } from '~/core/network';
@@ -14,7 +13,7 @@ import { SupportedCurrencyKey } from '~/core/references';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainName } from '~/core/types/chains';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
-import { parseAsset } from '~/core/utils/assets';
+import { parseAddressAsset } from '~/core/utils/assets';
 
 const USER_ASSETS_TIMEOUT_DURATION = 10000;
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
@@ -107,13 +106,18 @@ function parseUserAssetsByChain(
   message: AddressAssetsReceivedMessage,
   currency: SupportedCurrencyKey,
 ) {
-  return mapValues(message?.payload?.assets || {}, (assetData, address) =>
-    parseAsset({
-      address: address as Address,
-      asset: assetData?.asset,
-      currency,
-      quantity: assetData?.quantity,
-    }),
+  return Object.values(message?.payload?.assets || {}).reduce(
+    (dict, assetData) => {
+      const parsedAsset = parseAddressAsset({
+        address: assetData?.asset?.asset_code,
+        asset: assetData?.asset,
+        currency,
+        quantity: assetData?.quantity,
+      });
+      dict[parsedAsset?.uniqueId] = parsedAsset;
+      return dict;
+    },
+    {} as Record<string, ParsedAddressAsset>,
   );
 }
 

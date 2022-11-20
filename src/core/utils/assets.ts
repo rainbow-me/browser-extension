@@ -4,12 +4,14 @@ import { SupportedCurrencyKey } from '~/core/references';
 import {
   AssetType,
   ParsedAddressAsset,
+  ParsedAsset,
+  UniqueId,
   ZerionAsset,
   ZerionAssetPrice,
 } from '~/core/types/assets';
 import { ChainName } from '~/core/types/chains';
 
-import { isNativeAsset } from './chains';
+import { chainIdFromChainName, isNativeAsset } from './chains';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountToBalanceDisplay,
@@ -57,36 +59,23 @@ export function parseAsset({
   address,
   asset,
   currency,
-  quantity,
 }: {
   address: Address;
   asset: ZerionAsset;
   currency: SupportedCurrencyKey;
-  quantity: string;
-}): ParsedAddressAsset {
+}): ParsedAsset {
   const chainName = asset?.network ?? ChainName.mainnet;
-  const uniqueId =
-    chainName === ChainName.mainnet ? address : `${address}_${chainName}`;
-  const amount = convertRawAmountToDecimalFormat(quantity, asset?.decimals);
+  const chainId = chainIdFromChainName(chainName);
+  const uniqueId: UniqueId = `${address}_${chainId}`;
   const parsedAsset = {
     address,
-    balance: {
-      amount,
-      display: convertAmountToBalanceDisplay(amount, {
-        decimals: asset?.decimals,
-        symbol: asset?.symbol,
-      }),
-    },
+    colors: asset?.colors,
+    chainId,
     chainName,
     isNativeAsset: isNativeAsset(address, chainName),
     name: asset?.name,
+    mainnetAddress: asset?.mainnet_address,
     native: {
-      balance: getNativeAssetBalance({
-        currency,
-        decimals: asset?.decimals,
-        priceUnit: asset?.price?.value || 0,
-        value: amount,
-      }),
       price: getNativeAssetPrice({
         currency,
         priceData: asset?.price,
@@ -99,4 +88,42 @@ export function parseAsset({
   };
 
   return parsedAsset;
+}
+
+export function parseAddressAsset({
+  address,
+  asset,
+  currency,
+  quantity,
+}: {
+  address: Address;
+  asset: ZerionAsset;
+  currency: SupportedCurrencyKey;
+  quantity: string;
+}): ParsedAddressAsset {
+  const amount = convertRawAmountToDecimalFormat(quantity, asset?.decimals);
+  const parsedAsset = parseAsset({
+    address,
+    asset,
+    currency,
+  });
+  return {
+    ...parsedAsset,
+    balance: {
+      amount,
+      display: convertAmountToBalanceDisplay(amount, {
+        decimals: asset?.decimals,
+        symbol: asset?.symbol,
+      }),
+    },
+    native: {
+      ...parsedAsset.native,
+      balance: getNativeAssetBalance({
+        currency,
+        decimals: asset?.decimals,
+        priceUnit: asset?.price?.value || 0,
+        value: amount,
+      }),
+    },
+  };
 }

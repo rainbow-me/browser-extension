@@ -1,16 +1,36 @@
 import { Address } from 'wagmi';
 
-import { ChainName } from '~/core/types/chains';
+import { ChainId, ChainName } from '~/core/types/chains';
 
-export interface ParsedAddressAsset {
-  address: string;
+export interface ParsedAsset {
+  address: Address;
+  chainId: ChainId;
+  chainName: ChainName;
+  colors?: {
+    primary: string;
+    fallback?: string;
+  };
+  isNativeAsset: boolean;
+  name: string;
+  native: {
+    price?: {
+      change: string;
+      amount: number;
+      display: string;
+    };
+  };
+  mainnetAddress?: Address;
+  price?: ZerionAssetPrice;
+  symbol: string;
+  type: string;
+  uniqueId: UniqueId;
+}
+
+export interface ParsedAddressAsset extends ParsedAsset {
   balance: {
     amount: string;
     display: string;
   };
-  chainName: ChainName;
-  isNativeAsset: boolean;
-  name: string;
   native: {
     balance: {
       amount: string;
@@ -22,15 +42,11 @@ export interface ParsedAddressAsset {
       display: string;
     };
   };
-  price?: ZerionAssetPrice;
-  symbol: string;
-  type: string;
-  uniqueId: string;
 }
 
-export type ParsedAssetsDict = Record<Address, ParsedAddressAsset>;
+export type ParsedAssetsDict = Record<UniqueId, ParsedAddressAsset>;
 
-export type ParsedAssetsDictByChain = Record<ChainName, ParsedAssetsDict>;
+export type ParsedAssetsDictByChain = Record<ChainId, ParsedAssetsDict>;
 
 export interface ZerionAssetPrice {
   value: number;
@@ -53,7 +69,13 @@ export enum AssetType {
 }
 
 export interface ZerionAsset {
-  asset_code: string;
+  asset_code: Address;
+  colors?: {
+    primary: string;
+    fallback: string;
+  };
+  implementations?: Record<string, { address: Address; decimals: number }>;
+  mainnet_address?: Address;
   name: string;
   symbol: string;
   decimals: number;
@@ -71,3 +93,5 @@ export interface RainbowPrice {
 export interface RainbowPrices {
   [id: string]: RainbowPrice;
 }
+
+export type UniqueId = `${Address}_${ChainId}`;

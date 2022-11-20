@@ -1,0 +1,1 @@
+export { useCloudinaryAssetIcon } from './cloudinaryAssetIcon';
