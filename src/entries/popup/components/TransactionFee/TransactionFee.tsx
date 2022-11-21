@@ -5,7 +5,7 @@ import { Chain, chain } from 'wagmi';
 
 import { useMeteorology } from '~/core/resources/meteorology';
 import { MeterologyResponse } from '~/core/resources/meteorology/gas';
-import { multiply } from '~/core/utils/numbers';
+import { add, multiply } from '~/core/utils/numbers';
 import {
   Box,
   Column,
@@ -46,6 +46,10 @@ const parseSpeedGwei = (basefee: string, speed: Speed) => {
   ).toFixed(0);
 };
 
+const parseGwei = (basefee: string) => {
+  return new BigNumber(formatUnits(basefee, 'gwei')).toFixed(0);
+};
+
 export function TransactionFee({ chainId }: TransactionFeeProps) {
   const { data } = useMeteorology({ chainId }, { refetchInterval: 5000 });
   const [speed, setSpeed] = useState<Speed>('normal');
@@ -53,12 +57,37 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
   console.log('data', data);
 
   const speedGasLimits = useMemo(() => {
-    const basefee = (data as MeterologyResponse).data.baseFeeSuggestion;
+    const baseFeeSuggestion = (data as MeterologyResponse).data
+      .baseFeeSuggestion;
+    const currentBaseFee = (data as MeterologyResponse).data.currentBaseFee;
+    const maxPriorityFeeSuggestions = (data as MeterologyResponse).data
+      .maxPriorityFeeSuggestions;
+
     const speeds = {
-      custom: parseSpeedGwei(basefee, 'custom'),
-      normal: parseSpeedGwei(basefee, 'normal'),
-      fast: parseSpeedGwei(basefee, 'fast'),
-      urgent: parseSpeedGwei(basefee, 'urgent'),
+      custom: `${parseGwei(
+        add(currentBaseFee, maxPriorityFeeSuggestions.normal),
+      )} - ${parseSpeedGwei(
+        add(baseFeeSuggestion, maxPriorityFeeSuggestions.normal),
+        'custom',
+      )}`,
+      normal: `${parseGwei(
+        add(currentBaseFee, maxPriorityFeeSuggestions.normal),
+      )} - ${parseSpeedGwei(
+        add(baseFeeSuggestion, maxPriorityFeeSuggestions.normal),
+        'normal',
+      )}`,
+      fast: `${parseGwei(
+        add(currentBaseFee, maxPriorityFeeSuggestions.fast),
+      )} - ${parseSpeedGwei(
+        add(baseFeeSuggestion, maxPriorityFeeSuggestions.fast),
+        'fast',
+      )}`,
+      urgent: `${parseGwei(
+        add(currentBaseFee, maxPriorityFeeSuggestions.urgent),
+      )} - ${parseSpeedGwei(
+        add(baseFeeSuggestion, maxPriorityFeeSuggestions.urgent),
+        'urgent',
+      )}`,
     };
     return speeds;
   }, [data]);
