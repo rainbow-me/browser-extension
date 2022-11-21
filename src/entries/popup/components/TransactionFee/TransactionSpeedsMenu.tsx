@@ -17,7 +17,7 @@ import {
 
 export type Speed = 'urgent' | 'fast' | 'normal' | 'custom';
 
-// const speeds: Speed[] = ['custom', 'urgent', 'fast', 'normal'];
+const speeds: Speed[] = ['urgent', 'fast', 'normal'];
 
 const SPEED_EMOJIS: { [key in Speed]: string } = {
   urgent: '🚨',
@@ -26,7 +26,11 @@ const SPEED_EMOJIS: { [key in Speed]: string } = {
   custom: '⚙️',
 };
 
-export const SwitchSpeedMenuSelector = () => {
+export const SwitchSpeedMenuSelector = ({
+  speedGasLimits,
+}: {
+  speedGasLimits: { [key in Speed]: string };
+}) => {
   return (
     <>
       <MenuRadioItem value={'custom'}>
@@ -50,7 +54,7 @@ export const SwitchSpeedMenuSelector = () => {
           </Inline>
         </Box>
       </MenuRadioItem>
-      {['urgent', 'fast', 'normal'].map((speed, i) => {
+      {speeds.map((speed, i) => {
         return (
           <MenuRadioItem value={speed} key={i}>
             <Box id={`switch-network-item-${i}`}>
@@ -63,7 +67,7 @@ export const SwitchSpeedMenuSelector = () => {
                     {i18n.t(`transaction_fee.${speed}`)}
                   </Text>
                   <Text color="label" size="11pt" weight="medium">
-                    {'5 Gwei'}
+                    {speedGasLimits[speed]} Gwei
                   </Text>
                 </Stack>
               </Inline>
@@ -80,12 +84,14 @@ export const SwitchSpeedMenuSelector = () => {
 
 interface SwitchTransactionSpeedMenuProps {
   speed: Speed;
+  speedGasLimits: { [key in Speed]: string };
   chainId: Chain['id'];
   onSpeedChanged: (speed: Speed) => void;
 }
 
 export const SwitchTransactionSpeedMenu = ({
   speed,
+  speedGasLimits,
   onSpeedChanged,
 }: SwitchTransactionSpeedMenuProps) => {
   return (
@@ -122,7 +128,7 @@ export const SwitchTransactionSpeedMenu = ({
           value={speed}
           onValueChange={(speed) => onSpeedChanged(speed as Speed)}
         >
-          <SwitchSpeedMenuSelector />
+          <SwitchSpeedMenuSelector speedGasLimits={speedGasLimits} />
         </MenuRadioGroup>
       </MenuContent>
     </Menu>

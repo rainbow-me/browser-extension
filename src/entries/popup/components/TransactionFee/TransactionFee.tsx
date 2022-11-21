@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import BigNumber from 'bignumber.js';
+import { formatUnits } from 'ethers/lib/utils';
+import React, { useMemo, useState } from 'react';
 import { Chain, chain } from 'wagmi';
 
 import { useMeteorology } from '~/core/resources/meteorology';
+import { MeterologyResponse } from '~/core/resources/meteorology/gas';
+import { multiply } from '~/core/utils/numbers';
 import {
   Box,
   Column,
@@ -21,11 +25,43 @@ type TransactionFeeProps = {
   chainId: Chain['id'];
 };
 
+const getBaseFeeMultiplier = (speed: Speed) => {
+  switch (speed) {
+    case 'urgent':
+      return 1.1;
+    case 'fast':
+      return 1.05;
+    case 'normal':
+    default:
+      return 1;
+  }
+};
+
+const parseSpeedGwei = (basefee: string, speed: Speed) => {
+  return new BigNumber(
+    formatUnits(
+      new BigNumber(multiply(basefee, getBaseFeeMultiplier(speed))).toFixed(0),
+      'gwei',
+    ),
+  ).toFixed(0);
+};
+
 export function TransactionFee({ chainId }: TransactionFeeProps) {
-  const { data } = useMeteorology({ chainId });
+  const { data } = useMeteorology({ chainId }, { refetchInterval: 5000 });
   const [speed, setSpeed] = useState<Speed>('normal');
 
   console.log('data', data);
+
+  const speedGasLimits = useMemo(() => {
+    const basefee = (data as MeterologyResponse).data.baseFeeSuggestion;
+    const speeds = {
+      custom: parseSpeedGwei(basefee, 'custom'),
+      normal: parseSpeedGwei(basefee, 'normal'),
+      fast: parseSpeedGwei(basefee, 'fast'),
+      urgent: parseSpeedGwei(basefee, 'urgent'),
+    };
+    return speeds;
+  }, [data]);
 
   return (
     <Columns alignHorizontal="justify" alignVertical="center">
@@ -52,6 +88,7 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
             speed={speed}
             onSpeedChanged={setSpeed}
             chainId={chain.mainnet.id}
+            speedGasLimits={speedGasLimits}
           />
           <Box
             borderRadius="round"

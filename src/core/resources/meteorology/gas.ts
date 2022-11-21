@@ -92,7 +92,9 @@ async function meteorologyQueryFunction({
   const network = getNetworkFromChainId(chainId);
   if (!network) return undefined;
   const parsedResponse = await meteorologyHttp.get(`/${network}`);
-  const meteorologyData = parsedResponse.data;
+  const meteorologyData = parsedResponse.data as
+    | MeterologyResponse
+    | MeterologyLegacyResponse;
   return meteorologyData;
 }
 
