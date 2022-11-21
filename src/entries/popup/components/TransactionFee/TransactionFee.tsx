@@ -1,5 +1,5 @@
-import React from 'react';
-import { Chain } from 'wagmi';
+import React, { useState } from 'react';
+import { chain } from 'wagmi';
 
 import { useMeteorology } from '~/core/resources/meteorology';
 import {
@@ -15,12 +15,15 @@ import {
 
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 
+import { Speed, SwitchTransactionSpeedMenu } from './TransactionSpeedsMenu';
+
 type TransactionFeeProps = {
   chainId: Chain['id'];
 };
 
 export function TransactionFee({ chainId }: TransactionFeeProps) {
   const { data } = useMeteorology({ chainId });
+  const [speed, setSpeed] = useState<Speed>('normal');
 
   console.log('data', data);
 
@@ -45,29 +48,11 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
       </Column>
       <Column>
         <Inline space="6px" alignVertical="center" alignHorizontal="right">
-          <Box
-            borderWidth="2px"
-            borderColor="fillSecondary"
-            paddingVertical="5px"
-            paddingHorizontal="6px"
-            borderRadius="24px"
-          >
-            <Inline space="6px" alignVertical="center">
-              <Text color="label" weight="bold" size="14pt">
-                ⏱
-              </Text>
-
-              <Text color="label" weight="bold" size="14pt">
-                Normal
-              </Text>
-              <Symbol
-                weight="medium"
-                color="label"
-                size={14}
-                symbol="chevron.down.circle"
-              />
-            </Inline>
-          </Box>
+          <SwitchTransactionSpeedMenu
+            speed={speed}
+            onSpeedChanged={setSpeed}
+            chainId={chain.mainnet.id}
+          />
 
           <Box
             borderRadius="round"

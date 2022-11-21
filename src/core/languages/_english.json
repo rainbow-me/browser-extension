@@ -41,5 +41,12 @@
     "balance": "Balance",
     "send_transaction": "Send Transaction",
     "transaction_request": "Transaction Request"
+  },
+  "transaction_fee": {
+    "title": "Transaction Speeds",
+    "urgent": "Urgent",
+    "fast": "Fast",
+    "normal": "Normal",
+    "custom": "Custom"
   }
 }
