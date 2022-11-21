@@ -31,12 +31,18 @@ export function Transactions() {
               titleComponent={
                 <MenuItem.Title text={i18n.t('transactions.default_speed')} />
               }
+              rightComponent={<MenuItem.Selection text="🚨 Urgent" />}
             />
+          </Menu>
+          <Menu>
             <MenuItem
               hasSfSymbol
               titleComponent={
                 <MenuItem.Title text={i18n.t('transactions.use_flashbots')} />
               }
+            />
+            <MenuItem.Description
+              text={i18n.t('transactions.flashbots_description')}
             />
           </Menu>
         </MenuContainer>

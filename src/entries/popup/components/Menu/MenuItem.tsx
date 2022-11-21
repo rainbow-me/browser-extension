@@ -49,6 +49,25 @@ const Label = ({ text }: LabelProps) => {
   );
 };
 
+interface DescriptionProps {
+  text: string;
+}
+
+const Description = ({ text }: DescriptionProps) => (
+  <Box
+    justifyContent="center"
+    paddingHorizontal="16px"
+    paddingVertical="16px"
+    width="full"
+  >
+    <Inline alignHorizontal="justify" alignVertical="center">
+      <Text size="12pt" weight="medium" color="labelTertiary">
+        {text}
+      </Text>
+    </Inline>
+  </Box>
+);
+
 interface MenuItemProps {
   rightComponent?: React.ReactNode;
   leftComponent?: React.ReactNode;
@@ -117,5 +136,6 @@ MenuItem.Label = Label;
 MenuItem.Selection = Selection;
 MenuItem.TextIcon = TextIcon;
 MenuItem.Title = Title;
+MenuItem.Description = Description;
 
 export { MenuItem };

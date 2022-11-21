@@ -9,7 +9,7 @@ export function Settings() {
       background="surfaceSecondary"
       borderWidth="1px"
       borderColor="separatorTertiary"
-      height="full"
+      style={{ minHeight: '100%' }}
     >
       <Outlet />
     </Box>

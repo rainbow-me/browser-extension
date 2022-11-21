@@ -35,6 +35,11 @@ export function Privacy() {
                 />
               }
             />
+            <MenuItem.Description
+              text={i18n.t(
+                'privacy_and_security.hide_asset_balances_description',
+              )}
+            />
             <MenuItem
               hasSfSymbol
               titleComponent={

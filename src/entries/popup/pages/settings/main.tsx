@@ -25,6 +25,19 @@ export function Main() {
           <Menu>
             <MenuItem
               hasSfSymbol
+              titleComponent={
+                <MenuItem.Title
+                  text={i18n.t('settings.use_rainbow_as_default_wallet')}
+                />
+              }
+            />
+            <MenuItem.Description
+              text={i18n.t('settings.default_wallet_description')}
+            />
+          </Menu>
+          <Menu>
+            <MenuItem
+              hasSfSymbol
               leftComponent={
                 <SFSymbol symbol="lockFill" color="blue" size={18} />
               }
