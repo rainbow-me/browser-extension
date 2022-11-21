@@ -37,60 +37,132 @@ const getBaseFeeMultiplier = (speed: Speed) => {
   }
 };
 
-const parseSpeedGwei = (basefee: string, speed: Speed) => {
-  return new BigNumber(
-    formatUnits(
-      new BigNumber(multiply(basefee, getBaseFeeMultiplier(speed))).toFixed(0),
-      'gwei',
-    ),
-  ).toFixed(0);
+interface GasFeeParam {
+  amount: string;
+  display: string;
+  gwei: string;
+}
+
+interface GasFeeParams {
+  maxBaseFee: GasFeeParam;
+  maxPriorityFeePerGas: GasFeeParam;
+  option: string;
+  estimatedTime: { amount: number; display: string };
+}
+
+type GasFeeParamsBySpeed = {
+  [key in Speed]: GasFeeParams;
 };
 
-const parseGwei = (basefee: string) => {
-  return new BigNumber(formatUnits(basefee, 'gwei')).toFixed(0);
+const weiToGwei = (wei: string) => {
+  return new BigNumber(formatUnits(wei, 'gwei')).toFixed(0);
+};
+
+const parseGasFeeParam = ({ wei }: { wei: string }): GasFeeParam => {
+  const gwei = weiToGwei(wei);
+  return {
+    amount: wei,
+    display: `${gwei} Gwei`,
+    gwei,
+  };
+};
+
+const useMeteorologyData = ({ chainId }: { chainId: Chain['id'] }) => {
+  const { data } = useMeteorology({ chainId }, { refetchInterval: 5000 });
+
+  const baseFeeSuggestion = (data as MeterologyResponse).data.baseFeeSuggestion;
+  const currentBaseFee = (data as MeterologyResponse).data.currentBaseFee;
+  const maxPriorityFeeSuggestions = (data as MeterologyResponse).data
+    .maxPriorityFeeSuggestions;
+
+  const baseFee = parseGasFeeParam({ wei: currentBaseFee });
+  const speeds: GasFeeParamsBySpeed = {
+    custom: {
+      maxBaseFee: parseGasFeeParam({ wei: baseFeeSuggestion }),
+      maxPriorityFeePerGas: parseGasFeeParam({
+        wei: maxPriorityFeeSuggestions.fast,
+      }),
+      option: 'custom',
+      estimatedTime: { amount: 1, display: '1 min' },
+    },
+    urgent: {
+      maxBaseFee: parseGasFeeParam({
+        wei: new BigNumber(
+          multiply(baseFeeSuggestion, getBaseFeeMultiplier('urgent')),
+        ).toFixed(0),
+      }),
+      maxPriorityFeePerGas: parseGasFeeParam({
+        wei: maxPriorityFeeSuggestions.urgent,
+      }),
+      option: 'urgent',
+      estimatedTime: { amount: 1, display: '1 min' },
+    },
+    fast: {
+      maxBaseFee: parseGasFeeParam({
+        wei: new BigNumber(
+          multiply(baseFeeSuggestion, getBaseFeeMultiplier('fast')),
+        ).toFixed(0),
+      }),
+      maxPriorityFeePerGas: parseGasFeeParam({
+        wei: maxPriorityFeeSuggestions.fast,
+      }),
+      option: 'fast',
+      estimatedTime: { amount: 1, display: '1 min' },
+    },
+    normal: {
+      maxBaseFee: parseGasFeeParam({
+        wei: new BigNumber(
+          multiply(baseFeeSuggestion, getBaseFeeMultiplier('normal')),
+        ).toFixed(0),
+      }),
+      maxPriorityFeePerGas: parseGasFeeParam({
+        wei: maxPriorityFeeSuggestions.fast,
+      }),
+      option: 'normal',
+      estimatedTime: { amount: 1, display: '1 min' },
+    },
+  };
+
+  return { data, speeds, baseFee };
 };
 
 export function TransactionFee({ chainId }: TransactionFeeProps) {
-  const { data } = useMeteorology({ chainId }, { refetchInterval: 5000 });
+  const { speeds, baseFee } = useMeteorologyData({ chainId });
   const [speed, setSpeed] = useState<Speed>('normal');
 
-  console.log('data', data);
-
   const speedGasLimits = useMemo(() => {
-    const baseFeeSuggestion = (data as MeterologyResponse).data
-      .baseFeeSuggestion;
-    const currentBaseFee = (data as MeterologyResponse).data.currentBaseFee;
-    const maxPriorityFeeSuggestions = (data as MeterologyResponse).data
-      .maxPriorityFeeSuggestions;
-
-    const speeds = {
-      custom: `${parseGwei(
-        add(currentBaseFee, maxPriorityFeeSuggestions.normal),
-      )} - ${parseSpeedGwei(
-        add(baseFeeSuggestion, maxPriorityFeeSuggestions.normal),
-        'custom',
+    const speedss = {
+      custom: `${add(
+        baseFee.gwei,
+        speeds.custom.maxPriorityFeePerGas.gwei,
+      )} - ${add(
+        speeds.custom.maxBaseFee.gwei,
+        speeds.custom.maxPriorityFeePerGas.gwei,
       )}`,
-      normal: `${parseGwei(
-        add(currentBaseFee, maxPriorityFeeSuggestions.normal),
-      )} - ${parseSpeedGwei(
-        add(baseFeeSuggestion, maxPriorityFeeSuggestions.normal),
-        'normal',
+      normal: `${add(
+        baseFee.gwei,
+        speeds.normal.maxPriorityFeePerGas.gwei,
+      )} - ${add(
+        speeds.normal.maxBaseFee.gwei,
+        speeds.normal.maxPriorityFeePerGas.gwei,
       )}`,
-      fast: `${parseGwei(
-        add(currentBaseFee, maxPriorityFeeSuggestions.fast),
-      )} - ${parseSpeedGwei(
-        add(baseFeeSuggestion, maxPriorityFeeSuggestions.fast),
-        'fast',
+      fast: `${add(
+        baseFee.gwei,
+        speeds.fast.maxPriorityFeePerGas.gwei,
+      )} - ${add(
+        speeds.fast.maxBaseFee.gwei,
+        speeds.fast.maxPriorityFeePerGas.gwei,
       )}`,
-      urgent: `${parseGwei(
-        add(currentBaseFee, maxPriorityFeeSuggestions.urgent),
-      )} - ${parseSpeedGwei(
-        add(baseFeeSuggestion, maxPriorityFeeSuggestions.urgent),
-        'urgent',
+      urgent: `${add(
+        baseFee.gwei,
+        speeds.urgent.maxPriorityFeePerGas.gwei,
+      )} - ${add(
+        speeds.urgent.maxBaseFee.gwei,
+        speeds.urgent.maxPriorityFeePerGas.gwei,
       )}`,
     };
-    return speeds;
-  }, [data]);
+    return speedss;
+  }, [baseFee.gwei, speeds]);
 
   return (
     <Columns alignHorizontal="justify" alignVertical="center">
