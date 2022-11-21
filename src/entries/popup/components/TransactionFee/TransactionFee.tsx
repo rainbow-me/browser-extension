@@ -53,7 +53,6 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
             onSpeedChanged={setSpeed}
             chainId={chain.mainnet.id}
           />
-
           <Box
             borderRadius="round"
             boxShadow="12px accent"

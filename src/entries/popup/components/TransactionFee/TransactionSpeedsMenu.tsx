@@ -2,11 +2,12 @@ import React from 'react';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { Box, Inline, Text } from '~/design-system';
+import { Box, Inline, Stack, Text } from '~/design-system';
 
 import {
   Menu,
   MenuContent,
+  MenuItemIndicator,
   MenuLabel,
   MenuRadioGroup,
   MenuRadioItem,
@@ -17,7 +18,7 @@ import { SFSymbol } from '../SFSymbol/SFSymbol';
 
 export type Speed = 'urgent' | 'fast' | 'normal' | 'custom';
 
-const speeds: Speed[] = ['custom', 'urgent', 'fast', 'normal'];
+// const speeds: Speed[] = ['custom', 'urgent', 'fast', 'normal'];
 
 const SPEED_EMOJIS: { [key in Speed]: string } = {
   urgent: '🚨',
@@ -29,19 +30,41 @@ const SPEED_EMOJIS: { [key in Speed]: string } = {
 export const SwitchSpeedMenuSelector = () => {
   return (
     <>
-      {speeds.map((speed, i) => {
+      <MenuRadioItem value={'custom'}>
+        <Box id={`switch-network-item-${0}`}>
+          <Inline space="8px" alignVertical="center">
+            <Text weight="semibold" size="14pt">
+              {SPEED_EMOJIS['custom']}
+            </Text>
+            <Stack space="6px">
+              <Text color="label" size="14pt" weight="semibold">
+                {i18n.t(`transaction_fee.custom`)}
+              </Text>
+            </Stack>
+          </Inline>
+        </Box>
+      </MenuRadioItem>
+      {['urgent', 'fast', 'normal'].map((speed, i) => {
         return (
           <MenuRadioItem value={speed} key={i}>
             <Box id={`switch-network-item-${i}`}>
               <Inline space="8px" alignVertical="center">
                 <Text weight="semibold" size="14pt">
-                  {SPEED_EMOJIS[speed]}
+                  {SPEED_EMOJIS[speed as Speed]}
                 </Text>
-                <Text color="label" size="14pt" weight="semibold">
-                  {i18n.t(`transaction_fee.${speed}`)}
-                </Text>
+                <Stack space="6px">
+                  <Text color="label" size="14pt" weight="semibold">
+                    {i18n.t(`transaction_fee.${speed}`)}
+                  </Text>
+                  <Text color="label" size="11pt" weight="medium">
+                    {'5 Gwei'}
+                  </Text>
+                </Stack>
               </Inline>
             </Box>
+            <MenuItemIndicator style={{ marginLeft: 'auto' }}>
+              <SFSymbol symbol="checkMark" size={11} />
+            </MenuItemIndicator>
           </MenuRadioItem>
         );
       })}

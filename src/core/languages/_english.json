@@ -43,7 +43,7 @@
     "transaction_request": "Transaction Request"
   },
   "transaction_fee": {
-    "title": "Transaction Speeds",
+    "title": "Transaction Speed",
     "urgent": "Urgent",
     "fast": "Fast",
     "normal": "Normal",
