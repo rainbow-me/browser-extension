@@ -41,7 +41,13 @@ interface ColorContextProviderProps {
   background:
     | 'accent'
     | BackgroundColor
-    | { light: 'accent' | BackgroundColor; dark: 'accent' | BackgroundColor };
+    | {
+        default: 'accent' | BackgroundColor;
+        hover?: 'accent' | BackgroundColor;
+        focus?: 'accent' | BackgroundColor;
+        active?: 'accent' | BackgroundColor;
+        hoverActive?: 'accent' | BackgroundColor;
+      };
   children: ReactNode;
 }
 
@@ -53,9 +59,9 @@ export function ColorContextProvider({
   const accentColorContext = useAccentColorContext();
 
   const lightThemeBackgroundColor =
-    typeof background === 'string' ? background : background.light;
+    typeof background === 'string' ? background : background.default;
   const darkThemeBackgroundColor =
-    typeof background === 'string' ? background : background.dark;
+    typeof background === 'string' ? background : background.default;
 
   const lightThemeColorContext =
     lightThemeBackgroundColor === 'accent'

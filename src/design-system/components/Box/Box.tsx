@@ -23,7 +23,13 @@ type PolymorphicBox = Polymorphic.ForwardRefComponent<
     background?:
       | 'accent'
       | BackgroundColor
-      | { light: 'accent' | BackgroundColor; dark: 'accent' | BackgroundColor };
+      | {
+          default: 'accent' | BackgroundColor;
+          hover?: 'accent' | BackgroundColor;
+          focus?: 'accent' | BackgroundColor;
+          active?: 'accent' | BackgroundColor;
+          hoverActive?: 'accent' | BackgroundColor;
+        };
     className?: ClassValue;
     testId?: string;
   }
@@ -50,9 +56,9 @@ export const Box = forwardRef(
     const background = props.background;
 
     const lightThemeBackgroundColor =
-      typeof background === 'string' ? background : background?.light ?? null;
+      typeof background === 'string' ? background : background?.default ?? null;
     const darkThemeBackgroundColor =
-      typeof background === 'string' ? background : background?.dark ?? null;
+      typeof background === 'string' ? background : background?.default ?? null;
 
     const el = (
       <Component

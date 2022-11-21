@@ -7,6 +7,7 @@ export * as ButtonSymbolDocs from '../components/ButtonSymbol/ButtonSymbol.docs'
 export * as ColorDocs from '../styles/color.docs';
 export * as ColumnsDocs from '../components/Columns/Columns.docs';
 export * as InlineDocs from '../components/Inline/Inline.docs';
+export * as InputDocs from '../components/Input/Input.docs';
 export * as InsetDocs from '../components/Inset/Inset.docs';
 export * as RadiiDocs from '../styles/radii.docs';
 export * as RowsDocs from '../components/Rows/Rows.docs';

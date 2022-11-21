@@ -127,6 +127,7 @@ export type ContextualColorValue<Value> = {
 };
 
 export type BackgroundColor =
+  | 'transparent'
   | 'surfacePrimary'
   | 'surfacePrimaryElevated'
   | 'surfacePrimaryElevatedSecondary'
@@ -155,6 +156,16 @@ export const backgroundColors: Record<
   BackgroundColor,
   ContextualColorValue<BackgroundColorValue>
 > = {
+  transparent: {
+    light: {
+      color: 'rgba(0, 0, 0, 0)',
+      setColorContext: 'light',
+    },
+    dark: {
+      color: 'rgba(0, 0, 0, 0)',
+      setColorContext: 'dark',
+    },
+  },
   surfacePrimary: {
     light: {
       color: globalColors.white100,
@@ -385,6 +396,7 @@ export type ForegroundColor =
   | 'labelSecondary'
   | 'labelTertiary'
   | 'labelQuaternary'
+  | 'transparent'
   | 'blue'
   | 'green'
   | 'red'
@@ -423,6 +435,7 @@ export const foregroundColors: Record<
     light: globalColors.grey60,
     dark: globalColors.white60,
   },
+  transparent: selectBackgroundAsForeground('transparent'),
   blue: selectBackgroundAsForeground('blue'),
   green: selectBackgroundAsForeground('green'),
   red: selectBackgroundAsForeground('red'),
