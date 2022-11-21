@@ -15,6 +15,8 @@ import {
   MenuTrigger,
 } from '../Menu/Menu';
 
+import { GasFeeParams } from './TransactionFee';
+
 export type Speed = 'urgent' | 'fast' | 'normal' | 'custom';
 
 const speeds: Speed[] = ['urgent', 'fast', 'normal'];
@@ -29,7 +31,7 @@ const SPEED_EMOJIS: { [key in Speed]: string } = {
 export const SwitchSpeedMenuSelector = ({
   speedGasLimits,
 }: {
-  speedGasLimits: { [key in Speed]: string };
+  speedGasLimits: { [key in Speed]: GasFeeParams };
 }) => {
   return (
     <>
@@ -67,7 +69,7 @@ export const SwitchSpeedMenuSelector = ({
                     {i18n.t(`transaction_fee.${speed}`)}
                   </Text>
                   <Text color="label" size="11pt" weight="medium">
-                    {speedGasLimits[speed]} Gwei
+                    {speedGasLimits[speed].display}
                   </Text>
                 </Stack>
               </Inline>
@@ -84,7 +86,7 @@ export const SwitchSpeedMenuSelector = ({
 
 interface SwitchTransactionSpeedMenuProps {
   speed: Speed;
-  speedGasLimits: { [key in Speed]: string };
+  speedGasLimits: { [key in Speed]: GasFeeParams };
   chainId: Chain['id'];
   onSpeedChanged: (speed: Speed) => void;
 }
