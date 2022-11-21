@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Chain, chain } from 'wagmi';
 
+import { GasSpeed } from '~/core/types/gas';
 import {
   Box,
   Column,
@@ -15,33 +16,15 @@ import {
 import { useMeteorologyData } from '../../hooks/useMeteorologyData';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 
-import { Speed, SwitchTransactionSpeedMenu } from './TransactionSpeedsMenu';
+import { SwitchTransactionSpeedMenu } from './TransactionSpeedsMenu';
 
 type TransactionFeeProps = {
   chainId: Chain['id'];
 };
 
-export interface GasFeeParam {
-  amount: string;
-  display: string;
-  gwei: string;
-}
-
-export interface GasFeeParams {
-  maxBaseFee: GasFeeParam;
-  maxPriorityFeePerGas: GasFeeParam;
-  option: string;
-  estimatedTime: { amount: number; display: string };
-  display: string;
-}
-
-export type GasFeeParamsBySpeed = {
-  [key in Speed]: GasFeeParams;
-};
-
 export function TransactionFee({ chainId }: TransactionFeeProps) {
   const { speeds } = useMeteorologyData({ chainId });
-  const [speed, setSpeed] = useState<Speed>('normal');
+  const [speed, setSpeed] = useState<GasSpeed>('normal');
 
   return (
     <Columns alignHorizontal="justify" alignVertical="center">

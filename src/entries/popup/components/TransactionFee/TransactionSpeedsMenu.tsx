@@ -2,6 +2,7 @@ import React from 'react';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { GasFeeParams, GasSpeed } from '~/core/types/gas';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
 import {
@@ -15,13 +16,9 @@ import {
   MenuTrigger,
 } from '../Menu/Menu';
 
-import { GasFeeParams } from './TransactionFee';
+const speeds: GasSpeed[] = ['urgent', 'fast', 'normal'];
 
-export type Speed = 'urgent' | 'fast' | 'normal' | 'custom';
-
-const speeds: Speed[] = ['urgent', 'fast', 'normal'];
-
-const SPEED_EMOJIS: { [key in Speed]: string } = {
+const SPEED_EMOJIS: { [key in GasSpeed]: string } = {
   urgent: '🚨',
   fast: '🚀',
   normal: '⏱',
@@ -31,7 +28,7 @@ const SPEED_EMOJIS: { [key in Speed]: string } = {
 export const SwitchSpeedMenuSelector = ({
   speedGasLimits,
 }: {
-  speedGasLimits: { [key in Speed]: GasFeeParams };
+  speedGasLimits: { [key in GasSpeed]: GasFeeParams };
 }) => {
   return (
     <>
@@ -62,7 +59,7 @@ export const SwitchSpeedMenuSelector = ({
             <Box id={`switch-network-item-${i}`}>
               <Inline space="8px" alignVertical="center">
                 <Text weight="semibold" size="14pt">
-                  {SPEED_EMOJIS[speed as Speed]}
+                  {SPEED_EMOJIS[speed as GasSpeed]}
                 </Text>
                 <Stack space="6px">
                   <Text color="label" size="14pt" weight="semibold">
@@ -85,10 +82,10 @@ export const SwitchSpeedMenuSelector = ({
 };
 
 interface SwitchTransactionSpeedMenuProps {
-  speed: Speed;
-  speedGasLimits: { [key in Speed]: GasFeeParams };
+  speed: GasSpeed;
+  speedGasLimits: { [key in GasSpeed]: GasFeeParams };
   chainId: Chain['id'];
-  onSpeedChanged: (speed: Speed) => void;
+  onSpeedChanged: (speed: GasSpeed) => void;
 }
 
 export const SwitchTransactionSpeedMenu = ({
@@ -128,7 +125,7 @@ export const SwitchTransactionSpeedMenu = ({
         <MenuSeparator />
         <MenuRadioGroup
           value={speed}
-          onValueChange={(speed) => onSpeedChanged(speed as Speed)}
+          onValueChange={(speed) => onSpeedChanged(speed as GasSpeed)}
         >
           <SwitchSpeedMenuSelector speedGasLimits={speedGasLimits} />
         </MenuRadioGroup>

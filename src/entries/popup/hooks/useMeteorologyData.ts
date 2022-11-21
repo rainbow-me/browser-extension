@@ -6,14 +6,13 @@ import {
   MeterologyResponse,
   useMeteorology,
 } from '~/core/resources/meteorology/gas';
-import { add, multiply } from '~/core/utils/numbers';
-
 import {
   GasFeeParam,
   GasFeeParams,
   GasFeeParamsBySpeed,
-} from '../components/TransactionFee/TransactionFee';
-import { Speed } from '../components/TransactionFee/TransactionSpeedsMenu';
+  GasSpeed,
+} from '~/core/types/gas';
+import { add, multiply } from '~/core/utils/numbers';
 
 const weiToGwei = (wei: string) => {
   return new BigNumber(formatUnits(wei, 'gwei')).toFixed(0);
@@ -28,7 +27,7 @@ const parseGasFeeParam = ({ wei }: { wei: string }): GasFeeParam => {
   };
 };
 
-const getBaseFeeMultiplier = (speed: Speed) => {
+const getBaseFeeMultiplier = (speed: GasSpeed) => {
   switch (speed) {
     case 'urgent':
       return 1.1;
@@ -47,7 +46,7 @@ const parseGasFeeParams = ({
   maxPriorityFeeSuggestions,
 }: {
   wei: string;
-  speed: Speed;
+  speed: GasSpeed;
   maxPriorityFeeSuggestions: {
     fast: string;
     urgent: string;
