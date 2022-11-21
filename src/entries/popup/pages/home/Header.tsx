@@ -64,14 +64,19 @@ export function Header() {
 function AvatarSection() {
   const { address } = useAccount();
   const { avatar, isFetched } = useAvatar({ address });
+  const size = 60;
   return (
-    <Avatar.Wrapper size={60}>
+    <Avatar.Wrapper size={size}>
       {isFetched ? (
         <>
           {avatar?.imageUrl ? (
             <Avatar.Image imageUrl={avatar.imageUrl} />
           ) : (
-            <Avatar.Emoji color={avatar?.color} emoji={avatar?.emoji} />
+            <Avatar.Emoji
+              size={size}
+              color={avatar?.color}
+              emoji={avatar?.emoji}
+            />
           )}
         </>
       ) : null}

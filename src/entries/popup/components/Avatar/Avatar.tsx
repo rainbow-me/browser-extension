@@ -67,12 +67,27 @@ function AvatarImage({ imageUrl }: { imageUrl?: string }) {
   );
 }
 
-function AvatarEmoji({ color, emoji }: { color?: string; emoji?: string }) {
+function AvatarEmoji({
+  color,
+  emoji,
+  size,
+}: {
+  color?: string;
+  emoji?: string;
+  size?: number;
+}) {
   return (
     <AvatarContent backgroundColor={color}>
-      <Text size="32pt" weight="bold">
-        {emoji}
-      </Text>
+      <Box
+        style={{ width: size, height: size }}
+        alignItems="center"
+        justifyContent="center"
+        display="flex"
+      >
+        <Text size="32pt" weight="bold">
+          {emoji}
+        </Text>
+      </Box>
     </AvatarContent>
   );
 }
