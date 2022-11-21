@@ -1,4 +1,5 @@
 export { etherscanHttp } from './etherscan';
+export { meteorologyHttp } from './meteorology';
 export {
   refractionAddressWs,
   refractionAddressMessages,
