@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { createDocs } from '../../docs/createDocs';
 
 import { basic, heights } from './Input.examples';
