@@ -48,5 +48,63 @@
     "fast": "Fast",
     "normal": "Normal",
     "custom": "Custom"
+  },
+  "time": {
+    "days": {
+      "long": {
+        "plural": "days",
+        "singular": "day"
+      },
+      "micro": "d",
+      "short": {
+        "plural": "days",
+        "singular": "day"
+      }
+    },
+    "hours": {
+      "long": {
+        "plural": "hours",
+        "singular": "hour"
+      },
+      "micro": "h",
+      "short": {
+        "plural": "hrs",
+        "singular": "hr"
+      }
+    },
+    "milliseconds": {
+      "long": {
+        "plural": "milliseconds",
+        "singular": "millisecond"
+      },
+      "micro": "ms",
+      "short": {
+        "plural": "ms",
+        "singular": "ms"
+      }
+    },
+    "minutes": {
+      "long": {
+        "plural": "minutes",
+        "singular": "minute"
+      },
+      "micro": "m",
+      "short": {
+        "plural": "mins",
+        "singular": "min"
+      }
+    },
+    "now": "Now",
+    "seconds": {
+      "long": {
+        "plural": "seconds",
+        "singular": "second"
+      },
+      "micro": "s",
+      "short": {
+        "plural": "secs",
+        "singular": "sec"
+      }
+    }
   }
 }

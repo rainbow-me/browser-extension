@@ -17,3 +17,23 @@ export interface GasFeeParams {
 export type GasFeeParamsBySpeed = {
   [key in GasSpeed]: GasFeeParams;
 };
+
+export interface BlocksToConfirmationByPriorityFee {
+  1: string;
+  2: string;
+  3: string;
+  4: string;
+}
+
+export interface BlocksToConfirmationByBaseFee {
+  4: string;
+  8: string;
+  40: string;
+  120: string;
+  240: string;
+}
+
+export interface BlocksToConfirmation {
+  byBaseFee: BlocksToConfirmationByBaseFee;
+  byPriorityFee: BlocksToConfirmationByPriorityFee;
+}

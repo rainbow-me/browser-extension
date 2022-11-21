@@ -23,7 +23,7 @@ type TransactionFeeProps = {
 };
 
 export function TransactionFee({ chainId }: TransactionFeeProps) {
-  const { speeds } = useMeteorologyData({ chainId });
+  const { gasFeeParamsBySpeed } = useMeteorologyData({ chainId });
   const [speed, setSpeed] = useState<GasSpeed>('normal');
 
   return (
@@ -39,7 +39,7 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
             <Inline alignVertical="center" space="4px">
               <ChainBadge chainId={1} size="small" />
               <Text weight="semibold" color="label" size="14pt">
-                0.0007 ~ 1min
+                {`0.0007 ~ ${gasFeeParamsBySpeed[speed].estimatedTime.display}`}
               </Text>
             </Inline>
           </Row>
@@ -51,7 +51,7 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
             speed={speed}
             onSpeedChanged={setSpeed}
             chainId={chain.mainnet.id}
-            speedGasLimits={speeds}
+            gasFeeParamsBySpeed={gasFeeParamsBySpeed}
           />
           <Box
             borderRadius="round"

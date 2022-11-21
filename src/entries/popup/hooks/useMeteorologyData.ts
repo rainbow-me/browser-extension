@@ -7,12 +7,61 @@ import {
   useMeteorology,
 } from '~/core/resources/meteorology/gas';
 import {
+  BlocksToConfirmation,
   GasFeeParam,
   GasFeeParams,
   GasFeeParamsBySpeed,
   GasSpeed,
 } from '~/core/types/gas';
-import { add, multiply } from '~/core/utils/numbers';
+import { add, divide, lessThan, multiply } from '~/core/utils/numbers';
+import { getMinimalTimeUnitStringForMs } from '~/core/utils/time';
+
+const parseGasDataConfirmationTime = (
+  maxBaseFee: string,
+  maxPriorityFee: string,
+  blocksToConfirmation: BlocksToConfirmation,
+) => {
+  let blocksToWaitForPriorityFee = 0;
+  let blocksToWaitForBaseFee = 0;
+  const { byPriorityFee, byBaseFee } = blocksToConfirmation;
+
+  if (lessThan(maxPriorityFee, divide(byPriorityFee[4], 2))) {
+    blocksToWaitForPriorityFee += 240;
+  } else if (lessThan(maxPriorityFee, byPriorityFee[4])) {
+    blocksToWaitForPriorityFee += 4;
+  } else if (lessThan(maxPriorityFee, byPriorityFee[3])) {
+    blocksToWaitForPriorityFee += 3;
+  } else if (lessThan(maxPriorityFee, byPriorityFee[2])) {
+    blocksToWaitForPriorityFee += 2;
+  } else if (lessThan(maxPriorityFee, byPriorityFee[1])) {
+    blocksToWaitForPriorityFee += 1;
+  }
+
+  if (lessThan(byBaseFee[4], maxBaseFee)) {
+    blocksToWaitForBaseFee += 1;
+  } else if (lessThan(byBaseFee[8], maxBaseFee)) {
+    blocksToWaitForBaseFee += 4;
+  } else if (lessThan(byBaseFee[40], maxBaseFee)) {
+    blocksToWaitForBaseFee += 8;
+  } else if (lessThan(byBaseFee[120], maxBaseFee)) {
+    blocksToWaitForBaseFee += 40;
+  } else if (lessThan(byBaseFee[240], maxBaseFee)) {
+    blocksToWaitForBaseFee += 120;
+  } else {
+    blocksToWaitForBaseFee += 240;
+  }
+
+  // 1 hour as max estimate, 240 blocks
+  const totalBlocksToWait =
+    blocksToWaitForBaseFee +
+    (blocksToWaitForBaseFee < 240 ? blocksToWaitForPriorityFee : 0);
+  const timeAmount = 15 * totalBlocksToWait;
+
+  return {
+    amount: timeAmount,
+    display: getMinimalTimeUnitStringForMs(Number(multiply(timeAmount, 1000))),
+  };
+};
 
 const weiToGwei = (wei: string) => {
   return new BigNumber(formatUnits(wei, 'gwei')).toFixed(0);
@@ -44,6 +93,7 @@ const parseGasFeeParams = ({
   currentBaseFee,
   speed,
   maxPriorityFeeSuggestions,
+  blocksToConfirmation,
 }: {
   wei: string;
   speed: GasSpeed;
@@ -53,6 +103,7 @@ const parseGasFeeParams = ({
     normal: string;
   };
   currentBaseFee: string;
+  blocksToConfirmation: BlocksToConfirmation;
 }): GasFeeParams => {
   const maxBaseFee = parseGasFeeParam({
     wei: new BigNumber(multiply(wei, getBaseFeeMultiplier(speed))).toFixed(0),
@@ -71,49 +122,64 @@ const parseGasFeeParams = ({
       wei: maxPriorityFeePerGas.amount,
     }).gwei,
   )}`;
+  const estimatedTime = parseGasDataConfirmationTime(
+    maxBaseFee.amount,
+    maxPriorityFeePerGas.amount,
+    blocksToConfirmation,
+  );
   return {
     maxBaseFee,
     maxPriorityFeePerGas,
     display,
     option: speed,
-    estimatedTime: { amount: 1, display: '1 min' },
+    estimatedTime,
   };
 };
 
 export const useMeteorologyData = ({ chainId }: { chainId: Chain['id'] }) => {
   const { data } = useMeteorology({ chainId }, { refetchInterval: 5000 });
-  const baseFeeSuggestion = (data as MeterologyResponse).data.baseFeeSuggestion;
-  const currentBaseFee = (data as MeterologyResponse).data.currentBaseFee;
-  const maxPriorityFeeSuggestions = (data as MeterologyResponse).data
-    .maxPriorityFeeSuggestions;
+  const meteorologyData = data as MeterologyResponse;
+  const baseFeeSuggestion = meteorologyData.data.baseFeeSuggestion;
+  const currentBaseFee = meteorologyData.data.currentBaseFee;
+  const maxPriorityFeeSuggestions =
+    meteorologyData.data.maxPriorityFeeSuggestions;
+
+  const blocksToConfirmation: BlocksToConfirmation = {
+    byBaseFee: meteorologyData.data.blocksToConfirmationByBaseFee,
+    byPriorityFee: meteorologyData.data.blocksToConfirmationByPriorityFee,
+  };
 
   const baseFee = parseGasFeeParam({ wei: currentBaseFee });
-  const speeds: GasFeeParamsBySpeed = {
+  const gasFeeParamsBySpeed: GasFeeParamsBySpeed = {
     custom: parseGasFeeParams({
       currentBaseFee,
       maxPriorityFeeSuggestions,
       speed: 'custom',
       wei: baseFeeSuggestion,
+      blocksToConfirmation,
     }),
     urgent: parseGasFeeParams({
       currentBaseFee,
       maxPriorityFeeSuggestions,
       speed: 'urgent',
       wei: baseFeeSuggestion,
+      blocksToConfirmation,
     }),
     fast: parseGasFeeParams({
       currentBaseFee,
       maxPriorityFeeSuggestions,
       speed: 'fast',
       wei: baseFeeSuggestion,
+      blocksToConfirmation,
     }),
     normal: parseGasFeeParams({
       currentBaseFee,
       maxPriorityFeeSuggestions,
       speed: 'normal',
       wei: baseFeeSuggestion,
+      blocksToConfirmation,
     }),
   };
 
-  return { data, speeds, baseFee };
+  return { data, gasFeeParamsBySpeed, baseFee };
 };

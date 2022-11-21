@@ -26,9 +26,9 @@ const SPEED_EMOJIS: { [key in GasSpeed]: string } = {
 };
 
 export const SwitchSpeedMenuSelector = ({
-  speedGasLimits,
+  gasFeeParamsBySpeed,
 }: {
-  speedGasLimits: { [key in GasSpeed]: GasFeeParams };
+  gasFeeParamsBySpeed: { [key in GasSpeed]: GasFeeParams };
 }) => {
   return (
     <>
@@ -66,7 +66,7 @@ export const SwitchSpeedMenuSelector = ({
                     {i18n.t(`transaction_fee.${speed}`)}
                   </Text>
                   <Text color="label" size="11pt" weight="medium">
-                    {speedGasLimits[speed].display}
+                    {gasFeeParamsBySpeed[speed].display}
                   </Text>
                 </Stack>
               </Inline>
@@ -83,14 +83,14 @@ export const SwitchSpeedMenuSelector = ({
 
 interface SwitchTransactionSpeedMenuProps {
   speed: GasSpeed;
-  speedGasLimits: { [key in GasSpeed]: GasFeeParams };
+  gasFeeParamsBySpeed: { [key in GasSpeed]: GasFeeParams };
   chainId: Chain['id'];
   onSpeedChanged: (speed: GasSpeed) => void;
 }
 
 export const SwitchTransactionSpeedMenu = ({
   speed,
-  speedGasLimits,
+  gasFeeParamsBySpeed,
   onSpeedChanged,
 }: SwitchTransactionSpeedMenuProps) => {
   return (
@@ -127,7 +127,7 @@ export const SwitchTransactionSpeedMenu = ({
           value={speed}
           onValueChange={(speed) => onSpeedChanged(speed as GasSpeed)}
         >
-          <SwitchSpeedMenuSelector speedGasLimits={speedGasLimits} />
+          <SwitchSpeedMenuSelector gasFeeParamsBySpeed={gasFeeParamsBySpeed} />
         </MenuRadioGroup>
       </MenuContent>
     </Menu>
