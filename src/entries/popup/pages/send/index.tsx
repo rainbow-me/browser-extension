@@ -5,6 +5,7 @@ import React, { ChangeEvent, useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
+import { ChainName } from '~/core/types/chains';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 import {
   Box,
@@ -16,6 +17,7 @@ import {
   Text,
 } from '~/design-system';
 
+import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { sendTransaction } from '../../handlers/wallet';
 
 export const Send = () => {
@@ -191,6 +193,9 @@ export const Send = () => {
                 </Box>
               </Row>
             )}
+            <Row>
+              <TransactionFee network={ChainName.mainnet} />
+            </Row>
           </Rows>
         </Column>
       </Columns>

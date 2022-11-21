@@ -6,6 +6,7 @@ import { ProviderRequestPayload } from '~/core/transports/providerRequestTranspo
 import { getTransactionRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box, Inline, Inset, Separator, Stack, Text } from '~/design-system';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
+import { TransactionFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 
 interface SignMessageProps {
@@ -81,9 +82,7 @@ export function SendTransactionInfo({ request }: SignMessageProps) {
             </Stack>
           </Inset>
 
-          {
-            // TODO gas component
-          }
+          <TransactionFee chainId={chain.mainnet.id} />
           <Box style={{ height: 32 }} />
         </Stack>
       </Inset>
