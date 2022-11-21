@@ -675,6 +675,7 @@ export const symbolNames = selectSymbolNames(
   'arrow.down',
   'square.on.square',
   'slider.horizontal.3',
+  'arrow.up.forward.circle',
 );
 export type SymbolName = typeof symbolNames[number];
 

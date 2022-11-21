@@ -2,7 +2,7 @@ import React from 'react';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { Box, Inline, Stack, Text } from '~/design-system';
+import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
 import {
   Menu,
@@ -14,7 +14,6 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from '../Menu/Menu';
-import { SFSymbol } from '../SFSymbol/SFSymbol';
 
 export type Speed = 'urgent' | 'fast' | 'normal' | 'custom';
 
@@ -31,16 +30,23 @@ export const SwitchSpeedMenuSelector = () => {
   return (
     <>
       <MenuRadioItem value={'custom'}>
-        <Box id={`switch-network-item-${0}`}>
-          <Inline space="8px" alignVertical="center">
-            <Text weight="semibold" size="14pt">
-              {SPEED_EMOJIS['custom']}
-            </Text>
-            <Stack space="6px">
+        <Box width="full" id={`switch-network-item-${0}`}>
+          <Inline space="8px" alignVertical="center" alignHorizontal="justify">
+            <Inline space="8px" alignVertical="center">
+              <Text weight="semibold" size="14pt">
+                {SPEED_EMOJIS['custom']}
+              </Text>
               <Text color="label" size="14pt" weight="semibold">
                 {i18n.t(`transaction_fee.custom`)}
               </Text>
-            </Stack>
+            </Inline>
+
+            <Symbol
+              weight="medium"
+              size={12}
+              symbol="arrow.up.forward.circle"
+              color="labelTertiary"
+            />
           </Inline>
         </Box>
       </MenuRadioItem>
@@ -63,7 +69,7 @@ export const SwitchSpeedMenuSelector = () => {
               </Inline>
             </Box>
             <MenuItemIndicator style={{ marginLeft: 'auto' }}>
-              <SFSymbol symbol="checkMark" size={11} />
+              <Symbol weight="medium" symbol="checkmark" size={11} />
             </MenuItemIndicator>
           </MenuRadioItem>
         );
@@ -103,7 +109,7 @@ export const SwitchTransactionSpeedMenu = ({
                 <Text color="label" weight="bold" size="14pt">
                   {i18n.t(`transaction_fee.${speed}`)}
                 </Text>
-                <SFSymbol color="label" size={14} symbol="chevronDownCircle" />
+                <Symbol weight="medium" color="label" size={14} symbol="chevron.down.circle" />
               </Inline>
             </Box>
           }

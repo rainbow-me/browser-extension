@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { chain } from 'wagmi';
+import { Chain, chain } from 'wagmi';
 
 import { useMeteorology } from '~/core/resources/meteorology';
 import {
