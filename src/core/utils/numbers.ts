@@ -392,7 +392,7 @@ export const convertAmountToNativeDisplay = (
   skipDecimals?: boolean,
 ) => {
   const nativeSelected = supportedCurrencies?.[nativeCurrency];
-  const { decimals } = nativeSelected || {};
+  const { decimals } = nativeSelected;
   const display = handleSignificantDecimals(
     value,
     decimals,
