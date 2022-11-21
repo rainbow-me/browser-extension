@@ -5,7 +5,7 @@ import { FontWeight, SymbolName } from '~/design-system/styles/designTokens';
 import { SymbolStyles, symbolStyles } from '../../styles/core.css';
 import symbols from '../../symbols/generated';
 
-export type SFSymbolProps = {
+export type SymbolProps = {
   color?: SymbolStyles['color'];
   symbol: SymbolName;
   weight: FontWeight;
@@ -17,7 +17,7 @@ export function Symbol({
   symbol: name,
   weight,
   size,
-}: SFSymbolProps) {
+}: SymbolProps) {
   const symbol = symbols[name as keyof typeof symbols][weight];
   return (
     <svg

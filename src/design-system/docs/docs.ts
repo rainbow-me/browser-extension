@@ -3,6 +3,7 @@ export * as AccentColorProviderDocs from '../components/Box/AccentColorProvider.
 export * as BoxDocs from '../components/Box/Box.docs';
 export * as BleedDocs from '../components/Bleed/Bleed.docs';
 export * as ButtonDocs from '../components/Button/Button.docs';
+export * as ButtonSymbolDocs from '../components/ButtonSymbol/ButtonSymbol.docs';
 export * as ColorDocs from '../styles/color.docs';
 export * as InlineDocs from '../components/Inline/Inline.docs';
 export * as InsetDocs from '../components/Inset/Inset.docs';

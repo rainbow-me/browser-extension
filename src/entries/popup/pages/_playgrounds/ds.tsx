@@ -5,6 +5,7 @@ import {
   Bleed,
   Box,
   Button,
+  ButtonSymbol,
   Column,
   Columns,
   Inline,
@@ -1385,6 +1386,12 @@ export function DesignSystem() {
         <Button color="accent" height="44px" variant="raised">
           Button
         </Button>
+        <ButtonSymbol
+          color="surfaceSecondaryElevated"
+          height="44px"
+          symbol="qrcode"
+          variant="flat"
+        />
       </Stack>
     </Box>
   );

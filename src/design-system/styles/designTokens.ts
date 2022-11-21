@@ -638,6 +638,7 @@ export const symbolNames = selectSymbolNames(
   'person.crop.circle.fill',
   'binoculars.fill',
   'circle.fill',
+  'checkmark.circle.fill',
 );
 export type SymbolName = typeof symbolNames[number];
 
