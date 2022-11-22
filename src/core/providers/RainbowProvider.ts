@@ -2,13 +2,14 @@ import { EventEmitter } from 'eventemitter3';
 
 import { Messenger } from '../messengers';
 import { providerRequestTransport } from '../transports';
+import { RPCMethod } from '../types/rpcMethods';
 import { addHexPrefix } from '../utils/ethereum';
 import { convertStringToHex } from '../utils/numbers';
 
 export type ChainIdHex = `0x${string}`;
 
 export type RequestArguments = {
-  method: string;
+  method: RPCMethod;
   params?: Array<unknown>;
 };
 export type RequestResponse =

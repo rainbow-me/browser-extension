@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { getRequestDisplayDetails } from '~/core/utils/signMessages';
+import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box, Inline, Inset, Separator, Stack, Text } from '~/design-system';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 
@@ -16,7 +16,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
   });
 
   const message = useMemo(() => {
-    const { message } = getRequestDisplayDetails(request);
+    const { message } = getSigningRequestDisplayDetails(request);
     return message;
   }, [request]);
 

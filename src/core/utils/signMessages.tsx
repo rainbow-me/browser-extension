@@ -3,32 +3,42 @@ import { Address } from 'wagmi';
 
 import { supportedCurrencies } from '../references';
 import { ProviderRequestPayload } from '../transports/providerRequestTransport';
-import { SignMethods } from '../types/signMethods';
+import { RPCMethod } from '../types/rpcMethods';
 import { RainbowTransaction } from '../types/transactions';
 
 import { convertRawAmountToBalance } from './numbers';
 
-export const isSignTypedData = (method: string) =>
-  method.startsWith(SignMethods.ethSignTypedData);
+export const isSignTypedData = (method: RPCMethod) =>
+  method.indexOf('signTypedData') !== -1;
 
-export const getRequestDisplayDetails = (payload: ProviderRequestPayload) => {
+export const getTransactionRequestDisplayDetails = (
+  payload: ProviderRequestPayload,
+) => {
   switch (payload.method) {
-    case SignMethods.ethSendTransaction:
-    case SignMethods.ethSignTransaction: {
+    case 'eth_sendTransaction':
+    case 'eth_signTransaction': {
       const tx = payload?.params?.[0] as RainbowTransaction;
       const value = convertRawAmountToBalance(
         tx?.value?.toString() ?? 0,
         supportedCurrencies['ETH'],
       ).amount;
-
       return { value };
     }
-    case SignMethods.ethSign: {
+    default:
+      return {};
+  }
+};
+
+export const getSigningRequestDisplayDetails = (
+  payload: ProviderRequestPayload,
+) => {
+  switch (payload.method) {
+    case 'eth_sign': {
       const message = payload?.params?.[1] as string;
       const address = payload?.params?.[0] as Address;
       return { message, msgData: message, address: getAddress(address) };
     }
-    case SignMethods.personalSign: {
+    case 'personal_sign': {
       let message = payload?.params?.[0] as string;
       const address = payload?.params?.[1] as Address;
       try {
@@ -58,7 +68,7 @@ export const getRequestDisplayDetails = (payload: ProviderRequestPayload) => {
           const address = payload?.params?.[
             firstParamIsAddresss ? 0 : 1
           ] as Address;
-          let msgData = data;
+          let msgData = data as string;
           try {
             msgData = JSON.parse(data as string);
             // eslint-disable-next-line no-empty

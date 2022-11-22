@@ -36,7 +36,10 @@ export const RequestAccounts = ({
       address: selectedWallet,
       chainId: selectedNetwork.id,
     });
-    messenger.send(`connect:${appHostName}`, {});
+    messenger.send(`connect:${appHostName}`, {
+      address: selectedWallet,
+      chainId: selectedNetwork.id,
+    });
   }, [appHostName, approveRequest, selectedNetwork.id, selectedWallet]);
 
   return (

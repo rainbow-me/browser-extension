@@ -73,7 +73,7 @@ export const handleProviderRequest = ({
     console.log(meta.sender, method);
 
     const { getActiveSession, addSession } = appSessionsStore.getState();
-    const host = getDappHost(meta.sender.url || '');
+    const host = getDappHost(meta?.sender?.url || '');
     const activeSession = getActiveSession({ host });
 
     try {
