@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { Chain, chain } from 'wagmi';
 
 import { meteorologyHttp } from '~/core/network';
 import {
@@ -8,8 +9,15 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { ChainName } from '~/core/types/chains';
 
+const getNetworkFromChainId = (chainId: Chain['id']) => {
+  switch (chainId) {
+    case chain.polygon.id:
+      return chain.polygon.network;
+    default:
+      return chain.mainnet.network;
+  }
+};
 // ///////////////////////////////////////////////
 // Query Types
 
@@ -64,14 +72,14 @@ export type MeterologyLegacyResponse = {
 };
 
 export type MeteorologyArgs = {
-  network: ChainName;
+  chainId: Chain['id'];
 };
 
 // ///////////////////////////////////////////////
 // Query Key
 
-const meteorologyQueryKey = ({ network }: MeteorologyArgs) =>
-  createQueryKey('meteorology', { network }, { persisterVersion: 1 });
+const meteorologyQueryKey = ({ chainId }: MeteorologyArgs) =>
+  createQueryKey('meteorology', { chainId }, { persisterVersion: 1 });
 
 type MeteorologyQueryKey = ReturnType<typeof meteorologyQueryKey>;
 
@@ -79,12 +87,11 @@ type MeteorologyQueryKey = ReturnType<typeof meteorologyQueryKey>;
 // Query Function
 
 async function meteorologyQueryFunction({
-  queryKey: [{ network }],
+  queryKey: [{ chainId }],
 }: QueryFunctionArgs<typeof meteorologyQueryKey>) {
+  const network = getNetworkFromChainId(chainId);
   if (!network) return undefined;
-  const parsedResponse = await meteorologyHttp.get(`/${network}`, {
-    params: {},
-  });
+  const parsedResponse = await meteorologyHttp.get(`/${network}`);
   const meteorologyData = parsedResponse.data;
   return meteorologyData;
 }
@@ -95,7 +102,7 @@ type MeteorologyResult = QueryFunctionResult<typeof meteorologyQueryFunction>;
 // Query Fetcher
 
 export async function fetchMeteorology(
-  { network }: MeteorologyArgs,
+  { chainId }: MeteorologyArgs,
   config: QueryConfig<
     MeteorologyResult,
     Error,
@@ -104,7 +111,7 @@ export async function fetchMeteorology(
   > = {},
 ) {
   return await queryClient.fetchQuery(
-    meteorologyQueryKey({ network }),
+    meteorologyQueryKey({ chainId }),
     meteorologyQueryFunction,
     config,
   );
@@ -114,7 +121,7 @@ export async function fetchMeteorology(
 // Query Hook
 
 export function useMeteorology(
-  { network }: MeteorologyArgs,
+  { chainId }: MeteorologyArgs,
   config: QueryConfig<
     MeteorologyResult,
     Error,
@@ -123,7 +130,7 @@ export function useMeteorology(
   > = {},
 ) {
   return useQuery(
-    meteorologyQueryKey({ network }),
+    meteorologyQueryKey({ chainId }),
     meteorologyQueryFunction,
     config,
   );
