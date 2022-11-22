@@ -3,11 +3,11 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
-import { Box, Inline, Inset, Stack, Text } from '~/design-system';
+import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
+import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
-import { SFSymbol, SFSymbolProps } from '../../components/SFSymbol/SFSymbol';
 import { useAvatar } from '../../hooks/useAvatar';
 
 export function Header() {
@@ -91,11 +91,11 @@ function ActionButtonsSection() {
       {avatar?.color && (
         <Inline space="12px">
           <Link onClick={handleCopy} to={''}>
-            <ActionButton symbol="copy" text="Copy" />
+            <ActionButton symbol="square.on.square" text="Copy" />
           </Link>
-          <ActionButton symbol="swap" text="Swap" />
+          <ActionButton symbol="arrow.triangle.swap" text="Swap" />
           <Link to="/send">
-            <ActionButton symbol="send" text="Send" />
+            <ActionButton symbol="paperplane.fill" text="Send" />
           </Link>
         </Inline>
       )}
@@ -107,7 +107,7 @@ function ActionButton({
   symbol,
   text,
 }: {
-  symbol: SFSymbolProps['symbol'];
+  symbol: SymbolProps['symbol'];
   text: string;
 }) {
   return (
@@ -124,7 +124,7 @@ function ActionButton({
           height: '36px',
         }}
       >
-        <SFSymbol symbol={symbol} color="label" />
+        <Symbol size={15} symbol={symbol} color="label" weight="semibold" />
       </Box>
       <Text color="labelSecondary" size="12pt" weight="semibold">
         {text}

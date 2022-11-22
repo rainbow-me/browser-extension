@@ -127,6 +127,7 @@ export type ContextualColorValue<Value> = {
 };
 
 export type BackgroundColor =
+  | 'transparent'
   | 'surfacePrimary'
   | 'surfacePrimaryElevated'
   | 'surfacePrimaryElevatedSecondary'
@@ -155,6 +156,16 @@ export const backgroundColors: Record<
   BackgroundColor,
   ContextualColorValue<BackgroundColorValue>
 > = {
+  transparent: {
+    light: {
+      color: 'rgba(0, 0, 0, 0)',
+      setColorContext: 'light',
+    },
+    dark: {
+      color: 'rgba(0, 0, 0, 0)',
+      setColorContext: 'dark',
+    },
+  },
   surfacePrimary: {
     light: {
       color: globalColors.white100,
@@ -385,6 +396,7 @@ export type ForegroundColor =
   | 'labelSecondary'
   | 'labelTertiary'
   | 'labelQuaternary'
+  | 'transparent'
   | 'blue'
   | 'green'
   | 'red'
@@ -423,6 +435,7 @@ export const foregroundColors: Record<
     light: globalColors.grey60,
     dark: globalColors.white60,
   },
+  transparent: selectBackgroundAsForeground('transparent'),
   blue: selectBackgroundAsForeground('blue'),
   green: selectBackgroundAsForeground('green'),
   red: selectBackgroundAsForeground('red'),
@@ -611,6 +624,17 @@ export function negateSpace(space: Space): NegativeSpace {
   return spaceToNegativeSpace[space];
 }
 
+export const transformScales = {
+  '1.04': 1.04,
+  '0.96': 0.96,
+} as const;
+export type TransformScale = keyof typeof transformScales;
+
+export const transitions = {
+  bounce: { type: 'spring', mass: 0.1, stiffness: 500, damping: 20 },
+} as const;
+export type Transition = keyof typeof transitions;
+
 export const strokeWeights = {
   '1px': 1,
   '2px': 2,
@@ -639,6 +663,14 @@ export const symbolNames = selectSymbolNames(
   'binoculars.fill',
   'circle.fill',
   'checkmark.circle.fill',
+  'record.circle.fill',
+  'bolt.fill',
+  'rectangle.and.hand.point.up.left.filled',
+  'xmark.circle',
+  'paperplane.fill',
+  'arrow.triangle.swap',
+  'arrow.down',
+  'square.on.square',
 );
 export type SymbolName = typeof symbolNames[number];
 

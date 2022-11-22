@@ -2,7 +2,16 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { Box, Inline, Inset, Row, Rows, Stack, Text } from '~/design-system';
+import {
+  Box,
+  Inline,
+  Inset,
+  Row,
+  Rows,
+  Stack,
+  Symbol,
+  Text,
+} from '~/design-system';
 
 import {
   Menu,
@@ -12,7 +21,6 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from '../../components/Menu/Menu';
-import { SFSymbol } from '../../components/SFSymbol/SFSymbol';
 import {
   SwitchNetworkMenuDisconnect,
   SwitchNetworkMenuSelector,
@@ -88,10 +96,11 @@ export const NetworkMenu = ({ children }: { children: React.ReactNode }) => {
                 </Rows>
               </Box>
             </Inline>
-            <SFSymbol
+            <Symbol
               size={6}
-              color={appSession ? 'green' : undefined}
-              symbol="circleFill"
+              color={appSession ? 'green' : 'labelQuaternary'}
+              symbol="circle.fill"
+              weight="semibold"
             />
           </Inline>
         </Inset>
@@ -130,7 +139,11 @@ export const NetworkMenu = ({ children }: { children: React.ReactNode }) => {
                       alignVertical="center"
                       alignHorizontal="center"
                     >
-                      <SFSymbol size={14} symbol="squareOnSquareDashed" />
+                      <Symbol
+                        size={14}
+                        symbol="square.on.square.dashed"
+                        weight="semibold"
+                      />
                     </Inline>
                   </Box>
                   <Text size="14pt" weight="bold">

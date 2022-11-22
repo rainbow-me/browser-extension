@@ -8,17 +8,17 @@ import {
   convertRawAmountToBalance,
 } from '~/core/utils/numbers';
 import { truncateAddress } from '~/core/utils/truncateAddress';
-import { Box, Inline, Stack, Text } from '~/design-system';
+import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 import {
   DEFAULT_ACCOUNT,
   DEFAULT_ACCOUNT_2,
 } from '~/entries/background/handlers/handleProviderRequest';
+import { EthSymbol } from '~/entries/popup/components/EthSymbol/EthSymbol';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useBackgroundAccounts } from '~/entries/popup/hooks/useBackgroundAccounts';
 
 import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
-import { SFSymbol } from '../../../components/SFSymbol/SFSymbol';
 import { SwitchMenu } from '../../../components/SwitchMenu/SwitchMenu';
 import { SwitchNetworkMenu } from '../../../components/SwitchMenu/SwitchNetworkMenu';
 
@@ -70,10 +70,11 @@ export const BottomWallet = ({
         <EnsAvatar address={selectedWallet} />
         <EnsName color="labelSecondary" address={selectedWallet} />
         {displaySymbol && (
-          <SFSymbol
+          <Symbol
             color="labelSecondary"
             size={14}
-            symbol="chevronDownCircle"
+            symbol="chevron.down.circle"
+            weight="semibold"
           />
         )}
       </Inline>
@@ -119,7 +120,9 @@ export const BottomSwitchWallet = ({
         renderMenuTrigger={
           <BottomWallet selectedWallet={selectedWallet} displaySymbol />
         }
-        menuItemIndicator={<SFSymbol symbol="checkMark" size={11} />}
+        menuItemIndicator={
+          <Symbol symbol="checkmark" size={11} weight="semibold" />
+        }
         renderMenuItem={(wallet, i) => (
           <Box id={`switch-wallet-item-${i}`}>
             <Inline space="8px" alignVertical="center">
@@ -156,10 +159,11 @@ export const BottomNetwork = ({
           {selectedNetwork.name}
         </Text>
         {displaySymbol && (
-          <SFSymbol
+          <Symbol
             color="labelSecondary"
             size={14}
-            symbol="chevronDownCircle"
+            symbol="chevron.down.circle"
+            weight="semibold"
           />
         )}
       </Inline>
@@ -238,7 +242,7 @@ export const WalletBalance = ({ appHost }: { appHost: string }) => {
 
       <Inline alignVertical="center" alignHorizontal="right">
         {balance?.symbol === 'ETH' && (
-          <SFSymbol color="labelTertiary" symbol="eth" size={12} />
+          <EthSymbol color="labelTertiary" size={12} />
         )}
         <Text color="labelSecondary" size="14pt" weight="bold">
           {displayBalance}

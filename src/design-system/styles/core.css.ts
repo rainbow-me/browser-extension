@@ -66,7 +66,7 @@ const quotes = style({
 });
 
 const select = style([
-  field,
+  ...field,
   {
     ':disabled': {
       opacity: 1,
@@ -80,7 +80,7 @@ const select = style([
 ]);
 
 const input = style([
-  field,
+  ...field,
   style({
     selectors: {
       '&::-ms-clear': {
@@ -88,6 +88,9 @@ const input = style([
       },
       '&::-webkit-search-cancel-button': {
         WebkitAppearance: 'none',
+      },
+      '&:focus-visible': {
+        outline: 'none',
       },
     },
   }),
@@ -378,10 +381,13 @@ const boxBaseProperties = defineProperties({
 
 const boxColorProperties = defineProperties({
   conditions: {
-    light: { selector: `html.${rootThemeClasses.lightTheme} &` },
-    dark: { selector: `html.${rootThemeClasses.darkTheme} &` },
+    default: {},
+    hover: { selector: '&:hover' },
+    focus: { selector: '&:focus' },
+    active: { selector: '&:active' },
+    hoverActive: { selector: '&:hover:active' },
   },
-  defaultCondition: ['light', 'dark'],
+  defaultCondition: 'default',
   properties: {
     background: {
       accent: accentColorAsHsl,
@@ -391,6 +397,7 @@ const boxColorProperties = defineProperties({
       accent: accentColorAsHsl,
       white: 'white',
       ...pick(semanticColorVars.foregroundColors, [
+        'transparent',
         'label',
         ...separatorColors,
         ...strokeColors,
@@ -404,23 +411,11 @@ const boxColorProperties = defineProperties({
 export const boxStyles = createSprinkles(boxBaseProperties, boxColorProperties);
 export type BoxStyles = Parameters<typeof boxStyles>[0];
 
-const defineSize = (size: number) => ({ width: size, height: size });
-
 const symbolProperties = defineProperties({
   properties: {
     color: {
       accent: accentColorAsHsl,
       ...pick(semanticColorVars.foregroundColors, textColors),
-    },
-    size: {
-      '11pt': defineSize(11),
-      '12pt': defineSize(12),
-      '14pt': defineSize(14),
-      '16pt': defineSize(16),
-      '20pt': defineSize(20),
-      '23pt': defineSize(23),
-      '26pt': defineSize(26),
-      '32pt': defineSize(32),
     },
   },
 });
