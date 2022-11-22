@@ -104,7 +104,7 @@ export const CodePreview = ({
                 <ButtonLink
                   iconBefore={<PlayIcon />}
                   href={`${
-                    process.env.NODE_ENV === 'production' &&
+                    process.env.NODE_ENV !== 'development' &&
                     typeof window !== 'undefined'
                       ? `${window.location.origin}/playroom`
                       : 'http://localhost:9000/'

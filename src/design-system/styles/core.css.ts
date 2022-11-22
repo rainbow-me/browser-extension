@@ -18,6 +18,7 @@ import {
   ShadowColor,
   backgroundColors,
   buttonColors,
+  fontWeights,
   foregroundColors,
   negativeSpace,
   positionSpace,
@@ -403,6 +404,30 @@ const boxColorProperties = defineProperties({
 export const boxStyles = createSprinkles(boxBaseProperties, boxColorProperties);
 export type BoxStyles = Parameters<typeof boxStyles>[0];
 
+const defineSize = (size: number) => ({ width: size, height: size });
+
+const symbolProperties = defineProperties({
+  properties: {
+    color: {
+      accent: accentColorAsHsl,
+      ...pick(semanticColorVars.foregroundColors, textColors),
+    },
+    size: {
+      '11pt': defineSize(11),
+      '12pt': defineSize(12),
+      '14pt': defineSize(14),
+      '16pt': defineSize(16),
+      '20pt': defineSize(20),
+      '23pt': defineSize(23),
+      '26pt': defineSize(26),
+      '32pt': defineSize(32),
+    },
+  },
+});
+
+export const symbolStyles = createSprinkles(symbolProperties);
+export type SymbolStyles = Parameters<typeof symbolStyles>[0];
+
 [
   [SFRoundedRegular, 400],
   [SFRoundedMedium, 500],
@@ -465,13 +490,7 @@ const textProperties = defineProperties({
       '26pt': defineType(26, 32, 0.36),
       '32pt': defineType(32, 40, 0.41),
     },
-    fontWeight: {
-      regular: 400,
-      medium: 500,
-      semibold: 600,
-      bold: 700,
-      heavy: 800,
-    },
+    fontWeight: fontWeights,
     textAlign: ['left', 'center', 'right'],
   },
 });

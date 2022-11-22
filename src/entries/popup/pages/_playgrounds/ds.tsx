@@ -5,6 +5,7 @@ import {
   Bleed,
   Box,
   Button,
+  ButtonSymbol,
   Column,
   Columns,
   Inline,
@@ -13,6 +14,7 @@ import {
   Rows,
   Separator,
   Stack,
+  Symbol,
   Text,
   ThemeProvider,
 } from '~/design-system';
@@ -1375,9 +1377,21 @@ export function DesignSystem() {
             </Stack>
           </Inset>
         </Box>
+        <Inline space="10px">
+          <Symbol symbol="app.badge.checkmark" size="32pt" weight="bold" />
+          <Symbol symbol="arrow.left" size="32pt" weight="bold" />
+          <Symbol symbol="binoculars.fill" size="32pt" weight="bold" />
+          <Symbol symbol="checkmark" size="32pt" weight="bold" />
+        </Inline>
         <Button color="accent" height="44px" variant="raised">
           Button
         </Button>
+        <ButtonSymbol
+          color="surfaceSecondaryElevated"
+          height="44px"
+          symbol="qrcode"
+          variant="flat"
+        />
       </Stack>
     </Box>
   );

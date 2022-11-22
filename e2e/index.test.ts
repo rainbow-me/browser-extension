@@ -47,8 +47,8 @@ it('should display account name', async () => {
     '[data-testid="header"] [data-testid="account-name"]',
   );
   const actual = await label.getText();
-  const expected = '0x70c1...43C4';
-  expect(actual).toEqual(expected);
+  const expected = ['0x70c1...43C4', 'djweth.eth'];
+  expect(expected.includes(actual)).toEqual(true);
 });
 
 it.skip('should be able create a new wallet', async () => {

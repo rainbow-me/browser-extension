@@ -26,5 +26,4 @@ const text = createDocs({
   examples: typographyDocs.examples,
 });
 
-// eslint-disable-next-line import/no-default-export
 export default text;

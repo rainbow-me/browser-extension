@@ -429,6 +429,47 @@
         "process.env": true
       }
     },
+    "esbuild": {
+      "builtin": {
+        "child_process.execFileSync": true,
+        "child_process.spawn": true,
+        "crypto.randomBytes": true,
+        "fs.chmodSync": true,
+        "fs.copyFileSync": true,
+        "fs.existsSync": true,
+        "fs.mkdirSync": true,
+        "fs.readFile": true,
+        "fs.readFileSync": true,
+        "fs.unlink": true,
+        "fs.unlinkSync": true,
+        "fs.writeFile": true,
+        "fs.writeFileSync": true,
+        "os.arch": true,
+        "os.endianness": true,
+        "os.tmpdir": true,
+        "path.basename": true,
+        "path.dirname": true,
+        "path.join": true,
+        "tty.isatty": true,
+        "worker_threads": true
+      },
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "WebAssembly.Module": true,
+        "__dirname": true,
+        "__filename": true,
+        "console.error": true,
+        "console.log": true,
+        "process.cwd": true,
+        "process.env.ESBUILD_BINARY_PATH": true,
+        "process.env.ESBUILD_MAX_BUFFER": true,
+        "process.env.ESBUILD_WORKER_THREADS": true,
+        "process.platform": true,
+        "process.versions.node.split": true
+      }
+    },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core": {
       "builtin": {
         "assert": true,
@@ -1680,8 +1721,8 @@
         "process.stdout.write": true
       },
       "packages": {
-        "@vanilla-extract/vite-plugin>@vanilla-extract/integration>esbuild": true,
         "copy-webpack-plugin>serialize-javascript": true,
+        "esbuild": true,
         "vitest>vite>terser": true,
         "webpack>schema-utils": true,
         "webpack>terser-webpack-plugin>@jridgewell/trace-mapping": true,

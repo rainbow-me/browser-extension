@@ -8,5 +8,4 @@ const separator = createDocs({
   examples: [basic, colors, weights],
 });
 
-// eslint-disable-next-line import/no-default-export
 export default separator;

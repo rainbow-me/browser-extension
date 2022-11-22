@@ -401,20 +401,41 @@ export const emojis = createExample({
   Example: () =>
     source(
       <Inline space="10px" wrap={false}>
-        <Button color="accent" icon="🤡" height="44px" variant="raised">
+        <Button color="accent" emoji="🤡" height="44px" variant="raised">
           Button
         </Button>
-        <Button color="accent" icon="🤡" height="36px" variant="flat">
+        <Button color="accent" emoji="🤡" height="36px" variant="flat">
           Button
         </Button>
-        <Button color="accent" icon="🤡" height="32px" variant="tinted">
+        <Button color="accent" emoji="🤡" height="32px" variant="tinted">
           Button
         </Button>
-        <Button color="accent" icon="🤡" height="28px" variant="stroked">
+        <Button color="accent" emoji="🤡" height="28px" variant="stroked">
           Button
         </Button>
-        <Button icon="🤡" height="24px" variant="white">
+        <Button emoji="🤡" height="24px" variant="white">
           Button
+        </Button>
+      </Inline>,
+    ),
+});
+
+export const symbols = createExample({
+  name: 'Symbols',
+  showThemes: true,
+  Example: () =>
+    source(
+      <Inline space="10px" wrap={false}>
+        <Button color="accent" symbol="qrcode" height="44px" variant="raised">
+          QR Code
+        </Button>
+        <Button
+          color="accent"
+          symbol="checkmark.circle.fill"
+          height="44px"
+          variant="raised"
+        >
+          I&apos;ve saved my words
         </Button>
       </Inline>,
     ),

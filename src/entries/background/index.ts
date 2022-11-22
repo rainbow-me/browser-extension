@@ -8,9 +8,9 @@ import { handleProviderRequest } from './handlers/handleProviderRequest';
 import { handleSetupInpage } from './handlers/handleSetupInpage';
 import { handleWallets } from './handlers/handleWallets';
 
-const messenger = initializeMessenger({ connect: 'popup' });
+initializeSentry('background');
 
-initializeSentry();
+const messenger = initializeMessenger({ connect: 'popup' });
 createWagmiClient();
 handleInstallExtension();
 handleProviderRequest({ messenger });

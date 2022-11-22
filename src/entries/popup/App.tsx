@@ -28,8 +28,8 @@ export function App() {
   const { currentLanguage } = useCurrentLanguageStore();
 
   React.useEffect(() => {
-    initializeSentry();
     changeI18nLanguage(currentLanguage);
+    initializeSentry('popup');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
