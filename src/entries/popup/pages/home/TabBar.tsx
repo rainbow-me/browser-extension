@@ -11,7 +11,7 @@ import {
 } from '~/core/utils/numbers';
 import { Box, Inline, Inset, Text } from '~/design-system';
 
-import { SFSymbol } from '../../components/SFSymbol/SFSymbol';
+import { EthSymbol } from '../../components/EthSymbol/EthSymbol';
 import { Tabs } from '../../components/Tabs/Tabs';
 
 import { Tab } from '.';
@@ -56,13 +56,13 @@ export function TabBar({
           <Tabs.Tab
             active={activeTab === 'tokens'}
             onClick={() => onSelectTab('tokens')}
-            symbol="tokens"
+            symbol="record.circle.fill"
             text="Tokens"
           />
           <Tabs.Tab
             active={activeTab === 'activity'}
             onClick={() => onSelectTab('activity')}
-            symbol="activity"
+            symbol="bolt.fill"
             text="Activity"
           />
         </Tabs>
@@ -71,9 +71,8 @@ export function TabBar({
         {balance && (
           <Inline alignVertical="center">
             {balance?.symbol === 'ETH' && (
-              <SFSymbol
+              <EthSymbol
                 color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
-                symbol="eth"
                 size={14}
               />
             )}

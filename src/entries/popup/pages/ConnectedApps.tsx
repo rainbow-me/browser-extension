@@ -7,11 +7,10 @@ import { i18n } from '~/core/languages';
 import { useAppSessionsStore } from '~/core/state';
 import { getConnectedAppIcon } from '~/core/utils/connectedApps';
 import { truncateAddress } from '~/core/utils/truncateAddress';
-import { Box, Inline, Inset, Stack, Text } from '~/design-system';
+import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 
 import { Navbar } from '../components/Navbar/Navbar';
-import { SFSymbol } from '../components/SFSymbol/SFSymbol';
 import { SwitchNetworkMenu } from '../components/SwitchMenu/SwitchNetworkMenu';
 import { useAppSession } from '../hooks/useAppSession';
 
@@ -67,7 +66,7 @@ export function ConnectedApps() {
         bottom="0"
       >
         <Inline alignHorizontal="center" alignVertical="center" space="8px">
-          <SFSymbol symbol={'xmark'} color="red" size={12} />
+          <Symbol symbol={'xmark'} color="red" size={12} weight="semibold" />
           <Text color="red" size="14pt" weight="bold">
             {i18n.t('connected_apps.disconnect')}
           </Text>

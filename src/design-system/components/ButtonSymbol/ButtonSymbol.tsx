@@ -31,7 +31,11 @@ export function ButtonSymbol({ height, symbol, ...props }: ButtonSymbolProps) {
       <ButtonWrapper height={height} width="full" {...props}>
         <Symbol
           color={textColor}
-          size={textSize?.split(' ')[0] as SymbolProps['size']}
+          size={
+            parseInt(
+              textSize?.split(' ')[0].replace('pt', '') ?? '',
+            ) as SymbolProps['size']
+          }
           symbol={symbol}
           weight="bold"
         />

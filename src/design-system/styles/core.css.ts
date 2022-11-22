@@ -404,23 +404,11 @@ const boxColorProperties = defineProperties({
 export const boxStyles = createSprinkles(boxBaseProperties, boxColorProperties);
 export type BoxStyles = Parameters<typeof boxStyles>[0];
 
-const defineSize = (size: number) => ({ width: size, height: size });
-
 const symbolProperties = defineProperties({
   properties: {
     color: {
       accent: accentColorAsHsl,
       ...pick(semanticColorVars.foregroundColors, textColors),
-    },
-    size: {
-      '11pt': defineSize(11),
-      '12pt': defineSize(12),
-      '14pt': defineSize(14),
-      '16pt': defineSize(16),
-      '20pt': defineSize(20),
-      '23pt': defineSize(23),
-      '26pt': defineSize(26),
-      '32pt': defineSize(32),
     },
   },
 });

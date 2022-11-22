@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { Box, Inline, Inset, Stack, Text } from '~/design-system';
+import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
 
 import {
   Menu,
@@ -11,7 +11,6 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from '../../components/Menu/Menu';
-import { SFSymbol } from '../../components/SFSymbol/SFSymbol';
 
 export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -24,7 +23,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
           <Inset top="8px" bottom="8px">
             <Link to={'/settings'}>
               <Inline alignVertical="center" space="8px">
-                <SFSymbol size={12} symbol="gearshapeFill" />
+                <Symbol size={12} symbol="gearshape.fill" weight="semibold" />
                 <Text size="14pt" weight="bold">
                   {i18n.t('menu.home_header_right.settings')}
                 </Text>
@@ -33,7 +32,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
           </Inset>
           <Inset top="8px" bottom="8px">
             <Inline alignVertical="center" space="8px">
-              <SFSymbol size={12} symbol="qrcode" />
+              <Symbol size={12} symbol="qrcode" weight="semibold" />
               <Text size="14pt" weight="bold">
                 {i18n.t('menu.home_header_right.qr_code')}
               </Text>
@@ -45,7 +44,11 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
           <Box>
             <Inset top="8px" bottom="8px">
               <Inline alignVertical="center" space="8px">
-                <SFSymbol size={12} symbol="personCropCircleFill" />
+                <Symbol
+                  size={12}
+                  symbol="person.crop.circle.fill"
+                  weight="semibold"
+                />
                 <Text size="14pt" weight="bold">
                   {i18n.t('menu.home_header_right.rainbow_profile')}
                 </Text>
@@ -53,7 +56,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
             </Inset>
             <Inset top="8px" bottom="8px">
               <Inline alignVertical="center" space="8px">
-                <SFSymbol size={12} symbol="binocularsFill" />
+                <Symbol size={12} symbol="binoculars.fill" weight="semibold" />
                 <Text size="14pt" weight="bold">
                   {i18n.t('menu.home_header_right.view_on_explorer')}
                 </Text>
