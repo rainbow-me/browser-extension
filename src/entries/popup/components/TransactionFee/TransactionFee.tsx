@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import { Chain, chain } from 'wagmi';
 
+import { useCurrentCurrencyStore } from '~/core/state';
+import { ChainName } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
+import {
+  add,
+  convertRawAmountToNativeDisplay,
+  multiply,
+} from '~/core/utils/numbers';
 import {
   Box,
   Column,
@@ -14,6 +21,7 @@ import {
 } from '~/design-system';
 
 import { useMeteorologyData } from '../../hooks/useMeteorologyData';
+import { useUserAsset } from '../../hooks/useUserAsset';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 
 import { SwitchTransactionSpeedMenu } from './TransactionSpeedsMenu';
@@ -25,6 +33,24 @@ type TransactionFeeProps = {
 export function TransactionFee({ chainId }: TransactionFeeProps) {
   const { gasFeeParamsBySpeed } = useMeteorologyData({ chainId });
   const [speed, setSpeed] = useState<GasSpeed>('normal');
+  const asset = useUserAsset('eth_1');
+  const { currentCurrency } = useCurrentCurrencyStore();
+  const gasLimit = 20000;
+
+  const gas = add(
+    gasFeeParamsBySpeed[speed].maxBaseFee.amount,
+    gasFeeParamsBySpeed[speed].maxPriorityFeePerGas.amount,
+  );
+
+  const totalWei = multiply(gasLimit, gas);
+
+  // getna
+  const nativeDisplay = convertRawAmountToNativeDisplay(
+    totalWei,
+    18,
+    asset?.price?.value || 0,
+    currentCurrency,
+  );
 
   return (
     <Columns alignHorizontal="justify" alignVertical="center">
@@ -39,7 +65,7 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
             <Inline alignVertical="center" space="4px">
               <ChainBadge chainId={1} size="small" />
               <Text weight="semibold" color="label" size="14pt">
-                {`0.0007 ~ ${gasFeeParamsBySpeed[speed].estimatedTime.display}`}
+                {`${nativeDisplay.amount} ~ ${gasFeeParamsBySpeed[speed].estimatedTime.display}`}
               </Text>
             </Inline>
           </Row>
