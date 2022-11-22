@@ -4,20 +4,24 @@ import { useAccount, useEnsAvatar, useEnsName } from 'wagmi';
 
 import { useCurrentAddressStore } from '~/core/state';
 import { truncateAddress } from '~/core/utils/truncateAddress';
-import { Box, Inline, Text } from '~/design-system';
+import { Box, Inline, Symbol, Text } from '~/design-system';
 import {
   DEFAULT_ACCOUNT,
   DEFAULT_ACCOUNT_2,
 } from '~/entries/background/handlers/handleProviderRequest';
 
 import { Avatar } from '../Avatar/Avatar';
-import { SFSymbol } from '../SFSymbol/SFSymbol';
 
 type AccountNameProps = {
   includeAvatar?: boolean;
   id?: string;
   size?: '16pt' | '20pt';
 };
+
+const chevronDownSizes = {
+  '16pt': 12,
+  '20pt': 16,
+} as const;
 
 export function AccountName({
   includeAvatar = false,
@@ -53,7 +57,12 @@ export function AccountName({
         id={`${id ? `${id}-` : ''}account-name-link-to-wallet`}
         to="/wallets"
       >
-        <SFSymbol color="labelTertiary" size={20} symbol="chevronDown" />
+        <Symbol
+          size={chevronDownSizes[size]}
+          symbol="chevron.down"
+          color="labelTertiary"
+          weight="semibold"
+        />
       </Link>
     </Inline>
   );

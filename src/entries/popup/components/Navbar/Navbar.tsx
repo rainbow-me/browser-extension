@@ -1,8 +1,7 @@
 import * as React from 'react';
 
-import { Box, Text } from '~/design-system';
-
-import { SFSymbol, SFSymbolProps } from '../SFSymbol/SFSymbol';
+import { Box, Symbol, Text } from '~/design-system';
+import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
 import { navbarButtonStyles } from './Navbar.css';
 
@@ -80,13 +79,18 @@ export function NavbarButton({
 }
 
 type NavbarSymbolButtonProps = {
-  symbol: SFSymbolProps['symbol'];
+  symbol: SymbolProps['symbol'];
 };
 
 export function NavbarSymbolButton({ symbol }: NavbarSymbolButtonProps) {
   return (
     <NavbarButton>
-      <SFSymbol color="labelSecondary" symbol={symbol} size={17} />
+      <Symbol
+        color="labelSecondary"
+        symbol={symbol}
+        size={16}
+        weight="semibold"
+      />
     </NavbarButton>
   );
 }
@@ -94,7 +98,12 @@ export function NavbarSymbolButton({ symbol }: NavbarSymbolButtonProps) {
 export function NavbarBackButton() {
   return (
     <NavbarButton variant="ghost">
-      <SFSymbol color="labelSecondary" symbol="arrowLeft" size={15} />
+      <Symbol
+        color="labelSecondary"
+        symbol="arrow.left"
+        size={16}
+        weight="semibold"
+      />
     </NavbarButton>
   );
 }

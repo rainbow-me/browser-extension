@@ -9,7 +9,7 @@ export type SymbolProps = {
   color?: SymbolStyles['color'];
   symbol: SymbolName;
   weight: FontWeight;
-  size: SymbolStyles['size'];
+  size: number;
 };
 
 export function Symbol({
@@ -23,7 +23,8 @@ export function Symbol({
     <svg
       viewBox={`0 0 ${symbol.viewBox.width} ${symbol.viewBox.height}`}
       fill="none"
-      className={symbolStyles({ color, size })}
+      className={symbolStyles({ color })}
+      style={{ width: size, height: size }}
       xmlns="http://www.w3.org/2000/svg"
     >
       <path d={symbol.path} fill="currentColor" />

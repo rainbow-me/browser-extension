@@ -1,8 +1,7 @@
 import * as React from 'react';
 
-import { Box, Inline, Inset, Text } from '~/design-system';
-
-import { SFSymbol, SFSymbolProps } from '../SFSymbol/SFSymbol';
+import { Box, Inline, Inset, Symbol, Text } from '~/design-system';
+import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
 function Tabs({ children }: { children: React.ReactNode }) {
   return (
@@ -20,7 +19,7 @@ function Tab({
 }: {
   active?: boolean;
   onClick?: () => void;
-  symbol?: SFSymbolProps['symbol'];
+  symbol?: SymbolProps['symbol'];
   text: string;
 }) {
   return (
@@ -39,10 +38,11 @@ function Tab({
         <Inset horizontal="2px">
           <Inline alignVertical="center" space="4px">
             {symbol && (
-              <SFSymbol
+              <Symbol
                 color={active ? 'label' : 'labelTertiary'}
                 symbol={symbol}
                 size={14}
+                weight="semibold"
               />
             )}
             <Text

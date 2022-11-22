@@ -2,7 +2,7 @@ import React from 'react';
 import { Chain, useNetwork } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { Box, Inline, Inset, Text } from '~/design-system';
+import { Box, Inline, Inset, Symbol, Text } from '~/design-system';
 
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
@@ -14,7 +14,6 @@ import {
   MenuSeparator,
   MenuTrigger,
 } from '../Menu/Menu';
-import { SFSymbol } from '../SFSymbol/SFSymbol';
 
 export const SwitchNetworkMenuSelector = () => {
   const { chains } = useNetwork();
@@ -54,7 +53,7 @@ export const SwitchNetworkMenuDisconnect = ({
               alignVertical="center"
               alignHorizontal="center"
             >
-              <SFSymbol size={12} symbol="xmark" />
+              <Symbol size={12} symbol="xmark" weight="semibold" />
             </Inline>
           </Box>
           <Text size="14pt" weight="bold">

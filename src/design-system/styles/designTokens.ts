@@ -663,6 +663,14 @@ export const symbolNames = selectSymbolNames(
   'binoculars.fill',
   'circle.fill',
   'checkmark.circle.fill',
+  'record.circle.fill',
+  'bolt.fill',
+  'rectangle.and.hand.point.up.left.filled',
+  'xmark.circle',
+  'paperplane.fill',
+  'arrow.triangle.swap',
+  'arrow.down',
+  'square.on.square',
 );
 export type SymbolName = typeof symbolNames[number];
 
