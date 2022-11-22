@@ -624,6 +624,17 @@ export function negateSpace(space: Space): NegativeSpace {
   return spaceToNegativeSpace[space];
 }
 
+export const transformScales = {
+  '1.04': 1.04,
+  '0.96': 0.96,
+} as const;
+export type TransformScale = keyof typeof transformScales;
+
+export const transitions = {
+  bounce: { type: 'spring', mass: 0.1, stiffness: 500, damping: 20 },
+} as const;
+export type Transition = keyof typeof transitions;
+
 export const strokeWeights = {
   '1px': 1,
   '2px': 2,

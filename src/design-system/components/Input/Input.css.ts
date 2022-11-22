@@ -6,11 +6,11 @@ export const backgroundStyle = style({
   // Have to apply this so that the border opacity applies to the parent background
   // rather than the input background.
   backgroundClip: 'padding-box',
+  transition: 'border-color 100ms ease',
 });
 
 export const inputHeights = {
-  '34px': 34,
-  full: '100%',
+  '32px': 32,
 } as const;
 export type InputHeight = keyof typeof inputHeights;
 

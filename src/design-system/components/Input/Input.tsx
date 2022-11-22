@@ -2,22 +2,31 @@ import { motion } from 'framer-motion';
 import React, { InputHTMLAttributes } from 'react';
 
 import { BoxStyles, TextStyles, textStyles } from '../../styles/core.css';
-import { BackgroundColor, TextColor } from '../../styles/designTokens';
+import {
+  BackgroundColor,
+  TextColor,
+  transformScales,
+  transitions,
+} from '../../styles/designTokens';
 import { Box } from '../Box/Box';
 
-import { backgroundStyle, heightStyles, placeholderStyle } from './Input.css';
+import {
+  InputHeight,
+  backgroundStyle,
+  heightStyles,
+  placeholderStyle,
+} from './Input.css';
 
 export type InputProps = {
   'aria-label'?: InputHTMLAttributes<HTMLInputElement>['aria-label'];
   autoFocus?: InputHTMLAttributes<HTMLInputElement>['autoFocus'];
-  height?: 'full' | 'fit';
-  size: '34px';
+  height: InputHeight;
   onBlur?: InputHTMLAttributes<HTMLInputElement>['onBlur'];
   onChange?: InputHTMLAttributes<HTMLInputElement>['onChange'];
   onFocus?: InputHTMLAttributes<HTMLInputElement>['onFocus'];
   placeholder?: string;
   testId?: string;
-  variant: 'fill' | 'surface' | 'transparent';
+  variant: 'surface' | 'bordered' | 'transparent';
   value?: InputHTMLAttributes<HTMLInputElement>['value'];
 };
 
@@ -34,12 +43,9 @@ export const stylesForVariant: Record<
     textColor?: 'accent' | TextColor;
   }
 > = {
-  fill: {
+  surface: {
     background: {
-      default: 'fillSecondary',
-      focus: 'fillSecondary',
-      hoverActive: 'fill',
-      hover: 'fill',
+      default: 'surfacePrimaryElevated',
     },
     borderColor: {
       default: 'transparent',
@@ -49,12 +55,9 @@ export const stylesForVariant: Record<
     },
     textColor: 'label',
   },
-  surface: {
+  bordered: {
     background: {
-      default: 'surfacePrimary',
-      focus: 'surfacePrimary',
-      hoverActive: 'surfacePrimaryElevated',
-      hover: 'surfacePrimaryElevated',
+      default: 'transparent',
     },
     borderColor: {
       default: 'separator',
@@ -72,15 +75,15 @@ export const stylesForVariant: Record<
   },
 };
 
-export const stylesForSize: Record<
-  InputProps['size'],
+export const stylesForHeight: Record<
+  InputProps['height'],
   {
     borderRadius: BoxStyles['borderRadius'];
     fontSize?: TextStyles['fontSize'];
     paddingHorizontal: BoxStyles['paddingHorizontal'];
   }
 > = {
-  '34px': {
+  '32px': {
     borderRadius: '12px',
     fontSize: '14pt',
     paddingHorizontal: '12px',
@@ -89,19 +92,22 @@ export const stylesForSize: Record<
 
 export function Input({
   placeholder,
-  height = 'fit',
+  height,
   variant,
-  size,
   testId,
   ...inputProps
 }: InputProps) {
   const { background, borderColor, textColor } = stylesForVariant[variant];
-  const { borderRadius, fontSize, paddingHorizontal } = stylesForSize[size];
+  const { borderRadius, fontSize, paddingHorizontal } = stylesForHeight[height];
   return (
     <Box
       as={motion.div}
-      whileTap={{ scale: 0.96 }}
-      transition={{ type: 'spring', mass: 0.1, stiffness: 500, damping: 20 }}
+      whileTap={
+        variant !== 'transparent'
+          ? { scale: transformScales['0.96'] }
+          : undefined
+      }
+      transition={transitions.bounce}
       height="full"
       width="full"
     >
@@ -115,7 +121,7 @@ export function Input({
         borderRadius={borderRadius}
         className={[
           backgroundStyle,
-          heightStyles[height === 'full' ? 'full' : size],
+          heightStyles[height],
           textStyles({
             color: textColor,
             fontSize,
