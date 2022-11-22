@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { formatUnits } from 'ethers/lib/utils';
+import { useMemo, useState } from 'react';
 import { Chain } from 'wagmi';
 
 import {
@@ -138,48 +139,77 @@ const parseGasFeeParams = ({
 
 export const useMeteorologyData = ({ chainId }: { chainId: Chain['id'] }) => {
   const { data } = useMeteorology({ chainId }, { refetchInterval: 5000 });
-  const meteorologyData = data as MeterologyResponse;
-  const baseFeeSuggestion = meteorologyData.data.baseFeeSuggestion;
-  const currentBaseFee = meteorologyData.data.currentBaseFee;
-  const maxPriorityFeeSuggestions =
-    meteorologyData.data.maxPriorityFeeSuggestions;
+  const [speed, setSpeed] = useState<GasSpeed>('normal');
 
-  const blocksToConfirmation: BlocksToConfirmation = {
-    byBaseFee: meteorologyData.data.blocksToConfirmationByBaseFee,
-    byPriorityFee: meteorologyData.data.blocksToConfirmationByPriorityFee,
-  };
+  const meteorologyData = data as MeterologyResponse;
+
+  const {
+    data: {
+      baseFeeSuggestion,
+      currentBaseFee,
+      maxPriorityFeeSuggestions,
+      blocksToConfirmationByBaseFee,
+      blocksToConfirmationByPriorityFee,
+    },
+  } = meteorologyData || { data: {} };
+
+  const blocksToConfirmation: BlocksToConfirmation = useMemo(
+    () => ({
+      byBaseFee: blocksToConfirmationByBaseFee,
+      byPriorityFee: blocksToConfirmationByPriorityFee,
+    }),
+    [blocksToConfirmationByBaseFee, blocksToConfirmationByPriorityFee],
+  );
 
   const baseFee = parseGasFeeParam({ wei: currentBaseFee });
-  const gasFeeParamsBySpeed: GasFeeParamsBySpeed = {
-    custom: parseGasFeeParams({
-      currentBaseFee,
-      maxPriorityFeeSuggestions,
-      speed: 'custom',
-      wei: baseFeeSuggestion,
-      blocksToConfirmation,
-    }),
-    urgent: parseGasFeeParams({
-      currentBaseFee,
-      maxPriorityFeeSuggestions,
-      speed: 'urgent',
-      wei: baseFeeSuggestion,
-      blocksToConfirmation,
-    }),
-    fast: parseGasFeeParams({
-      currentBaseFee,
-      maxPriorityFeeSuggestions,
-      speed: 'fast',
-      wei: baseFeeSuggestion,
-      blocksToConfirmation,
-    }),
-    normal: parseGasFeeParams({
-      currentBaseFee,
-      maxPriorityFeeSuggestions,
-      speed: 'normal',
-      wei: baseFeeSuggestion,
-      blocksToConfirmation,
-    }),
-  };
 
-  return { data, gasFeeParamsBySpeed, baseFee };
+  const gasFeeParamsBySpeed: GasFeeParamsBySpeed = useMemo(
+    () => ({
+      custom: parseGasFeeParams({
+        currentBaseFee,
+        maxPriorityFeeSuggestions,
+        speed: 'custom',
+        wei: baseFeeSuggestion,
+        blocksToConfirmation,
+      }),
+      urgent: parseGasFeeParams({
+        currentBaseFee,
+        maxPriorityFeeSuggestions,
+        speed: 'urgent',
+        wei: baseFeeSuggestion,
+        blocksToConfirmation,
+      }),
+      fast: parseGasFeeParams({
+        currentBaseFee,
+        maxPriorityFeeSuggestions,
+        speed: 'fast',
+        wei: baseFeeSuggestion,
+        blocksToConfirmation,
+      }),
+      normal: parseGasFeeParams({
+        currentBaseFee,
+        maxPriorityFeeSuggestions,
+        speed: 'normal',
+        wei: baseFeeSuggestion,
+        blocksToConfirmation,
+      }),
+    }),
+    [
+      baseFeeSuggestion,
+      blocksToConfirmation,
+      currentBaseFee,
+      maxPriorityFeeSuggestions,
+    ],
+  );
+
+  const gasFee = useMemo(
+    () =>
+      add(
+        gasFeeParamsBySpeed[speed].maxBaseFee.amount,
+        gasFeeParamsBySpeed[speed].maxPriorityFeePerGas.amount,
+      ),
+    [gasFeeParamsBySpeed, speed],
+  );
+
+  return { data, gasFeeParamsBySpeed, baseFee, setSpeed, speed, gasFee };
 };

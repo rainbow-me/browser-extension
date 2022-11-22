@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import { Chain, chain } from 'wagmi';
+import React from 'react';
+import { Chain } from 'wagmi';
 
 import { useCurrentCurrencyStore } from '~/core/state';
-import { GasSpeed } from '~/core/types/gas';
 import {
-  add,
+  convertAmountToNativeDisplay,
   convertRawAmountToNativeDisplay,
   multiply,
 } from '~/core/utils/numbers';
@@ -30,24 +29,23 @@ type TransactionFeeProps = {
 };
 
 export function TransactionFee({ chainId }: TransactionFeeProps) {
-  const { gasFeeParamsBySpeed } = useMeteorologyData({ chainId });
-  const [speed, setSpeed] = useState<GasSpeed>('normal');
-  const asset = useNativeAssetForNetwork({ chainId: 1 });
+  const { gasFeeParamsBySpeed, speed, setSpeed, gasFee } = useMeteorologyData({
+    chainId,
+  });
+  const asset = useNativeAssetForNetwork({ chainId });
   const { currentCurrency } = useCurrentCurrencyStore();
+
+  // TODO estimate tx gas limit
   const gasLimit = 20000;
-
-  const gas = add(
-    gasFeeParamsBySpeed[speed].maxBaseFee.amount,
-    gasFeeParamsBySpeed[speed].maxPriorityFeePerGas.amount,
-  );
-
-  const totalWei = multiply(gasLimit, gas);
-
-  // getna
+  const totalWei = multiply(gasLimit, gasFee);
   const nativeDisplay = convertRawAmountToNativeDisplay(
     totalWei,
     18,
     asset?.price?.value || 0,
+    currentCurrency,
+  );
+  const cleanAmount = convertAmountToNativeDisplay(
+    nativeDisplay.amount,
     currentCurrency,
   );
 
@@ -64,7 +62,7 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
             <Inline alignVertical="center" space="4px">
               <ChainBadge chainId={1} size="small" />
               <Text weight="semibold" color="label" size="14pt">
-                {`${nativeDisplay.amount} ~ ${gasFeeParamsBySpeed[speed].estimatedTime.display}`}
+                {`${cleanAmount} ~ ${gasFeeParamsBySpeed[speed].estimatedTime.display}`}
               </Text>
             </Inline>
           </Row>
@@ -75,7 +73,7 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
           <SwitchTransactionSpeedMenu
             speed={speed}
             onSpeedChanged={setSpeed}
-            chainId={chain.mainnet.id}
+            chainId={chainId}
             gasFeeParamsBySpeed={gasFeeParamsBySpeed}
           />
           <Box
