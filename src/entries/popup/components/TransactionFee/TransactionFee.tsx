@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Chain, chain } from 'wagmi';
 
 import { useCurrentCurrencyStore } from '~/core/state';
-import { ChainName } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
 import {
   add,

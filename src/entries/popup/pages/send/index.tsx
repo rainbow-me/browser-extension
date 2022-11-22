@@ -3,9 +3,8 @@ import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAccount } from 'wagmi';
+import { chain, useAccount } from 'wagmi';
 
-import { ChainName } from '~/core/types/chains';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 import {
   Box,
@@ -194,7 +193,7 @@ export const Send = () => {
               </Row>
             )}
             <Row>
-              <TransactionFee network={ChainName.mainnet} />
+              <TransactionFee chainId={chain.mainnet.id} />
             </Row>
           </Rows>
         </Column>
