@@ -114,7 +114,12 @@ export const SwitchTransactionSpeedMenu = ({
                 <Text color="label" weight="bold" size="14pt">
                   {i18n.t(`transaction_fee.${speed}`)}
                 </Text>
-                <Symbol weight="medium" color="label" size={14} symbol="chevron.down.circle" />
+                <Symbol
+                  weight="medium"
+                  color="label"
+                  size={14}
+                  symbol="chevron.down.circle"
+                />
               </Inline>
             </Box>
           }
