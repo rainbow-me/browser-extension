@@ -1,6 +1,7 @@
 import React from 'react';
 import { Chain } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { SupportedCurrencyKey, supportedCurrencies } from '~/core/references';
 import {
   convertRawAmountToBalance,
@@ -49,7 +50,7 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
         <Rows space="8px">
           <Row>
             <Text weight="semibold" color="labelQuaternary" size="12pt">
-              Estimated fee
+              {i18n.t('transaction_fee.estimated_fee')}
             </Text>
           </Row>
           <Row>

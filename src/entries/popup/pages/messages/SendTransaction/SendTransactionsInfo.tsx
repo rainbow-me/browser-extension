@@ -8,15 +8,17 @@ import { Box, Inline, Inset, Separator, Stack, Text } from '~/design-system';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import { TransactionFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
+import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
 interface SignMessageProps {
   request: ProviderRequestPayload;
 }
 
 export function SendTransactionInfo({ request }: SignMessageProps) {
-  const { appHostName, appLogo } = useAppMetadata({
+  const { appHostName, appLogo, appHost } = useAppMetadata({
     url: request?.meta?.sender?.url,
   });
+  const { appSession } = useAppSession({ host: appHost });
 
   const { value } = useMemo(() => {
     const { value } = getTransactionRequestDisplayDetails(request);
@@ -82,9 +84,13 @@ export function SendTransactionInfo({ request }: SignMessageProps) {
             </Stack>
           </Inset>
 
-          <Inset horizontal="20px">
-            <TransactionFee chainId={chain.mainnet.id} />
-          </Inset>
+          {appSession.chainId === chain.mainnet.id ? (
+            <Inset horizontal="20px">
+              <TransactionFee chainId={chain.mainnet.id} />
+            </Inset>
+          ) : (
+            <Box style={{ height: 32 }} />
+          )}
         </Stack>
       </Inset>
       <Separator color="separatorTertiary" />

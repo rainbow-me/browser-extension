@@ -47,7 +47,8 @@
     "urgent": "Urgent",
     "fast": "Fast",
     "normal": "Normal",
-    "custom": "Custom"
+    "custom": "Custom",
+    "estimated_fee": "Estimated fee"
   },
   "time": {
     "days": {
