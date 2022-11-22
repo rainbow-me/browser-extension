@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { Chain } from 'wagmi';
 
 import {
-  MeterologyResponse,
+  MeteorologyResponse,
   useMeteorology,
 } from '~/core/resources/meteorology/gas';
 import {
@@ -141,7 +141,7 @@ export const useMeteorologyData = ({ chainId }: { chainId: Chain['id'] }) => {
   const { data } = useMeteorology({ chainId }, { refetchInterval: 5000 });
   const [speed, setSpeed] = useState<GasSpeed>('normal');
 
-  const meteorologyData = data as MeterologyResponse;
+  const meteorologyData = data as MeteorologyResponse;
 
   const {
     data: {
