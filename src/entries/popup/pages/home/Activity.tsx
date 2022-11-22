@@ -10,13 +10,18 @@ import {
   TransactionStatus,
   TransactionType,
 } from '~/core/types/transactions';
-import { Box, Column, Columns, Inline, Inset, Text } from '~/design-system';
-import { ForegroundColor } from '~/design-system/styles/designTokens';
-import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import {
-  Symbols as IconSymbol,
-  SFSymbol,
-} from '~/entries/popup/components/SFSymbol/SFSymbol';
+  Box,
+  Column,
+  Columns,
+  Inline,
+  Inset,
+  Symbol,
+  Text,
+} from '~/design-system';
+import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+import { TextColor } from '~/design-system/styles/designTokens';
+import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 
 export function Activity() {
   const { address } = useAccount();
@@ -76,23 +81,23 @@ export function Activity() {
 
 const titleIcons: {
   [key: string]: {
-    color: ForegroundColor;
+    color: 'accent' | TextColor;
     emoji?: ReactNode;
     space?: '2px';
     type: 'icon' | 'emoji';
   };
 } = {
-  closeCircled: {
+  'xmark.circle': {
     color: 'labelTertiary',
     space: '2px',
     type: 'icon',
   },
-  send: {
+  'paperplane.fill': {
     color: 'labelTertiary',
     space: '2px',
     type: 'icon',
   },
-  swap: {
+  'arrow.triangle.swap': {
     color: 'purple',
     space: '2px',
     type: 'icon',
@@ -108,9 +113,10 @@ const titleIcons: {
     space: '2px',
     type: 'emoji',
   },
-  receive: {
+  'arrow.down': {
     color: 'labelTertiary',
     type: 'icon',
+    space: '2px',
   },
 };
 
@@ -155,13 +161,13 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
     if (isContractInteraction) {
       iconSymbol = 'robot';
     } else if (failed) {
-      iconSymbol = 'closeCircled';
+      iconSymbol = 'xmark.circle';
     } else if (sending) {
-      iconSymbol = 'send';
+      iconSymbol = 'paperplane.fill';
     } else if (sendingViaSwap) {
-      iconSymbol = 'swap';
+      iconSymbol = 'arrow.triangle.swap';
     } else if (receiving || receivingViaSwap) {
-      iconSymbol = 'receive';
+      iconSymbol = 'arrow.down';
     }
 
     if (iconSymbol) {
@@ -171,10 +177,11 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
         icon: iconConfig?.emoji ? (
           iconConfig?.emoji
         ) : (
-          <SFSymbol
-            symbol={iconSymbol as IconSymbol}
+          <Symbol
+            symbol={iconSymbol as SymbolProps['symbol']}
             color={iconConfig.color}
             size={9}
+            weight="semibold"
           />
         ),
       };

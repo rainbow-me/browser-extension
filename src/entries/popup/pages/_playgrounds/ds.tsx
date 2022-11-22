@@ -1378,10 +1378,10 @@ export function DesignSystem() {
           </Inset>
         </Box>
         <Inline space="10px">
-          <Symbol symbol="app.badge.checkmark" size="32pt" weight="bold" />
-          <Symbol symbol="arrow.left" size="32pt" weight="bold" />
-          <Symbol symbol="binoculars.fill" size="32pt" weight="bold" />
-          <Symbol symbol="checkmark" size="32pt" weight="bold" />
+          <Symbol symbol="app.badge.checkmark" size={32} weight="bold" />
+          <Symbol symbol="arrow.left" size={32} weight="bold" />
+          <Symbol symbol="binoculars.fill" size={32} weight="bold" />
+          <Symbol symbol="checkmark" size={32} weight="bold" />
         </Inline>
         <Button color="accent" height="44px" variant="raised">
           Button

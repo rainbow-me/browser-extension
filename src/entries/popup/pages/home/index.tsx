@@ -70,7 +70,7 @@ function TopNav() {
       <Navbar
         leftComponent={
           <NetworkMenu>
-            <Navbar.SymbolButton symbol="appBadgeCheckmark" />
+            <Navbar.SymbolButton symbol="app.badge.checkmark" />
           </NetworkMenu>
         }
         rightComponent={
