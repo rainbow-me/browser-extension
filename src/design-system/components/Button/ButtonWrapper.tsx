@@ -7,6 +7,8 @@ import {
   ButtonColor,
   Space,
   TextColor,
+  transformScales,
+  transitions,
 } from '../../styles/designTokens';
 import { Box } from '../Box/Box';
 
@@ -190,9 +192,9 @@ export function ButtonWrapper({
   return (
     <Box
       as={motion.div}
-      whileHover={{ scale: 1.04 }}
-      whileTap={{ scale: 0.96 }}
-      transition={{ type: 'spring', mass: 0.1, stiffness: 500, damping: 20 }}
+      whileHover={{ scale: transformScales['1.04'] }}
+      whileTap={{ scale: transformScales['0.96'] }}
+      transition={transitions.bounce}
       width={width}
     >
       <Box
