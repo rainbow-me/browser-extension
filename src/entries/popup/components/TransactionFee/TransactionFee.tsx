@@ -1,10 +1,10 @@
 import React from 'react';
 import { Chain } from 'wagmi';
 
-import { useCurrentCurrencyStore } from '~/core/state';
+import { SupportedCurrencyKey, supportedCurrencies } from '~/core/references';
 import {
-  convertAmountToNativeDisplay,
-  convertRawAmountToNativeDisplay,
+  convertRawAmountToBalance,
+  handleSignificantDecimals,
   multiply,
 } from '~/core/utils/numbers';
 import {
@@ -33,21 +33,15 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
     chainId,
   });
   const asset = useNativeAssetForNetwork({ chainId });
-  const { currentCurrency } = useCurrentCurrencyStore();
 
   // TODO estimate tx gas limit
   const gasLimit = 20000;
   const totalWei = multiply(gasLimit, gasFee);
-  const nativeDisplay = convertRawAmountToNativeDisplay(
+  const nativeBalance = convertRawAmountToBalance(
     totalWei,
-    18,
-    asset?.price?.value || 0,
-    currentCurrency,
-  );
-  const cleanAmount = convertAmountToNativeDisplay(
-    nativeDisplay.amount,
-    currentCurrency,
-  );
+    supportedCurrencies[asset?.symbol as SupportedCurrencyKey],
+  ).amount;
+  const displayFeeValue = handleSignificantDecimals(nativeBalance, 4);
 
   return (
     <Columns alignHorizontal="justify" alignVertical="center">
@@ -62,7 +56,7 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
             <Inline alignVertical="center" space="4px">
               <ChainBadge chainId={1} size="small" />
               <Text weight="semibold" color="label" size="14pt">
-                {`${cleanAmount} ~ ${gasFeeParamsBySpeed[speed].estimatedTime.display}`}
+                {`${displayFeeValue} ~ ${gasFeeParamsBySpeed[speed].estimatedTime.display}`}
               </Text>
             </Inline>
           </Row>
