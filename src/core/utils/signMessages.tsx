@@ -8,7 +8,8 @@ import { RainbowTransaction } from '../types/transactions';
 
 import { convertRawAmountToBalance } from './numbers';
 
-export const isSignTypedData = (method: RPCMethod) => method.indexOf('signTypedData') !==-1;
+export const isSignTypedData = (method: RPCMethod) =>
+  method.indexOf('signTypedData') !== -1;
 
 export const getTransactionRequestDisplayDetails = (
   payload: ProviderRequestPayload,
