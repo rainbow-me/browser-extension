@@ -21,7 +21,7 @@ import {
 } from '~/design-system';
 
 import { useMeteorologyData } from '../../hooks/useMeteorologyData';
-import { useUserAsset } from '../../hooks/useUserAsset';
+import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 
 import { SwitchTransactionSpeedMenu } from './TransactionSpeedsMenu';
@@ -33,7 +33,7 @@ type TransactionFeeProps = {
 export function TransactionFee({ chainId }: TransactionFeeProps) {
   const { gasFeeParamsBySpeed } = useMeteorologyData({ chainId });
   const [speed, setSpeed] = useState<GasSpeed>('normal');
-  const asset = useUserAsset('eth_1');
+  const asset = useNativeAssetForNetwork({ chainId: 1 });
   const { currentCurrency } = useCurrentCurrencyStore();
   const gasLimit = 20000;
 
