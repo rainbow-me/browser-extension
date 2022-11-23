@@ -538,6 +538,7 @@ export const space = {
   '2px': 2,
   '3px': 3,
   '4px': 4,
+  '5px': 5,
   '6px': 6,
   '8px': 8,
   '10px': 10,
@@ -563,6 +564,7 @@ export const negativeSpace = {
   '-2px': -2,
   '-3px': -3,
   '-4px': -4,
+  '-5px': -5,
   '-6px': -6,
   '-8px': -8,
   '-10px': -10,
@@ -591,6 +593,7 @@ export const spaceToNegativeSpace: Record<
   '2px': '-2px',
   '3px': '-3px',
   '4px': '-4px',
+  '5px': '-5px',
   '6px': '-6px',
   '8px': '-8px',
   '10px': '-10px',
@@ -671,6 +674,8 @@ export const symbolNames = selectSymbolNames(
   'arrow.triangle.swap',
   'arrow.down',
   'square.on.square',
+  'slider.horizontal.3',
+  'arrow.up.forward.circle',
 );
 export type SymbolName = typeof symbolNames[number];
 
@@ -684,6 +689,7 @@ export const radii = {
   '18px': 18,
   '20px': 20,
   '24px': 24,
+  '28px': 28,
   '30px': 30,
 };
 export type Radius = keyof typeof radii;

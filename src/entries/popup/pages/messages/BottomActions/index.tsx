@@ -2,11 +2,7 @@ import React from 'react';
 import { Address, Chain, useBalance, useEnsAvatar, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { SupportedCurrencyKey, supportedCurrencies } from '~/core/references';
-import {
-  convertAmountToNativeDisplay,
-  convertRawAmountToBalance,
-} from '~/core/utils/numbers';
+import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { truncateAddress } from '~/core/utils/truncateAddress';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
@@ -216,23 +212,7 @@ export const WalletBalance = ({ appHost }: { appHost: string }) => {
     addressOrName: appSession.address,
     chainId: appSession.chainId,
   });
-  const symbol = balance?.symbol as SupportedCurrencyKey;
-
-  let displayBalance = symbol
-    ? convertAmountToNativeDisplay(
-        convertRawAmountToBalance(
-          // @ts-expect-error – TODO: fix this
-          balance?.value.hex || balance.value.toString(),
-          supportedCurrencies[symbol],
-        ).amount,
-        symbol,
-      )
-    : '';
-  if (symbol === 'ETH') {
-    // Our font set doesn't seem to like the ether symbol, so we have to omit it and use
-    // an icon instead.
-    displayBalance = displayBalance.replace('Ξ', '');
-  }
+  const displayBalance = handleSignificantDecimals(balance?.formatted || 0, 4);
 
   return (
     <Stack space="8px">

@@ -21,7 +21,7 @@ const getNetworkFromChainId = (chainId: Chain['id']) => {
 // ///////////////////////////////////////////////
 // Query Types
 
-export type MeterologyResponse = {
+export type MeteorologyResponse = {
   data: {
     baseFeeSuggestion: string;
     baseFeeTrend: number;
@@ -57,7 +57,7 @@ export type MeterologyResponse = {
   };
 };
 
-export type MeterologyLegacyResponse = {
+export type MeteorologyLegacyResponse = {
   data: {
     legacy: {
       fastGasPrice: string;
@@ -92,7 +92,9 @@ async function meteorologyQueryFunction({
   const network = getNetworkFromChainId(chainId);
   if (!network) return undefined;
   const parsedResponse = await meteorologyHttp.get(`/${network}`);
-  const meteorologyData = parsedResponse.data;
+  const meteorologyData = parsedResponse.data as
+    | MeteorologyResponse
+    | MeteorologyLegacyResponse;
   return meteorologyData;
 }
 

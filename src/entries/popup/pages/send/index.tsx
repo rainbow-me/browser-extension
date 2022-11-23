@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { motion } from 'framer-motion';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAccount } from 'wagmi';
+import { chain, useAccount } from 'wagmi';
 
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 import {
@@ -16,6 +16,7 @@ import {
   Text,
 } from '~/design-system';
 
+import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { sendTransaction } from '../../handlers/wallet';
 
 export const Send = () => {
@@ -191,6 +192,9 @@ export const Send = () => {
                 </Box>
               </Row>
             )}
+            <Row>
+              <TransactionFee chainId={chain.mainnet.id} />
+            </Row>
           </Rows>
         </Column>
       </Columns>
