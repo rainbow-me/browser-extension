@@ -1,5 +1,5 @@
 import React from 'react';
-import { Chain } from 'wagmi';
+import { Chain, chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import {
@@ -31,32 +31,40 @@ const SPEED_EMOJIS: { [key in GasSpeed]: string } = {
 
 export const SwitchSpeedMenuSelector = ({
   gasFeeParamsBySpeed,
+  chainId,
 }: {
   gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
+  chainId: Chain['id'];
 }) => {
   return (
     <>
-      <MenuRadioItem value={'custom'}>
-        <Box width="full" id={`switch-network-item-${0}`}>
-          <Inline space="8px" alignVertical="center" alignHorizontal="justify">
-            <Inline space="8px" alignVertical="center">
-              <Text weight="semibold" size="14pt">
-                {SPEED_EMOJIS['custom']}
-              </Text>
-              <Text color="label" size="14pt" weight="semibold">
-                {i18n.t(`transaction_fee.custom`)}
-              </Text>
-            </Inline>
+      {chain.mainnet.id === chainId ? (
+        <MenuRadioItem value={'custom'}>
+          <Box width="full" id={`switch-network-item-${0}`}>
+            <Inline
+              space="8px"
+              alignVertical="center"
+              alignHorizontal="justify"
+            >
+              <Inline space="8px" alignVertical="center">
+                <Text weight="semibold" size="14pt">
+                  {SPEED_EMOJIS['custom']}
+                </Text>
+                <Text color="label" size="14pt" weight="semibold">
+                  {i18n.t(`transaction_fee.custom`)}
+                </Text>
+              </Inline>
 
-            <Symbol
-              weight="medium"
-              size={12}
-              symbol="arrow.up.forward.circle"
-              color="labelTertiary"
-            />
-          </Inline>
-        </Box>
-      </MenuRadioItem>
+              <Symbol
+                weight="medium"
+                size={12}
+                symbol="arrow.up.forward.circle"
+                color="labelTertiary"
+              />
+            </Inline>
+          </Box>
+        </MenuRadioItem>
+      ) : null}
       {speeds.map((speed, i) => {
         return (
           <MenuRadioItem value={speed} key={i}>
@@ -96,6 +104,7 @@ export const SwitchTransactionSpeedMenu = ({
   speed,
   gasFeeParamsBySpeed,
   onSpeedChanged,
+  chainId,
 }: SwitchTransactionSpeedMenuProps) => {
   return (
     <Menu>
@@ -136,7 +145,10 @@ export const SwitchTransactionSpeedMenu = ({
           value={speed}
           onValueChange={(speed) => onSpeedChanged(speed as GasSpeed)}
         >
-          <SwitchSpeedMenuSelector gasFeeParamsBySpeed={gasFeeParamsBySpeed} />
+          <SwitchSpeedMenuSelector
+            chainId={chainId}
+            gasFeeParamsBySpeed={gasFeeParamsBySpeed}
+          />
         </MenuRadioGroup>
       </MenuContent>
     </Menu>

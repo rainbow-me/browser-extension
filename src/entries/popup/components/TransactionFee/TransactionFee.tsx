@@ -1,5 +1,5 @@
 import React from 'react';
-import { Chain } from 'wagmi';
+import { Chain, chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { SupportedCurrencyKey, supportedCurrencies } from '~/core/references';
@@ -55,7 +55,7 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
           </Row>
           <Row>
             <Inline alignVertical="center" space="4px">
-              <ChainBadge chainId={1} size="small" />
+              <ChainBadge chainId={chainId} size="small" />
               <Text weight="semibold" color="label" size="14pt">
                 {`${displayFeeValue} ~ ${gasFeeParamsBySpeed[speed].estimatedTime.display}`}
               </Text>
@@ -71,17 +71,19 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
             chainId={chainId}
             gasFeeParamsBySpeed={gasFeeParamsBySpeed}
           />
-          <Box
-            borderRadius="round"
-            boxShadow="12px accent"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            background="fillSecondary"
-            style={{ height: 28, width: 28 }}
-          >
-            <Symbol weight="medium" symbol="slider.horizontal.3" size={12} />
-          </Box>
+          {chainId === chain.mainnet.id ? (
+            <Box
+              borderRadius="round"
+              boxShadow="12px accent"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              background="fillSecondary"
+              style={{ height: 28, width: 28 }}
+            >
+              <Symbol weight="medium" symbol="slider.horizontal.3" size={12} />
+            </Box>
+          ) : null}
         </Inline>
       </Column>
     </Columns>
