@@ -19,7 +19,7 @@ import {
   Text,
 } from '~/design-system';
 
-import { useMeteorologyData } from '../../hooks/useMeteorologyData';
+import { useGas } from '../../hooks/useMeteorologyData';
 import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 
@@ -30,7 +30,7 @@ type TransactionFeeProps = {
 };
 
 export function TransactionFee({ chainId }: TransactionFeeProps) {
-  const { speed, setSpeed, gasFeeParamsBySpeed, gasFee } = useMeteorologyData({
+  const { speed, setSpeed, gasFeeParamsBySpeed, gasFee } = useGas({
     chainId,
   });
   const asset = useNativeAssetForNetwork({ chainId });
