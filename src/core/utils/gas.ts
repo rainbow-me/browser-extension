@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js';
+import { Chain, chain } from 'wagmi';
 
 import {
   BlocksToConfirmation,
@@ -68,18 +69,6 @@ export const parseGasFeeParam = ({ wei }: { wei: string }): GasFeeParam => {
   };
 };
 
-export const getBaseFeeMultiplier = (speed: GasSpeed) => {
-  switch (speed) {
-    case 'urgent':
-      return 1.1;
-    case 'fast':
-      return 1.05;
-    case 'normal':
-    default:
-      return 1;
-  }
-};
-
 export const parseGasFeeParams = ({
   wei,
   currentBaseFee,
@@ -113,7 +102,7 @@ export const parseGasFeeParams = ({
     parseGasFeeParam({
       wei: maxPriorityFeePerGas.amount,
     }).gwei,
-  )}`;
+  )} Gwei`;
   const estimatedTime = parseGasDataConfirmationTime(
     maxBaseFee.amount,
     maxPriorityFeePerGas.amount,
@@ -131,9 +120,11 @@ export const parseGasFeeParams = ({
 export const parseGasFeeLegacyParams = ({
   gwei,
   speed,
+  waitTime,
 }: {
   gwei: string;
   speed: GasSpeed;
+  waitTime: number;
 }): GasFeeLegacyParams => {
   const wei = gweiToWei(gwei);
   const gasPrice = parseGasFeeParam({
@@ -141,11 +132,39 @@ export const parseGasFeeLegacyParams = ({
   });
   const display = parseGasFeeParam({ wei }).gwei;
 
-  const estimatedTime = { amount: 1, display: '1sec' };
+  const estimatedTime = {
+    amount: waitTime,
+    display: getMinimalTimeUnitStringForMs(Number(multiply(waitTime, 1000))),
+  };
   return {
     gasPrice,
     display,
     option: speed,
     estimatedTime,
   };
+};
+
+export const getBaseFeeMultiplier = (speed: GasSpeed) => {
+  switch (speed) {
+    case 'urgent':
+      return 1.1;
+    case 'fast':
+      return 1.05;
+    case 'normal':
+    default:
+      return 1;
+  }
+};
+
+export const getChainWaitTime = (chainId: Chain['id']) => {
+  switch (chainId) {
+    case chain.polygon.id:
+      return { safeWait: 6, proposedWait: 3, fastWait: 3 };
+    case chain.optimism.id:
+      return { safeWait: 20, proposedWait: 20, fastWait: 20 };
+    case chain.arbitrum.id:
+      return { safeWait: 8, proposedWait: 8, fastWait: 8 };
+    default:
+      return { safeWait: 8, proposedWait: 8, fastWait: 8 };
+  }
 };

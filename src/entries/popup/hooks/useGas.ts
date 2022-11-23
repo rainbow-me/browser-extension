@@ -11,7 +11,11 @@ import {
   GasFeeParamsBySpeed,
   GasSpeed,
 } from '~/core/types/gas';
-import { parseGasFeeLegacyParams, parseGasFeeParams } from '~/core/utils/gas';
+import {
+  getChainWaitTime,
+  parseGasFeeLegacyParams,
+  parseGasFeeParams,
+} from '~/core/utils/gas';
 import { add } from '~/core/utils/numbers';
 
 export const useGas = ({ chainId }: { chainId: Chain['id'] }) => {
@@ -67,22 +71,27 @@ export const useGas = ({ chainId }: { chainId: Chain['id'] }) => {
         };
       } else {
         const response = data as MeteorologyLegacyResponse;
+        const chainWaitTime = getChainWaitTime(chainId);
         return {
           custom: parseGasFeeLegacyParams({
             gwei: response?.data.legacy.fastGasPrice,
             speed: 'custom',
+            waitTime: chainWaitTime.fastWait,
           }),
           urgent: parseGasFeeLegacyParams({
             gwei: response?.data.legacy.fastGasPrice,
             speed: 'urgent',
+            waitTime: chainWaitTime.fastWait,
           }),
           fast: parseGasFeeLegacyParams({
             gwei: response?.data.legacy.proposeGasPrice,
             speed: 'fast',
+            waitTime: chainWaitTime.proposedWait,
           }),
           normal: parseGasFeeLegacyParams({
             gwei: response?.data.legacy.safeGasPrice,
             speed: 'normal',
+            waitTime: chainWaitTime.safeWait,
           }),
         };
       }
