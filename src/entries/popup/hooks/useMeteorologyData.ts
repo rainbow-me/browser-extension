@@ -77,7 +77,6 @@ export const weiToGwei = (weiAmount: string) => {
 };
 
 const parseGasFeeParam = ({ wei }: { wei: string }): GasFeeParam => {
-  console.log('parseGasFeeParam', wei);
   const gwei = weiToGwei(wei);
   return {
     amount: wei,
@@ -234,7 +233,6 @@ export const useMeteorologyData = ({ chainId }: { chainId: Chain['id'] }) => {
         };
       } else {
         const response = data as MeteorologyLegacyResponse;
-        console.log('--- response.data', response?.data.legacy.fastGasPrice);
         const polygonGasPriceBumpFactor = 1.05;
 
         return {

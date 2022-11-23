@@ -25,7 +25,6 @@ export function SendTransactionInfo({ request }: SignMessageProps) {
     return { value };
   }, [request]);
 
-  console.log('---- appSession.chainId', appSession.chainId);
   return (
     <Box background="surfacePrimaryElevatedSecondary">
       <Inset top="40px" bottom="16px">

@@ -30,7 +30,7 @@ type TransactionFeeProps = {
 };
 
 export function TransactionFee({ chainId }: TransactionFeeProps) {
-  const { gasFeeParamsBySpeed, speed, setSpeed, gasFee } = useMeteorologyData({
+  const { speed, setSpeed, gasFeeParamsBySpeed, gasFee } = useMeteorologyData({
     chainId,
   });
   const asset = useNativeAssetForNetwork({ chainId });
