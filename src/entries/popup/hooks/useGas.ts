@@ -113,9 +113,7 @@ export const useGas = ({ chainId }: { chainId: Chain['id'] }) => {
   }, [chainId, gasFeeParamsBySpeed, selectedSpeed]);
 
   useEffect(() => {
-    if (selectedSpeed !== selectedGas.option) {
-      setSelectedGas({ selectedGas: gasFeeParamsBySpeed[selectedSpeed] });
-    }
+    setSelectedGas({ selectedGas: gasFeeParamsBySpeed[selectedSpeed] });
   }, [gasFeeParamsBySpeed, selectedGas.option, selectedSpeed, setSelectedGas]);
 
   return {

@@ -9,8 +9,8 @@ import {
   GasSpeed,
 } from '../types/gas';
 
-import { gweiToWei, weiToGwei } from './ethereum';
-import { add, divide, lessThan, multiply } from './numbers';
+import { addHexPrefix, gweiToWei, weiToGwei } from './ethereum';
+import { add, convertStringToHex, divide, lessThan, multiply } from './numbers';
 import { getMinimalTimeUnitStringForMs } from './time';
 
 export const parseGasDataConfirmationTime = (
@@ -108,12 +108,22 @@ export const parseGasFeeParams = ({
     maxPriorityFeePerGas.amount,
     blocksToConfirmation,
   );
+
+  const transactionGasParams = {
+    maxPriorityFeePerGas: addHexPrefix(
+      convertStringToHex(maxPriorityFeePerGas.amount),
+    ),
+    maxFeePerGas: addHexPrefix(
+      convertStringToHex(add(maxPriorityFeePerGas.amount, maxBaseFee.amount)),
+    ),
+  };
   return {
     maxBaseFee,
     maxPriorityFeePerGas,
     display,
     option: speed,
     estimatedTime,
+    transactionGasParams,
   };
 };
 
@@ -136,11 +146,15 @@ export const parseGasFeeLegacyParams = ({
     amount: waitTime,
     display: getMinimalTimeUnitStringForMs(Number(multiply(waitTime, 1000))),
   };
+  const transactionGasParams = {
+    gasPrice: addHexPrefix(convertStringToHex(gasPrice.amount)),
+  };
   return {
     gasPrice,
     display,
     option: speed,
     estimatedTime,
+    transactionGasParams,
   };
 };
 
