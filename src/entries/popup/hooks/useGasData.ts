@@ -4,7 +4,7 @@ import { Chain, chain, useProvider } from 'wagmi';
 import {
   MeteorologyLegacyResponse,
   useMeteorology,
-} from '~/core/resources/meteorology/gas';
+} from '~/core/resources/gas/meteorology';
 import { weiToGwei } from '~/core/utils/ethereum';
 
 export const useGasData = ({ chainId }: { chainId: Chain['id'] }) => {
@@ -36,7 +36,7 @@ export const useGasData = ({ chainId }: { chainId: Chain['id'] }) => {
           safeGasPrice: weiToGwei(gasPrice),
         },
         meta: {
-          blockNumber: 1,
+          blockNumber: 0,
           provider: '',
         },
       },

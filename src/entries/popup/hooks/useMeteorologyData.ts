@@ -4,7 +4,7 @@ import { Chain, chain } from 'wagmi';
 import {
   MeteorologyLegacyResponse,
   MeteorologyResponse,
-} from '~/core/resources/meteorology/gas';
+} from '~/core/resources/gas/meteorology';
 import {
   BlocksToConfirmation,
   GasFeeLegacyParamsBySpeed,
