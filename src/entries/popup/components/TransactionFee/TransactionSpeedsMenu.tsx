@@ -110,32 +110,30 @@ export const SwitchTransactionSpeedMenu = ({
 }: SwitchTransactionSpeedMenuProps) => {
   const menuTrigger = (
     <Box style={{ cursor: 'default' }}>
-      {
-        <Box
-          borderWidth="2px"
-          borderColor="fillSecondary"
-          paddingVertical="5px"
-          paddingHorizontal="6px"
-          borderRadius="24px"
-          as="button"
-        >
-          <Inline space="6px" alignVertical="center">
-            <Text color="label" weight="bold" size="14pt">
-              {SPEED_EMOJIS[speed]}
-            </Text>
+      <Box
+        borderWidth="2px"
+        borderColor="fillSecondary"
+        paddingVertical="5px"
+        paddingHorizontal="6px"
+        borderRadius="24px"
+        as="button"
+      >
+        <Inline space="6px" alignVertical="center">
+          <Text color="label" weight="bold" size="14pt">
+            {SPEED_EMOJIS[speed]}
+          </Text>
 
-            <Text color="label" weight="bold" size="14pt">
-              {i18n.t(`transaction_fee.${speed}`)}
-            </Text>
-            <Symbol
-              weight="medium"
-              color="label"
-              size={14}
-              symbol="chevron.down.circle"
-            />
-          </Inline>
-        </Box>
-      }
+          <Text color="label" weight="bold" size="14pt">
+            {i18n.t(`transaction_fee.${speed}`)}
+          </Text>
+          <Symbol
+            weight="medium"
+            color="label"
+            size={14}
+            symbol="chevron.down.circle"
+          />
+        </Inline>
+      </Box>
     </Box>
   );
   if (!enabled) return menuTrigger;
