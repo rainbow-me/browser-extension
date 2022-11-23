@@ -72,6 +72,9 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
             onSpeedChanged={setSpeed}
             chainId={chainId}
             gasFeeParamsBySpeed={gasFeeParamsBySpeed}
+            enabled={
+              chainId === chain.mainnet.id || chainId === chain.polygon.id
+            }
           />
           {chainId === chain.mainnet.id ? (
             <Box
