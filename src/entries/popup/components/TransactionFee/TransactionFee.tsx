@@ -30,7 +30,13 @@ type TransactionFeeProps = {
 };
 
 export function TransactionFee({ chainId }: TransactionFeeProps) {
-  const { speed, setSpeed, gasFeeParamsBySpeed, gasFee, isLoading } = useGas({
+  const {
+    selectedSpeed,
+    setSelectedSpeed,
+    gasFeeParamsBySpeed,
+    gasFee,
+    isLoading,
+  } = useGas({
     chainId,
   });
   const asset = useNativeAssetForNetwork({ chainId });
@@ -59,7 +65,7 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
               <Text weight="semibold" color="label" size="14pt">
                 {isLoading
                   ? '~'
-                  : `${displayFeeValue} ~ ${gasFeeParamsBySpeed[speed].estimatedTime.display}`}
+                  : `${displayFeeValue} ~ ${gasFeeParamsBySpeed[selectedSpeed].estimatedTime.display}`}
               </Text>
             </Inline>
           </Row>
@@ -68,8 +74,8 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
       <Column>
         <Inline space="6px" alignVertical="center" alignHorizontal="right">
           <SwitchTransactionSpeedMenu
-            speed={speed}
-            onSpeedChanged={setSpeed}
+            selectedSpeed={selectedSpeed}
+            onSpeedChanged={setSelectedSpeed}
             chainId={chainId}
             gasFeeParamsBySpeed={gasFeeParamsBySpeed}
             enabled={

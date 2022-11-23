@@ -5,10 +5,13 @@ import {
 import { uuid4 } from '@sentry/utils';
 import { Bytes } from 'ethers';
 import { Mnemonic } from 'ethers/lib/utils';
-import { Address } from 'wagmi';
+import { Address, chain } from 'wagmi';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';
 import { initializeMessenger } from '~/core/messengers';
+import { gasStore } from '~/core/state';
+import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
+import { convertStringToHex } from '~/core/utils/numbers';
 
 const messenger = initializeMessenger({ connect: 'background' });
 
@@ -38,10 +41,28 @@ const signMessageByType = async (
 export const sendTransaction = async (
   transactionRequest: TransactionRequest,
 ): Promise<TransactionResponse> => {
-  return walletAction(
-    'send_transaction',
-    transactionRequest,
-  ) as unknown as TransactionResponse;
+  const { selectedGas } = gasStore.getState();
+
+  const gasParams =
+    transactionRequest.chainId === chain.mainnet.id
+      ? {
+          maxPriorityFeePerGas: convertStringToHex(
+            (selectedGas as GasFeeParams).maxPriorityFeePerGas.amount,
+          ),
+          maxBaseFee: convertStringToHex(
+            (selectedGas as GasFeeParams).maxBaseFee.amount,
+          ),
+        }
+      : {
+          gasPrice: convertStringToHex(
+            (selectedGas as GasFeeLegacyParams).gasPrice.amount,
+          ),
+        };
+
+  return walletAction('send_transaction', {
+    ...transactionRequest,
+    ...gasParams,
+  }) as unknown as TransactionResponse;
 };
 
 export const personalSign = async (

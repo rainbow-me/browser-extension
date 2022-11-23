@@ -55,6 +55,7 @@ export const Send = () => {
         from: address,
         to: receiver,
         value: ethers.utils.parseEther(amount),
+        chainId: chain.mainnet.id,
       });
 
       if (result) {
