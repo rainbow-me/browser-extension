@@ -10,7 +10,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 
-const getNetworkFromChainId = (chainId: Chain['id']) => {
+const getMeteorologyNetworkFromChainId = (chainId: Chain['id']) => {
   switch (chainId) {
     case chain.polygon.id:
       return 'polygon';
@@ -89,8 +89,7 @@ type MeteorologyQueryKey = ReturnType<typeof meteorologyQueryKey>;
 async function meteorologyQueryFunction({
   queryKey: [{ chainId }],
 }: QueryFunctionArgs<typeof meteorologyQueryKey>) {
-  const network = getNetworkFromChainId(chainId);
-  if (!network) return undefined;
+  const network = getMeteorologyNetworkFromChainId(chainId);
   const parsedResponse = await meteorologyHttp.get(`/${network}`);
   const meteorologyData = parsedResponse.data as
     | MeteorologyResponse
