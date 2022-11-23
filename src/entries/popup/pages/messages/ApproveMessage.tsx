@@ -12,21 +12,20 @@ import { SignMessage } from './SignMessage';
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export const ApproveMessage = () => {
-  const { pendingRequests, removePendingRequest } = usePendingRequestStore();
+  const { pendingRequests } = usePendingRequestStore();
   const { window } = useNotificationWindowStore();
   const pendingRequest = pendingRequests[0];
 
   const approveRequest = useCallback(
     async (payload?: unknown) => {
       backgroundMessenger.send(`message:${pendingRequest?.id}`, payload);
-      removePendingRequest(pendingRequest?.id);
       // Wait until the message propagates to the background provider.
       setTimeout(() => {
         if (window?.id && pendingRequests.length <= 1)
           chrome.windows.remove(window?.id);
       }, 50);
     },
-    [pendingRequest, removePendingRequest, pendingRequests.length, window?.id],
+    [pendingRequest, pendingRequests.length, window?.id],
   );
 
   const rejectRequest = useCallback(() => {
