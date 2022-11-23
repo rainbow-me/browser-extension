@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js';
-import { formatUnits } from 'ethers/lib/utils';
 import { useMemo, useState } from 'react';
 import { Chain, chain } from 'wagmi';
 
@@ -67,11 +66,18 @@ const parseGasDataConfirmationTime = (
   };
 };
 
-const weiToGwei = (wei: string) => {
-  return new BigNumber(formatUnits(wei, 'gwei')).toFixed(0);
+export const gweiToWei = (gweiAmount: string) => {
+  const weiAmount = multiply(gweiAmount, 1000000000);
+  return weiAmount;
+};
+
+export const weiToGwei = (weiAmount: string) => {
+  const gweiAmount = divide(weiAmount, 1000000000);
+  return gweiAmount;
 };
 
 const parseGasFeeParam = ({ wei }: { wei: string }): GasFeeParam => {
+  console.log('parseGasFeeParam', wei);
   const gwei = weiToGwei(wei);
   return {
     amount: wei,
@@ -141,12 +147,13 @@ const parseGasFeeParams = ({
 };
 
 const parseGasFeeLegacyParams = ({
-  wei,
+  gwei,
   speed,
 }: {
-  wei: string;
+  gwei: string;
   speed: GasSpeed;
 }): GasFeeLegacyParams => {
+  const wei = gweiToWei(gwei);
   const gasPrice = parseGasFeeParam({
     wei: new BigNumber(multiply(wei, getBaseFeeMultiplier(speed))).toFixed(0),
   });
@@ -167,8 +174,8 @@ export const useMeteorologyData = ({ chainId }: { chainId: Chain['id'] }) => {
   const [speed, setSpeed] = useState<GasSpeed>('normal');
 
   const blocksToConfirmation: BlocksToConfirmation | null = useMemo(() => {
-    if (chainId === chain.mainnet.id) {
-      const response = data as MeteorologyResponse;
+    const response = data as MeteorologyResponse | undefined;
+    if (chainId === chain.mainnet.id && response) {
       return {
         byBaseFee: response.data.blocksToConfirmationByBaseFee,
         byPriorityFee: response.data.blocksToConfirmationByPriorityFee,
@@ -178,7 +185,7 @@ export const useMeteorologyData = ({ chainId }: { chainId: Chain['id'] }) => {
   }, [chainId, data]);
 
   const currentBaseFee = useMemo(() => {
-    if (chainId === chain.mainnet.id) {
+    if (chainId === chain.mainnet.id && data) {
       const response = data as MeteorologyResponse;
       return parseGasFeeParam({
         wei: response.data.currentBaseFee,
@@ -189,7 +196,7 @@ export const useMeteorologyData = ({ chainId }: { chainId: Chain['id'] }) => {
 
   const gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed =
     useMemo(() => {
-      if (chainId === chain.mainnet.id) {
+      if (chainId === chain.mainnet.id && data) {
         const response = data as MeteorologyResponse;
         const currentBaseFee = response.data.currentBaseFee;
         const maxPriorityFeeSuggestions =
@@ -227,21 +234,36 @@ export const useMeteorologyData = ({ chainId }: { chainId: Chain['id'] }) => {
         };
       } else {
         const response = data as MeteorologyLegacyResponse;
+        console.log('--- response.data', response?.data.legacy.fastGasPrice);
+        const polygonGasPriceBumpFactor = 1.05;
+
         return {
           custom: parseGasFeeLegacyParams({
-            wei: response.data.legacy.fastGasPrice,
+            gwei: multiply(
+              polygonGasPriceBumpFactor,
+              response?.data.legacy.fastGasPrice,
+            ),
             speed: 'custom',
           }),
           urgent: parseGasFeeLegacyParams({
-            wei: response.data.legacy.fastGasPrice,
+            gwei: multiply(
+              polygonGasPriceBumpFactor,
+              response?.data.legacy.fastGasPrice,
+            ),
             speed: 'urgent',
           }),
           fast: parseGasFeeLegacyParams({
-            wei: response.data.legacy.proposeGasPrice,
+            gwei: multiply(
+              polygonGasPriceBumpFactor,
+              response?.data.legacy.proposeGasPrice,
+            ),
             speed: 'fast',
           }),
           normal: parseGasFeeLegacyParams({
-            wei: response.data.legacy.safeGasPrice,
+            gwei: multiply(
+              polygonGasPriceBumpFactor,
+              response?.data.legacy.safeGasPrice,
+            ),
             speed: 'normal',
           }),
         };
@@ -251,13 +273,14 @@ export const useMeteorologyData = ({ chainId }: { chainId: Chain['id'] }) => {
   const gasFee = useMemo(() => {
     if (chainId === chain.mainnet.id) {
       return add(
-        (gasFeeParamsBySpeed as GasFeeParamsBySpeed)[speed].maxBaseFee.amount,
-        (gasFeeParamsBySpeed as GasFeeParamsBySpeed)[speed].maxPriorityFeePerGas
-          .amount,
+        (gasFeeParamsBySpeed as GasFeeParamsBySpeed)[speed]?.maxBaseFee
+          ?.amount || '0',
+        (gasFeeParamsBySpeed as GasFeeParamsBySpeed)[speed]
+          ?.maxPriorityFeePerGas?.amount || '0',
       );
     } else {
-      return (gasFeeParamsBySpeed as GasFeeLegacyParamsBySpeed)[speed].gasPrice
-        .amount;
+      return (gasFeeParamsBySpeed as GasFeeLegacyParamsBySpeed)[speed]?.gasPrice
+        ?.amount;
     }
   }, [chainId, gasFeeParamsBySpeed, speed]);
 

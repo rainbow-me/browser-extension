@@ -12,8 +12,10 @@ import {
 
 const getNetworkFromChainId = (chainId: Chain['id']) => {
   switch (chainId) {
+    case chain.polygon.id:
+      return 'polygon';
     default:
-      return chain.mainnet.network;
+      return 'mainnet';
   }
 };
 // ///////////////////////////////////////////////
@@ -87,7 +89,9 @@ type MeteorologyQueryKey = ReturnType<typeof meteorologyQueryKey>;
 async function meteorologyQueryFunction({
   queryKey: [{ chainId }],
 }: QueryFunctionArgs<typeof meteorologyQueryKey>) {
+  console.log('meteorology query function ', chainId);
   const network = getNetworkFromChainId(chainId);
+  console.log('meteorology query function network', network);
   if (!network) return undefined;
   const parsedResponse = await meteorologyHttp.get(`/${network}`);
   const meteorologyData = parsedResponse.data as

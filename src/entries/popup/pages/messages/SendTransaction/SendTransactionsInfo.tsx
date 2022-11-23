@@ -85,13 +85,9 @@ export function SendTransactionInfo({ request }: SignMessageProps) {
             </Stack>
           </Inset>
 
-          {appSession.chainId === chain.mainnet.id ? (
-            <Inset horizontal="20px">
-              <TransactionFee chainId={chain.mainnet.id} />
-            </Inset>
-          ) : (
-            <Box style={{ height: 32 }} />
-          )}
+          <Inset horizontal="20px">
+            <TransactionFee chainId={appSession.chainId} />
+          </Inset>
         </Stack>
       </Inset>
       <Separator color="separatorTertiary" />
