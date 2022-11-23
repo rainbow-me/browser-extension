@@ -92,17 +92,17 @@ export const parseGasFeeParams = ({
   const maxPriorityFeePerGas = parseGasFeeParam({
     wei: maxPriorityFeeSuggestions[speed === 'custom' ? 'urgent' : speed],
   });
-  const display = `${add(
-    parseGasFeeParam({ wei: currentBaseFee }).gwei,
-    parseGasFeeParam({
-      wei: maxPriorityFeePerGas.amount,
-    }).gwei,
-  )} - ${add(
-    parseGasFeeParam({ wei }).gwei,
-    parseGasFeeParam({
-      wei: maxPriorityFeePerGas.amount,
-    }).gwei,
-  )} Gwei`;
+
+  const baseFee = lessThan(currentBaseFee, maxBaseFee.amount)
+    ? currentBaseFee
+    : maxBaseFee.amount;
+
+  const display = `${new BigNumber(
+    weiToGwei(add(baseFee, maxPriorityFeePerGas.amount)),
+  ).toFixed(0)} - ${new BigNumber(
+    weiToGwei(add(wei, maxPriorityFeePerGas.amount)),
+  ).toFixed(0)} Gwei`;
+
   const estimatedTime = parseGasDataConfirmationTime(
     maxBaseFee.amount,
     maxPriorityFeePerGas.amount,
@@ -130,7 +130,7 @@ export const parseGasFeeLegacyParams = ({
   const gasPrice = parseGasFeeParam({
     wei: new BigNumber(multiply(wei, getBaseFeeMultiplier(speed))).toFixed(0),
   });
-  const display = parseGasFeeParam({ wei }).gwei;
+  const display = parseGasFeeParam({ wei }).display;
 
   const estimatedTime = {
     amount: waitTime,
