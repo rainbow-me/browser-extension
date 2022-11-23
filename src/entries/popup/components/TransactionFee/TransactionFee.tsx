@@ -19,7 +19,7 @@ import {
   Text,
 } from '~/design-system';
 
-import { useGas } from '../../hooks/useMeteorologyData';
+import { useGas } from '../../hooks/useGas';
 import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 
@@ -30,7 +30,7 @@ type TransactionFeeProps = {
 };
 
 export function TransactionFee({ chainId }: TransactionFeeProps) {
-  const { speed, setSpeed, gasFeeParamsBySpeed, gasFee } = useGas({
+  const { speed, setSpeed, gasFeeParamsBySpeed, gasFee, isLoading } = useGas({
     chainId,
   });
   const asset = useNativeAssetForNetwork({ chainId });
@@ -57,7 +57,9 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
             <Inline alignVertical="center" space="4px">
               <ChainBadge chainId={chainId} size="small" />
               <Text weight="semibold" color="label" size="14pt">
-                {`${displayFeeValue} ~ ${gasFeeParamsBySpeed[speed].estimatedTime.display}`}
+                {isLoading
+                  ? '~'
+                  : `${displayFeeValue} ~ ${gasFeeParamsBySpeed[speed].estimatedTime.display}`}
               </Text>
             </Inline>
           </Row>

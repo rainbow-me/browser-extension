@@ -36,17 +36,18 @@ async function providerGasQueryFunction({
 }: QueryFunctionArgs<typeof providerGasQueryKey>) {
   const provider = getProvider({ chainId });
   const gasPrice = await provider.getGasPrice();
+  const weiGasPrice = weiToGwei(gasPrice.toString());
 
   const parsedResponse = {
     data: {
       legacy: {
-        fastGasPrice: weiToGwei(gasPrice.toString()),
-        proposeGasPrice: weiToGwei(gasPrice.toString()),
-        safeGasPrice: weiToGwei(gasPrice.toString()),
+        fastGasPrice: weiGasPrice,
+        proposeGasPrice: weiGasPrice,
+        safeGasPrice: weiGasPrice,
       },
       meta: {
         blockNumber: 0,
-        provider: '',
+        provider: 'provider',
       },
     },
   };

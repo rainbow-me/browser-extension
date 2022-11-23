@@ -12,10 +12,10 @@ import {
   GasSpeed,
 } from '~/core/types/gas';
 import { parseGasFeeLegacyParams, parseGasFeeParams } from '~/core/utils/gas';
-import { add, multiply } from '~/core/utils/numbers';
+import { add } from '~/core/utils/numbers';
 
 export const useGas = ({ chainId }: { chainId: Chain['id'] }) => {
-  const { data: data } = useGasData({ chainId });
+  const { data: data, isLoading } = useGasData({ chainId });
 
   const [speed, setSpeed] = useState<GasSpeed>('normal');
 
@@ -23,10 +23,13 @@ export const useGas = ({ chainId }: { chainId: Chain['id'] }) => {
     useMemo(() => {
       if (chainId === chain.mainnet.id && data) {
         const response = data as MeteorologyResponse;
-        const currentBaseFee = response.data.currentBaseFee;
-        const maxPriorityFeeSuggestions =
-          response.data.maxPriorityFeeSuggestions;
-        const baseFeeSuggestion = response.data.baseFeeSuggestion;
+        const {
+          data: {
+            currentBaseFee,
+            maxPriorityFeeSuggestions,
+            baseFeeSuggestion,
+          },
+        } = response;
 
         const blocksToConfirmation = {
           byBaseFee: response.data.blocksToConfirmationByBaseFee,
@@ -64,35 +67,21 @@ export const useGas = ({ chainId }: { chainId: Chain['id'] }) => {
         };
       } else {
         const response = data as MeteorologyLegacyResponse;
-        const polygonGasPriceBumpFactor = 1.05;
-
         return {
           custom: parseGasFeeLegacyParams({
-            gwei: multiply(
-              polygonGasPriceBumpFactor,
-              response?.data.legacy.fastGasPrice,
-            ),
+            gwei: response?.data.legacy.fastGasPrice,
             speed: 'custom',
           }),
           urgent: parseGasFeeLegacyParams({
-            gwei: multiply(
-              polygonGasPriceBumpFactor,
-              response?.data.legacy.fastGasPrice,
-            ),
+            gwei: response?.data.legacy.fastGasPrice,
             speed: 'urgent',
           }),
           fast: parseGasFeeLegacyParams({
-            gwei: multiply(
-              polygonGasPriceBumpFactor,
-              response?.data.legacy.proposeGasPrice,
-            ),
+            gwei: response?.data.legacy.proposeGasPrice,
             speed: 'fast',
           }),
           normal: parseGasFeeLegacyParams({
-            gwei: multiply(
-              polygonGasPriceBumpFactor,
-              response?.data.legacy.safeGasPrice,
-            ),
+            gwei: response?.data.legacy.safeGasPrice,
             speed: 'normal',
           }),
         };
@@ -112,5 +101,5 @@ export const useGas = ({ chainId }: { chainId: Chain['id'] }) => {
     }
   }, [chainId, gasFeeParamsBySpeed, speed]);
 
-  return { data, gasFeeParamsBySpeed, gasFee, setSpeed, speed };
+  return { data, gasFeeParamsBySpeed, gasFee, setSpeed, speed, isLoading };
 };
