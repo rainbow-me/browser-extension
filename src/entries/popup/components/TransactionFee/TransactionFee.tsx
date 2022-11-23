@@ -36,7 +36,7 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
   const asset = useNativeAssetForNetwork({ chainId });
 
   // TODO estimate tx gas limit
-  const gasLimit = 20000;
+  const gasLimit = 2000000;
   const totalWei = multiply(gasLimit, gasFee);
   const nativeBalance = convertRawAmountToBalance(
     totalWei,

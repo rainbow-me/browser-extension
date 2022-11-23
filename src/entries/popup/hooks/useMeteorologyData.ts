@@ -4,7 +4,6 @@ import { Chain, chain } from 'wagmi';
 import {
   MeteorologyLegacyResponse,
   MeteorologyResponse,
-  useMeteorology,
 } from '~/core/resources/meteorology/gas';
 import {
   BlocksToConfirmation,
@@ -19,8 +18,10 @@ import {
 } from '~/core/utils/gas';
 import { add, multiply } from '~/core/utils/numbers';
 
+import { useGasData } from './useGasData';
+
 export const useMeteorologyData = ({ chainId }: { chainId: Chain['id'] }) => {
-  const { data } = useMeteorology({ chainId }, { refetchInterval: 5000 });
+  const { data: data } = useGasData({ chainId });
 
   const [speed, setSpeed] = useState<GasSpeed>('normal');
 
