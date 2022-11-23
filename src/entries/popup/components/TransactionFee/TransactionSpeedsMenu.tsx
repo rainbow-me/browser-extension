@@ -2,7 +2,11 @@ import React from 'react';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { GasFeeParams, GasSpeed } from '~/core/types/gas';
+import {
+  GasFeeLegacyParamsBySpeed,
+  GasFeeParamsBySpeed,
+  GasSpeed,
+} from '~/core/types/gas';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
 import {
@@ -28,7 +32,7 @@ const SPEED_EMOJIS: { [key in GasSpeed]: string } = {
 export const SwitchSpeedMenuSelector = ({
   gasFeeParamsBySpeed,
 }: {
-  gasFeeParamsBySpeed: { [key in GasSpeed]: GasFeeParams };
+  gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
 }) => {
   return (
     <>
@@ -83,7 +87,7 @@ export const SwitchSpeedMenuSelector = ({
 
 interface SwitchTransactionSpeedMenuProps {
   speed: GasSpeed;
-  gasFeeParamsBySpeed: { [key in GasSpeed]: GasFeeParams };
+  gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
   chainId: Chain['id'];
   onSpeedChanged: (speed: GasSpeed) => void;
 }

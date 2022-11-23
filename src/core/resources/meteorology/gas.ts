@@ -12,8 +12,6 @@ import {
 
 const getNetworkFromChainId = (chainId: Chain['id']) => {
   switch (chainId) {
-    case chain.polygon.id:
-      return chain.polygon.network;
     default:
       return chain.mainnet.network;
   }
@@ -131,6 +129,7 @@ export function useMeteorology(
     MeteorologyQueryKey
   > = {},
 ) {
+  console.log('-- IINNNNNN useMeteorology', chainId);
   return useQuery(
     meteorologyQueryKey({ chainId }),
     meteorologyQueryFunction,
