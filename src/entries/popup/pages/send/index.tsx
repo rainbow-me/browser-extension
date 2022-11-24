@@ -1,6 +1,5 @@
 import { Address, fetchEnsAddress } from '@wagmi/core';
 import { ethers } from 'ethers';
-import { motion } from 'framer-motion';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { chain, useAccount } from 'wagmi';
@@ -71,15 +70,10 @@ export const Send = () => {
 
   return (
     <Box
-      as={motion.div}
       display="flex"
       flexDirection="column"
       gap="24px"
       padding="20px"
-      initial={{ opacity: 0, x: window.innerWidth }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: window.innerWidth }}
-      transition={{ type: 'tween', duration: 0.2 }}
       style={{ overflow: 'auto' }}
     >
       <Columns space="12px">

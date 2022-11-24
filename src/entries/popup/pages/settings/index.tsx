@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import React, { useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -32,17 +31,7 @@ export function Settings() {
   }, []);
 
   return (
-    <Box
-      as={motion.div}
-      display="flex"
-      flexDirection="column"
-      gap="24px"
-      padding="20px"
-      initial={{ opacity: 0, x: window.innerWidth }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: window.innerWidth }}
-      transition={{ type: 'tween', duration: 0.2 }}
-    >
+    <Box display="flex" flexDirection="column" gap="24px" padding="20px">
       <Text as="h1" size="20pt" weight="bold">
         Settings
       </Text>

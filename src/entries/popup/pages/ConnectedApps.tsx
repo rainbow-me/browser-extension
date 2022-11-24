@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { Address, useEnsAvatar, useEnsName } from 'wagmi';
@@ -16,18 +15,8 @@ import { useAppSession } from '../hooks/useAppSession';
 
 export function ConnectedApps() {
   const { appSessions, clearSessions } = useAppSessionsStore();
-
   return (
-    <Box
-      as={motion.div}
-      display="flex"
-      flexDirection="column"
-      initial={{ opacity: 0, x: window.innerWidth }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: window.innerWidth }}
-      transition={{ type: 'tween', duration: 0.2 }}
-      height="full"
-    >
+    <React.Fragment>
       <Navbar
         title={i18n.t('connected_apps.title')}
         leftComponent={
@@ -72,7 +61,7 @@ export function ConnectedApps() {
           </Text>
         </Inline>
       </Box>
-    </Box>
+    </React.Fragment>
   );
 }
 
