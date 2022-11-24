@@ -8,6 +8,8 @@ import { initThemingBody, initThemingCritical } from '~/design-system';
 
 import { App } from './App';
 
+require('../../core/utils/lockdown');
+
 initThemingCritical();
 initThemingBody();
 syncStores();

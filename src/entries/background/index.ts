@@ -9,6 +9,7 @@ import { handleInstallExtension } from './handlers/handleInstallExtension';
 import { handleProviderRequest } from './handlers/handleProviderRequest';
 import { handleSetupInpage } from './handlers/handleSetupInpage';
 import { handleWallets } from './handlers/handleWallets';
+require('../../core/utils/lockdown');
 
 initializeSentry('background');
 
