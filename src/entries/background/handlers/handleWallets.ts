@@ -1,5 +1,4 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { uuid4 } from '@sentry/utils';
 import { getProvider } from '@wagmi/core';
 import { Bytes, TypedDataDomain, TypedDataField } from 'ethers';
 import { Address } from 'wagmi';
@@ -22,7 +21,6 @@ import {
   unlockVault,
   wipeVault,
 } from '~/core/keychain';
-import { keychainManager } from '~/core/keychain/KeychainManager';
 import { initializeMessenger } from '~/core/messengers';
 import { WalletAction } from '~/core/types/walletActions';
 import { EthereumWalletSeed } from '~/core/utils/ethereum';
@@ -58,8 +56,6 @@ export const handleWallets = () =>
   messenger.reply(
     'wallet_action',
     async ({ action, payload }: WalletActionArguments) => {
-      uuid4();
-      console.debug(keychainManager);
       try {
         let response = null;
         switch (action) {
