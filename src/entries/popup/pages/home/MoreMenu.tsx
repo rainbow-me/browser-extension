@@ -16,12 +16,14 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   return (
     <Menu>
       <MenuTrigger asChild>
-        <Box position="relative">{children}</Box>
+        <Box position="relative" id="home-page-header-right">
+          {children}
+        </Box>
       </MenuTrigger>
       <MenuContent>
         <Stack space="4px">
           <Inset top="8px" bottom="8px">
-            <Link to={'/settings'}>
+            <Link to={'/settings'} id="settings-link">
               <Inline alignVertical="center" space="8px">
                 <Symbol size={12} symbol="gearshape.fill" weight="semibold" />
                 <Text size="14pt" weight="bold">

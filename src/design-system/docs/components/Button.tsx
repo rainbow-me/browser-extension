@@ -49,10 +49,8 @@ export const Button = ({
   iconBefore,
   onClick,
   size,
-  testId,
 }: ButtonOverlayProps & {
   onClick: React.MouseEventHandler<HTMLButtonElement>;
-  testId: string;
 }) => (
   <Box as="button" onClick={onClick} type="button">
     <ButtonOverlay color={color} iconBefore={iconBefore} size={size}>

@@ -14,3 +14,4 @@
 ].forEach(Object.freeze);
 
 console.log('frozen intrinsics!');
+export {};

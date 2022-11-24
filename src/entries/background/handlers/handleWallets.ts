@@ -128,6 +128,19 @@ export const handleWallets = () =>
           case 'sign_typed_data':
             response = await signTypedData(payload as SignTypedDataArguments);
             break;
+          case 'test_sandbox':
+            {
+              try {
+                console.log('about to leak...');
+                const r = await fetch('https://api.ipify.org?format=json');
+                const res = await r.json();
+                console.log('response from server after leaking', res);
+                response = 'Background leaked!';
+              } catch (e) {
+                response = 'Background sandboxed!';
+              }
+            }
+            break;
           default: {
             // TODO: handle other methods
           }

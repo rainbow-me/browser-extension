@@ -15,5 +15,6 @@ export enum walletActions {
   send_transaction = 'send_transaction',
   personal_sign = 'personal_sign',
   sign_typed_data = 'sign_typed_data',
+  test_sandbox = 'test_sandbox',
 }
 export type WalletAction = keyof typeof walletActions;
