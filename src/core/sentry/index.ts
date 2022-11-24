@@ -12,7 +12,7 @@ export function initializeSentry(context: 'popup' | 'background') {
       });
       console.log('sentry initialized correctly!');
     } catch (e) {
-      console.log('sentry failed to initialize');
+      console.log('sentry failed to initialize', e);
     }
   }
 }
