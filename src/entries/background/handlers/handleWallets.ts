@@ -1,4 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { uuid4 } from '@sentry/utils';
 import { getProvider } from '@wagmi/core';
 import { Bytes, TypedDataDomain, TypedDataField } from 'ethers';
 import { Address } from 'wagmi';
@@ -57,6 +58,7 @@ export const handleWallets = () =>
   messenger.reply(
     'wallet_action',
     async ({ action, payload }: WalletActionArguments) => {
+      uuid4();
       console.debug(keychainManager);
       try {
         let response = null;

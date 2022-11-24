@@ -1,3 +1,5 @@
+import { uuid4 } from '@sentry/utils';
+
 import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry } from '~/core/sentry';
 import { syncStores } from '~/core/state';
@@ -17,3 +19,4 @@ handleProviderRequest({ messenger });
 handleSetupInpage();
 handleWallets();
 syncStores();
+uuid4();

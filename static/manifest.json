@@ -1,6 +1,6 @@
 {
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; frame-ancestors 'none';"
+    "extension_pages": " frame-ancestors 'none'; script-src 'self'; object-src 'self'; connect-src 'self' http://localhost:8545/ https://*.alchemyapi.io/ wss://*.rainbow.me https://rainbow.mypinata.cloud/ https://rainbowme-res.cloudinary.com/ wss://*.alchemyapi.io http://*.infura.io;"
   },
   "version": "1",
   "minimum_chrome_version": "88",
@@ -31,7 +31,13 @@
   ],
   "default_locale": "en",
   "description": "Rainbow is a fun, simple, and secure Ethereum wallet that makes managing your assets a joy.",
-  "host_permissions": ["file://*/*", "http://*/*", "https://*/*"],
+  "host_permissions": [
+    "http://localhost:8545/",
+    "https://*.infura.io/",
+    "https://*.alchemy.io/",
+    "https://*.rainbow.me/",
+    "https://sentry.io/"
+  ],
   "icons": {
     "16": "images/icon-16.png",
     "19": "images/icon-19.png",
@@ -45,7 +51,6 @@
   "name": "Rainbow Wallet | DEVELOPMENT BUILD",
   "permissions": [
     "activeTab",
-    "alarms",
     "contextMenus",
     "clipboardWrite",
     "notifications",
