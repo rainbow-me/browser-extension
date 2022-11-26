@@ -1,9 +1,9 @@
+import { motion } from 'framer-motion';
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { Box, Symbol, Text } from '~/design-system';
+import { Box, Button, Symbol, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
-
-import { navbarButtonStyles } from './Navbar.css';
 
 type NavbarProps = {
   leftComponent?: React.ReactElement;
@@ -23,13 +23,24 @@ export function Navbar({
       display="flex"
       alignItems="center"
       justifyContent="center"
-      padding="16px"
       width="full"
       position="relative"
-      height="full"
+      style={{ height: 65 }}
     >
       {leftComponent && (
-        <Box position="absolute" left="0" top="0" padding="16px" height="full">
+        <Box
+          as={motion.div}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.45 }}
+          exit={{ opacity: 0 }}
+          position="absolute"
+          style={{
+            left: 15,
+            top: 17,
+          }}
+          height="full"
+        >
           {leftComponent}
         </Box>
       )}
@@ -43,7 +54,19 @@ export function Navbar({
         titleComponent
       )}
       {rightComponent && (
-        <Box position="absolute" right="0" top="0" padding="16px" height="full">
+        <Box
+          as={motion.div}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.45 }}
+          exit={{ opacity: 0 }}
+          position="absolute"
+          style={{
+            right: 15,
+            top: 17,
+          }}
+          height="full"
+        >
           {rightComponent}
         </Box>
       )}
@@ -52,29 +75,30 @@ export function Navbar({
 }
 
 Navbar.BackButton = NavbarBackButton;
+Navbar.CloseButton = NavbarCloseButton;
 Navbar.SymbolButton = NavbarSymbolButton;
 
 type NavbarButtonProps = {
   children: React.ReactNode;
-  variant?: 'default' | 'ghost';
+  onClick?: () => void;
+  variant?: 'transparent' | 'flat';
 };
 
 // TODO: Refactor to use generic DS Button.
 export function NavbarButton({
   children,
-  variant = 'default',
+  onClick,
+  variant = 'transparent',
 }: NavbarButtonProps) {
   return (
-    <Box
-      className={navbarButtonStyles[variant]}
-      borderRadius="round"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      style={{ width: 32, height: 32 }}
+    <Button
+      height="32px"
+      onClick={onClick}
+      variant={variant}
+      color="surfaceSecondaryElevated"
     >
       {children}
-    </Box>
+    </Button>
   );
 }
 
@@ -95,15 +119,24 @@ export function NavbarSymbolButton({ symbol }: NavbarSymbolButtonProps) {
   );
 }
 
-export function NavbarBackButton() {
+function NavbarButtonWithGoBack({ symbol }: { symbol: SymbolProps['symbol'] }) {
+  const navigate = useNavigate();
   return (
-    <NavbarButton variant="ghost">
+    <NavbarButton variant="transparent" onClick={() => navigate(-1)}>
       <Symbol
         color="labelSecondary"
-        symbol="arrow.left"
+        symbol={symbol}
         size={16}
         weight="semibold"
       />
     </NavbarButton>
   );
+}
+
+export function NavbarBackButton() {
+  return <NavbarButtonWithGoBack symbol="arrowLeft" />;
+}
+
+export function NavbarCloseButton() {
+  return <NavbarButtonWithGoBack symbol="xmark" />;
 }

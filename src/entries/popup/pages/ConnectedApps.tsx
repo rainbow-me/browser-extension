@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import { Address, useEnsAvatar, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -9,7 +8,6 @@ import { truncateAddress } from '~/core/utils/truncateAddress';
 import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 
-import { Navbar } from '../components/Navbar/Navbar';
 import { SwitchNetworkMenu } from '../components/SwitchMenu/SwitchNetworkMenu';
 import { useAppSession } from '../hooks/useAppSession';
 
@@ -17,14 +15,6 @@ export function ConnectedApps() {
   const { appSessions, clearSessions } = useAppSessionsStore();
   return (
     <React.Fragment>
-      <Navbar
-        title={i18n.t('connected_apps.title')}
-        leftComponent={
-          <Link to="/">
-            <Navbar.BackButton />
-          </Link>
-        }
-      />
       <Box
         style={{
           flex: 1,

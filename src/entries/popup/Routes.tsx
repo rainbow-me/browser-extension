@@ -2,6 +2,7 @@ import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import { matchRoutes, useLocation } from 'react-router-dom';
 
+import { i18n } from '~/core/languages';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
 import { ConnectedApps } from './pages/ConnectedApps';
@@ -26,7 +27,11 @@ export function Routes() {
       {
         path: '/connected',
         element: (
-          <AnimatedRoute direction="vertical">
+          <AnimatedRoute
+            direction="vertical"
+            navbar
+            title={i18n.t('connected_apps.title')}
+          >
             <ConnectedApps />
           </AnimatedRoute>
         ),
@@ -34,7 +39,11 @@ export function Routes() {
       {
         path: '/settings',
         element: (
-          <AnimatedRoute direction="vertical">
+          <AnimatedRoute
+            direction="vertical"
+            navbar
+            title={i18n.t('settings.title')}
+          >
             <Settings />
           </AnimatedRoute>
         ),
@@ -42,7 +51,11 @@ export function Routes() {
       {
         path: '/send',
         element: (
-          <AnimatedRoute direction="vertical">
+          <AnimatedRoute
+            direction="vertical"
+            navbar
+            title={i18n.t('send.title')}
+          >
             <Send />
           </AnimatedRoute>
         ),
@@ -50,7 +63,11 @@ export function Routes() {
       {
         path: '/sign',
         element: (
-          <AnimatedRoute direction="vertical">
+          <AnimatedRoute
+            direction="vertical"
+            navbar
+            title={i18n.t('sign.title')}
+          >
             <Sign />
           </AnimatedRoute>
         ),
@@ -58,7 +75,11 @@ export function Routes() {
       {
         path: '/wallets',
         element: (
-          <AnimatedRoute direction="horizontal">
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            title={i18n.t('wallets.title')}
+          >
             <Wallets />
           </AnimatedRoute>
         ),

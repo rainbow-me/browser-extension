@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { Link } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useCurrentLanguageStore } from '~/core/state';
@@ -32,10 +31,6 @@ export function Settings() {
 
   return (
     <Box display="flex" flexDirection="column" gap="24px" padding="20px">
-      <Text as="h1" size="20pt" weight="bold">
-        Settings
-      </Text>
-
       <Box
         display="flex"
         flexDirection="row"

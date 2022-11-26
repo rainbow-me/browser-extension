@@ -1,7 +1,6 @@
 import { Address, fetchEnsAddress } from '@wagmi/core';
 import { ethers } from 'ethers';
 import React, { ChangeEvent, useCallback, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { chain, useAccount } from 'wagmi';
 
 import { isENSAddressFormat } from '~/core/utils/ethereum';
@@ -18,7 +17,7 @@ import {
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { sendTransaction } from '../../handlers/wallet';
 
-export const Send = () => {
+export function Send() {
   const [toAddress, setToAddress] = useState('');
   const [amount, setAmount] = useState('');
   const [txHash, setTxHash] = useState('');
@@ -76,28 +75,6 @@ export const Send = () => {
       padding="20px"
       style={{ overflow: 'auto' }}
     >
-      <Columns space="12px">
-        <Column width="1/3">
-          <Link to="/">
-            <Box as="button" style={{ borderRadius: 999, width: '100%' }}>
-              <Text
-                color="labelSecondary"
-                size="14pt"
-                weight="bold"
-                align="left"
-              >
-                Back
-              </Text>
-            </Box>
-          </Link>
-        </Column>
-        <Column>
-          <Text as="h1" size="20pt" weight="bold">
-            Send
-          </Text>
-        </Column>
-      </Columns>
-
       <Columns space="12px">
         <Column>
           <Rows space="12px">
@@ -195,4 +172,4 @@ export const Send = () => {
       </Columns>
     </Box>
   );
-};
+}

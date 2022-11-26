@@ -7,10 +7,13 @@ import {
   AnimatedRouteDirection,
   animatedRouteTransitionConfig,
 } from '~/design-system/styles/designTokens';
+import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 
 type AnimatedRouteProps = {
   children: React.ReactNode;
   direction: AnimatedRouteDirection;
+  navbar?: boolean;
+  title?: string;
 };
 
 export const animatedRouteValues: Record<
@@ -65,7 +68,7 @@ export const AnimatedRoute = React.forwardRef<
   HTMLDivElement,
   AnimatedRouteProps
 >((props: AnimatedRouteProps, ref) => {
-  const { children, direction } = props;
+  const { children, direction, navbar, title } = props;
   const { initial, end, exit } = animatedRouteValues[direction];
   const transition = animatedRouteTransitionConfig[direction];
   return (
@@ -80,6 +83,18 @@ export const AnimatedRoute = React.forwardRef<
       exit={exit}
       transition={transition}
     >
+      {navbar && (
+        <Navbar
+          title={title || ''}
+          leftComponent={
+            direction === 'horizontal' ? (
+              <Navbar.BackButton />
+            ) : (
+              <Navbar.CloseButton />
+            )
+          }
+        />
+      )}
       {children}
     </Box>
   );
