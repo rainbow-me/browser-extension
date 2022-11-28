@@ -36,7 +36,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
               <Link to={'/settings'}>
                 <Inline alignVertical="center" space="8px">
                   <Symbol size={12} symbol="gearshape.fill" weight="semibold" />
-                  <Text size="14pt" weight="bold">
+                  <Text size="14pt" weight="semibold">
                     {i18n.t('menu.home_header_right.settings')}
                   </Text>
                 </Inline>
@@ -45,7 +45,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
             <Inset vertical="8px">
               <Inline alignVertical="center" space="8px">
                 <Symbol size={12} symbol="qrcode" weight="semibold" />
-                <Text size="14pt" weight="bold">
+                <Text size="14pt" weight="semibold">
                   {i18n.t('menu.home_header_right.qr_code')}
                 </Text>
               </Inline>
@@ -63,7 +63,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
                         symbol="person.crop.circle.fill"
                         weight="semibold"
                       />
-                      <Text size="14pt" weight="bold">
+                      <Text size="14pt" weight="semibold">
                         {i18n.t('menu.home_header_right.rainbow_profile')}
                       </Text>
                     </Inline>
