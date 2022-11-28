@@ -9,6 +9,7 @@ import {
 } from 'wagmi';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { infuraProvider } from 'wagmi/providers/infura';
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { queryClient } from '../react-query';
 import { Storage } from '../storage';
@@ -19,9 +20,33 @@ const noopStorage = {
   removeItem: () => null,
 };
 
+export const bsc: Chain = {
+  id: 56,
+  name: 'Binance Smart Chain',
+  network: 'bsc',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Binance Chain',
+    symbol: 'BNB',
+  },
+  rpcUrls: {
+    default: process.env.BSC_MAINNET_RPC as string,
+  },
+  blockExplorers: {
+    default: { name: '', url: 'https://www.bscscan.com/' },
+  },
+  testnet: false,
+};
+
 const { chains, provider, webSocketProvider } = configureChains(
-  [chain.mainnet, chain.optimism, chain.polygon, chain.arbitrum],
+  [chain.mainnet, chain.optimism, chain.polygon, chain.arbitrum, bsc],
   [
+    jsonRpcProvider({
+      rpc: (chain) => {
+        if (chain.id !== bsc.id) return null;
+        return { http: chain.rpcUrls.default };
+      },
+    }),
     alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY }),
     infuraProvider({ apiKey: process.env.INFURA_API_KEY }),
   ],
