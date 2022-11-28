@@ -13,29 +13,12 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { queryClient } from '../react-query';
 import { Storage } from '../storage';
+import { bsc } from '../types/chains';
 
 const noopStorage = {
   getItem: () => '',
   setItem: () => null,
   removeItem: () => null,
-};
-
-export const bsc: Chain = {
-  id: 56,
-  name: 'Binance Smart Chain',
-  network: 'bsc',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'Binance Chain',
-    symbol: 'BNB',
-  },
-  rpcUrls: {
-    default: process.env.BSC_MAINNET_RPC as string,
-  },
-  blockExplorers: {
-    default: { name: '', url: 'https://www.bscscan.com/' },
-  },
-  testnet: false,
 };
 
 const { chains, provider, webSocketProvider } = configureChains(

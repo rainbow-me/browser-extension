@@ -1,11 +1,15 @@
 import { Chain, chain } from 'wagmi';
 
+import { bsc } from '~/core/types/chains';
+
 import { useMeteorology } from './meteorology';
 import { useProviderGas } from './providerGas';
 
 export const useGasData = ({ chainId }: { chainId: Chain['id'] }) => {
   const meteorologySupportsChain =
-    chainId === chain.mainnet.id || chainId === chain.polygon.id;
+    chainId === chain.mainnet.id ||
+    chainId === chain.polygon.id ||
+    chainId === bsc.id;
 
   const { data: meteorologyData, isLoading: meteorologyDataIsLoading } =
     useMeteorology(
