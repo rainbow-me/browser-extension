@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import { TextColor } from '~/design-system/styles/designTokens';
+
 import { Box } from '../Box/Box';
 import {
   ButtonVariantProps,
@@ -16,12 +18,18 @@ export type ButtonSymbolProps = {
   height: ButtonHeight;
   onClick?: () => void;
   symbol: SymbolProps['symbol'];
+  symbolColor?: TextColor;
+  weight?: SymbolProps['weight'];
 } & ButtonVariantProps;
 
 export function ButtonSymbol({ height, symbol, ...props }: ButtonSymbolProps) {
-  const { textColor } = stylesForVariant({
+  const { textColor: textColorFromVariant } = stylesForVariant({
     color: props.color ?? 'accent',
   })[props.variant];
+  let symbolColor = textColorFromVariant;
+  if (props.symbolColor) {
+    symbolColor = props.symbolColor;
+  }
 
   const { textSize } = stylesForHeight[height];
 
@@ -30,14 +38,14 @@ export function ButtonSymbol({ height, symbol, ...props }: ButtonSymbolProps) {
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
       <ButtonWrapper height={height} width="full" {...props}>
         <Symbol
-          color={textColor}
+          color={symbolColor}
           size={
             parseInt(
               textSize?.split(' ')[0].replace('pt', '') ?? '',
             ) as SymbolProps['size']
           }
           symbol={symbol}
-          weight="bold"
+          weight={props.weight || 'bold'}
         />
       </ButtonWrapper>
     </Box>

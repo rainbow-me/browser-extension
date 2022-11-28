@@ -163,7 +163,6 @@ export const stylesForVariant = ({
   stroked: {
     borderColor: color,
     borderWidth: '2px',
-    textColor: 'labelSecondary',
   },
   transparent: {
     textColor: color as TextColor,

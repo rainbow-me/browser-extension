@@ -114,9 +114,9 @@
         "plural": "secs",
         "singular": "sec"
       }
-    },
-  "wallets": {
+    }
+},
+"wallets": {
     "title": "Wallets"
   }
-}
 }

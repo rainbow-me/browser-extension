@@ -2,7 +2,8 @@ import { motion } from 'framer-motion';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Box, Button, Symbol, Text } from '~/design-system';
+import { Box, Button, ButtonSymbol, Text } from '~/design-system';
+import { ButtonSymbolProps } from '~/design-system/components/ButtonSymbol/ButtonSymbol';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
 type NavbarProps = {
@@ -84,7 +85,6 @@ type NavbarButtonProps = {
   variant?: 'transparent' | 'flat';
 };
 
-// TODO: Refactor to use generic DS Button.
 export function NavbarButton({
   children,
   onClick,
@@ -103,40 +103,59 @@ export function NavbarButton({
 }
 
 type NavbarSymbolButtonProps = {
-  symbol: SymbolProps['symbol'];
+  height?: ButtonSymbolProps['height'];
+  onClick?: () => void;
+  symbol: ButtonSymbolProps['symbol'];
+  variant: 'flat' | 'transparent';
+  weight?: ButtonSymbolProps['weight'];
 };
 
-export function NavbarSymbolButton({ symbol }: NavbarSymbolButtonProps) {
+export function NavbarSymbolButton({
+  height,
+  onClick,
+  symbol,
+  variant,
+  weight,
+}: NavbarSymbolButtonProps) {
   return (
-    <NavbarButton>
-      <Symbol
-        color="labelSecondary"
-        symbol={symbol}
-        size={16}
-        weight="semibold"
-      />
-    </NavbarButton>
+    <ButtonSymbol
+      color="surfaceSecondaryElevated"
+      height={height || '32px'}
+      onClick={onClick}
+      symbol={symbol}
+      symbolColor="labelSecondary"
+      variant={variant}
+      weight={weight}
+    />
   );
 }
 
-function NavbarButtonWithGoBack({ symbol }: { symbol: SymbolProps['symbol'] }) {
+function NavbarButtonWithBack({
+  height,
+  symbol,
+}: {
+  height: ButtonSymbolProps['height'];
+  symbol: SymbolProps['symbol'];
+}) {
   const navigate = useNavigate();
+  const padding = height === '24px' ? '4px' : '2px';
   return (
-    <NavbarButton variant="transparent" onClick={() => navigate(-1)}>
-      <Symbol
-        color="labelSecondary"
+    <Box padding={padding}>
+      <NavbarSymbolButton
+        height={height}
+        onClick={() => navigate(-1)}
         symbol={symbol}
-        size={16}
-        weight="semibold"
+        variant="transparent"
+        weight="bold"
       />
-    </NavbarButton>
+    </Box>
   );
 }
 
 export function NavbarBackButton() {
-  return <NavbarButtonWithGoBack symbol="arrowLeft" />;
+  return <NavbarButtonWithBack height="28px" symbol="arrow.left" />;
 }
 
 export function NavbarCloseButton() {
-  return <NavbarButtonWithGoBack symbol="xmark" />;
+  return <NavbarButtonWithBack height="24px" symbol="xmark" />;
 }
