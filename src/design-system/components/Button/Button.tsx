@@ -18,6 +18,7 @@ export type ButtonProps = {
   height: ButtonHeight;
   onClick?: () => void;
   width?: 'fit' | 'full';
+  testId?: string;
 } & ButtonVariantProps &
   (
     | {
@@ -35,6 +36,7 @@ export function Button({
   emoji,
   height,
   symbol,
+  testId,
   ...props
 }: ButtonProps) {
   const { textColor } = stylesForVariant({
@@ -46,7 +48,7 @@ export function Button({
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
     <ButtonWrapper height={height} {...props}>
-      <Box paddingHorizontal={paddingHorizontal}>
+      <Box paddingHorizontal={paddingHorizontal} testId={testId}>
         {typeof children === 'string' ? (
           <Inline alignVertical="center" space={gap}>
             {emoji && (

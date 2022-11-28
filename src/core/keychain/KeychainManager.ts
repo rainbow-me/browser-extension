@@ -56,10 +56,9 @@ class KeychainManager {
         const memState = await privates.get(this).getLastMemorizedState();
         // If it's there, the keychain manager is already unlocked
         if (memState) {
-          this.state = {
-            ...this.state,
-            ...memState,
-          };
+          this.state.keychains = memState.keychains || [];
+          this.state.isUnlocked = memState.isUnlocked || false;
+          this.state.vault = memState.vault || '';
         }
 
         // Also attempt to read from storage for future unlocks
@@ -116,9 +115,11 @@ class KeychainManager {
       save: async () => {
         // Remove any potential empty keychains
         // Serialize all the keychains
-        const serializedKeychains = await Promise.all(
-          this.state.keychains.map((keychain) => keychain.serialize()),
-        );
+        const serializedKeychains = this.state.keychains?.length
+          ? await Promise.all(
+              this.state.keychains?.map((keychain) => keychain.serialize()),
+            )
+          : [];
 
         // Encrypt the serialized keychains
         if (serializedKeychains.length > 0) {
@@ -225,14 +226,8 @@ class KeychainManager {
   }
 
   async lock() {
-    const newState = {
-      isUnlocked: false,
-      keychains: [],
-    };
-    this.state = {
-      ...this.state,
-      ...newState,
-    };
+    this.state.keychains = [];
+    this.state.isUnlocked = false;
     privates.get(this).password = null;
     await privates.get(this).memorize();
   }
@@ -241,11 +236,9 @@ class KeychainManager {
     if (!this.verifyPassword(password)) {
       throw new Error('Wrong password');
     }
-    this.state = {
-      isUnlocked: false,
-      keychains: [],
-      vault: '',
-    };
+    this.state.keychains = [];
+    this.state.isUnlocked = false;
+    this.state.vault = '';
 
     privates.get(this).password = '';
 
@@ -320,3 +313,4 @@ class KeychainManager {
 }
 
 export const keychainManager = new KeychainManager();
+Object.freeze(keychainManager);
