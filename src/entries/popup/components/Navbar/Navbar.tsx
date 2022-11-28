@@ -107,7 +107,6 @@ type NavbarSymbolButtonProps = {
   onClick?: () => void;
   symbol: ButtonSymbolProps['symbol'];
   variant: 'flat' | 'transparent';
-  weight?: ButtonSymbolProps['weight'];
 };
 
 export function NavbarSymbolButton({
@@ -115,7 +114,6 @@ export function NavbarSymbolButton({
   onClick,
   symbol,
   variant,
-  weight,
 }: NavbarSymbolButtonProps) {
   return (
     <ButtonSymbol
@@ -125,7 +123,6 @@ export function NavbarSymbolButton({
       symbol={symbol}
       symbolColor="labelSecondary"
       variant={variant}
-      weight={weight}
     />
   );
 }
@@ -146,7 +143,6 @@ function NavbarButtonWithBack({
         onClick={() => navigate(-1)}
         symbol={symbol}
         variant="transparent"
-        weight="bold"
       />
     </Box>
   );

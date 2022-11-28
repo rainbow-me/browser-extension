@@ -14,7 +14,7 @@ import { useAppSession } from '../hooks/useAppSession';
 export function ConnectedApps() {
   const { appSessions, clearSessions } = useAppSessionsStore();
   return (
-    <React.Fragment>
+    <Box display="flex" flexDirection="column" height="full">
       <Box
         style={{
           flex: 1,
@@ -51,7 +51,7 @@ export function ConnectedApps() {
           </Text>
         </Inline>
       </Box>
-    </React.Fragment>
+    </Box>
   );
 }
 

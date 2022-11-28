@@ -19,7 +19,6 @@ export type ButtonSymbolProps = {
   onClick?: () => void;
   symbol: SymbolProps['symbol'];
   symbolColor?: TextColor;
-  weight?: SymbolProps['weight'];
 } & ButtonVariantProps;
 
 export function ButtonSymbol({ height, symbol, ...props }: ButtonSymbolProps) {
@@ -45,7 +44,7 @@ export function ButtonSymbol({ height, symbol, ...props }: ButtonSymbolProps) {
             ) as SymbolProps['size']
           }
           symbol={symbol}
-          weight={props.weight || 'bold'}
+          weight="bold"
         />
       </ButtonWrapper>
     </Box>
