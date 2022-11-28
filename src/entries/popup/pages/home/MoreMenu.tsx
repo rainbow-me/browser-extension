@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
+import { useAccount, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
@@ -12,6 +13,15 @@ import {
 } from '../../components/Menu/Menu';
 
 export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
+  const { address } = useAccount();
+  const { data: ensName } = useEnsName({ address });
+
+  const openProfile = React.useCallback(() => {
+    chrome.tabs.create({
+      url: `https://rainbow.me/${ensName ?? address}`,
+    });
+  }, [address, ensName]);
+
   return (
     <Menu>
       <MenuTrigger asChild>
@@ -44,52 +54,31 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
           <Stack space="4px">
             <MenuSeparator />
             <Box>
-              <Inset vertical="8px">
-                <Inline alignVertical="center" alignHorizontal="justify">
-                  <Inline alignVertical="center" space="8px">
+              <Box onClick={openProfile}>
+                <Inset vertical="8px">
+                  <Inline alignVertical="center" alignHorizontal="justify">
+                    <Inline alignVertical="center" space="8px">
+                      <Symbol
+                        size={12}
+                        symbol="person.crop.circle.fill"
+                        weight="semibold"
+                      />
+                      <Text size="14pt" weight="bold">
+                        {i18n.t('menu.home_header_right.rainbow_profile')}
+                      </Text>
+                    </Inline>
                     <Symbol
                       size={12}
-                      symbol="person.crop.circle.fill"
+                      symbol="arrow.up.forward.circle"
                       weight="semibold"
+                      color="labelTertiary"
                     />
-                    <Text size="14pt" weight="bold">
-                      {i18n.t('menu.home_header_right.rainbow_profile')}
-                    </Text>
                   </Inline>
-                  <Symbol
-                    size={12}
-                    symbol="arrow.up.forward.circle"
-                    weight="semibold"
-                    color="labelTertiary"
-                  />
-                </Inline>
-              </Inset>
-
-              <Inset vertical="8px">
-                <Inline alignVertical="center" alignHorizontal="justify">
-                  <Inline alignVertical="center" space="8px">
-                    <Symbol
-                      size={12}
-                      symbol="binoculars.fill"
-                      weight="semibold"
-                    />
-                    <Text size="14pt" weight="bold">
-                      {i18n.t('menu.home_header_right.view_on_explorer')}
-                    </Text>
-                  </Inline>
-                  <Symbol
-                    size={12}
-                    symbol="arrow.up.forward.circle"
-                    weight="semibold"
-                    color="labelTertiary"
-                  />
-                </Inline>
-              </Inset>
+                </Inset>
+              </Box>
             </Box>
           </Stack>
         </Stack>
-
-        {/* <MenuItemIndicator style={{ marginLeft: 'auto' }}>o</MenuItemIndicator> */}
       </MenuContent>
     </Menu>
   );
