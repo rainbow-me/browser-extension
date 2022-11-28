@@ -54,7 +54,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
           <Stack space="4px">
             <MenuSeparator />
             <Box>
-              <Box onClick={openProfile}>
+              <Box width="full" as="button" onClick={openProfile}>
                 <Inset vertical="8px">
                   <Inline alignVertical="center" alignHorizontal="justify">
                     <Inline alignVertical="center" space="8px">
