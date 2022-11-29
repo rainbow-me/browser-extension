@@ -168,7 +168,7 @@ it('should be able to accept a signing request', async () => {
   await driver.switchTo().window(dappHandler);
 });
 
-it('should be able to accept a typed data signing request', async () => {
+it.skip('should be able to accept a typed data signing request', async () => {
   // TODO check if the signature is correct, we're not signing anything yet
   await delayTime('long');
   const dappHandler = await driver.getWindowHandle();
@@ -189,7 +189,7 @@ it('should be able to accept a typed data signing request', async () => {
   await driver.switchTo().window(dappHandler);
 });
 
-it('should be able to accept a transaction request', async () => {
+it.skip('should be able to accept a transaction request', async () => {
   // TODO send tx, we're not signing anything yet
   await delayTime('long');
   const dappHandler = await driver.getWindowHandle();
