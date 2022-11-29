@@ -152,8 +152,8 @@ it('should be able to accept a signing request', async () => {
   const button = await querySelector(driver, '[id="signTx"]');
   expect(button).toBeTruthy();
   await button.click();
-  await delayTime('short');
 
+  await delayTime('medium');
   const handlers = await driver.getAllWindowHandles();
 
   const popupHandler =
@@ -195,7 +195,7 @@ it.skip('should be able to accept a transaction request', async () => {
   const button = await querySelector(driver, '[id="sendTx"]');
   expect(button).toBeTruthy();
   await waitAndClick(button, driver);
-  await delayTime('short');
+  await delayTime('medium');
   const handlers = await driver.getAllWindowHandles();
 
   const popupHandler =
