@@ -175,7 +175,7 @@ it('should be able to accept a typed data signing request', async () => {
   const button = await querySelector(driver, '[id="signTypedData"]');
   expect(button).toBeTruthy();
   await waitAndClick(button, driver);
-  await delayTime('short');
+  await delayTime('medium');
   const handlers = await driver.getAllWindowHandles();
 
   const popupHandler =
