@@ -8,6 +8,7 @@
             "https://rainbow.mypinata.cloud/",
             "https://rainbowme-res.cloudinary.com/",
             "wss://*.alchemyapi.io",
+            "wss://*.g.alchemy.com",
             "https://*.infura.io",
             "https://burned-solitary-breeze.bsc.quiknode.pro/",
             "ws://localhost:9090/",
