@@ -14,9 +14,9 @@ const manifest = require('./static/manifest.json');
 const manifestFilePath = resolve(__dirname, './build/manifest.json');
 
 const manifestOverride = manifest;
-manifestOverride.content_security_policy.extension_pages = `${manifestOverride.content_security_policy.extension_pages} ${allowList.urls.join(
-  ' ',
-)};`;
+manifestOverride.content_security_policy.extension_pages = `${
+  manifestOverride.content_security_policy.extension_pages
+} ${allowList.urls.join(' ')};`;
 
 module.exports = {
   entry: {
