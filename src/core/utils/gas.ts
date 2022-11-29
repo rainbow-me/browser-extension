@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 import { Chain, chain } from 'wagmi';
 
+import { bsc } from '../types/chains';
 import {
   BlocksToConfirmation,
   GasFeeLegacyParams,
@@ -172,6 +173,7 @@ export const getBaseFeeMultiplier = (speed: GasSpeed) => {
 
 export const getChainWaitTime = (chainId: Chain['id']) => {
   switch (chainId) {
+    case bsc.id:
     case chain.polygon.id:
       return { safeWait: 6, proposedWait: 3, fastWait: 3 };
     case chain.optimism.id:

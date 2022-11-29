@@ -9,11 +9,14 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
+import { bsc } from '~/core/types/chains';
 
 const getMeteorologyNetworkFromChainId = (chainId: Chain['id']) => {
   switch (chainId) {
     case chain.polygon.id:
       return 'polygon';
+    case bsc.id:
+      return 'bsc';
     default:
       return 'mainnet';
   }

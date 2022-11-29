@@ -2,6 +2,7 @@ declare global {
   namespace NodeJS {
     interface ProcessEnv {
       ALCHEMY_API_KEY: string;
+      BSC_MAINNET_RPC: string;
       INFURA_API_KEY: string;
       ETHERSCAN_API_KEY: string;
       SENTRY_DSN: string;

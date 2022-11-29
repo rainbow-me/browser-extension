@@ -97,7 +97,7 @@ interface SwitchTransactionSpeedMenuProps {
   selectedSpeed: GasSpeed;
   gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
   chainId: Chain['id'];
-  enabled?: boolean;
+  editable?: boolean;
   onSpeedChanged: (speed: GasSpeed) => void;
 }
 
@@ -106,7 +106,7 @@ export const SwitchTransactionSpeedMenu = ({
   gasFeeParamsBySpeed,
   onSpeedChanged,
   chainId,
-  enabled = true,
+  editable = true,
 }: SwitchTransactionSpeedMenuProps) => {
   const menuTrigger = (
     <Box style={{ cursor: 'default' }}>
@@ -126,17 +126,19 @@ export const SwitchTransactionSpeedMenu = ({
           <Text color="label" weight="bold" size="14pt">
             {i18n.t(`transaction_fee.${selectedSpeed}`)}
           </Text>
-          <Symbol
-            weight="medium"
-            color="label"
-            size={14}
-            symbol="chevron.down.circle"
-          />
+          {editable ? (
+            <Symbol
+              weight="medium"
+              color="label"
+              size={14}
+              symbol="chevron.down.circle"
+            />
+          ) : null}
         </Inline>
       </Box>
     </Box>
   );
-  if (!enabled) return menuTrigger;
+  if (!editable) return menuTrigger;
   return (
     <Menu>
       <MenuTrigger asChild>{menuTrigger}</MenuTrigger>

@@ -1,6 +1,6 @@
 {
   "content_security_policy": {
-    "extension_pages": " frame-ancestors 'none'; script-src 'self'; object-src 'self'; connect-src 'self' http://localhost:8545/ https://*.alchemyapi.io/ wss://*.rainbow.me https://rainbow.mypinata.cloud/ https://rainbowme-res.cloudinary.com/ wss://*.alchemyapi.io http://*.infura.io ws://localhost:9090/ https://o331974.ingest.sentry.io;"
+    "extension_pages": "frame-ancestors 'none'; script-src 'self'; object-src 'self'; connect-src 'self'"
   },
   "version": "1",
   "minimum_chrome_version": "88",
@@ -45,7 +45,6 @@
   "name": "Rainbow Wallet | DEVELOPMENT BUILD",
   "permissions": [
     "activeTab",
-    "contextMenus",
     "clipboardWrite",
     "notifications",
     "scripting",
