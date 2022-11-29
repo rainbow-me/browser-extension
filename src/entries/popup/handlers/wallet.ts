@@ -9,6 +9,7 @@ import { Address } from 'wagmi';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';
 import { initializeMessenger } from '~/core/messengers';
+import { gasStore } from '~/core/state';
 
 const messenger = initializeMessenger({ connect: 'background' });
 
@@ -38,10 +39,11 @@ const signMessageByType = async (
 export const sendTransaction = async (
   transactionRequest: TransactionRequest,
 ): Promise<TransactionResponse> => {
-  return walletAction(
-    'send_transaction',
-    transactionRequest,
-  ) as unknown as TransactionResponse;
+  const { selectedGas } = gasStore.getState();
+  return walletAction('send_transaction', {
+    ...transactionRequest,
+    ...selectedGas.transactionGasParams,
+  }) as unknown as TransactionResponse;
 };
 
 export const personalSign = async (

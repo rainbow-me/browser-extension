@@ -1,5 +1,5 @@
 import React from 'react';
-import { Chain } from 'wagmi';
+import { Chain, chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { SupportedCurrencyKey, supportedCurrencies } from '~/core/references';
@@ -19,7 +19,7 @@ import {
   Text,
 } from '~/design-system';
 
-import { useMeteorologyData } from '../../hooks/useMeteorologyData';
+import { useGas } from '../../hooks/useGas';
 import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 
@@ -30,13 +30,19 @@ type TransactionFeeProps = {
 };
 
 export function TransactionFee({ chainId }: TransactionFeeProps) {
-  const { gasFeeParamsBySpeed, speed, setSpeed, gasFee } = useMeteorologyData({
+  const {
+    selectedSpeed,
+    setSelectedSpeed,
+    gasFeeParamsBySpeed,
+    gasFee,
+    isLoading,
+  } = useGas({
     chainId,
   });
   const asset = useNativeAssetForNetwork({ chainId });
 
   // TODO estimate tx gas limit
-  const gasLimit = 20000;
+  const gasLimit = 2000000;
   const totalWei = multiply(gasLimit, gasFee);
   const nativeBalance = convertRawAmountToBalance(
     totalWei,
@@ -55,9 +61,11 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
           </Row>
           <Row>
             <Inline alignVertical="center" space="4px">
-              <ChainBadge chainId={1} size="small" />
+              <ChainBadge chainId={chainId} size="small" />
               <Text weight="semibold" color="label" size="14pt">
-                {`${displayFeeValue} ~ ${gasFeeParamsBySpeed[speed].estimatedTime.display}`}
+                {isLoading
+                  ? '~'
+                  : `${displayFeeValue} ~ ${gasFeeParamsBySpeed[selectedSpeed].estimatedTime.display}`}
               </Text>
             </Inline>
           </Row>
@@ -66,22 +74,27 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
       <Column>
         <Inline space="6px" alignVertical="center" alignHorizontal="right">
           <SwitchTransactionSpeedMenu
-            speed={speed}
-            onSpeedChanged={setSpeed}
+            selectedSpeed={selectedSpeed}
+            onSpeedChanged={setSelectedSpeed}
             chainId={chainId}
             gasFeeParamsBySpeed={gasFeeParamsBySpeed}
+            editable={
+              chainId === chain.mainnet.id || chainId === chain.polygon.id
+            }
           />
-          <Box
-            borderRadius="round"
-            boxShadow="12px accent"
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            background="fillSecondary"
-            style={{ height: 28, width: 28 }}
-          >
-            <Symbol weight="medium" symbol="slider.horizontal.3" size={12} />
-          </Box>
+          {chainId === chain.mainnet.id ? (
+            <Box
+              borderRadius="round"
+              boxShadow="12px accent"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              background="fillSecondary"
+              style={{ height: 28, width: 28 }}
+            >
+              <Symbol weight="medium" symbol="slider.horizontal.3" size={12} />
+            </Box>
+          ) : null}
         </Inline>
       </Column>
     </Columns>

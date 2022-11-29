@@ -7,6 +7,8 @@ import { Address } from 'wagmi';
 import { PrivateKey } from '../keychain/IKeychain';
 import { EthereumWalletType } from '../types/walletTypes';
 
+import { divide, multiply } from './numbers';
+
 export type EthereumWalletSeed = PrivateKey | Mnemonic['phrase'];
 
 /**
@@ -96,4 +98,14 @@ export const hasPreviousTransactions = async (
   } catch (e) {
     return false;
   }
+};
+
+export const gweiToWei = (gweiAmount: string) => {
+  const weiAmount = multiply(gweiAmount, 1000000000);
+  return weiAmount;
+};
+
+export const weiToGwei = (weiAmount: string) => {
+  const gweiAmount = divide(weiAmount, 1000000000);
+  return gweiAmount;
 };
