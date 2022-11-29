@@ -709,7 +709,7 @@ export type AnimatedRouteConfig = Record<
 export const animatedRouteTransitionConfig = {
   base: {
     type: 'spring',
-    duration: 0.4,
+    duration: 0.3,
   },
   horizontal: {
     type: 'spring',

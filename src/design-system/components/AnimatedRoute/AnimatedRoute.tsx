@@ -37,7 +37,7 @@ export const animatedRouteValues: Record<
   horizontal: {
     initial: {
       opacity: 0,
-      x: window.innerWidth,
+      x: 16,
     },
     end: {
       opacity: 1,
@@ -45,13 +45,13 @@ export const animatedRouteValues: Record<
     },
     exit: {
       opacity: 0,
-      x: window.innerWidth,
+      x: 16,
     },
   },
   vertical: {
     initial: {
       opacity: 0,
-      y: window.innerHeight - 16,
+      y: 16,
     },
     end: {
       opacity: 1,
@@ -59,7 +59,7 @@ export const animatedRouteValues: Record<
     },
     exit: {
       opacity: 0,
-      y: window.innerHeight - 16,
+      y: 16,
     },
   },
 };
