@@ -110,6 +110,7 @@ it('should be able to connect to bx test dapp', async () => {
   await findElementAndClick({ id: 'switch-network-menu', driver });
   await findElementAndClick({ id: 'switch-network-item-1', driver });
 
+  await delayTime('medium');
   await findElementAndClick({ id: 'accept-request-button', driver });
 
   await driver.switchTo().window(dappHandler);
@@ -160,7 +161,7 @@ it('should be able to accept a signing request', async () => {
 
   await driver.switchTo().window(popupHandler);
 
-  await delayTime('short');
+  await delayTime('medium');
   await findElementAndClick({ id: 'accept-request-button', driver });
 
   await driver.switchTo().window(dappHandler);
@@ -174,14 +175,14 @@ it('should be able to accept a typed data signing request', async () => {
   const button = await querySelector(driver, '[id="signTypedData"]');
   expect(button).toBeTruthy();
   await waitAndClick(button, driver);
-  await delayTime('short');
+  await delayTime('medium');
   const handlers = await driver.getAllWindowHandles();
 
   const popupHandler =
     handlers.find((handler) => handler !== dappHandler) || '';
 
   await driver.switchTo().window(popupHandler);
-  await delayTime('short');
+  await delayTime('medium');
   await findElementAndClick({ id: 'accept-request-button', driver });
   await driver.switchTo().window(dappHandler);
 });
@@ -201,6 +202,7 @@ it.skip('should be able to accept a transaction request', async () => {
     handlers.find((handler) => handler !== dappHandler) || '';
 
   await driver.switchTo().window(popupHandler);
+  await delayTime('medium');
   await findElementAndClick({ id: 'accept-request-button', driver });
   await driver.switchTo().window(dappHandler);
 });

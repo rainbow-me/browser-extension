@@ -41,9 +41,10 @@ export function SendTransaction({
       from: getAddress(txRequest?.from ?? ''),
       to: getAddress(txRequest?.to ?? ''),
       value: txRequest.value,
+      chainId: appSession.chainId,
     });
     approveRequest(result);
-  }, [approveRequest, request]);
+  }, [appSession.chainId, approveRequest, request?.params]);
 
   return (
     <Rows alignVertical="justify">
