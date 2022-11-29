@@ -144,7 +144,7 @@ export const NetworkMenu = ({ children }: { children: React.ReactNode }) => {
                       />
                     </Inline>
                   </Box>
-                  <Text size="14pt" weight="bold">
+                  <Text size="14pt" weight="semibold">
                     {i18n.t('menu.home_header_left.all_connected_apps')}
                   </Text>
                 </Inline>
