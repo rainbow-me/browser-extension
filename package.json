@@ -185,7 +185,17 @@
       "@foundry-rs/hardhat-anvil>hardhat>ethereumjs-util>ethereum-cryptography>secp256k1": false,
       "@foundry-rs/hardhat-anvil>hardhat>ws>bufferutil": false,
       "@foundry-rs/hardhat-anvil>hardhat>ws>utf-8-validate": false,
-      "esbuild": false
+      "esbuild": false,
+      "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>ganache-core>ethereumjs-util>ethereum-cryptography>secp256k1": false,
+      "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>ganache-core>ethereumjs-vm>core-js-pure": false,
+      "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>ganache-core>keccak": false,
+      "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>ganache-core>web3": false,
+      "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>ganache-core>web3-provider-engine>eth-block-tracker>json-rpc-engine>babelify>babel-core>babel-runtime>core-js": false,
+      "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>ganache-core>websocket>bufferutil": false,
+      "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>ganache-core>websocket>utf-8-validate": false,
+      "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>postinstall-postinstall": false,
+      "@foundry-rs/hardhat-anvil>hardhat>ethereum-cryptography>keccak": false,
+      "@foundry-rs/hardhat-anvil>hardhat>ethereum-cryptography>secp256k1": false
     }
   },
   "lint-staged": {
