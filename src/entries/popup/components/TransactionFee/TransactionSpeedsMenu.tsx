@@ -94,7 +94,7 @@ export const SwitchSpeedMenuSelector = ({
 };
 
 interface SwitchTransactionSpeedMenuProps {
-  speed: GasSpeed;
+  selectedSpeed: GasSpeed;
   gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
   chainId: Chain['id'];
   enabled?: boolean;
@@ -102,7 +102,7 @@ interface SwitchTransactionSpeedMenuProps {
 }
 
 export const SwitchTransactionSpeedMenu = ({
-  speed,
+  selectedSpeed,
   gasFeeParamsBySpeed,
   onSpeedChanged,
   chainId,
@@ -120,11 +120,11 @@ export const SwitchTransactionSpeedMenu = ({
       >
         <Inline space="6px" alignVertical="center">
           <Text color="label" weight="bold" size="14pt">
-            {SPEED_EMOJIS[speed]}
+            {SPEED_EMOJIS[selectedSpeed]}
           </Text>
 
           <Text color="label" weight="bold" size="14pt">
-            {i18n.t(`transaction_fee.${speed}`)}
+            {i18n.t(`transaction_fee.${selectedSpeed}`)}
           </Text>
           <Symbol
             weight="medium"
@@ -144,7 +144,7 @@ export const SwitchTransactionSpeedMenu = ({
         <MenuLabel>{i18n.t('transaction_fee.title')}</MenuLabel>
         <MenuSeparator />
         <MenuRadioGroup
-          value={speed}
+          value={selectedSpeed}
           onValueChange={(speed) => onSpeedChanged(speed as GasSpeed)}
         >
           <SwitchSpeedMenuSelector

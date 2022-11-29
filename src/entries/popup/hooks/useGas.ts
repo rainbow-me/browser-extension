@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Chain, chain } from 'wagmi';
 
 import { useGasData } from '~/core/resources/gas';
@@ -6,6 +6,7 @@ import {
   MeteorologyLegacyResponse,
   MeteorologyResponse,
 } from '~/core/resources/gas/meteorology';
+import { useGasStore } from '~/core/state';
 import {
   GasFeeLegacyParamsBySpeed,
   GasFeeParamsBySpeed,
@@ -19,9 +20,9 @@ import {
 import { add } from '~/core/utils/numbers';
 
 export const useGas = ({ chainId }: { chainId: Chain['id'] }) => {
-  const { data: data, isLoading } = useGasData({ chainId });
-
-  const [speed, setSpeed] = useState<GasSpeed>('normal');
+  const { data, isLoading } = useGasData({ chainId });
+  const { selectedGas, setSelectedGas } = useGasStore();
+  const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>('normal');
 
   const gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed =
     useMemo(() => {
@@ -100,15 +101,27 @@ export const useGas = ({ chainId }: { chainId: Chain['id'] }) => {
   const gasFee = useMemo(() => {
     if (chainId === chain.mainnet.id) {
       return add(
-        (gasFeeParamsBySpeed as GasFeeParamsBySpeed)[speed]?.maxBaseFee?.amount,
-        (gasFeeParamsBySpeed as GasFeeParamsBySpeed)[speed]
+        (gasFeeParamsBySpeed as GasFeeParamsBySpeed)[selectedSpeed]?.maxBaseFee
+          ?.amount,
+        (gasFeeParamsBySpeed as GasFeeParamsBySpeed)[selectedSpeed]
           ?.maxPriorityFeePerGas?.amount,
       );
     } else {
-      return (gasFeeParamsBySpeed as GasFeeLegacyParamsBySpeed)[speed]?.gasPrice
-        ?.amount;
+      return (gasFeeParamsBySpeed as GasFeeLegacyParamsBySpeed)[selectedSpeed]
+        ?.gasPrice?.amount;
     }
-  }, [chainId, gasFeeParamsBySpeed, speed]);
+  }, [chainId, gasFeeParamsBySpeed, selectedSpeed]);
 
-  return { data, gasFeeParamsBySpeed, gasFee, setSpeed, speed, isLoading };
+  useEffect(() => {
+    setSelectedGas({ selectedGas: gasFeeParamsBySpeed[selectedSpeed] });
+  }, [gasFeeParamsBySpeed, selectedGas.option, selectedSpeed, setSelectedGas]);
+
+  return {
+    data,
+    gasFeeParamsBySpeed,
+    gasFee,
+    setSelectedSpeed,
+    selectedSpeed,
+    isLoading,
+  };
 };
