@@ -106,19 +106,6 @@ export function Settings() {
           </Button>
         </Box>
       </Box>
-
-      <Link to="/">
-        <Box
-          as="button"
-          background="surfaceSecondary"
-          padding="16px"
-          style={{ borderRadius: 999, width: '100%' }}
-        >
-          <Text color="labelSecondary" size="14pt" weight="bold">
-            Home
-          </Text>
-        </Box>
-      </Link>
     </Box>
   );
 }
