@@ -2,6 +2,7 @@
     "urls": [
             "http://localhost:8545/",
             "https://*.alchemyapi.io/",
+            "https://*.g.alchemy.com",
             "wss://*.rainbow.me",
             "https://*.rainbow.me",
             "https://rainbow.mypinata.cloud/",
