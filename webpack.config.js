@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+const fs = require('fs');
 const { join, resolve } = require('path');
 
 const { VanillaExtractPlugin } = require('@vanilla-extract/webpack-plugin');
@@ -7,6 +8,15 @@ const Dotenv = require('dotenv-webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { ProgressPlugin, ProvidePlugin } = require('webpack');
+
+const allowList = require('./static/allowlist.json');
+const manifest = require('./static/manifest.json');
+const manifestFilePath = resolve(__dirname, './build/manifest.json');
+
+const manifestOverride = manifest;
+manifestOverride.content_security_policy.extension_pages = `${
+  manifestOverride.content_security_policy.extension_pages
+} ${allowList.urls.join(' ')};`;
 
 module.exports = {
   entry: {
@@ -69,6 +79,23 @@ module.exports = {
     new ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
     }),
+    // Custom plugin to apply the sandbox
+    {
+      apply: (compiler) => {
+        compiler.hooks.afterEmit.tap('AfterEmitPlugin', () => {
+          if (
+            fs.writeFileSync(
+              manifestFilePath,
+              JSON.stringify(manifestOverride, null, 2),
+            )
+          ) {
+            process.stdout.write('manifest overwritten successfuly');
+          } else {
+            process.stderr.write('manifest override failed');
+          }
+        });
+      },
+    },
   ],
   resolve: {
     alias: {
