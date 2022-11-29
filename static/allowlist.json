@@ -3,6 +3,7 @@
             "http://localhost:8545/",
             "https://*.alchemyapi.io/",
             "wss://*.rainbow.me",
+            "https://*.rainbow.me",
             "https://rainbow.mypinata.cloud/",
             "https://rainbowme-res.cloudinary.com/",
             "wss://*.alchemyapi.io",
