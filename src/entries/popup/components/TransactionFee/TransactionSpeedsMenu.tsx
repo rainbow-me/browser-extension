@@ -1,8 +1,12 @@
 import React from 'react';
-import { Chain } from 'wagmi';
+import { Chain, chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { GasFeeParams, GasSpeed } from '~/core/types/gas';
+import {
+  GasFeeLegacyParamsBySpeed,
+  GasFeeParamsBySpeed,
+  GasSpeed,
+} from '~/core/types/gas';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
 import {
@@ -27,32 +31,40 @@ const SPEED_EMOJIS: { [key in GasSpeed]: string } = {
 
 export const SwitchSpeedMenuSelector = ({
   gasFeeParamsBySpeed,
+  chainId,
 }: {
-  gasFeeParamsBySpeed: { [key in GasSpeed]: GasFeeParams };
+  gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
+  chainId: Chain['id'];
 }) => {
   return (
     <>
-      <MenuRadioItem value={'custom'}>
-        <Box width="full" id={`switch-network-item-${0}`}>
-          <Inline space="8px" alignVertical="center" alignHorizontal="justify">
-            <Inline space="8px" alignVertical="center">
-              <Text weight="semibold" size="14pt">
-                {SPEED_EMOJIS['custom']}
-              </Text>
-              <Text color="label" size="14pt" weight="semibold">
-                {i18n.t(`transaction_fee.custom`)}
-              </Text>
-            </Inline>
+      {chain.mainnet.id === chainId ? (
+        <MenuRadioItem value={'custom'}>
+          <Box width="full" id={`switch-network-item-${0}`}>
+            <Inline
+              space="8px"
+              alignVertical="center"
+              alignHorizontal="justify"
+            >
+              <Inline space="8px" alignVertical="center">
+                <Text weight="semibold" size="14pt">
+                  {SPEED_EMOJIS['custom']}
+                </Text>
+                <Text color="label" size="14pt" weight="semibold">
+                  {i18n.t(`transaction_fee.custom`)}
+                </Text>
+              </Inline>
 
-            <Symbol
-              weight="medium"
-              size={12}
-              symbol="arrow.up.forward.circle"
-              color="labelTertiary"
-            />
-          </Inline>
-        </Box>
-      </MenuRadioItem>
+              <Symbol
+                weight="medium"
+                size={12}
+                symbol="arrow.up.forward.circle"
+                color="labelTertiary"
+              />
+            </Inline>
+          </Box>
+        </MenuRadioItem>
+      ) : null}
       {speeds.map((speed, i) => {
         return (
           <MenuRadioItem value={speed} key={i}>
@@ -83,8 +95,9 @@ export const SwitchSpeedMenuSelector = ({
 
 interface SwitchTransactionSpeedMenuProps {
   speed: GasSpeed;
-  gasFeeParamsBySpeed: { [key in GasSpeed]: GasFeeParams };
+  gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
   chainId: Chain['id'];
+  enabled?: boolean;
   onSpeedChanged: (speed: GasSpeed) => void;
 }
 
@@ -92,39 +105,41 @@ export const SwitchTransactionSpeedMenu = ({
   speed,
   gasFeeParamsBySpeed,
   onSpeedChanged,
+  chainId,
+  enabled = true,
 }: SwitchTransactionSpeedMenuProps) => {
+  const menuTrigger = (
+    <Box style={{ cursor: 'default' }}>
+      <Box
+        borderWidth="2px"
+        borderColor="fillSecondary"
+        paddingVertical="5px"
+        paddingHorizontal="6px"
+        borderRadius="24px"
+        as="button"
+      >
+        <Inline space="6px" alignVertical="center">
+          <Text color="label" weight="bold" size="14pt">
+            {SPEED_EMOJIS[speed]}
+          </Text>
+
+          <Text color="label" weight="bold" size="14pt">
+            {i18n.t(`transaction_fee.${speed}`)}
+          </Text>
+          <Symbol
+            weight="medium"
+            color="label"
+            size={14}
+            symbol="chevron.down.circle"
+          />
+        </Inline>
+      </Box>
+    </Box>
+  );
+  if (!enabled) return menuTrigger;
   return (
     <Menu>
-      <MenuTrigger asChild>
-        <Box style={{ cursor: 'default' }}>
-          {
-            <Box
-              borderWidth="2px"
-              borderColor="fillSecondary"
-              paddingVertical="5px"
-              paddingHorizontal="6px"
-              borderRadius="24px"
-              as="button"
-            >
-              <Inline space="6px" alignVertical="center">
-                <Text color="label" weight="bold" size="14pt">
-                  {SPEED_EMOJIS[speed]}
-                </Text>
-
-                <Text color="label" weight="bold" size="14pt">
-                  {i18n.t(`transaction_fee.${speed}`)}
-                </Text>
-                <Symbol
-                  weight="medium"
-                  color="label"
-                  size={14}
-                  symbol="chevron.down.circle"
-                />
-              </Inline>
-            </Box>
-          }
-        </Box>
-      </MenuTrigger>
+      <MenuTrigger asChild>{menuTrigger}</MenuTrigger>
       <MenuContent>
         <MenuLabel>{i18n.t('transaction_fee.title')}</MenuLabel>
         <MenuSeparator />
@@ -132,7 +147,10 @@ export const SwitchTransactionSpeedMenu = ({
           value={speed}
           onValueChange={(speed) => onSpeedChanged(speed as GasSpeed)}
         >
-          <SwitchSpeedMenuSelector gasFeeParamsBySpeed={gasFeeParamsBySpeed} />
+          <SwitchSpeedMenuSelector
+            chainId={chainId}
+            gasFeeParamsBySpeed={gasFeeParamsBySpeed}
+          />
         </MenuRadioGroup>
       </MenuContent>
     </Menu>

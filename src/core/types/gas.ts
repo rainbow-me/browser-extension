@@ -6,6 +6,17 @@ export interface GasFeeParam {
   gwei: string;
 }
 
+export interface GasFeeLegacyParams {
+  gasPrice: GasFeeParam;
+  option: string;
+  estimatedTime: { amount: number; display: string };
+  display: string;
+}
+
+export type GasFeeLegacyParamsBySpeed = {
+  [key in GasSpeed]: GasFeeLegacyParams;
+};
+
 export interface GasFeeParams {
   maxBaseFee: GasFeeParam;
   maxPriorityFeePerGas: GasFeeParam;
