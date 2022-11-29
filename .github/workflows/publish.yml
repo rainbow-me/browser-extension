@@ -1,5 +1,5 @@
 
-name: CI
+name: Publish to Chrome WebStore
 
 on:
   # schedule:
