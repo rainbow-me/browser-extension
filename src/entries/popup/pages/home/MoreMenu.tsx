@@ -33,7 +33,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
         <Stack space="4px">
           <Stack>
             <Inset vertical="8px">
-              <Link to={'/settings'}>
+              <Link to={'/settings'} id="settings-link">
                 <Inline alignVertical="center" space="8px">
                   <Symbol size={12} symbol="gearshape.fill" weight="semibold" />
                   <Text size="14pt" weight="semibold">
