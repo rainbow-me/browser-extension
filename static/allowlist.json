@@ -1,0 +1,13 @@
+{
+    "urls": [
+            "http://localhost:8545/",
+            "https://*.alchemyapi.io/",
+            "wss://*.rainbow.me",
+            "https://rainbow.mypinata.cloud/",
+            "https://rainbowme-res.cloudinary.com/",
+            "wss://*.alchemyapi.io",
+            "http://*.infura.io",
+            "ws://localhost:9090/",
+            "https://o331974.ingest.sentry.io"
+    ]
+}

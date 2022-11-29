@@ -10909,6 +10909,11 @@ tr46@~0.0.3:
   resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
   integrity sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==
 
+transform-json-webpack-plugin@0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/transform-json-webpack-plugin/-/transform-json-webpack-plugin-0.0.2.tgz#01b441acfa8a365701bd8989673cb148608860c7"
+  integrity sha512-/+nllp8j1qwZ61qdC4wQTR45HXbopAk9TXyC+209GboCj+vMFjCAWSq0UsVT8aD7gFoNo8MAd1QIGJfl0cpndA==
+
 ts-interface-checker@^0.1.9:
   version "0.1.13"
   resolved "https://registry.yarnpkg.com/ts-interface-checker/-/ts-interface-checker-0.1.13.tgz#784fd3d679722bc103b1b4b8030bcddb5db2a699"
