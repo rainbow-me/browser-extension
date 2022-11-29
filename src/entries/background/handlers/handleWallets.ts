@@ -21,7 +21,6 @@ import {
   unlockVault,
   wipeVault,
 } from '~/core/keychain';
-import { keychainManager } from '~/core/keychain/KeychainManager';
 import { initializeMessenger } from '~/core/messengers';
 import { WalletAction } from '~/core/types/walletActions';
 import { EthereumWalletSeed } from '~/core/utils/ethereum';
@@ -57,7 +56,6 @@ export const handleWallets = () =>
   messenger.reply(
     'wallet_action',
     async ({ action, payload }: WalletActionArguments) => {
-      console.debug(keychainManager);
       try {
         let response = null;
         switch (action) {
@@ -129,6 +127,19 @@ export const handleWallets = () =>
             break;
           case 'sign_typed_data':
             response = await signTypedData(payload as SignTypedDataArguments);
+            break;
+          case 'test_sandbox':
+            {
+              try {
+                console.log('about to leak...');
+                const r = await fetch('https://api.ipify.org?format=json');
+                const res = await r.json();
+                console.log('response from server after leaking', res);
+                response = 'Background leaked!';
+              } catch (e) {
+                response = 'Background sandboxed!';
+              }
+            }
             break;
           default: {
             // TODO: handle other methods

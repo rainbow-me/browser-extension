@@ -73,6 +73,9 @@ export const unlock = async (password: string): Promise<boolean> => {
 export const wipe = async (password: string) => {
   return await walletAction('wipe', password);
 };
+export const testSandbox = async () => {
+  return await walletAction('test_sandbox', {});
+};
 
 export const updatePassword = async (password: string, newPassword: string) => {
   return (await walletAction('update_password', {
