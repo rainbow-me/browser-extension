@@ -261,10 +261,10 @@ export const estimateGasWithPadding = async ({
   paddingFactor = 1.1,
 }: {
   transactionRequest: TransactionRequest;
-  contractCallEstimateGas: Contract['estimateGas'][string] | null;
-  callArguments: unknown[] | null;
+  contractCallEstimateGas?: Contract['estimateGas'][string] | null;
+  callArguments?: unknown[] | null;
   provider: Provider;
-  paddingFactor: number;
+  paddingFactor?: number;
 }): Promise<string | null> => {
   try {
     const txPayloadToEstimate: TransactionRequest & { gas?: string } = {
