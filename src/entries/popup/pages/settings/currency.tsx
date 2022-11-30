@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
-import React, { useState } from 'react';
+import React from 'react';
 
+import { supportedCurrencies } from '~/core/references';
+import { useCurrentCurrencyStore } from '~/core/state';
 import { Box } from '~/design-system';
 import { menuTransition } from '~/entries/popup/utils/animation';
 
@@ -8,35 +10,9 @@ import { Menu } from '../../components/Menu/Menu';
 import { MenuContainer } from '../../components/Menu/MenuContainer';
 import { MenuItem } from '../../components/Menu/MenuItem';
 
-interface CurrencyOption {
-  label: string;
-  emoji: string;
-}
-
-const currencies: { [key: string]: CurrencyOption } = {
-  eth: {
-    label: 'Ethereum',
-    emoji: '🔷',
-  },
-  usd: {
-    label: 'United States Dollar',
-    emoji: '🇺🇸',
-  },
-  eur: {
-    label: 'Euro',
-    emoji: '🇪🇺',
-  },
-  gbp: {
-    label: 'British Pound',
-    emoji: '🇬🇧',
-  },
-  jpy: {
-    label: 'Japanese Yen',
-    emoji: '🇯🇵',
-  },
-};
 export function Currency() {
-  const [selectedCurrency, setSelectedCurrency] = useState('eur');
+  const { currentCurrency, setCurrentCurrency } = useCurrentCurrencyStore();
+
   return (
     <Box
       as={motion.div}
@@ -52,21 +28,23 @@ export function Currency() {
       <Box paddingHorizontal="20px">
         <MenuContainer testID="settings-menu-container">
           <Menu>
-            {Object.keys(currencies).map((currency) => (
+            {Object.keys(supportedCurrencies).map((currency) => (
               <MenuItem
                 leftComponent={
-                  <MenuItem.TextIcon icon={currencies[currency].emoji} />
+                  <MenuItem.TextIcon
+                    icon={supportedCurrencies[currency].emoji}
+                  />
                 }
                 rightComponent={
-                  selectedCurrency === currency ? (
+                  currentCurrency === currency ? (
                     <MenuItem.SelectionIcon />
                   ) : null
                 }
-                key={currencies[currency].label}
+                key={supportedCurrencies[currency].label}
                 titleComponent={
-                  <MenuItem.Title text={currencies[currency].label} />
+                  <MenuItem.Title text={supportedCurrencies[currency].label} />
                 }
-                onClick={() => setSelectedCurrency(currency)}
+                onClick={() => setCurrentCurrency(currency)}
               />
             ))}
           </Menu>

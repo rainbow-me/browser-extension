@@ -1,9 +1,24 @@
-export const supportedCurrencies = {
+interface Currency {
+  alignment: string;
+  assetLimit: number;
+  currency: string;
+  decimals: number;
+  emoji: string;
+  emojiName?: string;
+  label: string;
+  mask: string;
+  placeholder: string;
+  smallThreshold: number;
+  symbol: string;
+}
+
+export const supportedCurrencies: { [key: string]: Currency } = {
   ETH: {
     alignment: 'left',
     assetLimit: 0.001,
     currency: 'ETH',
     decimals: 18,
+    emoji: '🔷',
     label: 'Ethereum',
     mask: '[09999999999]{.}[999999999999999999]',
     placeholder: '0',
@@ -15,6 +30,7 @@ export const supportedCurrencies = {
     assetLimit: 1,
     currency: 'USD',
     decimals: 2,
+    emoji: '🇺🇸',
     emojiName: 'united_states',
     label: 'United States Dollar',
     mask: '[099999999999]{.}[00]',
@@ -27,6 +43,7 @@ export const supportedCurrencies = {
     assetLimit: 1,
     currency: 'EUR',
     decimals: 2,
+    emoji: '🇪🇺',
     emojiName: 'european_union',
     label: 'Euro',
     mask: '[099999999999]{.}[00]',
@@ -39,6 +56,7 @@ export const supportedCurrencies = {
     assetLimit: 1,
     currency: 'GBP',
     decimals: 2,
+    emoji: '🇬🇧',
     emojiName: 'united_kingdom',
     label: 'British Pound',
     mask: '[099999999999]{.}[00]',
@@ -51,6 +69,7 @@ export const supportedCurrencies = {
     assetLimit: 1,
     currency: 'AUD',
     decimals: 2,
+    emoji: '🇦🇺',
     emojiName: 'australia',
     label: 'Australian Dollar',
     mask: '[099999999999]{.}[00]',
@@ -63,6 +82,7 @@ export const supportedCurrencies = {
     assetLimit: 1,
     currency: 'CNY',
     decimals: 2,
+    emoji: '🇨🇳',
     emojiName: 'china',
     label: 'Chinese Yuan',
     mask: '[099999999999]{.}[00]',
@@ -75,6 +95,7 @@ export const supportedCurrencies = {
     assetLimit: 1,
     currency: 'KRW',
     decimals: 0,
+    emoji: '🇰🇷',
     emojiName: 'south_korea',
     label: 'South Korean Won',
     mask: '[099999999999]{.}[00]',
@@ -87,6 +108,7 @@ export const supportedCurrencies = {
     assetLimit: 1,
     currency: 'RUB',
     decimals: 2,
+    emoji: '🇷🇺',
     emojiName: 'russia',
     label: 'Russian Ruble',
     mask: '[099999999999]{,}[00]',
@@ -99,6 +121,7 @@ export const supportedCurrencies = {
     assetLimit: 1,
     currency: 'INR',
     decimals: 2,
+    emoji: '🇮🇳',
     emojiName: 'india',
     label: 'Indian Rupee',
     mask: '[099999999999]{.}[00]',
@@ -111,6 +134,7 @@ export const supportedCurrencies = {
     assetLimit: 1,
     currency: 'JPY',
     decimals: 2,
+    emoji: '🇯🇵',
     emojiName: 'japan',
     label: 'Japanese Yen',
     mask: '[099999999999]{.}[00]',
@@ -123,6 +147,7 @@ export const supportedCurrencies = {
     assetLimit: 1,
     currency: 'TRY',
     decimals: 2,
+    emoji: '🇹🇷',
     emojiName: 'turkey',
     label: 'Turkish Lira',
     mask: '[099999999999]{.}[00]',
@@ -135,6 +160,7 @@ export const supportedCurrencies = {
     assetLimit: 1,
     currency: 'CAD',
     decimals: 2,
+    emoji: '🇨🇦',
     emojiName: 'canada',
     label: 'Canadian Dollar',
     mask: '[099999999999]{.}[00]',
@@ -147,6 +173,7 @@ export const supportedCurrencies = {
     assetLimit: 1,
     currency: 'NZD',
     decimals: 2,
+    emoji: '🇳🇿',
     emojiName: 'new_zealand',
     label: 'New Zealand Dollar',
     mask: '[099999999999]{.}[00]',
@@ -159,6 +186,7 @@ export const supportedCurrencies = {
     assetLimit: 1,
     currency: 'ZAR',
     decimals: 2,
+    emoji: '🇿🇦',
     emojiName: 'south_africa',
     label: 'South African Rand',
     mask: '[099999999999]{.}[00]',

@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
+import { supportedCurrencies } from '~/core/references';
+import { useCurrentCurrencyStore } from '~/core/state';
 import { Box, Inline, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -34,6 +36,8 @@ export function Main() {
   const handleChangeDefaultWallet = (checked: boolean) => {
     setRainbowAsDefaultWallet(checked);
   };
+  const { currentCurrency } = useCurrentCurrencyStore();
+
   return (
     <Box
       as={motion.div}
@@ -91,7 +95,11 @@ export function Main() {
               hasRightArrow
               leftComponent={<SFSymbol symbol="send" color="green" />}
               onClick={() => navigate('/settings/currency')}
-              rightComponent={<MenuItem.Selection text="Euro" />}
+              rightComponent={
+                <MenuItem.Selection
+                  text={supportedCurrencies[currentCurrency].label}
+                />
+              }
               titleComponent={
                 <MenuItem.Title text={i18n.t('settings.currency')} />
               }
@@ -143,6 +151,7 @@ export function Main() {
                   size={18}
                 />
               }
+              hasRightArrow
               titleComponent={
                 <MenuItem.Title text={i18n.t('settings.contacts')} />
               }
