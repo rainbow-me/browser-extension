@@ -4,7 +4,7 @@ import { createStore } from '../internal/createStore';
 
 export interface CurrentHideAssetBalancesState {
   currentHideAssetBalances: boolean;
-  setCurrentHideAssetBalances: (HideAssetBalances: boolean) => void;
+  setCurrentHideAssetBalances: (hideAssetBalances: boolean) => void;
 }
 
 export const currentHideAssetBalancesStore =

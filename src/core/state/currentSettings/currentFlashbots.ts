@@ -4,7 +4,7 @@ import { createStore } from '../internal/createStore';
 
 export interface CurrentFlashbotsState {
   currentFlashbots: boolean;
-  setCurrentFlashbots: (Flashbots: boolean) => void;
+  setCurrentFlashbots: (flashbots: boolean) => void;
 }
 
 export const currentFlashbotsStore = createStore<CurrentFlashbotsState>(

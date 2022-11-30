@@ -6,7 +6,7 @@ import { createStore } from '../internal/createStore';
 
 export interface CurrentCurrencyState {
   currentCurrency: SupportedCurrencyKey;
-  setCurrentCurrency: (address: SupportedCurrencyKey) => void;
+  setCurrentCurrency: (currency: SupportedCurrencyKey) => void;
 }
 
 export const currentCurrencyStore = createStore<CurrentCurrencyState>(

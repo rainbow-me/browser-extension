@@ -40,7 +40,7 @@ export function Currency() {
                     <MenuItem.SelectionIcon />
                   ) : null
                 }
-                key={supportedCurrencies[currency].label}
+                key={currency}
                 titleComponent={
                   <MenuItem.Title text={supportedCurrencies[currency].label} />
                 }

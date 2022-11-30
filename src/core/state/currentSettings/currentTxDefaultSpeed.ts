@@ -6,7 +6,7 @@ import { createStore } from '../internal/createStore';
 
 export interface CurrentTxDefaultSpeedState {
   currentTxDefaultSpeed: TxDefaultSpeedType;
-  setCurrentTxDefaultSpeed: (TxDefaultSpeed: TxDefaultSpeedType) => void;
+  setCurrentTxDefaultSpeed: (txDefaultSpeed: TxDefaultSpeedType) => void;
 }
 
 export const currentTxDefaultSpeedStore =

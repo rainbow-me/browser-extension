@@ -4,7 +4,7 @@ import { createStore } from '../internal/createStore';
 
 export interface CurrentDefaultWalletState {
   currentDefaultWallet: boolean;
-  setCurrentDefaultWallet: (DefaultWallet: boolean) => void;
+  setCurrentDefaultWallet: (defaultWallet: boolean) => void;
 }
 
 export const currentDefaultWalletStore = createStore<CurrentDefaultWalletState>(

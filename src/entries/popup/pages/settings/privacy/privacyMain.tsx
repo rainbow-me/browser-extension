@@ -3,6 +3,8 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
+import { autoLockTimerOptions } from '~/core/references/autoLockTimer';
+import { usecurrentAutoLockTimerStore } from '~/core/state/currentSettings/currentAutoLockTimer';
 import { useCurrentHideAssetBalancesStore } from '~/core/state/currentSettings/currentHideAssetBalances';
 import { useCurrentHideSmallBalancesStore } from '~/core/state/currentSettings/currentHideSmallBalances';
 import { Box } from '~/design-system';
@@ -20,6 +22,7 @@ export function PrivacyMain() {
     useCurrentHideAssetBalancesStore();
   const { currentHideSmallBalances, setCurrentHideSmallBalances } =
     useCurrentHideSmallBalancesStore();
+  const { currentAutoLockTimer } = usecurrentAutoLockTimerStore();
   return (
     <Box
       as={motion.div}
@@ -91,7 +94,11 @@ export function PrivacyMain() {
             <MenuItem
               hasSfSymbol
               hasRightArrow
-              rightComponent={<MenuItem.Selection text="10 minutes" />}
+              rightComponent={
+                <MenuItem.Selection
+                  text={autoLockTimerOptions[currentAutoLockTimer].label}
+                />
+              }
               titleComponent={
                 <MenuItem.Title
                   text={i18n.t('privacy_and_security.auto_lock_timer')}
