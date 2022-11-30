@@ -4,13 +4,10 @@ import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
-import { themeOptions } from '~/core/references/themes';
+import { ThemeType, themeOptions } from '~/core/references/themes';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentDefaultWalletStore } from '~/core/state/currentSettings/currentDefaultWallet';
-import {
-  ThemeType,
-  useCurrentThemeStore,
-} from '~/core/state/currentSettings/currentTheme';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { Box, Inline, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -119,7 +116,7 @@ export function Main() {
               }
               menuItemIndicator={<SFSymbol symbol="checkMark" size={11} />}
               renderMenuItem={(option, i) => {
-                const { label, symbol } = themeOptions[option];
+                const { label, symbol } = themeOptions[option as ThemeType];
 
                 return (
                   <Box id={`switch-option-item-${i}`}>

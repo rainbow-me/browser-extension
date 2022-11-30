@@ -2,6 +2,11 @@ import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import {
+  TxDefaultSpeedType,
+  txDefaultSpeedOptions,
+} from '~/core/references/txDefaultSpeed';
+import { useCurrentTxDefaultSpeedStore } from '~/core/state/currentSettings/currentTxDefaultSpeed';
 import { Box, Inline, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { PageHeader } from '~/entries/popup/components/PageHeader/PageHeader';
@@ -13,21 +18,13 @@ import { MenuItem } from '../../components/Menu/MenuItem';
 import { SFSymbol } from '../../components/SFSymbol/SFSymbol';
 import { SwitchMenu } from '../../components/SwitchMenu/SwitchMenu';
 
-interface SpeedOption {
-  emoji: string;
-  label: string;
-}
-const speedOptions: { [key: string]: SpeedOption } = {
-  normal: { emoji: '⏱', label: 'Normal' },
-  fast: { emoji: '🚀', label: 'Fast' },
-  urgent: { emoji: '🚨', label: 'Urgent' },
-};
-
 export function Transactions() {
   const [flashbots, setFlashbots] = useState(false);
   const handleChangeFlashbots = (checked: boolean) => {
     setFlashbots(checked);
   };
+  const { currentTxDefaultSpeed, setCurrentTxDefaultSpeed } =
+    useCurrentTxDefaultSpeedStore();
   return (
     <Box
       as={motion.div}
@@ -55,13 +52,20 @@ export function Transactions() {
                         text={i18n.t('transactions.default_speed')}
                       />
                     }
-                    rightComponent={<MenuItem.Selection text="🚨 Urgent" />}
+                    rightComponent={
+                      <MenuItem.Selection
+                        text={
+                          txDefaultSpeedOptions[currentTxDefaultSpeed].label
+                        }
+                      />
+                    }
                   />
                 </Box>
               }
               menuItemIndicator={<SFSymbol symbol="checkMark" size={11} />}
               renderMenuItem={(option, i) => {
-                const { label, emoji } = speedOptions[option];
+                const { label, emoji } =
+                  txDefaultSpeedOptions[option as TxDefaultSpeedType];
 
                 return (
                   <Box id={`switch-option-item-${i}`}>
@@ -78,10 +82,10 @@ export function Transactions() {
                   </Box>
                 );
               }}
-              menuItems={Object.keys(speedOptions)}
-              selectedValue="urgent"
+              menuItems={Object.keys(txDefaultSpeedOptions)}
+              selectedValue={currentTxDefaultSpeed}
               onValueChange={(value) => {
-                console.log(value);
+                setCurrentTxDefaultSpeed(value as TxDefaultSpeedType);
               }}
             />
           </Menu>

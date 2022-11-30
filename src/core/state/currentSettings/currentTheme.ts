@@ -1,8 +1,8 @@
 import create from 'zustand';
 
-import { createStore } from '../internal/createStore';
+import { ThemeType } from '~/core/references/themes';
 
-export type ThemeType = 'light' | 'dark' | 'system';
+import { createStore } from '../internal/createStore';
 
 export interface CurrentThemeState {
   currentTheme: ThemeType;
