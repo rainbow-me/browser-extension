@@ -1,9 +1,10 @@
+import { motion } from 'framer-motion';
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { Box, Symbol, Text } from '~/design-system';
+import { Box, Button, ButtonSymbol, Text } from '~/design-system';
+import { ButtonSymbolProps } from '~/design-system/components/ButtonSymbol/ButtonSymbol';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
-
-import { navbarButtonStyles } from './Navbar.css';
 
 type NavbarProps = {
   leftComponent?: React.ReactElement;
@@ -23,13 +24,24 @@ export function Navbar({
       display="flex"
       alignItems="center"
       justifyContent="center"
-      padding="16px"
       width="full"
       position="relative"
-      height="full"
+      style={{ height: 65 }}
     >
       {leftComponent && (
-        <Box position="absolute" left="0" top="0" padding="16px" height="full">
+        <Box
+          as={motion.div}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.45 }}
+          exit={{ opacity: 0 }}
+          position="absolute"
+          style={{
+            left: 15,
+            top: 17,
+          }}
+          height="full"
+        >
           {leftComponent}
         </Box>
       )}
@@ -43,7 +55,19 @@ export function Navbar({
         titleComponent
       )}
       {rightComponent && (
-        <Box position="absolute" right="0" top="0" padding="16px" height="full">
+        <Box
+          as={motion.div}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.45 }}
+          exit={{ opacity: 0 }}
+          position="absolute"
+          style={{
+            right: 15,
+            top: 17,
+          }}
+          height="full"
+        >
           {rightComponent}
         </Box>
       )}
@@ -52,58 +76,82 @@ export function Navbar({
 }
 
 Navbar.BackButton = NavbarBackButton;
+Navbar.CloseButton = NavbarCloseButton;
 Navbar.SymbolButton = NavbarSymbolButton;
 
 type NavbarButtonProps = {
   children: React.ReactNode;
-  variant?: 'default' | 'ghost';
+  onClick?: () => void;
+  variant?: 'transparent' | 'flat';
 };
 
-// TODO: Refactor to use generic DS Button.
 export function NavbarButton({
   children,
-  variant = 'default',
+  onClick,
+  variant = 'transparent',
 }: NavbarButtonProps) {
   return (
-    <Box
-      className={navbarButtonStyles[variant]}
-      borderRadius="round"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      style={{ width: 32, height: 32 }}
+    <Button
+      height="32px"
+      onClick={onClick}
+      variant={variant}
+      color="surfaceSecondaryElevated"
     >
       {children}
-    </Box>
+    </Button>
   );
 }
 
 type NavbarSymbolButtonProps = {
-  symbol: SymbolProps['symbol'];
+  height?: ButtonSymbolProps['height'];
+  onClick?: () => void;
+  symbol: ButtonSymbolProps['symbol'];
+  variant: 'flat' | 'transparent';
 };
 
-export function NavbarSymbolButton({ symbol }: NavbarSymbolButtonProps) {
+export function NavbarSymbolButton({
+  height,
+  onClick,
+  symbol,
+  variant,
+}: NavbarSymbolButtonProps) {
   return (
-    <NavbarButton>
-      <Symbol
-        color="labelSecondary"
+    <ButtonSymbol
+      color="surfaceSecondaryElevated"
+      height={height || '32px'}
+      onClick={onClick}
+      symbol={symbol}
+      symbolColor="labelSecondary"
+      variant={variant}
+    />
+  );
+}
+
+function NavbarButtonWithBack({
+  height,
+  symbol,
+}: {
+  height: ButtonSymbolProps['height'];
+  symbol: SymbolProps['symbol'];
+}) {
+  const navigate = useNavigate();
+  const padding = height === '24px' ? '4px' : '2px';
+  return (
+    <Box padding={padding}>
+      <NavbarSymbolButton
+        height={height}
+        onClick={() => navigate(-1)}
         symbol={symbol}
-        size={16}
-        weight="semibold"
+        variant="transparent"
       />
-    </NavbarButton>
+    </Box>
   );
 }
 
 export function NavbarBackButton() {
-  return (
-    <NavbarButton variant="ghost">
-      <Symbol
-        color="labelSecondary"
-        symbol="arrow.left"
-        size={16}
-        weight="semibold"
-      />
-    </NavbarButton>
-  );
+  return <NavbarButtonWithBack height="28px" symbol="arrow.left" />;
+}
+
+export function NavbarCloseButton() {
+  return <NavbarButtonWithBack height="24px" symbol="xmark" />;
 }
