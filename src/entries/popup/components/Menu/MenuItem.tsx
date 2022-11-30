@@ -2,8 +2,7 @@ import React from 'react';
 
 import { Box, Inline, Stack, Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
-
-import { SFSymbol } from '../SFSymbol/SFSymbol';
+import { SFSymbol } from '~/entries/popup/components/SFSymbol/SFSymbol';
 
 interface TextIconProps {
   color?: TextStyles['color'];

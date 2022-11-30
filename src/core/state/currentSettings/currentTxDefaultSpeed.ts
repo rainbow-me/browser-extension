@@ -1,8 +1,7 @@
 import create from 'zustand';
 
 import { TxDefaultSpeedType } from '~/core/references/txDefaultSpeed';
-
-import { createStore } from '../internal/createStore';
+import { createStore } from '~/core/state/internal/createStore';
 
 export interface CurrentTxDefaultSpeedState {
   currentTxDefaultSpeed: TxDefaultSpeedType;

@@ -1,8 +1,7 @@
 import create from 'zustand';
 
 import { ThemeType } from '~/core/references/themes';
-
-import { createStore } from '../internal/createStore';
+import { createStore } from '~/core/state/internal/createStore';
 
 export interface CurrentThemeState {
   currentTheme: ThemeType;
