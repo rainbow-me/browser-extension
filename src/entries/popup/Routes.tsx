@@ -10,7 +10,9 @@ import { Home } from './pages/home';
 import { Send } from './pages/send';
 import { Currency } from './pages/settings/currency';
 import { Main as SettingsMain } from './pages/settings/main';
-import { Privacy } from './pages/settings/privacy';
+import { AutolockTimer } from './pages/settings/privacy/autoLockTimer';
+// import { Privacy } from './pages/settings/privacy/index';
+import { PrivacyMain } from './pages/settings/privacy/privacyMain';
 import { Transactions } from './pages/settings/transactions';
 import { Sign } from './pages/sign';
 import { Wallets } from './pages/wallets';
@@ -55,7 +57,15 @@ export function Routes() {
         path: '/settings/privacy',
         element: (
           <AnimatedRoute direction="horizontal" navbar title="Privacy">
-            <Privacy />
+            <PrivacyMain />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/privacy/autoLockTimer',
+        element: (
+          <AnimatedRoute direction="horizontal" navbar title="Privacy">
+            <AutolockTimer />
           </AnimatedRoute>
         ),
       },

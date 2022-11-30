@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { Box } from '~/design-system';
@@ -11,7 +12,8 @@ import { PageHeader } from '~/entries/popup/components/PageHeader/PageHeader';
 import { SFSymbol } from '~/entries/popup/components/SFSymbol/SFSymbol';
 import { menuTransition } from '~/entries/popup/utils/animation';
 
-export function Privacy() {
+export function PrivacyMain() {
+  const navigate = useNavigate();
   const [hideAssetBalances, setHideAssetBalances] = useState(false);
   const handleChangeHideAssetBalances = (checked: boolean) => {
     setHideAssetBalances(checked);
@@ -91,11 +93,13 @@ export function Privacy() {
             <MenuItem
               hasSfSymbol
               hasRightArrow
+              rightComponent={<MenuItem.Selection text="10 minutes" />}
               titleComponent={
                 <MenuItem.Title
                   text={i18n.t('privacy_and_security.auto_lock_timer')}
                 />
               }
+              onClick={() => navigate('/settings/privacy/autoLockTimer')}
             />
           </Menu>
           <Menu>
