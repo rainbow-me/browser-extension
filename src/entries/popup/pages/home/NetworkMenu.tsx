@@ -51,7 +51,7 @@ export const NetworkMenu = ({ children }: { children: React.ReactNode }) => {
   const disconnect = React.useCallback(() => {
     disconnectAppSession();
   }, [disconnectAppSession]);
-  console.log('---- appName', appName);
+
   return (
     <Menu>
       <MenuTrigger asChild>
