@@ -197,4 +197,4 @@ export const supportedCurrencies: { [key: string]: Currency } = {
 };
 
 export type SupportedCurrency = typeof supportedCurrencies;
-export type SupportedCurrencyKey = keyof SupportedCurrency;
+export type SupportedCurrencyKey = keyof SupportedCurrency & string;
