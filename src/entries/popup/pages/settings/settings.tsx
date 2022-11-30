@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -21,6 +21,8 @@ import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { SFSymbol } from '~/entries/popup/components/SFSymbol/SFSymbol';
 import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 
+import { testSandbox } from '../../handlers/wallet';
+
 export function Settings() {
   const navigate = useNavigate();
   const { currentCurrency } = useCurrentCurrencyStore();
@@ -28,6 +30,26 @@ export function Settings() {
     useCurrentDefaultWalletStore();
 
   const { currentTheme, setCurrentTheme } = useCurrentThemeStore();
+
+  const testSandboxBackground = useCallback(async () => {
+    console.log('asking the bg if it can leak!');
+    const response = await testSandbox();
+    console.log('response', response);
+
+    alert(response);
+  }, []);
+
+  const testSandboxPopup = useCallback(async () => {
+    try {
+      console.log('about to leak...');
+      const r = await fetch('https://api.ipify.org?format=json');
+      const res = await r.json();
+      console.log('response from server after leaking', res);
+      alert('Popup leaked!');
+    } catch (e) {
+      alert('Popup sandboxed!');
+    }
+  }, []);
 
   return (
     <Box>
@@ -206,6 +228,19 @@ export function Settings() {
                 />
               }
               onClick={() => window.open(RAINBOW_SUPPORT_URL, '_blank')}
+            />
+          </Menu>
+          <Menu>
+            <MenuItem.Description text="Below buttons are for testing only" />
+            <MenuItem
+              titleComponent={<MenuItem.Title text="test sandbox popup" />}
+              onClick={testSandboxPopup}
+              testID="test-sandbox-popup"
+            />
+            <MenuItem
+              titleComponent={<MenuItem.Title text="test sandbox background" />}
+              onClick={testSandboxBackground}
+              testID="test-sandbox-background"
             />
           </Menu>
         </MenuContainer>
