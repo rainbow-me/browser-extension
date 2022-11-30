@@ -9,6 +9,15 @@
     "title": "Connected Apps",
     "disconnect": "Disconnect All"
   },
+  "send": {
+    "title": "Send"
+  },
+  "settings": {
+    "title": "Settings"
+  },
+  "sign": {
+    "title": "Sign"
+  },
   "menu": {
     "network": {
       "title": "Switch Networks",
@@ -22,8 +31,7 @@
     "home_header_right": {
       "settings": "Settings",
       "qr_code": "My QR Code",
-      "rainbow_profile": "Rainbow Profile",
-      "view_on_explorer": "View on Explorer"
+      "rainbow_profile": "Rainbow Profile"
     }
   },
   "approve_request": {
@@ -107,5 +115,8 @@
         "singular": "sec"
       }
     }
+},
+"wallets": {
+    "title": "Wallets"
   }
 }

@@ -6,9 +6,7 @@ import {
 } from '@metamask/eth-sig-util';
 import { ethers } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
-import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
 import { WalletAction } from '~/core/types/walletActions';
@@ -16,7 +14,7 @@ import { Box, Column, Columns, Row, Rows, Text } from '~/design-system';
 
 import { personalSign, signTypedData } from '../../handlers/wallet';
 
-export const Sign = () => {
+export function Sign() {
   const [message, setMessage] = useState('');
   const [signature, setSignature] = useState('');
   const [signing, setSigning] = useState(false);
@@ -75,39 +73,12 @@ export const Sign = () => {
 
   return (
     <Box
-      as={motion.div}
       display="flex"
       flexDirection="column"
       gap="24px"
       padding="20px"
-      initial={{ opacity: 0, x: window.innerWidth }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: window.innerWidth }}
-      transition={{ type: 'tween', duration: 0.2 }}
       style={{ overflowY: 'auto' }}
     >
-      <Columns space="12px">
-        <Column width="1/3">
-          <Link to="/">
-            <Box as="button" style={{ borderRadius: 999, width: '100%' }}>
-              <Text
-                color="labelSecondary"
-                size="14pt"
-                weight="bold"
-                align="left"
-              >
-                Back
-              </Text>
-            </Box>
-          </Link>
-        </Column>
-        <Column>
-          <Text as="h1" size="20pt" weight="bold">
-            Sign
-          </Text>
-        </Column>
-      </Columns>
-
       <Columns space="12px">
         <Column>
           <Rows space="12px">
@@ -171,4 +142,4 @@ export const Sign = () => {
       </Columns>
     </Box>
   );
-};
+}

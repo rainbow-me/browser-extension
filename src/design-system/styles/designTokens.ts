@@ -693,3 +693,34 @@ export const radii = {
   '30px': 30,
 };
 export type Radius = keyof typeof radii;
+
+export type AnimatedRouteDirection = 'base' | 'horizontal' | 'vertical';
+export type AnimatedRouteBreakpoints = 'initial' | 'end' | 'exit';
+export type AnimatedAttributes = {
+  opacity?: number;
+  x?: number;
+  y?: number;
+};
+export type AnimatedRouteConfig = Record<
+  AnimatedRouteBreakpoints,
+  AnimatedAttributes
+>;
+
+export const animatedRouteTransitionConfig = {
+  base: {
+    type: 'spring',
+    duration: 0.3,
+  },
+  horizontal: {
+    type: 'spring',
+    stiffness: 1111,
+    damping: 50,
+    mass: 1,
+  },
+  vertical: {
+    type: 'spring',
+    stiffness: 1111,
+    damping: 50,
+    mass: 1,
+  },
+};

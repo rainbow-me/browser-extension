@@ -1,3 +1,4 @@
+
 name: CI
 
 on:
@@ -37,11 +38,11 @@ jobs:
           path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
-      - name: Build the extension with LavaMoat
+      - name: Build the extension
         run: yarn build
       - uses: browser-actions/setup-chrome@latest
         with:
-          chrome-version: 'stable'
+          chrome-version: 1036826
       - name: Setup Brave browser
         run: |
           sudo apt install apt-transport-https curl

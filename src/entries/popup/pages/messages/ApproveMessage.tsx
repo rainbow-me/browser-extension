@@ -19,22 +19,17 @@ export const ApproveMessage = () => {
   const approveRequest = useCallback(
     async (payload?: unknown) => {
       backgroundMessenger.send(`message:${pendingRequest?.id}`, payload);
-      // Wait until the message propagates to the background provider.
-      setTimeout(() => {
-        if (window?.id && pendingRequests.length <= 1)
-          chrome.windows.remove(window?.id);
-      }, 50);
+      if (window?.id && pendingRequests.length <= 1)
+        chrome.windows.remove(window?.id);
     },
     [pendingRequest, pendingRequests.length, window?.id],
   );
 
   const rejectRequest = useCallback(() => {
+    // removePendingRequest(pendingRequest?.id);
     backgroundMessenger.send(`message:${pendingRequest?.id}`, false);
-    // Wait until the message propagates to the background provider.
-    setTimeout(() => {
-      if (window?.id && pendingRequests.length <= 1)
-        chrome.windows.remove(window.id);
-    }, 50);
+    if (window?.id && pendingRequests.length <= 1)
+      chrome.windows.remove(window.id);
   }, [pendingRequest?.id, pendingRequests.length, window?.id]);
 
   switch (pendingRequest.method) {
