@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 
 import { i18n } from '~/core/languages';
-import { Box } from '~/design-system';
+import { Box, Inline, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { PageHeader } from '~/entries/popup/components/PageHeader/PageHeader';
 import { menuTransition } from '~/entries/popup/utils/animation';
@@ -10,6 +10,18 @@ import { menuTransition } from '~/entries/popup/utils/animation';
 import { Menu } from '../../components/Menu/Menu';
 import { MenuContainer } from '../../components/Menu/MenuContainer';
 import { MenuItem } from '../../components/Menu/MenuItem';
+import { SFSymbol } from '../../components/SFSymbol/SFSymbol';
+import { SwitchMenu } from '../../components/SwitchMenu/SwitchMenu';
+
+interface SpeedOption {
+  emoji: string;
+  label: string;
+}
+const speedOptions: { [key: string]: SpeedOption } = {
+  normal: { emoji: '⏱', label: 'Normal' },
+  fast: { emoji: '🚀', label: 'Fast' },
+  urgent: { emoji: '🚨', label: 'Urgent' },
+};
 
 export function Transactions() {
   const [flashbots, setFlashbots] = useState(false);
@@ -31,13 +43,46 @@ export function Transactions() {
       <Box paddingHorizontal="20px">
         <MenuContainer testID="settings-menu-container">
           <Menu>
-            <MenuItem
-              hasSfSymbol
-              hasChevron
-              titleComponent={
-                <MenuItem.Title text={i18n.t('transactions.default_speed')} />
+            <SwitchMenu
+              align="end"
+              renderMenuTrigger={
+                <Box>
+                  <MenuItem
+                    hasSfSymbol
+                    hasChevron
+                    titleComponent={
+                      <MenuItem.Title
+                        text={i18n.t('transactions.default_speed')}
+                      />
+                    }
+                    rightComponent={<MenuItem.Selection text="🚨 Urgent" />}
+                  />
+                </Box>
               }
-              rightComponent={<MenuItem.Selection text="🚨 Urgent" />}
+              menuItemIndicator={<SFSymbol symbol="checkMark" size={11} />}
+              renderMenuItem={(option, i) => {
+                const { label, emoji } = speedOptions[option];
+
+                return (
+                  <Box id={`switch-option-item-${i}`}>
+                    <Inline space="8px" alignVertical="center">
+                      <Inline alignVertical="center" space="8px">
+                        <Text weight="medium" size="14pt">
+                          {emoji}
+                        </Text>
+                      </Inline>
+                      <Text weight="medium" size="14pt">
+                        {label}
+                      </Text>
+                    </Inline>
+                  </Box>
+                );
+              }}
+              menuItems={Object.keys(speedOptions)}
+              selectedValue="urgent"
+              onValueChange={(value) => {
+                console.log(value);
+              }}
             />
           </Menu>
           <Menu>
