@@ -3,6 +3,8 @@
   "license": "GPL-3.0-only",
   "version": "1.0.0",
   "scripts": {
+    "// Bumps the manifest and pkg.json versions": "",
+    "bump": "node scripts/bump.js",
     "// Generates a build using webpack secured by Lavamoat": "",
     "build": "yarn build:webpack",
     "// Generates modules via Webpack (without LavaMoat protected modules)": "",
