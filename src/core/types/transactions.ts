@@ -1,6 +1,5 @@
 import { BigNumberish } from 'ethers';
-
-import { ChainName } from '~/core/types/chains';
+import { Chain } from 'wagmi';
 
 import { ParsedAsset, ZerionAsset } from './assets';
 
@@ -26,7 +25,7 @@ export interface RainbowTransaction {
     amount: string;
     display: string;
   };
-  chain: ChainName;
+  chainId: Chain['id'];
   nonce?: number;
   pending?: boolean;
   protocol?: ProtocolType;
