@@ -4,11 +4,11 @@ import { Box, Stack } from '~/design-system';
 
 interface MenuContainerProps {
   children: React.ReactNode;
-  testID?: string;
+  testId?: string;
 }
-const MenuContainer = ({ children, testID }: MenuContainerProps) => {
+const MenuContainer = ({ children, testId }: MenuContainerProps) => {
   return (
-    <Box testId={testID} paddingBottom="20px">
+    <Box testId={testId} paddingBottom="20px">
       <Stack space="20px">{children}</Stack>
     </Box>
   );

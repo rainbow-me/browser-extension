@@ -22,7 +22,7 @@ export function Privacy() {
   const { currentAutoLockTimer } = usecurrentAutoLockTimerStore();
   return (
     <Box paddingHorizontal="20px">
-      <MenuContainer testID="settings-menu-container">
+      <MenuContainer testId="settings-menu-container">
         <Menu>
           <MenuItem
             hasSfSymbol

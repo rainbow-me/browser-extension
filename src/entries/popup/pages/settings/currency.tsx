@@ -12,7 +12,7 @@ export function Currency() {
 
   return (
     <Box paddingHorizontal="20px">
-      <MenuContainer testID="settings-menu-container">
+      <MenuContainer testId="settings-menu-container">
         <Menu>
           {Object.keys(supportedCurrencies).map((currency) => (
             <MenuItem

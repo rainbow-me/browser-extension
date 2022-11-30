@@ -86,7 +86,7 @@ interface MenuItemProps {
   disabled?: boolean;
   hasChevron?: boolean;
   hasSfSymbol?: boolean;
-  testID?: string;
+  testId?: string;
 }
 
 const MenuItem = ({
@@ -98,13 +98,13 @@ const MenuItem = ({
   labelComponent,
   disabled,
   hasChevron,
-  testID,
+  testId,
 }: MenuItemProps) => (
   <Box
     justifyContent="center"
     paddingHorizontal="16px"
     paddingVertical="16px"
-    testId={disabled ? testID : undefined}
+    testId={testId}
     width="full"
     onClick={onClick}
     style={{

@@ -21,7 +21,7 @@ export function Transactions() {
   const { currentFlashbots, setCurrentFlashbots } = useCurrentFlashbotsStore();
   return (
     <Box paddingHorizontal="20px">
-      <MenuContainer testID="settings-menu-container">
+      <MenuContainer testId="settings-menu-container">
         <Menu>
           <SwitchMenu
             align="end"

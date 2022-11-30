@@ -15,7 +15,7 @@ export function AutolockTimer() {
     usecurrentAutoLockTimerStore();
   return (
     <Box paddingHorizontal="20px">
-      <MenuContainer testID="settings-menu-container">
+      <MenuContainer testId="settings-menu-container">
         <Menu>
           {Object.keys(autoLockTimerOptions).map((lockTimer) => (
             <MenuItem

@@ -54,7 +54,7 @@ export function Settings() {
   return (
     <Box>
       <Box paddingHorizontal="20px">
-        <MenuContainer testID="settings-menu-container">
+        <MenuContainer testId="settings-menu-container">
           <Menu>
             <MenuItem
               hasSfSymbol
@@ -235,12 +235,12 @@ export function Settings() {
             <MenuItem
               titleComponent={<MenuItem.Title text="test sandbox popup" />}
               onClick={testSandboxPopup}
-              testID="test-sandbox-popup"
+              testId="test-sandbox-popup"
             />
             <MenuItem
               titleComponent={<MenuItem.Title text="test sandbox background" />}
               onClick={testSandboxBackground}
-              testID="test-sandbox-background"
+              testId="test-sandbox-background"
             />
           </Menu>
         </MenuContainer>
