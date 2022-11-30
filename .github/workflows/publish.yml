@@ -16,7 +16,7 @@ jobs:
         with:
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           ref: ${{ github.event.pull_request.head.ref }}
-          token: ${{ secrets.GITHUB_REPO_TOKEN }}
+          token: ${{ secrets.REPO_TOKEN }}
       - uses: actions/setup-node@v2
         with:
           node-version: "14.20.1"
