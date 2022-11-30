@@ -214,6 +214,9 @@ export function ButtonWrapper({
         position="relative"
         justifyContent="center"
         width={width}
+        style={{
+          backdropFilter: 'blur(26px)',
+        }}
       >
         {children}
       </Box>

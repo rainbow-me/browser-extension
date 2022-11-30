@@ -18,6 +18,14 @@
   "sign": {
     "title": "Sign"
   },
+  "welcome": {
+    "title": "Rainbow",
+    "subtitle": "Explore the new world of Ethereum",
+    "create_wallet": "Create a new wallet",
+    "import_wallet": "Import or connect a wallet",
+    "disclaimer_tos": "By proceeding, you agree to Rainbow’s",
+    "disclaimer_tos_link": "Terms of Service"
+  },
   "menu": {
     "network": {
       "title": "Switch Networks",

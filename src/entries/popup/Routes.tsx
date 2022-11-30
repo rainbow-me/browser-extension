@@ -11,6 +11,7 @@ import { Send } from './pages/send';
 import { Settings } from './pages/settings';
 import { Sign } from './pages/sign';
 import { Wallets } from './pages/wallets';
+import { Welcome } from './pages/welcome';
 
 export function Routes() {
   const location = useLocation();
@@ -33,6 +34,14 @@ export function Routes() {
             title={i18n.t('connected_apps.title')}
           >
             <ConnectedApps />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/welcome',
+        element: (
+          <AnimatedRoute direction="vertical" title={i18n.t('welcome.title')}>
+            <Welcome />
           </AnimatedRoute>
         ),
       },
