@@ -9,10 +9,9 @@ import { ConnectedApps } from './pages/ConnectedApps';
 import { Home } from './pages/home';
 import { Send } from './pages/send';
 import { Currency } from './pages/settings/currency';
-import { Main as SettingsMain } from './pages/settings/main';
 import { AutolockTimer } from './pages/settings/privacy/autoLockTimer';
-// import { Privacy } from './pages/settings/privacy/index';
-import { PrivacyMain } from './pages/settings/privacy/privacyMain';
+import { Privacy } from './pages/settings/privacy/privacy';
+import { Settings } from './pages/settings/settings';
 import { Transactions } from './pages/settings/transactions';
 import { Sign } from './pages/sign';
 import { Wallets } from './pages/wallets';
@@ -49,7 +48,7 @@ export function Routes() {
             navbar
             title={i18n.t('settings.title')}
           >
-            <SettingsMain />
+            <Settings />
           </AnimatedRoute>
         ),
       },
@@ -57,7 +56,7 @@ export function Routes() {
         path: '/settings/privacy',
         element: (
           <AnimatedRoute direction="horizontal" navbar title="Privacy">
-            <PrivacyMain />
+            <Privacy />
           </AnimatedRoute>
         ),
       },

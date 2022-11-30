@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { Box } from '~/design-system';
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,7 +36,6 @@ export const SwitchMenu = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        {' '}
         <Box style={{ cursor: 'default' }}>{renderMenuTrigger}</Box>
       </DropdownMenuTrigger>
       <DropdownMenuContent align={align}>

@@ -140,7 +140,7 @@ export function Default() {
           style={{ borderRadius: 999 }}
         >
           <Text color="labelSecondary" size="16pt" weight="bold">
-            {`CURRENT CURRENCY: ${currentCurrency?.toUpperCase()} | CHANGE`}
+            {`CURRENT CURRENCY: ${currentCurrency} | CHANGE`}
           </Text>
         </Box>
         <Text color="label" size="20pt" weight="bold">

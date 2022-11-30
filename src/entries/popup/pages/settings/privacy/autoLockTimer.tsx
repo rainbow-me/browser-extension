@@ -10,7 +10,6 @@ import { Box } from '~/design-system';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
-import { PageHeader } from '~/entries/popup/components/PageHeader/PageHeader';
 import { menuTransition } from '~/entries/popup/utils/animation';
 
 export function AutolockTimer() {
@@ -23,11 +22,6 @@ export function AutolockTimer() {
       animate={{ opacity: 1, x: 0 }}
       transition={menuTransition}
     >
-      <PageHeader
-        title="Auto-Lock Timer"
-        leftRoute="/settings/privacy"
-        leftSymbol="arrowLeft"
-      />
       <Box paddingHorizontal="20px">
         <MenuContainer testID="settings-menu-container">
           <Menu>

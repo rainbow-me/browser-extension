@@ -13,7 +13,6 @@ import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
-import { PageHeader } from '~/entries/popup/components/PageHeader/PageHeader';
 import { SFSymbol } from '~/entries/popup/components/SFSymbol/SFSymbol';
 import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 import { menuTransition } from '~/entries/popup/utils/animation';
@@ -29,11 +28,6 @@ export function Transactions() {
       animate={{ opacity: 1, x: 0 }}
       transition={menuTransition}
     >
-      <PageHeader
-        title="Transactions"
-        leftRoute="/settings"
-        leftSymbol="arrowLeft"
-      />
       <Box paddingHorizontal="20px">
         <MenuContainer testID="settings-menu-container">
           <Menu>

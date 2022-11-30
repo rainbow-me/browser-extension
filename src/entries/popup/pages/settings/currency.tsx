@@ -7,7 +7,6 @@ import { Box } from '~/design-system';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
-import { PageHeader } from '~/entries/popup/components/PageHeader/PageHeader';
 import { menuTransition } from '~/entries/popup/utils/animation';
 
 export function Currency() {
@@ -20,11 +19,6 @@ export function Currency() {
       animate={{ opacity: 1, x: 0 }}
       transition={menuTransition}
     >
-      <PageHeader
-        title="Currency"
-        leftRoute="/settings"
-        leftSymbol="arrowLeft"
-      />
       <Box paddingHorizontal="20px">
         <MenuContainer testID="settings-menu-container">
           <Menu>
