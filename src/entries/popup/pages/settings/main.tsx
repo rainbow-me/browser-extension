@@ -4,38 +4,32 @@ import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
+import { themeOptions } from '~/core/references/themes';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentDefaultWalletStore } from '~/core/state/currentSettings/currentDefaultWallet';
+import {
+  ThemeType,
+  useCurrentThemeStore,
+} from '~/core/state/currentSettings/currentTheme';
 import { Box, Inline, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { PageHeader } from '~/entries/popup/components/PageHeader/PageHeader';
-import {
-  SFSymbol,
-  Symbols,
-} from '~/entries/popup/components/SFSymbol/SFSymbol';
+import { SFSymbol } from '~/entries/popup/components/SFSymbol/SFSymbol';
 import { menuTransition } from '~/entries/popup/utils/animation';
 
 Symbol;
 import { SwitchMenu } from '../../components/SwitchMenu/SwitchMenu';
-
-interface ThemeOption {
-  symbol: Symbols;
-  label: string;
-}
-const themeOptions: { [key: string]: ThemeOption } = {
-  system: { symbol: 'gearshapeFill', label: 'System' },
-  light: { symbol: 'boltFill', label: 'Light' },
-  dark: { symbol: 'moonStars', label: 'Dark' },
-};
 
 export function Main() {
   const navigate = useNavigate();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { currentDefaultWallet, setCurrentDefaultWallet } =
     useCurrentDefaultWalletStore();
+
+  const { currentTheme, setCurrentTheme } = useCurrentThemeStore();
 
   return (
     <Box
@@ -112,7 +106,11 @@ export function Main() {
                     leftComponent={
                       <SFSymbol symbol="moonStars" color="purple" size={18} />
                     }
-                    rightComponent={<MenuItem.Selection text="System" />}
+                    rightComponent={
+                      <MenuItem.Selection
+                        text={themeOptions[currentTheme].label}
+                      />
+                    }
                     titleComponent={
                       <MenuItem.Title text={i18n.t('settings.theme')} />
                     }
@@ -137,9 +135,9 @@ export function Main() {
                 );
               }}
               menuItems={Object.keys(themeOptions)}
-              selectedValue="system"
+              selectedValue={currentTheme}
               onValueChange={(value) => {
-                console.log(value);
+                setCurrentTheme(value as ThemeType);
               }}
             />
             <MenuItem
