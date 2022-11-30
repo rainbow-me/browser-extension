@@ -3,6 +3,8 @@ import { constants } from 'ethers';
 import { ChainName } from '~/core/types/chains';
 
 export { supportedCurrencies } from './supportedCurrencies';
+export { ethUnits } from './ethUnits';
+
 export type {
   SupportedCurrency,
   SupportedCurrencyKey,

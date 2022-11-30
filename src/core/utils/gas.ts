@@ -1,6 +1,13 @@
+import {
+  Block,
+  Provider,
+  TransactionRequest,
+} from '@ethersproject/abstract-provider';
+import { Contract } from '@ethersproject/contracts';
 import BigNumber from 'bignumber.js';
 import { Chain, chain } from 'wagmi';
 
+import { ethUnits } from '../references';
 import { bsc } from '../types/chains';
 import {
   BlocksToConfirmation,
@@ -11,7 +18,16 @@ import {
 } from '../types/gas';
 
 import { addHexPrefix, gweiToWei, weiToGwei } from './ethereum';
-import { add, convertStringToHex, divide, lessThan, multiply } from './numbers';
+import {
+  add,
+  addBuffer,
+  convertStringToHex,
+  divide,
+  fraction,
+  greaterThan,
+  lessThan,
+  multiply,
+} from './numbers';
 import { getMinimalTimeUnitStringForMs } from './time';
 
 export const parseGasDataConfirmationTime = (
@@ -182,5 +198,85 @@ export const getChainWaitTime = (chainId: Chain['id']) => {
       return { safeWait: 8, proposedWait: 8, fastWait: 8 };
     default:
       return { safeWait: 8, proposedWait: 8, fastWait: 8 };
+  }
+};
+
+export const estimateGas = async ({
+  transactionRequest,
+  provider,
+}: {
+  transactionRequest: TransactionRequest;
+  provider: Provider;
+}) => {
+  try {
+    const gasLimit = await provider?.estimateGas(transactionRequest);
+    return gasLimit?.toString() ?? null;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const estimateGasWithPadding = async ({
+  transactionRequest,
+  contractCallEstimateGas = null,
+  callArguments = null,
+  provider,
+  paddingFactor = 1.1,
+}: {
+  transactionRequest: TransactionRequest;
+  contractCallEstimateGas: Contract['estimateGas'][string] | null;
+  callArguments: unknown[] | null;
+  provider: Provider;
+  paddingFactor: number;
+}): Promise<string | null> => {
+  try {
+    const txPayloadToEstimate: TransactionRequest & { gas?: string } = {
+      ...transactionRequest,
+    };
+
+    // `getBlock`'s typing requires a parameter, but passing no parameter
+    // works as intended and returns the gas limit.
+    const { gasLimit } = await (provider.getBlock as () => Promise<Block>)();
+
+    const { to, data } = txPayloadToEstimate;
+
+    // 1 - Check if the receiver is a contract
+    const code = to ? await provider.getCode(to) : undefined;
+    // 2 - if it's not a contract AND it doesn't have any data use the default gas limit
+    if (
+      (!contractCallEstimateGas && !to) ||
+      (to && !data && (!code || code === '0x'))
+    ) {
+      return ethUnits.basic_tx.toString();
+    }
+
+    // 3 - If it is a contract, call the RPC method `estimateGas` with a safe value
+    const saferGasLimit = fraction(gasLimit.toString(), 19, 20);
+
+    txPayloadToEstimate[contractCallEstimateGas ? 'gasLimit' : 'gas'] =
+      addHexPrefix(convertStringToHex(saferGasLimit));
+
+    const estimatedGas = await (contractCallEstimateGas
+      ? contractCallEstimateGas(...(callArguments ?? []), txPayloadToEstimate)
+      : provider.estimateGas(txPayloadToEstimate));
+
+    const lastBlockGasLimit = addBuffer(gasLimit.toString(), 0.9);
+    const paddedGas = addBuffer(
+      estimatedGas.toString(),
+      paddingFactor.toString(),
+    );
+
+    // If the safe estimation is above the last block gas limit, use it
+    if (greaterThan(estimatedGas.toString(), lastBlockGasLimit)) {
+      return estimatedGas.toString();
+    }
+    // If the estimation is below the last block gas limit, use the padded estimate
+    if (greaterThan(lastBlockGasLimit, paddedGas)) {
+      return paddedGas;
+    }
+    // otherwise default to the last block gas limit
+    return lastBlockGasLimit;
+  } catch (error) {
+    return null;
   }
 };
