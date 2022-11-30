@@ -8,10 +8,11 @@ import { dropdownMenuItemStyles } from './DropdownMenu.css';
 
 interface DropdownMenuContentProps {
   children: ReactNode;
+  align?: 'start' | 'center' | 'end';
 }
 
 export function DropdownMenuContent(props: DropdownMenuContentProps) {
-  const { children } = props;
+  const { children, align = 'start' } = props;
   return (
     <DropdownMenuPrimitive.Portal>
       <Box
@@ -27,7 +28,7 @@ export function DropdownMenuContent(props: DropdownMenuContentProps) {
         }}
         paddingHorizontal="12px"
         paddingVertical="4px"
-        align="start"
+        align={align}
       >
         {children}
       </Box>

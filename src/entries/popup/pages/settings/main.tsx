@@ -3,12 +3,29 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { Box, Text } from '~/design-system';
+import { Box, Inline, Text } from '~/design-system';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
-import { SFSymbol } from '~/entries/popup/components/SFSymbol/SFSymbol';
+import { PageHeader } from '~/entries/popup/components/PageHeader/PageHeader';
+import {
+  SFSymbol,
+  Symbols,
+} from '~/entries/popup/components/SFSymbol/SFSymbol';
 import { menuTransition } from '~/entries/popup/utils/animation';
+
+Symbol;
+import { SwitchMenu } from '../../components/SwitchMenu/SwitchMenu';
+
+interface ThemeOption {
+  symbol: Symbols;
+  label: string;
+}
+const themeOptions: { [key: string]: ThemeOption } = {
+  system: { symbol: 'gearshapeFill', label: 'System' },
+  light: { symbol: 'boltFill', label: 'Light' },
+  dark: { symbol: 'moonStars', label: 'Dark' },
+};
 
 export function Main() {
   const navigate = useNavigate();
@@ -68,15 +85,44 @@ export function Main() {
                 <MenuItem.Title text={i18n.t('settings.currency')} />
               }
             />
-            <MenuItem
-              hasChevron
-              leftComponent={
-                <SFSymbol symbol="moonStars" color="purple" size={18} />
+            <SwitchMenu
+              align="end"
+              renderMenuTrigger={
+                <Box>
+                  <MenuItem
+                    hasChevron
+                    leftComponent={
+                      <SFSymbol symbol="moonStars" color="purple" size={18} />
+                    }
+                    rightComponent={<MenuItem.Selection text="System" />}
+                    titleComponent={
+                      <MenuItem.Title text={i18n.t('settings.theme')} />
+                    }
+                  />
+                </Box>
               }
-              rightComponent={<MenuItem.Selection text="System" />}
-              titleComponent={
-                <MenuItem.Title text={i18n.t('settings.theme')} />
-              }
+              menuItemIndicator={<SFSymbol symbol="checkMark" size={11} />}
+              renderMenuItem={(option, i) => {
+                const { label, symbol } = themeOptions[option];
+
+                return (
+                  <Box id={`switch-option-item-${i}`}>
+                    <Inline space="8px" alignVertical="center">
+                      <Inline alignVertical="center" space="8px">
+                        <SFSymbol size={12} symbol={symbol} />
+                      </Inline>
+                      <Text weight="medium" size="14pt">
+                        {label}
+                      </Text>
+                    </Inline>
+                  </Box>
+                );
+              }}
+              menuItems={Object.keys(themeOptions)}
+              selectedValue="system"
+              onValueChange={(value) => {
+                console.log(value);
+              }}
             />
             <MenuItem
               leftComponent={
