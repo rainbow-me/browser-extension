@@ -9,6 +9,15 @@
     "title": "Connected Apps",
     "disconnect": "Disconnect All"
   },
+  "send": {
+    "title": "Send"
+  },
+  "settings": {
+    "title": "Settings"
+  },
+  "sign": {
+    "title": "Sign"
+  },
   "menu": {
     "network": {
       "title": "Switch Networks",
@@ -106,5 +115,8 @@
         "singular": "sec"
       }
     }
+},
+"wallets": {
+    "title": "Wallets"
   }
 }
