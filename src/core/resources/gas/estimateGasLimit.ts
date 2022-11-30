@@ -57,7 +57,7 @@ type EstimateGasLimitResult = QueryFunctionResult<
 // ///////////////////////////////////////////////
 // Query Fetcher
 
-export async function fetchMeteorology(
+export async function fetchEstimateGasLimit(
   { chainId, transactionRequest }: EstimateGasLimitArgs,
   config: QueryConfig<
     EstimateGasLimitResult,
