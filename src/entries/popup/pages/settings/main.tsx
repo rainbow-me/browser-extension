@@ -70,7 +70,7 @@ export function Main() {
                 <SFSymbol symbol="lockFill" color="blue" size={18} />
               }
               hasRightArrow
-              onPress={() => navigate('/settings/privacy')}
+              onClick={() => navigate('/settings/privacy')}
               titleComponent={
                 <MenuItem.Title
                   text={i18n.t('settings.privacy_and_security')}
@@ -82,7 +82,7 @@ export function Main() {
             <MenuItem
               hasRightArrow
               leftComponent={<SFSymbol symbol="boltFill" color="red" />}
-              onPress={() => navigate('/settings/transactions')}
+              onClick={() => navigate('/settings/transactions')}
               titleComponent={
                 <MenuItem.Title text={i18n.t('settings.transactions')} />
               }
@@ -90,7 +90,7 @@ export function Main() {
             <MenuItem
               hasRightArrow
               leftComponent={<SFSymbol symbol="send" color="green" />}
-              onPress={() => navigate('/settings/currency')}
+              onClick={() => navigate('/settings/currency')}
               rightComponent={<MenuItem.Selection text="Euro" />}
               titleComponent={
                 <MenuItem.Title text={i18n.t('settings.currency')} />

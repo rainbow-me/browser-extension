@@ -26,6 +26,15 @@ const Selection = ({ text }: SelectionProps) => (
   </Text>
 );
 
+const SelectionIcon = () => {
+  // TODO: switch to checkmark.circle.fill
+  return (
+    <Box>
+      <SFSymbol symbol="checkMark" size={14} />
+    </Box>
+  );
+};
+
 interface TitleProps {
   color?: TextStyles['color'];
   text: string;
@@ -72,7 +81,7 @@ interface MenuItemProps {
   rightComponent?: React.ReactNode;
   leftComponent?: React.ReactNode;
   hasRightArrow?: boolean;
-  onPress?: () => void;
+  onClick?: () => void;
   titleComponent: React.ReactNode;
   labelComponent?: React.ReactNode;
   disabled?: boolean;
@@ -83,7 +92,7 @@ interface MenuItemProps {
 
 const MenuItem = ({
   hasRightArrow,
-  onPress,
+  onClick,
   leftComponent,
   rightComponent,
   titleComponent,
@@ -98,7 +107,7 @@ const MenuItem = ({
     paddingVertical="16px"
     testId={disabled ? testID : undefined}
     width="full"
-    onClick={onPress}
+    onClick={onClick}
     style={{
       cursor: disabled ? 'default' : 'pointer',
     }}
@@ -134,6 +143,7 @@ const MenuItem = ({
 
 MenuItem.Label = Label;
 MenuItem.Selection = Selection;
+MenuItem.SelectionIcon = SelectionIcon;
 MenuItem.TextIcon = TextIcon;
 MenuItem.Title = Title;
 MenuItem.Description = Description;
