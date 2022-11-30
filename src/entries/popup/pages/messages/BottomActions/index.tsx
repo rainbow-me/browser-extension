@@ -265,17 +265,18 @@ export const RejectRequestButton = ({
   label: string;
 }) => {
   return (
-    <Box
-      as="button"
-      id="reject-request-button"
-      onClick={onClick}
-      width="full"
-      padding="16px"
-      borderRadius="round"
-    >
-      <Text color="labelSecondary" size="14pt" weight="bold">
-        {label}
-      </Text>
-    </Box>
+    <Inline alignHorizontal="center" alignVertical="center">
+      <Box
+        as="button"
+        id="reject-request-button"
+        onClick={onClick}
+        padding="16px"
+        borderRadius="round"
+      >
+        <Text color="labelSecondary" size="14pt" weight="bold">
+          {label}
+        </Text>
+      </Box>
+    </Inline>
   );
 };

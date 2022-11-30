@@ -1,0 +1,35 @@
+
+name: Publish to Chrome WebStore
+
+on:
+  # schedule:
+    # Runs every day at midnight
+    # - cron: '0 0 * * *'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    concurrency: 
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14.20.1"
+          cache: 'yarn'
+      - name: Install deps via Yarn
+        run: yarn setup
+      - uses: actions/checkout@v3
+        with:
+          repository: 'rainbow-me/browser-extension-env'
+          token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+          path: tmp
+      - name: Copy dotenv
+        run: cat tmp/dotenv >> .env && rm -rf tmp
+      - name: Build the extension ready for the stores
+        run: yarn bundle
+      - name: Submit to the chrome webstore
+        uses: PlasmoHQ/bpp@v3
+        with:
+          artifact: build/artifact.zip
+          keys: ${{ secrets.BPP_KEYS }}

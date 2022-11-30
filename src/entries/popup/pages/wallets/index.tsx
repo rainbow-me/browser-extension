@@ -1,13 +1,11 @@
 import { fetchEnsAddress } from '@wagmi/core';
-import { motion } from 'framer-motion';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Address, useAccount, useEnsName } from 'wagmi';
 
 import { useCurrentAddressStore } from '~/core/state';
 import { WalletAction } from '~/core/types/walletActions';
 import { EthereumWalletSeed, isENSAddressFormat } from '~/core/utils/ethereum';
-import { Box, Column, Columns, Separator, Text } from '~/design-system';
+import { Box, Separator, Text } from '~/design-system';
 
 import * as wallet from '../../handlers/wallet';
 
@@ -380,38 +378,12 @@ export function Wallets() {
 
   return (
     <Box
-      as={motion.div}
       display="flex"
       flexDirection="column"
       gap="24px"
       padding="20px"
-      initial={{ opacity: 0, x: window.innerWidth }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: window.innerWidth }}
-      transition={{ type: 'tween', duration: 0.2 }}
       style={{ overflow: 'auto' }}
     >
-      <Columns space="12px">
-        <Column width="1/3">
-          <Link id="wallets-go-back" to="/">
-            <Box as="button" style={{ borderRadius: 999, width: '100%' }}>
-              <Text
-                color="labelSecondary"
-                size="14pt"
-                weight="bold"
-                align="left"
-              >
-                Back
-              </Text>
-            </Box>
-          </Link>
-        </Column>
-        <Column width="1/3">
-          <Text as="h1" size="20pt" weight="bold">
-            Wallets
-          </Text>
-        </Column>
-      </Columns>
       {isUnlocked ? (
         <Fragment>
           {address && (
