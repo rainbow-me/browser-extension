@@ -4,11 +4,11 @@ import React from 'react';
 import { supportedCurrencies } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { Box } from '~/design-system';
+import { Menu } from '~/entries/popup/components/Menu/Menu';
+import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
+import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
+import { PageHeader } from '~/entries/popup/components/PageHeader/PageHeader';
 import { menuTransition } from '~/entries/popup/utils/animation';
-
-import { Menu } from '../../components/Menu/Menu';
-import { MenuContainer } from '../../components/Menu/MenuContainer';
-import { MenuItem } from '../../components/Menu/MenuItem';
 
 export function Currency() {
   const { currentCurrency, setCurrentCurrency } = useCurrentCurrencyStore();

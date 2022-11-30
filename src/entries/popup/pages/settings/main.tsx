@@ -21,10 +21,8 @@ import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { PageHeader } from '~/entries/popup/components/PageHeader/PageHeader';
 import { SFSymbol } from '~/entries/popup/components/SFSymbol/SFSymbol';
+import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 import { menuTransition } from '~/entries/popup/utils/animation';
-
-Symbol;
-import { SwitchMenu } from '../../components/SwitchMenu/SwitchMenu';
 
 export function Main() {
   const navigate = useNavigate();

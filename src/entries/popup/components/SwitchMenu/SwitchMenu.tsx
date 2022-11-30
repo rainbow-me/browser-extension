@@ -11,7 +11,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../DropdownMenu/DropdownMenu';
+} from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 
 interface SwitchMenuProps {
   title?: string;
