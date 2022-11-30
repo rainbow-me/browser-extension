@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion';
-import React, { useState } from 'react';
+import React from 'react';
 
 import { i18n } from '~/core/languages';
 import {
   TxDefaultSpeedType,
   txDefaultSpeedOptions,
 } from '~/core/references/txDefaultSpeed';
+import { useCurrentFlashbotsStore } from '~/core/state/currentSettings/currentFlashbots';
 import { useCurrentTxDefaultSpeedStore } from '~/core/state/currentSettings/currentTxDefaultSpeed';
 import { Box, Inline, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
@@ -19,12 +20,9 @@ import { SFSymbol } from '../../components/SFSymbol/SFSymbol';
 import { SwitchMenu } from '../../components/SwitchMenu/SwitchMenu';
 
 export function Transactions() {
-  const [flashbots, setFlashbots] = useState(false);
-  const handleChangeFlashbots = (checked: boolean) => {
-    setFlashbots(checked);
-  };
   const { currentTxDefaultSpeed, setCurrentTxDefaultSpeed } =
     useCurrentTxDefaultSpeedStore();
+  const { currentFlashbots, setCurrentFlashbots } = useCurrentFlashbotsStore();
   return (
     <Box
       as={motion.div}
@@ -94,8 +92,8 @@ export function Transactions() {
               hasSfSymbol
               rightComponent={
                 <Toggle
-                  checked={flashbots}
-                  handleChange={handleChangeFlashbots}
+                  checked={currentFlashbots}
+                  handleChange={setCurrentFlashbots}
                 />
               }
               titleComponent={
