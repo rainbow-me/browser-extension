@@ -2,12 +2,14 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import * as React from 'react';
 import { useAccount } from 'wagmi';
 
+import { ChainId } from '~/core/types/chains';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { useAvatar } from '../../hooks/useAvatar';
+import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
 import { MainLayout } from '../../layouts/MainLayout';
 import { StickyHeader } from '../../layouts/StickyHeader';
 
@@ -25,6 +27,13 @@ const COLLAPSED_HEADER_TOP_OFFSET = 172;
 export function Home() {
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
+  const bnb = useNativeAssetForNetwork({ chainId: ChainId.bsc });
+  const arbEth = useNativeAssetForNetwork({ chainId: ChainId.arbitrum });
+  const matic = useNativeAssetForNetwork({ chainId: ChainId.polygon });
+
+  console.log('BNB: ', bnb);
+  console.log('ETH: ', arbEth);
+  console.log('MATIC: ', matic);
 
   const [activeTab, setActiveTab] = React.useState<Tab>('tokens');
   const onSelectTab = React.useCallback((tab: Tab) => {
