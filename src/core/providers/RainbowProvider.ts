@@ -3,6 +3,7 @@ import { EventEmitter } from 'eventemitter3';
 import { Messenger } from '../messengers';
 import { providerRequestTransport } from '../transports';
 import { RPCMethod } from '../types/rpcMethods';
+import { toHex } from '../utils/numbers';
 
 export type ChainIdHex = `0x${string}`;
 
