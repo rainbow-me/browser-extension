@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion';
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
+import { useCurrentHideAssetBalancesStore } from '~/core/state/currentSettings/currentHideAssetBalances';
+import { useCurrentHideSmallBalancesStore } from '~/core/state/currentSettings/currentHideSmallBalances';
 import { Box } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -14,14 +16,10 @@ import { menuTransition } from '~/entries/popup/utils/animation';
 
 export function PrivacyMain() {
   const navigate = useNavigate();
-  const [hideAssetBalances, setHideAssetBalances] = useState(false);
-  const handleChangeHideAssetBalances = (checked: boolean) => {
-    setHideAssetBalances(checked);
-  };
-  const [hideSmallBalances, setHideSmallBalances] = useState(true);
-  const handleChangeHideSmallBalances = (checked: boolean) => {
-    setHideSmallBalances(checked);
-  };
+  const { currentHideAssetBalances, setCurrentHideAssetBalances } =
+    useCurrentHideAssetBalancesStore();
+  const { currentHideSmallBalances, setCurrentHideSmallBalances } =
+    useCurrentHideSmallBalancesStore();
   return (
     <Box
       as={motion.div}
@@ -48,8 +46,8 @@ export function PrivacyMain() {
               }
               rightComponent={
                 <Toggle
-                  checked={hideAssetBalances}
-                  handleChange={handleChangeHideAssetBalances}
+                  checked={currentHideAssetBalances}
+                  handleChange={setCurrentHideAssetBalances}
                 />
               }
               titleComponent={
@@ -67,8 +65,8 @@ export function PrivacyMain() {
               hasSfSymbol
               rightComponent={
                 <Toggle
-                  checked={hideSmallBalances}
-                  handleChange={handleChangeHideSmallBalances}
+                  checked={currentHideSmallBalances}
+                  handleChange={setCurrentHideSmallBalances}
                 />
               }
               titleComponent={
