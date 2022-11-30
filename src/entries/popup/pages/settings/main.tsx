@@ -1,9 +1,10 @@
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { Box, Inline, Text } from '~/design-system';
+import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
@@ -29,6 +30,10 @@ const themeOptions: { [key: string]: ThemeOption } = {
 
 export function Main() {
   const navigate = useNavigate();
+  const [rainbowAsDefaultWallet, setRainbowAsDefaultWallet] = useState(true);
+  const handleChangeDefaultWallet = (checked: boolean) => {
+    setRainbowAsDefaultWallet(checked);
+  };
   return (
     <Box
       as={motion.div}
@@ -45,6 +50,12 @@ export function Main() {
               titleComponent={
                 <MenuItem.Title
                   text={i18n.t('settings.use_rainbow_as_default_wallet')}
+                />
+              }
+              rightComponent={
+                <Toggle
+                  checked={rainbowAsDefaultWallet}
+                  handleChange={handleChangeDefaultWallet}
                 />
               }
             />
@@ -109,7 +120,7 @@ export function Main() {
                   <Box id={`switch-option-item-${i}`}>
                     <Inline space="8px" alignVertical="center">
                       <Inline alignVertical="center" space="8px">
-                        <SFSymbol size={12} symbol={symbol} />
+                        <SFSymbol size={18} symbol={symbol} />
                       </Inline>
                       <Text weight="medium" size="14pt">
                         {label}
