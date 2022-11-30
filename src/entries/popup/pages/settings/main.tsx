@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
+import { useCurrentDefaultWalletStore } from '~/core/state/currentSettings/currentDefaultWallet';
 import { Box, Inline, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -32,11 +33,9 @@ const themeOptions: { [key: string]: ThemeOption } = {
 
 export function Main() {
   const navigate = useNavigate();
-  const [rainbowAsDefaultWallet, setRainbowAsDefaultWallet] = useState(true);
-  const handleChangeDefaultWallet = (checked: boolean) => {
-    setRainbowAsDefaultWallet(checked);
-  };
   const { currentCurrency } = useCurrentCurrencyStore();
+  const { currentDefaultWallet, setCurrentDefaultWallet } =
+    useCurrentDefaultWalletStore();
 
   return (
     <Box
@@ -58,8 +57,8 @@ export function Main() {
               }
               rightComponent={
                 <Toggle
-                  checked={rainbowAsDefaultWallet}
-                  handleChange={handleChangeDefaultWallet}
+                  checked={currentDefaultWallet}
+                  handleChange={setCurrentDefaultWallet}
                 />
               }
             />
