@@ -1,8 +1,10 @@
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { Box } from '~/design-system';
+import { Toggle } from '~/design-system/components/Toggle/Toggle';
+import { PageHeader } from '~/entries/popup/components/PageHeader/PageHeader';
 import { menuTransition } from '~/entries/popup/utils/animation';
 
 import { Menu } from '../../components/Menu/Menu';
@@ -10,6 +12,10 @@ import { MenuContainer } from '../../components/Menu/MenuContainer';
 import { MenuItem } from '../../components/Menu/MenuItem';
 
 export function Transactions() {
+  const [flashbots, setFlashbots] = useState(false);
+  const handleChangeFlashbots = (checked: boolean) => {
+    setFlashbots(checked);
+  };
   return (
     <Box
       as={motion.div}
@@ -37,6 +43,12 @@ export function Transactions() {
           <Menu>
             <MenuItem
               hasSfSymbol
+              rightComponent={
+                <Toggle
+                  checked={flashbots}
+                  handleChange={handleChangeFlashbots}
+                />
+              }
               titleComponent={
                 <MenuItem.Title text={i18n.t('transactions.use_flashbots')} />
               }

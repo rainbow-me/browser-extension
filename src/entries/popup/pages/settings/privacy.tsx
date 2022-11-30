@@ -1,16 +1,25 @@
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { Box } from '~/design-system';
+import { Toggle } from '~/design-system/components/Toggle/Toggle';
+import { Menu } from '~/entries/popup/components/Menu/Menu';
+import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
+import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
+import { PageHeader } from '~/entries/popup/components/PageHeader/PageHeader';
+import { SFSymbol } from '~/entries/popup/components/SFSymbol/SFSymbol';
 import { menuTransition } from '~/entries/popup/utils/animation';
 
-import { Menu } from '../../components/Menu/Menu';
-import { MenuContainer } from '../../components/Menu/MenuContainer';
-import { MenuItem } from '../../components/Menu/MenuItem';
-import { SFSymbol } from '../../components/SFSymbol/SFSymbol';
-
 export function Privacy() {
+  const [hideAssetBalances, setHideAssetBalances] = useState(false);
+  const handleChangeHideAssetBalances = (checked: boolean) => {
+    setHideAssetBalances(checked);
+  };
+  const [hideSmallBalances, setHideSmallBalances] = useState(true);
+  const handleChangeHideSmallBalances = (checked: boolean) => {
+    setHideSmallBalances(checked);
+  };
   return (
     <Box
       as={motion.div}
@@ -28,7 +37,19 @@ export function Privacy() {
           <Menu>
             <MenuItem
               hasSfSymbol
-              leftComponent={<SFSymbol symbol="send" />}
+              leftComponent={
+                <SFSymbol
+                  symbol="eyeSlashCircleFill"
+                  size={18}
+                  color="labelQuaternary"
+                />
+              }
+              rightComponent={
+                <Toggle
+                  checked={hideAssetBalances}
+                  handleChange={handleChangeHideAssetBalances}
+                />
+              }
               titleComponent={
                 <MenuItem.Title
                   text={i18n.t('privacy_and_security.hide_asset_balances')}
@@ -42,6 +63,12 @@ export function Privacy() {
             />
             <MenuItem
               hasSfSymbol
+              rightComponent={
+                <Toggle
+                  checked={hideSmallBalances}
+                  handleChange={handleChangeHideSmallBalances}
+                />
+              }
               titleComponent={
                 <MenuItem.Title
                   text={i18n.t(
