@@ -7,7 +7,12 @@ import { Contract } from '@ethersproject/contracts';
 import BigNumber from 'bignumber.js';
 import { Chain, chain } from 'wagmi';
 
-import { ethUnits } from '../references';
+import {
+  SupportedCurrencyKey,
+  ethUnits,
+  supportedCurrencies,
+} from '../references';
+import { ParsedAddressAsset } from '../types/assets';
 import { bsc } from '../types/chains';
 import {
   BlocksToConfirmation,
@@ -21,10 +26,12 @@ import { addHexPrefix, gweiToWei, weiToGwei } from './ethereum';
 import {
   add,
   addBuffer,
+  convertRawAmountToBalance,
   convertStringToHex,
   divide,
   fraction,
   greaterThan,
+  handleSignificantDecimals,
   lessThan,
   multiply,
 } from './numbers';
@@ -92,6 +99,8 @@ export const parseGasFeeParams = ({
   speed,
   maxPriorityFeeSuggestions,
   blocksToConfirmation,
+  gasLimit,
+  nativeAsset,
 }: {
   wei: string;
   speed: GasSpeed;
@@ -101,6 +110,8 @@ export const parseGasFeeParams = ({
     normal: string;
   };
   currentBaseFee: string;
+  gasLimit: string;
+  nativeAsset?: ParsedAddressAsset;
   blocksToConfirmation: BlocksToConfirmation;
 }): GasFeeParams => {
   const maxBaseFee = parseGasFeeParam({
@@ -134,12 +145,23 @@ export const parseGasFeeParams = ({
       convertStringToHex(add(maxPriorityFeePerGas.amount, maxBaseFee.amount)),
     ),
   };
+
+  const amount = add(maxBaseFee.amount, maxPriorityFeePerGas.amount);
+  const totalWei = multiply(gasLimit, amount);
+  const nativeTotalWei = convertRawAmountToBalance(
+    totalWei,
+    supportedCurrencies[nativeAsset?.symbol as SupportedCurrencyKey],
+  ).amount;
+  const gasFeeDisplay = handleSignificantDecimals(nativeTotalWei, 4);
+  const gasFee = { amount: totalWei, display: gasFeeDisplay };
+
   return {
+    display,
+    estimatedTime,
+    gasFee,
     maxBaseFee,
     maxPriorityFeePerGas,
-    display,
     option: speed,
-    estimatedTime,
     transactionGasParams,
   };
 };
@@ -148,10 +170,14 @@ export const parseGasFeeLegacyParams = ({
   gwei,
   speed,
   waitTime,
+  gasLimit,
+  nativeAsset,
 }: {
   gwei: string;
   speed: GasSpeed;
   waitTime: number;
+  gasLimit: string;
+  nativeAsset?: ParsedAddressAsset;
 }): GasFeeLegacyParams => {
   const wei = gweiToWei(gwei);
   const gasPrice = parseGasFeeParam({
@@ -166,11 +192,22 @@ export const parseGasFeeLegacyParams = ({
   const transactionGasParams = {
     gasPrice: addHexPrefix(convertStringToHex(gasPrice.amount)),
   };
+
+  const amount = gasPrice.amount;
+  const totalWei = multiply(gasLimit, amount);
+  const nativeTotalWei = convertRawAmountToBalance(
+    totalWei,
+    supportedCurrencies[nativeAsset?.symbol as SupportedCurrencyKey],
+  ).amount;
+  const gasFeeDisplay = handleSignificantDecimals(nativeTotalWei, 4);
+  const gasFee = { amount: totalWei, display: gasFeeDisplay };
+
   return {
-    gasPrice,
     display,
-    option: speed,
     estimatedTime,
+    gasFee,
+    gasPrice,
+    option: speed,
     transactionGasParams,
   };
 };

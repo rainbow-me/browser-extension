@@ -28,16 +28,11 @@ export function TransactionFee({
   chainId,
   transactionRequest,
 }: TransactionFeeProps) {
-  const {
-    selectedSpeed,
-    setSelectedSpeed,
-    gasFeeParamsBySpeed,
-    isLoading,
-    gasFee,
-  } = useGas({
-    chainId,
-    transactionRequest,
-  });
+  const { selectedSpeed, setSelectedSpeed, gasFeeParamsBySpeed, isLoading } =
+    useGas({
+      chainId,
+      transactionRequest,
+    });
 
   return (
     <Columns alignHorizontal="justify" alignVertical="center">
@@ -54,7 +49,7 @@ export function TransactionFee({
               <Text weight="semibold" color="label" size="14pt">
                 {isLoading
                   ? '~'
-                  : `${gasFee.display} ~ ${gasFeeParamsBySpeed[selectedSpeed].estimatedTime.display}`}
+                  : `${gasFeeParamsBySpeed[selectedSpeed].gasFee.display} ~ ${gasFeeParamsBySpeed[selectedSpeed].estimatedTime.display}`}
               </Text>
             </Inline>
           </Row>
