@@ -1,6 +1,7 @@
+import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { Address, fetchEnsAddress } from '@wagmi/core';
 import { ethers } from 'ethers';
-import React, { ChangeEvent, useCallback, useState } from 'react';
+import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { chain, useAccount } from 'wagmi';
 
 import { isENSAddressFormat } from '~/core/utils/ethereum';
@@ -23,6 +24,14 @@ export function Send() {
   const [txHash, setTxHash] = useState('');
   const [sending, setSending] = useState(false);
   const { address } = useAccount();
+
+  const transactionRequest: TransactionRequest = useMemo(() => {
+    return {
+      tp: toAddress,
+      from: address,
+      amount,
+    };
+  }, [address, amount, toAddress]);
 
   const handleToAddressChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -165,7 +174,10 @@ export function Send() {
               </Row>
             )}
             <Row>
-              <TransactionFee chainId={chain.mainnet.id} />
+              <TransactionFee
+                chainId={chain.mainnet.id}
+                transactionRequest={transactionRequest}
+              />
             </Row>
           </Rows>
         </Column>

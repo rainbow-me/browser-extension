@@ -1,7 +1,13 @@
+import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useEffect, useMemo, useState } from 'react';
 import { Chain, chain } from 'wagmi';
 
-import { useGasData } from '~/core/resources/gas';
+import {
+  SupportedCurrencyKey,
+  ethUnits,
+  supportedCurrencies,
+} from '~/core/references';
+import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
 import {
   MeteorologyLegacyResponse,
   MeteorologyResponse,
@@ -17,12 +23,33 @@ import {
   parseGasFeeLegacyParams,
   parseGasFeeParams,
 } from '~/core/utils/gas';
-import { add } from '~/core/utils/numbers';
+import {
+  add,
+  convertRawAmountToBalance,
+  handleSignificantDecimals,
+  multiply,
+} from '~/core/utils/numbers';
 
-export const useGas = ({ chainId }: { chainId: Chain['id'] }) => {
+import { useNativeAssetForNetwork } from './useNativeAssetForNetwork';
+
+export const useGas = ({
+  chainId,
+  transactionRequest,
+}: {
+  chainId: Chain['id'];
+  transactionRequest: TransactionRequest;
+}) => {
   const { data, isLoading } = useGasData({ chainId });
+  const { data: gasLimitData } = useEstimateGasLimit({
+    chainId,
+    transactionRequest,
+  });
   const { selectedGas, setSelectedGas } = useGasStore();
   const [selectedSpeed, setSelectedSpeed] = useState(GasSpeed.NORMAL);
+
+  const asset = useNativeAssetForNetwork({ chainId });
+
+  const gasLimit = gasLimitData?.gasLimit ?? ethUnits.basic_transfer;
 
   const gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed =
     useMemo(() => {
@@ -99,18 +126,26 @@ export const useGas = ({ chainId }: { chainId: Chain['id'] }) => {
     }, [chainId, data]);
 
   const gasFee = useMemo(() => {
+    let amount = null;
     if (chainId === chain.mainnet.id) {
-      return add(
+      amount = add(
         (gasFeeParamsBySpeed as GasFeeParamsBySpeed)[selectedSpeed]?.maxBaseFee
           ?.amount,
         (gasFeeParamsBySpeed as GasFeeParamsBySpeed)[selectedSpeed]
           ?.maxPriorityFeePerGas?.amount,
       );
     } else {
-      return (gasFeeParamsBySpeed as GasFeeLegacyParamsBySpeed)[selectedSpeed]
+      amount = (gasFeeParamsBySpeed as GasFeeLegacyParamsBySpeed)[selectedSpeed]
         ?.gasPrice?.amount;
     }
-  }, [chainId, gasFeeParamsBySpeed, selectedSpeed]);
+    const totalWei = multiply(gasLimit, amount);
+    const nativeTotalWei = convertRawAmountToBalance(
+      totalWei,
+      supportedCurrencies[asset?.symbol as SupportedCurrencyKey],
+    ).amount;
+    const display = handleSignificantDecimals(nativeTotalWei, 4);
+    return { amount, display };
+  }, [asset?.symbol, chainId, gasFeeParamsBySpeed, gasLimit, selectedSpeed]);
 
   useEffect(() => {
     setSelectedGas({ selectedGas: gasFeeParamsBySpeed[selectedSpeed] });
