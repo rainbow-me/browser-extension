@@ -4,6 +4,12 @@ import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
+import {
+  RAINBOW_LEARN_URL,
+  RAINBOW_SHARE_URL,
+  RAINBOW_SUPPORT_URL,
+  RAINBOW_TWITTER_URL,
+} from '~/core/references/links';
 import { ThemeType, themeOptions } from '~/core/references/themes';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentDefaultWalletStore } from '~/core/state/currentSettings/currentDefaultWallet';
@@ -164,6 +170,7 @@ export function Main() {
                   size={14}
                 />
               }
+              onClick={() => window.open(RAINBOW_SHARE_URL, '_blank')}
             />
             <MenuItem
               leftComponent={<MenuItem.TextIcon icon="🧠" />}
@@ -179,6 +186,7 @@ export function Main() {
                   size={14}
                 />
               }
+              onClick={() => window.open(RAINBOW_LEARN_URL, '_blank')}
             />
             <MenuItem
               leftComponent={<MenuItem.TextIcon icon="🐦" />}
@@ -194,6 +202,7 @@ export function Main() {
                   size={14}
                 />
               }
+              onClick={() => window.open(RAINBOW_TWITTER_URL, '_blank')}
             />
             <MenuItem
               leftComponent={<MenuItem.TextIcon icon="💬" />}
@@ -209,6 +218,7 @@ export function Main() {
                   size={14}
                 />
               }
+              onClick={() => window.open(RAINBOW_SUPPORT_URL, '_blank')}
             />
           </Menu>
         </MenuContainer>
