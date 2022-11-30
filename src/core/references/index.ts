@@ -5,6 +5,8 @@ import { ChainName } from '~/core/types/chains';
 export { supportedCurrencies } from './supportedCurrencies';
 export { ethUnits } from './ethUnits';
 
+export { default as optimismGasOracleAbi } from './abis/optimism-gas-oracle-abi.json';
+
 export type {
   SupportedCurrency,
   SupportedCurrencyKey,
@@ -24,3 +26,5 @@ export const NATIVE_ASSETS_PER_CHAIN = {
   [ChainName.optimism]: OPTIMISM_ETH_ADDRESS,
   [ChainName.polygon]: MATIC_POLYGON_ADDRESS,
 };
+export const OVM_GAS_PRICE_ORACLE =
+  '0x420000000000000000000000000000000000000F';

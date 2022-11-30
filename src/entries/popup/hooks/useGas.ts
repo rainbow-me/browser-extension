@@ -29,7 +29,7 @@ export const useGas = ({
   chainId: Chain['id'];
   transactionRequest: TransactionRequest;
 }) => {
-  const { data, isLoading } = useGasData({ chainId });
+  const { data, isLoading } = useGasData({ chainId, transactionRequest });
   const { data: gasLimitData } = useEstimateGasLimit({
     chainId,
     transactionRequest,

@@ -4,12 +4,17 @@ import {
   TransactionRequest,
 } from '@ethersproject/abstract-provider';
 import { Contract } from '@ethersproject/contracts';
+import { serialize } from '@ethersproject/transactions';
 import BigNumber from 'bignumber.js';
+import { BigNumberish } from 'ethers';
+import { getAddress } from 'ethers/lib/utils';
 import { Chain, chain } from 'wagmi';
 
 import {
+  OVM_GAS_PRICE_ORACLE,
   SupportedCurrencyKey,
   ethUnits,
+  optimismGasOracleAbi,
   supportedCurrencies,
 } from '../references';
 import { ParsedAddressAsset } from '../types/assets';
@@ -34,6 +39,7 @@ import {
   handleSignificantDecimals,
   lessThan,
   multiply,
+  toHex,
 } from './numbers';
 import { getMinimalTimeUnitStringForMs } from './time';
 
@@ -190,7 +196,7 @@ export const parseGasFeeLegacyParams = ({
     display: getMinimalTimeUnitStringForMs(Number(multiply(waitTime, 1000))),
   };
   const transactionGasParams = {
-    gasPrice: addHexPrefix(convertStringToHex(gasPrice.amount)),
+    gasPrice: toHex(gasPrice.amount),
   };
 
   const amount = gasPrice.amount;
@@ -291,7 +297,7 @@ export const estimateGasWithPadding = async ({
     const saferGasLimit = fraction(gasLimit.toString(), 19, 20);
 
     txPayloadToEstimate[contractCallEstimateGas ? 'gasLimit' : 'gas'] =
-      addHexPrefix(convertStringToHex(saferGasLimit));
+      toHex(saferGasLimit);
 
     const estimatedGas = await (contractCallEstimateGas
       ? contractCallEstimateGas(...(callArguments ?? []), txPayloadToEstimate)
@@ -315,5 +321,62 @@ export const estimateGasWithPadding = async ({
     return lastBlockGasLimit;
   } catch (error) {
     return null;
+  }
+};
+
+export const calculateL1FeeOptimism = async ({
+  transactionRequest,
+  currentGasPrice,
+  provider,
+}: {
+  currentGasPrice: string;
+  transactionRequest: TransactionRequest & { gas?: string };
+  provider: Provider;
+}): Promise<BigNumberish | undefined> => {
+  try {
+    if (transactionRequest?.value) {
+      transactionRequest.value = transactionRequest.value.toString();
+    }
+
+    if (transactionRequest?.from) {
+      const nonce = await provider.getTransactionCount(transactionRequest.from);
+      // eslint-disable-next-line require-atomic-updates
+      transactionRequest.nonce = Number(nonce);
+      delete transactionRequest.from;
+    }
+
+    if (transactionRequest.gas) {
+      delete transactionRequest.gas;
+    }
+
+    if (transactionRequest.to) {
+      transactionRequest.to = getAddress(transactionRequest.to);
+    }
+    if (!transactionRequest.gasLimit) {
+      transactionRequest.gasLimit = toHex(
+        `${
+          transactionRequest.data === '0x'
+            ? ethUnits.basic_tx
+            : ethUnits.basic_transfer
+        }`,
+      );
+    }
+
+    if (currentGasPrice) transactionRequest.gasPrice = toHex(currentGasPrice);
+
+    const serializedTx = serialize({
+      ...transactionRequest,
+      nonce: transactionRequest.nonce as number,
+    });
+
+    const OVM_GasPriceOracle = new Contract(
+      OVM_GAS_PRICE_ORACLE,
+      optimismGasOracleAbi,
+      provider,
+    );
+    const l1FeeInWei = await OVM_GasPriceOracle.getL1Fee(serializedTx);
+    return l1FeeInWei;
+  } catch (e) {
+    //
   }
 };
