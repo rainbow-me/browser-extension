@@ -10117,10 +10117,10 @@ secp256k1@^4.0.1, secp256k1@^4.0.2:
     node-addon-api "^2.0.0"
     node-gyp-build "^4.2.0"
 
-selenium-webdriver@4.5.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/selenium-webdriver/-/selenium-webdriver-4.5.0.tgz#7e20d0fc038177970dad81159950c12f7411ac0d"
-  integrity sha512-9mSFii+lRwcnT2KUAB1kqvx6+mMiiQHH60Y0VUtr3kxxi3oZ3CV3B8e2nuJ7T4SPb+Q6VA0swswe7rYpez07Bg==
+selenium-webdriver@4.6.1:
+  version "4.6.1"
+  resolved "https://registry.yarnpkg.com/selenium-webdriver/-/selenium-webdriver-4.6.1.tgz#ac66867206542a40c24b5a44f4ccbae992e962dc"
+  integrity sha512-FT8Dw0tbzaTp8YYLuwhaCnve/nw03HKrOJrA3aUmTKmxaIFSP4kT2R5fN3K0RpV5kbR0ZnM4FGVI2vANBvekaA==
   dependencies:
     jszip "^3.10.0"
     tmp "^0.2.1"
