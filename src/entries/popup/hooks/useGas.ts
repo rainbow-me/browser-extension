@@ -35,9 +35,8 @@ export const useGas = ({
     chainId,
     transactionRequest,
   });
-  const { selectedGas, setSelectedGas } = useGasStore();
+  const { selectedGas, setSelectedGas, setGasFeeParamsBySpeed } = useGasStore();
   const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>(GasSpeed.NORMAL);
-
   const nativeAsset = useNativeAssetForNetwork({ chainId });
 
   const gasLimit = gasLimitData?.gasLimit ?? `${ethUnits.basic_transfer}`;
@@ -140,6 +139,12 @@ export const useGas = ({
     selectedSpeed,
     setSelectedGas,
   ]);
+
+  useEffect(() => {
+    setGasFeeParamsBySpeed({
+      gasFeeParamsBySpeed,
+    });
+  }, [gasFeeParamsBySpeed, setGasFeeParamsBySpeed]);
 
   return {
     data,

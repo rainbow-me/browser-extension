@@ -1,10 +1,17 @@
 import { MaxUint256 } from '@ethersproject/constants';
+import { RAINBOW_ROUTER_CONTRACT_ADDRESS } from '@rainbow-me/swaps';
 import { Address, Chain, erc20ABI, getProvider } from '@wagmi/core';
 import { Contract, Wallet } from 'ethers';
+import { chain } from 'wagmi';
 
 import { ethUnits } from '../references';
+import { gasStore } from '../state';
 import { ParsedAsset } from '../types/assets';
+import { TransactionGasParams, TransactionLegacyGasParams } from '../types/gas';
+import { TransactionStatus, TransactionType } from '../types/transactions';
 import { convertAmountToRawAmount, greaterThan, toHex } from '../utils/numbers';
+
+import { RapExchangeActionParameters, UnlockActionParameters } from './common';
 
 const getRawAllowance = async ({
   owner,
@@ -74,17 +81,8 @@ export const estimateApprove = async ({
   tokenAddress: Address;
   spender: Address;
   chainId: Chain['id'];
-}): Promise<number | string> => {
+}): Promise<string> => {
   try {
-    // if (
-    //   allowsPermit &&
-    //   ALLOWS_PERMIT[
-    //     tokenAddress?.toLowerCase() as keyof PermitSupportedTokenList
-    //   ]
-    // ) {
-    //   return '0';
-    // }
-
     const provider = getProvider({ chainId });
     const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
     const gasLimit = await tokenContract.estimateGas.approve(
@@ -94,9 +92,9 @@ export const estimateApprove = async ({
         from: owner,
       },
     );
-    return gasLimit ? gasLimit.toString() : ethUnits.basic_approval;
+    return gasLimit ? gasLimit.toString() : `${ethUnits.basic_approval}`;
   } catch (error) {
-    return ethUnits.basic_approval;
+    return `${ethUnits.basic_approval}`;
   }
 };
 
@@ -136,4 +134,109 @@ export const executeApprove = async ({
       : {}),
     nonce: nonce ? toHex(String(nonce)) : undefined,
   });
+};
+
+export const unlock = async ({
+  wallet,
+  index,
+  parameters,
+  baseNonce,
+}: {
+  wallet: Wallet;
+  index: number;
+  parameters: RapExchangeActionParameters;
+  baseNonce?: number;
+}): Promise<number | undefined> => {
+  const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
+  const accountAddress = parameters.tradeDetails?.from as Address;
+
+  const { assetToUnlock, contractAddress, chainId } =
+    parameters as UnlockActionParameters;
+  const { address: assetAddress } = assetToUnlock;
+
+  const contractAllowsPermit =
+    contractAddress === RAINBOW_ROUTER_CONTRACT_ADDRESS;
+
+  const gasLimit = contractAllowsPermit
+    ? '0'
+    : await estimateApprove({
+        owner: accountAddress,
+        tokenAddress: assetAddress,
+        spender: contractAddress,
+        chainId,
+      });
+
+  const gasParams = selectedGas.transactionGasParams;
+
+  // approvals should always use fast gas or custom (whatever is faster)
+  if (chainId === chain.mainnet.id) {
+    const transactionGasParams = gasParams as TransactionGasParams;
+    if (
+      !transactionGasParams.maxFeePerGas ||
+      !transactionGasParams.maxPriorityFeePerGas
+    ) {
+      const fastTransactionGasParams = gasFeeParamsBySpeed?.fast
+        ?.transactionGasParams as TransactionGasParams;
+
+      if (
+        greaterThan(
+          fastTransactionGasParams.maxFeePerGas,
+          transactionGasParams?.maxFeePerGas || 0,
+        )
+      ) {
+        (gasParams as TransactionGasParams).maxFeePerGas =
+          fastTransactionGasParams.maxFeePerGas;
+      }
+      if (
+        greaterThan(
+          fastTransactionGasParams.maxPriorityFeePerGas,
+          transactionGasParams?.maxPriorityFeePerGas || 0,
+        )
+      ) {
+        (gasParams as TransactionGasParams).maxPriorityFeePerGas =
+          fastTransactionGasParams.maxPriorityFeePerGas;
+      }
+    }
+  } else if (chainId === chain.polygon.id) {
+    const transactionGasParams = gasParams as TransactionLegacyGasParams;
+    if (!transactionGasParams.gasPrice) {
+      const fastGasPrice = (
+        gasFeeParamsBySpeed?.fast
+          ?.transactionGasParams as TransactionLegacyGasParams
+      ).gasPrice;
+
+      if (greaterThan(fastGasPrice, transactionGasParams?.gasPrice || 0)) {
+        (gasParams as TransactionLegacyGasParams).gasPrice = fastGasPrice;
+      }
+    }
+  }
+
+  const nonce = baseNonce ? baseNonce + index : undefined;
+  const approval = await executeApprove({
+    tokenAddress: assetAddress,
+    spender: contractAddress,
+    gasLimit,
+    gasParams,
+    wallet,
+    nonce,
+    chainId,
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const newTransaction = {
+    amount: 0,
+    asset: assetToUnlock,
+    data: approval.data,
+    from: accountAddress,
+    gasLimit,
+    hash: approval?.hash,
+    chainId,
+    nonce: approval?.nonce,
+    status: TransactionStatus.approving,
+    to: approval?.to,
+    type: TransactionType.authorize,
+    value: toHex(approval.value),
+    ...gasParams,
+  };
+  return approval?.nonce;
 };
