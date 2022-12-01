@@ -5,8 +5,8 @@ import {
   TxDefaultSpeedType,
   txDefaultSpeedOptions,
 } from '~/core/references/txDefaultSpeed';
-import { useCurrentTxDefaultSpeedStore } from '~/core/state/currentSettings/currentTxDefaultSpeed';
 import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
+import { useTxDefaultSpeedStore } from '~/core/state/currentSettings/txDefaultSpeed';
 import { Box, Inline, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -16,8 +16,7 @@ import { SFSymbol } from '~/entries/popup/components/SFSymbol/SFSymbol';
 import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 
 export function Transactions() {
-  const { currentTxDefaultSpeed, setCurrentTxDefaultSpeed } =
-    useCurrentTxDefaultSpeedStore();
+  const { txDefaultSpeed, setTxDefaultSpeed } = useTxDefaultSpeedStore();
   const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
   return (
     <Box paddingHorizontal="20px">
@@ -37,7 +36,7 @@ export function Transactions() {
                   }
                   rightComponent={
                     <MenuItem.Selection
-                      text={txDefaultSpeedOptions[currentTxDefaultSpeed].label}
+                      text={txDefaultSpeedOptions[txDefaultSpeed].label}
                     />
                   }
                 />
@@ -64,9 +63,9 @@ export function Transactions() {
               );
             }}
             menuItems={Object.keys(txDefaultSpeedOptions)}
-            selectedValue={currentTxDefaultSpeed}
+            selectedValue={txDefaultSpeed}
             onValueChange={(value) => {
-              setCurrentTxDefaultSpeed(value as TxDefaultSpeedType);
+              setTxDefaultSpeed(value as TxDefaultSpeedType);
             }}
           />
         </Menu>
