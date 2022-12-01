@@ -40,7 +40,6 @@ export function Header() {
             display="flex"
             justifyContent="center"
             position="absolute"
-            width="full"
             style={{
               filter: blurValue,
               opacity: opacityValue,
