@@ -67,11 +67,8 @@ export function Home() {
   }, [headerIsFixed, tabbarIsFixed]);
 
   const contentMargin = React.useMemo(() => {
-    if (headerIsFixed) {
+    if (headerIsFixed || tabbarIsFixed) {
       return HEADER_HEIGHT;
-    }
-    if (tabbarIsFixed) {
-      return TAB_BAR_HEIGHT + TOP_NAV_HEIGHT;
     }
     return 0;
   }, [headerIsFixed, tabbarIsFixed]);
