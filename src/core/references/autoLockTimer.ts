@@ -1,19 +1,4 @@
-export type AutoLockTimerOption =
-  | 'immediately'
-  | 'one_minute'
-  | 'five_minutes'
-  | 'ten_minutes'
-  | 'fifteen_minutes'
-  | 'thirty_minutes'
-  | 'one_hour'
-  | 'twelve_hours'
-  | 'twenty_four_hours'
-  | 'none';
-
-interface AutoLockTimerData {
-  label: string;
-  mins: number | null;
-}
+import { AutoLockTimerData, AutoLockTimerOption } from '../types/settings';
 
 export const autoLockTimerOptions: {
   [key in AutoLockTimerOption]: AutoLockTimerData;

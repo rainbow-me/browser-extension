@@ -9,10 +9,11 @@ import {
   RAINBOW_SUPPORT_URL,
   RAINBOW_TWITTER_URL,
 } from '~/core/references/links';
-import { ThemeOption, themeOptions } from '~/core/references/themes';
+import { themeOptions } from '~/core/references/themes';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useIsDefaultWalletStore } from '~/core/state/currentSettings/isDefaultWallet';
+import { ThemeOption } from '~/core/types/settings';
 import { Box, Inline, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';

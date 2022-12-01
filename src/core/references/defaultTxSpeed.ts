@@ -1,12 +1,7 @@
-export type DefaultTxSpeedType = 'normal' | 'fast' | 'urgent';
-
-interface DefaultTxSpeedOption {
-  emoji: string;
-  label: string;
-}
+import { DefaultTxSpeedData, DefaultTxSpeedOption } from '../types/settings';
 
 export const defaultTxSpeedOptions: {
-  [key in DefaultTxSpeedType]: DefaultTxSpeedOption;
+  [key in DefaultTxSpeedOption]: DefaultTxSpeedData;
 } = {
   normal: { emoji: '⏱', label: 'Normal' },
   fast: { emoji: '🚀', label: 'Fast' },

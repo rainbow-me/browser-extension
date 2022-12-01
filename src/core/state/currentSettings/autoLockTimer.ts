@@ -1,7 +1,7 @@
 import create from 'zustand';
 
-import { AutoLockTimerOption } from '~/core/references/autoLockTimer';
 import { createStore } from '~/core/state/internal/createStore';
+import { AutoLockTimerOption } from '~/core/types/settings';
 
 export interface AutoLockTimerState {
   autoLockTimer: AutoLockTimerOption;

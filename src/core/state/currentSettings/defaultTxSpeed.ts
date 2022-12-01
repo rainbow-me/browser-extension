@@ -1,11 +1,11 @@
 import create from 'zustand';
 
-import { DefaultTxSpeedType } from '~/core/references/defaultTxSpeed';
 import { createStore } from '~/core/state/internal/createStore';
+import { DefaultTxSpeedOption } from '~/core/types/settings';
 
 export interface DefaultTxSpeedState {
-  defaultTxSpeed: DefaultTxSpeedType;
-  setDefaultTxSpeed: (defaultTxSpeed: DefaultTxSpeedType) => void;
+  defaultTxSpeed: DefaultTxSpeedOption;
+  setDefaultTxSpeed: (defaultTxSpeed: DefaultTxSpeedOption) => void;
 }
 
 export const defaultTxSpeedStore = createStore<DefaultTxSpeedState>(

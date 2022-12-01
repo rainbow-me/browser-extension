@@ -1,12 +1,10 @@
 import React from 'react';
 
 import { i18n } from '~/core/languages';
-import {
-  DefaultTxSpeedType,
-  defaultTxSpeedOptions,
-} from '~/core/references/defaultTxSpeed';
+import { defaultTxSpeedOptions } from '~/core/references/defaultTxSpeed';
 import { useDefaultTxSpeedStore } from '~/core/state/currentSettings/defaultTxSpeed';
 import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
+import { DefaultTxSpeedOption } from '~/core/types/settings';
 import { Box, Inline, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -45,7 +43,7 @@ export function Transactions() {
             menuItemIndicator={<SFSymbol symbol="checkMark" size={11} />}
             renderMenuItem={(option, i) => {
               const { label, emoji } =
-                defaultTxSpeedOptions[option as DefaultTxSpeedType];
+                defaultTxSpeedOptions[option as DefaultTxSpeedOption];
 
               return (
                 <Box id={`switch-option-item-${i}`}>
@@ -65,7 +63,7 @@ export function Transactions() {
             menuItems={Object.keys(defaultTxSpeedOptions)}
             selectedValue={defaultTxSpeed}
             onValueChange={(value) => {
-              setDefaultTxSpeed(value as DefaultTxSpeedType);
+              setDefaultTxSpeed(value as DefaultTxSpeedOption);
             }}
           />
         </Menu>

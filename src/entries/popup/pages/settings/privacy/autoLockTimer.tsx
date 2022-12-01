@@ -1,10 +1,8 @@
 import React from 'react';
 
-import {
-  AutoLockTimerOption,
-  autoLockTimerOptions,
-} from '~/core/references/autoLockTimer';
+import { autoLockTimerOptions } from '~/core/references/autoLockTimer';
 import { useAutoLockTimerStore } from '~/core/state/currentSettings/autoLockTimer';
+import { AutoLockTimerOption } from '~/core/types/settings';
 import { Box } from '~/design-system';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
