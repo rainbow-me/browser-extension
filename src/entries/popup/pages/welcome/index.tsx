@@ -20,7 +20,10 @@ export function Welcome() {
       justifyContent="center"
       flexDirection="column"
       height="full"
-      background="transparent"
+      background="surfacePrimary"
+      style={{
+        position: 'absolute',
+      }}
     >
       <Box
         background="surfacePrimaryElevated"
@@ -33,7 +36,6 @@ export function Welcome() {
           width: 360,
           height: 600,
           paddingTop: 151,
-          border: '1px solid white',
           alignSelf: 'center',
           position: 'relative',
           overflow: 'hidden',
@@ -51,12 +53,12 @@ export function Welcome() {
         >
           <img
             src={rainbowPixel}
-            width="155"
-            height="155"
+            width="150"
+            height="150"
             style={{
               position: 'absolute',
               right: '0px',
-              top: '-10px',
+              top: '0px',
             }}
           />
           <img
@@ -91,13 +93,18 @@ export function Welcome() {
             width="155"
             style={{
               position: 'absolute',
-              right: '0px',
+              right: '-5px',
               bottom: '0px',
             }}
           />
         </Box>
-        <Box style={{ zIndex: 1 }} background="transparent">
-          <Box width="full" style={{ textAlign: 'center' }} paddingBottom="8px">
+        <Box width="full" style={{ zIndex: 1 }} background="transparent">
+          <Box
+            width="full"
+            display="flex"
+            justifyContent="center"
+            paddingBottom="8px"
+          >
             <img src={rainbowLogo} width="162" height="40" />
           </Box>
           <Box
@@ -118,7 +125,7 @@ export function Welcome() {
               {i18n.t('welcome.subtitle')}
             </Text>
           </Box>
-          <Box width="full" style={{ marginTop: '226px' }}>
+          <Box width="full" style={{ marginTop: '218px' }}>
             <Rows alignVertical="top" space="20px">
               <Rows alignVertical="top" space="10px">
                 <Button
@@ -126,7 +133,7 @@ export function Welcome() {
                   height="44px"
                   variant="flat"
                   width="full"
-                  symbol="arrow.left"
+                  symbol="arrow.right"
                   symbolSide="right"
                 >
                   {i18n.t('welcome.create_wallet')}
