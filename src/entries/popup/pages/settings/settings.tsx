@@ -51,209 +51,197 @@ export function Settings() {
   }, []);
 
   return (
-    <Box>
-      <Box paddingHorizontal="20px">
-        <MenuContainer testId="settings-menu-container">
-          <Menu>
-            <MenuItem
-              hasSfSymbol
-              titleComponent={
-                <MenuItem.Title
-                  text={i18n.t('settings.use_rainbow_as_default_wallet')}
-                />
-              }
-              rightComponent={
-                <Toggle
-                  checked={isDefaultWallet}
-                  handleChange={setIsDefaultWallet}
-                />
-              }
-            />
-            <MenuItem.Description
-              text={i18n.t('settings.default_wallet_description')}
-            />
-          </Menu>
-          <Menu>
-            <MenuItem
-              hasSfSymbol
-              leftComponent={
-                <SFSymbol symbol="lockFill" color="blue" size={18} />
-              }
-              hasRightArrow
-              onClick={() => navigate('/settings/privacy')}
-              titleComponent={
-                <MenuItem.Title
-                  text={i18n.t('settings.privacy_and_security')}
-                />
-              }
-            />
-          </Menu>
-          <Menu>
-            <MenuItem
-              hasRightArrow
-              leftComponent={<SFSymbol symbol="boltFill" color="red" />}
-              onClick={() => navigate('/settings/transactions')}
-              titleComponent={
-                <MenuItem.Title text={i18n.t('settings.transactions')} />
-              }
-            />
-            <MenuItem
-              hasRightArrow
-              leftComponent={<SFSymbol symbol="send" color="green" />}
-              onClick={() => navigate('/settings/currency')}
-              rightComponent={
-                <MenuItem.Selection
-                  text={supportedCurrencies[currentCurrency].label}
-                />
-              }
-              titleComponent={
-                <MenuItem.Title text={i18n.t('settings.currency')} />
-              }
-            />
-            <SwitchMenu
-              align="end"
-              renderMenuTrigger={
-                <MenuItem
-                  hasChevron
-                  leftComponent={
-                    <SFSymbol symbol="moonStars" color="purple" size={18} />
-                  }
-                  rightComponent={
-                    <MenuItem.Selection
-                      text={themeOptions[currentTheme].label}
-                    />
-                  }
-                  titleComponent={
-                    <MenuItem.Title text={i18n.t('settings.theme')} />
-                  }
-                />
-              }
-              menuItemIndicator={<SFSymbol symbol="checkMark" size={11} />}
-              renderMenuItem={(option, i) => {
-                const { label, symbol } = themeOptions[option as ThemeType];
+    <Box paddingHorizontal="20px">
+      <MenuContainer testId="settings-menu-container">
+        <Menu>
+          <MenuItem
+            hasSfSymbol
+            titleComponent={
+              <MenuItem.Title
+                text={i18n.t('settings.use_rainbow_as_default_wallet')}
+              />
+            }
+            rightComponent={
+              <Toggle
+                checked={isDefaultWallet}
+                handleChange={setIsDefaultWallet}
+              />
+            }
+          />
+          <MenuItem.Description
+            text={i18n.t('settings.default_wallet_description')}
+          />
+        </Menu>
+        <Menu>
+          <MenuItem
+            hasSfSymbol
+            leftComponent={
+              <SFSymbol symbol="lockFill" color="blue" size={18} />
+            }
+            hasRightArrow
+            onClick={() => navigate('/settings/privacy')}
+            titleComponent={
+              <MenuItem.Title text={i18n.t('settings.privacy_and_security')} />
+            }
+          />
+        </Menu>
+        <Menu>
+          <MenuItem
+            hasRightArrow
+            leftComponent={<SFSymbol symbol="boltFill" color="red" />}
+            onClick={() => navigate('/settings/transactions')}
+            titleComponent={
+              <MenuItem.Title text={i18n.t('settings.transactions')} />
+            }
+          />
+          <MenuItem
+            hasRightArrow
+            leftComponent={<SFSymbol symbol="send" color="green" />}
+            onClick={() => navigate('/settings/currency')}
+            rightComponent={
+              <MenuItem.Selection
+                text={supportedCurrencies[currentCurrency].label}
+              />
+            }
+            titleComponent={
+              <MenuItem.Title text={i18n.t('settings.currency')} />
+            }
+          />
+          <SwitchMenu
+            align="end"
+            renderMenuTrigger={
+              <MenuItem
+                hasChevron
+                leftComponent={
+                  <SFSymbol symbol="moonStars" color="purple" size={18} />
+                }
+                rightComponent={
+                  <MenuItem.Selection text={themeOptions[currentTheme].label} />
+                }
+                titleComponent={
+                  <MenuItem.Title text={i18n.t('settings.theme')} />
+                }
+              />
+            }
+            menuItemIndicator={<SFSymbol symbol="checkMark" size={11} />}
+            renderMenuItem={(option, i) => {
+              const { label, symbol } = themeOptions[option as ThemeType];
 
-                return (
-                  <Box id={`switch-option-item-${i}`}>
-                    <Inline space="8px" alignVertical="center">
-                      <Inline alignVertical="center" space="8px">
-                        <SFSymbol size={18} symbol={symbol} />
-                      </Inline>
-                      <Text weight="medium" size="14pt">
-                        {label}
-                      </Text>
+              return (
+                <Box id={`switch-option-item-${i}`}>
+                  <Inline space="8px" alignVertical="center">
+                    <Inline alignVertical="center" space="8px">
+                      <SFSymbol size={18} symbol={symbol} />
                     </Inline>
-                  </Box>
-                );
-              }}
-              menuItems={Object.keys(themeOptions)}
-              selectedValue={currentTheme}
-              onValueChange={(value) => {
-                setCurrentTheme(value as ThemeType);
-              }}
-            />
-            <MenuItem
-              leftComponent={
-                <SFSymbol
-                  symbol="personTextRectangleFill"
-                  color="blue"
-                  size={18}
-                />
-              }
-              hasRightArrow
-              titleComponent={
-                <MenuItem.Title text={i18n.t('settings.contacts')} />
-              }
-            />
-          </Menu>
-          <Menu>
-            <MenuItem
-              leftComponent={<MenuItem.TextIcon icon="🌈" />}
-              titleComponent={
-                <MenuItem.Title text={i18n.t('settings.share_rainbow')} />
-              }
-              rightComponent={
-                <SFSymbol
-                  symbol="arrowUpRightCircle"
-                  color="labelTertiary"
-                  size={14}
-                />
-              }
-              onClick={() => window.open(RAINBOW_SHARE_URL, '_blank')}
-            />
-            <MenuItem
-              leftComponent={<MenuItem.TextIcon icon="🧠" />}
-              titleComponent={
-                <MenuItem.Title
-                  text={i18n.t('settings.learn_about_ethereum')}
-                />
-              }
-              rightComponent={
-                <SFSymbol
-                  symbol="arrowUpRightCircle"
-                  color="labelTertiary"
-                  size={14}
-                />
-              }
-              onClick={() => window.open(RAINBOW_LEARN_URL, '_blank')}
-            />
-            <MenuItem
-              leftComponent={<MenuItem.TextIcon icon="🐦" />}
-              titleComponent={
-                <MenuItem.Title
-                  text={i18n.t('settings.follow_us_on_twitter')}
-                />
-              }
-              rightComponent={
-                <SFSymbol
-                  symbol="arrowUpRightCircle"
-                  color="labelTertiary"
-                  size={14}
-                />
-              }
-              onClick={() => window.open(RAINBOW_TWITTER_URL, '_blank')}
-            />
-            <MenuItem
-              leftComponent={<MenuItem.TextIcon icon="💬" />}
-              titleComponent={
-                <MenuItem.Title
-                  text={i18n.t('settings.feedback_and_support')}
-                />
-              }
-              rightComponent={
-                <SFSymbol
-                  symbol="arrowUpRightCircle"
-                  color="labelTertiary"
-                  size={14}
-                />
-              }
-              onClick={() => window.open(RAINBOW_SUPPORT_URL, '_blank')}
-            />
-          </Menu>
-          <Menu>
-            <MenuItem.Description text="Below buttons are for testing only" />
-            <MenuItem
-              titleComponent={<MenuItem.Title text="test sandbox popup" />}
-              onClick={testSandboxPopup}
-              testId="test-sandbox-popup"
-            />
-            <MenuItem
-              titleComponent={<MenuItem.Title text="test sandbox background" />}
-              onClick={testSandboxBackground}
-              testId="test-sandbox-background"
-            />
-          </Menu>
-        </MenuContainer>
-      </Box>
-      <Box
-        padding="20px"
-        alignItems="center"
-        justifyContent="center"
-        style={{ textAlign: 'center' }}
-      >
-        <Text size="12pt" weight="semibold" color="labelTertiary">
-          1.2.34 (56)
-        </Text>
-      </Box>
+                    <Text weight="medium" size="14pt">
+                      {label}
+                    </Text>
+                  </Inline>
+                </Box>
+              );
+            }}
+            menuItems={Object.keys(themeOptions)}
+            selectedValue={currentTheme}
+            onValueChange={(value) => {
+              setCurrentTheme(value as ThemeType);
+            }}
+          />
+          <MenuItem
+            leftComponent={
+              <SFSymbol
+                symbol="personTextRectangleFill"
+                color="blue"
+                size={18}
+              />
+            }
+            hasRightArrow
+            titleComponent={
+              <MenuItem.Title text={i18n.t('settings.contacts')} />
+            }
+          />
+        </Menu>
+        <Menu>
+          <MenuItem
+            leftComponent={<MenuItem.TextIcon icon="🌈" />}
+            titleComponent={
+              <MenuItem.Title text={i18n.t('settings.share_rainbow')} />
+            }
+            rightComponent={
+              <SFSymbol
+                symbol="arrowUpRightCircle"
+                color="labelTertiary"
+                size={14}
+              />
+            }
+            onClick={() => window.open(RAINBOW_SHARE_URL, '_blank')}
+          />
+          <MenuItem
+            leftComponent={<MenuItem.TextIcon icon="🧠" />}
+            titleComponent={
+              <MenuItem.Title text={i18n.t('settings.learn_about_ethereum')} />
+            }
+            rightComponent={
+              <SFSymbol
+                symbol="arrowUpRightCircle"
+                color="labelTertiary"
+                size={14}
+              />
+            }
+            onClick={() => window.open(RAINBOW_LEARN_URL, '_blank')}
+          />
+          <MenuItem
+            leftComponent={<MenuItem.TextIcon icon="🐦" />}
+            titleComponent={
+              <MenuItem.Title text={i18n.t('settings.follow_us_on_twitter')} />
+            }
+            rightComponent={
+              <SFSymbol
+                symbol="arrowUpRightCircle"
+                color="labelTertiary"
+                size={14}
+              />
+            }
+            onClick={() => window.open(RAINBOW_TWITTER_URL, '_blank')}
+          />
+          <MenuItem
+            leftComponent={<MenuItem.TextIcon icon="💬" />}
+            titleComponent={
+              <MenuItem.Title text={i18n.t('settings.feedback_and_support')} />
+            }
+            rightComponent={
+              <SFSymbol
+                symbol="arrowUpRightCircle"
+                color="labelTertiary"
+                size={14}
+              />
+            }
+            onClick={() => window.open(RAINBOW_SUPPORT_URL, '_blank')}
+          />
+        </Menu>
+        <Menu>
+          <MenuItem.Description text="Below buttons are for testing only" />
+          <MenuItem
+            titleComponent={<MenuItem.Title text="test sandbox popup" />}
+            onClick={testSandboxPopup}
+            testId="test-sandbox-popup"
+          />
+          <MenuItem
+            titleComponent={<MenuItem.Title text="test sandbox background" />}
+            onClick={testSandboxBackground}
+            testId="test-sandbox-background"
+          />
+        </Menu>
+        <Box
+          padding="20px"
+          alignItems="center"
+          justifyContent="center"
+          style={{ textAlign: 'center' }}
+        >
+          <Text size="12pt" weight="semibold" color="labelTertiary">
+            1.2.34 (56)
+          </Text>
+        </Box>
+      </MenuContainer>
     </Box>
   );
 }
