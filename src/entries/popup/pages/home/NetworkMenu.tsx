@@ -30,7 +30,7 @@ import { useAppSession } from '../../hooks/useAppSession';
 
 export const NetworkMenu = ({ children }: { children: React.ReactNode }) => {
   const [url, setUrl] = React.useState('');
-  const { appHost, appLogo } = useAppMetadata({ url });
+  const { appHost, appLogo, appName } = useAppMetadata({ url });
   const { updateAppSessionChainId, disconnectAppSession, appSession } =
     useAppSession({ host: appHost });
 
@@ -81,7 +81,7 @@ export const NetworkMenu = ({ children }: { children: React.ReactNode }) => {
                 <Rows space="8px">
                   <Row>
                     <Text size="14pt" weight="bold">
-                      {appHost}
+                      {appName ?? appHost}
                     </Text>
                   </Row>
                   {!appSession && (
