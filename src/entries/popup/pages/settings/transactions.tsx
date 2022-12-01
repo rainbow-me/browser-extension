@@ -5,8 +5,8 @@ import {
   TxDefaultSpeedType,
   txDefaultSpeedOptions,
 } from '~/core/references/txDefaultSpeed';
-import { useCurrentFlashbotsStore } from '~/core/state/currentSettings/currentFlashbots';
 import { useCurrentTxDefaultSpeedStore } from '~/core/state/currentSettings/currentTxDefaultSpeed';
+import { useIsFlashbotsEnabledStore } from '~/core/state/currentSettings/isFlashbotsEnabled';
 import { Box, Inline, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -18,7 +18,8 @@ import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 export function Transactions() {
   const { currentTxDefaultSpeed, setCurrentTxDefaultSpeed } =
     useCurrentTxDefaultSpeedStore();
-  const { currentFlashbots, setCurrentFlashbots } = useCurrentFlashbotsStore();
+  const { isFlashbotsEnabled, setIsFlashbotsEnabled } =
+    useIsFlashbotsEnabledStore();
   return (
     <Box paddingHorizontal="20px">
       <MenuContainer testId="settings-menu-container">
@@ -75,8 +76,8 @@ export function Transactions() {
             hasSfSymbol
             rightComponent={
               <Toggle
-                checked={currentFlashbots}
-                handleChange={setCurrentFlashbots}
+                checked={isFlashbotsEnabled}
+                handleChange={setIsFlashbotsEnabled}
               />
             }
             titleComponent={
