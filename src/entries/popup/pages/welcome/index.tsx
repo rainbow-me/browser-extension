@@ -65,7 +65,7 @@ export function Welcome() {
               </Button>
               <ThemeProvider theme="dark">
                 <Button
-                  color="surfacePrimaryElevated"
+                  color="surfaceSecondaryElevated"
                   height="44px"
                   variant="raised"
                   width="full"
