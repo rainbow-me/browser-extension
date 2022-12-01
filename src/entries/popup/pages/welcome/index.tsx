@@ -59,6 +59,7 @@ export function Welcome() {
                 width="full"
                 symbol="arrow.right"
                 symbolSide="right"
+                blur="26px"
               >
                 {i18n.t('welcome.create_wallet')}
               </Button>

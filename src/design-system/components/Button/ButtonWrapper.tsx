@@ -29,6 +29,7 @@ export type ButtonWrapperProps = {
   height: ButtonHeight;
   onClick?: () => void;
   width?: 'fit' | 'full';
+  blur?: string;
 } & ButtonVariantProps;
 
 const shadowValue = (size: ShadowSize, color?: ButtonColor) =>
@@ -180,6 +181,7 @@ export function ButtonWrapper({
   onClick,
   variant,
   width = 'fit',
+  blur = '',
 }: ButtonWrapperProps) {
   const { boxShadow } = stylesForHeightAndVariant({
     color,
@@ -188,6 +190,8 @@ export function ButtonWrapper({
   const { background, borderColor, borderWidth } = stylesForVariant({
     color: color ?? 'accent',
   })[variant];
+
+  const styles = (blur && { backdropFilter: `blur('${blur}')` }) || {};
 
   return (
     <Box
@@ -214,9 +218,7 @@ export function ButtonWrapper({
         position="relative"
         justifyContent="center"
         width={width}
-        style={{
-          backdropFilter: 'blur(26px)',
-        }}
+        style={styles}
       >
         {children}
       </Box>

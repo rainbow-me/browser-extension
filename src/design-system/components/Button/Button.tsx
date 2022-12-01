@@ -20,6 +20,7 @@ export type ButtonProps = {
   width?: 'fit' | 'full';
   testId?: string;
   symbolSide?: 'left' | 'right';
+  blur?: string;
 } & ButtonVariantProps &
   (
     | {
