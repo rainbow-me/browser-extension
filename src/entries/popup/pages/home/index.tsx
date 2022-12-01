@@ -43,9 +43,11 @@ export function Home() {
           className={className}
           style={{ ...style, position: 'relative' }}
         >
-          <TopNav />
-          <Header />
-          <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
+          <Box width="full" style={{ position: 'fixed', top: 0 }}>
+            <TopNav />
+            <Header />
+            <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
+          </Box>
           <Separator color="separatorTertiary" strokeWeight="1px" />
           <Content>
             {activeTab === 'tokens' && <Tokens />}
@@ -112,6 +114,7 @@ function Content({ children }: { children: React.ReactNode }) {
       background="surfacePrimaryElevated"
       style={{
         flex: 1,
+        marginTop: 265,
       }}
     >
       <Inset top="20px">{children}</Inset>
