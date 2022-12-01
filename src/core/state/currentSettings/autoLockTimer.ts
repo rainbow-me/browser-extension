@@ -1,11 +1,11 @@
 import create from 'zustand';
 
-import { AutoLockTimerOptionType } from '~/core/references/autoLockTimer';
+import { AutoLockTimerOption } from '~/core/references/autoLockTimer';
 import { createStore } from '~/core/state/internal/createStore';
 
 export interface AutoLockTimerState {
-  autoLockTimer: AutoLockTimerOptionType;
-  setAutoLockTimer: (autoLockTimer: AutoLockTimerOptionType) => void;
+  autoLockTimer: AutoLockTimerOption;
+  setAutoLockTimer: (autoLockTimer: AutoLockTimerOption) => void;
 }
 
 export const autoLockTimerStore = createStore<AutoLockTimerState>(

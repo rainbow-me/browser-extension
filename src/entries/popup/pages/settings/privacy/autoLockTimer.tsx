@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {
-  AutoLockTimerOptionType,
+  AutoLockTimerOption,
   autoLockTimerOptions,
 } from '~/core/references/autoLockTimer';
 import { useAutoLockTimerStore } from '~/core/state/currentSettings/autoLockTimer';
@@ -25,14 +25,11 @@ export function AutoLockTimer() {
               titleComponent={
                 <MenuItem.Title
                   text={
-                    autoLockTimerOptions[lockTimer as AutoLockTimerOptionType]
-                      .label
+                    autoLockTimerOptions[lockTimer as AutoLockTimerOption].label
                   }
                 />
               }
-              onClick={() =>
-                setAutoLockTimer(lockTimer as AutoLockTimerOptionType)
-              }
+              onClick={() => setAutoLockTimer(lockTimer as AutoLockTimerOption)}
             />
           ))}
         </Menu>

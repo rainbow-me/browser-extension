@@ -1,4 +1,4 @@
-export type AutoLockTimerOptionType =
+export type AutoLockTimerOption =
   | 'immediately'
   | 'one_minute'
   | 'five_minutes'
@@ -10,13 +10,13 @@ export type AutoLockTimerOptionType =
   | 'twenty_four_hours'
   | 'none';
 
-interface AutoLockTimerOption {
+interface AutoLockTimerData {
   label: string;
   mins: number | null;
 }
 
 export const autoLockTimerOptions: {
-  [key in AutoLockTimerOptionType]: AutoLockTimerOption;
+  [key in AutoLockTimerOption]: AutoLockTimerData;
 } = {
   immediately: {
     label: 'Immediately',
