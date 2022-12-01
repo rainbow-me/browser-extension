@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { supportedCurrencies } from '~/core/references';
+import { SupportedCurrencyKey, supportedCurrencies } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { Box } from '~/design-system';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -9,12 +9,15 @@ import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 
 export function Currency() {
   const { currentCurrency, setCurrentCurrency } = useCurrentCurrencyStore();
+  const supportedCurrencyKeys = Object.keys(
+    supportedCurrencies,
+  ) as SupportedCurrencyKey[];
 
   return (
     <Box paddingHorizontal="20px">
       <MenuContainer testId="settings-menu-container">
         <Menu>
-          {Object.keys(supportedCurrencies).map((currency) => (
+          {supportedCurrencyKeys.map((currency) => (
             <MenuItem
               leftComponent={
                 <MenuItem.TextIcon icon={supportedCurrencies[currency].emoji} />

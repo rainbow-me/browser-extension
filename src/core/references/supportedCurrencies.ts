@@ -1,18 +1,4 @@
-interface Currency {
-  alignment: string;
-  assetLimit: number;
-  currency: string;
-  decimals: number;
-  emoji: string;
-  emojiName?: string;
-  label: string;
-  mask: string;
-  placeholder: string;
-  smallThreshold: number;
-  symbol: string;
-}
-
-export const supportedCurrencies: { [key: string]: Currency } = {
+export const supportedCurrencies = {
   ETH: {
     alignment: 'left',
     assetLimit: 0.001,
@@ -197,4 +183,4 @@ export const supportedCurrencies: { [key: string]: Currency } = {
 };
 
 export type SupportedCurrency = typeof supportedCurrencies;
-export type SupportedCurrencyKey = keyof SupportedCurrency & string;
+export type SupportedCurrencyKey = keyof SupportedCurrency;
