@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { i18n } from '~/core/languages';
 import { autoLockTimerOptions } from '~/core/references/autoLockTimer';
 import { useAutoLockTimerStore } from '~/core/state/currentSettings/autoLockTimer';
-import { useCurrentHideSmallBalancesStore } from '~/core/state/currentSettings/currentHideSmallBalances';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
+import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
 import { Box } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -17,8 +17,8 @@ export function Privacy() {
   const navigate = useNavigate();
   const { hideAssetBalances, setHideAssetBalances } =
     useHideAssetBalancesStore();
-  const { currentHideSmallBalances, setCurrentHideSmallBalances } =
-    useCurrentHideSmallBalancesStore();
+  const { hideSmallBalances, setHideSmallBalances } =
+    useHideSmallBalancesStore();
   const { autoLockTimer } = useAutoLockTimerStore();
   return (
     <Box paddingHorizontal="20px">
@@ -54,8 +54,8 @@ export function Privacy() {
             hasSfSymbol
             rightComponent={
               <Toggle
-                checked={currentHideSmallBalances}
-                handleChange={setCurrentHideSmallBalances}
+                checked={hideSmallBalances}
+                handleChange={setHideSmallBalances}
               />
             }
             titleComponent={
