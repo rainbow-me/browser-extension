@@ -9,7 +9,7 @@ import {
   RAINBOW_SUPPORT_URL,
   RAINBOW_TWITTER_URL,
 } from '~/core/references/links';
-import { ThemeType, themeOptions } from '~/core/references/themes';
+import { ThemeOption, themeOptions } from '~/core/references/themes';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useIsDefaultWalletStore } from '~/core/state/currentSettings/isDefaultWallet';
@@ -116,7 +116,9 @@ export function Settings() {
                   <SFSymbol symbol="moonStars" color="purple" size={18} />
                 }
                 rightComponent={
-                  <MenuItem.Selection text={themeOptions[currentTheme].label} />
+                  <MenuItem.Selection
+                    text={themeOptions[currentTheme as ThemeOption].label}
+                  />
                 }
                 titleComponent={
                   <MenuItem.Title text={i18n.t('settings.theme')} />
@@ -125,7 +127,7 @@ export function Settings() {
             }
             menuItemIndicator={<SFSymbol symbol="checkMark" size={11} />}
             renderMenuItem={(option, i) => {
-              const { label, symbol } = themeOptions[option as ThemeType];
+              const { label, symbol } = themeOptions[option as ThemeOption];
 
               return (
                 <Box id={`switch-option-item-${i}`}>
@@ -143,7 +145,7 @@ export function Settings() {
             menuItems={Object.keys(themeOptions)}
             selectedValue={currentTheme}
             onValueChange={(value) => {
-              setCurrentTheme(value as ThemeType);
+              setCurrentTheme(value as ThemeOption);
             }}
           />
           <MenuItem

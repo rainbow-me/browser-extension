@@ -1,12 +1,12 @@
 import { Symbols } from '~/entries/popup/components/SFSymbol/SFSymbol';
 
-export type ThemeType = 'light' | 'dark' | 'system';
+export type ThemeOption = 'light' | 'dark' | 'system';
 
-export interface ThemeOption {
+export interface ThemeData {
   symbol: Symbols;
   label: string;
 }
-export const themeOptions: { [key in ThemeType]: ThemeOption } = {
+export const themeOptions: { [key in ThemeOption]: ThemeData } = {
   system: { symbol: 'gearshapeFill', label: 'System' },
   light: { symbol: 'boltFill', label: 'Light' },
   dark: { symbol: 'moonStars', label: 'Dark' },
