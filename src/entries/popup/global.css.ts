@@ -3,6 +3,7 @@ import { globalStyle } from '@vanilla-extract/css';
 globalStyle('html, body', {
   margin: 0,
   padding: 0,
+  backgroundColor: 'black',
 });
 
 globalStyle('html, body, #main', {
@@ -20,7 +21,7 @@ globalStyle('*::-webkit-scrollbar', {
 
 globalStyle('a', {
   textDecoration: 'none',
-  cursor: 'default',
+  cursor: 'pointer',
 });
 
 globalStyle('div[data-radix-popper-content-wrapper]', {

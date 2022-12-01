@@ -19,6 +19,7 @@ export type ButtonProps = {
   onClick?: () => void;
   width?: 'fit' | 'full';
   testId?: string;
+  symbolSide?: 'left' | 'right';
 } & ButtonVariantProps &
   (
     | {
@@ -36,6 +37,7 @@ export function Button({
   emoji,
   height,
   symbol,
+  symbolSide,
   testId,
   ...props
 }: ButtonProps) {
@@ -44,6 +46,21 @@ export function Button({
   })[props.variant];
 
   const { paddingHorizontal, gap, textSize } = stylesForHeight[height];
+
+  const symbolComponent =
+    (symbol && (
+      <Symbol
+        color={textColor}
+        size={
+          parseInt(
+            textSize?.split(' ')[0].replace('pt', '') ?? '',
+          ) as SymbolProps['size']
+        }
+        symbol={symbol}
+        weight="bold"
+      />
+    )) ||
+    null;
 
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
@@ -56,21 +73,11 @@ export function Button({
                 {emoji}
               </Text>
             )}
-            {symbol && (
-              <Symbol
-                color={textColor}
-                size={
-                  parseInt(
-                    textSize?.split(' ')[0].replace('pt', '') ?? '',
-                  ) as SymbolProps['size']
-                }
-                symbol={symbol}
-                weight="bold"
-              />
-            )}
+            {symbolSide !== 'right' && symbolComponent}
             <Text color={textColor} size={textSize} weight="bold">
               {children}
             </Text>
+            {symbolSide === 'right' && symbolComponent}
           </Inline>
         ) : (
           children
