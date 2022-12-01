@@ -17,14 +17,14 @@ export function Welcome() {
     <FlyingRainbows>
       <Box
         width="full"
-        style={{ zIndex: 1, paddingTop: 151 }}
+        style={{ zIndex: 1, paddingTop: 127 }}
         background="transparent"
       >
         <Box
           width="full"
           display="flex"
           justifyContent="center"
-          paddingBottom="8px"
+          paddingBottom="4px"
         >
           <img
             src={
@@ -49,7 +49,7 @@ export function Welcome() {
             {i18n.t('welcome.subtitle')}
           </Text>
         </Box>
-        <Box width="full" style={{ marginTop: '218px' }}>
+        <Box width="full" style={{ marginTop: '226px' }}>
           <Rows alignVertical="top" space="20px">
             <Rows alignVertical="top" space="10px">
               <Button

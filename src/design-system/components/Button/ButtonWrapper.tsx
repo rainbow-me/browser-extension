@@ -191,7 +191,7 @@ export function ButtonWrapper({
     color: color ?? 'accent',
   })[variant];
 
-  const styles = (blur && { backdropFilter: `blur('${blur}')` }) || {};
+  const styles = (blur && { backdropFilter: `blur(${blur})` }) || {};
 
   return (
     <Box

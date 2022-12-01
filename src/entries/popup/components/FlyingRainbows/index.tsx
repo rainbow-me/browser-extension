@@ -64,7 +64,7 @@ export function FlyingRainbows({ children }: { children: React.ReactNode }) {
             style={{
               position: 'absolute',
               left: '0px',
-              top: '360px',
+              top: '362px',
             }}
           />
           <img

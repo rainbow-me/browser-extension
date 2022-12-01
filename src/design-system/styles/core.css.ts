@@ -263,7 +263,7 @@ export const shadowVars = createThemeContract(
 export const shadows = Object.keys(shadowVars) as (keyof typeof shadowVars)[];
 
 globalStyle(`html.${rootThemeClasses.lightTheme}`, {
-  backgroundColor: 'white',
+  backgroundColor: backgroundColors.surfacePrimaryElevated.light.color,
   vars: assignVars(
     accentColorHslVars,
     hslObjectForColor(backgroundColors.blue.light.color),
@@ -271,7 +271,7 @@ globalStyle(`html.${rootThemeClasses.lightTheme}`, {
 });
 
 globalStyle(`html.${rootThemeClasses.darkTheme}`, {
-  backgroundColor: 'black',
+  backgroundColor: backgroundColors.surfacePrimaryElevated.dark.color,
   vars: assignVars(
     accentColorHslVars,
     hslObjectForColor(backgroundColors.blue.dark.color),
