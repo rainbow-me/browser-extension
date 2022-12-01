@@ -231,13 +231,13 @@ export function Settings() {
             testId="test-sandbox-background"
           />
         </Menu>
-        <Box
-          padding="20px"
-          alignItems="center"
-          justifyContent="center"
-          style={{ textAlign: 'center' }}
-        >
-          <Text size="12pt" weight="semibold" color="labelTertiary">
+        <Box padding="10px" alignItems="center" justifyContent="center">
+          <Text
+            size="12pt"
+            weight="semibold"
+            color="labelTertiary"
+            align="center"
+          >
             1.2.34 (56)
           </Text>
         </Box>
