@@ -55,7 +55,11 @@ export function Routes() {
       {
         path: '/settings/privacy',
         element: (
-          <AnimatedRoute direction="horizontal" navbar title="Privacy">
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            title={i18n.t('privacy_and_security.title')}
+          >
             <Privacy />
           </AnimatedRoute>
         ),
@@ -63,7 +67,11 @@ export function Routes() {
       {
         path: '/settings/privacy/autoLockTimer',
         element: (
-          <AnimatedRoute direction="horizontal" navbar title="Privacy">
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            title={i18n.t('auto_lock_timer.title')}
+          >
             <AutoLockTimer />
           </AnimatedRoute>
         ),
@@ -71,7 +79,11 @@ export function Routes() {
       {
         path: '/settings/transactions',
         element: (
-          <AnimatedRoute direction="horizontal" navbar title="Transactions">
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            title={i18n.t('transactions.title')}
+          >
             <Transactions />
           </AnimatedRoute>
         ),
@@ -79,7 +91,11 @@ export function Routes() {
       {
         path: '/settings/currency',
         element: (
-          <AnimatedRoute direction="horizontal" navbar title="Currency">
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            title={i18n.t('currency.title')}
+          >
             <Currency />
           </AnimatedRoute>
         ),

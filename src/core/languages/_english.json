@@ -20,6 +20,7 @@
     "feedback_and_support": "Feedback & Support"
   },
   "privacy_and_security": {
+    "title": "Privacy & Security",
     "hide_asset_balances": "Hide asset balances",
     "hide_asset_balances_description": "With this turned on Rainbow will obfuscate token balances accross the app.",
     "auto_hide_balances_under_1": " Auto-hide balances under $1",
@@ -29,9 +30,16 @@
     "view_secret_recovery_phrase": "View Secret Recovery Phrase"
   },
   "transactions": {
+    "title": "Transactions",
     "default_speed": "Default Speed",
     "use_flashbots": "Use Flashbots",
     "flashbots_description": "Flashbots protects your transactions and reduces the likelihood of transaction failures. Learn more."
+  },
+  "currency": {
+    "title": "Currency"
+  },
+  "auto_lock_timer": {
+    "title": "Auto-Lock Timer"
   },
   "connected_apps": {
     "title": "Connected Apps",
