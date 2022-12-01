@@ -21,6 +21,9 @@ import { Tokens } from './Tokens';
 export type Tab = 'tokens' | 'activity';
 
 const COLLAPSED_HEADER_TOP_OFFSET = 172;
+const HEADER_HEIGHT = 266;
+const TAB_BAR_HEIGHT = 34;
+const TOP_NAV_HEIGHT = 65;
 
 export function Home() {
   const { address } = useAccount();
@@ -36,6 +39,43 @@ export function Home() {
     setActiveTab(tab);
   }, []);
 
+  const { scrollY } = useScroll();
+  const [headerIsFixed, setHeaderIsFixed] = React.useState(true);
+  const [tabbarIsFixed, setTabbarIsFixed] = React.useState(false);
+
+  React.useEffect(() => {
+    scrollY.onChange((scrollYPos = 0) => {
+      if (scrollYPos === 0) {
+        setHeaderIsFixed(true);
+      } else setHeaderIsFixed(false);
+
+      if (scrollYPos > HEADER_HEIGHT - (TAB_BAR_HEIGHT + TOP_NAV_HEIGHT)) {
+        if (!tabbarIsFixed) {
+          setTabbarIsFixed(true);
+        }
+      } else setTabbarIsFixed(false);
+    });
+  });
+
+  const topFixedPosition = React.useMemo(() => {
+    if (headerIsFixed) {
+      return 0;
+    }
+    if (tabbarIsFixed) {
+      return -Math.abs(HEADER_HEIGHT - (TAB_BAR_HEIGHT + TOP_NAV_HEIGHT));
+    }
+  }, [headerIsFixed, tabbarIsFixed]);
+
+  const contentMargin = React.useMemo(() => {
+    if (headerIsFixed) {
+      return HEADER_HEIGHT;
+    }
+    if (tabbarIsFixed) {
+      return TAB_BAR_HEIGHT + TOP_NAV_HEIGHT;
+    }
+    return 0;
+  }, [headerIsFixed, tabbarIsFixed]);
+
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>
       {({ className, style }) => (
@@ -43,13 +83,19 @@ export function Home() {
           className={className}
           style={{ ...style, position: 'relative' }}
         >
-          <Box width="full" style={{ position: 'fixed', top: 0 }}>
+          <Box
+            width="full"
+            position={headerIsFixed || tabbarIsFixed ? 'fixed' : undefined}
+            style={{
+              top: topFixedPosition,
+            }}
+          >
             <TopNav />
             <Header />
             <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
           </Box>
           <Separator color="separatorTertiary" strokeWeight="1px" />
-          <Content>
+          <Content marginTop={contentMargin}>
             {activeTab === 'tokens' && <Tokens />}
             {activeTab === 'activity' && <Activity />}
           </Content>
@@ -66,7 +112,7 @@ function TopNav() {
   return (
     <StickyHeader
       background="surfacePrimaryElevatedSecondary"
-      height={64}
+      height={TOP_NAV_HEIGHT}
       topOffset={0}
     >
       <Navbar
@@ -100,21 +146,27 @@ function TabBar({
   return (
     <StickyHeader
       background="surfacePrimaryElevatedSecondary"
-      height={34}
-      topOffset={64}
+      height={TAB_BAR_HEIGHT}
+      topOffset={TOP_NAV_HEIGHT}
     >
       <TabBar_ activeTab={activeTab} onSelectTab={setActiveTab} />
     </StickyHeader>
   );
 }
 
-function Content({ children }: { children: React.ReactNode }) {
+function Content({
+  children,
+  marginTop,
+}: {
+  children: React.ReactNode;
+  marginTop: number;
+}) {
   return (
     <Box
       background="surfacePrimaryElevated"
       style={{
         flex: 1,
-        marginTop: 265,
+        marginTop,
       }}
     >
       <Inset top="20px">{children}</Inset>
