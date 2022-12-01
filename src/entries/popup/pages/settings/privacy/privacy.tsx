@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { autoLockTimerOptions } from '~/core/references/autoLockTimer';
-import { usecurrentAutoLockTimerStore } from '~/core/state/currentSettings/currentAutoLockTimer';
+import { useAutoLockTimerStore } from '~/core/state/currentSettings/autoLockTimer';
 import { useCurrentHideAssetBalancesStore } from '~/core/state/currentSettings/currentHideAssetBalances';
 import { useCurrentHideSmallBalancesStore } from '~/core/state/currentSettings/currentHideSmallBalances';
 import { Box } from '~/design-system';
@@ -19,7 +19,7 @@ export function Privacy() {
     useCurrentHideAssetBalancesStore();
   const { currentHideSmallBalances, setCurrentHideSmallBalances } =
     useCurrentHideSmallBalancesStore();
-  const { currentAutoLockTimer } = usecurrentAutoLockTimerStore();
+  const { autoLockTimer } = useAutoLockTimerStore();
   return (
     <Box paddingHorizontal="20px">
       <MenuContainer testId="settings-menu-container">
@@ -80,7 +80,7 @@ export function Privacy() {
             hasRightArrow
             rightComponent={
               <MenuItem.Selection
-                text={autoLockTimerOptions[currentAutoLockTimer].label}
+                text={autoLockTimerOptions[autoLockTimer].label}
               />
             }
             titleComponent={

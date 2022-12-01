@@ -4,15 +4,14 @@ import {
   AutoLockTimerOptionType,
   autoLockTimerOptions,
 } from '~/core/references/autoLockTimer';
-import { usecurrentAutoLockTimerStore } from '~/core/state/currentSettings/currentAutoLockTimer';
+import { useAutoLockTimerStore } from '~/core/state/currentSettings/autoLockTimer';
 import { Box } from '~/design-system';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 
 export function AutolockTimer() {
-  const { currentAutoLockTimer, setCurrentAutoLockTimer } =
-    usecurrentAutoLockTimerStore();
+  const { autoLockTimer, setAutoLockTimer } = useAutoLockTimerStore();
   return (
     <Box paddingHorizontal="20px">
       <MenuContainer testId="settings-menu-container">
@@ -20,9 +19,7 @@ export function AutolockTimer() {
           {Object.keys(autoLockTimerOptions).map((lockTimer) => (
             <MenuItem
               rightComponent={
-                currentAutoLockTimer === lockTimer ? (
-                  <MenuItem.SelectionIcon />
-                ) : null
+                autoLockTimer === lockTimer ? <MenuItem.SelectionIcon /> : null
               }
               key={lockTimer}
               titleComponent={
@@ -34,7 +31,7 @@ export function AutolockTimer() {
                 />
               }
               onClick={() =>
-                setCurrentAutoLockTimer(lockTimer as AutoLockTimerOptionType)
+                setAutoLockTimer(lockTimer as AutoLockTimerOptionType)
               }
             />
           ))}
