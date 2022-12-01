@@ -198,7 +198,7 @@ export const backgroundColors: Record<
   },
   surfaceSecondary: {
     light: {
-      color: '#F0F1F5',
+      color: globalColors.blueGrey10,
       setColorContext: 'light',
     },
     dark: {

@@ -1,175 +1,100 @@
 import * as React from 'react';
 
-import rainbowLight from 'static/assets/rainbow/light-rainbow.png';
-import rainbowNeon from 'static/assets/rainbow/neon-rainbow.png';
-import rainbowOg from 'static/assets/rainbow/og-rainbow.png';
-import rainbowPixel from 'static/assets/rainbow/pixel-rainbow.png';
+import rainbowLogoLight from 'static/assets/rainbow/rainbow-logo-light.png';
 import rainbowLogo from 'static/assets/rainbow/rainbow-logo.png';
-import rainbowWhite from 'static/assets/rainbow/white-rainbow.png';
 import { i18n } from '~/core/languages';
-import { Box, Button, Text } from '~/design-system';
+import { Box, Button, Text, ThemeProvider } from '~/design-system';
 import { Rows } from '~/design-system/components/Rows/Rows';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
+import { getTheme } from '~/design-system/styles/theme';
+
+import { FlyingRainbows } from '../../components/FlyingRainbows';
 
 export function Welcome() {
+  const themeInfo = getTheme();
+
   return (
-    <Box
-      display="flex"
-      width="full"
-      alignItems="center"
-      justifyContent="center"
-      flexDirection="column"
-      height="full"
-      background="surfacePrimary"
-      style={{
-        position: 'absolute',
-      }}
-    >
+    <FlyingRainbows>
       <Box
-        background="surfacePrimaryElevated"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        borderRadius="32px"
-        padding="24px"
-        style={{
-          width: 360,
-          height: 600,
-          paddingTop: 151,
-          alignSelf: 'center',
-          position: 'relative',
-          overflow: 'hidden',
-        }}
+        width="full"
+        style={{ zIndex: 1, paddingTop: 151 }}
+        background="transparent"
       >
         <Box
-          style={{
-            background: 'transparent',
-            position: 'absolute',
-            top: '0px',
-            left: '0px',
-            right: '0px',
-            bottom: '0px',
-          }}
+          width="full"
+          display="flex"
+          justifyContent="center"
+          paddingBottom="8px"
         >
           <img
-            src={rainbowPixel}
-            width="150"
-            height="150"
-            style={{
-              position: 'absolute',
-              right: '0px',
-              top: '0px',
-            }}
-          />
-          <img
-            src={rainbowWhite}
-            width="171"
-            style={{
-              position: 'absolute',
-              left: '0px',
-              top: '0px',
-            }}
-          />
-          <img
-            src={rainbowOg}
-            height="130"
-            style={{
-              position: 'absolute',
-              left: '0px',
-              top: '360px',
-            }}
-          />
-          <img
-            src={rainbowLight}
-            width="170"
-            style={{
-              position: 'absolute',
-              left: '100px',
-              top: '370px',
-            }}
-          />
-          <img
-            src={rainbowNeon}
-            width="155"
-            style={{
-              position: 'absolute',
-              right: '-5px',
-              bottom: '0px',
-            }}
+            src={
+              (themeInfo.savedTheme || themeInfo.systemTheme) === 'light'
+                ? rainbowLogoLight
+                : rainbowLogo
+            }
+            width="162"
+            height="40"
           />
         </Box>
-        <Box width="full" style={{ zIndex: 1 }} background="transparent">
-          <Box
-            width="full"
-            display="flex"
-            justifyContent="center"
-            paddingBottom="8px"
-          >
-            <img src={rainbowLogo} width="162" height="40" />
-          </Box>
-          <Box
-            width="full"
-            justifyContent="center"
-            alignItems="center"
-            display="flex"
-            style={{
-              height: '21px',
-            }}
-          >
-            <Text
-              align="center"
-              color="labelTertiary"
-              size="16pt"
-              weight="bold"
-            >
-              {i18n.t('welcome.subtitle')}
-            </Text>
-          </Box>
-          <Box width="full" style={{ marginTop: '218px' }}>
-            <Rows alignVertical="top" space="20px">
-              <Rows alignVertical="top" space="10px">
+        <Box
+          width="full"
+          justifyContent="center"
+          alignItems="center"
+          display="flex"
+          style={{
+            height: '21px',
+          }}
+        >
+          <Text align="center" color="labelTertiary" size="16pt" weight="bold">
+            {i18n.t('welcome.subtitle')}
+          </Text>
+        </Box>
+        <Box width="full" style={{ marginTop: '218px' }}>
+          <Rows alignVertical="top" space="20px">
+            <Rows alignVertical="top" space="10px">
+              <Button
+                color="fill"
+                height="44px"
+                variant="flat"
+                width="full"
+                symbol="arrow.right"
+                symbolSide="right"
+              >
+                {i18n.t('welcome.create_wallet')}
+              </Button>
+              <ThemeProvider theme="dark">
                 <Button
-                  color="fill"
-                  height="44px"
-                  variant="flat"
-                  width="full"
-                  symbol="arrow.right"
-                  symbolSide="right"
-                >
-                  {i18n.t('welcome.create_wallet')}
-                </Button>
-                <Button
-                  color="surfaceSecondaryElevated"
+                  color="surfacePrimaryElevated"
                   height="44px"
                   variant="raised"
                   width="full"
                 >
                   {i18n.t('welcome.import_wallet')}
                 </Button>
-              </Rows>
-              <Box display="flex" style={{ width: '210px', margin: 'auto' }}>
-                <Text
-                  align="center"
-                  color="labelTertiary"
-                  size="12pt"
-                  weight="regular"
-                  as="p"
-                >
-                  {i18n.t('welcome.disclaimer_tos')}&nbsp;
-                  <a
-                    href="https://rainbow.me/terms-of-use"
-                    target="_blank"
-                    style={{ color: accentColorAsHsl, cursor: 'pointer' }}
-                    rel="noreferrer"
-                  >
-                    {i18n.t('welcome.disclaimer_tos_link')}
-                  </a>
-                </Text>
-              </Box>
+              </ThemeProvider>
             </Rows>
-          </Box>
+            <Box display="flex" style={{ width: '210px', margin: 'auto' }}>
+              <Text
+                align="center"
+                color="labelTertiary"
+                size="12pt"
+                weight="regular"
+                as="p"
+              >
+                {i18n.t('welcome.disclaimer_tos')}&nbsp;
+                <a
+                  href="https://rainbow.me/terms-of-use"
+                  target="_blank"
+                  style={{ color: accentColorAsHsl, cursor: 'pointer' }}
+                  rel="noreferrer"
+                >
+                  {i18n.t('welcome.disclaimer_tos_link')}
+                </a>
+              </Text>
+            </Box>
+          </Rows>
         </Box>
       </Box>
-    </Box>
+    </FlyingRainbows>
   );
 }
