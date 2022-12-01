@@ -2,11 +2,11 @@ import React from 'react';
 
 import { i18n } from '~/core/languages';
 import {
-  TxDefaultSpeedType,
-  txDefaultSpeedOptions,
-} from '~/core/references/txDefaultSpeed';
+  DefaultTxSpeedType,
+  defaultTxSpeedOptions,
+} from '~/core/references/defaultTxSpeed';
+import { useDefaultTxSpeedStore } from '~/core/state/currentSettings/defaultTxSpeed';
 import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
-import { useTxDefaultSpeedStore } from '~/core/state/currentSettings/txDefaultSpeed';
 import { Box, Inline, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -16,7 +16,7 @@ import { SFSymbol } from '~/entries/popup/components/SFSymbol/SFSymbol';
 import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 
 export function Transactions() {
-  const { txDefaultSpeed, setTxDefaultSpeed } = useTxDefaultSpeedStore();
+  const { defaultTxSpeed, setDefaultTxSpeed } = useDefaultTxSpeedStore();
   const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
   return (
     <Box paddingHorizontal="20px">
@@ -36,7 +36,7 @@ export function Transactions() {
                   }
                   rightComponent={
                     <MenuItem.Selection
-                      text={txDefaultSpeedOptions[txDefaultSpeed].label}
+                      text={defaultTxSpeedOptions[defaultTxSpeed].label}
                     />
                   }
                 />
@@ -45,7 +45,7 @@ export function Transactions() {
             menuItemIndicator={<SFSymbol symbol="checkMark" size={11} />}
             renderMenuItem={(option, i) => {
               const { label, emoji } =
-                txDefaultSpeedOptions[option as TxDefaultSpeedType];
+                defaultTxSpeedOptions[option as DefaultTxSpeedType];
 
               return (
                 <Box id={`switch-option-item-${i}`}>
@@ -62,10 +62,10 @@ export function Transactions() {
                 </Box>
               );
             }}
-            menuItems={Object.keys(txDefaultSpeedOptions)}
-            selectedValue={txDefaultSpeed}
+            menuItems={Object.keys(defaultTxSpeedOptions)}
+            selectedValue={defaultTxSpeed}
             onValueChange={(value) => {
-              setTxDefaultSpeed(value as TxDefaultSpeedType);
+              setDefaultTxSpeed(value as DefaultTxSpeedType);
             }}
           />
         </Menu>
