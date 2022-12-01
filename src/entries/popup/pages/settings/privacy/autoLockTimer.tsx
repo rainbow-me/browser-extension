@@ -10,7 +10,7 @@ import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 
-export function AutolockTimer() {
+export function AutoLockTimer() {
   const { autoLockTimer, setAutoLockTimer } = useAutoLockTimerStore();
   return (
     <Box paddingHorizontal="20px">

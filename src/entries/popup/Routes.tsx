@@ -9,7 +9,7 @@ import { ConnectedApps } from './pages/ConnectedApps';
 import { Home } from './pages/home';
 import { Send } from './pages/send';
 import { Currency } from './pages/settings/currency';
-import { AutolockTimer } from './pages/settings/privacy/autoLockTimer';
+import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
 import { Privacy } from './pages/settings/privacy/privacy';
 import { Settings } from './pages/settings/settings';
 import { Transactions } from './pages/settings/transactions';
@@ -64,7 +64,7 @@ export function Routes() {
         path: '/settings/privacy/autoLockTimer',
         element: (
           <AnimatedRoute direction="horizontal" navbar title="Privacy">
-            <AutolockTimer />
+            <AutoLockTimer />
           </AnimatedRoute>
         ),
       },
