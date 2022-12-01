@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, Inline, Stack, Text } from '~/design-system';
+import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { SFSymbol } from '~/entries/popup/components/SFSymbol/SFSymbol';
 
@@ -26,11 +26,13 @@ const Selection = ({ text }: SelectionProps) => (
 );
 
 const SelectionIcon = () => {
-  // TODO: switch to checkmark.circle.fill
   return (
-    <Box>
-      <SFSymbol symbol="checkMark" size={14} />
-    </Box>
+    <Symbol
+      symbol="checkmark.circle.fill"
+      color="accent"
+      size={18}
+      weight="bold"
+    />
   );
 };
 
