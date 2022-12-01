@@ -11,8 +11,8 @@ import {
 } from '~/core/references/links';
 import { ThemeType, themeOptions } from '~/core/references/themes';
 import { useCurrentCurrencyStore } from '~/core/state';
-import { useCurrentDefaultWalletStore } from '~/core/state/currentSettings/currentDefaultWallet';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useIsDefaultWalletStore } from '~/core/state/currentSettings/isDefaultWallet';
 import { Box, Inline, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -26,8 +26,7 @@ import { testSandbox } from '../../handlers/wallet';
 export function Settings() {
   const navigate = useNavigate();
   const { currentCurrency } = useCurrentCurrencyStore();
-  const { currentDefaultWallet, setCurrentDefaultWallet } =
-    useCurrentDefaultWalletStore();
+  const { isDefaultWallet, setIsDefaultWallet } = useIsDefaultWalletStore();
 
   const { currentTheme, setCurrentTheme } = useCurrentThemeStore();
 
@@ -65,8 +64,8 @@ export function Settings() {
               }
               rightComponent={
                 <Toggle
-                  checked={currentDefaultWallet}
-                  handleChange={setCurrentDefaultWallet}
+                  checked={isDefaultWallet}
+                  handleChange={setIsDefaultWallet}
                 />
               }
             />
