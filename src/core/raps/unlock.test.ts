@@ -1,6 +1,6 @@
 import { RAINBOW_ROUTER_CONTRACT_ADDRESS } from '@rainbow-me/swaps';
 import { Address, chain } from '@wagmi/core';
-import { beforeAll, test } from 'vitest';
+import { beforeAll, expect, test } from 'vitest';
 
 import { ParsedAsset, UniqueId } from '../types/assets';
 import { ChainName } from '../types/chains';
@@ -45,8 +45,14 @@ const USDC_ASSET: ParsedAsset = {
   decimals: 18,
 };
 
-beforeAll(() => {
+export async function delay(ms: number) {
+  // eslint-disable-next-line no-promise-executor-return
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+beforeAll(async () => {
   createTestWagmiClient();
+  await delay(3000);
 });
 
 test('[rap/unlock] :: get raw allowance', async () => {
@@ -56,26 +62,26 @@ test('[rap/unlock] :: get raw allowance', async () => {
     spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
     chainId: chain.mainnet.id,
   });
-  console.log('RAWWW ALLOWANCE', rawAllowance);
+  expect(rawAllowance).toBe('0');
 });
 
 test('[rap/unlock] :: asset needs unlocking', async () => {
-  const rawAllowance = await assetNeedsUnlocking({
+  const needsUnlocking = await assetNeedsUnlocking({
     amount: '1000',
     accountAddress: RAINBOW_WALLET,
     assetToUnlock: USDC_ASSET,
     contractAddress: RAINBOW_ROUTER_CONTRACT_ADDRESS,
     chainId: chain.mainnet.id,
   });
-  console.log('RAWWW ALLOWANCE', rawAllowance);
+  expect(needsUnlocking).toBe(true);
 });
 
 test('[rap/unlock] :: estimate approve', async () => {
-  const rawAllowance = await estimateApprove({
+  const approveGasLimit = await estimateApprove({
     owner: RAINBOW_WALLET,
     tokenAddress: USDC_ASSET.address,
     spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
     chainId: chain.mainnet.id,
   });
-  console.log('RAWWW ALLOWANCE', rawAllowance);
+  expect(Number(approveGasLimit)).toBeGreaterThan(0);
 });

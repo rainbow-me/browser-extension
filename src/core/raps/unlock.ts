@@ -28,8 +28,11 @@ export const getRawAllowance = async ({
     const { address: tokenAddress } = token;
     const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
     const allowance = await tokenContract.allowance(owner, spender);
+    console.log('RAW ALLOWANCE', allowance);
     return allowance.toString();
   } catch (error) {
+    console.log('RAW ALLOWANCE error', error);
+
     return null;
   }
 };
