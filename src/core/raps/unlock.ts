@@ -2,16 +2,15 @@ import { MaxUint256 } from '@ethersproject/constants';
 import { RAINBOW_ROUTER_CONTRACT_ADDRESS } from '@rainbow-me/swaps';
 import { Address, Chain, erc20ABI, getProvider } from '@wagmi/core';
 import { Contract, Wallet } from 'ethers';
-import { chain } from 'wagmi';
 
 import { ethUnits } from '../references';
 import { gasStore } from '../state';
 import { ParsedAsset } from '../types/assets';
-import { TransactionGasParams, TransactionLegacyGasParams } from '../types/gas';
 import { TransactionStatus, TransactionType } from '../types/transactions';
 import { convertAmountToRawAmount, greaterThan, toHex } from '../utils/numbers';
 
 import { RapExchangeActionParameters, UnlockActionParameters } from './common';
+import { getFastSpeedByDefault } from './utils';
 
 const getRawAllowance = async ({
   owner,
@@ -166,50 +165,11 @@ export const unlock = async ({
         chainId,
       });
 
-  const gasParams = selectedGas.transactionGasParams;
-
-  // approvals should always use fast gas or custom (whatever is faster)
-  if (chainId === chain.mainnet.id) {
-    const transactionGasParams = gasParams as TransactionGasParams;
-    if (
-      !transactionGasParams.maxFeePerGas ||
-      !transactionGasParams.maxPriorityFeePerGas
-    ) {
-      const fastTransactionGasParams = gasFeeParamsBySpeed?.fast
-        ?.transactionGasParams as TransactionGasParams;
-
-      if (
-        greaterThan(
-          fastTransactionGasParams.maxFeePerGas,
-          transactionGasParams?.maxFeePerGas || 0,
-        )
-      ) {
-        (gasParams as TransactionGasParams).maxFeePerGas =
-          fastTransactionGasParams.maxFeePerGas;
-      }
-      if (
-        greaterThan(
-          fastTransactionGasParams.maxPriorityFeePerGas,
-          transactionGasParams?.maxPriorityFeePerGas || 0,
-        )
-      ) {
-        (gasParams as TransactionGasParams).maxPriorityFeePerGas =
-          fastTransactionGasParams.maxPriorityFeePerGas;
-      }
-    }
-  } else if (chainId === chain.polygon.id) {
-    const transactionGasParams = gasParams as TransactionLegacyGasParams;
-    if (!transactionGasParams.gasPrice) {
-      const fastGasPrice = (
-        gasFeeParamsBySpeed?.fast
-          ?.transactionGasParams as TransactionLegacyGasParams
-      ).gasPrice;
-
-      if (greaterThan(fastGasPrice, transactionGasParams?.gasPrice || 0)) {
-        (gasParams as TransactionLegacyGasParams).gasPrice = fastGasPrice;
-      }
-    }
-  }
+  const gasParams = getFastSpeedByDefault({
+    selectedGas,
+    chainId,
+    gasFeeParamsBySpeed,
+  });
 
   const nonce = baseNonce ? baseNonce + index : undefined;
   const approval = await executeApprove({

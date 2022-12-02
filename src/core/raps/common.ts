@@ -43,10 +43,10 @@ export interface RapExchangeActionParameters {
   contractAddress?: string;
   inputAmount?: string | null;
   outputAmount?: string | null;
-  tradeDetails?: Quote;
+  tradeDetails: Quote;
   permit?: boolean;
   flashbots?: boolean;
-  chainId?: number;
+  chainId: number;
   requiresApprove?: boolean;
   meta?: SwapMetadata;
 }
