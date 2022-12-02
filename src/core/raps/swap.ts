@@ -255,8 +255,9 @@ export const estimateSwapGasLimit = async ({
 }): Promise<string> => {
   const provider = getProvider({ chainId });
   if (!provider || !tradeDetails) {
-    return getBasicSwapGasLimit(Number(chainId));
+    return getBasicSwapGasLimit(chainId);
   }
+
   const { sellTokenAddress, buyTokenAddress } = tradeDetails;
   const isWrapNativeAsset =
     sellTokenAddress === ETH_ADDRESS_AGGREGATORS &&
