@@ -1,5 +1,7 @@
 import { SymbolName } from '~/design-system/styles/designTokens';
 
+import { GasSpeed } from './gas';
+
 export type AutoLockTimerOption =
   | 'immediately'
   | 'one_minute'
@@ -17,12 +19,10 @@ export interface AutoLockTimerData {
   mins: number | null;
 }
 
-export type DefaultTxSpeedOption = 'normal' | 'fast' | 'urgent';
-
-export interface DefaultTxSpeedData {
-  emoji: string;
-  label: string;
-}
+export type DefaultTxSpeedOption =
+  | GasSpeed.NORMAL
+  | GasSpeed.FAST
+  | GasSpeed.URGENT;
 
 export type ThemeOption = 'light' | 'dark' | 'system';
 

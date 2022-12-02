@@ -1,4 +1,10 @@
-export type GasSpeed = 'urgent' | 'fast' | 'normal' | 'custom';
+// export type GasSpeed = 'urgent' | 'fast' | 'normal' | 'custom';
+export enum GasSpeed {
+  URGENT = 'urgent',
+  FAST = 'fast',
+  NORMAL = 'normal',
+  CUSTOM = 'custom',
+}
 
 export interface GasFeeParam {
   amount: string;

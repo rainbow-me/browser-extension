@@ -1,9 +1,10 @@
 import React from 'react';
 
 import { i18n } from '~/core/languages';
-import { defaultTxSpeedOptions } from '~/core/references/defaultTxSpeed';
+import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useDefaultTxSpeedStore } from '~/core/state/currentSettings/defaultTxSpeed';
 import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
+import { GasSpeed } from '~/core/types/gas';
 import { DefaultTxSpeedOption } from '~/core/types/settings';
 import { Box, Inline, Symbol, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
@@ -15,6 +16,9 @@ import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 export function Transactions() {
   const { defaultTxSpeed, setDefaultTxSpeed } = useDefaultTxSpeedStore();
   const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
+  const filteredTxSpeedOptionKeys = Object.values(GasSpeed).filter(
+    (opt) => opt !== GasSpeed.CUSTOM,
+  );
   return (
     <Box paddingHorizontal="20px">
       <MenuContainer testId="settings-menu-container">
@@ -32,7 +36,7 @@ export function Transactions() {
                   }
                   rightComponent={
                     <MenuItem.Selection
-                      text={defaultTxSpeedOptions[defaultTxSpeed].label}
+                      text={i18n.t(`transaction_fee.${defaultTxSpeed}`)}
                     />
                   }
                 />
@@ -47,25 +51,22 @@ export function Transactions() {
               />
             }
             renderMenuItem={(option, i) => {
-              const { label, emoji } =
-                defaultTxSpeedOptions[option as DefaultTxSpeedOption];
-
               return (
                 <Box id={`switch-option-item-${i}`}>
                   <Inline space="8px" alignVertical="center">
                     <Inline alignVertical="center" space="8px">
                       <Text weight="medium" size="14pt">
-                        {emoji}
+                        {txSpeedEmoji[option as GasSpeed]}
                       </Text>
                     </Inline>
                     <Text weight="medium" size="14pt">
-                      {label}
+                      {i18n.t(`transaction_fee.${option}`)}
                     </Text>
                   </Inline>
                 </Box>
               );
             }}
-            menuItems={Object.keys(defaultTxSpeedOptions)}
+            menuItems={filteredTxSpeedOptionKeys}
             selectedValue={defaultTxSpeed}
             onValueChange={(value) => {
               setDefaultTxSpeed(value as DefaultTxSpeedOption);

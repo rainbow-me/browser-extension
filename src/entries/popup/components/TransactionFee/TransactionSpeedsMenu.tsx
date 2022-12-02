@@ -2,6 +2,7 @@ import React from 'react';
 import { Chain, chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { txSpeedEmoji } from '~/core/references/txSpeed';
 import {
   GasFeeLegacyParamsBySpeed,
   GasFeeParamsBySpeed,
@@ -20,14 +21,7 @@ import {
   DropdownMenuTrigger,
 } from '../DropdownMenu/DropdownMenu';
 
-const speeds: GasSpeed[] = ['urgent', 'fast', 'normal'];
-
-const SPEED_EMOJIS: { [key in GasSpeed]: string } = {
-  urgent: '🚨',
-  fast: '🚀',
-  normal: '⏱',
-  custom: '⚙️',
-};
+const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
 
 export const SwitchSpeedMenuSelector = ({
   gasFeeParamsBySpeed,
@@ -48,7 +42,7 @@ export const SwitchSpeedMenuSelector = ({
             >
               <Inline space="8px" alignVertical="center">
                 <Text weight="semibold" size="14pt">
-                  {SPEED_EMOJIS['custom']}
+                  {txSpeedEmoji[GasSpeed.CUSTOM]}
                 </Text>
                 <Text color="label" size="14pt" weight="semibold">
                   {i18n.t(`transaction_fee.custom`)}
@@ -71,7 +65,7 @@ export const SwitchSpeedMenuSelector = ({
             <Box id={`switch-network-item-${i}`}>
               <Inline space="8px" alignVertical="center">
                 <Text weight="semibold" size="14pt">
-                  {SPEED_EMOJIS[speed as GasSpeed]}
+                  {txSpeedEmoji[speed]}
                 </Text>
                 <Stack space="6px">
                   <Text color="label" size="14pt" weight="semibold">
@@ -120,7 +114,7 @@ export const SwitchTransactionSpeedMenu = ({
       >
         <Inline space="6px" alignVertical="center">
           <Text color="label" weight="bold" size="14pt">
-            {SPEED_EMOJIS[selectedSpeed]}
+            {txSpeedEmoji[selectedSpeed]}
           </Text>
 
           <Text color="label" weight="bold" size="14pt">
