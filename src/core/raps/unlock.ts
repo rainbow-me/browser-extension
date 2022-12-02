@@ -12,7 +12,7 @@ import { convertAmountToRawAmount, greaterThan, toHex } from '../utils/numbers';
 import { RapExchangeActionParameters, UnlockActionParameters } from './common';
 import { getFastSpeedByDefault } from './utils';
 
-const getRawAllowance = async ({
+export const getRawAllowance = async ({
   owner,
   token,
   spender,
