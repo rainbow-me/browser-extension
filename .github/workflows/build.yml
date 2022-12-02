@@ -42,7 +42,7 @@ jobs:
         run: yarn build
       - uses: browser-actions/setup-chrome@latest
         with:
-          chrome-version: 1036826
+          chrome-version: 'stable'
       - name: Setup Brave browser
         run: |
           sudo apt install apt-transport-https curl

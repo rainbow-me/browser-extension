@@ -228,7 +228,13 @@ const DisplayDappNames = {
   },
 };
 
-export const getDappHost = (url: string) => new URL(url).host;
+export const getDappHost = (url: string) => {
+  const host = new URL(url).host;
+  if (host.indexOf('www.') === 0) {
+    return host.replace('www.', '');
+  }
+  return host;
+};
 
 export const dappNameOverride = (url: string) => {
   const hostname = getDappHostname(url) as keyof typeof DisplayDappNames;
