@@ -1,4 +1,10 @@
-import { motion, useScroll, useTransform } from 'framer-motion';
+import {
+  MotionValue,
+  motion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from 'framer-motion';
 import * as React from 'react';
 import { useAccount } from 'wagmi';
 
@@ -21,7 +27,6 @@ import { Tokens } from './Tokens';
 export type Tab = 'tokens' | 'activity';
 
 const COLLAPSED_HEADER_TOP_OFFSET = 172;
-const HEADER_HEIGHT = 266;
 const TAB_BAR_HEIGHT = 34;
 const TOP_NAV_HEIGHT = 65;
 
@@ -40,59 +45,33 @@ export function Home() {
   }, []);
 
   const { scrollY } = useScroll();
-  const [headerIsFixed, setHeaderIsFixed] = React.useState(true);
-  const [tabbarIsFixed, setTabbarIsFixed] = React.useState(false);
+  const smoothScrollY = useSpring(scrollY, {
+    damping: 40,
+    stiffness: 400,
+  });
+  const scrollYTx = useTransform(smoothScrollY, [1, 1000], [0, 200]);
+  const [scrollAtTop, setScrollAtTop] = React.useState(true);
 
   React.useEffect(() => {
-    scrollY.onChange((scrollYPos = 0) => {
-      if (scrollYPos === 0) {
-        setHeaderIsFixed(true);
-      } else setHeaderIsFixed(false);
-
-      if (scrollYPos > HEADER_HEIGHT - (TAB_BAR_HEIGHT + TOP_NAV_HEIGHT)) {
-        if (!tabbarIsFixed) {
-          setTabbarIsFixed(true);
-        }
-      } else setTabbarIsFixed(false);
+    scrollY.onChange((position) => {
+      const isAtTop = position === 0;
+      if (isAtTop && !scrollAtTop) setScrollAtTop(true);
+      else if (!isAtTop && scrollAtTop) setScrollAtTop(false);
     });
   });
-
-  const topFixedPosition = React.useMemo(() => {
-    if (headerIsFixed) {
-      return 0;
-    }
-    if (tabbarIsFixed) {
-      return -Math.abs(HEADER_HEIGHT - (TAB_BAR_HEIGHT + TOP_NAV_HEIGHT));
-    }
-  }, [headerIsFixed, tabbarIsFixed]);
-
-  const contentMargin = React.useMemo(() => {
-    if (headerIsFixed || tabbarIsFixed) {
-      return HEADER_HEIGHT;
-    }
-    return 0;
-  }, [headerIsFixed, tabbarIsFixed]);
 
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>
       {({ className, style }) => (
         <MainLayout
           className={className}
-          style={{ ...style, position: 'relative' }}
+          style={{ ...style, position: 'relative', overscrollBehavior: 'none' }}
         >
-          <Box
-            width="full"
-            position={headerIsFixed || tabbarIsFixed ? 'fixed' : undefined}
-            style={{
-              top: topFixedPosition,
-            }}
-          >
-            <TopNav />
-            <Header />
-            <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
-          </Box>
+          <TopNav />
+          <Header />
+          <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
           <Separator color="separatorTertiary" strokeWeight="1px" />
-          <Content marginTop={contentMargin}>
+          <Content scrollSpring={scrollYTx} scrollAtTop={scrollAtTop}>
             {activeTab === 'tokens' && <Tokens />}
             {activeTab === 'activity' && <Activity />}
           </Content>
@@ -153,20 +132,25 @@ function TabBar({
 
 function Content({
   children,
-  marginTop,
+  scrollSpring,
+  scrollAtTop,
 }: {
   children: React.ReactNode;
-  marginTop: number;
+  scrollSpring: MotionValue<number>;
+  scrollAtTop: boolean;
 }) {
+  const y = scrollAtTop ? scrollSpring : 0;
   return (
     <Box
       background="surfacePrimaryElevated"
       style={{
         flex: 1,
-        marginTop,
+        position: 'relative',
       }}
     >
-      <Inset top="20px">{children}</Inset>
+      <Box height="full" as={motion.div} style={{ y }}>
+        <Inset top="20px">{children}</Inset>
+      </Box>
     </Box>
   );
 }
