@@ -61,7 +61,116 @@ const getBasicSwapGasLimit = (chainId: Chain['id']): string => {
   }
 };
 
-export const getDefaultGasLimitForTrade = (
+const getStateDiff = async (
+  provider: Provider,
+  tradeDetails: Quote,
+): Promise<unknown> => {
+  const tokenAddress = tradeDetails.sellTokenAddress;
+  const fromAddr = tradeDetails.from;
+  const toAddr = RAINBOW_ROUTER_CONTRACT_ADDRESS;
+  const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
+
+  const { number: blockNumber } = await (
+    provider.getBlock as () => Promise<Block>
+  )();
+
+  // Get data
+  const { data } = await tokenContract.populateTransaction.approve(
+    toAddr,
+    MaxUint256.toHexString(),
+  );
+
+  // trace_call default params
+  const callParams = [
+    {
+      data,
+      from: fromAddr,
+      to: tokenAddress,
+      value: '0x0',
+    },
+    ['stateDiff'],
+    blockNumber - TRACE_CALL_BLOCK_NUMBER_OFFSET,
+  ];
+
+  const trace = await (provider as StaticJsonRpcProvider).send(
+    'trace_call',
+    callParams,
+  );
+
+  if (trace.stateDiff) {
+    const slotAddress = Object.keys(
+      trace.stateDiff[tokenAddress]?.storage,
+    )?.[0];
+    if (slotAddress) {
+      const formattedStateDiff = {
+        [tokenAddress]: {
+          stateDiff: {
+            [slotAddress]: MaxUint256.toHexString(),
+          },
+        },
+      };
+      return formattedStateDiff;
+    }
+  }
+};
+
+const getClosestGasEstimate = async (
+  estimationFn: (gasEstimate: number) => Promise<boolean>,
+): Promise<string> => {
+  // From 200k to 1M
+  const gasEstimates = Array.from(Array(21).keys())
+    .filter((x) => x > 3)
+    .map((x) => x * GAS_LIMIT_INCREMENT);
+
+  let start = 0;
+  let end = gasEstimates.length - 1;
+
+  let highestFailedGuess = null;
+  let lowestSuccessfulGuess = null;
+  let lowestFailureGuess = null;
+  // guess is typically middle of array
+  let guessIndex = Math.floor((end - start) / 2);
+  while (end > start) {
+    // eslint-disable-next-line no-await-in-loop
+    const gasEstimationSucceded = await estimationFn(gasEstimates[guessIndex]);
+    if (gasEstimationSucceded) {
+      if (!lowestSuccessfulGuess || guessIndex < lowestSuccessfulGuess) {
+        lowestSuccessfulGuess = guessIndex;
+      }
+      end = guessIndex;
+      guessIndex = Math.max(
+        Math.floor((end + start) / 2) - 1,
+        highestFailedGuess || 0,
+      );
+    } else if (!gasEstimationSucceded) {
+      if (!highestFailedGuess || guessIndex > highestFailedGuess) {
+        highestFailedGuess = guessIndex;
+      }
+      if (!lowestFailureGuess || guessIndex < lowestFailureGuess) {
+        lowestFailureGuess = guessIndex;
+      }
+      start = guessIndex;
+      guessIndex = Math.ceil((end + start) / 2);
+    }
+
+    if (
+      (highestFailedGuess !== null &&
+        highestFailedGuess + 1 === lowestSuccessfulGuess) ||
+      lowestSuccessfulGuess === 0 ||
+      (lowestSuccessfulGuess !== null &&
+        lowestFailureGuess === lowestSuccessfulGuess - 1)
+    ) {
+      return String(gasEstimates[lowestSuccessfulGuess]);
+    }
+
+    if (highestFailedGuess === gasEstimates.length - 1) {
+      return '-1';
+    }
+  }
+  return '-1';
+};
+
+const getDefaultGasLimitForTrade = (
   tradeDetails: Quote,
   chainId: Chain['id'],
 ): string => {
@@ -83,58 +192,56 @@ export const getDefaultGasLimitForTrade = (
   );
 };
 
-export const executeSwap = async ({
-  chainId,
-  gasLimit,
-  nonce,
-  tradeDetails,
-  transactionGasParams,
-  wallet,
-  permit = false,
-}: {
-  chainId: Chain['id'];
-  gasLimit: string;
-  transactionGasParams: TransactionGasParams | TransactionLegacyGasParams;
-  nonce?: number;
-  tradeDetails: Quote;
-  wallet: Wallet;
-  permit: boolean;
-}) => {
-  if (!wallet || !tradeDetails) return null;
+const estimateSwapGasLimitWithFakeApproval = async (
+  chainId: number,
+  provider: Provider,
+  tradeDetails: Quote,
+): Promise<string> => {
+  let stateDiff: unknown;
 
-  const { sellTokenAddress, buyTokenAddress } = tradeDetails;
-  const transactionParams = {
-    gasLimit: toHex(gasLimit) || undefined,
-    nonce: nonce ? toHex(`${nonce}`) : undefined,
-    ...transactionGasParams,
-  };
+  try {
+    stateDiff = await getStateDiff(provider, tradeDetails);
+    const { router, methodName, params, methodArgs } = getQuoteExecutionDetails(
+      tradeDetails,
+      { from: tradeDetails.from },
+      provider as StaticJsonRpcProvider,
+    );
 
-  // Wrap Eth
-  if (
-    sellTokenAddress === ETH_ADDRESS &&
-    buyTokenAddress === WRAPPED_ASSET[chainId]
-  ) {
-    return wrapNativeAsset(
-      tradeDetails.buyAmount,
-      wallet,
-      chainId,
-      transactionParams,
+    const { data } = await router.populateTransaction[methodName](
+      ...(methodArgs ?? []),
+      params,
     );
-    // Unwrap Weth
-  } else if (
-    sellTokenAddress === WRAPPED_ASSET[chainId] &&
-    buyTokenAddress === ETH_ADDRESS
-  ) {
-    return unwrapNativeAsset(
-      tradeDetails.sellAmount,
-      wallet,
-      chainId,
-      transactionParams,
-    );
-    // Swap
-  } else {
-    return fillQuote(tradeDetails, transactionParams, wallet, permit, chainId);
+
+    const gasLimit = await getClosestGasEstimate(async (gas: number) => {
+      const callParams = [
+        {
+          data,
+          from: tradeDetails.from,
+          gas: toHexNoLeadingZeros(String(gas)),
+          gasPrice: toHexNoLeadingZeros(`100000000000`),
+          to: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+          value: '0x0', // 100 gwei
+        },
+        'latest',
+      ];
+
+      try {
+        await (provider as StaticJsonRpcProvider).send('eth_call', [
+          ...callParams,
+          stateDiff,
+        ]);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    });
+    if (gasLimit && greaterThan(gasLimit, ethUnits.basic_swap)) {
+      return gasLimit;
+    }
+  } catch (e) {
+    //
   }
+  return getDefaultGasLimitForTrade(tradeDetails, chainId);
 };
 
 export const estimateSwapGasLimit = async ({
@@ -200,7 +307,7 @@ export const estimateSwapGasLimit = async ({
         if (CHAIN_IDS_WITH_TRACE_SUPPORT.includes(chainId)) {
           try {
             const gasLimitWithFakeApproval =
-              await getSwapGasLimitWithFakeApproval(
+              await estimateSwapGasLimitWithFakeApproval(
                 chainId,
                 provider,
                 tradeDetails,
@@ -229,165 +336,58 @@ export const estimateSwapGasLimit = async ({
   }
 };
 
-export const getStateDiff = async (
-  provider: Provider,
-  tradeDetails: Quote,
-): Promise<unknown> => {
-  const tokenAddress = tradeDetails.sellTokenAddress;
-  const fromAddr = tradeDetails.from;
-  const toAddr = RAINBOW_ROUTER_CONTRACT_ADDRESS;
-  const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
+export const executeSwap = async ({
+  chainId,
+  gasLimit,
+  nonce,
+  tradeDetails,
+  transactionGasParams,
+  wallet,
+  permit = false,
+}: {
+  chainId: Chain['id'];
+  gasLimit: string;
+  transactionGasParams: TransactionGasParams | TransactionLegacyGasParams;
+  nonce?: number;
+  tradeDetails: Quote;
+  wallet: Wallet;
+  permit: boolean;
+}) => {
+  if (!wallet || !tradeDetails) return null;
 
-  const { number: blockNumber } = await (
-    provider.getBlock as () => Promise<Block>
-  )();
+  const { sellTokenAddress, buyTokenAddress } = tradeDetails;
+  const transactionParams = {
+    gasLimit: toHex(gasLimit) || undefined,
+    nonce: nonce ? toHex(`${nonce}`) : undefined,
+    ...transactionGasParams,
+  };
 
-  // Get data
-  const { data } = await tokenContract.populateTransaction.approve(
-    toAddr,
-    MaxUint256.toHexString(),
-  );
-
-  // trace_call default params
-  const callParams = [
-    {
-      data,
-      from: fromAddr,
-      to: tokenAddress,
-      value: '0x0',
-    },
-    ['stateDiff'],
-    blockNumber - TRACE_CALL_BLOCK_NUMBER_OFFSET,
-  ];
-
-  const trace = await (provider as StaticJsonRpcProvider).send(
-    'trace_call',
-    callParams,
-  );
-
-  if (trace.stateDiff) {
-    const slotAddress = Object.keys(
-      trace.stateDiff[tokenAddress]?.storage,
-    )?.[0];
-    if (slotAddress) {
-      const formattedStateDiff = {
-        [tokenAddress]: {
-          stateDiff: {
-            [slotAddress]: MaxUint256.toHexString(),
-          },
-        },
-      };
-      return formattedStateDiff;
-    }
-  }
-};
-
-async function getClosestGasEstimate(
-  estimationFn: (gasEstimate: number) => Promise<boolean>,
-): Promise<string> {
-  // From 200k to 1M
-  const gasEstimates = Array.from(Array(21).keys())
-    .filter((x) => x > 3)
-    .map((x) => x * GAS_LIMIT_INCREMENT);
-
-  let start = 0;
-  let end = gasEstimates.length - 1;
-
-  let highestFailedGuess = null;
-  let lowestSuccessfulGuess = null;
-  let lowestFailureGuess = null;
-  // guess is typically middle of array
-  let guessIndex = Math.floor((end - start) / 2);
-  while (end > start) {
-    // eslint-disable-next-line no-await-in-loop
-    const gasEstimationSucceded = await estimationFn(gasEstimates[guessIndex]);
-    if (gasEstimationSucceded) {
-      if (!lowestSuccessfulGuess || guessIndex < lowestSuccessfulGuess) {
-        lowestSuccessfulGuess = guessIndex;
-      }
-      end = guessIndex;
-      guessIndex = Math.max(
-        Math.floor((end + start) / 2) - 1,
-        highestFailedGuess || 0,
-      );
-    } else if (!gasEstimationSucceded) {
-      if (!highestFailedGuess || guessIndex > highestFailedGuess) {
-        highestFailedGuess = guessIndex;
-      }
-      if (!lowestFailureGuess || guessIndex < lowestFailureGuess) {
-        lowestFailureGuess = guessIndex;
-      }
-      start = guessIndex;
-      guessIndex = Math.ceil((end + start) / 2);
-    }
-
-    if (
-      (highestFailedGuess !== null &&
-        highestFailedGuess + 1 === lowestSuccessfulGuess) ||
-      lowestSuccessfulGuess === 0 ||
-      (lowestSuccessfulGuess !== null &&
-        lowestFailureGuess === lowestSuccessfulGuess - 1)
-    ) {
-      return String(gasEstimates[lowestSuccessfulGuess]);
-    }
-
-    if (highestFailedGuess === gasEstimates.length - 1) {
-      return '-1';
-    }
-  }
-  return '-1';
-}
-
-export const getSwapGasLimitWithFakeApproval = async (
-  chainId: number,
-  provider: Provider,
-  tradeDetails: Quote,
-): Promise<string> => {
-  let stateDiff: unknown;
-
-  try {
-    stateDiff = await getStateDiff(provider, tradeDetails);
-    const { router, methodName, params, methodArgs } = getQuoteExecutionDetails(
-      tradeDetails,
-      { from: tradeDetails.from },
-      provider as StaticJsonRpcProvider,
+  // Wrap Eth
+  if (
+    sellTokenAddress === ETH_ADDRESS &&
+    buyTokenAddress === WRAPPED_ASSET[chainId]
+  ) {
+    return wrapNativeAsset(
+      tradeDetails.buyAmount,
+      wallet,
+      chainId,
+      transactionParams,
     );
-
-    const { data } = await router.populateTransaction[methodName](
-      ...(methodArgs ?? []),
-      params,
+    // Unwrap Weth
+  } else if (
+    sellTokenAddress === WRAPPED_ASSET[chainId] &&
+    buyTokenAddress === ETH_ADDRESS
+  ) {
+    return unwrapNativeAsset(
+      tradeDetails.sellAmount,
+      wallet,
+      chainId,
+      transactionParams,
     );
-
-    const gasLimit = await getClosestGasEstimate(async (gas: number) => {
-      const callParams = [
-        {
-          data,
-          from: tradeDetails.from,
-          gas: toHexNoLeadingZeros(String(gas)),
-          gasPrice: toHexNoLeadingZeros(`100000000000`),
-          to: RAINBOW_ROUTER_CONTRACT_ADDRESS,
-          value: '0x0', // 100 gwei
-        },
-        'latest',
-      ];
-
-      try {
-        await (provider as StaticJsonRpcProvider).send('eth_call', [
-          ...callParams,
-          stateDiff,
-        ]);
-        return true;
-      } catch (e) {
-        return false;
-      }
-    });
-    if (gasLimit && greaterThan(gasLimit, ethUnits.basic_swap)) {
-      return gasLimit;
-    }
-  } catch (e) {
-    //
+    // Swap
+  } else {
+    return fillQuote(tradeDetails, transactionParams, wallet, permit, chainId);
   }
-  return getDefaultGasLimitForTrade(tradeDetails, chainId);
 };
 
 export const swap = async ({
