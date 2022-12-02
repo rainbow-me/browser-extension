@@ -8,7 +8,7 @@ import { serialize } from '@ethersproject/transactions';
 import BigNumber from 'bignumber.js';
 import { BigNumberish } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
-import { Chain, chain } from 'wagmi';
+import { Chain } from 'wagmi';
 
 import {
   OVM_GAS_PRICE_ORACLE,
@@ -18,7 +18,7 @@ import {
   supportedCurrencies,
 } from '../references';
 import { ParsedAddressAsset } from '../types/assets';
-import { bsc } from '../types/chains';
+import { ChainId } from '../types/chains';
 import {
   BlocksToConfirmation,
   GasFeeLegacyParams,
@@ -232,12 +232,12 @@ export const getBaseFeeMultiplier = (speed: GasSpeed) => {
 
 export const getChainWaitTime = (chainId: Chain['id']) => {
   switch (chainId) {
-    case bsc.id:
-    case chain.polygon.id:
+    case ChainId.bsc:
+    case ChainId.polygon:
       return { safeWait: 6, proposedWait: 3, fastWait: 3 };
-    case chain.optimism.id:
+    case ChainId.optimism:
       return { safeWait: 20, proposedWait: 20, fastWait: 20 };
-    case chain.arbitrum.id:
+    case ChainId.arbitrum:
       return { safeWait: 8, proposedWait: 8, fastWait: 8 };
     default:
       return { safeWait: 8, proposedWait: 8, fastWait: 8 };

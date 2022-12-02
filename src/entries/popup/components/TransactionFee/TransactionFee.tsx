@@ -1,8 +1,9 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import React from 'react';
-import { Chain, chain } from 'wagmi';
+import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { ChainId } from '~/core/types/chains';
 import {
   Box,
   Column,
@@ -63,10 +64,10 @@ export function TransactionFee({
             chainId={chainId}
             gasFeeParamsBySpeed={gasFeeParamsBySpeed}
             editable={
-              chainId === chain.mainnet.id || chainId === chain.polygon.id
+              chainId === ChainId.mainnet || chainId === ChainId.polygon
             }
           />
-          {chainId === chain.mainnet.id ? (
+          {chainId === ChainId.mainnet ? (
             <Box
               borderRadius="round"
               boxShadow="12px accent"

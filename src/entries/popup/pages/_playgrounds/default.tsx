@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Address, chain, useAccount, useBalance } from 'wagmi';
+import { Address, useAccount, useBalance } from 'wagmi';
 
 import { ETH_ADDRESS } from '~/core/references';
 import { selectUserAssetsList } from '~/core/resources/_selectors';
@@ -7,6 +7,7 @@ import { useAssetPrices, useUserAssets } from '~/core/resources/assets';
 import { useFirstTransactionTimestamp } from '~/core/resources/transactions';
 import { useTransactions } from '~/core/resources/transactions/transactions';
 import { useCurrentCurrencyStore, useCurrentLanguageStore } from '~/core/state';
+import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { Box, Inset, Stack, Text } from '~/design-system';
 import {
@@ -48,11 +49,11 @@ export function Default() {
   });
   const { data: mainnetBalance } = useBalance({
     addressOrName: address,
-    chainId: chain.mainnet.id,
+    chainId: ChainId.mainnet,
   });
   const { data: polygonBalance } = useBalance({
     addressOrName: address,
-    chainId: chain.polygon.id,
+    chainId: ChainId.polygon,
   });
   const { data: firstTransactionTimestamp } = useFirstTransactionTimestamp({
     address,
