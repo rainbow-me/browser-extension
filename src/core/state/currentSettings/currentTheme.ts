@@ -1,11 +1,11 @@
 import create from 'zustand';
 
-import { ThemeType } from '~/core/references/themes';
 import { createStore } from '~/core/state/internal/createStore';
+import { ThemeOption } from '~/core/types/settings';
 
 export interface CurrentThemeState {
-  currentTheme: ThemeType;
-  setCurrentTheme: (theme: ThemeType) => void;
+  currentTheme: ThemeOption;
+  setCurrentTheme: (theme: ThemeOption) => void;
 }
 
 export const currentThemeStore = createStore<CurrentThemeState>(
