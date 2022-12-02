@@ -37,7 +37,7 @@ import {
 } from '../utils/numbers';
 
 import { Rap, RapExchangeActionParameters } from './common';
-import { getFastSpeedByDefault } from './utils';
+import { overrideWithFastSpeedIfNeeded } from './utils';
 
 const GAS_LIMIT_INCREMENT = 50000;
 const EXTRA_GAS_PADDING = 1.5;
@@ -412,7 +412,7 @@ export const swap = async ({
   // if swap isn't the last action, use fast gas or custom (whatever is faster)
 
   if (currentRap.actions.length - 1 > index) {
-    gasParams = getFastSpeedByDefault({
+    gasParams = overrideWithFastSpeedIfNeeded({
       selectedGas,
       chainId,
       gasFeeParamsBySpeed,

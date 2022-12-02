@@ -10,7 +10,10 @@ import {
 } from '../types/gas';
 import { greaterThan } from '../utils/numbers';
 
-export const getFastSpeedByDefault = ({
+/**
+ * If gas price is not defined, override with fast speed
+ */
+export const overrideWithFastSpeedIfNeeded = ({
   selectedGas,
   chainId,
   gasFeeParamsBySpeed,

@@ -107,3 +107,7 @@ test('[rap/unlock] :: should execute approve', async () => {
   });
   expect(approvalTx.hash).toBeDefined();
 });
+
+test('[rap/unlock] :: should unlock', async () => {
+  // TODO
+});

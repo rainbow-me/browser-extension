@@ -9,7 +9,7 @@ import { TransactionStatus, TransactionType } from '../types/transactions';
 import { convertAmountToRawAmount, greaterThan, toHex } from '../utils/numbers';
 
 import { RapExchangeActionParameters, UnlockActionParameters } from './common';
-import { getFastSpeedByDefault } from './utils';
+import { overrideWithFastSpeedIfNeeded } from './utils';
 
 export const getRawAllowance = async ({
   owner,
@@ -156,7 +156,7 @@ export const unlock = async ({
     chainId,
   });
 
-  const gasParams = getFastSpeedByDefault({
+  const gasParams = overrideWithFastSpeedIfNeeded({
     selectedGas,
     chainId,
     gasFeeParamsBySpeed,
