@@ -1,5 +1,4 @@
 import { MaxUint256 } from '@ethersproject/constants';
-import { RAINBOW_ROUTER_CONTRACT_ADDRESS } from '@rainbow-me/swaps';
 import { Address, Chain, erc20ABI, getProvider } from '@wagmi/core';
 import { Contract, Wallet } from 'ethers';
 
@@ -98,7 +97,6 @@ export const estimateApprove = async ({
 };
 
 export const executeApprove = async ({
-  chainId,
   gasLimit,
   gasParams,
   nonce,
@@ -118,11 +116,8 @@ export const executeApprove = async ({
   tokenAddress: Address;
   wallet: Wallet;
 }) => {
-  const provider = getProvider({ chainId });
-  const walletToUse = new Wallet(wallet.privateKey, provider);
-
-  const exchange = new Contract(tokenAddress, erc20ABI, walletToUse);
-  return exchange.approve(spender, MaxUint256, {
+  const tokenContract = new Contract(tokenAddress, erc20ABI, wallet);
+  return tokenContract.approve(spender, MaxUint256, {
     gasLimit: toHex(gasLimit) || undefined,
     // In case it's an L2 with legacy gas price
     ...(gasParams.gasPrice ? { gasPrice: gasParams.gasPrice } : {}),
@@ -136,34 +131,30 @@ export const executeApprove = async ({
 };
 
 export const unlock = async ({
-  wallet,
+  baseNonce,
   index,
   parameters,
-  baseNonce,
+  wallet,
 }: {
-  wallet: Wallet;
+  baseNonce?: number;
   index: number;
   parameters: RapExchangeActionParameters;
-  baseNonce?: number;
+  wallet: Wallet;
 }): Promise<number | undefined> => {
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
-  const accountAddress = parameters.tradeDetails?.from as Address;
 
   const { assetToUnlock, contractAddress, chainId } =
     parameters as UnlockActionParameters;
   const { address: assetAddress } = assetToUnlock;
 
-  const contractAllowsPermit =
-    contractAddress === RAINBOW_ROUTER_CONTRACT_ADDRESS;
+  const accountAddress = parameters.tradeDetails?.from as Address;
 
-  const gasLimit = contractAllowsPermit
-    ? '0'
-    : await estimateApprove({
-        owner: accountAddress,
-        tokenAddress: assetAddress,
-        spender: contractAddress,
-        chainId,
-      });
+  const gasLimit = await estimateApprove({
+    owner: accountAddress,
+    tokenAddress: assetAddress,
+    spender: contractAddress,
+    chainId,
+  });
 
   const gasParams = getFastSpeedByDefault({
     selectedGas,
