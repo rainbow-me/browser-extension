@@ -1,8 +1,11 @@
+import { Block, Provider } from '@ethersproject/abstract-provider';
+import { MaxUint256 } from '@ethersproject/constants';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import {
   ALLOWS_PERMIT,
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
   Quote,
+  RAINBOW_ROUTER_CONTRACT_ADDRESS,
   WRAPPED_ASSET,
   fillQuote,
   getQuoteExecutionDetails,
@@ -10,8 +13,8 @@ import {
   unwrapNativeAsset,
   wrapNativeAsset,
 } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
-import { Wallet } from 'ethers';
+import { erc20ABI, getProvider } from '@wagmi/core';
+import { Contract, Wallet } from 'ethers';
 import { Chain, chain } from 'wagmi';
 
 import { logger } from '~/logger';
@@ -20,17 +23,28 @@ import { ETH_ADDRESS, ethUnits } from '../references';
 import { gasStore } from '../state';
 import { bsc } from '../types/chains';
 import { TransactionGasParams, TransactionLegacyGasParams } from '../types/gas';
+import {
+  ProtocolType,
+  TransactionStatus,
+  TransactionType,
+} from '../types/transactions';
 import { estimateGasWithPadding } from '../utils/gas';
-import { multiply, toHex } from '../utils/numbers';
+import {
+  greaterThan,
+  multiply,
+  toHex,
+  toHexNoLeadingZeros,
+} from '../utils/numbers';
 
 import { Rap, RapExchangeActionParameters } from './common';
 import { getFastSpeedByDefault } from './utils';
 
-// const GAS_LIMIT_INCREMENT = 50000;
+const GAS_LIMIT_INCREMENT = 50000;
 const EXTRA_GAS_PADDING = 1.5;
 const SWAP_GAS_PADDING = 1.1;
 const WRAP_GAS_PADDING = 1.002;
-// const CHAIN_IDS_WITH_TRACE_SUPPORT = [chain.mainnet.id];
+const CHAIN_IDS_WITH_TRACE_SUPPORT = [chain.mainnet.id];
+const TRACE_CALL_BLOCK_NUMBER_OFFSET = 20;
 
 const getBasicSwapGasLimit = (chainId: Chain['id']): string => {
   switch (chainId) {
@@ -183,19 +197,19 @@ export const estimateSwapGasLimit = async ({
 
       if (requiresApprove) {
         // TODO trace support gas
-        // if (CHAIN_IDS_WITH_TRACE_SUPPORT.includes(chainId)) {
-        //   try {
-        //     const gasLimitWithFakeApproval =
-        //       await getSwapGasLimitWithFakeApproval(
-        //         chainId,
-        //         provider,
-        //         tradeDetails,
-        //       );
-        //     return gasLimitWithFakeApproval;
-        //   } catch (e) {
-        //     //
-        //   }
-        // }
+        if (CHAIN_IDS_WITH_TRACE_SUPPORT.includes(chainId)) {
+          try {
+            const gasLimitWithFakeApproval =
+              await getSwapGasLimitWithFakeApproval(
+                chainId,
+                provider,
+                tradeDetails,
+              );
+            return gasLimitWithFakeApproval;
+          } catch (e) {
+            //
+          }
+        }
 
         return getDefaultGasLimitForTrade(tradeDetails, chainId);
       }
@@ -215,6 +229,167 @@ export const estimateSwapGasLimit = async ({
   }
 };
 
+export const getStateDiff = async (
+  provider: Provider,
+  tradeDetails: Quote,
+): Promise<unknown> => {
+  const tokenAddress = tradeDetails.sellTokenAddress;
+  const fromAddr = tradeDetails.from;
+  const toAddr = RAINBOW_ROUTER_CONTRACT_ADDRESS;
+  const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
+
+  const { number: blockNumber } = await (
+    provider.getBlock as () => Promise<Block>
+  )();
+
+  // Get data
+  const { data } = await tokenContract.populateTransaction.approve(
+    toAddr,
+    MaxUint256.toHexString(),
+  );
+
+  // trace_call default params
+  const callParams = [
+    {
+      data,
+      from: fromAddr,
+      to: tokenAddress,
+      value: '0x0',
+    },
+    ['stateDiff'],
+    blockNumber - TRACE_CALL_BLOCK_NUMBER_OFFSET,
+  ];
+
+  const trace = await (provider as StaticJsonRpcProvider).send(
+    'trace_call',
+    callParams,
+  );
+
+  if (trace.stateDiff) {
+    const slotAddress = Object.keys(
+      trace.stateDiff[tokenAddress]?.storage,
+    )?.[0];
+    if (slotAddress) {
+      const formattedStateDiff = {
+        [tokenAddress]: {
+          stateDiff: {
+            [slotAddress]: MaxUint256.toHexString(),
+          },
+        },
+      };
+      return formattedStateDiff;
+    }
+  }
+};
+
+async function getClosestGasEstimate(
+  estimationFn: (gasEstimate: number) => Promise<boolean>,
+): Promise<string> {
+  // From 200k to 1M
+  const gasEstimates = Array.from(Array(21).keys())
+    .filter((x) => x > 3)
+    .map((x) => x * GAS_LIMIT_INCREMENT);
+
+  let start = 0;
+  let end = gasEstimates.length - 1;
+
+  let highestFailedGuess = null;
+  let lowestSuccessfulGuess = null;
+  let lowestFailureGuess = null;
+  // guess is typically middle of array
+  let guessIndex = Math.floor((end - start) / 2);
+  while (end > start) {
+    // eslint-disable-next-line no-await-in-loop
+    const gasEstimationSucceded = await estimationFn(gasEstimates[guessIndex]);
+    if (gasEstimationSucceded) {
+      if (!lowestSuccessfulGuess || guessIndex < lowestSuccessfulGuess) {
+        lowestSuccessfulGuess = guessIndex;
+      }
+      end = guessIndex;
+      guessIndex = Math.max(
+        Math.floor((end + start) / 2) - 1,
+        highestFailedGuess || 0,
+      );
+    } else if (!gasEstimationSucceded) {
+      if (!highestFailedGuess || guessIndex > highestFailedGuess) {
+        highestFailedGuess = guessIndex;
+      }
+      if (!lowestFailureGuess || guessIndex < lowestFailureGuess) {
+        lowestFailureGuess = guessIndex;
+      }
+      start = guessIndex;
+      guessIndex = Math.ceil((end + start) / 2);
+    }
+
+    if (
+      (highestFailedGuess !== null &&
+        highestFailedGuess + 1 === lowestSuccessfulGuess) ||
+      lowestSuccessfulGuess === 0 ||
+      (lowestSuccessfulGuess !== null &&
+        lowestFailureGuess === lowestSuccessfulGuess - 1)
+    ) {
+      return String(gasEstimates[lowestSuccessfulGuess]);
+    }
+
+    if (highestFailedGuess === gasEstimates.length - 1) {
+      return '-1';
+    }
+  }
+  return '-1';
+}
+
+export const getSwapGasLimitWithFakeApproval = async (
+  chainId: number,
+  provider: Provider,
+  tradeDetails: Quote,
+): Promise<string> => {
+  let stateDiff: unknown;
+
+  try {
+    stateDiff = await getStateDiff(provider, tradeDetails);
+    const { router, methodName, params, methodArgs } = getQuoteExecutionDetails(
+      tradeDetails,
+      { from: tradeDetails.from },
+      provider as StaticJsonRpcProvider,
+    );
+
+    const { data } = await router.populateTransaction[methodName](
+      ...(methodArgs ?? []),
+      params,
+    );
+
+    const gasLimit = await getClosestGasEstimate(async (gas: number) => {
+      const callParams = [
+        {
+          data,
+          from: tradeDetails.from,
+          gas: toHexNoLeadingZeros(String(gas)),
+          gasPrice: toHexNoLeadingZeros(`100000000000`),
+          to: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+          value: '0x0', // 100 gwei
+        },
+        'latest',
+      ];
+
+      try {
+        await (provider as StaticJsonRpcProvider).send('eth_call', [
+          ...callParams,
+          stateDiff,
+        ]);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    });
+    if (gasLimit && greaterThan(gasLimit, ethUnits.basic_swap)) {
+      return gasLimit;
+    }
+  } catch (e) {
+    //
+  }
+  return getDefaultGasLimitForTrade(tradeDetails, chainId);
+};
+
 export const swap = async ({
   currentRap,
   wallet,
@@ -228,8 +403,10 @@ export const swap = async ({
   baseNonce?: number;
   currentRap: Rap;
 }): Promise<number | undefined> => {
-  const { tradeDetails, permit, chainId, requiresApprove } = parameters;
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
+
+  const { inputAmount, tradeDetails, permit, chainId, requiresApprove } =
+    parameters;
 
   let gasParams = selectedGas.transactionGasParams;
   // if swap isn't the last action, use fast gas or custom (whatever is faster)
@@ -264,38 +441,28 @@ export const swap = async ({
     };
 
     swap = await executeSwap(swapParams);
-
-    // if (permit) {
-    //   // Clear the allowance
-    //   const cacheKey = toLower(
-    //     `${wallet.address}|${tradeDetails.sellTokenAddress}|${tradeDetails.to}`,
-    //   );
-    //   // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-    //   delete AllowancesCache.cache[cacheKey];
-    // }
   } catch (e) {
     logger.error(e as Error);
     throw e;
   }
 
-  //   const newTransaction = {
-  //     ...gasParams,
-  //     amount: inputAmount,
-  //     asset: inputCurrency,
-  //     data: swap?.data,
-  //     flashbots: parameters.flashbots,
-  //     from: accountAddress,
-  //     gasLimit,
-  //     hash: swap?.hash ?? null,
-  //     network: ethereumUtils.getNetworkFromChainId(Number(chainId)),
-  //     nonce: swap?.nonce ?? null,
-  //     protocol: ProtocolType.uniswap,
-  //     status: TransactionStatus.swapping,
-  //     to: swap?.to ?? null,
-  //     type: TransactionType.trade,
-  //     value: (swap && toHex(swap.value)) || undefined,
-  //   };
-  //   logger.log(`[${actionName}] adding new txn`, newTransaction);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const newTransaction = {
+    ...gasParams,
+    amount: inputAmount,
+    data: swap?.data,
+    flashbots: parameters.flashbots,
+    from: tradeDetails.from,
+    gasLimit,
+    hash: swap?.hash ?? null,
+    chainId,
+    nonce: swap?.nonce ?? null,
+    protocol: ProtocolType.rainbow,
+    status: TransactionStatus.swapping,
+    to: swap?.to ?? null,
+    type: TransactionType.trade,
+    value: (swap && toHex(swap.value.toString())) || undefined,
+  };
 
   return swap?.nonce;
 };

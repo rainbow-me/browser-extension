@@ -421,3 +421,6 @@ export const convertRawAmountToDecimalFormat = (
 
 export const fromWei = (number: BigNumberish): string =>
   convertRawAmountToDecimalFormat(number, 18);
+
+export const toHexNoLeadingZeros = (value: string): string =>
+  toHex(value).replace(/^0x0*/, '0x');
