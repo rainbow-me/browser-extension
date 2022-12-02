@@ -1,5 +1,6 @@
 import { RAINBOW_ROUTER_CONTRACT_ADDRESS } from '@rainbow-me/swaps';
-import { Address, chain } from '@wagmi/core';
+import { Address, chain, getProvider } from '@wagmi/core';
+import { Wallet } from 'ethers';
 import { beforeAll, expect, test } from 'vitest';
 
 import { ParsedAsset, UniqueId } from '../types/assets';
@@ -9,6 +10,7 @@ import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
 import {
   assetNeedsUnlocking,
   estimateApprove,
+  executeApprove,
   getRawAllowance,
 } from './unlock';
 
@@ -84,4 +86,24 @@ test('[rap/unlock] :: estimate approve', async () => {
     chainId: chain.mainnet.id,
   });
   expect(Number(approveGasLimit)).toBeGreaterThan(0);
+});
+
+test('[rap/unlock] :: should execute approve', async () => {
+  const provider = getProvider({ chainId: chain.mainnet.id });
+  const wallet = new Wallet(
+    '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
+    provider,
+  );
+  const approvalTx = await executeApprove({
+    chainId: chain.mainnet.id,
+    gasLimit: '60000',
+    gasParams: {
+      maxFeePerGas: '200000000000',
+      maxPriorityFeePerGas: '2000000000',
+    },
+    spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+    tokenAddress: USDC_ASSET.address,
+    wallet,
+  });
+  expect(approvalTx.hash).toBeDefined();
 });

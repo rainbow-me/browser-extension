@@ -28,11 +28,8 @@ export const getRawAllowance = async ({
     const { address: tokenAddress } = token;
     const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
     const allowance = await tokenContract.allowance(owner, spender);
-    console.log('RAW ALLOWANCE', allowance);
     return allowance.toString();
   } catch (error) {
-    console.log('RAW ALLOWANCE error', error);
-
     return null;
   }
 };
@@ -101,25 +98,25 @@ export const estimateApprove = async ({
 };
 
 export const executeApprove = async ({
-  tokenAddress,
-  spender,
+  chainId,
   gasLimit,
   gasParams,
-  wallet,
   nonce,
-  chainId,
+  spender,
+  tokenAddress,
+  wallet,
 }: {
-  tokenAddress: Address;
-  spender: Address;
+  chainId: Chain['id'];
   gasLimit: string;
   gasParams: {
     gasPrice?: string;
     maxFeePerGas?: string;
     maxPriorityFeePerGas?: string;
   };
-  wallet: Wallet;
   nonce?: number;
-  chainId: Chain['id'];
+  spender: Address;
+  tokenAddress: Address;
+  wallet: Wallet;
 }) => {
   const provider = getProvider({ chainId });
   const walletToUse = new Wallet(wallet.privateKey, provider);
