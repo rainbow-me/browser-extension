@@ -6,14 +6,14 @@ import { Box, Inline, Inset, Symbol, Text } from '~/design-system';
 
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
-  Menu,
-  MenuContent,
-  MenuLabel,
-  MenuRadioGroup,
-  MenuRadioItem,
-  MenuSeparator,
-  MenuTrigger,
-} from '../Menu/Menu';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../DropdownMenu/DropdownMenu';
 
 export const SwitchNetworkMenuSelector = () => {
   const { chains } = useNetwork();
@@ -22,7 +22,7 @@ export const SwitchNetworkMenuSelector = () => {
       {chains.map((chain, i) => {
         const { id: chainId, name } = chain;
         return (
-          <MenuRadioItem value={String(chainId)} key={i}>
+          <DropdownMenuRadioItem value={String(chainId)} key={i}>
             <Box id={`switch-network-item-${i}`}>
               <Inline space="8px" alignVertical="center">
                 <ChainBadge chainId={chainId} size="small" />
@@ -31,7 +31,7 @@ export const SwitchNetworkMenuSelector = () => {
                 </Text>
               </Inline>
             </Box>
-          </MenuRadioItem>
+          </DropdownMenuRadioItem>
         );
       })}
     </>
@@ -80,14 +80,14 @@ export const SwitchNetworkMenu = ({
 }: SwitchNetworkMenuProps) => {
   const { chains } = useNetwork();
   return (
-    <Menu>
-      <MenuTrigger asChild>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <Box style={{ cursor: 'default' }}>{triggerComponent}</Box>
-      </MenuTrigger>
-      <MenuContent>
-        <MenuLabel>{i18n.t('menu.network.title')}</MenuLabel>
-        <MenuSeparator />
-        <MenuRadioGroup
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        <DropdownMenuLabel>{i18n.t('menu.network.title')}</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuRadioGroup
           value={String(chainId)}
           onValueChange={(chainId) => {
             const chain = chains.find(
@@ -97,11 +97,11 @@ export const SwitchNetworkMenu = ({
           }}
         >
           <SwitchNetworkMenuSelector />
-        </MenuRadioGroup>
+        </DropdownMenuRadioGroup>
         {onDisconnect ? (
           <SwitchNetworkMenuDisconnect onDisconnect={onDisconnect} />
         ) : null}
-      </MenuContent>
-    </Menu>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

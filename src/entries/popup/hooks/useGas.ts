@@ -22,7 +22,7 @@ import { add } from '~/core/utils/numbers';
 export const useGas = ({ chainId }: { chainId: Chain['id'] }) => {
   const { data, isLoading } = useGasData({ chainId });
   const { selectedGas, setSelectedGas } = useGasStore();
-  const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>('normal');
+  const [selectedSpeed, setSelectedSpeed] = useState(GasSpeed.NORMAL);
 
   const gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed =
     useMemo(() => {
@@ -44,28 +44,28 @@ export const useGas = ({ chainId }: { chainId: Chain['id'] }) => {
           custom: parseGasFeeParams({
             currentBaseFee,
             maxPriorityFeeSuggestions,
-            speed: 'custom',
+            speed: GasSpeed.CUSTOM,
             wei: baseFeeSuggestion,
             blocksToConfirmation,
           }),
           urgent: parseGasFeeParams({
             currentBaseFee,
             maxPriorityFeeSuggestions,
-            speed: 'urgent',
+            speed: GasSpeed.URGENT,
             wei: baseFeeSuggestion,
             blocksToConfirmation,
           }),
           fast: parseGasFeeParams({
             currentBaseFee,
             maxPriorityFeeSuggestions,
-            speed: 'fast',
+            speed: GasSpeed.FAST,
             wei: baseFeeSuggestion,
             blocksToConfirmation,
           }),
           normal: parseGasFeeParams({
             currentBaseFee,
             maxPriorityFeeSuggestions,
-            speed: 'normal',
+            speed: GasSpeed.NORMAL,
             wei: baseFeeSuggestion,
             blocksToConfirmation,
           }),
@@ -76,22 +76,22 @@ export const useGas = ({ chainId }: { chainId: Chain['id'] }) => {
         return {
           custom: parseGasFeeLegacyParams({
             gwei: response?.data.legacy.fastGasPrice,
-            speed: 'custom',
+            speed: GasSpeed.CUSTOM,
             waitTime: chainWaitTime.fastWait,
           }),
           urgent: parseGasFeeLegacyParams({
             gwei: response?.data.legacy.fastGasPrice,
-            speed: 'urgent',
+            speed: GasSpeed.URGENT,
             waitTime: chainWaitTime.fastWait,
           }),
           fast: parseGasFeeLegacyParams({
             gwei: response?.data.legacy.proposeGasPrice,
-            speed: 'fast',
+            speed: GasSpeed.FAST,
             waitTime: chainWaitTime.proposedWait,
           }),
           normal: parseGasFeeLegacyParams({
             gwei: response?.data.legacy.safeGasPrice,
-            speed: 'normal',
+            speed: GasSpeed.NORMAL,
             waitTime: chainWaitTime.safeWait,
           }),
         };

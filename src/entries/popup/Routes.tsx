@@ -8,7 +8,11 @@ import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/Animated
 import { ConnectedApps } from './pages/ConnectedApps';
 import { Home } from './pages/home';
 import { Send } from './pages/send';
-import { Settings } from './pages/settings';
+import { Currency } from './pages/settings/currency';
+import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
+import { Privacy } from './pages/settings/privacy/privacy';
+import { Settings } from './pages/settings/settings';
+import { Transactions } from './pages/settings/transactions';
 import { Sign } from './pages/sign';
 import { Wallets } from './pages/wallets';
 
@@ -45,6 +49,54 @@ export function Routes() {
             title={i18n.t('settings.title')}
           >
             <Settings />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/privacy',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            title={i18n.t('privacy_and_security.title')}
+          >
+            <Privacy />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/privacy/autoLockTimer',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            title={i18n.t('auto_lock_timer.title')}
+          >
+            <AutoLockTimer />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/transactions',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            title={i18n.t('transactions.title')}
+          >
+            <Transactions />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/currency',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            title={i18n.t('currency.title')}
+          >
+            <Currency />
           </AnimatedRoute>
         ),
       },
