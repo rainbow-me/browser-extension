@@ -46,8 +46,8 @@ export function Home() {
 
   const { scrollY } = useScroll();
   const smoothScrollY = useSpring(scrollY, {
-    damping: 40,
-    stiffness: 400,
+    damping: 50,
+    stiffness: 350,
   });
   const scrollYTx = useTransform(smoothScrollY, [1, 1000], [0, 200]);
   const [scrollAtTop, setScrollAtTop] = React.useState(true);
