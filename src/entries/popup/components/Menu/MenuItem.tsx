@@ -9,7 +9,7 @@ interface TextIconProps {
 }
 
 const TextIcon = ({ icon, color = 'label' }: TextIconProps) => (
-  <Text color={color} size="18pt" weight="semibold">
+  <Text color={color} size="16pt" weight="semibold">
     {icon}
   </Text>
 );
