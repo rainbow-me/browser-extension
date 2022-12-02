@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
-import { SFSymbol } from '~/entries/popup/components/SFSymbol/SFSymbol';
 
 interface TextIconProps {
   color?: TextStyles['color'];
@@ -31,7 +30,7 @@ const SelectionIcon = () => {
       symbol="checkmark.circle.fill"
       color="accent"
       size={18}
-      weight="bold"
+      weight="regular"
     />
   );
 };
@@ -87,7 +86,6 @@ interface MenuItemProps {
   labelComponent?: React.ReactNode;
   disabled?: boolean;
   hasChevron?: boolean;
-  hasSfSymbol?: boolean;
   testId?: string;
 }
 
@@ -128,13 +126,19 @@ const MenuItem = ({
       <Inline alignVertical="center" space="8px">
         {rightComponent}
         {hasRightArrow && (
-          <SFSymbol symbol="chevronRight" size={12} color="labelTertiary" />
+          <Symbol
+            symbol="chevron.right"
+            size={10}
+            color="labelTertiary"
+            weight="semibold"
+          />
         )}
         {hasChevron && (
-          <SFSymbol
-            symbol="chevronUpChevronDown"
+          <Symbol
+            symbol="chevron.up.chevron.down"
             size={12}
             color="labelTertiary"
+            weight="semibold"
           />
         )}
       </Inline>

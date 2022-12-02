@@ -1,4 +1,4 @@
-import { Symbols } from '~/entries/popup/components/SFSymbol/SFSymbol';
+import { SymbolName } from '~/design-system/styles/designTokens';
 
 export type AutoLockTimerOption =
   | 'immediately'
@@ -27,6 +27,6 @@ export interface DefaultTxSpeedData {
 export type ThemeOption = 'light' | 'dark' | 'system';
 
 export interface ThemeData {
-  symbol: Symbols;
+  symbol: SymbolName;
   label: string;
 }

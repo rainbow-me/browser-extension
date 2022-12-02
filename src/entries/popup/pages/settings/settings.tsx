@@ -14,12 +14,11 @@ import { useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useIsDefaultWalletStore } from '~/core/state/currentSettings/isDefaultWallet';
 import { ThemeOption } from '~/core/types/settings';
-import { Box, Inline, Text } from '~/design-system';
+import { Box, Inline, Symbol, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
-import { SFSymbol } from '~/entries/popup/components/SFSymbol/SFSymbol';
 import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 
 import { testSandbox } from '../../handlers/wallet';
@@ -56,7 +55,6 @@ export function Settings() {
       <MenuContainer testId="settings-menu-container">
         <Menu>
           <MenuItem
-            hasSfSymbol
             titleComponent={
               <MenuItem.Title
                 text={i18n.t('settings.use_rainbow_as_default_wallet')}
@@ -75,9 +73,13 @@ export function Settings() {
         </Menu>
         <Menu>
           <MenuItem
-            hasSfSymbol
             leftComponent={
-              <SFSymbol symbol="lockFill" color="blue" size={18} />
+              <Symbol
+                symbol="lock.fill"
+                weight="medium"
+                size={18}
+                color="blue"
+              />
             }
             hasRightArrow
             onClick={() => navigate('/settings/privacy')}
@@ -89,7 +91,14 @@ export function Settings() {
         <Menu>
           <MenuItem
             hasRightArrow
-            leftComponent={<SFSymbol symbol="boltFill" color="red" />}
+            leftComponent={
+              <Symbol
+                symbol="bolt.fill"
+                color="red"
+                weight="medium"
+                size={18}
+              />
+            }
             onClick={() => navigate('/settings/transactions')}
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.transactions')} />
@@ -97,7 +106,14 @@ export function Settings() {
           />
           <MenuItem
             hasRightArrow
-            leftComponent={<SFSymbol symbol="send" color="green" />}
+            leftComponent={
+              <Symbol
+                symbol="eurosign.circle"
+                color="green"
+                size={18}
+                weight="medium"
+              />
+            }
             onClick={() => navigate('/settings/currency')}
             rightComponent={
               <MenuItem.Selection
@@ -114,7 +130,12 @@ export function Settings() {
               <MenuItem
                 hasChevron
                 leftComponent={
-                  <SFSymbol symbol="moonStars" color="purple" size={18} />
+                  <Symbol
+                    symbol="moon.stars"
+                    color="purple"
+                    size={18}
+                    weight="medium"
+                  />
                 }
                 rightComponent={
                   <MenuItem.Selection
@@ -126,7 +147,14 @@ export function Settings() {
                 }
               />
             }
-            menuItemIndicator={<SFSymbol symbol="checkMark" size={11} />}
+            menuItemIndicator={
+              <Symbol
+                symbol="checkmark"
+                color="label"
+                size={12}
+                weight="semibold"
+              />
+            }
             renderMenuItem={(option, i) => {
               const { label, symbol } = themeOptions[option as ThemeOption];
 
@@ -134,9 +162,14 @@ export function Settings() {
                 <Box id={`switch-option-item-${i}`}>
                   <Inline space="8px" alignVertical="center">
                     <Inline alignVertical="center" space="8px">
-                      <SFSymbol size={18} symbol={symbol} />
+                      <Symbol
+                        size={14}
+                        symbol={symbol}
+                        color="label"
+                        weight="semibold"
+                      />
                     </Inline>
-                    <Text weight="medium" size="14pt">
+                    <Text weight="regular" size="14pt">
                       {label}
                     </Text>
                   </Inline>
@@ -151,10 +184,11 @@ export function Settings() {
           />
           <MenuItem
             leftComponent={
-              <SFSymbol
-                symbol="personTextRectangleFill"
+              <Symbol
+                symbol="person.text.rectangle.fill"
                 color="blue"
                 size={18}
+                weight="semibold"
               />
             }
             hasRightArrow
@@ -170,10 +204,11 @@ export function Settings() {
               <MenuItem.Title text={i18n.t('settings.share_rainbow')} />
             }
             rightComponent={
-              <SFSymbol
-                symbol="arrowUpRightCircle"
+              <Symbol
+                symbol="arrow.up.forward.circle"
                 color="labelTertiary"
-                size={14}
+                size={12}
+                weight="semibold"
               />
             }
             onClick={() => window.open(RAINBOW_SHARE_URL, '_blank')}
@@ -184,10 +219,11 @@ export function Settings() {
               <MenuItem.Title text={i18n.t('settings.learn_about_ethereum')} />
             }
             rightComponent={
-              <SFSymbol
-                symbol="arrowUpRightCircle"
+              <Symbol
+                symbol="arrow.up.forward.circle"
                 color="labelTertiary"
-                size={14}
+                size={12}
+                weight="semibold"
               />
             }
             onClick={() => window.open(RAINBOW_LEARN_URL, '_blank')}
@@ -198,10 +234,11 @@ export function Settings() {
               <MenuItem.Title text={i18n.t('settings.follow_us_on_twitter')} />
             }
             rightComponent={
-              <SFSymbol
-                symbol="arrowUpRightCircle"
+              <Symbol
+                symbol="arrow.up.forward.circle"
                 color="labelTertiary"
-                size={14}
+                size={12}
+                weight="semibold"
               />
             }
             onClick={() => window.open(RAINBOW_TWITTER_URL, '_blank')}
@@ -212,10 +249,11 @@ export function Settings() {
               <MenuItem.Title text={i18n.t('settings.feedback_and_support')} />
             }
             rightComponent={
-              <SFSymbol
-                symbol="arrowUpRightCircle"
+              <Symbol
+                symbol="arrow.up.forward.circle"
                 color="labelTertiary"
-                size={14}
+                size={12}
+                weight="semibold"
               />
             }
             onClick={() => window.open(RAINBOW_SUPPORT_URL, '_blank')}

@@ -6,12 +6,11 @@ import { autoLockTimerOptions } from '~/core/references/autoLockTimer';
 import { useAutoLockTimerStore } from '~/core/state/currentSettings/autoLockTimer';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
-import { Box } from '~/design-system';
+import { Box, Symbol } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
-import { SFSymbol } from '~/entries/popup/components/SFSymbol/SFSymbol';
 
 export function Privacy() {
   const navigate = useNavigate();
@@ -25,12 +24,12 @@ export function Privacy() {
       <MenuContainer testId="settings-menu-container">
         <Menu>
           <MenuItem
-            hasSfSymbol
             leftComponent={
-              <SFSymbol
-                symbol="eyeSlashCircleFill"
+              <Symbol
+                symbol="eye.slash.circle.fill"
                 size={18}
                 color="labelQuaternary"
+                weight="regular"
               />
             }
             rightComponent={
@@ -51,7 +50,6 @@ export function Privacy() {
             )}
           />
           <MenuItem
-            hasSfSymbol
             rightComponent={
               <Toggle
                 checked={hideSmallBalances}
@@ -67,7 +65,6 @@ export function Privacy() {
         </Menu>
         <Menu>
           <MenuItem
-            hasSfSymbol
             hasRightArrow
             titleComponent={
               <MenuItem.Title
@@ -76,7 +73,6 @@ export function Privacy() {
             }
           />
           <MenuItem
-            hasSfSymbol
             hasRightArrow
             rightComponent={
               <MenuItem.Selection
@@ -93,7 +89,6 @@ export function Privacy() {
         </Menu>
         <Menu>
           <MenuItem
-            hasSfSymbol
             hasRightArrow
             titleComponent={
               <MenuItem.Title
@@ -103,7 +98,6 @@ export function Privacy() {
             }
           />
           <MenuItem
-            hasSfSymbol
             hasRightArrow
             titleComponent={
               <MenuItem.Title

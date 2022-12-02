@@ -5,12 +5,11 @@ import { defaultTxSpeedOptions } from '~/core/references/defaultTxSpeed';
 import { useDefaultTxSpeedStore } from '~/core/state/currentSettings/defaultTxSpeed';
 import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
 import { DefaultTxSpeedOption } from '~/core/types/settings';
-import { Box, Inline, Text } from '~/design-system';
+import { Box, Inline, Symbol, Text } from '~/design-system';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
-import { SFSymbol } from '~/entries/popup/components/SFSymbol/SFSymbol';
 import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 
 export function Transactions() {
@@ -25,7 +24,6 @@ export function Transactions() {
             renderMenuTrigger={
               <Box>
                 <MenuItem
-                  hasSfSymbol
                   hasChevron
                   titleComponent={
                     <MenuItem.Title
@@ -40,7 +38,14 @@ export function Transactions() {
                 />
               </Box>
             }
-            menuItemIndicator={<SFSymbol symbol="checkMark" size={11} />}
+            menuItemIndicator={
+              <Symbol
+                symbol="checkmark"
+                size={12}
+                color="label"
+                weight="semibold"
+              />
+            }
             renderMenuItem={(option, i) => {
               const { label, emoji } =
                 defaultTxSpeedOptions[option as DefaultTxSpeedOption];
@@ -69,7 +74,6 @@ export function Transactions() {
         </Menu>
         <Menu>
           <MenuItem
-            hasSfSymbol
             rightComponent={
               <Toggle
                 checked={flashbotsEnabled}
