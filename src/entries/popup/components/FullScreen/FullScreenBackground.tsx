@@ -11,6 +11,7 @@ export function FullScreenBackground({
 }) {
   return (
     <Box
+      position="absolute"
       display="flex"
       width="full"
       alignItems="center"
@@ -18,9 +19,6 @@ export function FullScreenBackground({
       flexDirection="column"
       height="full"
       background="surfacePrimary"
-      style={{
-        position: 'absolute',
-      }}
     >
       <Blur />
       <div

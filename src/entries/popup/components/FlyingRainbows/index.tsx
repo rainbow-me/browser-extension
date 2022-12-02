@@ -30,14 +30,12 @@ export function FlyingRainbows({ children }: { children: React.ReactNode }) {
         }}
       >
         <Box
-          style={{
-            background: 'transparent',
-            position: 'absolute',
-            top: '0px',
-            left: '0px',
-            right: '0px',
-            bottom: '0px',
-          }}
+          position="absolute"
+          background="transparent"
+          top="0"
+          left="0"
+          right="0"
+          bottom="0"
         >
           <img
             src={rainbowPixel}

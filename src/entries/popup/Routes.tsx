@@ -39,11 +39,7 @@ export function Routes() {
       },
       {
         path: '/welcome',
-        element: (
-          <AnimatedRoute direction="vertical" title={i18n.t('welcome.title')}>
-            <Welcome />
-          </AnimatedRoute>
-        ),
+        element: <Welcome />,
       },
       {
         path: '/settings',
