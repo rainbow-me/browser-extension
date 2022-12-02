@@ -18,7 +18,7 @@ export function DropdownMenuContent(props: DropdownMenuContentProps) {
       <Box
         as={DropdownMenuPrimitive.Content}
         style={{
-          // All WIP styles
+          // TODOL move to design system
           border: '1px solid rgba(245, 248, 255, 0.03)',
           backgroundColor: 'rgba(53, 54, 58, 0.8)',
           width: 204,
@@ -108,6 +108,7 @@ export const DropdownMenuSeparator = () => (
   <Box
     as={DropdownMenuPrimitive.Separator}
     style={{
+      // TODO: move to design system
       borderTop: '1px solid rgba(245, 248, 255, 0.06)',
       borderRadius: '1px',
     }}

@@ -1,4 +1,3 @@
-// export type GasSpeed = 'urgent' | 'fast' | 'normal' | 'custom';
 export enum GasSpeed {
   URGENT = 'urgent',
   FAST = 'fast',
