@@ -1,9 +1,10 @@
+import { chain, getProvider } from '@wagmi/core';
+import { Wallet } from 'ethers';
 import { beforeAll, expect, test } from 'vitest';
-import { chain } from 'wagmi';
 
 import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
 
-import { estimateSwapGasLimit } from './swap';
+import { estimateSwapGasLimit, executeSwap } from './swap';
 
 const QUOTE = {
   sellTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
@@ -45,4 +46,25 @@ test('[rap/unlock] :: should estimate swap gas limit', async () => {
     tradeDetails: QUOTE,
   });
   expect(swapGasLimit).toBe('600000');
+});
+
+test('[rap/unlock] :: should execute swap', async () => {
+  const provider = getProvider({ chainId: chain.mainnet.id });
+  const wallet = new Wallet(
+    '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
+    provider,
+  );
+  const swapTx = await executeSwap({
+    chainId: chain.mainnet.id,
+    gasLimit: '600000',
+    transactionGasParams: {
+      maxFeePerGas: '200000000000',
+      maxPriorityFeePerGas: '2000000000',
+    },
+    tradeDetails: QUOTE,
+    wallet,
+    permit: false,
+  });
+
+  expect(swapTx?.hash).toBeDefined();
 });
