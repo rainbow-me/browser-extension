@@ -8,7 +8,7 @@ import { Rows } from '~/design-system/components/Rows/Rows';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
 import { getTheme } from '~/design-system/styles/theme';
 
-import { FlyingRainbows } from '../../components/FlyingRainbows';
+import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 
 export function Welcome() {
   const themeInfo = getTheme();

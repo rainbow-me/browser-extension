@@ -60,7 +60,7 @@ export function Header() {
   );
 }
 
-function AvatarSection() {
+export function AvatarSection() {
   const { address } = useAccount();
   const { avatar, isFetched } = useAvatar({ address });
   return (

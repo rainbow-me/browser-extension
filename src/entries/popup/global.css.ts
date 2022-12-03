@@ -26,3 +26,7 @@ globalStyle('a', {
 globalStyle('div[data-radix-popper-content-wrapper]', {
   zIndex: '999 !important',
 });
+
+globalStyle('*:focus', {
+  outline: 'none',
+});

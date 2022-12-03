@@ -28,6 +28,8 @@ export type InputProps = {
   testId?: string;
   variant: 'surface' | 'bordered' | 'transparent';
   value?: InputHTMLAttributes<HTMLInputElement>['value'];
+  type?: InputHTMLAttributes<HTMLInputElement>['type'];
+  innerRef?: React.Ref<HTMLInputElement>;
 };
 
 export const stylesForVariant: Record<
@@ -88,15 +90,21 @@ export const stylesForHeight: Record<
     fontSize: '14pt',
     paddingHorizontal: '12px',
   },
+  '44px': {
+    borderRadius: '12px',
+    fontSize: '14pt',
+    paddingHorizontal: '12px',
+  },
 };
 
-export function Input({
+export const Input = ({
   placeholder,
   height,
   variant,
   testId,
+  innerRef,
   ...inputProps
-}: InputProps) {
+}: InputProps) => {
   const { background, borderColor, textColor } = stylesForVariant[variant];
   const { borderRadius, fontSize, paddingHorizontal } = stylesForHeight[height];
   return (
@@ -115,6 +123,7 @@ export function Input({
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...inputProps}
         as="input"
+        ref={innerRef}
         background={background}
         borderColor={borderColor}
         borderWidth="1px"
@@ -137,4 +146,4 @@ export function Input({
       />
     </Box>
   );
-}
+};

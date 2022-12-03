@@ -569,6 +569,7 @@ export const negativeSpace = {
   '-8px': -8,
   '-10px': -10,
   '-12px': -12,
+  '-14px': -14,
   '-16px': -16,
   '-20px': -20,
   '-24px': -24,
@@ -677,6 +678,9 @@ export const symbolNames = selectSymbolNames(
   'slider.horizontal.3',
   'arrow.up.forward.circle',
   'arrow.right',
+  'eye',
+  'eye.slash.fill',
+  'exclamationmark.triangle.fill',
 );
 export type SymbolName = typeof symbolNames[number];
 
