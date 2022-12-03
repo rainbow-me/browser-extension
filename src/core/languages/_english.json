@@ -5,15 +5,48 @@
   "label": {
     "toggle": "Toggle"
   },
+  "settings": {
+    "title": "Settings",
+    "use_rainbow_as_default_wallet": "Use Rainbow as default wallet",
+    "default_wallet_description": "Allow Apps to prioritize Rainbow when looking for an extension to connect with.",
+    "privacy_and_security": "Privacy & Security",
+    "transactions": "Transactions",
+    "currency": "Currency",
+    "theme": "Theme",
+    "contacts": "Contacts",
+    "share_rainbow": "Share Rainbow",
+    "learn_about_ethereum": "Learn about Ethereum",
+    "follow_us_on_twitter": "Follow us on Twitter",
+    "feedback_and_support": "Feedback & Support"
+  },
+  "privacy_and_security": {
+    "title": "Privacy & Security",
+    "hide_asset_balances": "Hide asset balances",
+    "hide_asset_balances_description": "With this turned on Rainbow will obfuscate token balances accross the app.",
+    "auto_hide_balances_under_1": " Auto-hide balances under $1",
+    "change_password": "Change Password",
+    "auto_lock_timer": "Auto-Lock Timer",
+    "view_private_key": "View Private Key",
+    "view_secret_recovery_phrase": "View Secret Recovery Phrase"
+  },
+  "transactions": {
+    "title": "Transactions",
+    "default_speed": "Default Speed",
+    "use_flashbots": "Use Flashbots",
+    "flashbots_description": "Flashbots protects your transactions and reduces the likelihood of transaction failures. Learn more."
+  },
+  "currency": {
+    "title": "Currency"
+  },
+  "auto_lock_timer": {
+    "title": "Auto-Lock Timer"
+  },
   "connected_apps": {
     "title": "Connected Apps",
     "disconnect": "Disconnect All"
   },
   "send": {
     "title": "Send"
-  },
-  "settings": {
-    "title": "Settings"
   },
   "sign": {
     "title": "Sign"
@@ -123,8 +156,8 @@
         "singular": "sec"
       }
     }
-},
-"wallets": {
+  },
+  "wallets": {
     "title": "Wallets"
   }
 }

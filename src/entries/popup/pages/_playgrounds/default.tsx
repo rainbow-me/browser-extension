@@ -9,18 +9,18 @@ import { useTransactions } from '~/core/resources/transactions/transactions';
 import { useCurrentCurrencyStore, useCurrentLanguageStore } from '~/core/state';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { Box, Inset, Stack, Text } from '~/design-system';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItemIndicator,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 
 import { i18n } from '../../../../core/languages';
-import {
-  Menu,
-  MenuContent,
-  MenuItemIndicator,
-  MenuLabel,
-  MenuRadioGroup,
-  MenuRadioItem,
-  MenuSeparator,
-  MenuTrigger,
-} from '../../components/Menu/Menu';
 import { ClearStorage } from '../../components/_dev/ClearStorage';
 
 export function Default() {
@@ -84,8 +84,8 @@ export function Default() {
             LANGUAGE SALUTE (from i18n): {i18n.t('test.salute')}
           </Text>
         </Stack>
-        <Menu>
-          <MenuTrigger asChild>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
             <Box
               as="button"
               background="surfaceSecondary"
@@ -93,41 +93,41 @@ export function Default() {
               style={{ borderRadius: 999 }}
             >
               <Text color="labelSecondary" size="14pt" weight="bold">
-                Menu
+                Dropdown Menu
               </Text>
             </Box>
-          </MenuTrigger>
+          </DropdownMenuTrigger>
 
-          <MenuContent>
-            <MenuSeparator />
-            <MenuLabel>Networks</MenuLabel>
-            <MenuRadioGroup
+          <DropdownMenuContent>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>Networks</DropdownMenuLabel>
+            <DropdownMenuRadioGroup
               value={selectedNetwork}
               onValueChange={setSelectedNetwork}
             >
-              <MenuRadioItem value="ethereum">
+              <DropdownMenuRadioItem value="ethereum">
                 <Text color="label" size="14pt" weight="bold">
                   Ethereum
                 </Text>
-                <MenuItemIndicator style={{ marginLeft: 'auto' }}>
+                <DropdownMenuItemIndicator style={{ marginLeft: 'auto' }}>
                   <Text color="labelSecondary" size="11pt" weight="bold">
                     Selected
                   </Text>
-                </MenuItemIndicator>
-              </MenuRadioItem>
-              <MenuRadioItem value="optimism">
+                </DropdownMenuItemIndicator>
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="optimism">
                 <Text color="label" size="14pt" weight="bold">
                   Optimism
                 </Text>
-                <MenuItemIndicator style={{ marginLeft: 'auto' }}>
+                <DropdownMenuItemIndicator style={{ marginLeft: 'auto' }}>
                   <Text color="labelSecondary" size="11pt" weight="bold">
                     Selected
                   </Text>
-                </MenuItemIndicator>
-              </MenuRadioItem>
-            </MenuRadioGroup>
-          </MenuContent>
-        </Menu>
+                </DropdownMenuItemIndicator>
+              </DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <ClearStorage />
         <Box
           as="button"
@@ -140,7 +140,7 @@ export function Default() {
           style={{ borderRadius: 999 }}
         >
           <Text color="labelSecondary" size="16pt" weight="bold">
-            {`CURRENT CURRENCY: ${currentCurrency?.toUpperCase()} | CHANGE`}
+            {`CURRENT CURRENCY: ${currentCurrency} | CHANGE`}
           </Text>
         </Box>
         <Text color="label" size="20pt" weight="bold">
