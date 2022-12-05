@@ -198,7 +198,7 @@ export const backgroundColors: Record<
   },
   surfaceSecondary: {
     light: {
-      color: '#F0F1F5',
+      color: globalColors.blueGrey10,
       setColorContext: 'light',
     },
     dark: {
@@ -687,6 +687,7 @@ export const symbolNames = selectSymbolNames(
   'square.on.square',
   'slider.horizontal.3',
   'arrow.up.forward.circle',
+  'arrow.right',
 );
 export type SymbolName = typeof symbolNames[number];
 
@@ -702,6 +703,7 @@ export const radii = {
   '24px': 24,
   '28px': 28,
   '30px': 30,
+  '32px': 32,
 };
 export type Radius = keyof typeof radii;
 

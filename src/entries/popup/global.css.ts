@@ -21,7 +21,7 @@ globalStyle('*::-webkit-scrollbar', {
 
 globalStyle('a', {
   textDecoration: 'none',
-  cursor: 'default',
+  cursor: 'pointer',
 });
 
 globalStyle('div[data-radix-popper-content-wrapper]', {

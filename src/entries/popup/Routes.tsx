@@ -15,6 +15,7 @@ import { Settings } from './pages/settings/settings';
 import { Transactions } from './pages/settings/transactions';
 import { Sign } from './pages/sign';
 import { Wallets } from './pages/wallets';
+import { Welcome } from './pages/welcome';
 
 export function Routes() {
   const location = useLocation();
@@ -39,6 +40,10 @@ export function Routes() {
             <ConnectedApps />
           </AnimatedRoute>
         ),
+      },
+      {
+        path: '/welcome',
+        element: <Welcome />,
       },
       {
         path: '/settings',
