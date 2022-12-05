@@ -14,13 +14,13 @@ import {
 } from '~/design-system';
 
 import {
-  Menu,
-  MenuContent,
-  MenuItemIndicator,
-  MenuRadioGroup,
-  MenuSeparator,
-  MenuTrigger,
-} from '../../components/Menu/Menu';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItemIndicator,
+  DropdownMenuRadioGroup,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../../components/DropdownMenu/DropdownMenu';
 import {
   SwitchNetworkMenuDisconnect,
   SwitchNetworkMenuSelector,
@@ -65,13 +65,13 @@ export const NetworkMenu = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   return (
-    <Menu>
-      <MenuTrigger asChild>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <Box position="relative" id="home-page-header-left">
           {children}
         </Box>
-      </MenuTrigger>
-      <MenuContent>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
         {url ? (
           <Inset top="8px" bottom="12px">
             <Inline
@@ -125,26 +125,26 @@ export const NetworkMenu = ({ children }: { children: React.ReactNode }) => {
           {appSession ? (
             <>
               <Stack space="12px">
-                <MenuSeparator />
+                <DropdownMenuSeparator />
                 <Text color="label" size="14pt" weight="semibold">
                   {i18n.t('menu.home_header_left.networks')}
                 </Text>
               </Stack>
 
               <Box>
-                <MenuRadioGroup
+                <DropdownMenuRadioGroup
                   value={`${appSession?.chainId}`}
                   onValueChange={changeChainId}
                 >
                   <SwitchNetworkMenuSelector />
-                </MenuRadioGroup>
+                </DropdownMenuRadioGroup>
                 <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
               </Box>
             </>
           ) : null}
 
           <Stack space="4px">
-            {url ? <MenuSeparator /> : null}
+            {url ? <DropdownMenuSeparator /> : null}
 
             <Inset vertical="8px">
               <Link id="home-page-header-connected-apps" to={'/connected'}>
@@ -171,8 +171,10 @@ export const NetworkMenu = ({ children }: { children: React.ReactNode }) => {
           </Stack>
         </Stack>
 
-        <MenuItemIndicator style={{ marginLeft: 'auto' }}>o</MenuItemIndicator>
-      </MenuContent>
-    </Menu>
+        <DropdownMenuItemIndicator style={{ marginLeft: 'auto' }}>
+          o
+        </DropdownMenuItemIndicator>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

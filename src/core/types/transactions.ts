@@ -1,8 +1,7 @@
 import { BigNumberish } from 'ethers';
 
-import { ChainName } from '~/core/types/chains';
-
 import { ParsedAsset, ZerionAsset } from './assets';
+import { ChainName } from './chains';
 
 export interface RainbowTransaction {
   address?: string;

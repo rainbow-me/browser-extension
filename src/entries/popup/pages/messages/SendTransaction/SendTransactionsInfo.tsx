@@ -1,3 +1,4 @@
+import { TransactionRequest } from '@ethersproject/abstract-provider';
 import React, { useMemo } from 'react';
 import { chain } from 'wagmi';
 
@@ -85,7 +86,10 @@ export function SendTransactionInfo({ request }: SignMessageProps) {
           </Inset>
 
           <Inset horizontal="20px">
-            <TransactionFee chainId={appSession.chainId} />
+            <TransactionFee
+              chainId={appSession.chainId}
+              transactionRequest={request?.params?.[0] as TransactionRequest}
+            />
           </Inset>
         </Stack>
       </Inset>

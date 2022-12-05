@@ -1,7 +1,7 @@
 import { chain } from 'wagmi';
 import create from 'zustand';
 
-import { createStore } from '../internal/createStore';
+import { createStore } from '~/core/state/internal/createStore';
 
 export interface CurrentChainIdState {
   currentChainId: number;

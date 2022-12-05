@@ -1,8 +1,7 @@
 import create from 'zustand';
 
 import { Language, changeI18nLanguage } from '~/core/languages';
-
-import { createStore } from '../internal/createStore';
+import { createStore } from '~/core/state/internal/createStore';
 
 export interface CurrentLanguageState {
   currentLanguage: Language;
