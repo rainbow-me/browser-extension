@@ -1,7 +1,3 @@
-/* eslint-disable eslint-comments/no-unlimited-disable */
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-import { cp } from 'fs';
-
 import * as React from 'react';
 
 import {
