@@ -1,7 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { Chain, chain } from 'wagmi';
 
-import { bsc } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 
 import { useMeteorology } from './meteorology';
 import { useProviderGas } from './providerGas';
@@ -10,13 +9,14 @@ export const useGasData = ({
   chainId,
   transactionRequest,
 }: {
-  chainId: Chain['id'];
+  chainId: ChainId;
   transactionRequest: TransactionRequest;
 }) => {
-  const meteorologySupportsChain =
-    chainId === chain.mainnet.id ||
-    chainId === chain.polygon.id ||
-    chainId === bsc.id;
+  const meteorologySupportsChain = [
+    ChainId.bsc,
+    ChainId.mainnet,
+    ChainId.polygon,
+  ].includes(chainId);
 
   const { data: meteorologyData, isLoading: meteorologyDataIsLoading } =
     useMeteorology(

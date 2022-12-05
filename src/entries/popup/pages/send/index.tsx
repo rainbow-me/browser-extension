@@ -2,8 +2,9 @@ import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { Address, fetchEnsAddress } from '@wagmi/core';
 import { ethers } from 'ethers';
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
-import { chain, useAccount } from 'wagmi';
+import { useAccount } from 'wagmi';
 
+import { ChainId } from '~/core/types/chains';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 import {
   Box,
@@ -30,7 +31,7 @@ export function Send() {
       to: toAddress,
       from: address as Address,
       amount,
-      chainId: chain.mainnet.id,
+      chainId: ChainId.mainnet,
     };
   }, [address, amount, toAddress]);
 
@@ -63,7 +64,7 @@ export function Send() {
         from: address,
         to: receiver,
         value: ethers.utils.parseEther(amount),
-        chainId: chain.mainnet.id,
+        chainId: ChainId.mainnet,
       });
 
       if (result) {
@@ -176,7 +177,7 @@ export function Send() {
             )}
             <Row>
               <TransactionFee
-                chainId={chain.mainnet.id}
+                chainId={ChainId.mainnet}
                 transactionRequest={transactionRequest}
               />
             </Row>
