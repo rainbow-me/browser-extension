@@ -28,7 +28,6 @@ export interface UnlockActionParameters {
 }
 
 export type SwapMetadata = {
-  flashbots: boolean;
   slippage: number;
   route: Source;
   inputAsset: ParsedAsset;
@@ -37,18 +36,30 @@ export type SwapMetadata = {
   independentValue: string;
 };
 
-export interface RapExchangeActionParameters {
+interface RapBaseSwapActionParameters {
   amount?: string | null;
-  assetToUnlock?: ParsedAsset;
-  contractAddress?: string;
   inputAmount?: string | null;
   outputAmount?: string | null;
-  tradeDetails: Quote | CrosschainQuote;
   permit?: boolean;
-  flashbots?: boolean;
   chainId: number;
   requiresApprove?: boolean;
   meta?: SwapMetadata;
+}
+
+export interface RapSwapActionParameters extends RapBaseSwapActionParameters {
+  tradeDetails: Quote;
+}
+
+export interface RapCrosschainSwapActionParameters
+  extends RapBaseSwapActionParameters {
+  tradeDetails: CrosschainQuote;
+}
+
+export interface RapUnlockActionParameters {
+  fromAddress: Address;
+  assetToUnlock: ParsedAsset;
+  contractAddress: Address;
+  chainId: number;
 }
 
 export interface RapActionTransaction {
@@ -56,7 +67,7 @@ export interface RapActionTransaction {
 }
 
 export interface RapSwapAction {
-  parameters: RapExchangeActionParameters;
+  parameters: RapSwapActionParameters | RapCrosschainSwapActionParameters;
   transaction: RapActionTransaction;
   type: RapActionType;
 }

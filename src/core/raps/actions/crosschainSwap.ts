@@ -23,7 +23,7 @@ import {
   overrideWithFastSpeedIfNeeded,
 } from '../utils';
 
-import { Rap, RapExchangeActionParameters } from './../common';
+import { Rap, RapCrosschainSwapActionParameters } from './../common';
 
 const getCrosschainSwapDefaultGasLimit = (tradeDetails: CrosschainQuote) =>
   tradeDetails?.routes?.[0]?.userTxs?.[0]?.gasFees?.gasLimit;
@@ -110,7 +110,7 @@ export const crosschainSwap = async (
   wallet: Wallet,
   currentRap: Rap,
   index: number,
-  parameters: RapExchangeActionParameters,
+  parameters: RapCrosschainSwapActionParameters,
   baseNonce?: number,
 ): Promise<number | undefined> => {
   const { inputAmount, tradeDetails, chainId, requiresApprove } = parameters;
@@ -137,7 +137,7 @@ export const crosschainSwap = async (
     chainId,
     gasLimit,
     nonce,
-    tradeDetails,
+    tradeDetails: tradeDetails as CrosschainQuote,
     wallet,
     transactionGasParams: gasParams,
   };
@@ -149,7 +149,6 @@ export const crosschainSwap = async (
     ...gasParams,
     amount: inputAmount,
     data: swap?.data,
-    flashbots: parameters.flashbots,
     from: tradeDetails.from,
     gasLimit,
     hash: swap?.hash ?? null,

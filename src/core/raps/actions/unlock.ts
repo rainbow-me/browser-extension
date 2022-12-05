@@ -12,10 +12,7 @@ import {
   toHex,
 } from '../../utils/numbers';
 
-import {
-  RapExchangeActionParameters,
-  UnlockActionParameters,
-} from './../common';
+import { RapUnlockActionParameters } from './../common';
 import { overrideWithFastSpeedIfNeeded } from './../utils';
 
 export const getRawAllowance = async ({
@@ -145,19 +142,17 @@ export const unlock = async ({
 }: {
   baseNonce?: number;
   index: number;
-  parameters: RapExchangeActionParameters;
+  parameters: RapUnlockActionParameters;
   wallet: Wallet;
 }): Promise<number | undefined> => {
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
 
-  const { assetToUnlock, contractAddress, chainId } =
-    parameters as UnlockActionParameters;
+  const { assetToUnlock, contractAddress, chainId } = parameters;
+
   const { address: assetAddress } = assetToUnlock;
 
-  const accountAddress = parameters.tradeDetails?.from as Address;
-
   const gasLimit = await estimateApprove({
-    owner: accountAddress,
+    owner: parameters.fromAddress,
     tokenAddress: assetAddress,
     spender: contractAddress,
     chainId,
@@ -185,7 +180,7 @@ export const unlock = async ({
     amount: 0,
     asset: assetToUnlock,
     data: approval.data,
-    from: accountAddress,
+    from: parameters.fromAddress,
     gasLimit,
     hash: approval?.hash,
     chainId,

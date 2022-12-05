@@ -37,7 +37,7 @@ import {
   overrideWithFastSpeedIfNeeded,
 } from '../utils';
 
-import { Rap, RapExchangeActionParameters } from './../common';
+import { Rap, RapSwapActionParameters } from './../common';
 
 const WRAP_GAS_PADDING = 1.002;
 
@@ -197,7 +197,7 @@ export const swap = async ({
 }: {
   wallet: Wallet;
   index: number;
-  parameters: RapExchangeActionParameters;
+  parameters: RapSwapActionParameters;
   baseNonce?: number;
   currentRap: Rap;
 }): Promise<number | undefined> => {
@@ -230,7 +230,6 @@ export const swap = async ({
     const swapParams = {
       transactionGasParams: gasParams,
       chainId,
-      flashbots: !!parameters.flashbots,
       gasLimit,
       nonce,
       permit: !!permit,
@@ -249,7 +248,6 @@ export const swap = async ({
     ...gasParams,
     amount: inputAmount,
     data: swap?.data,
-    flashbots: parameters.flashbots,
     from: tradeDetails.from,
     gasLimit,
     hash: swap?.hash ?? null,
