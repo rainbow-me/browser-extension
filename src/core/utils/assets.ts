@@ -85,6 +85,7 @@ export function parseAsset({
     symbol: asset?.symbol,
     type: asset?.type ?? AssetType.token,
     uniqueId,
+    decimals: asset?.decimals,
   };
 
   return parsedAsset;
