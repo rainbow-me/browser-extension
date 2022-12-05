@@ -1,13 +1,8 @@
+import { TransactionRequest } from '@ethersproject/abstract-provider';
 import React from 'react';
 import { Chain, chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { SupportedCurrencyKey, supportedCurrencies } from '~/core/references';
-import {
-  convertRawAmountToBalance,
-  handleSignificantDecimals,
-  multiply,
-} from '~/core/utils/numbers';
 import {
   Box,
   Column,
@@ -20,35 +15,24 @@ import {
 } from '~/design-system';
 
 import { useGas } from '../../hooks/useGas';
-import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 
 import { SwitchTransactionSpeedMenu } from './TransactionSpeedsMenu';
 
 type TransactionFeeProps = {
   chainId: Chain['id'];
+  transactionRequest: TransactionRequest;
 };
 
-export function TransactionFee({ chainId }: TransactionFeeProps) {
-  const {
-    selectedSpeed,
-    setSelectedSpeed,
-    gasFeeParamsBySpeed,
-    gasFee,
-    isLoading,
-  } = useGas({
-    chainId,
-  });
-  const asset = useNativeAssetForNetwork({ chainId });
-
-  // TODO estimate tx gas limit
-  const gasLimit = 2000000;
-  const totalWei = multiply(gasLimit, gasFee);
-  const nativeBalance = convertRawAmountToBalance(
-    totalWei,
-    supportedCurrencies[asset?.symbol as SupportedCurrencyKey],
-  ).amount;
-  const displayFeeValue = handleSignificantDecimals(nativeBalance, 4);
+export function TransactionFee({
+  chainId,
+  transactionRequest,
+}: TransactionFeeProps) {
+  const { selectedSpeed, setSelectedSpeed, gasFeeParamsBySpeed, isLoading } =
+    useGas({
+      chainId,
+      transactionRequest,
+    });
 
   return (
     <Columns alignHorizontal="justify" alignVertical="center">
@@ -65,7 +49,7 @@ export function TransactionFee({ chainId }: TransactionFeeProps) {
               <Text weight="semibold" color="label" size="14pt">
                 {isLoading
                   ? '~'
-                  : `${displayFeeValue} ~ ${gasFeeParamsBySpeed[selectedSpeed].estimatedTime.display}`}
+                  : `${gasFeeParamsBySpeed[selectedSpeed].gasFee.display} ~ ${gasFeeParamsBySpeed[selectedSpeed].estimatedTime.display}`}
               </Text>
             </Inline>
           </Row>

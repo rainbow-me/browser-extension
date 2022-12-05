@@ -1,6 +1,23 @@
+import {
+  Block,
+  Provider,
+  TransactionRequest,
+} from '@ethersproject/abstract-provider';
+import { Contract } from '@ethersproject/contracts';
+import { serialize } from '@ethersproject/transactions';
 import BigNumber from 'bignumber.js';
+import { BigNumberish } from 'ethers';
+import { getAddress } from 'ethers/lib/utils';
 import { Chain, chain } from 'wagmi';
 
+import {
+  OVM_GAS_PRICE_ORACLE,
+  SupportedCurrencyKey,
+  ethUnits,
+  optimismGasOracleAbi,
+  supportedCurrencies,
+} from '../references';
+import { ParsedAddressAsset } from '../types/assets';
 import { bsc } from '../types/chains';
 import {
   BlocksToConfirmation,
@@ -11,7 +28,19 @@ import {
 } from '../types/gas';
 
 import { addHexPrefix, gweiToWei, weiToGwei } from './ethereum';
-import { add, convertStringToHex, divide, lessThan, multiply } from './numbers';
+import {
+  add,
+  addBuffer,
+  convertRawAmountToBalance,
+  convertStringToHex,
+  divide,
+  fraction,
+  greaterThan,
+  handleSignificantDecimals,
+  lessThan,
+  multiply,
+  toHex,
+} from './numbers';
 import { getMinimalTimeUnitStringForMs } from './time';
 
 export const parseGasDataConfirmationTime = (
@@ -76,6 +105,8 @@ export const parseGasFeeParams = ({
   speed,
   maxPriorityFeeSuggestions,
   blocksToConfirmation,
+  gasLimit,
+  nativeAsset,
 }: {
   wei: string;
   speed: GasSpeed;
@@ -85,6 +116,8 @@ export const parseGasFeeParams = ({
     normal: string;
   };
   currentBaseFee: string;
+  gasLimit: string;
+  nativeAsset?: ParsedAddressAsset;
   blocksToConfirmation: BlocksToConfirmation;
 }): GasFeeParams => {
   const maxBaseFee = parseGasFeeParam({
@@ -118,12 +151,23 @@ export const parseGasFeeParams = ({
       convertStringToHex(add(maxPriorityFeePerGas.amount, maxBaseFee.amount)),
     ),
   };
+
+  const amount = add(maxBaseFee.amount, maxPriorityFeePerGas.amount);
+  const totalWei = multiply(gasLimit, amount);
+  const nativeTotalWei = convertRawAmountToBalance(
+    totalWei,
+    supportedCurrencies[nativeAsset?.symbol as SupportedCurrencyKey],
+  ).amount;
+  const gasFeeDisplay = handleSignificantDecimals(nativeTotalWei, 4);
+  const gasFee = { amount: totalWei, display: gasFeeDisplay };
+
   return {
+    display,
+    estimatedTime,
+    gasFee,
     maxBaseFee,
     maxPriorityFeePerGas,
-    display,
     option: speed,
-    estimatedTime,
     transactionGasParams,
   };
 };
@@ -132,10 +176,14 @@ export const parseGasFeeLegacyParams = ({
   gwei,
   speed,
   waitTime,
+  gasLimit,
+  nativeAsset,
 }: {
   gwei: string;
   speed: GasSpeed;
   waitTime: number;
+  gasLimit: string;
+  nativeAsset?: ParsedAddressAsset;
 }): GasFeeLegacyParams => {
   const wei = gweiToWei(gwei);
   const gasPrice = parseGasFeeParam({
@@ -148,13 +196,24 @@ export const parseGasFeeLegacyParams = ({
     display: getMinimalTimeUnitStringForMs(Number(multiply(waitTime, 1000))),
   };
   const transactionGasParams = {
-    gasPrice: addHexPrefix(convertStringToHex(gasPrice.amount)),
+    gasPrice: toHex(gasPrice.amount),
   };
+
+  const amount = gasPrice.amount;
+  const totalWei = multiply(gasLimit, amount);
+  const nativeTotalWei = convertRawAmountToBalance(
+    totalWei,
+    supportedCurrencies[nativeAsset?.symbol as SupportedCurrencyKey],
+  ).amount;
+  const gasFeeDisplay = handleSignificantDecimals(nativeTotalWei, 4);
+  const gasFee = { amount: totalWei, display: gasFeeDisplay };
+
   return {
-    gasPrice,
     display,
-    option: speed,
     estimatedTime,
+    gasFee,
+    gasPrice,
+    option: speed,
     transactionGasParams,
   };
 };
@@ -182,5 +241,142 @@ export const getChainWaitTime = (chainId: Chain['id']) => {
       return { safeWait: 8, proposedWait: 8, fastWait: 8 };
     default:
       return { safeWait: 8, proposedWait: 8, fastWait: 8 };
+  }
+};
+
+export const estimateGas = async ({
+  transactionRequest,
+  provider,
+}: {
+  transactionRequest: TransactionRequest;
+  provider: Provider;
+}) => {
+  try {
+    const gasLimit = await provider?.estimateGas(transactionRequest);
+    return gasLimit?.toString() ?? null;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const estimateGasWithPadding = async ({
+  transactionRequest,
+  contractCallEstimateGas = null,
+  callArguments = null,
+  provider,
+  paddingFactor = 1.1,
+}: {
+  transactionRequest: TransactionRequest;
+  contractCallEstimateGas?: Contract['estimateGas'][string] | null;
+  callArguments?: unknown[] | null;
+  provider: Provider;
+  paddingFactor?: number;
+}): Promise<string | null> => {
+  try {
+    const txPayloadToEstimate: TransactionRequest & { gas?: string } = {
+      ...transactionRequest,
+    };
+
+    // `getBlock`'s typing requires a parameter, but passing no parameter
+    // works as intended and returns the gas limit.
+    const { gasLimit } = await (provider.getBlock as () => Promise<Block>)();
+
+    const { to, data } = txPayloadToEstimate;
+
+    // 1 - Check if the receiver is a contract
+    const code = to ? await provider.getCode(to) : undefined;
+    // 2 - if it's not a contract AND it doesn't have any data use the default gas limit
+    if (
+      (!contractCallEstimateGas && !to) ||
+      (to && !data && (!code || code === '0x'))
+    ) {
+      return ethUnits.basic_tx.toString();
+    }
+
+    // 3 - If it is a contract, call the RPC method `estimateGas` with a safe value
+    const saferGasLimit = fraction(gasLimit.toString(), 19, 20);
+
+    txPayloadToEstimate[contractCallEstimateGas ? 'gasLimit' : 'gas'] =
+      toHex(saferGasLimit);
+
+    const estimatedGas = await (contractCallEstimateGas
+      ? contractCallEstimateGas(...(callArguments ?? []), txPayloadToEstimate)
+      : provider.estimateGas(txPayloadToEstimate));
+
+    const lastBlockGasLimit = addBuffer(gasLimit.toString(), 0.9);
+    const paddedGas = addBuffer(
+      estimatedGas.toString(),
+      paddingFactor.toString(),
+    );
+
+    // If the safe estimation is above the last block gas limit, use it
+    if (greaterThan(estimatedGas.toString(), lastBlockGasLimit)) {
+      return estimatedGas.toString();
+    }
+    // If the estimation is below the last block gas limit, use the padded estimate
+    if (greaterThan(lastBlockGasLimit, paddedGas)) {
+      return paddedGas;
+    }
+    // otherwise default to the last block gas limit
+    return lastBlockGasLimit;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const calculateL1FeeOptimism = async ({
+  transactionRequest,
+  currentGasPrice,
+  provider,
+}: {
+  currentGasPrice: string;
+  transactionRequest: TransactionRequest & { gas?: string };
+  provider: Provider;
+}): Promise<BigNumberish | undefined> => {
+  try {
+    if (transactionRequest?.value) {
+      transactionRequest.value = transactionRequest.value.toString();
+    }
+
+    if (transactionRequest?.from) {
+      const nonce = await provider.getTransactionCount(transactionRequest.from);
+      // eslint-disable-next-line require-atomic-updates
+      transactionRequest.nonce = Number(nonce);
+      delete transactionRequest.from;
+    }
+
+    if (transactionRequest.gas) {
+      delete transactionRequest.gas;
+    }
+
+    if (transactionRequest.to) {
+      transactionRequest.to = getAddress(transactionRequest.to);
+    }
+    if (!transactionRequest.gasLimit) {
+      transactionRequest.gasLimit = toHex(
+        `${
+          transactionRequest.data === '0x'
+            ? ethUnits.basic_tx
+            : ethUnits.basic_transfer
+        }`,
+      );
+    }
+
+    if (currentGasPrice) transactionRequest.gasPrice = toHex(currentGasPrice);
+
+    const serializedTx = serialize({
+      ...transactionRequest,
+      nonce: transactionRequest.nonce as number,
+    });
+
+    const OVM_GasPriceOracle = new Contract(
+      OVM_GAS_PRICE_ORACLE,
+      optimismGasOracleAbi,
+      provider,
+    );
+    const l1FeeInWei = await OVM_GasPriceOracle.getL1Fee(serializedTx);
+    return l1FeeInWei;
+  } catch (e) {
+    //
   }
 };
