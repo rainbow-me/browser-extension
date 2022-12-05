@@ -105,10 +105,10 @@ export function Unlock() {
                   background="transparent"
                   position="absolute"
                   marginTop="-44px"
+                  borderRadius="12px"
                   style={{
                     height: '44px',
                     width: '100%',
-                    borderRadius: '12px',
                     pointerEvents: 'none',
                   }}
                 />
