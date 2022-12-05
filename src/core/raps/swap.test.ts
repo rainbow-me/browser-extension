@@ -1,4 +1,10 @@
-import { Source } from '@rainbow-me/swaps';
+import {
+  ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
+  Quote,
+  Source,
+  SwapType,
+  getQuote,
+} from '@rainbow-me/swaps';
 import { chain, getProvider } from '@wagmi/core';
 import { Wallet } from 'ethers';
 import { beforeAll, expect, test } from 'vitest';
@@ -50,12 +56,26 @@ test('[rap/unlock] :: should estimate swap gas limit', async () => {
     requiresApprove: false,
     tradeDetails: QUOTE,
   });
+
   expect(Number(swapGasLimit)).toBeGreaterThan(0);
 });
 
 test('[rap/unlock] :: should execute swap', async () => {
   const provider = getProvider({ chainId: chain.mainnet.id });
   const wallet = new Wallet(TEST_PKEY, provider);
+
+  const quote = await getQuote({
+    chainId: 1,
+    fromAddress: TEST_ADDRESS,
+    sellTokenAddress: ETH_ADDRESS_AGGREGATORS,
+    buyTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    sellAmount: '1000000000000000000',
+    slippage: 5,
+    destReceiver: TEST_ADDRESS,
+    swapType: SwapType.normal,
+    toChainId: 1,
+  });
+
   const swapTx = await executeSwap({
     chainId: chain.mainnet.id,
     gasLimit: '600000',
@@ -63,7 +83,7 @@ test('[rap/unlock] :: should execute swap', async () => {
       maxFeePerGas: '200000000000',
       maxPriorityFeePerGas: '2000000000',
     },
-    tradeDetails: QUOTE,
+    tradeDetails: quote as Quote,
     wallet,
     permit: false,
   });
