@@ -1,4 +1,9 @@
-export type GasSpeed = 'urgent' | 'fast' | 'normal' | 'custom';
+export enum GasSpeed {
+  URGENT = 'urgent',
+  FAST = 'fast',
+  NORMAL = 'normal',
+  CUSTOM = 'custom',
+}
 
 export interface GasFeeParam {
   amount: string;
@@ -11,7 +16,10 @@ export interface GasFeeLegacyParams {
   option: string;
   estimatedTime: { amount: number; display: string };
   display: string;
-  transactionGasParams: { gasPrice: string };
+  transactionGasParams: {
+    gasPrice: string;
+  };
+  gasFee: { amount: string; display: string };
 }
 
 export type GasFeeLegacyParamsBySpeed = {
@@ -24,7 +32,11 @@ export interface GasFeeParams {
   option: string;
   estimatedTime: { amount: number; display: string };
   display: string;
-  transactionGasParams: { maxPriorityFeePerGas: string; maxFeePerGas: string };
+  transactionGasParams: {
+    maxPriorityFeePerGas: string;
+    maxFeePerGas: string;
+  };
+  gasFee: { amount: string; display: string };
 }
 
 export type GasFeeParamsBySpeed = {

@@ -1,26 +1,26 @@
 import React from 'react';
 
 import { Box } from '~/design-system';
-
 import {
-  Menu,
-  MenuContent,
-  MenuItemIndicator,
-  MenuLabel,
-  MenuRadioGroup,
-  MenuRadioItem,
-  MenuSeparator,
-  MenuTrigger,
-} from '../Menu/Menu';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItemIndicator,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 
 interface SwitchMenuProps {
-  title: string;
+  title?: string;
   selectedValue: string;
   onValueChange: (value: string) => void;
   renderMenuTrigger: React.ReactNode;
   renderMenuItem: (item: string, i: number) => React.ReactNode;
   menuItemIndicator: React.ReactNode;
   menuItems: string[];
+  align?: 'start' | 'center' | 'end';
 }
 
 export const SwitchMenu = ({
@@ -31,28 +31,36 @@ export const SwitchMenu = ({
   menuItems,
   renderMenuItem,
   menuItemIndicator,
+  align,
 }: SwitchMenuProps) => {
   return (
-    <Menu>
-      <MenuTrigger asChild>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <Box style={{ cursor: 'default' }}>{renderMenuTrigger}</Box>
-      </MenuTrigger>
-      <MenuContent>
-        <MenuLabel>{title}</MenuLabel>
-        <MenuSeparator />
-        <MenuRadioGroup value={selectedValue} onValueChange={onValueChange}>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align={align}>
+        {title ? (
+          <>
+            <DropdownMenuLabel>{title}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+          </>
+        ) : null}
+        <DropdownMenuRadioGroup
+          value={selectedValue}
+          onValueChange={onValueChange}
+        >
           {menuItems.map((item, i) => {
             return (
-              <MenuRadioItem key={i} value={item}>
+              <DropdownMenuRadioItem key={i} value={item}>
                 {renderMenuItem(item, i)}
-                <MenuItemIndicator style={{ marginLeft: 'auto' }}>
+                <DropdownMenuItemIndicator style={{ marginLeft: 'auto' }}>
                   {menuItemIndicator}
-                </MenuItemIndicator>
-              </MenuRadioItem>
+                </DropdownMenuItemIndicator>
+              </DropdownMenuRadioItem>
             );
           })}
-        </MenuRadioGroup>
-      </MenuContent>
-    </Menu>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

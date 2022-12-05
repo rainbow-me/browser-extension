@@ -11,6 +11,7 @@ globalStyle('html, body, #main', {
 });
 
 globalStyle('*', {
+  boxSizing: 'border-box',
   transition: 'background 0.1s ease',
 });
 
