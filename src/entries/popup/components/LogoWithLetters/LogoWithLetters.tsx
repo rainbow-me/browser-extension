@@ -23,7 +23,6 @@ export function LogoWithLetters({
     <svg
       xmlns="http://www.w3.org/2000/svg"
       style={{
-        color: colorForTheme,
         width,
         height,
       }}
