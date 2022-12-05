@@ -30,6 +30,7 @@ import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/numbers';
 import {
   CHAIN_IDS_WITH_TRACE_SUPPORT,
+  SWAP_GAS_PADDING,
   estimateSwapGasLimitWithFakeApproval,
   getBasicSwapGasLimit,
   getDefaultGasLimitForTrade,
@@ -38,7 +39,6 @@ import {
 
 import { Rap, RapExchangeActionParameters } from './../common';
 
-const SWAP_GAS_PADDING = 1.1;
 const WRAP_GAS_PADDING = 1.002;
 
 export const estimateSwapGasLimit = async ({

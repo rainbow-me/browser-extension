@@ -1,4 +1,4 @@
-import { Quote } from '@rainbow-me/swaps';
+import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
 import { Address } from 'wagmi';
 
 import { ParsedAsset } from '../types/assets';
@@ -43,7 +43,7 @@ export interface RapExchangeActionParameters {
   contractAddress?: string;
   inputAmount?: string | null;
   outputAmount?: string | null;
-  tradeDetails: Quote;
+  tradeDetails: Quote | CrosschainQuote;
   permit?: boolean;
   flashbots?: boolean;
   chainId: number;

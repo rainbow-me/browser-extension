@@ -23,6 +23,8 @@ import {
 import { greaterThan, multiply, toHexNoLeadingZeros } from '../utils/numbers';
 
 export const CHAIN_IDS_WITH_TRACE_SUPPORT = [chain.mainnet.id];
+export const SWAP_GAS_PADDING = 1.1;
+
 const GAS_LIMIT_INCREMENT = 50000;
 const EXTRA_GAS_PADDING = 1.5;
 const TRACE_CALL_BLOCK_NUMBER_OFFSET = 20;
