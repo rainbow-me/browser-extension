@@ -1,6 +1,7 @@
 import {
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
   Quote,
+  QuoteError,
   SwapType,
   getQuote,
 } from '@rainbow-me/swaps';
@@ -11,15 +12,12 @@ import { ParsedAsset, UniqueId } from '../types/assets';
 import { ChainName } from '../types/chains';
 import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
 
-import { estimateUnlockAndSwap } from './unlockAndSwap';
+import { createUnlockAndSwapRap, estimateUnlockAndSwap } from './unlockAndSwap';
 
 const TEST_ADDRESS = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8';
-// const TEST_PKEY =
-//   '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d';
 
 const ETH_ASSET: ParsedAsset = {
   address: 'eth' as Address,
-  // balance: {amount: '0.176706411676362127', display: '0.17670641 ETH'},
   chainId: 1,
   chainName: ChainName.mainnet,
   colors: { primary: '#808088' },
@@ -31,7 +29,6 @@ const ETH_ASSET: ParsedAsset = {
       change: '2.79%',
       display: '$1,291.82',
     },
-    // balance: {amount: '228.2728767317581582424223352724254', display: '$228.27'}
   },
   price: {
     value: 1291.8200000000002,
@@ -45,7 +42,6 @@ const ETH_ASSET: ParsedAsset = {
 };
 const USDC_ASSET: ParsedAsset = {
   address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Address,
-  //   balance: { amount: '8.721623', display: '8.722 USDC' },
   chainId: 1,
   chainName: 'mainnet' as ChainName,
   colors: { primary: '#2775CA' },
@@ -58,10 +54,6 @@ const USDC_ASSET: ParsedAsset = {
       change: '-1.34%',
       display: '$1.00',
     },
-    // balance: {
-    //   amount: '8.726748116512825980694',
-    //   display: '$8.73',
-    // },
   },
   price: {
     value: 1.000587633346778,
@@ -76,7 +68,6 @@ const USDC_ASSET: ParsedAsset = {
 
 const ENS_ASSET: ParsedAsset = {
   address: '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72',
-  //   balance: { amount: '190.694524689290256384', display: '190.695 ENS' },
   chainId: 1,
   chainName: ChainName.mainnet,
   colors: { primary: '#6E9BF8' },
@@ -101,13 +92,15 @@ export async function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+let swapGasLimit = 0;
+
+let needsUnlockQuote: Quote | QuoteError | null;
+let doesntNeedUnlockQuote: Quote | QuoteError | null;
+
 beforeAll(async () => {
   createTestWagmiClient();
   await delay(3000);
-});
-
-test('[rap/unlockAndSwap] :: estimate unlock and swap rap without unlock', async () => {
-  const quote = await getQuote({
+  doesntNeedUnlockQuote = await getQuote({
     chainId: 1,
     fromAddress: TEST_ADDRESS,
     sellTokenAddress: ETH_ADDRESS_AGGREGATORS,
@@ -118,19 +111,7 @@ test('[rap/unlockAndSwap] :: estimate unlock and swap rap without unlock', async
     swapType: SwapType.normal,
     toChainId: 1,
   });
-  const gasLimit = await estimateUnlockAndSwap({
-    tradeDetails: quote as Quote,
-    chainId: 1,
-    inputCurrency: ETH_ASSET,
-    inputAmount: '1000000000000000000',
-    outputCurrency: USDC_ASSET,
-  });
-
-  expect(Number(gasLimit)).toBeGreaterThan(0);
-}, 10000);
-
-test('[rap/unlockAndSwap] :: estimate unlock and swap rap with unlock', async () => {
-  const quote = await getQuote({
+  needsUnlockQuote = await getQuote({
     chainId: 1,
     fromAddress: TEST_ADDRESS,
     sellTokenAddress: ENS_ASSET.address,
@@ -141,12 +122,48 @@ test('[rap/unlockAndSwap] :: estimate unlock and swap rap with unlock', async ()
     swapType: SwapType.normal,
     toChainId: 1,
   });
+}, 10000);
+
+test('[rap/unlockAndSwap] :: estimate unlock and swap rap without unlock', async () => {
   const gasLimit = await estimateUnlockAndSwap({
-    tradeDetails: quote as Quote,
+    tradeDetails: doesntNeedUnlockQuote as Quote,
+    chainId: 1,
+    inputCurrency: ETH_ASSET,
+    inputAmount: '1000000000000000000',
+    outputCurrency: USDC_ASSET,
+  });
+  expect(Number(gasLimit)).toBeGreaterThan(0);
+  swapGasLimit = Number(gasLimit);
+});
+
+test('[rap/unlockAndSwap] :: estimate unlock and swap rap with unlock', async () => {
+  const gasLimit = await estimateUnlockAndSwap({
+    tradeDetails: needsUnlockQuote as Quote,
     chainId: 1,
     inputCurrency: ENS_ASSET,
     inputAmount: '1000000000000000000',
     outputCurrency: USDC_ASSET,
   });
   expect(Number(gasLimit)).toBeGreaterThan(0);
-}, 10000);
+  expect(Number(gasLimit)).toBeGreaterThan(swapGasLimit);
+});
+
+test('[rap/unlockAndSwap] :: create unlock and swap rap without unlock', async () => {
+  const rap = await createUnlockAndSwapRap({
+    tradeDetails: doesntNeedUnlockQuote as Quote,
+    chainId: 1,
+    inputCurrency: ETH_ASSET,
+    outputCurrency: USDC_ASSET,
+  });
+  expect(rap.actions.length).toBe(1);
+});
+
+test('[rap/unlockAndSwap] :: create unlock and swap rap with unlock', async () => {
+  const rap = await createUnlockAndSwapRap({
+    tradeDetails: needsUnlockQuote as Quote,
+    chainId: 1,
+    inputCurrency: ENS_ASSET,
+    outputCurrency: USDC_ASSET,
+  });
+  expect(rap.actions.length).toBe(2);
+});
