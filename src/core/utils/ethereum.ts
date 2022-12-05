@@ -5,6 +5,7 @@ import { startsWith } from 'lodash';
 import { Address } from 'wagmi';
 
 import { PrivateKey } from '../keychain/IKeychain';
+import { ethUnits } from '../references';
 import { EthereumWalletType } from '../types/walletTypes';
 
 import { divide, multiply } from './numbers';
@@ -101,11 +102,11 @@ export const hasPreviousTransactions = async (
 };
 
 export const gweiToWei = (gweiAmount: string) => {
-  const weiAmount = multiply(gweiAmount, 1000000000);
+  const weiAmount = multiply(gweiAmount, ethUnits.gwei);
   return weiAmount;
 };
 
 export const weiToGwei = (weiAmount: string) => {
-  const gweiAmount = divide(weiAmount, 1000000000);
+  const gweiAmount = divide(weiAmount, ethUnits.gwei);
   return gweiAmount;
 };

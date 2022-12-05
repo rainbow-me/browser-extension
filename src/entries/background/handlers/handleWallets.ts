@@ -115,7 +115,9 @@ export const handleWallets = () =>
             break;
           }
           case 'send_transaction': {
-            const provider = getProvider();
+            const provider = getProvider({
+              chainId: (payload as TransactionRequest).chainId,
+            });
             response = await sendTransaction(
               payload as TransactionRequest,
               provider,

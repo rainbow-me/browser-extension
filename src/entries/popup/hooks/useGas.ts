@@ -1,7 +1,9 @@
+import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useEffect, useMemo, useState } from 'react';
 import { Chain, chain } from 'wagmi';
 
-import { useGasData } from '~/core/resources/gas';
+import { ethUnits } from '~/core/references';
+import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
 import {
   MeteorologyLegacyResponse,
   MeteorologyResponse,
@@ -17,12 +19,27 @@ import {
   parseGasFeeLegacyParams,
   parseGasFeeParams,
 } from '~/core/utils/gas';
-import { add } from '~/core/utils/numbers';
 
-export const useGas = ({ chainId }: { chainId: Chain['id'] }) => {
-  const { data, isLoading } = useGasData({ chainId });
+import { useNativeAssetForNetwork } from './useNativeAssetForNetwork';
+
+export const useGas = ({
+  chainId,
+  transactionRequest,
+}: {
+  chainId: Chain['id'];
+  transactionRequest: TransactionRequest;
+}) => {
+  const { data, isLoading } = useGasData({ chainId, transactionRequest });
+  const { data: gasLimitData } = useEstimateGasLimit({
+    chainId,
+    transactionRequest,
+  });
   const { selectedGas, setSelectedGas } = useGasStore();
-  const [selectedSpeed, setSelectedSpeed] = useState(GasSpeed.NORMAL);
+  const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>(GasSpeed.NORMAL);
+
+  const nativeAsset = useNativeAssetForNetwork({ chainId });
+
+  const gasLimit = gasLimitData?.gasLimit ?? `${ethUnits.basic_transfer}`;
 
   const gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed =
     useMemo(() => {
@@ -40,86 +57,92 @@ export const useGas = ({ chainId }: { chainId: Chain['id'] }) => {
           byBaseFee: response.data.blocksToConfirmationByBaseFee,
           byPriorityFee: response.data.blocksToConfirmationByPriorityFee,
         };
+
+        const parseGasFeeParamsSpeed = ({ speed }: { speed: GasSpeed }) =>
+          parseGasFeeParams({
+            currentBaseFee,
+            maxPriorityFeeSuggestions,
+            speed,
+            wei: baseFeeSuggestion,
+            blocksToConfirmation,
+            gasLimit,
+            nativeAsset,
+          });
+
         return {
-          custom: parseGasFeeParams({
-            currentBaseFee,
-            maxPriorityFeeSuggestions,
+          custom: parseGasFeeParamsSpeed({
             speed: GasSpeed.CUSTOM,
-            wei: baseFeeSuggestion,
-            blocksToConfirmation,
           }),
-          urgent: parseGasFeeParams({
-            currentBaseFee,
-            maxPriorityFeeSuggestions,
+          urgent: parseGasFeeParamsSpeed({
             speed: GasSpeed.URGENT,
-            wei: baseFeeSuggestion,
-            blocksToConfirmation,
           }),
-          fast: parseGasFeeParams({
-            currentBaseFee,
-            maxPriorityFeeSuggestions,
+          fast: parseGasFeeParamsSpeed({
             speed: GasSpeed.FAST,
-            wei: baseFeeSuggestion,
-            blocksToConfirmation,
           }),
-          normal: parseGasFeeParams({
-            currentBaseFee,
-            maxPriorityFeeSuggestions,
+          normal: parseGasFeeParamsSpeed({
             speed: GasSpeed.NORMAL,
-            wei: baseFeeSuggestion,
-            blocksToConfirmation,
           }),
         };
       } else {
         const response = data as MeteorologyLegacyResponse;
         const chainWaitTime = getChainWaitTime(chainId);
+        const parseGasFeeParamsSpeed = ({
+          speed,
+          gwei,
+          waitTime,
+        }: {
+          speed: GasSpeed;
+          gwei: string;
+          waitTime: number;
+        }) =>
+          parseGasFeeLegacyParams({
+            gwei,
+            speed,
+            waitTime,
+            gasLimit,
+            nativeAsset,
+          });
+
         return {
-          custom: parseGasFeeLegacyParams({
+          custom: parseGasFeeParamsSpeed({
             gwei: response?.data.legacy.fastGasPrice,
             speed: GasSpeed.CUSTOM,
             waitTime: chainWaitTime.fastWait,
           }),
-          urgent: parseGasFeeLegacyParams({
+          urgent: parseGasFeeParamsSpeed({
             gwei: response?.data.legacy.fastGasPrice,
             speed: GasSpeed.URGENT,
             waitTime: chainWaitTime.fastWait,
           }),
-          fast: parseGasFeeLegacyParams({
+          fast: parseGasFeeParamsSpeed({
             gwei: response?.data.legacy.proposeGasPrice,
             speed: GasSpeed.FAST,
             waitTime: chainWaitTime.proposedWait,
           }),
-          normal: parseGasFeeLegacyParams({
+          normal: parseGasFeeParamsSpeed({
             gwei: response?.data.legacy.safeGasPrice,
             speed: GasSpeed.NORMAL,
             waitTime: chainWaitTime.safeWait,
           }),
         };
       }
-    }, [chainId, data]);
-
-  const gasFee = useMemo(() => {
-    if (chainId === chain.mainnet.id) {
-      return add(
-        (gasFeeParamsBySpeed as GasFeeParamsBySpeed)[selectedSpeed]?.maxBaseFee
-          ?.amount,
-        (gasFeeParamsBySpeed as GasFeeParamsBySpeed)[selectedSpeed]
-          ?.maxPriorityFeePerGas?.amount,
-      );
-    } else {
-      return (gasFeeParamsBySpeed as GasFeeLegacyParamsBySpeed)[selectedSpeed]
-        ?.gasPrice?.amount;
-    }
-  }, [chainId, gasFeeParamsBySpeed, selectedSpeed]);
+    }, [chainId, data, gasLimit, nativeAsset]);
 
   useEffect(() => {
-    setSelectedGas({ selectedGas: gasFeeParamsBySpeed[selectedSpeed] });
-  }, [gasFeeParamsBySpeed, selectedGas.option, selectedSpeed, setSelectedGas]);
+    setSelectedGas({
+      selectedGas: gasFeeParamsBySpeed[selectedSpeed],
+    });
+  }, [
+    gasFeeParamsBySpeed,
+    gasLimit,
+    selectedGas.option,
+    selectedSpeed,
+    setSelectedGas,
+  ]);
 
   return {
     data,
     gasFeeParamsBySpeed,
-    gasFee,
     setSelectedSpeed,
     selectedSpeed,
     isLoading,
