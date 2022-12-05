@@ -18,13 +18,12 @@ import {
   estimateApprove,
   estimateSwapGasLimit,
 } from './actions';
+import { createNewAction, createNewRap } from './common';
 import {
   RapAction,
   RapSwapActionParameters,
   RapUnlockActionParameters,
-  createNewAction,
-  createNewRap,
-} from './common';
+} from './references';
 import { getBasicSwapGasLimit } from './utils';
 
 export const estimateUnlockAndSwap = async (

@@ -14,6 +14,7 @@ import {
 } from '../../types/transactions';
 import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/numbers';
+import { Rap, RapCrosschainSwapActionParameters } from '../references';
 import {
   CHAIN_IDS_WITH_TRACE_SUPPORT,
   SWAP_GAS_PADDING,
@@ -22,8 +23,6 @@ import {
   getDefaultGasLimitForTrade,
   overrideWithFastSpeedIfNeeded,
 } from '../utils';
-
-import { Rap, RapCrosschainSwapActionParameters } from './../common';
 
 const getCrosschainSwapDefaultGasLimit = (tradeDetails: CrosschainQuote) =>
   tradeDetails?.routes?.[0]?.userTxs?.[0]?.gasFees?.gasLimit;

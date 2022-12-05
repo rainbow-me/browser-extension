@@ -28,6 +28,7 @@ import {
 } from '../../types/transactions';
 import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/numbers';
+import { Rap, RapSwapActionParameters } from '../references';
 import {
   CHAIN_IDS_WITH_TRACE_SUPPORT,
   SWAP_GAS_PADDING,
@@ -36,8 +37,6 @@ import {
   getDefaultGasLimitForTrade,
   overrideWithFastSpeedIfNeeded,
 } from '../utils';
-
-import { Rap, RapSwapActionParameters } from './../common';
 
 const WRAP_GAS_PADDING = 1.002;
 

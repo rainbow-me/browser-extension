@@ -11,8 +11,8 @@ import {
   greaterThan,
   toHex,
 } from '../../utils/numbers';
+import { RapUnlockActionParameters } from '../references';
 
-import { RapUnlockActionParameters } from './../common';
 import { overrideWithFastSpeedIfNeeded } from './../utils';
 
 export const getRawAllowance = async ({
