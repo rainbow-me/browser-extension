@@ -17,7 +17,7 @@ export function Tokens() {
     { select: selectUserAssetsList },
   );
   return (
-    <Box marginTop="-20px">
+    <Box marginTop="-16px">
       {assets?.map((asset, i) => (
         <AssetRow key={`${asset?.uniqueId}-${i}`} uniqueId={asset?.uniqueId} />
       ))}
