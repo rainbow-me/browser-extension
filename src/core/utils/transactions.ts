@@ -1,6 +1,28 @@
-import { smartContractMethods } from '../references';
+import { Address } from 'wagmi';
 
-import { convertStringToHex } from './numbers';
+import {
+  ETH_ADDRESS,
+  SupportedCurrencyKey,
+  smartContractMethods,
+} from '../references';
+import {
+  getDescription,
+  getTitle,
+} from '../resources/transactions/transactions';
+import { ChainId } from '../types/chains';
+import {
+  NewTransaction,
+  RainbowTransaction,
+  TransactionStatus,
+  TransactionType,
+} from '../types/transactions';
+
+import { isL2Chain } from './chains';
+import {
+  convertAmountAndPriceToNativeDisplay,
+  convertAmountToBalanceDisplay,
+  convertStringToHex,
+} from './numbers';
 
 /**
  * @desc remove hex prefix
@@ -50,4 +72,102 @@ export const getDataForTokenTransfer = (value: string, to: string): string => {
     convertStringToHex(value),
   ]);
   return data;
+};
+
+export const parseNewTransaction = async (
+  txDetails: NewTransaction,
+  nativeCurrency: SupportedCurrencyKey,
+): Promise<RainbowTransaction> => {
+  let balance;
+  const {
+    amount,
+    asset,
+    dappName,
+    data,
+    from,
+    flashbots,
+    ensCommitRegistrationName,
+    ensRegistration,
+    gasLimit,
+    gasPrice,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+    chainId = ChainId.mainnet,
+    nonce,
+    hash: txHash,
+    protocol,
+    sourceAmount,
+    status: txStatus,
+    to,
+    transferId,
+    type: txType,
+    txTo,
+    value,
+  } = txDetails;
+
+  if (amount && asset) {
+    balance = {
+      amount,
+      display: convertAmountToBalanceDisplay(amount, asset),
+    };
+  }
+
+  const assetPrice = asset?.price?.value;
+
+  const native =
+    chainId && isL2Chain(chainId)
+      ? { amount: '', display: '' }
+      : convertAmountAndPriceToNativeDisplay(
+          amount ?? 0,
+          assetPrice ?? 0,
+          nativeCurrency,
+        );
+  const hash = txHash ?? `${txHash}-0`;
+
+  const status = txStatus ?? TransactionStatus.sending;
+  const type = txType ?? TransactionType.send;
+
+  const title = getTitle({
+    protocol: protocol,
+    status,
+    type,
+  });
+
+  const description = getDescription({
+    name: asset?.name || '',
+    status,
+    type,
+  });
+
+  return {
+    address: (asset?.address ?? ETH_ADDRESS) as Address,
+    balance,
+    dappName,
+    data,
+    description,
+    ensCommitRegistrationName,
+    ensRegistration,
+    flashbots,
+    from,
+    gasLimit,
+    gasPrice,
+    hash,
+    maxFeePerGas,
+    maxPriorityFeePerGas,
+    name: asset?.name,
+    native,
+    chainId,
+    nonce,
+    pending: true,
+    protocol,
+    sourceAmount,
+    status,
+    symbol: asset?.symbol,
+    title,
+    to,
+    transferId,
+    txTo: txTo || to,
+    type,
+    value,
+  };
 };

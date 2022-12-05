@@ -11,7 +11,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { ETH_ADDRESS, SupportedCurrencyKey } from '~/core/references';
-import { ChainName } from '~/core/types/chains';
+import { ChainId, ChainName } from '~/core/types/chains';
 import { TransactionsReceivedMessage } from '~/core/types/refraction';
 import {
   ProtocolType,
@@ -23,7 +23,7 @@ import {
   ZerionTransactionStatus,
 } from '~/core/types/transactions';
 import { parseAsset } from '~/core/utils/assets';
-import { isL2Chain } from '~/core/utils/chains';
+import { chainIdFromChainName, isL2Chain } from '~/core/utils/chains';
 import {
   convertRawAmountToBalance,
   convertRawAmountToNativeDisplay,
@@ -230,13 +230,13 @@ export const getDescription = ({
 type ParseTransactionArgs = {
   tx: ZerionTransaction;
   currency: SupportedCurrencyKey;
-  chain: ChainName;
+  chainId: ChainId;
 };
 
 const parseTransactionWithEmptyChanges = ({
   tx,
   currency,
-  chain,
+  chainId,
 }: ParseTransactionArgs): RainbowTransaction => {
   const methodName = 'Signed'; // let's ask BE to grab this for us: https://github.com/rainbow-me/rainbow/blob/develop/src/handlers/transactions.ts#L79
   const updatedAsset = {
@@ -255,24 +255,24 @@ const parseTransactionWithEmptyChanges = ({
   );
 
   return {
-    address: ETH_ADDRESS,
-    balance: isL2Chain(chain)
+    address: ETH_ADDRESS as Address,
+    balance: isL2Chain(chainId)
       ? { amount: '', display: '-' }
       : convertRawAmountToBalance(valueUnit, updatedAsset),
     description: methodName || 'Signed',
-    from: tx.address_from || '',
+    from: tx?.address_from as Address,
     hash: `${tx.hash}-${0}`,
     minedAt: tx.mined_at,
     name: methodName || 'Signed',
     native: nativeDisplay,
-    chain,
+    chainId,
     nonce: tx.nonce,
     pending: false,
     protocol: tx.protocol,
     status: TransactionStatus.contract_interaction,
     symbol: 'contract',
     title: `Contract Interaction`,
-    to: tx.address_to,
+    to: tx.address_to as Address,
     type: TransactionType.contract_interaction,
   };
 };
@@ -280,7 +280,7 @@ const parseTransactionWithEmptyChanges = ({
 function parseTransaction({
   tx,
   currency,
-  chain,
+  chainId,
 }: ParseTransactionArgs): RainbowTransaction | RainbowTransaction[] {
   if (tx.changes.length) {
     return tx.changes.map((internalTxn, index) => {
@@ -322,26 +322,27 @@ function parseTransaction({
         type: tx.type,
       });
       return {
-        address:
-          parsedAsset.address.toLowerCase() === ETH_ADDRESS
-            ? ETH_ADDRESS
-            : parsedAsset.address,
+        address: (parsedAsset.address.toLowerCase() === ETH_ADDRESS
+          ? ETH_ADDRESS
+          : parsedAsset.address) as Address,
         asset: parsedAsset,
         balance: convertRawAmountToBalance(valueUnit, { decimals }),
         description,
-        from: internalTxn.address_from ?? tx.address_from,
+        from: (internalTxn.address_from ?? tx.address_from) as Address,
         hash: `${tx.hash}-${index}`,
         minedAt: tx.mined_at,
         name: parsedAsset.name,
-        native: isL2Chain(chain) ? { amount: '', display: '' } : nativeDisplay,
-        chain,
+        native: isL2Chain(chainId)
+          ? { amount: '', display: '' }
+          : nativeDisplay,
+        chainId,
         nonce: tx.nonce,
         pending: false,
         protocol: tx.protocol,
         status,
         symbol: parsedAsset.symbol,
         title,
-        to: internalTxn.address_to ?? tx.address_to,
+        to: (internalTxn.address_to ?? tx.address_to) as Address,
         type: tx.type,
       };
     });
@@ -350,7 +351,7 @@ function parseTransaction({
   return parseTransactionWithEmptyChanges({
     tx,
     currency,
-    chain,
+    chainId,
   });
 }
 
@@ -364,7 +365,9 @@ function parseTransactions(
       parseTransaction({
         tx,
         currency,
-        chain: (message?.meta?.chain_id as ChainName) ?? ChainName.mainnet,
+        chainId: chainIdFromChainName(
+          (message?.meta?.chain_id as ChainName) ?? ChainName.mainnet,
+        ),
       }),
     )
     .flat();
