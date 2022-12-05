@@ -19,25 +19,28 @@ import { Chain, chain } from 'wagmi';
 
 import { logger } from '~/logger';
 
-import { ETH_ADDRESS, ethUnits } from '../references';
-import { gasStore } from '../state';
-import { bsc } from '../types/chains';
-import { TransactionGasParams, TransactionLegacyGasParams } from '../types/gas';
+import { ETH_ADDRESS, ethUnits } from '../../references';
+import { gasStore } from '../../state';
+import { bsc } from '../../types/chains';
+import {
+  TransactionGasParams,
+  TransactionLegacyGasParams,
+} from '../../types/gas';
 import {
   ProtocolType,
   TransactionStatus,
   TransactionType,
-} from '../types/transactions';
-import { estimateGasWithPadding } from '../utils/gas';
+} from '../../types/transactions';
+import { estimateGasWithPadding } from '../../utils/gas';
 import {
   greaterThan,
   multiply,
   toHex,
   toHexNoLeadingZeros,
-} from '../utils/numbers';
+} from '../../utils/numbers';
+import { overrideWithFastSpeedIfNeeded } from '../utils';
 
-import { Rap, RapExchangeActionParameters } from './common';
-import { overrideWithFastSpeedIfNeeded } from './utils';
+import { Rap, RapExchangeActionParameters } from './../common';
 
 const GAS_LIMIT_INCREMENT = 50000;
 const EXTRA_GAS_PADDING = 1.5;

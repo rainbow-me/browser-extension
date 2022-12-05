@@ -2,14 +2,21 @@ import { MaxUint256 } from '@ethersproject/constants';
 import { Address, Chain, erc20ABI, getProvider } from '@wagmi/core';
 import { Contract, Wallet } from 'ethers';
 
-import { ethUnits } from '../references';
-import { gasStore } from '../state';
-import { ParsedAsset } from '../types/assets';
-import { TransactionStatus, TransactionType } from '../types/transactions';
-import { convertAmountToRawAmount, greaterThan, toHex } from '../utils/numbers';
+import { ethUnits } from '../../references';
+import { gasStore } from '../../state';
+import { ParsedAsset } from '../../types/assets';
+import { TransactionStatus, TransactionType } from '../../types/transactions';
+import {
+  convertAmountToRawAmount,
+  greaterThan,
+  toHex,
+} from '../../utils/numbers';
 
-import { RapExchangeActionParameters, UnlockActionParameters } from './common';
-import { overrideWithFastSpeedIfNeeded } from './utils';
+import {
+  RapExchangeActionParameters,
+  UnlockActionParameters,
+} from './../common';
+import { overrideWithFastSpeedIfNeeded } from './../utils';
 
 export const getRawAllowance = async ({
   owner,

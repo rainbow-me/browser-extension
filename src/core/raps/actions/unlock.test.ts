@@ -3,9 +3,9 @@ import { Address, chain, getProvider } from '@wagmi/core';
 import { Wallet } from 'ethers';
 import { beforeAll, expect, test } from 'vitest';
 
-import { ParsedAsset, UniqueId } from '../types/assets';
-import { ChainName } from '../types/chains';
-import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
+import { ParsedAsset, UniqueId } from '../../types/assets';
+import { ChainName } from '../../types/chains';
+import { createTestWagmiClient } from '../../wagmi/createTestWagmiClient';
 
 import {
   assetNeedsUnlocking,

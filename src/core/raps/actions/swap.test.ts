@@ -9,7 +9,7 @@ import { chain, getProvider } from '@wagmi/core';
 import { Wallet } from 'ethers';
 import { beforeAll, expect, test } from 'vitest';
 
-import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
+import { createTestWagmiClient } from '../../wagmi/createTestWagmiClient';
 
 import { estimateSwapGasLimit, executeSwap } from './swap';
 
