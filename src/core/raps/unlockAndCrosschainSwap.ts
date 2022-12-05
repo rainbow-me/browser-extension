@@ -23,7 +23,7 @@ import {
 } from './references';
 import { getBasicSwapGasLimit } from './utils';
 
-export const estimateUnlockAndSwap = async (
+export const estimateUnlockAndCrosschainSwap = async (
   swapParameters: RapCrosschainSwapActionParameters,
 ) => {
   const { inputAmount, tradeDetails, chainId, inputCurrency, outputCurrency } =
@@ -89,7 +89,7 @@ export const estimateUnlockAndSwap = async (
   return gasLimits.reduce((acc, limit) => add(acc, limit), '0');
 };
 
-export const createUnlockAndSwapRap = async (
+export const createUnlockAndCrosschainSwapRap = async (
   swapParameters: RapCrosschainSwapActionParameters,
 ) => {
   let actions: RapAction[] = [];
