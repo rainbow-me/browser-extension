@@ -14,7 +14,6 @@ import { globalColors } from '~/design-system/styles/designTokens';
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { useAvatar } from '../../hooks/useAvatar';
-import { useDebounce } from '../../hooks/useDebounce';
 import { MainLayout } from '../../layouts/MainLayout';
 import { StickyHeader } from '../../layouts/StickyHeader';
 
@@ -50,17 +49,16 @@ export function Home() {
     damping: 50,
     stiffness: 350,
   });
-  const scrollYTx = useTransform(smoothScrollY, [1, 1000], [0, 200]);
+  const scrollYTransform = useTransform(smoothScrollY, [1, 1000], [0, 200]);
   const [scrollAtTop, setScrollAtTop] = useState(true);
-  const debouncedScrollAtTop = useDebounce<boolean>(scrollAtTop, 250);
 
   useEffect(() => {
-    scrollY.onChange((position) => {
+    return scrollY.onChange((position) => {
       const isAtTop = position === 0;
-      if (isAtTop && !debouncedScrollAtTop) setScrollAtTop(true);
-      else if (!isAtTop && debouncedScrollAtTop) setScrollAtTop(false);
+      if (isAtTop && !scrollAtTop) setScrollAtTop(true);
+      else if (!isAtTop && scrollAtTop) setScrollAtTop(false);
     });
-  }, [debouncedScrollAtTop, scrollY]);
+  }, [scrollAtTop, scrollY]);
 
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>
@@ -73,7 +71,7 @@ export function Home() {
           <Header />
           <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
           <Separator color="separatorTertiary" strokeWeight="1px" />
-          <Content scrollSpring={scrollYTx} scrollAtTop={scrollAtTop}>
+          <Content scrollSpring={scrollYTransform} shouldSpring={scrollAtTop}>
             {activeTab === 'tokens' && <Tokens />}
             {activeTab === 'activity' && <Activity />}
           </Content>
@@ -135,13 +133,13 @@ function TabBar({
 function Content({
   children,
   scrollSpring,
-  scrollAtTop,
+  shouldSpring,
 }: {
   children: React.ReactNode;
-  scrollSpring: MotionValue<number>;
-  scrollAtTop: boolean;
+  scrollSpring?: MotionValue<number>;
+  shouldSpring: boolean;
 }) {
-  const y = scrollAtTop ? scrollSpring : 0;
+  const y = shouldSpring ? scrollSpring : 0;
   return (
     <Box
       background="surfacePrimaryElevated"
