@@ -27,6 +27,7 @@ export function Text({
       as={as}
       className={textStyles({
         color,
+        cursor: 'default',
         fontFamily: 'rounded',
         fontSize: size,
         fontWeight: weight,

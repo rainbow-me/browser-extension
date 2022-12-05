@@ -119,7 +119,7 @@ function CoinIconWrapper({
     <Fragment>
       <ShadowWrapper color={shadowColor}>{children}</ShadowWrapper>
       {chainId !== ChainId.mainnet && (
-        <Bleed top="12px" left="6px">
+        <Bleed top="16px" left="6px">
           <ChainBadge chainId={chainId} shadow size="extraSmall" />
         </Bleed>
       )}
