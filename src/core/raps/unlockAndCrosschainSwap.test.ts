@@ -67,7 +67,7 @@ const USDC_ASSET: ParsedAsset = {
   symbol: 'USDC',
   type: 'stablecoin',
   uniqueId: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_1' as UniqueId,
-  decimals: 18,
+  decimals: 6,
 };
 
 const ENS_ASSET: ParsedAsset = {
