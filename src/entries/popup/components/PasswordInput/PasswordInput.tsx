@@ -25,7 +25,6 @@ export function PasswordInput({
         const input = inputRef.current as HTMLInputElement;
         const cursorPosition = input.selectionStart;
         setCursorPosition(cursorPosition || 0);
-        console.log('detected cursor position', cursorPosition);
       }
       onChange(e);
     },
@@ -36,7 +35,6 @@ export function PasswordInput({
     setVisible(!visible);
     if (inputRef.current) {
       const input = inputRef.current as HTMLInputElement;
-      console.log('setting cursor position', cursorPosition);
       input.focus();
       setTimeout(() => {
         input.setSelectionRange(cursorPosition, cursorPosition);
