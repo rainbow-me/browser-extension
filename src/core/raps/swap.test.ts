@@ -1,3 +1,4 @@
+import { Source } from '@rainbow-me/swaps';
 import { chain, getProvider } from '@wagmi/core';
 import { Wallet } from 'ethers';
 import { beforeAll, expect, test } from 'vitest';
@@ -6,27 +7,31 @@ import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
 
 import { estimateSwapGasLimit, executeSwap } from './swap';
 
+const TEST_ADDRESS = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8';
+const TEST_PKEY =
+  '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d';
 const QUOTE = {
-  sellTokenAddress: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
+  sellTokenAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
   buyTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-  allowanceTarget: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
+  allowanceTarget: '0x0000000000000000000000000000000000000000',
   to: '0xdef1c0ded9bec7f1a1670819833240f027b25eff',
-  data: '0xd9627aa4000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000009ec08da51d9200000000000000000000000000000000000000000000000000000000000003e8000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000020000000000000000000000001f9840a85d5af5bf1d1762f925bdaddc4201f984000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48869584cd000000000000000000000000100000000000000000000000000000000000001100000000000000000000000000000000000000000000009fb955af4a638a55de',
-  sellAmount: '176033521020108',
-  buyAmount: '1000',
-  value: '0',
-  gasPrice: '15000000000',
-  protocols: [{ name: 'Uniswap_V2', part: 100 }],
-  fee: '1483673702202',
-  feePercentageBasisPoints: 8500000000000000,
-  sellAmountMinusFees: '173066173615704',
-  tradeType: 'exact_output',
-  from: '0x7a3d05c70581bd345fe117c06e45f9669205384f',
+  data: '0x3598d8ab000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000478daa2b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002bc02aaa39b223fe8d0a0e5c4f27ead9083c756cc20001f4a0b86991c6218b36c1d19d4a2e9eb0ce3606eb48000000000000000000000000000000000000000000869584cd0000000000000000000000001000000000000000000000000000000000000011000000000000000000000000000000000000000000000041f21e1365638e0fda',
+  sellAmount: '1000000000000000000',
+  buyAmount: '1263648922',
+  value: '1000000000000000000',
+  gasPrice: '29500000000',
+  source: Source.Aggregator0x,
+  protocols: [{ name: 'Uniswap_V3', part: 100 }],
+  fee: '0',
+  feePercentageBasisPoints: 0,
+  sellAmountMinusFees: '1000000000000000000',
+  tradeType: 'exact_input',
+  from: TEST_ADDRESS,
   defaultGasLimit: '300000',
   swapType: 'normal',
   txTarget: '0x00000000009726632680fb29d3f7a9734e3010e2',
-  sellAmountInEth: '837814955509',
-  buyAmountInEth: '780157365179',
+  sellAmountInEth: '1000000000000000000',
+  buyAmountInEth: '999654193204642295',
 };
 
 export async function delay(ms: number) {
@@ -45,15 +50,12 @@ test('[rap/unlock] :: should estimate swap gas limit', async () => {
     requiresApprove: false,
     tradeDetails: QUOTE,
   });
-  expect(swapGasLimit).toBe('600000');
+  expect(Number(swapGasLimit)).toBeGreaterThan(0);
 });
 
 test('[rap/unlock] :: should execute swap', async () => {
   const provider = getProvider({ chainId: chain.mainnet.id });
-  const wallet = new Wallet(
-    '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
-    provider,
-  );
+  const wallet = new Wallet(TEST_PKEY, provider);
   const swapTx = await executeSwap({
     chainId: chain.mainnet.id,
     gasLimit: '600000',
