@@ -15,11 +15,6 @@ export enum Source {
   Aggregator1inch = '1inch',
 }
 
-export enum RapActionType {
-  swap = 'swap',
-  unlock = 'unlock',
-}
-
 export interface UnlockActionParameters {
   amount: string;
   assetToUnlock: ParsedAsset;
@@ -44,6 +39,8 @@ interface RapBaseSwapActionParameters {
   chainId: number;
   requiresApprove?: boolean;
   meta?: SwapMetadata;
+  inputCurrency: ParsedAsset;
+  outputCurrency: ParsedAsset;
 }
 
 export interface RapSwapActionParameters extends RapBaseSwapActionParameters {
@@ -62,16 +59,46 @@ export interface RapUnlockActionParameters {
   chainId: number;
 }
 
+type RapActionParameters =
+  | RapSwapActionParameters
+  | RapCrosschainSwapActionParameters
+  | RapUnlockActionParameters;
+
 export interface RapActionTransaction {
   hash: string | null;
 }
 
-export interface RapSwapAction {
-  parameters: RapSwapActionParameters | RapCrosschainSwapActionParameters;
+export interface RapAction {
+  parameters: RapActionParameters;
   transaction: RapActionTransaction;
-  type: RapActionType;
+  type: RapActionTypes;
 }
 
 export interface Rap {
-  actions: RapSwapAction[];
+  actions: RapAction[];
 }
+
+export enum rapActions {
+  swap = 'swap',
+  crosschainSwap = 'crosschainSwap',
+  unlock = 'unlock',
+}
+export type RapActionTypes = keyof typeof rapActions;
+
+export const createNewAction = (
+  type: RapActionTypes,
+  parameters: RapActionParameters,
+): RapAction => {
+  const newAction = {
+    parameters,
+    transaction: { confirmed: null, hash: null },
+    type,
+  };
+  return newAction;
+};
+
+export const createNewRap = (actions: RapAction[]) => {
+  return {
+    actions,
+  };
+};
