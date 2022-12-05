@@ -17,7 +17,7 @@ import {
   optimismGasOracleAbi,
   supportedCurrencies,
 } from '../references';
-import { ParsedAddressAsset } from '../types/assets';
+import { ParsedAsset } from '../types/assets';
 import { ChainId } from '../types/chains';
 import {
   BlocksToConfirmation,
@@ -117,7 +117,7 @@ export const parseGasFeeParams = ({
   };
   currentBaseFee: string;
   gasLimit: string;
-  nativeAsset?: ParsedAddressAsset;
+  nativeAsset?: ParsedAsset;
   blocksToConfirmation: BlocksToConfirmation;
 }): GasFeeParams => {
   const maxBaseFee = parseGasFeeParam({
@@ -183,7 +183,7 @@ export const parseGasFeeLegacyParams = ({
   speed: GasSpeed;
   waitTime: number;
   gasLimit: string;
-  nativeAsset?: ParsedAddressAsset;
+  nativeAsset?: ParsedAsset;
 }): GasFeeLegacyParams => {
   const wei = gweiToWei(gwei);
   const gasPrice = parseGasFeeParam({

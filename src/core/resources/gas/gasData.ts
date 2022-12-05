@@ -1,9 +1,17 @@
+import { TransactionRequest } from '@ethersproject/abstract-provider';
+
 import { ChainId } from '~/core/types/chains';
 
 import { useMeteorology } from './meteorology';
 import { useProviderGas } from './providerGas';
 
-export const useGasData = ({ chainId }: { chainId: ChainId }) => {
+export const useGasData = ({
+  chainId,
+  transactionRequest,
+}: {
+  chainId: ChainId;
+  transactionRequest: TransactionRequest;
+}) => {
   const meteorologySupportsChain = [
     ChainId.bsc,
     ChainId.mainnet,

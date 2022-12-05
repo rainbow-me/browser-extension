@@ -67,7 +67,7 @@ export const useGas = ({
             wei: baseFeeSuggestion,
             blocksToConfirmation,
             gasLimit,
-            nativeAsset,
+            nativeAsset: nativeAsset || undefined,
           });
 
         return {
@@ -101,7 +101,7 @@ export const useGas = ({
             speed,
             waitTime,
             gasLimit,
-            nativeAsset,
+            nativeAsset: nativeAsset || undefined,
           });
 
         return {
@@ -127,21 +127,7 @@ export const useGas = ({
           }),
         };
       }
-    }, [chainId, data]);
-
-  const gasFee = useMemo(() => {
-    if (chainId === ChainId.mainnet) {
-      return add(
-        (gasFeeParamsBySpeed as GasFeeParamsBySpeed)[selectedSpeed]?.maxBaseFee
-          ?.amount,
-        (gasFeeParamsBySpeed as GasFeeParamsBySpeed)[selectedSpeed]
-          ?.maxPriorityFeePerGas?.amount,
-      );
-    } else {
-      return (gasFeeParamsBySpeed as GasFeeLegacyParamsBySpeed)[selectedSpeed]
-        ?.gasPrice?.amount;
-    }
-  }, [chainId, gasFeeParamsBySpeed, selectedSpeed]);
+    }, [chainId, data, gasLimit, nativeAsset]);
 
   useEffect(() => {
     setSelectedGas({
