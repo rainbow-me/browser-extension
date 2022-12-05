@@ -97,14 +97,14 @@ export const stylesForHeight: Record<
   },
 };
 
-export const Input = ({
+export function Input({
   placeholder,
   height,
   variant,
   testId,
   innerRef,
   ...inputProps
-}: InputProps) => {
+}: InputProps) {
   const { background, borderColor, textColor } = stylesForVariant[variant];
   const { borderRadius, fontSize, paddingHorizontal } = stylesForHeight[height];
   return (
@@ -146,4 +146,4 @@ export const Input = ({
       />
     </Box>
   );
-};
+}
