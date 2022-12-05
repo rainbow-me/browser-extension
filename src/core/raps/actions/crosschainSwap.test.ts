@@ -1,68 +1,73 @@
 import {
+  CrosschainQuote,
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
-  Quote,
   QuoteError,
   SwapType,
-  getQuote,
+  getCrosschainQuote,
 } from '@rainbow-me/swaps';
 import { chain, getProvider } from '@wagmi/core';
 import { Wallet } from 'ethers';
 import { beforeAll, expect, test } from 'vitest';
 
+import { ChainId } from '~/core/types/chains';
+
 import { createTestWagmiClient } from '../../wagmi/createTestWagmiClient';
 
-import { estimateSwapGasLimit, executeSwap } from './swap';
+import {
+  estimateCrosschainSwapGasLimit,
+  executeCrosschainSwap,
+} from './crosschainSwap';
 
-const TEST_ADDRESS = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8';
+const ARBITRUM_USDC = '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8';
+const TEST_ADDRESS = '0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc';
 const TEST_PKEY =
-  '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d';
+  '0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a';
 
 export async function delay(ms: number) {
   // eslint-disable-next-line no-promise-executor-return
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-let quote: Quote | QuoteError | null;
+let crosschainQuote: CrosschainQuote | QuoteError | null;
 
 beforeAll(async () => {
   createTestWagmiClient();
   await delay(3000);
-  quote = await getQuote({
+  crosschainQuote = await getCrosschainQuote({
     chainId: 1,
     fromAddress: TEST_ADDRESS,
     sellTokenAddress: ETH_ADDRESS_AGGREGATORS,
-    buyTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+    buyTokenAddress: ARBITRUM_USDC,
     sellAmount: '1000000000000000000',
     slippage: 5,
     destReceiver: TEST_ADDRESS,
-    swapType: SwapType.normal,
-    toChainId: 1,
+    swapType: SwapType.crossChain,
+    toChainId: ChainId.arbitrum,
   });
 }, 10000);
 
-test('[rap/swap] :: should estimate swap gas limit', async () => {
-  const swapGasLimit = await estimateSwapGasLimit({
+test('[rap/crosschainSwap] :: should estimate crosschain swap gas limit', async () => {
+  const swapGasLimit = await estimateCrosschainSwapGasLimit({
     chainId: chain.mainnet.id,
     requiresApprove: false,
-    tradeDetails: quote as Quote,
+    tradeDetails: crosschainQuote as CrosschainQuote,
   });
 
   expect(Number(swapGasLimit)).toBeGreaterThan(0);
 });
 
-test('[rap/swap] :: should execute swap', async () => {
+test('[rap/crosschainSwap] :: should execute crosschain swap', async () => {
   const provider = getProvider({ chainId: chain.mainnet.id });
   const wallet = new Wallet(TEST_PKEY, provider);
-  const swapTx = await executeSwap({
-    chainId: chain.mainnet.id,
+
+  const swapTx = await executeCrosschainSwap({
     gasLimit: '600000',
     transactionGasParams: {
-      maxFeePerGas: '200000000000',
+      maxFeePerGas: '2000000000000',
       maxPriorityFeePerGas: '2000000000',
     },
-    tradeDetails: quote as Quote,
+    tradeDetails: crosschainQuote as CrosschainQuote,
     wallet,
-    permit: false,
   });
 
   expect(swapTx?.hash).toBeDefined();

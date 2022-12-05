@@ -126,9 +126,9 @@ export const crosschainSwap = async (
   }
 
   const gasLimit = await estimateCrosschainSwapGasLimit({
-    chainId: Number(chainId),
+    chainId,
     requiresApprove,
-    tradeDetails: tradeDetails as CrosschainQuote,
+    tradeDetails,
   });
 
   const nonce = baseNonce ? baseNonce + index : undefined;
@@ -137,7 +137,7 @@ export const crosschainSwap = async (
     chainId,
     gasLimit,
     nonce,
-    tradeDetails: tradeDetails as CrosschainQuote,
+    tradeDetails,
     wallet,
     transactionGasParams: gasParams,
   };
