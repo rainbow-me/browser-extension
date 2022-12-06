@@ -26,7 +26,9 @@
         "title": "Auto-Lock Timer"
       },
       "change_password": {
-        "title": "Change Password"
+        "title": "Change Password",
+        "header_label": "Change your password",
+        "update_password": "Update Password"
       }
     },
     "transactions": {
@@ -100,7 +102,6 @@
     "switch_networks": "Switch Networks",
     "switch_wallets": "Switch Wallets",
     "connect": "Connect to %{appName}",
-    "cancel": "Cancel",
     "message_signing_request": "Message Signing Request",
     "message": "Message",
     "sign_message": "Sign Message",
@@ -176,5 +177,8 @@
   },
   "wallets": {
     "title": "Wallets"
+  },
+  "common_actions": {
+    "cancel": "Cancel"
   }
 }

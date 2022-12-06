@@ -91,6 +91,11 @@ export const stylesForHeight: Record<
     fontSize: '14pt',
     paddingHorizontal: '12px',
   },
+  '40px': {
+    borderRadius: '12px',
+    fontSize: '14pt',
+    paddingHorizontal: '12px',
+  },
   '44px': {
     borderRadius: '12px',
     fontSize: '14pt',
