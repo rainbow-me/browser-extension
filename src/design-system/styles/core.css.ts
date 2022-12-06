@@ -53,7 +53,7 @@ const list = style({ listStyle: 'none' });
 const table = style({ borderCollapse: 'collapse', borderSpacing: 0 });
 const appearanceNone = style({ appearance: 'none' });
 const backgroundTransparent = style({ backgroundColor: 'transparent' });
-const button = style([backgroundTransparent, { cursor: 'pointer' }]);
+const button = style([backgroundTransparent, { cursor: 'default' }]);
 const field = [appearanceNone, backgroundTransparent];
 
 const quotes = style({
