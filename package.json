@@ -57,7 +57,7 @@
     "@metamask/eth-sig-util": "5.0.1",
     "@radix-ui/react-dropdown-menu": "2.0.1",
     "@radix-ui/react-polymorphic": "0.0.14",
-    "@rainbow-me/swaps": "0.1.17",
+    "@rainbow-me/swaps": "0.2.0",
     "@sentry/browser": "7.16.0",
     "@sentry/tracing": "7.16.0",
     "@tanstack/query-async-storage-persister": "4.10.3",

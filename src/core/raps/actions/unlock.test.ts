@@ -38,9 +38,9 @@ test('[rap/unlock] :: get raw allowance', async () => {
 test('[rap/unlock] :: asset needs unlocking', async () => {
   const needsUnlocking = await assetNeedsUnlocking({
     amount: '1000',
-    accountAddress: RAINBOW_WALLET,
+    owner: RAINBOW_WALLET,
     assetToUnlock: USDC_MAINNET_ASSET,
-    contractAddress: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+    spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
     chainId: chain.mainnet.id,
   });
   expect(needsUnlocking).toBe(true);
