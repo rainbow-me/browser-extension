@@ -25,6 +25,7 @@ export type InputProps = {
   onChange?: InputHTMLAttributes<HTMLInputElement>['onChange'];
   onFocus?: InputHTMLAttributes<HTMLInputElement>['onFocus'];
   placeholder?: string;
+  borderColor?: BoxStyles['borderColor'];
   testId?: string;
   variant: 'surface' | 'bordered' | 'transparent';
   value?: InputHTMLAttributes<HTMLInputElement>['value'];
@@ -103,9 +104,14 @@ export function Input({
   variant,
   testId,
   innerRef,
+  borderColor,
   ...inputProps
 }: InputProps) {
-  const { background, borderColor, textColor } = stylesForVariant[variant];
+  const {
+    background,
+    borderColor: borderColorFromVariant,
+    textColor,
+  } = stylesForVariant[variant];
   const { borderRadius, fontSize, paddingHorizontal } = stylesForHeight[height];
   return (
     <Box
@@ -125,7 +131,7 @@ export function Input({
         as="input"
         ref={innerRef}
         background={background}
-        borderColor={borderColor}
+        borderColor={borderColor ? borderColor : borderColorFromVariant}
         borderWidth="1px"
         borderRadius={borderRadius}
         className={[

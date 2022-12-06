@@ -97,22 +97,8 @@ export function Unlock() {
                 placeholder={i18n.t('unlock.password')}
                 value={password}
                 onChange={handlePasswordChange}
+                borderColor={error !== '' ? 'red' : undefined}
               />
-              {error !== '' && (
-                <Box
-                  borderWidth="1px"
-                  borderColor="red"
-                  background="transparent"
-                  position="absolute"
-                  marginTop="-44px"
-                  borderRadius="12px"
-                  style={{
-                    height: '44px',
-                    width: '100%',
-                    pointerEvents: 'none',
-                  }}
-                />
-              )}
             </Box>
             <Box width="fit">
               <Button

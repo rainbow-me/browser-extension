@@ -8,6 +8,7 @@ globalStyle('html, body', {
 globalStyle('html, body, #main', {
   minWidth: '360px',
   minHeight: '600px',
+  overscrollBehaviorY: 'none',
 });
 
 globalStyle('*', {

@@ -1,8 +1,9 @@
 import React from 'react';
-import { Chain, chain } from 'wagmi';
+import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
+import { ChainId } from '~/core/types/chains';
 import {
   GasFeeLegacyParamsBySpeed,
   GasFeeParamsBySpeed,
@@ -32,7 +33,7 @@ export const SwitchSpeedMenuSelector = ({
 }) => {
   return (
     <>
-      {chain.mainnet.id === chainId ? (
+      {ChainId.mainnet === chainId ? (
         <DropdownMenuRadioItem value={'custom'}>
           <Box width="full" id={`switch-network-item-${0}`}>
             <Inline

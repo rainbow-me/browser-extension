@@ -1,9 +1,9 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import React, { useMemo } from 'react';
-import { chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import { ChainId } from '~/core/types/chains';
 import { getTransactionRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box, Inline, Inset, Separator, Stack, Text } from '~/design-system';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
@@ -75,7 +75,7 @@ export function SendTransactionInfo({ request }: SignMessageProps) {
                     alignVertical="center"
                     alignHorizontal="center"
                   >
-                    <ChainBadge chainId={chain.mainnet.id} size={'small'} />
+                    <ChainBadge chainId={ChainId.mainnet} size={'small'} />
                     <Text size="14pt" weight="semibold" color="label">
                       {value}
                     </Text>

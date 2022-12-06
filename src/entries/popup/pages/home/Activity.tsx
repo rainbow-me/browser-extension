@@ -42,6 +42,7 @@ export function Activity() {
     count: listData.length,
     getScrollElement: () => containerRef.current,
     estimateSize: (i) => (typeof listData[i] === 'string' ? 34 : 52),
+    enableSmoothScroll: false,
   });
   return (
     <Box

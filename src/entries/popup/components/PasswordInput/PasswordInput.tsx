@@ -1,17 +1,20 @@
 import React, { useCallback, useRef, useState } from 'react';
 
-import { Box, Symbol } from '~/design-system';
+import { Box, ButtonSymbol } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
+import { BoxStyles } from '~/design-system/styles/core.css';
 
 export function PasswordInput({
   placeholder,
   testId,
   value,
+  borderColor,
   onChange,
 }: {
   placeholder: string;
   testId?: string;
   value: string;
+  borderColor?: BoxStyles['borderColor'];
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 }) {
   const [visible, setVisible] = useState(false);
@@ -52,31 +55,23 @@ export function PasswordInput({
         onChange={handleOnChange}
         type={visible ? 'text' : 'password'}
         innerRef={inputRef}
+        borderColor={borderColor}
       />
       <Box position="relative">
         <Box
           position="absolute"
           style={{
-            top: '-30px',
+            top: '-40.5px',
             right: '10px',
           }}
         >
-          <button
+          <ButtonSymbol
+            color={visible ? 'label' : 'labelTertiary'}
+            height="36px"
+            variant="transparent"
+            symbol={!visible ? 'eye' : 'eye.slash.fill'}
             onClick={toggleVisibility}
-            style={{
-              background: 'transparent',
-              border: 'none',
-              color: 'white',
-              cursor: 'pointer',
-            }}
-          >
-            <Symbol
-              symbol={!visible ? 'eye' : 'eye.slash.fill'}
-              size={16}
-              weight="regular"
-              color={visible ? 'label' : 'labelTertiary'}
-            />
-          </button>
+          />
         </Box>
       </Box>
     </Box>

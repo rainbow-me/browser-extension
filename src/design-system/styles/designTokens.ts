@@ -355,6 +355,9 @@ function selectBackgroundAsForeground(
 
 export const buttonColors = [
   'accent',
+  'label',
+  'labelSecondary',
+  'labelTertiary',
   ...selectBackgroundColors(
     'fill',
     'fillSecondary',

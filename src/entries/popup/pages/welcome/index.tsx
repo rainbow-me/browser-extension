@@ -1,18 +1,14 @@
 import * as React from 'react';
 
-import rainbowLogoLight from 'static/assets/rainbow/rainbow-logo-light.png';
-import rainbowLogo from 'static/assets/rainbow/rainbow-logo.png';
 import { i18n } from '~/core/languages';
 import { Box, Button, Text, ThemeProvider } from '~/design-system';
 import { Rows } from '~/design-system/components/Rows/Rows';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
-import { getTheme } from '~/design-system/styles/theme';
 
 import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
+import { LogoWithLetters } from '../../components/LogoWithLetters/LogoWithLetters';
 
 export function Welcome() {
-  const themeInfo = getTheme();
-
   return (
     <FlyingRainbows>
       <Box
@@ -26,15 +22,7 @@ export function Welcome() {
           justifyContent="center"
           paddingBottom="4px"
         >
-          <img
-            src={
-              (themeInfo.savedTheme || themeInfo.systemTheme) === 'light'
-                ? rainbowLogoLight
-                : rainbowLogo
-            }
-            width="162"
-            height="40"
-          />
+          <LogoWithLetters color="label" />
         </Box>
         <Box
           width="full"
@@ -67,7 +55,7 @@ export function Welcome() {
                 <Button
                   color="surfaceSecondaryElevated"
                   height="44px"
-                  variant="raised"
+                  variant="flat"
                   width="full"
                 >
                   {i18n.t('welcome.import_wallet')}
@@ -86,7 +74,7 @@ export function Welcome() {
                 <a
                   href="https://rainbow.me/terms-of-use"
                   target="_blank"
-                  style={{ color: accentColorAsHsl, cursor: 'pointer' }}
+                  style={{ color: accentColorAsHsl }}
                   rel="noreferrer"
                 >
                   {i18n.t('welcome.disclaimer_tos_link')}
