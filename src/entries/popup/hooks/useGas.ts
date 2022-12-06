@@ -9,7 +9,7 @@ import {
   MeteorologyResponse,
 } from '~/core/resources/gas/meteorology';
 import { useGasStore } from '~/core/state';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedAsset } from '~/core/types/assets';
 import {
   GasFeeLegacyParamsBySpeed,
   GasFeeParamsBySpeed,
@@ -32,7 +32,7 @@ export const parseGasFeeParamsBySpeed = ({
   chainId: Chain['id'];
   data?: MeteorologyResponse | MeteorologyLegacyResponse;
   gasLimit: string;
-  nativeAsset?: ParsedAddressAsset;
+  nativeAsset?: ParsedAsset;
 }) => {
   if (chainId === chain.mainnet.id && data) {
     const response = data as MeteorologyResponse;
