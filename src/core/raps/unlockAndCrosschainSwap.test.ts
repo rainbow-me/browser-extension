@@ -17,34 +17,11 @@ import {
   createUnlockAndCrosschainSwapRap,
   estimateUnlockAndCrosschainSwap,
 } from './unlockAndCrosschainSwap';
+import { ENS_MAINNET_ASSET, ETH_MAINNET_ASSET } from './unlockAndSwap.test';
 
 const TEST_ADDRESS = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8';
 
-const ETH_ASSET: ParsedAsset = {
-  address: 'eth' as Address,
-  chainId: 1,
-  chainName: ChainName.mainnet,
-  colors: { primary: '#808088' },
-  isNativeAsset: true,
-  name: 'Ethereum',
-  native: {
-    price: {
-      amount: 1291.8200000000002,
-      change: '2.79%',
-      display: '$1,291.82',
-    },
-  },
-  price: {
-    value: 1291.8200000000002,
-    relative_change_24h: 2.7856239208790683,
-    changed_at: -1,
-  },
-  symbol: 'ETH',
-  type: 'token',
-  uniqueId: 'eth_1' as UniqueId,
-  decimals: 18,
-};
-const USDC_ASSET: ParsedAsset = {
+const USDC_ARBITRUM_ASSET: ParsedAsset = {
   address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Address,
   chainId: ChainId.arbitrum,
   chainName: ChainName.arbitrum,
@@ -70,27 +47,6 @@ const USDC_ASSET: ParsedAsset = {
   decimals: 6,
 };
 
-const ENS_ASSET: ParsedAsset = {
-  address: '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72',
-  chainId: 1,
-  chainName: ChainName.mainnet,
-  colors: { primary: '#6E9BF8' },
-  isNativeAsset: false,
-  name: 'Ethereum Name Service',
-  native: {
-    price: { change: '0.64%', amount: 13.984137272000002, display: '$13.98' },
-  },
-  price: {
-    changed_at: -1,
-    relative_change_24h: 0.6397137281285907,
-    value: 13.984137272000002,
-  },
-  symbol: 'ENS',
-  type: 'token',
-  uniqueId: '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72_1',
-  decimals: 18,
-};
-
 export async function delay(ms: number) {
   // eslint-disable-next-line no-promise-executor-return
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -108,7 +64,7 @@ beforeAll(async () => {
     chainId: 1,
     fromAddress: TEST_ADDRESS,
     sellTokenAddress: ETH_ADDRESS_AGGREGATORS,
-    buyTokenAddress: USDC_ASSET.address,
+    buyTokenAddress: USDC_ARBITRUM_ASSET.address,
     sellAmount: '1000000000000000000',
     slippage: 5,
     destReceiver: TEST_ADDRESS,
@@ -118,8 +74,8 @@ beforeAll(async () => {
   needsUnlockQuote = await getQuote({
     chainId: 1,
     fromAddress: TEST_ADDRESS,
-    sellTokenAddress: ENS_ASSET.address,
-    buyTokenAddress: USDC_ASSET.address,
+    sellTokenAddress: ENS_MAINNET_ASSET.address,
+    buyTokenAddress: USDC_ARBITRUM_ASSET.address,
     sellAmount: '1000000000000000000',
     slippage: 5,
     destReceiver: TEST_ADDRESS,
@@ -132,9 +88,9 @@ test('[rap/unlockAndCrosschainSwap] :: estimate unlock and swap rap without unlo
   const gasLimit = await estimateUnlockAndCrosschainSwap({
     tradeDetails: doesntNeedUnlockQuote as CrosschainQuote,
     chainId: 1,
-    inputCurrency: ETH_ASSET,
+    inputCurrency: ETH_MAINNET_ASSET,
     inputAmount: '1000000000000000000',
-    outputCurrency: USDC_ASSET,
+    outputCurrency: USDC_ARBITRUM_ASSET,
   });
   expect(Number(gasLimit)).toBeGreaterThan(0);
   swapGasLimit = Number(gasLimit);
@@ -144,9 +100,9 @@ test('[rap/unlockAndCrosschainSwap] :: estimate unlock and swap rap with unlock'
   const gasLimit = await estimateUnlockAndCrosschainSwap({
     tradeDetails: needsUnlockQuote as CrosschainQuote,
     chainId: 1,
-    inputCurrency: ENS_ASSET,
+    inputCurrency: ENS_MAINNET_ASSET,
     inputAmount: '1000000000000000000',
-    outputCurrency: USDC_ASSET,
+    outputCurrency: USDC_ARBITRUM_ASSET,
   });
   expect(Number(gasLimit)).toBeGreaterThan(0);
   expect(Number(gasLimit)).toBeGreaterThan(swapGasLimit);
@@ -156,8 +112,8 @@ test('[rap/unlockAndCrosschainSwap] :: create unlock and swap rap without unlock
   const rap = await createUnlockAndCrosschainSwapRap({
     tradeDetails: doesntNeedUnlockQuote as CrosschainQuote,
     chainId: 1,
-    inputCurrency: ETH_ASSET,
-    outputCurrency: USDC_ASSET,
+    inputCurrency: ETH_MAINNET_ASSET,
+    outputCurrency: USDC_ARBITRUM_ASSET,
   });
   expect(rap.actions.length).toBe(1);
 });
@@ -166,8 +122,8 @@ test('[rap/unlockAndCrosschainSwap] :: create unlock and swap rap with unlock', 
   const rap = await createUnlockAndCrosschainSwapRap({
     tradeDetails: needsUnlockQuote as CrosschainQuote,
     chainId: 1,
-    inputCurrency: ENS_ASSET,
-    outputCurrency: USDC_ASSET,
+    inputCurrency: ENS_MAINNET_ASSET,
+    outputCurrency: USDC_ARBITRUM_ASSET,
   });
   expect(rap.actions.length).toBe(2);
 });

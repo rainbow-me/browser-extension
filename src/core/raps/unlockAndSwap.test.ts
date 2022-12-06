@@ -16,7 +16,7 @@ import { createUnlockAndSwapRap, estimateUnlockAndSwap } from './unlockAndSwap';
 
 const TEST_ADDRESS = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8';
 
-const ETH_ASSET: ParsedAsset = {
+export const ETH_MAINNET_ASSET: ParsedAsset = {
   address: 'eth' as Address,
   chainId: 1,
   chainName: ChainName.mainnet,
@@ -40,7 +40,7 @@ const ETH_ASSET: ParsedAsset = {
   uniqueId: 'eth_1' as UniqueId,
   decimals: 18,
 };
-const USDC_ASSET: ParsedAsset = {
+export const USDC_MAINNET_ASSET: ParsedAsset = {
   address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Address,
   chainId: 1,
   chainName: 'mainnet' as ChainName,
@@ -65,8 +65,7 @@ const USDC_ASSET: ParsedAsset = {
   uniqueId: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_1' as UniqueId,
   decimals: 6,
 };
-
-const ENS_ASSET: ParsedAsset = {
+export const ENS_MAINNET_ASSET: ParsedAsset = {
   address: '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72',
   chainId: 1,
   chainName: ChainName.mainnet,
@@ -104,7 +103,7 @@ beforeAll(async () => {
     chainId: 1,
     fromAddress: TEST_ADDRESS,
     sellTokenAddress: ETH_ADDRESS_AGGREGATORS,
-    buyTokenAddress: USDC_ASSET.address,
+    buyTokenAddress: USDC_MAINNET_ASSET.address,
     sellAmount: '1000000000000000000',
     slippage: 5,
     destReceiver: TEST_ADDRESS,
@@ -114,8 +113,8 @@ beforeAll(async () => {
   needsUnlockQuote = await getQuote({
     chainId: 1,
     fromAddress: TEST_ADDRESS,
-    sellTokenAddress: ENS_ASSET.address,
-    buyTokenAddress: USDC_ASSET.address,
+    sellTokenAddress: ENS_MAINNET_ASSET.address,
+    buyTokenAddress: USDC_MAINNET_ASSET.address,
     sellAmount: '1000000000000000000',
     slippage: 5,
     destReceiver: TEST_ADDRESS,
@@ -128,9 +127,9 @@ test('[rap/unlockAndSwap] :: estimate unlock and swap rap without unlock', async
   const gasLimit = await estimateUnlockAndSwap({
     tradeDetails: doesntNeedUnlockQuote as Quote,
     chainId: 1,
-    inputCurrency: ETH_ASSET,
+    inputCurrency: ETH_MAINNET_ASSET,
     inputAmount: '1000000000000000000',
-    outputCurrency: USDC_ASSET,
+    outputCurrency: USDC_MAINNET_ASSET,
   });
   expect(Number(gasLimit)).toBeGreaterThan(0);
   swapGasLimit = Number(gasLimit);
@@ -140,9 +139,9 @@ test('[rap/unlockAndSwap] :: estimate unlock and swap rap with unlock', async ()
   const gasLimit = await estimateUnlockAndSwap({
     tradeDetails: needsUnlockQuote as Quote,
     chainId: 1,
-    inputCurrency: ENS_ASSET,
+    inputCurrency: ENS_MAINNET_ASSET,
     inputAmount: '1000000000000000000',
-    outputCurrency: USDC_ASSET,
+    outputCurrency: USDC_MAINNET_ASSET,
   });
   expect(Number(gasLimit)).toBeGreaterThan(0);
   expect(Number(gasLimit)).toBeGreaterThan(swapGasLimit);
@@ -152,8 +151,8 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap without unlock', async (
   const rap = await createUnlockAndSwapRap({
     tradeDetails: doesntNeedUnlockQuote as Quote,
     chainId: 1,
-    inputCurrency: ETH_ASSET,
-    outputCurrency: USDC_ASSET,
+    inputCurrency: ETH_MAINNET_ASSET,
+    outputCurrency: USDC_MAINNET_ASSET,
   });
   expect(rap.actions.length).toBe(1);
 });
@@ -162,8 +161,8 @@ test('[rap/unlockAndSwap] :: create unlock and swap rap with unlock', async () =
   const rap = await createUnlockAndSwapRap({
     tradeDetails: needsUnlockQuote as Quote,
     chainId: 1,
-    inputCurrency: ENS_ASSET,
-    outputCurrency: USDC_ASSET,
+    inputCurrency: ENS_MAINNET_ASSET,
+    outputCurrency: USDC_MAINNET_ASSET,
   });
   expect(rap.actions.length).toBe(2);
 });
