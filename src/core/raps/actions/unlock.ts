@@ -2,6 +2,11 @@ import { MaxUint256 } from '@ethersproject/constants';
 import { Address, Chain, erc20ABI, getProvider } from '@wagmi/core';
 import { Contract, Wallet } from 'ethers';
 
+import {
+  TransactionGasParams,
+  TransactionLegacyGasParams,
+} from '~/core/types/gas';
+
 import { ethUnits } from '../../references';
 import { gasStore } from '../../state';
 import { ParsedAsset } from '../../types/assets';
@@ -38,37 +43,28 @@ export const getRawAllowance = async ({
 };
 
 export const assetNeedsUnlocking = async ({
-  accountAddress,
+  owner,
   amount,
-  assetToUnlock,
-  contractAddress,
+  token,
+  spender,
   chainId,
 }: {
-  accountAddress: Address;
+  owner: Address;
   amount: string;
-  assetToUnlock: ParsedAsset;
-  contractAddress: Address;
+  token: ParsedAsset;
+  spender: Address;
   chainId: Chain['id'];
 }) => {
-  const { isNativeAsset } = assetToUnlock;
-  if (isNativeAsset) return false;
-
-  //   const cacheKey =
-  //     `${accountAddress}|${address}|${contractAddress}`.toLowerCase();
+  if (token.isNativeAsset) return false;
 
   const allowance = await getRawAllowance({
-    owner: accountAddress,
-    token: assetToUnlock,
-    spender: contractAddress,
+    owner,
+    token,
+    spender,
     chainId,
   });
 
-  // TODO Cache that value
-  //   if (allowance !== null) {
-  //     AllowancesCache.cache[cacheKey] = allowance;
-  //   }
-
-  const rawAmount = convertAmountToRawAmount(amount, assetToUnlock.decimals);
+  const rawAmount = convertAmountToRawAmount(amount, token.decimals);
   const needsUnlocking = !greaterThan(allowance, rawAmount);
   return needsUnlocking;
 };
@@ -110,27 +106,18 @@ export const executeApprove = async ({
 }: {
   chainId: Chain['id'];
   gasLimit: string;
-  gasParams: {
-    gasPrice?: string;
-    maxFeePerGas?: string;
-    maxPriorityFeePerGas?: string;
-  };
+  gasParams: TransactionGasParams | TransactionLegacyGasParams;
   nonce?: number;
   spender: Address;
   tokenAddress: Address;
   wallet: Wallet;
 }) => {
   const tokenContract = new Contract(tokenAddress, erc20ABI, wallet);
+
   return tokenContract.approve(spender, MaxUint256, {
     gasLimit: toHex(gasLimit) || undefined,
-    // In case it's an L2 with legacy gas price
-    ...(gasParams.gasPrice ? { gasPrice: gasParams.gasPrice } : {}),
-    // EIP-1559 like networks
-    ...(gasParams.maxFeePerGas ? { maxFeePerGas: gasParams.maxFeePerGas } : {}),
-    ...(gasParams.maxPriorityFeePerGas
-      ? { maxPriorityFeePerGas: gasParams.maxPriorityFeePerGas }
-      : {}),
     nonce: nonce ? toHex(String(nonce)) : undefined,
+    ...gasParams,
   });
 };
 

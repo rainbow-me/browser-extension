@@ -59,10 +59,10 @@ export const estimateUnlockAndSwap = async (
 
   if (!isNativeAssetUnwrapping && !nativeAsset) {
     swapAssetNeedsUnlocking = await assetNeedsUnlocking({
-      accountAddress: accountAddress as Address,
+      owner: accountAddress as Address,
       amount: inputAmount,
       assetToUnlock: inputCurrency,
-      contractAddress: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+      spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
       chainId,
     });
   }
@@ -121,10 +121,10 @@ export const createUnlockAndSwapRap = async (
 
   if (!isNativeAssetUnwrapping && !nativeAsset) {
     swapAssetNeedsUnlocking = await assetNeedsUnlocking({
-      accountAddress,
+      owner: accountAddress,
       amount: inputAmount as string,
       assetToUnlock: inputCurrency,
-      contractAddress: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+      spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
       chainId,
     });
   }

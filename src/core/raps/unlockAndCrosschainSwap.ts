@@ -58,10 +58,10 @@ export const estimateUnlockAndCrosschainSwap = async (
 
   if (!isNativeAssetUnwrapping && !nativeAsset) {
     swapAssetNeedsUnlocking = await assetNeedsUnlocking({
-      accountAddress,
+      owner: accountAddress,
       amount: inputAmount,
       assetToUnlock: inputCurrency,
-      contractAddress: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+      spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
       chainId,
     });
   }
@@ -119,10 +119,10 @@ export const createUnlockAndCrosschainSwapRap = async (
 
   if (!isNativeAssetUnwrapping && !nativeAsset) {
     swapAssetNeedsUnlocking = await assetNeedsUnlocking({
-      accountAddress,
+      owner: accountAddress,
       amount: inputAmount as string,
       assetToUnlock: inputCurrency,
-      contractAddress: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+      spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
       chainId,
     });
   }
