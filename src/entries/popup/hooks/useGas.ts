@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useEffect, useMemo, useState } from 'react';
-import { Chain, chain } from 'wagmi';
+import { Chain } from 'wagmi';
 
 import { ethUnits } from '~/core/references';
 import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
@@ -9,6 +9,7 @@ import {
   MeteorologyResponse,
 } from '~/core/resources/gas/meteorology';
 import { useGasStore } from '~/core/state';
+import { ChainId } from '~/core/types/chains';
 import {
   GasFeeLegacyParamsBySpeed,
   GasFeeParamsBySpeed,
@@ -43,7 +44,7 @@ export const useGas = ({
 
   const gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed =
     useMemo(() => {
-      if (chainId === chain.mainnet.id && data) {
+      if (chainId === ChainId.mainnet && data) {
         const response = data as MeteorologyResponse;
         const {
           data: {
@@ -66,7 +67,7 @@ export const useGas = ({
             wei: baseFeeSuggestion,
             blocksToConfirmation,
             gasLimit,
-            nativeAsset,
+            nativeAsset: nativeAsset || undefined,
           });
 
         return {
@@ -100,7 +101,7 @@ export const useGas = ({
             speed,
             waitTime,
             gasLimit,
-            nativeAsset,
+            nativeAsset: nativeAsset || undefined,
           });
 
         return {

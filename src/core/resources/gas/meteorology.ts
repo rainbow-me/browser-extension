@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Chain, chain } from 'wagmi';
+import { Chain } from 'wagmi';
 
 import { meteorologyHttp } from '~/core/network';
 import {
@@ -9,13 +9,13 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { bsc } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 
 const getMeteorologyNetworkFromChainId = (chainId: Chain['id']) => {
   switch (chainId) {
-    case chain.polygon.id:
+    case ChainId.polygon:
       return 'polygon';
-    case bsc.id:
+    case ChainId.bsc:
       return 'bsc';
     default:
       return 'mainnet';

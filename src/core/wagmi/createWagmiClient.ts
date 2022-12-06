@@ -13,7 +13,7 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { queryClient } from '../react-query';
 import { Storage } from '../storage';
-import { bsc } from '../types/chains';
+import { ChainId, bsc } from '../types/chains';
 
 const noopStorage = {
   getItem: () => '',
@@ -26,7 +26,7 @@ const { chains, provider, webSocketProvider } = configureChains(
   [
     jsonRpcProvider({
       rpc: (chain) => {
-        if (chain.id !== bsc.id) return null;
+        if (chain.id !== ChainId.bsc) return null;
         return { http: chain.rpcUrls.default };
       },
     }),

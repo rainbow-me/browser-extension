@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
-import { chain } from 'wagmi';
 
 import { Language } from '~/core/languages';
+import { ChainId } from '~/core/types/chains';
 
 import {
   currentAddressStore,
@@ -28,8 +28,8 @@ test('should be able to set and change address', async () => {
 test('should be able to set and change chainId', async () => {
   const { currentChainId, setCurrentChainId } = currentChainIdStore.getState();
   expect(currentChainId).toBe(1);
-  setCurrentChainId(chain.mainnet.id);
-  expect(currentChainIdStore.getState().currentChainId).toBe(chain.mainnet.id);
+  setCurrentChainId(ChainId.mainnet);
+  expect(currentChainIdStore.getState().currentChainId).toBe(ChainId.mainnet);
 });
 
 test('should be able to set and change currency', async () => {

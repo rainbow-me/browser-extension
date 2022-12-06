@@ -1,38 +1,77 @@
-import { Chain, chain } from 'wagmi';
+import { Address } from 'wagmi';
 
 import {
   ARBITRUM_ETH_ADDRESS,
+  BNB_BSC_ADDRESS,
+  BNB_MAINNET_ADDRESS,
   ETH_ADDRESS,
+  MATIC_MAINNET_ADDRESS,
   MATIC_POLYGON_ADDRESS,
+  NATIVE_ASSETS_PER_CHAIN,
   OPTIMISM_ETH_ADDRESS,
 } from '~/core/references';
 import { UniqueId } from '~/core/types/assets';
+import { ChainId, ChainName } from '~/core/types/chains';
+import { chainNameFromChainId } from '~/core/utils/chains';
 
-import { useUserAsset } from './useUserAsset';
+import { useNativeAssets } from './useNativeAssets';
+
+const getNetworkNativeMainnetAssetAddress = ({
+  chainId,
+}: {
+  chainId: ChainId;
+}): Address => {
+  switch (chainId) {
+    case ChainId.arbitrum:
+    case ChainId.mainnet:
+    case ChainId.optimism:
+      return ETH_ADDRESS as Address;
+    case ChainId.bsc:
+      return BNB_MAINNET_ADDRESS;
+    case ChainId.polygon:
+      return MATIC_MAINNET_ADDRESS;
+    default:
+      return ETH_ADDRESS as Address;
+  }
+};
 
 const getNetworkNativeAssetUniqueId = ({
   chainId,
 }: {
-  chainId: Chain['id'];
+  chainId: ChainId;
 }): UniqueId => {
   switch (chainId) {
-    case chain.arbitrum.id:
+    case ChainId.arbitrum:
       return `${ARBITRUM_ETH_ADDRESS}_${chainId}` as UniqueId;
-    case chain.optimism.id:
+    case ChainId.mainnet:
+      return `${ETH_ADDRESS}_${chainId}` as UniqueId;
+    case ChainId.optimism:
       return `${OPTIMISM_ETH_ADDRESS}_${chainId}` as UniqueId;
-    case chain.polygon.id:
+    case ChainId.bsc:
+      return `${BNB_BSC_ADDRESS}_${chainId}` as UniqueId;
+    case ChainId.polygon:
       return `${MATIC_POLYGON_ADDRESS}_${chainId}` as UniqueId;
     default:
       return `${ETH_ADDRESS}_${chainId}` as UniqueId;
   }
 };
 
-export function useNativeAssetForNetwork({
-  chainId,
-}: {
-  chainId: Chain['id'];
-}) {
-  const uniqueId = getNetworkNativeAssetUniqueId({ chainId });
-  const nativeAsset = useUserAsset(uniqueId);
-  return nativeAsset;
+export function useNativeAssetForNetwork({ chainId }: { chainId: ChainId }) {
+  const nativeAssets = useNativeAssets();
+  const mainnetAddress = getNetworkNativeMainnetAssetAddress({ chainId });
+  const nativeAsset = nativeAssets?.[`${mainnetAddress}_${ChainId.mainnet}`];
+  if (nativeAsset) {
+    return {
+      ...nativeAsset,
+      chainId: nativeAsset?.chainId || ChainId.mainnet,
+      chainName: nativeAsset?.chainName || ChainName.mainnet,
+      uniqueId: getNetworkNativeAssetUniqueId({ chainId }),
+      address: NATIVE_ASSETS_PER_CHAIN[
+        chainNameFromChainId(chainId)
+      ] as Address,
+      mainnetAddress,
+      isNativeAsset: true,
+    };
+  }
+  return null;
 }
