@@ -45,26 +45,26 @@ export const getRawAllowance = async ({
 export const assetNeedsUnlocking = async ({
   owner,
   amount,
-  token,
+  assetToUnlock,
   spender,
   chainId,
 }: {
   owner: Address;
   amount: string;
-  token: ParsedAsset;
+  assetToUnlock: ParsedAsset;
   spender: Address;
   chainId: Chain['id'];
 }) => {
-  if (token.isNativeAsset) return false;
+  if (assetToUnlock.isNativeAsset) return false;
 
   const allowance = await getRawAllowance({
     owner,
-    token,
+    token: assetToUnlock,
     spender,
     chainId,
   });
 
-  const rawAmount = convertAmountToRawAmount(amount, token.decimals);
+  const rawAmount = convertAmountToRawAmount(amount, assetToUnlock.decimals);
   const needsUnlocking = !greaterThan(allowance, rawAmount);
   return needsUnlocking;
 };
