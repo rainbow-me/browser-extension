@@ -40,13 +40,15 @@ export function Privacy() {
             }
             titleComponent={
               <MenuItem.Title
-                text={i18n.t('privacy_and_security.hide_asset_balances')}
+                text={i18n.t(
+                  'settings.privacy_and_security.hide_asset_balances',
+                )}
               />
             }
           />
           <MenuItem.Description
             text={i18n.t(
-              'privacy_and_security.hide_asset_balances_description',
+              'settings.privacy_and_security.hide_asset_balances_description',
             )}
           />
           <MenuItem
@@ -58,7 +60,9 @@ export function Privacy() {
             }
             titleComponent={
               <MenuItem.Title
-                text={i18n.t('privacy_and_security.auto_hide_balances_under_1')}
+                text={i18n.t(
+                  'settings.privacy_and_security.auto_hide_balances_under_1',
+                )}
               />
             }
           />
@@ -68,9 +72,12 @@ export function Privacy() {
             hasRightArrow
             titleComponent={
               <MenuItem.Title
-                text={i18n.t('privacy_and_security.change_password')}
+                text={i18n.t(
+                  'settings.privacy_and_security.change_password.title',
+                )}
               />
             }
+            onClick={() => navigate('/settings/privacy/changePassword')}
           />
           <MenuItem
             hasRightArrow
@@ -81,7 +88,9 @@ export function Privacy() {
             }
             titleComponent={
               <MenuItem.Title
-                text={i18n.t('privacy_and_security.auto_lock_timer')}
+                text={i18n.t(
+                  'settings.privacy_and_security.auto_lock_timer.title',
+                )}
               />
             }
             onClick={() => navigate('/settings/privacy/autoLockTimer')}
@@ -93,7 +102,7 @@ export function Privacy() {
             titleComponent={
               <MenuItem.Title
                 color="red"
-                text={i18n.t('privacy_and_security.view_private_key')}
+                text={i18n.t('settings.privacy_and_security.view_private_key')}
               />
             }
           />
@@ -103,7 +112,7 @@ export function Privacy() {
               <MenuItem.Title
                 color="red"
                 text={i18n.t(
-                  'privacy_and_security.view_secret_recovery_phrase',
+                  'settings.privacy_and_security.view_secret_recovery_phrase',
                 )}
               />
             }
