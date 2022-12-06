@@ -2,6 +2,8 @@ import { CrosschainQuote, fillCrosschainQuote } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
 import { Wallet } from 'ethers';
 
+import { logger } from '~/logger';
+
 import { gasStore } from '../../state';
 import {
   TransactionGasParams,
@@ -124,11 +126,20 @@ export const crosschainSwap = async (
     });
   }
 
-  const gasLimit = await estimateCrosschainSwapGasLimit({
-    chainId,
-    requiresApprove,
-    tradeDetails,
-  });
+  let gasLimit;
+  try {
+    gasLimit = await estimateCrosschainSwapGasLimit({
+      chainId,
+      requiresApprove,
+      tradeDetails,
+    });
+  } catch (e) {
+    logger.error({
+      name: 'crosschainSwap: error estimateCrosschainSwapGasLimit',
+      message: (e as Error)?.message,
+    });
+    throw e;
+  }
 
   const nonce = baseNonce ? baseNonce + index : undefined;
 
@@ -141,7 +152,16 @@ export const crosschainSwap = async (
     transactionGasParams: gasParams,
   };
 
-  const swap = await executeCrosschainSwap(swapParams);
+  let swap;
+  try {
+    swap = await executeCrosschainSwap(swapParams);
+  } catch (e) {
+    logger.error({
+      name: 'crosschainSwap: error executeCrosschainSwap',
+      message: (e as Error)?.message,
+    });
+    throw e;
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const newTransaction = {

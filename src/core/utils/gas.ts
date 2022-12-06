@@ -10,6 +10,8 @@ import { BigNumberish } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 import { Chain } from 'wagmi';
 
+import { logger } from '~/logger';
+
 import {
   OVM_GAS_PRICE_ORACLE,
   SupportedCurrencyKey,
@@ -320,6 +322,10 @@ export const estimateGasWithPadding = async ({
     // otherwise default to the last block gas limit
     return lastBlockGasLimit;
   } catch (error) {
+    logger.error({
+      name: 'estimateGasWithPadding',
+      message: (error as Error).message,
+    });
     return null;
   }
 };

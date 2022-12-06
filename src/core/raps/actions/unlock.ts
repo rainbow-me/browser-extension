@@ -6,6 +6,7 @@ import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
+import { logger } from '~/logger';
 
 import { ethUnits } from '../../references';
 import { gasStore } from '../../state';
@@ -38,6 +39,10 @@ export const getRawAllowance = async ({
     const allowance = await tokenContract.allowance(owner, spender);
     return allowance.toString();
   } catch (error) {
+    logger.error({
+      name: 'getRawAllowance: error',
+      message: (error as Error)?.message,
+    });
     return null;
   }
 };
@@ -92,6 +97,10 @@ export const estimateApprove = async ({
     );
     return gasLimit ? gasLimit.toString() : `${ethUnits.basic_approval}`;
   } catch (error) {
+    logger.error({
+      name: 'unlock: error estimateApprove',
+      message: (error as Error)?.message,
+    });
     return `${ethUnits.basic_approval}`;
   }
 };
@@ -138,12 +147,21 @@ export const unlock = async ({
 
   const { address: assetAddress } = assetToUnlock;
 
-  const gasLimit = await estimateApprove({
-    owner: parameters.fromAddress,
-    tokenAddress: assetAddress,
-    spender: contractAddress,
-    chainId,
-  });
+  let gasLimit;
+  try {
+    gasLimit = await estimateApprove({
+      owner: parameters.fromAddress,
+      tokenAddress: assetAddress,
+      spender: contractAddress,
+      chainId,
+    });
+  } catch (e) {
+    logger.error({
+      name: 'unlock: error estimateApprove',
+      message: (e as Error)?.message,
+    });
+    throw e;
+  }
 
   const gasParams = overrideWithFastSpeedIfNeeded({
     selectedGas,
@@ -152,15 +170,25 @@ export const unlock = async ({
   });
 
   const nonce = baseNonce ? baseNonce + index : undefined;
-  const approval = await executeApprove({
-    tokenAddress: assetAddress,
-    spender: contractAddress,
-    gasLimit,
-    gasParams,
-    wallet,
-    nonce,
-    chainId,
-  });
+
+  let approval;
+  try {
+    approval = await executeApprove({
+      tokenAddress: assetAddress,
+      spender: contractAddress,
+      gasLimit,
+      gasParams,
+      wallet,
+      nonce,
+      chainId,
+    });
+  } catch (e) {
+    logger.error({
+      name: 'unlock: error executeApprove',
+      message: (e as Error)?.message,
+    });
+    throw e;
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const newTransaction = {

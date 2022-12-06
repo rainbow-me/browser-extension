@@ -13,6 +13,7 @@ import { getProvider } from '@wagmi/core';
 import { Wallet } from 'ethers';
 import { Chain } from 'wagmi';
 
+import { isLowerCaseMatch } from '~/core/utils/strings';
 import { logger } from '~/logger';
 
 import { ETH_ADDRESS, ethUnits } from '../../references';
@@ -56,11 +57,12 @@ export const estimateSwapGasLimit = async ({
 
   const { sellTokenAddress, buyTokenAddress } = tradeDetails;
   const isWrapNativeAsset =
-    sellTokenAddress === ETH_ADDRESS_AGGREGATORS &&
-    buyTokenAddress === WRAPPED_ASSET[chainId];
+    isLowerCaseMatch(sellTokenAddress, ETH_ADDRESS_AGGREGATORS) &&
+    isLowerCaseMatch(buyTokenAddress, WRAPPED_ASSET[chainId]);
+
   const isUnwrapNativeAsset =
-    sellTokenAddress === WRAPPED_ASSET[chainId] &&
-    buyTokenAddress === ETH_ADDRESS_AGGREGATORS;
+    isLowerCaseMatch(sellTokenAddress, WRAPPED_ASSET[chainId]) &&
+    isLowerCaseMatch(buyTokenAddress, ETH_ADDRESS_AGGREGATORS);
 
   // Wrap / Unwrap Eth
   if (isWrapNativeAsset || isUnwrapNativeAsset) {
@@ -100,7 +102,6 @@ export const estimateSwapGasLimit = async ({
       );
 
       if (requiresApprove) {
-        // TODO trace support gas
         if (CHAIN_IDS_WITH_TRACE_SUPPORT.includes(chainId)) {
           try {
             const gasLimitWithFakeApproval =
@@ -216,11 +217,21 @@ export const swap = async ({
     });
   }
 
-  const gasLimit = await estimateSwapGasLimit({
-    chainId,
-    requiresApprove,
-    tradeDetails,
-  });
+  let gasLimit;
+
+  try {
+    gasLimit = await estimateSwapGasLimit({
+      chainId,
+      requiresApprove,
+      tradeDetails,
+    });
+  } catch (e) {
+    logger.error({
+      name: 'swap: error estimateSwapGasLimit',
+      message: (e as Error).message,
+    });
+    throw e;
+  }
 
   let swap;
   try {
@@ -238,7 +249,10 @@ export const swap = async ({
 
     swap = await executeSwap(swapParams);
   } catch (e) {
-    logger.error(e as Error);
+    logger.error({
+      name: 'swap: error executeSwap',
+      message: (e as Error).message,
+    });
     throw e;
   }
 
