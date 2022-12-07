@@ -74,10 +74,10 @@ export const getDataForTokenTransfer = (value: string, to: string): string => {
   return data;
 };
 
-export const parseNewTransaction = async (
+export const parseNewTransaction = (
   txDetails: NewTransaction,
   nativeCurrency: SupportedCurrencyKey,
-): Promise<RainbowTransaction> => {
+): RainbowTransaction => {
   let balance;
   const {
     amount,
@@ -141,6 +141,7 @@ export const parseNewTransaction = async (
 
   return {
     address: (asset?.address ?? ETH_ADDRESS) as Address,
+    asset,
     balance,
     dappName,
     data,

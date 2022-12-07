@@ -371,6 +371,7 @@ function parseTransactions(
       }),
     )
     .flat();
+  console.log('PARSED TRANSACTIONS: ', parsedTransactions);
   return parsedTransactions;
 }
 

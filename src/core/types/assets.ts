@@ -10,7 +10,6 @@ export interface ParsedAsset {
     primary: string;
     fallback?: string;
   };
-  decimals: number;
   isNativeAsset: boolean;
   name: string;
   native: {
