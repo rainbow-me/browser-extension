@@ -10,9 +10,8 @@ import {
   NATIVE_ASSETS_PER_CHAIN,
   OPTIMISM_ETH_ADDRESS,
 } from '~/core/references';
-import { UniqueId } from '~/core/types/assets';
+import { ParsedAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
-import { chainNameFromChainId } from '~/core/utils/chains';
 
 import { useNativeAssets } from './useNativeAssets';
 
@@ -56,7 +55,11 @@ const getNetworkNativeAssetUniqueId = ({
   }
 };
 
-export function useNativeAssetForNetwork({ chainId }: { chainId: ChainId }) {
+export function useNativeAssetForNetwork({
+  chainId,
+}: {
+  chainId: ChainId;
+}): ParsedAsset | undefined {
   const nativeAssets = useNativeAssets();
   const mainnetAddress = getNetworkNativeMainnetAssetAddress({ chainId });
   const nativeAsset = nativeAssets?.[`${mainnetAddress}_${ChainId.mainnet}`];
@@ -66,12 +69,10 @@ export function useNativeAssetForNetwork({ chainId }: { chainId: ChainId }) {
       chainId: nativeAsset?.chainId || ChainId.mainnet,
       chainName: nativeAsset?.chainName || ChainName.mainnet,
       uniqueId: getNetworkNativeAssetUniqueId({ chainId }),
-      address: NATIVE_ASSETS_PER_CHAIN[
-        chainNameFromChainId(chainId)
-      ] as Address,
+      address: NATIVE_ASSETS_PER_CHAIN[chainId] as Address,
       mainnetAddress,
       isNativeAsset: true,
     };
   }
-  return null;
+  return undefined;
 }

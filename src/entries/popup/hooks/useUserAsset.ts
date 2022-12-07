@@ -17,5 +17,6 @@ export function useUserAsset(uniqueId: UniqueId) {
       select: selectUserAssetWithUniqueId(uniqueId),
     },
   );
+
   return asset;
 }

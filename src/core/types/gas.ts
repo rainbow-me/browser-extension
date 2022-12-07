@@ -11,14 +11,16 @@ export interface GasFeeParam {
   gwei: string;
 }
 
+export interface TransactionLegacyGasParams {
+  gasPrice: string;
+}
+
 export interface GasFeeLegacyParams {
   gasPrice: GasFeeParam;
   option: string;
   estimatedTime: { amount: number; display: string };
   display: string;
-  transactionGasParams: {
-    gasPrice: string;
-  };
+  transactionGasParams: TransactionLegacyGasParams;
   gasFee: { amount: string; display: string };
 }
 
@@ -26,16 +28,18 @@ export type GasFeeLegacyParamsBySpeed = {
   [key in GasSpeed]: GasFeeLegacyParams;
 };
 
+export interface TransactionGasParams {
+  maxPriorityFeePerGas: string;
+  maxFeePerGas: string;
+}
+
 export interface GasFeeParams {
   maxBaseFee: GasFeeParam;
   maxPriorityFeePerGas: GasFeeParam;
   option: string;
   estimatedTime: { amount: number; display: string };
   display: string;
-  transactionGasParams: {
-    maxPriorityFeePerGas: string;
-    maxFeePerGas: string;
-  };
+  transactionGasParams: TransactionGasParams;
   gasFee: { amount: string; display: string };
 }
 

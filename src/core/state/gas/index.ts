@@ -1,26 +1,42 @@
 import create from 'zustand';
 
-import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
+import {
+  GasFeeLegacyParams,
+  GasFeeLegacyParamsBySpeed,
+  GasFeeParams,
+  GasFeeParamsBySpeed,
+} from '~/core/types/gas';
 
 import { createStore } from '../internal/createStore';
 
 export interface GasStore {
   selectedGas: GasFeeParams | GasFeeLegacyParams;
+  gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
   setSelectedGas: ({
     selectedGas,
   }: {
     selectedGas: GasFeeParams | GasFeeLegacyParams;
-  }) => GasFeeParams | GasFeeLegacyParams;
+  }) => void;
+  setGasFeeParamsBySpeed: ({
+    gasFeeParamsBySpeed,
+  }: {
+    gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
+  }) => void;
 }
 
 export const gasStore = createStore<GasStore>(
   (set) => ({
     selectedGas: {} as GasFeeParams | GasFeeLegacyParams,
+    gasFeeParamsBySpeed: {} as GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed,
     setSelectedGas: ({ selectedGas }) => {
       set({
         selectedGas,
       });
-      return selectedGas;
+    },
+    setGasFeeParamsBySpeed: ({ gasFeeParamsBySpeed }) => {
+      set({
+        gasFeeParamsBySpeed,
+      });
     },
   }),
   {

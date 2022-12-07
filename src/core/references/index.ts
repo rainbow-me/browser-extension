@@ -1,6 +1,6 @@
 import { constants } from 'ethers';
 
-import { ChainName } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 
 export { supportedCurrencies } from './supportedCurrencies';
 export { ethUnits } from './ethUnits';
@@ -21,11 +21,11 @@ export const MATIC_MAINNET_ADDRESS =
 export const MATIC_POLYGON_ADDRESS =
   '0x0000000000000000000000000000000000001010';
 export const NATIVE_ASSETS_PER_CHAIN = {
-  [ChainName.arbitrum]: ARBITRUM_ETH_ADDRESS,
-  [ChainName.bsc]: BNB_BSC_ADDRESS,
-  [ChainName.mainnet]: ETH_ADDRESS,
-  [ChainName.optimism]: OPTIMISM_ETH_ADDRESS,
-  [ChainName.polygon]: MATIC_POLYGON_ADDRESS,
+  [ChainId.arbitrum]: ARBITRUM_ETH_ADDRESS,
+  [ChainId.bsc]: BNB_BSC_ADDRESS,
+  [ChainId.mainnet]: ETH_ADDRESS,
+  [ChainId.optimism]: OPTIMISM_ETH_ADDRESS,
+  [ChainId.polygon]: MATIC_POLYGON_ADDRESS,
 };
 export const OVM_GAS_PRICE_ORACLE =
   '0x420000000000000000000000000000000000000F';

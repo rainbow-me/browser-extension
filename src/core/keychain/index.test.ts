@@ -1,5 +1,3 @@
-import { exec } from 'child_process';
-
 import {
   MessageTypes,
   SignTypedDataVersion,
@@ -8,7 +6,7 @@ import {
 } from '@metamask/eth-sig-util';
 import { ethers } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
-import { afterAll, expect, test } from 'vitest';
+import { expect, test } from 'vitest';
 
 import { PrivateKey } from './IKeychain';
 
@@ -247,11 +245,3 @@ test('[keychain/index] :: should be able to send transactions', async () => {
   expect(receipt.blockNumber).toBeGreaterThan(0);
   expect(receipt.confirmations).toBeGreaterThan(0);
 }, 30000);
-
-afterAll(async () => {
-  try {
-    await exec('kill $(lsof -t -i:8545)');
-  } catch (e) {
-    // failed to kill anvil
-  }
-});

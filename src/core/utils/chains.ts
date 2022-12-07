@@ -3,6 +3,8 @@ import { Address } from 'wagmi';
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { ChainId, ChainName } from '~/core/types/chains';
 
+import { isLowerCaseMatch } from './strings';
+
 /**
  * @desc Checks if the given chain is a Layer 2.
  * @param chain The chain name to check.
@@ -24,10 +26,8 @@ export const isL2Chain = (chain: ChainName | ChainId): boolean => {
   }
 };
 
-export function isNativeAsset(address: Address, chain: ChainName) {
-  return (
-    NATIVE_ASSETS_PER_CHAIN[chain]?.toLowerCase() === address?.toLowerCase()
-  );
+export function isNativeAsset(address: Address, chain: ChainId) {
+  return isLowerCaseMatch(NATIVE_ASSETS_PER_CHAIN[chain], address);
 }
 
 export function chainIdFromChainName(chainName: ChainName) {

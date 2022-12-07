@@ -26,7 +26,6 @@ export const ApproveMessage = () => {
   );
 
   const rejectRequest = useCallback(() => {
-    // removePendingRequest(pendingRequest?.id);
     backgroundMessenger.send(`message:${pendingRequest?.id}`, false);
     if (window?.id && pendingRequests.length <= 1)
       chrome.windows.remove(window.id);
