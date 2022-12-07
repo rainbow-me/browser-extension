@@ -66,7 +66,8 @@ export function PasswordInput({
           }}
         >
           <ButtonSymbol
-            color={visible ? 'label' : 'labelTertiary'}
+            color="accent"
+            symbolColor={visible ? 'label' : 'labelTertiary'}
             height="36px"
             variant="transparent"
             symbol={!visible ? 'eye' : 'eye.slash.fill'}
