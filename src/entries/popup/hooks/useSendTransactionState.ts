@@ -1,7 +1,9 @@
 import { isAddress } from '@ethersproject/address';
-import { useState } from 'react';
-import { Address, useEnsAddress, useEnsName } from 'wagmi';
+import { useMemo, useState } from 'react';
+import { Address, useAccount, useEnsAddress, useEnsName } from 'wagmi';
 
+import { ParsedAddressAsset } from '~/core/types/assets';
+import { ChainId } from '~/core/types/chains';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 
 const useEns = ({ addressOrName }: { addressOrName: Address | string }) => {
@@ -26,10 +28,18 @@ const useEns = ({ addressOrName }: { addressOrName: Address | string }) => {
 
 export const useSendTransactionState = () => {
   const [toAddressOrName, setToAddressOrName] = useState<Address | string>('');
+  const [asset] = useState<ParsedAddressAsset>();
+  const [amount, setAmount] = useState<string>();
+  const { address: fromAddress } = useAccount();
 
   const { ensAddress: toAddress, ensName: toEnsName } = useEns({
     addressOrName: toAddressOrName ?? '',
   });
+
+  const chainId = useMemo(
+    () => asset?.chainId ?? ChainId.mainnet,
+    [asset?.chainId],
+  );
 
   //   const [to, setTo] = useState<Address>();
   //   const [from, setfrom] = useState<Address>();
@@ -38,5 +48,13 @@ export const useSendTransactionState = () => {
   //   const [gasLimit, setGasLimit] = useState<string>();
   //   const [token, setToken] = useState<ParsedAddressAsset>();
 
-  return { toAddress, toEnsName, setToAddressOrName };
+  return {
+    toAddress,
+    toEnsName,
+    fromAddress,
+    setToAddressOrName,
+    chainId,
+    setAmount,
+    amount,
+  };
 };

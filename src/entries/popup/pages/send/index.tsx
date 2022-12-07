@@ -1,10 +1,7 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { Address } from '@wagmi/core';
 import { ethers } from 'ethers';
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
-import { useAccount } from 'wagmi';
 
-import { ChainId } from '~/core/types/chains';
 import {
   Box,
   Column,
@@ -20,24 +17,26 @@ import { sendTransaction } from '../../handlers/wallet';
 import { useSendTransactionState } from '../../hooks/useSendTransactionState';
 
 export function Send() {
-  const [amount, setAmount] = useState('');
   const [txHash, setTxHash] = useState('');
   const [sending, setSending] = useState(false);
-  const { address } = useAccount();
 
-  const { toAddress, toEnsName, setToAddressOrName } =
-    useSendTransactionState();
-
-  console.log('------ addressss', toAddress, toEnsName);
+  const {
+    toAddress,
+    setToAddressOrName,
+    chainId,
+    setAmount,
+    amount,
+    fromAddress,
+  } = useSendTransactionState();
 
   const transactionRequest: TransactionRequest = useMemo(() => {
     return {
       to: toAddress,
-      from: address as Address,
+      from: fromAddress,
       amount,
-      chainId: ChainId.mainnet,
+      chainId,
     };
-  }, [address, amount, toAddress]);
+  }, [fromAddress, amount, chainId, toAddress]);
 
   const handleToAddressChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -46,19 +45,22 @@ export function Send() {
     [setToAddressOrName],
   );
 
-  const handleAmountChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setAmount(e.target.value);
-  }, []);
+  const handleAmountChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setAmount(e.target.value);
+    },
+    [setAmount],
+  );
 
   const handleSend = useCallback(async () => {
     setSending(true);
 
     try {
       const result = await sendTransaction({
-        from: address,
+        from: fromAddress,
         to: toAddress,
-        value: ethers.utils.parseEther(amount),
-        chainId: ChainId.mainnet,
+        value: ethers.utils.parseEther(amount ?? ''),
+        chainId,
       });
 
       if (result) {
@@ -70,7 +72,7 @@ export function Send() {
     } finally {
       setSending(false);
     }
-  }, [address, amount, toAddress]);
+  }, [fromAddress, amount, chainId, toAddress]);
 
   return (
     <Box
@@ -171,7 +173,7 @@ export function Send() {
             )}
             <Row>
               <TransactionFee
-                chainId={ChainId.mainnet}
+                chainId={chainId}
                 transactionRequest={transactionRequest}
               />
             </Row>
