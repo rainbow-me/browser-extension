@@ -42,14 +42,14 @@ export function Activity() {
     { ...newTestTx, asset: ethAsset, amount: '1' },
     currency,
   );
-  console.log('FOO: ', newTx);
-  const listData = useMemo(
+  let listData = useMemo(
     () =>
       Object.keys(transactionsByDate).reduce((listData, dateKey) => {
         return [...listData, dateKey, ...transactionsByDate[dateKey]];
       }, [] as (string | RainbowTransaction)[]),
     [transactionsByDate],
   );
+  listData = [newTx].concat(listData);
   const containerRef = useRef<HTMLDivElement>(null);
   const activityRowVirtualizer = useVirtualizer({
     count: listData.length,
@@ -151,7 +151,7 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
   const isTrade = type === TransactionType.trade;
   const received = status === TransactionStatus.received;
   const receivedViaSwap = status === TransactionStatus.received && isTrade;
-  const sent = status === TransactionStatus.sending;
+  const sent = status === TransactionStatus.sent;
   const sentViaSwap = status === TransactionStatus.swapped && isTrade;
   const failed = status === TransactionStatus.failed;
   const isContractInteraction =
