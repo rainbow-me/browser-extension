@@ -5,7 +5,7 @@ import { Box, Button, Text, ThemeProvider } from '~/design-system';
 import { Rows } from '~/design-system/components/Rows/Rows';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
 
-import { FlyingRainbows } from '../../components/FlyingRainbows';
+import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 import { LogoWithLetters } from '../../components/LogoWithLetters/LogoWithLetters';
 
 export function Welcome() {

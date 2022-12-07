@@ -7,7 +7,7 @@ import rainbowPixel from 'static/assets/rainbow/pixel-rainbow.png';
 import rainbowWhite from 'static/assets/rainbow/white-rainbow.png';
 import { Box } from '~/design-system';
 
-import { FullScreenBackground } from '../../components/FullScreen/FullScreenBackground';
+import { FullScreenBackground } from '../FullScreen/FullScreenBackground';
 
 export function FlyingRainbows({ children }: { children: React.ReactNode }) {
   return (
