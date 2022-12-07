@@ -7,6 +7,7 @@ import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/Animated
 
 import { ConnectedApps } from './pages/ConnectedApps';
 import { Home } from './pages/home';
+import { ManualBackupPrompt } from './pages/manualBackupPrompt';
 import { Send } from './pages/send';
 import { Currency } from './pages/settings/currency';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
@@ -49,6 +50,14 @@ export function Routes() {
       {
         path: '/unlock',
         element: <Unlock />,
+      },
+      {
+        path: '/manual-backup-prompt',
+        element: (
+          <AnimatedRoute direction="horizontal" navbar>
+            <ManualBackupPrompt />
+          </AnimatedRoute>
+        ),
       },
       {
         path: '/settings',

@@ -692,6 +692,9 @@ export const symbolNames = selectSymbolNames(
   'eye',
   'eye.slash.fill',
   'exclamationmark.triangle.fill',
+  'exclamationmark.triangle',
+  'highlighter',
+  'lock.open.fill',
 );
 export type SymbolName = typeof symbolNames[number];
 

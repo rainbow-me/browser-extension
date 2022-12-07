@@ -16,7 +16,7 @@ import { ButtonHeight, heightStyles, tintedStyles } from './ButtonWrapper.css';
 
 export type ButtonVariantProps =
   | {
-      color: ButtonColor;
+      color: ButtonColor | TextColor;
       variant: 'raised' | 'flat' | 'tinted' | 'stroked' | 'transparent';
     }
   | {
@@ -138,7 +138,7 @@ export const stylesForHeightAndVariant = ({
 export const stylesForVariant = ({
   color,
 }: {
-  color: ButtonColor;
+  color: ButtonColor | TextColor;
 }): Record<
   ButtonWrapperProps['variant'],
   {
@@ -149,12 +149,12 @@ export const stylesForVariant = ({
   }
 > => ({
   raised: {
-    background: color,
+    background: color as ButtonColor,
     borderColor: 'buttonStroke',
     borderWidth: '1px',
   },
   flat: {
-    background: color,
+    background: color as ButtonColor,
     borderColor: 'buttonStroke',
     borderWidth: '1px',
   },
@@ -162,7 +162,7 @@ export const stylesForVariant = ({
     textColor: color as TextColor,
   },
   stroked: {
-    borderColor: color,
+    borderColor: color as ButtonColor,
     borderWidth: '2px',
     textColor: 'labelSecondary',
   },
@@ -184,7 +184,7 @@ export function ButtonWrapper({
   blur = '',
 }: ButtonWrapperProps) {
   const { boxShadow } = stylesForHeightAndVariant({
-    color,
+    color: color as ButtonColor,
   })[height][variant];
 
   const { background, borderColor, borderWidth } = stylesForVariant({
@@ -211,7 +211,8 @@ export function ButtonWrapper({
         boxShadow={boxShadow}
         className={[
           heightStyles[height],
-          variant === 'tinted' && tintedStyles[color || 'accent'],
+          variant === 'tinted' &&
+            tintedStyles[(color as ButtonColor) || 'accent'],
         ]}
         display="flex"
         onClick={onClick}

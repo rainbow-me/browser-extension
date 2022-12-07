@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { Box, Button, Text, ThemeProvider } from '~/design-system';
@@ -9,6 +10,10 @@ import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 import { LogoWithLetters } from '../../components/LogoWithLetters/LogoWithLetters';
 
 export function Welcome() {
+  const navigate = useNavigate();
+  const handleCreateNewWalletClick = React.useCallback(async () => {
+    navigate('/manual-backup-prompt');
+  }, [navigate]);
   return (
     <FlyingRainbows>
       <Box
@@ -48,6 +53,7 @@ export function Welcome() {
                 symbol="arrow.right"
                 symbolSide="right"
                 blur="26px"
+                onClick={handleCreateNewWalletClick}
               >
                 {i18n.t('welcome.create_wallet')}
               </Button>
