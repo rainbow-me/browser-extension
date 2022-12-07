@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -15,6 +15,7 @@ import {
 } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
+import { verifyPassword } from '~/entries/popup/handlers/wallet';
 
 export const ConfirmPasswordPrompt = ({
   show,
@@ -26,14 +27,20 @@ export const ConfirmPasswordPrompt = ({
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
 
-  // TODO: hook up with password check logic
-  const handleValidatePassword = () => {
-    if (password !== '') {
+  const handleValidatePassword = async () => {
+    console.log('password:', password);
+    const correctPassword = await verifyPassword(password);
+    if (correctPassword) {
       navigate('/settings/privacy/changePassword');
       return;
     }
-    alert('Password is empty');
+    alert('Password is wrong');
   };
+  useEffect(() => {
+    return () => {
+      setPassword('');
+    };
+  }, []);
   return (
     <Prompt show={show}>
       <Rows space="24px">

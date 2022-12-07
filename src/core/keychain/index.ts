@@ -41,6 +41,12 @@ export const setVaultPassword = async (
   }
   return keychainManager.setPassword(newPassword);
 };
+
+export const dangerouslySetVaultPassword = async (newPassword: string) => {
+  console.log('setting new password:', newPassword);
+  return keychainManager.setPassword(newPassword);
+};
+
 export const verifyPassword = (password: string) => {
   return keychainManager.verifyPassword(password);
 };

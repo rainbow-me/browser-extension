@@ -14,13 +14,14 @@ import {
   Text,
 } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
+import { dangerouslyUpdatePassword } from '~/entries/popup/handlers/wallet';
 
 export function ChangePassword() {
   const navigate = useNavigate();
   const [newPassword, setNewPassword] = React.useState('');
   const [confirmNewPassword, setConfirmNewPassword] = React.useState('');
 
-  const handleUpdatePassword = () => {
+  const handleUpdatePassword = async () => {
     if (newPassword === '') {
       // TODO: below will be replaced by PasswordInput error msg
       alert('Password is empty');
@@ -31,6 +32,7 @@ export function ChangePassword() {
       alert('Passwords do not match');
       return;
     }
+    await dangerouslyUpdatePassword(newPassword);
     alert('Password updated');
     navigate('/settings/privacy');
   };
