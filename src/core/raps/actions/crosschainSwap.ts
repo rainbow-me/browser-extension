@@ -9,11 +9,6 @@ import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '../../types/gas';
-import {
-  ProtocolType,
-  TransactionStatus,
-  TransactionType,
-} from '../../types/transactions';
 import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/numbers';
 import { Rap, RapCrosschainSwapActionParameters } from '../references';
@@ -114,7 +109,7 @@ export const crosschainSwap = async (
   parameters: RapCrosschainSwapActionParameters,
   baseNonce?: number,
 ): Promise<number | undefined> => {
-  const { inputAmount, tradeDetails, chainId, requiresApprove } = parameters;
+  const { tradeDetails, chainId, requiresApprove } = parameters;
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
 
   let gasParams = selectedGas.transactionGasParams;
@@ -162,23 +157,6 @@ export const crosschainSwap = async (
     });
     throw e;
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const newTransaction = {
-    ...gasParams,
-    amount: inputAmount,
-    data: swap?.data,
-    from: tradeDetails.from,
-    gasLimit,
-    hash: swap?.hash ?? null,
-    chainId,
-    nonce: swap?.nonce ?? null,
-    protocol: ProtocolType.rainbow,
-    status: TransactionStatus.swapping,
-    to: swap?.to ?? null,
-    type: TransactionType.trade,
-    value: (swap && toHex(swap.value.toString())) || undefined,
-  };
 
   return swap?.nonce;
 };

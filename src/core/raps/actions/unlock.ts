@@ -11,7 +11,6 @@ import { logger } from '~/logger';
 import { ethUnits } from '../../references';
 import { gasStore } from '../../state';
 import { ParsedAsset } from '../../types/assets';
-import { TransactionStatus, TransactionType } from '../../types/transactions';
 import {
   convertAmountToRawAmount,
   greaterThan,
@@ -190,21 +189,5 @@ export const unlock = async ({
     throw e;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const newTransaction = {
-    amount: 0,
-    asset: assetToUnlock,
-    data: approval.data,
-    from: parameters.fromAddress,
-    gasLimit,
-    hash: approval?.hash,
-    chainId,
-    nonce: approval?.nonce,
-    status: TransactionStatus.approving,
-    to: approval?.to,
-    type: TransactionType.authorize,
-    value: toHex(approval.value),
-    ...gasParams,
-  };
   return approval?.nonce;
 };

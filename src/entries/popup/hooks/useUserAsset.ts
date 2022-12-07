@@ -18,7 +18,5 @@ export function useUserAsset(uniqueId: UniqueId) {
     },
   );
 
-  console.log('---- asset', asset);
-
   return asset;
 }
