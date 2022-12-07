@@ -28,7 +28,6 @@ export const ConfirmPasswordPrompt = ({
   const [password, setPassword] = useState('');
 
   const handleValidatePassword = async () => {
-    console.log('password:', password);
     const correctPassword = await verifyPassword(password);
     if (correctPassword) {
       navigate('/settings/privacy/changePassword');
