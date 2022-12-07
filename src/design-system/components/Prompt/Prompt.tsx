@@ -45,6 +45,8 @@ export const Prompt = ({
                 padding="12px"
                 background="surfaceMenu"
                 borderRadius="12px"
+                borderColor="separatorTertiary"
+                borderWidth="1px"
               >
                 {children}
               </Box>
