@@ -1,4 +1,9 @@
-import * as React from 'react';
+import React, {
+  SetStateAction,
+  forwardRef,
+  useCallback,
+  useState,
+} from 'react';
 
 import { i18n } from '~/core/languages';
 import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
@@ -8,19 +13,19 @@ import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 import { PasswordInput } from '../../components/PasswordInput/PasswordInput';
 import { AvatarSection } from '../home/Header';
 
-export function Unlock() {
-  const [password, setPassword] = React.useState('');
+export const Unlock = forwardRef<HTMLDivElement>((_, ref) => {
+  const [password, setPassword] = useState('');
 
-  const handlePasswordChange = React.useCallback(
-    (event: { target: { value: React.SetStateAction<string> } }) => {
+  const handlePasswordChange = useCallback(
+    (event: { target: { value: SetStateAction<string> } }) => {
       setPassword(event.target.value);
     },
     [],
   );
 
-  const [error, setError] = React.useState('');
+  const [error, setError] = useState('');
 
-  const handleUnlock = React.useCallback(() => {
+  const handleUnlock = useCallback(() => {
     setError('wrong password');
   }, []);
 
@@ -30,6 +35,7 @@ export function Unlock() {
         width="full"
         style={{ zIndex: 1, paddingTop: 125 }}
         background="transparent"
+        ref={ref}
       >
         <Box
           width="full"
@@ -140,4 +146,6 @@ export function Unlock() {
       </Box>
     </FlyingRainbows>
   );
-}
+});
+
+Unlock.displayName = 'Unlock';
