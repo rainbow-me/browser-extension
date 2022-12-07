@@ -17,6 +17,10 @@ import {
   optimismGasOracleAbi,
   supportedCurrencies,
 } from '../references';
+import {
+  MeteorologyLegacyResponse,
+  MeteorologyResponse,
+} from '../resources/gas/meteorology';
 import { ParsedAsset } from '../types/assets';
 import { ChainId } from '../types/chains';
 import {
@@ -380,3 +384,100 @@ export const calculateL1FeeOptimism = async ({
     //
   }
 };
+
+export const parseGasFeeParamsBySpeed = ({
+  chainId,
+  data,
+  gasLimit,
+  nativeAsset,
+}: {
+  chainId: Chain['id'];
+  data?: MeteorologyResponse | MeteorologyLegacyResponse;
+  gasLimit: string;
+  nativeAsset?: ParsedAsset;
+}) => {
+  if (chainId === ChainId.mainnet && data) {
+    const response = data as MeteorologyResponse;
+    const {
+      data: { currentBaseFee, maxPriorityFeeSuggestions, baseFeeSuggestion },
+    } = response;
+
+    const blocksToConfirmation = {
+      byBaseFee: response.data.blocksToConfirmationByBaseFee,
+      byPriorityFee: response.data.blocksToConfirmationByPriorityFee,
+    };
+
+    const parseGasFeeParamsSpeed = ({ speed }: { speed: GasSpeed }) =>
+      parseGasFeeParams({
+        currentBaseFee,
+        maxPriorityFeeSuggestions,
+        speed,
+        wei: baseFeeSuggestion,
+        blocksToConfirmation,
+        gasLimit,
+        nativeAsset,
+      });
+
+    return {
+      custom: parseGasFeeParamsSpeed({
+        speed: GasSpeed.CUSTOM,
+      }),
+      urgent: parseGasFeeParamsSpeed({
+        speed: GasSpeed.URGENT,
+      }),
+      fast: parseGasFeeParamsSpeed({
+        speed: GasSpeed.FAST,
+      }),
+      normal: parseGasFeeParamsSpeed({
+        speed: GasSpeed.NORMAL,
+      }),
+    };
+  } else {
+    const response = data as MeteorologyLegacyResponse;
+    const chainWaitTime = getChainWaitTime(chainId);
+    const parseGasFeeParamsSpeed = ({
+      speed,
+      gwei,
+      waitTime,
+    }: {
+      speed: GasSpeed;
+      gwei: string;
+      waitTime: number;
+    }) =>
+      parseGasFeeLegacyParams({
+        gwei,
+        speed,
+        waitTime,
+        gasLimit,
+        nativeAsset,
+      });
+
+    return {
+      custom: parseGasFeeParamsSpeed({
+        gwei: response?.data.legacy.fastGasPrice,
+        speed: GasSpeed.CUSTOM,
+        waitTime: chainWaitTime.fastWait,
+      }),
+      urgent: parseGasFeeParamsSpeed({
+        gwei: response?.data.legacy.fastGasPrice,
+        speed: GasSpeed.URGENT,
+        waitTime: chainWaitTime.fastWait,
+      }),
+      fast: parseGasFeeParamsSpeed({
+        gwei: response?.data.legacy.proposeGasPrice,
+        speed: GasSpeed.FAST,
+        waitTime: chainWaitTime.proposedWait,
+      }),
+      normal: parseGasFeeParamsSpeed({
+        gwei: response?.data.legacy.safeGasPrice,
+        speed: GasSpeed.NORMAL,
+        waitTime: chainWaitTime.safeWait,
+      }),
+    };
+  }
+};
+
+export const gasFeeParamsChanged = (
+  gasFeeParams1: GasFeeParams | GasFeeLegacyParams,
+  gasFeeParams2: GasFeeParams | GasFeeLegacyParams,
+) => gasFeeParams1.gasFee.amount !== gasFeeParams2.gasFee.amount;
