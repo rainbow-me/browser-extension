@@ -9,18 +9,11 @@ import { chain, getProvider } from '@wagmi/core';
 import { Wallet } from 'ethers';
 import { beforeAll, expect, test } from 'vitest';
 
+import { TEST_ADDRESS_2, TEST_PK_2, delay } from '~/test/utils';
+
 import { createTestWagmiClient } from '../../wagmi/createTestWagmiClient';
 
 import { estimateSwapGasLimit, executeSwap } from './swap';
-
-const TEST_ADDRESS = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8';
-const TEST_PKEY =
-  '0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d';
-
-export async function delay(ms: number) {
-  // eslint-disable-next-line no-promise-executor-return
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 let quote: Quote | QuoteError | null;
 
@@ -29,12 +22,12 @@ beforeAll(async () => {
   await delay(3000);
   quote = await getQuote({
     chainId: 1,
-    fromAddress: TEST_ADDRESS,
+    fromAddress: TEST_ADDRESS_2,
     sellTokenAddress: ETH_ADDRESS_AGGREGATORS,
     buyTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
     sellAmount: '1000000000000000000',
     slippage: 5,
-    destReceiver: TEST_ADDRESS,
+    destReceiver: TEST_ADDRESS_2,
     swapType: SwapType.normal,
     toChainId: 1,
   });
@@ -52,7 +45,7 @@ test('[rap/swap] :: should estimate swap gas limit', async () => {
 
 test('[rap/swap] :: should execute swap', async () => {
   const provider = getProvider({ chainId: chain.mainnet.id });
-  const wallet = new Wallet(TEST_PKEY, provider);
+  const wallet = new Wallet(TEST_PK_2, provider);
   const swapTx = await executeSwap({
     chainId: chain.mainnet.id,
     gasLimit: '600000',

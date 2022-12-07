@@ -6,90 +6,18 @@ import {
   getQuote,
 } from '@rainbow-me/swaps';
 import { beforeAll, expect, test } from 'vitest';
-import { Address } from 'wagmi';
 
-import { ParsedAsset, UniqueId } from '../types/assets';
-import { ChainName } from '../types/chains';
+import {
+  ENS_MAINNET_ASSET,
+  ETH_MAINNET_ASSET,
+  TEST_ADDRESS_2,
+  USDC_MAINNET_ASSET,
+  delay,
+} from '~/test/utils';
+
 import { createTestWagmiClient } from '../wagmi/createTestWagmiClient';
 
 import { createUnlockAndSwapRap, estimateUnlockAndSwap } from './unlockAndSwap';
-
-const TEST_ADDRESS = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8';
-
-export const ETH_MAINNET_ASSET: ParsedAsset = {
-  address: 'eth' as Address,
-  chainId: 1,
-  chainName: ChainName.mainnet,
-  colors: { primary: '#808088' },
-  isNativeAsset: true,
-  name: 'Ethereum',
-  native: {
-    price: {
-      amount: 1291.8200000000002,
-      change: '2.79%',
-      display: '$1,291.82',
-    },
-  },
-  price: {
-    value: 1291.8200000000002,
-    relative_change_24h: 2.7856239208790683,
-    changed_at: -1,
-  },
-  symbol: 'ETH',
-  type: 'token',
-  uniqueId: 'eth_1' as UniqueId,
-  decimals: 18,
-};
-export const USDC_MAINNET_ASSET: ParsedAsset = {
-  address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Address,
-  chainId: 1,
-  chainName: 'mainnet' as ChainName,
-  colors: { primary: '#2775CA' },
-  isNativeAsset: false,
-  mainnetAddress: undefined,
-  name: 'USD Coin',
-  native: {
-    price: {
-      amount: 1.000587633346778,
-      change: '-1.34%',
-      display: '$1.00',
-    },
-  },
-  price: {
-    value: 1.000587633346778,
-    relative_change_24h: -1.3378856946931859,
-    changed_at: -1,
-  },
-  symbol: 'USDC',
-  type: 'stablecoin',
-  uniqueId: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_1' as UniqueId,
-  decimals: 6,
-};
-export const ENS_MAINNET_ASSET: ParsedAsset = {
-  address: '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72',
-  chainId: 1,
-  chainName: ChainName.mainnet,
-  colors: { primary: '#6E9BF8' },
-  isNativeAsset: false,
-  name: 'Ethereum Name Service',
-  native: {
-    price: { change: '0.64%', amount: 13.984137272000002, display: '$13.98' },
-  },
-  price: {
-    changed_at: -1,
-    relative_change_24h: 0.6397137281285907,
-    value: 13.984137272000002,
-  },
-  symbol: 'ENS',
-  type: 'token',
-  uniqueId: '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72_1',
-  decimals: 18,
-};
-
-export async function delay(ms: number) {
-  // eslint-disable-next-line no-promise-executor-return
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 
 let swapGasLimit = 0;
 
@@ -101,23 +29,23 @@ beforeAll(async () => {
   await delay(3000);
   doesntNeedUnlockQuote = await getQuote({
     chainId: 1,
-    fromAddress: TEST_ADDRESS,
+    fromAddress: TEST_ADDRESS_2,
     sellTokenAddress: ETH_ADDRESS_AGGREGATORS,
     buyTokenAddress: USDC_MAINNET_ASSET.address,
     sellAmount: '1000000000000000000',
     slippage: 5,
-    destReceiver: TEST_ADDRESS,
+    destReceiver: TEST_ADDRESS_2,
     swapType: SwapType.normal,
     toChainId: 1,
   });
   needsUnlockQuote = await getQuote({
     chainId: 1,
-    fromAddress: TEST_ADDRESS,
+    fromAddress: TEST_ADDRESS_2,
     sellTokenAddress: ENS_MAINNET_ASSET.address,
     buyTokenAddress: USDC_MAINNET_ASSET.address,
     sellAmount: '1000000000000000000',
     slippage: 5,
-    destReceiver: TEST_ADDRESS,
+    destReceiver: TEST_ADDRESS_2,
     swapType: SwapType.normal,
     toChainId: 1,
   });

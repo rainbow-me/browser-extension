@@ -10,6 +10,12 @@ import { Wallet } from 'ethers';
 import { beforeAll, expect, test } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';
+import {
+  TEST_ADDRESS_3,
+  TEST_PK_3,
+  USDC_ARBITRUM_ASSET,
+  delay,
+} from '~/test/utils';
 
 import { createTestWagmiClient } from '../../wagmi/createTestWagmiClient';
 
@@ -18,16 +24,6 @@ import {
   executeCrosschainSwap,
 } from './crosschainSwap';
 
-const ARBITRUM_USDC = '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8';
-const TEST_ADDRESS = '0x3c44cdddb6a900fa2b585dd299e03d12fa4293bc';
-const TEST_PKEY =
-  '0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a';
-
-export async function delay(ms: number) {
-  // eslint-disable-next-line no-promise-executor-return
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 let crosschainQuote: CrosschainQuote | QuoteError | null;
 
 beforeAll(async () => {
@@ -35,12 +31,12 @@ beforeAll(async () => {
   await delay(3000);
   crosschainQuote = await getCrosschainQuote({
     chainId: 1,
-    fromAddress: TEST_ADDRESS,
+    fromAddress: TEST_ADDRESS_3,
     sellTokenAddress: ETH_ADDRESS_AGGREGATORS,
-    buyTokenAddress: ARBITRUM_USDC,
+    buyTokenAddress: USDC_ARBITRUM_ASSET.address,
     sellAmount: '1000000000000000000',
     slippage: 5,
-    destReceiver: TEST_ADDRESS,
+    destReceiver: TEST_ADDRESS_3,
     swapType: SwapType.crossChain,
     toChainId: ChainId.arbitrum,
   });
@@ -58,7 +54,7 @@ test('[rap/crosschainSwap] :: should estimate crosschain swap gas limit', async 
 
 test('[rap/crosschainSwap] :: should execute crosschain swap', async () => {
   const provider = getProvider({ chainId: chain.mainnet.id });
-  const wallet = new Wallet(TEST_PKEY, provider);
+  const wallet = new Wallet(TEST_PK_3, provider);
 
   const swapTx = await executeCrosschainSwap({
     gasLimit: '600000',

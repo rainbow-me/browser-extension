@@ -3,8 +3,14 @@ import { chain, getProvider } from '@wagmi/core';
 import { Wallet } from 'ethers';
 import { beforeAll, expect, test } from 'vitest';
 
+import {
+  RAINBOW_WALLET_ADDRESS,
+  TEST_PK_1,
+  USDC_MAINNET_ASSET,
+  delay,
+} from '~/test/utils';
+
 import { createTestWagmiClient } from '../../wagmi/createTestWagmiClient';
-import { USDC_MAINNET_ASSET } from '../unlockAndSwap.test';
 
 import {
   assetNeedsUnlocking,
@@ -13,13 +19,6 @@ import {
   getRawAllowance,
 } from './unlock';
 
-const RAINBOW_WALLET = '0x7a3d05c70581bd345fe117c06e45f9669205384f';
-
-export async function delay(ms: number) {
-  // eslint-disable-next-line no-promise-executor-return
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 beforeAll(async () => {
   createTestWagmiClient();
   await delay(3000);
@@ -27,7 +26,7 @@ beforeAll(async () => {
 
 test('[rap/unlock] :: get raw allowance', async () => {
   const rawAllowance = await getRawAllowance({
-    owner: RAINBOW_WALLET,
+    owner: RAINBOW_WALLET_ADDRESS,
     token: USDC_MAINNET_ASSET,
     spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
     chainId: chain.mainnet.id,
@@ -38,7 +37,7 @@ test('[rap/unlock] :: get raw allowance', async () => {
 test('[rap/unlock] :: asset needs unlocking', async () => {
   const needsUnlocking = await assetNeedsUnlocking({
     amount: '1000',
-    owner: RAINBOW_WALLET,
+    owner: RAINBOW_WALLET_ADDRESS,
     assetToUnlock: USDC_MAINNET_ASSET,
     spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
     chainId: chain.mainnet.id,
@@ -48,7 +47,7 @@ test('[rap/unlock] :: asset needs unlocking', async () => {
 
 test('[rap/unlock] :: estimate approve', async () => {
   const approveGasLimit = await estimateApprove({
-    owner: RAINBOW_WALLET,
+    owner: RAINBOW_WALLET_ADDRESS,
     tokenAddress: USDC_MAINNET_ASSET.address,
     spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
     chainId: chain.mainnet.id,
@@ -58,10 +57,7 @@ test('[rap/unlock] :: estimate approve', async () => {
 
 test('[rap/unlock] :: should execute approve', async () => {
   const provider = getProvider({ chainId: chain.mainnet.id });
-  const wallet = new Wallet(
-    '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
-    provider,
-  );
+  const wallet = new Wallet(TEST_PK_1, provider);
   const approvalTx = await executeApprove({
     chainId: chain.mainnet.id,
     gasLimit: '60000',
