@@ -24,7 +24,7 @@ export type DefaultTxSpeedOption =
   | GasSpeed.FAST
   | GasSpeed.URGENT;
 
-export type ThemeOption = 'light' | 'dark' | 'system';
+export type ThemeOption = 'light' | 'dark';
 
 export interface ThemeData {
   symbol: SymbolName;
