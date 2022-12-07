@@ -1,11 +1,10 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { Address, fetchEnsAddress } from '@wagmi/core';
+import { Address } from '@wagmi/core';
 import { ethers } from 'ethers';
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { useAccount } from 'wagmi';
 
 import { ChainId } from '~/core/types/chains';
-import { isENSAddressFormat } from '~/core/utils/ethereum';
 import {
   Box,
   Column,
@@ -18,13 +17,18 @@ import {
 
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { sendTransaction } from '../../handlers/wallet';
+import { useSendTransactionState } from '../../hooks/useSendTransactionState';
 
 export function Send() {
-  const [toAddress, setToAddress] = useState<Address>('' as Address);
   const [amount, setAmount] = useState('');
   const [txHash, setTxHash] = useState('');
   const [sending, setSending] = useState(false);
   const { address } = useAccount();
+
+  const { toAddress, toEnsName, setToAddressOrName } =
+    useSendTransactionState();
+
+  console.log('------ addressss', toAddress, toEnsName);
 
   const transactionRequest: TransactionRequest = useMemo(() => {
     return {
@@ -37,9 +41,9 @@ export function Send() {
 
   const handleToAddressChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setToAddress(e.target.value as Address);
+      setToAddressOrName(e.target.value);
     },
-    [],
+    [setToAddressOrName],
   );
 
   const handleAmountChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -47,22 +51,12 @@ export function Send() {
   }, []);
 
   const handleSend = useCallback(async () => {
-    let receiver = toAddress;
-    if (isENSAddressFormat(toAddress)) {
-      try {
-        receiver = (await fetchEnsAddress({ name: toAddress })) as Address;
-      } catch (e) {
-        console.log('error', e);
-        alert('Invalid ENS name');
-        return;
-      }
-    }
     setSending(true);
 
     try {
       const result = await sendTransaction({
         from: address,
-        to: receiver,
+        to: toAddress,
         value: ethers.utils.parseEther(amount),
         chainId: ChainId.mainnet,
       });
