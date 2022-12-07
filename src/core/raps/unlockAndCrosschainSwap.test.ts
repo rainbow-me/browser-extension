@@ -56,7 +56,7 @@ beforeAll(async () => {
   });
 }, 10000);
 
-test('[rap/unlockAndCrosschainSwap] :: estimate unlock and swap rap without unlock', async () => {
+test('[rap/unlockAndCrosschainSwap] :: estimate unlock and crosschain swap rap without unlock', async () => {
   const gasLimit = await estimateUnlockAndCrosschainSwap({
     tradeDetails: doesntNeedUnlockQuote as CrosschainQuote,
     chainId: 1,
@@ -64,11 +64,11 @@ test('[rap/unlockAndCrosschainSwap] :: estimate unlock and swap rap without unlo
     inputAmount: '1000000000000000000',
     outputCurrency: USDC_ARBITRUM_ASSET,
   });
-  expect(Number(gasLimit)).toBeGreaterThan(0);
   swapGasLimit = Number(gasLimit);
+  expect(swapGasLimit).toBeGreaterThan(0);
 });
 
-test('[rap/unlockAndCrosschainSwap] :: estimate unlock and swap rap with unlock', async () => {
+test('[rap/unlockAndCrosschainSwap] :: estimate unlock and crosschain swap rap with unlock', async () => {
   const gasLimit = await estimateUnlockAndCrosschainSwap({
     tradeDetails: needsUnlockQuote as CrosschainQuote,
     chainId: 1,
@@ -80,7 +80,7 @@ test('[rap/unlockAndCrosschainSwap] :: estimate unlock and swap rap with unlock'
   expect(Number(gasLimit)).toBeGreaterThan(swapGasLimit);
 });
 
-test('[rap/unlockAndCrosschainSwap] :: create unlock and swap rap without unlock', async () => {
+test('[rap/unlockAndCrosschainSwap] :: create unlock and crosschain swap rap without unlock', async () => {
   const rap = await createUnlockAndCrosschainSwapRap({
     tradeDetails: doesntNeedUnlockQuote as CrosschainQuote,
     chainId: 1,
@@ -90,7 +90,7 @@ test('[rap/unlockAndCrosschainSwap] :: create unlock and swap rap without unlock
   expect(rap.actions.length).toBe(1);
 });
 
-test('[rap/unlockAndCrosschainSwap] :: create unlock and swap rap with unlock', async () => {
+test('[rap/unlockAndCrosschainSwap] :: create unlock and crosschain swap rap with unlock', async () => {
   const rap = await createUnlockAndCrosschainSwapRap({
     tradeDetails: needsUnlockQuote as CrosschainQuote,
     chainId: 1,
