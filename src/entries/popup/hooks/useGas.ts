@@ -11,7 +11,9 @@ import {
 import { useGasStore } from '~/core/state';
 import { ParsedAsset } from '~/core/types/assets';
 import {
+  GasFeeLegacyParams,
   GasFeeLegacyParamsBySpeed,
+  GasFeeParams,
   GasFeeParamsBySpeed,
   GasSpeed,
 } from '~/core/types/gas';
@@ -115,6 +117,11 @@ export const parseGasFeeParamsBySpeed = ({
   }
 };
 
+const gasFeeParamsChanged = (
+  gasFeeParams1: GasFeeParams | GasFeeLegacyParams,
+  gasFeeParams2: GasFeeParams | GasFeeLegacyParams,
+) => gasFeeParams1.gasFee.amount !== gasFeeParams2.gasFee.amount;
+
 export const useGas = ({
   chainId,
   transactionRequest,
@@ -151,26 +158,19 @@ export const useGas = ({
     );
 
   useEffect(() => {
-    if (
-      selectedGas.gasFee.amount !==
-      gasFeeParamsBySpeed[selectedSpeed].gasFee.amount
-    ) {
+    if (gasFeeParamsChanged(selectedGas, gasFeeParamsBySpeed[selectedSpeed])) {
       setSelectedGas({
         selectedGas: gasFeeParamsBySpeed[selectedSpeed],
       });
     }
-  }, [
-    gasFeeParamsBySpeed,
-    selectedGas.gasFee.amount,
-    selectedGas.option,
-    selectedSpeed,
-    setSelectedGas,
-  ]);
+  }, [gasFeeParamsBySpeed, selectedGas, selectedSpeed, setSelectedGas]);
 
   useEffect(() => {
     if (
-      gasFeeParamsBySpeed[selectedSpeed].gasFee.amount !==
-      storeGasFeeParamsBySpeed[selectedSpeed].gasFee.amount
+      gasFeeParamsChanged(
+        gasFeeParamsBySpeed[selectedSpeed],
+        storeGasFeeParamsBySpeed[selectedSpeed],
+      )
     ) {
       setGasFeeParamsBySpeed({
         gasFeeParamsBySpeed,
