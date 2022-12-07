@@ -60,12 +60,17 @@ export const useSendTransactionState = () => {
     withPadding: true,
   });
 
+  const data = useMemo(() => {
+    return undefined;
+  }, []);
+
   console.log('---- estimate gas limit with padding data', gasLimit);
 
   return {
     toAddressOrName,
     amount,
     chainId,
+    data,
     fromAddress,
     gasLimit,
     toAddress,

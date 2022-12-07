@@ -23,6 +23,7 @@ export function Send() {
   const {
     amount,
     chainId,
+    data,
     fromAddress,
     toAddress,
     toAddressOrName,
@@ -36,8 +37,9 @@ export function Send() {
       from: fromAddress,
       amount,
       chainId,
+      data,
     };
-  }, [fromAddress, amount, chainId, toAddress]);
+  }, [toAddress, fromAddress, amount, chainId, data]);
 
   const handleToAddressChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -62,6 +64,7 @@ export function Send() {
         to: toAddress,
         value: ethers.utils.parseEther(amount ?? ''),
         chainId,
+        data,
       });
 
       if (result) {
@@ -73,7 +76,7 @@ export function Send() {
     } finally {
       setSending(false);
     }
-  }, [fromAddress, amount, chainId, toAddress]);
+  }, [fromAddress, amount, chainId, toAddress, data]);
 
   return (
     <Box
