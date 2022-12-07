@@ -84,14 +84,16 @@ export const useSendTransactionState = () => {
   }, [independentField]);
 
   return {
+    asset,
     assetAmount,
+    currentCurrency,
     toAddressOrName,
     independentAmount,
+    independentField,
     dependentAmount,
     chainId,
     data,
     fromAddress,
-    independentField,
     toAddress,
     toEnsName,
     value,

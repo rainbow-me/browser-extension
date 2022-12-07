@@ -21,7 +21,10 @@ export function Send() {
   const [sending, setSending] = useState(false);
 
   const {
+    asset,
+    currentCurrency,
     independentAmount,
+    independentField,
     dependentAmount,
     chainId,
     data,
@@ -140,9 +143,10 @@ export function Send() {
                 onClick={switchIndependentField}
                 color="accent"
                 height="36px"
-                variant="tinted"
+                variant="flat"
               >
-                Switch to
+                Switch to{' '}
+                {independentField === 'asset' ? currentCurrency : asset?.symbol}
               </Button>
             </Row>
             <Row>
