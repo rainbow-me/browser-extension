@@ -2,6 +2,8 @@ import { parseEther } from 'ethers/lib/utils';
 import { useCallback, useMemo, useState } from 'react';
 import { Address, useAccount } from 'wagmi';
 
+import { useCurrentCurrencyStore } from '~/core/state';
+import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isNativeAsset } from '~/core/utils/chains';
 import {
@@ -12,27 +14,22 @@ import {
 import { getDataForTokenTransfer } from '~/core/utils/transactions';
 
 import { useEns } from './useEns';
-import { useNativeAssetForNetwork } from './useNativeAssetForNetwork';
 
 export const useSendTransactionState = () => {
   const [toAddressOrName, setToAddressOrName] = useState<Address | string>('');
-  // const [asset, setAsset] = useState<ParsedAddressAsset>();
+  const [asset, setAsset] = useState<ParsedAddressAsset>();
   const [independentAmount, setIndependentAmount] = useState<string>();
+  const { currentCurrency } = useCurrentCurrencyStore();
   const [independentField, setIndependentField] = useState<'native' | 'asset'>(
     'asset',
   );
 
-  const asset = useNativeAssetForNetwork({ chainId: ChainId.mainnet });
   const { address: fromAddress } = useAccount();
+  const chainId = asset?.chainId ?? ChainId.mainnet;
 
   const { ensAddress: toAddress, ensName: toEnsName } = useEns({
     addressOrName: toAddressOrName ?? '',
   });
-
-  const chainId = useMemo(
-    () => asset?.chainId ?? ChainId.mainnet,
-    [asset?.chainId],
-  );
 
   const sendingNativeAsset = useMemo(
     () => !!asset && isNativeAsset(asset?.address, chainId),
@@ -45,7 +42,7 @@ export const useSendTransactionState = () => {
         dependentAmount: convertAmountAndPriceToNativeDisplay(
           independentAmount as string,
           asset?.price?.value || 0,
-          'USD',
+          currentCurrency,
         ).display,
       };
     } else {
@@ -60,32 +57,33 @@ export const useSendTransactionState = () => {
   }, [
     asset?.decimals,
     asset?.price?.value,
+    currentCurrency,
     independentAmount,
     independentField,
   ]);
 
-  const amount = useMemo(() => {
+  const assetAmount = useMemo(() => {
     if (independentField === 'asset') return independentAmount;
     return dependentAmount;
   }, [dependentAmount, independentAmount, independentField]);
 
   const value = useMemo(
-    () => (sendingNativeAsset && amount ? parseEther(amount) : '0'),
-    [amount, sendingNativeAsset],
+    () => (sendingNativeAsset && assetAmount ? parseEther(assetAmount) : '0'),
+    [assetAmount, sendingNativeAsset],
   );
 
   const data = useMemo(() => {
-    if (!asset || !toAddress || !amount || sendingNativeAsset) return '0x';
-    const rawAmount = convertAmountToRawAmount(amount, asset?.decimals);
+    if (!asset || !toAddress || !assetAmount || sendingNativeAsset) return '0x';
+    const rawAmount = convertAmountToRawAmount(assetAmount, asset?.decimals);
     return getDataForTokenTransfer(rawAmount, toAddress);
-  }, [amount, asset, sendingNativeAsset, toAddress]);
+  }, [assetAmount, asset, sendingNativeAsset, toAddress]);
 
   const switchIndependentField = useCallback(() => {
     setIndependentField(independentField === 'asset' ? 'native' : 'asset');
   }, [independentField]);
 
   return {
-    amount,
+    assetAmount,
     toAddressOrName,
     independentAmount,
     dependentAmount,
@@ -96,6 +94,7 @@ export const useSendTransactionState = () => {
     toAddress,
     toEnsName,
     value,
+    setAsset,
     setIndependentAmount,
     setIndependentField,
     setToAddressOrName,
