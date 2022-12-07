@@ -10,6 +10,9 @@ export const useSendTransactionState = () => {
   const [toAddressOrName, setToAddressOrName] = useState<Address | string>('');
   const [asset, setAsset] = useState<ParsedAddressAsset>();
   const [amount, setAmount] = useState<string>();
+  const [independentField, setIndependentField] = useState<
+    'native' | 'asset'
+  >();
   const { address: fromAddress } = useAccount();
 
   const { ensAddress: toAddress, ensName: toEnsName } = useEns({
@@ -31,10 +34,12 @@ export const useSendTransactionState = () => {
     chainId,
     data,
     fromAddress,
+    independentField,
     toAddress,
     toEnsName,
     setAmount,
     setAsset,
+    setIndependentField,
     setToAddressOrName,
   };
 };
