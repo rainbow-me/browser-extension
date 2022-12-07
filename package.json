@@ -41,7 +41,7 @@
     "// Runs tests": "",
     "anvil": "ALCHEMY_API_KEY=$(grep ALCHEMY_API_KEY .env | cut -d '=' -f2) && anvil --fork-url https://eth-mainnet.alchemyapi.io/v2/$ALCHEMY_API_KEY",
     "anvil:kill": "lsof -i :8545|tail -n +2|awk '{print $2}'|xargs -r kill",
-    "test": "yarn anvil & vitest || yarn anvil:kill",
+    "test": "yarn anvil & vitest && yarn anvil:kill || yarn anvil:kill",
     "test:watch": "yarn anvil & vitest --watch",
     "// Runs e2e": "",
     "e2e:linux:chrome": "BROWSER=chrome OS=linux CHROMIUM_BIN=$(which chrome) vitest e2e/ --config ./e2e/vitest.config.ts",
