@@ -127,7 +127,12 @@ export const useGas = ({
     chainId,
     transactionRequest,
   });
-  const { selectedGas, setSelectedGas, setGasFeeParamsBySpeed } = useGasStore();
+  const {
+    selectedGas,
+    setSelectedGas,
+    gasFeeParamsBySpeed: storeGasFeeParamsBySpeed,
+    setGasFeeParamsBySpeed,
+  } = useGasStore();
   const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>(GasSpeed.NORMAL);
   const nativeAsset = useNativeAssetForNetwork({ chainId });
 
@@ -154,10 +159,20 @@ export const useGas = ({
   }, [gasFeeParamsBySpeed, selectedGas.option, selectedSpeed, setSelectedGas]);
 
   useEffect(() => {
-    setGasFeeParamsBySpeed({
-      gasFeeParamsBySpeed,
-    });
-  }, [gasFeeParamsBySpeed, setGasFeeParamsBySpeed]);
+    if (
+      gasFeeParamsBySpeed[selectedSpeed].gasFee.amount !==
+      storeGasFeeParamsBySpeed[selectedSpeed].gasFee.amount
+    ) {
+      setGasFeeParamsBySpeed({
+        gasFeeParamsBySpeed,
+      });
+    }
+  }, [
+    gasFeeParamsBySpeed,
+    selectedSpeed,
+    setGasFeeParamsBySpeed,
+    storeGasFeeParamsBySpeed,
+  ]);
 
   return {
     data,
