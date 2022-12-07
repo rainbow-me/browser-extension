@@ -1,26 +1,32 @@
-import React, { forwardRef } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
+import { useCurrentAddressStore } from '~/core/state';
 import { Box, Button, Text, ThemeProvider } from '~/design-system';
 import { Rows } from '~/design-system/components/Rows/Rows';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
 
 import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 import { LogoWithLetters } from '../../components/LogoWithLetters/LogoWithLetters';
+import * as wallet from '../../handlers/wallet';
 
-export const Welcome = forwardRef<HTMLDivElement>((_, ref) => {
+export function Welcome() {
   const navigate = useNavigate();
+  const { setCurrentAddress } = useCurrentAddressStore();
+
   const handleCreateNewWalletClick = React.useCallback(async () => {
+    const newWalletAddress = await wallet.create();
+    setCurrentAddress(newWalletAddress);
     navigate('/manual-backup-prompt');
-  }, [navigate]);
+  }, [navigate, setCurrentAddress]);
+
   return (
     <FlyingRainbows>
       <Box
         width="full"
-        style={{ zIndex: 1, paddingTop: 127 }}
+        style={{ paddingTop: 127, zIndex: 999999999 }}
         background="transparent"
-        ref={ref}
       >
         <Box
           width="full"
@@ -93,6 +99,4 @@ export const Welcome = forwardRef<HTMLDivElement>((_, ref) => {
       </Box>
     </FlyingRainbows>
   );
-});
-
-Welcome.displayName = 'Welcome';
+}
