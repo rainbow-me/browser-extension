@@ -14,15 +14,20 @@ import {
 import { getDataForTokenTransfer } from '~/core/utils/transactions';
 
 import { useEns } from './useEns';
+import { useNativeAssetForNetwork } from './useNativeAssetForNetwork';
 
 export const useSendTransactionState = () => {
   const [toAddressOrName, setToAddressOrName] = useState<Address | string>('');
-  const [asset, setAsset] = useState<ParsedAddressAsset>();
+  const nativeAsset = useNativeAssetForNetwork({ chainId: ChainId.mainnet });
+
+  const [, setAsset] = useState<ParsedAddressAsset>(nativeAsset);
   const [independentAmount, setIndependentAmount] = useState<string>();
   const { currentCurrency } = useCurrentCurrencyStore();
   const [independentField, setIndependentField] = useState<'native' | 'asset'>(
     'asset',
   );
+
+  const asset = nativeAsset;
 
   const { address: fromAddress } = useAccount();
   const chainId = asset?.chainId ?? ChainId.mainnet;
@@ -36,23 +41,19 @@ export const useSendTransactionState = () => {
     [asset, chainId],
   );
 
-  const { dependentAmount } = useMemo(() => {
+  const dependentAmount = useMemo(() => {
     if (independentField === 'asset') {
-      return {
-        dependentAmount: convertAmountAndPriceToNativeDisplay(
-          independentAmount as string,
-          asset?.price?.value || 0,
-          currentCurrency,
-        ).display,
-      };
+      return convertAmountAndPriceToNativeDisplay(
+        independentAmount as string,
+        asset?.price?.value || 0,
+        currentCurrency,
+      ).amount;
     } else {
-      return {
-        dependentAmount: convertAmountFromNativeValue(
-          independentAmount as string,
-          asset?.price?.value || 0,
-          asset?.decimals,
-        ),
-      };
+      return convertAmountFromNativeValue(
+        independentAmount as string,
+        asset?.price?.value || 0,
+        asset?.decimals,
+      );
     }
   }, [
     asset?.decimals,
