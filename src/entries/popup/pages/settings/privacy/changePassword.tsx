@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import {
@@ -77,11 +77,11 @@ export function ChangePassword() {
         <Inset horizontal="104px">
           <Separator color="separatorTertiary" />
         </Inset>
-        <Rows space="20px">
+        <Rows space="24px">
           <Row>
-            <Rows space="10px">
+            <Rows space="12px">
               <Row>
-                <Text size="14pt" weight="semibold">
+                <Text size="14pt" weight="medium">
                   {i18n.t(
                     'settings.privacy_and_security.change_password.new_password',
                   )}
@@ -92,7 +92,7 @@ export function ChangePassword() {
                 <Input
                   height="40px"
                   placeholder="Password"
-                  variant="surface"
+                  variant="bordered"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                 />
@@ -100,9 +100,9 @@ export function ChangePassword() {
             </Rows>
           </Row>
           <Row>
-            <Rows space="10px">
+            <Rows space="12px">
               <Row>
-                <Text size="14pt" weight="semibold">
+                <Text size="14pt" weight="medium">
                   {i18n.t(
                     'settings.privacy_and_security.change_password.confirm_password',
                   )}
@@ -115,7 +115,7 @@ export function ChangePassword() {
                   placeholder={i18n.t(
                     'settings.privacy_and_security.change_password.inputPlaceholder',
                   )}
-                  variant="surface"
+                  variant="bordered"
                   value={confirmNewPassword}
                   onChange={(e) => setConfirmNewPassword(e.target.value)}
                 />
@@ -140,16 +140,15 @@ export function ChangePassword() {
                 </Button>
               </Row>
               <Row height="content">
-                <Link to="/settings/privacy">
-                  <Button
-                    color="accent"
-                    height="44px"
-                    variant="transparent"
-                    width="full"
-                  >
-                    {i18n.t('common_actions.cancel')}
-                  </Button>
-                </Link>
+                <Button
+                  color="blue"
+                  height="44px"
+                  variant="transparent"
+                  width="full"
+                  onClick={() => navigate(-1)}
+                >
+                  {i18n.t('common_actions.cancel')}
+                </Button>
               </Row>
             </Rows>
           </Box>

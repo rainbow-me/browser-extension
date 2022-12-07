@@ -5,7 +5,8 @@ import { i18n } from '~/core/languages';
 import {
   Box,
   Button,
-  Inline,
+  Column,
+  Columns,
   Inset,
   Row,
   Rows,
@@ -79,24 +80,30 @@ export const ConfirmPasswordPrompt = ({
           </Rows>
         </Row>
         <Row>
-          <Inline space="8px" alignHorizontal="center">
-            <Button
-              variant="flat"
-              height="44px"
-              color="fillSecondary"
-              onClick={onClose}
-            >
-              {i18n.t('common_actions.cancel')}
-            </Button>
-            <Button
-              variant="flat"
-              height="44px"
-              color="accent"
-              onClick={handleValidatePassword}
-            >
-              {i18n.t('common_actions.continue')}
-            </Button>
-          </Inline>
+          <Columns space="8px">
+            <Column>
+              <Button
+                variant="flat"
+                height="44px"
+                color="fillSecondary"
+                onClick={onClose}
+                width="full"
+              >
+                {i18n.t('common_actions.cancel')}
+              </Button>
+            </Column>
+            <Column>
+              <Button
+                variant="flat"
+                height="44px"
+                color="accent"
+                onClick={handleValidatePassword}
+                width="full"
+              >
+                {i18n.t('common_actions.continue')}
+              </Button>
+            </Column>
+          </Columns>
         </Row>
       </Rows>
     </Prompt>
