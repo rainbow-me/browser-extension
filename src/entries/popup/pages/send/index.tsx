@@ -21,12 +21,13 @@ export function Send() {
   const [sending, setSending] = useState(false);
 
   const {
-    toAddress,
-    setToAddressOrName,
-    chainId,
-    setAmount,
     amount,
+    chainId,
     fromAddress,
+    toAddress,
+    toAddressOrName,
+    setAmount,
+    setToAddressOrName,
   } = useSendTransactionState();
 
   const transactionRequest: TransactionRequest = useMemo(() => {
@@ -93,7 +94,7 @@ export function Send() {
             <Row>
               <input
                 type="text"
-                value={toAddress}
+                value={toAddressOrName}
                 placeholder={'ENS or address'}
                 onChange={handleToAddressChange}
                 style={{

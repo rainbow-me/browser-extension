@@ -1,7 +1,9 @@
 import { isAddress } from '@ethersproject/address';
+import { parseEther } from 'ethers/lib/utils';
 import { useMemo, useState } from 'react';
 import { Address, useAccount, useEnsAddress, useEnsName } from 'wagmi';
 
+import { useEstimateGasLimit } from '~/core/resources/gas';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
@@ -28,7 +30,7 @@ const useEns = ({ addressOrName }: { addressOrName: Address | string }) => {
 
 export const useSendTransactionState = () => {
   const [toAddressOrName, setToAddressOrName] = useState<Address | string>('');
-  const [asset] = useState<ParsedAddressAsset>();
+  const [asset, setAsset] = useState<ParsedAddressAsset>();
   const [amount, setAmount] = useState<string>();
   const { address: fromAddress } = useAccount();
 
@@ -48,13 +50,28 @@ export const useSendTransactionState = () => {
   //   const [gasLimit, setGasLimit] = useState<string>();
   //   const [token, setToken] = useState<ParsedAddressAsset>();
 
+  const { data: gasLimit } = useEstimateGasLimit({
+    transactionRequest: {
+      from: fromAddress,
+      to: toAddress,
+      value: parseEther(amount ?? '0'),
+    },
+    chainId,
+    withPadding: true,
+  });
+
+  console.log('---- estimate gas limit with padding data', gasLimit);
+
   return {
+    toAddressOrName,
+    amount,
+    chainId,
+    fromAddress,
+    gasLimit,
     toAddress,
     toEnsName,
-    fromAddress,
-    setToAddressOrName,
-    chainId,
     setAmount,
-    amount,
+    setAsset,
+    setToAddressOrName,
   };
 };
