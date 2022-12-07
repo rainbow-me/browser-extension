@@ -10,7 +10,7 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { estimateGas, estimateGasWithPadding } from '~/core/utils/gas';
+import { estimateGas } from '~/core/utils/gas';
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -22,7 +22,6 @@ export type EstimateGasLimitResponse = {
 export type EstimateGasLimitArgs = {
   chainId: Chain['id'];
   transactionRequest: TransactionRequest;
-  withPadding?: boolean;
 };
 
 // ///////////////////////////////////////////////
@@ -31,11 +30,10 @@ export type EstimateGasLimitArgs = {
 const estimateGasLimitQueryKey = ({
   chainId,
   transactionRequest,
-  withPadding,
 }: EstimateGasLimitArgs) =>
   createQueryKey(
     'estimateGasLimit',
-    { chainId, transactionRequest, withPadding },
+    { chainId, transactionRequest },
     { persisterVersion: 1 },
   );
 
@@ -45,10 +43,10 @@ type EstimateGasLimitQueryKey = ReturnType<typeof estimateGasLimitQueryKey>;
 // Query Function
 
 async function estimateGasLimitQueryFunction({
-  queryKey: [{ chainId, transactionRequest, withPadding }],
+  queryKey: [{ chainId, transactionRequest }],
 }: QueryFunctionArgs<typeof estimateGasLimitQueryKey>) {
   const provider = getProvider({ chainId });
-  const gasLimit = await (withPadding ? estimateGasWithPadding : estimateGas)({
+  const gasLimit = await estimateGas({
     transactionRequest,
     provider,
   });
@@ -63,7 +61,7 @@ type EstimateGasLimitResult = QueryFunctionResult<
 // Query Fetcher
 
 export async function fetchEstimateGasLimit(
-  { chainId, transactionRequest, withPadding = false }: EstimateGasLimitArgs,
+  { chainId, transactionRequest }: EstimateGasLimitArgs,
   config: QueryConfig<
     EstimateGasLimitResult,
     Error,
@@ -72,7 +70,7 @@ export async function fetchEstimateGasLimit(
   > = {},
 ) {
   return await queryClient.fetchQuery(
-    estimateGasLimitQueryKey({ chainId, transactionRequest, withPadding }),
+    estimateGasLimitQueryKey({ chainId, transactionRequest }),
     estimateGasLimitQueryFunction,
     config,
   );
@@ -82,7 +80,7 @@ export async function fetchEstimateGasLimit(
 // Query Hook
 
 export function useEstimateGasLimit(
-  { chainId, transactionRequest, withPadding = false }: EstimateGasLimitArgs,
+  { chainId, transactionRequest }: EstimateGasLimitArgs,
   config: QueryConfig<
     EstimateGasLimitResult,
     Error,
@@ -91,7 +89,7 @@ export function useEstimateGasLimit(
   > = {},
 ) {
   return useQuery(
-    estimateGasLimitQueryKey({ chainId, transactionRequest, withPadding }),
+    estimateGasLimitQueryKey({ chainId, transactionRequest }),
     estimateGasLimitQueryFunction,
     config,
   );
