@@ -44,8 +44,6 @@ export const useSendTransactionState = () => {
     return getDataForTokenTransfer(rawAmount, toAddress);
   }, [amount, asset, sendingNativeAsset, toAddress]);
 
-  console.log('dataatatatatata ', data);
-
   return {
     toAddressOrName,
     amount,
