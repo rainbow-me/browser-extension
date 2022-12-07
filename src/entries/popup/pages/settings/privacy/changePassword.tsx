@@ -1,18 +1,19 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { Box, Button, Inline, Row, Rows, Symbol, Text } from '~/design-system';
+import {
+  Box,
+  Button,
+  Inline,
+  Inset,
+  Row,
+  Rows,
+  Separator,
+  Symbol,
+  Text,
+} from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
-
-const Separator = () => (
-  <Inline alignHorizontal="center">
-    <Box
-      style={{ height: 1, width: '30%' }}
-      background="surfaceSecondaryElevated"
-    />
-  </Inline>
-);
 
 export function ChangePassword() {
   const navigate = useNavigate();
@@ -73,13 +74,17 @@ export function ChangePassword() {
             </Row>
           </Rows>
         </Row>
-        <Separator />
+        <Inset horizontal="104px">
+          <Separator color="separatorTertiary" />
+        </Inset>
         <Rows space="20px">
           <Row>
             <Rows space="10px">
               <Row>
                 <Text size="14pt" weight="semibold">
-                  New password
+                  {i18n.t(
+                    'settings.privacy_and_security.change_password.new_password',
+                  )}
                 </Text>
               </Row>
               <Row>
@@ -98,14 +103,18 @@ export function ChangePassword() {
             <Rows space="10px">
               <Row>
                 <Text size="14pt" weight="semibold">
-                  Confirm password
+                  {i18n.t(
+                    'settings.privacy_and_security.change_password.confirm_password',
+                  )}
                 </Text>
               </Row>
               <Row>
                 {/* TODO: switch for password input */}
                 <Input
                   height="40px"
-                  placeholder="Password"
+                  placeholder={i18n.t(
+                    'settings.privacy_and_security.change_password.inputPlaceholder',
+                  )}
                   variant="surface"
                   value={confirmNewPassword}
                   onChange={(e) => setConfirmNewPassword(e.target.value)}
@@ -131,17 +140,16 @@ export function ChangePassword() {
                 </Button>
               </Row>
               <Row height="content">
-                <Button
-                  color="accent"
-                  height="44px"
-                  variant="transparent"
-                  width="full"
-                  onClick={() => {
-                    navigate('/settings/privacy');
-                  }}
-                >
-                  {i18n.t('common_actions.cancel')}
-                </Button>
+                <Link to="/settings/privacy">
+                  <Button
+                    color="accent"
+                    height="44px"
+                    variant="transparent"
+                    width="full"
+                  >
+                    {i18n.t('common_actions.cancel')}
+                  </Button>
+                </Link>
               </Row>
             </Rows>
           </Box>

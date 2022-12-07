@@ -28,7 +28,15 @@
       "change_password": {
         "title": "Change Password",
         "header_label": "Change your password",
-        "update_password": "Update Password"
+        "new_password": "New password",
+        "confirm_password": "Confirm password",
+        "update_password": "Update Password",
+        "inputPlaceholder": "Password"
+      },
+      "confirmPassword": {
+        "title": "Enter your Password",
+        "description": "You need to enter your current password before you can update and change it.",
+        "inputPlaceholder": "Password"
       }
     },
     "transactions": {
@@ -179,6 +187,7 @@
     "title": "Wallets"
   },
   "common_actions": {
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "continue": "Continue"
   }
 }
