@@ -3,6 +3,9 @@ import { Address, useAccount } from 'wagmi';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { isNativeAsset } from '~/core/utils/chains';
+import { convertAmountToRawAmount } from '~/core/utils/numbers';
+import { getDataForTokenTransfer } from '~/core/utils/transactions';
 
 import { useEns } from './useEns';
 
@@ -24,9 +27,26 @@ export const useSendTransactionState = () => {
     [asset?.chainId],
   );
 
+  const sendingNativeAsset = useMemo(
+    () => !!asset && isNativeAsset(asset?.address, chainId),
+    [asset, chainId],
+  );
+
+  const value = useMemo(
+    () =>
+      sendingNativeAsset && amount && asset
+        ? convertAmountToRawAmount(amount, asset?.decimals ?? 18)
+        : '0',
+    [amount, asset, sendingNativeAsset],
+  );
+
   const data = useMemo(() => {
-    return undefined;
-  }, []);
+    if (!asset || !toAddress || !amount || sendingNativeAsset) return '0x';
+    const value = convertAmountToRawAmount(amount, asset?.decimals);
+    return getDataForTokenTransfer(value, toAddress);
+  }, [amount, asset, sendingNativeAsset, toAddress]);
+
+  console.log('dataatatatatata ', data);
 
   return {
     toAddressOrName,
@@ -37,6 +57,7 @@ export const useSendTransactionState = () => {
     independentField,
     toAddress,
     toEnsName,
+    value,
     setAmount,
     setAsset,
     setIndependentField,

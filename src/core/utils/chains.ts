@@ -26,8 +26,8 @@ export const isL2Chain = (chain: ChainName | ChainId): boolean => {
   }
 };
 
-export function isNativeAsset(address: Address, chain: ChainId) {
-  return isLowerCaseMatch(NATIVE_ASSETS_PER_CHAIN[chain], address);
+export function isNativeAsset(address: Address, chainId: ChainId) {
+  return isLowerCaseMatch(NATIVE_ASSETS_PER_CHAIN[chainId], address);
 }
 
 export function chainIdFromChainName(chainName: ChainName) {

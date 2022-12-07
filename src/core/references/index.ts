@@ -6,6 +6,7 @@ export { supportedCurrencies } from './supportedCurrencies';
 export { ethUnits } from './ethUnits';
 
 export { default as optimismGasOracleAbi } from './abis/optimism-gas-oracle-abi.json';
+export { default as smartContractMethods } from './abis/smart-contract-methods.json';
 
 export type {
   SupportedCurrency,
