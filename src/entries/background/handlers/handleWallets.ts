@@ -6,7 +6,6 @@ import { Address } from 'wagmi';
 import {
   addNewAccount,
   createWallet,
-  dangerouslySetVaultPassword,
   exportAccount,
   exportKeychain,
   getAccounts,
@@ -76,10 +75,6 @@ export const handleWallets = () =>
               newPassword: string;
             };
             response = await setVaultPassword(password, newPassword);
-            break;
-          }
-          case 'dangerously_update_password': {
-            response = await dangerouslySetVaultPassword(payload as string);
             break;
           }
           case 'wipe':

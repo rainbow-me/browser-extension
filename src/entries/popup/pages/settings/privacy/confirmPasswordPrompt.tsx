@@ -30,7 +30,9 @@ export const ConfirmPasswordPrompt = ({
   const handleValidatePassword = async () => {
     const correctPassword = await verifyPassword(password);
     if (correctPassword) {
-      navigate('/settings/privacy/changePassword');
+      navigate('/settings/privacy/changePassword', {
+        state: { currentPassword: password },
+      });
       return;
     }
     alert('Password is wrong');

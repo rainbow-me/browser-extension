@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import {
@@ -14,10 +14,11 @@ import {
   Text,
 } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
-import { dangerouslyUpdatePassword } from '~/entries/popup/handlers/wallet';
+import { updatePassword } from '~/entries/popup/handlers/wallet';
 
 export function ChangePassword() {
   const navigate = useNavigate();
+  const { state } = useLocation();
   const [newPassword, setNewPassword] = React.useState('');
   const [confirmNewPassword, setConfirmNewPassword] = React.useState('');
 
@@ -32,9 +33,12 @@ export function ChangePassword() {
       alert('Passwords do not match');
       return;
     }
-    await dangerouslyUpdatePassword(newPassword);
+    if (!state?.currentPassword) {
+      alert('password not received from previous screen');
+    }
+    await updatePassword(state?.currentPassword, newPassword);
     alert('Password updated');
-    navigate('/settings/privacy');
+    navigate(-1);
   };
   return (
     <Box
