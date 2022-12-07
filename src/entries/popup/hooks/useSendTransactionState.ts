@@ -1,3 +1,4 @@
+import { parseEther } from 'ethers/lib/utils';
 import { useMemo, useState } from 'react';
 import { Address, useAccount } from 'wagmi';
 
@@ -33,17 +34,14 @@ export const useSendTransactionState = () => {
   );
 
   const value = useMemo(
-    () =>
-      sendingNativeAsset && amount && asset
-        ? convertAmountToRawAmount(amount, asset?.decimals ?? 18)
-        : '0',
-    [amount, asset, sendingNativeAsset],
+    () => (sendingNativeAsset && amount ? parseEther(amount) : '0'),
+    [amount, sendingNativeAsset],
   );
 
   const data = useMemo(() => {
     if (!asset || !toAddress || !amount || sendingNativeAsset) return '0x';
-    const value = convertAmountToRawAmount(amount, asset?.decimals);
-    return getDataForTokenTransfer(value, toAddress);
+    const rawAmount = convertAmountToRawAmount(amount, asset?.decimals);
+    return getDataForTokenTransfer(rawAmount, toAddress);
   }, [amount, asset, sendingNativeAsset, toAddress]);
 
   console.log('dataatatatatata ', data);

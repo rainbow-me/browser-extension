@@ -1,5 +1,4 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { ethers } from 'ethers';
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
 
 import {
@@ -27,6 +26,7 @@ export function Send() {
     fromAddress,
     toAddress,
     toAddressOrName,
+    value,
     setAmount,
     setToAddressOrName,
   } = useSendTransactionState();
@@ -35,11 +35,11 @@ export function Send() {
     return {
       to: toAddress,
       from: fromAddress,
-      amount,
+      value,
       chainId,
       data,
     };
-  }, [toAddress, fromAddress, amount, chainId, data]);
+  }, [toAddress, fromAddress, value, chainId, data]);
 
   const handleToAddressChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -62,7 +62,7 @@ export function Send() {
       const result = await sendTransaction({
         from: fromAddress,
         to: toAddress,
-        value: ethers.utils.parseEther(amount ?? ''),
+        value,
         chainId,
         data,
       });
@@ -76,7 +76,7 @@ export function Send() {
     } finally {
       setSending(false);
     }
-  }, [fromAddress, amount, chainId, toAddress, data]);
+  }, [fromAddress, toAddress, value, chainId, data]);
 
   return (
     <Box
