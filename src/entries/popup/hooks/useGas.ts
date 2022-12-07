@@ -146,16 +146,12 @@ export const useGas = ({
     );
 
   useEffect(() => {
-    setSelectedGas({
-      selectedGas: gasFeeParamsBySpeed[selectedSpeed],
-    });
-  }, [
-    gasFeeParamsBySpeed,
-    gasLimit,
-    selectedGas.option,
-    selectedSpeed,
-    setSelectedGas,
-  ]);
+    if (selectedSpeed !== selectedGas.option) {
+      setSelectedGas({
+        selectedGas: gasFeeParamsBySpeed[selectedSpeed],
+      });
+    }
+  }, [gasFeeParamsBySpeed, selectedGas.option, selectedSpeed, setSelectedGas]);
 
   useEffect(() => {
     setGasFeeParamsBySpeed({
