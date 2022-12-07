@@ -11,7 +11,17 @@ export interface CurrentThemeState {
 export const currentThemeStore = createStore<CurrentThemeState>(
   (set) => ({
     currentTheme: 'dark',
-    setCurrentTheme: (newTheme) => set({ currentTheme: newTheme }),
+    setCurrentTheme: (newTheme) => {
+      if (newTheme === 'system') {
+        const prefersDarkMode = window.matchMedia(
+          '(prefers-color-scheme: dark)',
+        ).matches;
+
+        set({ currentTheme: prefersDarkMode ? 'dark' : 'light' });
+      } else {
+        set({ currentTheme: newTheme });
+      }
+    },
   }),
   {
     persist: {
