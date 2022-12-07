@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import { motion } from 'framer-motion';
 import React from 'react';
 
@@ -72,7 +71,6 @@ export const AnimatedRoute = React.forwardRef<
   const { children, direction, navbar, title } = props;
   const { initial, end, exit } = animatedRouteValues[direction];
   const transition = animatedRouteTransitionConfig[direction];
-
   return (
     <Box
       as={motion.div}

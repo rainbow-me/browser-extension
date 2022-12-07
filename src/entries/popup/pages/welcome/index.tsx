@@ -25,7 +25,7 @@ export function Welcome() {
     <FlyingRainbows>
       <Box
         width="full"
-        style={{ paddingTop: 127, zIndex: 999999999 }}
+        style={{ zIndex: 1, paddingTop: 127 }}
         background="transparent"
       >
         <Box
