@@ -9,6 +9,8 @@ export function FullScreenBackground({
 }: {
   children: React.ReactNode;
 }) {
+  const isFullscreen = window.innerHeight >= 600 && window.innerWidth > 360;
+  if (!isFullscreen) return children as JSX.Element;
   return (
     <Box
       position="absolute"
@@ -21,7 +23,7 @@ export function FullScreenBackground({
       background="surfacePrimary"
     >
       <Blur />
-      <div
+      <Box
         style={{
           position: 'absolute',
           top: '0px',
@@ -33,8 +35,19 @@ export function FullScreenBackground({
           backgroundRepeat: 'repeat',
           mixBlendMode: 'soft-light',
         }}
+        background="surfacePrimary"
       />
-      {children}
+      <Box
+        borderRadius="32px"
+        style={{
+          width: 360,
+          height: 600,
+          position: 'relative',
+          overflow: 'auto',
+        }}
+      >
+        {children}
+      </Box>
     </Box>
   );
 }

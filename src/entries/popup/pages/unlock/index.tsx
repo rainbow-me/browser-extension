@@ -1,9 +1,4 @@
-import React, {
-  SetStateAction,
-  forwardRef,
-  useCallback,
-  useState,
-} from 'react';
+import React, { SetStateAction, useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
@@ -13,7 +8,7 @@ import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 import { PasswordInput } from '../../components/PasswordInput/PasswordInput';
 import { AvatarSection } from '../home/Header';
 
-export const Unlock = forwardRef<HTMLDivElement>((_, ref) => {
+export function Unlock() {
   const [password, setPassword] = useState('');
 
   const handlePasswordChange = useCallback(
@@ -35,7 +30,6 @@ export const Unlock = forwardRef<HTMLDivElement>((_, ref) => {
         width="full"
         style={{ zIndex: 1, paddingTop: 125 }}
         background="transparent"
-        ref={ref}
       >
         <Box
           width="full"
@@ -146,6 +140,4 @@ export const Unlock = forwardRef<HTMLDivElement>((_, ref) => {
       </Box>
     </FlyingRainbows>
   );
-});
-
-Unlock.displayName = 'Unlock';
+}

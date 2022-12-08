@@ -5,8 +5,10 @@ import { matchRoutes, useLocation } from 'react-router-dom';
 import { i18n } from '~/core/languages';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
+import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
 import { ConnectedApps } from './pages/ConnectedApps';
 import { Home } from './pages/home';
+import { ManualBackupPrompt } from './pages/manualBackupPrompt';
 import { Send } from './pages/send';
 import { Currency } from './pages/settings/currency';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
@@ -44,11 +46,30 @@ export function Routes() {
       },
       {
         path: '/welcome',
-        element: <Welcome />,
+        element: (
+          <AnimatedRoute direction="base">
+            <Welcome />
+          </AnimatedRoute>
+        ),
+        background: FullScreenBackground,
       },
       {
         path: '/unlock',
-        element: <Unlock />,
+        element: (
+          <AnimatedRoute direction="base">
+            <Unlock />
+          </AnimatedRoute>
+        ),
+        background: FullScreenBackground,
+      },
+      {
+        path: '/manual-backup-prompt',
+        element: (
+          <AnimatedRoute direction="horizontal">
+            <ManualBackupPrompt />
+          </AnimatedRoute>
+        ),
+        background: FullScreenBackground,
       },
       {
         path: '/settings',
@@ -149,16 +170,21 @@ export function Routes() {
     ],
     location.pathname,
   );
-  const element = routeMatch?.[0]?.route?.element;
+  const match = routeMatch?.[0]?.route;
+  const element = match?.element;
+  const background = match?.background;
   if (!element) {
     // error UI here probably
     return null;
   }
+  const RoutesContainer = background ?? React.Fragment;
   return (
-    <AnimatePresence mode="popLayout">
-      {React.cloneElement(element, {
-        key: location.pathname,
-      })}
-    </AnimatePresence>
+    <RoutesContainer>
+      <AnimatePresence mode="popLayout">
+        {React.cloneElement(element, {
+          key: location.pathname,
+        })}
+      </AnimatePresence>
+    </RoutesContainer>
   );
 }
