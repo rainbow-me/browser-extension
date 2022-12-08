@@ -51,6 +51,17 @@
   "sign": {
     "title": "Sign"
   },
+  "unlock": {
+    "welcome_back": "Welcome back",
+    "enter_password": "Enter your password to unlock Rainbow.",
+    "password": "Password",
+    "unlock": "Unlock",
+    "having_trouble": "Having trouble?",
+    "contact": "Contact",
+    "rainbow_support": "Rainbow Support",
+    "wrong_password": "Wrong password"
+
+  },
   "welcome": {
     "title": "Rainbow",
     "subtitle": "Explore the new world of Ethereum",

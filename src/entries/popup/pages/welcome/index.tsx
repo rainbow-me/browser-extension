@@ -1,20 +1,21 @@
-import * as React from 'react';
+import React, { forwardRef } from 'react';
 
 import { i18n } from '~/core/languages';
 import { Box, Button, Text, ThemeProvider } from '~/design-system';
 import { Rows } from '~/design-system/components/Rows/Rows';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
 
-import { FlyingRainbows } from '../../components/FlyingRainbows';
+import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 import { LogoWithLetters } from '../../components/LogoWithLetters/LogoWithLetters';
 
-export function Welcome() {
+export const Welcome = forwardRef<HTMLDivElement>((_, ref) => {
   return (
     <FlyingRainbows>
       <Box
         width="full"
         style={{ zIndex: 1, paddingTop: 127 }}
         background="transparent"
+        ref={ref}
       >
         <Box
           width="full"
@@ -86,4 +87,6 @@ export function Welcome() {
       </Box>
     </FlyingRainbows>
   );
-}
+});
+
+Welcome.displayName = 'Welcome';

@@ -21,6 +21,7 @@ function AvatarWrapper({
   return (
     <Box
       borderRadius="round"
+      boxShadow="18px accent"
       position="relative"
       style={{
         height: size,

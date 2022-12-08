@@ -72,7 +72,7 @@ export function parseAsset({
     colors: asset?.colors,
     chainId,
     chainName,
-    isNativeAsset: isNativeAsset(address, chainName),
+    isNativeAsset: isNativeAsset(address, chainIdFromChainName(chainName)),
     name: asset?.name,
     mainnetAddress: asset?.mainnet_address,
     native: {
@@ -85,6 +85,7 @@ export function parseAsset({
     symbol: asset?.symbol,
     type: asset?.type ?? AssetType.token,
     uniqueId,
+    decimals: asset?.decimals,
   };
 
   return parsedAsset;

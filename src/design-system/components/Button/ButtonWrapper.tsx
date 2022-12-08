@@ -46,7 +46,7 @@ export const stylesForHeight: Record<
   '44px': {
     gap: '8px',
     paddingHorizontal: '24px',
-    textSize: '16pt',
+    textSize: '14pt',
   },
   '36px': {
     gap: '6px',

@@ -14,6 +14,7 @@ import { Privacy } from './pages/settings/privacy/privacy';
 import { Settings } from './pages/settings/settings';
 import { Transactions } from './pages/settings/transactions';
 import { Sign } from './pages/sign';
+import { Unlock } from './pages/unlock';
 import { Wallets } from './pages/wallets';
 import { Welcome } from './pages/welcome';
 
@@ -44,6 +45,10 @@ export function Routes() {
       {
         path: '/welcome',
         element: <Welcome />,
+      },
+      {
+        path: '/unlock',
+        element: <Unlock />,
       },
       {
         path: '/settings',
