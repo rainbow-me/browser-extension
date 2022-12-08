@@ -8,7 +8,6 @@ import { serialize } from '@ethersproject/transactions';
 import BigNumber from 'bignumber.js';
 import { BigNumberish } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
-import { Chain } from 'wagmi';
 
 import {
   OVM_GAS_PRICE_ORACLE,
@@ -234,7 +233,7 @@ export const getBaseFeeMultiplier = (speed: GasSpeed) => {
   }
 };
 
-export const getChainWaitTime = (chainId: Chain['id']) => {
+export const getChainWaitTime = (chainId: ChainId) => {
   switch (chainId) {
     case ChainId.bsc:
     case ChainId.polygon:
@@ -391,7 +390,7 @@ export const parseGasFeeParamsBySpeed = ({
   gasLimit,
   nativeAsset,
 }: {
-  chainId: Chain['id'];
+  chainId: ChainId;
   data?: MeteorologyResponse | MeteorologyLegacyResponse;
   gasLimit: string;
   nativeAsset?: ParsedAsset;
