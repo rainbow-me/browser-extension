@@ -11,7 +11,6 @@ export interface RainbowTransaction {
     amount: string;
     display: string;
   };
-  dappName?: string; // for walletconnect
   data?: string; // for pending tx
   description?: string;
   from?: Address;
@@ -30,16 +29,10 @@ export interface RainbowTransaction {
   nonce?: number;
   pending?: boolean;
   protocol?: ProtocolType;
-  flashbots?: boolean;
-  ensCommitRegistrationName?: string;
-  ensRegistration?: boolean;
-  sourceAmount?: string; // for purchases
   status?: TransactionStatus;
   symbol?: string;
-  timestamp?: number; // for purchases
   title?: string;
   to?: Address;
-  transferId?: string; // for purchases
   txTo?: string;
   type?: TransactionType;
   value?: BigNumberish; // for pending tx
@@ -92,7 +85,6 @@ export enum ZerionTransactionStatus {
 export interface NewTransaction {
   amount?: string;
   asset?: ParsedAsset | null;
-  dappName?: string; // for walletconnect
   data?: string;
   from?: Address;
   gasLimit?: BigNumberish;
@@ -103,14 +95,8 @@ export interface NewTransaction {
   chainId?: ChainId;
   nonce?: number;
   protocol?: ProtocolType;
-  flashbots?: boolean;
-  ensCommitRegistrationName?: string;
-  ensRegistration?: boolean;
-  sourceAmount?: string; // for purchases
   status?: TransactionStatus;
-  timestamp?: number; // for purchases
   to: Address;
-  transferId?: string; // for purchases
   type?: TransactionType;
   value?: BigNumberish;
   txTo?: Address;
