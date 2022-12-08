@@ -1,13 +1,15 @@
 import { globalStyle } from '@vanilla-extract/css';
 
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+
 globalStyle('html, body', {
   margin: 0,
   padding: 0,
 });
 
 globalStyle('html, body, #main', {
-  minWidth: '360px',
-  minHeight: '600px',
+  minWidth: `${POPUP_DIMENSIONS.width}px`,
+  minHeight: `${POPUP_DIMENSIONS.height}px`,
   overscrollBehaviorY: 'none',
 });
 

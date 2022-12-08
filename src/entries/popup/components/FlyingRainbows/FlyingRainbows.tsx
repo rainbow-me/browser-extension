@@ -5,10 +5,14 @@ import rainbowNeon from 'static/assets/rainbow/neon-rainbow.png';
 import rainbowOg from 'static/assets/rainbow/og-rainbow.png';
 import rainbowPixel from 'static/assets/rainbow/pixel-rainbow.png';
 import rainbowWhite from 'static/assets/rainbow/white-rainbow.png';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 
+import { useIsFullScreen } from '../../hooks/useIsFullScreen';
+
 export function FlyingRainbows({ children }: { children: React.ReactNode }) {
-  const isFullscreen = window.innerHeight >= 600 && window.innerWidth > 360;
+  const isFullscreen = useIsFullScreen();
+
   return (
     <Box
       borderColor="separatorSecondary"
@@ -20,8 +24,8 @@ export function FlyingRainbows({ children }: { children: React.ReactNode }) {
       borderRadius={isFullscreen ? '32px' : undefined}
       padding="24px"
       style={{
-        width: 360,
-        height: 600,
+        width: POPUP_DIMENSIONS.width,
+        height: POPUP_DIMENSIONS.height,
         alignSelf: 'center',
         position: 'relative',
         overflow: 'hidden',
