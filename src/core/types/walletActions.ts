@@ -5,6 +5,7 @@ export enum walletActions {
   update_password = 'update_password',
   wipe = 'wipe',
   unlock = 'unlock',
+  verify_password = 'verify_password',
   create = 'create',
   import = 'import',
   add = 'add',

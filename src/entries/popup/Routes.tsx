@@ -12,6 +12,7 @@ import { ManualBackupPrompt } from './pages/manualBackupPrompt';
 import { Send } from './pages/send';
 import { Currency } from './pages/settings/currency';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
+import { ChangePassword } from './pages/settings/privacy/changePassword';
 import { Privacy } from './pages/settings/privacy/privacy';
 import { Settings } from './pages/settings/settings';
 import { Transactions } from './pages/settings/transactions';
@@ -89,7 +90,7 @@ export function Routes() {
           <AnimatedRoute
             direction="horizontal"
             navbar
-            title={i18n.t('privacy_and_security.title')}
+            title={i18n.t('settings.privacy_and_security.title')}
           >
             <Privacy />
           </AnimatedRoute>
@@ -101,9 +102,19 @@ export function Routes() {
           <AnimatedRoute
             direction="horizontal"
             navbar
-            title={i18n.t('auto_lock_timer.title')}
+            title={i18n.t(
+              'settings.privacy_and_security.auto_lock_timer.title',
+            )}
           >
             <AutoLockTimer />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/privacy/changePassword',
+        element: (
+          <AnimatedRoute direction="horizontal">
+            <ChangePassword />
           </AnimatedRoute>
         ),
       },
@@ -113,7 +124,7 @@ export function Routes() {
           <AnimatedRoute
             direction="horizontal"
             navbar
-            title={i18n.t('transactions.title')}
+            title={i18n.t('settings.transactions.title')}
           >
             <Transactions />
           </AnimatedRoute>
@@ -125,7 +136,7 @@ export function Routes() {
           <AnimatedRoute
             direction="horizontal"
             navbar
-            title={i18n.t('currency.title')}
+            title={i18n.t('settings.currency.title')}
           >
             <Currency />
           </AnimatedRoute>

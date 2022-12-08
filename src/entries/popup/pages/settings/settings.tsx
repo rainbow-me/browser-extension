@@ -84,7 +84,9 @@ export function Settings() {
             hasRightArrow
             onClick={() => navigate('/settings/privacy')}
             titleComponent={
-              <MenuItem.Title text={i18n.t('settings.privacy_and_security')} />
+              <MenuItem.Title
+                text={i18n.t('settings.privacy_and_security.title')}
+              />
             }
           />
         </Menu>
@@ -101,7 +103,7 @@ export function Settings() {
             }
             onClick={() => navigate('/settings/transactions')}
             titleComponent={
-              <MenuItem.Title text={i18n.t('settings.transactions')} />
+              <MenuItem.Title text={i18n.t('settings.transactions.title')} />
             }
           />
           <MenuItem
@@ -121,7 +123,7 @@ export function Settings() {
               />
             }
             titleComponent={
-              <MenuItem.Title text={i18n.t('settings.currency')} />
+              <MenuItem.Title text={i18n.t('settings.currency.title')} />
             }
           />
           <SwitchMenu

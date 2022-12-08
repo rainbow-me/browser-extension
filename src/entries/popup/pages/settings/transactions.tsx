@@ -31,7 +31,7 @@ export function Transactions() {
                   hasChevron
                   titleComponent={
                     <MenuItem.Title
-                      text={i18n.t('transactions.default_speed')}
+                      text={i18n.t('settings.transactions.default_speed')}
                     />
                   }
                   rightComponent={
@@ -82,11 +82,13 @@ export function Transactions() {
               />
             }
             titleComponent={
-              <MenuItem.Title text={i18n.t('transactions.use_flashbots')} />
+              <MenuItem.Title
+                text={i18n.t('settings.transactions.use_flashbots')}
+              />
             }
           />
           <MenuItem.Description
-            text={i18n.t('transactions.flashbots_description')}
+            text={i18n.t('settings.transactions.flashbots_description')}
           />
         </Menu>
       </MenuContainer>
