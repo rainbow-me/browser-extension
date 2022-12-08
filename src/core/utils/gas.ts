@@ -479,4 +479,4 @@ export const parseGasFeeParamsBySpeed = ({
 export const gasFeeParamsChanged = (
   gasFeeParams1: GasFeeParams | GasFeeLegacyParams,
   gasFeeParams2: GasFeeParams | GasFeeLegacyParams,
-) => gasFeeParams1.gasFee.amount !== gasFeeParams2.gasFee.amount;
+) => gasFeeParams1?.gasFee?.amount !== gasFeeParams2?.gasFee?.amount;
