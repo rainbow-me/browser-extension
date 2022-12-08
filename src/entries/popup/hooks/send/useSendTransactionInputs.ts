@@ -7,7 +7,7 @@ import {
   convertAmountFromNativeValue,
 } from '~/core/utils/numbers';
 
-import { useNativeAssetForNetwork } from './useNativeAssetForNetwork';
+import { useNativeAssetForNetwork } from '../useNativeAssetForNetwork';
 
 export const useSendTransactionInputs = () => {
   const nativeAsset = useNativeAssetForNetwork({ chainId: ChainId.mainnet });

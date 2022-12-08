@@ -9,8 +9,8 @@ import { isNativeAsset } from '~/core/utils/chains';
 import { convertAmountToRawAmount } from '~/core/utils/numbers';
 import { getDataForTokenTransfer } from '~/core/utils/transactions';
 
-import { useEns } from './useEns';
-import { useNativeAssetForNetwork } from './useNativeAssetForNetwork';
+import { useEns } from '../useEns';
+import { useNativeAssetForNetwork } from '../useNativeAssetForNetwork';
 
 export const useSendTransactionState = ({
   assetAmount,

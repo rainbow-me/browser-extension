@@ -14,8 +14,8 @@ import {
 
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { sendTransaction } from '../../handlers/wallet';
-import { useSendTransactionInputs } from '../../hooks/useSendTransactionInputs';
-import { useSendTransactionState } from '../../hooks/useSendTransactionState';
+import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
+import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
 
 export function Send() {
   const [txHash, setTxHash] = useState('');
