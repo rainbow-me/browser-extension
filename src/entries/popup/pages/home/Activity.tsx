@@ -2,17 +2,12 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import React, { ReactNode, useCallback, useMemo, useRef } from 'react';
 import { useAccount } from 'wagmi';
 
-import { selectTransactionsByDate } from '~/core/resources/_selectors';
-import { useTransactions } from '~/core/resources/transactions/transactions';
 import { useCurrentCurrencyStore } from '~/core/state';
-import { ChainId } from '~/core/types/chains';
 import {
   RainbowTransaction,
   TransactionStatus,
   TransactionType,
-  newTestTx,
 } from '~/core/types/transactions';
-import { parseNewTransaction } from '~/core/utils/transactions';
 import {
   Box,
   Column,
@@ -24,32 +19,24 @@ import {
 } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
-import { TextColor } from '~/design-system/styles/designTokens';
+import { Space, TextColor } from '~/design-system/styles/designTokens';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 
 import { Spinner } from '../../components/Spinner/Spinner';
-import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
+import { useAllTransactions } from '../../hooks/useAllTransactions';
 
 export function Activity() {
   const { address } = useAccount();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { data: transactionsByDate = {} } = useTransactions(
-    { address, currency },
-    { select: selectTransactionsByDate },
-  );
-  const ethAsset = useNativeAssetForNetwork({ chainId: ChainId.mainnet });
-  const newTx = parseNewTransaction(
-    { ...newTestTx, asset: ethAsset, amount: '1' },
+  const { allTransactionsByDate } = useAllTransactions({
+    address,
     currency,
-  );
-  let listData = useMemo(
-    () =>
-      Object.keys(transactionsByDate).reduce((listData, dateKey) => {
-        return [...listData, dateKey, ...transactionsByDate[dateKey]];
-      }, [] as (string | RainbowTransaction)[]),
-    [transactionsByDate],
-  );
-  listData = [newTx].concat(listData);
+  });
+  const listData = useMemo(() => {
+    return Object.keys(allTransactionsByDate).reduce((listData, dateKey) => {
+      return [...listData, dateKey, ...allTransactionsByDate[dateKey]];
+    }, [] as (string | RainbowTransaction)[]);
+  }, [allTransactionsByDate]);
   const containerRef = useRef<HTMLDivElement>(null);
   const activityRowVirtualizer = useVirtualizer({
     count: listData.length,
@@ -57,6 +44,7 @@ export function Activity() {
     estimateSize: (i) => (typeof listData[i] === 'string' ? 34 : 52),
     enableSmoothScroll: false,
   });
+
   return (
     <Box
       marginTop={'-20px'}
@@ -97,7 +85,7 @@ const titleIcons: {
   [key: string]: {
     color: 'accent' | TextColor;
     element?: ReactNode;
-    space?: '2px';
+    space?: Space;
     type: 'icon' | 'emoji' | 'spinner';
   };
 } = {
@@ -135,7 +123,7 @@ const titleIcons: {
   spinner: {
     color: 'blue',
     element: <Spinner />,
-    space: '2px',
+    space: '3px',
     type: 'spinner',
   },
 };
@@ -206,7 +194,7 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
           <Symbol
             symbol={iconSymbol as SymbolProps['symbol']}
             color={iconConfig.color}
-            size={9}
+            size={10}
             weight="semibold"
           />
         ),
@@ -232,8 +220,8 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
       <Columns>
         <Column width="content">
           <Box paddingVertical="4px">
-            <Inline space={titleIconConfig?.space}>
-              {titleIconConfig?.icon}
+            <Inline space={titleIconConfig?.space} alignVertical="center">
+              <Box style={{ paddingBottom: 1 }}>{titleIconConfig?.icon}</Box>
               <Text color={getTitleColor()} size="12pt" weight="semibold">
                 {truncateString(title, 20)}
               </Text>

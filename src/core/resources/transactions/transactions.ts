@@ -294,7 +294,7 @@ function parseTransaction({
       });
       const priceUnit =
         internalTxn.price ?? internalTxn?.asset?.price?.value ?? 0;
-      const valueUnit = internalTxn?.value || 0;
+      const valueUnit: number = internalTxn?.value || 0;
       const nativeDisplay = convertRawAmountToNativeDisplay(
         valueUnit,
         decimals,
@@ -371,7 +371,6 @@ function parseTransactions(
       }),
     )
     .flat();
-  console.log('PARSED TRANSACTIONS: ', parsedTransactions);
   return parsedTransactions;
 }
 

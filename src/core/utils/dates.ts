@@ -34,7 +34,11 @@ export const yesterdayTimestamp = calculateTimestampOfYesterday();
 export const thisMonthTimestamp = calculateTimestampOfThisMonth();
 export const thisYearTimestamp = calculateTimestampOfThisYear();
 
-export const groupTransactionByDate = ({ minedAt }: RainbowTransaction) => {
+export const groupTransactionByDate = ({
+  minedAt,
+  pending,
+}: RainbowTransaction) => {
+  if (pending) return 'Today';
   if (!minedAt) return 'Dropped';
   const ts = minedAt * 1000;
 
