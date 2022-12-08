@@ -26,7 +26,7 @@ export interface PendingTransactionsState {
 export const pendingTransactionsStore = createStore<PendingTransactionsState>(
   (set, get) => ({
     getPendingTransactions: ({ address }) =>
-      address ? get()?.[address]?.pendingTransactions : [],
+      address ? get()?.[address]?.pendingTransactions || [] : [],
     setPendingTransactions: ({ address, pendingTransactions }) => {
       if (address) {
         set({
