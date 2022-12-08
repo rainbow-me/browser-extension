@@ -17,11 +17,11 @@ export function useAllTransactions({
     address,
     currency,
   });
-  const pendingTransactions: RainbowTransaction[] =
-    usePendingTransactionsStore()
-      .getPendingTransactions({ address })
-      ?.map((tx) => ({ ...tx, pending: true }));
-  const allTransactions = (pendingTransactions || []).concat(
+  const { getPendingTransactions } = usePendingTransactionsStore();
+  const pendingTransactions: RainbowTransaction[] = getPendingTransactions({
+    address,
+  })?.map((tx) => ({ ...tx, pending: true }));
+  const allTransactions = pendingTransactions.concat(
     confirmedTransactions || [],
   );
   return {
