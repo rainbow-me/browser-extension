@@ -113,12 +113,7 @@ export function Routes() {
       {
         path: '/settings/privacy/changePassword',
         element: (
-          <AnimatedRoute
-            direction="horizontal"
-            title={i18n.t(
-              'settings.privacy_and_security.change_password.title',
-            )}
-          >
+          <AnimatedRoute direction="horizontal">
             <ChangePassword />
           </AnimatedRoute>
         ),

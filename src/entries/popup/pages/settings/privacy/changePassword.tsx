@@ -25,11 +25,11 @@ export function ChangePassword() {
 
   const handleUpdatePassword = async () => {
     if (newPassword === '') {
-      setError('Password not set');
+      setError(i18n.t('passwords.password_not_set'));
       return;
     }
     if (newPassword !== confirmNewPassword) {
-      setError('Passwords do not match');
+      setError(i18n.t('passwords.passwords_do_not_match'));
       return;
     }
     await updatePassword(state?.currentPassword, newPassword);
@@ -87,16 +87,12 @@ export function ChangePassword() {
             <Rows space="12px">
               <Row>
                 <Text size="14pt" weight="medium">
-                  {i18n.t(
-                    'settings.privacy_and_security.change_password.new_password',
-                  )}
+                  {i18n.t('passwords.new_password')}
                 </Text>
               </Row>
               <Row>
                 <PasswordInput
-                  placeholder={i18n.t(
-                    'settings.privacy_and_security.change_password.new_password',
-                  )}
+                  placeholder={i18n.t('passwords.new_password')}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   borderColor={error ? 'red' : undefined}
@@ -108,18 +104,14 @@ export function ChangePassword() {
             <Rows space="12px">
               <Row>
                 <Text size="14pt" weight="medium">
-                  {i18n.t(
-                    'settings.privacy_and_security.change_password.confirm_password',
-                  )}
+                  {i18n.t('passwords.confirm_password')}
                 </Text>
               </Row>
               <Row>
                 <Rows>
                   <Row>
                     <PasswordInput
-                      placeholder={i18n.t(
-                        'settings.privacy_and_security.change_password.input_placeholder',
-                      )}
+                      placeholder={i18n.t('passwords.password')}
                       value={confirmNewPassword}
                       onChange={(e) => setConfirmNewPassword(e.target.value)}
                       borderColor={error ? 'red' : undefined}
@@ -155,9 +147,7 @@ export function ChangePassword() {
                   width="full"
                   onClick={handleUpdatePassword}
                 >
-                  {i18n.t(
-                    'settings.privacy_and_security.change_password.update_password',
-                  )}
+                  {i18n.t('passwords.update_password')}
                 </Button>
               </Row>
               <Row height="content">

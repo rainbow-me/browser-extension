@@ -21,7 +21,7 @@ export function Unlock() {
   const [error, setError] = useState('');
 
   const handleUnlock = useCallback(() => {
-    setError('wrong password');
+    setError(i18n.t('passwords.wrong_password'));
   }, []);
 
   return (
@@ -94,7 +94,7 @@ export function Unlock() {
                 </Box>
               )}
               <PasswordInput
-                placeholder={i18n.t('unlock.password')}
+                placeholder={i18n.t('passwords.password')}
                 value={password}
                 onChange={handlePasswordChange}
                 borderColor={error !== '' ? 'red' : undefined}

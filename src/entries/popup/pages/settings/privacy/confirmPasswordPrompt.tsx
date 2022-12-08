@@ -36,7 +36,7 @@ export const ConfirmPasswordPrompt = ({
       });
       return;
     }
-    setError('Password incorrect');
+    setError(i18n.t('passwords.password_incorrect'));
   };
 
   const handleClose = () => {
@@ -89,9 +89,7 @@ export const ConfirmPasswordPrompt = ({
               <Rows>
                 <Row>
                   <PasswordInput
-                    placeholder={i18n.t(
-                      'settings.privacy_and_security.confirmPassword.input_placeholder',
-                    )}
+                    placeholder={i18n.t('passwords.password')}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     borderColor={error ? 'red' : undefined}

@@ -27,16 +27,11 @@
       },
       "change_password": {
         "title": "Change Password",
-        "header_label": "Change your password",
-        "new_password": "New password",
-        "confirm_password": "Confirm password",
-        "update_password": "Update Password",
-        "input_placeholder": "Password"
+        "header_label": "Change your password"
       },
       "confirmPassword": {
         "title": "Enter your Password",
-        "description": "You need to enter your current password before you can update and change it.",
-        "input_placeholder": "Password"
+        "description": "You need to enter your current password before you can update and change it."
       }
     },
     "transactions": {
@@ -62,12 +57,10 @@
   "unlock": {
     "welcome_back": "Welcome back",
     "enter_password": "Enter your password to unlock Rainbow.",
-    "password": "Password",
     "unlock": "Unlock",
     "having_trouble": "Having trouble?",
     "contact": "Contact",
-    "rainbow_support": "Rainbow Support",
-    "wrong_password": "Wrong password"
+    "rainbow_support": "Rainbow Support"
   },
   "welcome": {
     "title": "Rainbow",
@@ -188,5 +181,15 @@
   "common_actions": {
     "cancel": "Cancel",
     "continue": "Continue"
+  },
+  "passwords": {
+    "password": "Password",
+    "password_not_set": "Password not set",
+    "password_incorrect": "Password incorrect",
+    "passwords_do_not_match": "Passwords do not match",
+    "wrong_password": "Wrong password",
+    "new_password": "New password",
+    "confirm_password": "Confirm password",
+    "update_password": "Update Password"
   }
 }
