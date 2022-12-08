@@ -11,18 +11,18 @@ export const Prompt = ({
   show: boolean;
   children: ReactNode;
 }) => {
-  const transition = animatedRouteTransitionConfig['base'];
+  const transition = animatedRouteTransitionConfig['vertical'];
 
   return (
     <AnimatePresence>
       {show && (
         <Box
+          position="absolute"
+          top="0"
+          bottom="0"
+          left="0"
+          right="0"
           style={{
-            position: 'absolute',
-            top: 0,
-            bottom: 0,
-            left: 0,
-            right: 0,
             width: '100%',
             height: '100%',
             zIndex: 1,
@@ -39,7 +39,8 @@ export const Prompt = ({
             <Row height="content">
               <Box
                 as={motion.div}
-                initial={{ y: 20 }}
+                initial={{ y: 16 }}
+                exit={{ y: 16 }}
                 animate={{ y: 0 }}
                 transition={transition}
                 padding="12px"

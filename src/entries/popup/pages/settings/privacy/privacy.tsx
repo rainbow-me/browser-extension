@@ -22,14 +22,17 @@ export function Privacy() {
     useHideSmallBalancesStore();
   const { autoLockTimer } = useAutoLockTimerStore();
   const [showEnterPassword, setShowEnterPassword] = useState(false);
-  const handleShowEnterPassword = () => {
+  const openPasswordPrompt = () => {
     setShowEnterPassword(true);
+  };
+  const closePasswordPrompt = () => {
+    setShowEnterPassword(false);
   };
   return (
     <Box>
       <ConfirmPasswordPrompt
         show={showEnterPassword}
-        onClose={() => setShowEnterPassword(false)}
+        onClose={closePasswordPrompt}
       />
       <Box paddingHorizontal="20px">
         <MenuContainer testId="settings-menu-container">
@@ -88,7 +91,7 @@ export function Privacy() {
                   )}
                 />
               }
-              onClick={handleShowEnterPassword}
+              onClick={openPasswordPrompt}
             />
             <MenuItem
               hasRightArrow
