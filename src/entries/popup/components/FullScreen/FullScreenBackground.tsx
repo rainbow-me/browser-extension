@@ -1,6 +1,9 @@
 import React from 'react';
 
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
+
+import { useIsFullScreen } from '../../hooks/useIsFullScreen';
 
 import { Blur } from './Blur';
 
@@ -9,7 +12,7 @@ export function FullScreenBackground({
 }: {
   children: React.ReactNode;
 }) {
-  const isFullscreen = window.innerHeight >= 600 && window.innerWidth > 360;
+  const isFullscreen = useIsFullScreen();
   if (!isFullscreen) return children as JSX.Element;
   return (
     <Box
@@ -40,8 +43,8 @@ export function FullScreenBackground({
       <Box
         borderRadius="32px"
         style={{
-          width: 360,
-          height: 600,
+          width: POPUP_DIMENSIONS.width,
+          height: POPUP_DIMENSIONS.height,
           position: 'relative',
           overflow: 'auto',
         }}
