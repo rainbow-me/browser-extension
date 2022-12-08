@@ -21,7 +21,7 @@ export const useSendTransactionState = ({
   const nativeAsset = useNativeAssetForNetwork({ chainId: ChainId.mainnet });
   const { currentCurrency } = useCurrentCurrencyStore();
 
-  const [, setAsset] = useState<ParsedAddressAsset>(nativeAsset);
+  const [, setAsset] = useState<ParsedAddressAsset>();
 
   const asset = nativeAsset;
 
