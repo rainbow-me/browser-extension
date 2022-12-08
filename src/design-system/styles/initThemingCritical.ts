@@ -1,4 +1,4 @@
-import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { currentThemeStore } from '~/core/state/currentSettings/currentTheme';
 
 import { ColorContext } from './designTokens';
 import { getTheme, rootThemeClasses } from './theme';
@@ -31,7 +31,8 @@ export function initThemingCritical({
     // Update the theme if the user changes their OS preference
     darkModeMediaQuery.addEventListener('change', ({ matches: isDark }) => {
       setTheme(isDark ? 'dark' : 'light');
-      useCurrentThemeStore.setState({
+
+      currentThemeStore.setState({
         currentTheme: isDark ? 'dark' : 'light',
       });
     });
