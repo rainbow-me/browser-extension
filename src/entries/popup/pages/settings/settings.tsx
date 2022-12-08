@@ -28,7 +28,7 @@ export function Settings() {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { isDefaultWallet, setIsDefaultWallet } = useIsDefaultWalletStore();
 
-  const { currentTheme, setCurrentTheme } = useCurrentThemeStore();
+  const { currentUserSelectedTheme, setCurrentTheme } = useCurrentThemeStore();
 
   const testSandboxBackground = useCallback(async () => {
     console.log('asking the bg if it can leak!');
@@ -139,7 +139,10 @@ export function Settings() {
                 }
                 rightComponent={
                   <MenuItem.Selection
-                    text={themeOptions[currentTheme as ThemeOption].label}
+                    text={
+                      themeOptions[currentUserSelectedTheme as ThemeOption]
+                        .label
+                    }
                   />
                 }
                 titleComponent={
@@ -177,7 +180,7 @@ export function Settings() {
               );
             }}
             menuItems={Object.keys(themeOptions)}
-            selectedValue={currentTheme}
+            selectedValue={currentUserSelectedTheme}
             onValueChange={(value) => {
               setCurrentTheme(value as ThemeOption);
             }}

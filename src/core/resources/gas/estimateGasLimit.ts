@@ -46,8 +46,11 @@ async function estimateGasLimitQueryFunction({
   queryKey: [{ chainId, transactionRequest }],
 }: QueryFunctionArgs<typeof estimateGasLimitQueryKey>) {
   const provider = getProvider({ chainId });
-  const gasLimit = await estimateGas({ transactionRequest, provider });
-  return { gasLimit };
+  const gasLimit = await estimateGas({
+    transactionRequest,
+    provider,
+  });
+  return gasLimit;
 }
 
 type EstimateGasLimitResult = QueryFunctionResult<
