@@ -44,6 +44,12 @@
       "title": "Currency"
     }
   },
+  "transactions": {
+    "contract_interaction": "Contract Interaction",
+    "savings": "Savings",
+    "deposited": "Deposited",
+    "withdrew": "Withdrew"
+  },
   "connected_apps": {
     "title": "Connected Apps",
     "disconnect": "Disconnect All"

@@ -194,7 +194,7 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
           <Symbol
             symbol={iconSymbol as SymbolProps['symbol']}
             color={iconConfig.color}
-            size={10}
+            size={9}
             weight="semibold"
           />
         ),
@@ -221,7 +221,7 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
         <Column width="content">
           <Box paddingVertical="4px">
             <Inline space={titleIconConfig?.space} alignVertical="center">
-              <Box style={{ paddingBottom: 1 }}>{titleIconConfig?.icon}</Box>
+              {titleIconConfig?.icon}
               <Text color={getTitleColor()} size="12pt" weight="semibold">
                 {truncateString(title, 20)}
               </Text>
