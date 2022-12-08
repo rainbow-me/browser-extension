@@ -1,11 +1,7 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { Address, fetchEnsAddress } from '@wagmi/core';
 import { ethers } from 'ethers';
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
-import { useAccount } from 'wagmi';
 
-import { ChainId } from '~/core/types/chains';
-import { isENSAddressFormat } from '~/core/utils/ethereum';
 import {
   Box,
   Column,
@@ -18,53 +14,57 @@ import {
 
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { sendTransaction } from '../../handlers/wallet';
+import { useSendTransactionState } from '../../hooks/useSendTransactionState';
 
 export function Send() {
-  const [toAddress, setToAddress] = useState<Address>('' as Address);
-  const [amount, setAmount] = useState('');
   const [txHash, setTxHash] = useState('');
   const [sending, setSending] = useState(false);
-  const { address } = useAccount();
+
+  const {
+    amount,
+    chainId,
+    data,
+    fromAddress,
+    toAddress,
+    toAddressOrName,
+    setAmount,
+    setToAddressOrName,
+  } = useSendTransactionState();
 
   const transactionRequest: TransactionRequest = useMemo(() => {
     return {
       to: toAddress,
-      from: address as Address,
+      from: fromAddress,
       amount,
-      chainId: ChainId.mainnet,
+      chainId,
+      data,
     };
-  }, [address, amount, toAddress]);
+  }, [toAddress, fromAddress, amount, chainId, data]);
 
   const handleToAddressChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setToAddress(e.target.value as Address);
+      setToAddressOrName(e.target.value);
     },
-    [],
+    [setToAddressOrName],
   );
 
-  const handleAmountChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setAmount(e.target.value);
-  }, []);
+  const handleAmountChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setAmount(e.target.value);
+    },
+    [setAmount],
+  );
 
   const handleSend = useCallback(async () => {
-    let receiver = toAddress;
-    if (isENSAddressFormat(toAddress)) {
-      try {
-        receiver = (await fetchEnsAddress({ name: toAddress })) as Address;
-      } catch (e) {
-        console.log('error', e);
-        alert('Invalid ENS name');
-        return;
-      }
-    }
     setSending(true);
 
     try {
       const result = await sendTransaction({
-        from: address,
-        to: receiver,
-        value: ethers.utils.parseEther(amount),
-        chainId: ChainId.mainnet,
+        from: fromAddress,
+        to: toAddress,
+        value: ethers.utils.parseEther(amount ?? ''),
+        chainId,
+        data,
       });
 
       if (result) {
@@ -76,7 +76,7 @@ export function Send() {
     } finally {
       setSending(false);
     }
-  }, [address, amount, toAddress]);
+  }, [fromAddress, amount, chainId, toAddress, data]);
 
   return (
     <Box
@@ -97,7 +97,7 @@ export function Send() {
             <Row>
               <input
                 type="text"
-                value={toAddress}
+                value={toAddressOrName}
                 placeholder={'ENS or address'}
                 onChange={handleToAddressChange}
                 style={{
@@ -177,7 +177,7 @@ export function Send() {
             )}
             <Row>
               <TransactionFee
-                chainId={ChainId.mainnet}
+                chainId={chainId}
                 transactionRequest={transactionRequest}
               />
             </Row>

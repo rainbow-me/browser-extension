@@ -123,7 +123,7 @@ export const useGas = ({
   transactionRequest: TransactionRequest;
 }) => {
   const { data, isLoading } = useGasData({ chainId, transactionRequest });
-  const { data: gasLimitData } = useEstimateGasLimit({
+  const { data: estimatedGasLimit } = useEstimateGasLimit({
     chainId,
     transactionRequest,
   });
@@ -131,7 +131,7 @@ export const useGas = ({
   const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>(GasSpeed.NORMAL);
   const nativeAsset = useNativeAssetForNetwork({ chainId });
 
-  const gasLimit = gasLimitData?.gasLimit ?? `${ethUnits.basic_transfer}`;
+  const gasLimit = estimatedGasLimit ?? `${ethUnits.basic_transfer}`;
 
   const gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed =
     useMemo(
@@ -146,16 +146,12 @@ export const useGas = ({
     );
 
   useEffect(() => {
-    setSelectedGas({
-      selectedGas: gasFeeParamsBySpeed[selectedSpeed],
-    });
-  }, [
-    gasFeeParamsBySpeed,
-    gasLimit,
-    selectedGas.option,
-    selectedSpeed,
-    setSelectedGas,
-  ]);
+    if (selectedSpeed !== selectedGas.option) {
+      setSelectedGas({
+        selectedGas: gasFeeParamsBySpeed[selectedSpeed],
+      });
+    }
+  }, [gasFeeParamsBySpeed, selectedGas.option, selectedSpeed, setSelectedGas]);
 
   useEffect(() => {
     setGasFeeParamsBySpeed({
