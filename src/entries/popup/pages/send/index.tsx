@@ -14,6 +14,7 @@ import {
 
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { sendTransaction } from '../../handlers/wallet';
+import { useSendTransactionInputs } from '../../hooks/useSendTransactionInputs';
 import { useSendTransactionState } from '../../hooks/useSendTransactionState';
 
 export function Send() {
@@ -21,21 +22,25 @@ export function Send() {
   const [sending, setSending] = useState(false);
 
   const {
-    asset,
-    currentCurrency,
+    assetAmount,
     independentAmount,
     independentField,
     dependentAmount,
+    setIndependentAmount,
+    switchIndependentField,
+  } = useSendTransactionInputs();
+
+  const {
+    asset,
+    currentCurrency,
     chainId,
     data,
     fromAddress,
     toAddress,
     toAddressOrName,
     value,
-    setIndependentAmount,
     setToAddressOrName,
-    switchIndependentField,
-  } = useSendTransactionState();
+  } = useSendTransactionState({ assetAmount });
 
   const transactionRequest: TransactionRequest = useMemo(() => {
     return {
