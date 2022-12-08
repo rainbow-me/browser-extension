@@ -191,5 +191,10 @@
     "new_password": "New password",
     "confirm_password": "Confirm password",
     "update_password": "Update Password"
+  },
+  "activity": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "this_month": "This Month"
   }
 }
