@@ -29,9 +29,12 @@
         "title": "Change Password",
         "header_label": "Change your password"
       },
-      "confirmPassword": {
+      "confirm_password": {
         "title": "Enter your Password",
         "description": "You need to enter your current password before you can update and change it."
+      },
+      "wallets_and_keys": {
+        "title": "Wallets & Keys"
       }
     },
     "transactions": {
