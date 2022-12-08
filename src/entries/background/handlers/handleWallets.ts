@@ -19,6 +19,7 @@ import {
   signMessage,
   signTypedData,
   unlockVault,
+  verifyPassword,
   wipeVault,
 } from '~/core/keychain';
 import { initializeMessenger } from '~/core/messengers';
@@ -74,7 +75,6 @@ export const handleWallets = () =>
               newPassword: string;
             };
             response = await setVaultPassword(password, newPassword);
-
             break;
           }
           case 'wipe':
@@ -82,6 +82,9 @@ export const handleWallets = () =>
             break;
           case 'unlock':
             response = await unlockVault(payload as string);
+            break;
+          case 'verify_password':
+            response = await verifyPassword(payload as string);
             break;
           case 'create':
             response = await createWallet();

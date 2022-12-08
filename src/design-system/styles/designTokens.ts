@@ -218,7 +218,7 @@ export const backgroundColors: Record<
   },
   surfaceMenu: {
     light: {
-      color: globalColors.white80,
+      color: 'rgba(255, 255, 255, 0.8)',
       setColorContext: 'light',
     },
     dark: {

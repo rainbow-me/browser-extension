@@ -11,6 +11,7 @@ export const backgroundStyle = style({
 
 export const inputHeights = {
   '32px': 32,
+  '40px': 40,
   '44px': 44,
 } as const;
 export type InputHeight = keyof typeof inputHeights;

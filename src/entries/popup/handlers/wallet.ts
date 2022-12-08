@@ -96,6 +96,10 @@ export const updatePassword = async (password: string, newPassword: string) => {
   })) as boolean;
 };
 
+export const verifyPassword = async (password: string) => {
+  return (await walletAction('verify_password', password)) as boolean;
+};
+
 export const getAccounts = async () => {
   return (await walletAction('get_accounts', {})) as Address[];
 };
