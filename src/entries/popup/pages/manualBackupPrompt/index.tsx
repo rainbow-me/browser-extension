@@ -72,7 +72,7 @@ export function ManualBackupPrompt() {
       </Box>
       <Box padding="16px">
         <Rows alignVertical="top" space="40px">
-          <Inline space="16px" wrap={false}>
+          <Inline space="16px" wrap={false} alignVertical="center">
             <Box display="flex" alignItems="center">
               <Symbol
                 symbol="highlighter"
@@ -85,7 +85,7 @@ export function ManualBackupPrompt() {
               {i18n.t('manual_backup_prompt.write_down_seed_importance')}
             </Text>
           </Inline>
-          <Inline space="16px" wrap={false}>
+          <Inline space="16px" wrap={false} alignVertical="center">
             <Box display="flex" alignItems="center">
               <Symbol
                 symbol="exclamationmark.triangle"
@@ -98,7 +98,7 @@ export function ManualBackupPrompt() {
               {i18n.t('manual_backup_prompt.secret_recovery_phrase_usage')}
             </Text>
           </Inline>
-          <Inline space="16px" wrap={false}>
+          <Inline space="16px" wrap={false} alignVertical="center">
             <Box display="flex" alignItems="center">
               <Symbol
                 symbol="lock.open.fill"
