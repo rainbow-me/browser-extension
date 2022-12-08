@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -13,33 +13,32 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
-import { Input } from '~/design-system/components/Input/Input';
+import { PasswordInput } from '~/entries/popup/components/PasswordInput/PasswordInput';
 import { updatePassword } from '~/entries/popup/handlers/wallet';
 
 export function ChangePassword() {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const [newPassword, setNewPassword] = React.useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = React.useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const handleUpdatePassword = async () => {
     if (newPassword === '') {
-      // TODO: below will be replaced by PasswordInput error msg
-      alert('Password is empty');
+      setError('Password not set');
       return;
     }
     if (newPassword !== confirmNewPassword) {
-      // TODO: below will be replaced by PasswordInput error msg
-      alert('Passwords do not match');
+      setError('Passwords do not match');
       return;
     }
-    if (!state?.currentPassword) {
-      alert('password not received from previous screen');
-    }
     await updatePassword(state?.currentPassword, newPassword);
-    alert('Password updated');
     navigate(-1);
   };
+
+  useEffect(() => {
+    setError(null);
+  }, [setError, newPassword, confirmNewPassword]);
   return (
     <Box
       paddingHorizontal="20px"
@@ -94,13 +93,13 @@ export function ChangePassword() {
                 </Text>
               </Row>
               <Row>
-                {/* TODO: switch for password input */}
-                <Input
-                  height="40px"
-                  placeholder="Password"
-                  variant="bordered"
+                <PasswordInput
+                  placeholder={i18n.t(
+                    'settings.privacy_and_security.change_password.new_password',
+                  )}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
+                  borderColor={error ? 'red' : undefined}
                 />
               </Row>
             </Rows>
@@ -115,22 +114,38 @@ export function ChangePassword() {
                 </Text>
               </Row>
               <Row>
-                {/* TODO: switch for password input */}
-                <Input
-                  height="40px"
-                  placeholder={i18n.t(
-                    'settings.privacy_and_security.change_password.inputPlaceholder',
+                <Rows>
+                  <Row>
+                    <PasswordInput
+                      placeholder={i18n.t(
+                        'settings.privacy_and_security.change_password.input_placeholder',
+                      )}
+                      value={confirmNewPassword}
+                      onChange={(e) => setConfirmNewPassword(e.target.value)}
+                      borderColor={error ? 'red' : undefined}
+                    />
+                  </Row>
+                  {error && (
+                    <Row>
+                      <Box paddingTop="8px">
+                        <Text
+                          size="14pt"
+                          weight="semibold"
+                          align="center"
+                          color="red"
+                        >
+                          {error}
+                        </Text>
+                      </Box>
+                    </Row>
                   )}
-                  variant="bordered"
-                  value={confirmNewPassword}
-                  onChange={(e) => setConfirmNewPassword(e.target.value)}
-                />
+                </Rows>
               </Row>
             </Rows>
           </Row>
         </Rows>
         <Row>
-          <Box paddingVertical="20px" paddingTop="104px">
+          <Box paddingVertical="20px" paddingTop="80px">
             <Rows space="8px">
               <Row>
                 <Button

@@ -13,8 +13,8 @@ import {
   Separator,
   Text,
 } from '~/design-system';
-import { Input } from '~/design-system/components/Input/Input';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
+import { PasswordInput } from '~/entries/popup/components/PasswordInput/PasswordInput';
 import { verifyPassword } from '~/entries/popup/handlers/wallet';
 
 export const ConfirmPasswordPrompt = ({
@@ -26,6 +26,7 @@ export const ConfirmPasswordPrompt = ({
 }) => {
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
 
   const handleValidatePassword = async () => {
     const correctPassword = await verifyPassword(password);
@@ -35,13 +36,24 @@ export const ConfirmPasswordPrompt = ({
       });
       return;
     }
-    alert('Password is wrong');
+    setError('Password incorrect');
   };
+
+  const handleClose = () => {
+    setPassword('');
+    onClose();
+  };
+
+  useEffect(() => {
+    setError(null);
+  }, [setError, password]);
+
   useEffect(() => {
     return () => {
       setPassword('');
     };
   }, []);
+
   return (
     <Prompt show={show}>
       <Rows space="24px">
@@ -74,16 +86,32 @@ export const ConfirmPasswordPrompt = ({
               </Inset>
             </Row>
             <Row>
-              {/* TODO: switch to PasswordInput */}
-              <Input
-                height="40px"
-                variant="bordered"
-                placeholder={i18n.t(
-                  'settings.privacy_and_security.confirmPassword.inputPlaceholder',
+              <Rows>
+                <Row>
+                  <PasswordInput
+                    placeholder={i18n.t(
+                      'settings.privacy_and_security.confirmPassword.input_placeholder',
+                    )}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    borderColor={error ? 'red' : undefined}
+                  />
+                </Row>
+                {error && (
+                  <Row>
+                    <Box paddingTop="8px">
+                      <Text
+                        size="14pt"
+                        weight="semibold"
+                        align="center"
+                        color="red"
+                      >
+                        {error}
+                      </Text>
+                    </Box>
+                  </Row>
                 )}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              </Rows>
             </Row>
           </Rows>
         </Row>
@@ -94,7 +122,7 @@ export const ConfirmPasswordPrompt = ({
                 variant="flat"
                 height="44px"
                 color="fillSecondary"
-                onClick={onClose}
+                onClick={handleClose}
                 width="full"
               >
                 {i18n.t('common_actions.cancel')}

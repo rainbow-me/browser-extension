@@ -31,12 +31,12 @@
         "new_password": "New password",
         "confirm_password": "Confirm password",
         "update_password": "Update Password",
-        "inputPlaceholder": "Password"
+        "input_placeholder": "Password"
       },
       "confirmPassword": {
         "title": "Enter your Password",
         "description": "You need to enter your current password before you can update and change it.",
-        "inputPlaceholder": "Password"
+        "input_placeholder": "Password"
       }
     },
     "transactions": {
@@ -68,7 +68,6 @@
     "contact": "Contact",
     "rainbow_support": "Rainbow Support",
     "wrong_password": "Wrong password"
-
   },
   "welcome": {
     "title": "Rainbow",
