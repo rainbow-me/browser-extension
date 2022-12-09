@@ -1,27 +1,42 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
+import { Address, useAccount, useEnsAvatar } from 'wagmi';
 
-import {
-  Box,
-  Button,
-  Column,
-  Columns,
-  Row,
-  Rows,
-  Separator,
-  Text,
-} from '~/design-system';
+import { Box, Button, Inline, Row, Rows, Symbol, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 
+import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { sendTransaction } from '../../handlers/wallet';
 import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsset';
 import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
 import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
 
+export const EnsAvatar = ({ address }: { address: Address }) => {
+  const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
+  return (
+    <Box
+      background="fill"
+      borderRadius="18px"
+      style={{
+        width: '36px',
+        height: '36px',
+        overflow: 'hidden',
+      }}
+    >
+      {ensAvatar && (
+        /* TODO: Convert to <Image> & Imgix/Cloudinary */
+        <img src={ensAvatar} width="100%" height="100%" loading="lazy" />
+      )}
+    </Box>
+  );
+};
+
 export function Send() {
-  const [txHash, setTxHash] = useState('');
+  const [, setTxHash] = useState('');
   const [sending, setSending] = useState(false);
+
+  const { address } = useAccount();
 
   const { asset } = useSendTransactionAsset();
   const {
@@ -97,127 +112,125 @@ export function Send() {
     <Box
       display="flex"
       flexDirection="column"
-      gap="24px"
-      padding="20px"
       style={{ overflow: 'auto' }}
+      paddingHorizontal="12px"
     >
-      <Columns space="12px">
-        <Column>
-          <Rows space="12px">
-            <Row>
-              <Text color="label" size="16pt" weight="bold">
-                To:
-              </Text>
-            </Row>
-            <Row>
-              <input
-                type="text"
-                value={toAddressOrName}
-                placeholder={'ENS or address'}
-                onChange={handleToAddressChange}
-                style={{
-                  borderRadius: 999,
-                  padding: '10px',
-                  fontSize: '11pt',
-                  width: '100%',
-                  boxSizing: 'border-box',
-                }}
-              />
-            </Row>
-            <Row>
-              <Text color="label" size="16pt" weight="bold">
-                Amount ({asset?.symbol}):
-              </Text>
-            </Row>
-            <Row>
-              <Input
-                type="number"
-                value={independentAmount}
-                placeholder={'Enter ETH amount'}
-                onChange={handleAmountChange}
-                height="32px"
-                variant="bordered"
-                innerRef={independentFieldRef}
-              />
-            </Row>
-            <Row>
-              <Text color="label" size="16pt" weight="bold">
-                Amount {independentField === 'asset' ? 'native' : asset?.symbol}
-                : {dependentAmount}
-              </Text>
-              <Button
-                onClick={switchIndependentField}
-                color="accent"
-                height="36px"
-                variant="flat"
-              >
-                Switch to{' '}
-                {independentField === 'asset' ? currentCurrency : asset?.symbol}
-              </Button>
-              <Button
-                onClick={setMaxAssetAmount}
-                color="accent"
-                height="36px"
-                variant="flat"
-              >
-                Max
-              </Button>
-            </Row>
-            <Row>
-              <Box
-                as="button"
-                background="accent"
-                boxShadow="24px accent"
-                onClick={handleSend}
-                padding="16px"
-                style={{
-                  borderRadius: 999,
-                  marginTop: '24px',
-                  width: '100%',
-                  boxSizing: 'border-box',
-                }}
-              >
-                <Text color="label" size="14pt" weight="bold">
-                  {sending ? 'Sending...' : 'Send Transaction'}
-                </Text>
-              </Box>
-            </Row>
-            {txHash && (
-              <Row>
-                <Box
-                  style={{
-                    width: '100%',
-                    textAlign: 'center',
-                    padding: '16px',
-                  }}
-                >
-                  <Separator />
-                  <a
-                    href={`https://etherscan.io/tx/${txHash}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{
-                      display: 'block',
-                      marginTop: '20px',
-                      textAlign: 'center',
-                    }}
-                  >
-                    <Text color="label" size="16pt" weight="bold">
-                      View on etherscan
-                    </Text>
-                  </a>
+      <Rows space="8px">
+        <Row>
+          <Box
+            background="surfaceSecondaryElevated"
+            paddingVertical="20px"
+            paddingHorizontal="16px"
+            borderRadius="24px"
+            width="full"
+          >
+            <Inline
+              alignHorizontal="justify"
+              alignVertical="center"
+              space="8px"
+            >
+              <Inline alignVertical="center" space="8px">
+                <EnsAvatar address={address as Address} />
+                <Box width="fit">
+                  <Input
+                    value={toAddressOrName}
+                    placeholder={'Name, ENS or address'}
+                    onChange={handleToAddressChange}
+                    height="32px"
+                    variant="transparent"
+                  />
                 </Box>
-              </Row>
-            )}
-            <Row>
-              <TransactionFee
-                chainId={chainId}
-                transactionRequest={transactionRequest}
-              />
-            </Row>
-          </Rows>
-        </Column>
-      </Columns>
+              </Inline>
+
+              <Symbol size={18} symbol="chevron.down.circle" weight="bold" />
+            </Inline>
+          </Box>
+        </Row>
+
+        <Row>
+          <Box
+            background="surfaceSecondaryElevated"
+            paddingVertical="20px"
+            paddingHorizontal="16px"
+            borderRadius="24px"
+            width="full"
+          >
+            <Inline
+              alignHorizontal="justify"
+              alignVertical="center"
+              space="8px"
+            >
+              <Inline alignVertical="center" space="8px">
+                <CoinIcon asset={asset} />
+                <Box width="fit">
+                  <Text size="16pt" weight="bold">
+                    {asset?.name}
+                  </Text>
+                </Box>
+              </Inline>
+              <Symbol size={18} symbol="chevron.down.circle" weight="bold" />
+            </Inline>
+          </Box>
+        </Row>
+
+        <Row>
+          <Text color="label" size="16pt" weight="bold">
+            Amount ({asset?.symbol}):
+          </Text>
+        </Row>
+        <Row>
+          <Input
+            value={independentAmount}
+            placeholder={'Enter ETH amount'}
+            onChange={handleAmountChange}
+            height="32px"
+            variant="bordered"
+            innerRef={independentFieldRef}
+          />
+        </Row>
+        <Row>
+          <Text color="label" size="16pt" weight="bold">
+            Amount {independentField === 'asset' ? 'native' : asset?.symbol}:{' '}
+            {dependentAmount}
+          </Text>
+          <Button
+            onClick={switchIndependentField}
+            color="accent"
+            height="36px"
+            variant="flat"
+          >
+            Switch to{' '}
+            {independentField === 'asset' ? currentCurrency : asset?.symbol}
+          </Button>
+          <Button
+            onClick={setMaxAssetAmount}
+            color="accent"
+            height="36px"
+            variant="flat"
+          >
+            Max
+          </Button>
+        </Row>
+        <Row>
+          <TransactionFee
+            chainId={chainId}
+            transactionRequest={transactionRequest}
+          />
+        </Row>
+        <Row>
+          <Button
+            onClick={handleSend}
+            height="44px"
+            variant="flat"
+            color="accent"
+            width="full"
+          >
+            <Text color="label" size="14pt" weight="bold">
+              {sending ? 'Sending...' : 'Send Transaction'}
+            </Text>
+          </Button>
+        </Row>
+      </Rows>
     </Box>
   );
 }
