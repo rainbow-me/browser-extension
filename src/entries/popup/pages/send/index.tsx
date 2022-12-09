@@ -43,6 +43,39 @@ export const EnsAvatar = ({ address }: { address: Address }) => {
   );
 };
 
+const ActionButon = ({
+  showClose,
+  onClose,
+}: {
+  showClose: boolean;
+  onClose: () => void;
+}) => {
+  return showClose ? (
+    <Box
+      style={{
+        width: 24,
+        height: 24,
+      }}
+      borderRadius="12px"
+      background="surfaceMenu"
+      borderWidth="1px"
+      borderColor="buttonStroke"
+      onClick={onClose}
+    >
+      <Inline height="full" alignHorizontal="center" alignVertical="center">
+        <Symbol size={8} symbol={'xmark'} weight="bold" color="label" />
+      </Inline>
+    </Box>
+  ) : (
+    <Symbol
+      size={18}
+      symbol={'chevron.down.circle'}
+      weight="semibold"
+      color="labelQuaternary"
+    />
+  );
+};
+
 export function Send() {
   const [, setTxHash] = useState('');
   const [sending, setSending] = useState(false);
@@ -148,39 +181,7 @@ export function Send() {
                     />
                   </Box>
                 </Inline>
-
-                {toAddress ? (
-                  <Box
-                    style={{
-                      width: 24,
-                      height: 24,
-                    }}
-                    borderRadius="12px"
-                    background="surfaceMenu"
-                    borderWidth="1px"
-                    borderColor="buttonStroke"
-                  >
-                    <Inline
-                      height="full"
-                      alignHorizontal="center"
-                      alignVertical="center"
-                    >
-                      <Symbol
-                        size={8}
-                        symbol={'xmark'}
-                        weight="bold"
-                        color="label"
-                      />
-                    </Inline>
-                  </Box>
-                ) : (
-                  <Symbol
-                    size={18}
-                    symbol={toAddress ? 'xmark' : 'chevron.down.circle'}
-                    weight="semibold"
-                    color="labelQuaternary"
-                  />
-                )}
+                <ActionButon showClose={!!toAddress} onClose={() => null} />
               </Inline>
             </Box>
           </Row>
@@ -207,12 +208,7 @@ export function Send() {
                       </Text>
                     </Box>
                   </Inline>
-                  <Symbol
-                    size={18}
-                    symbol="chevron.down.circle"
-                    weight="semibold"
-                    color="labelQuaternary"
-                  />
+                  <ActionButon showClose={!!asset} onClose={() => null} />
                 </Inline>
                 <Separator color="separatorSecondary" />
 
