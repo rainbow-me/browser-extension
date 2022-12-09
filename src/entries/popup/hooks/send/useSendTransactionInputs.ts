@@ -13,11 +13,11 @@ export const useSendTransactionInputs = ({
   asset: ParsedAddressAsset;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
-  const [independentAmount, setIndependentAmount] = useState<string>();
+  const independentFieldRef = useRef(null);
+  const [independentAmount, setIndependentAmount] = useState<string>('');
   const [independentField, setIndependentField] = useState<'native' | 'asset'>(
     'asset',
   );
-  const independentFieldRef = useRef(null);
 
   const dependentAmount = useMemo(() => {
     if (independentField === 'asset') {
@@ -46,9 +46,19 @@ export const useSendTransactionInputs = ({
     [dependentAmount, independentAmount, independentField],
   );
 
+  const setInputValue = useCallback((newValue: string) => {
+    (independentFieldRef?.current as unknown as HTMLInputElement).value =
+      newValue;
+    (independentFieldRef?.current as unknown as HTMLInputElement).focus();
+  }, []);
+
   const switchIndependentField = useCallback(() => {
+    const newValue =
+      independentField === 'asset' ? dependentAmount : assetAmount ?? '';
+    setInputValue(newValue);
+    setIndependentAmount(newValue);
     setIndependentField(independentField === 'asset' ? 'native' : 'asset');
-  }, [independentField]);
+  }, [assetAmount, dependentAmount, independentField, setInputValue]);
 
   const setMaxAssetAmount = useCallback(() => {
     // const rawAmount = convertAmountToRawAmount(
@@ -56,12 +66,24 @@ export const useSendTransactionInputs = ({
     //   asset.decimals,
     // );
 
-    setIndependentAmount(asset.balance.amount);
+    const newValue =
+      independentField === 'asset'
+        ? asset.balance.amount
+        : convertAmountAndPriceToNativeDisplay(
+            asset.balance.amount,
+            asset?.price?.value || 0,
+            currentCurrency,
+          ).amount;
 
-    (independentFieldRef?.current as unknown as HTMLInputElement).value =
-      asset.balance.amount;
-    (independentFieldRef?.current as unknown as HTMLInputElement).focus();
-  }, [asset.balance]);
+    setIndependentAmount(newValue);
+    setInputValue(newValue);
+  }, [
+    asset.balance.amount,
+    asset?.price?.value,
+    currentCurrency,
+    independentField,
+    setInputValue,
+  ]);
 
   return {
     assetAmount,
