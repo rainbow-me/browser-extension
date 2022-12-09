@@ -1,17 +1,16 @@
 import { ChainId } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
 
 import { SupportedCurrencyKey } from '~/core/references';
 import { selectTransactionsByDate } from '~/core/resources/_selectors';
 import { useTransactions } from '~/core/resources/transactions/transactions';
 import {
-  //   currentAddressStore,
-  //   pendingTransactionsStore,
+  currentAddressStore,
+  nonceStore,
+  pendingTransactionsStore,
   usePendingTransactionsStore,
 } from '~/core/state';
 import { RainbowTransaction } from '~/core/types/transactions';
-import { newTestTx } from '~/core/utils/transactions';
 
 export function useAllTransactions({
   address,
@@ -26,7 +25,8 @@ export function useAllTransactions({
       currency,
     },
     {
-      onSuccess: (d) => watchPendingTransactions(d),
+      onSuccess: (transactions: RainbowTransaction[]) =>
+        watchConfirmedTransactions(transactions),
     },
   );
   const { getPendingTransactions } = usePendingTransactionsStore();
@@ -42,28 +42,41 @@ export function useAllTransactions({
   };
 }
 
-async function watchPendingTransactions(d) {
-  //   const { currentAddress } = currentAddressStore.getState();
-  //   const { getPendingTransactions } = pendingTransactionsStore.getState();
-  //   const pendingTransactions = getPendingTransactions({
-  //     address: currentAddress,
-  //   });
-  try {
-    const provider = getProvider({ chainId: ChainId.mainnet });
-    const tx = d?.[0];
-    console.log('TX: ', tx);
-    const hash = getHash(tx);
-    console.log('HASH: ', hash);
-    if (hash) {
-      const txFromChain = await provider.getTransaction(hash);
-      console.log('TEST TX: ', newTestTx);
-      console.log('TX FROM CHAIN: ', txFromChain);
-    }
-  } catch (e) {
-    console.log();
-  }
-}
+function watchConfirmedTransactions(transactions: RainbowTransaction[]) {
+  const { currentAddress } = currentAddressStore.getState();
+  const { getPendingTransactions, setPendingTransactions } =
+    pendingTransactionsStore.getState();
+  const { setNonce } = nonceStore.getState();
+  const pendingTransactions = getPendingTransactions({
+    address: currentAddress,
+  });
+  const latestTx = transactions?.[0];
+  const latestConfirmedNonce = latestTx?.nonce || 0;
+  let currentNonce: number;
+  const latestPendingTx = pendingTransactions?.[0];
 
-function getHash(tx: RainbowTransaction) {
-  return tx?.hash?.split('-').shift();
+  if (latestPendingTx) {
+    const latestPendingNonce = latestPendingTx?.nonce || 0;
+    currentNonce =
+      latestPendingNonce > latestConfirmedNonce
+        ? latestPendingNonce
+        : latestConfirmedNonce;
+  } else {
+    currentNonce = latestConfirmedNonce;
+  }
+
+  setNonce({
+    address: currentAddress,
+    network: ChainId.mainnet,
+    currentNonce,
+    latestConfirmedNonce,
+  });
+
+  const updatedPendingTx = pendingTransactions?.filter(
+    (tx) => (tx?.nonce || 0) > latestConfirmedNonce,
+  );
+  setPendingTransactions({
+    address: currentAddress,
+    pendingTransactions: updatedPendingTx,
+  });
 }

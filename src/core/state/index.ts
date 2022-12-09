@@ -13,6 +13,7 @@ export {
   useNotificationWindowStore,
 } from './notificationWindow';
 export { appSessionsStore, useAppSessionsStore } from './appSessions';
+export { nonceStore, useNonceStore } from './nonce';
 export {
   pendingTransactionsStore,
   usePendingTransactionsStore,
