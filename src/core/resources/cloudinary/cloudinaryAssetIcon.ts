@@ -85,6 +85,8 @@ export function useCloudinaryAssetIcon(
   return useQuery(
     cloudinaryAssetIconQueryKey({ url }),
     cloudinaryAssetIconQueryFunction,
-    config,
+    {
+      ...config,
+    },
   );
 }

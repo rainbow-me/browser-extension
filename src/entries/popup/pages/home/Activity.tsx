@@ -2,12 +2,16 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import React, { ReactNode, useCallback, useMemo, useRef } from 'react';
 import { useAccount } from 'wagmi';
 
-import { useCurrentCurrencyStore } from '~/core/state';
+import {
+  useCurrentCurrencyStore,
+  usePendingTransactionsStore,
+} from '~/core/state';
 import {
   RainbowTransaction,
   TransactionStatus,
   TransactionType,
 } from '~/core/types/transactions';
+import { newTestTx, parseNewTransaction } from '~/core/utils/transactions';
 import {
   Box,
   Column,
@@ -45,6 +49,8 @@ export function Activity() {
     enableSmoothScroll: false,
   });
 
+  const { setPendingTransactions } = usePendingTransactionsStore();
+
   return (
     <Box
       marginTop={'-20px'}
@@ -60,6 +66,12 @@ export function Activity() {
           height: `${activityRowVirtualizer.getTotalSize()}px`,
           position: 'relative',
         }}
+        onClick={() =>
+          setPendingTransactions({
+            address,
+            pendingTransactions: [parseNewTransaction(newTestTx, currency)],
+          })
+        }
       >
         {activityRowVirtualizer.getVirtualItems().map(({ index }) => {
           const item = listData[index];
