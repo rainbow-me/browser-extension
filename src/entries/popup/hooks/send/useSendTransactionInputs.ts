@@ -64,9 +64,9 @@ export const useSendTransactionInputs = ({
   const setMaxAssetAmount = useCallback(() => {
     const newValue =
       independentField === 'asset'
-        ? asset.balance.amount
+        ? asset?.balance?.amount
         : convertAmountAndPriceToNativeDisplay(
-            asset.balance.amount,
+            asset?.balance?.amount,
             asset?.price?.value || 0,
             currentCurrency,
           ).amount;
@@ -74,7 +74,7 @@ export const useSendTransactionInputs = ({
     setIndependentAmount(newValue);
     setInputValue(newValue);
   }, [
-    asset.balance.amount,
+    asset?.balance?.amount,
     asset?.price?.value,
     currentCurrency,
     independentField,

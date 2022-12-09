@@ -38,8 +38,6 @@ export const useGas = ({
   const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>(GasSpeed.NORMAL);
   const nativeAsset = useNativeAssetForNetwork({ chainId });
 
-  console.log('--- transactionRequest', transactionRequest);
-  console.log('--- estimatedGasLimit', estimatedGasLimit);
   const gasLimit = estimatedGasLimit ?? `${ethUnits.basic_transfer}`;
 
   const gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed =

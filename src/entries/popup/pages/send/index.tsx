@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
-import { Address, useAccount, useEnsAvatar } from 'wagmi';
+import { Address, useEnsAvatar } from 'wagmi';
 
 import {
   AccentColorProvider,
@@ -46,8 +46,6 @@ export const EnsAvatar = ({ address }: { address: Address }) => {
 export function Send() {
   const [, setTxHash] = useState('');
   const [sending, setSending] = useState(false);
-
-  const { address } = useAccount();
 
   const { asset } = useSendTransactionAsset();
   const {
@@ -121,7 +119,7 @@ export function Send() {
 
   return (
     <AccentColorProvider
-      color={asset.colors?.primary || asset.colors?.fallback || 'accent'}
+      color={asset?.colors?.primary || asset?.colors?.fallback || '#191A1C'}
     >
       <Box style={{ overflow: 'auto' }} paddingHorizontal="12px" height="full">
         <Rows space="8px">
@@ -139,7 +137,7 @@ export function Send() {
                 space="8px"
               >
                 <Inline alignVertical="center" space="8px">
-                  <EnsAvatar address={address as Address} />
+                  <EnsAvatar address={toAddress} />
                   <Box width="fit">
                     <Input
                       value={toAddressOrName}
