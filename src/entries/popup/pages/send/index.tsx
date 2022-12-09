@@ -2,7 +2,18 @@ import { TransactionRequest } from '@ethersproject/abstract-provider';
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { Address, useAccount, useEnsAvatar } from 'wagmi';
 
-import { Box, Button, Inline, Row, Rows, Symbol, Text } from '~/design-system';
+import {
+  AccentColorProvider,
+  Box,
+  Button,
+  Inline,
+  Row,
+  Rows,
+  Separator,
+  Stack,
+  Symbol,
+  Text,
+} from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
@@ -109,12 +120,7 @@ export function Send() {
   }, [fromAddress, toAddress, value, chainId, data]);
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      style={{ overflow: 'auto' }}
-      paddingHorizontal="12px"
-    >
+    <Box style={{ overflow: 'auto' }} paddingHorizontal="12px" height="full">
       <Rows space="8px">
         <Row>
           <Box
@@ -151,57 +157,83 @@ export function Send() {
           <Box
             background="surfaceSecondaryElevated"
             paddingVertical="20px"
-            paddingHorizontal="16px"
+            paddingHorizontal="20px"
             borderRadius="24px"
             width="full"
           >
-            <Inline
-              alignHorizontal="justify"
-              alignVertical="center"
-              space="8px"
-            >
-              <Inline alignVertical="center" space="8px">
-                <CoinIcon asset={asset} />
-                <Box width="fit">
-                  <Text size="16pt" weight="bold">
-                    {asset?.name}
-                  </Text>
-                </Box>
+            <Stack space="16px">
+              <Inline
+                alignHorizontal="justify"
+                alignVertical="center"
+                space="8px"
+              >
+                <Inline alignVertical="center" space="8px">
+                  <CoinIcon asset={asset} />
+                  <Box width="fit">
+                    <Text size="16pt" weight="bold">
+                      {asset?.name}
+                    </Text>
+                  </Box>
+                </Inline>
+                <Symbol size={18} symbol="chevron.down.circle" weight="bold" />
               </Inline>
-              <Symbol size={18} symbol="chevron.down.circle" weight="bold" />
-            </Inline>
+              <Separator color="separatorSecondary" />
+              <AccentColorProvider
+                color={
+                  asset.colors?.primary || asset.colors?.fallback || 'accent'
+                }
+              >
+                <Box>
+                  <Rows space="16px">
+                    <Row>
+                      <Inline alignVertical="center" alignHorizontal="justify">
+                        <Input
+                          value={independentAmount}
+                          placeholder={`0.00 ${asset?.symbol}`}
+                          borderColor="accent"
+                          onChange={handleAmountChange}
+                          height="56px"
+                          variant="bordered"
+                          innerRef={independentFieldRef}
+                          style={{
+                            paddingRight: 80,
+                          }}
+                        />
+                        <Box position="absolute" style={{ right: 48 }}>
+                          <Button
+                            onClick={setMaxAssetAmount}
+                            color="accent"
+                            height="32px"
+                            variant="raised"
+                          >
+                            Max
+                          </Button>
+                        </Box>
+                      </Inline>
+                    </Row>
+
+                    <Row>
+                      <Inline alignHorizontal="justify" alignVertical="center">
+                        <Text color="label" size="12pt" weight="bold">
+                          {dependentAmount}
+                        </Text>
+                        <Box onClick={switchIndependentField}>
+                          <Text color="accent" size="12pt" weight="bold">
+                            Switch to{' '}
+                            {independentField === 'asset'
+                              ? currentCurrency
+                              : asset?.symbol}
+                          </Text>
+                        </Box>
+                      </Inline>
+                    </Row>
+                  </Rows>
+                </Box>
+              </AccentColorProvider>
+            </Stack>
           </Box>
         </Row>
-
-        <Row>
-          <Text color="label" size="16pt" weight="bold">
-            Amount ({asset?.symbol}):
-          </Text>
-        </Row>
-        <Row>
-          <Input
-            value={independentAmount}
-            placeholder={'Enter ETH amount'}
-            onChange={handleAmountChange}
-            height="32px"
-            variant="bordered"
-            innerRef={independentFieldRef}
-          />
-        </Row>
-        <Row>
-          <Text color="label" size="16pt" weight="bold">
-            Amount {independentField === 'asset' ? 'native' : asset?.symbol}:{' '}
-            {dependentAmount}
-          </Text>
-          <Button
-            onClick={switchIndependentField}
-            color="accent"
-            height="36px"
-            variant="flat"
-          >
-            Switch to{' '}
-            {independentField === 'asset' ? currentCurrency : asset?.symbol}
-          </Button>
+        {/* <Row>
           <Button
             onClick={setMaxAssetAmount}
             color="accent"
@@ -210,27 +242,31 @@ export function Send() {
           >
             Max
           </Button>
-        </Row>
-        <Row>
-          <TransactionFee
-            chainId={chainId}
-            transactionRequest={transactionRequest}
-          />
-        </Row>
-        <Row>
-          <Button
-            onClick={handleSend}
-            height="44px"
-            variant="flat"
-            color="accent"
-            width="full"
-          >
-            <Text color="label" size="14pt" weight="bold">
-              {sending ? 'Sending...' : 'Send Transaction'}
-            </Text>
-          </Button>
-        </Row>
+        </Row> */}
       </Rows>
+      <Box style={{ paddingTop: 143 }} padding="20px" bottom="0">
+        <Rows space="20px">
+          <Row>
+            <TransactionFee
+              chainId={chainId}
+              transactionRequest={transactionRequest}
+            />
+          </Row>
+          <Row>
+            <Button
+              onClick={handleSend}
+              height="44px"
+              variant="flat"
+              color="accent"
+              width="full"
+            >
+              <Text color="label" size="14pt" weight="bold">
+                {sending ? 'Sending...' : 'Send Transaction'}
+              </Text>
+            </Button>
+          </Row>
+        </Rows>
+      </Box>
     </Box>
   );
 }
