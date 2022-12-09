@@ -61,11 +61,6 @@ export const useSendTransactionInputs = ({
   }, [assetAmount, dependentAmount, independentField, setInputValue]);
 
   const setMaxAssetAmount = useCallback(() => {
-    // const rawAmount = convertAmountToRawAmount(
-    //   asset.balance.amount,
-    //   asset.decimals,
-    // );
-
     const newValue =
       independentField === 'asset'
         ? asset.balance.amount

@@ -126,7 +126,7 @@ export function Send() {
             </Row>
             <Row>
               <Text color="label" size="16pt" weight="bold">
-                Amount (ETH):
+                Amount ({asset?.symbol}):
               </Text>
             </Row>
             <Row>
@@ -138,18 +138,12 @@ export function Send() {
                 height="32px"
                 variant="bordered"
                 innerRef={independentFieldRef}
-                // style={{
-                //   borderRadius: 999,
-                //   padding: '10px',
-                //   fontSize: '11pt',
-                //   width: '100%',
-                //   boxSizing: 'border-box',
-                // }}
               />
             </Row>
             <Row>
               <Text color="label" size="16pt" weight="bold">
-                Amount native: {dependentAmount}
+                Amount {independentField === 'asset' ? 'native' : asset?.symbol}
+                : {dependentAmount}
               </Text>
               <Button
                 onClick={switchIndependentField}
