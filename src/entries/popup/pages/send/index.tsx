@@ -3,6 +3,7 @@ import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
 
 import {
   Box,
+  Button,
   Column,
   Columns,
   Row,
@@ -13,23 +14,33 @@ import {
 
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { sendTransaction } from '../../handlers/wallet';
-import { useSendTransactionState } from '../../hooks/useSendTransactionState';
+import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
+import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
 
 export function Send() {
   const [txHash, setTxHash] = useState('');
   const [sending, setSending] = useState(false);
 
   const {
-    amount,
+    assetAmount,
+    independentAmount,
+    independentField,
+    dependentAmount,
+    setIndependentAmount,
+    switchIndependentField,
+  } = useSendTransactionInputs();
+
+  const {
+    asset,
+    currentCurrency,
     chainId,
     data,
     fromAddress,
     toAddress,
     toAddressOrName,
     value,
-    setAmount,
     setToAddressOrName,
-  } = useSendTransactionState();
+  } = useSendTransactionState({ assetAmount });
 
   const transactionRequest: TransactionRequest = useMemo(() => {
     return {
@@ -50,9 +61,9 @@ export function Send() {
 
   const handleAmountChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setAmount(e.target.value);
+      setIndependentAmount(e.target.value);
     },
-    [setAmount],
+    [setIndependentAmount],
   );
 
   const handleSend = useCallback(async () => {
@@ -117,7 +128,7 @@ export function Send() {
             <Row>
               <input
                 type="text"
-                value={amount}
+                value={independentAmount}
                 placeholder={'Enter ETH amount'}
                 onChange={handleAmountChange}
                 style={{
@@ -128,6 +139,20 @@ export function Send() {
                   boxSizing: 'border-box',
                 }}
               />
+            </Row>
+            <Row>
+              <Text color="label" size="16pt" weight="bold">
+                Amount native: {dependentAmount}
+              </Text>
+              <Button
+                onClick={switchIndependentField}
+                color="accent"
+                height="36px"
+                variant="flat"
+              >
+                Switch to{' '}
+                {independentField === 'asset' ? currentCurrency : asset?.symbol}
+              </Button>
             </Row>
             <Row>
               <Box
