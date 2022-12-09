@@ -1,6 +1,9 @@
 import { format } from 'date-fns';
 
+import { i18n } from '../languages';
 import { RainbowTransaction } from '../types/transactions';
+
+import { getLocale } from './locales';
 
 export const calculateTimestampOfToday = () => {
   const d = new Date();
@@ -34,15 +37,21 @@ export const yesterdayTimestamp = calculateTimestampOfYesterday();
 export const thisMonthTimestamp = calculateTimestampOfThisMonth();
 export const thisYearTimestamp = calculateTimestampOfThisYear();
 
-export const groupTransactionByDate = ({ minedAt }: RainbowTransaction) => {
+export const groupTransactionByDate = ({
+  minedAt,
+  pending,
+}: RainbowTransaction) => {
+  if (pending) return i18n.t('activity.today');
   if (!minedAt) return 'Dropped';
   const ts = minedAt * 1000;
 
-  if (ts > todayTimestamp) return 'Today';
-  if (ts > yesterdayTimestamp) return 'Yesterday';
-  if (ts > thisMonthTimestamp) return 'This Month';
+  if (ts > todayTimestamp) return i18n.t('activity.today');
+  if (ts > yesterdayTimestamp) return i18n.t('activity.yesterday');
+  if (ts > thisMonthTimestamp) return i18n.t('activity.this_month');
   try {
-    return format(ts, `MMMM${ts > thisYearTimestamp ? '' : ' yyyy'}`);
+    return format(ts, `MMMM${ts > thisYearTimestamp ? '' : ' yyyy'}`, {
+      locale: getLocale(),
+    });
   } catch (e) {
     return 'Dropped';
   }

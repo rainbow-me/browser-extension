@@ -1,19 +1,19 @@
 import { BigNumberish } from 'ethers';
+import { Address } from 'wagmi';
 
 import { ParsedAsset, ZerionAsset } from './assets';
-import { ChainName } from './chains';
+import { ChainId } from './chains';
 
 export interface RainbowTransaction {
-  address?: string;
-  asset?: ParsedAsset;
+  address?: Address;
+  asset?: ParsedAsset | null;
   balance?: {
     amount: string;
     display: string;
   };
-  dappName?: string; // for walletconnect
   data?: string; // for pending tx
   description?: string;
-  from: string;
+  from?: Address;
   gasLimit?: BigNumberish;
   gasPrice?: BigNumberish;
   maxFeePerGas?: BigNumberish;
@@ -25,20 +25,14 @@ export interface RainbowTransaction {
     amount: string;
     display: string;
   };
-  chain: ChainName;
+  chainId: ChainId;
   nonce?: number;
   pending?: boolean;
   protocol?: ProtocolType;
-  flashbots?: boolean;
-  ensCommitRegistrationName?: string;
-  ensRegistration?: boolean;
-  sourceAmount?: string; // for purchases
   status?: TransactionStatus;
   symbol?: string;
-  timestamp?: number; // for purchases
   title?: string;
-  to: string;
-  transferId?: string; // for purchases
+  to?: Address;
   txTo?: string;
   type?: TransactionType;
   value?: BigNumberish; // for pending tx
@@ -87,6 +81,27 @@ export enum ZerionTransactionStatus {
   failed = 'failed',
   pending = 'pending',
 }
+
+export interface NewTransaction {
+  amount?: string;
+  asset?: ParsedAsset | null;
+  data?: string;
+  from?: Address;
+  gasLimit?: BigNumberish;
+  gasPrice?: BigNumberish;
+  maxFeePerGas?: BigNumberish;
+  maxPriorityFeePerGas?: BigNumberish;
+  hash?: string;
+  chainId?: ChainId;
+  nonce?: number;
+  protocol?: ProtocolType;
+  status?: TransactionStatus;
+  to: Address;
+  type?: TransactionType;
+  value?: BigNumberish;
+  txTo?: Address;
+}
+
 export enum ProtocolType {
   aave = 'aave',
   bancor = 'bancor',

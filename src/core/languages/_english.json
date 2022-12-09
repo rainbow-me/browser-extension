@@ -44,6 +44,12 @@
       "title": "Currency"
     }
   },
+  "transactions": {
+    "contract_interaction": "Contract Interaction",
+    "savings": "Savings",
+    "deposited": "Deposited",
+    "withdrew": "Withdrew"
+  },
   "connected_apps": {
     "title": "Connected Apps",
     "disconnect": "Disconnect All"
@@ -191,5 +197,10 @@
     "new_password": "New password",
     "confirm_password": "Confirm password",
     "update_password": "Update Password"
+  },
+  "activity": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "this_month": "This Month"
   }
 }
