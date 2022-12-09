@@ -10,20 +10,18 @@ import { convertAmountToRawAmount } from '~/core/utils/numbers';
 import { getDataForTokenTransfer } from '~/core/utils/transactions';
 
 import { useEns } from '../useEns';
-import { useNativeAssetForNetwork } from '../useNativeAssetForNetwork';
 
 export const useSendTransactionState = ({
   assetAmount,
+  asset,
 }: {
   assetAmount?: string;
+  asset: ParsedAddressAsset;
 }) => {
   const [toAddressOrName, setToAddressOrName] = useState<Address | string>('');
-  const nativeAsset = useNativeAssetForNetwork({ chainId: ChainId.mainnet });
   const { currentCurrency } = useCurrentCurrencyStore();
 
   const [, setAsset] = useState<ParsedAddressAsset>();
-
-  const asset = nativeAsset;
 
   const { address: fromAddress } = useAccount();
   const chainId = asset?.chainId ?? ChainId.mainnet;

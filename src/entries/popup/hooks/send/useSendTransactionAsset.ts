@@ -14,7 +14,7 @@ export const useSendTransactionAsset = () => {
     },
     { select: selectUserAssetsList },
   );
-  const asset = assets?.[0];
+  const asset = assets?.[3];
   return {
     asset,
   };

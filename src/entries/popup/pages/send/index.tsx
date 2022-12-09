@@ -70,7 +70,7 @@ export function Send() {
     toAddressOrName,
     value,
     setToAddressOrName,
-  } = useSendTransactionState({ assetAmount });
+  } = useSendTransactionState({ assetAmount, asset });
 
   const transactionRequest: TransactionRequest = useMemo(() => {
     return {
@@ -120,69 +120,72 @@ export function Send() {
   }, [fromAddress, toAddress, value, chainId, data]);
 
   return (
-    <Box style={{ overflow: 'auto' }} paddingHorizontal="12px" height="full">
-      <Rows space="8px">
-        <Row>
-          <Box
-            background="surfaceSecondaryElevated"
-            paddingVertical="20px"
-            paddingHorizontal="16px"
-            borderRadius="24px"
-            width="full"
-          >
-            <Inline
-              alignHorizontal="justify"
-              alignVertical="center"
-              space="8px"
+    <AccentColorProvider
+      color={asset.colors?.primary || asset.colors?.fallback || 'accent'}
+    >
+      <Box style={{ overflow: 'auto' }} paddingHorizontal="12px" height="full">
+        <Rows space="8px">
+          <Row>
+            <Box
+              background="surfaceSecondaryElevated"
+              paddingVertical="20px"
+              paddingHorizontal="16px"
+              borderRadius="24px"
+              width="full"
             >
-              <Inline alignVertical="center" space="8px">
-                <EnsAvatar address={address as Address} />
-                <Box width="fit">
-                  <Input
-                    value={toAddressOrName}
-                    placeholder={'Name, ENS or address'}
-                    onChange={handleToAddressChange}
-                    height="32px"
-                    variant="transparent"
-                  />
-                </Box>
-              </Inline>
-
-              <Symbol size={18} symbol="chevron.down.circle" weight="bold" />
-            </Inline>
-          </Box>
-        </Row>
-
-        <Row>
-          <Box
-            background="surfaceSecondaryElevated"
-            paddingVertical="20px"
-            paddingHorizontal="20px"
-            borderRadius="24px"
-            width="full"
-          >
-            <Stack space="16px">
               <Inline
                 alignHorizontal="justify"
                 alignVertical="center"
                 space="8px"
               >
                 <Inline alignVertical="center" space="8px">
-                  <CoinIcon asset={asset} />
+                  <EnsAvatar address={address as Address} />
                   <Box width="fit">
-                    <Text size="16pt" weight="bold">
-                      {asset?.name}
-                    </Text>
+                    <Input
+                      value={toAddressOrName}
+                      placeholder={'Name, ENS or address'}
+                      onChange={handleToAddressChange}
+                      height="32px"
+                      variant="transparent"
+                    />
                   </Box>
                 </Inline>
+
                 <Symbol size={18} symbol="chevron.down.circle" weight="bold" />
               </Inline>
-              <Separator color="separatorSecondary" />
-              <AccentColorProvider
-                color={
-                  asset.colors?.primary || asset.colors?.fallback || 'accent'
-                }
-              >
+            </Box>
+          </Row>
+
+          <Row>
+            <Box
+              background="surfaceSecondaryElevated"
+              paddingVertical="20px"
+              paddingHorizontal="20px"
+              borderRadius="24px"
+              width="full"
+            >
+              <Stack space="16px">
+                <Inline
+                  alignHorizontal="justify"
+                  alignVertical="center"
+                  space="8px"
+                >
+                  <Inline alignVertical="center" space="8px">
+                    <CoinIcon asset={asset} />
+                    <Box width="fit">
+                      <Text size="16pt" weight="bold">
+                        {asset?.name}
+                      </Text>
+                    </Box>
+                  </Inline>
+                  <Symbol
+                    size={18}
+                    symbol="chevron.down.circle"
+                    weight="bold"
+                  />
+                </Inline>
+                <Separator color="separatorSecondary" />
+
                 <Box>
                   <Rows space="16px">
                     <Row>
@@ -215,7 +218,7 @@ export function Send() {
                     <Row>
                       <Inline alignHorizontal="justify" alignVertical="center">
                         <Text color="label" size="12pt" weight="bold">
-                          {dependentAmount}
+                          {dependentAmount.display}
                         </Text>
                         <Box onClick={switchIndependentField}>
                           <Text color="accent" size="12pt" weight="bold">
@@ -229,11 +232,10 @@ export function Send() {
                     </Row>
                   </Rows>
                 </Box>
-              </AccentColorProvider>
-            </Stack>
-          </Box>
-        </Row>
-        {/* <Row>
+              </Stack>
+            </Box>
+          </Row>
+          {/* <Row>
           <Button
             onClick={setMaxAssetAmount}
             color="accent"
@@ -243,30 +245,31 @@ export function Send() {
             Max
           </Button>
         </Row> */}
-      </Rows>
-      <Box style={{ paddingTop: 143 }} padding="20px" bottom="0">
-        <Rows space="20px">
-          <Row>
-            <TransactionFee
-              chainId={chainId}
-              transactionRequest={transactionRequest}
-            />
-          </Row>
-          <Row>
-            <Button
-              onClick={handleSend}
-              height="44px"
-              variant="flat"
-              color="accent"
-              width="full"
-            >
-              <Text color="label" size="14pt" weight="bold">
-                {sending ? 'Sending...' : 'Send Transaction'}
-              </Text>
-            </Button>
-          </Row>
         </Rows>
+        <Box style={{ paddingTop: 143 }} padding="20px" bottom="0">
+          <Rows space="20px">
+            <Row>
+              <TransactionFee
+                chainId={chainId}
+                transactionRequest={transactionRequest}
+              />
+            </Row>
+            <Row>
+              <Button
+                onClick={handleSend}
+                height="44px"
+                variant="flat"
+                color="accent"
+                width="full"
+              >
+                <Text color="label" size="14pt" weight="bold">
+                  {sending ? 'Sending...' : 'Send Transaction'}
+                </Text>
+              </Button>
+            </Row>
+          </Rows>
+        </Box>
       </Box>
-    </Box>
+    </AccentColorProvider>
   );
 }

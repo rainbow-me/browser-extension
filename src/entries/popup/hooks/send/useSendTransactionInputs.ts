@@ -5,6 +5,7 @@ import { ParsedAddressAsset } from '~/core/types/assets';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountFromNativeValue,
+  convertAmountToBalanceDisplay,
 } from '~/core/utils/numbers';
 
 export const useSendTransactionInputs = ({
@@ -22,27 +23,26 @@ export const useSendTransactionInputs = ({
   const dependentAmount = useMemo(() => {
     if (independentField === 'asset') {
       return convertAmountAndPriceToNativeDisplay(
-        independentAmount as string,
+        (independentAmount as string) || '0',
         asset?.price?.value || 0,
         currentCurrency,
-      ).amount;
+      );
     } else {
-      return convertAmountFromNativeValue(
-        independentAmount as string,
+      const amountFromNativeValue = convertAmountFromNativeValue(
+        (independentAmount as string) || '0',
         asset?.price?.value || 0,
         asset?.decimals,
       );
+      return {
+        display: convertAmountToBalanceDisplay(amountFromNativeValue, asset),
+        amount: amountFromNativeValue,
+      };
     }
-  }, [
-    asset?.decimals,
-    asset?.price?.value,
-    currentCurrency,
-    independentAmount,
-    independentField,
-  ]);
+  }, [asset, currentCurrency, independentAmount, independentField]);
 
   const assetAmount = useMemo(
-    () => (independentField === 'asset' ? independentAmount : dependentAmount),
+    () =>
+      independentField === 'asset' ? independentAmount : dependentAmount.amount,
     [dependentAmount, independentAmount, independentField],
   );
 
@@ -55,7 +55,7 @@ export const useSendTransactionInputs = ({
 
   const switchIndependentField = useCallback(() => {
     const newValue =
-      independentField === 'asset' ? dependentAmount : assetAmount ?? '';
+      independentField === 'asset' ? dependentAmount.amount : assetAmount ?? '';
     setInputValue(newValue);
     setIndependentAmount(newValue);
     setIndependentField(independentField === 'asset' ? 'native' : 'asset');
