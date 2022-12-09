@@ -80,7 +80,7 @@ export function Send() {
   const [, setTxHash] = useState('');
   const [sending, setSending] = useState(false);
 
-  const { asset } = useSendTransactionAsset();
+  const { asset, shuffleAssetIndex } = useSendTransactionAsset();
   const {
     assetAmount,
     independentAmount,
@@ -200,101 +200,113 @@ export function Send() {
                   alignVertical="center"
                   space="8px"
                 >
-                  <Inline alignVertical="center" space="8px">
-                    <CoinIcon asset={asset} />
-                    <Box width="fit">
-                      <Text size="16pt" weight="bold">
-                        {asset?.name}
-                      </Text>
-                    </Box>
-                  </Inline>
-                  <ActionButon showClose={!!asset} onClose={() => null} />
-                </Inline>
-                <Separator color="separatorSecondary" />
-
-                <Box>
-                  <Rows space="16px">
-                    <Row>
-                      <Inline alignVertical="center" alignHorizontal="justify">
-                        <Input
-                          value={independentAmount}
-                          placeholder={`0.00 ${asset?.symbol}`}
-                          borderColor="accent"
-                          onChange={handleAmountChange}
-                          height="56px"
-                          variant="bordered"
-                          innerRef={independentFieldRef}
-                          style={{
-                            paddingRight: 80,
-                          }}
-                        />
-                        <Box position="absolute" style={{ right: 48 }}>
-                          <Button
-                            onClick={setMaxAssetAmount}
-                            color="accent"
-                            height="32px"
-                            variant="raised"
-                          >
-                            Max
-                          </Button>
-                        </Box>
-                      </Inline>
-                    </Row>
-
-                    <Row>
-                      <Inline alignHorizontal="justify" alignVertical="center">
-                        <Text color="label" size="12pt" weight="bold">
-                          {dependentAmount.display}
+                  <Box onClick={() => shuffleAssetIndex()}>
+                    <Inline alignVertical="center" space="8px">
+                      <CoinIcon asset={asset ?? undefined} />
+                      <Box width="fit">
+                        <Text
+                          size="16pt"
+                          weight="semibold"
+                          color={`${asset ? 'label' : 'labelTertiary'}`}
+                        >
+                          {asset?.name ?? 'Token'}
                         </Text>
-                        <Box onClick={switchIndependentField}>
-                          <Text color="accent" size="12pt" weight="bold">
-                            Switch to{' '}
-                            {independentField === 'asset'
-                              ? currentCurrency
-                              : asset?.symbol}
-                          </Text>
-                        </Box>
-                      </Inline>
-                    </Row>
-                  </Rows>
-                </Box>
+                      </Box>
+                    </Inline>
+                  </Box>
+                  <ActionButon
+                    showClose={!!asset}
+                    onClose={() => shuffleAssetIndex(-1)}
+                  />
+                </Inline>
+
+                {asset ? (
+                  <>
+                    <Separator color="separatorSecondary" />
+                    <Box>
+                      <Rows space="16px">
+                        <Row>
+                          <Inline
+                            alignVertical="center"
+                            alignHorizontal="justify"
+                          >
+                            <Input
+                              value={independentAmount}
+                              placeholder={`0.00 ${asset?.symbol}`}
+                              borderColor="accent"
+                              onChange={handleAmountChange}
+                              height="56px"
+                              variant="bordered"
+                              innerRef={independentFieldRef}
+                              style={{
+                                paddingRight: 80,
+                              }}
+                            />
+                            <Box position="absolute" style={{ right: 48 }}>
+                              <Button
+                                onClick={setMaxAssetAmount}
+                                color="accent"
+                                height="32px"
+                                variant="raised"
+                              >
+                                Max
+                              </Button>
+                            </Box>
+                          </Inline>
+                        </Row>
+
+                        <Row>
+                          <Inline
+                            alignHorizontal="justify"
+                            alignVertical="center"
+                          >
+                            <Text color="label" size="12pt" weight="bold">
+                              {dependentAmount.display}
+                            </Text>
+                            <Box onClick={switchIndependentField}>
+                              <Text color="accent" size="12pt" weight="bold">
+                                Switch to{' '}
+                                {independentField === 'asset'
+                                  ? currentCurrency
+                                  : asset?.symbol}
+                              </Text>
+                            </Box>
+                          </Inline>
+                        </Row>
+                      </Rows>
+                    </Box>
+                  </>
+                ) : null}
               </Stack>
             </Box>
+            {!asset && <Box style={{ height: 113 }} />}
           </Row>
-          {/* <Row>
-          <Button
-            onClick={setMaxAssetAmount}
-            color="accent"
-            height="36px"
-            variant="flat"
-          >
-            Max
-          </Button>
-        </Row> */}
         </Rows>
-        <Box style={{ paddingTop: 143 }} padding="20px" bottom="0">
-          <Rows space="20px">
-            <Row>
-              <TransactionFee
-                chainId={chainId}
-                transactionRequest={transactionRequest}
-              />
-            </Row>
-            <Row>
-              <Button
-                onClick={handleSend}
-                height="44px"
-                variant="flat"
-                color="accent"
-                width="full"
-              >
-                <Text color="label" size="14pt" weight="bold">
-                  {sending ? 'Sending...' : 'Send Transaction'}
-                </Text>
-              </Button>
-            </Row>
-          </Rows>
-        </Box>
+        {!!asset && (
+          <Box style={{ paddingTop: 143 }} padding="20px" bottom="0">
+            <Rows space="20px">
+              <Row>
+                <TransactionFee
+                  chainId={chainId}
+                  transactionRequest={transactionRequest}
+                />
+              </Row>
+              <Row>
+                <Button
+                  onClick={handleSend}
+                  height="44px"
+                  variant="flat"
+                  color="accent"
+                  width="full"
+                >
+                  <Text color="label" size="14pt" weight="bold">
+                    {sending ? 'Sending...' : 'Send Transaction'}
+                  </Text>
+                </Button>
+              </Row>
+            </Rows>
+          </Box>
+        )}
       </Box>
     </AccentColorProvider>
   );

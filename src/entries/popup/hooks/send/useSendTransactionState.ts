@@ -16,7 +16,7 @@ export const useSendTransactionState = ({
   asset,
 }: {
   assetAmount?: string;
-  asset: ParsedAddressAsset;
+  asset: ParsedAddressAsset | null;
 }) => {
   const [toAddressOrName, setToAddressOrName] = useState<Address | string>('');
   const { currentCurrency } = useCurrentCurrencyStore();

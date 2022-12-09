@@ -11,7 +11,7 @@ import {
 export const useSendTransactionInputs = ({
   asset,
 }: {
-  asset: ParsedAddressAsset;
+  asset: ParsedAddressAsset | null;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const independentFieldRef = useRef<HTMLInputElement>(null);
@@ -34,7 +34,10 @@ export const useSendTransactionInputs = ({
         asset?.decimals,
       );
       return {
-        display: convertAmountToBalanceDisplay(amountFromNativeValue, asset),
+        display: convertAmountToBalanceDisplay(
+          amountFromNativeValue,
+          asset ?? { decimals: 18, symbol: '' },
+        ),
         amount: amountFromNativeValue,
       };
     }
@@ -64,9 +67,9 @@ export const useSendTransactionInputs = ({
   const setMaxAssetAmount = useCallback(() => {
     const newValue =
       independentField === 'asset'
-        ? asset?.balance?.amount
+        ? asset?.balance?.amount || '0'
         : convertAmountAndPriceToNativeDisplay(
-            asset?.balance?.amount,
+            asset?.balance?.amount || 0,
             asset?.price?.value || 0,
             currentCurrency,
           ).amount;
