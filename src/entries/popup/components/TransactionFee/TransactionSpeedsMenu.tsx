@@ -104,33 +104,32 @@ export const SwitchTransactionSpeedMenu = ({
   editable = true,
 }: SwitchTransactionSpeedMenuProps) => {
   const menuTrigger = (
-    <Box style={{ cursor: 'default' }}>
-      <Box
-        borderWidth="2px"
-        borderColor="fillSecondary"
-        paddingVertical="5px"
-        paddingHorizontal="6px"
-        borderRadius="24px"
-        as="button"
-      >
-        <Inline space="6px" alignVertical="center">
-          <Text color="label" weight="bold" size="14pt">
-            {txSpeedEmoji[selectedSpeed]}
-          </Text>
+    <Box
+      style={{ cursor: 'default', height: 28 }}
+      borderWidth="2px"
+      borderColor="accent"
+      paddingVertical="5px"
+      paddingHorizontal="6px"
+      borderRadius="24px"
+      as="button"
+    >
+      <Inline space="6px" alignVertical="center">
+        <Text color="label" weight="bold" size="14pt">
+          {txSpeedEmoji[selectedSpeed]}
+        </Text>
 
-          <Text color="label" weight="bold" size="14pt">
-            {i18n.t(`transaction_fee.${selectedSpeed}`)}
-          </Text>
-          {editable ? (
-            <Symbol
-              weight="medium"
-              color="label"
-              size={14}
-              symbol="chevron.down.circle"
-            />
-          ) : null}
-        </Inline>
-      </Box>
+        <Text color="label" weight="bold" size="14pt">
+          {i18n.t(`transaction_fee.${selectedSpeed}`)}
+        </Text>
+        {editable ? (
+          <Symbol
+            weight="medium"
+            color="label"
+            size={14}
+            symbol="chevron.down.circle"
+          />
+        ) : null}
+      </Inline>
     </Box>
   );
   if (!editable) return menuTrigger;
