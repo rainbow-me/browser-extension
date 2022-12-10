@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
+import { i18n } from '~/core/languages';
 import { DummyWallet } from '~/core/types/walletsAndKeys';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Symbol } from '~/design-system';
@@ -17,7 +18,13 @@ export function AccountDetails() {
         <MenuContainer testId="settings-menu-container">
           <Menu>
             <MenuItem
-              titleComponent={<MenuItem.Title text="View Recovery Phrase" />}
+              titleComponent={
+                <MenuItem.Title
+                  text={i18n.t(
+                    'settings.privacy_and_security.wallets_and_keys.account_details.view_recovery_phrase',
+                  )}
+                />
+              }
               leftComponent={
                 <Symbol
                   symbol="lock.square.fill"
@@ -60,7 +67,12 @@ export function AccountDetails() {
                 />
               }
               titleComponent={
-                <MenuItem.Title text="Create a new Wallet" color="blue" />
+                <MenuItem.Title
+                  text={i18n.t(
+                    'settings.privacy_and_security.wallets_and_keys.account_details.create_new_wallet',
+                  )}
+                  color="blue"
+                />
               }
             />
           </Menu>

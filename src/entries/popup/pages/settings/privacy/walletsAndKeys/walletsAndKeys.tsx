@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { i18n } from '~/core/languages';
 import { DummyAccount } from '~/core/types/walletsAndKeys';
 import { Box, Symbol } from '~/design-system';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
@@ -31,9 +32,21 @@ export function WalletsAndKeys() {
             const account = testData[accountId];
             const numberOfWallets = account.wallets.length;
             const singleWallet = numberOfWallets === 1;
-            const label = `${account.imported ? 'Imported ‧ ' : ''}${
-              account.wallets.length
-            } Wallet${singleWallet ? '' : 's'}`;
+            const label = `${
+              account.imported
+                ? `${i18n.t(
+                    'settings.privacy_and_security.wallets_and_keys.imported',
+                  )} ‧ `
+                : ''
+            }${account.wallets.length} ${
+              singleWallet
+                ? i18n.t(
+                    'settings.privacy_and_security.wallets_and_keys.wallet_single',
+                  )
+                : i18n.t(
+                    'settings.privacy_and_security.wallets_and_keys.wallet_plural',
+                  )
+            }`;
 
             return (
               <Menu key={accountId}>
@@ -71,7 +84,9 @@ export function WalletsAndKeys() {
               }
               titleComponent={
                 <MenuItem.Title
-                  text="New Secret Phrase & Wallet"
+                  text={i18n.t(
+                    'settings.privacy_and_security.wallets_and_keys.new_secret_phrase_and_wallet',
+                  )}
                   color="blue"
                 />
               }

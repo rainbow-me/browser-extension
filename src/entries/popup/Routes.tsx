@@ -141,7 +141,7 @@ export function Routes() {
             direction="horizontal"
             navbar
             title={i18n.t(
-              'settings.privacy_and_security.wallets_and_keys.title',
+              'settings.privacy_and_security.wallets_and_keys.account_details.title',
             )}
           >
             <AccountDetails />

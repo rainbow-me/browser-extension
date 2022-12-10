@@ -34,7 +34,16 @@
         "description": "You need to enter your current password before you can update and change it."
       },
       "wallets_and_keys": {
-        "title": "Wallets & Keys"
+        "title": "Wallets & Keys",
+        "new_secret_phrase_and_wallet": "New Secret Phrase & Wallet",
+        "imported": "Imported",
+        "wallet_single": "Wallet",
+        "wallet_plural": "Wallets",
+        "account_details": {
+          "title": "Account Details",
+          "view_recovery_phrase": "View Recovery Phrase",
+          "create_new_wallet": "Create a new Wallet"
+        }
       }
     },
     "transactions": {
