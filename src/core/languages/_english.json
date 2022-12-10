@@ -88,8 +88,12 @@
     "title": "Your Secret Recovery Phrase",
     "write_down_seed_importance": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
     "copy_to_clipboard": "Copy to clipboard",
-    "saved_these_words": "I've saved these words",
-    "skip": "Skip"
+    "saved_these_words": "I've saved these words"
+  },
+  "seed_verify": {
+    "title": "Verify your Secret Recovery Phrase",
+    "explanation": "Select the 4th, 8th, and 12th words in order your  Secret Recovery Phrase displays them.",
+    "skip": "Skip this"
   },
   "menu": {
     "network": {

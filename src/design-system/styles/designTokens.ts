@@ -518,6 +518,7 @@ export type SeparatorColor = typeof separatorColors[number];
 
 export const textColors = selectForegroundColors(
   'label',
+  'transparent',
   'labelSecondary',
   'labelTertiary',
   'labelQuaternary',

@@ -86,7 +86,7 @@ export function Routes() {
       {
         path: '/seed-verify',
         element: (
-          <AnimatedRoute direction="horizontal">
+          <AnimatedRoute direction="horizontal" navbar>
             <SeedVerify />
           </AnimatedRoute>
         ),
