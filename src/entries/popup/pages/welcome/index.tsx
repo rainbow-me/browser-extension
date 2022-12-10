@@ -18,7 +18,8 @@ export function Welcome() {
   const handleCreateNewWalletClick = React.useCallback(async () => {
     const newWalletAddress = await wallet.create();
     setCurrentAddress(newWalletAddress);
-    navigate('/manual-backup-prompt');
+    console.log('navigating to ', '/seed-backup-prompt');
+    navigate('/seed-backup-prompt');
   }, [navigate, setCurrentAddress]);
 
   return (

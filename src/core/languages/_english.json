@@ -76,12 +76,19 @@
     "disclaimer_tos": "By proceeding, you agree to Rainbow’s",
     "disclaimer_tos_link": "Terms of Use"
   },
-  "manual_backup_prompt": {
+  "seed_backup_prompt": {
     "title": "Before you get started, backup your Secret Recovery Phrase",
     "write_down_seed_importance": "It's important to write down and store your Secret Recovery Phrase somewhere safe.",
     "secret_recovery_phrase_usage": "Your Secret Recovery Phrase is the only way to recover your accounts and funds",
     "secret_recovery_phrase_loss": "Anyone with your Secret Recovery Phrase can access your entire wallet",
     "reveal_your_recovery_phrase": "Reveal your recovery phrase",
+    "skip": "Skip"
+  },
+  "seed_reveal": {
+    "title": "Your Secret Recovery Phrase",
+    "write_down_seed_importance": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
+    "copy_to_clipboard": "Copy to clipboard",
+    "saved_these_words": "I've saved these words",
     "skip": "Skip"
   },
   "menu": {

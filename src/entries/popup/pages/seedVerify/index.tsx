@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { i18n } from '~/core/languages';
 import { Box, Button, Inline, Rows, Symbol, Text } from '~/design-system';
 
-export function ManualBackupPrompt() {
+export function SeedVerify() {
   const navigate = useNavigate();
 
   const handleShowRecoveryPhraseClick = React.useCallback(async () => {
