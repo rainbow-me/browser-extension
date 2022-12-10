@@ -1,3 +1,4 @@
+// temp types for wallet and key management settings development
 export type DummyWallet = {
   address: `0x${string}`;
   ens?: string;
