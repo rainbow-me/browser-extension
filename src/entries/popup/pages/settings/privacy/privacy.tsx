@@ -115,10 +115,13 @@ export function Privacy() {
               hasRightArrow
               titleComponent={
                 <MenuItem.Title
-                  color="red"
-                  text={i18n.t('settings.wallets_and_keys.title')}
+                  color="orange"
+                  text={i18n.t(
+                    'settings.privacy_and_security.wallets_and_keys.title',
+                  )}
                 />
               }
+              onClick={() => navigate('/settings/privacy/walletsAndKeys')}
             />
           </Menu>
         </MenuContainer>

@@ -14,6 +14,8 @@ import { Currency } from './pages/settings/currency';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
 import { ChangePassword } from './pages/settings/privacy/changePassword';
 import { Privacy } from './pages/settings/privacy/privacy';
+import { AccountDetails } from './pages/settings/privacy/walletsAndKeys/AccountDetails';
+import { WalletsAndKeys } from './pages/settings/privacy/walletsAndKeys/walletsAndKeys';
 import { Settings } from './pages/settings/settings';
 import { Transactions } from './pages/settings/transactions';
 import { Sign } from './pages/sign';
@@ -115,6 +117,34 @@ export function Routes() {
         element: (
           <AnimatedRoute direction="horizontal">
             <ChangePassword />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/privacy/walletsAndKeys',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            title={i18n.t(
+              'settings.privacy_and_security.wallets_and_keys.title',
+            )}
+          >
+            <WalletsAndKeys />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/privacy/walletsAndKeys/accountDetails',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            title={i18n.t(
+              'settings.privacy_and_security.wallets_and_keys.title',
+            )}
+          >
+            <AccountDetails />
           </AnimatedRoute>
         ),
       },
