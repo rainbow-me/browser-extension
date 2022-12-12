@@ -1,4 +1,3 @@
-import { ChainId } from '@rainbow-me/swaps';
 import { Address } from 'wagmi';
 
 import { SupportedCurrencyKey } from '~/core/references';
@@ -10,6 +9,7 @@ import {
   pendingTransactionsStore,
   usePendingTransactionsStore,
 } from '~/core/state';
+import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 
 export function useAllTransactions({
@@ -67,7 +67,7 @@ function watchConfirmedTransactions(transactions: RainbowTransaction[]) {
 
   setNonce({
     address: currentAddress,
-    network: ChainId.mainnet,
+    chainId: ChainId.mainnet,
     currentNonce,
     latestConfirmedNonce,
   });

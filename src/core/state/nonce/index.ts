@@ -1,5 +1,7 @@
-import { Address, Chain } from 'wagmi';
+import { Address } from 'wagmi';
 import create from 'zustand';
+
+import { ChainId } from '~/core/types/chains';
 
 import { createStore } from '../internal/createStore';
 
@@ -10,32 +12,30 @@ type NonceData = {
 
 type GetNonceArgs = {
   address?: Address;
-  network?: Chain['id'];
+  chainId?: ChainId;
 };
 
 type UpdateNonceArgs = NonceData & GetNonceArgs;
 
 export interface CurrentNonceState {
-  [key: Address]: {
-    [key: Chain['id']]: NonceData;
-  };
+  [key: Address]: Record<ChainId, NonceData>;
   setNonce: ({
     address,
     currentNonce,
     latestConfirmedNonce,
-    network,
+    chainId,
   }: UpdateNonceArgs) => void;
-  getNonce: ({ address, network }: GetNonceArgs) => NonceData | null;
+  getNonce: ({ address, chainId }: GetNonceArgs) => NonceData | null;
 }
 
 export const nonceStore = createStore<CurrentNonceState>(
   (set, get) => ({
-    setNonce: ({ address, currentNonce, latestConfirmedNonce, network }) => {
-      if (address && network) {
-        const staleData = get()?.[address]?.[network];
+    setNonce: ({ address, currentNonce, latestConfirmedNonce, chainId }) => {
+      if (address && chainId) {
+        const staleData = get()?.[address]?.[chainId];
         set({
           [address]: {
-            [network]: {
+            [chainId]: {
               currentNonce: currentNonce ?? staleData?.currentNonce,
               latestConfirmedNonce:
                 latestConfirmedNonce ?? staleData?.latestConfirmedNonce,
@@ -44,9 +44,9 @@ export const nonceStore = createStore<CurrentNonceState>(
         });
       }
     },
-    getNonce: ({ address, network }) => {
-      if (address && network) {
-        return get()?.[address]?.[network] ?? null;
+    getNonce: ({ address, chainId }) => {
+      if (address && chainId) {
+        return get()?.[address]?.[chainId] ?? null;
       }
       return null;
     },
