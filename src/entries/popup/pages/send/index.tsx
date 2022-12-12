@@ -1,4 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { isAddress } from 'ethers/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, {
   ChangeEvent,
@@ -62,9 +63,15 @@ const ToAddressInput = ({
     }, 500);
   }, []);
 
-  const inputVisible = useMemo(() => {
-    return !toEnsName && (stateInputVisible || !toAddressOrName);
-  }, [stateInputVisible, toAddressOrName, toEnsName]);
+  const inputVisible = useMemo(
+    () => !toEnsName && (stateInputVisible || !toAddressOrName),
+    [stateInputVisible, toAddressOrName, toEnsName],
+  );
+
+  const inputIsAddress = useMemo(
+    () => isAddress(toAddressOrName),
+    [toAddressOrName],
+  );
 
   return (
     <Box
@@ -114,11 +121,15 @@ const ToAddressInput = ({
               >
                 <Stack space="8px">
                   <Text weight="semibold" size="14pt" color="label">
-                    {toEnsName ?? toAddressOrName}
+                    {toEnsName ?? inputIsAddress
+                      ? truncateAddress(toAddressOrName as Address)
+                      : toAddressOrName}
                   </Text>
-                  <Text weight="semibold" size="12pt" color="labelTertiary">
-                    {truncateAddress(toAddress)}
-                  </Text>
+                  {inputIsAddress && (
+                    <Text weight="semibold" size="12pt" color="labelTertiary">
+                      {truncateAddress(toAddress)}
+                    </Text>
+                  )}
                 </Stack>
               </Box>
             )}
