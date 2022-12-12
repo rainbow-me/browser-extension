@@ -2,10 +2,13 @@ import { TransactionRequest } from '@ethersproject/abstract-provider';
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { Address, useEnsAvatar } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import {
   AccentColorProvider,
   Box,
   Button,
+  Column,
+  Columns,
   Inline,
   Row,
   Rows,
@@ -174,7 +177,7 @@ export function Send() {
                   <Box width="fit">
                     <Input
                       value={toAddressOrName}
-                      placeholder={'Name, ENS or address'}
+                      placeholder={i18n.t('send.input_to_address_placeholder')}
                       onChange={handleToAddressChange}
                       height="32px"
                       variant="transparent"
@@ -202,14 +205,17 @@ export function Send() {
                 >
                   <Box onClick={() => shuffleAssetIndex()}>
                     <Inline alignVertical="center" space="8px">
-                      <CoinIcon asset={asset ?? undefined} />
+                      <Box>
+                        <CoinIcon asset={asset ?? undefined} />
+                      </Box>
                       <Box width="fit">
                         <Text
                           size="16pt"
                           weight="semibold"
                           color={`${asset ? 'label' : 'labelTertiary'}`}
                         >
-                          {asset?.name ?? 'Token'}
+                          {asset?.name ??
+                            i18n.t('send.input_token_placeholder')}
                         </Text>
                       </Box>
                     </Inline>
@@ -249,29 +255,35 @@ export function Send() {
                                 height="32px"
                                 variant="raised"
                               >
-                                Max
+                                {i18n.t('send.max')}
                               </Button>
                             </Box>
                           </Inline>
                         </Row>
 
                         <Row>
-                          <Inline
+                          <Columns
                             alignHorizontal="justify"
                             alignVertical="center"
                           >
-                            <Text color="label" size="12pt" weight="bold">
-                              {dependentAmount.display}
-                            </Text>
-                            <Box onClick={switchIndependentField}>
-                              <Text color="accent" size="12pt" weight="bold">
-                                Switch to{' '}
-                                {independentField === 'asset'
-                                  ? currentCurrency
-                                  : asset?.symbol}
-                              </Text>
-                            </Box>
-                          </Inline>
+                            <Column width="2/3">
+                              <Box width="full">
+                                <Text size="12pt" color="label" weight="bold">
+                                  {dependentAmount.display}
+                                </Text>
+                              </Box>
+                            </Column>
+                            <Column width="1/3">
+                              <Box onClick={switchIndependentField}>
+                                <Text color="accent" size="12pt" weight="bold">
+                                  {i18n.t('send.switch_to')}{' '}
+                                  {independentField === 'asset'
+                                    ? currentCurrency
+                                    : asset?.symbol}
+                                </Text>
+                              </Box>
+                            </Column>
+                          </Columns>
                         </Row>
                       </Rows>
                     </Box>
@@ -300,7 +312,11 @@ export function Send() {
                   width="full"
                 >
                   <Text color="label" size="14pt" weight="bold">
-                    {sending ? 'Sending...' : 'Send Transaction'}
+                    {i18n.t(
+                      `send.${
+                        sending ? 'button_label_sending' : 'button_label_send'
+                      }`,
+                    )}
                   </Text>
                 </Button>
               </Row>

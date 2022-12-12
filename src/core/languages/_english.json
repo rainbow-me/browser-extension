@@ -55,7 +55,13 @@
     "disconnect": "Disconnect All"
   },
   "send": {
-    "title": "Send"
+    "title": "Send",
+    "input_to_address_placeholder": "Name, ENS or address",
+    "input_token_placeholder": "Token",
+    "max": "Max",
+    "switch_to": "Switch to",
+    "button_label_send": "Send Transacion",
+    "button_label_sending": "Sending"
   },
   "sign": {
     "title": "Sign"
