@@ -11,8 +11,8 @@ type NonceData = {
 };
 
 type GetNonceArgs = {
-  address?: Address;
-  chainId?: ChainId;
+  address: Address;
+  chainId: ChainId;
 };
 
 type UpdateNonceArgs = NonceData & GetNonceArgs;
@@ -31,24 +31,19 @@ export interface CurrentNonceState {
 export const nonceStore = createStore<CurrentNonceState>(
   (set, get) => ({
     setNonce: ({ address, currentNonce, latestConfirmedNonce, chainId }) => {
-      if (address && chainId) {
-        const staleData = get()?.[address]?.[chainId];
-        set({
-          [address]: {
-            [chainId]: {
-              currentNonce: currentNonce ?? staleData?.currentNonce,
-              latestConfirmedNonce:
-                latestConfirmedNonce ?? staleData?.latestConfirmedNonce,
-            },
+      const staleData = get()?.[address]?.[chainId];
+      set({
+        [address]: {
+          [chainId]: {
+            currentNonce: currentNonce ?? staleData?.currentNonce,
+            latestConfirmedNonce:
+              latestConfirmedNonce ?? staleData?.latestConfirmedNonce,
           },
-        });
-      }
+        },
+      });
     },
     getNonce: ({ address, chainId }) => {
-      if (address && chainId) {
-        return get()?.[address]?.[chainId] ?? null;
-      }
-      return null;
+      return get()?.[address]?.[chainId] ?? null;
     },
   }),
   {
