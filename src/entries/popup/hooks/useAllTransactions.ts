@@ -1,4 +1,4 @@
-import { Address } from 'wagmi';
+import { Address, useNetwork } from 'wagmi';
 
 import { SupportedCurrencyKey } from '~/core/references';
 import { selectTransactionsByDate } from '~/core/resources/_selectors';
@@ -19,6 +19,7 @@ export function useAllTransactions({
   address?: Address;
   currency: SupportedCurrencyKey;
 }) {
+  const currentChain = useNetwork();
   const { data: confirmedTransactions } = useTransactions(
     {
       address,
@@ -26,7 +27,10 @@ export function useAllTransactions({
     },
     {
       onSuccess: (transactions: RainbowTransaction[]) =>
-        watchConfirmedTransactions(transactions),
+        watchConfirmedTransactions(
+          transactions,
+          currentChain?.chain?.id || ChainId.mainnet,
+        ),
     },
   );
   const { getPendingTransactions } = usePendingTransactionsStore();
@@ -42,7 +46,10 @@ export function useAllTransactions({
   };
 }
 
-function watchConfirmedTransactions(transactions: RainbowTransaction[]) {
+function watchConfirmedTransactions(
+  transactions: RainbowTransaction[],
+  currentChainId: ChainId,
+) {
   const { currentAddress } = currentAddressStore.getState();
   const { getPendingTransactions, setPendingTransactions } =
     pendingTransactionsStore.getState();
@@ -72,9 +79,19 @@ function watchConfirmedTransactions(transactions: RainbowTransaction[]) {
     latestConfirmedNonce,
   });
 
-  const updatedPendingTx = pendingTransactions?.filter(
-    (tx) => (tx?.nonce || 0) > latestConfirmedNonce,
-  );
+  const updatedPendingTx = pendingTransactions?.filter((tx) => {
+    // we do not filter L2 txs here because we do not have L2 transaction history
+    if (tx?.chainId !== currentChainId) {
+      return true;
+    }
+    // remove pending tx because Zerion is now returning full tx data
+    if ((tx?.nonce || 0) < latestConfirmedNonce) {
+      return false;
+    }
+    // either still pending or Zerion is not returning confirmation yet
+    return true;
+  });
+
   setPendingTransactions({
     address: currentAddress,
     pendingTransactions: updatedPendingTx,
