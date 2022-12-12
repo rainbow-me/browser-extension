@@ -1,16 +1,19 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { AnimatePresence, motion } from 'framer-motion';
 import React, {
   ChangeEvent,
   InputHTMLAttributes,
   ReactNode,
   useCallback,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { truncateAddress } from '~/core/utils/address';
 import {
   AccentColorProvider,
   Box,
@@ -38,15 +41,31 @@ import { useSendTransactionState } from '../../hooks/send/useSendTransactionStat
 
 const ToAddressInput = ({
   toAddressOrName,
+  toEnsName,
   toAddress,
   handleToAddressChange,
   clearToAddress,
 }: {
   toAddressOrName: string;
+  toEnsName?: string;
   toAddress: Address;
   handleToAddressChange: InputHTMLAttributes<HTMLInputElement>['onChange'];
   clearToAddress: () => void;
 }) => {
+  const [stateInputVisible, setStateInputVisible] = useState(true);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const onClick = useCallback(() => {
+    setStateInputVisible(true);
+    setTimeout(() => {
+      inputRef?.current?.focus();
+    }, 500);
+  }, []);
+
+  const inputVisible = useMemo(() => {
+    return !toEnsName && (stateInputVisible || !toAddressOrName);
+  }, [stateInputVisible, toAddressOrName, toEnsName]);
+
   return (
     <Box
       background="surfaceSecondaryElevated"
@@ -54,6 +73,7 @@ const ToAddressInput = ({
       paddingHorizontal="16px"
       borderRadius="24px"
       width="full"
+      onClick={onClick}
     >
       <Columns alignVertical="center" alignHorizontal="justify" space="8px">
         <Column width="content">
@@ -63,13 +83,46 @@ const ToAddressInput = ({
         </Column>
 
         <Column>
-          <Input
-            value={toAddressOrName}
-            placeholder={i18n.t('send.input_to_address_placeholder')}
-            onChange={handleToAddressChange}
-            height="32px"
-            variant="transparent"
-          />
+          <AnimatePresence initial={false} mode="wait">
+            {inputVisible && (
+              <Box
+                as={motion.div}
+                key="input"
+                initial={{ y: 0, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -10, opacity: 0 }}
+              >
+                <Input
+                  value={toAddressOrName}
+                  placeholder={i18n.t('send.input_to_address_placeholder')}
+                  onChange={handleToAddressChange}
+                  height="32px"
+                  variant="transparent"
+                  onBlur={() => setStateInputVisible(false)}
+                  style={{ paddingLeft: 0, paddingRight: 0 }}
+                  innerRef={inputRef}
+                />
+              </Box>
+            )}
+            {!inputVisible && (
+              <Box
+                as={motion.div}
+                key="wallet"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <Stack space="8px">
+                  <Text weight="semibold" size="14pt" color="label">
+                    {toEnsName ?? toAddressOrName}
+                  </Text>
+                  <Text weight="semibold" size="12pt" color="labelTertiary">
+                    {truncateAddress(toAddress)}
+                  </Text>
+                </Stack>
+              </Box>
+            )}
+          </AnimatePresence>
         </Column>
 
         <Column width="content">
@@ -79,6 +132,7 @@ const ToAddressInput = ({
     </Box>
   );
 };
+
 const ActionButon = ({
   showClose,
   onClose,
@@ -154,6 +208,7 @@ export function Send() {
     fromAddress,
     toAddress,
     toAddressOrName,
+    toEnsName,
     value,
     setToAddressOrName,
   } = useSendTransactionState({ assetAmount, asset });
@@ -219,6 +274,7 @@ export function Send() {
           <Row>
             <ToAddressInput
               toAddress={toAddress}
+              toEnsName={toEnsName}
               toAddressOrName={toAddressOrName}
               clearToAddress={clearToAddress}
               handleToAddressChange={handleToAddressChange}
