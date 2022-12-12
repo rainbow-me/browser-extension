@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -12,6 +13,7 @@ import {
   Separator,
   Text,
 } from '~/design-system';
+import { globalColors } from '~/design-system/styles/designTokens';
 
 import { exportWallet } from '../../handlers/wallet';
 
@@ -32,6 +34,7 @@ const addLeadingZero = (num: number) => {
 };
 
 export function SeedVerify() {
+  const navigate = useNavigate();
   const [seed, setSeed] = useState('');
   const [randomSeed, setRandomSeed] = useState<string[]>([]);
   const { currentAddress } = useCurrentAddressStore();
@@ -74,8 +77,10 @@ export function SeedVerify() {
           seedWords[7] === selectedWords[1] &&
           seedWords[11] === selectedWords[2]
         ) {
-          // TO DO
           setValidated(true);
+          setTimeout(() => {
+            navigate('/');
+          }, 1200);
         } else {
           setIncorrect(true);
         }
@@ -84,7 +89,7 @@ export function SeedVerify() {
       setValidated(false);
       setIncorrect(false);
     }
-  }, [seed, selectedWords]);
+  }, [navigate, seed, selectedWords]);
 
   const handleSkip = useCallback(() => {
     // TO DO
@@ -128,123 +133,154 @@ export function SeedVerify() {
           marginTop: '27px',
         }}
         alignItems="center"
-        background="surfaceSecondaryElevated"
-        borderRadius="16px"
-        paddingHorizontal="24px"
-        padding="16px"
+        paddingHorizontal="52px"
       >
-        <Columns>
-          <Column width="1/3">
-            {randomSeed.slice(0, 6).map((word, index) => (
-              <Box
-                width="full"
-                onClick={() => handleSelect(word)}
-                borderColor="separatorTertiary"
-                borderWidth="1px"
-                borderRadius="12px"
-                padding="12px"
-                paddingRight="24px"
-                key={`word_${index}`}
-                background={
-                  validated
-                    ? 'green'
-                    : incorrect
-                    ? 'red'
-                    : selectedWords.includes(word)
-                    ? 'accent'
-                    : undefined
-                }
-                style={{
-                  marginBottom: '8px',
-                  marginRight: '14px',
-                  background: selectedWords.includes(word)
-                    ? undefined
-                    : 'radial-gradient(100% 100% at 0% 50%, rgba(245, 248, 255, 0.02) 0%, rgba(245, 248, 255, 0.06) 100%)',
-                }}
-              >
-                <Inline wrap={false} alignVertical="center" space="10px">
-                  <Text
-                    size="11pt"
-                    weight="medium"
-                    color={
-                      selectedWords.includes(word)
-                        ? 'labelQuaternary'
-                        : 'transparent'
-                    }
-                    align="center"
-                  >
-                    {selectedWords.includes(word)
-                      ? addLeadingZero((selectedWords.indexOf(word) + 1) * 4)
-                      : '00'}
-                  </Text>
-                  <Text size="14pt" weight="bold" color="label" align="center">
-                    {word}
-                  </Text>
-                </Inline>
-              </Box>
-            ))}
-          </Column>
-          <Box
-            borderColor="separatorTertiary"
-            height="fit"
-            style={{
-              width: '1px',
-              height: '100%',
-              borderRightStyle: 'solid',
-              borderRightWidth: '1px',
-            }}
-          ></Box>
-          <Column width="1/3">
-            {randomSeed.slice(-6).map((word, index) => (
-              <Box
-                width="full"
-                onClick={() => handleSelect(word)}
-                borderColor="separatorTertiary"
-                padding="12px"
-                paddingLeft="24px"
-                borderWidth="1px"
-                borderRadius="12px"
-                background={
-                  validated
-                    ? 'green'
-                    : incorrect
-                    ? 'red'
-                    : selectedWords.includes(word)
-                    ? 'accent'
-                    : undefined
-                }
-                key={`word_${index + 6}`}
-                style={{
-                  marginBottom: '8px',
-                  background: selectedWords.includes(word)
-                    ? undefined
-                    : 'radial-gradient(100% 100% at 0% 50%, rgba(245, 248, 255, 0.02) 0%, rgba(245, 248, 255, 0.06) 100%)',
-                  marginLeft: '14px',
-                }}
-              >
-                <Inline wrap={false} alignVertical="center" space="10px">
-                  <Text
-                    size="11pt"
-                    weight="medium"
-                    color={
-                      selectedWords.includes(word)
-                        ? 'labelQuaternary'
-                        : 'transparent'
-                    }
-                    align="center"
-                  >
-                    {selectedWords.includes(word)
-                      ? addLeadingZero((selectedWords.indexOf(word) + 1) * 4)
-                      : '00'}
-                  </Text>
-                  <Text size="14pt" weight="bold" color="label" align="center">
-                    {word}
-                  </Text>
-                </Inline>
-              </Box>
-            ))}
-          </Column>
-        </Columns>
+        <Box
+          background="surfaceSecondaryElevated"
+          borderRadius="16px"
+          padding="12px"
+          paddingBottom="4px"
+          borderColor={
+            (!validated && !incorrect && 'separatorSecondary') || undefined
+          }
+          borderWidth={'1px'}
+          style={{
+            borderColor: validated
+              ? globalColors.green90
+              : incorrect
+              ? globalColors.red90
+              : undefined,
+          }}
+        >
+          <Columns>
+            <Column width="1/3">
+              {randomSeed.slice(0, 6).map((word, index) => (
+                <Box
+                  width="fit"
+                  onClick={() => handleSelect(word)}
+                  borderColor="separatorTertiary"
+                  borderWidth="1px"
+                  borderRadius="8px"
+                  padding="8px"
+                  key={`word_${index}`}
+                  background={
+                    validated
+                      ? 'green'
+                      : incorrect
+                      ? 'red'
+                      : selectedWords.includes(word)
+                      ? 'accent'
+                      : undefined
+                  }
+                  style={{
+                    width: '102px',
+                    marginBottom: '8px',
+                    marginRight: '14px',
+                    background: selectedWords.includes(word)
+                      ? undefined
+                      : 'radial-gradient(100% 100% at 0% 50%, rgba(245, 248, 255, 0.02) 0%, rgba(245, 248, 255, 0.06) 100%)',
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  <Inline wrap={false} alignVertical="center" space="10px">
+                    <Text
+                      size="11pt"
+                      weight="medium"
+                      color={
+                        selectedWords.includes(word)
+                          ? 'labelQuaternary'
+                          : 'transparent'
+                      }
+                      align="center"
+                    >
+                      {selectedWords.includes(word)
+                        ? addLeadingZero((selectedWords.indexOf(word) + 1) * 4)
+                        : '00'}
+                    </Text>
+                    <Text
+                      size="14pt"
+                      weight="bold"
+                      color="label"
+                      align="center"
+                    >
+                      {word}
+                    </Text>
+                  </Inline>
+                </Box>
+              ))}
+            </Column>
+            <Box
+              borderColor="separatorTertiary"
+              height="fit"
+              style={{
+                width: '1px',
+                height: '100%',
+                borderRightStyle: 'solid',
+                borderRightWidth: '1px',
+              }}
+            ></Box>
+            <Column width="1/3">
+              {randomSeed.slice(-6).map((word, index) => (
+                <Box
+                  width="fit"
+                  onClick={() => handleSelect(word)}
+                  borderColor="separatorTertiary"
+                  borderRadius="8px"
+                  padding="8px"
+                  borderWidth="1px"
+                  background={
+                    validated
+                      ? 'green'
+                      : incorrect
+                      ? 'red'
+                      : selectedWords.includes(word)
+                      ? 'accent'
+                      : undefined
+                  }
+                  key={`word_${index + 6}`}
+                  style={{
+                    width: '102px',
+                    marginBottom: '8px',
+                    background: selectedWords.includes(word)
+                      ? undefined
+                      : 'radial-gradient(100% 100% at 0% 50%, rgba(245, 248, 255, 0.02) 0%, rgba(245, 248, 255, 0.06) 100%)',
+                    marginLeft: '14px',
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  <Inline wrap={false} alignVertical="center" space="10px">
+                    <Text
+                      size="11pt"
+                      weight="medium"
+                      color={
+                        selectedWords.includes(word)
+                          ? 'labelQuaternary'
+                          : 'transparent'
+                      }
+                      align="center"
+                    >
+                      {selectedWords.includes(word)
+                        ? addLeadingZero((selectedWords.indexOf(word) + 1) * 4)
+                        : '00'}
+                    </Text>
+                    <Text
+                      size="14pt"
+                      weight="bold"
+                      color="label"
+                      align="center"
+                    >
+                      {word}
+                    </Text>
+                  </Inline>
+                </Box>
+              ))}
+            </Column>
+          </Columns>
+        </Box>
       </Box>
 
       <Box>

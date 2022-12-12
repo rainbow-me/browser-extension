@@ -47,7 +47,7 @@ export function SeedReveal() {
       display="flex"
       flexDirection="column"
       alignItems="center"
-      padding="24px"
+      padding="20px"
       paddingTop="16px"
     >
       <Box
@@ -181,7 +181,7 @@ export function SeedReveal() {
         </Button>
       </Box>
 
-      <Box width="full" paddingTop="80px" paddingBottom="60px">
+      <Box width="full" style={{ paddingTop: '100px' }}>
         <Rows alignVertical="top" space="8px">
           <Button
             color="accent"
