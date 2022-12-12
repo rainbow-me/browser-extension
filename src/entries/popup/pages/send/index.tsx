@@ -290,7 +290,6 @@ export function Send() {
                 ) : null}
               </Stack>
             </Box>
-            {/* {!asset && <Box style={{ height: 113 }} />} */}
           </Row>
         </Rows>
         {asset ? (
