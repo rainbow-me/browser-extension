@@ -61,7 +61,8 @@
     "max": "Max",
     "switch_to": "Switch to",
     "button_label_send": "Send Transacion",
-    "button_label_sending": "Sending"
+    "button_label_sending": "Sending",
+    "enter_address_or_amount": "Enter an address or amount"
   },
   "sign": {
     "title": "Sign"

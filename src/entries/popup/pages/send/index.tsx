@@ -7,8 +7,6 @@ import {
   AccentColorProvider,
   Box,
   Button,
-  Column,
-  Columns,
   Inline,
   Row,
   Rows,
@@ -267,28 +265,24 @@ export function Send() {
                         </Row>
 
                         <Row>
-                          <Columns
+                          <Inline
                             alignHorizontal="justify"
                             alignVertical="center"
                           >
-                            <Column width="2/3">
-                              <Box width="full">
-                                <Text size="12pt" color="label" weight="bold">
-                                  {dependentAmount.display}
-                                </Text>
-                              </Box>
-                            </Column>
-                            <Column width="1/3">
-                              <Box onClick={switchIndependentField}>
-                                <Text color="accent" size="12pt" weight="bold">
-                                  {i18n.t('send.switch_to')}{' '}
-                                  {independentField === 'asset'
-                                    ? currentCurrency
-                                    : asset?.symbol}
-                                </Text>
-                              </Box>
-                            </Column>
-                          </Columns>
+                            <Box>
+                              <Text size="12pt" color="label" weight="bold">
+                                {dependentAmount.display}
+                              </Text>
+                            </Box>
+                            <Box onClick={switchIndependentField}>
+                              <Text color="accent" size="12pt" weight="bold">
+                                {i18n.t('send.switch_to')}{' '}
+                                {independentField === 'asset'
+                                  ? currentCurrency
+                                  : asset?.symbol}
+                              </Text>
+                            </Box>
+                          </Inline>
                         </Row>
                       </Rows>
                     </Box>
@@ -296,10 +290,10 @@ export function Send() {
                 ) : null}
               </Stack>
             </Box>
-            {!asset && <Box style={{ height: 113 }} />}
+            {/* {!asset && <Box style={{ height: 113 }} />} */}
           </Row>
         </Rows>
-        {!!asset && (
+        {asset ? (
           <Box style={{ paddingTop: 143 }} padding="20px" bottom="0">
             <Rows space="20px">
               <Row>
@@ -326,6 +320,20 @@ export function Send() {
                 </Button>
               </Row>
             </Rows>
+          </Box>
+        ) : (
+          <Box style={{ paddingTop: 310 }}>
+            <Button
+              onClick={handleSend}
+              height="44px"
+              variant="flat"
+              color="accent"
+              width="full"
+            >
+              <Text color="labelQuaternary" size="14pt" weight="bold">
+                {i18n.t('send.enter_address_or_amount')}
+              </Text>
+            </Button>
           </Box>
         )}
       </Box>
