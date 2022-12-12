@@ -9,7 +9,7 @@ import {
   SupportedCurrencyKey,
   smartContractMethods,
 } from '../references';
-import { currentAddressStore, pendingTransactionsStore } from '../state';
+import { pendingTransactionsStore } from '../state';
 import { ChainId } from '../types/chains';
 import {
   NewTransaction,
@@ -524,26 +524,28 @@ export function getTransactionHash(tx: RainbowTransaction): string | undefined {
   return tx.hash?.split('-').shift();
 }
 
-export async function watchPendingTransactions() {
-  const { currentAddress } = currentAddressStore.getState();
+export async function watchPendingTransactions({
+  address,
+}: {
+  address: Address;
+}) {
   const { getPendingTransactions, setPendingTransactions } =
     pendingTransactionsStore.getState();
   const pendingTransactions = getPendingTransactions({
-    address: currentAddress,
+    address,
   });
 
   const updatedPendingTransactions = await Promise.all(
     pendingTransactions.map(async (tx) => {
       let updatedTransaction = { ...tx };
       const txHash = getTransactionHash(tx);
-
       try {
         const chainId = tx?.chainId;
         if (chainId) {
           const provider = getProvider({ chainId });
           if (txHash) {
             const currentNonceForChainId = await provider.getTransactionCount(
-              currentAddress,
+              address,
               'latest',
             );
             const transactionResponse = await provider.getTransaction(txHash);
@@ -581,5 +583,8 @@ export async function watchPendingTransactions() {
     }),
   );
 
-  setPendingTransactions({ pendingTransactions: updatedPendingTransactions });
+  setPendingTransactions({
+    address,
+    pendingTransactions: updatedPendingTransactions,
+  });
 }

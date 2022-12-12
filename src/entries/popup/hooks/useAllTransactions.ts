@@ -84,11 +84,11 @@ function watchConfirmedTransactions(
     if (tx?.chainId !== currentChainId) {
       return true;
     }
-    // remove pending tx because Zerion is now returning full tx data
-    if ((tx?.nonce || 0) < latestConfirmedNonce) {
+    // remove pending tx because backend is now returning full tx data
+    if ((tx?.nonce || 0) <= latestConfirmedNonce) {
       return false;
     }
-    // either still pending or Zerion is not returning confirmation yet
+    // either still pending or backend is not returning confirmation yet
     return true;
   });
 
