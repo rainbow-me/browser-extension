@@ -13,6 +13,8 @@ import {
   AccentColorProvider,
   Box,
   Button,
+  Column,
+  Columns,
   Inline,
   Row,
   Rows,
@@ -177,29 +179,36 @@ export function Send() {
               borderRadius="24px"
               width="full"
             >
-              <Inline
-                alignHorizontal="justify"
+              <Columns
                 alignVertical="center"
+                alignHorizontal="justify"
                 space="8px"
               >
-                <Inline alignVertical="center" space="8px">
+                <Column width="content">
                   <WalletAvatar
                     address={toAddress}
                     size={36}
                     emojiSize="20pt"
                   />
-                  <Box width="fit">
-                    <Input
-                      value={toAddressOrName}
-                      placeholder={i18n.t('send.input_to_address_placeholder')}
-                      onChange={handleToAddressChange}
-                      height="32px"
-                      variant="transparent"
-                    />
-                  </Box>
-                </Inline>
-                <ActionButon showClose={!!toAddress} onClose={clearToAddress} />
-              </Inline>
+                </Column>
+
+                <Column>
+                  <Input
+                    value={toAddressOrName}
+                    placeholder={i18n.t('send.input_to_address_placeholder')}
+                    onChange={handleToAddressChange}
+                    height="32px"
+                    variant="transparent"
+                  />
+                </Column>
+
+                <Column width="content">
+                  <ActionButon
+                    showClose={!!toAddress}
+                    onClose={clearToAddress}
+                  />
+                </Column>
+              </Columns>
             </Box>
           </Row>
 
