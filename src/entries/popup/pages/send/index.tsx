@@ -123,6 +123,11 @@ export function Send() {
     [setToAddressOrName],
   );
 
+  const clearToAddress = useCallback(
+    () => setToAddressOrName(''),
+    [setToAddressOrName],
+  );
+
   const handleAmountChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       setIndependentAmount(e.target.value);
@@ -184,7 +189,7 @@ export function Send() {
                     />
                   </Box>
                 </Inline>
-                <ActionButon showClose={!!toAddress} onClose={() => null} />
+                <ActionButon showClose={!!toAddress} onClose={clearToAddress} />
               </Inline>
             </Box>
           </Row>
