@@ -1,11 +1,13 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import React, {
   ChangeEvent,
+  InputHTMLAttributes,
   ReactNode,
   useCallback,
   useMemo,
   useState,
 } from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
@@ -34,6 +36,49 @@ import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsse
 import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
 import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
 
+const ToAddressInput = ({
+  toAddressOrName,
+  toAddress,
+  handleToAddressChange,
+  clearToAddress,
+}: {
+  toAddressOrName: string;
+  toAddress: Address;
+  handleToAddressChange: InputHTMLAttributes<HTMLInputElement>['onChange'];
+  clearToAddress: () => void;
+}) => {
+  return (
+    <Box
+      background="surfaceSecondaryElevated"
+      paddingVertical="20px"
+      paddingHorizontal="16px"
+      borderRadius="24px"
+      width="full"
+    >
+      <Columns alignVertical="center" alignHorizontal="justify" space="8px">
+        <Column width="content">
+          <Box background="fillSecondary" borderRadius="18px">
+            <WalletAvatar address={toAddress} size={36} emojiSize="20pt" />
+          </Box>
+        </Column>
+
+        <Column>
+          <Input
+            value={toAddressOrName}
+            placeholder={i18n.t('send.input_to_address_placeholder')}
+            onChange={handleToAddressChange}
+            height="32px"
+            variant="transparent"
+          />
+        </Column>
+
+        <Column width="content">
+          <ActionButon showClose={!!toAddress} onClose={clearToAddress} />
+        </Column>
+      </Columns>
+    </Box>
+  );
+};
 const ActionButon = ({
   showClose,
   onClose,
@@ -172,44 +217,12 @@ export function Send() {
       <Box style={{ overflow: 'auto' }} paddingHorizontal="12px" height="full">
         <Rows space="8px">
           <Row>
-            <Box
-              background="surfaceSecondaryElevated"
-              paddingVertical="20px"
-              paddingHorizontal="16px"
-              borderRadius="24px"
-              width="full"
-            >
-              <Columns
-                alignVertical="center"
-                alignHorizontal="justify"
-                space="8px"
-              >
-                <Column width="content">
-                  <WalletAvatar
-                    address={toAddress}
-                    size={36}
-                    emojiSize="20pt"
-                  />
-                </Column>
-
-                <Column>
-                  <Input
-                    value={toAddressOrName}
-                    placeholder={i18n.t('send.input_to_address_placeholder')}
-                    onChange={handleToAddressChange}
-                    height="32px"
-                    variant="transparent"
-                  />
-                </Column>
-
-                <Column width="content">
-                  <ActionButon
-                    showClose={!!toAddress}
-                    onClose={clearToAddress}
-                  />
-                </Column>
-              </Columns>
-            </Box>
+            <ToAddressInput
+              toAddress={toAddress}
+              toAddressOrName={toAddressOrName}
+              clearToAddress={clearToAddress}
+              handleToAddressChange={handleToAddressChange}
+            />
           </Row>
 
           <Row>
