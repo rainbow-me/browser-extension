@@ -1,3 +1,5 @@
+import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { getProvider } from '@wagmi/core';
 import { capitalize } from 'lodash';
 import { Address } from 'wagmi';
 
@@ -7,6 +9,7 @@ import {
   SupportedCurrencyKey,
   smartContractMethods,
 } from '../references';
+import { currentAddressStore, pendingTransactionsStore } from '../state';
 import { ChainId } from '../types/chains';
 import {
   NewTransaction,
@@ -27,7 +30,9 @@ import {
   convertRawAmountToBalance,
   convertRawAmountToNativeDisplay,
   convertStringToHex,
+  isZero,
 } from './numbers';
+import { isLowerCaseMatch } from './strings';
 
 /**
  * @desc remove hex prefix
@@ -432,3 +437,149 @@ export const parseNewTransaction = (
     value,
   };
 };
+
+export function getTransactionConfirmedState(
+  type?: TransactionType,
+): TransactionStatus {
+  switch (type) {
+    case TransactionType.authorize:
+      return TransactionStatus.approved;
+    case TransactionType.deposit:
+      return TransactionStatus.deposited;
+    case TransactionType.withdraw:
+      return TransactionStatus.withdrew;
+    case TransactionType.receive:
+      return TransactionStatus.received;
+    case TransactionType.purchase:
+      return TransactionStatus.purchased;
+    default:
+      return TransactionStatus.sent;
+  }
+}
+
+export function getPendingTransactionData({
+  transaction,
+  transactionStatus,
+}: {
+  transaction: RainbowTransaction;
+  transactionStatus: TransactionStatus;
+}) {
+  const minedAt = Math.floor(Date.now() / 1000);
+  const title = getTitle({
+    protocol: transaction.protocol,
+    status: transactionStatus,
+    type: transaction.type,
+  });
+  return { minedAt, title, pending: false, status: transactionStatus };
+}
+
+export async function getTransactionReceiptStatus({
+  inlcuded,
+  transaction,
+  transactionResponse,
+}: {
+  inlcuded: boolean;
+  transaction: RainbowTransaction;
+  transactionResponse: TransactionResponse;
+}) {
+  let receipt;
+  let status;
+
+  try {
+    if (transactionResponse) {
+      receipt = await transactionResponse.wait();
+    }
+    // eslint-disable-next-line no-empty
+  } catch (e) {}
+
+  status = receipt?.status || 0;
+  if (!isZero(status)) {
+    const isSelf = isLowerCaseMatch(
+      transaction?.from || '',
+      transaction?.to || '',
+    );
+    const transactionDirection = isSelf
+      ? TransactionDirection.self
+      : TransactionDirection.out;
+    const transactionStatus =
+      transaction.status === TransactionStatus.cancelling
+        ? TransactionStatus.cancelled
+        : getTransactionConfirmedState(transaction?.type);
+    status = getTransactionLabel({
+      direction: transactionDirection,
+      pending: false,
+      protocol: transaction?.protocol,
+      status: transactionStatus,
+      type: transaction?.type,
+    });
+  } else if (inlcuded) {
+    status = TransactionStatus.unknown;
+  } else {
+    status = TransactionStatus.failed;
+  }
+  return status;
+}
+
+export function getTransactionHash(tx: RainbowTransaction): string | undefined {
+  return tx.hash?.split('-').shift();
+}
+
+export async function watchPendingTransactions() {
+  const { currentAddress } = currentAddressStore.getState();
+  const { getPendingTransactions, setPendingTransactions } =
+    pendingTransactionsStore.getState();
+  const pendingTransactions = getPendingTransactions({
+    address: currentAddress,
+  });
+
+  const updatedPendingTransactions = await Promise.all(
+    pendingTransactions.map(async (tx) => {
+      let updatedTransaction = { ...tx };
+      const txHash = getTransactionHash(tx);
+
+      try {
+        const chainId = tx?.chainId;
+        if (chainId) {
+          const provider = getProvider({ chainId });
+          if (txHash) {
+            const currentNonceForChainId = await provider.getTransactionCount(
+              currentAddress,
+              'latest',
+            );
+            const transactionResponse = await provider.getTransaction(txHash);
+            const nonceAlreadyIncluded =
+              currentNonceForChainId >
+              (tx?.nonce || transactionResponse?.nonce);
+            if (
+              (transactionResponse?.blockNumber &&
+                transactionResponse?.blockHash) ||
+              nonceAlreadyIncluded
+            ) {
+              const transactionStatus = await getTransactionReceiptStatus({
+                inlcuded: nonceAlreadyIncluded,
+                transaction: tx,
+                transactionResponse,
+              });
+              const pendingTransactionData = getPendingTransactionData({
+                transaction: tx,
+                transactionStatus,
+              });
+
+              updatedTransaction = {
+                ...updatedTransaction,
+                ...pendingTransactionData,
+              };
+            }
+          }
+        } else {
+          throw new Error('Pending transaction missing chain id');
+        }
+      } catch (e) {
+        console.log('ERROR WATCHING PENDING TX: ', e);
+      }
+      return updatedTransaction;
+    }),
+  );
+
+  setPendingTransactions({ pendingTransactions: updatedPendingTransactions });
+}
