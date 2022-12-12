@@ -131,7 +131,7 @@ export function Send() {
             </Row>
             <Row>
               <Input
-                // type="text"
+                type="number"
                 value={independentAmount}
                 placeholder={'Enter ETH amount'}
                 onChange={handleAmountChange}
