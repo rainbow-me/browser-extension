@@ -13,7 +13,7 @@ export const useSendTransactionInputs = ({
   asset: ParsedAddressAsset;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
-  const independentFieldRef = useRef(null);
+  const independentFieldRef = useRef<HTMLInputElement>(null);
   const [independentAmount, setIndependentAmount] = useState<string>('');
   const [independentField, setIndependentField] = useState<'native' | 'asset'>(
     'asset',
@@ -47,9 +47,10 @@ export const useSendTransactionInputs = ({
   );
 
   const setInputValue = useCallback((newValue: string) => {
-    (independentFieldRef?.current as unknown as HTMLInputElement).value =
-      newValue;
-    (independentFieldRef?.current as unknown as HTMLInputElement).focus();
+    if (independentFieldRef.current) {
+      independentFieldRef.current.value = newValue;
+      independentFieldRef.current.focus();
+    }
   }, []);
 
   const switchIndependentField = useCallback(() => {
