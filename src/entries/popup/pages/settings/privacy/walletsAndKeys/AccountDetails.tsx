@@ -4,10 +4,78 @@ import { useLocation } from 'react-router-dom';
 import { i18n } from '~/core/languages';
 import { DummyWallet } from '~/core/types/walletsAndKeys';
 import { truncateAddress } from '~/core/utils/address';
-import { Box, Symbol } from '~/design-system';
+import { Box, Inline, Row, Rows, Symbol, Text } from '~/design-system';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
+
+const MoreInfoButton = ({ wallet }: { wallet: DummyWallet }) => {
+  const handleViewPrivateKey = () => {
+    null;
+  };
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Box style={{ cursor: 'default' }}>
+          <Symbol
+            symbol="ellipsis.circle"
+            weight="bold"
+            size={14}
+            color="labelTertiary"
+          />
+        </Box>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onSelect={handleViewPrivateKey}>
+          <Inline alignVertical="center" space="8px" wrap={false}>
+            <Symbol
+              size={18}
+              symbol="key.fill"
+              weight="semibold"
+              color="labelQuaternary"
+            />
+            <Box width="full">
+              <Text size="14pt" weight="semibold">
+                View Private Key
+              </Text>
+            </Box>
+          </Inline>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+
+        <DropdownMenuItem>
+          <Inline alignVertical="center" space="8px" wrap={false}>
+            <Symbol
+              symbol="doc.on.doc"
+              size={18}
+              weight="semibold"
+              color="labelQuaternary"
+            />
+            <Rows space="6px">
+              <Row>
+                <Text size="14pt" weight="semibold">
+                  Copy Address
+                </Text>
+              </Row>
+              <Row>
+                <Text size="11pt" weight="medium" color="labelTertiary">
+                  {truncateAddress(wallet.address)}
+                </Text>
+              </Row>
+            </Rows>
+          </Inline>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 export function AccountDetails() {
   const { state } = useLocation();
@@ -51,7 +119,7 @@ export function AccountDetails() {
                       <MenuItem.Label text={truncateAddress(wallet.address)} />
                     ) : null
                   }
-                  hasRightArrow
+                  rightComponent={<MoreInfoButton wallet={wallet} />}
                 />
               );
             })}
