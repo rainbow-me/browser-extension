@@ -41,7 +41,7 @@ it('Should open the popup', async () => {
   await goToPopup(driver, rootURL);
 });
 
-it.skip('should display account name', async () => {
+it('should display account name', async () => {
   const label = await querySelector(
     driver,
     '[data-testid="header"] [data-testid="account-name"]',
