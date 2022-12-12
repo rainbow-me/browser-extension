@@ -6,7 +6,6 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { Address, useEnsAvatar } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
@@ -27,30 +26,11 @@ import { foregroundColors } from '~/design-system/styles/designTokens';
 
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
+import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { sendTransaction } from '../../handlers/wallet';
 import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsset';
 import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
 import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
-
-export const EnsAvatar = ({ address }: { address: Address }) => {
-  const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
-  return (
-    <Box
-      background="fill"
-      borderRadius="18px"
-      style={{
-        width: '36px',
-        height: '36px',
-        overflow: 'hidden',
-      }}
-    >
-      {ensAvatar && (
-        /* TODO: Convert to <Image> & Imgix/Cloudinary */
-        <img src={ensAvatar} width="100%" height="100%" loading="lazy" />
-      )}
-    </Box>
-  );
-};
 
 const ActionButon = ({
   showClose,
@@ -203,7 +183,11 @@ export function Send() {
                 space="8px"
               >
                 <Inline alignVertical="center" space="8px">
-                  <EnsAvatar address={toAddress} />
+                  <WalletAvatar
+                    address={toAddress}
+                    size={36}
+                    emojiSize="20pt"
+                  />
                   <Box width="fit">
                     <Input
                       value={toAddressOrName}

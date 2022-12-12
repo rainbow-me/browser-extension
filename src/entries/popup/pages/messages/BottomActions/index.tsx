@@ -1,5 +1,5 @@
 import React from 'react';
-import { Address, Chain, useBalance, useEnsAvatar, useEnsName } from 'wagmi';
+import { Address, Chain, useBalance, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
@@ -11,32 +11,13 @@ import {
   DEFAULT_ACCOUNT_2,
 } from '~/entries/background/handlers/handleProviderRequest';
 import { EthSymbol } from '~/entries/popup/components/EthSymbol/EthSymbol';
+import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useBackgroundAccounts } from '~/entries/popup/hooks/useBackgroundAccounts';
 
 import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
 import { SwitchMenu } from '../../../components/SwitchMenu/SwitchMenu';
 import { SwitchNetworkMenu } from '../../../components/SwitchMenu/SwitchNetworkMenu';
-
-export const EnsAvatar = ({ address }: { address: Address }) => {
-  const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
-  return (
-    <Box
-      background="fill"
-      borderRadius="30px"
-      style={{
-        width: '18px',
-        height: '18px',
-        overflow: 'hidden',
-      }}
-    >
-      {ensAvatar && (
-        /* TODO: Convert to <Image> & Imgix/Cloudinary */
-        <img src={ensAvatar} width="100%" height="100%" loading="lazy" />
-      )}
-    </Box>
-  );
-};
 
 export const EnsName = ({
   address,
@@ -63,7 +44,7 @@ export const BottomWallet = ({
   return (
     <Box id={'switch-wallet-menu'}>
       <Inline alignVertical="center" space="4px">
-        <EnsAvatar address={selectedWallet} />
+        <WalletAvatar address={selectedWallet} size={18} emojiSize={'12pt'} />
         <EnsName color="labelSecondary" address={selectedWallet} />
         {displaySymbol && (
           <Symbol
@@ -122,7 +103,11 @@ export const BottomSwitchWallet = ({
         renderMenuItem={(wallet, i) => (
           <Box id={`switch-wallet-item-${i}`}>
             <Inline space="8px" alignVertical="center">
-              <EnsAvatar address={wallet as Address} />
+              <WalletAvatar
+                address={wallet as Address}
+                size={18}
+                emojiSize={'12pt'}
+              />
               <EnsName color="label" address={wallet as Address} />
             </Inline>
           </Box>
