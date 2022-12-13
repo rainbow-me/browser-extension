@@ -23,15 +23,14 @@ import {
 import { Input } from '~/design-system/components/Input/Input';
 import { foregroundColors } from '~/design-system/styles/designTokens';
 
-import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { sendTransaction } from '../../handlers/wallet';
 import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsset';
 import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
 import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
 
-import { InputActionButon } from './InputActionButton';
 import { ToAddressInput } from './ToAddressInput';
+import { TokenInput } from './TokenInput';
 
 const AccentColorProviderWrapper = ({
   color,
@@ -151,42 +150,13 @@ export function Send() {
           <Row>
             <Box
               background="surfaceSecondaryElevated"
-              paddingVertical="20px"
-              paddingHorizontal="20px"
               borderRadius="24px"
               width="full"
             >
-              <Stack space="16px">
-                <Inline
-                  alignHorizontal="justify"
-                  alignVertical="center"
-                  space="8px"
-                >
-                  <Box onClick={() => shuffleAssetIndex()}>
-                    <Inline alignVertical="center" space="8px">
-                      <Box>
-                        <CoinIcon asset={asset ?? undefined} />
-                      </Box>
-                      <Box width="fit">
-                        <Text
-                          size="16pt"
-                          weight="semibold"
-                          color={`${asset ? 'label' : 'labelTertiary'}`}
-                        >
-                          {asset?.name ??
-                            i18n.t('send.input_token_placeholder')}
-                        </Text>
-                      </Box>
-                    </Inline>
-                  </Box>
-                  <InputActionButon
-                    showClose={!!asset}
-                    onClose={() => shuffleAssetIndex(-1)}
-                  />
-                </Inline>
-
-                {asset ? (
-                  <>
+              <TokenInput asset={asset} shuffleAssetIndex={shuffleAssetIndex} />
+              {asset ? (
+                <Box paddingBottom="20px" paddingHorizontal="20px">
+                  <Stack space="16px">
                     <Separator color="separatorSecondary" />
                     <Box>
                       <Rows space="16px">
@@ -242,9 +212,9 @@ export function Send() {
                         </Row>
                       </Rows>
                     </Box>
-                  </>
-                ) : null}
-              </Stack>
+                  </Stack>
+                </Box>
+              ) : null}
             </Box>
           </Row>
         </Rows>
