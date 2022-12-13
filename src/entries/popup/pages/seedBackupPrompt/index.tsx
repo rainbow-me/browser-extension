@@ -4,12 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { i18n } from '~/core/languages';
 import { Box, Button, Inline, Rows, Symbol, Text } from '~/design-system';
 
-export function ManualBackupPrompt() {
+export function SeedBackupPrompt() {
   const navigate = useNavigate();
 
   const handleShowRecoveryPhraseClick = React.useCallback(async () => {
-    console.log('to do');
-  }, []);
+    navigate('/seed-reveal');
+  }, [navigate]);
 
   const handleSkipClick = React.useCallback(async () => {
     navigate('/');
@@ -67,7 +67,7 @@ export function ManualBackupPrompt() {
         style={{ paddingTop: '84px', paddingBottom: '49px' }}
       >
         <Text size="16pt" weight="bold" color="label" align="center">
-          {i18n.t('manual_backup_prompt.title')}
+          {i18n.t('seed_backup_prompt.title')}
         </Text>
       </Box>
       <Box padding="16px">
@@ -82,7 +82,7 @@ export function ManualBackupPrompt() {
               />
             </Box>
             <Text size="14pt" weight="medium" color="label">
-              {i18n.t('manual_backup_prompt.write_down_seed_importance')}
+              {i18n.t('seed_backup_prompt.write_down_seed_importance')}
             </Text>
           </Inline>
           <Inline space="16px" wrap={false} alignVertical="center">
@@ -95,7 +95,7 @@ export function ManualBackupPrompt() {
               />
             </Box>
             <Text size="14pt" weight="medium" color="label">
-              {i18n.t('manual_backup_prompt.secret_recovery_phrase_usage')}
+              {i18n.t('seed_backup_prompt.secret_recovery_phrase_usage')}
             </Text>
           </Inline>
           <Inline space="16px" wrap={false} alignVertical="center">
@@ -108,7 +108,7 @@ export function ManualBackupPrompt() {
               />
             </Box>
             <Text size="14pt" weight="medium" color="label">
-              {i18n.t('manual_backup_prompt.secret_recovery_phrase_loss')}
+              {i18n.t('seed_backup_prompt.secret_recovery_phrase_loss')}
             </Text>
           </Inline>
         </Rows>
@@ -124,7 +124,7 @@ export function ManualBackupPrompt() {
             blur="26px"
             onClick={handleShowRecoveryPhraseClick}
           >
-            {i18n.t('manual_backup_prompt.reveal_your_recovery_phrase')}
+            {i18n.t('seed_backup_prompt.reveal_your_recovery_phrase')}
           </Button>
 
           <Button
@@ -134,7 +134,7 @@ export function ManualBackupPrompt() {
             width="full"
             onClick={handleSkipClick}
           >
-            {i18n.t('manual_backup_prompt.skip')}
+            {i18n.t('seed_backup_prompt.skip')}
           </Button>
         </Rows>
       </Box>

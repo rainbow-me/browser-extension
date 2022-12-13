@@ -8,7 +8,9 @@ import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/Animated
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
 import { ConnectedApps } from './pages/ConnectedApps';
 import { Home } from './pages/home';
-import { ManualBackupPrompt } from './pages/manualBackupPrompt';
+import { SeedBackupPrompt } from './pages/seedBackupPrompt';
+import { SeedReveal } from './pages/seedReveal';
+import { SeedVerify } from './pages/seedVerify';
 import { Send } from './pages/send';
 import { Currency } from './pages/settings/currency';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
@@ -66,10 +68,28 @@ export function Routes() {
         background: FullScreenBackground,
       },
       {
-        path: '/manual-backup-prompt',
+        path: '/seed-backup-prompt',
         element: (
           <AnimatedRoute direction="horizontal">
-            <ManualBackupPrompt />
+            <SeedBackupPrompt />
+          </AnimatedRoute>
+        ),
+        background: FullScreenBackground,
+      },
+      {
+        path: '/seed-reveal',
+        element: (
+          <AnimatedRoute direction="horizontal" navbar>
+            <SeedReveal />
+          </AnimatedRoute>
+        ),
+        background: FullScreenBackground,
+      },
+      {
+        path: '/seed-verify',
+        element: (
+          <AnimatedRoute direction="horizontal" navbar>
+            <SeedVerify />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,
