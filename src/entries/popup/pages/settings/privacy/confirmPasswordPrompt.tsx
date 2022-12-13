@@ -63,7 +63,7 @@ export const ConfirmPasswordPrompt = ({
               <Box paddingTop="12px">
                 <Text size="16pt" weight="bold" align="center">
                   {i18n.t(
-                    'settings.privacy_and_security.confirmPassword.title',
+                    'settings.privacy_and_security.confirm_password.title',
                   )}
                 </Text>
               </Box>
@@ -76,7 +76,7 @@ export const ConfirmPasswordPrompt = ({
                 align="center"
               >
                 {i18n.t(
-                  'settings.privacy_and_security.confirmPassword.description',
+                  'settings.privacy_and_security.confirm_password.description',
                 )}
               </Text>
             </Row>
