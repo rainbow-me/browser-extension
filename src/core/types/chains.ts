@@ -23,6 +23,7 @@ export const bsc: Chain = {
 export enum ChainName {
   arbitrum = 'arbitrum',
   bsc = 'bsc',
+  goerli = 'goerli',
   optimism = 'optimism',
   polygon = 'polygon',
   mainnet = 'mainnet',
@@ -31,6 +32,7 @@ export enum ChainName {
 export enum ChainId {
   arbitrum = chain.arbitrum.id,
   bsc = BSC_CHAIN_ID,
+  goerli = chain.goerli.id,
   optimism = chain.optimism.id,
   mainnet = chain.mainnet.id,
   polygon = chain.polygon.id,

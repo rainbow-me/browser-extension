@@ -1,7 +1,7 @@
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import * as React from 'react';
 import { HashRouter } from 'react-router-dom';
-import { WagmiConfig } from 'wagmi';
+import { WagmiConfig, useAccount } from 'wagmi';
 
 import { changeI18nLanguage } from '~/core/languages';
 import { persistOptions, queryClient } from '~/core/react-query';
@@ -13,6 +13,7 @@ import { createWagmiClient } from '~/core/wagmi';
 import { Box, ThemeProvider } from '~/design-system';
 
 import { Routes } from './Routes';
+import { usePendingTransactionWatcher } from './hooks/usePendingTransactionWatcher';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { ApproveMessage } from './pages/messages/ApproveMessage';
 import { RainbowConnector } from './wagmi/RainbowConnector';
@@ -27,6 +28,9 @@ const wagmiClient = createWagmiClient({
 
 export function App() {
   const { currentLanguage } = useCurrentLanguageStore();
+  const { address } = useAccount();
+
+  usePendingTransactionWatcher({ address });
 
   React.useEffect(() => {
     changeI18nLanguage(currentLanguage);
