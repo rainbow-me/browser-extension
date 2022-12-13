@@ -30,8 +30,7 @@ export function WalletsAndKeys() {
         <MenuContainer>
           {Object.keys(testData).map((accountId) => {
             const account = testData[accountId];
-            const numberOfWallets = account.wallets.length;
-            const singleWallet = numberOfWallets === 1;
+            const singleWallet = account.wallets.length === 1;
             const label = `${
               account.imported
                 ? `${i18n.t(
