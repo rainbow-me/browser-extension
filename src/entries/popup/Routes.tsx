@@ -19,7 +19,7 @@ import { Currency } from './pages/settings/currency';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
 import { ChangePassword } from './pages/settings/privacy/changePassword';
 import { Privacy } from './pages/settings/privacy/privacy';
-import { AccountDetails } from './pages/settings/privacy/walletsAndKeys/AccountDetails';
+import { AccountDetails } from './pages/settings/privacy/walletsAndKeys/walletAccountDetails';
 import { WalletsAndKeys } from './pages/settings/privacy/walletsAndKeys/walletsAndKeys';
 import { Settings } from './pages/settings/settings';
 import { Transactions } from './pages/settings/transactions';
