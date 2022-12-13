@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 
+import { DummyWallet } from '~/core/types/walletsAndKeys';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 
+import AddressPill from '../AddressPill/AddressPill';
 interface TextIconProps {
   color?: TextStyles['color'];
   icon: string;
@@ -34,14 +36,57 @@ const SelectionIcon = () => {
     />
   );
 };
+const NUM_OF_WALLETS_SHOWN_PER_ACCOUNT = 7;
+
+const WalletList = ({ wallets }: { wallets: DummyWallet[] }) => {
+  const numberOfWallets = wallets.length;
+  const shownWallets = wallets.slice(0, NUM_OF_WALLETS_SHOWN_PER_ACCOUNT);
+  const diff = numberOfWallets - NUM_OF_WALLETS_SHOWN_PER_ACCOUNT;
+  const [showMoreWallets, setShowMoreWallets] = useState(false);
+  const handleShowMoreWallets = () => {
+    setShowMoreWallets(true);
+  };
+
+  return (
+    <Box
+      justifyContent="center"
+      paddingHorizontal="16px"
+      paddingVertical="16px"
+      width="full"
+    >
+      <Inline space="6px" alignVertical="center">
+        {(showMoreWallets ? wallets : shownWallets).map((wallet) => (
+          <AddressPill
+            address={wallet.address}
+            ens={wallet.ens}
+            key={wallet.address}
+          />
+        ))}
+        {!showMoreWallets && diff > 0 && (
+          <Box
+            paddingHorizontal="8px"
+            paddingVertical="5px"
+            background="fillSecondary"
+            borderRadius="round"
+            onClick={handleShowMoreWallets}
+          >
+            <Text weight="medium" color="labelTertiary" size="14pt">
+              +{diff}
+            </Text>
+          </Box>
+        )}
+      </Inline>
+    </Box>
+  );
+};
 
 interface TitleProps {
   color?: TextStyles['color'];
   text: string;
 }
 
-const Title = ({ text }: TitleProps) => (
-  <Text color="label" size="14pt" weight="medium">
+const Title = ({ text, color = 'label' }: TitleProps) => (
+  <Text color={color} size="14pt" weight="medium">
     {text}
   </Text>
 );
@@ -52,7 +97,7 @@ interface LabelProps {
 
 const Label = ({ text }: LabelProps) => {
   return (
-    <Text color="labelSecondary" size="14pt" weight="medium">
+    <Text color="labelTertiary" size="12pt" weight="medium">
       {text}
     </Text>
   );
@@ -152,5 +197,6 @@ MenuItem.SelectionIcon = SelectionIcon;
 MenuItem.TextIcon = TextIcon;
 MenuItem.Title = Title;
 MenuItem.Description = Description;
+MenuItem.WalletList = WalletList;
 
 export { MenuItem };
