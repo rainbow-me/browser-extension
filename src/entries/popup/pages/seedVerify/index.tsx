@@ -11,6 +11,7 @@ import {
   Columns,
   Inline,
   Separator,
+  Symbol,
   Text,
 } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
@@ -104,16 +105,25 @@ export function SeedVerify() {
       flexDirection="column"
       alignItems="center"
       padding="24px"
-      paddingTop="16px"
+      style={{ paddingTop: '56px' }}
     >
-      <Box
-        alignItems="center"
-        paddingBottom="10px"
-        style={{ marginTop: '40px' }}
-      >
-        <Text size="16pt" weight="bold" color="label" align="center">
-          {i18n.t('seed_verify.title')}
-        </Text>
+      <Box alignItems="center" paddingBottom="10px">
+        <Inline
+          wrap={false}
+          alignVertical="center"
+          alignHorizontal="center"
+          space="5px"
+        >
+          <Symbol
+            symbol="doc.plaintext"
+            size={16}
+            color="transparent"
+            weight={'bold'}
+          />
+          <Text size="16pt" weight="bold" color="label" align="center">
+            {i18n.t('seed_verify.title')}
+          </Text>
+        </Inline>
         <Box padding="16px" paddingTop="10px">
           <Text
             size="12pt"
@@ -128,13 +138,7 @@ export function SeedVerify() {
       <Box width="full" style={{ width: '106px' }}>
         <Separator color="separatorTertiary" strokeWeight="1px" />
       </Box>
-      <Box
-        style={{
-          marginTop: '27px',
-        }}
-        alignItems="center"
-        paddingHorizontal="52px"
-      >
+      <Box paddingTop="28px">
         <Box
           background="surfaceSecondaryElevated"
           borderRadius="16px"

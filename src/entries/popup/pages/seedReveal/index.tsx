@@ -48,13 +48,9 @@ export function SeedReveal() {
       flexDirection="column"
       alignItems="center"
       padding="20px"
-      paddingTop="16px"
+      style={{ paddingTop: '56px' }}
     >
-      <Box
-        alignItems="center"
-        paddingBottom="10px"
-        style={{ marginTop: '40px' }}
-      >
+      <Box alignItems="center" paddingBottom="10px">
         <Inline
           wrap={false}
           alignVertical="center"
@@ -85,102 +81,129 @@ export function SeedReveal() {
       <Box width="full" style={{ width: '106px' }}>
         <Separator color="separatorTertiary" strokeWeight="1px" />
       </Box>
-      <Box
-        style={{
-          marginTop: '27px',
-        }}
-        alignItems="center"
-        background="surfaceSecondaryElevated"
-        borderRadius="16px"
-        paddingHorizontal="24px"
-        padding="16px"
-      >
-        <Columns>
-          <Column width="1/3">
-            {seed
-              .split(' ')
-              .slice(0, 6)
-              .map((word, index) => (
-                <Box padding="12px" paddingRight="24px" key={`word_${index}`}>
-                  <Inline wrap={false} alignVertical="center" space="10px">
-                    <Text
-                      size="11pt"
-                      weight="medium"
-                      color="labelQuaternary"
-                      align="center"
-                    >
-                      0{index + 1}
-                    </Text>
-                    <Text
-                      size="14pt"
-                      weight="bold"
-                      color="label"
-                      align="center"
-                    >
-                      {word}
-                    </Text>
-                  </Inline>
-                </Box>
-              ))}
-          </Column>
-          <Box
-            borderColor="separatorTertiary"
-            height="fit"
-            style={{
-              width: '1px',
-              height: '100%',
-              borderRightStyle: 'solid',
-              borderRightWidth: '1px',
-            }}
-          ></Box>
-          <Column width="1/3">
-            {seed
-              .split(' ')
-              .slice(-6)
-              .map((word, index) => (
-                <Box
-                  padding="12px"
-                  paddingLeft="24px"
-                  key={`word_${index + 6}`}
-                >
-                  <Inline wrap={false} alignVertical="center" space="10px">
-                    <Text
-                      size="11pt"
-                      weight="medium"
-                      color="labelQuaternary"
-                      align="center"
-                    >
-                      {index + 7 > 9 ? '' : '0'}
-                      {index + 7}
-                    </Text>
-                    <Text
-                      size="14pt"
-                      weight="bold"
-                      color="label"
-                      align="center"
-                    >
-                      {word}
-                    </Text>
-                  </Inline>
-                </Box>
-              ))}
-          </Column>
-        </Columns>
-      </Box>
-
-      <Box>
-        <Button
-          color="accent"
-          height="44px"
-          variant="transparent"
-          width="full"
-          onClick={handleCopy}
-          symbol="doc.on.doc"
+      <Box paddingTop="28px">
+        <Box
+          background="surfaceSecondaryElevated"
+          borderRadius="16px"
+          padding="12px"
+          paddingBottom="4px"
+          borderColor={'transparent'}
+          borderWidth={'1px'}
         >
-          {i18n.t('seed_reveal.copy_to_clipboard')}
-        </Button>
-      </Box>
+          <Columns>
+            <Column width="1/3">
+              {seed
+                .split(' ')
+                .slice(0, 6)
+                .map((word, index) => (
+                  <Box
+                    width="fit"
+                    borderColor="transparent"
+                    borderWidth="1px"
+                    borderRadius="8px"
+                    padding="8px"
+                    key={`word_${index}`}
+                    background={'transparent'}
+                    style={{
+                      width: '102px',
+                      marginBottom: '8px',
+                      marginRight: '14px',
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    <Inline wrap={false} alignVertical="center" space="10px">
+                      <Text
+                        size="11pt"
+                        weight="medium"
+                        color={'labelQuaternary'}
+                        align="center"
+                      >
+                        0{index}
+                      </Text>
+                      <Text
+                        size="14pt"
+                        weight="bold"
+                        color="label"
+                        align="center"
+                      >
+                        {word}
+                      </Text>
+                    </Inline>
+                  </Box>
+                ))}
+            </Column>
+            <Box
+              borderColor="separatorTertiary"
+              height="fit"
+              style={{
+                width: '1px',
+                height: '100%',
+                borderRightStyle: 'solid',
+                borderRightWidth: '1px',
+              }}
+            ></Box>
+            <Column width="1/3">
+              {seed
+                .split(' ')
+                .slice(-6)
+                .map((word, index) => (
+                  <Box
+                    width="fit"
+                    borderColor="transparent"
+                    borderRadius="8px"
+                    padding="8px"
+                    borderWidth="1px"
+                    background={'transparent'}
+                    key={`word_${index + 6}`}
+                    style={{
+                      width: '102px',
+                      marginBottom: '8px',
+                      marginLeft: '14px',
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    <Inline wrap={false} alignVertical="center" space="10px">
+                      <Text
+                        size="11pt"
+                        weight="medium"
+                        color={'labelQuaternary'}
+                        align="center"
+                      >
+                        {index + 7 > 9 ? '' : '0'}
+                        {index + 7}
+                      </Text>
+                      <Text
+                        size="14pt"
+                        weight="bold"
+                        color="label"
+                        align="center"
+                      >
+                        {word}
+                      </Text>
+                    </Inline>
+                  </Box>
+                ))}
+            </Column>
+          </Columns>
+        </Box>
 
+        <Box>
+          <Button
+            color="accent"
+            height="44px"
+            variant="transparent"
+            width="full"
+            onClick={handleCopy}
+            symbol="doc.on.doc"
+          >
+            {i18n.t('seed_reveal.copy_to_clipboard')}
+          </Button>
+        </Box>
+      </Box>
       <Box width="full" style={{ paddingTop: '100px' }}>
         <Rows alignVertical="top" space="8px">
           <Button
