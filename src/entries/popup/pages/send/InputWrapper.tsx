@@ -17,7 +17,7 @@ export const InputWrapper = ({
   onActionClose: () => void;
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
-
+  console.log('-- showDropdown', showDropdown);
   return (
     <Box style={{ height: 68 }}>
       <Box
@@ -29,10 +29,12 @@ export const InputWrapper = ({
         style={{ left: 0 }}
       >
         <Box
+          as={motion.div}
           background="surfaceSecondaryElevated"
           borderRadius="24px"
           paddingHorizontal="20px"
-          paddingVertical="16px"
+          paddingTop="16px"
+          paddingBottom="8px"
         >
           <Columns alignVertical="center" alignHorizontal="justify" space="8px">
             <Column width="content">{leftComponent}</Column>
@@ -50,28 +52,21 @@ export const InputWrapper = ({
           </Columns>
 
           <AnimatePresence initial={false}>
-            {showDropdown && (
+            {!showDropdown && (
               <Box
                 as={motion.div}
-                paddingHorizontal="12px"
-                style={{
-                  left: 0,
-                }}
-                width="full"
-                background="surfaceSecondaryElevated"
-                key="address-dropdown"
-                // position="absolute"
                 initial={{ opacity: 0, height: 0 }}
                 animate={{
                   opacity: 1,
-                  height: 'auto',
+                  height: 8,
                   transition: {
                     height: {
-                      duration: 0.4,
+                      duration: 0.1,
+                      delay: 0.2,
                     },
                     opacity: {
-                      duration: 0.2,
-                      delay: 0.15,
+                      duration: 0.05,
+                      delay: 0.2,
                     },
                   },
                 }}
@@ -80,10 +75,51 @@ export const InputWrapper = ({
                   height: 0,
                   transition: {
                     height: {
-                      duration: 0.4,
+                      duration: 0.1,
                     },
                     opacity: {
+                      duration: 0.05,
+                    },
+                  },
+                }}
+                key="2"
+                style={{ height: 0 }}
+              />
+            )}
+
+            {showDropdown && (
+              <Box
+                as={motion.div}
+                paddingHorizontal="12px"
+                style={{
+                  left: 0,
+                }}
+                transition={{ type: 'spring', bounce: 1 }}
+                width="full"
+                background="surfaceSecondaryElevated"
+                key="address-dropdown"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{
+                  opacity: 1,
+                  height: 'auto',
+                  transition: {
+                    height: {
                       duration: 0.2,
+                    },
+                    opacity: {
+                      duration: 0.1,
+                    },
+                  },
+                }}
+                exit={{
+                  opacity: 0,
+                  height: 0,
+                  transition: {
+                    height: {
+                      duration: 0.2,
+                    },
+                    opacity: {
+                      duration: 0.1,
                     },
                   },
                 }}
