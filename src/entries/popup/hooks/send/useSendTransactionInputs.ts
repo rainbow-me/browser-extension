@@ -1,24 +1,23 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { useCurrentCurrencyStore } from '~/core/state';
-import { ChainId } from '~/core/types/chains';
+import { ParsedAddressAsset } from '~/core/types/assets';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountFromNativeValue,
 } from '~/core/utils/numbers';
 
-import { useNativeAssetForNetwork } from '../useNativeAssetForNetwork';
-
-export const useSendTransactionInputs = () => {
-  const nativeAsset = useNativeAssetForNetwork({ chainId: ChainId.mainnet });
-
-  const [independentAmount, setIndependentAmount] = useState<string>();
+export const useSendTransactionInputs = ({
+  asset,
+}: {
+  asset: ParsedAddressAsset;
+}) => {
   const { currentCurrency } = useCurrentCurrencyStore();
+  const independentFieldRef = useRef<HTMLInputElement>(null);
+  const [independentAmount, setIndependentAmount] = useState<string>('');
   const [independentField, setIndependentField] = useState<'native' | 'asset'>(
     'asset',
   );
-
-  const asset = nativeAsset;
 
   const dependentAmount = useMemo(() => {
     if (independentField === 'asset') {
@@ -47,15 +46,48 @@ export const useSendTransactionInputs = () => {
     [dependentAmount, independentAmount, independentField],
   );
 
+  const setInputValue = useCallback((newValue: string) => {
+    if (independentFieldRef.current) {
+      independentFieldRef.current.value = newValue;
+      independentFieldRef.current.focus();
+    }
+  }, []);
+
   const switchIndependentField = useCallback(() => {
+    const newValue =
+      independentField === 'asset' ? dependentAmount : assetAmount ?? '';
+    setInputValue(newValue);
+    setIndependentAmount(newValue);
     setIndependentField(independentField === 'asset' ? 'native' : 'asset');
-  }, [independentField]);
+  }, [assetAmount, dependentAmount, independentField, setInputValue]);
+
+  const setMaxAssetAmount = useCallback(() => {
+    const newValue =
+      independentField === 'asset'
+        ? asset.balance.amount
+        : convertAmountAndPriceToNativeDisplay(
+            asset.balance.amount,
+            asset?.price?.value || 0,
+            currentCurrency,
+          ).amount;
+
+    setIndependentAmount(newValue);
+    setInputValue(newValue);
+  }, [
+    asset.balance.amount,
+    asset?.price?.value,
+    currentCurrency,
+    independentField,
+    setInputValue,
+  ]);
 
   return {
     assetAmount,
     independentAmount,
     independentField,
+    independentFieldRef,
     dependentAmount,
+    setMaxAssetAmount,
     setIndependentAmount,
     setIndependentField,
     switchIndependentField,

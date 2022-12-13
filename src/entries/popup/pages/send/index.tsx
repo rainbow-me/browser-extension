@@ -11,9 +11,11 @@ import {
   Separator,
   Text,
 } from '~/design-system';
+import { Input } from '~/design-system/components/Input/Input';
 
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { sendTransaction } from '../../handlers/wallet';
+import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsset';
 import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
 import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
 
@@ -21,17 +23,19 @@ export function Send() {
   const [txHash, setTxHash] = useState('');
   const [sending, setSending] = useState(false);
 
+  const { asset } = useSendTransactionAsset();
   const {
     assetAmount,
     independentAmount,
     independentField,
+    independentFieldRef,
     dependentAmount,
     setIndependentAmount,
     switchIndependentField,
-  } = useSendTransactionInputs();
+    setMaxAssetAmount,
+  } = useSendTransactionInputs({ asset });
 
   const {
-    asset,
     currentCurrency,
     chainId,
     data,
@@ -122,27 +126,24 @@ export function Send() {
             </Row>
             <Row>
               <Text color="label" size="16pt" weight="bold">
-                Amount (ETH):
+                Amount ({asset?.symbol}):
               </Text>
             </Row>
             <Row>
-              <input
-                type="text"
+              <Input
+                type="number"
                 value={independentAmount}
                 placeholder={'Enter ETH amount'}
                 onChange={handleAmountChange}
-                style={{
-                  borderRadius: 999,
-                  padding: '10px',
-                  fontSize: '11pt',
-                  width: '100%',
-                  boxSizing: 'border-box',
-                }}
+                height="32px"
+                variant="bordered"
+                innerRef={independentFieldRef}
               />
             </Row>
             <Row>
               <Text color="label" size="16pt" weight="bold">
-                Amount native: {dependentAmount}
+                Amount {independentField === 'asset' ? 'native' : asset?.symbol}
+                : {dependentAmount}
               </Text>
               <Button
                 onClick={switchIndependentField}
@@ -152,6 +153,14 @@ export function Send() {
               >
                 Switch to{' '}
                 {independentField === 'asset' ? currentCurrency : asset?.symbol}
+              </Button>
+              <Button
+                onClick={setMaxAssetAmount}
+                color="accent"
+                height="36px"
+                variant="flat"
+              >
+                Max
               </Button>
             </Row>
             <Row>
