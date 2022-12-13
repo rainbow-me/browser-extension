@@ -13,6 +13,7 @@ export const inputHeights = {
   '32px': 32,
   '40px': 40,
   '44px': 44,
+  '56px': 56,
 } as const;
 export type InputHeight = keyof typeof inputHeights;
 
