@@ -1,8 +1,15 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
+import React, {
+  ChangeEvent,
+  ReactNode,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 import { Address, useEnsAvatar } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import {
   AccentColorProvider,
   Box,
@@ -16,6 +23,7 @@ import {
   Text,
 } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
+import { foregroundColors } from '~/design-system/styles/designTokens';
 
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
@@ -74,6 +82,25 @@ const ActionButon = ({
       weight="semibold"
       color="labelQuaternary"
     />
+  );
+};
+
+const AccentColorProviderWrapper = ({
+  color,
+  children,
+}: {
+  color?: string;
+  children: ReactNode;
+}) => {
+  const { currentTheme } = useCurrentThemeStore();
+  const defaultColor =
+    currentTheme === 'light'
+      ? foregroundColors.labelQuaternary.dark
+      : foregroundColors.labelQuaternary.light;
+  return (
+    <AccentColorProvider color={color ?? defaultColor}>
+      {children}
+    </AccentColorProvider>
   );
 };
 
@@ -157,8 +184,8 @@ export function Send() {
   }, [fromAddress, toAddress, value, chainId, data]);
 
   return (
-    <AccentColorProvider
-      color={asset?.colors?.primary || asset?.colors?.fallback || '#191A1C'}
+    <AccentColorProviderWrapper
+      color={asset?.colors?.primary || asset?.colors?.fallback}
     >
       <Box style={{ overflow: 'auto' }} paddingHorizontal="12px" height="full">
         <Rows space="8px">
@@ -330,6 +357,6 @@ export function Send() {
           </Box>
         )}
       </Box>
-    </AccentColorProvider>
+    </AccentColorProviderWrapper>
   );
 }

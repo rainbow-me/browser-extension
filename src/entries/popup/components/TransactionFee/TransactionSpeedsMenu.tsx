@@ -105,7 +105,7 @@ export const SwitchTransactionSpeedMenu = ({
 }: SwitchTransactionSpeedMenuProps) => {
   const menuTrigger = (
     <Box
-      style={{ cursor: 'default', height: 28 }}
+      style={{ height: 28 }}
       borderWidth="2px"
       borderColor="accent"
       paddingVertical="5px"
