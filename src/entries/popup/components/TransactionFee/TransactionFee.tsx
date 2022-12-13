@@ -71,10 +71,11 @@ export function TransactionFee({
             <Box
               borderRadius="round"
               boxShadow="12px accent"
+              borderWidth="2px"
               display="flex"
               alignItems="center"
               justifyContent="center"
-              background="fillSecondary"
+              borderColor="fillSecondary"
               style={{ height: 28, width: 28 }}
             >
               <Symbol weight="medium" symbol="slider.horizontal.3" size={12} />

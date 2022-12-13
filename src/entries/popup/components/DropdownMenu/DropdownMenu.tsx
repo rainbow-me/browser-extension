@@ -54,10 +54,11 @@ export const DropdownMenuLabel = (props: DropdownMenuLabelProps) => {
 
 interface DropdownMenuItemProps {
   children: ReactNode;
+  onSelect?: (event: Event) => void;
 }
 
 export const DropdownMenuItem = (props: DropdownMenuItemProps) => {
-  const { children } = props;
+  const { children, onSelect } = props;
   return (
     <Box
       as={DropdownMenuPrimitive.Item}
@@ -71,6 +72,7 @@ export const DropdownMenuItem = (props: DropdownMenuItemProps) => {
         outline: 'none',
       }}
       className={dropdownMenuItemStyles}
+      onSelect={onSelect}
     >
       {children}
     </Box>

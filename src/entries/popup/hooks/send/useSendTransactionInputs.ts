@@ -1,61 +1,96 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { useCurrentCurrencyStore } from '~/core/state';
-import { ChainId } from '~/core/types/chains';
+import { ParsedAddressAsset } from '~/core/types/assets';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountFromNativeValue,
+  convertAmountToBalanceDisplay,
 } from '~/core/utils/numbers';
 
-import { useNativeAssetForNetwork } from '../useNativeAssetForNetwork';
-
-export const useSendTransactionInputs = () => {
-  const nativeAsset = useNativeAssetForNetwork({ chainId: ChainId.mainnet });
-
-  const [independentAmount, setIndependentAmount] = useState<string>();
+export const useSendTransactionInputs = ({
+  asset,
+}: {
+  asset: ParsedAddressAsset | null;
+}) => {
   const { currentCurrency } = useCurrentCurrencyStore();
+  const independentFieldRef = useRef<HTMLInputElement>(null);
+  const [independentAmount, setIndependentAmount] = useState<string>('');
   const [independentField, setIndependentField] = useState<'native' | 'asset'>(
     'asset',
   );
 
-  const asset = nativeAsset;
-
   const dependentAmount = useMemo(() => {
     if (independentField === 'asset') {
       return convertAmountAndPriceToNativeDisplay(
-        independentAmount as string,
+        (independentAmount as string) || '0',
         asset?.price?.value || 0,
         currentCurrency,
-      ).amount;
+      );
     } else {
-      return convertAmountFromNativeValue(
-        independentAmount as string,
+      const amountFromNativeValue = convertAmountFromNativeValue(
+        (independentAmount as string) || '0',
         asset?.price?.value || 0,
         asset?.decimals,
       );
+      return {
+        display: convertAmountToBalanceDisplay(
+          amountFromNativeValue,
+          asset ?? { decimals: 18, symbol: '' },
+        ),
+        amount: amountFromNativeValue,
+      };
     }
-  }, [
-    asset?.decimals,
-    asset?.price?.value,
-    currentCurrency,
-    independentAmount,
-    independentField,
-  ]);
+  }, [asset, currentCurrency, independentAmount, independentField]);
 
   const assetAmount = useMemo(
-    () => (independentField === 'asset' ? independentAmount : dependentAmount),
+    () =>
+      independentField === 'asset' ? independentAmount : dependentAmount.amount,
     [dependentAmount, independentAmount, independentField],
   );
 
+  const setInputValue = useCallback((newValue: string) => {
+    if (independentFieldRef.current) {
+      independentFieldRef.current.value = newValue;
+      independentFieldRef.current.focus();
+    }
+  }, []);
+
   const switchIndependentField = useCallback(() => {
+    const newValue =
+      independentField === 'asset' ? dependentAmount.amount : assetAmount ?? '';
+    setInputValue(newValue);
+    setIndependentAmount(newValue);
     setIndependentField(independentField === 'asset' ? 'native' : 'asset');
-  }, [independentField]);
+  }, [assetAmount, dependentAmount, independentField, setInputValue]);
+
+  const setMaxAssetAmount = useCallback(() => {
+    const newValue =
+      independentField === 'asset'
+        ? asset?.balance?.amount || '0'
+        : convertAmountAndPriceToNativeDisplay(
+            asset?.balance?.amount || 0,
+            asset?.price?.value || 0,
+            currentCurrency,
+          ).amount;
+
+    setIndependentAmount(newValue);
+    setInputValue(newValue);
+  }, [
+    asset?.balance?.amount,
+    asset?.price?.value,
+    currentCurrency,
+    independentField,
+    setInputValue,
+  ]);
 
   return {
     assetAmount,
     independentAmount,
     independentField,
+    independentFieldRef,
     dependentAmount,
+    setMaxAssetAmount,
     setIndependentAmount,
     setIndependentField,
     switchIndependentField,
