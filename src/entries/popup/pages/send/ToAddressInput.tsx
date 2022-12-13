@@ -1,12 +1,6 @@
 import { isAddress } from 'ethers/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
-import React, {
-  InputHTMLAttributes,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, { InputHTMLAttributes, useMemo, useRef } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -31,24 +25,11 @@ export const ToAddressInput = ({
   handleToAddressChange: InputHTMLAttributes<HTMLInputElement>['onChange'];
   clearToAddress: () => void;
 }) => {
-  const [stateInputVisible, setStateInputVisible] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const onClick = useCallback(() => {
-    setStateInputVisible(true);
-    setTimeout(() => {
-      inputRef?.current?.focus();
-    }, 500);
-  }, []);
-
   const inputVisible = useMemo(
-    () => !toEnsName && (stateInputVisible || !toAddressOrName),
-    [stateInputVisible, toAddressOrName, toEnsName],
-  );
-
-  const inputIsAddress = useMemo(
-    () => isAddress(toAddressOrName),
-    [toAddressOrName],
+    () => (!toAddressOrName || !toEnsName) && !isAddress(toAddressOrName),
+    [toAddressOrName, toEnsName],
   );
 
   return (
@@ -58,7 +39,6 @@ export const ToAddressInput = ({
       paddingHorizontal="16px"
       borderRadius="24px"
       width="full"
-      onClick={onClick}
     >
       <Columns alignVertical="center" alignHorizontal="justify" space="8px">
         <Column width="content">
@@ -83,7 +63,6 @@ export const ToAddressInput = ({
                   onChange={handleToAddressChange}
                   height="32px"
                   variant="transparent"
-                  onBlur={() => setStateInputVisible(false)}
                   style={{ paddingLeft: 0, paddingRight: 0 }}
                   innerRef={inputRef}
                 />
@@ -99,11 +78,9 @@ export const ToAddressInput = ({
               >
                 <Stack space="8px">
                   <Text weight="semibold" size="14pt" color="label">
-                    {toEnsName ?? inputIsAddress
-                      ? truncateAddress(toAddressOrName as Address)
-                      : toAddressOrName}
+                    {toEnsName || truncateAddress(toAddress)}
                   </Text>
-                  {inputIsAddress && (
+                  {toEnsName && (
                     <Text weight="semibold" size="12pt" color="labelTertiary">
                       {truncateAddress(toAddress)}
                     </Text>
