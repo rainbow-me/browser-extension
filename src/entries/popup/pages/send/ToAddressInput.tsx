@@ -23,78 +23,33 @@ import { useBackgroundAccounts } from '../../hooks/useBackgroundAccounts';
 
 import { InputWrapper } from './InputWrapper';
 
-const WalletsList = ({
-  contacts,
+const WalletSection = ({
+  title,
   wallets,
-  watchedWallets,
   onClickWallet,
 }: {
-  contacts: Address[];
+  title: string;
   wallets: Address[];
-  watchedWallets: Address[];
   onClickWallet: (address: Address) => void;
 }) => {
-  return (
+  return wallets.length ? (
     <Stack space="16px">
-      {!!contacts.length && (
-        <Stack space="16px">
-          <Inline alignVertical="center" space="4px">
-            <Symbol
-              symbol="person.crop.circle.fill"
-              weight="semibold"
-              color="labelTertiary"
-              size={14}
-            />
-            <Text size="14pt" weight="semibold" color="labelTertiary">
-              {i18n.t('send.wallets_list.contacts')}
-            </Text>
-          </Inline>
-          {contacts.map((wallet) => (
-            <WalletRow onClick={onClickWallet} key={wallet} wallet={wallet} />
-          ))}
-        </Stack>
-      )}
-
-      {!!wallets.length && (
-        <Stack space="16px">
-          <Inline alignVertical="center" space="4px">
-            <Symbol
-              symbol="lock.square.stack.fill"
-              weight="semibold"
-              color="labelTertiary"
-              size={14}
-            />
-            <Text size="14pt" weight="semibold" color="labelTertiary">
-              {i18n.t('send.wallets_list.my_wallets')}
-            </Text>
-          </Inline>
-          {wallets.map((wallet) => (
-            <WalletRow onClick={onClickWallet} key={wallet} wallet={wallet} />
-          ))}
-        </Stack>
-      )}
-
-      {!!watchedWallets.length && (
-        <Stack space="16px">
-          <Inline alignVertical="center" space="4px">
-            <Symbol
-              symbol="eyes.inverse"
-              weight="semibold"
-              color="labelTertiary"
-              size={14}
-            />
-            <Text size="14pt" weight="semibold" color="labelTertiary">
-              {i18n.t('send.wallets_list.watched_wallets')}
-            </Text>
-          </Inline>
-
-          {watchedWallets.map((wallet) => (
-            <WalletRow onClick={onClickWallet} key={wallet} wallet={wallet} />
-          ))}
-        </Stack>
-      )}
+      <Inline alignVertical="center" space="4px">
+        <Symbol
+          symbol="lock.square.stack.fill"
+          weight="semibold"
+          color="labelTertiary"
+          size={14}
+        />
+        <Text size="14pt" weight="semibold" color="labelTertiary">
+          {title}
+        </Text>
+      </Inline>
+      {wallets.map((wallet) => (
+        <WalletRow onClick={onClickWallet} key={wallet} wallet={wallet} />
+      ))}
     </Stack>
-  );
+  ) : null;
 };
 
 const WalletRow = ({
@@ -154,7 +109,16 @@ export const ToAddressInput = ({
     [toAddressOrName, toEnsName],
   );
 
+  const selectWalletAndCloseDropdown = useCallback(
+    (address: Address) => {
+      setToAddressOrName(address);
+      onDropdownAction();
+    },
+    [onDropdownAction, setToAddressOrName],
+  );
+
   const { accounts } = useBackgroundAccounts();
+  // TODO watched wallets and contacts still don't exist
   const watchedWallets: Address[] = [
     DEFAULT_ACCOUNT as Address,
     DEFAULT_ACCOUNT_2 as Address,
@@ -215,15 +179,23 @@ export const ToAddressInput = ({
         showActionClose={!!toAddress}
         onActionClose={clearToAddress}
         dropdownComponent={
-          <WalletsList
-            contacts={contacts}
-            wallets={accounts}
-            watchedWallets={watchedWallets}
-            onClickWallet={(address) => {
-              setToAddressOrName(address);
-              onDropdownAction();
-            }}
-          />
+          <Stack space="16px">
+            <WalletSection
+              title={i18n.t('send.wallets_list.contacts')}
+              wallets={contacts}
+              onClickWallet={selectWalletAndCloseDropdown}
+            />
+            <WalletSection
+              title={i18n.t('send.wallets_list.my_wallets')}
+              wallets={accounts}
+              onClickWallet={selectWalletAndCloseDropdown}
+            />
+            <WalletSection
+              title={i18n.t('send.wallets_list.watched_wallets')}
+              wallets={watchedWallets}
+              onClickWallet={selectWalletAndCloseDropdown}
+            />
+          </Stack>
         }
         dropdownVisible={dropdownVisible}
         onDropdownAction={onDropdownAction}
