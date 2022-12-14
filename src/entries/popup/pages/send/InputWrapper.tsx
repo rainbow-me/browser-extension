@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { ReactElement, useCallback, useState } from 'react';
+import React, { ReactElement } from 'react';
 
 import { Box, Column, Columns, Separator, Stack } from '~/design-system';
 
@@ -18,22 +18,19 @@ export const InputWrapper = ({
   leftComponent,
   centerComponent,
   dropdownContent,
+  dropdownVisible,
   showActionClose,
   onActionClose,
+  onDropdownAction,
 }: {
   leftComponent: ReactElement;
   centerComponent: ReactElement;
   dropdownContent: ReactElement;
   showActionClose: boolean;
+  dropdownVisible: boolean;
   onActionClose: () => void;
+  onDropdownAction: () => void;
 }) => {
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-
-  const openDropdown = useCallback(
-    () => setDropdownVisible((dropdownVisible) => !dropdownVisible),
-    [],
-  );
-
   return (
     <Box style={{ height: 68 }}>
       <Box width="full" position="relative" style={{ zIndex: 1 }}>
@@ -44,7 +41,7 @@ export const InputWrapper = ({
           paddingTop="16px"
           height="full"
         >
-          <Box onClick={openDropdown}>
+          <Box onClick={onDropdownAction}>
             <Columns
               alignVertical="center"
               alignHorizontal="justify"

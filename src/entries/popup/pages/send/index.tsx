@@ -144,6 +144,7 @@ export function Send() {
               toAddressOrName={toAddressOrName}
               clearToAddress={clearToAddress}
               handleToAddressChange={handleToAddressChange}
+              setToAddressOrName={setToAddressOrName}
             />
           </Row>
 

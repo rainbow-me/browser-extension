@@ -1,6 +1,12 @@
 import { isAddress } from 'ethers/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { InputHTMLAttributes, useMemo, useRef } from 'react';
+import React, {
+  InputHTMLAttributes,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Address, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -17,10 +23,18 @@ import { useBackgroundAccounts } from '../../hooks/useBackgroundAccounts';
 
 import { InputWrapper } from './InputWrapper';
 
-const WalletRow = ({ wallet }: { wallet: Address }) => {
-  const { data: ensName } = useEnsName({ address: wallet });
+const WalletRow = ({
+  wallet,
+  onClick,
+}: {
+  wallet: Address;
+  onClick: (addressOrName: string) => void;
+}) => {
+  const { data: ensName } = useEnsName({
+    address: wallet,
+  });
   return (
-    <Box key={wallet}>
+    <Box key={wallet} onClick={() => onClick(wallet)}>
       <Inline alignVertical="center" space="8px">
         <WalletAvatar size={36} address={wallet} emojiSize="20pt" />
         <Stack space="8px">
@@ -43,14 +57,23 @@ export const ToAddressInput = ({
   toAddress,
   handleToAddressChange,
   clearToAddress,
+  setToAddressOrName,
 }: {
   toAddressOrName: string;
   toEnsName?: string;
   toAddress: Address;
   handleToAddressChange: InputHTMLAttributes<HTMLInputElement>['onChange'];
   clearToAddress: () => void;
+  setToAddressOrName: (adrressOrName: string) => void;
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+
+  const onDropdownAction = useCallback(
+    () => setDropdownVisible((dropdownVisible) => !dropdownVisible),
+    [],
+  );
 
   const inputVisible = useMemo(
     () => (!toAddressOrName || !toEnsName) && !isAddress(toAddressOrName),
@@ -119,10 +142,19 @@ export const ToAddressInput = ({
         dropdownContent={
           <>
             {wallets.map((wallet) => (
-              <WalletRow key={wallet} wallet={wallet} />
+              <WalletRow
+                onClick={(adress) => {
+                  setToAddressOrName(adress);
+                  onDropdownAction();
+                }}
+                key={wallet}
+                wallet={wallet}
+              />
             ))}
           </>
         }
+        dropdownVisible={dropdownVisible}
+        onDropdownAction={onDropdownAction}
       />
     </>
   );
