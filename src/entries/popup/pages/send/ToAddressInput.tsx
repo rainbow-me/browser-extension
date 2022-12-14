@@ -1,17 +1,42 @@
 import { isAddress } from 'ethers/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { InputHTMLAttributes, useMemo, useRef } from 'react';
-import { Address } from 'wagmi';
+import { Address, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { truncateAddress } from '~/core/utils/address';
-import { Box, Stack, Text } from '~/design-system';
+import { Box, Inline, Stack, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
+import {
+  DEFAULT_ACCOUNT,
+  DEFAULT_ACCOUNT_2,
+} from '~/entries/background/handlers/handleProviderRequest';
 
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
+import { useBackgroundAccounts } from '../../hooks/useBackgroundAccounts';
 
 import { InputWrapper } from './InputWrapper';
 
+const WalletRow = ({ wallet }: { wallet: Address }) => {
+  const { data: ensName } = useEnsName({ address: wallet });
+  return (
+    <Box key={wallet}>
+      <Inline alignVertical="center" space="8px">
+        <WalletAvatar size={36} address={wallet} emojiSize="20pt" />
+        <Stack space="8px">
+          <Text weight="semibold" size="14pt" color="label">
+            {ensName ?? truncateAddress(wallet)}
+          </Text>
+          {ensName && (
+            <Text weight="semibold" size="12pt" color="labelTertiary">
+              {truncateAddress(wallet)}
+            </Text>
+          )}
+        </Stack>
+      </Inline>
+    </Box>
+  );
+};
 export const ToAddressInput = ({
   toAddressOrName,
   toEnsName,
@@ -31,6 +56,12 @@ export const ToAddressInput = ({
     () => (!toAddressOrName || !toEnsName) && !isAddress(toAddressOrName),
     [toAddressOrName, toEnsName],
   );
+
+  const { accounts } = useBackgroundAccounts();
+  const wallets: Address[] = [
+    DEFAULT_ACCOUNT as Address,
+    DEFAULT_ACCOUNT_2 as Address,
+  ].concat(accounts);
 
   return (
     <>
@@ -85,6 +116,13 @@ export const ToAddressInput = ({
         }
         showActionClose={!!toAddress}
         onActionClose={clearToAddress}
+        dropdownContent={
+          <>
+            {wallets.map((wallet) => (
+              <WalletRow key={wallet} wallet={wallet} />
+            ))}
+          </>
+        }
       />
     </>
   );

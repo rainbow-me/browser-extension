@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { ReactElement, useCallback, useState } from 'react';
 
-import { Box, Column, Columns, Separator, Stack, Text } from '~/design-system';
+import { Box, Column, Columns, Separator, Stack } from '~/design-system';
 
 import { InputActionButon } from './InputActionButton';
 
@@ -17,11 +17,13 @@ const TRANSITION_CONFIG = {
 export const InputWrapper = ({
   leftComponent,
   centerComponent,
+  dropdownContent,
   showActionClose,
   onActionClose,
 }: {
   leftComponent: ReactElement;
   centerComponent: ReactElement;
+  dropdownContent: ReactElement;
   showActionClose: boolean;
   onActionClose: () => void;
 }) => {
@@ -85,102 +87,17 @@ export const InputWrapper = ({
           >
             <AnimatePresence>
               {dropdownVisible && (
-                <>
-                  <Box paddingVertical="16px">
+                <Box>
+                  <Box paddingTop="16px">
                     <Separator />
                   </Box>
                   <Box
                     style={{ maxHeight: 430, overflow: 'scroll' }}
-                    paddingBottom="16px"
+                    paddingVertical="16px"
                   >
-                    <Stack space="12px">
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>{' '}
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>{' '}
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>{' '}
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>{' '}
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>{' '}
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>{' '}
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>{' '}
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>{' '}
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>{' '}
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>{' '}
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>{' '}
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>{' '}
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>{' '}
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>{' '}
-                      <Text weight="bold" size="11pt">
-                        AAAAAA
-                      </Text>
-                    </Stack>
+                    <Stack space="12px">{dropdownContent}</Stack>
                   </Box>
-                </>
+                </Box>
               )}
             </AnimatePresence>
           </Box>
