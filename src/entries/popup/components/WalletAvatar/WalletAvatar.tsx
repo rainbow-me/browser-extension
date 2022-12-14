@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Address } from 'wagmi';
 
+import { Box } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 
 import { Avatar } from '../../components/Avatar/Avatar';
@@ -17,7 +18,16 @@ export function WalletAvatar({
 }) {
   const { avatar, isFetched } = useAvatar({ address });
   return (
-    <Avatar.Wrapper size={size}>
+    <Box
+      borderRadius="round"
+      position="relative"
+      background="fillSecondary"
+      style={{
+        height: size,
+        width: size,
+        overflow: 'hidden',
+      }}
+    >
       {isFetched ? (
         <>
           {avatar?.imageUrl ? (
@@ -32,6 +42,6 @@ export function WalletAvatar({
         </>
       ) : null}
       <Avatar.Skeleton />
-    </Avatar.Wrapper>
+    </Box>
   );
 }

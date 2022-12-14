@@ -76,7 +76,7 @@ function ShadowWrapper({
       <AccentColorProvider color={color}>
         <Box
           boxShadow={'24px accent'}
-          background="fill"
+          background="fillSecondary"
           borderRadius="round"
           style={{
             width: 36,
@@ -93,7 +93,7 @@ function ShadowWrapper({
 
   return (
     <Box
-      background="fill"
+      background="fillSecondary"
       borderRadius="round"
       style={{
         width: 36,

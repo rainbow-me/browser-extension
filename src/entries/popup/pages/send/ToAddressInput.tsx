@@ -135,7 +135,7 @@ export const ToAddressInput = ({
     <>
       <InputWrapper
         leftComponent={
-          <Box background="fillSecondary" borderRadius="18px">
+          <Box borderRadius="18px">
             <WalletAvatar address={toAddress} size={36} emojiSize="20pt" />
           </Box>
         }
