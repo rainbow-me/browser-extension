@@ -25,6 +25,7 @@ export const NewWalletPrompt = ({
 
   const handleValidateWalletName = async () => {
     if (walletName !== '') {
+      // TODO: generate the new wallet
       handleClose();
       return;
     }
