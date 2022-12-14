@@ -122,9 +122,15 @@ export const ToAddressInput = ({
   const watchedWallets: Address[] = [
     DEFAULT_ACCOUNT as Address,
     DEFAULT_ACCOUNT_2 as Address,
+    DEFAULT_ACCOUNT as Address,
+    DEFAULT_ACCOUNT_2 as Address,
   ];
-  const contacts = [DEFAULT_ACCOUNT as Address];
-
+  const contacts: Address[] = [
+    DEFAULT_ACCOUNT as Address,
+    DEFAULT_ACCOUNT_2 as Address,
+    DEFAULT_ACCOUNT as Address,
+    DEFAULT_ACCOUNT_2 as Address,
+  ];
   return (
     <>
       <InputWrapper

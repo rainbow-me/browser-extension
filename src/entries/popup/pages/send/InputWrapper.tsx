@@ -89,7 +89,7 @@ export const InputWrapper = ({
                     <Separator />
                   </Box>
                   <Box
-                    style={{ maxHeight: 430, overflow: 'scroll' }}
+                    style={{ maxHeight: 450, overflow: 'scroll' }}
                     paddingVertical="16px"
                   >
                     <Stack space="12px">{dropdownComponent}</Stack>
