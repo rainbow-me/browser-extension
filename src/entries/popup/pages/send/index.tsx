@@ -132,28 +132,28 @@ export function Send() {
   }, [fromAddress, toAddress, value, chainId, data]);
 
   return (
-    <AccentColorProviderWrapper
-      color={asset?.colors?.primary || asset?.colors?.fallback}
+    <Box
+      background="surfaceSecondary"
+      style={{ height: 535, paddingBottom: 19 }}
+      paddingHorizontal="12px"
     >
-      <Box
-        background="surfaceSecondary"
-        style={{ height: 535, paddingBottom: 19 }}
-        paddingHorizontal="12px"
-      >
+      <Rows space="8px" alignVertical="top">
         <Rows space="8px" alignVertical="top">
-          <Rows space="8px" alignVertical="top">
-            <Row height="content">
-              <ToAddressInput
-                toAddress={toAddress}
-                toEnsName={toEnsName}
-                toAddressOrName={toAddressOrName}
-                clearToAddress={clearToAddress}
-                handleToAddressChange={handleToAddressChange}
-                setToAddressOrName={setToAddressOrName}
-              />
-            </Row>
+          <Row height="content">
+            <ToAddressInput
+              toAddress={toAddress}
+              toEnsName={toEnsName}
+              toAddressOrName={toAddressOrName}
+              clearToAddress={clearToAddress}
+              handleToAddressChange={handleToAddressChange}
+              setToAddressOrName={setToAddressOrName}
+            />
+          </Row>
 
-            <Row height="content">
+          <Row height="content">
+            <AccentColorProviderWrapper
+              color={asset?.colors?.primary || asset?.colors?.fallback}
+            >
               <Box
                 background="surfaceSecondaryElevated"
                 borderRadius="24px"
@@ -225,11 +225,15 @@ export function Send() {
                   </Box>
                 ) : null}
               </Box>
-            </Row>
-          </Rows>
+            </AccentColorProviderWrapper>
+          </Row>
+        </Rows>
 
-          <Row height="content">
-            {asset ? (
+        <Row height="content">
+          {asset ? (
+            <AccentColorProviderWrapper
+              color={asset?.colors?.primary || asset?.colors?.fallback}
+            >
               <Box paddingHorizontal="8px">
                 <Rows space="20px">
                   <Row>
@@ -259,23 +263,23 @@ export function Send() {
                   </Row>
                 </Rows>
               </Box>
-            ) : (
-              <Box paddingHorizontal="8px">
-                <Button
-                  height="44px"
-                  variant="flat"
-                  color="accent"
-                  width="full"
-                >
-                  <Text color="labelQuaternary" size="14pt" weight="bold">
-                    {i18n.t('send.enter_address_or_amount')}
-                  </Text>
-                </Button>
-              </Box>
-            )}
-          </Row>
-        </Rows>
-      </Box>
-    </AccentColorProviderWrapper>
+            </AccentColorProviderWrapper>
+          ) : (
+            <Box paddingHorizontal="8px">
+              <Button
+                height="44px"
+                variant="flat"
+                color="surfaceSecondary"
+                width="full"
+              >
+                <Text color="labelQuaternary" size="14pt" weight="bold">
+                  {i18n.t('send.enter_address_or_amount')}
+                </Text>
+              </Button>
+            </Box>
+          )}
+        </Row>
+      </Rows>
+    </Box>
   );
 }

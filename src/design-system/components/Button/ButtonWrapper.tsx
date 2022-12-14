@@ -16,7 +16,7 @@ import { ButtonHeight, heightStyles, tintedStyles } from './ButtonWrapper.css';
 
 export type ButtonVariantProps =
   | {
-      color: ButtonColor | TextColor;
+      color: BackgroundColor | ButtonColor | TextColor;
       variant: 'raised' | 'flat' | 'tinted' | 'stroked' | 'transparent';
     }
   | {
@@ -138,7 +138,7 @@ export const stylesForHeightAndVariant = ({
 export const stylesForVariant = ({
   color,
 }: {
-  color: ButtonColor | TextColor;
+  color: BackgroundColor | ButtonColor | TextColor;
 }): Record<
   ButtonWrapperProps['variant'],
   {
