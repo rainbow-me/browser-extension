@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import React from 'react';
 
 import { Box, Inline, Symbol } from '~/design-system';
@@ -5,8 +6,10 @@ import { Box, Inline, Symbol } from '~/design-system';
 export const InputActionButon = ({
   showClose,
   onClose,
+  dropdownVisible,
 }: {
   showClose: boolean;
+  dropdownVisible: boolean;
   onClose: () => void;
 }) => {
   return showClose ? (
@@ -26,11 +29,18 @@ export const InputActionButon = ({
       </Inline>
     </Box>
   ) : (
-    <Symbol
-      size={18}
-      symbol={'chevron.down.circle'}
-      weight="semibold"
-      color="labelQuaternary"
-    />
+    <Box
+      as={motion.div}
+      animate={dropdownVisible ? { rotate: 180 } : { rotate: 0 }}
+    >
+      <Inline alignVertical="center">
+        <Symbol
+          size={18}
+          symbol={'chevron.down.circle'}
+          weight="semibold"
+          color="labelQuaternary"
+        />
+      </Inline>
+    </Box>
   );
 };

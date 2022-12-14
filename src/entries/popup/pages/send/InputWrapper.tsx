@@ -17,6 +17,7 @@ export const InputWrapper = ({
   onActionClose: () => void;
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
+
   return (
     <Box style={{ height: 68 }}>
       <Box
@@ -46,6 +47,7 @@ export const InputWrapper = ({
               <InputActionButon
                 showClose={showActionClose}
                 onClose={onActionClose}
+                dropdownVisible={showDropdown}
               />
             </Column>
           </Columns>
@@ -59,7 +61,6 @@ export const InputWrapper = ({
             background="surfaceSecondaryElevated"
             key="address-dropdown"
             initial={{ opacity: 0, height: 8 }}
-            transition={{ duration: 0.01 }}
             animate={
               showDropdown
                 ? {
@@ -156,8 +157,6 @@ export const InputWrapper = ({
               </Text>
             </Stack>
           </Box>
-          {/* )} */}
-          {/* </AnimatePresence> */}
         </Box>
       </Box>
     </Box>

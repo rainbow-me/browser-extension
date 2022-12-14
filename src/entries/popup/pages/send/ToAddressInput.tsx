@@ -31,6 +31,7 @@ export const ToAddressInput = ({
     () => (!toAddressOrName || !toEnsName) && !isAddress(toAddressOrName),
     [toAddressOrName, toEnsName],
   );
+
   return (
     <>
       <InputWrapper
