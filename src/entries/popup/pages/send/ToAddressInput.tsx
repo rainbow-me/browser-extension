@@ -2,6 +2,7 @@ import { isAddress } from 'ethers/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, {
   InputHTMLAttributes,
+  ReactNode,
   useCallback,
   useMemo,
   useRef,
@@ -10,8 +11,9 @@ import React, {
 import { Address, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { truncateAddress } from '~/core/utils/address';
-import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import {
   DEFAULT_ACCOUNT,
@@ -22,6 +24,28 @@ import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useBackgroundAccounts } from '../../hooks/useBackgroundAccounts';
 
 import { InputWrapper } from './InputWrapper';
+import {
+  addressToInputHighlightWrapperStyleDark,
+  addressToInputHighlightWrapperStyleLight,
+} from './ToAddressInpnut.css';
+
+function RowHighlightWrapper({ children }: { children: ReactNode }) {
+  const { currentTheme } = useCurrentThemeStore();
+  return (
+    <Inset>
+      <Box
+        borderRadius="12px"
+        className={
+          currentTheme === 'dark'
+            ? addressToInputHighlightWrapperStyleDark
+            : addressToInputHighlightWrapperStyleLight
+        }
+      >
+        {children}
+      </Box>
+    </Inset>
+  );
+}
 
 const WalletSection = ({
   title,
@@ -33,20 +57,25 @@ const WalletSection = ({
   onClickWallet: (address: Address) => void;
 }) => {
   return wallets.length ? (
-    <Stack space="16px">
-      <Inline alignVertical="center" space="4px">
-        <Symbol
-          symbol="lock.square.stack.fill"
-          weight="semibold"
-          color="labelTertiary"
-          size={14}
-        />
-        <Text size="14pt" weight="semibold" color="labelTertiary">
-          {title}
-        </Text>
-      </Inline>
-      {wallets.map((wallet) => (
-        <WalletRow onClick={onClickWallet} key={wallet} wallet={wallet} />
+    <Stack>
+      <Box paddingBottom="8px">
+        <Inline alignVertical="center" space="4px">
+          <Symbol
+            symbol="lock.square.stack.fill"
+            weight="semibold"
+            color="labelTertiary"
+            size={14}
+          />
+          <Text size="14pt" weight="semibold" color="labelTertiary">
+            {title}
+          </Text>
+        </Inline>
+      </Box>
+
+      {wallets.map((wallet, i) => (
+        <RowHighlightWrapper key={i}>
+          <WalletRow onClick={onClickWallet} key={wallet} wallet={wallet} />
+        </RowHighlightWrapper>
       ))}
     </Stack>
   ) : null;
@@ -63,7 +92,7 @@ const WalletRow = ({
     address: wallet,
   });
   return (
-    <Box key={wallet} onClick={() => onClick(wallet)}>
+    <Box key={wallet} onClick={() => onClick(wallet)} paddingVertical="8px">
       <Inline alignVertical="center" space="8px">
         <WalletAvatar size={36} address={wallet} emojiSize="20pt" />
         <Stack space="8px">
