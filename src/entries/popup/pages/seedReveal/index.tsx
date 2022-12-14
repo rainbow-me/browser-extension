@@ -15,6 +15,7 @@ import {
   Text,
 } from '~/design-system';
 
+import { FullScreenContainerWithNavbar } from '../../components/FullScreen/FullScreenContainerWithNavbar';
 import { exportWallet } from '../../handlers/wallet';
 
 export function SeedReveal() {
@@ -40,16 +41,7 @@ export function SeedReveal() {
   }, [seed]);
 
   return (
-    <Box
-      borderColor="separatorSecondary"
-      borderWidth="1px"
-      background="surfaceSecondary"
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      padding="20px"
-      style={{ paddingTop: '56px' }}
-    >
+    <FullScreenContainerWithNavbar>
       <Box alignItems="center" paddingBottom="10px">
         <Inline
           wrap={false}
@@ -219,6 +211,6 @@ export function SeedReveal() {
           </Button>
         </Rows>
       </Box>
-    </Box>
+    </FullScreenContainerWithNavbar>
   );
 }
