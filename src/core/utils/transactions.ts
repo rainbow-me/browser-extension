@@ -621,6 +621,7 @@ export async function addNewTransaction({
   );
 
   setPendingTransactions({
+    address,
     pendingTransactions: [newPendingTransaction, ...pendingTransactions],
   });
   setNonce({
