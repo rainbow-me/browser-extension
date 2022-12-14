@@ -1,5 +1,5 @@
-import { passwordStrength } from 'check-password-strength';
-import React, { useEffect, useState } from 'react';
+import { Options, passwordStrength } from 'check-password-strength';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -21,16 +21,13 @@ import { updatePassword } from '../../handlers/wallet';
 
 const strengthMeta = [
   {
-    text: i18n.t('passwords.too_weak'),
-    color: 'red',
+    text: i18n.t('passwords.weak'),
+    color: 'orange',
+    symbol: 'checkmark.shield.fill',
   },
   {
     text: i18n.t('passwords.weak'),
     color: 'orange',
-  },
-  {
-    text: i18n.t('passwords.weak'),
-    color: 'yellow',
     symbol: 'checkmark.shield.fill',
   },
   {
@@ -40,23 +37,67 @@ const strengthMeta = [
   },
 ];
 
-export function CreatePassword() {
-  const getPasswordStrength = (password: string) => {
-    return passwordStrength(password).id;
-  };
+const passwordStrengthOptions = [
+  {
+    id: 0,
+    value: 'Too weak',
+    minDiversity: 0,
+    minLength: 0,
+  },
+  {
+    id: 1,
+    value: 'Weak',
+    minDiversity: 0,
+    minLength: 8,
+  },
+  {
+    id: 2,
+    value: 'Strong',
+    minDiversity: 4,
+    minLength: 8,
+  },
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+] as Options;
 
+const getPasswordStrength = (password: string) => {
+  return passwordStrength(password, passwordStrengthOptions).id;
+};
+
+export function CreatePassword() {
   const navigate = useNavigate();
   const [newPassword, setNewPassword] = useState('');
   const [strength, setStrength] = useState<number | null>(null);
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [isValid, setIsValid] = useState(false);
-  const [isMatching, setIsMatching] = useState(false);
+  const [isMatching, setIsMatching] = useState<boolean | null>(null);
 
+  // Check if passwords match
+  const checkIfPasswordsMatch = useCallback(() => {
+    if (
+      newPassword.length > 0 &&
+      newPassword.length === confirmNewPassword.length
+    ) {
+      if (newPassword === confirmNewPassword) {
+        setIsMatching(true);
+        return true;
+      } else {
+        setIsMatching(false);
+        return false;
+      }
+    } else {
+      setIsMatching(null);
+      return null;
+    }
+  }, [confirmNewPassword, newPassword]);
+
+  // Check strength && validity
   useEffect(() => {
     if (newPassword.length > 0) {
       const pwdStrength = getPasswordStrength(newPassword);
       setStrength(pwdStrength);
-      if (pwdStrength > 1) {
+      if (pwdStrength > 0) {
+        checkIfPasswordsMatch();
         setIsValid(true);
       } else {
         setIsValid(false);
@@ -65,22 +106,11 @@ export function CreatePassword() {
       setStrength(null);
       setIsValid(false);
     }
-    if (newPassword.length > 0 && confirmNewPassword.length > 0) {
-      if (newPassword === confirmNewPassword) {
-        setIsMatching(true);
-      } else {
-        setIsMatching(false);
-      }
-    }
-  }, [confirmNewPassword, isMatching, newPassword]);
+  }, [checkIfPasswordsMatch, confirmNewPassword, isMatching, newPassword]);
 
-  useEffect(() => {
-    console.log({
-      newPassword,
-      strength,
-      isValid,
-    });
-  }, [isValid, newPassword, strength]);
+  const handleOnBlur = useCallback(() => {
+    checkIfPasswordsMatch();
+  }, [checkIfPasswordsMatch]);
 
   const handleSetPassword = async () => {
     if (!isValid) return;
@@ -196,6 +226,7 @@ export function CreatePassword() {
                       placeholder={i18n.t('passwords.password')}
                       value={confirmNewPassword}
                       onChange={(e) => setConfirmNewPassword(e.target.value)}
+                      onBlur={handleOnBlur}
                     />
                   </Row>
                   <Row>
@@ -206,7 +237,8 @@ export function CreatePassword() {
                         align="left"
                         color="labelTertiary"
                       >
-                        {confirmNewPassword.length > 0 && !isMatching ? (
+                        {confirmNewPassword.length > 0 &&
+                        isMatching === false ? (
                           i18n.t('passwords.passwords_do_not_match')
                         ) : (
                           <>&nbsp;</>
@@ -223,9 +255,9 @@ export function CreatePassword() {
       <Box width="full" style={{ paddingTop: '210px' }}>
         <Rows alignVertical="top" space="8px">
           <Button
-            color={isValid && isMatching ? 'accent' : 'fillSecondary'}
+            color={isValid && isMatching ? 'accent' : 'labelQuaternary'}
             height="44px"
-            variant={isValid && isMatching ? 'flat' : 'stroked'}
+            variant={isValid && isMatching ? 'flat' : 'disabled'}
             width="full"
             onClick={handleSetPassword}
           >
