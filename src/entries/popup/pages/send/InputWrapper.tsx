@@ -5,6 +5,15 @@ import { Box, Column, Columns, Separator, Stack, Text } from '~/design-system';
 
 import { InputActionButon } from './InputActionButton';
 
+const TRANSITION_CONFIG = {
+  height: {
+    type: 'spring',
+    stiffness: 540,
+    damping: 40,
+    mass: 1.2,
+  },
+};
+
 export const InputWrapper = ({
   leftComponent,
   centerComponent,
@@ -31,7 +40,6 @@ export const InputWrapper = ({
           borderRadius="24px"
           paddingHorizontal="20px"
           paddingTop="16px"
-          paddingBottom="8px"
           height="full"
         >
           <Box onClick={openDropdown}>
@@ -58,35 +66,20 @@ export const InputWrapper = ({
 
           <Box
             as={motion.div}
-            paddingHorizontal="12px"
             width="full"
             height="full"
             background="surfaceSecondaryElevated"
             key="address-dropdown"
-            initial={{ height: 8 }}
+            initial={{ height: 16 }}
             animate={
               dropdownVisible
                 ? {
                     height: 'auto',
-                    transition: {
-                      height: {
-                        type: 'spring',
-                        stiffness: 540,
-                        damping: 40,
-                        mass: 1.2,
-                      },
-                    },
+                    transition: TRANSITION_CONFIG,
                   }
                 : {
-                    height: 8,
-                    transition: {
-                      height: {
-                        type: 'spring',
-                        stiffness: 540,
-                        damping: 40,
-                        mass: 1.2,
-                      },
-                    },
+                    height: 16,
+                    transition: TRANSITION_CONFIG,
                   }
             }
           >
@@ -96,7 +89,10 @@ export const InputWrapper = ({
                   <Box paddingVertical="16px">
                     <Separator />
                   </Box>
-                  <Box style={{ maxHeight: 430, overflow: 'scroll' }}>
+                  <Box
+                    style={{ maxHeight: 430, overflow: 'scroll' }}
+                    paddingBottom="16px"
+                  >
                     <Stack space="12px">
                       <Text weight="bold" size="11pt">
                         AAAAAA
