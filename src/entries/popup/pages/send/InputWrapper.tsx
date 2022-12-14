@@ -17,7 +17,7 @@ const TRANSITION_CONFIG = {
 export const InputWrapper = ({
   leftComponent,
   centerComponent,
-  dropdownContent,
+  dropdownComponent,
   dropdownVisible,
   showActionClose,
   onActionClose,
@@ -25,7 +25,7 @@ export const InputWrapper = ({
 }: {
   leftComponent: ReactElement;
   centerComponent: ReactElement;
-  dropdownContent: ReactElement;
+  dropdownComponent: ReactElement;
   showActionClose: boolean;
   dropdownVisible: boolean;
   onActionClose: () => void;
@@ -92,7 +92,7 @@ export const InputWrapper = ({
                     style={{ maxHeight: 430, overflow: 'scroll' }}
                     paddingVertical="16px"
                   >
-                    <Stack space="12px">{dropdownContent}</Stack>
+                    <Stack space="12px">{dropdownComponent}</Stack>
                   </Box>
                 </Box>
               )}

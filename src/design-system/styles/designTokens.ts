@@ -697,6 +697,7 @@ export const symbolNames = selectSymbolNames(
   'arrow.right',
   'eye',
   'eye.slash.fill',
+  'eyes.inverse',
   'exclamationmark.triangle.fill',
   'exclamationmark.triangle',
   'highlighter',

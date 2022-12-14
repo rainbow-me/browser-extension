@@ -11,7 +11,7 @@ import { Address, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { truncateAddress } from '~/core/utils/address';
-import { Box, Inline, Stack, Text } from '~/design-system';
+import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import {
   DEFAULT_ACCOUNT,
@@ -81,10 +81,11 @@ export const ToAddressInput = ({
   );
 
   const { accounts } = useBackgroundAccounts();
-  const wallets: Address[] = [
+  const watchedWallets: Address[] = [
     DEFAULT_ACCOUNT as Address,
     DEFAULT_ACCOUNT_2 as Address,
-  ].concat(accounts);
+  ];
+  const contacts = [DEFAULT_ACCOUNT];
 
   return (
     <>
@@ -139,19 +140,87 @@ export const ToAddressInput = ({
         }
         showActionClose={!!toAddress}
         onActionClose={clearToAddress}
-        dropdownContent={
-          <>
-            {wallets.map((wallet) => (
-              <WalletRow
-                onClick={(adress) => {
-                  setToAddressOrName(adress);
-                  onDropdownAction();
-                }}
-                key={wallet}
-                wallet={wallet}
-              />
-            ))}
-          </>
+        dropdownComponent={
+          <Stack space="16px">
+            {!!contacts.length && (
+              <Stack space="16px">
+                <Inline alignVertical="center" space="4px">
+                  <Symbol
+                    symbol="person.crop.circle.fill"
+                    weight="semibold"
+                    color="labelTertiary"
+                    size={14}
+                  />
+                  <Text size="14pt" weight="semibold" color="labelTertiary">
+                    Contacts
+                  </Text>
+                </Inline>
+                {accounts.map((wallet) => (
+                  <WalletRow
+                    onClick={(adress) => {
+                      setToAddressOrName(adress);
+                      onDropdownAction();
+                    }}
+                    key={wallet}
+                    wallet={wallet}
+                  />
+                ))}
+              </Stack>
+            )}
+
+            {!!accounts.length && (
+              <Stack space="16px">
+                <Inline alignVertical="center" space="4px">
+                  <Symbol
+                    symbol="lock.square.stack.fill"
+                    weight="semibold"
+                    color="labelTertiary"
+                    size={14}
+                  />
+                  <Text size="14pt" weight="semibold" color="labelTertiary">
+                    My wallets
+                  </Text>
+                </Inline>
+                {accounts.map((wallet) => (
+                  <WalletRow
+                    onClick={(adress) => {
+                      setToAddressOrName(adress);
+                      onDropdownAction();
+                    }}
+                    key={wallet}
+                    wallet={wallet}
+                  />
+                ))}
+              </Stack>
+            )}
+
+            {!!watchedWallets.length && (
+              <Stack space="16px">
+                <Inline alignVertical="center" space="4px">
+                  <Symbol
+                    symbol="eyes.inverse"
+                    weight="semibold"
+                    color="labelTertiary"
+                    size={14}
+                  />
+                  <Text size="14pt" weight="semibold" color="labelTertiary">
+                    Watching
+                  </Text>
+                </Inline>
+
+                {watchedWallets.map((wallet) => (
+                  <WalletRow
+                    onClick={(adress) => {
+                      setToAddressOrName(adress);
+                      onDropdownAction();
+                    }}
+                    key={wallet}
+                    wallet={wallet}
+                  />
+                ))}
+              </Stack>
+            )}
+          </Stack>
         }
         dropdownVisible={dropdownVisible}
         onDropdownAction={onDropdownAction}
