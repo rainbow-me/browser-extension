@@ -135,127 +135,146 @@ export function Send() {
     <AccentColorProviderWrapper
       color={asset?.colors?.primary || asset?.colors?.fallback}
     >
-      <Box style={{ overflow: 'auto' }} paddingHorizontal="12px" height="full">
-        <Rows space="8px">
-          <Row>
-            <ToAddressInput
-              toAddress={toAddress}
-              toEnsName={toEnsName}
-              toAddressOrName={toAddressOrName}
-              clearToAddress={clearToAddress}
-              handleToAddressChange={handleToAddressChange}
-              setToAddressOrName={setToAddressOrName}
-            />
-          </Row>
+      <Box
+        background="surfaceSecondary"
+        style={{ height: 535, paddingBottom: 19 }}
+        paddingHorizontal="12px"
+      >
+        <Rows space="8px" alignVertical="top">
+          <Rows space="8px" alignVertical="top">
+            <Row height="content">
+              <ToAddressInput
+                toAddress={toAddress}
+                toEnsName={toEnsName}
+                toAddressOrName={toAddressOrName}
+                clearToAddress={clearToAddress}
+                handleToAddressChange={handleToAddressChange}
+                setToAddressOrName={setToAddressOrName}
+              />
+            </Row>
 
-          <Row>
-            <Box
-              background="surfaceSecondaryElevated"
-              borderRadius="24px"
-              width="full"
-            >
-              <TokenInput asset={asset} shuffleAssetIndex={shuffleAssetIndex} />
-              {asset ? (
-                <Box paddingBottom="20px" paddingHorizontal="20px">
-                  <Stack space="16px">
-                    <Separator color="separatorSecondary" />
-                    <Box>
-                      <Rows space="16px">
-                        <Row>
-                          <Inline
-                            alignVertical="center"
-                            alignHorizontal="justify"
-                          >
-                            <Input
-                              value={independentAmount}
-                              placeholder={`0.00 ${asset?.symbol}`}
-                              borderColor="accent"
-                              onChange={handleAmountChange}
-                              height="56px"
-                              variant="bordered"
-                              innerRef={independentFieldRef}
-                              style={{
-                                paddingRight: 80,
-                              }}
-                            />
-                            <Box position="absolute" style={{ right: 48 }}>
-                              <Button
-                                onClick={setMaxAssetAmount}
-                                color="accent"
-                                height="32px"
-                                variant="raised"
-                              >
-                                {i18n.t('send.max')}
-                              </Button>
-                            </Box>
-                          </Inline>
-                        </Row>
-
-                        <Row>
-                          <Inline
-                            alignHorizontal="justify"
-                            alignVertical="center"
-                          >
-                            <Box>
-                              <Text size="12pt" color="label" weight="bold">
-                                {dependentAmount.display}
-                              </Text>
-                            </Box>
-                            <Box onClick={switchIndependentField}>
-                              <Text color="accent" size="12pt" weight="bold">
-                                {i18n.t('send.switch_to')}{' '}
-                                {independentField === 'asset'
-                                  ? currentCurrency
-                                  : asset?.symbol}
-                              </Text>
-                            </Box>
-                          </Inline>
-                        </Row>
-                      </Rows>
-                    </Box>
-                  </Stack>
-                </Box>
-              ) : null}
-            </Box>
-          </Row>
-        </Rows>
-        {asset ? (
-          <Box style={{ paddingTop: 143 }} padding="20px" bottom="0">
-            <Rows space="20px">
-              <Row>
-                <TransactionFee
-                  chainId={chainId}
-                  transactionRequest={transactionRequest}
+            <Row height="content">
+              <Box
+                background="surfaceSecondaryElevated"
+                borderRadius="24px"
+                width="full"
+              >
+                <TokenInput
+                  asset={asset}
+                  shuffleAssetIndex={shuffleAssetIndex}
                 />
-              </Row>
-              <Row>
+                {asset ? (
+                  <Box paddingBottom="20px" paddingHorizontal="20px">
+                    <Stack space="16px">
+                      <Separator color="separatorSecondary" />
+                      <Box>
+                        <Rows space="16px">
+                          <Row>
+                            <Inline
+                              alignVertical="center"
+                              alignHorizontal="justify"
+                            >
+                              <Input
+                                value={independentAmount}
+                                placeholder={`0.00 ${asset?.symbol}`}
+                                borderColor="accent"
+                                onChange={handleAmountChange}
+                                height="56px"
+                                variant="bordered"
+                                innerRef={independentFieldRef}
+                                style={{
+                                  paddingRight: 80,
+                                }}
+                              />
+                              <Box position="absolute" style={{ right: 48 }}>
+                                <Button
+                                  onClick={setMaxAssetAmount}
+                                  color="accent"
+                                  height="32px"
+                                  variant="raised"
+                                >
+                                  {i18n.t('send.max')}
+                                </Button>
+                              </Box>
+                            </Inline>
+                          </Row>
+
+                          <Row>
+                            <Inline
+                              alignHorizontal="justify"
+                              alignVertical="center"
+                            >
+                              <Box>
+                                <Text size="12pt" color="label" weight="bold">
+                                  {dependentAmount.display}
+                                </Text>
+                              </Box>
+                              <Box onClick={switchIndependentField}>
+                                <Text color="accent" size="12pt" weight="bold">
+                                  {i18n.t('send.switch_to')}{' '}
+                                  {independentField === 'asset'
+                                    ? currentCurrency
+                                    : asset?.symbol}
+                                </Text>
+                              </Box>
+                            </Inline>
+                          </Row>
+                        </Rows>
+                      </Box>
+                    </Stack>
+                  </Box>
+                ) : null}
+              </Box>
+            </Row>
+          </Rows>
+
+          <Row height="content">
+            {asset ? (
+              <Box paddingHorizontal="8px">
+                <Rows space="20px">
+                  <Row>
+                    <TransactionFee
+                      chainId={chainId}
+                      transactionRequest={transactionRequest}
+                    />
+                  </Row>
+                  <Row>
+                    <Button
+                      onClick={handleSend}
+                      height="44px"
+                      variant="flat"
+                      color="accent"
+                      width="full"
+                    >
+                      <Text color="label" size="14pt" weight="bold">
+                        {i18n.t(
+                          `send.${
+                            sending
+                              ? 'button_label_sending'
+                              : 'button_label_send'
+                          }`,
+                        )}
+                      </Text>
+                    </Button>
+                  </Row>
+                </Rows>
+              </Box>
+            ) : (
+              <Box paddingHorizontal="8px">
                 <Button
-                  onClick={handleSend}
                   height="44px"
                   variant="flat"
                   color="accent"
                   width="full"
                 >
-                  <Text color="label" size="14pt" weight="bold">
-                    {i18n.t(
-                      `send.${
-                        sending ? 'button_label_sending' : 'button_label_send'
-                      }`,
-                    )}
+                  <Text color="labelQuaternary" size="14pt" weight="bold">
+                    {i18n.t('send.enter_address_or_amount')}
                   </Text>
                 </Button>
-              </Row>
-            </Rows>
-          </Box>
-        ) : (
-          <Box style={{ paddingTop: 310 }} paddingBottom="20px">
-            <Button height="44px" variant="flat" color="accent" width="full">
-              <Text color="labelQuaternary" size="14pt" weight="bold">
-                {i18n.t('send.enter_address_or_amount')}
-              </Text>
-            </Button>
-          </Box>
-        )}
+              </Box>
+            )}
+          </Row>
+        </Rows>
       </Box>
     </AccentColorProviderWrapper>
   );
