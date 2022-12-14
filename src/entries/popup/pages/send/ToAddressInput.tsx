@@ -23,12 +23,86 @@ import { useBackgroundAccounts } from '../../hooks/useBackgroundAccounts';
 
 import { InputWrapper } from './InputWrapper';
 
+const WalletsList = ({
+  contacts,
+  wallets,
+  watchedWallets,
+  onClickWallet,
+}: {
+  contacts: Address[];
+  wallets: Address[];
+  watchedWallets: Address[];
+  onClickWallet: (address: Address) => void;
+}) => {
+  return (
+    <Stack space="16px">
+      {!!contacts.length && (
+        <Stack space="16px">
+          <Inline alignVertical="center" space="4px">
+            <Symbol
+              symbol="person.crop.circle.fill"
+              weight="semibold"
+              color="labelTertiary"
+              size={14}
+            />
+            <Text size="14pt" weight="semibold" color="labelTertiary">
+              {i18n.t('send.wallets_list.contacts')}
+            </Text>
+          </Inline>
+          {contacts.map((wallet) => (
+            <WalletRow onClick={onClickWallet} key={wallet} wallet={wallet} />
+          ))}
+        </Stack>
+      )}
+
+      {!!wallets.length && (
+        <Stack space="16px">
+          <Inline alignVertical="center" space="4px">
+            <Symbol
+              symbol="lock.square.stack.fill"
+              weight="semibold"
+              color="labelTertiary"
+              size={14}
+            />
+            <Text size="14pt" weight="semibold" color="labelTertiary">
+              {i18n.t('send.wallets_list.my_wallets')}
+            </Text>
+          </Inline>
+          {wallets.map((wallet) => (
+            <WalletRow onClick={onClickWallet} key={wallet} wallet={wallet} />
+          ))}
+        </Stack>
+      )}
+
+      {!!watchedWallets.length && (
+        <Stack space="16px">
+          <Inline alignVertical="center" space="4px">
+            <Symbol
+              symbol="eyes.inverse"
+              weight="semibold"
+              color="labelTertiary"
+              size={14}
+            />
+            <Text size="14pt" weight="semibold" color="labelTertiary">
+              {i18n.t('send.wallets_list.watched_wallets')}
+            </Text>
+          </Inline>
+
+          {watchedWallets.map((wallet) => (
+            <WalletRow onClick={onClickWallet} key={wallet} wallet={wallet} />
+          ))}
+        </Stack>
+      )}
+    </Stack>
+  );
+};
+
 const WalletRow = ({
   wallet,
   onClick,
 }: {
   wallet: Address;
-  onClick: (addressOrName: string) => void;
+  onClick: (address: Address) => void;
 }) => {
   const { data: ensName } = useEnsName({
     address: wallet,
@@ -85,7 +159,7 @@ export const ToAddressInput = ({
     DEFAULT_ACCOUNT as Address,
     DEFAULT_ACCOUNT_2 as Address,
   ];
-  const contacts = [DEFAULT_ACCOUNT];
+  const contacts = [DEFAULT_ACCOUNT as Address];
 
   return (
     <>
@@ -141,86 +215,15 @@ export const ToAddressInput = ({
         showActionClose={!!toAddress}
         onActionClose={clearToAddress}
         dropdownComponent={
-          <Stack space="16px">
-            {!!contacts.length && (
-              <Stack space="16px">
-                <Inline alignVertical="center" space="4px">
-                  <Symbol
-                    symbol="person.crop.circle.fill"
-                    weight="semibold"
-                    color="labelTertiary"
-                    size={14}
-                  />
-                  <Text size="14pt" weight="semibold" color="labelTertiary">
-                    Contacts
-                  </Text>
-                </Inline>
-                {accounts.map((wallet) => (
-                  <WalletRow
-                    onClick={(adress) => {
-                      setToAddressOrName(adress);
-                      onDropdownAction();
-                    }}
-                    key={wallet}
-                    wallet={wallet}
-                  />
-                ))}
-              </Stack>
-            )}
-
-            {!!accounts.length && (
-              <Stack space="16px">
-                <Inline alignVertical="center" space="4px">
-                  <Symbol
-                    symbol="lock.square.stack.fill"
-                    weight="semibold"
-                    color="labelTertiary"
-                    size={14}
-                  />
-                  <Text size="14pt" weight="semibold" color="labelTertiary">
-                    My wallets
-                  </Text>
-                </Inline>
-                {accounts.map((wallet) => (
-                  <WalletRow
-                    onClick={(adress) => {
-                      setToAddressOrName(adress);
-                      onDropdownAction();
-                    }}
-                    key={wallet}
-                    wallet={wallet}
-                  />
-                ))}
-              </Stack>
-            )}
-
-            {!!watchedWallets.length && (
-              <Stack space="16px">
-                <Inline alignVertical="center" space="4px">
-                  <Symbol
-                    symbol="eyes.inverse"
-                    weight="semibold"
-                    color="labelTertiary"
-                    size={14}
-                  />
-                  <Text size="14pt" weight="semibold" color="labelTertiary">
-                    Watching
-                  </Text>
-                </Inline>
-
-                {watchedWallets.map((wallet) => (
-                  <WalletRow
-                    onClick={(adress) => {
-                      setToAddressOrName(adress);
-                      onDropdownAction();
-                    }}
-                    key={wallet}
-                    wallet={wallet}
-                  />
-                ))}
-              </Stack>
-            )}
-          </Stack>
+          <WalletsList
+            contacts={contacts}
+            wallets={accounts}
+            watchedWallets={watchedWallets}
+            onClickWallet={(address) => {
+              setToAddressOrName(address);
+              onDropdownAction();
+            }}
+          />
         }
         dropdownVisible={dropdownVisible}
         onDropdownAction={onDropdownAction}
