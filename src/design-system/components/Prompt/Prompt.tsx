@@ -17,7 +17,7 @@ export const Prompt = ({
     <AnimatePresence>
       {show && (
         <Box
-          position="absolute"
+          position="fixed"
           top="0"
           bottom="0"
           left="0"
