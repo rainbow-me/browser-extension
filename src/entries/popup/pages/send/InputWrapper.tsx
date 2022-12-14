@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
-import React, { ReactElement, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import React, { ReactElement, useCallback, useState } from 'react';
 
 import { Box, Column, Columns, Separator, Stack, Text } from '~/design-system';
 
@@ -16,146 +16,180 @@ export const InputWrapper = ({
   showActionClose: boolean;
   onActionClose: () => void;
 }) => {
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+
+  const openDropdown = useCallback(
+    () => setDropdownVisible((dropdownVisible) => !dropdownVisible),
+    [],
+  );
 
   return (
     <Box style={{ height: 68 }}>
-      <Box
-        width="full"
-        onClick={() => setShowDropdown(true)}
-        onBlur={() => setShowDropdown(false)}
-        position="absolute"
-        paddingHorizontal="12px"
-        style={{ left: 0 }}
-      >
+      <Box width="full" position="relative" style={{ left: 0 }}>
         <Box
           as={motion.div}
           background="surfaceSecondaryElevated"
           borderRadius="24px"
           paddingHorizontal="20px"
           paddingTop="16px"
-          paddingBottom="6px"
+          paddingBottom="8px"
+          style={{ left: 0 }}
+          height="full"
         >
-          <Columns alignVertical="center" alignHorizontal="justify" space="8px">
-            <Column width="content">{leftComponent}</Column>
+          <Box onClick={openDropdown}>
+            <Columns
+              alignVertical="center"
+              alignHorizontal="justify"
+              space="8px"
+            >
+              <Column width="content">{leftComponent}</Column>
 
-            <Column>
-              <>{centerComponent}</>
-            </Column>
+              <Column>
+                <>{centerComponent}</>
+              </Column>
 
-            <Column width="content">
-              <InputActionButon
-                showClose={showActionClose}
-                onClose={onActionClose}
-                dropdownVisible={showDropdown}
-              />
-            </Column>
-          </Columns>
+              <Column width="content">
+                <InputActionButon
+                  showClose={showActionClose}
+                  onClose={onActionClose}
+                  dropdownVisible={dropdownVisible}
+                />
+              </Column>
+            </Columns>
+          </Box>
+
           <Box
             as={motion.div}
             paddingHorizontal="12px"
-            style={{
-              left: 0,
-            }}
             width="full"
+            height="full"
             background="surfaceSecondaryElevated"
             key="address-dropdown"
-            initial={{ opacity: 0, height: 8 }}
+            initial={{ height: 8 }}
             animate={
-              showDropdown
+              dropdownVisible
                 ? {
-                    opacity: 1,
                     height: 'auto',
                     transition: {
                       height: {
-                        type: 'tween',
-                        ease: 'backOut',
-                        duration: 0.3,
-                      },
-                      opacity: {
-                        duration: 0.2,
+                        type: 'spring',
+                        stiffness: 540,
+                        damping: 40,
+                        mass: 1.2,
                       },
                     },
                   }
                 : {
-                    opacity: 0,
-                    height: 10,
+                    height: 8,
                     transition: {
                       height: {
-                        type: 'tween',
-                        ease: 'backOut',
-                        duration: 0.3,
-                      },
-                      opacity: {
-                        duration: 0.23,
+                        type: 'spring',
+                        stiffness: 540,
+                        damping: 40,
+                        mass: 1.2,
                       },
                     },
                   }
             }
           >
-            <Box paddingVertical="16px">
-              <Separator />
-            </Box>
-
-            <Stack space="12px">
-              <Text weight="bold" size="11pt">
-                AAAAAA
-              </Text>
-              <Text weight="bold" size="11pt">
-                AAAAAA
-              </Text>
-              <Text weight="bold" size="11pt">
-                AAAAAA
-              </Text>
-              <Text weight="bold" size="11pt">
-                AAAAAA
-              </Text>
-              <Text weight="bold" size="11pt">
-                AAAAAA
-              </Text>
-              <Text weight="bold" size="11pt">
-                AAAAAA
-              </Text>
-              <Text weight="bold" size="11pt">
-                AAAAAA
-              </Text>
-              <Text weight="bold" size="11pt">
-                AAAAAA
-              </Text>
-              <Text weight="bold" size="11pt">
-                AAAAAA
-              </Text>
-              <Text weight="bold" size="11pt">
-                AAAAAA
-              </Text>
-              <Text weight="bold" size="11pt">
-                AAAAAA
-              </Text>
-              <Text weight="bold" size="11pt">
-                AAAAAA
-              </Text>
-              <Text weight="bold" size="11pt">
-                AAAAAA
-              </Text>
-              <Text weight="bold" size="11pt">
-                AAAAAA
-              </Text>{' '}
-              <Text weight="bold" size="11pt">
-                AAAAAA
-              </Text>{' '}
-              <Text weight="bold" size="11pt">
-                AAAAAA
-              </Text>{' '}
-              <Text weight="bold" size="11pt">
-                AAAAAA
-              </Text>{' '}
-              <Text weight="bold" size="11pt">
-                AAAAAA
-              </Text>{' '}
-              <Text weight="bold" size="11pt">
-                AAAAAA
-              </Text>
-            </Stack>
+            <AnimatePresence>
+              {dropdownVisible && (
+                <Box
+                  as={motion.div}
+                  style={{ maxHeight: 455, overflow: 'scroll' }}
+                >
+                  <Box paddingVertical="16px">
+                    <Separator />
+                  </Box>
+                  <Stack space="12px">
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>{' '}
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>{' '}
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>{' '}
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>{' '}
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>{' '}
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>{' '}
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>{' '}
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>{' '}
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>{' '}
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>{' '}
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>{' '}
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>{' '}
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>{' '}
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>{' '}
+                    <Text weight="bold" size="11pt">
+                      AAAAAA
+                    </Text>
+                  </Stack>
+                </Box>
+              )}
+            </AnimatePresence>
           </Box>
         </Box>
       </Box>
