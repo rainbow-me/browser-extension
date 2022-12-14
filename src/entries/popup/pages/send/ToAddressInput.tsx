@@ -58,7 +58,7 @@ const WalletSection = ({
 }) => {
   return wallets.length ? (
     <Stack>
-      <Box paddingBottom="8px">
+      <Box paddingHorizontal="20px" paddingBottom="8px">
         <Inline alignVertical="center" space="4px">
           <Symbol
             symbol="lock.square.stack.fill"
@@ -73,9 +73,13 @@ const WalletSection = ({
       </Box>
 
       {wallets.map((wallet, i) => (
-        <RowHighlightWrapper key={i}>
-          <WalletRow onClick={onClickWallet} key={wallet} wallet={wallet} />
-        </RowHighlightWrapper>
+        <Inset horizontal="8px" key={i}>
+          <RowHighlightWrapper key={i}>
+            <Inset horizontal="12px" key={i}>
+              <WalletRow onClick={onClickWallet} key={wallet} wallet={wallet} />
+            </Inset>
+          </RowHighlightWrapper>
+        </Inset>
       ))}
     </Stack>
   ) : null;
