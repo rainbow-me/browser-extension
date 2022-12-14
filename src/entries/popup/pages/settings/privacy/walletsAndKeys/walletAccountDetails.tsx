@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -15,6 +15,8 @@ import {
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
+
+import { NewWalletPrompt } from './newWalletPrompt';
 
 const MoreInfoButton = ({ wallet }: { wallet: DummyWallet }) => {
   const handleViewPrivateKey = () => {
@@ -79,9 +81,19 @@ const MoreInfoButton = ({ wallet }: { wallet: DummyWallet }) => {
 
 export function AccountDetails() {
   const { state } = useLocation();
-
+  const [showNewWalletPrompt, setShowNewWalletPrompt] = useState(false);
+  const handleOpenNewWalletPrompt = () => {
+    setShowNewWalletPrompt(true);
+  };
+  const handleCloseNewWalletPrompt = () => {
+    setShowNewWalletPrompt(false);
+  };
   return (
     <Box>
+      <NewWalletPrompt
+        show={showNewWalletPrompt}
+        onClose={handleCloseNewWalletPrompt}
+      />
       <Box paddingHorizontal="20px">
         <MenuContainer testId="settings-menu-container">
           <Menu>
@@ -142,6 +154,7 @@ export function AccountDetails() {
                   color="blue"
                 />
               }
+              onClick={handleOpenNewWalletPrompt}
             />
           </Menu>
         </MenuContainer>
