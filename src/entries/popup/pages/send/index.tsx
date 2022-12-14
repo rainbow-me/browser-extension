@@ -247,7 +247,7 @@ export function Send() {
             </Rows>
           </Box>
         ) : (
-          <Box style={{ paddingTop: 340 }}>
+          <Box style={{ paddingTop: 340, zIndex: -1 }}>
             <Button height="44px" variant="flat" color="accent" width="full">
               <Text color="labelQuaternary" size="14pt" weight="bold">
                 {i18n.t('send.enter_address_or_amount')}

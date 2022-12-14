@@ -196,6 +196,7 @@ export function ButtonWrapper({
   return (
     <Box
       as={motion.div}
+      initial={{ zIndex: 0 }}
       whileHover={{ scale: transformScales['1.04'] }}
       whileTap={{ scale: transformScales['0.96'] }}
       transition={transitions.bounce}

@@ -25,15 +25,13 @@ export const InputWrapper = ({
 
   return (
     <Box style={{ height: 68 }}>
-      <Box width="full" position="relative" style={{ left: 0 }}>
+      <Box width="full" position="relative" style={{ zIndex: 1 }}>
         <Box
-          as={motion.div}
           background="surfaceSecondaryElevated"
           borderRadius="24px"
           paddingHorizontal="20px"
           paddingTop="16px"
           paddingBottom="8px"
-          style={{ left: 0 }}
           height="full"
         >
           <Box onClick={openDropdown}>
@@ -94,100 +92,99 @@ export const InputWrapper = ({
           >
             <AnimatePresence>
               {dropdownVisible && (
-                <Box
-                  as={motion.div}
-                  style={{ maxHeight: 455, overflow: 'scroll' }}
-                >
+                <>
                   <Box paddingVertical="16px">
                     <Separator />
                   </Box>
-                  <Stack space="12px">
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>{' '}
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>{' '}
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>{' '}
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>{' '}
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>{' '}
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>{' '}
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>{' '}
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>{' '}
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>{' '}
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>{' '}
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>{' '}
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>{' '}
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>{' '}
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>{' '}
-                    <Text weight="bold" size="11pt">
-                      AAAAAA
-                    </Text>
-                  </Stack>
-                </Box>
+                  <Box style={{ maxHeight: 430, overflow: 'scroll' }}>
+                    <Stack space="12px">
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>{' '}
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>{' '}
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>{' '}
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>{' '}
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>{' '}
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>{' '}
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>{' '}
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>{' '}
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>{' '}
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>{' '}
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>{' '}
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>{' '}
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>{' '}
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>{' '}
+                      <Text weight="bold" size="11pt">
+                        AAAAAA
+                      </Text>
+                    </Stack>
+                  </Box>
+                </>
               )}
             </AnimatePresence>
           </Box>
