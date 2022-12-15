@@ -5,6 +5,7 @@ import { Box } from '~/design-system';
 import {
   AnimatedRouteConfig,
   AnimatedRouteDirection,
+  BackgroundColor,
   animatedRouteTransitionConfig,
 } from '~/design-system/styles/designTokens';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
@@ -13,6 +14,7 @@ type AnimatedRouteProps = {
   children: React.ReactNode;
   direction: AnimatedRouteDirection;
   navbar?: boolean;
+  navbarBackground?: BackgroundColor;
   title?: string;
 };
 
@@ -68,7 +70,7 @@ export const AnimatedRoute = React.forwardRef<
   HTMLDivElement,
   AnimatedRouteProps
 >((props: AnimatedRouteProps, ref) => {
-  const { children, direction, navbar, title } = props;
+  const { children, direction, navbar, title, navbarBackground } = props;
   const { initial, end, exit } = animatedRouteValues[direction];
   const transition = animatedRouteTransitionConfig[direction];
   return (
@@ -86,6 +88,7 @@ export const AnimatedRoute = React.forwardRef<
       {navbar && (
         <Navbar
           title={title || ''}
+          background={navbarBackground}
           leftComponent={
             direction === 'horizontal' ? (
               <Navbar.BackButton />

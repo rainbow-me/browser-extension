@@ -12,7 +12,7 @@ export function SeedBackupPrompt() {
   }, [navigate]);
 
   const handleSkipClick = React.useCallback(async () => {
-    navigate('/');
+    navigate('/create-password');
   }, [navigate]);
 
   return (

@@ -74,7 +74,12 @@
     "switch_to": "Switch to",
     "button_label_send": "Send Transacion",
     "button_label_sending": "Sending",
-    "enter_address_or_amount": "Enter an address or amount"
+    "enter_address_or_amount": "Enter an address or amount",
+    "wallets_list": {
+      "contacts": "Contacts",
+      "my_wallets": "My wallets",
+      "watched_wallets": "Watching"
+    }
   },
   "sign": {
     "title": "Sign"
@@ -236,7 +241,16 @@
     "wrong_password": "Wrong password",
     "new_password": "New password",
     "confirm_password": "Confirm password",
-    "update_password": "Update Password"
+    "update_password": "Update Password",
+    "set_password": "Set Password",
+    "too_weak": "Too weak",
+    "weak": "Weak",
+    "strong": "Strong",
+    "too_short": "Password needs to be at least 8 chars long"
+  },  
+  "create_password": {
+    "title": "Create your password",
+    "description": "Choose a password to secure & lock your wallet."
   },
   "activity": {
     "today": "Today",

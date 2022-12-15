@@ -399,6 +399,9 @@ const boxColorProperties = defineProperties({
       ...pick(semanticColorVars.foregroundColors, [
         'transparent',
         'label',
+        'labelSecondary',
+        'labelTertiary',
+        'labelQuaternary',
         ...separatorColors,
         ...strokeColors,
       ] as const),

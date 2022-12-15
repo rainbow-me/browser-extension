@@ -10,12 +10,14 @@ export function PasswordInput({
   value,
   borderColor,
   onChange,
+  onBlur,
 }: {
   placeholder: string;
   testId?: string;
   value: string;
   borderColor?: BoxStyles['borderColor'];
   onChange: React.ChangeEventHandler<HTMLInputElement>;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
 }) {
   const [visible, setVisible] = useState(false);
   const inputRef = useRef(null);
@@ -53,6 +55,7 @@ export function PasswordInput({
         placeholder={placeholder}
         value={value}
         onChange={handleOnChange}
+        onBlur={onBlur}
         type={visible ? 'text' : 'password'}
         innerRef={inputRef}
         borderColor={borderColor}
