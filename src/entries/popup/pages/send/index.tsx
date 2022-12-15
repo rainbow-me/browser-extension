@@ -35,7 +35,7 @@ import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsse
 import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
 import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
 
-import { SaveContactPrompt } from './SaveContactPrompt';
+import { ContactPrompt } from './ContactPrompt';
 import { ToAddressInput } from './ToAddressInput';
 import { TokenInput } from './TokenInput';
 
@@ -184,7 +184,7 @@ export function Send() {
 
   return (
     <>
-      <SaveContactPrompt address={toAddress || ''} />
+      <ContactPrompt address={toAddress || ''} mode="save" />
       <Navbar
         title={'Send' || ''}
         background={'surfaceSecondary'}
