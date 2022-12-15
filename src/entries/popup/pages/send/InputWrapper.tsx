@@ -84,8 +84,8 @@ export const InputWrapper = ({
           >
             <AnimatePresence>
               {dropdownVisible && (
-                <Box>
-                  <Box paddingTop="16px">
+                <Box marginHorizontal="-20px">
+                  <Box paddingHorizontal="20px" paddingTop="16px">
                     <Separator />
                   </Box>
                   <Box
