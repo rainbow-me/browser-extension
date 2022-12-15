@@ -7,7 +7,6 @@ import {
   Box,
   Button,
   Inline,
-  Inset,
   Stack,
   Symbol,
   Text,
@@ -16,6 +15,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
@@ -99,69 +99,84 @@ const EditContactDropdown = ({
           <Stack space="4px">
             <Stack space="4px">
               <DropdownMenuSeparator />
-              <Bleed horizontal="8px">
-                <Box width="full" padding="8px">
+              <DropdownMenuRadioItem value={'1'}>
+                <Box width="full" marginVertical="-1px">
                   <Inline space="8px" alignVertical="center">
-                    <Symbol
-                      symbol="doc.on.doc.fill"
-                      weight="semibold"
-                      size={14}
-                    />
-                    <Stack space="6px">
-                      <Text weight="semibold" size="14pt" color="label">
-                        Copy address
-                      </Text>
-                      <Text weight="regular" size="11pt" color="labelTertiary">
-                        {truncateAddress(toAddress)}
-                      </Text>
-                    </Stack>
+                    <Box background="blue">
+                      <Bleed vertical="8px">
+                        <Symbol
+                          symbol="doc.on.doc.fill"
+                          weight="semibold"
+                          size={14}
+                        />
+                      </Bleed>
+                    </Box>
+
+                    <Box background="blue">
+                      <Stack space="6px">
+                        <Text weight="semibold" size="14pt" color="label">
+                          Copy address
+                        </Text>
+                        <Text
+                          weight="regular"
+                          size="11pt"
+                          color="labelTertiary"
+                        >
+                          {truncateAddress(toAddress)}
+                        </Text>
+                      </Stack>
+                    </Box>
                   </Inline>
                 </Box>
-                <Box width="full" padding="8px">
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value={'2'}>
+                <Box width="full">
                   <Inline space="8px" alignVertical="center">
-                    <Symbol
-                      symbol="person.crop.circle.fill"
-                      weight="semibold"
-                      size={14}
-                    />
+                    <Bleed vertical="4px">
+                      <Symbol
+                        symbol="person.crop.circle.fill"
+                        weight="semibold"
+                        size={14}
+                      />
+                    </Bleed>
                     <Text weight="semibold" size="14pt" color="label">
                       Edit contact
                     </Text>
                   </Inline>
                 </Box>
-                <Box
-                  width="full"
-                  as="button"
-                  padding="8px"
-                  onClick={viewOnEtherscan}
-                >
-                  <Inset vertical="8px">
-                    <Inline alignVertical="center" alignHorizontal="justify">
-                      <Inline alignVertical="center" space="8px">
+              </DropdownMenuRadioItem>
+
+              <DropdownMenuRadioItem value={'3'}>
+                <Box width="full" as="button" onClick={viewOnEtherscan}>
+                  <Inline alignVertical="center" alignHorizontal="justify">
+                    <Inline alignVertical="center" space="8px">
+                      <Bleed vertical="4px">
                         <Symbol
                           size={12}
                           symbol="binoculars.fill"
                           weight="semibold"
                         />
-                        <Text size="14pt" weight="semibold">
-                          {'View on Etherscan'}
-                        </Text>
-                      </Inline>
+                      </Bleed>
+                      <Text size="14pt" weight="semibold">
+                        {'View on Etherscan'}
+                      </Text>
+                    </Inline>
+                    <Bleed vertical="8px">
                       <Symbol
                         size={12}
                         symbol="arrow.up.forward.circle"
                         weight="semibold"
                         color="labelTertiary"
                       />
-                    </Inline>
-                  </Inset>
+                    </Bleed>
+                  </Inline>
                 </Box>
-              </Bleed>
+              </DropdownMenuRadioItem>
             </Stack>
             <Stack space="4px">
               <DropdownMenuSeparator />
-              <Bleed horizontal="8px">
-                <Box padding="8px">
+              <DropdownMenuRadioItem value={'4'}>
+                <Box>
                   <Inline space="8px" alignVertical="center">
                     <Symbol
                       symbol="trash"
@@ -174,7 +189,7 @@ const EditContactDropdown = ({
                     </Text>
                   </Inline>
                 </Box>
-              </Bleed>
+              </DropdownMenuRadioItem>
             </Stack>
           </Stack>
         </Stack>

@@ -564,6 +564,7 @@ export const space = {
 } as const;
 
 export const negativeSpace = {
+  '-1px': -1,
   '-2px': -2,
   '-3px': -3,
   '-4px': -4,
