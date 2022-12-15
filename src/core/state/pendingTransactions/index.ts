@@ -1,8 +1,10 @@
 import { Address } from 'wagmi';
 import create from 'zustand';
 
-import { RainbowTransaction } from '~/core/types/transactions';
+import { NewTransaction, RainbowTransaction } from '~/core/types/transactions';
+import { parseNewTransaction } from '~/core/utils/transactions';
 
+import { currentCurrencyStore } from '../currentSettings';
 import { createStore } from '../internal/createStore';
 
 export interface PendingTransactionsState {
@@ -25,8 +27,19 @@ export interface PendingTransactionsState {
 
 export const pendingTransactionsStore = createStore<PendingTransactionsState>(
   (set, get) => ({
-    getPendingTransactions: ({ address }) =>
-      address ? get()?.[address]?.pendingTransactions || [] : [],
+    getPendingTransactions: ({ address }) => {
+      if (address) {
+        const { currentCurrency } = currentCurrencyStore.getState();
+        const pendingTransactions = (
+          get()?.[address]?.pendingTransactions || []
+        ).map((tx) =>
+          parseNewTransaction(tx as NewTransaction, currentCurrency),
+        );
+        return pendingTransactions;
+      }
+
+      return [];
+    },
     setPendingTransactions: ({ address, pendingTransactions }) => {
       if (address) {
         set({
