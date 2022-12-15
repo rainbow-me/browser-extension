@@ -98,7 +98,7 @@ export const NewWalletPrompt = ({
             <Row>
               <Button
                 variant="flat"
-                height="44px"
+                height="36px"
                 color="accent"
                 onClick={handleValidateWalletName}
                 width="full"
@@ -109,7 +109,7 @@ export const NewWalletPrompt = ({
             <Row>
               <Button
                 variant="flat"
-                height="44px"
+                height="36px"
                 color="fillSecondary"
                 onClick={handleClose}
                 width="full"
