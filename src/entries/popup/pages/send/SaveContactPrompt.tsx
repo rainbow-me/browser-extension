@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent, useCallback, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { truncateAddress } from '~/core/utils/address';
@@ -15,7 +15,11 @@ export const SaveContactPrompt = ({
   address: Address;
   onClose?: () => void;
 }) => {
-  //   const [name, setName] = useState('');
+  const [, setName] = useState('');
+
+  const handleNameChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    setName(e.target.value);
+  }, []);
 
   //   const handleClose = () => {
   //     onClose?.();
@@ -24,46 +28,53 @@ export const SaveContactPrompt = ({
   return (
     <Prompt show={!!address}>
       <Box alignItems="center" width="full" paddingTop="12px">
-        <Stack alignHorizontal="center" space="24px">
-          <Stack alignHorizontal="center" space="20px">
-            <Text weight="bold" size="16pt" color="label">
-              Save contact
-            </Text>
-            <Separator color="separatorTertiary" />
-            <WalletAvatar address={address} size={44} />
-            <Stack alignHorizontal="center" space="10px">
-              <Input
-                height="32px"
-                variant="transparent"
-                placeholder="Name"
-                style={{ textAlign: 'center' }}
-              />
-              <Text weight="medium" color="labelTertiary" size="12pt">
-                {truncateAddress(address)}
+        <Stack space="20px">
+          <Stack alignHorizontal="center" space="24px">
+            <Stack alignHorizontal="center" space="20px">
+              <Text weight="bold" size="16pt" color="label">
+                Save contact
               </Text>
+              <Box style={{ width: 42 }}>
+                <Separator color="separatorTertiary" strokeWeight="1px" />
+              </Box>
+              <WalletAvatar address={address} size={44} />
+              <Stack alignHorizontal="center" space="10px">
+                <Input
+                  onChange={handleNameChange}
+                  height="44px"
+                  variant="transparent"
+                  placeholder="Name"
+                  style={{ textAlign: 'center' }}
+                />
+                <Text weight="medium" color="labelTertiary" size="12pt">
+                  {truncateAddress(address)}
+                </Text>
+              </Stack>
+              <Box style={{ width: 42 }}>
+                <Separator color="separatorTertiary" strokeWeight="1px" />
+              </Box>
             </Stack>
-            <Separator color="separatorTertiary" />
           </Stack>
-        </Stack>
-        <Stack alignHorizontal="center" space="8px">
-          <Button
-            width="full"
-            color="accent"
-            height="36px"
-            variant="flat"
-            borderRadius="8px"
-          >
-            Add to contacts
-          </Button>
-          <Button
-            width="full"
-            color="fillSecondary"
-            height="36px"
-            variant="raised"
-            borderRadius="8px"
-          >
-            Cancel
-          </Button>
+          <Stack alignHorizontal="center" space="8px">
+            <Button
+              width="full"
+              color="accent"
+              height="36px"
+              variant="flat"
+              borderRadius="9px"
+            >
+              Add to contacts
+            </Button>
+            <Button
+              width="full"
+              color="fillSecondary"
+              height="36px"
+              variant="raised"
+              borderRadius="9px"
+            >
+              Cancel
+            </Button>
+          </Stack>
         </Stack>
       </Box>
     </Prompt>

@@ -723,6 +723,7 @@ export const radii = {
   '3px': 3,
   '6px': 6,
   '8px': 8,
+  '9px': 9,
   '12px': 12,
   '14px': 14,
   '16px': 16,
