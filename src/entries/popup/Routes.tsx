@@ -8,6 +8,7 @@ import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/Animated
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
 import { ConnectedApps } from './pages/ConnectedApps';
 import { Home } from './pages/home';
+import { ImportOrConnect } from './pages/importOrConnect';
 import { SeedBackupPrompt } from './pages/seedBackupPrompt';
 import { SeedReveal } from './pages/seedReveal';
 import { SeedVerify } from './pages/seedVerify';
@@ -54,6 +55,15 @@ export function Routes() {
         element: (
           <AnimatedRoute direction="base">
             <Welcome />
+          </AnimatedRoute>
+        ),
+        background: FullScreenBackground,
+      },
+      {
+        path: '/import-or-connect',
+        element: (
+          <AnimatedRoute direction="horizontal" navbar>
+            <ImportOrConnect />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,

@@ -15,6 +15,10 @@ export function Welcome() {
   const navigate = useNavigate();
   const { setCurrentAddress } = useCurrentAddressStore();
 
+  const handleImportWalletClick = React.useCallback(async () => {
+    navigate('/import-or-connect');
+  }, [navigate]);
+
   const handleCreateNewWalletClick = React.useCallback(async () => {
     const newWalletAddress = await wallet.create();
     setCurrentAddress(newWalletAddress);
@@ -70,6 +74,7 @@ export function Welcome() {
                   height="44px"
                   variant="flat"
                   width="full"
+                  onClick={handleImportWalletClick}
                 >
                   {i18n.t('welcome.import_wallet')}
                 </Button>
