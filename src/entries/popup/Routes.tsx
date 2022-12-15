@@ -27,6 +27,14 @@ import { Welcome } from './pages/welcome';
 
 export function Routes() {
   const location = useLocation();
+
+  React.useEffect(() => {
+    // need to wait a tick for the page to render
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 0);
+  }, [location]);
+
   const routeMatch = matchRoutes(
     [
       {
