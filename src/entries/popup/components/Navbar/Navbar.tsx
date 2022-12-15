@@ -5,12 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Button, ButtonSymbol, Text } from '~/design-system';
 import { ButtonSymbolProps } from '~/design-system/components/ButtonSymbol/ButtonSymbol';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+import { BackgroundColor } from '~/design-system/styles/designTokens';
 
 type NavbarProps = {
   leftComponent?: React.ReactElement;
   rightComponent?: React.ReactElement;
   title?: string;
   titleComponent?: React.ReactElement;
+  background?: BackgroundColor;
 };
 
 export function Navbar({
@@ -18,6 +20,7 @@ export function Navbar({
   rightComponent,
   title,
   titleComponent,
+  background,
 }: NavbarProps) {
   return (
     <Box
@@ -26,6 +29,7 @@ export function Navbar({
       justifyContent="center"
       width="full"
       position="relative"
+      background={background ?? undefined}
       style={{ height: 65 }}
     >
       {leftComponent && (
