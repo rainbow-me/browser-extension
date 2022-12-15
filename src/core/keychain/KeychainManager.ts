@@ -284,7 +284,7 @@ class KeychainManager {
     for (let i = 0; i < keychains.length; i++) {
       const accounts = await keychains[i].getAccounts();
       keychainArrays.push({
-        type: keychains[i].type,
+        type: keychains[i].type as KeychainType,
         accounts,
         imported:
           keychains[i].type === KeychainType.HdKeychain

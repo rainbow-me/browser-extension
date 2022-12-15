@@ -28,6 +28,14 @@ import { Welcome } from './pages/welcome';
 
 export function Routes() {
   const location = useLocation();
+
+  React.useEffect(() => {
+    // need to wait a tick for the page to render
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 0);
+  }, [location]);
+
   const routeMatch = matchRoutes(
     [
       {
@@ -206,8 +214,9 @@ export function Routes() {
         path: '/send',
         element: (
           <AnimatedRoute
-            direction="vertical"
+            direction="horizontal"
             navbar
+            navbarBackground="surfaceSecondary"
             title={i18n.t('send.title')}
           >
             <Send />

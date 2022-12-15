@@ -74,7 +74,12 @@
     "switch_to": "Switch to",
     "button_label_send": "Send Transacion",
     "button_label_sending": "Sending",
-    "enter_address_or_amount": "Enter an address or amount"
+    "enter_address_or_amount": "Enter an address or amount",
+    "wallets_list": {
+      "contacts": "Contacts",
+      "my_wallets": "My wallets",
+      "watched_wallets": "Watching"
+    }
   },
   "sign": {
     "title": "Sign"

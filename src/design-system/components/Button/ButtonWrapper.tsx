@@ -16,7 +16,7 @@ import { ButtonHeight, heightStyles, tintedStyles } from './ButtonWrapper.css';
 
 export type ButtonVariantProps =
   | {
-      color: ButtonColor | TextColor;
+      color: BackgroundColor | ButtonColor | TextColor;
       variant:
         | 'raised'
         | 'flat'
@@ -149,7 +149,7 @@ export const stylesForHeightAndVariant = ({
 export const stylesForVariant = ({
   color,
 }: {
-  color: ButtonColor | TextColor;
+  color: BackgroundColor | ButtonColor | TextColor;
 }): Record<
   ButtonWrapperProps['variant'],
   {
@@ -212,6 +212,7 @@ export function ButtonWrapper({
   return (
     <Box
       as={motion.div}
+      initial={{ zIndex: 0 }}
       whileHover={{ scale: transformScales['1.04'] }}
       whileTap={{ scale: transformScales['0.96'] }}
       transition={transitions.bounce}
