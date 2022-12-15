@@ -25,7 +25,7 @@ export const InputActionButon = ({
       onClick={onClose}
     >
       <Inline height="full" alignHorizontal="center" alignVertical="center">
-        <Symbol size={8} symbol={'xmark'} weight="bold" color="label" />
+        <Symbol size={8} symbol="xmark" weight="bold" color="label" />
       </Inline>
     </Box>
   ) : (

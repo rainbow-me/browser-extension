@@ -12,9 +12,11 @@ import { Address, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
+import { SymbolName } from '~/design-system/styles/designTokens';
 import {
   DEFAULT_ACCOUNT,
   DEFAULT_ACCOUNT_2,
@@ -22,6 +24,7 @@ import {
 
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useBackgroundAccounts } from '../../hooks/useBackgroundAccounts';
+import { useBackgroundWallets } from '../../hooks/useBackgroundWallets';
 
 import { InputWrapper } from './InputWrapper';
 import {
@@ -51,17 +54,19 @@ const WalletSection = ({
   title,
   wallets,
   onClickWallet,
+  symbol,
 }: {
   title: string;
   wallets: Address[];
   onClickWallet: (address: Address) => void;
+  symbol: SymbolName;
 }) => {
   return wallets.length ? (
     <Stack>
       <Box paddingHorizontal="20px" paddingBottom="8px">
         <Inline alignVertical="center" space="4px">
           <Symbol
-            symbol="lock.square.stack.fill"
+            symbol={symbol}
             weight="semibold"
             color="labelTertiary"
             size={14}
@@ -151,9 +156,20 @@ export const ToAddressInput = ({
   );
 
   const { accounts } = useBackgroundAccounts();
+  const { wallets } = useBackgroundWallets();
+
+  const watchedWallets = wallets.filter(
+    (wallet) => wallet.type === KeychainType.ReadOnlyKeychain,
+  );
+  const watchedAccounts = watchedWallets
+    .map((watchedWallet) => watchedWallet.accounts)
+    .flat();
+
   // TODO watched wallets and contacts still don't exist
-  const watchedWallets: Address[] = [DEFAULT_ACCOUNT as Address];
-  const contacts: Address[] = [DEFAULT_ACCOUNT_2 as Address];
+  const contacts: Address[] = [
+    DEFAULT_ACCOUNT as Address,
+    DEFAULT_ACCOUNT_2 as Address,
+  ];
   return (
     <>
       <InputWrapper
@@ -210,18 +226,21 @@ export const ToAddressInput = ({
         dropdownComponent={
           <Stack space="16px">
             <WalletSection
+              symbol="person.crop.circle.fill"
               title={i18n.t('send.wallets_list.contacts')}
               wallets={contacts}
               onClickWallet={selectWalletAndCloseDropdown}
             />
             <WalletSection
+              symbol="lock.square.stack.fill"
               title={i18n.t('send.wallets_list.my_wallets')}
               wallets={accounts}
               onClickWallet={selectWalletAndCloseDropdown}
             />
             <WalletSection
+              symbol="eyes.inverse"
               title={i18n.t('send.wallets_list.watched_wallets')}
-              wallets={watchedWallets}
+              wallets={watchedAccounts}
               onClickWallet={selectWalletAndCloseDropdown}
             />
           </Stack>
