@@ -3,16 +3,18 @@ import React, { CSSProperties, ReactNode } from 'react';
 
 import { Box, Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
+import { Space } from '~/design-system/styles/designTokens';
 
 import { dropdownMenuItemStyles } from './DropdownMenu.css';
 
 interface DropdownMenuContentProps {
   children: ReactNode;
   align?: 'start' | 'center' | 'end';
+  marginRight?: Space;
 }
 
 export function DropdownMenuContent(props: DropdownMenuContentProps) {
-  const { children, align = 'start' } = props;
+  const { children, align = 'start', marginRight } = props;
   return (
     <DropdownMenuPrimitive.Portal>
       <Box
@@ -25,6 +27,7 @@ export function DropdownMenuContent(props: DropdownMenuContentProps) {
           backdropFilter: 'blur(26px)',
           boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
           borderRadius: '16px',
+          marginRight: marginRight ?? '0px',
         }}
         paddingHorizontal="12px"
         paddingVertical="4px"

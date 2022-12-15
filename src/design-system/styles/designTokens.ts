@@ -715,6 +715,8 @@ export const symbolNames = selectSymbolNames(
   'doc.text.magnifyingglass',
   'magnifyingglass.circle',
   'arrow.uturn.down.circle.fill',
+  'doc.on.doc.fill',
+  'trash',
 );
 export type SymbolName = typeof symbolNames[number];
 

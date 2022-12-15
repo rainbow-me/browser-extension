@@ -175,7 +175,7 @@ export function Send() {
           <NavbarContactButton
             onSaveAction={setSaveContactAction}
             toAddress={toAddress}
-            mode="save"
+            mode="edit"
           />
         }
       />
