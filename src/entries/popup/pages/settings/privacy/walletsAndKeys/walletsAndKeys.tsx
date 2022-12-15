@@ -89,6 +89,11 @@ export function WalletsAndKeys() {
                   color="blue"
                 />
               }
+              onClick={() =>
+                navigate(
+                  '/settings/privacy/walletsAndKeys/accountDetails/newSecretPhrase',
+                )
+              }
             />
           </Menu>
         </MenuContainer>

@@ -19,6 +19,8 @@ import { Currency } from './pages/settings/currency';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
 import { ChangePassword } from './pages/settings/privacy/changePassword';
 import { Privacy } from './pages/settings/privacy/privacy';
+import { RecoveryPhrase } from './pages/settings/privacy/walletsAndKeys/newSecretPhrase/recoveryPhrase';
+import { NewSecretPhraseWarning } from './pages/settings/privacy/walletsAndKeys/newSecretPhrase/warning';
 import { AccountDetails } from './pages/settings/privacy/walletsAndKeys/walletAccountDetails';
 import { WalletsAndKeys } from './pages/settings/privacy/walletsAndKeys/walletsAndKeys';
 import { Settings } from './pages/settings/settings';
@@ -203,6 +205,30 @@ export function Routes() {
             )}
           >
             <AccountDetails />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/privacy/walletsAndKeys/accountDetails/newSecretPhrase',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            background="surfaceSecondary"
+          >
+            <NewSecretPhraseWarning />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/privacy/walletsAndKeys/accountDetails/recoveryPhrase',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            background="surfaceSecondary"
+          >
+            <RecoveryPhrase />
           </AnimatedRoute>
         ),
       },

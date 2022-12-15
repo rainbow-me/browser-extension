@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
 import {
   Box,
   Button,
@@ -12,27 +11,18 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import SeedPhraseTable from '~/entries/popup/components/SeedPhraseTable/SeedPhaseTable';
 
-import { FullScreenContainerWithNavbar } from '../../components/FullScreen/FullScreenContainerWithNavbar';
-import SeedPhraseTable from '../../components/SeedPhraseTable/SeedPhaseTable';
-import { exportWallet } from '../../handlers/wallet';
-
-export function SeedReveal() {
+export function RecoveryPhrase() {
   const navigate = useNavigate();
 
-  const [seed, setSeed] = useState('');
-  const { currentAddress } = useCurrentAddressStore();
-
-  useEffect(() => {
-    const init = async () => {
-      const seedPhrase = await exportWallet(currentAddress, '');
-      setSeed(seedPhrase);
-    };
-    init();
-  }, [currentAddress]);
+  const [seed] = useState(
+    // dummy seed for UI
+    'hello hello hello hello hello hello hello hello hello hello hello hello',
+  );
 
   const handleSavedTheseWords = React.useCallback(async () => {
-    navigate('/seed-verify');
+    navigate(-2);
   }, [navigate]);
 
   const handleCopy = useCallback(() => {
@@ -40,8 +30,15 @@ export function SeedReveal() {
   }, [seed]);
 
   return (
-    <FullScreenContainerWithNavbar>
-      <Box alignItems="center" paddingBottom="10px">
+    <Box
+      background="surfaceSecondary"
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      padding="20px"
+      paddingTop="2px"
+    >
+      <Box alignItems="center" paddingBottom="6px" paddingHorizontal="12px">
         <Inline
           wrap={false}
           alignVertical="center"
@@ -50,12 +47,12 @@ export function SeedReveal() {
         >
           <Symbol
             symbol="doc.plaintext"
-            size={16}
+            size={18}
             color="orange"
             weight={'bold'}
           />
           <Text size="16pt" weight="bold" color="label" align="center">
-            {i18n.t('seed_reveal.title')}
+            Your Recovery Phrase
           </Text>
         </Inline>
         <Box padding="16px" paddingTop="10px">
@@ -65,19 +62,20 @@ export function SeedReveal() {
             color="labelTertiary"
             align="center"
           >
-            {i18n.t('seed_reveal.write_down_seed_importance')}
+            Anyone who has these words can access your entire wallet! You should
+            never share them.
           </Text>
         </Box>
       </Box>
       <Box width="full" style={{ width: '106px' }}>
         <Separator color="separatorTertiary" strokeWeight="1px" />
       </Box>
-      <Box paddingTop="28px">
+      <Box paddingTop="24px">
         <SeedPhraseTable seed={seed} />
-        <Box>
+        <Box padding="12px">
           <Button
             color="accent"
-            height="44px"
+            height="32px"
             variant="transparent"
             width="full"
             onClick={handleCopy}
@@ -87,7 +85,7 @@ export function SeedReveal() {
           </Button>
         </Box>
       </Box>
-      <Box width="full" style={{ paddingTop: '100px' }}>
+      <Box width="full" paddingTop="80px">
         <Rows alignVertical="top" space="8px">
           <Button
             color="accent"
@@ -102,6 +100,6 @@ export function SeedReveal() {
           </Button>
         </Rows>
       </Box>
-    </FullScreenContainerWithNavbar>
+    </Box>
   );
 }
