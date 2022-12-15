@@ -6,7 +6,6 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
@@ -21,7 +20,6 @@ import {
   Rows,
   Separator,
   Stack,
-  Symbol,
   Text,
 } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
@@ -29,13 +27,13 @@ import { foregroundColors } from '~/design-system/styles/designTokens';
 
 import { Navbar } from '../../components/Navbar/Navbar';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
-import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { sendTransaction } from '../../handlers/wallet';
 import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsset';
 import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
 import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
 
 import { ContactPrompt } from './ContactPrompt';
+import { NavbarContactButton } from './NavbarContactButton';
 import { ToAddressInput } from './ToAddressInput';
 import { TokenInput } from './TokenInput';
 
@@ -55,51 +53,6 @@ const AccentColorProviderWrapper = ({
     <AccentColorProvider color={color ?? defaultColor}>
       {children}
     </AccentColorProvider>
-  );
-};
-
-const SaveButton = ({
-  toAddress,
-  onSaveAction,
-}: {
-  toAddress?: Address;
-  onSaveAction: React.Dispatch<
-    React.SetStateAction<{
-      show: boolean;
-      mode: 'save' | 'remove';
-    }>
-  >;
-}) => {
-  const openSavePrompt = useCallback(() => {
-    onSaveAction({ show: true, mode: 'save' });
-  }, [onSaveAction]);
-
-  return (
-    <Button
-      color="surfaceSecondaryElevated"
-      height="28px"
-      variant="flat"
-      onClick={openSavePrompt}
-    >
-      <Inline space="4px" alignVertical="center">
-        {toAddress ? (
-          <WalletAvatar size={16} address={toAddress} emojiSize="11pt" />
-        ) : (
-          <Box position="relative" paddingRight="2px">
-            <Symbol
-              weight="semibold"
-              symbol="person.crop.circle.fill.badge.plus"
-              size={16}
-              color="labelSecondary"
-            />
-          </Box>
-        )}
-
-        <Text weight="semibold" size="14pt" color="labelSecondary">
-          Save
-        </Text>
-      </Inline>
-    </Button>
   );
 };
 
@@ -219,9 +172,10 @@ export function Send() {
         background={'surfaceSecondary'}
         leftComponent={<Navbar.BackButton />}
         rightComponent={
-          <SaveButton
+          <NavbarContactButton
             onSaveAction={setSaveContactAction}
             toAddress={toAddress}
+            mode="save"
           />
         }
       />
