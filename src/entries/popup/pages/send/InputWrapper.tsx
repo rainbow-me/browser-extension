@@ -40,6 +40,8 @@ export const InputWrapper = ({
           paddingHorizontal="20px"
           paddingTop="16px"
           height="full"
+          borderWidth="1px"
+          borderColor="buttonStroke"
         >
           <Box onClick={onDropdownAction}>
             <Columns

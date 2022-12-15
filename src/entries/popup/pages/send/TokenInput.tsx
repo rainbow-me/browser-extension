@@ -22,6 +22,8 @@ export const TokenInput = ({
       paddingHorizontal="20px"
       borderRadius="24px"
       width="full"
+      borderWidth="1px"
+      borderColor="buttonStroke"
     >
       <Stack space="16px">
         <Inline alignHorizontal="justify" alignVertical="center" space="8px">
