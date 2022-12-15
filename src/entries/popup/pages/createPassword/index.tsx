@@ -21,14 +21,14 @@ import { updatePassword } from '../../handlers/wallet';
 
 const strengthMeta = [
   {
-    text: i18n.t('passwords.weak'),
+    text: i18n.t('passwords.too_weak'),
     color: 'orange',
-    symbol: 'checkmark.shield.fill',
+    symbol: 'exclamationmark.triangle.fill',
   },
   {
     text: i18n.t('passwords.weak'),
     color: 'orange',
-    symbol: 'checkmark.shield.fill',
+    symbol: 'exclamationmark.triangle.fill',
   },
   {
     text: i18n.t('passwords.strong'),
@@ -168,6 +168,20 @@ export function CreatePassword() {
                     </Text>
 
                     <Inline space="2px" wrap={false} alignVertical="center">
+                      <Text
+                        size="12pt"
+                        weight="regular"
+                        color={
+                          (strength &&
+                            (strengthMeta[strength as number]
+                              .color as TextColor)) ||
+                          'transparent'
+                        }
+                      >
+                        {(strength && strengthMeta[strength].text) || (
+                          <>&nbsp;</>
+                        )}
+                      </Text>
                       {strength && strengthMeta[strength].symbol ? (
                         <Symbol
                           symbol={strengthMeta[strength].symbol as SymbolName}
@@ -183,20 +197,6 @@ export function CreatePassword() {
                           weight={'bold'}
                         />
                       )}
-                      <Text
-                        size="12pt"
-                        weight="regular"
-                        color={
-                          (strength &&
-                            (strengthMeta[strength as number]
-                              .color as TextColor)) ||
-                          'transparent'
-                        }
-                      >
-                        {(strength && strengthMeta[strength].text) || (
-                          <>&nbsp;</>
-                        )}
-                      </Text>
                     </Inline>
                   </Inline>
                 </Box>

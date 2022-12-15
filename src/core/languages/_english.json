@@ -230,7 +230,6 @@
     "set_password": "Set Password",
     "too_weak": "Too weak",
     "weak": "Weak",
-    "medium": "Medium",
     "strong": "Strong",
     "too_short": "Password needs to be at least 8 chars long"
   },  
