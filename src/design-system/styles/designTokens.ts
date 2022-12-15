@@ -670,6 +670,7 @@ export const symbolNames = selectSymbolNames(
   'gearshape.fill',
   'qrcode',
   'person.crop.circle.fill',
+  'person.crop.circle.fill.badge.plus',
   'binoculars.fill',
   'circle.fill',
   'checkmark.circle.fill',

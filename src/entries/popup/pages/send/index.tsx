@@ -16,16 +16,20 @@ import {
   Box,
   Button,
   Inline,
+  Inset,
   Row,
   Rows,
   Separator,
   Stack,
+  Symbol,
   Text,
 } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { foregroundColors } from '~/design-system/styles/designTokens';
 
+import { Navbar } from '../../components/Navbar/Navbar';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
+import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { sendTransaction } from '../../handlers/wallet';
 import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsset';
 import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
@@ -153,154 +157,190 @@ export function Send() {
   }, [asset, assetAmount, fromAddress, toAddress, value, chainId, data]);
 
   return (
-    <Box
-      background="surfaceSecondary"
-      style={{ height: 535, paddingBottom: 19 }}
-      paddingHorizontal="12px"
-    >
-      <Rows space="8px" alignVertical="top">
+    <>
+      <Navbar
+        title={'Send' || ''}
+        background={'surfaceSecondary'}
+        leftComponent={<Navbar.BackButton />}
+        rightComponent={
+          <Box borderRadius="28px" background="surfaceSecondary">
+            <Inset vertical="6px" left="10px" right="12px">
+              <Inline alignVertical="center" space="4px">
+                {toAddress ? (
+                  <WalletAvatar
+                    size={16}
+                    address={toAddress}
+                    emojiSize="11pt"
+                  />
+                ) : (
+                  <Symbol
+                    weight="semibold"
+                    symbol="person.crop.circle.fill.badge.plus"
+                    size={16}
+                    color="labelSecondary"
+                  />
+                )}
+                <Text weight="semibold" size="14pt" color="labelSecondary">
+                  Save
+                </Text>
+              </Inline>
+            </Inset>
+          </Box>
+        }
+      />
+      <Box
+        background="surfaceSecondary"
+        style={{ height: 535, paddingBottom: 19 }}
+        paddingHorizontal="12px"
+      >
         <Rows space="8px" alignVertical="top">
-          <Row height="content">
-            <ToAddressInput
-              toAddress={toAddress}
-              toEnsName={toEnsName}
-              toAddressOrName={toAddressOrName}
-              clearToAddress={clearToAddress}
-              handleToAddressChange={handleToAddressChange}
-              setToAddressOrName={setToAddressOrName}
-            />
-          </Row>
+          <Rows space="8px" alignVertical="top">
+            <Row height="content">
+              <ToAddressInput
+                toAddress={toAddress}
+                toEnsName={toEnsName}
+                toAddressOrName={toAddressOrName}
+                clearToAddress={clearToAddress}
+                handleToAddressChange={handleToAddressChange}
+                setToAddressOrName={setToAddressOrName}
+              />
+            </Row>
 
-          <Row height="content">
-            <AccentColorProviderWrapper
-              color={asset?.colors?.primary || asset?.colors?.fallback}
-            >
-              <Box
-                background="surfaceSecondaryElevated"
-                borderRadius="24px"
-                width="full"
+            <Row height="content">
+              <AccentColorProviderWrapper
+                color={asset?.colors?.primary || asset?.colors?.fallback}
               >
-                <TokenInput
-                  asset={asset}
-                  shuffleAssetIndex={shuffleAssetIndex}
-                />
-                {asset ? (
-                  <Box paddingBottom="20px" paddingHorizontal="20px">
-                    <Stack space="16px">
-                      <Separator color="separatorSecondary" />
-                      <Box>
-                        <Rows space="16px">
-                          <Row>
-                            <Inline
-                              alignVertical="center"
-                              alignHorizontal="justify"
-                            >
-                              <Input
-                                value={independentAmount}
-                                placeholder={`0.00 ${asset?.symbol}`}
-                                borderColor="accent"
-                                onChange={handleAmountChange}
-                                height="56px"
-                                variant="bordered"
-                                innerRef={independentFieldRef}
-                                style={{
-                                  paddingRight: 80,
-                                }}
-                              />
-                              <Box position="absolute" style={{ right: 48 }}>
-                                <Button
-                                  onClick={setMaxAssetAmount}
-                                  color="accent"
-                                  height="32px"
-                                  variant="raised"
-                                >
-                                  {i18n.t('send.max')}
-                                </Button>
-                              </Box>
-                            </Inline>
-                          </Row>
+                <Box
+                  background="surfaceSecondaryElevated"
+                  borderRadius="24px"
+                  width="full"
+                >
+                  <TokenInput
+                    asset={asset}
+                    shuffleAssetIndex={shuffleAssetIndex}
+                  />
+                  {asset ? (
+                    <Box paddingBottom="20px" paddingHorizontal="20px">
+                      <Stack space="16px">
+                        <Separator color="separatorSecondary" />
+                        <Box>
+                          <Rows space="16px">
+                            <Row>
+                              <Inline
+                                alignVertical="center"
+                                alignHorizontal="justify"
+                              >
+                                <Input
+                                  value={independentAmount}
+                                  placeholder={`0.00 ${asset?.symbol}`}
+                                  borderColor="accent"
+                                  onChange={handleAmountChange}
+                                  height="56px"
+                                  variant="bordered"
+                                  innerRef={independentFieldRef}
+                                  style={{
+                                    paddingRight: 80,
+                                  }}
+                                />
+                                <Box position="absolute" style={{ right: 48 }}>
+                                  <Button
+                                    onClick={setMaxAssetAmount}
+                                    color="accent"
+                                    height="32px"
+                                    variant="raised"
+                                  >
+                                    {i18n.t('send.max')}
+                                  </Button>
+                                </Box>
+                              </Inline>
+                            </Row>
 
-                          <Row>
-                            <Inline
-                              alignHorizontal="justify"
-                              alignVertical="center"
-                            >
-                              <Box>
-                                <Text size="12pt" color="label" weight="bold">
-                                  {dependentAmount.display}
-                                </Text>
-                              </Box>
-                              <Box onClick={switchIndependentField}>
-                                <Text color="accent" size="12pt" weight="bold">
-                                  {i18n.t('send.switch_to')}{' '}
-                                  {independentField === 'asset'
-                                    ? currentCurrency
-                                    : asset?.symbol}
-                                </Text>
-                              </Box>
-                            </Inline>
-                          </Row>
-                        </Rows>
-                      </Box>
-                    </Stack>
-                  </Box>
-                ) : null}
+                            <Row>
+                              <Inline
+                                alignHorizontal="justify"
+                                alignVertical="center"
+                              >
+                                <Box>
+                                  <Text size="12pt" color="label" weight="bold">
+                                    {dependentAmount.display}
+                                  </Text>
+                                </Box>
+                                <Box onClick={switchIndependentField}>
+                                  <Text
+                                    color="accent"
+                                    size="12pt"
+                                    weight="bold"
+                                  >
+                                    {i18n.t('send.switch_to')}{' '}
+                                    {independentField === 'asset'
+                                      ? currentCurrency
+                                      : asset?.symbol}
+                                  </Text>
+                                </Box>
+                              </Inline>
+                            </Row>
+                          </Rows>
+                        </Box>
+                      </Stack>
+                    </Box>
+                  ) : null}
+                </Box>
+              </AccentColorProviderWrapper>
+            </Row>
+          </Rows>
+
+          <Row height="content">
+            {asset ? (
+              <AccentColorProviderWrapper
+                color={asset?.colors?.primary || asset?.colors?.fallback}
+              >
+                <Box paddingHorizontal="8px">
+                  <Rows space="20px">
+                    <Row>
+                      <TransactionFee
+                        chainId={chainId}
+                        transactionRequest={transactionRequest}
+                      />
+                    </Row>
+                    <Row>
+                      <Button
+                        onClick={handleSend}
+                        height="44px"
+                        variant="flat"
+                        color="accent"
+                        width="full"
+                      >
+                        <Text color="label" size="14pt" weight="bold">
+                          {i18n.t(
+                            `send.${
+                              sending
+                                ? 'button_label_sending'
+                                : 'button_label_send'
+                            }`,
+                          )}
+                        </Text>
+                      </Button>
+                    </Row>
+                  </Rows>
+                </Box>
+              </AccentColorProviderWrapper>
+            ) : (
+              <Box paddingHorizontal="8px">
+                <Button
+                  height="44px"
+                  variant="flat"
+                  color="surfaceSecondary"
+                  width="full"
+                >
+                  <Text color="labelQuaternary" size="14pt" weight="bold">
+                    {i18n.t('send.enter_address_or_amount')}
+                  </Text>
+                </Button>
               </Box>
-            </AccentColorProviderWrapper>
+            )}
           </Row>
         </Rows>
-
-        <Row height="content">
-          {asset ? (
-            <AccentColorProviderWrapper
-              color={asset?.colors?.primary || asset?.colors?.fallback}
-            >
-              <Box paddingHorizontal="8px">
-                <Rows space="20px">
-                  <Row>
-                    <TransactionFee
-                      chainId={chainId}
-                      transactionRequest={transactionRequest}
-                    />
-                  </Row>
-                  <Row>
-                    <Button
-                      onClick={handleSend}
-                      height="44px"
-                      variant="flat"
-                      color="accent"
-                      width="full"
-                    >
-                      <Text color="label" size="14pt" weight="bold">
-                        {i18n.t(
-                          `send.${
-                            sending
-                              ? 'button_label_sending'
-                              : 'button_label_send'
-                          }`,
-                        )}
-                      </Text>
-                    </Button>
-                  </Row>
-                </Rows>
-              </Box>
-            </AccentColorProviderWrapper>
-          ) : (
-            <Box paddingHorizontal="8px">
-              <Button
-                height="44px"
-                variant="flat"
-                color="surfaceSecondary"
-                width="full"
-              >
-                <Text color="labelQuaternary" size="14pt" weight="bold">
-                  {i18n.t('send.enter_address_or_amount')}
-                </Text>
-              </Button>
-            </Box>
-          )}
-        </Row>
-      </Rows>
-    </Box>
+      </Box>
+    </>
   );
 }
