@@ -72,7 +72,7 @@ export function RestoreOrConnect() {
           <Box
             width="full"
             paddingBottom="20px"
-            onClick={() => navigateTo('/import')}
+            onClick={() => navigateTo('/restore')}
           >
             <Columns alignHorizontal="center" alignVertical="center">
               <Column>
