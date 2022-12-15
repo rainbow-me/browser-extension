@@ -15,6 +15,7 @@ import {
 } from '~/design-system';
 
 import { ChevronRight } from '../../components/ChevronRight';
+import { FullScreenContainerWithNavbar } from '../../components/FullScreen/FullScreenContainerWithNavbar';
 
 export function ImportOrConnect() {
   const navigate = useNavigate();
@@ -27,16 +28,7 @@ export function ImportOrConnect() {
   );
 
   return (
-    <Box
-      borderColor="separatorSecondary"
-      borderWidth="1px"
-      background="surfaceSecondary"
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      padding="24px"
-      style={{ paddingTop: '56px' }}
-    >
+    <FullScreenContainerWithNavbar>
       <Box alignItems="center" paddingBottom="10px">
         <Inline
           wrap={false}
@@ -68,12 +60,11 @@ export function ImportOrConnect() {
       <Box width="full" style={{ width: '106px' }}>
         <Separator color="separatorTertiary" strokeWeight="1px" />
       </Box>
-      <Box paddingTop="28px">
+      <Box paddingTop="24px">
         <Box
           background="surfaceSecondaryElevated"
           borderRadius="16px"
           paddingVertical="24px"
-          paddingBottom="4px"
           paddingHorizontal="20px"
           borderColor={'separatorSecondary'}
           borderWidth={'1px'}
@@ -87,8 +78,8 @@ export function ImportOrConnect() {
               <Column>
                 <Symbol
                   weight="bold"
-                  symbol="doc.plaintext"
-                  size={25}
+                  symbol="lock.rotation"
+                  size={20}
                   color="purple"
                 />
                 <Box paddingTop="14px">
@@ -96,7 +87,7 @@ export function ImportOrConnect() {
                     <Text size="16pt" weight="bold" color="label">
                       {i18n.t('import_or_connect.restore_wallet')}
                     </Text>
-                    <Text size="14pt" weight="regular" color="labelSecondary">
+                    <Text size="14pt" weight="regular" color="labelTertiary">
                       {i18n.t('import_or_connect.restore_wallet_description')}
                     </Text>
                   </Stack>
@@ -117,8 +108,8 @@ export function ImportOrConnect() {
               <Column>
                 <Symbol
                   weight="bold"
-                  symbol="doc.plaintext"
-                  size={25}
+                  symbol="doc.text.magnifyingglass"
+                  size={20}
                   color="accent"
                 />
                 <Box paddingTop="14px">
@@ -126,7 +117,7 @@ export function ImportOrConnect() {
                     <Text size="16pt" weight="bold" color="label">
                       {i18n.t('import_or_connect.connect_wallet')}
                     </Text>
-                    <Text size="14pt" weight="regular" color="labelSecondary">
+                    <Text size="14pt" weight="regular" color="labelTertiary">
                       {i18n.t('import_or_connect.connect_wallet_description')}
                     </Text>
                   </Stack>
@@ -138,17 +129,13 @@ export function ImportOrConnect() {
             </Columns>
           </Box>
           <Separator color="separatorTertiary" strokeWeight="1px" />
-          <Box
-            paddingBottom="20px"
-            paddingTop="20px"
-            onClick={() => navigateTo('/watch')}
-          >
+          <Box paddingTop="20px" onClick={() => navigateTo('/watch')}>
             <Columns alignHorizontal="center" alignVertical="center">
               <Column>
                 <Symbol
                   weight="bold"
-                  symbol="doc.plaintext"
-                  size={25}
+                  symbol="magnifyingglass.circle"
+                  size={20}
                   color="green"
                 />
                 <Box paddingTop="14px">
@@ -156,7 +143,7 @@ export function ImportOrConnect() {
                     <Text size="16pt" weight="bold" color="label">
                       {i18n.t('import_or_connect.watch_address')}
                     </Text>
-                    <Text size="14pt" weight="regular" color="labelSecondary">
+                    <Text size="14pt" weight="regular" color="labelTertiary">
                       {i18n.t('import_or_connect.watch_address_description')}
                     </Text>
                   </Stack>
@@ -171,6 +158,6 @@ export function ImportOrConnect() {
       </Box>
 
       <Box width="full" paddingTop="80px" paddingBottom="60px"></Box>
-    </Box>
+    </FullScreenContainerWithNavbar>
   );
 }
