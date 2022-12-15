@@ -58,9 +58,29 @@ const AccentColorProviderWrapper = ({
   );
 };
 
-const SaveButton = ({ toAddress }: { toAddress?: Address }) => {
+const SaveButton = ({
+  toAddress,
+  onSaveAction,
+}: {
+  toAddress?: Address;
+  onSaveAction: React.Dispatch<
+    React.SetStateAction<{
+      show: boolean;
+      mode: 'save' | 'remove';
+    }>
+  >;
+}) => {
+  const openSavePrompt = useCallback(() => {
+    onSaveAction({ show: true, mode: 'save' });
+  }, [onSaveAction]);
+
   return (
-    <Button color="surfaceSecondaryElevated" height="28px" variant="flat">
+    <Button
+      color="surfaceSecondaryElevated"
+      height="28px"
+      variant="flat"
+      onClick={openSavePrompt}
+    >
       <Inline space="4px" alignVertical="center">
         {toAddress ? (
           <WalletAvatar size={16} address={toAddress} emojiSize="11pt" />
@@ -86,6 +106,10 @@ const SaveButton = ({ toAddress }: { toAddress?: Address }) => {
 export function Send() {
   const [, setTxHash] = useState('');
   const [sending, setSending] = useState(false);
+  const [contactSaveAction, setSaveContactAction] = useState<{
+    show: boolean;
+    mode: 'save' | 'remove';
+  }>({ show: false, mode: 'save' });
 
   const { asset, shuffleAssetIndex } = useSendTransactionAsset();
   const {
@@ -184,12 +208,22 @@ export function Send() {
 
   return (
     <>
-      <ContactPrompt address={toAddress || ''} mode="save" />
+      <ContactPrompt
+        address={toAddress}
+        show={contactSaveAction?.show}
+        mode={contactSaveAction?.mode}
+        onSaveContactAction={setSaveContactAction}
+      />
       <Navbar
         title={'Send' || ''}
         background={'surfaceSecondary'}
         leftComponent={<Navbar.BackButton />}
-        rightComponent={<SaveButton toAddress={toAddress} />}
+        rightComponent={
+          <SaveButton
+            onSaveAction={setSaveContactAction}
+            toAddress={toAddress}
+          />
+        }
       />
       <Box
         background="surfaceSecondary"

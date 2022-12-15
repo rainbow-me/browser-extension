@@ -8,12 +8,31 @@ import { Prompt } from '~/design-system/components/Prompt/Prompt';
 
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 
-const SaveContact = ({ address }: { address: Address }) => {
+const SaveContact = ({
+  address,
+  onSaveContactAction,
+}: {
+  address: Address;
+  onSaveContactAction: React.Dispatch<
+    React.SetStateAction<{
+      show: boolean;
+      mode: 'save' | 'remove';
+    }>
+  >;
+}) => {
   const [, setName] = useState('');
 
   const handleNameChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   }, []);
+
+  const onSave = useCallback(() => {
+    onSaveContactAction({ show: false, mode: 'save' });
+  }, [onSaveContactAction]);
+
+  const onCancel = useCallback(() => {
+    onSaveContactAction({ show: false, mode: 'save' });
+  }, [onSaveContactAction]);
 
   return (
     <Box alignItems="center" width="full" paddingTop="12px">
@@ -54,6 +73,7 @@ const SaveContact = ({ address }: { address: Address }) => {
             height="36px"
             variant="flat"
             borderRadius="9px"
+            onClick={onSave}
           >
             Add to contacts
           </Button>
@@ -63,6 +83,7 @@ const SaveContact = ({ address }: { address: Address }) => {
             height="36px"
             variant="raised"
             borderRadius="9px"
+            onClick={onCancel}
           >
             Cancel
           </Button>
@@ -72,7 +93,24 @@ const SaveContact = ({ address }: { address: Address }) => {
   );
 };
 
-const RemoveContact = () => {
+const RemoveContact = ({
+  onSaveContactAction,
+}: {
+  onSaveContactAction: React.Dispatch<
+    React.SetStateAction<{
+      show: boolean;
+      mode: 'save' | 'remove';
+    }>
+  >;
+}) => {
+  const onRemove = useCallback(() => {
+    onSaveContactAction({ show: false, mode: 'remove' });
+  }, [onSaveContactAction]);
+
+  const onCancel = useCallback(() => {
+    onSaveContactAction({ show: false, mode: 'remove' });
+  }, [onSaveContactAction]);
+
   return (
     <Box alignItems="center" width="full" paddingTop="12px">
       <Stack space="24px">
@@ -103,6 +141,7 @@ const RemoveContact = () => {
             height="36px"
             variant="flat"
             borderRadius="9px"
+            onClick={onRemove}
           >
             Remove contact
           </Button>
@@ -112,6 +151,7 @@ const RemoveContact = () => {
             height="36px"
             variant="raised"
             borderRadius="9px"
+            onClick={onCancel}
           >
             Cancel
           </Button>
@@ -122,24 +162,30 @@ const RemoveContact = () => {
 };
 
 export const ContactPrompt = ({
+  show,
   address,
   mode,
-}: //   onClose,
-{
+  onSaveContactAction,
+}: {
+  show: boolean;
   address: Address;
-  onClose?: () => void;
   mode: 'save' | 'remove';
+  onSaveContactAction: React.Dispatch<
+    React.SetStateAction<{
+      show: boolean;
+      mode: 'save' | 'remove';
+    }>
+  >;
 }) => {
-  //   const handleClose = () => {
-  //     onClose?.();
-  //   };
-
   return (
-    <Prompt show={!!address}>
+    <Prompt show={show}>
       {mode === 'save' ? (
-        <SaveContact address={address} />
+        <SaveContact
+          address={address}
+          onSaveContactAction={onSaveContactAction}
+        />
       ) : (
-        <RemoveContact address={address} />
+        <RemoveContact onSaveContactAction={onSaveContactAction} />
       )}
     </Prompt>
   );
