@@ -709,6 +709,7 @@ export const symbolNames = selectSymbolNames(
   'key.fill',
   'doc.plaintext',
   'doc.on.doc',
+  'checkmark.shield.fill',
 );
 export type SymbolName = typeof symbolNames[number];
 

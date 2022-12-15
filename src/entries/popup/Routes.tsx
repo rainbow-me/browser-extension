@@ -7,6 +7,7 @@ import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/Animated
 
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
 import { ConnectedApps } from './pages/ConnectedApps';
+import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
 import { SeedBackupPrompt } from './pages/seedBackupPrompt';
 import { SeedReveal } from './pages/seedReveal';
@@ -98,6 +99,15 @@ export function Routes() {
         element: (
           <AnimatedRoute direction="horizontal" navbar>
             <SeedVerify />
+          </AnimatedRoute>
+        ),
+        background: FullScreenBackground,
+      },
+      {
+        path: '/create-password',
+        element: (
+          <AnimatedRoute direction="horizontal" navbar>
+            <CreatePassword />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,
