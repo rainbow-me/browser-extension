@@ -21,6 +21,8 @@ import { ChangePassword } from './pages/settings/privacy/changePassword';
 import { Privacy } from './pages/settings/privacy/privacy';
 import { RecoveryPhrase } from './pages/settings/privacy/walletsAndKeys/newSecretPhrase/recoveryPhrase';
 import { NewSecretPhraseWarning } from './pages/settings/privacy/walletsAndKeys/newSecretPhrase/warning';
+import { PrivateKey } from './pages/settings/privacy/walletsAndKeys/newWallet/privateKey';
+import { NewPrivateKeyWarning } from './pages/settings/privacy/walletsAndKeys/newWallet/warning';
 import { AccountDetails } from './pages/settings/privacy/walletsAndKeys/walletAccountDetails';
 import { WalletsAndKeys } from './pages/settings/privacy/walletsAndKeys/walletsAndKeys';
 import { Settings } from './pages/settings/settings';
@@ -209,7 +211,31 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/accountDetails/newSecretPhrase',
+        path: '/settings/privacy/walletsAndKeys/accountDetails/newWalletWarning',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            background="surfaceSecondary"
+          >
+            <NewPrivateKeyWarning />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/privacy/walletsAndKeys/accountDetails/privateKey',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            background="surfaceSecondary"
+          >
+            <PrivateKey />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/privacy/walletsAndKeys/accountDetails/newSecretPhraseWarning',
         element: (
           <AnimatedRoute
             direction="horizontal"

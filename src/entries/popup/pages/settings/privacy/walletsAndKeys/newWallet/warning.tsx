@@ -13,36 +13,35 @@ const iconAndCopyList: IconAndCopyItem[] = [
       symbol: 'exclamationmark.triangle',
       color: 'orange',
     },
-    copy: 'Never share your Recovery Phrase or enter it into any apps.',
+    copy: 'Never share your Private Key or enter it into any apps.',
   },
   {
     icon: {
       symbol: 'eye.slash.fill',
       color: 'pink',
     },
-    copy: 'Make sure nobody can view your screen when viewing your Recovery Phrase.',
+    copy: 'Make sure nobody can view your screen when viewing your Private Key.',
   },
   {
     icon: {
       symbol: 'lock.open.fill',
       color: 'red',
     },
-    copy: 'Anyone with your Recovery Phrase can access your entire wallet.',
+    copy: 'Anyone with your Private Key can access your entire wallet.',
   },
   {
     icon: {
       symbol: 'lifepreserver',
       color: 'blue',
     },
-    copy: 'Rainbow Support will never ask you for your Recovery Phrase.',
+    copy: 'Rainbow Support will never ask you for your Private Key.',
   },
 ];
-
-export function NewSecretPhraseWarning() {
+export function NewPrivateKeyWarning() {
   const navigate = useNavigate();
 
   const handleShowRecoveryPhraseClick = useCallback(async () => {
-    navigate('/settings/privacy/walletsAndKeys/accountDetails/recoveryPhrase');
+    navigate('/settings/privacy/walletsAndKeys/accountDetails/privateKey');
   }, [navigate]);
 
   return (
@@ -103,11 +102,11 @@ export function NewSecretPhraseWarning() {
             height="44px"
             variant="flat"
             width="full"
-            symbol="doc.plaintext.fill"
+            symbol="key.fill"
             blur="26px"
             onClick={handleShowRecoveryPhraseClick}
           >
-            Show Recovery Phrase
+            Show Private Key
           </Button>
         </Rows>
       </Box>

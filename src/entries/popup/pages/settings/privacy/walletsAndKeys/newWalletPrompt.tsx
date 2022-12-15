@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import {
@@ -20,16 +21,19 @@ export const NewWalletPrompt = ({
   show: boolean;
   onClose: () => void;
 }) => {
+  const navigate = useNavigate();
   const [walletName, setWalletName] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   const handleValidateWalletName = async () => {
     if (walletName !== '') {
       // TODO: generate the new wallet
-      handleClose();
+      navigate(
+        '/settings/privacy/walletsAndKeys/accountDetails/newWalletWarning',
+      );
       return;
     }
-    setError(i18n.t('No wallet name set'));
+    setError('No wallet name set');
   };
 
   const handleClose = () => {
