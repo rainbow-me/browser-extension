@@ -9,7 +9,11 @@ import {
   SupportedCurrencyKey,
   smartContractMethods,
 } from '../references';
-import { pendingTransactionsStore } from '../state';
+import {
+  currentCurrencyStore,
+  nonceStore,
+  pendingTransactionsStore,
+} from '../state';
 import { ChainId } from '../types/chains';
 import {
   NewTransaction,
@@ -535,6 +539,8 @@ export async function watchPendingTransactions({
     address,
   });
 
+  if (!pendingTransactions?.length) return;
+
   const updatedPendingTransactions = await Promise.all(
     pendingTransactions.map(async (tx) => {
       let updatedTransaction = { ...tx };
@@ -586,5 +592,41 @@ export async function watchPendingTransactions({
   setPendingTransactions({
     address,
     pendingTransactions: updatedPendingTransactions,
+  });
+}
+
+export async function addNewTransaction({
+  address,
+  chainId,
+  transaction,
+}: {
+  address: Address;
+  chainId: ChainId;
+  transaction: NewTransaction;
+}) {
+  const { getNonce, setNonce } = nonceStore.getState();
+  const localNonceData = getNonce({ address, chainId });
+  const localNonce = localNonceData?.currentNonce;
+  const provider = getProvider({ chainId });
+  const nonceOnChain =
+    ((await provider.getTransactionCount(address, 'safe')) || 0) - 1;
+  const nonce = (localNonce || 0) > nonceOnChain ? localNonce : nonceOnChain;
+  const { getPendingTransactions, setPendingTransactions } =
+    pendingTransactionsStore.getState();
+  const pendingTransactions = getPendingTransactions({ address });
+  const { currentCurrency } = currentCurrencyStore.getState();
+  const newPendingTransaction = parseNewTransaction(
+    { ...transaction, nonce },
+    currentCurrency,
+  );
+
+  setPendingTransactions({
+    address,
+    pendingTransactions: [newPendingTransaction, ...pendingTransactions],
+  });
+  setNonce({
+    address,
+    chainId,
+    currentNonce: nonce,
   });
 }

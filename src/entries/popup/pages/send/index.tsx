@@ -10,6 +10,8 @@ import { Address, useEnsAvatar } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import { addNewTransaction } from '~/core/utils/transactions';
 import {
   AccentColorProvider,
   Box,
@@ -175,13 +177,32 @@ export function Send() {
       if (result) {
         alert(`Transaction sent successfully: ${JSON.stringify(result.hash)}`);
         setTxHash(result?.hash as string);
+        const transaction = {
+          amount: assetAmount,
+          asset,
+          data: result.data,
+          value: result.value,
+          from: fromAddress,
+          to: toAddress,
+          hash: result.hash,
+          chainId,
+          status: TransactionStatus.sending,
+          type: TransactionType.send,
+        };
+        if (fromAddress) {
+          await addNewTransaction({
+            address: fromAddress,
+            chainId,
+            transaction,
+          });
+        }
       }
     } catch (e) {
       alert('Transaction failed');
     } finally {
       setSending(false);
     }
-  }, [fromAddress, toAddress, value, chainId, data]);
+  }, [asset, assetAmount, fromAddress, toAddress, value, chainId, data]);
 
   return (
     <AccentColorProviderWrapper
