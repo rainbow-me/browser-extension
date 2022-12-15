@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { refractionAddressMessages, refractionAddressWs } from '~/core/network';
+import { refractionAddressWs } from '~/core/network';
 import {
   QueryConfig,
   QueryFunctionArgs,
@@ -9,10 +9,13 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
-import { ChainName } from '~/core/types/chains';
+import { ChainId, ChainName } from '~/core/types/chains';
 import { TransactionsReceivedMessage } from '~/core/types/refraction';
 import { RainbowTransaction } from '~/core/types/transactions';
-import { chainIdFromChainName } from '~/core/utils/chains';
+import {
+  chainIdFromChainName,
+  chainNameFromChainId,
+} from '~/core/utils/chains';
 import { parseTransaction } from '~/core/utils/transactions';
 
 const TRANSACTIONS_TIMEOUT_DURATION = 35000;
@@ -23,16 +26,21 @@ const TRANSACTIONS_REFETCH_INTERVAL = 60000;
 
 export type TransactionsArgs = {
   address?: string;
+  chainId: ChainId;
   currency: SupportedCurrencyKey;
 };
 
 // ///////////////////////////////////////////////
 // Query Key
 
-const transactionsQueryKey = ({ address, currency }: TransactionsArgs) =>
+const transactionsQueryKey = ({
+  address,
+  chainId,
+  currency,
+}: TransactionsArgs) =>
   createQueryKey(
     'transactions',
-    { address, currency },
+    { address, chainId, currency },
     { persisterVersion: 1 },
   );
 
@@ -42,33 +50,36 @@ type TransactionsQueryKey = ReturnType<typeof transactionsQueryKey>;
 // Query Function
 
 async function transactionsQueryFunction({
-  queryKey: [{ address, currency }],
+  queryKey: [{ address, chainId, currency }],
 }: QueryFunctionArgs<typeof transactionsQueryKey>): Promise<
   RainbowTransaction[]
 > {
+  const isMainnet = chainId === ChainId.mainnet;
+  const scope = [
+    `${isMainnet ? '' : chainNameFromChainId(chainId) + '-'}transactions`,
+  ];
+  const event = `received address ${scope[0]}`;
   refractionAddressWs.emit('get', {
     payload: {
       address,
       currency: currency.toLowerCase(),
       transactions_limit: 250,
     },
-    scope: ['transactions'],
+    scope,
   });
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
       resolve(
-        queryClient.getQueryData(transactionsQueryKey({ address, currency })) ||
-          [],
+        queryClient.getQueryData(
+          transactionsQueryKey({ address, chainId, currency }),
+        ) || [],
       );
     }, TRANSACTIONS_TIMEOUT_DURATION);
     const resolver = (message: TransactionsReceivedMessage) => {
       clearTimeout(timeout);
       resolve(parseTransactions(message, currency));
     };
-    refractionAddressWs.once(
-      refractionAddressMessages.ADDRESS_TRANSACTIONS.RECEIVED,
-      resolver,
-    );
+    refractionAddressWs.once(event, resolver);
   });
 }
 
@@ -97,7 +108,7 @@ function parseTransactions(
 // Query Hook
 
 export function useTransactions<TSelectData = TransactionsResult>(
-  { address, currency }: TransactionsArgs,
+  { address, chainId, currency }: TransactionsArgs,
   config: QueryConfig<
     TransactionsResult,
     Error,
@@ -106,7 +117,7 @@ export function useTransactions<TSelectData = TransactionsResult>(
   > = {},
 ) {
   return useQuery(
-    transactionsQueryKey({ address, currency }),
+    transactionsQueryKey({ address, currency, chainId }),
     transactionsQueryFunction,
     {
       ...config,
