@@ -45,6 +45,7 @@ export function Default() {
   });
   const { data: transactions } = useTransactions({
     address,
+    chainId: ChainId.mainnet,
     currency: currentCurrency,
   });
   const { data: mainnetBalance } = useBalance({
