@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
@@ -16,7 +17,6 @@ import {
   Box,
   Button,
   Inline,
-  Inset,
   Row,
   Rows,
   Separator,
@@ -54,6 +54,31 @@ const AccentColorProviderWrapper = ({
     <AccentColorProvider color={color ?? defaultColor}>
       {children}
     </AccentColorProvider>
+  );
+};
+
+const SaveButton = ({ toAddress }: { toAddress?: Address }) => {
+  return (
+    <Button color="surfaceSecondaryElevated" height="28px" variant="flat">
+      <Inline space="4px" alignVertical="center">
+        {toAddress ? (
+          <WalletAvatar size={16} address={toAddress} emojiSize="11pt" />
+        ) : (
+          <Box position="relative" paddingRight="2px">
+            <Symbol
+              weight="semibold"
+              symbol="person.crop.circle.fill.badge.plus"
+              size={16}
+              color="labelSecondary"
+            />
+          </Box>
+        )}
+
+        <Text weight="semibold" size="14pt" color="labelSecondary">
+          Save
+        </Text>
+      </Inline>
+    </Button>
   );
 };
 
@@ -162,31 +187,7 @@ export function Send() {
         title={'Send' || ''}
         background={'surfaceSecondary'}
         leftComponent={<Navbar.BackButton />}
-        rightComponent={
-          <Box borderRadius="28px" background="surfaceSecondary">
-            <Inset vertical="6px" left="10px" right="12px">
-              <Inline alignVertical="center" space="4px">
-                {toAddress ? (
-                  <WalletAvatar
-                    size={16}
-                    address={toAddress}
-                    emojiSize="11pt"
-                  />
-                ) : (
-                  <Symbol
-                    weight="semibold"
-                    symbol="person.crop.circle.fill.badge.plus"
-                    size={16}
-                    color="labelSecondary"
-                  />
-                )}
-                <Text weight="semibold" size="14pt" color="labelSecondary">
-                  Save
-                </Text>
-              </Inline>
-            </Inset>
-          </Box>
-        }
+        rightComponent={<SaveButton toAddress={toAddress} />}
       />
       <Box
         background="surfaceSecondary"
