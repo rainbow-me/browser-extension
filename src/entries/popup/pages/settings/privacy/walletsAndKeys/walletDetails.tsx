@@ -5,6 +5,7 @@ import { i18n } from '~/core/languages';
 import { DummyWallet } from '~/core/types/walletsAndKeys';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Row, Rows, Symbol, Text } from '~/design-system';
+import { Avatar } from '~/entries/popup/components/Avatar/Avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,6 +16,7 @@ import {
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
+import { useAvatar } from '~/entries/popup/hooks/useAvatar';
 
 import { NewWalletPrompt } from './newWalletPrompt';
 
@@ -90,6 +92,40 @@ const MoreInfoButton = ({ wallet }: { wallet: DummyWallet }) => {
   );
 };
 
+export default function WalletLine({ wallet }: { wallet: DummyWallet }) {
+  const { avatar, isFetched } = useAvatar({ address: wallet.address });
+  return (
+    <MenuItem
+      key={wallet.address}
+      titleComponent={
+        <MenuItem.Title text={wallet.ens || truncateAddress(wallet.address)} />
+      }
+      labelComponent={
+        wallet.ens ? (
+          <MenuItem.Label text={truncateAddress(wallet.address)} />
+        ) : null
+      }
+      leftComponent={
+        <Box marginRight="-8px">
+          <Avatar.Wrapper size={36}>
+            {isFetched ? (
+              <>
+                {avatar?.imageUrl ? (
+                  <Avatar.Image imageUrl={avatar.imageUrl} />
+                ) : (
+                  <Avatar.Emoji color={avatar?.color} />
+                )}
+              </>
+            ) : null}
+            <Avatar.Skeleton />
+          </Avatar.Wrapper>
+        </Box>
+      }
+      rightComponent={<MoreInfoButton wallet={wallet} />}
+    />
+  );
+}
+
 export function WalletDetails() {
   const navigate = useNavigate();
   const { state } = useLocation();
@@ -136,22 +172,7 @@ export function WalletDetails() {
           </Menu>
           <Menu>
             {state?.account.wallets.map((wallet: DummyWallet) => {
-              return (
-                <MenuItem
-                  key={wallet.address}
-                  titleComponent={
-                    <MenuItem.Title
-                      text={wallet.ens || truncateAddress(wallet.address)}
-                    />
-                  }
-                  labelComponent={
-                    wallet.ens ? (
-                      <MenuItem.Label text={truncateAddress(wallet.address)} />
-                    ) : null
-                  }
-                  rightComponent={<MoreInfoButton wallet={wallet} />}
-                />
-              );
+              return <WalletLine wallet={wallet} key={wallet.address} />;
             })}
           </Menu>
           <Menu>
