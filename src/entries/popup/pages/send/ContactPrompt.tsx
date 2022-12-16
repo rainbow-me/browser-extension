@@ -1,15 +1,24 @@
 import React, { ChangeEvent, useCallback, useState } from 'react';
-import { Address } from 'wagmi';
+import { Address, useEnsAvatar } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useContactsStore } from '~/core/state/contacts';
 import { truncateAddress } from '~/core/utils/address';
-import { Box, Button, Separator, Stack, Text } from '~/design-system';
+import {
+  AccentColorProvider,
+  Box,
+  Button,
+  Separator,
+  Stack,
+  Text,
+} from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
+import { globalColors } from '~/design-system/styles/designTokens';
 
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useContact } from '../../hooks/useContacts';
+import { useDominantColor } from '../../hooks/useDominantColor';
 
 export type ContactAction = 'save' | 'edit' | 'delete';
 
@@ -205,20 +214,26 @@ export const ContactPrompt = ({
     }>
   >;
 }) => {
+  const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
+  const { data: dominantColor } = useDominantColor({
+    imageUrl: ensAvatar ?? undefined,
+  });
   return (
     <Prompt show={show}>
-      {action === 'save' || action === 'edit' ? (
-        <SaveOrEditContact
-          address={address}
-          action={action}
-          onSaveContactAction={onSaveContactAction}
-        />
-      ) : (
-        <DeleteContact
-          address={address}
-          onSaveContactAction={onSaveContactAction}
-        />
-      )}
+      <AccentColorProvider color={dominantColor || globalColors.blue50}>
+        {action === 'save' || action === 'edit' ? (
+          <SaveOrEditContact
+            address={address}
+            action={action}
+            onSaveContactAction={onSaveContactAction}
+          />
+        ) : (
+          <DeleteContact
+            address={address}
+            onSaveContactAction={onSaveContactAction}
+          />
+        )}
+      </AccentColorProvider>
     </Prompt>
   );
 };
