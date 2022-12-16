@@ -1,6 +1,7 @@
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { useContactsStore } from '~/core/state/contacts';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Button, Separator, Stack, Text } from '~/design-system';
@@ -48,7 +49,11 @@ const SaveOrEditContact = ({
         <Stack alignHorizontal="center" space="24px">
           <Stack alignHorizontal="center" space="20px">
             <Text weight="bold" size="16pt" color="label">
-              {`${action === 'save' ? 'Save' : 'Edit'} contact`}
+              {i18n.t(
+                `contacts.${
+                  action === 'save' ? 'save_contact' : 'edit_contact'
+                }`,
+              )}
             </Text>
             <Box style={{ width: 42 }}>
               <Separator color="separatorTertiary" strokeWeight="1px" />
@@ -84,7 +89,11 @@ const SaveOrEditContact = ({
             borderRadius="9px"
             onClick={onSave}
           >
-            Add to contacts
+            {i18n.t(
+              `contacts.${
+                action === 'save' ? 'add_to_contacts' : 'edit_contact'
+              }`,
+            )}
           </Button>
           <Button
             width="full"
@@ -94,7 +103,7 @@ const SaveOrEditContact = ({
             borderRadius="9px"
             onClick={onCancel}
           >
-            Cancel
+            {i18n.t(`contacts.cancel`)}
           </Button>
         </Stack>
       </Stack>
@@ -130,7 +139,7 @@ const DeleteContact = ({
       <Stack space="24px">
         <Stack alignHorizontal="center" space="20px">
           <Text weight="bold" size="16pt" color="label">
-            Remove contact?
+            {i18n.t('send.remove_contact_title')}
           </Text>
           <Box width="full">
             <Text
@@ -139,7 +148,7 @@ const DeleteContact = ({
               size="12pt"
               align="center"
             >
-              Are you sure you want to remove “0xhab.eth” from your contacts?
+              {i18n.t('send.remove_contact_description')}
             </Text>
           </Box>
 
@@ -157,7 +166,7 @@ const DeleteContact = ({
             borderRadius="9px"
             onClick={onRemove}
           >
-            Remove contact
+            {i18n.t('send.remove_contact_action')}
           </Button>
           <Button
             width="full"
@@ -167,7 +176,7 @@ const DeleteContact = ({
             borderRadius="9px"
             onClick={onCancel}
           >
-            Cancel
+            {i18n.t('send.cancel')}
           </Button>
         </Stack>
       </Stack>

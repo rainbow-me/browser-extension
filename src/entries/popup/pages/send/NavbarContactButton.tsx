@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import React, { useCallback } from 'react';
 import { Address, useEnsName } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { truncateAddress } from '~/core/utils/address';
 import {
   Bleed,
@@ -67,7 +68,7 @@ const NavbarSaveContactButton = ({
           )}
 
           <Text weight="semibold" size="14pt" color={'labelSecondary'}>
-            Save
+            {i18n.t('contacts.save')}
           </Text>
         </Inline>
       </Button>
@@ -152,7 +153,7 @@ const EditContactDropdown = ({
                       <Box>
                         <Stack space="6px">
                           <Text weight="semibold" size="14pt" color="label">
-                            Copy address
+                            {i18n.t('contacts.copy_address')}
                           </Text>
                           <Text
                             weight="regular"
@@ -177,7 +178,7 @@ const EditContactDropdown = ({
                         />
                       </Inline>
                       <Text weight="semibold" size="14pt" color="label">
-                        Edit contact
+                        {i18n.t('contacts.edit_contact')}
                       </Text>
                     </Inline>
                   </Box>
@@ -195,7 +196,7 @@ const EditContactDropdown = ({
                           />
                         </Inline>
                         <Text size="14pt" weight="semibold">
-                          {'View on Etherscan'}
+                          {i18n.t('contacts.view_on_etherscan')}
                         </Text>
                       </Inline>
                       <Bleed vertical="8px">
@@ -222,7 +223,7 @@ const EditContactDropdown = ({
                         color="red"
                       />
                       <Text weight="semibold" size="14pt" color="red">
-                        Delete contact
+                        {i18n.t('contacts.delete_contact')}
                       </Text>
                     </Inline>
                   </Box>

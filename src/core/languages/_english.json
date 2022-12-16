@@ -81,6 +81,19 @@
       "watched_wallets": "Watching"
     }
   },
+  "contacts": {
+    "save_contact": "Save contact",
+    "add_to_contacts": "Add to contacts",
+    "edit_contact": "Edit contact",
+    "cancel": "Cancel",
+    "remove_contact_title": "Remove contact?",
+    "remove_contact_action": "Remove contact",
+    "remove_contact_description": "Are you sure you want to remove “-------” from your contacts?",
+    "save": "Save",
+    "copy_address": "Copy address",
+    "view_on_etherscan": "View on Etherscan",
+    "delete_contact": "Delete contact"
+  },
   "sign": {
     "title": "Sign"
   },
@@ -258,7 +271,7 @@
     "weak": "Weak",
     "strong": "Strong",
     "too_short": "Password needs to be at least 8 chars long"
-  },  
+  },
   "create_password": {
     "title": "Create your password",
     "description": "Choose a password to secure & lock your wallet."
