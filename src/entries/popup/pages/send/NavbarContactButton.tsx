@@ -24,6 +24,8 @@ import {
 import { Navbar } from '../../components/Navbar/Navbar';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 
+import { ContactAction } from './ContactPrompt';
+
 const NavbarSaveContactButton = ({
   toAddress,
   onSaveAction,
@@ -32,12 +34,12 @@ const NavbarSaveContactButton = ({
   onSaveAction: React.Dispatch<
     React.SetStateAction<{
       show: boolean;
-      mode: 'save' | 'remove';
+      action: ContactAction;
     }>
   >;
 }) => {
   const openSavePrompt = useCallback(() => {
-    onSaveAction({ show: true, mode: 'save' });
+    onSaveAction({ show: true, action: 'save' });
   }, [onSaveAction]);
 
   return (
@@ -79,7 +81,7 @@ const EditContactDropdown = ({
   onEdit: React.Dispatch<
     React.SetStateAction<{
       show: boolean;
-      mode: 'save' | 'remove';
+      action: ContactAction;
     }>
   >;
 }) => {
@@ -98,13 +100,13 @@ const EditContactDropdown = ({
           navigator.clipboard.writeText(toAddress as string);
           break;
         case 'edit':
-          onEdit({ show: true, mode: 'save' });
+          onEdit({ show: true, action: 'save' });
           break;
         case 'view':
           viewOnEtherscan();
           break;
         case 'delete':
-          onEdit({ show: true, mode: 'remove' });
+          onEdit({ show: true, action: 'delete' });
 
           break;
       }
@@ -233,20 +235,15 @@ const EditContactDropdown = ({
 const NavbarEditContactButton = ({
   toAddress,
   onSaveAction,
-}: //   onSaveAction,
-{
+}: {
   toAddress?: Address;
   onSaveAction: React.Dispatch<
     React.SetStateAction<{
       show: boolean;
-      mode: 'save' | 'remove';
+      action: ContactAction;
     }>
   >;
 }) => {
-  //   const openSavePrompt = useCallback(() => {
-  //     onSaveAction({ show: true, mode: 'save' });
-  //   }, [onSaveAction]);
-
   return (
     <EditContactDropdown toAddress={toAddress} onEdit={onSaveAction}>
       <Navbar.SymbolButton symbol="ellipsis" variant="flat" />
@@ -257,20 +254,20 @@ const NavbarEditContactButton = ({
 export const NavbarContactButton = ({
   toAddress,
   onSaveAction,
-  mode,
+  action,
 }: {
   toAddress?: Address;
   onSaveAction: React.Dispatch<
     React.SetStateAction<{
       show: boolean;
-      mode: 'save' | 'remove';
+      action: ContactAction;
     }>
   >;
-  mode: 'save' | 'edit';
+  action: ContactAction;
 }) => {
   return (
     <AnimatePresence initial={false} mode="wait">
-      {mode === 'save' && (
+      {action === 'save' && (
         <Box
           as={motion.div}
           key="save"
@@ -284,7 +281,7 @@ export const NavbarContactButton = ({
           />
         </Box>
       )}
-      {mode === 'edit' && (
+      {action === 'edit' && (
         <Box
           as={motion.div}
           key="edit"

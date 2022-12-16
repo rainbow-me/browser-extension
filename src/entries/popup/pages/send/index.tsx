@@ -33,7 +33,7 @@ import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsse
 import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
 import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
 
-import { ContactPrompt } from './ContactPrompt';
+import { ContactAction, ContactPrompt } from './ContactPrompt';
 import { NavbarContactButton } from './NavbarContactButton';
 import { ToAddressInput } from './ToAddressInput';
 import { TokenInput } from './TokenInput';
@@ -62,8 +62,8 @@ export function Send() {
   const [sending, setSending] = useState(false);
   const [contactSaveAction, setSaveContactAction] = useState<{
     show: boolean;
-    mode: 'save' | 'remove';
-  }>({ show: false, mode: 'save' });
+    action: ContactAction;
+  }>({ show: false, action: 'save' });
 
   const { asset, shuffleAssetIndex } = useSendTransactionAsset();
   const {
@@ -171,18 +171,18 @@ export function Send() {
       <ContactPrompt
         address={toAddress}
         show={contactSaveAction?.show}
-        mode={contactSaveAction?.mode}
+        action={contactSaveAction?.action}
         onSaveContactAction={setSaveContactAction}
       />
       <Navbar
-        title={'Send' || ''}
+        title={'Send'}
         background={'surfaceSecondary'}
         leftComponent={<Navbar.BackButton />}
         rightComponent={
           <NavbarContactButton
             onSaveAction={setSaveContactAction}
             toAddress={toAddress}
-            mode={navbarButtonMode}
+            action={navbarButtonMode}
           />
         }
       />

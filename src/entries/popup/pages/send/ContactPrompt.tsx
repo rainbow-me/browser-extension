@@ -8,6 +8,8 @@ import { Prompt } from '~/design-system/components/Prompt/Prompt';
 
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 
+export type ContactAction = 'save' | 'edit' | 'delete';
+
 const SaveContact = ({
   address,
   onSaveContactAction,
@@ -16,7 +18,7 @@ const SaveContact = ({
   onSaveContactAction: React.Dispatch<
     React.SetStateAction<{
       show: boolean;
-      mode: 'save' | 'remove';
+      action: ContactAction;
     }>
   >;
 }) => {
@@ -27,11 +29,11 @@ const SaveContact = ({
   }, []);
 
   const onSave = useCallback(() => {
-    onSaveContactAction({ show: false, mode: 'save' });
+    onSaveContactAction({ show: false, action: 'save' });
   }, [onSaveContactAction]);
 
   const onCancel = useCallback(() => {
-    onSaveContactAction({ show: false, mode: 'save' });
+    onSaveContactAction({ show: false, action: 'save' });
   }, [onSaveContactAction]);
 
   return (
@@ -93,22 +95,22 @@ const SaveContact = ({
   );
 };
 
-const RemoveContact = ({
+const DeleteContact = ({
   onSaveContactAction,
 }: {
   onSaveContactAction: React.Dispatch<
     React.SetStateAction<{
       show: boolean;
-      mode: 'save' | 'remove';
+      action: ContactAction;
     }>
   >;
 }) => {
   const onRemove = useCallback(() => {
-    onSaveContactAction({ show: false, mode: 'remove' });
+    onSaveContactAction({ show: false, action: 'delete' });
   }, [onSaveContactAction]);
 
   const onCancel = useCallback(() => {
-    onSaveContactAction({ show: false, mode: 'remove' });
+    onSaveContactAction({ show: false, action: 'delete' });
   }, [onSaveContactAction]);
 
   return (
@@ -164,28 +166,28 @@ const RemoveContact = ({
 export const ContactPrompt = ({
   show,
   address,
-  mode,
+  action,
   onSaveContactAction,
 }: {
   show: boolean;
   address: Address;
-  mode: 'save' | 'remove';
+  action: ContactAction;
   onSaveContactAction: React.Dispatch<
     React.SetStateAction<{
       show: boolean;
-      mode: 'save' | 'remove';
+      action: ContactAction;
     }>
   >;
 }) => {
   return (
     <Prompt show={show}>
-      {mode === 'save' ? (
+      {action === 'save' ? (
         <SaveContact
           address={address}
           onSaveContactAction={onSaveContactAction}
         />
       ) : (
-        <RemoveContact onSaveContactAction={onSaveContactAction} />
+        <DeleteContact onSaveContactAction={onSaveContactAction} />
       )}
     </Prompt>
   );
