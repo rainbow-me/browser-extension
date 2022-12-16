@@ -101,7 +101,7 @@ const SaveOrEditContact = ({
           >
             {i18n.t(
               `contacts.${
-                action === 'save' ? 'add_to_contacts' : 'edit_contact'
+                action === 'save' ? 'add_to_contacts' : 'save_changes'
               }`,
             )}
           </Button>
