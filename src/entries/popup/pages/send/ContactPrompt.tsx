@@ -10,10 +10,12 @@ import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 
 export type ContactAction = 'save' | 'edit' | 'delete';
 
-const SaveContact = ({
+const SaveOrEditContact = ({
+  action,
   address,
   onSaveContactAction,
 }: {
+  action: 'save' | 'edit';
   address: Address;
   onSaveContactAction: React.Dispatch<
     React.SetStateAction<{
@@ -42,7 +44,7 @@ const SaveContact = ({
         <Stack alignHorizontal="center" space="24px">
           <Stack alignHorizontal="center" space="20px">
             <Text weight="bold" size="16pt" color="label">
-              Save contact
+              {`${action === 'save' ? 'Save' : 'Edit'} contact`}
             </Text>
             <Box style={{ width: 42 }}>
               <Separator color="separatorTertiary" strokeWeight="1px" />
@@ -181,9 +183,10 @@ export const ContactPrompt = ({
 }) => {
   return (
     <Prompt show={show}>
-      {action === 'save' ? (
-        <SaveContact
+      {action === 'save' || action === 'edit' ? (
+        <SaveOrEditContact
           address={address}
+          action={action}
           onSaveContactAction={onSaveContactAction}
         />
       ) : (

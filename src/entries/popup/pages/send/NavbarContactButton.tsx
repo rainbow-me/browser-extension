@@ -100,7 +100,7 @@ const EditContactDropdown = ({
           navigator.clipboard.writeText(toAddress as string);
           break;
         case 'edit':
-          onEdit({ show: true, action: 'save' });
+          onEdit({ show: true, action: 'edit' });
           break;
         case 'view':
           viewOnEtherscan();

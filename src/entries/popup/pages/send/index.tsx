@@ -175,7 +175,7 @@ export function Send() {
         onSaveContactAction={setSaveContactAction}
       />
       <Navbar
-        title={'Send'}
+        title={'Send' || ''}
         background={'surfaceSecondary'}
         leftComponent={<Navbar.BackButton />}
         rightComponent={
