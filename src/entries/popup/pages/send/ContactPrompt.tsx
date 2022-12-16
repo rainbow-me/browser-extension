@@ -27,8 +27,9 @@ const SaveOrEditContact = ({
   >;
 }) => {
   const { saveContact, getContact } = useContactsStore();
+
   const contact = useMemo(() => getContact({ address }), [address, getContact]);
-  const [name, setName] = useState(contact?.name);
+  const [name, setName] = useState(contact?.name || '');
 
   const handleNameChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -152,7 +153,7 @@ const DeleteContact = ({
               align="center"
             >
               {i18n.t('contacts.remove_contact_description', {
-                name: ensName ?? contact?.name,
+                name: ensName || contact?.name,
               })}
             </Text>
           </Box>

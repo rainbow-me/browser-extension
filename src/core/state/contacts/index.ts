@@ -10,7 +10,7 @@ export interface Contact {
 
 export interface ContactsStore {
   contacts: { [address: Address]: Contact };
-  getContact: ({ address }: { address: Address }) => Contact;
+  getContact: ({ address }: { address: Address }) => Contact | undefined;
   isContact: ({ address }: { address: Address }) => boolean;
   saveContact: ({ contact }: { contact: Contact }) => void;
   editContact: ({ contact }: { contact: Contact }) => void;

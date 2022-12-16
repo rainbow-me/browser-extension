@@ -11,16 +11,13 @@ import React, {
 import { Address, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useContactsStore } from '~/core/state/contacts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { SymbolName } from '~/design-system/styles/designTokens';
-import {
-  DEFAULT_ACCOUNT,
-  DEFAULT_ACCOUNT_2,
-} from '~/entries/background/handlers/handleProviderRequest';
 
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useBackgroundAccounts } from '../../hooks/useBackgroundAccounts';
@@ -97,18 +94,20 @@ const WalletRow = ({
   wallet: Address;
   onClick: (address: Address) => void;
 }) => {
+  const { getContact } = useContactsStore();
   const { data: ensName } = useEnsName({
     address: wallet,
   });
+  const contact = getContact({ address: wallet });
   return (
     <Box key={wallet} onClick={() => onClick(wallet)} paddingVertical="8px">
       <Inline alignVertical="center" space="8px">
         <WalletAvatar size={36} address={wallet} emojiSize="20pt" />
         <Stack space="8px">
           <Text weight="semibold" size="14pt" color="label">
-            {ensName ?? truncateAddress(wallet)}
+            {ensName || contact?.name || truncateAddress(wallet)}
           </Text>
-          {ensName && (
+          {(ensName || contact?.name) && (
             <Text weight="semibold" size="12pt" color="labelTertiary">
               {truncateAddress(wallet)}
             </Text>
@@ -157,6 +156,7 @@ export const ToAddressInput = ({
 
   const { accounts } = useBackgroundAccounts();
   const { wallets } = useBackgroundWallets();
+  const { getContact, contacts: contactsObjects } = useContactsStore();
 
   const watchedWallets = wallets.filter(
     (wallet) => wallet.type === KeychainType.ReadOnlyKeychain,
@@ -165,11 +165,9 @@ export const ToAddressInput = ({
     .map((watchedWallet) => watchedWallet.accounts)
     .flat();
 
-  // TODO watched wallets and contacts still don't exist
-  const contacts: Address[] = [
-    DEFAULT_ACCOUNT as Address,
-    DEFAULT_ACCOUNT_2 as Address,
-  ];
+  const contacts = Object.keys(contactsObjects);
+  const contact = getContact({ address: toAddress });
+
   return (
     <>
       <InputWrapper
@@ -209,9 +207,9 @@ export const ToAddressInput = ({
               >
                 <Stack space="8px">
                   <Text weight="semibold" size="14pt" color="label">
-                    {toEnsName || truncateAddress(toAddress)}
+                    {toEnsName || contact?.name || truncateAddress(toAddress)}
                   </Text>
-                  {toEnsName && (
+                  {(toEnsName || contact?.name) && (
                     <Text weight="semibold" size="12pt" color="labelTertiary">
                       {truncateAddress(toAddress)}
                     </Text>
@@ -228,7 +226,7 @@ export const ToAddressInput = ({
             <WalletSection
               symbol="person.crop.circle.fill"
               title={i18n.t('send.wallets_list.contacts')}
-              wallets={contacts}
+              wallets={contacts as Address[]}
               onClickWallet={selectWalletAndCloseDropdown}
             />
             <WalletSection
