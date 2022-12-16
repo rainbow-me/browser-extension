@@ -96,7 +96,7 @@
     "title": "Rainbow",
     "subtitle": "Explore the new world of Ethereum",
     "create_wallet": "Create a new wallet",
-    "import_wallet": "Restore or connect a wallet",
+    "restore_wallet": "Restore or connect a wallet",
     "disclaimer_tos": "By proceeding, you agree to Rainbow’s",
     "disclaimer_tos_link": "Terms of Use"
   },
@@ -113,6 +113,16 @@
     "write_down_seed_importance": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
     "copy_to_clipboard": "Copy to clipboard",
     "saved_these_words": "I've saved these words"
+  },
+  "restore_or_connect": {
+    "title": "Restore or Connect",
+    "explanation": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
+    "restore_wallet": "Restore with a Secret Recovery Phrase or Private Key",
+    "restore_wallet_description": "Add a wallet using your Secret Recovery Phrase or a Private Key.",
+    "connect_wallet": "Connect your hardware wallet",
+    "connect_wallet_description": "Add accounts from your hardware wallet",
+    "watch_address": "Watch an Ethereum address",
+    "watch_address_description": "Watch a public address or ENS name"
   },
   "seed_verify": {
     "title": "Verify your Secret Recovery Phrase",

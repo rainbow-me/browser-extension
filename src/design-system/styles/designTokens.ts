@@ -710,6 +710,9 @@ export const symbolNames = selectSymbolNames(
   'doc.plaintext',
   'doc.on.doc',
   'checkmark.shield.fill',
+  'lock.rotation',
+  'doc.text.magnifyingglass',
+  'magnifyingglass.circle',
 );
 export type SymbolName = typeof symbolNames[number];
 
