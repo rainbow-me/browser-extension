@@ -19,8 +19,11 @@ import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { NewWalletPrompt } from './newWalletPrompt';
 
 const MoreInfoButton = ({ wallet }: { wallet: DummyWallet }) => {
+  const navigate = useNavigate();
   const handleViewPrivateKey = () => {
-    null;
+    navigate(
+      '/settings/privacy/walletsAndKeys/accountDetails/privateKeyWarning',
+    );
   };
   return (
     <DropdownMenu>
