@@ -100,7 +100,7 @@ const SaveOrEditContact = ({
             width="full"
             color="fillSecondary"
             height="36px"
-            variant="raised"
+            variant="flat"
             borderRadius="9px"
             onClick={onCancel}
           >
