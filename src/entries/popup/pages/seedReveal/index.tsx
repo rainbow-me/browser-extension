@@ -83,7 +83,7 @@ export function SeedReveal() {
             onClick={handleCopy}
             symbol="doc.on.doc"
           >
-            {i18n.t('seed_reveal.copy_to_clipboard')}
+            {i18n.t('common_actions.copy_to_clipboard')}
           </Button>
         </Box>
       </Box>
