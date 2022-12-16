@@ -95,6 +95,7 @@ const EditContactDropdown = ({
     (value: string) => {
       switch (value) {
         case 'copy':
+          navigator.clipboard.writeText(toAddress as string);
           break;
         case 'edit':
           onEdit({ show: true, mode: 'save' });
@@ -108,7 +109,7 @@ const EditContactDropdown = ({
           break;
       }
     },
-    [onEdit, viewOnEtherscan],
+    [onEdit, toAddress, viewOnEtherscan],
   );
 
   return (
