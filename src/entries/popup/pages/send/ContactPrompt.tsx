@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
+import { Address, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useContactsStore } from '~/core/state/contacts';
@@ -123,7 +123,8 @@ const DeleteContact = ({
     }>
   >;
 }) => {
-  const { deleteContact } = useContactsStore();
+  const { deleteContact, getContact } = useContactsStore();
+  const { data: ensName } = useEnsName({ address });
 
   const onRemove = useCallback(() => {
     deleteContact({ address });
@@ -133,6 +134,8 @@ const DeleteContact = ({
   const onCancel = useCallback(() => {
     onSaveContactAction({ show: false, action: 'delete' });
   }, [onSaveContactAction]);
+
+  const contact = useMemo(() => getContact({ address }), [address, getContact]);
 
   return (
     <Box alignItems="center" width="full" paddingTop="12px">
@@ -148,7 +151,9 @@ const DeleteContact = ({
               size="12pt"
               align="center"
             >
-              {i18n.t('contacts.remove_contact_description')}
+              {i18n.t('contacts.remove_contact_description', {
+                name: ensName ?? contact?.name,
+              })}
             </Text>
           </Box>
 

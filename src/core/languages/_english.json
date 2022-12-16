@@ -88,7 +88,7 @@
     "cancel": "Cancel",
     "remove_contact_title": "Remove contact?",
     "remove_contact_action": "Remove contact",
-    "remove_contact_description": "Are you sure you want to remove “-------” from your contacts?",
+    "remove_contact_description": "Are you sure you want to remove “%{name}” from your contacts?",
     "save": "Save",
     "copy_address": "Copy address",
     "view_on_etherscan": "View on Etherscan",
