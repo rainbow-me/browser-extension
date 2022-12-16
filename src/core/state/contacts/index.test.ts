@@ -35,16 +35,6 @@ test('should be able to delete contact', async () => {
   });
 });
 
-test('should be able to edit contact', async () => {
-  const { editContact } = contactsStore.getState();
-  editContact({
-    contact: { address: DEFAULT_ACCOUNT_2, name: ACCOUNT_NAME_1 },
-  });
-  expect(contactsStore.getState().contacts).toStrictEqual({
-    [DEFAULT_ACCOUNT_2]: { address: DEFAULT_ACCOUNT_2, name: ACCOUNT_NAME_1 },
-  });
-});
-
 test('should be able to verify if is contact', async () => {
   const { isContact } = contactsStore.getState();
   const contact = isContact({ address: DEFAULT_ACCOUNT_2 });
