@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { i18n } from '~/core/languages';
 import { Box, Button, Rows, Symbol, Text } from '~/design-system';
 import {
   IconAndCopyItem,
@@ -13,28 +14,36 @@ const iconAndCopyList: IconAndCopyItem[] = [
       symbol: 'exclamationmark.triangle',
       color: 'orange',
     },
-    copy: 'Never share your Recovery Phrase or enter it into any apps.',
+    copy: i18n.t(
+      'settings.privacy_and_security.wallets_and_keys.recovery_phrase.warning1',
+    ),
   },
   {
     icon: {
       symbol: 'eye.slash.fill',
       color: 'pink',
     },
-    copy: 'Make sure nobody can view your screen when viewing your Recovery Phrase.',
+    copy: i18n.t(
+      'settings.privacy_and_security.wallets_and_keys.recovery_phrase.warning2',
+    ),
   },
   {
     icon: {
       symbol: 'lock.open.fill',
       color: 'red',
     },
-    copy: 'Anyone with your Recovery Phrase can access your entire wallet.',
+    copy: i18n.t(
+      'settings.privacy_and_security.wallets_and_keys.recovery_phrase.warning3',
+    ),
   },
   {
     icon: {
       symbol: 'lifepreserver',
       color: 'blue',
     },
-    copy: 'Rainbow Support will never ask you for your Recovery Phrase.',
+    copy: i18n.t(
+      'settings.privacy_and_security.wallets_and_keys.recovery_phrase.warning4',
+    ),
   },
 ];
 
@@ -92,7 +101,7 @@ export function RecoveryPhraseWarning() {
         style={{ paddingTop: '84px', paddingBottom: '60px' }}
       >
         <Text size="16pt" weight="bold" color="label" align="center">
-          Before you proceed
+          {i18n.t('common_titles.before_you_proceed')}
         </Text>
       </Box>
       <IconAndCopyList iconAndCopyList={iconAndCopyList} />
@@ -107,7 +116,9 @@ export function RecoveryPhraseWarning() {
             blur="26px"
             onClick={handleShowRecoveryPhraseClick}
           >
-            Show Recovery Phrase
+            {i18n.t(
+              'settings.privacy_and_security.wallets_and_keys.recovery_phrase.show',
+            )}
           </Button>
         </Rows>
       </Box>

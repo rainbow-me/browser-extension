@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { i18n } from '~/core/languages';
 import {
   Box,
   Button,
@@ -45,7 +46,9 @@ export function PrivateKey() {
         >
           <Symbol symbol="key.fill" size={18} color="orange" weight={'bold'} />
           <Text size="16pt" weight="bold" color="label" align="center">
-            Your Private Key
+            {i18n.t(
+              'settings.privacy_and_security.wallets_and_keys.private_key.title',
+            )}
           </Text>
         </Inline>
         <Box padding="16px" paddingTop="10px">
@@ -55,8 +58,9 @@ export function PrivateKey() {
             color="labelTertiary"
             align="center"
           >
-            Anyone who has this key can access your entire wallet! You should
-            never share it.
+            {i18n.t(
+              'settings.privacy_and_security.wallets_and_keys.private_key.subtitle',
+            )}
           </Text>
         </Box>
       </Box>
@@ -87,7 +91,7 @@ export function PrivateKey() {
             onClick={handleCopy}
             symbol="doc.on.doc"
           >
-            Copy to clipboard
+            {i18n.t('common_actions.copy_to_clipboard')}
           </Button>
         </Box>
       </Box>
@@ -102,7 +106,9 @@ export function PrivateKey() {
             blur="26px"
             onClick={handleSavedTheseWords}
           >
-            I&apos;ve saved this
+            {i18n.t(
+              'settings.privacy_and_security.wallets_and_keys.private_key.saved',
+            )}
           </Button>
         </Rows>
       </Box>

@@ -52,7 +52,9 @@ export function RecoveryPhrase() {
             weight={'bold'}
           />
           <Text size="16pt" weight="bold" color="label" align="center">
-            Your Recovery Phrase
+            {i18n.t(
+              'settings.privacy_and_security.wallets_and_keys.recovery_phrase.title',
+            )}
           </Text>
         </Inline>
         <Box padding="16px" paddingTop="10px">
@@ -62,8 +64,9 @@ export function RecoveryPhrase() {
             color="labelTertiary"
             align="center"
           >
-            Anyone who has these words can access your entire wallet! You should
-            never share them.
+            {i18n.t(
+              'settings.privacy_and_security.wallets_and_keys.recovery_phrase.subtitle',
+            )}
           </Text>
         </Box>
       </Box>
@@ -96,7 +99,9 @@ export function RecoveryPhrase() {
             blur="26px"
             onClick={handleSavedTheseWords}
           >
-            {i18n.t('seed_reveal.saved_these_words')}
+            {i18n.t(
+              'settings.privacy_and_security.wallets_and_keys.recovery_phrase.saved',
+            )}
           </Button>
         </Rows>
       </Box>

@@ -51,6 +51,26 @@
           "create": "Create Wallet",
           "no_wallet_name_set": "No wallet name set",
           "input_placeholder": "ex: Wallet 1"
+        },
+        "private_key": {
+          "title": "Your Private Key",
+          "subtitle": "Anyone who has this key can access your entire wallet! You should never share it.",
+          "saved": "I've saved this",
+          "warning1": "Never share your Private Key or enter it into any apps.",
+          "warning2": "Make sure nobody can view your screen when viewing your Private Key.",
+          "warning3": "Anyone with your Private Key can access your entire wallet.",
+          "warning4": "Rainbow Support will never ask you for your Private Key.",
+          "show": "Show Private Key"
+        },
+        "recovery_phrase": {
+          "title": "Your Recovery Phrase",
+          "subtitle": "Anyone who has these words can access your entire wallet! You should never share them.",
+          "saved": "I've saved these words",
+          "warning1": "Never share your Recovery Phrase or enter it into any apps.",
+          "warning2": "Make sure nobody can view your screen when viewing your Recovery Phrase.",
+          "warning3": "Anyone with your Recovery Phrase can access your entire wallet.",
+          "warning4": "Rainbow Support will never ask you for your Recovery Phrase.",
+          "show": "Show Recovery Phrase"
         }
       }
     },
@@ -265,7 +285,11 @@
   },
   "common_actions": {
     "cancel": "Cancel",
-    "continue": "Continue"
+    "continue": "Continue",
+    "copy_to_clipboard": "Copy to clipboard"
+  },
+  "common_titles": {
+    "before_you_proceed": "Before you proceed"
   },
   "passwords": {
     "password": "Password",
