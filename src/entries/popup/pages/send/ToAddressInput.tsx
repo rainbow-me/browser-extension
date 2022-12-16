@@ -115,7 +115,7 @@ const WalletRow = ({
   );
 };
 
-const DropdownWalletList = ({
+const DropdownWalletsList = ({
   wallets,
   contacts,
   watchedWallets,
@@ -187,7 +187,7 @@ const DropdownWalletList = ({
               weight="semibold"
               align="center"
             >
-              No results
+              {i18n.t('send.wallets_list.no_results')}
             </Text>
           </Stack>
         </Box>
@@ -292,7 +292,7 @@ export const ToAddressInput = ({
         showActionClose={!!toAddress}
         onActionClose={clearToAddress}
         dropdownComponent={
-          <DropdownWalletList
+          <DropdownWalletsList
             wallets={wallets}
             watchedWallets={watchedWallets}
             contacts={contacts}
