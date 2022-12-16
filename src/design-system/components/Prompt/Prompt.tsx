@@ -11,7 +11,8 @@ export const Prompt = ({
   show: boolean;
   children: ReactNode;
 }) => {
-  const transition = animatedRouteTransitionConfig['vertical'];
+  const emphasizedShort = animatedRouteTransitionConfig['emphasizedShort'];
+  const deceleratedShort = animatedRouteTransitionConfig['deceleratedShort'];
 
   return (
     <AnimatePresence>
@@ -31,7 +32,7 @@ export const Prompt = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={transition}
+          transition={emphasizedShort}
           backdropFilter="blur(26px)"
           padding="40px"
         >
@@ -39,10 +40,10 @@ export const Prompt = ({
             <Row height="content">
               <Box
                 as={motion.div}
-                initial={{ y: 16 }}
-                exit={{ y: 16 }}
-                animate={{ y: 0 }}
-                transition={transition}
+                initial={{ opacity: 0, scale: 1.1 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={deceleratedShort}
                 padding="12px"
                 background="surfaceMenu"
                 borderRadius="12px"

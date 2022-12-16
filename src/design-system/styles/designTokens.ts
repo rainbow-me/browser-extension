@@ -733,7 +733,12 @@ export const radii = {
 };
 export type Radius = keyof typeof radii;
 
-export type AnimatedRouteDirection = 'base' | 'horizontal' | 'vertical';
+export type AnimatedRouteDirection =
+  | 'base'
+  | 'horizontal'
+  | 'vertical'
+  | 'deceleratedShort'
+  | 'emphasizedShort';
 export type AnimatedRouteBreakpoints = 'initial' | 'end' | 'exit';
 export type AnimatedAttributes = {
   opacity?: number;
@@ -761,5 +766,13 @@ export const animatedRouteTransitionConfig = {
     stiffness: 1111,
     damping: 50,
     mass: 1,
+  },
+  deceleratedShort: {
+    ease: [0, 0, 0, 1],
+    duration: 0.18,
+  },
+  emphasizedShort: {
+    ease: [0.2, 0, 0, 1],
+    duration: 0.2,
   },
 };
