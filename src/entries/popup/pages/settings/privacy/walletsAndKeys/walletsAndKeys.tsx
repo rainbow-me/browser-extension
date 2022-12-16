@@ -91,7 +91,7 @@ export function WalletsAndKeys() {
               }
               onClick={() =>
                 navigate(
-                  '/settings/privacy/walletsAndKeys/accountDetails/newSecretPhraseWarning',
+                  '/settings/privacy/walletsAndKeys/accountDetails/recoveryPhraseWarning',
                 )
               }
             />

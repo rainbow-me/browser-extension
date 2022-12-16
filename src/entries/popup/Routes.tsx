@@ -19,10 +19,10 @@ import { Currency } from './pages/settings/currency';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
 import { ChangePassword } from './pages/settings/privacy/changePassword';
 import { Privacy } from './pages/settings/privacy/privacy';
-import { RecoveryPhrase } from './pages/settings/privacy/walletsAndKeys/newSecretPhrase/recoveryPhrase';
-import { NewSecretPhraseWarning } from './pages/settings/privacy/walletsAndKeys/newSecretPhrase/warning';
-import { PrivateKey } from './pages/settings/privacy/walletsAndKeys/newWallet/privateKey';
-import { NewPrivateKeyWarning } from './pages/settings/privacy/walletsAndKeys/newWallet/warning';
+import { PrivateKey } from './pages/settings/privacy/walletsAndKeys/privateKey/privateKey';
+import { PrivateKeyWarning } from './pages/settings/privacy/walletsAndKeys/privateKey/warning';
+import { RecoveryPhrase } from './pages/settings/privacy/walletsAndKeys/recoveryPhrase/recoveryPhrase';
+import { RecoveryPhraseWarning } from './pages/settings/privacy/walletsAndKeys/recoveryPhrase/warning';
 import { AccountDetails } from './pages/settings/privacy/walletsAndKeys/walletAccountDetails';
 import { WalletsAndKeys } from './pages/settings/privacy/walletsAndKeys/walletsAndKeys';
 import { Settings } from './pages/settings/settings';
@@ -211,14 +211,14 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/accountDetails/newWalletWarning',
+        path: '/settings/privacy/walletsAndKeys/accountDetails/privateKeyWarning',
         element: (
           <AnimatedRoute
             direction="horizontal"
             navbar
             background="surfaceSecondary"
           >
-            <NewPrivateKeyWarning />
+            <PrivateKeyWarning />
           </AnimatedRoute>
         ),
       },
@@ -235,14 +235,14 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/accountDetails/newSecretPhraseWarning',
+        path: '/settings/privacy/walletsAndKeys/accountDetails/recoveryPhraseWarning',
         element: (
           <AnimatedRoute
             direction="horizontal"
             navbar
             background="surfaceSecondary"
           >
-            <NewSecretPhraseWarning />
+            <RecoveryPhraseWarning />
           </AnimatedRoute>
         ),
       },

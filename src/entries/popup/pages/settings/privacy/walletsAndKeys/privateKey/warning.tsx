@@ -37,7 +37,7 @@ const iconAndCopyList: IconAndCopyItem[] = [
     copy: 'Rainbow Support will never ask you for your Private Key.',
   },
 ];
-export function NewPrivateKeyWarning() {
+export function PrivateKeyWarning() {
   const navigate = useNavigate();
 
   const handleShowRecoveryPhraseClick = useCallback(async () => {

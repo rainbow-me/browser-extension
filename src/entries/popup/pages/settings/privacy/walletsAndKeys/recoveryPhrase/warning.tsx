@@ -38,7 +38,7 @@ const iconAndCopyList: IconAndCopyItem[] = [
   },
 ];
 
-export function NewSecretPhraseWarning() {
+export function RecoveryPhraseWarning() {
   const navigate = useNavigate();
 
   const handleShowRecoveryPhraseClick = useCallback(async () => {
