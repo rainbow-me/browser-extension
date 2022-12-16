@@ -11,17 +11,14 @@ import React, {
 import { Address, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useContactsStore } from '~/core/state/contacts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
-import { useBackgroundAccounts } from '../../hooks/useBackgroundAccounts';
-import { useBackgroundWallets } from '../../hooks/useBackgroundWallets';
+import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
 import { useContact } from '../../hooks/useContacts';
 
 import { InputWrapper } from './InputWrapper';
@@ -154,19 +151,10 @@ export const ToAddressInput = ({
     [onDropdownAction, setToAddressOrName],
   );
 
-  const { accounts } = useBackgroundAccounts();
-  const { wallets } = useBackgroundWallets();
-  const { contacts: contactsObjects } = useContactsStore();
-
-  const watchedWallets = wallets.filter(
-    (wallet) => wallet.type === KeychainType.ReadOnlyKeychain,
-  );
-  const watchedAccounts = watchedWallets
-    .map((watchedWallet) => watchedWallet.accounts)
-    .flat();
-
-  const contacts = Object.keys(contactsObjects);
-  const contact = useContact({ address: toAddress });
+  const toAddressContact = useContact({ address: toAddress });
+  const { wallets, watchedWallets, contacts } = useAllFilteredWallets({
+    filter: toAddressOrName,
+  });
 
   return (
     <>
@@ -207,9 +195,9 @@ export const ToAddressInput = ({
               >
                 <Stack space="8px">
                   <Text weight="semibold" size="14pt" color="label">
-                    {contact?.display || truncateAddress(toAddress)}
+                    {toAddressContact?.display || truncateAddress(toAddress)}
                   </Text>
-                  {contact?.display && (
+                  {toAddressContact?.display && (
                     <Text weight="semibold" size="12pt" color="labelTertiary">
                       {truncateAddress(toAddress)}
                     </Text>
@@ -226,7 +214,7 @@ export const ToAddressInput = ({
             <WalletSection
               symbol="lock.square.stack.fill"
               title={i18n.t('send.wallets_list.my_wallets')}
-              wallets={accounts}
+              wallets={wallets}
               onClickWallet={selectWalletAndCloseDropdown}
             />
             <WalletSection
@@ -238,7 +226,7 @@ export const ToAddressInput = ({
             <WalletSection
               symbol="eyes.inverse"
               title={i18n.t('send.wallets_list.watched_wallets')}
-              wallets={watchedAccounts}
+              wallets={watchedWallets}
               onClickWallet={selectWalletAndCloseDropdown}
             />
           </Stack>
