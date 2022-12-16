@@ -1,9 +1,11 @@
 import { fetchEnsName } from '@wagmi/core';
+import { isAddress } from 'ethers/lib/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { contactsStore, useContactsStore } from '~/core/state/contacts';
 import { KeychainType } from '~/core/types/keychainTypes';
+import { isENSAddressFormat } from '~/core/utils/ethereum';
 
 import { useBackgroundAccounts } from '../useBackgroundAccounts';
 import { useBackgroundWallets } from '../useBackgroundWallets';
@@ -95,16 +97,21 @@ export const useAllFilteredWallets = ({ filter }: { filter: string }) => {
 
   useEffect(() => {
     const filterWallets = async () => {
+      const filterIsAddressOrEns =
+        isAddress(filter) || isENSAddressFormat(filter);
       const filteredWalletsData = walletsData.filter(
         ({ ensName, address, name }) =>
+          filterIsAddressOrEns ||
           filterWalletData({ ensName, address, name, filter }),
       );
       const filteredWatchedWalletsData = watchedWalletsData.filter(
         ({ ensName, address, name }) =>
+          filterIsAddressOrEns ||
           filterWalletData({ ensName, address, name, filter }),
       );
       const filteredContactsData = contactsData.filter(
         ({ ensName, address, name }) =>
+          filterIsAddressOrEns ||
           filterWalletData({ ensName, address, name, filter }),
       );
 
