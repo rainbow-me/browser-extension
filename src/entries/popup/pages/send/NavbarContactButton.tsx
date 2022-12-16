@@ -97,22 +97,22 @@ const EditContactDropdown = ({
             </Text>
           </Box>
           <Stack space="4px">
-            <Stack space="4px">
+            <Box>
               <DropdownMenuSeparator />
-              <DropdownMenuRadioItem value={'1'}>
+              <DropdownMenuRadioItem value={'copy'}>
                 <Box width="full" marginVertical="-1px">
                   <Inline space="8px" alignVertical="center">
-                    <Box background="blue">
-                      <Bleed vertical="8px">
+                    <Box>
+                      <Inline alignVertical="center">
                         <Symbol
                           symbol="doc.on.doc.fill"
                           weight="semibold"
-                          size={14}
+                          size={18}
                         />
-                      </Bleed>
+                      </Inline>
                     </Box>
 
-                    <Box background="blue">
+                    <Box>
                       <Stack space="6px">
                         <Text weight="semibold" size="14pt" color="label">
                           Copy address
@@ -129,16 +129,16 @@ const EditContactDropdown = ({
                   </Inline>
                 </Box>
               </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value={'2'}>
-                <Box width="full">
+              <DropdownMenuRadioItem value={'edit'}>
+                <Box width="full" paddingVertical="2px">
                   <Inline space="8px" alignVertical="center">
-                    <Bleed vertical="4px">
+                    <Inline alignVertical="center">
                       <Symbol
                         symbol="person.crop.circle.fill"
                         weight="semibold"
-                        size={14}
+                        size={18}
                       />
-                    </Bleed>
+                    </Inline>
                     <Text weight="semibold" size="14pt" color="label">
                       Edit contact
                     </Text>
@@ -146,24 +146,29 @@ const EditContactDropdown = ({
                 </Box>
               </DropdownMenuRadioItem>
 
-              <DropdownMenuRadioItem value={'3'}>
-                <Box width="full" as="button" onClick={viewOnEtherscan}>
+              <DropdownMenuRadioItem value={'view'}>
+                <Box
+                  width="full"
+                  paddingVertical="2px"
+                  as="button"
+                  onClick={viewOnEtherscan}
+                >
                   <Inline alignVertical="center" alignHorizontal="justify">
                     <Inline alignVertical="center" space="8px">
-                      <Bleed vertical="4px">
+                      <Inline alignVertical="center">
                         <Symbol
-                          size={12}
+                          size={18}
                           symbol="binoculars.fill"
                           weight="semibold"
                         />
-                      </Bleed>
+                      </Inline>
                       <Text size="14pt" weight="semibold">
                         {'View on Etherscan'}
                       </Text>
                     </Inline>
                     <Bleed vertical="8px">
                       <Symbol
-                        size={12}
+                        size={14}
                         symbol="arrow.up.forward.circle"
                         weight="semibold"
                         color="labelTertiary"
@@ -172,16 +177,16 @@ const EditContactDropdown = ({
                   </Inline>
                 </Box>
               </DropdownMenuRadioItem>
-            </Stack>
+            </Box>
             <Stack space="4px">
               <DropdownMenuSeparator />
-              <DropdownMenuRadioItem value={'4'}>
+              <DropdownMenuRadioItem value={'delete'}>
                 <Box>
                   <Inline space="8px" alignVertical="center">
                     <Symbol
                       symbol="trash"
                       weight="semibold"
-                      size={14}
+                      size={18}
                       color="red"
                     />
                     <Text weight="semibold" size="14pt" color="red">
