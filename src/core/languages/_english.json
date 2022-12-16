@@ -45,6 +45,12 @@
           "create_new_wallet": "Create a new Wallet",
           "view_private_key": "View Private Key",
           "copy_address": "Copy Address"
+        },
+        "new_wallet": {
+          "name_your_wallet": "Name your wallet",
+          "create": "Create Wallet",
+          "no_wallet_name_set": "No wallet name set",
+          "input_placeholder": "ex: Wallet 1"
         }
       }
     },

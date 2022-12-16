@@ -33,7 +33,11 @@ export const NewWalletPrompt = ({
       );
       return;
     }
-    setError('No wallet name set');
+    setError(
+      i18n.t(
+        'settings.privacy_and_security.wallets_and_keys.new_wallet.no_wallet_name_set',
+      ),
+    );
   };
 
   const handleClose = () => {
@@ -59,7 +63,9 @@ export const NewWalletPrompt = ({
             <Row>
               <Box paddingTop="12px">
                 <Text size="16pt" weight="bold" align="center">
-                  Name your wallet
+                  {i18n.t(
+                    'settings.privacy_and_security.wallets_and_keys.new_wallet.name_your_wallet',
+                  )}
                 </Text>
               </Box>
             </Row>
@@ -72,7 +78,9 @@ export const NewWalletPrompt = ({
               <Rows>
                 <Row>
                   <Input
-                    placeholder="ex: Wallet 1"
+                    placeholder={i18n.t(
+                      'settings.privacy_and_security.wallets_and_keys.new_wallet.create',
+                    )}
                     value={walletName}
                     onChange={(e) => setWalletName(e.target.value)}
                     height="44px"
@@ -107,7 +115,9 @@ export const NewWalletPrompt = ({
                 onClick={handleValidateWalletName}
                 width="full"
               >
-                Create Wallet
+                {i18n.t(
+                  'settings.privacy_and_security.wallets_and_keys.new_wallet.create',
+                )}
               </Button>
             </Row>
             <Row>
