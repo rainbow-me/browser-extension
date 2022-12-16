@@ -16,6 +16,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
@@ -71,9 +72,16 @@ const NavbarSaveContactButton = ({
 const EditContactDropdown = ({
   children,
   toAddress,
+  onEdit,
 }: {
   children: React.ReactNode;
   toAddress?: Address;
+  onEdit: React.Dispatch<
+    React.SetStateAction<{
+      show: boolean;
+      mode: 'save' | 'remove';
+    }>
+  >;
 }) => {
   const { data: ensName } = useEnsName({ address: toAddress });
 
@@ -82,6 +90,26 @@ const EditContactDropdown = ({
       url: `https://etherscan.io/address/${toAddress}`,
     });
   }, [toAddress]);
+
+  const onValueChange = useCallback(
+    (value: string) => {
+      switch (value) {
+        case 'copy':
+          break;
+        case 'edit':
+          onEdit({ show: true, mode: 'save' });
+          break;
+        case 'view':
+          viewOnEtherscan();
+          break;
+        case 'delete':
+          onEdit({ show: true, mode: 'remove' });
+
+          break;
+      }
+    },
+    [onEdit, viewOnEtherscan],
+  );
 
   return (
     <DropdownMenu>
@@ -97,107 +125,104 @@ const EditContactDropdown = ({
               {ensName ?? truncateAddress(toAddress)}
             </Text>
           </Box>
-          <Stack space="4px">
-            <Box>
-              <DropdownMenuSeparator />
-              <DropdownMenuRadioItem value={'copy'}>
-                <Box width="full" marginVertical="-1px">
-                  <Inline space="8px" alignVertical="center">
-                    <Box>
-                      <Inline alignVertical="center">
-                        <Symbol
-                          symbol="doc.on.doc.fill"
-                          weight="semibold"
-                          size={18}
-                        />
-                      </Inline>
-                    </Box>
+          <DropdownMenuRadioGroup onValueChange={onValueChange}>
+            <Stack space="4px">
+              <Box>
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioItem value={'copy'}>
+                  <Box width="full" marginVertical="-1px">
+                    <Inline space="8px" alignVertical="center">
+                      <Box>
+                        <Inline alignVertical="center">
+                          <Symbol
+                            symbol="doc.on.doc.fill"
+                            weight="semibold"
+                            size={18}
+                          />
+                        </Inline>
+                      </Box>
 
-                    <Box>
-                      <Stack space="6px">
-                        <Text weight="semibold" size="14pt" color="label">
-                          Copy address
-                        </Text>
-                        <Text
-                          weight="regular"
-                          size="11pt"
-                          color="labelTertiary"
-                        >
-                          {truncateAddress(toAddress)}
-                        </Text>
-                      </Stack>
-                    </Box>
-                  </Inline>
-                </Box>
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value={'edit'}>
-                <Box width="full" paddingVertical="2px">
-                  <Inline space="8px" alignVertical="center">
-                    <Inline alignVertical="center">
-                      <Symbol
-                        symbol="person.crop.circle.fill"
-                        weight="semibold"
-                        size={18}
-                      />
+                      <Box>
+                        <Stack space="6px">
+                          <Text weight="semibold" size="14pt" color="label">
+                            Copy address
+                          </Text>
+                          <Text
+                            weight="regular"
+                            size="11pt"
+                            color="labelTertiary"
+                          >
+                            {truncateAddress(toAddress)}
+                          </Text>
+                        </Stack>
+                      </Box>
                     </Inline>
-                    <Text weight="semibold" size="14pt" color="label">
-                      Edit contact
-                    </Text>
-                  </Inline>
-                </Box>
-              </DropdownMenuRadioItem>
-
-              <DropdownMenuRadioItem value={'view'}>
-                <Box
-                  width="full"
-                  paddingVertical="2px"
-                  as="button"
-                  onClick={viewOnEtherscan}
-                >
-                  <Inline alignVertical="center" alignHorizontal="justify">
-                    <Inline alignVertical="center" space="8px">
+                  </Box>
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value={'edit'}>
+                  <Box width="full" paddingVertical="2px">
+                    <Inline space="8px" alignVertical="center">
                       <Inline alignVertical="center">
                         <Symbol
-                          size={18}
-                          symbol="binoculars.fill"
+                          symbol="person.crop.circle.fill"
                           weight="semibold"
+                          size={18}
                         />
                       </Inline>
-                      <Text size="14pt" weight="semibold">
-                        {'View on Etherscan'}
+                      <Text weight="semibold" size="14pt" color="label">
+                        Edit contact
                       </Text>
                     </Inline>
-                    <Bleed vertical="8px">
+                  </Box>
+                </DropdownMenuRadioItem>
+
+                <DropdownMenuRadioItem value={'view'}>
+                  <Box width="full" paddingVertical="2px">
+                    <Inline alignVertical="center" alignHorizontal="justify">
+                      <Inline alignVertical="center" space="8px">
+                        <Inline alignVertical="center">
+                          <Symbol
+                            size={18}
+                            symbol="binoculars.fill"
+                            weight="semibold"
+                          />
+                        </Inline>
+                        <Text size="14pt" weight="semibold">
+                          {'View on Etherscan'}
+                        </Text>
+                      </Inline>
+                      <Bleed vertical="8px">
+                        <Symbol
+                          size={14}
+                          symbol="arrow.up.forward.circle"
+                          weight="semibold"
+                          color="labelTertiary"
+                        />
+                      </Bleed>
+                    </Inline>
+                  </Box>
+                </DropdownMenuRadioItem>
+              </Box>
+              <Stack space="4px">
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioItem value={'delete'}>
+                  <Box>
+                    <Inline space="8px" alignVertical="center">
                       <Symbol
-                        size={14}
-                        symbol="arrow.up.forward.circle"
+                        symbol="trash"
                         weight="semibold"
-                        color="labelTertiary"
+                        size={18}
+                        color="red"
                       />
-                    </Bleed>
-                  </Inline>
-                </Box>
-              </DropdownMenuRadioItem>
-            </Box>
-            <Stack space="4px">
-              <DropdownMenuSeparator />
-              <DropdownMenuRadioItem value={'delete'}>
-                <Box>
-                  <Inline space="8px" alignVertical="center">
-                    <Symbol
-                      symbol="trash"
-                      weight="semibold"
-                      size={18}
-                      color="red"
-                    />
-                    <Text weight="semibold" size="14pt" color="red">
-                      Delete contact
-                    </Text>
-                  </Inline>
-                </Box>
-              </DropdownMenuRadioItem>
+                      <Text weight="semibold" size="14pt" color="red">
+                        Delete contact
+                      </Text>
+                    </Inline>
+                  </Box>
+                </DropdownMenuRadioItem>
+              </Stack>
             </Stack>
-          </Stack>
+          </DropdownMenuRadioGroup>
         </Stack>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -206,6 +231,7 @@ const EditContactDropdown = ({
 
 const NavbarEditContactButton = ({
   toAddress,
+  onSaveAction,
 }: //   onSaveAction,
 {
   toAddress?: Address;
@@ -221,7 +247,7 @@ const NavbarEditContactButton = ({
   //   }, [onSaveAction]);
 
   return (
-    <EditContactDropdown toAddress={toAddress}>
+    <EditContactDropdown toAddress={toAddress} onEdit={onSaveAction}>
       <Navbar.SymbolButton symbol="ellipsis" variant="flat" />
     </EditContactDropdown>
   );
