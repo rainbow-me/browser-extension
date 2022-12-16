@@ -1,0 +1,76 @@
+{
+  "wallet1": {
+    "type": "recovery_phrase",
+    "imported": false,
+    "seedPhrase": "hello hello hello hello hello hello hello hello hello hello hello hello",
+    "accounts": [
+      {
+        "address": "0xc986ca9476edc3c021c04e3306f9e37eed9071ab",
+        "ens": "nicoglennon.eth",
+        "privateKey": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      },
+      {
+        "address": "0xBe260B86e2eE35A406F9154107f242882aB00aEe",
+        "ens": "nickbytes.eth",
+        "privateKey": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      },
+      {
+        "address": "0xDBC05B1ECB4FDAEF943819C0B04E9EF6DF4BABD6",
+        "privateKey": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      },
+      {
+        "address": "0x721B68FA152A930F3DF71F54AC1CE7ED3AC5F867",
+        "privateKey": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      },
+      {
+        "address": "0xB3B66043A8F1E7F558BA5D7F46A26D1B41F5CA2A",
+        "privateKey": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      },
+      {
+        "address": "0xB678AC4F4D06E21EF11E858940333692EC2C80BA",
+        "privateKey": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      },
+      {
+        "address": "0x5A84099345D666F5FC7FE644D0A7B0D2B51D84AD",
+        "privateKey": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      },
+      {
+        "address": "0x1BCC5EE4EA0AF205EBCB22017A221C0FA5569BAF",
+        "privateKey": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      },
+      {
+        "address": "0xBC225EE4EA0AF205EBCB22017A221C0FA556333B",
+        "privateKey": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      }
+    ]
+  },
+  "wallet2": {
+    "type": "recovery_phrase",
+    "imported": true,
+    "seedPhrase": "hello hello hello hello hello hello hello hello hello hello hello hello",
+    "accounts": [
+      {
+        "address": "0xE5501BC2B0Df6D0D7daAFC18D2ef127D9e612963",
+        "ens": "mikedemarais.eth",
+        "privateKey": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      },
+      {
+        "address": "0xa39AccA383FDdb7e44648522b9c334e66d25a21A",
+        "ens": "cbaroni.eth",
+        "privateKey": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      }
+    ]
+  },
+  "wallet3": {
+    "type": "private_key",
+    "imported": true,
+    "privateKey": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+    "accounts": [
+      {
+        "address": "0x11E4857Bb9993a50c685A79AFad4E6F65D518DDa",
+        "ens": "hayden.eth",
+        "privateKey": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+      }
+    ]
+  }
+}

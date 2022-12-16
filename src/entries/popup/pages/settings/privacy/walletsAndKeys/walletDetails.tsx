@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { DummyWallet } from '~/core/types/walletsAndKeys';
+import { DummyAccount } from '~/core/types/walletsAndKeys';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Row, Rows, Symbol, Text } from '~/design-system';
 import { Avatar } from '~/entries/popup/components/Avatar/Avatar';
@@ -20,7 +20,7 @@ import { useAvatar } from '~/entries/popup/hooks/useAvatar';
 
 import { NewWalletPrompt } from './newWalletPrompt';
 
-const MoreInfoButton = ({ wallet }: { wallet: DummyWallet }) => {
+const MoreInfoButton = ({ account }: { account: DummyAccount }) => {
   const navigate = useNavigate();
   const handleViewPrivateKey = () => {
     navigate(
@@ -28,8 +28,8 @@ const MoreInfoButton = ({ wallet }: { wallet: DummyWallet }) => {
     );
   };
   const handleCopyAddress = useCallback(() => {
-    navigator.clipboard.writeText(wallet.address);
-  }, [wallet.address]);
+    navigator.clipboard.writeText(account.address);
+  }, [account.address]);
 
   return (
     <DropdownMenu>
@@ -81,7 +81,7 @@ const MoreInfoButton = ({ wallet }: { wallet: DummyWallet }) => {
               </Row>
               <Row>
                 <Text size="11pt" weight="medium" color="labelTertiary">
-                  {truncateAddress(wallet.address)}
+                  {truncateAddress(account.address)}
                 </Text>
               </Row>
             </Rows>
@@ -92,17 +92,19 @@ const MoreInfoButton = ({ wallet }: { wallet: DummyWallet }) => {
   );
 };
 
-export default function WalletLine({ wallet }: { wallet: DummyWallet }) {
-  const { avatar, isFetched } = useAvatar({ address: wallet.address });
+export default function AccountItem({ account }: { account: DummyAccount }) {
+  const { avatar, isFetched } = useAvatar({ address: account.address });
   return (
     <MenuItem
-      key={wallet.address}
+      key={account.address}
       titleComponent={
-        <MenuItem.Title text={wallet.ens || truncateAddress(wallet.address)} />
+        <MenuItem.Title
+          text={account.ens || truncateAddress(account.address)}
+        />
       }
       labelComponent={
-        wallet.ens ? (
-          <MenuItem.Label text={truncateAddress(wallet.address)} />
+        account.ens ? (
+          <MenuItem.Label text={truncateAddress(account.address)} />
         ) : null
       }
       leftComponent={
@@ -121,7 +123,7 @@ export default function WalletLine({ wallet }: { wallet: DummyWallet }) {
           </Avatar.Wrapper>
         </Box>
       }
-      rightComponent={<MoreInfoButton wallet={wallet} />}
+      rightComponent={<MoreInfoButton account={account} />}
     />
   );
 }
@@ -171,8 +173,8 @@ export function WalletDetails() {
             />
           </Menu>
           <Menu>
-            {state?.account.wallets.map((wallet: DummyWallet) => {
-              return <WalletLine wallet={wallet} key={wallet.address} />;
+            {state?.wallet.accounts.map((account: DummyAccount) => {
+              return <AccountItem account={account} key={account.address} />;
             })}
           </Menu>
           <Menu>

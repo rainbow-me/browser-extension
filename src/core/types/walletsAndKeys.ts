@@ -1,11 +1,14 @@
 // temp types for wallet and key management settings development
-export type DummyWallet = {
+export type DummyAccount = {
   address: `0x${string}`;
   ens?: string;
+  privateKey: string;
 };
 
-export type DummyAccount = {
+export type DummyWallet = {
   type: string;
   imported: boolean;
-  wallets: DummyWallet[];
+  privateKey?: string;
+  seedPhrase?: string;
+  accounts: DummyAccount[];
 };

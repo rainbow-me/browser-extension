@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { DummyWallet } from '~/core/types/walletsAndKeys';
+import { DummyAccount } from '~/core/types/walletsAndKeys';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 
@@ -36,15 +36,15 @@ const SelectionIcon = () => {
     />
   );
 };
-const NUM_OF_WALLETS_SHOWN_PER_ACCOUNT = 7;
+const NUM_OF_ACCOUNTS_SHOWN_PER_ACCOUNT = 7;
 
-const WalletList = ({ wallets }: { wallets: DummyWallet[] }) => {
-  const numberOfWallets = wallets.length;
-  const shownWallets = wallets.slice(0, NUM_OF_WALLETS_SHOWN_PER_ACCOUNT);
-  const diff = numberOfWallets - NUM_OF_WALLETS_SHOWN_PER_ACCOUNT;
-  const [showMoreWallets, setShowMoreWallets] = useState(false);
-  const handleShowMoreWallets = () => {
-    setShowMoreWallets(true);
+const AccountList = ({ accounts }: { accounts: DummyAccount[] }) => {
+  const numberOfAccounts = accounts.length;
+  const shownAccounts = accounts.slice(0, NUM_OF_ACCOUNTS_SHOWN_PER_ACCOUNT);
+  const diff = numberOfAccounts - NUM_OF_ACCOUNTS_SHOWN_PER_ACCOUNT;
+  const [showMoreAccounts, setShowMoreAccounts] = useState(false);
+  const handleShowMoreAccounts = () => {
+    setShowMoreAccounts(true);
   };
 
   return (
@@ -55,20 +55,20 @@ const WalletList = ({ wallets }: { wallets: DummyWallet[] }) => {
       width="full"
     >
       <Inline space="6px" alignVertical="center">
-        {(showMoreWallets ? wallets : shownWallets).map((wallet) => (
+        {(showMoreAccounts ? accounts : shownAccounts).map((wallet) => (
           <AddressPill
             address={wallet.address}
             ens={wallet.ens}
             key={wallet.address}
           />
         ))}
-        {!showMoreWallets && diff > 0 && (
+        {!showMoreAccounts && diff > 0 && (
           <Box
             paddingHorizontal="8px"
             paddingVertical="5px"
             background="fillSecondary"
             borderRadius="round"
-            onClick={handleShowMoreWallets}
+            onClick={handleShowMoreAccounts}
           >
             <Text weight="medium" color="labelTertiary" size="14pt">
               +{diff}
@@ -197,6 +197,6 @@ MenuItem.SelectionIcon = SelectionIcon;
 MenuItem.TextIcon = TextIcon;
 MenuItem.Title = Title;
 MenuItem.Description = Description;
-MenuItem.WalletList = WalletList;
+MenuItem.AccountList = AccountList;
 
 export { MenuItem };

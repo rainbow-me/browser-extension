@@ -2,25 +2,25 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { DummyAccount } from '~/core/types/walletsAndKeys';
+import { DummyWallet } from '~/core/types/walletsAndKeys';
 import { Box, Symbol } from '~/design-system';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 
-import testAccounts from './testAccounts.json'; // temporary account data for UI -- will revisit to hook up with actual wallets
+import testWallets from './testWallets.json'; // temporary account data for UI -- will revisit to hook up with actual wallets
 
-interface DummyAccounts {
-  [accountId: string]: DummyAccount;
+interface DummyWallets {
+  [walletId: string]: DummyWallet;
 }
 export function WalletsAndKeys() {
   const navigate = useNavigate();
 
-  const testData = testAccounts as DummyAccounts;
+  const testData = testWallets as DummyWallets;
 
-  const handleViewWallet = (accountId: string) => {
+  const handleViewWallet = (walletId: string) => {
     navigate(`/settings/privacy/walletsAndKeys/walletDetails`, {
-      state: { account: testData[accountId] },
+      state: { wallet: testData[walletId] },
     });
   };
 
@@ -28,17 +28,17 @@ export function WalletsAndKeys() {
     <Box>
       <Box paddingHorizontal="20px">
         <MenuContainer>
-          {Object.keys(testData).map((accountId) => {
-            const account = testData[accountId];
-            const singleWallet = account.wallets.length === 1;
+          {Object.keys(testData).map((walletId) => {
+            const wallet = testData[walletId];
+            const singleAccount = wallet.accounts.length === 1;
             const label = `${
-              account.imported
+              wallet.imported
                 ? `${i18n.t(
                     'settings.privacy_and_security.wallets_and_keys.imported',
                   )} ‧ `
                 : ''
-            }${account.wallets.length} ${
-              singleWallet
+            }${wallet.accounts.length} ${
+              singleAccount
                 ? i18n.t(
                     'settings.privacy_and_security.wallets_and_keys.wallet_single',
                   )
@@ -48,15 +48,15 @@ export function WalletsAndKeys() {
             }`;
 
             return (
-              <Menu key={accountId}>
+              <Menu key={walletId}>
                 <MenuItem
-                  titleComponent={<MenuItem.Title text={accountId} />}
+                  titleComponent={<MenuItem.Title text={walletId} />}
                   labelComponent={<MenuItem.Label text={label} />}
-                  onClick={() => handleViewWallet(accountId)}
+                  onClick={() => handleViewWallet(walletId)}
                   leftComponent={
                     <Symbol
                       symbol={
-                        singleWallet
+                        singleAccount
                           ? 'lock.square.fill'
                           : 'lock.square.stack.fill'
                       }
@@ -67,7 +67,7 @@ export function WalletsAndKeys() {
                   }
                   hasRightArrow
                 />
-                <MenuItem.WalletList wallets={account.wallets} />
+                <MenuItem.AccountList accounts={wallet.accounts} />
               </Menu>
             );
           })}
