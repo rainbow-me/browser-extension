@@ -139,7 +139,7 @@ const DeleteContact = ({
       <Stack space="24px">
         <Stack alignHorizontal="center" space="20px">
           <Text weight="bold" size="16pt" color="label">
-            {i18n.t('send.remove_contact_title')}
+            {i18n.t('contacts.remove_contact_title')}
           </Text>
           <Box width="full">
             <Text
@@ -148,7 +148,7 @@ const DeleteContact = ({
               size="12pt"
               align="center"
             >
-              {i18n.t('send.remove_contact_description')}
+              {i18n.t('contacts.remove_contact_description')}
             </Text>
           </Box>
 
@@ -166,7 +166,7 @@ const DeleteContact = ({
             borderRadius="9px"
             onClick={onRemove}
           >
-            {i18n.t('send.remove_contact_action')}
+            {i18n.t('contacts.remove_contact_action')}
           </Button>
           <Button
             width="full"
@@ -176,7 +176,7 @@ const DeleteContact = ({
             borderRadius="9px"
             onClick={onCancel}
           >
-            {i18n.t('send.cancel')}
+            {i18n.t('contacts.cancel')}
           </Button>
         </Stack>
       </Stack>
