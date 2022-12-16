@@ -1,5 +1,5 @@
 import { fetchEnsName } from '@wagmi/core';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { contactsStore, useContactsStore } from '~/core/state/contacts';
@@ -56,13 +56,22 @@ export const useAllFilteredWallets = ({ filter }: { filter: string }) => {
   const { wallets } = useBackgroundWallets();
   const { contacts: contactsObjects } = useContactsStore();
 
-  const [filteredWallets, setFilteredWallets] = useState<Address[]>([]);
-  const [filteredWatchedWallets, setFilteredWatchedWallets] = useState<
-    Address[]
-  >([]);
-  const [filteredContactsWallets, setFilteredContactsWallets] = useState<
-    Address[]
-  >([]);
+  const { watchedWallets, contacts } = useMemo(() => {
+    const watchedWallets = wallets.filter(
+      (wallet) => wallet.type === KeychainType.ReadOnlyKeychain,
+    );
+    const watchedAccounts = watchedWallets
+      .map((watchedWallet) => watchedWallet.accounts)
+      .flat();
+    const contacts = Object.keys(contactsObjects) as Address[];
+    return { watchedWallets: watchedAccounts, contacts };
+  }, [contactsObjects, wallets]);
+
+  const [filteredWallets, setFilteredWallets] = useState<Address[]>(accounts);
+  const [filteredWatchedWallets, setFilteredWatchedWallets] =
+    useState<Address[]>(watchedWallets);
+  const [filteredContactsWallets, setFilteredContactsWallets] =
+    useState<Address[]>(contacts);
 
   const [walletsData, setWalletsData] = useState<WalletData[]>([]);
   const [watchedWalletsData, setWatchedWalletsData] = useState<WalletData[]>(
@@ -70,19 +79,11 @@ export const useAllFilteredWallets = ({ filter }: { filter: string }) => {
   );
   const [contactsData, setContactsData] = useState<WalletData[]>([]);
 
-  const watchedWallets = wallets.filter(
-    (wallet) => wallet.type === KeychainType.ReadOnlyKeychain,
-  );
-  const watchedAccounts = watchedWallets
-    .map((watchedWallet) => watchedWallet.accounts)
-    .flat();
-  const contacts = Object.keys(contactsObjects) as Address[];
-
   useEffect(() => {
     const getWalletsData = async () => {
       const walletsData = await getAddressesData({ addresses: accounts });
       const watchedWalletsData = await getAddressesData({
-        addresses: watchedAccounts,
+        addresses: watchedWallets,
       });
       const contactsData = await getAddressesData({ addresses: contacts });
       setWalletsData(walletsData);
@@ -90,7 +91,7 @@ export const useAllFilteredWallets = ({ filter }: { filter: string }) => {
       setContactsData(contactsData);
     };
     getWalletsData();
-  }, [accounts, contacts, watchedAccounts]);
+  }, [accounts, contacts, contactsObjects, wallets, watchedWallets]);
 
   useEffect(() => {
     const filterWallets = async () => {
@@ -119,15 +120,7 @@ export const useAllFilteredWallets = ({ filter }: { filter: string }) => {
       setFilteredContactsWallets(filteredContactsWallets);
     };
     filterWallets();
-  }, [
-    accounts,
-    contacts,
-    contactsData,
-    filter,
-    walletsData,
-    watchedAccounts,
-    watchedWalletsData,
-  ]);
+  }, [accounts, contactsData, filter, walletsData, watchedWalletsData]);
 
   return {
     wallets: filteredWallets,
