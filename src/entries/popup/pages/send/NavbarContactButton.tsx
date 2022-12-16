@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import React, { useCallback } from 'react';
 import { Address, useEnsName } from 'wagmi';
 
@@ -240,15 +241,36 @@ export const NavbarContactButton = ({
   >;
   mode: 'save' | 'edit';
 }) => {
-  return mode === 'save' ? (
-    <NavbarSaveContactButton
-      toAddress={toAddress}
-      onSaveAction={onSaveAction}
-    />
-  ) : (
-    <NavbarEditContactButton
-      toAddress={toAddress}
-      onSaveAction={onSaveAction}
-    />
+  return (
+    <AnimatePresence initial={false} mode="wait">
+      {mode === 'save' && (
+        <Box
+          as={motion.div}
+          key="save"
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <NavbarSaveContactButton
+            toAddress={toAddress}
+            onSaveAction={onSaveAction}
+          />
+        </Box>
+      )}
+      {mode === 'edit' && (
+        <Box
+          as={motion.div}
+          key="edit"
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <NavbarEditContactButton
+            toAddress={toAddress}
+            onSaveAction={onSaveAction}
+          />
+        </Box>
+      )}
+    </AnimatePresence>
   );
 };

@@ -24,6 +24,7 @@ import {
 } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { foregroundColors } from '~/design-system/styles/designTokens';
+import { DEFAULT_ACCOUNT } from '~/entries/background/handlers/handleProviderRequest';
 
 import { Navbar } from '../../components/Navbar/Navbar';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
@@ -159,6 +160,12 @@ export function Send() {
     }
   }, [asset, assetAmount, fromAddress, toAddress, value, chainId, data]);
 
+  const navbarButtonMode = useMemo(() => {
+    const isContact = toAddress === DEFAULT_ACCOUNT;
+    if (isContact) return 'edit';
+    return 'save';
+  }, [toAddress]);
+
   return (
     <>
       <ContactPrompt
@@ -175,7 +182,7 @@ export function Send() {
           <NavbarContactButton
             onSaveAction={setSaveContactAction}
             toAddress={toAddress}
-            mode="edit"
+            mode={navbarButtonMode}
           />
         }
       />
