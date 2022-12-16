@@ -23,7 +23,7 @@ import { PrivateKey } from './pages/settings/privacy/walletsAndKeys/privateKey/p
 import { PrivateKeyWarning } from './pages/settings/privacy/walletsAndKeys/privateKey/warning';
 import { RecoveryPhrase } from './pages/settings/privacy/walletsAndKeys/recoveryPhrase/recoveryPhrase';
 import { RecoveryPhraseWarning } from './pages/settings/privacy/walletsAndKeys/recoveryPhrase/warning';
-import { AccountDetails } from './pages/settings/privacy/walletsAndKeys/walletAccountDetails';
+import { WalletDetails } from './pages/settings/privacy/walletsAndKeys/walletDetails';
 import { WalletsAndKeys } from './pages/settings/privacy/walletsAndKeys/walletsAndKeys';
 import { Settings } from './pages/settings/settings';
 import { Transactions } from './pages/settings/transactions';
@@ -197,21 +197,21 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/accountDetails',
+        path: '/settings/privacy/walletsAndKeys/walletDetails',
         element: (
           <AnimatedRoute
             direction="horizontal"
             navbar
             title={i18n.t(
-              'settings.privacy_and_security.wallets_and_keys.account_details.title',
+              'settings.privacy_and_security.wallets_and_keys.wallet_details.title',
             )}
           >
-            <AccountDetails />
+            <WalletDetails />
           </AnimatedRoute>
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/accountDetails/privateKeyWarning',
+        path: '/settings/privacy/walletsAndKeys/walletDetails/privateKeyWarning',
         element: (
           <AnimatedRoute
             direction="horizontal"
@@ -223,7 +223,7 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/accountDetails/privateKey',
+        path: '/settings/privacy/walletsAndKeys/walletDetails/privateKey',
         element: (
           <AnimatedRoute
             direction="horizontal"
@@ -235,7 +235,7 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/accountDetails/recoveryPhraseWarning',
+        path: '/settings/privacy/walletsAndKeys/walletDetails/recoveryPhraseWarning',
         element: (
           <AnimatedRoute
             direction="horizontal"
@@ -247,7 +247,7 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/accountDetails/recoveryPhrase',
+        path: '/settings/privacy/walletsAndKeys/walletDetails/recoveryPhrase',
         element: (
           <AnimatedRoute
             direction="horizontal"

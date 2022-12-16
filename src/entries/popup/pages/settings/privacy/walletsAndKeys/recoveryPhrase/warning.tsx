@@ -42,7 +42,7 @@ export function RecoveryPhraseWarning() {
   const navigate = useNavigate();
 
   const handleShowRecoveryPhraseClick = useCallback(async () => {
-    navigate('/settings/privacy/walletsAndKeys/accountDetails/recoveryPhrase');
+    navigate('/settings/privacy/walletsAndKeys/walletDetails/recoveryPhrase');
   }, [navigate]);
 
   return (

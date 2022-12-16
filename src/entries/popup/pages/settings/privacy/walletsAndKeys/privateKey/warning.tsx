@@ -41,7 +41,7 @@ export function PrivateKeyWarning() {
   const navigate = useNavigate();
 
   const handleShowRecoveryPhraseClick = useCallback(async () => {
-    navigate('/settings/privacy/walletsAndKeys/accountDetails/privateKey');
+    navigate('/settings/privacy/walletsAndKeys/walletDetails/privateKey');
   }, [navigate]);
 
   return (

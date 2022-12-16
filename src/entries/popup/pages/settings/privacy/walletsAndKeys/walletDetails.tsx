@@ -22,7 +22,7 @@ const MoreInfoButton = ({ wallet }: { wallet: DummyWallet }) => {
   const navigate = useNavigate();
   const handleViewPrivateKey = () => {
     navigate(
-      '/settings/privacy/walletsAndKeys/accountDetails/privateKeyWarning',
+      '/settings/privacy/walletsAndKeys/walletDetails/privateKeyWarning',
     );
   };
   return (
@@ -82,7 +82,7 @@ const MoreInfoButton = ({ wallet }: { wallet: DummyWallet }) => {
   );
 };
 
-export function AccountDetails() {
+export function WalletDetails() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [showNewWalletPrompt, setShowNewWalletPrompt] = useState(false);
@@ -94,7 +94,7 @@ export function AccountDetails() {
   };
   const handleViewRecoveryPhrase = () => {
     navigate(
-      '/settings/privacy/walletsAndKeys/accountDetails/recoveryPhraseWarning',
+      '/settings/privacy/walletsAndKeys/walletDetails/recoveryPhraseWarning',
     );
   };
   return (
@@ -110,7 +110,7 @@ export function AccountDetails() {
               titleComponent={
                 <MenuItem.Title
                   text={i18n.t(
-                    'settings.privacy_and_security.wallets_and_keys.account_details.view_recovery_phrase',
+                    'settings.privacy_and_security.wallets_and_keys.wallet_details.view_recovery_phrase',
                   )}
                 />
               }
@@ -159,7 +159,7 @@ export function AccountDetails() {
               titleComponent={
                 <MenuItem.Title
                   text={i18n.t(
-                    'settings.privacy_and_security.wallets_and_keys.account_details.create_new_wallet',
+                    'settings.privacy_and_security.wallets_and_keys.wallet_details.create_new_wallet',
                   )}
                   color="blue"
                 />

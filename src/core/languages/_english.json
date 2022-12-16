@@ -39,10 +39,9 @@
         "imported": "Imported",
         "wallet_single": "Wallet",
         "wallet_plural": "Wallets",
-        "account_details": {
-          "title": "Account Details",
-          "view_recovery_phrase": "View Recovery Phrase",
-          "create_new_wallet": "Create a new Wallet"
+        "wallet_details": {
+          "title": "Wallet Details",
+          "view_recovery_phrase": "View Recovery Phrase"
         }
       }
     },

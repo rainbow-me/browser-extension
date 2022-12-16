@@ -18,8 +18,8 @@ export function WalletsAndKeys() {
 
   const testData = testAccounts as DummyAccounts;
 
-  const handleViewAccount = (accountId: string) => {
-    navigate(`/settings/privacy/walletsAndKeys/accountDetails`, {
+  const handleViewWallet = (accountId: string) => {
+    navigate(`/settings/privacy/walletsAndKeys/walletDetails`, {
       state: { account: testData[accountId] },
     });
   };
@@ -52,7 +52,7 @@ export function WalletsAndKeys() {
                 <MenuItem
                   titleComponent={<MenuItem.Title text={accountId} />}
                   labelComponent={<MenuItem.Label text={label} />}
-                  onClick={() => handleViewAccount(accountId)}
+                  onClick={() => handleViewWallet(accountId)}
                   leftComponent={
                     <Symbol
                       symbol={
@@ -91,7 +91,7 @@ export function WalletsAndKeys() {
               }
               onClick={() =>
                 navigate(
-                  '/settings/privacy/walletsAndKeys/accountDetails/recoveryPhraseWarning',
+                  '/settings/privacy/walletsAndKeys/walletDetails/recoveryPhraseWarning',
                 )
               }
             />

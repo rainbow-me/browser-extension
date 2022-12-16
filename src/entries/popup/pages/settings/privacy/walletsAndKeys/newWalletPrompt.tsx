@@ -29,7 +29,7 @@ export const NewWalletPrompt = ({
     if (walletName !== '') {
       // TODO: generate the new wallet
       navigate(
-        '/settings/privacy/walletsAndKeys/accountDetails/privateKeyWarning',
+        '/settings/privacy/walletsAndKeys/walletDetails/privateKeyWarning',
       );
       return;
     }
