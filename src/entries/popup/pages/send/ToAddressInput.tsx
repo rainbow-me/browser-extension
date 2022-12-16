@@ -22,6 +22,7 @@ import { SymbolName } from '~/design-system/styles/designTokens';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useBackgroundAccounts } from '../../hooks/useBackgroundAccounts';
 import { useBackgroundWallets } from '../../hooks/useBackgroundWallets';
+import { useContact } from '../../hooks/useContacts';
 
 import { InputWrapper } from './InputWrapper';
 import {
@@ -94,20 +95,19 @@ const WalletRow = ({
   wallet: Address;
   onClick: (address: Address) => void;
 }) => {
-  const { getContact } = useContactsStore();
   const { data: ensName } = useEnsName({
     address: wallet,
   });
-  const contact = getContact({ address: wallet });
+  const contact = useContact({ address: wallet });
   return (
     <Box key={wallet} onClick={() => onClick(wallet)} paddingVertical="8px">
       <Inline alignVertical="center" space="8px">
         <WalletAvatar size={36} address={wallet} emojiSize="20pt" />
         <Stack space="8px">
           <Text weight="semibold" size="14pt" color="label">
-            {ensName || contact?.name || truncateAddress(wallet)}
+            {contact?.display || truncateAddress(wallet)}
           </Text>
-          {(ensName || contact?.name) && (
+          {(contact?.display || ensName) && (
             <Text weight="semibold" size="12pt" color="labelTertiary">
               {truncateAddress(wallet)}
             </Text>
@@ -156,7 +156,7 @@ export const ToAddressInput = ({
 
   const { accounts } = useBackgroundAccounts();
   const { wallets } = useBackgroundWallets();
-  const { getContact, contacts: contactsObjects } = useContactsStore();
+  const { contacts: contactsObjects } = useContactsStore();
 
   const watchedWallets = wallets.filter(
     (wallet) => wallet.type === KeychainType.ReadOnlyKeychain,
@@ -166,7 +166,7 @@ export const ToAddressInput = ({
     .flat();
 
   const contacts = Object.keys(contactsObjects);
-  const contact = getContact({ address: toAddress });
+  const contact = useContact({ address: toAddress });
 
   return (
     <>
@@ -207,9 +207,9 @@ export const ToAddressInput = ({
               >
                 <Stack space="8px">
                   <Text weight="semibold" size="14pt" color="label">
-                    {toEnsName || contact?.name || truncateAddress(toAddress)}
+                    {contact?.display || truncateAddress(toAddress)}
                   </Text>
-                  {(toEnsName || contact?.name) && (
+                  {contact?.display && (
                     <Text weight="semibold" size="12pt" color="labelTertiary">
                       {truncateAddress(toAddress)}
                     </Text>

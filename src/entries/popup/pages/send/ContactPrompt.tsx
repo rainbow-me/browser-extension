@@ -1,5 +1,5 @@
-import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
-import { Address, useEnsName } from 'wagmi';
+import React, { ChangeEvent, useCallback, useState } from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useContactsStore } from '~/core/state/contacts';
@@ -9,6 +9,7 @@ import { Input } from '~/design-system/components/Input/Input';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
 
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
+import { useContact } from '../../hooks/useContacts';
 
 export type ContactAction = 'save' | 'edit' | 'delete';
 
@@ -26,10 +27,9 @@ const SaveOrEditContact = ({
     }>
   >;
 }) => {
-  const { saveContact, getContact } = useContactsStore();
-
-  const contact = useMemo(() => getContact({ address }), [address, getContact]);
-  const [name, setName] = useState(contact?.name || '');
+  const { saveContact } = useContactsStore();
+  const contact = useContact({ address });
+  const [name, setName] = useState(contact?.display || '');
 
   const handleNameChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -124,8 +124,7 @@ const DeleteContact = ({
     }>
   >;
 }) => {
-  const { deleteContact, getContact } = useContactsStore();
-  const { data: ensName } = useEnsName({ address });
+  const { deleteContact } = useContactsStore();
 
   const onRemove = useCallback(() => {
     deleteContact({ address });
@@ -136,7 +135,7 @@ const DeleteContact = ({
     onSaveContactAction({ show: false, action: 'delete' });
   }, [onSaveContactAction]);
 
-  const contact = useMemo(() => getContact({ address }), [address, getContact]);
+  const contact = useContact({ address });
 
   return (
     <Box alignItems="center" width="full" paddingTop="12px">
@@ -153,7 +152,7 @@ const DeleteContact = ({
               align="center"
             >
               {i18n.t('contacts.remove_contact_description', {
-                name: ensName || contact?.name,
+                name: contact?.display,
               })}
             </Text>
           </Box>
