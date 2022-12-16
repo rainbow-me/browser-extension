@@ -224,15 +224,15 @@ export const ToAddressInput = ({
         dropdownComponent={
           <Stack space="16px">
             <WalletSection
-              symbol="person.crop.circle.fill"
-              title={i18n.t('send.wallets_list.contacts')}
-              wallets={contacts as Address[]}
-              onClickWallet={selectWalletAndCloseDropdown}
-            />
-            <WalletSection
               symbol="lock.square.stack.fill"
               title={i18n.t('send.wallets_list.my_wallets')}
               wallets={accounts}
+              onClickWallet={selectWalletAndCloseDropdown}
+            />
+            <WalletSection
+              symbol="person.crop.circle.fill"
+              title={i18n.t('send.wallets_list.contacts')}
+              wallets={contacts as Address[]}
               onClickWallet={selectWalletAndCloseDropdown}
             />
             <WalletSection
