@@ -114,6 +114,88 @@ const WalletRow = ({
     </Box>
   );
 };
+
+const DropdownWalletList = ({
+  wallets,
+  contacts,
+  watchedWallets,
+  selectWalletAndCloseDropdown,
+}: {
+  wallets: Address[];
+  contacts: Address[];
+  watchedWallets: Address[];
+  selectWalletAndCloseDropdown: (address: Address) => void;
+}) => {
+  const walletsExist =
+    wallets.length + contacts.length + watchedWallets.length > 0;
+
+  return (
+    <AnimatePresence initial={false}>
+      {walletsExist && (
+        <Box
+          as={motion.div}
+          key="input"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <Stack space="16px">
+            <WalletSection
+              symbol="lock.square.stack.fill"
+              title={i18n.t('send.wallets_list.my_wallets')}
+              wallets={wallets}
+              onClickWallet={selectWalletAndCloseDropdown}
+            />
+            <WalletSection
+              symbol="person.crop.circle.fill"
+              title={i18n.t('send.wallets_list.contacts')}
+              wallets={contacts as Address[]}
+              onClickWallet={selectWalletAndCloseDropdown}
+            />
+            <WalletSection
+              symbol="eyes.inverse"
+              title={i18n.t('send.wallets_list.watched_wallets')}
+              wallets={watchedWallets}
+              onClickWallet={selectWalletAndCloseDropdown}
+            />
+          </Stack>
+        </Box>
+      )}
+      {!walletsExist && (
+        <Box
+          as={motion.div}
+          key="input"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          alignItems="center"
+          style={{ paddingTop: 169 }}
+        >
+          <Stack space="16px">
+            <Inline alignHorizontal="center">
+              <Symbol
+                color="labelQuaternary"
+                weight="semibold"
+                symbol="magnifyingglass.circle.fill"
+                size={26}
+              />
+            </Inline>
+
+            <Text
+              color="labelQuaternary"
+              size="20pt"
+              weight="semibold"
+              align="center"
+            >
+              No results
+            </Text>
+          </Stack>
+        </Box>
+      )}
+    </AnimatePresence>
+  );
+};
+
 export const ToAddressInput = ({
   toAddressOrName,
   toEnsName,
@@ -210,26 +292,12 @@ export const ToAddressInput = ({
         showActionClose={!!toAddress}
         onActionClose={clearToAddress}
         dropdownComponent={
-          <Stack space="16px">
-            <WalletSection
-              symbol="lock.square.stack.fill"
-              title={i18n.t('send.wallets_list.my_wallets')}
-              wallets={wallets}
-              onClickWallet={selectWalletAndCloseDropdown}
-            />
-            <WalletSection
-              symbol="person.crop.circle.fill"
-              title={i18n.t('send.wallets_list.contacts')}
-              wallets={contacts as Address[]}
-              onClickWallet={selectWalletAndCloseDropdown}
-            />
-            <WalletSection
-              symbol="eyes.inverse"
-              title={i18n.t('send.wallets_list.watched_wallets')}
-              wallets={watchedWallets}
-              onClickWallet={selectWalletAndCloseDropdown}
-            />
-          </Stack>
+          <DropdownWalletList
+            wallets={wallets}
+            watchedWallets={watchedWallets}
+            contacts={contacts}
+            selectWalletAndCloseDropdown={selectWalletAndCloseDropdown}
+          />
         }
         dropdownVisible={dropdownVisible}
         onDropdownAction={onDropdownAction}
