@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { DummyWallet } from '~/core/types/walletsAndKeys';
@@ -80,6 +80,7 @@ const MoreInfoButton = ({ wallet }: { wallet: DummyWallet }) => {
 };
 
 export function AccountDetails() {
+  const navigate = useNavigate();
   const { state } = useLocation();
   const [showNewWalletPrompt, setShowNewWalletPrompt] = useState(false);
   const handleOpenNewWalletPrompt = () => {
@@ -87,6 +88,11 @@ export function AccountDetails() {
   };
   const handleCloseNewWalletPrompt = () => {
     setShowNewWalletPrompt(false);
+  };
+  const handleViewRecoveryPhrase = () => {
+    navigate(
+      '/settings/privacy/walletsAndKeys/accountDetails/recoveryPhraseWarning',
+    );
   };
   return (
     <Box>
@@ -114,6 +120,7 @@ export function AccountDetails() {
                 />
               }
               hasRightArrow
+              onClick={handleViewRecoveryPhrase}
             />
           </Menu>
           <Menu>
