@@ -16,7 +16,7 @@ export function PrivateKey() {
   const navigate = useNavigate();
 
   const [privKey] = useState(
-    // dummy seed for UI
+    // dummy privkey for UI
     '0xb1b3dcf4a200ab01c7aeafb8b4cda3fd03401dd2413d169846959a8f7915fd2f',
   );
 
