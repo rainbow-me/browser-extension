@@ -10,6 +10,7 @@ import { ConnectedApps } from './pages/ConnectedApps';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
 import { ImportOrConnect } from './pages/importOrConnect';
+import { ImportWallet } from './pages/importWallet';
 import { SeedBackupPrompt } from './pages/seedBackupPrompt';
 import { SeedReveal } from './pages/seedReveal';
 import { SeedVerify } from './pages/seedVerify';
@@ -73,6 +74,15 @@ export function Routes() {
         element: (
           <AnimatedRoute direction="horizontal" navbar>
             <ImportOrConnect />
+          </AnimatedRoute>
+        ),
+        background: FullScreenBackground,
+      },
+      {
+        path: '/import',
+        element: (
+          <AnimatedRoute direction="horizontal" navbar>
+            <ImportWallet />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,
