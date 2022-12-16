@@ -41,7 +41,10 @@
         "wallet_plural": "Wallets",
         "wallet_details": {
           "title": "Wallet Details",
-          "view_recovery_phrase": "View Recovery Phrase"
+          "view_recovery_phrase": "View Recovery Phrase",
+          "create_new_wallet": "Create a new Wallet",
+          "view_private_key": "View Private Key",
+          "copy_address": "Copy Address"
         }
       }
     },

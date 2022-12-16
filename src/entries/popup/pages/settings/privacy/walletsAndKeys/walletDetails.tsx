@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -25,6 +25,10 @@ const MoreInfoButton = ({ wallet }: { wallet: DummyWallet }) => {
       '/settings/privacy/walletsAndKeys/walletDetails/privateKeyWarning',
     );
   };
+  const handleCopyAddress = useCallback(() => {
+    navigator.clipboard.writeText(wallet.address);
+  }, [wallet.address]);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -48,14 +52,16 @@ const MoreInfoButton = ({ wallet }: { wallet: DummyWallet }) => {
             />
             <Box width="full">
               <Text size="14pt" weight="semibold">
-                View Private Key
+                {i18n.t(
+                  'settings.privacy_and_security.wallets_and_keys.wallet_details.view_private_key',
+                )}
               </Text>
             </Box>
           </Inline>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem>
+        <DropdownMenuItem onSelect={handleCopyAddress}>
           <Inline alignVertical="center" space="8px" wrap={false}>
             <Symbol
               symbol="doc.on.doc"
@@ -66,7 +72,9 @@ const MoreInfoButton = ({ wallet }: { wallet: DummyWallet }) => {
             <Rows space="6px">
               <Row>
                 <Text size="14pt" weight="semibold">
-                  Copy Address
+                  {i18n.t(
+                    'settings.privacy_and_security.wallets_and_keys.wallet_details.copy_address',
+                  )}
                 </Text>
               </Row>
               <Row>
