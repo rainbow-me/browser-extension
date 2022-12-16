@@ -1,6 +1,7 @@
-import React, { ChangeEvent, useCallback, useState } from 'react';
+import React, { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
+import { useContactsStore } from '~/core/state/contacts';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Button, Separator, Stack, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
@@ -24,15 +25,18 @@ const SaveOrEditContact = ({
     }>
   >;
 }) => {
-  const [, setName] = useState('');
+  const { saveContact, getContact } = useContactsStore();
+  const contact = useMemo(() => getContact({ address }), [address, getContact]);
+  const [name, setName] = useState(contact?.name);
 
   const handleNameChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   }, []);
 
   const onSave = useCallback(() => {
+    saveContact({ contact: { address, name } });
     onSaveContactAction({ show: false, action: 'save' });
-  }, [onSaveContactAction]);
+  }, [address, name, onSaveContactAction, saveContact]);
 
   const onCancel = useCallback(() => {
     onSaveContactAction({ show: false, action: 'save' });
@@ -53,6 +57,7 @@ const SaveOrEditContact = ({
             <Stack alignHorizontal="center" space="10px">
               <Box marginVertical="-12px">
                 <Input
+                  value={name}
                   onChange={handleNameChange}
                   height="44px"
                   variant="transparent"
@@ -98,8 +103,10 @@ const SaveOrEditContact = ({
 };
 
 const DeleteContact = ({
+  address,
   onSaveContactAction,
 }: {
+  address: Address;
   onSaveContactAction: React.Dispatch<
     React.SetStateAction<{
       show: boolean;
@@ -107,9 +114,12 @@ const DeleteContact = ({
     }>
   >;
 }) => {
+  const { deleteContact } = useContactsStore();
+
   const onRemove = useCallback(() => {
+    deleteContact({ address });
     onSaveContactAction({ show: false, action: 'delete' });
-  }, [onSaveContactAction]);
+  }, [address, deleteContact, onSaveContactAction]);
 
   const onCancel = useCallback(() => {
     onSaveContactAction({ show: false, action: 'delete' });
@@ -190,7 +200,10 @@ export const ContactPrompt = ({
           onSaveContactAction={onSaveContactAction}
         />
       ) : (
-        <DeleteContact onSaveContactAction={onSaveContactAction} />
+        <DeleteContact
+          address={address}
+          onSaveContactAction={onSaveContactAction}
+        />
       )}
     </Prompt>
   );
