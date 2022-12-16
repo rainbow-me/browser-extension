@@ -2,7 +2,36 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { Box, Button, Inline, Rows, Symbol, Text } from '~/design-system';
+import { Box, Button, Rows, Symbol, Text } from '~/design-system';
+
+import {
+  IconAndCopyItem,
+  IconAndCopyList,
+} from '../../components/IconAndCopyList.tsx/IconAndCopyList';
+
+const iconAndCopyList: IconAndCopyItem[] = [
+  {
+    icon: {
+      symbol: 'highlighter',
+      color: 'blue',
+    },
+    copy: i18n.t('seed_backup_prompt.warning1'),
+  },
+  {
+    icon: {
+      symbol: 'exclamationmark.triangle',
+      color: 'orange',
+    },
+    copy: i18n.t('seed_backup_prompt.warning2'),
+  },
+  {
+    icon: {
+      symbol: 'lock.open.fill',
+      color: 'red',
+    },
+    copy: i18n.t('seed_backup_prompt.warning3'),
+  },
+];
 
 export function SeedBackupPrompt() {
   const navigate = useNavigate();
@@ -70,48 +99,8 @@ export function SeedBackupPrompt() {
           {i18n.t('seed_backup_prompt.title')}
         </Text>
       </Box>
-      <Box padding="16px">
-        <Rows alignVertical="top" space="40px">
-          <Inline space="16px" wrap={false} alignVertical="center">
-            <Box display="flex" alignItems="center">
-              <Symbol
-                symbol="highlighter"
-                size={18}
-                color="accent"
-                weight={'medium'}
-              />
-            </Box>
-            <Text size="14pt" weight="medium" color="label">
-              {i18n.t('seed_backup_prompt.write_down_seed_importance')}
-            </Text>
-          </Inline>
-          <Inline space="16px" wrap={false} alignVertical="center">
-            <Box display="flex" alignItems="center">
-              <Symbol
-                symbol="exclamationmark.triangle"
-                size={18}
-                color="orange"
-                weight={'medium'}
-              />
-            </Box>
-            <Text size="14pt" weight="medium" color="label">
-              {i18n.t('seed_backup_prompt.secret_recovery_phrase_usage')}
-            </Text>
-          </Inline>
-          <Inline space="16px" wrap={false} alignVertical="center">
-            <Box display="flex" alignItems="center">
-              <Symbol
-                symbol="lock.open.fill"
-                size={18}
-                color="red"
-                weight={'medium'}
-              />
-            </Box>
-            <Text size="14pt" weight="medium" color="label">
-              {i18n.t('seed_backup_prompt.secret_recovery_phrase_loss')}
-            </Text>
-          </Inline>
-        </Rows>
+      <Box padding="12px">
+        <IconAndCopyList iconAndCopyList={iconAndCopyList} />
       </Box>
       <Box width="full" paddingTop="52px">
         <Rows alignVertical="top" space="8px">
