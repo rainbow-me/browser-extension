@@ -183,6 +183,7 @@ export function Send() {
             onSaveAction={setSaveContactAction}
             toAddress={toAddress}
             action={navbarButtonAction}
+            enabled={!!toAddress}
           />
         }
       />

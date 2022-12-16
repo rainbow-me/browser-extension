@@ -29,7 +29,9 @@ import { ContactAction } from './ContactPrompt';
 const NavbarSaveContactButton = ({
   toAddress,
   onSaveAction,
+  enabled,
 }: {
+  enabled: boolean;
   toAddress?: Address;
   onSaveAction: React.Dispatch<
     React.SetStateAction<{
@@ -43,31 +45,33 @@ const NavbarSaveContactButton = ({
   }, [onSaveAction]);
 
   return (
-    <Button
-      color="surfaceSecondaryElevated"
-      height="28px"
-      variant="flat"
-      onClick={openSavePrompt}
-    >
-      <Inline space="4px" alignVertical="center">
-        {toAddress ? (
-          <WalletAvatar size={16} address={toAddress} emojiSize="11pt" />
-        ) : (
-          <Box position="relative" paddingRight="2px">
-            <Symbol
-              weight="semibold"
-              symbol="person.crop.circle.fill.badge.plus"
-              size={16}
-              color="labelSecondary"
-            />
-          </Box>
-        )}
+    <Box opacity={enabled ? '1' : '0.2'}>
+      <Button
+        color="surfacePrimaryElevatedSecondary"
+        height="28px"
+        variant="flat"
+        onClick={enabled ? openSavePrompt : () => null}
+      >
+        <Inline space="4px" alignVertical="center">
+          {toAddress ? (
+            <WalletAvatar size={16} address={toAddress} emojiSize="11pt" />
+          ) : (
+            <Box position="relative" paddingRight="2px">
+              <Symbol
+                weight="semibold"
+                symbol="person.crop.circle.fill.badge.plus"
+                size={16}
+                color={'labelSecondary'}
+              />
+            </Box>
+          )}
 
-        <Text weight="semibold" size="14pt" color="labelSecondary">
-          Save
-        </Text>
-      </Inline>
-    </Button>
+          <Text weight="semibold" size="14pt" color={'labelSecondary'}>
+            Save
+          </Text>
+        </Inline>
+      </Button>
+    </Box>
   );
 };
 
@@ -255,6 +259,7 @@ export const NavbarContactButton = ({
   toAddress,
   onSaveAction,
   action,
+  enabled,
 }: {
   toAddress?: Address;
   onSaveAction: React.Dispatch<
@@ -264,6 +269,7 @@ export const NavbarContactButton = ({
     }>
   >;
   action: ContactAction;
+  enabled: boolean;
 }) => {
   return (
     <AnimatePresence initial={false} mode="wait">
@@ -278,6 +284,7 @@ export const NavbarContactButton = ({
           <NavbarSaveContactButton
             toAddress={toAddress}
             onSaveAction={onSaveAction}
+            enabled={enabled}
           />
         </Box>
       )}
