@@ -744,6 +744,7 @@ export type AnimatedAttributes = {
   opacity?: number;
   x?: number;
   y?: number;
+  scale?: number;
 };
 export type AnimatedRouteConfig = Record<
   AnimatedRouteBreakpoints,
