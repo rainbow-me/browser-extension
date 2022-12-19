@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
-import { Box, Inline, Stack, Text } from '~/design-system';
+import { Box, Text } from '~/design-system';
 
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 
-import { InputActionButon } from './InputActionButton';
+import { InputWrapper } from './InputWrapper';
 
 export const TokenInput = ({
   asset,
@@ -15,43 +15,43 @@ export const TokenInput = ({
   asset: ParsedAddressAsset | null;
   shuffleAssetIndex: (n?: number) => void;
 }) => {
-  return (
-    <Box
-      background="surfaceSecondaryElevated"
-      paddingVertical="20px"
-      paddingHorizontal="20px"
-      borderRadius="24px"
-      width="full"
-      borderWidth="1px"
-      borderColor="buttonStroke"
-    >
-      <Stack space="16px">
-        <Inline alignHorizontal="justify" alignVertical="center" space="8px">
-          <Box onClick={() => shuffleAssetIndex()}>
-            <Inline alignVertical="center" space="8px">
-              <Box>
-                <CoinIcon asset={asset ?? undefined} />
-              </Box>
+  const [dropdownVisible, setDropdownVisible] = useState(false);
+  const onDropdownAction = useCallback(
+    () => setDropdownVisible((dropdownVisible) => !dropdownVisible),
+    [],
+  );
 
-              <Box width="fit">
-                <Text
-                  size="16pt"
-                  weight="semibold"
-                  color={`${asset ? 'label' : 'labelTertiary'}`}
-                >
-                  {asset?.name ?? i18n.t('send.input_token_placeholder')}
-                </Text>
-              </Box>
-            </Inline>
-          </Box>
-          <InputActionButon
-            showClose={!!asset}
-            onClose={() => shuffleAssetIndex(-1)}
-            dropdownVisible={false}
-            onDropdownAction={() => null}
-          />
-        </Inline>
-      </Stack>
-    </Box>
+  return (
+    <InputWrapper
+      zIndex={1}
+      dropdownHeight={377}
+      leftComponent={
+        <Box>
+          <CoinIcon asset={asset ?? undefined} />
+        </Box>
+      }
+      centerComponent={
+        <Box width="fit">
+          <Text
+            size="16pt"
+            weight="semibold"
+            color={`${asset ? 'label' : 'labelTertiary'}`}
+          >
+            {asset?.name ?? i18n.t('send.input_token_placeholder')}
+          </Text>
+        </Box>
+      }
+      showActionClose={false}
+      onActionClose={() => shuffleAssetIndex(-1)}
+      dropdownComponent={
+        <Box>
+          <Text size="12pt" weight="bold">
+            aaaaaaaa
+          </Text>
+        </Box>
+      }
+      dropdownVisible={dropdownVisible}
+      onDropdownAction={onDropdownAction}
+    />
   );
 };
