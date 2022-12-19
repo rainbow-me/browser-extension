@@ -83,7 +83,8 @@
     },
     "tokens_input": {
       "tokens": "Tokens",
-      "sort": "Sort"
+      "sort": "Sort",
+      "available": "Available"
     }
   },
   "contacts": {
