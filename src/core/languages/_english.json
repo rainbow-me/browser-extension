@@ -74,7 +74,12 @@
     "switch_to": "Switch to",
     "button_label_send": "Send Transacion",
     "button_label_sending": "Sending",
-    "enter_address_or_amount": "Enter an address or amount"
+    "enter_address_or_amount": "Enter an address or amount",
+    "wallets_list": {
+      "contacts": "Contacts",
+      "my_wallets": "My wallets",
+      "watched_wallets": "Watching"
+    }
   },
   "sign": {
     "title": "Sign"
@@ -91,7 +96,7 @@
     "title": "Rainbow",
     "subtitle": "Explore the new world of Ethereum",
     "create_wallet": "Create a new wallet",
-    "import_wallet": "Restore or connect a wallet",
+    "import_wallet": "Import or connect a wallet",
     "disclaimer_tos": "By proceeding, you agree to Rainbow’s",
     "disclaimer_tos_link": "Terms of Use"
   },
@@ -108,6 +113,27 @@
     "write_down_seed_importance": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
     "copy_to_clipboard": "Copy to clipboard",
     "saved_these_words": "I've saved these words"
+  },
+  "import_or_connect": {
+    "title": "Import or Connect",
+    "explanation": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
+    "import_wallet": "Import with a Secret Recovery Phrase or Private Key",
+    "import_wallet_description": "Add a wallet using your Secret Recovery Phrase or a Private Key.",
+    "connect_wallet": "Connect your hardware wallet",
+    "connect_wallet_description": "Add accounts from your hardware wallet",
+    "watch_address": "Watch an Ethereum address",
+    "watch_address_description": "Watch a public address or ENS name"
+  },
+  "import_wallet": {
+    "title": "Import your wallet",
+    "description": "Enter your Secret Recovery Phrase or a Private Key from Rainbow or any Ethereum wallet.",
+    "too_many_words": "Too many words",
+    "too_many_chars": "Too many characters",
+    "add_another": "Add another",
+    "remove": "Remove",
+    "placeholder": "Paste your Secret Recovery Phrase or a Private Key from another wallet",
+    "import_wallet": "Import Wallet",
+    "import_wallet_plural": "Import Wallets"
   },
   "seed_verify": {
     "title": "Verify your Secret Recovery Phrase",
@@ -226,7 +252,16 @@
     "wrong_password": "Wrong password",
     "new_password": "New password",
     "confirm_password": "Confirm password",
-    "update_password": "Update Password"
+    "update_password": "Update Password",
+    "set_password": "Set Password",
+    "too_weak": "Too weak",
+    "weak": "Weak",
+    "strong": "Strong",
+    "too_short": "Password needs to be at least 8 chars long"
+  },  
+  "create_password": {
+    "title": "Create your password",
+    "description": "Choose a password to secure & lock your wallet."
   },
   "activity": {
     "today": "Today",

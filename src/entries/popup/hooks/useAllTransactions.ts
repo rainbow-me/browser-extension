@@ -23,6 +23,7 @@ export function useAllTransactions({
   const { data: confirmedTransactions } = useTransactions(
     {
       address,
+      chainId: ChainId.mainnet,
       currency,
     },
     {
@@ -33,13 +34,63 @@ export function useAllTransactions({
         ),
     },
   );
+  const { data: confirmedArbitrumTransactions } = useTransactions(
+    {
+      address,
+      chainId: ChainId.arbitrum,
+      currency,
+    },
+    {
+      onSuccess: (transactions: RainbowTransaction[]) =>
+        watchConfirmedTransactions(transactions, ChainId.arbitrum),
+    },
+  );
+  const { data: confirmedBscTransactions } = useTransactions(
+    {
+      address,
+      chainId: ChainId.bsc,
+      currency,
+    },
+    {
+      onSuccess: (transactions: RainbowTransaction[]) =>
+        watchConfirmedTransactions(transactions, ChainId.bsc),
+    },
+  );
+  const { data: confirmedOptimismTransactions } = useTransactions(
+    {
+      address,
+      chainId: ChainId.optimism,
+      currency,
+    },
+    {
+      onSuccess: (transactions: RainbowTransaction[]) =>
+        watchConfirmedTransactions(transactions, ChainId.optimism),
+    },
+  );
+  const { data: confirmedPolygonTransactions } = useTransactions(
+    {
+      address,
+      chainId: ChainId.polygon,
+      currency,
+    },
+    {
+      onSuccess: (transactions: RainbowTransaction[]) =>
+        watchConfirmedTransactions(transactions, ChainId.polygon),
+    },
+  );
+
   const { getPendingTransactions } = usePendingTransactionsStore();
   const pendingTransactions: RainbowTransaction[] = getPendingTransactions({
     address,
   })?.map((tx) => ({ ...tx, pending: true }));
-  const allTransactions = pendingTransactions.concat(
-    confirmedTransactions || [],
-  );
+  const allTransactions = [
+    ...pendingTransactions,
+    ...(confirmedTransactions || []),
+    ...(confirmedArbitrumTransactions || []),
+    ...(confirmedBscTransactions || []),
+    ...(confirmedOptimismTransactions || []),
+    ...(confirmedPolygonTransactions || []),
+  ];
   return {
     allTransactions,
     allTransactionsByDate: selectTransactionsByDate(allTransactions),
@@ -80,7 +131,6 @@ function watchConfirmedTransactions(
   });
 
   const updatedPendingTx = pendingTransactions?.filter((tx) => {
-    // we do not filter L2 txs here because we do not have L2 transaction history
     if (tx?.chainId !== currentChainId) {
       return true;
     }

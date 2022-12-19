@@ -697,6 +697,7 @@ export const symbolNames = selectSymbolNames(
   'arrow.right',
   'eye',
   'eye.slash.fill',
+  'eyes.inverse',
   'exclamationmark.triangle.fill',
   'exclamationmark.triangle',
   'highlighter',
@@ -708,6 +709,11 @@ export const symbolNames = selectSymbolNames(
   'key.fill',
   'doc.plaintext',
   'doc.on.doc',
+  'checkmark.shield.fill',
+  'lock.rotation',
+  'doc.text.magnifyingglass',
+  'magnifyingglass.circle',
+  'arrow.uturn.down.circle.fill',
 );
 export type SymbolName = typeof symbolNames[number];
 

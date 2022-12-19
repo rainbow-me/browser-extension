@@ -16,6 +16,7 @@ import {
 } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
 
+import { FullScreenContainerWithNavbar } from '../../components/FullScreen/FullScreenContainerWithNavbar';
 import { exportWallet } from '../../handlers/wallet';
 
 const shuffleArray = (array: string[]) => {
@@ -93,20 +94,11 @@ export function SeedVerify() {
   }, [navigate, seed, selectedWords]);
 
   const handleSkip = useCallback(() => {
-    // TO DO
-  }, []);
+    navigate('/create-password');
+  }, [navigate]);
 
   return (
-    <Box
-      borderColor="separatorSecondary"
-      borderWidth="1px"
-      background="surfaceSecondary"
-      display="flex"
-      flexDirection="column"
-      alignItems="center"
-      padding="24px"
-      style={{ paddingTop: '56px' }}
-    >
+    <FullScreenContainerWithNavbar>
       <Box alignItems="center" paddingBottom="10px">
         <Inline
           wrap={false}
@@ -300,6 +292,6 @@ export function SeedVerify() {
       </Box>
 
       <Box width="full" paddingTop="80px" paddingBottom="60px"></Box>
-    </Box>
+    </FullScreenContainerWithNavbar>
   );
 }

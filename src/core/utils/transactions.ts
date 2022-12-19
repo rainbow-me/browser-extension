@@ -539,6 +539,8 @@ export async function watchPendingTransactions({
     address,
   });
 
+  if (!pendingTransactions?.length) return;
+
   const updatedPendingTransactions = await Promise.all(
     pendingTransactions.map(async (tx) => {
       let updatedTransaction = { ...tx };
@@ -641,3 +643,4 @@ export function getTransactionBlockExplorerUrl({
   const blockExplorerHost = getEtherscanHostForChain(chainId);
   return `https://${blockExplorerHost}/tx/${trimmedHash}`;
 }
+

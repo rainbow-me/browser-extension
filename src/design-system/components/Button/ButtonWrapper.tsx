@@ -16,8 +16,14 @@ import { ButtonHeight, heightStyles, tintedStyles } from './ButtonWrapper.css';
 
 export type ButtonVariantProps =
   | {
-      color: ButtonColor | TextColor;
-      variant: 'raised' | 'flat' | 'tinted' | 'stroked' | 'transparent';
+      color: BackgroundColor | ButtonColor | TextColor;
+      variant:
+        | 'raised'
+        | 'flat'
+        | 'tinted'
+        | 'stroked'
+        | 'transparent'
+        | 'disabled';
     }
   | {
       color?: never;
@@ -46,7 +52,7 @@ export const stylesForHeight: Record<
   '44px': {
     gap: '8px',
     paddingHorizontal: '24px',
-    textSize: '14pt',
+    textSize: '16pt',
   },
   '36px': {
     gap: '6px',
@@ -88,6 +94,7 @@ export const stylesForHeightAndVariant = ({
     flat: {},
     tinted: {},
     stroked: {},
+    disabled: {},
     transparent: {},
     white: {
       boxShadow: shadowValue('30px', color),
@@ -98,6 +105,7 @@ export const stylesForHeightAndVariant = ({
     flat: {},
     tinted: {},
     stroked: {},
+    disabled: {},
     transparent: {},
     white: {
       boxShadow: shadowValue('24px', color),
@@ -108,6 +116,7 @@ export const stylesForHeightAndVariant = ({
     flat: {},
     tinted: {},
     stroked: {},
+    disabled: {},
     transparent: {},
     white: {
       boxShadow: shadowValue('24px', color),
@@ -118,6 +127,7 @@ export const stylesForHeightAndVariant = ({
     flat: {},
     tinted: {},
     stroked: {},
+    disabled: {},
     transparent: {},
     white: {
       boxShadow: shadowValue('12px', color),
@@ -128,6 +138,7 @@ export const stylesForHeightAndVariant = ({
     flat: {},
     tinted: {},
     stroked: {},
+    disabled: {},
     transparent: {},
     white: {
       boxShadow: shadowValue('12px', color),
@@ -138,7 +149,7 @@ export const stylesForHeightAndVariant = ({
 export const stylesForVariant = ({
   color,
 }: {
-  color: ButtonColor | TextColor;
+  color: BackgroundColor | ButtonColor | TextColor;
 }): Record<
   ButtonWrapperProps['variant'],
   {
@@ -172,6 +183,11 @@ export const stylesForVariant = ({
   white: {
     background: 'white',
   },
+  disabled: {
+    borderColor: 'separatorSecondary',
+    borderWidth: '2px',
+    textColor: color as TextColor,
+  },
 });
 
 export function ButtonWrapper({
@@ -196,6 +212,7 @@ export function ButtonWrapper({
   return (
     <Box
       as={motion.div}
+      initial={{ zIndex: 0 }}
       whileHover={{ scale: transformScales['1.04'] }}
       whileTap={{ scale: transformScales['0.96'] }}
       transition={transitions.bounce}

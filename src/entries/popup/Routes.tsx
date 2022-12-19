@@ -7,7 +7,10 @@ import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/Animated
 
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
 import { ConnectedApps } from './pages/ConnectedApps';
+import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
+import { ImportOrConnect } from './pages/importOrConnect';
+import { ImportWallet } from './pages/importWallet';
 import { SeedBackupPrompt } from './pages/seedBackupPrompt';
 import { SeedReveal } from './pages/seedReveal';
 import { SeedVerify } from './pages/seedVerify';
@@ -27,6 +30,14 @@ import { Welcome } from './pages/welcome';
 
 export function Routes() {
   const location = useLocation();
+
+  React.useEffect(() => {
+    // need to wait a tick for the page to render
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 0);
+  }, [location]);
+
   const routeMatch = matchRoutes(
     [
       {
@@ -54,6 +65,24 @@ export function Routes() {
         element: (
           <AnimatedRoute direction="base">
             <Welcome />
+          </AnimatedRoute>
+        ),
+        background: FullScreenBackground,
+      },
+      {
+        path: '/import-or-connect',
+        element: (
+          <AnimatedRoute direction="horizontal" navbar>
+            <ImportOrConnect />
+          </AnimatedRoute>
+        ),
+        background: FullScreenBackground,
+      },
+      {
+        path: '/import',
+        element: (
+          <AnimatedRoute direction="horizontal" navbar>
+            <ImportWallet />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,
@@ -90,6 +119,15 @@ export function Routes() {
         element: (
           <AnimatedRoute direction="horizontal" navbar>
             <SeedVerify />
+          </AnimatedRoute>
+        ),
+        background: FullScreenBackground,
+      },
+      {
+        path: '/create-password',
+        element: (
+          <AnimatedRoute direction="horizontal" navbar>
+            <CreatePassword />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,
@@ -196,8 +234,9 @@ export function Routes() {
         path: '/send',
         element: (
           <AnimatedRoute
-            direction="vertical"
+            direction="horizontal"
             navbar
+            navbarBackground="surfaceSecondary"
             title={i18n.t('send.title')}
           >
             <Send />
