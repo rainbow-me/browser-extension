@@ -64,6 +64,7 @@ export function Send() {
     show: boolean;
     action: ContactAction;
   }>({ show: false, action: 'save' });
+  const [toAddressDropdownOpen, setToAddressDropdownOpen] = useState(false);
 
   const { isContact } = useContactsStore();
 
@@ -202,6 +203,7 @@ export function Send() {
                 clearToAddress={clearToAddress}
                 handleToAddressChange={handleToAddressChange}
                 setToAddressOrName={setToAddressOrName}
+                onDropdownOpen={setToAddressDropdownOpen}
               />
             </Row>
 
@@ -217,6 +219,7 @@ export function Send() {
                   <TokenInput
                     asset={asset}
                     shuffleAssetIndex={shuffleAssetIndex}
+                    dropdownClosed={toAddressDropdownOpen}
                   />
                   {asset ? (
                     <Box paddingBottom="20px" paddingHorizontal="20px">

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
@@ -11,15 +11,23 @@ import { InputWrapper } from './InputWrapper';
 export const TokenInput = ({
   asset,
   shuffleAssetIndex,
+  dropdownClosed = false,
 }: {
   asset: ParsedAddressAsset | null;
   shuffleAssetIndex: (n?: number) => void;
+  dropdownClosed: boolean;
 }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const onDropdownAction = useCallback(
     () => setDropdownVisible((dropdownVisible) => !dropdownVisible),
     [],
   );
+
+  useEffect(() => {
+    if (dropdownClosed) {
+      setDropdownVisible(false);
+    }
+  }, [dropdownClosed]);
 
   return (
     <InputWrapper
