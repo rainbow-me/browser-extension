@@ -27,7 +27,7 @@ import {
   addressToInputHighlightWrapperStyleLight,
 } from './ToAddressInpnut.css';
 
-function RowHighlightWrapper({ children }: { children: ReactNode }) {
+const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
   const { currentTheme } = useCurrentThemeStore();
   return (
     <Inset>
@@ -43,7 +43,7 @@ function RowHighlightWrapper({ children }: { children: ReactNode }) {
       </Box>
     </Inset>
   );
-}
+};
 
 const WalletSection = ({
   title,
@@ -126,8 +126,10 @@ const DropdownWalletsList = ({
   watchedWallets: Address[];
   selectWalletAndCloseDropdown: (address: Address) => void;
 }) => {
-  const walletsExist =
-    wallets.length + contacts.length + watchedWallets.length > 0;
+  const walletsExist = useMemo(
+    () => wallets.length + contacts.length + watchedWallets.length > 0,
+    [contacts.length, wallets.length, watchedWallets.length],
+  );
 
   return (
     <AnimatePresence initial={false}>
@@ -220,6 +222,12 @@ export const ToAddressInput = ({
     [],
   );
 
+  const onInputClick = useCallback(() => {
+    if (!dropdownVisible) {
+      setDropdownVisible(true);
+    }
+  }, [dropdownVisible]);
+
   const inputVisible = useMemo(
     () => (!toAddressOrName || !toEnsName) && !isAddress(toAddressOrName),
     [toAddressOrName, toEnsName],
@@ -255,6 +263,7 @@ export const ToAddressInput = ({
                 initial={{ y: 0, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: -10, opacity: 0 }}
+                onClick={onInputClick}
               >
                 <Input
                   value={toAddressOrName}
