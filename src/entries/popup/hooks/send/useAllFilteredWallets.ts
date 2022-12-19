@@ -103,29 +103,26 @@ export const useAllFilteredWallets = ({ filter }: { filter: string }) => {
     const filterWallets = async () => {
       const filterIsAddressOrEns =
         isAddress(filter) || isENSAddressFormat(filter);
-      const filteredWalletsData = walletsData.filter(
-        ({ ensName, address, name }) =>
-          filterIsAddressOrEns ||
-          filterWalletData({ ensName, address, name, filter }),
-      );
-      const filteredWatchedWalletsData = watchedWalletsData.filter(
-        ({ ensName, address, name }) =>
-          filterIsAddressOrEns ||
-          filterWalletData({ ensName, address, name, filter }),
-      );
-      const filteredContactsData = contactsData.filter(
-        ({ ensName, address, name }) =>
-          filterIsAddressOrEns ||
-          filterWalletData({ ensName, address, name, filter }),
+
+      const [
+        filteredWalletsData,
+        filteredWatchedWalletsData,
+        filteredContactsData,
+      ] = [walletsData, watchedWalletsData, contactsData].map((data) =>
+        data.filter(
+          ({ ensName, address, name }) =>
+            filterIsAddressOrEns ||
+            filterWalletData({ ensName, address, name, filter }),
+        ),
       );
 
-      const filteredWallets = filteredWalletsData.map(({ address }) => address);
-      const filteredWatchedWallets = filteredWatchedWalletsData.map(
-        ({ address }) => address,
-      );
-      const filteredContactsWallets = filteredContactsData.map(
-        ({ address }) => address,
-      );
+      const [filteredWallets, filteredWatchedWallets, filteredContactsWallets] =
+        [
+          filteredWalletsData,
+          filteredWatchedWalletsData,
+          filteredContactsData,
+        ].map((filteredData) => filteredData.map(({ address }) => address));
+
       setFilteredWallets(filteredWallets);
       setFilteredWatchedWallets(filteredWatchedWallets);
       setFilteredContactsWallets(filteredContactsWallets);
