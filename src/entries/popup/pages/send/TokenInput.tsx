@@ -58,6 +58,14 @@ export const TokenInput = ({
     { select: selectUserAssetsList },
   );
 
+  const onSelectAsset = useCallback(
+    (i: number) => {
+      shuffleAssetIndex(i);
+      setDropdownVisible(false);
+    },
+    [shuffleAssetIndex],
+  );
+
   useEffect(() => {
     if (dropdownClosed) {
       setDropdownVisible(false);
@@ -67,7 +75,7 @@ export const TokenInput = ({
   return (
     <InputWrapper
       zIndex={1}
-      dropdownHeight={377}
+      dropdownHeight={376}
       leftComponent={
         <Box>
           <CoinIcon asset={asset ?? undefined} />
@@ -114,16 +122,21 @@ export const TokenInput = ({
               </Inline>
             </Inline>
           </Box>
-
-          {assets?.map((asset, i) => (
-            <Box paddingHorizontal="8px" key={`${asset?.uniqueId}-${i}`}>
-              <RowHighlightWrapper>
-                <Box marginHorizontal="-8px">
-                  <AssetRow uniqueId={asset?.uniqueId} />
-                </Box>
-              </RowHighlightWrapper>
-            </Box>
-          ))}
+          <Box>
+            {assets?.map((asset, i) => (
+              <Box
+                paddingHorizontal="8px"
+                key={`${asset?.uniqueId}-${i}`}
+                onClick={() => onSelectAsset(i)}
+              >
+                <RowHighlightWrapper>
+                  <Box marginHorizontal="-8px">
+                    <AssetRow uniqueId={asset?.uniqueId} />
+                  </Box>
+                </RowHighlightWrapper>
+              </Box>
+            ))}
+          </Box>
         </Stack>
       }
       dropdownVisible={dropdownVisible}

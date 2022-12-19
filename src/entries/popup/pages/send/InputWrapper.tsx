@@ -56,7 +56,7 @@ export const InputWrapper = ({
               <Column width="content">{leftComponent}</Column>
 
               <Column>
-                <>{centerComponent}</>
+                <Box onClick={onDropdownAction}>{centerComponent}</Box>
               </Column>
 
               <Column width="content">
