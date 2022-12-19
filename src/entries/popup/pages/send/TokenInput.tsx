@@ -106,7 +106,7 @@ export const TokenInput = ({
                   size={14}
                 />
                 <Text size="14pt" weight="semibold" color="labelTertiary">
-                  Tokens
+                  {i18n.t('send.tokens_input.tokens')}
                 </Text>
               </Inline>
               <Inline space="4px" alignVertical="center">
@@ -117,7 +117,7 @@ export const TokenInput = ({
                   size={14}
                 />
                 <Text size="14pt" weight="semibold" color="labelTertiary">
-                  Sort
+                  {i18n.t('send.tokens_input.sort')}
                 </Text>
               </Inline>
             </Inline>
