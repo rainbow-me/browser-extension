@@ -6,11 +6,11 @@ import { i18n } from '~/core/languages';
 import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
 
 import {
-  Menu,
-  MenuContent,
-  MenuSeparator,
-  MenuTrigger,
-} from '../../components/Menu/Menu';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../../components/DropdownMenu/DropdownMenu';
 
 export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   const { address } = useAccount();
@@ -23,13 +23,13 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   }, [address, ensName]);
 
   return (
-    <Menu>
-      <MenuTrigger asChild>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <Box position="relative" id="home-page-header-right">
           {children}
         </Box>
-      </MenuTrigger>
-      <MenuContent>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
         <Stack space="4px">
           <Stack>
             <Inset vertical="8px">
@@ -52,7 +52,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
             </Inset>
           </Stack>
           <Stack space="4px">
-            <MenuSeparator />
+            <DropdownMenuSeparator />
             <Box>
               <Box width="full" as="button" onClick={openProfile}>
                 <Inset vertical="8px">
@@ -79,7 +79,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
             </Box>
           </Stack>
         </Stack>
-      </MenuContent>
-    </Menu>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

@@ -14,13 +14,13 @@ import {
 } from '~/design-system';
 
 import {
-  Menu,
-  MenuContent,
-  MenuItemIndicator,
-  MenuRadioGroup,
-  MenuSeparator,
-  MenuTrigger,
-} from '../../components/Menu/Menu';
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItemIndicator,
+  DropdownMenuRadioGroup,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '../../components/DropdownMenu/DropdownMenu';
 import {
   SwitchNetworkMenuDisconnect,
   SwitchNetworkMenuSelector,
@@ -30,16 +30,9 @@ import { useAppSession } from '../../hooks/useAppSession';
 
 export const NetworkMenu = ({ children }: { children: React.ReactNode }) => {
   const [url, setUrl] = React.useState('');
-  const { appHost, appLogo } = useAppMetadata({ url });
+  const { appHost, appLogo, appName } = useAppMetadata({ url });
   const { updateAppSessionChainId, disconnectAppSession, appSession } =
     useAppSession({ host: appHost });
-
-  chrome?.tabs?.query({ active: true, lastFocusedWindow: true }, (tabs) => {
-    const url = tabs[0].url;
-    if (url) {
-      setUrl(url);
-    }
-  });
 
   const changeChainId = React.useCallback(
     (chainId: string) => {
@@ -52,81 +45,106 @@ export const NetworkMenu = ({ children }: { children: React.ReactNode }) => {
     disconnectAppSession();
   }, [disconnectAppSession]);
 
+  React.useEffect(() => {
+    chrome?.tabs?.query({ active: true, lastFocusedWindow: true }, (tabs) => {
+      const url = tabs[0].url;
+      try {
+        if (url) {
+          const urlObject = new URL(url ?? '');
+          if (
+            urlObject.protocol === 'http:' ||
+            urlObject.protocol === 'https:'
+          ) {
+            setUrl(url);
+          }
+        }
+      } catch (e) {
+        //
+      }
+    });
+  }, []);
+
   return (
-    <Menu>
-      <MenuTrigger asChild>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <Box position="relative" id="home-page-header-left">
           {children}
         </Box>
-      </MenuTrigger>
-      <MenuContent>
-        <Inset top="8px" bottom="12px">
-          <Inline alignHorizontal="justify" alignVertical="center" space="8px">
-            <Inline space="8px" alignVertical="center">
-              <Box
-                style={{
-                  height: 14,
-                  width: 14,
-                  borderRadius: 3.5,
-                  overflow: 'hidden',
-                }}
-              >
-                <img src={appLogo} width="100%" height="100%" />
-              </Box>
-              <Box
-                id={`home-page-header-host-${
-                  appSession ? appHost : 'not-connected'
-                }`}
-              >
-                <Rows space="8px">
-                  <Row>
-                    <Text size="14pt" weight="bold">
-                      {appHost}
-                    </Text>
-                  </Row>
-                  {!appSession && (
+      </DropdownMenuTrigger>
+      <DropdownMenuContent>
+        {url ? (
+          <Inset top="8px" bottom="12px">
+            <Inline
+              alignHorizontal="justify"
+              alignVertical="center"
+              space="8px"
+            >
+              <Inline space="8px" alignVertical="center">
+                <Box
+                  style={{
+                    height: 14,
+                    width: 14,
+                    borderRadius: 3.5,
+                    overflow: 'hidden',
+                  }}
+                >
+                  <img src={appLogo} width="100%" height="100%" />
+                </Box>
+                <Box
+                  id={`home-page-header-host-${
+                    appSession ? appHost : 'not-connected'
+                  }`}
+                >
+                  <Rows space="8px">
                     <Row>
-                      <Text size="11pt" weight="bold">
-                        {i18n.t('menu.home_header_left.not_connected')}
+                      <Text size="14pt" weight="bold">
+                        {appName ?? appHost}
                       </Text>
                     </Row>
-                  )}
-                </Rows>
-              </Box>
+                    {!appSession && (
+                      <Row>
+                        <Text size="11pt" weight="bold">
+                          {i18n.t('menu.home_header_left.not_connected')}
+                        </Text>
+                      </Row>
+                    )}
+                  </Rows>
+                </Box>
+              </Inline>
+              <Symbol
+                size={6}
+                color={appSession ? 'green' : 'labelQuaternary'}
+                symbol="circle.fill"
+                weight="semibold"
+              />
             </Inline>
-            <Symbol
-              size={6}
-              color={appSession ? 'green' : 'labelQuaternary'}
-              symbol="circle.fill"
-              weight="semibold"
-            />
-          </Inline>
-        </Inset>
+          </Inset>
+        ) : null}
 
         <Stack space="4px">
           {appSession ? (
             <>
               <Stack space="12px">
-                <MenuSeparator />
+                <DropdownMenuSeparator />
                 <Text color="label" size="14pt" weight="semibold">
                   {i18n.t('menu.home_header_left.networks')}
                 </Text>
               </Stack>
 
               <Box>
-                <MenuRadioGroup
+                <DropdownMenuRadioGroup
                   value={`${appSession?.chainId}`}
                   onValueChange={changeChainId}
                 >
                   <SwitchNetworkMenuSelector />
-                </MenuRadioGroup>
+                </DropdownMenuRadioGroup>
                 <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
               </Box>
             </>
           ) : null}
 
           <Stack space="4px">
-            <MenuSeparator />
+            {url ? <DropdownMenuSeparator /> : null}
 
             <Inset vertical="8px">
               <Link id="home-page-header-connected-apps" to={'/connected'}>
@@ -153,8 +171,10 @@ export const NetworkMenu = ({ children }: { children: React.ReactNode }) => {
           </Stack>
         </Stack>
 
-        <MenuItemIndicator style={{ marginLeft: 'auto' }}>o</MenuItemIndicator>
-      </MenuContent>
-    </Menu>
+        <DropdownMenuItemIndicator style={{ marginLeft: 'auto' }}>
+          o
+        </DropdownMenuItemIndicator>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

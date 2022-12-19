@@ -4,7 +4,9 @@ import { isNil } from 'lodash';
 
 import { supportedCurrencies } from '~/core/references';
 
-type BigNumberish = number | string | BigNumber;
+import { addHexPrefix } from './ethereum';
+
+export type BigNumberish = number | string | BigNumber;
 type nativeCurrencyType = typeof supportedCurrencies;
 
 export const abs = (value: BigNumberish): string =>
@@ -151,6 +153,9 @@ export const convertHexToString = (hex: BigNumberish): string =>
 
 export const convertStringToHex = (stringToConvert: string): string =>
   new BigNumber(stringToConvert).toString(16);
+
+export const toHex = (stringToConvert: string): string =>
+  addHexPrefix(convertStringToHex(stringToConvert));
 
 export const add = (numberOne: BigNumberish, numberTwo: BigNumberish): string =>
   new BigNumber(numberOne).plus(numberTwo).toFixed();
@@ -416,3 +421,6 @@ export const convertRawAmountToDecimalFormat = (
 
 export const fromWei = (number: BigNumberish): string =>
   convertRawAmountToDecimalFormat(number, 18);
+
+export const toHexNoLeadingZeros = (value: string): string =>
+  toHex(value).replace(/^0x0*/, '0x');

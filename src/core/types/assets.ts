@@ -24,6 +24,7 @@ export interface ParsedAsset {
   symbol: string;
   type: string;
   uniqueId: UniqueId;
+  decimals: number;
 }
 
 export interface ParsedAddressAsset extends ParsedAsset {

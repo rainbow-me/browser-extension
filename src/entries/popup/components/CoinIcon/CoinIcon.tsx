@@ -24,7 +24,7 @@ export function CoinIcon({
   asset,
   fallbackText,
 }: {
-  asset?: ParsedAsset | ParsedAddressAsset;
+  asset?: ParsedAsset | ParsedAddressAsset | null;
   fallbackText?: string;
 }) {
   const sym = asset?.symbol || fallbackText || '';
@@ -34,6 +34,7 @@ export function CoinIcon({
   const address = (asset?.address || '') as Address;
   const chain = asset?.chainId || ChainId.mainnet;
   const shadowColor = asset?.colors?.primary;
+
   return (
     <CoinIconWrapper shadowColor={shadowColor} chainId={chain}>
       <CloudinaryCoinIcon
@@ -75,7 +76,7 @@ function ShadowWrapper({
       <AccentColorProvider color={color}>
         <Box
           boxShadow={'24px accent'}
-          background="fill"
+          background="fillSecondary"
           borderRadius="round"
           style={{
             width: 36,
@@ -92,7 +93,7 @@ function ShadowWrapper({
 
   return (
     <Box
-      background="fill"
+      background="fillSecondary"
       borderRadius="round"
       style={{
         width: 36,
@@ -119,7 +120,7 @@ function CoinIconWrapper({
     <Fragment>
       <ShadowWrapper color={shadowColor}>{children}</ShadowWrapper>
       {chainId !== ChainId.mainnet && (
-        <Bleed top="12px" left="6px">
+        <Bleed top="16px" left="6px">
           <ChainBadge chainId={chainId} shadow size="extraSmall" />
         </Bleed>
       )}

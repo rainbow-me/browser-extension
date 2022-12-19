@@ -1,17 +1,23 @@
 import { globalStyle } from '@vanilla-extract/css';
 
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+
 globalStyle('html, body', {
   margin: 0,
   padding: 0,
 });
 
 globalStyle('html, body, #main', {
-  minWidth: '360px',
-  minHeight: '600px',
+  minWidth: `${POPUP_DIMENSIONS.width}px`,
+  minHeight: `${POPUP_DIMENSIONS.height}px`,
+  overscrollBehaviorY: 'none',
 });
 
 globalStyle('*', {
-  transition: 'background 0.1s ease',
+  boxSizing: 'border-box',
+  transition: 'background 0.2s ease',
+  userSelect: 'none',
+  cursor: 'default !important',
 });
 
 globalStyle('*::-webkit-scrollbar', {
@@ -20,9 +26,13 @@ globalStyle('*::-webkit-scrollbar', {
 
 globalStyle('a', {
   textDecoration: 'none',
-  cursor: 'default',
+  cursor: 'pointer',
 });
 
 globalStyle('div[data-radix-popper-content-wrapper]', {
   zIndex: '999 !important',
+});
+
+globalStyle('*:focus', {
+  outline: 'none',
 });

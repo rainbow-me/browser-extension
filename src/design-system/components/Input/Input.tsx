@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { InputHTMLAttributes } from 'react';
+import React, { CSSProperties, InputHTMLAttributes } from 'react';
 
 import { BoxStyles, TextStyles, textStyles } from '../../styles/core.css';
 import {
@@ -25,9 +25,14 @@ export type InputProps = {
   onChange?: InputHTMLAttributes<HTMLInputElement>['onChange'];
   onFocus?: InputHTMLAttributes<HTMLInputElement>['onFocus'];
   placeholder?: string;
+  borderColor?: BoxStyles['borderColor'];
   testId?: string;
   variant: 'surface' | 'bordered' | 'transparent';
   value?: InputHTMLAttributes<HTMLInputElement>['value'];
+  type?: InputHTMLAttributes<HTMLInputElement>['type'];
+  innerRef?: React.Ref<HTMLInputElement>;
+  selectionColor?: BoxStyles['borderColor'];
+  style?: CSSProperties;
 };
 
 export const stylesForVariant: Record<
@@ -81,12 +86,32 @@ export const stylesForHeight: Record<
     borderRadius: BoxStyles['borderRadius'];
     fontSize?: TextStyles['fontSize'];
     paddingHorizontal: BoxStyles['paddingHorizontal'];
+    paddingVertical: BoxStyles['paddingVertical'];
   }
 > = {
   '32px': {
     borderRadius: '12px',
     fontSize: '14pt',
     paddingHorizontal: '12px',
+    paddingVertical: '12px',
+  },
+  '40px': {
+    borderRadius: '12px',
+    fontSize: '14pt',
+    paddingHorizontal: '12px',
+    paddingVertical: '12px',
+  },
+  '44px': {
+    borderRadius: '12px',
+    fontSize: '14pt',
+    paddingHorizontal: '12px',
+    paddingVertical: '12px',
+  },
+  '56px': {
+    borderRadius: '14px',
+    fontSize: '23pt',
+    paddingHorizontal: '16px',
+    paddingVertical: '16px',
   },
 };
 
@@ -95,10 +120,17 @@ export function Input({
   height,
   variant,
   testId,
+  innerRef,
+  borderColor,
   ...inputProps
 }: InputProps) {
-  const { background, borderColor, textColor } = stylesForVariant[variant];
-  const { borderRadius, fontSize, paddingHorizontal } = stylesForHeight[height];
+  const {
+    background,
+    borderColor: borderColorFromVariant,
+    textColor,
+  } = stylesForVariant[variant];
+  const { borderRadius, fontSize, paddingHorizontal, paddingVertical } =
+    stylesForHeight[height];
   return (
     <Box
       as={motion.div}
@@ -115,8 +147,9 @@ export function Input({
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...inputProps}
         as="input"
+        ref={innerRef}
         background={background}
-        borderColor={borderColor}
+        borderColor={borderColor ? borderColor : borderColorFromVariant}
         borderWidth="1px"
         borderRadius={borderRadius}
         className={[
@@ -131,6 +164,7 @@ export function Input({
           placeholderStyle,
         ]}
         paddingHorizontal={paddingHorizontal}
+        paddingVertical={paddingVertical}
         placeholder={placeholder}
         testId={testId}
         width="full"

@@ -1,5 +1,11 @@
-import { motion, useScroll, useTransform } from 'framer-motion';
-import * as React from 'react';
+import {
+  MotionValue,
+  motion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from 'framer-motion';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
@@ -21,13 +27,15 @@ import { Tokens } from './Tokens';
 export type Tab = 'tokens' | 'activity';
 
 const COLLAPSED_HEADER_TOP_OFFSET = 172;
+const TAB_BAR_HEIGHT = 34;
+const TOP_NAV_HEIGHT = 65;
 
 export function Home() {
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
 
-  const [activeTab, setActiveTab] = React.useState<Tab>('tokens');
-  const onSelectTab = React.useCallback((tab: Tab) => {
+  const [activeTab, setActiveTab] = useState<Tab>('tokens');
+  const onSelectTab = useCallback((tab: Tab) => {
     // If we are already in a state where the header is collapsed,
     // then ensure we are scrolling to the top when we change tab.
     if (window.scrollY > COLLAPSED_HEADER_TOP_OFFSET) {
@@ -36,18 +44,34 @@ export function Home() {
     setActiveTab(tab);
   }, []);
 
+  const { scrollY } = useScroll();
+  const smoothScrollY = useSpring(scrollY, {
+    damping: 50,
+    stiffness: 350,
+  });
+  const scrollYTransform = useTransform(smoothScrollY, [1, 1000], [0, 200]);
+  const [scrollAtTop, setScrollAtTop] = useState(true);
+
+  useEffect(() => {
+    return scrollY.onChange((position) => {
+      const isAtTop = position === 0;
+      if (isAtTop && !scrollAtTop) setScrollAtTop(true);
+      else if (!isAtTop && scrollAtTop) setScrollAtTop(false);
+    });
+  }, [scrollAtTop, scrollY]);
+
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>
       {({ className, style }) => (
         <MainLayout
           className={className}
-          style={{ ...style, position: 'relative' }}
+          style={{ ...style, position: 'relative', overscrollBehavior: 'none' }}
         >
           <TopNav />
           <Header />
           <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
           <Separator color="separatorTertiary" strokeWeight="1px" />
-          <Content>
+          <Content scrollSpring={scrollYTransform} shouldSpring={scrollAtTop}>
             {activeTab === 'tokens' && <Tokens />}
             {activeTab === 'activity' && <Activity />}
           </Content>
@@ -64,7 +88,7 @@ function TopNav() {
   return (
     <StickyHeader
       background="surfacePrimaryElevatedSecondary"
-      height={64}
+      height={TOP_NAV_HEIGHT}
       topOffset={0}
     >
       <Navbar
@@ -98,23 +122,36 @@ function TabBar({
   return (
     <StickyHeader
       background="surfacePrimaryElevatedSecondary"
-      height={34}
-      topOffset={64}
+      height={TAB_BAR_HEIGHT}
+      topOffset={TOP_NAV_HEIGHT}
     >
       <TabBar_ activeTab={activeTab} onSelectTab={setActiveTab} />
     </StickyHeader>
   );
 }
 
-function Content({ children }: { children: React.ReactNode }) {
+function Content({
+  children,
+  scrollSpring,
+  shouldSpring,
+}: {
+  children: React.ReactNode;
+  scrollSpring?: MotionValue<number>;
+  shouldSpring: boolean;
+}) {
+  const y = shouldSpring ? scrollSpring : 0;
   return (
     <Box
       background="surfacePrimaryElevated"
       style={{
         flex: 1,
+        position: 'relative',
       }}
     >
-      <Inset top="20px">{children}</Inset>
+      {/** spring transformY to imitate scroll bounce*/}
+      <Box height="full" as={motion.div} style={{ y }}>
+        <Inset top="20px">{children}</Inset>
+      </Box>
     </Box>
   );
 }

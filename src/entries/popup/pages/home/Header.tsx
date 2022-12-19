@@ -15,14 +15,6 @@ export function Header() {
   const scaleValue = useTransform(progress, [0, 1], [1, 0.3]);
   const opacityValue = useTransform(progress, [0, 1], [1, 0]);
 
-  const { scrollYProgress: blurProgress } = useScroll({
-    offset: ['10px', '60px'],
-  });
-  const blurValue = useTransform(
-    blurProgress,
-    (out) => `blur(${10 ** out - 1}px)`,
-  );
-
   return (
     <Box
       background="surfacePrimaryElevatedSecondary"
@@ -41,7 +33,6 @@ export function Header() {
             justifyContent="center"
             position="absolute"
             style={{
-              filter: blurValue,
               opacity: opacityValue,
               scale: scaleValue,
               transformOrigin: 'bottom',
@@ -60,7 +51,7 @@ export function Header() {
   );
 }
 
-function AvatarSection() {
+export function AvatarSection() {
   const { address } = useAccount();
   const { avatar, isFetched } = useAvatar({ address });
   return (

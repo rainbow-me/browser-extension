@@ -1,175 +1,306 @@
-import { Address, fetchEnsAddress } from '@wagmi/core';
-import { ethers } from 'ethers';
-import React, { ChangeEvent, useCallback, useState } from 'react';
-import { chain, useAccount } from 'wagmi';
+import { TransactionRequest } from '@ethersproject/abstract-provider';
+import React, {
+  ChangeEvent,
+  ReactNode,
+  useCallback,
+  useMemo,
+  useState,
+} from 'react';
 
-import { isENSAddressFormat } from '~/core/utils/ethereum';
+import { i18n } from '~/core/languages';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import { addNewTransaction } from '~/core/utils/transactions';
 import {
+  AccentColorProvider,
   Box,
-  Column,
-  Columns,
+  Button,
+  Inline,
   Row,
   Rows,
   Separator,
+  Stack,
   Text,
 } from '~/design-system';
+import { Input } from '~/design-system/components/Input/Input';
+import { foregroundColors } from '~/design-system/styles/designTokens';
 
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { sendTransaction } from '../../handlers/wallet';
+import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsset';
+import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
+import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
+
+import { ToAddressInput } from './ToAddressInput';
+import { TokenInput } from './TokenInput';
+
+const AccentColorProviderWrapper = ({
+  color,
+  children,
+}: {
+  color?: string;
+  children: ReactNode;
+}) => {
+  const { currentTheme } = useCurrentThemeStore();
+  const defaultColor =
+    currentTheme === 'light'
+      ? foregroundColors.labelQuaternary.dark
+      : foregroundColors.labelQuaternary.light;
+  return (
+    <AccentColorProvider color={color ?? defaultColor}>
+      {children}
+    </AccentColorProvider>
+  );
+};
 
 export function Send() {
-  const [toAddress, setToAddress] = useState('');
-  const [amount, setAmount] = useState('');
-  const [txHash, setTxHash] = useState('');
+  const [, setTxHash] = useState('');
   const [sending, setSending] = useState(false);
-  const { address } = useAccount();
+
+  const { asset, shuffleAssetIndex } = useSendTransactionAsset();
+  const {
+    assetAmount,
+    independentAmount,
+    independentField,
+    independentFieldRef,
+    dependentAmount,
+    setIndependentAmount,
+    switchIndependentField,
+    setMaxAssetAmount,
+  } = useSendTransactionInputs({ asset });
+
+  const {
+    currentCurrency,
+    chainId,
+    data,
+    fromAddress,
+    toAddress,
+    toAddressOrName,
+    toEnsName,
+    value,
+    setToAddressOrName,
+  } = useSendTransactionState({ assetAmount, asset });
+
+  const transactionRequest: TransactionRequest = useMemo(() => {
+    return {
+      to: toAddress,
+      from: fromAddress,
+      value,
+      chainId,
+      data,
+    };
+  }, [toAddress, fromAddress, value, chainId, data]);
 
   const handleToAddressChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setToAddress(e.target.value as string);
+      setToAddressOrName(e.target.value);
     },
-    [],
+    [setToAddressOrName],
   );
 
-  const handleAmountChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setAmount(e.target.value);
-  }, []);
+  const clearToAddress = useCallback(
+    () => setToAddressOrName(''),
+    [setToAddressOrName],
+  );
+
+  const handleAmountChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setIndependentAmount(e.target.value);
+    },
+    [setIndependentAmount],
+  );
 
   const handleSend = useCallback(async () => {
-    let receiver = toAddress;
-    if (isENSAddressFormat(toAddress)) {
-      try {
-        receiver = (await fetchEnsAddress({ name: toAddress })) as Address;
-      } catch (e) {
-        console.log('error', e);
-        alert('Invalid ENS name');
-        return;
-      }
-    }
     setSending(true);
 
     try {
       const result = await sendTransaction({
-        from: address,
-        to: receiver,
-        value: ethers.utils.parseEther(amount),
-        chainId: chain.mainnet.id,
+        from: fromAddress,
+        to: toAddress,
+        value,
+        chainId,
+        data,
       });
 
       if (result) {
         alert(`Transaction sent successfully: ${JSON.stringify(result.hash)}`);
         setTxHash(result?.hash as string);
+        const transaction = {
+          amount: assetAmount,
+          asset,
+          data: result.data,
+          value: result.value,
+          from: fromAddress,
+          to: toAddress,
+          hash: result.hash,
+          chainId,
+          status: TransactionStatus.sending,
+          type: TransactionType.send,
+        };
+        if (fromAddress) {
+          await addNewTransaction({
+            address: fromAddress,
+            chainId,
+            transaction,
+          });
+        }
       }
     } catch (e) {
       alert('Transaction failed');
     } finally {
       setSending(false);
     }
-  }, [address, amount, toAddress]);
+  }, [asset, assetAmount, fromAddress, toAddress, value, chainId, data]);
 
   return (
     <Box
-      display="flex"
-      flexDirection="column"
-      gap="24px"
-      padding="20px"
-      style={{ overflow: 'auto' }}
+      background="surfaceSecondary"
+      style={{ height: 535, paddingBottom: 19 }}
+      paddingHorizontal="12px"
     >
-      <Columns space="12px">
-        <Column>
-          <Rows space="12px">
-            <Row>
-              <Text color="label" size="16pt" weight="bold">
-                To:
-              </Text>
-            </Row>
-            <Row>
-              <input
-                type="text"
-                value={toAddress}
-                placeholder={'ENS or address'}
-                onChange={handleToAddressChange}
-                style={{
-                  borderRadius: 999,
-                  padding: '10px',
-                  fontSize: '11pt',
-                  width: '100%',
-                  boxSizing: 'border-box',
-                }}
-              />
-            </Row>
-            <Row>
-              <Text color="label" size="16pt" weight="bold">
-                Amount (ETH):
-              </Text>
-            </Row>
-            <Row>
-              <input
-                type="text"
-                value={amount}
-                placeholder={'Enter ETH amount'}
-                onChange={handleAmountChange}
-                style={{
-                  borderRadius: 999,
-                  padding: '10px',
-                  fontSize: '11pt',
-                  width: '100%',
-                  boxSizing: 'border-box',
-                }}
-              />
-            </Row>
-            <Row>
+      <Rows space="8px" alignVertical="top">
+        <Rows space="8px" alignVertical="top">
+          <Row height="content">
+            <ToAddressInput
+              toAddress={toAddress}
+              toEnsName={toEnsName}
+              toAddressOrName={toAddressOrName}
+              clearToAddress={clearToAddress}
+              handleToAddressChange={handleToAddressChange}
+              setToAddressOrName={setToAddressOrName}
+            />
+          </Row>
+
+          <Row height="content">
+            <AccentColorProviderWrapper
+              color={asset?.colors?.primary || asset?.colors?.fallback}
+            >
               <Box
-                as="button"
-                background="accent"
-                boxShadow="24px accent"
-                onClick={handleSend}
-                padding="16px"
-                style={{
-                  borderRadius: 999,
-                  marginTop: '24px',
-                  width: '100%',
-                  boxSizing: 'border-box',
-                }}
+                background="surfaceSecondaryElevated"
+                borderRadius="24px"
+                width="full"
               >
-                <Text color="label" size="14pt" weight="bold">
-                  {sending ? 'Sending...' : 'Send Transaction'}
-                </Text>
+                <TokenInput
+                  asset={asset}
+                  shuffleAssetIndex={shuffleAssetIndex}
+                />
+                {asset ? (
+                  <Box paddingBottom="20px" paddingHorizontal="20px">
+                    <Stack space="16px">
+                      <Separator color="separatorSecondary" />
+                      <Box>
+                        <Rows space="16px">
+                          <Row>
+                            <Inline
+                              alignVertical="center"
+                              alignHorizontal="justify"
+                            >
+                              <Input
+                                value={independentAmount}
+                                placeholder={`0.00 ${asset?.symbol}`}
+                                borderColor="accent"
+                                onChange={handleAmountChange}
+                                height="56px"
+                                variant="bordered"
+                                innerRef={independentFieldRef}
+                                style={{
+                                  paddingRight: 80,
+                                }}
+                              />
+                              <Box position="absolute" style={{ right: 48 }}>
+                                <Button
+                                  onClick={setMaxAssetAmount}
+                                  color="accent"
+                                  height="32px"
+                                  variant="raised"
+                                >
+                                  {i18n.t('send.max')}
+                                </Button>
+                              </Box>
+                            </Inline>
+                          </Row>
+
+                          <Row>
+                            <Inline
+                              alignHorizontal="justify"
+                              alignVertical="center"
+                            >
+                              <Box>
+                                <Text size="12pt" color="label" weight="bold">
+                                  {dependentAmount.display}
+                                </Text>
+                              </Box>
+                              <Box onClick={switchIndependentField}>
+                                <Text color="accent" size="12pt" weight="bold">
+                                  {i18n.t('send.switch_to')}{' '}
+                                  {independentField === 'asset'
+                                    ? currentCurrency
+                                    : asset?.symbol}
+                                </Text>
+                              </Box>
+                            </Inline>
+                          </Row>
+                        </Rows>
+                      </Box>
+                    </Stack>
+                  </Box>
+                ) : null}
               </Box>
-            </Row>
-            {txHash && (
-              <Row>
-                <Box
-                  style={{
-                    width: '100%',
-                    textAlign: 'center',
-                    padding: '16px',
-                  }}
-                >
-                  <Separator />
-                  <a
-                    href={`https://etherscan.io/tx/${txHash}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{
-                      display: 'block',
-                      marginTop: '20px',
-                      textAlign: 'center',
-                    }}
-                  >
-                    <Text color="label" size="16pt" weight="bold">
-                      View on etherscan
-                    </Text>
-                  </a>
-                </Box>
-              </Row>
-            )}
-            <Row>
-              <TransactionFee chainId={chain.mainnet.id} />
-            </Row>
-          </Rows>
-        </Column>
-      </Columns>
+            </AccentColorProviderWrapper>
+          </Row>
+        </Rows>
+
+        <Row height="content">
+          {asset ? (
+            <AccentColorProviderWrapper
+              color={asset?.colors?.primary || asset?.colors?.fallback}
+            >
+              <Box paddingHorizontal="8px">
+                <Rows space="20px">
+                  <Row>
+                    <TransactionFee
+                      chainId={chainId}
+                      transactionRequest={transactionRequest}
+                    />
+                  </Row>
+                  <Row>
+                    <Button
+                      onClick={handleSend}
+                      height="44px"
+                      variant="flat"
+                      color="accent"
+                      width="full"
+                    >
+                      <Text color="label" size="14pt" weight="bold">
+                        {i18n.t(
+                          `send.${
+                            sending
+                              ? 'button_label_sending'
+                              : 'button_label_send'
+                          }`,
+                        )}
+                      </Text>
+                    </Button>
+                  </Row>
+                </Rows>
+              </Box>
+            </AccentColorProviderWrapper>
+          ) : (
+            <Box paddingHorizontal="8px">
+              <Button
+                height="44px"
+                variant="flat"
+                color="surfaceSecondary"
+                width="full"
+              >
+                <Text color="labelQuaternary" size="14pt" weight="bold">
+                  {i18n.t('send.enter_address_or_amount')}
+                </Text>
+              </Button>
+            </Box>
+          )}
+        </Row>
+      </Rows>
     </Box>
   );
 }

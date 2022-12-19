@@ -1,23 +1,9 @@
-import { Chain } from 'wagmi';
+import { Chain, chain } from 'wagmi';
 
-export enum ChainName {
-  arbitrum = 'arbitrum',
-  bsc = 'bsc',
-  optimism = 'optimism',
-  polygon = 'polygon',
-  mainnet = 'mainnet',
-}
-
-export enum ChainId {
-  arbitrum = 42161,
-  bsc = 56,
-  optimism = 10,
-  mainnet = 1,
-  polygon = 137,
-}
+const BSC_CHAIN_ID = 56;
 
 export const bsc: Chain = {
-  id: 56,
+  id: BSC_CHAIN_ID,
   name: 'Binance Smart Chain',
   network: 'bsc',
   nativeCurrency: {
@@ -33,3 +19,21 @@ export const bsc: Chain = {
   },
   testnet: false,
 };
+
+export enum ChainName {
+  arbitrum = 'arbitrum',
+  bsc = 'bsc',
+  goerli = 'goerli',
+  optimism = 'optimism',
+  polygon = 'polygon',
+  mainnet = 'mainnet',
+}
+
+export enum ChainId {
+  arbitrum = chain.arbitrum.id,
+  bsc = BSC_CHAIN_ID,
+  goerli = chain.goerli.id,
+  optimism = chain.optimism.id,
+  mainnet = chain.mainnet.id,
+  polygon = chain.polygon.id,
+}

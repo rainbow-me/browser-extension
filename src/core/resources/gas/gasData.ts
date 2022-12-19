@@ -1,15 +1,22 @@
-import { Chain, chain } from 'wagmi';
+import { TransactionRequest } from '@ethersproject/abstract-provider';
 
-import { bsc } from '~/core/types/chains';
+import { ChainId } from '~/core/types/chains';
 
 import { useMeteorology } from './meteorology';
 import { useProviderGas } from './providerGas';
 
-export const useGasData = ({ chainId }: { chainId: Chain['id'] }) => {
-  const meteorologySupportsChain =
-    chainId === chain.mainnet.id ||
-    chainId === chain.polygon.id ||
-    chainId === bsc.id;
+export const useGasData = ({
+  chainId,
+  transactionRequest,
+}: {
+  chainId: ChainId;
+  transactionRequest: TransactionRequest;
+}) => {
+  const meteorologySupportsChain = [
+    ChainId.bsc,
+    ChainId.mainnet,
+    ChainId.polygon,
+  ].includes(chainId);
 
   const { data: meteorologyData, isLoading: meteorologyDataIsLoading } =
     useMeteorology(
@@ -22,7 +29,7 @@ export const useGasData = ({ chainId }: { chainId: Chain['id'] }) => {
 
   const { data: providerGasData, isLoading: providerGasDataIsLoading } =
     useProviderGas(
-      { chainId },
+      { chainId, transactionRequest },
       {
         enabled: !meteorologySupportsChain,
         refetchInterval: 5000,

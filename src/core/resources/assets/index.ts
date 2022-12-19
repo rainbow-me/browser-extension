@@ -1,3 +1,5 @@
+export { useAssets } from './assets';
+export type { AssetsArgs } from './assets';
 export { useAssetPrices } from './assetPrices';
 export type { AssetPricesArgs } from './assetPrices';
 export { useUserAssets } from './userAssets';

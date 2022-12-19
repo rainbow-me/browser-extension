@@ -2,8 +2,6 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import React, { ReactNode, useCallback, useMemo, useRef } from 'react';
 import { useAccount } from 'wagmi';
 
-import { selectTransactionsByDate } from '~/core/resources/_selectors';
-import { useTransactions } from '~/core/resources/transactions/transactions';
 import { useCurrentCurrencyStore } from '~/core/state';
 import {
   RainbowTransaction,
@@ -20,29 +18,33 @@ import {
   Text,
 } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
-import { TextColor } from '~/design-system/styles/designTokens';
+import { TextStyles } from '~/design-system/styles/core.css';
+import { Space, TextColor } from '~/design-system/styles/designTokens';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
+
+import { Spinner } from '../../components/Spinner/Spinner';
+import { useAllTransactions } from '../../hooks/useAllTransactions';
 
 export function Activity() {
   const { address } = useAccount();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { data: transactionsByDate = {} } = useTransactions(
-    { address, currency },
-    { select: selectTransactionsByDate },
-  );
-  const listData = useMemo(
-    () =>
-      Object.keys(transactionsByDate).reduce((listData, dateKey) => {
-        return [...listData, dateKey, ...transactionsByDate[dateKey]];
-      }, [] as (string | RainbowTransaction)[]),
-    [transactionsByDate],
-  );
+  const { allTransactionsByDate } = useAllTransactions({
+    address,
+    currency,
+  });
+  const listData = useMemo(() => {
+    return Object.keys(allTransactionsByDate).reduce((listData, dateKey) => {
+      return [...listData, dateKey, ...allTransactionsByDate[dateKey]];
+    }, [] as (string | RainbowTransaction)[]);
+  }, [allTransactionsByDate]);
   const containerRef = useRef<HTMLDivElement>(null);
   const activityRowVirtualizer = useVirtualizer({
     count: listData.length,
     getScrollElement: () => containerRef.current,
     estimateSize: (i) => (typeof listData[i] === 'string' ? 34 : 52),
+    enableSmoothScroll: false,
   });
+
   return (
     <Box
       marginTop={'-20px'}
@@ -82,9 +84,9 @@ export function Activity() {
 const titleIcons: {
   [key: string]: {
     color: 'accent' | TextColor;
-    emoji?: ReactNode;
-    space?: '2px';
-    type: 'icon' | 'emoji';
+    element?: ReactNode;
+    space?: Space;
+    type: 'icon' | 'emoji' | 'spinner';
   };
 } = {
   'xmark.circle': {
@@ -105,7 +107,7 @@ const titleIcons: {
   robot: {
     color: 'labelTertiary',
     // TODO: Create Emoji Component to handle all cases
-    emoji: (
+    element: (
       <Text size="12pt" weight="regular">
         {'🤖'}
       </Text>
@@ -118,6 +120,12 @@ const titleIcons: {
     type: 'icon',
     space: '2px',
   },
+  spinner: {
+    color: 'blue',
+    element: <Spinner />,
+    space: '3px',
+    type: 'spinner',
+  },
 };
 
 // TODO: create truncation component
@@ -129,31 +137,35 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
   const { asset, balance, name, native, status, symbol, title, type } =
     transaction;
   const isTrade = type === TransactionType.trade;
-  const receiving = type === TransactionType.receive;
-  const receivingViaSwap = status === TransactionStatus.received && isTrade;
-  const sending = type === TransactionType.send;
-  const sendingViaSwap = status === TransactionStatus.swapped && isTrade;
+  const received = status === TransactionStatus.received;
+  const receivedViaSwap = status === TransactionStatus.received && isTrade;
+  const sent = status === TransactionStatus.sent;
+  const sentViaSwap = status === TransactionStatus.swapped && isTrade;
   const failed = status === TransactionStatus.failed;
   const isContractInteraction =
     status === TransactionStatus.contract_interaction;
+  const swapping = status === TransactionStatus.swapping;
+  const sending = status === TransactionStatus.sending;
 
   const getNativeDisplay = useCallback(() => {
-    const isDebit = sending || sendingViaSwap;
+    const isDebit = sent || sentViaSwap || sending || swapping;
 
     return `${isDebit ? '- ' : ''}${native?.display}`;
-  }, [native?.display, sending, sendingViaSwap]);
+  }, [native?.display, sent, sentViaSwap, sending, swapping]);
 
   const getNativeDisplayColor = useCallback(() => {
-    if (receiving) {
+    if (received) {
       return 'green';
     }
-    return receivingViaSwap ? 'purple' : 'labelTertiary';
-  }, [receiving, receivingViaSwap]);
+    return receivedViaSwap ? 'purple' : 'labelTertiary';
+  }, [received, receivedViaSwap]);
 
-  const getTitleColor = useCallback(
-    () => (sendingViaSwap ? 'purple' : 'labelTertiary'),
-    [sendingViaSwap],
-  );
+  const getTitleColor = useCallback((): TextStyles['color'] => {
+    if (sending || swapping) {
+      return 'blue';
+    }
+    return sentViaSwap ? 'purple' : 'labelTertiary';
+  }, [sentViaSwap, sending, swapping]);
 
   const getTitleIcon = useCallback(() => {
     let iconSymbol: keyof typeof titleIcons | undefined;
@@ -162,20 +174,22 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
       iconSymbol = 'robot';
     } else if (failed) {
       iconSymbol = 'xmark.circle';
-    } else if (sending) {
+    } else if (sent) {
       iconSymbol = 'paperplane.fill';
-    } else if (sendingViaSwap) {
+    } else if (sentViaSwap) {
       iconSymbol = 'arrow.triangle.swap';
-    } else if (receiving || receivingViaSwap) {
+    } else if (received || receivedViaSwap) {
       iconSymbol = 'arrow.down';
+    } else if (sending || swapping) {
+      iconSymbol = 'spinner';
     }
 
     if (iconSymbol) {
       const iconConfig = titleIcons[iconSymbol];
       return {
         ...iconConfig,
-        icon: iconConfig?.emoji ? (
-          iconConfig?.emoji
+        icon: iconConfig?.element ? (
+          iconConfig?.element
         ) : (
           <Symbol
             symbol={iconSymbol as SymbolProps['symbol']}
@@ -191,10 +205,12 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
   }, [
     failed,
     isContractInteraction,
-    receiving,
-    receivingViaSwap,
+    received,
+    receivedViaSwap,
+    sent,
+    sentViaSwap,
     sending,
-    sendingViaSwap,
+    swapping,
   ]);
 
   const titleIconConfig = getTitleIcon();
@@ -204,7 +220,7 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
       <Columns>
         <Column width="content">
           <Box paddingVertical="4px">
-            <Inline space={titleIconConfig?.space}>
+            <Inline space={titleIconConfig?.space} alignVertical="center">
               {titleIconConfig?.icon}
               <Text color={getTitleColor()} size="12pt" weight="semibold">
                 {truncateString(title, 20)}

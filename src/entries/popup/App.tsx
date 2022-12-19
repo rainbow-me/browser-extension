@@ -1,17 +1,19 @@
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import * as React from 'react';
 import { HashRouter } from 'react-router-dom';
-import { WagmiConfig } from 'wagmi';
+import { WagmiConfig, useAccount } from 'wagmi';
 
 import { changeI18nLanguage } from '~/core/languages';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry } from '~/core/sentry';
 import { useCurrentLanguageStore } from '~/core/state';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { createWagmiClient } from '~/core/wagmi';
-import { Box } from '~/design-system';
+import { Box, ThemeProvider } from '~/design-system';
 
 import { Routes } from './Routes';
+import { usePendingTransactionWatcher } from './hooks/usePendingTransactionWatcher';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { ApproveMessage } from './pages/messages/ApproveMessage';
 import { RainbowConnector } from './wagmi/RainbowConnector';
@@ -26,6 +28,9 @@ const wagmiClient = createWagmiClient({
 
 export function App() {
   const { currentLanguage } = useCurrentLanguageStore();
+  const { address } = useAccount();
+
+  usePendingTransactionWatcher({ address });
 
   React.useEffect(() => {
     changeI18nLanguage(currentLanguage);
@@ -34,6 +39,7 @@ export function App() {
   }, []);
 
   const { pendingRequests } = usePendingRequestStore();
+  const { currentTheme } = useCurrentThemeStore();
 
   return (
     <PersistQueryClientProvider
@@ -41,19 +47,21 @@ export function App() {
       persistOptions={persistOptions}
     >
       <WagmiConfig client={wagmiClient}>
-        {playground ? (
-          PlaygroundComponents[playground]
-        ) : (
-          <Box id="main" background="surfacePrimaryElevated">
-            {pendingRequests[0] ? (
-              <ApproveMessage />
-            ) : (
-              <HashRouter>
-                <Routes />
-              </HashRouter>
-            )}
-          </Box>
-        )}
+        <ThemeProvider theme={currentTheme}>
+          {playground ? (
+            PlaygroundComponents[playground]
+          ) : (
+            <Box id="main" background="surfacePrimaryElevated">
+              {pendingRequests[0] ? (
+                <ApproveMessage />
+              ) : (
+                <HashRouter>
+                  <Routes />
+                </HashRouter>
+              )}
+            </Box>
+          )}
+        </ThemeProvider>
       </WagmiConfig>
     </PersistQueryClientProvider>
   );

@@ -43,7 +43,7 @@ export const SignMessageActions = ({
           <Row>
             <RejectRequestButton
               onClick={onRejectRequest}
-              label={i18n.t('approve_request.cancel')}
+              label={i18n.t('common_actions.cancel')}
             />
           </Row>
         </Rows>

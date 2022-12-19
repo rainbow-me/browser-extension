@@ -16,8 +16,14 @@ import { ButtonHeight, heightStyles, tintedStyles } from './ButtonWrapper.css';
 
 export type ButtonVariantProps =
   | {
-      color: ButtonColor;
-      variant: 'raised' | 'flat' | 'tinted' | 'stroked' | 'transparent';
+      color: BackgroundColor | ButtonColor | TextColor;
+      variant:
+        | 'raised'
+        | 'flat'
+        | 'tinted'
+        | 'stroked'
+        | 'transparent'
+        | 'disabled';
     }
   | {
       color?: never;
@@ -29,6 +35,7 @@ export type ButtonWrapperProps = {
   height: ButtonHeight;
   onClick?: () => void;
   width?: 'fit' | 'full';
+  blur?: string;
 } & ButtonVariantProps;
 
 const shadowValue = (size: ShadowSize, color?: ButtonColor) =>
@@ -87,6 +94,7 @@ export const stylesForHeightAndVariant = ({
     flat: {},
     tinted: {},
     stroked: {},
+    disabled: {},
     transparent: {},
     white: {
       boxShadow: shadowValue('30px', color),
@@ -97,6 +105,7 @@ export const stylesForHeightAndVariant = ({
     flat: {},
     tinted: {},
     stroked: {},
+    disabled: {},
     transparent: {},
     white: {
       boxShadow: shadowValue('24px', color),
@@ -107,6 +116,7 @@ export const stylesForHeightAndVariant = ({
     flat: {},
     tinted: {},
     stroked: {},
+    disabled: {},
     transparent: {},
     white: {
       boxShadow: shadowValue('24px', color),
@@ -117,6 +127,7 @@ export const stylesForHeightAndVariant = ({
     flat: {},
     tinted: {},
     stroked: {},
+    disabled: {},
     transparent: {},
     white: {
       boxShadow: shadowValue('12px', color),
@@ -127,6 +138,7 @@ export const stylesForHeightAndVariant = ({
     flat: {},
     tinted: {},
     stroked: {},
+    disabled: {},
     transparent: {},
     white: {
       boxShadow: shadowValue('12px', color),
@@ -137,7 +149,7 @@ export const stylesForHeightAndVariant = ({
 export const stylesForVariant = ({
   color,
 }: {
-  color: ButtonColor;
+  color: BackgroundColor | ButtonColor | TextColor;
 }): Record<
   ButtonWrapperProps['variant'],
   {
@@ -148,12 +160,12 @@ export const stylesForVariant = ({
   }
 > => ({
   raised: {
-    background: color,
+    background: color as ButtonColor,
     borderColor: 'buttonStroke',
     borderWidth: '1px',
   },
   flat: {
-    background: color,
+    background: color as ButtonColor,
     borderColor: 'buttonStroke',
     borderWidth: '1px',
   },
@@ -161,7 +173,7 @@ export const stylesForVariant = ({
     textColor: color as TextColor,
   },
   stroked: {
-    borderColor: color,
+    borderColor: color as ButtonColor,
     borderWidth: '2px',
     textColor: 'labelSecondary',
   },
@@ -170,6 +182,11 @@ export const stylesForVariant = ({
   },
   white: {
     background: 'white',
+  },
+  disabled: {
+    borderColor: 'separatorSecondary',
+    borderWidth: '2px',
+    textColor: color as TextColor,
   },
 });
 
@@ -180,18 +197,22 @@ export function ButtonWrapper({
   onClick,
   variant,
   width = 'fit',
+  blur = '',
 }: ButtonWrapperProps) {
   const { boxShadow } = stylesForHeightAndVariant({
-    color,
+    color: color as ButtonColor,
   })[height][variant];
 
   const { background, borderColor, borderWidth } = stylesForVariant({
     color: color ?? 'accent',
   })[variant];
 
+  const styles = (blur && { backdropFilter: `blur(${blur})` }) || {};
+
   return (
     <Box
       as={motion.div}
+      initial={{ zIndex: 0 }}
       whileHover={{ scale: transformScales['1.04'] }}
       whileTap={{ scale: transformScales['0.96'] }}
       transition={transitions.bounce}
@@ -207,13 +228,15 @@ export function ButtonWrapper({
         boxShadow={boxShadow}
         className={[
           heightStyles[height],
-          variant === 'tinted' && tintedStyles[color || 'accent'],
+          variant === 'tinted' &&
+            tintedStyles[(color as ButtonColor) || 'accent'],
         ]}
         display="flex"
         onClick={onClick}
         position="relative"
         justifyContent="center"
         width={width}
+        style={styles}
       >
         {children}
       </Box>

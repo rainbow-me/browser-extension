@@ -5,18 +5,140 @@
   "label": {
     "toggle": "Toggle"
   },
+  "settings": {
+    "title": "Settings",
+    "use_rainbow_as_default_wallet": "Use Rainbow as default wallet",
+    "default_wallet_description": "Allow Apps to prioritize Rainbow when looking for an extension to connect with.",
+    "theme": "Theme",
+    "contacts": "Contacts",
+    "share_rainbow": "Share Rainbow",
+    "learn_about_ethereum": "Learn about Ethereum",
+    "follow_us_on_twitter": "Follow us on Twitter",
+    "feedback_and_support": "Feedback & Support",
+    "privacy_and_security": {
+      "title": "Privacy & Security",
+      "hide_asset_balances": "Hide asset balances",
+      "hide_asset_balances_description": "With this turned on Rainbow will obfuscate token balances accross the app.",
+      "auto_hide_balances_under_1": " Auto-hide balances under $1",
+      "view_private_key": "View Private Key",
+      "view_secret_recovery_phrase": "View Secret Recovery Phrase",
+      "auto_lock_timer": {
+        "title": "Auto-Lock Timer"
+      },
+      "change_password": {
+        "title": "Change Password",
+        "header_label": "Change your password"
+      },
+      "confirm_password": {
+        "title": "Enter your Password",
+        "description": "You need to enter your current password before you can update and change it."
+      },
+      "wallets_and_keys": {
+        "title": "Wallets & Keys",
+        "new_secret_phrase_and_wallet": "New Secret Phrase & Wallet",
+        "imported": "Imported",
+        "wallet_single": "Wallet",
+        "wallet_plural": "Wallets",
+        "account_details": {
+          "title": "Account Details",
+          "view_recovery_phrase": "View Recovery Phrase",
+          "create_new_wallet": "Create a new Wallet"
+        }
+      }
+    },
+    "transactions": {
+      "title": "Transactions",
+      "default_speed": "Default Speed",
+      "use_flashbots": "Use Flashbots",
+      "flashbots_description": "Flashbots protects your transactions and reduces the likelihood of transaction failures. Learn more."
+    },
+    "currency": {
+      "title": "Currency"
+    }
+  },
+  "transactions": {
+    "contract_interaction": "Contract Interaction",
+    "savings": "Savings",
+    "deposited": "Deposited",
+    "withdrew": "Withdrew"
+  },
   "connected_apps": {
     "title": "Connected Apps",
     "disconnect": "Disconnect All"
   },
   "send": {
-    "title": "Send"
-  },
-  "settings": {
-    "title": "Settings"
+    "title": "Send",
+    "input_to_address_placeholder": "Name, ENS or address",
+    "input_token_placeholder": "Token",
+    "max": "Max",
+    "switch_to": "Switch to",
+    "button_label_send": "Send Transacion",
+    "button_label_sending": "Sending",
+    "enter_address_or_amount": "Enter an address or amount",
+    "wallets_list": {
+      "contacts": "Contacts",
+      "my_wallets": "My wallets",
+      "watched_wallets": "Watching"
+    }
   },
   "sign": {
     "title": "Sign"
+  },
+  "unlock": {
+    "welcome_back": "Welcome back",
+    "enter_password": "Enter your password to unlock Rainbow.",
+    "unlock": "Unlock",
+    "having_trouble": "Having trouble?",
+    "contact": "Contact",
+    "rainbow_support": "Rainbow Support"
+  },
+  "welcome": {
+    "title": "Rainbow",
+    "subtitle": "Explore the new world of Ethereum",
+    "create_wallet": "Create a new wallet",
+    "import_wallet": "Import or connect a wallet",
+    "disclaimer_tos": "By proceeding, you agree to Rainbow’s",
+    "disclaimer_tos_link": "Terms of Use"
+  },
+  "seed_backup_prompt": {
+    "title": "Before you get started, backup your Secret Recovery Phrase",
+    "write_down_seed_importance": "It's important to write down and store your Secret Recovery Phrase somewhere safe.",
+    "secret_recovery_phrase_usage": "Your Secret Recovery Phrase is the only way to recover your accounts and funds",
+    "secret_recovery_phrase_loss": "Anyone with your Secret Recovery Phrase can access your entire wallet",
+    "reveal_your_recovery_phrase": "Reveal your recovery phrase",
+    "skip": "Skip"
+  },
+  "seed_reveal": {
+    "title": "Your Secret Recovery Phrase",
+    "write_down_seed_importance": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
+    "copy_to_clipboard": "Copy to clipboard",
+    "saved_these_words": "I've saved these words"
+  },
+  "import_or_connect": {
+    "title": "Import or Connect",
+    "explanation": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
+    "import_wallet": "Import with a Secret Recovery Phrase or Private Key",
+    "import_wallet_description": "Add a wallet using your Secret Recovery Phrase or a Private Key.",
+    "connect_wallet": "Connect your hardware wallet",
+    "connect_wallet_description": "Add accounts from your hardware wallet",
+    "watch_address": "Watch an Ethereum address",
+    "watch_address_description": "Watch a public address or ENS name"
+  },
+  "import_wallet": {
+    "title": "Import your wallet",
+    "description": "Enter your Secret Recovery Phrase or a Private Key from Rainbow or any Ethereum wallet.",
+    "too_many_words": "Too many words",
+    "too_many_chars": "Too many characters",
+    "add_another": "Add another",
+    "remove": "Remove",
+    "placeholder": "Paste your Secret Recovery Phrase or a Private Key from another wallet",
+    "import_wallet": "Import Wallet",
+    "import_wallet_plural": "Import Wallets"
+  },
+  "seed_verify": {
+    "title": "Verify your Secret Recovery Phrase",
+    "explanation": "Select the 4th, 8th, and 12th words in order your  Secret Recovery Phrase displays them.",
+    "skip": "Skip this"
   },
   "menu": {
     "network": {
@@ -42,7 +164,6 @@
     "switch_networks": "Switch Networks",
     "switch_wallets": "Switch Wallets",
     "connect": "Connect to %{appName}",
-    "cancel": "Cancel",
     "message_signing_request": "Message Signing Request",
     "message": "Message",
     "sign_message": "Sign Message",
@@ -115,8 +236,36 @@
         "singular": "sec"
       }
     }
-},
-"wallets": {
+  },
+  "wallets": {
     "title": "Wallets"
+  },
+  "common_actions": {
+    "cancel": "Cancel",
+    "continue": "Continue"
+  },
+  "passwords": {
+    "password": "Password",
+    "password_not_set": "Password not set",
+    "password_incorrect": "Password incorrect",
+    "passwords_do_not_match": "Passwords do not match",
+    "wrong_password": "Wrong password",
+    "new_password": "New password",
+    "confirm_password": "Confirm password",
+    "update_password": "Update Password",
+    "set_password": "Set Password",
+    "too_weak": "Too weak",
+    "weak": "Weak",
+    "strong": "Strong",
+    "too_short": "Password needs to be at least 8 chars long"
+  },  
+  "create_password": {
+    "title": "Create your password",
+    "description": "Choose a password to secure & lock your wallet."
+  },
+  "activity": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "this_month": "This Month"
   }
 }

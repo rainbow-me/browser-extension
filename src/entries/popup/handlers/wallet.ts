@@ -3,6 +3,7 @@ import {
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { uuid4 } from '@sentry/utils';
+import { getProvider } from '@wagmi/core';
 import { Bytes } from 'ethers';
 import { Mnemonic } from 'ethers/lib/utils';
 import { Address } from 'wagmi';
@@ -10,6 +11,7 @@ import { Address } from 'wagmi';
 import { PrivateKey } from '~/core/keychain/IKeychain';
 import { initializeMessenger } from '~/core/messengers';
 import { gasStore } from '~/core/state';
+import { estimateGasWithPadding } from '~/core/utils/gas';
 
 const messenger = initializeMessenger({ connect: 'background' });
 
@@ -40,9 +42,17 @@ export const sendTransaction = async (
   transactionRequest: TransactionRequest,
 ): Promise<TransactionResponse> => {
   const { selectedGas } = gasStore.getState();
+  const provider = getProvider({
+    chainId: transactionRequest.chainId,
+  });
+  const gasLimit = await estimateGasWithPadding({
+    transactionRequest,
+    provider,
+  });
   return walletAction('send_transaction', {
     ...transactionRequest,
     ...selectedGas.transactionGasParams,
+    gasLimit,
   }) as unknown as TransactionResponse;
 };
 
@@ -84,6 +94,10 @@ export const updatePassword = async (password: string, newPassword: string) => {
     password,
     newPassword,
   })) as boolean;
+};
+
+export const verifyPassword = async (password: string) => {
+  return (await walletAction('verify_password', password)) as boolean;
 };
 
 export const getAccounts = async () => {
