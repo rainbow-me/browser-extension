@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useCallback } from 'react';
-import { Address, useEnsName } from 'wagmi';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { truncateAddress } from '~/core/utils/address';
@@ -24,6 +24,7 @@ import {
 } from '../../components/DropdownMenu/DropdownMenu';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
+import { useContact } from '../../hooks/useContacts';
 
 import { ContactAction } from './ContactPrompt';
 
@@ -90,7 +91,7 @@ const EditContactDropdown = ({
     }>
   >;
 }) => {
-  const { data: ensName } = useEnsName({ address: toAddress });
+  const contact = useContact({ address: toAddress || ('' as Address) });
 
   const viewOnEtherscan = useCallback(() => {
     chrome.tabs.create({
@@ -130,7 +131,7 @@ const EditContactDropdown = ({
         <Stack space="4px">
           <Box paddingTop="8px" paddingBottom="12px">
             <Text weight="bold" size="14pt" color="label" align="center">
-              {ensName ?? truncateAddress(toAddress)}
+              {contact?.display || truncateAddress(toAddress)}
             </Text>
           </Box>
           <DropdownMenuRadioGroup onValueChange={onValueChange}>
