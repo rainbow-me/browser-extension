@@ -713,6 +713,7 @@ export const symbolNames = selectSymbolNames(
   'lock.rotation',
   'doc.text.magnifyingglass',
   'magnifyingglass.circle',
+  'arrow.uturn.down.circle.fill',
 );
 export type SymbolName = typeof symbolNames[number];
 

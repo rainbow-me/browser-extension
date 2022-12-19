@@ -9,7 +9,8 @@ import { FullScreenBackground } from './components/FullScreen/FullScreenBackgrou
 import { ConnectedApps } from './pages/ConnectedApps';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
-import { RestoreOrConnect } from './pages/restoreOrConnect';
+import { ImportOrConnect } from './pages/importOrConnect';
+import { ImportWallet } from './pages/importWallet';
 import { SeedBackupPrompt } from './pages/seedBackupPrompt';
 import { SeedReveal } from './pages/seedReveal';
 import { SeedVerify } from './pages/seedVerify';
@@ -72,7 +73,16 @@ export function Routes() {
         path: '/import-or-connect',
         element: (
           <AnimatedRoute direction="horizontal" navbar>
-            <RestoreOrConnect />
+            <ImportOrConnect />
+          </AnimatedRoute>
+        ),
+        background: FullScreenBackground,
+      },
+      {
+        path: '/import',
+        element: (
+          <AnimatedRoute direction="horizontal" navbar>
+            <ImportWallet />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,
