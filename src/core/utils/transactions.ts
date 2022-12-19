@@ -633,7 +633,7 @@ export function getTransactionBlockExplorerUrl({
   chainId: ChainId;
 }) {
   const trimmedHash = hash.replace(/-.*/g, '');
-  if (isString(hash)) return;
+  if (!isString(hash)) return;
   const blockExplorerHost = getEtherscanHostForChain(chainId);
   return `https://${blockExplorerHost}/tx/${trimmedHash}`;
 }
