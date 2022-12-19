@@ -40,7 +40,7 @@ export function chainNameFromChainId(chainId: ChainId) {
   ] as ChainName;
 }
 
-export function getBlockExplorerHostForChain(chainId: ChainId) {
+export function getEtherscanHostForChain(chainId: ChainId) {
   if (chainId === ChainId.optimism) {
     return 'optimistic.etherscan.io';
   } else if (chainId === ChainId.polygon) {
