@@ -4,9 +4,25 @@ import { i18n } from '~/core/languages';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
-import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
+import {
+  Bleed,
+  Box,
+  Inline,
+  Inset,
+  Stack,
+  Symbol,
+  Text,
+} from '~/design-system';
 
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from '../../components/DropdownMenu/DropdownMenu';
+import { SortMethod } from '../../hooks/send/useSendTransactionAsset';
 import { AssetRow } from '../home/Tokens';
 
 import { InputWrapper } from './InputWrapper';
@@ -38,11 +54,15 @@ export const TokenInput = ({
   assets,
   selectAssetIndex,
   dropdownClosed = false,
+  setSortMethod,
+  sortMethod,
 }: {
   asset: ParsedAddressAsset | null;
   assets: ParsedAddressAsset[];
   selectAssetIndex: (n?: number) => void;
   dropdownClosed: boolean;
+  setSortMethod: (sortMethod: SortMethod) => void;
+  sortMethod: SortMethod;
 }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const onDropdownAction = useCallback(
@@ -117,17 +137,67 @@ export const TokenInput = ({
                   {i18n.t('send.tokens_input.tokens')}
                 </Text>
               </Inline>
-              <Inline space="4px" alignVertical="center">
-                <Symbol
-                  symbol="arrow.up.arrow.down"
-                  color="labelTertiary"
-                  weight="semibold"
-                  size={14}
-                />
-                <Text size="14pt" weight="semibold" color="labelTertiary">
-                  {i18n.t('send.tokens_input.sort')}
-                </Text>
-              </Inline>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Box>
+                    <Inline space="4px" alignVertical="center">
+                      <Symbol
+                        symbol="arrow.up.arrow.down"
+                        color="labelTertiary"
+                        weight="semibold"
+                        size={14}
+                      />
+                      <Text size="14pt" weight="semibold" color="labelTertiary">
+                        {i18n.t('send.tokens_input.sort')}
+                      </Text>
+                    </Inline>
+                  </Box>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent marginRight="32px">
+                  <DropdownMenuRadioGroup
+                    value={sortMethod}
+                    onValueChange={(method) =>
+                      setSortMethod(method as SortMethod)
+                    }
+                  >
+                    <Box>
+                      <DropdownMenuRadioItem value="token">
+                        <Inline space="8px" alignVertical="center">
+                          <Bleed vertical="4px">
+                            <Symbol
+                              weight="semibold"
+                              symbol="record.circle.fill"
+                              size={18}
+                              color="label"
+                            />
+                          </Bleed>
+
+                          <Text size="14pt" weight="semibold" color="label">
+                            Token Balance
+                          </Text>
+                        </Inline>
+                      </DropdownMenuRadioItem>
+                      <DropdownMenuRadioItem value="chain">
+                        <Inline space="8px" alignVertical="center">
+                          <Bleed vertical="4px">
+                            <Symbol
+                              weight="semibold"
+                              symbol="network"
+                              size={18}
+                              color="label"
+                            />
+                          </Bleed>
+
+                          <Text size="14pt" weight="semibold" color="label">
+                            Networks
+                          </Text>
+                        </Inline>
+                      </DropdownMenuRadioItem>
+                    </Box>
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </Inline>
           </Box>
           <Box>
