@@ -68,7 +68,7 @@ export function Send() {
 
   const { isContact } = useContactsStore();
 
-  const { asset, shuffleAssetIndex } = useSendTransactionAsset();
+  const { asset, selectAssetIndex, assets } = useSendTransactionAsset();
   const {
     assetAmount,
     independentAmount,
@@ -218,7 +218,8 @@ export function Send() {
                 >
                   <TokenInput
                     asset={asset}
-                    shuffleAssetIndex={shuffleAssetIndex}
+                    assets={assets}
+                    selectAssetIndex={selectAssetIndex}
                     dropdownClosed={toAddressDropdownOpen}
                   />
                   {asset ? (

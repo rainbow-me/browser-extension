@@ -18,7 +18,7 @@ export const useSendTransactionAsset = () => {
     { select: selectUserAssetsList },
   );
 
-  const shuffleAssetIndex = useCallback(
+  const selectAssetIndex = useCallback(
     (n?: number) => {
       setIndex(n ?? index + 1);
     },
@@ -28,7 +28,8 @@ export const useSendTransactionAsset = () => {
   const asset = index === -1 ? null : assets?.[index];
 
   return {
-    shuffleAssetIndex,
+    selectAssetIndex,
     asset,
+    assets,
   };
 };

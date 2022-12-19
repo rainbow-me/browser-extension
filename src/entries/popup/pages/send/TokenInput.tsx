@@ -1,10 +1,6 @@
 import React, { ReactNode, useCallback, useEffect, useState } from 'react';
-import { useAccount } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { selectUserAssetsList } from '~/core/resources/_selectors';
-import { useUserAssets } from '~/core/resources/assets';
-import { useCurrentCurrencyStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
@@ -39,11 +35,13 @@ const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
 
 export const TokenInput = ({
   asset,
-  shuffleAssetIndex,
+  assets,
+  selectAssetIndex,
   dropdownClosed = false,
 }: {
   asset: ParsedAddressAsset | null;
-  shuffleAssetIndex: (n?: number) => void;
+  assets: ParsedAddressAsset[];
+  selectAssetIndex: (n?: number) => void;
   dropdownClosed: boolean;
 }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -51,20 +49,12 @@ export const TokenInput = ({
     () => setDropdownVisible((dropdownVisible) => !dropdownVisible),
     [],
   );
-
-  const { address } = useAccount();
-  const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { data: assets = [] } = useUserAssets(
-    { address, currency },
-    { select: selectUserAssetsList },
-  );
-
   const onSelectAsset = useCallback(
     (i: number) => {
-      shuffleAssetIndex(i);
+      selectAssetIndex(i);
       setDropdownVisible(false);
     },
-    [shuffleAssetIndex],
+    [selectAssetIndex],
   );
 
   useEffect(() => {
@@ -105,7 +95,7 @@ export const TokenInput = ({
         </Box>
       }
       showActionClose={!!asset}
-      onActionClose={() => shuffleAssetIndex(-1)}
+      onActionClose={() => selectAssetIndex(-1)}
       dropdownComponent={
         <Stack space="8px">
           <Box paddingHorizontal="20px">
