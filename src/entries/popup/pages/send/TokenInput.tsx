@@ -63,6 +63,12 @@ export const TokenInput = ({
     }
   }, [dropdownClosed]);
 
+  useEffect(() => {
+    if (dropdownClosed) {
+      setDropdownVisible(false);
+    }
+  }, [dropdownClosed]);
+
   return (
     <InputWrapper
       zIndex={1}
