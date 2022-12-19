@@ -58,16 +58,20 @@ export const useAllFilteredWallets = ({ filter }: { filter: string }) => {
   const { wallets } = useBackgroundWallets();
   const { contacts: contactsObjects } = useContactsStore();
 
-  const { watchedWallets, contacts } = useMemo(() => {
+  const contacts = useMemo(
+    () => Object.keys(contactsObjects) as Address[],
+    [contactsObjects],
+  );
+
+  const watchedWallets = useMemo(() => {
     const watchedWallets = wallets.filter(
       (wallet) => wallet.type === KeychainType.ReadOnlyKeychain,
     );
-    const watchedAccounts = watchedWallets
+    const newWatchedWallets = watchedWallets
       .map((watchedWallet) => watchedWallet.accounts)
       .flat();
-    const contacts = Object.keys(contactsObjects) as Address[];
-    return { watchedWallets: watchedAccounts, contacts };
-  }, [contactsObjects, wallets]);
+    return newWatchedWallets;
+  }, [wallets]);
 
   const [filteredWallets, setFilteredWallets] = useState<Address[]>(accounts);
   const [filteredWatchedWallets, setFilteredWatchedWallets] =

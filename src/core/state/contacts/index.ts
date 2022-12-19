@@ -27,14 +27,17 @@ export const contactsStore = createStore<ContactsStore>(
       return Boolean(get().contacts[address]);
     },
     saveContact: ({ contact }) => {
-      const newContacts = get().contacts;
-      newContacts[contact.address] = contact;
+      const contacts = get().contacts;
+      const newContacts = {
+        ...contacts,
+        [contact.address]: contact,
+      };
       set({ contacts: newContacts });
     },
     deleteContact: ({ address }) => {
-      const newContacts = get().contacts;
-      delete newContacts[address];
-      set({ contacts: newContacts });
+      const contacts = get().contacts;
+      delete contacts[address];
+      set({ contacts: { ...contacts } });
     },
   }),
   {
