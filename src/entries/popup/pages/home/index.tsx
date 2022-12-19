@@ -8,6 +8,7 @@ import {
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 
+import { RainbowTransaction } from '~/core/types/transactions';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
 
@@ -16,6 +17,10 @@ import { Navbar } from '../../components/Navbar/Navbar';
 import { useAvatar } from '../../hooks/useAvatar';
 import { MainLayout } from '../../layouts/MainLayout';
 import { StickyHeader } from '../../layouts/StickyHeader';
+import {
+  SpeedUpAndCancelSheet,
+  SpeedUpAndCancelSheetPrompt,
+} from '../speedUpAndCancelSheet';
 
 import { Activity } from './Activity';
 import { Header } from './Header';
@@ -33,6 +38,10 @@ const TOP_NAV_HEIGHT = 65;
 export function Home() {
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
+  const [prompt, setPrompt] = useState<SpeedUpAndCancelSheetPrompt>('none');
+  const [speedUpAndCancelTx, setSpeedUpAndCancelTx] =
+    useState<RainbowTransaction>();
+  const displayingPrompt = prompt !== 'none';
 
   const [activeTab, setActiveTab] = useState<Tab>('tokens');
   const onSelectTab = useCallback((tab: Tab) => {
@@ -63,19 +72,46 @@ export function Home() {
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>
       {({ className, style }) => (
-        <MainLayout
-          className={className}
-          style={{ ...style, position: 'relative', overscrollBehavior: 'none' }}
-        >
-          <TopNav />
-          <Header />
-          <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
-          <Separator color="separatorTertiary" strokeWeight="1px" />
-          <Content scrollSpring={scrollYTransform} shouldSpring={scrollAtTop}>
-            {activeTab === 'tokens' && <Tokens />}
-            {activeTab === 'activity' && <Activity />}
-          </Content>
-        </MainLayout>
+        <>
+          <MainLayout
+            className={className}
+            style={{
+              ...style,
+              position: 'relative',
+              overscrollBehavior: 'none',
+              overflow: displayingPrompt ? 'hidden' : 'auto',
+              height: window.innerHeight,
+            }}
+          >
+            <TopNav />
+            <Header />
+            <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
+            <Separator color="separatorTertiary" strokeWeight="1px" />
+            <Content scrollSpring={scrollYTransform} shouldSpring={scrollAtTop}>
+              {activeTab === 'tokens' && <Tokens />}
+              {activeTab === 'activity' && (
+                <Activity
+                  onPromptSelected={({
+                    prompt,
+                    transaction,
+                  }: {
+                    prompt: SpeedUpAndCancelSheetPrompt;
+                    transaction: RainbowTransaction;
+                  }) => {
+                    setPrompt(prompt);
+                    setSpeedUpAndCancelTx(transaction);
+                  }}
+                />
+              )}
+            </Content>
+          </MainLayout>
+          <SpeedUpAndCancelSheet
+            cancel={prompt === 'cancel'}
+            onClose={() => setPrompt('none')}
+            show={prompt !== 'none'}
+            transaction={speedUpAndCancelTx}
+          />
+        </>
       )}
     </AccentColorProvider>
   );

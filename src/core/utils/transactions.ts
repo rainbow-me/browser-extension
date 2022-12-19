@@ -1,6 +1,6 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { getProvider } from '@wagmi/core';
-import { capitalize } from 'lodash';
+import { capitalize, isString } from 'lodash';
 import { Address } from 'wagmi';
 
 import { i18n } from '../languages';
@@ -23,7 +23,7 @@ import {
 } from '../types/transactions';
 
 import { parseAsset } from './assets';
-import { isL2Chain } from './chains';
+import { getEtherscanHostForChain, isL2Chain } from './chains';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountToBalanceDisplay,
@@ -587,4 +587,53 @@ export async function watchPendingTransactions({
     address,
     pendingTransactions: updatedPendingTransactions,
   });
+}
+
+export async function addNewTransaction({
+  address,
+  chainId,
+  transaction,
+}: {
+  address: Address;
+  chainId: ChainId;
+  transaction: NewTransaction;
+}) {
+  const { getNonce, setNonce } = nonceStore.getState();
+  const localNonceData = getNonce({ address, chainId });
+  const localNonce = localNonceData?.currentNonce;
+  const provider = getProvider({ chainId });
+  const nonceOnChain =
+    ((await provider.getTransactionCount(address, 'safe')) || 0) - 1;
+  const nonce = (localNonce || 0) > nonceOnChain ? localNonce : nonceOnChain;
+  const { getPendingTransactions, setPendingTransactions } =
+    pendingTransactionsStore.getState();
+  const pendingTransactions = getPendingTransactions({ address });
+  const { currentCurrency } = currentCurrencyStore.getState();
+  const newPendingTransaction = parseNewTransaction(
+    { ...transaction, nonce },
+    currentCurrency,
+  );
+
+  setPendingTransactions({
+    address,
+    pendingTransactions: [newPendingTransaction, ...pendingTransactions],
+  });
+  setNonce({
+    address,
+    chainId,
+    currentNonce: nonce,
+  });
+}
+
+export function getTransactionBlockExplorerUrl({
+  hash,
+  chainId,
+}: {
+  hash: string;
+  chainId: ChainId;
+}) {
+  const trimmedHash = hash.replace(/-.*/g, '');
+  if (isString(hash)) return;
+  const blockExplorerHost = getEtherscanHostForChain(chainId);
+  return `https://${blockExplorerHost}/tx/${trimmedHash}`;
 }

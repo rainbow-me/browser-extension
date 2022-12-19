@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { Box, Text } from '~/design-system';
+import { TextStyles } from '~/design-system/styles/core.css';
 
 function Avatar({ imageUrl, size }: { imageUrl?: string; size: number }) {
   return (
@@ -69,10 +70,18 @@ function AvatarImage({ imageUrl }: { imageUrl?: string }) {
   );
 }
 
-function AvatarEmoji({ color, emoji }: { color?: string; emoji?: string }) {
+function AvatarEmoji({
+  color,
+  emoji,
+  size,
+}: {
+  color?: string;
+  emoji?: string;
+  size?: TextStyles['fontSize'];
+}) {
   return (
     <AvatarContent backgroundColor={color}>
-      <Text size="32pt" weight="bold">
+      <Text size={size ?? '32pt'} weight="bold">
         {emoji}
       </Text>
     </AvatarContent>

@@ -2,14 +2,19 @@ import { AnimatePresence, motion } from 'framer-motion';
 import React, { ReactNode } from 'react';
 
 import { Box, Row, Rows } from '~/design-system';
-import { animatedRouteTransitionConfig } from '~/design-system/styles/designTokens';
+import {
+  Space,
+  animatedRouteTransitionConfig,
+} from '~/design-system/styles/designTokens';
 
 export const Prompt = ({
   show,
   children,
+  padding,
 }: {
   show: boolean;
   children: ReactNode;
+  padding?: Space;
 }) => {
   const transition = animatedRouteTransitionConfig['vertical'];
 
@@ -33,7 +38,7 @@ export const Prompt = ({
           exit={{ opacity: 0 }}
           transition={transition}
           backdropFilter="blur(26px)"
-          padding="40px"
+          padding={padding ?? '40px'}
         >
           <Rows alignVertical="center">
             <Row height="content">

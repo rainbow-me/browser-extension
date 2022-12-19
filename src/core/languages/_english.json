@@ -232,5 +232,20 @@
     "today": "Today",
     "yesterday": "Yesterday",
     "this_month": "This Month"
+  },
+  "speed_up_and_cancel": {
+    "speed_up": "Speed up",
+    "cancel": "Cancel",
+    "view_on_etherscan": "View on Etherscan",
+    "cancel_explanation": "This will attempt to cancel your pending transaction. It requires broadcasting another transaction.",
+    "speed_up_explanantion": "This will speed up your pending transaction by replacing it. There's a chance your original transaction will confirm first.",
+    "cancel_title": "Cancel transaction",
+    "speed_up_title": "Speed up transaction",
+    "wallet": "Wallet",
+    "balance": "Balance",
+    "cancel_cta": "Cancel transaction",
+    "speed_up_cta": "Speed up transaction",
+    "speed_up_transaction": "Speed up transaction",
+    "close_cta": "Cancel"
   }
 }
