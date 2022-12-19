@@ -9,7 +9,11 @@ import {
   SupportedCurrencyKey,
   smartContractMethods,
 } from '../references';
-import { pendingTransactionsStore } from '../state';
+import {
+  currentCurrencyStore,
+  nonceStore,
+  pendingTransactionsStore,
+} from '../state';
 import { ChainId } from '../types/chains';
 import {
   NewTransaction,
