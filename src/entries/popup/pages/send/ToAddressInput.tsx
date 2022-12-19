@@ -4,6 +4,7 @@ import React, {
   InputHTMLAttributes,
   ReactNode,
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -240,6 +241,12 @@ export const ToAddressInput = ({
     },
     [onDropdownAction, setToAddressOrName],
   );
+
+  useEffect(() => {
+    if (!inputVisible) {
+      setDropdownVisible(false);
+    }
+  }, [inputVisible]);
 
   const toAddressContact = useContact({ address: toAddress });
   const { wallets, watchedWallets, contacts } = useAllFilteredWallets({
