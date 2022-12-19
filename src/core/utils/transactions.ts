@@ -643,4 +643,3 @@ export function getTransactionBlockExplorerUrl({
   const blockExplorerHost = getEtherscanHostForChain(chainId);
   return `https://${blockExplorerHost}/tx/${trimmedHash}`;
 }
-
