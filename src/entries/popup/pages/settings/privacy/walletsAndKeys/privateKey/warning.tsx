@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { Box, Button, Rows, Symbol, Text } from '~/design-system';
@@ -47,11 +47,14 @@ const iconAndCopyList: IconAndCopyItem[] = [
   },
 ];
 export function PrivateKeyWarning() {
+  const { state } = useLocation();
   const navigate = useNavigate();
 
-  const handleShowRecoveryPhraseClick = useCallback(async () => {
-    navigate('/settings/privacy/walletsAndKeys/walletDetails/privateKey');
-  }, [navigate]);
+  const handleShowPrivkeyClick = useCallback(async () => {
+    navigate('/settings/privacy/walletsAndKeys/walletDetails/privateKey', {
+      state: { password: state.password, account: state.account },
+    });
+  }, [navigate, state.account, state.password]);
 
   return (
     <Box
@@ -113,7 +116,7 @@ export function PrivateKeyWarning() {
             width="full"
             symbol="key.fill"
             blur="26px"
-            onClick={handleShowRecoveryPhraseClick}
+            onClick={handleShowPrivkeyClick}
           >
             {i18n.t(
               'settings.privacy_and_security.wallets_and_keys.private_key.show',

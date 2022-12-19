@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import {
@@ -12,14 +12,25 @@ import {
   Text,
 } from '~/design-system';
 import SeedPhraseTable from '~/entries/popup/components/SeedPhraseTable/SeedPhaseTable';
+import { exportWallet } from '~/entries/popup/handlers/wallet';
 
 export function RecoveryPhrase() {
+  const { state } = useLocation();
   const navigate = useNavigate();
 
-  const [seed] = useState(
-    // dummy seed for UI
-    'hello hello hello hello hello hello hello hello hello hello hello hello',
-  );
+  const [seed, setSeed] = useState('');
+
+  useEffect(() => {
+    const fetchRecoveryPhrase = async () => {
+      const recoveryPhrase = await exportWallet(
+        state.wallet?.accounts?.[0],
+        state.password,
+      );
+      setSeed(recoveryPhrase);
+    };
+    fetchRecoveryPhrase();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSavedTheseWords = React.useCallback(async () => {
     navigate(-2);

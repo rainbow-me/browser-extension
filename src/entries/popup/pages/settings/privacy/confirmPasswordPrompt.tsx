@@ -20,9 +20,11 @@ import { verifyPassword } from '~/entries/popup/handlers/wallet';
 export const ConfirmPasswordPrompt = ({
   show,
   onClose,
+  redirect,
 }: {
   show: boolean;
   onClose: () => void;
+  redirect: string;
 }) => {
   const navigate = useNavigate();
   const [password, setPassword] = useState('');
@@ -31,8 +33,8 @@ export const ConfirmPasswordPrompt = ({
   const handleValidatePassword = async () => {
     const correctPassword = await verifyPassword(password);
     if (correctPassword) {
-      navigate('/settings/privacy/changePassword', {
-        state: { currentPassword: password },
+      navigate(redirect, {
+        state: { password },
       });
       return;
     }

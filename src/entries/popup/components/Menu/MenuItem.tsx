@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { Address } from 'wagmi';
 
-import { DummyAccount } from '~/core/types/walletsAndKeys';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 
@@ -38,7 +38,7 @@ const SelectionIcon = () => {
 };
 const NUM_OF_ACCOUNTS_SHOWN_PER_ACCOUNT = 7;
 
-const AccountList = ({ accounts }: { accounts: DummyAccount[] }) => {
+const AccountList = ({ accounts }: { accounts: Address[] }) => {
   const numberOfAccounts = accounts.length;
   const shownAccounts = accounts.slice(0, NUM_OF_ACCOUNTS_SHOWN_PER_ACCOUNT);
   const diff = numberOfAccounts - NUM_OF_ACCOUNTS_SHOWN_PER_ACCOUNT;
@@ -55,12 +55,8 @@ const AccountList = ({ accounts }: { accounts: DummyAccount[] }) => {
       width="full"
     >
       <Inline space="6px" alignVertical="center">
-        {(showMoreAccounts ? accounts : shownAccounts).map((wallet) => (
-          <AddressPill
-            address={wallet.address}
-            ens={wallet.ens}
-            key={wallet.address}
-          />
+        {(showMoreAccounts ? accounts : shownAccounts).map((account) => (
+          <AddressPill address={account} key={account} />
         ))}
         {!showMoreAccounts && diff > 0 && (
           <Box

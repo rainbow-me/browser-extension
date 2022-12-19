@@ -31,7 +31,7 @@
       },
       "confirm_password": {
         "title": "Enter your Password",
-        "description": "You need to enter your current password before you can update and change it."
+        "description": "You need to enter your current password to continue."
       },
       "wallets_and_keys": {
         "title": "Wallets & Keys",
@@ -39,6 +39,7 @@
         "imported": "Imported",
         "wallet_single": "Wallet",
         "wallet_plural": "Wallets",
+        "recovery_phrase_label": "Recovery Phrase",
         "wallet_details": {
           "title": "Wallet Details",
           "view_recovery_phrase": "View Recovery Phrase",

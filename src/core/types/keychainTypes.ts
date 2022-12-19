@@ -3,3 +3,9 @@ export enum KeychainType {
   KeyPairKeychain = 'KeyPairKeychain',
   ReadOnlyKeychain = 'ReadOnlyKeychain',
 }
+
+export type KeychainWallet = {
+  type: KeychainType;
+  accounts: `0x${string}`[];
+  imported: boolean;
+};

@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { DummyAccount } from '~/core/types/walletsAndKeys';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Row, Rows, Symbol, Text } from '~/design-system';
 import { Avatar } from '~/entries/popup/components/Avatar/Avatar';
@@ -17,19 +17,22 @@ import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { useAvatar } from '~/entries/popup/hooks/useAvatar';
+import { useEns } from '~/entries/popup/hooks/useEns';
 
 import { NewWalletPrompt } from './newWalletPrompt';
 
-const MoreInfoButton = ({ account }: { account: DummyAccount }) => {
+const MoreInfoButton = ({ account }: { account: Address }) => {
   const navigate = useNavigate();
+  const { state } = useLocation();
   const handleViewPrivateKey = () => {
     navigate(
       '/settings/privacy/walletsAndKeys/walletDetails/privateKeyWarning',
+      { state: { account, password: state.password } },
     );
   };
   const handleCopyAddress = useCallback(() => {
-    navigator.clipboard.writeText(account.address);
-  }, [account.address]);
+    navigator.clipboard.writeText(account);
+  }, [account]);
 
   return (
     <DropdownMenu>
@@ -81,7 +84,7 @@ const MoreInfoButton = ({ account }: { account: DummyAccount }) => {
               </Row>
               <Row>
                 <Text size="11pt" weight="medium" color="labelTertiary">
-                  {truncateAddress(account.address)}
+                  {truncateAddress(account)}
                 </Text>
               </Row>
             </Rows>
@@ -92,20 +95,19 @@ const MoreInfoButton = ({ account }: { account: DummyAccount }) => {
   );
 };
 
-export default function AccountItem({ account }: { account: DummyAccount }) {
-  const { avatar, isFetched } = useAvatar({ address: account.address });
+export default function AccountItem({ account }: { account: Address }) {
+  const { avatar, isFetched } = useAvatar({ address: account });
+  const { ensName } = useEns({
+    addressOrName: account,
+  });
   return (
     <MenuItem
-      key={account.address}
+      key={account}
       titleComponent={
-        <MenuItem.Title
-          text={account.ens || truncateAddress(account.address)}
-        />
+        <MenuItem.Title text={ensName || truncateAddress(account)} />
       }
       labelComponent={
-        account.ens ? (
-          <MenuItem.Label text={truncateAddress(account.address)} />
-        ) : null
+        ensName ? <MenuItem.Label text={truncateAddress(account)} /> : null
       }
       leftComponent={
         <Box marginRight="-8px">
@@ -141,6 +143,7 @@ export function WalletDetails() {
   const handleViewRecoveryPhrase = () => {
     navigate(
       '/settings/privacy/walletsAndKeys/walletDetails/recoveryPhraseWarning',
+      { state: { wallet: state.wallet, password: state.password } },
     );
   };
   return (
@@ -173,8 +176,8 @@ export function WalletDetails() {
             />
           </Menu>
           <Menu>
-            {state?.wallet.accounts.map((account: DummyAccount) => {
-              return <AccountItem account={account} key={account.address} />;
+            {state?.wallet?.accounts.map((account: Address) => {
+              return <AccountItem account={account} key={account} />;
             })}
           </Menu>
           <Menu>

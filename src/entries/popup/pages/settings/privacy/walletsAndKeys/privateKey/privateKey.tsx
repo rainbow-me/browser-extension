@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import {
@@ -11,14 +11,22 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { exportAccount } from '~/entries/popup/handlers/wallet';
 
 export function PrivateKey() {
+  const { state } = useLocation();
   const navigate = useNavigate();
 
-  const [privKey] = useState(
-    // dummy privkey for UI
-    '0xb1b3dcf4a200ab01c7aeafb8b4cda3fd03401dd2413d169846959a8f7915fd2f',
-  );
+  const [privKey, setPrivKey] = useState('');
+
+  useEffect(() => {
+    const fetchPrivateKey = async () => {
+      const privateKey = await exportAccount(state.account, state.password);
+      setPrivKey(privateKey);
+    };
+    fetchPrivateKey();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSavedTheseWords = React.useCallback(async () => {
     navigate(-2);
@@ -71,7 +79,8 @@ export function PrivateKey() {
         <Box
           background="surfaceSecondaryElevated"
           borderRadius="16px"
-          padding="12px"
+          paddingVertical="12px"
+          paddingHorizontal="16px"
           borderColor={'transparent'}
           borderWidth={'1px'}
           style={{

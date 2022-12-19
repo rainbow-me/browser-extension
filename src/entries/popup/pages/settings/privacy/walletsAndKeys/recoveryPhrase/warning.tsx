@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { Box, Button, Rows, Symbol, Text } from '~/design-system';
@@ -49,10 +49,13 @@ const iconAndCopyList: IconAndCopyItem[] = [
 
 export function RecoveryPhraseWarning() {
   const navigate = useNavigate();
+  const { state } = useLocation();
 
   const handleShowRecoveryPhraseClick = useCallback(async () => {
-    navigate('/settings/privacy/walletsAndKeys/walletDetails/recoveryPhrase');
-  }, [navigate]);
+    navigate('/settings/privacy/walletsAndKeys/walletDetails/recoveryPhrase', {
+      state: { password: state.password, wallet: state.wallet },
+    });
+  }, [navigate, state.password, state.wallet]);
 
   return (
     <Box
