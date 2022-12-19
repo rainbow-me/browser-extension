@@ -91,7 +91,14 @@ export const InputWrapper = ({
           >
             <AnimatePresence>
               {dropdownVisible && (
-                <Box marginHorizontal="-20px">
+                <Box
+                  as={motion.div}
+                  key="input"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  marginHorizontal="-20px"
+                >
                   <Box paddingHorizontal="20px" paddingTop="16px">
                     <Separator />
                   </Box>
