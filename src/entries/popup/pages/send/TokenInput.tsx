@@ -65,6 +65,8 @@ export const TokenInput = ({
   sortMethod: SortMethod;
 }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
+
   const onDropdownAction = useCallback(
     () => setDropdownVisible((dropdownVisible) => !dropdownVisible),
     [],
@@ -83,11 +85,11 @@ export const TokenInput = ({
     }
   }, [dropdownClosed]);
 
-  useEffect(() => {
-    if (dropdownClosed) {
-      setDropdownVisible(false);
+  const closeSortContextMenu = useCallback(() => {
+    if (sortDropdownOpen) {
+      setSortDropdownOpen(false);
     }
-  }, [dropdownClosed]);
+  }, [sortDropdownOpen]);
 
   return (
     <InputWrapper
@@ -124,7 +126,10 @@ export const TokenInput = ({
       onActionClose={() => selectAssetIndex(-1)}
       dropdownComponent={
         <Stack space="8px">
-          <Box paddingHorizontal="20px">
+          <Box
+            onScroll={() => console.log('ON SCROLLLLLLLLLLLLL')}
+            paddingHorizontal="20px"
+          >
             <Inline alignHorizontal="justify">
               <Inline space="4px" alignVertical="center">
                 <Symbol
@@ -137,7 +142,10 @@ export const TokenInput = ({
                   {i18n.t('send.tokens_input.tokens')}
                 </Text>
               </Inline>
-              <DropdownMenu>
+              <DropdownMenu
+                onOpenChange={setSortDropdownOpen}
+                open={sortDropdownOpen}
+              >
                 <DropdownMenuTrigger asChild>
                   <Box>
                     <Inline space="4px" alignVertical="center">
@@ -219,6 +227,7 @@ export const TokenInput = ({
       }
       dropdownVisible={dropdownVisible}
       onDropdownAction={onDropdownAction}
+      onDropdownScroll={closeSortContextMenu}
     />
   );
 };
