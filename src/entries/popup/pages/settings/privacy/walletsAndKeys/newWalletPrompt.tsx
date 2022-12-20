@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
+import { KeychainWallet } from '~/core/types/keychainTypes';
 import {
   Box,
   Button,
@@ -13,23 +14,28 @@ import {
 } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
+import { add } from '~/entries/popup/handlers/wallet';
 
 export const NewWalletPrompt = ({
   show,
   onClose,
+  wallet,
 }: {
   show: boolean;
   onClose: () => void;
+  wallet: KeychainWallet;
 }) => {
+  const { state } = useLocation();
   const navigate = useNavigate();
   const [walletName, setWalletName] = useState('');
   const [error, setError] = useState<string | null>(null);
 
   const handleValidateWalletName = async () => {
     if (walletName !== '') {
-      // TODO: generate the new wallet
+      const newAccount = await add(wallet?.accounts?.[0]);
       navigate(
         '/settings/privacy/walletsAndKeys/walletDetails/privateKeyWarning',
+        { state: { account: newAccount, password: state?.password } },
       );
       return;
     }

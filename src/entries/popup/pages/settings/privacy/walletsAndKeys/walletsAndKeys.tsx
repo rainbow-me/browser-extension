@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { KeychainWallet } from '~/core/types/keychainTypes';
+import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { Box, Symbol } from '~/design-system';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
-import { getWallets } from '~/entries/popup/handlers/wallet';
+import { create, getWallets } from '~/entries/popup/handlers/wallet';
 
 export function WalletsAndKeys() {
   const { state } = useLocation();
@@ -27,6 +27,23 @@ export function WalletsAndKeys() {
     };
     fetchWallets();
   }, []);
+
+  const handleCreateNewRecoveryPhrase = async () => {
+    const newWalletAccount = await create();
+    navigate(
+      '/settings/privacy/walletsAndKeys/walletDetails/recoveryPhraseWarning',
+      {
+        state: {
+          wallet: {
+            accounts: [newWalletAccount],
+            imported: false,
+            type: KeychainType.HdKeychain,
+          },
+          password: state.password,
+        },
+      },
+    );
+  };
 
   return (
     <Box>
@@ -98,11 +115,7 @@ export function WalletsAndKeys() {
                   color="blue"
                 />
               }
-              onClick={() =>
-                navigate(
-                  '/settings/privacy/walletsAndKeys/walletDetails/recoveryPhraseWarning',
-                )
-              }
+              onClick={handleCreateNewRecoveryPhrase}
             />
           </Menu>
         </MenuContainer>

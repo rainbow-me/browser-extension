@@ -149,6 +149,7 @@ export function WalletDetails() {
   return (
     <Box>
       <NewWalletPrompt
+        wallet={state.wallet}
         show={showNewWalletPrompt}
         onClose={handleCloseNewWalletPrompt}
       />
