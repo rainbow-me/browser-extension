@@ -1,13 +1,8 @@
-<<<<<<< HEAD
 import React, { ReactNode, useCallback, useEffect, useState } from 'react';
-=======
-import React, { useCallback, useState } from 'react';
->>>>>>> 83d0969 (use input wrapper on token input)
 
 import { i18n } from '~/core/languages';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { ParsedAddressAsset } from '~/core/types/assets';
-<<<<<<< HEAD
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import {
   Bleed,
@@ -18,9 +13,6 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
-=======
-import { Box, Text } from '~/design-system';
->>>>>>> 83d0969 (use input wrapper on token input)
 
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import {
@@ -34,7 +26,6 @@ import { SortMethod } from '../../hooks/send/useSendTransactionAsset';
 import { AssetRow } from '../home/Tokens';
 
 import { InputWrapper } from './InputWrapper';
-<<<<<<< HEAD
 import {
   addressToInputHighlightWrapperStyleDark,
   addressToInputHighlightWrapperStyleLight,
@@ -57,8 +48,6 @@ const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
     </Inset>
   );
 };
-=======
->>>>>>> 83d0969 (use input wrapper on token input)
 
 export const TokenInput = ({
   asset,
@@ -76,16 +65,12 @@ export const TokenInput = ({
   sortMethod: SortMethod;
 }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
-<<<<<<< HEAD
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
 
-=======
->>>>>>> 83d0969 (use input wrapper on token input)
   const onDropdownAction = useCallback(
     () => setDropdownVisible((dropdownVisible) => !dropdownVisible),
     [],
   );
-<<<<<<< HEAD
   const onSelectAsset = useCallback(
     (i: number) => {
       selectAssetIndex(i);
@@ -110,13 +95,6 @@ export const TokenInput = ({
     <InputWrapper
       zIndex={1}
       dropdownHeight={376}
-=======
-
-  return (
-    <InputWrapper
-      zIndex={1}
-      height={377}
->>>>>>> 83d0969 (use input wrapper on token input)
       leftComponent={
         <Box>
           <CoinIcon asset={asset ?? undefined} />
@@ -124,7 +102,6 @@ export const TokenInput = ({
       }
       centerComponent={
         <Box width="fit">
-<<<<<<< HEAD
           <Stack space="8px">
             <Text
               size="16pt"
@@ -251,28 +228,6 @@ export const TokenInput = ({
       dropdownVisible={dropdownVisible}
       onDropdownAction={onDropdownAction}
       onDropdownScroll={closeSortContextMenu}
-=======
-          <Text
-            size="16pt"
-            weight="semibold"
-            color={`${asset ? 'label' : 'labelTertiary'}`}
-          >
-            {asset?.name ?? i18n.t('send.input_token_placeholder')}
-          </Text>
-        </Box>
-      }
-      showActionClose={false}
-      onActionClose={() => shuffleAssetIndex(-1)}
-      dropdownComponent={
-        <Box>
-          <Text size="12pt" weight="bold">
-            aaaaaaaa
-          </Text>
-        </Box>
-      }
-      dropdownVisible={dropdownVisible}
-      onDropdownAction={onDropdownAction}
->>>>>>> 83d0969 (use input wrapper on token input)
     />
   );
 };
