@@ -4,6 +4,7 @@ import React, {
   InputHTMLAttributes,
   ReactNode,
   useCallback,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -11,17 +12,14 @@ import React, {
 import { Address, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useContactsStore } from '~/core/state/contacts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
-import { useBackgroundAccounts } from '../../hooks/useBackgroundAccounts';
-import { useBackgroundWallets } from '../../hooks/useBackgroundWallets';
+import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
 import { useContact } from '../../hooks/useContacts';
 
 import { InputWrapper } from './InputWrapper';
@@ -30,7 +28,7 @@ import {
   addressToInputHighlightWrapperStyleLight,
 } from './ToAddressInpnut.css';
 
-function RowHighlightWrapper({ children }: { children: ReactNode }) {
+const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
   const { currentTheme } = useCurrentThemeStore();
   return (
     <Inset>
@@ -46,7 +44,7 @@ function RowHighlightWrapper({ children }: { children: ReactNode }) {
       </Box>
     </Inset>
   );
-}
+};
 
 const WalletSection = ({
   title,
@@ -117,6 +115,90 @@ const WalletRow = ({
     </Box>
   );
 };
+
+const DropdownWalletsList = ({
+  wallets,
+  contacts,
+  watchedWallets,
+  selectWalletAndCloseDropdown,
+}: {
+  wallets: Address[];
+  contacts: Address[];
+  watchedWallets: Address[];
+  selectWalletAndCloseDropdown: (address: Address) => void;
+}) => {
+  const walletsExist = useMemo(
+    () => wallets.length + contacts.length + watchedWallets.length > 0,
+    [contacts.length, wallets.length, watchedWallets.length],
+  );
+
+  return (
+    <AnimatePresence initial={false}>
+      {walletsExist && (
+        <Box
+          as={motion.div}
+          key="input"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        >
+          <Stack space="16px">
+            <WalletSection
+              symbol="lock.square.stack.fill"
+              title={i18n.t('send.wallets_list.my_wallets')}
+              wallets={wallets}
+              onClickWallet={selectWalletAndCloseDropdown}
+            />
+            <WalletSection
+              symbol="person.crop.circle.fill"
+              title={i18n.t('send.wallets_list.contacts')}
+              wallets={contacts as Address[]}
+              onClickWallet={selectWalletAndCloseDropdown}
+            />
+            <WalletSection
+              symbol="eyes.inverse"
+              title={i18n.t('send.wallets_list.watched_wallets')}
+              wallets={watchedWallets}
+              onClickWallet={selectWalletAndCloseDropdown}
+            />
+          </Stack>
+        </Box>
+      )}
+      {!walletsExist && (
+        <Box
+          as={motion.div}
+          key="input"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          alignItems="center"
+          style={{ paddingTop: 169 }}
+        >
+          <Stack space="16px">
+            <Inline alignHorizontal="center">
+              <Symbol
+                color="labelQuaternary"
+                weight="semibold"
+                symbol="magnifyingglass.circle.fill"
+                size={26}
+              />
+            </Inline>
+
+            <Text
+              color="labelQuaternary"
+              size="20pt"
+              weight="semibold"
+              align="center"
+            >
+              {i18n.t('send.wallets_list.no_results')}
+            </Text>
+          </Stack>
+        </Box>
+      )}
+    </AnimatePresence>
+  );
+};
+
 export const ToAddressInput = ({
   toAddressOrName,
   toEnsName,
@@ -141,6 +223,12 @@ export const ToAddressInput = ({
     [],
   );
 
+  const onInputClick = useCallback(() => {
+    if (!dropdownVisible) {
+      setDropdownVisible(true);
+    }
+  }, [dropdownVisible]);
+
   const inputVisible = useMemo(
     () => (!toAddressOrName || !toEnsName) && !isAddress(toAddressOrName),
     [toAddressOrName, toEnsName],
@@ -154,19 +242,16 @@ export const ToAddressInput = ({
     [onDropdownAction, setToAddressOrName],
   );
 
-  const { accounts } = useBackgroundAccounts();
-  const { wallets } = useBackgroundWallets();
-  const { contacts: contactsObjects } = useContactsStore();
+  useEffect(() => {
+    if (!inputVisible) {
+      setDropdownVisible(false);
+    }
+  }, [inputVisible]);
 
-  const watchedWallets = wallets.filter(
-    (wallet) => wallet.type === KeychainType.ReadOnlyKeychain,
-  );
-  const watchedAccounts = watchedWallets
-    .map((watchedWallet) => watchedWallet.accounts)
-    .flat();
-
-  const contacts = Object.keys(contactsObjects);
-  const contact = useContact({ address: toAddress });
+  const toAddressContact = useContact({ address: toAddress });
+  const { wallets, watchedWallets, contacts } = useAllFilteredWallets({
+    filter: toAddressOrName,
+  });
 
   return (
     <>
@@ -185,6 +270,7 @@ export const ToAddressInput = ({
                 initial={{ y: 0, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: -10, opacity: 0 }}
+                onClick={onInputClick}
               >
                 <Input
                   value={toAddressOrName}
@@ -207,9 +293,9 @@ export const ToAddressInput = ({
               >
                 <Stack space="8px">
                   <Text weight="semibold" size="14pt" color="label">
-                    {contact?.display || truncateAddress(toAddress)}
+                    {toAddressContact?.display || truncateAddress(toAddress)}
                   </Text>
-                  {contact?.display && (
+                  {toAddressContact?.display && (
                     <Text weight="semibold" size="12pt" color="labelTertiary">
                       {truncateAddress(toAddress)}
                     </Text>
@@ -222,26 +308,12 @@ export const ToAddressInput = ({
         showActionClose={!!toAddress}
         onActionClose={clearToAddress}
         dropdownComponent={
-          <Stack space="16px">
-            <WalletSection
-              symbol="lock.square.stack.fill"
-              title={i18n.t('send.wallets_list.my_wallets')}
-              wallets={accounts}
-              onClickWallet={selectWalletAndCloseDropdown}
-            />
-            <WalletSection
-              symbol="person.crop.circle.fill"
-              title={i18n.t('send.wallets_list.contacts')}
-              wallets={contacts as Address[]}
-              onClickWallet={selectWalletAndCloseDropdown}
-            />
-            <WalletSection
-              symbol="eyes.inverse"
-              title={i18n.t('send.wallets_list.watched_wallets')}
-              wallets={watchedAccounts}
-              onClickWallet={selectWalletAndCloseDropdown}
-            />
-          </Stack>
+          <DropdownWalletsList
+            wallets={wallets}
+            watchedWallets={watchedWallets}
+            contacts={contacts}
+            selectWalletAndCloseDropdown={selectWalletAndCloseDropdown}
+          />
         }
         dropdownVisible={dropdownVisible}
         onDropdownAction={onDropdownAction}

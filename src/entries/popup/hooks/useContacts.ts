@@ -2,7 +2,7 @@ import { Address, useEnsName } from 'wagmi';
 
 import { useContactsStore } from '~/core/state/contacts';
 
-export const useContact = ({ address }: { address: Address }) => {
+export const useContact = ({ address }: { address: Address | undefined }) => {
   const { getContact } = useContactsStore();
   const { data: ensName } = useEnsName({ address });
 
@@ -11,6 +11,6 @@ export const useContact = ({ address }: { address: Address }) => {
   return {
     ensName,
     display,
-    ...contactStore,
+    ...(contactStore || {}),
   };
 };

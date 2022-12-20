@@ -43,7 +43,7 @@ export const InputWrapper = ({
           borderWidth="1px"
           borderColor="buttonStroke"
         >
-          <Box onClick={onDropdownAction}>
+          <Box>
             <Columns
               alignVertical="center"
               alignHorizontal="justify"
@@ -59,6 +59,7 @@ export const InputWrapper = ({
                 <InputActionButon
                   showClose={showActionClose}
                   onClose={onActionClose}
+                  onDropdownAction={onDropdownAction}
                   dropdownVisible={dropdownVisible}
                 />
               </Column>

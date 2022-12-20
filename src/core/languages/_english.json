@@ -78,7 +78,8 @@
     "wallets_list": {
       "contacts": "Contacts",
       "my_wallets": "My wallets",
-      "watched_wallets": "Watching"
+      "watched_wallets": "Watching",
+      "no_results": "No results"
     }
   },
   "contacts": {
