@@ -564,6 +564,7 @@ export const space = {
 } as const;
 
 export const negativeSpace = {
+  '-1px': -1,
   '-2px': -2,
   '-3px': -3,
   '-4px': -4,
@@ -670,6 +671,7 @@ export const symbolNames = selectSymbolNames(
   'gearshape.fill',
   'qrcode',
   'person.crop.circle.fill',
+  'person.crop.circle.fill.badge.plus',
   'binoculars.fill',
   'circle.fill',
   'checkmark.circle.fill',
@@ -714,6 +716,8 @@ export const symbolNames = selectSymbolNames(
   'doc.text.magnifyingglass',
   'magnifyingglass.circle',
   'arrow.uturn.down.circle.fill',
+  'doc.on.doc.fill',
+  'trash',
 );
 export type SymbolName = typeof symbolNames[number];
 
@@ -722,6 +726,7 @@ export const radii = {
   '3px': 3,
   '6px': 6,
   '8px': 8,
+  '9px': 9,
   '12px': 12,
   '14px': 14,
   '16px': 16,

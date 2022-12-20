@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { Radius } from '~/design-system/styles/designTokens';
+
 import { Box } from '../Box/Box';
 import { Inline } from '../Inline/Inline';
 import { Symbol, SymbolProps } from '../Symbol/Symbol';
@@ -21,6 +23,7 @@ export type ButtonProps = {
   testId?: string;
   symbolSide?: 'left' | 'right';
   blur?: string;
+  borderRadius?: Radius;
 } & ButtonVariantProps &
   (
     | {

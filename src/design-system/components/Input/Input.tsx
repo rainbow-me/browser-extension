@@ -103,7 +103,7 @@ export const stylesForHeight: Record<
   },
   '44px': {
     borderRadius: '12px',
-    fontSize: '14pt',
+    fontSize: '20pt',
     paddingHorizontal: '12px',
     paddingVertical: '12px',
   },
