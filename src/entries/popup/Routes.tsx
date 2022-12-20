@@ -233,12 +233,7 @@ export function Routes() {
       {
         path: '/send',
         element: (
-          <AnimatedRoute
-            direction="horizontal"
-            navbar
-            navbarBackground="surfaceSecondary"
-            title={i18n.t('send.title')}
-          >
+          <AnimatedRoute direction="horizontal" title={i18n.t('send.title')}>
             <Send />
           </AnimatedRoute>
         ),

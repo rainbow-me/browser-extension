@@ -355,7 +355,7 @@ const boxBaseProperties = defineProperties({
     marginLeft: negativeSpace,
     marginRight: negativeSpace,
     marginTop: negativeSpace,
-    opacity: ['0.1'],
+    opacity: ['1', '0.1', '0.2'],
     paddingBottom: space,
     paddingLeft: space,
     paddingRight: space,

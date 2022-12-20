@@ -5,6 +5,7 @@ import { BoxStyles, ShadowSize, TextStyles } from '../../styles/core.css';
 import {
   BackgroundColor,
   ButtonColor,
+  Radius,
   Space,
   TextColor,
   transformScales,
@@ -36,6 +37,7 @@ export type ButtonWrapperProps = {
   onClick?: () => void;
   width?: 'fit' | 'full';
   blur?: string;
+  borderRadius?: Radius;
 } & ButtonVariantProps;
 
 const shadowValue = (size: ShadowSize, color?: ButtonColor) =>
@@ -198,6 +200,7 @@ export function ButtonWrapper({
   variant,
   width = 'fit',
   blur = '',
+  borderRadius,
 }: ButtonWrapperProps) {
   const { boxShadow } = stylesForHeightAndVariant({
     color: color as ButtonColor,
@@ -208,7 +211,6 @@ export function ButtonWrapper({
   })[variant];
 
   const styles = (blur && { backdropFilter: `blur(${blur})` }) || {};
-
   return (
     <Box
       as={motion.div}
@@ -222,7 +224,7 @@ export function ButtonWrapper({
         as="button"
         alignItems="center"
         background={background}
-        borderRadius="round"
+        borderRadius={borderRadius ?? 'round'}
         borderColor={borderColor}
         borderWidth={borderWidth}
         boxShadow={boxShadow}
