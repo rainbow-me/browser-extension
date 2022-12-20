@@ -113,7 +113,9 @@
     "tokens_input": {
       "tokens": "Tokens",
       "sort": "Sort",
-      "available": "available"
+      "available": "available",
+      "token_balance": "Token Balance",
+      "networks": "Networks"
     }
   },
   "contacts": {

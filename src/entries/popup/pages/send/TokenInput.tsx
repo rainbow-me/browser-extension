@@ -179,7 +179,7 @@ export const TokenInput = ({
                           </Bleed>
 
                           <Text size="14pt" weight="semibold" color="label">
-                            Token Balance
+                            {i18n.t('send.tokens_input.token_balance')}
                           </Text>
                         </Inline>
                       </DropdownMenuRadioItem>
@@ -195,7 +195,7 @@ export const TokenInput = ({
                           </Bleed>
 
                           <Text size="14pt" weight="semibold" color="label">
-                            Networks
+                            {i18n.t('send.tokens_input.networks')}
                           </Text>
                         </Inline>
                       </DropdownMenuRadioItem>
