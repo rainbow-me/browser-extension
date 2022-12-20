@@ -126,10 +126,7 @@ export const TokenInput = ({
       onActionClose={() => selectAssetIndex(-1)}
       dropdownComponent={
         <Stack space="8px">
-          <Box
-            onScroll={() => console.log('ON SCROLLLLLLLLLLLLL')}
-            paddingHorizontal="20px"
-          >
+          <Box paddingHorizontal="20px">
             <Inline alignHorizontal="justify">
               <Inline space="4px" alignVertical="center">
                 <Symbol
