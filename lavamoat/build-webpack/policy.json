@@ -191,20 +191,6 @@
         "@vanilla-extract/webpack-plugin>loader-utils>json5": true
       }
     },
-    "audit-ci>semver": {
-      "globals": {
-        "console.error": true,
-        "process": true
-      },
-      "packages": {
-        "audit-ci>semver>lru-cache": true
-      }
-    },
-    "audit-ci>semver>lru-cache": {
-      "packages": {
-        "geckodriver>tar>yallist": true
-      }
-    },
     "browserify>concat-stream>buffer-from": {
       "globals": {
         "Buffer": true
@@ -327,14 +313,14 @@
         "Buffer.from": true
       },
       "packages": {
-        "audit-ci>semver": true,
         "css-loader>icss-utils": true,
         "css-loader>postcss": true,
         "css-loader>postcss-modules-extract-imports": true,
         "css-loader>postcss-modules-local-by-default": true,
         "css-loader>postcss-modules-scope": true,
         "css-loader>postcss-modules-values": true,
-        "css-loader>postcss-value-parser": true
+        "css-loader>postcss-value-parser": true,
+        "css-loader>semver": true
       }
     },
     "css-loader>postcss": {
@@ -396,6 +382,15 @@
         "process.argv.includes": true,
         "process.env": true,
         "process.platform": true
+      }
+    },
+    "css-loader>semver": {
+      "globals": {
+        "console.error": true,
+        "process": true
+      },
+      "packages": {
+        "semver>lru-cache": true
       }
     },
     "dotenv-webpack": {
@@ -1222,6 +1217,11 @@
         "eslint>is-glob": true
       }
     },
+    "semver>lru-cache": {
+      "packages": {
+        "semver>lru-cache>yallist": true
+      }
+    },
     "ts-loader": {
       "builtin": {
         "console.Console": true,
@@ -1242,9 +1242,9 @@
         "process.stdout": true
       },
       "packages": {
-        "audit-ci>semver": true,
         "eslint>chalk": true,
         "ts-loader>micromatch": true,
+        "ts-loader>semver": true,
         "typescript": true,
         "webpack": true
       }
@@ -1266,6 +1266,15 @@
       "globals": {
         "process.platform": true,
         "process.version.slice": true
+      }
+    },
+    "ts-loader>semver": {
+      "globals": {
+        "console.error": true,
+        "process": true
+      },
+      "packages": {
+        "semver>lru-cache": true
       }
     },
     "typescript": {
