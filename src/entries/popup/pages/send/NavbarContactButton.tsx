@@ -91,7 +91,7 @@ const EditContactDropdown = ({
     }>
   >;
 }) => {
-  const contact = useContact({ address: toAddress || ('' as Address) });
+  const contact = useContact({ address: toAddress });
 
   const viewOnEtherscan = useCallback(() => {
     chrome.tabs.create({

@@ -48,7 +48,6 @@ export const TokenInput = ({
             showClose={!!asset}
             onClose={() => shuffleAssetIndex(-1)}
             dropdownVisible={false}
-            onDropdownAction={() => null}
           />
         </Inline>
       </Stack>

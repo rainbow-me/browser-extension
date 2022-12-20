@@ -10,7 +10,11 @@ export interface Contact {
 
 export interface ContactsStore {
   contacts: { [address: Address]: Contact };
-  getContact: ({ address }: { address: Address }) => Contact | undefined;
+  getContact: ({
+    address,
+  }: {
+    address: Address | undefined;
+  }) => Contact | undefined;
   isContact: ({ address }: { address: Address }) => boolean;
   saveContact: ({ contact }: { contact: Contact }) => void;
   deleteContact: ({ address }: { address: Address }) => void;
@@ -21,7 +25,7 @@ export const contactsStore = createStore<ContactsStore>(
     contacts: {},
     getContact: ({ address }) => {
       const newContacts = get().contacts;
-      return newContacts[address];
+      return address ? newContacts[address] : undefined;
     },
     isContact: ({ address }) => {
       return Boolean(get().contacts[address]);

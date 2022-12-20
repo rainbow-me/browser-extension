@@ -12,7 +12,7 @@ export const InputActionButon = ({
   showClose: boolean;
   dropdownVisible: boolean;
   onClose: () => void;
-  onDropdownAction: () => void;
+  onDropdownAction?: () => void;
 }) => {
   return showClose ? (
     <Box
