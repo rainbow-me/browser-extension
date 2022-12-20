@@ -5,8 +5,11 @@ import { BoxStyles } from '~/design-system/styles/core.css';
 import { Input } from '../../../../design-system/components/Input/Input';
 import { InputHeight } from '../../../../design-system/components/Input/Input.css';
 
+import { maskInput } from './utils';
+
 export const InputMask = ({
   borderColor,
+  decimals,
   height,
   innerRef,
   placeholder,
@@ -16,6 +19,7 @@ export const InputMask = ({
   onChange,
 }: {
   borderColor: BoxStyles['borderColor'];
+  decimals?: number;
   height: InputHeight;
   innerRef: Ref<HTMLInputElement>;
   placeholder: string;
@@ -26,32 +30,10 @@ export const InputMask = ({
 }) => {
   const handleOnChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-
-      const partitions = value.split('.');
-
-      const cleanPartitions = partitions.map((p) => p.replace(/[^0-9]/g, ''));
-
-      const integerPart = cleanPartitions?.[0];
-
-      const cleanIntegerPart =
-        integerPart.length === 2 ? String(Number(integerPart)) : integerPart;
-
-      const decimalsPart = cleanPartitions?.[1];
-      const cleanDecimalsPart = decimalsPart?.substring(0, 6);
-
-      const one =
-        decimalsPart !== undefined
-          ? [cleanIntegerPart, cleanDecimalsPart].join('.')
-          : cleanIntegerPart;
-
-      if (one === '.') {
-        onChange('0.');
-      } else {
-        onChange(one);
-      }
+      const maskedValue = maskInput({ inputValue: e.target.value, decimals });
+      onChange(maskedValue);
     },
-    [onChange],
+    [decimals, onChange],
   );
 
   return (
