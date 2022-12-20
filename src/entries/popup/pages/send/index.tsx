@@ -232,7 +232,11 @@ export function Send() {
                                 <InputMask
                                   value={independentAmount}
                                   placeholder={`0.00 ${asset?.symbol}`}
-                                  decimals={asset?.decimals}
+                                  decimals={
+                                    independentField === 'asset'
+                                      ? asset?.decimals
+                                      : undefined
+                                  }
                                   borderColor="accent"
                                   onChange={setIndependentAmount}
                                   height="56px"
