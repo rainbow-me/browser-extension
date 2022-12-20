@@ -23,8 +23,8 @@ import {
   Stack,
   Text,
 } from '~/design-system';
-import { Input } from '~/design-system/components/Input/Input';
 import { foregroundColors } from '~/design-system/styles/designTokens';
+import { InputMask } from '~/entries/popup/components/InputMask/InputMask';
 
 import { Navbar } from '../../components/Navbar/Navbar';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
@@ -113,13 +113,6 @@ export function Send() {
   const clearToAddress = useCallback(
     () => setToAddressOrName(''),
     [setToAddressOrName],
-  );
-
-  const handleAmountChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setIndependentAmount(e.target.value);
-    },
-    [setIndependentAmount],
   );
 
   const handleSend = useCallback(async () => {
@@ -236,11 +229,11 @@ export function Send() {
                                 alignVertical="center"
                                 alignHorizontal="justify"
                               >
-                                <Input
+                                <InputMask
                                   value={independentAmount}
                                   placeholder={`0.00 ${asset?.symbol}`}
                                   borderColor="accent"
-                                  onChange={handleAmountChange}
+                                  onChange={setIndependentAmount}
                                   height="56px"
                                   variant="bordered"
                                   innerRef={independentFieldRef}
