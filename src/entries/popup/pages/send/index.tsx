@@ -8,7 +8,6 @@ import React, {
 } from 'react';
 
 import { i18n } from '~/core/languages';
-import { supportedCurrencies } from '~/core/references';
 import { useContactsStore } from '~/core/state/contacts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
@@ -17,16 +16,11 @@ import {
   AccentColorProvider,
   Box,
   Button,
-  Inline,
   Row,
   Rows,
-  Separator,
-  Stack,
   Text,
-  textStyles,
 } from '~/design-system';
 import { foregroundColors } from '~/design-system/styles/designTokens';
-import { InputMask } from '~/entries/popup/components/InputMask/InputMask';
 
 import { Navbar } from '../../components/Navbar/Navbar';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
@@ -39,6 +33,7 @@ import { ContactAction, ContactPrompt } from './ContactPrompt';
 import { NavbarContactButton } from './NavbarContactButton';
 import { ToAddressInput } from './ToAddressInput';
 import { TokenInput } from './TokenInput';
+import { ValueInput } from './ValueInput';
 
 const AccentColorProviderWrapper = ({
   color,
@@ -67,8 +62,6 @@ export function Send() {
     action: ContactAction;
   }>({ show: false, action: 'save' });
   const [toAddressDropdownOpen, setToAddressDropdownOpen] = useState(false);
-
-  const { innerWidth: windowWidth } = window;
 
   const { isContact } = useContactsStore();
 
@@ -165,8 +158,6 @@ export function Send() {
     ? 'edit'
     : 'save';
 
-  console.log('-- independentAmount', independentAmount);
-
   return (
     <>
       <ContactPrompt
@@ -225,96 +216,17 @@ export function Send() {
                     sortMethod={sortMethod}
                   />
                   {asset ? (
-                    <Box paddingBottom="20px" paddingHorizontal="20px">
-                      <Stack space="16px">
-                        <Separator color="separatorSecondary" />
-                        <Box width="full">
-                          <Rows space="16px">
-                            <Row>
-                              <Inline
-                                alignVertical="center"
-                                alignHorizontal="justify"
-                              >
-                                <InputMask
-                                  value={`${independentAmount}`}
-                                  placeholder={`0.00 ${
-                                    independentField === 'asset'
-                                      ? asset?.symbol
-                                      : currentCurrency
-                                  }`}
-                                  decimals={
-                                    independentField === 'asset'
-                                      ? asset?.decimals
-                                      : supportedCurrencies[currentCurrency]
-                                          .decimals
-                                  }
-                                  borderColor="accent"
-                                  onChange={setIndependentAmount}
-                                  height="56px"
-                                  variant="bordered"
-                                  innerRef={independentFieldRef}
-                                  placeholderSymbol={
-                                    independentField === 'asset'
-                                      ? asset?.symbol
-                                      : currentCurrency
-                                  }
-                                />
-                                <Box position="absolute" style={{ right: 48 }}>
-                                  <Button
-                                    onClick={setMaxAssetAmount}
-                                    color="accent"
-                                    height="32px"
-                                    variant="raised"
-                                  >
-                                    {i18n.t('send.max')}
-                                  </Button>
-                                </Box>
-                              </Inline>
-                            </Row>
-
-                            <Row>
-                              <Inline
-                                alignHorizontal="justify"
-                                alignVertical="center"
-                              >
-                                <Box
-                                  as={'div'}
-                                  style={{
-                                    whiteSpace: 'nowrap',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    maxWidth: windowWidth / 2,
-                                  }}
-                                  paddingVertical="2px"
-                                  className={textStyles({
-                                    color: 'label',
-                                    cursor: 'default',
-                                    fontFamily: 'rounded',
-                                    fontSize: '12pt',
-                                    fontWeight: 'bold',
-                                    textAlign: 'center',
-                                  })}
-                                >
-                                  {dependentAmount.display}
-                                </Box>
-                                <Box onClick={switchIndependentField}>
-                                  <Text
-                                    color="accent"
-                                    size="12pt"
-                                    weight="bold"
-                                  >
-                                    {i18n.t('send.switch_to')}{' '}
-                                    {independentField === 'asset'
-                                      ? currentCurrency
-                                      : asset?.symbol}
-                                  </Text>
-                                </Box>
-                              </Inline>
-                            </Row>
-                          </Rows>
-                        </Box>
-                      </Stack>
-                    </Box>
+                    <ValueInput
+                      asset={asset}
+                      currentCurrency={currentCurrency}
+                      dependentAmount={dependentAmount}
+                      independentAmount={independentAmount}
+                      independentField={independentField}
+                      independentFieldRef={independentFieldRef}
+                      setIndependentAmount={setIndependentAmount}
+                      setMaxAssetAmount={setMaxAssetAmount}
+                      switchIndependentField={switchIndependentField}
+                    />
                   ) : null}
                 </Box>
               </AccentColorProviderWrapper>
