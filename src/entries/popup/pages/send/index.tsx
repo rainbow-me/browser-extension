@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 
 import { i18n } from '~/core/languages';
+import { supportedCurrencies } from '~/core/references';
 import { useContactsStore } from '~/core/state/contacts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
@@ -236,18 +237,27 @@ export function Send() {
                               >
                                 <InputMask
                                   value={`${independentAmount}`}
-                                  placeholder={`0.00 ${asset?.symbol}`}
+                                  placeholder={`0.00 ${
+                                    independentField === 'asset'
+                                      ? asset?.symbol
+                                      : currentCurrency
+                                  }`}
                                   decimals={
                                     independentField === 'asset'
                                       ? asset?.decimals
-                                      : undefined
+                                      : supportedCurrencies[currentCurrency]
+                                          .decimals
                                   }
                                   borderColor="accent"
                                   onChange={setIndependentAmount}
                                   height="56px"
                                   variant="bordered"
                                   innerRef={independentFieldRef}
-                                  placeholderSymbol={`${asset?.symbol}`}
+                                  placeholderSymbol={
+                                    independentField === 'asset'
+                                      ? asset?.symbol
+                                      : currentCurrency
+                                  }
                                 />
                                 <Box position="absolute" style={{ right: 48 }}>
                                   <Button
@@ -275,6 +285,7 @@ export function Send() {
                                     textOverflow: 'ellipsis',
                                     maxWidth: windowWidth / 2,
                                   }}
+                                  paddingVertical="2px"
                                   className={textStyles({
                                     color: 'label',
                                     cursor: 'default',
