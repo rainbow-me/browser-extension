@@ -53,7 +53,7 @@ export const NewWalletPrompt = ({
 
   useEffect(() => {
     setError(null);
-  }, [setWalletName, walletName]);
+  }, [walletName]);
 
   useEffect(() => {
     return () => {

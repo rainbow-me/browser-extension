@@ -28,7 +28,7 @@ export function PrivateKey() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSavedTheseWords = React.useCallback(async () => {
+  const handleSavedTheseWords = useCallback(async () => {
     navigate(-2);
   }, [navigate]);
 
