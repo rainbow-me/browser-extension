@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { CSSProperties, Ref, useCallback, useMemo } from 'react';
+import React, { CSSProperties, RefObject, useCallback, useMemo } from 'react';
 
 import { Box, Inline, Text } from '~/design-system';
 import { BoxStyles } from '~/design-system/styles/core.css';
@@ -28,7 +28,7 @@ export const SendInputMask = ({
   borderColor: BoxStyles['borderColor'];
   decimals?: number;
   height: InputHeight;
-  innerRef: Ref<HTMLInputElement>;
+  innerRef: RefObject<HTMLInputElement>;
   placeholder: string;
   style?: CSSProperties;
   value: string;
@@ -50,6 +50,10 @@ export const SendInputMask = ({
     [placeholderSymbol],
   );
 
+  const onMaskClick = useCallback(() => {
+    innerRef?.current?.focus();
+  }, [innerRef]);
+
   return (
     <Box
       width="full"
@@ -61,6 +65,7 @@ export const SendInputMask = ({
       }
       transition={transitions.bounce}
       style={style}
+      onClick={onMaskClick}
     >
       {value ? (
         <>
