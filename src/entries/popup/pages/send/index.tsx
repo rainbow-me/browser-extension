@@ -162,6 +162,8 @@ export function Send() {
     ? 'edit'
     : 'save';
 
+  console.log('-- independentAmount', independentAmount);
+
   return (
     <>
       <ContactPrompt

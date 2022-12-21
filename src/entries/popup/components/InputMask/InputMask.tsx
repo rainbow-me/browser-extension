@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import React, { CSSProperties, Ref, useCallback } from 'react';
 
 import { Box, Inline, Text } from '~/design-system';
-import { BoxStyles, textStyles } from '~/design-system/styles/core.css';
+import { BoxStyles } from '~/design-system/styles/core.css';
 import {
   transformScales,
   transitions,
@@ -43,6 +43,7 @@ export const InputMask = ({
     },
     [decimals, onChange],
   );
+  console.log('input mask value', value);
   return (
     <Box
       as={motion.div}
@@ -58,30 +59,23 @@ export const InputMask = ({
           <Box position="absolute" paddingTop="20px">
             <Inline alignVertical="center">
               <Box
-                as={'div'}
                 style={{
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'clip',
                   maxWidth: 153,
-                  direction: 'rtl',
                   marginLeft: 17,
                   marginRight: 4,
                 }}
-                className={textStyles({
-                  color: 'labelTertiary',
-                  cursor: 'default',
-                  fontFamily: 'rounded',
-                  fontSize: '23pt',
-                  fontWeight: 'semibold',
-                  textAlign: 'center',
-                })}
               >
-                {`${value}`}
+                <Box style={{ visibility: 'hidden' }}>
+                  <Text size="23pt" weight="semibold" color="labelTertiary">
+                    {value}
+                  </Text>
+                </Box>
               </Box>
-              <Text size="23pt" weight="semibold" color="labelTertiary">
-                {placeholderSymbol}
-              </Text>
+              <Box paddingLeft="2px">
+                <Text size="23pt" weight="semibold" color="labelTertiary">
+                  {placeholderSymbol}
+                </Text>
+              </Box>
             </Inline>
           </Box>
         </>
