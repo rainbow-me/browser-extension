@@ -7,6 +7,7 @@ import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountFromNativeValue,
   convertAmountToBalanceDisplay,
+  convertNumberToString,
   toFixedDecimals,
 } from '~/core/utils/numbers';
 
@@ -32,9 +33,11 @@ export const useSendTransactionInputs = ({
 
       return {
         display: nativeDisplay.display,
-        amount: toFixedDecimals(
-          nativeDisplay.amount,
-          supportedCurrencies[currentCurrency].decimals,
+        amount: convertNumberToString(
+          toFixedDecimals(
+            nativeDisplay.amount,
+            supportedCurrencies[currentCurrency].decimals,
+          ),
         ),
       };
     } else {
@@ -78,13 +81,15 @@ export const useSendTransactionInputs = ({
     const newValue =
       independentField === 'asset'
         ? asset?.balance?.amount || '0'
-        : toFixedDecimals(
-            convertAmountAndPriceToNativeDisplay(
-              asset?.balance?.amount || 0,
-              asset?.price?.value || 0,
-              currentCurrency,
-            ).amount,
-            supportedCurrencies[currentCurrency].decimals,
+        : convertNumberToString(
+            toFixedDecimals(
+              convertAmountAndPriceToNativeDisplay(
+                asset?.balance?.amount || 0,
+                asset?.price?.value || 0,
+                currentCurrency,
+              ).amount,
+              supportedCurrencies[currentCurrency].decimals,
+            ),
           );
 
     setIndependentAmount(newValue);
