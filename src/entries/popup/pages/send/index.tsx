@@ -225,7 +225,7 @@ export function Send() {
                     <Box paddingBottom="20px" paddingHorizontal="20px">
                       <Stack space="16px">
                         <Separator color="separatorSecondary" />
-                        <Box>
+                        <Box width="full">
                           <Rows space="16px">
                             <Row>
                               <Inline
@@ -245,9 +245,6 @@ export function Send() {
                                   height="56px"
                                   variant="bordered"
                                   innerRef={independentFieldRef}
-                                  style={{
-                                    paddingRight: 125,
-                                  }}
                                   placeholderSymbol={`${asset?.symbol}`}
                                 />
                                 <Box position="absolute" style={{ right: 48 }}>

@@ -43,9 +43,11 @@ export const InputMask = ({
     },
     [decimals, onChange],
   );
-  console.log('input mask value', value);
+  const { innerWidth: width } = window;
+
   return (
     <Box
+      width="full"
       as={motion.div}
       whileTap={
         variant !== 'transparent'
@@ -53,6 +55,7 @@ export const InputMask = ({
           : undefined
       }
       transition={transitions.bounce}
+      style={style}
     >
       {value ? (
         <>
@@ -60,7 +63,7 @@ export const InputMask = ({
             <Inline alignVertical="center">
               <Box
                 style={{
-                  maxWidth: 153,
+                  maxWidth: width - 210,
                   marginLeft: 17,
                   marginRight: 4,
                 }}
@@ -89,7 +92,7 @@ export const InputMask = ({
         height={height}
         variant={variant}
         innerRef={innerRef}
-        style={style}
+        style={{ paddingRight: 125 }}
         enableTapScale={false}
       />
     </Box>
