@@ -102,12 +102,14 @@ export function Home() {
               )}
             </Content>
           </MainLayout>
-          <SpeedUpAndCancelSheet
-            cancel={sheet === 'cancel'}
-            onClose={() => setSheet('none')}
-            show={sheet !== 'none'}
-            transaction={speedUpAndCancelTx}
-          />
+          {sheet !== 'none' && (
+            <SpeedUpAndCancelSheet
+              cancel={sheet === 'cancel'}
+              onClose={() => setSheet('none')}
+              show={true}
+              transaction={speedUpAndCancelTx}
+            />
+          )}
         </>
       )}
     </AccentColorProvider>

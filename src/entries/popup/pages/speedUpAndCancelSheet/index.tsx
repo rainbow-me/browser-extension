@@ -4,6 +4,7 @@ import React, { useMemo } from 'react';
 import { useAccount, useBalance, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { GasSpeed } from '~/core/types/gas';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
@@ -116,6 +117,7 @@ export function SpeedUpAndCancelSheet({
                 <Box paddingHorizontal="20px" paddingVertical="16px">
                   <TransactionFee
                     chainId={transaction?.chainId || ChainId.mainnet}
+                    defaultSpeed={GasSpeed.URGENT}
                     transactionRequest={transactionRequest}
                   />
                 </Box>
