@@ -2,7 +2,7 @@ import React from 'react';
 
 import { i18n } from '~/core/languages';
 import { Box, Button, Rows, Symbol, Text } from '~/design-system';
-import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+import { SymbolName } from '~/design-system/styles/designTokens';
 
 import {
   IconAndCopyItem,
@@ -13,7 +13,7 @@ interface WarningInfoProps {
   iconAndCopyList: IconAndCopyItem[];
   onProceed: () => void;
   proceedButtonLabel: string;
-  proceedButtonSymbol: SymbolProps['symbol'];
+  proceedButtonSymbol: SymbolName;
 }
 
 export default function WarningInfo({
