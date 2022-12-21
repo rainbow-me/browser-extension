@@ -31,14 +31,16 @@ export const useSendTransactionInputs = ({
         currentCurrency,
       );
 
+      const amount = convertNumberToString(
+        toFixedDecimals(
+          nativeDisplay.amount,
+          supportedCurrencies[currentCurrency].decimals,
+        ),
+      );
+
       return {
         display: nativeDisplay.display,
-        amount: convertNumberToString(
-          toFixedDecimals(
-            nativeDisplay.amount,
-            supportedCurrencies[currentCurrency].decimals,
-          ),
-        ),
+        amount: amount === '0' ? '' : amount,
       };
     } else {
       const amountFromNativeValue = convertAmountFromNativeValue(
@@ -51,7 +53,7 @@ export const useSendTransactionInputs = ({
           amountFromNativeValue,
           asset ?? { decimals: 18, symbol: '' },
         ),
-        amount: amountFromNativeValue,
+        amount: amountFromNativeValue === '0' ? '' : amountFromNativeValue,
       };
     }
   }, [asset, currentCurrency, independentAmount, independentField]);
