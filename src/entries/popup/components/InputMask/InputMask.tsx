@@ -1,6 +1,12 @@
+import { motion } from 'framer-motion';
 import React, { CSSProperties, Ref, useCallback } from 'react';
 
-import { BoxStyles } from '~/design-system/styles/core.css';
+import { Box, Inline, Text } from '~/design-system';
+import { BoxStyles, textStyles } from '~/design-system/styles/core.css';
+import {
+  transformScales,
+  transitions,
+} from '~/design-system/styles/designTokens';
 
 import { Input } from '../../../../design-system/components/Input/Input';
 import { InputHeight } from '../../../../design-system/components/Input/Input.css';
@@ -17,6 +23,7 @@ export const InputMask = ({
   value,
   variant,
   onChange,
+  placeholderSymbol,
 }: {
   borderColor: BoxStyles['borderColor'];
   decimals?: number;
@@ -27,6 +34,7 @@ export const InputMask = ({
   value: string;
   variant: 'surface' | 'bordered' | 'transparent';
   onChange: (value: string) => void;
+  placeholderSymbol?: string;
 }) => {
   const handleOnChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,17 +43,61 @@ export const InputMask = ({
     },
     [decimals, onChange],
   );
-
   return (
-    <Input
-      value={value}
-      placeholder={placeholder}
-      borderColor={borderColor}
-      onChange={handleOnChange}
-      height={height}
-      variant={variant}
-      innerRef={innerRef}
-      style={style}
-    />
+    <Box
+      as={motion.div}
+      whileTap={
+        variant !== 'transparent'
+          ? { scale: transformScales['0.96'] }
+          : undefined
+      }
+      transition={transitions.bounce}
+    >
+      {value ? (
+        <>
+          <Box position="absolute" paddingTop="20px">
+            <Inline alignVertical="center">
+              <Box
+                as={'div'}
+                style={{
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'clip',
+                  maxWidth: 153,
+                  direction: 'rtl',
+                  marginLeft: 17,
+                  marginRight: 4,
+                }}
+                className={textStyles({
+                  color: 'labelTertiary',
+                  cursor: 'default',
+                  fontFamily: 'rounded',
+                  fontSize: '23pt',
+                  fontWeight: 'semibold',
+                  textAlign: 'center',
+                })}
+              >
+                {`${value}`}
+              </Box>
+              <Text size="23pt" weight="semibold" color="labelTertiary">
+                {placeholderSymbol}
+              </Text>
+            </Inline>
+          </Box>
+        </>
+      ) : null}
+
+      <Input
+        value={value}
+        placeholder={placeholder}
+        borderColor={borderColor}
+        onChange={handleOnChange}
+        height={height}
+        variant={variant}
+        innerRef={innerRef}
+        style={style}
+        enableTapScale={false}
+      />
+    </Box>
   );
 };

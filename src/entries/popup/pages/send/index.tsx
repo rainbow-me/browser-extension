@@ -22,6 +22,7 @@ import {
   Separator,
   Stack,
   Text,
+  textStyles,
 } from '~/design-system';
 import { foregroundColors } from '~/design-system/styles/designTokens';
 import { InputMask } from '~/entries/popup/components/InputMask/InputMask';
@@ -230,7 +231,7 @@ export function Send() {
                                 alignHorizontal="justify"
                               >
                                 <InputMask
-                                  value={independentAmount}
+                                  value={`${independentAmount}`}
                                   placeholder={`0.00 ${asset?.symbol}`}
                                   decimals={
                                     independentField === 'asset'
@@ -243,8 +244,9 @@ export function Send() {
                                   variant="bordered"
                                   innerRef={independentFieldRef}
                                   style={{
-                                    paddingRight: 80,
+                                    paddingRight: 125,
                                   }}
+                                  placeholderSymbol={`${asset?.symbol}`}
                                 />
                                 <Box position="absolute" style={{ right: 48 }}>
                                   <Button
@@ -264,10 +266,24 @@ export function Send() {
                                 alignHorizontal="justify"
                                 alignVertical="center"
                               >
-                                <Box>
-                                  <Text size="12pt" color="label" weight="bold">
-                                    {dependentAmount.display}
-                                  </Text>
+                                <Box
+                                  as={'div'}
+                                  style={{
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    maxWidth: 200,
+                                  }}
+                                  className={textStyles({
+                                    color: 'label',
+                                    cursor: 'default',
+                                    fontFamily: 'rounded',
+                                    fontSize: '12pt',
+                                    fontWeight: 'bold',
+                                    textAlign: 'center',
+                                  })}
+                                >
+                                  {dependentAmount.display}
                                 </Box>
                                 <Box onClick={switchIndependentField}>
                                   <Text

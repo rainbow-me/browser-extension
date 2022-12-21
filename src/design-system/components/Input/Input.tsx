@@ -33,6 +33,7 @@ export type InputProps = {
   innerRef?: React.Ref<HTMLInputElement>;
   selectionColor?: BoxStyles['borderColor'];
   style?: CSSProperties;
+  enableTapScale?: boolean;
 };
 
 export const stylesForVariant: Record<
@@ -122,6 +123,7 @@ export function Input({
   testId,
   innerRef,
   borderColor,
+  enableTapScale = true,
   ...inputProps
 }: InputProps) {
   const {
@@ -135,7 +137,7 @@ export function Input({
     <Box
       as={motion.div}
       whileTap={
-        variant !== 'transparent'
+        variant !== 'transparent' && enableTapScale
           ? { scale: transformScales['0.96'] }
           : undefined
       }
