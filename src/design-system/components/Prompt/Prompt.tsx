@@ -18,7 +18,7 @@ export const Prompt = ({
     <AnimatePresence>
       {show && (
         <Box
-          position="absolute"
+          position="fixed"
           top="0"
           bottom="0"
           left="0"
@@ -46,7 +46,7 @@ export const Prompt = ({
                 transition={deceleratedShort}
                 padding="12px"
                 background="surfaceMenu"
-                borderRadius="12px"
+                borderRadius="16px"
                 borderColor="separatorTertiary"
                 borderWidth="1px"
               >

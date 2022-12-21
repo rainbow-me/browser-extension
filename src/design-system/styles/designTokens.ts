@@ -716,6 +716,8 @@ export const symbolNames = selectSymbolNames(
   'doc.text.magnifyingglass',
   'magnifyingglass.circle',
   'arrow.uturn.down.circle.fill',
+  'lifepreserver',
+  'doc.plaintext.fill',
   'magnifyingglass.circle.fill',
   'doc.on.doc.fill',
   'trash',

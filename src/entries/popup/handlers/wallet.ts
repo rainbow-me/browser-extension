@@ -11,6 +11,7 @@ import { Address } from 'wagmi';
 import { PrivateKey } from '~/core/keychain/IKeychain';
 import { initializeMessenger } from '~/core/messengers';
 import { gasStore } from '~/core/state';
+import { KeychainWallet } from '~/core/types/keychainTypes';
 import { estimateGasWithPadding } from '~/core/utils/gas';
 
 const messenger = initializeMessenger({ connect: 'background' });
@@ -102,6 +103,13 @@ export const verifyPassword = async (password: string) => {
 
 export const getAccounts = async () => {
   return (await walletAction('get_accounts', {})) as Address[];
+};
+export const getWallets = async () => {
+  return (await walletAction('get_wallets', {})) as KeychainWallet[];
+};
+
+export const getWallet = async (address: Address) => {
+  return (await walletAction('get_wallet', address)) as KeychainWallet;
 };
 
 export const getStatus = async () => {
