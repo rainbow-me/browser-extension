@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { CSSProperties, Ref, useCallback } from 'react';
+import React, { CSSProperties, Ref, useCallback, useMemo } from 'react';
 
 import { Box, Inline, Text } from '~/design-system';
 import { BoxStyles } from '~/design-system/styles/core.css';
@@ -43,7 +43,12 @@ export const InputMask = ({
     },
     [decimals, onChange],
   );
-  const { innerWidth: width } = window;
+  const { innerWidth: windowWidth } = window;
+
+  const symbolPadding = useMemo(
+    () => ((placeholderSymbol?.length || 3) - 3) * 20,
+    [placeholderSymbol],
+  );
 
   return (
     <Box
@@ -63,7 +68,7 @@ export const InputMask = ({
             <Inline alignVertical="center">
               <Box
                 style={{
-                  maxWidth: width - 210,
+                  maxWidth: windowWidth - 210 - symbolPadding,
                   marginLeft: 17,
                   marginRight: 4,
                 }}
@@ -92,7 +97,7 @@ export const InputMask = ({
         height={height}
         variant={variant}
         innerRef={innerRef}
-        style={{ paddingRight: 125 }}
+        style={{ paddingRight: 125 + symbolPadding }}
         enableTapScale={false}
       />
     </Box>
