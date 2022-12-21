@@ -76,7 +76,7 @@ export function Welcome() {
                   width="full"
                   onClick={handleImportWalletClick}
                 >
-                  {i18n.t('welcome.restore_wallet')}
+                  {i18n.t('welcome.import_wallet')}
                 </Button>
               </ThemeProvider>
             </Rows>

@@ -50,7 +50,7 @@ export function PasswordInput({
   return (
     <Box testId={testId}>
       <Input
-        height="44px"
+        height="40px"
         variant="bordered"
         placeholder={placeholder}
         value={value}

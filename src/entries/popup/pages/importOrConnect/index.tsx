@@ -17,7 +17,7 @@ import {
 import { ChevronRight } from '../../components/ChevronRight';
 import { FullScreenContainerWithNavbar } from '../../components/FullScreen/FullScreenContainerWithNavbar';
 
-export function RestoreOrConnect() {
+export function ImportOrConnect() {
   const navigate = useNavigate();
 
   const navigateTo = useCallback(
@@ -43,7 +43,7 @@ export function RestoreOrConnect() {
             weight={'bold'}
           />
           <Text size="16pt" weight="bold" color="label" align="center">
-            {i18n.t('restore_or_connect.title')}
+            {i18n.t('import_or_connect.title')}
           </Text>
         </Inline>
         <Box padding="16px" paddingTop="10px">
@@ -53,7 +53,7 @@ export function RestoreOrConnect() {
             color="labelTertiary"
             align="center"
           >
-            {i18n.t('restore_or_connect.explanation')}
+            {i18n.t('import_or_connect.explanation')}
           </Text>
         </Box>
       </Box>
@@ -72,7 +72,7 @@ export function RestoreOrConnect() {
           <Box
             width="full"
             paddingBottom="20px"
-            onClick={() => navigateTo('/restore')}
+            onClick={() => navigateTo('/import')}
           >
             <Columns alignHorizontal="center" alignVertical="center">
               <Column>
@@ -85,10 +85,10 @@ export function RestoreOrConnect() {
                 <Box paddingTop="14px">
                   <Stack space="14px">
                     <Text size="16pt" weight="bold" color="label">
-                      {i18n.t('restore_or_connect.restore_wallet')}
+                      {i18n.t('import_or_connect.import_wallet')}
                     </Text>
                     <Text size="14pt" weight="regular" color="labelTertiary">
-                      {i18n.t('restore_or_connect.restore_wallet_description')}
+                      {i18n.t('import_or_connect.import_wallet_description')}
                     </Text>
                   </Stack>
                 </Box>
@@ -115,10 +115,10 @@ export function RestoreOrConnect() {
                 <Box paddingTop="14px">
                   <Stack space="14px">
                     <Text size="16pt" weight="bold" color="label">
-                      {i18n.t('restore_or_connect.connect_wallet')}
+                      {i18n.t('import_or_connect.connect_wallet')}
                     </Text>
                     <Text size="14pt" weight="regular" color="labelTertiary">
-                      {i18n.t('restore_or_connect.connect_wallet_description')}
+                      {i18n.t('import_or_connect.connect_wallet_description')}
                     </Text>
                   </Stack>
                 </Box>
@@ -141,10 +141,10 @@ export function RestoreOrConnect() {
                 <Box paddingTop="14px">
                   <Stack space="14px">
                     <Text size="16pt" weight="bold" color="label">
-                      {i18n.t('restore_or_connect.watch_address')}
+                      {i18n.t('import_or_connect.watch_address')}
                     </Text>
                     <Text size="14pt" weight="regular" color="labelTertiary">
-                      {i18n.t('restore_or_connect.watch_address_description')}
+                      {i18n.t('import_or_connect.watch_address_description')}
                     </Text>
                   </Stack>
                 </Box>
