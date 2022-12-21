@@ -154,6 +154,14 @@ export function Send() {
     }
   }, [asset, assetAmount, fromAddress, toAddress, value, chainId, data]);
 
+  const selecteAsset = useCallback(
+    (index?: number) => {
+      selectAssetIndex(index);
+      setIndependentAmount('');
+    },
+    [selectAssetIndex, setIndependentAmount],
+  );
+
   const navbarButtonAction = isContact({ address: toAddress })
     ? 'edit'
     : 'save';
@@ -210,7 +218,7 @@ export function Send() {
                   <TokenInput
                     asset={asset}
                     assets={assets}
-                    selectAssetIndex={selectAssetIndex}
+                    selectAssetIndex={selecteAsset}
                     dropdownClosed={toAddressDropdownOpen}
                     setSortMethod={setSortMethod}
                     sortMethod={sortMethod}
