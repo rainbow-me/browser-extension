@@ -67,6 +67,8 @@ export function Send() {
   }>({ show: false, action: 'save' });
   const [toAddressDropdownOpen, setToAddressDropdownOpen] = useState(false);
 
+  const { innerWidth: windowWidth } = window;
+
   const { isContact } = useContactsStore();
 
   const { asset, selectAssetIndex, assets, setSortMethod, sortMethod } =
@@ -271,7 +273,7 @@ export function Send() {
                                     whiteSpace: 'nowrap',
                                     overflow: 'hidden',
                                     textOverflow: 'ellipsis',
-                                    maxWidth: 200,
+                                    maxWidth: windowWidth / 2,
                                   }}
                                   className={textStyles({
                                     color: 'label',
