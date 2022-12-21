@@ -1,8 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Row, Rows, Symbol, Text } from '~/design-system';
 import { Avatar } from '~/entries/popup/components/Avatar/Avatar';
@@ -16,6 +17,7 @@ import {
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
+import { getWallet } from '~/entries/popup/handlers/wallet';
 import { useAvatar } from '~/entries/popup/hooks/useAvatar';
 import { useEns } from '~/entries/popup/hooks/useEns';
 
@@ -134,6 +136,7 @@ export function WalletDetails() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [showNewWalletPrompt, setShowNewWalletPrompt] = useState(false);
+  const [wallet, setWallet] = useState<KeychainWallet>(state.wallet);
   const handleOpenNewWalletPrompt = () => {
     setShowNewWalletPrompt(true);
   };
@@ -143,13 +146,23 @@ export function WalletDetails() {
   const handleViewRecoveryPhrase = () => {
     navigate(
       '/settings/privacy/walletsAndKeys/walletDetails/recoveryPhraseWarning',
-      { state: { wallet: state.wallet, password: state.password } },
+      { state: { wallet, password: state.password } },
     );
   };
+
+  useEffect(() => {
+    const fetchWallet = async () => {
+      const fetchedWallet = await getWallet(state.wallet?.accounts[0]);
+      setWallet(fetchedWallet);
+    };
+    fetchWallet();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <Box>
       <NewWalletPrompt
-        wallet={state.wallet}
+        wallet={wallet}
         show={showNewWalletPrompt}
         onClose={handleCloseNewWalletPrompt}
       />
@@ -177,7 +190,7 @@ export function WalletDetails() {
             />
           </Menu>
           <Menu>
-            {state?.wallet?.accounts.map((account: Address) => {
+            {wallet?.accounts.map((account: Address) => {
               return <AccountItem account={account} key={account} />;
             })}
           </Menu>

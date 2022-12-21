@@ -9,6 +9,7 @@ import {
   exportAccount,
   exportKeychain,
   getAccounts,
+  getWallet,
   getWallets,
   hasVault,
   importWallet,
@@ -104,6 +105,9 @@ export const handleWallets = () =>
             break;
           case 'get_wallets':
             response = await getWallets();
+            break;
+          case 'get_wallet':
+            response = await getWallet(payload as Address);
             break;
           case 'export_wallet': {
             const { address, password } = payload as {
