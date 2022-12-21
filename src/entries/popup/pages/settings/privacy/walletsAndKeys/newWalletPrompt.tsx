@@ -89,7 +89,7 @@ export const NewWalletPrompt = ({
                     )}
                     value={walletName}
                     onChange={(e) => setWalletName(e.target.value)}
-                    height="44px"
+                    height="40px"
                     variant="bordered"
                   />
                 </Row>

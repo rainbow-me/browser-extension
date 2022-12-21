@@ -45,7 +45,7 @@ export const Prompt = ({
                 transition={transition}
                 padding="12px"
                 background="surfaceMenu"
-                borderRadius="12px"
+                borderRadius="16px"
                 borderColor="separatorTertiary"
                 borderWidth="1px"
               >
