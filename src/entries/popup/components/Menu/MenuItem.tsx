@@ -36,12 +36,12 @@ const SelectionIcon = () => {
     />
   );
 };
-const NUM_OF_ACCOUNTS_SHOWN_PER_ACCOUNT = 7;
+const NUM_OF_ACCOUNTS_SHOWN_PER_WALLET = 7;
 
 const AccountList = ({ accounts }: { accounts: Address[] }) => {
   const numberOfAccounts = accounts.length;
-  const shownAccounts = accounts.slice(0, NUM_OF_ACCOUNTS_SHOWN_PER_ACCOUNT);
-  const diff = numberOfAccounts - NUM_OF_ACCOUNTS_SHOWN_PER_ACCOUNT;
+  const shownAccounts = accounts.slice(0, NUM_OF_ACCOUNTS_SHOWN_PER_WALLET);
+  const diff = numberOfAccounts - NUM_OF_ACCOUNTS_SHOWN_PER_WALLET;
   const [showMoreAccounts, setShowMoreAccounts] = useState(false);
   const handleShowMoreAccounts = () => {
     setShowMoreAccounts(true);
