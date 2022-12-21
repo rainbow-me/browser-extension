@@ -13,7 +13,7 @@ import { InputHeight } from '../../../../design-system/components/Input/Input.cs
 
 import { maskInput } from './utils';
 
-export const InputMask = ({
+export const SendInputMask = ({
   borderColor,
   decimals,
   height,

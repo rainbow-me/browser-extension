@@ -14,7 +14,7 @@ import {
   Text,
 } from '~/design-system';
 
-import { InputMask } from '../../components/InputMask/InputMask';
+import { SendInputMask } from '../../components/SendInputMask/SendInputMask';
 
 export const ValueInput = ({
   asset,
@@ -49,7 +49,7 @@ export const ValueInput = ({
           <Rows space="16px">
             <Row>
               <Inline alignVertical="center" alignHorizontal="justify">
-                <InputMask
+                <SendInputMask
                   value={`${independentAmount}`}
                   placeholder={`0.00 ${
                     independentField === 'asset'
