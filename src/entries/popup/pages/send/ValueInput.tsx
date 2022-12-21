@@ -12,7 +12,6 @@ import {
   Separator,
   Stack,
   Text,
-  textStyles,
 } from '~/design-system';
 
 import { InputMask } from '../../components/InputMask/InputMask';
@@ -86,27 +85,32 @@ export const ValueInput = ({
               </Inline>
             </Row>
 
-            <Row>
+            <Row height="content">
               <Inline alignHorizontal="justify" alignVertical="center">
                 <Box
-                  as={'div'}
                   style={{
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
                     maxWidth: windowWidth / 2,
                   }}
-                  paddingVertical="2px"
-                  className={textStyles({
-                    color: 'label',
-                    cursor: 'default',
-                    fontFamily: 'rounded',
-                    fontSize: '12pt',
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                  })}
                 >
-                  {dependentAmount.display}
+                  <Text
+                    size="11pt"
+                    weight="bold"
+                    color={`${asset ? 'label' : 'labelTertiary'}`}
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    textOverflow="ellipsis"
+                  >
+                    <Box
+                      paddingVertical="2px"
+                      style={{
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      {dependentAmount.display}
+                    </Box>
+                  </Text>
                 </Box>
                 <Box onClick={switchIndependentField}>
                   <Text color="accent" size="12pt" weight="bold">
