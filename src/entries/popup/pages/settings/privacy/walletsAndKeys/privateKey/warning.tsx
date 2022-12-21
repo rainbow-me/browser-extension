@@ -15,7 +15,7 @@ const iconAndCopyList: IconAndCopyItem[] = [
       color: 'orange',
     },
     copy: i18n.t(
-      'settings.privacy_and_security.wallets_and_keys.private_key.warning1',
+      'settings.privacy_and_security.wallets_and_keys.private_key.warning_1',
     ),
   },
   {
@@ -24,7 +24,7 @@ const iconAndCopyList: IconAndCopyItem[] = [
       color: 'pink',
     },
     copy: i18n.t(
-      'settings.privacy_and_security.wallets_and_keys.private_key.warning2',
+      'settings.privacy_and_security.wallets_and_keys.private_key.warning_2',
     ),
   },
   {
@@ -33,7 +33,7 @@ const iconAndCopyList: IconAndCopyItem[] = [
       color: 'red',
     },
     copy: i18n.t(
-      'settings.privacy_and_security.wallets_and_keys.private_key.warning3',
+      'settings.privacy_and_security.wallets_and_keys.private_key.warning_3',
     ),
   },
   {
@@ -42,7 +42,7 @@ const iconAndCopyList: IconAndCopyItem[] = [
       color: 'blue',
     },
     copy: i18n.t(
-      'settings.privacy_and_security.wallets_and_keys.private_key.warning4',
+      'settings.privacy_and_security.wallets_and_keys.private_key.warning_4',
     ),
   },
 ];

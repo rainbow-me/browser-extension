@@ -57,20 +57,20 @@
           "title": "Your Private Key",
           "subtitle": "Anyone who has this key can access your entire wallet! You should never share it.",
           "saved": "I've saved this",
-          "warning1": "Never share your Private Key or enter it into any apps.",
-          "warning2": "Make sure nobody can view your screen when viewing your Private Key.",
-          "warning3": "Anyone with your Private Key can access your entire wallet.",
-          "warning4": "Rainbow Support will never ask you for your Private Key.",
+          "warning_1": "Never share your Private Key or enter it into any apps.",
+          "warning_2": "Make sure nobody can view your screen when viewing your Private Key.",
+          "warning_3": "Anyone with your Private Key can access your entire wallet.",
+          "warning_4": "Rainbow Support will never ask you for your Private Key.",
           "show": "Show Private Key"
         },
         "recovery_phrase": {
           "title": "Your Recovery Phrase",
           "subtitle": "Anyone who has these words can access your entire wallet! You should never share them.",
           "saved": "I've saved these words",
-          "warning1": "Never share your Recovery Phrase or enter it into any apps.",
-          "warning2": "Make sure nobody can view your screen when viewing your Recovery Phrase.",
-          "warning3": "Anyone with your Recovery Phrase can access your entire wallet.",
-          "warning4": "Rainbow Support will never ask you for your Recovery Phrase.",
+          "warning_1": "Never share your Recovery Phrase or enter it into any apps.",
+          "warning_2": "Make sure nobody can view your screen when viewing your Recovery Phrase.",
+          "warning_3": "Anyone with your Recovery Phrase can access your entire wallet.",
+          "warning_4": "Rainbow Support will never ask you for your Recovery Phrase.",
           "show": "Show Recovery Phrase"
         }
       }
@@ -146,9 +146,9 @@
   },
   "seed_backup_prompt": {
     "title": "Before you get started, backup your Secret Recovery Phrase",
-    "warning1": "It's important to write down and store your Secret Recovery Phrase somewhere safe.",
-    "warning2": "Your Secret Recovery Phrase is the only way to recover your accounts and funds",
-    "warning3": "Anyone with your Secret Recovery Phrase can access your entire wallet",
+    "warning_1": "It's important to write down and store your Secret Recovery Phrase somewhere safe.",
+    "warning_2": "Your Secret Recovery Phrase is the only way to recover your accounts and funds",
+    "warning_3": "Anyone with your Secret Recovery Phrase can access your entire wallet",
     "reveal_your_recovery_phrase": "Reveal your recovery phrase",
     "skip": "Skip"
   },

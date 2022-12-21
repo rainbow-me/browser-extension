@@ -15,7 +15,7 @@ const iconAndCopyList: IconAndCopyItem[] = [
       color: 'orange',
     },
     copy: i18n.t(
-      'settings.privacy_and_security.wallets_and_keys.recovery_phrase.warning1',
+      'settings.privacy_and_security.wallets_and_keys.recovery_phrase.warning_1',
     ),
   },
   {
@@ -24,7 +24,7 @@ const iconAndCopyList: IconAndCopyItem[] = [
       color: 'pink',
     },
     copy: i18n.t(
-      'settings.privacy_and_security.wallets_and_keys.recovery_phrase.warning2',
+      'settings.privacy_and_security.wallets_and_keys.recovery_phrase.warning_2',
     ),
   },
   {
@@ -33,7 +33,7 @@ const iconAndCopyList: IconAndCopyItem[] = [
       color: 'red',
     },
     copy: i18n.t(
-      'settings.privacy_and_security.wallets_and_keys.recovery_phrase.warning3',
+      'settings.privacy_and_security.wallets_and_keys.recovery_phrase.warning_3',
     ),
   },
   {
@@ -42,7 +42,7 @@ const iconAndCopyList: IconAndCopyItem[] = [
       color: 'blue',
     },
     copy: i18n.t(
-      'settings.privacy_and_security.wallets_and_keys.recovery_phrase.warning4',
+      'settings.privacy_and_security.wallets_and_keys.recovery_phrase.warning_4',
     ),
   },
 ];

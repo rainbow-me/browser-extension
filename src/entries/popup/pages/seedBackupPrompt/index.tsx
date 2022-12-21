@@ -15,21 +15,21 @@ const iconAndCopyList: IconAndCopyItem[] = [
       symbol: 'highlighter',
       color: 'blue',
     },
-    copy: i18n.t('seed_backup_prompt.warning1'),
+    copy: i18n.t('seed_backup_prompt.warning_1'),
   },
   {
     icon: {
       symbol: 'exclamationmark.triangle',
       color: 'orange',
     },
-    copy: i18n.t('seed_backup_prompt.warning2'),
+    copy: i18n.t('seed_backup_prompt.warning_2'),
   },
   {
     icon: {
       symbol: 'lock.open.fill',
       color: 'red',
     },
-    copy: i18n.t('seed_backup_prompt.warning3'),
+    copy: i18n.t('seed_backup_prompt.warning_3'),
   },
 ];
 
