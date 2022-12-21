@@ -1,58 +1,63 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
+import { KeychainWallet } from '~/core/types/keychainTypes';
 import {
   Box,
   Button,
-  Column,
-  Columns,
   Inset,
   Row,
   Rows,
   Separator,
   Text,
 } from '~/design-system';
+import { Input } from '~/design-system/components/Input/Input';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
-import { PasswordInput } from '~/entries/popup/components/PasswordInput/PasswordInput';
-import { verifyPassword } from '~/entries/popup/handlers/wallet';
+import { add } from '~/entries/popup/handlers/wallet';
 
-export const ConfirmPasswordPrompt = ({
+export const NewWalletPrompt = ({
   show,
   onClose,
-  redirect,
+  wallet,
 }: {
   show: boolean;
   onClose: () => void;
-  redirect: string;
+  wallet: KeychainWallet;
 }) => {
+  const { state } = useLocation();
   const navigate = useNavigate();
-  const [password, setPassword] = useState('');
+  const [walletName, setWalletName] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  const handleValidatePassword = async () => {
-    const correctPassword = await verifyPassword(password);
-    if (correctPassword) {
-      navigate(redirect, {
-        state: { password },
-      });
+  const handleValidateWalletName = async () => {
+    if (walletName !== '') {
+      const newAccount = await add(wallet?.accounts?.[0]);
+      navigate(
+        '/settings/privacy/walletsAndKeys/walletDetails/privateKeyWarning',
+        { state: { account: newAccount, password: state?.password } },
+      );
       return;
     }
-    setError(i18n.t('passwords.password_incorrect'));
+    setError(
+      i18n.t(
+        'settings.privacy_and_security.wallets_and_keys.new_wallet.no_wallet_name_set',
+      ),
+    );
   };
 
   const handleClose = () => {
-    setPassword('');
+    setWalletName('');
     onClose();
   };
 
   useEffect(() => {
     setError(null);
-  }, [setError, password]);
+  }, [walletName]);
 
   useEffect(() => {
     return () => {
-      setPassword('');
+      setWalletName('');
     };
   }, []);
 
@@ -65,22 +70,10 @@ export const ConfirmPasswordPrompt = ({
               <Box paddingTop="12px">
                 <Text size="16pt" weight="bold" align="center">
                   {i18n.t(
-                    'settings.privacy_and_security.confirm_password.title',
+                    'settings.privacy_and_security.wallets_and_keys.new_wallet.name_your_wallet',
                   )}
                 </Text>
               </Box>
-            </Row>
-            <Row>
-              <Text
-                size="12pt"
-                weight="medium"
-                color="labelTertiary"
-                align="center"
-              >
-                {i18n.t(
-                  'settings.privacy_and_security.confirm_password.description',
-                )}
-              </Text>
             </Row>
             <Row>
               <Inset horizontal="104px">
@@ -90,11 +83,14 @@ export const ConfirmPasswordPrompt = ({
             <Row>
               <Rows>
                 <Row>
-                  <PasswordInput
-                    placeholder={i18n.t('passwords.password')}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    borderColor={error ? 'red' : undefined}
+                  <Input
+                    placeholder={i18n.t(
+                      'settings.privacy_and_security.wallets_and_keys.new_wallet.create',
+                    )}
+                    value={walletName}
+                    onChange={(e) => setWalletName(e.target.value)}
+                    height="40px"
+                    variant="bordered"
                   />
                 </Row>
                 {error && (
@@ -116,8 +112,21 @@ export const ConfirmPasswordPrompt = ({
           </Rows>
         </Row>
         <Row>
-          <Columns space="8px">
-            <Column>
+          <Rows space="8px">
+            <Row>
+              <Button
+                variant="flat"
+                height="36px"
+                color="accent"
+                onClick={handleValidateWalletName}
+                width="full"
+              >
+                {i18n.t(
+                  'settings.privacy_and_security.wallets_and_keys.new_wallet.create',
+                )}
+              </Button>
+            </Row>
+            <Row>
               <Button
                 variant="flat"
                 height="36px"
@@ -127,19 +136,8 @@ export const ConfirmPasswordPrompt = ({
               >
                 {i18n.t('common_actions.cancel')}
               </Button>
-            </Column>
-            <Column>
-              <Button
-                variant="flat"
-                height="36px"
-                color="accent"
-                onClick={handleValidatePassword}
-                width="full"
-              >
-                {i18n.t('common_actions.continue')}
-              </Button>
-            </Column>
-          </Columns>
+            </Row>
+          </Rows>
         </Row>
       </Rows>
     </Prompt>
