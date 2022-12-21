@@ -17,10 +17,7 @@ import { Navbar } from '../../components/Navbar/Navbar';
 import { useAvatar } from '../../hooks/useAvatar';
 import { MainLayout } from '../../layouts/MainLayout';
 import { StickyHeader } from '../../layouts/StickyHeader';
-import {
-  SpeedUpAndCancelSheet,
-  SpeedUpAndCancelSheetPrompt,
-} from '../speedUpAndCancelSheet';
+import { SheetMode, SpeedUpAndCancelSheet } from '../speedUpAndCancelSheet';
 
 import { Activity } from './Activity';
 import { Header } from './Header';
@@ -38,10 +35,10 @@ const TOP_NAV_HEIGHT = 65;
 export function Home() {
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
-  const [prompt, setPrompt] = useState<SpeedUpAndCancelSheetPrompt>('none');
+  const [sheet, setSheet] = useState<SheetMode>('none');
   const [speedUpAndCancelTx, setSpeedUpAndCancelTx] =
     useState<RainbowTransaction>();
-  const displayingPrompt = prompt !== 'none';
+  const displayingSheet = sheet !== 'none';
 
   const [activeTab, setActiveTab] = useState<Tab>('tokens');
   const onSelectTab = useCallback((tab: Tab) => {
@@ -79,7 +76,7 @@ export function Home() {
               ...style,
               position: 'relative',
               overscrollBehavior: 'none',
-              overflow: displayingPrompt ? 'hidden' : 'auto',
+              overflow: displayingSheet ? 'hidden' : 'auto',
               height: window.innerHeight,
             }}
           >
@@ -91,14 +88,14 @@ export function Home() {
               {activeTab === 'tokens' && <Tokens />}
               {activeTab === 'activity' && (
                 <Activity
-                  onPromptSelected={({
-                    prompt,
+                  onSheetSelected={({
+                    sheet,
                     transaction,
                   }: {
-                    prompt: SpeedUpAndCancelSheetPrompt;
+                    sheet: SheetMode;
                     transaction: RainbowTransaction;
                   }) => {
-                    setPrompt(prompt);
+                    setSheet(sheet);
                     setSpeedUpAndCancelTx(transaction);
                   }}
                 />
@@ -106,9 +103,9 @@ export function Home() {
             </Content>
           </MainLayout>
           <SpeedUpAndCancelSheet
-            cancel={prompt === 'cancel'}
-            onClose={() => setPrompt('none')}
-            show={prompt !== 'none'}
+            cancel={sheet === 'cancel'}
+            onClose={() => setSheet('none')}
+            show={sheet !== 'none'}
             transaction={speedUpAndCancelTx}
           />
         </>

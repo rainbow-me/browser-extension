@@ -27,7 +27,7 @@ import {
 } from '../types/transactions';
 
 import { parseAsset } from './assets';
-import { getEtherscanHostForChain, isL2Chain } from './chains';
+import { getBlockExplorerHostForChain, isL2Chain } from './chains';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountToBalanceDisplay,
@@ -640,6 +640,6 @@ export function getTransactionBlockExplorerUrl({
 }) {
   const trimmedHash = hash.replace(/-.*/g, '');
   if (!isString(hash)) return;
-  const blockExplorerHost = getEtherscanHostForChain(chainId);
+  const blockExplorerHost = getBlockExplorerHostForChain(chainId);
   return `https://${blockExplorerHost}/tx/${trimmedHash}`;
 }

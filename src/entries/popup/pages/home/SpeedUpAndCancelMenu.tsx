@@ -9,10 +9,12 @@ import { Box, Inline, Symbol, Text } from '~/design-system';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
-import { SpeedUpAndCancelSheetPrompt } from '../speedUpAndCancelSheet';
+import { SheetMode } from '../speedUpAndCancelSheet';
 
 export function SpeedUpAndCancelMenu({
   children,
@@ -21,89 +23,91 @@ export function SpeedUpAndCancelMenu({
 }: {
   children: ReactNode;
   onRowSelection: ({
-    prompt,
+    sheet,
     transaction,
   }: {
-    prompt: SpeedUpAndCancelSheetPrompt;
+    sheet: SheetMode;
     transaction: RainbowTransaction;
   }) => void;
   transaction: RainbowTransaction;
 }) {
-  // need to control this manually so that menu closes when modal appears
+  // need to control this manually so that menu closes when sheet appears
   const [closed, setClosed] = useState(false);
   const onOpenChange = () => setClosed(false);
+  const handleRowSelection = (sheet: SheetMode) => () => {
+    onRowSelection({ sheet, transaction });
+    setClosed(true);
+  };
   return (
     <MenuWrapper closed={closed} onOpenChange={onOpenChange}>
       <DropdownMenuTrigger asChild>
         <Box position="relative">{children}</Box>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <MenuRow>
-          <Box
-            onClick={() => {
-              onRowSelection({ prompt: 'speedUp', transaction });
-              setClosed(true);
-            }}
-          >
-            <Inline space="8px" alignVertical="center">
-              <Text weight="semibold" size="14pt">
-                {'🚀'}
-              </Text>
-              <Text color="label" size="14pt" weight="semibold">
-                {i18n.t('speed_up_and_cancel.speed_up')}
-              </Text>
-            </Inline>
+        <DropdownMenuRadioGroup>
+          <DropdownMenuRadioItem value={'speedUp'}>
+            <MenuRow>
+              <Box onClick={handleRowSelection('speedUp')}>
+                <Inline space="8px" alignVertical="center">
+                  <Text weight="semibold" size="14pt">
+                    {'🚀'}
+                  </Text>
+                  <Text color="label" size="14pt" weight="semibold">
+                    {i18n.t('speed_up_and_cancel.speed_up')}
+                  </Text>
+                </Inline>
+              </Box>
+            </MenuRow>
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value={'cancel'}>
+            <MenuRow>
+              <Box onClick={handleRowSelection('cancel')}>
+                <Inline space="8px" alignVertical="center">
+                  <Text weight="semibold" size="14pt">
+                    {'☠️'}
+                  </Text>
+                  <Text size="14pt" weight="semibold">
+                    {i18n.t('speed_up_and_cancel.cancel')}
+                  </Text>
+                </Inline>
+              </Box>
+            </MenuRow>
+          </DropdownMenuRadioItem>
+          <Box paddingVertical="4px">
+            <DropdownMenuSeparator />
           </Box>
-        </MenuRow>
-        <MenuRow>
-          <Box
-            onClick={() => {
-              onRowSelection({ prompt: 'cancel', transaction });
-              setClosed(true);
-            }}
-          >
-            <Inline space="8px" alignVertical="center">
-              <Text weight="semibold" size="14pt">
-                {'☠️'}
-              </Text>
-              <Text size="14pt" weight="semibold">
-                {i18n.t('speed_up_and_cancel.cancel')}
-              </Text>
-            </Inline>
-          </Box>
-        </MenuRow>
-        <Box paddingVertical="4px">
-          <DropdownMenuSeparator />
-        </Box>
-        <MenuRow>
-          <a
-            href={getTransactionBlockExplorerUrl({
-              chainId: transaction?.chainId || ChainId.mainnet,
-              hash: transaction?.hash || '',
-            })}
-            target="_blank"
-            rel="noreferrer"
-            style={{ color: 'inherit' }}
-          >
-            <Inline space="8px" alignVertical="center">
+          <DropdownMenuRadioItem value={'blockExplorer'}>
+            <MenuRow>
+              <a
+                href={getTransactionBlockExplorerUrl({
+                  chainId: transaction?.chainId || ChainId.mainnet,
+                  hash: transaction?.hash || '',
+                })}
+                target="_blank"
+                rel="noreferrer"
+                style={{ color: 'inherit' }}
+              >
+                <Inline space="8px" alignVertical="center">
+                  <Symbol
+                    weight="medium"
+                    size={18}
+                    symbol="binoculars.fill"
+                    color="label"
+                  />
+                  <Text color="label" size="14pt" weight="semibold">
+                    {i18n.t('speed_up_and_cancel.view_on_etherscan')}
+                  </Text>
+                </Inline>
+              </a>
               <Symbol
                 weight="medium"
-                size={18}
-                symbol="binoculars.fill"
-                color="label"
+                size={12}
+                symbol="arrow.up.forward.circle"
+                color="labelQuaternary"
               />
-              <Text color="label" size="14pt" weight="semibold">
-                {i18n.t('speed_up_and_cancel.view_on_etherscan')}
-              </Text>
-            </Inline>
-          </a>
-          <Symbol
-            weight="medium"
-            size={12}
-            symbol="arrow.up.forward.circle"
-            color="labelQuaternary"
-          />
-        </MenuRow>
+            </MenuRow>
+          </DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </MenuWrapper>
   );
@@ -111,7 +115,7 @@ export function SpeedUpAndCancelMenu({
 
 function MenuRow({ children }: { children: ReactNode }) {
   return (
-    <Box paddingVertical="12px">
+    <Box paddingVertical="2px">
       <Inline space="8px" alignVertical="center" alignHorizontal="justify">
         {children}
       </Inline>

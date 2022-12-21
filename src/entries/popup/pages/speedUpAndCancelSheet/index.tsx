@@ -20,10 +20,9 @@ import {
 } from '~/design-system';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
 
-import { Avatar } from '../../components/Avatar/Avatar';
 import { EthSymbol } from '../../components/EthSymbol/EthSymbol';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
-import { useAvatar } from '../../hooks/useAvatar';
+import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 
 type SpeedUpAndCancelSheetProps = {
   cancel?: boolean;
@@ -32,7 +31,10 @@ type SpeedUpAndCancelSheetProps = {
   transaction?: RainbowTransaction;
 };
 
-export type SpeedUpAndCancelSheetPrompt = 'cancel' | 'none' | 'speedUp';
+// governs type of sheet displayed on top of MainLayout
+// we should centralize this type if we add additional
+// sheet modes to the main layout
+export type SheetMode = 'cancel' | 'none' | 'speedUp';
 
 export function SpeedUpAndCancelSheet({
   cancel,
@@ -140,7 +142,13 @@ export function SpeedUpAndCancelSheet({
                             {i18n.t('speed_up_and_cancel.wallet')}
                           </Text>
                           <Inline alignVertical="center" space="4px">
-                            <EnsAvatar />
+                            {transaction?.to && (
+                              <WalletAvatar
+                                address={transaction.to}
+                                size={18}
+                                emojiSize="12pt"
+                              />
+                            )}
                             <AccountName />
                           </Inline>
                         </Stack>
@@ -199,29 +207,6 @@ export function SpeedUpAndCancelSheet({
         </Rows>
       </Box>
     </Prompt>
-  );
-}
-
-function EnsAvatar() {
-  const { address } = useAccount();
-  const { avatar, isFetched } = useAvatar({ address });
-  return (
-    <Avatar.Wrapper size={18}>
-      {isFetched ? (
-        <>
-          {avatar?.imageUrl ? (
-            <Avatar.Image imageUrl={avatar.imageUrl} />
-          ) : (
-            <Avatar.Emoji
-              color={avatar?.color}
-              emoji={avatar?.emoji}
-              size="12pt"
-            />
-          )}
-        </>
-      ) : null}
-      <Avatar.Skeleton />
-    </Avatar.Wrapper>
   );
 }
 

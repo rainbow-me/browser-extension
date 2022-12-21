@@ -24,21 +24,21 @@ import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 
 import { Spinner } from '../../components/Spinner/Spinner';
 import { useAllTransactions } from '../../hooks/useAllTransactions';
-import { SpeedUpAndCancelSheetPrompt } from '../speedUpAndCancelSheet';
+import { SheetMode } from '../speedUpAndCancelSheet';
 
 import { SpeedUpAndCancelMenu } from './SpeedUpAndCancelMenu';
 
 type ActivityProps = {
-  onPromptSelected: ({
-    prompt,
+  onSheetSelected: ({
+    sheet,
     transaction,
   }: {
-    prompt: SpeedUpAndCancelSheetPrompt;
+    sheet: SheetMode;
     transaction: RainbowTransaction;
   }) => void;
 };
 
-export function Activity({ onPromptSelected }: ActivityProps) {
+export function Activity({ onSheetSelected }: ActivityProps) {
   const { address } = useAccount();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { allTransactionsByDate } = useAllTransactions({
@@ -59,13 +59,13 @@ export function Activity({ onPromptSelected }: ActivityProps) {
   });
 
   const onTransactionSelected = ({
-    prompt,
+    sheet,
     transaction,
   }: {
-    prompt: SpeedUpAndCancelSheetPrompt;
+    sheet: SheetMode;
     transaction: RainbowTransaction;
   }) => {
-    onPromptSelected({ prompt, transaction });
+    onSheetSelected({ sheet, transaction });
   };
 
   return (
