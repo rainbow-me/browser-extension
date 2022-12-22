@@ -11,6 +11,7 @@ import {
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 
 type AnimatedRouteProps = {
+  background?: BackgroundColor;
   children: React.ReactNode;
   direction: AnimatedRouteDirection;
   navbar?: boolean;
@@ -70,7 +71,8 @@ export const AnimatedRoute = React.forwardRef<
   HTMLDivElement,
   AnimatedRouteProps
 >((props: AnimatedRouteProps, ref) => {
-  const { children, direction, navbar, title, navbarBackground } = props;
+  const { background, children, direction, navbar, title, navbarBackground } =
+    props;
   const { initial, end, exit } = animatedRouteValues[direction];
   const transition = animatedRouteTransitionConfig[direction];
   return (
@@ -84,6 +86,7 @@ export const AnimatedRoute = React.forwardRef<
       animate={end}
       exit={exit}
       transition={transition}
+      background={background}
     >
       {navbar && (
         <Navbar

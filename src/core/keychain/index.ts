@@ -125,6 +125,7 @@ export const removeAccount = async (address: Address): Promise<void> => {
 export const getWallets = async () => {
   return keychainManager.getWallets();
 };
+
 export const getAccounts = async (): Promise<Address[]> => {
   return keychainManager.getAccounts();
 };
@@ -165,6 +166,10 @@ export const signMessage = async ({
 }: SignMessageArguments): Promise<string> => {
   const signer = await keychainManager.getSigner(address);
   return signer.signMessage(msgData);
+};
+
+export const getWallet = async (address: Address) => {
+  return keychainManager.getWallet(address);
 };
 
 export const signTypedData = async ({

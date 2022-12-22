@@ -295,6 +295,20 @@ class KeychainManager {
     return keychainArrays;
   }
 
+  async getWallet(address: Address) {
+    const keychain = await this.getKeychain(address);
+    const accounts = await keychain.getAccounts();
+    const wallet = {
+      type: keychain.type as KeychainType,
+      accounts,
+      imported:
+        keychain.type === KeychainType.HdKeychain
+          ? (keychain as HdKeychain).imported
+          : false,
+    };
+    return wallet;
+  }
+
   async getKeychain(address: Address) {
     for (let i = 0; i < this.state.keychains.length; i++) {
       const keychain = this.state.keychains[i];
