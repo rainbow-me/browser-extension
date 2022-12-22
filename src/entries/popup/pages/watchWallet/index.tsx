@@ -187,7 +187,7 @@ export function WatchWallet() {
         </Box>
       ) : (
         <>
-          <Box paddingTop="28px" width="full">
+          <Box paddingTop="24px" width="full">
             <Stack space="10px">
               <Box
                 as={motion.div}
@@ -271,7 +271,7 @@ export function WatchWallet() {
                 width="full"
                 position="relative"
               >
-                <Rows space="14px">
+                <Rows space="6px">
                   {accountsToWatch.map((address: Address | string, index) => (
                     <Row key={`avatar_${address}`}>
                       <Rows space="6px">
@@ -306,7 +306,7 @@ export function WatchWallet() {
                                 justifyContent="flex-end"
                                 width="fit"
                                 onClick={() => toggleAccount(address)}
-                                paddingTop="3px"
+                                paddingTop="6px"
                               >
                                 <Checkbox
                                   selected={additionalAccounts.includes(
