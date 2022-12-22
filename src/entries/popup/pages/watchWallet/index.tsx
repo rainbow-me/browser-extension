@@ -335,7 +335,9 @@ export function WatchWallet() {
               </Box>
             </Box>
           </Box>
-
+          <Box width="full" position="absolute" style={{ bottom: '83px' }}>
+            <Separator color="separatorTertiary" strokeWeight="1px" />
+          </Box>
           <Box width="full" paddingTop="20px">
             <Button
               symbol="arrow.uturn.down.circle.fill"
