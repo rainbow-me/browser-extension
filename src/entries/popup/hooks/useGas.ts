@@ -4,7 +4,7 @@ import { Chain } from 'wagmi';
 
 import { ethUnits } from '~/core/references';
 import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
-import { useGasStore } from '~/core/state';
+import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
 import {
   GasFeeLegacyParamsBySpeed,
   GasFeeParamsBySpeed,
@@ -31,6 +31,7 @@ export const useGas = ({
     chainId,
     transactionRequest,
   });
+  const { currentCurrency } = useCurrentCurrencyStore();
   const {
     selectedGas,
     setSelectedGas,
@@ -52,8 +53,9 @@ export const useGas = ({
           data,
           gasLimit,
           nativeAsset,
+          currency: currentCurrency,
         }),
-      [chainId, data, gasLimit, nativeAsset],
+      [chainId, data, gasLimit, nativeAsset, currentCurrency],
     );
 
   useEffect(() => {

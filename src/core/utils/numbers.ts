@@ -288,6 +288,30 @@ export const convertAmountAndPriceToNativeDisplay = (
   };
 };
 
+export const convertAmountAndPriceToNativeDisplayWithThreshold = (
+  amount: BigNumberish,
+  priceUnit: BigNumberish,
+  nativeCurrency: keyof nativeCurrencyType,
+  buffer?: number,
+  skipDecimals = false,
+): { amount: string; display: string } => {
+  const nativeBalanceRaw = convertAmountToNativeAmount(amount, priceUnit);
+  const nativeBalanceWithThreshold = handleSignificantDecimalsWithThreshold(
+    nativeBalanceRaw,
+    4,
+  );
+  const nativeDisplay = convertAmountToNativeDisplay(
+    nativeBalanceWithThreshold,
+    nativeCurrency,
+    buffer,
+    skipDecimals,
+  );
+  return {
+    amount: nativeBalanceRaw,
+    display: nativeDisplay,
+  };
+};
+
 /**
  * @desc convert from raw amount to display formatted string
  */
