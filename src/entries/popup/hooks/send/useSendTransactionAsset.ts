@@ -1,13 +1,28 @@
 import { useCallback, useState } from 'react';
 import { useAccount } from 'wagmi';
 
-import { selectUserAssetsList } from '~/core/resources/_selectors';
+import {
+  selectUserAssetsList,
+  selectUserAssetsListByChainId,
+} from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
+
+export type SortMethod = 'token' | 'chain';
+
+const sortBy = (by: SortMethod) => {
+  switch (by) {
+    case 'token':
+      return selectUserAssetsList;
+    case 'chain':
+      return selectUserAssetsListByChainId;
+  }
+};
 
 export const useSendTransactionAsset = () => {
   const { address } = useAccount();
   const { currentCurrency } = useCurrentCurrencyStore();
+  const [sortMethod, setSortMethod] = useState<SortMethod>('token');
 
   const [index, setIndex] = useState<number>(-1);
   const { data: assets = [] } = useUserAssets(
@@ -15,7 +30,7 @@ export const useSendTransactionAsset = () => {
       address,
       currency: currentCurrency,
     },
-    { select: selectUserAssetsList },
+    { select: sortBy(sortMethod) },
   );
 
   const selectAssetIndex = useCallback(
@@ -31,5 +46,7 @@ export const useSendTransactionAsset = () => {
     selectAssetIndex,
     asset,
     assets,
+    sortMethod,
+    setSortMethod,
   };
 };

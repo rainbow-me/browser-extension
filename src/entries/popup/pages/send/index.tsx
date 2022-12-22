@@ -68,7 +68,8 @@ export function Send() {
 
   const { isContact } = useContactsStore();
 
-  const { asset, selectAssetIndex, assets } = useSendTransactionAsset();
+  const { asset, selectAssetIndex, assets, setSortMethod, sortMethod } =
+    useSendTransactionAsset();
   const {
     assetAmount,
     independentAmount,
@@ -221,6 +222,8 @@ export function Send() {
                     assets={assets}
                     selectAssetIndex={selectAssetIndex}
                     dropdownClosed={toAddressDropdownOpen}
+                    setSortMethod={setSortMethod}
+                    sortMethod={sortMethod}
                   />
                   {asset ? (
                     <Box paddingBottom="20px" paddingHorizontal="20px">

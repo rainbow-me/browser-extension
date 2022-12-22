@@ -24,6 +24,7 @@ export const InputWrapper = ({
   onDropdownAction,
   zIndex,
   dropdownHeight,
+  onDropdownScroll,
 }: {
   leftComponent: ReactElement;
   centerComponent: ReactElement;
@@ -34,6 +35,7 @@ export const InputWrapper = ({
   onDropdownAction: () => void;
   zIndex?: number;
   dropdownHeight?: number;
+  onDropdownScroll?: () => void;
 }) => {
   return (
     <Box style={{ height: 68 }}>
@@ -107,6 +109,7 @@ export const InputWrapper = ({
                       height: dropdownHeight ?? 452,
                       overflow: 'scroll',
                     }}
+                    onScroll={onDropdownScroll}
                     paddingVertical="16px"
                   >
                     <Stack space="12px">{dropdownComponent}</Stack>
