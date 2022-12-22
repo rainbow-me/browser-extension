@@ -65,6 +65,30 @@ export const animatedRouteValues: Record<
       y: 16,
     },
   },
+  deceleratedShort: {
+    initial: {
+      opacity: 0,
+      scale: 1.1,
+    },
+    end: {
+      opacity: 1,
+      scale: 1,
+    },
+    exit: {
+      opacity: 0,
+    },
+  },
+  emphasizedShort: {
+    initial: {
+      opacity: 0,
+    },
+    end: {
+      opacity: 1,
+    },
+    exit: {
+      opacity: 0,
+    },
+  },
 };
 
 export const AnimatedRoute = React.forwardRef<
