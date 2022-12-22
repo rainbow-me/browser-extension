@@ -1,6 +1,6 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { getProvider } from '@wagmi/core';
-import { capitalize } from 'lodash';
+import { capitalize, isString } from 'lodash';
 import { Address } from 'wagmi';
 
 import { i18n } from '../languages';
@@ -27,7 +27,7 @@ import {
 } from '../types/transactions';
 
 import { parseAsset } from './assets';
-import { isL2Chain } from './chains';
+import { getBlockExplorerHostForChain, isL2Chain } from './chains';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountToBalanceDisplay,
@@ -629,4 +629,17 @@ export async function addNewTransaction({
     chainId,
     currentNonce: nonce,
   });
+}
+
+export function getTransactionBlockExplorerUrl({
+  hash,
+  chainId,
+}: {
+  hash: string;
+  chainId: ChainId;
+}) {
+  const trimmedHash = hash.replace(/-.*/g, '');
+  if (!isString(hash)) return;
+  const blockExplorerHost = getBlockExplorerHostForChain(chainId);
+  return `https://${blockExplorerHost}/tx/${trimmedHash}`;
 }

@@ -4,6 +4,7 @@ import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';
+import { GasSpeed } from '~/core/types/gas';
 import {
   Box,
   Column,
@@ -22,16 +23,19 @@ import { SwitchTransactionSpeedMenu } from './TransactionSpeedsMenu';
 
 type TransactionFeeProps = {
   chainId: Chain['id'];
+  defaultSpeed?: GasSpeed;
   transactionRequest: TransactionRequest;
 };
 
 export function TransactionFee({
   chainId,
+  defaultSpeed,
   transactionRequest,
 }: TransactionFeeProps) {
   const { selectedSpeed, setSelectedSpeed, gasFeeParamsBySpeed, isLoading } =
     useGas({
       chainId,
+      defaultSpeed,
       transactionRequest,
     });
 
