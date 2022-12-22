@@ -109,6 +109,13 @@
       "my_wallets": "My wallets",
       "watched_wallets": "Watching",
       "no_results": "No results"
+    },
+    "tokens_input": {
+      "tokens": "Tokens",
+      "sort": "Sort",
+      "available": "available",
+      "token_balance": "Token Balance",
+      "networks": "Networks"
     }
   },
   "contacts": {

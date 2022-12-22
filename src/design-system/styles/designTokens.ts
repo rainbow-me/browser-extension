@@ -696,6 +696,7 @@ export const symbolNames = selectSymbolNames(
   'square.on.square',
   'slider.horizontal.3',
   'arrow.up.forward.circle',
+  'arrow.up.arrow.down',
   'arrow.right',
   'eye',
   'eye.slash.fill',
@@ -721,6 +722,8 @@ export const symbolNames = selectSymbolNames(
   'magnifyingglass.circle.fill',
   'doc.on.doc.fill',
   'trash',
+  'wand.and.stars',
+  'network',
 );
 export type SymbolName = typeof symbolNames[number];
 

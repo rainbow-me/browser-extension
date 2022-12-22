@@ -206,6 +206,7 @@ export const ToAddressInput = ({
   handleToAddressChange,
   clearToAddress,
   setToAddressOrName,
+  onDropdownOpen,
 }: {
   toAddressOrName: string;
   toEnsName?: string;
@@ -213,21 +214,26 @@ export const ToAddressInput = ({
   handleToAddressChange: InputHTMLAttributes<HTMLInputElement>['onChange'];
   clearToAddress: () => void;
   setToAddressOrName: (adrressOrName: string) => void;
+  onDropdownOpen: (open: boolean) => void;
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
-  const onDropdownAction = useCallback(
-    () => setDropdownVisible((dropdownVisible) => !dropdownVisible),
-    [],
-  );
+  const onDropdownAction = useCallback(() => {
+    onDropdownOpen(!dropdownVisible);
+    setDropdownVisible(!dropdownVisible);
+  }, [dropdownVisible, onDropdownOpen]);
 
-  const onInputClick = useCallback(() => {
-    if (!dropdownVisible) {
-      setDropdownVisible(true);
-    }
-  }, [dropdownVisible]);
+  const openDropdown = useCallback(() => {
+    onDropdownOpen(true);
+    setDropdownVisible(true);
+  }, [onDropdownOpen]);
+
+  const closeDropdown = useCallback(() => {
+    onDropdownOpen(false);
+    setDropdownVisible(false);
+  }, [onDropdownOpen]);
 
   const inputVisible = useMemo(
     () => (!toAddressOrName || !toEnsName) && !isAddress(toAddressOrName),
@@ -242,11 +248,17 @@ export const ToAddressInput = ({
     [onDropdownAction, setToAddressOrName],
   );
 
+  const onInputClick = useCallback(() => {
+    if (!dropdownVisible) {
+      openDropdown();
+    }
+  }, [dropdownVisible, openDropdown]);
+
   useEffect(() => {
     if (!inputVisible) {
-      setDropdownVisible(false);
+      closeDropdown();
     }
-  }, [inputVisible]);
+  }, [closeDropdown, inputVisible]);
 
   const toAddressContact = useContact({ address: toAddress });
   const { wallets, watchedWallets, contacts } = useAllFilteredWallets({
@@ -256,6 +268,8 @@ export const ToAddressInput = ({
   return (
     <>
       <InputWrapper
+        zIndex={2}
+        dropdownHeight={452}
         leftComponent={
           <Box borderRadius="18px">
             <WalletAvatar address={toAddress} size={36} emojiSize="20pt" />
