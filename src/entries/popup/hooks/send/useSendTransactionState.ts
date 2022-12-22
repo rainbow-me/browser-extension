@@ -26,7 +26,7 @@ export const useSendTransactionState = ({
   const { address: fromAddress } = useAccount();
   const chainId = asset?.chainId ?? ChainId.mainnet;
 
-  const { ensAddress: destinationAddress, ensName: toEnsName } = useEns({
+  const { ensAddress: toAddress, ensName: toEnsName } = useEns({
     addressOrName: toAddressOrName ?? '',
   });
 
@@ -41,32 +41,29 @@ export const useSendTransactionState = ({
   );
 
   const data = useMemo(() => {
-    if (!asset || !destinationAddress || !assetAmount || sendingNativeAsset)
-      return '0x';
+    if (!asset || !toAddress || !assetAmount || sendingNativeAsset) return '0x';
     const rawAmount = convertAmountToRawAmount(assetAmount, asset?.decimals);
-    return getDataForTokenTransfer(rawAmount, destinationAddress);
-  }, [assetAmount, asset, sendingNativeAsset, destinationAddress]);
+    return getDataForTokenTransfer(rawAmount, toAddress);
+  }, [assetAmount, asset, sendingNativeAsset, toAddress]);
 
-  const toAddress: Address = useMemo(() => {
+  const txToAddress: Address = useMemo(() => {
     const assetAddress = asset?.address;
     const isSendingNativeAsset = assetAddress
       ? isNativeAsset(assetAddress, chainId)
       : true;
-    return !isSendingNativeAsset && assetAddress
-      ? assetAddress
-      : destinationAddress;
-  }, [asset?.address, chainId, destinationAddress]);
+    return !isSendingNativeAsset && assetAddress ? assetAddress : toAddress;
+  }, [asset?.address, chainId, toAddress]);
 
   return {
     asset,
     currentCurrency,
-    destinationAddress,
     toAddressOrName,
     chainId,
     data,
     fromAddress,
     toAddress,
     toEnsName,
+    txToAddress,
     value,
     setAsset,
     setToAddressOrName,

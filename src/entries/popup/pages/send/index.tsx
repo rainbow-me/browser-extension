@@ -86,19 +86,20 @@ export function Send() {
     toAddress,
     toAddressOrName,
     toEnsName,
+    txToAddress,
     value,
     setToAddressOrName,
   } = useSendTransactionState({ assetAmount, asset });
 
   const transactionRequest: TransactionRequest = useMemo(() => {
     return {
-      to: toAddress,
+      to: txToAddress,
       from: fromAddress,
       value,
       chainId,
       data,
     };
-  }, [chainId, toAddress, fromAddress, value, data]);
+  }, [txToAddress, fromAddress, value, chainId, data]);
 
   const handleToAddressChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
