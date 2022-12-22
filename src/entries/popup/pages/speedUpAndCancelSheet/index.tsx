@@ -107,9 +107,11 @@ export function SpeedUpAndCancelSheet({
                         weight="medium"
                         align="center"
                       >
-                        {
-                          'This will attempt to cancel your pending transaction. It requires broadcasting another transaction.'
-                        }
+                        {i18n.t(
+                          cancel
+                            ? 'speed_up_and_cancel.cancel_explanation'
+                            : 'speed_up_and_cancel.speed_up_explanation',
+                        )}
                       </Text>
                     </Box>
                   </Box>
