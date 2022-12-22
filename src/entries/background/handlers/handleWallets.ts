@@ -102,11 +102,9 @@ export const handleWallets = () =>
             response = await removeAccount(payload as Address);
             break;
           case 'derive_accounts_from_secret':
-            console.log('deriving accounts from secret BG', payload);
             response = await deriveAccountsFromSecret(
               payload as EthereumWalletSeed,
             );
-            console.log('done bg', response);
             break;
           case 'get_accounts':
             response = await getAccounts();
