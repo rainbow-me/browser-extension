@@ -230,10 +230,9 @@ export const lessThan = (
 export const handleSignificantDecimalsWithThreshold = (
   value: BigNumberish,
   decimals: number,
-  buffer = 3,
   threshold = '0.0001',
 ) => {
-  const result = handleSignificantDecimals(value, decimals, buffer);
+  const result = toFixedDecimals(value, decimals);
   return lessThan(result, threshold) ? `< ${threshold}` : result;
 };
 
