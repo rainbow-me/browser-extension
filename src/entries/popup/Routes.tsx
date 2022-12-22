@@ -11,6 +11,8 @@ import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
 import { ImportOrConnect } from './pages/importOrConnect';
 import { ImportWallet } from './pages/importWallet';
+import { ImportWalletSelection } from './pages/importWalletSelection';
+import { EditImportWalletSelection } from './pages/importWalletSelection/EditImportWalletSelection';
 import { SeedBackupPrompt } from './pages/seedBackupPrompt';
 import { SeedReveal } from './pages/seedReveal';
 import { SeedVerify } from './pages/seedVerify';
@@ -19,7 +21,11 @@ import { Currency } from './pages/settings/currency';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
 import { ChangePassword } from './pages/settings/privacy/changePassword';
 import { Privacy } from './pages/settings/privacy/privacy';
-import { AccountDetails } from './pages/settings/privacy/walletsAndKeys/AccountDetails';
+import { PrivateKey } from './pages/settings/privacy/walletsAndKeys/privateKey/privateKey';
+import { PrivateKeyWarning } from './pages/settings/privacy/walletsAndKeys/privateKey/warning';
+import { RecoveryPhrase } from './pages/settings/privacy/walletsAndKeys/recoveryPhrase/recoveryPhrase';
+import { RecoveryPhraseWarning } from './pages/settings/privacy/walletsAndKeys/recoveryPhrase/warning';
+import { WalletDetails } from './pages/settings/privacy/walletsAndKeys/walletDetails';
 import { WalletsAndKeys } from './pages/settings/privacy/walletsAndKeys/walletsAndKeys';
 import { Settings } from './pages/settings/settings';
 import { Transactions } from './pages/settings/transactions';
@@ -83,6 +89,28 @@ export function Routes() {
         element: (
           <AnimatedRoute direction="horizontal" navbar>
             <ImportWallet />
+          </AnimatedRoute>
+        ),
+        background: FullScreenBackground,
+      },
+      {
+        path: '/import/select',
+        element: (
+          <AnimatedRoute direction="horizontal" navbar>
+            <ImportWalletSelection />
+          </AnimatedRoute>
+        ),
+        background: FullScreenBackground,
+      },
+      {
+        path: '/import/edit',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            title={i18n.t('edit_import_wallet_selection.title')}
+          >
+            <EditImportWalletSelection />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,
@@ -193,16 +221,64 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/accountDetails',
+        path: '/settings/privacy/walletsAndKeys/walletDetails',
         element: (
           <AnimatedRoute
             direction="horizontal"
             navbar
             title={i18n.t(
-              'settings.privacy_and_security.wallets_and_keys.account_details.title',
+              'settings.privacy_and_security.wallets_and_keys.wallet_details.title',
             )}
           >
-            <AccountDetails />
+            <WalletDetails />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/privacy/walletsAndKeys/walletDetails/privateKeyWarning',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            background="surfaceSecondary"
+          >
+            <PrivateKeyWarning />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/privacy/walletsAndKeys/walletDetails/privateKey',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            background="surfaceSecondary"
+          >
+            <PrivateKey />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/privacy/walletsAndKeys/walletDetails/recoveryPhraseWarning',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            background="surfaceSecondary"
+          >
+            <RecoveryPhraseWarning />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/privacy/walletsAndKeys/walletDetails/recoveryPhrase',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            background="surfaceSecondary"
+          >
+            <RecoveryPhrase />
           </AnimatedRoute>
         ),
       },
@@ -233,12 +309,7 @@ export function Routes() {
       {
         path: '/send',
         element: (
-          <AnimatedRoute
-            direction="horizontal"
-            navbar
-            navbarBackground="surfaceSecondary"
-            title={i18n.t('send.title')}
-          >
+          <AnimatedRoute direction="horizontal" title={i18n.t('send.title')}>
             <Send />
           </AnimatedRoute>
         ),

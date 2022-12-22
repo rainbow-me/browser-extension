@@ -6,9 +6,12 @@ import { Address } from 'wagmi';
 import {
   addNewAccount,
   createWallet,
+  deriveAccountsFromSecret,
   exportAccount,
   exportKeychain,
   getAccounts,
+  getWallet,
+  getWallets,
   hasVault,
   importWallet,
   isVaultUnlocked,
@@ -98,8 +101,19 @@ export const handleWallets = () =>
           case 'remove':
             response = await removeAccount(payload as Address);
             break;
+          case 'derive_accounts_from_secret':
+            response = await deriveAccountsFromSecret(
+              payload as EthereumWalletSeed,
+            );
+            break;
           case 'get_accounts':
             response = await getAccounts();
+            break;
+          case 'get_wallets':
+            response = await getWallets();
+            break;
+          case 'get_wallet':
+            response = await getWallet(payload as Address);
             break;
           case 'export_wallet': {
             const { address, password } = payload as {

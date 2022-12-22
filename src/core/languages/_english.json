@@ -31,7 +31,7 @@
       },
       "confirm_password": {
         "title": "Enter your Password",
-        "description": "You need to enter your current password before you can update and change it."
+        "description": "You need to enter your current password to continue."
       },
       "wallets_and_keys": {
         "title": "Wallets & Keys",
@@ -39,10 +39,39 @@
         "imported": "Imported",
         "wallet_single": "Wallet",
         "wallet_plural": "Wallets",
-        "account_details": {
-          "title": "Account Details",
+        "recovery_phrase_label": "Recovery Phrase",
+        "wallet_details": {
+          "title": "Wallet Details",
           "view_recovery_phrase": "View Recovery Phrase",
-          "create_new_wallet": "Create a new Wallet"
+          "create_new_wallet": "Create a new Wallet",
+          "view_private_key": "View Private Key",
+          "copy_address": "Copy Address"
+        },
+        "new_wallet": {
+          "name_your_wallet": "Name your wallet",
+          "create": "Create Wallet",
+          "no_wallet_name_set": "No wallet name set",
+          "input_placeholder": "ex: Wallet 1"
+        },
+        "private_key": {
+          "title": "Your Private Key",
+          "subtitle": "Anyone who has this key can access your entire wallet! You should never share it.",
+          "saved": "I've saved this",
+          "warning_1": "Never share your Private Key or enter it into any apps.",
+          "warning_2": "Make sure nobody can view your screen when viewing your Private Key.",
+          "warning_3": "Anyone with your Private Key can access your entire wallet.",
+          "warning_4": "Rainbow Support will never ask you for your Private Key.",
+          "show": "Show Private Key"
+        },
+        "recovery_phrase": {
+          "title": "Your Recovery Phrase",
+          "subtitle": "Anyone who has these words can access your entire wallet! You should never share them.",
+          "saved": "I've saved these words",
+          "warning_1": "Never share your Recovery Phrase or enter it into any apps.",
+          "warning_2": "Make sure nobody can view your screen when viewing your Recovery Phrase.",
+          "warning_3": "Anyone with your Recovery Phrase can access your entire wallet.",
+          "warning_4": "Rainbow Support will never ask you for your Recovery Phrase.",
+          "show": "Show Recovery Phrase"
         }
       }
     },
@@ -78,8 +107,30 @@
     "wallets_list": {
       "contacts": "Contacts",
       "my_wallets": "My wallets",
-      "watched_wallets": "Watching"
+      "watched_wallets": "Watching",
+      "no_results": "No results"
+    },
+    "tokens_input": {
+      "tokens": "Tokens",
+      "sort": "Sort",
+      "available": "available",
+      "token_balance": "Token Balance",
+      "networks": "Networks"
     }
+  },
+  "contacts": {
+    "save_contact": "Save contact",
+    "add_to_contacts": "Add to contacts",
+    "edit_contact": "Edit contact",
+    "save_changes": "Save changes",
+    "cancel": "Cancel",
+    "remove_contact_title": "Remove contact?",
+    "remove_contact_action": "Remove contact",
+    "remove_contact_description": "Are you sure you want to remove “%{name}” from your contacts?",
+    "save": "Save",
+    "copy_address": "Copy address",
+    "view_on_etherscan": "View on Etherscan",
+    "delete_contact": "Delete contact"
   },
   "sign": {
     "title": "Sign"
@@ -102,16 +153,15 @@
   },
   "seed_backup_prompt": {
     "title": "Before you get started, backup your Secret Recovery Phrase",
-    "write_down_seed_importance": "It's important to write down and store your Secret Recovery Phrase somewhere safe.",
-    "secret_recovery_phrase_usage": "Your Secret Recovery Phrase is the only way to recover your accounts and funds",
-    "secret_recovery_phrase_loss": "Anyone with your Secret Recovery Phrase can access your entire wallet",
+    "warning_1": "It's important to write down and store your Secret Recovery Phrase somewhere safe.",
+    "warning_2": "Your Secret Recovery Phrase is the only way to recover your accounts and funds",
+    "warning_3": "Anyone with your Secret Recovery Phrase can access your entire wallet",
     "reveal_your_recovery_phrase": "Reveal your recovery phrase",
     "skip": "Skip"
   },
   "seed_reveal": {
     "title": "Your Secret Recovery Phrase",
     "write_down_seed_importance": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
-    "copy_to_clipboard": "Copy to clipboard",
     "saved_these_words": "I've saved these words"
   },
   "import_or_connect": {
@@ -124,6 +174,14 @@
     "watch_address": "Watch an Ethereum address",
     "watch_address_description": "Watch a public address or ENS name"
   },
+  "import_wallet_selection": {
+    "title": "Your wallets",
+    "description_plural": "Rainbow detected %{count} wallets that have been previously recently. You can edit or add more at any time.",
+    "description_singular": "Rainbow detected 1 wallet that have been previously recently. You can add more at any time.",
+    "add_wallets": "Add wallets",
+    "edit_wallets": "Edit wallets",
+    "loading": "Hold tight while we look up all your wallets..."
+  },
   "import_wallet": {
     "title": "Import your wallet",
     "description": "Enter your Secret Recovery Phrase or a Private Key from Rainbow or any Ethereum wallet.",
@@ -134,6 +192,13 @@
     "placeholder": "Paste your Secret Recovery Phrase or a Private Key from another wallet",
     "import_wallet": "Import Wallet",
     "import_wallet_plural": "Import Wallets"
+  },
+  "edit_import_wallet_selection": {
+    "title": "All wallets",
+    "add_n_wallets": "Add %{count} wallets",
+    "add_wallet": "Add wallet",
+    "importing_your_wallet": "Importing your wallet...",
+    "importing_your_wallets": "Importing your wallets..."
   },
   "seed_verify": {
     "title": "Verify your Secret Recovery Phrase",
@@ -242,7 +307,11 @@
   },
   "common_actions": {
     "cancel": "Cancel",
-    "continue": "Continue"
+    "continue": "Continue",
+    "copy_to_clipboard": "Copy to clipboard"
+  },
+  "common_titles": {
+    "before_you_proceed": "Before you proceed"
   },
   "passwords": {
     "password": "Password",
@@ -258,7 +327,7 @@
     "weak": "Weak",
     "strong": "Strong",
     "too_short": "Password needs to be at least 8 chars long"
-  },  
+  },
   "create_password": {
     "title": "Create your password",
     "description": "Choose a password to secure & lock your wallet."

@@ -15,7 +15,7 @@ import {
 } from '~/design-system';
 import { SymbolName, TextColor } from '~/design-system/styles/designTokens';
 
-import { FullScreenContainerWithNavbar } from '../../components/FullScreen/FullScreenContainerWithNavbar';
+import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { PasswordInput } from '../../components/PasswordInput/PasswordInput';
 import { updatePassword } from '../../handlers/wallet';
 
@@ -119,7 +119,7 @@ export function CreatePassword() {
   };
 
   return (
-    <FullScreenContainerWithNavbar>
+    <FullScreenContainer>
       <Box alignItems="center" paddingBottom="10px">
         <Inline
           wrap={false}
@@ -265,6 +265,6 @@ export function CreatePassword() {
           </Button>
         </Rows>
       </Box>
-    </FullScreenContainerWithNavbar>
+    </FullScreenContainer>
   );
 }

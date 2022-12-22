@@ -564,6 +564,7 @@ export const space = {
 } as const;
 
 export const negativeSpace = {
+  '-1px': -1,
   '-2px': -2,
   '-3px': -3,
   '-4px': -4,
@@ -670,6 +671,7 @@ export const symbolNames = selectSymbolNames(
   'gearshape.fill',
   'qrcode',
   'person.crop.circle.fill',
+  'person.crop.circle.fill.badge.plus',
   'binoculars.fill',
   'circle.fill',
   'checkmark.circle.fill',
@@ -694,6 +696,7 @@ export const symbolNames = selectSymbolNames(
   'square.on.square',
   'slider.horizontal.3',
   'arrow.up.forward.circle',
+  'arrow.up.arrow.down',
   'arrow.right',
   'eye',
   'eye.slash.fill',
@@ -714,6 +717,13 @@ export const symbolNames = selectSymbolNames(
   'doc.text.magnifyingglass',
   'magnifyingglass.circle',
   'arrow.uturn.down.circle.fill',
+  'lifepreserver',
+  'doc.plaintext.fill',
+  'magnifyingglass.circle.fill',
+  'doc.on.doc.fill',
+  'trash',
+  'wand.and.stars',
+  'network',
 );
 export type SymbolName = typeof symbolNames[number];
 
@@ -722,6 +732,7 @@ export const radii = {
   '3px': 3,
   '6px': 6,
   '8px': 8,
+  '9px': 9,
   '12px': 12,
   '14px': 14,
   '16px': 16,
@@ -734,12 +745,18 @@ export const radii = {
 };
 export type Radius = keyof typeof radii;
 
-export type AnimatedRouteDirection = 'base' | 'horizontal' | 'vertical';
+export type AnimatedRouteDirection =
+  | 'base'
+  | 'horizontal'
+  | 'vertical'
+  | 'deceleratedShort'
+  | 'emphasizedShort';
 export type AnimatedRouteBreakpoints = 'initial' | 'end' | 'exit';
 export type AnimatedAttributes = {
   opacity?: number;
   x?: number;
   y?: number;
+  scale?: number;
 };
 export type AnimatedRouteConfig = Record<
   AnimatedRouteBreakpoints,
@@ -762,5 +779,13 @@ export const animatedRouteTransitionConfig = {
     stiffness: 1111,
     damping: 50,
     mass: 1,
+  },
+  deceleratedShort: {
+    ease: [0, 0, 0, 1],
+    duration: 0.18,
+  },
+  emphasizedShort: {
+    ease: [0.2, 0, 0, 1],
+    duration: 0.2,
   },
 };

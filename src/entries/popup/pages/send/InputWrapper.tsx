@@ -22,6 +22,9 @@ export const InputWrapper = ({
   showActionClose,
   onActionClose,
   onDropdownAction,
+  zIndex,
+  dropdownHeight,
+  onDropdownScroll,
 }: {
   leftComponent: ReactElement;
   centerComponent: ReactElement;
@@ -30,16 +33,19 @@ export const InputWrapper = ({
   dropdownVisible: boolean;
   onActionClose: () => void;
   onDropdownAction: () => void;
+  zIndex?: number;
+  dropdownHeight?: number;
+  onDropdownScroll?: () => void;
 }) => {
   return (
     <Box style={{ height: 68 }}>
-      <Box width="full" position="relative" style={{ zIndex: 1 }}>
+      <Box width="full" position="relative" style={{ zIndex: zIndex ?? 1 }}>
         <Box
+          height="full"
           background="surfaceSecondaryElevated"
           borderRadius="24px"
           paddingHorizontal="20px"
           paddingTop="16px"
-          height="full"
           borderWidth="1px"
           borderColor="buttonStroke"
         >
@@ -52,7 +58,7 @@ export const InputWrapper = ({
               <Column width="content">{leftComponent}</Column>
 
               <Column>
-                <>{centerComponent}</>
+                <Box>{centerComponent}</Box>
               </Column>
 
               <Column width="content">
@@ -86,12 +92,23 @@ export const InputWrapper = ({
           >
             <AnimatePresence>
               {dropdownVisible && (
-                <Box marginHorizontal="-20px">
+                <Box
+                  as={motion.div}
+                  key="input"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  marginHorizontal="-20px"
+                >
                   <Box paddingHorizontal="20px" paddingTop="16px">
                     <Separator />
                   </Box>
                   <Box
-                    style={{ height: 452, overflow: 'scroll' }}
+                    style={{
+                      height: dropdownHeight ?? 452,
+                      overflow: 'scroll',
+                    }}
+                    onScroll={onDropdownScroll}
                     paddingVertical="16px"
                   >
                     <Stack space="12px">{dropdownComponent}</Stack>

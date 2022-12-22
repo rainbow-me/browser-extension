@@ -13,6 +13,10 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.REPO_TOKEN }}
       - uses: actions/setup-node@v2
         with:
           node-version: "14.20.1"
@@ -26,10 +30,19 @@ jobs:
           path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
+      - name: Bump the version
+        run: yarn bump
       - name: Build the extension ready for the stores
         run: yarn bundle
       - name: Submit to the chrome webstore
         uses: PlasmoHQ/bpp@v3
         with:
-          artifact: build/artifact.zip
+          artifact: ./rainbowbx.zip
           keys: ${{ secrets.BPP_KEYS }}
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: Version Bump
+          committer_name: GitHub Actions
+          committer_email: actions@github.com
+          add: '*.json'
