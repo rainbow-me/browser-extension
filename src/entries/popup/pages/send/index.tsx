@@ -11,7 +11,6 @@ import { i18n } from '~/core/languages';
 import { useContactsStore } from '~/core/state/contacts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
-import { isNativeAsset } from '~/core/utils/chains';
 import { addNewTransaction } from '~/core/utils/transactions';
 import {
   AccentColorProvider,
@@ -92,18 +91,14 @@ export function Send() {
   } = useSendTransactionState({ assetAmount, asset });
 
   const transactionRequest: TransactionRequest = useMemo(() => {
-    const assetAddress = asset?.address;
-    const isSendingNativeAsset = assetAddress
-      ? isNativeAsset(asset?.address, chainId)
-      : true;
     return {
-      to: isSendingNativeAsset ? toAddress : assetAddress,
+      to: toAddress,
       from: fromAddress,
       value,
       chainId,
       data,
     };
-  }, [asset?.address, chainId, toAddress, fromAddress, value, data]);
+  }, [chainId, toAddress, fromAddress, value, data]);
 
   const handleToAddressChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
