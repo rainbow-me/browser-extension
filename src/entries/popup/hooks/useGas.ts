@@ -28,7 +28,7 @@ export const useGas = ({
   defaultSpeed?: GasSpeed;
   transactionRequest: TransactionRequest;
 }) => {
-  const { data, isLoading } = useGasData({ chainId, transactionRequest });
+  const { data, isLoading } = useGasData({ chainId });
   const { data: estimatedGasLimit } = useEstimateGasLimit({
     chainId,
     transactionRequest,
