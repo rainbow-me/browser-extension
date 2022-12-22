@@ -22,17 +22,27 @@ export function Privacy() {
     useHideSmallBalancesStore();
   const { autoLockTimer } = useAutoLockTimerStore();
   const [showEnterPassword, setShowEnterPassword] = useState(false);
+  const [confirmPasswordRedirect, setConfirmPasswordRedirect] = useState('');
   const openPasswordPrompt = () => {
     setShowEnterPassword(true);
   };
   const closePasswordPrompt = () => {
     setShowEnterPassword(false);
   };
+  const handleChangePassword = async () => {
+    setConfirmPasswordRedirect('/settings/privacy/changePassword');
+    openPasswordPrompt();
+  };
+  const handleWalletsAndKeys = async () => {
+    setConfirmPasswordRedirect('/settings/privacy/walletsAndKeys');
+    openPasswordPrompt();
+  };
   return (
     <Box>
       <ConfirmPasswordPrompt
         show={showEnterPassword}
         onClose={closePasswordPrompt}
+        redirect={confirmPasswordRedirect}
       />
       <Box paddingHorizontal="20px">
         <MenuContainer testId="settings-menu-container">
@@ -91,7 +101,7 @@ export function Privacy() {
                   )}
                 />
               }
-              onClick={openPasswordPrompt}
+              onClick={handleChangePassword}
             />
             <MenuItem
               hasRightArrow
@@ -121,7 +131,7 @@ export function Privacy() {
                   )}
                 />
               }
-              onClick={() => navigate('/settings/privacy/walletsAndKeys')}
+              onClick={handleWalletsAndKeys}
             />
           </Menu>
         </MenuContainer>

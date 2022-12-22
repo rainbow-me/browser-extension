@@ -21,7 +21,11 @@ import { Currency } from './pages/settings/currency';
 import { AutoLockTimer } from './pages/settings/privacy/autoLockTimer';
 import { ChangePassword } from './pages/settings/privacy/changePassword';
 import { Privacy } from './pages/settings/privacy/privacy';
-import { AccountDetails } from './pages/settings/privacy/walletsAndKeys/AccountDetails';
+import { PrivateKey } from './pages/settings/privacy/walletsAndKeys/privateKey/privateKey';
+import { PrivateKeyWarning } from './pages/settings/privacy/walletsAndKeys/privateKey/warning';
+import { RecoveryPhrase } from './pages/settings/privacy/walletsAndKeys/recoveryPhrase/recoveryPhrase';
+import { RecoveryPhraseWarning } from './pages/settings/privacy/walletsAndKeys/recoveryPhrase/warning';
+import { WalletDetails } from './pages/settings/privacy/walletsAndKeys/walletDetails';
 import { WalletsAndKeys } from './pages/settings/privacy/walletsAndKeys/walletsAndKeys';
 import { Settings } from './pages/settings/settings';
 import { Transactions } from './pages/settings/transactions';
@@ -217,16 +221,64 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/accountDetails',
+        path: '/settings/privacy/walletsAndKeys/walletDetails',
         element: (
           <AnimatedRoute
             direction="horizontal"
             navbar
             title={i18n.t(
-              'settings.privacy_and_security.wallets_and_keys.account_details.title',
+              'settings.privacy_and_security.wallets_and_keys.wallet_details.title',
             )}
           >
-            <AccountDetails />
+            <WalletDetails />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/privacy/walletsAndKeys/walletDetails/privateKeyWarning',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            background="surfaceSecondary"
+          >
+            <PrivateKeyWarning />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/privacy/walletsAndKeys/walletDetails/privateKey',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            background="surfaceSecondary"
+          >
+            <PrivateKey />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/privacy/walletsAndKeys/walletDetails/recoveryPhraseWarning',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            background="surfaceSecondary"
+          >
+            <RecoveryPhraseWarning />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: '/settings/privacy/walletsAndKeys/walletDetails/recoveryPhrase',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            background="surfaceSecondary"
+          >
+            <RecoveryPhrase />
           </AnimatedRoute>
         ),
       },

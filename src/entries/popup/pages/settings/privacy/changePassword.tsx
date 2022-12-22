@@ -32,7 +32,7 @@ export function ChangePassword() {
       setError(i18n.t('passwords.passwords_do_not_match'));
       return;
     }
-    await updatePassword(state?.currentPassword, newPassword);
+    await updatePassword(state?.password, newPassword);
     navigate(-1);
   };
 

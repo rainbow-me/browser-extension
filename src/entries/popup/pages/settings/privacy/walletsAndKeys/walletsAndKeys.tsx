@@ -1,44 +1,64 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { DummyAccount } from '~/core/types/walletsAndKeys';
+import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { Box, Symbol } from '~/design-system';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
+import { create, getWallets } from '~/entries/popup/handlers/wallet';
 
-import testAccounts from './testAccounts.json'; // temporary account data for UI -- will revisit to hook up with actual wallets
-
-interface DummyAccounts {
-  [accountId: string]: DummyAccount;
-}
 export function WalletsAndKeys() {
+  const { state } = useLocation();
   const navigate = useNavigate();
+  const [wallets, setWallets] = useState<KeychainWallet[]>([]);
 
-  const testData = testAccounts as DummyAccounts;
-
-  const handleViewAccount = (accountId: string) => {
-    navigate(`/settings/privacy/walletsAndKeys/accountDetails`, {
-      state: { account: testData[accountId] },
+  const handleViewWallet = (wallet: KeychainWallet) => {
+    navigate(`/settings/privacy/walletsAndKeys/walletDetails`, {
+      state: { wallet, password: state.password },
     });
+  };
+
+  useEffect(() => {
+    const fetchWallets = async () => {
+      const walletsFromKeychain = await getWallets();
+      setWallets(walletsFromKeychain);
+    };
+    fetchWallets();
+  }, []);
+
+  const handleCreateNewRecoveryPhrase = async () => {
+    const newWalletAccount = await create();
+    navigate(
+      '/settings/privacy/walletsAndKeys/walletDetails/recoveryPhraseWarning',
+      {
+        state: {
+          wallet: {
+            accounts: [newWalletAccount],
+            imported: false,
+            type: KeychainType.HdKeychain,
+          },
+          password: state.password,
+        },
+      },
+    );
   };
 
   return (
     <Box>
       <Box paddingHorizontal="20px">
         <MenuContainer>
-          {Object.keys(testData).map((accountId) => {
-            const account = testData[accountId];
-            const singleWallet = account.wallets.length === 1;
+          {wallets.map((wallet, idx) => {
+            const singleAccount = wallet.accounts.length === 1;
             const label = `${
-              account.imported
+              wallet.imported
                 ? `${i18n.t(
                     'settings.privacy_and_security.wallets_and_keys.imported',
                   )} ‧ `
                 : ''
-            }${account.wallets.length} ${
-              singleWallet
+            }${wallet.accounts.length} ${
+              singleAccount
                 ? i18n.t(
                     'settings.privacy_and_security.wallets_and_keys.wallet_single',
                   )
@@ -48,15 +68,21 @@ export function WalletsAndKeys() {
             }`;
 
             return (
-              <Menu key={accountId}>
+              <Menu key={idx}>
                 <MenuItem
-                  titleComponent={<MenuItem.Title text={accountId} />}
+                  titleComponent={
+                    <MenuItem.Title
+                      text={`${i18n.t(
+                        'settings.privacy_and_security.wallets_and_keys.recovery_phrase_label',
+                      )} ${idx + 1}`}
+                    />
+                  }
                   labelComponent={<MenuItem.Label text={label} />}
-                  onClick={() => handleViewAccount(accountId)}
+                  onClick={() => handleViewWallet(wallet)}
                   leftComponent={
                     <Symbol
                       symbol={
-                        singleWallet
+                        singleAccount
                           ? 'lock.square.fill'
                           : 'lock.square.stack.fill'
                       }
@@ -67,7 +93,7 @@ export function WalletsAndKeys() {
                   }
                   hasRightArrow
                 />
-                <MenuItem.WalletList wallets={account.wallets} />
+                <MenuItem.AccountList accounts={wallet.accounts} />
               </Menu>
             );
           })}
@@ -89,6 +115,7 @@ export function WalletsAndKeys() {
                   color="blue"
                 />
               }
+              onClick={handleCreateNewRecoveryPhrase}
             />
           </Menu>
         </MenuContainer>

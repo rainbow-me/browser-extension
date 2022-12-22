@@ -12,6 +12,8 @@ export enum walletActions {
   add = 'add',
   remove = 'remove',
   get_accounts = 'get_accounts',
+  get_wallets = 'get_wallets',
+  get_wallet = 'get_wallet',
   export_wallet = 'export_wallet',
   export_account = 'export_account',
   send_transaction = 'send_transaction',
