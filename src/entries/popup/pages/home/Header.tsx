@@ -51,11 +51,11 @@ export function Header() {
   );
 }
 
-export function AvatarSection() {
+export function AvatarSection({ size = 60 }: { size?: number }) {
   const { address } = useAccount();
   const { avatar, isFetched } = useAvatar({ address });
   return (
-    <Avatar.Wrapper size={60}>
+    <Avatar.Wrapper size={size}>
       {isFetched ? (
         <>
           {avatar?.imageUrl ? (

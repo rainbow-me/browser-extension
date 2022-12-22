@@ -11,6 +11,8 @@ import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
 import { ImportOrConnect } from './pages/importOrConnect';
 import { ImportWallet } from './pages/importWallet';
+import { ImportWalletSelection } from './pages/importWalletSelection';
+import { EditImportWalletSelection } from './pages/importWalletSelection/EditImportWalletSelection';
 import { SeedBackupPrompt } from './pages/seedBackupPrompt';
 import { SeedReveal } from './pages/seedReveal';
 import { SeedVerify } from './pages/seedVerify';
@@ -83,6 +85,28 @@ export function Routes() {
         element: (
           <AnimatedRoute direction="horizontal" navbar>
             <ImportWallet />
+          </AnimatedRoute>
+        ),
+        background: FullScreenBackground,
+      },
+      {
+        path: '/import/select',
+        element: (
+          <AnimatedRoute direction="horizontal" navbar>
+            <ImportWalletSelection />
+          </AnimatedRoute>
+        ),
+        background: FullScreenBackground,
+      },
+      {
+        path: '/import/edit',
+        element: (
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            title={i18n.t('edit_import_wallet_selection.title')}
+          >
+            <EditImportWalletSelection />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,

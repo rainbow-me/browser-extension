@@ -1,4 +1,5 @@
 import React, { SetStateAction, useCallback, useState } from 'react';
+import { Address, useAccount } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
@@ -10,6 +11,7 @@ import { AvatarSection } from '../home/Header';
 
 export function Unlock() {
   const [password, setPassword] = useState('');
+  const { address } = useAccount();
 
   const handlePasswordChange = useCallback(
     (event: { target: { value: SetStateAction<string> } }) => {
@@ -53,7 +55,7 @@ export function Unlock() {
             flexDirection="column"
           >
             <Box width="fit" paddingBottom="24px">
-              <AvatarSection />
+              <AvatarSection address={address as Address} />
             </Box>
             <Box width="fit" paddingBottom="10px">
               <Text align="center" color="label" size="16pt" weight="bold">
