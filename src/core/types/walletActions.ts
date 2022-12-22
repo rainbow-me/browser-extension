@@ -6,6 +6,7 @@ export enum walletActions {
   wipe = 'wipe',
   unlock = 'unlock',
   verify_password = 'verify_password',
+  derive_accounts_from_secret = 'derive_accounts_from_secret',
   create = 'create',
   import = 'import',
   add = 'add',

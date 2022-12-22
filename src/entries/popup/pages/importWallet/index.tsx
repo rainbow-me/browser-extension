@@ -1,10 +1,12 @@
-import { isValidMnemonic } from 'ethers/lib/utils';
+import { isAddress, isValidMnemonic } from 'ethers/lib/utils';
 import { motion } from 'framer-motion';
 import { startsWith } from 'lodash';
 import React, { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useCurrentAddressStore } from '~/core/state';
 import { addHexPrefix, isValidPrivateKey } from '~/core/utils/ethereum';
 import {
   Box,
@@ -23,7 +25,8 @@ import {
   transitions,
 } from '~/design-system/styles/designTokens';
 
-import { FullScreenContainerWithNavbar } from '../../components/FullScreen/FullScreenContainerWithNavbar';
+import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
+import * as wallet from '../../handlers/wallet';
 
 const validateSecret = (secret: string) => {
   // check if it's a private key
@@ -37,6 +40,8 @@ export function ImportWallet() {
   const navigate = useNavigate();
   const [isValid, setIsValid] = useState(false);
   const [secrets, setSecrets] = useState(['']);
+  const { setCurrentAddress } = useCurrentAddressStore();
+
   const [validity, setValidity] = useState<
     { valid: boolean; too_long: boolean; type: string | undefined }[]
   >([]);
@@ -83,9 +88,21 @@ export function ImportWallet() {
     [secrets, updateValidity],
   );
   const handleImportWallet = useCallback(async () => {
-    // Todo import wallet
-    navigate('/');
-  }, [navigate]);
+    if (secrets.length === 1 && secrets[0] === '') return;
+    // If it's only one private key or address, import it directly and go to wallet screen
+    if (secrets.length === 1) {
+      if (isValidPrivateKey(secrets[0]) || isAddress(secrets[0])) {
+        const address = (await wallet.importWithSecret(secrets[0])) as Address;
+        setCurrentAddress(address);
+        navigate('/');
+        return;
+      }
+    }
+
+    navigate('/import/select', {
+      state: { secrets },
+    });
+  }, [navigate, secrets, setCurrentAddress]);
 
   const handleAddAnotherOne = useCallback(() => {
     const newSecrets = [...secrets, ''];
@@ -100,7 +117,7 @@ export function ImportWallet() {
   }, [secrets, updateValidity]);
 
   return (
-    <FullScreenContainerWithNavbar>
+    <FullScreenContainer>
       <Box alignItems="center" paddingBottom="10px">
         <Inline
           wrap={false}
@@ -137,7 +154,7 @@ export function ImportWallet() {
         width="full"
         style={{
           overflow: 'auto',
-          height: '550px',
+          height: '400px',
         }}
       >
         <Stack space="10px">
@@ -248,6 +265,6 @@ export function ImportWallet() {
           </Button>
         </Rows>
       </Box>
-    </FullScreenContainerWithNavbar>
+    </FullScreenContainer>
   );
 }
