@@ -696,6 +696,7 @@ export const symbolNames = selectSymbolNames(
   'square.on.square',
   'slider.horizontal.3',
   'arrow.up.forward.circle',
+  'arrow.up.arrow.down',
   'arrow.right',
   'eye',
   'eye.slash.fill',

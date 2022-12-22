@@ -64,10 +64,11 @@ export function Send() {
     show: boolean;
     action: ContactAction;
   }>({ show: false, action: 'save' });
+  const [toAddressDropdownOpen, setToAddressDropdownOpen] = useState(false);
 
   const { isContact } = useContactsStore();
 
-  const { asset, shuffleAssetIndex } = useSendTransactionAsset();
+  const { asset, selectAssetIndex, assets } = useSendTransactionAsset();
   const {
     assetAmount,
     independentAmount,
@@ -202,6 +203,7 @@ export function Send() {
                 clearToAddress={clearToAddress}
                 handleToAddressChange={handleToAddressChange}
                 setToAddressOrName={setToAddressOrName}
+                onDropdownOpen={setToAddressDropdownOpen}
               />
             </Row>
 
@@ -216,7 +218,9 @@ export function Send() {
                 >
                   <TokenInput
                     asset={asset}
-                    shuffleAssetIndex={shuffleAssetIndex}
+                    assets={assets}
+                    selectAssetIndex={selectAssetIndex}
+                    dropdownClosed={toAddressDropdownOpen}
                   />
                   {asset ? (
                     <Box paddingBottom="20px" paddingHorizontal="20px">
