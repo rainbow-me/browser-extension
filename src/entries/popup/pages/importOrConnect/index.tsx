@@ -102,7 +102,7 @@ export function ImportOrConnect() {
           <Box
             paddingBottom="20px"
             paddingTop="20px"
-            onClick={() => navigateTo('/connect')}
+            onClick={() => alert('coming soon!')}
           >
             <Columns alignHorizontal="center" alignVertical="center">
               <Column>
