@@ -1,4 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { ChainId } from '@rainbow-me/swaps';
 import { useQuery } from '@tanstack/react-query';
 import { getProvider } from '@wagmi/core';
 import { Chain } from 'wagmi';
@@ -53,6 +54,9 @@ async function estimateGasLimitQueryFunction({
   });
 
   if (!gasLimit) {
+    if (chainId === ChainId.arbitrum) {
+      return `${ethUnits.arbitrum_basic_tx}`;
+    }
     return transactionRequest?.data === '0x'
       ? `${ethUnits.basic_tx}`
       : `${ethUnits.basic_transfer}`;

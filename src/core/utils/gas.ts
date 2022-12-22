@@ -34,7 +34,6 @@ import { addHexPrefix, gweiToWei, weiToGwei } from './ethereum';
 import {
   add,
   addBuffer,
-  convertAmountAndPriceToNativeDisplay,
   convertAmountAndPriceToNativeDisplayWithThreshold,
   convertRawAmountToBalance,
   convertStringToHex,
@@ -221,7 +220,7 @@ export const parseGasFeeLegacyParams = ({
     supportedCurrencies[nativeAsset?.symbol as SupportedCurrencyKey],
   ).amount;
 
-  const nativeDisplay = convertAmountAndPriceToNativeDisplay(
+  const nativeDisplay = convertAmountAndPriceToNativeDisplayWithThreshold(
     nativeTotalWei,
     nativeAsset?.price?.value || 0,
     currency,
