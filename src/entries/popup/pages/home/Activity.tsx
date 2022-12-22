@@ -26,6 +26,7 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import { useAllTransactions } from '../../hooks/useAllTransactions';
 import { SheetMode } from '../speedUpAndCancelSheet';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { SpeedUpAndCancelMenu } from './SpeedUpAndCancelMenu';
 
 type ActivityProps = {
@@ -58,6 +59,7 @@ export function Activity({ onSheetSelected }: ActivityProps) {
     enableSmoothScroll: false,
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onTransactionSelected = ({
     sheet,
     transaction,
@@ -102,15 +104,16 @@ export function Activity({ onSheetSelected }: ActivityProps) {
                 </Inset>
               );
             }
-            return (
-              <SpeedUpAndCancelMenu
-                key={index}
-                onRowSelection={onTransactionSelected}
-                transaction={item}
-              >
-                <ActivityRow transaction={item} />
-              </SpeedUpAndCancelMenu>
-            );
+            // return (
+            //   <SpeedUpAndCancelMenu
+            //     key={index}
+            //     onRowSelection={onTransactionSelected}
+            //     transaction={item}
+            //   >
+            //     <ActivityRow transaction={item} />
+            //   </SpeedUpAndCancelMenu>
+            // );
+            return <ActivityRow transaction={item} key={index} />;
           })}
         </Box>
       </Box>
