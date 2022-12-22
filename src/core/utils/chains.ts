@@ -39,3 +39,16 @@ export function chainNameFromChainId(chainId: ChainId) {
     Object.values(ChainId).indexOf(chainId)
   ] as ChainName;
 }
+
+export function getBlockExplorerHostForChain(chainId: ChainId) {
+  if (chainId === ChainId.optimism) {
+    return 'optimistic.etherscan.io';
+  } else if (chainId === ChainId.polygon) {
+    return 'polygonscan.com';
+  } else if (chainId === ChainId.bsc) {
+    return 'bscscan.com';
+  } else if (chainId === ChainId.arbitrum) {
+    return 'arbiscan.io';
+  }
+  return 'etherscan.io';
+}

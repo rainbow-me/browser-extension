@@ -7,12 +7,10 @@ export const InputActionButon = ({
   showClose,
   onClose,
   dropdownVisible,
-  onDropdownAction,
 }: {
   showClose: boolean;
   dropdownVisible: boolean;
   onClose: () => void;
-  onDropdownAction?: () => void;
 }) => {
   return showClose ? (
     <Box
@@ -34,7 +32,6 @@ export const InputActionButon = ({
     <Box
       as={motion.div}
       animate={dropdownVisible ? { rotate: 180 } : { rotate: 0 }}
-      onClick={onDropdownAction}
     >
       <Inline alignVertical="center">
         <Symbol

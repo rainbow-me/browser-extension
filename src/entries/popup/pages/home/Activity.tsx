@@ -24,8 +24,22 @@ import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 
 import { Spinner } from '../../components/Spinner/Spinner';
 import { useAllTransactions } from '../../hooks/useAllTransactions';
+import { SheetMode } from '../speedUpAndCancelSheet';
 
-export function Activity() {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { SpeedUpAndCancelMenu } from './SpeedUpAndCancelMenu';
+
+type ActivityProps = {
+  onSheetSelected: ({
+    sheet,
+    transaction,
+  }: {
+    sheet: SheetMode;
+    transaction: RainbowTransaction;
+  }) => void;
+};
+
+export function Activity({ onSheetSelected }: ActivityProps) {
   const { address } = useAccount();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { allTransactionsByDate } = useAllTransactions({
@@ -45,39 +59,65 @@ export function Activity() {
     enableSmoothScroll: false,
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const onTransactionSelected = ({
+    sheet,
+    transaction,
+  }: {
+    sheet: SheetMode;
+    transaction: RainbowTransaction;
+  }) => {
+    onSheetSelected({ sheet, transaction });
+  };
+
   return (
-    <Box
-      marginTop={'-20px'}
-      ref={containerRef}
-      width="full"
-      style={{
-        overflow: 'auto',
-      }}
-    >
+    <>
       <Box
+        marginTop={'-20px'}
+        ref={containerRef}
         width="full"
         style={{
-          height: `${activityRowVirtualizer.getTotalSize()}px`,
-          position: 'relative',
+          overflow: 'auto',
         }}
       >
-        {activityRowVirtualizer.getVirtualItems().map(({ index }) => {
-          const item = listData[index];
-          if (typeof item === 'string') {
-            return (
-              <Inset key={index} horizontal="20px" top="16px" bottom="8px">
-                <Box>
-                  <Text size="14pt" weight={'semibold'} color={'labelTertiary'}>
-                    {item}
-                  </Text>
-                </Box>
-              </Inset>
-            );
-          }
-          return <ActivityRow key={index} transaction={item} />;
-        })}
+        <Box
+          width="full"
+          style={{
+            height: `${activityRowVirtualizer.getTotalSize()}px`,
+            position: 'relative',
+          }}
+        >
+          {activityRowVirtualizer.getVirtualItems().map(({ index }) => {
+            const item = listData[index];
+            if (typeof item === 'string') {
+              return (
+                <Inset key={index} horizontal="20px" top="16px" bottom="8px">
+                  <Box>
+                    <Text
+                      size="14pt"
+                      weight={'semibold'}
+                      color={'labelTertiary'}
+                    >
+                      {item}
+                    </Text>
+                  </Box>
+                </Inset>
+              );
+            }
+            // return (
+            //   <SpeedUpAndCancelMenu
+            //     key={index}
+            //     onRowSelection={onTransactionSelected}
+            //     transaction={item}
+            //   >
+            //     <ActivityRow transaction={item} />
+            //   </SpeedUpAndCancelMenu>
+            // );
+            return <ActivityRow transaction={item} key={index} />;
+          })}
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 }
 

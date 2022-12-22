@@ -19,9 +19,11 @@ import { useNativeAssetForNetwork } from './useNativeAssetForNetwork';
 
 export const useGas = ({
   chainId,
+  defaultSpeed,
   transactionRequest,
 }: {
   chainId: Chain['id'];
+  defaultSpeed?: GasSpeed;
   transactionRequest: TransactionRequest;
 }) => {
   const { data, isLoading } = useGasData({ chainId, transactionRequest });
@@ -35,7 +37,9 @@ export const useGas = ({
     gasFeeParamsBySpeed: storeGasFeeParamsBySpeed,
     setGasFeeParamsBySpeed,
   } = useGasStore();
-  const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>(GasSpeed.NORMAL);
+  const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>(
+    defaultSpeed || GasSpeed.NORMAL,
+  );
   const nativeAsset = useNativeAssetForNetwork({ chainId });
 
   const gasLimit = estimatedGasLimit ?? `${ethUnits.basic_transfer}`;

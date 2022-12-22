@@ -64,6 +64,7 @@ export const TokenInput = ({
   setSortMethod: (sortMethod: SortMethod) => void;
   sortMethod: SortMethod;
 }) => {
+  const { innerWidth: windowWidth } = window;
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
 
@@ -103,13 +104,23 @@ export const TokenInput = ({
       centerComponent={
         <Box width="fit">
           <Stack space="8px">
-            <Text
-              size="16pt"
-              weight="semibold"
-              color={`${asset ? 'label' : 'labelTertiary'}`}
+            <Box
+              style={{
+                maxWidth: windowWidth / 2,
+              }}
             >
-              {asset?.name ?? i18n.t('send.input_token_placeholder')}
-            </Text>
+              <Text
+                size="16pt"
+                weight="semibold"
+                color={`${asset ? 'label' : 'labelTertiary'}`}
+                whiteSpace="nowrap"
+                overflow="hidden"
+                textOverflow="ellipsis"
+              >
+                {asset?.name ?? i18n.t('send.input_token_placeholder')}
+              </Text>
+            </Box>
+
             {asset && (
               <Text size="12pt" weight="semibold" color={`labelTertiary`}>
                 {handleSignificantDecimals(

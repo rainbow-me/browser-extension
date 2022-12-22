@@ -16,14 +16,10 @@ import {
   AccentColorProvider,
   Box,
   Button,
-  Inline,
   Row,
   Rows,
-  Separator,
-  Stack,
   Text,
 } from '~/design-system';
-import { Input } from '~/design-system/components/Input/Input';
 import { foregroundColors } from '~/design-system/styles/designTokens';
 
 import { Navbar } from '../../components/Navbar/Navbar';
@@ -37,6 +33,7 @@ import { ContactAction, ContactPrompt } from './ContactPrompt';
 import { NavbarContactButton } from './NavbarContactButton';
 import { ToAddressInput } from './ToAddressInput';
 import { TokenInput } from './TokenInput';
+import { ValueInput } from './ValueInput';
 
 const AccentColorProviderWrapper = ({
   color,
@@ -115,13 +112,6 @@ export function Send() {
     [setToAddressOrName],
   );
 
-  const handleAmountChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setIndependentAmount(e.target.value);
-    },
-    [setIndependentAmount],
-  );
-
   const handleSend = useCallback(async () => {
     setSending(true);
 
@@ -163,6 +153,14 @@ export function Send() {
       setSending(false);
     }
   }, [asset, assetAmount, fromAddress, toAddress, value, chainId, data]);
+
+  const selecteAsset = useCallback(
+    (index?: number) => {
+      selectAssetIndex(index);
+      setIndependentAmount('');
+    },
+    [selectAssetIndex, setIndependentAmount],
+  );
 
   const navbarButtonAction = isContact({ address: toAddress })
     ? 'edit'
@@ -220,75 +218,23 @@ export function Send() {
                   <TokenInput
                     asset={asset}
                     assets={assets}
-                    selectAssetIndex={selectAssetIndex}
+                    selectAssetIndex={selecteAsset}
                     dropdownClosed={toAddressDropdownOpen}
                     setSortMethod={setSortMethod}
                     sortMethod={sortMethod}
                   />
                   {asset ? (
-                    <Box paddingBottom="20px" paddingHorizontal="20px">
-                      <Stack space="16px">
-                        <Separator color="separatorSecondary" />
-                        <Box>
-                          <Rows space="16px">
-                            <Row>
-                              <Inline
-                                alignVertical="center"
-                                alignHorizontal="justify"
-                              >
-                                <Input
-                                  value={independentAmount}
-                                  placeholder={`0.00 ${asset?.symbol}`}
-                                  borderColor="accent"
-                                  onChange={handleAmountChange}
-                                  height="56px"
-                                  variant="bordered"
-                                  innerRef={independentFieldRef}
-                                  style={{
-                                    paddingRight: 80,
-                                  }}
-                                />
-                                <Box position="absolute" style={{ right: 48 }}>
-                                  <Button
-                                    onClick={setMaxAssetAmount}
-                                    color="accent"
-                                    height="32px"
-                                    variant="raised"
-                                  >
-                                    {i18n.t('send.max')}
-                                  </Button>
-                                </Box>
-                              </Inline>
-                            </Row>
-
-                            <Row>
-                              <Inline
-                                alignHorizontal="justify"
-                                alignVertical="center"
-                              >
-                                <Box>
-                                  <Text size="12pt" color="label" weight="bold">
-                                    {dependentAmount.display}
-                                  </Text>
-                                </Box>
-                                <Box onClick={switchIndependentField}>
-                                  <Text
-                                    color="accent"
-                                    size="12pt"
-                                    weight="bold"
-                                  >
-                                    {i18n.t('send.switch_to')}{' '}
-                                    {independentField === 'asset'
-                                      ? currentCurrency
-                                      : asset?.symbol}
-                                  </Text>
-                                </Box>
-                              </Inline>
-                            </Row>
-                          </Rows>
-                        </Box>
-                      </Stack>
-                    </Box>
+                    <ValueInput
+                      asset={asset}
+                      currentCurrency={currentCurrency}
+                      dependentAmount={dependentAmount}
+                      independentAmount={independentAmount}
+                      independentField={independentField}
+                      independentFieldRef={independentFieldRef}
+                      setIndependentAmount={setIndependentAmount}
+                      setMaxAssetAmount={setMaxAssetAmount}
+                      switchIndependentField={switchIndependentField}
+                    />
                   ) : null}
                 </Box>
               </AccentColorProviderWrapper>
