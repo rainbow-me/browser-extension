@@ -15,7 +15,7 @@ import {
 } from '~/design-system';
 
 import { ChevronRight } from '../../components/ChevronRight';
-import { FullScreenContainerWithNavbar } from '../../components/FullScreen/FullScreenContainerWithNavbar';
+import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 
 export function ImportOrConnect() {
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ export function ImportOrConnect() {
   );
 
   return (
-    <FullScreenContainerWithNavbar>
+    <FullScreenContainer>
       <Box alignItems="center" paddingBottom="10px">
         <Inline
           wrap={false}
@@ -158,6 +158,6 @@ export function ImportOrConnect() {
       </Box>
 
       <Box width="full" paddingTop="80px" paddingBottom="60px"></Box>
-    </FullScreenContainerWithNavbar>
+    </FullScreenContainer>
   );
 }

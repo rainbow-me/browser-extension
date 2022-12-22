@@ -74,6 +74,28 @@ class KeychainManager {
         return chrome.storage.session.set({ keychainManager: this.state });
       },
 
+      deriveAccounts: async (
+        opts: SerializedKeypairKeychain | SerializedHdKeychain,
+      ): Promise<Address[]> => {
+        let keychain;
+        switch (opts.type) {
+          case KeychainType.HdKeychain:
+            keychain = new HdKeychain();
+            await keychain.init(opts as SerializedHdKeychain);
+            break;
+          case KeychainType.KeyPairKeychain:
+            keychain = new KeyPairKeychain();
+            await keychain.init(opts as SerializedKeypairKeychain);
+            break;
+          case KeychainType.ReadOnlyKeychain:
+            keychain = new ReadOnlyKeychain();
+            await keychain.init(opts as unknown as SerializedReadOnlyKeychain);
+            break;
+          default:
+            throw new Error('Keychain type not recognized.');
+        }
+        return keychain.getAccounts();
+      },
       restoreKeychain: async (
         opts: SerializedKeypairKeychain | SerializedHdKeychain,
       ): Promise<Keychain> => {
@@ -187,6 +209,18 @@ class KeychainManager {
     return privates.get(this).restoreKeychain({
       ...opts,
       imported: true,
+      autodiscover: true,
+    });
+  }
+
+  async deriveAccounts(
+    opts:
+      | SerializedKeypairKeychain
+      | SerializedHdKeychain
+      | SerializedReadOnlyKeychain,
+  ): Promise<Address[]> {
+    return privates.get(this).deriveAccounts({
+      ...opts,
       autodiscover: true,
     });
   }

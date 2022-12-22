@@ -13,7 +13,7 @@ import {
   Text,
 } from '~/design-system';
 
-import { FullScreenContainerWithNavbar } from '../../components/FullScreen/FullScreenContainerWithNavbar';
+import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import SeedPhraseTable from '../../components/SeedPhraseTable/SeedPhaseTable';
 import { exportWallet } from '../../handlers/wallet';
 
@@ -40,7 +40,7 @@ export function SeedReveal() {
   }, [seed]);
 
   return (
-    <FullScreenContainerWithNavbar>
+    <FullScreenContainer>
       <Box alignItems="center" paddingBottom="10px">
         <Inline
           wrap={false}
@@ -102,6 +102,6 @@ export function SeedReveal() {
           </Button>
         </Rows>
       </Box>
-    </FullScreenContainerWithNavbar>
+    </FullScreenContainer>
   );
 }

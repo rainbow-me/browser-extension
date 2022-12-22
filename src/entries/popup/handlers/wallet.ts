@@ -97,6 +97,13 @@ export const updatePassword = async (password: string, newPassword: string) => {
   })) as boolean;
 };
 
+export const deriveAccountsFromSecret = async (secret: string) => {
+  return (await walletAction(
+    'derive_accounts_from_secret',
+    secret,
+  )) as Address[];
+};
+
 export const verifyPassword = async (password: string) => {
   return (await walletAction('verify_password', password)) as boolean;
 };

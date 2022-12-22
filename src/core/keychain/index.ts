@@ -76,6 +76,39 @@ export const createWallet = async (): Promise<Address> => {
   return accounts[0];
 };
 
+export const deriveAccountsFromSecret = async (
+  secret: EthereumWalletSeed,
+): Promise<Address[]> => {
+  const walletType = identifyWalletType(secret);
+  let accounts = [];
+  switch (walletType) {
+    case EthereumWalletType.mnemonic: {
+      accounts = await keychainManager.deriveAccounts({
+        type: KeychainType.HdKeychain,
+        mnemonic: secret,
+      });
+      break;
+    }
+    case EthereumWalletType.privateKey: {
+      accounts = await keychainManager.deriveAccounts({
+        type: KeychainType.KeyPairKeychain,
+        privateKey: secret,
+      });
+      break;
+    }
+    case EthereumWalletType.readOnly: {
+      accounts = await keychainManager.deriveAccounts({
+        type: KeychainType.ReadOnlyKeychain,
+        address: secret as Address,
+      });
+      break;
+    }
+    default:
+      throw new Error('Wallet type not recognized.');
+  }
+  return accounts as Address[];
+};
+
 export const importWallet = async (
   secret: EthereumWalletSeed,
 ): Promise<Address> => {

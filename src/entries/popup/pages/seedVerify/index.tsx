@@ -16,7 +16,7 @@ import {
 } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
 
-import { FullScreenContainerWithNavbar } from '../../components/FullScreen/FullScreenContainerWithNavbar';
+import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { exportWallet } from '../../handlers/wallet';
 
 const shuffleArray = (array: string[]) => {
@@ -98,7 +98,7 @@ export function SeedVerify() {
   }, [navigate]);
 
   return (
-    <FullScreenContainerWithNavbar>
+    <FullScreenContainer>
       <Box alignItems="center" paddingBottom="10px">
         <Inline
           wrap={false}
@@ -292,6 +292,6 @@ export function SeedVerify() {
       </Box>
 
       <Box width="full" paddingTop="80px" paddingBottom="60px"></Box>
-    </FullScreenContainerWithNavbar>
+    </FullScreenContainer>
   );
 }
