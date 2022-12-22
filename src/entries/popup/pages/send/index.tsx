@@ -157,6 +157,7 @@ export function Send() {
           type: TransactionType.send,
         };
         if (fromAddress) {
+          console.log('ADDING NEW TRANSACTION: ', transaction);
           await addNewTransaction({
             address: fromAddress,
             chainId,
