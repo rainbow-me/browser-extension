@@ -36,7 +36,7 @@ export const useSendTransactionState = ({
   );
 
   const value = useMemo(
-    () => (sendingNativeAsset && assetAmount ? parseEther(assetAmount) : '0'),
+    () => (sendingNativeAsset && assetAmount ? parseEther(assetAmount) : '0x0'),
     [assetAmount, sendingNativeAsset],
   );
 

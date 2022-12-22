@@ -10,6 +10,7 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
+import { ethUnits } from '~/core/references';
 import { estimateGas } from '~/core/utils/gas';
 
 // ///////////////////////////////////////////////
@@ -50,6 +51,12 @@ async function estimateGasLimitQueryFunction({
     transactionRequest,
     provider,
   });
+
+  if (!gasLimit) {
+    return transactionRequest?.data === '0x'
+      ? `${ethUnits.basic_tx}`
+      : `${ethUnits.basic_transfer}`;
+  }
   return gasLimit;
 }
 

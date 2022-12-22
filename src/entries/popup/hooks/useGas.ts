@@ -43,20 +43,16 @@ export const useGas = ({
   );
   const nativeAsset = useNativeAssetForNetwork({ chainId });
 
-  const gasLimit = estimatedGasLimit ?? `${ethUnits.basic_transfer}`;
-
   const gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed =
-    useMemo(
-      () =>
-        parseGasFeeParamsBySpeed({
-          chainId,
-          data,
-          gasLimit,
-          nativeAsset,
-          currency: currentCurrency,
-        }),
-      [chainId, data, gasLimit, nativeAsset, currentCurrency],
-    );
+    useMemo(() => {
+      return parseGasFeeParamsBySpeed({
+        chainId,
+        data,
+        gasLimit: estimatedGasLimit || `${ethUnits.basic_transfer}`,
+        nativeAsset,
+        currency: currentCurrency,
+      });
+    }, [chainId, data, estimatedGasLimit, nativeAsset, currentCurrency]);
 
   useEffect(() => {
     if (gasFeeParamsChanged(selectedGas, gasFeeParamsBySpeed[selectedSpeed])) {
