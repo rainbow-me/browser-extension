@@ -98,6 +98,6 @@ export function useEstimateGasLimit(
   return useQuery(
     estimateGasLimitQueryKey({ chainId, transactionRequest }),
     estimateGasLimitQueryFunction,
-    config,
+    { keepPreviousData: true, ...config },
   );
 }

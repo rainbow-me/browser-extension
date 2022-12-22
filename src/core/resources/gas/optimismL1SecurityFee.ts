@@ -94,6 +94,6 @@ export function useOptimismL1SecurityFee(
   return useQuery(
     optimismL1SecurityFeeQueryKey({ transactionRequest }),
     optimismL1SecurityFeeQueryFunction,
-    config,
+    { keepPreviousData: true, ...config },
   );
 }
