@@ -29,7 +29,7 @@ type AssetRowProps = {
   uniqueId: UniqueId;
 };
 
-function AssetRow({ uniqueId }: AssetRowProps) {
+export function AssetRow({ uniqueId }: AssetRowProps) {
   const asset = useUserAsset(uniqueId);
   const name = asset?.name;
 
