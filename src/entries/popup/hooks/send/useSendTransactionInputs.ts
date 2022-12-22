@@ -1,11 +1,14 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 
+import { supportedCurrencies } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountFromNativeValue,
   convertAmountToBalanceDisplay,
+  convertNumberToString,
+  toFixedDecimals,
 } from '~/core/utils/numbers';
 
 export const useSendTransactionInputs = ({
@@ -22,11 +25,23 @@ export const useSendTransactionInputs = ({
 
   const dependentAmount = useMemo(() => {
     if (independentField === 'asset') {
-      return convertAmountAndPriceToNativeDisplay(
+      const nativeDisplay = convertAmountAndPriceToNativeDisplay(
         (independentAmount as string) || '0',
         asset?.price?.value || 0,
         currentCurrency,
       );
+
+      const amount = convertNumberToString(
+        toFixedDecimals(
+          nativeDisplay.amount,
+          supportedCurrencies[currentCurrency].decimals,
+        ),
+      );
+
+      return {
+        display: nativeDisplay.display,
+        amount: amount === '0' ? '' : amount,
+      };
     } else {
       const amountFromNativeValue = convertAmountFromNativeValue(
         (independentAmount as string) || '0',
@@ -38,7 +53,7 @@ export const useSendTransactionInputs = ({
           amountFromNativeValue,
           asset ?? { decimals: 18, symbol: '' },
         ),
-        amount: amountFromNativeValue,
+        amount: amountFromNativeValue === '0' ? '' : amountFromNativeValue,
       };
     }
   }, [asset, currentCurrency, independentAmount, independentField]);
@@ -68,11 +83,16 @@ export const useSendTransactionInputs = ({
     const newValue =
       independentField === 'asset'
         ? asset?.balance?.amount || '0'
-        : convertAmountAndPriceToNativeDisplay(
-            asset?.balance?.amount || 0,
-            asset?.price?.value || 0,
-            currentCurrency,
-          ).amount;
+        : convertNumberToString(
+            toFixedDecimals(
+              convertAmountAndPriceToNativeDisplay(
+                asset?.balance?.amount || 0,
+                asset?.price?.value || 0,
+                currentCurrency,
+              ).amount,
+              supportedCurrencies[currentCurrency].decimals,
+            ),
+          );
 
     setIndependentAmount(newValue);
     setInputValue(newValue);

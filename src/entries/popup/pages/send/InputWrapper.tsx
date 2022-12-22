@@ -41,15 +41,15 @@ export const InputWrapper = ({
     <Box style={{ height: 68 }}>
       <Box width="full" position="relative" style={{ zIndex: zIndex ?? 1 }}>
         <Box
+          height="full"
           background="surfaceSecondaryElevated"
           borderRadius="24px"
           paddingHorizontal="20px"
           paddingTop="16px"
-          height="full"
           borderWidth="1px"
           borderColor="buttonStroke"
         >
-          <Box>
+          <Box onClick={onDropdownAction}>
             <Columns
               alignVertical="center"
               alignHorizontal="justify"
@@ -58,14 +58,13 @@ export const InputWrapper = ({
               <Column width="content">{leftComponent}</Column>
 
               <Column>
-                <Box onClick={onDropdownAction}>{centerComponent}</Box>
+                <Box>{centerComponent}</Box>
               </Column>
 
               <Column width="content">
                 <InputActionButon
                   showClose={showActionClose}
                   onClose={onActionClose}
-                  onDropdownAction={onDropdownAction}
                   dropdownVisible={dropdownVisible}
                 />
               </Column>

@@ -11,6 +11,15 @@ interface TextProps {
   size: TextStyles['fontSize'];
   weight: TextStyles['fontWeight'];
   testId?: string;
+  whiteSpace?:
+    | 'normal'
+    | 'nowrap'
+    | 'pre'
+    | 'pre-wrap'
+    | 'pre-line'
+    | 'break-spaces';
+  overflow?: 'visible' | 'hidden' | 'scroll' | 'auto';
+  textOverflow?: 'clip' | 'ellipsis';
 }
 
 export function Text({
@@ -21,10 +30,14 @@ export function Text({
   size,
   weight,
   testId,
+  whiteSpace,
+  overflow,
+  textOverflow,
 }: TextProps) {
   return (
     <Box
       as={as}
+      style={{ whiteSpace, overflow, textOverflow }}
       className={textStyles({
         color,
         cursor: 'default',
