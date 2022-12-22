@@ -34,6 +34,7 @@ import { addHexPrefix, gweiToWei, weiToGwei } from './ethereum';
 import {
   add,
   addBuffer,
+  convertAmountAndPriceToNativeDisplay,
   convertAmountAndPriceToNativeDisplayWithThreshold,
   convertRawAmountToBalance,
   convertStringToHex,
@@ -188,6 +189,7 @@ export const parseGasFeeLegacyParams = ({
   gasLimit,
   nativeAsset,
   currency,
+  optimismL1SecurityFee,
 }: {
   gwei: string;
   speed: GasSpeed;
@@ -195,6 +197,7 @@ export const parseGasFeeLegacyParams = ({
   gasLimit: string;
   nativeAsset?: ParsedAsset;
   currency: SupportedCurrencyKey;
+  optimismL1SecurityFee?: string;
 }): GasFeeLegacyParams => {
   const wei = gweiToWei(gwei);
   const gasPrice = parseGasFeeParam({
@@ -211,16 +214,19 @@ export const parseGasFeeLegacyParams = ({
   };
 
   const amount = gasPrice.amount;
-  const totalWei = multiply(gasLimit, amount);
+  const totalWei = add(multiply(gasLimit, amount), optimismL1SecurityFee || 0);
+
   const nativeTotalWei = convertRawAmountToBalance(
     totalWei,
     supportedCurrencies[nativeAsset?.symbol as SupportedCurrencyKey],
   ).amount;
-  const nativeDisplay = convertAmountAndPriceToNativeDisplayWithThreshold(
+
+  const nativeDisplay = convertAmountAndPriceToNativeDisplay(
     nativeTotalWei,
     nativeAsset?.price?.value || 0,
     currency,
   );
+
   const gasFee = { amount: totalWei, display: nativeDisplay.display };
 
   return {
@@ -402,12 +408,14 @@ export const parseGasFeeParamsBySpeed = ({
   gasLimit,
   nativeAsset,
   currency,
+  optimismL1SecurityFee,
 }: {
   chainId: ChainId;
   data?: MeteorologyResponse | MeteorologyLegacyResponse;
   gasLimit: string;
   nativeAsset?: ParsedAsset;
   currency: SupportedCurrencyKey;
+  optimismL1SecurityFee?: string;
 }) => {
   if (chainId === ChainId.mainnet && data) {
     const response = data as MeteorologyResponse;
@@ -465,6 +473,7 @@ export const parseGasFeeParamsBySpeed = ({
         gasLimit,
         nativeAsset,
         currency,
+        optimismL1SecurityFee,
       });
 
     return {

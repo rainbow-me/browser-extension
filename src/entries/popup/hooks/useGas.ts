@@ -4,7 +4,9 @@ import { Chain } from 'wagmi';
 
 import { ethUnits } from '~/core/references';
 import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
+import { useOptimismL1SecurityFee } from '~/core/resources/gas/optimismL1SecurityFee';
 import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
+import { ChainId } from '~/core/types/chains';
 import {
   GasFeeLegacyParamsBySpeed,
   GasFeeParamsBySpeed,
@@ -31,6 +33,10 @@ export const useGas = ({
     chainId,
     transactionRequest,
   });
+  const { data: optimismL1SecurityFee } = useOptimismL1SecurityFee(
+    { transactionRequest },
+    { enabled: chainId === ChainId.optimism },
+  );
   const { currentCurrency } = useCurrentCurrencyStore();
   const {
     selectedGas,
@@ -51,8 +57,16 @@ export const useGas = ({
         gasLimit: estimatedGasLimit || `${ethUnits.basic_transfer}`,
         nativeAsset,
         currency: currentCurrency,
+        optimismL1SecurityFee,
       });
-    }, [chainId, data, estimatedGasLimit, nativeAsset, currentCurrency]);
+    }, [
+      chainId,
+      data,
+      estimatedGasLimit,
+      nativeAsset,
+      currentCurrency,
+      optimismL1SecurityFee,
+    ]);
 
   useEffect(() => {
     if (gasFeeParamsChanged(selectedGas, gasFeeParamsBySpeed[selectedSpeed])) {
