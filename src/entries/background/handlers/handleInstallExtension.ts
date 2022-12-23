@@ -20,9 +20,8 @@ export const handleInstallExtension = () =>
         }
       });
     } else {
-      // Page we want to show after installation.
-      // Disabled until we have some onboarding flow/
-      // const tab = await chrome.tabs.create({ url: 'https://rainbow.me/' });
-      // console.log(`Created tab ${tab.id}`);
+      chrome.tabs.create({
+        url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome`,
+      });
     }
   });

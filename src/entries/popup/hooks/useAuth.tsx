@@ -21,11 +21,6 @@ const getUserStatus = async (): Promise<UserStatusResult> => {
   // if we have a vault set it means onboarding is complete
   const { unlocked, hasVault, passwordSet } = await wallet.getStatus();
   // if we don't have a password set we need to check if there's a wallet
-  console.log({
-    unlocked,
-    hasVault,
-    passwordSet,
-  });
   if (hasVault) {
     // Check if it has a password set
     if (passwordSet) {
@@ -46,25 +41,19 @@ const useSessionStatus = () => {
   const [status, setStatus] = useState('');
 
   const updateStatus = useCallback(async () => {
-    console.log('updating ssession status');
     const newStatus = await getUserStatus();
-    console.log('new status is', newStatus);
     setStatus(newStatus);
     await chrome.storage.session.set({ userStatus: newStatus });
-    console.log('done updating');
   }, []);
 
   useEffect(() => {
     const init = async () => {
       // Read from local storage first
-      console.log('reading status from session storage...');
       const { userStatus: statusFromStorage } =
         await chrome.storage.session.get('userStatus');
       if (!statusFromStorage) {
-        console.log('nothing found in session storage, refreshing status');
         updateStatus();
       } else {
-        console.log('got status from session storage...', statusFromStorage);
         setStatus(statusFromStorage);
       }
     };
@@ -86,12 +75,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const listener = (changes: {
       [key: string]: chrome.storage.StorageChange;
     }) => {
-      console.log('===> LISTENER FOUND CHANGES', changes);
       if (!changes['userStatus']) return;
       const newValue = changes['userStatus']?.newValue;
       const oldValue = changes['userStatus']?.oldValue;
       if (newValue === oldValue) return;
-      console.log('===> status changed via listener!', newValue);
       setStatus(newValue);
     };
     chrome.storage.session.onChanged.addListener(listener);

@@ -32,9 +32,7 @@ export function Settings() {
   const { currentUserSelectedTheme, setCurrentTheme } = useCurrentThemeStore();
 
   const testSandboxBackground = useCallback(async () => {
-    console.log('asking the bg if it can leak!');
     const response = await testSandbox();
-    console.log('response', response);
 
     alert(response);
   }, []);
