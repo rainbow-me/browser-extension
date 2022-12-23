@@ -32,6 +32,7 @@ import { Transactions } from './pages/settings/transactions';
 import { Sign } from './pages/sign';
 import { Unlock } from './pages/unlock';
 import { Wallets } from './pages/wallets';
+import { WatchWallet } from './pages/watchWallet';
 import { Welcome } from './pages/welcome';
 
 export function Routes() {
@@ -80,6 +81,15 @@ export function Routes() {
         element: (
           <AnimatedRoute direction="horizontal" navbar>
             <ImportOrConnect />
+          </AnimatedRoute>
+        ),
+        background: FullScreenBackground,
+      },
+      {
+        path: '/watch',
+        element: (
+          <AnimatedRoute direction="horizontal" navbar>
+            <WatchWallet />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,

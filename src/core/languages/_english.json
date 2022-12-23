@@ -182,6 +182,16 @@
     "edit_wallets": "Edit wallets",
     "loading": "Hold tight while we look up all your wallets..."
   },
+  "watch_wallet": {
+    "title": "Watch an Ethereum address",
+    "description": "Enter any Ethereum address or ENS name. You'll have to import it later to send or sign transactions.",
+    "invalid_address_or_ens_name": "Invalid address",
+    "watch_top_ens_wallets": "Watch top ENS wallets",
+    "placeholder": "Ethereum address or ENS name",
+    "watch_wallet": "Watch Wallet",
+    "watch_wallets": "Watch Wallets",
+    "loading": "Hold tight while we start watching these wallets..."
+  },
   "import_wallet": {
     "title": "Import your wallet",
     "description": "Enter your Secret Recovery Phrase or a Private Key from Rainbow or any Ethereum wallet.",
