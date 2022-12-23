@@ -35,6 +35,7 @@ import { FullScreenContainer } from '../../components/FullScreen/FullScreenConta
 import { Spinner } from '../../components/Spinner/Spinner';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import * as wallet from '../../handlers/wallet';
+import { useAuth } from '../../hooks/useAuth';
 import { ROUTES } from '../../urls';
 
 export function WatchWallet() {
@@ -45,7 +46,7 @@ export function WatchWallet() {
   const { setCurrentAddress } = useCurrentAddressStore();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
-
+  const { updateStatus } = useAuth();
   const accountsToWatch = [
     'vitalik.eth',
     'bored.eth',
@@ -121,10 +122,19 @@ export function WatchWallet() {
         setCurrentAddress(importedAddress);
       }
     }
+
+    updateStatus();
     setTimeout(() => {
-      navigate(ROUTES.HOME);
+      navigate(ROUTES.CREATE_PASSWORD);
     }, 1200);
-  }, [isLoading, address, additionalAccounts, navigate, setCurrentAddress]);
+  }, [
+    isLoading,
+    address,
+    additionalAccounts,
+    updateStatus,
+    setCurrentAddress,
+    navigate,
+  ]);
 
   return (
     <FullScreenContainer>

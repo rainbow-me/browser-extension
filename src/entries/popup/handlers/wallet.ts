@@ -123,6 +123,7 @@ export const getStatus = async () => {
   return (await walletAction('status', {})) as {
     unlocked: boolean;
     hasVault: boolean;
+    passwordSet: boolean;
   };
 };
 

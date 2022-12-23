@@ -24,6 +24,7 @@ import { FullScreenContainer } from '../../components/FullScreen/FullScreenConta
 import { Spinner } from '../../components/Spinner/Spinner';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import * as wallet from '../../handlers/wallet';
+import { useAuth } from '../../hooks/useAuth';
 import { ROUTES } from '../../urls';
 
 export function EditImportWalletSelection() {
@@ -32,6 +33,7 @@ export function EditImportWalletSelection() {
   const [accountsIgnored, setAccountsIgnored] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { setCurrentAddress } = useCurrentAddressStore();
+  const { updateStatus } = useAuth();
 
   const selectedAccounts = useMemo(
     () => state.accountsToImport.length - accountsIgnored.length,
@@ -60,13 +62,14 @@ export function EditImportWalletSelection() {
       await wallet.remove(accountsIgnored[i] as Address);
     }
 
-    // Navigate to home
-    navigate(ROUTES.HOME);
+    updateStatus();
+    navigate(ROUTES.CREATE_PASSWORD);
   }, [
     accountsIgnored,
     isLoading,
     navigate,
     selectedAccounts,
+    updateStatus,
     setCurrentAddress,
     state.secrets,
   ]);

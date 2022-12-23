@@ -18,6 +18,7 @@ import { globalColors } from '~/design-system/styles/designTokens';
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { exportWallet } from '../../handlers/wallet';
+import { useAuth } from '../../hooks/useAuth';
 import { ROUTES } from '../../urls';
 
 const shuffleArray = (array: string[]) => {
@@ -44,6 +45,7 @@ export function SeedVerify() {
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
   const [validated, setValidated] = useState(false);
   const [incorrect, setIncorrect] = useState(false);
+  const { updateStatus } = useAuth();
 
   useEffect(() => {
     const init = async () => {
@@ -82,7 +84,8 @@ export function SeedVerify() {
         ) {
           setValidated(true);
           setTimeout(() => {
-            navigate(ROUTES.HOME);
+            updateStatus();
+            navigate(ROUTES.CREATE_PASSWORD);
           }, 1200);
         } else {
           setIncorrect(true);
@@ -92,11 +95,12 @@ export function SeedVerify() {
       setValidated(false);
       setIncorrect(false);
     }
-  }, [navigate, seed, selectedWords]);
+  }, [navigate, seed, selectedWords, updateStatus]);
 
   const handleSkip = useCallback(() => {
+    updateStatus();
     navigate(ROUTES.CREATE_PASSWORD);
-  }, [navigate]);
+  }, [navigate, updateStatus]);
 
   return (
     <FullScreenContainer>

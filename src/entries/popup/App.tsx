@@ -13,6 +13,7 @@ import { createWagmiClient } from '~/core/wagmi';
 import { Box, ThemeProvider } from '~/design-system';
 
 import { Routes } from './Routes';
+import { AuthProvider } from './hooks/useAuth';
 import { usePendingTransactionWatcher } from './hooks/usePendingTransactionWatcher';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { ApproveMessage } from './pages/messages/ApproveMessage';
@@ -51,15 +52,17 @@ export function App() {
           {playground ? (
             PlaygroundComponents[playground]
           ) : (
-            <Box id="main" background="surfacePrimaryElevated">
-              {pendingRequests[0] ? (
-                <ApproveMessage />
-              ) : (
-                <HashRouter>
-                  <Routes />
-                </HashRouter>
-              )}
-            </Box>
+            <AuthProvider>
+              <Box id="main" background="surfacePrimaryElevated">
+                {pendingRequests[0] ? (
+                  <ApproveMessage />
+                ) : (
+                  <HashRouter>
+                    <Routes />
+                  </HashRouter>
+                )}
+              </Box>
+            </AuthProvider>
           )}
         </ThemeProvider>
       </WagmiConfig>

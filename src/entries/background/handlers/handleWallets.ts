@@ -14,6 +14,7 @@ import {
   getWallets,
   hasVault,
   importWallet,
+  isPasswordSet,
   isVaultUnlocked,
   lockVault,
   removeAccount,
@@ -67,6 +68,7 @@ export const handleWallets = () =>
             response = {
               hasVault: await hasVault(),
               unlocked: await isVaultUnlocked(),
+              passwordSet: await isPasswordSet(),
             };
             break;
           case 'lock':

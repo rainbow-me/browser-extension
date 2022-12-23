@@ -52,7 +52,7 @@ export function Routes() {
       {
         path: ROUTES.ROOT,
         element: (
-          <AnimatedRoute direction="base">
+          <AnimatedRoute direction="base" protectedRoute>
             <RootHandler />
           </AnimatedRoute>
         ),
@@ -60,7 +60,7 @@ export function Routes() {
       {
         path: ROUTES.HOME,
         element: (
-          <AnimatedRoute direction="base">
+          <AnimatedRoute direction="base" protectedRoute>
             <Home />
           </AnimatedRoute>
         ),
@@ -72,6 +72,7 @@ export function Routes() {
             direction="vertical"
             navbar
             title={i18n.t('connected_apps.title')}
+            protectedRoute
           >
             <ConnectedApps />
           </AnimatedRoute>
@@ -80,7 +81,7 @@ export function Routes() {
       {
         path: ROUTES.WELCOME,
         element: (
-          <AnimatedRoute direction="base">
+          <AnimatedRoute direction="base" protectedRoute={['NEW']}>
             <Welcome />
           </AnimatedRoute>
         ),
@@ -89,7 +90,7 @@ export function Routes() {
       {
         path: ROUTES.IMPORT_OR_CONNECT,
         element: (
-          <AnimatedRoute direction="horizontal" navbar>
+          <AnimatedRoute direction="horizontal" navbar protectedRoute={['NEW']}>
             <ImportOrConnect />
           </AnimatedRoute>
         ),
@@ -98,7 +99,7 @@ export function Routes() {
       {
         path: ROUTES.WATCH,
         element: (
-          <AnimatedRoute direction="horizontal" navbar>
+          <AnimatedRoute direction="horizontal" navbar protectedRoute={['NEW']}>
             <WatchWallet />
           </AnimatedRoute>
         ),
@@ -107,7 +108,7 @@ export function Routes() {
       {
         path: ROUTES.IMPORT,
         element: (
-          <AnimatedRoute direction="horizontal" navbar>
+          <AnimatedRoute direction="horizontal" navbar protectedRoute={['NEW']}>
             <ImportWallet />
           </AnimatedRoute>
         ),
@@ -116,7 +117,7 @@ export function Routes() {
       {
         path: ROUTES.IMPORT__SELECT,
         element: (
-          <AnimatedRoute direction="horizontal" navbar>
+          <AnimatedRoute direction="horizontal" navbar protectedRoute={['NEW']}>
             <ImportWalletSelection />
           </AnimatedRoute>
         ),
@@ -129,6 +130,7 @@ export function Routes() {
             direction="horizontal"
             navbar
             title={i18n.t('edit_import_wallet_selection.title')}
+            protectedRoute={['NEW']}
           >
             <EditImportWalletSelection />
           </AnimatedRoute>
@@ -138,7 +140,7 @@ export function Routes() {
       {
         path: ROUTES.UNLOCK,
         element: (
-          <AnimatedRoute direction="base">
+          <AnimatedRoute direction="base" protectedRoute={['LOCKED']}>
             <Unlock />
           </AnimatedRoute>
         ),
@@ -147,7 +149,10 @@ export function Routes() {
       {
         path: ROUTES.SEED_BACKUP_PROMPT,
         element: (
-          <AnimatedRoute direction="horizontal">
+          <AnimatedRoute
+            direction="horizontal"
+            protectedRoute={['NEW', 'NEEDS_PASSWORD']}
+          >
             <SeedBackupPrompt />
           </AnimatedRoute>
         ),
@@ -156,7 +161,11 @@ export function Routes() {
       {
         path: ROUTES.SEED_REVEAL,
         element: (
-          <AnimatedRoute direction="horizontal" navbar>
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            protectedRoute={['NEW', 'NEEDS_PASSWORD']}
+          >
             <SeedReveal />
           </AnimatedRoute>
         ),
@@ -165,7 +174,11 @@ export function Routes() {
       {
         path: ROUTES.SEED_VERIFY,
         element: (
-          <AnimatedRoute direction="horizontal" navbar>
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            protectedRoute={['NEW', 'NEEDS_PASSWORD']}
+          >
             <SeedVerify />
           </AnimatedRoute>
         ),
@@ -174,7 +187,11 @@ export function Routes() {
       {
         path: ROUTES.CREATE_PASSWORD,
         element: (
-          <AnimatedRoute direction="horizontal" navbar>
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            protectedRoute={['NEEDS_PASSWORD']}
+          >
             <CreatePassword />
           </AnimatedRoute>
         ),
@@ -187,6 +204,7 @@ export function Routes() {
             direction="vertical"
             navbar
             title={i18n.t('settings.title')}
+            protectedRoute
           >
             <Settings />
           </AnimatedRoute>
@@ -199,6 +217,7 @@ export function Routes() {
             direction="horizontal"
             navbar
             title={i18n.t('settings.privacy_and_security.title')}
+            protectedRoute
           >
             <Privacy />
           </AnimatedRoute>
@@ -213,6 +232,7 @@ export function Routes() {
             title={i18n.t(
               'settings.privacy_and_security.auto_lock_timer.title',
             )}
+            protectedRoute
           >
             <AutoLockTimer />
           </AnimatedRoute>
@@ -221,7 +241,7 @@ export function Routes() {
       {
         path: ROUTES.SETTINGS__PRIVACY__CHANGE_PASSWORD,
         element: (
-          <AnimatedRoute direction="horizontal">
+          <AnimatedRoute direction="horizontal" protectedRoute>
             <ChangePassword />
           </AnimatedRoute>
         ),
@@ -235,6 +255,7 @@ export function Routes() {
             title={i18n.t(
               'settings.privacy_and_security.wallets_and_keys.title',
             )}
+            protectedRoute
           >
             <WalletsAndKeys />
           </AnimatedRoute>
@@ -249,6 +270,7 @@ export function Routes() {
             title={i18n.t(
               'settings.privacy_and_security.wallets_and_keys.wallet_details.title',
             )}
+            protectedRoute
           >
             <WalletDetails />
           </AnimatedRoute>
@@ -261,6 +283,7 @@ export function Routes() {
             direction="horizontal"
             navbar
             background="surfaceSecondary"
+            protectedRoute
           >
             <PrivateKeyWarning />
           </AnimatedRoute>
@@ -273,6 +296,7 @@ export function Routes() {
             direction="horizontal"
             navbar
             background="surfaceSecondary"
+            protectedRoute
           >
             <PrivateKey />
           </AnimatedRoute>
@@ -285,6 +309,7 @@ export function Routes() {
             direction="horizontal"
             navbar
             background="surfaceSecondary"
+            protectedRoute
           >
             <RecoveryPhraseWarning />
           </AnimatedRoute>
@@ -297,6 +322,7 @@ export function Routes() {
             direction="horizontal"
             navbar
             background="surfaceSecondary"
+            protectedRoute
           >
             <RecoveryPhrase />
           </AnimatedRoute>
@@ -309,6 +335,7 @@ export function Routes() {
             direction="horizontal"
             navbar
             title={i18n.t('settings.transactions.title')}
+            protectedRoute
           >
             <Transactions />
           </AnimatedRoute>
@@ -321,6 +348,7 @@ export function Routes() {
             direction="horizontal"
             navbar
             title={i18n.t('settings.currency.title')}
+            protectedRoute
           >
             <Currency />
           </AnimatedRoute>
@@ -329,7 +357,11 @@ export function Routes() {
       {
         path: ROUTES.SEND,
         element: (
-          <AnimatedRoute direction="horizontal" title={i18n.t('send.title')}>
+          <AnimatedRoute
+            direction="horizontal"
+            title={i18n.t('send.title')}
+            protectedRoute
+          >
             <Send />
           </AnimatedRoute>
         ),
@@ -341,6 +373,7 @@ export function Routes() {
             direction="vertical"
             navbar
             title={i18n.t('sign.title')}
+            protectedRoute
           >
             <Sign />
           </AnimatedRoute>
@@ -353,6 +386,7 @@ export function Routes() {
             direction="horizontal"
             navbar
             title={i18n.t('wallets.title')}
+            protectedRoute
           >
             <Wallets />
           </AnimatedRoute>

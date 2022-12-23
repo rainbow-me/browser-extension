@@ -66,6 +66,10 @@ export const hasVault = () => {
   return !!keychainManager.state.vault;
 };
 
+export const isPasswordSet = () => {
+  return !keychainManager.verifyPassword('');
+};
+
 export const isVaultUnlocked = (): boolean => {
   return keychainManager.state.isUnlocked;
 };
