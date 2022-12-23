@@ -10,12 +10,14 @@ import { afterAll, beforeAll, expect, it } from 'vitest';
 import {
   delayTime,
   findElementAndClick,
+  findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
   goToPopup,
   goToTestApp,
   initDriverWithOptions,
   querySelector,
+  typeOnTextInput,
   waitAndClick,
 } from './helpers';
 
@@ -37,43 +39,84 @@ beforeAll(async () => {
 
 afterAll(async () => driver.quit());
 
-it('Should open the popup', async () => {
+// Create a new wallet
+it('should be able create a new wallet', async () => {
   await goToPopup(driver, rootURL);
-});
-
-it('should display account name', async () => {
-  const label = await querySelector(
+  await findElementByTestIdAndClick({
+    id: 'create-wallet-button',
     driver,
-    '[data-testid="header"] [data-testid="account-name"]',
-  );
-  const actual = await label.getText();
-  const expected = ['0x70c1...43C4', 'djweth.eth'];
-  expect(expected.includes(actual)).toEqual(true);
+  });
+  await findElementByTestIdAndClick({
+    id: 'show-recovery-phrase-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'saved-these-words-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'skip-this-button',
+    driver,
+  });
+
+  await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
+  await typeOnTextInput({
+    id: 'confirm-password-input',
+    driver,
+    text: 'test1234',
+  });
+
+  await findElementByTestIdAndClick({ id: 'set-password-button', driver });
+  await delayTime('long');
+  await findElementByText(driver, 'Your wallets ready');
 });
 
-it.skip('should be able create a new wallet', async () => {
+// Import a wallet
+it('should be able import a wallet via seed', async () => {
+  // Wipe before starting
   await goToPopup(driver, rootURL);
   await findElementAndClick({
     id: 'header-account-name-link-to-wallet',
     driver,
   });
-  await driver
-    .findElement({ id: 'wallet-password-input' })
-    .sendKeys('password');
-  await findElementAndClick({ id: 'wallet-password-submit', driver });
-  await findElementAndClick({ id: 'wallet-create-button', driver });
-  await findElementAndClick({ id: 'wallets-go-back', driver });
-});
+  await findElementAndClick({ id: 'wallet-wipe-button', driver });
+  await driver.switchTo().alert().sendKeys('test1234');
+  await driver.switchTo().alert().accept();
 
-it('should shuffle account', async () => {
-  await findElementAndClick({ id: 'header-account-name-shuffle', driver });
-  const label = await querySelector(
+  //  Start from welcome screen
+  await goToPopup(driver, rootURL);
+  await findElementByTestIdAndClick({
+    id: 'import-wallet-button',
     driver,
-    '[data-testid="header"] [data-testid="account-name"]',
-  );
-  const actual = await label.getText();
-  const expected = '0x5B57...7C35';
-  expect(actual).toEqual(expected);
+  });
+  await findElementByTestIdAndClick({
+    id: 'import-wallet-option',
+    driver,
+  });
+
+  await typeOnTextInput({
+    id: 'secret-textarea',
+    driver,
+    text: 'test test test test test test test test test test test junk',
+  });
+
+  await findElementByTestIdAndClick({
+    id: 'import-wallets-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'add-wallets-button',
+    driver,
+  });
+  await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
+  await typeOnTextInput({
+    id: 'confirm-password-input',
+    driver,
+    text: 'test1234',
+  });
+  await findElementByTestIdAndClick({ id: 'set-password-button', driver });
+  await delayTime('long');
+  await findElementByText(driver, 'Your wallets ready');
 });
 
 it('should be able to connect to bx test dapp', async () => {
@@ -242,4 +285,84 @@ it('should be able to test the sandbox for the background', async () => {
   console.log('text', text);
   expect(text).toBe('Background sandboxed!');
   await driver.switchTo().alert().accept();
+});
+
+// Watch a wallet
+it('should be able watch a wallet', async () => {
+  // Wipe before starting
+  await goToPopup(driver, rootURL);
+  await findElementAndClick({
+    id: 'header-account-name-link-to-wallet',
+    driver,
+  });
+  await findElementAndClick({ id: 'wallet-wipe-button', driver });
+  await driver.switchTo().alert().sendKeys('test1234');
+  await driver.switchTo().alert().accept();
+
+  //  Start from welcome screen
+  await goToPopup(driver, rootURL);
+  await findElementByTestIdAndClick({
+    id: 'import-wallet-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'watch-wallet-option',
+    driver,
+  });
+
+  await typeOnTextInput({
+    id: 'secret-textarea',
+    driver,
+    text: 'djweth.eth',
+  });
+
+  await findElementByTestIdAndClick({
+    id: 'watch-wallets-button',
+    driver,
+  });
+  await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
+  await typeOnTextInput({
+    id: 'confirm-password-input',
+    driver,
+    text: 'test1234',
+  });
+  await findElementByTestIdAndClick({ id: 'set-password-button', driver });
+  await delayTime('long');
+  await findElementByText(driver, 'Your wallets ready');
+});
+
+it('should display account name', async () => {
+  await goToPopup(driver, rootURL);
+  const label = await querySelector(
+    driver,
+    '[data-testid="header"] [data-testid="account-name"]',
+  );
+
+  const actual = await label.getText();
+  const expected = ['0x70c1...43C4', 'djweth.eth'];
+  expect(expected.includes(actual)).toEqual(true);
+});
+
+it('should shuffle account', async () => {
+  await findElementAndClick({ id: 'header-account-name-shuffle', driver });
+  const label = await querySelector(
+    driver,
+    '[data-testid="header"] [data-testid="account-name"]',
+  );
+  const actual = await label.getText();
+  const expected = ['0x5B57...7C35', 'estebanmino.eth'];
+  expect(expected.includes(actual)).toEqual(true);
+});
+
+it('should be able to lock and unlock the extension', async () => {
+  // Lock
+  await findElementAndClick({
+    id: 'header-account-name-link-to-wallet',
+    driver,
+  });
+  await findElementAndClick({ id: 'wallet-lock-button', driver });
+
+  // Unlock
+  await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
+  await findElementByTestIdAndClick({ id: 'unlock-button', driver });
 });

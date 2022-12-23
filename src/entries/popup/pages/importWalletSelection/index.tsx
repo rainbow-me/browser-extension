@@ -205,6 +205,7 @@ export function ImportWalletSelection() {
                 variant={'flat'}
                 width="full"
                 onClick={handleAddWallets}
+                testId="add-wallets-button"
               >
                 {i18n.t('import_wallet_selection.add_wallets')}
               </Button>
@@ -214,6 +215,7 @@ export function ImportWalletSelection() {
                 variant="transparent"
                 width="full"
                 onClick={handleEditWallets}
+                testId="edit-wallets-button"
               >
                 {i18n.t('import_wallet_selection.edit_wallets')}
               </Button>

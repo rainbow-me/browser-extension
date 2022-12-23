@@ -201,6 +201,7 @@ export function WatchWallet() {
               >
                 <Box
                   as="textarea"
+                  testId="secret-textarea"
                   background="surfaceSecondaryElevated"
                   borderRadius="12px"
                   borderWidth="1px"
@@ -348,6 +349,7 @@ export function WatchWallet() {
               variant={isValid ? 'flat' : 'disabled'}
               width="full"
               onClick={handleWatchWallet}
+              testId="watch-wallets-button"
             >
               {additionalAccounts.length + (address.length > 0 ? 1 : 0) > 1
                 ? i18n.t('watch_wallet.watch_wallets')

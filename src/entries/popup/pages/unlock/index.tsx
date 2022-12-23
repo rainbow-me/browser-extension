@@ -106,6 +106,7 @@ export function Unlock() {
                 value={password}
                 onChange={handlePasswordChange}
                 borderColor={error !== '' ? 'red' : undefined}
+                testId="password-input"
               />
             </Box>
             <Box width="fit">
@@ -117,6 +118,7 @@ export function Unlock() {
                 symbol="arrow.right"
                 symbolSide="right"
                 onClick={handleUnlock}
+                testId="unlock-button"
               >
                 {i18n.t('unlock.unlock')}
               </Button>

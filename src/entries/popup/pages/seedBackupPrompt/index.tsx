@@ -113,6 +113,7 @@ export function SeedBackupPrompt() {
             symbol="checkmark.circle.fill"
             blur="26px"
             onClick={handleShowRecoveryPhraseClick}
+            testId="show-recovery-phrase-button"
           >
             {i18n.t('seed_backup_prompt.reveal_your_recovery_phrase')}
           </Button>
@@ -123,6 +124,7 @@ export function SeedBackupPrompt() {
             variant="transparent"
             width="full"
             onClick={handleSkipClick}
+            testId="skip-button"
           >
             {i18n.t('seed_backup_prompt.skip')}
           </Button>

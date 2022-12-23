@@ -74,6 +74,7 @@ export function ImportOrConnect() {
             width="full"
             paddingBottom="20px"
             onClick={() => navigateTo(ROUTES.IMPORT)}
+            testId="import-wallet-option"
           >
             <Columns alignHorizontal="center" alignVertical="center">
               <Column>
@@ -104,6 +105,7 @@ export function ImportOrConnect() {
             paddingBottom="20px"
             paddingTop="20px"
             onClick={() => alert('coming soon!')}
+            testId="connect-wallet-option"
           >
             <Columns alignHorizontal="center" alignVertical="center">
               <Column>
@@ -130,7 +132,11 @@ export function ImportOrConnect() {
             </Columns>
           </Box>
           <Separator color="separatorTertiary" strokeWeight="1px" />
-          <Box paddingTop="20px" onClick={() => navigateTo(ROUTES.WATCH)}>
+          <Box
+            paddingTop="20px"
+            testId="watch-wallet-option"
+            onClick={() => navigateTo(ROUTES.WATCH)}
+          >
             <Columns alignHorizontal="center" alignVertical="center">
               <Column>
                 <Symbol

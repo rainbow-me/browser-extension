@@ -66,6 +66,7 @@ export function Welcome() {
                 symbolSide="right"
                 blur="26px"
                 onClick={handleCreateNewWalletClick}
+                testId="create-wallet-button"
               >
                 {i18n.t('welcome.create_wallet')}
               </Button>
@@ -76,6 +77,7 @@ export function Welcome() {
                   variant="flat"
                   width="full"
                   onClick={handleImportWalletClick}
+                  testId="import-wallet-button"
                 >
                   {i18n.t('welcome.import_wallet')}
                 </Button>

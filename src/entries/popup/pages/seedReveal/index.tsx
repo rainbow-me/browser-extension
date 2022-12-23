@@ -98,6 +98,7 @@ export function SeedReveal() {
             symbol="checkmark.circle.fill"
             blur="26px"
             onClick={handleSavedTheseWords}
+            testId="saved-these-words-button"
           >
             {i18n.t('seed_reveal.saved_these_words')}
           </Button>

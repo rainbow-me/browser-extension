@@ -179,6 +179,7 @@ export function ImportWallet() {
                 padding="12px"
                 placeholder={i18n.t('import_wallet.placeholder')}
                 value={secrets[i]}
+                testId="secret-textarea"
                 onChange={(e) => handleSeedChange(e, i)}
                 className={[
                   placeholderStyle,
@@ -259,6 +260,7 @@ export function ImportWallet() {
             variant={isValid ? 'flat' : 'disabled'}
             width="full"
             onClick={handleImportWallet}
+            testId="import-wallets-button"
           >
             {secrets.length > 1
               ? i18n.t('import_wallet.import_wallet_plural')

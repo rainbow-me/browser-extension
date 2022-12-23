@@ -141,7 +141,6 @@ export const AnimatedRoute = React.forwardRef<
   );
 
   if (protectedRoute) {
-    console.log('protectedRoute', protectedRoute, window.location.hash);
     return (
       <ProtectedRoute allowedStates={protectedRoute}>{content}</ProtectedRoute>
     );

@@ -142,6 +142,7 @@ const Lock = ({ onLock }: { onLock: () => void }) => {
         onClick={onLock}
         padding="16px"
         style={{ borderRadius: 999 }}
+        id="wallet-lock-button"
       >
         <Text color="label" size="14pt" weight="bold">
           🔒 Lock
@@ -164,6 +165,7 @@ const Wipe = ({ onWipe }: { onWipe: () => void }) => {
         onClick={onWipe}
         padding="16px"
         style={{ borderRadius: 999 }}
+        id="wallet-wipe-button"
       >
         <Text color="label" size="14pt" weight="bold">
           🗑️ Wipe

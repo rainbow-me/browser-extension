@@ -287,6 +287,7 @@ export function SeedVerify() {
           variant="transparent"
           width="full"
           onClick={handleSkip}
+          testId="skip-this-button"
         >
           {i18n.t('seed_verify.skip')}
         </Button>

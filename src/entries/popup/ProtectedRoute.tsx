@@ -27,9 +27,6 @@ export const ProtectedRoute = ({
   } else {
     switch (status) {
       case 'LOCKED':
-        if (isFullScreen) {
-          window.close();
-        }
         return <Navigate to={ROUTES.UNLOCK} />;
         break;
       case 'NEW':

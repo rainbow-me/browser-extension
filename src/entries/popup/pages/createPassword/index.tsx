@@ -207,6 +207,7 @@ export function CreatePassword() {
                   placeholder={i18n.t('passwords.password')}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
+                  testId="password-input"
                 />
               </Row>
             </Rows>
@@ -228,6 +229,7 @@ export function CreatePassword() {
                       value={confirmNewPassword}
                       onChange={(e) => setConfirmNewPassword(e.target.value)}
                       onBlur={handleOnBlur}
+                      testId="confirm-password-input"
                     />
                   </Row>
                   <Row>
@@ -261,6 +263,7 @@ export function CreatePassword() {
             variant={isValid && isMatching ? 'flat' : 'disabled'}
             width="full"
             onClick={handleSetPassword}
+            testId="set-password-button"
           >
             {i18n.t('passwords.set_password')}
           </Button>
