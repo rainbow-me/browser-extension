@@ -28,7 +28,7 @@ export function Unlock() {
 
   const handleUnlock = useCallback(async () => {
     if (await wallet.unlock(password)) {
-      updateStatus();
+      await updateStatus();
       navigate(ROUTES.HOME);
     } else {
       setError(i18n.t('passwords.wrong_password'));

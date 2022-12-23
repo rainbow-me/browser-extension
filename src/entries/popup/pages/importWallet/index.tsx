@@ -97,7 +97,7 @@ export function ImportWallet() {
       if (isValidPrivateKey(secrets[0]) || isAddress(secrets[0])) {
         const address = (await wallet.importWithSecret(secrets[0])) as Address;
         setCurrentAddress(address);
-        updateStatus();
+        await updateStatus();
         navigate(ROUTES.CREATE_PASSWORD);
         return;
       }

@@ -62,7 +62,7 @@ export function EditImportWalletSelection() {
       await wallet.remove(accountsIgnored[i] as Address);
     }
 
-    updateStatus();
+    await updateStatus();
     navigate(ROUTES.CREATE_PASSWORD);
   }, [
     accountsIgnored,

@@ -33,4 +33,5 @@ export const ROUTES = {
   SEND: '/send', // Send
   SIGN: '/sign', // Sign
   WALLETS: '/wallets', // Wallets
+  READY: '/ready', // WalletReady
 };

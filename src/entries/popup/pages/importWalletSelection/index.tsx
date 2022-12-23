@@ -42,7 +42,7 @@ export function ImportWalletSelection() {
       setAccountsToImport(addresses);
     };
     init();
-  }, [state.secrets]);
+  }, [state?.secrets]);
 
   const handleAddWallets = useCallback(async () => {
     // Import all the secrets
@@ -55,7 +55,7 @@ export function ImportWalletSelection() {
         setCurrentAddress(address);
       }
     }
-    updateStatus();
+    await updateStatus();
     navigate(ROUTES.CREATE_PASSWORD);
   }, [navigate, setCurrentAddress, updateStatus, state.secrets]);
 

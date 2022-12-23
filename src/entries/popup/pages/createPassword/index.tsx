@@ -118,8 +118,8 @@ export function CreatePassword() {
   const handleSetPassword = async () => {
     if (!isValid) return;
     await updatePassword('', newPassword);
-    updateStatus();
-    navigate(ROUTES.HOME);
+    await updateStatus();
+    navigate(ROUTES.READY);
   };
 
   return (

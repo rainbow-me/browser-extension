@@ -123,7 +123,7 @@ export function WatchWallet() {
       }
     }
 
-    updateStatus();
+    await updateStatus();
     setTimeout(() => {
       navigate(ROUTES.CREATE_PASSWORD);
     }, 1200);

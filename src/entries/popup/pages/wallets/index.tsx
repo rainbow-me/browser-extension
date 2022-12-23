@@ -330,7 +330,7 @@ export function Wallets() {
   const lock = useCallback(async () => {
     await wallet.lock();
     await updateState();
-    updateStatus();
+    await updateStatus();
   }, [updateState, updateStatus]);
 
   const wipe = useCallback(async () => {

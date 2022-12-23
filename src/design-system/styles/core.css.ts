@@ -488,6 +488,7 @@ const textProperties = defineProperties({
       '23pt': defineType(23, 29, 0.35),
       '26pt': defineType(26, 32, 0.36),
       '32pt': defineType(32, 40, 0.41),
+      '44pt': defineType(44, 44, 0.41),
     },
     fontWeight: fontWeights,
     textAlign: ['left', 'center', 'right'],

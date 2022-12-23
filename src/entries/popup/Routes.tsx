@@ -32,6 +32,7 @@ import { Settings } from './pages/settings/settings';
 import { Transactions } from './pages/settings/transactions';
 import { Sign } from './pages/sign';
 import { Unlock } from './pages/unlock';
+import { WalletReady } from './pages/walletReady';
 import { Wallets } from './pages/wallets';
 import { WatchWallet } from './pages/watchWallet';
 import { Welcome } from './pages/welcome';
@@ -86,6 +87,14 @@ export function Routes() {
           </AnimatedRoute>
         ),
         background: FullScreenBackground,
+      },
+      {
+        path: ROUTES.READY,
+        element: (
+          <AnimatedRoute direction="base" protectedRoute={['READY']}>
+            <WalletReady />
+          </AnimatedRoute>
+        ),
       },
       {
         path: ROUTES.IMPORT_OR_CONNECT,

@@ -74,7 +74,7 @@ export function SeedVerify() {
 
   useEffect(() => {
     if (selectedWords.length === 3) {
-      setTimeout(() => {
+      setTimeout(async () => {
         // Validate
         const seedWords = seed.split(' ');
         if (
@@ -83,8 +83,8 @@ export function SeedVerify() {
           seedWords[11] === selectedWords[2]
         ) {
           setValidated(true);
+          await updateStatus();
           setTimeout(() => {
-            updateStatus();
             navigate(ROUTES.CREATE_PASSWORD);
           }, 1200);
         } else {
@@ -97,8 +97,8 @@ export function SeedVerify() {
     }
   }, [navigate, seed, selectedWords, updateStatus]);
 
-  const handleSkip = useCallback(() => {
-    updateStatus();
+  const handleSkip = useCallback(async () => {
+    await updateStatus();
     navigate(ROUTES.CREATE_PASSWORD);
   }, [navigate, updateStatus]);
 
