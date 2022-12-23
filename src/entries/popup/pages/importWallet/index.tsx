@@ -27,7 +27,6 @@ import {
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import * as wallet from '../../handlers/wallet';
-import { useAuth } from '../../hooks/useAuth';
 import { ROUTES } from '../../urls';
 
 const validateSecret = (secret: string) => {
@@ -43,7 +42,6 @@ export function ImportWallet() {
   const [isValid, setIsValid] = useState(false);
   const [secrets, setSecrets] = useState(['']);
   const { setCurrentAddress } = useCurrentAddressStore();
-  const { updateStatus } = useAuth();
 
   const [validity, setValidity] = useState<
     { valid: boolean; too_long: boolean; type: string | undefined }[]
@@ -97,7 +95,6 @@ export function ImportWallet() {
       if (isValidPrivateKey(secrets[0]) || isAddress(secrets[0])) {
         const address = (await wallet.importWithSecret(secrets[0])) as Address;
         setCurrentAddress(address);
-        await updateStatus();
         navigate(ROUTES.CREATE_PASSWORD);
         return;
       }
@@ -106,7 +103,7 @@ export function ImportWallet() {
     navigate(ROUTES.IMPORT__SELECT, {
       state: { secrets },
     });
-  }, [navigate, secrets, setCurrentAddress, updateStatus]);
+  }, [navigate, secrets, setCurrentAddress]);
 
   const handleAddAnotherOne = useCallback(() => {
     const newSecrets = [...secrets, ''];

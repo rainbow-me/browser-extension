@@ -8,7 +8,6 @@ import { EthereumWalletSeed, isENSAddressFormat } from '~/core/utils/ethereum';
 import { Box, Separator, Text } from '~/design-system';
 
 import * as wallet from '../../handlers/wallet';
-import { useAuth } from '../../hooks/useAuth';
 
 const shortAddress = (address: string) => {
   return `${address?.substring(0, 6)}...${address?.substring(38, 42)}`;
@@ -269,7 +268,6 @@ export function Wallets() {
   const { address } = useAccount();
   const { data: ensName } = useEnsName({ address });
   const { setCurrentAddress } = useCurrentAddressStore();
-  const { updateStatus } = useAuth();
 
   const updatePassword = useCallback((pwd: string) => {
     setPassword(pwd);
@@ -330,15 +328,13 @@ export function Wallets() {
   const lock = useCallback(async () => {
     await wallet.lock();
     await updateState();
-    await updateStatus();
-  }, [updateState, updateStatus]);
+  }, [updateState]);
 
   const wipe = useCallback(async () => {
     const pwd = password || prompt('Enter password');
     await wallet.wipe(pwd as string);
     await updateState();
-    updateStatus();
-  }, [password, updateState, updateStatus]);
+  }, [password, updateState]);
 
   const addAccount = useCallback(async () => {
     const silbing = accounts[0];

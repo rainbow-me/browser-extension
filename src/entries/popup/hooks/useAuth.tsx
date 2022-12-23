@@ -11,7 +11,7 @@ import * as wallet from '../handlers/wallet';
 
 const AuthContext = createContext({
   status: 'NEW',
-  updateStatus: () => undefined,
+  updateStatus: () => Promise.resolve(),
 });
 
 export type UserStatusResult = 'LOCKED' | 'NEEDS_PASSWORD' | 'NEW' | 'READY';
@@ -50,7 +50,7 @@ const useSessionStatus = () => {
     const newStatus = await getUserStatus();
     console.log('new status is', newStatus);
     setStatus(newStatus);
-    await chrome.storage.session.set({ userStatus: null });
+    await chrome.storage.session.set({ userStatus: newStatus });
     console.log('done updating');
   }, []);
 
@@ -73,13 +73,30 @@ const useSessionStatus = () => {
 
   return {
     status,
+    setStatus,
     updateStatus,
     clearStatus: () => setStatus(''),
   };
 };
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { status, updateStatus } = useSessionStatus();
+  const { status, updateStatus, setStatus } = useSessionStatus();
+
+  useEffect(() => {
+    const listener = (changes: {
+      [key: string]: chrome.storage.StorageChange;
+    }) => {
+      console.log('===> LISTENER FOUND CHANGES', changes);
+      if (!changes['userStatus']) return;
+      const newValue = changes['userStatus']?.newValue;
+      const oldValue = changes['userStatus']?.oldValue;
+      if (newValue === oldValue) return;
+      console.log('===> status changed via listener!', newValue);
+      setStatus(newValue);
+    };
+    chrome.storage.session.onChanged.addListener(listener);
+    return () => chrome.storage.session.onChanged.removeListener(listener);
+  }, [setStatus, status]);
 
   const value = useMemo(
     () => ({

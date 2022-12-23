@@ -18,7 +18,6 @@ import { SymbolName, TextColor } from '~/design-system/styles/designTokens';
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { PasswordInput } from '../../components/PasswordInput/PasswordInput';
 import { updatePassword } from '../../handlers/wallet';
-import { useAuth } from '../../hooks/useAuth';
 import { ROUTES } from '../../urls';
 
 const strengthMeta = [
@@ -73,7 +72,6 @@ export function CreatePassword() {
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [isMatching, setIsMatching] = useState<boolean | null>(null);
-  const { updateStatus } = useAuth();
 
   // Check if passwords match
   const checkIfPasswordsMatch = useCallback(() => {
@@ -118,7 +116,6 @@ export function CreatePassword() {
   const handleSetPassword = async () => {
     if (!isValid) return;
     await updatePassword('', newPassword);
-    await updateStatus();
     navigate(ROUTES.READY);
   };
 

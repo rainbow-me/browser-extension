@@ -76,25 +76,39 @@ export const signTypedData = async (
 };
 
 export const lock = async () => {
-  return walletAction('lock', {});
+  await walletAction('lock', {});
+  await chrome.storage.session.set({ userStatus: 'LOCKED' });
+  return;
 };
 
 export const unlock = async (password: string): Promise<boolean> => {
-  return (await walletAction('unlock', password)) as boolean;
+  const res = await walletAction('unlock', password);
+  if (res) {
+    await chrome.storage.session.set({ userStatus: 'READY' });
+  }
+  return res as boolean;
 };
 
 export const wipe = async (password: string) => {
-  return await walletAction('wipe', password);
+  await walletAction('wipe', password);
+  await chrome.storage.session.set({ userStatus: 'NEW' });
+  return;
 };
 export const testSandbox = async () => {
   return await walletAction('test_sandbox', {});
 };
 
 export const updatePassword = async (password: string, newPassword: string) => {
-  return (await walletAction('update_password', {
+  const ret = await walletAction('update_password', {
     password,
     newPassword,
-  })) as boolean;
+  });
+  // We have a vault
+  // We have a password
+  // It's unlocked
+  // Then it's ready to use
+  await chrome.storage.session.set({ userStatus: 'READY' });
+  return ret as boolean;
 };
 
 export const deriveAccountsFromSecret = async (secret: string) => {
@@ -128,11 +142,30 @@ export const getStatus = async () => {
 };
 
 export const create = async () => {
-  return (await walletAction('create', {})) as Address;
+  const address = await walletAction('create', {});
+
+  // we probably need to set a password
+  let newStatus = 'NEEDS_PASSWORD';
+  const { passwordSet } = await getStatus();
+  // unless we have a password, then we're ready to go
+  if (passwordSet) {
+    newStatus = 'READY';
+  }
+  await chrome.storage.session.set({ userStatus: newStatus });
+  return address as Address;
 };
 
 export const importWithSecret = async (seed: string) => {
-  return (await walletAction('import', seed)) as Address;
+  const address = await walletAction('import', seed);
+  // we probably need to set a password
+  let newStatus = 'NEEDS_PASSWORD';
+  const { passwordSet } = await getStatus();
+  // unless we have a password, then we're ready to go
+  if (passwordSet) {
+    newStatus = 'READY';
+  }
+  await chrome.storage.session.set({ userStatus: newStatus });
+  return address as Address;
 };
 
 export const remove = async (address: Address) => {

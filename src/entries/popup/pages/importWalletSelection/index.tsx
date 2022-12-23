@@ -23,7 +23,6 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { deriveAccountsFromSecret } from '../../handlers/wallet';
 import * as wallet from '../../handlers/wallet';
-import { useAuth } from '../../hooks/useAuth';
 import { ROUTES } from '../../urls';
 
 export function ImportWalletSelection() {
@@ -31,7 +30,6 @@ export function ImportWalletSelection() {
   const { state } = useLocation();
   const { setCurrentAddress } = useCurrentAddressStore();
   const [accountsToImport, setAccountsToImport] = useState<string[]>([]);
-  const { updateStatus } = useAuth();
   useEffect(() => {
     const init = async () => {
       let addresses: Address[] = [];
@@ -55,9 +53,8 @@ export function ImportWalletSelection() {
         setCurrentAddress(address);
       }
     }
-    await updateStatus();
     navigate(ROUTES.CREATE_PASSWORD);
-  }, [navigate, setCurrentAddress, updateStatus, state.secrets]);
+  }, [navigate, setCurrentAddress, state.secrets]);
 
   const handleEditWallets = useCallback(async () => {
     navigate(ROUTES.IMPORT__EDIT, {

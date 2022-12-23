@@ -8,7 +8,6 @@ import {
   IconAndCopyItem,
   IconAndCopyList,
 } from '../../components/IconAndCopyList.tsx/IconAndCopyList';
-import { useAuth } from '../../hooks/useAuth';
 import { ROUTES } from '../../urls';
 
 const iconAndCopyList: IconAndCopyItem[] = [
@@ -37,16 +36,14 @@ const iconAndCopyList: IconAndCopyItem[] = [
 
 export function SeedBackupPrompt() {
   const navigate = useNavigate();
-  const { updateStatus } = useAuth();
 
   const handleShowRecoveryPhraseClick = React.useCallback(async () => {
     navigate(ROUTES.SEED_REVEAL);
   }, [navigate]);
 
   const handleSkipClick = React.useCallback(async () => {
-    await updateStatus();
     navigate(ROUTES.CREATE_PASSWORD);
-  }, [updateStatus, navigate]);
+  }, [navigate]);
 
   return (
     <Box

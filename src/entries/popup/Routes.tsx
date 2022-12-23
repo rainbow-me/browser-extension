@@ -91,7 +91,10 @@ export function Routes() {
       {
         path: ROUTES.READY,
         element: (
-          <AnimatedRoute direction="base" protectedRoute={['READY']}>
+          <AnimatedRoute
+            direction="deceleratedShort"
+            protectedRoute={['READY']}
+          >
             <WalletReady />
           </AnimatedRoute>
         ),
@@ -160,7 +163,7 @@ export function Routes() {
         element: (
           <AnimatedRoute
             direction="horizontal"
-            protectedRoute={['NEW', 'NEEDS_PASSWORD']}
+            protectedRoute={['NEEDS_PASSWORD']}
           >
             <SeedBackupPrompt />
           </AnimatedRoute>
@@ -173,7 +176,7 @@ export function Routes() {
           <AnimatedRoute
             direction="horizontal"
             navbar
-            protectedRoute={['NEW', 'NEEDS_PASSWORD']}
+            protectedRoute={['NEEDS_PASSWORD']}
           >
             <SeedReveal />
           </AnimatedRoute>
@@ -186,7 +189,7 @@ export function Routes() {
           <AnimatedRoute
             direction="horizontal"
             navbar
-            protectedRoute={['NEW', 'NEEDS_PASSWORD']}
+            protectedRoute={['NEEDS_PASSWORD']}
           >
             <SeedVerify />
           </AnimatedRoute>

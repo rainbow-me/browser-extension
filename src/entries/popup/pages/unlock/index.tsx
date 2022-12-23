@@ -8,14 +8,12 @@ import { accentColorAsHsl } from '~/design-system/styles/core.css';
 import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 import { PasswordInput } from '../../components/PasswordInput/PasswordInput';
 import * as wallet from '../../handlers/wallet';
-import { useAuth } from '../../hooks/useAuth';
 import { ROUTES } from '../../urls';
 import { AvatarSection } from '../home/Header';
 
 export function Unlock() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const { updateStatus } = useAuth();
 
   const handlePasswordChange = useCallback(
     (event: { target: { value: SetStateAction<string> } }) => {
@@ -28,12 +26,11 @@ export function Unlock() {
 
   const handleUnlock = useCallback(async () => {
     if (await wallet.unlock(password)) {
-      await updateStatus();
       navigate(ROUTES.HOME);
     } else {
       setError(i18n.t('passwords.wrong_password'));
     }
-  }, [navigate, password, updateStatus]);
+  }, [navigate, password]);
 
   return (
     <FlyingRainbows>

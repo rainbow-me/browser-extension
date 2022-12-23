@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 
 import { UserStatusResult, useAuth } from './hooks/useAuth';
+import { useIsFullScreen } from './hooks/useIsFullScreen';
 import { ROUTES } from './urls';
 
 export const ProtectedRoute = ({
@@ -12,6 +13,9 @@ export const ProtectedRoute = ({
   allowedStates: UserStatusResult[] | true;
 }): JSX.Element => {
   const { status } = useAuth();
+  const isFullScreen = useIsFullScreen();
+  console.log('Protected route logic');
+  console.log('allowedStates', { allowedStates, status });
   if (
     (allowedStates === true && status === 'READY') ||
     (Array.isArray(allowedStates) &&
@@ -26,20 +30,26 @@ export const ProtectedRoute = ({
   } else {
     switch (status) {
       case 'LOCKED':
-        console.log('locked user, redirecting to CREATE_PASSWORD');
+        if (isFullScreen) {
+          window.close();
+        }
         return <Navigate to={ROUTES.UNLOCK} />;
         break;
-      case 'NEEDS_PASSWORD':
-        console.log('needs password, redirecting!');
-        return <Navigate to={ROUTES.CREATE_PASSWORD} />;
-        break;
+      // case 'NEEDS_PASSWORD':
+      //   console.log('needs password, redirecting!');
+      //   return <Navigate to={ROUTES.CREATE_PASSWORD} />;
+      //   break;
       case 'NEW':
         console.log('new user, redirecting to welcome');
+        if (!isFullScreen) {
+          chrome.tabs.create({
+            url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome`,
+          });
+        }
         return <Navigate to={ROUTES.WELCOME} />;
         break;
       case 'READY':
-        console.log('user ready and unlocked!');
-        return <Navigate to={ROUTES.HOME} />;
+        return <Navigate to={isFullScreen ? ROUTES.READY : ROUTES.HOME} />;
         break;
       default:
         return <></>;
