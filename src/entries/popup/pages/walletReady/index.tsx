@@ -11,7 +11,7 @@ export function WalletReady() {
   useEffect(() => {
     setTimeout(() => {
       setReady(true);
-    }, 1000);
+    }, 300);
   });
   return (
     <Box
