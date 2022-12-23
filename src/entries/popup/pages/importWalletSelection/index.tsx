@@ -28,6 +28,7 @@ import { ROUTES } from '../../urls';
 export function ImportWalletSelection() {
   const navigate = useNavigate();
   const { state } = useLocation();
+  const [isImporting, setIsImporting] = useState(false);
   const { setCurrentAddress } = useCurrentAddressStore();
   const [accountsToImport, setAccountsToImport] = useState<string[]>([]);
   useEffect(() => {
@@ -43,6 +44,8 @@ export function ImportWalletSelection() {
   }, [state?.secrets]);
 
   const handleAddWallets = useCallback(async () => {
+    if (isImporting) return;
+    setIsImporting(true);
     // Import all the secrets
     for (let i = 0; i < state.secrets.length; i++) {
       const address = (await wallet.importWithSecret(
@@ -54,7 +57,7 @@ export function ImportWalletSelection() {
       }
     }
     navigate(ROUTES.CREATE_PASSWORD);
-  }, [navigate, setCurrentAddress, state.secrets]);
+  }, [isImporting, navigate, setCurrentAddress, state.secrets]);
 
   const handleEditWallets = useCallback(async () => {
     navigate(ROUTES.IMPORT__EDIT, {
@@ -91,7 +94,7 @@ export function ImportWalletSelection() {
             color="labelTertiary"
             align="center"
           >
-            {accountsToImport.length
+            {accountsToImport.length && !isImporting
               ? accountsToImport.length === 1
                 ? i18n.t('import_wallet_selection.description_singular')
                 : i18n.t('import_wallet_selection.description_plural', {
@@ -104,7 +107,7 @@ export function ImportWalletSelection() {
       <Box width="full" style={{ width: '106px' }} paddingBottom="28px">
         <Separator color="separatorTertiary" strokeWeight="1px" />
       </Box>
-      {!accountsToImport.length ? (
+      {!accountsToImport.length || isImporting ? (
         <Box
           alignItems="center"
           justifyContent="center"
@@ -117,7 +120,9 @@ export function ImportWalletSelection() {
             color="labelSecondary"
             align="center"
           >
-            {i18n.t('import_wallet_selection.loading')}
+            {isImporting
+              ? i18n.t('import_wallet_selection.importing')
+              : i18n.t('import_wallet_selection.loading')}
           </Text>
           <br />
           <br />

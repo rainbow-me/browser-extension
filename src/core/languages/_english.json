@@ -180,7 +180,8 @@
     "description_singular": "Rainbow detected 1 wallet that have been previously recently. You can add more at any time.",
     "add_wallets": "Add wallets",
     "edit_wallets": "Edit wallets",
-    "loading": "Hold tight while we look up all your wallets..."
+    "loading": "Hold tight while we look up all your wallets...",
+    "importing": "Importing your wallets..."
   },
   "watch_wallet": {
     "title": "Watch an Ethereum address",
