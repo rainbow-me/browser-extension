@@ -27,6 +27,7 @@ import {
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import * as wallet from '../../handlers/wallet';
+import { ROUTES } from '../../urls';
 
 const validateSecret = (secret: string) => {
   // check if it's a private key
@@ -94,12 +95,12 @@ export function ImportWallet() {
       if (isValidPrivateKey(secrets[0]) || isAddress(secrets[0])) {
         const address = (await wallet.importWithSecret(secrets[0])) as Address;
         setCurrentAddress(address);
-        navigate('/');
+        navigate(ROUTES.HOME);
         return;
       }
     }
 
-    navigate('/import/select', {
+    navigate(ROUTES.IMPORT__SELECT, {
       state: { secrets },
     });
   }, [navigate, secrets, setCurrentAddress]);

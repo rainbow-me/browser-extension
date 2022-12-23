@@ -8,6 +8,7 @@ import {
   IconAndCopyItem,
   IconAndCopyList,
 } from '../../components/IconAndCopyList.tsx/IconAndCopyList';
+import { ROUTES } from '../../urls';
 
 const iconAndCopyList: IconAndCopyItem[] = [
   {
@@ -37,11 +38,11 @@ export function SeedBackupPrompt() {
   const navigate = useNavigate();
 
   const handleShowRecoveryPhraseClick = React.useCallback(async () => {
-    navigate('/seed-reveal');
+    navigate(ROUTES.SEED_REVEAL);
   }, [navigate]);
 
   const handleSkipClick = React.useCallback(async () => {
-    navigate('/create-password');
+    navigate(ROUTES.CREATE_PASSWORD);
   }, [navigate]);
 
   return (

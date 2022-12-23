@@ -18,6 +18,7 @@ import { globalColors } from '~/design-system/styles/designTokens';
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { exportWallet } from '../../handlers/wallet';
+import { ROUTES } from '../../urls';
 
 const shuffleArray = (array: string[]) => {
   const arrayCopy = [...array];
@@ -81,7 +82,7 @@ export function SeedVerify() {
         ) {
           setValidated(true);
           setTimeout(() => {
-            navigate('/');
+            navigate(ROUTES.HOME);
           }, 1200);
         } else {
           setIncorrect(true);
@@ -94,7 +95,7 @@ export function SeedVerify() {
   }, [navigate, seed, selectedWords]);
 
   const handleSkip = useCallback(() => {
-    navigate('/create-password');
+    navigate(ROUTES.CREATE_PASSWORD);
   }, [navigate]);
 
   return (

@@ -24,6 +24,7 @@ import { FullScreenContainer } from '../../components/FullScreen/FullScreenConta
 import { Spinner } from '../../components/Spinner/Spinner';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import * as wallet from '../../handlers/wallet';
+import { ROUTES } from '../../urls';
 
 export function EditImportWalletSelection() {
   const navigate = useNavigate();
@@ -60,7 +61,7 @@ export function EditImportWalletSelection() {
     }
 
     // Navigate to home
-    navigate('/');
+    navigate(ROUTES.HOME);
   }, [
     accountsIgnored,
     isLoading,

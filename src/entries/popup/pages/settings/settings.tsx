@@ -22,6 +22,7 @@ import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 
 import { testSandbox } from '../../handlers/wallet';
+import { ROUTES } from '../../urls';
 
 export function Settings() {
   const navigate = useNavigate();
@@ -82,7 +83,7 @@ export function Settings() {
               />
             }
             hasRightArrow
-            onClick={() => navigate('/settings/privacy')}
+            onClick={() => navigate(ROUTES.SETTINGS__PRIVACY)}
             titleComponent={
               <MenuItem.Title
                 text={i18n.t('settings.privacy_and_security.title')}
@@ -101,7 +102,7 @@ export function Settings() {
                 size={18}
               />
             }
-            onClick={() => navigate('/settings/transactions')}
+            onClick={() => navigate(ROUTES.SETTINGS__TRANSACTIONS)}
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.transactions.title')} />
             }
@@ -116,7 +117,7 @@ export function Settings() {
                 weight="medium"
               />
             }
-            onClick={() => navigate('/settings/currency')}
+            onClick={() => navigate(ROUTES.SETTINGS__CURRENCY)}
             rightComponent={
               <MenuItem.Selection
                 text={supportedCurrencies[currentCurrency].label}

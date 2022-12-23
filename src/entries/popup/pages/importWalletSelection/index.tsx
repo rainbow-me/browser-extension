@@ -23,6 +23,7 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { deriveAccountsFromSecret } from '../../handlers/wallet';
 import * as wallet from '../../handlers/wallet';
+import { ROUTES } from '../../urls';
 
 export function ImportWalletSelection() {
   const navigate = useNavigate();
@@ -54,11 +55,11 @@ export function ImportWalletSelection() {
       }
     }
     // Navigate to home
-    navigate('/');
+    navigate(ROUTES.HOME);
   }, [navigate, setCurrentAddress, state.secrets]);
 
   const handleEditWallets = useCallback(async () => {
-    navigate('/import/edit', {
+    navigate(ROUTES.IMPORT__EDIT, {
       state: {
         secrets: state.secrets,
         accountsToImport,

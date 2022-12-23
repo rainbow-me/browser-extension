@@ -13,6 +13,7 @@ import { ImportOrConnect } from './pages/importOrConnect';
 import { ImportWallet } from './pages/importWallet';
 import { ImportWalletSelection } from './pages/importWalletSelection';
 import { EditImportWalletSelection } from './pages/importWalletSelection/EditImportWalletSelection';
+import { RootHandler } from './pages/rootHandler/RootHandler';
 import { SeedBackupPrompt } from './pages/seedBackupPrompt';
 import { SeedReveal } from './pages/seedReveal';
 import { SeedVerify } from './pages/seedVerify';
@@ -34,6 +35,7 @@ import { Unlock } from './pages/unlock';
 import { Wallets } from './pages/wallets';
 import { WatchWallet } from './pages/watchWallet';
 import { Welcome } from './pages/welcome';
+import { ROUTES } from './urls';
 
 export function Routes() {
   const location = useLocation();
@@ -48,7 +50,15 @@ export function Routes() {
   const routeMatch = matchRoutes(
     [
       {
-        path: '/',
+        path: ROUTES.ROOT,
+        element: (
+          <AnimatedRoute direction="base">
+            <RootHandler />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: ROUTES.HOME,
         element: (
           <AnimatedRoute direction="base">
             <Home />
@@ -56,7 +66,7 @@ export function Routes() {
         ),
       },
       {
-        path: '/connected',
+        path: ROUTES.CONNECTED,
         element: (
           <AnimatedRoute
             direction="vertical"
@@ -68,7 +78,7 @@ export function Routes() {
         ),
       },
       {
-        path: '/welcome',
+        path: ROUTES.WELCOME,
         element: (
           <AnimatedRoute direction="base">
             <Welcome />
@@ -77,7 +87,7 @@ export function Routes() {
         background: FullScreenBackground,
       },
       {
-        path: '/import-or-connect',
+        path: ROUTES.IMPORT_OR_CONNECT,
         element: (
           <AnimatedRoute direction="horizontal" navbar>
             <ImportOrConnect />
@@ -86,7 +96,7 @@ export function Routes() {
         background: FullScreenBackground,
       },
       {
-        path: '/watch',
+        path: ROUTES.WATCH,
         element: (
           <AnimatedRoute direction="horizontal" navbar>
             <WatchWallet />
@@ -95,7 +105,7 @@ export function Routes() {
         background: FullScreenBackground,
       },
       {
-        path: '/import',
+        path: ROUTES.IMPORT,
         element: (
           <AnimatedRoute direction="horizontal" navbar>
             <ImportWallet />
@@ -104,7 +114,7 @@ export function Routes() {
         background: FullScreenBackground,
       },
       {
-        path: '/import/select',
+        path: ROUTES.IMPORT__SELECT,
         element: (
           <AnimatedRoute direction="horizontal" navbar>
             <ImportWalletSelection />
@@ -113,7 +123,7 @@ export function Routes() {
         background: FullScreenBackground,
       },
       {
-        path: '/import/edit',
+        path: ROUTES.IMPORT__EDIT,
         element: (
           <AnimatedRoute
             direction="horizontal"
@@ -126,7 +136,7 @@ export function Routes() {
         background: FullScreenBackground,
       },
       {
-        path: '/unlock',
+        path: ROUTES.UNLOCK,
         element: (
           <AnimatedRoute direction="base">
             <Unlock />
@@ -135,7 +145,7 @@ export function Routes() {
         background: FullScreenBackground,
       },
       {
-        path: '/seed-backup-prompt',
+        path: ROUTES.SEED_BACKUP_PROMPT,
         element: (
           <AnimatedRoute direction="horizontal">
             <SeedBackupPrompt />
@@ -144,7 +154,7 @@ export function Routes() {
         background: FullScreenBackground,
       },
       {
-        path: '/seed-reveal',
+        path: ROUTES.SEED_REVEAL,
         element: (
           <AnimatedRoute direction="horizontal" navbar>
             <SeedReveal />
@@ -153,7 +163,7 @@ export function Routes() {
         background: FullScreenBackground,
       },
       {
-        path: '/seed-verify',
+        path: ROUTES.SEED_VERIFY,
         element: (
           <AnimatedRoute direction="horizontal" navbar>
             <SeedVerify />
@@ -162,7 +172,7 @@ export function Routes() {
         background: FullScreenBackground,
       },
       {
-        path: '/create-password',
+        path: ROUTES.CREATE_PASSWORD,
         element: (
           <AnimatedRoute direction="horizontal" navbar>
             <CreatePassword />
@@ -171,7 +181,7 @@ export function Routes() {
         background: FullScreenBackground,
       },
       {
-        path: '/settings',
+        path: ROUTES.SETTINGS,
         element: (
           <AnimatedRoute
             direction="vertical"
@@ -183,7 +193,7 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/privacy',
+        path: ROUTES.SETTINGS__PRIVACY,
         element: (
           <AnimatedRoute
             direction="horizontal"
@@ -195,7 +205,7 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/privacy/autoLockTimer',
+        path: ROUTES.SETTINGS__PRIVACY__AUTOLOCK,
         element: (
           <AnimatedRoute
             direction="horizontal"
@@ -209,7 +219,7 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/privacy/changePassword',
+        path: ROUTES.SETTINGS__PRIVACY__CHANGE_PASSWORD,
         element: (
           <AnimatedRoute direction="horizontal">
             <ChangePassword />
@@ -217,7 +227,7 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys',
+        path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS,
         element: (
           <AnimatedRoute
             direction="horizontal"
@@ -231,7 +241,7 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/walletDetails',
+        path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS,
         element: (
           <AnimatedRoute
             direction="horizontal"
@@ -245,7 +255,7 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/walletDetails/privateKeyWarning',
+        path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
         element: (
           <AnimatedRoute
             direction="horizontal"
@@ -257,7 +267,7 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/walletDetails/privateKey',
+        path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY,
         element: (
           <AnimatedRoute
             direction="horizontal"
@@ -269,7 +279,7 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/walletDetails/recoveryPhraseWarning',
+        path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
         element: (
           <AnimatedRoute
             direction="horizontal"
@@ -281,7 +291,7 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/walletDetails/recoveryPhrase',
+        path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE,
         element: (
           <AnimatedRoute
             direction="horizontal"
@@ -293,7 +303,7 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/transactions',
+        path: ROUTES.SETTINGS__TRANSACTIONS,
         element: (
           <AnimatedRoute
             direction="horizontal"
@@ -305,7 +315,7 @@ export function Routes() {
         ),
       },
       {
-        path: '/settings/currency',
+        path: ROUTES.SETTINGS__CURRENCY,
         element: (
           <AnimatedRoute
             direction="horizontal"
@@ -317,7 +327,7 @@ export function Routes() {
         ),
       },
       {
-        path: '/send',
+        path: ROUTES.SEND,
         element: (
           <AnimatedRoute direction="horizontal" title={i18n.t('send.title')}>
             <Send />
@@ -325,7 +335,7 @@ export function Routes() {
         ),
       },
       {
-        path: '/sign',
+        path: ROUTES.SIGN,
         element: (
           <AnimatedRoute
             direction="vertical"
@@ -337,7 +347,7 @@ export function Routes() {
         ),
       },
       {
-        path: '/wallets',
+        path: ROUTES.WALLETS,
         element: (
           <AnimatedRoute
             direction="horizontal"

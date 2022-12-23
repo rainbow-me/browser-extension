@@ -18,6 +18,7 @@ import { SymbolName, TextColor } from '~/design-system/styles/designTokens';
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { PasswordInput } from '../../components/PasswordInput/PasswordInput';
 import { updatePassword } from '../../handlers/wallet';
+import { ROUTES } from '../../urls';
 
 const strengthMeta = [
   {
@@ -115,7 +116,7 @@ export function CreatePassword() {
   const handleSetPassword = async () => {
     if (!isValid) return;
     await updatePassword('', newPassword);
-    navigate('/');
+    navigate(ROUTES.HOME);
   };
 
   return (

@@ -16,6 +16,7 @@ import {
 
 import { ChevronRight } from '../../components/ChevronRight';
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
+import { ROUTES } from '../../urls';
 
 export function ImportOrConnect() {
   const navigate = useNavigate();
@@ -72,7 +73,7 @@ export function ImportOrConnect() {
           <Box
             width="full"
             paddingBottom="20px"
-            onClick={() => navigateTo('/import')}
+            onClick={() => navigateTo(ROUTES.IMPORT)}
           >
             <Columns alignHorizontal="center" alignVertical="center">
               <Column>
@@ -129,7 +130,7 @@ export function ImportOrConnect() {
             </Columns>
           </Box>
           <Separator color="separatorTertiary" strokeWeight="1px" />
-          <Box paddingTop="20px" onClick={() => navigateTo('/watch')}>
+          <Box paddingTop="20px" onClick={() => navigateTo(ROUTES.WATCH)}>
             <Columns alignHorizontal="center" alignVertical="center">
               <Column>
                 <Symbol
