@@ -15,6 +15,7 @@ import {
   getExtensionIdByName,
   goToPopup,
   goToTestApp,
+  goToWelcome,
   initDriverWithOptions,
   querySelector,
   typeOnTextInput,
@@ -43,7 +44,7 @@ afterAll(async () => driver.quit());
 // Create a new wallet
 it('should be able create a new wallet', async () => {
   console.log('opening root url', rootURL);
-  await goToPopup(driver, rootURL);
+  await goToWelcome(driver, rootURL);
   console.log('opened root url');
   await findElementByTestIdAndClick({
     id: 'create-wallet-button',
@@ -87,7 +88,7 @@ it('should be able import a wallet via seed', async () => {
   await driver.switchTo().alert().accept();
 
   //  Start from welcome screen
-  await goToPopup(driver, rootURL);
+  await goToWelcome(driver, rootURL);
   await findElementByTestIdAndClick({
     id: 'import-wallet-button',
     driver,
@@ -303,7 +304,7 @@ it('should be able watch a wallet', async () => {
   await driver.switchTo().alert().accept();
 
   //  Start from welcome screen
-  await goToPopup(driver, rootURL);
+  await goToWelcome(driver, rootURL);
   await findElementByTestIdAndClick({
     id: 'import-wallet-button',
     driver,

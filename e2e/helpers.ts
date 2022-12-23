@@ -111,6 +111,11 @@ export async function goToPopup(driver, rootURL) {
   await delay(500);
 }
 
+export async function goToWelcome(driver, rootURL) {
+  await driver.get(rootURL + '/popup.html#/welcome');
+  await delay(1000);
+}
+
 export async function delayTime(time: 'short' | 'medium' | 'long') {
   switch (time) {
     case 'short':
