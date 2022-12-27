@@ -38,8 +38,6 @@ export const useGas = ({
     transactionRequest,
   });
 
-  console.log('---- estimatedGasLimit', estimatedGasLimit);
-  console.log('---- estimatedGasLimit transactionRequest', transactionRequest);
   const { data: optimismL1SecurityFee } = useOptimismL1SecurityFee(
     { transactionRequest },
     { enabled: chainId === ChainId.optimism },
@@ -51,6 +49,7 @@ export const useGas = ({
     gasFeeParamsBySpeed: storeGasFeeParamsBySpeed,
     setGasFeeParamsBySpeed,
   } = useGasStore();
+
   const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>(
     defaultSpeed || GasSpeed.NORMAL,
   );
