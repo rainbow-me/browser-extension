@@ -291,19 +291,11 @@ export const convertAmountAndPriceToNativeDisplayWithThreshold = (
   amount: BigNumberish,
   priceUnit: BigNumberish,
   nativeCurrency: keyof nativeCurrencyType,
-  buffer?: number,
-  skipDecimals = false,
 ): { amount: string; display: string } => {
   const nativeBalanceRaw = convertAmountToNativeAmount(amount, priceUnit);
-  const nativeBalanceWithThreshold = handleSignificantDecimalsWithThreshold(
+  const nativeDisplay = convertAmountToNativeDisplayWithThreshold(
     nativeBalanceRaw,
-    4,
-  );
-  const nativeDisplay = convertAmountToNativeDisplay(
-    nativeBalanceWithThreshold,
     nativeCurrency,
-    buffer,
-    skipDecimals,
   );
   return {
     amount: nativeBalanceRaw,
@@ -426,6 +418,22 @@ export const convertAmountToNativeDisplay = (
     decimals,
     buffer,
     skipDecimals,
+  );
+  if (nativeSelected.alignment === 'left') {
+    return `${nativeSelected.symbol}${display}`;
+  }
+  return `${display} ${nativeSelected.symbol}`;
+};
+
+export const convertAmountToNativeDisplayWithThreshold = (
+  value: BigNumberish,
+  nativeCurrency: keyof nativeCurrencyType,
+) => {
+  const nativeSelected = supportedCurrencies?.[nativeCurrency];
+  const display = handleSignificantDecimalsWithThreshold(
+    value,
+    nativeSelected.decimals,
+    nativeSelected.decimals < 4 ? '0.01' : '0.0001',
   );
   if (nativeSelected.alignment === 'left') {
     return `${nativeSelected.symbol}${display}`;
