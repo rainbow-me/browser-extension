@@ -186,6 +186,7 @@ export function Send() {
         asset={asset}
         primaryAmountDisplay={independentAmountDisplay.display}
         secondaryAmountDisplay={dependentAmountDisplay.display}
+        onSaveContactAction={setSaveContactAction}
       />
       <Navbar
         title={i18n.t('send.title')}
