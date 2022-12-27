@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react';
-import { useAccount } from 'wagmi';
+import { useCallback, useMemo, useState } from 'react';
+import { Address, useAccount } from 'wagmi';
 
 import {
   selectUserAssetsList,
@@ -7,6 +7,7 @@ import {
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 
 export type SortMethod = 'token' | 'chain';
 
@@ -24,7 +25,9 @@ export const useSendTransactionAsset = () => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const [sortMethod, setSortMethod] = useState<SortMethod>('token');
 
-  const [index, setIndex] = useState<number>(-1);
+  const [selectedAssetAddress, setSelectedAssetAddress] = useState<
+    Address | ''
+  >('');
   const { data: assets = [] } = useUserAssets(
     {
       address,
@@ -33,17 +36,20 @@ export const useSendTransactionAsset = () => {
     { select: sortBy(sortMethod) },
   );
 
-  const selectAssetIndex = useCallback(
-    (n?: number) => {
-      setIndex(n ?? index + 1);
-    },
-    [index],
+  const selectAssetAddress = useCallback((address: Address | '') => {
+    setSelectedAssetAddress(address);
+  }, []);
+
+  const asset = useMemo(
+    () =>
+      assets?.find(({ address }) =>
+        isLowerCaseMatch(address, selectedAssetAddress),
+      ) || null,
+    [assets, selectedAssetAddress],
   );
 
-  const asset = index === -1 ? null : assets?.[index];
-
   return {
-    selectAssetIndex,
+    selectAssetAddress,
     asset,
     assets,
     sortMethod,

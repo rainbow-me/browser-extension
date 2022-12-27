@@ -73,7 +73,9 @@ export const SendInputMask = ({
             <Inline alignVertical="center">
               <Box
                 style={{
-                  maxWidth: windowWidth - 210 - symbolPadding,
+                  maxWidth: value
+                    ? windowWidth - 210 - symbolPadding
+                    : windowWidth,
                   marginLeft: 17,
                   marginRight: 4,
                 }}

@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useContactsStore } from '~/core/state/contacts';
@@ -68,7 +69,7 @@ export function Send() {
 
   const { isContact } = useContactsStore();
 
-  const { asset, selectAssetIndex, assets, setSortMethod, sortMethod } =
+  const { asset, selectAssetAddress, assets, setSortMethod, sortMethod } =
     useSendTransactionAsset();
   const {
     assetAmount,
@@ -158,12 +159,12 @@ export function Send() {
     }
   }, [asset, assetAmount, fromAddress, toAddress, value, chainId, data]);
 
-  const selecteAsset = useCallback(
-    (index?: number) => {
-      selectAssetIndex(index);
+  const selectAsset = useCallback(
+    (address: Address | '') => {
+      selectAssetAddress(address);
       setIndependentAmount('');
     },
-    [selectAssetIndex, setIndependentAmount],
+    [selectAssetAddress, setIndependentAmount],
   );
 
   const navbarButtonAction = isContact({ address: toAddress })
@@ -233,7 +234,7 @@ export function Send() {
                   <TokenInput
                     asset={asset}
                     assets={assets}
-                    selectAssetIndex={selecteAsset}
+                    selectAssetAddress={selectAsset}
                     dropdownClosed={toAddressDropdownOpen}
                     setSortMethod={setSortMethod}
                     sortMethod={sortMethod}

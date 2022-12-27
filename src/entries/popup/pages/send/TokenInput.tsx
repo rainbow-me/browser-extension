@@ -1,4 +1,5 @@
 import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
@@ -52,14 +53,14 @@ const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
 export const TokenInput = ({
   asset,
   assets,
-  selectAssetIndex,
+  selectAssetAddress,
   dropdownClosed = false,
   setSortMethod,
   sortMethod,
 }: {
   asset: ParsedAddressAsset | null;
   assets: ParsedAddressAsset[];
-  selectAssetIndex: (n?: number) => void;
+  selectAssetAddress: (address: Address | '') => void;
   dropdownClosed: boolean;
   setSortMethod: (sortMethod: SortMethod) => void;
   sortMethod: SortMethod;
@@ -73,11 +74,11 @@ export const TokenInput = ({
     [],
   );
   const onSelectAsset = useCallback(
-    (i: number) => {
-      selectAssetIndex(i);
+    (address: Address | '') => {
+      selectAssetAddress(address);
       setDropdownVisible(false);
     },
-    [selectAssetIndex],
+    [selectAssetAddress],
   );
 
   useEffect(() => {
@@ -134,7 +135,7 @@ export const TokenInput = ({
         </Box>
       }
       showActionClose={!!asset}
-      onActionClose={() => selectAssetIndex(-1)}
+      onActionClose={() => onSelectAsset('')}
       dropdownComponent={
         <Stack space="8px">
           <Box paddingHorizontal="20px">
@@ -221,7 +222,7 @@ export const TokenInput = ({
               <Box
                 paddingHorizontal="8px"
                 key={`${asset?.uniqueId}-${i}`}
-                onClick={() => onSelectAsset(i)}
+                onClick={() => onSelectAsset(asset.address)}
               >
                 <RowHighlightWrapper>
                   <Box marginHorizontal="-8px">
