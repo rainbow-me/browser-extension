@@ -12,46 +12,45 @@ export const BottomSheet = ({
 }) => {
   return (
     <AnimatePresence>
-      <>
-        {show && (
-          <>
-            <Box
-              position="fixed"
-              bottom="0"
-              left="0"
-              right="0"
-              style={{
-                width: '100%',
-                height: '100%',
-                zIndex: 10,
-              }}
-              background="scrimTertiary"
-              as={motion.div}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            />
-
-            <Box
-              position="absolute"
-              bottom="0"
-              left="0"
-              right="0"
-              paddingBottom="20px"
-              paddingHorizontal="12px"
-              style={{ zIndex: 11 }}
-              as={motion.div}
-              initial={{ y: 300 }}
-              animate={{ y: 0 }}
-              exit={{ y: 300 }}
-            >
-              <Box background="surfacePrimaryElevated" borderRadius="24px">
-                {children}
-              </Box>
-            </Box>
-          </>
-        )}
-      </>
+      {show && (
+        <Box
+          position="fixed"
+          bottom="0"
+          left="0"
+          right="0"
+          style={{
+            width: '100%',
+            height: '100%',
+            zIndex: 10,
+          }}
+          background="scrimTertiary"
+          as={motion.div}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          key="background"
+        />
+      )}
+      {show && (
+        <Box
+          position="absolute"
+          bottom="0"
+          left="0"
+          right="0"
+          paddingBottom="20px"
+          paddingHorizontal="12px"
+          style={{ zIndex: 11 }}
+          as={motion.div}
+          initial={{ opacity: 1, y: 800 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 1, y: 800 }}
+          key="review"
+        >
+          <Box background="surfacePrimaryElevated" borderRadius="24px">
+            {children}
+          </Box>
+        </Box>
+      )}
     </AnimatePresence>
   );
 };
