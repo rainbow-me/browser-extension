@@ -205,7 +205,8 @@ export function Send() {
       />
       <Box
         background="surfaceSecondary"
-        style={{ height: 535, paddingBottom: 19 }}
+        style={{ height: 535 }}
+        paddingBottom="20px"
         paddingHorizontal="12px"
       >
         <Rows space="8px" alignVertical="top">

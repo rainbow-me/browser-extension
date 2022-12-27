@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Address } from 'wagmi';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
   Box,
   Button,
@@ -20,6 +21,7 @@ import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet'
 
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
+import { useBackgroundAccounts } from '../../hooks/useBackgroundAccounts';
 import { useContact } from '../../hooks/useContacts';
 
 export const ReviewSheet = ({
@@ -39,8 +41,14 @@ export const ReviewSheet = ({
   onCancel: () => void;
   onSend: () => void;
 }) => {
+  const { accounts } = useBackgroundAccounts();
+
   const { name: toName } = useContact({ address: toAddress });
 
+  const isToWalletOwner = useMemo(
+    () => !!accounts.find((account) => isLowerCaseMatch(account, toAddress)),
+    [accounts, toAddress],
+  );
   return (
     <BottomSheet show={show}>
       <Box background="surfacePrimaryElevatedSecondary">
@@ -57,8 +65,8 @@ export const ReviewSheet = ({
               <Row>
                 <Columns alignHorizontal="justify">
                   <Column>
-                    <Box paddingVertical="6px">
-                      <Rows space="10px">
+                    <Box paddingVertical="6px" height="full">
+                      <Rows space="10px" alignVertical="center">
                         <Row>
                           <Text size="20pt" weight="bold" color="label">
                             {primaryAmountDisplay}
@@ -129,18 +137,24 @@ export const ReviewSheet = ({
               <Row>
                 <Columns alignHorizontal="justify">
                   <Column>
-                    <Box paddingVertical="6px">
-                      <Rows space="10px">
-                        <Row>
+                    <Box paddingVertical="6px" height="full">
+                      <Rows space="10px" alignVertical="center">
+                        <Row height="content">
                           <Text size="20pt" weight="bold" color="label">
                             {toName || truncateAddress(toAddress)}
                           </Text>
                         </Row>
-                        <Row>
-                          <Text size="12pt" weight="bold" color="labelTertiary">
-                            You own this wallet
-                          </Text>
-                        </Row>
+                        {isToWalletOwner ? (
+                          <Row>
+                            <Text
+                              size="12pt"
+                              weight="bold"
+                              color="labelTertiary"
+                            >
+                              You own this wallet
+                            </Text>
+                          </Row>
+                        ) : null}
                       </Rows>
                     </Box>
                   </Column>
@@ -155,7 +169,7 @@ export const ReviewSheet = ({
           </Box>
         </Stack>
       </Box>
-      <Separator />
+      <Separator color="separatorSecondary" />
 
       <Box width="full" padding="20px">
         <Rows space="8px">
@@ -178,10 +192,9 @@ export const ReviewSheet = ({
               <Button
                 color="transparent"
                 height="44px"
-                variant="flat"
+                variant="tinted"
                 onClick={onCancel}
               >
-                Cancel
                 <Text weight="bold" size="16pt" color="labelSecondary">
                   Cancel
                 </Text>
