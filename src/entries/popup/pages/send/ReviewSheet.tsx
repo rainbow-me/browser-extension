@@ -53,7 +53,10 @@ export const ReviewSheet = ({
   );
   return (
     <BottomSheet show={show}>
-      <Box background="surfacePrimaryElevatedSecondary">
+      <Box
+        style={{ borderTopLeftRadius: 24, borderTopRightRadius: 24 }}
+        background="surfacePrimaryElevatedSecondary"
+      >
         <Stack space="20px">
           <Box paddingVertical="26px">
             <Inline alignHorizontal="center" alignVertical="center">
@@ -236,9 +239,23 @@ export const ReviewSheet = ({
               width="full"
               onClick={onSend}
             >
-              <Text weight="bold" size="16pt" color="label">
-                {i18n.t('send.review.send_to', { toName })}
-              </Text>
+              <Box
+                style={{ maxWidth: TEXT_OVERFLOW_WIDTH }}
+                marginVertical="-2px"
+              >
+                <Text
+                  whiteSpace="nowrap"
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                  weight="bold"
+                  size="16pt"
+                  color="label"
+                >
+                  {i18n.t('send.review.send_to', {
+                    toName,
+                  })}
+                </Text>
+              </Box>
             </Button>
           </Row>
 
