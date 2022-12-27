@@ -565,6 +565,7 @@ export const space = {
   '4px': 4,
   '5px': 5,
   '6px': 6,
+  '7px': 7,
   '8px': 8,
   '10px': 10,
   '12px': 12,
@@ -595,6 +596,7 @@ export const negativeSpace = {
   '-4px': -4,
   '-5px': -5,
   '-6px': -6,
+  '-7px': -7,
   '-8px': -8,
   '-10px': -10,
   '-12px': -12,
@@ -627,6 +629,7 @@ export const spaceToNegativeSpace: Record<
   '4px': '-4px',
   '5px': '-5px',
   '6px': '-6px',
+  '7px': '-7px',
   '8px': '-8px',
   '10px': '-10px',
   '12px': '-12px',
@@ -769,6 +772,7 @@ export const radii = {
   '28px': 28,
   '30px': 30,
   '32px': 32,
+  '40px': 40,
 };
 export type Radius = keyof typeof radii;
 
