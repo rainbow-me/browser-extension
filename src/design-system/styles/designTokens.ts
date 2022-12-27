@@ -145,7 +145,10 @@ export type BackgroundColor =
   | 'orange'
   | 'yellow'
   | 'shadowNear'
-  | 'shadowFar';
+  | 'shadowFar'
+  | 'scrim'
+  | 'scrimSecondary'
+  | 'scrimTertiary';
 
 export type BackgroundColorValue = {
   color: string;
@@ -333,6 +336,27 @@ export const backgroundColors: Record<
   shadowFar: {
     dark: { color: globalColors.grey100, setColorContext: 'dark' },
     light: { color: '#25292E', setColorContext: 'dark' },
+  },
+  scrim: {
+    light: {
+      color: 'rgba(0, 0, 0, 0.2)',
+      setColorContext: 'light',
+    },
+    dark: { color: 'rgba(0, 0, 0, 0.4)', setColorContext: 'dark' },
+  },
+  scrimSecondary: {
+    light: {
+      color: 'rgba(0, 0, 0, 0.4)',
+      setColorContext: 'light',
+    },
+    dark: { color: 'rgba(0, 0, 0, 0.6)', setColorContext: 'dark' },
+  },
+  scrimTertiary: {
+    light: {
+      color: 'rgba(0, 0, 0, 0.6)',
+      setColorContext: 'light',
+    },
+    dark: { color: 'rgba(0, 0, 0, 0.8)', setColorContext: 'dark' },
   },
 };
 
@@ -549,6 +573,7 @@ export const space = {
   '20px': 20,
   '24px': 24,
   '28px': 28,
+  '26px': 26,
   '30px': 30,
   '32px': 32,
   '36px': 36,
@@ -577,6 +602,7 @@ export const negativeSpace = {
   '-16px': -16,
   '-20px': -20,
   '-24px': -24,
+  '-26px': -26,
   '-28px': -28,
   '-30px': -30,
   '-32px': -32,
@@ -608,6 +634,7 @@ export const spaceToNegativeSpace: Record<
   '16px': '-16px',
   '20px': '-20px',
   '24px': '-24px',
+  '26px': '-26px',
   '28px': '-28px',
   '30px': '-30px',
   '32px': '-32px',

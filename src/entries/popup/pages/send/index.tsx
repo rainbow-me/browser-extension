@@ -31,6 +31,7 @@ import { useSendTransactionState } from '../../hooks/send/useSendTransactionStat
 
 import { ContactAction, ContactPrompt } from './ContactPrompt';
 import { NavbarContactButton } from './NavbarContactButton';
+import { ReviewSheet } from './ReviewSheet';
 import { ToAddressInput } from './ToAddressInput';
 import { TokenInput } from './TokenInput';
 import { ValueInput } from './ValueInput';
@@ -175,6 +176,7 @@ export function Send() {
         action={contactSaveAction?.action}
         onSaveContactAction={setSaveContactAction}
       />
+      <ReviewSheet />
       <Navbar
         title={i18n.t('send.title')}
         background={'surfaceSecondary'}
