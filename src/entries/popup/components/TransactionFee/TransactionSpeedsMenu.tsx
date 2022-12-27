@@ -28,7 +28,7 @@ export const SwitchSpeedMenuSelector = ({
   gasFeeParamsBySpeed,
   chainId,
 }: {
-  gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
+  gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed | null;
   chainId: Chain['id'];
 }) => {
   return (
@@ -73,7 +73,7 @@ export const SwitchSpeedMenuSelector = ({
                     {i18n.t(`transaction_fee.${speed}`)}
                   </Text>
                   <Text color="label" size="11pt" weight="medium">
-                    {gasFeeParamsBySpeed[speed].display}
+                    {gasFeeParamsBySpeed?.[speed].display}
                   </Text>
                 </Stack>
               </Inline>
@@ -90,7 +90,7 @@ export const SwitchSpeedMenuSelector = ({
 
 interface SwitchTransactionSpeedMenuProps {
   selectedSpeed: GasSpeed;
-  gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
+  gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed | null;
   chainId: Chain['id'];
   editable?: boolean;
   onSpeedChanged: (speed: GasSpeed) => void;

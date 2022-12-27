@@ -157,8 +157,8 @@ export const parseGasFeeParams = ({
     ),
   };
 
-  const amount = add(maxBaseFee.amount, maxPriorityFeePerGas.amount);
-  const totalWei = multiply(gasLimit, amount);
+  const feeAmount = add(maxBaseFee.amount, maxPriorityFeePerGas.amount);
+  const totalWei = multiply(gasLimit, feeAmount);
   const nativeTotalWei = convertRawAmountToBalance(
     totalWei,
     supportedCurrencies[nativeAsset?.symbol as SupportedCurrencyKey],
@@ -410,13 +410,13 @@ export const parseGasFeeParamsBySpeed = ({
   optimismL1SecurityFee,
 }: {
   chainId: ChainId;
-  data?: MeteorologyResponse | MeteorologyLegacyResponse;
+  data: MeteorologyResponse | MeteorologyLegacyResponse;
   gasLimit: string;
   nativeAsset?: ParsedAsset;
   currency: SupportedCurrencyKey;
   optimismL1SecurityFee?: string;
 }) => {
-  if (chainId === ChainId.mainnet && data) {
+  if (chainId === ChainId.mainnet) {
     const response = data as MeteorologyResponse;
     const {
       data: { currentBaseFee, maxPriorityFeeSuggestions, baseFeeSuggestion },

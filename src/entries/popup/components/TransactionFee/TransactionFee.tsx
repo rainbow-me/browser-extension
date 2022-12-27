@@ -1,5 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -39,6 +39,11 @@ export function TransactionFee({
       transactionRequest,
     });
 
+  const gasFeeParamsForSelectedSpeed = useMemo(
+    () => gasFeeParamsBySpeed?.[selectedSpeed],
+    [gasFeeParamsBySpeed, selectedSpeed],
+  );
+
   return (
     <Columns alignHorizontal="justify" alignVertical="center">
       <Column>
@@ -61,7 +66,7 @@ export function TransactionFee({
               >
                 {isLoading
                   ? '~'
-                  : `${gasFeeParamsBySpeed[selectedSpeed].gasFee.display} ~ ${gasFeeParamsBySpeed[selectedSpeed].estimatedTime.display}`}
+                  : `${gasFeeParamsForSelectedSpeed?.gasFee.display} ~ ${gasFeeParamsForSelectedSpeed?.estimatedTime.display}`}
               </Text>
             </Inline>
           </Row>
