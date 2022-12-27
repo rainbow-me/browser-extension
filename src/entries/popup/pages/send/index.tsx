@@ -118,7 +118,11 @@ export function Send() {
     [setToAddressOrName],
   );
 
-  const openReviewSheet = useCallback(() => setShowReviewSheet(true), []);
+  const openReviewSheet = useCallback(() => {
+    if (!!toAddress && independentAmount) {
+      setShowReviewSheet(true);
+    }
+  }, [independentAmount, toAddress]);
   const closeReviewSheet = useCallback(() => setShowReviewSheet(false), []);
 
   const handleSend = useCallback(async () => {

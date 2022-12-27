@@ -178,7 +178,9 @@ const EditContactDropdown = ({
   );
 };
 
-const TEXT_OVERFLOW_WIDTH = 220;
+const { innerWidth: windowWidth } = window;
+
+const TEXT_OVERFLOW_WIDTH = windowWidth - 160;
 export const ReviewSheet = ({
   show,
   toAddress,
@@ -406,7 +408,7 @@ export const ReviewSheet = ({
               onClick={onSend}
             >
               <Box
-                style={{ maxWidth: TEXT_OVERFLOW_WIDTH }}
+                style={{ maxWidth: TEXT_OVERFLOW_WIDTH + 20 }}
                 marginVertical="-2px"
               >
                 <Text
