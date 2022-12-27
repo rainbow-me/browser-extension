@@ -25,6 +25,7 @@ import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useBackgroundAccounts } from '../../hooks/useBackgroundAccounts';
 import { useContact } from '../../hooks/useContacts';
 
+const TEXT_OVERFLOW_WIDTH = 220;
 export const ReviewSheet = ({
   show,
   toAddress,
@@ -44,7 +45,7 @@ export const ReviewSheet = ({
 }) => {
   const { accounts } = useBackgroundAccounts();
 
-  const { name: toName } = useContact({ address: toAddress });
+  const { display: toName } = useContact({ address: toAddress });
 
   const isToWalletOwner = useMemo(
     () => !!accounts.find((account) => isLowerCaseMatch(account, toAddress)),
@@ -69,14 +70,42 @@ export const ReviewSheet = ({
                     <Box paddingVertical="6px" height="full">
                       <Rows space="10px" alignVertical="center">
                         <Row>
-                          <Text size="20pt" weight="bold" color="label">
-                            {primaryAmountDisplay}
-                          </Text>
+                          <Box
+                            style={{ maxWidth: TEXT_OVERFLOW_WIDTH }}
+                            marginVertical="-2px"
+                          >
+                            <Text
+                              whiteSpace="nowrap"
+                              overflow="hidden"
+                              textOverflow="ellipsis"
+                              size="20pt"
+                              weight="bold"
+                              color="label"
+                            >
+                              <Box paddingVertical="2px">
+                                {primaryAmountDisplay}
+                              </Box>
+                            </Text>
+                          </Box>
                         </Row>
                         <Row>
-                          <Text size="12pt" weight="bold" color="labelTertiary">
-                            {secondaryAmountDisplay}
-                          </Text>
+                          <Box
+                            style={{ maxWidth: TEXT_OVERFLOW_WIDTH }}
+                            marginVertical="-2px"
+                          >
+                            <Text
+                              whiteSpace="nowrap"
+                              overflow="hidden"
+                              textOverflow="ellipsis"
+                              size="12pt"
+                              weight="bold"
+                              color="labelTertiary"
+                            >
+                              <Box paddingVertical="2px">
+                                {secondaryAmountDisplay}
+                              </Box>
+                            </Text>
+                          </Box>
                         </Row>
                       </Rows>
                     </Box>
@@ -137,13 +166,38 @@ export const ReviewSheet = ({
               </Row>
               <Row>
                 <Columns alignHorizontal="justify">
-                  <Column>
+                  <Column width="4/5">
                     <Box paddingVertical="6px" height="full">
                       <Rows space="10px" alignVertical="center">
                         <Row height="content">
-                          <Text size="20pt" weight="bold" color="label">
-                            {toName || truncateAddress(toAddress)}
-                          </Text>
+                          <Inline space="7px" alignVertical="center">
+                            <Box
+                              style={{ maxWidth: TEXT_OVERFLOW_WIDTH }}
+                              marginVertical="-2px"
+                            >
+                              <Text
+                                whiteSpace="nowrap"
+                                overflow="hidden"
+                                textOverflow="ellipsis"
+                                size="20pt"
+                                weight="bold"
+                                color="label"
+                              >
+                                <Box paddingVertical="2px">
+                                  {toName || truncateAddress(toAddress)}
+                                </Box>
+                              </Text>
+                            </Box>
+
+                            <Box>
+                              <Symbol
+                                symbol="ellipsis.circle"
+                                weight="bold"
+                                size={16}
+                                color="labelTertiary"
+                              />
+                            </Box>
+                          </Inline>
                         </Row>
                         {isToWalletOwner ? (
                           <Row>
