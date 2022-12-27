@@ -39,17 +39,13 @@ export const BottomSheet = ({
               right="0"
               paddingBottom="20px"
               paddingHorizontal="12px"
-              opacity="1"
-              style={{ zIndex: 111 }}
+              style={{ zIndex: 11 }}
               as={motion.div}
               initial={{ y: 300 }}
               animate={{ y: 0 }}
               exit={{ y: 300 }}
             >
-              <Box
-                background="surfacePrimaryElevatedSecondary"
-                borderRadius="24px"
-              >
+              <Box background="surfacePrimaryElevated" borderRadius="24px">
                 {children}
               </Box>
             </Box>
