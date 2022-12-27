@@ -74,7 +74,8 @@ export function Send() {
     independentAmount,
     independentField,
     independentFieldRef,
-    dependentAmount,
+    dependentAmountDisplay,
+    independentAmountDisplay,
     setIndependentAmount,
     switchIndependentField,
     setMaxAssetAmount,
@@ -116,6 +117,8 @@ export function Send() {
   );
 
   const openReviewSheet = useCallback(() => setShowReviewSheet(true), []);
+  const closeReviewSheet = useCallback(() => setShowReviewSheet(false), []);
+
   const handleSend = useCallback(async () => {
     setSending(true);
 
@@ -180,12 +183,12 @@ export function Send() {
       />
       <ReviewSheet
         show={showReviewSheet}
-        onCancel={() => setShowReviewSheet(false)}
+        onCancel={closeReviewSheet}
         onSend={handleSend}
-        accentColor={asset?.colors?.primary || asset?.colors?.fallback}
         toAddress={toAddress}
-        fromAddress={fromAddress}
         asset={asset}
+        primaryAmountDisplay={independentAmountDisplay.display}
+        secondaryAmountDisplay={dependentAmountDisplay.display}
       />
       <Navbar
         title={i18n.t('send.title')}
@@ -240,7 +243,7 @@ export function Send() {
                     <ValueInput
                       asset={asset}
                       currentCurrency={currentCurrency}
-                      dependentAmount={dependentAmount}
+                      dependentAmount={dependentAmountDisplay}
                       independentAmount={independentAmount}
                       independentField={independentField}
                       independentFieldRef={independentFieldRef}
