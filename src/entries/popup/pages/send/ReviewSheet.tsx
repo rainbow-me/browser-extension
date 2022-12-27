@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Address } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
 import { isLowerCaseMatch } from '~/core/utils/strings';
@@ -56,7 +57,7 @@ export const ReviewSheet = ({
           <Box paddingVertical="26px">
             <Inline alignHorizontal="center" alignVertical="center">
               <Text size="14pt" weight="heavy" color="label">
-                Review & Send
+                {i18n.t('send.review.title')}
               </Text>
             </Inline>
           </Box>
@@ -100,7 +101,7 @@ export const ReviewSheet = ({
                     >
                       <Inline alignHorizontal="center" alignVertical="center">
                         <Text size="12pt" weight="heavy" color="labelTertiary">
-                          to
+                          {i18n.t('send.review.to')}
                         </Text>
                       </Inline>
                     </Box>
@@ -151,7 +152,7 @@ export const ReviewSheet = ({
                               weight="bold"
                               color="labelTertiary"
                             >
-                              You own this wallet
+                              {i18n.t('send.review.you_own_wallet')}
                             </Text>
                           </Row>
                         ) : null}
@@ -182,7 +183,7 @@ export const ReviewSheet = ({
               onClick={onSend}
             >
               <Text weight="bold" size="16pt" color="label">
-                Send to {toName}
+                {i18n.t('send.review.send_to', { toName })}
               </Text>
             </Button>
           </Row>
@@ -196,7 +197,7 @@ export const ReviewSheet = ({
                 onClick={onCancel}
               >
                 <Text weight="bold" size="16pt" color="labelSecondary">
-                  Cancel
+                  {i18n.t('send.review.cancel')}
                 </Text>
               </Button>
             </Inline>

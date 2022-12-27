@@ -16,8 +16,10 @@ import {
   AccentColorProvider,
   Box,
   Button,
+  Inline,
   Row,
   Rows,
+  Symbol,
   Text,
 } from '~/design-system';
 import { foregroundColors } from '~/design-system/styles/designTokens';
@@ -58,7 +60,6 @@ export const AccentColorProviderWrapper = ({
 export function Send() {
   const [, setTxHash] = useState('');
   const [showReviewSheet, setShowReviewSheet] = useState(false);
-  const [sending, setSending] = useState(false);
   const [contactSaveAction, setSaveContactAction] = useState<{
     show: boolean;
     action: ContactAction;
@@ -120,8 +121,6 @@ export function Send() {
   const closeReviewSheet = useCallback(() => setShowReviewSheet(false), []);
 
   const handleSend = useCallback(async () => {
-    setSending(true);
-
     try {
       const result = await sendTransaction({
         from: fromAddress,
@@ -156,8 +155,6 @@ export function Send() {
       }
     } catch (e) {
       alert('Transaction failed');
-    } finally {
-      setSending(false);
     }
   }, [asset, assetAmount, fromAddress, toAddress, value, chainId, data]);
 
@@ -279,15 +276,16 @@ export function Send() {
                         color="accent"
                         width="full"
                       >
-                        <Text color="label" size="14pt" weight="bold">
-                          {i18n.t(
-                            `send.${
-                              sending
-                                ? 'button_label_sending'
-                                : 'button_label_send'
-                            }`,
-                          )}
-                        </Text>
+                        <Inline space="8px" alignVertical="center">
+                          <Symbol
+                            symbol="doc.text.magnifyingglass"
+                            weight="bold"
+                            size={16}
+                          />
+                          <Text color="label" size="16pt" weight="bold">
+                            {i18n.t('send.button_label_review')}
+                          </Text>
+                        </Inline>
                       </Button>
                     </Row>
                   </Rows>
