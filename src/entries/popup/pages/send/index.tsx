@@ -36,7 +36,7 @@ import { ToAddressInput } from './ToAddressInput';
 import { TokenInput } from './TokenInput';
 import { ValueInput } from './ValueInput';
 
-const AccentColorProviderWrapper = ({
+export const AccentColorProviderWrapper = ({
   color,
   children,
 }: {
@@ -57,6 +57,7 @@ const AccentColorProviderWrapper = ({
 
 export function Send() {
   const [, setTxHash] = useState('');
+  const [showReviewSheet, setShowReviewSheet] = useState(false);
   const [sending, setSending] = useState(false);
   const [contactSaveAction, setSaveContactAction] = useState<{
     show: boolean;
@@ -114,6 +115,7 @@ export function Send() {
     [setToAddressOrName],
   );
 
+  const openReviewSheet = useCallback(() => setShowReviewSheet(true), []);
   const handleSend = useCallback(async () => {
     setSending(true);
 
@@ -176,7 +178,15 @@ export function Send() {
         action={contactSaveAction?.action}
         onSaveContactAction={setSaveContactAction}
       />
-      <ReviewSheet />
+      <ReviewSheet
+        show={showReviewSheet}
+        onCancel={() => setShowReviewSheet(false)}
+        onSend={handleSend}
+        accentColor={asset?.colors?.primary || asset?.colors?.fallback}
+        toAddress={toAddress}
+        fromAddress={fromAddress}
+        asset={asset}
+      />
       <Navbar
         title={i18n.t('send.title')}
         background={'surfaceSecondary'}
@@ -259,7 +269,7 @@ export function Send() {
                     </Row>
                     <Row>
                       <Button
-                        onClick={handleSend}
+                        onClick={openReviewSheet}
                         height="44px"
                         variant="flat"
                         color="accent"
