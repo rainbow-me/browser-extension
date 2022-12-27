@@ -97,7 +97,7 @@ export const TokenInput = ({
       zIndex={1}
       dropdownHeight={376}
       leftComponent={
-        <Box>
+        <Box paddingRight="8px">
           <CoinIcon asset={asset ?? undefined} />
         </Box>
       }
