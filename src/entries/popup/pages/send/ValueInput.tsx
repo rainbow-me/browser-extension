@@ -13,6 +13,7 @@ import {
   Stack,
   Text,
 } from '~/design-system';
+import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
 import { SendInputMask } from '../../components/SendInputMask/SendInputMask';
 
@@ -92,25 +93,13 @@ export const ValueInput = ({
                     maxWidth: windowWidth / 2,
                   }}
                 >
-                  <Text
+                  <TextOverflow
                     size="11pt"
                     weight="bold"
                     color={`${asset ? 'label' : 'labelTertiary'}`}
-                    whiteSpace="nowrap"
-                    overflow="hidden"
-                    textOverflow="ellipsis"
                   >
-                    <Box
-                      paddingVertical="2px"
-                      style={{
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                      }}
-                    >
-                      {dependentAmount.display}
-                    </Box>
-                  </Text>
+                    {dependentAmount.display}
+                  </TextOverflow>
                 </Box>
                 <Box onClick={switchIndependentField}>
                   <Text color="accent" size="12pt" weight="bold">

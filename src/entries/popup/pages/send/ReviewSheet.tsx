@@ -20,6 +20,7 @@ import {
   Text,
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
+import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import {
@@ -235,14 +236,8 @@ export const ReviewSheet = ({
                     <Box paddingVertical="6px" height="full">
                       <Rows space="10px" alignVertical="center">
                         <Row>
-                          <Box
-                            style={{ maxWidth: TEXT_OVERFLOW_WIDTH }}
-                            marginVertical="-2px"
-                          >
-                            <Text
-                              whiteSpace="nowrap"
-                              overflow="hidden"
-                              textOverflow="ellipsis"
+                          <Box style={{ maxWidth: TEXT_OVERFLOW_WIDTH }}>
+                            <TextOverflow
                               size="20pt"
                               weight="bold"
                               color="label"
@@ -250,26 +245,18 @@ export const ReviewSheet = ({
                               <Box paddingVertical="2px">
                                 {primaryAmountDisplay}
                               </Box>
-                            </Text>
+                            </TextOverflow>
                           </Box>
                         </Row>
                         <Row>
-                          <Box
-                            style={{ maxWidth: TEXT_OVERFLOW_WIDTH }}
-                            marginVertical="-2px"
-                          >
-                            <Text
-                              whiteSpace="nowrap"
-                              overflow="hidden"
-                              textOverflow="ellipsis"
+                          <Box style={{ maxWidth: TEXT_OVERFLOW_WIDTH }}>
+                            <TextOverflow
                               size="12pt"
                               weight="bold"
                               color="labelTertiary"
                             >
-                              <Box paddingVertical="2px">
-                                {secondaryAmountDisplay}
-                              </Box>
-                            </Text>
+                              {secondaryAmountDisplay}
+                            </TextOverflow>
                           </Box>
                         </Row>
                       </Rows>
@@ -336,22 +323,14 @@ export const ReviewSheet = ({
                       <Rows space="10px" alignVertical="center">
                         <Row height="content">
                           <Inline space="7px" alignVertical="center">
-                            <Box
-                              style={{ maxWidth: TEXT_OVERFLOW_WIDTH }}
-                              marginVertical="-2px"
-                            >
-                              <Text
-                                whiteSpace="nowrap"
-                                overflow="hidden"
-                                textOverflow="ellipsis"
+                            <Box style={{ maxWidth: TEXT_OVERFLOW_WIDTH }}>
+                              <TextOverflow
                                 size="20pt"
                                 weight="bold"
                                 color="label"
                               >
-                                <Box paddingVertical="2px">
-                                  {toName || truncateAddress(toAddress)}
-                                </Box>
-                              </Text>
+                                {toName || truncateAddress(toAddress)}
+                              </TextOverflow>
                             </Box>
 
                             <Box>
@@ -413,18 +392,11 @@ export const ReviewSheet = ({
                 style={{ maxWidth: TEXT_OVERFLOW_WIDTH + 20 }}
                 marginVertical="-2px"
               >
-                <Text
-                  whiteSpace="nowrap"
-                  overflow="hidden"
-                  textOverflow="ellipsis"
-                  weight="bold"
-                  size="16pt"
-                  color="label"
-                >
+                <TextOverflow weight="bold" size="16pt" color="label">
                   {i18n.t('send.review.send_to', {
                     toName,
                   })}
-                </Text>
+                </TextOverflow>
               </Box>
             </Button>
           </Row>

@@ -14,6 +14,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import {
@@ -104,26 +105,23 @@ export const TokenInput = ({
       }
       centerComponent={
         <Box width="fit">
-          <Stack space="8px">
+          <Stack>
             <Box
               style={{
                 maxWidth: windowWidth / 2,
               }}
             >
-              <Text
+              <TextOverflow
                 size="16pt"
                 weight="semibold"
                 color={`${asset ? 'label' : 'labelTertiary'}`}
-                whiteSpace="nowrap"
-                overflow="hidden"
-                textOverflow="ellipsis"
               >
                 {asset?.name ?? i18n.t('send.input_token_placeholder')}
-              </Text>
+              </TextOverflow>
             </Box>
 
             {asset && (
-              <Text size="12pt" weight="semibold" color={`labelTertiary`}>
+              <Text size="12pt" weight="semibold" color="labelTertiary">
                 {handleSignificantDecimals(
                   asset?.balance.amount,
                   asset?.decimals,
