@@ -105,11 +105,14 @@ const WalletRow = ({
       <Inline alignVertical="center" space="8px">
         <WalletAvatar size={36} address={wallet} emojiSize="20pt" />
         <Stack space="8px">
-          <Box style={{ maxWidth: (2 * windowWidth) / 3 }}>
-            <TextOverflow weight="semibold" size="14pt" color="label">
-              {contact?.display || truncateAddress(wallet)}
-            </TextOverflow>
-          </Box>
+          <TextOverflow
+            maxWidth={(2 * windowWidth) / 3}
+            weight="semibold"
+            size="14pt"
+            color="label"
+          >
+            {contact?.display || truncateAddress(wallet)}
+          </TextOverflow>
 
           {(contact?.display || ensName) && (
             <Text weight="semibold" size="12pt" color="labelTertiary">
@@ -312,11 +315,14 @@ export const ToAddressInput = ({
                 exit={{ opacity: 0 }}
               >
                 <Stack space="8px">
-                  <Box style={{ maxWidth: windowWidth / 2 }}>
-                    <TextOverflow weight="semibold" size="14pt" color="label">
-                      {toAddressContact?.display || truncateAddress(toAddress)}
-                    </TextOverflow>
-                  </Box>
+                  <TextOverflow
+                    maxWidth={windowWidth / 2}
+                    weight="semibold"
+                    size="14pt"
+                    color="label"
+                  >
+                    {toAddressContact?.display || truncateAddress(toAddress)}
+                  </TextOverflow>
                   {toAddressContact?.display && (
                     <Text weight="semibold" size="12pt" color="labelTertiary">
                       {truncateAddress(toAddress)}

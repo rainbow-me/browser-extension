@@ -236,28 +236,26 @@ export const ReviewSheet = ({
                     <Box paddingVertical="6px" height="full">
                       <Rows space="10px" alignVertical="center">
                         <Row>
-                          <Box style={{ maxWidth: TEXT_OVERFLOW_WIDTH }}>
-                            <TextOverflow
-                              size="20pt"
-                              weight="bold"
-                              color="label"
-                            >
-                              <Box paddingVertical="2px">
-                                {primaryAmountDisplay}
-                              </Box>
-                            </TextOverflow>
-                          </Box>
+                          <TextOverflow
+                            maxWidth={TEXT_OVERFLOW_WIDTH}
+                            size="20pt"
+                            weight="bold"
+                            color="label"
+                          >
+                            <Box paddingVertical="2px">
+                              {primaryAmountDisplay}
+                            </Box>
+                          </TextOverflow>
                         </Row>
                         <Row>
-                          <Box style={{ maxWidth: TEXT_OVERFLOW_WIDTH }}>
-                            <TextOverflow
-                              size="12pt"
-                              weight="bold"
-                              color="labelTertiary"
-                            >
-                              {secondaryAmountDisplay}
-                            </TextOverflow>
-                          </Box>
+                          <TextOverflow
+                            maxWidth={TEXT_OVERFLOW_WIDTH}
+                            size="12pt"
+                            weight="bold"
+                            color="labelTertiary"
+                          >
+                            {secondaryAmountDisplay}
+                          </TextOverflow>
                         </Row>
                       </Rows>
                     </Box>
@@ -323,15 +321,14 @@ export const ReviewSheet = ({
                       <Rows space="10px" alignVertical="center">
                         <Row height="content">
                           <Inline space="7px" alignVertical="center">
-                            <Box style={{ maxWidth: TEXT_OVERFLOW_WIDTH }}>
-                              <TextOverflow
-                                size="20pt"
-                                weight="bold"
-                                color="label"
-                              >
-                                {toName || truncateAddress(toAddress)}
-                              </TextOverflow>
-                            </Box>
+                            <TextOverflow
+                              maxWidth={TEXT_OVERFLOW_WIDTH}
+                              size="20pt"
+                              weight="bold"
+                              color="label"
+                            >
+                              {toName || truncateAddress(toAddress)}
+                            </TextOverflow>
 
                             <Box>
                               <EditContactDropdown
@@ -388,13 +385,16 @@ export const ReviewSheet = ({
               width="full"
               onClick={onSend}
             >
-              <Box style={{ maxWidth: TEXT_OVERFLOW_WIDTH + 20 }}>
-                <TextOverflow weight="bold" size="16pt" color="label">
-                  {i18n.t('send.review.send_to', {
-                    toName,
-                  })}
-                </TextOverflow>
-              </Box>
+              <TextOverflow
+                maxWidth={TEXT_OVERFLOW_WIDTH + 20}
+                weight="bold"
+                size="16pt"
+                color="label"
+              >
+                {i18n.t('send.review.send_to', {
+                  toName,
+                })}
+              </TextOverflow>
             </Button>
           </Row>
 

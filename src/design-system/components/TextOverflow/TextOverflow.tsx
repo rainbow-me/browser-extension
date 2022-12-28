@@ -12,6 +12,7 @@ interface TextOverflowProps {
   size: TextStyles['fontSize'];
   weight: TextStyles['fontWeight'];
   testId?: string;
+  maxWidth?: number;
 }
 
 export function TextOverflow({
@@ -22,33 +23,35 @@ export function TextOverflow({
   size,
   weight,
   testId,
+  maxWidth,
 }: TextOverflowProps) {
   return (
-    <Box
-      as={as}
-      marginVertical="-8px"
-      className={textStyles({
-        color,
-        cursor: 'default',
-        fontFamily: 'rounded',
-        fontSize: size,
-        fontWeight: weight,
-        textAlign: align,
-      })}
-      testId={testId}
-    >
-      <Inset vertical="8px">
-        <Box
-          style={{
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          }}
-        >
-          {children}
-        </Box>
-      </Inset>
-      {/* {children} */}
+    <Box style={{ maxWidth }}>
+      <Box
+        as={as}
+        marginVertical="-8px"
+        className={textStyles({
+          color,
+          cursor: 'default',
+          fontFamily: 'rounded',
+          fontSize: size,
+          fontWeight: weight,
+          textAlign: align,
+        })}
+        testId={testId}
+      >
+        <Inset vertical="8px">
+          <Box
+            style={{
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {children}
+          </Box>
+        </Inset>
+      </Box>
     </Box>
   );
 }

@@ -107,19 +107,14 @@ export const TokenInput = ({
       centerComponent={
         <Box width="fit">
           <Stack space="8px">
-            <Box
-              style={{
-                maxWidth: windowWidth / 2,
-              }}
+            <TextOverflow
+              maxWidth={windowWidth / 2}
+              size="16pt"
+              weight="semibold"
+              color={`${asset ? 'label' : 'labelTertiary'}`}
             >
-              <TextOverflow
-                size="16pt"
-                weight="semibold"
-                color={`${asset ? 'label' : 'labelTertiary'}`}
-              >
-                {asset?.name ?? i18n.t('send.input_token_placeholder')}
-              </TextOverflow>
-            </Box>
+              {asset?.name ?? i18n.t('send.input_token_placeholder')}
+            </TextOverflow>
 
             {asset && (
               <Text size="12pt" weight="semibold" color="labelTertiary">

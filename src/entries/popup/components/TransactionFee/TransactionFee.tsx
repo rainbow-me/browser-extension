@@ -57,13 +57,16 @@ export function TransactionFee({
           <Row>
             <Inline alignVertical="center" space="4px">
               <ChainBadge chainId={chainId} size="small" />
-              <Box style={{ maxWidth: 200 }}>
-                <TextOverflow weight="semibold" color="label" size="14pt">
-                  {isLoading
-                    ? '~'
-                    : `${gasFeeParamsForSelectedSpeed?.gasFee.display} ~ ${gasFeeParamsForSelectedSpeed?.estimatedTime.display}`}
-                </TextOverflow>
-              </Box>
+              <TextOverflow
+                maxWidth={200}
+                weight="semibold"
+                color="label"
+                size="14pt"
+              >
+                {isLoading
+                  ? '~'
+                  : `${gasFeeParamsForSelectedSpeed?.gasFee.display} ~ ${gasFeeParamsForSelectedSpeed?.estimatedTime.display}`}
+              </TextOverflow>
             </Inline>
           </Row>
         </Rows>

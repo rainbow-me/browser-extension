@@ -91,19 +91,14 @@ export const ValueInput = ({
 
             <Row height="content">
               <Inline alignHorizontal="justify" alignVertical="center">
-                <Box
-                  style={{
-                    maxWidth: windowWidth / 2,
-                  }}
+                <TextOverflow
+                  maxWidth={windowWidth / 2}
+                  size="11pt"
+                  weight="bold"
+                  color={`${asset ? 'label' : 'labelTertiary'}`}
                 >
-                  <TextOverflow
-                    size="11pt"
-                    weight="bold"
-                    color={`${asset ? 'label' : 'labelTertiary'}`}
-                  >
-                    {dependentAmount.display}
-                  </TextOverflow>
-                </Box>
+                  {dependentAmount.display}
+                </TextOverflow>
                 <Box onClick={switchIndependentField}>
                   <Text color="accent" size="12pt" weight="bold">
                     {i18n.t('send.switch_to')}{' '}
