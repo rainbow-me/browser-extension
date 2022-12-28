@@ -360,12 +360,14 @@ export const ReviewSheet = ({
                                 closeReview={onCancel}
                                 onEdit={onSaveContactAction}
                               >
-                                <Symbol
-                                  symbol="ellipsis.circle"
-                                  weight="bold"
-                                  size={16}
-                                  color="labelTertiary"
-                                />
+                                <Inline alignVertical="center">
+                                  <Symbol
+                                    symbol="ellipsis.circle"
+                                    weight="bold"
+                                    size={16}
+                                    color="labelTertiary"
+                                  />
+                                </Inline>
                               </EditContactDropdown>
                             </Box>
                           </Inline>
@@ -398,7 +400,7 @@ export const ReviewSheet = ({
       <Separator color="separatorSecondary" />
 
       <Box width="full" padding="20px">
-        <Rows space="8px">
+        <Rows space="8px" alignVertical="center">
           <Row>
             <Button
               color="accent"
