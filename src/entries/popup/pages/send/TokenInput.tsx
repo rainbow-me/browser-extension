@@ -117,9 +117,7 @@ export const TokenInput = ({
                 weight="semibold"
                 color={`${asset ? 'label' : 'labelTertiary'}`}
               >
-                {'eergtrghrtwhrtwhrtjh576j65uy5ea5t42T2FW24G34G345T43TWGWRGWEG34' ??
-                  asset?.name ??
-                  i18n.t('send.input_token_placeholder')}
+                {asset?.name ?? i18n.t('send.input_token_placeholder')}
               </TextOverflow>
             </Box>
 

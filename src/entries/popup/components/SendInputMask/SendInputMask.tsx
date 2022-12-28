@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import React, { CSSProperties, RefObject, useCallback, useMemo } from 'react';
 
 import { Box, Inline, Text } from '~/design-system';
+import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { BoxStyles } from '~/design-system/styles/core.css';
 import {
   transformScales,
@@ -12,6 +13,8 @@ import { Input } from '../../../../design-system/components/Input/Input';
 import { InputHeight } from '../../../../design-system/components/Input/Input.css';
 
 import { maskInput } from './utils';
+
+const { innerWidth: windowWidth } = window;
 
 export const SendInputMask = ({
   borderColor,
@@ -43,10 +46,9 @@ export const SendInputMask = ({
     },
     [decimals, onChange],
   );
-  const { innerWidth: windowWidth } = window;
 
   const symbolPadding = useMemo(
-    () => ((placeholderSymbol?.length || 3) - 3) * 20,
+    () => ((placeholderSymbol?.length || 3) - 3) * 18,
     [placeholderSymbol],
   );
 
@@ -87,10 +89,14 @@ export const SendInputMask = ({
                   </Text>
                 </Box>
               </Box>
-              <Box paddingLeft="2px">
-                <Text size="23pt" weight="semibold" color="labelTertiary">
+              <Box style={{ maxWidth: 100 }} paddingLeft="2px">
+                <TextOverflow
+                  size="23pt"
+                  weight="semibold"
+                  color="labelTertiary"
+                >
                   {placeholderSymbol}
-                </Text>
+                </TextOverflow>
               </Box>
             </Inline>
           </Box>
@@ -105,7 +111,7 @@ export const SendInputMask = ({
         height={height}
         variant={variant}
         innerRef={innerRef}
-        style={{ paddingRight: 125 + symbolPadding }}
+        style={{ paddingRight: value ? 125 + symbolPadding : 0 }}
         enableTapScale={false}
       />
     </Box>

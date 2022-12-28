@@ -17,6 +17,8 @@ import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverfl
 
 import { SendInputMask } from '../../components/SendInputMask/SendInputMask';
 
+const { innerWidth: windowWidth } = window;
+
 export const ValueInput = ({
   asset,
   currentCurrency,
@@ -41,7 +43,8 @@ export const ValueInput = ({
   setMaxAssetAmount: () => void;
   switchIndependentField: () => void;
 }) => {
-  const { innerWidth: windowWidth } = window;
+  const truncatedAssetSymbol = asset?.symbol?.slice(0, 5) ?? '';
+
   return (
     <Box paddingBottom="20px" paddingHorizontal="20px">
       <Stack space="16px">
@@ -54,7 +57,7 @@ export const ValueInput = ({
                   value={`${independentAmount}`}
                   placeholder={`0.00 ${
                     independentField === 'asset'
-                      ? asset?.symbol
+                      ? truncatedAssetSymbol
                       : currentCurrency
                   }`}
                   decimals={
@@ -69,7 +72,7 @@ export const ValueInput = ({
                   innerRef={independentFieldRef}
                   placeholderSymbol={
                     independentField === 'asset'
-                      ? asset?.symbol
+                      ? truncatedAssetSymbol
                       : currentCurrency
                   }
                 />
