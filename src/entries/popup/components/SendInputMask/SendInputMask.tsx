@@ -78,6 +78,7 @@ export const SendInputMask = ({
                     : windowWidth,
                   marginLeft: 17,
                   marginRight: 4,
+                  marginTop: 1,
                 }}
               >
                 <Box style={{ visibility: 'hidden' }}>
