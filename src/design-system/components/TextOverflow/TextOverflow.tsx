@@ -24,29 +24,31 @@ export function TextOverflow({
   testId,
 }: TextOverflowProps) {
   return (
-    <Box>
-      <Box
-        as={as}
-        style={{
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        }}
-        marginVertical="-8px"
-        className={textStyles({
-          color,
-          cursor: 'default',
-          fontFamily: 'rounded',
-          fontSize: size,
-          fontWeight: weight,
-          textAlign: align,
-        })}
-        testId={testId}
-      >
-        <Inset vertical="8px">
-          <Box>{children}</Box>
-        </Inset>
-      </Box>
+    <Box
+      as={as}
+      marginVertical="-8px"
+      className={textStyles({
+        color,
+        cursor: 'default',
+        fontFamily: 'rounded',
+        fontSize: size,
+        fontWeight: weight,
+        textAlign: align,
+      })}
+      testId={testId}
+    >
+      <Inset vertical="8px">
+        <Box
+          style={{
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
+          {children}
+        </Box>
+      </Inset>
+      {/* {children} */}
     </Box>
   );
 }

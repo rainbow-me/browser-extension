@@ -388,10 +388,7 @@ export const ReviewSheet = ({
               width="full"
               onClick={onSend}
             >
-              <Box
-                style={{ maxWidth: TEXT_OVERFLOW_WIDTH + 20 }}
-                marginVertical="-2px"
-              >
+              <Box style={{ maxWidth: TEXT_OVERFLOW_WIDTH + 20 }}>
                 <TextOverflow weight="bold" size="16pt" color="label">
                   {i18n.t('send.review.send_to', {
                     toName,

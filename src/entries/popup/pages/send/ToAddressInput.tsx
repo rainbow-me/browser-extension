@@ -16,6 +16,7 @@ import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme'
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
+import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
@@ -27,6 +28,8 @@ import {
   addressToInputHighlightWrapperStyleDark,
   addressToInputHighlightWrapperStyleLight,
 } from './ToAddressInpnut.css';
+
+const { innerWidth: windowWidth } = window;
 
 const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
   const { currentTheme } = useCurrentThemeStore();
@@ -102,9 +105,12 @@ const WalletRow = ({
       <Inline alignVertical="center" space="8px">
         <WalletAvatar size={36} address={wallet} emojiSize="20pt" />
         <Stack space="8px">
-          <Text weight="semibold" size="14pt" color="label">
-            {contact?.display || truncateAddress(wallet)}
-          </Text>
+          <Box style={{ maxWidth: (2 * windowWidth) / 3 }}>
+            <TextOverflow weight="semibold" size="14pt" color="label">
+              {contact?.display || truncateAddress(wallet)}
+            </TextOverflow>
+          </Box>
+
           {(contact?.display || ensName) && (
             <Text weight="semibold" size="12pt" color="labelTertiary">
               {truncateAddress(wallet)}
@@ -306,9 +312,11 @@ export const ToAddressInput = ({
                 exit={{ opacity: 0 }}
               >
                 <Stack space="8px">
-                  <Text weight="semibold" size="14pt" color="label">
-                    {toAddressContact?.display || truncateAddress(toAddress)}
-                  </Text>
+                  <Box style={{ maxWidth: windowWidth / 2 }}>
+                    <TextOverflow weight="semibold" size="14pt" color="label">
+                      {toAddressContact?.display || truncateAddress(toAddress)}
+                    </TextOverflow>
+                  </Box>
                   {toAddressContact?.display && (
                     <Text weight="semibold" size="12pt" color="labelTertiary">
                       {truncateAddress(toAddress)}

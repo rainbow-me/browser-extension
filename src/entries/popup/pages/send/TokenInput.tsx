@@ -51,6 +51,8 @@ const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
   );
 };
 
+const { innerWidth: windowWidth } = window;
+
 export const TokenInput = ({
   asset,
   assets,
@@ -66,7 +68,6 @@ export const TokenInput = ({
   setSortMethod: (sortMethod: SortMethod) => void;
   sortMethod: SortMethod;
 }) => {
-  const { innerWidth: windowWidth } = window;
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
 
@@ -99,13 +100,13 @@ export const TokenInput = ({
       zIndex={1}
       dropdownHeight={376}
       leftComponent={
-        <Box paddingRight="8px">
+        <Box>
           <CoinIcon asset={asset ?? undefined} />
         </Box>
       }
       centerComponent={
         <Box width="fit">
-          <Stack>
+          <Stack space="8px">
             <Box
               style={{
                 maxWidth: windowWidth / 2,
@@ -116,7 +117,9 @@ export const TokenInput = ({
                 weight="semibold"
                 color={`${asset ? 'label' : 'labelTertiary'}`}
               >
-                {asset?.name ?? i18n.t('send.input_token_placeholder')}
+                {'eergtrghrtwhrtwhrtjh576j65uy5ea5t42T2FW24G34G345T43TWGWRGWEG34' ??
+                  asset?.name ??
+                  i18n.t('send.input_token_placeholder')}
               </TextOverflow>
             </Box>
 
