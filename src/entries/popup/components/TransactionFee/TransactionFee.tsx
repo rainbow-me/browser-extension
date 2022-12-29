@@ -26,6 +26,7 @@ type TransactionFeeProps = {
   defaultSpeed?: GasSpeed;
   transactionRequest: TransactionRequest;
   accentColor?: string;
+  plainTriggerBorder?: boolean;
 };
 
 export function TransactionFee({
@@ -33,6 +34,7 @@ export function TransactionFee({
   defaultSpeed,
   transactionRequest,
   accentColor,
+  plainTriggerBorder,
 }: TransactionFeeProps) {
   const { selectedSpeed, setSelectedSpeed, gasFeeParamsBySpeed, isLoading } =
     useGas({
@@ -85,6 +87,7 @@ export function TransactionFee({
               chainId === ChainId.mainnet || chainId === ChainId.polygon
             }
             accentColor={accentColor}
+            plainTriggerBorder={plainTriggerBorder}
           />
           {chainId === ChainId.mainnet ? (
             <Box
