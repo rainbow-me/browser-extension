@@ -167,6 +167,8 @@ export function Send() {
     ? 'edit'
     : 'save';
 
+  console.log('asset?.colors?.primary', asset?.colors?.primary);
+
   return (
     <>
       <ContactPrompt
@@ -253,6 +255,9 @@ export function Send() {
                       <TransactionFee
                         chainId={chainId}
                         transactionRequest={transactionRequest}
+                        accentColor={
+                          asset?.colors?.primary || asset?.colors?.fallback
+                        }
                       />
                     </Row>
                     <Row>

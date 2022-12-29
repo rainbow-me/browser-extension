@@ -13,21 +13,46 @@ import {
 
 import { useAvatar } from '../../hooks/useAvatar';
 
+interface DropdownMenuTriggerProps {
+  children: ReactNode;
+  accentColor?: string;
+  asChild?: boolean;
+}
+
+export function DropdownMenuTrigger(props: DropdownMenuTriggerProps) {
+  const { children, accentColor, asChild } = props;
+  const { address } = useAccount();
+  const { avatar } = useAvatar({ address });
+
+  return (
+    <AccentColorProvider
+      color={accentColor || avatar?.color || globalColors.blue60}
+    >
+      <DropdownMenuPrimitive.Trigger asChild={asChild}>
+        {children}
+      </DropdownMenuPrimitive.Trigger>
+    </AccentColorProvider>
+  );
+}
+
 interface DropdownMenuContentProps {
   children: ReactNode;
   align?: 'start' | 'center' | 'end';
   marginRight?: Space;
+  accentColor?: string;
 }
 
 export function DropdownMenuContent(props: DropdownMenuContentProps) {
-  const { children, align = 'start', marginRight } = props;
+  const { children, align = 'start', marginRight, accentColor } = props;
   const { currentTheme } = useCurrentThemeStore();
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
 
   return (
     <DropdownMenuPrimitive.Portal>
-      <AccentColorProvider color={avatar?.color || globalColors.blue60}>
+      <AccentColorProvider
+        color={accentColor || avatar?.color || globalColors.blue60}
+      >
         <ThemeProvider theme={currentTheme}>
           <Box
             as={DropdownMenuPrimitive.Content}
@@ -103,7 +128,7 @@ interface DropdownMenuRadioItemProps {
   children: ReactNode;
   value: string;
   selectedValue?: string;
-  selectedColor?: BackgroundColor;
+  selectedColor?: string;
 }
 
 export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
@@ -123,10 +148,12 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
       }}
       background={{
         default:
-          selectedValue === value ? selectedColor ?? 'accent' : 'transparent',
+          selectedValue === value
+            ? (selectedColor as BackgroundColor) ?? 'accent'
+            : 'transparent',
         hover:
           selectedValue === value
-            ? selectedColor ?? 'accent'
+            ? (selectedColor as BackgroundColor) ?? 'accent'
             : 'surfaceSecondary',
       }}
     >
@@ -172,5 +199,4 @@ export const DropdownMenu = (
   <DropdownMenuPrimitive.Root {...props} modal={false} />
 );
 
-export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
 export const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;

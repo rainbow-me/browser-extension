@@ -136,7 +136,9 @@ export const NetworkMenu = ({ children }: { children: React.ReactNode }) => {
                   value={`${appSession?.chainId}`}
                   onValueChange={changeChainId}
                 >
-                  <SwitchNetworkMenuSelector />
+                  <SwitchNetworkMenuSelector
+                    selectedValue={`${appSession?.chainId}`}
+                  />
                 </DropdownMenuRadioGroup>
                 <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
               </Box>

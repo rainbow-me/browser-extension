@@ -25,12 +25,14 @@ type TransactionFeeProps = {
   chainId: Chain['id'];
   defaultSpeed?: GasSpeed;
   transactionRequest: TransactionRequest;
+  accentColor?: string;
 };
 
 export function TransactionFee({
   chainId,
   defaultSpeed,
   transactionRequest,
+  accentColor,
 }: TransactionFeeProps) {
   const { selectedSpeed, setSelectedSpeed, gasFeeParamsBySpeed, isLoading } =
     useGas({
@@ -82,6 +84,7 @@ export function TransactionFee({
             editable={
               chainId === ChainId.mainnet || chainId === ChainId.polygon
             }
+            accentColor={accentColor}
           />
           {chainId === ChainId.mainnet ? (
             <Box

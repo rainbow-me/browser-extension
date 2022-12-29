@@ -100,6 +100,7 @@ interface SwitchTransactionSpeedMenuProps {
   chainId: Chain['id'];
   editable?: boolean;
   onSpeedChanged: (speed: GasSpeed) => void;
+  accentColor?: string | 'accent';
 }
 
 export const SwitchTransactionSpeedMenu = ({
@@ -108,12 +109,15 @@ export const SwitchTransactionSpeedMenu = ({
   onSpeedChanged,
   chainId,
   editable = true,
+  accentColor,
 }: SwitchTransactionSpeedMenuProps) => {
   const menuTrigger = (
     <Box
-      style={{ height: 28 }}
+      style={{
+        height: 28,
+      }}
       borderWidth="2px"
-      borderColor="accent"
+      borderColor={'accent'}
       paddingVertical="5px"
       paddingHorizontal="6px"
       borderRadius="24px"
@@ -141,8 +145,10 @@ export const SwitchTransactionSpeedMenu = ({
   if (!editable) return menuTrigger;
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>{menuTrigger}</DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuTrigger asChild accentColor={accentColor}>
+        {menuTrigger}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent accentColor={accentColor}>
         <DropdownMenuLabel>{i18n.t('transaction_fee.title')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup
