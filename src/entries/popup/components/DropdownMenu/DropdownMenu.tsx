@@ -1,7 +1,8 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import React, { CSSProperties, ReactNode } from 'react';
 
-import { Box, Text } from '~/design-system';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { Box, Text, ThemeProvider } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { Space } from '~/design-system/styles/designTokens';
 
@@ -15,26 +16,30 @@ interface DropdownMenuContentProps {
 
 export function DropdownMenuContent(props: DropdownMenuContentProps) {
   const { children, align = 'start', marginRight } = props;
+  const { currentTheme } = useCurrentThemeStore();
+
   return (
     <DropdownMenuPrimitive.Portal>
-      <Box
-        as={DropdownMenuPrimitive.Content}
-        style={{
-          // TODOL move to design system
-          border: '1px solid rgba(245, 248, 255, 0.03)',
-          backgroundColor: 'rgba(53, 54, 58, 0.8)',
-          width: 204,
-          backdropFilter: 'blur(26px)',
-          boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
-          borderRadius: '16px',
-          marginRight: marginRight ?? '0px',
-        }}
-        paddingHorizontal="12px"
-        paddingVertical="4px"
-        align={align}
-      >
-        {children}
-      </Box>
+      <ThemeProvider theme={currentTheme}>
+        <Box
+          as={DropdownMenuPrimitive.Content}
+          style={{
+            width: 204,
+            backdropFilter: 'blur(26px)',
+            boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
+            marginRight: marginRight ?? '0px',
+          }}
+          paddingHorizontal="12px"
+          paddingVertical="4px"
+          align={align}
+          background="surfaceMenu"
+          borderColor="separatorTertiary"
+          borderWidth="1px"
+          borderRadius="16px"
+        >
+          {children}
+        </Box>
+      </ThemeProvider>
     </DropdownMenuPrimitive.Portal>
   );
 }
