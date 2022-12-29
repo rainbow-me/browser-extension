@@ -27,14 +27,16 @@ const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
 export const SwitchSpeedMenuSelector = ({
   gasFeeParamsBySpeed,
   chainId,
+  selectedValue,
 }: {
   gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed | null;
   chainId: Chain['id'];
+  selectedValue?: string;
 }) => {
   return (
     <>
       {ChainId.mainnet === chainId ? (
-        <DropdownMenuRadioItem value={'custom'}>
+        <DropdownMenuRadioItem value={'custom'} selectedValue={selectedValue}>
           <Box width="full" id={`switch-network-item-${0}`}>
             <Inline
               space="8px"
@@ -62,7 +64,11 @@ export const SwitchSpeedMenuSelector = ({
       ) : null}
       {speeds.map((speed, i) => {
         return (
-          <DropdownMenuRadioItem value={speed} key={i}>
+          <DropdownMenuRadioItem
+            value={speed}
+            key={i}
+            selectedValue={selectedValue}
+          >
             <Box id={`switch-network-item-${i}`}>
               <Inline space="8px" alignVertical="center">
                 <Text weight="semibold" size="14pt">
@@ -146,6 +152,7 @@ export const SwitchTransactionSpeedMenu = ({
           <SwitchSpeedMenuSelector
             chainId={chainId}
             gasFeeParamsBySpeed={gasFeeParamsBySpeed}
+            selectedValue={selectedSpeed}
           />
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>

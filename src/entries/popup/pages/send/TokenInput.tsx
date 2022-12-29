@@ -178,7 +178,10 @@ export const TokenInput = ({
                     }
                   >
                     <Box>
-                      <DropdownMenuRadioItem value="token">
+                      <DropdownMenuRadioItem
+                        value="token"
+                        selectedValue={sortMethod}
+                      >
                         <Inline space="8px" alignVertical="center">
                           <Bleed vertical="4px">
                             <Symbol

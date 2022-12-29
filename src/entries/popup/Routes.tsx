@@ -359,6 +359,7 @@ export function Routes() {
     return null;
   }
   const RoutesContainer = background ?? React.Fragment;
+
   return (
     <RoutesContainer>
       <AnimatePresence mode="popLayout">

@@ -1,12 +1,17 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import React, { CSSProperties, ReactNode } from 'react';
+import { useAccount } from 'wagmi';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { Box, Text, ThemeProvider } from '~/design-system';
+import { AccentColorProvider, Box, Text, ThemeProvider } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
-import { Space } from '~/design-system/styles/designTokens';
+import {
+  BackgroundColor,
+  Space,
+  globalColors,
+} from '~/design-system/styles/designTokens';
 
-import { dropdownMenuItemStyles } from './DropdownMenu.css';
+import { useAvatar } from '../../hooks/useAvatar';
 
 interface DropdownMenuContentProps {
   children: ReactNode;
@@ -17,29 +22,33 @@ interface DropdownMenuContentProps {
 export function DropdownMenuContent(props: DropdownMenuContentProps) {
   const { children, align = 'start', marginRight } = props;
   const { currentTheme } = useCurrentThemeStore();
+  const { address } = useAccount();
+  const { avatar } = useAvatar({ address });
 
   return (
     <DropdownMenuPrimitive.Portal>
-      <ThemeProvider theme={currentTheme}>
-        <Box
-          as={DropdownMenuPrimitive.Content}
-          style={{
-            width: 204,
-            backdropFilter: 'blur(26px)',
-            boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
-            marginRight: marginRight ?? '0px',
-          }}
-          paddingHorizontal="12px"
-          paddingVertical="4px"
-          align={align}
-          background="surfaceMenu"
-          borderColor="separatorTertiary"
-          borderWidth="1px"
-          borderRadius="16px"
-        >
-          {children}
-        </Box>
-      </ThemeProvider>
+      <AccentColorProvider color={avatar?.color || globalColors.blue60}>
+        <ThemeProvider theme={currentTheme}>
+          <Box
+            as={DropdownMenuPrimitive.Content}
+            style={{
+              width: 204,
+              backdropFilter: 'blur(26px)',
+              boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
+              marginRight: marginRight ?? '0px',
+            }}
+            paddingHorizontal="12px"
+            paddingVertical="4px"
+            align={align}
+            background="surfaceMenu"
+            borderColor="separatorTertiary"
+            borderWidth="1px"
+            borderRadius="16px"
+          >
+            {children}
+          </Box>
+        </ThemeProvider>
+      </AccentColorProvider>
     </DropdownMenuPrimitive.Portal>
   );
 }
@@ -79,8 +88,11 @@ export const DropdownMenuItem = (props: DropdownMenuItemProps) => {
         borderRadius: '12px',
         outline: 'none',
       }}
-      className={dropdownMenuItemStyles}
       onSelect={onSelect}
+      background={{
+        default: 'transparent',
+        hover: 'surfaceSecondary',
+      }}
     >
       {children}
     </Box>
@@ -90,10 +102,12 @@ export const DropdownMenuItem = (props: DropdownMenuItemProps) => {
 interface DropdownMenuRadioItemProps {
   children: ReactNode;
   value: string;
+  selectedValue?: string;
+  selectedColor?: BackgroundColor;
 }
 
 export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
-  const { children, value } = props;
+  const { children, value, selectedValue, selectedColor } = props;
   return (
     <Box
       as={DropdownMenuPrimitive.RadioItem}
@@ -107,7 +121,14 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
         borderRadius: '12px',
         outline: 'none',
       }}
-      className={dropdownMenuItemStyles}
+      background={{
+        default:
+          selectedValue === value ? selectedColor ?? 'accent' : 'transparent',
+        hover:
+          selectedValue === value
+            ? selectedColor ?? 'accent'
+            : 'surfaceSecondary',
+      }}
     >
       {children}
     </Box>
@@ -117,11 +138,9 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
 export const DropdownMenuSeparator = () => (
   <Box
     as={DropdownMenuPrimitive.Separator}
-    style={{
-      // TODO: move to design system
-      borderTop: '1px solid rgba(245, 248, 255, 0.06)',
-      borderRadius: '1px',
-    }}
+    style={{ borderRadius: 1 }}
+    borderWidth="1px"
+    borderColor="separatorSecondary"
   />
 );
 

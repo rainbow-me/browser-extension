@@ -51,7 +51,11 @@ export const SwitchMenu = ({
         >
           {menuItems.map((item, i) => {
             return (
-              <DropdownMenuRadioItem key={i} value={item}>
+              <DropdownMenuRadioItem
+                key={i}
+                value={item}
+                selectedValue={selectedValue}
+              >
                 {renderMenuItem(item, i)}
                 <DropdownMenuItemIndicator style={{ marginLeft: 'auto' }}>
                   {menuItemIndicator}
