@@ -20,12 +20,10 @@ import {
   fallbackTextStyleSmall,
 } from './CoinIcon.css';
 
-const DEFAULT_SIZE = 36;
-
 export function CoinIcon({
   asset,
   fallbackText,
-  size,
+  size = 36,
 }: {
   asset?: ParsedAsset | ParsedAddressAsset | null;
   fallbackText?: string;
@@ -33,15 +31,14 @@ export function CoinIcon({
 }) {
   const sym = asset?.symbol || fallbackText || '';
 
-  const iconSize = size || DEFAULT_SIZE;
-  const formattedSymbol = formatSymbol(sym, iconSize);
+  const formattedSymbol = formatSymbol(sym, size);
   const mainnetAddress = asset?.mainnetAddress;
   const address = (asset?.address || '') as Address;
   const chain = asset?.chainId || ChainId.mainnet;
   const shadowColor = asset?.colors?.primary;
 
   return (
-    <CoinIconWrapper size={iconSize} shadowColor={shadowColor} chainId={chain}>
+    <CoinIconWrapper size={size} shadowColor={shadowColor} chainId={chain}>
       <CloudinaryCoinIcon
         address={address}
         chainId={chain}
@@ -55,8 +52,8 @@ export function CoinIcon({
               address || '',
               emojiColors,
             ),
-            height: iconSize,
-            width: iconSize,
+            height: size,
+            width: size,
             display: 'flex',
           }}
         >
