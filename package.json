@@ -158,6 +158,7 @@
   },
   "resolutions": {
     "globby": "11.1.0",
+    "json5": "2.2.2",
     "eslint-import-resolver-typescript": "2.7.1",
     "minimatch": "3.0.5",
     "minimist": "1.2.6",
@@ -169,7 +170,8 @@
     "clean-css": "4.1.11",
     "@xmldom/xmldom": "0.8.4",
     "loader-utils": "2.0.4",
-    "nth-check": "2.0.1"
+    "nth-check": "2.0.1",
+    "decode-uri-component": "0.2.1"
   },
   "lavamoat": {
     "allowScripts": {
