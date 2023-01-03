@@ -49,7 +49,7 @@ export function SpeedUpAndCancelSheet({
   show,
   transaction,
 }: SpeedUpAndCancelSheetProps) {
-  const transactionRequest: TransactionRequest = useMemo(
+  const speedUpTransactionRequest: TransactionRequest = useMemo(
     () => ({
       to: transaction?.to,
       from: transaction?.from,
@@ -72,7 +72,7 @@ export function SpeedUpAndCancelSheet({
   const handleCancellation = async () => {
     const cancellationResult = await sendTransaction(cancelTransactionRequest);
     if (cancellationResult?.from) {
-      const transaction = {
+      const cancelTx = {
         data: cancellationResult?.data,
         value: cancellationResult?.value,
         from: cancellationResult?.from as Address,
@@ -81,14 +81,22 @@ export function SpeedUpAndCancelSheet({
         chainId: cancelTransactionRequest?.chainId,
         status: TransactionStatus.cancelling,
         type: TransactionType.cancel,
+        nonce: transaction?.nonce,
       };
       await addNewTransaction({
         address: cancellationResult?.from as Address,
         chainId: cancellationResult?.chainId,
-        transaction,
+        transaction: cancelTx,
       });
     }
   };
+  // const handleSpeedUp = async () => {
+  //   const speedUpResult = await sendTransaction(speedUpReqest);
+  //   if (speedUpResult?.from) {
+  //     const transaction = {};
+  //     await addNewTransaction({});
+  //   }
+  // };
   return (
     <Prompt show={show} padding="12px">
       <Box
@@ -156,7 +164,11 @@ export function SpeedUpAndCancelSheet({
                   <TransactionFee
                     chainId={transaction?.chainId || ChainId.mainnet}
                     defaultSpeed={GasSpeed.URGENT}
-                    transactionRequest={transactionRequest}
+                    transactionRequest={
+                      cancel
+                        ? cancelTransactionRequest
+                        : speedUpTransactionRequest
+                    }
                   />
                 </Box>
               </Box>

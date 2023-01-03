@@ -538,7 +538,6 @@ export async function watchPendingTransactions({
   const pendingTransactions = getPendingTransactions({
     address,
   });
-  console.log('PENDING TRANSACTIONS: ', pendingTransactions);
 
   if (!pendingTransactions?.length) return;
 
@@ -615,12 +614,13 @@ export async function addNewTransaction({
   const nonceOnChain =
     ((await provider.getTransactionCount(address, 'pending')) || 0) - 1;
   const nonce = (localNonce || 0) > nonceOnChain ? localNonce : nonceOnChain;
+
   const { getPendingTransactions, setPendingTransactions } =
     pendingTransactionsStore.getState();
   const pendingTransactions = getPendingTransactions({ address });
   const { currentCurrency } = currentCurrencyStore.getState();
   const newPendingTransaction = parseNewTransaction(
-    { ...transaction, nonce },
+    { ...transaction, nonce: transaction?.nonce || nonce },
     currentCurrency,
   );
 
@@ -631,7 +631,7 @@ export async function addNewTransaction({
   setNonce({
     address,
     chainId,
-    currentNonce: nonce,
+    currentNonce: transaction?.nonce || nonce,
   });
 }
 

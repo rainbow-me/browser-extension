@@ -118,7 +118,9 @@ function watchConfirmedTransactions(
   const latestTx = txSortedByDescendingNonce?.[0];
   const latestConfirmedNonce = latestTx?.nonce || 0;
   let currentNonce: number;
-  const latestPendingTx = pendingTransactions?.[0];
+  const latestPendingTx = pendingTransactions?.filter(
+    (tx) => tx?.chainId === currentChainId,
+  )?.[0];
 
   if (latestPendingTx) {
     const latestPendingNonce = latestPendingTx?.nonce || 0;
@@ -129,6 +131,8 @@ function watchConfirmedTransactions(
   } else {
     currentNonce = latestConfirmedNonce;
   }
+
+  console.log(currentChainId, currentNonce);
 
   setNonce({
     address: currentAddress,
