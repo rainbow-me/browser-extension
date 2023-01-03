@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "scripts": {
     "// Bumps the manifest and pkg.json versions": "",
     "bump": "node scripts/bump.js",
