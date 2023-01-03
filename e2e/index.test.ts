@@ -36,16 +36,13 @@ beforeAll(async () => {
   const extensionId = await getExtensionIdByName(driver, 'Rainbow');
   if (!extensionId) throw new Error('Extension not found');
   rootURL += extensionId;
-  console.log('rootURL', rootURL);
 });
 
 afterAll(async () => driver.quit());
 
 // Create a new wallet
 it('should be able create a new wallet', async () => {
-  console.log('opening root url', rootURL);
   await goToWelcome(driver, rootURL);
-  console.log('opened root url');
   await findElementByTestIdAndClick({
     id: 'create-wallet-button',
     driver,
@@ -286,7 +283,6 @@ it('should be able to test the sandbox for the background', async () => {
   await waitAndClick(btn, driver);
   await delayTime('long');
   const text = await driver.switchTo().alert().getText();
-  console.log('text', text);
   expect(text).toBe('Background sandboxed!');
   await driver.switchTo().alert().accept();
 });
