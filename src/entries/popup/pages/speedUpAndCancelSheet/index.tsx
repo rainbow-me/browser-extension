@@ -76,7 +76,7 @@ export function SpeedUpAndCancelSheet({
         data: cancellationResult?.data,
         value: cancellationResult?.value,
         from: cancellationResult?.from as Address,
-        to: cancellationResult?.from,
+        to: cancellationResult?.from as Address,
         hash: cancellationResult?.hash,
         chainId: cancelTransactionRequest?.chainId,
         status: TransactionStatus.cancelling,
