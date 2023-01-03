@@ -50,6 +50,7 @@ export const sendTransaction = async (
     transactionRequest,
     provider,
   });
+  console.log('sending transaction: ', transactionRequest);
   return walletAction('send_transaction', {
     ...transactionRequest,
     ...selectedGas.transactionGasParams,
