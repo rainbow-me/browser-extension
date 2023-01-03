@@ -392,7 +392,7 @@ export const ReviewSheet = ({
                 color="label"
               >
                 {i18n.t('send.review.send_to', {
-                  toName,
+                  toName: toName || truncateAddress(toAddress),
                 })}
               </TextOverflow>
             </Button>
