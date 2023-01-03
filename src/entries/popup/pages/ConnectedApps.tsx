@@ -5,7 +5,15 @@ import { i18n } from '~/core/languages';
 import { useAppSessionsStore } from '~/core/state';
 import { getConnectedAppIcon } from '~/core/utils/connectedApps';
 import { truncateAddress } from '~/core/utils/truncateAddress';
-import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
+import {
+  Box,
+  Button,
+  Inline,
+  Inset,
+  Stack,
+  Symbol,
+  Text,
+} from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 
 import { SwitchNetworkMenu } from '../components/SwitchMenu/SwitchNetworkMenu';
@@ -14,11 +22,11 @@ import { useAppSession } from '../hooks/useAppSession';
 export function ConnectedApps() {
   const { appSessions, clearSessions } = useAppSessionsStore();
   return (
-    <Box display="flex" flexDirection="column" height="full">
+    <Box>
       <Box
         style={{
-          flex: 1,
           overflow: 'scroll',
+          height: 489,
         }}
       >
         <Rows alignVertical="top">
@@ -35,20 +43,32 @@ export function ConnectedApps() {
       </Box>
 
       <Box
-        as="button"
-        id="disconnect-button"
-        boxShadow="24px accent"
-        borderColor="buttonStroke"
+        borderColor="separatorSecondary"
         borderWidth="1px"
-        onClick={clearSessions}
-        padding="16px"
+        alignItems="center"
         bottom="0"
+        left="0"
+        right="0"
       >
-        <Inline alignHorizontal="center" alignVertical="center" space="8px">
-          <Symbol symbol={'xmark'} color="red" size={12} weight="semibold" />
-          <Text color="red" size="14pt" weight="bold">
-            {i18n.t('connected_apps.disconnect')}
-          </Text>
+        <Inline alignHorizontal="center">
+          <Button
+            onClick={clearSessions}
+            color="surfacePrimaryElevated"
+            height="44px"
+            variant="stroked"
+          >
+            <Inline alignHorizontal="center" alignVertical="center" space="8px">
+              <Symbol
+                symbol={'xmark'}
+                color="red"
+                size={12}
+                weight="semibold"
+              />
+              <Text color="red" size="14pt" weight="bold">
+                {i18n.t('connected_apps.disconnect')}
+              </Text>
+            </Inline>
+          </Button>
         </Inline>
       </Box>
     </Box>

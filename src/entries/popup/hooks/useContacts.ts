@@ -12,5 +12,6 @@ export const useContact = ({ address }: { address: Address | undefined }) => {
     ensName,
     display,
     ...(contactStore || {}),
+    isContact: !!contactStore,
   };
 };

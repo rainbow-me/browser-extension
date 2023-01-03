@@ -34,7 +34,7 @@ export function CoinRow({
         <Inset horizontal="12px" vertical="8px">
           <Rows>
             <Row>
-              <Columns alignVertical="center">
+              <Columns alignVertical="center" space="8px">
                 <Column width="content">
                   <CoinIcon asset={asset} fallbackText={fallbackText} />
                 </Column>

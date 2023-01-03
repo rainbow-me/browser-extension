@@ -1,4 +1,5 @@
 import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
@@ -13,6 +14,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import {
@@ -49,22 +51,23 @@ const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
   );
 };
 
+const { innerWidth: windowWidth } = window;
+
 export const TokenInput = ({
   asset,
   assets,
-  selectAssetIndex,
+  selectAssetAddress,
   dropdownClosed = false,
   setSortMethod,
   sortMethod,
 }: {
   asset: ParsedAddressAsset | null;
   assets: ParsedAddressAsset[];
-  selectAssetIndex: (n?: number) => void;
+  selectAssetAddress: (address: Address | '') => void;
   dropdownClosed: boolean;
   setSortMethod: (sortMethod: SortMethod) => void;
   sortMethod: SortMethod;
 }) => {
-  const { innerWidth: windowWidth } = window;
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
 
@@ -73,11 +76,11 @@ export const TokenInput = ({
     [],
   );
   const onSelectAsset = useCallback(
-    (i: number) => {
-      selectAssetIndex(i);
+    (address: Address | '') => {
+      selectAssetAddress(address);
       setDropdownVisible(false);
     },
-    [selectAssetIndex],
+    [selectAssetAddress],
   );
 
   useEffect(() => {
@@ -104,25 +107,17 @@ export const TokenInput = ({
       centerComponent={
         <Box width="fit">
           <Stack space="8px">
-            <Box
-              style={{
-                maxWidth: windowWidth / 2,
-              }}
+            <TextOverflow
+              maxWidth={windowWidth / 2}
+              size="16pt"
+              weight="semibold"
+              color={`${asset ? 'label' : 'labelTertiary'}`}
             >
-              <Text
-                size="16pt"
-                weight="semibold"
-                color={`${asset ? 'label' : 'labelTertiary'}`}
-                whiteSpace="nowrap"
-                overflow="hidden"
-                textOverflow="ellipsis"
-              >
-                {asset?.name ?? i18n.t('send.input_token_placeholder')}
-              </Text>
-            </Box>
+              {asset?.name ?? i18n.t('send.input_token_placeholder')}
+            </TextOverflow>
 
             {asset && (
-              <Text size="12pt" weight="semibold" color={`labelTertiary`}>
+              <Text size="12pt" weight="semibold" color="labelTertiary">
                 {handleSignificantDecimals(
                   asset?.balance.amount,
                   asset?.decimals,
@@ -134,7 +129,7 @@ export const TokenInput = ({
         </Box>
       }
       showActionClose={!!asset}
-      onActionClose={() => selectAssetIndex(-1)}
+      onActionClose={() => onSelectAsset('')}
       dropdownComponent={
         <Stack space="8px">
           <Box paddingHorizontal="20px">
@@ -224,7 +219,7 @@ export const TokenInput = ({
               <Box
                 paddingHorizontal="8px"
                 key={`${asset?.uniqueId}-${i}`}
-                onClick={() => onSelectAsset(i)}
+                onClick={() => onSelectAsset(asset.address)}
               >
                 <RowHighlightWrapper>
                   <Box marginHorizontal="-8px">

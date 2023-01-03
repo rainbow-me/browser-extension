@@ -15,6 +15,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
 import { useGas } from '../../hooks/useGas';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
@@ -60,10 +61,8 @@ export function TransactionFee({
           <Row>
             <Inline alignVertical="center" space="4px">
               <ChainBadge chainId={chainId} size="small" />
-              <Text
-                overflow="hidden"
-                textOverflow="ellipsis"
-                whiteSpace="nowrap"
+              <TextOverflow
+                maxWidth={200}
                 weight="semibold"
                 color="label"
                 size="14pt"
@@ -71,7 +70,7 @@ export function TransactionFee({
                 {isLoading
                   ? '~'
                   : `${gasFeeParamsForSelectedSpeed?.gasFee.display} ~ ${gasFeeParamsForSelectedSpeed?.estimatedTime.display}`}
-              </Text>
+              </TextOverflow>
             </Inline>
           </Row>
         </Rows>
