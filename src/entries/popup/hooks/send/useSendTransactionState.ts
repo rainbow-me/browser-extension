@@ -36,7 +36,7 @@ export const useSendTransactionState = ({
   );
 
   const value = useMemo(
-    () => (sendingNativeAsset && assetAmount ? parseEther(assetAmount) : '0'),
+    () => (sendingNativeAsset && assetAmount ? parseEther(assetAmount) : '0x0'),
     [assetAmount, sendingNativeAsset],
   );
 
@@ -45,6 +45,14 @@ export const useSendTransactionState = ({
     const rawAmount = convertAmountToRawAmount(assetAmount, asset?.decimals);
     return getDataForTokenTransfer(rawAmount, toAddress);
   }, [assetAmount, asset, sendingNativeAsset, toAddress]);
+
+  const txToAddress: Address = useMemo(() => {
+    const assetAddress = asset?.address;
+    const isSendingNativeAsset = assetAddress
+      ? isNativeAsset(assetAddress, chainId)
+      : true;
+    return !isSendingNativeAsset && assetAddress ? assetAddress : toAddress;
+  }, [asset?.address, chainId, toAddress]);
 
   return {
     asset,
@@ -55,6 +63,7 @@ export const useSendTransactionState = ({
     fromAddress,
     toAddress,
     toEnsName,
+    txToAddress,
     value,
     setAsset,
     setToAddressOrName,

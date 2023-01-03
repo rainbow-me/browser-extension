@@ -230,10 +230,9 @@ export const lessThan = (
 export const handleSignificantDecimalsWithThreshold = (
   value: BigNumberish,
   decimals: number,
-  buffer = 3,
   threshold = '0.0001',
 ) => {
-  const result = handleSignificantDecimals(value, decimals, buffer);
+  const result = toFixedDecimals(value, decimals);
   return lessThan(result, threshold) ? `< ${threshold}` : result;
 };
 
@@ -281,6 +280,22 @@ export const convertAmountAndPriceToNativeDisplay = (
     nativeCurrency,
     buffer,
     skipDecimals,
+  );
+  return {
+    amount: nativeBalanceRaw,
+    display: nativeDisplay,
+  };
+};
+
+export const convertAmountAndPriceToNativeDisplayWithThreshold = (
+  amount: BigNumberish,
+  priceUnit: BigNumberish,
+  nativeCurrency: keyof nativeCurrencyType,
+): { amount: string; display: string } => {
+  const nativeBalanceRaw = convertAmountToNativeAmount(amount, priceUnit);
+  const nativeDisplay = convertAmountToNativeDisplayWithThreshold(
+    nativeBalanceRaw,
+    nativeCurrency,
   );
   return {
     amount: nativeBalanceRaw,
@@ -403,6 +418,22 @@ export const convertAmountToNativeDisplay = (
     decimals,
     buffer,
     skipDecimals,
+  );
+  if (nativeSelected.alignment === 'left') {
+    return `${nativeSelected.symbol}${display}`;
+  }
+  return `${display} ${nativeSelected.symbol}`;
+};
+
+export const convertAmountToNativeDisplayWithThreshold = (
+  value: BigNumberish,
+  nativeCurrency: keyof nativeCurrencyType,
+) => {
+  const nativeSelected = supportedCurrencies?.[nativeCurrency];
+  const display = handleSignificantDecimalsWithThreshold(
+    value,
+    nativeSelected.decimals,
+    nativeSelected.decimals < 4 ? '0.01' : '0.0001',
   );
   if (nativeSelected.alignment === 'left') {
     return `${nativeSelected.symbol}${display}`;
