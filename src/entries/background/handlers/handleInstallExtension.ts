@@ -19,9 +19,9 @@ export const handleInstallExtension = () =>
             });
         }
       });
-    } else {
-      chrome.tabs.create({
-        url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome`,
-      });
-    }
+    } // else {
+    //   chrome.tabs.create({
+    //     url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome`,
+    //   });
+    // }
   });
