@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useContactsStore } from '~/core/state/contacts';
@@ -16,8 +17,10 @@ import {
   AccentColorProvider,
   Box,
   Button,
+  Inline,
   Row,
   Rows,
+  Symbol,
   Text,
 } from '~/design-system';
 import { foregroundColors } from '~/design-system/styles/designTokens';
@@ -31,11 +34,12 @@ import { useSendTransactionState } from '../../hooks/send/useSendTransactionStat
 
 import { ContactAction, ContactPrompt } from './ContactPrompt';
 import { NavbarContactButton } from './NavbarContactButton';
+import { ReviewSheet } from './ReviewSheet';
 import { ToAddressInput } from './ToAddressInput';
 import { TokenInput } from './TokenInput';
 import { ValueInput } from './ValueInput';
 
-const AccentColorProviderWrapper = ({
+export const AccentColorProviderWrapper = ({
   color,
   children,
 }: {
@@ -56,7 +60,7 @@ const AccentColorProviderWrapper = ({
 
 export function Send() {
   const [, setTxHash] = useState('');
-  const [sending, setSending] = useState(false);
+  const [showReviewSheet, setShowReviewSheet] = useState(false);
   const [contactSaveAction, setSaveContactAction] = useState<{
     show: boolean;
     action: ContactAction;
@@ -65,14 +69,15 @@ export function Send() {
 
   const { isContact } = useContactsStore();
 
-  const { asset, selectAssetIndex, assets, setSortMethod, sortMethod } =
+  const { asset, selectAssetAddress, assets, setSortMethod, sortMethod } =
     useSendTransactionAsset();
   const {
     assetAmount,
     independentAmount,
     independentField,
     independentFieldRef,
-    dependentAmount,
+    dependentAmountDisplay,
+    independentAmountDisplay,
     setIndependentAmount,
     switchIndependentField,
     setMaxAssetAmount,
@@ -113,9 +118,14 @@ export function Send() {
     [setToAddressOrName],
   );
 
-  const handleSend = useCallback(async () => {
-    setSending(true);
+  const openReviewSheet = useCallback(() => {
+    if (!!toAddress && independentAmount) {
+      setShowReviewSheet(true);
+    }
+  }, [independentAmount, toAddress]);
+  const closeReviewSheet = useCallback(() => setShowReviewSheet(false), []);
 
+  const handleSend = useCallback(async () => {
     try {
       const result = await sendTransaction({
         from: fromAddress,
@@ -150,17 +160,15 @@ export function Send() {
       }
     } catch (e) {
       alert('Transaction failed');
-    } finally {
-      setSending(false);
     }
   }, [asset, assetAmount, fromAddress, toAddress, value, chainId, data]);
 
-  const selecteAsset = useCallback(
-    (index?: number) => {
-      selectAssetIndex(index);
+  const selectAsset = useCallback(
+    (address: Address | '') => {
+      selectAssetAddress(address);
       setIndependentAmount('');
     },
-    [selectAssetIndex, setIndependentAmount],
+    [selectAssetAddress, setIndependentAmount],
   );
 
   const navbarButtonAction = isContact({ address: toAddress })
@@ -173,6 +181,16 @@ export function Send() {
         address={toAddress}
         show={contactSaveAction?.show}
         action={contactSaveAction?.action}
+        onSaveContactAction={setSaveContactAction}
+      />
+      <ReviewSheet
+        show={showReviewSheet}
+        onCancel={closeReviewSheet}
+        onSend={handleSend}
+        toAddress={toAddress}
+        asset={asset}
+        primaryAmountDisplay={independentAmountDisplay.display}
+        secondaryAmountDisplay={dependentAmountDisplay.display}
         onSaveContactAction={setSaveContactAction}
       />
       <Navbar
@@ -190,7 +208,8 @@ export function Send() {
       />
       <Box
         background="surfaceSecondary"
-        style={{ height: 535, paddingBottom: 19 }}
+        style={{ height: 535 }}
+        paddingBottom="20px"
         paddingHorizontal="12px"
       >
         <Rows space="8px" alignVertical="top">
@@ -219,7 +238,7 @@ export function Send() {
                   <TokenInput
                     asset={asset}
                     assets={assets}
-                    selectAssetIndex={selecteAsset}
+                    selectAssetAddress={selectAsset}
                     dropdownClosed={toAddressDropdownOpen}
                     setSortMethod={setSortMethod}
                     sortMethod={sortMethod}
@@ -228,7 +247,7 @@ export function Send() {
                     <ValueInput
                       asset={asset}
                       currentCurrency={currentCurrency}
-                      dependentAmount={dependentAmount}
+                      dependentAmount={dependentAmountDisplay}
                       independentAmount={independentAmount}
                       independentField={independentField}
                       independentFieldRef={independentFieldRef}
@@ -257,21 +276,22 @@ export function Send() {
                     </Row>
                     <Row>
                       <Button
-                        onClick={handleSend}
+                        onClick={openReviewSheet}
                         height="44px"
                         variant="flat"
                         color="accent"
                         width="full"
                       >
-                        <Text color="label" size="14pt" weight="bold">
-                          {i18n.t(
-                            `send.${
-                              sending
-                                ? 'button_label_sending'
-                                : 'button_label_send'
-                            }`,
-                          )}
-                        </Text>
+                        <Inline space="8px" alignVertical="center">
+                          <Symbol
+                            symbol="doc.text.magnifyingglass"
+                            weight="bold"
+                            size={16}
+                          />
+                          <Text color="label" size="16pt" weight="bold">
+                            {i18n.t('send.button_label_review')}
+                          </Text>
+                        </Inline>
                       </Button>
                     </Row>
                   </Rows>
