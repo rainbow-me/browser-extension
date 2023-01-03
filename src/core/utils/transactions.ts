@@ -609,7 +609,7 @@ export async function addNewTransaction({
   const localNonce = localNonceData?.currentNonce;
   const provider = getProvider({ chainId });
   const nonceOnChain =
-    ((await provider.getTransactionCount(address, 'safe')) || 0) - 1;
+    ((await provider.getTransactionCount(address, 'pending')) || 0) - 1;
   const nonce = (localNonce || 0) > nonceOnChain ? localNonce : nonceOnChain;
   const { getPendingTransactions, setPendingTransactions } =
     pendingTransactionsStore.getState();

@@ -104,16 +104,16 @@ export function Activity({ onSheetSelected }: ActivityProps) {
                 </Inset>
               );
             }
-            // return (
-            //   <SpeedUpAndCancelMenu
-            //     key={index}
-            //     onRowSelection={onTransactionSelected}
-            //     transaction={item}
-            //   >
-            //     <ActivityRow transaction={item} />
-            //   </SpeedUpAndCancelMenu>
-            // );
-            return <ActivityRow transaction={item} key={index} />;
+            return (
+              <SpeedUpAndCancelMenu
+                key={index}
+                onRowSelection={onTransactionSelected}
+                transaction={item}
+              >
+                <ActivityRow transaction={item} />
+              </SpeedUpAndCancelMenu>
+            );
+            // return <ActivityRow transaction={item} key={index} />;
           })}
         </Box>
       </Box>
