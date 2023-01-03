@@ -167,8 +167,6 @@ export function Send() {
     ? 'edit'
     : 'save';
 
-  console.log('asset?.colors?.primary', asset?.colors?.primary);
-
   return (
     <>
       <ContactPrompt
