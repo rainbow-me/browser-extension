@@ -53,6 +53,7 @@ const NavbarSaveContactButton = ({
         height="28px"
         variant="flat"
         onClick={enabled ? openSavePrompt : () => null}
+        testId={`navbar-contact-button-save`}
       >
         <Inline space="4px" alignVertical="center">
           {toAddress ? (
@@ -123,7 +124,11 @@ const EditContactDropdown = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Box position="relative" id="home-page-header-right">
+        <Box
+          testId="navbar-contact-button-edit"
+          position="relative"
+          id="home-page-header-right"
+        >
           {children}
         </Box>
       </DropdownMenuTrigger>

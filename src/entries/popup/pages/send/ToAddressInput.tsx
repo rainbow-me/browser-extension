@@ -296,6 +296,7 @@ export const ToAddressInput = ({
                 onClick={onInputClick}
               >
                 <Input
+                  testId="to-address-input"
                   value={toAddressOrName}
                   placeholder={i18n.t('send.input_to_address_placeholder')}
                   onChange={handleToAddressChange}

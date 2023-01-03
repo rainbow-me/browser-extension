@@ -8,6 +8,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 
 import {
+  delay,
   delayTime,
   findElementAndClick,
   findElementByText,
@@ -244,11 +245,46 @@ it('should be able to test the sandbox for the background', async () => {
   await driver.switchTo().alert().accept();
 });
 
-it('should be able to connect to hardhat', async () => {
+it('should be able to connect to hardhat and go to send flow', async () => {
   const btn = await querySelector(driver, '[data-testid="connect-to-hardhat"]');
   await waitAndClick(btn, driver);
   const button = await findElementByText(driver, 'Disconnect from Hardhat');
   expect(button).toBeTruthy();
-  // await findElementAndClick({ id: 'navbar-left-component', driver });
-  // await delay(10000);
+  await findElementAndClick({ id: 'navbar-button-with-back', driver });
+  await findElementAndClick({ id: 'header-link-send', driver });
+});
+
+it('should be able to save new contact on send flow', async () => {
+  const input = await querySelector(driver, '[data-testid="to-address-input"]');
+  await input.sendKeys('rainbowwallet.eth');
+  await delayTime('medium');
+  const saveButton = await querySelector(
+    driver,
+    '[data-testid="navbar-contact-button-save"]',
+  );
+  expect(saveButton).toBeTruthy();
+  await waitAndClick(saveButton, driver);
+  const confirmContactButton = await querySelector(
+    driver,
+    '[data-testid="contact-prompt-confirm"]',
+  );
+  expect(confirmContactButton).toBeTruthy();
+  await waitAndClick(confirmContactButton, driver);
+  await delay(10000);
+});
+
+it('should be able to save edit contact on send flow', async () => {
+  const editButton = await querySelector(
+    driver,
+    '[data-testid="navbar-contact-button-edit"]',
+  );
+  expect(editButton).toBeTruthy();
+  await waitAndClick(editButton, driver);
+  // const confirmContactButton = await querySelector(
+  //   driver,
+  //   '[data-testid="contact-prompt-confirm"]',
+  // );
+  // expect(confirmContactButton).toBeTruthy();
+  // await waitAndClick(confirmContactButton, driver);
+  await delay(10000);
 });

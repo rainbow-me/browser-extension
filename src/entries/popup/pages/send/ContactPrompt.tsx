@@ -98,6 +98,7 @@ const SaveOrEditContact = ({
             variant="flat"
             borderRadius="9px"
             onClick={onSave}
+            testId="contact-prompt-confirm"
           >
             {i18n.t(
               `contacts.${
