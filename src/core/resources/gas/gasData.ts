@@ -1,17 +1,9 @@
-import { TransactionRequest } from '@ethersproject/abstract-provider';
-
 import { ChainId } from '~/core/types/chains';
 
 import { useMeteorology } from './meteorology';
 import { useProviderGas } from './providerGas';
 
-export const useGasData = ({
-  chainId,
-  transactionRequest,
-}: {
-  chainId: ChainId;
-  transactionRequest: TransactionRequest;
-}) => {
+export const useGasData = ({ chainId }: { chainId: ChainId }) => {
   const meteorologySupportsChain = [
     ChainId.bsc,
     ChainId.mainnet,
@@ -29,7 +21,7 @@ export const useGasData = ({
 
   const { data: providerGasData, isLoading: providerGasDataIsLoading } =
     useProviderGas(
-      { chainId, transactionRequest },
+      { chainId },
       {
         enabled: !meteorologySupportsChain,
         refetchInterval: 5000,
