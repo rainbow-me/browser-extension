@@ -13,7 +13,7 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { queryClient } from '../react-query';
 import { Storage } from '../storage';
-import { ChainId, bsc } from '../types/chains';
+import { ChainId, bsc, hardhat } from '../types/chains';
 
 const noopStorage = {
   getItem: () => '',
@@ -22,12 +22,13 @@ const noopStorage = {
 };
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [chain.mainnet, chain.optimism, chain.polygon, chain.arbitrum, bsc],
+  [chain.mainnet, chain.optimism, chain.polygon, chain.arbitrum, bsc, hardhat],
   [
     jsonRpcProvider({
       rpc: (chain) => {
-        if (chain.id !== ChainId.bsc) return null;
-        return { http: chain.rpcUrls.default };
+        if (chain.id === ChainId.bsc || chain.id === ChainId.hardhat)
+          return { http: chain.rpcUrls.default };
+        return null;
       },
     }),
     alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY }),

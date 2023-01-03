@@ -10,7 +10,9 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useContactsStore } from '~/core/state/contacts';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { ChainId } from '~/core/types/chains';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import {
@@ -68,6 +70,7 @@ export function Send() {
   const [toAddressDropdownOpen, setToAddressDropdownOpen] = useState(false);
 
   const { isContact } = useContactsStore();
+  const { connectedToHardhat } = useConnectedToHardhatStore();
 
   const { asset, selectAssetAddress, assets, setSortMethod, sortMethod } =
     useSendTransactionAsset();
@@ -131,7 +134,10 @@ export function Send() {
         from: fromAddress,
         to: toAddress,
         value,
-        chainId,
+        chainId:
+          chainId === ChainId.mainnet && connectedToHardhat
+            ? ChainId.hardhat
+            : chainId,
         data,
       });
 
@@ -161,7 +167,16 @@ export function Send() {
     } catch (e) {
       alert('Transaction failed');
     }
-  }, [asset, assetAmount, fromAddress, toAddress, value, chainId, data]);
+  }, [
+    fromAddress,
+    toAddress,
+    value,
+    chainId,
+    connectedToHardhat,
+    data,
+    assetAmount,
+    asset,
+  ]);
 
   const selectAsset = useCallback(
     (address: Address | '') => {

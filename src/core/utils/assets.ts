@@ -128,3 +128,37 @@ export function parseAddressAsset({
     },
   };
 }
+
+export function parseParsedAddressAsset({
+  parsedAsset,
+  currency,
+  quantity,
+}: {
+  parsedAsset: ParsedAddressAsset;
+  currency: SupportedCurrencyKey;
+  quantity: string;
+}): ParsedAddressAsset {
+  const amount = convertRawAmountToDecimalFormat(
+    quantity,
+    parsedAsset?.decimals,
+  );
+  return {
+    ...parsedAsset,
+    balance: {
+      amount,
+      display: convertAmountToBalanceDisplay(amount, {
+        decimals: parsedAsset?.decimals,
+        symbol: parsedAsset?.symbol,
+      }),
+    },
+    native: {
+      ...parsedAsset.native,
+      balance: getNativeAssetBalance({
+        currency,
+        decimals: parsedAsset?.decimals,
+        priceUnit: parsedAsset?.price?.value || 0,
+        value: amount,
+      }),
+    },
+  };
+}
