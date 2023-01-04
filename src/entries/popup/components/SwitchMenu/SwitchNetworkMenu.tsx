@@ -15,14 +15,22 @@ import {
   DropdownMenuTrigger,
 } from '../DropdownMenu/DropdownMenu';
 
-export const SwitchNetworkMenuSelector = () => {
+export const SwitchNetworkMenuSelector = ({
+  selectedValue,
+}: {
+  selectedValue?: string;
+}) => {
   const { chains } = useNetwork();
   return (
     <>
       {chains.map((chain, i) => {
         const { id: chainId, name } = chain;
         return (
-          <DropdownMenuRadioItem value={String(chainId)} key={i}>
+          <DropdownMenuRadioItem
+            value={String(chainId)}
+            key={i}
+            selectedValue={selectedValue}
+          >
             <Box id={`switch-network-item-${i}`}>
               <Inline space="8px" alignVertical="center">
                 <ChainBadge chainId={chainId} size="small" />
@@ -96,7 +104,7 @@ export const SwitchNetworkMenu = ({
             onChainChanged(chain?.id, chain);
           }}
         >
-          <SwitchNetworkMenuSelector />
+          <SwitchNetworkMenuSelector selectedValue={String(chainId)} />
         </DropdownMenuRadioGroup>
         {onDisconnect ? (
           <SwitchNetworkMenuDisconnect onDisconnect={onDisconnect} />

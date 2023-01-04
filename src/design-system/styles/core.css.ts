@@ -321,7 +321,7 @@ export const gapVar = createVar();
 const boxBaseProperties = defineProperties({
   properties: {
     alignItems: ['stretch', 'flex-start', 'center', 'flex-end'],
-    backdropFilter: ['blur(26px)'],
+    backdropFilter: ['blur(26px)', 'opacity(80%)', 'opacity(5%)'],
     borderRadius: radii,
     borderWidth: mapValues(strokeWeights, (borderWidth) => ({
       borderStyle: 'solid',

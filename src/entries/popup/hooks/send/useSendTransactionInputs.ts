@@ -23,7 +23,7 @@ export const useSendTransactionInputs = ({
     'asset',
   );
 
-  const dependentAmount = useMemo(() => {
+  const dependentAmountDisplay = useMemo(() => {
     if (independentField === 'asset') {
       const nativeDisplay = convertAmountAndPriceToNativeDisplay(
         (independentAmount as string) || '0',
@@ -58,10 +58,32 @@ export const useSendTransactionInputs = ({
     }
   }, [asset, currentCurrency, independentAmount, independentField]);
 
+  const independentAmountDisplay = useMemo(() => {
+    if (independentField === 'asset') {
+      return {
+        display: `${independentAmount} ${asset?.symbol}`,
+        amount: independentAmount,
+      };
+    } else {
+      const currencySelected = supportedCurrencies?.[currentCurrency];
+      const display =
+        currencySelected.alignment === 'left'
+          ? `${currencySelected.symbol}${independentAmount}`
+          : `${independentAmount} ${currencySelected.symbol}`;
+
+      return {
+        display,
+        amount: independentAmount,
+      };
+    }
+  }, [asset, currentCurrency, independentAmount, independentField]);
+
   const assetAmount = useMemo(
     () =>
-      independentField === 'asset' ? independentAmount : dependentAmount.amount,
-    [dependentAmount, independentAmount, independentField],
+      independentField === 'asset'
+        ? independentAmount
+        : dependentAmountDisplay.amount,
+    [dependentAmountDisplay, independentAmount, independentField],
   );
 
   const setInputValue = useCallback((newValue: string) => {
@@ -73,11 +95,13 @@ export const useSendTransactionInputs = ({
 
   const switchIndependentField = useCallback(() => {
     const newValue =
-      independentField === 'asset' ? dependentAmount.amount : assetAmount ?? '';
+      independentField === 'asset'
+        ? dependentAmountDisplay.amount
+        : assetAmount ?? '';
     setInputValue(newValue);
     setIndependentAmount(newValue);
     setIndependentField(independentField === 'asset' ? 'native' : 'asset');
-  }, [assetAmount, dependentAmount, independentField, setInputValue]);
+  }, [assetAmount, dependentAmountDisplay, independentField, setInputValue]);
 
   const setMaxAssetAmount = useCallback(() => {
     const newValue =
@@ -109,7 +133,8 @@ export const useSendTransactionInputs = ({
     independentAmount,
     independentField,
     independentFieldRef,
-    dependentAmount,
+    dependentAmountDisplay,
+    independentAmountDisplay,
     setMaxAssetAmount,
     setIndependentAmount,
     setIndependentField,

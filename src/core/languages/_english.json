@@ -103,6 +103,7 @@
     "switch_to": "Switch to",
     "button_label_send": "Send Transacion",
     "button_label_sending": "Sending",
+    "button_label_review": "Review",
     "enter_address_or_amount": "Enter an address or amount",
     "wallets_list": {
       "contacts": "Contacts",
@@ -116,6 +117,13 @@
       "available": "available",
       "token_balance": "Token Balance",
       "networks": "Networks"
+    },
+    "review": {
+      "title": "Review & Send",
+      "to": "to",
+      "you_own_wallet": "You own this wallet",
+      "send_to": "Send to %{toName}",
+      "cancel": "Cancel"
     }
   },
   "contacts": {

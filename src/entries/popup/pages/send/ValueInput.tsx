@@ -13,8 +13,11 @@ import {
   Stack,
   Text,
 } from '~/design-system';
+import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
 import { SendInputMask } from '../../components/SendInputMask/SendInputMask';
+
+const { innerWidth: windowWidth } = window;
 
 export const ValueInput = ({
   asset,
@@ -40,7 +43,8 @@ export const ValueInput = ({
   setMaxAssetAmount: () => void;
   switchIndependentField: () => void;
 }) => {
-  const { innerWidth: windowWidth } = window;
+  const truncatedAssetSymbol = asset?.symbol?.slice(0, 5) ?? '';
+
   return (
     <Box paddingBottom="20px" paddingHorizontal="20px">
       <Stack space="16px">
@@ -53,7 +57,7 @@ export const ValueInput = ({
                   value={`${independentAmount}`}
                   placeholder={`0.00 ${
                     independentField === 'asset'
-                      ? asset?.symbol
+                      ? truncatedAssetSymbol
                       : currentCurrency
                   }`}
                   decimals={
@@ -68,7 +72,7 @@ export const ValueInput = ({
                   innerRef={independentFieldRef}
                   placeholderSymbol={
                     independentField === 'asset'
-                      ? asset?.symbol
+                      ? truncatedAssetSymbol
                       : currentCurrency
                   }
                 />
@@ -87,31 +91,14 @@ export const ValueInput = ({
 
             <Row height="content">
               <Inline alignHorizontal="justify" alignVertical="center">
-                <Box
-                  style={{
-                    maxWidth: windowWidth / 2,
-                  }}
+                <TextOverflow
+                  maxWidth={windowWidth / 2}
+                  size="11pt"
+                  weight="bold"
+                  color={`${asset ? 'label' : 'labelTertiary'}`}
                 >
-                  <Text
-                    size="11pt"
-                    weight="bold"
-                    color={`${asset ? 'label' : 'labelTertiary'}`}
-                    whiteSpace="nowrap"
-                    overflow="hidden"
-                    textOverflow="ellipsis"
-                  >
-                    <Box
-                      paddingVertical="2px"
-                      style={{
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                      }}
-                    >
-                      {dependentAmount.display}
-                    </Box>
-                  </Text>
-                </Box>
+                  {dependentAmount.display}
+                </TextOverflow>
                 <Box onClick={switchIndependentField}>
                   <Text color="accent" size="12pt" weight="bold">
                     {i18n.t('send.switch_to')}{' '}

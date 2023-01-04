@@ -1,40 +1,79 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import React, { CSSProperties, ReactNode } from 'react';
+import { useAccount } from 'wagmi';
 
-import { Box, Text } from '~/design-system';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { AccentColorProvider, Box, Text, ThemeProvider } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
-import { Space } from '~/design-system/styles/designTokens';
+import {
+  BackgroundColor,
+  Space,
+  globalColors,
+} from '~/design-system/styles/designTokens';
 
-import { dropdownMenuItemStyles } from './DropdownMenu.css';
+import { useAvatar } from '../../hooks/useAvatar';
+
+interface DropdownMenuTriggerProps {
+  children: ReactNode;
+  accentColor?: string;
+  asChild?: boolean;
+}
+
+export function DropdownMenuTrigger(props: DropdownMenuTriggerProps) {
+  const { children, accentColor, asChild } = props;
+  const { address } = useAccount();
+  const { avatar } = useAvatar({ address });
+
+  return (
+    <AccentColorProvider
+      color={accentColor || avatar?.color || globalColors.blue60}
+    >
+      <DropdownMenuPrimitive.Trigger asChild={asChild}>
+        {children}
+      </DropdownMenuPrimitive.Trigger>
+    </AccentColorProvider>
+  );
+}
 
 interface DropdownMenuContentProps {
   children: ReactNode;
   align?: 'start' | 'center' | 'end';
   marginRight?: Space;
+  accentColor?: string;
 }
 
 export function DropdownMenuContent(props: DropdownMenuContentProps) {
-  const { children, align = 'start', marginRight } = props;
+  const { children, align = 'start', marginRight, accentColor } = props;
+  const { currentTheme } = useCurrentThemeStore();
+  const { address } = useAccount();
+  const { avatar } = useAvatar({ address });
+
   return (
     <DropdownMenuPrimitive.Portal>
-      <Box
-        as={DropdownMenuPrimitive.Content}
-        style={{
-          // TODOL move to design system
-          border: '1px solid rgba(245, 248, 255, 0.03)',
-          backgroundColor: 'rgba(53, 54, 58, 0.8)',
-          width: 204,
-          backdropFilter: 'blur(26px)',
-          boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
-          borderRadius: '16px',
-          marginRight: marginRight ?? '0px',
-        }}
-        paddingHorizontal="12px"
-        paddingVertical="4px"
-        align={align}
+      <AccentColorProvider
+        color={accentColor || avatar?.color || globalColors.blue60}
       >
-        {children}
-      </Box>
+        <ThemeProvider theme={currentTheme}>
+          <Box
+            as={DropdownMenuPrimitive.Content}
+            style={{
+              width: 204,
+              backdropFilter: 'blur(26px)',
+              boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
+              marginRight: marginRight ?? '0px',
+            }}
+            paddingHorizontal="12px"
+            paddingVertical="4px"
+            align={align}
+            background="surfaceMenu"
+            borderColor="separatorTertiary"
+            borderWidth="1px"
+            borderRadius="16px"
+          >
+            {children}
+          </Box>
+        </ThemeProvider>
+      </AccentColorProvider>
     </DropdownMenuPrimitive.Portal>
   );
 }
@@ -74,8 +113,11 @@ export const DropdownMenuItem = (props: DropdownMenuItemProps) => {
         borderRadius: '12px',
         outline: 'none',
       }}
-      className={dropdownMenuItemStyles}
       onSelect={onSelect}
+      background={{
+        default: 'transparent',
+        hover: 'surfaceSecondary',
+      }}
     >
       {children}
     </Box>
@@ -85,10 +127,12 @@ export const DropdownMenuItem = (props: DropdownMenuItemProps) => {
 interface DropdownMenuRadioItemProps {
   children: ReactNode;
   value: string;
+  selectedValue?: string;
+  selectedColor?: string;
 }
 
 export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
-  const { children, value } = props;
+  const { children, value, selectedValue, selectedColor } = props;
   return (
     <Box
       as={DropdownMenuPrimitive.RadioItem}
@@ -102,7 +146,16 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
         borderRadius: '12px',
         outline: 'none',
       }}
-      className={dropdownMenuItemStyles}
+      background={{
+        default:
+          selectedValue === value
+            ? (selectedColor as BackgroundColor) ?? 'accent'
+            : 'transparent',
+        hover:
+          selectedValue === value
+            ? (selectedColor as BackgroundColor) ?? 'accent'
+            : 'surfaceSecondary',
+      }}
     >
       {children}
     </Box>
@@ -112,11 +165,9 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
 export const DropdownMenuSeparator = () => (
   <Box
     as={DropdownMenuPrimitive.Separator}
-    style={{
-      // TODO: move to design system
-      borderTop: '1px solid rgba(245, 248, 255, 0.06)',
-      borderRadius: '1px',
-    }}
+    style={{ borderRadius: 1 }}
+    borderWidth="1px"
+    borderColor="separatorSecondary"
   />
 );
 
@@ -148,5 +199,4 @@ export const DropdownMenu = (
   <DropdownMenuPrimitive.Root {...props} modal={false} />
 );
 
-export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
 export const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;

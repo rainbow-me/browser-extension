@@ -4,7 +4,13 @@ import { Chain } from 'wagmi';
 
 import { ethUnits } from '~/core/references';
 import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
-import { useGasStore } from '~/core/state';
+import {
+  MeteorologyLegacyResponse,
+  MeteorologyResponse,
+} from '~/core/resources/gas/meteorology';
+import { useOptimismL1SecurityFee } from '~/core/resources/gas/optimismL1SecurityFee';
+import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
+import { ChainId } from '~/core/types/chains';
 import {
   GasFeeLegacyParamsBySpeed,
   GasFeeParamsBySpeed,
@@ -26,38 +32,58 @@ export const useGas = ({
   defaultSpeed?: GasSpeed;
   transactionRequest: TransactionRequest;
 }) => {
-  const { data, isLoading } = useGasData({ chainId, transactionRequest });
+  const { data: gasData, isLoading } = useGasData({ chainId });
   const { data: estimatedGasLimit } = useEstimateGasLimit({
     chainId,
     transactionRequest,
   });
+
+  const { data: optimismL1SecurityFee } = useOptimismL1SecurityFee(
+    { transactionRequest },
+    { enabled: chainId === ChainId.optimism },
+  );
+  const { currentCurrency } = useCurrentCurrencyStore();
   const {
     selectedGas,
     setSelectedGas,
     gasFeeParamsBySpeed: storeGasFeeParamsBySpeed,
     setGasFeeParamsBySpeed,
   } = useGasStore();
+
   const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>(
     defaultSpeed || GasSpeed.NORMAL,
   );
   const nativeAsset = useNativeAssetForNetwork({ chainId });
 
-  const gasLimit = estimatedGasLimit ?? `${ethUnits.basic_transfer}`;
-
-  const gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed =
-    useMemo(
-      () =>
-        parseGasFeeParamsBySpeed({
+  const gasFeeParamsBySpeed:
+    | GasFeeParamsBySpeed
+    | GasFeeLegacyParamsBySpeed
+    | null = useMemo(() => {
+    return !isLoading
+      ? parseGasFeeParamsBySpeed({
           chainId,
-          data,
-          gasLimit,
+          data: gasData as MeteorologyLegacyResponse | MeteorologyResponse,
+          gasLimit: estimatedGasLimit || `${ethUnits.basic_transfer}`,
           nativeAsset,
-        }),
-      [chainId, data, gasLimit, nativeAsset],
-    );
+          currency: currentCurrency,
+          optimismL1SecurityFee,
+        })
+      : null;
+  }, [
+    isLoading,
+    chainId,
+    gasData,
+    estimatedGasLimit,
+    nativeAsset,
+    currentCurrency,
+    optimismL1SecurityFee,
+  ]);
 
   useEffect(() => {
-    if (gasFeeParamsChanged(selectedGas, gasFeeParamsBySpeed[selectedSpeed])) {
+    if (
+      gasFeeParamsBySpeed?.[selectedSpeed] &&
+      gasFeeParamsChanged(selectedGas, gasFeeParamsBySpeed?.[selectedSpeed])
+    ) {
       setSelectedGas({
         selectedGas: gasFeeParamsBySpeed[selectedSpeed],
       });
@@ -66,6 +92,7 @@ export const useGas = ({
 
   useEffect(() => {
     if (
+      gasFeeParamsBySpeed?.[selectedSpeed] &&
       gasFeeParamsChanged(
         gasFeeParamsBySpeed[selectedSpeed],
         storeGasFeeParamsBySpeed[selectedSpeed],
@@ -83,7 +110,6 @@ export const useGas = ({
   ]);
 
   return {
-    data,
     gasFeeParamsBySpeed,
     setSelectedSpeed,
     selectedSpeed,

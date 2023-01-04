@@ -1,5 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -15,6 +15,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
 import { useGas } from '../../hooks/useGas';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
@@ -25,12 +26,16 @@ type TransactionFeeProps = {
   chainId: Chain['id'];
   defaultSpeed?: GasSpeed;
   transactionRequest: TransactionRequest;
+  accentColor?: string;
+  plainTriggerBorder?: boolean;
 };
 
 export function TransactionFee({
   chainId,
   defaultSpeed,
   transactionRequest,
+  accentColor,
+  plainTriggerBorder,
 }: TransactionFeeProps) {
   const { selectedSpeed, setSelectedSpeed, gasFeeParamsBySpeed, isLoading } =
     useGas({
@@ -38,6 +43,11 @@ export function TransactionFee({
       defaultSpeed,
       transactionRequest,
     });
+
+  const gasFeeParamsForSelectedSpeed = useMemo(
+    () => gasFeeParamsBySpeed?.[selectedSpeed],
+    [gasFeeParamsBySpeed, selectedSpeed],
+  );
 
   return (
     <Columns alignHorizontal="justify" alignVertical="center">
@@ -51,11 +61,16 @@ export function TransactionFee({
           <Row>
             <Inline alignVertical="center" space="4px">
               <ChainBadge chainId={chainId} size="small" />
-              <Text weight="semibold" color="label" size="14pt">
+              <TextOverflow
+                maxWidth={200}
+                weight="semibold"
+                color="label"
+                size="14pt"
+              >
                 {isLoading
                   ? '~'
-                  : `${gasFeeParamsBySpeed[selectedSpeed].gasFee.display} ~ ${gasFeeParamsBySpeed[selectedSpeed].estimatedTime.display}`}
-              </Text>
+                  : `${gasFeeParamsForSelectedSpeed?.gasFee.display} ~ ${gasFeeParamsForSelectedSpeed?.estimatedTime.display}`}
+              </TextOverflow>
             </Inline>
           </Row>
         </Rows>
@@ -70,6 +85,8 @@ export function TransactionFee({
             editable={
               chainId === ChainId.mainnet || chainId === ChainId.polygon
             }
+            accentColor={accentColor}
+            plainTriggerBorder={plainTriggerBorder}
           />
           {chainId === ChainId.mainnet ? (
             <Box

@@ -23,20 +23,22 @@ import {
 export function CoinIcon({
   asset,
   fallbackText,
+  size = 36,
 }: {
   asset?: ParsedAsset | ParsedAddressAsset | null;
   fallbackText?: string;
+  size?: number;
 }) {
   const sym = asset?.symbol || fallbackText || '';
 
-  const formattedSymbol = formatSymbol(sym, 36);
+  const formattedSymbol = formatSymbol(sym, size);
   const mainnetAddress = asset?.mainnetAddress;
   const address = (asset?.address || '') as Address;
   const chain = asset?.chainId || ChainId.mainnet;
   const shadowColor = asset?.colors?.primary;
 
   return (
-    <CoinIconWrapper shadowColor={shadowColor} chainId={chain}>
+    <CoinIconWrapper size={size} shadowColor={shadowColor} chainId={chain}>
       <CloudinaryCoinIcon
         address={address}
         chainId={chain}
@@ -50,8 +52,8 @@ export function CoinIcon({
               address || '',
               emojiColors,
             ),
-            height: 36,
-            width: 36,
+            height: size,
+            width: size,
             display: 'flex',
           }}
         >
@@ -67,9 +69,11 @@ export function CoinIcon({
 function ShadowWrapper({
   children,
   color,
+  size,
 }: {
   children: ReactNode;
   color?: string;
+  size: number;
 }) {
   if (color) {
     return (
@@ -79,10 +83,9 @@ function ShadowWrapper({
           background="fillSecondary"
           borderRadius="round"
           style={{
-            width: 36,
-            height: 36,
+            width: size,
+            height: size,
             overflow: 'hidden',
-            marginRight: '8px',
           }}
         >
           {children}
@@ -96,10 +99,9 @@ function ShadowWrapper({
       background="fillSecondary"
       borderRadius="round"
       style={{
-        width: 36,
-        height: 36,
+        width: size,
+        height: size,
         overflow: 'hidden',
-        marginRight: '8px',
       }}
     >
       {children}
@@ -111,14 +113,18 @@ function CoinIconWrapper({
   chainId,
   children,
   shadowColor,
+  size,
 }: {
   chainId: ChainId;
   children: React.ReactNode;
   shadowColor?: string;
+  size: number;
 }) {
   return (
     <Fragment>
-      <ShadowWrapper color={shadowColor}>{children}</ShadowWrapper>
+      <ShadowWrapper color={shadowColor} size={size}>
+        {children}
+      </ShadowWrapper>
       {chainId !== ChainId.mainnet && (
         <Bleed top="16px" left="6px">
           <ChainBadge chainId={chainId} shadow size="extraSmall" />
