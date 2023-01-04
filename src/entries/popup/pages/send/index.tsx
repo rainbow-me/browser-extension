@@ -299,6 +299,7 @@ export function Send() {
                         variant="flat"
                         color="accent"
                         width="full"
+                        testId="send-review-button"
                       >
                         <Inline space="8px" alignVertical="center">
                           <Symbol

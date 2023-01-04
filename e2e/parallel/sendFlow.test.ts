@@ -396,3 +396,47 @@ it('should be able to click max and switch on send flow', async () => {
   await inputMask.clear();
   await inputMask.sendKeys('1');
 });
+
+it('should be able to go to review on send flow', async () => {
+  const reviewButton = await querySelector(
+    driver,
+    '[data-testid="send-review-button"]',
+  );
+  expect(reviewButton).toBeTruthy();
+  await waitAndClick(reviewButton, driver);
+});
+
+it('should be able to interact with destination menu on review on send flow', async () => {
+  const editContactButton = await querySelector(
+    driver,
+    '[data-testid="send-review-edit-contact-trigger"]',
+  );
+  expect(editContactButton).toBeTruthy();
+  await waitAndClick(editContactButton, driver);
+
+  const viewContactItem = await querySelector(
+    driver,
+    '[data-testid="send-review-edit-contact-view"]',
+  );
+  expect(viewContactItem).toBeTruthy();
+  const copyContactItem = await querySelector(
+    driver,
+    '[data-testid="send-review-edit-contact-copy"]',
+  );
+  expect(copyContactItem).toBeTruthy();
+  const editContactItem = await querySelector(
+    driver,
+    '[data-testid="send-review-edit-contact-edit"]',
+  );
+  expect(editContactItem).toBeTruthy();
+  await waitAndClick(copyContactItem, driver);
+});
+
+it('should be able to send transaction on review on send flow', async () => {
+  const sendButton = await querySelector(
+    driver,
+    '[data-testid="review-confirm-button"]',
+  );
+  expect(sendButton).toBeTruthy();
+  await waitAndClick(sendButton, driver);
+});

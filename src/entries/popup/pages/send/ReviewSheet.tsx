@@ -82,7 +82,7 @@ const EditContactDropdown = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Box position="relative" id="home-page-header-right">
+        <Box position="relative" testId="send-review-edit-contact-trigger">
           {children}
         </Box>
       </DropdownMenuTrigger>
@@ -90,7 +90,11 @@ const EditContactDropdown = ({
         <DropdownMenuRadioGroup onValueChange={onValueChange}>
           <Stack space="4px">
             <DropdownMenuRadioItem value={'view'}>
-              <Box width="full" paddingVertical="2px">
+              <Box
+                width="full"
+                paddingVertical="2px"
+                testId="send-review-edit-contact-view"
+              >
                 <Inline alignVertical="center" alignHorizontal="justify">
                   <Inline alignVertical="center" space="8px">
                     <Inline alignVertical="center">
@@ -118,7 +122,11 @@ const EditContactDropdown = ({
             <Box>
               <DropdownMenuSeparator />
               <DropdownMenuRadioItem value={'edit'}>
-                <Box width="full" paddingVertical="2px">
+                <Box
+                  width="full"
+                  paddingVertical="2px"
+                  testId="send-review-edit-contact-edit"
+                >
                   <Inline space="8px" alignVertical="center">
                     <Inline alignVertical="center">
                       <Symbol
@@ -142,7 +150,11 @@ const EditContactDropdown = ({
                 </Box>
               </DropdownMenuRadioItem>
               <DropdownMenuRadioItem value={'copy'}>
-                <Box width="full" marginVertical="-1px">
+                <Box
+                  width="full"
+                  marginVertical="-1px"
+                  testId="send-review-edit-contact-copy"
+                >
                   <Inline space="8px" alignVertical="center">
                     <Box>
                       <Inline alignVertical="center">
@@ -384,6 +396,7 @@ export const ReviewSheet = ({
               variant="flat"
               width="full"
               onClick={onSend}
+              testId="review-confirm-button"
             >
               <TextOverflow
                 maxWidth={TEXT_OVERFLOW_WIDTH + 20}
