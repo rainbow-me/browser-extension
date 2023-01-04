@@ -77,8 +77,6 @@ export function AssetRow({ uniqueId }: AssetRowProps) {
     [asset?.native?.balance?.display, hideAssetBalances, currentCurrency],
   );
 
-  console.log('asset', asset);
-
   const topRow = useMemo(
     () => (
       <Columns>
