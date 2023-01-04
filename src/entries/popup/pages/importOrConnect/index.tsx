@@ -163,8 +163,6 @@ export function ImportOrConnect() {
           </Box>
         </Box>
       </Box>
-
-      <Box width="full" paddingTop="80px" paddingBottom="60px"></Box>
     </FullScreenContainer>
   );
 }
