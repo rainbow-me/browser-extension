@@ -95,7 +95,6 @@ export const TokenInput = ({
     }
   }, [sortDropdownOpen]);
 
-  console.log('------- {asset?.uniqueId', asset?.uniqueId);
   return (
     <InputWrapper
       zIndex={1}

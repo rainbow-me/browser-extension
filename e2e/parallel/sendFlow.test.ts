@@ -374,3 +374,25 @@ it('should be able to select token on send flow', async () => {
   expect(asset).toBeTruthy();
   await waitAndClick(asset, driver);
 });
+
+it('should be able to click max and switch on send flow', async () => {
+  const switchButton = await querySelector(
+    driver,
+    '[data-testid="value-input-switch"]',
+  );
+  expect(switchButton).toBeTruthy();
+
+  const maxButton = await querySelector(
+    driver,
+    '[data-testid="value-input-max"]',
+  );
+
+  await waitAndClick(maxButton, driver);
+
+  const inputMask = await querySelector(
+    driver,
+    '[data-testid="send-input-mask"]',
+  );
+  await inputMask.clear();
+  await inputMask.sendKeys('1');
+});
