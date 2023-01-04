@@ -26,6 +26,9 @@ export const ProtectedRoute = ({
     }
   } else {
     switch (status) {
+      case 'NEEDS_PASSWORD':
+        return <Navigate to={ROUTES.CREATE_PASSWORD} />;
+        break;
       case 'LOCKED':
         return <Navigate to={ROUTES.UNLOCK} />;
         break;
