@@ -7,32 +7,11 @@ import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { UniqueId } from '~/core/types/assets';
-import { Box, Column, Columns, Inline, Symbol, Text } from '~/design-system';
-import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+import { Box, Column, Columns, Inline, Text } from '~/design-system';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 
-const Asterisks = ({
-  color,
-  size,
-}: {
-  color: SymbolProps['color'];
-  size: SymbolProps['size'];
-}) => (
-  <Inline>
-    {Array(4)
-      .fill(0)
-      .map((_, i) => (
-        <Symbol
-          symbol={'asterisk'}
-          weight={'bold'}
-          size={size}
-          color={color}
-          key={i}
-        />
-      ))}
-  </Inline>
-);
+import { Asterisks } from '../../components/Asterisks/Asterisks';
 
 export function Tokens() {
   const { address } = useAccount();
