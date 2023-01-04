@@ -129,7 +129,7 @@ it('should be able to connect to bx test dapp', async () => {
 });
 
 it('should be able to go back to extension and switch account and chain', async () => {
-  await goToPopup(driver, rootURL);
+  await goToPopup(driver, rootURL, '#/home');
   await findElementAndClick({ id: 'home-page-header-left', driver });
   await findElementAndClick({ id: 'home-page-header-connected-apps', driver });
   await findElementAndClick({ id: 'switch-network-menu', driver });
