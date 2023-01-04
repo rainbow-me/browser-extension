@@ -124,11 +124,7 @@ const EditContactDropdown = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Box
-          testId="navbar-contact-button-edit"
-          position="relative"
-          id="home-page-header-right"
-        >
+        <Box testId={'navbar-contact-button-edit'} position="relative">
           {children}
         </Box>
       </DropdownMenuTrigger>
@@ -144,7 +140,11 @@ const EditContactDropdown = ({
               <Box>
                 <DropdownMenuSeparator />
                 <DropdownMenuRadioItem value={'copy'}>
-                  <Box width="full" marginVertical="-1px">
+                  <Box
+                    testId="navbar-contact-button-edit-copy"
+                    width="full"
+                    marginVertical="-1px"
+                  >
                     <Inline space="8px" alignVertical="center">
                       <Box>
                         <Inline alignVertical="center">
@@ -174,7 +174,11 @@ const EditContactDropdown = ({
                   </Box>
                 </DropdownMenuRadioItem>
                 <DropdownMenuRadioItem value={'edit'}>
-                  <Box width="full" paddingVertical="2px">
+                  <Box
+                    testId="navbar-contact-button-edit-edit"
+                    width="full"
+                    paddingVertical="2px"
+                  >
                     <Inline space="8px" alignVertical="center">
                       <Inline alignVertical="center">
                         <Symbol
@@ -191,7 +195,11 @@ const EditContactDropdown = ({
                 </DropdownMenuRadioItem>
 
                 <DropdownMenuRadioItem value={'view'}>
-                  <Box width="full" paddingVertical="2px">
+                  <Box
+                    testId="navbar-contact-button-edit-view"
+                    width="full"
+                    paddingVertical="2px"
+                  >
                     <Inline alignVertical="center" alignHorizontal="justify">
                       <Inline alignVertical="center" space="8px">
                         <Inline alignVertical="center">
@@ -220,7 +228,7 @@ const EditContactDropdown = ({
               <Stack space="4px">
                 <DropdownMenuSeparator />
                 <DropdownMenuRadioItem value={'delete'}>
-                  <Box>
+                  <Box testId="navbar-contact-button-edit-delete">
                     <Inline space="8px" alignVertical="center">
                       <Symbol
                         symbol="trash"

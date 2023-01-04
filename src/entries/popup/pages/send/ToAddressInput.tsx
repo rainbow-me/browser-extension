@@ -321,6 +321,7 @@ export const ToAddressInput = ({
                     weight="semibold"
                     size="14pt"
                     color="label"
+                    testId="to-address-input-display"
                   >
                     {toAddressContact?.display || truncateAddress(toAddress)}
                   </TextOverflow>

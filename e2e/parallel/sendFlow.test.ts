@@ -8,7 +8,6 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 
 import {
-  delay,
   delayTime,
   findElementAndClick,
   findElementByText,
@@ -254,10 +253,10 @@ it('should be able to connect to hardhat and go to send flow', async () => {
   await findElementAndClick({ id: 'header-link-send', driver });
 });
 
-it('should be able to save new contact on send flow', async () => {
+it('should be able to save contact on send flow', async () => {
   const input = await querySelector(driver, '[data-testid="to-address-input"]');
   await input.sendKeys('rainbowwallet.eth');
-  await delayTime('medium');
+  await delayTime('long');
   const saveButton = await querySelector(
     driver,
     '[data-testid="navbar-contact-button-save"]',
@@ -270,21 +269,80 @@ it('should be able to save new contact on send flow', async () => {
   );
   expect(confirmContactButton).toBeTruthy();
   await waitAndClick(confirmContactButton, driver);
-  await delay(10000);
+
+  const displayName = await querySelector(
+    driver,
+    '[data-testid="to-address-input-display"]',
+  );
+  const displayNameText = await displayName.getText();
+  expect(displayNameText).toBe('rainbowwallet.eth');
 });
 
-it('should be able to save edit contact on send flow', async () => {
-  const editButton = await querySelector(
+it('should be able to edit contact on send flow', async () => {
+  const button = await querySelector(
     driver,
     '[data-testid="navbar-contact-button-edit"]',
   );
+  expect(button).toBeTruthy();
+  await waitAndClick(button, driver);
+
+  const editButton = await querySelector(
+    driver,
+    '[data-testid="navbar-contact-button-edit-edit"]',
+  );
   expect(editButton).toBeTruthy();
   await waitAndClick(editButton, driver);
-  // const confirmContactButton = await querySelector(
-  //   driver,
-  //   '[data-testid="contact-prompt-confirm"]',
-  // );
-  // expect(confirmContactButton).toBeTruthy();
-  // await waitAndClick(confirmContactButton, driver);
-  await delay(10000);
+  await delayTime('medium');
+
+  const contactInput = await querySelector(
+    driver,
+    '[data-testid="contact-prompt-input"]',
+  );
+  expect(contactInput).toBeTruthy();
+
+  await contactInput.clear();
+  await contactInput.sendKeys('rianbo');
+
+  const confirmContactButton = await querySelector(
+    driver,
+    '[data-testid="contact-prompt-confirm"]',
+  );
+  expect(confirmContactButton).toBeTruthy();
+  await waitAndClick(confirmContactButton, driver);
+
+  const displayName = await querySelector(
+    driver,
+    '[data-testid="to-address-input-display"]',
+  );
+  const displayNameText = await displayName.getText();
+  expect(displayNameText).toBe('rianbo');
+});
+
+it('should be able to delete contact on send flow', async () => {
+  const button2 = await querySelector(
+    driver,
+    '[data-testid="navbar-contact-button-edit"]',
+  );
+  expect(button2).toBeTruthy();
+  await waitAndClick(button2, driver);
+
+  const deleteButton = await querySelector(
+    driver,
+    '[data-testid="navbar-contact-button-edit-delete"]',
+  );
+  expect(deleteButton).toBeTruthy();
+  await waitAndClick(deleteButton, driver);
+
+  const confirmContactButton2 = await querySelector(
+    driver,
+    '[data-testid="contact-prompt-delete-confirm"]',
+  );
+  expect(confirmContactButton2).toBeTruthy();
+  await waitAndClick(confirmContactButton2, driver);
+  const displayName = await querySelector(
+    driver,
+    '[data-testid="to-address-input-display"]',
+  );
+  const displayNameText = await displayName.getText();
+  expect(displayNameText).toBe('rainbowwallet.eth');
 });
