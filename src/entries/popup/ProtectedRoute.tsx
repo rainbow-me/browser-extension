@@ -5,6 +5,10 @@ import { UserStatusResult, useAuth } from './hooks/useAuth';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import { ROUTES } from './urls';
 
+const isHome = () =>
+  window.location.hash === '' || window.location.hash === '#/';
+const isWelcome = () => window.location.hash === '#/welcome';
+
 export const ProtectedRoute = ({
   children,
   allowedStates,
@@ -26,9 +30,6 @@ export const ProtectedRoute = ({
     }
   } else {
     switch (status) {
-      case 'NEEDS_PASSWORD':
-        return <Navigate to={ROUTES.CREATE_PASSWORD} />;
-        break;
       case 'LOCKED':
         return <Navigate to={ROUTES.UNLOCK} />;
         break;
@@ -44,7 +45,10 @@ export const ProtectedRoute = ({
         return <Navigate to={isFullScreen ? ROUTES.READY : ROUTES.HOME} />;
         break;
       default:
-        return <></>;
+        if (status === 'NEEDS_PASSWORD' && (isHome() || isWelcome())) {
+          return <Navigate to={ROUTES.CREATE_PASSWORD} />;
+        }
+        return children as JSX.Element;
     }
   }
 };
