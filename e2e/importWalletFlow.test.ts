@@ -212,7 +212,7 @@ it.skip('should be able to accept a transaction request', async () => {
 });
 
 it('should be able to disconnect from connected dapps', async () => {
-  await goToPopup(driver, rootURL);
+  await goToPopup(driver, rootURL, '#/home');
   await findElementAndClick({ id: 'home-page-header-left', driver });
   await findElementAndClick({ id: 'home-page-header-connected-apps', driver });
   await findElementAndClick({ id: 'switch-network-menu', driver });
@@ -223,7 +223,7 @@ it('should be able to disconnect from connected dapps', async () => {
 });
 
 it('should be able to test the sandbox for the popup', async () => {
-  await goToPopup(driver, rootURL);
+  await goToPopup(driver, rootURL, '#/home');
   await findElementAndClick({ id: 'home-page-header-right', driver });
   await findElementAndClick({ id: 'settings-link', driver });
   const btn = await querySelector(driver, '[data-testid="test-sandbox-popup"]');
