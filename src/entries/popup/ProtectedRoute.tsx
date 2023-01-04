@@ -8,6 +8,7 @@ import { ROUTES } from './urls';
 const isHome = () =>
   window.location.hash === '' || window.location.hash === '#/';
 const isWelcome = () => window.location.hash === '#/welcome';
+const isCreatePassword = () => window.location.hash === '#/create-password';
 
 export const ProtectedRoute = ({
   children,
@@ -45,7 +46,10 @@ export const ProtectedRoute = ({
         return <Navigate to={isFullScreen ? ROUTES.READY : ROUTES.HOME} />;
         break;
       default:
-        if (status === 'NEEDS_PASSWORD' && (isHome() || isWelcome())) {
+        if (
+          status === 'NEEDS_PASSWORD' &&
+          (isHome() || isWelcome() || isCreatePassword())
+        ) {
           return <Navigate to={ROUTES.CREATE_PASSWORD} />;
         }
         return children as JSX.Element;
