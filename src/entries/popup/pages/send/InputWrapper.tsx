@@ -25,6 +25,7 @@ export const InputWrapper = ({
   zIndex,
   dropdownHeight,
   onDropdownScroll,
+  testId,
 }: {
   leftComponent: ReactElement;
   centerComponent: ReactElement;
@@ -36,6 +37,7 @@ export const InputWrapper = ({
   zIndex?: number;
   dropdownHeight?: number;
   onDropdownScroll?: () => void;
+  testId?: string;
 }) => {
   return (
     <Box style={{ height: 68 }}>
@@ -66,6 +68,7 @@ export const InputWrapper = ({
                   showClose={showActionClose}
                   onClose={onActionClose}
                   dropdownVisible={dropdownVisible}
+                  testId={`input-wrapper-close-${testId}`}
                 />
               </Column>
             </Columns>

@@ -346,3 +346,15 @@ it('should be able to delete contact on send flow', async () => {
   const displayNameText = await displayName.getText();
   expect(displayNameText).toBe('rainbowwallet.eth');
 });
+
+it('should be able to clear to address input on send flow', async () => {
+  const clearButton = await querySelector(
+    driver,
+    '[data-testid="input-wrapper-close-to-address-input"]',
+  );
+  expect(clearButton).toBeTruthy();
+  await waitAndClick(clearButton, driver);
+
+  const input = await querySelector(driver, '[data-testid="to-address-input"]');
+  await input.sendKeys('rainbowwallet.eth');
+});

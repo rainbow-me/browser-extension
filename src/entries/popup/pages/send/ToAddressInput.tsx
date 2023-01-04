@@ -279,6 +279,7 @@ export const ToAddressInput = ({
       <InputWrapper
         zIndex={2}
         dropdownHeight={452}
+        testId={'to-address-input'}
         leftComponent={
           <Box borderRadius="18px">
             <WalletAvatar address={toAddress} size={36} emojiSize="20pt" />
