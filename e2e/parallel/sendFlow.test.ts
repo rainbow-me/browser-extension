@@ -358,3 +358,19 @@ it('should be able to clear to address input on send flow', async () => {
   const input = await querySelector(driver, '[data-testid="to-address-input"]');
   await input.sendKeys('rainbowwallet.eth');
 });
+
+it('should be able to select token on send flow', async () => {
+  const dropdown = await querySelector(
+    driver,
+    '[data-testid="input-wrapper-dropdown-token-input"]',
+  );
+  expect(dropdown).toBeTruthy();
+  await waitAndClick(dropdown, driver);
+
+  const asset = await querySelector(
+    driver,
+    '[data-testid="token-input-asset-eth_1"]',
+  );
+  expect(asset).toBeTruthy();
+  await waitAndClick(asset, driver);
+});

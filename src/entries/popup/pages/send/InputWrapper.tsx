@@ -51,7 +51,10 @@ export const InputWrapper = ({
           borderWidth="1px"
           borderColor="buttonStroke"
         >
-          <Box onClick={onDropdownAction}>
+          <Box
+            testId={`input-wrapper-dropdown-${testId}`}
+            onClick={onDropdownAction}
+          >
             <Columns
               alignVertical="center"
               alignHorizontal="justify"
