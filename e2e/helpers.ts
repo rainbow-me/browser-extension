@@ -106,9 +106,9 @@ export async function goToTestApp(driver) {
   await delay(1000);
 }
 
-export async function goToPopup(driver, rootURL) {
-  await driver.get(rootURL + '/popup.html');
-  await delay(2000);
+export async function goToPopup(driver, rootURL, route) {
+  await driver.get(rootURL + '/popup.html' + (route || ''));
+  await delay(5000);
 }
 
 export async function goToWelcome(driver, rootURL) {
