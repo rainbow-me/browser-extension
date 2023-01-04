@@ -27,14 +27,16 @@ const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
 export const SwitchSpeedMenuSelector = ({
   gasFeeParamsBySpeed,
   chainId,
+  selectedValue,
 }: {
   gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed | null;
   chainId: Chain['id'];
+  selectedValue?: string;
 }) => {
   return (
     <>
       {ChainId.mainnet === chainId ? (
-        <DropdownMenuRadioItem value={'custom'}>
+        <DropdownMenuRadioItem value={'custom'} selectedValue={selectedValue}>
           <Box width="full" id={`switch-network-item-${0}`}>
             <Inline
               space="8px"
@@ -62,7 +64,11 @@ export const SwitchSpeedMenuSelector = ({
       ) : null}
       {speeds.map((speed, i) => {
         return (
-          <DropdownMenuRadioItem value={speed} key={i}>
+          <DropdownMenuRadioItem
+            value={speed}
+            key={i}
+            selectedValue={selectedValue}
+          >
             <Box id={`switch-network-item-${i}`}>
               <Inline space="8px" alignVertical="center">
                 <Text weight="semibold" size="14pt">
@@ -94,6 +100,8 @@ interface SwitchTransactionSpeedMenuProps {
   chainId: Chain['id'];
   editable?: boolean;
   onSpeedChanged: (speed: GasSpeed) => void;
+  accentColor?: string | 'accent';
+  plainTriggerBorder?: boolean;
 }
 
 export const SwitchTransactionSpeedMenu = ({
@@ -102,12 +110,16 @@ export const SwitchTransactionSpeedMenu = ({
   onSpeedChanged,
   chainId,
   editable = true,
+  accentColor,
+  plainTriggerBorder,
 }: SwitchTransactionSpeedMenuProps) => {
   const menuTrigger = (
     <Box
-      style={{ height: 28 }}
+      style={{
+        height: 28,
+      }}
       borderWidth="2px"
-      borderColor="accent"
+      borderColor={plainTriggerBorder ? 'fillSecondary' : 'accent'}
       paddingVertical="5px"
       paddingHorizontal="6px"
       borderRadius="24px"
@@ -135,8 +147,10 @@ export const SwitchTransactionSpeedMenu = ({
   if (!editable) return menuTrigger;
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>{menuTrigger}</DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuTrigger asChild accentColor={accentColor}>
+        {menuTrigger}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent accentColor={accentColor}>
         <DropdownMenuLabel>{i18n.t('transaction_fee.title')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup
@@ -146,6 +160,7 @@ export const SwitchTransactionSpeedMenu = ({
           <SwitchSpeedMenuSelector
             chainId={chainId}
             gasFeeParamsBySpeed={gasFeeParamsBySpeed}
+            selectedValue={selectedSpeed}
           />
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>

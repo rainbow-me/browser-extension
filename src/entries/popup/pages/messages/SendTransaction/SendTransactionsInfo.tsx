@@ -89,6 +89,7 @@ export function SendTransactionInfo({ request }: SignMessageProps) {
             <TransactionFee
               chainId={appSession.chainId}
               transactionRequest={request?.params?.[0] as TransactionRequest}
+              plainTriggerBorder
             />
           </Inset>
         </Stack>

@@ -272,6 +272,9 @@ export function Send() {
                       <TransactionFee
                         chainId={chainId}
                         transactionRequest={transactionRequest}
+                        accentColor={
+                          asset?.colors?.primary || asset?.colors?.fallback
+                        }
                       />
                     </Row>
                     <Row>
