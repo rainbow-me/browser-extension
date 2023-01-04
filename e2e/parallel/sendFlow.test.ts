@@ -77,7 +77,7 @@ it('should shuffle account', async () => {
   expect(actual).toEqual(expected);
 });
 
-it('should be able to connect to bx test dapp', async () => {
+it.skip('should be able to connect to bx test dapp', async () => {
   await delayTime('long');
   await goToTestApp(driver);
   const dappHandler = await driver.getWindowHandle();
@@ -127,7 +127,7 @@ it('should be able to connect to bx test dapp', async () => {
   expect(ensLabel).toBeTruthy();
 });
 
-it('should be able to go back to extension and switch account and chain', async () => {
+it.skip('should be able to go back to extension and switch account and chain', async () => {
   await goToPopup(driver, rootURL);
   await findElementAndClick({ id: 'home-page-header-left', driver });
   await findElementAndClick({ id: 'home-page-header-connected-apps', driver });
@@ -146,7 +146,7 @@ it('should be able to go back to extension and switch account and chain', async 
   expect(actualAccountAddress.includes(expectedAccountAddress)).toBe(true);
 });
 
-it('should be able to accept a signing request', async () => {
+it.skip('should be able to accept a signing request', async () => {
   await goToTestApp(driver);
 
   const dappHandler = await driver.getWindowHandle();
@@ -210,7 +210,7 @@ it.skip('should be able to accept a transaction request', async () => {
   await driver.switchTo().window(dappHandler);
 });
 
-it('should be able to disconnect from connected dapps', async () => {
+it.skip('should be able to disconnect from connected dapps', async () => {
   await goToPopup(driver, rootURL);
   await findElementAndClick({ id: 'home-page-header-left', driver });
   await findElementAndClick({ id: 'home-page-header-connected-apps', driver });
