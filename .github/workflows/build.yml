@@ -8,10 +8,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    env:
-      DISPLAY: :0
-      VITEST_SEGFAULT_RETRY: 3
+  # INSTALL DEPS
+  install:
     runs-on: ubuntu-latest
     concurrency: 
       group: ${{ github.workflow }}-${{ github.ref }}
@@ -24,19 +22,24 @@ jobs:
           cache: 'yarn'
       - name: Install deps via Yarn
         run: yarn setup
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: rainbowbx-${{ github.sha }}.zip
+          path: build/
       - name: Check for frozen lockfile
         run: yarn check-lockfile
-      - name: Lint
-        run: yarn lint
-      - name: Audit CI
-        run:  yarn audit:ci
-      - name: Check types
-        run: yarn typecheck
+      
+  # BUILD THE EXTENSION
+  build:
+    runs-on: ubuntu-latest
+    needs: [install]
+    steps:
       - uses: actions/checkout@v3
         with:
-          repository: 'rainbow-me/browser-extension-env'
-          token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-          path: tmp
+            repository: 'rainbow-me/browser-extension-env'
+            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+            path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Build the extension
@@ -46,11 +49,26 @@ jobs:
         with:
           name: rainbowbx-${{ github.sha }}.zip
           path: build/
+  # CHROME TESTS
   chrome-e2e:
     runs-on: ubuntu-latest
     needs: [build]
+    env:
+      DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 3
     steps:
-      - name: Download artifacts
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14.20.1"
+          cache: 'yarn'
+      - name: Install deps via Yarn
+        run: yarn setup
+      - name: Download deps artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules
+      - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
           name: rainbowbx-${{ github.sha }}.zip
@@ -66,11 +84,23 @@ jobs:
       - name: Run e2e (Chrome)
         run: |
               yarn e2e:linux:chrome
-    
+  # BRAVE TESTS
   brave-e2e:
     needs: [build]
     runs-on: ubuntu-latest
+    env:
+      DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 3
     steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14.20.1"
+          cache: 'yarn'
+      - name: Download deps artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
@@ -90,28 +120,36 @@ jobs:
       - name: Run e2e (Brave)
         run: |
           yarn e2e:linux:brave
-
+  # UNIT TESTS
   unit-tests:
     runs-on: ubuntu-latest
+    needs: [install]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v2
         with:
           node-version: "14.20.1"
           cache: 'yarn'
-      - name: Install deps via Yarn
-        run: yarn setup
-      - name: Install rust
-        uses: actions-rs/toolchain@v1
+      - name: Download deps artifacts
+        uses: actions/download-artifact@v3
+
+  # LINT, TYPECHECK, AUDIT
+  ci-checks:
+    runs-on: ubuntu-latest
+    needs: [install]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
         with:
-          toolchain: stable
-          target: wasm32-unknown-unknown
-          profile: minimal
-          override: true
-      - name: Install Anvil
-        uses: foundry-rs/foundry-toolchain@v1
+          node-version: "14.20.1"
+          cache: 'yarn'
+      - name: Download deps artifacts
+        uses: actions/download-artifact@v3
         with:
-          version: nightly
-      - name: Run unit tests
-        run: |
-          yarn test
+          name: node_modules
+      - name: Lint
+        run: yarn lint
+      - name: Audit CI
+        run:  yarn audit:ci
+      - name: Check types
+        run: yarn typecheck
