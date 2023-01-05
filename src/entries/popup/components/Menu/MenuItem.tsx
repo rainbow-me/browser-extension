@@ -28,12 +28,14 @@ const Selection = ({ text }: SelectionProps) => (
 
 const SelectionIcon = () => {
   return (
-    <Symbol
-      symbol="checkmark.circle.fill"
-      color="accent"
-      size={18}
-      weight="regular"
-    />
+    <Box style={{ height: 18 }} borderRadius="round">
+      <Symbol
+        symbol="checkmark.circle.fill"
+        color="accent"
+        size={18}
+        weight="medium"
+      />
+    </Box>
   );
 };
 const NUM_OF_ACCOUNTS_SHOWN_PER_WALLET = 7;
@@ -152,38 +154,45 @@ const MenuItem = ({
       cursor: disabled ? 'default' : 'pointer',
     }}
   >
-    <Inline alignHorizontal="justify" alignVertical="center">
-      <Inline alignVertical="center" space="16px">
-        {leftComponent && (
-          <Box alignItems="center" justifyContent="center">
-            {leftComponent}
-          </Box>
-        )}
-        <Stack space="8px">
-          {titleComponent}
-          {labelComponent}
-        </Stack>
+    <Box
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      style={{ height: 18 }}
+    >
+      <Inline alignHorizontal="justify" alignVertical="center" height="full">
+        <Inline alignVertical="center" space="16px" height="full">
+          {leftComponent && (
+            <Box alignItems="center" justifyContent="center">
+              {leftComponent}
+            </Box>
+          )}
+          <Stack space="8px">
+            {titleComponent}
+            {labelComponent}
+          </Stack>
+        </Inline>
+        <Inline alignVertical="center" space="8px">
+          {rightComponent}
+          {hasRightArrow && (
+            <Symbol
+              symbol="chevron.right"
+              size={10}
+              color="labelTertiary"
+              weight="semibold"
+            />
+          )}
+          {hasChevron && (
+            <Symbol
+              symbol="chevron.up.chevron.down"
+              size={12}
+              color="labelTertiary"
+              weight="semibold"
+            />
+          )}
+        </Inline>
       </Inline>
-      <Inline alignVertical="center" space="8px">
-        {rightComponent}
-        {hasRightArrow && (
-          <Symbol
-            symbol="chevron.right"
-            size={10}
-            color="labelTertiary"
-            weight="semibold"
-          />
-        )}
-        {hasChevron && (
-          <Symbol
-            symbol="chevron.up.chevron.down"
-            size={12}
-            color="labelTertiary"
-            weight="semibold"
-          />
-        )}
-      </Inline>
-    </Inline>
+    </Box>
   </Box>
 );
 
