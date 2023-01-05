@@ -69,9 +69,18 @@ export const SendInputMask = ({
       style={style}
       onClick={onMaskClick}
     >
+      <Box
+        position="absolute"
+        background={'accent'}
+        opacity="0.04"
+        borderRadius="14px"
+        width="full"
+        style={{ height: 56, width: windowWidth - 64, zIndex: 0 }}
+      />
+
       {value ? (
         <>
-          <Box position="absolute" paddingTop="20px">
+          <Box position="absolute" paddingTop="20px" style={{ zIndex: 99 }}>
             <Inline alignVertical="center">
               <Box
                 style={{
@@ -104,21 +113,27 @@ export const SendInputMask = ({
         </>
       ) : null}
 
-      <Input
-        value={value}
-        placeholder={placeholder}
-        borderColor={borderColor}
-        onChange={handleOnChange}
-        height={height}
-        variant={variant}
-        innerRef={innerRef}
-        style={{
-          paddingRight: value ? 125 + symbolPadding : 0,
-          caretColor: accentColorAsHsl,
-        }}
-        enableTapScale={false}
-        testId="send-input-mask"
-      />
+      <Box
+        style={{ zIndex: 99 }}
+        backdropFilter="opacity(0%)"
+        // background="accent"
+      >
+        <Input
+          value={value}
+          placeholder={placeholder}
+          borderColor={borderColor}
+          onChange={handleOnChange}
+          height={height}
+          variant={variant}
+          innerRef={innerRef}
+          style={{
+            paddingRight: value ? 125 + symbolPadding : 0,
+            caretColor: accentColorAsHsl,
+          }}
+          enableTapScale={false}
+          testId="send-input-mask"
+        />
+      </Box>
     </Box>
   );
 };
