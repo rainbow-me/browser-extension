@@ -3,7 +3,7 @@ import React, { CSSProperties, RefObject, useCallback, useMemo } from 'react';
 
 import { Box, Inline, Text } from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
-import { BoxStyles } from '~/design-system/styles/core.css';
+import { BoxStyles, accentColorAsHsl } from '~/design-system/styles/core.css';
 import {
   transformScales,
   transitions,
@@ -112,7 +112,10 @@ export const SendInputMask = ({
         height={height}
         variant={variant}
         innerRef={innerRef}
-        style={{ paddingRight: value ? 125 + symbolPadding : 0 }}
+        style={{
+          paddingRight: value ? 125 + symbolPadding : 0,
+          caretColor: accentColorAsHsl,
+        }}
         enableTapScale={false}
         testId="send-input-mask"
       />
