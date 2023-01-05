@@ -5,12 +5,14 @@ import {
   SupportedCurrencyKey,
   supportedCurrencies,
 } from '~/core/references/supportedCurrencies';
+import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import {
   convertAmountToNativeDisplay,
   convertRawAmountToBalance,
 } from '~/core/utils/numbers';
 import { Box, Inline, Inset, Text } from '~/design-system';
 
+import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { EthSymbol } from '../../components/EthSymbol/EthSymbol';
 import { Tabs } from '../../components/Tabs/Tabs';
 
@@ -24,6 +26,7 @@ export function TabBar({
   onSelectTab: (tab: Tab) => void;
 }) {
   const { address } = useAccount();
+  const { hideAssetBalances } = useHideAssetBalancesStore();
   const { data: balance } = useBalance({ addressOrName: address });
   const symbol = balance?.symbol as SupportedCurrencyKey;
 
@@ -42,6 +45,20 @@ export function TabBar({
     // an icon instead.
     displayBalance = displayBalance.replace('Ξ', '');
   }
+
+  const displayBalanceComponent = hideAssetBalances ? (
+    <Inline alignHorizontal="right">
+      <Asterisks color="label" size={13} />
+    </Inline>
+  ) : (
+    <Text
+      color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
+      size="16pt"
+      weight="bold"
+    >
+      {displayBalance}
+    </Text>
+  );
 
   return (
     <Box
@@ -76,13 +93,7 @@ export function TabBar({
                 size={14}
               />
             )}
-            <Text
-              color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
-              size="16pt"
-              weight="bold"
-            >
-              {displayBalance}
-            </Text>
+            {displayBalanceComponent}
           </Inline>
         )}
       </Inset>

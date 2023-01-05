@@ -755,6 +755,7 @@ export const symbolNames = selectSymbolNames(
   'wand.and.stars',
   'network',
   'command',
+  'asterisk',
 );
 export type SymbolName = typeof symbolNames[number];
 
