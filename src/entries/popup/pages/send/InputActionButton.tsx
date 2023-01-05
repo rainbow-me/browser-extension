@@ -21,9 +21,7 @@ export const InputActionButon = ({
         height: 24,
       }}
       borderRadius="12px"
-      background="surfaceMenu"
-      borderWidth="1px"
-      borderColor="buttonStroke"
+      background="fillSecondary"
       onClick={onClose}
       testId={testId}
     >
