@@ -83,7 +83,7 @@ export function useAllTransactions({
   const { getPendingTransactions } = usePendingTransactionsStore();
   const pendingTransactions: RainbowTransaction[] = getPendingTransactions({
     address,
-  })?.map((tx) => ({ ...tx, pending: true }));
+  });
   const allTransactions = [
     ...pendingTransactions,
     ...(confirmedTransactions || []),

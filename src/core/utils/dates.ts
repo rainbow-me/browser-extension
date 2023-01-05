@@ -41,8 +41,7 @@ export const groupTransactionByDate = ({
   minedAt,
   pending,
 }: RainbowTransaction) => {
-  if (pending) return i18n.t('activity.today');
-  if (!minedAt) return 'Dropped';
+  if (pending || !minedAt) return i18n.t('activity.today');
   const ts = minedAt * 1000;
 
   if (ts > todayTimestamp) return i18n.t('activity.today');

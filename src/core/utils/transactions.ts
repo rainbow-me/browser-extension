@@ -576,6 +576,7 @@ export async function watchPendingTransactions({
               updatedTransaction = {
                 ...updatedTransaction,
                 ...pendingTransactionData,
+                pending: false,
               };
             }
           }
