@@ -147,7 +147,7 @@ export function Settings() {
                   />
                 }
                 titleComponent={
-                  <MenuItem.Title text={i18n.t('settings.theme')} />
+                  <MenuItem.Title text={i18n.t('settings.theme.title')} />
                 }
               />
             }
