@@ -25,7 +25,7 @@ jobs:
       - name: Check for frozen lockfile
         run: yarn check-lockfile
       - name: Zip node_modules
-        run: zip node_modules.zip node_modules/
+        run: zip node_modules.zip node_modules/ -r
       - name: Upload deps artifacts
         uses: actions/upload-artifact@v3
         with:
