@@ -1,4 +1,5 @@
 import React, { SetStateAction, useCallback, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
@@ -6,10 +7,13 @@ import { accentColorAsHsl } from '~/design-system/styles/core.css';
 
 import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 import { PasswordInput } from '../../components/PasswordInput/PasswordInput';
+import * as wallet from '../../handlers/wallet';
+import { ROUTES } from '../../urls';
 import { AvatarSection } from '../home/Header';
 
 export function Unlock() {
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handlePasswordChange = useCallback(
     (event: { target: { value: SetStateAction<string> } }) => {
@@ -20,9 +24,13 @@ export function Unlock() {
 
   const [error, setError] = useState('');
 
-  const handleUnlock = useCallback(() => {
-    setError(i18n.t('passwords.wrong_password'));
-  }, []);
+  const handleUnlock = useCallback(async () => {
+    if (await wallet.unlock(password)) {
+      navigate(ROUTES.HOME);
+    } else {
+      setError(i18n.t('passwords.wrong_password'));
+    }
+  }, [navigate, password]);
 
   return (
     <FlyingRainbows>
@@ -98,6 +106,7 @@ export function Unlock() {
                 value={password}
                 onChange={handlePasswordChange}
                 borderColor={error !== '' ? 'red' : undefined}
+                testId="password-input"
               />
             </Box>
             <Box width="fit">
@@ -109,6 +118,7 @@ export function Unlock() {
                 symbol="arrow.right"
                 symbolSide="right"
                 onClick={handleUnlock}
+                testId="unlock-button"
               >
                 {i18n.t('unlock.unlock')}
               </Button>

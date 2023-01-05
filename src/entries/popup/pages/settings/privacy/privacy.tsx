@@ -11,6 +11,7 @@ import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
+import { ROUTES } from '~/entries/popup/urls';
 
 import { ConfirmPasswordPrompt } from './confirmPasswordPrompt';
 
@@ -117,7 +118,7 @@ export function Privacy() {
                   )}
                 />
               }
-              onClick={() => navigate('/settings/privacy/autoLockTimer')}
+              onClick={() => navigate(ROUTES.SETTINGS__PRIVACY__AUTOLOCK)}
             />
           </Menu>
           <Menu>

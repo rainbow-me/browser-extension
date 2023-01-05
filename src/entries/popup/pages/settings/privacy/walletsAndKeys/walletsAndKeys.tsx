@@ -8,6 +8,7 @@ import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { create, getWallets } from '~/entries/popup/handlers/wallet';
+import { ROUTES } from '~/entries/popup/urls';
 
 export function WalletsAndKeys() {
   const { state } = useLocation();
@@ -15,7 +16,7 @@ export function WalletsAndKeys() {
   const [wallets, setWallets] = useState<KeychainWallet[]>([]);
 
   const handleViewWallet = (wallet: KeychainWallet) => {
-    navigate(`/settings/privacy/walletsAndKeys/walletDetails`, {
+    navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS, {
       state: { wallet, password: state.password },
     });
   };
@@ -31,7 +32,7 @@ export function WalletsAndKeys() {
   const handleCreateNewRecoveryPhrase = async () => {
     const newWalletAccount = await create();
     navigate(
-      '/settings/privacy/walletsAndKeys/walletDetails/recoveryPhraseWarning',
+      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
       {
         state: {
           wallet: {

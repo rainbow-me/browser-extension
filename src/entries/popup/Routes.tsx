@@ -13,6 +13,7 @@ import { ImportOrConnect } from './pages/importOrConnect';
 import { ImportWallet } from './pages/importWallet';
 import { ImportWalletSelection } from './pages/importWalletSelection';
 import { EditImportWalletSelection } from './pages/importWalletSelection/EditImportWalletSelection';
+import { RootHandler } from './pages/rootHandler/RootHandler';
 import { SeedBackupPrompt } from './pages/seedBackupPrompt';
 import { SeedReveal } from './pages/seedReveal';
 import { SeedVerify } from './pages/seedVerify';
@@ -31,9 +32,11 @@ import { Settings } from './pages/settings/settings';
 import { Transactions } from './pages/settings/transactions';
 import { Sign } from './pages/sign';
 import { Unlock } from './pages/unlock';
+import { WalletReady } from './pages/walletReady';
 import { Wallets } from './pages/wallets';
 import { WatchWallet } from './pages/watchWallet';
 import { Welcome } from './pages/welcome';
+import { ROUTES } from './urls';
 
 export function Routes() {
   const location = useLocation();
@@ -48,77 +51,98 @@ export function Routes() {
   const routeMatch = matchRoutes(
     [
       {
-        path: '/',
+        path: ROUTES.ROOT,
         element: (
-          <AnimatedRoute direction="base">
+          <AnimatedRoute direction="base" protectedRoute>
+            <RootHandler />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: ROUTES.HOME,
+        element: (
+          <AnimatedRoute direction="base" protectedRoute>
             <Home />
           </AnimatedRoute>
         ),
       },
       {
-        path: '/connected',
+        path: ROUTES.CONNECTED,
         element: (
           <AnimatedRoute
             direction="vertical"
             navbar
             title={i18n.t('connected_apps.title')}
+            protectedRoute
           >
             <ConnectedApps />
           </AnimatedRoute>
         ),
       },
       {
-        path: '/welcome',
+        path: ROUTES.WELCOME,
         element: (
-          <AnimatedRoute direction="base">
+          <AnimatedRoute direction="base" protectedRoute={['NEW']}>
             <Welcome />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,
       },
       {
-        path: '/import-or-connect',
+        path: ROUTES.READY,
         element: (
-          <AnimatedRoute direction="horizontal" navbar>
+          <AnimatedRoute
+            direction="deceleratedShort"
+            protectedRoute={['READY']}
+          >
+            <WalletReady />
+          </AnimatedRoute>
+        ),
+      },
+      {
+        path: ROUTES.IMPORT_OR_CONNECT,
+        element: (
+          <AnimatedRoute direction="horizontal" navbar protectedRoute={['NEW']}>
             <ImportOrConnect />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,
       },
       {
-        path: '/watch',
+        path: ROUTES.WATCH,
         element: (
-          <AnimatedRoute direction="horizontal" navbar>
+          <AnimatedRoute direction="horizontal" navbar protectedRoute={['NEW']}>
             <WatchWallet />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,
       },
       {
-        path: '/import',
+        path: ROUTES.IMPORT,
         element: (
-          <AnimatedRoute direction="horizontal" navbar>
+          <AnimatedRoute direction="horizontal" navbar protectedRoute={['NEW']}>
             <ImportWallet />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,
       },
       {
-        path: '/import/select',
+        path: ROUTES.IMPORT__SELECT,
         element: (
-          <AnimatedRoute direction="horizontal" navbar>
+          <AnimatedRoute direction="horizontal" navbar protectedRoute={['NEW']}>
             <ImportWalletSelection />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,
       },
       {
-        path: '/import/edit',
+        path: ROUTES.IMPORT__EDIT,
         element: (
           <AnimatedRoute
             direction="horizontal"
             navbar
             title={i18n.t('edit_import_wallet_selection.title')}
+            protectedRoute={['NEW']}
           >
             <EditImportWalletSelection />
           </AnimatedRoute>
@@ -126,76 +150,93 @@ export function Routes() {
         background: FullScreenBackground,
       },
       {
-        path: '/unlock',
+        path: ROUTES.UNLOCK,
         element: (
-          <AnimatedRoute direction="base">
+          <AnimatedRoute direction="base" protectedRoute={['LOCKED']}>
             <Unlock />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,
       },
       {
-        path: '/seed-backup-prompt',
+        path: ROUTES.SEED_BACKUP_PROMPT,
         element: (
-          <AnimatedRoute direction="horizontal">
+          <AnimatedRoute
+            direction="horizontal"
+            protectedRoute={['NEEDS_PASSWORD']}
+          >
             <SeedBackupPrompt />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,
       },
       {
-        path: '/seed-reveal',
+        path: ROUTES.SEED_REVEAL,
         element: (
-          <AnimatedRoute direction="horizontal" navbar>
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            protectedRoute={['NEEDS_PASSWORD']}
+          >
             <SeedReveal />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,
       },
       {
-        path: '/seed-verify',
+        path: ROUTES.SEED_VERIFY,
         element: (
-          <AnimatedRoute direction="horizontal" navbar>
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            protectedRoute={['NEEDS_PASSWORD']}
+          >
             <SeedVerify />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,
       },
       {
-        path: '/create-password',
+        path: ROUTES.CREATE_PASSWORD,
         element: (
-          <AnimatedRoute direction="horizontal" navbar>
+          <AnimatedRoute
+            direction="horizontal"
+            navbar
+            protectedRoute={['NEEDS_PASSWORD']}
+          >
             <CreatePassword />
           </AnimatedRoute>
         ),
         background: FullScreenBackground,
       },
       {
-        path: '/settings',
+        path: ROUTES.SETTINGS,
         element: (
           <AnimatedRoute
             direction="vertical"
             navbar
             title={i18n.t('settings.title')}
+            protectedRoute
           >
             <Settings />
           </AnimatedRoute>
         ),
       },
       {
-        path: '/settings/privacy',
+        path: ROUTES.SETTINGS__PRIVACY,
         element: (
           <AnimatedRoute
             direction="horizontal"
             navbar
             title={i18n.t('settings.privacy_and_security.title')}
+            protectedRoute
           >
             <Privacy />
           </AnimatedRoute>
         ),
       },
       {
-        path: '/settings/privacy/autoLockTimer',
+        path: ROUTES.SETTINGS__PRIVACY__AUTOLOCK,
         element: (
           <AnimatedRoute
             direction="horizontal"
@@ -203,21 +244,22 @@ export function Routes() {
             title={i18n.t(
               'settings.privacy_and_security.auto_lock_timer.title',
             )}
+            protectedRoute
           >
             <AutoLockTimer />
           </AnimatedRoute>
         ),
       },
       {
-        path: '/settings/privacy/changePassword',
+        path: ROUTES.SETTINGS__PRIVACY__CHANGE_PASSWORD,
         element: (
-          <AnimatedRoute direction="horizontal">
+          <AnimatedRoute direction="horizontal" protectedRoute>
             <ChangePassword />
           </AnimatedRoute>
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys',
+        path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS,
         element: (
           <AnimatedRoute
             direction="horizontal"
@@ -225,13 +267,14 @@ export function Routes() {
             title={i18n.t(
               'settings.privacy_and_security.wallets_and_keys.title',
             )}
+            protectedRoute
           >
             <WalletsAndKeys />
           </AnimatedRoute>
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/walletDetails',
+        path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS,
         element: (
           <AnimatedRoute
             direction="horizontal"
@@ -239,110 +282,123 @@ export function Routes() {
             title={i18n.t(
               'settings.privacy_and_security.wallets_and_keys.wallet_details.title',
             )}
+            protectedRoute
           >
             <WalletDetails />
           </AnimatedRoute>
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/walletDetails/privateKeyWarning',
+        path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
         element: (
           <AnimatedRoute
             direction="horizontal"
             navbar
             background="surfaceSecondary"
+            protectedRoute
           >
             <PrivateKeyWarning />
           </AnimatedRoute>
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/walletDetails/privateKey',
+        path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY,
         element: (
           <AnimatedRoute
             direction="horizontal"
             navbar
             background="surfaceSecondary"
+            protectedRoute
           >
             <PrivateKey />
           </AnimatedRoute>
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/walletDetails/recoveryPhraseWarning',
+        path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
         element: (
           <AnimatedRoute
             direction="horizontal"
             navbar
             background="surfaceSecondary"
+            protectedRoute
           >
             <RecoveryPhraseWarning />
           </AnimatedRoute>
         ),
       },
       {
-        path: '/settings/privacy/walletsAndKeys/walletDetails/recoveryPhrase',
+        path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE,
         element: (
           <AnimatedRoute
             direction="horizontal"
             navbar
             background="surfaceSecondary"
+            protectedRoute
           >
             <RecoveryPhrase />
           </AnimatedRoute>
         ),
       },
       {
-        path: '/settings/transactions',
+        path: ROUTES.SETTINGS__TRANSACTIONS,
         element: (
           <AnimatedRoute
             direction="horizontal"
             navbar
             title={i18n.t('settings.transactions.title')}
+            protectedRoute
           >
             <Transactions />
           </AnimatedRoute>
         ),
       },
       {
-        path: '/settings/currency',
+        path: ROUTES.SETTINGS__CURRENCY,
         element: (
           <AnimatedRoute
             direction="horizontal"
             navbar
             title={i18n.t('settings.currency.title')}
+            protectedRoute
           >
             <Currency />
           </AnimatedRoute>
         ),
       },
       {
-        path: '/send',
+        path: ROUTES.SEND,
         element: (
-          <AnimatedRoute direction="horizontal" title={i18n.t('send.title')}>
+          <AnimatedRoute
+            direction="horizontal"
+            title={i18n.t('send.title')}
+            protectedRoute
+          >
             <Send />
           </AnimatedRoute>
         ),
       },
       {
-        path: '/sign',
+        path: ROUTES.SIGN,
         element: (
           <AnimatedRoute
             direction="vertical"
             navbar
             title={i18n.t('sign.title')}
+            protectedRoute
           >
             <Sign />
           </AnimatedRoute>
         ),
       },
       {
-        path: '/wallets',
+        path: ROUTES.WALLETS,
         element: (
           <AnimatedRoute
             direction="horizontal"
             navbar
             title={i18n.t('wallets.title')}
+            protectedRoute
           >
             <Wallets />
           </AnimatedRoute>

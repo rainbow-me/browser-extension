@@ -35,6 +35,7 @@ import { FullScreenContainer } from '../../components/FullScreen/FullScreenConta
 import { Spinner } from '../../components/Spinner/Spinner';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import * as wallet from '../../handlers/wallet';
+import { ROUTES } from '../../urls';
 
 export function WatchWallet() {
   const navigate = useNavigate();
@@ -44,7 +45,6 @@ export function WatchWallet() {
   const { setCurrentAddress } = useCurrentAddressStore();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
-
   const accountsToWatch = [
     'vitalik.eth',
     'bored.eth',
@@ -120,10 +120,11 @@ export function WatchWallet() {
         setCurrentAddress(importedAddress);
       }
     }
+
     setTimeout(() => {
-      navigate('/');
+      navigate(ROUTES.CREATE_PASSWORD);
     }, 1200);
-  }, [isLoading, address, additionalAccounts, navigate, setCurrentAddress]);
+  }, [isLoading, address, additionalAccounts, setCurrentAddress, navigate]);
 
   return (
     <FullScreenContainer>
@@ -200,6 +201,7 @@ export function WatchWallet() {
               >
                 <Box
                   as="textarea"
+                  testId="secret-textarea"
                   background="surfaceSecondaryElevated"
                   borderRadius="12px"
                   borderWidth="1px"
@@ -347,6 +349,7 @@ export function WatchWallet() {
               variant={isValid ? 'flat' : 'disabled'}
               width="full"
               onClick={handleWatchWallet}
+              testId="watch-wallets-button"
             >
               {additionalAccounts.length + (address.length > 0 ? 1 : 0) > 1
                 ? i18n.t('watch_wallet.watch_wallets')

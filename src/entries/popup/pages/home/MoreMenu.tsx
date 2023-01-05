@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
+import { ROUTES } from '../../urls';
 
 export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   const { address } = useAccount();
@@ -33,7 +34,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
         <Stack space="4px">
           <Stack>
             <Inset vertical="8px">
-              <Link to={'/settings'} id="settings-link">
+              <Link to={ROUTES.SETTINGS} id="settings-link">
                 <Inline alignVertical="center" space="8px">
                   <Symbol size={12} symbol="gearshape.fill" weight="semibold" />
                   <Text size="14pt" weight="semibold">

@@ -86,14 +86,34 @@ export async function findElementAndClick({ id, driver }) {
   await waitAndClick(element, driver);
 }
 
+export async function findElementByTestId({ id, driver }) {
+  return querySelector(driver, `[data-testid="${id}"]`);
+}
+
+export async function findElementByTestIdAndClick({ id, driver }) {
+  await delay(200);
+  const element = await findElementByTestId({ id, driver });
+  await waitAndClick(element, driver);
+}
+
+export async function typeOnTextInput({ id, text, driver }) {
+  const element = await findElementByTestId({ id, driver });
+  await element.sendKeys(text);
+}
+
 export async function goToTestApp(driver) {
   await driver.get('https://bx-test-dapp.vercel.app/');
   await delay(1000);
 }
 
-export async function goToPopup(driver, rootURL) {
-  await driver.get(rootURL + '/popup.html');
-  await delay(500);
+export async function goToPopup(driver, rootURL, route = '') {
+  await driver.get(rootURL + '/popup.html' + route);
+  await delay(5000);
+}
+
+export async function goToWelcome(driver, rootURL) {
+  await driver.get(rootURL + '/popup.html#/welcome');
+  await delay(1000);
 }
 
 export async function delayTime(time: 'short' | 'medium' | 'long') {

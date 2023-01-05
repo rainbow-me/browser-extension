@@ -23,13 +23,14 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { deriveAccountsFromSecret } from '../../handlers/wallet';
 import * as wallet from '../../handlers/wallet';
+import { ROUTES } from '../../urls';
 
 export function ImportWalletSelection() {
   const navigate = useNavigate();
   const { state } = useLocation();
+  const [isImporting, setIsImporting] = useState(false);
   const { setCurrentAddress } = useCurrentAddressStore();
   const [accountsToImport, setAccountsToImport] = useState<string[]>([]);
-
   useEffect(() => {
     const init = async () => {
       let addresses: Address[] = [];
@@ -40,9 +41,11 @@ export function ImportWalletSelection() {
       setAccountsToImport(addresses);
     };
     init();
-  }, [state.secrets]);
+  }, [state?.secrets]);
 
   const handleAddWallets = useCallback(async () => {
+    if (isImporting) return;
+    setIsImporting(true);
     // Import all the secrets
     for (let i = 0; i < state.secrets.length; i++) {
       const address = (await wallet.importWithSecret(
@@ -53,12 +56,11 @@ export function ImportWalletSelection() {
         setCurrentAddress(address);
       }
     }
-    // Navigate to home
-    navigate('/');
-  }, [navigate, setCurrentAddress, state.secrets]);
+    navigate(ROUTES.CREATE_PASSWORD);
+  }, [isImporting, navigate, setCurrentAddress, state.secrets]);
 
   const handleEditWallets = useCallback(async () => {
-    navigate('/import/edit', {
+    navigate(ROUTES.IMPORT__EDIT, {
       state: {
         secrets: state.secrets,
         accountsToImport,
@@ -92,7 +94,7 @@ export function ImportWalletSelection() {
             color="labelTertiary"
             align="center"
           >
-            {accountsToImport.length
+            {accountsToImport.length && !isImporting
               ? accountsToImport.length === 1
                 ? i18n.t('import_wallet_selection.description_singular')
                 : i18n.t('import_wallet_selection.description_plural', {
@@ -105,7 +107,7 @@ export function ImportWalletSelection() {
       <Box width="full" style={{ width: '106px' }} paddingBottom="28px">
         <Separator color="separatorTertiary" strokeWeight="1px" />
       </Box>
-      {!accountsToImport.length ? (
+      {!accountsToImport.length || isImporting ? (
         <Box
           alignItems="center"
           justifyContent="center"
@@ -118,7 +120,9 @@ export function ImportWalletSelection() {
             color="labelSecondary"
             align="center"
           >
-            {i18n.t('import_wallet_selection.loading')}
+            {isImporting
+              ? i18n.t('import_wallet_selection.importing')
+              : i18n.t('import_wallet_selection.loading')}
           </Text>
           <br />
           <br />
@@ -201,6 +205,7 @@ export function ImportWalletSelection() {
                 variant={'flat'}
                 width="full"
                 onClick={handleAddWallets}
+                testId="add-wallets-button"
               >
                 {i18n.t('import_wallet_selection.add_wallets')}
               </Button>
@@ -210,6 +215,7 @@ export function ImportWalletSelection() {
                 variant="transparent"
                 width="full"
                 onClick={handleEditWallets}
+                testId="edit-wallets-button"
               >
                 {i18n.t('import_wallet_selection.edit_wallets')}
               </Button>

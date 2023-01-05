@@ -27,6 +27,7 @@ import {
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import * as wallet from '../../handlers/wallet';
+import { ROUTES } from '../../urls';
 
 const validateSecret = (secret: string) => {
   // check if it's a private key
@@ -94,12 +95,12 @@ export function ImportWallet() {
       if (isValidPrivateKey(secrets[0]) || isAddress(secrets[0])) {
         const address = (await wallet.importWithSecret(secrets[0])) as Address;
         setCurrentAddress(address);
-        navigate('/');
+        navigate(ROUTES.CREATE_PASSWORD);
         return;
       }
     }
 
-    navigate('/import/select', {
+    navigate(ROUTES.IMPORT__SELECT, {
       state: { secrets },
     });
   }, [navigate, secrets, setCurrentAddress]);
@@ -178,6 +179,7 @@ export function ImportWallet() {
                 padding="12px"
                 placeholder={i18n.t('import_wallet.placeholder')}
                 value={secrets[i]}
+                testId="secret-textarea"
                 onChange={(e) => handleSeedChange(e, i)}
                 className={[
                   placeholderStyle,
@@ -258,6 +260,7 @@ export function ImportWallet() {
             variant={isValid ? 'flat' : 'disabled'}
             width="full"
             onClick={handleImportWallet}
+            testId="import-wallets-button"
           >
             {secrets.length > 1
               ? i18n.t('import_wallet.import_wallet_plural')

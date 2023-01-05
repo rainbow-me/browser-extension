@@ -188,7 +188,8 @@
     "description_singular": "Rainbow detected 1 wallet that have been previously recently. You can add more at any time.",
     "add_wallets": "Add wallets",
     "edit_wallets": "Edit wallets",
-    "loading": "Hold tight while we look up all your wallets..."
+    "loading": "Hold tight while we look up all your wallets...",
+    "importing": "Importing your wallets..."
   },
   "watch_wallet": {
     "title": "Watch an Ethereum address",
@@ -369,5 +370,14 @@
     "speed_up_cta": "Speed up transaction",
     "speed_up_transaction": "Speed up transaction",
     "close_cta": "Cancel"
+  },
+  "wallet_ready": {
+    "title": "Your wallets ready",
+    "essentials": "Essentials",
+    "get_started_with_rainbow": "Get started with Rainbow",
+    "get_started_with_rainbow_desc": "Welcome to Rainbow! We're so glad you're here. We’ve created this guide to help with the basics of Rainbow.",
+    "discover_shortcuts": "Discover shortcuts",
+    "discover_shortcuts_desc": "Welcome to Rainbow! We're so glad you're here. We’ve created this guide to help with the basics of Rainbow and get you started on your new We... ",
+    "pin_rainbow_to_your_toolbar": "Pin Rainbow to your toolbar:"
   }
 }

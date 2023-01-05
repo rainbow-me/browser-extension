@@ -8,6 +8,7 @@ import {
   IconAndCopyItem,
   IconAndCopyList,
 } from '../../components/IconAndCopyList.tsx/IconAndCopyList';
+import { ROUTES } from '../../urls';
 
 const iconAndCopyList: IconAndCopyItem[] = [
   {
@@ -37,11 +38,11 @@ export function SeedBackupPrompt() {
   const navigate = useNavigate();
 
   const handleShowRecoveryPhraseClick = React.useCallback(async () => {
-    navigate('/seed-reveal');
+    navigate(ROUTES.SEED_REVEAL);
   }, [navigate]);
 
   const handleSkipClick = React.useCallback(async () => {
-    navigate('/create-password');
+    navigate(ROUTES.CREATE_PASSWORD);
   }, [navigate]);
 
   return (
@@ -112,6 +113,7 @@ export function SeedBackupPrompt() {
             symbol="checkmark.circle.fill"
             blur="26px"
             onClick={handleShowRecoveryPhraseClick}
+            testId="show-recovery-phrase-button"
           >
             {i18n.t('seed_backup_prompt.reveal_your_recovery_phrase')}
           </Button>
@@ -122,6 +124,7 @@ export function SeedBackupPrompt() {
             variant="transparent"
             width="full"
             onClick={handleSkipClick}
+            testId="skip-button"
           >
             {i18n.t('seed_backup_prompt.skip')}
           </Button>

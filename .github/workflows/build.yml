@@ -11,6 +11,7 @@ jobs:
   build:
     env:
       DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 3
     runs-on: ubuntu-latest
     concurrency: 
       group: ${{ github.workflow }}-${{ github.ref }}
