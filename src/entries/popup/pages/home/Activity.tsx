@@ -59,7 +59,6 @@ export function Activity({ onSheetSelected }: ActivityProps) {
     enableSmoothScroll: false,
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const onTransactionSelected = ({
     sheet,
     transaction,
@@ -104,7 +103,7 @@ export function Activity({ onSheetSelected }: ActivityProps) {
                 </Inset>
               );
             }
-            return (
+            return item?.pending ? (
               <SpeedUpAndCancelMenu
                 key={index}
                 onRowSelection={onTransactionSelected}
@@ -112,8 +111,9 @@ export function Activity({ onSheetSelected }: ActivityProps) {
               >
                 <ActivityRow transaction={item} />
               </SpeedUpAndCancelMenu>
+            ) : (
+              <ActivityRow transaction={item} key={index} />
             );
-            // return <ActivityRow transaction={item} key={index} />;
           })}
         </Box>
       </Box>

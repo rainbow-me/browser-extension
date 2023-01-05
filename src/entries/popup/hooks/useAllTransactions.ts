@@ -92,12 +92,6 @@ export function useAllTransactions({
     ...(confirmedOptimismTransactions || []),
     ...(confirmedPolygonTransactions || []),
   ];
-  console.log('pending tx: ', pendingTransactions);
-  // console.log('mainnet confirmed: ', confirmedTransactions);
-  // console.log('arbitrum confirmed: ', confirmedArbitrumTransactions);
-  // console.log('bsc confirmed: ', confirmedBscTransactions);
-  console.log('optimism confirmed: ', confirmedOptimismTransactions);
-  // console.log('polygon confirmed: ', confirmedPolygonTransactions);
   return {
     allTransactions,
     allTransactionsByDate: selectTransactionsByDate(allTransactions),
