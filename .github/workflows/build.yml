@@ -25,12 +25,12 @@ jobs:
       - name: Check for frozen lockfile
         run: yarn check-lockfile
       - name: Zip node_modules
-        run: zip node_modules.zip node_modules/ -r
+        run: tar czvf node_modules.tar.gz node_modules/
       - name: Upload deps artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: node_modules.zip
-          path: node_modules.zip
+          name: node_modules.tar.gz
+          path: node_modules.tar.gz
       
   # BUILD THE EXTENSION
   build:
@@ -45,9 +45,9 @@ jobs:
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
-          name: node_modules.zip
+          name: node_modules.tar.gz
       - name: Unzip node_modules
-        run: unzip node_modules.zip
+        run: tar xzvf node_modules.tar.gz
       - name: Install deps via Yarn
         run: yarn setup
       - uses: actions/checkout@v3
@@ -80,9 +80,9 @@ jobs:
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
-          name: node_modules.zip
+          name: node_modules.tar.gz
       - name: Unzip node_modules
-        run: unzip node_modules.zip
+        run: tar xzvf node_modules.tar.gz
       - name: Install deps via Yarn
         run: yarn setup
       - name: Download build artifacts
@@ -117,9 +117,9 @@ jobs:
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
-          name: node_modules.zip
+          name: node_modules.tar.gz
       - name: Unzip node_modules
-        run: unzip node_modules.zip
+        run: tar xzvf node_modules.tar.gz
       - name: Install deps via Yarn
         run: yarn setup
       - name: Download build artifacts
@@ -154,9 +154,9 @@ jobs:
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
-          name: node_modules.zip
+          name: node_modules.tar.gz
       - name: Unzip node_modules
-        run: unzip node_modules.zip
+        run: tar xzvf node_modules.tar.gz
       - name: Install deps via Yarn
         run: yarn setup
       - name: Install rust
@@ -187,9 +187,9 @@ jobs:
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
-          name: node_modules.zip
+          name: node_modules.tar.gz
       - name: Unzip node_modules
-        run: unzip node_modules.zip
+        run: tar xzvf node_modules.tar.gz
       - name: Install deps via Yarn
         run: yarn setup
       - name: Lint
