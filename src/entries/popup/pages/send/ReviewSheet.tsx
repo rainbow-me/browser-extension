@@ -42,13 +42,13 @@ import { useContact } from '../../hooks/useContacts';
 import { ContactAction } from './ContactPrompt';
 
 const EditContactDropdown = ({
-  asset,
+  chainId,
   children,
   toAddress,
   closeReview,
   onEdit,
 }: {
-  asset?: ParsedAddressAsset | null;
+  chainId?: ChainId;
   children: React.ReactNode;
   toAddress?: Address;
   closeReview: () => void;
@@ -62,13 +62,11 @@ const EditContactDropdown = ({
   const contact = useContact({ address: toAddress });
 
   const viewOnEtherscan = useCallback(() => {
-    const explorer = getBlockExplorerHostForChain(
-      asset?.chainId || ChainId.mainnet,
-    );
+    const explorer = getBlockExplorerHostForChain(chainId || ChainId.mainnet);
     chrome.tabs.create({
       url: `https://${explorer}/address/${toAddress}`,
     });
-  }, [asset?.chainId, toAddress]);
+  }, [chainId, toAddress]);
 
   const onValueChange = useCallback(
     (value: string) => {
@@ -116,7 +114,7 @@ const EditContactDropdown = ({
                     <Text size="14pt" weight="semibold">
                       {i18n.t(
                         `contacts.${
-                          asset?.chainId && isL2Chain(asset?.chainId)
+                          chainId && isL2Chain(chainId)
                             ? 'view_on_explorer'
                             : 'view_on_etherscan'
                         }`,
@@ -355,7 +353,7 @@ export const ReviewSheet = ({
 
                             <Box>
                               <EditContactDropdown
-                                asset={asset}
+                                chainId={asset?.chainId}
                                 toAddress={toAddress}
                                 closeReview={onCancel}
                                 onEdit={onSaveContactAction}
