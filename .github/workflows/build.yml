@@ -48,8 +48,6 @@ jobs:
           name: node_modules.tar.gz
       - name: Unzip node_modules
         run: tar xzvf node_modules.tar.gz
-      - name: Install deps via Yarn
-        run: yarn setup
       - uses: actions/checkout@v3
         with:
             repository: 'rainbow-me/browser-extension-env'
@@ -83,8 +81,6 @@ jobs:
           name: node_modules.tar.gz
       - name: Unzip node_modules
         run: tar xzvf node_modules.tar.gz
-      - name: Install deps via Yarn
-        run: yarn setup
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
@@ -120,8 +116,6 @@ jobs:
           name: node_modules.tar.gz
       - name: Unzip node_modules
         run: tar xzvf node_modules.tar.gz
-      - name: Install deps via Yarn
-        run: yarn setup
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
@@ -157,8 +151,6 @@ jobs:
           name: node_modules.tar.gz
       - name: Unzip node_modules
         run: tar xzvf node_modules.tar.gz
-      - name: Install deps via Yarn
-        run: yarn setup
       - name: Install rust
         uses: actions-rs/toolchain@v1
         with:
@@ -190,8 +182,6 @@ jobs:
           name: node_modules.tar.gz
       - name: Unzip node_modules
         run: tar xzvf node_modules.tar.gz
-      - name: Install deps via Yarn
-        run: yarn setup
       - name: Lint
         run: yarn lint
       - name: Audit CI
