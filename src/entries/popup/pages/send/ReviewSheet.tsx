@@ -25,6 +25,7 @@ import {
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
+import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import {
   DropdownMenu,
@@ -323,32 +324,15 @@ export const ReviewSheet = ({
                         </Text>
                       </Inline>
                     </Box>
-                    <Box
-                      style={{
-                        width: 44,
-                        height: 20,
-                      }}
-                    >
-                      <Inline alignHorizontal="center">
-                        <Box paddingVertical="2px">
-                          <Box marginTop="-2px">
-                            <Symbol
-                              weight="bold"
-                              symbol="chevron.down"
-                              size={13}
-                              color="labelQuaternary"
-                            />
-                          </Box>
-                          <Box marginTop="-7px">
-                            <Symbol
-                              weight="bold"
-                              symbol="chevron.down"
-                              size={13}
-                              color="labelTertiary"
-                            />
-                          </Box>
+                    <Box style={{ width: 44 }}>
+                      <Stack alignHorizontal="center">
+                        <Box style={{ height: 10 }}>
+                          <ChevronDown color="separatorSecondary" />
                         </Box>
-                      </Inline>
+                        <Box style={{ height: 10 }} marginTop="-2px">
+                          <ChevronDown color="separator" />
+                        </Box>
+                      </Stack>
                     </Box>
                   </Inline>
                 </Box>

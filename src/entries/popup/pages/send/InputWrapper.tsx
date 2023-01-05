@@ -26,7 +26,7 @@ export const InputWrapper = ({
   dropdownHeight,
   onDropdownScroll,
   testId,
-  borderVisible,
+  borderVisible = true,
 }: {
   leftComponent: ReactElement;
   centerComponent: ReactElement;

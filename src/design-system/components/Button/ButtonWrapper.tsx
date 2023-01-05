@@ -206,7 +206,6 @@ export function ButtonWrapper({
     color: color as ButtonColor,
   })[height][variant];
 
-  console.log('------- wrapper borderRadius', borderRadius);
   const { background, borderColor, borderWidth } = stylesForVariant({
     color: color ?? 'accent',
   })[variant];
