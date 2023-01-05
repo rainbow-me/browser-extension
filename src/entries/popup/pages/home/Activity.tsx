@@ -103,7 +103,7 @@ export function Activity({ onSheetSelected }: ActivityProps) {
                 </Inset>
               );
             }
-            return item?.pending ? (
+            return (
               <SpeedUpAndCancelMenu
                 key={index}
                 onRowSelection={onTransactionSelected}
@@ -111,8 +111,6 @@ export function Activity({ onSheetSelected }: ActivityProps) {
               >
                 <ActivityRow transaction={item} />
               </SpeedUpAndCancelMenu>
-            ) : (
-              <ActivityRow transaction={item} key={index} />
             );
           })}
         </Box>

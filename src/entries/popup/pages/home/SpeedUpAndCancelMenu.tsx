@@ -45,33 +45,37 @@ export function SpeedUpAndCancelMenu({
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuRadioGroup>
-          <DropdownMenuRadioItem value={'speedUp'}>
-            <MenuRow onClick={handleRowSelection('speedUp')}>
-              <Inline space="8px" alignVertical="center">
-                <Text weight="semibold" size="14pt">
-                  {'🚀'}
-                </Text>
-                <Text color="label" size="14pt" weight="semibold">
-                  {i18n.t('speed_up_and_cancel.speed_up')}
-                </Text>
-              </Inline>
-            </MenuRow>
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem value={'cancel'}>
-            <MenuRow onClick={handleRowSelection('cancel')}>
-              <Inline space="8px" alignVertical="center">
-                <Text weight="semibold" size="14pt">
-                  {'☠️'}
-                </Text>
-                <Text size="14pt" weight="semibold">
-                  {i18n.t('speed_up_and_cancel.cancel')}
-                </Text>
-              </Inline>
-            </MenuRow>
-          </DropdownMenuRadioItem>
-          <Box paddingVertical="4px">
-            <DropdownMenuSeparator />
-          </Box>
+          {transaction?.pending && (
+            <>
+              <DropdownMenuRadioItem value={'speedUp'}>
+                <MenuRow onClick={handleRowSelection('speedUp')}>
+                  <Inline space="8px" alignVertical="center">
+                    <Text weight="semibold" size="14pt">
+                      {'🚀'}
+                    </Text>
+                    <Text color="label" size="14pt" weight="semibold">
+                      {i18n.t('speed_up_and_cancel.speed_up')}
+                    </Text>
+                  </Inline>
+                </MenuRow>
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value={'cancel'}>
+                <MenuRow onClick={handleRowSelection('cancel')}>
+                  <Inline space="8px" alignVertical="center">
+                    <Text weight="semibold" size="14pt">
+                      {'☠️'}
+                    </Text>
+                    <Text size="14pt" weight="semibold">
+                      {i18n.t('speed_up_and_cancel.cancel')}
+                    </Text>
+                  </Inline>
+                </MenuRow>
+              </DropdownMenuRadioItem>
+              <Box paddingVertical="4px">
+                <DropdownMenuSeparator />
+              </Box>
+            </>
+          )}
           <DropdownMenuRadioItem value={'blockExplorer'}>
             <MenuRow>
               <a
