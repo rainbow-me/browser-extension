@@ -86,7 +86,7 @@ jobs:
         with:
           name: rainbowbx-${{ github.sha }}.zip
       - name: Unzip build
-        run: unzip rainbowbx-${{ github.sha }}.zip -d build
+        run: mv rainbowbx-${{ github.sha }}.zip build
       - name: Setup xvfb
         run: |
           sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
@@ -123,7 +123,7 @@ jobs:
         with:
           name: rainbowbx-${{ github.sha }}.zip
       - name: Unzip build
-        run: unzip rainbowbx-${{ github.sha }}.zip -d build
+        run: mv rainbowbx-${{ github.sha }}.zip build
       - name: Setup xvfb
         run: |
           sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
