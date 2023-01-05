@@ -20,6 +20,7 @@ import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { getWallet } from '~/entries/popup/handlers/wallet';
 import { useAvatar } from '~/entries/popup/hooks/useAvatar';
 import { useEns } from '~/entries/popup/hooks/useEns';
+import { ROUTES } from '~/entries/popup/urls';
 
 import { NewWalletPrompt } from './newWalletPrompt';
 
@@ -28,7 +29,7 @@ const MoreInfoButton = ({ account }: { account: Address }) => {
   const { state } = useLocation();
   const handleViewPrivateKey = () => {
     navigate(
-      '/settings/privacy/walletsAndKeys/walletDetails/privateKeyWarning',
+      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
       { state: { account, password: state.password } },
     );
   };
@@ -145,7 +146,7 @@ export function WalletDetails() {
   };
   const handleViewRecoveryPhrase = () => {
     navigate(
-      '/settings/privacy/walletsAndKeys/walletDetails/recoveryPhraseWarning',
+      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
       { state: { wallet, password: state.password } },
     );
   };

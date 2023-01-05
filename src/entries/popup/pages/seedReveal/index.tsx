@@ -16,6 +16,7 @@ import {
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import SeedPhraseTable from '../../components/SeedPhraseTable/SeedPhaseTable';
 import { exportWallet } from '../../handlers/wallet';
+import { ROUTES } from '../../urls';
 
 export function SeedReveal() {
   const navigate = useNavigate();
@@ -32,7 +33,7 @@ export function SeedReveal() {
   }, [currentAddress]);
 
   const handleSavedTheseWords = React.useCallback(async () => {
-    navigate('/seed-verify');
+    navigate(ROUTES.SEED_VERIFY);
   }, [navigate]);
 
   const handleCopy = useCallback(() => {
@@ -97,6 +98,7 @@ export function SeedReveal() {
             symbol="checkmark.circle.fill"
             blur="26px"
             onClick={handleSavedTheseWords}
+            testId="saved-these-words-button"
           >
             {i18n.t('seed_reveal.saved_these_words')}
           </Button>

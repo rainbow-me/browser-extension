@@ -10,19 +10,20 @@ import { accentColorAsHsl } from '~/design-system/styles/core.css';
 import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 import { LogoWithLetters } from '../../components/LogoWithLetters/LogoWithLetters';
 import * as wallet from '../../handlers/wallet';
+import { ROUTES } from '../../urls';
 
 export function Welcome() {
   const navigate = useNavigate();
   const { setCurrentAddress } = useCurrentAddressStore();
 
   const handleImportWalletClick = React.useCallback(async () => {
-    navigate('/import-or-connect');
+    navigate(ROUTES.IMPORT_OR_CONNECT);
   }, [navigate]);
 
   const handleCreateNewWalletClick = React.useCallback(async () => {
     const newWalletAddress = await wallet.create();
     setCurrentAddress(newWalletAddress);
-    navigate('/seed-backup-prompt');
+    navigate(ROUTES.SEED_BACKUP_PROMPT);
   }, [navigate, setCurrentAddress]);
 
   return (
@@ -65,6 +66,7 @@ export function Welcome() {
                 symbolSide="right"
                 blur="26px"
                 onClick={handleCreateNewWalletClick}
+                testId="create-wallet-button"
               >
                 {i18n.t('welcome.create_wallet')}
               </Button>
@@ -75,6 +77,7 @@ export function Welcome() {
                   variant="flat"
                   width="full"
                   onClick={handleImportWalletClick}
+                  testId="import-wallet-button"
                 >
                   {i18n.t('welcome.import_wallet')}
                 </Button>

@@ -27,6 +27,7 @@ import {
 } from '../../components/SwitchMenu/SwitchNetworkMenu';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
+import { ROUTES } from '../../urls';
 
 export const NetworkMenu = ({ children }: { children: React.ReactNode }) => {
   const [url, setUrl] = React.useState('');
@@ -149,7 +150,7 @@ export const NetworkMenu = ({ children }: { children: React.ReactNode }) => {
             {url ? <DropdownMenuSeparator /> : null}
 
             <Inset vertical="8px">
-              <Link id="home-page-header-connected-apps" to={'/connected'}>
+              <Link id="home-page-header-connected-apps" to={ROUTES.CONNECTED}>
                 <Inline alignVertical="center" space="8px">
                   <Box style={{ width: 18, height: 18 }}>
                     <Inline

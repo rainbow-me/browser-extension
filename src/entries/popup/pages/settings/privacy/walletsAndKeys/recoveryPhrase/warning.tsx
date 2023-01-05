@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { i18n } from '~/core/languages';
 import { IconAndCopyItem } from '~/entries/popup/components/IconAndCopyList.tsx/IconAndCopyList';
 import WarningInfo from '~/entries/popup/components/WarningInfo/WarningInfo';
+import { ROUTES } from '~/entries/popup/urls';
 
 const iconAndCopyList: IconAndCopyItem[] = [
   {
@@ -49,9 +50,12 @@ export function RecoveryPhraseWarning() {
   const { state } = useLocation();
 
   const handleShowRecoveryPhraseClick = useCallback(async () => {
-    navigate('/settings/privacy/walletsAndKeys/walletDetails/recoveryPhrase', {
-      state: { password: state.password, wallet: state.wallet },
-    });
+    navigate(
+      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE,
+      {
+        state: { password: state.password, wallet: state.wallet },
+      },
+    );
   }, [navigate, state.password, state.wallet]);
 
   return (

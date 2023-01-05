@@ -10,12 +10,15 @@ import { afterAll, beforeAll, expect, it } from 'vitest';
 import {
   delayTime,
   findElementAndClick,
+  findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
   goToPopup,
   goToTestApp,
+  goToWelcome,
   initDriverWithOptions,
   querySelector,
+  typeOnTextInput,
   waitAndClick,
 } from './helpers';
 
@@ -37,43 +40,42 @@ beforeAll(async () => {
 
 afterAll(async () => driver.quit());
 
-it('Should open the popup', async () => {
-  await goToPopup(driver, rootURL);
-});
-
-it('should display account name', async () => {
-  const label = await querySelector(
-    driver,
-    '[data-testid="header"] [data-testid="account-name"]',
-  );
-  const actual = await label.getText();
-  const expected = ['0x70c1...43C4', 'djweth.eth'];
-  expect(expected.includes(actual)).toEqual(true);
-});
-
-it.skip('should be able create a new wallet', async () => {
-  await goToPopup(driver, rootURL);
-  await findElementAndClick({
-    id: 'header-account-name-link-to-wallet',
+// Import a wallet
+it('should be able import a wallet via seed', async () => {
+  //  Start from welcome screen
+  await goToWelcome(driver, rootURL);
+  await findElementByTestIdAndClick({
+    id: 'import-wallet-button',
     driver,
   });
-  await driver
-    .findElement({ id: 'wallet-password-input' })
-    .sendKeys('password');
-  await findElementAndClick({ id: 'wallet-password-submit', driver });
-  await findElementAndClick({ id: 'wallet-create-button', driver });
-  await findElementAndClick({ id: 'wallets-go-back', driver });
-});
-
-it('should shuffle account', async () => {
-  await findElementAndClick({ id: 'header-account-name-shuffle', driver });
-  const label = await querySelector(
+  await findElementByTestIdAndClick({
+    id: 'import-wallet-option',
     driver,
-    '[data-testid="header"] [data-testid="account-name"]',
-  );
-  const actual = await label.getText();
-  const expected = '0x5B57...7C35';
-  expect(actual).toEqual(expected);
+  });
+
+  await typeOnTextInput({
+    id: 'secret-textarea',
+    driver,
+    text: 'test test test test test test test test test test test junk',
+  });
+
+  await findElementByTestIdAndClick({
+    id: 'import-wallets-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'add-wallets-button',
+    driver,
+  });
+  await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
+  await typeOnTextInput({
+    id: 'confirm-password-input',
+    driver,
+    text: 'test1234',
+  });
+  await findElementByTestIdAndClick({ id: 'set-password-button', driver });
+  await delayTime('long');
+  await findElementByText(driver, 'Your wallets ready');
 });
 
 it('should be able to connect to bx test dapp', async () => {
@@ -127,7 +129,7 @@ it('should be able to connect to bx test dapp', async () => {
 });
 
 it('should be able to go back to extension and switch account and chain', async () => {
-  await goToPopup(driver, rootURL);
+  await goToPopup(driver, rootURL, '#/home');
   await findElementAndClick({ id: 'home-page-header-left', driver });
   await findElementAndClick({ id: 'home-page-header-connected-apps', driver });
   await findElementAndClick({ id: 'switch-network-menu', driver });
@@ -210,7 +212,7 @@ it.skip('should be able to accept a transaction request', async () => {
 });
 
 it('should be able to disconnect from connected dapps', async () => {
-  await goToPopup(driver, rootURL);
+  await goToPopup(driver, rootURL, '#/home');
   await findElementAndClick({ id: 'home-page-header-left', driver });
   await findElementAndClick({ id: 'home-page-header-connected-apps', driver });
   await findElementAndClick({ id: 'switch-network-menu', driver });
@@ -221,7 +223,7 @@ it('should be able to disconnect from connected dapps', async () => {
 });
 
 it('should be able to test the sandbox for the popup', async () => {
-  await goToPopup(driver, rootURL);
+  await goToPopup(driver, rootURL, '#/home');
   await findElementAndClick({ id: 'home-page-header-right', driver });
   await findElementAndClick({ id: 'settings-link', driver });
   const btn = await querySelector(driver, '[data-testid="test-sandbox-popup"]');
@@ -239,7 +241,6 @@ it('should be able to test the sandbox for the background', async () => {
   await waitAndClick(btn, driver);
   await delayTime('long');
   const text = await driver.switchTo().alert().getText();
-  console.log('text', text);
   expect(text).toBe('Background sandboxed!');
   await driver.switchTo().alert().accept();
 });

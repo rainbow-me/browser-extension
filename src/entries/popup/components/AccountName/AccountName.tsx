@@ -10,6 +10,7 @@ import {
   DEFAULT_ACCOUNT_2,
 } from '~/entries/background/handlers/handleProviderRequest';
 
+import { ROUTES } from '../../urls';
 import { Avatar } from '../Avatar/Avatar';
 
 type AccountNameProps = {
@@ -55,7 +56,7 @@ export function AccountName({
       </Box>
       <Link
         id={`${id ? `${id}-` : ''}account-name-link-to-wallet`}
-        to="/wallets"
+        to={ROUTES.WALLETS}
       >
         <Symbol
           size={chevronDownSizes[size]}

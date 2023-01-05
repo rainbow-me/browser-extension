@@ -15,6 +15,7 @@ import {
 import { Input } from '~/design-system/components/Input/Input';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
 import { add } from '~/entries/popup/handlers/wallet';
+import { ROUTES } from '~/entries/popup/urls';
 
 export const NewWalletPrompt = ({
   show,
@@ -34,7 +35,7 @@ export const NewWalletPrompt = ({
     if (walletName !== '') {
       const newAccount = await add(wallet?.accounts?.[0]);
       navigate(
-        '/settings/privacy/walletsAndKeys/walletDetails/privateKeyWarning',
+        ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
         { state: { account: newAccount, password: state?.password } },
       );
       return;

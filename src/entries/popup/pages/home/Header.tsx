@@ -9,6 +9,7 @@ import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
 import { useAvatar } from '../../hooks/useAvatar';
+import { ROUTES } from '../../urls';
 
 export function Header() {
   const { scrollYProgress: progress } = useScroll({ offset: ['0px', '64px'] });
@@ -84,7 +85,7 @@ function ActionButtonsSection() {
             <ActionButton symbol="square.on.square" text="Copy" />
           </Link>
           <ActionButton symbol="arrow.triangle.swap" text="Swap" />
-          <Link to="/send">
+          <Link to={ROUTES.SEND}>
             <ActionButton symbol="paperplane.fill" text="Send" />
           </Link>
         </Inline>

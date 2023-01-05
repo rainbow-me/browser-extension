@@ -8,7 +8,9 @@ import {
   BackgroundColor,
   animatedRouteTransitionConfig,
 } from '~/design-system/styles/designTokens';
+import { ProtectedRoute } from '~/entries/popup/ProtectedRoute';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
+import { UserStatusResult } from '~/entries/popup/hooks/useAuth';
 
 type AnimatedRouteProps = {
   background?: BackgroundColor;
@@ -17,6 +19,7 @@ type AnimatedRouteProps = {
   navbar?: boolean;
   navbarBackground?: BackgroundColor;
   title?: string;
+  protectedRoute?: UserStatusResult[] | true;
 };
 
 export const animatedRouteValues: Record<
@@ -95,11 +98,19 @@ export const AnimatedRoute = React.forwardRef<
   HTMLDivElement,
   AnimatedRouteProps
 >((props: AnimatedRouteProps, ref) => {
-  const { background, children, direction, navbar, title, navbarBackground } =
-    props;
+  const {
+    background,
+    children,
+    direction,
+    navbar,
+    title,
+    navbarBackground,
+    protectedRoute,
+  } = props;
   const { initial, end, exit } = animatedRouteValues[direction];
   const transition = animatedRouteTransitionConfig[direction];
-  return (
+
+  const content = (
     <Box
       as={motion.div}
       ref={ref}
@@ -128,6 +139,13 @@ export const AnimatedRoute = React.forwardRef<
       {children}
     </Box>
   );
+
+  if (protectedRoute) {
+    return (
+      <ProtectedRoute allowedStates={protectedRoute}>{content}</ProtectedRoute>
+    );
+  }
+  return content;
 });
 
 AnimatedRoute.displayName = 'AnimatedRoute';

@@ -48,7 +48,7 @@ export function PasswordInput({
   }, [cursorPosition, visible]);
 
   return (
-    <Box testId={testId}>
+    <Box>
       <Input
         height="40px"
         variant="bordered"
@@ -59,6 +59,7 @@ export function PasswordInput({
         type={visible ? 'text' : 'password'}
         innerRef={inputRef}
         borderColor={borderColor}
+        testId={testId}
       />
       <Box position="relative">
         <Box
