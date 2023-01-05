@@ -182,6 +182,8 @@ jobs:
           name: node_modules.tar.gz
       - name: Unzip node_modules
         run: tar xzvf node_modules.tar.gz
+      - name: DS Setup
+        run: yarn ds:install
       - name: Lint
         run: yarn lint
       - name: Audit CI
