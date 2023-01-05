@@ -81,7 +81,8 @@ export const ValueInput = ({
                   <Button
                     onClick={setMaxAssetAmount}
                     color="accent"
-                    height="32px"
+                    height="24px"
+                    borderRadius="8px"
                     variant="raised"
                     testId="value-input-max"
                   >
