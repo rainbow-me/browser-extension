@@ -313,7 +313,8 @@ export const ReviewSheet = ({
                     <Box
                       background="surfaceSecondaryElevated"
                       borderRadius="40px"
-                      padding="6px"
+                      paddingHorizontal="8px"
+                      paddingVertical="6px"
                       width="fit"
                     >
                       <Inline alignHorizontal="center" alignVertical="center">
