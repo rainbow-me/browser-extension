@@ -108,12 +108,11 @@ export function Settings() {
           <MenuItem
             hasRightArrow
             leftComponent={
-              <Symbol
-                symbol="eurosign.circle"
-                color="green"
-                size={18}
-                weight="medium"
-              />
+              <Box style={{ width: 18 }}>
+                <Text color="green" size="20pt" weight="regular">
+                  €
+                </Text>
+              </Box>
             }
             onClick={() => navigate(ROUTES.SETTINGS__CURRENCY)}
             rightComponent={
