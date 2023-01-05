@@ -12,6 +12,8 @@ import { ProtectedRoute } from '~/entries/popup/ProtectedRoute';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { UserStatusResult } from '~/entries/popup/hooks/useAuth';
 
+import { animatedRouteStyles } from './AnimatedRoute.css';
+
 type AnimatedRouteProps = {
   background?: BackgroundColor;
   children: React.ReactNode;
@@ -122,6 +124,7 @@ export const AnimatedRoute = React.forwardRef<
       exit={exit}
       transition={transition}
       background={background}
+      className={animatedRouteStyles}
     >
       {navbar && (
         <Navbar

@@ -40,12 +40,7 @@ export function ChangePassword() {
     setError(null);
   }, [setError, newPassword, confirmNewPassword]);
   return (
-    <Box
-      paddingHorizontal="20px"
-      background="surfaceSecondary"
-      paddingTop="64px"
-      height="full"
-    >
+    <Box paddingHorizontal="20px" paddingTop="64px" height="full">
       <Rows alignVertical="justify" space="24px">
         <Row height="content">
           <Rows space="24px">
