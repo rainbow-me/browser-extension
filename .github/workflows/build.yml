@@ -24,14 +24,14 @@ jobs:
           cache: 'yarn'
       - name: Install deps via Yarn
         run: yarn setup
-      # - name: Check for frozen lockfile
-      #   run: yarn check-lockfile
-      # - name: Audit CI
-      #   run:  yarn audit:ci
-      # - name: Lint
-      #   run: yarn lint
-      # - name: Check types
-      #   run: yarn typecheck
+      - name: Check for frozen lockfile
+        run: yarn check-lockfile
+      - name: Audit CI
+        run:  yarn audit:ci
+      - name: Lint
+        run: yarn lint
+      - name: Check types
+        run: yarn typecheck
       - uses: actions/checkout@v3
         with:
           repository: 'rainbow-me/browser-extension-env'
@@ -44,13 +44,13 @@ jobs:
       - uses: browser-actions/setup-chrome@latest
         with:
           chrome-version: 'stable'
-      # - name: Setup Brave browser
-      #   run: |
-      #     sudo apt install apt-transport-https curl
-      #     sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-      #     echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
-      #     sudo apt update
-      #     sudo apt install brave-browser
+      - name: Setup Brave browser
+        run: |
+          sudo apt install apt-transport-https curl
+          sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+          sudo apt update
+          sudo apt install brave-browser
       - name: Setup xvfb
         run: |
           sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
@@ -59,28 +59,28 @@ jobs:
       - name: Run e2e (Chrome)
         run: |
           yarn e2e:linux:chrome
-      # - name: Run e2e (Brave)
-      #   run: |
-      #     yarn e2e:linux:brave
-      # - name: Install rust
-      #   uses: actions-rs/toolchain@v1
-      #   with:
-      #     toolchain: stable
-      #     target: wasm32-unknown-unknown
-      #     profile: minimal
-      #     override: true
-      # - name: Install Anvil
-      #   uses: foundry-rs/foundry-toolchain@v1
-      #   with:
-      #     version: nightly
-      # - name: Run unit tests
-      #   run: |
-      #     yarn test
-      # - name: Upload artifacts
-      #   uses: actions/upload-artifact@v1
-      #   with:
-      #     name: rainbowbx-${{ github.sha }}.zip
-      #     path: build/
+      - name: Run e2e (Brave)
+        run: |
+          yarn e2e:linux:brave
+      - name: Install rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
+          profile: minimal
+          override: true
+      - name: Install Anvil
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+      - name: Run unit tests
+        run: |
+          yarn test
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: rainbowbx-${{ github.sha }}.zip
+          path: build/
 
 
           
