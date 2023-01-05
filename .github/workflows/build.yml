@@ -36,6 +36,15 @@ jobs:
     needs: [install]
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14.20.1"
+          cache: 'yarn'
+      - name: Download deps artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules
+      - uses: actions/checkout@v3
         with:
             repository: 'rainbow-me/browser-extension-env'
             token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
@@ -62,8 +71,6 @@ jobs:
         with:
           node-version: "14.20.1"
           cache: 'yarn'
-      - name: Install deps via Yarn
-        run: yarn setup
       - name: Download deps artifacts
         uses: actions/download-artifact@v3
         with:
@@ -101,7 +108,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: node_modules
-      - name: Download artifacts
+      - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
           name: rainbowbx-${{ github.sha }}.zip
@@ -132,6 +139,20 @@ jobs:
           cache: 'yarn'
       - name: Download deps artifacts
         uses: actions/download-artifact@v3
+      - name: Install rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: wasm32-unknown-unknown
+          profile: minimal
+          override: true
+      - name: Install Anvil
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+      - name: Run unit tests
+        run: |
+          yarn test
 
   # LINT, TYPECHECK, AUDIT
   ci-checks:
