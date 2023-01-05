@@ -22,13 +22,13 @@ jobs:
           cache: 'yarn'
       - name: Install deps via Yarn
         run: yarn setup
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: rainbowbx-${{ github.sha }}.zip
-          path: build/
       - name: Check for frozen lockfile
         run: yarn check-lockfile
+      - name: Upload deps artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: node_modules
+          path: node_modules
       
   # BUILD THE EXTENSION
   build:
