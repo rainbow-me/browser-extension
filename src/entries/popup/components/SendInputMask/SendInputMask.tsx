@@ -75,12 +75,12 @@ export const SendInputMask = ({
         opacity="0.04"
         borderRadius="14px"
         width="full"
-        style={{ height: 56, width: windowWidth - 64, zIndex: 0 }}
+        style={{ height: 56, width: windowWidth - 64 }}
       />
 
       {value ? (
         <>
-          <Box position="absolute" paddingTop="20px" style={{ zIndex: 99 }}>
+          <Box position="absolute" paddingTop="20px">
             <Inline alignVertical="center">
               <Box
                 style={{
@@ -113,11 +113,7 @@ export const SendInputMask = ({
         </>
       ) : null}
 
-      <Box
-        style={{ zIndex: 99 }}
-        backdropFilter="opacity(0%)"
-        // background="accent"
-      >
+      <Box backdropFilter="opacity(0%)">
         <Input
           value={value}
           placeholder={placeholder}

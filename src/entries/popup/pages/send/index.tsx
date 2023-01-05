@@ -218,6 +218,7 @@ export function Send() {
             toAddress={toAddress}
             action={navbarButtonAction}
             enabled={!!toAddress}
+            chainId={asset?.chainId}
           />
         }
       />

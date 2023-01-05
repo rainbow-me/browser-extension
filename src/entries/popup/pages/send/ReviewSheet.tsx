@@ -4,7 +4,9 @@ import { Address } from 'wagmi';
 import SendSound from 'static/assets/audio/woosh.wav';
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
+import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
+import { getBlockExplorerHostForChain, isL2Chain } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
   Bleed,
@@ -39,11 +41,13 @@ import { useContact } from '../../hooks/useContacts';
 import { ContactAction } from './ContactPrompt';
 
 const EditContactDropdown = ({
+  asset,
   children,
   toAddress,
   closeReview,
   onEdit,
 }: {
+  asset?: ParsedAddressAsset | null;
   children: React.ReactNode;
   toAddress?: Address;
   closeReview: () => void;
@@ -57,10 +61,13 @@ const EditContactDropdown = ({
   const contact = useContact({ address: toAddress });
 
   const viewOnEtherscan = useCallback(() => {
+    const explorer = getBlockExplorerHostForChain(
+      asset?.chainId || ChainId.mainnet,
+    );
     chrome.tabs.create({
-      url: `https://etherscan.io/address/${toAddress}`,
+      url: `https://${explorer}/address/${toAddress}`,
     });
-  }, [toAddress]);
+  }, [asset?.chainId, toAddress]);
 
   const onValueChange = useCallback(
     (value: string) => {
@@ -106,7 +113,13 @@ const EditContactDropdown = ({
                       />
                     </Inline>
                     <Text size="14pt" weight="semibold">
-                      {i18n.t('contacts.view_on_etherscan')}
+                      {i18n.t(
+                        `contacts.${
+                          asset?.chainId && isL2Chain(asset?.chainId)
+                            ? 'view_on_explorer'
+                            : 'view_on_etherscan'
+                        }`,
+                      )}
                     </Text>
                   </Inline>
                   <Bleed vertical="8px">
@@ -195,6 +208,7 @@ const EditContactDropdown = ({
 const { innerWidth: windowWidth } = window;
 
 const TEXT_OVERFLOW_WIDTH = windowWidth - 160;
+
 export const ReviewSheet = ({
   show,
   toAddress,
@@ -356,6 +370,7 @@ export const ReviewSheet = ({
 
                             <Box>
                               <EditContactDropdown
+                                asset={asset}
                                 toAddress={toAddress}
                                 closeReview={onCancel}
                                 onEdit={onSaveContactAction}
