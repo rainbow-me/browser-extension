@@ -26,10 +26,10 @@ jobs:
         run: yarn setup
       - name: Check for frozen lockfile
         run: yarn check-lockfile
-      - name: Audit CI
-        run:  yarn audit:ci
       - name: Lint
         run: yarn lint
+      - name: Audit CI
+        run:  yarn audit:ci
       - name: Check types
         run: yarn typecheck
       - uses: actions/checkout@v3
@@ -40,10 +40,46 @@ jobs:
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Build the extension
-        run: yarn build
-      - uses: browser-actions/setup-chrome@latest
+        run: yarn build      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
         with:
-          chrome-version: 'stable'
+          name: rainbowbx-${{ github.sha }}.zip
+          path: build/
+  chrome-e2e:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: rainbowbx-${{ github.sha }}.zip
+      - name: Setup xvfb
+        run: |
+          sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
+          # start xvfb in the background
+          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
+      - name: Install chrome
+        uses: browser-actions/setup-chrome@latest
+        with:
+              chrome-version: 'stable'
+      - name: Run e2e (Chrome)
+        run: |
+              yarn e2e:linux:chrome
+    
+  brave-e2e:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: rainbowbx-${{ github.sha }}.zip
+      - name: Setup xvfb
+        run: |
+          sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
+          # start xvfb in the background
+          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
       - name: Setup Brave browser
         run: |
           sudo apt install apt-transport-https curl
@@ -51,17 +87,20 @@ jobs:
           echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
           sudo apt update
           sudo apt install brave-browser
-      - name: Setup xvfb
-        run: |
-          sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
-          # start xvfb in the background
-          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
-      - name: Run e2e (Chrome)
-        run: |
-          yarn e2e:linux:chrome
       - name: Run e2e (Brave)
         run: |
           yarn e2e:linux:brave
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14.20.1"
+          cache: 'yarn'
+      - name: Install deps via Yarn
+        run: yarn setup
       - name: Install rust
         uses: actions-rs/toolchain@v1
         with:
@@ -76,11 +115,3 @@ jobs:
       - name: Run unit tests
         run: |
           yarn test
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v1
-        with:
-          name: rainbowbx-${{ github.sha }}.zip
-          path: build/
-
-
-          
