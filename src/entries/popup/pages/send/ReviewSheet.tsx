@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { Address } from 'wagmi';
 
+import SendSound from 'static/assets/audio/woosh.wav';
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
@@ -226,6 +227,17 @@ export const ReviewSheet = ({
     () => !!accounts.find((account) => isLowerCaseMatch(account, toAddress)),
     [accounts, toAddress],
   );
+
+  const playSound = useCallback(() => {
+    const sound = new Audio(SendSound);
+    sound.play();
+  }, []);
+
+  const handleSend = useCallback(() => {
+    playSound();
+    onSend();
+  }, [onSend, playSound]);
+
   return (
     <BottomSheet show={show}>
       <Box
@@ -395,7 +407,7 @@ export const ReviewSheet = ({
               height="44px"
               variant="flat"
               width="full"
-              onClick={onSend}
+              onClick={handleSend}
               testId="review-confirm-button"
             >
               <TextOverflow
