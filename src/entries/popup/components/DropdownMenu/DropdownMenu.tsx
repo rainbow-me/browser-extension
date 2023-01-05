@@ -43,40 +43,54 @@ interface DropdownMenuContentProps {
 }
 
 export function DropdownMenuContent(props: DropdownMenuContentProps) {
+  return (
+    <DropdownMenuPrimitive.Portal>
+      <DropdownMenuContentBody
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        {...props}
+      />
+    </DropdownMenuPrimitive.Portal>
+  );
+}
+
+const DropdownMenuContentBody = React.forwardRef<
+  HTMLDivElement,
+  DropdownMenuContentProps
+>((props: DropdownMenuContentProps, ref) => {
   const { children, align = 'start', marginRight, accentColor } = props;
   const { currentTheme } = useCurrentThemeStore();
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
-
   return (
-    <DropdownMenuPrimitive.Portal>
-      <AccentColorProvider
-        color={accentColor || avatar?.color || globalColors.blue60}
-      >
-        <ThemeProvider theme={currentTheme}>
-          <Box
-            as={DropdownMenuPrimitive.Content}
-            style={{
-              width: 204,
-              backdropFilter: 'blur(26px)',
-              boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
-              marginRight: marginRight ?? '0px',
-            }}
-            paddingHorizontal="12px"
-            paddingVertical="4px"
-            align={align}
-            background="surfaceMenu"
-            borderColor="separatorTertiary"
-            borderWidth="1px"
-            borderRadius="16px"
-          >
-            {children}
-          </Box>
-        </ThemeProvider>
-      </AccentColorProvider>
-    </DropdownMenuPrimitive.Portal>
+    <AccentColorProvider
+      color={accentColor || avatar?.color || globalColors.blue60}
+    >
+      <ThemeProvider theme={currentTheme}>
+        <Box
+          as={DropdownMenuPrimitive.Content}
+          style={{
+            width: 204,
+            backdropFilter: 'blur(26px)',
+            boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
+            marginRight: marginRight ?? '0px',
+          }}
+          paddingHorizontal="12px"
+          paddingVertical="4px"
+          align={align}
+          background="surfaceMenu"
+          borderColor="separatorTertiary"
+          borderWidth="1px"
+          borderRadius="16px"
+          ref={ref}
+        >
+          {children}
+        </Box>
+      </ThemeProvider>
+    </AccentColorProvider>
   );
-}
+});
+
+DropdownMenuContentBody.displayName = 'DropdownMenuContentBody';
 
 interface DropdownMenuLabelProps {
   children: ReactNode;
