@@ -24,11 +24,13 @@ jobs:
         run: yarn setup
       - name: Check for frozen lockfile
         run: yarn check-lockfile
+      - name: Zip node_modules
+        run: zip node_modules.zip node_modules/
       - name: Upload deps artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: node_modules
-          path: node_modules
+          name: node_modules.zip
+          path: node_modules.zip
       
   # BUILD THE EXTENSION
   build:
@@ -43,7 +45,9 @@ jobs:
       - name: Download deps artifacts
         uses: actions/download-artifact@v3
         with:
-          name: node_modules
+          name: node_modules.zip
+      - name: Unzip node_modules
+        run: unzip node_modules.zip
       - uses: actions/checkout@v3
         with:
             repository: 'rainbow-me/browser-extension-env'
@@ -74,7 +78,9 @@ jobs:
       - name: Download deps artifacts
         uses: actions/download-artifact@v3
         with:
-          name: node_modules
+          name: node_modules.zip
+      - name: Unzip node_modules
+        run: unzip node_modules.zip
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
@@ -107,7 +113,9 @@ jobs:
       - name: Download deps artifacts
         uses: actions/download-artifact@v3
         with:
-          name: node_modules
+          name: node_modules.zip
+      - name: Unzip node_modules
+        run: unzip node_modules.zip
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
@@ -139,6 +147,10 @@ jobs:
           cache: 'yarn'
       - name: Download deps artifacts
         uses: actions/download-artifact@v3
+        with:
+          name: node_modules.zip
+      - name: Unzip node_modules
+        run: unzip node_modules.zip
       - name: Install rust
         uses: actions-rs/toolchain@v1
         with:
@@ -167,7 +179,9 @@ jobs:
       - name: Download deps artifacts
         uses: actions/download-artifact@v3
         with:
-          name: node_modules
+          name: node_modules.zip
+      - name: Unzip node_modules
+        run: unzip node_modules.zip
       - name: Lint
         run: yarn lint
       - name: Audit CI
