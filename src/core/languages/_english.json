@@ -129,7 +129,7 @@
     "input_to_address_placeholder": "Name, ENS or address",
     "input_token_placeholder": "Token",
     "max": "Max",
-    "switch_to": "Switch to",
+    "switch_to": "Switch to %{currency}",
     "button_label_send": "Send Transacion",
     "button_label_sending": "Sending",
     "button_label_review": "Review",

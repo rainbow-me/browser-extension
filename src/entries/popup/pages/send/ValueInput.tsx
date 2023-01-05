@@ -11,6 +11,7 @@ import {
   Rows,
   Separator,
   Stack,
+  Symbol,
   Text,
 } from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
@@ -104,12 +105,22 @@ export const ValueInput = ({
                   testId="value-input-switch"
                   onClick={switchIndependentField}
                 >
-                  <Text color="accent" size="12pt" weight="bold">
-                    {i18n.t('send.switch_to')}{' '}
-                    {independentField === 'asset'
-                      ? currentCurrency
-                      : asset?.symbol}
-                  </Text>
+                  <Inline alignVertical="center" space="4px">
+                    <Symbol
+                      color="accent"
+                      size={14}
+                      weight="bold"
+                      symbol="arrow.up.arrow.down"
+                    />
+                    <Text color="accent" size="12pt" weight="bold">
+                      {i18n.t('send.switch_to', {
+                        currency:
+                          independentField === 'asset'
+                            ? currentCurrency
+                            : asset?.symbol,
+                      })}
+                    </Text>
+                  </Inline>
                 </Box>
               </Inline>
             </Row>
