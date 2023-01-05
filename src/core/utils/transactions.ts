@@ -478,11 +478,11 @@ export function getPendingTransactionData({
 }
 
 export async function getTransactionReceiptStatus({
-  inlcuded,
+  included,
   transaction,
   transactionResponse,
 }: {
-  inlcuded: boolean;
+  included: boolean;
   transaction: RainbowTransaction;
   transactionResponse: TransactionResponse;
 }) {
@@ -516,7 +516,7 @@ export async function getTransactionReceiptStatus({
       status: transactionStatus,
       type: transaction?.type,
     });
-  } else if (inlcuded) {
+  } else if (included) {
     status = TransactionStatus.unknown;
   } else {
     status = TransactionStatus.failed;
@@ -554,11 +554,9 @@ export async function watchPendingTransactions({
               address,
               'latest',
             );
-            console.log('currentNonceForChainId: ', currentNonceForChainId);
             const transactionResponse = await provider.getTransaction(txHash);
-            console.log('transaction response: ', transactionResponse);
             const nonceAlreadyIncluded =
-              currentNonceForChainId >
+              currentNonceForChainId >=
               (tx?.nonce || transactionResponse?.nonce);
             if (
               (transactionResponse?.blockNumber &&
@@ -566,7 +564,7 @@ export async function watchPendingTransactions({
               nonceAlreadyIncluded
             ) {
               const transactionStatus = await getTransactionReceiptStatus({
-                inlcuded: nonceAlreadyIncluded,
+                included: nonceAlreadyIncluded,
                 transaction: tx,
                 transactionResponse,
               });
@@ -591,7 +589,6 @@ export async function watchPendingTransactions({
     }),
   );
 
-  console.log('updatedPendingTransactions: ', updatedPendingTransactions);
   setPendingTransactions({
     address,
     pendingTransactions: updatedPendingTransactions,
@@ -613,14 +610,15 @@ export async function addNewTransaction({
   const provider = getProvider({ chainId });
   const nonceOnChain =
     ((await provider.getTransactionCount(address, 'pending')) || 0) - 1;
-  const nonce = (localNonce || 0) > nonceOnChain ? localNonce : nonceOnChain;
+  const currentNonce =
+    (localNonce || 0) > nonceOnChain ? localNonce : nonceOnChain;
 
   const { getPendingTransactions, setPendingTransactions } =
     pendingTransactionsStore.getState();
   const pendingTransactions = getPendingTransactions({ address });
   const { currentCurrency } = currentCurrencyStore.getState();
   const newPendingTransaction = parseNewTransaction(
-    { ...transaction, nonce: transaction?.nonce || nonce },
+    { ...transaction, nonce: currentNonce },
     currentCurrency,
   );
 
@@ -631,7 +629,43 @@ export async function addNewTransaction({
   setNonce({
     address,
     chainId,
-    currentNonce: transaction?.nonce || nonce,
+    currentNonce,
+  });
+}
+
+export function updateTransaction({
+  address,
+  chainId,
+  transaction,
+}: {
+  address: Address;
+  chainId: ChainId;
+  transaction: NewTransaction;
+}) {
+  const { setNonce } = nonceStore.getState();
+  const { getPendingTransactions, setPendingTransactions } =
+    pendingTransactionsStore.getState();
+  const { currentCurrency } = currentCurrencyStore.getState();
+  const updatedPendingTransaction = parseNewTransaction(
+    transaction,
+    currentCurrency,
+  );
+  const pendingTransactions = getPendingTransactions({ address });
+  setPendingTransactions({
+    address,
+    pendingTransactions: [
+      { ...transaction, ...updatedPendingTransaction },
+      ...pendingTransactions.filter(
+        (tx) =>
+          tx?.chainId !== chainId &&
+          tx?.nonce !== updatedPendingTransaction?.nonce,
+      ),
+    ],
+  });
+  setNonce({
+    address,
+    chainId,
+    currentNonce: updatedPendingTransaction?.nonce,
   });
 }
 

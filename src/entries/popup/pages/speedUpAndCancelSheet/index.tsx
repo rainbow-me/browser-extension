@@ -12,7 +12,7 @@ import {
 } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
-import { addNewTransaction } from '~/core/utils/transactions';
+import { updateTransaction } from '~/core/utils/transactions';
 import {
   Box,
   Button,
@@ -56,6 +56,7 @@ export function SpeedUpAndCancelSheet({
       value: transaction?.value,
       chainId: transaction?.chainId,
       data: transaction?.data,
+      nonce: transaction?.nonce,
     }),
     [transaction],
   );
@@ -66,6 +67,7 @@ export function SpeedUpAndCancelSheet({
       value: 0,
       chainId: transaction?.chainId,
       data: undefined,
+      nonce: transaction?.nonce,
     }),
     [transaction],
   );
@@ -73,6 +75,7 @@ export function SpeedUpAndCancelSheet({
     const cancellationResult = await sendTransaction(cancelTransactionRequest);
     if (cancellationResult?.from) {
       const cancelTx = {
+        asset: transaction?.asset,
         data: cancellationResult?.data,
         value: cancellationResult?.value,
         from: cancellationResult?.from as Address,
@@ -83,20 +86,37 @@ export function SpeedUpAndCancelSheet({
         type: TransactionType.cancel,
         nonce: transaction?.nonce,
       };
-      await addNewTransaction({
+      updateTransaction({
         address: cancellationResult?.from as Address,
         chainId: cancellationResult?.chainId,
         transaction: cancelTx,
       });
     }
+    onClose();
   };
-  // const handleSpeedUp = async () => {
-  //   const speedUpResult = await sendTransaction(speedUpReqest);
-  //   if (speedUpResult?.from) {
-  //     const transaction = {};
-  //     await addNewTransaction({});
-  //   }
-  // };
+  const handleSpeedUp = async () => {
+    const speedUpResult = await sendTransaction(speedUpTransactionRequest);
+    if (speedUpResult?.from) {
+      const speedUpTransaction = {
+        asset: transaction?.asset,
+        data: speedUpResult?.data,
+        value: speedUpResult?.value,
+        from: speedUpResult?.from as Address,
+        to: speedUpResult?.to as Address,
+        hash: speedUpResult?.hash,
+        chainId: speedUpResult?.chainId,
+        status: TransactionStatus.speeding_up,
+        type: TransactionType.send,
+        nonce: transaction?.nonce,
+      };
+      updateTransaction({
+        address: speedUpResult?.from as Address,
+        chainId: speedUpResult?.chainId,
+        transaction: speedUpTransaction,
+      });
+    }
+    onClose();
+  };
   return (
     <Prompt show={show} padding="12px">
       <Box
@@ -226,7 +246,7 @@ export function SpeedUpAndCancelSheet({
                         height="44px"
                         variant="flat"
                         width="full"
-                        onClick={handleCancellation}
+                        onClick={cancel ? handleCancellation : handleSpeedUp}
                       >
                         <Text size="16pt" weight="bold">
                           {i18n.t(

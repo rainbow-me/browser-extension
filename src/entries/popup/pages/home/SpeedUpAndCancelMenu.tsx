@@ -46,31 +46,27 @@ export function SpeedUpAndCancelMenu({
       <DropdownMenuContent>
         <DropdownMenuRadioGroup>
           <DropdownMenuRadioItem value={'speedUp'}>
-            <MenuRow>
-              <Box onClick={handleRowSelection('speedUp')}>
-                <Inline space="8px" alignVertical="center">
-                  <Text weight="semibold" size="14pt">
-                    {'🚀'}
-                  </Text>
-                  <Text color="label" size="14pt" weight="semibold">
-                    {i18n.t('speed_up_and_cancel.speed_up')}
-                  </Text>
-                </Inline>
-              </Box>
+            <MenuRow onClick={handleRowSelection('speedUp')}>
+              <Inline space="8px" alignVertical="center">
+                <Text weight="semibold" size="14pt">
+                  {'🚀'}
+                </Text>
+                <Text color="label" size="14pt" weight="semibold">
+                  {i18n.t('speed_up_and_cancel.speed_up')}
+                </Text>
+              </Inline>
             </MenuRow>
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem value={'cancel'}>
-            <MenuRow>
-              <Box onClick={handleRowSelection('cancel')}>
-                <Inline space="8px" alignVertical="center">
-                  <Text weight="semibold" size="14pt">
-                    {'☠️'}
-                  </Text>
-                  <Text size="14pt" weight="semibold">
-                    {i18n.t('speed_up_and_cancel.cancel')}
-                  </Text>
-                </Inline>
-              </Box>
+            <MenuRow onClick={handleRowSelection('cancel')}>
+              <Inline space="8px" alignVertical="center">
+                <Text weight="semibold" size="14pt">
+                  {'☠️'}
+                </Text>
+                <Text size="14pt" weight="semibold">
+                  {i18n.t('speed_up_and_cancel.cancel')}
+                </Text>
+              </Inline>
             </MenuRow>
           </DropdownMenuRadioItem>
           <Box paddingVertical="4px">
@@ -113,9 +109,15 @@ export function SpeedUpAndCancelMenu({
   );
 }
 
-function MenuRow({ children }: { children: ReactNode }) {
+function MenuRow({
+  children,
+  onClick,
+}: {
+  children: ReactNode;
+  onClick?: () => void;
+}) {
   return (
-    <Box paddingVertical="2px">
+    <Box onClick={onClick} paddingVertical="2px" width="full">
       <Inline space="8px" alignVertical="center" alignHorizontal="justify">
         {children}
       </Inline>

@@ -186,6 +186,8 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
     status === TransactionStatus.contract_interaction;
   const swapping = status === TransactionStatus.swapping;
   const sending = status === TransactionStatus.sending;
+  const speedingUp = status === TransactionStatus.speeding_up;
+  const cancelling = status === TransactionStatus.cancelling;
 
   const getNativeDisplay = useCallback(() => {
     const isDebit = sent || sentViaSwap || sending || swapping;
@@ -201,11 +203,11 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
   }, [received, receivedViaSwap]);
 
   const getTitleColor = useCallback((): TextStyles['color'] => {
-    if (sending || swapping) {
+    if (cancelling || sending || speedingUp || swapping) {
       return 'blue';
     }
     return sentViaSwap ? 'purple' : 'labelTertiary';
-  }, [sentViaSwap, sending, swapping]);
+  }, [cancelling, sentViaSwap, sending, speedingUp, swapping]);
 
   const getTitleIcon = useCallback(() => {
     let iconSymbol: keyof typeof titleIcons | undefined;
@@ -220,7 +222,7 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
       iconSymbol = 'arrow.triangle.swap';
     } else if (received || receivedViaSwap) {
       iconSymbol = 'arrow.down';
-    } else if (sending || swapping) {
+    } else if (cancelling || sending || speedingUp || swapping) {
       iconSymbol = 'spinner';
     }
 
@@ -243,6 +245,7 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
 
     return null;
   }, [
+    cancelling,
     failed,
     isContractInteraction,
     received,
@@ -250,6 +253,7 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
     sent,
     sentViaSwap,
     sending,
+    speedingUp,
     swapping,
   ]);
 
