@@ -16,7 +16,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: "14.20.1"
           cache: 'yarn'
@@ -38,16 +38,18 @@ jobs:
     needs: [install]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: "14.20.1"
           cache: 'yarn'
-      - name: Download deps artifacts
+      - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
           name: node_modules.zip
       - name: Unzip node_modules
         run: unzip node_modules.zip
+      - name: Install deps via Yarn
+        run: yarn setup
       - uses: actions/checkout@v3
         with:
             repository: 'rainbow-me/browser-extension-env'
@@ -71,16 +73,18 @@ jobs:
       VITEST_SEGFAULT_RETRY: 3
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: "14.20.1"
           cache: 'yarn'
-      - name: Download deps artifacts
+      - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
           name: node_modules.zip
       - name: Unzip node_modules
         run: unzip node_modules.zip
+      - name: Install deps via Yarn
+        run: yarn setup
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
@@ -106,16 +110,18 @@ jobs:
       VITEST_SEGFAULT_RETRY: 3
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: "14.20.1"
           cache: 'yarn'
-      - name: Download deps artifacts
+      - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
           name: node_modules.zip
       - name: Unzip node_modules
         run: unzip node_modules.zip
+      - name: Install deps via Yarn
+        run: yarn setup
       - name: Download build artifacts
         uses: actions/download-artifact@v3
         with:
@@ -141,16 +147,18 @@ jobs:
     needs: [install]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: "14.20.1"
           cache: 'yarn'
-      - name: Download deps artifacts
+      - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
           name: node_modules.zip
       - name: Unzip node_modules
         run: unzip node_modules.zip
+      - name: Install deps via Yarn
+        run: yarn setup
       - name: Install rust
         uses: actions-rs/toolchain@v1
         with:
@@ -172,16 +180,18 @@ jobs:
     needs: [install]
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: "14.20.1"
           cache: 'yarn'
-      - name: Download deps artifacts
+      - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
         with:
           name: node_modules.zip
       - name: Unzip node_modules
         run: unzip node_modules.zip
+      - name: Install deps via Yarn
+        run: yarn setup
       - name: Lint
         run: yarn lint
       - name: Audit CI
