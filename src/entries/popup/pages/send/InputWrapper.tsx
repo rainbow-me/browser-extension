@@ -26,6 +26,7 @@ export const InputWrapper = ({
   dropdownHeight,
   onDropdownScroll,
   testId,
+  borderVisible,
 }: {
   leftComponent: ReactElement;
   centerComponent: ReactElement;
@@ -38,6 +39,7 @@ export const InputWrapper = ({
   dropdownHeight?: number;
   onDropdownScroll?: () => void;
   testId?: string;
+  borderVisible?: boolean;
 }) => {
   return (
     <Box style={{ height: 68 }}>
@@ -48,7 +50,7 @@ export const InputWrapper = ({
           borderRadius="24px"
           paddingHorizontal="20px"
           paddingTop="16px"
-          borderWidth="1px"
+          borderWidth={borderVisible ? '1px' : undefined}
           borderColor="buttonStroke"
         >
           <Box

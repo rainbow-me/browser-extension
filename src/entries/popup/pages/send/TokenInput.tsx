@@ -236,6 +236,7 @@ export const TokenInput = ({
       dropdownVisible={dropdownVisible}
       onDropdownAction={onDropdownAction}
       onDropdownScroll={closeSortContextMenu}
+      borderVisible={!asset}
     />
   );
 };
