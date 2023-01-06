@@ -263,29 +263,35 @@ export function Settings() {
             onClick={() => window.open(RAINBOW_SUPPORT_URL, '_blank')}
           />
         </Menu>
-        <Menu>
-          <MenuItem.Description text="Below buttons are for testing only" />
-          <MenuItem
-            titleComponent={<MenuItem.Title text="test sandbox popup" />}
-            onClick={testSandboxPopup}
-            testId="test-sandbox-popup"
-          />
-          <MenuItem
-            titleComponent={<MenuItem.Title text="test sandbox background" />}
-            onClick={testSandboxBackground}
-            testId="test-sandbox-background"
-          />
-        </Menu>
-        <Box padding="10px" alignItems="center" justifyContent="center">
-          <Text
-            size="12pt"
-            weight="semibold"
-            color="labelTertiary"
-            align="center"
-          >
-            1.2.34 (56)
-          </Text>
-        </Box>
+        {process.env.IS_TESTING === 'true' && (
+          <>
+            <Menu>
+              <MenuItem.Description text="Below buttons are for testing only" />
+              <MenuItem
+                titleComponent={<MenuItem.Title text="test sandbox popup" />}
+                onClick={testSandboxPopup}
+                testId="test-sandbox-popup"
+              />
+              <MenuItem
+                titleComponent={
+                  <MenuItem.Title text="test sandbox background" />
+                }
+                onClick={testSandboxBackground}
+                testId="test-sandbox-background"
+              />
+            </Menu>
+            <Box padding="10px" alignItems="center" justifyContent="center">
+              <Text
+                size="12pt"
+                weight="semibold"
+                color="labelTertiary"
+                align="center"
+              >
+                1.2.34 (56)
+              </Text>
+            </Box>
+          </>
+        )}
       </MenuContainer>
     </Box>
   );

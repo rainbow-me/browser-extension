@@ -19,9 +19,12 @@ export const handleInstallExtension = () =>
             });
         }
       });
-    } // else {
-    //   chrome.tabs.create({
-    //     url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome`,
-    //   });
-    // }
+    } else {
+      // This breaks e2e!!
+      if (process.env.IS_TESTING !== 'true') {
+        chrome.tabs.create({
+          url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome`,
+        });
+      }
+    }
   });
