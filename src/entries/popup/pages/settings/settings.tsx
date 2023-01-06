@@ -296,7 +296,7 @@ export function Settings() {
                   />
                 }
                 onClick={connectToHardhat}
-                testId="test-sandbox-background"
+                testId="connect-to-hardhat"
               />
             </Menu>
             <Box padding="10px" alignItems="center" justifyContent="center">

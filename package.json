@@ -50,7 +50,7 @@
     "test:watch": "yarn anvil & vitest --watch",
     "// Runs e2e": "",
     "vitest:parallel": "yarn vitest e2e/parallel --config ./e2e/vitest.config.ts",
-    "vitest:serial": "yarn vitest e2e/serial --config ./e2e/serial/vitest.config.ts",
+    "vitest:serial": "yarn anvil & yarn vitest e2e/serial --config ./e2e/serial/vitest.config.ts && yarn anvil:kill || yarn anvil:kill",
     "e2e:mac:chrome": "BROWSER=chrome OS=mac yarn vitest:parallel && yarn vitest:serial",
     "e2e:mac:brave": "BROWSER=brave OS=mac yarn vitest:parallel && yarn vitest:serial",
     "e2e:mac": "yarn e2e:mac:chrome && yarn e2e:mac:brave",
