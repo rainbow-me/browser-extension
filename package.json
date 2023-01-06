@@ -4,8 +4,8 @@
   "version": "1.0.3",
   "scripts": {
     "//enable dev mode": "",
-    "devmode:on": "sed -i '' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
-    "devmode:off": "sed -i '' -e 's/IS_DEV.*/IS_DEV=false/g' .env",
+    "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
+    "devmode:off": "sed -i'' -e 's/IS_DEV.*/IS_DEV=false/g' .env",
     "// Bumps the manifest and pkg.json versions": "",
     "bump": "node scripts/bump.js",
     "// Generates a build using webpack secured by Lavamoat": "",
