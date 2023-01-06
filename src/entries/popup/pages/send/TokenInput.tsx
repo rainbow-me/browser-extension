@@ -150,7 +150,12 @@ export const TokenInput = ({
                 onOpenChange={setSortDropdownOpen}
                 open={sortDropdownOpen}
               >
-                <DropdownMenuTrigger asChild>
+                <DropdownMenuTrigger
+                  accentColor={
+                    asset?.colors?.primary || asset?.colors?.fallback
+                  }
+                  asChild
+                >
                   <Box>
                     <Inline space="4px" alignVertical="center">
                       <Symbol
@@ -166,50 +171,56 @@ export const TokenInput = ({
                   </Box>
                 </DropdownMenuTrigger>
 
-                <DropdownMenuContent marginRight="32px">
+                <DropdownMenuContent
+                  accentColor={
+                    asset?.colors?.primary || asset?.colors?.fallback
+                  }
+                  marginRight="32px"
+                >
                   <DropdownMenuRadioGroup
                     value={sortMethod}
-                    onValueChange={(method) =>
-                      setSortMethod(method as SortMethod)
-                    }
+                    onValueChange={(method) => {
+                      setSortMethod(method as SortMethod);
+                    }}
                   >
-                    <Box>
-                      <DropdownMenuRadioItem
-                        value="token"
-                        selectedValue={sortMethod}
-                      >
-                        <Inline space="8px" alignVertical="center">
-                          <Bleed vertical="4px">
-                            <Symbol
-                              weight="semibold"
-                              symbol="record.circle.fill"
-                              size={18}
-                              color="label"
-                            />
-                          </Bleed>
+                    <DropdownMenuRadioItem
+                      value="token"
+                      selectedValue={sortMethod}
+                    >
+                      <Inline space="8px" alignVertical="center">
+                        <Bleed vertical="4px">
+                          <Symbol
+                            weight="semibold"
+                            symbol="record.circle.fill"
+                            size={18}
+                            color="label"
+                          />
+                        </Bleed>
 
-                          <Text size="14pt" weight="semibold" color="label">
-                            {i18n.t('send.tokens_input.token_balance')}
-                          </Text>
-                        </Inline>
-                      </DropdownMenuRadioItem>
-                      <DropdownMenuRadioItem value="chain">
-                        <Inline space="8px" alignVertical="center">
-                          <Bleed vertical="4px">
-                            <Symbol
-                              weight="semibold"
-                              symbol="network"
-                              size={18}
-                              color="label"
-                            />
-                          </Bleed>
+                        <Text size="14pt" weight="semibold" color="label">
+                          {i18n.t('send.tokens_input.token_balance')}
+                        </Text>
+                      </Inline>
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem
+                      value="chain"
+                      selectedValue={sortMethod}
+                    >
+                      <Inline space="8px" alignVertical="center">
+                        <Bleed vertical="4px">
+                          <Symbol
+                            weight="semibold"
+                            symbol="network"
+                            size={18}
+                            color="label"
+                          />
+                        </Bleed>
 
-                          <Text size="14pt" weight="semibold" color="label">
-                            {i18n.t('send.tokens_input.networks')}
-                          </Text>
-                        </Inline>
-                      </DropdownMenuRadioItem>
-                    </Box>
+                        <Text size="14pt" weight="semibold" color="label">
+                          {i18n.t('send.tokens_input.networks')}
+                        </Text>
+                      </Inline>
+                    </DropdownMenuRadioItem>
                   </DropdownMenuRadioGroup>
                 </DropdownMenuContent>
               </DropdownMenu>
