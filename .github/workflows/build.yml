@@ -97,6 +97,9 @@ jobs:
               chrome-version: 'stable'
       - name: Run e2e (Chrome)
         run: |
+              export BROWSER=chrome 
+              export OS=linux 
+              export CHROMIUM_BIN=$(which chrome) 
               yarn e2e:linux:chrome
   # BRAVE TESTS
   brave-e2e:
@@ -136,6 +139,9 @@ jobs:
           sudo apt install brave-browser
       - name: Run e2e (Brave)
         run: |
+          export BROWSER=brave 
+          export OS=linux 
+          export BRAVE_BIN='/usr/bin/brave-browser-stable'
           yarn e2e:linux:brave
   # UNIT TESTS
   unit-tests:
