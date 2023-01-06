@@ -120,7 +120,11 @@ export default function AccountItem({ account }: { account: Address }) {
                 {avatar?.imageUrl ? (
                   <Avatar.Image imageUrl={avatar.imageUrl} />
                 ) : (
-                  <Avatar.Emoji color={avatar?.color} />
+                  <Avatar.Emoji
+                    color={avatar?.color}
+                    emoji={avatar?.emoji}
+                    size="20pt"
+                  />
                 )}
               </>
             ) : null}
