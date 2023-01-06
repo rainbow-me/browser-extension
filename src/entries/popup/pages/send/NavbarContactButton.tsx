@@ -144,13 +144,13 @@ const EditContactDropdown = ({
           </Box>
           <DropdownMenuRadioGroup onValueChange={onValueChange}>
             <Stack space="4px">
+              <DropdownMenuSeparator />
               <Box>
-                <DropdownMenuSeparator />
                 <DropdownMenuRadioItem value={'copy'}>
                   <Box
                     testId="navbar-contact-button-edit-copy"
                     width="full"
-                    marginVertical="-1px"
+                    // marginVertical="-1px"
                   >
                     <Inline space="8px" alignVertical="center">
                       <Box>

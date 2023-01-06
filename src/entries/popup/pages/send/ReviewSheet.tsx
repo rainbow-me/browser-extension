@@ -132,8 +132,8 @@ const EditContactDropdown = ({
                 </Inline>
               </Box>
             </DropdownMenuRadioItem>
+            <DropdownMenuSeparator />
             <Box>
-              <DropdownMenuSeparator />
               <DropdownMenuRadioItem value={'edit'}>
                 <Box
                   width="full"
