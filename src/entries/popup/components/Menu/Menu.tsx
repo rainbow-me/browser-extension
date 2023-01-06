@@ -1,20 +1,23 @@
 import React from 'react';
 
 import { Box, Separator, Stack } from '~/design-system';
+import { BoxStyles } from '~/design-system/styles/core.css';
 
 interface MenuProps {
   children: React.ReactNode;
   header?: string;
   description?: string;
+  paddingVertical?: BoxStyles['paddingVertical'];
 }
 
-const Menu = ({ children }: MenuProps) => {
+const Menu = ({ children, paddingVertical }: MenuProps) => {
   return (
     <Box
       background="surfaceSecondaryElevated"
       borderRadius="16px"
       boxShadow="12px"
       width="full"
+      paddingVertical={paddingVertical}
     >
       <Stack
         separator={
