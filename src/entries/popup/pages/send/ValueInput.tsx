@@ -1,3 +1,4 @@
+import { AnimationControls, motion } from 'framer-motion';
 import React from 'react';
 
 import { i18n } from '~/core/languages';
@@ -30,6 +31,7 @@ export const ValueInput = ({
   setIndependentAmount,
   setMaxAssetAmount,
   switchIndependentField,
+  inputAnimationControls,
 }: {
   asset: ParsedAddressAsset;
   currentCurrency: SupportedCurrencyKey;
@@ -43,6 +45,7 @@ export const ValueInput = ({
   setIndependentAmount: React.Dispatch<React.SetStateAction<string>>;
   setMaxAssetAmount: () => void;
   switchIndependentField: () => void;
+  inputAnimationControls: AnimationControls;
 }) => {
   const truncatedAssetSymbol = asset?.symbol?.slice(0, 5) ?? '';
 
@@ -54,29 +57,36 @@ export const ValueInput = ({
           <Rows space="16px">
             <Row>
               <Inline alignVertical="center" alignHorizontal="justify">
-                <SendInputMask
-                  value={`${independentAmount}`}
-                  placeholder={`0.00 ${
-                    independentField === 'asset'
-                      ? truncatedAssetSymbol
-                      : currentCurrency
-                  }`}
-                  decimals={
-                    independentField === 'asset'
-                      ? asset?.decimals
-                      : supportedCurrencies[currentCurrency].decimals
-                  }
-                  borderColor="accent"
-                  onChange={setIndependentAmount}
-                  height="56px"
-                  variant="bordered"
-                  innerRef={independentFieldRef}
-                  placeholderSymbol={
-                    independentField === 'asset'
-                      ? truncatedAssetSymbol
-                      : currentCurrency
-                  }
-                />
+                <Box
+                  as={motion.div}
+                  width="full"
+                  animate={inputAnimationControls}
+                >
+                  <SendInputMask
+                    value={`${independentAmount}`}
+                    placeholder={`0.00 ${
+                      independentField === 'asset'
+                        ? truncatedAssetSymbol
+                        : currentCurrency
+                    }`}
+                    decimals={
+                      independentField === 'asset'
+                        ? asset?.decimals
+                        : supportedCurrencies[currentCurrency].decimals
+                    }
+                    borderColor="accent"
+                    onChange={setIndependentAmount}
+                    height="56px"
+                    variant="bordered"
+                    innerRef={independentFieldRef}
+                    placeholderSymbol={
+                      independentField === 'asset'
+                        ? truncatedAssetSymbol
+                        : currentCurrency
+                    }
+                  />
+                </Box>
+
                 <Box position="absolute" style={{ right: 48 }}>
                   <Button
                     onClick={setMaxAssetAmount}
