@@ -46,6 +46,6 @@ test('should be able to get contact', async () => {
   const contact = getContact({ address: DEFAULT_ACCOUNT_2 });
   expect(contact).toStrictEqual({
     address: DEFAULT_ACCOUNT_2,
-    name: ACCOUNT_NAME_1,
+    name: ACCOUNT_NAME_2,
   });
 });
