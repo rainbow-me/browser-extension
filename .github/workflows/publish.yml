@@ -2,9 +2,9 @@
 name: Publish to Chrome WebStore
 
 on:
-  # schedule:
+  schedule:
     # Runs every day at midnight
-    # - cron: '0 0 * * *'
+    - cron: '0 0 * * *'
   workflow_dispatch:
 jobs:
   build:
@@ -33,7 +33,7 @@ jobs:
       - name: Bump the version
         run: yarn bump
       - name: Build the extension ready for the stores
-        run: yarn bundle
+        run: yarn build:webpack && yarn zip
       - name: Submit to the chrome webstore
         uses: PlasmoHQ/bpp@v3
         with:

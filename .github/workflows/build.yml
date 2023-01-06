@@ -8,17 +8,15 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
-    env:
-      DISPLAY: :0
-      VITEST_SEGFAULT_RETRY: 3
+  # INSTALL DEPS
+  install:
     runs-on: ubuntu-latest
     concurrency: 
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version: "14.20.1"
           cache: 'yarn'
@@ -26,24 +24,115 @@ jobs:
         run: yarn setup
       - name: Check for frozen lockfile
         run: yarn check-lockfile
-      - name: Audit CI
-        run:  yarn audit:ci
-      - name: Lint
-        run: yarn lint
-      - name: Check types
-        run: yarn typecheck
+      - name: Zip node_modules
+        run: tar czvf node_modules.tar.gz node_modules/
+      - name: Upload deps artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: node_modules.tar.gz
+          path: node_modules.tar.gz
+      
+  # BUILD THE EXTENSION
+  build:
+    runs-on: ubuntu-latest
+    needs: [install]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "14.20.1"
+          cache: 'yarn'
+      - name: Download deps cache artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules.tar.gz
+      - name: Unzip node_modules
+        run: tar xzvf node_modules.tar.gz
       - uses: actions/checkout@v3
         with:
-          repository: 'rainbow-me/browser-extension-env'
-          token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-          path: tmp
+            repository: 'rainbow-me/browser-extension-env'
+            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+            path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
+      - name: Set IS_TESTING=true
+        run: |
+          sed -i 's/IS_TESTING.*/IS_TESTING=true/g' .env
       - name: Build the extension
-        run: yarn build
-      - uses: browser-actions/setup-chrome@latest
+        run: yarn build:webpack      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
         with:
-          chrome-version: 'stable'
+          name: rainbowbx-${{ github.sha }}.zip
+          path: build/
+  # CHROME TESTS
+  chrome-e2e:
+    runs-on: ubuntu-latest
+    needs: [build]
+    env:
+      DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 3
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "14.20.1"
+          cache: 'yarn'
+      - name: Download deps cache artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules.tar.gz
+      - name: Unzip node_modules
+        run: tar xzvf node_modules.tar.gz
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: rainbowbx-${{ github.sha }}.zip
+          path: build
+      - name: Setup xvfb
+        run: |
+          sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
+          # start xvfb in the background
+          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
+      - name: Install chrome
+        uses: browser-actions/setup-chrome@latest
+        with:
+              chrome-version: 'stable'
+      - name: Run e2e (Chrome)
+        run: |
+              export BROWSER=chrome 
+              export OS=linux 
+              export CHROMIUM_BIN=$(which chrome) 
+              yarn vitest:parallel && yarn vitest:serial
+  # BRAVE TESTS
+  brave-e2e:
+    needs: [build]
+    runs-on: ubuntu-latest
+    env:
+      DISPLAY: :0
+      VITEST_SEGFAULT_RETRY: 3
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "14.20.1"
+          cache: 'yarn'
+      - name: Download deps cache artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules.tar.gz
+      - name: Unzip node_modules
+        run: tar xzvf node_modules.tar.gz
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: rainbowbx-${{ github.sha }}.zip
+          path: build
+      - name: Setup xvfb
+        run: |
+          sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
+          # start xvfb in the background
+          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
       - name: Setup Brave browser
         run: |
           sudo apt install apt-transport-https curl
@@ -51,17 +140,28 @@ jobs:
           echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
           sudo apt update
           sudo apt install brave-browser
-      - name: Setup xvfb
-        run: |
-          sudo apt-get install -y xvfb libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-randr0 libxcb-render-util0 libxcb-xinerama0 libxcb-xinput0 libxcb-xfixes0
-          # start xvfb in the background
-          sudo /usr/bin/Xvfb $DISPLAY -screen 0 1280x1024x24 &
-      - name: Run e2e (Chrome)
-        run: |
-          yarn e2e:linux:chrome
       - name: Run e2e (Brave)
         run: |
-          yarn e2e:linux:brave
+          export BROWSER=brave 
+          export OS=linux 
+          export BRAVE_BIN='/usr/bin/brave-browser-stable'
+          yarn vitest:parallel && yarn vitest:serial
+  # UNIT TESTS
+  unit-tests:
+    runs-on: ubuntu-latest
+    needs: [install]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "14.20.1"
+          cache: 'yarn'
+      - name: Download deps cache artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules.tar.gz
+      - name: Unzip node_modules
+        run: tar xzvf node_modules.tar.gz
       - name: Install rust
         uses: actions-rs/toolchain@v1
         with:
@@ -76,11 +176,28 @@ jobs:
       - name: Run unit tests
         run: |
           yarn test
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v1
+
+  # LINT, TYPECHECK, AUDIT
+  ci-checks:
+    runs-on: ubuntu-latest
+    needs: [install]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          name: rainbowbx-${{ github.sha }}.zip
-          path: build/
-
-
-          
+          node-version: "14.20.1"
+          cache: 'yarn'
+      - name: Download deps cache artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules.tar.gz
+      - name: Unzip node_modules
+        run: tar xzvf node_modules.tar.gz
+      - name: DS Setup
+        run: yarn ds:install
+      - name: Lint
+        run: yarn lint
+      - name: Audit CI
+        run:  yarn audit:ci
+      - name: Check types
+        run: yarn typecheck
