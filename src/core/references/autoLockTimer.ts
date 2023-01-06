@@ -1,46 +1,53 @@
+import { i18n } from '../languages';
 import { AutoLockTimerData, AutoLockTimerOption } from '../types/settings';
 
 export const autoLockTimerOptions: {
   [key in AutoLockTimerOption]: AutoLockTimerData;
 } = {
   immediately: {
-    label: 'Immediately',
+    label: i18n.t('settings.privacy_and_security.auto_lock_timer.immediately'),
     mins: 0,
   },
   one_minute: {
-    label: '1 minute',
+    label: i18n.t('settings.privacy_and_security.auto_lock_timer.one_minute'),
     mins: 1,
   },
   five_minutes: {
-    label: '5 minutes',
+    label: i18n.t('settings.privacy_and_security.auto_lock_timer.five_minutes'),
     mins: 5,
   },
   ten_minutes: {
-    label: '10 minutes',
+    label: i18n.t('settings.privacy_and_security.auto_lock_timer.ten_minutes'),
     mins: 10,
   },
   fifteen_minutes: {
-    label: '15 minutes',
+    label: i18n.t(
+      'settings.privacy_and_security.auto_lock_timer.fifteen_minutes',
+    ),
     mins: 15,
   },
   thirty_minutes: {
-    label: '30 minutes',
+    label: i18n.t(
+      'settings.privacy_and_security.auto_lock_timer.thirty_minutes',
+    ),
     mins: 30,
   },
   one_hour: {
-    label: '1 hour',
+    label: i18n.t('settings.privacy_and_security.auto_lock_timer.one_hour'),
     mins: 60,
   },
   twelve_hours: {
-    label: '12 hours',
+    label: i18n.t('settings.privacy_and_security.auto_lock_timer.twelve_hours'),
     mins: 720,
   },
   twenty_four_hours: {
-    label: '24 hours',
+    label: i18n.t(
+      'settings.privacy_and_security.auto_lock_timer.twenty_four_hours',
+    ),
     mins: 1440,
   },
   none: {
-    label: 'None',
+    label: i18n.t('settings.privacy_and_security.auto_lock_timer.none'),
     mins: null,
   },
 };

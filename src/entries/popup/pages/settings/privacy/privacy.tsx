@@ -31,11 +31,11 @@ export function Privacy() {
     setShowEnterPassword(false);
   };
   const handleChangePassword = async () => {
-    setConfirmPasswordRedirect('/settings/privacy/changePassword');
+    setConfirmPasswordRedirect(ROUTES.SETTINGS__PRIVACY__CHANGE_PASSWORD);
     openPasswordPrompt();
   };
   const handleWalletsAndKeys = async () => {
-    setConfirmPasswordRedirect('/settings/privacy/walletsAndKeys');
+    setConfirmPasswordRedirect(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);
     openPasswordPrompt();
   };
   return (

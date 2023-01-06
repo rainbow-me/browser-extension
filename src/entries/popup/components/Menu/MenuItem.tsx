@@ -161,7 +161,7 @@ const MenuItem = ({
       style={{ height: 18 }}
     >
       <Inline alignHorizontal="justify" alignVertical="center" height="full">
-        <Inline alignVertical="center" space="16px" height="full">
+        <Inline alignVertical="center" space="16px" height="full" wrap={false}>
           {leftComponent && (
             <Box alignItems="center" justifyContent="center">
               {leftComponent}

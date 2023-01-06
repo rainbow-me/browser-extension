@@ -124,6 +124,7 @@ export const ConfirmPasswordPrompt = ({
                 color="fillSecondary"
                 onClick={handleClose}
                 width="full"
+                borderRadius="9px"
               >
                 {i18n.t('common_actions.cancel')}
               </Button>
@@ -135,6 +136,7 @@ export const ConfirmPasswordPrompt = ({
                 color="accent"
                 onClick={handleValidatePassword}
                 width="full"
+                borderRadius="9px"
               >
                 {i18n.t('common_actions.continue')}
               </Button>
