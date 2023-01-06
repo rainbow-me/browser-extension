@@ -105,6 +105,7 @@ export const ValueInput = ({
             <Row height="content">
               <Inline alignHorizontal="justify" alignVertical="center">
                 <TextOverflow
+                  as="p"
                   maxWidth={windowWidth / 2}
                   size="11pt"
                   weight="bold"

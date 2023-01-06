@@ -118,7 +118,7 @@ export const TokenInput = ({
             </TextOverflow>
 
             {asset && (
-              <Text size="12pt" weight="semibold" color="labelTertiary">
+              <Text as="p" size="12pt" weight="semibold" color="labelTertiary">
                 {handleSignificantDecimals(
                   asset?.balance.amount,
                   asset?.decimals,
