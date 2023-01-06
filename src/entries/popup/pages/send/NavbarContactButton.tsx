@@ -56,6 +56,8 @@ const NavbarSaveContactButton = ({
         variant="flat"
         onClick={enabled ? openSavePrompt : () => null}
         testId={`navbar-contact-button-save`}
+        paddingLeft="8px"
+        paddingRight="12px"
       >
         <Inline space="4px" alignVertical="center">
           {toAddress ? (
