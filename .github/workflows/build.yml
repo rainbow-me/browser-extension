@@ -56,7 +56,9 @@ jobs:
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Set IS_TESTING=true
-        run: sed -i 's/IS_TESSTING.*/IS_TESTING=true/g' .env
+        run: |
+          sed -i 's/IS_TESSTING.*/IS_TESTING=true/g' .env
+          tail -n 1 .env
       - name: Build the extension
         run: yarn build:webpack      
       - name: Upload artifacts
