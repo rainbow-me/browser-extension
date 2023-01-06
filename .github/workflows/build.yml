@@ -100,7 +100,7 @@ jobs:
               export BROWSER=chrome 
               export OS=linux 
               export CHROMIUM_BIN=$(which chrome) 
-              yarn e2e:linux:chrome
+              yarn vitest:parallel && yarn vitest:serial
   # BRAVE TESTS
   brave-e2e:
     needs: [build]
@@ -142,7 +142,7 @@ jobs:
           export BROWSER=brave 
           export OS=linux 
           export BRAVE_BIN='/usr/bin/brave-browser-stable'
-          yarn e2e:linux:brave
+          yarn vitest:parallel && yarn vitest:serial
   # UNIT TESTS
   unit-tests:
     runs-on: ubuntu-latest
