@@ -58,7 +58,7 @@ jobs:
       - name: Set IS_TESTING=true
         run: sed -i 's/IS_TESSTING.*/IS_TESTING=true/g' .env
       - name: Build the extension
-        run: yarn build      
+        run: yarn build:webpack      
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
