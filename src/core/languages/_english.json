@@ -9,12 +9,17 @@
     "title": "Settings",
     "use_rainbow_as_default_wallet": "Use Rainbow as default wallet",
     "default_wallet_description": "Allow Apps to prioritize Rainbow when looking for an extension to connect with.",
-    "theme": "Theme",
     "contacts": "Contacts",
     "share_rainbow": "Share Rainbow",
     "learn_about_ethereum": "Learn about Ethereum",
     "follow_us_on_twitter": "Follow us on Twitter",
     "feedback_and_support": "Feedback & Support",
+    "theme": {
+      "title": "Theme",
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    },
     "privacy_and_security": {
       "title": "Privacy & Security",
       "hide_asset_balances": "Hide asset balances",
@@ -23,7 +28,17 @@
       "view_private_key": "View Private Key",
       "view_secret_recovery_phrase": "View Secret Recovery Phrase",
       "auto_lock_timer": {
-        "title": "Auto-Lock Timer"
+        "title": "Auto-Lock Timer",
+        "immediately": "Immediately",
+        "one_minute": "1 minute",
+        "five_minutes": "5 minutes",
+        "ten_minutes": "10 minutes",
+        "fifteen_minutes": "15 minutes",
+        "thirty_minutes": "30 minutes",
+        "one_hour": "1 hour",
+        "twelve_hours": "12 hours",
+        "twenty_four_hours": "24 hours",
+        "none": "None"
       },
       "change_password": {
         "title": "Change Password",
@@ -82,7 +97,21 @@
       "flashbots_description": "Flashbots protects your transactions and reduces the likelihood of transaction failures. Learn more."
     },
     "currency": {
-      "title": "Currency"
+      "title": "Currency",
+      "ETH": "Ethereum",
+      "USD": "United States Dollar",
+      "EUR": "Euro",
+      "GBP": "British Pound",
+      "AUD": "Australian Dollar",
+      "CNY": "Chinese Yuan",
+      "KRW": "South Korean Won",
+      "JPY": "Japanese Yen",
+      "RUB": "Russian Ruble",
+      "INR": "Indian Rupee",
+      "TRY": "Turkish Lira",
+      "CAD": "Canadian Dollar",
+      "NZD": "New Zealand Dollar",
+      "ZAR": "South African Rand"
     }
   },
   "transactions": {

@@ -217,6 +217,7 @@ export function Routes() {
             navbar
             title={i18n.t('settings.title')}
             protectedRoute
+            background="surfaceSecondary"
           >
             <Settings />
           </AnimatedRoute>
@@ -230,6 +231,7 @@ export function Routes() {
             navbar
             title={i18n.t('settings.privacy_and_security.title')}
             protectedRoute
+            background="surfaceSecondary"
           >
             <Privacy />
           </AnimatedRoute>
@@ -245,6 +247,7 @@ export function Routes() {
               'settings.privacy_and_security.auto_lock_timer.title',
             )}
             protectedRoute
+            background="surfaceSecondary"
           >
             <AutoLockTimer />
           </AnimatedRoute>
@@ -253,7 +256,11 @@ export function Routes() {
       {
         path: ROUTES.SETTINGS__PRIVACY__CHANGE_PASSWORD,
         element: (
-          <AnimatedRoute direction="horizontal" protectedRoute>
+          <AnimatedRoute
+            direction="horizontal"
+            protectedRoute
+            background="surfaceSecondary"
+          >
             <ChangePassword />
           </AnimatedRoute>
         ),
@@ -268,6 +275,7 @@ export function Routes() {
               'settings.privacy_and_security.wallets_and_keys.title',
             )}
             protectedRoute
+            background="surfaceSecondary"
           >
             <WalletsAndKeys />
           </AnimatedRoute>
@@ -283,6 +291,7 @@ export function Routes() {
               'settings.privacy_and_security.wallets_and_keys.wallet_details.title',
             )}
             protectedRoute
+            background="surfaceSecondary"
           >
             <WalletDetails />
           </AnimatedRoute>
@@ -348,6 +357,7 @@ export function Routes() {
             navbar
             title={i18n.t('settings.transactions.title')}
             protectedRoute
+            background="surfaceSecondary"
           >
             <Transactions />
           </AnimatedRoute>
@@ -361,6 +371,7 @@ export function Routes() {
             navbar
             title={i18n.t('settings.currency.title')}
             protectedRoute
+            background="surfaceSecondary"
           >
             <Currency />
           </AnimatedRoute>

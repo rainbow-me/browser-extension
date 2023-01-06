@@ -190,7 +190,7 @@ export function WalletDetails() {
               onClick={handleViewRecoveryPhrase}
             />
           </Menu>
-          <Menu>
+          <Menu paddingVertical="8px">
             {wallet?.accounts.map((account: Address) => {
               return <AccountItem account={account} key={account} />;
             })}

@@ -121,6 +121,7 @@ export const NewWalletPrompt = ({
                 color="accent"
                 onClick={handleValidateWalletName}
                 width="full"
+                borderRadius="9px"
               >
                 {i18n.t(
                   'settings.privacy_and_security.wallets_and_keys.new_wallet.create',
@@ -134,6 +135,7 @@ export const NewWalletPrompt = ({
                 color="fillSecondary"
                 onClick={handleClose}
                 width="full"
+                borderRadius="9px"
               >
                 {i18n.t('common_actions.cancel')}
               </Button>
