@@ -143,7 +143,7 @@ const ConnectedApp = ({
       <Box
         background={{
           default: 'transparent',
-          hover: 'surfaceSecondaryElevated',
+          hover: 'surfacePrimaryElevatedSecondary',
         }}
         borderRadius="12px"
         onMouseEnter={onMouseEnter}
