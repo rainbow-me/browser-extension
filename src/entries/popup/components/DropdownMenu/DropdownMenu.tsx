@@ -40,6 +40,7 @@ interface DropdownMenuContentProps {
   align?: 'start' | 'center' | 'end';
   marginRight?: Space;
   accentColor?: string;
+  sideOffset?: number;
 }
 
 export function DropdownMenuContent(props: DropdownMenuContentProps) {

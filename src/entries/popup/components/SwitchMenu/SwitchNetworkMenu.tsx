@@ -92,7 +92,7 @@ export const SwitchNetworkMenu = ({
       <DropdownMenuTrigger asChild>
         <Box style={{ cursor: 'default' }}>{triggerComponent}</Box>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent align="end" marginRight="20px" sideOffset={1}>
         <DropdownMenuLabel>{i18n.t('menu.network.title')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup
