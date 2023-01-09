@@ -19,9 +19,9 @@ const IS_TESTING = process.env.IS_TESTING === 'true';
 
 const SUPPORTED_CHAINS = [
   chain.mainnet,
+  { ...chain.polygon, name: 'Polygon (Matic)' },
   chain.optimism,
-  chain.polygon,
-  chain.arbitrum,
+  { ...chain.arbitrum, name: 'Arbitrum' },
   bsc,
 ];
 
