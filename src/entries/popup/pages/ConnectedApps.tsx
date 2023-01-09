@@ -158,7 +158,7 @@ const ConnectedApp = ({
           </Box>
         )}
         <AppNetworkMenu displayConnectedRoute={false} align="end" url={url}>
-          <Box width="full">
+          <Box>
             <Box id="switch-network-menu">
               <Inset horizontal="12px" vertical="8px">
                 <Inline alignHorizontal="justify" alignVertical="center">

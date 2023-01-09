@@ -65,9 +65,7 @@ export const AppNetworkMenu = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Box position="relative" id="home-page-header-left">
-          {children}
-        </Box>
+        <Box id="home-page-header-left">{children}</Box>
       </DropdownMenuTrigger>
       <DropdownMenuContent sideOffset={sideOffset} align={align}>
         {url ? (
