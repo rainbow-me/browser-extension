@@ -67,14 +67,15 @@ export const hasVault = () => {
 };
 
 export const isPasswordSet = async () => {
-  const available = !keychainManager.verifyPassword('');
+  const isPasswordEmpty = keychainManager.verifyPassword('');
   // We don't have it in memory
-  if (!available) {
+  if (isPasswordEmpty) {
     // check if it was set at all
-    if (await unlockVault('')) {
-      lockVault();
+    if (await keychainManager.verifyPasswordViaDecryption('')) {
       return false;
     }
+    return true;
+  } else {
     return true;
   }
 };
