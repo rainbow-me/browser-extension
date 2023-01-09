@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { TextColor } from '~/design-system/styles/designTokens';
+import { Radius, TextColor } from '~/design-system/styles/designTokens';
 
 import { Box } from '../Box/Box';
 import {
@@ -19,6 +19,7 @@ export type ButtonSymbolProps = {
   onClick?: () => void;
   symbol: SymbolProps['symbol'];
   symbolColor?: TextColor;
+  borderRadius?: Radius;
 } & ButtonVariantProps;
 
 export function ButtonSymbol({ height, symbol, ...props }: ButtonSymbolProps) {
