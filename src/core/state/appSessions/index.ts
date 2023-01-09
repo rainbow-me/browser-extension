@@ -3,7 +3,7 @@ import create from 'zustand';
 
 import { createStore } from '../internal/createStore';
 
-interface AppSession {
+export interface AppSession {
   host: string;
   chainId: number;
   address: Address;

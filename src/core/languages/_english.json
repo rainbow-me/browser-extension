@@ -122,7 +122,8 @@
   },
   "connected_apps": {
     "title": "Connected Apps",
-    "disconnect": "Disconnect All"
+    "disconnect": "Disconnect All",
+    "other_wallets": "Other Wallets"
   },
   "send": {
     "title": "Send",

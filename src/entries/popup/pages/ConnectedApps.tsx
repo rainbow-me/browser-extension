@@ -2,7 +2,9 @@ import * as React from 'react';
 import { Address, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useAppSessionsStore } from '~/core/state';
+import { useAppSessionsStore, useCurrentAddressStore } from '~/core/state';
+import { AppSession } from '~/core/state/appSessions';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 import { truncateAddress } from '~/core/utils/truncateAddress';
 import {
   Box,
@@ -22,6 +24,18 @@ import { useAppSession } from '../hooks/useAppSession';
 
 export function ConnectedApps() {
   const { appSessions, clearSessions } = useAppSessionsStore();
+  const { currentAddress } = useCurrentAddressStore();
+
+  const filteredSessions = Object.values(appSessions).reduce(
+    (acc: [AppSession[], AppSession[]], session: AppSession) => (
+      acc[isLowerCaseMatch(session.address, currentAddress) ? 0 : 1].push(
+        session,
+      ),
+      acc
+    ),
+    [[], []],
+  );
+
   return (
     <Box>
       <Box
@@ -30,18 +44,43 @@ export function ConnectedApps() {
           height: 489,
         }}
       >
-        <Rows alignVertical="top">
-          {Object.keys(appSessions).map((key, i) => (
-            <Row height="content" key={i}>
-              <ConnectedApp
-                host={appSessions[key].host}
-                url={appSessions[key].url}
-                address={appSessions[key].address}
-                chainId={appSessions[key].chainId}
-              />
-            </Row>
-          ))}
-        </Rows>
+        <Stack space="16px">
+          <Rows alignVertical="top">
+            {filteredSessions?.[0]?.map((session, i) => (
+              <Row height="content" key={i}>
+                <ConnectedApp
+                  host={session.host}
+                  url={session.url}
+                  address={session.address}
+                  chainId={session.chainId}
+                />
+              </Row>
+            ))}
+          </Rows>
+
+          {filteredSessions.length && (
+            <>
+              <Box paddingHorizontal="20px">
+                <Text size="14pt" color="labelTertiary" weight="semibold">
+                  Other Wallets
+                </Text>
+              </Box>
+
+              <Rows alignVertical="top">
+                {filteredSessions?.[1]?.map((session, i) => (
+                  <Row height="content" key={i}>
+                    <ConnectedApp
+                      host={session.host}
+                      url={session.url}
+                      address={session.address}
+                      chainId={session.chainId}
+                    />
+                  </Row>
+                ))}
+              </Rows>
+            </>
+          )}
+        </Stack>
       </Box>
 
       <Box
@@ -92,7 +131,7 @@ function ConnectedApp({
   const { updateAppSessionChainId, disconnectAppSession } = useAppSession({
     host,
   });
-  const { appLogo, appName } = useAppMetadata({ url });
+  const { appLogo, appName, appHost } = useAppMetadata({ url });
 
   return (
     <SwitchNetworkMenu
@@ -130,7 +169,7 @@ function ConnectedApp({
                       weight="semibold"
                       color="label"
                     >
-                      {`${appName}`}
+                      {appName || appHost}
                     </Text>
                     <Inline space="4px" alignVertical="center">
                       <Box
