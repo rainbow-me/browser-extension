@@ -92,7 +92,7 @@ export const NewWalletPrompt = ({
                 <Row>
                   <Input
                     placeholder={i18n.t(
-                      'settings.privacy_and_security.wallets_and_keys.new_wallet.create',
+                      'settings.privacy_and_security.wallets_and_keys.new_wallet.input_placeholder',
                     )}
                     value={walletName}
                     onChange={(e) => setWalletName(e.target.value)}
