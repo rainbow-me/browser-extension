@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Box, Inline } from '~/design-system';
+import { Box, Inline, Symbol } from '~/design-system';
 
 import { Navbar } from '../../components/Navbar/Navbar';
 import { AppNetworkMenu } from '../../components/SwitchMenu/AppNetworkMenu';
@@ -44,7 +44,32 @@ export const NetworkMenu = () => {
           borderColor="separatorTertiary"
           borderWidth="1px"
         >
-          <Inline alignHorizontal="center" alignVertical="center">
+          <Inline alignHorizontal="center" alignVertical="center" height="full">
+            <Box
+              position="absolute"
+              style={{
+                paddingLeft: 24,
+                paddingBottom: 24,
+              }}
+            >
+              <Box
+                background="surfacePrimaryElevated"
+                style={{ height: 8, width: 8, borderRadius: 4.5 }}
+              >
+                <Inline
+                  alignHorizontal="center"
+                  alignVertical="center"
+                  height="full"
+                >
+                  <Symbol
+                    size={6}
+                    color={appSession ? 'green' : 'labelQuaternary'}
+                    symbol="circle.fill"
+                    weight="semibold"
+                  />
+                </Inline>
+              </Box>
+            </Box>
             <Box
               style={{
                 height: 14,
