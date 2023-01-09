@@ -136,7 +136,7 @@ describe('Import wallet flow', () => {
     await findElementAndClick({ id: 'switch-network-item-2', driver });
 
     await goToTestApp(driver);
-    const expectedNetwork = 'Network: Polygon - matic';
+    const expectedNetwork = 'Network: Optimism - optimism';
     const network = await querySelector(driver, '[id="network"]');
     const actualNetwork = await network.getText();
     expect(actualNetwork).toEqual(expectedNetwork);

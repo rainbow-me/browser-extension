@@ -32,7 +32,13 @@ export const NetworkMenu = () => {
   }, []);
 
   return (
-    <AppNetworkMenu sideOffset={1} url={url}>
+    <AppNetworkMenu
+      menuTriggerId="home-page-header-left"
+      headerHostId="home-page-header-host"
+      connectedAppsId="home-page-header-connected-apps"
+      sideOffset={1}
+      url={url}
+    >
       {appSession ? (
         <Box
           style={{

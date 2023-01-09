@@ -37,6 +37,9 @@ interface AppNetworkMenuProps {
   align?: 'center' | 'end' | 'start';
   displayConnectedRoute?: boolean;
   sideOffset?: number;
+  menuTriggerId?: string;
+  headerHostId?: string;
+  connectedAppsId?: string;
 }
 
 export const AppNetworkMenu = ({
@@ -45,6 +48,9 @@ export const AppNetworkMenu = ({
   align,
   displayConnectedRoute = true,
   sideOffset,
+  menuTriggerId,
+  headerHostId,
+  connectedAppsId,
 }: AppNetworkMenuProps) => {
   const { appHost, appLogo, appName } = useAppMetadata({ url });
 
@@ -65,7 +71,7 @@ export const AppNetworkMenu = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Box id="home-page-header-left">{children}</Box>
+        <Box id={menuTriggerId}>{children}</Box>
       </DropdownMenuTrigger>
       <DropdownMenuContent sideOffset={sideOffset} align={align}>
         {url ? (
@@ -84,7 +90,7 @@ export const AppNetworkMenu = ({
                   <img src={appLogo} width="100%" height="100%" />
                 </Box>
                 <Box
-                  id={`home-page-header-host-${
+                  id={`${headerHostId}-${
                     appSession ? appHost : 'not-connected'
                   }`}
                 >
@@ -148,10 +154,7 @@ export const AppNetworkMenu = ({
               {url ? <DropdownMenuSeparator /> : null}
 
               <Inset vertical="8px">
-                <Link
-                  id="home-page-header-connected-apps"
-                  to={ROUTES.CONNECTED}
-                >
+                <Link id={connectedAppsId} to={ROUTES.CONNECTED}>
                   <Inline alignVertical="center" space="8px">
                     <Box style={{ width: 18, height: 18 }}>
                       <Inline
