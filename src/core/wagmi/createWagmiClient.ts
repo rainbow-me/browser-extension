@@ -15,6 +15,16 @@ import { queryClient } from '../react-query';
 import { Storage } from '../storage';
 import { ChainId, bsc, hardhat } from '../types/chains';
 
+const IS_TESTING = process.env.IS_TESTING === 'true';
+
+const SUPPORTED_CHAINS = [
+  chain.mainnet,
+  chain.optimism,
+  chain.polygon,
+  chain.arbitrum,
+  bsc,
+];
+
 const noopStorage = {
   getItem: () => '',
   setItem: () => null,
@@ -22,7 +32,7 @@ const noopStorage = {
 };
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [chain.mainnet, chain.optimism, chain.polygon, chain.arbitrum, bsc, hardhat],
+  IS_TESTING ? SUPPORTED_CHAINS.concat(hardhat) : SUPPORTED_CHAINS,
   [
     jsonRpcProvider({
       rpc: (chain) => {
