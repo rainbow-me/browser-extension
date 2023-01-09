@@ -1,9 +1,16 @@
 import * as React from 'react';
 
-import { AppNetworkMenu } from '../../components/SwitchMenu/AppNetworkMenu';
+import { Box, Inline } from '~/design-system';
 
-export const NetworkMenu = ({ children }: { children: React.ReactNode }) => {
+import { Navbar } from '../../components/Navbar/Navbar';
+import { AppNetworkMenu } from '../../components/SwitchMenu/AppNetworkMenu';
+import { useAppMetadata } from '../../hooks/useAppMetadata';
+import { useAppSession } from '../../hooks/useAppSession';
+
+export const NetworkMenu = () => {
   const [url, setUrl] = React.useState('');
+  const { appLogo, appHost } = useAppMetadata({ url });
+  const { appSession } = useAppSession({ host: appHost });
 
   React.useEffect(() => {
     chrome?.tabs?.query({ active: true, lastFocusedWindow: true }, (tabs) => {
@@ -26,7 +33,33 @@ export const NetworkMenu = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AppNetworkMenu sideOffset={1} url={url}>
-      {children}
+      {appSession ? (
+        <Box
+          style={{
+            height: 32,
+            width: 32,
+          }}
+          borderRadius="round"
+          background="surfaceSecondaryElevated"
+          borderColor="separatorTertiary"
+          borderWidth="1px"
+        >
+          <Inline alignHorizontal="center" alignVertical="center">
+            <Box
+              style={{
+                height: 14,
+                width: 14,
+                borderRadius: 4,
+                overflow: 'hidden',
+              }}
+            >
+              <img src={appLogo} width="100%" height="100%" />
+            </Box>
+          </Inline>
+        </Box>
+      ) : (
+        <Navbar.SymbolButton symbol="app.badge.checkmark" variant="flat" />
+      )}
     </AppNetworkMenu>
   );
 };

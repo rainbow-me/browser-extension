@@ -80,8 +80,8 @@ export const AppNetworkMenu = ({
                     width: 14,
                     borderRadius: 3.5,
                     overflow: 'hidden',
+                    marginRight: 2,
                   }}
-                  paddingLeft="2px"
                 >
                   <img src={appLogo} width="100%" height="100%" />
                 </Box>
