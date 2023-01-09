@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { Address, useEnsAvatar, useEnsName } from 'wagmi';
+import { Address, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useAppSessionsStore } from '~/core/state';
-import { getConnectedAppIcon } from '~/core/utils/connectedApps';
 import { truncateAddress } from '~/core/utils/truncateAddress';
 import {
   Box,
@@ -17,6 +16,8 @@ import {
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 
 import { SwitchNetworkMenu } from '../components/SwitchMenu/SwitchNetworkMenu';
+import { WalletAvatar } from '../components/WalletAvatar/WalletAvatar';
+import { useAppMetadata } from '../hooks/useAppMetadata';
 import { useAppSession } from '../hooks/useAppSession';
 
 export function ConnectedApps() {
@@ -34,6 +35,7 @@ export function ConnectedApps() {
             <Row height="content" key={i}>
               <ConnectedApp
                 host={appSessions[key].host}
+                url={appSessions[key].url}
                 address={appSessions[key].address}
                 chainId={appSessions[key].chainId}
               />
@@ -77,89 +79,84 @@ export function ConnectedApps() {
 
 function ConnectedApp({
   host,
+  url,
   address,
   chainId,
 }: {
   host: string;
+  url: string;
   address: Address;
   chainId: number;
 }) {
   const { data: ensName } = useEnsName({ address });
-  const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
   const { updateAppSessionChainId, disconnectAppSession } = useAppSession({
     host,
   });
-
-  const changeChainId = React.useCallback(
-    (chainId: number) => {
-      updateAppSessionChainId(chainId);
-    },
-    [updateAppSessionChainId],
-  );
-
-  const disconnect = React.useCallback(() => {
-    disconnectAppSession();
-  }, [disconnectAppSession]);
+  const { appLogo, appName } = useAppMetadata({ url });
 
   return (
     <SwitchNetworkMenu
-      onChainChanged={changeChainId}
+      onChainChanged={updateAppSessionChainId}
       chainId={chainId}
-      onDisconnect={disconnect}
+      onDisconnect={disconnectAppSession}
       triggerComponent={
-        <Box as="button" id="switch-network-menu" width="full">
-          <Inset horizontal="20px" vertical="8px">
-            <Inline space="8px">
-              <Box
-                background="fill"
-                borderRadius="12px"
-                style={{
-                  width: '36px',
-                  height: '36px',
-                  overflow: 'hidden',
-                }}
-              >
-                <img
-                  src={getConnectedAppIcon(host)}
-                  width="100%"
-                  height="100%"
-                />
-              </Box>
-              <Box>
-                <Stack space="8px">
-                  <Text size="14pt" weight="semibold">
-                    {host}
-                  </Text>
-                  <Inline space="4px" alignVertical="center">
-                    <Box
-                      background="fill"
-                      borderRadius="30px"
-                      style={{
-                        width: '16px',
-                        height: '16px',
-                        overflow: 'hidden',
-                      }}
+        <Box width="full" paddingHorizontal="8px">
+          <Box
+            id="switch-network-menu"
+            background={{
+              default: 'transparent',
+              hover: 'surfaceSecondaryElevated',
+            }}
+            borderRadius="12px"
+          >
+            <Inset horizontal="12px" vertical="8px">
+              <Inline space="8px" alignVertical="center">
+                <Box
+                  background="fill"
+                  borderRadius="12px"
+                  style={{
+                    width: '36px',
+                    height: '36px',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <img src={appLogo} width="100%" height="100%" />
+                </Box>
+                <Box>
+                  <Stack space="8px">
+                    <Text
+                      align="left"
+                      size="14pt"
+                      weight="semibold"
+                      color="label"
                     >
-                      {ensAvatar && (
-                        /* TODO: Convert to <Image> & Imgix/Cloudinary */
-                        <img
-                          src={ensAvatar}
-                          width="100%"
-                          height="100%"
-                          loading="lazy"
+                      {`${appName}`}
+                    </Text>
+                    <Inline space="4px" alignVertical="center">
+                      <Box
+                        background="fill"
+                        borderRadius="30px"
+                        style={{
+                          width: '16px',
+                          height: '16px',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        <WalletAvatar
+                          address={address}
+                          size={16}
+                          emojiSize="12pt"
                         />
-                      )}
-                    </Box>
-                    <Box>
+                      </Box>
                       <Text color="labelTertiary" size="12pt" weight="semibold">
                         {ensName || truncateAddress(address)}
                       </Text>
-                    </Box>
-                  </Inline>
-                </Stack>
-              </Box>
-            </Inline>
-          </Inset>
+                    </Inline>
+                  </Stack>
+                </Box>
+              </Inline>
+            </Inset>
+          </Box>
         </Box>
       }
     />

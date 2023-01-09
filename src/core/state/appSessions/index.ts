@@ -7,6 +7,7 @@ interface AppSession {
   host: string;
   chainId: number;
   address: Address;
+  url: string;
 }
 
 export interface AppSessionsStore {
@@ -38,11 +39,11 @@ export const appSessionsStore = createStore<AppSessionsStore>(
       const appSessions = get().appSessions;
       return appSessions[host] || null;
     },
-    addSession: ({ host, address, chainId }) => {
+    addSession: ({ host, address, chainId, url }) => {
       const appSessions = get().appSessions;
       const existingSession = appSessions[host];
       if (!existingSession) {
-        appSessions[host] = { host, address, chainId };
+        appSessions[host] = { host, address, chainId, url };
       }
       set({
         appSessions,

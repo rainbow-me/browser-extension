@@ -74,7 +74,8 @@ export const handleProviderRequest = ({
     console.log(meta.sender, method);
 
     const { getActiveSession, addSession } = appSessionsStore.getState();
-    const host = getDappHost(meta?.sender?.url || '');
+    const url = meta?.sender?.url || '';
+    const host = getDappHost(url);
     const activeSession = getActiveSession({ host });
 
     try {
@@ -128,6 +129,7 @@ export const handleProviderRequest = ({
             host,
             address,
             chainId,
+            url,
           });
           response = [address];
           break;
