@@ -24,5 +24,9 @@ export const NetworkMenu = ({ children }: { children: React.ReactNode }) => {
     });
   }, []);
 
-  return <AppNetworkMenu url={url}>{children}</AppNetworkMenu>;
+  return (
+    <AppNetworkMenu sideOffset={1} url={url}>
+      {children}
+    </AppNetworkMenu>
+  );
 };

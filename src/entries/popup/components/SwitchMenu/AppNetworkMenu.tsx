@@ -36,6 +36,7 @@ interface AppNetworkMenuProps {
   url: string;
   align?: 'center' | 'end' | 'start';
   displayConnectedRoute?: boolean;
+  sideOffset?: number;
 }
 
 export const AppNetworkMenu = ({
@@ -43,6 +44,7 @@ export const AppNetworkMenu = ({
   url,
   align,
   displayConnectedRoute = true,
+  sideOffset,
 }: AppNetworkMenuProps) => {
   const { appHost, appLogo, appName } = useAppMetadata({ url });
 
@@ -67,7 +69,7 @@ export const AppNetworkMenu = ({
           {children}
         </Box>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align={align}>
+      <DropdownMenuContent sideOffset={sideOffset} align={align}>
         {url ? (
           <Inset top="10px" bottom="14px">
             <Inline alignHorizontal="justify" alignVertical="center">
