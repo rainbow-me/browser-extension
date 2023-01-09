@@ -8,7 +8,6 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 
 import {
-  delay,
   delayTime,
   findElementAndClick,
   findElementByTestIdAndClick,
@@ -278,5 +277,4 @@ it('should be able to send transaction on review on send flow', async () => {
   );
   expect(sendButton).toBeTruthy();
   await waitAndClick(sendButton, driver);
-  await delay(10000);
 });
