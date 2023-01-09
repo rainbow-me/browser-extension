@@ -1,4 +1,5 @@
 .env
+.env-e
 .DS_Store
 
 # node.js
