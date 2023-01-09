@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useWalletNamesStore } from '~/core/state/walletNames';
 import { KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Row, Rows, Symbol, Text } from '~/design-system';
@@ -98,7 +99,13 @@ const MoreInfoButton = ({ account }: { account: Address }) => {
   );
 };
 
-export default function AccountItem({ account }: { account: Address }) {
+export default function AccountItem({
+  account,
+  name,
+}: {
+  account: Address;
+  name?: string;
+}) {
   const { avatar, isFetched } = useAvatar({ address: account });
   const { ensName } = useEns({
     addressOrName: account,
@@ -107,10 +114,12 @@ export default function AccountItem({ account }: { account: Address }) {
     <MenuItem
       key={account}
       titleComponent={
-        <MenuItem.Title text={ensName || truncateAddress(account)} />
+        <MenuItem.Title text={name || ensName || truncateAddress(account)} />
       }
       labelComponent={
-        ensName ? <MenuItem.Label text={truncateAddress(account)} /> : null
+        name || ensName ? (
+          <MenuItem.Label text={truncateAddress(account)} />
+        ) : null
       }
       leftComponent={
         <Box marginRight="-8px">
@@ -154,6 +163,7 @@ export function WalletDetails() {
       { state: { wallet, password: state.password } },
     );
   };
+  const { walletNames } = useWalletNamesStore();
 
   useEffect(() => {
     const fetchWallet = async () => {
@@ -196,7 +206,13 @@ export function WalletDetails() {
           </Menu>
           <Menu paddingVertical="8px">
             {wallet?.accounts.map((account: Address) => {
-              return <AccountItem account={account} key={account} />;
+              return (
+                <AccountItem
+                  name={walletNames[account]}
+                  account={account}
+                  key={account}
+                />
+              );
             })}
           </Menu>
           <Menu>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
+import { useWalletNamesStore } from '~/core/state/walletNames';
 import { KeychainWallet } from '~/core/types/keychainTypes';
 import {
   Box,
@@ -30,10 +31,15 @@ export const NewWalletPrompt = ({
   const navigate = useNavigate();
   const [walletName, setWalletName] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const { saveWalletName } = useWalletNamesStore();
 
   const handleValidateWalletName = async () => {
-    if (walletName !== '') {
+    if (walletName && walletName.trim() !== '') {
       const newAccount = await add(wallet?.accounts?.[0]);
+      saveWalletName({
+        name: walletName.trim(),
+        address: newAccount,
+      });
       navigate(
         ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
         { state: { account: newAccount, password: state?.password } },

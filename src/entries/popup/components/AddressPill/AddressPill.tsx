@@ -8,7 +8,13 @@ import { useAvatar } from '../../hooks/useAvatar';
 import { useEns } from '../../hooks/useEns';
 import { Avatar } from '../Avatar/Avatar';
 
-export default function AddressPill({ address }: { address: Address }) {
+export default function AddressPill({
+  address,
+  name,
+}: {
+  address: Address;
+  name?: string;
+}) {
   const { avatar, isFetched } = useAvatar({ address });
   const { ensName } = useEns({
     addressOrName: address,
@@ -36,7 +42,7 @@ export default function AddressPill({ address }: { address: Address }) {
           <Avatar.Skeleton />
         </Avatar.Wrapper>
         <Text weight="medium" color="labelTertiary" size="14pt">
-          {ensName || truncateAddress(address)}
+          {name || ensName || truncateAddress(address)}
         </Text>
       </Inline>
     </Box>
