@@ -25,9 +25,9 @@ function sendMessage<TPayload>(
   { tabId }: { tabId?: number } = {},
 ) {
   if (!tabId) {
-    chrome.runtime.sendMessage(message);
+    chrome?.runtime?.sendMessage?.(message);
   } else {
-    chrome.tabs.sendMessage(tabId, message);
+    chrome.tabs?.sendMessage(tabId, message);
   }
 }
 
@@ -59,13 +59,13 @@ export const tabMessenger = createMessenger({
       const listener = (message: ReplyMessage<TResponse>) => {
         if (!isValidReply<TResponse>({ id, message, topic })) return;
 
-        chrome.runtime.onMessage.removeListener(listener);
+        chrome.runtime.onMessage?.removeListener(listener);
 
         const { response: response_, error } = message.payload;
         if (error) reject(new Error(error.message));
         resolve(response_);
       };
-      chrome.runtime.onMessage.addListener(listener);
+      chrome.runtime.onMessage?.addListener(listener);
 
       getActiveTabs().then(([tab]) => {
         sendMessage({ topic: `> ${topic}`, payload, id }, { tabId: tab?.id });
@@ -121,7 +121,7 @@ export const tabMessenger = createMessenger({
       });
       return true;
     };
-    chrome.runtime.onMessage.addListener(listener);
-    return () => chrome.runtime.onMessage.removeListener(listener);
+    chrome.runtime.onMessage?.addListener(listener);
+    return () => chrome.runtime.onMessage?.removeListener(listener);
   },
 });
