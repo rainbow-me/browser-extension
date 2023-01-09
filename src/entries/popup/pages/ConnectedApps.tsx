@@ -18,7 +18,7 @@ import {
 } from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 
-import { SwitchNetworkMenu } from '../components/SwitchMenu/SwitchNetworkMenu';
+import { AppNetworkMenu } from '../components/SwitchMenu/AppNetworkMenu';
 import { WalletAvatar } from '../components/WalletAvatar/WalletAvatar';
 import { useAppMetadata } from '../hooks/useAppMetadata';
 import { useAppSession } from '../hooks/useAppSession';
@@ -53,7 +53,6 @@ export const ConnectedApps = () => {
                   host={session.host}
                   url={session.url}
                   address={session.address}
-                  chainId={session.chainId}
                 />
               </Row>
             ))}
@@ -74,7 +73,6 @@ export const ConnectedApps = () => {
                       host={session.host}
                       url={session.url}
                       address={session.address}
-                      chainId={session.chainId}
                     />
                   </Row>
                 ))}
@@ -121,16 +119,14 @@ const ConnectedApp = ({
   host,
   url,
   address,
-  chainId,
 }: {
   host: string;
   url: string;
   address: Address;
-  chainId: number;
 }) => {
   const [disconnectButtonVisible, setDisconnectButtonVisible] = useState(false);
   const { data: ensName } = useEnsName({ address });
-  const { updateAppSessionChainId, disconnectAppSession } = useAppSession({
+  const { disconnectAppSession } = useAppSession({
     host,
   });
   const { appLogo, appName, appHost } = useAppMetadata({ url });
@@ -161,70 +157,65 @@ const ConnectedApp = ({
             />
           </Box>
         )}
-        <SwitchNetworkMenu
-          onChainChanged={updateAppSessionChainId}
-          chainId={chainId}
-          onDisconnect={disconnectAppSession}
-          triggerComponent={
-            <Box width="full">
-              <Box id="switch-network-menu">
-                <Inset horizontal="12px" vertical="8px">
-                  <Inline alignHorizontal="justify" alignVertical="center">
-                    <Inline space="8px" alignVertical="center">
-                      <Box
-                        background="fill"
-                        borderRadius="12px"
-                        style={{
-                          width: '36px',
-                          height: '36px',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <img src={appLogo} width="100%" height="100%" />
-                      </Box>
-                      <Box>
-                        <Stack space="8px">
-                          <Text
-                            align="left"
-                            size="14pt"
-                            weight="semibold"
-                            color="label"
+        <AppNetworkMenu displayConnectedRoute={false} align="end" url={url}>
+          <Box width="full">
+            <Box id="switch-network-menu">
+              <Inset horizontal="12px" vertical="8px">
+                <Inline alignHorizontal="justify" alignVertical="center">
+                  <Inline space="8px" alignVertical="center">
+                    <Box
+                      background="fill"
+                      borderRadius="12px"
+                      style={{
+                        width: '36px',
+                        height: '36px',
+                        overflow: 'hidden',
+                      }}
+                    >
+                      <img src={appLogo} width="100%" height="100%" />
+                    </Box>
+                    <Box>
+                      <Stack space="8px">
+                        <Text
+                          align="left"
+                          size="14pt"
+                          weight="semibold"
+                          color="label"
+                        >
+                          {appName || appHost}
+                        </Text>
+                        <Inline space="4px" alignVertical="center">
+                          <Box
+                            background="fill"
+                            borderRadius="30px"
+                            style={{
+                              width: '16px',
+                              height: '16px',
+                              overflow: 'hidden',
+                            }}
                           >
-                            {appName || appHost}
+                            <WalletAvatar
+                              address={address}
+                              size={16}
+                              emojiSize="12pt"
+                            />
+                          </Box>
+                          <Text
+                            color="labelTertiary"
+                            size="12pt"
+                            weight="semibold"
+                          >
+                            {ensName || truncateAddress(address)}
                           </Text>
-                          <Inline space="4px" alignVertical="center">
-                            <Box
-                              background="fill"
-                              borderRadius="30px"
-                              style={{
-                                width: '16px',
-                                height: '16px',
-                                overflow: 'hidden',
-                              }}
-                            >
-                              <WalletAvatar
-                                address={address}
-                                size={16}
-                                emojiSize="12pt"
-                              />
-                            </Box>
-                            <Text
-                              color="labelTertiary"
-                              size="12pt"
-                              weight="semibold"
-                            >
-                              {ensName || truncateAddress(address)}
-                            </Text>
-                          </Inline>
-                        </Stack>
-                      </Box>
-                    </Inline>
+                        </Inline>
+                      </Stack>
+                    </Box>
                   </Inline>
-                </Inset>
-              </Box>
+                </Inline>
+              </Inset>
             </Box>
-          }
-        />
+          </Box>
+        </AppNetworkMenu>
       </Box>
     </Box>
   );

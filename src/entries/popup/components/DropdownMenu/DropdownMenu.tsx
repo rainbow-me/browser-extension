@@ -148,6 +148,7 @@ interface DropdownMenuRadioItemProps {
 
 export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
   const { children, value, selectedValue, selectedColor } = props;
+  const isSelectedValue = selectedValue === value;
   return (
     <Box
       as={DropdownMenuPrimitive.RadioItem}
@@ -162,15 +163,15 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
         outline: 'none',
       }}
       background={{
-        default:
-          selectedValue === value
-            ? (selectedColor as BackgroundColor) ?? 'accent'
-            : 'transparent',
-        hover:
-          selectedValue === value
-            ? (selectedColor as BackgroundColor) ?? 'accent'
-            : 'surfaceSecondary',
+        default: isSelectedValue
+          ? (selectedColor as BackgroundColor) ?? 'accent'
+          : 'transparent',
+        hover: isSelectedValue
+          ? (selectedColor as BackgroundColor) ?? 'accent'
+          : 'surfaceSecondary',
       }}
+      borderColor={isSelectedValue ? 'buttonStrokeSecondary' : 'transparent'}
+      borderWidth="1px"
     >
       {children}
     </Box>
