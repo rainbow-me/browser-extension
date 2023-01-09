@@ -4,8 +4,10 @@ import Switch from 'react-switch';
 const Toggle = ({
   checked,
   handleChange,
+  disabled = false,
 }: {
   checked: boolean;
+  disabled?: boolean;
   handleChange: (checked: boolean) => void;
 }) => {
   return (
@@ -19,6 +21,7 @@ const Toggle = ({
       uncheckedIcon={false}
       checkedIcon={false}
       onColor="#268FFF"
+      disabled={disabled}
     />
   );
 };

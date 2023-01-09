@@ -9,7 +9,7 @@ export interface HideSmallBalancesState {
 
 export const hideSmallBalancesStore = createStore<HideSmallBalancesState>(
   (set) => ({
-    hideSmallBalances: true,
+    hideSmallBalances: false,
     setHideSmallBalances: (newHideSmallBalances) =>
       set({ hideSmallBalances: newHideSmallBalances }),
   }),
