@@ -7,6 +7,9 @@ import React, {
   useState,
 } from 'react';
 
+import { autoLockTimerOptions } from '~/core/references/autoLockTimer';
+import { useAutoLockTimerStore } from '~/core/state/currentSettings/autoLockTimer';
+
 import * as wallet from '../handlers/wallet';
 
 const AuthContext = createContext({
@@ -39,6 +42,8 @@ const getUserStatus = async (): Promise<UserStatusResult> => {
 
 const useSessionStatus = () => {
   const [status, setStatus] = useState('');
+  const { autoLockTimer } = useAutoLockTimerStore();
+  const autoLockTimerMinutes = autoLockTimerOptions[autoLockTimer].mins;
 
   const updateStatus = useCallback(async () => {
     const newStatus = await getUserStatus();
@@ -58,6 +63,36 @@ const useSessionStatus = () => {
       }
     };
     init();
+  }, [updateStatus]);
+
+  useEffect(() => {
+    // check if have to autolock
+    const runAutoLock = async () => {
+      if (autoLockTimerMinutes !== null) {
+        const userStatus = await getUserStatus();
+        // to not interfere with onboarding status, only autolock if status is READY
+        if (userStatus === 'READY') {
+          const { lastUnlock: lastUnlockFromStorage } =
+            await chrome.storage.session.get('lastUnlock');
+          if (lastUnlockFromStorage) {
+            const lastUnlock = new Date(lastUnlockFromStorage);
+            const now = new Date();
+            const diff = now.getTime() - lastUnlock.getTime();
+            const diffMinutes = Math.round(diff / 1000 / 60);
+            if (diffMinutes >= autoLockTimerMinutes) {
+              await wallet.lock();
+              updateStatus();
+            }
+            // if no lastUnlock found in storage, re-lock for safety
+          } else {
+            await wallet.lock();
+            updateStatus();
+          }
+        }
+      }
+    };
+    runAutoLock();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateStatus]);
 
   return {
