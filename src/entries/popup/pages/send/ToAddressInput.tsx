@@ -279,6 +279,7 @@ export const ToAddressInput = ({
       <InputWrapper
         zIndex={2}
         dropdownHeight={452}
+        testId={'to-address-input'}
         leftComponent={
           <Box borderRadius="18px">
             <WalletAvatar address={toAddress} size={36} emojiSize="20pt" />
@@ -296,6 +297,7 @@ export const ToAddressInput = ({
                 onClick={onInputClick}
               >
                 <Input
+                  testId="to-address-input"
                   value={toAddressOrName}
                   placeholder={i18n.t('send.input_to_address_placeholder')}
                   onChange={handleToAddressChange}
@@ -320,6 +322,7 @@ export const ToAddressInput = ({
                     weight="semibold"
                     size="14pt"
                     color="label"
+                    testId="to-address-input-display"
                   >
                     {toAddressContact?.display || truncateAddress(toAddress)}
                   </TextOverflow>

@@ -82,6 +82,7 @@ export const ValueInput = ({
                     color="accent"
                     height="32px"
                     variant="raised"
+                    testId="value-input-max"
                   >
                     {i18n.t('send.max')}
                   </Button>
@@ -99,7 +100,10 @@ export const ValueInput = ({
                 >
                   {dependentAmount.display}
                 </TextOverflow>
-                <Box onClick={switchIndependentField}>
+                <Box
+                  testId="value-input-switch"
+                  onClick={switchIndependentField}
+                >
                   <Text color="accent" size="12pt" weight="bold">
                     {i18n.t('send.switch_to')}{' '}
                     {independentField === 'asset'

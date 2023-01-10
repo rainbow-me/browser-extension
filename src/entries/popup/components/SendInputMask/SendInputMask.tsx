@@ -114,6 +114,7 @@ export const SendInputMask = ({
         innerRef={innerRef}
         style={{ paddingRight: value ? 125 + symbolPadding : 0 }}
         enableTapScale={false}
+        testId="send-input-mask"
       />
     </Box>
   );

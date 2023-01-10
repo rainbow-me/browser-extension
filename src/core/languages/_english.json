@@ -408,5 +408,10 @@
     "discover_shortcuts": "Discover shortcuts",
     "discover_shortcuts_desc": "Welcome to Rainbow! We're so glad you're here. We’ve created this guide to help with the basics of Rainbow and get you started on your new We... ",
     "pin_rainbow_to_your_toolbar": "Pin Rainbow to your toolbar:"
+  },
+  "wallet_header": {
+    "copy": "Copy",
+    "swap": "Swap",
+    "send": "Send"
   }
 }

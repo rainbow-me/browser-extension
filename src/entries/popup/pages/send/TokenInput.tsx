@@ -99,6 +99,7 @@ export const TokenInput = ({
     <InputWrapper
       zIndex={1}
       dropdownHeight={376}
+      testId={'token-input'}
       leftComponent={
         <Box>
           <CoinIcon asset={asset ?? undefined} />
@@ -220,6 +221,7 @@ export const TokenInput = ({
                 paddingHorizontal="8px"
                 key={`${asset?.uniqueId}-${i}`}
                 onClick={() => onSelectAsset(asset.address)}
+                testId={`token-input-asset-${asset?.uniqueId}`}
               >
                 <RowHighlightWrapper>
                   <Box marginHorizontal="-8px">

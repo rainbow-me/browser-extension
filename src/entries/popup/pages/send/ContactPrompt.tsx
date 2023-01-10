@@ -78,6 +78,7 @@ const SaveOrEditContact = ({
                   variant="transparent"
                   placeholder="Name"
                   style={{ textAlign: 'center' }}
+                  testId="contact-prompt-input"
                 />
               </Box>
 
@@ -98,6 +99,7 @@ const SaveOrEditContact = ({
             variant="flat"
             borderRadius="9px"
             onClick={onSave}
+            testId="contact-prompt-confirm"
           >
             {i18n.t(
               `contacts.${
@@ -179,6 +181,7 @@ const DeleteContact = ({
             variant="flat"
             borderRadius="9px"
             onClick={onRemove}
+            testId="contact-prompt-delete-confirm"
           >
             {i18n.t('contacts.remove_contact_action')}
           </Button>
