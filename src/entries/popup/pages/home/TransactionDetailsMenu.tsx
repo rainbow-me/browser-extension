@@ -16,7 +16,7 @@ import {
 } from '../../components/DropdownMenu/DropdownMenu';
 import { SheetMode } from '../speedUpAndCancelSheet';
 
-export function SpeedUpAndCancelMenu({
+export function TransactionDetailsMenu({
   children,
   onRowSelection,
   transaction,

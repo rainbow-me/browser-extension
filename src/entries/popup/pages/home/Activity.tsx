@@ -27,7 +27,7 @@ import { useAllTransactions } from '../../hooks/useAllTransactions';
 import { SheetMode } from '../speedUpAndCancelSheet';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { SpeedUpAndCancelMenu } from './SpeedUpAndCancelMenu';
+import { TransactionDetailsMenu } from './TransactionDetailsMenu';
 
 type ActivityProps = {
   onSheetSelected: ({
@@ -104,13 +104,13 @@ export function Activity({ onSheetSelected }: ActivityProps) {
               );
             }
             return (
-              <SpeedUpAndCancelMenu
+              <TransactionDetailsMenu
                 key={index}
                 onRowSelection={onTransactionSelected}
                 transaction={item}
               >
                 <ActivityRow transaction={item} />
-              </SpeedUpAndCancelMenu>
+              </TransactionDetailsMenu>
             );
           })}
         </Box>
