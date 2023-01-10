@@ -263,6 +263,11 @@ export const ToAddressInput = ({
     }
   }, [dropdownVisible, openDropdown]);
 
+  const onActionClose = useCallback(() => {
+    clearToAddress();
+    setTimeout(() => inputRef?.current?.focus(), 500);
+  }, [clearToAddress]);
+
   useEffect(() => {
     if (!inputVisible) {
       closeDropdown();
@@ -337,7 +342,7 @@ export const ToAddressInput = ({
           </AnimatePresence>
         }
         showActionClose={!!toAddress}
-        onActionClose={clearToAddress}
+        onActionClose={onActionClose}
         dropdownComponent={
           <DropdownWalletsList
             wallets={wallets}
