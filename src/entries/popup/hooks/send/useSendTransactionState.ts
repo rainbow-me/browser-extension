@@ -6,7 +6,7 @@ import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isNativeAsset } from '~/core/utils/chains';
-import { convertAmountToRawAmount } from '~/core/utils/numbers';
+import { convertAmountToRawAmount, toHex } from '~/core/utils/numbers';
 import { getDataForTokenTransfer } from '~/core/utils/transactions';
 
 import { useEns } from '../useEns';
@@ -36,7 +36,10 @@ export const useSendTransactionState = ({
   );
 
   const value = useMemo(
-    () => (sendingNativeAsset && assetAmount ? parseEther(assetAmount) : '0x0'),
+    () =>
+      sendingNativeAsset && assetAmount
+        ? toHex(parseEther(assetAmount).toString())
+        : '0x0',
     [assetAmount, sendingNativeAsset],
   );
 

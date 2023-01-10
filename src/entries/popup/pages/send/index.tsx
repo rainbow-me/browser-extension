@@ -1,4 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { useAnimationControls } from 'framer-motion';
 import React, {
   ChangeEvent,
   ReactNode,
@@ -10,7 +11,9 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useContactsStore } from '~/core/state/contacts';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { ChainId } from '~/core/types/chains';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import {
@@ -68,6 +71,7 @@ export function Send() {
   const [toAddressDropdownOpen, setToAddressDropdownOpen] = useState(false);
 
   const { isContact } = useContactsStore();
+  const { connectedToHardhat } = useConnectedToHardhatStore();
 
   const { asset, selectAssetAddress, assets, setSortMethod, sortMethod } =
     useSendTransactionAsset();
@@ -96,6 +100,7 @@ export function Send() {
     setToAddressOrName,
   } = useSendTransactionState({ assetAmount, asset });
 
+  const controls = useAnimationControls();
   const transactionRequest: TransactionRequest = useMemo(() => {
     return {
       to: txToAddress,
@@ -121,17 +126,27 @@ export function Send() {
   const openReviewSheet = useCallback(() => {
     if (!!toAddress && independentAmount) {
       setShowReviewSheet(true);
+    } else {
+      controls.start({
+        rotate: [1, -1.4, 0, 1, -1.4, 0],
+        transition: { duration: 0.2 },
+      });
+      independentFieldRef?.current?.focus();
     }
-  }, [independentAmount, toAddress]);
+  }, [controls, independentAmount, independentFieldRef, toAddress]);
+
   const closeReviewSheet = useCallback(() => setShowReviewSheet(false), []);
 
   const handleSend = useCallback(async () => {
     try {
       const result = await sendTransaction({
         from: fromAddress,
-        to: toAddress,
+        to: txToAddress,
         value,
-        chainId,
+        chainId:
+          chainId === ChainId.mainnet && connectedToHardhat
+            ? ChainId.hardhat
+            : chainId,
         data,
       });
 
@@ -144,7 +159,7 @@ export function Send() {
           data: result.data,
           value: result.value,
           from: fromAddress,
-          to: toAddress,
+          to: txToAddress,
           hash: result.hash,
           chainId,
           status: TransactionStatus.sending,
@@ -161,7 +176,16 @@ export function Send() {
     } catch (e) {
       alert('Transaction failed');
     }
-  }, [asset, assetAmount, fromAddress, toAddress, value, chainId, data]);
+  }, [
+    fromAddress,
+    txToAddress,
+    value,
+    chainId,
+    connectedToHardhat,
+    data,
+    assetAmount,
+    asset,
+  ]);
 
   const selectAsset = useCallback(
     (address: Address | '') => {
@@ -203,6 +227,7 @@ export function Send() {
             toAddress={toAddress}
             action={navbarButtonAction}
             enabled={!!toAddress}
+            chainId={asset?.chainId}
           />
         }
       />
@@ -254,6 +279,7 @@ export function Send() {
                       setIndependentAmount={setIndependentAmount}
                       setMaxAssetAmount={setMaxAssetAmount}
                       switchIndependentField={switchIndependentField}
+                      inputAnimationControls={controls}
                     />
                   ) : null}
                 </Box>
@@ -284,6 +310,7 @@ export function Send() {
                         variant="flat"
                         color="accent"
                         width="full"
+                        testId="send-review-button"
                       >
                         <Inline space="8px" alignVertical="center">
                           <Symbol

@@ -28,29 +28,50 @@ export type TransactionsArgs = {
   address?: string;
   chainId: ChainId;
   currency: SupportedCurrencyKey;
+  transactionsLimit?: number;
 };
 
 // ///////////////////////////////////////////////
 // Query Key
 
-const transactionsQueryKey = ({
+export const transactionsQueryKey = ({
   address,
   chainId,
   currency,
+  transactionsLimit,
 }: TransactionsArgs) =>
   createQueryKey(
     'transactions',
-    { address, chainId, currency },
+    { address, chainId, currency, transactionsLimit },
     { persisterVersion: 1 },
   );
 
 type TransactionsQueryKey = ReturnType<typeof transactionsQueryKey>;
 
 // ///////////////////////////////////////////////
+// Query Fetcher
+
+export async function fetchTransactions<TSelectData = TransactionsResult>(
+  { address, chainId, currency, transactionsLimit }: TransactionsArgs,
+  config: QueryConfig<
+    TransactionsResult,
+    Error,
+    TSelectData,
+    TransactionsQueryKey
+  >,
+) {
+  return await queryClient.fetchQuery(
+    transactionsQueryKey({ address, chainId, currency, transactionsLimit }),
+    transactionsQueryFunction,
+    config,
+  );
+}
+
+// ///////////////////////////////////////////////
 // Query Function
 
 async function transactionsQueryFunction({
-  queryKey: [{ address, chainId, currency }],
+  queryKey: [{ address, chainId, currency, transactionsLimit }],
 }: QueryFunctionArgs<typeof transactionsQueryKey>): Promise<
   RainbowTransaction[]
 > {
@@ -63,7 +84,7 @@ async function transactionsQueryFunction({
     payload: {
       address,
       currency: currency.toLowerCase(),
-      transactions_limit: 250,
+      transactions_limit: transactionsLimit ?? 250,
     },
     scope,
   });
@@ -71,7 +92,12 @@ async function transactionsQueryFunction({
     const timeout = setTimeout(() => {
       resolve(
         queryClient.getQueryData(
-          transactionsQueryKey({ address, chainId, currency }),
+          transactionsQueryKey({
+            address,
+            chainId,
+            currency,
+            transactionsLimit,
+          }),
         ) || [],
       );
     }, TRANSACTIONS_TIMEOUT_DURATION);
@@ -108,7 +134,7 @@ function parseTransactions(
 // Query Hook
 
 export function useTransactions<TSelectData = TransactionsResult>(
-  { address, chainId, currency }: TransactionsArgs,
+  { address, chainId, currency, transactionsLimit }: TransactionsArgs,
   config: QueryConfig<
     TransactionsResult,
     Error,
@@ -117,7 +143,7 @@ export function useTransactions<TSelectData = TransactionsResult>(
   > = {},
 ) {
   return useQuery(
-    transactionsQueryKey({ address, currency, chainId }),
+    transactionsQueryKey({ address, currency, chainId, transactionsLimit }),
     transactionsQueryFunction,
     {
       ...config,

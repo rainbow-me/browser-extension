@@ -29,6 +29,10 @@ globalStyle('a', {
   cursor: 'pointer',
 });
 
+globalStyle('p', {
+  userSelect: 'text',
+});
+
 globalStyle('div[data-radix-popper-content-wrapper]', {
   zIndex: '999 !important',
 });

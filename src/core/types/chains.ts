@@ -1,6 +1,7 @@
 import { Chain, chain } from 'wagmi';
 
 const BSC_CHAIN_ID = 56;
+const HARDHAT_CHAIN_ID = 1337;
 
 export const bsc: Chain = {
   id: BSC_CHAIN_ID,
@@ -20,6 +21,21 @@ export const bsc: Chain = {
   testnet: false,
 };
 
+export const hardhat: Chain = {
+  id: HARDHAT_CHAIN_ID,
+  name: 'Hardhat',
+  network: 'hardhat',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Hardhat',
+    symbol: 'eth',
+  },
+  rpcUrls: {
+    default: 'http://127.0.0.1:8545',
+  },
+  testnet: true,
+};
+
 export enum ChainName {
   arbitrum = 'arbitrum',
   bsc = 'bsc',
@@ -27,6 +43,7 @@ export enum ChainName {
   optimism = 'optimism',
   polygon = 'polygon',
   mainnet = 'mainnet',
+  hardhat = 'hardhat',
 }
 
 export enum ChainId {
@@ -36,4 +53,5 @@ export enum ChainId {
   optimism = chain.optimism.id,
   mainnet = chain.mainnet.id,
   polygon = chain.polygon.id,
+  hardhat = HARDHAT_CHAIN_ID,
 }

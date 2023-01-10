@@ -66,8 +66,18 @@ export const hasVault = () => {
   return !!keychainManager.state.vault;
 };
 
-export const isPasswordSet = () => {
-  return !keychainManager.verifyPassword('');
+export const isPasswordSet = async () => {
+  const isPasswordEmpty = keychainManager.verifyPassword('');
+  // We don't have it in memory
+  if (isPasswordEmpty) {
+    // check if it was set at all
+    if (await keychainManager.verifyPasswordViaDecryption('')) {
+      return false;
+    }
+    return true;
+  } else {
+    return true;
+  }
 };
 
 export const isVaultUnlocked = (): boolean => {

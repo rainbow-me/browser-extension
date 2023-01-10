@@ -1,5 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
-import { Address } from 'wagmi';
+import { getProvider } from '@wagmi/core';
+import { Contract } from 'ethers';
+import { Address, erc20ABI } from 'wagmi';
 
 import { refractionAddressWs } from '~/core/network';
 import {
@@ -10,10 +12,15 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
+import { currentAddressStore } from '~/core/state';
+import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ParsedAddressAsset } from '~/core/types/assets';
-import { ChainName } from '~/core/types/chains';
+import { ChainId, ChainName } from '~/core/types/chains';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
-import { parseAddressAsset } from '~/core/utils/assets';
+import {
+  parseAddressAsset,
+  parseParsedAddressAsset,
+} from '~/core/utils/assets';
 
 const USER_ASSETS_TIMEOUT_DURATION = 10000;
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
@@ -72,9 +79,13 @@ export async function userAssetsByChainQueryFunction({
 }: QueryFunctionArgs<typeof userAssetsByChainQueryKey>): Promise<
   Record<string, ParsedAddressAsset>
 > {
+  const { connectedToHardhat } = connectedToHardhatStore.getState();
+  const { currentAddress } = currentAddressStore.getState();
+
   const isMainnet = chain === ChainName.mainnet;
   const scope = [`${isMainnet ? '' : chain + '-'}assets`];
   const event = `received address ${scope[0]}`;
+
   refractionAddressWs.emit('get', {
     payload: {
       address,
@@ -82,6 +93,7 @@ export async function userAssetsByChainQueryFunction({
     },
     scope,
   });
+
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
       resolve(
@@ -90,9 +102,46 @@ export async function userAssetsByChainQueryFunction({
         ) || {},
       );
     }, USER_ASSETS_TIMEOUT_DURATION);
-    const resolver = (message: AddressAssetsReceivedMessage) => {
+
+    const resolver = async (message: AddressAssetsReceivedMessage) => {
       clearTimeout(timeout);
-      resolve(parseUserAssetsByChain(message, currency));
+
+      const parsedUserAssetsByChain = parseUserAssetsByChain(message, currency);
+
+      if (connectedToHardhat) {
+        const provider = getProvider({ chainId: ChainId.hardhat });
+
+        Object.values(parsedUserAssetsByChain).forEach(async (parsedAsset) => {
+          if (parsedAsset.chainId !== ChainId.mainnet) return parsedAsset;
+          try {
+            if (parsedAsset.isNativeAsset) {
+              const balance = await provider.getBalance(currentAddress);
+              const updatedAsset = parseParsedAddressAsset({
+                parsedAsset,
+                currency,
+                quantity: balance.toString(),
+              });
+              parsedUserAssetsByChain[parsedAsset.uniqueId] = updatedAsset;
+            } else {
+              const contract = new Contract(
+                parsedAsset.address,
+                erc20ABI,
+                provider,
+              );
+              const balance = await contract.balanceOf(currentAddress);
+              const updatedAsset = parseParsedAddressAsset({
+                parsedAsset,
+                currency,
+                quantity: balance.toString(),
+              });
+              parsedUserAssetsByChain[parsedAsset.uniqueId] = updatedAsset;
+            }
+          } catch (e) {
+            return parsedAsset;
+          }
+        });
+      }
+      resolve(parsedUserAssetsByChain);
     };
     refractionAddressWs.once(event, resolver);
   });

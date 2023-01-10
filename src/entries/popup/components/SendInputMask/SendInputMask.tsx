@@ -3,7 +3,7 @@ import React, { CSSProperties, RefObject, useCallback, useMemo } from 'react';
 
 import { Box, Inline, Text } from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
-import { BoxStyles } from '~/design-system/styles/core.css';
+import { BoxStyles, accentColorAsHsl } from '~/design-system/styles/core.css';
 import {
   transformScales,
   transitions,
@@ -69,6 +69,15 @@ export const SendInputMask = ({
       style={style}
       onClick={onMaskClick}
     >
+      <Box
+        position="absolute"
+        background={'accent'}
+        opacity="0.04"
+        borderRadius="14px"
+        width="full"
+        style={{ height: 56, width: windowWidth - 64 }}
+      />
+
       {value ? (
         <>
           <Box position="absolute" paddingTop="20px">
@@ -104,17 +113,23 @@ export const SendInputMask = ({
         </>
       ) : null}
 
-      <Input
-        value={value}
-        placeholder={placeholder}
-        borderColor={borderColor}
-        onChange={handleOnChange}
-        height={height}
-        variant={variant}
-        innerRef={innerRef}
-        style={{ paddingRight: value ? 125 + symbolPadding : 0 }}
-        enableTapScale={false}
-      />
+      <Box backdropFilter="opacity(0%)">
+        <Input
+          value={value}
+          placeholder={placeholder}
+          borderColor={borderColor}
+          onChange={handleOnChange}
+          height={height}
+          variant={variant}
+          innerRef={innerRef}
+          style={{
+            paddingRight: value ? 125 + symbolPadding : 0,
+            caretColor: accentColorAsHsl,
+          }}
+          enableTapScale={false}
+          testId="send-input-mask"
+        />
+      </Box>
     </Box>
   );
 };

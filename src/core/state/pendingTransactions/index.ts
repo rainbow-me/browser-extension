@@ -32,9 +32,13 @@ export const pendingTransactionsStore = createStore<PendingTransactionsState>(
         const { currentCurrency } = currentCurrencyStore.getState();
         const pendingTransactions = (
           get()?.[address]?.pendingTransactions || []
-        ).map((tx) =>
-          parseNewTransaction(tx as NewTransaction, currentCurrency),
-        );
+        ).map((tx) => {
+          if (tx?.pending) {
+            return parseNewTransaction(tx as NewTransaction, currentCurrency);
+          } else {
+            return tx;
+          }
+        });
         return pendingTransactions;
       }
 
