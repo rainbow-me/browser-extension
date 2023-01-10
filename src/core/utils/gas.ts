@@ -128,8 +128,6 @@ export const parseGasFeeParams = ({
   const maxBaseFee = parseGasFeeParam({
     wei: new BigNumber(multiply(wei, getBaseFeeMultiplier(speed))).toFixed(0),
   });
-  // uncomment to slow down mainnet tx
-  // maxBaseFee.amount = divide(parseInt(maxBaseFee.amount), 1.5).split('.')[0];
   const maxPriorityFeePerGas = parseGasFeeParam({
     wei: maxPriorityFeeSuggestions[speed === 'custom' ? 'urgent' : speed],
   });
