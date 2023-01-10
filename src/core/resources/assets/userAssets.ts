@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Address } from 'wagmi';
 
-import { refractionAddressWs } from '~/core/network';
 import {
   QueryConfig,
   QueryFunctionArgs,
@@ -63,13 +62,6 @@ async function userAssetsQueryFunctionByChain({
 async function userAssetsQueryFunction({
   queryKey: [{ address, currency }],
 }: QueryFunctionArgs<typeof userAssetsQueryKey>) {
-  refractionAddressWs.emit('get', {
-    payload: {
-      address,
-      currency: currency?.toLowerCase(),
-    },
-    scope: ['assets'],
-  });
   return await userAssetsQueryFunctionByChain({ address, currency });
 }
 
