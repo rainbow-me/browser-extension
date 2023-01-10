@@ -131,7 +131,6 @@ export const handleProviderRequest = ({
             },
           )) as { address: Address; chainId: number };
           addSession({
-            url,
             host,
             address,
             chainId,
