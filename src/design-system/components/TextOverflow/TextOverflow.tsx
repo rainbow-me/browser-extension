@@ -28,7 +28,6 @@ export function TextOverflow({
   return (
     <Box style={{ maxWidth }}>
       <Box
-        as={as}
         marginVertical="-8px"
         className={textStyles({
           color,
@@ -42,6 +41,7 @@ export function TextOverflow({
       >
         <Inset vertical="8px">
           <Box
+            as={as}
             style={{
               whiteSpace: 'nowrap',
               overflow: 'hidden',

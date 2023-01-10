@@ -81,6 +81,7 @@ export function Privacy() {
                 <Toggle
                   checked={hideSmallBalances}
                   handleChange={setHideSmallBalances}
+                  disabled
                 />
               }
               titleComponent={

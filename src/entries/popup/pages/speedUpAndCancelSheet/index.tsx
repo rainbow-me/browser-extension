@@ -1,13 +1,18 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { ChainId } from '@rainbow-me/swaps';
 import React, { useMemo } from 'react';
-import { useAccount, useBalance, useEnsName } from 'wagmi';
+import { Address, useAccount, useBalance, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { GasSpeed } from '~/core/types/gas';
-import { RainbowTransaction } from '~/core/types/transactions';
+import {
+  RainbowTransaction,
+  TransactionStatus,
+  TransactionType,
+} from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
-import { handleSignificantDecimals } from '~/core/utils/numbers';
+import { handleSignificantDecimals, toHex } from '~/core/utils/numbers';
+import { updateTransaction } from '~/core/utils/transactions';
 import {
   Box,
   Button,
@@ -24,6 +29,7 @@ import { Prompt } from '~/design-system/components/Prompt/Prompt';
 import { EthSymbol } from '../../components/EthSymbol/EthSymbol';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
+import { sendTransaction } from '../../handlers/wallet';
 
 type SpeedUpAndCancelSheetProps = {
   cancel?: boolean;
@@ -43,16 +49,70 @@ export function SpeedUpAndCancelSheet({
   show,
   transaction,
 }: SpeedUpAndCancelSheetProps) {
-  const transactionRequest: TransactionRequest = useMemo(
+  const speedUpTransactionRequest: TransactionRequest = useMemo(
     () => ({
       to: transaction?.to,
       from: transaction?.from,
       value: transaction?.value,
       chainId: transaction?.chainId,
       data: transaction?.data,
+      nonce: transaction?.nonce,
     }),
     [transaction],
   );
+  const cancelTransactionRequest: TransactionRequest = useMemo(
+    () => ({
+      to: transaction?.from,
+      from: transaction?.from,
+      value: toHex('0'),
+      chainId: transaction?.chainId,
+      data: undefined,
+      nonce: transaction?.nonce,
+    }),
+    [transaction],
+  );
+  const handleCancellation = async () => {
+    const cancellationResult = await sendTransaction(cancelTransactionRequest);
+    const cancelTx = {
+      asset: transaction?.asset,
+      data: cancellationResult?.data,
+      value: cancellationResult?.value,
+      from: cancellationResult?.from as Address,
+      to: cancellationResult?.from as Address,
+      hash: cancellationResult?.hash,
+      chainId: cancelTransactionRequest?.chainId,
+      status: TransactionStatus.cancelling,
+      type: TransactionType.cancel,
+      nonce: transaction?.nonce,
+    };
+    updateTransaction({
+      address: cancellationResult?.from as Address,
+      chainId: cancellationResult?.chainId,
+      transaction: cancelTx,
+    });
+    onClose();
+  };
+  const handleSpeedUp = async () => {
+    const speedUpResult = await sendTransaction(speedUpTransactionRequest);
+    const speedUpTransaction = {
+      asset: transaction?.asset,
+      data: speedUpResult?.data,
+      value: speedUpResult?.value,
+      from: speedUpResult?.from as Address,
+      to: speedUpResult?.to as Address,
+      hash: speedUpResult?.hash,
+      chainId: speedUpResult?.chainId,
+      status: TransactionStatus.speeding_up,
+      type: TransactionType.send,
+      nonce: transaction?.nonce,
+    };
+    updateTransaction({
+      address: speedUpResult?.from as Address,
+      chainId: speedUpResult?.chainId,
+      transaction: speedUpTransaction,
+    });
+    onClose();
+  };
   return (
     <Prompt show={show} padding="12px">
       <Box
@@ -120,7 +180,11 @@ export function SpeedUpAndCancelSheet({
                   <TransactionFee
                     chainId={transaction?.chainId || ChainId.mainnet}
                     defaultSpeed={GasSpeed.URGENT}
-                    transactionRequest={transactionRequest}
+                    transactionRequest={
+                      cancel
+                        ? cancelTransactionRequest
+                        : speedUpTransactionRequest
+                    }
                   />
                 </Box>
               </Box>
@@ -178,6 +242,7 @@ export function SpeedUpAndCancelSheet({
                         height="44px"
                         variant="flat"
                         width="full"
+                        onClick={cancel ? handleCancellation : handleSpeedUp}
                       >
                         <Text size="16pt" weight="bold">
                           {i18n.t(

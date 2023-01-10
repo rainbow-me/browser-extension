@@ -129,7 +129,7 @@
     "input_to_address_placeholder": "Name, ENS or address",
     "input_token_placeholder": "Token",
     "max": "Max",
-    "switch_to": "Switch to",
+    "switch_to": "Switch to %{currency}",
     "button_label_send": "Send Transacion",
     "button_label_sending": "Sending",
     "button_label_review": "Review",
@@ -167,6 +167,7 @@
     "save": "Save",
     "copy_address": "Copy address",
     "view_on_etherscan": "View on Etherscan",
+    "view_on_explorer": "View on Explorer",
     "delete_contact": "Delete contact"
   },
   "sign": {
@@ -389,6 +390,7 @@
     "speed_up": "Speed up",
     "cancel": "Cancel",
     "view_on_etherscan": "View on Etherscan",
+    "view_on_explorer": "View on Explorer",
     "cancel_explanation": "This will attempt to cancel your pending transaction. It requires broadcasting another transaction.",
     "speed_up_explanation": "This will speed up your pending transaction by replacing it. There's a chance your original transaction will confirm first.",
     "cancel_title": "Cancel transaction",
@@ -408,5 +410,10 @@
     "discover_shortcuts": "Discover shortcuts",
     "discover_shortcuts_desc": "Welcome to Rainbow! We're so glad you're here. We’ve created this guide to help with the basics of Rainbow and get you started on your new We... ",
     "pin_rainbow_to_your_toolbar": "Pin Rainbow to your toolbar:"
+  },
+  "wallet_header": {
+    "copy": "Copy",
+    "swap": "Swap",
+    "send": "Send"
   }
 }

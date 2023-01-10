@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
@@ -81,12 +82,21 @@ function ActionButtonsSection() {
     <Box style={{ height: 56 }}>
       {avatar?.color && (
         <Inline space="12px">
-          <Link onClick={handleCopy} to={''}>
-            <ActionButton symbol="square.on.square" text="Copy" />
+          <Link id="header-link-copy" onClick={handleCopy} to={''}>
+            <ActionButton
+              symbol="square.on.square"
+              text={i18n.t('wallet_header.copy')}
+            />
           </Link>
-          <ActionButton symbol="arrow.triangle.swap" text="Swap" />
-          <Link to={ROUTES.SEND}>
-            <ActionButton symbol="paperplane.fill" text="Send" />
+          <ActionButton
+            symbol="arrow.triangle.swap"
+            text={i18n.t('wallet_header.swap')}
+          />
+          <Link id="header-link-send" to={ROUTES.SEND}>
+            <ActionButton
+              symbol="paperplane.fill"
+              text={i18n.t('wallet_header.send')}
+            />
           </Link>
         </Inline>
       )}

@@ -7,10 +7,12 @@ export const InputActionButon = ({
   showClose,
   onClose,
   dropdownVisible,
+  testId,
 }: {
   showClose: boolean;
   dropdownVisible: boolean;
   onClose: () => void;
+  testId?: string;
 }) => {
   return showClose ? (
     <Box
@@ -19,10 +21,9 @@ export const InputActionButon = ({
         height: 24,
       }}
       borderRadius="12px"
-      background="surfaceMenu"
-      borderWidth="1px"
-      borderColor="buttonStroke"
+      background="fillSecondary"
       onClick={onClose}
+      testId={testId}
     >
       <Inline height="full" alignHorizontal="center" alignVertical="center">
         <Symbol size={8} symbol="xmark" weight="bold" color="label" />

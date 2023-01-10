@@ -178,6 +178,19 @@ class KeychainManager {
     return privates.get(this).password === password;
   }
 
+  async verifyPasswordViaDecryption(password: string) {
+    if (!this.state.vault) {
+      throw new Error('Nothing to unlock');
+    }
+    try {
+      if (await this.encryptor.decrypt(password, this.state.vault)) {
+        return true;
+      }
+      // eslint-disable-next-line no-empty
+    } catch (e) {}
+    return false;
+  }
+
   async checkForDuplicateInKeychain(keychain: Keychain) {
     const existingAccounts = await this.getAccounts();
     const newAccounts = await keychain.getAccounts();

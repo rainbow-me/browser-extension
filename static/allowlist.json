@@ -1,17 +1,18 @@
 {
     "urls": [
-            "http://localhost:8545/",
-            "https://*.alchemyapi.io/",
-            "https://*.g.alchemy.com",
-            "wss://*.rainbow.me",
-            "https://*.rainbow.me",
-            "https://rainbow.mypinata.cloud/",
-            "https://rainbowme-res.cloudinary.com/",
-            "wss://*.alchemyapi.io",
-            "wss://*.g.alchemy.com",
-            "https://*.infura.io",
-            "https://burned-solitary-breeze.bsc.quiknode.pro/",
-            "ws://localhost:9090/",
-            "https://o331974.ingest.sentry.io"
+        "http://localhost:8545/",
+        "http://127.0.0.1:8545/",
+        "https://*.alchemyapi.io/",
+        "https://*.g.alchemy.com",
+        "wss://*.rainbow.me",
+        "https://*.rainbow.me",
+        "https://rainbow.mypinata.cloud/",
+        "https://rainbowme-res.cloudinary.com/",
+        "wss://*.alchemyapi.io",
+        "wss://*.g.alchemy.com",
+        "https://*.infura.io",
+        "https://burned-solitary-breeze.bsc.quiknode.pro/",
+        "ws://localhost:9090/",
+        "https://o331974.ingest.sentry.io"
     ]
 }

@@ -11,6 +11,7 @@ import {
 } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 
 export function useAllTransactions({
   address,
@@ -82,7 +83,7 @@ export function useAllTransactions({
   const { getPendingTransactions } = usePendingTransactionsStore();
   const pendingTransactions: RainbowTransaction[] = getPendingTransactions({
     address,
-  })?.map((tx) => ({ ...tx, pending: true }));
+  });
   const allTransactions = [
     ...pendingTransactions,
     ...(confirmedTransactions || []),
@@ -108,10 +109,18 @@ function watchConfirmedTransactions(
   const pendingTransactions = getPendingTransactions({
     address: currentAddress,
   });
-  const latestTx = transactions?.[0];
+
+  const txSortedByDescendingNonce = transactions
+    .filter((tx) => {
+      return isLowerCaseMatch(tx?.from, currentAddress);
+    })
+    .sort(({ nonce: n1 }, { nonce: n2 }) => (n2 ?? 0) - (n1 ?? 0));
+  const latestTx = txSortedByDescendingNonce?.[0];
   const latestConfirmedNonce = latestTx?.nonce || 0;
   let currentNonce: number;
-  const latestPendingTx = pendingTransactions?.[0];
+  const latestPendingTx = pendingTransactions?.filter(
+    (tx) => tx?.chainId === currentChainId,
+  )?.[0];
 
   if (latestPendingTx) {
     const latestPendingNonce = latestPendingTx?.nonce || 0;
@@ -125,7 +134,7 @@ function watchConfirmedTransactions(
 
   setNonce({
     address: currentAddress,
-    chainId: ChainId.mainnet,
+    chainId: currentChainId,
     currentNonce,
     latestConfirmedNonce,
   });
