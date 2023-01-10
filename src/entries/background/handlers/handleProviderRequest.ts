@@ -43,8 +43,7 @@ const messengerProviderRequest = async (
   messenger: Messenger,
   request: ProviderRequestPayload,
 ) => {
-  const { addPendingRequest, removePendingRequest } =
-    pendingRequestStore.getState();
+  const { addPendingRequest } = pendingRequestStore.getState();
   // Add pending request to global background state.
   addPendingRequest(request);
   openWindow();
@@ -55,7 +54,6 @@ const messengerProviderRequest = async (
       resolve(payload),
     ),
   );
-  removePendingRequest(request.id);
   if (!payload) {
     throw new UserRejectedRequestError('User rejected the request.');
   }
