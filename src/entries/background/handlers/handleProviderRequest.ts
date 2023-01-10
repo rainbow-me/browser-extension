@@ -9,6 +9,7 @@ import {
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { getDappHost } from '~/core/utils/connectedApps';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/numbers';
 
 export const DEFAULT_ACCOUNT =
@@ -24,9 +25,10 @@ const openWindow = async () => {
   const window = await chrome.windows.create({
     url: chrome.runtime.getURL('popup.html'),
     type: 'popup',
-    height: 625,
+    height: POPUP_DIMENSIONS.height + 25,
     width: 360,
-    left: (currentWindow.width || 360) - 360,
+    left:
+      (currentWindow.width || POPUP_DIMENSIONS.width) - POPUP_DIMENSIONS.width,
     top: 0,
   });
   chrome.windows.onRemoved.addListener((id) => {
