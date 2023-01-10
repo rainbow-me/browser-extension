@@ -606,7 +606,9 @@ export async function watchPendingTransactions({
 
   setPendingTransactions({
     address,
-    pendingTransactions: updatedPendingTransactions,
+    pendingTransactions: updatedPendingTransactions.filter(
+      (tx) => tx?.status !== TransactionStatus?.unknown,
+    ),
   });
 }
 

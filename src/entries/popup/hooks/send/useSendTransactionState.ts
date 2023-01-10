@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers';
 import { parseEther } from 'ethers/lib/utils';
 import { useMemo, useState } from 'react';
 import { Address, useAccount } from 'wagmi';
@@ -7,7 +6,7 @@ import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isNativeAsset } from '~/core/utils/chains';
-import { convertAmountToRawAmount } from '~/core/utils/numbers';
+import { convertAmountToRawAmount, toHex } from '~/core/utils/numbers';
 import { getDataForTokenTransfer } from '~/core/utils/transactions';
 
 import { useEns } from '../useEns';
@@ -39,8 +38,8 @@ export const useSendTransactionState = ({
   const value = useMemo(
     () =>
       sendingNativeAsset && assetAmount
-        ? parseEther(assetAmount)
-        : BigNumber.from('0x0'),
+        ? toHex(parseEther(assetAmount).toString())
+        : '0x0',
     [assetAmount, sendingNativeAsset],
   );
 

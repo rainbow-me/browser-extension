@@ -11,7 +11,7 @@ import {
   TransactionType,
 } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
-import { handleSignificantDecimals } from '~/core/utils/numbers';
+import { handleSignificantDecimals, toHex } from '~/core/utils/numbers';
 import { updateTransaction } from '~/core/utils/transactions';
 import {
   Box,
@@ -64,7 +64,7 @@ export function SpeedUpAndCancelSheet({
     () => ({
       to: transaction?.from,
       from: transaction?.from,
-      value: 0,
+      value: toHex('0'),
       chainId: transaction?.chainId,
       data: undefined,
       nonce: transaction?.nonce,

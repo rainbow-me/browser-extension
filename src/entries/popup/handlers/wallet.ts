@@ -2,7 +2,6 @@ import {
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
-import { ChainId } from '@rainbow-me/swaps';
 import { uuid4 } from '@sentry/utils';
 import { getProvider } from '@wagmi/core';
 import { Bytes } from 'ethers';
@@ -52,15 +51,11 @@ export const sendTransaction = async (
     transactionRequest,
     provider,
   });
-  const value =
-    transactionRequest?.chainId !== ChainId.mainnet
-      ? toHex(transactionRequest?.value?.toString() || '0x0')
-      : transactionRequest?.value;
   return walletAction('send_transaction', {
     ...transactionRequest,
     ...selectedGas.transactionGasParams,
     gasLimit: toHex(gasLimit || '0'),
-    value,
+    value: transactionRequest?.value,
   }) as unknown as TransactionResponse;
 };
 
