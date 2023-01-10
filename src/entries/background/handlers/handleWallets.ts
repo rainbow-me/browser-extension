@@ -64,13 +64,17 @@ export const handleWallets = () =>
       try {
         let response = null;
         switch (action) {
-          case 'status':
+          case 'status': {
+            const _hasVault = await hasVault();
+            const unlocked = _hasVault && (await isVaultUnlocked());
+            const passwordSet = _hasVault && (await isPasswordSet());
             response = {
-              hasVault: await hasVault(),
-              unlocked: await isVaultUnlocked(),
-              passwordSet: await isPasswordSet(),
+              hasVault: _hasVault,
+              unlocked,
+              passwordSet,
             };
             break;
+          }
           case 'lock':
             response = await lockVault();
             break;

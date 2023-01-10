@@ -9,6 +9,7 @@ import {
   SupportedCurrencyKey,
   smartContractMethods,
 } from '../references';
+import { fetchTransactions } from '../resources/transactions/transactions';
 import {
   currentCurrencyStore,
   nonceStore,
@@ -149,9 +150,7 @@ export function parseTransaction({
         hash: `${tx.hash}-${index}`,
         minedAt: tx.mined_at,
         name: parsedAsset.name,
-        native: isL2Chain(chainId)
-          ? { amount: '', display: '' }
-          : nativeDisplay,
+        native: nativeDisplay,
         chainId,
         nonce: tx.nonce,
         pending: false,
@@ -389,14 +388,11 @@ export const parseNewTransaction = (
 
   const assetPrice = asset?.price?.value;
 
-  const native =
-    chainId && isL2Chain(chainId)
-      ? { amount: '', display: '' }
-      : convertAmountAndPriceToNativeDisplay(
-          amount ?? 0,
-          assetPrice ?? 0,
-          nativeCurrency,
-        );
+  const native = convertAmountAndPriceToNativeDisplay(
+    amount ?? 0,
+    assetPrice ?? 0,
+    nativeCurrency,
+  );
   const hash = txHash ?? `${txHash}-0`;
 
   const status = txStatus ?? TransactionStatus.sending;
@@ -478,11 +474,11 @@ export function getPendingTransactionData({
 }
 
 export async function getTransactionReceiptStatus({
-  inlcuded,
+  included,
   transaction,
   transactionResponse,
 }: {
-  inlcuded: boolean;
+  included: boolean;
   transaction: RainbowTransaction;
   transactionResponse: TransactionResponse;
 }) {
@@ -516,7 +512,7 @@ export async function getTransactionReceiptStatus({
       status: transactionStatus,
       type: transaction?.type,
     });
-  } else if (inlcuded) {
+  } else if (included) {
     status = TransactionStatus.unknown;
   } else {
     status = TransactionStatus.failed;
@@ -538,6 +534,7 @@ export async function watchPendingTransactions({
   const pendingTransactions = getPendingTransactions({
     address,
   });
+  const { currentCurrency } = currentCurrencyStore.getState();
 
   if (!pendingTransactions?.length) return;
 
@@ -563,8 +560,19 @@ export async function watchPendingTransactions({
                 transactionResponse?.blockHash) ||
               nonceAlreadyIncluded
             ) {
+              const latestTransactionsConfirmedByBackend =
+                await fetchTransactions(
+                  {
+                    address,
+                    chainId,
+                    currency: currentCurrency,
+                    transactionsLimit: 1,
+                  },
+                  { cacheTime: 0 },
+                );
+              const latest = latestTransactionsConfirmedByBackend?.[0];
               const transactionStatus = await getTransactionReceiptStatus({
-                inlcuded: nonceAlreadyIncluded,
+                included: nonceAlreadyIncluded,
                 transaction: tx,
                 transactionResponse,
               });
@@ -573,10 +581,17 @@ export async function watchPendingTransactions({
                 transactionStatus,
               });
 
-              updatedTransaction = {
-                ...updatedTransaction,
-                ...pendingTransactionData,
-              };
+              if (latest && getTransactionHash(latest) === tx?.hash) {
+                updatedTransaction = {
+                  ...updatedTransaction,
+                  ...latest,
+                };
+              } else {
+                updatedTransaction = {
+                  ...updatedTransaction,
+                  ...pendingTransactionData,
+                };
+              }
             }
           }
         } else {
@@ -591,7 +606,9 @@ export async function watchPendingTransactions({
 
   setPendingTransactions({
     address,
-    pendingTransactions: updatedPendingTransactions,
+    pendingTransactions: updatedPendingTransactions.filter(
+      (tx) => tx?.status !== TransactionStatus?.unknown,
+    ),
   });
 }
 
@@ -609,14 +626,16 @@ export async function addNewTransaction({
   const localNonce = localNonceData?.currentNonce;
   const provider = getProvider({ chainId });
   const nonceOnChain =
-    ((await provider.getTransactionCount(address, 'safe')) || 0) - 1;
-  const nonce = (localNonce || 0) > nonceOnChain ? localNonce : nonceOnChain;
+    ((await provider.getTransactionCount(address, 'pending')) || 0) - 1;
+  const currentNonce =
+    (localNonce || 0) > nonceOnChain ? localNonce : nonceOnChain;
+
   const { getPendingTransactions, setPendingTransactions } =
     pendingTransactionsStore.getState();
   const pendingTransactions = getPendingTransactions({ address });
   const { currentCurrency } = currentCurrencyStore.getState();
   const newPendingTransaction = parseNewTransaction(
-    { ...transaction, nonce },
+    { ...transaction, nonce: currentNonce },
     currentCurrency,
   );
 
@@ -627,7 +646,43 @@ export async function addNewTransaction({
   setNonce({
     address,
     chainId,
-    currentNonce: nonce,
+    currentNonce,
+  });
+}
+
+export function updateTransaction({
+  address,
+  chainId,
+  transaction,
+}: {
+  address: Address;
+  chainId: ChainId;
+  transaction: NewTransaction;
+}) {
+  const { setNonce } = nonceStore.getState();
+  const { getPendingTransactions, setPendingTransactions } =
+    pendingTransactionsStore.getState();
+  const { currentCurrency } = currentCurrencyStore.getState();
+  const updatedPendingTransaction = parseNewTransaction(
+    transaction,
+    currentCurrency,
+  );
+  const pendingTransactions = getPendingTransactions({ address });
+  setPendingTransactions({
+    address,
+    pendingTransactions: [
+      { ...transaction, ...updatedPendingTransaction },
+      ...pendingTransactions.filter(
+        (tx) =>
+          tx?.chainId !== chainId &&
+          tx?.nonce !== updatedPendingTransaction?.nonce,
+      ),
+    ],
+  });
+  setNonce({
+    address,
+    chainId,
+    currentNonce: updatedPendingTransaction?.nonce,
   });
 }
 

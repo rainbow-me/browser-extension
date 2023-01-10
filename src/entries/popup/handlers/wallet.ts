@@ -13,6 +13,7 @@ import { initializeMessenger } from '~/core/messengers';
 import { gasStore } from '~/core/state';
 import { KeychainWallet } from '~/core/types/keychainTypes';
 import { estimateGasWithPadding } from '~/core/utils/gas';
+import { toHex } from '~/core/utils/numbers';
 
 const messenger = initializeMessenger({ connect: 'background' });
 
@@ -53,7 +54,8 @@ export const sendTransaction = async (
   return walletAction('send_transaction', {
     ...transactionRequest,
     ...selectedGas.transactionGasParams,
-    gasLimit,
+    gasLimit: toHex(gasLimit || '0'),
+    value: transactionRequest?.value,
   }) as unknown as TransactionResponse;
 };
 

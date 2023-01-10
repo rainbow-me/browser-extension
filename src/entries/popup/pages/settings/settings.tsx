@@ -11,6 +11,7 @@ import {
 } from '~/core/references/links';
 import { themeOptions } from '~/core/references/themes';
 import { useCurrentCurrencyStore } from '~/core/state';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useIsDefaultWalletStore } from '~/core/state/currentSettings/isDefaultWallet';
 import { ThemeOption } from '~/core/types/settings';
@@ -30,6 +31,8 @@ export function Settings() {
   const { isDefaultWallet, setIsDefaultWallet } = useIsDefaultWalletStore();
 
   const { currentUserSelectedTheme, setCurrentTheme } = useCurrentThemeStore();
+  const { connectedToHardhat, setConnectedToHardhat } =
+    useConnectedToHardhatStore();
 
   const testSandboxBackground = useCallback(async () => {
     const response = await testSandbox();
@@ -48,6 +51,10 @@ export function Settings() {
       alert('Popup sandboxed!');
     }
   }, []);
+
+  const connectToHardhat = useCallback(() => {
+    setConnectedToHardhat(!connectedToHardhat);
+  }, [setConnectedToHardhat, connectedToHardhat]);
 
   return (
     <Box paddingHorizontal="20px">
@@ -277,6 +284,19 @@ export function Settings() {
                 }
                 onClick={testSandboxBackground}
                 testId="test-sandbox-background"
+              />
+              <MenuItem
+                titleComponent={
+                  <MenuItem.Title
+                    text={
+                      connectedToHardhat
+                        ? 'Disconnect from Hardhat'
+                        : 'Connect to Hardhat'
+                    }
+                  />
+                }
+                onClick={connectToHardhat}
+                testId="connect-to-hardhat"
               />
             </Menu>
             <Box padding="10px" alignItems="center" justifyContent="center">

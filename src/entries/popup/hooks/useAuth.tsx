@@ -81,8 +81,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (newValue === oldValue) return;
       setStatus(newValue);
     };
-    chrome.storage.session.onChanged.addListener(listener);
-    return () => chrome.storage.session.onChanged.removeListener(listener);
+    chrome.storage.session?.onChanged?.addListener(listener);
+    return () => chrome.storage.session?.onChanged?.removeListener(listener);
   }, [setStatus, status]);
 
   const value = useMemo(
