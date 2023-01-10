@@ -73,48 +73,44 @@ export function SpeedUpAndCancelSheet({
   );
   const handleCancellation = async () => {
     const cancellationResult = await sendTransaction(cancelTransactionRequest);
-    if (cancellationResult?.from) {
-      const cancelTx = {
-        asset: transaction?.asset,
-        data: cancellationResult?.data,
-        value: cancellationResult?.value,
-        from: cancellationResult?.from as Address,
-        to: cancellationResult?.from as Address,
-        hash: cancellationResult?.hash,
-        chainId: cancelTransactionRequest?.chainId,
-        status: TransactionStatus.cancelling,
-        type: TransactionType.cancel,
-        nonce: transaction?.nonce,
-      };
-      updateTransaction({
-        address: cancellationResult?.from as Address,
-        chainId: cancellationResult?.chainId,
-        transaction: cancelTx,
-      });
-    }
+    const cancelTx = {
+      asset: transaction?.asset,
+      data: cancellationResult?.data,
+      value: cancellationResult?.value,
+      from: cancellationResult?.from as Address,
+      to: cancellationResult?.from as Address,
+      hash: cancellationResult?.hash,
+      chainId: cancelTransactionRequest?.chainId,
+      status: TransactionStatus.cancelling,
+      type: TransactionType.cancel,
+      nonce: transaction?.nonce,
+    };
+    updateTransaction({
+      address: cancellationResult?.from as Address,
+      chainId: cancellationResult?.chainId,
+      transaction: cancelTx,
+    });
     onClose();
   };
   const handleSpeedUp = async () => {
     const speedUpResult = await sendTransaction(speedUpTransactionRequest);
-    if (speedUpResult?.from) {
-      const speedUpTransaction = {
-        asset: transaction?.asset,
-        data: speedUpResult?.data,
-        value: speedUpResult?.value,
-        from: speedUpResult?.from as Address,
-        to: speedUpResult?.to as Address,
-        hash: speedUpResult?.hash,
-        chainId: speedUpResult?.chainId,
-        status: TransactionStatus.speeding_up,
-        type: TransactionType.send,
-        nonce: transaction?.nonce,
-      };
-      updateTransaction({
-        address: speedUpResult?.from as Address,
-        chainId: speedUpResult?.chainId,
-        transaction: speedUpTransaction,
-      });
-    }
+    const speedUpTransaction = {
+      asset: transaction?.asset,
+      data: speedUpResult?.data,
+      value: speedUpResult?.value,
+      from: speedUpResult?.from as Address,
+      to: speedUpResult?.to as Address,
+      hash: speedUpResult?.hash,
+      chainId: speedUpResult?.chainId,
+      status: TransactionStatus.speeding_up,
+      type: TransactionType.send,
+      nonce: transaction?.nonce,
+    };
+    updateTransaction({
+      address: speedUpResult?.from as Address,
+      chainId: speedUpResult?.chainId,
+      transaction: speedUpTransaction,
+    });
     onClose();
   };
   return (
