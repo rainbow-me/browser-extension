@@ -84,6 +84,7 @@ export function useAllTransactions({
   const pendingTransactions: RainbowTransaction[] = getPendingTransactions({
     address,
   });
+  console.log('pending transactions: ', pendingTransactions);
   const allTransactions = [
     ...pendingTransactions,
     ...(confirmedTransactions || []),

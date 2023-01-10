@@ -33,11 +33,11 @@ export const pendingTransactionsStore = createStore<PendingTransactionsState>(
         const pendingTransactions = (
           get()?.[address]?.pendingTransactions || []
         ).map((tx) => {
-          const formattedPendingTransaction = parseNewTransaction(
-            tx as NewTransaction,
-            currentCurrency,
-          );
-          return { ...formattedPendingTransaction, pending: tx?.pending };
+          if (tx?.pending) {
+            return parseNewTransaction(tx as NewTransaction, currentCurrency);
+          } else {
+            return tx;
+          }
         });
         return pendingTransactions;
       }

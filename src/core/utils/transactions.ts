@@ -9,6 +9,7 @@ import {
   SupportedCurrencyKey,
   smartContractMethods,
 } from '../references';
+import { fetchTransactions } from '../resources/transactions/transactions';
 import {
   currentCurrencyStore,
   nonceStore,
@@ -149,9 +150,7 @@ export function parseTransaction({
         hash: `${tx.hash}-${index}`,
         minedAt: tx.mined_at,
         name: parsedAsset.name,
-        native: isL2Chain(chainId)
-          ? { amount: '', display: '' }
-          : nativeDisplay,
+        native: nativeDisplay,
         chainId,
         nonce: tx.nonce,
         pending: false,
@@ -389,14 +388,11 @@ export const parseNewTransaction = (
 
   const assetPrice = asset?.price?.value;
 
-  const native =
-    chainId && isL2Chain(chainId)
-      ? { amount: '', display: '' }
-      : convertAmountAndPriceToNativeDisplay(
-          amount ?? 0,
-          assetPrice ?? 0,
-          nativeCurrency,
-        );
+  const native = convertAmountAndPriceToNativeDisplay(
+    amount ?? 0,
+    assetPrice ?? 0,
+    nativeCurrency,
+  );
   const hash = txHash ?? `${txHash}-0`;
 
   const status = txStatus ?? TransactionStatus.sending;
@@ -538,6 +534,7 @@ export async function watchPendingTransactions({
   const pendingTransactions = getPendingTransactions({
     address,
   });
+  const { currentCurrency } = currentCurrencyStore.getState();
 
   if (!pendingTransactions?.length) return;
 
@@ -556,13 +553,24 @@ export async function watchPendingTransactions({
             );
             const transactionResponse = await provider.getTransaction(txHash);
             const nonceAlreadyIncluded =
-              currentNonceForChainId >=
+              currentNonceForChainId >
               (tx?.nonce || transactionResponse?.nonce);
             if (
               (transactionResponse?.blockNumber &&
                 transactionResponse?.blockHash) ||
               nonceAlreadyIncluded
             ) {
+              const latestTransactionsConfirmedByBackend =
+                await fetchTransactions(
+                  {
+                    address,
+                    chainId,
+                    currency: currentCurrency,
+                    transactionsLimit: 1,
+                  },
+                  { cacheTime: 0 },
+                );
+              const latest = latestTransactionsConfirmedByBackend?.[0];
               const transactionStatus = await getTransactionReceiptStatus({
                 included: nonceAlreadyIncluded,
                 transaction: tx,
@@ -573,11 +581,17 @@ export async function watchPendingTransactions({
                 transactionStatus,
               });
 
-              updatedTransaction = {
-                ...updatedTransaction,
-                ...pendingTransactionData,
-                pending: false,
-              };
+              if (latest && getTransactionHash(latest) === tx?.hash) {
+                updatedTransaction = {
+                  ...updatedTransaction,
+                  ...latest,
+                };
+              } else {
+                updatedTransaction = {
+                  ...updatedTransaction,
+                  ...pendingTransactionData,
+                };
+              }
             }
           }
         } else {

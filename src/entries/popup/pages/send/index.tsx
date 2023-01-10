@@ -132,7 +132,7 @@ export function Send() {
     try {
       const result = await sendTransaction({
         from: fromAddress,
-        to: toAddress,
+        to: txToAddress,
         value,
         chainId:
           chainId === ChainId.mainnet && connectedToHardhat
@@ -150,7 +150,7 @@ export function Send() {
           data: result.data,
           value: result.value,
           from: fromAddress,
-          to: toAddress,
+          to: txToAddress,
           hash: result.hash,
           chainId,
           status: TransactionStatus.sending,
@@ -169,7 +169,7 @@ export function Send() {
     }
   }, [
     fromAddress,
-    toAddress,
+    txToAddress,
     value,
     chainId,
     connectedToHardhat,

@@ -54,7 +54,7 @@ export const sendTransaction = async (
   });
   const value =
     transactionRequest?.chainId !== ChainId.mainnet
-      ? toHex(transactionRequest.value?.toString() || '')
+      ? toHex(transactionRequest?.value?.toString() || '0x0')
       : transactionRequest?.value;
   return walletAction('send_transaction', {
     ...transactionRequest,

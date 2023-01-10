@@ -1,3 +1,4 @@
+import { BigNumber } from 'ethers';
 import { parseEther } from 'ethers/lib/utils';
 import { useMemo, useState } from 'react';
 import { Address, useAccount } from 'wagmi';
@@ -36,7 +37,10 @@ export const useSendTransactionState = ({
   );
 
   const value = useMemo(
-    () => (sendingNativeAsset && assetAmount ? parseEther(assetAmount) : '0x0'),
+    () =>
+      sendingNativeAsset && assetAmount
+        ? parseEther(assetAmount)
+        : BigNumber.from('0x0'),
     [assetAmount, sendingNativeAsset],
   );
 

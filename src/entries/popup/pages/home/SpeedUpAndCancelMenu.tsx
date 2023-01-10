@@ -95,7 +95,9 @@ export function SpeedUpAndCancelMenu({
                     color="label"
                   />
                   <Text color="label" size="14pt" weight="semibold">
-                    {i18n.t('speed_up_and_cancel.view_on_etherscan')}
+                    {transaction?.chainId === ChainId.mainnet
+                      ? i18n.t('speed_up_and_cancel.view_on_etherscan')
+                      : i18n.t('speed_up_and_cancel.view_on_explorer')}
                   </Text>
                 </Inline>
               </a>
