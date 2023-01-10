@@ -206,7 +206,7 @@ describe('Import wallet flow', () => {
 
     await driver.switchTo().window(popupHandler);
     await delayTime('medium');
-    await findElementAndClick({ id: 'accept-request-button', driver });
+    await findElementAndClick({ id: 'reject-request-button', driver });
     await driver.switchTo().window(dappHandler);
   });
 
