@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useWalletNamesStore } from '~/core/state/walletNames';
 import { KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Row, Rows, Symbol, Text } from '~/design-system';
@@ -20,7 +19,7 @@ import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { getWallet } from '~/entries/popup/handlers/wallet';
 import { useAvatar } from '~/entries/popup/hooks/useAvatar';
-import { useEns } from '~/entries/popup/hooks/useEns';
+import { useWalletName } from '~/entries/popup/hooks/useWalletName';
 import { ROUTES } from '~/entries/popup/urls';
 
 import { NewWalletPrompt } from './newWalletPrompt';
@@ -99,27 +98,16 @@ const MoreInfoButton = ({ account }: { account: Address }) => {
   );
 };
 
-export default function AccountItem({
-  account,
-  name,
-}: {
-  account: Address;
-  name?: string;
-}) {
+export default function AccountItem({ account }: { account: Address }) {
   const { avatar, isFetched } = useAvatar({ address: account });
-  const { ensName } = useEns({
-    addressOrName: account,
-  });
+
+  const { displayName, showAddress } = useWalletName({ address: account });
   return (
     <MenuItem
       key={account}
-      titleComponent={
-        <MenuItem.Title text={name || ensName || truncateAddress(account)} />
-      }
+      titleComponent={<MenuItem.Title text={displayName} />}
       labelComponent={
-        name || ensName ? (
-          <MenuItem.Label text={truncateAddress(account)} />
-        ) : null
+        showAddress ? <MenuItem.Label text={truncateAddress(account)} /> : null
       }
       leftComponent={
         <Box marginRight="-8px">
@@ -163,7 +151,6 @@ export function WalletDetails() {
       { state: { wallet, password: state.password } },
     );
   };
-  const { walletNames } = useWalletNamesStore();
 
   useEffect(() => {
     const fetchWallet = async () => {
@@ -206,13 +193,7 @@ export function WalletDetails() {
           </Menu>
           <Menu paddingVertical="8px">
             {wallet?.accounts.map((account: Address) => {
-              return (
-                <AccountItem
-                  name={walletNames[account]}
-                  account={account}
-                  key={account}
-                />
-              );
+              return <AccountItem account={account} key={account} />;
             })}
           </Menu>
           <Menu>
