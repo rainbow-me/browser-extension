@@ -4,7 +4,9 @@ import { Address } from 'wagmi';
 import SendSound from 'static/assets/audio/woosh.wav';
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
+import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
+import { getBlockExplorerHostForChain, isL2Chain } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
   Bleed,
@@ -23,6 +25,7 @@ import {
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
+import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import {
   DropdownMenu,
@@ -39,11 +42,13 @@ import { useContact } from '../../hooks/useContacts';
 import { ContactAction } from './ContactPrompt';
 
 const EditContactDropdown = ({
+  chainId,
   children,
   toAddress,
   closeReview,
   onEdit,
 }: {
+  chainId?: ChainId;
   children: React.ReactNode;
   toAddress?: Address;
   closeReview: () => void;
@@ -57,10 +62,11 @@ const EditContactDropdown = ({
   const contact = useContact({ address: toAddress });
 
   const viewOnEtherscan = useCallback(() => {
+    const explorer = getBlockExplorerHostForChain(chainId || ChainId.mainnet);
     chrome.tabs.create({
-      url: `https://etherscan.io/address/${toAddress}`,
+      url: `https://${explorer}/address/${toAddress}`,
     });
-  }, [toAddress]);
+  }, [chainId, toAddress]);
 
   const onValueChange = useCallback(
     (value: string) => {
@@ -106,7 +112,13 @@ const EditContactDropdown = ({
                       />
                     </Inline>
                     <Text size="14pt" weight="semibold">
-                      {i18n.t('contacts.view_on_etherscan')}
+                      {i18n.t(
+                        `contacts.${
+                          chainId && isL2Chain(chainId)
+                            ? 'view_on_explorer'
+                            : 'view_on_etherscan'
+                        }`,
+                      )}
                     </Text>
                   </Inline>
                   <Bleed vertical="8px">
@@ -120,8 +132,8 @@ const EditContactDropdown = ({
                 </Inline>
               </Box>
             </DropdownMenuRadioItem>
+            <DropdownMenuSeparator />
             <Box>
-              <DropdownMenuSeparator />
               <DropdownMenuRadioItem value={'edit'}>
                 <Box
                   width="full"
@@ -195,6 +207,7 @@ const EditContactDropdown = ({
 const { innerWidth: windowWidth } = window;
 
 const TEXT_OVERFLOW_WIDTH = windowWidth - 160;
+
 export const ReviewSheet = ({
   show,
   toAddress,
@@ -299,7 +312,8 @@ export const ReviewSheet = ({
                     <Box
                       background="surfaceSecondaryElevated"
                       borderRadius="40px"
-                      padding="6px"
+                      paddingHorizontal="8px"
+                      paddingVertical="6px"
                       width="fit"
                     >
                       <Inline alignHorizontal="center" alignVertical="center">
@@ -308,32 +322,15 @@ export const ReviewSheet = ({
                         </Text>
                       </Inline>
                     </Box>
-                    <Box
-                      style={{
-                        width: 44,
-                        height: 20,
-                      }}
-                    >
-                      <Inline alignHorizontal="center">
-                        <Box paddingVertical="2px">
-                          <Box marginTop="-2px">
-                            <Symbol
-                              weight="bold"
-                              symbol="chevron.down"
-                              size={13}
-                              color="labelQuaternary"
-                            />
-                          </Box>
-                          <Box marginTop="-7px">
-                            <Symbol
-                              weight="bold"
-                              symbol="chevron.down"
-                              size={13}
-                              color="labelTertiary"
-                            />
-                          </Box>
+                    <Box style={{ width: 44 }}>
+                      <Stack alignHorizontal="center">
+                        <Box style={{ height: 10 }}>
+                          <ChevronDown color="separatorSecondary" />
                         </Box>
-                      </Inline>
+                        <Box style={{ height: 10 }} marginTop="-2px">
+                          <ChevronDown color="separator" />
+                        </Box>
+                      </Stack>
                     </Box>
                   </Inline>
                 </Box>
@@ -356,6 +353,7 @@ export const ReviewSheet = ({
 
                             <Box>
                               <EditContactDropdown
+                                chainId={asset?.chainId}
                                 toAddress={toAddress}
                                 closeReview={onCancel}
                                 onEdit={onSaveContactAction}

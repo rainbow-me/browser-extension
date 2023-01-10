@@ -1,4 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { useAnimationControls } from 'framer-motion';
 import React, {
   ChangeEvent,
   ReactNode,
@@ -99,6 +100,7 @@ export function Send() {
     setToAddressOrName,
   } = useSendTransactionState({ assetAmount, asset });
 
+  const controls = useAnimationControls();
   const transactionRequest: TransactionRequest = useMemo(() => {
     return {
       to: txToAddress,
@@ -124,8 +126,15 @@ export function Send() {
   const openReviewSheet = useCallback(() => {
     if (!!toAddress && independentAmount) {
       setShowReviewSheet(true);
+    } else {
+      controls.start({
+        rotate: [1, -1.4, 0, 1, -1.4, 0],
+        transition: { duration: 0.2 },
+      });
+      independentFieldRef?.current?.focus();
     }
-  }, [independentAmount, toAddress]);
+  }, [controls, independentAmount, independentFieldRef, toAddress]);
+
   const closeReviewSheet = useCallback(() => setShowReviewSheet(false), []);
 
   const handleSend = useCallback(async () => {
@@ -218,6 +227,7 @@ export function Send() {
             toAddress={toAddress}
             action={navbarButtonAction}
             enabled={!!toAddress}
+            chainId={asset?.chainId}
           />
         }
       />
@@ -269,6 +279,7 @@ export function Send() {
                       setIndependentAmount={setIndependentAmount}
                       setMaxAssetAmount={setMaxAssetAmount}
                       switchIndependentField={switchIndependentField}
+                      inputAnimationControls={controls}
                     />
                   ) : null}
                 </Box>

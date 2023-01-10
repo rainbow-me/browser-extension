@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { BoxStyles } from '~/design-system/styles/core.css';
 import { Radius } from '~/design-system/styles/designTokens';
 
 import { Box } from '../Box/Box';
@@ -24,6 +25,8 @@ export type ButtonProps = {
   symbolSide?: 'left' | 'right';
   blur?: string;
   borderRadius?: Radius;
+  paddingLeft?: BoxStyles['paddingLeft'];
+  paddingRight?: BoxStyles['paddingRight'];
 } & ButtonVariantProps &
   (
     | {
@@ -69,7 +72,11 @@ export function Button({
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
     <ButtonWrapper height={height} {...props}>
-      <Box paddingHorizontal={paddingHorizontal} testId={testId}>
+      <Box
+        paddingLeft={props.paddingLeft || paddingHorizontal}
+        paddingRight={props.paddingRight || paddingHorizontal}
+        testId={testId}
+      >
         {typeof children === 'string' ? (
           <Inline alignVertical="center" space={gap}>
             {emoji && (

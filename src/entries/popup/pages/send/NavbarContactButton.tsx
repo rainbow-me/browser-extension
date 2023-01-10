@@ -3,7 +3,9 @@ import React, { useCallback } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
+import { getBlockExplorerHostForChain, isL2Chain } from '~/core/utils/chains';
 import {
   Bleed,
   Box,
@@ -54,6 +56,8 @@ const NavbarSaveContactButton = ({
         variant="flat"
         onClick={enabled ? openSavePrompt : () => null}
         testId={`navbar-contact-button-save`}
+        paddingLeft="8px"
+        paddingRight="12px"
       >
         <Inline space="4px" alignVertical="center">
           {toAddress ? (
@@ -80,10 +84,12 @@ const NavbarSaveContactButton = ({
 
 const EditContactDropdown = ({
   children,
+  chainId,
   toAddress,
   onEdit,
 }: {
   children: React.ReactNode;
+  chainId?: ChainId;
   toAddress?: Address;
   onEdit: React.Dispatch<
     React.SetStateAction<{
@@ -95,10 +101,11 @@ const EditContactDropdown = ({
   const contact = useContact({ address: toAddress });
 
   const viewOnEtherscan = useCallback(() => {
+    const explorer = getBlockExplorerHostForChain(chainId || ChainId.mainnet);
     chrome.tabs.create({
-      url: `https://etherscan.io/address/${toAddress}`,
+      url: `https://${explorer}/address/${toAddress}`,
     });
-  }, [toAddress]);
+  }, [chainId, toAddress]);
 
   const onValueChange = useCallback(
     (value: string) => {
@@ -137,13 +144,13 @@ const EditContactDropdown = ({
           </Box>
           <DropdownMenuRadioGroup onValueChange={onValueChange}>
             <Stack space="4px">
+              <DropdownMenuSeparator />
               <Box>
-                <DropdownMenuSeparator />
                 <DropdownMenuRadioItem value={'copy'}>
                   <Box
                     testId="navbar-contact-button-edit-copy"
                     width="full"
-                    marginVertical="-1px"
+                    // marginVertical="-1px"
                   >
                     <Inline space="8px" alignVertical="center">
                       <Box>
@@ -210,7 +217,13 @@ const EditContactDropdown = ({
                           />
                         </Inline>
                         <Text size="14pt" weight="semibold">
-                          {i18n.t('contacts.view_on_etherscan')}
+                          {i18n.t(
+                            `contacts.${
+                              chainId && isL2Chain(chainId)
+                                ? 'view_on_explorer'
+                                : 'view_on_etherscan'
+                            }`,
+                          )}
                         </Text>
                       </Inline>
                       <Bleed vertical="8px">
@@ -252,9 +265,11 @@ const EditContactDropdown = ({
 };
 
 const NavbarEditContactButton = ({
+  chainId,
   toAddress,
   onSaveAction,
 }: {
+  chainId?: ChainId;
   toAddress?: Address;
   onSaveAction: React.Dispatch<
     React.SetStateAction<{
@@ -264,18 +279,24 @@ const NavbarEditContactButton = ({
   >;
 }) => {
   return (
-    <EditContactDropdown toAddress={toAddress} onEdit={onSaveAction}>
+    <EditContactDropdown
+      chainId={chainId}
+      toAddress={toAddress}
+      onEdit={onSaveAction}
+    >
       <Navbar.SymbolButton symbol="ellipsis" variant="flat" />
     </EditContactDropdown>
   );
 };
 
 export const NavbarContactButton = ({
+  chainId,
   toAddress,
   onSaveAction,
   action,
   enabled,
 }: {
+  chainId?: ChainId;
   toAddress?: Address;
   onSaveAction: React.Dispatch<
     React.SetStateAction<{
@@ -314,6 +335,7 @@ export const NavbarContactButton = ({
           <NavbarEditContactButton
             toAddress={toAddress}
             onSaveAction={onSaveAction}
+            chainId={chainId}
           />
         </Box>
       )}
