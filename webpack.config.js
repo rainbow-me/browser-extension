@@ -40,7 +40,7 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.(woff2|png)?$/,
+        test: /\.(woff2|png|wav)?$/,
         use: 'file-loader',
       },
       {
