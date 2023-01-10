@@ -20,11 +20,14 @@ export const DEFAULT_CHAIN_ID = '0x1';
 const openWindow = async () => {
   const { setWindow, window: stateWindow } = notificationWindowStore.getState();
   if (stateWindow) return;
+  const currentWindow = await chrome.windows.getCurrent();
   const window = await chrome.windows.create({
     url: chrome.runtime.getURL('popup.html'),
     type: 'popup',
     height: 625,
     width: 360,
+    left: (currentWindow.width || 360) - 360,
+    top: 0,
   });
   chrome.windows.onRemoved.addListener((id) => {
     if (id === window.id) {
@@ -74,7 +77,8 @@ export const handleProviderRequest = ({
     console.log(meta.sender, method);
 
     const { getActiveSession, addSession } = appSessionsStore.getState();
-    const host = getDappHost(meta?.sender?.url || '');
+    const url = meta?.sender?.url || '';
+    const host = getDappHost(url);
     const activeSession = getActiveSession({ host });
 
     try {
@@ -125,6 +129,7 @@ export const handleProviderRequest = ({
             },
           )) as { address: Address; chainId: number };
           addSession({
+            url,
             host,
             address,
             chainId,
