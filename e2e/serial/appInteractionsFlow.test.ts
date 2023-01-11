@@ -268,7 +268,6 @@ describe('App interactions flow', () => {
   });
 
   it('should be able to accept a transaction request', async () => {
-    // TODO send tx, we're not signing anything yet
     await delayTime('long');
     const dappHandler = await driver.getWindowHandle();
 
@@ -284,6 +283,7 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(popupHandler);
     await delayTime('long');
     await findElementAndClick({ id: 'accept-request-button', driver });
+    await delayTime('long');
     await driver.switchTo().window(dappHandler);
   });
 
