@@ -6,7 +6,7 @@ import { i18n } from '~/core/languages';
 import { KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Row, Rows, Symbol, Text } from '~/design-system';
-import { Avatar } from '~/entries/popup/components/Avatar/Avatar';
+import AccountItem from '~/entries/popup/components/AccountItem/AccountItem';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,9 +18,7 @@ import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { getWallet } from '~/entries/popup/handlers/wallet';
-import { useAvatar } from '~/entries/popup/hooks/useAvatar';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
-import { useWalletName } from '~/entries/popup/hooks/useWalletName';
 import { ROUTES } from '~/entries/popup/urls';
 
 import { NewWalletPrompt } from './newWalletPrompt';
@@ -99,42 +97,6 @@ const MoreInfoButton = ({ account }: { account: Address }) => {
   );
 };
 
-export default function AccountItem({ account }: { account: Address }) {
-  const { avatar, isFetched } = useAvatar({ address: account });
-
-  const { displayName, showAddress } = useWalletName({ address: account });
-  return (
-    <MenuItem
-      key={account}
-      titleComponent={<MenuItem.Title text={displayName} />}
-      labelComponent={
-        showAddress ? <MenuItem.Label text={truncateAddress(account)} /> : null
-      }
-      leftComponent={
-        <Box marginRight="-8px">
-          <Avatar.Wrapper size={36}>
-            {isFetched ? (
-              <>
-                {avatar?.imageUrl ? (
-                  <Avatar.Image imageUrl={avatar.imageUrl} />
-                ) : (
-                  <Avatar.Emoji
-                    color={avatar?.color}
-                    emoji={avatar?.emoji}
-                    size="20pt"
-                  />
-                )}
-              </>
-            ) : null}
-            <Avatar.Skeleton />
-          </Avatar.Wrapper>
-        </Box>
-      }
-      rightComponent={<MoreInfoButton account={account} />}
-    />
-  );
-}
-
 export function WalletDetails() {
   const navigate = useRainbowNavigate();
   const { state } = useLocation();
@@ -194,7 +156,13 @@ export function WalletDetails() {
           </Menu>
           <Menu paddingVertical="8px">
             {wallet?.accounts.map((account: Address) => {
-              return <AccountItem account={account} key={account} />;
+              return (
+                <AccountItem
+                  account={account}
+                  key={account}
+                  rightComponent={<MoreInfoButton account={account} />}
+                />
+              );
             })}
           </Menu>
           <Menu>

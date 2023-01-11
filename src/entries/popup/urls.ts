@@ -33,6 +33,7 @@ export const ROUTES = {
   SEND: '/send', // Send
   SIGN: '/sign', // Sign
   WALLETS: '/wallets', // Wallets
+  WALLET_SWITCHER: '/wallet-switcher', // WalletSwitcher
   READY: '/ready', // WalletReady
   APPROVE_APP_REQUEST: '/approve-request',
 };

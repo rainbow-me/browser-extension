@@ -57,8 +57,7 @@ export function AccountName({
       </Box>
       <Link
         id={`${id ? `${id}-` : ''}account-name-link-to-wallet`}
-        to={ROUTES.WALLETS}
-        state={{ from: location.pathname }}
+        to={ROUTES.WALLET_SWITCHER}
       >
         <Symbol
           size={chevronDownSizes[size]}

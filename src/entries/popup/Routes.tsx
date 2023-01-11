@@ -35,6 +35,7 @@ import { Transactions } from './pages/settings/transactions';
 import { Sign } from './pages/sign';
 import { Unlock } from './pages/unlock';
 import { WalletReady } from './pages/walletReady';
+import { WalletSwitcher } from './pages/walletSwitcher';
 import { Wallets } from './pages/wallets';
 import { WatchWallet } from './pages/watchWallet';
 import { Welcome } from './pages/welcome';
@@ -419,6 +420,21 @@ const ROUTE_DATA = [
         protectedRoute
       >
         <Wallets />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.WALLET_SWITCHER,
+    element: (
+      <AnimatedRoute
+        backTo={ROUTES.HOME}
+        direction="up"
+        navbar
+        navbarIcon="ex"
+        title={i18n.t('wallets.title')}
+        protectedRoute
+      >
+        <WalletSwitcher />
       </AnimatedRoute>
     ),
   },
