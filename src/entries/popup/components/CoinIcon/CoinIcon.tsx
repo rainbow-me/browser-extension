@@ -24,7 +24,7 @@ export function CoinIcon({
   fallbackText,
   size = 36,
 }: {
-  asset?: ParsedAsset | ParsedAddressAsset;
+  asset?: ParsedAsset | ParsedAddressAsset | null;
   fallbackText?: string;
   size?: number;
 }) {
