@@ -7,12 +7,7 @@ import { useAvatar } from '../../hooks/useAvatar';
 import { useWalletName } from '../../hooks/useWalletName';
 import { Avatar } from '../Avatar/Avatar';
 
-export default function AddressPill({
-  address,
-}: {
-  address: Address;
-  name?: string;
-}) {
+export default function AddressPill({ address }: { address: Address }) {
   const { avatar, isFetched } = useAvatar({ address });
   const { displayName } = useWalletName({ address });
   return (
