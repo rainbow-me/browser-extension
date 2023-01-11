@@ -320,12 +320,14 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
     [getNativeDisplay, getNativeDisplayColor, name],
   );
 
-  return (
+  return asset ? (
     <CoinRow
       asset={asset}
       fallbackText={symbol}
       topRow={topRow}
       bottomRow={bottomRow}
     />
+  ) : (
+    <CoinRow fallbackText={symbol} topRow={topRow} bottomRow={bottomRow} />
   );
 }
