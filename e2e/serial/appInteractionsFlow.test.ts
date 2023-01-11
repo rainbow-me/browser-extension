@@ -110,6 +110,23 @@ describe('App interactions flow', () => {
     await findElementByText(driver, 'Your wallets ready');
   });
 
+  it('should be able to go to setings', async () => {
+    await goToPopup(driver, rootURL);
+    await findElementAndClick({ id: 'home-page-header-right', driver });
+    await findElementAndClick({ id: 'settings-link', driver });
+  });
+
+  it('should be able to connect to hardhat', async () => {
+    const btn = await querySelector(
+      driver,
+      '[data-testid="connect-to-hardhat"]',
+    );
+    await waitAndClick(btn, driver);
+    const button = await findElementByText(driver, 'Disconnect from Hardhat');
+    expect(button).toBeTruthy();
+    await findElementAndClick({ id: 'navbar-button-with-back', driver });
+  });
+
   it('should be able to connect to bx test dapp', async () => {
     await delayTime('long');
     await goToTestApp(driver);
@@ -265,8 +282,8 @@ describe('App interactions flow', () => {
       handlers.find((handler) => handler !== dappHandler) || '';
 
     await driver.switchTo().window(popupHandler);
-    await delayTime('medium');
-    await findElementAndClick({ id: 'reject-request-button', driver });
+    await delayTime('long');
+    await findElementAndClick({ id: 'accept-request-button', driver });
     await driver.switchTo().window(dappHandler);
   });
 

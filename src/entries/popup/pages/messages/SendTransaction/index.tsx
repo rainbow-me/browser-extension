@@ -2,7 +2,9 @@ import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { getAddress } from 'ethers/lib/utils';
 import React, { useCallback } from 'react';
 
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import { ChainId } from '~/core/types/chains';
 import { Row, Rows } from '~/design-system';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
@@ -34,6 +36,7 @@ export function SendTransaction({
   });
   const { appSession } = useAppSession({ host: appHost });
   const selectedWallet = appSession.address;
+  const { connectedToHardhat } = useConnectedToHardhatStore();
 
   const onAcceptRequest = useCallback(async () => {
     const txRequest = request?.params?.[0] as TransactionRequest;
@@ -41,10 +44,13 @@ export function SendTransaction({
       from: getAddress(txRequest?.from ?? ''),
       to: getAddress(txRequest?.to ?? ''),
       value: txRequest.value,
-      chainId: appSession.chainId,
+      chainId:
+        appSession.chainId === ChainId.mainnet && connectedToHardhat
+          ? ChainId.hardhat
+          : appSession.chainId,
     });
     approveRequest(result);
-  }, [appSession.chainId, approveRequest, request?.params]);
+  }, [appSession.chainId, approveRequest, connectedToHardhat, request?.params]);
 
   return (
     <Rows alignVertical="justify">
