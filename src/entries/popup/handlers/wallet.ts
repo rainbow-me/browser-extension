@@ -3,7 +3,7 @@ import {
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
 import { uuid4 } from '@sentry/utils';
-import { Provider, getProvider } from '@wagmi/core';
+import { getProvider } from '@wagmi/core';
 import { Bytes } from 'ethers';
 import { Mnemonic } from 'ethers/lib/utils';
 import { Address } from 'wagmi';
@@ -42,14 +42,11 @@ const signMessageByType = async (
 
 export const sendTransaction = async (
   transactionRequest: TransactionRequest,
-  provider?: Provider,
 ): Promise<TransactionResponse> => {
   const { selectedGas } = gasStore.getState();
-  const txProvider =
-    provider ||
-    getProvider({
-      chainId: transactionRequest.chainId,
-    });
+  const txProvider = getProvider({
+    chainId: transactionRequest.chainId,
+  });
   const gasLimit = await estimateGasWithPadding({
     transactionRequest,
     provider: txProvider,

@@ -1,5 +1,4 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { getProvider } from '@wagmi/core';
 import { getAddress } from 'ethers/lib/utils';
 import React, { useCallback } from 'react';
 
@@ -41,17 +40,12 @@ export function SendTransaction({
 
   const onAcceptRequest = useCallback(async () => {
     const txRequest = request?.params?.[0] as TransactionRequest;
-    const result = await wallet.sendTransaction(
-      {
-        from: getAddress(txRequest?.from ?? ''),
-        to: getAddress(txRequest?.to ?? ''),
-        value: txRequest.value,
-        chainId: appSession.chainId,
-      },
-      connectedToHardhat
-        ? getProvider({ chainId: ChainId.hardhat })
-        : undefined,
-    );
+    const result = await wallet.sendTransaction({
+      from: getAddress(txRequest?.from ?? ''),
+      to: getAddress(txRequest?.to ?? ''),
+      value: txRequest.value,
+      chainId: connectedToHardhat ? ChainId.hardhat : appSession.chainId,
+    });
     approveRequest(result);
   }, [appSession.chainId, approveRequest, connectedToHardhat, request?.params]);
 

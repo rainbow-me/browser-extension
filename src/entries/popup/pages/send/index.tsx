@@ -1,5 +1,4 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { getProvider } from '@wagmi/core';
 import { useAnimationControls } from 'framer-motion';
 import React, {
   ChangeEvent,
@@ -137,21 +136,15 @@ export function Send() {
   }, [controls, independentAmount, independentFieldRef, toAddress]);
 
   const closeReviewSheet = useCallback(() => setShowReviewSheet(false), []);
-
   const handleSend = useCallback(async () => {
     try {
-      const result = await sendTransaction(
-        {
-          from: fromAddress,
-          to: txToAddress,
-          value,
-          chainId,
-          data,
-        },
-        connectedToHardhat
-          ? getProvider({ chainId: ChainId.hardhat })
-          : undefined,
-      );
+      const result = await sendTransaction({
+        from: fromAddress,
+        to: txToAddress,
+        value,
+        chainId: connectedToHardhat ? ChainId.hardhat : chainId,
+        data,
+      });
 
       if (result) {
         alert(`Transaction sent successfully: ${JSON.stringify(result.hash)}`);
