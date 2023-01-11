@@ -1,24 +1,20 @@
 import React from 'react';
 import { Address } from 'wagmi';
 
-import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Text } from '~/design-system';
 
 import { useAvatar } from '../../hooks/useAvatar';
-import { useEns } from '../../hooks/useEns';
+import { useWalletName } from '../../hooks/useWalletName';
 import { Avatar } from '../Avatar/Avatar';
 
 export default function AddressPill({
   address,
-  name,
 }: {
   address: Address;
   name?: string;
 }) {
   const { avatar, isFetched } = useAvatar({ address });
-  const { ensName } = useEns({
-    addressOrName: address,
-  });
+  const { displayName } = useWalletName({ address });
   return (
     <Box
       key={address}
@@ -42,7 +38,7 @@ export default function AddressPill({
           <Avatar.Skeleton />
         </Avatar.Wrapper>
         <Text weight="medium" color="labelTertiary" size="14pt">
-          {name || ensName || truncateAddress(address)}
+          {displayName}
         </Text>
       </Inline>
     </Box>

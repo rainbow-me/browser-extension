@@ -10,13 +10,7 @@ export const useWalletName = ({ address }: { address: Address }) => {
   const displayName =
     walletNames[address] || ensName || truncateAddress(address);
   const showAddress = walletNames[address] || ensName;
-  console.log('useWalletName', {
-    address,
-    displayName,
-    showAddress,
-    wna: walletNames[address],
-    ensName,
-  });
+
   return {
     displayName,
     showAddress,

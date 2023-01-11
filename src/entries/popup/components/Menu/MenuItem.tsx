@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Address } from 'wagmi';
 
-import { useWalletNamesStore } from '~/core/state/walletNames';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 
@@ -49,7 +48,6 @@ const AccountList = ({ accounts }: { accounts: Address[] }) => {
   const handleShowMoreAccounts = () => {
     setShowMoreAccounts(true);
   };
-  const { walletNames } = useWalletNamesStore();
 
   return (
     <Box
@@ -60,11 +58,7 @@ const AccountList = ({ accounts }: { accounts: Address[] }) => {
     >
       <Inline space="6px" alignVertical="center">
         {(showMoreAccounts ? accounts : shownAccounts).map((account) => (
-          <AddressPill
-            name={walletNames[account]}
-            address={account}
-            key={account}
-          />
+          <AddressPill address={account} key={account} />
         ))}
         {!showMoreAccounts && diff > 0 && (
           <Box
