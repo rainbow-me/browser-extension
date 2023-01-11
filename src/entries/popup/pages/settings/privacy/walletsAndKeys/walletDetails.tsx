@@ -19,7 +19,7 @@ import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { getWallet } from '~/entries/popup/handlers/wallet';
 import { useAvatar } from '~/entries/popup/hooks/useAvatar';
-import { useEns } from '~/entries/popup/hooks/useEns';
+import { useWalletName } from '~/entries/popup/hooks/useWalletName';
 import { ROUTES } from '~/entries/popup/urls';
 
 import { NewWalletPrompt } from './newWalletPrompt';
@@ -100,17 +100,14 @@ const MoreInfoButton = ({ account }: { account: Address }) => {
 
 export default function AccountItem({ account }: { account: Address }) {
   const { avatar, isFetched } = useAvatar({ address: account });
-  const { ensName } = useEns({
-    addressOrName: account,
-  });
+
+  const { displayName, showAddress } = useWalletName({ address: account });
   return (
     <MenuItem
       key={account}
-      titleComponent={
-        <MenuItem.Title text={ensName || truncateAddress(account)} />
-      }
+      titleComponent={<MenuItem.Title text={displayName} />}
       labelComponent={
-        ensName ? <MenuItem.Label text={truncateAddress(account)} /> : null
+        showAddress ? <MenuItem.Label text={truncateAddress(account)} /> : null
       }
       leftComponent={
         <Box marginRight="-8px">
@@ -120,7 +117,11 @@ export default function AccountItem({ account }: { account: Address }) {
                 {avatar?.imageUrl ? (
                   <Avatar.Image imageUrl={avatar.imageUrl} />
                 ) : (
-                  <Avatar.Emoji color={avatar?.color} />
+                  <Avatar.Emoji
+                    color={avatar?.color}
+                    emoji={avatar?.emoji}
+                    size="20pt"
+                  />
                 )}
               </>
             ) : null}
