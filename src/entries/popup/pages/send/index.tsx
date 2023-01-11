@@ -1,4 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { getProvider } from '@wagmi/core';
 import { useAnimationControls } from 'framer-motion';
 import React, {
   ChangeEvent,
@@ -139,16 +140,18 @@ export function Send() {
 
   const handleSend = useCallback(async () => {
     try {
-      const result = await sendTransaction({
-        from: fromAddress,
-        to: txToAddress,
-        value,
-        chainId:
-          chainId === ChainId.mainnet && connectedToHardhat
-            ? ChainId.hardhat
-            : chainId,
-        data,
-      });
+      const result = await sendTransaction(
+        {
+          from: fromAddress,
+          to: txToAddress,
+          value,
+          chainId,
+          data,
+        },
+        connectedToHardhat
+          ? getProvider({ chainId: ChainId.hardhat })
+          : undefined,
+      );
 
       if (result) {
         alert(`Transaction sent successfully: ${JSON.stringify(result.hash)}`);
@@ -181,8 +184,8 @@ export function Send() {
     txToAddress,
     value,
     chainId,
-    connectedToHardhat,
     data,
+    connectedToHardhat,
     assetAmount,
     asset,
   ]);
