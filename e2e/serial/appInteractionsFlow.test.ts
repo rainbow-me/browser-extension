@@ -1,5 +1,7 @@
 import 'chromedriver';
 import 'geckodriver';
+import { ethers } from 'ethers';
+import { getAddress, verifyTypedData } from 'ethers/lib/utils';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
@@ -18,13 +20,46 @@ import {
   waitAndClick,
 } from '../helpers';
 
+const TYPED_MESSAGE = {
+  domain: {
+    chainId: 1,
+    name: 'Ether Mail',
+    verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+    version: '1',
+  },
+  types: {
+    Mail: [
+      { name: 'from', type: 'Person' },
+      { name: 'to', type: 'Person' },
+      { name: 'contents', type: 'string' },
+    ],
+    Person: [
+      { name: 'name', type: 'string' },
+      { name: 'wallet', type: 'address' },
+    ],
+  },
+  value: {
+    contents: 'Hello, Bob!',
+    from: {
+      name: 'Cow',
+      wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+    },
+    to: {
+      name: 'Bob',
+      wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+    },
+  },
+};
+const MESSAGE = 'rainbow rocks 🌈';
+const CONNECTED_ADDRESS = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8';
+
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
-describe('Import wallet flow', () => {
+describe('App interactions flow', () => {
   beforeAll(async () => {
     driver = await initDriverWithOptions({
       browser,
@@ -168,6 +203,16 @@ describe('Import wallet flow', () => {
 
     await delayTime('medium');
     await driver.switchTo().window(dappHandler);
+    const signatureTextSelector = await querySelector(
+      driver,
+      '[id="signTxSignature"]',
+    );
+    const signatureText = await signatureTextSelector.getText();
+    const signature = signatureText.replace('sign message data sig: ', '');
+
+    expect(ethers.utils.isHexString(signature)).toBe(true);
+    const recoveredAddress = ethers.utils.verifyMessage(MESSAGE, signature);
+    expect(getAddress(recoveredAddress)).eq(getAddress(CONNECTED_ADDRESS));
   });
 
   it('should be able to accept a typed data signing request', async () => {
@@ -188,6 +233,21 @@ describe('Import wallet flow', () => {
     await findElementAndClick({ id: 'accept-request-button', driver });
     await delayTime('medium');
     await driver.switchTo().window(dappHandler);
+    const signatureTextSelector = await querySelector(
+      driver,
+      '[id="signTypedDataSignature"]',
+    );
+    const signatureText = await signatureTextSelector.getText();
+    const signature = signatureText.replace('typed message data sig: ', '');
+    expect(ethers.utils.isHexString(signature)).toBe(true);
+
+    const recoveredAddress = verifyTypedData(
+      TYPED_MESSAGE.domain,
+      TYPED_MESSAGE.types,
+      TYPED_MESSAGE.value,
+      signature,
+    );
+    expect(getAddress(recoveredAddress)).eq(getAddress(CONNECTED_ADDRESS));
   });
 
   it('should be able to accept a transaction request', async () => {
@@ -222,31 +282,5 @@ describe('Import wallet flow', () => {
     await goToTestApp(driver);
     const button = await findElementByText(driver, 'Connect Wallet');
     expect(button).toBeTruthy();
-  });
-
-  it('should be able to test the sandbox for the popup', async () => {
-    await goToPopup(driver, rootURL, '#/home');
-    await findElementAndClick({ id: 'home-page-header-right', driver });
-    await findElementAndClick({ id: 'settings-link', driver });
-    const btn = await querySelector(
-      driver,
-      '[data-testid="test-sandbox-popup"]',
-    );
-    await waitAndClick(btn, driver);
-    const text = await driver.switchTo().alert().getText();
-    expect(text).toBe('Popup sandboxed!');
-    await driver.switchTo().alert().accept();
-  });
-
-  it('should be able to test the sandbox for the background', async () => {
-    const btn = await querySelector(
-      driver,
-      '[data-testid="test-sandbox-background"]',
-    );
-    await waitAndClick(btn, driver);
-    await delayTime('long');
-    const text = await driver.switchTo().alert().getText();
-    expect(text).toBe('Background sandboxed!');
-    await driver.switchTo().alert().accept();
   });
 });

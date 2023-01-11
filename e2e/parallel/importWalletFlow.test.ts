@@ -1,16 +1,20 @@
 import 'chromedriver';
 import 'geckodriver';
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
   delayTime,
+  findElementAndClick,
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
+  goToPopup,
   goToWelcome,
   initDriverWithOptions,
+  querySelector,
   typeOnTextInput,
+  waitAndClick,
 } from '../helpers';
 
 let rootURL = 'chrome-extension://';
@@ -68,5 +72,31 @@ describe('Import wallet flow', () => {
     await findElementByTestIdAndClick({ id: 'set-password-button', driver });
     await delayTime('long');
     await findElementByText(driver, 'Your wallets ready');
+  });
+
+  it('should be able to test the sandbox for the popup', async () => {
+    await goToPopup(driver, rootURL, '#/home');
+    await findElementAndClick({ id: 'home-page-header-right', driver });
+    await findElementAndClick({ id: 'settings-link', driver });
+    const btn = await querySelector(
+      driver,
+      '[data-testid="test-sandbox-popup"]',
+    );
+    await waitAndClick(btn, driver);
+    const text = await driver.switchTo().alert().getText();
+    expect(text).toBe('Popup sandboxed!');
+    await driver.switchTo().alert().accept();
+  });
+
+  it('should be able to test the sandbox for the background', async () => {
+    const btn = await querySelector(
+      driver,
+      '[data-testid="test-sandbox-background"]',
+    );
+    await waitAndClick(btn, driver);
+    await delayTime('long');
+    const text = await driver.switchTo().alert().getText();
+    expect(text).toBe('Background sandboxed!');
+    await driver.switchTo().alert().accept();
   });
 });
