@@ -6,6 +6,7 @@ import {
   QueryFunctionArgs,
   QueryFunctionResult,
   createQueryKey,
+  queryClient,
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { ParsedAssetsDictByChain } from '~/core/types/assets';
@@ -43,13 +44,18 @@ async function userAssetsQueryFunctionByChain({
   currency: SupportedCurrencyKey;
 }): Promise<ParsedAssetsDictByChain> {
   const queries = [];
+  const cache = queryClient.getQueryCache();
+  const cachedUserAssets = cache.find(userAssetsQueryKey({ address, currency }))
+    ?.state?.data as ParsedAssetsDictByChain;
   const getResultsForChain = async (chain: ChainName) => {
     const results = await fetchUserAssetsByChain(
       { address, chain, currency },
       { cacheTime: 0 },
     );
+    const chainId = chainIdFromChainName(chain);
+    const cachedDataForChain = cachedUserAssets[chainId];
     return {
-      [chainIdFromChainName(chain)]: results,
+      [chainId]: Object.keys(results).length ? results : cachedDataForChain,
     };
   };
   for (const chain in ChainName) {

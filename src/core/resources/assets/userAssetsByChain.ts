@@ -105,7 +105,6 @@ export async function userAssetsByChainQueryFunction({
 
     const resolver = async (message: AddressAssetsReceivedMessage) => {
       clearTimeout(timeout);
-
       const parsedUserAssetsByChain = parseUserAssetsByChain(message, currency);
 
       if (connectedToHardhat) {
