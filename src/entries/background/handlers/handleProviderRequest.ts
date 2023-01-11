@@ -1,3 +1,5 @@
+import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { getProvider } from '@wagmi/core';
 import { Address, UserRejectedRequestError } from 'wagmi';
 
 import { Messenger } from '~/core/messengers';
@@ -130,6 +132,24 @@ export const handleProviderRequest = ({
             chainId,
           });
           response = [address];
+          break;
+        }
+        case 'eth_blockNumber': {
+          const provider = getProvider({ chainId: activeSession?.chainId });
+          const blockNumber = await provider.getBlockNumber();
+          response = blockNumber;
+          break;
+        }
+        case 'eth_call': {
+          const provider = getProvider({ chainId: activeSession?.chainId });
+          response = await provider.call(params?.[0] as TransactionRequest);
+          break;
+        }
+        case 'eth_estimateGas': {
+          const provider = getProvider({ chainId: activeSession?.chainId });
+          response = await provider.estimateGas(
+            params?.[0] as TransactionRequest,
+          );
           break;
         }
         default: {
