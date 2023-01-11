@@ -6,6 +6,7 @@ import { i18n } from '~/core/languages';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
+import LockPill from './components/LockPill/LockPill';
 import { ConnectedApps } from './pages/ConnectedApps';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
@@ -218,6 +219,7 @@ export function Routes() {
             title={i18n.t('settings.title')}
             protectedRoute
             background="surfaceSecondary"
+            rightNavbarComponent={<LockPill />}
           >
             <Settings />
           </AnimatedRoute>

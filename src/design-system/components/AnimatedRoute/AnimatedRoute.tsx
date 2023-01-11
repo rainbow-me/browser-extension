@@ -22,6 +22,7 @@ type AnimatedRouteProps = {
   navbarBackground?: BackgroundColor;
   title?: string;
   protectedRoute?: UserStatusResult[] | true;
+  rightNavbarComponent?: React.ReactElement;
 };
 
 export const animatedRouteValues: Record<
@@ -108,6 +109,7 @@ export const AnimatedRoute = React.forwardRef<
     title,
     navbarBackground,
     protectedRoute,
+    rightNavbarComponent,
   } = props;
   const { initial, end, exit } = animatedRouteValues[direction];
   const transition = animatedRouteTransitionConfig[direction];
@@ -137,6 +139,7 @@ export const AnimatedRoute = React.forwardRef<
               <Navbar.CloseButton />
             )
           }
+          rightComponent={rightNavbarComponent}
         />
       )}
       {children}
