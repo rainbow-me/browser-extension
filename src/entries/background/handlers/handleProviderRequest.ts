@@ -1,4 +1,6 @@
+import { ToBufferInputTypes } from '@ethereumjs/util';
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { recoverPersonalSignature } from '@metamask/eth-sig-util';
 import { getProvider } from '@wagmi/core';
 import { Address, UserRejectedRequestError } from 'wagmi';
 
@@ -150,6 +152,13 @@ export const handleProviderRequest = ({
           response = await provider.estimateGas(
             params?.[0] as TransactionRequest,
           );
+          break;
+        }
+        case 'personal_ecRecover': {
+          response = recoverPersonalSignature({
+            data: params?.[0] as ToBufferInputTypes,
+            signature: params?.[1] as string,
+          });
           break;
         }
         default: {

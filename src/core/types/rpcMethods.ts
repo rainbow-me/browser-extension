@@ -14,6 +14,7 @@ export enum rpcMethods {
   eth_blockNumber = 'eth_blockNumber',
   eth_call = 'eth_call',
   eth_estimateGas = 'eth_estimateGas',
+  personal_ecRecover = 'personal_ecRecover',
 }
 
 export type RPCMethod = keyof typeof rpcMethods;
