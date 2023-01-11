@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { Box } from '~/design-system';
 import {
@@ -9,6 +9,7 @@ import {
   animatedRouteTransitionConfig,
 } from '~/design-system/styles/designTokens';
 import { ProtectedRoute } from '~/entries/popup/ProtectedRoute';
+import { RouterContext } from '~/entries/popup/Routes';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { UserStatusResult } from '~/entries/popup/hooks/useAuth';
 
@@ -101,6 +102,9 @@ export const AnimatedRoute = React.forwardRef<
   HTMLDivElement,
   AnimatedRouteProps
 >((props: AnimatedRouteProps, ref) => {
+  const RouteInfo = useContext(RouterContext);
+  console.log('RouteInfo: ', RouteInfo);
+  const previousRouteDirection = RouteInfo?.from;
   const {
     background,
     children,
@@ -111,8 +115,10 @@ export const AnimatedRoute = React.forwardRef<
     protectedRoute,
     rightNavbarComponent,
   } = props;
-  const { initial, end, exit } = animatedRouteValues[direction];
-  const transition = animatedRouteTransitionConfig[direction];
+  const { initial, end, exit } = animatedRouteValues[previousRouteDirection];
+  console.log('animated route config: ', { initial, end, exit });
+  const transition = animatedRouteTransitionConfig[previousRouteDirection];
+  console.log('animated route transition: ', transition);
 
   const content = (
     <Box

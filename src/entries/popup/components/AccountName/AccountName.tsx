@@ -57,6 +57,7 @@ export function AccountName({
       <Link
         id={`${id ? `${id}-` : ''}account-name-link-to-wallet`}
         to={ROUTES.WALLETS}
+        onClick={() => console.log('I am clicking this shit')}
       >
         <Symbol
           size={chevronDownSizes[size]}
