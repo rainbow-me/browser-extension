@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
+import { Box, ButtonSymbol, Inline, Inset, Stack, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
 import { AccountName } from '../../components/AccountName/AccountName';
@@ -82,12 +82,12 @@ function ActionButtonsSection() {
     <Box style={{ height: 56 }}>
       {avatar?.color && (
         <Inline space="12px">
-          <Link id="header-link-copy" onClick={handleCopy} to={''}>
-            <ActionButton
-              symbol="square.on.square"
-              text={i18n.t('wallet_header.copy')}
-            />
-          </Link>
+          <ActionButton
+            symbol="square.on.square"
+            text={i18n.t('wallet_header.copy')}
+            onClick={handleCopy}
+            testId="header-link-copy"
+          />
           <ActionButton
             symbol="arrow.triangle.swap"
             text={i18n.t('wallet_header.swap')}
@@ -107,26 +107,24 @@ function ActionButtonsSection() {
 function ActionButton({
   symbol,
   text,
+  onClick,
+  testId,
 }: {
   symbol: SymbolProps['symbol'];
   text: string;
+  onClick?: () => void;
+  testId?: string;
 }) {
   return (
     <Stack alignHorizontal="center" space="10px">
-      <Box
-        background="accent"
-        borderRadius="round"
-        boxShadow="12px accent"
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        style={{
-          width: '36px',
-          height: '36px',
-        }}
-      >
-        <Symbol size={15} symbol={symbol} color="label" weight="semibold" />
-      </Box>
+      <ButtonSymbol
+        color="accent"
+        height="36px"
+        variant="raised"
+        symbol={symbol}
+        testId={testId}
+        onClick={onClick}
+      />
       <Text color="labelSecondary" size="12pt" weight="semibold">
         {text}
       </Text>
