@@ -136,6 +136,7 @@ export const handleProviderRequest = ({
             host,
             address,
             chainId,
+            url,
           });
           response = [address];
           break;
