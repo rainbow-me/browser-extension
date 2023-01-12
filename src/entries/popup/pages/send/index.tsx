@@ -7,6 +7,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -34,6 +35,7 @@ import { sendTransaction } from '../../handlers/wallet';
 import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsset';
 import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
 import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
+import { ROUTES } from '../../urls';
 
 import { ContactAction, ContactPrompt } from './ContactPrompt';
 import { NavbarContactButton } from './NavbarContactButton';
@@ -69,6 +71,8 @@ export function Send() {
     action: ContactAction;
   }>({ show: false, action: 'save' });
   const [toAddressDropdownOpen, setToAddressDropdownOpen] = useState(false);
+
+  const navigate = useNavigate();
 
   const { isContact } = useContactsStore();
   const { connectedToHardhat } = useConnectedToHardhatStore();
@@ -147,7 +151,6 @@ export function Send() {
       });
 
       if (result) {
-        alert(`Transaction sent successfully: ${JSON.stringify(result.hash)}`);
         setTxHash(result?.hash as string);
         const transaction = {
           amount: assetAmount,
@@ -161,13 +164,12 @@ export function Send() {
           status: TransactionStatus.sending,
           type: TransactionType.send,
         };
-        if (fromAddress) {
-          await addNewTransaction({
-            address: fromAddress,
-            chainId,
-            transaction,
-          });
-        }
+        await addNewTransaction({
+          address: fromAddress,
+          chainId,
+          transaction,
+        });
+        navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
       }
     } catch (e) {
       alert('Transaction failed');
@@ -181,6 +183,7 @@ export function Send() {
     connectedToHardhat,
     assetAmount,
     asset,
+    navigate,
   ]);
 
   const selectAsset = useCallback(
