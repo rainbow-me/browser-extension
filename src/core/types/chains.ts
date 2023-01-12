@@ -5,7 +5,7 @@ const HARDHAT_CHAIN_ID = 1337;
 
 export const bsc: Chain = {
   id: BSC_CHAIN_ID,
-  name: 'Binance Smart Chain',
+  name: 'Binance Chain',
   network: 'bsc',
   nativeCurrency: {
     decimals: 18,

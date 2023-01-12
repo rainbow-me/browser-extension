@@ -127,11 +127,7 @@ function TopNav() {
       topOffset={0}
     >
       <Navbar
-        leftComponent={
-          <NetworkMenu>
-            <Navbar.SymbolButton symbol="app.badge.checkmark" variant="flat" />
-          </NetworkMenu>
-        }
+        leftComponent={<NetworkMenu />}
         rightComponent={
           <MoreMenu>
             <Navbar.SymbolButton symbol="ellipsis" variant="flat" />
