@@ -14,7 +14,7 @@ import { SignMessage } from './SignMessage';
 
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
-export const ApproveMessage = () => {
+export const ApproveAppRequest = () => {
   const { pendingRequests, removePendingRequest } = usePendingRequestStore();
   const { window } = useNotificationWindowStore();
   const navigate = useNavigate();
