@@ -24,7 +24,11 @@ export function WalletsAndKeys() {
   useEffect(() => {
     const fetchWallets = async () => {
       const walletsFromKeychain = await getWallets();
-      setWallets(walletsFromKeychain);
+      const controlledWallets = walletsFromKeychain.filter(
+        (wallet) => wallet.type !== KeychainType.ReadOnlyKeychain,
+      );
+
+      setWallets(controlledWallets);
     };
     fetchWallets();
   }, []);
