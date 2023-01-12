@@ -1,15 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useAccount, useEnsAvatar, useEnsName } from 'wagmi';
+import { useAccount, useEnsAvatar } from 'wagmi';
 
 import { useCurrentAddressStore } from '~/core/state';
-import { truncateAddress } from '~/core/utils/truncateAddress';
 import { Box, Inline, Symbol, Text } from '~/design-system';
 import {
   DEFAULT_ACCOUNT,
   DEFAULT_ACCOUNT_2,
 } from '~/entries/background/handlers/handleProviderRequest';
 
+import { useWalletName } from '../../hooks/useWalletName';
 import { ROUTES } from '../../urls';
 import { Avatar } from '../Avatar/Avatar';
 
@@ -30,7 +30,7 @@ export function AccountName({
   id,
 }: AccountNameProps) {
   const { address } = useAccount();
-  const { data: ensName } = useEnsName({ address });
+  const { displayName } = useWalletName({ address: address || '0x' });
   const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
 
   const { setCurrentAddress } = useCurrentAddressStore();
@@ -51,7 +51,7 @@ export function AccountName({
         id={`${id ?? ''}-account-name-shuffle`}
       >
         <Text color="label" size={size} weight="heavy" testId="account-name">
-          {ensName ?? truncateAddress(address || '0x')}
+          {displayName}
         </Text>
       </Box>
       <Link
