@@ -102,6 +102,11 @@ jobs:
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: nightly
+      - uses: actions/checkout@v3
+        with:
+            repository: 'rainbow-me/browser-extension-env'
+            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+            path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Run e2e (Chrome)
@@ -150,6 +155,11 @@ jobs:
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: nightly
+      - uses: actions/checkout@v3
+        with:
+            repository: 'rainbow-me/browser-extension-env'
+            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+            path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Run e2e (Brave)
