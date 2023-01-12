@@ -188,7 +188,7 @@ describe('App interactions flow', () => {
     await findElementAndClick({ id: 'switch-network-item-0', driver });
 
     await goToTestApp(driver);
-    const expectedNetwork = 'Network: Optimism - optimism';
+    const expectedNetwork = 'Network: Ethereum - homestead';
     const network = await querySelector(driver, '[id="network"]');
     const actualNetwork = await network.getText();
     expect(actualNetwork).toEqual(expectedNetwork);
