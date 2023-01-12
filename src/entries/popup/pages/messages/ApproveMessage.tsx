@@ -1,9 +1,12 @@
 import React, { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { initializeMessenger } from '~/core/messengers';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { Box, Text } from '~/design-system';
+
+import { ROUTES } from '../../urls';
 
 import { RequestAccounts } from './RequestAccounts';
 import { SendTransaction } from './SendTransaction';
@@ -14,7 +17,8 @@ const backgroundMessenger = initializeMessenger({ connect: 'background' });
 export const ApproveMessage = () => {
   const { pendingRequests, removePendingRequest } = usePendingRequestStore();
   const { window } = useNotificationWindowStore();
-  const pendingRequest = pendingRequests[0];
+  const navigate = useNavigate();
+  const pendingRequest = pendingRequests?.[0];
 
   const approveRequest = useCallback(
     async (payload?: unknown) => {
@@ -24,8 +28,10 @@ export const ApproveMessage = () => {
           chrome.windows.remove(window?.id);
         removePendingRequest(pendingRequest?.id);
       }, 50);
+      navigate(ROUTES.HOME);
     },
     [
+      navigate,
       pendingRequest?.id,
       pendingRequests.length,
       removePendingRequest,
@@ -40,14 +46,16 @@ export const ApproveMessage = () => {
         chrome.windows.remove(window.id);
       removePendingRequest(pendingRequest?.id);
     }, 50);
+    navigate(ROUTES.HOME);
   }, [
+    navigate,
     pendingRequest?.id,
     pendingRequests.length,
     removePendingRequest,
     window?.id,
   ]);
 
-  switch (pendingRequest.method) {
+  switch (pendingRequest?.method) {
     case 'eth_requestAccounts':
       return (
         <RequestAccounts
