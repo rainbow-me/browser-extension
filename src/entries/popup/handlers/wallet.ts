@@ -44,12 +44,12 @@ export const sendTransaction = async (
   transactionRequest: TransactionRequest,
 ): Promise<TransactionResponse> => {
   const { selectedGas } = gasStore.getState();
-  const txProvider = getProvider({
+  const provider = getProvider({
     chainId: transactionRequest.chainId,
   });
   const gasLimit = await estimateGasWithPadding({
     transactionRequest,
-    provider: txProvider,
+    provider,
   });
   return walletAction('send_transaction', {
     ...transactionRequest,
