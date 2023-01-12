@@ -13,6 +13,7 @@ import { createWagmiClient } from '~/core/wagmi';
 import { Box, ThemeProvider } from '~/design-system';
 
 import { Routes } from './Routes';
+import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { AuthProvider } from './hooks/useAuth';
 import { usePendingTransactionWatcher } from './hooks/usePendingTransactionWatcher';
 import { PlaygroundComponents } from './pages/_playgrounds';
@@ -62,6 +63,7 @@ export function App() {
                   </HashRouter>
                 )}
               </Box>
+              <IdleTimer />
             </AuthProvider>
           )}
         </ThemeProvider>
