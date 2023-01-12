@@ -4,6 +4,7 @@ import {
   Quote,
   QuoteError,
   SwapType,
+  getCrosschainQuote,
   getQuote,
 } from '@rainbow-me/swaps';
 import { beforeAll, expect, test } from 'vitest';
@@ -32,7 +33,7 @@ let doesntNeedUnlockQuote: Quote | QuoteError | null;
 beforeAll(async () => {
   createTestWagmiClient();
   await delay(3000);
-  doesntNeedUnlockQuote = await getQuote({
+  doesntNeedUnlockQuote = await getCrosschainQuote({
     chainId: 1,
     fromAddress: TEST_ADDRESS_2,
     sellTokenAddress: ETH_ADDRESS_AGGREGATORS,

@@ -9,6 +9,7 @@ import {
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { getDappHost } from '~/core/utils/connectedApps';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/numbers';
 
 export const DEFAULT_ACCOUNT =
@@ -20,11 +21,15 @@ export const DEFAULT_CHAIN_ID = '0x1';
 const openWindow = async () => {
   const { setWindow, window: stateWindow } = notificationWindowStore.getState();
   if (stateWindow) return;
+  const currentWindow = await chrome.windows.getCurrent();
   const window = await chrome.windows.create({
     url: chrome.runtime.getURL('popup.html'),
     type: 'popup',
-    height: 625,
+    height: POPUP_DIMENSIONS.height + 25,
     width: 360,
+    left:
+      (currentWindow.width || POPUP_DIMENSIONS.width) - POPUP_DIMENSIONS.width,
+    top: 0,
   });
   chrome.windows.onRemoved.addListener((id) => {
     if (id === window.id) {
@@ -74,7 +79,8 @@ export const handleProviderRequest = ({
     console.log(meta.sender, method);
 
     const { getActiveSession, addSession } = appSessionsStore.getState();
-    const host = getDappHost(meta?.sender?.url || '');
+    const url = meta?.sender?.url || '';
+    const host = getDappHost(url);
     const activeSession = getActiveSession({ host });
 
     try {
