@@ -270,42 +270,25 @@ describe('App interactions flow', () => {
   it('should be able to accept a transaction request', async () => {
     await delayTime('long');
     await goToTestApp(driver);
-    await delayTime('long');
 
-    console.log('FAIL 1');
     const dappHandler = await driver.getWindowHandle();
 
-    console.log('FAIL 2');
     await delayTime('long');
     const button = await querySelector(driver, '[id="sendTx"]');
-    console.log('FAIL 3');
 
     expect(button).toBeTruthy();
-    console.log('FAIL 4');
-
     await waitAndClick(button, driver);
-    console.log('FAIL 5');
-
     await delayTime('medium');
-    console.log('FAIL 6');
 
     const handlers = await driver.getAllWindowHandles();
-    console.log('FAIL 7');
-
     const popupHandler =
       handlers.find((handler) => handler !== dappHandler) || '';
-    console.log('FAIL 8');
 
     await driver.switchTo().window(popupHandler);
-    console.log('FAIL 9');
     await delayTime('long');
-    console.log('FAIL 10');
     await findElementAndClick({ id: 'accept-request-button', driver });
-    console.log('FAIL 1');
     await delayTime('long');
-    console.log('FAIL 2');
     await driver.switchTo().window(dappHandler);
-    console.log('FAIL 3');
   });
 
   it('should be able to disconnect from connected dapps', async () => {
