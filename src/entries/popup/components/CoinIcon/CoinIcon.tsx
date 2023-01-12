@@ -4,7 +4,6 @@ import { Address } from 'wagmi';
 
 import EthIcon from 'static/assets/ethIcon.png';
 import { ETH_ADDRESS } from '~/core/references';
-import { useCloudinaryAssetIcon } from '~/core/resources/cloudinary';
 import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { AccentColorProvider, Bleed, Box } from '~/design-system';
@@ -43,6 +42,7 @@ export function CoinIcon({
         address={address}
         chainId={chain}
         mainnetAddress={mainnetAddress}
+        url={asset?.icon_url}
       >
         <Box
           justifyContent="center"
@@ -136,21 +136,17 @@ function CoinIconWrapper({
 
 function CloudinaryCoinIcon({
   address,
-  chainId,
   mainnetAddress,
   children,
+  url,
 }: {
   address: Address;
   chainId: ChainId;
   mainnetAddress?: Address;
   children: React.ReactNode;
+  url?: string;
 }) {
-  const { data: imageUrl } = useCloudinaryAssetIcon({
-    address,
-    chainId,
-    mainnetAddress,
-  });
-  let src = imageUrl;
+  let src = url;
   const eth = ETH_ADDRESS as Address;
 
   if (address === eth || mainnetAddress === eth) {
