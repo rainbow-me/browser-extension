@@ -23,7 +23,7 @@ export function CoinRow({
   topRow,
   bottomRow,
 }: {
-  asset?: ParsedAsset | ParsedAddressAsset | null;
+  asset?: ParsedAsset | ParsedAddressAsset;
   fallbackText?: string;
   topRow: ReactNode;
   bottomRow: ReactNode;
