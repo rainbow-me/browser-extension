@@ -168,15 +168,13 @@ export function Send() {
           status: TransactionStatus.sending,
           type: TransactionType.send,
         };
-        if (fromAddress) {
-          await addNewTransaction({
-            address: fromAddress,
-            chainId,
-            transaction,
-          });
-        }
+        await addNewTransaction({
+          address: fromAddress,
+          chainId,
+          transaction,
+        });
+        navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
       }
-      navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
     } catch (e) {
       alert('Transaction failed');
     }
