@@ -780,9 +780,9 @@ export type Radius = keyof typeof radii;
 
 export type AnimatedRouteDirection =
   | 'base'
-  | 'horizontal'
+  | 'right'
   | 'left'
-  | 'vertical'
+  | 'up'
   | 'down'
   | 'deceleratedShort'
   | 'emphasizedShort';
@@ -803,7 +803,7 @@ export const animatedRouteTransitionConfig = {
     type: 'spring',
     duration: 0.3,
   },
-  horizontal: {
+  right: {
     type: 'spring',
     stiffness: 1111,
     damping: 50,
@@ -815,7 +815,7 @@ export const animatedRouteTransitionConfig = {
     damping: 50,
     mass: 1,
   },
-  vertical: {
+  up: {
     type: 'spring',
     stiffness: 1111,
     damping: 50,

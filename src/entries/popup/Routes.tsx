@@ -66,7 +66,7 @@ const ROUTE_DATA = [
     path: ROUTES.CONNECTED,
     element: (
       <AnimatedRoute
-        direction="vertical"
+        direction="up"
         navbar
         title={i18n.t('connected_apps.title')}
         protectedRoute
@@ -95,7 +95,7 @@ const ROUTE_DATA = [
   {
     path: ROUTES.IMPORT_OR_CONNECT,
     element: (
-      <AnimatedRoute direction="horizontal" navbar protectedRoute={['NEW']}>
+      <AnimatedRoute direction="right" navbar protectedRoute={['NEW']}>
         <ImportOrConnect />
       </AnimatedRoute>
     ),
@@ -104,7 +104,7 @@ const ROUTE_DATA = [
   {
     path: ROUTES.WATCH,
     element: (
-      <AnimatedRoute direction="horizontal" navbar protectedRoute={['NEW']}>
+      <AnimatedRoute direction="right" navbar protectedRoute={['NEW']}>
         <WatchWallet />
       </AnimatedRoute>
     ),
@@ -113,7 +113,7 @@ const ROUTE_DATA = [
   {
     path: ROUTES.IMPORT,
     element: (
-      <AnimatedRoute direction="horizontal" navbar protectedRoute={['NEW']}>
+      <AnimatedRoute direction="right" navbar protectedRoute={['NEW']}>
         <ImportWallet />
       </AnimatedRoute>
     ),
@@ -122,7 +122,7 @@ const ROUTE_DATA = [
   {
     path: ROUTES.IMPORT__SELECT,
     element: (
-      <AnimatedRoute direction="horizontal" navbar protectedRoute={['NEW']}>
+      <AnimatedRoute direction="right" navbar protectedRoute={['NEW']}>
         <ImportWalletSelection />
       </AnimatedRoute>
     ),
@@ -132,7 +132,7 @@ const ROUTE_DATA = [
     path: ROUTES.IMPORT__EDIT,
     element: (
       <AnimatedRoute
-        direction="horizontal"
+        direction="right"
         navbar
         title={i18n.t('edit_import_wallet_selection.title')}
         protectedRoute={['NEW']}
@@ -154,7 +154,7 @@ const ROUTE_DATA = [
   {
     path: ROUTES.SEED_BACKUP_PROMPT,
     element: (
-      <AnimatedRoute direction="horizontal" protectedRoute={['NEEDS_PASSWORD']}>
+      <AnimatedRoute direction="right" protectedRoute={['NEEDS_PASSWORD']}>
         <SeedBackupPrompt />
       </AnimatedRoute>
     ),
@@ -164,7 +164,7 @@ const ROUTE_DATA = [
     path: ROUTES.SEED_REVEAL,
     element: (
       <AnimatedRoute
-        direction="horizontal"
+        direction="right"
         navbar
         protectedRoute={['NEEDS_PASSWORD']}
       >
@@ -177,7 +177,7 @@ const ROUTE_DATA = [
     path: ROUTES.SEED_VERIFY,
     element: (
       <AnimatedRoute
-        direction="horizontal"
+        direction="right"
         navbar
         protectedRoute={['NEEDS_PASSWORD']}
       >
@@ -190,7 +190,7 @@ const ROUTE_DATA = [
     path: ROUTES.CREATE_PASSWORD,
     element: (
       <AnimatedRoute
-        direction="horizontal"
+        direction="right"
         navbar
         protectedRoute={['NEEDS_PASSWORD']}
       >
@@ -203,7 +203,7 @@ const ROUTE_DATA = [
     path: ROUTES.SETTINGS,
     element: (
       <AnimatedRoute
-        direction="vertical"
+        direction="up"
         navbar
         title={i18n.t('settings.title')}
         protectedRoute
@@ -218,7 +218,7 @@ const ROUTE_DATA = [
     path: ROUTES.SETTINGS__PRIVACY,
     element: (
       <AnimatedRoute
-        direction="horizontal"
+        direction="right"
         navbar
         title={i18n.t('settings.privacy_and_security.title')}
         protectedRoute
@@ -232,7 +232,7 @@ const ROUTE_DATA = [
     path: ROUTES.SETTINGS__PRIVACY__AUTOLOCK,
     element: (
       <AnimatedRoute
-        direction="horizontal"
+        direction="right"
         navbar
         title={i18n.t('settings.privacy_and_security.auto_lock_timer.title')}
         protectedRoute
@@ -246,7 +246,7 @@ const ROUTE_DATA = [
     path: ROUTES.SETTINGS__PRIVACY__CHANGE_PASSWORD,
     element: (
       <AnimatedRoute
-        direction="horizontal"
+        direction="right"
         protectedRoute
         background="surfaceSecondary"
       >
@@ -258,7 +258,7 @@ const ROUTE_DATA = [
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS,
     element: (
       <AnimatedRoute
-        direction="horizontal"
+        direction="right"
         navbar
         title={i18n.t('settings.privacy_and_security.wallets_and_keys.title')}
         protectedRoute
@@ -272,7 +272,7 @@ const ROUTE_DATA = [
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS,
     element: (
       <AnimatedRoute
-        direction="horizontal"
+        direction="right"
         navbar
         title={i18n.t(
           'settings.privacy_and_security.wallets_and_keys.wallet_details.title',
@@ -288,7 +288,7 @@ const ROUTE_DATA = [
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
     element: (
       <AnimatedRoute
-        direction="horizontal"
+        direction="right"
         navbar
         background="surfaceSecondary"
         protectedRoute
@@ -301,7 +301,7 @@ const ROUTE_DATA = [
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY,
     element: (
       <AnimatedRoute
-        direction="horizontal"
+        direction="right"
         navbar
         background="surfaceSecondary"
         protectedRoute
@@ -314,7 +314,7 @@ const ROUTE_DATA = [
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
     element: (
       <AnimatedRoute
-        direction="horizontal"
+        direction="right"
         navbar
         background="surfaceSecondary"
         protectedRoute
@@ -327,7 +327,7 @@ const ROUTE_DATA = [
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE,
     element: (
       <AnimatedRoute
-        direction="horizontal"
+        direction="right"
         navbar
         background="surfaceSecondary"
         protectedRoute
@@ -340,7 +340,7 @@ const ROUTE_DATA = [
     path: ROUTES.SETTINGS__TRANSACTIONS,
     element: (
       <AnimatedRoute
-        direction="horizontal"
+        direction="right"
         navbar
         title={i18n.t('settings.transactions.title')}
         protectedRoute
@@ -354,7 +354,7 @@ const ROUTE_DATA = [
     path: ROUTES.SETTINGS__CURRENCY,
     element: (
       <AnimatedRoute
-        direction="horizontal"
+        direction="right"
         navbar
         title={i18n.t('settings.currency.title')}
         protectedRoute
@@ -368,7 +368,7 @@ const ROUTE_DATA = [
     path: ROUTES.SEND,
     element: (
       <AnimatedRoute
-        direction="horizontal"
+        direction="right"
         title={i18n.t('send.title')}
         protectedRoute
       >
@@ -380,7 +380,7 @@ const ROUTE_DATA = [
     path: ROUTES.SIGN,
     element: (
       <AnimatedRoute
-        direction="vertical"
+        direction="up"
         navbar
         title={i18n.t('sign.title')}
         protectedRoute
@@ -393,7 +393,7 @@ const ROUTE_DATA = [
     path: ROUTES.WALLETS,
     element: (
       <AnimatedRoute
-        direction="horizontal"
+        direction="right"
         navbar
         title={i18n.t('wallets.title')}
         protectedRoute
@@ -422,9 +422,6 @@ export function Routes() {
     }, 0);
   }, [location]);
 
-  console.log('prev location: ', prevLocation);
-  console.log('current location: ', location.pathname);
-
   const previousMatch = matchingRoute(prevLocation);
   const previousElement = previousMatch?.element;
   const previousDirection = previousElement?.props?.direction;
@@ -444,7 +441,9 @@ export function Routes() {
           key: location.pathname,
           direction:
             previousDirection !== 'base'
-              ? directionMap[previousDirection as 'horizontal' | 'vertical']
+              ? directionMap[
+                  previousDirection as 'right' | 'up' | 'left' | 'down'
+                ]
               : element?.props.direction,
         })}
       </AnimatePresence>
@@ -453,6 +452,8 @@ export function Routes() {
 }
 
 const directionMap = {
-  horizontal: 'left',
-  vertical: 'down',
+  right: 'left',
+  up: 'down',
+  left: 'right',
+  down: 'up',
 };

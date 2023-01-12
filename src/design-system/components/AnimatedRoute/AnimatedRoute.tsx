@@ -43,7 +43,7 @@ export const animatedRouteValues: Record<
       y: -16,
     },
   },
-  horizontal: {
+  right: {
     initial: {
       opacity: 0,
       x: 16,
@@ -71,7 +71,7 @@ export const animatedRouteValues: Record<
       x: -16,
     },
   },
-  vertical: {
+  up: {
     initial: {
       opacity: 0,
       y: 16,
@@ -88,7 +88,7 @@ export const animatedRouteValues: Record<
   down: {
     initial: {
       opacity: 0,
-      y: 16,
+      y: -16,
     },
     end: {
       opacity: 1,
@@ -96,7 +96,7 @@ export const animatedRouteValues: Record<
     },
     exit: {
       opacity: 0,
-      y: 16,
+      y: -16,
     },
   },
   deceleratedShort: {
@@ -161,7 +161,7 @@ export const AnimatedRoute = React.forwardRef<
           title={title || ''}
           background={navbarBackground}
           leftComponent={
-            direction === 'horizontal' ? (
+            ['left', 'right'].includes(direction) ? (
               <Navbar.BackButton />
             ) : (
               <Navbar.CloseButton />
