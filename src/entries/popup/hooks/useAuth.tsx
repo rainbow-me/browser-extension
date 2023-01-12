@@ -68,9 +68,11 @@ const useSessionStatus = () => {
   useEffect(() => {
     // check if have to autolock
     const runAutoLock = async () => {
+      console.log('running autolock', autoLockTimerMinutes);
       if (autoLockTimerMinutes !== null) {
         const userStatus = await getUserStatus();
         // to not interfere with onboarding status, only autolock if status is READY
+        console.log('userStatus', userStatus);
         if (userStatus === 'READY') {
           const { lastUnlock: lastUnlockFromStorage } =
             await chrome.storage.session.get('lastUnlock');
@@ -79,16 +81,15 @@ const useSessionStatus = () => {
             const now = new Date();
             const diff = now.getTime() - lastUnlock.getTime();
             const diffMinutes = diff / 1000 / 60;
+            console.log('Minutes diff since last activity', diffMinutes);
             if (diffMinutes >= autoLockTimerMinutes) {
+              console.log('autolocking for inactivity');
               await wallet.lock();
               updateStatus();
             }
-            // if no lastUnlock found in storage, re-lock for safety
-          } else {
-            await wallet.lock();
-            updateStatus();
           }
         } else {
+          console.log('not unlocked so just updating status');
           updateStatus();
         }
       }
