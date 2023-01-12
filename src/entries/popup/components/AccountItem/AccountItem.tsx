@@ -2,7 +2,7 @@ import React from 'react';
 import { Address } from 'wagmi';
 
 import { truncateAddress } from '~/core/utils/address';
-import { Box } from '~/design-system';
+import { Box, Symbol } from '~/design-system';
 
 import { useAvatar } from '../../hooks/useAvatar';
 import { useEns } from '../../hooks/useEns';
@@ -14,11 +14,13 @@ export default function AccountItem({
   rightComponent,
   onClick,
   labelComponent,
+  isSelected,
 }: {
   account: Address;
   rightComponent?: React.ReactNode;
   onClick?: () => void;
   labelComponent?: React.ReactNode;
+  isSelected?: boolean;
 }) {
   const { avatar, isFetched } = useAvatar({ address: account });
   const { ensName } = useEns({
@@ -36,7 +38,31 @@ export default function AccountItem({
         (ensName ? <MenuItem.Label text={truncateAddress(account)} /> : null)
       }
       leftComponent={
-        <Box marginRight="-8px">
+        <Box marginRight="-8px" height="fit" position="relative">
+          {isSelected && (
+            <Box
+              style={{
+                width: 20,
+                height: 20,
+                zIndex: 1,
+                bottom: -4,
+                left: -4,
+              }}
+              position="absolute"
+              padding="3px"
+              borderRadius="round"
+              background="surfaceSecondary"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Symbol
+                symbol="checkmark.circle.fill"
+                color="accent"
+                weight="bold"
+                size={14}
+              />
+            </Box>
+          )}
           <Avatar.Wrapper size={36}>
             {isFetched ? (
               <>

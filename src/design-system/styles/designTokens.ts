@@ -781,6 +781,7 @@ export const symbolNames = selectSymbolNames(
   'asterisk',
   'info.circle.fill',
   'app.connected.to.app.below.fill',
+  'trash.fill',
 );
 export type SymbolName = typeof symbolNames[number];
 

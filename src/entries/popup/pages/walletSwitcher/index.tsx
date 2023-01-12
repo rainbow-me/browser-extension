@@ -40,13 +40,13 @@ const infoButtonOptions = (account: Address): MoreInfoOption[] => [
       // console.log('Remove wallet');
     },
     label: 'Remove wallet',
-    symbol: 'trash',
+    symbol: 'trash.fill',
     color: 'red',
   },
 ];
 
 export function WalletSwitcher() {
-  const { setCurrentAddress } = useCurrentAddressStore();
+  const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
   const navigate = useNavigate();
   const [accounts, setAccounts] = useState<Address[]>();
   useEffect(() => {
@@ -80,6 +80,7 @@ export function WalletSwitcher() {
                     <MoreInfoButton options={infoButtonOptions(account)} />
                   }
                   labelComponent={<MenuItem.Label text={'Ξ2.143'} />}
+                  isSelected={account === currentAddress}
                 />
               ))}
             </Stack>
