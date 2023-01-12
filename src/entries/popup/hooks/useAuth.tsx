@@ -78,7 +78,7 @@ const useSessionStatus = () => {
             const lastUnlock = new Date(lastUnlockFromStorage);
             const now = new Date();
             const diff = now.getTime() - lastUnlock.getTime();
-            const diffMinutes = Math.round(diff / 1000 / 60);
+            const diffMinutes = diff / 1000 / 60;
             if (diffMinutes >= autoLockTimerMinutes) {
               await wallet.lock();
               updateStatus();
@@ -88,6 +88,9 @@ const useSessionStatus = () => {
             await wallet.lock();
             updateStatus();
           }
+        } else {
+          await wallet.lock();
+          updateStatus();
         }
       }
     };
