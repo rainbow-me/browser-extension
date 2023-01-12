@@ -102,6 +102,8 @@ jobs:
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: nightly
+      - name: Copy dotenv
+        run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Run e2e (Chrome)
         run: |
               export BROWSER=chrome 
@@ -148,6 +150,8 @@ jobs:
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: nightly
+      - name: Copy dotenv
+        run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Run e2e (Brave)
         run: |
           export BROWSER=brave 
