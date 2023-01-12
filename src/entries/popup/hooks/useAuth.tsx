@@ -89,7 +89,6 @@ const useSessionStatus = () => {
             updateStatus();
           }
         } else {
-          await wallet.lock();
           updateStatus();
         }
       }
