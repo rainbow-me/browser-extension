@@ -40,11 +40,6 @@ import { WatchWallet } from './pages/watchWallet';
 import { Welcome } from './pages/welcome';
 import { ROUTES } from './urls';
 
-export const RouterContext = React.createContext({
-  to: 'base',
-  from: 'base',
-});
-
 const ROUTE_DATA = [
   {
     path: ROUTES.ROOT,
@@ -413,6 +408,9 @@ const matchingRoute = (pathName: string) => {
 export function Routes() {
   const location = useLocation();
   const [prevLocation, setPrevLocation] = React.useState(location.pathname);
+  const { state } = location;
+
+  console.log('state: ', state);
 
   React.useEffect(() => {
     // need to wait a tick for the page to render=
@@ -427,6 +425,7 @@ export function Routes() {
   const previousDirection = previousElement?.props?.direction;
   const match = matchingRoute(location.pathname);
   const element = match?.element;
+  const currentDirection = element?.props.direction;
   const background = match?.background;
   if (!element) {
     // error UI here probably
@@ -440,7 +439,9 @@ export function Routes() {
         {React.cloneElement(element, {
           key: location.pathname,
           direction:
-            previousDirection !== 'base'
+            previousDirection !== 'base' &&
+            currentDirection !== previousDirection &&
+            state?.back
               ? directionMap[
                   previousDirection as 'right' | 'up' | 'left' | 'down'
                 ]

@@ -7,6 +7,8 @@ import { ButtonSymbolProps } from '~/design-system/components/ButtonSymbol/Butto
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { BackgroundColor } from '~/design-system/styles/designTokens';
 
+import { ROUTES } from '../../urls';
+
 type NavbarProps = {
   leftComponent?: React.ReactElement;
   rightComponent?: React.ReactElement;
@@ -145,7 +147,7 @@ function NavbarButtonWithBack({
     <Box padding={padding} id="navbar-button-with-back">
       <NavbarSymbolButton
         height={height}
-        onClick={() => navigate(-1)}
+        onClick={() => navigate(ROUTES.HOME, { state: { back: true } })}
         symbol={symbol}
         variant="transparent"
       />
