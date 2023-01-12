@@ -1,8 +1,8 @@
 import { parseEther } from 'ethers/lib/utils';
 import { useMemo, useState } from 'react';
-import { Address, useAccount } from 'wagmi';
+import { Address } from 'wagmi';
 
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isNativeAsset } from '~/core/utils/chains';
@@ -23,7 +23,7 @@ export const useSendTransactionState = ({
 
   const [, setAsset] = useState<ParsedAddressAsset>();
 
-  const { address: fromAddress } = useAccount();
+  const { currentAddress: fromAddress } = useCurrentAddressStore();
   const chainId = asset?.chainId ?? ChainId.mainnet;
 
   const { ensAddress: toAddress, ensName: toEnsName } = useEns({

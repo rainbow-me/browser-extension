@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Launch anvil in the bg
-yarn anvil &
+yarn anvil --chain-id 1337 &
 # Give it some time to boot (CI is slower)
 if [ "$CI" = "true" ]; then
   sleep 15
