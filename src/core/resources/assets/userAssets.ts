@@ -55,7 +55,8 @@ async function userAssetsQueryFunctionByChain({
     const chainId = chainIdFromChainName(chain);
     const cachedDataForChain = cachedUserAssets?.[chainId];
     return {
-      [chainId]: Object.keys(results).length ? results : cachedDataForChain,
+      [chainId]:
+        results ?? Object.keys(results).length ? results : cachedDataForChain,
     };
   };
   for (const chain in ChainName) {
