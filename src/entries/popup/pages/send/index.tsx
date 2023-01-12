@@ -140,17 +140,13 @@ export function Send() {
   }, [controls, independentAmount, independentFieldRef, toAddress]);
 
   const closeReviewSheet = useCallback(() => setShowReviewSheet(false), []);
-
   const handleSend = useCallback(async () => {
     try {
       const result = await sendTransaction({
         from: fromAddress,
         to: txToAddress,
         value,
-        chainId:
-          chainId === ChainId.mainnet && connectedToHardhat
-            ? ChainId.hardhat
-            : chainId,
+        chainId: connectedToHardhat ? ChainId.hardhat : chainId,
         data,
       });
 
@@ -183,8 +179,8 @@ export function Send() {
     txToAddress,
     value,
     chainId,
-    connectedToHardhat,
     data,
+    connectedToHardhat,
     assetAmount,
     asset,
     navigate,
