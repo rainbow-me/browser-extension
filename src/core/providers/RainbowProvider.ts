@@ -111,12 +111,25 @@ export class RainbowProvider extends EventEmitter {
   /** @deprecated – This method is deprecated in favor of `request`. */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async sendAsync(args: RequestArguments) {
-    // TODO – deprecated, but we still may need it to be compatible with older dapps.
+    this.request(args);
   }
 
   /** @deprecated – This method is deprecated in favor of `request`. */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async send(args: RequestArguments) {
-    // TODO – deprecated, but we still may need it to be compatible with older dapps.
+  async send(
+    methodOrPayload: string | RequestArguments,
+    paramsOrCallback: Array<unknown>,
+  ) {
+    if (
+      typeof methodOrPayload === 'string' &&
+      Array.isArray(paramsOrCallback)
+    ) {
+      this.request({
+        method: methodOrPayload as RPCMethod,
+        params: paramsOrCallback,
+      });
+    } else {
+      this.request(methodOrPayload as RequestArguments);
+    }
   }
 }
