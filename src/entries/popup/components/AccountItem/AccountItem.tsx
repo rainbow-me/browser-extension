@@ -12,9 +12,13 @@ import { MenuItem } from '../Menu/MenuItem';
 export default function AccountItem({
   account,
   rightComponent,
+  onClick,
+  labelComponent,
 }: {
   account: Address;
   rightComponent?: React.ReactNode;
+  onClick?: () => void;
+  labelComponent?: React.ReactNode;
 }) {
   const { avatar, isFetched } = useAvatar({ address: account });
   const { ensName } = useEns({
@@ -22,12 +26,14 @@ export default function AccountItem({
   });
   return (
     <MenuItem
+      onClick={onClick}
       key={account}
       titleComponent={
         <MenuItem.Title text={ensName || truncateAddress(account)} />
       }
       labelComponent={
-        ensName ? <MenuItem.Label text={truncateAddress(account)} /> : null
+        labelComponent ||
+        (ensName ? <MenuItem.Label text={truncateAddress(account)} /> : null)
       }
       leftComponent={
         <Box marginRight="-8px">

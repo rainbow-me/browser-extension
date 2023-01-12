@@ -120,7 +120,7 @@ export const DropdownMenuItem = (props: DropdownMenuItemProps) => {
   return (
     <Box
       as={DropdownMenuPrimitive.Item}
-      paddingVertical="12px"
+      paddingVertical="8px"
       paddingHorizontal="8px"
       marginHorizontal="-8px"
       style={{
@@ -182,7 +182,7 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
 export const DropdownMenuSeparator = () => (
   <Box
     as={DropdownMenuPrimitive.Separator}
-    style={{ borderRadius: 1 }}
+    style={{ borderRadius: 1, marginTop: 4, marginBottom: 4 }}
     borderWidth="1px"
     borderColor="separatorSecondary"
   />
