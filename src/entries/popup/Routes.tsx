@@ -4,7 +4,6 @@ import { matchRoutes, useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
-import { AnimatedRouteDirection } from '~/design-system/styles/designTokens';
 
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
 import LockPill from './components/LockPill/LockPill';
@@ -45,28 +44,6 @@ export const RouterContext = React.createContext({
   to: 'base',
   from: 'base',
 });
-
-const RouterProvider = ({ children }: { children: React.ReactNode }) => {
-  const location = useLocation();
-  const matchingDirection: AnimatedRouteDirection = matchingRoute(
-    location.pathname,
-  )?.element?.props?.direction;
-  const [route, setRoute] = React.useState<
-    Record<string, AnimatedRouteDirection>
-  >({
-    to: matchingDirection,
-    from: matchingDirection,
-  });
-  React.useEffect(() => {
-    const matchingDirection: string = matchingRoute(location.pathname)?.element
-      ?.props?.direction;
-    setRoute((prev) => ({ to: matchingDirection, from: prev.to }));
-  }, [location?.pathname]);
-
-  return (
-    <RouterContext.Provider value={route}>{children}</RouterContext.Provider>
-  );
-};
 
 const ROUTE_DATA = [
   {
@@ -435,14 +412,22 @@ const matchingRoute = (pathName: string) => {
 
 export function Routes() {
   const location = useLocation();
+  const [prevLocation, setPrevLocation] = React.useState(location.pathname);
 
   React.useEffect(() => {
-    // need to wait a tick for the page to render
+    // need to wait a tick for the page to render=
+    setPrevLocation(location.pathname);
     setTimeout(() => {
       window.scrollTo(0, 0);
     }, 0);
   }, [location]);
 
+  console.log('prev location: ', prevLocation);
+  console.log('current location: ', location.pathname);
+
+  const previousMatch = matchingRoute(prevLocation);
+  const previousElement = previousMatch?.element;
+  const previousDirection = previousElement?.props?.direction;
   const match = matchingRoute(location.pathname);
   const element = match?.element;
   const background = match?.background;
@@ -452,17 +437,22 @@ export function Routes() {
   }
   const RoutesContainer = background ?? React.Fragment;
 
-  console.log('LOCATION.PATHNAME: ', location.pathname);
-
   return (
     <RoutesContainer>
-      <RouterProvider>
-        <AnimatePresence mode="popLayout">
-          {React.cloneElement(element, {
-            key: location.pathname,
-          })}
-        </AnimatePresence>
-      </RouterProvider>
+      <AnimatePresence mode="popLayout">
+        {React.cloneElement(element, {
+          key: location.pathname,
+          direction:
+            previousDirection !== 'base'
+              ? directionMap[previousDirection as 'horizontal' | 'vertical']
+              : element?.props.direction,
+        })}
+      </AnimatePresence>
     </RoutesContainer>
   );
 }
+
+const directionMap = {
+  horizontal: 'left',
+  vertical: 'down',
+};

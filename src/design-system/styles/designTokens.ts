@@ -781,7 +781,9 @@ export type Radius = keyof typeof radii;
 export type AnimatedRouteDirection =
   | 'base'
   | 'horizontal'
+  | 'left'
   | 'vertical'
+  | 'down'
   | 'deceleratedShort'
   | 'emphasizedShort';
 export type AnimatedRouteBreakpoints = 'initial' | 'end' | 'exit';
@@ -807,7 +809,19 @@ export const animatedRouteTransitionConfig = {
     damping: 50,
     mass: 1,
   },
+  left: {
+    type: 'spring',
+    stiffness: 1111,
+    damping: 50,
+    mass: 1,
+  },
   vertical: {
+    type: 'spring',
+    stiffness: 1111,
+    damping: 50,
+    mass: 1,
+  },
+  down: {
     type: 'spring',
     stiffness: 1111,
     damping: 50,

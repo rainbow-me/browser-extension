@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { useContext } from 'react';
+import React from 'react';
 
 import { Box } from '~/design-system';
 import {
@@ -9,7 +9,6 @@ import {
   animatedRouteTransitionConfig,
 } from '~/design-system/styles/designTokens';
 import { ProtectedRoute } from '~/entries/popup/ProtectedRoute';
-import { RouterContext } from '~/entries/popup/Routes';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { UserStatusResult } from '~/entries/popup/hooks/useAuth';
 
@@ -58,7 +57,35 @@ export const animatedRouteValues: Record<
       x: 16,
     },
   },
+  left: {
+    initial: {
+      opacity: 0,
+      x: -16,
+    },
+    end: {
+      opacity: 1,
+      x: 0,
+    },
+    exit: {
+      opacity: 0,
+      x: -16,
+    },
+  },
   vertical: {
+    initial: {
+      opacity: 0,
+      y: 16,
+    },
+    end: {
+      opacity: 1,
+      y: 0,
+    },
+    exit: {
+      opacity: 0,
+      y: 16,
+    },
+  },
+  down: {
     initial: {
       opacity: 0,
       y: 16,
@@ -102,9 +129,6 @@ export const AnimatedRoute = React.forwardRef<
   HTMLDivElement,
   AnimatedRouteProps
 >((props: AnimatedRouteProps, ref) => {
-  const RouteInfo = useContext(RouterContext);
-  console.log('RouteInfo: ', RouteInfo);
-  const previousRouteDirection = RouteInfo?.from;
   const {
     background,
     children,
@@ -115,10 +139,8 @@ export const AnimatedRoute = React.forwardRef<
     protectedRoute,
     rightNavbarComponent,
   } = props;
-  const { initial, end, exit } = animatedRouteValues[previousRouteDirection];
-  console.log('animated route config: ', { initial, end, exit });
-  const transition = animatedRouteTransitionConfig[previousRouteDirection];
-  console.log('animated route transition: ', transition);
+  const { initial, end, exit } = animatedRouteValues[direction];
+  const transition = animatedRouteTransitionConfig[direction];
 
   const content = (
     <Box
