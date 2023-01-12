@@ -273,6 +273,7 @@ describe('App interactions flow', () => {
     const dappHandler = await driver.getWindowHandle();
 
     console.log('FAIL 2');
+    await delayTime('long');
     const button = await querySelector(driver, '[id="sendTx"]');
     console.log('FAIL 3');
 
