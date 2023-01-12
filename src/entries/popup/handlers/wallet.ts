@@ -87,7 +87,6 @@ export const unlock = async (password: string): Promise<boolean> => {
   const res = await walletAction('unlock', password);
   if (res) {
     await chrome.storage.session.set({ userStatus: 'READY' });
-    await chrome.storage.session.set({ lastUnlock: new Date().toJSON() });
   }
   return res as boolean;
 };
