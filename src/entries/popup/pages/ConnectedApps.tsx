@@ -1,13 +1,15 @@
-import * as React from 'react';
-import { Address, useEnsAvatar, useEnsName } from 'wagmi';
+import React, { useCallback, useState } from 'react';
+import { Address, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useAppSessionsStore } from '~/core/state';
-import { getConnectedAppIcon } from '~/core/utils/connectedApps';
+import { useAppSessionsStore, useCurrentAddressStore } from '~/core/state';
+import { AppSession } from '~/core/state/appSessions';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 import { truncateAddress } from '~/core/utils/truncateAddress';
 import {
   Box,
   Button,
+  ButtonSymbol,
   Inline,
   Inset,
   Stack,
@@ -16,11 +18,25 @@ import {
 } from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 
-import { SwitchNetworkMenu } from '../components/SwitchMenu/SwitchNetworkMenu';
+import { AppNetworkMenu } from '../components/SwitchMenu/AppNetworkMenu';
+import { WalletAvatar } from '../components/WalletAvatar/WalletAvatar';
+import { useAppMetadata } from '../hooks/useAppMetadata';
 import { useAppSession } from '../hooks/useAppSession';
 
-export function ConnectedApps() {
+export const ConnectedApps = () => {
   const { appSessions, clearSessions } = useAppSessionsStore();
+  const { currentAddress } = useCurrentAddressStore();
+
+  const filteredSessions = Object.values(appSessions).reduce(
+    (acc: [AppSession[], AppSession[]], session: AppSession) => (
+      acc[isLowerCaseMatch(session.address, currentAddress) ? 0 : 1].push(
+        session,
+      ),
+      acc
+    ),
+    [[], []],
+  );
+
   return (
     <Box>
       <Box
@@ -29,17 +45,41 @@ export function ConnectedApps() {
           height: 489,
         }}
       >
-        <Rows alignVertical="top">
-          {Object.keys(appSessions).map((key, i) => (
-            <Row height="content" key={i}>
-              <ConnectedApp
-                host={appSessions[key].host}
-                address={appSessions[key].address}
-                chainId={appSessions[key].chainId}
-              />
-            </Row>
-          ))}
-        </Rows>
+        <Stack space="16px">
+          <Rows alignVertical="top">
+            {filteredSessions?.[0]?.map((session, i) => (
+              <Row height="content" key={i}>
+                <ConnectedApp
+                  host={session.host}
+                  url={session.url}
+                  address={session.address}
+                />
+              </Row>
+            ))}
+          </Rows>
+
+          {filteredSessions[1].length > 0 && (
+            <>
+              <Box paddingHorizontal="20px">
+                <Text size="14pt" color="labelTertiary" weight="semibold">
+                  {i18n.t('connected_apps.other_wallets')}
+                </Text>
+              </Box>
+
+              <Rows alignVertical="top">
+                {filteredSessions?.[1]?.map((session, i) => (
+                  <Row height="content" key={i}>
+                    <ConnectedApp
+                      host={session.host}
+                      url={session.url}
+                      address={session.address}
+                    />
+                  </Row>
+                ))}
+              </Rows>
+            </>
+          )}
+        </Stack>
       </Box>
 
       <Box
@@ -73,95 +113,110 @@ export function ConnectedApps() {
       </Box>
     </Box>
   );
-}
+};
 
-function ConnectedApp({
+const ConnectedApp = ({
   host,
+  url,
   address,
-  chainId,
 }: {
   host: string;
+  url: string;
   address: Address;
-  chainId: number;
-}) {
+}) => {
+  const [disconnectButtonVisible, setDisconnectButtonVisible] = useState(false);
   const { data: ensName } = useEnsName({ address });
-  const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
-  const { updateAppSessionChainId, disconnectAppSession } = useAppSession({
+  const { disconnectAppSession } = useAppSession({
     host,
   });
+  const { appLogo, appName, appHost } = useAppMetadata({ url });
 
-  const changeChainId = React.useCallback(
-    (chainId: number) => {
-      updateAppSessionChainId(chainId);
-    },
-    [updateAppSessionChainId],
-  );
-
-  const disconnect = React.useCallback(() => {
-    disconnectAppSession();
-  }, [disconnectAppSession]);
+  const onMouseEnter = useCallback(() => setDisconnectButtonVisible(true), []);
+  const onMouseLeave = useCallback(() => setDisconnectButtonVisible(false), []);
 
   return (
-    <SwitchNetworkMenu
-      onChainChanged={changeChainId}
-      chainId={chainId}
-      onDisconnect={disconnect}
-      triggerComponent={
-        <Box as="button" id="switch-network-menu" width="full">
-          <Inset horizontal="20px" vertical="8px">
-            <Inline space="8px">
-              <Box
-                background="fill"
-                borderRadius="12px"
-                style={{
-                  width: '36px',
-                  height: '36px',
-                  overflow: 'hidden',
-                }}
-              >
-                <img
-                  src={getConnectedAppIcon(host)}
-                  width="100%"
-                  height="100%"
-                />
-              </Box>
-              <Box>
-                <Stack space="8px">
-                  <Text size="14pt" weight="semibold">
-                    {host}
-                  </Text>
-                  <Inline space="4px" alignVertical="center">
+    <Box paddingHorizontal="8px">
+      <Box
+        background={{
+          default: 'transparent',
+          hover: 'surfacePrimaryElevatedSecondary',
+        }}
+        borderRadius="12px"
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      >
+        {disconnectButtonVisible && (
+          <Box position="absolute" paddingTop="12px" style={{ right: 20 }}>
+            <ButtonSymbol
+              color="red"
+              height="28px"
+              variant="raised"
+              symbol="xmark"
+              borderRadius="8px"
+              onClick={disconnectAppSession}
+            />
+          </Box>
+        )}
+        <AppNetworkMenu displayConnectedRoute={false} align="end" url={url}>
+          <Box>
+            <Box id="switch-network-menu">
+              <Inset horizontal="12px" vertical="8px">
+                <Inline alignHorizontal="justify" alignVertical="center">
+                  <Inline space="8px" alignVertical="center">
                     <Box
                       background="fill"
-                      borderRadius="30px"
+                      borderRadius="12px"
                       style={{
-                        width: '16px',
-                        height: '16px',
+                        width: '36px',
+                        height: '36px',
                         overflow: 'hidden',
                       }}
                     >
-                      {ensAvatar && (
-                        /* TODO: Convert to <Image> & Imgix/Cloudinary */
-                        <img
-                          src={ensAvatar}
-                          width="100%"
-                          height="100%"
-                          loading="lazy"
-                        />
-                      )}
+                      <img src={appLogo} width="100%" height="100%" />
                     </Box>
                     <Box>
-                      <Text color="labelTertiary" size="12pt" weight="semibold">
-                        {ensName || truncateAddress(address)}
-                      </Text>
+                      <Stack space="8px">
+                        <Text
+                          align="left"
+                          size="14pt"
+                          weight="semibold"
+                          color="label"
+                        >
+                          {appName || appHost}
+                        </Text>
+                        <Inline space="4px" alignVertical="center">
+                          <Box
+                            background="fill"
+                            borderRadius="30px"
+                            style={{
+                              width: '16px',
+                              height: '16px',
+                              overflow: 'hidden',
+                            }}
+                          >
+                            <WalletAvatar
+                              address={address}
+                              size={16}
+                              emojiSize="12pt"
+                            />
+                          </Box>
+                          <Text
+                            color="labelTertiary"
+                            size="12pt"
+                            weight="semibold"
+                          >
+                            {ensName || truncateAddress(address)}
+                          </Text>
+                        </Inline>
+                      </Stack>
                     </Box>
                   </Inline>
-                </Stack>
-              </Box>
-            </Inline>
-          </Inset>
-        </Box>
-      }
-    />
+                </Inline>
+              </Inset>
+            </Box>
+          </Box>
+        </AppNetworkMenu>
+      </Box>
+    </Box>
   );
-}
+};

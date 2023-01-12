@@ -8,6 +8,7 @@ import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItemIndicator,
   DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
@@ -39,6 +40,9 @@ export const SwitchNetworkMenuSelector = ({
                 </Text>
               </Inline>
             </Box>
+            <DropdownMenuItemIndicator style={{ marginLeft: 'auto' }}>
+              <Symbol weight="medium" symbol="checkmark" size={11} />
+            </DropdownMenuItemIndicator>
           </DropdownMenuRadioItem>
         );
       })}
@@ -92,7 +96,7 @@ export const SwitchNetworkMenu = ({
       <DropdownMenuTrigger asChild>
         <Box style={{ cursor: 'default' }}>{triggerComponent}</Box>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent sideOffset={1}>
         <DropdownMenuLabel>{i18n.t('menu.network.title')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup

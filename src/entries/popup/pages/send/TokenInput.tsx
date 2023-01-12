@@ -89,12 +89,6 @@ export const TokenInput = ({
     }
   }, [dropdownClosed]);
 
-  const closeSortContextMenu = useCallback(() => {
-    if (sortDropdownOpen) {
-      setSortDropdownOpen(false);
-    }
-  }, [sortDropdownOpen]);
-
   return (
     <InputWrapper
       zIndex={1}
@@ -246,7 +240,6 @@ export const TokenInput = ({
       }
       dropdownVisible={dropdownVisible}
       onDropdownAction={onDropdownAction}
-      onDropdownScroll={closeSortContextMenu}
       borderVisible={!asset}
     />
   );

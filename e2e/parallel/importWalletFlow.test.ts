@@ -104,7 +104,7 @@ describe('Import wallet flow', () => {
 
     // switch account
     await findElementAndClick({ id: 'switch-wallet-menu', driver });
-    await findElementAndClick({ id: 'switch-wallet-item-0', driver });
+    await findElementAndClick({ id: 'switch-wallet-item-2', driver });
     // switch network
     await findElementAndClick({ id: 'switch-network-menu', driver });
     await findElementAndClick({ id: 'switch-network-item-1', driver });
@@ -136,7 +136,7 @@ describe('Import wallet flow', () => {
     await findElementAndClick({ id: 'switch-network-item-2', driver });
 
     await goToTestApp(driver);
-    const expectedNetwork = 'Network: Polygon - matic';
+    const expectedNetwork = 'Network: Optimism - optimism';
     const network = await querySelector(driver, '[id="network"]');
     const actualNetwork = await network.getText();
     expect(actualNetwork).toEqual(expectedNetwork);
@@ -206,7 +206,7 @@ describe('Import wallet flow', () => {
 
     await driver.switchTo().window(popupHandler);
     await delayTime('medium');
-    await findElementAndClick({ id: 'accept-request-button', driver });
+    await findElementAndClick({ id: 'reject-request-button', driver });
     await driver.switchTo().window(dappHandler);
   });
 

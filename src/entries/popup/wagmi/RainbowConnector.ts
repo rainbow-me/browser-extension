@@ -58,7 +58,7 @@ export class RainbowConnector extends Connector<
       account,
       chain: { id: chainId, unsupported: false },
       provider: new providers.Web3Provider(
-        <providers.ExternalProvider>provider,
+        <providers.ExternalProvider>(<unknown>provider),
       ),
     };
   }
@@ -94,7 +94,7 @@ export class RainbowConnector extends Connector<
       this.getAccount(),
     ]);
     return new providers.Web3Provider(
-      <providers.ExternalProvider>provider,
+      <providers.ExternalProvider>(<unknown>provider),
       chainId,
     ).getSigner(account);
   }
