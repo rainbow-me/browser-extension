@@ -2,6 +2,7 @@ import React from 'react';
 
 import { i18n } from '~/core/languages';
 import { Box, Inline, Separator, Stack, Text } from '~/design-system';
+import { TextInline } from '~/design-system/docs/components/TextInline';
 
 export const RequestAccountsInfo = ({
   appHostName,
@@ -44,7 +45,8 @@ export const RequestAccountsInfo = ({
             color="labelSecondary"
             align="center"
           >
-            {appName} {i18n.t('approve_request.wallet_info_title')}
+            <TextInline color="label">{appName}</TextInline>{' '}
+            {i18n.t('approve_request.wallet_info_title')}
           </Text>
 
           <Text align="center" color="accent" size="20pt" weight="bold">
