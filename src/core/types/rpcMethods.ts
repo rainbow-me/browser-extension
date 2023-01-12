@@ -11,6 +11,10 @@ export enum rpcMethods {
   wallet_addEthereumChain = 'wallet_addEthereumChain',
   wallet_switchEthereumChain = 'wallet_switchEthereumChain',
   eth_requestAccounts = 'eth_requestAccounts',
+  eth_blockNumber = 'eth_blockNumber',
+  eth_call = 'eth_call',
+  eth_estimateGas = 'eth_estimateGas',
+  personal_ecRecover = 'personal_ecRecover',
 }
 
 export type RPCMethod = keyof typeof rpcMethods;
