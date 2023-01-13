@@ -19,9 +19,11 @@ export const ApproveMessage = () => {
   const approveRequest = useCallback(
     async (payload?: unknown) => {
       backgroundMessenger.send(`message:${pendingRequest?.id}`, payload);
-      if (window?.id && pendingRequests.length <= 1)
-        chrome.windows.remove(window?.id);
-      removePendingRequest(pendingRequest?.id);
+      setTimeout(() => {
+        if (window?.id && pendingRequests.length <= 1)
+          chrome.windows.remove(window?.id);
+        removePendingRequest(pendingRequest?.id);
+      }, 50);
     },
     [
       pendingRequest?.id,
@@ -33,9 +35,11 @@ export const ApproveMessage = () => {
 
   const rejectRequest = useCallback(() => {
     backgroundMessenger.send(`message:${pendingRequest?.id}`, null);
-    if (window?.id && pendingRequests.length <= 1)
-      chrome.windows.remove(window.id);
-    removePendingRequest(pendingRequest?.id);
+    setTimeout(() => {
+      if (window?.id && pendingRequests.length <= 1)
+        chrome.windows.remove(window.id);
+      removePendingRequest(pendingRequest?.id);
+    }, 50);
   }, [
     pendingRequest?.id,
     pendingRequests.length,
