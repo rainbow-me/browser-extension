@@ -48,20 +48,16 @@ export class RainbowProvider extends EventEmitter {
     const host = window.location.host;
     messenger?.reply(`accountsChanged:${host}`, async (address) => {
       this.emit('accountsChanged', [address]);
-      return true;
     });
     messenger?.reply(`chainChanged:${host}`, async (chainId: number) => {
       this.emit('chainChanged', toHex(String(chainId)));
-      return true;
     });
     messenger?.reply(`disconnect:${host}`, async () => {
       this.emit('disconnect');
       this.emit('accountsChanged', []);
-      return true;
     });
     messenger?.reply(`connect:${host}`, async (connectionInfo) => {
       this.emit('connect', connectionInfo);
-      return true;
     });
   }
 
