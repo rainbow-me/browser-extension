@@ -20,6 +20,7 @@ export type ButtonSymbolProps = {
   symbol: SymbolProps['symbol'];
   symbolColor?: TextColor;
   borderRadius?: Radius;
+  testId?: string;
 } & ButtonVariantProps;
 
 export function ButtonSymbol({ height, symbol, ...props }: ButtonSymbolProps) {
