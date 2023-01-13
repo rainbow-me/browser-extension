@@ -10,10 +10,13 @@ import {
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { ParsedAssetsDictByChain } from '~/core/types/assets';
-import { ChainName } from '~/core/types/chains';
+import { ChainId, ChainName } from '~/core/types/chains';
 import { chainIdFromChainName } from '~/core/utils/chains';
 
-import { fetchUserAssetsByChain } from './userAssetsByChain';
+import {
+  fetchUserAssetsByChain,
+  useUserAssetsByChain,
+} from './userAssetsByChain';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 
@@ -86,9 +89,40 @@ export function useUserAssets<TSelectResult = UserAssetsResult>(
     UserAssetsQueryKey
   > = {},
 ) {
+  const { data: mainnetAssets } = useUserAssetsByChain({
+    address,
+    currency,
+    chain: ChainName.mainnet,
+  });
+  const { data: optimismAssets } = useUserAssetsByChain({
+    address,
+    currency,
+    chain: ChainName.optimism,
+  });
+  const { data: bscAssets } = useUserAssetsByChain({
+    address,
+    currency,
+    chain: ChainName.bsc,
+  });
+  const { data: polygonAssets } = useUserAssetsByChain({
+    address,
+    currency,
+    chain: ChainName.polygon,
+  });
+  const { data: arbitrumAssets } = useUserAssetsByChain({
+    address,
+    currency,
+    chain: ChainName.arbitrum,
+  });
   return useQuery(
     userAssetsQueryKey({ address, currency }),
-    userAssetsQueryFunction,
+    () => ({
+      [ChainId.mainnet]: mainnetAssets ?? {},
+      [ChainId.optimism]: optimismAssets ?? {},
+      [ChainId.bsc]: bscAssets ?? {},
+      [ChainId.polygon]: polygonAssets ?? {},
+      [ChainId.arbitrum]: arbitrumAssets ?? {},
+    }),
     {
       ...config,
       refetchInterval: USER_ASSETS_REFETCH_INTERVAL,
