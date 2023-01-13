@@ -42,10 +42,7 @@ export function setupBridgeMessengerRelay() {
   windowMessenger.reply<unknown, unknown>(
     '*',
     async (payload, { topic, id }) => {
-      if (!topic) {
-        console.log('N0T TOPIC  windowMessenger reply');
-        return;
-      }
+      if (!topic) return;
 
       const topic_ = topic.replace('> ', '');
       const response = await tabMessenger.send<unknown, unknown>(
@@ -59,10 +56,7 @@ export function setupBridgeMessengerRelay() {
 
   // e.g. background -> content script -> inpage
   tabMessenger.reply<unknown, unknown>('*', async (payload, { topic, id }) => {
-    if (!topic) {
-      console.log('N0T TOPIC tabMessenger reply');
-      return;
-    }
+    if (!topic) return;
 
     const topic_: string = topic.replace('> ', '');
     const response = await windowMessenger.send<unknown, unknown>(
