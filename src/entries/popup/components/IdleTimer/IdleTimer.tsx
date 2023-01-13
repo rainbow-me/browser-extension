@@ -18,6 +18,8 @@ const recordActivity = debounce(() => {
 
 export const IdleTimer = () => {
   useEffect(() => {
+    // Set activity on initial load
+    recordActivity();
     // listen for mouse and keyboard events
     window.addEventListener('mousemove', recordActivity);
     window.addEventListener('keydown', recordActivity);
