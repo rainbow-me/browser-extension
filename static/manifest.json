@@ -54,7 +54,6 @@
   "permissions": [
     "activeTab",
     "clipboardWrite",
-    "notifications",
     "scripting",
     "storage",
     "tabs",
