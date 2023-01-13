@@ -6,6 +6,7 @@ import { Box, Symbol } from '~/design-system';
 
 import { useAvatar } from '../../hooks/useAvatar';
 import { useEns } from '../../hooks/useEns';
+import { useWalletName } from '../../hooks/useWalletName';
 import { Avatar } from '../Avatar/Avatar';
 import { MenuItem } from '../Menu/MenuItem';
 
@@ -26,13 +27,12 @@ export default function AccountItem({
   const { ensName } = useEns({
     addressOrName: account,
   });
+  const { displayName } = useWalletName({ address: account });
   return (
     <MenuItem
       onClick={onClick}
       key={account}
-      titleComponent={
-        <MenuItem.Title text={ensName || truncateAddress(account)} />
-      }
+      titleComponent={<MenuItem.Title text={displayName} />}
       labelComponent={
         labelComponent ||
         (ensName ? <MenuItem.Label text={truncateAddress(account)} /> : null)
@@ -69,7 +69,11 @@ export default function AccountItem({
                 {avatar?.imageUrl ? (
                   <Avatar.Image imageUrl={avatar.imageUrl} />
                 ) : (
-                  <Avatar.Emoji color={avatar?.color} />
+                  <Avatar.Emoji
+                    color={avatar?.color}
+                    emoji={avatar?.emoji}
+                    size="20pt"
+                  />
                 )}
               </>
             ) : null}

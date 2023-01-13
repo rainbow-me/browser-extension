@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { useCurrentAddressStore } from '~/core/state';
+import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
@@ -13,13 +14,18 @@ import {
   MoreInfoButton,
   MoreInfoOption,
 } from '../../components/MoreInfoButton/MoreInfoButton';
-import { getAccounts } from '../../handlers/wallet';
+import { getWallets } from '../../handlers/wallet';
 
-const infoButtonOptions = (account: Address): MoreInfoOption[] => [
+import { RenameWalletPrompt } from './renameWalletPrompt';
+
+const infoButtonOptions = (
+  account: Address,
+  setRenameAccount: React.Dispatch<React.SetStateAction<Address | undefined>>,
+): MoreInfoOption[] => [
   {
     onSelect: (e: Event) => {
       e.stopPropagation();
-      console.log('rename wallet');
+      setRenameAccount(account);
     },
     label: 'Rename wallet',
     symbol: 'person.crop.circle.fill',
@@ -45,13 +51,43 @@ const infoButtonOptions = (account: Address): MoreInfoOption[] => [
   },
 ];
 
+const WatchingPill = () => (
+  <Box
+    background="surfacePrimaryElevatedSecondary"
+    borderRadius="round"
+    padding="8px"
+  >
+    <Text size="12pt" weight="semibold" color="labelQuaternary">
+      Watching
+    </Text>
+  </Box>
+);
+
+interface AddressAndType {
+  address: Address;
+  type: KeychainType;
+}
+
 export function WalletSwitcher() {
+  const [renameAccount, setRenameAccount] = useState<Address | undefined>();
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
   const navigate = useNavigate();
-  const [accounts, setAccounts] = useState<Address[]>();
+  const [accounts, setAccounts] = useState<AddressAndType[]>([]);
   useEffect(() => {
     const fetchAccounts = async () => {
-      const accounts = await getAccounts();
+      const wallets = await getWallets();
+      let accounts: AddressAndType[] = [];
+      wallets.forEach((wallet) => {
+        accounts = [
+          ...accounts,
+          ...wallet.accounts.map(
+            (account): AddressAndType => ({
+              address: account,
+              type: wallet.type,
+            }),
+          ),
+        ];
+      });
       setAccounts(accounts);
     };
     fetchAccounts();
@@ -62,6 +98,13 @@ export function WalletSwitcher() {
   };
   return (
     <Box height="full">
+      <RenameWalletPrompt
+        show={!!renameAccount}
+        account={renameAccount}
+        onClose={() => {
+          setRenameAccount(undefined);
+        }}
+      />
       <Box paddingHorizontal="4px">
         {/* search */}
         <Box />
@@ -71,16 +114,25 @@ export function WalletSwitcher() {
               {accounts?.map((account) => (
                 <AccountItem
                   onClick={() => {
-                    console.log('clicked on larger item');
-                    handleSelectAddress(account);
+                    handleSelectAddress(account.address);
                   }}
-                  account={account}
-                  key={account}
+                  account={account.address}
+                  key={account.address}
                   rightComponent={
-                    <MoreInfoButton options={infoButtonOptions(account)} />
+                    <Inline alignVertical="center" space="10px">
+                      {account.type === KeychainType.ReadOnlyKeychain && (
+                        <WatchingPill />
+                      )}
+                      <MoreInfoButton
+                        options={infoButtonOptions(
+                          account.address,
+                          setRenameAccount,
+                        )}
+                      />
+                    </Inline>
                   }
                   labelComponent={<MenuItem.Label text={'Ξ2.143'} />}
-                  isSelected={account === currentAddress}
+                  isSelected={account.address === currentAddress}
                 />
               ))}
             </Stack>
