@@ -15,7 +15,7 @@ import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 import { Asterisks } from '../../components/Asterisks/Asterisks';
 
 const { innerWidth: windowWidth } = window;
-const TEXT_MAX_WIDTH = windowWidth - 60;
+const TEXT_MAX_WIDTH = windowWidth - 150;
 
 export function Tokens() {
   const { address } = useAccount();
