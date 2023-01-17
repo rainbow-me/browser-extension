@@ -56,7 +56,11 @@ export const tabMessenger = createMessenger({
     { id }: { id?: number | string } = {},
   ) {
     return new Promise<TResponse>((resolve, reject) => {
-      const listener = (message: ReplyMessage<TResponse>) => {
+      const listener = (
+        message: ReplyMessage<TResponse>,
+        _: chrome.runtime.MessageSender,
+        sendResponse: (response?: unknown) => void,
+      ) => {
         if (!isValidReply<TResponse>({ id, message, topic })) return;
 
         chrome.runtime.onMessage?.removeListener(listener);
@@ -64,6 +68,8 @@ export const tabMessenger = createMessenger({
         const { response: response_, error } = message.payload;
         if (error) reject(new Error(error.message));
         resolve(response_);
+        sendResponse({});
+        return true;
       };
       chrome.runtime.onMessage?.addListener(listener);
 
@@ -76,49 +82,50 @@ export const tabMessenger = createMessenger({
     topic: string,
     callback: CallbackFunction<TPayload, TResponse>,
   ) {
-    const listener = (
+    const listener = async (
       message: SendMessage<TPayload>,
       sender: chrome.runtime.MessageSender,
+      sendResponse: (response?: unknown) => void,
     ) => {
       if (!isValidSend({ message, topic })) return;
 
       const repliedTopic = message.topic.replace('>', '<');
 
-      getActiveTabs().then(([tab]) => {
-        callback(message.payload, {
+      const [tab] = await getActiveTabs();
+
+      try {
+        const response = await callback(message.payload, {
           id: message.id,
           sender,
           topic: message.topic,
-        })
-          .then((response) =>
-            sendMessage(
-              {
-                topic: repliedTopic,
-                payload: { response },
-                id: message.id,
-              },
-              { tabId: tab?.id },
-            ),
-          )
-          .catch((error_) => {
-            // Errors do not serialize properly over `chrome.runtime.sendMessage`, so
-            // we are manually serializing it to an object.
-            const error: Record<string, unknown> = {};
-            for (const key of Object.getOwnPropertyNames(error_)) {
-              error[key] = (<Error>error_)[<keyof Error>key];
-            }
-            sendMessage(
-              {
-                topic: repliedTopic,
-                payload: { error },
-                id: message.id,
-              },
-              {
-                tabId: tab?.id,
-              },
-            );
-          });
-      });
+        });
+        sendMessage(
+          {
+            topic: repliedTopic,
+            payload: { response },
+            id: message.id,
+          },
+          { tabId: tab?.id },
+        );
+      } catch (error_) {
+        // Errors do not serialize properly over `chrome.runtime.sendMessage`, so
+        // we are manually serializing it to an object.
+        const error: Record<string, unknown> = {};
+        for (const key of Object.getOwnPropertyNames(error_)) {
+          error[key] = (<Error>error_)[<keyof Error>key];
+        }
+        sendMessage(
+          {
+            topic: repliedTopic,
+            payload: { error },
+            id: message.id,
+          },
+          {
+            tabId: tab?.id,
+          },
+        );
+      }
+      sendResponse({});
       return true;
     };
     chrome.runtime.onMessage?.addListener(listener);
