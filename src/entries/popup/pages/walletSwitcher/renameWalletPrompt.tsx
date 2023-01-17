@@ -87,7 +87,7 @@ export const RenameWalletPrompt = ({
               <Rows>
                 <Row>
                   <Inline alignHorizontal="center">
-                    <Avatar.Wrapper size={44}>
+                    <Avatar.Wrapper size={44} color={avatar?.color}>
                       {isFetched ? (
                         <>
                           {avatar?.imageUrl ? (

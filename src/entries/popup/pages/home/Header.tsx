@@ -57,7 +57,7 @@ export function AvatarSection() {
   const { address } = useAccount();
   const { avatar, isFetched } = useAvatar({ address });
   return (
-    <Avatar.Wrapper size={60}>
+    <Avatar.Wrapper size={60} color={avatar?.color}>
       {isFetched ? (
         <>
           {avatar?.imageUrl ? (
@@ -82,12 +82,14 @@ function ActionButtonsSection() {
     <Box style={{ height: 56 }}>
       {avatar?.color && (
         <Inline space="12px">
-          <ActionButton
-            symbol="square.on.square"
-            text={i18n.t('wallet_header.copy')}
-            onClick={handleCopy}
-            testId="header-link-copy"
-          />
+          <Link to={ROUTES.WALLETS}>
+            <ActionButton
+              symbol="square.on.square"
+              text={i18n.t('wallet_header.copy')}
+              onClick={handleCopy}
+              testId="header-link-copy"
+            />
+          </Link>
           <ActionButton
             symbol="arrow.triangle.swap"
             text={i18n.t('wallet_header.swap')}

@@ -77,7 +77,7 @@ export default function AccountItem({
               />
             </Box>
           )}
-          <Avatar.Wrapper size={36}>
+          <Avatar.Wrapper size={36} color={avatar?.color}>
             {isFetched ? (
               <>
                 {avatar?.imageUrl ? (

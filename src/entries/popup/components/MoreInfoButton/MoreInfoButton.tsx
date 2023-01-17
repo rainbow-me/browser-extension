@@ -40,8 +40,8 @@ const MoreInfoButton = ({ options }: { options: MoreInfoOption[] }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           {options.map((option) => (
-            <>
-              <DropdownMenuItem onSelect={option.onSelect} key={option.symbol}>
+            <Box key={option.symbol}>
+              <DropdownMenuItem onSelect={option.onSelect}>
                 <Inline alignVertical="center" space="10px" wrap={false}>
                   <Symbol
                     size={18}
@@ -71,7 +71,7 @@ const MoreInfoButton = ({ options }: { options: MoreInfoOption[] }) => {
                 </Inline>
               </DropdownMenuItem>
               {option.separator && <DropdownMenuSeparator />}
-            </>
+            </Box>
           ))}
         </DropdownMenuContent>
       </DropdownMenu>
