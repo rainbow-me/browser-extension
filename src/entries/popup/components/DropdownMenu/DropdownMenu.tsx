@@ -83,6 +83,7 @@ const DropdownMenuContentBody = React.forwardRef<
           borderWidth="1px"
           borderRadius="16px"
           ref={ref}
+          hideWhenDetached
         >
           {children}
         </Box>

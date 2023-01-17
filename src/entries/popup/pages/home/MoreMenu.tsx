@@ -1,13 +1,15 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAccount, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
+import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
@@ -16,12 +18,27 @@ import { ROUTES } from '../../urls';
 export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   const { address } = useAccount();
   const { data: ensName } = useEnsName({ address });
+  const navigate = useNavigate();
 
   const openProfile = React.useCallback(() => {
     chrome.tabs.create({
       url: `https://rainbow.me/${ensName ?? address}`,
     });
   }, [address, ensName]);
+
+  const onValueChange = React.useCallback(
+    (value: 'settings' | 'profile') => {
+      switch (value) {
+        case 'settings':
+          navigate(ROUTES.SETTINGS);
+          break;
+        case 'profile':
+          openProfile();
+          break;
+      }
+    },
+    [navigate, openProfile],
+  );
 
   return (
     <DropdownMenu>
@@ -31,32 +48,40 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
         </Box>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <Stack space="4px">
-          <Stack>
-            <Inset vertical="8px">
-              <Link to={ROUTES.SETTINGS} id="settings-link">
+        <DropdownMenuRadioGroup
+          onValueChange={(value) =>
+            onValueChange(value as 'settings' | 'profile')
+          }
+        >
+          <Stack space="4px">
+            <Stack>
+              <DropdownMenuRadioItem value="settings">
+                <Box id="settings-link">
+                  <Inline alignVertical="center" space="8px">
+                    <Symbol
+                      size={12}
+                      symbol="gearshape.fill"
+                      weight="semibold"
+                    />
+                    <Text size="14pt" weight="semibold">
+                      {i18n.t('menu.home_header_right.settings')}
+                    </Text>
+                  </Inline>
+                </Box>
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="qr-code">
                 <Inline alignVertical="center" space="8px">
-                  <Symbol size={12} symbol="gearshape.fill" weight="semibold" />
+                  <Symbol size={12} symbol="qrcode" weight="semibold" />
                   <Text size="14pt" weight="semibold">
-                    {i18n.t('menu.home_header_right.settings')}
+                    {i18n.t('menu.home_header_right.qr_code')}
                   </Text>
                 </Inline>
-              </Link>
-            </Inset>
-            <Inset vertical="8px">
-              <Inline alignVertical="center" space="8px">
-                <Symbol size={12} symbol="qrcode" weight="semibold" />
-                <Text size="14pt" weight="semibold">
-                  {i18n.t('menu.home_header_right.qr_code')}
-                </Text>
-              </Inline>
-            </Inset>
-          </Stack>
-          <Stack space="4px">
-            <DropdownMenuSeparator />
-            <Box>
-              <Box width="full" as="button" onClick={openProfile}>
-                <Inset vertical="8px">
+              </DropdownMenuRadioItem>
+            </Stack>
+            <Stack space="4px">
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioItem value="profile">
+                <Box width="full">
                   <Inline alignVertical="center" alignHorizontal="justify">
                     <Inline alignVertical="center" space="8px">
                       <Symbol
@@ -75,11 +100,11 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
                       color="labelTertiary"
                     />
                   </Inline>
-                </Inset>
-              </Box>
-            </Box>
+                </Box>
+              </DropdownMenuRadioItem>
+            </Stack>
           </Stack>
-        </Stack>
+        </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

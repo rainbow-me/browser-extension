@@ -1,5 +1,5 @@
 import React, { ReactNode, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import {
@@ -22,6 +22,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItemIndicator,
   DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../DropdownMenu/DropdownMenu';
@@ -53,9 +54,21 @@ export const AppNetworkMenu = ({
   connectedAppsId,
 }: AppNetworkMenuProps) => {
   const { appHost, appLogo, appName } = useAppMetadata({ url });
+  const navigate = useNavigate();
 
   const { updateAppSessionChainId, disconnectAppSession, appSession } =
     useAppSession({ host: appHost });
+
+  const onValueChange = useCallback(
+    (value: 'connected-apps') => {
+      switch (value) {
+        case 'connected-apps':
+          navigate(ROUTES.CONNECTED);
+          break;
+      }
+    },
+    [navigate],
+  );
 
   const changeChainId = useCallback(
     (chainId: string) => {
@@ -150,32 +163,38 @@ export const AppNetworkMenu = ({
           ) : null}
 
           {displayConnectedRoute && (
-            <Stack space="4px">
-              {url ? <DropdownMenuSeparator /> : null}
+            <DropdownMenuRadioGroup
+              onValueChange={(value) =>
+                onValueChange(value as 'connected-apps')
+              }
+            >
+              <Stack space="4px">
+                {url ? <DropdownMenuSeparator /> : null}
 
-              <Inset vertical="8px">
-                <Link id={connectedAppsId} to={ROUTES.CONNECTED}>
-                  <Inline alignVertical="center" space="8px">
-                    <Box style={{ width: 18, height: 18 }}>
-                      <Inline
-                        height="full"
-                        alignVertical="center"
-                        alignHorizontal="center"
-                      >
-                        <Symbol
-                          size={14}
-                          symbol="square.on.square.dashed"
-                          weight="semibold"
-                        />
-                      </Inline>
-                    </Box>
-                    <Text size="14pt" weight="semibold">
-                      {i18n.t('menu.home_header_left.all_connected_apps')}
-                    </Text>
-                  </Inline>
-                </Link>
-              </Inset>
-            </Stack>
+                <DropdownMenuRadioItem value="connected-apps">
+                  <Box id={connectedAppsId}>
+                    <Inline alignVertical="center" space="8px">
+                      <Box style={{ width: 18, height: 18 }}>
+                        <Inline
+                          height="full"
+                          alignVertical="center"
+                          alignHorizontal="center"
+                        >
+                          <Symbol
+                            size={14}
+                            symbol="square.on.square.dashed"
+                            weight="semibold"
+                          />
+                        </Inline>
+                      </Box>
+                      <Text size="14pt" weight="semibold">
+                        {i18n.t('menu.home_header_left.all_connected_apps')}
+                      </Text>
+                    </Inline>
+                  </Box>
+                </DropdownMenuRadioItem>
+              </Stack>
+            </DropdownMenuRadioGroup>
           )}
         </Stack>
 
