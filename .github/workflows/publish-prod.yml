@@ -1,0 +1,48 @@
+
+name: Publish to Chrome WebStore (Production)
+
+on:
+  # schedule:
+  # Runs every day at midnight
+  # - cron: '0 0 * * *'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    concurrency: 
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.REPO_TOKEN }}
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14.20.1"
+          cache: 'yarn'
+      - name: Install deps via Yarn
+        run: yarn setup
+      - uses: actions/checkout@v3
+        with:
+          repository: 'rainbow-me/browser-extension-env'
+          token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+          path: tmp
+      - name: Copy dotenv
+        run: cat tmp/dotenv >> .env && rm -rf tmp
+      - name: Bump the version
+        run: yarn bump
+      - name: Build the extension ready for the stores
+        run: yarn build:webpack && yarn zip
+      - name: Submit to the chrome webstore
+        uses: PlasmoHQ/bpp@v3
+        with:
+          artifact: ./rainbowbx.zip
+          keys: ${{ secrets.BPP_KEYS_PROD }}
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          message: Version Bump
+          committer_name: GitHub Actions
+          committer_email: actions@github.com
+          add: '*.json'
