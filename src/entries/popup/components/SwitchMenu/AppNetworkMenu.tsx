@@ -63,7 +63,7 @@ export const AppNetworkMenu = ({
     (value: 'connected-apps') => {
       switch (value) {
         case 'connected-apps':
-          navigate(ROUTES.SETTINGS);
+          navigate(ROUTES.CONNECTED);
           break;
       }
     },
