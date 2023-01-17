@@ -14,13 +14,16 @@ import {
   MoreInfoButton,
   MoreInfoOption,
 } from '../../components/MoreInfoButton/MoreInfoButton';
-import { getWallets } from '../../handlers/wallet';
+import { getWallets, remove } from '../../handlers/wallet';
 
+import { WalletActionsMenu } from './WalletSwitcher.css';
+import { RemoveWalletPrompt } from './removeWalletPrompt';
 import { RenameWalletPrompt } from './renameWalletPrompt';
 
 const infoButtonOptions = (
   account: Address,
   setRenameAccount: React.Dispatch<React.SetStateAction<Address | undefined>>,
+  setRemoveAccount: React.Dispatch<React.SetStateAction<Address | undefined>>,
 ): MoreInfoOption[] => [
   {
     onSelect: (e: Event) => {
@@ -43,7 +46,7 @@ const infoButtonOptions = (
   {
     onSelect: (e: Event) => {
       e.stopPropagation();
-      // console.log('Remove wallet');
+      setRemoveAccount(account);
     },
     label: 'Remove wallet',
     symbol: 'trash.fill',
@@ -70,31 +73,46 @@ interface AddressAndType {
 
 export function WalletSwitcher() {
   const [renameAccount, setRenameAccount] = useState<Address | undefined>();
+  const [removeAccount, setRemoveAccount] = useState<Address | undefined>();
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
   const navigate = useNavigate();
   const [accounts, setAccounts] = useState<AddressAndType[]>([]);
+  const fetchAccounts = async () => {
+    const wallets = await getWallets();
+    let accounts: AddressAndType[] = [];
+    wallets.forEach((wallet) => {
+      accounts = [
+        ...accounts,
+        ...wallet.accounts.map(
+          (account): AddressAndType => ({
+            address: account,
+            type: wallet.type,
+          }),
+        ),
+      ];
+    });
+    setAccounts(accounts);
+  };
   useEffect(() => {
-    const fetchAccounts = async () => {
-      const wallets = await getWallets();
-      let accounts: AddressAndType[] = [];
-      wallets.forEach((wallet) => {
-        accounts = [
-          ...accounts,
-          ...wallet.accounts.map(
-            (account): AddressAndType => ({
-              address: account,
-              type: wallet.type,
-            }),
-          ),
-        ];
-      });
-      setAccounts(accounts);
-    };
     fetchAccounts();
   }, []);
   const handleSelectAddress = (address: Address) => {
     setCurrentAddress(address);
     navigate(-1);
+  };
+  const handleRemoveAccount = async (address: Address) => {
+    await remove(address);
+    if (address === currentAddress) {
+      const deletedIndex = accounts.findIndex(
+        (account) => account.address === address,
+      );
+      const nextIndex =
+        deletedIndex === accounts.length - 1
+          ? deletedIndex - 1
+          : deletedIndex + 1;
+      setCurrentAddress(accounts[nextIndex]?.address);
+    }
+    fetchAccounts();
   };
   return (
     <Box height="full">
@@ -105,11 +123,20 @@ export function WalletSwitcher() {
           setRenameAccount(undefined);
         }}
       />
+      <RemoveWalletPrompt
+        show={!!removeAccount}
+        account={removeAccount}
+        onClose={() => {
+          setRemoveAccount(undefined);
+        }}
+        onRemoveAccount={handleRemoveAccount}
+      />
+
       <Box paddingHorizontal="4px">
         {/* search */}
         <Box />
         <MenuContainer>
-          <Box width="full">
+          <Box width="full" paddingBottom="80px">
             <Stack>
               {accounts?.map((account) => (
                 <AccountItem
@@ -127,6 +154,7 @@ export function WalletSwitcher() {
                         options={infoButtonOptions(
                           account.address,
                           setRenameAccount,
+                          setRemoveAccount,
                         )}
                       />
                     </Inline>
@@ -140,9 +168,9 @@ export function WalletSwitcher() {
         </MenuContainer>
       </Box>
       <Box
-        style={{ position: 'fixed', bottom: 0 }}
+        className={WalletActionsMenu}
         width="full"
-        background="surfaceSecondary"
+        backdropFilter="blur(26px)"
         padding="10px"
         borderWidth="1px"
         borderColor="separatorTertiary"

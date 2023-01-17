@@ -3,9 +3,13 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useWalletNamesStore } from '~/core/state/walletNames';
+import { truncateAddress } from '~/core/utils/address';
 import {
   Box,
   Button,
+  Column,
+  Columns,
+  Inline,
   Inset,
   Row,
   Rows,
@@ -14,6 +18,9 @@ import {
 } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
+
+import { Avatar } from '../../components/Avatar/Avatar';
+import { useAvatar } from '../../hooks/useAvatar';
 
 export const RenameWalletPrompt = ({
   show,
@@ -57,6 +64,7 @@ export const RenameWalletPrompt = ({
   useEffect(() => {
     setError(null);
   }, [newWalletName]);
+  const { avatar, isFetched } = useAvatar({ address: account });
 
   return (
     <Prompt show={show}>
@@ -66,7 +74,7 @@ export const RenameWalletPrompt = ({
             <Row>
               <Box paddingTop="12px">
                 <Text size="16pt" weight="bold" align="center">
-                  Rename Wallet
+                  Rename wallet
                 </Text>
               </Box>
             </Row>
@@ -78,49 +86,74 @@ export const RenameWalletPrompt = ({
             <Row>
               <Rows>
                 <Row>
-                  <Input
-                    placeholder={i18n.t(
-                      'settings.privacy_and_security.wallets_and_keys.new_wallet.input_placeholder',
-                    )}
-                    value={newWalletName}
-                    onChange={(e) => setNewWalletName(e.target.value)}
-                    height="40px"
-                    variant="bordered"
-                  />
+                  <Inline alignHorizontal="center">
+                    <Avatar.Wrapper size={44}>
+                      {isFetched ? (
+                        <>
+                          {avatar?.imageUrl ? (
+                            <Avatar.Image imageUrl={avatar.imageUrl} />
+                          ) : (
+                            <Avatar.Emoji
+                              color={avatar?.color}
+                              emoji={avatar?.emoji}
+                              size="20pt"
+                            />
+                          )}
+                        </>
+                      ) : null}
+                      <Avatar.Skeleton />
+                    </Avatar.Wrapper>
+                  </Inline>
                 </Row>
-                {error && (
-                  <Row>
-                    <Box paddingTop="8px">
-                      <Text
-                        size="14pt"
-                        weight="semibold"
-                        align="center"
-                        color="red"
-                      >
-                        {error}
-                      </Text>
-                    </Box>
-                  </Row>
-                )}
+                <Row>
+                  <Rows>
+                    <Row>
+                      <Input
+                        placeholder={i18n.t(
+                          'settings.privacy_and_security.wallets_and_keys.new_wallet.input_placeholder',
+                        )}
+                        value={newWalletName}
+                        onChange={(e) => setNewWalletName(e.target.value)}
+                        height="44px"
+                        variant="transparent"
+                        textAlign="center"
+                      />
+                    </Row>
+                    <Row>
+                      <Inline alignHorizontal="center">
+                        <Text size="12pt" weight="medium" color="labelTertiary">
+                          {truncateAddress(account)}
+                        </Text>
+                      </Inline>
+                    </Row>
+                    {error && (
+                      <Row>
+                        <Box paddingTop="8px">
+                          <Text
+                            size="14pt"
+                            weight="semibold"
+                            align="center"
+                            color="red"
+                          >
+                            {error}
+                          </Text>
+                        </Box>
+                      </Row>
+                    )}
+                  </Rows>
+                </Row>
               </Rows>
             </Row>
           </Rows>
         </Row>
         <Row>
-          <Rows space="8px">
-            <Row>
-              <Button
-                variant="flat"
-                height="36px"
-                color="accent"
-                onClick={handleValidateWalletName}
-                width="full"
-                borderRadius="9px"
-              >
-                Rename wallet
-              </Button>
-            </Row>
-            <Row>
+          <Inset horizontal="104px">
+            <Separator color="separatorTertiary" />
+          </Inset>
+        </Row>
+        <Row>
+          <Columns space="8px">
+            <Column>
               <Button
                 variant="flat"
                 height="36px"
@@ -131,8 +164,20 @@ export const RenameWalletPrompt = ({
               >
                 {i18n.t('common_actions.cancel')}
               </Button>
-            </Row>
-          </Rows>
+            </Column>
+            <Column>
+              <Button
+                variant="flat"
+                height="36px"
+                color="accent"
+                onClick={handleValidateWalletName}
+                width="full"
+                borderRadius="9px"
+              >
+                Update
+              </Button>
+            </Column>
+          </Columns>
         </Row>
       </Rows>
     </Prompt>

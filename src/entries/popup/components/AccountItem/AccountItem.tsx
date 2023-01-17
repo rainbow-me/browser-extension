@@ -32,7 +32,7 @@ export default function AccountItem({
     <MenuItem
       onClick={onClick}
       key={account}
-      titleComponent={<MenuItem.Title text={displayName} />}
+      titleComponent={<MenuItem.Title text={displayName || ''} />}
       labelComponent={
         labelComponent ||
         (ensName ? <MenuItem.Label text={truncateAddress(account)} /> : null)
