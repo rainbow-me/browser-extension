@@ -1,4 +1,3 @@
-import { parseEther } from 'ethers/lib/utils';
 import { useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
@@ -6,6 +5,7 @@ import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isNativeAsset } from '~/core/utils/chains';
+import { toWei } from '~/core/utils/ethereum';
 import { convertAmountToRawAmount, toHex } from '~/core/utils/numbers';
 import { getDataForTokenTransfer } from '~/core/utils/transactions';
 
@@ -37,9 +37,7 @@ export const useSendTransactionState = ({
 
   const value = useMemo(
     () =>
-      sendingNativeAsset && assetAmount
-        ? toHex(parseEther(assetAmount).toString())
-        : '0x0',
+      sendingNativeAsset && assetAmount ? toHex(toWei(assetAmount)) : '0x0',
     [assetAmount, sendingNativeAsset],
   );
 
