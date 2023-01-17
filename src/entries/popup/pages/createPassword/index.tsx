@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import {
@@ -17,11 +16,12 @@ import { SymbolName, TextColor } from '~/design-system/styles/designTokens';
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { PasswordInput } from '../../components/PasswordInput/PasswordInput';
 import { updatePassword } from '../../handlers/wallet';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 import { getPasswordStrength, strengthMeta } from '../../utils/passwords';
 
 export function CreatePassword() {
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
   const [newPassword, setNewPassword] = useState('');
   const [strength, setStrength] = useState<number | null>(null);
   const [confirmNewPassword, setConfirmNewPassword] = useState('');

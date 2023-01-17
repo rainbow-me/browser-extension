@@ -3,7 +3,6 @@ import { fetchEnsAddress } from '@wagmi/core';
 import { isAddress } from 'ethers/lib/utils';
 import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -35,10 +34,11 @@ import { FullScreenContainer } from '../../components/FullScreen/FullScreenConta
 import { Spinner } from '../../components/Spinner/Spinner';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import * as wallet from '../../handlers/wallet';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 export function WatchWallet() {
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
   const [isValid, setIsValid] = useState(false);
   const [address, setAddress] = useState('');
   const [additionalAccounts, setAdditionalAccounts] = useState<string[]>([]);

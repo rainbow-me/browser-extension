@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import {
@@ -16,13 +16,15 @@ import {
 import { SymbolName, TextColor } from '~/design-system/styles/designTokens';
 import { PasswordInput } from '~/entries/popup/components/PasswordInput/PasswordInput';
 import { updatePassword } from '~/entries/popup/handlers/wallet';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { ROUTES } from '~/entries/popup/urls';
 import {
   getPasswordStrength,
   strengthMeta,
 } from '~/entries/popup/utils/passwords';
 
 export function ChangePassword() {
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
   const { state } = useLocation();
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -74,7 +76,7 @@ export function ChangePassword() {
   const handleUpdatePassword = async () => {
     if (!isValid || !isMatching) return;
     await updatePassword(state?.password, newPassword);
-    navigate(-1);
+    navigate(ROUTES.SETTINGS__PRIVACY);
   };
 
   return (
@@ -232,7 +234,7 @@ export function ChangePassword() {
                   height="44px"
                   variant="transparent"
                   width="full"
-                  onClick={() => navigate(-1)}
+                  onClick={() => navigate(ROUTES.SETTINGS__PRIVACY)}
                 >
                   {i18n.t('common_actions.cancel')}
                 </Button>

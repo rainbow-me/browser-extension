@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import React from 'react';
+import { To } from 'react-router-dom';
 
 import { Box } from '~/design-system';
 import {
@@ -16,6 +17,7 @@ import { animatedRouteStyles } from './AnimatedRoute.css';
 
 type AnimatedRouteProps = {
   background?: BackgroundColor;
+  backTo?: To;
   children: React.ReactNode;
   direction: AnimatedRouteDirection;
   navbar?: boolean;
@@ -131,6 +133,7 @@ export const AnimatedRoute = React.forwardRef<
 >((props: AnimatedRouteProps, ref) => {
   const {
     background,
+    backTo,
     children,
     direction,
     navbar,
@@ -162,9 +165,9 @@ export const AnimatedRoute = React.forwardRef<
           background={navbarBackground}
           leftComponent={
             ['left', 'right'].includes(direction) ? (
-              <Navbar.BackButton />
+              <Navbar.BackButton backTo={backTo} />
             ) : (
-              <Navbar.CloseButton />
+              <Navbar.CloseButton backTo={backTo} />
             )
           }
           rightComponent={rightNavbarComponent}

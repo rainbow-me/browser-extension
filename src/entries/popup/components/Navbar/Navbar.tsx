@@ -1,13 +1,11 @@
 import { motion } from 'framer-motion';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { To, useLocation, useNavigate } from 'react-router-dom';
 
 import { Box, Button, ButtonSymbol, Text } from '~/design-system';
 import { ButtonSymbolProps } from '~/design-system/components/ButtonSymbol/ButtonSymbol';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { BackgroundColor } from '~/design-system/styles/designTokens';
-
-import { ROUTES } from '../../urls';
 
 type NavbarProps = {
   leftComponent?: React.ReactElement;
@@ -135,19 +133,30 @@ export function NavbarSymbolButton({
 }
 
 function NavbarButtonWithBack({
+  backTo,
   height,
   symbol,
 }: {
+  backTo?: To;
   height: ButtonSymbolProps['height'];
   symbol: SymbolProps['symbol'];
 }) {
+  const location = useLocation();
   const navigate = useNavigate();
   const padding = height === '24px' ? '4px' : '2px';
   return (
     <Box padding={padding} id="navbar-button-with-back">
       <NavbarSymbolButton
         height={height}
-        onClick={() => navigate(ROUTES.HOME, { state: { back: true } })}
+        onClick={() => {
+          if (backTo) {
+            navigate(backTo, {
+              state: { isBack: true, from: location.pathname },
+            });
+          } else {
+            navigate(-1);
+          }
+        }}
         symbol={symbol}
         variant="transparent"
       />
@@ -155,10 +164,12 @@ function NavbarButtonWithBack({
   );
 }
 
-export function NavbarBackButton() {
-  return <NavbarButtonWithBack height="28px" symbol="arrow.left" />;
+export function NavbarBackButton({ backTo }: { backTo?: To }) {
+  return (
+    <NavbarButtonWithBack backTo={backTo} height="28px" symbol="arrow.left" />
+  );
 }
 
-export function NavbarCloseButton() {
-  return <NavbarButtonWithBack height="24px" symbol="xmark" />;
+export function NavbarCloseButton({ backTo }: { backTo?: To }) {
+  return <NavbarButtonWithBack backTo={backTo} height="24px" symbol="xmark" />;
 }

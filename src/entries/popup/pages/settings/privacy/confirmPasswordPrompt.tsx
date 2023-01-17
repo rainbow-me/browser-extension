@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import {
@@ -16,6 +15,7 @@ import {
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
 import { PasswordInput } from '~/entries/popup/components/PasswordInput/PasswordInput';
 import { verifyPassword } from '~/entries/popup/handlers/wallet';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 
 export const ConfirmPasswordPrompt = ({
   show,
@@ -26,7 +26,7 @@ export const ConfirmPasswordPrompt = ({
   onClose: () => void;
   redirect: string;
 }) => {
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
 

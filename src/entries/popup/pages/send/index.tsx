@@ -7,7 +7,6 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -35,6 +34,7 @@ import { sendTransaction } from '../../handlers/wallet';
 import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsset';
 import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
 import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 import { ContactAction, ContactPrompt } from './ContactPrompt';
@@ -72,7 +72,7 @@ export function Send() {
   }>({ show: false, action: 'save' });
   const [toAddressDropdownOpen, setToAddressDropdownOpen] = useState(false);
 
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
 
   const { isContact } = useContactsStore();
   const { connectedToHardhat } = useConnectedToHardhatStore();

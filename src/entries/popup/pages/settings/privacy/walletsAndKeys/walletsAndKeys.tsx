@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
@@ -8,11 +8,12 @@ import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { create, getWallets } from '~/entries/popup/handlers/wallet';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
 export function WalletsAndKeys() {
   const { state } = useLocation();
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
   const [wallets, setWallets] = useState<KeychainWallet[]>([]);
 
   const handleViewWallet = (wallet: KeychainWallet) => {

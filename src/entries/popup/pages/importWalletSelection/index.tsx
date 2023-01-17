@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-nested-ternary */
 import React, { useCallback, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -23,10 +23,11 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { deriveAccountsFromSecret } from '../../handlers/wallet';
 import * as wallet from '../../handlers/wallet';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 export function ImportWalletSelection() {
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
   const { state } = useLocation();
   const [isImporting, setIsImporting] = useState(false);
   const { setCurrentAddress } = useCurrentAddressStore();

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useWalletNamesStore } from '~/core/state/walletNames';
@@ -16,6 +16,7 @@ import {
 import { Input } from '~/design-system/components/Input/Input';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
 import { add } from '~/entries/popup/handlers/wallet';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
 export const NewWalletPrompt = ({
@@ -28,7 +29,7 @@ export const NewWalletPrompt = ({
   wallet: KeychainWallet;
 }) => {
   const { state } = useLocation();
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
   const [walletName, setWalletName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const { saveWalletName } = useWalletNamesStore();
