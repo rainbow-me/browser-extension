@@ -8,7 +8,6 @@ import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry } from '~/core/sentry';
 import { useCurrentLanguageStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { usePendingRequestStore } from '~/core/state/requests';
 import { createWagmiClient } from '~/core/wagmi';
 import { Box, ThemeProvider } from '~/design-system';
 
@@ -17,7 +16,6 @@ import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { AuthProvider } from './hooks/useAuth';
 import { usePendingTransactionWatcher } from './hooks/usePendingTransactionWatcher';
 import { PlaygroundComponents } from './pages/_playgrounds';
-import { ApproveMessage } from './pages/messages/ApproveMessage';
 import { RainbowConnector } from './wagmi/RainbowConnector';
 
 const playground = process.env.PLAYGROUND as 'default' | 'ds';
@@ -40,7 +38,6 @@ export function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { pendingRequests } = usePendingRequestStore();
   const { currentTheme } = useCurrentThemeStore();
 
   return (
@@ -55,13 +52,9 @@ export function App() {
           ) : (
             <AuthProvider>
               <Box id="main" background="surfacePrimaryElevated">
-                {pendingRequests[0] ? (
-                  <ApproveMessage />
-                ) : (
-                  <HashRouter>
-                    <Routes />
-                  </HashRouter>
-                )}
+                <HashRouter>
+                  <Routes />
+                </HashRouter>
               </Box>
               <IdleTimer />
             </AuthProvider>

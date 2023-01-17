@@ -6,9 +6,10 @@ import {
   useTransform,
 } from 'framer-motion';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
+import { usePendingRequestStore } from '~/core/state';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
@@ -18,6 +19,7 @@ import { Navbar } from '../../components/Navbar/Navbar';
 import { useAvatar } from '../../hooks/useAvatar';
 import { MainLayout } from '../../layouts/MainLayout';
 import { StickyHeader } from '../../layouts/StickyHeader';
+import { ROUTES } from '../../urls';
 import { SheetMode, SpeedUpAndCancelSheet } from '../speedUpAndCancelSheet';
 
 import { Activity } from './Activity';
@@ -38,11 +40,24 @@ export function Home() {
   const { state } = useLocation();
   const { avatar } = useAvatar({ address });
   const [sheet, setSheet] = useState<SheetMode>('none');
+
+  const navigate = useNavigate();
+
   const [speedUpAndCancelTx, setSpeedUpAndCancelTx] =
     useState<RainbowTransaction>();
+
   const displayingSheet = sheet !== 'none';
 
+  const { pendingRequests } = usePendingRequestStore();
+
+  useEffect(() => {
+    if (pendingRequests?.[0]) {
+      navigate(ROUTES.APPROVE_APP_REQUEST);
+    }
+  }, [navigate, pendingRequests]);
+
   const [activeTab, setActiveTab] = useState<Tab>(state?.activeTab || 'tokens');
+
   const onSelectTab = useCallback((tab: Tab) => {
     // If we are already in a state where the header is collapsed,
     // then ensure we are scrolling to the top when we change tab.
