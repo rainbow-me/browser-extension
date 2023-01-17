@@ -7,9 +7,10 @@ import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
-import AccountItem from '../../components/AccountItem/AccountItem';
+import AccountItem, {
+  LabelOption,
+} from '../../components/AccountItem/AccountItem';
 import { MenuContainer } from '../../components/Menu/MenuContainer';
-import { MenuItem } from '../../components/Menu/MenuItem';
 import {
   MoreInfoButton,
   MoreInfoOption,
@@ -159,7 +160,7 @@ export function WalletSwitcher() {
                       />
                     </Inline>
                   }
-                  labelComponent={<MenuItem.Label text={'Ξ2.143'} />}
+                  labelType={LabelOption.balance}
                   isSelected={account.address === currentAddress}
                 />
               ))}

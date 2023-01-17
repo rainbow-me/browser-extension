@@ -1,42 +1,56 @@
 import React from 'react';
-import { Address } from 'wagmi';
+import { Address, useBalance } from 'wagmi';
 
 import { truncateAddress } from '~/core/utils/address';
+import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { Box, Symbol } from '~/design-system';
 
 import { useAvatar } from '../../hooks/useAvatar';
-import { useEns } from '../../hooks/useEns';
 import { useWalletName } from '../../hooks/useWalletName';
 import { Avatar } from '../Avatar/Avatar';
 import { MenuItem } from '../Menu/MenuItem';
+
+export enum LabelOption {
+  address = 'address',
+  balance = 'balance',
+}
 
 export default function AccountItem({
   account,
   rightComponent,
   onClick,
-  labelComponent,
+  labelType,
   isSelected,
 }: {
   account: Address;
   rightComponent?: React.ReactNode;
   onClick?: () => void;
-  labelComponent?: React.ReactNode;
   isSelected?: boolean;
+  labelType?: LabelOption;
 }) {
   const { avatar, isFetched } = useAvatar({ address: account });
-  const { ensName } = useEns({
-    addressOrName: account,
-  });
-  const { displayName } = useWalletName({ address: account });
+  const { displayName, showAddress } = useWalletName({ address: account });
+  const { data: balance } = useBalance({ addressOrName: account });
+
+  let labelComponent = null;
+  if (labelType === LabelOption.address) {
+    labelComponent = showAddress ? (
+      <MenuItem.Label text={truncateAddress(account)} />
+    ) : null;
+  } else if (labelType === LabelOption.balance) {
+    labelComponent = (
+      <MenuItem.Label
+        text={`Ξ${handleSignificantDecimals(balance?.formatted || 0, 4)}`}
+      />
+    );
+  }
+
   return (
     <MenuItem
       onClick={onClick}
       key={account}
       titleComponent={<MenuItem.Title text={displayName || ''} />}
-      labelComponent={
-        labelComponent ||
-        (ensName ? <MenuItem.Label text={truncateAddress(account)} /> : null)
-      }
+      labelComponent={labelComponent}
       leftComponent={
         <Box marginRight="-8px" height="fit" position="relative">
           {isSelected && (

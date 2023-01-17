@@ -6,7 +6,9 @@ import { i18n } from '~/core/languages';
 import { KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Row, Rows, Symbol, Text } from '~/design-system';
-import AccountItem from '~/entries/popup/components/AccountItem/AccountItem';
+import AccountItem, {
+  LabelOption,
+} from '~/entries/popup/components/AccountItem/AccountItem';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -161,6 +163,7 @@ export function WalletDetails() {
                   account={account}
                   key={account}
                   rightComponent={<MoreInfoButton account={account} />}
+                  labelType={LabelOption.address}
                 />
               );
             })}
