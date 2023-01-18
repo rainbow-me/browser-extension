@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react';
 
 import { Box, Row, Rows } from '~/design-system';
 import {
+  BackgroundColor,
   Space,
   animatedRouteTransitionConfig,
 } from '~/design-system/styles/designTokens';
@@ -11,10 +12,12 @@ export const Prompt = ({
   show,
   children,
   padding,
+  background,
 }: {
   show: boolean;
   children: ReactNode;
   padding?: Space;
+  background?: BackgroundColor;
 }) => {
   const emphasizedShort = animatedRouteTransitionConfig['emphasizedShort'];
   const deceleratedShort = animatedRouteTransitionConfig['deceleratedShort'];
@@ -50,7 +53,7 @@ export const Prompt = ({
                 exit={{ opacity: 0 }}
                 transition={deceleratedShort}
                 padding="12px"
-                background="surfaceMenu"
+                background={background ?? 'surfaceMenu'}
                 borderRadius="16px"
                 borderColor="separatorTertiary"
                 borderWidth="1px"
