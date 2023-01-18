@@ -3,7 +3,16 @@ import React from 'react';
 import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { GasSpeed } from '~/core/types/gas';
-import { Box, Inline, Separator, Stack, Text } from '~/design-system';
+import {
+  Box,
+  Button,
+  Column,
+  Columns,
+  Inline,
+  Separator,
+  Stack,
+  Text,
+} from '~/design-system';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
 
 const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
@@ -16,94 +25,105 @@ export const CustomGasSheet = () => {
           Gwei Settings
         </Text>
       </Box>
-      <Stack space="12px">
-        <Box paddingBottom="12px">
-          <Box style={{ height: 32 }} paddingLeft="20px" paddingRight="16px">
-            <Stack space="12px">
-              <Inline height="full" alignHorizontal="right">
-                <Text color="green" align="center" size="11pt" weight="bold">
-                  Rising
-                </Text>
-              </Inline>
-              <Inline height="full" alignHorizontal="justify">
-                <Text
-                  color="label"
-                  align="center"
-                  size="14pt"
-                  weight="semibold"
-                >
-                  Current base fee
-                </Text>
-                <Text
-                  color="label"
-                  align="center"
-                  size="14pt"
-                  weight="semibold"
-                >
-                  Max base fee
-                </Text>
-              </Inline>
-            </Stack>
+      <Box paddingBottom="8px">
+        <Stack space="12px">
+          <Box paddingBottom="12px">
+            <Box style={{ height: 32 }} paddingLeft="20px" paddingRight="16px">
+              <Stack space="12px">
+                <Inline height="full" alignHorizontal="right">
+                  <Text color="green" align="center" size="11pt" weight="bold">
+                    Rising
+                  </Text>
+                </Inline>
+                <Inline height="full" alignHorizontal="justify">
+                  <Text
+                    color="label"
+                    align="center"
+                    size="14pt"
+                    weight="semibold"
+                  >
+                    Current base fee
+                  </Text>
+                  <Text
+                    color="label"
+                    align="center"
+                    size="14pt"
+                    weight="semibold"
+                  >
+                    Max base fee
+                  </Text>
+                </Inline>
+              </Stack>
+            </Box>
           </Box>
-        </Box>
-        <Box style={{ height: 32 }} paddingLeft="20px" paddingRight="16px">
-          <Inline
-            height="full"
-            alignHorizontal="justify"
-            alignVertical="center"
-          >
-            <Text color="label" align="center" size="14pt" weight="semibold">
-              Max base fee
-            </Text>
-            <Text color="label" align="center" size="14pt" weight="semibold">
-              Max base fee
-            </Text>
-          </Inline>
-        </Box>
-        <Box style={{ height: 32 }} paddingLeft="20px" paddingRight="16px">
-          <Inline
-            height="full"
-            alignHorizontal="justify"
-            alignVertical="center"
-          >
-            <Text color="label" align="center" size="14pt" weight="semibold">
-              Miner tip
-            </Text>
-            <Text color="label" align="center" size="14pt" weight="semibold">
-              Max base fee
-            </Text>
-          </Inline>
-        </Box>
-        <Box style={{ height: 32 }} paddingLeft="20px" paddingRight="16px">
-          <Inline
-            height="full"
-            alignHorizontal="justify"
-            alignVertical="center"
-          >
-            <Text color="label" align="center" size="14pt" weight="semibold">
-              Max transaction fee
-            </Text>
-            <Text color="label" align="center" size="14pt" weight="semibold">
-              Max base fee
-            </Text>
-          </Inline>
-        </Box>
-      </Stack>
+          <Box style={{ height: 32 }} paddingLeft="20px" paddingRight="16px">
+            <Inline
+              height="full"
+              alignHorizontal="justify"
+              alignVertical="center"
+            >
+              <Text color="label" align="center" size="14pt" weight="semibold">
+                Max base fee
+              </Text>
+              <Text color="label" align="center" size="14pt" weight="semibold">
+                Max base fee
+              </Text>
+            </Inline>
+          </Box>
+          <Box style={{ height: 32 }} paddingLeft="20px" paddingRight="16px">
+            <Inline
+              height="full"
+              alignHorizontal="justify"
+              alignVertical="center"
+            >
+              <Text color="label" align="center" size="14pt" weight="semibold">
+                Miner tip
+              </Text>
+              <Text color="label" align="center" size="14pt" weight="semibold">
+                Max base fee
+              </Text>
+            </Inline>
+          </Box>
+          <Box style={{ height: 32 }} paddingLeft="20px" paddingRight="16px">
+            <Inline
+              height="full"
+              alignHorizontal="justify"
+              alignVertical="center"
+            >
+              <Text color="label" align="center" size="14pt" weight="semibold">
+                Max transaction fee
+              </Text>
+              <Text color="label" align="center" size="14pt" weight="semibold">
+                Max base fee
+              </Text>
+            </Inline>
+          </Box>
+        </Stack>
+      </Box>
 
       {/* /// */}
 
-      <Box background="surfaceSecondaryElevated">
-        <Text color="labelQuaternary" size="12pt" weight="semibold">
-          Transaction speed
-        </Text>
+      <Box
+        background="surfaceSecondaryElevated"
+        marginHorizontal="-12px"
+        marginBottom="-12px"
+        paddingBottom="20px"
+        paddingTop="22px"
+        paddingHorizontal="20px"
+      >
+        <Box paddingBottom="8px">
+          <Text color="labelQuaternary" size="12pt" weight="semibold">
+            Transaction speed
+          </Text>
+        </Box>
 
         <Stack space="2px">
           <Box
             paddingVertical="8px"
-            paddingHorizontal="12px"
             borderRadius="12px"
-            borderWidth="1px"
-            borderColor="buttonStroke"
+            marginHorizontal="-12px"
+            paddingHorizontal="12px"
+            background={{ default: 'transparent', hover: 'accent' }}
           >
             <Inline alignVertical="center" alignHorizontal="justify">
               <Inline space="10px" alignVertical="center">
@@ -141,7 +161,7 @@ export const CustomGasSheet = () => {
             </Inline>
           </Box>
 
-          <Box paddingHorizontal="20px">
+          <Box>
             <Separator color="separatorTertiary" />
           </Box>
 
@@ -150,10 +170,10 @@ export const CustomGasSheet = () => {
               <Box
                 key={i}
                 paddingVertical="8px"
-                paddingHorizontal="12px"
                 borderRadius="12px"
-                borderWidth="1px"
-                borderColor="buttonStroke"
+                marginHorizontal="-12px"
+                paddingHorizontal="12px"
+                background={{ default: 'transparent', hover: 'accent' }}
               >
                 <Inline alignVertical="center" alignHorizontal="justify">
                   <Inline space="10px" alignVertical="center">
@@ -208,6 +228,32 @@ export const CustomGasSheet = () => {
             </>
           ))}
         </Stack>
+
+        {/* /// */}
+
+        <Box paddingTop="20px">
+          <Columns alignHorizontal="justify" space="12px">
+            <Column>
+              <Button
+                width="full"
+                color="fillSecondary"
+                height="44px"
+                variant="flat"
+              >
+                <Text color="labelSecondary" size="16pt" weight="bold">
+                  Cancel
+                </Text>
+              </Button>
+            </Column>
+            <Column>
+              <Button width="full" color="accent" height="44px" variant="flat">
+                <Text color="label" size="16pt" weight="bold">
+                  Set
+                </Text>
+              </Button>
+            </Column>
+          </Columns>
+        </Box>
       </Box>
     </Prompt>
   );
