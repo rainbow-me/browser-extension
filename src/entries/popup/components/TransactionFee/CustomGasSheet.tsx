@@ -56,7 +56,7 @@ export const CustomGasSheet = () => {
                       size="14pt"
                       weight="semibold"
                     >
-                      Max base fee
+                      31 Gwei
                     </Text>
                   </Inline>
                 </Stack>
@@ -100,7 +100,7 @@ export const CustomGasSheet = () => {
                   Max transaction fee
                 </Text>
                 <Text color="label" align="right" size="14pt" weight="semibold">
-                  Max base fee
+                  0.001
                 </Text>
               </Inline>
             </Box>
