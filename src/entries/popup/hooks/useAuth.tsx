@@ -105,10 +105,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (newValue === 'READY') {
         // verify if we're truly unlocked
         const { unlocked } = await wallet.getStatus();
-        if (!unlocked) {
-          // Don't update status
-          setStatus(oldValue);
-        } else {
+        if (unlocked) {
           setStatus(newValue);
         }
       } else {
