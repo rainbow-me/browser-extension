@@ -24,7 +24,12 @@ export const CustomGasSheet = () => {
   const [minerTip, setMinerTip] = useState('0');
 
   return (
-    <Prompt background="surfaceSecondary" show={true} padding="16px">
+    <Prompt
+      background="surfaceSecondary"
+      show={true}
+      padding="16px"
+      scrimBackground
+    >
       <Box paddingHorizontal="20px">
         <Box paddingVertical="27px">
           <Text color="label" align="center" size="14pt" weight="heavy">
@@ -34,11 +39,11 @@ export const CustomGasSheet = () => {
         <Box paddingBottom="8px">
           <Stack space="12px">
             <Box paddingBottom="12px">
-              <Box style={{ height: 32 }}>
+              <Box height="full">
                 <Stack space="12px">
                   <Inline height="full" alignHorizontal="right">
                     <Text
-                      color="green"
+                      color="orange"
                       align="center"
                       size="11pt"
                       weight="bold"
@@ -46,7 +51,11 @@ export const CustomGasSheet = () => {
                       Rising
                     </Text>
                   </Inline>
-                  <Inline height="full" alignHorizontal="justify">
+                  <Inline
+                    height="full"
+                    alignHorizontal="justify"
+                    alignVertical="bottom"
+                  >
                     <Text
                       color="label"
                       align="left"
@@ -67,9 +76,9 @@ export const CustomGasSheet = () => {
                 </Stack>
               </Box>
             </Box>
-            <Box style={{ height: 32 }}>
+            <Box>
               <Inline
-                height="full"
+                height="fit"
                 alignHorizontal="justify"
                 alignVertical="center"
               >
@@ -85,7 +94,7 @@ export const CustomGasSheet = () => {
                 </Box>
               </Inline>
             </Box>
-            <Box style={{ height: 32 }}>
+            <Box>
               <Inline
                 height="full"
                 alignHorizontal="justify"
@@ -103,12 +112,8 @@ export const CustomGasSheet = () => {
                 </Box>
               </Inline>
             </Box>
-            <Box style={{ height: 32 }}>
-              <Inline
-                height="full"
-                alignHorizontal="justify"
-                alignVertical="center"
-              >
+            <Box paddingVertical="12px">
+              <Inline alignHorizontal="justify" alignVertical="center">
                 <Text color="label" align="left" size="14pt" weight="semibold">
                   Max transaction fee
                 </Text>
@@ -120,14 +125,16 @@ export const CustomGasSheet = () => {
           </Stack>
         </Box>
 
-        {/* /// */}
-
         <Box
           background="surfaceSecondaryElevated"
           paddingBottom="20px"
           paddingTop="22px"
           marginHorizontal="-20px"
           paddingHorizontal="20px"
+          style={{
+            borderEndEndRadius: 16,
+            borderEndStartRadius: 16,
+          }}
         >
           <Box paddingBottom="8px">
             <Text color="labelQuaternary" size="12pt" weight="semibold">
@@ -256,8 +263,6 @@ export const CustomGasSheet = () => {
               </>
             ))}
           </Stack>
-
-          {/* /// */}
 
           <Box paddingTop="20px">
             <Columns alignHorizontal="justify" space="12px">

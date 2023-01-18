@@ -150,6 +150,16 @@ export type BackgroundColor =
   | 'scrimSecondary'
   | 'scrimTertiary';
 
+export const backdropFilter = {
+  'blur(26px)': 'blur(26px)',
+  'opacity(80%)': 'opacity(80%)',
+  'opacity(5%)': 'opacity(5%)',
+  'opacity(30%)': 'opacity(30%)',
+  'opacity(0%)': 'opacity(0%)',
+} as const;
+
+export type BackdropFilter = keyof typeof backdropFilter;
+
 export type BackgroundColorValue = {
   color: string;
   setColorContext: ColorContext;

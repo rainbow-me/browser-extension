@@ -13,19 +13,41 @@ export const Prompt = ({
   children,
   padding,
   background,
+  scrimBackground,
 }: {
   show: boolean;
   children: ReactNode;
   padding?: Space;
   background?: BackgroundColor;
+  scrimBackground?: boolean;
 }) => {
   const emphasizedShort = animatedRouteTransitionConfig['emphasizedShort'];
   const deceleratedShort = animatedRouteTransitionConfig['deceleratedShort'];
 
   return (
     <AnimatePresence>
+      {show && scrimBackground && (
+        <Box
+          position="fixed"
+          bottom="0"
+          left="0"
+          right="0"
+          style={{
+            width: '100%',
+            height: '100%',
+            zIndex: 10,
+          }}
+          background="scrim"
+          as={motion.div}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          key="background"
+        />
+      )}
       {show && (
         <Box
+          key="content"
           position="fixed"
           top="0"
           bottom="0"
@@ -41,7 +63,7 @@ export const Prompt = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={emphasizedShort}
-          backdropFilter="blur(26px)"
+          backdropFilter={'opacity(0%)'}
           padding={padding ?? '40px'}
         >
           <Rows alignVertical="center">

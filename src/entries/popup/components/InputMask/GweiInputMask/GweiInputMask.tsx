@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { CSSProperties, useCallback, useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 
 import { Box, Inline, Text } from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
@@ -14,12 +14,10 @@ import { maskInput } from '../utils';
 const GWEI_DECIMALS = 9;
 
 export const GweiInputMask = ({
-  style,
   value,
   variant,
   onChange,
 }: {
-  style?: CSSProperties;
   value: string;
   variant: 'surface' | 'bordered' | 'transparent';
   onChange: (value: string) => void;
@@ -50,7 +48,6 @@ export const GweiInputMask = ({
           : undefined
       }
       transition={transitions.bounce}
-      style={style}
       onClick={onMaskClick}
     >
       <Box
