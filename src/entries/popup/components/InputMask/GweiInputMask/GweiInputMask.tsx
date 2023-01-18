@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
 import { Box, Inline, Text } from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
@@ -22,7 +22,9 @@ export const GweiInputMask = ({
   variant: 'surface' | 'bordered' | 'transparent';
   onChange: (value: string) => void;
 }) => {
+  const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
   const handleOnChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const maskedValue = maskInput({
@@ -37,6 +39,9 @@ export const GweiInputMask = ({
   const onMaskClick = useCallback(() => {
     inputRef?.current?.focus();
   }, [inputRef]);
+
+  const onFocus = useCallback(() => setIsFocused(true), []);
+  const onBlur = useCallback(() => setIsFocused(false), []);
 
   return (
     <Box
@@ -72,9 +77,11 @@ export const GweiInputMask = ({
 
       <Box backdropFilter="opacity(0%)">
         <Input
+          onFocus={onFocus}
+          onBlur={onBlur}
           value={`${value}`}
           placeholder={'0'}
-          borderColor="separator"
+          borderColor={isFocused ? 'accent' : 'separator'}
           onChange={handleOnChange}
           height="34px"
           variant={variant}
