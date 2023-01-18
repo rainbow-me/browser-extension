@@ -23,6 +23,7 @@ const getUserStatus = async (): Promise<UserStatusResult> => {
   // here we'll run the redirect logic
   // if we have a vault set it means onboarding is complete
   const { unlocked, hasVault, passwordSet } = await wallet.getStatus();
+  console.log('useAuth::getUserStatus', { unlocked, hasVault, passwordSet });
   // if we don't have a password set we need to check if there's a wallet
   if (hasVault) {
     // Check if it has a password set
@@ -47,22 +48,13 @@ const useSessionStatus = () => {
 
   const updateStatus = useCallback(async () => {
     const newStatus = await getUserStatus();
+    console.log('setting new status', newStatus);
     setStatus(newStatus);
     await chrome.storage.session.set({ userStatus: newStatus });
   }, []);
 
   useEffect(() => {
-    const init = async () => {
-      // Read from local storage first
-      const { userStatus: statusFromStorage } =
-        await chrome.storage.session.get('userStatus');
-      if (!statusFromStorage) {
-        updateStatus();
-      } else {
-        setStatus(statusFromStorage);
-      }
-    };
-    init();
+    updateStatus();
   }, [updateStatus]);
 
   useEffect(() => {
@@ -105,14 +97,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { status, updateStatus, setStatus } = useSessionStatus();
 
   useEffect(() => {
-    const listener = (changes: {
+    const listener = async (changes: {
       [key: string]: chrome.storage.StorageChange;
     }) => {
       if (!changes['userStatus']) return;
       const newValue = changes['userStatus']?.newValue;
       const oldValue = changes['userStatus']?.oldValue;
       if (newValue === oldValue) return;
-      setStatus(newValue);
+      if (newValue === 'READY') {
+        // verify if we're truly unlocked
+        const { unlocked } = await wallet.getStatus();
+        if (!unlocked) {
+          // Don't update status
+          setStatus(oldValue);
+        } else {
+          setStatus(newValue);
+        }
+      } else {
+        setStatus(newValue);
+      }
     };
     chrome.storage.session?.onChanged?.addListener(listener);
     return () => chrome.storage.session?.onChanged?.removeListener(listener);
