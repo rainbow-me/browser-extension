@@ -23,7 +23,6 @@ const getUserStatus = async (): Promise<UserStatusResult> => {
   // here we'll run the redirect logic
   // if we have a vault set it means onboarding is complete
   const { unlocked, hasVault, passwordSet } = await wallet.getStatus();
-  console.log('useAuth::getUserStatus', { unlocked, hasVault, passwordSet });
   // if we don't have a password set we need to check if there's a wallet
   if (hasVault) {
     // Check if it has a password set
@@ -48,7 +47,6 @@ const useSessionStatus = () => {
 
   const updateStatus = useCallback(async () => {
     const newStatus = await getUserStatus();
-    console.log('setting new status', newStatus);
     setStatus(newStatus);
     await chrome.storage.session.set({ userStatus: newStatus });
   }, []);

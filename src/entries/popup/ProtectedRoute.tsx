@@ -9,6 +9,7 @@ const isHome = () =>
   window.location.hash === '' || window.location.hash === '#/';
 const isWelcome = () => window.location.hash === '#/welcome';
 const isCreatePassword = () => window.location.hash === '#/create-password';
+const isLockScreen = () => window.location.hash === '#/unlock';
 
 export const ProtectedRoute = ({
   children,
@@ -43,7 +44,11 @@ export const ProtectedRoute = ({
         return <Navigate to={ROUTES.WELCOME} />;
         break;
       case 'READY':
-        return <Navigate to={isFullScreen ? ROUTES.READY : ROUTES.HOME} />;
+        return (
+          <Navigate
+            to={isFullScreen && !isLockScreen() ? ROUTES.READY : ROUTES.HOME}
+          />
+        );
         break;
       default:
         if (
