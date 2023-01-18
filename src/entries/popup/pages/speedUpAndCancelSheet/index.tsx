@@ -119,6 +119,7 @@ export function SpeedUpAndCancelSheet({
         style={{
           height: window.innerHeight - 64,
         }}
+        padding="12px"
       >
         <Rows>
           <Row>

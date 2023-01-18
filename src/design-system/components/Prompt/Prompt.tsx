@@ -52,7 +52,6 @@ export const Prompt = ({
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}
                 transition={deceleratedShort}
-                padding="12px"
                 background={background ?? 'surfaceMenu'}
                 borderRadius="16px"
                 borderColor="separatorTertiary"

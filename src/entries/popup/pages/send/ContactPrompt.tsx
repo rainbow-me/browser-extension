@@ -223,20 +223,22 @@ export const ContactPrompt = ({
   });
   return (
     <Prompt show={show}>
-      <AccentColorProvider color={dominantColor || globalColors.blue50}>
-        {action === 'save' || action === 'edit' ? (
-          <SaveOrEditContact
-            address={address}
-            action={action}
-            onSaveContactAction={onSaveContactAction}
-          />
-        ) : (
-          <DeleteContact
-            address={address}
-            onSaveContactAction={onSaveContactAction}
-          />
-        )}
-      </AccentColorProvider>
+      <Box padding="12px">
+        <AccentColorProvider color={dominantColor || globalColors.blue50}>
+          {action === 'save' || action === 'edit' ? (
+            <SaveOrEditContact
+              address={address}
+              action={action}
+              onSaveContactAction={onSaveContactAction}
+            />
+          ) : (
+            <DeleteContact
+              address={address}
+              onSaveContactAction={onSaveContactAction}
+            />
+          )}
+        </AccentColorProvider>
+      </Box>
     </Prompt>
   );
 };
