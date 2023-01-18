@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
@@ -15,9 +15,14 @@ import {
 } from '~/design-system';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
 
+import { GweiInputMask } from '../InputMask/GweiInputMask/GweiInputMask';
+
 const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
 
 export const CustomGasSheet = () => {
+  const [maxBaseFee, setMaxBaseFee] = useState('0');
+  const [minerTip, setMinerTip] = useState('0');
+
   return (
     <Prompt background="surfaceSecondary" show={true} padding="16px">
       <Box paddingHorizontal="20px">
@@ -71,9 +76,13 @@ export const CustomGasSheet = () => {
                 <Text align="left" color="label" size="14pt" weight="semibold">
                   Max base fee
                 </Text>
-                <Text align="right" color="label" size="14pt" weight="semibold">
-                  Max base fee
-                </Text>
+                <Box style={{ width: 98 }} marginRight="-4px">
+                  <GweiInputMask
+                    value={maxBaseFee}
+                    variant="surface"
+                    onChange={setMaxBaseFee}
+                  />
+                </Box>
               </Inline>
             </Box>
             <Box style={{ height: 32 }}>
@@ -85,9 +94,13 @@ export const CustomGasSheet = () => {
                 <Text align="left" color="label" size="14pt" weight="semibold">
                   Miner tip
                 </Text>
-                <Text align="right" color="label" size="14pt" weight="semibold">
-                  Max base fee
-                </Text>
+                <Box style={{ width: 98 }} marginRight="-4px">
+                  <GweiInputMask
+                    value={minerTip}
+                    variant="surface"
+                    onChange={setMinerTip}
+                  />
+                </Box>
               </Inline>
             </Box>
             <Box style={{ height: 32 }}>
