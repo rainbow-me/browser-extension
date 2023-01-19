@@ -79,6 +79,7 @@ export function Send() {
 
   const { asset, selectAssetAddress, assets, setSortMethod, sortMethod } =
     useSendTransactionAsset();
+
   const {
     assetAmount,
     independentAmount,

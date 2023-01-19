@@ -1,6 +1,6 @@
 import { isHexString } from '@ethersproject/bytes';
 import { isValidMnemonic } from '@ethersproject/hdnode';
-import { Mnemonic, isAddress } from 'ethers/lib/utils';
+import { Mnemonic, isAddress, parseEther } from 'ethers/lib/utils';
 import { startsWith } from 'lodash';
 import { Address } from 'wagmi';
 
@@ -109,4 +109,9 @@ export const gweiToWei = (gweiAmount: string) => {
 export const weiToGwei = (weiAmount: string) => {
   const gweiAmount = divide(weiAmount, ethUnits.gwei);
   return gweiAmount;
+};
+
+export const toWei = (ether: string): string => {
+  const result = parseEther(ether);
+  return result.toString();
 };

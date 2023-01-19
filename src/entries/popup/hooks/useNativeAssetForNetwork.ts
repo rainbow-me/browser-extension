@@ -34,7 +34,7 @@ const getNetworkNativeMainnetAssetAddress = ({
   }
 };
 
-const getNetworkNativeAssetUniqueId = ({
+export const getNetworkNativeAssetUniqueId = ({
   chainId,
 }: {
   chainId: ChainId;
