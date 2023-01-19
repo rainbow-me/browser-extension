@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
-import { GasSpeed } from '~/core/types/gas';
+import { useGasStore } from '~/core/state';
+import { GasFeeParams, GasSpeed } from '~/core/types/gas';
 import {
   Box,
   Button,
@@ -20,8 +21,34 @@ import { GweiInputMask } from '../InputMask/GweiInputMask/GweiInputMask';
 const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
 
 export const CustomGasSheet = () => {
-  const [maxBaseFee, setMaxBaseFee] = useState('0');
-  const [minerTip, setMinerTip] = useState('0');
+  const {
+    setCustomMaxBaseFee,
+    setCustomMinerTip,
+    gasFeeParamsBySpeed: { custom },
+  } = useGasStore();
+
+  const [maxBaseFee, setMaxBaseFee] = useState(
+    (custom as GasFeeParams)?.maxBaseFee?.gwei,
+  );
+  const [minerTip, setMinerTip] = useState(
+    (custom as GasFeeParams)?.maxPriorityFeePerGas?.gwei,
+  );
+
+  const updateCustomMaxBaseFee = useCallback(
+    (maxBaseFee: string) => {
+      setCustomMaxBaseFee(maxBaseFee);
+      setMaxBaseFee(maxBaseFee);
+    },
+    [setCustomMaxBaseFee],
+  );
+
+  const updateCustomMinerTip = useCallback(
+    (minertip: string) => {
+      setCustomMinerTip(minertip);
+      setMinerTip(minertip);
+    },
+    [setCustomMinerTip],
+  );
 
   return (
     <Prompt
@@ -89,7 +116,7 @@ export const CustomGasSheet = () => {
                   <GweiInputMask
                     value={maxBaseFee}
                     variant="surface"
-                    onChange={setMaxBaseFee}
+                    onChange={updateCustomMaxBaseFee}
                   />
                 </Box>
               </Inline>
@@ -107,7 +134,7 @@ export const CustomGasSheet = () => {
                   <GweiInputMask
                     value={minerTip}
                     variant="surface"
-                    onChange={setMinerTip}
+                    onChange={updateCustomMinerTip}
                   />
                 </Box>
               </Inline>
@@ -118,7 +145,7 @@ export const CustomGasSheet = () => {
                   Max transaction fee
                 </Text>
                 <Text color="label" align="right" size="14pt" weight="semibold">
-                  0.001
+                  {custom.gasFee.display}
                 </Text>
               </Inline>
             </Box>

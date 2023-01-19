@@ -48,6 +48,7 @@ export const useGas = ({
     setSelectedGas,
     gasFeeParamsBySpeed: storeGasFeeParamsBySpeed,
     setGasFeeParamsBySpeed,
+    customGasModified,
   } = useGasStore();
 
   const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>(
@@ -59,7 +60,7 @@ export const useGas = ({
     | GasFeeParamsBySpeed
     | GasFeeLegacyParamsBySpeed
     | null = useMemo(() => {
-    return !isLoading
+    const newGasFeeParamsBySpeed = !isLoading
       ? parseGasFeeParamsBySpeed({
           chainId,
           data: gasData as MeteorologyLegacyResponse | MeteorologyResponse,
@@ -69,6 +70,11 @@ export const useGas = ({
           optimismL1SecurityFee,
         })
       : null;
+
+    if (customGasModified && newGasFeeParamsBySpeed) {
+      newGasFeeParamsBySpeed.custom = storeGasFeeParamsBySpeed.custom;
+    }
+    return newGasFeeParamsBySpeed;
   }, [
     isLoading,
     chainId,
@@ -77,6 +83,8 @@ export const useGas = ({
     nativeAsset,
     currentCurrency,
     optimismL1SecurityFee,
+    customGasModified,
+    storeGasFeeParamsBySpeed.custom,
   ]);
 
   useEffect(() => {

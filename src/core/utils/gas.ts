@@ -94,7 +94,8 @@ export const parseGasDataConfirmationTime = (
 };
 
 export const parseGasFeeParam = ({ wei }: { wei: string }): GasFeeParam => {
-  const gwei = weiToGwei(wei);
+  const gwei = wei ? weiToGwei(wei) : '';
+  console.log('--- parseGasFeeParam', wei, gwei);
   return {
     amount: wei,
     display: `${gwei} Gwei`,
