@@ -66,7 +66,7 @@ export const Prompt = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={emphasizedShort}
-          backdropFilter={backdropFilter ?? 'blur(26px)'}
+          backdropFilter={backdropFilter ?? 'blur(12px)'}
           padding={padding ?? '40px'}
         >
           <Rows alignVertical="center">

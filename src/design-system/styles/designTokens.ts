@@ -151,6 +151,7 @@ export type BackgroundColor =
   | 'scrimTertiary';
 
 export const backdropFilter = {
+  'blur(12px)': 'blur(12px)',
   'blur(26px)': 'blur(26px)',
   'opacity(80%)': 'opacity(80%)',
   'opacity(5%)': 'opacity(5%)',
