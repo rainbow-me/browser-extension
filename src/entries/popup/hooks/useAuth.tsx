@@ -22,7 +22,15 @@ export type UserStatusResult = 'LOCKED' | 'NEEDS_PASSWORD' | 'NEW' | 'READY';
 const getUserStatus = async (): Promise<UserStatusResult> => {
   // here we'll run the redirect logic
   // if we have a vault set it means onboarding is complete
-  const { unlocked, hasVault, passwordSet } = await wallet.getStatus();
+  let status = await wallet.getStatus();
+  if (!status.hasVault && !status.passwordSet && !status.unlocked) {
+    // it's either a first time user or the vault didn't bootstrap yet
+    // let's wait a second and try again
+    // eslint-disable-next-line no-promise-executor-return
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    status = await wallet.getStatus();
+  }
+  const { unlocked, hasVault, passwordSet } = status;
   // if we don't have a password set we need to check if there's a wallet
   if (hasVault) {
     // Check if it has a password set
