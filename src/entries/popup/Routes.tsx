@@ -14,6 +14,7 @@ import { ImportOrConnect } from './pages/importOrConnect';
 import { ImportWallet } from './pages/importWallet';
 import { ImportWalletSelection } from './pages/importWalletSelection';
 import { EditImportWalletSelection } from './pages/importWalletSelection/EditImportWalletSelection';
+import { ApproveAppRequest } from './pages/messages/ApproveAppRequest';
 import { RootHandler } from './pages/rootHandler/RootHandler';
 import { SeedBackupPrompt } from './pages/seedBackupPrompt';
 import { SeedReveal } from './pages/seedReveal';
@@ -53,6 +54,14 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute direction="base" protectedRoute>
         <Home />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.APPROVE_APP_REQUEST,
+    element: (
+      <AnimatedRoute direction="base" protectedRoute>
+        <ApproveAppRequest />
       </AnimatedRoute>
     ),
   },
