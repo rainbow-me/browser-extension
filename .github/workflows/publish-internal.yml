@@ -1,5 +1,5 @@
 
-name: Publish to Chrome WebStore
+name: Publish to Chrome WebStore (Trusted Testers)
 
 on:
   schedule:
@@ -38,7 +38,7 @@ jobs:
         uses: PlasmoHQ/bpp@v3
         with:
           artifact: ./rainbowbx.zip
-          keys: ${{ secrets.BPP_KEYS }}
+          keys: ${{ secrets.BPP_KEYS_INTERNAL }}
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
