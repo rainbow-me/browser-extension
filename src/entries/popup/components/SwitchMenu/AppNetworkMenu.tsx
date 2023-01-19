@@ -1,5 +1,4 @@
 import React, { ReactNode, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import {
@@ -16,6 +15,7 @@ import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverfl
 
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 import {
   DropdownMenu,
@@ -54,7 +54,7 @@ export const AppNetworkMenu = ({
   connectedAppsId,
 }: AppNetworkMenuProps) => {
   const { appHost, appLogo, appName } = useAppMetadata({ url });
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
 
   const { updateAppSessionChainId, disconnectAppSession, appSession } =
     useAppSession({ host: appHost });

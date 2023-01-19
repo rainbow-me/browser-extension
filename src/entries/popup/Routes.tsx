@@ -62,6 +62,7 @@ const ROUTE_DATA = [
       <AnimatedRoute
         direction="up"
         navbar
+        navbarIcon="ex"
         backTo={ROUTES.HOME}
         title={i18n.t('connected_apps.title')}
         protectedRoute
@@ -188,6 +189,7 @@ const ROUTE_DATA = [
         backTo={ROUTES.HOME}
         direction="up"
         navbar
+        navbarIcon="ex"
         title={i18n.t('settings.title')}
         protectedRoute
         background="surfaceSecondary"
@@ -204,6 +206,7 @@ const ROUTE_DATA = [
         backTo={ROUTES.SETTINGS}
         direction="right"
         navbar
+        navbarIcon="arrow"
         title={i18n.t('settings.privacy_and_security.title')}
         protectedRoute
         background="surfaceSecondary"
@@ -219,6 +222,7 @@ const ROUTE_DATA = [
         backTo={ROUTES.SETTINGS__PRIVACY}
         direction="right"
         navbar
+        navbarIcon="arrow"
         title={i18n.t('settings.privacy_and_security.auto_lock_timer.title')}
         protectedRoute
         background="surfaceSecondary"
@@ -247,6 +251,7 @@ const ROUTE_DATA = [
         backTo={ROUTES.SETTINGS__PRIVACY}
         direction="right"
         navbar
+        navbarIcon="arrow"
         title={i18n.t('settings.privacy_and_security.wallets_and_keys.title')}
         protectedRoute
         background="surfaceSecondary"
@@ -262,6 +267,7 @@ const ROUTE_DATA = [
         backTo={ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS}
         direction="right"
         navbar
+        navbarIcon="arrow"
         title={i18n.t(
           'settings.privacy_and_security.wallets_and_keys.wallet_details.title',
         )}
@@ -279,6 +285,7 @@ const ROUTE_DATA = [
         backTo={ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS}
         direction="right"
         navbar
+        navbarIcon="arrow"
         background="surfaceSecondary"
         protectedRoute
       >
@@ -293,6 +300,7 @@ const ROUTE_DATA = [
         backTo={ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS}
         direction="right"
         navbar
+        navbarIcon="arrow"
         background="surfaceSecondary"
         protectedRoute
       >
@@ -307,6 +315,7 @@ const ROUTE_DATA = [
         backTo={ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS}
         direction="right"
         navbar
+        navbarIcon="arrow"
         background="surfaceSecondary"
         protectedRoute
       >
@@ -321,6 +330,7 @@ const ROUTE_DATA = [
         backTo={ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS}
         direction="right"
         navbar
+        navbarIcon="arrow"
         background="surfaceSecondary"
         protectedRoute
       >
@@ -335,6 +345,7 @@ const ROUTE_DATA = [
         backTo={ROUTES.SETTINGS}
         direction="right"
         navbar
+        navbarIcon="arrow"
         title={i18n.t('settings.transactions.title')}
         protectedRoute
         background="surfaceSecondary"
@@ -350,6 +361,7 @@ const ROUTE_DATA = [
         backTo={ROUTES.SETTINGS}
         direction="right"
         navbar
+        navbarIcon="arrow"
         title={i18n.t('settings.currency.title')}
         protectedRoute
         background="surfaceSecondary"
@@ -378,6 +390,7 @@ const ROUTE_DATA = [
         backTo={ROUTES.HOME}
         direction="up"
         navbar
+        navbarIcon="ex"
         title={i18n.t('sign.title')}
         protectedRoute
       >
@@ -392,6 +405,7 @@ const ROUTE_DATA = [
         backTo={ROUTES.HOME}
         direction="right"
         navbar
+        navbarIcon="arrow"
         title={i18n.t('wallets.title')}
         protectedRoute
       >

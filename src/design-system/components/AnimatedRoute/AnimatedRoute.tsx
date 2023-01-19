@@ -21,6 +21,7 @@ type AnimatedRouteProps = {
   children: React.ReactNode;
   direction: AnimatedRouteDirection;
   navbar?: boolean;
+  navbarIcon?: 'arrow' | 'ex';
   navbarBackground?: BackgroundColor;
   title?: string;
   protectedRoute?: UserStatusResult[] | true;
@@ -137,6 +138,7 @@ export const AnimatedRoute = React.forwardRef<
     children,
     direction,
     navbar,
+    navbarIcon,
     title,
     navbarBackground,
     protectedRoute,
@@ -164,7 +166,7 @@ export const AnimatedRoute = React.forwardRef<
           title={title || ''}
           background={navbarBackground}
           leftComponent={
-            ['left', 'right'].includes(direction) ? (
+            navbarIcon === 'arrow' ? (
               <Navbar.BackButton backTo={backTo} />
             ) : (
               <Navbar.CloseButton backTo={backTo} />

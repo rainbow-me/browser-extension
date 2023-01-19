@@ -1,14 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import SeedPhraseTable from '~/entries/popup/components/SeedPhraseTable/SeedPhaseTable';
 import ViewSecret from '~/entries/popup/components/ViewSecret/ViewSecret';
 import { exportWallet } from '~/entries/popup/handlers/wallet';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { ROUTES } from '~/entries/popup/urls';
 
 export function RecoveryPhrase() {
   const { state } = useLocation();
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
 
   const [seed, setSeed] = useState('');
 
@@ -25,7 +27,7 @@ export function RecoveryPhrase() {
   }, []);
 
   const handleSavedTheseWords = useCallback(async () => {
-    navigate(-2);
+    navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);
   }, [navigate]);
 
   const handleCopy = useCallback(() => {

@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAccount, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -13,12 +12,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   const { address } = useAccount();
   const { data: ensName } = useEnsName({ address });
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
 
   const openProfile = React.useCallback(() => {
     chrome.tabs.create({
