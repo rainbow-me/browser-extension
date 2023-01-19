@@ -58,7 +58,9 @@ const infoButtonOptions = ({
       e.stopPropagation();
       setRenameAccount(account);
     },
-    label: 'Rename wallet',
+    label: i18n.t(
+      'settings.privacy_and_security.wallets_and_keys.wallet_details.rename_wallet',
+    ),
     symbol: 'person.crop.circle.fill',
   },
   {
@@ -66,7 +68,9 @@ const infoButtonOptions = ({
       e.stopPropagation();
       navigator.clipboard.writeText(account as string);
     },
-    label: 'Copy Address',
+    label: i18n.t(
+      'settings.privacy_and_security.wallets_and_keys.wallet_details.copy_address',
+    ),
     subLabel: truncateAddress(account),
     symbol: 'doc.on.doc.fill',
     separator: true,
@@ -78,7 +82,9 @@ const infoButtonOptions = ({
             e.stopPropagation();
             unhideWallet(account);
           },
-          label: 'Unhide wallet',
+          label: i18n.t(
+            'settings.privacy_and_security.wallets_and_keys.wallet_details.unhide_wallet',
+          ),
           symbol: 'eye.slash.circle.fill' as SymbolProps['symbol'],
         },
       ]
@@ -88,7 +94,9 @@ const infoButtonOptions = ({
       e.stopPropagation();
       setRemoveAccount(account);
     },
-    label: 'Delete wallet',
+    label: i18n.t(
+      'settings.privacy_and_security.wallets_and_keys.wallet_details.delete_wallet',
+    ),
     symbol: 'trash.fill',
     color: 'red',
   },
@@ -217,7 +225,13 @@ export function WalletDetails() {
                   key={account}
                   rightComponent={
                     <Inline alignVertical="center" space="10px">
-                      {hiddenWallets[account] && <LabelPill label="Hidden" />}
+                      {hiddenWallets[account] && (
+                        <LabelPill
+                          label={i18n.t(
+                            'settings.privacy_and_security.wallets_and_keys.wallet_details.hidden',
+                          )}
+                        />
+                      )}
                       <MoreInfoButton
                         options={infoButtonOptions({
                           account,

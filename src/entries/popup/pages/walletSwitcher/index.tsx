@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Address } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { KeychainType } from '~/core/types/keychainTypes';
@@ -43,7 +44,7 @@ const infoButtonOptions = ({
       e.stopPropagation();
       setRenameAccount(account.address);
     },
-    label: 'Rename wallet',
+    label: i18n.t('wallet_switcher.rename_wallet'),
     symbol: 'person.crop.circle.fill',
   },
   {
@@ -51,7 +52,7 @@ const infoButtonOptions = ({
       e.stopPropagation();
       navigator.clipboard.writeText(account.address as string);
     },
-    label: 'Copy Address',
+    label: i18n.t('wallet_switcher.copy_address'),
     subLabel: truncateAddress(account.address),
     symbol: 'doc.on.doc.fill',
     separator: true,
@@ -63,7 +64,7 @@ const infoButtonOptions = ({
             e.stopPropagation();
             setRemoveAccount(account);
           },
-          label: 'Remove wallet',
+          label: i18n.t('wallet_switcher.remove_wallet'),
           symbol: 'trash.fill' as SymbolProps['symbol'],
           color: 'red' as TextStyles['color'],
         },
@@ -74,7 +75,7 @@ const infoButtonOptions = ({
             e.stopPropagation();
             setRemoveAccount(account);
           },
-          label: 'Hide wallet',
+          label: i18n.t('wallet_switcher.hide_wallet'),
           symbol: 'eye.slash.circle.fill' as SymbolProps['symbol'],
           color: 'red' as TextStyles['color'],
         },
@@ -155,7 +156,7 @@ export function WalletSwitcher() {
                   rightComponent={
                     <Inline alignVertical="center" space="10px">
                       {account.type === KeychainType.ReadOnlyKeychain && (
-                        <LabelPill label="Watching" />
+                        <LabelPill label={i18n.t('wallet_switcher.watching')} />
                       )}
                       <MoreInfoButton
                         options={infoButtonOptions({
@@ -192,7 +193,7 @@ export function WalletSwitcher() {
                 color="blue"
               />
               <Text size="14pt" weight="medium" color="blue">
-                Add another wallet
+                {i18n.t('wallet_switcher.add_another_wallet')}
               </Text>
             </Inline>
           </Box>
@@ -205,7 +206,7 @@ export function WalletSwitcher() {
                 color="blue"
               />
               <Text size="14pt" weight="medium" color="blue">
-                Connect a hardware wallet
+                {i18n.t('wallet_switcher.connect_hardware_wallet')}
               </Text>
             </Inline>
           </Box>

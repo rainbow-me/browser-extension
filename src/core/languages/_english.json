@@ -5,6 +5,27 @@
   "label": {
     "toggle": "Toggle"
   },
+  "wallet_switcher": {
+    "title": "Wallets",
+    "rename_wallet": "Rename wallet",
+    "copy_address": "Copy Address",
+    "remove_wallet": "Remove wallet",
+    "hide_wallet": "Hide wallet",
+    "watching": "Watching",
+    "add_another_wallet": "Add another wallet",
+    "connect_hardware_wallet": "Connect a hardware wallet"
+  },
+  "rename_wallet_prompt": {
+    "rename_wallet": "Rename wallet",
+    "update": "Update"
+  },
+  "remove_wallet_prompt": {
+    "error": "Error removing wallet",
+    "hide": "Hide",
+    "remove": "Remove",
+    "hide_description": "This only removes the wallet from this list. You can find this wallet and additional management options in settings.",
+    "remove_description": "This will remove the wallet from this list and delete all data associated with it."
+  },
   "settings": {
     "title": "Settings",
     "use_rainbow_as_default_wallet": "Use Rainbow as default wallet",
@@ -59,8 +80,12 @@
           "title": "Wallet Details",
           "view_recovery_phrase": "View Recovery Phrase",
           "create_new_wallet": "Create a new Wallet",
+          "rename_wallet": "Rename Wallet",
+          "unhide_wallet": "Unhide Wallet",
+          "delete_wallet": "Delete Wallet",
           "view_private_key": "View Private Key",
-          "copy_address": "Copy Address"
+          "copy_address": "Copy Address",
+          "hidden": "Hidden"
         },
         "new_wallet": {
           "name_your_wallet": "Name your wallet",

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Address } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import {
   Box,
   Button,
@@ -37,7 +38,7 @@ export const RemoveWalletPrompt = ({
         await onRemoveAccount(account);
         onClose();
       } catch (e) {
-        setError('Error removing wallet');
+        setError(i18n.t('remove_wallet_prompt.error'));
       }
     }
   };
@@ -54,7 +55,11 @@ export const RemoveWalletPrompt = ({
             <Row>
               <Box paddingTop="12px">
                 <Text size="16pt" weight="bold" align="center">
-                  {hide ? `Hide ${displayName}?` : `Remove ${displayName}?`}
+                  {`${
+                    hide
+                      ? i18n.t('remove_wallet_prompt.hide')
+                      : i18n.t('remove_wallet_prompt.remove')
+                  } ${displayName}?`}
                 </Text>
               </Box>
             </Row>
@@ -73,8 +78,8 @@ export const RemoveWalletPrompt = ({
                     color="labelTertiary"
                   >
                     {hide
-                      ? 'This only removes the wallet from this list. You can find this wallet and additional management options in settings.'
-                      : 'Are you sure you want to remove this wallet?'}
+                      ? i18n.t('remove_wallet_prompt.hide_description')
+                      : i18n.t('remove_wallet_prompt.remove_description')}
                   </Text>
                 </Row>
                 {error && (
@@ -118,7 +123,9 @@ export const RemoveWalletPrompt = ({
                 width="full"
                 borderRadius="9px"
               >
-                {hide ? 'Hide' : 'Remove'}
+                {hide
+                  ? i18n.t('remove_wallet_prompt.hide')
+                  : i18n.t('remove_wallet_prompt.remove')}
               </Button>
             </Column>
           </Columns>

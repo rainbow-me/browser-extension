@@ -74,7 +74,7 @@ export const RenameWalletPrompt = ({
             <Row>
               <Box paddingTop="12px">
                 <Text size="16pt" weight="bold" align="center">
-                  Rename wallet
+                  {i18n.t('rename_wallet_prompt.rename_wallet')}
                 </Text>
               </Box>
             </Row>
@@ -174,7 +174,7 @@ export const RenameWalletPrompt = ({
                 width="full"
                 borderRadius="9px"
               >
-                Update
+                {i18n.t('rename_wallet_prompt.update')}
               </Button>
             </Column>
           </Columns>
