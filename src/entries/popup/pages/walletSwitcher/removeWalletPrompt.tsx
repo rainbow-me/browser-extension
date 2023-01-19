@@ -21,11 +21,13 @@ export const RemoveWalletPrompt = ({
   onClose,
   account,
   onRemoveAccount,
+  hide,
 }: {
   show: boolean;
   onClose: () => void;
   account: Address | undefined;
   onRemoveAccount: (account: Address) => Promise<void>;
+  hide?: boolean;
 }) => {
   const { displayName } = useWalletName({ address: account });
   const [error, setError] = useState<string>();
@@ -52,7 +54,7 @@ export const RemoveWalletPrompt = ({
             <Row>
               <Box paddingTop="12px">
                 <Text size="16pt" weight="bold" align="center">
-                  Remove {displayName}?
+                  {hide ? `Hide ${displayName}?` : `Remove ${displayName}?`}
                 </Text>
               </Box>
             </Row>
@@ -70,7 +72,9 @@ export const RemoveWalletPrompt = ({
                     align="center"
                     color="labelTertiary"
                   >
-                    Are you sure you want to remove this wallet?
+                    {hide
+                      ? 'This only removes the wallet from this list. You can find this wallet and additional management options in settings.'
+                      : 'Are you sure you want to remove this wallet?'}
                   </Text>
                 </Row>
                 {error && (
@@ -109,12 +113,12 @@ export const RemoveWalletPrompt = ({
               <Button
                 variant="flat"
                 height="36px"
-                color="accent"
+                color="red"
                 onClick={handleRemoveWallet}
                 width="full"
                 borderRadius="9px"
               >
-                Remove
+                {hide ? 'Hide' : 'Remove'}
               </Button>
             </Column>
           </Columns>

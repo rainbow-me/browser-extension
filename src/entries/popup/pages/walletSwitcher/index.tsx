@@ -1,35 +1,47 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { useCurrentAddressStore } from '~/core/state';
+import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+import { TextStyles } from '~/design-system/styles/core.css';
 
 import AccountItem, {
   LabelOption,
 } from '../../components/AccountItem/AccountItem';
+import { LabelPill } from '../../components/LabelPill/LabelPill';
 import { MenuContainer } from '../../components/Menu/MenuContainer';
 import {
   MoreInfoButton,
   MoreInfoOption,
 } from '../../components/MoreInfoButton/MoreInfoButton';
-import { getWallets, remove } from '../../handlers/wallet';
+import { remove } from '../../handlers/wallet';
+import { useWallets } from '../../hooks/useWallets';
 
 import { WalletActionsMenu } from './WalletSwitcher.css';
 import { RemoveWalletPrompt } from './removeWalletPrompt';
 import { RenameWalletPrompt } from './renameWalletPrompt';
 
-const infoButtonOptions = (
-  account: Address,
-  setRenameAccount: React.Dispatch<React.SetStateAction<Address | undefined>>,
-  setRemoveAccount: React.Dispatch<React.SetStateAction<Address | undefined>>,
-): MoreInfoOption[] => [
+const infoButtonOptions = ({
+  account,
+  setRenameAccount,
+  setRemoveAccount,
+}: {
+  account: AddressAndType;
+  setRenameAccount: React.Dispatch<React.SetStateAction<Address | undefined>>;
+  setRemoveAccount: React.Dispatch<
+    React.SetStateAction<AddressAndType | undefined>
+  >;
+  hide?: boolean;
+}): MoreInfoOption[] => [
   {
     onSelect: (e: Event) => {
       e.stopPropagation();
-      setRenameAccount(account);
+      setRenameAccount(account.address);
     },
     label: 'Rename wallet',
     symbol: 'person.crop.circle.fill',
@@ -37,72 +49,66 @@ const infoButtonOptions = (
   {
     onSelect: (e: Event) => {
       e.stopPropagation();
-      navigator.clipboard.writeText(account as string);
+      navigator.clipboard.writeText(account.address as string);
     },
     label: 'Copy Address',
-    subLabel: truncateAddress(account),
+    subLabel: truncateAddress(account.address),
     symbol: 'doc.on.doc.fill',
     separator: true,
   },
-  {
-    onSelect: (e: Event) => {
-      e.stopPropagation();
-      setRemoveAccount(account);
-    },
-    label: 'Remove wallet',
-    symbol: 'trash.fill',
-    color: 'red',
-  },
+  ...(account.type === KeychainType.ReadOnlyKeychain
+    ? [
+        {
+          onSelect: (e: Event) => {
+            e.stopPropagation();
+            setRemoveAccount(account);
+          },
+          label: 'Remove wallet',
+          symbol: 'trash.fill' as SymbolProps['symbol'],
+          color: 'red' as TextStyles['color'],
+        },
+      ]
+    : [
+        {
+          onSelect: (e: Event) => {
+            e.stopPropagation();
+            setRemoveAccount(account);
+          },
+          label: 'Hide wallet',
+          symbol: 'eye.slash.circle.fill' as SymbolProps['symbol'],
+          color: 'red' as TextStyles['color'],
+        },
+      ]),
 ];
 
-const WatchingPill = () => (
-  <Box
-    background="surfacePrimaryElevatedSecondary"
-    borderRadius="round"
-    padding="8px"
-  >
-    <Text size="12pt" weight="semibold" color="labelQuaternary">
-      Watching
-    </Text>
-  </Box>
-);
-
-interface AddressAndType {
+export interface AddressAndType {
   address: Address;
   type: KeychainType;
 }
 
 export function WalletSwitcher() {
   const [renameAccount, setRenameAccount] = useState<Address | undefined>();
-  const [removeAccount, setRemoveAccount] = useState<Address | undefined>();
+  const [removeAccount, setRemoveAccount] = useState<
+    AddressAndType | undefined
+  >();
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
+  const { hideWallet } = useHiddenWalletsStore();
   const navigate = useNavigate();
-  const [accounts, setAccounts] = useState<AddressAndType[]>([]);
-  const fetchAccounts = async () => {
-    const wallets = await getWallets();
-    let accounts: AddressAndType[] = [];
-    wallets.forEach((wallet) => {
-      accounts = [
-        ...accounts,
-        ...wallet.accounts.map(
-          (account): AddressAndType => ({
-            address: account,
-            type: wallet.type,
-          }),
-        ),
-      ];
-    });
-    setAccounts(accounts);
-  };
-  useEffect(() => {
-    fetchAccounts();
-  }, []);
+  const { visibleWallets: accounts, fetchWallets } = useWallets();
   const handleSelectAddress = (address: Address) => {
     setCurrentAddress(address);
     navigate(-1);
   };
   const handleRemoveAccount = async (address: Address) => {
-    await remove(address);
+    const removed = accounts.find((account) => account.address === address);
+    // remove if read-only
+    if (removed?.type === KeychainType.ReadOnlyKeychain) {
+      await remove(address);
+      fetchWallets();
+    } else {
+      // hide if imported
+      hideWallet({ address });
+    }
     if (address === currentAddress) {
       const deletedIndex = accounts.findIndex(
         (account) => account.address === address,
@@ -113,7 +119,6 @@ export function WalletSwitcher() {
           : deletedIndex + 1;
       setCurrentAddress(accounts[nextIndex]?.address);
     }
-    fetchAccounts();
   };
   return (
     <Box height="full">
@@ -126,11 +131,12 @@ export function WalletSwitcher() {
       />
       <RemoveWalletPrompt
         show={!!removeAccount}
-        account={removeAccount}
+        account={removeAccount?.address}
         onClose={() => {
           setRemoveAccount(undefined);
         }}
         onRemoveAccount={handleRemoveAccount}
+        hide={removeAccount?.type !== KeychainType.ReadOnlyKeychain}
       />
 
       <Box paddingHorizontal="4px">
@@ -149,14 +155,14 @@ export function WalletSwitcher() {
                   rightComponent={
                     <Inline alignVertical="center" space="10px">
                       {account.type === KeychainType.ReadOnlyKeychain && (
-                        <WatchingPill />
+                        <LabelPill label="Watching" />
                       )}
                       <MoreInfoButton
-                        options={infoButtonOptions(
-                          account.address,
+                        options={infoButtonOptions({
+                          account,
                           setRenameAccount,
                           setRemoveAccount,
-                        )}
+                        })}
                       />
                     </Inline>
                   }

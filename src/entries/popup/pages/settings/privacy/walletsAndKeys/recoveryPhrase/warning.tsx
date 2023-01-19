@@ -54,10 +54,10 @@ export function RecoveryPhraseWarning() {
     navigate(
       ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE,
       {
-        state: { password: state.password, wallet: state.wallet },
+        state: { password: state?.password, wallet: state?.wallet },
       },
     );
-  }, [navigate, state.password, state.wallet]);
+  }, [navigate, state?.password, state?.wallet]);
 
   return (
     <WarningInfo

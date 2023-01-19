@@ -51,9 +51,9 @@ export function PrivateKeyWarning() {
 
   const handleShowPrivkeyClick = useCallback(async () => {
     navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY, {
-      state: { password: state.password, account: state.account },
+      state: { password: state?.password, account: state?.account },
     });
-  }, [navigate, state.account, state.password]);
+  }, [navigate, state?.account, state?.password]);
 
   return (
     <WarningInfo

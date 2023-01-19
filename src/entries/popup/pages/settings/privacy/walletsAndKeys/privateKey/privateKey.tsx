@@ -16,7 +16,7 @@ export function PrivateKey() {
 
   useEffect(() => {
     const fetchPrivateKey = async () => {
-      const privateKey = await exportAccount(state.account, state.password);
+      const privateKey = await exportAccount(state?.account, state?.password);
       setPrivKey(privateKey);
     };
     fetchPrivateKey();

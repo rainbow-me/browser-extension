@@ -1,109 +1,107 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useCurrentAddressStore } from '~/core/state';
+import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
-import { Box, Inline, Row, Rows, Symbol, Text } from '~/design-system';
+import { Box, Inline, Symbol } from '~/design-system';
+import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import AccountItem, {
   LabelOption,
 } from '~/entries/popup/components/AccountItem/AccountItem';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '~/entries/popup/components/DropdownMenu/DropdownMenu';
+import { LabelPill } from '~/entries/popup/components/LabelPill/LabelPill';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
-import { getWallet } from '~/entries/popup/handlers/wallet';
+import {
+  MoreInfoButton,
+  MoreInfoOption,
+} from '~/entries/popup/components/MoreInfoButton/MoreInfoButton';
+import { getWallet, remove } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
+
+import { RemoveWalletPrompt } from '../../../walletSwitcher/removeWalletPrompt';
+import { RenameWalletPrompt } from '../../../walletSwitcher/renameWalletPrompt';
 
 import { NewWalletPrompt } from './newWalletPrompt';
 
-const MoreInfoButton = ({ account }: { account: Address }) => {
-  const navigate = useRainbowNavigate();
-  const { state } = useLocation();
-  const handleViewPrivateKey = () => {
-    navigate(
-      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
-      { state: { account, password: state.password } },
-    );
-  };
-  const handleCopyAddress = useCallback(() => {
-    navigator.clipboard.writeText(account);
-  }, [account]);
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Box style={{ cursor: 'default' }}>
-          <Symbol
-            symbol="ellipsis.circle"
-            weight="bold"
-            size={14}
-            color="labelTertiary"
-          />
-        </Box>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onSelect={handleViewPrivateKey}>
-          <Inline alignVertical="center" space="8px" wrap={false}>
-            <Symbol
-              size={18}
-              symbol="key.fill"
-              weight="semibold"
-              color="labelQuaternary"
-            />
-            <Box width="full">
-              <Text size="14pt" weight="semibold">
-                {i18n.t(
-                  'settings.privacy_and_security.wallets_and_keys.wallet_details.view_private_key',
-                )}
-              </Text>
-            </Box>
-          </Inline>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem onSelect={handleCopyAddress}>
-          <Inline alignVertical="center" space="8px" wrap={false}>
-            <Symbol
-              symbol="doc.on.doc"
-              size={18}
-              weight="semibold"
-              color="labelQuaternary"
-            />
-            <Rows space="6px">
-              <Row>
-                <Text size="14pt" weight="semibold">
-                  {i18n.t(
-                    'settings.privacy_and_security.wallets_and_keys.wallet_details.copy_address',
-                  )}
-                </Text>
-              </Row>
-              <Row>
-                <Text size="11pt" weight="medium" color="labelTertiary">
-                  {truncateAddress(account)}
-                </Text>
-              </Row>
-            </Rows>
-          </Inline>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-};
+const infoButtonOptions = ({
+  account,
+  handleViewPrivateKey,
+  setRenameAccount,
+  setRemoveAccount,
+  unhideWallet,
+}: {
+  account: Address;
+  handleViewPrivateKey: (account: Address) => void;
+  setRenameAccount: React.Dispatch<React.SetStateAction<Address | undefined>>;
+  setRemoveAccount: React.Dispatch<React.SetStateAction<Address | undefined>>;
+  unhideWallet: ((address: Address) => void) | undefined;
+}): MoreInfoOption[] => [
+  {
+    onSelect: (e: Event) => {
+      e.stopPropagation();
+      handleViewPrivateKey(account);
+    },
+    label: i18n.t(
+      'settings.privacy_and_security.wallets_and_keys.wallet_details.view_private_key',
+    ),
+    symbol: 'key.fill',
+  },
+  {
+    onSelect: (e: Event) => {
+      e.stopPropagation();
+      setRenameAccount(account);
+    },
+    label: 'Rename wallet',
+    symbol: 'person.crop.circle.fill',
+  },
+  {
+    onSelect: (e: Event) => {
+      e.stopPropagation();
+      navigator.clipboard.writeText(account as string);
+    },
+    label: 'Copy Address',
+    subLabel: truncateAddress(account),
+    symbol: 'doc.on.doc.fill',
+    separator: true,
+  },
+  ...(unhideWallet
+    ? [
+        {
+          onSelect: (e: Event) => {
+            e.stopPropagation();
+            unhideWallet(account);
+          },
+          label: 'Unhide wallet',
+          symbol: 'eye.slash.circle.fill' as SymbolProps['symbol'],
+        },
+      ]
+    : []),
+  {
+    onSelect: (e: Event) => {
+      e.stopPropagation();
+      setRemoveAccount(account);
+    },
+    label: 'Delete wallet',
+    symbol: 'trash.fill',
+    color: 'red',
+  },
+];
 
 export function WalletDetails() {
   const navigate = useRainbowNavigate();
   const { state } = useLocation();
   const [showNewWalletPrompt, setShowNewWalletPrompt] = useState(false);
-  const [wallet, setWallet] = useState<KeychainWallet>(state.wallet);
+  const [renameAccount, setRenameAccount] = useState<Address | undefined>();
+  const [removeAccount, setRemoveAccount] = useState<Address | undefined>();
+
+  const [wallet, setWallet] = useState<KeychainWallet>(state?.wallet);
   const handleOpenNewWalletPrompt = () => {
     setShowNewWalletPrompt(true);
   };
@@ -113,18 +111,56 @@ export function WalletDetails() {
   const handleViewRecoveryPhrase = () => {
     navigate(
       ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
-      { state: { wallet, password: state.password } },
+      { state: { wallet, password: state?.password } },
     );
   };
 
+  const handleViewPrivateKey = (account: Address) => {
+    navigate(
+      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
+      { state: { account, password: state?.password } },
+    );
+  };
+
+  const fetchWallet = async () => {
+    const fetchedWallet = await getWallet(state?.wallet?.accounts?.[0]);
+    setWallet(fetchedWallet);
+  };
   useEffect(() => {
-    const fetchWallet = async () => {
-      const fetchedWallet = await getWallet(state.wallet?.accounts[0]);
-      setWallet(fetchedWallet);
-    };
     fetchWallet();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
+  const { unhideWallet, hiddenWallets } = useHiddenWalletsStore();
+  const { visibleWallets } = useWallets();
+
+  const handleRemoveAccount = async (address: Address) => {
+    const walletBeforeDeletion = await getWallet(address);
+    unhideWallet({ address });
+    await remove(address);
+    // set current address to the next account if you deleted that one
+    if (address === currentAddress) {
+      const deletedIndex = visibleWallets.findIndex(
+        (account) => account.address === address,
+      );
+      const nextIndex =
+        deletedIndex === visibleWallets.length - 1
+          ? deletedIndex - 1
+          : deletedIndex + 1;
+      setCurrentAddress(visibleWallets[nextIndex].address);
+    }
+    // if more accounts in this wallet
+    const otherAccountSameWallet = walletBeforeDeletion.accounts.find(
+      (a) => a !== address,
+    );
+    if (otherAccountSameWallet) {
+      const walletAfterDeletion = await getWallet(otherAccountSameWallet);
+      setWallet(walletAfterDeletion);
+    } else {
+      navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);
+    }
+  };
 
   return (
     <Box>
@@ -132,6 +168,21 @@ export function WalletDetails() {
         wallet={wallet}
         show={showNewWalletPrompt}
         onClose={handleCloseNewWalletPrompt}
+      />
+      <RenameWalletPrompt
+        show={!!renameAccount}
+        account={renameAccount}
+        onClose={() => {
+          setRenameAccount(undefined);
+        }}
+      />
+      <RemoveWalletPrompt
+        show={!!removeAccount}
+        account={removeAccount}
+        onClose={() => {
+          setRemoveAccount(undefined);
+        }}
+        onRemoveAccount={handleRemoveAccount}
       />
       <Box paddingHorizontal="20px">
         <MenuContainer testId="settings-menu-container">
@@ -162,7 +213,22 @@ export function WalletDetails() {
                 <AccountItem
                   account={account}
                   key={account}
-                  rightComponent={<MoreInfoButton account={account} />}
+                  rightComponent={
+                    <Inline alignVertical="center" space="10px">
+                      {hiddenWallets[account] && <LabelPill label="Hidden" />}
+                      <MoreInfoButton
+                        options={infoButtonOptions({
+                          account,
+                          handleViewPrivateKey,
+                          setRenameAccount,
+                          setRemoveAccount,
+                          unhideWallet: hiddenWallets[account]
+                            ? (address: Address) => unhideWallet({ address })
+                            : undefined,
+                        })}
+                      />
+                    </Inline>
+                  }
                   labelType={LabelOption.address}
                 />
               );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAccount, useEnsAvatar } from 'wagmi';
 
 import { useCurrentAddressStore } from '~/core/state';
@@ -32,7 +32,6 @@ export function AccountName({
   const { address } = useAccount();
   const { displayName } = useWalletName({ address: address || '0x' });
   const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
-  const location = useLocation();
 
   const { setCurrentAddress } = useCurrentAddressStore();
 
