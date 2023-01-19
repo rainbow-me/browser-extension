@@ -77,11 +77,6 @@ export function ChangePassword() {
     navigate(-1);
   };
 
-  console.log({
-    isValid,
-    isMatching,
-  });
-
   return (
     <Box paddingHorizontal="20px" paddingTop="64px" height="full">
       <Rows alignVertical="justify" space="24px">
