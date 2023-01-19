@@ -127,9 +127,11 @@ export function WalletDetails() {
     setWallet(fetchedWallet);
   };
   useEffect(() => {
-    fetchWallet();
+    if (state?.wallet?.accounts?.[0]) {
+      fetchWallet();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [state?.wallet?.accounts?.[0]]);
 
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
   const { unhideWallet, hiddenWallets } = useHiddenWalletsStore();
