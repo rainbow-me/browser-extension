@@ -178,6 +178,7 @@ export const CustomGasSheet = ({
       background="surfaceSecondary"
       show={show}
       padding="16px"
+      backdropFilter="opacity(0%)"
       scrimBackground
     >
       <Box paddingHorizontal="20px">

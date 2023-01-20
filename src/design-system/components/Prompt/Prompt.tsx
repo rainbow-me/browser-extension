@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react';
 
 import { Box, Row, Rows } from '~/design-system';
 import {
+  BackdropFilter,
   BackgroundColor,
   Space,
   animatedRouteTransitionConfig,
@@ -14,12 +15,14 @@ export const Prompt = ({
   padding,
   background,
   scrimBackground,
+  backdropFilter,
 }: {
   show: boolean;
   children: ReactNode;
   padding?: Space;
   background?: BackgroundColor;
   scrimBackground?: boolean;
+  backdropFilter?: BackdropFilter;
 }) => {
   const emphasizedShort = animatedRouteTransitionConfig['emphasizedShort'];
   const deceleratedShort = animatedRouteTransitionConfig['deceleratedShort'];
@@ -63,7 +66,7 @@ export const Prompt = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={emphasizedShort}
-          backdropFilter="blur(26px)"
+          backdropFilter={backdropFilter ?? 'blur(26px)'}
           padding={padding ?? '40px'}
         >
           <Rows alignVertical="center">
