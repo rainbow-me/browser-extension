@@ -10,6 +10,8 @@ import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useGasStore } from '~/core/state';
 import { GasFeeParams, GasSpeed } from '~/core/types/gas';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+import { handleSignificantDecimals } from '~/core/utils/numbers';
 import {
   Box,
   Button,
@@ -21,10 +23,13 @@ import {
   Text,
 } from '~/design-system';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
+import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
 import { GweiInputMask } from '../InputMask/GweiInputMask/GweiInputMask';
 
 const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
+
+const TEXT_OVERFLOW_WIDTH = POPUP_DIMENSIONS.width - 235;
 
 export const CustomGasSheet = ({
   setCustomMaxBaseFee,
@@ -176,7 +181,7 @@ export const CustomGasSheet = ({
                       size="14pt"
                       weight="semibold"
                     >
-                      {currentBaseFee}
+                      {handleSignificantDecimals(currentBaseFee, 0, 3, true)}
                     </Text>
                   </Inline>
                 </Stack>
@@ -194,7 +199,7 @@ export const CustomGasSheet = ({
                 <Box style={{ width: 98 }} marginRight="-4px">
                   <GweiInputMask
                     inputRef={maxBaseInputRef}
-                    value={maxBaseFee}
+                    value={handleSignificantDecimals(maxBaseFee, 0, 3, true)}
                     variant="surface"
                     onChange={updateCustomMaxBaseFee}
                   />
@@ -213,7 +218,7 @@ export const CustomGasSheet = ({
                 <Box style={{ width: 98 }} marginRight="-4px">
                   <GweiInputMask
                     inputRef={minerTipInputRef}
-                    value={minerTip}
+                    value={handleSignificantDecimals(minerTip, 0, 3, true)}
                     variant="surface"
                     onChange={updateCustomMinerTip}
                   />
@@ -225,9 +230,15 @@ export const CustomGasSheet = ({
                 <Text color="label" align="left" size="14pt" weight="semibold">
                   Max transaction fee
                 </Text>
-                <Text color="label" align="right" size="14pt" weight="semibold">
+                <TextOverflow
+                  maxWidth={TEXT_OVERFLOW_WIDTH}
+                  color="label"
+                  align="right"
+                  size="14pt"
+                  weight="semibold"
+                >
                   {customSpeed.gasFee.display}
-                </Text>
+                </TextOverflow>
               </Inline>
             </Box>
           </Stack>
@@ -279,34 +290,37 @@ export const CustomGasSheet = ({
                     >
                       {i18n.t(`transaction_fee.custom`)}
                     </Text>
-                    <Text
+                    <TextOverflow
+                      maxWidth={TEXT_OVERFLOW_WIDTH}
                       align="left"
                       color="label"
                       size="11pt"
                       weight="semibold"
                     >
                       {customSpeed.gasFee.display}
-                    </Text>
+                    </TextOverflow>
                   </Stack>
                 </Inline>
 
                 <Stack space="12px">
-                  <Text
+                  <TextOverflow
+                    maxWidth={TEXT_OVERFLOW_WIDTH}
                     align="right"
                     color="label"
                     size="14pt"
                     weight="semibold"
                   >
                     {customSpeed.display}
-                  </Text>
-                  <Text
+                  </TextOverflow>
+                  <TextOverflow
+                    maxWidth={TEXT_OVERFLOW_WIDTH}
                     align="right"
                     color="label"
                     size="11pt"
                     weight="semibold"
                   >
                     {customSpeed.estimatedTime.display}
-                  </Text>
+                  </TextOverflow>
                 </Stack>
               </Inline>
             </Box>
@@ -344,34 +358,37 @@ export const CustomGasSheet = ({
                         >
                           {i18n.t(`transaction_fee.${speed}`)}
                         </Text>
-                        <Text
+                        <TextOverflow
+                          maxWidth={TEXT_OVERFLOW_WIDTH}
                           align="left"
                           color="label"
                           size="11pt"
                           weight="semibold"
                         >
                           {storeSpeeds[speed].gasFee.display}
-                        </Text>
+                        </TextOverflow>
                       </Stack>
                     </Inline>
 
                     <Stack space="12px">
-                      <Text
+                      <TextOverflow
+                        maxWidth={TEXT_OVERFLOW_WIDTH}
                         align="right"
                         color="label"
                         size="14pt"
                         weight="semibold"
                       >
                         {storeSpeeds[speed].display}
-                      </Text>
-                      <Text
+                      </TextOverflow>
+                      <TextOverflow
+                        maxWidth={TEXT_OVERFLOW_WIDTH}
                         align="right"
                         color="label"
                         size="11pt"
                         weight="semibold"
                       >
                         {storeSpeeds[speed].estimatedTime.display}
-                      </Text>
+                      </TextOverflow>
                     </Stack>
                   </Inline>
                 </Box>
