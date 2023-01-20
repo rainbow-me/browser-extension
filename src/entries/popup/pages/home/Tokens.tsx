@@ -8,10 +8,14 @@ import { useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { UniqueId } from '~/core/types/assets';
 import { Box, Column, Columns, Inline, Text } from '~/design-system';
+import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 
 import { Asterisks } from '../../components/Asterisks/Asterisks';
+
+const { innerWidth: windowWidth } = window;
+const TEXT_MAX_WIDTH = windowWidth - 150;
 
 export function Tokens() {
   const { address } = useAccount();
@@ -21,7 +25,12 @@ export function Tokens() {
     { select: selectUserAssetsList },
   );
   return (
-    <Box marginTop="-16px">
+    <Box
+      style={{
+        overflow: 'auto',
+      }}
+      marginTop="-16px"
+    >
       {assets?.map((asset, i) => (
         <AssetRow key={`${asset?.uniqueId}-${i}`} uniqueId={asset?.uniqueId} />
       ))}
@@ -49,14 +58,24 @@ export function AssetRow({ uniqueId }: AssetRowProps) {
       hideAssetBalances ? (
         <Inline space="4px">
           <Asterisks color="labelTertiary" size={8} />
-          <Text color="labelTertiary" size="12pt" weight="semibold">
+          <TextOverflow
+            maxWidth={TEXT_MAX_WIDTH}
+            color="labelTertiary"
+            size="12pt"
+            weight="semibold"
+          >
             {asset?.symbol}
-          </Text>
+          </TextOverflow>
         </Inline>
       ) : (
-        <Text color="labelTertiary" size="12pt" weight="semibold">
+        <TextOverflow
+          maxWidth={TEXT_MAX_WIDTH}
+          color="labelTertiary"
+          size="12pt"
+          weight="semibold"
+        >
           {asset?.balance?.display}
-        </Text>
+        </TextOverflow>
       ),
     [asset?.balance?.display, asset?.symbol, hideAssetBalances],
   );
@@ -64,9 +83,14 @@ export function AssetRow({ uniqueId }: AssetRowProps) {
     () =>
       hideAssetBalances ? (
         <Inline alignHorizontal="right">
-          <Text size="14pt" weight="semibold" align="right">
+          <TextOverflow
+            maxWidth={TEXT_MAX_WIDTH}
+            size="14pt"
+            weight="semibold"
+            align="right"
+          >
             {supportedCurrencies[currentCurrency].symbol}
-          </Text>
+          </TextOverflow>
           <Asterisks color="label" size={10} />
         </Inline>
       ) : (
