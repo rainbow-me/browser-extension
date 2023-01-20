@@ -1,5 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -38,7 +38,7 @@ export function TransactionFee({
   accentColor,
   plainTriggerBorder,
 }: TransactionFeeProps) {
-  const [showCustomGasSheet, setShowCustomGasSheet] = useState(true);
+  const [showCustomGasSheet, setShowCustomGasSheet] = useState(false);
   const {
     selectedSpeed,
     setSelectedSpeed,
@@ -57,13 +57,30 @@ export function TransactionFee({
     [gasFeeParamsBySpeed, selectedSpeed],
   );
 
+  const openCustomGasSheet = useCallback(() => setShowCustomGasSheet(true), []);
+
+  const closeCustomGasSheet = useCallback(
+    () => setShowCustomGasSheet(false),
+    [],
+  );
+
+  const onSpeedChanged = useCallback(
+    (speed: GasSpeed) => {
+      if (speed === GasSpeed.CUSTOM) {
+        openCustomGasSheet();
+      }
+      setSelectedSpeed(speed);
+    },
+    [openCustomGasSheet, setSelectedSpeed],
+  );
+
   return (
     <Box>
       <CustomGasSheet
         show={showCustomGasSheet}
         setCustomMaxBaseFee={setCustomMaxBaseFee}
         setCustomMinerTip={setCustomMinerTip}
-        hideCustomGasSheet={() => setShowCustomGasSheet(false)}
+        closeCustomGasSheet={closeCustomGasSheet}
       />
       <Columns alignHorizontal="justify" alignVertical="center">
         <Column>
@@ -99,7 +116,7 @@ export function TransactionFee({
           <Inline space="6px" alignVertical="center" alignHorizontal="right">
             <SwitchTransactionSpeedMenu
               selectedSpeed={selectedSpeed}
-              onSpeedChanged={setSelectedSpeed}
+              onSpeedChanged={onSpeedChanged}
               chainId={chainId}
               gasFeeParamsBySpeed={gasFeeParamsBySpeed}
               editable={
@@ -118,6 +135,7 @@ export function TransactionFee({
                 justifyContent="center"
                 borderColor="fillSecondary"
                 style={{ height: 28, width: 28 }}
+                onClick={openCustomGasSheet}
               >
                 <Symbol
                   weight="medium"

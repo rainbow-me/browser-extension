@@ -30,12 +30,12 @@ export const CustomGasSheet = ({
   setCustomMaxBaseFee,
   setCustomMinerTip,
   show,
-  hideCustomGasSheet,
+  closeCustomGasSheet,
 }: {
   show: boolean;
   setCustomMaxBaseFee: (maxBaseFee: string) => void;
   setCustomMinerTip: (maxBaseFee: string) => void;
-  hideCustomGasSheet: () => void;
+  closeCustomGasSheet: () => void;
 }) => {
   const {
     gasFeeParamsBySpeed: {
@@ -363,7 +363,7 @@ export const CustomGasSheet = ({
                   color="fillSecondary"
                   height="44px"
                   variant="flat"
-                  onClick={hideCustomGasSheet}
+                  onClick={closeCustomGasSheet}
                 >
                   <Text color="labelSecondary" size="16pt" weight="bold">
                     Cancel
