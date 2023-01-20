@@ -20,10 +20,14 @@ import { GweiInputMask } from '../InputMask/GweiInputMask/GweiInputMask';
 
 const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
 
-export const CustomGasSheet = () => {
+export const CustomGasSheet = ({
+  setCustomMaxBaseFee,
+  setCustomMinerTip,
+}: {
+  setCustomMaxBaseFee: (maxBaseFee: string) => void;
+  setCustomMinerTip: (maxBaseFee: string) => void;
+}) => {
   const {
-    setCustomMaxBaseFee,
-    setCustomMinerTip,
     gasFeeParamsBySpeed: { custom },
   } = useGasStore();
 

@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { useEffect, useMemo, useState } from 'react';
-import { Chain } from 'wagmi';
+import BigNumber from 'bignumber.js';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ethUnits } from '~/core/references';
 import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
@@ -15,9 +15,12 @@ import {
   GasFeeLegacyParamsBySpeed,
   GasFeeParamsBySpeed,
   GasSpeed,
+  TransactionGasParams,
 } from '~/core/types/gas';
+import { gweiToWei } from '~/core/utils/ethereum';
 import {
   gasFeeParamsChanged,
+  parseCustomGasFeeParams,
   parseGasFeeParamsBySpeed,
 } from '~/core/utils/gas';
 
@@ -28,7 +31,7 @@ export const useGas = ({
   defaultSpeed,
   transactionRequest,
 }: {
-  chainId: Chain['id'];
+  chainId: ChainId;
   defaultSpeed?: GasSpeed;
   transactionRequest: TransactionRequest;
 }) => {
@@ -42,19 +45,102 @@ export const useGas = ({
     { transactionRequest },
     { enabled: chainId === ChainId.optimism },
   );
+
   const { currentCurrency } = useCurrentCurrencyStore();
+  const nativeAsset = useNativeAssetForNetwork({ chainId });
+
   const {
     selectedGas,
     setSelectedGas,
     gasFeeParamsBySpeed: storeGasFeeParamsBySpeed,
     setGasFeeParamsBySpeed,
     customGasModified,
+    setCustomSpeed,
   } = useGasStore();
+
+  const setCustomMaxBaseFee = useCallback(
+    (maxBaseFee = '0') => {
+      if (!gasData) return;
+      const { data } = gasData as MeteorologyResponse;
+      const currentBaseFee = data.currentBaseFee;
+
+      const blocksToConfirmation = {
+        byBaseFee: data.blocksToConfirmationByBaseFee,
+        byPriorityFee: data.blocksToConfirmationByPriorityFee,
+      };
+
+      const maxPriorityFeePerGas = new BigNumber(
+        (
+          storeGasFeeParamsBySpeed?.custom
+            .transactionGasParams as TransactionGasParams
+        ).maxPriorityFeePerGas,
+      ).toString();
+
+      const newCustomSpeed = parseCustomGasFeeParams({
+        currentBaseFee,
+        maxPriorityFeeWei: maxPriorityFeePerGas,
+        speed: GasSpeed.CUSTOM,
+        baseFeeWei: gweiToWei(maxBaseFee),
+        blocksToConfirmation,
+        gasLimit: estimatedGasLimit || `${ethUnits.basic_transfer}`,
+        nativeAsset,
+        currency: currentCurrency,
+      });
+      setCustomSpeed(newCustomSpeed);
+    },
+    [
+      storeGasFeeParamsBySpeed?.custom,
+      gasData,
+      estimatedGasLimit,
+      nativeAsset,
+      currentCurrency,
+      setCustomSpeed,
+    ],
+  );
+
+  const setCustomMinerTip = useCallback(
+    (minerTip = '0') => {
+      if (!gasData) return;
+      const { data } = gasData as MeteorologyResponse;
+      const currentBaseFee = data.currentBaseFee;
+
+      const blocksToConfirmation = {
+        byBaseFee: data.blocksToConfirmationByBaseFee,
+        byPriorityFee: data.blocksToConfirmationByPriorityFee,
+      };
+
+      const maxBaseFee = new BigNumber(
+        (
+          storeGasFeeParamsBySpeed?.custom
+            .transactionGasParams as TransactionGasParams
+        ).maxFeePerGas,
+      ).toString();
+
+      const newCustomSpeed = parseCustomGasFeeParams({
+        currentBaseFee,
+        maxPriorityFeeWei: gweiToWei(minerTip),
+        speed: GasSpeed.CUSTOM,
+        baseFeeWei: maxBaseFee,
+        blocksToConfirmation,
+        gasLimit: estimatedGasLimit || `${ethUnits.basic_transfer}`,
+        nativeAsset,
+        currency: currentCurrency,
+      });
+      setCustomSpeed(newCustomSpeed);
+    },
+    [
+      currentCurrency,
+      estimatedGasLimit,
+      gasData,
+      nativeAsset,
+      setCustomSpeed,
+      storeGasFeeParamsBySpeed?.custom,
+    ],
+  );
 
   const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>(
     defaultSpeed || GasSpeed.NORMAL,
   );
-  const nativeAsset = useNativeAssetForNetwork({ chainId });
 
   const gasFeeParamsBySpeed:
     | GasFeeParamsBySpeed
@@ -122,5 +208,7 @@ export const useGas = ({
     setSelectedSpeed,
     selectedSpeed,
     isLoading,
+    setCustomMaxBaseFee,
+    setCustomMinerTip,
   };
 };

@@ -38,12 +38,18 @@ export function TransactionFee({
   accentColor,
   plainTriggerBorder,
 }: TransactionFeeProps) {
-  const { selectedSpeed, setSelectedSpeed, gasFeeParamsBySpeed, isLoading } =
-    useGas({
-      chainId,
-      defaultSpeed,
-      transactionRequest,
-    });
+  const {
+    selectedSpeed,
+    setSelectedSpeed,
+    gasFeeParamsBySpeed,
+    isLoading,
+    setCustomMaxBaseFee,
+    setCustomMinerTip,
+  } = useGas({
+    chainId,
+    defaultSpeed,
+    transactionRequest,
+  });
 
   const gasFeeParamsForSelectedSpeed = useMemo(
     () => gasFeeParamsBySpeed?.[selectedSpeed],
@@ -52,7 +58,10 @@ export function TransactionFee({
 
   return (
     <Box>
-      <CustomGasSheet />
+      <CustomGasSheet
+        setCustomMaxBaseFee={setCustomMaxBaseFee}
+        setCustomMinerTip={setCustomMinerTip}
+      />
       <Columns alignHorizontal="justify" alignVertical="center">
         <Column>
           <Rows space="8px">

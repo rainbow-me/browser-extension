@@ -7,8 +7,6 @@ import {
   GasFeeParamsBySpeed,
   GasSpeed,
 } from '~/core/types/gas';
-import { gweiToWei } from '~/core/utils/ethereum';
-import { parseGasFeeParam } from '~/core/utils/gas';
 
 import { createStore } from '../internal/createStore';
 
@@ -16,6 +14,7 @@ export interface GasStore {
   selectedGas: GasFeeParams | GasFeeLegacyParams;
   gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
   customGasModified: boolean;
+  setCustomSpeed: (speed: GasFeeParams) => void;
   setSelectedGas: ({
     selectedGas,
   }: {
@@ -26,8 +25,6 @@ export interface GasStore {
   }: {
     gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
   }) => void;
-  setCustomMaxBaseFee: (maxBaseFee: string) => void;
-  setCustomMinerTip: (minerTip: string) => void;
 }
 
 export const gasStore = createStore<GasStore>(
@@ -45,30 +42,12 @@ export const gasStore = createStore<GasStore>(
         gasFeeParamsBySpeed,
       });
     },
-    setCustomMaxBaseFee: (maxBaseFee) => {
+    setCustomSpeed: (speed: GasFeeParams) => {
       const { gasFeeParamsBySpeed } = get();
-      const customSpeed = gasFeeParamsBySpeed.custom as GasFeeParams;
-      (customSpeed as GasFeeParams).maxBaseFee = parseGasFeeParam({
-        wei: maxBaseFee ? gweiToWei(maxBaseFee) : '0',
-      });
       set({
         gasFeeParamsBySpeed: {
           ...gasFeeParamsBySpeed,
-          [GasSpeed.CUSTOM]: customSpeed,
-        } as GasFeeParamsBySpeed,
-        customGasModified: true,
-      });
-    },
-    setCustomMinerTip: (minerTip) => {
-      const { gasFeeParamsBySpeed } = get();
-      const customSpeed = gasFeeParamsBySpeed.custom as GasFeeParams;
-      customSpeed.maxPriorityFeePerGas = parseGasFeeParam({
-        wei: minerTip ? gweiToWei(minerTip) : '0',
-      });
-      set({
-        gasFeeParamsBySpeed: {
-          ...gasFeeParamsBySpeed,
-          [GasSpeed.CUSTOM]: customSpeed,
+          [GasSpeed.CUSTOM]: speed,
         } as GasFeeParamsBySpeed,
         customGasModified: true,
       });
