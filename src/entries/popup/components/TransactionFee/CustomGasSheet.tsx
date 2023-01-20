@@ -144,7 +144,7 @@ export const CustomGasSheet = ({
       <Box paddingHorizontal="20px">
         <Box paddingVertical="27px">
           <Text color="label" align="center" size="14pt" weight="heavy">
-            Gwei Settings
+            {i18n.t('custom_gas.title')}
           </Text>
         </Box>
         <Box paddingBottom="8px">
@@ -173,7 +173,7 @@ export const CustomGasSheet = ({
                       size="14pt"
                       weight="semibold"
                     >
-                      Current base fee
+                      {i18n.t('custom_gas.current_base_fee')}
                     </Text>
                     <Text
                       color="label"
@@ -194,7 +194,7 @@ export const CustomGasSheet = ({
                 alignVertical="center"
               >
                 <Text align="left" color="label" size="14pt" weight="semibold">
-                  Max base fee
+                  {i18n.t('custom_gas.max_base_fee')}
                 </Text>
                 <Box style={{ width: 98 }} marginRight="-4px">
                   <GweiInputMask
@@ -213,7 +213,7 @@ export const CustomGasSheet = ({
                 alignVertical="center"
               >
                 <Text align="left" color="label" size="14pt" weight="semibold">
-                  Miner tip
+                  {i18n.t('custom_gas.miner_tip')}
                 </Text>
                 <Box style={{ width: 98 }} marginRight="-4px">
                   <GweiInputMask
@@ -228,7 +228,7 @@ export const CustomGasSheet = ({
             <Box paddingVertical="12px">
               <Inline alignHorizontal="justify" alignVertical="center">
                 <Text color="label" align="left" size="14pt" weight="semibold">
-                  Max transaction fee
+                  {i18n.t('custom_gas.max_transaction_fee')}
                 </Text>
                 <TextOverflow
                   maxWidth={TEXT_OVERFLOW_WIDTH}
@@ -257,7 +257,7 @@ export const CustomGasSheet = ({
         >
           <Box paddingBottom="8px">
             <Text color="labelQuaternary" size="12pt" weight="semibold">
-              Transaction speed
+              {i18n.t('custom_gas.transaction_speed')}
             </Text>
           </Box>
 
@@ -412,7 +412,7 @@ export const CustomGasSheet = ({
                   onClick={closeCustomGasSheet}
                 >
                   <Text color="labelSecondary" size="16pt" weight="bold">
-                    Cancel
+                    {i18n.t('custom_gas.cancel')}
                   </Text>
                 </Button>
               </Column>
@@ -425,7 +425,7 @@ export const CustomGasSheet = ({
                   onClick={setCustomGas}
                 >
                   <Text color="label" size="16pt" weight="bold">
-                    Set
+                    {i18n.t('custom_gas.set')}
                   </Text>
                 </Button>
               </Column>

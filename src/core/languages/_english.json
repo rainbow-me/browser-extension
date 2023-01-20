@@ -156,6 +156,16 @@
       "cancel": "Cancel"
     }
   },
+  "custom_gas": {
+    "title": "Gwei Settings",
+    "current_base_fee": "Current base fee",
+    "max_base_fee": "Max base fee",
+    "miner_tip": "Miner tip",
+    "max_transaction_fee": "Max transaction fee",
+    "transaction_speed": "Transaction speed",
+    "cancel": "Cancel",
+    "set": "Set"
+  },
   "contacts": {
     "save_contact": "Save contact",
     "add_to_contacts": "Add to contacts",
