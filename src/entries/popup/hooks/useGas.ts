@@ -58,6 +58,8 @@ export const useGas = ({
     clearCustomGasModified,
   } = useGasStore();
 
+  console.log('------- customGasModified', customGasModified);
+
   const setCustomMaxBaseFee = useCallback(
     (maxBaseFee = '0') => {
       if (!gasData) return;
@@ -151,6 +153,12 @@ export const useGas = ({
         })
       : null;
 
+    console.log(
+      'getting newGasFeeParamsBySpeed',
+      customGasModified,
+      newGasFeeParamsBySpeed?.custom,
+      storeGasFeeParamsBySpeed.custom,
+    );
     if (customGasModified && newGasFeeParamsBySpeed) {
       newGasFeeParamsBySpeed.custom = storeGasFeeParamsBySpeed.custom;
     }
