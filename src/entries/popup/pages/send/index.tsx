@@ -207,7 +207,6 @@ export function Send() {
 
   useEffect(() => {
     return () => {
-      console.log('cleaned up');
       clearCustomGasModified();
     };
   }, [clearCustomGasModified]);

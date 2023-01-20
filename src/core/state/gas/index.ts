@@ -14,7 +14,6 @@ export interface GasStore {
   selectedGas: GasFeeParams | GasFeeLegacyParams;
   gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
   customGasModified: boolean;
-  currentBaseFee: string;
   setCustomSpeed: (speed: GasFeeParams) => void;
   setSelectedGas: ({
     selectedGas,
@@ -27,7 +26,6 @@ export interface GasStore {
     gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
   }) => void;
   clearCustomGasModified: () => void;
-  setCurrentBaseFee: (currrentBaseFee: string) => void;
 }
 
 export const gasStore = createStore<GasStore>(
@@ -35,7 +33,6 @@ export const gasStore = createStore<GasStore>(
     selectedGas: {} as GasFeeParams | GasFeeLegacyParams,
     gasFeeParamsBySpeed: {} as GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed,
     customGasModified: false,
-    currentBaseFee: '',
     setSelectedGas: ({ selectedGas }) => {
       set({
         selectedGas,
@@ -58,9 +55,6 @@ export const gasStore = createStore<GasStore>(
     },
     clearCustomGasModified: () => {
       set({ customGasModified: false });
-    },
-    setCurrentBaseFee: (currentBaseFee: string) => {
-      set({ currentBaseFee });
     },
   }),
   {

@@ -164,7 +164,13 @@
     "max_transaction_fee": "Max transaction fee",
     "transaction_speed": "Transaction speed",
     "cancel": "Cancel",
-    "set": "Set"
+    "set": "Set",
+    "base_trend": {
+      "falling": "Falling",
+      "stable": "Stable",
+      "surging": "Surging",
+      "rising": "Rising"
+    }
   },
   "contacts": {
     "save_contact": "Save contact",

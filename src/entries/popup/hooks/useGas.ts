@@ -57,8 +57,6 @@ export const useGas = ({
     customGasModified,
     setCustomSpeed,
     clearCustomGasModified,
-    currentBaseFee,
-    setCurrentBaseFee,
   } = useGasStore();
 
   const setCustomMaxBaseFee = useCallback(
@@ -206,13 +204,6 @@ export const useGas = ({
     storeGasFeeParamsBySpeed,
   ]);
 
-  useEffect(() => {
-    const { data } = gasData as MeteorologyResponse;
-    if (data?.currentBaseFee !== currentBaseFee) {
-      setCurrentBaseFee(weiToGwei(data?.currentBaseFee));
-    }
-  }, [currentBaseFee, gasData, setCurrentBaseFee]);
-
   return {
     gasFeeParamsBySpeed,
     setSelectedSpeed,
@@ -221,5 +212,9 @@ export const useGas = ({
     setCustomMaxBaseFee,
     setCustomMinerTip,
     clearCustomGasModified,
+    currentBaseFee: weiToGwei(
+      (gasData as MeteorologyResponse)?.data?.currentBaseFee,
+    ),
+    baseFeeTrend: (gasData as MeteorologyResponse)?.data?.baseFeeTrend,
   };
 };

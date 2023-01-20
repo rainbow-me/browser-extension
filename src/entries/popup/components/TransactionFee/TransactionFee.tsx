@@ -46,6 +46,8 @@ export function TransactionFee({
     isLoading,
     setCustomMaxBaseFee,
     setCustomMinerTip,
+    currentBaseFee,
+    baseFeeTrend,
   } = useGas({
     chainId,
     defaultSpeed,
@@ -77,6 +79,8 @@ export function TransactionFee({
   return (
     <Box>
       <CustomGasSheet
+        currentBaseFee={currentBaseFee}
+        baseFeeTrend={baseFeeTrend}
         show={showCustomGasSheet}
         setCustomMaxBaseFee={setCustomMaxBaseFee}
         setCustomMinerTip={setCustomMinerTip}

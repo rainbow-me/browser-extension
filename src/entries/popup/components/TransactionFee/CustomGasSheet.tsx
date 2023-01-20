@@ -10,7 +10,6 @@ import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useGasStore } from '~/core/state';
 import { GasFeeParams, GasSpeed } from '~/core/types/gas';
-import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import {
   Box,
@@ -20,25 +19,64 @@ import {
   Inline,
   Separator,
   Stack,
+  Symbol,
   Text,
 } from '~/design-system';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
+import { SymbolStyles, TextStyles } from '~/design-system/styles/core.css';
+import { SymbolName } from '~/design-system/styles/designTokens';
 
 import { GweiInputMask } from '../InputMask/GweiInputMask/GweiInputMask';
 
 const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
 
-const TEXT_OVERFLOW_WIDTH = POPUP_DIMENSIONS.width - 235;
+const { innerWidth: windowWidth } = window;
+const TEXT_OVERFLOW_WIDTH = windowWidth / 2 - 20;
+
+const getBaseFeeTrend = (trend: number) => {
+  switch (trend) {
+    case -1:
+      return {
+        color: 'green',
+        label: i18n.t('custom_gas.base_trend.falling'),
+        symbol: 'arrow.down.forward',
+      };
+    case 0:
+      return {
+        color: 'yellow',
+        label: i18n.t('custom_gas.base_trend.stable'),
+        symbol: 'sun.max.fill',
+      };
+    case 1:
+      return {
+        color: 'red',
+        label: i18n.t('custom_gas.base_trend.surging'),
+        symbol: 'exclamationmark.triangle.fill',
+      };
+    case 2:
+      return {
+        color: 'orange',
+        label: i18n.t('custom_gas.base_trend.rising'),
+        symbol: 'arrow.up.forward',
+      };
+    default:
+      return { color: 'blue', label: '', symbol: '' };
+  }
+};
 
 export const CustomGasSheet = ({
+  show,
+  currentBaseFee,
+  baseFeeTrend,
   setCustomMaxBaseFee,
   setCustomMinerTip,
-  show,
   closeCustomGasSheet,
   setSelectedSpeed,
 }: {
   show: boolean;
+  currentBaseFee: string;
+  baseFeeTrend: number;
   setCustomMaxBaseFee: (maxBaseFee: string) => void;
   setCustomMinerTip: (maxBaseFee: string) => void;
   closeCustomGasSheet: () => void;
@@ -52,7 +90,6 @@ export const CustomGasSheet = ({
       fast: fastSpeed,
     },
     customGasModified,
-    currentBaseFee,
     selectedGas,
   } = useGasStore();
 
@@ -79,6 +116,8 @@ export const CustomGasSheet = ({
   const [minerTip, setMinerTip] = useState(
     (customSpeed as GasFeeParams)?.maxPriorityFeePerGas?.gwei,
   );
+
+  const trend = useMemo(() => getBaseFeeTrend(baseFeeTrend), [baseFeeTrend]);
 
   useEffect(() => {
     if (
@@ -152,14 +191,25 @@ export const CustomGasSheet = ({
             <Box paddingBottom="12px">
               <Box height="full">
                 <Stack space="12px">
-                  <Inline height="full" alignHorizontal="right">
+                  <Inline
+                    height="full"
+                    alignHorizontal="right"
+                    space="4px"
+                    alignVertical="center"
+                  >
+                    <Symbol
+                      symbol={trend.symbol as SymbolName}
+                      color={trend.color as SymbolStyles['color']}
+                      weight="bold"
+                      size={11}
+                    />
                     <Text
-                      color="orange"
+                      color={trend.color as TextStyles['color']}
                       align="center"
                       size="11pt"
                       weight="bold"
                     >
-                      Rising
+                      {trend.label}
                     </Text>
                   </Inline>
                   <Inline
@@ -181,7 +231,12 @@ export const CustomGasSheet = ({
                       size="14pt"
                       weight="semibold"
                     >
-                      {handleSignificantDecimals(currentBaseFee, 0, 3, true)}
+                      {`${handleSignificantDecimals(
+                        currentBaseFee,
+                        0,
+                        3,
+                        true,
+                      )} Gwei`}
                     </Text>
                   </Inline>
                 </Stack>
