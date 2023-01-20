@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
@@ -32,9 +38,25 @@ export const CustomGasSheet = ({
   hideCustomGasSheet: () => void;
 }) => {
   const {
-    gasFeeParamsBySpeed: { custom: customSpeed, urgent: urgentSpeed },
+    gasFeeParamsBySpeed: {
+      custom: customSpeed,
+      urgent: urgentSpeed,
+      normal: normalSpeed,
+      fast: fastSpeed,
+    },
     customGasModified,
+    currentBaseFee,
   } = useGasStore();
+
+  const storeSpeeds = useMemo(
+    () => ({
+      [GasSpeed.NORMAL]: normalSpeed,
+      [GasSpeed.FAST]: fastSpeed,
+      [GasSpeed.URGENT]: urgentSpeed,
+      [GasSpeed.CUSTOM]: urgentSpeed,
+    }),
+    [fastSpeed, normalSpeed, urgentSpeed],
+  );
 
   const maxBaseInputRef = useRef<HTMLInputElement>(null);
   const minerTipInputRef = useRef<HTMLInputElement>(null);
@@ -137,7 +159,7 @@ export const CustomGasSheet = ({
                       size="14pt"
                       weight="semibold"
                     >
-                      31 Gwei
+                      {currentBaseFee}
                     </Text>
                   </Inline>
                 </Stack>
@@ -239,7 +261,7 @@ export const CustomGasSheet = ({
                       size="11pt"
                       weight="semibold"
                     >
-                      0.001
+                      {customSpeed.gasFee.display}
                     </Text>
                   </Stack>
                 </Inline>
@@ -251,7 +273,7 @@ export const CustomGasSheet = ({
                     size="14pt"
                     weight="semibold"
                   >
-                    55 Gwei
+                    {customSpeed.display}
                   </Text>
                   <Text
                     align="right"
@@ -259,7 +281,7 @@ export const CustomGasSheet = ({
                     size="11pt"
                     weight="semibold"
                   >
-                    ~ 5 sec
+                    {customSpeed.estimatedTime.display}
                   </Text>
                 </Stack>
               </Inline>
@@ -299,7 +321,7 @@ export const CustomGasSheet = ({
                           size="11pt"
                           weight="semibold"
                         >
-                          0.001
+                          {storeSpeeds[speed].gasFee.display}
                         </Text>
                       </Stack>
                     </Inline>
@@ -311,7 +333,7 @@ export const CustomGasSheet = ({
                         size="14pt"
                         weight="semibold"
                       >
-                        55 Gwei
+                        {storeSpeeds[speed].display}
                       </Text>
                       <Text
                         align="right"
@@ -319,7 +341,7 @@ export const CustomGasSheet = ({
                         size="11pt"
                         weight="semibold"
                       >
-                        ~ 5 sec
+                        {storeSpeeds[speed].estimatedTime.display}
                       </Text>
                     </Stack>
                   </Inline>

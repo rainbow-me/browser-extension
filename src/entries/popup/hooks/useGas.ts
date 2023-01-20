@@ -17,7 +17,7 @@ import {
   GasSpeed,
   TransactionGasParams,
 } from '~/core/types/gas';
-import { gweiToWei } from '~/core/utils/ethereum';
+import { gweiToWei, weiToGwei } from '~/core/utils/ethereum';
 import {
   gasFeeParamsChanged,
   parseCustomGasFeeParams,
@@ -57,9 +57,9 @@ export const useGas = ({
     customGasModified,
     setCustomSpeed,
     clearCustomGasModified,
+    currentBaseFee,
+    setCurrentBaseFee,
   } = useGasStore();
-
-  console.log('------- customGasModified', customGasModified);
 
   const setCustomMaxBaseFee = useCallback(
     (maxBaseFee = '0') => {
@@ -211,6 +211,13 @@ export const useGas = ({
     setGasFeeParamsBySpeed,
     storeGasFeeParamsBySpeed,
   ]);
+
+  useEffect(() => {
+    const { data } = gasData as MeteorologyResponse;
+    if (data?.currentBaseFee !== currentBaseFee) {
+      setCurrentBaseFee(weiToGwei(data?.currentBaseFee));
+    }
+  }, [currentBaseFee, gasData, setCurrentBaseFee]);
 
   return {
     gasFeeParamsBySpeed,
