@@ -82,14 +82,12 @@ function ActionButtonsSection() {
     <Box style={{ height: 56 }}>
       {avatar?.color && (
         <Inline space="12px">
-          <Link to={ROUTES.WALLETS}>
-            <ActionButton
-              symbol="square.on.square"
-              text={i18n.t('wallet_header.copy')}
-              onClick={handleCopy}
-              testId="header-link-copy"
-            />
-          </Link>
+          <ActionButton
+            symbol="square.on.square"
+            text={i18n.t('wallet_header.copy')}
+            onClick={handleCopy}
+            testId="header-link-copy"
+          />
           <ActionButton
             symbol="arrow.triangle.swap"
             text={i18n.t('wallet_header.swap')}

@@ -95,9 +95,10 @@ describe('Watch wallet flow', () => {
   it('should be able to lock and unlock the extension', async () => {
     // Lock
     await findElementAndClick({
-      id: 'header-account-name-link-to-wallet',
+      id: 'home-page-header-right',
       driver,
     });
+    await findElementAndClick({ id: 'settings-link', driver });
     await findElementAndClick({ id: 'wallet-lock-button', driver });
 
     // Unlock
