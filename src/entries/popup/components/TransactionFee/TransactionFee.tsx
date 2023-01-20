@@ -81,6 +81,7 @@ export function TransactionFee({
         setCustomMaxBaseFee={setCustomMaxBaseFee}
         setCustomMinerTip={setCustomMinerTip}
         closeCustomGasSheet={closeCustomGasSheet}
+        setSelectedSpeed={setSelectedSpeed}
       />
       <Columns alignHorizontal="justify" alignVertical="center">
         <Column>

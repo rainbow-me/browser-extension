@@ -31,11 +31,13 @@ export const CustomGasSheet = ({
   setCustomMinerTip,
   show,
   closeCustomGasSheet,
+  setSelectedSpeed,
 }: {
   show: boolean;
   setCustomMaxBaseFee: (maxBaseFee: string) => void;
   setCustomMinerTip: (maxBaseFee: string) => void;
   closeCustomGasSheet: () => void;
+  setSelectedSpeed: (speed: GasSpeed) => void;
 }) => {
   const {
     gasFeeParamsBySpeed: {
@@ -46,7 +48,12 @@ export const CustomGasSheet = ({
     },
     customGasModified,
     currentBaseFee,
+    selectedGas,
   } = useGasStore();
+
+  const [selectedSpeedOption, setSelectedSpeedOption] = useState<GasSpeed>(
+    selectedGas.option,
+  );
 
   const storeSpeeds = useMemo(
     () => ({
@@ -111,6 +118,16 @@ export const CustomGasSheet = ({
     },
     [setCustomMinerTip],
   );
+
+  const setCustomGas = useCallback(() => {
+    setSelectedSpeed(selectedSpeedOption);
+    closeCustomGasSheet();
+  }, [closeCustomGasSheet, selectedSpeedOption, setSelectedSpeed]);
+
+  useEffect(() => {
+    setSelectedSpeedOption(selectedGas.option);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [show]);
 
   return (
     <Prompt
@@ -239,7 +256,14 @@ export const CustomGasSheet = ({
               borderRadius="12px"
               marginHorizontal="-12px"
               paddingHorizontal="12px"
-              background={{ default: 'transparent', hover: 'accent' }}
+              background={{
+                default:
+                  selectedSpeedOption === GasSpeed.CUSTOM
+                    ? 'accent'
+                    : 'transparent',
+                hover: 'accent',
+              }}
+              onClick={() => setSelectedSpeedOption(GasSpeed.CUSTOM)}
             >
               <Inline alignVertical="center" alignHorizontal="justify">
                 <Inline space="10px" alignVertical="center">
@@ -299,7 +323,12 @@ export const CustomGasSheet = ({
                   borderRadius="12px"
                   marginHorizontal="-12px"
                   paddingHorizontal="12px"
-                  background={{ default: 'transparent', hover: 'accent' }}
+                  background={{
+                    default:
+                      selectedSpeedOption === speed ? 'accent' : 'transparent',
+                    hover: 'accent',
+                  }}
+                  onClick={() => setSelectedSpeedOption(speed)}
                 >
                   <Inline alignVertical="center" alignHorizontal="justify">
                     <Inline space="10px" alignVertical="center">
@@ -376,6 +405,7 @@ export const CustomGasSheet = ({
                   color="accent"
                   height="44px"
                   variant="flat"
+                  onClick={setCustomGas}
                 >
                   <Text color="label" size="16pt" weight="bold">
                     Set
