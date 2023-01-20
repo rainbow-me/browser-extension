@@ -1,5 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -38,6 +38,7 @@ export function TransactionFee({
   accentColor,
   plainTriggerBorder,
 }: TransactionFeeProps) {
+  const [showCustomGasSheet, setShowCustomGasSheet] = useState(true);
   const {
     selectedSpeed,
     setSelectedSpeed,
@@ -59,8 +60,10 @@ export function TransactionFee({
   return (
     <Box>
       <CustomGasSheet
+        show={showCustomGasSheet}
         setCustomMaxBaseFee={setCustomMaxBaseFee}
         setCustomMinerTip={setCustomMinerTip}
+        hideCustomGasSheet={() => setShowCustomGasSheet(false)}
       />
       <Columns alignHorizontal="justify" alignVertical="center">
         <Column>

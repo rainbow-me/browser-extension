@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
@@ -23,20 +23,56 @@ const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
 export const CustomGasSheet = ({
   setCustomMaxBaseFee,
   setCustomMinerTip,
+  show,
+  hideCustomGasSheet,
 }: {
+  show: boolean;
   setCustomMaxBaseFee: (maxBaseFee: string) => void;
   setCustomMinerTip: (maxBaseFee: string) => void;
+  hideCustomGasSheet: () => void;
 }) => {
   const {
-    gasFeeParamsBySpeed: { custom },
+    gasFeeParamsBySpeed: { custom: customSpeed, urgent: urgentSpeed },
+    customGasModified,
   } = useGasStore();
 
+  const maxBaseInputRef = useRef<HTMLInputElement>(null);
+  const minerTipInputRef = useRef<HTMLInputElement>(null);
+
   const [maxBaseFee, setMaxBaseFee] = useState(
-    (custom as GasFeeParams)?.maxBaseFee?.gwei,
+    (customSpeed as GasFeeParams)?.maxBaseFee?.gwei,
   );
   const [minerTip, setMinerTip] = useState(
-    (custom as GasFeeParams)?.maxPriorityFeePerGas?.gwei,
+    (customSpeed as GasFeeParams)?.maxPriorityFeePerGas?.gwei,
   );
+
+  useEffect(() => {
+    if (
+      !customGasModified &&
+      (urgentSpeed as GasFeeParams)?.maxBaseFee?.gwei !== maxBaseFee
+    ) {
+      setMaxBaseFee((urgentSpeed as GasFeeParams)?.maxBaseFee?.gwei);
+      if (maxBaseInputRef?.current) {
+        maxBaseInputRef.current.value = (
+          urgentSpeed as GasFeeParams
+        )?.maxBaseFee?.gwei;
+      }
+    }
+  }, [customGasModified, urgentSpeed, maxBaseFee]);
+
+  useEffect(() => {
+    if (
+      !customGasModified &&
+      (urgentSpeed as GasFeeParams)?.maxPriorityFeePerGas?.gwei !== minerTip
+    ) {
+      setMinerTip((urgentSpeed as GasFeeParams)?.maxPriorityFeePerGas?.gwei);
+      if (minerTipInputRef?.current) {
+        minerTipInputRef.current.value = (
+          urgentSpeed as GasFeeParams
+        )?.maxPriorityFeePerGas?.gwei;
+      }
+    }
+  }, [customGasModified, urgentSpeed, maxBaseFee, minerTip]);
 
   const updateCustomMaxBaseFee = useCallback(
     (maxBaseFee: string) => {
@@ -57,7 +93,7 @@ export const CustomGasSheet = ({
   return (
     <Prompt
       background="surfaceSecondary"
-      show={true}
+      show={show}
       padding="16px"
       scrimBackground
     >
@@ -118,6 +154,7 @@ export const CustomGasSheet = ({
                 </Text>
                 <Box style={{ width: 98 }} marginRight="-4px">
                   <GweiInputMask
+                    inputRef={maxBaseInputRef}
                     value={maxBaseFee}
                     variant="surface"
                     onChange={updateCustomMaxBaseFee}
@@ -136,6 +173,7 @@ export const CustomGasSheet = ({
                 </Text>
                 <Box style={{ width: 98 }} marginRight="-4px">
                   <GweiInputMask
+                    inputRef={minerTipInputRef}
                     value={minerTip}
                     variant="surface"
                     onChange={updateCustomMinerTip}
@@ -149,7 +187,7 @@ export const CustomGasSheet = ({
                   Max transaction fee
                 </Text>
                 <Text color="label" align="right" size="14pt" weight="semibold">
-                  {custom.gasFee.display}
+                  {customSpeed.gasFee.display}
                 </Text>
               </Inline>
             </Box>
@@ -303,6 +341,7 @@ export const CustomGasSheet = ({
                   color="fillSecondary"
                   height="44px"
                   variant="flat"
+                  onClick={hideCustomGasSheet}
                 >
                   <Text color="labelSecondary" size="16pt" weight="bold">
                     Cancel

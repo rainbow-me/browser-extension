@@ -25,6 +25,7 @@ export interface GasStore {
   }: {
     gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
   }) => void;
+  clearCustomGasModified: () => void;
 }
 
 export const gasStore = createStore<GasStore>(
@@ -51,6 +52,9 @@ export const gasStore = createStore<GasStore>(
         } as GasFeeParamsBySpeed,
         customGasModified: true,
       });
+    },
+    clearCustomGasModified: () => {
+      set({ customGasModified: false });
     },
   }),
   {

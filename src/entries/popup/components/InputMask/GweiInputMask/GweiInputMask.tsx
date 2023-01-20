@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { useCallback, useRef, useState } from 'react';
+import React, { RefObject, useCallback, useState } from 'react';
 
 import { Box, Inline, Text } from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
@@ -17,13 +17,14 @@ export const GweiInputMask = ({
   value,
   variant,
   onChange,
+  inputRef,
 }: {
   value: string;
   variant: 'surface' | 'bordered' | 'transparent';
   onChange: (value: string) => void;
+  inputRef: RefObject<HTMLInputElement>;
 }) => {
   const [isFocused, setIsFocused] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleOnChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
