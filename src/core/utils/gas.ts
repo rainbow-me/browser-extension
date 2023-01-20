@@ -89,7 +89,9 @@ export const parseGasDataConfirmationTime = (
 
   return {
     amount: timeAmount,
-    display: getMinimalTimeUnitStringForMs(Number(multiply(timeAmount, 1000))),
+    display: `~${getMinimalTimeUnitStringForMs(
+      Number(multiply(timeAmount, 1000)),
+    )}`,
   };
 };
 

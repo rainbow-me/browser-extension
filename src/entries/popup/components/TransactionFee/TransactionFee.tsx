@@ -107,7 +107,7 @@ export function TransactionFee({
                 <Text weight="semibold" color="labelTertiary" size="14pt">
                   {isLoading
                     ? ''
-                    : `~ ${gasFeeParamsForSelectedSpeed?.estimatedTime.display}`}
+                    : `${gasFeeParamsForSelectedSpeed?.estimatedTime.display}`}
                 </Text>
               </Inline>
             </Row>
