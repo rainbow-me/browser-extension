@@ -70,7 +70,7 @@ export const CustomGasSheet = ({
   currentBaseFee,
   baseFeeTrend,
   setCustomMaxBaseFee,
-  setCustomMinerTip,
+  setCustomMaxPriorityFee,
   closeCustomGasSheet,
   setSelectedSpeed,
 }: {
@@ -78,7 +78,7 @@ export const CustomGasSheet = ({
   currentBaseFee: string;
   baseFeeTrend: number;
   setCustomMaxBaseFee: (maxBaseFee: string) => void;
-  setCustomMinerTip: (maxBaseFee: string) => void;
+  setCustomMaxPriorityFee: (maxPriorityFee: string) => void;
   closeCustomGasSheet: () => void;
   setSelectedSpeed: (speed: GasSpeed) => void;
 }) => {
@@ -107,45 +107,42 @@ export const CustomGasSheet = ({
     [fastSpeed, normalSpeed, urgentSpeed],
   );
 
-  const maxBaseInputRef = useRef<HTMLInputElement>(null);
-  const minerTipInputRef = useRef<HTMLInputElement>(null);
+  const maxBaseFeeInputRef = useRef<HTMLInputElement>(null);
+  const maxPriorityFeeInputRef = useRef<HTMLInputElement>(null);
 
   const [maxBaseFee, setMaxBaseFee] = useState(
     (customSpeed as GasFeeParams)?.maxBaseFee?.gwei,
   );
-  const [minerTip, setMinerTip] = useState(
+  const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState(
     (customSpeed as GasFeeParams)?.maxPriorityFeePerGas?.gwei,
   );
 
   const trend = useMemo(() => getBaseFeeTrend(baseFeeTrend), [baseFeeTrend]);
 
   useEffect(() => {
-    if (
-      !customGasModified &&
-      (urgentSpeed as GasFeeParams)?.maxBaseFee?.gwei !== maxBaseFee
-    ) {
-      setMaxBaseFee((urgentSpeed as GasFeeParams)?.maxBaseFee?.gwei);
-      if (maxBaseInputRef?.current) {
-        maxBaseInputRef.current.value = (
-          urgentSpeed as GasFeeParams
-        )?.maxBaseFee?.gwei;
+    const urgentMaxBaseFeeGwei = (urgentSpeed as GasFeeParams)?.maxBaseFee
+      ?.gwei;
+    if (!customGasModified && urgentMaxBaseFeeGwei !== maxBaseFee) {
+      setMaxBaseFee(urgentMaxBaseFeeGwei);
+      if (maxBaseFeeInputRef?.current) {
+        maxBaseFeeInputRef.current.value = urgentMaxBaseFeeGwei;
       }
     }
   }, [customGasModified, urgentSpeed, maxBaseFee]);
 
   useEffect(() => {
+    const urgentMaxPriorityFeeGwei = (urgentSpeed as GasFeeParams)
+      ?.maxPriorityFeePerGas?.gwei;
     if (
       !customGasModified &&
-      (urgentSpeed as GasFeeParams)?.maxPriorityFeePerGas?.gwei !== minerTip
+      urgentMaxPriorityFeeGwei !== maxPriorityFeePerGas
     ) {
-      setMinerTip((urgentSpeed as GasFeeParams)?.maxPriorityFeePerGas?.gwei);
-      if (minerTipInputRef?.current) {
-        minerTipInputRef.current.value = (
-          urgentSpeed as GasFeeParams
-        )?.maxPriorityFeePerGas?.gwei;
+      setMaxPriorityFeePerGas(urgentMaxPriorityFeeGwei);
+      if (maxPriorityFeeInputRef?.current) {
+        maxPriorityFeeInputRef.current.value = urgentMaxPriorityFeeGwei;
       }
     }
-  }, [customGasModified, urgentSpeed, maxBaseFee, minerTip]);
+  }, [customGasModified, urgentSpeed, maxBaseFee, maxPriorityFeePerGas]);
 
   const updateCustomMaxBaseFee = useCallback(
     (maxBaseFee: string) => {
@@ -155,12 +152,12 @@ export const CustomGasSheet = ({
     [setCustomMaxBaseFee],
   );
 
-  const updateCustomMinerTip = useCallback(
-    (minertip: string) => {
-      setCustomMinerTip(minertip);
-      setMinerTip(minertip);
+  const updateCustomMaxPriorityFee = useCallback(
+    (maxPriorityFee: string) => {
+      setCustomMaxPriorityFee(maxPriorityFee);
+      setMaxPriorityFeePerGas(maxPriorityFee);
     },
-    [setCustomMinerTip],
+    [setCustomMaxPriorityFee],
   );
 
   const setCustomGas = useCallback(() => {
@@ -254,8 +251,8 @@ export const CustomGasSheet = ({
                 </Text>
                 <Box style={{ width: 98 }} marginRight="-4px">
                   <GweiInputMask
-                    inputRef={maxBaseInputRef}
-                    value={handleSignificantDecimals(maxBaseFee, 0, 3, true)}
+                    inputRef={maxBaseFeeInputRef}
+                    value={maxBaseFee}
                     variant="surface"
                     onChange={updateCustomMaxBaseFee}
                   />
@@ -273,10 +270,10 @@ export const CustomGasSheet = ({
                 </Text>
                 <Box style={{ width: 98 }} marginRight="-4px">
                   <GweiInputMask
-                    inputRef={minerTipInputRef}
-                    value={handleSignificantDecimals(minerTip, 0, 3, true)}
+                    inputRef={maxPriorityFeeInputRef}
+                    value={maxPriorityFeePerGas}
                     variant="surface"
-                    onChange={updateCustomMinerTip}
+                    onChange={updateCustomMaxPriorityFee}
                   />
                 </Box>
               </Inline>

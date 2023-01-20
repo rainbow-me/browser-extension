@@ -1,5 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -45,9 +45,10 @@ export function TransactionFee({
     gasFeeParamsBySpeed,
     isLoading,
     setCustomMaxBaseFee,
-    setCustomMinerTip,
+    setCustomMaxPriorityFee,
     currentBaseFee,
     baseFeeTrend,
+    clearCustomGasModified,
   } = useGas({
     chainId,
     defaultSpeed,
@@ -76,6 +77,10 @@ export function TransactionFee({
     [openCustomGasSheet, setSelectedSpeed],
   );
 
+  useEffect(() => {
+    clearCustomGasModified();
+  }, [clearCustomGasModified]);
+
   return (
     <Box>
       <CustomGasSheet
@@ -83,7 +88,7 @@ export function TransactionFee({
         baseFeeTrend={baseFeeTrend}
         show={showCustomGasSheet}
         setCustomMaxBaseFee={setCustomMaxBaseFee}
-        setCustomMinerTip={setCustomMinerTip}
+        setCustomMaxPriorityFee={setCustomMaxPriorityFee}
         closeCustomGasSheet={closeCustomGasSheet}
         setSelectedSpeed={setSelectedSpeed}
       />

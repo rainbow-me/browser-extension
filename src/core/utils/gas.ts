@@ -40,6 +40,7 @@ import {
   divide,
   fraction,
   greaterThan,
+  handleSignificantDecimals,
   lessThan,
   multiply,
   toHex,
@@ -86,10 +87,9 @@ export const parseGasDataConfirmationTime = (
     blocksToWaitForBaseFee +
     (blocksToWaitForBaseFee < 240 ? blocksToWaitForPriorityFee : 0);
   const timeAmount = 15 * totalBlocksToWait;
-
   return {
     amount: timeAmount,
-    display: `~${getMinimalTimeUnitStringForMs(
+    display: `${timeAmount >= 3600 ? '>' : '~'} ${getMinimalTimeUnitStringForMs(
       Number(multiply(timeAmount, 1000)),
     )}`,
   };
@@ -99,8 +99,8 @@ export const parseGasFeeParam = ({ wei }: { wei: string }): GasFeeParam => {
   const gwei = wei ? weiToGwei(wei) : '';
   return {
     amount: wei,
-    display: `${gwei} Gwei`,
-    gwei,
+    display: `${handleSignificantDecimals(gwei, 0, 3, true)} Gwei`,
+    gwei: handleSignificantDecimals(gwei, 0, 3, true),
   };
 };
 
@@ -123,12 +123,17 @@ export const parseCustomGasFeeParams = ({
   blocksToConfirmation: BlocksToConfirmation;
   currency: SupportedCurrencyKey;
 }): GasFeeParams => {
+  console.log('MAX BASE FEE baseFeeWei', baseFeeWei);
+  console.log('MAX BASE FEE maxPriorityFeePerGas', maxPriorityFeeWei);
   const maxBaseFee = parseGasFeeParam({
-    wei: baseFeeWei,
+    wei: baseFeeWei || '0',
   });
   const maxPriorityFeePerGas = parseGasFeeParam({
-    wei: maxPriorityFeeWei,
+    wei: maxPriorityFeeWei || '0',
   });
+
+  console.log('MAX BASE FEE', maxBaseFee);
+  console.log('MAX PRIORITY FEE', maxPriorityFeePerGas);
 
   const baseFee = lessThan(currentBaseFee, maxBaseFee.amount)
     ? currentBaseFee
@@ -161,8 +166,9 @@ export const parseCustomGasFeeParams = ({
     totalWei,
     supportedCurrencies[nativeAsset?.symbol as SupportedCurrencyKey],
   ).amount;
+  console.log('--nativeTotalWei', nativeTotalWei);
   const nativeDisplay = convertAmountAndPriceToNativeDisplayWithThreshold(
-    nativeTotalWei,
+    nativeTotalWei || 0,
     nativeAsset?.price?.value || 0,
     currency,
   );
@@ -318,6 +324,7 @@ export const parseGasFeeLegacyParams = ({
 export const getBaseFeeMultiplier = (speed: GasSpeed) => {
   switch (speed) {
     case 'urgent':
+    case 'custom':
       return 1.1;
     case 'fast':
       return 1.05;

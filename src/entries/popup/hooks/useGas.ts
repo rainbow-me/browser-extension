@@ -81,7 +81,7 @@ export const useGas = ({
         currentBaseFee,
         maxPriorityFeeWei: maxPriorityFeePerGas,
         speed: GasSpeed.CUSTOM,
-        baseFeeWei: gweiToWei(maxBaseFee),
+        baseFeeWei: gweiToWei(maxBaseFee || '0'),
         blocksToConfirmation,
         gasLimit: estimatedGasLimit || `${ethUnits.basic_transfer}`,
         nativeAsset,
@@ -99,8 +99,8 @@ export const useGas = ({
     ],
   );
 
-  const setCustomMinerTip = useCallback(
-    (minerTip = '0') => {
+  const setCustomMaxPriorityFee = useCallback(
+    (maxPriorityFee = '0') => {
       if (!gasData) return;
       const { data } = gasData as MeteorologyResponse;
       const currentBaseFee = data.currentBaseFee;
@@ -119,7 +119,7 @@ export const useGas = ({
 
       const newCustomSpeed = parseCustomGasFeeParams({
         currentBaseFee,
-        maxPriorityFeeWei: gweiToWei(minerTip),
+        maxPriorityFeeWei: gweiToWei(maxPriorityFee || '0'),
         speed: GasSpeed.CUSTOM,
         baseFeeWei: maxBaseFee,
         blocksToConfirmation,
@@ -210,7 +210,7 @@ export const useGas = ({
     selectedSpeed,
     isLoading,
     setCustomMaxBaseFee,
-    setCustomMinerTip,
+    setCustomMaxPriorityFee,
     clearCustomGasModified,
     currentBaseFee: weiToGwei(
       (gasData as MeteorologyResponse)?.data?.currentBaseFee,
