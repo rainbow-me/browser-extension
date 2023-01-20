@@ -10,7 +10,10 @@ import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useGasStore } from '~/core/state';
 import { GasFeeParams, GasSpeed } from '~/core/types/gas';
-import { handleSignificantDecimals } from '~/core/utils/numbers';
+import {
+  handleSignificantDecimals,
+  toFixedDecimals,
+} from '~/core/utils/numbers';
 import {
   Box,
   Button,
@@ -83,12 +86,8 @@ export const CustomGasSheet = ({
   setSelectedSpeed: (speed: GasSpeed) => void;
 }) => {
   const {
-    gasFeeParamsBySpeed: {
-      custom: customSpeed,
-      urgent: urgentSpeed,
-      normal: normalSpeed,
-      fast: fastSpeed,
-    },
+    gasFeeParamsBySpeed: { custom: customSpeed, urgent: urgentSpeed },
+    gasFeeParamsBySpeed,
     customGasModified,
     selectedGas,
   } = useGasStore();
@@ -97,23 +96,17 @@ export const CustomGasSheet = ({
     selectedGas.option,
   );
 
-  const storeSpeeds = useMemo(
-    () => ({
-      [GasSpeed.NORMAL]: normalSpeed,
-      [GasSpeed.FAST]: fastSpeed,
-      [GasSpeed.URGENT]: urgentSpeed,
-      [GasSpeed.CUSTOM]: urgentSpeed,
-    }),
-    [fastSpeed, normalSpeed, urgentSpeed],
-  );
-
   const maxBaseFeeInputRef = useRef<HTMLInputElement>(null);
   const maxPriorityFeeInputRef = useRef<HTMLInputElement>(null);
+
+  const [focusedMaxBaseFeeInput, setFocusedMaxBaseFeeInput] = useState(false);
+  const [focusedMaxPriorityFeeInput, setFocusedMaxPriorityFeeInput] =
+    useState(false);
 
   const [maxBaseFee, setMaxBaseFee] = useState(
     (customSpeed as GasFeeParams)?.maxBaseFee?.gwei,
   );
-  const [maxPriorityFeePerGas, setMaxPriorityFeePerGas] = useState(
+  const [maxPriorityFee, setMaxPriorityFee] = useState(
     (customSpeed as GasFeeParams)?.maxPriorityFeePerGas?.gwei,
   );
 
@@ -133,19 +126,17 @@ export const CustomGasSheet = ({
   useEffect(() => {
     const urgentMaxPriorityFeeGwei = (urgentSpeed as GasFeeParams)
       ?.maxPriorityFeePerGas?.gwei;
-    if (
-      !customGasModified &&
-      urgentMaxPriorityFeeGwei !== maxPriorityFeePerGas
-    ) {
-      setMaxPriorityFeePerGas(urgentMaxPriorityFeeGwei);
+    if (!customGasModified && urgentMaxPriorityFeeGwei !== maxPriorityFee) {
+      setMaxPriorityFee(urgentMaxPriorityFeeGwei);
       if (maxPriorityFeeInputRef?.current) {
         maxPriorityFeeInputRef.current.value = urgentMaxPriorityFeeGwei;
       }
     }
-  }, [customGasModified, urgentSpeed, maxBaseFee, maxPriorityFeePerGas]);
+  }, [customGasModified, urgentSpeed, maxBaseFee, maxPriorityFee]);
 
   const updateCustomMaxBaseFee = useCallback(
     (maxBaseFee: string) => {
+      setSelectedSpeedOption(GasSpeed.CUSTOM);
       setCustomMaxBaseFee(maxBaseFee);
       setMaxBaseFee(maxBaseFee);
     },
@@ -154,8 +145,9 @@ export const CustomGasSheet = ({
 
   const updateCustomMaxPriorityFee = useCallback(
     (maxPriorityFee: string) => {
+      setSelectedSpeedOption(GasSpeed.CUSTOM);
       setCustomMaxPriorityFee(maxPriorityFee);
-      setMaxPriorityFeePerGas(maxPriorityFee);
+      setMaxPriorityFee(maxPriorityFee);
     },
     [setCustomMaxPriorityFee],
   );
@@ -167,8 +159,34 @@ export const CustomGasSheet = ({
 
   useEffect(() => {
     setSelectedSpeedOption(selectedGas.option);
+    setTimeout(() => {
+      maxBaseFeeInputRef?.current?.focus();
+    }, 500);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show]);
+
+  useEffect(() => {
+    if (!focusedMaxBaseFeeInput && !focusedMaxPriorityFeeInput) {
+      const gasSpeed = gasFeeParamsBySpeed[selectedSpeedOption] as GasFeeParams;
+      const maxBaseFeeGwei = toFixedDecimals(gasSpeed?.maxBaseFee?.gwei, 0);
+
+      const maxPriorityFeeGwei = gasSpeed?.maxPriorityFeePerGas?.gwei;
+      setMaxBaseFee(maxBaseFeeGwei);
+      setMaxPriorityFee(maxPriorityFeeGwei);
+      if (maxBaseFeeInputRef?.current) {
+        maxBaseFeeInputRef.current.value = maxBaseFeeGwei;
+      }
+      if (maxPriorityFeeInputRef?.current) {
+        maxPriorityFeeInputRef.current.value = maxPriorityFeeGwei;
+      }
+    }
+  }, [
+    focusedMaxBaseFeeInput,
+    focusedMaxPriorityFeeInput,
+    gasFeeParamsBySpeed,
+    selectedGas,
+    selectedSpeedOption,
+  ]);
 
   return (
     <Prompt
@@ -251,6 +269,8 @@ export const CustomGasSheet = ({
                 </Text>
                 <Box style={{ width: 98 }} marginRight="-4px">
                   <GweiInputMask
+                    onInputFocus={() => setFocusedMaxBaseFeeInput(true)}
+                    onInputBlur={() => setFocusedMaxBaseFeeInput(false)}
                     inputRef={maxBaseFeeInputRef}
                     value={maxBaseFee}
                     variant="surface"
@@ -270,8 +290,10 @@ export const CustomGasSheet = ({
                 </Text>
                 <Box style={{ width: 98 }} marginRight="-4px">
                   <GweiInputMask
+                    onInputFocus={() => setFocusedMaxPriorityFeeInput(true)}
+                    onInputBlur={() => setFocusedMaxPriorityFeeInput(false)}
                     inputRef={maxPriorityFeeInputRef}
-                    value={maxPriorityFeePerGas}
+                    value={maxPriorityFee}
                     variant="surface"
                     onChange={updateCustomMaxPriorityFee}
                   />
@@ -418,7 +440,7 @@ export const CustomGasSheet = ({
                           size="11pt"
                           weight="semibold"
                         >
-                          {storeSpeeds[speed].gasFee.display}
+                          {gasFeeParamsBySpeed[speed].gasFee.display}
                         </TextOverflow>
                       </Stack>
                     </Inline>
@@ -431,7 +453,7 @@ export const CustomGasSheet = ({
                         size="14pt"
                         weight="semibold"
                       >
-                        {storeSpeeds[speed].display}
+                        {gasFeeParamsBySpeed[speed].display}
                       </TextOverflow>
                       <TextOverflow
                         maxWidth={TEXT_OVERFLOW_WIDTH}
@@ -440,7 +462,7 @@ export const CustomGasSheet = ({
                         size="11pt"
                         weight="semibold"
                       >
-                        {storeSpeeds[speed].estimatedTime.display}
+                        {gasFeeParamsBySpeed[speed].estimatedTime.display}
                       </TextOverflow>
                     </Stack>
                   </Inline>

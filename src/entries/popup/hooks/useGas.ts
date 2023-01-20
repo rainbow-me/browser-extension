@@ -1,5 +1,4 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import BigNumber from 'bignumber.js';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ethUnits } from '~/core/references';
@@ -13,9 +12,9 @@ import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import {
   GasFeeLegacyParamsBySpeed,
+  GasFeeParams,
   GasFeeParamsBySpeed,
   GasSpeed,
-  TransactionGasParams,
 } from '~/core/types/gas';
 import { gweiToWei, weiToGwei } from '~/core/utils/ethereum';
 import {
@@ -62,6 +61,7 @@ export const useGas = ({
   const setCustomMaxBaseFee = useCallback(
     (maxBaseFee = '0') => {
       if (!gasData) return;
+
       const { data } = gasData as MeteorologyResponse;
       const currentBaseFee = data.currentBaseFee;
 
@@ -70,12 +70,9 @@ export const useGas = ({
         byPriorityFee: data.blocksToConfirmationByPriorityFee,
       };
 
-      const maxPriorityFeePerGas = new BigNumber(
-        (
-          storeGasFeeParamsBySpeed?.custom
-            .transactionGasParams as TransactionGasParams
-        ).maxPriorityFeePerGas,
-      ).toString();
+      const maxPriorityFeePerGas = (
+        storeGasFeeParamsBySpeed?.custom as GasFeeParams
+      ).maxPriorityFeePerGas.amount;
 
       const newCustomSpeed = parseCustomGasFeeParams({
         currentBaseFee,
@@ -110,12 +107,8 @@ export const useGas = ({
         byPriorityFee: data.blocksToConfirmationByPriorityFee,
       };
 
-      const maxBaseFee = new BigNumber(
-        (
-          storeGasFeeParamsBySpeed?.custom
-            .transactionGasParams as TransactionGasParams
-        ).maxFeePerGas,
-      ).toString();
+      const maxBaseFee = (storeGasFeeParamsBySpeed?.custom as GasFeeParams)
+        .maxBaseFee.amount;
 
       const newCustomSpeed = parseCustomGasFeeParams({
         currentBaseFee,

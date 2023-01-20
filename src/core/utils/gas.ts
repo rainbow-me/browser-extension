@@ -40,7 +40,6 @@ import {
   divide,
   fraction,
   greaterThan,
-  handleSignificantDecimals,
   lessThan,
   multiply,
   toHex,
@@ -99,8 +98,8 @@ export const parseGasFeeParam = ({ wei }: { wei: string }): GasFeeParam => {
   const gwei = wei ? weiToGwei(wei) : '';
   return {
     amount: wei,
-    display: `${handleSignificantDecimals(gwei, 0, 3, true)} Gwei`,
-    gwei: handleSignificantDecimals(gwei, 0, 3, true),
+    display: `${gwei} Gwei`,
+    gwei,
   };
 };
 
@@ -123,17 +122,12 @@ export const parseCustomGasFeeParams = ({
   blocksToConfirmation: BlocksToConfirmation;
   currency: SupportedCurrencyKey;
 }): GasFeeParams => {
-  console.log('MAX BASE FEE baseFeeWei', baseFeeWei);
-  console.log('MAX BASE FEE maxPriorityFeePerGas', maxPriorityFeeWei);
   const maxBaseFee = parseGasFeeParam({
     wei: baseFeeWei || '0',
   });
   const maxPriorityFeePerGas = parseGasFeeParam({
     wei: maxPriorityFeeWei || '0',
   });
-
-  console.log('MAX BASE FEE', maxBaseFee);
-  console.log('MAX PRIORITY FEE', maxPriorityFeePerGas);
 
   const baseFee = lessThan(currentBaseFee, maxBaseFee.amount)
     ? currentBaseFee
