@@ -30,7 +30,7 @@ import { RenameWalletPrompt } from '../../../walletSwitcher/renameWalletPrompt';
 
 import { NewWalletPrompt } from './newWalletPrompt';
 
-const infoButtonOptions = ({
+const InfoButtonOptions = ({
   account,
   handleViewPrivateKey,
   setRenameAccount,
@@ -228,7 +228,7 @@ export function WalletDetails() {
                         />
                       )}
                       <MoreInfoButton
-                        options={infoButtonOptions({
+                        options={InfoButtonOptions({
                           account,
                           handleViewPrivateKey,
                           setRenameAccount,
