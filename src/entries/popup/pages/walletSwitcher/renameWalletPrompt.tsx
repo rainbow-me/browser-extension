@@ -19,8 +19,7 @@ import {
 import { Input } from '~/design-system/components/Input/Input';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
 
-import { Avatar } from '../../components/Avatar/Avatar';
-import { useAvatar } from '../../hooks/useAvatar';
+import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 
 export const RenameWalletPrompt = ({
   show,
@@ -64,7 +63,6 @@ export const RenameWalletPrompt = ({
   useEffect(() => {
     setError(null);
   }, [newWalletName]);
-  const { avatar, isFetched } = useAvatar({ address: account });
 
   return (
     <Prompt show={show}>
@@ -87,22 +85,13 @@ export const RenameWalletPrompt = ({
               <Rows>
                 <Row>
                   <Inline alignHorizontal="center">
-                    <Avatar.Wrapper size={44} color={avatar?.color}>
-                      {isFetched ? (
-                        <>
-                          {avatar?.imageUrl ? (
-                            <Avatar.Image imageUrl={avatar.imageUrl} />
-                          ) : (
-                            <Avatar.Emoji
-                              color={avatar?.color}
-                              emoji={avatar?.emoji}
-                              size="20pt"
-                            />
-                          )}
-                        </>
-                      ) : null}
-                      <Avatar.Skeleton />
-                    </Avatar.Wrapper>
+                    {account && (
+                      <WalletAvatar
+                        address={account}
+                        size={44}
+                        emojiSize="20pt"
+                      />
+                    )}
                   </Inline>
                 </Row>
                 <Row>
