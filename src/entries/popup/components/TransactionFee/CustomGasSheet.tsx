@@ -88,7 +88,6 @@ export const CustomGasSheet = ({
     gasFeeParamsBySpeed,
     selectedGas,
     setSelectedGas,
-    clearCustomGasModified,
   } = useGasStore();
 
   const [selectedSpeedOption, setSelectedSpeedOption] = useState<GasSpeed>(
@@ -161,13 +160,12 @@ export const CustomGasSheet = ({
   }, [closeCustomGasSheet, selectedSpeedOption, setSelectedSpeed]);
 
   useEffect(() => {
-    setSelectedSpeedOption(selectedGas.option);
+    onSelectedGasChange(selectedGas.option);
     setTimeout(() => {
       maxBaseFeeInputRef?.current?.focus();
     }, 500);
-    clearCustomGasModified();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clearCustomGasModified, show]);
+  }, [show]);
 
   const onSelectedGasChange = useCallback(
     (speed: GasSpeed) => {

@@ -99,7 +99,7 @@ export const parseGasFeeParam = ({ wei }: { wei: string }): GasFeeParam => {
   return {
     amount: wei,
     display: `${gwei} Gwei`,
-    gwei,
+    gwei: `${Math.round(Number(gwei) * 10) / 10}`,
   };
 };
 
