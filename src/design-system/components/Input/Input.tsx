@@ -170,7 +170,7 @@ export function Input({
             fontSize,
             fontWeight: 'semibold',
             fontFamily: 'rounded',
-            textAlign: textAlign,
+            textAlign,
           }),
           placeholderStyle,
         ]}
