@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -13,32 +13,70 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { SymbolName, TextColor } from '~/design-system/styles/designTokens';
 import { PasswordInput } from '~/entries/popup/components/PasswordInput/PasswordInput';
 import { updatePassword } from '~/entries/popup/handlers/wallet';
+import {
+  getPasswordStrength,
+  strengthMeta,
+} from '~/entries/popup/utils/passwords';
 
 export function ChangePassword() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [strength, setStrength] = useState<number | null>(null);
+
+  const [isValid, setIsValid] = useState(false);
+  const [isMatching, setIsMatching] = useState<boolean | null>(null);
+
+  // Check if passwords match
+  const checkIfPasswordsMatch = useCallback(() => {
+    if (
+      newPassword.length > 0 &&
+      confirmNewPassword.length >= newPassword.length
+    ) {
+      if (newPassword === confirmNewPassword) {
+        setIsMatching(true);
+        return true;
+      } else {
+        setIsMatching(false);
+        return false;
+      }
+    } else {
+      setIsMatching(null);
+      return null;
+    }
+  }, [confirmNewPassword, newPassword]);
+
+  // Check strength && validity
+  useEffect(() => {
+    if (newPassword.length > 0) {
+      const pwdStrength = getPasswordStrength(newPassword);
+      setStrength(pwdStrength);
+      if (pwdStrength > 0) {
+        checkIfPasswordsMatch();
+        setIsValid(true);
+      } else {
+        setIsValid(false);
+      }
+    } else {
+      setStrength(null);
+      setIsValid(false);
+    }
+  }, [checkIfPasswordsMatch, confirmNewPassword, isMatching, newPassword]);
+
+  const handleOnBlur = useCallback(() => {
+    checkIfPasswordsMatch();
+  }, [checkIfPasswordsMatch]);
 
   const handleUpdatePassword = async () => {
-    if (newPassword === '') {
-      setError(i18n.t('passwords.password_not_set'));
-      return;
-    }
-    if (newPassword !== confirmNewPassword) {
-      setError(i18n.t('passwords.passwords_do_not_match'));
-      return;
-    }
+    if (!isValid || !isMatching) return;
     await updatePassword(state?.password, newPassword);
     navigate(-1);
   };
 
-  useEffect(() => {
-    setError(null);
-  }, [setError, newPassword, confirmNewPassword]);
   return (
     <Box paddingHorizontal="20px" paddingTop="64px" height="full">
       <Rows alignVertical="justify" space="24px">
@@ -81,16 +119,56 @@ export function ChangePassword() {
           <Row>
             <Rows space="12px">
               <Row>
-                <Text size="14pt" weight="medium">
-                  {i18n.t('passwords.new_password')}
-                </Text>
+                <Box paddingHorizontal="12px">
+                  <Inline
+                    wrap={false}
+                    alignVertical="center"
+                    alignHorizontal="justify"
+                    space="5px"
+                  >
+                    <Text size="14pt" weight="medium">
+                      {i18n.t('passwords.new_password')}
+                    </Text>
+
+                    <Inline space="2px" wrap={false} alignVertical="center">
+                      <Text
+                        size="12pt"
+                        weight="regular"
+                        color={
+                          (strength &&
+                            (strengthMeta[strength as number]
+                              .color as TextColor)) ||
+                          'transparent'
+                        }
+                      >
+                        {(strength && strengthMeta[strength].text) || (
+                          <>&nbsp;</>
+                        )}
+                      </Text>
+                      {strength && strengthMeta[strength].symbol ? (
+                        <Symbol
+                          symbol={strengthMeta[strength].symbol as SymbolName}
+                          size={12}
+                          color={strengthMeta[strength].color as TextColor}
+                          weight={'bold'}
+                        />
+                      ) : (
+                        <Symbol
+                          symbol={'arrow.down'}
+                          size={12}
+                          color={'transparent'}
+                          weight={'bold'}
+                        />
+                      )}
+                    </Inline>
+                  </Inline>
+                </Box>
               </Row>
               <Row>
                 <PasswordInput
                   placeholder={i18n.t('passwords.new_password')}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  borderColor={error ? 'red' : undefined}
                 />
               </Row>
             </Rows>
@@ -109,23 +187,26 @@ export function ChangePassword() {
                       placeholder={i18n.t('passwords.password')}
                       value={confirmNewPassword}
                       onChange={(e) => setConfirmNewPassword(e.target.value)}
-                      borderColor={error ? 'red' : undefined}
+                      onBlur={handleOnBlur}
                     />
                   </Row>
-                  {error && (
-                    <Row>
-                      <Box paddingTop="8px">
-                        <Text
-                          size="14pt"
-                          weight="semibold"
-                          align="center"
-                          color="red"
-                        >
-                          {error}
-                        </Text>
-                      </Box>
-                    </Row>
-                  )}
+                  <Row>
+                    <Box paddingTop="12px" paddingLeft="12px">
+                      <Text
+                        size="14pt"
+                        weight="semibold"
+                        align="left"
+                        color="labelTertiary"
+                      >
+                        {confirmNewPassword.length > 0 &&
+                        isMatching === false ? (
+                          i18n.t('passwords.passwords_do_not_match')
+                        ) : (
+                          <>&nbsp;</>
+                        )}
+                      </Text>
+                    </Box>
+                  </Row>
                 </Rows>
               </Row>
             </Rows>
@@ -136,9 +217,9 @@ export function ChangePassword() {
             <Rows space="8px">
               <Row>
                 <Button
-                  color="accent"
+                  color={isValid && isMatching ? 'accent' : 'labelQuaternary'}
                   height="44px"
-                  variant="flat"
+                  variant={isValid && isMatching ? 'flat' : 'disabled'}
                   width="full"
                   onClick={handleUpdatePassword}
                 >
