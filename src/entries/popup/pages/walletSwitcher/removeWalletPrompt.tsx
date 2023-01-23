@@ -43,10 +43,6 @@ export const RemoveWalletPrompt = ({
     }
   };
 
-  const handleClose = () => {
-    onClose();
-  };
-
   return (
     <Prompt show={show}>
       <Rows space="24px">
@@ -107,7 +103,7 @@ export const RemoveWalletPrompt = ({
                 variant="flat"
                 height="36px"
                 color="fillSecondary"
-                onClick={handleClose}
+                onClick={onClose}
                 width="full"
                 borderRadius="9px"
               >
