@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -22,6 +22,7 @@ import {
 } from '../../components/MoreInfoButton/MoreInfoButton';
 import { remove } from '../../handlers/wallet';
 import { useWallets } from '../../hooks/useWallets';
+import { ROUTES } from '../../urls';
 
 import { WalletActionsMenu } from './WalletSwitcher.css';
 import { RemoveWalletPrompt } from './removeWalletPrompt';
@@ -206,6 +207,23 @@ export function WalletSwitcher() {
               </Text>
             </Inline>
           </Box>
+          {process.env.IS_DEV && (
+            <Box padding="10px">
+              <Link to={ROUTES.WALLETS}>
+                <Inline alignVertical="center" space="10px">
+                  <Symbol
+                    symbol="gear"
+                    weight={'bold'}
+                    size={16}
+                    color="labelSecondary"
+                  />
+                  <Text size="14pt" weight="medium" color="labelSecondary">
+                    Old Wallets UI [DEV]
+                  </Text>
+                </Inline>
+              </Link>
+            </Box>
+          )}
           <Box></Box>
         </Stack>
       </Box>
