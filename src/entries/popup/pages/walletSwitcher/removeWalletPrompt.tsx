@@ -51,11 +51,9 @@ export const RemoveWalletPrompt = ({
             <Row>
               <Box paddingTop="12px">
                 <Text size="16pt" weight="bold" align="center">
-                  {`${
-                    hide
-                      ? i18n.t('remove_wallet_prompt.hide')
-                      : i18n.t('remove_wallet_prompt.remove')
-                  } ${displayName}?`}
+                  {`${i18n.t(
+                    `remove_wallet_prompt.${hide ? 'hide' : 'remove'}`,
+                  )} ${displayName}?`}
                 </Text>
               </Box>
             </Row>
@@ -73,9 +71,11 @@ export const RemoveWalletPrompt = ({
                     align="center"
                     color="labelTertiary"
                   >
-                    {hide
-                      ? i18n.t('remove_wallet_prompt.hide_description')
-                      : i18n.t('remove_wallet_prompt.remove_description')}
+                    {i18n.t(
+                      `remove_wallet_prompt.${
+                        hide ? 'hide_description' : 'remove_description'
+                      }`,
+                    )}
                   </Text>
                 </Row>
                 {error && (
@@ -119,9 +119,7 @@ export const RemoveWalletPrompt = ({
                 width="full"
                 borderRadius="9px"
               >
-                {hide
-                  ? i18n.t('remove_wallet_prompt.hide')
-                  : i18n.t('remove_wallet_prompt.remove')}
+                {i18n.t(`remove_wallet_prompt.${hide ? 'hide' : 'remove'}`)}
               </Button>
             </Column>
           </Columns>
