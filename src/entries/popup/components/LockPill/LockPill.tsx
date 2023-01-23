@@ -21,7 +21,7 @@ export default function LockPill() {
         paddingVertical="7px"
         alignItems="center"
         justifyContent="center"
-        id="wallet-lock-button"
+        testId="wallet-lock-button"
       >
         <Inline space="6px" alignVertical="center">
           <Symbol symbol="lock.fill" size={13} weight="medium" />
