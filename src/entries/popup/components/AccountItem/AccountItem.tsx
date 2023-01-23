@@ -5,10 +5,9 @@ import { truncateAddress } from '~/core/utils/address';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { Box, Symbol } from '~/design-system';
 
-import { useAvatar } from '../../hooks/useAvatar';
 import { useWalletName } from '../../hooks/useWalletName';
-import { Avatar } from '../Avatar/Avatar';
 import { MenuItem } from '../Menu/MenuItem';
+import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
 export enum LabelOption {
   address = 'address',
@@ -28,7 +27,7 @@ export default function AccountItem({
   isSelected?: boolean;
   labelType?: LabelOption;
 }) {
-  const { avatar, isFetched } = useAvatar({ address: account });
+  // const { avatar, isFetched } = useAvatar({ address: account });
   const { displayName, showAddress } = useWalletName({ address: account });
   const { data: balance } = useBalance({ addressOrName: account });
 
@@ -65,7 +64,7 @@ export default function AccountItem({
               position="absolute"
               padding="3px"
               borderRadius="round"
-              background="surfaceSecondary"
+              background="surfacePrimaryElevated"
               alignItems="center"
               justifyContent="center"
             >
@@ -77,22 +76,7 @@ export default function AccountItem({
               />
             </Box>
           )}
-          <Avatar.Wrapper size={36} color={avatar?.color}>
-            {isFetched ? (
-              <>
-                {avatar?.imageUrl ? (
-                  <Avatar.Image imageUrl={avatar.imageUrl} />
-                ) : (
-                  <Avatar.Emoji
-                    color={avatar?.color}
-                    emoji={avatar?.emoji}
-                    size="20pt"
-                  />
-                )}
-              </>
-            ) : null}
-            <Avatar.Skeleton />
-          </Avatar.Wrapper>
+          <WalletAvatar address={account} size={36} emojiSize="20pt" />
         </Box>
       }
       rightComponent={rightComponent}
