@@ -18,15 +18,11 @@ export const GweiInputMask = ({
   variant,
   onChange,
   inputRef,
-  onInputFocus,
-  onInputBlur,
 }: {
   value: string;
   variant: 'surface' | 'bordered' | 'transparent';
   onChange: (value: string) => void;
   inputRef: RefObject<HTMLInputElement>;
-  onInputFocus: () => void;
-  onInputBlur: () => void;
 }) => {
   const [isFocused, setIsFocused] = useState(false);
 
@@ -46,14 +42,12 @@ export const GweiInputMask = ({
   }, [inputRef]);
 
   const onFocus = useCallback(() => {
-    onInputFocus();
     setIsFocused(true);
-  }, [onInputFocus]);
+  }, []);
 
   const onBlur = useCallback(() => {
-    onInputBlur();
     setIsFocused(false);
-  }, [onInputBlur]);
+  }, []);
 
   return (
     <Box

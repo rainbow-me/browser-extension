@@ -160,7 +160,6 @@ export const parseCustomGasFeeParams = ({
     totalWei,
     supportedCurrencies[nativeAsset?.symbol as SupportedCurrencyKey],
   ).amount;
-  console.log('--nativeTotalWei', nativeTotalWei);
   const nativeDisplay = convertAmountAndPriceToNativeDisplayWithThreshold(
     nativeTotalWei || 0,
     nativeAsset?.price?.value || 0,

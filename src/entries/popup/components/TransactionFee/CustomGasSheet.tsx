@@ -10,10 +10,7 @@ import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useGasStore } from '~/core/state';
 import { GasFeeParams, GasSpeed } from '~/core/types/gas';
-import {
-  handleSignificantDecimals,
-  toFixedDecimals,
-} from '~/core/utils/numbers';
+import { handleSignificantDecimals } from '~/core/utils/numbers';
 import {
   Box,
   Button,
@@ -30,6 +27,7 @@ import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverfl
 import { SymbolStyles, TextStyles } from '~/design-system/styles/core.css';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
+import usePrevious from '../../hooks/usePrevious';
 import { GweiInputMask } from '../InputMask/GweiInputMask/GweiInputMask';
 
 const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
@@ -86,22 +84,21 @@ export const CustomGasSheet = ({
   setSelectedSpeed: (speed: GasSpeed) => void;
 }) => {
   const {
-    gasFeeParamsBySpeed: { custom: customSpeed, urgent: urgentSpeed },
+    gasFeeParamsBySpeed: { custom: customSpeed },
     gasFeeParamsBySpeed,
-    customGasModified,
     selectedGas,
+    setSelectedGas,
+    clearCustomGasModified,
   } = useGasStore();
 
   const [selectedSpeedOption, setSelectedSpeedOption] = useState<GasSpeed>(
     selectedGas.option,
   );
 
+  const prevSelectedGasOption = usePrevious(selectedSpeedOption);
+
   const maxBaseFeeInputRef = useRef<HTMLInputElement>(null);
   const maxPriorityFeeInputRef = useRef<HTMLInputElement>(null);
-
-  const [focusedMaxBaseFeeInput, setFocusedMaxBaseFeeInput] = useState(false);
-  const [focusedMaxPriorityFeeInput, setFocusedMaxPriorityFeeInput] =
-    useState(false);
 
   const [maxBaseFee, setMaxBaseFee] = useState(
     (customSpeed as GasFeeParams)?.maxBaseFee?.gwei,
@@ -112,44 +109,50 @@ export const CustomGasSheet = ({
 
   const trend = useMemo(() => getBaseFeeTrend(baseFeeTrend), [baseFeeTrend]);
 
-  useEffect(() => {
-    const urgentMaxBaseFeeGwei = (urgentSpeed as GasFeeParams)?.maxBaseFee
-      ?.gwei;
-    if (!customGasModified && urgentMaxBaseFeeGwei !== maxBaseFee) {
-      setMaxBaseFee(urgentMaxBaseFeeGwei);
-      if (maxBaseFeeInputRef?.current) {
-        maxBaseFeeInputRef.current.value = urgentMaxBaseFeeGwei;
-      }
-    }
-  }, [customGasModified, urgentSpeed, maxBaseFee]);
-
-  useEffect(() => {
-    const urgentMaxPriorityFeeGwei = (urgentSpeed as GasFeeParams)
-      ?.maxPriorityFeePerGas?.gwei;
-    if (!customGasModified && urgentMaxPriorityFeeGwei !== maxPriorityFee) {
-      setMaxPriorityFee(urgentMaxPriorityFeeGwei);
-      if (maxPriorityFeeInputRef?.current) {
-        maxPriorityFeeInputRef.current.value = urgentMaxPriorityFeeGwei;
-      }
-    }
-  }, [customGasModified, urgentSpeed, maxBaseFee, maxPriorityFee]);
-
   const updateCustomMaxBaseFee = useCallback(
     (maxBaseFee: string) => {
+      if (prevSelectedGasOption !== GasSpeed.CUSTOM && prevSelectedGasOption) {
+        const prevSelectedGas = gasFeeParamsBySpeed[
+          prevSelectedGasOption
+        ] as GasFeeParams;
+        setSelectedGas({
+          selectedGas: prevSelectedGas,
+        });
+        setMaxPriorityFee(prevSelectedGas.maxPriorityFeePerGas.gwei);
+      }
       setSelectedSpeedOption(GasSpeed.CUSTOM);
       setCustomMaxBaseFee(maxBaseFee);
       setMaxBaseFee(maxBaseFee);
     },
-    [setCustomMaxBaseFee],
+    [
+      gasFeeParamsBySpeed,
+      prevSelectedGasOption,
+      setCustomMaxBaseFee,
+      setSelectedGas,
+    ],
   );
 
   const updateCustomMaxPriorityFee = useCallback(
     (maxPriorityFee: string) => {
+      if (prevSelectedGasOption !== GasSpeed.CUSTOM && prevSelectedGasOption) {
+        const prevSelectedGas = gasFeeParamsBySpeed[
+          prevSelectedGasOption
+        ] as GasFeeParams;
+        setSelectedGas({
+          selectedGas: prevSelectedGas,
+        });
+        setMaxBaseFee(prevSelectedGas.maxBaseFee.gwei);
+      }
       setSelectedSpeedOption(GasSpeed.CUSTOM);
       setCustomMaxPriorityFee(maxPriorityFee);
       setMaxPriorityFee(maxPriorityFee);
     },
-    [setCustomMaxPriorityFee],
+    [
+      gasFeeParamsBySpeed,
+      prevSelectedGasOption,
+      setCustomMaxPriorityFee,
+      setSelectedGas,
+    ],
   );
 
   const setCustomGas = useCallback(() => {
@@ -157,36 +160,26 @@ export const CustomGasSheet = ({
     closeCustomGasSheet();
   }, [closeCustomGasSheet, selectedSpeedOption, setSelectedSpeed]);
 
-  // useEffect(() => {
-  //   setSelectedSpeedOption(selectedGas.option);
-  //   setTimeout(() => {
-  //     maxBaseFeeInputRef?.current?.focus();
-  //   }, 500);
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [show]);
-
   useEffect(() => {
-    if (!focusedMaxBaseFeeInput && !focusedMaxPriorityFeeInput) {
-      const gasSpeed = gasFeeParamsBySpeed[selectedSpeedOption] as GasFeeParams;
-      const maxBaseFeeGwei = toFixedDecimals(gasSpeed?.maxBaseFee?.gwei, 0);
+    setSelectedSpeedOption(selectedGas.option);
+    setTimeout(() => {
+      maxBaseFeeInputRef?.current?.focus();
+    }, 500);
+    clearCustomGasModified();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clearCustomGasModified, show]);
 
-      const maxPriorityFeeGwei = gasSpeed?.maxPriorityFeePerGas?.gwei;
-      setMaxBaseFee(maxBaseFeeGwei);
-      setMaxPriorityFee(maxPriorityFeeGwei);
-      if (maxBaseFeeInputRef?.current) {
-        maxBaseFeeInputRef.current.value = maxBaseFeeGwei;
-      }
-      if (maxPriorityFeeInputRef?.current) {
-        maxPriorityFeeInputRef.current.value = maxPriorityFeeGwei;
-      }
-    }
-  }, [
-    focusedMaxBaseFeeInput,
-    focusedMaxPriorityFeeInput,
-    gasFeeParamsBySpeed,
-    selectedGas,
-    selectedSpeedOption,
-  ]);
+  const onSelectedGasChange = useCallback(
+    (speed: GasSpeed) => {
+      const selectedGas = gasFeeParamsBySpeed[speed] as GasFeeParams;
+      setSelectedGas({ selectedGas: gasFeeParamsBySpeed[speed] });
+      setMaxBaseFee(selectedGas.maxBaseFee.gwei);
+      setMaxPriorityFee(selectedGas.maxPriorityFeePerGas.gwei);
+      setSelectedSpeedOption(speed);
+      maxBaseFeeInputRef?.current?.focus();
+    },
+    [gasFeeParamsBySpeed, setSelectedGas],
+  );
 
   return (
     <Prompt
@@ -269,8 +262,6 @@ export const CustomGasSheet = ({
                 </Text>
                 <Box style={{ width: 98 }} marginRight="-4px">
                   <GweiInputMask
-                    onInputFocus={() => setFocusedMaxBaseFeeInput(true)}
-                    onInputBlur={() => setFocusedMaxBaseFeeInput(false)}
                     inputRef={maxBaseFeeInputRef}
                     value={maxBaseFee}
                     variant="surface"
@@ -290,8 +281,6 @@ export const CustomGasSheet = ({
                 </Text>
                 <Box style={{ width: 98 }} marginRight="-4px">
                   <GweiInputMask
-                    onInputFocus={() => setFocusedMaxPriorityFeeInput(true)}
-                    onInputBlur={() => setFocusedMaxPriorityFeeInput(false)}
                     inputRef={maxPriorityFeeInputRef}
                     value={maxPriorityFee}
                     variant="surface"
@@ -349,7 +338,7 @@ export const CustomGasSheet = ({
                     : 'transparent',
                 hover: 'accent',
               }}
-              onClick={() => setSelectedSpeedOption(GasSpeed.CUSTOM)}
+              onClick={() => onSelectedGasChange(GasSpeed.CUSTOM)}
             >
               <Inline alignVertical="center" alignHorizontal="justify">
                 <Inline space="10px" alignVertical="center">
@@ -417,7 +406,7 @@ export const CustomGasSheet = ({
                       selectedSpeedOption === speed ? 'accent' : 'transparent',
                     hover: 'accent',
                   }}
-                  onClick={() => setSelectedSpeedOption(speed)}
+                  onClick={() => onSelectedGasChange(speed)}
                 >
                   <Inline alignVertical="center" alignHorizontal="justify">
                     <Inline space="10px" alignVertical="center">
