@@ -93,8 +93,8 @@ export function Home() {
               ...style,
               position: 'relative',
               overscrollBehavior: 'none',
-              overflow: displayingSheet ? 'hidden' : 'auto',
               height: window.innerHeight,
+              ...(displayingSheet ? { overflow: 'hidden' } : {}),
             }}
           >
             <TopNav />

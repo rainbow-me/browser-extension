@@ -17,6 +17,7 @@ export function MainLayout({
       display="flex"
       flexDirection="column"
       height="full"
+      width="full"
       style={style}
     >
       {children}
