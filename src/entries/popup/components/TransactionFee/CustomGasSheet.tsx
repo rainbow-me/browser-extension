@@ -10,13 +10,19 @@ import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useGasStore } from '~/core/state';
 import { GasFeeParams, GasSpeed } from '~/core/types/gas';
-import { handleSignificantDecimals } from '~/core/utils/numbers';
+import {
+  handleSignificantDecimals,
+  isZero,
+  lessThan,
+} from '~/core/utils/numbers';
 import {
   Box,
   Button,
   Column,
   Columns,
   Inline,
+  Row,
+  Rows,
   Separator,
   Stack,
   Symbol,
@@ -66,6 +72,61 @@ const getBaseFeeTrend = (trend: number) => {
   }
 };
 
+const GasLabel = ({
+  label,
+  warning,
+}: {
+  label: string;
+  warning?: 'stuck' | 'fail';
+}) => {
+  if (!warning) {
+    return (
+      <Text align="left" color="label" size="14pt" weight="semibold">
+        {label}
+      </Text>
+    );
+  }
+
+  return (
+    <Rows space="8px">
+      <Row>
+        <Inline space="4px" alignVertical="center">
+          <Text align="left" color="label" size="14pt" weight="semibold">
+            {label}
+          </Text>
+          <Symbol
+            symbol={'exclamationmark.triangle.fill'}
+            color={warning === 'fail' ? 'red' : 'orange'}
+            weight="bold"
+            size={11}
+          />
+        </Inline>
+      </Row>
+      <Row>
+        <Inline space="4px">
+          <Text
+            color={warning === 'fail' ? 'red' : 'orange'}
+            size="14pt"
+            weight="medium"
+          >
+            {i18n.t(`custom_gas.warnings.low`)}
+          </Text>
+          <Text color="label" size="14pt" weight="medium">
+            {'‧'}
+          </Text>
+          <Text color="labelTertiary" size="14pt" weight="medium">
+            {i18n.t(
+              `custom_gas.warnings.${
+                warning === 'stuck' ? 'may_get_stuck' : 'likely_to_fail'
+              }`,
+            )}
+          </Text>
+        </Inline>
+      </Row>
+    </Rows>
+  );
+};
+
 export const CustomGasSheet = ({
   show,
   currentBaseFee,
@@ -105,6 +166,13 @@ export const CustomGasSheet = ({
   const [maxPriorityFee, setMaxPriorityFee] = useState(
     (customSpeed as GasFeeParams)?.maxPriorityFeePerGas?.gwei,
   );
+
+  const [maxBaseFeeWarning, setMaxBaseFeeWarning] = useState<
+    'stuck' | 'fail' | undefined
+  >();
+  const [maxPriorityFeeWarning, setPriorityBaseFeeWarning] = useState<
+    'stuck' | 'fail' | undefined
+  >();
 
   const trend = useMemo(() => getBaseFeeTrend(baseFeeTrend), [baseFeeTrend]);
 
@@ -166,6 +234,29 @@ export const CustomGasSheet = ({
     }, 500);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show]);
+
+  useEffect(() => {
+    if (!maxBaseFee || isZero(maxBaseFee)) {
+      setMaxBaseFeeWarning('fail');
+    } else if (lessThan(maxBaseFee, currentBaseFee)) {
+      setMaxBaseFeeWarning('stuck');
+    } else {
+      setMaxBaseFeeWarning(undefined);
+    }
+  }, [currentBaseFee, gasFeeParamsBySpeed.normal, maxBaseFee]);
+
+  useEffect(() => {
+    const normalSpeed = gasFeeParamsBySpeed.normal as GasFeeParams;
+    if (!maxPriorityFee || isZero(maxPriorityFee)) {
+      setPriorityBaseFeeWarning('fail');
+    } else if (
+      lessThan(maxPriorityFee, normalSpeed.maxPriorityFeePerGas.gwei)
+    ) {
+      setPriorityBaseFeeWarning('stuck');
+    } else {
+      setPriorityBaseFeeWarning(undefined);
+    }
+  }, [gasFeeParamsBySpeed.normal, maxBaseFee, maxPriorityFee]);
 
   const onSelectedGasChange = useCallback(
     (speed: GasSpeed) => {
@@ -255,9 +346,12 @@ export const CustomGasSheet = ({
                 alignHorizontal="justify"
                 alignVertical="center"
               >
-                <Text align="left" color="label" size="14pt" weight="semibold">
-                  {i18n.t('custom_gas.max_base_fee')}
-                </Text>
+                <Box>
+                  <GasLabel
+                    label={i18n.t('custom_gas.max_base_fee')}
+                    warning={maxBaseFeeWarning}
+                  />
+                </Box>
                 <Box style={{ width: 98 }} marginRight="-4px">
                   <GweiInputMask
                     inputRef={maxBaseFeeInputRef}
@@ -274,9 +368,12 @@ export const CustomGasSheet = ({
                 alignHorizontal="justify"
                 alignVertical="center"
               >
-                <Text align="left" color="label" size="14pt" weight="semibold">
-                  {i18n.t('custom_gas.miner_tip')}
-                </Text>
+                <Box>
+                  <GasLabel
+                    label={i18n.t('custom_gas.miner_tip')}
+                    warning={maxPriorityFeeWarning}
+                  />
+                </Box>
                 <Box style={{ width: 98 }} marginRight="-4px">
                   <GweiInputMask
                     inputRef={maxPriorityFeeInputRef}

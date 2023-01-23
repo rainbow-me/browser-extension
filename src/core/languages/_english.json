@@ -170,6 +170,11 @@
       "stable": "Stable",
       "surging": "Surging",
       "rising": "Rising"
+    },
+    "warnings": {
+      "may_get_stuck": "may get stuck",
+      "likely_to_fail": "likely to fail",
+      "low": "Low"
     }
   },
   "contacts": {
