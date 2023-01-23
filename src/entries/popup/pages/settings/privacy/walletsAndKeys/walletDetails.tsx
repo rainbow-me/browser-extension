@@ -44,8 +44,7 @@ const infoButtonOptions = ({
   unhideWallet: ((address: Address) => void) | undefined;
 }): MoreInfoOption[] => [
   {
-    onSelect: (e: Event) => {
-      e.stopPropagation();
+    onSelect: () => {
       handleViewPrivateKey(account);
     },
     label: i18n.t(
@@ -54,8 +53,7 @@ const infoButtonOptions = ({
     symbol: 'key.fill',
   },
   {
-    onSelect: (e: Event) => {
-      e.stopPropagation();
+    onSelect: () => {
       setRenameAccount(account);
     },
     label: i18n.t(
@@ -64,8 +62,7 @@ const infoButtonOptions = ({
     symbol: 'person.crop.circle.fill',
   },
   {
-    onSelect: (e: Event) => {
-      e.stopPropagation();
+    onSelect: () => {
       navigator.clipboard.writeText(account as string);
     },
     label: i18n.t(
@@ -78,8 +75,7 @@ const infoButtonOptions = ({
   ...(unhideWallet
     ? [
         {
-          onSelect: (e: Event) => {
-            e.stopPropagation();
+          onSelect: () => {
             unhideWallet(account);
           },
           label: i18n.t(
@@ -90,8 +86,7 @@ const infoButtonOptions = ({
       ]
     : []),
   {
-    onSelect: (e: Event) => {
-      e.stopPropagation();
+    onSelect: () => {
       setRemoveAccount(account);
     },
     label: i18n.t(

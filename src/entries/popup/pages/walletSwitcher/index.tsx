@@ -40,16 +40,14 @@ const infoButtonOptions = ({
   hide?: boolean;
 }): MoreInfoOption[] => [
   {
-    onSelect: (e: Event) => {
-      e.stopPropagation();
+    onSelect: () => {
       setRenameAccount(account.address);
     },
     label: i18n.t('wallet_switcher.rename_wallet'),
     symbol: 'person.crop.circle.fill',
   },
   {
-    onSelect: (e: Event) => {
-      e.stopPropagation();
+    onSelect: () => {
       navigator.clipboard.writeText(account.address as string);
     },
     label: i18n.t('wallet_switcher.copy_address'),
@@ -60,8 +58,7 @@ const infoButtonOptions = ({
   ...(account.type === KeychainType.ReadOnlyKeychain
     ? [
         {
-          onSelect: (e: Event) => {
-            e.stopPropagation();
+          onSelect: () => {
             setRemoveAccount(account);
           },
           label: i18n.t('wallet_switcher.remove_wallet'),
@@ -71,8 +68,7 @@ const infoButtonOptions = ({
       ]
     : [
         {
-          onSelect: (e: Event) => {
-            e.stopPropagation();
+          onSelect: () => {
             setRemoveAccount(account);
           },
           label: i18n.t('wallet_switcher.hide_wallet'),

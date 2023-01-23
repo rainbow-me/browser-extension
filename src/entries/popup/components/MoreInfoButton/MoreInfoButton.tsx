@@ -17,7 +17,7 @@ export interface MoreInfoOption {
   subLabel?: string;
   symbol: SymbolProps['symbol'];
   separator?: boolean;
-  onSelect: (e: Event) => void;
+  onSelect: () => void;
   color?: TextStyles['color'];
 }
 
@@ -26,10 +26,7 @@ const MoreInfoButton = ({ options }: { options: MoreInfoOption[] }) => {
     <Box onClick={(e) => e.stopPropagation()}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Box
-            style={{ cursor: 'default' }}
-            onClick={(e) => e.stopPropagation()}
-          >
+          <Box style={{ cursor: 'default' }}>
             <Symbol
               symbol="ellipsis.circle"
               weight="bold"
