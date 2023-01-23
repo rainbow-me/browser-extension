@@ -70,7 +70,11 @@ const MoreInfoButton = ({ options }: { options: MoreInfoOption[] }) => {
                   </Rows>
                 </Inline>
               </DropdownMenuItem>
-              {option.separator && <DropdownMenuSeparator />}
+              {option.separator && (
+                <Box paddingVertical="4px">
+                  <DropdownMenuSeparator />
+                </Box>
+              )}
             </Box>
           ))}
         </DropdownMenuContent>
