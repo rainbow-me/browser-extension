@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import React, {
   useCallback,
   useEffect,
@@ -78,54 +79,69 @@ const GasLabel = ({
 }: {
   label: string;
   warning?: 'stuck' | 'fail';
-}) => {
-  if (!warning) {
-    return (
-      <Text align="left" color="label" size="14pt" weight="semibold">
-        {label}
-      </Text>
-    );
-  }
-
-  return (
-    <Rows space="8px">
-      <Row>
-        <Inline space="4px" alignVertical="center">
-          <Text align="left" color="label" size="14pt" weight="semibold">
-            {label}
-          </Text>
-          <Symbol
-            symbol={'exclamationmark.triangle.fill'}
-            color={warning === 'fail' ? 'red' : 'orange'}
-            weight="bold"
-            size={11}
-          />
-        </Inline>
-      </Row>
-      <Row>
-        <Inline space="4px">
-          <Text
-            color={warning === 'fail' ? 'red' : 'orange'}
-            size="14pt"
-            weight="medium"
-          >
-            {i18n.t(`custom_gas.warnings.low`)}
-          </Text>
-          <Text color="label" size="14pt" weight="medium">
-            {'‧'}
-          </Text>
-          <Text color="labelTertiary" size="14pt" weight="medium">
-            {i18n.t(
-              `custom_gas.warnings.${
-                warning === 'stuck' ? 'may_get_stuck' : 'likely_to_fail'
-              }`,
-            )}
-          </Text>
-        </Inline>
-      </Row>
-    </Rows>
-  );
-};
+}) => (
+  <AnimatePresence mode="wait" initial={false}>
+    {!warning && (
+      <Box
+        as={motion.div}
+        key="no-warning"
+        initial={{ y: -8, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: -8, opacity: 0 }}
+      >
+        <Text align="left" color="label" size="14pt" weight="semibold">
+          {label}
+        </Text>
+      </Box>
+    )}
+    {!!warning && (
+      <Box
+        as={motion.div}
+        key="warning"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <Rows space="8px">
+          <Row>
+            <Inline space="4px" alignVertical="center">
+              <Text align="left" color="label" size="14pt" weight="semibold">
+                {label}
+              </Text>
+              <Symbol
+                symbol={'exclamationmark.triangle.fill'}
+                color={warning === 'fail' ? 'red' : 'orange'}
+                weight="bold"
+                size={11}
+              />
+            </Inline>
+          </Row>
+          <Row>
+            <Inline space="4px">
+              <Text
+                color={warning === 'fail' ? 'red' : 'orange'}
+                size="14pt"
+                weight="medium"
+              >
+                {i18n.t(`custom_gas.warnings.low`)}
+              </Text>
+              <Text color="label" size="14pt" weight="medium">
+                {'‧'}
+              </Text>
+              <Text color="labelTertiary" size="14pt" weight="medium">
+                {i18n.t(
+                  `custom_gas.warnings.${
+                    warning === 'stuck' ? 'may_get_stuck' : 'likely_to_fail'
+                  }`,
+                )}
+              </Text>
+            </Inline>
+          </Row>
+        </Rows>
+      </Box>
+    )}
+  </AnimatePresence>
+);
 
 export const CustomGasSheet = ({
   show,
