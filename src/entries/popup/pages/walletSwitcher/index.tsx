@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -21,6 +21,7 @@ import {
   MoreInfoOption,
 } from '../../components/MoreInfoButton/MoreInfoButton';
 import { remove } from '../../handlers/wallet';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 
@@ -91,11 +92,11 @@ export function WalletSwitcher() {
   >();
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
   const { hideWallet } = useHiddenWalletsStore();
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
   const { visibleWallets: accounts, fetchWallets } = useWallets();
   const handleSelectAddress = (address: Address) => {
     setCurrentAddress(address);
-    navigate(-1);
+    navigate(ROUTES.HOME);
   };
   const handleRemoveAccount = async (address: Address) => {
     const removed = accounts.find((account) => account.address === address);
