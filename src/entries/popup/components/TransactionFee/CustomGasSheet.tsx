@@ -35,7 +35,7 @@ import { GweiInputMask } from '../InputMask/GweiInputMask/GweiInputMask';
 const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
 
 const { innerWidth: windowWidth } = window;
-const TEXT_OVERFLOW_WIDTH = windowWidth / 2 - 20;
+const TEXT_OVERFLOW_WIDTH = windowWidth / 2 - 30;
 
 const getBaseFeeTrend = (trend: number) => {
   switch (trend) {
@@ -157,13 +157,13 @@ export const CustomGasSheet = ({
     closeCustomGasSheet();
   }, [closeCustomGasSheet, selectedSpeedOption, setSelectedSpeed]);
 
-  useEffect(() => {
-    setSelectedSpeedOption(selectedGas.option);
-    setTimeout(() => {
-      maxBaseFeeInputRef?.current?.focus();
-    }, 500);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [show]);
+  // useEffect(() => {
+  //   setSelectedSpeedOption(selectedGas.option);
+  //   setTimeout(() => {
+  //     maxBaseFeeInputRef?.current?.focus();
+  //   }, 500);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [show]);
 
   useEffect(() => {
     if (!focusedMaxBaseFeeInput && !focusedMaxPriorityFeeInput) {
@@ -366,7 +366,7 @@ export const CustomGasSheet = ({
                       {i18n.t(`transaction_fee.custom`)}
                     </Text>
                     <TextOverflow
-                      maxWidth={TEXT_OVERFLOW_WIDTH}
+                      maxWidth={TEXT_OVERFLOW_WIDTH - 50}
                       align="left"
                       color="label"
                       size="11pt"
