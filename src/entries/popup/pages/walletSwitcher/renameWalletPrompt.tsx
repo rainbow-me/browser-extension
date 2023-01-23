@@ -36,9 +36,9 @@ export const RenameWalletPrompt = ({
   const [newWalletName, setNewWalletName] = useState(oldWalletName);
   const [error, setError] = useState<string | null>(null);
 
-  const handleValidateWalletName = async () => {
+  const handleValidateWalletName = () => {
     if (account && newWalletName !== '') {
-      await saveWalletName({ address: account, name: newWalletName });
+      saveWalletName({ address: account, name: newWalletName });
       onClose();
       return;
     }
