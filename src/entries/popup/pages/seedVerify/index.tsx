@@ -1,6 +1,5 @@
 /* eslint-disable no-nested-ternary */
 import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -18,6 +17,7 @@ import { globalColors } from '~/design-system/styles/designTokens';
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { exportWallet } from '../../handlers/wallet';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 const shuffleArray = (array: string[]) => {
@@ -37,7 +37,7 @@ const addLeadingZero = (num: number) => {
 };
 
 export function SeedVerify() {
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
   const [seed, setSeed] = useState('');
   const [randomSeed, setRandomSeed] = useState<string[]>([]);
   const { currentAddress } = useCurrentAddressStore();

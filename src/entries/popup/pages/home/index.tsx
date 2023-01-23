@@ -6,7 +6,7 @@ import {
   useTransform,
 } from 'framer-motion';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
 import { usePendingRequestStore } from '~/core/state';
@@ -17,6 +17,7 @@ import { globalColors } from '~/design-system/styles/designTokens';
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { useAvatar } from '../../hooks/useAvatar';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { MainLayout } from '../../layouts/MainLayout';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
@@ -41,7 +42,7 @@ export function Home() {
   const { avatar } = useAvatar({ address });
   const [sheet, setSheet] = useState<SheetMode>('none');
 
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
 
   const [speedUpAndCancelTx, setSpeedUpAndCancelTx] =
     useState<RainbowTransaction>();

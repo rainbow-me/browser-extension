@@ -92,7 +92,11 @@ function ActionButtonsSection() {
             symbol="arrow.triangle.swap"
             text={i18n.t('wallet_header.swap')}
           />
-          <Link id="header-link-send" to={ROUTES.SEND}>
+          <Link
+            id="header-link-send"
+            to={ROUTES.SEND}
+            state={{ from: ROUTES.HOME }}
+          >
             <ActionButton
               symbol="paperplane.fill"
               text={i18n.t('wallet_header.send')}

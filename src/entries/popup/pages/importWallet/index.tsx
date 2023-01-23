@@ -2,7 +2,6 @@ import { isAddress, isValidMnemonic } from 'ethers/lib/utils';
 import { motion } from 'framer-motion';
 import { startsWith } from 'lodash';
 import React, { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -27,6 +26,7 @@ import {
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import * as wallet from '../../handlers/wallet';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 const validateSecret = (secret: string) => {
@@ -38,7 +38,7 @@ const validateSecret = (secret: string) => {
 };
 
 export function ImportWallet() {
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
   const [isValid, setIsValid] = useState(false);
   const [secrets, setSecrets] = useState(['']);
   const { setCurrentAddress } = useCurrentAddressStore();

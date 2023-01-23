@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import React from 'react';
+import { To } from 'react-router-dom';
 
 import { Box } from '~/design-system';
 import {
@@ -16,9 +17,11 @@ import { animatedRouteStyles } from './AnimatedRoute.css';
 
 type AnimatedRouteProps = {
   background?: BackgroundColor;
+  backTo?: To;
   children: React.ReactNode;
   direction: AnimatedRouteDirection;
   navbar?: boolean;
+  navbarIcon?: 'arrow' | 'ex';
   navbarBackground?: BackgroundColor;
   title?: string;
   protectedRoute?: UserStatusResult[] | true;
@@ -43,7 +46,7 @@ export const animatedRouteValues: Record<
       y: -16,
     },
   },
-  horizontal: {
+  right: {
     initial: {
       opacity: 0,
       x: 16,
@@ -57,7 +60,21 @@ export const animatedRouteValues: Record<
       x: 16,
     },
   },
-  vertical: {
+  left: {
+    initial: {
+      opacity: 0,
+      x: -16,
+    },
+    end: {
+      opacity: 1,
+      x: 0,
+    },
+    exit: {
+      opacity: 0,
+      x: -16,
+    },
+  },
+  up: {
     initial: {
       opacity: 0,
       y: 16,
@@ -69,6 +86,20 @@ export const animatedRouteValues: Record<
     exit: {
       opacity: 0,
       y: 16,
+    },
+  },
+  down: {
+    initial: {
+      opacity: 0,
+      y: -16,
+    },
+    end: {
+      opacity: 1,
+      y: 0,
+    },
+    exit: {
+      opacity: 0,
+      y: -16,
     },
   },
   deceleratedShort: {
@@ -103,9 +134,11 @@ export const AnimatedRoute = React.forwardRef<
 >((props: AnimatedRouteProps, ref) => {
   const {
     background,
+    backTo,
     children,
     direction,
     navbar,
+    navbarIcon,
     title,
     navbarBackground,
     protectedRoute,
@@ -133,10 +166,10 @@ export const AnimatedRoute = React.forwardRef<
           title={title || ''}
           background={navbarBackground}
           leftComponent={
-            direction === 'horizontal' ? (
-              <Navbar.BackButton />
+            navbarIcon === 'arrow' ? (
+              <Navbar.BackButton backTo={backTo} />
             ) : (
-              <Navbar.CloseButton />
+              <Navbar.CloseButton backTo={backTo} />
             )
           }
           rightComponent={rightNavbarComponent}

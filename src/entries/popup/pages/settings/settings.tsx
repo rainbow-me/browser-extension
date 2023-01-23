@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
@@ -23,10 +22,11 @@ import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 
 import { testSandbox } from '../../handlers/wallet';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 export function Settings() {
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { isDefaultWallet, setIsDefaultWallet } = useIsDefaultWalletStore();
 
