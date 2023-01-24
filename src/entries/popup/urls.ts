@@ -34,6 +34,7 @@ export const ROUTES = {
   SIGN: '/sign', // Sign
   WALLETS: '/wallets', // Wallets
   WALLET_SWITCHER: '/wallet-switcher', // WalletSwitcher
+  ADD_WALLET: '/add-wallet', // AddWallet
   READY: '/ready', // WalletReady
   APPROVE_APP_REQUEST: '/approve-request',
 };

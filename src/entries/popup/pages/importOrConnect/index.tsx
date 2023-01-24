@@ -2,19 +2,10 @@
 import React, { useCallback } from 'react';
 
 import { i18n } from '~/core/languages';
-import {
-  Box,
-  Column,
-  Columns,
-  Inline,
-  Separator,
-  Stack,
-  Symbol,
-  Text,
-} from '~/design-system';
+import { Box, Inline, Separator, Symbol, Text } from '~/design-system';
 
-import { ChevronRight } from '../../components/ChevronRight';
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
+import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -62,106 +53,34 @@ export function ImportOrConnect() {
         <Separator color="separatorTertiary" strokeWeight="1px" />
       </Box>
       <Box paddingTop="24px">
-        <Box
-          background="surfaceSecondaryElevated"
-          borderRadius="16px"
-          paddingVertical="24px"
-          paddingHorizontal="20px"
-          borderColor={'separatorSecondary'}
-          borderWidth={'1px'}
-        >
-          <Box
-            width="full"
-            paddingBottom="20px"
+        <OnboardMenu>
+          <OnboardMenu.Item
             onClick={() => navigateTo(ROUTES.IMPORT)}
+            title={i18n.t('import_or_connect.import_wallet')}
+            subtitle={i18n.t('import_or_connect.import_wallet_description')}
+            symbol="lock.rotation"
+            symbolColor="purple"
             testId="import-wallet-option"
-          >
-            <Columns alignHorizontal="center" alignVertical="center">
-              <Column>
-                <Symbol
-                  weight="bold"
-                  symbol="lock.rotation"
-                  size={20}
-                  color="purple"
-                />
-                <Box paddingTop="14px">
-                  <Stack space="14px">
-                    <Text size="16pt" weight="bold" color="label">
-                      {i18n.t('import_or_connect.import_wallet')}
-                    </Text>
-                    <Text size="14pt" weight="regular" color="labelTertiary">
-                      {i18n.t('import_or_connect.import_wallet_description')}
-                    </Text>
-                  </Stack>
-                </Box>
-              </Column>
-              <Column width="content">
-                <ChevronRight color="separatorSecondary" />
-              </Column>
-            </Columns>
-          </Box>
-          <Separator color="separatorTertiary" strokeWeight="1px" />
-          <Box
-            paddingBottom="20px"
-            paddingTop="20px"
+          />
+          <Separator color="separatorTertiary" />
+          <OnboardMenu.Item
             onClick={() => alert('coming soon!')}
+            title={i18n.t('import_or_connect.connect_wallet')}
+            subtitle={i18n.t('import_or_connect.connect_wallet_description')}
+            symbol="doc.text.magnifyingglass"
+            symbolColor="blue"
             testId="connect-wallet-option"
-          >
-            <Columns alignHorizontal="center" alignVertical="center">
-              <Column>
-                <Symbol
-                  weight="bold"
-                  symbol="doc.text.magnifyingglass"
-                  size={20}
-                  color="accent"
-                />
-                <Box paddingTop="14px">
-                  <Stack space="14px">
-                    <Text size="16pt" weight="bold" color="label">
-                      {i18n.t('import_or_connect.connect_wallet')}
-                    </Text>
-                    <Text size="14pt" weight="regular" color="labelTertiary">
-                      {i18n.t('import_or_connect.connect_wallet_description')}
-                    </Text>
-                  </Stack>
-                </Box>
-              </Column>
-              <Column width="content">
-                <ChevronRight color="separatorSecondary" />
-              </Column>
-            </Columns>
-          </Box>
-          <Separator color="separatorTertiary" strokeWeight="1px" />
-          <Box
-            paddingTop="20px"
-            testId="watch-wallet-option"
+          />
+          <Separator color="separatorTertiary" />
+          <OnboardMenu.Item
             onClick={() => navigateTo(ROUTES.WATCH)}
-          >
-            <Columns alignHorizontal="center" alignVertical="center">
-              <Column>
-                <Symbol
-                  weight="bold"
-                  symbol="magnifyingglass.circle"
-                  size={20}
-                  color="green"
-                />
-                <Box paddingTop="14px">
-                  <Stack space="14px">
-                    <Text size="16pt" weight="bold" color="label">
-                      {i18n.t('import_or_connect.watch_address')}
-                    </Text>
-                    <Text size="14pt" weight="regular" color="labelTertiary">
-                      {i18n.t('import_or_connect.watch_address_description')}
-                    </Text>
-                  </Stack>
-                </Box>
-              </Column>
-              <Column width="content">
-                <ChevronRight color="separatorSecondary" />
-              </Column>
-            </Columns>
-          </Box>
-        </Box>
+            title={i18n.t('import_or_connect.watch_address')}
+            subtitle={i18n.t('import_or_connect.watch_address_description')}
+            symbol="magnifyingglass.circle"
+            symbolColor="green"
+            testId="watch-wallet-option"
+          />
+        </OnboardMenu>
       </Box>
     </FullScreenContainer>
   );

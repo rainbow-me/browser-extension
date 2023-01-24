@@ -7,7 +7,7 @@ import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
-import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { Box, Button, Inline, Stack } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
 
@@ -80,6 +80,8 @@ const infoButtonOptions = ({
       ]),
 ];
 
+const bottomSpacing = 20 + 20 + 32 + 32 + (process.env.IS_DEV ? 32 + 8 : 0);
+
 export interface AddressAndType {
   address: Address;
   type: KeychainType;
@@ -142,7 +144,7 @@ export function WalletSwitcher() {
         {/* search */}
         <Box />
         <MenuContainer>
-          <Box width="full" paddingBottom="80px">
+          <Box width="full" style={{ paddingBottom: bottomSpacing }}>
             <Stack>
               {accounts?.map((account) => (
                 <AccountItem
@@ -177,55 +179,51 @@ export function WalletSwitcher() {
         className={WalletActionsMenu}
         width="full"
         backdropFilter="blur(26px)"
-        padding="10px"
+        padding="20px"
         borderWidth="1px"
         borderColor="separatorTertiary"
       >
-        <Stack>
-          <Box padding="10px">
-            <Inline alignVertical="center" space="10px">
-              <Symbol
-                symbol="plus.circle.fill"
-                weight={'bold'}
-                size={16}
-                color="blue"
-              />
-              <Text size="14pt" weight="medium" color="blue">
-                {i18n.t('wallet_switcher.add_another_wallet')}
-              </Text>
-            </Inline>
-          </Box>
-          <Box padding="10px">
-            <Inline alignVertical="center" space="10px">
-              <Symbol
-                symbol="app.connected.to.app.below.fill"
-                weight={'bold'}
-                size={16}
-                color="blue"
-              />
-              <Text size="14pt" weight="medium" color="blue">
-                {i18n.t('wallet_switcher.connect_hardware_wallet')}
-              </Text>
-            </Inline>
-          </Box>
+        <Stack space="8px">
+          <Link to={ROUTES.ADD_WALLET}>
+            <Button
+              color="blue"
+              variant="flat"
+              symbol="plus.circle.fill"
+              symbolSide="left"
+              height="32px"
+              width="full"
+              borderRadius="9px"
+            >
+              {i18n.t('wallet_switcher.add_another_wallet')}
+            </Button>
+          </Link>
+          <Button
+            onClick={() => alert('Coming soon!')}
+            color="fillSecondary"
+            variant="flat"
+            symbol="app.connected.to.app.below.fill"
+            symbolSide="left"
+            height="32px"
+            width="full"
+            borderRadius="9px"
+          >
+            {i18n.t('wallet_switcher.connect_hardware_wallet')}
+          </Button>
           {process.env.IS_DEV && (
-            <Box padding="10px">
-              <Link to={ROUTES.WALLETS}>
-                <Inline alignVertical="center" space="10px">
-                  <Symbol
-                    symbol="gear"
-                    weight={'bold'}
-                    size={16}
-                    color="labelSecondary"
-                  />
-                  <Text size="14pt" weight="medium" color="labelSecondary">
-                    Old Wallets UI [DEV]
-                  </Text>
-                </Inline>
-              </Link>
-            </Box>
+            <Link to={ROUTES.WALLETS}>
+              <Button
+                color="fillSecondary"
+                variant="flat"
+                symbol="gearshape.fill"
+                symbolSide="left"
+                height="32px"
+                width="full"
+                borderRadius="9px"
+              >
+                Old Wallets UI [DEV]
+              </Button>
+            </Link>
           )}
-          <Box></Box>
         </Stack>
       </Box>
     </Box>
