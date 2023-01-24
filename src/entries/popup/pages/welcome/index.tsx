@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -10,10 +9,11 @@ import { accentColorAsHsl } from '~/design-system/styles/core.css';
 import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 import { LogoWithLetters } from '../../components/LogoWithLetters/LogoWithLetters';
 import * as wallet from '../../handlers/wallet';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 export function Welcome() {
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
   const { setCurrentAddress } = useCurrentAddressStore();
 
   const handleImportWalletClick = React.useCallback(async () => {

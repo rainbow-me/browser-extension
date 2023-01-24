@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { Box, Button, Rows, Symbol, Text } from '~/design-system';
@@ -8,6 +7,7 @@ import {
   IconAndCopyItem,
   IconAndCopyList,
 } from '../../components/IconAndCopyList.tsx/IconAndCopyList';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 const iconAndCopyList: IconAndCopyItem[] = [
@@ -35,7 +35,7 @@ const iconAndCopyList: IconAndCopyItem[] = [
 ];
 
 export function SeedBackupPrompt() {
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
 
   const handleShowRecoveryPhraseClick = React.useCallback(async () => {
     navigate(ROUTES.SEED_REVEAL);

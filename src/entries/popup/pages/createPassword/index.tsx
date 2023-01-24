@@ -1,6 +1,4 @@
-import { Options, passwordStrength } from 'check-password-strength';
 import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import {
@@ -18,55 +16,12 @@ import { SymbolName, TextColor } from '~/design-system/styles/designTokens';
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { PasswordInput } from '../../components/PasswordInput/PasswordInput';
 import { updatePassword } from '../../handlers/wallet';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
-
-const strengthMeta = [
-  {
-    text: i18n.t('passwords.too_weak'),
-    color: 'orange',
-    symbol: 'exclamationmark.triangle.fill',
-  },
-  {
-    text: i18n.t('passwords.weak'),
-    color: 'orange',
-    symbol: 'exclamationmark.triangle.fill',
-  },
-  {
-    text: i18n.t('passwords.strong'),
-    color: 'green',
-    symbol: 'checkmark.shield.fill',
-  },
-];
-
-const passwordStrengthOptions = [
-  {
-    id: 0,
-    value: 'Too weak',
-    minDiversity: 0,
-    minLength: 0,
-  },
-  {
-    id: 1,
-    value: 'Weak',
-    minDiversity: 0,
-    minLength: 8,
-  },
-  {
-    id: 2,
-    value: 'Strong',
-    minDiversity: 4,
-    minLength: 8,
-  },
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-] as Options;
-
-const getPasswordStrength = (password: string) => {
-  return passwordStrength(password, passwordStrengthOptions).id;
-};
+import { getPasswordStrength, strengthMeta } from '../../utils/passwords';
 
 export function CreatePassword() {
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
   const [newPassword, setNewPassword] = useState('');
   const [strength, setStrength] = useState<number | null>(null);
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -77,7 +32,7 @@ export function CreatePassword() {
   const checkIfPasswordsMatch = useCallback(() => {
     if (
       newPassword.length > 0 &&
-      newPassword.length === confirmNewPassword.length
+      confirmNewPassword.length >= newPassword.length
     ) {
       if (newPassword === confirmNewPassword) {
         setIsMatching(true);

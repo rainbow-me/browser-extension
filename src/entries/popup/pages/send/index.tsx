@@ -4,13 +4,14 @@ import React, {
   ChangeEvent,
   ReactNode,
   useCallback,
+  useEffect,
   useMemo,
   useState,
 } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
@@ -35,6 +36,7 @@ import { sendTransaction } from '../../handlers/wallet';
 import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsset';
 import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
 import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 import { ContactAction, ContactPrompt } from './ContactPrompt';
@@ -72,7 +74,7 @@ export function Send() {
   }>({ show: false, action: 'save' });
   const [toAddressDropdownOpen, setToAddressDropdownOpen] = useState(false);
 
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
 
   const { isContact } = useContactsStore();
   const { connectedToHardhat } = useConnectedToHardhatStore();
@@ -91,6 +93,8 @@ export function Send() {
     switchIndependentField,
     setMaxAssetAmount,
   } = useSendTransactionInputs({ asset });
+
+  const { clearCustomGasModified } = useGasStore();
 
   const {
     currentCurrency,
@@ -198,6 +202,14 @@ export function Send() {
   const navbarButtonAction = isContact({ address: toAddress })
     ? 'edit'
     : 'save';
+
+  useEffect(() => () => clearCustomGasModified(), [clearCustomGasModified]);
+
+  useEffect(() => {
+    return () => {
+      clearCustomGasModified();
+    };
+  }, [clearCustomGasModified]);
 
   return (
     <>

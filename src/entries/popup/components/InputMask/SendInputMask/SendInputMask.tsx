@@ -9,10 +9,9 @@ import {
   transitions,
 } from '~/design-system/styles/designTokens';
 
-import { Input } from '../../../../design-system/components/Input/Input';
-import { InputHeight } from '../../../../design-system/components/Input/Input.css';
-
-import { maskInput } from './utils';
+import { Input } from '../../../../../design-system/components/Input/Input';
+import { InputHeight } from '../../../../../design-system/components/Input/Input.css';
+import { maskInput } from '../utils';
 
 const { innerWidth: windowWidth } = window;
 

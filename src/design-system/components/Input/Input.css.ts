@@ -11,6 +11,7 @@ export const backgroundStyle = style({
 
 export const inputHeights = {
   '32px': 32,
+  '34px': 34,
   '40px': 40,
   '44px': 44,
   '56px': 56,

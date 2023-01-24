@@ -1,11 +1,11 @@
 import React, { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { initializeMessenger } from '~/core/messengers';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { Box, Text } from '~/design-system';
 
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 import { RequestAccounts } from './RequestAccounts';
@@ -17,7 +17,7 @@ const backgroundMessenger = initializeMessenger({ connect: 'background' });
 export const ApproveAppRequest = () => {
   const { pendingRequests, removePendingRequest } = usePendingRequestStore();
   const { window } = useNotificationWindowStore();
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
   const pendingRequest = pendingRequests?.[0];
 
   const approveRequest = useCallback(

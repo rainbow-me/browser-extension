@@ -42,7 +42,7 @@ export default function SeedPhraseTable({ seed }: { seed: string }) {
                     color={'labelQuaternary'}
                     align="center"
                   >
-                    0{index}
+                    0{index + 1}
                   </Text>
                   <Text
                     size="14pt"

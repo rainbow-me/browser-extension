@@ -5,6 +5,7 @@ import {
   GasFeeLegacyParamsBySpeed,
   GasFeeParams,
   GasFeeParamsBySpeed,
+  GasSpeed,
 } from '~/core/types/gas';
 
 import { createStore } from '../internal/createStore';
@@ -12,6 +13,8 @@ import { createStore } from '../internal/createStore';
 export interface GasStore {
   selectedGas: GasFeeParams | GasFeeLegacyParams;
   gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
+  customGasModified: boolean;
+  setCustomSpeed: (speed: GasFeeParams) => void;
   setSelectedGas: ({
     selectedGas,
   }: {
@@ -22,12 +25,14 @@ export interface GasStore {
   }: {
     gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
   }) => void;
+  clearCustomGasModified: () => void;
 }
 
 export const gasStore = createStore<GasStore>(
-  (set) => ({
+  (set, get) => ({
     selectedGas: {} as GasFeeParams | GasFeeLegacyParams,
     gasFeeParamsBySpeed: {} as GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed,
+    customGasModified: false,
     setSelectedGas: ({ selectedGas }) => {
       set({
         selectedGas,
@@ -37,6 +42,19 @@ export const gasStore = createStore<GasStore>(
       set({
         gasFeeParamsBySpeed,
       });
+    },
+    setCustomSpeed: (speed: GasFeeParams) => {
+      const { gasFeeParamsBySpeed } = get();
+      set({
+        gasFeeParamsBySpeed: {
+          ...gasFeeParamsBySpeed,
+          [GasSpeed.CUSTOM]: speed,
+        } as GasFeeParamsBySpeed,
+        customGasModified: true,
+      });
+    },
+    clearCustomGasModified: () => {
+      set({ customGasModified: false });
     },
   }),
   {

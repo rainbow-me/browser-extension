@@ -1,9 +1,10 @@
 import React, { useCallback } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { IconAndCopyItem } from '~/entries/popup/components/IconAndCopyList.tsx/IconAndCopyList';
 import WarningInfo from '~/entries/popup/components/WarningInfo/WarningInfo';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
 const iconAndCopyList: IconAndCopyItem[] = [
@@ -46,7 +47,7 @@ const iconAndCopyList: IconAndCopyItem[] = [
 ];
 export function PrivateKeyWarning() {
   const { state } = useLocation();
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
 
   const handleShowPrivkeyClick = useCallback(async () => {
     navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY, {

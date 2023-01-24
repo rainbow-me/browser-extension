@@ -1,6 +1,5 @@
 /* eslint-disable no-nested-ternary */
 import React, { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import {
@@ -16,10 +15,11 @@ import {
 
 import { ChevronRight } from '../../components/ChevronRight';
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 export function ImportOrConnect() {
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
 
   const navigateTo = useCallback(
     (route: string) => {

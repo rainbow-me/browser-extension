@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -19,13 +19,14 @@ import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { getWallet } from '~/entries/popup/handlers/wallet';
 import { useAvatar } from '~/entries/popup/hooks/useAvatar';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWalletName } from '~/entries/popup/hooks/useWalletName';
 import { ROUTES } from '~/entries/popup/urls';
 
 import { NewWalletPrompt } from './newWalletPrompt';
 
 const MoreInfoButton = ({ account }: { account: Address }) => {
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
   const { state } = useLocation();
   const handleViewPrivateKey = () => {
     navigate(
@@ -135,7 +136,7 @@ export default function AccountItem({ account }: { account: Address }) {
 }
 
 export function WalletDetails() {
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
   const { state } = useLocation();
   const [showNewWalletPrompt, setShowNewWalletPrompt] = useState(false);
   const [wallet, setWallet] = useState<KeychainWallet>(state.wallet);

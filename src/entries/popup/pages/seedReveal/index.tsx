@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -16,10 +15,11 @@ import {
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import SeedPhraseTable from '../../components/SeedPhraseTable/SeedPhaseTable';
 import { exportWallet } from '../../handlers/wallet';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 export function SeedReveal() {
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
 
   const [seed, setSeed] = useState('');
   const { currentAddress } = useCurrentAddressStore();

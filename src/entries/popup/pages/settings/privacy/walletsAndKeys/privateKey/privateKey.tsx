@@ -1,14 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { Box, Text } from '~/design-system';
 import ViewSecret from '~/entries/popup/components/ViewSecret/ViewSecret';
 import { exportAccount } from '~/entries/popup/handlers/wallet';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { ROUTES } from '~/entries/popup/urls';
 
 export function PrivateKey() {
   const { state } = useLocation();
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
 
   const [privKey, setPrivKey] = useState('');
 
@@ -22,7 +24,7 @@ export function PrivateKey() {
   }, []);
 
   const handleSavedTheseWords = useCallback(async () => {
-    navigate(-2);
+    navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);
   }, [navigate]);
 
   const handleCopy = useCallback(() => {
