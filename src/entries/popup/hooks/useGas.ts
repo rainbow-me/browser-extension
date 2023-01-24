@@ -1,6 +1,5 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { useEffect, useMemo, useState } from 'react';
-import { Chain } from 'wagmi';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { ethUnits } from '~/core/references';
 import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
@@ -13,11 +12,14 @@ import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import {
   GasFeeLegacyParamsBySpeed,
+  GasFeeParams,
   GasFeeParamsBySpeed,
   GasSpeed,
 } from '~/core/types/gas';
+import { gweiToWei, weiToGwei } from '~/core/utils/ethereum';
 import {
   gasFeeParamsChanged,
+  parseCustomGasFeeParams,
   parseGasFeeParamsBySpeed,
 } from '~/core/utils/gas';
 
@@ -28,7 +30,7 @@ export const useGas = ({
   defaultSpeed,
   transactionRequest,
 }: {
-  chainId: Chain['id'];
+  chainId: ChainId;
   defaultSpeed?: GasSpeed;
   transactionRequest: TransactionRequest;
 }) => {
@@ -42,24 +44,103 @@ export const useGas = ({
     { transactionRequest },
     { enabled: chainId === ChainId.optimism },
   );
+
   const { currentCurrency } = useCurrentCurrencyStore();
+  const nativeAsset = useNativeAssetForNetwork({ chainId });
+
   const {
     selectedGas,
     setSelectedGas,
     gasFeeParamsBySpeed: storeGasFeeParamsBySpeed,
     setGasFeeParamsBySpeed,
+    customGasModified,
+    setCustomSpeed,
+    clearCustomGasModified,
   } = useGasStore();
+
+  const setCustomMaxBaseFee = useCallback(
+    (maxBaseFee = '0') => {
+      if (!gasData) return;
+
+      const { data } = gasData as MeteorologyResponse;
+      const currentBaseFee = data.currentBaseFee;
+
+      const blocksToConfirmation = {
+        byBaseFee: data.blocksToConfirmationByBaseFee,
+        byPriorityFee: data.blocksToConfirmationByPriorityFee,
+      };
+
+      const maxPriorityFeePerGas = (
+        storeGasFeeParamsBySpeed?.custom as GasFeeParams
+      ).maxPriorityFeePerGas.amount;
+
+      const newCustomSpeed = parseCustomGasFeeParams({
+        currentBaseFee,
+        maxPriorityFeeWei: maxPriorityFeePerGas,
+        speed: GasSpeed.CUSTOM,
+        baseFeeWei: gweiToWei(maxBaseFee || '0'),
+        blocksToConfirmation,
+        gasLimit: estimatedGasLimit || `${ethUnits.basic_transfer}`,
+        nativeAsset,
+        currency: currentCurrency,
+      });
+      setCustomSpeed(newCustomSpeed);
+    },
+    [
+      storeGasFeeParamsBySpeed?.custom,
+      gasData,
+      estimatedGasLimit,
+      nativeAsset,
+      currentCurrency,
+      setCustomSpeed,
+    ],
+  );
+
+  const setCustomMaxPriorityFee = useCallback(
+    (maxPriorityFee = '0') => {
+      if (!gasData) return;
+      const { data } = gasData as MeteorologyResponse;
+      const currentBaseFee = data.currentBaseFee;
+
+      const blocksToConfirmation = {
+        byBaseFee: data.blocksToConfirmationByBaseFee,
+        byPriorityFee: data.blocksToConfirmationByPriorityFee,
+      };
+
+      const maxBaseFee = (storeGasFeeParamsBySpeed?.custom as GasFeeParams)
+        .maxBaseFee.amount;
+
+      const newCustomSpeed = parseCustomGasFeeParams({
+        currentBaseFee,
+        maxPriorityFeeWei: gweiToWei(maxPriorityFee || '0'),
+        speed: GasSpeed.CUSTOM,
+        baseFeeWei: maxBaseFee,
+        blocksToConfirmation,
+        gasLimit: estimatedGasLimit || `${ethUnits.basic_transfer}`,
+        nativeAsset,
+        currency: currentCurrency,
+      });
+      setCustomSpeed(newCustomSpeed);
+    },
+    [
+      currentCurrency,
+      estimatedGasLimit,
+      gasData,
+      nativeAsset,
+      setCustomSpeed,
+      storeGasFeeParamsBySpeed?.custom,
+    ],
+  );
 
   const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>(
     defaultSpeed || GasSpeed.NORMAL,
   );
-  const nativeAsset = useNativeAssetForNetwork({ chainId });
 
   const gasFeeParamsBySpeed:
     | GasFeeParamsBySpeed
     | GasFeeLegacyParamsBySpeed
     | null = useMemo(() => {
-    return !isLoading
+    const newGasFeeParamsBySpeed = !isLoading
       ? parseGasFeeParamsBySpeed({
           chainId,
           data: gasData as MeteorologyLegacyResponse | MeteorologyResponse,
@@ -69,6 +150,11 @@ export const useGas = ({
           optimismL1SecurityFee,
         })
       : null;
+
+    if (customGasModified && newGasFeeParamsBySpeed) {
+      newGasFeeParamsBySpeed.custom = storeGasFeeParamsBySpeed.custom;
+    }
+    return newGasFeeParamsBySpeed;
   }, [
     isLoading,
     chainId,
@@ -77,6 +163,8 @@ export const useGas = ({
     nativeAsset,
     currentCurrency,
     optimismL1SecurityFee,
+    customGasModified,
+    storeGasFeeParamsBySpeed.custom,
   ]);
 
   useEffect(() => {
@@ -114,5 +202,12 @@ export const useGas = ({
     setSelectedSpeed,
     selectedSpeed,
     isLoading,
+    setCustomMaxBaseFee,
+    setCustomMaxPriorityFee,
+    clearCustomGasModified,
+    currentBaseFee: weiToGwei(
+      (gasData as MeteorologyResponse)?.data?.currentBaseFee,
+    ),
+    baseFeeTrend: (gasData as MeteorologyResponse)?.data?.baseFeeTrend,
   };
 };

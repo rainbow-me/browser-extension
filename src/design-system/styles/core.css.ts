@@ -16,6 +16,7 @@ import {
   BackgroundColor,
   ColorContext,
   ShadowColor,
+  backdropFilter,
   backgroundColors,
   buttonColors,
   fontWeights,
@@ -321,12 +322,7 @@ export const gapVar = createVar();
 const boxBaseProperties = defineProperties({
   properties: {
     alignItems: ['stretch', 'flex-start', 'center', 'flex-end'],
-    backdropFilter: [
-      'blur(26px)',
-      'opacity(80%)',
-      'opacity(5%)',
-      'opacity(0%)',
-    ],
+    backdropFilter: backdropFilter,
     borderRadius: radii,
     borderWidth: mapValues(strokeWeights, (borderWidth) => ({
       borderStyle: 'solid',

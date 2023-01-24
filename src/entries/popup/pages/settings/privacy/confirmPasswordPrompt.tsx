@@ -58,92 +58,94 @@ export const ConfirmPasswordPrompt = ({
 
   return (
     <Prompt show={show}>
-      <Rows space="24px">
-        <Row>
-          <Rows space="20px">
-            <Row>
-              <Box paddingTop="12px">
-                <Text size="16pt" weight="bold" align="center">
+      <Box padding="12px">
+        <Rows space="24px">
+          <Row>
+            <Rows space="20px">
+              <Row>
+                <Box paddingTop="12px">
+                  <Text size="16pt" weight="bold" align="center">
+                    {i18n.t(
+                      'settings.privacy_and_security.confirm_password.title',
+                    )}
+                  </Text>
+                </Box>
+              </Row>
+              <Row>
+                <Text
+                  size="12pt"
+                  weight="medium"
+                  color="labelTertiary"
+                  align="center"
+                >
                   {i18n.t(
-                    'settings.privacy_and_security.confirm_password.title',
+                    'settings.privacy_and_security.confirm_password.description',
                   )}
                 </Text>
-              </Box>
-            </Row>
-            <Row>
-              <Text
-                size="12pt"
-                weight="medium"
-                color="labelTertiary"
-                align="center"
-              >
-                {i18n.t(
-                  'settings.privacy_and_security.confirm_password.description',
-                )}
-              </Text>
-            </Row>
-            <Row>
-              <Inset horizontal="104px">
-                <Separator color="separatorTertiary" />
-              </Inset>
-            </Row>
-            <Row>
-              <Rows>
-                <Row>
-                  <PasswordInput
-                    placeholder={i18n.t('passwords.password')}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    borderColor={error ? 'red' : undefined}
-                  />
-                </Row>
-                {error && (
+              </Row>
+              <Row>
+                <Inset horizontal="104px">
+                  <Separator color="separatorTertiary" />
+                </Inset>
+              </Row>
+              <Row>
+                <Rows>
                   <Row>
-                    <Box paddingTop="8px">
-                      <Text
-                        size="14pt"
-                        weight="semibold"
-                        align="center"
-                        color="red"
-                      >
-                        {error}
-                      </Text>
-                    </Box>
+                    <PasswordInput
+                      placeholder={i18n.t('passwords.password')}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      borderColor={error ? 'red' : undefined}
+                    />
                   </Row>
-                )}
-              </Rows>
-            </Row>
-          </Rows>
-        </Row>
-        <Row>
-          <Columns space="8px">
-            <Column>
-              <Button
-                variant="flat"
-                height="36px"
-                color="fillSecondary"
-                onClick={handleClose}
-                width="full"
-                borderRadius="9px"
-              >
-                {i18n.t('common_actions.cancel')}
-              </Button>
-            </Column>
-            <Column>
-              <Button
-                variant="flat"
-                height="36px"
-                color="accent"
-                onClick={handleValidatePassword}
-                width="full"
-                borderRadius="9px"
-              >
-                {i18n.t('common_actions.continue')}
-              </Button>
-            </Column>
-          </Columns>
-        </Row>
-      </Rows>
+                  {error && (
+                    <Row>
+                      <Box paddingTop="8px">
+                        <Text
+                          size="14pt"
+                          weight="semibold"
+                          align="center"
+                          color="red"
+                        >
+                          {error}
+                        </Text>
+                      </Box>
+                    </Row>
+                  )}
+                </Rows>
+              </Row>
+            </Rows>
+          </Row>
+          <Row>
+            <Columns space="8px">
+              <Column>
+                <Button
+                  variant="flat"
+                  height="36px"
+                  color="fillSecondary"
+                  onClick={handleClose}
+                  width="full"
+                  borderRadius="9px"
+                >
+                  {i18n.t('common_actions.cancel')}
+                </Button>
+              </Column>
+              <Column>
+                <Button
+                  variant="flat"
+                  height="36px"
+                  color="accent"
+                  onClick={handleValidatePassword}
+                  width="full"
+                  borderRadius="9px"
+                >
+                  {i18n.t('common_actions.continue')}
+                </Button>
+              </Column>
+            </Columns>
+          </Row>
+        </Rows>
+      </Box>
     </Prompt>
   );
 };

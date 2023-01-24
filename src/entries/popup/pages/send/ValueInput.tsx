@@ -17,7 +17,7 @@ import {
 } from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
-import { SendInputMask } from '../../components/SendInputMask/SendInputMask';
+import { SendInputMask } from '../../components/InputMask/SendInputMask/SendInputMask';
 
 const { innerWidth: windowWidth } = window;
 

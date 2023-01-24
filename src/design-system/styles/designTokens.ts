@@ -150,6 +150,16 @@ export type BackgroundColor =
   | 'scrimSecondary'
   | 'scrimTertiary';
 
+export const backdropFilter = {
+  'blur(26px)': 'blur(26px)',
+  'opacity(80%)': 'opacity(80%)',
+  'opacity(5%)': 'opacity(5%)',
+  'opacity(30%)': 'opacity(30%)',
+  'opacity(0%)': 'opacity(0%)',
+} as const;
+
+export type BackdropFilter = keyof typeof backdropFilter;
+
 export type BackgroundColorValue = {
   color: string;
   setColorContext: ColorContext;
@@ -571,10 +581,13 @@ export const space = {
   '12px': 12,
   '14px': 14,
   '16px': 16,
+  '19px': 19,
   '20px': 20,
+  '22px': 22,
   '24px': 24,
   '28px': 28,
   '26px': 26,
+  '27px': 27,
   '30px': 30,
   '32px': 32,
   '36px': 36,
@@ -602,9 +615,12 @@ export const negativeSpace = {
   '-12px': -12,
   '-14px': -14,
   '-16px': -16,
+  '-19px': -19,
   '-20px': -20,
+  '-22px': -22,
   '-24px': -24,
   '-26px': -26,
+  '-27px': -27,
   '-28px': -28,
   '-30px': -30,
   '-32px': -32,
@@ -635,9 +651,12 @@ export const spaceToNegativeSpace: Record<
   '12px': '-12px',
   '14px': '-14px',
   '16px': '-16px',
+  '19px': '-19px',
   '20px': '-20px',
+  '22px': '-22px',
   '24px': '-24px',
   '26px': '-26px',
+  '27px': '-27px',
   '28px': '-28px',
   '30px': '-30px',
   '32px': '-32px',
@@ -695,6 +714,7 @@ export const symbolNames = selectSymbolNames(
   'arrow.left',
   'app.badge.checkmark',
   'ellipsis',
+  'exclamationmark.triangle.fill',
   'xmark',
   'checkmark',
   'square.on.square.dashed',
@@ -715,6 +735,7 @@ export const symbolNames = selectSymbolNames(
   'checkmark.circle.fill',
   'eurosign.circle',
   'sun.max',
+  'sun.max.fill',
   'moon',
   'gear',
   'chevron.right',
@@ -725,7 +746,9 @@ export const symbolNames = selectSymbolNames(
   'arrow.down',
   'square.on.square',
   'slider.horizontal.3',
+  'arrow.down.forward',
   'arrow.up.forward.circle',
+  'arrow.up.forward',
   'arrow.up.arrow.down',
   'arrow.right',
   'eye',
