@@ -25,8 +25,6 @@ import {
   Column,
   Columns,
   Inline,
-  Row,
-  Rows,
   Separator,
   Stack,
   Symbol,
@@ -49,71 +47,34 @@ const TEXT_OVERFLOW_WIDTH = windowWidth / 2 - 30;
 const GasLabel = ({
   label,
   warning,
-  onClick,
 }: {
   label: string;
   warning?: 'stuck' | 'fail';
-  onClick: () => void;
 }) => (
-  <AnimatePresence mode="wait" initial={false}>
-    {!warning && (
-      <Box
-        as={motion.div}
-        key="no-warning"
-        initial={{ y: -8, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: -8, opacity: 0 }}
-      >
-        <Inline space="4px" alignVertical="center">
-          <Box>
-            <Text align="left" color="label" size="14pt" weight="semibold">
-              {label}
-            </Text>
-          </Box>
-          <Box>
-            <Bleed vertical="6px" horizontal="6px">
-              <ButtonSymbol
-                symbol="info.circle.fill"
-                color="labelQuaternary"
-                height="28px"
-                variant="tinted"
-                onClick={onClick}
+  <Box as={motion.div} layout="position">
+    <Stack space="8px">
+      <Inline space="4px" alignVertical="center">
+        <Box as={motion.div}>
+          <Text align="left" color="label" size="14pt" weight="semibold">
+            {label}
+          </Text>
+        </Box>
+        <AnimatePresence>
+          {!!warning && (
+            <Box as={motion.div} layout marginBottom="-2px">
+              <Symbol
+                symbol={'exclamationmark.triangle.fill'}
+                color={warning === 'fail' ? 'red' : 'orange'}
+                weight="bold"
+                size={11}
               />
-            </Bleed>
-          </Box>
-        </Inline>
-      </Box>
-    )}
-    {!!warning && (
-      <Box
-        as={motion.div}
-        key="warning"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        <Rows space="8px">
-          <Row>
-            <Inline space="4px" alignVertical="center">
-              <Box>
-                <Text align="left" color="label" size="14pt" weight="semibold">
-                  {label}
-                </Text>
-              </Box>
-              <Box>
-                <Bleed vertical="6px" horizontal="6px">
-                  <ButtonSymbol
-                    symbol="exclamationmark.triangle.fill"
-                    color={warning === 'fail' ? 'red' : 'orange'}
-                    height="28px"
-                    variant="transparent"
-                    onClick={onClick}
-                  />
-                </Bleed>
-              </Box>
-            </Inline>
-          </Row>
-          <Row>
+            </Box>
+          )}
+        </AnimatePresence>
+      </Inline>
+      <AnimatePresence>
+        {!!warning && (
+          <Box as={motion.div} layout="position">
             <Inline space="4px">
               <Text
                 color={warning === 'fail' ? 'red' : 'orange'}
@@ -133,11 +94,11 @@ const GasLabel = ({
                 )}
               </Text>
             </Inline>
-          </Row>
-        </Rows>
-      </Box>
-    )}
-  </AnimatePresence>
+          </Box>
+        )}
+      </AnimatePresence>
+    </Stack>
+  </Box>
 );
 
 export const CustomGasSheet = ({
