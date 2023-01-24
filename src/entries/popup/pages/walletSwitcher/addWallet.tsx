@@ -39,7 +39,7 @@ const AddWallet = () => {
           <Separator color="separatorTertiary" />
           <OnboardMenu.Item
             onClick={() => {
-              console.log('hardware wallet');
+              alert('coming soon!');
             }}
             title={i18n.t('add_wallet.hardware_wallet')}
             subtitle={i18n.t('add_wallet.hardware_wallet_description')}
