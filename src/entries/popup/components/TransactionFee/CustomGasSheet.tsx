@@ -52,36 +52,54 @@ const getBaseFeeTrend = (trend: number) => {
         color: 'green',
         label: i18n.t('custom_gas.base_trend.falling'),
         symbol: 'arrow.down.forward',
+        explainer: 'Fees are dropping right now!',
+        emoji: '📉',
       };
     case 0:
       return {
         color: 'yellow',
         label: i18n.t('custom_gas.base_trend.stable'),
         symbol: 'sun.max.fill',
+        explainer: 'Network traffic is stable right now. Have fun!',
+        emoji: '🌞',
       };
     case 1:
       return {
         color: 'red',
         label: i18n.t('custom_gas.base_trend.surging'),
         symbol: 'exclamationmark.triangle.fill',
+        explainer:
+          'Fees are unusually high right now! Unless your transaction is urgent, it’s best to wait for fees to drop.',
+        emoji: '🎢',
       };
     case 2:
       return {
         color: 'orange',
         label: i18n.t('custom_gas.base_trend.rising'),
         symbol: 'arrow.up.forward',
+        explainer:
+          'Fees are rising right now! It’s best to use a higher max base fee to avoid a stuck transaction.',
+        emoji: '🥵',
       };
     default:
-      return { color: 'blue', label: '', symbol: '' };
+      return {
+        color: 'blue',
+        label: '',
+        symbol: '',
+        explainer: '',
+        emoji: '⛽',
+      };
   }
 };
 
 const GasLabel = ({
   label,
   warning,
+  onClick,
 }: {
   label: string;
   warning?: 'stuck' | 'fail';
+  onClick: () => void;
 }) => (
   <AnimatePresence mode="wait" initial={false}>
     {!warning && (
@@ -105,6 +123,7 @@ const GasLabel = ({
                 color="labelQuaternary"
                 height="28px"
                 variant="tinted"
+                onClick={onClick}
               />
             </Bleed>
           </Box>
@@ -134,6 +153,7 @@ const GasLabel = ({
                     color={warning === 'fail' ? 'red' : 'orange'}
                     height="28px"
                     variant="transparent"
+                    onClick={onClick}
                   />
                 </Bleed>
               </Box>
@@ -216,7 +236,7 @@ export const CustomGasSheet = ({
   const [explainerSheetParams, setExplainerSheetParams] = useState<{
     show: boolean;
     title: string;
-    description: string;
+    description: string | string[];
     emoji: string;
   }>({ show: false, title: '', description: '', emoji: '' });
 
@@ -327,25 +347,28 @@ export const CustomGasSheet = ({
     [],
   );
 
-  const showCurrentBaseFeeExplainer = useCallback(
-    () =>
-      setExplainerSheetParams({
-        show: true,
-        emoji: '⛽',
-        description:
-          'The base fee is set by the Ethereum network and changes depending on how busy the network is.',
-        title: 'Current base fee',
-      }),
-    [],
-  );
+  const showCurrentBaseFeeExplainer = useCallback(() => {
+    const trendParams = getBaseFeeTrend(baseFeeTrend);
+    setExplainerSheetParams({
+      show: true,
+      emoji: trendParams.emoji,
+      description: [
+        'The base fee is set by the Ethereum network and changes depending on how busy the network is.',
+        trendParams.explainer,
+      ],
+      title: 'Current base fee',
+    });
+  }, [baseFeeTrend]);
 
   const showMaxBaseFeeExplainer = useCallback(
     () =>
       setExplainerSheetParams({
         show: true,
         emoji: '📈',
-        description:
-          'This is the maximum base fee you’re willing to pay for this transaction.\n\nSetting a higher max base fee prevents your transaction from getting stuck if fees rise.',
+        description: [
+          'This is the maximum base fee you’re willing to pay for this transaction.',
+          'Setting a higher max base fee prevents your transaction from getting stuck if fees rise.',
+        ],
         title: 'Max base fee',
       }),
     [],
@@ -417,7 +440,7 @@ export const CustomGasSheet = ({
                       alignHorizontal="justify"
                       alignVertical="bottom"
                     >
-                      <Box onClick={showCurrentBaseFeeExplainer}>
+                      <Box>
                         <Inline space="4px" alignVertical="center">
                           <Text
                             color="label"
@@ -434,6 +457,7 @@ export const CustomGasSheet = ({
                                 color="labelQuaternary"
                                 height="28px"
                                 variant="transparent"
+                                onClick={showCurrentBaseFeeExplainer}
                               />
                             </Bleed>
                           </Box>
@@ -463,10 +487,11 @@ export const CustomGasSheet = ({
                   alignHorizontal="justify"
                   alignVertical="center"
                 >
-                  <Box onClick={showMaxBaseFeeExplainer}>
+                  <Box>
                     <GasLabel
                       label={i18n.t('custom_gas.max_base_fee')}
                       warning={maxBaseFeeWarning}
+                      onClick={showMaxBaseFeeExplainer}
                     />
                   </Box>
 
@@ -486,10 +511,11 @@ export const CustomGasSheet = ({
                   alignHorizontal="justify"
                   alignVertical="center"
                 >
-                  <Box onClick={showMaxPriorityFeeExplainer}>
+                  <Box>
                     <GasLabel
                       label={i18n.t('custom_gas.miner_tip')}
                       warning={maxPriorityFeeWarning}
+                      onClick={showMaxPriorityFeeExplainer}
                     />
                   </Box>
                   <Box style={{ width: 98 }} marginRight="-4px">
