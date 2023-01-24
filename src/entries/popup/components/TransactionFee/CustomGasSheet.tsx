@@ -17,8 +17,10 @@ import {
   lessThan,
 } from '~/core/utils/numbers';
 import {
+  Bleed,
   Box,
   Button,
+  ButtonSymbol,
   Column,
   Columns,
   Inline,
@@ -91,15 +93,21 @@ const GasLabel = ({
         exit={{ y: -8, opacity: 0 }}
       >
         <Inline space="4px" alignVertical="center">
-          <Text align="left" color="label" size="14pt" weight="semibold">
-            {label}
-          </Text>
-          <Symbol
-            symbol="info.circle.fill"
-            color="labelQuaternary"
-            weight="semibold"
-            size={14}
-          />
+          <Box>
+            <Text align="left" color="label" size="14pt" weight="semibold">
+              {label}
+            </Text>
+          </Box>
+          <Box>
+            <Bleed vertical="6px" horizontal="6px">
+              <ButtonSymbol
+                symbol="info.circle.fill"
+                color="labelQuaternary"
+                height="28px"
+                variant="tinted"
+              />
+            </Bleed>
+          </Box>
         </Inline>
       </Box>
     )}
@@ -114,15 +122,21 @@ const GasLabel = ({
         <Rows space="8px">
           <Row>
             <Inline space="4px" alignVertical="center">
-              <Text align="left" color="label" size="14pt" weight="semibold">
-                {label}
-              </Text>
-              <Symbol
-                symbol={'exclamationmark.triangle.fill'}
-                color={warning === 'fail' ? 'red' : 'orange'}
-                weight="bold"
-                size={11}
-              />
+              <Box>
+                <Text align="left" color="label" size="14pt" weight="semibold">
+                  {label}
+                </Text>
+              </Box>
+              <Box>
+                <Bleed vertical="6px" horizontal="6px">
+                  <ButtonSymbol
+                    symbol="exclamationmark.triangle.fill"
+                    color={warning === 'fail' ? 'red' : 'orange'}
+                    height="28px"
+                    variant="transparent"
+                  />
+                </Bleed>
+              </Box>
             </Inline>
           </Row>
           <Row>
@@ -363,7 +377,7 @@ export const CustomGasSheet = ({
         background="surfaceSecondary"
         show={show}
         padding="16px"
-        backdropFilter="opacity(0%)"
+        backdropFilter="blur(26px)"
         scrimBackground
       >
         <Box paddingHorizontal="20px">
@@ -413,12 +427,16 @@ export const CustomGasSheet = ({
                           >
                             {i18n.t('custom_gas.current_base_fee')}
                           </Text>
-                          <Symbol
-                            symbol="info.circle.fill"
-                            color="labelQuaternary"
-                            weight="semibold"
-                            size={14}
-                          />
+                          <Box>
+                            <Bleed vertical="6px" horizontal="6px">
+                              <ButtonSymbol
+                                symbol="info.circle.fill"
+                                color="labelQuaternary"
+                                height="28px"
+                                variant="transparent"
+                              />
+                            </Bleed>
+                          </Box>
                         </Inline>
                       </Box>
 
