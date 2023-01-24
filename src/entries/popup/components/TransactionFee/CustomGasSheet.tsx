@@ -11,6 +11,7 @@ import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useGasStore } from '~/core/state';
 import { GasFeeParams, GasSpeed } from '~/core/types/gas';
+import { getBaseFeeTrendParams } from '~/core/utils/gas';
 import {
   handleSignificantDecimals,
   isZero,
@@ -44,53 +45,6 @@ const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
 
 const { innerWidth: windowWidth } = window;
 const TEXT_OVERFLOW_WIDTH = windowWidth / 2 - 30;
-
-const getBaseFeeTrend = (trend: number) => {
-  switch (trend) {
-    case -1:
-      return {
-        color: 'green',
-        label: i18n.t('custom_gas.base_trend.falling'),
-        symbol: 'arrow.down.forward',
-        explainer: 'Fees are dropping right now!',
-        emoji: '📉',
-      };
-    case 0:
-      return {
-        color: 'yellow',
-        label: i18n.t('custom_gas.base_trend.stable'),
-        symbol: 'sun.max.fill',
-        explainer: 'Network traffic is stable right now. Have fun!',
-        emoji: '🌞',
-      };
-    case 1:
-      return {
-        color: 'red',
-        label: i18n.t('custom_gas.base_trend.surging'),
-        symbol: 'exclamationmark.triangle.fill',
-        explainer:
-          'Fees are unusually high right now! Unless your transaction is urgent, it’s best to wait for fees to drop.',
-        emoji: '🎢',
-      };
-    case 2:
-      return {
-        color: 'orange',
-        label: i18n.t('custom_gas.base_trend.rising'),
-        symbol: 'arrow.up.forward',
-        explainer:
-          'Fees are rising right now! It’s best to use a higher max base fee to avoid a stuck transaction.',
-        emoji: '🥵',
-      };
-    default:
-      return {
-        color: 'blue',
-        label: '',
-        symbol: '',
-        explainer: '',
-        emoji: '⛽',
-      };
-  }
-};
 
 const GasLabel = ({
   label,
@@ -240,7 +194,10 @@ export const CustomGasSheet = ({
     emoji: string;
   }>({ show: false, title: '', description: '', emoji: '' });
 
-  const trend = useMemo(() => getBaseFeeTrend(baseFeeTrend), [baseFeeTrend]);
+  const trend = useMemo(
+    () => getBaseFeeTrendParams(baseFeeTrend),
+    [baseFeeTrend],
+  );
 
   const updateCustomMaxBaseFee = useCallback(
     (maxBaseFee: string) => {
@@ -348,7 +305,7 @@ export const CustomGasSheet = ({
   );
 
   const showCurrentBaseFeeExplainer = useCallback(() => {
-    const trendParams = getBaseFeeTrend(baseFeeTrend);
+    const trendParams = getBaseFeeTrendParams(baseFeeTrend);
     setExplainerSheetParams({
       show: true,
       emoji: trendParams.emoji,

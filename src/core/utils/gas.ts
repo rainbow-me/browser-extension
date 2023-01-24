@@ -9,6 +9,7 @@ import BigNumber from 'bignumber.js';
 import { BigNumberish } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 
+import { i18n } from '../languages';
 import {
   OVM_GAS_PRICE_ORACLE,
   SupportedCurrencyKey,
@@ -581,3 +582,48 @@ export const gasFeeParamsChanged = (
   gasFeeParams1: GasFeeParams | GasFeeLegacyParams,
   gasFeeParams2: GasFeeParams | GasFeeLegacyParams,
 ) => gasFeeParams1?.gasFee?.amount !== gasFeeParams2?.gasFee?.amount;
+
+export const getBaseFeeTrendParams = (trend: number) => {
+  switch (trend) {
+    case -1:
+      return {
+        color: 'green',
+        label: i18n.t('custom_gas.base_trend.falling'),
+        symbol: 'arrow.down.forward',
+        explainer: i18n.t('custom_gas.base_trend.falling_explainer'),
+        emoji: '📉',
+      };
+    case 0:
+      return {
+        color: 'yellow',
+        label: i18n.t('custom_gas.base_trend.stable'),
+        symbol: 'sun.max.fill',
+        explainer: i18n.t('custom_gas.base_trend.stable_explainer'),
+        emoji: '🌞',
+      };
+    case 1:
+      return {
+        color: 'red',
+        label: i18n.t('custom_gas.base_trend.surging'),
+        symbol: 'exclamationmark.triangle.fill',
+        explainer: i18n.t('custom_gas.base_trend.surging_explainer'),
+        emoji: '🎢',
+      };
+    case 2:
+      return {
+        color: 'orange',
+        label: i18n.t('custom_gas.base_trend.rising'),
+        symbol: 'arrow.up.forward',
+        explainer: i18n.t('custom_gas.base_trend.rising_explainer'),
+        emoji: '🥵',
+      };
+    default:
+      return {
+        color: 'blue',
+        label: '',
+        symbol: '',
+        explainer: '',
+        emoji: '⛽',
+      };
+  }
+};

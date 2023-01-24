@@ -167,9 +167,13 @@
     "set": "Set",
     "base_trend": {
       "falling": "Falling",
+      "falling_explainer": "Fees are dropping right now!",
       "stable": "Stable",
+      "stable_explainer": "Network traffic is stable right now. Have fun!",
       "surging": "Surging",
-      "rising": "Rising"
+      "surging_explainer": "Fees are unusually high right now! Unless your transaction is urgent, it’s best to wait for fees to drop.",
+      "rising": "Rising",
+      "rising_explainer": "Fees are rising right now! It’s best to use a higher max base fee to avoid a stuck transaction."
     },
     "warnings": {
       "may_get_stuck": "may get stuck",
