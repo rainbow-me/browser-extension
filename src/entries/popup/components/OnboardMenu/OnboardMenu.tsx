@@ -1,6 +1,14 @@
 import React from 'react';
 
-import { Box, Column, Columns, Stack, Symbol, Text } from '~/design-system';
+import {
+  Box,
+  Column,
+  Columns,
+  Separator,
+  Stack,
+  Symbol,
+  Text,
+} from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
 import { ChevronRight } from '../ChevronRight';
@@ -58,6 +66,11 @@ const OnboardItem = ({
   );
 };
 
+const OnboardSeparator = () => {
+  return <Separator color="separatorTertiary" />;
+};
+
 OnboardMenu.Item = OnboardItem;
+OnboardMenu.Separator = OnboardSeparator;
 
 export { OnboardMenu };

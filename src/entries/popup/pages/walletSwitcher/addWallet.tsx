@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { i18n } from '~/core/languages';
-import { Box, Separator } from '~/design-system';
+import { Box } from '~/design-system';
 
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
 
@@ -26,7 +26,7 @@ const AddWallet = () => {
             symbolColor="pink"
             symbol="plus.circle"
           />
-          <Separator color="separatorTertiary" />
+          <OnboardMenu.Separator />
           <OnboardMenu.Item
             onClick={() => {
               console.log('import wallet');
@@ -36,7 +36,7 @@ const AddWallet = () => {
             symbolColor="purple"
             symbol="lock.rotation"
           />
-          <Separator color="separatorTertiary" />
+          <OnboardMenu.Separator />
           <OnboardMenu.Item
             onClick={() => {
               alert('coming soon!');
@@ -46,7 +46,7 @@ const AddWallet = () => {
             symbolColor="blue"
             symbol="doc.text.magnifyingglass"
           />
-          <Separator color="separatorTertiary" />
+          <OnboardMenu.Separator />
           <OnboardMenu.Item
             onClick={() => {
               console.log('watch address');

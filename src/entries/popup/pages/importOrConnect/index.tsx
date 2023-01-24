@@ -62,7 +62,7 @@ export function ImportOrConnect() {
             symbolColor="purple"
             testId="import-wallet-option"
           />
-          <Separator color="separatorTertiary" />
+          <OnboardMenu.Separator />
           <OnboardMenu.Item
             onClick={() => alert('coming soon!')}
             title={i18n.t('import_or_connect.connect_wallet')}
@@ -71,7 +71,7 @@ export function ImportOrConnect() {
             symbolColor="blue"
             testId="connect-wallet-option"
           />
-          <Separator color="separatorTertiary" />
+          <OnboardMenu.Separator />
           <OnboardMenu.Item
             onClick={() => navigateTo(ROUTES.WATCH)}
             title={i18n.t('import_or_connect.watch_address')}
