@@ -13,6 +13,7 @@ import {
   getWallet,
   getWallets,
   hasVault,
+  importHardwareWallet,
   importWallet,
   isPasswordSet,
   isVaultUnlocked,
@@ -100,6 +101,16 @@ export const handleWallets = () =>
             break;
           case 'import':
             response = await importWallet(payload as EthereumWalletSeed);
+            break;
+          case 'import_hw':
+            response = await importHardwareWallet(
+              payload as {
+                wallets: Array<{ address: Address; index: number }>;
+                vendor: string;
+                deviceId: string;
+                accountsEnabled: number;
+              },
+            );
             break;
           case 'add':
             response = await addNewAccount(payload as Address);

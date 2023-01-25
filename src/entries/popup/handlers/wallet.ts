@@ -2,16 +2,19 @@ import {
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
+import AppEth from '@ledgerhq/hw-app-eth';
+import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import { uuid4 } from '@sentry/utils';
 import { getProvider } from '@wagmi/core';
 import { Bytes } from 'ethers';
-import { Mnemonic } from 'ethers/lib/utils';
+import { Mnemonic, keccak256 } from 'ethers/lib/utils';
 import { Address } from 'wagmi';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';
 import { initializeMessenger } from '~/core/messengers';
 import { gasStore } from '~/core/state';
 import { KeychainWallet } from '~/core/types/keychainTypes';
+import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
 import { toHex } from '~/core/utils/numbers';
 
@@ -51,6 +54,7 @@ export const sendTransaction = async (
     transactionRequest,
     provider,
   });
+
   return walletAction('send_transaction', {
     ...transactionRequest,
     ...selectedGas.transactionGasParams,
@@ -189,4 +193,71 @@ export const exportAccount = async (address: Address, password: string) => {
     address,
     password,
   })) as PrivateKey;
+};
+
+export const connectLedger = async () => {
+  // Connect to the device
+  try {
+    const transport = await TransportWebUSB.create();
+    const appEth = new AppEth(transport);
+    const result = await appEth.getAddress("44'/60'/0'/0/0", false, false);
+    const addressesToImport = [{ address: result.address, index: 0 }];
+    // The device id is the keccak256 of the address at index 0
+    // @HW/TODO - discovery
+    let accountsEnabled = 1;
+    // Autodiscover accounts
+    let empty = false;
+    while (!empty) {
+      // eslint-disable-next-line no-await-in-loop
+      const result = await appEth.getAddress(
+        `44'/60'/0'/0/${accountsEnabled}`,
+        false,
+        false,
+      );
+
+      // eslint-disable-next-line no-await-in-loop
+      const hasBeenUsed = await hasPreviousTransactions(
+        result.address as Address,
+      );
+
+      if (hasBeenUsed) {
+        addressesToImport.push({
+          address: result.address,
+          index: accountsEnabled,
+        });
+        accountsEnabled += 1;
+      } else {
+        empty = true;
+      }
+    }
+
+    const deviceId = keccak256(result.address);
+    const address = await walletAction('import_hw', {
+      deviceId,
+      wallets: addressesToImport,
+      vendor: 'Ledger',
+      accountsEnabled,
+    });
+    // we probably need to set a password
+    let newStatus = 'NEEDS_PASSWORD';
+    const { passwordSet } = await getStatus();
+    // unless we have a password, then we're ready to go
+    if (passwordSet) {
+      newStatus = 'READY';
+    }
+    await chrome.storage.session.set({ userStatus: newStatus });
+    return address;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (e: any) {
+    console.log(e);
+    if (e?.name === 'TransportStatusError') {
+      alert(
+        'Please make sure your ledger is unlocked and open the Ethereum app',
+      );
+    } else {
+      alert('Unable to connect to your ledger. Please try again.');
+    }
+    return null;
+  }
 };

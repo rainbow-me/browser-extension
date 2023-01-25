@@ -13,6 +13,39 @@ const shortAddress = (address: string) => {
   return `${address?.substring(0, 6)}...${address?.substring(38, 42)}`;
 };
 
+const Ledger = ({
+  onLedgerConnected,
+}: {
+  onLedgerConnected: (address: Address) => void;
+}) => {
+  const onLedgerConnect = async () => {
+    const res = await wallet.connectLedger();
+    if (res) {
+      onLedgerConnected(res as Address);
+    }
+  };
+
+  return (
+    <>
+      <Text as="h1" size="16pt" weight="bold" align="center">
+        Ledger
+      </Text>
+      <Box
+        as="button"
+        background="accent"
+        boxShadow="24px accent"
+        onClick={onLedgerConnect}
+        padding="16px"
+        style={{ borderRadius: 999 }}
+      >
+        <Text color="label" size="14pt" weight="bold">
+          Connect
+        </Text>
+      </Box>
+    </>
+  );
+};
+
 function PasswordForm({
   title,
   action,
@@ -320,6 +353,11 @@ export function Wallets() {
     [updateState],
   );
 
+  const onLedgerConnected = async (address: Address) => {
+    setCurrentAddress(address);
+    await updateState();
+  };
+
   const handleSecretChange = useCallback(
     (event: { target: { value: React.SetStateAction<string> } }) => {
       setSecret(event?.target?.value);
@@ -436,6 +474,7 @@ export function Wallets() {
           onSubmit={updateState}
         />
       )}
+      <Ledger onLedgerConnected={onLedgerConnected} />
     </Box>
   );
 }

@@ -10,11 +10,19 @@ import {
   SerializedKeypairKeychain,
 } from './keychainTypes/keyPairKeychain';
 import {
+  LedgerKeychain,
+  SerializedLedgerKeychain,
+} from './keychainTypes/ledgerKeychain';
+import {
   ReadOnlyKeychain,
   SerializedReadOnlyKeychain,
 } from './keychainTypes/readOnlyKeychain';
 
-export type Keychain = KeyPairKeychain | HdKeychain | ReadOnlyKeychain;
+export type Keychain =
+  | KeyPairKeychain
+  | HdKeychain
+  | ReadOnlyKeychain
+  | LedgerKeychain;
 
 interface KeychainManagerState {
   keychains: Keychain[];
@@ -25,7 +33,8 @@ interface KeychainManagerState {
 type SerializedKeychain =
   | SerializedHdKeychain
   | SerializedKeypairKeychain
-  | SerializedReadOnlyKeychain;
+  | SerializedReadOnlyKeychain
+  | SerializedLedgerKeychain;
 type DecryptedVault = SerializedKeychain[];
 
 const privates = new WeakMap();
@@ -91,13 +100,21 @@ class KeychainManager {
             keychain = new ReadOnlyKeychain();
             await keychain.init(opts as unknown as SerializedReadOnlyKeychain);
             break;
+          case KeychainType.LedgerKeychain:
+            keychain = new LedgerKeychain();
+            await keychain.init(opts as unknown as SerializedLedgerKeychain);
+            break;
           default:
             throw new Error('Keychain type not recognized.');
         }
         return keychain.getAccounts();
       },
       restoreKeychain: async (
-        opts: SerializedKeypairKeychain | SerializedHdKeychain,
+        opts:
+          | SerializedKeypairKeychain
+          | SerializedHdKeychain
+          | SerializedReadOnlyKeychain
+          | SerializedLedgerKeychain,
       ): Promise<Keychain> => {
         let keychain;
         switch (opts.type) {
@@ -111,7 +128,11 @@ class KeychainManager {
             break;
           case KeychainType.ReadOnlyKeychain:
             keychain = new ReadOnlyKeychain();
-            await keychain.init(opts as unknown as SerializedReadOnlyKeychain);
+            await keychain.init(opts as SerializedReadOnlyKeychain);
+            break;
+          case KeychainType.LedgerKeychain:
+            keychain = new LedgerKeychain();
+            await keychain.init(opts as SerializedLedgerKeychain);
             break;
           default:
             throw new Error('Keychain type not recognized.');
@@ -217,7 +238,8 @@ class KeychainManager {
     opts:
       | SerializedKeypairKeychain
       | SerializedHdKeychain
-      | SerializedReadOnlyKeychain,
+      | SerializedReadOnlyKeychain
+      | SerializedLedgerKeychain,
   ): Promise<Keychain> {
     return privates.get(this).restoreKeychain({
       ...opts,
