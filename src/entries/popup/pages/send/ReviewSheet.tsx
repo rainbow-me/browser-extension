@@ -25,6 +25,8 @@ import {
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
+import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
+import { Checkbox } from '../../components/Checkbox/Checkbox';
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import {
@@ -236,6 +238,11 @@ export const ReviewSheet = ({
 
   const { display: toName } = useContact({ address: toAddress });
 
+  // const sendingOnL2 = useMemo(
+  //   () => isL2Chain(asset?.chainId || ChainId.mainnet),
+  //   [asset?.chainId],
+  // );
+
   const isToWalletOwner = useMemo(
     () => !!accounts.find((account) => isLowerCaseMatch(account, toAddress)),
     [accounts, toAddress],
@@ -256,6 +263,7 @@ export const ReviewSheet = ({
       <Box
         style={{ borderTopLeftRadius: 24, borderTopRightRadius: 24 }}
         background="surfacePrimaryElevatedSecondary"
+        // background="green"
       >
         <Stack space="20px">
           <Box paddingVertical="26px">
@@ -266,137 +274,203 @@ export const ReviewSheet = ({
             </Inline>
           </Box>
           <Box paddingHorizontal="24px" paddingVertical="20px">
-            <Rows space="10px">
-              <Row>
-                <Columns alignHorizontal="justify">
-                  <Column>
-                    <Box paddingVertical="6px" height="full">
-                      <Rows space="10px" alignVertical="center">
-                        <Row>
-                          <TextOverflow
-                            maxWidth={TEXT_OVERFLOW_WIDTH}
-                            size="20pt"
-                            weight="bold"
-                            color="label"
-                          >
-                            <Box paddingVertical="2px">
-                              {primaryAmountDisplay}
-                            </Box>
-                          </TextOverflow>
-                        </Row>
-                        <Row>
-                          <TextOverflow
-                            maxWidth={TEXT_OVERFLOW_WIDTH}
-                            size="12pt"
-                            weight="bold"
-                            color="labelTertiary"
-                          >
-                            {secondaryAmountDisplay}
-                          </TextOverflow>
-                        </Row>
-                      </Rows>
-                    </Box>
-                  </Column>
-                  <Column>
-                    <Inline alignVertical="center" alignHorizontal="right">
-                      <Box>
-                        <CoinIcon asset={asset} size={44} />
-                      </Box>
-                    </Inline>
-                  </Column>
-                </Columns>
-              </Row>
-              <Row>
-                <Box>
-                  <Inline alignHorizontal="justify">
-                    <Box
-                      background="surfaceSecondaryElevated"
-                      borderRadius="40px"
-                      paddingHorizontal="8px"
-                      paddingVertical="6px"
-                      width="fit"
-                    >
-                      <Inline alignHorizontal="center" alignVertical="center">
-                        <Text size="12pt" weight="heavy" color="labelTertiary">
-                          {i18n.t('send.review.to')}
-                        </Text>
-                      </Inline>
-                    </Box>
-                    <Box style={{ width: 44 }}>
-                      <Stack alignHorizontal="center">
-                        <Box style={{ height: 10 }}>
-                          <ChevronDown color="separatorSecondary" />
-                        </Box>
-                        <Box style={{ height: 10 }} marginTop="-2px">
-                          <ChevronDown color="separator" />
-                        </Box>
-                      </Stack>
-                    </Box>
-                  </Inline>
-                </Box>
-              </Row>
-              <Row>
-                <Columns alignHorizontal="justify">
-                  <Column width="4/5">
-                    <Box paddingVertical="6px" height="full">
-                      <Rows space="10px" alignVertical="center">
-                        <Row height="content">
-                          <Inline space="7px" alignVertical="center">
+            <Stack space="20px">
+              <Rows space="10px">
+                <Row>
+                  <Columns alignHorizontal="justify">
+                    <Column>
+                      <Box paddingVertical="6px" height="full">
+                        <Rows space="10px" alignVertical="center">
+                          <Row>
                             <TextOverflow
                               maxWidth={TEXT_OVERFLOW_WIDTH}
                               size="20pt"
                               weight="bold"
                               color="label"
                             >
-                              {toName || truncateAddress(toAddress)}
+                              <Box paddingVertical="2px">
+                                {primaryAmountDisplay}
+                              </Box>
                             </TextOverflow>
-
-                            <Box>
-                              <EditContactDropdown
-                                chainId={asset?.chainId}
-                                toAddress={toAddress}
-                                closeReview={onCancel}
-                                onEdit={onSaveContactAction}
-                              >
-                                <Inline alignVertical="center">
-                                  <Symbol
-                                    symbol="ellipsis.circle"
-                                    weight="bold"
-                                    size={16}
-                                    color="labelTertiary"
-                                  />
-                                </Inline>
-                              </EditContactDropdown>
-                            </Box>
-                          </Inline>
-                        </Row>
-                        {isToWalletOwner ? (
+                          </Row>
                           <Row>
-                            <Text
+                            <TextOverflow
+                              maxWidth={TEXT_OVERFLOW_WIDTH}
                               size="12pt"
                               weight="bold"
                               color="labelTertiary"
                             >
-                              {i18n.t('send.review.you_own_wallet')}
-                            </Text>
+                              {secondaryAmountDisplay}
+                            </TextOverflow>
                           </Row>
-                        ) : null}
-                      </Rows>
-                    </Box>
-                  </Column>
-                  <Column>
-                    <Inline alignHorizontal="right">
-                      <WalletAvatar address={toAddress} size={44} />
+                        </Rows>
+                      </Box>
+                    </Column>
+                    <Column>
+                      <Inline alignVertical="center" alignHorizontal="right">
+                        <Box>
+                          <CoinIcon asset={asset} size={44} />
+                        </Box>
+                      </Inline>
+                    </Column>
+                  </Columns>
+                </Row>
+                <Row>
+                  <Box>
+                    <Inline alignHorizontal="justify">
+                      <Box
+                        background="surfaceSecondaryElevated"
+                        borderRadius="40px"
+                        paddingHorizontal="8px"
+                        paddingVertical="6px"
+                        width="fit"
+                      >
+                        <Inline alignHorizontal="center" alignVertical="center">
+                          <Text
+                            size="12pt"
+                            weight="heavy"
+                            color="labelTertiary"
+                          >
+                            {i18n.t('send.review.to')}
+                          </Text>
+                        </Inline>
+                      </Box>
+                      <Box style={{ width: 44 }}>
+                        <Stack alignHorizontal="center">
+                          <Box style={{ height: 10 }}>
+                            <ChevronDown color="separatorSecondary" />
+                          </Box>
+                          <Box style={{ height: 10 }} marginTop="-2px">
+                            <ChevronDown color="separator" />
+                          </Box>
+                        </Stack>
+                      </Box>
                     </Inline>
-                  </Column>
-                </Columns>
-              </Row>
-            </Rows>
+                  </Box>
+                </Row>
+                <Row>
+                  <Columns alignHorizontal="justify">
+                    <Column width="4/5">
+                      <Box paddingVertical="6px" height="full">
+                        <Rows space="10px" alignVertical="center">
+                          <Row height="content">
+                            <Inline space="7px" alignVertical="center">
+                              <TextOverflow
+                                maxWidth={TEXT_OVERFLOW_WIDTH}
+                                size="20pt"
+                                weight="bold"
+                                color="label"
+                              >
+                                {toName || truncateAddress(toAddress)}
+                              </TextOverflow>
+
+                              <Box>
+                                <EditContactDropdown
+                                  chainId={asset?.chainId}
+                                  toAddress={toAddress}
+                                  closeReview={onCancel}
+                                  onEdit={onSaveContactAction}
+                                >
+                                  <Inline alignVertical="center">
+                                    <Symbol
+                                      symbol="ellipsis.circle"
+                                      weight="bold"
+                                      size={16}
+                                      color="labelTertiary"
+                                    />
+                                  </Inline>
+                                </EditContactDropdown>
+                              </Box>
+                            </Inline>
+                          </Row>
+                          {isToWalletOwner ? (
+                            <Row>
+                              <Text
+                                size="12pt"
+                                weight="bold"
+                                color="labelTertiary"
+                              >
+                                {i18n.t('send.review.you_own_wallet')}
+                              </Text>
+                            </Row>
+                          ) : null}
+                        </Rows>
+                      </Box>
+                    </Column>
+                    <Column>
+                      <Inline alignHorizontal="right">
+                        <WalletAvatar address={toAddress} size={44} />
+                      </Inline>
+                    </Column>
+                  </Columns>
+                </Row>
+              </Rows>
+              <Separator color="separatorTertiary" />
+            </Stack>
           </Box>
         </Stack>
       </Box>
-      <Separator color="separatorSecondary" />
 
+      <Stack space="20px">
+        <Box
+          background="fillSecondary"
+          padding="8px"
+          width="full"
+          borderRadius="12px"
+        >
+          <Inline alignVertical="center" alignHorizontal="justify">
+            <Inline alignVertical="center" space="8px">
+              <ChainBadge chainId={ChainId.optimism} size="extraSmall" />
+              <Text size="12pt" weight="bold" color="labelSecondary">
+                Sending on the Optimism network
+              </Text>
+            </Inline>
+            <Symbol
+              weight="bold"
+              symbol="info.circle.fill"
+              size={12}
+              color="labelTertiary"
+            />
+          </Inline>
+        </Box>
+        <Inline space="7px">
+          <Box background="red">
+            <Checkbox
+              width="16px"
+              height="16px"
+              borderRadius="6px"
+              selected={false}
+            />
+          </Box>
+          <Box background="orange">
+            <Inline alignVertical="center">
+              <Text
+                align="center"
+                size="12pt"
+                weight="bold"
+                color="labelSecondary"
+              >
+                I’m not sending to an exchange
+              </Text>
+            </Inline>
+          </Box>
+        </Inline>
+        <Inline space="7px">
+          <Box>
+            <Checkbox
+              width="16px"
+              height="16px"
+              borderRadius="6px"
+              selected={false}
+            />
+          </Box>
+          <Text size="12pt" weight="bold" color="labelSecondary">
+            The person I’m sending to has a wallet that support Polygon
+          </Text>
+        </Inline>
+      </Stack>
+
+      <Separator color="separatorSecondary" />
       <Box width="full" padding="20px">
         <Rows space="8px" alignVertical="center">
           <Row>
