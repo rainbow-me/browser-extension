@@ -35,6 +35,7 @@ export const ROUTES = {
   WALLETS: '/wallets', // Wallets
   WALLET_SWITCHER: '/wallet-switcher', // WalletSwitcher
   ADD_WALLET: '/add-wallet', // AddWallet
+  NEW_WATCH_WALLET: '/new-watch-wallet', // NewWatchWallet
   READY: '/ready', // WalletReady
   APPROVE_APP_REQUEST: '/approve-request',
 };

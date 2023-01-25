@@ -37,6 +37,7 @@ import { Unlock } from './pages/unlock';
 import { WalletReady } from './pages/walletReady';
 import { WalletSwitcher } from './pages/walletSwitcher';
 import { AddWallet } from './pages/walletSwitcher/addWallet';
+import { NewWatchWallet } from './pages/walletSwitcher/newWatchWallet';
 import { Wallets } from './pages/wallets';
 import { WatchWallet } from './pages/watchWallet';
 import { Welcome } from './pages/welcome';
@@ -452,6 +453,21 @@ const ROUTE_DATA = [
         background="surfaceSecondary"
       >
         <AddWallet />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.NEW_WATCH_WALLET,
+    element: (
+      <AnimatedRoute
+        backTo={ROUTES.ADD_WALLET}
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <NewWatchWallet />
       </AnimatedRoute>
     ),
   },

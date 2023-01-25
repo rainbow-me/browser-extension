@@ -1,11 +1,21 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { i18n } from '~/core/languages';
 import { Box } from '~/design-system';
 
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { ROUTES } from '../../urls';
 
 const AddWallet = () => {
+  const navigate = useRainbowNavigate();
+  const navigateTo = useCallback(
+    (route: string) => {
+      navigate(route);
+    },
+    [navigate],
+  );
+
   return (
     <Box height="full">
       <Box
@@ -48,9 +58,7 @@ const AddWallet = () => {
           />
           <OnboardMenu.Separator />
           <OnboardMenu.Item
-            onClick={() => {
-              console.log('watch address');
-            }}
+            onClick={() => navigateTo(ROUTES.NEW_WATCH_WALLET)}
             title={i18n.t('add_wallet.watch_address')}
             subtitle={i18n.t('add_wallet.watch_address_description')}
             symbolColor="green"
