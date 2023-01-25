@@ -1,12 +1,18 @@
 import { isValidAddress } from 'ethereumjs-util';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address, useProvider } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
 import { toWei } from '~/core/utils/ethereum';
-import { add, lessThan } from '~/core/utils/numbers';
+import {
+  add,
+  convertAmountToRawAmount,
+  lessOrEqualThan,
+  lessThan,
+} from '~/core/utils/numbers';
 
 import { getNetworkNativeAssetUniqueId } from '../useNativeAssetForNetwork';
 import { useUserAsset } from '../useUserAsset';
@@ -16,11 +22,13 @@ export const useSendTransactionValidations = ({
   assetAmount,
   selectedGas,
   toAddress,
+  toAddressOrName,
 }: {
   asset?: ParsedAddressAsset | null;
   assetAmount?: string;
   selectedGas?: GasFeeParams | GasFeeLegacyParams;
   toAddress?: Address;
+  toAddressOrName?: string;
 }) => {
   const [toAddressIsSmartContract, setToAddressIsSmartContract] =
     useState(false);
@@ -29,38 +37,57 @@ export const useSendTransactionValidations = ({
     chainId: asset?.chainId || ChainId.mainnet,
   });
   const provider = useProvider({ chainId: asset?.chainId || ChainId.mainnet });
-
   const nativeAsset = useUserAsset(nativeAssetUniqueId || '');
 
+  const [isValidToAddress, setIsValidToAddress] = useState(false);
+
+  const validateToAddress = useCallback(
+    (address?: Address) =>
+      setIsValidToAddress(isValidAddress(address || toAddress || '')),
+    [toAddress],
+  );
+
   const enoughAssetBalance = useMemo(() => {
-    if (!asset?.isNativeAsset) {
-      return lessThan(toWei(assetAmount || '0'), asset?.balance?.amount || '0');
-    } else {
-      return lessThan(
-        add(toWei(assetAmount || '0'), selectedGas?.gasFee?.amount || '0'),
-        toWei(asset?.balance?.amount || '0'),
-      );
+    if (assetAmount) {
+      if (!asset?.isNativeAsset) {
+        return lessOrEqualThan(
+          convertAmountToRawAmount(assetAmount, asset?.decimals || 18),
+          convertAmountToRawAmount(
+            asset?.balance?.amount || '0',
+            asset?.decimals || 18,
+          ),
+        );
+      } else {
+        return lessOrEqualThan(
+          toWei(assetAmount || '0'),
+          toWei(asset?.balance?.amount || '0'),
+        );
+      }
     }
   }, [
     asset?.balance?.amount,
+    asset?.decimals,
     asset?.isNativeAsset,
     assetAmount,
-    selectedGas?.gasFee?.amount,
   ]);
 
-  const enoughNativeAssetForGas = useMemo(
-    () =>
-      lessThan(
-        selectedGas?.gasFee?.amount || '0',
-        nativeAsset?.native?.balance?.amount || '0',
-      ),
-    [nativeAsset?.native?.balance, selectedGas?.gasFee],
-  );
-
-  const validToAddress = useMemo(
-    () => isValidAddress(toAddress || ''),
-    [toAddress],
-  );
+  const enoughNativeAssetForGas = useMemo(() => {
+    if (asset?.isNativeAsset) {
+      return lessOrEqualThan(
+        add(toWei(assetAmount || '0'), selectedGas?.gasFee?.amount || '0'),
+        toWei(nativeAsset?.balance?.amount || '0'),
+      );
+    }
+    return lessThan(
+      selectedGas?.gasFee?.amount || '0',
+      toWei(nativeAsset?.balance?.amount || '0'),
+    );
+  }, [
+    asset?.isNativeAsset,
+    assetAmount,
+    nativeAsset?.balance?.amount,
+    selectedGas?.gasFee?.amount,
+  ]);
 
   useEffect(() => {
     const checkToAddress = async () => {
@@ -74,10 +101,48 @@ export const useSendTransactionValidations = ({
     checkToAddress();
   }, [provider, toAddress]);
 
+  const buttonLabel = useMemo(() => {
+    if (!isValidToAddress && toAddressOrName !== '')
+      return i18n.t('send.button_label.review');
+
+    if (!toAddress && !assetAmount) {
+      return i18n.t('send.button_label.enter_address_and_amount');
+    }
+    if (!enoughAssetBalance)
+      return i18n.t('send.button_label.insufficient_asset', {
+        symbol: asset?.symbol,
+      });
+    if (!enoughNativeAssetForGas)
+      return i18n.t('send.button_label.insufficient_native_asset_for_gas', {
+        symbol: nativeAsset?.symbol,
+      });
+    if (toAddressOrName === '') {
+      return i18n.t('send.button_label.enter_address');
+    }
+    return i18n.t('send.button_label.review');
+  }, [
+    asset?.symbol,
+    assetAmount,
+    enoughAssetBalance,
+    enoughNativeAssetForGas,
+    isValidToAddress,
+    nativeAsset?.symbol,
+    toAddress,
+    toAddressOrName,
+  ]);
+
+  const validInputs = useMemo(
+    () => isValidToAddress && enoughAssetBalance && enoughNativeAssetForGas,
+    [enoughAssetBalance, enoughNativeAssetForGas, isValidToAddress],
+  );
+
   return {
-    validToAddress,
+    validInputs,
     enoughAssetBalance,
     enoughNativeAssetForGas,
     toAddressIsSmartContract,
+    buttonLabel,
+    isValidToAddress,
+    validateToAddress,
   };
 };

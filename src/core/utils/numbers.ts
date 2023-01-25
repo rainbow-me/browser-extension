@@ -227,6 +227,13 @@ export const lessThan = (
   numberTwo: BigNumberish,
 ): boolean => new BigNumber(numberOne).lt(numberTwo);
 
+export const lessOrEqualThan = (
+  numberOne: BigNumberish,
+  numberTwo: BigNumberish,
+): boolean =>
+  new BigNumber(numberOne).lt(numberTwo) ||
+  new BigNumber(numberOne).eq(numberTwo);
+
 export const handleSignificantDecimalsWithThreshold = (
   value: BigNumberish,
   decimals: number,

@@ -172,10 +172,15 @@
     "input_token_placeholder": "Token",
     "max": "Max",
     "switch_to": "Switch to %{currency}",
-    "button_label_send": "Send Transacion",
-    "button_label_sending": "Sending",
-    "button_label_review": "Review",
-    "enter_address_or_amount": "Enter an address or amount",
+    "button_label": {
+      "review": "Review",
+      "enter_address_and_amount": "Enter an address and amount",
+      "enter_valid_address": "Enter a valid address",
+      "enter_address": "Enter an address",
+      "enter_amount": "Enter an amount",
+      "insufficient_asset": "Insufficient %{symbol}",
+      "insufficient_native_asset_for_gas": "Insufficient %{symbol} for gas"
+    },
     "wallets_list": {
       "contacts": "Contacts",
       "my_wallets": "My wallets",

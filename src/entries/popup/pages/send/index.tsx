@@ -36,6 +36,7 @@ import { sendTransaction } from '../../handlers/wallet';
 import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsset';
 import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
 import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
+import { useSendTransactionValidations } from '../../hooks/send/useTransactionValidations';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -108,6 +109,17 @@ export function Send() {
     value,
     setToAddressOrName,
   } = useSendTransactionState({ assetAmount, asset });
+
+  const { selectedGas } = useGasStore();
+
+  const { buttonLabel, isValidToAddress, validateToAddress } =
+    useSendTransactionValidations({
+      asset,
+      assetAmount,
+      selectedGas,
+      toAddress,
+      toAddressOrName,
+    });
 
   const controls = useAnimationControls();
   const transactionRequest: TransactionRequest = useMemo(() => {
@@ -260,6 +272,7 @@ export function Send() {
                 handleToAddressChange={handleToAddressChange}
                 setToAddressOrName={setToAddressOrName}
                 onDropdownOpen={setToAddressDropdownOpen}
+                validateToAddress={validateToAddress}
               />
             </Row>
 
@@ -300,7 +313,7 @@ export function Send() {
           </Rows>
 
           <Row height="content">
-            {asset ? (
+            {isValidToAddress ? (
               <AccentColorProviderWrapper
                 color={asset?.colors?.primary || asset?.colors?.fallback}
               >
@@ -331,7 +344,7 @@ export function Send() {
                             size={16}
                           />
                           <Text color="label" size="16pt" weight="bold">
-                            {i18n.t('send.button_label_review')}
+                            {buttonLabel}
                           </Text>
                         </Inline>
                       </Button>
@@ -348,7 +361,7 @@ export function Send() {
                   width="full"
                 >
                   <Text color="labelQuaternary" size="14pt" weight="bold">
-                    {i18n.t('send.enter_address_or_amount')}
+                    {buttonLabel}
                   </Text>
                 </Button>
               </Box>
