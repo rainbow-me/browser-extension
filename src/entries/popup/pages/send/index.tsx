@@ -231,16 +231,21 @@ export function Send() {
         action={contactSaveAction?.action}
         onSaveContactAction={setSaveContactAction}
       />
-      <ReviewSheet
-        show={showReviewSheet}
-        onCancel={closeReviewSheet}
-        onSend={handleSend}
-        toAddress={toAddress}
-        asset={asset}
-        primaryAmountDisplay={independentAmountDisplay.display}
-        secondaryAmountDisplay={dependentAmountDisplay.display}
-        onSaveContactAction={setSaveContactAction}
-      />
+      <AccentColorProviderWrapper
+        color={asset?.colors?.primary || asset?.colors?.fallback}
+      >
+        <ReviewSheet
+          show={showReviewSheet}
+          onCancel={closeReviewSheet}
+          onSend={handleSend}
+          toAddress={toAddress}
+          asset={asset}
+          primaryAmountDisplay={independentAmountDisplay.display}
+          secondaryAmountDisplay={dependentAmountDisplay.display}
+          onSaveContactAction={setSaveContactAction}
+        />
+      </AccentColorProviderWrapper>
+
       <Navbar
         title={i18n.t('send.title')}
         background={'surfaceSecondary'}

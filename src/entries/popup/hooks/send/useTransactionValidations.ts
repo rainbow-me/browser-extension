@@ -108,6 +108,9 @@ export const useSendTransactionValidations = ({
     if (!toAddress && !assetAmount) {
       return i18n.t('send.button_label.enter_address_and_amount');
     }
+    if (!assetAmount) {
+      return i18n.t('send.button_label.enter_amount');
+    }
     if (toAddressOrName === '') {
       return i18n.t('send.button_label.enter_address');
     }
