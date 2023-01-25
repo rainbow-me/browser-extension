@@ -108,6 +108,9 @@ export const useSendTransactionValidations = ({
     if (!toAddress && !assetAmount) {
       return i18n.t('send.button_label.enter_address_and_amount');
     }
+    if (toAddressOrName === '') {
+      return i18n.t('send.button_label.enter_address');
+    }
     if (!enoughAssetBalance)
       return i18n.t('send.button_label.insufficient_asset', {
         symbol: asset?.symbol,
@@ -116,9 +119,6 @@ export const useSendTransactionValidations = ({
       return i18n.t('send.button_label.insufficient_native_asset_for_gas', {
         symbol: nativeAsset?.symbol,
       });
-    if (toAddressOrName === '') {
-      return i18n.t('send.button_label.enter_address');
-    }
     return i18n.t('send.button_label.review');
   }, [
     asset?.symbol,
@@ -131,18 +131,29 @@ export const useSendTransactionValidations = ({
     toAddressOrName,
   ]);
 
-  const validInputs = useMemo(
-    () => isValidToAddress && enoughAssetBalance && enoughNativeAssetForGas,
-    [enoughAssetBalance, enoughNativeAssetForGas, isValidToAddress],
+  const readyForReview = useMemo(
+    () =>
+      isValidToAddress &&
+      toAddressOrName !== '' &&
+      assetAmount &&
+      enoughAssetBalance &&
+      enoughNativeAssetForGas,
+    [
+      assetAmount,
+      enoughAssetBalance,
+      enoughNativeAssetForGas,
+      isValidToAddress,
+      toAddressOrName,
+    ],
   );
 
   return {
-    validInputs,
     enoughAssetBalance,
     enoughNativeAssetForGas,
     toAddressIsSmartContract,
     buttonLabel,
     isValidToAddress,
+    readyForReview,
     validateToAddress,
   };
 };

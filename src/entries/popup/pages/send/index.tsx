@@ -112,7 +112,7 @@ export function Send() {
 
   const { selectedGas } = useGasStore();
 
-  const { buttonLabel, isValidToAddress, validateToAddress } =
+  const { buttonLabel, isValidToAddress, readyForReview, validateToAddress } =
     useSendTransactionValidations({
       asset,
       assetAmount,
@@ -145,7 +145,7 @@ export function Send() {
   );
 
   const openReviewSheet = useCallback(() => {
-    if (!!toAddress && independentAmount) {
+    if (readyForReview) {
       setShowReviewSheet(true);
     } else {
       controls.start({
@@ -154,7 +154,7 @@ export function Send() {
       });
       independentFieldRef?.current?.focus();
     }
-  }, [controls, independentAmount, independentFieldRef, toAddress]);
+  }, [controls, independentFieldRef, readyForReview]);
 
   const closeReviewSheet = useCallback(() => setShowReviewSheet(false), []);
   const handleSend = useCallback(async () => {
@@ -338,11 +338,13 @@ export function Send() {
                         testId="send-review-button"
                       >
                         <Inline space="8px" alignVertical="center">
-                          <Symbol
-                            symbol="doc.text.magnifyingglass"
-                            weight="bold"
-                            size={16}
-                          />
+                          {readyForReview && (
+                            <Symbol
+                              symbol="doc.text.magnifyingglass"
+                              weight="bold"
+                              size={16}
+                            />
+                          )}
                           <Text color="label" size="16pt" weight="bold">
                             {buttonLabel}
                           </Text>
