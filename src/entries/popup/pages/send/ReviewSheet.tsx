@@ -263,7 +263,6 @@ export const ReviewSheet = ({
       <Box
         style={{ borderTopLeftRadius: 24, borderTopRightRadius: 24 }}
         background="surfacePrimaryElevatedSecondary"
-        // background="green"
       >
         <Stack space="20px">
           <Box paddingVertical="26px">
@@ -409,66 +408,76 @@ export const ReviewSheet = ({
             </Stack>
           </Box>
         </Stack>
-      </Box>
 
-      <Stack space="20px">
-        <Box
-          background="fillSecondary"
-          padding="8px"
-          width="full"
-          borderRadius="12px"
-        >
-          <Inline alignVertical="center" alignHorizontal="justify">
-            <Inline alignVertical="center" space="8px">
-              <ChainBadge chainId={ChainId.optimism} size="extraSmall" />
-              <Text size="12pt" weight="bold" color="labelSecondary">
-                Sending on the Optimism network
-              </Text>
-            </Inline>
-            <Symbol
-              weight="bold"
-              symbol="info.circle.fill"
-              size={12}
-              color="labelTertiary"
-            />
-          </Inline>
+        <Box paddingHorizontal="16px" paddingBottom="20px">
+          <Stack space="20px">
+            <Box
+              background="fillSecondary"
+              padding="8px"
+              width="full"
+              borderRadius="12px"
+            >
+              <Inline alignVertical="center" alignHorizontal="justify">
+                <Inline alignVertical="center" space="8px">
+                  <ChainBadge chainId={ChainId.optimism} size="extraSmall" />
+                  <Text size="12pt" weight="bold" color="labelSecondary">
+                    Sending on the Optimism network
+                  </Text>
+                </Inline>
+                <Symbol
+                  weight="bold"
+                  symbol="info.circle.fill"
+                  size={12}
+                  color="labelTertiary"
+                />
+              </Inline>
+            </Box>
+            <Box paddingHorizontal="7px">
+              <Stack space="12px">
+                <Columns alignVertical="center" space="7px">
+                  <Column width="content">
+                    <Checkbox
+                      width="16px"
+                      height="16px"
+                      borderRadius="6px"
+                      selected={true}
+                      backgroundSelected="blue"
+                      borderColorSelected="blue"
+                      borderColor="separator"
+                    />
+                  </Column>
+                  <Column>
+                    <Text
+                      align="left"
+                      size="12pt"
+                      weight="bold"
+                      color="labelSecondary"
+                    >
+                      I’m not sending to an exchange
+                    </Text>
+                  </Column>
+                </Columns>
+                <Columns space="7px">
+                  <Column width="content">
+                    <Checkbox
+                      width="16px"
+                      height="16px"
+                      borderRadius="6px"
+                      selected={false}
+                    />
+                  </Column>
+                  <Column>
+                    <Text size="12pt" weight="bold" color="labelSecondary">
+                      The person I’m sending to has a wallet that support
+                      Polygon
+                    </Text>
+                  </Column>
+                </Columns>
+              </Stack>
+            </Box>
+          </Stack>
         </Box>
-        <Inline space="7px">
-          <Box background="red">
-            <Checkbox
-              width="16px"
-              height="16px"
-              borderRadius="6px"
-              selected={false}
-            />
-          </Box>
-          <Box background="orange">
-            <Inline alignVertical="center">
-              <Text
-                align="center"
-                size="12pt"
-                weight="bold"
-                color="labelSecondary"
-              >
-                I’m not sending to an exchange
-              </Text>
-            </Inline>
-          </Box>
-        </Inline>
-        <Inline space="7px">
-          <Box>
-            <Checkbox
-              width="16px"
-              height="16px"
-              borderRadius="6px"
-              selected={false}
-            />
-          </Box>
-          <Text size="12pt" weight="bold" color="labelSecondary">
-            The person I’m sending to has a wallet that support Polygon
-          </Text>
-        </Inline>
-      </Stack>
+      </Box>
 
       <Separator color="separatorSecondary" />
       <Box width="full" padding="20px">

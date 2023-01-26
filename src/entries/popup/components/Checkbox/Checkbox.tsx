@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Box, Symbol } from '~/design-system';
 import { BoxStyles } from '~/design-system/styles/core.css';
-import { Space } from '~/design-system/styles/designTokens';
+import { BackgroundColor, Space } from '~/design-system/styles/designTokens';
 
 export function Checkbox({
   selected,
@@ -10,18 +10,26 @@ export function Checkbox({
   borderRadius,
   width,
   height,
+  background = 'transparent',
+  backgroundSelected = 'accent',
+  borderColor = 'separatorSecondary',
+  borderColorSelected = 'accent',
 }: {
   selected: boolean;
   onClick?: () => void;
   borderRadius?: BoxStyles['borderRadius'];
   width?: Space;
   height?: Space;
+  borderColor?: BoxStyles['borderColor'];
+  borderColorSelected?: BoxStyles['borderColor'];
+  background?: 'accent' | BackgroundColor;
+  backgroundSelected?: 'accent' | BackgroundColor;
 }) {
   return (
     <Box
       borderRadius={borderRadius || '28px'}
-      background={selected ? 'accent' : 'transparent'}
-      borderColor={selected ? 'accent' : 'separatorSecondary'}
+      background={selected ? backgroundSelected : background}
+      borderColor={selected ? borderColorSelected : borderColor}
       borderWidth="1px"
       alignItems="center"
       justifyContent="center"
