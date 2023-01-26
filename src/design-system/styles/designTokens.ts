@@ -744,6 +744,7 @@ export const symbolNames = selectSymbolNames(
   'eye.slash.circle.fill',
   'person.text.rectangle.fill',
   'arrow.triangle.swap',
+  'arrow.up',
   'arrow.down',
   'square.on.square',
   'slider.horizontal.3',

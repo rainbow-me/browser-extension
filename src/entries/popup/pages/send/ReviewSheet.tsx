@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import SendSound from 'static/assets/audio/woosh.wav';
@@ -235,6 +235,7 @@ export const ReviewSheet = ({
   >;
 }) => {
   const { accounts } = useBackgroundAccounts();
+  const [sendingOnL2Checks, setSendingOnL2Checks] = useState([false, false]);
 
   const { display: toName } = useContact({ address: toAddress });
 
@@ -259,6 +260,11 @@ export const ReviewSheet = ({
     playSound();
     onSend();
   }, [onSend, playSound]);
+
+  const sendEnabled = useMemo(() => {
+    if (!sendingOnL2) return true;
+    return sendingOnL2Checks[0] && sendingOnL2Checks[1];
+  }, [sendingOnL2, sendingOnL2Checks]);
 
   return (
     <BottomSheet show={show}>
@@ -446,10 +452,16 @@ export const ReviewSheet = ({
                         width="16px"
                         height="16px"
                         borderRadius="6px"
-                        selected={true}
+                        selected={sendingOnL2Checks[0]}
                         backgroundSelected="blue"
                         borderColorSelected="blue"
                         borderColor="separator"
+                        onClick={() =>
+                          setSendingOnL2Checks([
+                            !sendingOnL2Checks[0],
+                            sendingOnL2Checks[1],
+                          ])
+                        }
                       />
                     </Column>
                     <Column>
@@ -469,7 +481,16 @@ export const ReviewSheet = ({
                         width="16px"
                         height="16px"
                         borderRadius="6px"
-                        selected={false}
+                        selected={sendingOnL2Checks[1]}
+                        backgroundSelected="blue"
+                        borderColorSelected="blue"
+                        borderColor="separator"
+                        onClick={() =>
+                          setSendingOnL2Checks([
+                            sendingOnL2Checks[0],
+                            !sendingOnL2Checks[1],
+                          ])
+                        }
                       />
                     </Column>
                     <Column>
@@ -491,23 +512,50 @@ export const ReviewSheet = ({
         <Rows space="8px" alignVertical="center">
           <Row>
             <Button
-              color="accent"
+              color={sendEnabled ? 'accent' : 'fill'}
               height="44px"
               variant="flat"
               width="full"
               onClick={handleSend}
               testId="review-confirm-button"
             >
-              <TextOverflow
-                maxWidth={TEXT_OVERFLOW_WIDTH + 20}
-                weight="bold"
-                size="16pt"
-                color="label"
-              >
-                {i18n.t('send.review.send_to', {
-                  toName: toName || truncateAddress(toAddress),
-                })}
-              </TextOverflow>
+              {sendEnabled ? (
+                <Box>
+                  <TextOverflow
+                    maxWidth={TEXT_OVERFLOW_WIDTH + 20}
+                    weight="bold"
+                    size="16pt"
+                    color="label"
+                  >
+                    {i18n.t('send.review.send_to', {
+                      toName: toName || truncateAddress(toAddress),
+                    })}
+                  </TextOverflow>
+                </Box>
+              ) : (
+                <Box>
+                  <Inline
+                    alignHorizontal="center"
+                    alignVertical="center"
+                    space="8px"
+                  >
+                    <Symbol
+                      symbol="arrow.up"
+                      color="label"
+                      weight="bold"
+                      size={16}
+                    />
+                    <TextOverflow
+                      maxWidth={TEXT_OVERFLOW_WIDTH + 20}
+                      weight="bold"
+                      size="16pt"
+                      color="label"
+                    >
+                      {'Complete the checks'}
+                    </TextOverflow>
+                  </Inline>
+                </Box>
+              )}
             </Button>
           </Row>
 
