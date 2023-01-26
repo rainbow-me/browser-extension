@@ -190,9 +190,9 @@ export const CustomGasSheet = ({
   const [explainerSheetParams, setExplainerSheetParams] = useState<{
     show: boolean;
     title: string;
-    description: string | string[];
+    description: string[];
     emoji: string;
-  }>({ show: false, title: '', description: '', emoji: '' });
+  }>({ show: false, title: '', description: [''], emoji: '' });
 
   const trend = useMemo(
     () => getBaseFeeTrendParams(baseFeeTrend),
@@ -298,7 +298,7 @@ export const CustomGasSheet = ({
       setExplainerSheetParams({
         show: false,
         emoji: '',
-        description: '',
+        description: [''],
         title: '',
       }),
     [],
@@ -336,8 +336,9 @@ export const CustomGasSheet = ({
       setExplainerSheetParams({
         show: true,
         emoji: '⛏',
-        description:
+        description: [
           'The miner tip goes directly to the miner who confirms your transaction on the network.\n\nA higher tip makes your transaction more likely to be confirmed quickly.',
+        ],
         title: 'Miner tip',
       }),
     [],

@@ -24,7 +24,7 @@ export const ExplainerSheet = ({
   show: boolean;
   emoji: string;
   title: string;
-  description: string | string[];
+  description: string[];
   actionButtonLabel: string;
   actionButtonAction: () => void;
   cancelButtonLabel?: string;
@@ -40,28 +40,17 @@ export const ExplainerSheet = ({
             {title}
           </Text>
           <Separator color="separatorTertiary" />
-          {typeof description === 'string' ? (
+          {description.map((t, i) => (
             <Text
+              key={i}
               align="center"
               weight="regular"
               size="14pt"
               color="labelTertiary"
             >
-              {description}
+              {t}
             </Text>
-          ) : (
-            description.map((t, i) => (
-              <Text
-                key={i}
-                align="center"
-                weight="regular"
-                size="14pt"
-                color="labelTertiary"
-              >
-                {t}
-              </Text>
-            ))
-          )}
+          ))}
         </Stack>
       </Box>
       <Box width="full" padding="20px">
