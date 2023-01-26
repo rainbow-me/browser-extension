@@ -437,5 +437,13 @@
     "copy": "Copy",
     "swap": "Swap",
     "send": "Send"
+  },
+  "token_search": {
+    "section_header": {
+      "favorites": "Favorites",
+      "unverified": "Unverified",
+      "verified": "Verified",
+      "on_other_networks": "On other networks"
+    }
   }
 }
