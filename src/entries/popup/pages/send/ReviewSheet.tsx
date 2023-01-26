@@ -4,7 +4,7 @@ import { Address } from 'wagmi';
 import SendSound from 'static/assets/audio/woosh.wav';
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
-import { ChainId } from '~/core/types/chains';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain, isL2Chain } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
@@ -238,10 +238,12 @@ export const ReviewSheet = ({
 
   const { display: toName } = useContact({ address: toAddress });
 
-  // const sendingOnL2 = useMemo(
-  //   () => isL2Chain(asset?.chainId || ChainId.mainnet),
-  //   [asset?.chainId],
-  // );
+  const sendingOnL2 = useMemo(
+    () => isL2Chain(asset?.chainId || ChainId.mainnet),
+    [asset?.chainId],
+  );
+
+  const chainName = ChainNameDisplay[asset?.chainId || ChainId.mainnet];
 
   const isToWalletOwner = useMemo(
     () => !!accounts.find((account) => isLowerCaseMatch(account, toAddress)),
@@ -404,79 +406,84 @@ export const ReviewSheet = ({
                   </Columns>
                 </Row>
               </Rows>
-              <Separator color="separatorTertiary" />
+              {sendingOnL2 && <Separator color="separatorTertiary" />}
             </Stack>
           </Box>
         </Stack>
 
-        <Box paddingHorizontal="16px" paddingBottom="20px">
-          <Stack space="20px">
-            <Box
-              background="fillSecondary"
-              padding="8px"
-              width="full"
-              borderRadius="12px"
-            >
-              <Inline alignVertical="center" alignHorizontal="justify">
-                <Inline alignVertical="center" space="8px">
-                  <ChainBadge chainId={ChainId.optimism} size="extraSmall" />
-                  <Text size="12pt" weight="bold" color="labelSecondary">
-                    Sending on the Optimism network
-                  </Text>
-                </Inline>
-                <Symbol
-                  weight="bold"
-                  symbol="info.circle.fill"
-                  size={12}
-                  color="labelTertiary"
-                />
-              </Inline>
-            </Box>
-            <Box paddingHorizontal="7px">
-              <Stack space="12px">
-                <Columns alignVertical="center" space="7px">
-                  <Column width="content">
-                    <Checkbox
-                      width="16px"
-                      height="16px"
-                      borderRadius="6px"
-                      selected={true}
-                      backgroundSelected="blue"
-                      borderColorSelected="blue"
-                      borderColor="separator"
+        {sendingOnL2 && (
+          <Box paddingHorizontal="16px" paddingBottom="20px">
+            <Stack space="20px">
+              <Box
+                background="fillSecondary"
+                padding="8px"
+                width="full"
+                borderRadius="12px"
+              >
+                <Inline alignVertical="center" alignHorizontal="justify">
+                  <Inline alignVertical="center" space="8px">
+                    <ChainBadge
+                      chainId={asset?.chainId || ChainId.mainnet}
+                      size="extraSmall"
                     />
-                  </Column>
-                  <Column>
-                    <Text
-                      align="left"
-                      size="12pt"
-                      weight="bold"
-                      color="labelSecondary"
-                    >
-                      I’m not sending to an exchange
-                    </Text>
-                  </Column>
-                </Columns>
-                <Columns space="7px">
-                  <Column width="content">
-                    <Checkbox
-                      width="16px"
-                      height="16px"
-                      borderRadius="6px"
-                      selected={false}
-                    />
-                  </Column>
-                  <Column>
                     <Text size="12pt" weight="bold" color="labelSecondary">
-                      The person I’m sending to has a wallet that support
-                      Polygon
+                      {`Sending on the ${chainName} network`}
                     </Text>
-                  </Column>
-                </Columns>
-              </Stack>
-            </Box>
-          </Stack>
-        </Box>
+                  </Inline>
+                  <Symbol
+                    weight="bold"
+                    symbol="info.circle.fill"
+                    size={12}
+                    color="labelTertiary"
+                  />
+                </Inline>
+              </Box>
+              <Box paddingHorizontal="7px">
+                <Stack space="12px">
+                  <Columns alignVertical="center" space="7px">
+                    <Column width="content">
+                      <Checkbox
+                        width="16px"
+                        height="16px"
+                        borderRadius="6px"
+                        selected={true}
+                        backgroundSelected="blue"
+                        borderColorSelected="blue"
+                        borderColor="separator"
+                      />
+                    </Column>
+                    <Column>
+                      <Text
+                        align="left"
+                        size="12pt"
+                        weight="bold"
+                        color="labelSecondary"
+                      >
+                        I’m not sending to an exchange
+                      </Text>
+                    </Column>
+                  </Columns>
+                  <Columns space="7px">
+                    <Column width="content">
+                      <Checkbox
+                        width="16px"
+                        height="16px"
+                        borderRadius="6px"
+                        selected={false}
+                      />
+                    </Column>
+                    <Column>
+                      <Text size="12pt" weight="bold" color="labelSecondary">
+                        {`The person I’m sending to has a wallet that support
+                        ${chainName}`}
+                      </Text>
+                    </Column>
+                  </Columns>
+                </Stack>
+              </Box>
+            </Stack>
+          </Box>
+        )}
       </Box>
 
       <Separator color="separatorSecondary" />
