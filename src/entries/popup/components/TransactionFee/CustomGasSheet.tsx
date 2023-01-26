@@ -310,10 +310,10 @@ export const CustomGasSheet = ({
       show: true,
       emoji: trendParams.emoji,
       description: [
-        'The base fee is set by the Ethereum network and changes depending on how busy the network is.',
+        i18n.t('custom_gas.explainer.current_base_description'),
         trendParams.explainer,
       ],
-      title: 'Current base fee',
+      title: '',
     });
   }, [baseFeeTrend]);
 
@@ -323,10 +323,10 @@ export const CustomGasSheet = ({
         show: true,
         emoji: '📈',
         description: [
-          'This is the maximum base fee you’re willing to pay for this transaction.',
-          'Setting a higher max base fee prevents your transaction from getting stuck if fees rise.',
+          i18n.t('custom_gas.explainer.max_base_explainer_1'),
+          i18n.t('custom_gas.explainer.max_base_explainer_2'),
         ],
-        title: 'Max base fee',
+        title: i18n.t('custom_gas.explainer.max_base_title'),
       }),
     [],
   );
@@ -336,10 +336,8 @@ export const CustomGasSheet = ({
       setExplainerSheetParams({
         show: true,
         emoji: '⛏',
-        description: [
-          'The miner tip goes directly to the miner who confirms your transaction on the network.\n\nA higher tip makes your transaction more likely to be confirmed quickly.',
-        ],
-        title: 'Miner tip',
+        description: [i18n.t('custom_gas.explainer.max_priority_explainer')],
+        title: i18n.t('custom_gas.explainer.max_priority_title'),
       }),
     [],
   );
