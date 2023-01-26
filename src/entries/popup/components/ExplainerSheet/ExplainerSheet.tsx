@@ -11,6 +11,8 @@ import {
   Text,
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
+import { TextStyles } from '~/design-system/styles/core.css';
+import { ButtonVariant } from '~/design-system/styles/designTokens';
 
 export const ExplainerSheet = ({
   show,
@@ -19,6 +21,8 @@ export const ExplainerSheet = ({
   description,
   actionButtonLabel,
   actionButtonAction,
+  actionButtonVariant,
+  actionButtonLabelColor,
   cancelButtonLabel,
 }: {
   show: boolean;
@@ -27,6 +31,8 @@ export const ExplainerSheet = ({
   description: string[];
   actionButtonLabel: string;
   actionButtonAction: () => void;
+  actionButtonVariant?: ButtonVariant;
+  actionButtonLabelColor?: TextStyles['color'];
   cancelButtonLabel?: string;
 }) => {
   return (
@@ -58,12 +64,17 @@ export const ExplainerSheet = ({
           <Row>
             <Button
               width="full"
-              color="accent"
+              color="blue"
               height="44px"
-              variant="raised"
+              variant={actionButtonVariant || 'raised'}
               onClick={actionButtonAction}
             >
-              <Text align="center" weight="bold" size="16pt" color="label">
+              <Text
+                align="center"
+                weight="bold"
+                size="16pt"
+                color={actionButtonLabelColor || 'accent'}
+              >
                 {actionButtonLabel}
               </Text>
             </Button>

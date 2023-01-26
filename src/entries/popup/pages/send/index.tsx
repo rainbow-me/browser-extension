@@ -30,6 +30,7 @@ import {
 } from '~/design-system';
 import { foregroundColors } from '~/design-system/styles/designTokens';
 
+import { ExplainerSheet } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { sendTransaction } from '../../handlers/wallet';
@@ -70,6 +71,7 @@ export const AccentColorProviderWrapper = ({
 export function Send() {
   const [, setTxHash] = useState('');
   const [showReviewSheet, setShowReviewSheet] = useState(false);
+  const [showToContractExplainer, setShowToContractExplainer] = useState(false);
   const [contactSaveAction, setSaveContactAction] = useState<{
     show: boolean;
     action: ContactAction;
@@ -130,7 +132,7 @@ export function Send() {
   const prevToAddressIsSmartContract = usePrevious(toAddressIsSmartContract);
   useEffect(() => {
     if (!prevToAddressIsSmartContract && toAddressIsSmartContract) {
-      // console.log('TRIGGGERGRGRGRRGRGRG');
+      setShowToContractExplainer(true);
     }
   }, [prevToAddressIsSmartContract, toAddressIsSmartContract]);
 
@@ -170,51 +172,56 @@ export function Send() {
   }, [controls, independentFieldRef, readyForReview]);
 
   const closeReviewSheet = useCallback(() => setShowReviewSheet(false), []);
-  const handleSend = useCallback(async () => {
-    try {
-      const result = await sendTransaction({
-        from: fromAddress,
-        to: txToAddress,
-        value,
-        chainId: connectedToHardhat ? ChainId.hardhat : chainId,
-        data,
-      });
 
-      if (result) {
-        setTxHash(result?.hash as string);
-        const transaction = {
-          amount: assetAmount,
-          asset,
-          data: result.data,
-          value: result.value,
+  const handleSend = useCallback(
+    async (callback?: () => void) => {
+      try {
+        const result = await sendTransaction({
           from: fromAddress,
           to: txToAddress,
-          hash: result.hash,
-          chainId,
-          status: TransactionStatus.sending,
-          type: TransactionType.send,
-        };
-        await addNewTransaction({
-          address: fromAddress,
-          chainId,
-          transaction,
+          value,
+          chainId: connectedToHardhat ? ChainId.hardhat : chainId,
+          data,
         });
-        navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
+
+        if (result) {
+          setTxHash(result?.hash as string);
+          const transaction = {
+            amount: assetAmount,
+            asset,
+            data: result.data,
+            value: result.value,
+            from: fromAddress,
+            to: txToAddress,
+            hash: result.hash,
+            chainId,
+            status: TransactionStatus.sending,
+            type: TransactionType.send,
+          };
+          await addNewTransaction({
+            address: fromAddress,
+            chainId,
+            transaction,
+          });
+          callback?.();
+          navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
+        }
+      } catch (e) {
+        alert('Transaction failed');
       }
-    } catch (e) {
-      alert('Transaction failed');
-    }
-  }, [
-    fromAddress,
-    txToAddress,
-    value,
-    chainId,
-    data,
-    connectedToHardhat,
-    assetAmount,
-    asset,
-    navigate,
-  ]);
+    },
+    [
+      fromAddress,
+      txToAddress,
+      value,
+      chainId,
+      data,
+      connectedToHardhat,
+      assetAmount,
+      asset,
+      navigate,
+    ],
+  );
 
   const selectAsset = useCallback(
     (address: Address | '') => {
@@ -238,6 +245,22 @@ export function Send() {
 
   return (
     <>
+      <ExplainerSheet
+        show={showToContractExplainer}
+        emoji="✋"
+        title={i18n.t('send.explainers.to_smart_contract_title')}
+        description={[
+          i18n.t('send.explainers.to_smart_contract.description_1'),
+          i18n.t('send.explainers.to_smart_contract.description_2'),
+          i18n.t('send.explainers.to_smart_contract.description_3'),
+        ]}
+        actionButtonLabel={i18n.t(
+          'send.explainers.to_smart_contract.action_label',
+        )}
+        actionButtonAction={() => setShowToContractExplainer(false)}
+        actionButtonVariant="tinted"
+        actionButtonLabelColor="blue"
+      />
       <ContactPrompt
         address={toAddress}
         show={contactSaveAction?.show}

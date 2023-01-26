@@ -200,6 +200,15 @@
       "you_own_wallet": "You own this wallet",
       "send_to": "Send to %{toName}",
       "cancel": "Cancel"
+    },
+    "explainers": {
+      "to_smart_contract": {
+        "description_1": "The address you entered is for a smart contract.",
+        "description_2": "Except for rare situations, you probably shouldn't do this. You could lose your assets or they might go to the wrong place.",
+        "description_3": "Double check the address, verify it with the recipient, or contact support first.",
+        "title": "Hold your horses!",
+        "action_label": "Got it"
+      }
     }
   },
   "custom_gas": {
@@ -228,7 +237,7 @@
       "max_base_explainer_2": "Setting a higher max base fee prevents your transaction from getting stuck if fees rise.",
       "max_base_title": "Max base fee",
       "max_priority_explainer": "The miner tip goes directly to the miner who confirms your transaction on the network.\n\nA higher tip makes your transaction more likely to be confirmed quickly.",
-      "max_priority_title": "Miner tip"
+      "max_priority_title": "Miner tip",
     },
     "warnings": {
       "may_get_stuck": "may get stuck",

@@ -150,6 +150,14 @@ export type BackgroundColor =
   | 'scrimSecondary'
   | 'scrimTertiary';
 
+export type ButtonVariant =
+  | 'raised'
+  | 'flat'
+  | 'tinted'
+  | 'stroked'
+  | 'transparent'
+  | 'disabled';
+
 export const backdropFilter = {
   'blur(12px)': 'blur(12px)',
   'blur(26px)': 'blur(26px)',
