@@ -1,9 +1,11 @@
 import React, { useCallback } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useCurrentAddressStore } from '~/core/state';
 import { Box } from '~/design-system';
 
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
+import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -15,6 +17,13 @@ const AddWallet = () => {
     },
     [navigate],
   );
+  const { setCurrentAddress } = useCurrentAddressStore();
+
+  const createWallet = useCallback(async () => {
+    const address = await wallet.create();
+    setCurrentAddress(address);
+    navigateTo(ROUTES.HOME);
+  }, [navigateTo, setCurrentAddress]);
 
   return (
     <Box height="full">
@@ -28,9 +37,7 @@ const AddWallet = () => {
       >
         <OnboardMenu>
           <OnboardMenu.Item
-            onClick={() => {
-              console.log('create wallet');
-            }}
+            onClick={createWallet}
             title={i18n.t('add_wallet.create_wallet')}
             subtitle={i18n.t('add_wallet.create_wallet_description')}
             symbolColor="pink"
