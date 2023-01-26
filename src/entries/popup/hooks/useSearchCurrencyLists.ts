@@ -33,7 +33,7 @@ export function useSearchCurrencyLists({
   outputChainId: ChainId;
   searchQuery?: string;
 }) {
-  const query = searchQuery || '';
+  const query = searchQuery?.toLowerCase() || '';
 
   const isCrosschainSearch = useMemo(() => {
     return inputChainId && inputChainId !== outputChainId;
