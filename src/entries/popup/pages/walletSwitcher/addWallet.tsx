@@ -38,9 +38,7 @@ const AddWallet = () => {
           />
           <OnboardMenu.Separator />
           <OnboardMenu.Item
-            onClick={() => {
-              console.log('import wallet');
-            }}
+            onClick={() => navigateTo(ROUTES.NEW_IMPORT_WALLET)}
             title={i18n.t('add_wallet.import_wallet')}
             subtitle={i18n.t('add_wallet.import_wallet_description')}
             symbolColor="purple"

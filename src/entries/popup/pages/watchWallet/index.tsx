@@ -17,7 +17,7 @@ export function WatchWallet() {
 
   return (
     <FullScreenContainer>
-      <WatchWalletStep suggestions onFinishImporting={onFinishImporting} />
+      <WatchWalletStep onboarding onFinishImporting={onFinishImporting} />
     </FullScreenContainer>
   );
 }

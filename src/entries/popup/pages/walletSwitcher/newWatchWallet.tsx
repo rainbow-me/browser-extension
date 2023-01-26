@@ -21,7 +21,7 @@ const NewWatchWallet = () => {
       flexDirection="column"
       alignItems="center"
     >
-      <WatchWallet suggestions={false} onFinishImporting={onFinishImporting} />
+      <WatchWallet onFinishImporting={onFinishImporting} />
     </Box>
   );
 };

@@ -35,10 +35,10 @@ import { Spinner } from '../Spinner/Spinner';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
 const WatchWallet = ({
-  suggestions,
+  onboarding = false,
   onFinishImporting,
 }: {
-  suggestions: boolean;
+  onboarding?: boolean;
   onFinishImporting: () => void;
 }) => {
   const [isValid, setIsValid] = useState(false);
@@ -192,7 +192,13 @@ const WatchWallet = ({
         </Box>
       ) : (
         <>
-          <Box paddingTop="24px" width="full">
+          <Box
+            paddingTop="24px"
+            width="full"
+            style={{
+              height: onboarding ? 'undefined' : '375px',
+            }}
+          >
             <Stack space="10px">
               <Box
                 as={motion.div}
@@ -247,7 +253,7 @@ const WatchWallet = ({
               </Box>
             </Stack>
           </Box>
-          {suggestions && (
+          {onboarding && (
             <>
               <Box
                 paddingVertical="24px"
