@@ -313,7 +313,7 @@ export const CustomGasSheet = ({
         i18n.t('custom_gas.explainer.current_base_description'),
         trendParams.explainer,
       ],
-      title: '',
+      title: i18n.t('custom_gas.explainer.current_base_title'),
     });
   }, [baseFeeTrend]);
 
