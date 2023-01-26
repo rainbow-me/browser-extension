@@ -1,6 +1,7 @@
+import { getProvider } from '@wagmi/core';
 import { isValidAddress } from 'ethereumjs-util';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address, useProvider } from 'wagmi';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
@@ -36,7 +37,6 @@ export const useSendTransactionValidations = ({
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
     chainId: asset?.chainId || ChainId.mainnet,
   });
-  const provider = useProvider({ chainId: asset?.chainId || ChainId.mainnet });
   const nativeAsset = useUserAsset(nativeAssetUniqueId || '');
 
   const [isValidToAddress, setIsValidToAddress] = useState(false);
@@ -94,12 +94,16 @@ export const useSendTransactionValidations = ({
       if (!toAddress) {
         setToAddressIsSmartContract(false);
       } else {
+        setToAddressIsSmartContract(false);
+        const provider = getProvider({
+          chainId: asset?.chainId || ChainId.mainnet,
+        });
         const code = await provider.getCode(toAddress);
         setToAddressIsSmartContract(code !== '0x');
       }
     };
     checkToAddress();
-  }, [provider, toAddress]);
+  }, [asset?.chainId, toAddress]);
 
   const buttonLabel = useMemo(() => {
     if (!isValidToAddress && toAddressOrName !== '')

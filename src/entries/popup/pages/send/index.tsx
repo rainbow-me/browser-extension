@@ -37,6 +37,7 @@ import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsse
 import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
 import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
 import { useSendTransactionValidations } from '../../hooks/send/useTransactionValidations';
+import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -112,14 +113,26 @@ export function Send() {
 
   const { selectedGas } = useGasStore();
 
-  const { buttonLabel, isValidToAddress, readyForReview, validateToAddress } =
-    useSendTransactionValidations({
-      asset,
-      assetAmount,
-      selectedGas,
-      toAddress,
-      toAddressOrName,
-    });
+  const {
+    buttonLabel,
+    isValidToAddress,
+    readyForReview,
+    validateToAddress,
+    toAddressIsSmartContract,
+  } = useSendTransactionValidations({
+    asset,
+    assetAmount,
+    selectedGas,
+    toAddress,
+    toAddressOrName,
+  });
+
+  const prevToAddressIsSmartContract = usePrevious(toAddressIsSmartContract);
+  useEffect(() => {
+    if (!prevToAddressIsSmartContract && toAddressIsSmartContract) {
+      // console.log('TRIGGGERGRGRGRRGRGRG');
+    }
+  }, [prevToAddressIsSmartContract, toAddressIsSmartContract]);
 
   const controls = useAnimationControls();
   const transactionRequest: TransactionRequest = useMemo(() => {
