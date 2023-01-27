@@ -48,15 +48,16 @@ async function userAssetsQueryFunctionByChain({
   const cachedUserAssets = cache.find(userAssetsQueryKey({ address, currency }))
     ?.state?.data as ParsedAssetsDictByChain;
   const getResultsForChain = async (chain: ChainName) => {
-    const results = await fetchUserAssetsByChain(
-      { address, chain, currency },
-      { cacheTime: 0 },
-    );
+    const results =
+      (await fetchUserAssetsByChain(
+        { address, chain, currency },
+        { cacheTime: 0 },
+      )) || {};
     const chainId = chainIdFromChainName(chain);
-    const cachedDataForChain = cachedUserAssets?.[chainId];
+    const cachedDataForChain = cachedUserAssets?.[chainId] || {};
     return {
       [chainId]:
-        results ?? Object.keys(results).length ? results : cachedDataForChain,
+        results && Object.keys(results).length ? results : cachedDataForChain,
     };
   };
   for (const chain in ChainName) {
