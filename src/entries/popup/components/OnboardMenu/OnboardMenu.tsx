@@ -46,8 +46,13 @@ const OnboardItem = ({
     <Box width="full" paddingVertical="20px" onClick={onClick} testId={testId}>
       <Columns alignHorizontal="center" alignVertical="center">
         <Column>
-          <Symbol weight="bold" symbol={symbol} size={20} color={symbolColor} />
-          <Box paddingTop="14px">
+          <Symbol
+            weight="semibold"
+            symbol={symbol}
+            size={20}
+            color={symbolColor}
+          />
+          <Box paddingTop="12px">
             <Stack space="12px">
               <Text size="16pt" weight="bold" color="label">
                 {title}
