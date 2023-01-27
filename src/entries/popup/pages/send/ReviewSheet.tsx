@@ -300,7 +300,7 @@ export const ReviewSheet = ({
       },
       linkButton: {
         url: 'https://learn.rainbow.me/a-beginners-guide-to-layer-2-networks',
-        label: 'Read more',
+        label: i18n.t(`explainers.send.sending_on_l2.link_button_label`),
       },
       actionButton: {
         label: i18n.t('explainers.send.action_label'),
@@ -500,7 +500,9 @@ export const ReviewSheet = ({
                         size="extraSmall"
                       />
                       <Text size="12pt" weight="bold" color="labelSecondary">
-                        {`Sending on the ${chainName} network`}
+                        {i18n.t('send.review.sending_on_network', {
+                          chainName,
+                        })}
                       </Text>
                     </Inline>
                     <Symbol
@@ -538,7 +540,7 @@ export const ReviewSheet = ({
                           weight="bold"
                           color="labelSecondary"
                         >
-                          I’m not sending to an exchange
+                          {i18n.t('send.review.sending_on_l2_check_1')}
                         </Text>
                       </Column>
                     </Columns>
@@ -562,8 +564,9 @@ export const ReviewSheet = ({
                       </Column>
                       <Column>
                         <Text size="12pt" weight="bold" color="labelSecondary">
-                          {`The person I’m sending to has a wallet that support
-                        ${chainName}`}
+                          {i18n.t('send.review.sending_on_l2_check_2', {
+                            chainName,
+                          })}
                         </Text>
                       </Column>
                     </Columns>
@@ -618,7 +621,7 @@ export const ReviewSheet = ({
                         size="16pt"
                         color="label"
                       >
-                        {'Complete the checks'}
+                        {i18n.t('send.review.complete_checks')}
                       </TextOverflow>
                     </Inline>
                   </Box>

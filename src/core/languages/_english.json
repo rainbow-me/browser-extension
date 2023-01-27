@@ -199,7 +199,10 @@
       "to": "to",
       "you_own_wallet": "You own this wallet",
       "send_to": "Send to %{toName}",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "sending_on_network": "Sending on the %chainName network",
+      "sending_on_l2_check_1": "I’m not sending to an exchange",
+      "sending_on_l2_check_2": "The person I’m sending to has a wallet that support %chainName"
     }
   },
   "custom_gas": {
@@ -515,7 +518,8 @@
         "polygon_description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Polygon has its own security and consensus mechanisms that differ from Ethereum.",
         "bsc_title": "What's Binance Chain?",
         "bsc_description_1": "Binance Smart Chain, or BSC for short, is the blockchain network for the  trading platform Binance.",
-        "bsc_description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, BSC has its own security and consensus mechanisms that differ from Ethereum."
+        "bsc_description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, BSC has its own security and consensus mechanisms that differ from Ethereum.",
+        "link_button_label": "Read more"
       },
       "action_label": "Got it"
     },

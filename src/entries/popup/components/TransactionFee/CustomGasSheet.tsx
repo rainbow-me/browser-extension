@@ -12,12 +12,7 @@ import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useGasStore } from '~/core/state';
 import { GasFeeParams, GasSpeed } from '~/core/types/gas';
 import { getBaseFeeTrendParams } from '~/core/utils/gas';
-import {
-  handleSignificantDecimals,
-  isZero,
-  lessThan,
-  toFixedDecimals,
-} from '~/core/utils/numbers';
+import { isZero, lessThan, toFixedDecimals } from '~/core/utils/numbers';
 import {
   Bleed,
   Box,
@@ -458,12 +453,7 @@ export const CustomGasSheet = ({
                         size="14pt"
                         weight="semibold"
                       >
-                        {`${handleSignificantDecimals(
-                          currentBaseFee,
-                          0,
-                          3,
-                          true,
-                        )} Gwei`}
+                        {`${toFixedDecimals(currentBaseFee, 0)} Gwei`}
                       </Text>
                     </Inline>
                   </Stack>
