@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useCurrentAddressStore } from '~/core/state';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { truncateAddress } from '~/core/utils/address';
 import {
   Box,
   Button,
-  Column,
-  Columns,
   Inline,
   Inset,
   Row,
@@ -18,47 +17,52 @@ import {
 } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { ROUTES } from '~/entries/popup/urls';
 
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
+import * as wallet from '../../handlers/wallet';
 
-export const RenameWalletPrompt = ({
+export const CreateWalletPrompt = ({
+  address,
   show,
   onClose,
-  account,
 }: {
+  address?: Address;
   show: boolean;
   onClose: () => void;
-  account: Address | undefined;
 }) => {
-  const { walletNames, saveWalletName } = useWalletNamesStore();
-  const oldWalletName = (account && walletNames[account]) || '';
-  const [newWalletName, setNewWalletName] = useState(oldWalletName);
+  const navigate = useRainbowNavigate();
+  const [walletName, setWalletName] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const { saveWalletName } = useWalletNamesStore();
+  const { setCurrentAddress } = useCurrentAddressStore();
 
-  const handleValidateWalletName = () => {
-    if (account && newWalletName !== '') {
-      saveWalletName({ address: account, name: newWalletName });
-      onClose();
+  const handleValidateWalletName = async () => {
+    if (address && walletName && walletName.trim() !== '') {
+      saveWalletName({
+        name: walletName.trim(),
+        address,
+      });
+      setCurrentAddress(address);
+      navigate(ROUTES.HOME);
       return;
     }
     setError(i18n.t('errors.no_wallet_name_set'));
   };
 
-  const handleClose = () => {
-    setNewWalletName(oldWalletName);
+  const handleClose = useCallback(async () => {
+    setWalletName('');
+    setError(null);
+    if (address) {
+      await wallet.remove(address);
+    }
     onClose();
-  };
-
-  useEffect(() => {
-    setNewWalletName(oldWalletName);
-    return () => {
-      setNewWalletName(oldWalletName);
-    };
-  }, [oldWalletName]);
+  }, [address, onClose]);
 
   useEffect(() => {
     setError(null);
-  }, [newWalletName]);
+  }, [walletName]);
 
   return (
     <Prompt show={show}>
@@ -66,13 +70,6 @@ export const RenameWalletPrompt = ({
         <Rows space="24px">
           <Row>
             <Rows space="20px">
-              <Row>
-                <Box paddingTop="12px">
-                  <Text size="16pt" weight="bold" align="center">
-                    {i18n.t('rename_wallet_prompt.rename_wallet')}
-                  </Text>
-                </Box>
-              </Row>
               <Row>
                 <Inset horizontal="104px">
                   <Separator color="separatorTertiary" />
@@ -82,9 +79,9 @@ export const RenameWalletPrompt = ({
                 <Rows>
                   <Row>
                     <Inline alignHorizontal="center">
-                      {account && (
+                      {address && (
                         <WalletAvatar
-                          address={account}
+                          address={address}
                           size={44}
                           emojiSize="20pt"
                         />
@@ -96,10 +93,10 @@ export const RenameWalletPrompt = ({
                       <Row>
                         <Input
                           placeholder={i18n.t(
-                            'settings.privacy_and_security.wallets_and_keys.new_wallet.input_placeholder',
+                            'create_wallet_prompt.input_placeholder',
                           )}
-                          value={newWalletName}
-                          onChange={(e) => setNewWalletName(e.target.value)}
+                          value={walletName}
+                          onChange={(e) => setWalletName(e.target.value)}
                           height="44px"
                           variant="transparent"
                           textAlign="center"
@@ -112,7 +109,7 @@ export const RenameWalletPrompt = ({
                             weight="medium"
                             color="labelTertiary"
                           >
-                            {truncateAddress(account)}
+                            {truncateAddress(address)}
                           </Text>
                         </Inline>
                       </Row>
@@ -142,8 +139,20 @@ export const RenameWalletPrompt = ({
             </Inset>
           </Row>
           <Row>
-            <Columns space="8px">
-              <Column>
+            <Rows space="8px">
+              <Row>
+                <Button
+                  variant="flat"
+                  height="36px"
+                  color="accent"
+                  onClick={handleValidateWalletName}
+                  width="full"
+                  borderRadius="9px"
+                >
+                  {i18n.t('create_wallet_prompt.create_wallet')}
+                </Button>
+              </Row>
+              <Row>
                 <Button
                   variant="flat"
                   height="36px"
@@ -154,20 +163,8 @@ export const RenameWalletPrompt = ({
                 >
                   {i18n.t('common_actions.cancel')}
                 </Button>
-              </Column>
-              <Column>
-                <Button
-                  variant="flat"
-                  height="36px"
-                  color="accent"
-                  onClick={handleValidateWalletName}
-                  width="full"
-                  borderRadius="9px"
-                >
-                  {i18n.t('rename_wallet_prompt.update')}
-                </Button>
-              </Column>
-            </Columns>
+              </Row>
+            </Rows>
           </Row>
         </Rows>
       </Box>
