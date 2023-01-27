@@ -47,9 +47,11 @@ const TEXT_OVERFLOW_WIDTH = windowWidth / 2 - 30;
 const GasLabel = ({
   label,
   warning,
+  onClick,
 }: {
   label: string;
   warning?: 'stuck' | 'fail';
+  onClick: () => void;
 }) => (
   <Box as={motion.div} layout="position">
     <Stack space="8px">
@@ -62,13 +64,27 @@ const GasLabel = ({
         <AnimatePresence>
           {!!warning && (
             <Box as={motion.div} layout marginBottom="-2px">
-              <Symbol
-                symbol={'exclamationmark.triangle.fill'}
-                color={warning === 'fail' ? 'red' : 'orange'}
-                weight="bold"
-                size={11}
-              />
+              <Bleed vertical="6px" horizontal="6px">
+                <ButtonSymbol
+                  symbol={'exclamationmark.triangle.fill'}
+                  color={warning === 'fail' ? 'red' : 'orange'}
+                  height="28px"
+                  variant="transparent"
+                  onClick={onClick}
+                />
+              </Bleed>
             </Box>
+          )}
+          {!warning && (
+            <Bleed vertical="6px" horizontal="6px">
+              <ButtonSymbol
+                symbol="info.circle.fill"
+                color="labelQuaternary"
+                height="28px"
+                variant="tinted"
+                onClick={onClick}
+              />
+            </Bleed>
           )}
         </AnimatePresence>
       </Inline>
