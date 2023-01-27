@@ -19,6 +19,7 @@ interface ExplainerSheetProps {
   emoji: string;
   title: string;
   description: string[];
+  headerPill?: React.ReactElement;
   actionButton?: {
     label: string;
     variant?: ButtonVariant;
@@ -77,6 +78,7 @@ export const ExplainerSheet = ({
   actionButton,
   cancelButton,
   linkButton,
+  headerPill,
 }: ExplainerSheetProps) => {
   const goToLink = useCallback(() => {
     linkButton?.url &&
@@ -95,7 +97,13 @@ export const ExplainerSheet = ({
           <Text weight="heavy" size="20pt" color="label">
             {title}
           </Text>
-          <Separator color="separatorTertiary" />
+
+          {headerPill && <Box>{headerPill}</Box>}
+
+          <Box style={{ width: 102 }}>
+            <Separator color="separatorTertiary" strokeWeight="1px" />
+          </Box>
+
           {description.map((t, i) => (
             <Text
               key={i}

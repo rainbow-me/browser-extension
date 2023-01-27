@@ -9,6 +9,8 @@ import BigNumber from 'bignumber.js';
 import { BigNumberish } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
 
+import { globalColors } from '~/design-system/styles/designTokens';
+
 import { i18n } from '../languages';
 import {
   OVM_GAS_PRICE_ORACLE,
@@ -588,6 +590,7 @@ export const getBaseFeeTrendParams = (trend: number) => {
     case -1:
       return {
         color: 'green',
+        borderColor: globalColors.greenA10,
         label: i18n.t('custom_gas.base_trend.falling'),
         symbol: 'arrow.down.forward',
         explainer: i18n.t('explainers.custom_gas.current_base_falling'),
@@ -596,6 +599,7 @@ export const getBaseFeeTrendParams = (trend: number) => {
     case 0:
       return {
         color: 'yellow',
+        borderColor: globalColors.yellowA10,
         label: i18n.t('custom_gas.base_trend.stable'),
         symbol: 'sun.max.fill',
         explainer: i18n.t('explainers.custom_gas.current_base_stable'),
@@ -604,6 +608,7 @@ export const getBaseFeeTrendParams = (trend: number) => {
     case 1:
       return {
         color: 'red',
+        borderColor: globalColors.redA10,
         label: i18n.t('custom_gas.base_trend.surging'),
         symbol: 'exclamationmark.triangle.fill',
         explainer: i18n.t('explainers.custom_gas.current_base_surging'),
@@ -612,6 +617,7 @@ export const getBaseFeeTrendParams = (trend: number) => {
     case 2:
       return {
         color: 'orange',
+        borderColor: globalColors.orangeA10,
         label: i18n.t('custom_gas.base_trend.rising'),
         symbol: 'arrow.up.forward',
         explainer: i18n.t('explainers.custom_gas.current_base_rising'),
@@ -620,6 +626,7 @@ export const getBaseFeeTrendParams = (trend: number) => {
     default:
       return {
         color: 'blue',
+        borderColor: '',
         label: '',
         symbol: '',
         explainer: '',

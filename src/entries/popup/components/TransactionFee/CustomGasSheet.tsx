@@ -16,6 +16,7 @@ import {
   handleSignificantDecimals,
   isZero,
   lessThan,
+  toFixedDecimals,
 } from '~/core/utils/numbers';
 import {
   Bleed,
@@ -119,6 +120,47 @@ const GasLabel = ({
     </Stack>
   </Box>
 );
+
+const ExplainerHeaderPill = ({
+  color,
+  label,
+  gwei,
+  symbol,
+  borderColor,
+}: {
+  color: string;
+  label: string;
+  gwei: string;
+  symbol: string;
+  borderColor: string;
+}) => {
+  return (
+    <Box
+      style={{
+        borderColor: borderColor,
+      }}
+      borderColor="red"
+      borderWidth="1px"
+      borderRadius="round"
+      paddingVertical="9px"
+      paddingHorizontal="10px"
+    >
+      <Inline alignVertical="center" space="6px" height="full">
+        <Symbol
+          symbol={symbol as SymbolName}
+          color={color as SymbolStyles['color']}
+          weight="bold"
+          size={11}
+        />
+        <Text
+          weight="bold"
+          size="14pt"
+          color={color as TextStyles['color']}
+        >{`${label} ∙ ${toFixedDecimals(gwei, 0)} Gwei`}</Text>
+      </Inline>
+    </Box>
+  );
+};
 
 export const CustomGasSheet = ({
   show,
@@ -284,8 +326,17 @@ export const CustomGasSheet = ({
         action: hideExplanerSheet,
         labelColor: 'label',
       },
+      headerPill: (
+        <ExplainerHeaderPill
+          color={trendParams.color}
+          label={trendParams.label}
+          gwei={currentBaseFee}
+          symbol={trendParams.symbol}
+          borderColor={trendParams.borderColor}
+        />
+      ),
     });
-  }, [baseFeeTrend, hideExplanerSheet, showExplainerSheet]);
+  }, [baseFeeTrend, currentBaseFee, hideExplanerSheet, showExplainerSheet]);
 
   const showMaxBaseFeeExplainer = useCallback(
     () =>
@@ -330,6 +381,7 @@ export const CustomGasSheet = ({
         title={explainerSheetParams.title}
         description={explainerSheetParams.description}
         actionButton={explainerSheetParams.actionButton}
+        headerPill={explainerSheetParams.headerPill}
       />
       <Prompt
         background="surfaceSecondary"
