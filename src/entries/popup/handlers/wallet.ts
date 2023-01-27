@@ -17,6 +17,7 @@ import { KeychainWallet } from '~/core/types/keychainTypes';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
 import { toHex } from '~/core/utils/numbers';
+import { getNextNonce } from '~/core/utils/transactions';
 
 import {
   sendTransactionFromLedger,
@@ -51,8 +52,6 @@ const signMessageByType = async (
 export const sendTransaction = async (
   transactionRequest: TransactionRequest,
 ): Promise<TransactionResponse> => {
-  // Check the type of account it is
-
   const { selectedGas } = gasStore.getState();
   const provider = getProvider({
     chainId: transactionRequest.chainId,
@@ -62,19 +61,24 @@ export const sendTransaction = async (
     provider,
   });
 
+  const nonce = await getNextNonce({
+    address: transactionRequest.from as Address,
+    chainId: transactionRequest.chainId as number,
+  });
+
   const params = {
     ...transactionRequest,
     ...selectedGas.transactionGasParams,
     gasLimit: toHex(gasLimit || '0'),
     value: transactionRequest?.value,
+    nonce,
   };
 
   const { type, vendor } = await getWallet(transactionRequest.from as Address);
-  console.log('send transaction', type, vendor);
+  // Check the type of account it is
   if (type === 'HardwareWalletKeychain') {
     switch (vendor) {
       case 'Ledger':
-        console.log('sending from ledger');
         return sendTransactionFromLedger(params);
       case 'Trezor':
         throw new Error('Trezor not supported yet');
@@ -82,7 +86,6 @@ export const sendTransaction = async (
         throw new Error('Unsupported hardware wallet');
     }
   } else {
-    console.log('normal send');
     return walletAction(
       'send_transaction',
       params,
@@ -305,7 +308,6 @@ export const connectLedger = async () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    console.log(e);
     if (e?.name === 'TransportStatusError') {
       alert(
         'Please make sure your ledger is unlocked and open the Ethereum app',

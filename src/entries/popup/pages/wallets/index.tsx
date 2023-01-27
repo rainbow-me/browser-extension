@@ -388,7 +388,6 @@ export function Wallets() {
     async (address: Address) => {
       const pwd = password || prompt('Enter password');
       const seed = await wallet.exportWallet(address, pwd as string);
-      console.log('seed', seed);
       return seed;
     },
     [password],
@@ -399,7 +398,6 @@ export function Wallets() {
       const pwd = password || prompt('Enter password');
 
       const pkey = await wallet.exportAccount(address, pwd as string);
-      console.log('pkey', pkey);
       return pkey;
     },
     [password],

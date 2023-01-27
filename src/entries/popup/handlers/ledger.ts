@@ -17,19 +17,13 @@ export async function sendTransactionFromLedger(
 ): Promise<TransactionResponse> {
   try {
     const { from: address } = transaction;
-    console.log('sending transaction from ledger', transaction);
-    console.log('from address', address);
     const provider = getProvider({
       chainId: transaction.chainId,
     });
-    console.log('provider', provider);
 
     const transport = await TransportWebUSB.create();
-    console.log('got transport');
     const appEth = new AppEth(transport);
-    console.log('got appEth');
     const path = await getPath(address as Address);
-    console.log('path', path);
 
     const baseTx: ethers.utils.UnsignedTransaction = {
       chainId: transaction.chainId || undefined,
@@ -48,8 +42,6 @@ export async function sendTransactionFromLedger(
 
     const unsignedTx = ethers.utils.serializeTransaction(baseTx).substring(2);
 
-    console.log('unsignedTx', unsignedTx);
-
     const resolution = await ledgerService.resolveTransaction(
       unsignedTx,
       appEth.loadConfig,
@@ -60,10 +52,7 @@ export async function sendTransactionFromLedger(
       },
     );
 
-    console.log('resolution', resolution);
-
     const sig = await appEth.signTransaction(path, unsignedTx, resolution);
-    console.log('sig', sig);
 
     const serializedTransaction = ethers.utils.serializeTransaction(baseTx, {
       r: '0x' + sig.r,
@@ -71,11 +60,9 @@ export async function sendTransactionFromLedger(
       v: ethers.BigNumber.from('0x' + sig.v).toNumber(),
     });
 
-    console.log('serializedTransaction', serializedTransaction);
     return provider.sendTransaction(serializedTransaction);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    console.log('error with sendTransactionFromLedger', e);
     if (e?.name === 'TransportStatusError') {
       alert(
         'Please make sure your ledger is unlocked and open the Ethereum app',

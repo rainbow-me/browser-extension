@@ -17,7 +17,7 @@ import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connect
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { ChainId } from '~/core/types/chains';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
-import { addNewTransaction, getNextNonce } from '~/core/utils/transactions';
+import { addNewTransaction } from '~/core/utils/transactions';
 import {
   AccentColorProvider,
   Box,
@@ -148,15 +148,10 @@ export function Send() {
   const handleSend = useCallback(async () => {
     try {
       const chainIdToUse = connectedToHardhat ? ChainId.hardhat : chainId;
-      const nonce = await getNextNonce({
-        address: fromAddress,
-        chainId: chainIdToUse,
-      });
       const result = await sendTransaction({
         from: fromAddress,
         to: txToAddress,
         value,
-        nonce,
         chainId: chainIdToUse,
         data,
       });
@@ -172,6 +167,7 @@ export function Send() {
           to: txToAddress,
           hash: result.hash,
           chainId,
+          nonce: result.nonce,
           status: TransactionStatus.sending,
           type: TransactionType.send,
         };
