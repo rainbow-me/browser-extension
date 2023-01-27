@@ -199,10 +199,10 @@ export const CustomGasSheet = ({
 
   const [maxBaseFeeWarning, setMaxBaseFeeWarning] = useState<
     'stuck' | 'fail' | undefined
-  >();
+  >(undefined);
   const [maxPriorityFeeWarning, setPriorityBaseFeeWarning] = useState<
     'stuck' | 'fail' | undefined
-  >();
+  >(undefined);
 
   const trend = useMemo(
     () => getBaseFeeTrendParams(baseFeeTrend),

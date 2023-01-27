@@ -107,7 +107,7 @@ export const useSendTransactionValidations = ({
 
   const buttonLabel = useMemo(() => {
     if (!isValidToAddress && toAddressOrName !== '')
-      return i18n.t('send.button_label.review');
+      return i18n.t('send.button_label.enter_valid_address');
 
     if (!toAddress && !assetAmount) {
       return i18n.t('send.button_label.enter_address_and_amount');
