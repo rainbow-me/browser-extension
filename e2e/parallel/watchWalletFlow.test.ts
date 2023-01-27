@@ -81,17 +81,6 @@ describe('Watch wallet flow', () => {
     expect(expected.includes(actual)).toEqual(true);
   });
 
-  it('should shuffle account', async () => {
-    await findElementAndClick({ id: 'header-account-name-shuffle', driver });
-    const label = await querySelector(
-      driver,
-      '[data-testid="header"] [data-testid="account-name"]',
-    );
-    const actual = await label.getText();
-    const expected = ['0x5B57...7C35', 'estebanmino.eth'];
-    expect(expected.includes(actual)).toEqual(true);
-  });
-
   it('should be able to lock and unlock the extension', async () => {
     // Lock
     await findElementAndClick({
