@@ -287,10 +287,10 @@ export const CustomGasSheet = ({
       show: true,
       emoji: trendParams.emoji,
       description: [
-        i18n.t('custom_gas.explainer.current_base_description'),
+        i18n.t('explainers.custom_gas.current_base_description'),
         trendParams.explainer,
       ],
-      title: i18n.t('custom_gas.explainer.current_base_title'),
+      title: i18n.t('explainers.custom_gas.current_base_title'),
     });
   }, [baseFeeTrend]);
 
@@ -300,10 +300,10 @@ export const CustomGasSheet = ({
         show: true,
         emoji: '📈',
         description: [
-          i18n.t('custom_gas.explainer.max_base_explainer_1'),
-          i18n.t('custom_gas.explainer.max_base_explainer_2'),
+          i18n.t('explainers.custom_gas.max_base_explainer_1'),
+          i18n.t('explainers.custom_gas.max_base_explainer_2'),
         ],
-        title: i18n.t('custom_gas.explainer.max_base_title'),
+        title: i18n.t('explainers.custom_gas.max_base_title'),
       }),
     [],
   );
@@ -313,8 +313,8 @@ export const CustomGasSheet = ({
       setExplainerSheetParams({
         show: true,
         emoji: '⛏',
-        description: [i18n.t('custom_gas.explainer.max_priority_explainer')],
-        title: i18n.t('custom_gas.explainer.max_priority_title'),
+        description: [i18n.t('explainers.custom_gas.max_priority_explainer')],
+        title: i18n.t('explainers.custom_gas.max_priority_title'),
       }),
     [],
   );
@@ -326,8 +326,9 @@ export const CustomGasSheet = ({
         emoji={explainerSheetParams.emoji}
         title={explainerSheetParams.title}
         description={explainerSheetParams.description}
-        actionButtonLabel="Got it"
+        actionButtonLabel={i18n.t('explainers.custom_gas.action_button_label')}
         actionButtonAction={closeExplainer}
+        actionButtonLabelColor="label"
       />
       <Prompt
         background="surfaceSecondary"

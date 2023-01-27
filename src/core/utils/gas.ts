@@ -590,7 +590,7 @@ export const getBaseFeeTrendParams = (trend: number) => {
         color: 'green',
         label: i18n.t('custom_gas.base_trend.falling'),
         symbol: 'arrow.down.forward',
-        explainer: i18n.t('custom_gas.explainer.current_base_falling'),
+        explainer: i18n.t('explainers.custom_gas.current_base_falling'),
         emoji: '📉',
       };
     case 0:
@@ -598,7 +598,7 @@ export const getBaseFeeTrendParams = (trend: number) => {
         color: 'yellow',
         label: i18n.t('custom_gas.base_trend.stable'),
         symbol: 'sun.max.fill',
-        explainer: i18n.t('custom_gas.explainer.current_base_stable'),
+        explainer: i18n.t('explainers.custom_gas.current_base_stable'),
         emoji: '🌞',
       };
     case 1:
@@ -606,7 +606,7 @@ export const getBaseFeeTrendParams = (trend: number) => {
         color: 'red',
         label: i18n.t('custom_gas.base_trend.surging'),
         symbol: 'exclamationmark.triangle.fill',
-        explainer: i18n.t('custom_gas.explainer.current_base_surging'),
+        explainer: i18n.t('explainers.custom_gas.current_base_surging'),
         emoji: '🎢',
       };
     case 2:
@@ -614,7 +614,7 @@ export const getBaseFeeTrendParams = (trend: number) => {
         color: 'orange',
         label: i18n.t('custom_gas.base_trend.rising'),
         symbol: 'arrow.up.forward',
-        explainer: i18n.t('custom_gas.explainer.current_base_rising'),
+        explainer: i18n.t('explainers.custom_gas.current_base_rising'),
         emoji: '🥵',
       };
     default:

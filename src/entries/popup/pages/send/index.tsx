@@ -248,15 +248,13 @@ export function Send() {
       <ExplainerSheet
         show={showToContractExplainer}
         emoji="✋"
-        title={i18n.t('send.explainers.to_smart_contract_title')}
+        title={i18n.t('explainers.send.to_smart_contract.title')}
         description={[
-          i18n.t('send.explainers.to_smart_contract.description_1'),
-          i18n.t('send.explainers.to_smart_contract.description_2'),
-          i18n.t('send.explainers.to_smart_contract.description_3'),
+          i18n.t('explainers.send.to_smart_contract.description_1'),
+          i18n.t('explainers.send.to_smart_contract.description_2'),
+          i18n.t('explainers.send.to_smart_contract.description_3'),
         ]}
-        actionButtonLabel={i18n.t(
-          'send.explainers.to_smart_contract.action_label',
-        )}
+        actionButtonLabel={i18n.t('explainers.send.action_label')}
         actionButtonAction={() => setShowToContractExplainer(false)}
         actionButtonVariant="tinted"
         actionButtonLabelColor="blue"
