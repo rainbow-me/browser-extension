@@ -71,7 +71,6 @@ export const AccentColorProviderWrapper = ({
 export function Send() {
   const [, setTxHash] = useState('');
   const [showReviewSheet, setShowReviewSheet] = useState(false);
-  const [showToContractExplainer, setShowToContractExplainer] = useState(false);
   const [contactSaveAction, setSaveContactAction] = useState<{
     show: boolean;
     action: ContactAction;
@@ -128,13 +127,6 @@ export function Send() {
     toAddress,
     toAddressOrName,
   });
-
-  const prevToAddressIsSmartContract = usePrevious(toAddressIsSmartContract);
-  useEffect(() => {
-    if (!prevToAddressIsSmartContract && toAddressIsSmartContract) {
-      setShowToContractExplainer(true);
-    }
-  }, [prevToAddressIsSmartContract, toAddressIsSmartContract]);
 
   const controls = useAnimationControls();
   const transactionRequest: TransactionRequest = useMemo(() => {
@@ -243,19 +235,55 @@ export function Send() {
     };
   }, [clearCustomGasModified]);
 
+  const [explainerSheetParams, setExplainerSheetParams] = useState<{
+    show: boolean;
+    title: string;
+    description: string[];
+    emoji: string;
+  }>({ show: false, title: '', description: [''], emoji: '' });
+
+  const showToContractExplainer = useCallback(() => {
+    setExplainerSheetParams({
+      show: true,
+      title: i18n.t('explainers.send.to_smart_contract.title'),
+      description: [
+        i18n.t('explainers.send.to_smart_contract.description_1'),
+        i18n.t('explainers.send.to_smart_contract.description_2'),
+        i18n.t('explainers.send.to_smart_contract.description_3'),
+      ],
+      emoji: '',
+    });
+  }, []);
+
+  const hideExplainer = useCallback(() => {
+    setExplainerSheetParams({
+      show: true,
+      title: '',
+      description: [''],
+      emoji: '',
+    });
+  }, []);
+
+  const prevToAddressIsSmartContract = usePrevious(toAddressIsSmartContract);
+  useEffect(() => {
+    if (!prevToAddressIsSmartContract && toAddressIsSmartContract) {
+      showToContractExplainer();
+    }
+  }, [
+    prevToAddressIsSmartContract,
+    showToContractExplainer,
+    toAddressIsSmartContract,
+  ]);
+
   return (
     <>
       <ExplainerSheet
-        show={showToContractExplainer}
+        show={explainerSheetParams.show}
         emoji="✋"
-        title={i18n.t('explainers.send.to_smart_contract.title')}
-        description={[
-          i18n.t('explainers.send.to_smart_contract.description_1'),
-          i18n.t('explainers.send.to_smart_contract.description_2'),
-          i18n.t('explainers.send.to_smart_contract.description_3'),
-        ]}
+        title={explainerSheetParams.title}
+        description={explainerSheetParams.description}
         actionButtonLabel={i18n.t('explainers.send.action_label')}
-        actionButtonAction={() => setShowToContractExplainer(false)}
+        actionButtonAction={hideExplainer}
         actionButtonVariant="tinted"
         actionButtonLabelColor="blue"
       />

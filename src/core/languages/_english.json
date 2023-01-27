@@ -507,10 +507,13 @@
         "arbitrum_title": "What's Arbitrum?",
         "arbitrum_description_1": "Arbitrum is a Layer 2 network that runs on top of Ethereum, enabling cheaper and faster transactions while still benefiting from the underlying security of Ethereum.",
         "arbitrum_description_2": "It bundles lots of transactions together in a \"roll up\" before sending them down to live permanently on Ethereum.",
+        "optimism_title": "What's Optimism?",
         "optimism_description_1": "Optimism is a Layer 2 network that runs on top of Ethereum, enabling cheaper and faster transactions while still benefiting from the underlying security of Ethereum.",
         "optimism_description_2": "It bundles lots of transactions together in a \"roll up\" before sending them down to live permanently on Ethereum.",
+        "polygon_title": "What's Polygon?",
         "polygon_description_1": "Polygon is a sidechain, a distinct network that runs alongside Ethereum and is compatible with it.",
         "polygon_description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Polygon has its own security and consensus mechanisms that differ from Ethereum.",
+        "bsc_title": "What's Binance Chain?",
         "bsc_description_1": "Binance Smart Chain, or BSC for short, is the blockchain network for the  trading platform Binance.",
         "bsc_description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, BSC has its own security and consensus mechanisms that differ from Ethereum."
       },
