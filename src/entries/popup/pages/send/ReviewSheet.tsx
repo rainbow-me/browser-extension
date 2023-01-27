@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import SendSound from 'static/assets/audio/woosh.wav';
@@ -53,6 +53,7 @@ import {
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useBackgroundAccounts } from '../../hooks/useBackgroundAccounts';
 import { useContact } from '../../hooks/useContacts';
+import usePrevious from '../../hooks/usePrevious';
 
 import { ContactAction } from './ContactPrompt';
 
@@ -249,6 +250,7 @@ export const ReviewSheet = ({
 }) => {
   const { accounts } = useBackgroundAccounts();
   const [sendingOnL2Checks, setSendingOnL2Checks] = useState([false, false]);
+  const prevShow = usePrevious(show);
 
   const { display: toName } = useContact({ address: toAddress });
 
@@ -264,20 +266,17 @@ export const ReviewSheet = ({
     [accounts, toAddress],
   );
 
-  const playSound = useCallback(() => {
-    const sound = new Audio(SendSound);
-    sound.play();
-  }, []);
-
-  const handleSend = useCallback(() => {
-    playSound();
-    onSend();
-  }, [onSend, playSound]);
-
   const sendEnabled = useMemo(() => {
     if (!sendingOnL2) return true;
     return sendingOnL2Checks[0] && sendingOnL2Checks[1];
   }, [sendingOnL2, sendingOnL2Checks]);
+
+  const handleSend = useCallback(() => {
+    if (sendEnabled) {
+      onSend();
+      new Audio(SendSound).play();
+    }
+  }, [onSend, sendEnabled]);
 
   const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
     useExplainerSheetParams();
@@ -311,6 +310,12 @@ export const ReviewSheet = ({
       },
     });
   }, [asset?.chainId, hideExplanerSheet, showExplainerSheet]);
+
+  useEffect(() => {
+    if (prevShow && !show) {
+      setSendingOnL2Checks([false, false]);
+    }
+  }, [prevShow, show]);
 
   return (
     <>
