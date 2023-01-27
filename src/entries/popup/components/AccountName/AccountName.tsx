@@ -2,12 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAccount, useEnsAvatar } from 'wagmi';
 
-import { useCurrentAddressStore } from '~/core/state';
 import { Box, Inline, Symbol, Text } from '~/design-system';
-import {
-  DEFAULT_ACCOUNT,
-  DEFAULT_ACCOUNT_2,
-} from '~/entries/background/handlers/handleProviderRequest';
 
 import { useWalletName } from '../../hooks/useWalletName';
 import { ROUTES } from '../../urls';
@@ -33,23 +28,10 @@ export function AccountName({
   const { displayName } = useWalletName({ address: address || '0x' });
   const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
 
-  const { setCurrentAddress } = useCurrentAddressStore();
-
-  // TODO: handle account switching correctly
-  const shuffleAccount = React.useCallback(() => {
-    setCurrentAddress(
-      address === DEFAULT_ACCOUNT ? DEFAULT_ACCOUNT_2 : DEFAULT_ACCOUNT,
-    );
-  }, [address, setCurrentAddress]);
-
   return (
     <Inline alignVertical="center" space="4px">
       {includeAvatar && <Avatar imageUrl={ensAvatar || ''} size={16} />}
-      <Box
-        as="button"
-        onClick={shuffleAccount}
-        id={`${id ?? ''}-account-name-shuffle`}
-      >
+      <Box as="button" id={`${id ?? ''}-account-name-shuffle`}>
         <Text color="label" size={size} weight="heavy" testId="account-name">
           {displayName}
         </Text>
