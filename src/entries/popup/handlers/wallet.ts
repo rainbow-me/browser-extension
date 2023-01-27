@@ -18,9 +18,14 @@ import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
 import { toHex } from '~/core/utils/numbers';
 
+import {
+  sendTransactionFromLedger,
+  signMessageByTypeFromLedger,
+} from './ledger';
+
 const messenger = initializeMessenger({ connect: 'background' });
 
-const walletAction = async (action: string, payload: unknown) => {
+export const walletAction = async (action: string, payload: unknown) => {
   const { result }: { result: unknown } = await messenger.send(
     'wallet_action',
     {
@@ -46,6 +51,8 @@ const signMessageByType = async (
 export const sendTransaction = async (
   transactionRequest: TransactionRequest,
 ): Promise<TransactionResponse> => {
+  // Check the type of account it is
+
   const { selectedGas } = gasStore.getState();
   const provider = getProvider({
     chainId: transactionRequest.chainId,
@@ -55,30 +62,78 @@ export const sendTransaction = async (
     provider,
   });
 
-  return walletAction('send_transaction', {
+  const params = {
     ...transactionRequest,
     ...selectedGas.transactionGasParams,
     gasLimit: toHex(gasLimit || '0'),
     value: transactionRequest?.value,
-  }) as unknown as TransactionResponse;
+  };
+
+  const { type, vendor } = await getWallet(transactionRequest.from as Address);
+  console.log('send transaction', type, vendor);
+  if (type === 'HardwareWalletKeychain') {
+    switch (vendor) {
+      case 'Ledger':
+        console.log('sending from ledger');
+        return sendTransactionFromLedger(params);
+      case 'Trezor':
+        throw new Error('Trezor not supported yet');
+      default:
+        throw new Error('Unsupported hardware wallet');
+    }
+  } else {
+    console.log('normal send');
+    return walletAction(
+      'send_transaction',
+      params,
+    ) as unknown as TransactionResponse;
+  }
 };
 
 export const personalSign = async (
   msgData: string | Bytes,
   address: Address,
 ): Promise<string> => {
-  return (await signMessageByType(msgData, address, 'personal_sign')) as string;
+  const { type, vendor } = await getWallet(address as Address);
+  if (type === 'HardwareWalletKeychain') {
+    switch (vendor) {
+      case 'Ledger':
+        return signMessageByTypeFromLedger(msgData, address, 'personal_sign');
+      case 'Trezor':
+        throw new Error('Trezor not supported yet');
+      default:
+        throw new Error('Unsupported hardware wallet');
+    }
+  } else {
+    return (await signMessageByType(
+      msgData,
+      address,
+      'personal_sign',
+    )) as string;
+  }
 };
 
 export const signTypedData = async (
   msgData: string | Bytes,
   address: Address,
 ) => {
-  return (await signMessageByType(
-    msgData,
-    address,
-    'sign_typed_data',
-  )) as string;
+  const { type, vendor } = await getWallet(address as Address);
+  if (type === 'HardwareWalletKeychain') {
+    switch (vendor) {
+      case 'Ledger':
+        return signMessageByTypeFromLedger(msgData, address, 'sign_typed_data');
+      case 'Trezor':
+        throw new Error('Trezor not supported yet');
+      default:
+        throw new Error('Unsupported hardware wallet');
+    }
+  } else {
+    return (await signMessageByType(
+      msgData,
+      address,
+      'sign_typed_data',
+    )) as string;
+  }
 };
 
 export const lock = async () => {

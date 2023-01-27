@@ -21,5 +21,6 @@ export enum walletActions {
   sign_typed_data = 'sign_typed_data',
   test_sandbox = 'test_sandbox',
   import_hw = 'import_hw',
+  get_path = 'get_path',
 }
 export type WalletAction = keyof typeof walletActions;

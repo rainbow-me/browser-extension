@@ -5,7 +5,7 @@ import { KeychainType } from '~/core/types/keychainTypes';
 
 import { IKeychain, PrivateKey } from '../IKeychain';
 
-export interface SerializedLedgerKeychain {
+export interface SerializedHardwareWalletKeychain {
   vendor?: string;
   hdPath?: string;
   deviceId?: string;
@@ -18,11 +18,13 @@ export interface SerializedLedgerKeychain {
 
 const privates = new WeakMap();
 
-export class LedgerKeychain implements IKeychain {
+export class HardwareWalletKeychain implements IKeychain {
   type: string;
+  vendor?: string;
 
   constructor() {
-    this.type = KeychainType.LedgerKeychain;
+    this.type = KeychainType.HardwareWalletKeychain;
+    this.vendor = undefined;
 
     privates.set(this, {
       wallets: [],
@@ -44,7 +46,7 @@ export class LedgerKeychain implements IKeychain {
     });
   }
 
-  init(options: SerializedLedgerKeychain) {
+  init(options: SerializedHardwareWalletKeychain) {
     return this.deserialize(options);
   }
 
@@ -52,12 +54,19 @@ export class LedgerKeychain implements IKeychain {
     throw new Error('Method not implemented.');
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getSigner(address: Address): Signer {
-    const wallet = privates.get(this).getWalletForAddress(address);
-    return wallet;
+    throw new Error('Method not implemented.');
   }
 
-  async serialize(): Promise<SerializedLedgerKeychain> {
+  getPath(address: Address): string {
+    const wallet = privates
+      .get(this)
+      .wallets.find((wallet: Wallet) => (wallet as Wallet).address === address);
+    return `${privates.get(this).hdPath}/${wallet.index}`;
+  }
+
+  async serialize(): Promise<SerializedHardwareWalletKeychain> {
     return {
       deviceId: privates.get(this).deviceId,
       accountsEnabled: privates.get(this).accountsEnabled,
@@ -65,13 +74,15 @@ export class LedgerKeychain implements IKeychain {
       type: this.type,
       accountsDeleted: privates.get(this).accountsDeleted,
       wallets: privates.get(this).wallets,
+      vendor: this.vendor,
     };
   }
 
-  async deserialize(opts: SerializedLedgerKeychain) {
+  async deserialize(opts: SerializedHardwareWalletKeychain) {
     if (opts?.hdPath) privates.get(this).hdPath = opts.hdPath;
     if (opts?.deviceId) privates.get(this).deviceId = opts.deviceId;
     if (opts?.wallets) privates.get(this).wallets = opts.wallets;
+    if (opts?.vendor) this.vendor = opts.vendor;
     if (opts?.accountsEnabled)
       privates.get(this).accountsEnabled = opts.accountsEnabled;
   }

@@ -17,7 +17,7 @@ import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connect
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { ChainId } from '~/core/types/chains';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
-import { addNewTransaction } from '~/core/utils/transactions';
+import { addNewTransaction, getNextNonce } from '~/core/utils/transactions';
 import {
   AccentColorProvider,
   Box,
@@ -147,11 +147,17 @@ export function Send() {
   const closeReviewSheet = useCallback(() => setShowReviewSheet(false), []);
   const handleSend = useCallback(async () => {
     try {
+      const chainIdToUse = connectedToHardhat ? ChainId.hardhat : chainId;
+      const nonce = await getNextNonce({
+        address: fromAddress,
+        chainId: chainIdToUse,
+      });
       const result = await sendTransaction({
         from: fromAddress,
         to: txToAddress,
         value,
-        chainId: connectedToHardhat ? ChainId.hardhat : chainId,
+        nonce,
+        chainId: chainIdToUse,
         data,
       });
 
@@ -177,6 +183,7 @@ export function Send() {
         navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
       }
     } catch (e) {
+      console.log('error', e);
       alert('Transaction failed');
     }
   }, [

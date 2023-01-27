@@ -136,7 +136,7 @@ export const importHardwareWallet = async ({
 }) => {
   const keychain = await keychainManager.importKeychain({
     vendor,
-    type: KeychainType.LedgerKeychain,
+    type: KeychainType.HardwareWalletKeychain,
     deviceId,
     wallets,
     accountsEnabled,
@@ -239,6 +239,10 @@ export const signMessage = async ({
 
 export const getWallet = async (address: Address) => {
   return keychainManager.getWallet(address);
+};
+
+export const getPath = async (address: Address) => {
+  return keychainManager.getPath(address);
 };
 
 export const signTypedData = async ({
