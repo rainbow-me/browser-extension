@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
 import {
   Box,
@@ -14,36 +14,76 @@ import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet'
 import { TextStyles } from '~/design-system/styles/core.css';
 import { ButtonVariant } from '~/design-system/styles/designTokens';
 
+interface ExplainerSheetProps {
+  show: boolean;
+  emoji: string;
+  title: string;
+  description: string[];
+  actionButton?: {
+    label: string;
+    variant?: ButtonVariant;
+    labelColor?: TextStyles['color'];
+    action: () => void;
+  };
+  cancelButton?: {
+    label: string;
+    variant?: ButtonVariant;
+    labelColor?: TextStyles['color'];
+    action: () => void;
+  };
+  linkButton?: {
+    label: string;
+    url: string;
+  };
+}
+
+export const useExplainerSheetParams = () => {
+  const [explainerSheetParams, setExplainerSheetParams] =
+    useState<ExplainerSheetProps>({
+      show: false,
+      emoji: '',
+      title: '',
+      description: [''],
+    });
+
+  const hideExplanerSheet = useCallback(
+    () =>
+      setExplainerSheetParams({
+        show: false,
+        emoji: '',
+        title: '',
+        description: [''],
+      }),
+    [],
+  );
+
+  const showExplainerSheet = useCallback(
+    (params: ExplainerSheetProps) =>
+      setExplainerSheetParams({
+        ...params,
+        show: true,
+      }),
+    [],
+  );
+
+  return { explainerSheetParams, hideExplanerSheet, showExplainerSheet };
+};
+
 export const ExplainerSheet = ({
   show,
   emoji,
   title,
   description,
-  actionButtonLabel,
-  actionButtonAction,
-  actionButtonVariant,
-  actionButtonLabelColor,
-  cancelButtonLabel,
-  linkButtonLabel,
-  linkUrl,
-}: {
-  show: boolean;
-  emoji: string;
-  title: string;
-  description: string[];
-  actionButtonLabel: string;
-  actionButtonAction: () => void;
-  actionButtonVariant?: ButtonVariant;
-  actionButtonLabelColor?: TextStyles['color'];
-  cancelButtonLabel?: string;
-  linkButtonLabel?: string;
-  linkUrl?: string;
-}) => {
-  const goToLink = React.useCallback(() => {
-    chrome.tabs.create({
-      url: linkUrl,
-    });
-  }, [linkUrl]);
+  actionButton,
+  cancelButton,
+  linkButton,
+}: ExplainerSheetProps) => {
+  const goToLink = useCallback(() => {
+    linkButton?.url &&
+      chrome.tabs.create({
+        url: linkButton?.url,
+      });
+  }, [linkButton?.url]);
 
   return (
     <BottomSheet show={show}>
@@ -71,7 +111,7 @@ export const ExplainerSheet = ({
       </Box>
       <Box width="full" padding="20px">
         <Rows space="8px">
-          {linkButtonLabel && (
+          {linkButton && (
             <Row>
               <Box width="full" alignItems="center">
                 <Inline alignHorizontal="center">
@@ -88,7 +128,7 @@ export const ExplainerSheet = ({
                       size="16pt"
                       color="labelQuaternary"
                     >
-                      {linkButtonLabel}
+                      {linkButton.label}
                     </Text>
                   </Button>
                 </Inline>
@@ -100,21 +140,21 @@ export const ExplainerSheet = ({
               width="full"
               color="blue"
               height="44px"
-              variant={actionButtonVariant || 'raised'}
-              onClick={actionButtonAction}
+              variant={actionButton?.variant || 'raised'}
+              onClick={actionButton?.action}
             >
               <Text
                 align="center"
                 weight="bold"
                 size="16pt"
-                color={actionButtonLabelColor || 'accent'}
+                color={actionButton?.labelColor || 'accent'}
               >
-                {actionButtonLabel}
+                {actionButton?.label}
               </Text>
             </Button>
           </Row>
 
-          {cancelButtonLabel && (
+          {cancelButton && (
             <Row>
               <Box width="full" alignItems="center">
                 <Inline alignHorizontal="center">
@@ -125,7 +165,7 @@ export const ExplainerSheet = ({
                       size="16pt"
                       color="labelSecondary"
                     >
-                      {cancelButtonLabel}
+                      {cancelButton?.label}
                     </Text>
                   </Button>
                 </Inline>

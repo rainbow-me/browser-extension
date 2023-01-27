@@ -30,7 +30,10 @@ import {
 } from '~/design-system';
 import { foregroundColors } from '~/design-system/styles/designTokens';
 
-import { ExplainerSheet } from '../../components/ExplainerSheet/ExplainerSheet';
+import {
+  ExplainerSheet,
+  useExplainerSheetParams,
+} from '../../components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { sendTransaction } from '../../handlers/wallet';
@@ -235,15 +238,11 @@ export function Send() {
     };
   }, [clearCustomGasModified]);
 
-  const [explainerSheetParams, setExplainerSheetParams] = useState<{
-    show: boolean;
-    title: string;
-    description: string[];
-    emoji: string;
-  }>({ show: false, title: '', description: [''], emoji: '' });
+  const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
+    useExplainerSheetParams();
 
   const showToContractExplainer = useCallback(() => {
-    setExplainerSheetParams({
+    showExplainerSheet({
       show: true,
       title: i18n.t('explainers.send.to_smart_contract.title'),
       description: [
@@ -251,18 +250,15 @@ export function Send() {
         i18n.t('explainers.send.to_smart_contract.description_2'),
         i18n.t('explainers.send.to_smart_contract.description_3'),
       ],
+      actionButton: {
+        label: i18n.t('explainers.send.action_label'),
+        variant: 'tinted',
+        labelColor: 'blue',
+        action: hideExplanerSheet,
+      },
       emoji: '',
     });
-  }, []);
-
-  const hideExplainer = useCallback(() => {
-    setExplainerSheetParams({
-      show: true,
-      title: '',
-      description: [''],
-      emoji: '',
-    });
-  }, []);
+  }, [hideExplanerSheet, showExplainerSheet]);
 
   const prevToAddressIsSmartContract = usePrevious(toAddressIsSmartContract);
   useEffect(() => {
@@ -282,10 +278,7 @@ export function Send() {
         emoji="✋"
         title={explainerSheetParams.title}
         description={explainerSheetParams.description}
-        actionButtonLabel={i18n.t('explainers.send.action_label')}
-        actionButtonAction={hideExplainer}
-        actionButtonVariant="tinted"
-        actionButtonLabelColor="blue"
+        actionButton={explainerSheetParams.actionButton}
       />
       <ContactPrompt
         address={toAddress}

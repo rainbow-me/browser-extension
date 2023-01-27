@@ -46,7 +46,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
-import { ExplainerSheet } from '../../components/ExplainerSheet/ExplainerSheet';
+import {
+  ExplainerSheet,
+  useExplainerSheetParams,
+} from '../../components/ExplainerSheet/ExplainerSheet';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useBackgroundAccounts } from '../../hooks/useBackgroundAccounts';
 import { useContact } from '../../hooks/useContacts';
@@ -276,17 +279,12 @@ export const ReviewSheet = ({
     return sendingOnL2Checks[0] && sendingOnL2Checks[1];
   }, [sendingOnL2, sendingOnL2Checks]);
 
-  const [explainerSheetParams, setExplainerSheetParams] = useState<{
-    show: boolean;
-    title: string;
-    description: string[];
-    emoji: string;
-    linkUrl: string;
-  }>({ show: false, title: '', description: [''], emoji: '', linkUrl: '' });
+  const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
+    useExplainerSheetParams();
 
   const showL2Explainer = useCallback(() => {
     const chainName = chainNameFromChainId(asset?.chainId || ChainId.mainnet);
-    setExplainerSheetParams({
+    showExplainerSheet({
       show: true,
       title: i18n.t(`explainers.send.sending_on_l2.${chainName}_title`),
       description: [
@@ -294,19 +292,18 @@ export const ReviewSheet = ({
         i18n.t(`explainers.send.sending_on_l2.${chainName}_description_2`),
       ],
       emoji: '',
-      linkUrl: 'https://learn.rainbow.me/a-beginners-guide-to-layer-2-networks',
+      linkButton: {
+        url: 'https://learn.rainbow.me/a-beginners-guide-to-layer-2-networks',
+        label: 'Read more',
+      },
+      actionButton: {
+        label: i18n.t('explainers.send.action_label'),
+        variant: 'tinted',
+        labelColor: 'blue',
+        action: hideExplanerSheet,
+      },
     });
-  }, [asset?.chainId]);
-
-  const hideExplainer = useCallback(() => {
-    setExplainerSheetParams({
-      show: false,
-      title: '',
-      description: [''],
-      emoji: '',
-      linkUrl: '',
-    });
-  }, []);
+  }, [asset?.chainId, hideExplanerSheet, showExplainerSheet]);
 
   return (
     <>
@@ -316,12 +313,8 @@ export const ReviewSheet = ({
           emoji="✋"
           title={explainerSheetParams.title}
           description={explainerSheetParams.description}
-          linkUrl={explainerSheetParams.linkUrl}
-          actionButtonLabel={i18n.t('explainers.send.action_label')}
-          actionButtonAction={hideExplainer}
-          actionButtonVariant="tinted"
-          actionButtonLabelColor="blue"
-          linkButtonLabel="Read more"
+          actionButton={explainerSheetParams.actionButton}
+          linkButton={explainerSheetParams.linkButton}
         />
         <Box
           style={{ borderTopLeftRadius: 24, borderTopRightRadius: 24 }}

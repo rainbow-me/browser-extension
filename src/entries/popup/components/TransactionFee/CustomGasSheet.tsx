@@ -36,7 +36,10 @@ import { SymbolStyles, TextStyles } from '~/design-system/styles/core.css';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
 import usePrevious from '../../hooks/usePrevious';
-import { ExplainerSheet } from '../ExplainerSheet/ExplainerSheet';
+import {
+  ExplainerSheet,
+  useExplainerSheetParams,
+} from '../ExplainerSheet/ExplainerSheet';
 import { GweiInputMask } from '../InputMask/GweiInputMask/GweiInputMask';
 
 const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
@@ -164,13 +167,6 @@ export const CustomGasSheet = ({
     'stuck' | 'fail' | undefined
   >();
 
-  const [explainerSheetParams, setExplainerSheetParams] = useState<{
-    show: boolean;
-    title: string;
-    description: string[];
-    emoji: string;
-  }>({ show: false, title: '', description: [''], emoji: '' });
-
   const trend = useMemo(
     () => getBaseFeeTrendParams(baseFeeTrend),
     [baseFeeTrend],
@@ -270,20 +266,12 @@ export const CustomGasSheet = ({
     [gasFeeParamsBySpeed, setSelectedGas],
   );
 
-  const closeExplainer = useCallback(
-    () =>
-      setExplainerSheetParams({
-        show: false,
-        emoji: '',
-        description: [''],
-        title: '',
-      }),
-    [],
-  );
+  const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
+    useExplainerSheetParams();
 
   const showCurrentBaseFeeExplainer = useCallback(() => {
     const trendParams = getBaseFeeTrendParams(baseFeeTrend);
-    setExplainerSheetParams({
+    showExplainerSheet({
       show: true,
       emoji: trendParams.emoji,
       description: [
@@ -291,12 +279,17 @@ export const CustomGasSheet = ({
         trendParams.explainer,
       ],
       title: i18n.t('explainers.custom_gas.current_base_title'),
+      actionButton: {
+        label: i18n.t('explainers.custom_gas.action_button_label'),
+        action: hideExplanerSheet,
+        labelColor: 'label',
+      },
     });
-  }, [baseFeeTrend]);
+  }, [baseFeeTrend, hideExplanerSheet, showExplainerSheet]);
 
   const showMaxBaseFeeExplainer = useCallback(
     () =>
-      setExplainerSheetParams({
+      showExplainerSheet({
         show: true,
         emoji: '📈',
         description: [
@@ -304,19 +297,29 @@ export const CustomGasSheet = ({
           i18n.t('explainers.custom_gas.max_base_explainer_2'),
         ],
         title: i18n.t('explainers.custom_gas.max_base_title'),
+        actionButton: {
+          label: i18n.t('explainers.custom_gas.action_button_label'),
+          action: hideExplanerSheet,
+          labelColor: 'label',
+        },
       }),
-    [],
+    [hideExplanerSheet, showExplainerSheet],
   );
 
   const showMaxPriorityFeeExplainer = useCallback(
     () =>
-      setExplainerSheetParams({
+      showExplainerSheet({
         show: true,
         emoji: '⛏',
         description: [i18n.t('explainers.custom_gas.max_priority_explainer')],
         title: i18n.t('explainers.custom_gas.max_priority_title'),
+        actionButton: {
+          label: i18n.t('explainers.custom_gas.action_button_label'),
+          action: hideExplanerSheet,
+          labelColor: 'label',
+        },
       }),
-    [],
+    [hideExplanerSheet, showExplainerSheet],
   );
 
   return (
@@ -326,9 +329,7 @@ export const CustomGasSheet = ({
         emoji={explainerSheetParams.emoji}
         title={explainerSheetParams.title}
         description={explainerSheetParams.description}
-        actionButtonLabel={i18n.t('explainers.custom_gas.action_button_label')}
-        actionButtonAction={closeExplainer}
-        actionButtonLabelColor="label"
+        actionButton={explainerSheetParams.actionButton}
       />
       <Prompt
         background="surfaceSecondary"
