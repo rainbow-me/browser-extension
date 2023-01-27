@@ -160,6 +160,11 @@ export const toHex = (stringToConvert: string): string =>
 export const add = (numberOne: BigNumberish, numberTwo: BigNumberish): string =>
   new BigNumber(numberOne).plus(numberTwo).toFixed();
 
+export const minus = (
+  numberOne: BigNumberish,
+  numberTwo: BigNumberish,
+): string => new BigNumber(numberOne).minus(numberTwo).toFixed();
+
 export const addDisplay = (numberOne: string, numberTwo: string): string => {
   const unit = numberOne.replace(/[\d.-]/g, '');
   const leftAlignedUnit = numberOne.indexOf(unit) === 0;

@@ -88,6 +88,8 @@ export function Send() {
   const { asset, selectAssetAddress, assets, setSortMethod, sortMethod } =
     useSendTransactionAsset();
 
+  const { clearCustomGasModified, selectedGas } = useGasStore();
+
   const {
     assetAmount,
     independentAmount,
@@ -98,9 +100,7 @@ export function Send() {
     setIndependentAmount,
     switchIndependentField,
     setMaxAssetAmount,
-  } = useSendTransactionInputs({ asset });
-
-  const { clearCustomGasModified } = useGasStore();
+  } = useSendTransactionInputs({ asset, selectedGas });
 
   const {
     currentCurrency,
@@ -114,8 +114,6 @@ export function Send() {
     value,
     setToAddressOrName,
   } = useSendTransactionState({ assetAmount, asset });
-
-  const { selectedGas } = useGasStore();
 
   const {
     buttonLabel,
