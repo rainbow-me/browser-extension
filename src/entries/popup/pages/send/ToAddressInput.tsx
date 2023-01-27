@@ -245,8 +245,10 @@ export const ToAddressInput = ({
   }, [onDropdownOpen]);
 
   const inputVisible = useMemo(
-    () => (!toAddressOrName || !toEnsName) && !isAddress(toAddressOrName),
-    [toAddressOrName, toEnsName],
+    () =>
+      ((!toAddressOrName || !toEnsName) && !isAddress(toAddressOrName)) ||
+      !isAddress(toAddress),
+    [toAddress, toAddressOrName, toEnsName],
   );
 
   const selectWalletAndCloseDropdown = useCallback(
