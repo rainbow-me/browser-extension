@@ -315,7 +315,18 @@ export const CustomGasSheet = ({
     const trendParams = getBaseFeeTrendParams(baseFeeTrend);
     showExplainerSheet({
       show: true,
-      emoji: trendParams.emoji,
+      header: {
+        emoji: trendParams.emoji,
+        headerPill: (
+          <ExplainerHeaderPill
+            color={trendParams.color}
+            label={trendParams.label}
+            gwei={currentBaseFee}
+            symbol={trendParams.symbol}
+            borderColor={trendParams.borderColor}
+          />
+        ),
+      },
       description: [
         i18n.t('explainers.custom_gas.current_base_description'),
         trendParams.explainer,
@@ -326,15 +337,6 @@ export const CustomGasSheet = ({
         action: hideExplanerSheet,
         labelColor: 'label',
       },
-      headerPill: (
-        <ExplainerHeaderPill
-          color={trendParams.color}
-          label={trendParams.label}
-          gwei={currentBaseFee}
-          symbol={trendParams.symbol}
-          borderColor={trendParams.borderColor}
-        />
-      ),
     });
   }, [baseFeeTrend, currentBaseFee, hideExplanerSheet, showExplainerSheet]);
 
@@ -342,7 +344,7 @@ export const CustomGasSheet = ({
     () =>
       showExplainerSheet({
         show: true,
-        emoji: '📈',
+        header: { emoji: '📈' },
         description: [
           i18n.t('explainers.custom_gas.max_base_explainer_1'),
           i18n.t('explainers.custom_gas.max_base_explainer_2'),
@@ -361,7 +363,7 @@ export const CustomGasSheet = ({
     () =>
       showExplainerSheet({
         show: true,
-        emoji: '⛏',
+        header: { emoji: '⛏' },
         description: [i18n.t('explainers.custom_gas.max_priority_explainer')],
         title: i18n.t('explainers.custom_gas.max_priority_title'),
         actionButton: {
@@ -377,11 +379,10 @@ export const CustomGasSheet = ({
     <>
       <ExplainerSheet
         show={explainerSheetParams.show}
-        emoji={explainerSheetParams.emoji}
+        header={explainerSheetParams.header}
         title={explainerSheetParams.title}
         description={explainerSheetParams.description}
         actionButton={explainerSheetParams.actionButton}
-        headerPill={explainerSheetParams.headerPill}
       />
       <Prompt
         background="surfaceSecondary"

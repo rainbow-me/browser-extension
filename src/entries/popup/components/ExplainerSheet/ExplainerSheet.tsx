@@ -16,10 +16,19 @@ import { ButtonVariant } from '~/design-system/styles/designTokens';
 
 interface ExplainerSheetProps {
   show: boolean;
-  emoji: string;
+  header:
+    | {
+        emoji?: never;
+        icon?: React.ReactElement;
+        headerPill?: React.ReactElement;
+      }
+    | {
+        emoji?: string;
+        icon?: never;
+        headerPill?: React.ReactElement;
+      };
   title: string;
   description: string[];
-  headerPill?: React.ReactElement;
   actionButton?: {
     label: string;
     variant?: ButtonVariant;
@@ -42,7 +51,7 @@ export const useExplainerSheetParams = () => {
   const [explainerSheetParams, setExplainerSheetParams] =
     useState<ExplainerSheetProps>({
       show: false,
-      emoji: '',
+      header: {},
       title: '',
       description: [''],
     });
@@ -51,7 +60,7 @@ export const useExplainerSheetParams = () => {
     () =>
       setExplainerSheetParams({
         show: false,
-        emoji: '',
+        header: {},
         title: '',
         description: [''],
       }),
@@ -72,13 +81,12 @@ export const useExplainerSheetParams = () => {
 
 export const ExplainerSheet = ({
   show,
-  emoji,
+  header,
   title,
   description,
   actionButton,
   cancelButton,
   linkButton,
-  headerPill,
 }: ExplainerSheetProps) => {
   const goToLink = useCallback(() => {
     linkButton?.url &&
@@ -91,14 +99,18 @@ export const ExplainerSheet = ({
     <BottomSheet show={show}>
       <Box paddingVertical="44px" paddingHorizontal="32px">
         <Stack alignHorizontal="center" space="20px">
-          <Text weight="heavy" size="32pt" color="label">
-            {emoji}
-          </Text>
+          {header?.emoji ? (
+            <Text weight="heavy" size="32pt" color="label">
+              {header?.emoji}
+            </Text>
+          ) : (
+            header?.icon
+          )}
           <Text weight="heavy" size="20pt" color="label">
             {title}
           </Text>
 
-          {headerPill && <Box>{headerPill}</Box>}
+          {header.headerPill && <Box>{header.headerPill}</Box>}
 
           <Box style={{ width: 102 }}>
             <Separator color="separatorTertiary" strokeWeight="1px" />

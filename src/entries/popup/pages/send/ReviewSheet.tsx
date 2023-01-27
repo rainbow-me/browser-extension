@@ -291,7 +291,14 @@ export const ReviewSheet = ({
         i18n.t(`explainers.send.sending_on_l2.${chainName}_description_1`),
         i18n.t(`explainers.send.sending_on_l2.${chainName}_description_2`),
       ],
-      emoji: '',
+      header: {
+        icon: (
+          <ChainBadge
+            chainId={asset?.chainId || ChainId.mainnet}
+            size="medium"
+          />
+        ),
+      },
       linkButton: {
         url: 'https://learn.rainbow.me/a-beginners-guide-to-layer-2-networks',
         label: 'Read more',
@@ -310,7 +317,7 @@ export const ReviewSheet = ({
       <BottomSheet show={show}>
         <ExplainerSheet
           show={explainerSheetParams.show}
-          emoji="✋"
+          header={explainerSheetParams.header}
           title={explainerSheetParams.title}
           description={explainerSheetParams.description}
           actionButton={explainerSheetParams.actionButton}
@@ -343,9 +350,7 @@ export const ReviewSheet = ({
                                 weight="bold"
                                 color="label"
                               >
-                                <Box paddingVertical="2px">
-                                  {primaryAmountDisplay}
-                                </Box>
+                                {primaryAmountDisplay}
                               </TextOverflow>
                             </Row>
                             <Row>

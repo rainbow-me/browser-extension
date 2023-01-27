@@ -254,7 +254,7 @@ export function Send() {
         labelColor: 'blue',
         action: hideExplanerSheet,
       },
-      emoji: '',
+      header: { emoji: '✋' },
     });
   }, [hideExplanerSheet, showExplainerSheet]);
 
@@ -273,7 +273,7 @@ export function Send() {
     <>
       <ExplainerSheet
         show={explainerSheetParams.show}
-        emoji="✋"
+        header={explainerSheetParams.header}
         title={explainerSheetParams.title}
         description={explainerSheetParams.description}
         actionButton={explainerSheetParams.actionButton}
