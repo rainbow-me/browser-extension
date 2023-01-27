@@ -205,9 +205,10 @@ it('should be able to select token on send flow', async () => {
   expect(dropdown).toBeTruthy();
   await waitAndClick(dropdown, driver);
 
+  // dai
   const asset = await querySelector(
     driver,
-    '[data-testid="token-input-asset-eth_1"]',
+    '[data-testid="token-input-asset-0x6b175474e89094c44da98b954eedeac495271d0f_1"]',
   );
   expect(asset).toBeTruthy();
   await waitAndClick(asset, driver);
