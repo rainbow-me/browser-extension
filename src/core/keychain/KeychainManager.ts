@@ -59,16 +59,12 @@ class KeychainManager {
           this.state.keychains = memState.keychains || [];
           this.state.isUnlocked = memState.isUnlocked || false;
           this.state.vault = memState.vault || '';
-        } else {
-          console.log('REHYDRATEEEEEE no memState');
         }
 
         // Also attempt to read from storage for future unlocks
         const storageState = await privates.get(this).getLastStorageState();
         if (storageState) {
           this.state.vault = storageState.vault;
-        } else {
-          console.log('REHYDRATEEEEEE no storageState');
         }
       },
 
@@ -161,19 +157,11 @@ class KeychainManager {
       },
 
       getLastStorageState: () => {
-        try {
-          return chrome.storage.local.get('vault');
-        } catch (e) {
-          console.log('ERROR getLastStorageState', e);
-        }
+        return chrome.storage.local.get('vault');
       },
 
       getLastMemorizedState: () => {
-        try {
-          return chrome.storage.session.get('keychainManager');
-        } catch (e) {
-          console.log('ERROR getLastMemorizedState', e);
-        }
+        return chrome.storage.session.get('keychainManager');
       },
     });
 
@@ -324,28 +312,16 @@ class KeychainManager {
   }
 
   async getAccounts() {
-    try {
-      console.log('--- GET ACCOUNT ---');
-      const keychains = this.state.keychains || [];
+    const keychains = this.state.keychains || [];
 
-      console.log('GET ACCOUNT keychains', keychains);
+    const keychainArrays = await Promise.all(
+      keychains.map((keychain) => keychain.getAccounts()),
+    );
+    const addresses = keychainArrays.reduce((res, arr) => {
+      return res.concat(arr);
+    }, []);
 
-      const keychainArrays = await Promise.all(
-        keychains.map((keychain) => keychain.getAccounts()),
-      );
-
-      console.log('GET ACCOUNT keychainArrays', keychainArrays);
-
-      const addresses = keychainArrays.reduce((res, arr) => {
-        console.log('GET ACCOUNT inaddresses arr', arr);
-        console.log('GET ACCOUNT inaddresses res', res);
-        return res.concat(arr);
-      }, []);
-      return addresses;
-    } catch (e) {
-      console.log('GET ACCOUNT error', e);
-      return [];
-    }
+    return addresses;
   }
 
   async getWallets() {
