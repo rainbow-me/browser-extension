@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import React, { useCallback, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
@@ -28,6 +29,10 @@ import {
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
+import {
+  transformScales,
+  transitions,
+} from '~/design-system/styles/designTokens';
 
 import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
 import { Checkbox } from '../../components/Checkbox/Checkbox';
@@ -276,7 +281,8 @@ export const ReviewSheet = ({
     title: string;
     description: string[];
     emoji: string;
-  }>({ show: false, title: '', description: [''], emoji: '' });
+    linkUrl: string;
+  }>({ show: false, title: '', description: [''], emoji: '', linkUrl: '' });
 
   const showL2Explainer = useCallback(() => {
     const chainName = chainNameFromChainId(asset?.chainId || ChainId.mainnet);
@@ -288,15 +294,17 @@ export const ReviewSheet = ({
         i18n.t(`explainers.send.sending_on_l2.${chainName}_description_2`),
       ],
       emoji: '',
+      linkUrl: 'https://learn.rainbow.me/a-beginners-guide-to-layer-2-networks',
     });
   }, [asset?.chainId]);
 
   const hideExplainer = useCallback(() => {
     setExplainerSheetParams({
-      show: true,
+      show: false,
       title: '',
       description: [''],
       emoji: '',
+      linkUrl: '',
     });
   }, []);
 
@@ -308,10 +316,12 @@ export const ReviewSheet = ({
           emoji="✋"
           title={explainerSheetParams.title}
           description={explainerSheetParams.description}
+          linkUrl={explainerSheetParams.linkUrl}
           actionButtonLabel={i18n.t('explainers.send.action_label')}
           actionButtonAction={hideExplainer}
           actionButtonVariant="tinted"
           actionButtonLabelColor="blue"
+          linkButtonLabel="Read more"
         />
         <Box
           style={{ borderTopLeftRadius: 24, borderTopRightRadius: 24 }}
@@ -469,11 +479,16 @@ export const ReviewSheet = ({
             <Box paddingHorizontal="16px" paddingBottom="20px">
               <Stack space="20px">
                 <Box
+                  as={motion.div}
                   background="fillSecondary"
                   padding="8px"
                   width="full"
                   borderRadius="12px"
                   onClick={showL2Explainer}
+                  initial={{ zIndex: 0 }}
+                  whileHover={{ scale: transformScales['1.04'] }}
+                  whileTap={{ scale: transformScales['0.96'] }}
+                  transition={transitions.bounce}
                 >
                   <Inline alignVertical="center" alignHorizontal="justify">
                     <Inline alignVertical="center" space="8px">

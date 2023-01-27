@@ -24,6 +24,8 @@ export const ExplainerSheet = ({
   actionButtonVariant,
   actionButtonLabelColor,
   cancelButtonLabel,
+  linkButtonLabel,
+  linkUrl,
 }: {
   show: boolean;
   emoji: string;
@@ -34,7 +36,15 @@ export const ExplainerSheet = ({
   actionButtonVariant?: ButtonVariant;
   actionButtonLabelColor?: TextStyles['color'];
   cancelButtonLabel?: string;
+  linkButtonLabel?: string;
+  linkUrl?: string;
 }) => {
+  const goToLink = React.useCallback(() => {
+    chrome.tabs.create({
+      url: linkUrl,
+    });
+  }, [linkUrl]);
+
   return (
     <BottomSheet show={show}>
       <Box paddingVertical="44px" paddingHorizontal="32px">
@@ -61,6 +71,30 @@ export const ExplainerSheet = ({
       </Box>
       <Box width="full" padding="20px">
         <Rows space="8px">
+          {linkButtonLabel && (
+            <Row>
+              <Box width="full" alignItems="center">
+                <Inline alignHorizontal="center">
+                  <Button
+                    width="full"
+                    color="fill"
+                    height="44px"
+                    variant="flat"
+                    onClick={goToLink}
+                  >
+                    <Text
+                      align="center"
+                      weight="bold"
+                      size="16pt"
+                      color="labelQuaternary"
+                    >
+                      {linkButtonLabel}
+                    </Text>
+                  </Button>
+                </Inline>
+              </Box>
+            </Row>
+          )}
           <Row>
             <Button
               width="full"
@@ -79,6 +113,7 @@ export const ExplainerSheet = ({
               </Text>
             </Button>
           </Row>
+
           {cancelButtonLabel && (
             <Row>
               <Box width="full" alignItems="center">
