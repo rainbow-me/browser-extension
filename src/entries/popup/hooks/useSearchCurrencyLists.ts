@@ -249,8 +249,16 @@ export function useSearchCurrencyLists({
     targetVerifiedAssets,
   ]);
 
+  const loading = useMemo(() => {
+    return getIsLoading();
+  }, [getIsLoading]);
+
+  const results = useMemo(() => {
+    return buildSearchResults();
+  }, [buildSearchResults]);
+
   return {
-    loading: getIsLoading(),
-    results: buildSearchResults(),
+    loading,
+    results,
   };
 }
