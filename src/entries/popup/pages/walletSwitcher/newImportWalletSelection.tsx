@@ -5,8 +5,6 @@ import { Box } from '~/design-system';
 import { ImportWalletSelection } from '../../components/ImportWallet/ImportWalletSelection';
 
 const NewImportWalletSelection = () => {
-  //   const navigate = useRainbowNavigate();
-
   return (
     <Box
       height="full"
