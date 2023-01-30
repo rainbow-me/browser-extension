@@ -24,6 +24,7 @@ export type InputProps = {
   onBlur?: InputHTMLAttributes<HTMLInputElement>['onBlur'];
   onChange?: InputHTMLAttributes<HTMLInputElement>['onChange'];
   onFocus?: InputHTMLAttributes<HTMLInputElement>['onFocus'];
+  onKeyDown?: InputHTMLAttributes<HTMLInputElement>['onKeyDown'];
   placeholder?: string;
   borderColor?: BoxStyles['borderColor'];
   testId?: string;
