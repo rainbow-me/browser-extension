@@ -21,7 +21,7 @@ export const BottomSheet = ({
           style={{
             width: '100%',
             height: '100%',
-            zIndex: 10,
+            zIndex: 100,
           }}
           background="scrimTertiary"
           as={motion.div}
@@ -39,12 +39,12 @@ export const BottomSheet = ({
           right="0"
           paddingBottom="20px"
           paddingHorizontal="12px"
-          style={{ zIndex: 11 }}
+          style={{ zIndex: 101 }}
           as={motion.div}
           initial={{ opacity: 1, y: 800 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 1, y: 800 }}
-          key="review"
+          key="bottom"
         >
           <Box background="surfacePrimaryElevated" borderRadius="24px">
             {children}

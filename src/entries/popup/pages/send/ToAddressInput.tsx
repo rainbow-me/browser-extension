@@ -245,8 +245,10 @@ export const ToAddressInput = ({
   }, [onDropdownOpen]);
 
   const inputVisible = useMemo(
-    () => (!toAddressOrName || !toEnsName) && !isAddress(toAddressOrName),
-    [toAddressOrName, toEnsName],
+    () =>
+      ((!toAddressOrName || !toEnsName) && !isAddress(toAddressOrName)) ||
+      !isAddress(toAddress),
+    [toAddress, toAddressOrName, toEnsName],
   );
 
   const selectWalletAndCloseDropdown = useCallback(
@@ -291,55 +293,57 @@ export const ToAddressInput = ({
           </Box>
         }
         centerComponent={
-          <AnimatePresence initial={false} mode="wait">
-            {inputVisible && (
+          <Box as={motion.div} layout>
+            <Stack space="8px">
               <Box
                 as={motion.div}
                 key="input"
-                initial={{ y: 0, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -10, opacity: 0 }}
                 onClick={onInputClick}
+                layout="position"
               >
-                <Input
-                  testId="to-address-input"
-                  value={toAddressOrName}
-                  placeholder={i18n.t('send.input_to_address_placeholder')}
-                  onChange={handleToAddressChange}
-                  height="32px"
-                  variant="transparent"
-                  style={{ paddingLeft: 0, paddingRight: 0 }}
-                  innerRef={inputRef}
-                />
+                <AnimatePresence>
+                  {inputVisible ? (
+                    <Box as={motion.div} layout="position">
+                      <Input
+                        testId="to-address-input"
+                        value={toAddressOrName}
+                        placeholder={i18n.t(
+                          'send.input_to_address_placeholder',
+                        )}
+                        onChange={handleToAddressChange}
+                        height="32px"
+                        variant="transparent"
+                        style={{ paddingLeft: 0, paddingRight: 0 }}
+                        innerRef={inputRef}
+                      />
+                    </Box>
+                  ) : (
+                    <Box as={motion.div} layout="position">
+                      <TextOverflow
+                        maxWidth={windowWidth / 2}
+                        weight="semibold"
+                        size="14pt"
+                        color="label"
+                        testId="to-address-input-display"
+                      >
+                        {toAddressContact?.display ||
+                          truncateAddress(toAddress)}
+                      </TextOverflow>
+                    </Box>
+                  )}
+                </AnimatePresence>
               </Box>
-            )}
-            {!inputVisible && (
-              <Box
-                as={motion.div}
-                key="wallet"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-              >
-                <Stack space="8px">
-                  <TextOverflow
-                    maxWidth={windowWidth / 2}
-                    weight="semibold"
-                    size="14pt"
-                    color="label"
-                    testId="to-address-input-display"
-                  >
-                    {toAddressContact?.display || truncateAddress(toAddress)}
-                  </TextOverflow>
-                  {toAddressContact?.display && (
+              <AnimatePresence>
+                {!inputVisible && toAddressContact?.display && (
+                  <Box as={motion.div} key="wallet" layout="position">
                     <Text weight="semibold" size="12pt" color="labelTertiary">
                       {truncateAddress(toAddress)}
                     </Text>
-                  )}
-                </Stack>
-              </Box>
-            )}
-          </AnimatePresence>
+                  </Box>
+                )}
+              </AnimatePresence>
+            </Stack>
+          </Box>
         }
         showActionClose={!!toAddress}
         onActionClose={onActionClose}
