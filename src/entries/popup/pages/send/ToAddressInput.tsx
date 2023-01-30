@@ -31,7 +31,11 @@ import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
 import { useContact } from '../../hooks/useContacts';
 
-import { InputWrapper } from './InputWrapper';
+import {
+  InputWrapper,
+  dropdownContainerVariant,
+  dropdownItemVariant,
+} from './InputWrapper';
 import {
   addressToInputHighlightWrapperStyleDark,
   addressToInputHighlightWrapperStyleLight,
@@ -70,7 +74,7 @@ const WalletSection = ({
 }) => {
   return wallets.length ? (
     <Stack space="8px">
-      <Box>
+      <Box as={motion.div} variants={dropdownItemVariant}>
         <Inline alignVertical="center" space="4px">
           <Symbol
             symbol={symbol}
@@ -115,7 +119,13 @@ const WalletRow = ({
   });
   const contact = useContact({ address: wallet });
   return (
-    <Box key={wallet} onClick={() => onClick(wallet)} paddingVertical="8px">
+    <Box
+      as={motion.div}
+      variants={dropdownItemVariant}
+      key={wallet}
+      onClick={() => onClick(wallet)}
+      paddingVertical="8px"
+    >
       <Inline alignVertical="center" space="8px">
         <WalletAvatar size={36} address={wallet} emojiSize="20pt" />
         <Stack space="8px">
@@ -156,15 +166,16 @@ const DropdownWalletsList = ({
   );
 
   return (
-    <AnimatePresence initial={false}>
+    <>
       {walletsExist && (
         <Box
           as={motion.div}
           key="input"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           paddingHorizontal="19px"
+          variants={dropdownContainerVariant}
+          initial="hidden"
+          animate="show"
         >
           <Stack space="16px">
             <WalletSection
@@ -219,7 +230,7 @@ const DropdownWalletsList = ({
           </Stack>
         </Box>
       )}
-    </AnimatePresence>
+    </>
   );
 };
 
