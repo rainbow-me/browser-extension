@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Address } from 'wagmi';
@@ -7,8 +8,9 @@ import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
-import { Box, Button, Inline, Stack } from '~/design-system';
-import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+import { Box, Button, Inline, Stack, Text } from '~/design-system';
+import { Input } from '~/design-system/components/Input/Input';
+import { Symbol, SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
 
 import AccountItem, {
@@ -82,6 +84,30 @@ const infoButtonOptions = ({
 
 const bottomSpacing = 20 + 20 + 32 + 32 + (process.env.IS_DEV ? 32 + 8 : 0);
 
+const NoWallets = () => (
+  <Box
+    alignItems="center"
+    justifyContent="center"
+    paddingTop="104px"
+    as={motion.div}
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+  >
+    <Stack alignHorizontal="center" space="8px">
+      <Symbol
+        symbol="binoculars.fill"
+        weight="bold"
+        size={32}
+        color="labelQuaternary"
+      />
+      <Text size="20pt" weight="bold" color="labelQuaternary">
+        {i18n.t('wallet_switcher.no_wallets')}
+      </Text>
+    </Stack>
+  </Box>
+);
+
 export interface AddressAndType {
   address: Address;
   type: KeychainType;
@@ -94,6 +120,7 @@ export function WalletSwitcher() {
   >();
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
   const { hideWallet } = useHiddenWalletsStore();
+  const [q, setQ] = useState('');
   const navigate = useRainbowNavigate();
   const { visibleWallets: accounts, fetchWallets } = useWallets();
   const handleSelectAddress = (address: Address) => {
@@ -121,6 +148,34 @@ export function WalletSwitcher() {
       setCurrentAddress(accounts[nextIndex]?.address);
     }
   };
+
+  const displayedWallets = accounts.map((account) => (
+    <AccountItem
+      key={account.address}
+      onClick={() => {
+        handleSelectAddress(account.address);
+      }}
+      account={account.address}
+      rightComponent={
+        <Inline alignVertical="center" space="10px">
+          {account.type === KeychainType.ReadOnlyKeychain && (
+            <LabelPill label={i18n.t('wallet_switcher.watching')} />
+          )}
+          <MoreInfoButton
+            options={infoButtonOptions({
+              account,
+              setRenameAccount,
+              setRemoveAccount,
+            })}
+          />
+        </Inline>
+      }
+      labelType={LabelOption.balance}
+      isSelected={account.address === currentAddress}
+      searchTerm={q}
+    />
+  ));
+
   return (
     <Box height="full">
       <RenameWalletPrompt
@@ -141,37 +196,23 @@ export function WalletSwitcher() {
       />
 
       <Box paddingHorizontal="4px">
-        {/* search */}
-        <Box />
+        <Box paddingHorizontal="16px" paddingBottom="20px" marginTop="-5px">
+          <Input
+            height="32px"
+            variant="bordered"
+            placeholder={i18n.t('wallet_switcher.search_placeholder')}
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+          />
+        </Box>
         <MenuContainer>
-          <Box width="full" style={{ paddingBottom: bottomSpacing }}>
-            <Stack>
-              {accounts?.map((account) => (
-                <AccountItem
-                  onClick={() => {
-                    handleSelectAddress(account.address);
-                  }}
-                  account={account.address}
-                  key={account.address}
-                  rightComponent={
-                    <Inline alignVertical="center" space="10px">
-                      {account.type === KeychainType.ReadOnlyKeychain && (
-                        <LabelPill label={i18n.t('wallet_switcher.watching')} />
-                      )}
-                      <MoreInfoButton
-                        options={infoButtonOptions({
-                          account,
-                          setRenameAccount,
-                          setRemoveAccount,
-                        })}
-                      />
-                    </Inline>
-                  }
-                  labelType={LabelOption.balance}
-                  isSelected={account.address === currentAddress}
-                />
-              ))}
-            </Stack>
+          <Box
+            width="full"
+            height="full"
+            style={{ paddingBottom: bottomSpacing }}
+          >
+            <Stack>{displayedWallets}</Stack>
+            {displayedWallets.length === 0 && <NoWallets />}
           </Box>
         </MenuContainer>
       </Box>

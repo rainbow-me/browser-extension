@@ -20,14 +20,15 @@ export default function AccountItem({
   onClick,
   labelType,
   isSelected,
+  searchTerm,
 }: {
   account: Address;
   rightComponent?: React.ReactNode;
   onClick?: () => void;
   isSelected?: boolean;
   labelType?: LabelOption;
+  searchTerm?: string;
 }) {
-  // const { avatar, isFetched } = useAvatar({ address: account });
   const { displayName, showAddress } = useWalletName({ address: account });
   const { data: balance } = useBalance({ addressOrName: account });
 
@@ -43,6 +44,13 @@ export default function AccountItem({
       />
     );
   }
+
+  if (
+    searchTerm &&
+    !displayName?.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    !account?.toLowerCase().includes(searchTerm.toLowerCase())
+  )
+    return null;
 
   return (
     <MenuItem
