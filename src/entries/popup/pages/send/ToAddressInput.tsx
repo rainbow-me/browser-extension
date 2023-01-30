@@ -14,7 +14,15 @@ import { Address, useEnsName } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { truncateAddress } from '~/core/utils/address';
-import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
+import {
+  Bleed,
+  Box,
+  Inline,
+  Inset,
+  Stack,
+  Symbol,
+  Text,
+} from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { SymbolName } from '~/design-system/styles/designTokens';
@@ -61,8 +69,8 @@ const WalletSection = ({
   symbol: SymbolName;
 }) => {
   return wallets.length ? (
-    <Stack>
-      <Box paddingHorizontal="20px" paddingBottom="8px">
+    <Stack space="8px">
+      <Box>
         <Inline alignVertical="center" space="4px">
           <Symbol
             symbol={symbol}
@@ -76,15 +84,21 @@ const WalletSection = ({
         </Inline>
       </Box>
 
-      {wallets.map((wallet, i) => (
-        <Inset horizontal="8px" key={i}>
-          <RowHighlightWrapper key={i}>
-            <Inset horizontal="12px" key={i}>
-              <WalletRow onClick={onClickWallet} key={wallet} wallet={wallet} />
-            </Inset>
-          </RowHighlightWrapper>
-        </Inset>
-      ))}
+      <Box>
+        {wallets.map((wallet, i) => (
+          <Bleed horizontal="12px" key={i}>
+            <RowHighlightWrapper key={i}>
+              <Inset horizontal="12px" key={i}>
+                <WalletRow
+                  onClick={onClickWallet}
+                  key={wallet}
+                  wallet={wallet}
+                />
+              </Inset>
+            </RowHighlightWrapper>
+          </Bleed>
+        ))}
+      </Box>
     </Stack>
   ) : null;
 };
@@ -150,6 +164,7 @@ const DropdownWalletsList = ({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          paddingHorizontal="19px"
         >
           <Stack space="16px">
             <WalletSection
