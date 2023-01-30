@@ -1,6 +1,7 @@
 import { ToBufferInputTypes } from '@ethereumjs/util';
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { recoverPersonalSignature } from '@metamask/eth-sig-util';
+import { ChainId } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
 import { Address, UserRejectedRequestError } from 'wagmi';
 
@@ -12,6 +13,7 @@ import {
 } from '~/core/state';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import { isSupportedChainId } from '~/core/utils/chains';
 import { getDappHost } from '~/core/utils/connectedApps';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/numbers';
@@ -80,7 +82,8 @@ export const handleProviderRequest = ({
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
     console.log(meta.sender, method);
 
-    const { getActiveSession, addSession } = appSessionsStore.getState();
+    const { getActiveSession, addSession, updateSessionChainId } =
+      appSessionsStore.getState();
     const url = meta?.sender?.url || '';
     const host = getDappHost(url);
     const activeSession = getActiveSession({ host });
@@ -116,8 +119,28 @@ export const handleProviderRequest = ({
           }
           break;
         }
-        case 'wallet_addEthereumChain':
-        case 'wallet_switchEthereumChain':
+        case 'wallet_addEthereumChain': {
+          const proposedChainId = (params?.[0] as { chainId: ChainId })
+            ?.chainId;
+          const supportedChainId = isSupportedChainId(Number(proposedChainId));
+          if (!supportedChainId) throw new Error('Chain Id not supported');
+          response = null;
+          break;
+        }
+        case 'wallet_switchEthereumChain': {
+          const proposedChainId = (params?.[0] as { chainId: ChainId })
+            ?.chainId;
+          const supportedChainId = isSupportedChainId(Number(proposedChainId));
+          if (!supportedChainId) throw new Error('Chain Id not supported');
+          if (proposedChainId) {
+            updateSessionChainId({
+              chainId: Number(proposedChainId),
+              host,
+            });
+          }
+          response = null;
+          break;
+        }
         case 'eth_requestAccounts': {
           if (activeSession) {
             response = [activeSession.address];

@@ -1,9 +1,17 @@
-import { Address } from 'wagmi';
+import { Address, chain } from 'wagmi';
 
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
-import { ChainId, ChainName } from '~/core/types/chains';
+import { ChainId, ChainName, bsc } from '~/core/types/chains';
 
 import { isLowerCaseMatch } from './strings';
+
+export const SUPPORTED_CHAINS = [
+  chain.mainnet,
+  { ...chain.polygon, name: 'Polygon (Matic)' },
+  chain.optimism,
+  { ...chain.arbitrum, name: 'Arbitrum' },
+  bsc,
+];
 
 /**
  * @desc Checks if the given chain is a Layer 2.
@@ -51,4 +59,9 @@ export function getBlockExplorerHostForChain(chainId: ChainId) {
     return 'arbiscan.io';
   }
   return 'etherscan.io';
+}
+
+export function isSupportedChainId(chainId: number) {
+  const supportedChainIds = SUPPORTED_CHAINS.map((chain) => chain.id);
+  return supportedChainIds.includes(chainId);
 }
