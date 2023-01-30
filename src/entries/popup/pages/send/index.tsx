@@ -371,7 +371,7 @@ export function Send() {
           </Rows>
 
           <Row height="content">
-            {isValidToAddress ? (
+            {isValidToAddress && !!asset ? (
               <AccentColorProviderWrapper
                 color={asset?.colors?.primary || asset?.colors?.fallback}
               >
