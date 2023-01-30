@@ -167,7 +167,7 @@ export function useSearchCurrencyLists({
     [verifiedAssets],
   );
 
-  const getIsLoading = useCallback(() => {
+  const loading = useMemo(() => {
     return query === ''
       ? verifiedAssets[outputChainId].loading
       : targetVerifiedAssetsLoading || targetUnverifiedAssetsLoading;
@@ -204,7 +204,7 @@ export function useSearchCurrencyLists({
 
   // favorites/bridge asset are not currently implemented
   // the lists below should be filtered by favorite/bridge asset match
-  const buildSearchResults = useCallback(() => {
+  const results = useMemo(() => {
     if (query === '') {
       const curatedSection = {
         data: curatedAssets[outputChainId],
@@ -248,14 +248,6 @@ export function useSearchCurrencyLists({
     targetUnverifiedAssets,
     targetVerifiedAssets,
   ]);
-
-  const loading = useMemo(() => {
-    return getIsLoading();
-  }, [getIsLoading]);
-
-  const results = useMemo(() => {
-    return buildSearchResults();
-  }, [buildSearchResults]);
 
   return {
     loading,
