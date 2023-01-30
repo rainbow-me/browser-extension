@@ -276,8 +276,9 @@ export const ToAddressInput = ({
   useEffect(() => {
     if (!inputVisible) {
       closeDropdown();
+      validateToAddress();
     }
-  }, [closeDropdown, inputVisible]);
+  }, [closeDropdown, inputVisible, validateToAddress]);
 
   const toAddressContact = useContact({ address: toAddress });
   const { wallets, watchedWallets, contacts } = useAllFilteredWallets({

@@ -39,7 +39,7 @@ export const useSendTransactionInputs = ({
 
       const amount = convertNumberToString(
         toFixedDecimals(
-          nativeDisplay.amount,
+          nativeDisplay?.amount,
           supportedCurrencies[currentCurrency].decimals,
         ),
       );
@@ -88,7 +88,7 @@ export const useSendTransactionInputs = ({
     () =>
       independentField === 'asset'
         ? independentAmount
-        : dependentAmountDisplay.amount,
+        : dependentAmountDisplay?.amount,
     [dependentAmountDisplay, independentAmount, independentField],
   );
 
@@ -102,7 +102,7 @@ export const useSendTransactionInputs = ({
   const switchIndependentField = useCallback(() => {
     const newValue =
       independentField === 'asset'
-        ? dependentAmountDisplay.amount
+        ? dependentAmountDisplay?.amount
         : assetAmount ?? '';
     setInputValue(newValue);
     setIndependentAmount(newValue);
@@ -115,7 +115,7 @@ export const useSendTransactionInputs = ({
       asset?.decimals || 18,
     );
     const rawAssetBalanceAmount = asset?.isNativeAsset
-      ? minus(assetBalanceAmount, selectedGas.gasFee.amount)
+      ? minus(assetBalanceAmount, selectedGas?.gasFee?.amount)
       : assetBalanceAmount;
 
     const assetBalance = convertRawAmountToBalance(rawAssetBalanceAmount, {
@@ -124,11 +124,11 @@ export const useSendTransactionInputs = ({
 
     const newValue =
       independentField === 'asset'
-        ? assetBalance.amount
+        ? assetBalance?.amount
         : convertNumberToString(
             toFixedDecimals(
               convertAmountAndPriceToNativeDisplay(
-                assetBalance.amount,
+                assetBalance?.amount,
                 asset?.price?.value || 0,
                 currentCurrency,
               ).amount,
@@ -145,7 +145,7 @@ export const useSendTransactionInputs = ({
     asset?.price?.value,
     currentCurrency,
     independentField,
-    selectedGas.gasFee.amount,
+    selectedGas?.gasFee?.amount,
     setInputValue,
   ]);
 

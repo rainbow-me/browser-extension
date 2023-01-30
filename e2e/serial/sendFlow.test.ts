@@ -91,6 +91,13 @@ it('should be able to connect to hardhat and go to send flow', async () => {
   await findElementAndClick({ id: 'header-link-send', driver });
 });
 
+it('should be able to go back and go to send flow', async () => {
+  await delayTime('veryLong');
+  await findElementAndClick({ id: 'navbar-button-with-back', driver });
+  await delayTime('veryLong');
+  await findElementAndClick({ id: 'header-link-send', driver });
+});
+
 it('should be able to save contact on send flow', async () => {
   const input = await querySelector(driver, '[data-testid="to-address-input"]');
   await input.sendKeys('rainbowwallet.eth');
@@ -233,7 +240,7 @@ it('should be able to click max and switch on send flow', async () => {
     '[data-testid="send-input-mask"]',
   );
   await inputMask.clear();
-  await inputMask.sendKeys('1');
+  await inputMask.sendKeys('0.01');
 });
 
 it('should be able to go to review on send flow', async () => {

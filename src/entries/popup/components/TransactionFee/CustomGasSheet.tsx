@@ -616,9 +616,8 @@ export const CustomGasSheet = ({
               </Box>
 
               {speeds.map((speed, i) => (
-                <>
+                <Box key={i}>
                   <Box
-                    key={i}
                     paddingVertical="8px"
                     borderRadius="12px"
                     marginHorizontal="-12px"
@@ -685,7 +684,7 @@ export const CustomGasSheet = ({
                       <Separator color="separatorTertiary" />
                     </Box>
                   )}
-                </>
+                </Box>
               ))}
             </Stack>
 
