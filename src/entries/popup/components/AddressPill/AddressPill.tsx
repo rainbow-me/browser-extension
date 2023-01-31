@@ -20,7 +20,7 @@ export default function AddressPill({ address }: { address: Address }) {
       borderRadius="round"
     >
       <Inline space="4px" alignVertical="center">
-        <Avatar.Wrapper size={12}>
+        <Avatar.Wrapper size={12} color={avatar?.color}>
           {isFetched ? (
             <>
               {avatar?.imageUrl ? (

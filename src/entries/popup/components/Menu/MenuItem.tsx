@@ -172,7 +172,7 @@ const MenuItem = ({
             {labelComponent}
           </Stack>
         </Inline>
-        <Inline alignVertical="center" space="8px">
+        <Inline alignVertical="center" space="8px" height="full" wrap={false}>
           {rightComponent}
           {hasRightArrow && (
             <Symbol

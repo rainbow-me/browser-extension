@@ -5,6 +5,44 @@
   "label": {
     "toggle": "Toggle"
   },
+  "wallet_switcher": {
+    "title": "Wallets",
+    "rename_wallet": "Rename wallet",
+    "copy_address": "Copy Address",
+    "remove_wallet": "Remove wallet",
+    "hide_wallet": "Hide wallet",
+    "watching": "Watching",
+    "add_another_wallet": "Add another wallet",
+    "connect_hardware_wallet": "Connect a hardware wallet"
+  },
+  "add_wallet": {
+    "title": "Add another wallet",
+    "create_wallet": "Create a new wallet",
+    "create_wallet_description": "Create a new wallet on one of your seed phrases.",
+    "import_wallet": "Import with a Secret Recovery Phrase or Private Key",
+    "import_wallet_description": "Add a wallet using your Secret Recovery Phrase or a Private Key.",
+    "hardware_wallet": "Add from your hardware wallet",
+    "hardware_wallet_description": "Add more accounts from your Bluetooth hardware wallet.",
+    "watch_address": "Watch an Ethereum address",
+    "watch_address_description": "Watch a public address or ENS name."
+  },
+  "create_wallet_prompt": {
+    "title": "Create a new wallet",
+    "create_wallet": "Create wallet",
+    "create": "Create Wallet",
+    "input_placeholder": "Name"
+  },
+  "rename_wallet_prompt": {
+    "rename_wallet": "Rename wallet",
+    "update": "Update"
+  },
+  "remove_wallet_prompt": {
+    "error": "Error removing wallet",
+    "hide": "Hide",
+    "remove": "Remove",
+    "hide_description": "This only removes the wallet from this list. You can find this wallet and additional management options in settings.",
+    "remove_description": "This will remove the wallet from this list and delete all data associated with it."
+  },
   "settings": {
     "title": "Settings",
     "use_rainbow_as_default_wallet": "Use Rainbow as default wallet",
@@ -59,13 +97,16 @@
           "title": "Wallet Details",
           "view_recovery_phrase": "View Recovery Phrase",
           "create_new_wallet": "Create a new Wallet",
+          "rename_wallet": "Rename Wallet",
+          "unhide_wallet": "Unhide Wallet",
+          "delete_wallet": "Delete Wallet",
           "view_private_key": "View Private Key",
-          "copy_address": "Copy Address"
+          "copy_address": "Copy Address",
+          "hidden": "Hidden"
         },
         "new_wallet": {
           "name_your_wallet": "Name your wallet",
           "create": "Create Wallet",
-          "no_wallet_name_set": "No wallet name set",
           "input_placeholder": "ex: Wallet 1"
         },
         "private_key": {
@@ -394,6 +435,9 @@
     "cancel": "Cancel",
     "continue": "Continue",
     "copy_to_clipboard": "Copy to clipboard"
+  },
+  "errors": {
+    "no_wallet_name_set": "No wallet name set"
   },
   "common_titles": {
     "before_you_proceed": "Before you proceed"
