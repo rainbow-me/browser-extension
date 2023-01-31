@@ -92,9 +92,9 @@ it('should be able to connect to hardhat and go to send flow', async () => {
 });
 
 it('should be able to go back and go to send flow', async () => {
-  await delayTime('veryLong');
+  await delayTime('very-long');
   await findElementAndClick({ id: 'navbar-button-with-back', driver });
-  await delayTime('veryLong');
+  await delayTime('very-long');
   await findElementAndClick({ id: 'header-link-send', driver });
 });
 

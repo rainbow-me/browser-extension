@@ -117,7 +117,7 @@ export async function goToWelcome(driver, rootURL) {
 }
 
 export async function delayTime(
-  time: 'short' | 'medium' | 'long' | 'veryLong',
+  time: 'short' | 'medium' | 'long' | 'very-long',
 ) {
   switch (time) {
     case 'short':
@@ -126,7 +126,7 @@ export async function delayTime(
       return await delay(500);
     case 'long':
       return await delay(1000);
-    case 'veryLong':
+    case 'very-long':
       return await delay(5000);
   }
 }
