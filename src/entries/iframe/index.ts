@@ -7,6 +7,7 @@ export const injectNotificationIframe = () => {
   const domContainer = document.getElementById(
     'bx-notification-iframe',
   ) as Element;
+
   const root = createRoot(domContainer);
   root.render(createElement(Notification));
 };
