@@ -1,11 +1,13 @@
+import { fetchEnsName } from '@wagmi/core';
 import { motion } from 'framer-motion';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
+import { useWalletNamesStore } from '~/core/state/walletNames';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
@@ -84,7 +86,13 @@ const infoButtonOptions = ({
 
 const bottomSpacing = 20 + 20 + 32 + 32 + (process.env.IS_DEV ? 32 + 8 : 0);
 
-const NoWallets = () => (
+const NoWalletsWarning = ({
+  symbol,
+  text,
+}: {
+  symbol: SymbolProps['symbol'];
+  text: string;
+}) => (
   <Box
     alignItems="center"
     justifyContent="center"
@@ -95,18 +103,18 @@ const NoWallets = () => (
     exit={{ opacity: 0 }}
   >
     <Stack alignHorizontal="center" space="8px">
-      <Symbol
-        symbol="binoculars.fill"
-        weight="bold"
-        size={32}
-        color="labelQuaternary"
-      />
+      <Symbol symbol={symbol} weight="bold" size={32} color="labelQuaternary" />
       <Text size="20pt" weight="bold" color="labelQuaternary">
-        {i18n.t('wallet_switcher.no_wallets')}
+        {text}
       </Text>
     </Stack>
   </Box>
 );
+
+interface WalletSearchData extends AddressAndType {
+  walletName?: string;
+  ensName?: string;
+}
 
 export interface AddressAndType {
   address: Address;
@@ -123,58 +131,115 @@ export function WalletSwitcher() {
   const [q, setQ] = useState('');
   const navigate = useRainbowNavigate();
   const { visibleWallets: accounts, fetchWallets } = useWallets();
-  const handleSelectAddress = (address: Address) => {
-    setCurrentAddress(address);
-    navigate(ROUTES.HOME);
-  };
-  const handleRemoveAccount = async (address: Address) => {
-    const removed = accounts.find((account) => account.address === address);
-    // remove if read-only
-    if (removed?.type === KeychainType.ReadOnlyKeychain) {
-      await remove(address);
-      fetchWallets();
-    } else {
-      // hide if imported
-      hideWallet({ address });
-    }
-    if (address === currentAddress) {
-      const deletedIndex = accounts.findIndex(
-        (account) => account.address === address,
-      );
-      const nextIndex =
-        deletedIndex === accounts.length - 1
-          ? deletedIndex - 1
-          : deletedIndex + 1;
-      setCurrentAddress(accounts[nextIndex]?.address);
-    }
-  };
 
-  const displayedWallets = accounts.map((account) => (
-    <AccountItem
-      key={account.address}
-      onClick={() => {
-        handleSelectAddress(account.address);
-      }}
-      account={account.address}
-      rightComponent={
-        <Inline alignVertical="center" space="10px">
-          {account.type === KeychainType.ReadOnlyKeychain && (
-            <LabelPill label={i18n.t('wallet_switcher.watching')} />
-          )}
-          <MoreInfoButton
-            options={infoButtonOptions({
-              account,
-              setRenameAccount,
-              setRemoveAccount,
-            })}
-          />
-        </Inline>
+  const handleSelectAddress = useCallback(
+    (address: Address) => {
+      setCurrentAddress(address);
+      navigate(ROUTES.HOME);
+    },
+    [navigate, setCurrentAddress],
+  );
+  const handleRemoveAccount = useCallback(
+    async (address: Address) => {
+      const removed = accounts.find((account) => account.address === address);
+      // remove if read-only
+      if (removed?.type === KeychainType.ReadOnlyKeychain) {
+        await remove(address);
+        fetchWallets();
+      } else {
+        // hide if imported
+        hideWallet({ address });
       }
-      labelType={LabelOption.balance}
-      isSelected={account.address === currentAddress}
-      searchTerm={q}
-    />
-  ));
+      if (address === currentAddress) {
+        const deletedIndex = accounts.findIndex(
+          (account) => account.address === address,
+        );
+        const nextIndex =
+          deletedIndex === accounts.length - 1
+            ? deletedIndex - 1
+            : deletedIndex + 1;
+        setCurrentAddress(accounts[nextIndex]?.address);
+      }
+    },
+    [accounts, currentAddress, fetchWallets, hideWallet, setCurrentAddress],
+  );
+  const { walletNames } = useWalletNamesStore();
+
+  const [accountsWithNamesAndEns, setAccountsWithNamesAndEns] = useState<
+    WalletSearchData[]
+  >([]);
+
+  const [isParsing, setIsParsing] = useState(true);
+
+  useEffect(() => {
+    const getAccountsWithNamesAndEns = async () => {
+      setIsParsing(true);
+      setAccountsWithNamesAndEns(accounts as WalletSearchData[]);
+      const accountsSearchData = await Promise.all(
+        accounts.map(async (addressAndType) => {
+          let accountSearchData: WalletSearchData = {
+            ...addressAndType,
+          };
+          const walletName = walletNames[addressAndType.address];
+          if (walletName) {
+            accountSearchData = { ...accountSearchData, walletName };
+          } else {
+            const ensName = (await fetchEnsName({
+              address: addressAndType.address,
+            })) as string;
+            if (ensName) {
+              accountSearchData = { ...accountSearchData, ensName };
+            }
+          }
+          return accountSearchData;
+        }),
+      );
+      setAccountsWithNamesAndEns(accountsSearchData);
+      setIsParsing(false);
+    };
+    getAccountsWithNamesAndEns();
+  }, [accounts, walletNames]);
+
+  const filteredAccounts = useMemo(() => {
+    if (!q) return accountsWithNamesAndEns;
+    return accountsWithNamesAndEns.filter(
+      ({ address, walletName, ensName }) =>
+        address.toLowerCase().includes(q.toLowerCase()) ||
+        walletName?.toLowerCase().includes(q.toLowerCase()) ||
+        ensName?.toLowerCase().includes(q.toLowerCase()),
+    );
+  }, [accountsWithNamesAndEns, q]);
+
+  const displayedWallets = useMemo(
+    () =>
+      filteredAccounts.map((account) => (
+        <AccountItem
+          key={account.address}
+          onClick={() => {
+            handleSelectAddress(account.address);
+          }}
+          account={account.address}
+          rightComponent={
+            <Inline alignVertical="center" space="10px">
+              {account.type === KeychainType.ReadOnlyKeychain && (
+                <LabelPill label={i18n.t('wallet_switcher.watching')} />
+              )}
+              <MoreInfoButton
+                options={infoButtonOptions({
+                  account,
+                  setRenameAccount,
+                  setRemoveAccount,
+                })}
+              />
+            </Inline>
+          }
+          labelType={LabelOption.balance}
+          isSelected={account.address === currentAddress}
+        />
+      )),
+    [currentAddress, filteredAccounts, handleSelectAddress],
+  );
+  console.log('displayedWallets', displayedWallets);
 
   return (
     <Box height="full">
@@ -203,6 +268,7 @@ export function WalletSwitcher() {
             placeholder={i18n.t('wallet_switcher.search_placeholder')}
             value={q}
             onChange={(e) => setQ(e.target.value)}
+            autoFocus
           />
         </Box>
         <MenuContainer>
@@ -212,7 +278,19 @@ export function WalletSwitcher() {
             style={{ paddingBottom: bottomSpacing }}
           >
             <Stack>{displayedWallets}</Stack>
-            {displayedWallets.length === 0 && <NoWallets />}
+            {!isParsing &&
+              displayedWallets.length === 0 &&
+              (q ? (
+                <NoWalletsWarning
+                  symbol="magnifyingglass.circle.fill"
+                  text={i18n.t('wallet_switcher.no_results')}
+                />
+              ) : (
+                <NoWalletsWarning
+                  symbol="binoculars.fill"
+                  text={i18n.t('wallet_switcher.no_wallets')}
+                />
+              ))}
           </Box>
         </MenuContainer>
       </Box>
