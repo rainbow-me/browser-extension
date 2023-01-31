@@ -11,7 +11,7 @@ export function PasswordInput({
   borderColor,
   onChange,
   onBlur,
-  onEnterDown,
+  onSubmit,
 }: {
   placeholder: string;
   testId?: string;
@@ -19,7 +19,7 @@ export function PasswordInput({
   borderColor?: BoxStyles['borderColor'];
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
-  onEnterDown?: () => void;
+  onSubmit?: () => void;
 }) {
   const [visible, setVisible] = useState(false);
   const inputRef = useRef(null);
@@ -52,10 +52,10 @@ export function PasswordInput({
   const onKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
-        onEnterDown?.();
+        onSubmit?.();
       }
     },
-    [onEnterDown],
+    [onSubmit],
   );
 
   return (

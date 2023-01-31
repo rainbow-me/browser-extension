@@ -107,7 +107,7 @@ export function Unlock() {
                 onChange={handlePasswordChange}
                 borderColor={error !== '' ? 'red' : undefined}
                 testId="password-input"
-                onEnterDown={handleUnlock}
+                onSubmit={handleUnlock}
               />
             </Box>
             <Box width="fit">
