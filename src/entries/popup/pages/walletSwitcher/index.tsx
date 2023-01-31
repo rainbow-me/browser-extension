@@ -1,6 +1,14 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { fetchEnsName } from '@wagmi/core';
 import { motion } from 'framer-motion';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  DragDropContext,
+  Draggable,
+  DraggingStyle,
+  Droppable,
+  NotDraggingStyle,
+} from 'react-beautiful-dnd';
 import { Link } from 'react-router-dom';
 import { Address } from 'wagmi';
 
@@ -32,6 +40,13 @@ import { ROUTES } from '../../urls';
 import { WalletActionsMenu } from './WalletSwitcher.css';
 import { RemoveWalletPrompt } from './removeWalletPrompt';
 import { RenameWalletPrompt } from './renameWalletPrompt';
+
+const getItemStyle = (
+  isDragging: boolean,
+  draggableStyle: DraggingStyle | NotDraggingStyle | undefined,
+) => ({
+  ...draggableStyle,
+});
 
 const infoButtonOptions = ({
   account,
@@ -212,33 +227,57 @@ export function WalletSwitcher() {
 
   const displayedWallets = useMemo(
     () =>
-      filteredAccounts.map((account) => (
-        <AccountItem
+      filteredAccounts.map((account, index) => (
+        <Draggable
           key={account.address}
-          onClick={() => {
-            handleSelectAddress(account.address);
-          }}
-          account={account.address}
-          rightComponent={
-            <Inline alignVertical="center" space="10px">
-              {account.type === KeychainType.ReadOnlyKeychain && (
-                <LabelPill label={i18n.t('wallet_switcher.watching')} />
+          draggableId={account.address}
+          index={index}
+        >
+          {(provided, snapshot) => (
+            <Box
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              style={getItemStyle(
+                snapshot.isDragging,
+                provided.draggableProps.style,
               )}
-              <MoreInfoButton
-                options={infoButtonOptions({
-                  account,
-                  setRenameAccount,
-                  setRemoveAccount,
-                })}
+              background={snapshot.isDragging ? 'surfaceSecondary' : undefined}
+              borderRadius="12px"
+            >
+              <AccountItem
+                key={account.address}
+                onClick={() => {
+                  handleSelectAddress(account.address);
+                }}
+                account={account.address}
+                rightComponent={
+                  <Inline alignVertical="center" space="10px">
+                    {account.type === KeychainType.ReadOnlyKeychain && (
+                      <LabelPill label={i18n.t('wallet_switcher.watching')} />
+                    )}
+                    <MoreInfoButton
+                      options={infoButtonOptions({
+                        account,
+                        setRenameAccount,
+                        setRemoveAccount,
+                      })}
+                    />
+                  </Inline>
+                }
+                labelType={LabelOption.balance}
+                isSelected={account.address === currentAddress}
               />
-            </Inline>
-          }
-          labelType={LabelOption.balance}
-          isSelected={account.address === currentAddress}
-        />
+            </Box>
+          )}
+        </Draggable>
       )),
     [currentAddress, filteredAccounts, handleSelectAddress],
   );
+
+  const onDragEnd = () => {
+    console.log('onDragEnd');
+  };
 
   return (
     <Box height="full">
@@ -271,26 +310,34 @@ export function WalletSwitcher() {
           />
         </Box>
         <MenuContainer>
-          <Box
-            width="full"
-            height="full"
-            style={{ paddingBottom: bottomSpacing }}
-          >
-            <Stack>{displayedWallets}</Stack>
-            {!isParsing &&
-              displayedWallets.length === 0 &&
-              (q ? (
-                <NoWalletsWarning
-                  symbol="magnifyingglass.circle.fill"
-                  text={i18n.t('wallet_switcher.no_results')}
-                />
-              ) : (
-                <NoWalletsWarning
-                  symbol="binoculars.fill"
-                  text={i18n.t('wallet_switcher.no_wallets')}
-                />
-              ))}
-          </Box>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable">
+              {(provided) => (
+                <Box {...provided.droppableProps} ref={provided.innerRef}>
+                  <Box
+                    width="full"
+                    height="full"
+                    style={{ paddingBottom: bottomSpacing }}
+                  >
+                    <Stack>{displayedWallets}</Stack>
+                    {!isParsing &&
+                      displayedWallets.length === 0 &&
+                      (q ? (
+                        <NoWalletsWarning
+                          symbol="magnifyingglass.circle.fill"
+                          text={i18n.t('wallet_switcher.no_results')}
+                        />
+                      ) : (
+                        <NoWalletsWarning
+                          symbol="binoculars.fill"
+                          text={i18n.t('wallet_switcher.no_wallets')}
+                        />
+                      ))}
+                  </Box>
+                </Box>
+              )}
+            </Droppable>
+          </DragDropContext>
         </MenuContainer>
       </Box>
       <Box
