@@ -239,7 +239,6 @@ export function WalletSwitcher() {
       )),
     [currentAddress, filteredAccounts, handleSelectAddress],
   );
-  console.log('displayedWallets', displayedWallets);
 
   return (
     <Box height="full">
