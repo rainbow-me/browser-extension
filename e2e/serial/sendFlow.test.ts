@@ -87,13 +87,13 @@ it('should be able to connect to hardhat and go to send flow', async () => {
   await waitAndClick(btn, driver);
   const button = await findElementByText(driver, 'Disconnect from Hardhat');
   expect(button).toBeTruthy();
-  await findElementAndClick({ id: 'navbar-button-with-back', driver });
+  await findElementByTestIdAndClick({ id: 'navbar-button-with-back', driver });
   await findElementAndClick({ id: 'header-link-send', driver });
 });
 
 it('should be able to go back and go to send flow', async () => {
   await delayTime('very-long');
-  await findElementAndClick({ id: 'navbar-button-with-back', driver });
+  await findElementByTestIdAndClick({ id: 'navbar-button-with-back', driver });
   await delayTime('very-long');
   await findElementAndClick({ id: 'header-link-send', driver });
 });
