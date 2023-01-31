@@ -151,6 +151,7 @@ export type BackgroundColor =
   | 'scrimTertiary';
 
 export const backdropFilter = {
+  'blur(12px)': 'blur(12px)',
   'blur(26px)': 'blur(26px)',
   'opacity(80%)': 'opacity(80%)',
   'opacity(5%)': 'opacity(5%)',
@@ -780,6 +781,9 @@ export const symbolNames = selectSymbolNames(
   'command',
   'asterisk',
   'info.circle.fill',
+  'app.connected.to.app.below.fill',
+  'trash.fill',
+  'plus.circle',
 );
 export type SymbolName = typeof symbolNames[number];
 

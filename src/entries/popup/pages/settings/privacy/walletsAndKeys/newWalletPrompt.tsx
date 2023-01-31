@@ -47,14 +47,11 @@ export const NewWalletPrompt = ({
       );
       return;
     }
-    setError(
-      i18n.t(
-        'settings.privacy_and_security.wallets_and_keys.new_wallet.no_wallet_name_set',
-      ),
-    );
+    setError(i18n.t('errors.no_wallet_name_set'));
   };
 
   const handleClose = () => {
+    setError(null);
     setWalletName('');
     onClose();
   };
@@ -62,12 +59,6 @@ export const NewWalletPrompt = ({
   useEffect(() => {
     setError(null);
   }, [walletName]);
-
-  useEffect(() => {
-    return () => {
-      setWalletName('');
-    };
-  }, []);
 
   return (
     <Prompt show={show}>

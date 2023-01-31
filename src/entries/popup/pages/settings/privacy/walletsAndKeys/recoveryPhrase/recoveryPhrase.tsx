@@ -17,8 +17,8 @@ export function RecoveryPhrase() {
   useEffect(() => {
     const fetchRecoveryPhrase = async () => {
       const recoveryPhrase = await exportWallet(
-        state.wallet?.accounts?.[0],
-        state.password,
+        state?.wallet?.accounts?.[0],
+        state?.password,
       );
       setSeed(recoveryPhrase);
     };

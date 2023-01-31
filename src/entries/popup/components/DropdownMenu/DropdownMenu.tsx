@@ -120,7 +120,7 @@ export const DropdownMenuItem = (props: DropdownMenuItemProps) => {
   return (
     <Box
       as={DropdownMenuPrimitive.Item}
-      paddingVertical="12px"
+      paddingVertical="8px"
       paddingHorizontal="8px"
       marginHorizontal="-8px"
       style={{
