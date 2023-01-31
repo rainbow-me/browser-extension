@@ -15,9 +15,10 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
     url: request?.meta?.sender?.url,
   });
 
-  const message = useMemo(() => {
-    const { message } = getSigningRequestDisplayDetails(request);
-    return message;
+  const { message, typedData } = useMemo(() => {
+    console.log('request', request);
+    const { message, typedData } = getSigningRequestDisplayDetails(request);
+    return { message, typedData };
   }, [request]);
 
   return (
@@ -71,11 +72,16 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
           <Box
             background="surfacePrimaryElevated"
             borderRadius="12px"
-            style={{ height: 189, overflow: 'hidden' }}
+            style={{
+              width: '100%',
+              height: 189,
+              overflowX: 'auto',
+              overflowY: 'auto',
+            }}
           >
             <Inset horizontal="20px" vertical="20px">
               <Text weight="regular" color="label" size="14pt">
-                {message}
+                {typedData ? <pre>{message}</pre> : message}
               </Text>
             </Inset>
           </Box>

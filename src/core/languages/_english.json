@@ -316,6 +316,7 @@
     "message_signing_request": "Message Signing Request",
     "message": "Message",
     "sign_message": "Sign Message",
+    "confirm_hw": "Confirm on your device",
     "balance": "Balance",
     "send_transaction": "Send Transaction",
     "transaction_request": "Transaction Request"

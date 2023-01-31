@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { getAddress } from 'ethers/lib/utils';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -31,6 +31,7 @@ export function SendTransaction({
   rejectRequest,
   request,
 }: ApproveRequestProps) {
+  const [waitingForDevice, setWaitingForDevice] = useState(false);
   const { appHost } = useAppMetadata({
     url: request?.meta?.sender?.url,
   });
@@ -40,6 +41,13 @@ export function SendTransaction({
 
   const onAcceptRequest = useCallback(async () => {
     const txRequest = request?.params?.[0] as TransactionRequest;
+    const { type } = await wallet.getWallet(selectedWallet);
+
+    // Change the label while we wait for confirmation
+    if (type === 'HardwareWalletKeychain') {
+      setWaitingForDevice(true);
+    }
+
     const result = await wallet.sendTransaction({
       from: getAddress(txRequest?.from ?? ''),
       to: getAddress(txRequest?.to ?? ''),
@@ -47,7 +55,14 @@ export function SendTransaction({
       chainId: connectedToHardhat ? ChainId.hardhat : appSession.chainId,
     });
     approveRequest(result);
-  }, [appSession.chainId, approveRequest, connectedToHardhat, request?.params]);
+    setWaitingForDevice(false);
+  }, [
+    appSession.chainId,
+    approveRequest,
+    connectedToHardhat,
+    request?.params,
+    selectedWallet,
+  ]);
 
   return (
     <Rows alignVertical="justify">
@@ -56,6 +71,7 @@ export function SendTransaction({
       </Row>
       <Row height="content">
         <SendTransactionActions
+          waitingForDevice={waitingForDevice}
           appHost={appHost}
           selectedWallet={selectedWallet}
           onAcceptRequest={onAcceptRequest}

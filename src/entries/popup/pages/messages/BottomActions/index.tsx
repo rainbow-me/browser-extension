@@ -4,7 +4,7 @@ import { Address, Chain, useBalance, useEnsName } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { truncateAddress } from '~/core/utils/truncateAddress';
-import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { Box, Button, Inline, Stack, Symbol, Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 import {
   DEFAULT_ACCOUNT,
@@ -220,25 +220,24 @@ export const WalletBalance = ({ appHost }: { appHost: string }) => {
 export const AcceptRequestButton = ({
   onClick,
   label,
+  waitingForDevice,
 }: {
   onClick: () => void;
   label: string;
+  waitingForDevice?: boolean;
 }) => {
   return (
-    <Box
-      as="button"
-      id="accept-request-button"
-      background="accent"
+    <Button
+      emoji={waitingForDevice ? '👀' : undefined}
+      color={waitingForDevice ? 'label' : 'accent'}
+      height="44px"
       width="full"
-      onClick={onClick}
-      padding="16px"
-      borderRadius="round"
-      boxShadow="24px accent"
+      onClick={(!waitingForDevice && onClick) || undefined}
+      testId="accept-request-button"
+      variant={waitingForDevice ? 'disabled' : 'flat'}
     >
-      <Text color="label" size="14pt" weight="bold">
-        {label}
-      </Text>
-    </Box>
+      {label}
+    </Button>
   );
 };
 
@@ -250,18 +249,15 @@ export const RejectRequestButton = ({
   label: string;
 }) => {
   return (
-    <Inline alignHorizontal="center" alignVertical="center">
-      <Box
-        as="button"
-        id="reject-request-button"
-        onClick={onClick}
-        padding="16px"
-        borderRadius="round"
-      >
-        <Text color="labelSecondary" size="14pt" weight="bold">
-          {label}
-        </Text>
-      </Box>
-    </Inline>
+    <Button
+      color={'labelSecondary'}
+      height="44px"
+      width="full"
+      onClick={onClick}
+      testId="reject-request-button"
+      variant={'transparent'}
+    >
+      {label}
+    </Button>
   );
 };
