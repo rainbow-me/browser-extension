@@ -10,6 +10,7 @@ import { useLocation } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
 import { usePendingRequestStore } from '~/core/state';
+import { rpcMethods } from '~/core/types/rpcMethods';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
@@ -53,7 +54,24 @@ export function Home() {
 
   useEffect(() => {
     if (pendingRequests?.[0]) {
-      navigate(ROUTES.APPROVE_APP_REQUEST);
+      if (
+        pendingRequests[0].method === rpcMethods.wallet_addEthereumChain ||
+        pendingRequests[0].method === rpcMethods.wallet_switchEthereumChain
+      ) {
+        try {
+          chrome.notifications.create({
+            title: 'Notification',
+            message: 'Yesss',
+            iconUrl: 'images/icon-16.png',
+            type: 'basic',
+          });
+        } catch (e) {
+          console.log('ERRPROROROROR', e);
+        }
+        console.log('notification created');
+      } else {
+        navigate(ROUTES.APPROVE_APP_REQUEST);
+      }
     }
   }, [navigate, pendingRequests]);
 

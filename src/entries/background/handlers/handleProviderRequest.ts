@@ -13,7 +13,7 @@ import {
 } from '~/core/state';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { isSupportedChainId } from '~/core/utils/chains';
+import { chainNameFromChainId, isSupportedChainId } from '~/core/utils/chains';
 import { getDappHost } from '~/core/utils/connectedApps';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/numbers';
@@ -138,6 +138,16 @@ export const handleProviderRequest = ({
               host,
             });
           }
+          chrome.notifications.create({
+            title: 'Notification',
+            message: `Network changed to ${chainNameFromChainId(
+              Number(proposedChainId),
+            )}`,
+            iconUrl: 'images/icon-16.png',
+            type: 'basic',
+          });
+          console.log('OPENENNNENENENEENNENE');
+
           response = null;
           break;
         }
