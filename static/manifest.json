@@ -65,7 +65,8 @@
     {
       "resources": [
         "inpage.js",
-        "*.woff2"
+        "*.woff2",
+        "popup.css"
       ],
       "matches": [
         "<all_urls>"

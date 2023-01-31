@@ -15,8 +15,7 @@ function IFrame({ children }: { children: ReactNode }) {
   //   const ref = useRef<HTMLIFrameElement>(null);
   const [ref, setRef] = useState<HTMLIFrameElement>();
 
-  const settttt = (ref: HTMLIFrameElement) => {
-    console.log('SETTTINGGG REFFF', ref);
+  const onRef = (ref: HTMLIFrameElement) => {
     setRef(ref);
   };
 
@@ -26,21 +25,16 @@ function IFrame({ children }: { children: ReactNode }) {
   return (
     <iframe
       style={{
-        width: '161px',
-        height: '40px',
         borderRadius: '26px',
-        borderWidth: '0px',
-        backgroundColor: 'rgba(255, 255, 0, 0.8)',
-        boxShadow:
-          '0px 8px 24px rgba(37, 41, 46, 0.12), 0px 2px 6px rgba(0, 0, 0, 0.02);',
-
         top: '88px',
         zIndex: '9999999',
         right: '100px',
-        position: 'absolute',
+        position: 'fixed',
+        height: '40px',
+        borderWidth: '0px',
       }}
       title="iframe"
-      ref={settttt}
+      ref={onRef}
     >
       {container && createPortal(children, container)}
     </iframe>
@@ -57,13 +51,18 @@ const NotificationComponent = () => {
   }, []);
 
   useEffect(() => tick(), [tick]);
+
   return (
     <Box
       background="surfaceMenu"
       borderRadius="28px"
       backdropFilter="blur(26px)"
+      borderColor="blue"
+      style={{
+        height: '40px',
+      }}
     >
-      <Rows>
+      <Rows space="6px">
         <Row>
           <Text color="label" size="16pt" weight="bold">
             Network changed {t}
