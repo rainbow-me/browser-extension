@@ -172,10 +172,15 @@
     "input_token_placeholder": "Token",
     "max": "Max",
     "switch_to": "Switch to %{currency}",
-    "button_label_send": "Send Transacion",
-    "button_label_sending": "Sending",
-    "button_label_review": "Review",
-    "enter_address_or_amount": "Enter an address or amount",
+    "button_label": {
+      "review": "Review",
+      "enter_address_and_amount": "Enter an address and amount",
+      "enter_valid_address": "Enter a valid address",
+      "enter_address": "Enter an address",
+      "enter_amount": "Enter an amount",
+      "insufficient_asset": "Insufficient %{symbol}",
+      "insufficient_native_asset_for_gas": "Insufficient %{symbol} for gas"
+    },
     "wallets_list": {
       "contacts": "Contacts",
       "my_wallets": "My wallets",
@@ -194,7 +199,11 @@
       "to": "to",
       "you_own_wallet": "You own this wallet",
       "send_to": "Send to %{toName}",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "sending_on_network": "Sending on the %{chainName} network",
+      "sending_on_l2_check_1": "I’m not sending to an exchange",
+      "sending_on_l2_check_2": "The person I’m sending to has a wallet that support %{chainName}",
+      "complete_checks": "Complete the checks"
     }
   },
   "custom_gas": {
@@ -211,19 +220,6 @@
       "stable": "Stable",
       "surging": "Surging",
       "rising": "Rising"
-    },
-    "explainer": {
-      "current_base_stable": "Network traffic is stable right now. Have fun!",
-      "current_base_surging": "Fees are unusually high right now! Unless your transaction is urgent, it’s best to wait for fees to drop.",
-      "current_base_falling": "Fees are dropping right now!",
-      "current_base_rising": "Fees are rising right now! It’s best to use a higher max base fee to avoid a stuck transaction.",
-      "current_base_description": "The base fee is set by the Ethereum network and changes depending on how busy the network is.",
-      "current_base_title": "Current base fee",
-      "max_base_explainer_1": "This is the maximum base fee you’re willing to pay for this transaction.",
-      "max_base_explainer_2": "Setting a higher max base fee prevents your transaction from getting stuck if fees rise.",
-      "max_base_title": "Max base fee",
-      "max_priority_explainer": "The miner tip goes directly to the miner who confirms your transaction on the network.\n\nA higher tip makes your transaction more likely to be confirmed quickly.",
-      "max_priority_title": "Miner tip"
     },
     "warnings": {
       "may_get_stuck": "may get stuck",
@@ -501,6 +497,46 @@
       "unverified": "Unverified",
       "verified": "Verified",
       "on_other_networks": "On other networks"
+    }
+  },
+  "explainers": {
+    "send": {
+      "to_smart_contract": {
+        "description_1": "The address you entered is for a smart contract.",
+        "description_2": "Except for rare situations, you probably shouldn't do this. You could lose your assets or they might go to the wrong place.",
+        "description_3": "Double check the address, verify it with the recipient, or contact support first.",
+        "title": "Hold your horses!"
+      },
+      "sending_on_l2": {
+        "arbitrum_title": "What's Arbitrum?",
+        "arbitrum_description_1": "Arbitrum is a Layer 2 network that runs on top of Ethereum, enabling cheaper and faster transactions while still benefiting from the underlying security of Ethereum.",
+        "arbitrum_description_2": "It bundles lots of transactions together in a \"roll up\" before sending them down to live permanently on Ethereum.",
+        "optimism_title": "What's Optimism?",
+        "optimism_description_1": "Optimism is a Layer 2 network that runs on top of Ethereum, enabling cheaper and faster transactions while still benefiting from the underlying security of Ethereum.",
+        "optimism_description_2": "It bundles lots of transactions together in a \"roll up\" before sending them down to live permanently on Ethereum.",
+        "polygon_title": "What's Polygon?",
+        "polygon_description_1": "Polygon is a sidechain, a distinct network that runs alongside Ethereum and is compatible with it.",
+        "polygon_description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, Polygon has its own security and consensus mechanisms that differ from Ethereum.",
+        "bsc_title": "What's Binance Chain?",
+        "bsc_description_1": "Binance Smart Chain, or BSC for short, is the blockchain network for the  trading platform Binance.",
+        "bsc_description_2": "It allows for cheaper and faster transactions, but unlike Layer 2 networks, BSC has its own security and consensus mechanisms that differ from Ethereum.",
+        "link_button_label": "Read more"
+      },
+      "action_label": "Got it"
+    },
+    "custom_gas": {
+      "action_button_label": "Got it",
+      "current_base_stable": "Network traffic is stable right now. Have fun!",
+      "current_base_surging": "Fees are unusually high right now! Unless your transaction is urgent, it’s best to wait for fees to drop.",
+      "current_base_falling": "Fees are dropping right now!",
+      "current_base_rising": "Fees are rising right now! It’s best to use a higher max base fee to avoid a stuck transaction.",
+      "current_base_description": "The base fee is set by the Ethereum network and changes depending on how busy the network is.",
+      "current_base_title": "Current base fee",
+      "max_base_explainer_1": "This is the maximum base fee you’re willing to pay for this transaction.",
+      "max_base_explainer_2": "Setting a higher max base fee prevents your transaction from getting stuck if fees rise.",
+      "max_base_title": "Max base fee",
+      "max_priority_explainer": "The miner tip goes directly to the miner who confirms your transaction on the network.\n\nA higher tip makes your transaction more likely to be confirmed quickly.",
+      "max_priority_title": "Miner tip"
     }
   }
 }
