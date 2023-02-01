@@ -1,6 +1,9 @@
 import React, { ReactNode, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import { i18n } from '~/core/languages';
+import { ChainId } from '~/core/types/chains';
+import { chainNameFromChainId } from '~/core/utils/chains';
 import {
   Box,
   Column,
@@ -11,6 +14,16 @@ import {
   Text,
   ThemeProvider,
 } from '~/design-system';
+
+// 161 (figma width spec) + 48 (radius shadow) since we need space for the shadow to be visible in the iframe
+const NOTIFICATION_WIDTH = '209px';
+// 40 (figma height spec) + 48 (radius shadow) + 16 (vertical shadow), since we need space for the shadow to be visible in the iframe
+const NOTIFICATION_HEIGHT = '122px';
+
+// 9 (figma top spec) - 41 (extra iframe height for shadow, 122 - 40 /2 )
+// since we need space for the shadow to be visible in the iframe
+const NOTIFICATION_TOP = '-32px';
+const NOTIFICATION_RIGHT = '100px';
 
 export const Notification = () => {
   return (
@@ -37,9 +50,9 @@ function IFrame({ children }: { children: ReactNode }) {
     const root = ref?.contentDocument?.getElementsByTagName('html')[0]; // '0' to assign the first (and only `HTML` tag)
     if (root) {
       root.style.background = 'transparent';
-      root.style.height = '40px';
-      root.style.width = '161px';
       root.style.position = 'fixed';
+      root.style.height = NOTIFICATION_HEIGHT;
+      root.style.width = NOTIFICATION_WIDTH;
     }
     root?.setAttribute('class', 'lt');
     ref?.contentDocument?.head?.appendChild(iframeLink);
@@ -49,19 +62,17 @@ function IFrame({ children }: { children: ReactNode }) {
     <Box
       as={'iframe'}
       style={{
-        top: '88px',
-        zIndex: '9999999',
-        right: '100px',
-        position: 'fixed',
-        height: '40px',
-        width: '161px',
+        top: NOTIFICATION_TOP,
+        right: NOTIFICATION_RIGHT,
+        height: NOTIFICATION_HEIGHT,
+        width: NOTIFICATION_WIDTH,
         borderWidth: '0px',
+        position: 'fixed',
         background: 'transparent',
+        zIndex: '9999999',
       }}
       title="iframe"
-      className="ohihuhuihui"
       ref={onRef}
-      allowTransparency={true}
     >
       {container && createPortal(children, container)}
     </Box>
@@ -71,8 +82,11 @@ function IFrame({ children }: { children: ReactNode }) {
 const NotificationComponent = () => {
   return (
     <ThemeProvider theme="light">
-      <Box height="full" style={{ height: 40, width: 161 }}>
-        <Inline height="full" alignVertical="center">
+      <Box
+        height="full"
+        style={{ height: NOTIFICATION_HEIGHT, width: NOTIFICATION_WIDTH }}
+      >
+        <Inline height="full" alignVertical="center" alignHorizontal="center">
           <Box
             alignItems="center"
             borderRadius="28px"
@@ -98,12 +112,12 @@ const NotificationComponent = () => {
                 <Rows alignVertical="center" space="6px">
                   <Row>
                     <Text color="label" size="12pt" weight="bold">
-                      Network changed
+                      {i18n.t('injected_notifications.network_changed')}
                     </Text>
                   </Row>
                   <Row>
                     <Text color="labelTertiary" size="11pt" weight="medium">
-                      Optimism
+                      {chainNameFromChainId(ChainId.optimism)}
                     </Text>
                   </Row>
                 </Rows>
