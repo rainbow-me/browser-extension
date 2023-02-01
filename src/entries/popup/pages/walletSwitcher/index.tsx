@@ -6,6 +6,7 @@ import {
   DragDropContext,
   Draggable,
   DraggingStyle,
+  DropResult,
   Droppable,
   NotDraggingStyle,
 } from 'react-beautiful-dnd';
@@ -16,6 +17,7 @@ import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletNamesStore } from '~/core/state/walletNames';
+import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
@@ -40,6 +42,18 @@ import { ROUTES } from '../../urls';
 import { WalletActionsMenu } from './WalletSwitcher.css';
 import { RemoveWalletPrompt } from './removeWalletPrompt';
 import { RenameWalletPrompt } from './renameWalletPrompt';
+
+const reorder = (
+  list: Iterable<unknown> | ArrayLike<unknown>,
+  startIndex: number,
+  endIndex: number,
+) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
 
 const getItemStyle = (
   isDragging: boolean,
@@ -184,12 +198,16 @@ export function WalletSwitcher() {
     WalletSearchData[]
   >([]);
 
-  const [isParsing, setIsParsing] = useState(true);
+  const isSearching = useMemo(() => {
+    return !!q;
+  }, [q]);
+
+  const { walletOrder, saveWalletOrder } = useWalletOrderStore();
 
   useEffect(() => {
     const getAccountsWithNamesAndEns = async () => {
-      setIsParsing(true);
-      setAccountsWithNamesAndEns(accounts as WalletSearchData[]);
+      if (accounts.length !== 0)
+        setAccountsWithNamesAndEns(accounts as WalletSearchData[]);
       const accountsSearchData = await Promise.all(
         accounts.map(async (addressAndType) => {
           let accountSearchData: WalletSearchData = {
@@ -209,8 +227,8 @@ export function WalletSwitcher() {
           return accountSearchData;
         }),
       );
-      setAccountsWithNamesAndEns(accountsSearchData);
-      setIsParsing(false);
+      if (accountsSearchData.length !== 0)
+        setAccountsWithNamesAndEns(accountsSearchData);
     };
     getAccountsWithNamesAndEns();
   }, [accounts, walletNames]);
@@ -225,13 +243,32 @@ export function WalletSwitcher() {
     );
   }, [accountsWithNamesAndEns, q]);
 
-  const displayedWallets = useMemo(
+  const filteredAndSortedAccounts = useMemo(() => {
+    const sortedAccounts = filteredAccounts.sort((a, b) => {
+      const aIndex = walletOrder.indexOf(a.address);
+      const bIndex = walletOrder.indexOf(b.address);
+      if (aIndex === -1 && bIndex === -1) {
+        return 0;
+      }
+      if (aIndex === -1) {
+        return 1;
+      }
+      if (bIndex === -1) {
+        return -1;
+      }
+      return aIndex - bIndex;
+    });
+    return sortedAccounts;
+  }, [filteredAccounts, walletOrder]);
+
+  const displayedAccounts = useMemo(
     () =>
-      filteredAccounts.map((account, index) => (
+      filteredAndSortedAccounts.map((account, index) => (
         <Draggable
           key={account.address}
           draggableId={account.address}
           index={index}
+          isDragDisabled={isSearching}
         >
           {(provided, snapshot) => (
             <Box
@@ -272,11 +309,24 @@ export function WalletSwitcher() {
           )}
         </Draggable>
       )),
-    [currentAddress, filteredAccounts, handleSelectAddress],
+    [
+      currentAddress,
+      filteredAndSortedAccounts,
+      handleSelectAddress,
+      isSearching,
+    ],
   );
 
-  const onDragEnd = () => {
-    console.log('onDragEnd');
+  const onDragEnd = (result: DropResult) => {
+    const { destination, source } = result;
+    if (!destination) return;
+    if (destination.index === source.index) return;
+    const newAccountsWithNamesAndEns = reorder(
+      accountsWithNamesAndEns,
+      source.index,
+      destination.index,
+    ) as WalletSearchData[];
+    saveWalletOrder(newAccountsWithNamesAndEns.map(({ address }) => address));
   };
 
   return (
@@ -319,21 +369,26 @@ export function WalletSwitcher() {
                     height="full"
                     style={{ paddingBottom: bottomSpacing }}
                   >
-                    <Stack>{displayedWallets}</Stack>
-                    {!isParsing &&
-                      displayedWallets.length === 0 &&
-                      (q ? (
-                        <NoWalletsWarning
-                          symbol="magnifyingglass.circle.fill"
-                          text={i18n.t('wallet_switcher.no_results')}
-                        />
-                      ) : (
-                        <NoWalletsWarning
-                          symbol="binoculars.fill"
-                          text={i18n.t('wallet_switcher.no_wallets')}
-                        />
-                      ))}
+                    <Stack>
+                      {displayedAccounts.length !== 0 && (
+                        <Box
+                          as={motion.div}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                        >
+                          {displayedAccounts}
+                        </Box>
+                      )}
+                    </Stack>
+                    {isSearching && displayedAccounts.length === 0 && (
+                      <NoWalletsWarning
+                        symbol="magnifyingglass.circle.fill"
+                        text={i18n.t('wallet_switcher.no_results')}
+                      />
+                    )}
                   </Box>
+                  {provided.placeholder}
                 </Box>
               )}
             </Droppable>
