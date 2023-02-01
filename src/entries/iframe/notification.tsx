@@ -2,6 +2,7 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { i18n } from '~/core/languages';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { ChainId } from '~/core/types/chains';
 import { chainNameFromChainId } from '~/core/utils/chains';
 import {
@@ -26,14 +27,21 @@ const NOTIFICATION_TOP = '-32px';
 const NOTIFICATION_RIGHT = '100px';
 
 export const Notification = () => {
+  const { currentTheme } = useCurrentThemeStore();
   return (
-    <IFrame>
-      <NotificationComponent />
+    <IFrame theme={currentTheme}>
+      <NotificationComponent theme={currentTheme} />
     </IFrame>
   );
 };
 
-function IFrame({ children }: { children: ReactNode }) {
+function IFrame({
+  children,
+  theme,
+}: {
+  children: ReactNode;
+  theme: 'dark' | 'light';
+}) {
   const [ref, setRef] = useState<HTMLIFrameElement>();
 
   const onRef = (ref: HTMLIFrameElement) => {
@@ -54,9 +62,9 @@ function IFrame({ children }: { children: ReactNode }) {
       root.style.height = NOTIFICATION_HEIGHT;
       root.style.width = NOTIFICATION_WIDTH;
     }
-    root?.setAttribute('class', 'lt');
+    root?.setAttribute('class', theme === 'dark' ? 'dt' : 'lt');
     ref?.contentDocument?.head?.appendChild(iframeLink);
-  }, [ref?.contentDocument]);
+  }, [ref?.contentDocument, theme]);
 
   return (
     <Box
@@ -79,9 +87,9 @@ function IFrame({ children }: { children: ReactNode }) {
   );
 }
 
-const NotificationComponent = () => {
+const NotificationComponent = ({ theme }: { theme: 'dark' | 'light' }) => {
   return (
-    <ThemeProvider theme="light">
+    <ThemeProvider theme={theme}>
       <Box
         height="full"
         style={{ height: NOTIFICATION_HEIGHT, width: NOTIFICATION_WIDTH }}
