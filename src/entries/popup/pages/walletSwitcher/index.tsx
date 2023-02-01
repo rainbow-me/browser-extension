@@ -44,7 +44,7 @@ import { RemoveWalletPrompt } from './removeWalletPrompt';
 import { RenameWalletPrompt } from './renameWalletPrompt';
 
 const reorder = (
-  list: Iterable<unknown> | ArrayLike<unknown>,
+  list: Iterable<unknown>,
   startIndex: number,
   endIndex: number,
 ) => {
