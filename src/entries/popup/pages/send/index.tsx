@@ -30,12 +30,18 @@ import {
 } from '~/design-system';
 import { foregroundColors } from '~/design-system/styles/designTokens';
 
+import {
+  ExplainerSheet,
+  useExplainerSheetParams,
+} from '../../components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { getWallet, sendTransaction } from '../../handlers/wallet';
 import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsset';
 import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
 import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
+import { useSendTransactionValidations } from '../../hooks/send/useTransactionValidations';
+import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -66,7 +72,6 @@ export const AccentColorProviderWrapper = ({
 };
 
 export function Send() {
-  const [, setTxHash] = useState('');
   const [waitingForDevice, setWaitingForDevice] = useState(false);
   const [showReviewSheet, setShowReviewSheet] = useState(false);
   const [contactSaveAction, setSaveContactAction] = useState<{
@@ -83,6 +88,8 @@ export function Send() {
   const { asset, selectAssetAddress, assets, setSortMethod, sortMethod } =
     useSendTransactionAsset();
 
+  const { clearCustomGasModified, selectedGas } = useGasStore();
+
   const {
     assetAmount,
     independentAmount,
@@ -93,9 +100,7 @@ export function Send() {
     setIndependentAmount,
     switchIndependentField,
     setMaxAssetAmount,
-  } = useSendTransactionInputs({ asset });
-
-  const { clearCustomGasModified } = useGasStore();
+  } = useSendTransactionInputs({ asset, selectedGas });
 
   const {
     currentCurrency,
@@ -109,6 +114,20 @@ export function Send() {
     value,
     setToAddressOrName,
   } = useSendTransactionState({ assetAmount, asset });
+
+  const {
+    buttonLabel,
+    isValidToAddress,
+    readyForReview,
+    validateToAddress,
+    toAddressIsSmartContract,
+  } = useSendTransactionValidations({
+    asset,
+    assetAmount,
+    selectedGas,
+    toAddress,
+    toAddressOrName,
+  });
 
   const controls = useAnimationControls();
   const transactionRequest: TransactionRequest = useMemo(() => {
@@ -134,7 +153,7 @@ export function Send() {
   );
 
   const openReviewSheet = useCallback(() => {
-    if (!!toAddress && independentAmount) {
+    if (readyForReview) {
       setShowReviewSheet(true);
     } else {
       controls.start({
@@ -143,66 +162,65 @@ export function Send() {
       });
       independentFieldRef?.current?.focus();
     }
-  }, [controls, independentAmount, independentFieldRef, toAddress]);
+  }, [readyForReview, controls, independentFieldRef]);
 
   const closeReviewSheet = useCallback(() => setShowReviewSheet(false), []);
-  const handleSend = useCallback(async () => {
-    try {
-      const { type } = await getWallet(fromAddress);
 
-      // Change the label while we wait for confirmation
-      if (type === 'HardwareWalletKeychain') {
-        setWaitingForDevice(true);
-      }
+  const handleSend = useCallback(
+    async (callback?: () => void) => {
+      try {
+        const { type } = await getWallet(fromAddress);
 
-      const chainIdToUse = connectedToHardhat ? ChainId.hardhat : chainId;
-      const result = await sendTransaction({
-        from: fromAddress,
-        to: txToAddress,
-        value,
-        chainId: chainIdToUse,
-        data,
-      });
-
-      if (result) {
-        setTxHash(result?.hash as string);
-        const transaction = {
-          amount: assetAmount,
-          asset,
-          data: result.data,
-          value: result.value,
+        // Change the label while we wait for confirmation
+        if (type === 'HardwareWalletKeychain') {
+          setWaitingForDevice(true);
+        }
+        const result = await sendTransaction({
           from: fromAddress,
           to: txToAddress,
-          hash: result.hash,
-          chainId,
-          nonce: result.nonce,
-          status: TransactionStatus.sending,
-          type: TransactionType.send,
-        };
-        await addNewTransaction({
-          address: fromAddress,
-          chainId,
-          transaction,
+          value,
+          chainId: connectedToHardhat ? ChainId.hardhat : chainId,
+          data,
         });
-        navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
+        if (result) {
+          const transaction = {
+            amount: assetAmount,
+            asset,
+            data: result.data,
+            value: result.value,
+            from: fromAddress,
+            to: txToAddress,
+            hash: result.hash,
+            chainId,
+            status: TransactionStatus.sending,
+            type: TransactionType.send,
+          };
+          await addNewTransaction({
+            address: fromAddress,
+            chainId,
+            transaction,
+          });
+          callback?.();
+          navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
+        }
+      } catch (e) {
+        alert('Transaction failed');
+      } finally {
+        setWaitingForDevice(false);
       }
-    } catch (e) {
-      console.log('error', e);
-      alert('Transaction failed');
-    } finally {
-      setWaitingForDevice(false);
-    }
-  }, [
-    fromAddress,
-    txToAddress,
-    value,
-    chainId,
-    data,
-    connectedToHardhat,
-    assetAmount,
-    asset,
-    navigate,
-  ]);
+    },
+    [
+      fromAddress,
+      txToAddress,
+      value,
+      connectedToHardhat,
+      chainId,
+      data,
+      assetAmount,
+      asset,
+      navigate,
+    ],
+  );
 
   const selectAsset = useCallback(
     (address: Address | '') => {
@@ -224,25 +242,70 @@ export function Send() {
     };
   }, [clearCustomGasModified]);
 
+  const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
+    useExplainerSheetParams();
+
+  const showToContractExplainer = useCallback(() => {
+    showExplainerSheet({
+      show: true,
+      title: i18n.t('explainers.send.to_smart_contract.title'),
+      description: [
+        i18n.t('explainers.send.to_smart_contract.description_1'),
+        i18n.t('explainers.send.to_smart_contract.description_2'),
+        i18n.t('explainers.send.to_smart_contract.description_3'),
+      ],
+      actionButton: {
+        label: i18n.t('explainers.send.action_label'),
+        variant: 'tinted',
+        labelColor: 'blue',
+        action: hideExplanerSheet,
+      },
+      header: { emoji: '✋' },
+    });
+  }, [hideExplanerSheet, showExplainerSheet]);
+
+  const prevToAddressIsSmartContract = usePrevious(toAddressIsSmartContract);
+  useEffect(() => {
+    if (!prevToAddressIsSmartContract && toAddressIsSmartContract) {
+      showToContractExplainer();
+    }
+  }, [
+    prevToAddressIsSmartContract,
+    showToContractExplainer,
+    toAddressIsSmartContract,
+  ]);
+
   return (
     <>
+      <ExplainerSheet
+        show={explainerSheetParams.show}
+        header={explainerSheetParams.header}
+        title={explainerSheetParams.title}
+        description={explainerSheetParams.description}
+        actionButton={explainerSheetParams.actionButton}
+      />
       <ContactPrompt
         address={toAddress}
         show={contactSaveAction?.show}
         action={contactSaveAction?.action}
         onSaveContactAction={setSaveContactAction}
       />
-      <ReviewSheet
-        show={showReviewSheet}
-        onCancel={closeReviewSheet}
-        onSend={handleSend}
-        toAddress={toAddress}
-        asset={asset}
-        primaryAmountDisplay={independentAmountDisplay.display}
-        secondaryAmountDisplay={dependentAmountDisplay.display}
-        onSaveContactAction={setSaveContactAction}
-        waitingForDevice={waitingForDevice}
-      />
+      <AccentColorProviderWrapper
+        color={asset?.colors?.primary || asset?.colors?.fallback}
+      >
+        <ReviewSheet
+          show={showReviewSheet}
+          onCancel={closeReviewSheet}
+          onSend={handleSend}
+          toAddress={toAddress}
+          asset={asset}
+          primaryAmountDisplay={independentAmountDisplay.display}
+          secondaryAmountDisplay={dependentAmountDisplay.display}
+          onSaveContactAction={setSaveContactAction}
+          waitingForDevice={waitingForDevice}
+        />
+      </AccentColorProviderWrapper>
+
       <Navbar
         title={i18n.t('send.title')}
         background={'surfaceSecondary'}
@@ -274,6 +337,7 @@ export function Send() {
                 handleToAddressChange={handleToAddressChange}
                 setToAddressOrName={setToAddressOrName}
                 onDropdownOpen={setToAddressDropdownOpen}
+                validateToAddress={validateToAddress}
               />
             </Row>
 
@@ -314,7 +378,7 @@ export function Send() {
           </Rows>
 
           <Row height="content">
-            {asset ? (
+            {isValidToAddress && !!asset ? (
               <AccentColorProviderWrapper
                 color={asset?.colors?.primary || asset?.colors?.fallback}
               >
@@ -339,13 +403,15 @@ export function Send() {
                         testId="send-review-button"
                       >
                         <Inline space="8px" alignVertical="center">
-                          <Symbol
-                            symbol="doc.text.magnifyingglass"
-                            weight="bold"
-                            size={16}
-                          />
+                          {readyForReview && (
+                            <Symbol
+                              symbol="doc.text.magnifyingglass"
+                              weight="bold"
+                              size={16}
+                            />
+                          )}
                           <Text color="label" size="16pt" weight="bold">
-                            {i18n.t('send.button_label_review')}
+                            {buttonLabel}
                           </Text>
                         </Inline>
                       </Button>
@@ -362,7 +428,7 @@ export function Send() {
                   width="full"
                 >
                   <Text color="labelQuaternary" size="14pt" weight="bold">
-                    {i18n.t('send.enter_address_or_amount')}
+                    {buttonLabel}
                   </Text>
                 </Button>
               </Box>

@@ -124,7 +124,10 @@ describe('App interactions flow', () => {
     await waitAndClick(btn, driver);
     const button = await findElementByText(driver, 'Disconnect from Hardhat');
     expect(button).toBeTruthy();
-    await findElementAndClick({ id: 'navbar-button-with-back', driver });
+    await findElementByTestIdAndClick({
+      id: 'navbar-button-with-back',
+      driver,
+    });
   });
 
   it('should be able to connect to bx test dapp', async () => {
