@@ -57,7 +57,7 @@ function IFrame({
     iframeLink.rel = 'stylesheet';
     const root = ref?.contentDocument?.getElementsByTagName('html')[0]; // '0' to assign the first (and only `HTML` tag)
     if (root) {
-      root.style.background = 'transparent';
+      root.style.background = 'none transparent !important';
       root.style.position = 'fixed';
       root.style.height = NOTIFICATION_HEIGHT;
       root.style.width = NOTIFICATION_WIDTH;
@@ -67,8 +67,7 @@ function IFrame({
   }, [ref?.contentDocument, theme]);
 
   return (
-    <Box
-      as={'iframe'}
+    <iframe
       style={{
         top: NOTIFICATION_TOP,
         right: NOTIFICATION_RIGHT,
@@ -76,14 +75,14 @@ function IFrame({
         width: NOTIFICATION_WIDTH,
         borderWidth: '0px',
         position: 'fixed',
-        background: 'transparent',
+        // background: 'none transparent !transparent',
         zIndex: '9999999',
       }}
       title="iframe"
       ref={onRef}
     >
       {container && createPortal(children, container)}
-    </Box>
+    </iframe>
   );
 }
 
