@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import { Address } from 'wagmi';
 
@@ -27,7 +28,11 @@ import {
 import { SortMethod } from '../../hooks/send/useSendTransactionAsset';
 import { AssetRow } from '../home/Tokens';
 
-import { InputWrapper } from './InputWrapper';
+import {
+  InputWrapper,
+  dropdownContainerVariant,
+  dropdownItemVariant,
+} from './InputWrapper';
 import {
   addressToInputHighlightWrapperStyleDark,
   addressToInputHighlightWrapperStyleLight,
@@ -220,7 +225,12 @@ export const TokenInput = ({
               </DropdownMenu>
             </Inline>
           </Box>
-          <Box>
+          <Box
+            as={motion.div}
+            variants={dropdownContainerVariant}
+            initial="hidden"
+            animate="show"
+          >
             {assets?.map((asset, i) => (
               <Box
                 paddingHorizontal="8px"
@@ -229,7 +239,11 @@ export const TokenInput = ({
                 testId={`token-input-asset-${asset?.uniqueId}`}
               >
                 <RowHighlightWrapper>
-                  <Box marginHorizontal="-8px">
+                  <Box
+                    as={motion.div}
+                    variants={dropdownItemVariant}
+                    marginHorizontal="-8px"
+                  >
                     <AssetRow uniqueId={asset?.uniqueId} />
                   </Box>
                 </RowHighlightWrapper>
