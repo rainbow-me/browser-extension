@@ -5,6 +5,7 @@ import { BoxStyles, ShadowSize, TextStyles } from '../../styles/core.css';
 import {
   BackgroundColor,
   ButtonColor,
+  ButtonVariant,
   Radius,
   Space,
   TextColor,
@@ -18,13 +19,7 @@ import { ButtonHeight, heightStyles, tintedStyles } from './ButtonWrapper.css';
 export type ButtonVariantProps =
   | {
       color: BackgroundColor | ButtonColor | TextColor;
-      variant:
-        | 'raised'
-        | 'flat'
-        | 'tinted'
-        | 'stroked'
-        | 'transparent'
-        | 'disabled';
+      variant: ButtonVariant;
     }
   | {
       color?: never;
