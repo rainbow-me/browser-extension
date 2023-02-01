@@ -93,7 +93,7 @@ export function Activity({ onSheetSelected }: ActivityProps) {
             align="center"
             size="12pt"
             weight="medium"
-            color="labelTertiary"
+            color="labelQuaternary"
           >
             Once you start using your wallet, you will see your transactions
             here.
