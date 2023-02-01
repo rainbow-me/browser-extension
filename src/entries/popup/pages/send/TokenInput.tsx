@@ -77,6 +77,7 @@ export const TokenInput = ({
   );
   const onSelectAsset = useCallback(
     (address: Address | '') => {
+      console.log('onSelectAsset', address);
       selectAssetAddress(address);
       setDropdownVisible(false);
     },

@@ -1,11 +1,17 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { ethers } from 'ethers';
 import { getAddress } from 'ethers/lib/utils';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Address } from 'wagmi';
 
+import { ETH_ADDRESS } from '~/core/references';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
+import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import { addNewTransaction } from '~/core/utils/transactions';
 import { Row, Rows } from '~/design-system';
+import { useSendTransactionAsset } from '~/entries/popup/hooks/send/useSendTransactionAsset';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
@@ -38,6 +44,11 @@ export function SendTransaction({
   const { appSession } = useAppSession({ host: appHost });
   const selectedWallet = appSession.address;
   const { connectedToHardhat } = useConnectedToHardhatStore();
+  const { asset, selectAssetAddress } = useSendTransactionAsset();
+
+  useEffect(() => {
+    selectAssetAddress(ETH_ADDRESS as Address);
+  }, [selectAssetAddress]);
 
   const onAcceptRequest = useCallback(async () => {
     const txRequest = request?.params?.[0] as TransactionRequest;
@@ -47,18 +58,40 @@ export function SendTransaction({
     if (type === 'HardwareWalletKeychain') {
       setWaitingForDevice(true);
     }
-
-    const result = await wallet.sendTransaction({
+    const txData = {
       from: getAddress(txRequest?.from ?? ''),
       to: getAddress(txRequest?.to ?? ''),
       value: txRequest.value,
       chainId: connectedToHardhat ? ChainId.hardhat : appSession.chainId,
-    });
+    };
+    const result = await wallet.sendTransaction(txData);
+    if (result) {
+      const transaction = {
+        amount: ethers.utils.formatEther(result.value),
+        asset,
+        data: result.data,
+        value: result.value,
+        from: txData.from,
+        to: txData.to,
+        hash: result.hash,
+        chainId: txData.chainId,
+        nonce: result.nonce,
+        status: TransactionStatus.sending,
+        type: TransactionType.send,
+      };
+      await addNewTransaction({
+        address: txData.from as Address,
+        chainId: txData.chainId as ChainId,
+        transaction,
+      });
+    }
+
     approveRequest(result);
     setWaitingForDevice(false);
   }, [
     appSession.chainId,
     approveRequest,
+    asset,
     connectedToHardhat,
     request?.params,
     selectedWallet,

@@ -214,6 +214,7 @@ export const ReviewSheet = ({
   asset,
   primaryAmountDisplay,
   secondaryAmountDisplay,
+  waitingForDevice,
   onCancel,
   onSend,
   onSaveContactAction,
@@ -223,6 +224,7 @@ export const ReviewSheet = ({
   asset?: ParsedAddressAsset | null;
   primaryAmountDisplay: string;
   secondaryAmountDisplay: string;
+  waitingForDevice: boolean;
   onCancel: () => void;
   onSend: () => void;
   onSaveContactAction: React.Dispatch<
@@ -401,11 +403,11 @@ export const ReviewSheet = ({
         <Rows space="8px" alignVertical="center">
           <Row>
             <Button
-              color="accent"
+              color={waitingForDevice ? 'label' : 'accent'}
               height="44px"
-              variant="flat"
+              variant={waitingForDevice ? 'disabled' : 'flat'}
               width="full"
-              onClick={handleSend}
+              onClick={(!waitingForDevice && handleSend) || undefined}
               testId="review-confirm-button"
             >
               <TextOverflow
@@ -414,9 +416,11 @@ export const ReviewSheet = ({
                 size="16pt"
                 color="label"
               >
-                {i18n.t('send.review.send_to', {
-                  toName: toName || truncateAddress(toAddress),
-                })}
+                {waitingForDevice
+                  ? `👀 ${i18n.t('send.review.confirm_hw')}`
+                  : i18n.t('send.review.send_to', {
+                      toName: toName || truncateAddress(toAddress),
+                    })}
               </TextOverflow>
             </Button>
           </Row>

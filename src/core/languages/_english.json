@@ -194,7 +194,8 @@
       "to": "to",
       "you_own_wallet": "You own this wallet",
       "send_to": "Send to %{toName}",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "confirm_hw": "Confirm on your device"
     }
   },
   "custom_gas": {

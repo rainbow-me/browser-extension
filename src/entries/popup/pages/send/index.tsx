@@ -32,7 +32,7 @@ import { foregroundColors } from '~/design-system/styles/designTokens';
 
 import { Navbar } from '../../components/Navbar/Navbar';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
-import { sendTransaction } from '../../handlers/wallet';
+import { getWallet, sendTransaction } from '../../handlers/wallet';
 import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsset';
 import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
 import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
@@ -67,6 +67,7 @@ export const AccentColorProviderWrapper = ({
 
 export function Send() {
   const [, setTxHash] = useState('');
+  const [waitingForDevice, setWaitingForDevice] = useState(false);
   const [showReviewSheet, setShowReviewSheet] = useState(false);
   const [contactSaveAction, setSaveContactAction] = useState<{
     show: boolean;
@@ -147,6 +148,13 @@ export function Send() {
   const closeReviewSheet = useCallback(() => setShowReviewSheet(false), []);
   const handleSend = useCallback(async () => {
     try {
+      const { type } = await getWallet(fromAddress);
+
+      // Change the label while we wait for confirmation
+      if (type === 'HardwareWalletKeychain') {
+        setWaitingForDevice(true);
+      }
+
       const chainIdToUse = connectedToHardhat ? ChainId.hardhat : chainId;
       const result = await sendTransaction({
         from: fromAddress,
@@ -181,6 +189,8 @@ export function Send() {
     } catch (e) {
       console.log('error', e);
       alert('Transaction failed');
+    } finally {
+      setWaitingForDevice(false);
     }
   }, [
     fromAddress,
@@ -231,6 +241,7 @@ export function Send() {
         primaryAmountDisplay={independentAmountDisplay.display}
         secondaryAmountDisplay={dependentAmountDisplay.display}
         onSaveContactAction={setSaveContactAction}
+        waitingForDevice={waitingForDevice}
       />
       <Navbar
         title={i18n.t('send.title')}
