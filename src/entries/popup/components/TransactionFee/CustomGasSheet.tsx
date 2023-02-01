@@ -12,11 +12,7 @@ import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useGasStore } from '~/core/state';
 import { GasFeeParams, GasSpeed } from '~/core/types/gas';
 import { getBaseFeeTrendParams } from '~/core/utils/gas';
-import {
-  handleSignificantDecimals,
-  isZero,
-  lessThan,
-} from '~/core/utils/numbers';
+import { isZero, lessThan, toFixedDecimals } from '~/core/utils/numbers';
 import {
   Bleed,
   Box,
@@ -36,7 +32,10 @@ import { SymbolStyles, TextStyles } from '~/design-system/styles/core.css';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
 import usePrevious from '../../hooks/usePrevious';
-import { ExplainerSheet } from '../ExplainerSheet/ExplainerSheet';
+import {
+  ExplainerSheet,
+  useExplainerSheetParams,
+} from '../ExplainerSheet/ExplainerSheet';
 import { GweiInputMask } from '../InputMask/GweiInputMask/GweiInputMask';
 
 const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
@@ -117,6 +116,47 @@ const GasLabel = ({
   </Box>
 );
 
+const ExplainerHeaderPill = ({
+  color,
+  label,
+  gwei,
+  symbol,
+  borderColor,
+}: {
+  color: string;
+  label: string;
+  gwei: string;
+  symbol: string;
+  borderColor: string;
+}) => {
+  return (
+    <Box
+      style={{
+        borderColor: borderColor,
+      }}
+      borderColor="red"
+      borderWidth="1px"
+      borderRadius="round"
+      paddingVertical="9px"
+      paddingHorizontal="10px"
+    >
+      <Inline alignVertical="center" space="6px" height="full">
+        <Symbol
+          symbol={symbol as SymbolName}
+          color={color as SymbolStyles['color']}
+          weight="bold"
+          size={11}
+        />
+        <Text
+          weight="bold"
+          size="14pt"
+          color={color as TextStyles['color']}
+        >{`${label} ∙ ${toFixedDecimals(gwei, 0)} Gwei`}</Text>
+      </Inline>
+    </Box>
+  );
+};
+
 export const CustomGasSheet = ({
   show,
   currentBaseFee,
@@ -159,17 +199,10 @@ export const CustomGasSheet = ({
 
   const [maxBaseFeeWarning, setMaxBaseFeeWarning] = useState<
     'stuck' | 'fail' | undefined
-  >();
+  >(undefined);
   const [maxPriorityFeeWarning, setPriorityBaseFeeWarning] = useState<
     'stuck' | 'fail' | undefined
-  >();
-
-  const [explainerSheetParams, setExplainerSheetParams] = useState<{
-    show: boolean;
-    title: string;
-    description: string[];
-    emoji: string;
-  }>({ show: false, title: '', description: [''], emoji: '' });
+  >(undefined);
 
   const trend = useMemo(
     () => getBaseFeeTrendParams(baseFeeTrend),
@@ -270,64 +303,81 @@ export const CustomGasSheet = ({
     [gasFeeParamsBySpeed, setSelectedGas],
   );
 
-  const closeExplainer = useCallback(
-    () =>
-      setExplainerSheetParams({
-        show: false,
-        emoji: '',
-        description: [''],
-        title: '',
-      }),
-    [],
-  );
+  const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
+    useExplainerSheetParams();
 
   const showCurrentBaseFeeExplainer = useCallback(() => {
     const trendParams = getBaseFeeTrendParams(baseFeeTrend);
-    setExplainerSheetParams({
+    showExplainerSheet({
       show: true,
-      emoji: trendParams.emoji,
+      header: {
+        emoji: trendParams.emoji,
+        headerPill: (
+          <ExplainerHeaderPill
+            color={trendParams.color}
+            label={trendParams.label}
+            gwei={currentBaseFee}
+            symbol={trendParams.symbol}
+            borderColor={trendParams.borderColor}
+          />
+        ),
+      },
       description: [
-        i18n.t('custom_gas.explainer.current_base_description'),
+        i18n.t('explainers.custom_gas.current_base_description'),
         trendParams.explainer,
       ],
-      title: i18n.t('custom_gas.explainer.current_base_title'),
+      title: i18n.t('explainers.custom_gas.current_base_title'),
+      actionButton: {
+        label: i18n.t('explainers.custom_gas.action_button_label'),
+        action: hideExplanerSheet,
+        labelColor: 'label',
+      },
     });
-  }, [baseFeeTrend]);
+  }, [baseFeeTrend, currentBaseFee, hideExplanerSheet, showExplainerSheet]);
 
   const showMaxBaseFeeExplainer = useCallback(
     () =>
-      setExplainerSheetParams({
+      showExplainerSheet({
         show: true,
-        emoji: '📈',
+        header: { emoji: '📈' },
         description: [
-          i18n.t('custom_gas.explainer.max_base_explainer_1'),
-          i18n.t('custom_gas.explainer.max_base_explainer_2'),
+          i18n.t('explainers.custom_gas.max_base_explainer_1'),
+          i18n.t('explainers.custom_gas.max_base_explainer_2'),
         ],
-        title: i18n.t('custom_gas.explainer.max_base_title'),
+        title: i18n.t('explainers.custom_gas.max_base_title'),
+        actionButton: {
+          label: i18n.t('explainers.custom_gas.action_button_label'),
+          action: hideExplanerSheet,
+          labelColor: 'label',
+        },
       }),
-    [],
+    [hideExplanerSheet, showExplainerSheet],
   );
 
   const showMaxPriorityFeeExplainer = useCallback(
     () =>
-      setExplainerSheetParams({
+      showExplainerSheet({
         show: true,
-        emoji: '⛏',
-        description: [i18n.t('custom_gas.explainer.max_priority_explainer')],
-        title: i18n.t('custom_gas.explainer.max_priority_title'),
+        header: { emoji: '⛏' },
+        description: [i18n.t('explainers.custom_gas.max_priority_explainer')],
+        title: i18n.t('explainers.custom_gas.max_priority_title'),
+        actionButton: {
+          label: i18n.t('explainers.custom_gas.action_button_label'),
+          action: hideExplanerSheet,
+          labelColor: 'label',
+        },
       }),
-    [],
+    [hideExplanerSheet, showExplainerSheet],
   );
 
   return (
     <>
       <ExplainerSheet
         show={explainerSheetParams.show}
-        emoji={explainerSheetParams.emoji}
+        header={explainerSheetParams.header}
         title={explainerSheetParams.title}
         description={explainerSheetParams.description}
-        actionButtonLabel="Got it"
-        actionButtonAction={closeExplainer}
+        actionButton={explainerSheetParams.actionButton}
       />
       <Prompt
         background="surfaceSecondary"
@@ -403,12 +453,7 @@ export const CustomGasSheet = ({
                         size="14pt"
                         weight="semibold"
                       >
-                        {`${handleSignificantDecimals(
-                          currentBaseFee,
-                          0,
-                          3,
-                          true,
-                        )} Gwei`}
+                        {`${toFixedDecimals(currentBaseFee, 0)} Gwei`}
                       </Text>
                     </Inline>
                   </Stack>
@@ -571,9 +616,8 @@ export const CustomGasSheet = ({
               </Box>
 
               {speeds.map((speed, i) => (
-                <>
+                <Box key={i}>
                   <Box
-                    key={i}
                     paddingVertical="8px"
                     borderRadius="12px"
                     marginHorizontal="-12px"
@@ -640,7 +684,7 @@ export const CustomGasSheet = ({
                       <Separator color="separatorTertiary" />
                     </Box>
                   )}
-                </>
+                </Box>
               ))}
             </Stack>
 

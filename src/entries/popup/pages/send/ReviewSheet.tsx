@@ -1,12 +1,17 @@
-import React, { useCallback, useMemo } from 'react';
+import { motion } from 'framer-motion';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import SendSound from 'static/assets/audio/woosh.wav';
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
-import { ChainId } from '~/core/types/chains';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
-import { getBlockExplorerHostForChain, isL2Chain } from '~/core/utils/chains';
+import {
+  chainNameFromChainId,
+  getBlockExplorerHostForChain,
+  isL2Chain,
+} from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
   Bleed,
@@ -24,7 +29,13 @@ import {
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
+import {
+  transformScales,
+  transitions,
+} from '~/design-system/styles/designTokens';
 
+import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
+import { Checkbox } from '../../components/Checkbox/Checkbox';
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import {
@@ -35,9 +46,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
+import {
+  ExplainerSheet,
+  useExplainerSheetParams,
+} from '../../components/ExplainerSheet/ExplainerSheet';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useBackgroundAccounts } from '../../hooks/useBackgroundAccounts';
 import { useContact } from '../../hooks/useContacts';
+import usePrevious from '../../hooks/usePrevious';
 
 import { ContactAction } from './ContactPrompt';
 
@@ -233,210 +249,403 @@ export const ReviewSheet = ({
   >;
 }) => {
   const { accounts } = useBackgroundAccounts();
+  const [sendingOnL2Checks, setSendingOnL2Checks] = useState([false, false]);
+  const prevShow = usePrevious(show);
 
   const { display: toName } = useContact({ address: toAddress });
+
+  const sendingOnL2 = useMemo(
+    () => isL2Chain(asset?.chainId || ChainId.mainnet),
+    [asset?.chainId],
+  );
+
+  const chainName = ChainNameDisplay[asset?.chainId || ChainId.mainnet];
 
   const isToWalletOwner = useMemo(
     () => !!accounts.find((account) => isLowerCaseMatch(account, toAddress)),
     [accounts, toAddress],
   );
 
-  const playSound = useCallback(() => {
-    const sound = new Audio(SendSound);
-    sound.play();
-  }, []);
+  const sendEnabled = useMemo(() => {
+    if (!sendingOnL2) return true;
+    return sendingOnL2Checks[0] && sendingOnL2Checks[1];
+  }, [sendingOnL2, sendingOnL2Checks]);
 
   const handleSend = useCallback(() => {
-    playSound();
-    onSend();
-  }, [onSend, playSound]);
+    if (sendEnabled) {
+      onSend();
+      new Audio(SendSound).play();
+    }
+  }, [onSend, sendEnabled]);
+
+  const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
+    useExplainerSheetParams();
+
+  const showL2Explainer = useCallback(() => {
+    const chainName = chainNameFromChainId(asset?.chainId || ChainId.mainnet);
+    showExplainerSheet({
+      show: true,
+      title: i18n.t(`explainers.send.sending_on_l2.${chainName}_title`),
+      description: [
+        i18n.t(`explainers.send.sending_on_l2.${chainName}_description_1`),
+        i18n.t(`explainers.send.sending_on_l2.${chainName}_description_2`),
+      ],
+      header: {
+        icon: (
+          <ChainBadge
+            chainId={asset?.chainId || ChainId.mainnet}
+            size="medium"
+          />
+        ),
+      },
+      linkButton: {
+        url: 'https://learn.rainbow.me/a-beginners-guide-to-layer-2-networks',
+        label: i18n.t(`explainers.send.sending_on_l2.link_button_label`),
+      },
+      actionButton: {
+        label: i18n.t('explainers.send.action_label'),
+        variant: 'tinted',
+        labelColor: 'blue',
+        action: hideExplanerSheet,
+      },
+    });
+  }, [asset?.chainId, hideExplanerSheet, showExplainerSheet]);
+
+  useEffect(() => {
+    if (prevShow && !show) {
+      setSendingOnL2Checks([false, false]);
+    }
+  }, [prevShow, show]);
 
   return (
-    <BottomSheet show={show}>
-      <Box
-        style={{ borderTopLeftRadius: 24, borderTopRightRadius: 24 }}
-        background="surfacePrimaryElevatedSecondary"
-      >
-        <Stack space="20px">
-          <Box paddingVertical="26px">
-            <Inline alignHorizontal="center" alignVertical="center">
-              <Text size="14pt" weight="heavy" color="label">
-                {i18n.t('send.review.title')}
-              </Text>
-            </Inline>
-          </Box>
-          <Box paddingHorizontal="24px" paddingVertical="20px">
-            <Rows space="10px">
-              <Row>
-                <Columns alignHorizontal="justify">
-                  <Column>
-                    <Box paddingVertical="6px" height="full">
-                      <Rows space="10px" alignVertical="center">
-                        <Row>
-                          <TextOverflow
-                            maxWidth={TEXT_OVERFLOW_WIDTH}
-                            size="20pt"
-                            weight="bold"
-                            color="label"
-                          >
-                            <Box paddingVertical="2px">
-                              {primaryAmountDisplay}
-                            </Box>
-                          </TextOverflow>
-                        </Row>
-                        <Row>
-                          <TextOverflow
-                            maxWidth={TEXT_OVERFLOW_WIDTH}
-                            size="12pt"
-                            weight="bold"
-                            color="labelTertiary"
-                          >
-                            {secondaryAmountDisplay}
-                          </TextOverflow>
-                        </Row>
-                      </Rows>
-                    </Box>
-                  </Column>
-                  <Column>
-                    <Inline alignVertical="center" alignHorizontal="right">
-                      <Box>
-                        <CoinIcon asset={asset} size={44} />
-                      </Box>
-                    </Inline>
-                  </Column>
-                </Columns>
-              </Row>
-              <Row>
-                <Box>
-                  <Inline alignHorizontal="justify">
-                    <Box
-                      background="surfaceSecondaryElevated"
-                      borderRadius="40px"
-                      paddingHorizontal="8px"
-                      paddingVertical="6px"
-                      width="fit"
-                    >
-                      <Inline alignHorizontal="center" alignVertical="center">
-                        <Text size="12pt" weight="heavy" color="labelTertiary">
-                          {i18n.t('send.review.to')}
-                        </Text>
-                      </Inline>
-                    </Box>
-                    <Box style={{ width: 44 }}>
-                      <Stack alignHorizontal="center">
-                        <Box style={{ height: 10 }}>
-                          <ChevronDown color="separatorSecondary" />
-                        </Box>
-                        <Box style={{ height: 10 }} marginTop="-2px">
-                          <ChevronDown color="separator" />
-                        </Box>
-                      </Stack>
-                    </Box>
-                  </Inline>
-                </Box>
-              </Row>
-              <Row>
-                <Columns alignHorizontal="justify">
-                  <Column width="4/5">
-                    <Box paddingVertical="6px" height="full">
-                      <Rows space="10px" alignVertical="center">
-                        <Row height="content">
-                          <Inline space="7px" alignVertical="center">
-                            <TextOverflow
-                              maxWidth={TEXT_OVERFLOW_WIDTH}
-                              size="20pt"
-                              weight="bold"
-                              color="label"
-                            >
-                              {toName || truncateAddress(toAddress)}
-                            </TextOverflow>
-
-                            <Box>
-                              <EditContactDropdown
-                                chainId={asset?.chainId}
-                                toAddress={toAddress}
-                                closeReview={onCancel}
-                                onEdit={onSaveContactAction}
+    <>
+      <BottomSheet show={show}>
+        <ExplainerSheet
+          show={explainerSheetParams.show}
+          header={explainerSheetParams.header}
+          title={explainerSheetParams.title}
+          description={explainerSheetParams.description}
+          actionButton={explainerSheetParams.actionButton}
+          linkButton={explainerSheetParams.linkButton}
+        />
+        <Box
+          style={{ borderTopLeftRadius: 24, borderTopRightRadius: 24 }}
+          background="surfacePrimaryElevatedSecondary"
+        >
+          <Stack space="20px">
+            <Box paddingVertical="26px">
+              <Inline alignHorizontal="center" alignVertical="center">
+                <Text size="14pt" weight="heavy" color="label">
+                  {i18n.t('send.review.title')}
+                </Text>
+              </Inline>
+            </Box>
+            <Box paddingHorizontal="24px" paddingVertical="20px">
+              <Stack space="20px">
+                <Rows space="10px">
+                  <Row>
+                    <Columns alignHorizontal="justify">
+                      <Column>
+                        <Box paddingVertical="6px" height="full">
+                          <Rows space="10px" alignVertical="center">
+                            <Row>
+                              <TextOverflow
+                                maxWidth={TEXT_OVERFLOW_WIDTH}
+                                size="20pt"
+                                weight="bold"
+                                color="label"
                               >
-                                <Inline alignVertical="center">
-                                  <Symbol
-                                    symbol="ellipsis.circle"
-                                    weight="bold"
-                                    size={16}
-                                    color="labelTertiary"
-                                  />
-                                </Inline>
-                              </EditContactDropdown>
-                            </Box>
-                          </Inline>
-                        </Row>
-                        {isToWalletOwner ? (
-                          <Row>
+                                {primaryAmountDisplay}
+                              </TextOverflow>
+                            </Row>
+                            <Row>
+                              <TextOverflow
+                                maxWidth={TEXT_OVERFLOW_WIDTH}
+                                size="12pt"
+                                weight="bold"
+                                color="labelTertiary"
+                              >
+                                {secondaryAmountDisplay}
+                              </TextOverflow>
+                            </Row>
+                          </Rows>
+                        </Box>
+                      </Column>
+                      <Column>
+                        <Inline alignVertical="center" alignHorizontal="right">
+                          <Box>
+                            <CoinIcon asset={asset} size={44} />
+                          </Box>
+                        </Inline>
+                      </Column>
+                    </Columns>
+                  </Row>
+                  <Row>
+                    <Box>
+                      <Inline alignHorizontal="justify">
+                        <Box
+                          background="surfaceSecondaryElevated"
+                          borderRadius="40px"
+                          paddingHorizontal="8px"
+                          paddingVertical="6px"
+                          width="fit"
+                        >
+                          <Inline
+                            alignHorizontal="center"
+                            alignVertical="center"
+                          >
                             <Text
                               size="12pt"
-                              weight="bold"
+                              weight="heavy"
                               color="labelTertiary"
                             >
-                              {i18n.t('send.review.you_own_wallet')}
+                              {i18n.t('send.review.to')}
                             </Text>
-                          </Row>
-                        ) : null}
-                      </Rows>
+                          </Inline>
+                        </Box>
+                        <Box style={{ width: 44 }}>
+                          <Stack alignHorizontal="center">
+                            <Box style={{ height: 10 }}>
+                              <ChevronDown color="separatorSecondary" />
+                            </Box>
+                            <Box style={{ height: 10 }} marginTop="-2px">
+                              <ChevronDown color="separator" />
+                            </Box>
+                          </Stack>
+                        </Box>
+                      </Inline>
                     </Box>
-                  </Column>
-                  <Column>
-                    <Inline alignHorizontal="right">
-                      <WalletAvatar address={toAddress} size={44} />
+                  </Row>
+                  <Row>
+                    <Columns alignHorizontal="justify">
+                      <Column width="4/5">
+                        <Box paddingVertical="6px" height="full">
+                          <Rows space="10px" alignVertical="center">
+                            <Row height="content">
+                              <Inline space="7px" alignVertical="center">
+                                <TextOverflow
+                                  maxWidth={TEXT_OVERFLOW_WIDTH}
+                                  size="20pt"
+                                  weight="bold"
+                                  color="label"
+                                >
+                                  {toName || truncateAddress(toAddress)}
+                                </TextOverflow>
+
+                                <Box>
+                                  <EditContactDropdown
+                                    chainId={asset?.chainId}
+                                    toAddress={toAddress}
+                                    closeReview={onCancel}
+                                    onEdit={onSaveContactAction}
+                                  >
+                                    <Inline alignVertical="center">
+                                      <Symbol
+                                        symbol="ellipsis.circle"
+                                        weight="bold"
+                                        size={16}
+                                        color="labelTertiary"
+                                      />
+                                    </Inline>
+                                  </EditContactDropdown>
+                                </Box>
+                              </Inline>
+                            </Row>
+                            {isToWalletOwner ? (
+                              <Row>
+                                <Text
+                                  size="12pt"
+                                  weight="bold"
+                                  color="labelTertiary"
+                                >
+                                  {i18n.t('send.review.you_own_wallet')}
+                                </Text>
+                              </Row>
+                            ) : null}
+                          </Rows>
+                        </Box>
+                      </Column>
+                      <Column>
+                        <Inline alignHorizontal="right">
+                          <WalletAvatar address={toAddress} size={44} />
+                        </Inline>
+                      </Column>
+                    </Columns>
+                  </Row>
+                </Rows>
+                {sendingOnL2 && <Separator color="separatorTertiary" />}
+              </Stack>
+            </Box>
+          </Stack>
+
+          {sendingOnL2 && (
+            <Box paddingHorizontal="16px" paddingBottom="20px">
+              <Stack space="20px">
+                <Box
+                  as={motion.div}
+                  background="fillSecondary"
+                  padding="8px"
+                  width="full"
+                  borderRadius="12px"
+                  onClick={showL2Explainer}
+                  initial={{ zIndex: 0 }}
+                  whileHover={{ scale: transformScales['1.04'] }}
+                  whileTap={{ scale: transformScales['0.96'] }}
+                  transition={transitions.bounce}
+                >
+                  <Inline alignVertical="center" alignHorizontal="justify">
+                    <Inline alignVertical="center" space="8px">
+                      <ChainBadge
+                        chainId={asset?.chainId || ChainId.mainnet}
+                        size="extraSmall"
+                      />
+                      <Text size="12pt" weight="bold" color="labelSecondary">
+                        {i18n.t('send.review.sending_on_network', {
+                          chainName,
+                        })}
+                      </Text>
                     </Inline>
-                  </Column>
-                </Columns>
-              </Row>
-            </Rows>
-          </Box>
-        </Stack>
-      </Box>
-      <Separator color="separatorSecondary" />
+                    <Symbol
+                      weight="bold"
+                      symbol="info.circle.fill"
+                      size={12}
+                      color="labelTertiary"
+                    />
+                  </Inline>
+                </Box>
+                <Box paddingHorizontal="7px">
+                  <Stack space="12px">
+                    <Columns alignVertical="center" space="7px">
+                      <Column width="content">
+                        <Checkbox
+                          width="16px"
+                          height="16px"
+                          borderRadius="6px"
+                          selected={sendingOnL2Checks[0]}
+                          backgroundSelected="blue"
+                          borderColorSelected="blue"
+                          borderColor="separator"
+                          onClick={() =>
+                            setSendingOnL2Checks([
+                              !sendingOnL2Checks[0],
+                              sendingOnL2Checks[1],
+                            ])
+                          }
+                        />
+                      </Column>
+                      <Column>
+                        <Text
+                          align="left"
+                          size="12pt"
+                          weight="bold"
+                          color="labelSecondary"
+                        >
+                          {i18n.t('send.review.sending_on_l2_check_1')}
+                        </Text>
+                      </Column>
+                    </Columns>
+                    <Columns space="7px">
+                      <Column width="content">
+                        <Checkbox
+                          width="16px"
+                          height="16px"
+                          borderRadius="6px"
+                          selected={sendingOnL2Checks[1]}
+                          backgroundSelected="blue"
+                          borderColorSelected="blue"
+                          borderColor="separator"
+                          onClick={() =>
+                            setSendingOnL2Checks([
+                              sendingOnL2Checks[0],
+                              !sendingOnL2Checks[1],
+                            ])
+                          }
+                        />
+                      </Column>
+                      <Column>
+                        <Text size="12pt" weight="bold" color="labelSecondary">
+                          {i18n.t('send.review.sending_on_l2_check_2', {
+                            chainName,
+                          })}
+                        </Text>
+                      </Column>
+                    </Columns>
+                  </Stack>
+                </Box>
+              </Stack>
+            </Box>
+          )}
+        </Box>
 
-      <Box width="full" padding="20px">
-        <Rows space="8px" alignVertical="center">
-          <Row>
-            <Button
-              color="accent"
-              height="44px"
-              variant="flat"
-              width="full"
-              onClick={handleSend}
-              testId="review-confirm-button"
-            >
-              <TextOverflow
-                maxWidth={TEXT_OVERFLOW_WIDTH + 20}
-                weight="bold"
-                size="16pt"
-                color="label"
-              >
-                {i18n.t('send.review.send_to', {
-                  toName: toName || truncateAddress(toAddress),
-                })}
-              </TextOverflow>
-            </Button>
-          </Row>
-
-          <Row>
-            <Inline alignHorizontal="center">
+        <Separator color="separatorSecondary" />
+        <Box width="full" padding="20px">
+          <Rows space="8px" alignVertical="center">
+            <Row>
               <Button
-                color="transparent"
+                color={sendEnabled ? 'accent' : 'fill'}
                 height="44px"
-                variant="tinted"
-                onClick={onCancel}
+                variant="flat"
+                width="full"
+                onClick={handleSend}
+                testId="review-confirm-button"
               >
-                <Text weight="bold" size="16pt" color="labelSecondary">
-                  {i18n.t('send.review.cancel')}
-                </Text>
+                {sendEnabled ? (
+                  <Box>
+                    <TextOverflow
+                      maxWidth={TEXT_OVERFLOW_WIDTH + 20}
+                      weight="bold"
+                      size="16pt"
+                      color="label"
+                    >
+                      {i18n.t('send.review.send_to', {
+                        toName: toName || truncateAddress(toAddress),
+                      })}
+                    </TextOverflow>
+                  </Box>
+                ) : (
+                  <Box>
+                    <Inline
+                      alignHorizontal="center"
+                      alignVertical="center"
+                      space="8px"
+                    >
+                      <Symbol
+                        symbol="arrow.up"
+                        color="label"
+                        weight="bold"
+                        size={16}
+                      />
+                      <TextOverflow
+                        maxWidth={TEXT_OVERFLOW_WIDTH + 20}
+                        weight="bold"
+                        size="16pt"
+                        color="label"
+                      >
+                        {i18n.t('send.review.complete_checks')}
+                      </TextOverflow>
+                    </Inline>
+                  </Box>
+                )}
               </Button>
-            </Inline>
-          </Row>
-        </Rows>
-      </Box>
-    </BottomSheet>
+            </Row>
+
+            <Row>
+              <Inline alignHorizontal="center">
+                <Button
+                  color="transparent"
+                  height="44px"
+                  variant="tinted"
+                  onClick={onCancel}
+                >
+                  <Text weight="bold" size="16pt" color="labelSecondary">
+                    {i18n.t('send.review.cancel')}
+                  </Text>
+                </Button>
+              </Inline>
+            </Row>
+          </Rows>
+        </Box>
+      </BottomSheet>
+    </>
   );
 };

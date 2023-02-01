@@ -216,6 +216,7 @@ export const ToAddressInput = ({
   clearToAddress,
   setToAddressOrName,
   onDropdownOpen,
+  validateToAddress,
 }: {
   toAddressOrName: string;
   toEnsName?: string;
@@ -224,6 +225,7 @@ export const ToAddressInput = ({
   clearToAddress: () => void;
   setToAddressOrName: (adrressOrName: string) => void;
   onDropdownOpen: (open: boolean) => void;
+  validateToAddress: (address?: Address) => void;
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -255,8 +257,9 @@ export const ToAddressInput = ({
     (address: Address) => {
       setToAddressOrName(address);
       onDropdownAction();
+      validateToAddress(address);
     },
-    [onDropdownAction, setToAddressOrName],
+    [onDropdownAction, validateToAddress, setToAddressOrName],
   );
 
   const onInputClick = useCallback(() => {
@@ -273,8 +276,9 @@ export const ToAddressInput = ({
   useEffect(() => {
     if (!inputVisible) {
       closeDropdown();
+      validateToAddress();
     }
-  }, [closeDropdown, inputVisible]);
+  }, [closeDropdown, inputVisible, validateToAddress]);
 
   const toAddressContact = useContact({ address: toAddress });
   const { wallets, watchedWallets, contacts } = useAllFilteredWallets({
