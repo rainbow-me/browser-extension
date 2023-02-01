@@ -2,6 +2,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import React, { ReactNode, useCallback, useMemo, useRef } from 'react';
 import { useAccount } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { useCurrentCurrencyStore } from '~/core/state';
 import {
   RainbowTransaction,
@@ -85,7 +86,7 @@ export function Activity({ onSheetSelected }: ActivityProps) {
             weight="semibold"
             color="labelTertiary"
           >
-            No activity yet
+            {i18n.t('activity.empty_header')}
           </Text>
         </Box>
         <Inset horizontal="40px">
@@ -95,8 +96,7 @@ export function Activity({ onSheetSelected }: ActivityProps) {
             weight="medium"
             color="labelQuaternary"
           >
-            Once you start using your wallet, you will see your transactions
-            here.
+            {i18n.t('activity.empty_description')}
           </Text>
         </Inset>
       </Box>

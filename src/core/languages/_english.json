@@ -463,7 +463,9 @@
   "activity": {
     "today": "Today",
     "yesterday": "Yesterday",
-    "this_month": "This Month"
+    "this_month": "This Month",
+    "empty_header": "No activity yet",
+    "empty_description": "Once you start using your wallet, you will see your transactions here."
   },
   "speed_up_and_cancel": {
     "speed_up": "Speed up",
