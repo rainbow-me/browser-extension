@@ -69,6 +69,40 @@ export function Activity({ onSheetSelected }: ActivityProps) {
     onSheetSelected({ sheet, transaction });
   };
 
+  if (!listData.length) {
+    return (
+      <Box
+        width="full"
+        height="full"
+        justifyContent="center"
+        alignItems="center"
+        paddingTop="104px"
+      >
+        <Box paddingBottom="14px">
+          <Text
+            align="center"
+            size="20pt"
+            weight="semibold"
+            color="labelTertiary"
+          >
+            No activity yet
+          </Text>
+        </Box>
+        <Inset horizontal="40px">
+          <Text
+            align="center"
+            size="12pt"
+            weight="medium"
+            color="labelTertiary"
+          >
+            Once you start using your wallet, you will see your transactions
+            here.
+          </Text>
+        </Inset>
+      </Box>
+    );
+  }
+
   return (
     <>
       <Box
