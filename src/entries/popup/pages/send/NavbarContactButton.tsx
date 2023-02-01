@@ -51,7 +51,7 @@ const NavbarSaveContactButton = ({
   return (
     <Box opacity={enabled ? '1' : '0.2'}>
       <Button
-        color="surfacePrimaryElevatedSecondary"
+        color="surfaceSecondaryElevated"
         height="28px"
         variant="flat"
         onClick={enabled ? openSavePrompt : () => null}

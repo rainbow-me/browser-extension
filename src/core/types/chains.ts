@@ -55,3 +55,11 @@ export enum ChainId {
   polygon = chain.polygon.id,
   hardhat = HARDHAT_CHAIN_ID,
 }
+
+export const ChainNameDisplay = {
+  [ChainId.arbitrum]: 'Arbitrum',
+  [ChainId.bsc]: 'Binance Chain',
+  [ChainId.optimism]: 'Optimism',
+  [ChainId.polygon]: 'Polygon',
+  [ChainId.mainnet]: 'Ethereum',
+};
