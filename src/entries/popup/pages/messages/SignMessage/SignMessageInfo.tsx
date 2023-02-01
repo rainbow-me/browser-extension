@@ -16,7 +16,6 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
   });
 
   const { message, typedData } = useMemo(() => {
-    console.log('request', request);
     const { message, typedData } = getSigningRequestDisplayDetails(request);
     return { message, typedData };
   }, [request]);
