@@ -1,7 +1,16 @@
-import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import { Box, Inset, Row, Rows, Text, ThemeProvider } from '~/design-system';
+import {
+  Box,
+  Column,
+  Columns,
+  Inline,
+  Row,
+  Rows,
+  Text,
+  ThemeProvider,
+} from '~/design-system';
 
 export const Notification = () => {
   return (
@@ -26,7 +35,12 @@ function IFrame({ children }: { children: ReactNode }) {
       'chrome-extension://gjmdpkmgceafaiefjdekbelbcjigmaed/popup.css';
     iframeLink.rel = 'stylesheet';
     const root = ref?.contentDocument?.getElementsByTagName('html')[0]; // '0' to assign the first (and only `HTML` tag)
-
+    if (root) {
+      root.style.background = 'transparent';
+      root.style.height = '40px';
+      root.style.width = '161px';
+      root.style.position = 'fixed';
+    }
     root?.setAttribute('class', 'lt');
     ref?.contentDocument?.head?.appendChild(iframeLink);
   }, [ref?.contentDocument]);
@@ -39,13 +53,15 @@ function IFrame({ children }: { children: ReactNode }) {
         zIndex: '9999999',
         right: '100px',
         position: 'fixed',
-        height: '100px',
-        width: '400px',
+        height: '40px',
+        width: '161px',
         borderWidth: '0px',
+        background: 'transparent',
       }}
       title="iframe"
       className="ohihuhuihui"
       ref={onRef}
+      allowTransparency={true}
     >
       {container && createPortal(children, container)}
     </Box>
@@ -53,43 +69,48 @@ function IFrame({ children }: { children: ReactNode }) {
 }
 
 const NotificationComponent = () => {
-  const [t, setT] = useState(0);
-
-  const tick = useCallback(() => {
-    console.log('tick');
-    setT((t) => t + 1);
-    setTimeout(() => tick(), 500);
-  }, []);
-
-  useEffect(() => tick(), [tick]);
-
   return (
     <ThemeProvider theme="light">
-      <Box height="full" style={{ height: 60, width: 200 }}>
-        <Inset horizontal="12px" vertical="12px">
+      <Box height="full" style={{ height: 40, width: 161 }}>
+        <Inline height="full" alignVertical="center">
           <Box
+            alignItems="center"
             borderRadius="28px"
             backdropFilter="blur(26px)"
-            height="full"
+            background="surfaceMenu"
+            paddingLeft="8px"
+            paddingRight="16px"
+            paddingVertical="8px"
             style={{
               boxShadow:
                 '0px 8px 24px rgba(37, 41, 46, 0.12), 0px 2px 6px rgba(0, 0, 0, 0.02)',
             }}
           >
-            <Rows alignVertical="center" space="6px">
-              <Row>
-                <Text color="label" size="16pt" weight="bold">
-                  Network changed {t}
-                </Text>
-              </Row>
-              <Row>
-                <Text color="label" size="16pt" weight="bold">
-                  Optimism
-                </Text>
-              </Row>
-            </Rows>
+            <Columns space="8px">
+              <Column width="content">
+                <img
+                  src="chrome-extension://gjmdpkmgceafaiefjdekbelbcjigmaed/assets/badges/arbitrumBadge.png"
+                  width={24}
+                  height={24}
+                />
+              </Column>
+              <Column>
+                <Rows alignVertical="center" space="6px">
+                  <Row>
+                    <Text color="label" size="12pt" weight="bold">
+                      Network changed
+                    </Text>
+                  </Row>
+                  <Row>
+                    <Text color="labelTertiary" size="11pt" weight="medium">
+                      Optimism
+                    </Text>
+                  </Row>
+                </Rows>
+              </Column>
+            </Columns>
           </Box>
-        </Inset>
+        </Inline>
       </Box>
     </ThemeProvider>
   );
