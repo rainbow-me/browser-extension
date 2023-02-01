@@ -2,6 +2,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import React, { ReactNode, useCallback, useMemo, useRef } from 'react';
 import { useAccount } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { useCurrentCurrencyStore } from '~/core/state';
 import {
   RainbowTransaction,
@@ -68,6 +69,39 @@ export function Activity({ onSheetSelected }: ActivityProps) {
   }) => {
     onSheetSelected({ sheet, transaction });
   };
+
+  if (!listData.length) {
+    return (
+      <Box
+        width="full"
+        height="full"
+        justifyContent="center"
+        alignItems="center"
+        paddingTop="104px"
+      >
+        <Box paddingBottom="14px">
+          <Text
+            align="center"
+            size="20pt"
+            weight="semibold"
+            color="labelTertiary"
+          >
+            {i18n.t('activity.empty_header')}
+          </Text>
+        </Box>
+        <Inset horizontal="40px">
+          <Text
+            align="center"
+            size="12pt"
+            weight="medium"
+            color="labelQuaternary"
+          >
+            {i18n.t('activity.empty_description')}
+          </Text>
+        </Inset>
+      </Box>
+    );
+  }
 
   return (
     <>
