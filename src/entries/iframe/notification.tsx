@@ -62,21 +62,23 @@ export const Notification = () => {
       window?.document.documentElement?.getAttribute('data-color-mode');
     const dataTheme =
       window?.document.documentElement?.getAttribute('data-theme');
+    const dataMode =
+      window?.document.documentElement?.getAttribute('data-mode');
+
     const style = window?.document.documentElement?.getAttribute('style');
     const dark = window?.document.documentElement?.getAttributeNode('dark');
     const backgroundColro = window
       .getComputedStyle(document.body, null)
       .getPropertyValue('background-color');
 
-    console.log('backgroundColro dark', `-${backgroundColro}-`);
-    console.log(
-      'backgroundColro parseRGB',
-      `-${isDarkColor(backgroundColro)}-`,
-    );
-    console.log('dark dark', `-${dark}-`);
-    console.log('style style', `-${style}-`);
-    console.log('COLOR SCHEME', `-${colorScheme}-`);
-    console.log('DATA COLOR MODE', dataColorMode);
+    console.log('- documentElement', document?.documentElement);
+    console.log('- colorScheme', colorScheme);
+    console.log('- dataColorMode', dataColorMode);
+    console.log('- dataTheme', dataTheme);
+    console.log('- dataMode', dataMode);
+    console.log('- style', style);
+    console.log('- dark', dark);
+    console.log('- style?.includes', style?.includes('color-scheme: dark'));
 
     const extractedTheme =
       isDarkColor(backgroundColro) ||
@@ -87,8 +89,22 @@ export const Notification = () => {
         ? 'dark'
         : 'light';
 
-    setSiteTheme(extractedTheme);
-    iframeMeta.content = extractedTheme;
+    console.log('--- extractedTheme', extractedTheme);
+    const siteTheme =
+      isDarkColor(backgroundColro) ||
+      dataTheme === 'dark' ||
+      style?.includes('color-scheme: dark') ||
+      dataColorMode === 'dark' ||
+      colorScheme === 'dark'
+        ? 'dark'
+        : 'light';
+
+    const themeDefined = dataTheme || dataMode || dataColorMode || colorScheme;
+    //   style?.includes('color-scheme: dark');
+
+    console.log('THEME DEFINED ', themeDefined);
+    setSiteTheme(siteTheme);
+    iframeMeta.content = themeDefined;
 
     const root = ref?.contentDocument?.getElementsByTagName('html')[0];
     if (root) {
@@ -101,7 +117,8 @@ export const Notification = () => {
     }
     root?.setAttribute('class', colorScheme === 'dark' ? 'dt' : 'lt');
     ref?.contentDocument?.head?.appendChild(iframeLink);
-    ref?.contentDocument?.head?.appendChild(iframeMeta);
+    // ref?.contentDocument?.head?.appendChild(iframeMeta);
+    themeDefined && ref?.contentDocument?.body?.appendChild(iframeMeta);
   }, [ref?.contentDocument]);
 
   console.log('SITE THEME', siteTheme);
@@ -115,7 +132,7 @@ export const Notification = () => {
         width: NOTIFICATION_WIDTH,
         borderWidth: '0px',
         position: 'fixed',
-        // background: 'none transparent !transparent',
+        background: 'none transparent !transparent',
         zIndex: '9999999',
       }}
       title="iframe"
