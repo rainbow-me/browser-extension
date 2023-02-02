@@ -14,7 +14,15 @@ import { Address, useEnsName } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { truncateAddress } from '~/core/utils/address';
-import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
+import {
+  Bleed,
+  Box,
+  Inline,
+  Inset,
+  Stack,
+  Symbol,
+  Text,
+} from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { SymbolName } from '~/design-system/styles/designTokens';
@@ -23,7 +31,11 @@ import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
 import { useContact } from '../../hooks/useContacts';
 
-import { InputWrapper } from './InputWrapper';
+import {
+  InputWrapper,
+  dropdownContainerVariant,
+  dropdownItemVariant,
+} from './InputWrapper';
 import {
   addressToInputHighlightWrapperStyleDark,
   addressToInputHighlightWrapperStyleLight,
@@ -61,8 +73,8 @@ const WalletSection = ({
   symbol: SymbolName;
 }) => {
   return wallets.length ? (
-    <Stack>
-      <Box paddingHorizontal="20px" paddingBottom="8px">
+    <Stack space="8px">
+      <Box as={motion.div} variants={dropdownItemVariant}>
         <Inline alignVertical="center" space="4px">
           <Symbol
             symbol={symbol}
@@ -76,15 +88,21 @@ const WalletSection = ({
         </Inline>
       </Box>
 
-      {wallets.map((wallet, i) => (
-        <Inset horizontal="8px" key={i}>
-          <RowHighlightWrapper key={i}>
-            <Inset horizontal="12px" key={i}>
-              <WalletRow onClick={onClickWallet} key={wallet} wallet={wallet} />
-            </Inset>
-          </RowHighlightWrapper>
-        </Inset>
-      ))}
+      <Box>
+        {wallets.map((wallet, i) => (
+          <Bleed horizontal="12px" key={i}>
+            <RowHighlightWrapper key={i}>
+              <Inset horizontal="12px" key={i}>
+                <WalletRow
+                  onClick={onClickWallet}
+                  key={wallet}
+                  wallet={wallet}
+                />
+              </Inset>
+            </RowHighlightWrapper>
+          </Bleed>
+        ))}
+      </Box>
     </Stack>
   ) : null;
 };
@@ -101,7 +119,13 @@ const WalletRow = ({
   });
   const contact = useContact({ address: wallet });
   return (
-    <Box key={wallet} onClick={() => onClick(wallet)} paddingVertical="8px">
+    <Box
+      as={motion.div}
+      variants={dropdownItemVariant}
+      key={wallet}
+      onClick={() => onClick(wallet)}
+      paddingVertical="8px"
+    >
       <Inline alignVertical="center" space="8px">
         <WalletAvatar size={36} address={wallet} emojiSize="20pt" />
         <Stack space="8px">
@@ -142,14 +166,16 @@ const DropdownWalletsList = ({
   );
 
   return (
-    <AnimatePresence initial={false}>
+    <>
       {walletsExist && (
         <Box
           as={motion.div}
           key="input"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          paddingHorizontal="19px"
+          variants={dropdownContainerVariant}
+          initial="hidden"
+          animate="show"
         >
           <Stack space="16px">
             <WalletSection
@@ -204,7 +230,7 @@ const DropdownWalletsList = ({
           </Stack>
         </Box>
       )}
-    </AnimatePresence>
+    </>
   );
 };
 

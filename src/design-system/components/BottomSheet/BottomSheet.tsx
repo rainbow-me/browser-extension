@@ -29,6 +29,7 @@ export const BottomSheet = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           key="background"
+          transition={{ duration: 0.3 }}
         />
       )}
       {show && (
@@ -45,6 +46,7 @@ export const BottomSheet = ({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 1, y: 800 }}
           key="bottom"
+          transition={{ duration: 0.3 }}
         >
           <Box background="surfacePrimaryElevated" borderRadius="24px">
             {children}
