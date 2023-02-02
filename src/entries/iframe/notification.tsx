@@ -17,14 +17,16 @@ import {
 } from '~/design-system';
 
 // 161 (figma width spec) + 48 (radius shadow) since we need space for the shadow to be visible in the iframe
-const NOTIFICATION_WIDTH = '209px';
+const NOTIFICATION_WIDTH = '609px';
+// const NOTIFICATION_WIDTH = '209px';
 // 40 (figma height spec) + 48 (radius shadow) + 16 (vertical shadow), since we need space for the shadow to be visible in the iframe
-const NOTIFICATION_HEIGHT = '122px';
+const NOTIFICATION_HEIGHT = '552px';
+// const NOTIFICATION_HEIGHT = '122px';
 
 // 9 (figma top spec) - 41 (extra iframe height for shadow, 122 - 40 /2 )
 // since we need space for the shadow to be visible in the iframe
 const NOTIFICATION_TOP = '-32px';
-const NOTIFICATION_RIGHT = '100px';
+const NOTIFICATION_RIGHT = '600px';
 
 export const Notification = () => {
   const { currentTheme } = useCurrentThemeStore();
@@ -57,12 +59,14 @@ function IFrame({
     iframeLink.rel = 'stylesheet';
     const root = ref?.contentDocument?.getElementsByTagName('html')[0]; // '0' to assign the first (and only `HTML` tag)
     if (root) {
-      root.style.background = 'none transparent !important';
+      //   root.style.background = 'none transparent !important';
+      //   root.style.backgroundColor = 'none transparent !important';
       root.style.position = 'fixed';
       root.style.height = NOTIFICATION_HEIGHT;
       root.style.width = NOTIFICATION_WIDTH;
+      //   root.style.cssText = 'background-color: transparent !important';
     }
-    root?.setAttribute('class', theme === 'dark' ? 'dt' : 'lt');
+    // root?.setAttribute('class', theme === 'dark' ? 'dt' : 'lt');
     ref?.contentDocument?.head?.appendChild(iframeLink);
   }, [ref?.contentDocument, theme]);
 
