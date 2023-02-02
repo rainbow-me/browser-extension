@@ -176,7 +176,8 @@
     "@xmldom/xmldom": "0.8.4",
     "loader-utils": "2.0.4",
     "nth-check": "2.0.1",
-    "decode-uri-component": "0.2.1"
+    "decode-uri-component": "0.2.1",
+    "deep-object-diff": "1.1.9"
   },
   "lavamoat": {
     "allowScripts": {
