@@ -4,7 +4,7 @@ import { getAddress } from 'ethers/lib/utils';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Address } from 'wagmi';
 
-import { ETH_ADDRESS } from '~/core/references';
+import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
@@ -47,47 +47,55 @@ export function SendTransaction({
   const { asset, selectAssetAddress } = useSendTransactionAsset();
 
   useEffect(() => {
-    selectAssetAddress(ETH_ADDRESS as Address);
-  }, [selectAssetAddress]);
+    selectAssetAddress(
+      NATIVE_ASSETS_PER_CHAIN[
+        connectedToHardhat ? ChainId.hardhat : appSession.chainId
+      ] as Address,
+    );
+  }, [appSession.chainId, connectedToHardhat, selectAssetAddress]);
 
   const onAcceptRequest = useCallback(async () => {
-    const txRequest = request?.params?.[0] as TransactionRequest;
-    const { type } = await wallet.getWallet(selectedWallet);
+    try {
+      const txRequest = request?.params?.[0] as TransactionRequest;
+      const { type } = await wallet.getWallet(selectedWallet);
 
-    // Change the label while we wait for confirmation
-    if (type === 'HardwareWalletKeychain') {
-      setWaitingForDevice(true);
-    }
-    const txData = {
-      from: getAddress(txRequest?.from ?? ''),
-      to: getAddress(txRequest?.to ?? ''),
-      value: txRequest.value,
-      chainId: connectedToHardhat ? ChainId.hardhat : appSession.chainId,
-    };
-    const result = await wallet.sendTransaction(txData);
-    if (result) {
-      const transaction = {
-        amount: ethers.utils.formatEther(result.value),
-        asset,
-        data: result.data,
-        value: result.value,
-        from: txData.from,
-        to: txData.to,
-        hash: result.hash,
-        chainId: txData.chainId,
-        nonce: result.nonce,
-        status: TransactionStatus.sending,
-        type: TransactionType.send,
+      // Change the label while we wait for confirmation
+      if (type === 'HardwareWalletKeychain') {
+        setWaitingForDevice(true);
+      }
+      const txData = {
+        from: getAddress(txRequest?.from ?? ''),
+        to: getAddress(txRequest?.to ?? ''),
+        value: txRequest.value,
+        chainId: connectedToHardhat ? ChainId.hardhat : appSession.chainId,
       };
-      await addNewTransaction({
-        address: txData.from as Address,
-        chainId: txData.chainId as ChainId,
-        transaction,
-      });
-    }
+      const result = await wallet.sendTransaction(txData);
+      if (result) {
+        const transaction = {
+          amount: ethers.utils.formatEther(result.value),
+          asset,
+          data: result.data,
+          value: result.value,
+          from: txData.from,
+          to: txData.to,
+          hash: result.hash,
+          chainId: txData.chainId,
+          nonce: result.nonce,
+          status: TransactionStatus.sending,
+          type: TransactionType.send,
+        };
+        await addNewTransaction({
+          address: txData.from as Address,
+          chainId: txData.chainId as ChainId,
+          transaction,
+        });
+      }
 
-    approveRequest(result);
-    setWaitingForDevice(false);
+      approveRequest(result);
+      setWaitingForDevice(false);
+    } finally {
+      setWaitingForDevice(false);
+    }
   }, [
     appSession.chainId,
     approveRequest,
