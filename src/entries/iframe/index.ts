@@ -8,6 +8,7 @@ import { Notification } from './notification';
 const ELEMENT_ID = 'rainbow-notification';
 
 const NOTIFICATION_DURATION = 3000;
+const DELAY_DURATION = 2000;
 
 export const injectNotificationIframe = async ({
   chainId,
@@ -23,10 +24,7 @@ export const injectNotificationIframe = async ({
   // eslint-disable-next-line no-promise-executor-return
   await new Promise((resolve) =>
     // eslint-disable-next-line no-promise-executor-return
-    setTimeout(
-      resolve,
-      notificationAlreadyInjected ? NOTIFICATION_DURATION : 0,
-    ),
+    setTimeout(resolve, notificationAlreadyInjected ? DELAY_DURATION : 0),
   );
   const notificationElement = document.createElement('div');
   notificationElement.className = 'element';
@@ -38,5 +36,5 @@ export const injectNotificationIframe = async ({
 
   setTimeout(() => {
     document?.getElementById(ELEMENT_ID)?.remove();
-  }, 3000);
+  }, NOTIFICATION_DURATION);
 };
