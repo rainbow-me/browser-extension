@@ -146,7 +146,10 @@ export const handleProviderRequest = ({
               host,
             });
           }
-          console.log('---- supportedChainId');
+          console.log(
+            '---- chrome.runtime.getURL()',
+            chrome.runtime.getURL(''),
+          );
           inpageMessenger?.send('wallet_switchEthereumChain', {
             chainId: Number(proposedChainId),
             status: 'success',

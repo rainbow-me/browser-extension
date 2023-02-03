@@ -14,6 +14,18 @@ import {
   ThemeProvider,
 } from '~/design-system';
 
+const ASSET_SOURCE = {
+  [ChainId.mainnet]:
+    'chrome-extension://gjmdpkmgceafaiefjdekbelbcjigmaed/assets/badges/ethereumBadge.png',
+  [ChainId.optimism]:
+    'chrome-extension://gjmdpkmgceafaiefjdekbelbcjigmaed/assets/badges/optimismBadge.png',
+  [ChainId.arbitrum]:
+    'chrome-extension://gjmdpkmgceafaiefjdekbelbcjigmaed/assets/badges/arbitrumBadge.png',
+  [ChainId.polygon]:
+    'chrome-extension://gjmdpkmgceafaiefjdekbelbcjigmaed/assets/badges/polygonBadge.png',
+  [ChainId.bsc]:
+    'chrome-extension://gjmdpkmgceafaiefjdekbelbcjigmaed/assets/badges/bscBadge.png',
+};
 const isDarkColor = (rgb: string) => {
   const from = rgb.indexOf('(');
   const to = rgb.indexOf(')');
@@ -213,11 +225,7 @@ const NotificationComponent = ({
           >
             <Columns space="8px">
               <Column width="content">
-                <img
-                  src="chrome-extension://gjmdpkmgceafaiefjdekbelbcjigmaed/assets/badges/arbitrumBadge.png"
-                  width={24}
-                  height={24}
-                />
+                <img src={ASSET_SOURCE[chainId]} width={24} height={24} />
               </Column>
               <Column>
                 <Rows alignVertical="center" space="6px">
