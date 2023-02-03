@@ -23,11 +23,9 @@ const isDarkColor = (rgb: string) => {
 };
 
 // 161 (figma width spec) + 48 (radius shadow) since we need space for the shadow to be visible in the iframe
-const NOTIFICATION_WIDTH = '609px';
-// const NOTIFICATION_WIDTH = '209px';
+const NOTIFICATION_WIDTH = '209px';
 // 40 (figma height spec) + 48 (radius shadow) + 16 (vertical shadow), since we need space for the shadow to be visible in the iframe
-const NOTIFICATION_HEIGHT = '552px';
-// const NOTIFICATION_HEIGHT = '122px';
+const NOTIFICATION_HEIGHT = '122px';
 
 // 9 (figma top spec) - 41 (extra iframe height for shadow, 122 - 40 /2 )
 // since we need space for the shadow to be visible in the iframe
