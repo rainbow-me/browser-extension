@@ -57,8 +57,7 @@
     "scripting",
     "storage",
     "tabs",
-    "unlimitedStorage",
-    "notifications"
+    "unlimitedStorage"
   ],
   "short_name": "Rainbow",
   "web_accessible_resources": [
