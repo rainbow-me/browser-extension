@@ -152,6 +152,7 @@ export const handleProviderRequest = ({
               status: 'success',
               extensionUrl,
             });
+            inpageMessenger.send(`chainChanged:${host}`, proposedChainId);
           }
           response = null;
           break;
