@@ -137,6 +137,7 @@ export const handleProviderRequest = ({
             inpageMessenger?.send('wallet_switchEthereumChain', {
               chainId: Number(proposedChainId),
               status: 'failed',
+              extensionUrl: chrome.runtime.getURL(''),
             });
             throw new Error('Chain Id not supported');
           }
@@ -153,6 +154,7 @@ export const handleProviderRequest = ({
           inpageMessenger?.send('wallet_switchEthereumChain', {
             chainId: Number(proposedChainId),
             status: 'success',
+            extensionUrl: chrome.runtime.getURL(''),
           });
 
           response = true;

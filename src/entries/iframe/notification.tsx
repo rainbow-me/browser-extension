@@ -10,21 +10,17 @@ import {
   Inline,
   Row,
   Rows,
+  Symbol,
   Text,
   ThemeProvider,
 } from '~/design-system';
 
 const ASSET_SOURCE = {
-  [ChainId.mainnet]:
-    'chrome-extension://gjmdpkmgceafaiefjdekbelbcjigmaed/assets/badges/ethereumBadge.png',
-  [ChainId.optimism]:
-    'chrome-extension://gjmdpkmgceafaiefjdekbelbcjigmaed/assets/badges/optimismBadge.png',
-  [ChainId.arbitrum]:
-    'chrome-extension://gjmdpkmgceafaiefjdekbelbcjigmaed/assets/badges/arbitrumBadge.png',
-  [ChainId.polygon]:
-    'chrome-extension://gjmdpkmgceafaiefjdekbelbcjigmaed/assets/badges/polygonBadge.png',
-  [ChainId.bsc]:
-    'chrome-extension://gjmdpkmgceafaiefjdekbelbcjigmaed/assets/badges/bscBadge.png',
+  [ChainId.mainnet]: 'assets/badges/ethereumBadge.png',
+  [ChainId.optimism]: 'assets/badges/optimismBadge.png',
+  [ChainId.arbitrum]: 'assets/badges/arbitrumBadge.png',
+  [ChainId.polygon]: 'assets/badges/polygonBadge.png',
+  [ChainId.bsc]: 'assets/badges/bscBadge.png',
 };
 const isDarkColor = (rgb: string) => {
   const from = rgb.indexOf('(');
@@ -46,9 +42,11 @@ const NOTIFICATION_RIGHT = '50px';
 export const Notification = ({
   chainId,
   status,
+  extensionUrl,
 }: {
   chainId: ChainId;
   status: 'success' | 'failed';
+  extensionUrl: string;
 }) => {
   const [ref, setRef] = useState<HTMLIFrameElement>();
   const [siteTheme, setSiteTheme] = useState<'dark' | 'light'>('dark');
@@ -148,8 +146,8 @@ export const Notification = ({
 
     // inject popup.css to use rnbw DS
     const iframeLink = document.createElement('link');
-    iframeLink.href =
-      'chrome-extension://gjmdpkmgceafaiefjdekbelbcjigmaed/popup.css';
+    console.log('---- extensionUrl', extensionUrl);
+    iframeLink.href = `${extensionUrl}popup.css`;
     iframeLink.rel = 'stylesheet';
     ref?.contentDocument?.head?.appendChild(iframeLink);
 
@@ -162,7 +160,7 @@ export const Notification = ({
       // set rnbw theme
       root.setAttribute('class', colorScheme === 'dark' ? 'dt' : 'lt');
     }
-  }, [ref?.contentDocument]);
+  }, [extensionUrl, ref?.contentDocument]);
 
   return (
     <iframe
@@ -184,6 +182,7 @@ export const Notification = ({
             siteTheme={siteTheme}
             chainId={chainId}
             status={status}
+            extensionUrl={extensionUrl}
           />,
           container,
         )}
@@ -195,10 +194,12 @@ const NotificationComponent = ({
   chainId,
   siteTheme,
   status,
+  extensionUrl,
 }: {
   chainId: ChainId;
   siteTheme: 'dark' | 'light';
   status: 'success' | 'failed';
+  extensionUrl: string;
 }) => {
   return (
     <ThemeProvider theme={siteTheme}>
@@ -225,7 +226,34 @@ const NotificationComponent = ({
           >
             <Columns space="8px">
               <Column width="content">
-                <img src={ASSET_SOURCE[chainId]} width={24} height={24} />
+                {status === 'success' ? (
+                  <img
+                    src={`${extensionUrl}${ASSET_SOURCE[chainId]}`}
+                    width={24}
+                    height={24}
+                  />
+                ) : (
+                  <Box
+                    height="full"
+                    borderRadius="round"
+                    background="red"
+                    style={{ width: 24, height: 24 }}
+                  >
+                    <Inline
+                      height="full"
+                      alignVertical="center"
+                      alignHorizontal="center"
+                    >
+                      <Box marginTop="-1px">
+                        <Symbol
+                          symbol="exclamationmark.triangle.fill"
+                          weight="bold"
+                          size={14}
+                        />
+                      </Box>
+                    </Inline>
+                  </Box>
+                )}
               </Column>
               <Column>
                 <Rows alignVertical="center" space="6px">

@@ -25,11 +25,13 @@ if (shouldInjectProvider()) {
     async ({
       chainId,
       status,
+      extensionUrl,
     }: {
       chainId: ChainId;
       status: 'success' | 'failed';
+      extensionUrl: string;
     }) => {
-      injectNotificationIframe({ chainId, status });
+      injectNotificationIframe({ chainId, status, extensionUrl });
     },
   );
 }

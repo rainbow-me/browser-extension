@@ -9,9 +9,11 @@ const ELEMENT_ID = 'rainbow-notification';
 export const injectNotificationIframe = ({
   chainId,
   status,
+  extensionUrl,
 }: {
   chainId: ChainId;
   status: 'success' | 'failed';
+  extensionUrl: string;
 }) => {
   // in case there's one already
   document?.getElementById(ELEMENT_ID)?.remove();
@@ -21,7 +23,7 @@ export const injectNotificationIframe = ({
   document.body.appendChild(notificationElement);
   const domContainer = document.getElementById(ELEMENT_ID) as Element;
   const root = createRoot(domContainer);
-  root.render(createElement(Notification, { chainId, status }));
+  root.render(createElement(Notification, { chainId, status, extensionUrl }));
 
   setTimeout(() => {
     document?.getElementById(ELEMENT_ID)?.remove();
