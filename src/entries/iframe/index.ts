@@ -6,7 +6,10 @@ import { ChainId } from '~/core/types/chains';
 import { Notification } from './notification';
 
 const ELEMENT_ID = 'rainbow-notification';
-export const injectNotificationIframe = ({
+
+const NOTIFICATION_DURATION = 3000;
+
+export const injectNotificationIframe = async ({
   chainId,
   status,
   extensionUrl,
@@ -16,7 +19,15 @@ export const injectNotificationIframe = ({
   extensionUrl: string;
 }) => {
   // in case there's one already
-  document?.getElementById(ELEMENT_ID)?.remove();
+  const notificationAlreadyInjected = !!document?.getElementById(ELEMENT_ID);
+  // eslint-disable-next-line no-promise-executor-return
+  await new Promise((resolve) =>
+    // eslint-disable-next-line no-promise-executor-return
+    setTimeout(
+      resolve,
+      notificationAlreadyInjected ? NOTIFICATION_DURATION : 0,
+    ),
+  );
   const notificationElement = document.createElement('div');
   notificationElement.className = 'element';
   notificationElement.id = ELEMENT_ID;
