@@ -133,17 +133,23 @@ export const handleProviderRequest = ({
           const proposedChainId = (params?.[0] as { chainId: ChainId })
             ?.chainId;
           const supportedChainId = isSupportedChainId(Number(proposedChainId));
-          if (!supportedChainId) throw new Error('Chain Id not supported');
+          if (!supportedChainId) {
+            inpageMessenger?.send('wallet_switchEthereumChain', {
+              chainId: Number(proposedChainId),
+              status: 'failed',
+            });
+            throw new Error('Chain Id not supported');
+          }
           if (proposedChainId) {
             updateSessionChainId({
               chainId: Number(proposedChainId),
               host,
             });
           }
-
+          console.log('---- supportedChainId');
           inpageMessenger?.send('wallet_switchEthereumChain', {
             chainId: Number(proposedChainId),
-            status: 'succeeded',
+            status: 'success',
           });
 
           response = true;

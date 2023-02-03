@@ -37,7 +37,7 @@ export const Notification = ({
   status,
 }: {
   chainId: ChainId;
-  status: 'succeeded' | 'failed';
+  status: 'success' | 'failed';
 }) => {
   const [ref, setRef] = useState<HTMLIFrameElement>();
   const [siteTheme, setSiteTheme] = useState<'dark' | 'light'>('dark');
@@ -183,11 +183,11 @@ export const Notification = ({
 const NotificationComponent = ({
   chainId,
   siteTheme,
-}: //   status,
-{
+  status,
+}: {
   chainId: ChainId;
   siteTheme: 'dark' | 'light';
-  status: 'succeeded' | 'failed';
+  status: 'success' | 'failed';
 }) => {
   return (
     <ThemeProvider theme={siteTheme}>
@@ -224,7 +224,13 @@ const NotificationComponent = ({
                 <Rows alignVertical="center" space="6px">
                   <Row>
                     <Text color="label" size="12pt" weight="bold">
-                      {i18n.t('injected_notifications.network_changed')}
+                      {i18n.t(
+                        `injected_notifications.${
+                          status === 'success'
+                            ? 'network_changed'
+                            : 'network_changed_failed'
+                        }`,
+                      )}
                     </Text>
                   </Row>
                   <Row>

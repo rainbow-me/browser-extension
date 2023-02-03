@@ -27,7 +27,7 @@ if (shouldInjectProvider()) {
       status,
     }: {
       chainId: ChainId;
-      status: 'succeeded' | 'failed';
+      status: 'success' | 'failed';
     }) => {
       injectNotificationIframe({ chainId, status });
     },
