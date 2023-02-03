@@ -43,50 +43,27 @@ export const Notification = () => {
   const container = ref?.contentDocument?.body;
 
   useEffect(() => {
-    const iframeLink = document.createElement('link');
-    iframeLink.href =
-      'chrome-extension://gjmdpkmgceafaiefjdekbelbcjigmaed/popup.css';
-    iframeLink.rel = 'stylesheet';
+    const documentElement = window?.document.documentElement;
 
-    const iframeMeta = document.createElement('meta');
-    iframeMeta.name = 'color-scheme';
-
-    // const isDarkMode =
-    //   window.matchMedia && window.matchMedia('color-scheme: dark').matches;
     const colorScheme = (
       document.querySelector('meta[name="color-scheme"]') as HTMLMetaElement
     )?.content;
-    const dataColorMode =
-      window?.document.documentElement?.getAttribute('data-color-mode');
-    const dataTheme =
-      window?.document.documentElement?.getAttribute('data-theme');
-    const dataMode =
-      window?.document.documentElement?.getAttribute('data-mode');
+    const dataColorMode = documentElement?.getAttribute('data-color-mode');
+    const dataTheme = documentElement?.getAttribute('data-theme');
+    const dataMode = documentElement?.getAttribute('data-mode');
 
-    const style = window?.document.documentElement?.getAttribute('style');
-    const headStyle = document.head?.getElementsByTagName('style')?.[0];
-    const dark = window?.document.documentElement?.getAttributeNode('dark');
-    const classs = window?.document.documentElement?.getAttributeNode('class');
+    const style = documentElement?.getAttribute('style');
+    const classs = documentElement?.getAttributeNode('class');
     const backgroundColro = window
       .getComputedStyle(document.body, null)
       .getPropertyValue('background-color');
 
-    // console.log('- window', window.getComputedStyle());
-
-    console.log('- style innerHTMstylestylestyleL', style);
-
-    console.log(
-      '- documentElement innerHTML',
-      window.document?.documentElement?.innerHTML,
-    );
-    const innerHtml = window.document?.documentElement?.innerHTML;
-    // const htmlIncludesColorSchemeInitial = innerHtml?.includes('color-scheme');
-
-    const colorSchemeIndex = innerHtml?.indexOf('color-scheme');
+    const colorSchemeIndex =
+      documentElement?.innerHTML?.indexOf('color-scheme');
 
     // could be a meta tag, part of script, a class or style
     // so we need to check if any theme is defined
-    const allPossibleSchemes = innerHtml.substring(
+    const allPossibleSchemes = documentElement?.innerHTML.substring(
       colorSchemeIndex - 30,
       colorSchemeIndex + 60,
     );
@@ -95,11 +72,8 @@ export const Notification = () => {
       'prefers-color-scheme',
       '',
     );
-    console.log('--=-=-=-=-=--m cleanInnerHtml', cleanAllPossibleSchemes);
     const htmlIncludesColorScheme =
       cleanAllPossibleSchemes?.includes('color-scheme');
-
-    console.log('--- INNTER HTML INDEX ', colorSchemeIndex);
 
     let innerHTMLColorScheme = undefined;
     if (htmlIncludesColorScheme) {
@@ -114,42 +88,6 @@ export const Notification = () => {
       }
     }
 
-    console.log(
-      '--- INNTER HTML INDEX substr ',
-      innerHtml.substring(colorSchemeIndex + 13, colorSchemeIndex + 23),
-    );
-
-    console.log(
-      '=--- CHECK STRING ',
-      innerHtml.substring(colorSchemeIndex - 30, colorSchemeIndex + 60),
-    );
-    console.log(
-      '- documentElement innerHTML',
-      window.document?.documentElement?.innerHTML?.includes('color-scheme'),
-    );
-
-    console.log('- colorScheme', colorScheme);
-    console.log('- dataColorMode', dataColorMode);
-    console.log('- dataTheme', dataTheme);
-    console.log('- dataMode', dataMode);
-    console.log('- style', style);
-    console.log('- headStyle', headStyle?.style);
-    console.log('- dark', dark);
-    console.log('- dark', classs?.value);
-    console.log('- style?.includes', style?.includes('color-scheme'));
-    console.log('- headStyle?.includes');
-
-    const extractedTheme =
-      isDarkColor(backgroundColro) ||
-      dataTheme === 'dark' ||
-      style?.includes('color-scheme: dark') ||
-      dataColorMode === 'dark' ||
-      colorScheme === 'dark'
-        ? 'dark'
-        : 'light';
-
-    console.log('--- extractedTheme', extractedTheme);
-    console.log('--- extracted style', style);
     const siteTheme =
       isDarkColor(backgroundColro) ||
       dataTheme === 'dark' ||
@@ -171,49 +109,40 @@ export const Notification = () => {
     }
 
     const themeDefined =
-      //   dataTheme ||
       innerHTMLColorScheme ||
       dataMode ||
       dataColorMode ||
       colorScheme ||
       styleColorScheme ||
       classStyle;
-    // dataTheme || dataMode || dataColorMode || colorScheme;
-    //   style?.includes('color-scheme: dark');
-
-    console.log('--- THEME DEFINED dataTheme ', dataTheme);
-    console.log('--- THEME DEFINED dataMode ', dataMode);
-    console.log('--- THEME DEFINED dataColorMode ', dataColorMode);
-    console.log('--- THEME DEFINED colorScheme ', colorScheme);
-    console.log('--- THEME DEFINED styleColorScheme ', styleColorScheme);
-    console.log('--- THEME DEFINED classStyle ', classStyle);
-    console.log(
-      '--- THEME DEFINED 3 ',
-      classs?.value?.includes('light') ? 'dark' : 'eee',
-    );
-    console.log('THEME DEFINED ', themeDefined);
-    console.log(
-      'THEME DEFINED htmlIncludesColorScheme',
-      htmlIncludesColorScheme,
-    );
     setSiteTheme(siteTheme);
+
     if (themeDefined || htmlIncludesColorScheme) {
+      // we need to inject a meta tag with color-scheme if the site defined it
+      // so the iframe background is transparent, otherwise it will be black or white
+      // depending on the theme
+      const iframeMeta = document.createElement('meta');
+      iframeMeta.name = 'color-scheme';
       iframeMeta.content = themeDefined || '';
       ref?.contentDocument?.body?.appendChild(iframeMeta);
     }
+
+    // inject popup.css to use rnbw DS
+    const iframeLink = document.createElement('link');
+    iframeLink.href =
+      'chrome-extension://gjmdpkmgceafaiefjdekbelbcjigmaed/popup.css';
+    iframeLink.rel = 'stylesheet';
     ref?.contentDocument?.head?.appendChild(iframeLink);
-    // ref?.contentDocument?.head?.appendChild(iframeMeta);
 
     const root = ref?.contentDocument?.getElementsByTagName('html')[0];
+    // get the iframe element
     if (root) {
-      root.style.background = 'none transparent !important';
-      root.style.backgroundColor = 'none transparent !important';
-      root.style.position = 'fixed';
-      root.style.height = NOTIFICATION_HEIGHT;
-      root.style.width = NOTIFICATION_WIDTH;
+      // set background-color as cssText
+      // background and backgroundColor as <iframe /> prop doesn't work
       root.style.cssText = 'background-color: transparent !important';
+      // set rnbw theme
+      root.setAttribute('class', colorScheme === 'dark' ? 'dt' : 'lt');
     }
-    root?.setAttribute('class', colorScheme === 'dark' ? 'dt' : 'lt');
   }, [ref?.contentDocument]);
 
   console.log('SITE THEME', siteTheme);
@@ -227,7 +156,6 @@ export const Notification = () => {
         width: NOTIFICATION_WIDTH,
         borderWidth: '0px',
         position: 'fixed',
-        background: 'none transparent !transparent',
         zIndex: '9999999',
       }}
       title="iframe"
