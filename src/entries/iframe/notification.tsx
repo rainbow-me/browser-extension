@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { i18n } from '~/core/languages';
-import { ChainId } from '~/core/types/chains';
-import { chainNameFromChainId } from '~/core/utils/chains';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import {
   Box,
   Column,
@@ -235,7 +234,9 @@ const NotificationComponent = ({
                   </Row>
                   <Row>
                     <Text color="labelTertiary" size="11pt" weight="medium">
-                      {chainNameFromChainId(chainId)}
+                      {status === 'success'
+                        ? ChainNameDisplay[chainId]
+                        : i18n.t('injected_notifications.unsupported_network')}
                     </Text>
                   </Row>
                 </Rows>
