@@ -51,11 +51,20 @@ export const Notification = () => {
     const dataColorMode = documentElement?.getAttribute('data-color-mode');
     const dataTheme = documentElement?.getAttribute('data-theme');
     const dataMode = documentElement?.getAttribute('data-mode');
-    const style = documentElement?.getAttribute('style');
-    const classs = documentElement?.getAttributeNode('class');
-    const backgroundColro = window
+    const htmlStyle = documentElement?.getAttribute('style');
+    const htmlClass = documentElement?.getAttributeNode('class')?.value;
+    const backgroundColor = window
       .getComputedStyle(document.body, null)
       .getPropertyValue('background-color');
+
+    const siteTheme =
+      isDarkColor(backgroundColor) ||
+      dataTheme === 'dark' ||
+      dataColorMode === 'dark' ||
+      colorScheme === 'dark'
+        ? 'dark'
+        : 'light';
+    setSiteTheme(siteTheme);
 
     const colorSchemeIndex =
       documentElement?.innerHTML?.indexOf('color-scheme');
@@ -89,37 +98,34 @@ export const Notification = () => {
       }
     }
 
-    const siteTheme =
-      isDarkColor(backgroundColro) ||
-      dataTheme === 'dark' ||
-      style?.includes('color-scheme: ') ||
-      dataColorMode === 'dark' ||
-      colorScheme === 'dark'
-        ? 'dark'
-        : 'light';
-    setSiteTheme(siteTheme);
+    // check if style has a color-scheme
+    const styleColorScheme = htmlStyle?.includes('color-scheme: ')
+      ? htmlStyle?.replace('color-scheme: ', '').replace(';', '')
+      : undefined;
 
-    let classStyle = undefined;
-    if (classs?.value?.includes('dark')) {
-      classStyle = 'dark';
-    } else if (classs?.value?.includes('light')) {
-      classStyle = 'light';
+    // check is the html has a theme class
+    let htmlClassStyle = undefined;
+    if (htmlClass?.includes('dark')) {
+      htmlClassStyle = 'dark';
+    } else if (htmlClass?.includes('light')) {
+      htmlClassStyle = 'light';
     }
 
-    const themeDefined =
+    const metaTagColorScheme =
       innerHTMLColorScheme ||
       dataMode ||
       dataColorMode ||
       colorScheme ||
-      classStyle;
+      styleColorScheme ||
+      htmlClassStyle;
 
-    if (themeDefined || htmlIncludesColorScheme) {
-      // we need to inject a meta tag with color-scheme if the site defined it
-      // so the iframe background is transparent, otherwise it will be black or white
-      // depending on the theme
+    // we need to inject a meta tag with color-scheme if the site defined it
+    // so the iframe background is transparent, otherwise it will be black or white
+    // depending on the theme
+    if (metaTagColorScheme) {
       const iframeMeta = document.createElement('meta');
       iframeMeta.name = 'color-scheme';
-      iframeMeta.content = themeDefined || '';
+      iframeMeta.content = metaTagColorScheme;
       ref?.contentDocument?.body?.appendChild(iframeMeta);
     }
 
@@ -130,8 +136,8 @@ export const Notification = () => {
     iframeLink.rel = 'stylesheet';
     ref?.contentDocument?.head?.appendChild(iframeLink);
 
-    const root = ref?.contentDocument?.getElementsByTagName('html')[0];
     // get the iframe element
+    const root = ref?.contentDocument?.getElementsByTagName('html')[0];
     if (root) {
       // set background-color as cssText
       // background and backgroundColor as <iframe /> prop doesn't work
@@ -179,14 +185,7 @@ const NotificationComponent = ({
         }}
       >
         <Inline height="full" alignVertical="center" alignHorizontal="center">
-          <Box
-            borderRadius="28px"
-            style={
-              {
-                //   backgroundColor: siteTheme === 'dark' ? '#191A1C' : '#FFFFFF',
-              }
-            }
-          >
+          <Box borderRadius="28px">
             <Box
               borderRadius="28px"
               paddingLeft="8px"
