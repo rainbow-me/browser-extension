@@ -23,11 +23,12 @@ export const ApproveAppRequest = () => {
   const approveRequest = useCallback(
     async (payload?: unknown) => {
       backgroundMessenger.send(`message:${pendingRequest?.id}`, payload);
-      setTimeout(() => {
-        if (window?.id && pendingRequests.length <= 1)
-          chrome.windows.remove(window?.id);
+      if (window?.id && pendingRequests.length <= 1) {
         removePendingRequest(pendingRequest?.id);
-      }, 50);
+        setTimeout(() => {
+          window?.id && chrome.windows.remove(window?.id);
+        }, 50);
+      }
       navigate(ROUTES.HOME);
     },
     [
@@ -41,11 +42,12 @@ export const ApproveAppRequest = () => {
 
   const rejectRequest = useCallback(() => {
     backgroundMessenger.send(`message:${pendingRequest?.id}`, null);
-    setTimeout(() => {
-      if (window?.id && pendingRequests.length <= 1)
-        chrome.windows.remove(window.id);
+    if (window?.id && pendingRequests.length <= 1) {
       removePendingRequest(pendingRequest?.id);
-    }, 50);
+      setTimeout(() => {
+        window?.id && chrome.windows.remove(window?.id);
+      }, 50);
+    }
     navigate(ROUTES.HOME);
   }, [
     navigate,
