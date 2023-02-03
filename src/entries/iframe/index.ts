@@ -5,7 +5,7 @@ import { Notification } from './notification';
 
 export const injectNotificationIframe = () => {
   const domContainer = document.getElementById(
-    'bx-notification-iframe',
+    'rainbow-notification',
   ) as Element;
 
   const root = createRoot(domContainer);

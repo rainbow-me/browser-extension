@@ -57,6 +57,11 @@ export const Notification = () => {
       .getComputedStyle(document.body, null)
       .getPropertyValue('background-color');
 
+    console.log(
+      '--- backgroundColor',
+      backgroundColor,
+      window.getComputedStyle(document.body, null),
+    );
     const siteTheme =
       isDarkColor(backgroundColor) ||
       dataTheme === 'dark' ||

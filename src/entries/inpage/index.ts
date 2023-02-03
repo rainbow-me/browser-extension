@@ -21,22 +21,8 @@ if (shouldInjectProvider()) {
   window.onload = () => {
     const injectElement = document.createElement('div');
     injectElement.className = 'element';
-    injectElement.id = 'bx-notification-iframe';
-
+    injectElement.id = 'rainbow-notification';
     document.body.appendChild(injectElement);
-
-    // const link = document.createElement('link');
-
-    // Set the attributes
-    // for link element
-    // link.href = '../popup/global.css';
-    // link.rel = 'stylesheet';
-    // link.type = 'text/css';
-
-    // Set the link element at the
-    // 'head' of HTML document
-    // document.head.appendChild(link);
-
     injectNotificationIframe();
   };
 }
