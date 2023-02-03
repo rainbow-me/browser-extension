@@ -130,34 +130,30 @@ export const handleProviderRequest = ({
           break;
         }
         case 'wallet_switchEthereumChain': {
-          const proposedChainId = (params?.[0] as { chainId: ChainId })
-            ?.chainId;
+          const proposedChainId = Number(
+            (params?.[0] as { chainId: ChainId })?.chainId,
+          );
           const supportedChainId = isSupportedChainId(Number(proposedChainId));
+          const extensionUrl = chrome.runtime.getURL('');
           if (!supportedChainId) {
             inpageMessenger?.send('wallet_switchEthereumChain', {
-              chainId: Number(proposedChainId),
+              chainId: proposedChainId,
               status: 'failed',
-              extensionUrl: chrome.runtime.getURL(''),
+              extensionUrl,
             });
             throw new Error('Chain Id not supported');
-          }
-          if (proposedChainId) {
+          } else {
             updateSessionChainId({
-              chainId: Number(proposedChainId),
+              chainId: proposedChainId,
               host,
             });
+            inpageMessenger?.send('wallet_switchEthereumChain', {
+              chainId: proposedChainId,
+              status: 'success',
+              extensionUrl,
+            });
           }
-          console.log(
-            '---- chrome.runtime.getURL()',
-            chrome.runtime.getURL(''),
-          );
-          inpageMessenger?.send('wallet_switchEthereumChain', {
-            chainId: Number(proposedChainId),
-            status: 'success',
-            extensionUrl: chrome.runtime.getURL(''),
-          });
-
-          response = true;
+          response = null;
           break;
         }
         case 'eth_requestAccounts': {
