@@ -140,6 +140,7 @@ export const handleProviderRequest = ({
               chainId: proposedChainId,
               status: 'failed',
               extensionUrl,
+              host,
             });
             throw new Error('Chain Id not supported');
           } else {
@@ -151,6 +152,7 @@ export const handleProviderRequest = ({
               chainId: proposedChainId,
               status: 'success',
               extensionUrl,
+              host,
             });
             inpageMessenger.send(`chainChanged:${host}`, proposedChainId);
           }

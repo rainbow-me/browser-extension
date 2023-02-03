@@ -26,12 +26,16 @@ if (shouldInjectProvider()) {
       chainId,
       status,
       extensionUrl,
+      host,
     }: {
       chainId: ChainId;
       status: 'success' | 'failed';
       extensionUrl: string;
+      host: string;
     }) => {
-      injectNotificationIframe({ chainId, status, extensionUrl });
+      if (window.location.hostname === host) {
+        injectNotificationIframe({ chainId, status, extensionUrl });
+      }
     },
   );
 }
