@@ -51,7 +51,6 @@ export const Notification = () => {
     const dataColorMode = documentElement?.getAttribute('data-color-mode');
     const dataTheme = documentElement?.getAttribute('data-theme');
     const dataMode = documentElement?.getAttribute('data-mode');
-
     const style = documentElement?.getAttribute('style');
     const classs = documentElement?.getAttributeNode('class');
     const backgroundColro = window
@@ -68,6 +67,8 @@ export const Notification = () => {
       colorSchemeIndex + 60,
     );
 
+    // prefers-color-scheme is just the OS config so we don't want to
+    // take that value
     const cleanAllPossibleSchemes = allPossibleSchemes?.replace(
       'prefers-color-scheme',
       '',
@@ -96,10 +97,7 @@ export const Notification = () => {
       colorScheme === 'dark'
         ? 'dark'
         : 'light';
-
-    const styleColorScheme = style?.includes('color-scheme: ')
-      ? style?.replace('color-scheme: ', '').replace(';', '')
-      : undefined;
+    setSiteTheme(siteTheme);
 
     let classStyle = undefined;
     if (classs?.value?.includes('dark')) {
@@ -113,9 +111,7 @@ export const Notification = () => {
       dataMode ||
       dataColorMode ||
       colorScheme ||
-      styleColorScheme ||
       classStyle;
-    setSiteTheme(siteTheme);
 
     if (themeDefined || htmlIncludesColorScheme) {
       // we need to inject a meta tag with color-scheme if the site defined it
@@ -144,8 +140,6 @@ export const Notification = () => {
       root.setAttribute('class', colorScheme === 'dark' ? 'dt' : 'lt');
     }
   }, [ref?.contentDocument]);
-
-  console.log('SITE THEME', siteTheme);
 
   return (
     <iframe
