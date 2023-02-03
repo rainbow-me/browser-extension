@@ -146,7 +146,6 @@ export const Notification = ({
 
     // inject popup.css to use rnbw DS
     const iframeLink = document.createElement('link');
-    console.log('---- extensionUrl', extensionUrl);
     iframeLink.href = `${extensionUrl}popup.css`;
     iframeLink.rel = 'stylesheet';
     ref?.contentDocument?.head?.appendChild(iframeLink);
