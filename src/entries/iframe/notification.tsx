@@ -66,19 +66,80 @@ export const Notification = () => {
       window?.document.documentElement?.getAttribute('data-mode');
 
     const style = window?.document.documentElement?.getAttribute('style');
+    const headStyle = document.head?.getElementsByTagName('style')?.[0];
     const dark = window?.document.documentElement?.getAttributeNode('dark');
+    const classs = window?.document.documentElement?.getAttributeNode('class');
     const backgroundColro = window
       .getComputedStyle(document.body, null)
       .getPropertyValue('background-color');
 
-    console.log('- documentElement', document?.documentElement);
+    // console.log('- window', window.getComputedStyle());
+
+    console.log('- style innerHTMstylestylestyleL', style);
+
+    console.log(
+      '- documentElement innerHTML',
+      window.document?.documentElement?.innerHTML,
+    );
+    const innerHtml = window.document?.documentElement?.innerHTML;
+    // const htmlIncludesColorSchemeInitial = innerHtml?.includes('color-scheme');
+
+    const colorSchemeIndex = innerHtml?.indexOf('color-scheme');
+
+    // could be a meta tag, part of script, a class or style
+    // so we need to check if any theme is defined
+    const allPossibleSchemes = innerHtml.substring(
+      colorSchemeIndex - 30,
+      colorSchemeIndex + 60,
+    );
+
+    const cleanAllPossibleSchemes = allPossibleSchemes?.replace(
+      'prefers-color-scheme',
+      '',
+    );
+    console.log('--=-=-=-=-=--m cleanInnerHtml', cleanAllPossibleSchemes);
+    const htmlIncludesColorScheme =
+      cleanAllPossibleSchemes?.includes('color-scheme');
+
+    console.log('--- INNTER HTML INDEX ', colorSchemeIndex);
+
+    let innerHTMLColorScheme = undefined;
+    if (htmlIncludesColorScheme) {
+      if (cleanAllPossibleSchemes.includes('light dark')) {
+        innerHTMLColorScheme = 'light dark';
+      } else if (cleanAllPossibleSchemes.includes('dark light')) {
+        innerHTMLColorScheme = 'dark light';
+      } else if (cleanAllPossibleSchemes.includes('dark')) {
+        innerHTMLColorScheme = 'dark';
+      } else if (cleanAllPossibleSchemes.includes('light')) {
+        innerHTMLColorScheme = 'light';
+      }
+    }
+
+    console.log(
+      '--- INNTER HTML INDEX substr ',
+      innerHtml.substring(colorSchemeIndex + 13, colorSchemeIndex + 23),
+    );
+
+    console.log(
+      '=--- CHECK STRING ',
+      innerHtml.substring(colorSchemeIndex - 30, colorSchemeIndex + 60),
+    );
+    console.log(
+      '- documentElement innerHTML',
+      window.document?.documentElement?.innerHTML?.includes('color-scheme'),
+    );
+
     console.log('- colorScheme', colorScheme);
     console.log('- dataColorMode', dataColorMode);
     console.log('- dataTheme', dataTheme);
     console.log('- dataMode', dataMode);
     console.log('- style', style);
+    console.log('- headStyle', headStyle?.style);
     console.log('- dark', dark);
-    console.log('- style?.includes', style?.includes('color-scheme: dark'));
+    console.log('- dark', classs?.value);
+    console.log('- style?.includes', style?.includes('color-scheme'));
+    console.log('- headStyle?.includes');
 
     const extractedTheme =
       isDarkColor(backgroundColro) ||
@@ -90,21 +151,60 @@ export const Notification = () => {
         : 'light';
 
     console.log('--- extractedTheme', extractedTheme);
+    console.log('--- extracted style', style);
     const siteTheme =
       isDarkColor(backgroundColro) ||
       dataTheme === 'dark' ||
-      style?.includes('color-scheme: dark') ||
+      style?.includes('color-scheme: ') ||
       dataColorMode === 'dark' ||
       colorScheme === 'dark'
         ? 'dark'
         : 'light';
 
-    const themeDefined = dataTheme || dataMode || dataColorMode || colorScheme;
+    const styleColorScheme = style?.includes('color-scheme: ')
+      ? style?.replace('color-scheme: ', '').replace(';', '')
+      : undefined;
+
+    let classStyle = undefined;
+    if (classs?.value?.includes('dark')) {
+      classStyle = 'dark';
+    } else if (classs?.value?.includes('light')) {
+      classStyle = 'light';
+    }
+
+    const themeDefined =
+      //   dataTheme ||
+      innerHTMLColorScheme ||
+      dataMode ||
+      dataColorMode ||
+      colorScheme ||
+      styleColorScheme ||
+      classStyle;
+    // dataTheme || dataMode || dataColorMode || colorScheme;
     //   style?.includes('color-scheme: dark');
 
+    console.log('--- THEME DEFINED dataTheme ', dataTheme);
+    console.log('--- THEME DEFINED dataMode ', dataMode);
+    console.log('--- THEME DEFINED dataColorMode ', dataColorMode);
+    console.log('--- THEME DEFINED colorScheme ', colorScheme);
+    console.log('--- THEME DEFINED styleColorScheme ', styleColorScheme);
+    console.log('--- THEME DEFINED classStyle ', classStyle);
+    console.log(
+      '--- THEME DEFINED 3 ',
+      classs?.value?.includes('light') ? 'dark' : 'eee',
+    );
     console.log('THEME DEFINED ', themeDefined);
+    console.log(
+      'THEME DEFINED htmlIncludesColorScheme',
+      htmlIncludesColorScheme,
+    );
     setSiteTheme(siteTheme);
-    iframeMeta.content = themeDefined;
+    if (themeDefined || htmlIncludesColorScheme) {
+      iframeMeta.content = themeDefined || '';
+      ref?.contentDocument?.body?.appendChild(iframeMeta);
+    }
+    ref?.contentDocument?.head?.appendChild(iframeLink);
+    // ref?.contentDocument?.head?.appendChild(iframeMeta);
 
     const root = ref?.contentDocument?.getElementsByTagName('html')[0];
     if (root) {
@@ -116,9 +216,6 @@ export const Notification = () => {
       root.style.cssText = 'background-color: transparent !important';
     }
     root?.setAttribute('class', colorScheme === 'dark' ? 'dt' : 'lt');
-    ref?.contentDocument?.head?.appendChild(iframeLink);
-    // ref?.contentDocument?.head?.appendChild(iframeMeta);
-    themeDefined && ref?.contentDocument?.body?.appendChild(iframeMeta);
   }, [ref?.contentDocument]);
 
   console.log('SITE THEME', siteTheme);
