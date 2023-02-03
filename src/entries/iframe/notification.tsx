@@ -204,6 +204,7 @@ const NotificationComponent = ({
     <ThemeProvider theme={siteTheme}>
       <Box
         height="full"
+        position="fixed"
         style={{
           height: NOTIFICATION_HEIGHT,
           width: NOTIFICATION_WIDTH,
