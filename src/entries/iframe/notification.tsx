@@ -32,7 +32,13 @@ const NOTIFICATION_HEIGHT = '122px';
 const NOTIFICATION_TOP = '-32px';
 const NOTIFICATION_RIGHT = '50px';
 
-export const Notification = () => {
+export const Notification = ({
+  chainId,
+  status,
+}: {
+  chainId: ChainId;
+  status: 'succeeded' | 'failed';
+}) => {
   const [ref, setRef] = useState<HTMLIFrameElement>();
   const [siteTheme, setSiteTheme] = useState<'dark' | 'light'>('dark');
 
@@ -57,11 +63,6 @@ export const Notification = () => {
       .getComputedStyle(document.body, null)
       .getPropertyValue('background-color');
 
-    console.log(
-      '--- backgroundColor',
-      backgroundColor,
-      window.getComputedStyle(document.body, null),
-    );
     const siteTheme =
       isDarkColor(backgroundColor) ||
       dataTheme === 'dark' ||
@@ -168,7 +169,11 @@ export const Notification = () => {
     >
       {container &&
         createPortal(
-          <NotificationComponent siteTheme={siteTheme} />,
+          <NotificationComponent
+            siteTheme={siteTheme}
+            chainId={chainId}
+            status={status}
+          />,
           container,
         )}
     </iframe>
@@ -176,9 +181,13 @@ export const Notification = () => {
 };
 
 const NotificationComponent = ({
+  chainId,
   siteTheme,
-}: {
+}: //   status,
+{
+  chainId: ChainId;
   siteTheme: 'dark' | 'light';
+  status: 'succeeded' | 'failed';
 }) => {
   return (
     <ThemeProvider theme={siteTheme}>
@@ -220,7 +229,7 @@ const NotificationComponent = ({
                   </Row>
                   <Row>
                     <Text color="labelTertiary" size="11pt" weight="medium">
-                      {chainNameFromChainId(ChainId.optimism)}
+                      {chainNameFromChainId(chainId)}
                     </Text>
                   </Row>
                 </Rows>

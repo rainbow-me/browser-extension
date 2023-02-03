@@ -13,7 +13,7 @@ import {
 } from '~/core/state';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
-import { chainNameFromChainId, isSupportedChainId } from '~/core/utils/chains';
+import { isSupportedChainId } from '~/core/utils/chains';
 import { getDappHost } from '~/core/utils/connectedApps';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/numbers';
@@ -75,9 +75,11 @@ const messengerProviderRequest = async (
  * Handles RPC requests from the provider.
  */
 export const handleProviderRequest = ({
-  messenger,
+  popupMessenger,
+  inpageMessenger,
 }: {
-  messenger: Messenger;
+  popupMessenger: Messenger;
+  inpageMessenger: Messenger;
 }) =>
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
     console.log(meta.sender, method);
@@ -110,7 +112,7 @@ export const handleProviderRequest = ({
         case 'eth_signTypedData_v3':
         case 'eth_signTypedData_v4': {
           {
-            response = await messengerProviderRequest(messenger, {
+            response = await messengerProviderRequest(popupMessenger, {
               method,
               id,
               params,
@@ -138,17 +140,13 @@ export const handleProviderRequest = ({
               host,
             });
           }
-          chrome.notifications.create({
-            title: 'Notification',
-            message: `Network changed to ${chainNameFromChainId(
-              Number(proposedChainId),
-            )}`,
-            iconUrl: 'images/icon-16.png',
-            type: 'basic',
-          });
-          console.log('OPENENNNENENENEENNENE');
 
-          response = null;
+          inpageMessenger?.send('wallet_switchEthereumChain', {
+            chainId: Number(proposedChainId),
+            status: 'succeeded',
+          });
+
+          response = true;
           break;
         }
         case 'eth_requestAccounts': {
@@ -157,7 +155,7 @@ export const handleProviderRequest = ({
             break;
           }
           const { address, chainId } = (await messengerProviderRequest(
-            messenger,
+            popupMessenger,
             {
               method,
               id,
