@@ -185,44 +185,42 @@ const NotificationComponent = ({
         }}
       >
         <Inline height="full" alignVertical="center" alignHorizontal="center">
-          <Box borderRadius="28px">
-            <Box
-              borderRadius="28px"
-              paddingLeft="8px"
-              paddingRight="16px"
-              paddingVertical="8px"
-              alignItems="center"
-              backdropFilter="blur(26px)"
-              background="surfaceMenu"
-              style={{
-                boxShadow:
-                  '0px 8px 24px rgba(37, 41, 46, 0.12), 0px 2px 6px rgba(0, 0, 0, 0.02)',
-              }}
-            >
-              <Columns space="8px">
-                <Column width="content">
-                  <img
-                    src="chrome-extension://gjmdpkmgceafaiefjdekbelbcjigmaed/assets/badges/arbitrumBadge.png"
-                    width={24}
-                    height={24}
-                  />
-                </Column>
-                <Column>
-                  <Rows alignVertical="center" space="6px">
-                    <Row>
-                      <Text color="label" size="12pt" weight="bold">
-                        {i18n.t('injected_notifications.network_changed')}
-                      </Text>
-                    </Row>
-                    <Row>
-                      <Text color="labelTertiary" size="11pt" weight="medium">
-                        {chainNameFromChainId(ChainId.optimism)}
-                      </Text>
-                    </Row>
-                  </Rows>
-                </Column>
-              </Columns>
-            </Box>
+          <Box
+            borderRadius="28px"
+            paddingLeft="8px"
+            paddingRight="16px"
+            paddingVertical="8px"
+            alignItems="center"
+            backdropFilter="blur(26px)"
+            background="surfaceMenu"
+            style={{
+              boxShadow:
+                '0px 8px 24px rgba(37, 41, 46, 0.12), 0px 2px 6px rgba(0, 0, 0, 0.02)',
+            }}
+          >
+            <Columns space="8px">
+              <Column width="content">
+                <img
+                  src="chrome-extension://gjmdpkmgceafaiefjdekbelbcjigmaed/assets/badges/arbitrumBadge.png"
+                  width={24}
+                  height={24}
+                />
+              </Column>
+              <Column>
+                <Rows alignVertical="center" space="6px">
+                  <Row>
+                    <Text color="label" size="12pt" weight="bold">
+                      {i18n.t('injected_notifications.network_changed')}
+                    </Text>
+                  </Row>
+                  <Row>
+                    <Text color="labelTertiary" size="11pt" weight="medium">
+                      {chainNameFromChainId(ChainId.optimism)}
+                    </Text>
+                  </Row>
+                </Rows>
+              </Column>
+            </Columns>
           </Box>
         </Inline>
       </Box>
