@@ -23,6 +23,7 @@ const ASSET_SOURCE = {
   [ChainId.bsc]: 'assets/badges/bscBadge.png',
 };
 const isDarkColor = (rgb: string) => {
+  console.log(' --- isDarkColor', rgb);
   const from = rgb.indexOf('(');
   const to = rgb.indexOf(')');
   const [r, g, b] = rgb.substring(from + 1, to).split(',');
@@ -72,13 +73,36 @@ export const Notification = ({
       .getComputedStyle(document.body, null)
       .getPropertyValue('background-color');
 
+    // use rainbowkit to determine the theme, if present
+    const siteUsingRainbowkit =
+      documentElement?.innerHTML?.includes('[data-rk]');
+
+    const rainbowKitConnectButtonColorIndex =
+      documentElement?.innerHTML?.indexOf(
+        '--rk-colors-connectButtonBackground',
+      );
+
+    const rainbowKitConnectButtonColor = documentElement?.innerHTML.substring(
+      rainbowKitConnectButtonColorIndex + 36,
+      rainbowKitConnectButtonColorIndex + 40,
+    );
+
+    const rainbowKitLightMode = rainbowKitConnectButtonColor === '#FFF';
+
+    let rainbowKitTheme: 'light' | 'dark' | undefined = undefined;
+    if (siteUsingRainbowkit) {
+      rainbowKitTheme = rainbowKitLightMode ? 'light' : 'dark';
+    }
+
     const siteTheme =
-      isDarkColor(backgroundColor) ||
+      rainbowKitTheme ||
+      (isDarkColor(backgroundColor) ||
       dataTheme === 'dark' ||
       dataColorMode === 'dark' ||
       colorScheme === 'dark'
         ? 'dark'
-        : 'light';
+        : 'light');
+
     setSiteTheme(siteTheme);
 
     const colorSchemeIndex =
