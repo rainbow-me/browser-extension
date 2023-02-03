@@ -23,7 +23,6 @@ const ASSET_SOURCE = {
   [ChainId.bsc]: 'assets/badges/bscBadge.png',
 };
 const isDarkColor = (rgb: string) => {
-  console.log(' --- isDarkColor', rgb);
   const from = rgb.indexOf('(');
   const to = rgb.indexOf(')');
   const [r, g, b] = rgb.substring(from + 1, to).split(',');
