@@ -3,6 +3,8 @@ import * as React from 'react';
 import { matchRoutes, useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+import { Box } from '~/design-system';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
@@ -538,10 +540,20 @@ export function Routes() {
   const match = matchingRoute(location.pathname);
   const background = match?.background;
   const RoutesContainer = background ?? React.Fragment;
+  const { innerHeight: windowHeight } = window;
   return (
-    <RoutesContainer>
-      <CurrentRoute pathname={location.pathname} />
-    </RoutesContainer>
+    <Box
+      style={{
+        maxWidth:
+          windowHeight === POPUP_DIMENSIONS.height
+            ? POPUP_DIMENSIONS.width
+            : undefined,
+      }}
+    >
+      <RoutesContainer>
+        <CurrentRoute pathname={location.pathname} />
+      </RoutesContainer>
+    </Box>
   );
 }
 
