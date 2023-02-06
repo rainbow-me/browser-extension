@@ -35,6 +35,12 @@ import { Transactions } from './pages/settings/transactions';
 import { Sign } from './pages/sign';
 import { Unlock } from './pages/unlock';
 import { WalletReady } from './pages/walletReady';
+import { WalletSwitcher } from './pages/walletSwitcher';
+import { AddWallet } from './pages/walletSwitcher/addWallet';
+import { NewImportWallet } from './pages/walletSwitcher/newImportWallet';
+import { NewImportWalletSelection } from './pages/walletSwitcher/newImportWalletSelection';
+import { NewImportWalletSelectionEdit } from './pages/walletSwitcher/newImportWalletSelectionEdit';
+import { NewWatchWallet } from './pages/walletSwitcher/newWatchWallet';
 import { Wallets } from './pages/wallets';
 import { WatchWallet } from './pages/watchWallet';
 import { Welcome } from './pages/welcome';
@@ -419,6 +425,97 @@ const ROUTE_DATA = [
         protectedRoute
       >
         <Wallets />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.WALLET_SWITCHER,
+    element: (
+      <AnimatedRoute
+        backTo={ROUTES.HOME}
+        direction="up"
+        navbar
+        navbarIcon="ex"
+        title={i18n.t('wallets.title')}
+        protectedRoute
+      >
+        <WalletSwitcher />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.ADD_WALLET,
+    element: (
+      <AnimatedRoute
+        backTo={ROUTES.WALLET_SWITCHER}
+        direction="down"
+        navbar
+        navbarIcon="ex"
+        title={i18n.t('add_wallet.title')}
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <AddWallet />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.NEW_WATCH_WALLET,
+    element: (
+      <AnimatedRoute
+        backTo={ROUTES.ADD_WALLET}
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <NewWatchWallet />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.NEW_IMPORT_WALLET,
+    element: (
+      <AnimatedRoute
+        backTo={ROUTES.ADD_WALLET}
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <NewImportWallet />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.NEW_IMPORT_WALLET_SELECTION,
+    element: (
+      <AnimatedRoute
+        backTo={ROUTES.NEW_IMPORT_WALLET}
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <NewImportWalletSelection />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.NEW_IMPORT_WALLET_SELECTION_EDIT,
+    element: (
+      <AnimatedRoute
+        backTo={ROUTES.NEW_IMPORT_WALLET_SELECTION}
+        direction="right"
+        navbar
+        navbarIcon="arrow"
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <NewImportWalletSelectionEdit />
       </AnimatedRoute>
     ),
   },

@@ -150,7 +150,16 @@ export type BackgroundColor =
   | 'scrimSecondary'
   | 'scrimTertiary';
 
+export type ButtonVariant =
+  | 'raised'
+  | 'flat'
+  | 'tinted'
+  | 'stroked'
+  | 'transparent'
+  | 'disabled';
+
 export const backdropFilter = {
+  'blur(12px)': 'blur(12px)',
   'blur(26px)': 'blur(26px)',
   'opacity(80%)': 'opacity(80%)',
   'opacity(5%)': 'opacity(5%)',
@@ -577,6 +586,7 @@ export const space = {
   '6px': 6,
   '7px': 7,
   '8px': 8,
+  '9px': 9,
   '10px': 10,
   '12px': 12,
   '14px': 14,
@@ -611,6 +621,7 @@ export const negativeSpace = {
   '-6px': -6,
   '-7px': -7,
   '-8px': -8,
+  '-9px': -9,
   '-10px': -10,
   '-12px': -12,
   '-14px': -14,
@@ -647,6 +658,7 @@ export const spaceToNegativeSpace: Record<
   '6px': '-6px',
   '7px': '-7px',
   '8px': '-8px',
+  '9px': '-9px',
   '10px': '-10px',
   '12px': '-12px',
   '14px': '-14px',
@@ -743,6 +755,7 @@ export const symbolNames = selectSymbolNames(
   'eye.slash.circle.fill',
   'person.text.rectangle.fill',
   'arrow.triangle.swap',
+  'arrow.up',
   'arrow.down',
   'square.on.square',
   'slider.horizontal.3',
@@ -780,6 +793,9 @@ export const symbolNames = selectSymbolNames(
   'command',
   'asterisk',
   'info.circle.fill',
+  'app.connected.to.app.below.fill',
+  'trash.fill',
+  'plus.circle',
 );
 export type SymbolName = typeof symbolNames[number];
 

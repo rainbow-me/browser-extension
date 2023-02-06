@@ -612,6 +612,50 @@ export async function watchPendingTransactions({
   });
 }
 
+export async function getCurrentNonce({
+  address,
+  chainId,
+}: {
+  address: Address;
+  chainId: ChainId;
+}) {
+  const { getNonce } = nonceStore.getState();
+  const localNonceData = getNonce({ address, chainId });
+  const localNonce = localNonceData?.currentNonce;
+  const provider = getProvider({ chainId });
+
+  const nonceIncludingPending = await provider.getTransactionCount(
+    address,
+    'pending',
+  );
+  const nonceOnChain = (nonceIncludingPending || 0) - 1;
+  const currentNonce =
+    (localNonce || 0) > nonceOnChain ? localNonce : nonceOnChain;
+
+  return currentNonce;
+}
+
+export async function getNextNonce({
+  address,
+  chainId,
+}: {
+  address: Address;
+  chainId: ChainId;
+}) {
+  const { getNonce } = nonceStore.getState();
+  const localNonceData = getNonce({ address, chainId });
+  const localNonce = localNonceData?.currentNonce || 0;
+  const provider = getProvider({ chainId });
+
+  const txCountIncludingPending = await provider.getTransactionCount(
+    address,
+    'pending',
+  );
+  if (!localNonce && !txCountIncludingPending) return 0;
+  const ret = Math.max(localNonce + 1, txCountIncludingPending);
+  return ret;
+}
+
 export async function addNewTransaction({
   address,
   chainId,
@@ -621,21 +665,13 @@ export async function addNewTransaction({
   chainId: ChainId;
   transaction: NewTransaction;
 }) {
-  const { getNonce, setNonce } = nonceStore.getState();
-  const localNonceData = getNonce({ address, chainId });
-  const localNonce = localNonceData?.currentNonce;
-  const provider = getProvider({ chainId });
-  const nonceOnChain =
-    ((await provider.getTransactionCount(address, 'pending')) || 0) - 1;
-  const currentNonce =
-    (localNonce || 0) > nonceOnChain ? localNonce : nonceOnChain;
-
+  const { setNonce } = nonceStore.getState();
   const { getPendingTransactions, setPendingTransactions } =
     pendingTransactionsStore.getState();
   const pendingTransactions = getPendingTransactions({ address });
   const { currentCurrency } = currentCurrencyStore.getState();
   const newPendingTransaction = parseNewTransaction(
-    { ...transaction, nonce: currentNonce },
+    transaction,
     currentCurrency,
   );
 
@@ -646,7 +682,7 @@ export async function addNewTransaction({
   setNonce({
     address,
     chainId,
-    currentNonce,
+    currentNonce: transaction.nonce,
   });
 }
 

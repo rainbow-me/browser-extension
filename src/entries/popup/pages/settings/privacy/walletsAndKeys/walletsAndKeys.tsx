@@ -18,7 +18,7 @@ export function WalletsAndKeys() {
 
   const handleViewWallet = (wallet: KeychainWallet) => {
     navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS, {
-      state: { wallet, password: state.password },
+      state: { wallet, password: state?.password },
     });
   };
 
@@ -45,7 +45,7 @@ export function WalletsAndKeys() {
             imported: false,
             type: KeychainType.HdKeychain,
           },
-          password: state.password,
+          password: state?.password,
         },
       },
     );

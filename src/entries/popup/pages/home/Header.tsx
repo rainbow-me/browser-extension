@@ -57,7 +57,7 @@ export function AvatarSection() {
   const { address } = useAccount();
   const { avatar, isFetched } = useAvatar({ address });
   return (
-    <Avatar.Wrapper size={60}>
+    <Avatar.Wrapper size={60} color={avatar?.color}>
       {isFetched ? (
         <>
           {avatar?.imageUrl ? (

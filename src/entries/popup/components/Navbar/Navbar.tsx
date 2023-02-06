@@ -145,7 +145,7 @@ function NavbarButtonWithBack({
   const navigate = useNavigate();
   const padding = height === '24px' ? '4px' : '2px';
   return (
-    <Box padding={padding} id="navbar-button-with-back">
+    <Box padding={padding} testId="navbar-button-with-back">
       <NavbarSymbolButton
         height={height}
         onClick={() => {

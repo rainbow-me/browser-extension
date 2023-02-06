@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.0.13",
+  "version": "1.0.23",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -58,6 +58,8 @@
   },
   "dependencies": {
     "@capsizecss/core": "3.0.0",
+    "@ledgerhq/hw-app-eth": "6.30.4",
+    "@ledgerhq/hw-transport-webusb": "6.27.10",
     "@metamask/browser-passworder": "3.0.0",
     "@metamask/eth-sig-util": "5.0.1",
     "@radix-ui/react-dropdown-menu": "2.0.1",
@@ -174,7 +176,8 @@
     "@xmldom/xmldom": "0.8.4",
     "loader-utils": "2.0.4",
     "nth-check": "2.0.1",
-    "decode-uri-component": "0.2.1"
+    "decode-uri-component": "0.2.1",
+    "http-cache-semantics": "4.1.1"
   },
   "lavamoat": {
     "allowScripts": {

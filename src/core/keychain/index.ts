@@ -123,6 +123,28 @@ export const deriveAccountsFromSecret = async (
   return accounts as Address[];
 };
 
+export const importHardwareWallet = async ({
+  vendor,
+  deviceId,
+  wallets,
+  accountsEnabled,
+}: {
+  vendor: string;
+  deviceId: string;
+  wallets: Array<{ address: Address; index: number }>;
+  accountsEnabled: number;
+}) => {
+  const keychain = await keychainManager.importKeychain({
+    vendor,
+    type: KeychainType.HardwareWalletKeychain,
+    deviceId,
+    wallets,
+    accountsEnabled,
+  });
+  const accounts = await keychain.getAccounts();
+  return accounts[0];
+};
+
 export const importWallet = async (
   secret: EthereumWalletSeed,
 ): Promise<Address> => {
@@ -217,6 +239,10 @@ export const signMessage = async ({
 
 export const getWallet = async (address: Address) => {
   return keychainManager.getWallet(address);
+};
+
+export const getPath = async (address: Address) => {
+  return keychainManager.getPath(address);
 };
 
 export const signTypedData = async ({

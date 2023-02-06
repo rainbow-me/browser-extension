@@ -24,6 +24,7 @@ export type InputProps = {
   onBlur?: InputHTMLAttributes<HTMLInputElement>['onBlur'];
   onChange?: InputHTMLAttributes<HTMLInputElement>['onChange'];
   onFocus?: InputHTMLAttributes<HTMLInputElement>['onFocus'];
+  onKeyDown?: InputHTMLAttributes<HTMLInputElement>['onKeyDown'];
   placeholder?: string;
   borderColor?: BoxStyles['borderColor'];
   testId?: string;
@@ -34,6 +35,7 @@ export type InputProps = {
   selectionColor?: BoxStyles['borderColor'];
   style?: CSSProperties;
   enableTapScale?: boolean;
+  textAlign?: TextStyles['textAlign'];
 };
 
 export const stylesForVariant: Record<
@@ -129,6 +131,7 @@ export function Input({
   testId,
   innerRef,
   borderColor,
+  textAlign,
   enableTapScale = true,
   ...inputProps
 }: InputProps) {
@@ -168,6 +171,7 @@ export function Input({
             fontSize,
             fontWeight: 'semibold',
             fontFamily: 'rounded',
+            textAlign,
           }),
           placeholderStyle,
         ]}

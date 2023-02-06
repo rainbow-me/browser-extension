@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { Box, Text } from '~/design-system';
+import { AccentColorProvider, Box, Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 
 function Avatar({ imageUrl, size }: { imageUrl?: string; size: number }) {
@@ -15,23 +15,27 @@ function Avatar({ imageUrl, size }: { imageUrl?: string; size: number }) {
 function AvatarWrapper({
   children,
   size,
+  color,
 }: {
   children: React.ReactNode;
   size: number;
+  color?: string;
 }) {
   return (
-    <Box
-      borderRadius="round"
-      boxShadow="18px accent"
-      position="relative"
-      style={{
-        height: size,
-        width: size,
-        overflow: 'hidden',
-      }}
-    >
-      {children}
-    </Box>
+    <AccentColorProvider color={color || 'black'}>
+      <Box
+        borderRadius="round"
+        boxShadow="18px accent"
+        position="relative"
+        style={{
+          height: size,
+          width: size,
+          overflow: 'hidden',
+        }}
+      >
+        {children}
+      </Box>
+    </AccentColorProvider>
   );
 }
 

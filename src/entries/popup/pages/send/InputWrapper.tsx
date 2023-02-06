@@ -14,6 +14,21 @@ const TRANSITION_CONFIG = {
   },
 };
 
+export const dropdownContainerVariant = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+export const dropdownItemVariant = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1 },
+};
+
 export const InputWrapper = ({
   leftComponent,
   centerComponent,
@@ -86,6 +101,7 @@ export const InputWrapper = ({
             background="surfaceSecondaryElevated"
             key="address-dropdown"
             initial={{ height: 16 }}
+            style={{ overflowY: 'clip' }}
             animate={
               dropdownVisible
                 ? {

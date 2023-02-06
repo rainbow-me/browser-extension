@@ -33,8 +33,7 @@ The keychain manager currently supports the following types of wallets:
 
 In the future, the keychain manager will support the following types of wallets:
 - `WatchOnlyKeychain` (public key based)
-- `LedgerKeychain` (ledger based)
-- `TrezorKeychain` (trezor based)
+- `HardwareWalletKeychain` (ledger or trezor based)
 
 All the keychain types implement the `IKeychain` interface, which provides a common interface for the keychain manager to use.
 
