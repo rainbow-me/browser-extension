@@ -13,13 +13,15 @@ import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
+import { OnboardBeforeConnectSheet } from './OnboardBeforeConnectSheet';
+
 export function Welcome() {
   const navigate = useRainbowNavigate();
   const { state } = useLocation();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [showConnectAttemptSheet, setShowConnectAttemptSheet] = useState(
-    location.search.includes('connect-attempt') || state?.connectAttempt,
-  );
+  const [showOnboardBeforeConnectSheet, setShowOnboardBeforeConnectSheet] =
+    useState(
+      window.location.hash.includes('connect-attempt') || state?.connectAttempt,
+    );
 
   const { setCurrentAddress } = useCurrentAddressStore();
 
@@ -34,84 +36,95 @@ export function Welcome() {
   }, [navigate, setCurrentAddress]);
 
   return (
-    <FlyingRainbows>
-      <Box
-        width="full"
-        style={{ zIndex: 1, paddingTop: 127 }}
-        background="transparent"
-      >
+    <>
+      <OnboardBeforeConnectSheet
+        show={showOnboardBeforeConnectSheet}
+        onClick={() => setShowOnboardBeforeConnectSheet(false)}
+      />
+      <FlyingRainbows>
         <Box
           width="full"
-          display="flex"
-          justifyContent="center"
-          paddingBottom="4px"
+          style={{ zIndex: 1, paddingTop: 127 }}
+          background="transparent"
         >
-          <LogoWithLetters color="label" />
-        </Box>
-        <Box
-          width="full"
-          justifyContent="center"
-          alignItems="center"
-          display="flex"
-          style={{
-            height: '21px',
-          }}
-        >
-          <Text align="center" color="labelTertiary" size="16pt" weight="bold">
-            {i18n.t('welcome.subtitle')}
-          </Text>
-        </Box>
-        <Box width="full" style={{ marginTop: '226px' }}>
-          <Rows alignVertical="top" space="20px">
-            <Rows alignVertical="top" space="10px">
-              <Button
-                color="fill"
-                height="44px"
-                variant="flat"
-                width="full"
-                symbol="arrow.right"
-                symbolSide="right"
-                blur="26px"
-                onClick={handleCreateNewWalletClick}
-                testId="create-wallet-button"
-              >
-                {i18n.t('welcome.create_wallet')}
-              </Button>
-              <ThemeProvider theme="dark">
+          <Box
+            width="full"
+            display="flex"
+            justifyContent="center"
+            paddingBottom="4px"
+          >
+            <LogoWithLetters color="label" />
+          </Box>
+          <Box
+            width="full"
+            justifyContent="center"
+            alignItems="center"
+            display="flex"
+            style={{
+              height: '21px',
+            }}
+          >
+            <Text
+              align="center"
+              color="labelTertiary"
+              size="16pt"
+              weight="bold"
+            >
+              {i18n.t('welcome.subtitle')}
+            </Text>
+          </Box>
+          <Box width="full" style={{ marginTop: '226px' }}>
+            <Rows alignVertical="top" space="20px">
+              <Rows alignVertical="top" space="10px">
                 <Button
-                  color="surfaceSecondaryElevated"
+                  color="fill"
                   height="44px"
                   variant="flat"
                   width="full"
-                  onClick={handleImportWalletClick}
-                  testId="import-wallet-button"
+                  symbol="arrow.right"
+                  symbolSide="right"
+                  blur="26px"
+                  onClick={handleCreateNewWalletClick}
+                  testId="create-wallet-button"
                 >
-                  {i18n.t('welcome.import_wallet')}
+                  {i18n.t('welcome.create_wallet')}
                 </Button>
-              </ThemeProvider>
-            </Rows>
-            <Box display="flex" style={{ width: '210px', margin: 'auto' }}>
-              <Text
-                align="center"
-                color="labelTertiary"
-                size="12pt"
-                weight="regular"
-                as="p"
-              >
-                {i18n.t('welcome.disclaimer_tos')}&nbsp;
-                <a
-                  href="https://rainbow.me/terms-of-use"
-                  target="_blank"
-                  style={{ color: accentColorAsHsl }}
-                  rel="noreferrer"
+                <ThemeProvider theme="dark">
+                  <Button
+                    color="surfaceSecondaryElevated"
+                    height="44px"
+                    variant="flat"
+                    width="full"
+                    onClick={handleImportWalletClick}
+                    testId="import-wallet-button"
+                  >
+                    {i18n.t('welcome.import_wallet')}
+                  </Button>
+                </ThemeProvider>
+              </Rows>
+              <Box display="flex" style={{ width: '210px', margin: 'auto' }}>
+                <Text
+                  align="center"
+                  color="labelTertiary"
+                  size="12pt"
+                  weight="regular"
+                  as="p"
                 >
-                  {i18n.t('welcome.disclaimer_tos_link')}
-                </a>
-              </Text>
-            </Box>
-          </Rows>
+                  {i18n.t('welcome.disclaimer_tos')}&nbsp;
+                  <a
+                    href="https://rainbow.me/terms-of-use"
+                    target="_blank"
+                    style={{ color: accentColorAsHsl }}
+                    rel="noreferrer"
+                  >
+                    {i18n.t('welcome.disclaimer_tos_link')}
+                  </a>
+                </Text>
+              </Box>
+            </Rows>
+          </Box>
         </Box>
-      </Box>
-    </FlyingRainbows>
+      </FlyingRainbows>
+    </>
   );
 }
