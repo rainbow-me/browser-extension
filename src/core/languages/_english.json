@@ -8,7 +8,7 @@
   "wallet_switcher": {
     "title": "Wallets",
     "rename_wallet": "Rename wallet",
-    "copy_address": "Copy Address",
+    "copy_address": "Copy address",
     "remove_wallet": "Remove wallet",
     "hide_wallet": "Hide wallet",
     "watching": "Watching",
