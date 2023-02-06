@@ -1,5 +1,6 @@
 import {
   ParsedAddressAsset,
+  ParsedAssetsDict,
   ParsedAssetsDictByChain,
   UniqueId,
 } from '~/core/types/assets';
@@ -29,6 +30,20 @@ export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
   return assetsByNetwork
     .map((chainAssets) => Object.values(chainAssets))
     .flat();
+}
+
+export function selectUserAssetAddressMapByChainId(
+  assets: ParsedAssetsDictByChain,
+) {
+  const mapAddresses = (list: ParsedAssetsDict) =>
+    Object.values(list || {}).map((i) => i?.address);
+  return {
+    [ChainId.mainnet]: mapAddresses(assets?.[ChainId.mainnet]) || [],
+    [ChainId.optimism]: mapAddresses(assets?.[ChainId.optimism]) || [],
+    [ChainId.bsc]: mapAddresses(assets?.[ChainId.bsc]) || [],
+    [ChainId.polygon]: mapAddresses(assets?.[ChainId.polygon]) || [],
+    [ChainId.arbitrum]: mapAddresses(assets?.[ChainId.arbitrum]) || [],
+  };
 }
 
 // selector generators

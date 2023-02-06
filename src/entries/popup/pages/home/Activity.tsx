@@ -19,6 +19,7 @@ import {
   Text,
 } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { Space, TextColor } from '~/design-system/styles/designTokens';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
@@ -39,6 +40,9 @@ type ActivityProps = {
     transaction: RainbowTransaction;
   }) => void;
 };
+
+const { innerWidth: windowWidth } = window;
+const TEXT_MAX_WIDTH = windowWidth - 150;
 
 export function Activity({ onSheetSelected }: ActivityProps) {
   const { address } = useAccount();
@@ -327,14 +331,16 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
     ],
   );
 
-  const bottomRow = useMemo(
-    () => (
+  const bottomRow = useMemo(() => {
+    const nameMaxWidthDiff = getNativeDisplay().length * 3;
+    const nameMaxWidth = TEXT_MAX_WIDTH - nameMaxWidthDiff;
+    return (
       <Columns>
         <Column width="content">
           <Box paddingVertical="4px">
-            <Text size="14pt" weight="semibold">
-              {truncateString(name, 16)}
-            </Text>
+            <TextOverflow maxWidth={nameMaxWidth} size="14pt" weight="semibold">
+              {name}
+            </TextOverflow>
           </Box>
         </Column>
         <Column>
@@ -350,9 +356,8 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
           </Box>
         </Column>
       </Columns>
-    ),
-    [getNativeDisplay, getNativeDisplayColor, name],
-  );
+    );
+  }, [getNativeDisplay, getNativeDisplayColor, name]);
 
   return asset ? (
     <CoinRow

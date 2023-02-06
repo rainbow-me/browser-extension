@@ -8,7 +8,7 @@
   "wallet_switcher": {
     "title": "Wallets",
     "rename_wallet": "Rename wallet",
-    "copy_address": "Copy Address",
+    "copy_address": "Copy address",
     "remove_wallet": "Remove wallet",
     "hide_wallet": "Hide wallet",
     "watching": "Watching",
@@ -542,5 +542,10 @@
       "max_priority_explainer": "The miner tip goes directly to the miner who confirms your transaction on the network.\n\nA higher tip makes your transaction more likely to be confirmed quickly.",
       "max_priority_title": "Miner tip"
     }
+  },
+  "injected_notifications": {
+    "network_changed": "Network changed",
+    "network_changed_failed": "Network changed failed",
+    "unsupported_network": "Unsupported network"
   }
 }
