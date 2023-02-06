@@ -23,10 +23,7 @@ export const useWallets = () => {
       allWallets.forEach((wallet) => {
         if (!hiddenWallets[wallet.address]) {
           visibleWallets.push(wallet);
-          if (
-            wallet.type === KeychainType.KeyPairKeychain ||
-            wallet.type === KeychainType.HdKeychain
-          ) {
+          if (wallet.type !== KeychainType.ReadOnlyKeychain) {
             visibleOwnedWallets.push(wallet);
           } else if (wallet.type === KeychainType.ReadOnlyKeychain) {
             watchedWallets.push(wallet);
