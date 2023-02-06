@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 
 import { i18n } from '~/core/languages';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { INJECTED_NOTIFICATION_DIMENSIONS } from '~/core/utils/dimensions';
 import {
   Box,
   Column,
@@ -28,16 +29,6 @@ const isDarkColor = (rgb: string) => {
   const [r, g, b] = rgb.substring(from + 1, to).split(',');
   return !(Number(r) > 40 || Number(g) > 40 || Number(b) > 40);
 };
-
-// 161 (figma width spec) + 48 (radius shadow) since we need space for the shadow to be visible in the iframe
-const NOTIFICATION_WIDTH = '209px';
-// 40 (figma height spec) + 48 (radius shadow) + 16 (vertical shadow), since we need space for the shadow to be visible in the iframe
-const NOTIFICATION_HEIGHT = '122px';
-
-// 9 (figma top spec) - 41 (extra iframe height for shadow, 122 - 40 /2 )
-// since we need space for the shadow to be visible in the iframe
-const NOTIFICATION_TOP = '-32px';
-const NOTIFICATION_RIGHT = '50px';
 
 export const Notification = ({
   chainId,
@@ -187,10 +178,10 @@ export const Notification = ({
   return (
     <iframe
       style={{
-        top: NOTIFICATION_TOP,
-        right: NOTIFICATION_RIGHT,
-        height: NOTIFICATION_HEIGHT,
-        width: NOTIFICATION_WIDTH,
+        top: INJECTED_NOTIFICATION_DIMENSIONS.top,
+        right: INJECTED_NOTIFICATION_DIMENSIONS.right,
+        height: INJECTED_NOTIFICATION_DIMENSIONS.height,
+        width: INJECTED_NOTIFICATION_DIMENSIONS.width,
         borderWidth: '0px',
         position: 'fixed',
         zIndex: '9999999',
@@ -229,8 +220,8 @@ const NotificationComponent = ({
         height="full"
         position="fixed"
         style={{
-          height: NOTIFICATION_HEIGHT,
-          width: NOTIFICATION_WIDTH,
+          height: INJECTED_NOTIFICATION_DIMENSIONS.height,
+          width: INJECTED_NOTIFICATION_DIMENSIONS.width,
         }}
       >
         <Inline height="full" alignVertical="center" alignHorizontal="center">
