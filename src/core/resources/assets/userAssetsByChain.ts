@@ -21,6 +21,7 @@ import {
   parseAddressAsset,
   parseParsedAddressAsset,
 } from '~/core/utils/assets';
+import { ETH_MAINNET_ASSET } from '~/test/utils';
 
 const USER_ASSETS_TIMEOUT_DURATION = 10000;
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
@@ -109,7 +110,8 @@ export async function userAssetsByChainQueryFunction({
 
       if (connectedToHardhat) {
         const provider = getProvider({ chainId: ChainId.hardhat });
-
+        // force checking for ETH if connected to hardhat
+        parsedUserAssetsByChain[ETH_MAINNET_ASSET.uniqueId] = ETH_MAINNET_ASSET;
         Object.values(parsedUserAssetsByChain).forEach(async (parsedAsset) => {
           if (parsedAsset.chainId !== ChainId.mainnet) return parsedAsset;
           try {
