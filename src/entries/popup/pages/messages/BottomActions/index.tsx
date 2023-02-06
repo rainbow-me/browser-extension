@@ -77,7 +77,7 @@ export const BottomSwitchWallet = ({
   selectedWallet: Address;
   setSelectedWallet: (selected: Address) => void;
 }) => {
-  const { visibleOwnedWallets } = useWallets();
+  const { visibleWallets } = useWallets();
 
   return (
     <Stack space="8px">
@@ -104,7 +104,7 @@ export const BottomSwitchWallet = ({
             </Inline>
           </Box>
         )}
-        menuItems={visibleOwnedWallets?.map((wallet) => wallet.address)}
+        menuItems={visibleWallets?.map((wallet) => wallet.address)}
         selectedValue={selectedWallet}
         onValueChange={(value) => setSelectedWallet(value as Address)}
       />
