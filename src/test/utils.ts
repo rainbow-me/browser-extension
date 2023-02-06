@@ -1,6 +1,6 @@
 import { Address } from 'wagmi';
 
-import { ParsedAsset, UniqueId } from '~/core/types/assets';
+import { ParsedAddressAsset, ParsedAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 
 export const TEST_ADDRESS_1 = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
@@ -16,29 +16,30 @@ export const TEST_PK_3 =
 export const RAINBOW_WALLET_ADDRESS =
   '0x7a3d05c70581bd345fe117c06e45f9669205384f';
 
-export const ETH_MAINNET_ASSET: ParsedAsset = {
+export const ETH_MAINNET_ASSET: ParsedAddressAsset = {
   address: 'eth' as Address,
+  balance: { amount: '10000', display: '10,000.00 ETH' },
   chainId: 1,
-  chainName: ChainName.mainnet,
-  colors: { primary: '#808088' },
+  chainName: 'mainnet' as ChainName,
+  colors: { primary: '#808088', fallback: '#E8EAF5' },
+  decimals: 18,
+  icon_url:
+    'https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/smartchain/0x2170ed0880ac9a755fd29b2688956bd959f933f8.png',
   isNativeAsset: true,
+  mainnetAddress: undefined,
   name: 'Ethereum',
   native: {
-    price: {
-      amount: 1291.8200000000002,
-      change: '2.79%',
-      display: '$1,291.82',
-    },
+    balance: { amount: '16341800', display: '$16,341,800.00' },
+    price: { change: '0.15%', amount: 1634.18, display: '$1,634.18' },
   },
   price: {
-    value: 1291.8200000000002,
-    relative_change_24h: 2.7856239208790683,
+    value: 1634.18,
+    relative_change_24h: 0.14646492502099484,
     changed_at: -1,
   },
   symbol: 'ETH',
   type: 'token',
-  uniqueId: 'eth_1' as UniqueId,
-  decimals: 18,
+  uniqueId: 'eth_1',
 };
 export const USDC_MAINNET_ASSET: ParsedAsset = {
   address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Address,
