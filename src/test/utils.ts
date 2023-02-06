@@ -23,8 +23,7 @@ export const ETH_MAINNET_ASSET: ParsedAddressAsset = {
   chainName: 'mainnet' as ChainName,
   colors: { primary: '#808088', fallback: '#E8EAF5' },
   decimals: 18,
-  icon_url:
-    'https://rainbowme-res.cloudinary.com/image/upload/v1668565116/assets/smartchain/0x2170ed0880ac9a755fd29b2688956bd959f933f8.png',
+  icon_url: '',
   isNativeAsset: true,
   mainnetAddress: undefined,
   name: 'Ethereum',
