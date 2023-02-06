@@ -28,6 +28,8 @@ export interface CurrentNonceState {
   getNonce: ({ address, chainId }: GetNonceArgs) => NonceData | null;
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 export const nonceStore = createStore<CurrentNonceState>(
   (set, get) => ({
     setNonce: ({ address, currentNonce, latestConfirmedNonce, chainId }) => {

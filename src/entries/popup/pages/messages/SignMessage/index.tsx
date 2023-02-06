@@ -1,10 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { chain, useNetwork } from 'wagmi';
 
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { RPCMethod } from '~/core/types/rpcMethods';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
-import { Row, Rows } from '~/design-system';
+import { Box } from '~/design-system';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
@@ -38,6 +38,7 @@ export function SignMessage({
   rejectRequest,
   request,
 }: ApproveRequestProps) {
+  const [waitingForDevice, setWaitingForDevice] = useState(false);
   const { appHost } = useAppMetadata({
     url: request?.meta?.sender?.url,
   });
@@ -51,8 +52,15 @@ export function SignMessage({
   const onAcceptRequest = useCallback(async () => {
     const walletAction = getWalletActionMethod(request?.method);
     const requestPayload = getSigningRequestDisplayDetails(request);
+    const { type } = await wallet.getWallet(selectedWallet);
     if (!requestPayload.msgData || !requestPayload.address) return;
     let result = null;
+
+    // Change the label while we wait for confirmation
+    if (type === 'HardwareWalletKeychain') {
+      setWaitingForDevice(true);
+    }
+
     if (walletAction === 'personal_sign') {
       result = await wallet.personalSign(
         requestPayload.msgData,
@@ -65,21 +73,19 @@ export function SignMessage({
       );
     }
     approveRequest(result);
-  }, [approveRequest, request]);
+    setWaitingForDevice(false);
+  }, [approveRequest, request, selectedWallet]);
 
   return (
-    <Rows alignVertical="justify">
-      <Row height="content">
-        <SignMessageInfo request={request} />
-      </Row>
-      <Row height="content">
-        <SignMessageActions
-          selectedWallet={selectedWallet}
-          selectedNetwork={selectedNetwork}
-          onAcceptRequest={onAcceptRequest}
-          onRejectRequest={rejectRequest}
-        />
-      </Row>
-    </Rows>
+    <Box style={{ overflowY: 'hidden' }} width="full" height="full">
+      <SignMessageInfo request={request} />
+      <SignMessageActions
+        waitingForDevice={waitingForDevice}
+        selectedWallet={selectedWallet}
+        selectedNetwork={selectedNetwork}
+        onAcceptRequest={onAcceptRequest}
+        onRejectRequest={rejectRequest}
+      />
+    </Box>
   );
 }

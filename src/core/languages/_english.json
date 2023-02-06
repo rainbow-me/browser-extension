@@ -8,7 +8,7 @@
   "wallet_switcher": {
     "title": "Wallets",
     "rename_wallet": "Rename wallet",
-    "copy_address": "Copy Address",
+    "copy_address": "Copy address",
     "remove_wallet": "Remove wallet",
     "hide_wallet": "Hide wallet",
     "watching": "Watching",
@@ -203,7 +203,8 @@
       "sending_on_network": "Sending on the %{chainName} network",
       "sending_on_l2_check_1": "I’m not sending to an exchange",
       "sending_on_l2_check_2": "The person I’m sending to has a wallet that support %{chainName}",
-      "complete_checks": "Complete the checks"
+      "complete_checks": "Complete the checks",
+      "confirm_hw": "Confirm on your device"
     }
   },
   "custom_gas": {
@@ -353,6 +354,7 @@
     "message_signing_request": "Message Signing Request",
     "message": "Message",
     "sign_message": "Sign Message",
+    "confirm_hw": "Confirm on your device",
     "balance": "Balance",
     "send_transaction": "Send Transaction",
     "transaction_request": "Transaction Request"
@@ -540,5 +542,10 @@
       "max_priority_explainer": "The miner tip goes directly to the miner who confirms your transaction on the network.\n\nA higher tip makes your transaction more likely to be confirmed quickly.",
       "max_priority_title": "Miner tip"
     }
+  },
+  "injected_notifications": {
+    "network_changed": "Network changed",
+    "network_changed_failed": "Network changed failed",
+    "unsupported_network": "Unsupported network"
   }
 }

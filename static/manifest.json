@@ -64,7 +64,9 @@
     {
       "resources": [
         "inpage.js",
-        "*.woff2"
+        "*.woff2",
+        "popup.css",
+        "assets/badges/*.png"
       ],
       "matches": [
         "<all_urls>"
