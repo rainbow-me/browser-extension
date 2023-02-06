@@ -36,7 +36,7 @@ import {
 } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
-import { sendTransaction } from '../../handlers/wallet';
+import { getWallet, sendTransaction } from '../../handlers/wallet';
 import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsset';
 import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
 import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
@@ -72,7 +72,7 @@ export const AccentColorProviderWrapper = ({
 };
 
 export function Send() {
-  const [, setTxHash] = useState('');
+  const [waitingForDevice, setWaitingForDevice] = useState(false);
   const [showReviewSheet, setShowReviewSheet] = useState(false);
   const [contactSaveAction, setSaveContactAction] = useState<{
     show: boolean;
@@ -162,13 +162,19 @@ export function Send() {
       });
       independentFieldRef?.current?.focus();
     }
-  }, [controls, independentFieldRef, readyForReview]);
+  }, [readyForReview, controls, independentFieldRef]);
 
   const closeReviewSheet = useCallback(() => setShowReviewSheet(false), []);
 
   const handleSend = useCallback(
     async (callback?: () => void) => {
       try {
+        const { type } = await getWallet(fromAddress);
+
+        // Change the label while we wait for confirmation
+        if (type === 'HardwareWalletKeychain') {
+          setWaitingForDevice(true);
+        }
         const result = await sendTransaction({
           from: fromAddress,
           to: txToAddress,
@@ -176,9 +182,7 @@ export function Send() {
           chainId: connectedToHardhat ? ChainId.hardhat : chainId,
           data,
         });
-
         if (result) {
-          setTxHash(result?.hash as string);
           const transaction = {
             amount: assetAmount,
             asset,
@@ -201,15 +205,17 @@ export function Send() {
         }
       } catch (e) {
         alert('Transaction failed');
+      } finally {
+        setWaitingForDevice(false);
       }
     },
     [
       fromAddress,
       txToAddress,
       value,
+      connectedToHardhat,
       chainId,
       data,
-      connectedToHardhat,
       assetAmount,
       asset,
       navigate,
@@ -296,6 +302,7 @@ export function Send() {
           primaryAmountDisplay={independentAmountDisplay.display}
           secondaryAmountDisplay={dependentAmountDisplay.display}
           onSaveContactAction={setSaveContactAction}
+          waitingForDevice={waitingForDevice}
         />
       </AccentColorProviderWrapper>
 

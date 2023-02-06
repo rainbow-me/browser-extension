@@ -203,7 +203,8 @@
       "sending_on_network": "Sending on the %{chainName} network",
       "sending_on_l2_check_1": "I’m not sending to an exchange",
       "sending_on_l2_check_2": "The person I’m sending to has a wallet that support %{chainName}",
-      "complete_checks": "Complete the checks"
+      "complete_checks": "Complete the checks",
+      "confirm_hw": "Confirm on your device"
     }
   },
   "custom_gas": {
@@ -353,6 +354,7 @@
     "message_signing_request": "Message Signing Request",
     "message": "Message",
     "sign_message": "Sign Message",
+    "confirm_hw": "Confirm on your device",
     "balance": "Balance",
     "send_transaction": "Send Transaction",
     "transaction_request": "Transaction Request"

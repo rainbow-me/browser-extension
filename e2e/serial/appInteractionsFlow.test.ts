@@ -165,7 +165,7 @@ describe('App interactions flow', () => {
     await findElementAndClick({ id: 'switch-network-item-0', driver });
 
     await delayTime('medium');
-    await findElementAndClick({ id: 'accept-request-button', driver });
+    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
     await driver.switchTo().window(dappHandler);
     const topButton = await querySelector(
@@ -219,7 +219,7 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(popupHandler);
 
     await delayTime('medium');
-    await findElementAndClick({ id: 'accept-request-button', driver });
+    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
     await delayTime('medium');
     await driver.switchTo().window(dappHandler);
@@ -250,7 +250,7 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
     await delayTime('medium');
-    await findElementAndClick({ id: 'accept-request-button', driver });
+    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
     await delayTime('medium');
     await driver.switchTo().window(dappHandler);
     const signatureTextSelector = await querySelector(
@@ -289,7 +289,7 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
     await delayTime('long');
-    await findElementAndClick({ id: 'accept-request-button', driver });
+    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
     await delayTime('long');
     await driver.switchTo().window(dappHandler);
   });
