@@ -27,6 +27,7 @@ export const NATIVE_ASSETS_PER_CHAIN = {
   [ChainId.mainnet]: ETH_ADDRESS,
   [ChainId.optimism]: OPTIMISM_ETH_ADDRESS,
   [ChainId.polygon]: MATIC_POLYGON_ADDRESS,
+  [ChainId.hardhat]: ETH_ADDRESS,
 };
 export const OVM_GAS_PRICE_ORACLE =
   '0x420000000000000000000000000000000000000F';
