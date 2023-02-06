@@ -1,19 +1,18 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 
+import { usePendingRequestStore } from '~/core/state';
+
 import { UserStatusResult, useAuth } from './hooks/useAuth';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import { ROUTES } from './urls';
 
-const windowLocationHash = window.location.hash.split('?')?.[0];
-const windowLocationOptionalParams = window.location.hash.split('?')?.[1];
+const windowLocationHash = window.location.hash;
 
 const isHome = () => windowLocationHash === '' || windowLocationHash === '#/';
 const isWelcome = () => windowLocationHash === '#/welcome';
 const isCreatePassword = () => windowLocationHash === '#/create-password';
 const isLockScreen = () => windowLocationHash === '#/unlock';
-const isConnectAttempt = () =>
-  windowLocationOptionalParams === 'connect-attempt';
 
 export const ProtectedRoute = ({
   children,
@@ -25,14 +24,8 @@ export const ProtectedRoute = ({
   const { status } = useAuth();
   const isFullScreen = useIsFullScreen();
 
-  console.log('--- windowLocationHash', window.location);
-  console.log('--- windowLocationHash', windowLocationHash);
-  console.log('--- windowLocationOptionalParams', windowLocationOptionalParams);
-  console.log(
-    '--- isConnectAttempt()',
-    isConnectAttempt(),
-    window.location.hash.split('?')?.[1],
-  );
+  const { pendingRequests } = usePendingRequestStore();
+
   if (
     (allowedStates === true && status === 'READY') ||
     (Array.isArray(allowedStates) &&
@@ -53,12 +46,7 @@ export const ProtectedRoute = ({
             url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome`,
           });
         }
-        return (
-          <Navigate
-            to={ROUTES.WELCOME}
-            state={{ connectAttempt: isConnectAttempt() }}
-          />
-        );
+        return <Navigate to={ROUTES.WELCOME} />;
       case 'READY':
         return (
           <Navigate
@@ -73,7 +61,9 @@ export const ProtectedRoute = ({
           return (
             <Navigate
               to={ROUTES.CREATE_PASSWORD}
-              state={{ connectAttempt: isConnectAttempt() }}
+              state={{
+                pendingRequest: !!pendingRequests.length,
+              }}
             />
           );
         }

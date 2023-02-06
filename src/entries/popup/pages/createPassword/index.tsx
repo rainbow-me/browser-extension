@@ -32,7 +32,7 @@ export function CreatePassword() {
   const { state } = useLocation();
 
   const [showOnboardBeforeConnectSheet, setShowOnboardBeforeConnectSheet] =
-    useState(state?.connectAttempt);
+    useState(state?.pendingRequest);
 
   // Check if passwords match
   const checkIfPasswordsMatch = useCallback(() => {

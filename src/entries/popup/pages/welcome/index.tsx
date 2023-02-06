@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
+import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
 import { Box, Button, Text, ThemeProvider } from '~/design-system';
 import { Rows } from '~/design-system/components/Rows/Rows';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
@@ -17,11 +16,9 @@ import { OnboardBeforeConnectSheet } from './OnboardBeforeConnectSheet';
 
 export function Welcome() {
   const navigate = useRainbowNavigate();
-  const { state } = useLocation();
+  const { pendingRequests } = usePendingRequestStore();
   const [showOnboardBeforeConnectSheet, setShowOnboardBeforeConnectSheet] =
-    useState(
-      window.location.hash.includes('connect-attempt') || state?.connectAttempt,
-    );
+    useState(!!pendingRequests.length);
 
   const { setCurrentAddress } = useCurrentAddressStore();
 

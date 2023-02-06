@@ -5,7 +5,7 @@ import { ChainId } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
 import { Address, UserRejectedRequestError } from 'wagmi';
 
-import { hasVault } from '~/core/keychain';
+import { hasVault, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import {
   appSessionsStore,
@@ -59,11 +59,11 @@ const messengerProviderRequest = async (
   // Add pending request to global background state.
   addPendingRequest(request);
 
-  if (hasVault()) {
+  if (hasVault() && (await isPasswordSet())) {
     openWindow();
   } else {
     chrome.tabs.create({
-      url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome?connect-attempt`,
+      url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome`,
     });
   }
   // Wait for response from the popup.
