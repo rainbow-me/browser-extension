@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -14,6 +15,12 @@ import { ROUTES } from '../../urls';
 
 export function Welcome() {
   const navigate = useRainbowNavigate();
+  const { state } = useLocation();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [showConnectAttemptSheet, setShowConnectAttemptSheet] = useState(
+    location.search.includes('connect-attempt') || state?.connectAttempt,
+  );
+
   const { setCurrentAddress } = useCurrentAddressStore();
 
   const handleImportWalletClick = React.useCallback(async () => {

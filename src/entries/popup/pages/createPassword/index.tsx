@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import {
@@ -26,7 +27,15 @@ export function CreatePassword() {
   const [strength, setStrength] = useState<number | null>(null);
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [isValid, setIsValid] = useState(false);
+
   const [isMatching, setIsMatching] = useState<boolean | null>(null);
+
+  const { state } = useLocation();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [showConnectAttemptSheet, setShowConnectAttemptSheet] = useState(
+    state?.connectAttempt,
+  );
+  console.log('--- showConnectAttemptSheet', showConnectAttemptSheet);
 
   // Check if passwords match
   const checkIfPasswordsMatch = useCallback(() => {
