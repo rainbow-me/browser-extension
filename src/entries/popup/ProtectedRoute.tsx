@@ -5,11 +5,15 @@ import { UserStatusResult, useAuth } from './hooks/useAuth';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import { ROUTES } from './urls';
 
-const isHome = () =>
-  window.location.hash === '' || window.location.hash === '#/';
-const isWelcome = () => window.location.hash === '#/welcome';
-const isCreatePassword = () => window.location.hash === '#/create-password';
-const isLockScreen = () => window.location.hash === '#/unlock';
+const windowLocationHash = window.location.hash.split('?')?.[0];
+const windowLocationOptionalParams = window.location.hash.split('?')?.[1];
+
+const isHome = () => windowLocationHash === '' || windowLocationHash === '#/';
+const isWelcome = () => windowLocationHash === '#/welcome';
+const isCreatePassword = () => windowLocationHash === '#/create-password';
+const isLockScreen = () => windowLocationHash === '#/unlock';
+const isConnectAttempt = () =>
+  windowLocationOptionalParams === 'connect-attempt';
 
 export const ProtectedRoute = ({
   children,
@@ -20,12 +24,21 @@ export const ProtectedRoute = ({
 }): JSX.Element => {
   const { status } = useAuth();
   const isFullScreen = useIsFullScreen();
+
+  console.log('--- windowLocationHash', window.location);
+  console.log('--- windowLocationHash', windowLocationHash);
+  console.log('--- windowLocationOptionalParams', windowLocationOptionalParams);
+  console.log(
+    '--- isConnectAttempt()',
+    isConnectAttempt(),
+    window.location.hash.split('?')?.[1],
+  );
   if (
     (allowedStates === true && status === 'READY') ||
     (Array.isArray(allowedStates) &&
       allowedStates.includes(status as UserStatusResult))
   ) {
-    if (window.location.hash === '' || window.location.hash === '#/') {
+    if (windowLocationHash === '' || windowLocationHash === '#/') {
       return <Navigate to={ROUTES.HOME} />;
     } else {
       return children as JSX.Element;
@@ -34,28 +47,35 @@ export const ProtectedRoute = ({
     switch (status) {
       case 'LOCKED':
         return <Navigate to={ROUTES.UNLOCK} />;
-        break;
       case 'NEW':
         if (!isFullScreen) {
           chrome.tabs.create({
             url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome`,
           });
         }
-        return <Navigate to={ROUTES.WELCOME} />;
-        break;
+        return (
+          <Navigate
+            to={ROUTES.WELCOME}
+            state={{ connectAttempt: isConnectAttempt() }}
+          />
+        );
       case 'READY':
         return (
           <Navigate
             to={isFullScreen && !isLockScreen() ? ROUTES.READY : ROUTES.HOME}
           />
         );
-        break;
       default:
         if (
           status === 'NEEDS_PASSWORD' &&
           (isHome() || isWelcome() || isCreatePassword())
         ) {
-          return <Navigate to={ROUTES.CREATE_PASSWORD} />;
+          return (
+            <Navigate
+              to={ROUTES.CREATE_PASSWORD}
+              state={{ connectAttempt: isConnectAttempt() }}
+            />
+          );
         }
         return children as JSX.Element;
     }
