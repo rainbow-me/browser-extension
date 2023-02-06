@@ -2,6 +2,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import React, { ReactNode, useCallback, useMemo, useRef } from 'react';
 import { useAccount } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { useCurrentCurrencyStore } from '~/core/state';
 import {
   RainbowTransaction,
@@ -18,6 +19,7 @@ import {
   Text,
 } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { Space, TextColor } from '~/design-system/styles/designTokens';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
@@ -38,6 +40,9 @@ type ActivityProps = {
     transaction: RainbowTransaction;
   }) => void;
 };
+
+const { innerWidth: windowWidth } = window;
+const TEXT_MAX_WIDTH = windowWidth - 150;
 
 export function Activity({ onSheetSelected }: ActivityProps) {
   const { address } = useAccount();
@@ -68,6 +73,39 @@ export function Activity({ onSheetSelected }: ActivityProps) {
   }) => {
     onSheetSelected({ sheet, transaction });
   };
+
+  if (!listData.length) {
+    return (
+      <Box
+        width="full"
+        height="full"
+        justifyContent="center"
+        alignItems="center"
+        paddingTop="104px"
+      >
+        <Box paddingBottom="14px">
+          <Text
+            align="center"
+            size="20pt"
+            weight="semibold"
+            color="labelTertiary"
+          >
+            {i18n.t('activity.empty_header')}
+          </Text>
+        </Box>
+        <Inset horizontal="40px">
+          <Text
+            align="center"
+            size="12pt"
+            weight="medium"
+            color="labelQuaternary"
+          >
+            {i18n.t('activity.empty_description')}
+          </Text>
+        </Inset>
+      </Box>
+    );
+  }
 
   return (
     <>
@@ -293,14 +331,16 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
     ],
   );
 
-  const bottomRow = useMemo(
-    () => (
+  const bottomRow = useMemo(() => {
+    const nameMaxWidthDiff = getNativeDisplay().length * 3;
+    const nameMaxWidth = TEXT_MAX_WIDTH - nameMaxWidthDiff;
+    return (
       <Columns>
         <Column width="content">
           <Box paddingVertical="4px">
-            <Text size="14pt" weight="semibold">
-              {truncateString(name, 16)}
-            </Text>
+            <TextOverflow maxWidth={nameMaxWidth} size="14pt" weight="semibold">
+              {name}
+            </TextOverflow>
           </Box>
         </Column>
         <Column>
@@ -316,9 +356,8 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
           </Box>
         </Column>
       </Columns>
-    ),
-    [getNativeDisplay, getNativeDisplayColor, name],
-  );
+    );
+  }, [getNativeDisplay, getNativeDisplayColor, name]);
 
   return asset ? (
     <CoinRow

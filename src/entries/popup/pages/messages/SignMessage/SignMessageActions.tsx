@@ -12,11 +12,13 @@ import {
 } from '../BottomActions';
 
 export const SignMessageActions = ({
+  waitingForDevice,
   selectedWallet,
   selectedNetwork,
   onAcceptRequest,
   onRejectRequest,
 }: {
+  waitingForDevice: boolean;
   selectedWallet: Address;
   selectedNetwork: Chain;
   onAcceptRequest: () => void;
@@ -37,7 +39,12 @@ export const SignMessageActions = ({
           <Row>
             <AcceptRequestButton
               onClick={onAcceptRequest}
-              label={i18n.t('approve_request.sign_message')}
+              label={
+                waitingForDevice
+                  ? i18n.t('approve_request.confirm_hw')
+                  : i18n.t('approve_request.sign_message')
+              }
+              waitingForDevice={waitingForDevice}
             />
           </Row>
           <Row>
