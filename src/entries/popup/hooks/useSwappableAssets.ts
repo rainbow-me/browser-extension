@@ -1,4 +1,4 @@
-import { useAccount } from 'wagmi';
+import { useMemo } from 'react';
 
 import {
   selectUserAssetAddressMapByChainId,
@@ -6,12 +6,12 @@ import {
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useSwappableAddresses } from '~/core/resources/search/swappableAddresses';
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 
 export function useSwappableAssets(toChainId?: ChainId) {
-  const { address } = useAccount();
+  const { currentAddress: address } = useCurrentAddressStore();
 
   const { currentCurrency: currency } = useCurrentCurrencyStore();
 
@@ -69,28 +69,42 @@ export function useSwappableAssets(toChainId?: ChainId) {
     toChainId,
   });
 
-  const swappableInfo = {
-    [ChainId.mainnet]: {
-      addresses: swappableMainnetAddresses,
-      loading: swappableMainnetAddressesAreLoading,
-    },
-    [ChainId.optimism]: {
-      addresses: swappableOptimismAddresses,
-      loading: swappableOptimismAddressesAreLoading,
-    },
-    [ChainId.bsc]: {
-      addresses: swappableBscAddresses,
-      loading: swappableBscAddressesAreLoading,
-    },
-    [ChainId.polygon]: {
-      addresses: swappablePolygonAddresses,
-      loading: swappablePolygonAddressesAreLoading,
-    },
-    [ChainId.arbitrum]: {
-      addresses: swappableArbitrumAddresses,
-      loading: swappableArbitrumAddressesAreLoading,
-    },
-  };
+  const swappableInfo = useMemo(
+    () => ({
+      [ChainId.mainnet]: {
+        addresses: swappableMainnetAddresses,
+        loading: swappableMainnetAddressesAreLoading,
+      },
+      [ChainId.optimism]: {
+        addresses: swappableOptimismAddresses,
+        loading: swappableOptimismAddressesAreLoading,
+      },
+      [ChainId.bsc]: {
+        addresses: swappableBscAddresses,
+        loading: swappableBscAddressesAreLoading,
+      },
+      [ChainId.polygon]: {
+        addresses: swappablePolygonAddresses,
+        loading: swappablePolygonAddressesAreLoading,
+      },
+      [ChainId.arbitrum]: {
+        addresses: swappableArbitrumAddresses,
+        loading: swappableArbitrumAddressesAreLoading,
+      },
+    }),
+    [
+      swappableArbitrumAddresses,
+      swappableArbitrumAddressesAreLoading,
+      swappableBscAddresses,
+      swappableBscAddressesAreLoading,
+      swappableMainnetAddresses,
+      swappableMainnetAddressesAreLoading,
+      swappableOptimismAddresses,
+      swappableOptimismAddressesAreLoading,
+      swappablePolygonAddresses,
+      swappablePolygonAddressesAreLoading,
+    ],
+  );
 
   const isSwappableAsset = (asset: ParsedAddressAsset) => {
     const { address, chainId } = asset;
