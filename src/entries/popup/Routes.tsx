@@ -438,6 +438,7 @@ const ROUTE_DATA = [
         navbarIcon="ex"
         title={i18n.t('wallets.title')}
         protectedRoute
+        background="surfacePrimaryElevated"
       >
         <WalletSwitcher />
       </AnimatedRoute>
