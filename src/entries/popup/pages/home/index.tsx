@@ -17,6 +17,7 @@ import { globalColors } from '~/design-system/styles/designTokens';
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { useAvatar } from '../../hooks/useAvatar';
+import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { MainLayout } from '../../layouts/MainLayout';
 import { StickyHeader } from '../../layouts/StickyHeader';
@@ -51,11 +52,15 @@ export function Home() {
 
   const { pendingRequests } = usePendingRequestStore();
 
+  const prevPendingRequest = usePrevious(pendingRequests?.[0]);
   useEffect(() => {
-    if (pendingRequests?.[0]) {
+    if (
+      pendingRequests?.[0] &&
+      pendingRequests?.[0].id !== prevPendingRequest?.id
+    ) {
       navigate(ROUTES.APPROVE_APP_REQUEST);
     }
-  }, [navigate, pendingRequests]);
+  }, [navigate, pendingRequests, prevPendingRequest?.id]);
 
   const [activeTab, setActiveTab] = useState<Tab>(state?.activeTab || 'tokens');
 

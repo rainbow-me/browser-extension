@@ -36,7 +36,7 @@ import {
 } from '../../components/MoreInfoButton/MoreInfoButton';
 import { remove } from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { useWallets } from '../../hooks/useWallets';
+import { AddressAndType, useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 
 import { WalletActionsMenu } from './WalletSwitcher.css';
@@ -143,11 +143,6 @@ const NoWalletsWarning = ({
 interface WalletSearchData extends AddressAndType {
   walletName?: string;
   ensName?: string;
-}
-
-export interface AddressAndType {
-  address: Address;
-  type: KeychainType;
 }
 
 export function WalletSwitcher() {
