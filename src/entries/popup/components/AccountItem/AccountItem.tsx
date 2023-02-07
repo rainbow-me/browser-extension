@@ -26,8 +26,8 @@ export default function AccountItem({
   onClick?: () => void;
   isSelected?: boolean;
   labelType?: LabelOption;
+  searchTerm?: string;
 }) {
-  // const { avatar, isFetched } = useAvatar({ address: account });
   const { displayName, showAddress } = useWalletName({ address: account });
   const { data: balance } = useBalance({ addressOrName: account });
 

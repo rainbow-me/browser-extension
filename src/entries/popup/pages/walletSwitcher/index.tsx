@@ -1,14 +1,28 @@
-import React, { useState } from 'react';
+/* eslint-disable react/jsx-props-no-spreading */
+import { fetchEnsName } from '@wagmi/core';
+import { motion } from 'framer-motion';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  DragDropContext,
+  Draggable,
+  DraggingStyle,
+  DropResult,
+  Droppable,
+  NotDraggingStyle,
+} from 'react-beautiful-dnd';
 import { Link } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
+import { useWalletNamesStore } from '~/core/state/walletNames';
+import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
-import { Box, Button, Inline, Stack } from '~/design-system';
-import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+import { Box, Button, Inline, Stack, Text } from '~/design-system';
+import { Input } from '~/design-system/components/Input/Input';
+import { Symbol, SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
 
 import AccountItem, {
@@ -22,12 +36,31 @@ import {
 } from '../../components/MoreInfoButton/MoreInfoButton';
 import { remove } from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { useWallets } from '../../hooks/useWallets';
+import { AddressAndType, useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 
 import { WalletActionsMenu } from './WalletSwitcher.css';
 import { RemoveWalletPrompt } from './removeWalletPrompt';
 import { RenameWalletPrompt } from './renameWalletPrompt';
+
+const reorder = (
+  list: Iterable<unknown>,
+  startIndex: number,
+  endIndex: number,
+) => {
+  const result = Array.from(list);
+  const [removed] = result.splice(startIndex, 1);
+  result.splice(endIndex, 0, removed);
+
+  return result;
+};
+
+const getItemStyle = (
+  isDragging: boolean,
+  draggableStyle: DraggingStyle | NotDraggingStyle | undefined,
+) => ({
+  ...draggableStyle,
+});
 
 const infoButtonOptions = ({
   account,
@@ -82,9 +115,34 @@ const infoButtonOptions = ({
 
 const bottomSpacing = 20 + 20 + 32 + 32 + (process.env.IS_DEV ? 32 + 8 : 0);
 
-export interface AddressAndType {
-  address: Address;
-  type: KeychainType;
+const NoWalletsWarning = ({
+  symbol,
+  text,
+}: {
+  symbol: SymbolProps['symbol'];
+  text: string;
+}) => (
+  <Box
+    alignItems="center"
+    justifyContent="center"
+    paddingTop="104px"
+    as={motion.div}
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+  >
+    <Stack alignHorizontal="center" space="8px">
+      <Symbol symbol={symbol} weight="bold" size={32} color="labelQuaternary" />
+      <Text size="20pt" weight="bold" color="labelQuaternary">
+        {text}
+      </Text>
+    </Stack>
+  </Box>
+);
+
+interface WalletSearchData extends AddressAndType {
+  walletName?: string;
+  ensName?: string;
 }
 
 export function WalletSwitcher() {
@@ -94,33 +152,178 @@ export function WalletSwitcher() {
   >();
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
   const { hideWallet } = useHiddenWalletsStore();
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useRainbowNavigate();
   const { visibleWallets: accounts, fetchWallets } = useWallets();
-  const handleSelectAddress = (address: Address) => {
-    setCurrentAddress(address);
-    navigate(ROUTES.HOME);
-  };
-  const handleRemoveAccount = async (address: Address) => {
-    const removed = accounts.find((account) => account.address === address);
-    // remove if read-only
-    if (removed?.type === KeychainType.ReadOnlyKeychain) {
-      await remove(address);
-      fetchWallets();
-    } else {
-      // hide if imported
-      hideWallet({ address });
-    }
-    if (address === currentAddress) {
-      const deletedIndex = accounts.findIndex(
-        (account) => account.address === address,
+
+  const handleSelectAddress = useCallback(
+    (address: Address) => {
+      setCurrentAddress(address);
+      navigate(ROUTES.HOME);
+    },
+    [navigate, setCurrentAddress],
+  );
+  const handleRemoveAccount = useCallback(
+    async (address: Address) => {
+      const removed = accounts.find((account) => account.address === address);
+      // remove if read-only
+      if (removed?.type === KeychainType.ReadOnlyKeychain) {
+        await remove(address);
+        fetchWallets();
+      } else {
+        // hide if imported
+        hideWallet({ address });
+      }
+      if (address === currentAddress) {
+        const deletedIndex = accounts.findIndex(
+          (account) => account.address === address,
+        );
+        const nextIndex =
+          deletedIndex === accounts.length - 1
+            ? deletedIndex - 1
+            : deletedIndex + 1;
+        setCurrentAddress(accounts[nextIndex]?.address);
+      }
+    },
+    [accounts, currentAddress, fetchWallets, hideWallet, setCurrentAddress],
+  );
+  const { walletNames } = useWalletNamesStore();
+
+  const [accountsWithNamesAndEns, setAccountsWithNamesAndEns] = useState<
+    WalletSearchData[]
+  >([]);
+
+  const isSearching = useMemo(() => {
+    return !!searchQuery;
+  }, [searchQuery]);
+
+  const { walletOrder, saveWalletOrder } = useWalletOrderStore();
+
+  useEffect(() => {
+    const getAccountsWithNamesAndEns = async () => {
+      if (accounts.length !== 0)
+        setAccountsWithNamesAndEns(accounts as WalletSearchData[]);
+      const accountsSearchData = await Promise.all(
+        accounts.map(async (addressAndType) => {
+          let accountSearchData: WalletSearchData = {
+            ...addressAndType,
+          };
+          const walletName = walletNames[addressAndType.address];
+          if (walletName) {
+            accountSearchData = { ...accountSearchData, walletName };
+          } else {
+            const ensName = (await fetchEnsName({
+              address: addressAndType.address,
+            })) as string;
+            if (ensName) {
+              accountSearchData = { ...accountSearchData, ensName };
+            }
+          }
+          return accountSearchData;
+        }),
       );
-      const nextIndex =
-        deletedIndex === accounts.length - 1
-          ? deletedIndex - 1
-          : deletedIndex + 1;
-      setCurrentAddress(accounts[nextIndex]?.address);
-    }
+      if (accountsSearchData.length !== 0)
+        setAccountsWithNamesAndEns(accountsSearchData);
+    };
+    getAccountsWithNamesAndEns();
+  }, [accounts, walletNames]);
+
+  const filteredAccounts = useMemo(() => {
+    if (!searchQuery) return accountsWithNamesAndEns;
+    return accountsWithNamesAndEns.filter(
+      ({ address, walletName, ensName }) =>
+        address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        walletName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        ensName?.toLowerCase().includes(searchQuery.toLowerCase()),
+    );
+  }, [accountsWithNamesAndEns, searchQuery]);
+
+  const filteredAndSortedAccounts = useMemo(() => {
+    const sortedAccounts = filteredAccounts.sort((a, b) => {
+      const aIndex = walletOrder.indexOf(a.address);
+      const bIndex = walletOrder.indexOf(b.address);
+      if (aIndex === -1 && bIndex === -1) {
+        return 0;
+      }
+      if (aIndex === -1) {
+        return 1;
+      }
+      if (bIndex === -1) {
+        return -1;
+      }
+      return aIndex - bIndex;
+    });
+    return sortedAccounts;
+  }, [filteredAccounts, walletOrder]);
+
+  const displayedAccounts = useMemo(
+    () =>
+      filteredAndSortedAccounts.map((account, index) => (
+        <Draggable
+          key={account.address}
+          draggableId={account.address}
+          index={index}
+          isDragDisabled={isSearching}
+        >
+          {(provided, snapshot) => (
+            <Box
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              style={getItemStyle(
+                snapshot.isDragging,
+                provided.draggableProps.style,
+              )}
+              background={snapshot.isDragging ? 'surfaceSecondary' : undefined}
+              borderRadius="12px"
+            >
+              <AccountItem
+                key={account.address}
+                onClick={() => {
+                  handleSelectAddress(account.address);
+                }}
+                account={account.address}
+                rightComponent={
+                  <Inline alignVertical="center" space="10px">
+                    {account.type === KeychainType.ReadOnlyKeychain && (
+                      <LabelPill label={i18n.t('wallet_switcher.watching')} />
+                    )}
+                    <MoreInfoButton
+                      options={infoButtonOptions({
+                        account,
+                        setRenameAccount,
+                        setRemoveAccount,
+                      })}
+                    />
+                  </Inline>
+                }
+                labelType={LabelOption.balance}
+                isSelected={account.address === currentAddress}
+              />
+            </Box>
+          )}
+        </Draggable>
+      )),
+    [
+      currentAddress,
+      filteredAndSortedAccounts,
+      handleSelectAddress,
+      isSearching,
+    ],
+  );
+
+  const onDragEnd = (result: DropResult) => {
+    const { destination, source } = result;
+    if (!destination) return;
+    if (destination.index === source.index) return;
+    const newAccountsWithNamesAndEns = reorder(
+      accountsWithNamesAndEns,
+      source.index,
+      destination.index,
+    ) as WalletSearchData[];
+    saveWalletOrder(newAccountsWithNamesAndEns.map(({ address }) => address));
   };
+
   return (
     <Box height="full">
       <RenameWalletPrompt
@@ -141,38 +344,50 @@ export function WalletSwitcher() {
       />
 
       <Box paddingHorizontal="4px">
-        {/* search */}
-        <Box />
+        <Box paddingHorizontal="16px" paddingBottom="20px" marginTop="-5px">
+          <Input
+            height="32px"
+            variant="bordered"
+            placeholder={i18n.t('wallet_switcher.search_placeholder')}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            autoFocus
+          />
+        </Box>
         <MenuContainer>
-          <Box width="full" style={{ paddingBottom: bottomSpacing }}>
-            <Stack>
-              {accounts?.map((account) => (
-                <AccountItem
-                  onClick={() => {
-                    handleSelectAddress(account.address);
-                  }}
-                  account={account.address}
-                  key={account.address}
-                  rightComponent={
-                    <Inline alignVertical="center" space="10px">
-                      {account.type === KeychainType.ReadOnlyKeychain && (
-                        <LabelPill label={i18n.t('wallet_switcher.watching')} />
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable">
+              {(provided) => (
+                <Box {...provided.droppableProps} ref={provided.innerRef}>
+                  <Box
+                    width="full"
+                    height="full"
+                    style={{ paddingBottom: bottomSpacing }}
+                  >
+                    <Stack>
+                      {displayedAccounts.length !== 0 && (
+                        <Box
+                          as={motion.div}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                        >
+                          {displayedAccounts}
+                        </Box>
                       )}
-                      <MoreInfoButton
-                        options={infoButtonOptions({
-                          account,
-                          setRenameAccount,
-                          setRemoveAccount,
-                        })}
+                    </Stack>
+                    {isSearching && displayedAccounts.length === 0 && (
+                      <NoWalletsWarning
+                        symbol="magnifyingglass.circle.fill"
+                        text={i18n.t('wallet_switcher.no_results')}
                       />
-                    </Inline>
-                  }
-                  labelType={LabelOption.balance}
-                  isSelected={account.address === currentAddress}
-                />
-              ))}
-            </Stack>
-          </Box>
+                    )}
+                  </Box>
+                  {provided.placeholder}
+                </Box>
+              )}
+            </Droppable>
+          </DragDropContext>
         </MenuContainer>
       </Box>
       <Box
