@@ -10,9 +10,11 @@ import {
   exportAccount,
   exportKeychain,
   getAccounts,
+  getPath,
   getWallet,
   getWallets,
   hasVault,
+  importHardwareWallet,
   importWallet,
   isPasswordSet,
   isVaultUnlocked,
@@ -101,6 +103,16 @@ export const handleWallets = () =>
           case 'import':
             response = await importWallet(payload as EthereumWalletSeed);
             break;
+          case 'import_hw':
+            response = await importHardwareWallet(
+              payload as {
+                wallets: Array<{ address: Address; index: number }>;
+                vendor: string;
+                deviceId: string;
+                accountsEnabled: number;
+              },
+            );
+            break;
           case 'add':
             response = await addNewAccount(payload as Address);
             break;
@@ -120,6 +132,9 @@ export const handleWallets = () =>
             break;
           case 'get_wallet':
             response = await getWallet(payload as Address);
+            break;
+          case 'get_path':
+            response = await getPath(payload as Address);
             break;
           case 'export_wallet': {
             const { address, password } = payload as {

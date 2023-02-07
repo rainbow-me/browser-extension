@@ -47,7 +47,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
           {children}
         </Box>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent marginRight="16px" sideOffset={1}>
         <DropdownMenuRadioGroup
           onValueChange={(value) =>
             onValueChange(value as 'settings' | 'profile')

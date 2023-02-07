@@ -16,11 +16,13 @@ export const SendTransactionActions = ({
   selectedWallet,
   onAcceptRequest,
   onRejectRequest,
+  waitingForDevice,
 }: {
   appHost: string;
   selectedWallet: Address;
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
+  waitingForDevice: boolean;
 }) => {
   return (
     <Inset vertical="20px" horizontal="20px">
@@ -37,7 +39,12 @@ export const SendTransactionActions = ({
           <Row>
             <AcceptRequestButton
               onClick={onAcceptRequest}
-              label={i18n.t('approve_request.send_transaction')}
+              label={
+                waitingForDevice
+                  ? i18n.t('approve_request.confirm_hw')
+                  : i18n.t('approve_request.send_transaction')
+              }
+              waitingForDevice={waitingForDevice}
             />
           </Row>
           <Row>

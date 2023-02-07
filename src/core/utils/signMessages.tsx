@@ -74,9 +74,10 @@ export const getSigningRequestDisplayDetails = (
             // eslint-disable-next-line no-empty
           } catch (e) {}
           return {
-            message: JSON.stringify(data),
+            message: JSON.stringify(msgData, null, 2),
             msgData,
             address: getAddress(address),
+            typedData: true,
           };
         }
       }
