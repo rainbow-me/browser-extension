@@ -122,7 +122,6 @@ export const useAllFilteredWallets = ({ filter }: { filter: string }) => {
     filterWallets();
   }, [contactsData, filter, walletsData, watchedWalletsData]);
 
-  console.log('------ visibleOwnedWallets', visibleOwnedWallets);
   return {
     wallets: filteredWallets,
     watchedWallets: filteredWatchedWallets,
