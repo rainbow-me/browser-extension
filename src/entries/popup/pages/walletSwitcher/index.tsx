@@ -152,7 +152,7 @@ export function WalletSwitcher() {
   >();
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
   const { hideWallet } = useHiddenWalletsStore();
-  const [q, setQ] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useRainbowNavigate();
   const { visibleWallets: accounts, fetchWallets } = useWallets();
 
@@ -194,8 +194,8 @@ export function WalletSwitcher() {
   >([]);
 
   const isSearching = useMemo(() => {
-    return !!q;
-  }, [q]);
+    return !!searchQuery;
+  }, [searchQuery]);
 
   const { walletOrder, saveWalletOrder } = useWalletOrderStore();
 
@@ -229,14 +229,14 @@ export function WalletSwitcher() {
   }, [accounts, walletNames]);
 
   const filteredAccounts = useMemo(() => {
-    if (!q) return accountsWithNamesAndEns;
+    if (!searchQuery) return accountsWithNamesAndEns;
     return accountsWithNamesAndEns.filter(
       ({ address, walletName, ensName }) =>
-        address.toLowerCase().includes(q.toLowerCase()) ||
-        walletName?.toLowerCase().includes(q.toLowerCase()) ||
-        ensName?.toLowerCase().includes(q.toLowerCase()),
+        address.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        walletName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        ensName?.toLowerCase().includes(searchQuery.toLowerCase()),
     );
-  }, [accountsWithNamesAndEns, q]);
+  }, [accountsWithNamesAndEns, searchQuery]);
 
   const filteredAndSortedAccounts = useMemo(() => {
     const sortedAccounts = filteredAccounts.sort((a, b) => {
@@ -349,8 +349,8 @@ export function WalletSwitcher() {
             height="32px"
             variant="bordered"
             placeholder={i18n.t('wallet_switcher.search_placeholder')}
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             autoFocus
           />
         </Box>
