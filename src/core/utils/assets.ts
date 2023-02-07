@@ -1,3 +1,4 @@
+import urlRegex from 'url-regex';
 import { Address } from 'wagmi';
 
 import { SupportedCurrencyKey } from '~/core/references';
@@ -162,4 +163,11 @@ export function parseParsedAddressAsset({
       }),
     },
   };
+}
+
+export function filterAsset(asset: ZerionAsset) {
+  const nameContainsUrl = urlRegex({ strict: false }).test(asset?.name);
+  const symbolContainsUrl = urlRegex({ strict: false }).test(asset?.symbol);
+  const shouldFilter = nameContainsUrl || symbolContainsUrl;
+  return shouldFilter;
 }
