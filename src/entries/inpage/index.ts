@@ -11,6 +11,13 @@ declare global {
     ethereum?: RainbowProvider;
     rainbow: RainbowProvider;
     providers: (RainbowProvider | Ethereum)[];
+    walletRouter: {
+      rainbowProvider: RainbowProvider;
+      lastInjectedProvider?: RainbowProvider;
+      currentProvider?: RainbowProvider;
+      providers: (RainbowProvider | Ethereum)[];
+      setProviders: (rainbowAsDefault: boolean) => void;
+    };
   }
 }
 
@@ -37,32 +44,25 @@ if (shouldInjectProvider()) {
           : [window.ethereum]
         : []),
     ],
+    setProviders: (rainbowAsDefault: boolean) => {
+      if (rainbowAsDefault) {
+        walletRouter.currentProvider = window.rainbow;
+        window.ethereum = window.rainbow;
+      } else {
+        walletRouter.currentProvider =
+          walletRouter.lastInjectedProvider ?? window.ethereum;
+        window.ethereum = walletRouter.currentProvider;
+      }
+    },
   };
-
-  const setProviders = (rainbowAsDefault: boolean) => {
-    if (rainbowAsDefault) {
-      walletRouter.currentProvider = window.rainbow;
-      window.ethereum = window.rainbow;
-    } else {
-      walletRouter.currentProvider =
-        walletRouter.lastInjectedProvider ?? window.rainbow;
-      window.ethereum = walletRouter.lastInjectedProvider;
-    }
-    // window.ethereum = walletRouter.currentProvider;
-    // window.location.reload();
-  };
+  window.walletRouter = walletRouter;
 
   backgroundMessenger.reply(
     'rainbow_setDefaultProvider',
     async ({ rainbowAsDefault }: { rainbowAsDefault: boolean }) => {
-      console.log('rainbow_setDefaultProvider', rainbowAsDefault);
-      setProviders(rainbowAsDefault);
+      window.walletRouter.setProviders(rainbowAsDefault);
     },
   );
-
-  // setTimeout(() => {
-  // setProviders(true);
-  // }, 2000);
 
   window.ethereum = walletRouter.currentProvider;
   window.providers = walletRouter.providers;
