@@ -1,13 +1,12 @@
 import { motion } from 'framer-motion';
 import React from 'react';
 
-import { hslObjectForColor } from '~/design-system/styles/hslObjectForColor';
-
 import {
   BoxStyles,
   ShadowSize,
   TextStyles,
   accentColorAsHsl,
+  foregroundColorVars,
 } from '../../styles/core.css';
 import {
   BackgroundColor,
@@ -214,17 +213,13 @@ export function ButtonWrapper({
     color: color ?? 'accent',
   })[variant];
 
-  let outlineColor;
+  let outlineColor = undefined;
   // Only apply outline to buttons with tabIndex
   if (tabIndex !== undefined) {
-    if (color && color !== 'accent') {
-      const hsl = hslObjectForColor(color);
-      outlineColor = `hsl(${[hsl.hue, hsl.saturation, hsl.lightness, []].join(
-        ', ',
-      )};`;
-    } else {
-      outlineColor = accentColorAsHsl;
-    }
+    outlineColor =
+      color && color !== 'accent'
+        ? foregroundColorVars[color as TextColor]
+        : accentColorAsHsl;
   }
   const styles = {
     ...((blur && { backdropFilter: `blur(${blur})` }) || {}),
