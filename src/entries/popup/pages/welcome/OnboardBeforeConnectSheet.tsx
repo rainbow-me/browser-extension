@@ -1,6 +1,7 @@
 import React from 'react';
 
 import WalletIcon from 'static/assets/wallet.png';
+import { i18n } from '~/core/languages';
 import {
   Box,
   Button,
@@ -28,7 +29,7 @@ export const OnboardBeforeConnectSheet = ({
           </Box>
           <Box>
             <Text color="label" size="20pt" weight="heavy">
-              Before you can connect
+              {i18n.t('onboard_before_connect.before_connect')}
             </Text>
           </Box>
           <Box style={{ width: '102px' }}>
@@ -41,8 +42,7 @@ export const OnboardBeforeConnectSheet = ({
               size="14pt"
               weight="regular"
             >
-              You’re almost done. Quickly finish setting up your wallet with
-              Rainbow.
+              {i18n.t('onboard_before_connect.almost_done')}
             </Text>
           </Box>
         </Stack>
@@ -57,7 +57,7 @@ export const OnboardBeforeConnectSheet = ({
         >
           <Inline space="4px" alignVertical="center">
             <Text color="label" size="16pt" weight="bold">
-              Set up your wallet
+              {i18n.t('onboard_before_connect.setup_wallet')}
             </Text>
             <Symbol symbol="arrow.right" weight="bold" size={14} />
           </Inline>
