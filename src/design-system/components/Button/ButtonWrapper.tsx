@@ -33,6 +33,7 @@ export type ButtonWrapperProps = {
   width?: 'fit' | 'full';
   blur?: string;
   borderRadius?: Radius;
+  tabIndex?: number;
 } & ButtonVariantProps;
 
 const shadowValue = (size: ShadowSize, color?: ButtonColor) =>
@@ -196,6 +197,7 @@ export function ButtonWrapper({
   width = 'fit',
   blur = '',
   borderRadius,
+  tabIndex,
 }: ButtonWrapperProps) {
   const { boxShadow } = stylesForHeightAndVariant({
     color: color as ButtonColor,
@@ -234,6 +236,7 @@ export function ButtonWrapper({
         justifyContent="center"
         width={width}
         style={styles}
+        tabIndex={tabIndex}
       >
         {children}
       </Box>
