@@ -7,12 +7,11 @@ import { UserStatusResult, useAuth } from './hooks/useAuth';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import { ROUTES } from './urls';
 
-const windowLocationHash = window.location.hash;
-
-const isHome = () => windowLocationHash === '' || windowLocationHash === '#/';
-const isWelcome = () => windowLocationHash === '#/welcome';
-const isCreatePassword = () => windowLocationHash === '#/create-password';
-const isLockScreen = () => windowLocationHash === '#/unlock';
+const isHome = () =>
+  window.location.hash === '' || window.location.hash === '#/';
+const isWelcome = () => window.location.hash === '#/welcome';
+const isCreatePassword = () => window.location.hash === '#/create-password';
+const isLockScreen = () => window.location.hash === '#/unlock';
 
 export const ProtectedRoute = ({
   children,
@@ -23,15 +22,13 @@ export const ProtectedRoute = ({
 }): JSX.Element => {
   const { status } = useAuth();
   const isFullScreen = useIsFullScreen();
-
   const { pendingRequests } = usePendingRequestStore();
-
   if (
     (allowedStates === true && status === 'READY') ||
     (Array.isArray(allowedStates) &&
       allowedStates.includes(status as UserStatusResult))
   ) {
-    if (windowLocationHash === '' || windowLocationHash === '#/') {
+    if (window.location.hash === '' || window.location.hash === '#/') {
       return <Navigate to={ROUTES.HOME} />;
     } else {
       return children as JSX.Element;
@@ -61,9 +58,7 @@ export const ProtectedRoute = ({
           return (
             <Navigate
               to={ROUTES.CREATE_PASSWORD}
-              state={{
-                pendingRequest: !!pendingRequests.length,
-              }}
+              state={{ pendingRequest: isWelcome() && !!pendingRequests?.[0] }}
             />
           );
         }
