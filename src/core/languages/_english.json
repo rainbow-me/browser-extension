@@ -34,7 +34,7 @@
   },
   "rename_wallet_prompt": {
     "rename_wallet": "Rename wallet",
-    "update": "Update"
+    "done": "Done"
   },
   "remove_wallet_prompt": {
     "error": "Error removing wallet",

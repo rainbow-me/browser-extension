@@ -178,7 +178,7 @@ export const RenameWalletPrompt = ({
                   borderRadius="9px"
                   tabIndex={2}
                 >
-                  {i18n.t('rename_wallet_prompt.update')}
+                  {i18n.t('rename_wallet_prompt.done')}
                 </Button>
               </Column>
             </Columns>
