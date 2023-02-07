@@ -6,14 +6,10 @@ import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { truncateAddress } from '~/core/utils/truncateAddress';
 import { Box, Button, Inline, Stack, Symbol, Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
-import {
-  DEFAULT_ACCOUNT,
-  DEFAULT_ACCOUNT_2,
-} from '~/entries/background/handlers/handleProviderRequest';
 import { EthSymbol } from '~/entries/popup/components/EthSymbol/EthSymbol';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
-import { useBackgroundAccounts } from '~/entries/popup/hooks/useBackgroundAccounts';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 
 import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
 import { SwitchMenu } from '../../../components/SwitchMenu/SwitchMenu';
@@ -81,11 +77,7 @@ export const BottomSwitchWallet = ({
   selectedWallet: Address;
   setSelectedWallet: (selected: Address) => void;
 }) => {
-  const { accounts } = useBackgroundAccounts();
-  const wallets: Address[] = [
-    DEFAULT_ACCOUNT as Address,
-    DEFAULT_ACCOUNT_2 as Address,
-  ].concat(accounts);
+  const { visibleWallets } = useWallets();
 
   return (
     <Stack space="8px">
@@ -112,7 +104,7 @@ export const BottomSwitchWallet = ({
             </Inline>
           </Box>
         )}
-        menuItems={wallets}
+        menuItems={visibleWallets?.map((wallet) => wallet.address)}
         selectedValue={selectedWallet}
         onValueChange={(value) => setSelectedWallet(value as Address)}
       />

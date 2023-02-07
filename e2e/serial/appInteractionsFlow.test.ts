@@ -51,7 +51,7 @@ const TYPED_MESSAGE = {
   },
 };
 const MESSAGE = 'rainbow rocks 🌈';
-const CONNECTED_ADDRESS = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8';
+const CONNECTED_ADDRESS = '0x90F79bf6EB2c4f870365E785982E1f101E93b906';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
@@ -12,9 +12,26 @@ export interface AddressAndType {
 }
 
 export const useWallets = () => {
-  const [visibleWallets, setVisibleWallets] = useState<AddressAndType[]>([]);
   const [allWallets, setAllWallets] = useState<AddressAndType[]>([]);
   const { hiddenWallets } = useHiddenWalletsStore();
+
+  const { visibleWallets, visibleOwnedWallets, watchedWallets } =
+    useMemo(() => {
+      const visibleWallets: AddressAndType[] = [];
+      const visibleOwnedWallets: AddressAndType[] = [];
+      const watchedWallets: AddressAndType[] = [];
+      allWallets.forEach((wallet) => {
+        if (!hiddenWallets[wallet.address]) {
+          visibleWallets.push(wallet);
+          if (wallet.type !== KeychainType.ReadOnlyKeychain) {
+            visibleOwnedWallets.push(wallet);
+          } else if (wallet.type === KeychainType.ReadOnlyKeychain) {
+            watchedWallets.push(wallet);
+          }
+        }
+      });
+      return { visibleWallets, visibleOwnedWallets, watchedWallets };
+    }, [allWallets, hiddenWallets]);
 
   const fetchWallets = async () => {
     const wallets = await getWallets();
@@ -36,16 +53,11 @@ export const useWallets = () => {
     fetchWallets();
   }, []);
 
-  useEffect(() => {
-    const vWallets = allWallets.filter(
-      (wallet) => !hiddenWallets[wallet.address],
-    );
-    setVisibleWallets(vWallets);
-  }, [allWallets, hiddenWallets]);
-
   return {
     allWallets,
     visibleWallets,
+    visibleOwnedWallets,
+    watchedWallets,
     fetchWallets,
   };
 };
