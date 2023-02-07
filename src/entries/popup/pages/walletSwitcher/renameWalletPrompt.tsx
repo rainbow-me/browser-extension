@@ -1,4 +1,10 @@
-import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
+import React, {
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -67,6 +73,11 @@ export const RenameWalletPrompt = ({
       }
     },
     [handleValidateWalletName],
+  );
+
+  const isValid = useMemo(
+    () => newWalletName.length > 0 && newWalletName.trim() !== '',
+    [newWalletName],
   );
 
   return (
@@ -170,10 +181,10 @@ export const RenameWalletPrompt = ({
               </Column>
               <Column>
                 <Button
-                  variant="flat"
+                  color={isValid ? 'accent' : 'labelQuaternary'}
+                  variant={isValid ? 'flat' : 'disabled'}
                   height="36px"
-                  color="accent"
-                  onClick={handleValidateWalletName}
+                  onClick={isValid ? handleValidateWalletName : undefined}
                   width="full"
                   borderRadius="9px"
                   tabIndex={2}
