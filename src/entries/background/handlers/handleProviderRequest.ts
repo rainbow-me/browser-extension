@@ -200,6 +200,11 @@ export const handleProviderRequest = ({
           );
           break;
         }
+        case 'eth_gasPrice': {
+          const provider = getProvider({ chainId: activeSession?.chainId });
+          response = await provider.getGasPrice();
+          break;
+        }
         case 'personal_ecRecover': {
           response = recoverPersonalSignature({
             data: params?.[0] as ToBufferInputTypes,
@@ -207,6 +212,7 @@ export const handleProviderRequest = ({
           });
           break;
         }
+
         default: {
           // TODO: handle other methods
         }
