@@ -1,3 +1,5 @@
+import { Ethereum } from '@wagmi/core';
+
 import { initializeMessenger } from '~/core/messengers';
 import { RainbowProvider } from '~/core/providers';
 import { ChainId } from '~/core/types/chains';
@@ -7,6 +9,8 @@ import { injectNotificationIframe } from '../iframe';
 declare global {
   interface Window {
     ethereum?: RainbowProvider;
+    rainbow: RainbowProvider;
+    providers: (RainbowProvider | Ethereum)[];
   }
 }
 
@@ -15,30 +19,76 @@ const backgroundMessenger = initializeMessenger({ connect: 'background' });
 const provider = new RainbowProvider({ messenger });
 
 if (shouldInjectProvider()) {
-  window.ethereum = provider;
+  window.rainbow = provider;
+  // window.ethereum = provider;
 
-  console.log('injection complete in window');
-  window.dispatchEvent(new Event('ethereum#initialized'));
+  const walletRouter = {
+    rainbowProvider: window.rainbow,
+    lastInjectedProvider: window.ethereum,
+    currentProvider: window.ethereum,
+    providers: [
+      window.rainbow,
+      // eslint-disable-next-line no-nested-ternary
+      ...(window.ethereum
+        ? // let's use the providers that has already been registered
+          // This format is used by coinbase wallet
+          Array.isArray(window.providers)
+          ? [...window.providers, window.ethereum]
+          : [window.ethereum]
+        : []),
+    ],
+  };
+
+  const setProviders = (rainbowAsDefault: boolean) => {
+    if (rainbowAsDefault) {
+      walletRouter.currentProvider = window.rainbow;
+      window.ethereum = window.rainbow;
+    } else {
+      walletRouter.currentProvider =
+        walletRouter.lastInjectedProvider ?? window.rainbow;
+      window.ethereum = walletRouter.lastInjectedProvider;
+    }
+    // window.ethereum = walletRouter.currentProvider;
+    // window.location.reload();
+  };
 
   backgroundMessenger.reply(
-    'wallet_switchEthereumChain',
-    async ({
-      chainId,
-      status,
-      extensionUrl,
-      host,
-    }: {
-      chainId: ChainId;
-      status: 'success' | 'failed';
-      extensionUrl: string;
-      host: string;
-    }) => {
-      if (window.location.hostname === host) {
-        injectNotificationIframe({ chainId, status, extensionUrl });
-      }
+    'rainbow_setDefaultProvider',
+    async ({ rainbowAsDefault }: { rainbowAsDefault: boolean }) => {
+      console.log('rainbow_setDefaultProvider', rainbowAsDefault);
+      setProviders(rainbowAsDefault);
     },
   );
+
+  // setTimeout(() => {
+  // setProviders(true);
+  // }, 2000);
+
+  window.ethereum = walletRouter.currentProvider;
+  window.providers = walletRouter.providers;
 }
+
+console.log('injection complete in window');
+window.dispatchEvent(new Event('ethereum#initialized'));
+
+backgroundMessenger.reply(
+  'wallet_switchEthereumChain',
+  async ({
+    chainId,
+    status,
+    extensionUrl,
+    host,
+  }: {
+    chainId: ChainId;
+    status: 'success' | 'failed';
+    extensionUrl: string;
+    host: string;
+  }) => {
+    if (window.location.hostname === host) {
+      injectNotificationIframe({ chainId, status, extensionUrl });
+    }
+  },
+);
 
 /**
  * Determines if the provider should be injected
