@@ -2,22 +2,31 @@ import {
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
+import AppEth from '@ledgerhq/hw-app-eth';
+import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import { uuid4 } from '@sentry/utils';
 import { getProvider } from '@wagmi/core';
 import { Bytes } from 'ethers';
-import { Mnemonic } from 'ethers/lib/utils';
+import { Mnemonic, keccak256 } from 'ethers/lib/utils';
 import { Address } from 'wagmi';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';
 import { initializeMessenger } from '~/core/messengers';
 import { gasStore } from '~/core/state';
 import { KeychainWallet } from '~/core/types/keychainTypes';
+import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
 import { toHex } from '~/core/utils/numbers';
+import { getNextNonce } from '~/core/utils/transactions';
+
+import {
+  sendTransactionFromLedger,
+  signMessageByTypeFromLedger,
+} from './ledger';
 
 const messenger = initializeMessenger({ connect: 'background' });
 
-const walletAction = async (action: string, payload: unknown) => {
+export const walletAction = async (action: string, payload: unknown) => {
   const { result }: { result: unknown } = await messenger.send(
     'wallet_action',
     {
@@ -51,30 +60,83 @@ export const sendTransaction = async (
     transactionRequest,
     provider,
   });
-  return walletAction('send_transaction', {
+
+  const nonce = await getNextNonce({
+    address: transactionRequest.from as Address,
+    chainId: transactionRequest.chainId as number,
+  });
+
+  const params = {
     ...transactionRequest,
     ...selectedGas.transactionGasParams,
     gasLimit: toHex(gasLimit || '0'),
     value: transactionRequest?.value,
-  }) as unknown as TransactionResponse;
+    nonce,
+  };
+
+  const { type, vendor } = await getWallet(transactionRequest.from as Address);
+  // Check the type of account it is
+  if (type === 'HardwareWalletKeychain') {
+    switch (vendor) {
+      case 'Ledger':
+        return sendTransactionFromLedger(params);
+      case 'Trezor':
+        throw new Error('Trezor not supported yet');
+      default:
+        throw new Error('Unsupported hardware wallet');
+    }
+  } else {
+    return walletAction(
+      'send_transaction',
+      params,
+    ) as unknown as TransactionResponse;
+  }
 };
 
 export const personalSign = async (
   msgData: string | Bytes,
   address: Address,
 ): Promise<string> => {
-  return (await signMessageByType(msgData, address, 'personal_sign')) as string;
+  const { type, vendor } = await getWallet(address as Address);
+  if (type === 'HardwareWalletKeychain') {
+    switch (vendor) {
+      case 'Ledger':
+        return signMessageByTypeFromLedger(msgData, address, 'personal_sign');
+      case 'Trezor':
+        throw new Error('Trezor not supported yet');
+      default:
+        throw new Error('Unsupported hardware wallet');
+    }
+  } else {
+    return (await signMessageByType(
+      msgData,
+      address,
+      'personal_sign',
+    )) as string;
+  }
 };
 
 export const signTypedData = async (
   msgData: string | Bytes,
   address: Address,
 ) => {
-  return (await signMessageByType(
-    msgData,
-    address,
-    'sign_typed_data',
-  )) as string;
+  const { type, vendor } = await getWallet(address as Address);
+  if (type === 'HardwareWalletKeychain') {
+    switch (vendor) {
+      case 'Ledger':
+        return signMessageByTypeFromLedger(msgData, address, 'sign_typed_data');
+      case 'Trezor':
+        throw new Error('Trezor not supported yet');
+      default:
+        throw new Error('Unsupported hardware wallet');
+    }
+  } else {
+    return (await signMessageByType(
+      msgData,
+      address,
+      'sign_typed_data',
+    )) as string;
+  }
 };
 
 export const lock = async () => {
@@ -189,4 +251,70 @@ export const exportAccount = async (address: Address, password: string) => {
     address,
     password,
   })) as PrivateKey;
+};
+
+export const connectLedger = async () => {
+  // Connect to the device
+  try {
+    const transport = await TransportWebUSB.create();
+    const appEth = new AppEth(transport);
+    const result = await appEth.getAddress("44'/60'/0'/0/0", false, false);
+    const addressesToImport = [{ address: result.address, index: 0 }];
+    // The device id is the keccak256 of the address at index 0
+    // @HW/TODO - discovery
+    let accountsEnabled = 1;
+    // Autodiscover accounts
+    let empty = false;
+    while (!empty) {
+      // eslint-disable-next-line no-await-in-loop
+      const result = await appEth.getAddress(
+        `44'/60'/0'/0/${accountsEnabled}`,
+        false,
+        false,
+      );
+
+      // eslint-disable-next-line no-await-in-loop
+      const hasBeenUsed = await hasPreviousTransactions(
+        result.address as Address,
+      );
+
+      if (hasBeenUsed) {
+        addressesToImport.push({
+          address: result.address,
+          index: accountsEnabled,
+        });
+        accountsEnabled += 1;
+      } else {
+        empty = true;
+      }
+    }
+
+    const deviceId = keccak256(result.address);
+    const address = await walletAction('import_hw', {
+      deviceId,
+      wallets: addressesToImport,
+      vendor: 'Ledger',
+      accountsEnabled,
+    });
+    // we probably need to set a password
+    let newStatus = 'NEEDS_PASSWORD';
+    const { passwordSet } = await getStatus();
+    // unless we have a password, then we're ready to go
+    if (passwordSet) {
+      newStatus = 'READY';
+    }
+    await chrome.storage.session.set({ userStatus: newStatus });
+    return address;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (e: any) {
+    if (e?.name === 'TransportStatusError') {
+      alert(
+        'Please make sure your ledger is unlocked and open the Ethereum app',
+      );
+    } else {
+      alert('Unable to connect to your ledger. Please try again.');
+    }
+    return null;
+  }
 };

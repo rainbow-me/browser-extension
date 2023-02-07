@@ -1,5 +1,8 @@
 import { initializeMessenger } from '~/core/messengers';
 import { RainbowProvider } from '~/core/providers';
+import { ChainId } from '~/core/types/chains';
+
+import { injectNotificationIframe } from '../iframe';
 
 declare global {
   interface Window {
@@ -8,6 +11,7 @@ declare global {
 }
 
 const messenger = initializeMessenger({ connect: 'popup' });
+const backgroundMessenger = initializeMessenger({ connect: 'background' });
 const provider = new RainbowProvider({ messenger });
 
 if (shouldInjectProvider()) {
@@ -15,6 +19,25 @@ if (shouldInjectProvider()) {
 
   console.log('injection complete in window');
   window.dispatchEvent(new Event('ethereum#initialized'));
+
+  backgroundMessenger.reply(
+    'wallet_switchEthereumChain',
+    async ({
+      chainId,
+      status,
+      extensionUrl,
+      host,
+    }: {
+      chainId: ChainId;
+      status: 'success' | 'failed';
+      extensionUrl: string;
+      host: string;
+    }) => {
+      if (window.location.hostname === host) {
+        injectNotificationIframe({ chainId, status, extensionUrl });
+      }
+    },
+  );
 }
 
 /**

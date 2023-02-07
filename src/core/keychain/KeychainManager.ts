@@ -4,6 +4,10 @@ import { Address } from 'wagmi';
 
 import { KeychainType } from '../types/keychainTypes';
 
+import {
+  HardwareWalletKeychain,
+  SerializedHardwareWalletKeychain,
+} from './keychainTypes/hardwareWalletKeychain';
 import { HdKeychain, SerializedHdKeychain } from './keychainTypes/hdKeychain';
 import {
   KeyPairKeychain,
@@ -14,7 +18,11 @@ import {
   SerializedReadOnlyKeychain,
 } from './keychainTypes/readOnlyKeychain';
 
-export type Keychain = KeyPairKeychain | HdKeychain | ReadOnlyKeychain;
+export type Keychain =
+  | KeyPairKeychain
+  | HdKeychain
+  | ReadOnlyKeychain
+  | HardwareWalletKeychain;
 
 interface KeychainManagerState {
   keychains: Keychain[];
@@ -25,7 +33,8 @@ interface KeychainManagerState {
 type SerializedKeychain =
   | SerializedHdKeychain
   | SerializedKeypairKeychain
-  | SerializedReadOnlyKeychain;
+  | SerializedReadOnlyKeychain
+  | SerializedHardwareWalletKeychain;
 type DecryptedVault = SerializedKeychain[];
 
 const privates = new WeakMap();
@@ -91,13 +100,23 @@ class KeychainManager {
             keychain = new ReadOnlyKeychain();
             await keychain.init(opts as unknown as SerializedReadOnlyKeychain);
             break;
+          case KeychainType.HardwareWalletKeychain:
+            keychain = new HardwareWalletKeychain();
+            await keychain.init(
+              opts as unknown as SerializedHardwareWalletKeychain,
+            );
+            break;
           default:
             throw new Error('Keychain type not recognized.');
         }
         return keychain.getAccounts();
       },
       restoreKeychain: async (
-        opts: SerializedKeypairKeychain | SerializedHdKeychain,
+        opts:
+          | SerializedKeypairKeychain
+          | SerializedHdKeychain
+          | SerializedReadOnlyKeychain
+          | SerializedHardwareWalletKeychain,
       ): Promise<Keychain> => {
         let keychain;
         switch (opts.type) {
@@ -111,7 +130,11 @@ class KeychainManager {
             break;
           case KeychainType.ReadOnlyKeychain:
             keychain = new ReadOnlyKeychain();
-            await keychain.init(opts as unknown as SerializedReadOnlyKeychain);
+            await keychain.init(opts as SerializedReadOnlyKeychain);
+            break;
+          case KeychainType.HardwareWalletKeychain:
+            keychain = new HardwareWalletKeychain();
+            await keychain.init(opts as SerializedHardwareWalletKeychain);
             break;
           default:
             throw new Error('Keychain type not recognized.');
@@ -217,7 +240,8 @@ class KeychainManager {
     opts:
       | SerializedKeypairKeychain
       | SerializedHdKeychain
-      | SerializedReadOnlyKeychain,
+      | SerializedReadOnlyKeychain
+      | SerializedHardwareWalletKeychain,
   ): Promise<Keychain> {
     return privates.get(this).restoreKeychain({
       ...opts,
@@ -342,6 +366,14 @@ class KeychainManager {
     return keychainArrays;
   }
 
+  async getPath(address: Address) {
+    const keychain = await this.getKeychain(address);
+    if (keychain.type === 'HardwareWalletKeychain') {
+      return (keychain as HardwareWalletKeychain).getPath(address);
+    }
+    throw new Error('Not implemented');
+  }
+
   async getWallet(address: Address) {
     const keychain = await this.getKeychain(address);
     const accounts = await keychain.getAccounts();
@@ -352,7 +384,17 @@ class KeychainManager {
         keychain.type === KeychainType.HdKeychain
           ? (keychain as HdKeychain).imported
           : false,
+    } as {
+      vendor?: string;
+      type: KeychainType;
+      accounts: Address[];
+      imported: boolean;
     };
+
+    if (keychain.type === 'HardwareWalletKeychain') {
+      wallet.vendor = (keychain as HardwareWalletKeychain).vendor as string;
+    }
+
     return wallet;
   }
 

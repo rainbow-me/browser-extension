@@ -13,10 +13,12 @@ require('../../core/utils/lockdown');
 
 initializeSentry('background');
 
-const messenger = initializeMessenger({ connect: 'popup' });
+const popupMessenger = initializeMessenger({ connect: 'popup' });
+const inpageMessenger = initializeMessenger({ connect: 'inpage' });
+
 createWagmiClient();
 handleInstallExtension();
-handleProviderRequest({ messenger });
+handleProviderRequest({ popupMessenger, inpageMessenger });
 handleSetupInpage();
 handleWallets();
 syncStores();

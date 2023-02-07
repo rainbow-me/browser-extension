@@ -8,12 +8,14 @@ import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry } from '~/core/sentry';
 import { useCurrentLanguageStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { createWagmiClient } from '~/core/wagmi';
 import { Box, ThemeProvider } from '~/design-system';
 
 import { Routes } from './Routes';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { AuthProvider } from './hooks/useAuth';
+import { useIsFullScreen } from './hooks/useIsFullScreen';
 import { usePendingTransactionWatcher } from './hooks/usePendingTransactionWatcher';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { RainbowConnector } from './wagmi/RainbowConnector';
@@ -39,6 +41,7 @@ export function App() {
   }, []);
 
   const { currentTheme } = useCurrentThemeStore();
+  const isFullScreen = useIsFullScreen();
 
   return (
     <PersistQueryClientProvider
@@ -51,7 +54,15 @@ export function App() {
             PlaygroundComponents[playground]
           ) : (
             <AuthProvider>
-              <Box id="main" background="surfacePrimaryElevated">
+              <Box
+                id="main"
+                background="surfacePrimaryElevated"
+                style={{
+                  maxWidth: !isFullScreen
+                    ? `${POPUP_DIMENSIONS.width}px`
+                    : undefined,
+                }}
+              >
                 <HashRouter>
                   <Routes />
                 </HashRouter>
