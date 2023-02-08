@@ -1,4 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -35,14 +41,14 @@ export const RenameWalletPrompt = ({
   const [newWalletName, setNewWalletName] = useState(oldWalletName);
   const [error, setError] = useState<string | null>(null);
 
-  const handleValidateWalletName = () => {
+  const handleValidateWalletName = useCallback(() => {
     if (account && newWalletName !== '') {
       saveWalletName({ address: account, name: newWalletName });
       onClose();
       return;
     }
     setError(i18n.t('errors.no_wallet_name_set'));
-  };
+  }, [account, newWalletName, onClose, saveWalletName]);
 
   const handleClose = () => {
     setNewWalletName(oldWalletName);
@@ -59,6 +65,20 @@ export const RenameWalletPrompt = ({
   useEffect(() => {
     setError(null);
   }, [newWalletName]);
+
+  const onKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        handleValidateWalletName();
+      }
+    },
+    [handleValidateWalletName],
+  );
+
+  const isValid = useMemo(
+    () => newWalletName.length > 0 && newWalletName.trim() !== '',
+    [newWalletName],
+  );
 
   return (
     <Prompt show={show}>
@@ -103,6 +123,9 @@ export const RenameWalletPrompt = ({
                           height="44px"
                           variant="transparent"
                           textAlign="center"
+                          autoFocus
+                          onKeyDown={onKeyDown}
+                          tabIndex={1}
                         />
                       </Row>
                       <Row>
@@ -151,20 +174,22 @@ export const RenameWalletPrompt = ({
                   onClick={handleClose}
                   width="full"
                   borderRadius="9px"
+                  tabIndex={3}
                 >
                   {i18n.t('common_actions.cancel')}
                 </Button>
               </Column>
               <Column>
                 <Button
-                  variant="flat"
+                  color={isValid ? 'accent' : 'labelQuaternary'}
+                  variant={isValid ? 'flat' : 'disabled'}
                   height="36px"
-                  color="accent"
-                  onClick={handleValidateWalletName}
+                  onClick={isValid ? handleValidateWalletName : undefined}
                   width="full"
                   borderRadius="9px"
+                  tabIndex={2}
                 >
-                  {i18n.t('rename_wallet_prompt.update')}
+                  {i18n.t('rename_wallet_prompt.done')}
                 </Button>
               </Column>
             </Columns>

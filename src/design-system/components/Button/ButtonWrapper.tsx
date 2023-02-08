@@ -1,7 +1,13 @@
 import { motion } from 'framer-motion';
 import React from 'react';
 
-import { BoxStyles, ShadowSize, TextStyles } from '../../styles/core.css';
+import {
+  BoxStyles,
+  ShadowSize,
+  TextStyles,
+  accentColorAsHsl,
+  foregroundColorVars,
+} from '../../styles/core.css';
 import {
   BackgroundColor,
   ButtonColor,
@@ -33,6 +39,7 @@ export type ButtonWrapperProps = {
   width?: 'fit' | 'full';
   blur?: string;
   borderRadius?: Radius;
+  tabIndex?: number;
 } & ButtonVariantProps;
 
 const shadowValue = (size: ShadowSize, color?: ButtonColor) =>
@@ -196,6 +203,7 @@ export function ButtonWrapper({
   width = 'fit',
   blur = '',
   borderRadius,
+  tabIndex,
 }: ButtonWrapperProps) {
   const { boxShadow } = stylesForHeightAndVariant({
     color: color as ButtonColor,
@@ -205,7 +213,19 @@ export function ButtonWrapper({
     color: color ?? 'accent',
   })[variant];
 
-  const styles = (blur && { backdropFilter: `blur(${blur})` }) || {};
+  let outlineColor = undefined;
+  // Only apply outline to buttons with tabIndex
+  if (tabIndex !== undefined) {
+    outlineColor =
+      color && color !== 'accent'
+        ? foregroundColorVars[color as TextColor]
+        : accentColorAsHsl;
+  }
+  const styles = {
+    ...((blur && { backdropFilter: `blur(${blur})` }) || {}),
+    outlineColor,
+  };
+
   return (
     <Box
       as={motion.div}
@@ -214,6 +234,7 @@ export function ButtonWrapper({
       whileTap={{ scale: transformScales['0.96'] }}
       transition={transitions.bounce}
       width={width}
+      className="bx-button-wrapper"
     >
       <Box
         as="button"
@@ -234,6 +255,7 @@ export function ButtonWrapper({
         justifyContent="center"
         width={width}
         style={styles}
+        tabIndex={tabIndex}
       >
         {children}
       </Box>

@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -38,7 +44,7 @@ export const CreateWalletPrompt = ({
   const { saveWalletName } = useWalletNamesStore();
   const { setCurrentAddress } = useCurrentAddressStore();
 
-  const handleValidateWalletName = async () => {
+  const handleValidateWalletName = useCallback(async () => {
     if (address && walletName && walletName.trim() !== '') {
       saveWalletName({
         name: walletName.trim(),
@@ -49,7 +55,7 @@ export const CreateWalletPrompt = ({
       return;
     }
     setError(i18n.t('errors.no_wallet_name_set'));
-  };
+  }, [address, navigate, saveWalletName, setCurrentAddress, walletName]);
 
   const handleClose = useCallback(async () => {
     setWalletName('');
@@ -63,6 +69,20 @@ export const CreateWalletPrompt = ({
   useEffect(() => {
     setError(null);
   }, [walletName]);
+
+  const onKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        handleValidateWalletName();
+      }
+    },
+    [handleValidateWalletName],
+  );
+
+  const isValid = useMemo(
+    () => walletName.length > 0 && walletName.trim() !== '',
+    [walletName],
+  );
 
   return (
     <Prompt show={show}>
@@ -100,6 +120,9 @@ export const CreateWalletPrompt = ({
                           height="44px"
                           variant="transparent"
                           textAlign="center"
+                          autoFocus
+                          onKeyDown={onKeyDown}
+                          tabIndex={1}
                         />
                       </Row>
                       <Row>
@@ -142,12 +165,13 @@ export const CreateWalletPrompt = ({
             <Rows space="8px">
               <Row>
                 <Button
-                  variant="flat"
+                  color={isValid ? 'accent' : 'labelQuaternary'}
+                  variant={isValid ? 'flat' : 'disabled'}
                   height="36px"
-                  color="accent"
-                  onClick={handleValidateWalletName}
+                  onClick={isValid ? handleValidateWalletName : undefined}
                   width="full"
                   borderRadius="9px"
+                  tabIndex={2}
                 >
                   {i18n.t('create_wallet_prompt.create_wallet')}
                 </Button>
@@ -160,6 +184,7 @@ export const CreateWalletPrompt = ({
                   onClick={handleClose}
                   width="full"
                   borderRadius="9px"
+                  tabIndex={3}
                 >
                   {i18n.t('common_actions.cancel')}
                 </Button>
