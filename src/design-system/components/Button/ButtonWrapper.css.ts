@@ -1,4 +1,4 @@
-import { styleVariants } from '@vanilla-extract/css';
+import { globalStyle, styleVariants } from '@vanilla-extract/css';
 
 import { accentColorHslVars } from '../../styles/core.css';
 import { ButtonColor, globalColors } from '../../styles/designTokens';
@@ -56,4 +56,11 @@ export const tintedStyles = styleVariants<
   surfacePrimaryElevated: {},
   surfaceSecondaryElevated: {},
   surfacePrimaryElevatedSecondary: {},
+});
+
+globalStyle('.bx-button-wrapper button:focus', {
+  // transparent by default so we can set
+  // the right color whenever we want to show the outline
+  outline: '1px solid transparent',
+  outlineOffset: '2px',
 });

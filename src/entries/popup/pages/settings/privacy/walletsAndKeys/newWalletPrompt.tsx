@@ -1,4 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, {
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -34,7 +40,7 @@ export const NewWalletPrompt = ({
   const [error, setError] = useState<string | null>(null);
   const { saveWalletName } = useWalletNamesStore();
 
-  const handleValidateWalletName = async () => {
+  const handleValidateWalletName = useCallback(async () => {
     if (walletName && walletName.trim() !== '') {
       const newAccount = await add(wallet?.accounts?.[0]);
       saveWalletName({
@@ -48,7 +54,7 @@ export const NewWalletPrompt = ({
       return;
     }
     setError(i18n.t('errors.no_wallet_name_set'));
-  };
+  }, [navigate, saveWalletName, state?.password, wallet?.accounts, walletName]);
 
   const handleClose = () => {
     setError(null);
@@ -59,6 +65,20 @@ export const NewWalletPrompt = ({
   useEffect(() => {
     setError(null);
   }, [walletName]);
+
+  const onKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        handleValidateWalletName();
+      }
+    },
+    [handleValidateWalletName],
+  );
+
+  const isValid = useMemo(
+    () => walletName.length > 0 && walletName.trim() !== '',
+    [walletName],
+  );
 
   return (
     <Prompt show={show}>
@@ -91,6 +111,9 @@ export const NewWalletPrompt = ({
                       onChange={(e) => setWalletName(e.target.value)}
                       height="40px"
                       variant="bordered"
+                      onKeyDown={onKeyDown}
+                      autoFocus
+                      tabIndex={1}
                     />
                   </Row>
                   {error && (
@@ -115,12 +138,13 @@ export const NewWalletPrompt = ({
             <Rows space="8px">
               <Row>
                 <Button
-                  variant="flat"
+                  color={isValid ? 'accent' : 'labelQuaternary'}
+                  variant={isValid ? 'flat' : 'disabled'}
                   height="36px"
-                  color="accent"
-                  onClick={handleValidateWalletName}
+                  onClick={isValid ? handleValidateWalletName : undefined}
                   width="full"
                   borderRadius="9px"
+                  tabIndex={2}
                 >
                   {i18n.t(
                     'settings.privacy_and_security.wallets_and_keys.new_wallet.create',
@@ -135,6 +159,7 @@ export const NewWalletPrompt = ({
                   onClick={handleClose}
                   width="full"
                   borderRadius="9px"
+                  tabIndex={3}
                 >
                   {i18n.t('common_actions.cancel')}
                 </Button>
