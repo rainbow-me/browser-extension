@@ -18,6 +18,7 @@ import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
 import {
+  filterAsset,
   parseAddressAsset,
   parseParsedAddressAsset,
 } from '~/core/utils/assets';
@@ -158,13 +159,16 @@ function parseUserAssetsByChain(
 ) {
   return Object.values(message?.payload?.assets || {}).reduce(
     (dict, assetData) => {
-      const parsedAsset = parseAddressAsset({
-        address: assetData?.asset?.asset_code,
-        asset: assetData?.asset,
-        currency,
-        quantity: assetData?.quantity,
-      });
-      dict[parsedAsset?.uniqueId] = parsedAsset;
+      const shouldFilterToken = filterAsset(assetData?.asset);
+      if (!shouldFilterToken) {
+        const parsedAsset = parseAddressAsset({
+          address: assetData?.asset?.asset_code,
+          asset: assetData?.asset,
+          currency,
+          quantity: assetData?.quantity,
+        });
+        dict[parsedAsset?.uniqueId] = parsedAsset;
+      }
       return dict;
     },
     {} as Record<string, ParsedAddressAsset>,
