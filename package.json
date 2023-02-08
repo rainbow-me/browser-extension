@@ -99,7 +99,7 @@
     "react-router-dom": "6.4.2",
     "react-switch": "7.0.0",
     "socket.io-client": "4.5.3",
-    "url-regex": "5.0.0",
+    "validator": "13.9.0",
     "wagmi": "0.7.5",
     "zustand": "4.1.2"
   },
@@ -119,6 +119,7 @@
     "@types/react-dom": "18.0.6",
     "@types/selenium-webdriver": "4.1.9",
     "@types/semver": "7.3.13",
+    "@types/validator": "13.7.12",
     "@typescript-eslint/eslint-plugin": "5.38.1",
     "@typescript-eslint/parser": "5.38.1",
     "@vanilla-extract/vite-plugin": "3.6.1",
