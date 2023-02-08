@@ -19,7 +19,7 @@ const AuthContext = createContext({
 
 export type UserStatusResult = 'LOCKED' | 'NEEDS_PASSWORD' | 'NEW' | 'READY';
 
-const getUserStatus = async (): Promise<UserStatusResult> => {
+export const getUserStatus = async (): Promise<UserStatusResult> => {
   // here we'll run the redirect logic
   // if we have a vault set it means onboarding is complete
   let status = await wallet.getStatus();
