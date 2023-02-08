@@ -3,7 +3,7 @@
  */
 export const handleInstallExtension = () =>
   chrome.runtime.onInstalled.addListener(async () => {
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env.IS_DEV === 'true') {
       chrome.contextMenus.create({
         id: 'open-tab',
         title: 'Open Extension in a New Tab',
@@ -19,12 +19,10 @@ export const handleInstallExtension = () =>
             });
         }
       });
-    } else {
       // This breaks e2e!!
-      if (process.env.IS_TESTING !== 'true') {
-        chrome.tabs.create({
-          url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome`,
-        });
-      }
+    } else if (process.env.IS_TESTING !== 'true') {
+      chrome.tabs.create({
+        url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome`,
+      });
     }
   });
