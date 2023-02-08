@@ -163,6 +163,9 @@ export function CreatePassword() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   testId="password-input"
+                  onSubmit={handleSetPassword}
+                  tabIndex={1}
+                  autoFocus
                 />
               </Row>
             </Rows>
@@ -185,6 +188,8 @@ export function CreatePassword() {
                       onChange={(e) => setConfirmNewPassword(e.target.value)}
                       onBlur={handleOnBlur}
                       testId="confirm-password-input"
+                      onSubmit={handleSetPassword}
+                      tabIndex={2}
                     />
                   </Row>
                   <Row>
@@ -219,6 +224,7 @@ export function CreatePassword() {
             width="full"
             onClick={handleSetPassword}
             testId="set-password-button"
+            tabIndex={3}
           >
             {i18n.t('passwords.set_password')}
           </Button>

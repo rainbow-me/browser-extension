@@ -27,6 +27,7 @@ export type ButtonProps = {
   borderRadius?: Radius;
   paddingLeft?: BoxStyles['paddingLeft'];
   paddingRight?: BoxStyles['paddingRight'];
+  tabIndex?: number;
 } & ButtonVariantProps &
   (
     | {

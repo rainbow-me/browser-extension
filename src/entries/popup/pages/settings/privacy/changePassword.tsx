@@ -171,6 +171,9 @@ export function ChangePassword() {
                   placeholder={i18n.t('passwords.new_password')}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
+                  tabIndex={1}
+                  onSubmit={handleUpdatePassword}
+                  autoFocus
                 />
               </Row>
             </Rows>
@@ -190,6 +193,8 @@ export function ChangePassword() {
                       value={confirmNewPassword}
                       onChange={(e) => setConfirmNewPassword(e.target.value)}
                       onBlur={handleOnBlur}
+                      tabIndex={2}
+                      onSubmit={handleUpdatePassword}
                     />
                   </Row>
                   <Row>
@@ -224,6 +229,7 @@ export function ChangePassword() {
                   variant={isValid && isMatching ? 'flat' : 'disabled'}
                   width="full"
                   onClick={handleUpdatePassword}
+                  tabIndex={3}
                 >
                   {i18n.t('passwords.update_password')}
                 </Button>
@@ -235,6 +241,7 @@ export function ChangePassword() {
                   variant="transparent"
                   width="full"
                   onClick={() => navigate(ROUTES.SETTINGS__PRIVACY)}
+                  tabIndex={4}
                 >
                   {i18n.t('common_actions.cancel')}
                 </Button>

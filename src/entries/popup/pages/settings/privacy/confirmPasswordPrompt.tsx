@@ -96,6 +96,9 @@ export const ConfirmPasswordPrompt = ({
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       borderColor={error ? 'red' : undefined}
+                      tabIndex={1}
+                      onSubmit={handleValidatePassword}
+                      autoFocus
                     />
                   </Row>
                   {error && (
@@ -126,6 +129,7 @@ export const ConfirmPasswordPrompt = ({
                   onClick={handleClose}
                   width="full"
                   borderRadius="9px"
+                  tabIndex={3}
                 >
                   {i18n.t('common_actions.cancel')}
                 </Button>
@@ -138,6 +142,7 @@ export const ConfirmPasswordPrompt = ({
                   onClick={handleValidatePassword}
                   width="full"
                   borderRadius="9px"
+                  tabIndex={2}
                 >
                   {i18n.t('common_actions.continue')}
                 </Button>
