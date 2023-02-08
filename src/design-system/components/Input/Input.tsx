@@ -36,6 +36,7 @@ export type InputProps = {
   style?: CSSProperties;
   enableTapScale?: boolean;
   textAlign?: TextStyles['textAlign'];
+  tabIndex?: number;
 };
 
 export const stylesForVariant: Record<
@@ -158,6 +159,7 @@ export function Input({
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...inputProps}
         as="input"
+        tabIndex={inputProps.tabIndex ?? undefined}
         ref={innerRef}
         background={background}
         borderColor={borderColor ? borderColor : borderColorFromVariant}

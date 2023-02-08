@@ -108,6 +108,8 @@ export function Unlock() {
                 borderColor={error !== '' ? 'red' : undefined}
                 testId="password-input"
                 onSubmit={handleUnlock}
+                tabIndex={1}
+                autoFocus
               />
             </Box>
             <Box width="fit">
@@ -120,6 +122,7 @@ export function Unlock() {
                 symbolSide="right"
                 onClick={handleUnlock}
                 testId="unlock-button"
+                tabIndex={2}
               >
                 {i18n.t('unlock.unlock')}
               </Button>
