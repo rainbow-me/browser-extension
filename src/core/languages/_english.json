@@ -257,6 +257,11 @@
     "contact": "Contact",
     "rainbow_support": "Rainbow Support"
   },
+  "onboard_before_connect": {
+    "before_connect": "Before you can connect",
+    "almost_done": "You’re almost done. Quickly finish setting up your wallet with Rainbow.",
+    "setup_wallet": "Set up your wallet"
+  },
   "welcome": {
     "title": "Rainbow",
     "subtitle": "Explore the new world of Ethereum",

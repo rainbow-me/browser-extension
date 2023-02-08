@@ -20,42 +20,36 @@ export const ApproveAppRequest = () => {
   const navigate = useRainbowNavigate();
   const pendingRequest = pendingRequests?.[0];
 
-  const approveRequest = useCallback(
-    async (payload?: unknown) => {
-      backgroundMessenger.send(`message:${pendingRequest?.id}`, payload);
-      if (window?.id && pendingRequests.length <= 1) {
-        removePendingRequest(pendingRequest?.id);
+  const handleRequestAction = useCallback(() => {
+    if (pendingRequests.length <= 1) {
+      removePendingRequest(pendingRequest?.id);
+      if (window?.id) {
         setTimeout(() => {
           window?.id && chrome.windows.remove(window?.id);
         }, 50);
       }
-      navigate(ROUTES.HOME);
-    },
-    [
-      navigate,
-      pendingRequest?.id,
-      pendingRequests.length,
-      removePendingRequest,
-      window?.id,
-    ],
-  );
-
-  const rejectRequest = useCallback(() => {
-    backgroundMessenger.send(`message:${pendingRequest?.id}`, null);
-    if (window?.id && pendingRequests.length <= 1) {
-      removePendingRequest(pendingRequest?.id);
-      setTimeout(() => {
-        window?.id && chrome.windows.remove(window?.id);
-      }, 50);
     }
-    navigate(ROUTES.HOME);
   }, [
-    navigate,
     pendingRequest?.id,
     pendingRequests.length,
     removePendingRequest,
     window?.id,
   ]);
+
+  const approveRequest = useCallback(
+    async (payload?: unknown) => {
+      backgroundMessenger.send(`message:${pendingRequest?.id}`, payload);
+      handleRequestAction();
+      navigate(ROUTES.HOME);
+    },
+    [handleRequestAction, navigate, pendingRequest?.id],
+  );
+
+  const rejectRequest = useCallback(() => {
+    backgroundMessenger.send(`message:${pendingRequest?.id}`, null);
+    handleRequestAction();
+    navigate(ROUTES.HOME);
+  }, [handleRequestAction, navigate, pendingRequest?.id]);
 
   switch (pendingRequest?.method) {
     case 'eth_requestAccounts':
