@@ -30,22 +30,33 @@ export function AccountName({
 
   return (
     <Inline alignVertical="center" space="4px">
-      {includeAvatar && <Avatar imageUrl={ensAvatar || ''} size={16} />}
-      <Box as="button" id={`${id ?? ''}-account-name-shuffle`}>
-        <Text color="label" size={size} weight="heavy" testId="account-name">
-          {displayName}
-        </Text>
-      </Box>
       <Link
         id={`${id ? `${id}-` : ''}account-name-link-to-wallet`}
         to={ROUTES.WALLET_SWITCHER}
       >
-        <Symbol
-          size={chevronDownSizes[size]}
-          symbol="chevron.down"
-          color="labelTertiary"
-          weight="semibold"
-        />
+        <Inline alignVertical="center" space="4px">
+          {includeAvatar && (
+            <Box paddingRight="2px">
+              <Avatar imageUrl={ensAvatar || ''} size={16} />
+            </Box>
+          )}
+          <Box as="button" id={`${id ?? ''}-account-name-shuffle`}>
+            <Text
+              color="label"
+              size={size}
+              weight="heavy"
+              testId="account-name"
+            >
+              {displayName}
+            </Text>
+          </Box>
+          <Symbol
+            size={chevronDownSizes[size]}
+            symbol="chevron.down"
+            color="labelTertiary"
+            weight="semibold"
+          />
+        </Inline>
       </Link>
     </Inline>
   );
