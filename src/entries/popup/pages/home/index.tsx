@@ -99,7 +99,7 @@ export function Home() {
               ...style,
               position: 'relative',
               overscrollBehavior: 'none',
-              height: window.innerHeight,
+              height: 'auto',
               ...(displayingSheet ? { overflow: 'hidden' } : {}),
             }}
           >
