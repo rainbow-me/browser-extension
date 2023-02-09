@@ -16,7 +16,8 @@ declare global {
       lastInjectedProvider?: RainbowProvider;
       currentProvider?: RainbowProvider;
       providers: (RainbowProvider | Ethereum)[];
-      setProviders: (rainbowAsDefault: boolean) => void;
+      setDefaultProvider: (rainbowAsDefault: boolean) => void;
+      addProvider: (provider: RainbowProvider | Ethereum) => void;
     };
   }
 }
@@ -26,46 +27,66 @@ const backgroundMessenger = initializeMessenger({ connect: 'background' });
 const provider = new RainbowProvider({ messenger });
 
 if (shouldInjectProvider()) {
-  window.rainbow = provider;
-  // window.ethereum = provider;
+  Object.defineProperty(window, 'rainbow', {
+    value: provider,
+    configurable: false,
+    writable: false,
+  });
 
-  const walletRouter = {
-    rainbowProvider: window.rainbow,
-    lastInjectedProvider: window.ethereum,
-    currentProvider: window.ethereum,
-    providers: [
-      window.rainbow,
-      // eslint-disable-next-line no-nested-ternary
-      ...(window.ethereum
-        ? // let's use the providers that has already been registered
-          // This format is used by coinbase wallet
-          Array.isArray(window.providers)
-          ? [...window.providers, window.ethereum]
-          : [window.ethereum]
-        : []),
-    ],
-    setProviders: (rainbowAsDefault: boolean) => {
-      if (rainbowAsDefault) {
-        walletRouter.currentProvider = window.rainbow;
-        window.ethereum = window.rainbow;
-      } else {
-        walletRouter.currentProvider =
-          walletRouter.lastInjectedProvider ?? window.ethereum;
-        window.ethereum = walletRouter.currentProvider;
-      }
-    },
-  };
-  window.walletRouter = walletRouter;
+  setTimeout(() => {
+    Object.defineProperty(window, 'walletRouter', {
+      value: {
+        rainbowProvider: window.rainbow,
+        lastInjectedProvider: window.ethereum,
+        currentProvider: window.ethereum,
+        providers: [
+          window.rainbow,
+          // eslint-disable-next-line no-nested-ternary
+          ...(window.ethereum
+            ? // let's use the providers that has already been registered
+              // This format is used by coinbase wallet
+              Array.isArray(window.providers)
+              ? [...window.providers, window.ethereum]
+              : [window.ethereum]
+            : []),
+        ],
+        setDefaultProvider: (rainbowAsDefault: boolean) => {
+          if (rainbowAsDefault) {
+            window.walletRouter.currentProvider = window.rainbow;
+            window.ethereum = window.rainbow;
+          } else {
+            window.walletRouter.currentProvider =
+              window.walletRouter.lastInjectedProvider ?? window.ethereum;
+            window.ethereum = window.walletRouter.currentProvider;
+          }
+        },
+        addProvider: (provider: RainbowProvider | Ethereum) => {
+          window.walletRouter.providers.push(provider);
+        },
+      },
+      configurable: true,
+      writable: false,
+    });
 
+    Object.defineProperty(window, 'ethereum', {
+      value: new Proxy(window.walletRouter.currentProvider || {}, {}),
+      set(newProvider) {
+        if (window?.walletRouter.providers.includes(newProvider)) {
+          window.walletRouter?.addProvider(newProvider);
+        }
+      },
+      configurable: false,
+      writable: true,
+    });
+  }, 100);
+
+  // const walletRouter = (window.walletRouter = walletRouter);
   backgroundMessenger.reply(
     'rainbow_setDefaultProvider',
     async ({ rainbowAsDefault }: { rainbowAsDefault: boolean }) => {
-      window.walletRouter.setProviders(rainbowAsDefault);
+      window.walletRouter.setDefaultProvider(rainbowAsDefault);
     },
   );
-
-  window.ethereum = walletRouter.currentProvider;
-  window.providers = walletRouter.providers;
 }
 
 console.log('injection complete in window');
