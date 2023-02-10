@@ -84,6 +84,10 @@ export const isVaultUnlocked = (): boolean => {
   return keychainManager.state.isUnlocked;
 };
 
+export const isReady = (): boolean => {
+  return keychainManager.state.initialized;
+};
+
 export const createWallet = async (): Promise<Address> => {
   const keychain = await keychainManager.addNewKeychain();
   const accounts = await keychain.getAccounts();
