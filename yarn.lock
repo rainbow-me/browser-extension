@@ -1569,10 +1569,10 @@
   resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-6.10.1.tgz#5bd16082261d7364eabb511c788f00937dac588d"
   integrity sha512-z+ILK8Q3y+nfUl43ctCPuR4Y2bIxk/ooCQFwZxhtci1EhAtMDzMAx2W25qx8G1PPL9UUOdnUax19+F0OjXoj4w==
 
-"@metamask/browser-passworder@3.0.0":
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/@metamask/browser-passworder/-/browser-passworder-3.0.0.tgz#c06744e66a968ffa13f70cc71a7d3b15d86b0ee7"
-  integrity sha512-hD10mgvhcDkZX8wnauw8udp1K2MzcbZfrN7Yon9sQ+OqVK9kiQ4VhZAyZNZTy9KJLtfoVD9Y2F6L4gEese7hDA==
+"@metamask/browser-passworder@4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@metamask/browser-passworder/-/browser-passworder-4.0.2.tgz#436d7252aad56763baa5e5608e60a170ac9458d7"
+  integrity sha512-fC1EdXCd2nRZXCNcoCUODOV3p7dGkwYfWzZlqocBrckCv0+J6MQw2aIjFPER0laS/+OB86w89QFOtwzPZuuYkw==
 
 "@metamask/eth-sig-util@4.0.0":
   version "4.0.0"
