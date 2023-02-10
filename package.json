@@ -107,6 +107,7 @@
     "@foundry-rs/hardhat-anvil": "0.1.7",
     "@lavamoat/allow-scripts": "2.0.3",
     "@lavamoat/preinstall-always-fail": "1.0.0",
+    "@peculiar/webcrypto": "1.4.1",
     "@testing-library/react": "13.4.0",
     "@types/chroma-js": "2.1.4",
     "@types/chrome": "0.0.200",

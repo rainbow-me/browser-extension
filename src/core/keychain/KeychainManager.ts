@@ -357,12 +357,11 @@ class KeychainManager {
     await chrome.storage.session.set({ salt: null });
   }
 
-  // updateEncryptionKey = async (password: string) => {};
-
   async unlock(password: string) {
     if (!this.state.vault) {
       throw new Error('Nothing to unlock');
     }
+
     const {
       vault: decryptedVault,
       exportedKeyString,
