@@ -8,13 +8,13 @@ import { injectNotificationIframe } from '../iframe';
 
 declare global {
   interface Window {
-    ethereum?: RainbowProvider;
+    ethereum: RainbowProvider | Ethereum;
     rainbow: RainbowProvider;
     providers: (RainbowProvider | Ethereum)[];
     walletRouter: {
       rainbowProvider: RainbowProvider;
       lastInjectedProvider?: RainbowProvider;
-      currentProvider?: RainbowProvider;
+      currentProvider: RainbowProvider | Ethereum;
       providers: (RainbowProvider | Ethereum)[];
       setDefaultProvider: (rainbowAsDefault: boolean) => void;
       addProvider: (provider: RainbowProvider | Ethereum) => void;
@@ -33,52 +33,116 @@ if (shouldInjectProvider()) {
     writable: false,
   });
 
-  setTimeout(() => {
-    Object.defineProperty(window, 'walletRouter', {
-      value: {
-        rainbowProvider: window.rainbow,
-        lastInjectedProvider: window.ethereum,
-        currentProvider: window.ethereum,
-        providers: [
-          window.rainbow,
-          // eslint-disable-next-line no-nested-ternary
-          ...(window.ethereum
-            ? // let's use the providers that has already been registered
-              // This format is used by coinbase wallet
-              Array.isArray(window.providers)
-              ? [...window.providers, window.ethereum]
-              : [window.ethereum]
-            : []),
-        ],
-        setDefaultProvider: (rainbowAsDefault: boolean) => {
-          if (rainbowAsDefault) {
-            window.walletRouter.currentProvider = window.rainbow;
-            window.ethereum = window.rainbow;
-          } else {
-            window.walletRouter.currentProvider =
-              window.walletRouter.lastInjectedProvider ?? window.ethereum;
-            window.ethereum = window.walletRouter.currentProvider;
-          }
-        },
-        addProvider: (provider: RainbowProvider | Ethereum) => {
-          window.walletRouter.providers.push(provider);
-        },
-      },
-      configurable: true,
-      writable: false,
-    });
+  const setDefaultProvider = (rainbowAsDefault: boolean) => {
+    if (rainbowAsDefault) {
+      window.walletRouter.currentProvider = window.rainbow;
+      window.ethereum = window.rainbow;
+    } else {
+      window.walletRouter.currentProvider =
+        window.walletRouter.lastInjectedProvider ?? window.ethereum;
+      window.ethereum = window.walletRouter.currentProvider;
+    }
+  };
 
-    Object.defineProperty(window, 'ethereum', {
-      value: new Proxy(window.walletRouter.currentProvider || {}, {}),
-      set(newProvider) {
-        if (window?.walletRouter.providers.includes(newProvider)) {
-          window.walletRouter?.addProvider(newProvider);
+  // setTimeout(() => {
+  Object.defineProperty(window, 'walletRouter', {
+    value: {
+      rainbowProvider: window.rainbow,
+      lastInjectedProvider: window.ethereum,
+      currentProvider: window.rainbow,
+      providers: [
+        window.rainbow,
+        // eslint-disable-next-line no-nested-ternary
+        ...(window.ethereum
+          ? // let's use the providers that has already been registered
+            // This format is used by coinbase wallet
+            Array.isArray(window.ethereum.providers)
+            ? [...window.ethereum.providers, window.ethereum]
+            : [window.ethereum]
+          : []),
+      ],
+      setDefaultProvider,
+      addProvider: (provider: RainbowProvider | Ethereum) => {
+        console.log('adddd provider ', provider);
+        if (!window.walletRouter.providers.includes(provider)) {
+          window.walletRouter.providers.push(provider);
         }
       },
-      configurable: false,
-      writable: true,
-    });
-  }, 100);
+    },
+    configurable: true,
+    writable: false,
+  });
+
+  let cachedWindowEthereumProxy: unknown;
+
+  let cachedCurrentProvider: RainbowProvider | Ethereum;
+
+  // setTimeout(() => {
+  Object.defineProperty(window, 'ethereum', {
+    get() {
+      if (!window.walletRouter) {
+        throw new Error(
+          'window.walletRouter is expected to be set to change the injected provider on window.ethereum.',
+        );
+      }
+      if (
+        cachedWindowEthereumProxy &&
+        cachedCurrentProvider === window.walletRouter.currentProvider
+      ) {
+        return cachedWindowEthereumProxy;
+      }
+
+      cachedWindowEthereumProxy = new Proxy(
+        window.walletRouter.currentProvider,
+        {
+          get(target, prop, receiver) {
+            if (
+              window.walletRouter &&
+              window.walletRouter.currentProvider &&
+              !(prop in window.walletRouter.currentProvider) &&
+              prop in window.walletRouter
+            ) {
+              if (
+                (window.location.href.includes('app.uniswap.org') ||
+                  window.location.href.includes('kwenta.io') ||
+                  window.location.href.includes('galxe.com')) &&
+                prop === 'providers'
+              ) {
+                return null;
+              }
+              // @ts-expect-error ts accepts symbols as index only from 4.4
+              // https://stackoverflow.com/questions/59118271/using-symbol-as-object-key-type-in-typescript
+              return window.walletRouter[prop];
+            }
+
+            return Reflect.get(target, prop, receiver);
+          },
+        },
+      );
+      cachedCurrentProvider = window.walletRouter.currentProvider;
+
+      return cachedWindowEthereumProxy;
+    },
+    set(newProvider) {
+      window.walletRouter?.addProvider(newProvider);
+    },
+    configurable: true,
+  });
+  console.log('DISPATCHING INITIALIZED WIT 1 H', window.ethereum);
+  window.dispatchEvent(new Event('ethereum#initialized'));
+  // }, 500);
+
+  // Object.defineProperty(window, 'ethereum', {
+  //   value: {},
+  //   set(newProvider) {
+  //     if (window?.walletRouter.providers.includes(newProvider)) {
+  //       window.walletRouter?.addProvider(newProvider);
+  //     }
+  //   },
+  //   configurable: false,
+  //   writable: true,
+  // });
+  // }, 100);
 
   // const walletRouter = (window.walletRouter = walletRouter);
   backgroundMessenger.reply(
@@ -90,6 +154,7 @@ if (shouldInjectProvider()) {
 }
 
 console.log('injection complete in window');
+console.log('DISPATCHING INITIALIZED WITH', window.ethereum);
 window.dispatchEvent(new Event('ethereum#initialized'));
 
 backgroundMessenger.reply(
