@@ -41,7 +41,7 @@ export class RainbowProvider extends EventEmitter {
   selectedAddress: string | undefined;
 
   #isUnlocked = true;
-  #requestId = 0;
+  requestId = 0;
 
   constructor({ messenger }: { messenger?: Messenger } = {}) {
     super();
@@ -78,7 +78,7 @@ export class RainbowProvider extends EventEmitter {
     params,
   }: RequestArguments): Promise<RequestResponse | undefined> {
     // eslint-disable-next-line no-plusplus
-    const id = this.#requestId++;
+    const id = this.requestId++;
 
     const response = await providerRequestTransport.send(
       {
