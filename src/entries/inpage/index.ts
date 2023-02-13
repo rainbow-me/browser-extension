@@ -27,23 +27,14 @@ const backgroundMessenger = initializeMessenger({ connect: 'background' });
 const rainbowProvider = new RainbowProvider({ messenger });
 
 if (shouldInjectProvider()) {
+  let cachedWindowEthereumProxy: unknown;
+  let cachedCurrentProvider: RainbowProvider | Ethereum;
+
   Object.defineProperty(window, 'rainbow', {
     value: rainbowProvider,
     configurable: false,
     writable: false,
   });
-
-  const setDefaultProvider = (rainbowAsDefault: boolean) => {
-    if (rainbowAsDefault) {
-      window.walletRouter.currentProvider = window.rainbow;
-      window.ethereum = window.rainbow;
-    } else {
-      window.walletRouter.currentProvider =
-        window.walletRouter.lastInjectedProvider ?? window.ethereum;
-      window.ethereum =
-        window.walletRouter.lastInjectedProvider ?? window.ethereum;
-    }
-  };
 
   Object.defineProperty(window, 'walletRouter', {
     value: {
@@ -61,7 +52,17 @@ if (shouldInjectProvider()) {
             : [window.ethereum]
           : []),
       ],
-      setDefaultProvider,
+      setDefaultProvider: (rainbowAsDefault: boolean) => {
+        if (rainbowAsDefault) {
+          window.walletRouter.currentProvider = window.rainbow;
+          window.ethereum = window.rainbow;
+        } else {
+          window.walletRouter.currentProvider =
+            window.walletRouter.lastInjectedProvider ?? window.ethereum;
+          window.ethereum =
+            window.walletRouter.lastInjectedProvider ?? window.ethereum;
+        }
+      },
       addProvider: (provider: RainbowProvider | Ethereum) => {
         if (!window.walletRouter.providers.includes(provider)) {
           window.walletRouter.providers.push(provider);
@@ -74,10 +75,6 @@ if (shouldInjectProvider()) {
     configurable: false,
     writable: false,
   });
-
-  let cachedWindowEthereumProxy: unknown;
-
-  let cachedCurrentProvider: RainbowProvider | Ethereum;
 
   Object.defineProperty(window, 'ethereum', {
     get() {
@@ -139,7 +136,6 @@ if (shouldInjectProvider()) {
 }
 
 console.log('injection complete in window');
-console.log('DISPATCHING INITIALIZED WITH', window.ethereum);
 window.dispatchEvent(new Event('ethereum#initialized'));
 
 backgroundMessenger.reply(
