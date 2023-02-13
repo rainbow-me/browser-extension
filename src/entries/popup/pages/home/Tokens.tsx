@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useBalance } from 'wagmi';
 
 import { supportedCurrencies } from '~/core/references';
 import { selectUserAssetsList } from '~/core/resources/_selectors';
@@ -7,12 +7,22 @@ import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { UniqueId } from '~/core/types/assets';
-import { Box, Column, Columns, Inline, Text } from '~/design-system';
+import {
+  Box,
+  Column,
+  Columns,
+  Inline,
+  Inset,
+  Symbol,
+  Text,
+} from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 
 import { Asterisks } from '../../components/Asterisks/Asterisks';
+import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
+import { WalletIcon } from '../../components/WalletIcon/WalletIcon';
 
 const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 150;
@@ -24,6 +34,91 @@ export function Tokens() {
     { address, currency },
     { select: selectUserAssetsList },
   );
+
+  const { data: balance } = useBalance({ addressOrName: address });
+
+  if (balance?.formatted === '0.0') {
+    return (
+      <Inset horizontal="20px">
+        <Box paddingBottom="8px">
+          <a href="https://www.coinbase.com/" target="_blank" rel="noreferrer">
+            <Box
+              background={{
+                default: 'surfaceSecondaryElevated',
+              }}
+              borderRadius="16px"
+              borderColor="separatorTertiary"
+              boxShadow="12px"
+            >
+              <Inset horizontal="16px" vertical="16px">
+                <Box paddingBottom="12px">
+                  <Inline alignVertical="center" alignHorizontal="justify">
+                    <Box>
+                      <Inline alignVertical="center" space="8px">
+                        <CoinbaseIcon />
+                        <Text size="14pt" color="label" weight="semibold">
+                          Deposit from Coinbase
+                        </Text>
+                      </Inline>
+                    </Box>
+                    <Symbol
+                      size={12}
+                      symbol="arrow.up.forward.circle"
+                      weight="semibold"
+                      color="labelTertiary"
+                    />
+                  </Inline>
+                </Box>
+                <Text size="11pt" color="labelSecondary" weight="bold">
+                  Buy or transfer from Coinbase
+                </Text>
+              </Inset>
+            </Box>
+          </a>
+        </Box>
+
+        <Box
+          background={{
+            default: 'surfacePrimaryElevated',
+          }}
+          borderRadius="16px"
+          borderColor="separatorTertiary"
+          boxShadow="12px"
+          borderWidth="1px"
+        >
+          <Inset horizontal="16px" vertical="16px">
+            <Box paddingBottom="12px">
+              <Inline alignVertical="center" space="8px">
+                <WalletIcon />
+                <Text size="14pt" color="label" weight="semibold">
+                  Send from another wallet
+                </Text>
+              </Inline>
+            </Box>
+            <Text size="11pt" color="labelSecondary" weight="bold">
+              Press{' '}
+              <Box
+                background="fillSecondary"
+                as="span"
+                style={{
+                  display: 'inline-block',
+                  width: '16px',
+                  height: '16px',
+                  borderRadius: '4px',
+                  verticalAlign: 'middle',
+                  textAlign: 'center',
+                  lineHeight: '16px',
+                }}
+              >
+                C
+              </Box>{' '}
+              to copy your address
+            </Text>
+          </Inset>
+        </Box>
+      </Inset>
+    );
+  }
   return (
     <Box
       style={{
