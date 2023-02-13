@@ -3,6 +3,8 @@ import { expect, test } from 'vitest';
 import { Language } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';
 
+import { DEFAULT_ACCOUNT } from '../contacts/index.test';
+
 import {
   currentAddressStore,
   currentChainIdStore,
@@ -19,7 +21,9 @@ test('should be able to set and change language', async () => {
 });
 
 test('should be able to set and change address', async () => {
-  const { currentAddress, setCurrentAddress } = currentAddressStore.getState();
+  const { setCurrentAddress } = currentAddressStore.getState();
+  setCurrentAddress(DEFAULT_ACCOUNT);
+  const { currentAddress } = currentAddressStore.getState();
   expect(currentAddress).toBe('0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4');
   setCurrentAddress('0x123');
   expect(currentAddressStore.getState().currentAddress).toBe('0x123');
