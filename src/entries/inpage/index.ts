@@ -13,7 +13,7 @@ declare global {
     providers: (RainbowProvider | Ethereum)[];
     walletRouter: {
       rainbowProvider: RainbowProvider;
-      lastInjectedProvider: RainbowProvider | Ethereum;
+      lastInjectedProvider?: RainbowProvider | Ethereum;
       currentProvider: RainbowProvider | Ethereum;
       providers: (RainbowProvider | Ethereum)[];
       setDefaultProvider: (rainbowAsDefault: boolean) => void;

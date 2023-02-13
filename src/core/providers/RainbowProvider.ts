@@ -36,7 +36,7 @@ export class RainbowProvider extends EventEmitter {
   connected = false;
   isRainbow = true;
   isReady = true;
-  isMetaMask = true;
+  isMetaMask = false;
   networkVersion = '1';
   selectedAddress: string | undefined;
 

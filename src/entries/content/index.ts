@@ -8,7 +8,6 @@ setupBridgeMessengerRelay();
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
 
 setTimeout(() => {
-  console.log('inpageMessenger snendnenne');
   inpageMessenger.send('rainbow_setDefaultProvider', {
     rainbowAsDefault: isDefaultWalletStore.getState().isDefaultWallet,
   });
