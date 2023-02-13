@@ -87,10 +87,12 @@ function ActionButtonsSection() {
             text={i18n.t('wallet_header.copy')}
             onClick={handleCopy}
             testId="header-link-copy"
+            tabIndex={4}
           />
           <ActionButton
             symbol="arrow.triangle.swap"
             text={i18n.t('wallet_header.swap')}
+            tabIndex={5}
           />
           <Link
             id="header-link-send"
@@ -100,6 +102,7 @@ function ActionButtonsSection() {
             <ActionButton
               symbol="paperplane.fill"
               text={i18n.t('wallet_header.send')}
+              tabIndex={6}
             />
           </Link>
         </Inline>
@@ -113,11 +116,13 @@ function ActionButton({
   text,
   onClick,
   testId,
+  tabIndex,
 }: {
   symbol: SymbolProps['symbol'];
   text: string;
   onClick?: () => void;
   testId?: string;
+  tabIndex?: number;
 }) {
   return (
     <Stack alignHorizontal="center" space="10px">
@@ -128,6 +133,7 @@ function ActionButton({
         symbol={symbol}
         testId={testId}
         onClick={onClick}
+        tabIndex={tabIndex}
       />
       <Text color="labelSecondary" size="12pt" weight="semibold">
         {text}

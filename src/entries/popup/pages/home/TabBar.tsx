@@ -75,12 +75,14 @@ export function TabBar({
             onClick={() => onSelectTab('tokens')}
             symbol="record.circle.fill"
             text="Tokens"
+            tabIndex={7}
           />
           <Tabs.Tab
             active={activeTab === 'activity'}
             onClick={() => onSelectTab('activity')}
             symbol="bolt.fill"
             text="Activity"
+            tabIndex={8}
           />
         </Tabs>
       </Box>

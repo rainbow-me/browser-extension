@@ -40,3 +40,19 @@ globalStyle('div[data-radix-popper-content-wrapper]', {
 globalStyle('*:focus', {
   outline: 'none',
 });
+
+globalStyle('#header-account-name-shuffle:focus-visible', {
+  // transparent by default so we can set
+  // the right color whenever we want to show the outline
+  outline: '1px solid',
+  outlineOffset: '2px',
+  outlineColor: 'transparent',
+});
+
+globalStyle('.home-tab-wrapper:focus-visible', {
+  // transparent by default so we can set
+  // the right color whenever we want to show the outline
+  outline: '1px solid',
+  outlineOffset: '2px',
+  outlineColor: 'transparent',
+});
