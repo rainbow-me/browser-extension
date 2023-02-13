@@ -59,12 +59,10 @@ export function Settings() {
     setConnectedToHardhat(!connectedToHardhat);
   }, [setConnectedToHardhat, connectedToHardhat]);
 
-  const useRainbowAsDefaultWallet = useCallback(
+  const setRainbowAsDefaultWallet = useCallback(
     async (rainbowAsDefault: boolean) => {
       setIsDefaultWallet(rainbowAsDefault);
       messenger.send('rainbow_setDefaultProvider', { rainbowAsDefault });
-      chrome.storage.session.set({ defaultWallet: rainbowAsDefault });
-      localStorage.setItem('defaultWallet', 'yes');
     },
     [setIsDefaultWallet],
   );
@@ -82,7 +80,7 @@ export function Settings() {
             rightComponent={
               <Toggle
                 checked={isDefaultWallet}
-                handleChange={useRainbowAsDefaultWallet}
+                handleChange={setRainbowAsDefaultWallet}
               />
             }
           />
