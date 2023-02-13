@@ -84,12 +84,14 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
                 </Inline>
               </DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="lock">
-                <Inline alignVertical="center" space="8px">
-                  <Symbol size={12} symbol="lock.fill" weight="semibold" />
-                  <Text size="14pt" weight="semibold">
-                    {i18n.t('menu.home_header_right.lock_rainbow')}
-                  </Text>
-                </Inline>
+                <Box testId="lock">
+                  <Inline alignVertical="center" space="8px">
+                    <Symbol size={12} symbol="lock.fill" weight="semibold" />
+                    <Text size="14pt" weight="semibold">
+                      {i18n.t('menu.home_header_right.lock_rainbow')}
+                    </Text>
+                  </Inline>
+                </Box>
               </DropdownMenuRadioItem>
             </Stack>
             <Stack space="4px">
