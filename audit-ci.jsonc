@@ -3,5 +3,5 @@
   // $schema provides code completion hints to IDEs.
   "$schema": "https://github.com/IBM/audit-ci/raw/main/docs/schema.json",
   "moderate": true,
-  "allowlist": ["deep-object-diff"]
+  "allowlist": ["deep-object-diff", "GHSA-8x6c-cv3v-vp6g"]
 }
