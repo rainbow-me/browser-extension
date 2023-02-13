@@ -47,8 +47,8 @@ if (shouldInjectProvider()) {
         ...(window.ethereum
           ? // let's use the providers that has already been registered
             // This format is used by coinbase wallet
-            Array.isArray(window.walletRouter.providers)
-            ? [...window.walletRouter.providers, window.ethereum]
+            Array.isArray(window.ethereum?.providers)
+            ? [...(window.ethereum?.providers || []), window.ethereum]
             : [window.ethereum]
           : []),
       ],
@@ -78,11 +78,6 @@ if (shouldInjectProvider()) {
 
   Object.defineProperty(window, 'ethereum', {
     get() {
-      if (!window.walletRouter) {
-        throw new Error(
-          'window.walletRouter is expected to be set to change the injected provider on window.ethereum.',
-        );
-      }
       if (
         cachedWindowEthereumProxy &&
         cachedCurrentProvider === window.walletRouter.currentProvider
@@ -100,16 +95,15 @@ if (shouldInjectProvider()) {
               !(prop in window.walletRouter.currentProvider) &&
               prop in window.walletRouter
             ) {
+              // Uniswap MM connector checks the providers array for the MM provider and forces to use that
+              // https://github.com/Uniswap/web3-react/blob/main/packages/metamask/src/index.ts#L57
               if (
-                (window.location.href.includes('app.uniswap.org') ||
-                  window.location.href.includes('kwenta.io') ||
-                  window.location.href.includes('galxe.com')) &&
+                window.location.href.includes('app.uniswap.org') &&
                 prop === 'providers'
               ) {
                 return null;
               }
               // @ts-expect-error ts accepts symbols as index only from 4.4
-              // https://stackoverflow.com/questions/59118271/using-symbol-as-object-key-type-in-typescript
               return window.walletRouter[prop];
             }
 

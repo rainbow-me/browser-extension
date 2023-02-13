@@ -39,6 +39,7 @@ export class RainbowProvider extends EventEmitter {
   isMetaMask = false;
   networkVersion = '1';
   selectedAddress: string | undefined;
+  providers = [];
 
   #isUnlocked = true;
   requestId = 0;

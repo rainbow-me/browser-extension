@@ -163,7 +163,6 @@ export const handleProviderRequest = ({
           break;
         }
         case 'eth_requestAccounts': {
-          console.log('HANDLE PROVIDER REQUEST eth_requestAccounts');
           if (activeSession) {
             response = [activeSession.address];
             break;
