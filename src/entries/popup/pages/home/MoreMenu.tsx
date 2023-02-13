@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useAccount, useEnsName } from 'wagmi';
 
+import LockSound from 'static/assets/audio/ui_lock.wav';
 import { i18n } from '~/core/languages';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
@@ -37,6 +38,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
           openProfile();
           break;
         case 'lock':
+          new Audio(LockSound).play();
           wallet.lock();
           break;
       }
