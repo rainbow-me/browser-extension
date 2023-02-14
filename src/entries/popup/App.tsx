@@ -1,11 +1,11 @@
-import { uuid4, uuid4 } from '@sentry/utils';
+import { uuid4 } from '@sentry/utils';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import * as React from 'react';
 import { HashRouter } from 'react-router-dom';
 import { WagmiConfig, useAccount } from 'wagmi';
 
-import { analytics, analytics } from '~/analytics';
-import { event, event } from '~/analytics/event';
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { changeI18nLanguage } from '~/core/languages';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry } from '~/core/sentry';
