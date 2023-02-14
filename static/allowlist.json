@@ -13,6 +13,7 @@
         "https://*.infura.io",
         "https://burned-solitary-breeze.bsc.quiknode.pro/",
         "ws://localhost:9090/",
-        "https://o331974.ingest.sentry.io"
+        "https://o331974.ingest.sentry.io",
+        "https://api.segment.io"
     ]
 }
