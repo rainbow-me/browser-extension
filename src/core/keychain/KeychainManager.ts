@@ -82,6 +82,7 @@ class KeychainManager {
                 return privates.get(this).restoreKeychain(serializedKeychain);
               }),
             );
+            await privates.get(this).persist();
             this.state.isUnlocked = true;
           }
         } catch (e) {
@@ -148,7 +149,6 @@ class KeychainManager {
         }
         await this.checkForDuplicateInKeychain(keychain);
         this.state.keychains.push(keychain as Keychain);
-        await privates.get(this).persist();
         return keychain;
       },
 
@@ -197,6 +197,9 @@ class KeychainManager {
             result.salt = salt;
             result.exportedKeyString = encryptionKey;
           }
+          if (!pwd && !(encryptionKey && salt)) {
+            throw new Error('No password or encryption key found.');
+          }
           this.state.vault = result.vault;
           await privates.get(this).setEncryptionKey(result.exportedKeyString);
           await privates.get(this).setSalt(result.salt);
@@ -207,13 +210,13 @@ class KeychainManager {
         await chrome.storage.local.set({ vault: this.state.vault });
       },
 
-      setSalt: (val: string) => {
+      setSalt: (val: string | null) => {
         return chrome.storage.session.set({ salt: val });
       },
       getSalt: () => {
         return chrome.storage.session.get('salt');
       },
-      setEncryptionKey: (val: string) => {
+      setEncryptionKey: (val: string | null) => {
         return chrome.storage.session.set({ encryptionKey: val });
       },
       getEncryptionKey: () => {
@@ -234,11 +237,7 @@ class KeychainManager {
     await privates.get(this).persist();
   }
 
-  verifyPassword(password: string) {
-    return privates.get(this).password === password;
-  }
-
-  async verifyPasswordViaDecryption(password: string) {
+  async verifyPassword(password: string) {
     if (!this.state.vault) {
       throw new Error('Nothing to unlock');
     }
@@ -280,11 +279,13 @@ class KeychainManager {
       | SerializedReadOnlyKeychain
       | SerializedHardwareWalletKeychain,
   ): Promise<Keychain> {
-    return privates.get(this).restoreKeychain({
+    const result = await privates.get(this).restoreKeychain({
       ...opts,
       imported: true,
       autodiscover: true,
     });
+    await privates.get(this).persist();
+    return result;
   }
 
   async deriveAccounts(
@@ -353,8 +354,8 @@ class KeychainManager {
 
     await chrome.storage.local.set({ vault: null });
     await chrome.storage.session.set({ keychainManager: null });
-    await chrome.storage.session.set({ encryptionKey: null });
-    await chrome.storage.session.set({ salt: null });
+    await privates.get(this).setEncryptionKey(null);
+    await privates.get(this).setSalt(null);
   }
 
   async unlock(password: string) {
@@ -378,6 +379,7 @@ class KeychainManager {
         return privates.get(this).restoreKeychain(serializedKeychain);
       }),
     );
+    await privates.get(this).persist();
   }
 
   async getAccounts() {
