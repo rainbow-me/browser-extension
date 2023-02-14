@@ -15,7 +15,6 @@ export function WalletIcon({
         overflow: 'hidden',
         height: height,
         width: width,
-        boxShadow: '0px 4px 12px 0px rgba(0, 0, 0, 0.3)',
       }}
     >
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">

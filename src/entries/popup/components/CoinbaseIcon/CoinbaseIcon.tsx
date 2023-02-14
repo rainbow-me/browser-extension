@@ -12,11 +12,11 @@ export function CoinbaseIcon({
   return (
     <Box
       borderRadius="round"
+      boxShadow="9px"
       style={{
         overflow: 'hidden',
         height: height,
         width: width,
-        boxShadow: '0px 4px 12px 0px rgba(0, 0, 0, 0.3)',
       }}
     >
       <svg
