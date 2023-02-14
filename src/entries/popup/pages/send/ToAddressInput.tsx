@@ -9,7 +9,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Address, useEnsName } from 'wagmi';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
@@ -29,8 +29,7 @@ import { SymbolName } from '~/design-system/styles/designTokens';
 
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
-import { useContact } from '../../hooks/useContacts';
-import { useWalletName } from '../../hooks/useWalletName';
+import { useWalletInfo } from '../../hooks/useWalletInfo';
 
 import {
   InputWrapper,
@@ -120,16 +119,13 @@ const WalletRow = ({
   onClick: (address: Address) => void;
   section: 'contacts' | 'my_wallets' | 'watching';
 }) => {
-  const { data: ensName } = useEnsName({
+  const { displayName, contactName, isNameDefined } = useWalletInfo({
     address: wallet,
   });
-  const contact = useContact({ address: wallet });
-  const { displayName } = useWalletName({ address: wallet });
-
-  const walletName = useMemo(() => {
-    if (section === 'contacts') return contact.display;
-    return displayName;
-  }, [contact.display, displayName, section]);
+  const name = useMemo(
+    () => (section === 'contacts' ? contactName : displayName),
+    [section, contactName, displayName],
+  );
 
   return (
     <Box
@@ -148,10 +144,10 @@ const WalletRow = ({
             size="14pt"
             color="label"
           >
-            {walletName || truncateAddress(wallet)}
+            {name}
           </TextOverflow>
 
-          {(walletName || ensName) && (
+          {isNameDefined && (
             <Text weight="semibold" size="12pt" color="labelTertiary">
               {truncateAddress(wallet)}
             </Text>
@@ -322,7 +318,7 @@ export const ToAddressInput = ({
     }
   }, [closeDropdown, inputVisible, validateToAddress]);
 
-  const toAddressContact = useContact({ address: toAddress });
+  const { displayName, isNameDefined } = useWalletInfo({ address: toAddress });
   const { wallets, watchedWallets, contacts } = useAllFilteredWallets({
     filter: toAddressOrName,
   });
@@ -372,15 +368,14 @@ export const ToAddressInput = ({
                         color="label"
                         testId="to-address-input-display"
                       >
-                        {toAddressContact?.display ||
-                          truncateAddress(toAddress)}
+                        {displayName}
                       </TextOverflow>
                     </Box>
                   )}
                 </AnimatePresence>
               </Box>
               <AnimatePresence>
-                {!inputVisible && toAddressContact?.display && (
+                {!inputVisible && isNameDefined && (
                   <Box as={motion.div} key="wallet" layout="position">
                     <Text weight="semibold" size="12pt" color="labelTertiary">
                       {truncateAddress(toAddress)}
