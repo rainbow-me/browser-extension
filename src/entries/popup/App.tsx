@@ -1,9 +1,11 @@
+import { uuid4 } from '@sentry/utils';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import * as React from 'react';
 import { HashRouter } from 'react-router-dom';
 import { WagmiConfig, useAccount } from 'wagmi';
-import { uuid4 } from '@sentry/utils';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { changeI18nLanguage } from '~/core/languages';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry } from '~/core/sentry';
@@ -20,8 +22,6 @@ import { useIsFullScreen } from './hooks/useIsFullScreen';
 import { usePendingTransactionWatcher } from './hooks/usePendingTransactionWatcher';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { RainbowConnector } from './wagmi/RainbowConnector';
-import { analytics } from '~/analytics';
-import { event } from '~/analytics/event';
 
 const playground = process.env.PLAYGROUND as 'default' | 'ds';
 
