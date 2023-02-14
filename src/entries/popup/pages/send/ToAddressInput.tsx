@@ -30,6 +30,7 @@ import { SymbolName } from '~/design-system/styles/designTokens';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
 import { useContact } from '../../hooks/useContacts';
+import { useWalletName } from '../../hooks/useWalletName';
 
 import {
   InputWrapper,
@@ -66,11 +67,13 @@ const WalletSection = ({
   wallets,
   onClickWallet,
   symbol,
+  section,
 }: {
   title: string;
   wallets: Address[];
   onClickWallet: (address: Address) => void;
   symbol: SymbolName;
+  section: 'contacts' | 'my_wallets' | 'watching';
 }) => {
   return wallets.length ? (
     <Stack space="8px">
@@ -96,6 +99,7 @@ const WalletSection = ({
                 <WalletRow
                   onClick={onClickWallet}
                   key={wallet}
+                  section={section}
                   wallet={wallet}
                 />
               </Inset>
@@ -110,14 +114,23 @@ const WalletSection = ({
 const WalletRow = ({
   wallet,
   onClick,
+  section,
 }: {
   wallet: Address;
   onClick: (address: Address) => void;
+  section: 'contacts' | 'my_wallets' | 'watching';
 }) => {
   const { data: ensName } = useEnsName({
     address: wallet,
   });
   const contact = useContact({ address: wallet });
+  const { displayName } = useWalletName({ address: wallet });
+
+  const walletName = useMemo(() => {
+    if (section === 'contacts') return contact.display;
+    return displayName;
+  }, [contact.display, displayName, section]);
+
   return (
     <Box
       as={motion.div}
@@ -135,10 +148,10 @@ const WalletRow = ({
             size="14pt"
             color="label"
           >
-            {contact?.display || truncateAddress(wallet)}
+            {walletName || truncateAddress(wallet)}
           </TextOverflow>
 
-          {(contact?.display || ensName) && (
+          {(walletName || ensName) && (
             <Text weight="semibold" size="12pt" color="labelTertiary">
               {truncateAddress(wallet)}
             </Text>
@@ -183,18 +196,21 @@ const DropdownWalletsList = ({
               title={i18n.t('send.wallets_list.my_wallets')}
               wallets={wallets}
               onClickWallet={selectWalletAndCloseDropdown}
+              section="my_wallets"
             />
             <WalletSection
               symbol="person.crop.circle.fill"
               title={i18n.t('send.wallets_list.contacts')}
               wallets={contacts as Address[]}
               onClickWallet={selectWalletAndCloseDropdown}
+              section="contacts"
             />
             <WalletSection
               symbol="eyes.inverse"
               title={i18n.t('send.wallets_list.watched_wallets')}
               wallets={watchedWallets}
               onClickWallet={selectWalletAndCloseDropdown}
+              section="watching"
             />
           </Stack>
         </Box>
