@@ -1,3 +1,4 @@
+import { Ethereum } from '@wagmi/core';
 import { EventEmitter } from 'eventemitter3';
 
 import { Messenger } from '../messengers';
@@ -39,7 +40,7 @@ export class RainbowProvider extends EventEmitter {
   isMetaMask = false;
   networkVersion = '1';
   selectedAddress: string | undefined;
-  providers = [];
+  providers: RainbowProvider[] | Ethereum[] | undefined = undefined;
 
   #isUnlocked = true;
   requestId = 0;
