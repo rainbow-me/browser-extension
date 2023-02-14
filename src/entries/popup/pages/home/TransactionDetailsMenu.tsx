@@ -7,13 +7,13 @@ import { getTransactionBlockExplorerUrl } from '~/core/utils/transactions';
 import { Box, Inline, Symbol, Text } from '~/design-system';
 
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '../../components/DropdownMenu/DropdownMenu';
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from '../../components/ContextMenu/ContextMenu';
 import { SheetMode } from '../speedUpAndCancelSheet';
 
 export function TransactionDetailsMenu({
@@ -40,14 +40,14 @@ export function TransactionDetailsMenu({
   };
   return (
     <MenuWrapper closed={closed} onOpenChange={onOpenChange}>
-      <DropdownMenuTrigger asChild>
+      <ContextMenuTrigger asChild>
         <Box position="relative">{children}</Box>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuRadioGroup>
+      </ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuRadioGroup>
           {transaction?.pending && (
             <>
-              <DropdownMenuRadioItem value={'speedUp'}>
+              <ContextMenuRadioItem value={'speedUp'}>
                 <MenuRow onClick={handleRowSelection('speedUp')}>
                   <Inline space="8px" alignVertical="center">
                     <Text weight="semibold" size="14pt">
@@ -58,8 +58,8 @@ export function TransactionDetailsMenu({
                     </Text>
                   </Inline>
                 </MenuRow>
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value={'cancel'}>
+              </ContextMenuRadioItem>
+              <ContextMenuRadioItem value={'cancel'}>
                 <MenuRow onClick={handleRowSelection('cancel')}>
                   <Inline space="8px" alignVertical="center">
                     <Text weight="semibold" size="14pt">
@@ -70,13 +70,13 @@ export function TransactionDetailsMenu({
                     </Text>
                   </Inline>
                 </MenuRow>
-              </DropdownMenuRadioItem>
+              </ContextMenuRadioItem>
               <Box paddingVertical="4px">
-                <DropdownMenuSeparator />
+                <ContextMenuSeparator />
               </Box>
             </>
           )}
-          <DropdownMenuRadioItem value={'blockExplorer'}>
+          <ContextMenuRadioItem value={'blockExplorer'}>
             <MenuRow>
               <a
                 href={getTransactionBlockExplorerUrl({
@@ -108,9 +108,9 @@ export function TransactionDetailsMenu({
                 color="labelQuaternary"
               />
             </MenuRow>
-          </DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
+          </ContextMenuRadioItem>
+        </ContextMenuRadioGroup>
+      </ContextMenuContent>
     </MenuWrapper>
   );
 }
@@ -141,12 +141,8 @@ function MenuWrapper({
   onOpenChange: () => void;
 }) {
   if (closed) {
-    return (
-      <DropdownMenu open={false} onOpenChange={onOpenChange}>
-        {children}
-      </DropdownMenu>
-    );
+    return <ContextMenu onOpenChange={onOpenChange}>{children}</ContextMenu>;
   }
 
-  return <DropdownMenu>{children}</DropdownMenu>;
+  return <ContextMenu>{children}</ContextMenu>;
 }
