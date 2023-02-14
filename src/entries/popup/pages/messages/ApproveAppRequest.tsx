@@ -21,8 +21,8 @@ export const ApproveAppRequest = () => {
   const pendingRequest = pendingRequests?.[0];
 
   const handleRequestAction = useCallback(() => {
+    removePendingRequest(pendingRequest?.id);
     if (pendingRequests.length <= 1) {
-      removePendingRequest(pendingRequest?.id);
       if (window?.id) {
         setTimeout(() => {
           window?.id && chrome.windows.remove(window?.id);
