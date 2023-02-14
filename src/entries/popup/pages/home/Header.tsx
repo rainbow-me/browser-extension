@@ -11,6 +11,7 @@ import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
 import { useAvatar } from '../../hooks/useAvatar';
 import { ROUTES } from '../../urls';
+import { tabIndexes } from '../../utils/tabIndexes';
 
 export function Header() {
   const { scrollYProgress: progress } = useScroll({ offset: ['0px', '64px'] });
@@ -87,12 +88,12 @@ function ActionButtonsSection() {
             text={i18n.t('wallet_header.copy')}
             onClick={handleCopy}
             testId="header-link-copy"
-            tabIndex={4}
+            tabIndex={tabIndexes.WALLET_HEADER_COPY_BUTTON}
           />
           <ActionButton
             symbol="arrow.triangle.swap"
             text={i18n.t('wallet_header.swap')}
-            tabIndex={5}
+            tabIndex={tabIndexes.WALLET_HEADER_SWAP_BUTTON}
           />
           <Link
             id="header-link-send"
@@ -102,7 +103,7 @@ function ActionButtonsSection() {
             <ActionButton
               symbol="paperplane.fill"
               text={i18n.t('wallet_header.send')}
-              tabIndex={6}
+              tabIndex={tabIndexes.WALLET_HEADER_SEND_BUTTON}
             />
           </Link>
         </Inline>

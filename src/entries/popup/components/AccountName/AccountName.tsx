@@ -7,6 +7,7 @@ import { accentColorAsHsl } from '~/design-system/styles/core.css';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWalletName } from '../../hooks/useWalletName';
 import { ROUTES } from '../../urls';
+import { tabIndexes } from '../../utils/tabIndexes';
 import { Avatar } from '../Avatar/Avatar';
 
 type AccountNameProps = {
@@ -39,9 +40,12 @@ export function AccountName({
       id={`${id ?? ''}-account-name-shuffle`}
       onClick={handleClick}
       as="button"
-      tabIndex={includeAvatar ? undefined : 2}
+      tabIndex={
+        includeAvatar ? undefined : tabIndexes.WALLET_HEADER_ACCOUNT_NAME
+      }
       style={{
         outlineColor: accentColorAsHsl,
+        borderRadius: 6,
       }}
     >
       <Inline alignVertical="center" space="4px">
