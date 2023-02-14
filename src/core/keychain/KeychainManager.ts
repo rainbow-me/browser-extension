@@ -197,9 +197,6 @@ class KeychainManager {
             result.salt = salt;
             result.exportedKeyString = encryptionKey;
           }
-          if (!pwd && !(encryptionKey && salt)) {
-            throw new Error('No password or encryption key found.');
-          }
           this.state.vault = result.vault;
           await privates.get(this).setEncryptionKey(result.exportedKeyString);
           await privates.get(this).setSalt(result.salt);
@@ -238,9 +235,6 @@ class KeychainManager {
   }
 
   async verifyPassword(password: string) {
-    if (!this.state.vault) {
-      throw new Error('Nothing to unlock');
-    }
     try {
       if (await decrypt(password, this.state.vault)) {
         return true;
