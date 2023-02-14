@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { useAccount, useBalance } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { useUserAssets } from '~/core/resources/assets';
@@ -62,7 +63,7 @@ export function Tokens() {
                           color="label"
                           weight="semibold"
                         >
-                          Deposit from Coinbase
+                          {i18n.t('tokens_tab.coinbase_title')}
                         </Text>
                       </Inline>
                     </Box>
@@ -75,7 +76,7 @@ export function Tokens() {
                   </Inline>
                 </Box>
                 <Text as="p" size="11pt" color="labelSecondary" weight="bold">
-                  Buy or transfer from Coinbase
+                  {i18n.t('tokens_tab.coinbase_description')}
                 </Text>
               </Inset>
             </Box>
@@ -96,12 +97,12 @@ export function Tokens() {
               <Inline alignVertical="center" space="8px">
                 <WalletIcon />
                 <Text as="p" size="14pt" color="label" weight="semibold">
-                  Send from another wallet
+                  {i18n.t('tokens_tab.send_from_wallet')}
                 </Text>
               </Inline>
             </Box>
             <Text as="p" size="11pt" color="labelSecondary" weight="bold">
-              Press{' '}
+              {i18n.t('tokens_tab.send_description_1')}{' '}
               <Box
                 background="fillSecondary"
                 as="span"
@@ -117,7 +118,7 @@ export function Tokens() {
               >
                 C
               </Box>{' '}
-              to copy your address
+              {i18n.t('tokens_tab.send_description_2')}
             </Text>
           </Inset>
         </Box>
