@@ -146,7 +146,7 @@ interface ShadowDefinition {
   light: string;
 }
 
-export type ShadowSize = '9px' | '12px' | '18px' | '24px' | '30px';
+export type ShadowSize = '12px' | '18px' | '24px' | '30px';
 export type Shadow = ShadowSize | `${ShadowSize} ${ShadowColor}`;
 
 function coloredShadows<Size extends ShadowSize>(
@@ -172,26 +172,6 @@ function getShadowColor(
 }
 
 const shadowTokens: Record<Shadow, ShadowDefinition> = {
-  '9px': {
-    light: [
-      `0px 3px 9px ${getShadowColor('shadowFar', 'light', 0.16)}`,
-      `0px 1.5px 4.5px ${getShadowColor('shadowNear', 'light', 0.02)}`,
-    ].join(', '),
-    dark: [
-      `0px 3px 9px ${getShadowColor('shadowFar', 'dark', 0.16)}`,
-      `0px 1.5px 4.5px ${getShadowColor('shadowNear', 'dark', 0.02)}`,
-    ].join(', '),
-  },
-  ...coloredShadows('9px', (color) => ({
-    light: [
-      `0px 3px 9px ${getShadowColor(color, 'light', 0.16)}`,
-      `0px 1.5px 4.5px ${getShadowColor('shadowNear', 'light', 0.02)}`,
-    ].join(', '),
-    dark: [
-      `0px 3px 9px ${getShadowColor('shadowFar', 'dark', 0.16)}`,
-      `0px 1.5px 4.5px ${getShadowColor('shadowNear', 'dark', 0.02)}`,
-    ].join(', '),
-  })),
   '12px': {
     light: [
       `0 4px 12px ${getShadowColor('shadowFar', 'light', 0.02)}`,

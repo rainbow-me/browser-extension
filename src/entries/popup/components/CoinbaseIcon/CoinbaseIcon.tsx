@@ -12,7 +12,7 @@ export function CoinbaseIcon({
   return (
     <Box
       borderRadius="round"
-      boxShadow="9px"
+      boxShadow="12px"
       style={{
         overflow: 'hidden',
         height: height,
