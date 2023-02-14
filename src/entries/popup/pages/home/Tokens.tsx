@@ -56,7 +56,12 @@ export function Tokens() {
                     <Box>
                       <Inline alignVertical="center" space="8px">
                         <CoinbaseIcon />
-                        <Text size="14pt" color="label" weight="semibold">
+                        <Text
+                          as="p"
+                          size="14pt"
+                          color="label"
+                          weight="semibold"
+                        >
                           Deposit from Coinbase
                         </Text>
                       </Inline>
@@ -69,7 +74,7 @@ export function Tokens() {
                     />
                   </Inline>
                 </Box>
-                <Text size="11pt" color="labelSecondary" weight="bold">
+                <Text as="p" size="11pt" color="labelSecondary" weight="bold">
                   Buy or transfer from Coinbase
                 </Text>
               </Inset>
@@ -90,12 +95,12 @@ export function Tokens() {
             <Box paddingBottom="12px">
               <Inline alignVertical="center" space="8px">
                 <WalletIcon />
-                <Text size="14pt" color="label" weight="semibold">
+                <Text as="p" size="14pt" color="label" weight="semibold">
                   Send from another wallet
                 </Text>
               </Inline>
             </Box>
-            <Text size="11pt" color="labelSecondary" weight="bold">
+            <Text as="p" size="11pt" color="labelSecondary" weight="bold">
               Press{' '}
               <Box
                 background="fillSecondary"
