@@ -44,9 +44,7 @@ export function Tokens() {
         <Box paddingBottom="8px">
           <a href="https://www.coinbase.com/" target="_blank" rel="noreferrer">
             <Box
-              background={{
-                default: 'surfaceSecondaryElevated',
-              }}
+              background="surfaceSecondaryElevated"
               borderRadius="16px"
               borderColor="separatorTertiary"
               boxShadow="12px"
@@ -84,9 +82,7 @@ export function Tokens() {
         </Box>
 
         <Box
-          background={{
-            default: 'surfacePrimaryElevated',
-          }}
+          background="surfacePrimaryElevated"
           borderRadius="16px"
           borderColor="separatorTertiary"
           boxShadow="12px"
