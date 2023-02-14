@@ -15,6 +15,6 @@
         "ws://localhost:9090/",
         "https://o331974.ingest.sentry.io",
         "https://api.segment.io",
-        "https://cdn.segment.com"
+        "https://cdn.segment.com/"
     ]
 }
