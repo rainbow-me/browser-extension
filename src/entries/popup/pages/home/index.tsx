@@ -153,7 +153,11 @@ function TopNav() {
         leftComponent={<NetworkMenu />}
         rightComponent={
           <MoreMenu>
-            <Navbar.SymbolButton symbol="ellipsis" variant="flat" />
+            <Navbar.SymbolButton
+              symbol="ellipsis"
+              variant="flat"
+              tabIndex={3}
+            />
           </MoreMenu>
         }
         titleComponent={

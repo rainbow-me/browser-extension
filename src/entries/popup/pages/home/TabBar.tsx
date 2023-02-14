@@ -15,6 +15,7 @@ import { Box, Inline, Inset, Text } from '~/design-system';
 import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { EthSymbol } from '../../components/EthSymbol/EthSymbol';
 import { Tabs } from '../../components/Tabs/Tabs';
+import { tabIndexes } from '../../utils/tabIndexes';
 
 import { Tab } from '.';
 
@@ -75,12 +76,14 @@ export function TabBar({
             onClick={() => onSelectTab('tokens')}
             symbol="record.circle.fill"
             text="Tokens"
+            tabIndex={tabIndexes.WALLET_HEADER_TOKENS_TAB}
           />
           <Tabs.Tab
             active={activeTab === 'activity'}
             onClick={() => onSelectTab('activity')}
             symbol="bolt.fill"
             text="Activity"
+            tabIndex={tabIndexes.WALLET_HEADER_ACTIVITY_TAB}
           />
         </Tabs>
       </Box>
