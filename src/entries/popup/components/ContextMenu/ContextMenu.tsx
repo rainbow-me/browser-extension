@@ -28,12 +28,7 @@ export function ContextMenuTrigger(props: ContextMenuTriggerProps) {
     <AccentColorProvider
       color={accentColor || avatar?.color || globalColors.blue60}
     >
-      <ContextMenuPrimitive.Trigger
-        asChild={asChild}
-        // disabled
-        onContextMenu={() => console.log('ON CONTEXTTTT MENYYY')}
-        onMouseDown={() => console.log('ON CONTEXTTTT MENYYY')}
-      >
+      <ContextMenuPrimitive.Trigger asChild={asChild}>
         {children}
       </ContextMenuPrimitive.Trigger>
     </AccentColorProvider>
@@ -82,7 +77,6 @@ const ContextMenuContentBody = React.forwardRef<
           forceMount
           paddingHorizontal="12px"
           paddingVertical="4px"
-          // align={align}
           background="surfaceMenu"
           borderColor="separatorTertiary"
           borderWidth="1px"
