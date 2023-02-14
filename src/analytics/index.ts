@@ -52,7 +52,7 @@ export class Analytics {
   ) {
     if (this.disabled) return;
     const metadata = this.getDefaultMetadata();
-    this.client.track(event, { ...params, ...metadata });
+    this.client.track(event, Object.assign(metadata, params));
   }
 
   /**
