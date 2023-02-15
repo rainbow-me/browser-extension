@@ -79,7 +79,7 @@ function ActionButtonsSection() {
   const { avatar } = useAvatar({ address });
 
   const { watchedWallets } = useWallets();
-  console.log('--- watchedWallets', watchedWallets);
+
   const handleCopy = React.useCallback(() => {
     navigator.clipboard.writeText(address as string);
   }, [address]);
@@ -88,6 +88,11 @@ function ActionButtonsSection() {
     const watchedAddresses = watchedWallets.map(({ address }) => address);
     return address && watchedAddresses.includes(address);
   }, [address, watchedWallets]);
+
+  const alertWatchingWallet = React.useCallback(() => {
+    // this will be removed so not adding it to lang file
+    alert('This wallet is currently in "Watching" mode');
+  }, []);
 
   return (
     <Box style={{ height: 56 }}>
@@ -109,6 +114,7 @@ function ActionButtonsSection() {
             id="header-link-send"
             to={isWatchingWallet ? '#' : ROUTES.SEND}
             state={{ from: ROUTES.HOME }}
+            onClick={isWatchingWallet ? alertWatchingWallet : null}
           >
             <ActionButton
               symbol="paperplane.fill"
