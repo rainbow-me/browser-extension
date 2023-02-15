@@ -61,7 +61,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
         >
           <Stack space="4px">
             <Stack>
-              <DropdownMenuRadioItem value="settings">
+              <DropdownMenuRadioItem highlightAccentColor value="settings">
                 <Box id="settings-link">
                   <Inline alignVertical="center" space="8px">
                     <Symbol
@@ -75,7 +75,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
                   </Inline>
                 </Box>
               </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="qr-code">
+              <DropdownMenuRadioItem highlightAccentColor value="qr-code">
                 <Inline alignVertical="center" space="8px">
                   <Symbol size={12} symbol="qrcode" weight="semibold" />
                   <Text size="14pt" weight="semibold">
@@ -83,7 +83,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
                   </Text>
                 </Inline>
               </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="lock">
+              <DropdownMenuRadioItem highlightAccentColor value="lock">
                 <Box testId="lock">
                   <Inline alignVertical="center" space="8px">
                     <Symbol size={12} symbol="lock.fill" weight="semibold" />
@@ -96,7 +96,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
             </Stack>
             <Stack space="4px">
               <DropdownMenuSeparator />
-              <DropdownMenuRadioItem value="profile">
+              <DropdownMenuRadioItem highlightAccentColor value="profile">
                 <Box width="full">
                   <Inline alignVertical="center" alignHorizontal="justify">
                     <Inline alignVertical="center" space="8px">

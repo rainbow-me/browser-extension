@@ -18,8 +18,10 @@ import {
 
 export const SwitchNetworkMenuSelector = ({
   selectedValue,
+  highlightAccentColor,
 }: {
   selectedValue?: string;
+  highlightAccentColor?: boolean;
 }) => {
   const { chains } = useNetwork();
   return (
@@ -28,6 +30,7 @@ export const SwitchNetworkMenuSelector = ({
         const { id: chainId, name } = chain;
         return (
           <DropdownMenuRadioItem
+            highlightAccentColor={highlightAccentColor}
             value={String(chainId)}
             key={i}
             selectedValue={selectedValue}

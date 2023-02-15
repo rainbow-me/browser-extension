@@ -154,6 +154,7 @@ export const AppNetworkMenu = ({
                   onValueChange={changeChainId}
                 >
                   <SwitchNetworkMenuSelector
+                    highlightAccentColor
                     selectedValue={`${appSession?.chainId}`}
                   />
                 </DropdownMenuRadioGroup>
@@ -171,7 +172,10 @@ export const AppNetworkMenu = ({
               <Stack space="4px">
                 {url ? <DropdownMenuSeparator /> : null}
 
-                <DropdownMenuRadioItem value="connected-apps">
+                <DropdownMenuRadioItem
+                  highlightAccentColor
+                  value="connected-apps"
+                >
                   <Box id={connectedAppsId}>
                     <Inline alignVertical="center" space="8px">
                       <Box style={{ width: 18, height: 18 }}>
