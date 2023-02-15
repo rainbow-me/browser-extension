@@ -9,7 +9,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Address, useEnsName } from 'wagmi';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
@@ -29,7 +29,7 @@ import { SymbolName } from '~/design-system/styles/designTokens';
 
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
-import { useContact } from '../../hooks/useContacts';
+import { useWalletInfo } from '../../hooks/useWalletInfo';
 
 import {
   InputWrapper,
@@ -66,11 +66,13 @@ const WalletSection = ({
   wallets,
   onClickWallet,
   symbol,
+  section,
 }: {
   title: string;
   wallets: Address[];
   onClickWallet: (address: Address) => void;
   symbol: SymbolName;
+  section: 'contacts' | 'my_wallets' | 'watching';
 }) => {
   return wallets.length ? (
     <Stack space="8px">
@@ -96,6 +98,7 @@ const WalletSection = ({
                 <WalletRow
                   onClick={onClickWallet}
                   key={wallet}
+                  section={section}
                   wallet={wallet}
                 />
               </Inset>
@@ -110,14 +113,20 @@ const WalletSection = ({
 const WalletRow = ({
   wallet,
   onClick,
+  section,
 }: {
   wallet: Address;
   onClick: (address: Address) => void;
+  section: 'contacts' | 'my_wallets' | 'watching';
 }) => {
-  const { data: ensName } = useEnsName({
+  const { displayName, contactName, isNameDefined } = useWalletInfo({
     address: wallet,
   });
-  const contact = useContact({ address: wallet });
+  const name = useMemo(
+    () => (section === 'contacts' ? contactName : displayName),
+    [section, contactName, displayName],
+  );
+
   return (
     <Box
       as={motion.div}
@@ -135,10 +144,10 @@ const WalletRow = ({
             size="14pt"
             color="label"
           >
-            {contact?.display || truncateAddress(wallet)}
+            {name}
           </TextOverflow>
 
-          {(contact?.display || ensName) && (
+          {isNameDefined && (
             <Text weight="semibold" size="12pt" color="labelTertiary">
               {truncateAddress(wallet)}
             </Text>
@@ -183,18 +192,21 @@ const DropdownWalletsList = ({
               title={i18n.t('send.wallets_list.my_wallets')}
               wallets={wallets}
               onClickWallet={selectWalletAndCloseDropdown}
+              section="my_wallets"
             />
             <WalletSection
               symbol="person.crop.circle.fill"
               title={i18n.t('send.wallets_list.contacts')}
               wallets={contacts as Address[]}
               onClickWallet={selectWalletAndCloseDropdown}
+              section="contacts"
             />
             <WalletSection
               symbol="eyes.inverse"
               title={i18n.t('send.wallets_list.watched_wallets')}
               wallets={watchedWallets}
               onClickWallet={selectWalletAndCloseDropdown}
+              section="watching"
             />
           </Stack>
         </Box>
@@ -306,7 +318,7 @@ export const ToAddressInput = ({
     }
   }, [closeDropdown, inputVisible, validateToAddress]);
 
-  const toAddressContact = useContact({ address: toAddress });
+  const { displayName, isNameDefined } = useWalletInfo({ address: toAddress });
   const { wallets, watchedWallets, contacts } = useAllFilteredWallets({
     filter: toAddressOrName,
   });
@@ -356,15 +368,14 @@ export const ToAddressInput = ({
                         color="label"
                         testId="to-address-input-display"
                       >
-                        {toAddressContact?.display ||
-                          truncateAddress(toAddress)}
+                        {displayName}
                       </TextOverflow>
                     </Box>
                   )}
                 </AnimatePresence>
               </Box>
               <AnimatePresence>
-                {!inputVisible && toAddressContact?.display && (
+                {!inputVisible && isNameDefined && (
                   <Box as={motion.div} key="wallet" layout="position">
                     <Text weight="semibold" size="12pt" color="labelTertiary">
                       {truncateAddress(toAddress)}
