@@ -1,6 +1,8 @@
-import * as React from 'react';
+import React, { useMemo } from 'react';
 import { useAccount, useBalance } from 'wagmi';
 
+import { supportedCurrencies } from '~/core/references';
+import { useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { Box, Inline, Inset, Text } from '~/design-system';
 
@@ -22,19 +24,31 @@ export function TabBar({
   const { hideAssetBalances } = useHideAssetBalancesStore();
   const { data: balance } = useBalance({ addressOrName: address });
   const { display: userAssetsBalanceDisplay } = useUserAssetsBalance();
+  const { currentCurrency } = useCurrentCurrencyStore();
 
-  const displayBalanceComponent = hideAssetBalances ? (
-    <Inline alignHorizontal="right">
-      <Asterisks color="label" size={13} />
-    </Inline>
-  ) : (
-    <Text
-      color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
-      size="16pt"
-      weight="bold"
-    >
-      {userAssetsBalanceDisplay}
-    </Text>
+  const displayBalanceComponent = useMemo(
+    () =>
+      hideAssetBalances ? (
+        <Inline alignHorizontal="right" alignVertical="center">
+          <Text
+            color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
+            size="16pt"
+            weight="bold"
+          >
+            {supportedCurrencies?.[currentCurrency]?.symbol}
+          </Text>
+          <Asterisks color="label" size={13} />
+        </Inline>
+      ) : (
+        <Text
+          color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
+          size="16pt"
+          weight="bold"
+        >
+          {userAssetsBalanceDisplay}
+        </Text>
+      ),
+    [activeTab, currentCurrency, hideAssetBalances, userAssetsBalanceDisplay],
   );
 
   return (
