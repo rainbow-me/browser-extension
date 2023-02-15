@@ -114,7 +114,7 @@ function ActionButtonsSection() {
             id="header-link-send"
             to={isWatchingWallet ? '#' : ROUTES.SEND}
             state={{ from: ROUTES.HOME }}
-            onClick={isWatchingWallet ? alertWatchingWallet : null}
+            onClick={isWatchingWallet ? alertWatchingWallet : () => null}
           >
             <ActionButton
               symbol="paperplane.fill"
