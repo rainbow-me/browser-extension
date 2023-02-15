@@ -20,6 +20,6 @@ export function useUserAssetsBalance() {
 
   return {
     amount: totalAssetsBalance,
-    display: convertAmountToNativeDisplay(totalAssetsBalance, currency),
+    display: convertAmountToNativeDisplay(totalAssetsBalance || 0, currency),
   };
 }
