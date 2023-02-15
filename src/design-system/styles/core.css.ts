@@ -140,6 +140,7 @@ export const semanticColorVars = createThemeContract({
 });
 
 export const foregroundColorVars = semanticColorVars.foregroundColors;
+export const backgroundColorsVars = semanticColorVars.backgroundColors;
 
 interface ShadowDefinition {
   dark: string;
