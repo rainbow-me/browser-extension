@@ -65,15 +65,7 @@ export function TabBar({
       </Box>
       <Inset top="4px">
         {balance && (
-          <Inline alignVertical="center">
-            {/* {balance?.symbol === 'ETH' && (
-              <EthSymbol
-                color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
-                size={14}
-              />
-            )} */}
-            {displayBalanceComponent}
-          </Inline>
+          <Inline alignVertical="center">{displayBalanceComponent}</Inline>
         )}
       </Inset>
     </Box>
