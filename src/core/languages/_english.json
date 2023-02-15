@@ -348,7 +348,8 @@
     "home_header_right": {
       "settings": "Settings",
       "qr_code": "My QR Code",
-      "rainbow_profile": "Rainbow Profile"
+      "rainbow_profile": "Rainbow Profile",
+      "lock_rainbow": "Lock Rainbow"
     }
   },
   "approve_request": {
