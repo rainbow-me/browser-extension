@@ -2,8 +2,7 @@ import { expect, test } from 'vitest';
 
 import { Language } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';
-
-import { DEFAULT_ACCOUNT } from '../contacts/index.test';
+import { DEFAULT_ACCOUNT } from '~/core/utils/defaults';
 
 import {
   currentAddressStore,
