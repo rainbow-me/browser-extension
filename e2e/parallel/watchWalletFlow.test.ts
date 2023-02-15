@@ -87,8 +87,7 @@ describe('Watch wallet flow', () => {
       id: 'home-page-header-right',
       driver,
     });
-    await findElementAndClick({ id: 'settings-link', driver });
-    await findElementByTestIdAndClick({ id: 'wallet-lock-button', driver });
+    await findElementByTestIdAndClick({ id: 'lock', driver });
 
     // Unlock
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });

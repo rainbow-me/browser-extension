@@ -112,6 +112,7 @@ type NavbarSymbolButtonProps = {
   onClick?: () => void;
   symbol: ButtonSymbolProps['symbol'];
   variant: 'flat' | 'transparent';
+  tabIndex?: number;
 };
 
 export function NavbarSymbolButton({
@@ -119,6 +120,7 @@ export function NavbarSymbolButton({
   onClick,
   symbol,
   variant,
+  tabIndex,
 }: NavbarSymbolButtonProps) {
   return (
     <ButtonSymbol
@@ -128,6 +130,7 @@ export function NavbarSymbolButton({
       symbol={symbol}
       symbolColor="labelSecondary"
       variant={variant}
+      tabIndex={tabIndex}
     />
   );
 }
