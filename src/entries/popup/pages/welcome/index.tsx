@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
@@ -13,12 +13,15 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 import { OnboardBeforeConnectSheet } from './OnboardBeforeConnectSheet';
-
 export function Welcome() {
   const navigate = useRainbowNavigate();
   const { pendingRequests } = usePendingRequestStore();
   const [showOnboardBeforeConnectSheet, setShowOnboardBeforeConnectSheet] =
     useState(!!pendingRequests.length);
+
+  useEffect(() => {
+    wallet.wipe('');
+  }, []);
 
   const { setCurrentAddress } = useCurrentAddressStore();
 
