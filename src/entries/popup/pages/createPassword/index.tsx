@@ -74,11 +74,11 @@ export function CreatePassword() {
     checkIfPasswordsMatch();
   }, [checkIfPasswordsMatch]);
 
-  const handleSetPassword = async () => {
-    if (!isValid) return;
+  const handleSetPassword = useCallback(async () => {
+    if (!isValid || !isMatching) return;
     await updatePassword('', newPassword);
     navigate(ROUTES.READY);
-  };
+  }, [isMatching, isValid, navigate, newPassword]);
 
   return (
     <>
