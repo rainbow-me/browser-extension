@@ -89,7 +89,11 @@ export const NetworkMenu = () => {
           </Inline>
         </Box>
       ) : (
-        <Navbar.SymbolButton symbol="app.badge.checkmark" variant="flat" />
+        <Navbar.SymbolButton
+          symbol="app.badge.checkmark"
+          variant="flat"
+          tabIndex={1}
+        />
       )}
     </AppNetworkMenu>
   );

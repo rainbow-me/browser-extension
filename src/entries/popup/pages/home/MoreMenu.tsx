@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useAccount, useEnsName } from 'wagmi';
 
+import LockSound from 'static/assets/audio/ui_lock.wav';
 import { i18n } from '~/core/languages';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
@@ -12,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
+import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -27,13 +29,17 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   }, [address, ensName]);
 
   const onValueChange = React.useCallback(
-    (value: 'settings' | 'profile') => {
+    (value: 'settings' | 'profile' | 'lock') => {
       switch (value) {
         case 'settings':
           navigate(ROUTES.SETTINGS);
           break;
         case 'profile':
           openProfile();
+          break;
+        case 'lock':
+          new Audio(LockSound).play();
+          wallet.lock();
           break;
       }
     },
@@ -76,6 +82,16 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
                     {i18n.t('menu.home_header_right.qr_code')}
                   </Text>
                 </Inline>
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="lock">
+                <Box testId="lock">
+                  <Inline alignVertical="center" space="8px">
+                    <Symbol size={12} symbol="lock.fill" weight="semibold" />
+                    <Text size="14pt" weight="semibold">
+                      {i18n.t('menu.home_header_right.lock_rainbow')}
+                    </Text>
+                  </Inline>
+                </Box>
               </DropdownMenuRadioItem>
             </Stack>
             <Stack space="4px">

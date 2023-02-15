@@ -58,9 +58,10 @@ export const tintedStyles = styleVariants<
   surfacePrimaryElevatedSecondary: {},
 });
 
-globalStyle('.bx-button-wrapper button:focus', {
+globalStyle('.bx-button-wrapper button:focus-visible', {
   // transparent by default so we can set
   // the right color whenever we want to show the outline
-  outline: '1px solid transparent',
+  outline: '1px solid',
   outlineOffset: '2px',
+  outlineColor: 'transparent',
 });

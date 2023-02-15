@@ -12,6 +12,7 @@ const isHome = () =>
 const isWelcome = () => window.location.hash === '#/welcome';
 const isCreatePassword = () => window.location.hash === '#/create-password';
 const isLockScreen = () => window.location.hash === '#/unlock';
+const isReadyScreen = () => window.location.hash === '#/ready';
 
 export const ProtectedRoute = ({
   children,
@@ -23,7 +24,11 @@ export const ProtectedRoute = ({
   const { status } = useAuth();
   const isFullScreen = useIsFullScreen();
   const { pendingRequests } = usePendingRequestStore();
-  if (
+
+  // we don't want to move from ready screen when we reach it
+  if (isReadyScreen()) {
+    return children as JSX.Element;
+  } else if (
     (allowedStates === true && status === 'READY') ||
     (Array.isArray(allowedStates) &&
       allowedStates.includes(status as UserStatusResult))
@@ -55,6 +60,11 @@ export const ProtectedRoute = ({
           status === 'NEEDS_PASSWORD' &&
           (isHome() || isWelcome() || isCreatePassword())
         ) {
+          if (!isFullScreen) {
+            chrome.tabs.create({
+              url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome`,
+            });
+          }
           return (
             <Navigate
               to={ROUTES.CREATE_PASSWORD}
