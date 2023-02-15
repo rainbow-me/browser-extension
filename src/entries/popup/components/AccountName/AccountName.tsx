@@ -1,11 +1,13 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useCallback } from 'react';
 import { useAccount, useEnsAvatar } from 'wagmi';
 
 import { Box, Inline, Symbol, Text } from '~/design-system';
+import { accentColorAsHsl } from '~/design-system/styles/core.css';
 
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWalletName } from '../../hooks/useWalletName';
 import { ROUTES } from '../../urls';
+import { tabIndexes } from '../../utils/tabIndexes';
 import { Avatar } from '../Avatar/Avatar';
 
 type AccountNameProps = {
@@ -27,20 +29,33 @@ export function AccountName({
   const { address } = useAccount();
   const { displayName } = useWalletName({ address: address || '0x' });
   const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
+  const navigate = useRainbowNavigate();
+
+  const handleClick = useCallback(() => {
+    navigate(ROUTES.WALLET_SWITCHER);
+  }, [navigate]);
 
   return (
-    <Inline alignVertical="center" space="4px">
-      <Link
-        id={`${id ? `${id}-` : ''}account-name-link-to-wallet`}
-        to={ROUTES.WALLET_SWITCHER}
-      >
+    <Box
+      id={`${id ?? ''}-account-name-shuffle`}
+      onClick={handleClick}
+      as="button"
+      tabIndex={
+        includeAvatar ? undefined : tabIndexes.WALLET_HEADER_ACCOUNT_NAME
+      }
+      style={{
+        outlineColor: accentColorAsHsl,
+        borderRadius: 6,
+      }}
+    >
+      <Inline alignVertical="center" space="4px">
         <Inline alignVertical="center" space="4px">
           {includeAvatar && (
             <Box paddingRight="2px">
               <Avatar imageUrl={ensAvatar || ''} size={16} />
             </Box>
           )}
-          <Box as="button" id={`${id ?? ''}-account-name-shuffle`}>
+          <Box id={`${id ?? ''}-account-name-shuffle`}>
             <Text
               color="label"
               size={size}
@@ -57,7 +72,7 @@ export function AccountName({
             weight="semibold"
           />
         </Inline>
-      </Link>
-    </Inline>
+      </Inline>
+    </Box>
   );
 }

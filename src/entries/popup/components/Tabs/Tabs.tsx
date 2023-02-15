@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { Box, Inline, Inset, Symbol, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+import { accentColorAsHsl } from '~/design-system/styles/core.css';
 
 function Tabs({ children }: { children: React.ReactNode }) {
   return (
@@ -16,16 +17,17 @@ function Tab({
   onClick,
   symbol,
   text,
+  tabIndex,
 }: {
   active?: boolean;
   onClick?: () => void;
   symbol?: SymbolProps['symbol'];
   text: string;
+  tabIndex?: number;
 }) {
   return (
     /* TODO: Convert to <Rows> */
     <Box
-      onClick={onClick}
       display="flex"
       flexDirection="column"
       justifyContent="center"
@@ -34,7 +36,15 @@ function Tab({
       }}
     >
       {/* TODO: Convert to <Row> */}
-      <Box display="flex" alignItems="center" style={{ flex: 1 }}>
+      <Box
+        as="button"
+        display="flex"
+        alignItems="center"
+        style={{ flex: 1, outlineColor: accentColorAsHsl, borderRadius: 6 }}
+        className="home-tab-wrapper"
+        onClick={onClick}
+        tabIndex={tabIndex}
+      >
         <Inset horizontal="2px">
           <Inline alignVertical="center" space="4px">
             {symbol && (
@@ -56,7 +66,11 @@ function Tab({
         </Inset>
       </Box>
       {/* TODO: Convert to <Row> */}
-      <Box display="flex" alignItems="flex-end" style={{ height: '12px' }}>
+      <Box
+        display="flex"
+        alignItems="flex-end"
+        style={{ height: '12px', width: '100%' }}
+      >
         {active && (
           <Box
             background="accent"

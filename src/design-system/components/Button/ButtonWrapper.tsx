@@ -218,7 +218,7 @@ export function ButtonWrapper({
   if (tabIndex !== undefined) {
     outlineColor =
       color && color !== 'accent'
-        ? foregroundColorVars[color as TextColor]
+        ? foregroundColorVars[color as TextColor] || accentColorAsHsl
         : accentColorAsHsl;
   }
   const styles = {
