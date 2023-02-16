@@ -248,8 +248,12 @@ export function ButtonWrapper({
             : background
         }
         borderRadius={borderRadius ?? 'round'}
-        borderColor={borderColor}
-        borderWidth={borderWidth}
+        borderColor={
+          variant === 'transparent'
+            ? { default: borderColor || 'transparent', hover: 'buttonStroke' }
+            : (borderColor as BoxStyles['borderColor'])
+        }
+        borderWidth={variant === 'transparent' ? '1px' : borderWidth}
         boxShadow={boxShadow}
         className={[
           heightStyles[height],
