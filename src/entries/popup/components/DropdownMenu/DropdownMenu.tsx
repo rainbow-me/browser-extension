@@ -13,6 +13,8 @@ import {
 
 import { useAvatar } from '../../hooks/useAvatar';
 
+import { RadioItemHighlightWrapper } from './RadioItemHighlightWrapper.css';
+
 interface DropdownMenuTriggerProps {
   children: ReactNode;
   accentColor?: string;
@@ -145,10 +147,17 @@ interface DropdownMenuRadioItemProps {
   value: string;
   selectedValue?: string;
   selectedColor?: string;
+  highlightAccentColor?: boolean;
 }
 
 export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
-  const { children, value, selectedValue, selectedColor } = props;
+  const {
+    children,
+    value,
+    selectedValue,
+    selectedColor,
+    highlightAccentColor,
+  } = props;
   const isSelectedValue = selectedValue === value;
   return (
     <Box
@@ -158,6 +167,11 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
       paddingHorizontal="8px"
       marginHorizontal="-8px"
       alignItems="center"
+      className={
+        highlightAccentColor && !isSelectedValue
+          ? RadioItemHighlightWrapper
+          : null
+      }
       style={{
         display: 'flex',
         borderRadius: '12px',
