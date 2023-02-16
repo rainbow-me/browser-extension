@@ -45,7 +45,7 @@ export default function AccountItem({
 
   const nativeDisplay = convertAmountAndPriceToNativeDisplay(
     balance?.formatted || 0,
-    nativeAsset?.native?.price?.amount,
+    nativeAsset?.native?.price?.amount || 0,
     currentCurrency,
   );
 
