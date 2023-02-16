@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import * as React from 'react';
 import { To, useLocation, useNavigate } from 'react-router-dom';
 
-import { Box, Button, ButtonSymbol, Text } from '~/design-system';
+import { Box, Button, ButtonSymbol, Inline, Text } from '~/design-system';
 import { ButtonSymbolProps } from '~/design-system/components/ButtonSymbol/ButtonSymbol';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { BackgroundColor } from '~/design-system/styles/designTokens';
@@ -43,6 +43,7 @@ export function Navbar({
           style={{
             left: 15,
             top: 17,
+            height: 32,
           }}
           height="full"
           id="navbar-left-component"
@@ -51,11 +52,11 @@ export function Navbar({
         </Box>
       )}
       {title ? (
-        <Box style={{ textAlign: 'center' }}>
-          <Text size="14pt" weight="heavy">
+        <Inline alignVertical="center">
+          <Text size="14pt" weight="heavy" align="center">
             {title}
           </Text>
-        </Box>
+        </Inline>
       ) : (
         titleComponent
       )}
@@ -70,6 +71,7 @@ export function Navbar({
           style={{
             right: 15,
             top: 17,
+            height: 32,
           }}
           height="full"
         >
@@ -113,6 +115,7 @@ type NavbarSymbolButtonProps = {
   symbol: ButtonSymbolProps['symbol'];
   variant: 'flat' | 'transparent';
   tabIndex?: number;
+  symbolSize?: SymbolProps['size'];
 };
 
 export function NavbarSymbolButton({
@@ -121,6 +124,7 @@ export function NavbarSymbolButton({
   symbol,
   variant,
   tabIndex,
+  symbolSize,
 }: NavbarSymbolButtonProps) {
   return (
     <ButtonSymbol
@@ -131,6 +135,7 @@ export function NavbarSymbolButton({
       symbolColor="labelSecondary"
       variant={variant}
       tabIndex={tabIndex}
+      symbolSize={symbolSize}
     />
   );
 }
@@ -139,16 +144,17 @@ function NavbarButtonWithBack({
   backTo,
   height,
   symbol,
+  symbolSize,
 }: {
   backTo?: To;
   height: ButtonSymbolProps['height'];
   symbol: SymbolProps['symbol'];
+  symbolSize?: SymbolProps['size'];
 }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const padding = height === '24px' ? '4px' : '2px';
   return (
-    <Box padding={padding} testId="navbar-button-with-back">
+    <Box testId="navbar-button-with-back">
       <NavbarSymbolButton
         height={height}
         onClick={() => {
@@ -162,6 +168,7 @@ function NavbarButtonWithBack({
         }}
         symbol={symbol}
         variant="transparent"
+        symbolSize={symbolSize}
       />
     </Box>
   );
@@ -169,10 +176,22 @@ function NavbarButtonWithBack({
 
 export function NavbarBackButton({ backTo }: { backTo?: To }) {
   return (
-    <NavbarButtonWithBack backTo={backTo} height="28px" symbol="arrow.left" />
+    <NavbarButtonWithBack
+      backTo={backTo}
+      height="32px"
+      symbolSize={14}
+      symbol="arrow.left"
+    />
   );
 }
 
 export function NavbarCloseButton({ backTo }: { backTo?: To }) {
-  return <NavbarButtonWithBack backTo={backTo} height="24px" symbol="xmark" />;
+  return (
+    <NavbarButtonWithBack
+      backTo={backTo}
+      height="32px"
+      symbolSize={11}
+      symbol="xmark"
+    />
+  );
 }
