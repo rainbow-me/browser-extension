@@ -18,19 +18,17 @@ import { useAppSession } from '../../hooks/useAppSession';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItemIndicator,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '../DropdownMenu/DropdownMenu';
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItemIndicator,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from '../ContextMenu/ContextMenu';
 
-import {
-  SwitchNetworkMenuDisconnect,
-  SwitchNetworkMenuSelector,
-} from './SwitchNetworkMenu';
+import { SwitchNetworkContextMenuSelector } from './SwitchNetworkContextMenu';
+import { SwitchNetworkMenuDisconnect } from './SwitchNetworkMenu';
 
 interface AppNetworkMenuProps {
   children: ReactNode;
@@ -43,10 +41,9 @@ interface AppNetworkMenuProps {
   connectedAppsId?: string;
 }
 
-export const AppNetworkMenu = ({
+export const AppNetworkContextMenu = ({
   children,
   url,
-  align,
   displayConnectedRoute = true,
   sideOffset,
   menuTriggerId,
@@ -82,11 +79,11 @@ export const AppNetworkMenu = ({
   }, [disconnectAppSession]);
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <ContextMenu>
+      <ContextMenuTrigger asChild>
         <Box id={menuTriggerId}>{children}</Box>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent sideOffset={sideOffset} align={align}>
+      </ContextMenuTrigger>
+      <ContextMenuContent sideOffset={sideOffset}>
         {url ? (
           <Inset top="10px" bottom="14px">
             <Inline alignHorizontal="justify" alignVertical="center">
@@ -142,40 +139,36 @@ export const AppNetworkMenu = ({
           {appSession ? (
             <>
               <Stack space="12px">
-                <DropdownMenuSeparator />
+                <ContextMenuSeparator />
                 <Text color="labelTertiary" size="11pt" weight="bold">
                   {i18n.t('menu.home_header_left.networks')}
                 </Text>
               </Stack>
 
               <Box paddingTop="4px">
-                <DropdownMenuRadioGroup
+                <ContextMenuRadioGroup
                   value={`${appSession?.chainId}`}
                   onValueChange={changeChainId}
                 >
-                  <SwitchNetworkMenuSelector
-                    highlightAccentColor
+                  <SwitchNetworkContextMenuSelector
                     selectedValue={`${appSession?.chainId}`}
                   />
-                </DropdownMenuRadioGroup>
+                </ContextMenuRadioGroup>
                 <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
               </Box>
             </>
           ) : null}
 
           {displayConnectedRoute && (
-            <DropdownMenuRadioGroup
+            <ContextMenuRadioGroup
               onValueChange={(value) =>
                 onValueChange(value as 'connected-apps')
               }
             >
               <Stack space="4px">
-                {url ? <DropdownMenuSeparator /> : null}
+                {url ? <ContextMenuSeparator /> : null}
 
-                <DropdownMenuRadioItem
-                  highlightAccentColor
-                  value="connected-apps"
-                >
+                <ContextMenuRadioItem value="connected-apps">
                   <Box id={connectedAppsId}>
                     <Inline alignVertical="center" space="8px">
                       <Box style={{ width: 18, height: 18 }}>
@@ -196,16 +189,16 @@ export const AppNetworkMenu = ({
                       </Text>
                     </Inline>
                   </Box>
-                </DropdownMenuRadioItem>
+                </ContextMenuRadioItem>
               </Stack>
-            </DropdownMenuRadioGroup>
+            </ContextMenuRadioGroup>
           )}
         </Stack>
 
-        <DropdownMenuItemIndicator style={{ marginLeft: 'auto' }}>
+        <ContextMenuItemIndicator style={{ marginLeft: 'auto' }}>
           o
-        </DropdownMenuItemIndicator>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </ContextMenuItemIndicator>
+      </ContextMenuContent>
+    </ContextMenu>
   );
 };

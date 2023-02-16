@@ -4,7 +4,6 @@ import { Chain, Connector } from 'wagmi';
 
 import { ChainIdHex, RainbowProvider } from '~/core/providers';
 import { currentAddressStore, currentChainIdStore } from '~/core/state';
-import { DEFAULT_ACCOUNT } from '~/entries/background/handlers/handleProviderRequest';
 
 function normalizeChainId(chainId: ChainIdHex | number | bigint) {
   if (typeof chainId === 'string') return Number(BigInt(chainId));
@@ -76,7 +75,7 @@ export class RainbowConnector extends Connector<
 
   async getAccount() {
     const currentAddress = currentAddressStore.getState().currentAddress;
-    return currentAddress || getAddress(DEFAULT_ACCOUNT);
+    return currentAddress;
   }
 
   async getChainId() {

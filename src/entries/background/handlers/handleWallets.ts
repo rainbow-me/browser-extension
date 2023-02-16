@@ -17,6 +17,7 @@ import {
   importHardwareWallet,
   importWallet,
   isPasswordSet,
+  isReady,
   isVaultUnlocked,
   lockVault,
   removeAccount,
@@ -70,10 +71,12 @@ export const handleWallets = () =>
             const _hasVault = await hasVault();
             const unlocked = _hasVault && (await isVaultUnlocked());
             const passwordSet = _hasVault && (await isPasswordSet());
+            const ready = await isReady();
             response = {
               hasVault: _hasVault,
               unlocked,
               passwordSet,
+              ready,
             };
             break;
           }

@@ -1,4 +1,4 @@
-import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
+import * as ContextMenuPrimitive from '@radix-ui/react-context-menu';
 import React, { CSSProperties, ReactNode } from 'react';
 import { useAccount } from 'wagmi';
 
@@ -13,15 +13,13 @@ import {
 
 import { useAvatar } from '../../hooks/useAvatar';
 
-import { RadioItemHighlightWrapper } from './RadioItemHighlightWrapper.css';
-
-interface DropdownMenuTriggerProps {
+interface ContextMenuTriggerProps {
   children: ReactNode;
   accentColor?: string;
   asChild?: boolean;
 }
 
-export function DropdownMenuTrigger(props: DropdownMenuTriggerProps) {
+export function ContextMenuTrigger(props: ContextMenuTriggerProps) {
   const { children, accentColor, asChild } = props;
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
@@ -30,37 +28,36 @@ export function DropdownMenuTrigger(props: DropdownMenuTriggerProps) {
     <AccentColorProvider
       color={accentColor || avatar?.color || globalColors.blue60}
     >
-      <DropdownMenuPrimitive.Trigger asChild={asChild}>
+      <ContextMenuPrimitive.Trigger asChild={asChild}>
         {children}
-      </DropdownMenuPrimitive.Trigger>
+      </ContextMenuPrimitive.Trigger>
     </AccentColorProvider>
   );
 }
 
-interface DropdownMenuContentProps {
+interface ContextMenuContentProps {
   children: ReactNode;
-  align?: 'start' | 'center' | 'end';
   marginRight?: Space;
   accentColor?: string;
   sideOffset?: number;
 }
 
-export function DropdownMenuContent(props: DropdownMenuContentProps) {
+export function ContextMenuContent(props: ContextMenuContentProps) {
   return (
-    <DropdownMenuPrimitive.Portal>
-      <DropdownMenuContentBody
+    <ContextMenuPrimitive.Portal>
+      <ContextMenuContentBody
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...props}
       />
-    </DropdownMenuPrimitive.Portal>
+    </ContextMenuPrimitive.Portal>
   );
 }
 
-const DropdownMenuContentBody = React.forwardRef<
+const ContextMenuContentBody = React.forwardRef<
   HTMLDivElement,
-  DropdownMenuContentProps
->((props: DropdownMenuContentProps, ref) => {
-  const { children, align = 'start', marginRight, accentColor } = props;
+  ContextMenuContentProps
+>((props: ContextMenuContentProps, ref) => {
+  const { children, marginRight, accentColor } = props;
   const { currentTheme } = useCurrentThemeStore();
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
@@ -70,16 +67,16 @@ const DropdownMenuContentBody = React.forwardRef<
     >
       <ThemeProvider theme={currentTheme}>
         <Box
-          as={DropdownMenuPrimitive.Content}
+          as={ContextMenuPrimitive.Content}
           style={{
             width: 204,
             backdropFilter: 'blur(26px)',
             boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
             marginRight: marginRight ?? '0px',
           }}
+          forceMount
           paddingHorizontal="12px"
           paddingVertical="4px"
-          align={align}
           background="surfaceMenu"
           borderColor="separatorTertiary"
           borderWidth="1px"
@@ -94,17 +91,17 @@ const DropdownMenuContentBody = React.forwardRef<
   );
 });
 
-DropdownMenuContentBody.displayName = 'DropdownMenuContentBody';
+ContextMenuContentBody.displayName = 'ContextMenuContentBody';
 
-interface DropdownMenuLabelProps {
+interface ContextMenuLabelProps {
   children: ReactNode;
   align?: TextStyles['textAlign'];
 }
 
-export const DropdownMenuLabel = (props: DropdownMenuLabelProps) => {
+export const ContextMenuLabel = (props: ContextMenuLabelProps) => {
   const { children, align = 'center' } = props;
   return (
-    <Box as={DropdownMenuPrimitive.Label} paddingTop="8px" paddingBottom="12px">
+    <Box as={ContextMenuPrimitive.Label} paddingTop="8px" paddingBottom="12px">
       <Text color="label" size="14pt" weight="bold" align={align}>
         {children}
       </Text>
@@ -112,16 +109,16 @@ export const DropdownMenuLabel = (props: DropdownMenuLabelProps) => {
   );
 };
 
-interface DropdownMenuItemProps {
+interface ContextMenuItemProps {
   children: ReactNode;
   onSelect?: (event: Event) => void;
 }
 
-export const DropdownMenuItem = (props: DropdownMenuItemProps) => {
+export const ContextMenuItem = (props: ContextMenuItemProps) => {
   const { children, onSelect } = props;
   return (
     <Box
-      as={DropdownMenuPrimitive.Item}
+      as={ContextMenuPrimitive.Item}
       paddingVertical="8px"
       paddingHorizontal="8px"
       marginHorizontal="-8px"
@@ -142,36 +139,24 @@ export const DropdownMenuItem = (props: DropdownMenuItemProps) => {
   );
 };
 
-interface DropdownMenuRadioItemProps {
+interface ContextMenuRadioItemProps {
   children: ReactNode;
   value: string;
   selectedValue?: string;
   selectedColor?: string;
-  highlightAccentColor?: boolean;
 }
 
-export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
-  const {
-    children,
-    value,
-    selectedValue,
-    selectedColor,
-    highlightAccentColor,
-  } = props;
+export const ContextMenuRadioItem = (props: ContextMenuRadioItemProps) => {
+  const { children, value, selectedValue, selectedColor } = props;
   const isSelectedValue = selectedValue === value;
   return (
     <Box
-      as={DropdownMenuPrimitive.RadioItem}
+      as={ContextMenuPrimitive.RadioItem}
       value={value}
       paddingVertical="10px"
       paddingHorizontal="8px"
       marginHorizontal="-8px"
       alignItems="center"
-      className={
-        highlightAccentColor && !isSelectedValue
-          ? RadioItemHighlightWrapper
-          : null
-      }
       style={{
         display: 'flex',
         borderRadius: '12px',
@@ -193,28 +178,28 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
   );
 };
 
-export const DropdownMenuSeparator = () => (
+export const ContextMenuSeparator = () => (
   <Box
-    as={DropdownMenuPrimitive.Separator}
+    as={ContextMenuPrimitive.Separator}
     style={{ borderRadius: 1 }}
     borderWidth="1px"
     borderColor="separatorSecondary"
   />
 );
 
-interface DropdownMenuItemIndicatorProps {
+interface ContextMenuItemIndicatorProps {
   children: ReactNode;
   style?: CSSProperties;
   className?: string;
 }
 
-export const DropdownMenuItemIndicator = (
-  props: DropdownMenuItemIndicatorProps,
+export const ContextMenuItemIndicator = (
+  props: ContextMenuItemIndicatorProps,
 ) => {
   const { children, style, className } = props;
   return (
     <Box
-      as={DropdownMenuPrimitive.DropdownMenuItemIndicator}
+      as={ContextMenuPrimitive.ItemIndicator}
       className={className}
       style={style}
     >
@@ -223,11 +208,9 @@ export const DropdownMenuItemIndicator = (
   );
 };
 
-export const DropdownMenu = (
-  props: DropdownMenuPrimitive.DropdownMenuProps,
-) => (
+export const ContextMenu = (props: ContextMenuPrimitive.ContextMenuProps) => (
   // eslint-disable-next-line react/jsx-props-no-spreading
-  <DropdownMenuPrimitive.Root {...props} modal={false} />
+  <ContextMenuPrimitive.Root {...props} />
 );
 
-export const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;
+export const ContextMenuRadioGroup = ContextMenuPrimitive.RadioGroup;
