@@ -26,7 +26,7 @@ const MoreInfoButton = ({ options }: { options: MoreInfoOption[] }) => {
     <Box onClick={(e) => e.stopPropagation()}>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Box padding="16px" marginRight="-16px" style={{ cursor: 'default' }}>
+          <Box style={{ cursor: 'default' }}>
             <Symbol
               symbol="ellipsis.circle"
               weight="bold"

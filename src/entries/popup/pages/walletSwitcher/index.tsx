@@ -294,7 +294,7 @@ export function WalletSwitcher() {
                 }}
                 account={account.address}
                 rightComponent={
-                  <Inline alignVertical="center" space="10px">
+                  <Inline alignVertical="center" space="6px">
                     {account.type === KeychainType.ReadOnlyKeychain && (
                       <LabelPill label={i18n.t('wallet_switcher.watching')} />
                     )}
