@@ -113,7 +113,7 @@ type NavbarSymbolButtonProps = {
   height?: ButtonSymbolProps['height'];
   onClick?: () => void;
   symbol: ButtonSymbolProps['symbol'];
-  variant: 'flat' | 'transparent';
+  variant: 'flat' | 'transparent' | 'transparentHover';
   tabIndex?: number;
   symbolSize?: SymbolProps['size'];
 };
@@ -167,7 +167,7 @@ function NavbarButtonWithBack({
           }
         }}
         symbol={symbol}
-        variant="transparent"
+        variant="transparentHover"
         symbolSize={symbolSize}
       />
     </Box>

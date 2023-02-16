@@ -100,6 +100,7 @@ export const stylesForHeightAndVariant = ({
     stroked: {},
     disabled: {},
     transparent: {},
+    transparentHover: {},
     white: {
       boxShadow: shadowValue('30px', color),
     },
@@ -111,6 +112,7 @@ export const stylesForHeightAndVariant = ({
     stroked: {},
     disabled: {},
     transparent: {},
+    transparentHover: {},
     white: {
       boxShadow: shadowValue('24px', color),
     },
@@ -122,6 +124,7 @@ export const stylesForHeightAndVariant = ({
     stroked: {},
     disabled: {},
     transparent: {},
+    transparentHover: {},
     white: {
       boxShadow: shadowValue('24px', color),
     },
@@ -133,6 +136,7 @@ export const stylesForHeightAndVariant = ({
     stroked: {},
     disabled: {},
     transparent: {},
+    transparentHover: {},
     white: {
       boxShadow: shadowValue('12px', color),
     },
@@ -144,6 +148,7 @@ export const stylesForHeightAndVariant = ({
     stroked: {},
     disabled: {},
     transparent: {},
+    transparentHover: {},
     white: {
       boxShadow: shadowValue('12px', color),
     },
@@ -182,6 +187,9 @@ export const stylesForVariant = ({
     textColor: 'labelSecondary',
   },
   transparent: {
+    textColor: color as TextColor,
+  },
+  transparentHover: {
     textColor: color as TextColor,
   },
   white: {
@@ -240,7 +248,7 @@ export function ButtonWrapper({
         as="button"
         alignItems="center"
         background={
-          variant === 'transparent'
+          variant === 'transparentHover'
             ? {
                 default: background || 'transparent',
                 hover: 'surfaceSecondaryElevated',
@@ -249,9 +257,9 @@ export function ButtonWrapper({
         }
         borderRadius={borderRadius ?? 'round'}
         borderColor={
-          variant === 'transparent'
+          variant === 'transparentHover'
             ? { default: borderColor || 'transparent', hover: 'buttonStroke' }
-            : (borderColor as BoxStyles['borderColor'])
+            : borderColor
         }
         borderWidth={variant === 'transparent' ? '1px' : borderWidth}
         boxShadow={boxShadow}

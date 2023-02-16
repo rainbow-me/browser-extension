@@ -156,6 +156,7 @@ export type ButtonVariant =
   | 'tinted'
   | 'stroked'
   | 'transparent'
+  | 'transparentHover'
   | 'disabled';
 
 export const backdropFilter = {
