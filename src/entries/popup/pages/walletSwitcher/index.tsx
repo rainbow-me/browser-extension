@@ -301,6 +301,7 @@ export function WalletSwitcher() {
               borderRadius="12px"
             >
               <AccountItem
+                rowHighligth
                 key={account.address}
                 onClick={() => {
                   handleSelectAddress(account.address);

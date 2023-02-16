@@ -27,6 +27,7 @@ export default function AccountItem({
   onClick,
   labelType,
   isSelected,
+  rowHighligth,
 }: {
   account: Address;
   rightComponent?: React.ReactNode;
@@ -34,6 +35,7 @@ export default function AccountItem({
   isSelected?: boolean;
   labelType?: LabelOption;
   searchTerm?: string;
+  rowHighligth?: boolean;
 }) {
   const { displayName, showAddress } = useWalletName({ address: account });
   const { data: balance } = useBalance({ addressOrName: account });
@@ -67,7 +69,7 @@ export default function AccountItem({
 
   return (
     <Box
-      className={rowHighlightWrapperStyle}
+      className={rowHighligth ? rowHighlightWrapperStyle : undefined}
       onClick={onClick}
       key={account}
       paddingHorizontal="12px"
