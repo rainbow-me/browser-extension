@@ -22,12 +22,10 @@ export const ApproveAppRequest = () => {
 
   const handleRequestAction = useCallback(() => {
     removePendingRequest(pendingRequest?.id);
-    if (pendingRequests.length <= 1) {
-      if (window?.id) {
-        setTimeout(() => {
-          window?.id && chrome.windows.remove(window?.id);
-        }, 50);
-      }
+    if (pendingRequests.length <= 1 && window?.id) {
+      setTimeout(() => {
+        window?.id && chrome.windows.remove(window?.id);
+      }, 50);
     }
   }, [
     pendingRequest?.id,

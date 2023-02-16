@@ -10,6 +10,7 @@ import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
 import { useAvatar } from '../../hooks/useAvatar';
+import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
 
@@ -76,9 +77,23 @@ export function AvatarSection() {
 function ActionButtonsSection() {
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
+
+  const { watchedWallets } = useWallets();
+
   const handleCopy = React.useCallback(() => {
     navigator.clipboard.writeText(address as string);
   }, [address]);
+
+  const isWatchingWallet = React.useMemo(() => {
+    const watchedAddresses = watchedWallets.map(({ address }) => address);
+    return address && watchedAddresses.includes(address);
+  }, [address, watchedWallets]);
+
+  const alertWatchingWallet = React.useCallback(() => {
+    // this will be removed so not adding it to lang file
+    alert('This wallet is currently in "Watching" mode');
+  }, []);
+
   return (
     <Box style={{ height: 56 }}>
       {avatar?.color && (
@@ -97,8 +112,9 @@ function ActionButtonsSection() {
           />
           <Link
             id="header-link-send"
-            to={ROUTES.SEND}
+            to={isWatchingWallet ? '#' : ROUTES.SEND}
             state={{ from: ROUTES.HOME }}
+            onClick={isWatchingWallet ? alertWatchingWallet : () => null}
           >
             <ActionButton
               symbol="paperplane.fill"
