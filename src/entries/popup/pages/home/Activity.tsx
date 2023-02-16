@@ -55,13 +55,13 @@ export function Activity({ onSheetSelected }: ActivityProps) {
     return Object.keys(allTransactionsByDate).reduce((listData, dateKey) => {
       return [...listData, dateKey, ...allTransactionsByDate[dateKey]];
     }, [] as (string | RainbowTransaction)[]);
-  }, [allTransactionsByDate]);
+  }, [allTransactionsByDate]).slice(0, 200);
   const containerRef = useRef<HTMLDivElement>(null);
   const activityRowVirtualizer = useVirtualizer({
     count: listData.length,
     getScrollElement: () => containerRef.current,
     estimateSize: (i) => (typeof listData[i] === 'string' ? 34 : 52),
-    enableSmoothScroll: false,
+    overscan: 20,
   });
 
   const onTransactionSelected = ({
@@ -110,8 +110,8 @@ export function Activity({ onSheetSelected }: ActivityProps) {
   return (
     <>
       <Box
-        marginTop={'-20px'}
         ref={containerRef}
+        marginTop={'-20px'}
         width="full"
         style={{
           overflow: 'auto',
@@ -120,35 +120,46 @@ export function Activity({ onSheetSelected }: ActivityProps) {
         <Box
           width="full"
           style={{
-            height: `${activityRowVirtualizer.getTotalSize()}px`,
+            height: activityRowVirtualizer.getTotalSize(),
             position: 'relative',
           }}
         >
-          {activityRowVirtualizer.getVirtualItems().map(({ index }) => {
-            const item = listData[index];
-            if (typeof item === 'string') {
-              return (
-                <Inset key={index} horizontal="20px" top="16px" bottom="8px">
-                  <Box>
-                    <Text
-                      size="14pt"
-                      weight={'semibold'}
-                      color={'labelTertiary'}
-                    >
-                      {item}
-                    </Text>
-                  </Box>
-                </Inset>
-              );
-            }
+          {activityRowVirtualizer.getVirtualItems().map((virtualItem) => {
+            const { index } = virtualItem;
+            const rowData = listData?.[index];
             return (
-              <TransactionDetailsMenu
+              <Box
                 key={index}
-                onRowSelection={onTransactionSelected}
-                transaction={item}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: virtualItem.size,
+                  transform: `translateY(${virtualItem.start}px)`,
+                }}
               >
-                <ActivityRow transaction={item} />
-              </TransactionDetailsMenu>
+                {typeof rowData === 'string' ? (
+                  <Inset key={index} horizontal="20px" top="16px" bottom="8px">
+                    <Box>
+                      <Text
+                        size="14pt"
+                        weight={'semibold'}
+                        color={'labelTertiary'}
+                      >
+                        {rowData}
+                      </Text>
+                    </Box>
+                  </Inset>
+                ) : (
+                  <TransactionDetailsMenu
+                    onRowSelection={onTransactionSelected}
+                    transaction={rowData}
+                  >
+                    <ActivityRow transaction={rowData} />
+                  </TransactionDetailsMenu>
+                )}
+              </Box>
             );
           })}
         </Box>
@@ -209,7 +220,11 @@ const truncateString = (txt = '', maxLength = 22) => {
   return `${txt?.slice(0, maxLength)}${txt.length > maxLength ? '...' : ''}`;
 };
 
-function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
+const ActivityRow = React.memo(function ({
+  transaction,
+}: {
+  transaction: RainbowTransaction;
+}) {
   const { asset, balance, name, native, status, symbol, title, type } =
     transaction;
   const isTrade = type === TransactionType.trade;
@@ -369,4 +384,6 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
   ) : (
     <CoinRow fallbackText={symbol} topRow={topRow} bottomRow={bottomRow} />
   );
-}
+});
+
+ActivityRow.displayName = 'ActivityRow';
