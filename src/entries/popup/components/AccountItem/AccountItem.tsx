@@ -44,7 +44,7 @@ export default function AccountItem({
   const { hideAssetBalances } = useHideAssetBalancesStore();
 
   const nativeDisplay = convertAmountAndPriceToNativeDisplay(
-    balance?.formatted,
+    balance?.formatted || 0,
     nativeAsset?.native?.price?.amount,
     currentCurrency,
   );
