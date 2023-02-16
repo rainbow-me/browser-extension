@@ -14,7 +14,12 @@ export const strengthMeta = [
     symbol: 'exclamationmark.triangle.fill',
   },
   {
-    text: i18n.t('passwords.strong'),
+    text: i18n.t('passwords.good'),
+    color: 'green',
+    symbol: 'shield.righthalf.filled',
+  },
+  {
+    text: i18n.t('passwords.excellent'),
     color: 'green',
     symbol: 'checkmark.shield.fill',
   },
@@ -35,7 +40,13 @@ export const passwordStrengthOptions = [
   },
   {
     id: 2,
-    value: 'Strong',
+    value: 'Good',
+    minDiversity: 0,
+    minLength: 12,
+  },
+  {
+    id: 3,
+    value: 'Excellent',
     minDiversity: 4,
     minLength: 8,
   },
