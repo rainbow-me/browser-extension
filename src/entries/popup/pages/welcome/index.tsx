@@ -20,7 +20,13 @@ export function Welcome() {
     useState(!!pendingRequests.length);
 
   useEffect(() => {
-    wallet.wipe('');
+    const wipeIncompleteWallet = async () => {
+      const { hasVault, passwordSet } = await wallet.getStatus();
+      if (hasVault && !passwordSet) {
+        wallet.wipe('');
+      }
+    };
+    wipeIncompleteWallet();
   }, []);
 
   const { setCurrentAddress } = useCurrentAddressStore();
