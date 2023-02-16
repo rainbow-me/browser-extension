@@ -4,7 +4,7 @@ import { Chain, Connector } from 'wagmi';
 
 import { ChainIdHex, RainbowProvider } from '~/core/providers';
 import { currentAddressStore, currentChainIdStore } from '~/core/state';
-import { DEFAULT_ACCOUNT } from '~/entries/background/handlers/handleProviderRequest';
+import { DEFAULT_ACCOUNT } from '~/core/utils/defaults';
 
 function normalizeChainId(chainId: ChainIdHex | number | bigint) {
   if (typeof chainId === 'string') return Number(BigInt(chainId));

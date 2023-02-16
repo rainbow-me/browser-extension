@@ -1,5 +1,6 @@
 import React, { SetStateAction, useCallback, useState } from 'react';
 
+import UnlockSound from 'static/assets/audio/ui_unlock.wav';
 import { i18n } from '~/core/languages';
 import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
@@ -26,6 +27,7 @@ export function Unlock() {
 
   const handleUnlock = useCallback(async () => {
     if (await wallet.unlock(password)) {
+      new Audio(UnlockSound).play();
       navigate(ROUTES.HOME, { state: { isBack: true } });
     } else {
       setError(i18n.t('passwords.wrong_password'));
