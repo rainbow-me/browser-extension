@@ -52,6 +52,8 @@ import { WalletActionsMenu } from './WalletSwitcher.css';
 import { RemoveWalletPrompt } from './removeWalletPrompt';
 import { RenameWalletPrompt } from './renameWalletPrompt';
 
+const { innerHeight: windowHeight } = window;
+
 const reorder = (
   list: Iterable<unknown>,
   startIndex: number,
@@ -123,6 +125,7 @@ const infoButtonOptions = ({
 ];
 
 const bottomSpacing = 20 + 20 + 32 + 32 + (process.env.IS_DEV ? 32 + 8 : 0);
+const topSpacing = 127;
 
 const NoWalletsWarning = ({
   symbol,
@@ -371,18 +374,17 @@ export function WalletSwitcher() {
         onRemoveAccount={handleRemoveAccount}
         hide={removeAccount?.type !== KeychainType.ReadOnlyKeychain}
       />
-
-      <Box paddingHorizontal="4px">
-        <Box paddingHorizontal="16px" paddingBottom="20px" marginTop="-5px">
-          <Input
-            height="32px"
-            variant="bordered"
-            placeholder={i18n.t('wallet_switcher.search_placeholder')}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            autoFocus
-          />
-        </Box>
+      <Box paddingHorizontal="16px" paddingBottom="20px">
+        <Input
+          height="32px"
+          variant="bordered"
+          placeholder={i18n.t('wallet_switcher.search_placeholder')}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          autoFocus
+        />
+      </Box>
+      <Box style={{ overflow: 'scroll' }} paddingHorizontal="8px">
         <MenuContainer>
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable">
@@ -391,7 +393,10 @@ export function WalletSwitcher() {
                   <Box
                     width="full"
                     height="full"
-                    style={{ paddingBottom: bottomSpacing }}
+                    style={{
+                      overflow: 'scroll',
+                      height: windowHeight - bottomSpacing - topSpacing,
+                    }}
                   >
                     <Stack>
                       {displayedAccounts.length !== 0 && (
@@ -422,10 +427,11 @@ export function WalletSwitcher() {
       <Box
         className={WalletActionsMenu}
         width="full"
-        backdropFilter="blur(26px)"
+        backdropFilter="opacity(5%)"
         padding="20px"
         borderWidth="1px"
         borderColor="separatorTertiary"
+        background="surfaceSecondary"
       >
         <Stack space="8px">
           <Link to={ROUTES.ADD_WALLET}>
