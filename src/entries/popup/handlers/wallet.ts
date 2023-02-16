@@ -202,6 +202,7 @@ export const getStatus = async () => {
     unlocked: boolean;
     hasVault: boolean;
     passwordSet: boolean;
+    ready: boolean;
   };
 };
 

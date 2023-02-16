@@ -2,7 +2,7 @@ import { Address } from 'wagmi';
 import create from 'zustand';
 
 import { createStore } from '~/core/state/internal/createStore';
-import { DEFAULT_ACCOUNT } from '~/entries/background/handlers/handleProviderRequest';
+import { DEFAULT_ACCOUNT } from '~/core/utils/defaults';
 
 export interface CurrentAddressState {
   currentAddress: Address;
