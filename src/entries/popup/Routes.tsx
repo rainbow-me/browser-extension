@@ -391,7 +391,6 @@ const ROUTE_DATA = [
       <AnimatedRoute
         backTo={ROUTES.HOME}
         direction="up"
-        navbarIcon="ex"
         title={i18n.t('send.title')}
         protectedRoute
       >
