@@ -258,7 +258,7 @@ export function ButtonWrapper({
         borderRadius={borderRadius ?? 'round'}
         borderColor={
           variant === 'transparentHover'
-            ? { default: borderColor || 'transparent', hover: 'buttonStroke' }
+            ? { default: 'transparent', hover: 'buttonStroke' }
             : borderColor
         }
         borderWidth={variant === 'transparentHover' ? '1px' : borderWidth}
