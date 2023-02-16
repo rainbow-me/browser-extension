@@ -277,65 +277,68 @@ export function WalletSwitcher() {
   }, [filteredAccounts, walletOrder]);
 
   const displayedAccounts = useMemo(
-    () => (
-      <AccentColorProvider color={avatar?.color || globalColors.blue60}>
-        {filteredAndSortedAccounts.map((account, index) => (
-          <Draggable
-            key={account.address}
-            draggableId={account.address}
-            index={index}
-            isDragDisabled={isSearching}
-          >
-            {(provided, snapshot) => (
-              <Box
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-                style={getItemStyle(
-                  snapshot.isDragging,
-                  provided.draggableProps.style,
-                )}
-                background={
-                  snapshot.isDragging ? 'surfaceSecondary' : undefined
+    () =>
+      filteredAndSortedAccounts.map((account, index) => (
+        <Draggable
+          key={account.address}
+          draggableId={account.address}
+          index={index}
+          isDragDisabled={isSearching}
+        >
+          {(provided, snapshot) => (
+            <Box
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+              style={getItemStyle(
+                snapshot.isDragging,
+                provided.draggableProps.style,
+              )}
+              background={snapshot.isDragging ? 'surfaceSecondary' : undefined}
+              borderRadius="12px"
+            >
+              <AccountItem
+                key={account.address}
+                onClick={() => {
+                  handleSelectAddress(account.address);
+                }}
+                account={account.address}
+                rightComponent={
+                  <Inline alignVertical="center" space="6px">
+                    {account.type === KeychainType.ReadOnlyKeychain && (
+                      <LabelPill label={i18n.t('wallet_switcher.watching')} />
+                    )}
+                    <MoreInfoButton
+                      options={infoButtonOptions({
+                        account,
+                        setRenameAccount,
+                        setRemoveAccount,
+                      })}
+                    />
+                  </Inline>
                 }
-                borderRadius="12px"
-              >
-                <AccountItem
-                  key={account.address}
-                  onClick={() => {
-                    handleSelectAddress(account.address);
-                  }}
-                  account={account.address}
-                  rightComponent={
-                    <Inline alignVertical="center" space="6px">
-                      {account.type === KeychainType.ReadOnlyKeychain && (
-                        <LabelPill label={i18n.t('wallet_switcher.watching')} />
-                      )}
-                      <MoreInfoButton
-                        options={infoButtonOptions({
-                          account,
-                          setRenameAccount,
-                          setRemoveAccount,
-                        })}
-                      />
-                    </Inline>
-                  }
-                  labelType={LabelOption.balance}
-                  isSelected={account.address === currentAddress}
-                />
-              </Box>
-            )}
-          </Draggable>
-        ))}
-      </AccentColorProvider>
-    ),
+                labelType={LabelOption.balance}
+                isSelected={account.address === currentAddress}
+              />
+            </Box>
+          )}
+        </Draggable>
+      )),
     [
-      avatar?.color,
       currentAddress,
       filteredAndSortedAccounts,
       handleSelectAddress,
       isSearching,
     ],
+  );
+
+  const displayedAccountsComponent = useMemo(
+    () => (
+      <AccentColorProvider color={avatar?.color || globalColors.blue60}>
+        {displayedAccounts}
+      </AccentColorProvider>
+    ),
+    [avatar?.color, displayedAccounts],
   );
 
   const onDragEnd = (result: DropResult) => {
@@ -398,7 +401,7 @@ export function WalletSwitcher() {
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
                         >
-                          {displayedAccounts}
+                          {displayedAccountsComponent}
                         </Box>
                       )}
                     </Stack>
