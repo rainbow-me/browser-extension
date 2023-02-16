@@ -1,13 +1,17 @@
 import React from 'react';
 import { Address, useBalance } from 'wagmi';
 
+import { supportedCurrencies } from '~/core/references';
+import { useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
+import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
-import { handleSignificantDecimals } from '~/core/utils/numbers';
+import { convertAmountAndPriceToNativeDisplay } from '~/core/utils/numbers';
 import { Box, Inline, Row, Rows, Symbol, Text } from '~/design-system';
 
-import { Asterisks } from '../../components/Asterisks/Asterisks';
+import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
 import { useWalletName } from '../../hooks/useWalletName';
+import { Asterisks } from '../Asterisks/Asterisks';
 import { rowHighlightWrapperStyle } from '../CoinRow/CoinRow.css';
 import { MenuItem } from '../Menu/MenuItem';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
@@ -33,7 +37,15 @@ export default function AccountItem({
 }) {
   const { displayName, showAddress } = useWalletName({ address: account });
   const { data: balance } = useBalance({ addressOrName: account });
+  const nativeAsset = useNativeAssetForNetwork({ chainId: ChainId.mainnet });
+  const { currentCurrency } = useCurrentCurrencyStore();
   const { hideAssetBalances } = useHideAssetBalancesStore();
+
+  const nativeDisplay = convertAmountAndPriceToNativeDisplay(
+    balance?.formatted,
+    nativeAsset?.native?.price?.amount,
+    currentCurrency,
+  );
 
   let labelComponent = null;
   if (labelType === LabelOption.address) {
@@ -44,14 +56,12 @@ export default function AccountItem({
     labelComponent = hideAssetBalances ? (
       <Inline alignVertical="center">
         <Text color="labelTertiary" size="12pt" weight="medium">
-          {'Ξ'}
+          {supportedCurrencies[currentCurrency]?.symbol}
         </Text>
         <Asterisks color="labelTertiary" size={10} />
       </Inline>
     ) : (
-      <MenuItem.Label
-        text={`Ξ${handleSignificantDecimals(balance?.formatted || 0, 4)}`}
-      />
+      <MenuItem.Label text={`${nativeDisplay?.display}`} />
     );
   }
 
