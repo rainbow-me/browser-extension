@@ -390,7 +390,8 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute
         backTo={ROUTES.HOME}
-        direction="right"
+        direction="up"
+        navbarIcon="ex"
         title={i18n.t('send.title')}
         protectedRoute
       >
