@@ -116,6 +116,13 @@ describe('App interactions flow', () => {
     await findElementAndClick({ id: 'settings-link', driver });
   });
 
+  it('should be able to set rainbow as default wallet', async () => {
+    await findElementByTestIdAndClick({
+      id: 'set-rainbow-default-toggle',
+      driver,
+    });
+  });
+
   it('should be able to connect to hardhat', async () => {
     const btn = await querySelector(
       driver,
@@ -144,7 +151,7 @@ describe('App interactions flow', () => {
 
     const mmButton = await querySelector(
       driver,
-      '[data-testid="rk-wallet-option-rainbow"]',
+      '[data-testid="rk-wallet-option-injected"]',
     );
     await waitAndClick(mmButton, driver);
 

@@ -1,9 +1,6 @@
 import { expect, test } from 'vitest';
 
-import {
-  DEFAULT_ACCOUNT,
-  DEFAULT_ACCOUNT_2,
-} from '~/entries/background/handlers/handleProviderRequest';
+import { DEFAULT_ACCOUNT, DEFAULT_ACCOUNT_2 } from '~/core/utils/defaults';
 
 import { contactsStore } from '.';
 
