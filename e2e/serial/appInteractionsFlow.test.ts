@@ -116,6 +116,13 @@ describe('App interactions flow', () => {
     await findElementAndClick({ id: 'settings-link', driver });
   });
 
+  it('should be able to set rainbow as default wallet', async () => {
+    await findElementByTestIdAndClick({
+      id: 'set-rainbow-default-toggle',
+      driver,
+    });
+  });
+
   it('should be able to connect to hardhat', async () => {
     const btn = await querySelector(
       driver,
