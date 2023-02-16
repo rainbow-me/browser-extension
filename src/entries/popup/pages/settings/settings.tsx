@@ -79,6 +79,7 @@ export function Settings() {
             }
             rightComponent={
               <Toggle
+                testId="set-rainbow-default-toggle"
                 checked={isDefaultWallet}
                 handleChange={setRainbowAsDefaultWallet}
               />
