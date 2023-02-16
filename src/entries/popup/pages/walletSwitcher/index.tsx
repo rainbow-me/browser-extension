@@ -20,10 +20,18 @@ import { useWalletNamesStore } from '~/core/state/walletNames';
 import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
-import { Box, Button, Inline, Stack, Text } from '~/design-system';
+import {
+  AccentColorProvider,
+  Box,
+  Button,
+  Inline,
+  Stack,
+  Text,
+} from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { Symbol, SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
+import { globalColors } from '~/design-system/styles/designTokens';
 
 import AccountItem, {
   LabelOption,
@@ -35,6 +43,7 @@ import {
   MoreInfoOption,
 } from '../../components/MoreInfoButton/MoreInfoButton';
 import { remove } from '../../handlers/wallet';
+import { useAvatar } from '../../hooks/useAvatar';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { AddressAndType, useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
@@ -155,6 +164,7 @@ export function WalletSwitcher() {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useRainbowNavigate();
   const { visibleWallets: accounts, fetchWallets } = useWallets();
+  const { avatar } = useAvatar({ address: currentAddress });
 
   const { deleteWalletName } = useWalletNamesStore();
 
@@ -267,54 +277,60 @@ export function WalletSwitcher() {
   }, [filteredAccounts, walletOrder]);
 
   const displayedAccounts = useMemo(
-    () =>
-      filteredAndSortedAccounts.map((account, index) => (
-        <Draggable
-          key={account.address}
-          draggableId={account.address}
-          index={index}
-          isDragDisabled={isSearching}
-        >
-          {(provided, snapshot) => (
-            <Box
-              ref={provided.innerRef}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              style={getItemStyle(
-                snapshot.isDragging,
-                provided.draggableProps.style,
-              )}
-              background={snapshot.isDragging ? 'surfaceSecondary' : undefined}
-              borderRadius="12px"
-            >
-              <AccountItem
-                key={account.address}
-                onClick={() => {
-                  handleSelectAddress(account.address);
-                }}
-                account={account.address}
-                rightComponent={
-                  <Inline alignVertical="center" space="6px">
-                    {account.type === KeychainType.ReadOnlyKeychain && (
-                      <LabelPill label={i18n.t('wallet_switcher.watching')} />
-                    )}
-                    <MoreInfoButton
-                      options={infoButtonOptions({
-                        account,
-                        setRenameAccount,
-                        setRemoveAccount,
-                      })}
-                    />
-                  </Inline>
+    () => (
+      <AccentColorProvider color={avatar?.color || globalColors.blue60}>
+        {filteredAndSortedAccounts.map((account, index) => (
+          <Draggable
+            key={account.address}
+            draggableId={account.address}
+            index={index}
+            isDragDisabled={isSearching}
+          >
+            {(provided, snapshot) => (
+              <Box
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                style={getItemStyle(
+                  snapshot.isDragging,
+                  provided.draggableProps.style,
+                )}
+                background={
+                  snapshot.isDragging ? 'surfaceSecondary' : undefined
                 }
-                labelType={LabelOption.balance}
-                isSelected={account.address === currentAddress}
-              />
-            </Box>
-          )}
-        </Draggable>
-      )),
+                borderRadius="12px"
+              >
+                <AccountItem
+                  key={account.address}
+                  onClick={() => {
+                    handleSelectAddress(account.address);
+                  }}
+                  account={account.address}
+                  rightComponent={
+                    <Inline alignVertical="center" space="6px">
+                      {account.type === KeychainType.ReadOnlyKeychain && (
+                        <LabelPill label={i18n.t('wallet_switcher.watching')} />
+                      )}
+                      <MoreInfoButton
+                        options={infoButtonOptions({
+                          account,
+                          setRenameAccount,
+                          setRemoveAccount,
+                        })}
+                      />
+                    </Inline>
+                  }
+                  labelType={LabelOption.balance}
+                  isSelected={account.address === currentAddress}
+                />
+              </Box>
+            )}
+          </Draggable>
+        ))}
+      </AccentColorProvider>
+    ),
     [
+      avatar?.color,
       currentAddress,
       filteredAndSortedAccounts,
       handleSelectAddress,
