@@ -24,6 +24,7 @@ import { TextStyles } from '~/design-system/styles/core.css';
 import { Space, TextColor } from '~/design-system/styles/designTokens';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 
+import { ActivitySkeleton } from '../../components/ActivitySkeleton/ActivitySkeleton';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { useAllTransactions } from '../../hooks/useAllTransactions';
 import { SheetMode } from '../speedUpAndCancelSheet';
@@ -47,7 +48,7 @@ const TEXT_MAX_WIDTH = windowWidth - 150;
 export function Activity({ onSheetSelected }: ActivityProps) {
   const { address } = useAccount();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { allTransactionsByDate } = useAllTransactions({
+  const { allTransactionsByDate, isInitialLoading } = useAllTransactions({
     address,
     currency,
   });
@@ -73,6 +74,10 @@ export function Activity({ onSheetSelected }: ActivityProps) {
   }) => {
     onSheetSelected({ sheet, transaction });
   };
+
+  if (isInitialLoading) {
+    return <ActivitySkeleton />;
+  }
 
   if (!listData.length) {
     return (
