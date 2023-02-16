@@ -239,7 +239,14 @@ export function ButtonWrapper({
       <Box
         as="button"
         alignItems="center"
-        background={background}
+        background={
+          variant === 'transparent'
+            ? {
+                default: background || 'transparent',
+                hover: 'surfaceSecondaryElevated',
+              }
+            : background
+        }
         borderRadius={borderRadius ?? 'round'}
         borderColor={borderColor}
         borderWidth={borderWidth}
