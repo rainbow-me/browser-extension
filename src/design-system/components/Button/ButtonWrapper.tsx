@@ -261,7 +261,7 @@ export function ButtonWrapper({
             ? { default: borderColor || 'transparent', hover: 'buttonStroke' }
             : borderColor
         }
-        borderWidth={variant === 'transparent' ? '1px' : borderWidth}
+        borderWidth={variant === 'transparentHover' ? '1px' : borderWidth}
         boxShadow={boxShadow}
         className={[
           heightStyles[height],
