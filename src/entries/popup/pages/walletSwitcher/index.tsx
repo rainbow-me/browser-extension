@@ -156,6 +156,8 @@ export function WalletSwitcher() {
   const navigate = useRainbowNavigate();
   const { visibleWallets: accounts, fetchWallets } = useWallets();
 
+  const { deleteWalletName } = useWalletNamesStore();
+
   const handleSelectAddress = useCallback(
     (address: Address) => {
       setCurrentAddress(address);
@@ -174,6 +176,7 @@ export function WalletSwitcher() {
         // hide if imported
         hideWallet({ address });
       }
+      deleteWalletName({ address });
       if (address === currentAddress) {
         const deletedIndex = accounts.findIndex(
           (account) => account.address === address,
@@ -185,7 +188,14 @@ export function WalletSwitcher() {
         setCurrentAddress(accounts[nextIndex]?.address);
       }
     },
-    [accounts, currentAddress, fetchWallets, hideWallet, setCurrentAddress],
+    [
+      accounts,
+      currentAddress,
+      deleteWalletName,
+      fetchWallets,
+      hideWallet,
+      setCurrentAddress,
+    ],
   );
   const { walletNames } = useWalletNamesStore();
 

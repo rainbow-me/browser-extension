@@ -5,6 +5,7 @@ import { Address } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
+import { useWalletNamesStore } from '~/core/state/walletNames';
 import { KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Symbol } from '~/design-system';
@@ -139,11 +140,13 @@ export function WalletDetails() {
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
   const { unhideWallet, hiddenWallets } = useHiddenWalletsStore();
   const { visibleWallets } = useWallets();
+  const { deleteWalletName } = useWalletNamesStore();
 
   const handleRemoveAccount = async (address: Address) => {
     const walletBeforeDeletion = await getWallet(address);
     unhideWallet({ address });
     await remove(address);
+    deleteWalletName({ address });
     // set current address to the next account if you deleted that one
     if (address === currentAddress) {
       const deletedIndex = visibleWallets.findIndex(

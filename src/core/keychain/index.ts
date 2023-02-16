@@ -67,21 +67,18 @@ export const hasVault = () => {
 };
 
 export const isPasswordSet = async () => {
-  const isPasswordEmpty = keychainManager.verifyPassword('');
-  // We don't have it in memory
-  if (isPasswordEmpty) {
-    // check if it was set at all
-    if (await keychainManager.verifyPasswordViaDecryption('')) {
-      return false;
-    }
-    return true;
-  } else {
-    return true;
+  if (await keychainManager.verifyPassword('')) {
+    return false;
   }
+  return true;
 };
 
 export const isVaultUnlocked = (): boolean => {
   return keychainManager.state.isUnlocked;
+};
+
+export const isReady = (): boolean => {
+  return keychainManager.state.initialized;
 };
 
 export const createWallet = async (): Promise<Address> => {
