@@ -1,10 +1,12 @@
 import React from 'react';
 import { Address, useBalance } from 'wagmi';
 
+import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { truncateAddress } from '~/core/utils/address';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
-import { Box, Symbol } from '~/design-system';
+import { Box, Inline, Symbol, Text } from '~/design-system';
 
+import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { useWalletName } from '../../hooks/useWalletName';
 import { MenuItem } from '../Menu/MenuItem';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
@@ -30,6 +32,7 @@ export default function AccountItem({
 }) {
   const { displayName, showAddress } = useWalletName({ address: account });
   const { data: balance } = useBalance({ addressOrName: account });
+  const { hideAssetBalances } = useHideAssetBalancesStore();
 
   let labelComponent = null;
   if (labelType === LabelOption.address) {
@@ -37,7 +40,14 @@ export default function AccountItem({
       <MenuItem.Label text={truncateAddress(account)} />
     ) : null;
   } else if (labelType === LabelOption.balance) {
-    labelComponent = (
+    labelComponent = hideAssetBalances ? (
+      <Inline alignVertical="center">
+        <Text color="labelTertiary" size="12pt" weight="medium">
+          {'Ξ'}
+        </Text>
+        <Asterisks color="labelTertiary" size={10} />
+      </Inline>
+    ) : (
       <MenuItem.Label
         text={`Ξ${handleSignificantDecimals(balance?.formatted || 0, 4)}`}
       />
