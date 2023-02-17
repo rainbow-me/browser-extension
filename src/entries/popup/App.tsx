@@ -1,4 +1,3 @@
-import { uuid4 } from '@sentry/utils';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import * as React from 'react';
 import { HashRouter } from 'react-router-dom';
@@ -9,7 +8,7 @@ import { event } from '~/analytics/event';
 import { changeI18nLanguage } from '~/core/languages';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry } from '~/core/sentry';
-import { useCurrentLanguageStore } from '~/core/state';
+import { useCurrentLanguageStore, useDeviceIdStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { createWagmiClient } from '~/core/wagmi';
@@ -34,15 +33,15 @@ const wagmiClient = createWagmiClient({
 export function App() {
   const { currentLanguage } = useCurrentLanguageStore();
   const { address } = useAccount();
+  const { deviceId } = useDeviceIdStore();
 
   usePendingTransactionWatcher({ address });
 
   React.useEffect(() => {
     changeI18nLanguage(currentLanguage);
     initializeSentry('popup');
-    const deviceId = uuid4();
     analytics.setDeviceId(deviceId);
-    analytics.identify({});
+    analytics.identify();
     analytics.track(event.open);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -23,7 +23,7 @@ export class Analytics {
    * here. This uses the `deviceId` as the identifier, and attaches the hashed
    * wallet address as a property, if available.
    */
-  identify(userProperties: UserProperties) {
+  identify(userProperties?: UserProperties) {
     if (this.disabled) return;
     const metadata = this.getDefaultMetadata();
     this.client.identify(this.deviceId, {
