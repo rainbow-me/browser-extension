@@ -391,6 +391,7 @@ export function WalletSwitcher() {
           text="Drag wallets to reorder them"
           textBold="Tip:"
           symbol="sparkle"
+          promoType="wallet_witcher"
         />
       </Box>
       <Box style={{ overflow: 'scroll' }} paddingHorizontal="8px">
