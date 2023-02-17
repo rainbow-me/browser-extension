@@ -16,6 +16,7 @@ import { Box, ThemeProvider } from '~/design-system';
 
 import { Routes } from './Routes';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
+import { Toast } from './components/Toast/Toast';
 import { AuthProvider } from './hooks/useAuth';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import { usePendingTransactionWatcher } from './hooks/usePendingTransactionWatcher';
@@ -75,6 +76,7 @@ export function App() {
                 </HashRouter>
               </Box>
               <IdleTimer />
+              <Toast />
             </AuthProvider>
           )}
         </ThemeProvider>

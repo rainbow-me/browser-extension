@@ -4,12 +4,14 @@ import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { truncateAddress } from '~/core/utils/address';
 import { Box, ButtonSymbol, Inline, Inset, Stack, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
 import { useAvatar } from '../../hooks/useAvatar';
+import { useToast } from '../../hooks/useToast';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
@@ -79,10 +81,15 @@ function ActionButtonsSection() {
   const { avatar } = useAvatar({ address });
 
   const { watchedWallets } = useWallets();
+  const { triggerToast } = useToast();
 
   const handleCopy = React.useCallback(() => {
     navigator.clipboard.writeText(address as string);
-  }, [address]);
+    triggerToast({
+      title: i18n.t('wallet_header.copy_toast'),
+      description: truncateAddress(address),
+    });
+  }, [address, triggerToast]);
 
   const isWatchingWallet = React.useMemo(() => {
     const watchedAddresses = watchedWallets.map(({ address }) => address);
