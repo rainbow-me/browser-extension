@@ -26,7 +26,12 @@ export const Toast = () => {
   return (
     <Box width="full" style={{ position: 'fixed', zIndex: 999999, bottom: 16 }}>
       <Inline alignHorizontal="center">
-        <Box borderRadius="26px" background="surfaceMenu" width="fit">
+        <Box
+          borderRadius="26px"
+          background="surfaceMenu"
+          width="fit"
+          backdropFilter="blur(26px)"
+        >
           <Box paddingVertical="8px" paddingHorizontal="16px">
             <Rows space="6px">
               <Row>
