@@ -64,7 +64,7 @@ export const lockVault = () => {
 };
 export const hasVault = () => {
   return (
-    keychainManager.state?.keychains?.length > 0 || keychainManager.state?.vault
+    keychainManager.state.keychains.length > 0 || keychainManager.state.vault
   );
 };
 
