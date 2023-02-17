@@ -3,24 +3,33 @@
  */
 export const event = {
   /**
-   * Called when the popup is opened.
+   * Called when the popup entry is opened, including:
+   * - extension popup
+   * - new window
+   * - onboarding or welcome page
    */
-  open: 'open',
+  popupOpened: 'popup.opened',
+  /**
+   * Called when the core wallet Tokens & Activity
+   * screen is viewed or opened in the extension popup.
+   */
+  walletViewed: 'wallet.viewed',
   /**
    * Called when user disables tracking in Settings.
    */
-  analyticsTrackingDisabled: 'analytics_tracking.disabled',
+  settingsAnalyticsTrackingDisabled: 'settings.analytics_tracking.disabled',
   /**
    * Called when user enables tracking in Settings.
    */
-  analyticsTrackingEnabled: 'analytics_tracking.enabled',
+  settingsAnalyticsTrackingEnabled: 'settings.analytics_tracking.enabled',
 } as const;
 
 /**
  * Properties corresponding to each event
  */
 export type EventProperties = {
-  [event.open]: undefined;
-  [event.analyticsTrackingDisabled]: undefined;
-  [event.analyticsTrackingEnabled]: undefined;
+  [event.popupOpened]: undefined;
+  [event.walletViewed]: undefined;
+  [event.settingsAnalyticsTrackingDisabled]: undefined;
+  [event.settingsAnalyticsTrackingEnabled]: undefined;
 };

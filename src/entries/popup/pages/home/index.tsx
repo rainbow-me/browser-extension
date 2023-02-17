@@ -9,6 +9,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { usePendingRequestStore } from '~/core/state';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
@@ -88,6 +90,8 @@ export function Home() {
       else if (!isAtTop && scrollAtTop) setScrollAtTop(false);
     });
   }, [scrollAtTop, scrollY]);
+
+  analytics.track(event.walletViewed);
 
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>

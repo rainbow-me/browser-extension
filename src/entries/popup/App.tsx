@@ -43,7 +43,7 @@ export function App() {
     setSentryUser(deviceId);
     analytics.setDeviceId(deviceId);
     analytics.identify();
-    analytics.track(event.open);
+    analytics.track(event.popupOpened);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
