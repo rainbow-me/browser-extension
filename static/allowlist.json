@@ -7,6 +7,7 @@
         "wss://*.rainbow.me",
         "https://*.rainbow.me",
         "https://rainbow.mypinata.cloud/",
+        "https://gateway.ipfs.io/",
         "https://rainbowme-res.cloudinary.com/",
         "wss://*.alchemyapi.io",
         "wss://*.g.alchemy.com",
