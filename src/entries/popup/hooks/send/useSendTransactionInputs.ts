@@ -139,7 +139,6 @@ export const useSendTransactionInputs = ({
               supportedCurrencies[currentCurrency].decimals,
             ),
           );
-    console.log('setMaxAssetAmount newValue', newValue);
 
     setIndependentAmount(newValue);
     setInputValue(newValue);
