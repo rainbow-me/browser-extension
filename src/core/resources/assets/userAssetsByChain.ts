@@ -109,7 +109,6 @@ export async function userAssetsByChainQueryFunction({
     const resolver = async (message: AddressAssetsReceivedMessage) => {
       clearTimeout(timeout);
       const parsedUserAssetsByChain = parseUserAssetsByChain(message, currency);
-      console.log('parsedUserAssetsByChain', parsedUserAssetsByChain);
       if (connectedToHardhat) {
         const provider = getProvider({ chainId: ChainId.hardhat });
         // force checking for ETH if connected to hardhat
