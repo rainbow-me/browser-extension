@@ -37,6 +37,9 @@ export const ConnectedApps = () => {
     [[], []],
   );
 
+  const noConnectedApps =
+    !filteredSessions?.[0]?.length && !filteredSessions?.[1]?.length;
+
   return (
     <Box>
       <Box
@@ -45,6 +48,29 @@ export const ConnectedApps = () => {
           height: 489,
         }}
       >
+        {noConnectedApps && (
+          <Box
+            style={{ height: '100%', width: '100%', display: 'flex' }}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Stack alignHorizontal="center" space="16px">
+              <Symbol
+                symbol="square.dashed"
+                size={26}
+                color={'labelTertiary'}
+                weight="bold"
+              />
+              <Text size="20pt" color="labelTertiary" weight="medium">
+                {i18n.t('connected_apps.no_connections_title')}
+              </Text>
+              <Text size="11pt" color="labelTertiary" weight="medium">
+                {i18n.t('connected_apps.no_connections_copy')}
+              </Text>
+            </Stack>
+          </Box>
+        )}
+
         <Stack space="16px">
           <Rows alignVertical="top">
             {filteredSessions?.[0]?.map((session, i) => (
@@ -82,35 +108,41 @@ export const ConnectedApps = () => {
         </Stack>
       </Box>
 
-      <Box
-        borderColor="separatorSecondary"
-        borderWidth="1px"
-        alignItems="center"
-        bottom="0"
-        left="0"
-        right="0"
-      >
-        <Inline alignHorizontal="center">
-          <Button
-            onClick={clearSessions}
-            color="surfacePrimaryElevated"
-            height="44px"
-            variant="stroked"
-          >
-            <Inline alignHorizontal="center" alignVertical="center" space="8px">
-              <Symbol
-                symbol={'xmark'}
-                color="red"
-                size={12}
-                weight="semibold"
-              />
-              <Text color="red" size="14pt" weight="bold">
-                {i18n.t('connected_apps.disconnect')}
-              </Text>
-            </Inline>
-          </Button>
-        </Inline>
-      </Box>
+      {!noConnectedApps && (
+        <Box
+          borderColor="separatorSecondary"
+          borderWidth="1px"
+          alignItems="center"
+          bottom="0"
+          left="0"
+          right="0"
+        >
+          <Inline alignHorizontal="center">
+            <Button
+              onClick={clearSessions}
+              color="surfacePrimaryElevated"
+              height="44px"
+              variant="stroked"
+            >
+              <Inline
+                alignHorizontal="center"
+                alignVertical="center"
+                space="8px"
+              >
+                <Symbol
+                  symbol={'xmark'}
+                  color="red"
+                  size={12}
+                  weight="semibold"
+                />
+                <Text color="red" size="14pt" weight="bold">
+                  {i18n.t('connected_apps.disconnect')}
+                </Text>
+              </Inline>
+            </Button>
+          </Inline>
+        </Box>
+      )}
     </Box>
   );
 };
