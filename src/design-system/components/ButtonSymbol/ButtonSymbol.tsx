@@ -19,12 +19,18 @@ export type ButtonSymbolProps = {
   onClick?: () => void;
   symbol: SymbolProps['symbol'];
   symbolColor?: TextColor;
+  symbolSize?: SymbolProps['size'];
   borderRadius?: Radius;
   testId?: string;
   tabIndex?: number;
 } & ButtonVariantProps;
 
-export function ButtonSymbol({ height, symbol, ...props }: ButtonSymbolProps) {
+export function ButtonSymbol({
+  height,
+  symbol,
+  symbolSize,
+  ...props
+}: ButtonSymbolProps) {
   const { textColor: textColorFromVariant } = stylesForVariant({
     color: props.color ?? 'accent',
   })[props.variant];
@@ -42,9 +48,10 @@ export function ButtonSymbol({ height, symbol, ...props }: ButtonSymbolProps) {
         <Symbol
           color={symbolColor}
           size={
-            parseInt(
+            symbolSize ??
+            (parseInt(
               textSize?.split(' ')[0].replace('pt', '') ?? '',
-            ) as SymbolProps['size']
+            ) as SymbolProps['size'])
           }
           symbol={symbol}
           weight="bold"

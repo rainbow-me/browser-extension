@@ -56,10 +56,7 @@ export const ProtectedRoute = ({
           />
         );
       default:
-        if (
-          status === 'NEEDS_PASSWORD' &&
-          (isHome() || isWelcome() || isCreatePassword())
-        ) {
+        if (status === 'NEEDS_PASSWORD' && (isHome() || isCreatePassword())) {
           if (!isFullScreen) {
             chrome.tabs.create({
               url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome`,

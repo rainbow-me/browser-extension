@@ -1,8 +1,10 @@
-import React, { useCallback } from 'react';
+import { motion } from 'framer-motion';
+import React, { useCallback, useState } from 'react';
 import { useAccount, useEnsAvatar } from 'wagmi';
 
 import { Box, Inline, Symbol, Text } from '~/design-system';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
+import { transformScales } from '~/design-system/styles/designTokens';
 
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWalletName } from '../../hooks/useWalletName';
@@ -30,6 +32,7 @@ export function AccountName({
   const { displayName } = useWalletName({ address: address || '0x' });
   const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
   const navigate = useRainbowNavigate();
+  const [hover, setHover] = useState(false);
 
   const handleClick = useCallback(() => {
     navigate(ROUTES.WALLET_SWITCHER);
@@ -37,9 +40,9 @@ export function AccountName({
 
   return (
     <Box
+      as={motion.div}
       id={`${id ?? ''}-account-name-shuffle`}
       onClick={handleClick}
-      as="button"
       tabIndex={
         includeAvatar ? undefined : tabIndexes.WALLET_HEADER_ACCOUNT_NAME
       }
@@ -47,6 +50,10 @@ export function AccountName({
         outlineColor: accentColorAsHsl,
         borderRadius: 6,
       }}
+      whileHover={{ scale: transformScales['1.04'] }}
+      whileTap={{ scale: transformScales['0.96'] }}
+      onHoverStart={() => setHover(true)}
+      onHoverEnd={() => setHover(false)}
     >
       <Inline alignVertical="center" space="4px">
         <Inline alignVertical="center" space="4px">
@@ -68,7 +75,7 @@ export function AccountName({
           <Symbol
             size={chevronDownSizes[size]}
             symbol="chevron.down"
-            color="labelTertiary"
+            color={hover ? 'label' : 'labelTertiary'}
             weight="semibold"
           />
         </Inline>
