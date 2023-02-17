@@ -20,7 +20,7 @@ export const Toast = () => {
 
   useEffect(() => {
     return () => clearToastListener();
-  });
+  }, []);
 
   if (!visible) return null;
   return (
