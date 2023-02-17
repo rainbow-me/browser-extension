@@ -11,6 +11,7 @@ import {
   convertAmountToRawAmount,
   convertNumberToString,
   convertRawAmountToBalance,
+  lessThan,
   minus,
   toFixedDecimals,
 } from '~/core/utils/numbers';
@@ -114,9 +115,12 @@ export const useSendTransactionInputs = ({
       asset?.balance?.amount || '0',
       asset?.decimals || 18,
     );
-    const rawAssetBalanceAmount = asset?.isNativeAsset
-      ? minus(assetBalanceAmount, selectedGas?.gasFee?.amount)
-      : assetBalanceAmount;
+
+    const rawAssetBalanceAmount =
+      asset?.isNativeAsset &&
+      lessThan(selectedGas?.gasFee?.amount, assetBalanceAmount)
+        ? minus(assetBalanceAmount, selectedGas?.gasFee?.amount)
+        : assetBalanceAmount;
 
     const assetBalance = convertRawAmountToBalance(rawAssetBalanceAmount, {
       decimals: asset?.decimals || 18,

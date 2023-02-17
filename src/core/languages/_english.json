@@ -197,7 +197,8 @@
       "sort": "Sort",
       "available": "available",
       "token_balance": "Token Balance",
-      "networks": "Networks"
+      "networks": "Networks",
+      "no_tokens": "No tokens"
     },
     "review": {
       "title": "Review & Send",
