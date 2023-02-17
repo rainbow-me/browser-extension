@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { truncateAddress } from '~/core/utils/address';
 import { Box, ButtonSymbol, Inline, Inset, Stack, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
@@ -13,6 +14,7 @@ import { useAvatar } from '../../hooks/useAvatar';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
+import { triggerToast } from '../../utils/toast';
 
 export function Header() {
   const { scrollYProgress: progress } = useScroll({ offset: ['0px', '64px'] });
@@ -82,6 +84,10 @@ function ActionButtonsSection() {
 
   const handleCopy = React.useCallback(() => {
     navigator.clipboard.writeText(address as string);
+    triggerToast({
+      title: i18n.t('wallet_header.copy_toast'),
+      description: truncateAddress(address),
+    });
   }, [address]);
 
   const isWatchingWallet = React.useMemo(() => {

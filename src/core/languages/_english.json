@@ -515,7 +515,8 @@
   "wallet_header": {
     "copy": "Copy",
     "swap": "Swap",
-    "send": "Send"
+    "send": "Send",
+    "copy_toast": "Address Copied"
   },
   "token_search": {
     "section_header": {
