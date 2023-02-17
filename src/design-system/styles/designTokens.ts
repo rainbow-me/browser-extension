@@ -796,6 +796,7 @@ export const symbolNames = selectSymbolNames(
   'app.connected.to.app.below.fill',
   'trash.fill',
   'plus.circle',
+  'shield.righthalf.filled',
 );
 export type SymbolName = typeof symbolNames[number];
 

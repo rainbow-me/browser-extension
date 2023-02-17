@@ -74,11 +74,13 @@ export function CreatePassword() {
     checkIfPasswordsMatch();
   }, [checkIfPasswordsMatch]);
 
-  const handleSetPassword = async () => {
-    if (!isValid) return;
+  const handleSetPassword = useCallback(async () => {
+    if (!isValid || !isMatching) return;
     await updatePassword('', newPassword);
     navigate(ROUTES.READY);
-  };
+  }, [isMatching, isValid, navigate, newPassword]);
+
+  const showSoftAlert = strength !== null && strength > 0 && strength < 3;
 
   return (
     <>
@@ -136,33 +138,33 @@ export function CreatePassword() {
 
                       <Inline space="2px" wrap={false} alignVertical="center">
                         <Text
-                          size="12pt"
+                          size="14pt"
                           weight="regular"
                           color={
                             (strength &&
                               (strengthMeta[strength as number]
                                 .color as TextColor)) ||
-                            'transparent'
+                            'labelTertiary'
                           }
                         >
                           {(strength && strengthMeta[strength].text) || (
-                            <>&nbsp;</>
+                            <>{i18n.t('passwords.8_chars_min')}</>
                           )}
                         </Text>
                         {strength && strengthMeta[strength].symbol ? (
-                          <Symbol
-                            symbol={strengthMeta[strength].symbol as SymbolName}
-                            size={12}
-                            color={strengthMeta[strength].color as TextColor}
-                            weight={'bold'}
-                          />
+                          <>
+                            <Box style={{ width: 1 }} />
+                            <Symbol
+                              symbol={
+                                strengthMeta[strength].symbol as SymbolName
+                              }
+                              size={14}
+                              color={strengthMeta[strength].color as TextColor}
+                              weight={'bold'}
+                            />
+                          </>
                         ) : (
-                          <Symbol
-                            symbol={'arrow.down'}
-                            size={12}
-                            color={'transparent'}
-                            weight={'bold'}
-                          />
+                          <Box style={{ height: 14 }} />
                         )}
                       </Inline>
                     </Inline>
@@ -226,8 +228,37 @@ export function CreatePassword() {
             </Row>
           </Rows>
         </Box>
-        <Box width="full" style={{ paddingTop: '210px' }}>
-          <Rows alignVertical="top" space="8px">
+        <Box
+          width="full"
+          style={{ paddingTop: showSoftAlert ? '140px' : '210px' }}
+        >
+          <Rows alignVertical="top" space="20px">
+            {showSoftAlert && (
+              <Box
+                padding="10px"
+                background="surfaceSecondaryElevated"
+                borderRadius="8px"
+                borderWidth="1px"
+                borderColor="separatorSecondary"
+                style={{ height: 50 }}
+              >
+                <Inline space="8px" wrap={false} alignVertical="center">
+                  <Box width="fit">
+                    <Symbol
+                      symbol={strengthMeta[strength].symbol as SymbolName}
+                      size={25}
+                      color={strengthMeta[strength].color as TextColor}
+                      weight={'bold'}
+                    />
+                  </Box>
+                  <Box>
+                    <Text size="12pt" weight="regular">
+                      {i18n.t('passwords.try_another_password')}
+                    </Text>
+                  </Box>
+                </Inline>
+              </Box>
+            )}
             <Button
               color={isValid && isMatching ? 'accent' : 'labelQuaternary'}
               height="44px"

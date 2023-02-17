@@ -1,7 +1,7 @@
 import { isAddress, isValidMnemonic } from 'ethers/lib/utils';
 import { motion } from 'framer-motion';
 import { startsWith } from 'lodash';
-import React, { useCallback, useState } from 'react';
+import React, { KeyboardEvent, useCallback, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -120,6 +120,15 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
     updateValidity(newSecrets);
   }, [secrets, updateValidity]);
 
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        handleImportWallet();
+      }
+    },
+    [handleImportWallet],
+  );
+
   return (
     <>
       <Box alignItems="center" paddingBottom="10px">
@@ -183,6 +192,9 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
                 placeholder={i18n.t('import_wallet.placeholder')}
                 value={secrets[i]}
                 testId="secret-textarea"
+                onKeyDown={handleKeyDown}
+                tabIndex={1}
+                autoFocus
                 onChange={(e) => handleSeedChange(e, i)}
                 className={[
                   placeholderStyle,
@@ -264,6 +276,7 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
             width="full"
             onClick={handleImportWallet}
             testId="import-wallets-button"
+            tabIndex={2}
           >
             {secrets.length > 1
               ? i18n.t('import_wallet.import_wallet_plural')

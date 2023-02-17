@@ -6,22 +6,20 @@ import { Box, Inline, Inset, Symbol, Text } from '~/design-system';
 
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItemIndicator,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '../DropdownMenu/DropdownMenu';
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItemIndicator,
+  ContextMenuLabel,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from '../ContextMenu/ContextMenu';
 
-export const SwitchNetworkMenuSelector = ({
+export const SwitchNetworkContextMenuSelector = ({
   selectedValue,
-  highlightAccentColor,
 }: {
   selectedValue?: string;
-  highlightAccentColor?: boolean;
 }) => {
   const { chains } = useNetwork();
   return (
@@ -29,8 +27,7 @@ export const SwitchNetworkMenuSelector = ({
       {chains.map((chain, i) => {
         const { id: chainId, name } = chain;
         return (
-          <DropdownMenuRadioItem
-            highlightAccentColor={highlightAccentColor}
+          <ContextMenuRadioItem
             value={String(chainId)}
             key={i}
             selectedValue={selectedValue}
@@ -43,10 +40,10 @@ export const SwitchNetworkMenuSelector = ({
                 </Text>
               </Inline>
             </Box>
-            <DropdownMenuItemIndicator style={{ marginLeft: 'auto' }}>
+            <ContextMenuItemIndicator style={{ marginLeft: 'auto' }}>
               <Symbol weight="medium" symbol="checkmark" size={11} />
-            </DropdownMenuItemIndicator>
-          </DropdownMenuRadioItem>
+            </ContextMenuItemIndicator>
+          </ContextMenuRadioItem>
         );
       })}
     </>
@@ -87,7 +84,7 @@ interface SwitchNetworkMenuProps {
   triggerComponent: React.ReactNode;
 }
 
-export const SwitchNetworkMenu = ({
+export const SwitchNetworkContextMenu = ({
   chainId,
   onChainChanged,
   onDisconnect,
@@ -95,14 +92,14 @@ export const SwitchNetworkMenu = ({
 }: SwitchNetworkMenuProps) => {
   const { chains } = useNetwork();
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <ContextMenu>
+      <ContextMenuTrigger asChild>
         <Box style={{ cursor: 'default' }}>{triggerComponent}</Box>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent sideOffset={1}>
-        <DropdownMenuLabel>{i18n.t('menu.network.title')}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup
+      </ContextMenuTrigger>
+      <ContextMenuContent sideOffset={1}>
+        <ContextMenuLabel>{i18n.t('menu.network.title')}</ContextMenuLabel>
+        <ContextMenuSeparator />
+        <ContextMenuRadioGroup
           value={String(chainId)}
           onValueChange={(chainId) => {
             const chain = chains.find(
@@ -111,12 +108,12 @@ export const SwitchNetworkMenu = ({
             onChainChanged(chain?.id, chain);
           }}
         >
-          <SwitchNetworkMenuSelector selectedValue={String(chainId)} />
-        </DropdownMenuRadioGroup>
+          <SwitchNetworkContextMenuSelector selectedValue={String(chainId)} />
+        </ContextMenuRadioGroup>
         {onDisconnect ? (
           <SwitchNetworkMenuDisconnect onDisconnect={onDisconnect} />
         ) : null}
-      </DropdownMenuContent>
-    </DropdownMenu>
+      </ContextMenuContent>
+    </ContextMenu>
   );
 };

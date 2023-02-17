@@ -6,6 +6,7 @@ import {
 } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { deriveAddressAndChainWithUniqueId } from '~/core/utils/address';
+import { add } from '~/core/utils/numbers';
 
 // selectors
 export function selectUserAssetsList(assets: ParsedAssetsDictByChain) {
@@ -51,5 +52,25 @@ export function selectUserAssetWithUniqueId(uniqueId: UniqueId) {
   return (assets: ParsedAssetsDictByChain) => {
     const { chain } = deriveAddressAndChainWithUniqueId(uniqueId);
     return assets?.[chain]?.[uniqueId];
+  };
+}
+
+export function selectUserAssetsBalance() {
+  return (assets: ParsedAssetsDictByChain) => {
+    const networksTotalBalance = Object.values(assets).map((assetsOnject) => {
+      const assetsNetwork = Object.values(assetsOnject);
+      const networkBalance = assetsNetwork
+        .map((asset) => asset.native.balance.amount)
+        .reduce(
+          (prevBalance, currBalance) => add(prevBalance, currBalance),
+          '0',
+        );
+      return networkBalance;
+    });
+    const totalAssetsBalance = networksTotalBalance.reduce(
+      (prevBalance, currBalance) => add(prevBalance, currBalance),
+      '0',
+    );
+    return totalAssetsBalance;
   };
 }

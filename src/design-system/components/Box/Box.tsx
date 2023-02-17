@@ -32,6 +32,7 @@ type PolymorphicBox = Polymorphic.ForwardRefComponent<
         };
     className?: ClassValue;
     testId?: string;
+    onKeyDown?: React.KeyboardEventHandler;
   }
 >;
 

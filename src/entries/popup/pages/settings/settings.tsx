@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 
 import { i18n } from '~/core/languages';
+import { initializeMessenger } from '~/core/messengers';
 import { supportedCurrencies } from '~/core/references';
 import {
   RAINBOW_LEARN_URL,
@@ -24,6 +25,8 @@ import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 import { testSandbox } from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
+
+const messenger = initializeMessenger({ connect: 'inpage' });
 
 export function Settings() {
   const navigate = useRainbowNavigate();
@@ -56,6 +59,14 @@ export function Settings() {
     setConnectedToHardhat(!connectedToHardhat);
   }, [setConnectedToHardhat, connectedToHardhat]);
 
+  const setRainbowAsDefaultWallet = useCallback(
+    async (rainbowAsDefault: boolean) => {
+      setIsDefaultWallet(rainbowAsDefault);
+      messenger.send('rainbow_setDefaultProvider', { rainbowAsDefault });
+    },
+    [setIsDefaultWallet],
+  );
+
   return (
     <Box paddingHorizontal="20px">
       <MenuContainer testId="settings-menu-container">
@@ -68,8 +79,9 @@ export function Settings() {
             }
             rightComponent={
               <Toggle
+                testId="set-rainbow-default-toggle"
                 checked={isDefaultWallet}
-                handleChange={setIsDefaultWallet}
+                handleChange={setRainbowAsDefaultWallet}
               />
             }
           />
