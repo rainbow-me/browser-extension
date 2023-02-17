@@ -38,7 +38,7 @@ const MoreInfoButton = ({ options }: { options: MoreInfoOption[] }) => {
             <ButtonSymbol
               color="labelTertiary"
               height="32px"
-              variant="transparent"
+              variant="transparentHover"
               symbol="ellipsis.circle"
             />
           </Box>
