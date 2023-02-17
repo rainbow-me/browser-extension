@@ -29,7 +29,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   }, [address, ensName]);
 
   const onValueChange = React.useCallback(
-    (value: 'settings' | 'profile' | 'lock') => {
+    (value: 'settings' | 'profile' | 'lock' | 'qr-code') => {
       switch (value) {
         case 'settings':
           navigate(ROUTES.SETTINGS);
@@ -40,6 +40,9 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
         case 'lock':
           new Audio(LockSound).play();
           wallet.lock();
+          break;
+        case 'qr-code':
+          alert('coming soon!');
           break;
       }
     },
