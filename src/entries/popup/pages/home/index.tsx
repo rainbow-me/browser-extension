@@ -91,7 +91,9 @@ export function Home() {
     });
   }, [scrollAtTop, scrollY]);
 
-  analytics.track(event.walletViewed);
+  useEffect(() => {
+    analytics.track(event.walletViewed);
+  }, []);
 
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>
