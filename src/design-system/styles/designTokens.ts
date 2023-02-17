@@ -799,6 +799,8 @@ export const symbolNames = selectSymbolNames(
   'plus.circle',
   'shield.righthalf.filled',
   'square.dashed',
+  'sparkle',
+  'xmark.circle.fill',
 );
 export type SymbolName = typeof symbolNames[number];
 

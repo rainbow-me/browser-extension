@@ -22,6 +22,7 @@ import {
   parseAddressAsset,
   parseParsedAddressAsset,
 } from '~/core/utils/assets';
+import { greaterThan } from '~/core/utils/numbers';
 import { ETH_MAINNET_ASSET } from '~/test/utils';
 
 const USER_ASSETS_TIMEOUT_DURATION = 10000;
@@ -108,7 +109,6 @@ export async function userAssetsByChainQueryFunction({
     const resolver = async (message: AddressAssetsReceivedMessage) => {
       clearTimeout(timeout);
       const parsedUserAssetsByChain = parseUserAssetsByChain(message, currency);
-
       if (connectedToHardhat) {
         const provider = getProvider({ chainId: ChainId.hardhat });
         // force checking for ETH if connected to hardhat
@@ -160,7 +160,7 @@ function parseUserAssetsByChain(
   return Object.values(message?.payload?.assets || {}).reduce(
     (dict, assetData) => {
       const shouldFilterToken = filterAsset(assetData?.asset);
-      if (!shouldFilterToken) {
+      if (!shouldFilterToken && greaterThan(assetData?.quantity, 0)) {
         const parsedAsset = parseAddressAsset({
           address: assetData?.asset?.asset_code,
           asset: assetData?.asset,

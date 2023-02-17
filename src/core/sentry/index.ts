@@ -16,3 +16,9 @@ export function initializeSentry(context: 'popup' | 'background') {
     }
   }
 }
+
+export function setSentryUser(deviceId: string) {
+  Sentry.setUser({
+    id: deviceId,
+  });
+}
