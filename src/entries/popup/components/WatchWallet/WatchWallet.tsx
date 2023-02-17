@@ -3,7 +3,7 @@
 import { Address, fetchEnsAddress } from '@wagmi/core';
 import { isAddress } from 'ethers/lib/utils';
 import { motion } from 'framer-motion';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { KeyboardEvent, useCallback, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -134,6 +134,15 @@ const WatchWallet = ({
     setCurrentAddress,
   ]);
 
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        handleWatchWallet();
+      }
+    },
+    [handleWatchWallet],
+  );
+
   const readyToWatchWallet = useMemo(() => {
     if (address === '' && additionalAccounts.length) return true;
     return isValid;
@@ -229,6 +238,9 @@ const WatchWallet = ({
                   padding="12px"
                   placeholder={i18n.t('watch_wallet.placeholder')}
                   value={address}
+                  onKeyDown={handleKeyDown}
+                  tabIndex={1}
+                  autoFocus
                   onChange={handleAddressChange}
                   className={[
                     placeholderStyle,

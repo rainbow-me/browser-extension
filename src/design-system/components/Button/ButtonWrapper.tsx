@@ -100,6 +100,7 @@ export const stylesForHeightAndVariant = ({
     stroked: {},
     disabled: {},
     transparent: {},
+    transparentHover: {},
     white: {
       boxShadow: shadowValue('30px', color),
     },
@@ -111,6 +112,7 @@ export const stylesForHeightAndVariant = ({
     stroked: {},
     disabled: {},
     transparent: {},
+    transparentHover: {},
     white: {
       boxShadow: shadowValue('24px', color),
     },
@@ -122,6 +124,7 @@ export const stylesForHeightAndVariant = ({
     stroked: {},
     disabled: {},
     transparent: {},
+    transparentHover: {},
     white: {
       boxShadow: shadowValue('24px', color),
     },
@@ -133,6 +136,7 @@ export const stylesForHeightAndVariant = ({
     stroked: {},
     disabled: {},
     transparent: {},
+    transparentHover: {},
     white: {
       boxShadow: shadowValue('12px', color),
     },
@@ -144,6 +148,7 @@ export const stylesForHeightAndVariant = ({
     stroked: {},
     disabled: {},
     transparent: {},
+    transparentHover: {},
     white: {
       boxShadow: shadowValue('12px', color),
     },
@@ -182,6 +187,9 @@ export const stylesForVariant = ({
     textColor: 'labelSecondary',
   },
   transparent: {
+    textColor: color as TextColor,
+  },
+  transparentHover: {
     textColor: color as TextColor,
   },
   white: {
@@ -239,10 +247,21 @@ export function ButtonWrapper({
       <Box
         as="button"
         alignItems="center"
-        background={background}
+        background={
+          variant === 'transparentHover'
+            ? {
+                default: background || 'transparent',
+                hover: 'surfaceSecondaryElevated',
+              }
+            : background
+        }
         borderRadius={borderRadius ?? 'round'}
-        borderColor={borderColor}
-        borderWidth={borderWidth}
+        borderColor={
+          variant === 'transparentHover'
+            ? { default: 'transparent', hover: 'buttonStroke' }
+            : borderColor
+        }
+        borderWidth={variant === 'transparentHover' ? '1px' : borderWidth}
         boxShadow={boxShadow}
         className={[
           heightStyles[height],
