@@ -3,7 +3,7 @@ import create from 'zustand';
 import { createStore } from '../internal/createStore';
 
 export enum promoTypes {
-  wallet_witcher = 'wallet_witcher',
+  wallet_switcher = 'wallet_switcher',
 }
 export type PromoTypes = keyof typeof promoTypes;
 
@@ -15,7 +15,7 @@ export interface QuickPromoStore {
 export const quickPromoStore = createStore<QuickPromoStore>(
   (set, get) => ({
     seenPromos: {
-      wallet_witcher: false,
+      wallet_switcher: false,
     },
     setSeenPromo: (key: PromoTypes) => {
       const seenPromos = get().seenPromos;
