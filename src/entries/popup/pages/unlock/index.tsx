@@ -1,6 +1,6 @@
 import React, { SetStateAction, useCallback, useState } from 'react';
 
-import UnlockSound from 'static/assets/audio/ui_unlock.wav';
+import UnlockSound from 'static/assets/audio/ui_unlock.mp3';
 import { i18n } from '~/core/languages';
 import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
