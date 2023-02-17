@@ -204,6 +204,7 @@ function Content({
       style={{
         flex: 1,
         position: 'relative',
+        contentVisibility: 'auto',
       }}
     >
       {/** spring transformY to imitate scroll bounce*/}
