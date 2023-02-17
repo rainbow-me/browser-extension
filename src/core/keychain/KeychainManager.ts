@@ -180,7 +180,7 @@ class KeychainManager {
 
         if (serializedKeychains.length > 0) {
           const result = { vault: '', exportedKeyString: '', salt: '' };
-          if (pwd || pwd === '') {
+          if (pwd) {
             // Generate a new encryption key every time we save and have a password
             const encryptionResult = await encryptWithDetail(
               privates.get(this).password as string,
@@ -236,6 +236,15 @@ class KeychainManager {
 
   async verifyPassword(password: string) {
     try {
+      // Check if we haven't set a password yet
+      if (
+        this.state.vault === '' &&
+        password === '' &&
+        this.state.keychains.length > 0
+      ) {
+        return true;
+      }
+
       if (await decrypt(password, this.state.vault)) {
         return true;
       }

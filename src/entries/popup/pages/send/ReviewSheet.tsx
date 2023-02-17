@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
-import SendSound from 'static/assets/audio/woosh.wav';
+import SendSound from 'static/assets/audio/woosh.mp3';
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
