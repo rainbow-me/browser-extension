@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Box, Inline, Row, Rows, Text } from '~/design-system';
 
@@ -7,7 +7,7 @@ import { useToast } from '../../hooks/useToast';
 export const Toast = () => {
   const [visible, setVisible] = useState(false);
   const [text, setText] = useState({ title: '', description: '' });
-  const { listenToast } = useToast();
+  const { listenToast, clearToastListener } = useToast();
 
   listenToast(
     async ({ title, description }: { title: string; description: string }) => {
@@ -18,6 +18,10 @@ export const Toast = () => {
       }, 3000);
     },
   );
+
+  useEffect(() => {
+    return () => clearToastListener();
+  }, [clearToastListener]);
 
   if (!visible) return null;
   return (

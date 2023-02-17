@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 
 const eventEmitter = new EventEmitter();
 
@@ -30,10 +30,6 @@ export const useToast = () => {
   const clearToastListener = useCallback(() => {
     eventEmitter.removeAllListeners('rainbow_toast');
   }, []);
-
-  useEffect(() => {
-    return () => clearToastListener();
-  }, [clearToastListener]);
 
   return { listenToast, triggerToast, clearToastListener };
 };
