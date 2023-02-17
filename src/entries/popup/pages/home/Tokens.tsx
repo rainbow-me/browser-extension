@@ -1,11 +1,10 @@
 import React, { useMemo } from 'react';
-import { useAccount, useBalance } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { useUserAssets } from '~/core/resources/assets';
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { UniqueId } from '~/core/types/assets';
 import {
@@ -29,16 +28,14 @@ const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 150;
 
 export function Tokens() {
-  const { address } = useAccount();
+  const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { data: assets = [] } = useUserAssets(
-    { address, currency },
+    { address: currentAddress, currency },
     { select: selectUserAssetsList },
   );
 
-  const { data: balance } = useBalance({ addressOrName: address });
-
-  if (balance?.formatted === '0.0') {
+  if (!assets?.length) {
     return (
       <Inset horizontal="20px">
         <Box paddingBottom="8px">
