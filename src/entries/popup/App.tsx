@@ -7,7 +7,7 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { changeI18nLanguage } from '~/core/languages';
 import { persistOptions, queryClient } from '~/core/react-query';
-import { initializeSentry } from '~/core/sentry';
+import { initializeSentry, setSentryUser } from '~/core/sentry';
 import { useCurrentLanguageStore, useDeviceIdStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
@@ -40,6 +40,7 @@ export function App() {
   React.useEffect(() => {
     changeI18nLanguage(currentLanguage);
     initializeSentry('popup');
+    setSentryUser(deviceId);
     analytics.setDeviceId(deviceId);
     analytics.identify();
     analytics.track(event.open);
