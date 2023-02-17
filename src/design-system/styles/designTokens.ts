@@ -135,6 +135,7 @@ export type BackgroundColor =
   | 'surfaceSecondaryElevated'
   | 'surfaceMenu'
   | 'fill'
+  | 'fillHorizontal'
   | 'fillSecondary'
   | 'white'
   | 'blue'
@@ -256,6 +257,18 @@ export const backgroundColors: Record<
     },
     dark: {
       color: globalColors.white30,
+      setColorContext: 'dark',
+    },
+  },
+  fillHorizontal: {
+    light: {
+      color:
+        'radial-gradient(100% 100% at 0% 50%, rgba(9, 17, 31, 0.02) 0%, rgba(9, 17, 31, 0.05) 100%)',
+      setColorContext: 'light',
+    },
+    dark: {
+      color:
+        'radial-gradient(100% 100% at 0% 50%, rgba(245, 248, 255, 0.02) 0%, rgba(245, 248, 255, 0.06) 100%)',
       setColorContext: 'dark',
     },
   },

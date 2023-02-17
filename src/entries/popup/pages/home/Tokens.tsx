@@ -20,6 +20,7 @@ import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverfl
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 
+import { TokensSkeleton } from '../../components/ActivitySkeleton/ActivitySkeleton';
 import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
 import { WalletIcon } from '../../components/WalletIcon/WalletIcon';
@@ -30,10 +31,14 @@ const TEXT_MAX_WIDTH = windowWidth - 150;
 export function Tokens() {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { data: assets = [] } = useUserAssets(
+  const { data: assets = [], isInitialLoading } = useUserAssets(
     { address: currentAddress, currency },
     { select: selectUserAssetsList },
   );
+
+  if (isInitialLoading) {
+    return <TokensSkeleton />;
+  }
 
   if (!assets?.length) {
     return (

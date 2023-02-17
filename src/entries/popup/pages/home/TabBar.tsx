@@ -6,6 +6,7 @@ import { useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { Box, Inline, Inset, Text } from '~/design-system';
 
+import { skeletonLine } from '../../components/ActivitySkeleton/ActivitySkeleton.css';
 import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { Tabs } from '../../components/Tabs/Tabs';
 import { useUserAssetsBalance } from '../../hooks/useUserAssetsBalance';
@@ -22,7 +23,7 @@ export function TabBar({
 }) {
   const { address } = useAccount();
   const { hideAssetBalances } = useHideAssetBalancesStore();
-  const { data: balance } = useBalance({ addressOrName: address });
+  const { data: balance, isLoading } = useBalance({ addressOrName: address });
   const { display: userAssetsBalanceDisplay } = useUserAssetsBalance();
   const { currentCurrency } = useCurrentCurrencyStore();
 
@@ -78,6 +79,16 @@ export function TabBar({
         </Tabs>
       </Box>
       <Inset top="4px">
+        {isLoading && (
+          <Inline alignVertical="center">
+            <Box
+              className={skeletonLine}
+              background="fillHorizontal"
+              style={{ width: '62px', height: '11px' }}
+            ></Box>
+          </Inline>
+        )}
+
         {balance && (
           <Inline alignVertical="center">{displayBalanceComponent}</Inline>
         )}
