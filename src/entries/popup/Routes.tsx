@@ -426,7 +426,7 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute
         backTo={ROUTES.HOME}
-        direction="right"
+        direction="up"
         title={i18n.t('send.title')}
         protectedRoute
       >

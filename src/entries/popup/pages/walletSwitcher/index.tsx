@@ -20,10 +20,18 @@ import { useWalletNamesStore } from '~/core/state/walletNames';
 import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
-import { Box, Button, Inline, Stack, Text } from '~/design-system';
+import {
+  AccentColorProvider,
+  Box,
+  Button,
+  Inline,
+  Stack,
+  Text,
+} from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { Symbol, SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
+import { globalColors } from '~/design-system/styles/designTokens';
 
 import AccountItem, {
   LabelOption,
@@ -35,6 +43,7 @@ import {
   MoreInfoOption,
 } from '../../components/MoreInfoButton/MoreInfoButton';
 import { remove } from '../../handlers/wallet';
+import { useAvatar } from '../../hooks/useAvatar';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { AddressAndType, useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
@@ -42,6 +51,8 @@ import { ROUTES } from '../../urls';
 import { WalletActionsMenu } from './WalletSwitcher.css';
 import { RemoveWalletPrompt } from './removeWalletPrompt';
 import { RenameWalletPrompt } from './renameWalletPrompt';
+
+const { innerHeight: windowHeight } = window;
 
 const reorder = (
   list: Iterable<unknown>,
@@ -114,6 +125,7 @@ const infoButtonOptions = ({
 ];
 
 const bottomSpacing = 20 + 20 + 32 + 32 + (process.env.IS_DEV ? 32 + 8 : 0);
+const topSpacing = 127;
 
 const NoWalletsWarning = ({
   symbol,
@@ -155,6 +167,7 @@ export function WalletSwitcher() {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useRainbowNavigate();
   const { visibleWallets: accounts, fetchWallets } = useWallets();
+  const { avatar } = useAvatar({ address: currentAddress });
 
   const { deleteWalletName } = useWalletNamesStore();
 
@@ -288,13 +301,14 @@ export function WalletSwitcher() {
               borderRadius="12px"
             >
               <AccountItem
+                rowHighlight
                 key={account.address}
                 onClick={() => {
                   handleSelectAddress(account.address);
                 }}
                 account={account.address}
                 rightComponent={
-                  <Inline alignVertical="center" space="10px">
+                  <Inline alignVertical="center" space="6px">
                     {account.type === KeychainType.ReadOnlyKeychain && (
                       <LabelPill label={i18n.t('wallet_switcher.watching')} />
                     )}
@@ -320,6 +334,15 @@ export function WalletSwitcher() {
       handleSelectAddress,
       isSearching,
     ],
+  );
+
+  const displayedAccountsComponent = useMemo(
+    () => (
+      <AccentColorProvider color={avatar?.color || globalColors.blue60}>
+        {displayedAccounts}
+      </AccentColorProvider>
+    ),
+    [avatar?.color, displayedAccounts],
   );
 
   const onDragEnd = (result: DropResult) => {
@@ -352,18 +375,17 @@ export function WalletSwitcher() {
         onRemoveAccount={handleRemoveAccount}
         hide={removeAccount?.type !== KeychainType.ReadOnlyKeychain}
       />
-
-      <Box paddingHorizontal="4px">
-        <Box paddingHorizontal="16px" paddingBottom="20px" marginTop="-5px">
-          <Input
-            height="32px"
-            variant="bordered"
-            placeholder={i18n.t('wallet_switcher.search_placeholder')}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            autoFocus
-          />
-        </Box>
+      <Box paddingHorizontal="16px" paddingBottom="20px">
+        <Input
+          height="32px"
+          variant="bordered"
+          placeholder={i18n.t('wallet_switcher.search_placeholder')}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          autoFocus
+        />
+      </Box>
+      <Box style={{ overflow: 'scroll' }} paddingHorizontal="8px">
         <MenuContainer>
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable">
@@ -372,7 +394,10 @@ export function WalletSwitcher() {
                   <Box
                     width="full"
                     height="full"
-                    style={{ paddingBottom: bottomSpacing }}
+                    style={{
+                      overflow: 'scroll',
+                      height: windowHeight - bottomSpacing - topSpacing,
+                    }}
                   >
                     <Stack>
                       {displayedAccounts.length !== 0 && (
@@ -382,7 +407,7 @@ export function WalletSwitcher() {
                           animate={{ opacity: 1 }}
                           exit={{ opacity: 0 }}
                         >
-                          {displayedAccounts}
+                          {displayedAccountsComponent}
                         </Box>
                       )}
                     </Stack>
@@ -403,10 +428,11 @@ export function WalletSwitcher() {
       <Box
         className={WalletActionsMenu}
         width="full"
-        backdropFilter="blur(26px)"
+        backdropFilter="opacity(5%)"
         padding="20px"
         borderWidth="1px"
         borderColor="separatorTertiary"
+        background="surfaceSecondary"
       >
         <Stack space="8px">
           <Link to={ROUTES.ADD_WALLET}>
