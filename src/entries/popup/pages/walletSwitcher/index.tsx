@@ -42,6 +42,7 @@ import {
   MoreInfoButton,
   MoreInfoOption,
 } from '../../components/MoreInfoButton/MoreInfoButton';
+import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
 import { remove } from '../../handlers/wallet';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -375,7 +376,7 @@ export function WalletSwitcher() {
         onRemoveAccount={handleRemoveAccount}
         hide={removeAccount?.type !== KeychainType.ReadOnlyKeychain}
       />
-      <Box paddingHorizontal="16px" paddingBottom="20px">
+      <Box paddingHorizontal="16px" paddingBottom="12px">
         <Input
           height="32px"
           variant="bordered"
@@ -383,6 +384,14 @@ export function WalletSwitcher() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           autoFocus
+        />
+      </Box>
+      <Box paddingHorizontal="16px" paddingBottom="8px">
+        <QuickPromo
+          text="Drag wallets to reorder them"
+          textBold="Tip:"
+          symbol="sparkle"
+          promoType="wallet_switcher"
         />
       </Box>
       <Box style={{ overflow: 'scroll' }} paddingHorizontal="8px">

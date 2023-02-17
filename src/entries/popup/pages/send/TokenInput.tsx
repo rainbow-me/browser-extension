@@ -231,24 +231,48 @@ export const TokenInput = ({
             initial="hidden"
             animate="show"
           >
-            {assets?.map((asset, i) => (
-              <Box
-                paddingHorizontal="8px"
-                key={`${asset?.uniqueId}-${i}`}
-                onClick={() => onSelectAsset(asset.address)}
-                testId={`token-input-asset-${asset?.uniqueId}`}
-              >
-                <RowHighlightWrapper>
-                  <Box
-                    as={motion.div}
-                    variants={dropdownItemVariant}
-                    marginHorizontal="-8px"
+            {!!assets?.length &&
+              assets?.map((asset, i) => (
+                <Box
+                  paddingHorizontal="8px"
+                  key={`${asset?.uniqueId}-${i}`}
+                  onClick={() => onSelectAsset(asset.address)}
+                  testId={`token-input-asset-${asset?.uniqueId}`}
+                >
+                  <RowHighlightWrapper>
+                    <Box
+                      as={motion.div}
+                      variants={dropdownItemVariant}
+                      marginHorizontal="-8px"
+                    >
+                      <AssetRow uniqueId={asset?.uniqueId} />
+                    </Box>
+                  </RowHighlightWrapper>
+                </Box>
+              ))}
+            {!assets.length && (
+              <Box alignItems="center" style={{ paddingTop: 119 }}>
+                <Stack space="16px">
+                  <Inline alignHorizontal="center">
+                    <Symbol
+                      color="labelQuaternary"
+                      weight="semibold"
+                      symbol="record.circle.fill"
+                      size={26}
+                    />
+                  </Inline>
+
+                  <Text
+                    color="labelQuaternary"
+                    size="20pt"
+                    weight="semibold"
+                    align="center"
                   >
-                    <AssetRow uniqueId={asset?.uniqueId} />
-                  </Box>
-                </RowHighlightWrapper>
+                    {i18n.t('send.tokens_input.no_tokens')}
+                  </Text>
+                </Stack>
               </Box>
-            ))}
+            )}
           </Box>
         </Stack>
       }
