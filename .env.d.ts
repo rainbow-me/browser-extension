@@ -5,6 +5,7 @@ declare global {
       BSC_MAINNET_RPC: string;
       INFURA_API_KEY: string;
       ETHERSCAN_API_KEY: string;
+      SEGMENT_WRITE_KEY: string;
       SENTRY_DSN: string;
       DATA_API_KEY: string;
       DATA_ENDPOINT: string;

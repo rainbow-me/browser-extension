@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useAccount, useEnsName } from 'wagmi';
 
-import LockSound from 'static/assets/audio/ui_lock.wav';
+import LockSound from 'static/assets/audio/ui_lock.mp3';
 import { i18n } from '~/core/languages';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
@@ -29,7 +29,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   }, [address, ensName]);
 
   const onValueChange = React.useCallback(
-    (value: 'settings' | 'profile' | 'lock') => {
+    (value: 'settings' | 'profile' | 'lock' | 'qr-code') => {
       switch (value) {
         case 'settings':
           navigate(ROUTES.SETTINGS);
@@ -40,6 +40,9 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
         case 'lock':
           new Audio(LockSound).play();
           wallet.lock();
+          break;
+        case 'qr-code':
+          alert('coming soon!');
           break;
       }
     },

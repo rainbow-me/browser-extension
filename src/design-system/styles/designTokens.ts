@@ -858,32 +858,24 @@ export type AnimatedRouteConfig = Record<
 
 export const animatedRouteTransitionConfig = {
   base: {
-    type: 'spring',
-    duration: 0.3,
+    ease: [0.24, 0, 0, 1],
+    duration: 0.12,
   },
   right: {
-    type: 'spring',
-    stiffness: 1111,
-    damping: 50,
-    mass: 1,
+    ease: [0.05, 0.7, 0.1, 1],
+    duration: 0.26,
   },
   left: {
-    type: 'spring',
-    stiffness: 1111,
-    damping: 50,
-    mass: 1,
+    ease: [0.24, 0, 0, 1],
+    duration: 0.12,
   },
   up: {
-    type: 'spring',
-    stiffness: 1111,
-    damping: 50,
-    mass: 1,
+    ease: [0.05, 0.7, 0.1, 1],
+    duration: 0.26,
   },
   down: {
-    type: 'spring',
-    stiffness: 1111,
-    damping: 50,
-    mass: 1,
+    ease: [0.24, 0, 0, 1],
+    duration: 0.12,
   },
   deceleratedShort: {
     ease: [0, 0, 0, 1],
