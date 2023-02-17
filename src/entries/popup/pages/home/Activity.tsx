@@ -140,7 +140,7 @@ export function Activity({ onSheetSelected }: ActivityProps) {
                 }}
               >
                 {typeof rowData === 'string' ? (
-                  <Inset key={index} horizontal="20px" top="16px" bottom="8px">
+                  <Inset horizontal="20px" top="16px" bottom="8px">
                     <Box>
                       <Text
                         size="14pt"
