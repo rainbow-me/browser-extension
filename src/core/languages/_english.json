@@ -167,7 +167,9 @@
   "connected_apps": {
     "title": "Connected Apps",
     "disconnect": "Disconnect All",
-    "other_wallets": "Other Wallets"
+    "other_wallets": "Other Wallets",
+    "no_connections_title": "No connected apps",
+    "no_connections_copy": "Websites you connect to will show up here"
   },
   "send": {
     "title": "Send",
