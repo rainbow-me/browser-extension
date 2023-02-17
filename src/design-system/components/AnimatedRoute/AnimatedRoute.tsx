@@ -71,7 +71,7 @@ export const animatedRouteValues: Record<
     },
     exit: {
       opacity: 0,
-      x: -12,
+      x: 12,
     },
   },
   up: {
