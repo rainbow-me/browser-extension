@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { Box, Inline, Row, Rows, Text } from '~/design-system';
 
-import { clearToastListener, listenToast } from '../../utils/toast';
+import { useToast } from '../../hooks/useToast';
 
 export const Toast = () => {
   const [visible, setVisible] = useState(false);
   const [text, setText] = useState({ title: '', description: '' });
+  const { listenToast } = useToast();
 
   listenToast(
     async ({ title, description }: { title: string; description: string }) => {
@@ -17,10 +18,6 @@ export const Toast = () => {
       }, 3000);
     },
   );
-
-  useEffect(() => {
-    return () => clearToastListener();
-  }, []);
 
   if (!visible) return null;
   return (
