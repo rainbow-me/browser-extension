@@ -83,9 +83,11 @@ export function PasswordInput({
         <Box
           position="absolute"
           style={{
-            top: '-40.5px',
-            right: '10px',
+            top: '-40px',
+            right: '5px',
+            height: '40px',
           }}
+          paddingVertical="2px"
         >
           <ButtonSymbol
             color="accent"

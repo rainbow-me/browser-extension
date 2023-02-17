@@ -156,6 +156,7 @@ export type ButtonVariant =
   | 'tinted'
   | 'stroked'
   | 'transparent'
+  | 'transparentHover'
   | 'disabled';
 
 export const backdropFilter = {
@@ -796,6 +797,8 @@ export const symbolNames = selectSymbolNames(
   'app.connected.to.app.below.fill',
   'trash.fill',
   'plus.circle',
+  'shield.righthalf.filled',
+  'square.dashed',
 );
 export type SymbolName = typeof symbolNames[number];
 

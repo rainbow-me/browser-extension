@@ -180,7 +180,7 @@ class KeychainManager {
 
         if (serializedKeychains.length > 0) {
           const result = { vault: '', exportedKeyString: '', salt: '' };
-          if (pwd) {
+          if (pwd || pwd === '') {
             // Generate a new encryption key every time we save and have a password
             const encryptionResult = await encryptWithDetail(
               privates.get(this).password as string,

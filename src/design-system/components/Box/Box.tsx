@@ -30,8 +30,18 @@ type PolymorphicBox = Polymorphic.ForwardRefComponent<
           active?: 'accent' | BackgroundColor;
           hoverActive?: 'accent' | BackgroundColor;
         };
+    borderColor?:
+      | BoxStyles['borderColor']
+      | {
+          default: BoxStyles['borderColor'];
+          hover?: BoxStyles['borderColor'];
+          focus?: BoxStyles['borderColor'];
+          active?: BoxStyles['borderColor'];
+          hoverActive?: BoxStyles['borderColor'];
+        };
     className?: ClassValue;
     testId?: string;
+    onKeyDown?: React.KeyboardEventHandler;
   }
 >;
 

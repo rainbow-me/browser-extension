@@ -107,7 +107,13 @@ const ROUTE_DATA = [
   {
     path: ROUTES.IMPORT_OR_CONNECT,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEW']}>
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW']}
+        navbar
+        navbarIcon="arrow"
+        backTo={ROUTES.WELCOME}
+      >
         <ImportOrConnect />
       </AnimatedRoute>
     ),
@@ -116,7 +122,13 @@ const ROUTE_DATA = [
   {
     path: ROUTES.WATCH,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEW']}>
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW']}
+        navbar
+        navbarIcon="arrow"
+        backTo={ROUTES.IMPORT_OR_CONNECT}
+      >
         <WatchWallet />
       </AnimatedRoute>
     ),
@@ -125,7 +137,13 @@ const ROUTE_DATA = [
   {
     path: ROUTES.IMPORT,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEW']}>
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW']}
+        navbar
+        navbarIcon="arrow"
+        backTo={ROUTES.IMPORT_OR_CONNECT}
+      >
         <ImportWallet />
       </AnimatedRoute>
     ),
@@ -165,7 +183,13 @@ const ROUTE_DATA = [
   {
     path: ROUTES.SEED_BACKUP_PROMPT,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEEDS_PASSWORD']}>
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW']}
+        navbar
+        navbarIcon="arrow"
+        backTo={ROUTES.WELCOME}
+      >
         <SeedBackupPrompt />
       </AnimatedRoute>
     ),
@@ -174,7 +198,13 @@ const ROUTE_DATA = [
   {
     path: ROUTES.SEED_REVEAL,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEEDS_PASSWORD']}>
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW']}
+        navbar
+        navbarIcon="arrow"
+        backTo={ROUTES.SEED_BACKUP_PROMPT}
+      >
         <SeedReveal />
       </AnimatedRoute>
     ),
@@ -183,7 +213,7 @@ const ROUTE_DATA = [
   {
     path: ROUTES.SEED_VERIFY,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEEDS_PASSWORD']}>
+      <AnimatedRoute direction="right" protectedRoute={['NEW']}>
         <SeedVerify />
       </AnimatedRoute>
     ),
@@ -192,7 +222,13 @@ const ROUTE_DATA = [
   {
     path: ROUTES.CREATE_PASSWORD,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEEDS_PASSWORD']}>
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEEDS_PASSWORD']}
+        navbar
+        navbarIcon="arrow"
+        backTo={ROUTES.WELCOME}
+      >
         <CreatePassword />
       </AnimatedRoute>
     ),
