@@ -63,7 +63,9 @@ export const lockVault = () => {
   return keychainManager.lock();
 };
 export const hasVault = () => {
-  return !!keychainManager.state.vault;
+  return (
+    keychainManager.state?.keychains?.length > 0 || keychainManager.state?.vault
+  );
 };
 
 export const isPasswordSet = async () => {
@@ -77,7 +79,7 @@ export const isVaultUnlocked = (): boolean => {
   return keychainManager.state.isUnlocked;
 };
 
-export const isReady = (): boolean => {
+export const isInitialized = (): boolean => {
   return keychainManager.state.initialized;
 };
 
