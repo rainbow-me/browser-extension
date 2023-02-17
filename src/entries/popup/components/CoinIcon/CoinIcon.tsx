@@ -34,7 +34,7 @@ export function CoinIcon({
   const mainnetAddress = asset?.mainnetAddress;
   const address = (asset?.address || '') as Address;
   const chain = asset?.chainId || ChainId.mainnet;
-  const shadowColor = asset?.colors?.primary;
+  const shadowColor = asset?.colors?.primary || '#808088';
 
   return (
     <CoinIconWrapper size={size} shadowColor={shadowColor} chainId={chain}>
@@ -72,40 +72,24 @@ function ShadowWrapper({
   size,
 }: {
   children: ReactNode;
-  color?: string;
+  color: string;
   size: number;
 }) {
-  if (color) {
-    return (
-      <AccentColorProvider color={color}>
-        <Box
-          boxShadow={'24px accent'}
-          background="fillSecondary"
-          borderRadius="round"
-          style={{
-            width: size,
-            height: size,
-            overflow: 'hidden',
-          }}
-        >
-          {children}
-        </Box>
-      </AccentColorProvider>
-    );
-  }
-
   return (
-    <Box
-      background="fillSecondary"
-      borderRadius="round"
-      style={{
-        width: size,
-        height: size,
-        overflow: 'hidden',
-      }}
-    >
-      {children}
-    </Box>
+    <AccentColorProvider color={color}>
+      <Box
+        boxShadow={'24px accent'}
+        background="fillSecondary"
+        borderRadius="round"
+        style={{
+          width: size,
+          height: size,
+          overflow: 'hidden',
+        }}
+      >
+        {children}
+      </Box>
+    </AccentColorProvider>
   );
 }
 
@@ -117,7 +101,7 @@ function CoinIconWrapper({
 }: {
   chainId: ChainId;
   children: React.ReactNode;
-  shadowColor?: string;
+  shadowColor: string;
   size: number;
 }) {
   return (
