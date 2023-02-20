@@ -5,9 +5,6 @@ import { useNotificationWindowStore } from '~/core/state/notificationWindow';
 import { usePendingRequestStore } from '~/core/state/requests';
 import { Box, Text } from '~/design-system';
 
-import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { ROUTES } from '../../urls';
-
 import { RequestAccounts } from './RequestAccounts';
 import { SendTransaction } from './SendTransaction';
 import { SignMessage } from './SignMessage';
@@ -17,7 +14,6 @@ const backgroundMessenger = initializeMessenger({ connect: 'background' });
 export const ApproveAppRequest = () => {
   const { pendingRequests, removePendingRequest } = usePendingRequestStore();
   const { window } = useNotificationWindowStore();
-  const navigate = useRainbowNavigate();
   const pendingRequest = pendingRequests?.[0];
 
   const handleRequestAction = useCallback(() => {
@@ -38,16 +34,14 @@ export const ApproveAppRequest = () => {
     async (payload?: unknown) => {
       backgroundMessenger.send(`message:${pendingRequest?.id}`, payload);
       handleRequestAction();
-      navigate(ROUTES.HOME);
     },
-    [handleRequestAction, navigate, pendingRequest?.id],
+    [handleRequestAction, pendingRequest?.id],
   );
 
   const rejectRequest = useCallback(() => {
     backgroundMessenger.send(`message:${pendingRequest?.id}`, null);
     handleRequestAction();
-    navigate(ROUTES.HOME);
-  }, [handleRequestAction, navigate, pendingRequest?.id]);
+  }, [handleRequestAction, pendingRequest?.id]);
 
   switch (pendingRequest?.method) {
     case 'eth_requestAccounts':
