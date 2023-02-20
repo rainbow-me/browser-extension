@@ -7,6 +7,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { Address } from 'wagmi';
@@ -168,12 +169,12 @@ export const TokenInput = ({
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  // const [inputVisible, setInputVisible] = useState(true);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const onDropdownAction = useCallback(
-    () => setDropdownVisible((dropdownVisible) => !dropdownVisible),
-    [],
-  );
+  const onDropdownAction = useCallback(() => {
+    setDropdownVisible(!dropdownVisible);
+    dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
+  }, [dropdownVisible]);
   const onSelectAsset = useCallback(
     (address: Address | '') => {
       selectAssetAddress(address);
@@ -199,6 +200,13 @@ export const TokenInput = ({
         )
       : assets;
   }, [assets, inputValue]);
+
+  const onCloseDropdown = useCallback(() => {
+    onSelectAsset('');
+    setTimeout(() => {
+      inputRef?.current?.focus();
+    }, 200);
+  }, [onSelectAsset]);
 
   useEffect(() => {
     if (dropdownClosed) {
@@ -230,7 +238,7 @@ export const TokenInput = ({
                 height="32px"
                 variant="transparent"
                 style={{ paddingLeft: 0, paddingRight: 0 }}
-                // innerRef={inputRef}
+                innerRef={inputRef}
               />
             </Box>
           ) : (
@@ -263,7 +271,7 @@ export const TokenInput = ({
         </Box>
       }
       showActionClose={!!asset}
-      onActionClose={() => onSelectAsset('')}
+      onActionClose={onCloseDropdown}
       dropdownComponent={
         <Stack space="8px">
           <Box paddingHorizontal="20px">
