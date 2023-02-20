@@ -3,7 +3,6 @@ import React, { useCallback } from 'react';
 import { initializeMessenger } from '~/core/messengers';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
 import { usePendingRequestStore } from '~/core/state/requests';
-import { Box, Text } from '~/design-system';
 
 import { RequestAccounts } from './RequestAccounts';
 import { SendTransaction } from './SendTransaction';
@@ -73,28 +72,6 @@ export const ApproveAppRequest = () => {
         />
       );
     default:
-      return (
-        <>
-          <Box padding="16px" style={{ borderRadius: 999 }}>
-            <Text color="labelSecondary" size="14pt" weight="bold">
-              {`RPC METHOD ${String(pendingRequest?.method)} ${JSON.stringify(
-                pendingRequest,
-              )}`}
-            </Text>
-          </Box>
-          <Box
-            as="button"
-            id="reject-button"
-            background="surfaceSecondary"
-            onClick={rejectRequest}
-            padding="16px"
-            style={{ borderRadius: 999 }}
-          >
-            <Text color="labelSecondary" size="14pt" weight="bold">
-              REJECT
-            </Text>
-          </Box>
-        </>
-      );
+      return null;
   }
 };
