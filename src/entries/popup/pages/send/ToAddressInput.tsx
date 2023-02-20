@@ -323,6 +323,11 @@ export const ToAddressInput = ({
     filter: toAddressOrName,
   });
 
+  useEffect(() => {
+    openDropdown();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
       <InputWrapper

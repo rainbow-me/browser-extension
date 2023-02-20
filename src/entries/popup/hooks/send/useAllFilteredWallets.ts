@@ -77,13 +77,17 @@ export const useAllFilteredWallets = ({ filter }: { filter: string }) => {
 
   useEffect(() => {
     const getWalletsData = async () => {
-      const walletsData = await getAddressesData({
+      const walletsDataPromise = getAddressesData({
         addresses: visibleOwnedWallets.map((wallet) => wallet.address),
       });
-      const watchedWalletsData = await getAddressesData({
+      const watchedWalletsDataPromise = getAddressesData({
         addresses: watchedWallets.map((wallet) => wallet.address),
       });
-      const contactsData = await getAddressesData({ addresses: contacts });
+      const contactsDataPromise = getAddressesData({ addresses: contacts });
+
+      const [walletsData, watchedWalletsData, contactsData] = await Promise.all(
+        [walletsDataPromise, watchedWalletsDataPromise, contactsDataPromise],
+      );
       setWalletsData(walletsData);
       setWatchedWalletsData(watchedWalletsData);
       setContactsData(contactsData);
@@ -123,8 +127,12 @@ export const useAllFilteredWallets = ({ filter }: { filter: string }) => {
   }, [contactsData, filter, walletsData, watchedWalletsData]);
 
   return {
-    wallets: filteredWallets,
-    watchedWallets: filteredWatchedWallets,
-    contacts: filteredContactsWallets,
+    wallets: !filter
+      ? visibleOwnedWallets.map(({ address }) => address)
+      : filteredWallets,
+    watchedWallets: !filter
+      ? watchedWallets.map(({ address }) => address)
+      : filteredWatchedWallets,
+    contacts: !filter ? contacts : filteredContactsWallets,
   };
 };
