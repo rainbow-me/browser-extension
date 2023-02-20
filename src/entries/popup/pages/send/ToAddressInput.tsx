@@ -272,11 +272,13 @@ export const ToAddressInput = ({
   const onDropdownAction = useCallback(() => {
     onDropdownOpen(!dropdownVisible);
     setDropdownVisible(!dropdownVisible);
+    dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
   }, [dropdownVisible, onDropdownOpen]);
 
   const openDropdown = useCallback(() => {
     onDropdownOpen(true);
     setDropdownVisible(true);
+    inputRef?.current?.focus();
   }, [onDropdownOpen]);
 
   const closeDropdown = useCallback(() => {
