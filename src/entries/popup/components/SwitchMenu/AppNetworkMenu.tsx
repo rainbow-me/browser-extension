@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback } from 'react';
+import React, { ReactNode, useCallback, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import {
@@ -18,6 +18,15 @@ import { useAppSession } from '../../hooks/useAppSession';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItemIndicator,
+  ContextMenuRadioGroup,
+  ContextMenuRadioItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from '../ContextMenu/ContextMenu';
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItemIndicator,
@@ -32,7 +41,7 @@ import {
   SwitchNetworkMenuSelector,
 } from './SwitchNetworkMenu';
 
-interface AppNetworkMenuProps {
+interface AppNetworkMenuDropdownProps {
   children: ReactNode;
   url: string;
   align?: 'center' | 'end' | 'start';
@@ -41,6 +50,7 @@ interface AppNetworkMenuProps {
   menuTriggerId?: string;
   headerHostId?: string;
   connectedAppsId?: string;
+  type: 'dropdown' | 'context';
 }
 
 export const AppNetworkMenu = ({
@@ -52,7 +62,8 @@ export const AppNetworkMenu = ({
   menuTriggerId,
   headerHostId,
   connectedAppsId,
-}: AppNetworkMenuProps) => {
+  type,
+}: AppNetworkMenuDropdownProps) => {
   const { appHost, appLogo, appName } = useAppMetadata({ url });
   const navigate = useRainbowNavigate();
 
@@ -81,12 +92,42 @@ export const AppNetworkMenu = ({
     disconnectAppSession();
   }, [disconnectAppSession]);
 
+  const {
+    Menu,
+    MenuTrigger,
+    MenuContent,
+    MenuSeparator,
+    MenuRadioGroup,
+    MenuRadioItem,
+    MenuItemIndicator,
+  } = useMemo(() => {
+    return type === 'context'
+      ? {
+          Menu: ContextMenu,
+          MenuTrigger: ContextMenuTrigger,
+          MenuContent: ContextMenuContent,
+          MenuSeparator: ContextMenuSeparator,
+          MenuRadioGroup: ContextMenuRadioGroup,
+          MenuRadioItem: ContextMenuRadioItem,
+          MenuItemIndicator: ContextMenuItemIndicator,
+        }
+      : {
+          Menu: DropdownMenu,
+          MenuTrigger: DropdownMenuTrigger,
+          MenuContent: DropdownMenuContent,
+          MenuSeparator: DropdownMenuSeparator,
+          MenuRadioGroup: DropdownMenuRadioGroup,
+          MenuRadioItem: DropdownMenuRadioItem,
+          MenuItemIndicator: DropdownMenuItemIndicator,
+        };
+  }, [type]);
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <Menu>
+      <MenuTrigger asChild>
         <Box id={menuTriggerId}>{children}</Box>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent sideOffset={sideOffset} align={align}>
+      </MenuTrigger>
+      <MenuContent sideOffset={sideOffset} align={align}>
         {url ? (
           <Inset top="10px" bottom="14px">
             <Inline alignHorizontal="justify" alignVertical="center">
@@ -142,14 +183,14 @@ export const AppNetworkMenu = ({
           {appSession ? (
             <>
               <Stack space="12px">
-                <DropdownMenuSeparator />
+                <MenuSeparator />
                 <Text color="labelTertiary" size="11pt" weight="bold">
                   {i18n.t('menu.home_header_left.networks')}
                 </Text>
               </Stack>
 
               <Box paddingTop="4px">
-                <DropdownMenuRadioGroup
+                <MenuRadioGroup
                   value={`${appSession?.chainId}`}
                   onValueChange={changeChainId}
                 >
@@ -157,25 +198,22 @@ export const AppNetworkMenu = ({
                     highlightAccentColor
                     selectedValue={`${appSession?.chainId}`}
                   />
-                </DropdownMenuRadioGroup>
+                </MenuRadioGroup>
                 <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
               </Box>
             </>
           ) : null}
 
           {displayConnectedRoute && (
-            <DropdownMenuRadioGroup
+            <MenuRadioGroup
               onValueChange={(value) =>
                 onValueChange(value as 'connected-apps')
               }
             >
               <Stack space="4px">
-                {url ? <DropdownMenuSeparator /> : null}
+                {url ? <MenuSeparator /> : null}
 
-                <DropdownMenuRadioItem
-                  highlightAccentColor
-                  value="connected-apps"
-                >
+                <MenuRadioItem highlightAccentColor value="connected-apps">
                   <Box id={connectedAppsId}>
                     <Inline alignVertical="center" space="8px">
                       <Box style={{ width: 18, height: 18 }}>
@@ -196,16 +234,14 @@ export const AppNetworkMenu = ({
                       </Text>
                     </Inline>
                   </Box>
-                </DropdownMenuRadioItem>
+                </MenuRadioItem>
               </Stack>
-            </DropdownMenuRadioGroup>
+            </MenuRadioGroup>
           )}
         </Stack>
 
-        <DropdownMenuItemIndicator style={{ marginLeft: 'auto' }}>
-          o
-        </DropdownMenuItemIndicator>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        <MenuItemIndicator style={{ marginLeft: 'auto' }}>o</MenuItemIndicator>
+      </MenuContent>
+    </Menu>
   );
 };
