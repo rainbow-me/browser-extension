@@ -1,5 +1,14 @@
 import { motion } from 'framer-motion';
-import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+import React, {
+  ChangeEvent,
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -15,6 +24,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { Input } from '~/design-system/components/Input/Input';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
@@ -58,6 +68,88 @@ const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
 
 const { innerWidth: windowWidth } = window;
 
+const TokenSortMenu = ({
+  asset,
+  setSortDropdownOpen,
+  sortDropdownOpen,
+  sortMethod,
+  setSortMethod,
+}: {
+  asset: ParsedAddressAsset | null;
+  setSortDropdownOpen: Dispatch<SetStateAction<boolean>>;
+  sortDropdownOpen: boolean;
+  sortMethod: string;
+  setSortMethod: (method: SortMethod) => void;
+}) => {
+  return (
+    <DropdownMenu onOpenChange={setSortDropdownOpen} open={sortDropdownOpen}>
+      <DropdownMenuTrigger
+        accentColor={asset?.colors?.primary || asset?.colors?.fallback}
+        asChild
+      >
+        <Box>
+          <Inline space="4px" alignVertical="center">
+            <Symbol
+              symbol="arrow.up.arrow.down"
+              color="labelTertiary"
+              weight="semibold"
+              size={14}
+            />
+            <Text size="14pt" weight="semibold" color="labelTertiary">
+              {i18n.t('send.tokens_input.sort')}
+            </Text>
+          </Inline>
+        </Box>
+      </DropdownMenuTrigger>
+
+      <DropdownMenuContent
+        accentColor={asset?.colors?.primary || asset?.colors?.fallback}
+        marginRight="32px"
+      >
+        <DropdownMenuRadioGroup
+          value={sortMethod}
+          onValueChange={(method) => {
+            setSortMethod(method as SortMethod);
+          }}
+        >
+          <DropdownMenuRadioItem value="token" selectedValue={sortMethod}>
+            <Inline space="8px" alignVertical="center">
+              <Bleed vertical="4px">
+                <Symbol
+                  weight="semibold"
+                  symbol="record.circle.fill"
+                  size={18}
+                  color="label"
+                />
+              </Bleed>
+
+              <Text size="14pt" weight="semibold" color="label">
+                {i18n.t('send.tokens_input.token_balance')}
+              </Text>
+            </Inline>
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem value="chain" selectedValue={sortMethod}>
+            <Inline space="8px" alignVertical="center">
+              <Bleed vertical="4px">
+                <Symbol
+                  weight="semibold"
+                  symbol="network"
+                  size={18}
+                  color="label"
+                />
+              </Bleed>
+
+              <Text size="14pt" weight="semibold" color="label">
+                {i18n.t('send.tokens_input.networks')}
+              </Text>
+            </Inline>
+          </DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
 export const TokenInput = ({
   asset,
   assets,
@@ -75,6 +167,8 @@ export const TokenInput = ({
 }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  // const [inputVisible, setInputVisible] = useState(true);
 
   const onDropdownAction = useCallback(
     () => setDropdownVisible((dropdownVisible) => !dropdownVisible),
@@ -88,11 +182,31 @@ export const TokenInput = ({
     [selectAssetAddress],
   );
 
+  const onInputValueChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setInputValue(e.target.value);
+    },
+    [setInputValue],
+  );
+
+  const filteredAssets = useMemo(() => {
+    return inputValue
+      ? assets.filter(
+          ({ name, symbol, address }) =>
+            name.toLowerCase().startsWith(inputValue.toLowerCase()) ||
+            symbol.toLowerCase().startsWith(inputValue.toLowerCase()) ||
+            address.toLowerCase().startsWith(inputValue.toLowerCase()),
+        )
+      : assets;
+  }, [assets, inputValue]);
+
   useEffect(() => {
     if (dropdownClosed) {
       setDropdownVisible(false);
     }
   }, [dropdownClosed]);
+
+  const inputVisible = useMemo(() => !asset, [asset]);
 
   return (
     <InputWrapper
@@ -106,26 +220,46 @@ export const TokenInput = ({
       }
       centerComponent={
         <Box width="fit">
-          <Stack space="8px">
-            <TextOverflow
-              maxWidth={windowWidth / 2}
-              size="16pt"
-              weight="semibold"
-              color={`${asset ? 'label' : 'labelTertiary'}`}
-            >
-              {asset?.name ?? i18n.t('send.input_token_placeholder')}
-            </TextOverflow>
+          {inputVisible ? (
+            <Box as={motion.div} layout="position">
+              <Input
+                testId="token-input"
+                value={inputValue}
+                placeholder={'Token'}
+                onChange={onInputValueChange}
+                height="32px"
+                variant="transparent"
+                style={{ paddingLeft: 0, paddingRight: 0 }}
+                // innerRef={inputRef}
+              />
+            </Box>
+          ) : (
+            <Stack space="8px">
+              <TextOverflow
+                maxWidth={windowWidth / 2}
+                size="16pt"
+                weight="semibold"
+                color={`${asset ? 'label' : 'labelTertiary'}`}
+              >
+                {asset?.name ?? i18n.t('send.input_token_placeholder')}
+              </TextOverflow>
 
-            {asset && (
-              <Text as="p" size="12pt" weight="semibold" color="labelTertiary">
-                {handleSignificantDecimals(
-                  asset?.balance.amount,
-                  asset?.decimals,
-                )}{' '}
-                {i18n.t('send.tokens_input.available')}
-              </Text>
-            )}
-          </Stack>
+              {asset && (
+                <Text
+                  as="p"
+                  size="12pt"
+                  weight="semibold"
+                  color="labelTertiary"
+                >
+                  {handleSignificantDecimals(
+                    asset?.balance.amount,
+                    asset?.decimals,
+                  )}{' '}
+                  {i18n.t('send.tokens_input.available')}
+                </Text>
+              )}
+            </Stack>
+          )}
         </Box>
       }
       showActionClose={!!asset}
@@ -145,84 +279,13 @@ export const TokenInput = ({
                   {i18n.t('send.tokens_input.tokens')}
                 </Text>
               </Inline>
-              <DropdownMenu
-                onOpenChange={setSortDropdownOpen}
-                open={sortDropdownOpen}
-              >
-                <DropdownMenuTrigger
-                  accentColor={
-                    asset?.colors?.primary || asset?.colors?.fallback
-                  }
-                  asChild
-                >
-                  <Box>
-                    <Inline space="4px" alignVertical="center">
-                      <Symbol
-                        symbol="arrow.up.arrow.down"
-                        color="labelTertiary"
-                        weight="semibold"
-                        size={14}
-                      />
-                      <Text size="14pt" weight="semibold" color="labelTertiary">
-                        {i18n.t('send.tokens_input.sort')}
-                      </Text>
-                    </Inline>
-                  </Box>
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent
-                  accentColor={
-                    asset?.colors?.primary || asset?.colors?.fallback
-                  }
-                  marginRight="32px"
-                >
-                  <DropdownMenuRadioGroup
-                    value={sortMethod}
-                    onValueChange={(method) => {
-                      setSortMethod(method as SortMethod);
-                    }}
-                  >
-                    <DropdownMenuRadioItem
-                      value="token"
-                      selectedValue={sortMethod}
-                    >
-                      <Inline space="8px" alignVertical="center">
-                        <Bleed vertical="4px">
-                          <Symbol
-                            weight="semibold"
-                            symbol="record.circle.fill"
-                            size={18}
-                            color="label"
-                          />
-                        </Bleed>
-
-                        <Text size="14pt" weight="semibold" color="label">
-                          {i18n.t('send.tokens_input.token_balance')}
-                        </Text>
-                      </Inline>
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem
-                      value="chain"
-                      selectedValue={sortMethod}
-                    >
-                      <Inline space="8px" alignVertical="center">
-                        <Bleed vertical="4px">
-                          <Symbol
-                            weight="semibold"
-                            symbol="network"
-                            size={18}
-                            color="label"
-                          />
-                        </Bleed>
-
-                        <Text size="14pt" weight="semibold" color="label">
-                          {i18n.t('send.tokens_input.networks')}
-                        </Text>
-                      </Inline>
-                    </DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <TokenSortMenu
+                asset={asset}
+                setSortDropdownOpen={setSortDropdownOpen}
+                sortDropdownOpen={sortDropdownOpen}
+                sortMethod={sortMethod}
+                setSortMethod={setSortMethod}
+              />
             </Inline>
           </Box>
           <Box
@@ -231,8 +294,8 @@ export const TokenInput = ({
             initial="hidden"
             animate="show"
           >
-            {!!assets?.length &&
-              assets?.map((asset, i) => (
+            {!!filteredAssets?.length &&
+              filteredAssets?.map((asset, i) => (
                 <Box
                   paddingHorizontal="8px"
                   key={`${asset?.uniqueId}-${i}`}
@@ -250,7 +313,7 @@ export const TokenInput = ({
                   </RowHighlightWrapper>
                 </Box>
               ))}
-            {!assets.length && (
+            {!filteredAssets.length && (
               <Box alignItems="center" style={{ paddingTop: 119 }}>
                 <Stack space="16px">
                   <Inline alignHorizontal="center">
