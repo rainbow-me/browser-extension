@@ -195,6 +195,7 @@ export const AppNetworkMenu = ({
                   onValueChange={changeChainId}
                 >
                   <SwitchNetworkMenuSelector
+                    type={type}
                     highlightAccentColor
                     selectedValue={`${appSession?.chainId}`}
                   />
