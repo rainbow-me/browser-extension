@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { contactsStore, useContactsStore } from '~/core/state/contacts';
+import { walletNamesStore } from '~/core/state/walletNames';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 
 import { useWallets } from '../useWallets';
@@ -12,6 +13,8 @@ interface WalletData {
   ensName?: string;
   address: Address;
   name?: string;
+  contactName?: string;
+  walletName?: string;
 }
 
 const getAddressData = async ({
@@ -19,13 +22,15 @@ const getAddressData = async ({
 }: {
   address: Address;
 }): Promise<WalletData> => {
+  const { walletNames } = walletNamesStore.getState();
   const ensName = (await fetchEnsName({ address })) as string;
   const { getContact } = contactsStore.getState();
   const contact = getContact({ address });
   return {
-    ensName,
     address,
-    name: contact?.name,
+    ensName,
+    contactName: contact?.name,
+    walletName: walletNames[address],
   };
 };
 
@@ -39,17 +44,20 @@ const getAddressesData = async ({ addresses }: { addresses: Address[] }) => {
 const filterWalletData = ({
   ensName,
   address,
-  name,
+  contactName,
+  walletName,
   filter,
 }: {
   ensName?: string;
   address: Address;
-  name?: string;
+  contactName?: string;
+  walletName?: string;
   filter: string;
 }) =>
   ensName?.toLowerCase()?.startsWith(filter?.toLowerCase()) ||
   address?.toLowerCase()?.startsWith(filter?.toLowerCase()) ||
-  name?.toLowerCase()?.startsWith(filter?.toLowerCase());
+  contactName?.toLowerCase()?.startsWith(filter?.toLowerCase()) ||
+  walletName?.toLowerCase()?.startsWith(filter?.toLowerCase());
 
 export const useAllFilteredWallets = ({ filter }: { filter: string }) => {
   const { contacts: contactsObjects } = useContactsStore();
@@ -106,9 +114,15 @@ export const useAllFilteredWallets = ({ filter }: { filter: string }) => {
         filteredContactsData,
       ] = [walletsData, watchedWalletsData, contactsData].map((data) =>
         data.filter(
-          ({ ensName, address, name }) =>
+          ({ ensName, address, contactName, walletName }) =>
             filterIsAddressOrEns ||
-            filterWalletData({ ensName, address, name, filter }),
+            filterWalletData({
+              ensName,
+              address,
+              contactName,
+              walletName,
+              filter,
+            }),
         ),
       );
 
