@@ -217,19 +217,13 @@ export const AppNetworkMenu = ({
                 <MenuRadioItem highlightAccentColor value="connected-apps">
                   <Box id={connectedAppsId}>
                     <Inline alignVertical="center" space="8px">
-                      <Box style={{ width: 18, height: 18 }}>
-                        <Inline
-                          height="full"
-                          alignVertical="center"
-                          alignHorizontal="center"
-                        >
-                          <Symbol
-                            size={14}
-                            symbol="square.on.square.dashed"
-                            weight="semibold"
-                          />
-                        </Inline>
-                      </Box>
+                      <Inline alignVertical="center" alignHorizontal="center">
+                        <Symbol
+                          size={12}
+                          symbol="square.on.square.dashed"
+                          weight="semibold"
+                        />
+                      </Inline>
                       <Text size="14pt" weight="semibold">
                         {i18n.t('menu.home_header_left.all_connected_apps')}
                       </Text>
