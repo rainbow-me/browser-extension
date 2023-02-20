@@ -208,6 +208,14 @@ export const TokenInput = ({
     }, 200);
   }, [onSelectAsset]);
 
+  const selectAsset = useCallback(
+    (address: Address) => {
+      onSelectAsset(address);
+      setInputValue('');
+    },
+    [onSelectAsset],
+  );
+
   useEffect(() => {
     if (dropdownClosed) {
       setDropdownVisible(false);
@@ -227,7 +235,7 @@ export const TokenInput = ({
         </Box>
       }
       centerComponent={
-        <Box width="fit">
+        <Box width="full">
           {inputVisible ? (
             <Box as={motion.div} layout="position">
               <Input
@@ -307,7 +315,7 @@ export const TokenInput = ({
                 <Box
                   paddingHorizontal="8px"
                   key={`${asset?.uniqueId}-${i}`}
-                  onClick={() => onSelectAsset(asset.address)}
+                  onClick={() => selectAsset(asset.address)}
                   testId={`token-input-asset-${asset?.uniqueId}`}
                 >
                   <RowHighlightWrapper>
