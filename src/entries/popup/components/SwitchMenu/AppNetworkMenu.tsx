@@ -41,7 +41,7 @@ import {
   SwitchNetworkMenuSelector,
 } from './SwitchNetworkMenu';
 
-interface AppNetworkMenuDropdownProps {
+interface AppNetworkMenuProps {
   children: ReactNode;
   url: string;
   align?: 'center' | 'end' | 'start';
@@ -63,7 +63,7 @@ export const AppNetworkMenu = ({
   headerHostId,
   connectedAppsId,
   type,
-}: AppNetworkMenuDropdownProps) => {
+}: AppNetworkMenuProps) => {
   const { appHost, appLogo, appName } = useAppMetadata({ url });
   const navigate = useRainbowNavigate();
 
