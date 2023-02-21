@@ -814,6 +814,7 @@ export const symbolNames = selectSymbolNames(
   'square.dashed',
   'sparkle',
   'xmark.circle.fill',
+  'switch.2',
 );
 export type SymbolName = typeof symbolNames[number];
 
