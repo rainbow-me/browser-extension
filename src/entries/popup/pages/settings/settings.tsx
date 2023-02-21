@@ -13,6 +13,10 @@ import { themeOptions } from '~/core/references/themes';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import {
+  FeatureFlagTypes,
+  useFeatureFlagsStore,
+} from '~/core/state/currentSettings/featureFlags';
 import { useIsDefaultWalletStore } from '~/core/state/currentSettings/isDefaultWallet';
 import { ThemeOption } from '~/core/types/settings';
 import { Box, Inline, Symbol, Text } from '~/design-system';
@@ -32,6 +36,7 @@ export function Settings() {
   const navigate = useRainbowNavigate();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { isDefaultWallet, setIsDefaultWallet } = useIsDefaultWalletStore();
+  const { featureFlags, setFeatureFlag } = useFeatureFlagsStore();
 
   const { currentUserSelectedTheme, setCurrentTheme } = useCurrentThemeStore();
   const { connectedToHardhat, setConnectedToHardhat } =
@@ -42,6 +47,13 @@ export function Settings() {
 
     alert(response);
   }, []);
+
+  const toggleFeatureFlag = useCallback(
+    (key: FeatureFlagTypes) => {
+      setFeatureFlag(key, !featureFlags[key]);
+    },
+    [featureFlags, setFeatureFlag],
+  );
 
   const testSandboxPopup = useCallback(async () => {
     try {
@@ -282,46 +294,68 @@ export function Settings() {
           />
         </Menu>
         {process.env.IS_TESTING === 'true' && (
-          <>
-            <Menu>
-              <MenuItem.Description text="Below buttons are for testing only" />
+          <Menu>
+            <MenuItem.Description text="Below buttons are for testing only" />
+            <MenuItem
+              titleComponent={<MenuItem.Title text="test sandbox popup" />}
+              onClick={testSandboxPopup}
+              testId="test-sandbox-popup"
+            />
+            <MenuItem
+              titleComponent={<MenuItem.Title text="test sandbox background" />}
+              onClick={testSandboxBackground}
+              testId="test-sandbox-background"
+            />
+            <MenuItem
+              titleComponent={
+                <MenuItem.Title
+                  text={
+                    connectedToHardhat
+                      ? 'Disconnect from Hardhat'
+                      : 'Connect to Hardhat'
+                  }
+                />
+              }
+              onClick={connectToHardhat}
+              testId="connect-to-hardhat"
+            />
+          </Menu>
+        )}
+        {process.env.IS_DEV === 'true' && (
+          <Menu>
+            <MenuItem.Description text="Feature Flags" />
+            {Object.keys(featureFlags).map((key, i) => (
               <MenuItem
-                titleComponent={<MenuItem.Title text="test sandbox popup" />}
-                onClick={testSandboxPopup}
-                testId="test-sandbox-popup"
-              />
-              <MenuItem
-                titleComponent={
-                  <MenuItem.Title text="test sandbox background" />
-                }
-                onClick={testSandboxBackground}
-                testId="test-sandbox-background"
-              />
-              <MenuItem
+                key={i}
                 titleComponent={
                   <MenuItem.Title
-                    text={
-                      connectedToHardhat
-                        ? 'Disconnect from Hardhat'
-                        : 'Connect to Hardhat'
+                    text={i18n.t(`settings.feature_flags.${key}`)}
+                  />
+                }
+                rightComponent={
+                  <Toggle
+                    testId="set-rainbow-default-toggle"
+                    checked={featureFlags[key as FeatureFlagTypes]}
+                    handleChange={() =>
+                      toggleFeatureFlag(key as FeatureFlagTypes)
                     }
                   />
                 }
-                onClick={connectToHardhat}
-                testId="connect-to-hardhat"
               />
-            </Menu>
-            <Box padding="10px" alignItems="center" justifyContent="center">
-              <Text
-                size="12pt"
-                weight="semibold"
-                color="labelTertiary"
-                align="center"
-              >
-                1.2.34 (56)
-              </Text>
-            </Box>
-          </>
+            ))}
+          </Menu>
+        )}
+        {process.env.IS_TESTING === 'true' && (
+          <Box padding="10px" alignItems="center" justifyContent="center">
+            <Text
+              size="12pt"
+              weight="semibold"
+              color="labelTertiary"
+              align="center"
+            >
+              1.2.34 (56)
+            </Text>
+          </Box>
         )}
       </MenuContainer>
     </Box>
