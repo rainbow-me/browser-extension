@@ -16,7 +16,11 @@
     "connect_hardware_wallet": "Connect a hardware wallet",
     "search_placeholder": "Search wallets",
     "no_wallets": "No wallets",
-    "no_results": "No results"
+    "no_results": "No results",
+    "quick_promo": {
+      "text": "Drag wallets to reorder them",
+      "text_bold": "Tip:"
+    }
   },
   "add_wallet": {
     "title": "Add another wallet",

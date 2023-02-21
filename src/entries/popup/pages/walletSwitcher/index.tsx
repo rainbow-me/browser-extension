@@ -388,8 +388,8 @@ export function WalletSwitcher() {
       </Box>
       <Box paddingHorizontal="16px" paddingBottom="8px">
         <QuickPromo
-          text="Drag wallets to reorder them"
-          textBold="Tip:"
+          text={i18n.t('wallet_switcher.quick_promo.text')}
+          textBold={i18n.t('wallet_switcher.quick_promo.text_bold')}
           symbol="sparkle"
           promoType="wallet_switcher"
         />
