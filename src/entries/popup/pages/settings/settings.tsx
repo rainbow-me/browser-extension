@@ -130,7 +130,7 @@ export function Settings() {
             leftComponent={
               <Box style={{ width: 18 }}>
                 <Text color="green" size="20pt" weight="regular">
-                  €
+                  {supportedCurrencies[currentCurrency].glyph}
                 </Text>
               </Box>
             }
