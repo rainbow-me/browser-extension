@@ -1,6 +1,11 @@
+import { motion } from 'framer-motion';
 import * as React from 'react';
 
 import { Box, Inline, Symbol } from '~/design-system';
+import {
+  transformScales,
+  transitions,
+} from '~/design-system/styles/designTokens';
 
 import { Navbar } from '../../components/Navbar/Navbar';
 import { AppNetworkMenu } from '../../components/SwitchMenu/AppNetworkMenu';
@@ -41,6 +46,11 @@ export const NetworkMenu = () => {
     >
       {appSession ? (
         <Box
+          as={motion.div}
+          initial={{ zIndex: 0 }}
+          whileHover={{ scale: transformScales['1.04'] }}
+          whileTap={{ scale: transformScales['0.96'] }}
+          transition={transitions.bounce}
           style={{
             height: 32,
             width: 32,
