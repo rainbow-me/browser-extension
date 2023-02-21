@@ -119,7 +119,7 @@ function ActionButtonsSection() {
           />
           <Link
             id="header-link-swap"
-            to={featureFlags[featureFlagTypes.swaps] ? '#' : ROUTES.SWAP}
+            to={featureFlags[featureFlagTypes.swaps] ? ROUTES.SWAP : '#'}
             state={{ from: ROUTES.HOME }}
           >
             <ActionButton
