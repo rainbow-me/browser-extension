@@ -125,7 +125,7 @@ const infoButtonOptions = ({
       ]),
 ];
 
-const bottomSpacing = 20 + 20 + 32 + 32 + (process.env.IS_DEV ? 32 + 8 : 0);
+const bottomSpacing = 150 + (process.env.IS_DEV ? 40 : 0);
 const topSpacing = 127;
 
 const NoWalletsWarning = ({
