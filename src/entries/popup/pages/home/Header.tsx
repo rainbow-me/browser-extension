@@ -4,6 +4,10 @@ import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import {
+  featureFlagTypes,
+  useFeatureFlagsStore,
+} from '~/core/state/currentSettings/featureFlags';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, ButtonSymbol, Inline, Inset, Stack, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
@@ -82,6 +86,7 @@ function ActionButtonsSection() {
 
   const { watchedWallets } = useWallets();
   const { triggerToast } = useToast();
+  const { featureFlags } = useFeatureFlagsStore();
 
   const handleCopy = React.useCallback(() => {
     navigator.clipboard.writeText(address as string);
@@ -112,11 +117,18 @@ function ActionButtonsSection() {
             testId="header-link-copy"
             tabIndex={tabIndexes.WALLET_HEADER_COPY_BUTTON}
           />
-          <ActionButton
-            symbol="arrow.triangle.swap"
-            text={i18n.t('wallet_header.swap')}
-            tabIndex={tabIndexes.WALLET_HEADER_SWAP_BUTTON}
-          />
+          <Link
+            id="header-link-swap"
+            to={featureFlags[featureFlagTypes.swaps] ? '#' : ROUTES.SWAP}
+            state={{ from: ROUTES.HOME }}
+          >
+            <ActionButton
+              symbol="arrow.triangle.swap"
+              text={i18n.t('wallet_header.swap')}
+              tabIndex={tabIndexes.WALLET_HEADER_SWAP_BUTTON}
+            />
+          </Link>
+
           <Link
             id="header-link-send"
             to={isWatchingWallet ? '#' : ROUTES.SEND}
