@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import React, { useMemo, useRef } from 'react';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
@@ -35,104 +36,60 @@ export function Tokens() {
     { address: currentAddress, currency },
     { select: selectUserAssetsList },
   );
+  const containerRef = useRef<HTMLDivElement>(null);
+  const tokenRowVirtualizer = useVirtualizer({
+    count: assets?.length,
+    getScrollElement: () => containerRef.current,
+    estimateSize: () => 52,
+    overscan: 20,
+  });
 
   if (isInitialLoading) {
     return <TokensSkeleton />;
   }
 
   if (!assets?.length) {
-    return (
-      <Inset horizontal="20px">
-        <Box paddingBottom="8px">
-          <a href="https://www.coinbase.com/" target="_blank" rel="noreferrer">
-            <Box
-              background="surfaceSecondaryElevated"
-              borderRadius="16px"
-              borderColor="separatorTertiary"
-              boxShadow="12px"
-            >
-              <Inset horizontal="16px" vertical="16px">
-                <Box paddingBottom="12px">
-                  <Inline alignVertical="center" alignHorizontal="justify">
-                    <Box>
-                      <Inline alignVertical="center" space="8px">
-                        <CoinbaseIcon />
-                        <Text
-                          as="p"
-                          size="14pt"
-                          color="label"
-                          weight="semibold"
-                        >
-                          {i18n.t('tokens_tab.coinbase_title')}
-                        </Text>
-                      </Inline>
-                    </Box>
-                    <Symbol
-                      size={12}
-                      symbol="arrow.up.forward.circle"
-                      weight="semibold"
-                      color="labelTertiary"
-                    />
-                  </Inline>
-                </Box>
-                <Text as="p" size="11pt" color="labelSecondary" weight="bold">
-                  {i18n.t('tokens_tab.coinbase_description')}
-                </Text>
-              </Inset>
-            </Box>
-          </a>
-        </Box>
-
-        <Box
-          background="surfacePrimaryElevated"
-          borderRadius="16px"
-          borderColor="separatorTertiary"
-          boxShadow="12px"
-          borderWidth="1px"
-        >
-          <Inset horizontal="16px" vertical="16px">
-            <Box paddingBottom="12px">
-              <Inline alignVertical="center" space="8px">
-                <WalletIcon />
-                <Text as="p" size="14pt" color="label" weight="semibold">
-                  {i18n.t('tokens_tab.send_from_wallet')}
-                </Text>
-              </Inline>
-            </Box>
-            <Text as="p" size="11pt" color="labelSecondary" weight="bold">
-              {i18n.t('tokens_tab.send_description_1')}{' '}
-              <Box
-                background="fillSecondary"
-                as="span"
-                style={{
-                  display: 'inline-block',
-                  width: '16px',
-                  height: '16px',
-                  borderRadius: '4px',
-                  verticalAlign: 'middle',
-                  textAlign: 'center',
-                  lineHeight: '16px',
-                }}
-              >
-                C
-              </Box>{' '}
-              {i18n.t('tokens_tab.send_description_2')}
-            </Text>
-          </Inset>
-        </Box>
-      </Inset>
-    );
+    return <TokensEmptyState />;
   }
+
   return (
-    <Box
-      style={{
-        overflow: 'auto',
-      }}
-      marginTop="-16px"
-    >
-      {assets?.map((asset, i) => (
-        <AssetRow key={`${asset?.uniqueId}-${i}`} uniqueId={asset?.uniqueId} />
-      ))}
+    <Box ref={containerRef} width="full" style={{ overflow: 'auto' }}>
+      <Box
+        width="full"
+        style={{
+          height: tokenRowVirtualizer.getTotalSize(),
+          position: 'relative',
+        }}
+      ></Box>
+      <Box
+        style={{
+          overflow: 'auto',
+        }}
+        marginTop="-16px"
+      >
+        {tokenRowVirtualizer.getVirtualItems().map((virtualItem) => {
+          const { index } = virtualItem;
+          const rowData = assets?.[index];
+          return (
+            <Box
+              key={index}
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: virtualItem.size,
+                transform: `translateY(${virtualItem.start}px)`,
+              }}
+            >
+              <AssetRow
+                key={`${rowData?.uniqueId}-${index}`}
+                uniqueId={rowData?.uniqueId}
+              />
+            </Box>
+          );
+        })}
+      </Box>
     </Box>
   );
 }
@@ -242,4 +199,83 @@ export function AssetRow({ uniqueId }: AssetRowProps) {
   );
 
   return <CoinRow asset={asset} topRow={topRow} bottomRow={bottomRow} />;
+}
+
+function TokensEmptyState() {
+  return (
+    <Inset horizontal="20px">
+      <Box paddingBottom="8px">
+        <a href="https://www.coinbase.com/" target="_blank" rel="noreferrer">
+          <Box
+            background="surfaceSecondaryElevated"
+            borderRadius="16px"
+            borderColor="separatorTertiary"
+            boxShadow="12px"
+          >
+            <Inset horizontal="16px" vertical="16px">
+              <Box paddingBottom="12px">
+                <Inline alignVertical="center" alignHorizontal="justify">
+                  <Box>
+                    <Inline alignVertical="center" space="8px">
+                      <CoinbaseIcon />
+                      <Text as="p" size="14pt" color="label" weight="semibold">
+                        {i18n.t('tokens_tab.coinbase_title')}
+                      </Text>
+                    </Inline>
+                  </Box>
+                  <Symbol
+                    size={12}
+                    symbol="arrow.up.forward.circle"
+                    weight="semibold"
+                    color="labelTertiary"
+                  />
+                </Inline>
+              </Box>
+              <Text as="p" size="11pt" color="labelSecondary" weight="bold">
+                {i18n.t('tokens_tab.coinbase_description')}
+              </Text>
+            </Inset>
+          </Box>
+        </a>
+      </Box>
+
+      <Box
+        background="surfacePrimaryElevated"
+        borderRadius="16px"
+        borderColor="separatorTertiary"
+        boxShadow="12px"
+        borderWidth="1px"
+      >
+        <Inset horizontal="16px" vertical="16px">
+          <Box paddingBottom="12px">
+            <Inline alignVertical="center" space="8px">
+              <WalletIcon />
+              <Text as="p" size="14pt" color="label" weight="semibold">
+                {i18n.t('tokens_tab.send_from_wallet')}
+              </Text>
+            </Inline>
+          </Box>
+          <Text as="p" size="11pt" color="labelSecondary" weight="bold">
+            {i18n.t('tokens_tab.send_description_1')}
+            <Box
+              background="fillSecondary"
+              as="span"
+              style={{
+                display: 'inline-block',
+                width: '16px',
+                height: '16px',
+                borderRadius: '4px',
+                verticalAlign: 'middle',
+                textAlign: 'center',
+                lineHeight: '16px',
+              }}
+            >
+              C
+            </Box>
+            {i18n.t('tokens_tab.send_description_2')}
+          </Text>
+        </Inset>
+      </Box>
+    </Inset>
+  );
 }
