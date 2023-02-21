@@ -33,7 +33,8 @@ export function Settings() {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { isDefaultWallet, setIsDefaultWallet } = useIsDefaultWalletStore();
 
-  const { currentUserSelectedTheme, setCurrentTheme } = useCurrentThemeStore();
+  const { currentUserSelectedTheme, currentTheme, setCurrentTheme } =
+    useCurrentThemeStore();
   const { connectedToHardhat, setConnectedToHardhat } =
     useConnectedToHardhatStore();
 
@@ -150,8 +151,8 @@ export function Settings() {
                 hasChevron
                 leftComponent={
                   <Symbol
-                    symbol="moon.stars"
-                    color="purple"
+                    symbol={currentTheme === 'light' ? 'sun.max' : 'moon.stars'}
+                    color={themeOptions[currentTheme as ThemeOption].color}
                     size={18}
                     weight="medium"
                   />
@@ -178,7 +179,8 @@ export function Settings() {
               />
             }
             renderMenuItem={(option, i) => {
-              const { label, symbol } = themeOptions[option as ThemeOption];
+              const { label, symbol, color } =
+                themeOptions[option as ThemeOption];
 
               return (
                 <Box id={`switch-option-item-${i}`}>
@@ -187,7 +189,7 @@ export function Settings() {
                       <Symbol
                         size={14}
                         symbol={symbol}
-                        color="label"
+                        color={color}
                         weight="semibold"
                       />
                     </Inline>
