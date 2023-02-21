@@ -13,7 +13,6 @@ import {
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { currentAddressStore } from '~/core/state';
-import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
@@ -35,6 +34,7 @@ export type UserAssetsByChainArgs = {
   address?: Address;
   chain: ChainName;
   currency: SupportedCurrencyKey;
+  connectedToHardhat: boolean;
 };
 
 // ///////////////////////////////////////////////
@@ -44,10 +44,11 @@ export const userAssetsByChainQueryKey = ({
   address,
   chain,
   currency,
+  connectedToHardhat,
 }: UserAssetsByChainArgs) =>
   createQueryKey(
     'userAssetsByChain',
-    { address, chain, currency },
+    { address, chain, currency, connectedToHardhat },
     { persisterVersion: 1 },
   );
 
@@ -59,7 +60,7 @@ type UserAssetsByChainQueryKey = ReturnType<typeof userAssetsByChainQueryKey>;
 export async function fetchUserAssetsByChain<
   TSelectData = UserAssetsByChainResult,
 >(
-  { address, chain, currency }: UserAssetsByChainArgs,
+  { address, chain, currency, connectedToHardhat }: UserAssetsByChainArgs,
   config: QueryConfig<
     UserAssetsByChainResult,
     Error,
@@ -68,7 +69,7 @@ export async function fetchUserAssetsByChain<
   > = {},
 ) {
   return await queryClient.fetchQuery(
-    userAssetsByChainQueryKey({ address, chain, currency }),
+    userAssetsByChainQueryKey({ address, chain, currency, connectedToHardhat }),
     userAssetsByChainQueryFunction,
     config,
   );
@@ -78,11 +79,10 @@ export async function fetchUserAssetsByChain<
 // Query Function
 
 export async function userAssetsByChainQueryFunction({
-  queryKey: [{ address, chain, currency }],
+  queryKey: [{ address, chain, currency, connectedToHardhat }],
 }: QueryFunctionArgs<typeof userAssetsByChainQueryKey>): Promise<
   Record<string, ParsedAddressAsset>
 > {
-  const { connectedToHardhat } = connectedToHardhatStore.getState();
   const { currentAddress } = currentAddressStore.getState();
 
   const isMainnet = chain === ChainName.mainnet;
@@ -101,7 +101,12 @@ export async function userAssetsByChainQueryFunction({
     const timeout = setTimeout(() => {
       resolve(
         queryClient.getQueryData(
-          userAssetsByChainQueryKey({ address, chain, currency }),
+          userAssetsByChainQueryKey({
+            address,
+            chain,
+            currency,
+            connectedToHardhat,
+          }),
         ) || {},
       );
     }, USER_ASSETS_TIMEOUT_DURATION);
@@ -179,7 +184,7 @@ function parseUserAssetsByChain(
 // Query Hook
 
 export function useUserAssetsByChain<TSelectResult = UserAssetsByChainResult>(
-  { address, chain, currency }: UserAssetsByChainArgs,
+  { address, chain, currency, connectedToHardhat }: UserAssetsByChainArgs,
   config: QueryConfig<
     UserAssetsByChainResult,
     Error,
@@ -188,7 +193,7 @@ export function useUserAssetsByChain<TSelectResult = UserAssetsByChainResult>(
   > = {},
 ) {
   return useQuery(
-    userAssetsByChainQueryKey({ address, chain, currency }),
+    userAssetsByChainQueryKey({ address, chain, currency, connectedToHardhat }),
     userAssetsByChainQueryFunction,
     {
       ...config,
