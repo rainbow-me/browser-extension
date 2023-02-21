@@ -1,0 +1,54 @@
+{
+  "content_security_policy": {
+    "extension_pages": "frame-ancestors 'none'; script-src 'self'; object-src 'self'; connect-src 'self'"
+  },
+  "minimum_chrome_version": "88",
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "author": "https://rainbow.me",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "contentscript.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "default_locale": "en",
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "manifest_version": 3,
+  "permissions": [
+    "activeTab",
+    "clipboardWrite",
+    "scripting",
+    "storage",
+    "tabs",
+    "unlimitedStorage"
+  ],
+  "short_name": "Rainbow",
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "inpage.js",
+        "*.woff2",
+        "popup.css",
+        "assets/badges/*.png"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}

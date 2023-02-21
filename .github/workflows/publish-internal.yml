@@ -32,6 +32,8 @@ jobs:
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Bump the version
         run: yarn bump
+      - name: Generate the manifest
+        run: yarn generate-manifest internal
       - name: Build the extension ready for the stores
         run: yarn build:webpack && yarn zip
       - name: Submit to the chrome webstore
