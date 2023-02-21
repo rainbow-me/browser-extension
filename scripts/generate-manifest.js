@@ -34,9 +34,9 @@ function orderedStringify(obj, space) {
   return JSON.stringify(obj, Array.from(allKeys).sort(), space);
 }
 
-// Update static/manifest.json
+// Update build/manifest.json
 require('fs').writeFileSync(
-  './static/manifest.json',
+  './build/manifest.json',
   orderedStringify(manifest, 2),
 );
 
