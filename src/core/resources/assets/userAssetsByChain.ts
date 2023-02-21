@@ -117,7 +117,10 @@ export async function userAssetsByChainQueryFunction({
       if (connectedToHardhat) {
         const provider = getProvider({ chainId: ChainId.hardhat });
         // force checking for ETH if connected to hardhat
-        parsedUserAssetsByChain[ETH_MAINNET_ASSET.uniqueId] = ETH_MAINNET_ASSET;
+        if (chain === ChainName.mainnet) {
+          parsedUserAssetsByChain[ETH_MAINNET_ASSET.uniqueId] =
+            ETH_MAINNET_ASSET;
+        }
         Object.values(parsedUserAssetsByChain).forEach(async (parsedAsset) => {
           if (parsedAsset.chainId !== ChainId.mainnet) return parsedAsset;
           try {
