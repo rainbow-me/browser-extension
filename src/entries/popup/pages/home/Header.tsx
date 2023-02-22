@@ -120,12 +120,11 @@ function ActionButtonsSection() {
           <Link
             id="header-link-swap"
             to={
-              !isWatchingWallet && featureFlags[featureFlagTypes.swaps]
-                ? ROUTES.SWAP
-                : '#'
+              // !isWatchingWallet &&
+              featureFlags[featureFlagTypes.swaps] ? ROUTES.SWAP : '#'
             }
             state={{ from: ROUTES.HOME }}
-            onClick={isWatchingWallet ? alertWatchingWallet : () => null}
+            // onClick={isWatchingWallet ? alertWatchingWallet : () => null}
           >
             <ActionButton
               symbol="arrow.triangle.swap"
