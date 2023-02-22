@@ -3,7 +3,7 @@ import React, { ReactElement } from 'react';
 
 import { Box, Column, Columns, Separator, Stack } from '~/design-system';
 
-import { InputActionButon } from './InputActionButton';
+import { InputActionButon } from '../../pages/send/InputActionButton';
 
 const TRANSITION_CONFIG = {
   height: {
@@ -29,7 +29,7 @@ export const dropdownItemVariant = {
   show: { opacity: 1 },
 };
 
-export const InputWrapper = ({
+export const DropdownInputWrapper = ({
   leftComponent,
   centerComponent,
   dropdownComponent,
