@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import React, { useCallback } from 'react';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { Box, ButtonSymbol, Inline, Stack } from '~/design-system';
@@ -11,7 +10,7 @@ import {
 
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 import { Navbar } from '../../components/Navbar/Navbar';
-import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsset';
+import { useSwapAssets } from '../../hooks/swap/useSwapAssets';
 import { useSwapInputs } from '../../hooks/swap/useSwapInputs';
 
 import { SwapTokenInput } from './SwapTokenInput';
@@ -20,16 +19,15 @@ export function Swap() {
   const { tokenToReceiveDropdownVisible, tokenToSwapDropdownVisible } =
     useSwapInputs();
 
-  const { asset, selectAssetAddress, assets, setSortMethod, sortMethod } =
-    useSendTransactionAsset();
-
-  const selectAsset = useCallback(
-    (address: Address | '') => {
-      selectAssetAddress(address);
-      // setIndependentAmount('');
-    },
-    [selectAssetAddress],
-  );
+  const {
+    assets,
+    sortMethod,
+    assetToReceive,
+    assetToSwap,
+    setSortMethod,
+    setAssetToReceiveAddress,
+    setAssetToSwapAddress,
+  } = useSwapAssets();
 
   const onFlip = useCallback(() => null, []);
 
@@ -58,9 +56,9 @@ export function Swap() {
       >
         <Stack space="8px">
           <SwapTokenInput
-            asset={asset}
+            asset={assetToSwap}
             assets={assets}
-            selectAssetAddress={selectAsset}
+            selectAssetAddress={setAssetToSwapAddress}
             dropdownClosed={tokenToSwapDropdownVisible}
             setSortMethod={setSortMethod}
             sortMethod={sortMethod}
@@ -103,9 +101,9 @@ export function Swap() {
           </Box>
 
           <SwapTokenInput
-            asset={asset}
+            asset={assetToReceive}
             assets={assets}
-            selectAssetAddress={selectAsset}
+            selectAssetAddress={setAssetToReceiveAddress}
             dropdownClosed={tokenToReceiveDropdownVisible}
             setSortMethod={setSortMethod}
             sortMethod={sortMethod}
