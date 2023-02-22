@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import React, { useCallback } from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { Box, ButtonSymbol, Inline, Stack } from '~/design-system';
@@ -17,8 +18,12 @@ import { useSwapInputs } from '../../hooks/swap/useSwapInputs';
 import { SwapTokenInput } from './SwapTokenInput';
 
 export function Swap() {
-  const { tokenToReceiveDropdownVisible, tokenToSwapDropdownVisible } =
-    useSwapInputs();
+  const {
+    tokenToReceiveDropdownVisible,
+    tokenToSwapDropdownVisible,
+    onTokenToSwapInputClick,
+    onTokenToReceiveInputClick,
+  } = useSwapInputs();
 
   const {
     assets,
@@ -30,8 +35,23 @@ export function Swap() {
     setAssetToSwapAddress,
   } = useSwapAssets();
 
+  const selectTokenToSwapAddress = useCallback(
+    (address: Address | '') => {
+      setAssetToSwapAddress(address);
+    },
+    [setAssetToSwapAddress],
+  );
+
+  const selectTokenToReceiveAddress = useCallback(
+    (address: Address | '') => {
+      setAssetToReceiveAddress(address);
+    },
+    [setAssetToReceiveAddress],
+  );
+
   const onFlip = useCallback(() => null, []);
 
+  console.log('---- tokenToSwapDropdownVisible', tokenToSwapDropdownVisible);
   return (
     <>
       <Navbar
@@ -64,8 +84,9 @@ export function Swap() {
             <SwapTokenInput
               asset={assetToSwap}
               assets={assets}
-              selectAssetAddress={setAssetToSwapAddress}
-              dropdownClosed={tokenToSwapDropdownVisible}
+              selectAssetAddress={selectTokenToSwapAddress}
+              onDropdownOpen={onTokenToSwapInputClick}
+              dropdownClosed={tokenToReceiveDropdownVisible}
               setSortMethod={setSortMethod}
               sortMethod={sortMethod}
               zIndex={2}
@@ -117,8 +138,9 @@ export function Swap() {
             <SwapTokenInput
               asset={assetToReceive}
               assets={assets}
-              selectAssetAddress={setAssetToReceiveAddress}
-              dropdownClosed={tokenToReceiveDropdownVisible}
+              selectAssetAddress={selectTokenToReceiveAddress}
+              onDropdownOpen={onTokenToReceiveInputClick}
+              dropdownClosed={tokenToSwapDropdownVisible}
               setSortMethod={setSortMethod}
               sortMethod={sortMethod}
               zIndex={1}

@@ -67,6 +67,7 @@ export const SwapTokenInput = ({
   sortMethod,
   zIndex,
   placeholder,
+  onDropdownOpen,
 }: {
   asset: ParsedAddressAsset | null;
   assets: ParsedAddressAsset[];
@@ -76,14 +77,16 @@ export const SwapTokenInput = ({
   sortMethod: SortMethod;
   zIndex?: number;
   placeholder: string;
+  onDropdownOpen: (open: boolean) => void;
 }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
 
-  const onDropdownAction = useCallback(
-    () => setDropdownVisible((dropdownVisible) => !dropdownVisible),
-    [],
-  );
+  const onDropdownAction = useCallback(() => {
+    onDropdownOpen(!dropdownVisible);
+    setDropdownVisible(!dropdownVisible);
+  }, [dropdownVisible, onDropdownOpen]);
+
   const onSelectAsset = useCallback(
     (address: Address | '') => {
       selectAssetAddress(address);
