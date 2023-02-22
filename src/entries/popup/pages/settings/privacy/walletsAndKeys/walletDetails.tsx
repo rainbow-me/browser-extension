@@ -105,7 +105,14 @@ export function WalletDetails() {
   const [renameAccount, setRenameAccount] = useState<Address | undefined>();
   const [removeAccount, setRemoveAccount] = useState<Address | undefined>();
 
-  const [wallet, setWallet] = useState<KeychainWallet>(state?.wallet);
+  const [wallet, setWallet] = useState<KeychainWallet>();
+
+  useEffect(() => {
+    chrome.storage.session.get(['wallet'], (result) => {
+      return setWallet(result.wallet as KeychainWallet);
+    });
+  }, []);
+
   const handleOpenNewWalletPrompt = () => {
     setShowNewWalletPrompt(true);
   };
@@ -172,11 +179,13 @@ export function WalletDetails() {
 
   return (
     <Box>
-      <NewWalletPrompt
-        wallet={wallet}
-        show={showNewWalletPrompt}
-        onClose={handleCloseNewWalletPrompt}
-      />
+      {wallet && (
+        <NewWalletPrompt
+          wallet={wallet as KeychainWallet}
+          show={showNewWalletPrompt}
+          onClose={handleCloseNewWalletPrompt}
+        />
+      )}
       <RenameWalletPrompt
         show={!!renameAccount}
         account={renameAccount}
@@ -216,7 +225,7 @@ export function WalletDetails() {
             />
           </Menu>
           <Menu paddingVertical="8px">
-            {wallet?.accounts.map((account: Address) => {
+            {wallet?.accounts?.map((account: Address) => {
               return (
                 <AccountItem
                   account={account}

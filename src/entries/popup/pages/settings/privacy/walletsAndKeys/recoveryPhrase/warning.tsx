@@ -1,11 +1,12 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { IconAndCopyItem } from '~/entries/popup/components/IconAndCopyList.tsx/IconAndCopyList';
 import WarningInfo from '~/entries/popup/components/WarningInfo/WarningInfo';
-import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
+
+import { ConfirmPasswordPrompt } from '../../confirmPasswordPrompt';
 
 const iconAndCopyList: IconAndCopyItem[] = [
   {
@@ -47,26 +48,40 @@ const iconAndCopyList: IconAndCopyItem[] = [
 ];
 
 export function RecoveryPhraseWarning() {
-  const navigate = useRainbowNavigate();
   const { state } = useLocation();
 
+  const [showEnterPassword, setShowEnterPassword] = useState(false);
+  const [confirmPasswordRedirect, setConfirmPasswordRedirect] = useState('');
+  const openPasswordPrompt = () => {
+    setShowEnterPassword(true);
+  };
+  const closePasswordPrompt = () => {
+    setShowEnterPassword(false);
+  };
+
   const handleShowRecoveryPhraseClick = useCallback(async () => {
-    navigate(
+    openPasswordPrompt();
+    setConfirmPasswordRedirect(
       ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE,
-      {
-        state: { password: state?.password, wallet: state?.wallet },
-      },
     );
-  }, [navigate, state?.password, state?.wallet]);
+  }, []);
 
   return (
-    <WarningInfo
-      iconAndCopyList={iconAndCopyList}
-      onProceed={handleShowRecoveryPhraseClick}
-      proceedButtonLabel={i18n.t(
-        'settings.privacy_and_security.wallets_and_keys.recovery_phrase.show',
-      )}
-      proceedButtonSymbol="doc.plaintext.fill"
-    />
+    <>
+      <ConfirmPasswordPrompt
+        show={showEnterPassword}
+        onClose={closePasswordPrompt}
+        redirect={confirmPasswordRedirect}
+        extraState={{ wallet: state?.wallet }}
+      />
+      <WarningInfo
+        iconAndCopyList={iconAndCopyList}
+        onProceed={handleShowRecoveryPhraseClick}
+        proceedButtonLabel={i18n.t(
+          'settings.privacy_and_security.wallets_and_keys.recovery_phrase.show',
+        )}
+        proceedButtonSymbol="doc.plaintext.fill"
+      />
+    </>
   );
 }
