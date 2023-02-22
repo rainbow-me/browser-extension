@@ -160,6 +160,9 @@
       "CAD": "Canadian Dollar",
       "NZD": "New Zealand Dollar",
       "ZAR": "South African Rand"
+    },
+    "feature_flags": {
+      "swaps": "Swaps"
     }
   },
   "transactions": {
