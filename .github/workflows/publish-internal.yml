@@ -33,7 +33,11 @@ jobs:
       - name: Bump the version
         run: yarn bump
       - name: Build the extension ready for the stores
-        run: yarn build:webpack && yarn zip
+        run: yarn build:webpack
+      - name: Generate the manifest
+        run: yarn generate-manifest internal
+      - name: Zip it
+        run: yarn zip
       - name: Submit to the chrome webstore
         uses: PlasmoHQ/bpp@v3
         with:

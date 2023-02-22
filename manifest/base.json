@@ -1,0 +1,72 @@
+{
+  "content_security_policy": {
+    "extension_pages": "frame-ancestors 'none'; script-src 'self'; object-src 'self'; connect-src 'self'"
+  },
+  "minimum_chrome_version": "88",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/icon-16.png",
+      "19": "images/icon-19.png",
+      "32": "images/icon-16@2x.png",
+      "38": "images/icon-19@2x.png",
+      "64": "images/icon-16@4x.png",
+      "128": "images/icon-16@8x.png",
+      "512": "images/icon-16@32x.png"
+    }
+  },
+  "author": "https://rainbow.me",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "images/icon-16.png",
+    "19": "images/icon-19.png",
+    "32": "images/icon-16@2x.png",
+    "38": "images/icon-19@2x.png",
+    "64": "images/icon-16@4x.png",
+    "128": "images/icon-16@8x.png",
+    "512": "images/icon-16@32x.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "contentscript.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "default_locale": "en",
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "manifest_version": 3,
+  "permissions": [
+    "activeTab",
+    "clipboardWrite",
+    "scripting",
+    "storage",
+    "tabs",
+    "unlimitedStorage"
+  ],
+  "short_name": "Rainbow",
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "inpage.js",
+        "*.woff2",
+        "popup.css",
+        "assets/badges/*.png"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ]
+}
