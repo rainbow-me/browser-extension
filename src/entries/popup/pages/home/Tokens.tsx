@@ -5,6 +5,7 @@ import { supportedCurrencies } from '~/core/references';
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { UniqueId } from '~/core/types/assets';
 import {
@@ -31,8 +32,9 @@ const TEXT_MAX_WIDTH = windowWidth - 150;
 export function Tokens() {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
+  const { connectedToHardhat } = useConnectedToHardhatStore();
   const { data: assets = [], isInitialLoading } = useUserAssets(
-    { address: currentAddress, currency },
+    { address: currentAddress, currency, connectedToHardhat },
     { select: selectUserAssetsList },
   );
 

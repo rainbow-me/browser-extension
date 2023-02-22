@@ -1,31 +1,33 @@
 import React from 'react';
-import { Address, Chain, useBalance, useEnsName } from 'wagmi';
+import { Address, Chain, useBalance } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
-import { truncateAddress } from '~/core/utils/truncateAddress';
 import { Box, Button, Inline, Stack, Symbol, Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { EthSymbol } from '~/entries/popup/components/EthSymbol/EthSymbol';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
+import { useWalletInfo } from '~/entries/popup/hooks/useWalletInfo';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 
 import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
 import { SwitchMenu } from '../../../components/SwitchMenu/SwitchMenu';
 
-export const EnsName = ({
+export const WalletName = ({
   address,
   color = 'label',
 }: {
   address: Address;
   color: TextStyles['color'];
 }) => {
-  const { data: ensName } = useEnsName({ address });
+  const { displayName: walletDisplayName } = useWalletInfo({
+    address,
+  });
   return (
     <Text color={color} size="14pt" weight="semibold">
-      {ensName || truncateAddress(address)}
+      {walletDisplayName}
     </Text>
   );
 };
@@ -41,7 +43,7 @@ export const BottomWallet = ({
     <Box id={'switch-wallet-menu'}>
       <Inline alignVertical="center" space="4px">
         <WalletAvatar address={selectedWallet} size={18} emojiSize={'12pt'} />
-        <EnsName color="labelSecondary" address={selectedWallet} />
+        <WalletName color="labelSecondary" address={selectedWallet} />
         {displaySymbol && (
           <Symbol
             color="labelSecondary"
@@ -100,7 +102,7 @@ export const BottomSwitchWallet = ({
                 size={18}
                 emojiSize={'12pt'}
               />
-              <EnsName color="label" address={wallet as Address} />
+              <WalletName color="label" address={wallet as Address} />
             </Inline>
           </Box>
         )}

@@ -12,6 +12,7 @@ export const supportedCurrencies = {
     placeholder: '0',
     smallThreshold: 0.003,
     symbol: 'Ξ',
+    glyph: 'Ξ',
   },
   USD: {
     alignment: 'left',
@@ -25,6 +26,7 @@ export const supportedCurrencies = {
     placeholder: '0.00',
     smallThreshold: 1,
     symbol: '$',
+    glyph: '$',
   },
   EUR: {
     alignment: 'left',
@@ -38,6 +40,7 @@ export const supportedCurrencies = {
     placeholder: '0.00',
     smallThreshold: 1,
     symbol: '€',
+    glyph: '€',
   },
   GBP: {
     alignment: 'left',
@@ -51,6 +54,7 @@ export const supportedCurrencies = {
     placeholder: '0.00',
     smallThreshold: 1,
     symbol: '£',
+    glyph: '£',
   },
   AUD: {
     alignment: 'left',
@@ -64,6 +68,7 @@ export const supportedCurrencies = {
     placeholder: '0.00',
     smallThreshold: 1,
     symbol: 'A$',
+    glyph: '$',
   },
   CNY: {
     alignment: 'left',
@@ -77,6 +82,7 @@ export const supportedCurrencies = {
     placeholder: '0.00',
     smallThreshold: 5,
     symbol: '¥',
+    glyph: '¥',
   },
   KRW: {
     alignment: 'left',
@@ -90,6 +96,7 @@ export const supportedCurrencies = {
     placeholder: '0.00',
     smallThreshold: 1000,
     symbol: '₩',
+    glyph: '₩',
   },
   RUB: {
     alignment: 'right',
@@ -103,6 +110,7 @@ export const supportedCurrencies = {
     placeholder: '0.00',
     smallThreshold: 75,
     symbol: '₽',
+    glyph: '₽',
   },
   INR: {
     alignment: 'left',
@@ -116,6 +124,7 @@ export const supportedCurrencies = {
     placeholder: '0.00',
     smallThreshold: 75,
     symbol: '₹',
+    glyph: '₹',
   },
   JPY: {
     alignment: 'left',
@@ -129,6 +138,7 @@ export const supportedCurrencies = {
     placeholder: '0.00',
     smallThreshold: 100,
     symbol: '¥',
+    glyph: '¥',
   },
   TRY: {
     alignment: 'left',
@@ -142,6 +152,7 @@ export const supportedCurrencies = {
     placeholder: '0.00',
     smallThreshold: 8,
     symbol: '₺',
+    glyph: '₺',
   },
   CAD: {
     alignment: 'left',
@@ -155,6 +166,7 @@ export const supportedCurrencies = {
     placeholder: '0.00',
     smallThreshold: 1,
     symbol: 'CA$',
+    glyph: '$',
   },
   NZD: {
     alignment: 'left',
@@ -168,6 +180,7 @@ export const supportedCurrencies = {
     placeholder: '0.00',
     smallThreshold: 1.5,
     symbol: 'NZ$',
+    glyph: '$',
   },
   ZAR: {
     alignment: 'left',
@@ -181,6 +194,7 @@ export const supportedCurrencies = {
     placeholder: '0.00',
     smallThreshold: 15,
     symbol: 'R',
+    glyph: 'R',
   },
 };
 
