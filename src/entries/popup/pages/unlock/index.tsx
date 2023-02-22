@@ -7,6 +7,7 @@ import { accentColorAsHsl } from '~/design-system/styles/core.css';
 
 import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 import { PasswordInput } from '../../components/PasswordInput/PasswordInput';
+import { Tooltip } from '../../components/Tooltip/Tooltip';
 import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -70,16 +71,19 @@ export function Unlock() {
                 {i18n.t('unlock.welcome_back')}
               </Text>
             </Box>
-            <Box width="full">
-              <Text
-                align="center"
-                color="labelTertiary"
-                size="12pt"
-                weight="regular"
-              >
-                {i18n.t('unlock.enter_password')}
-              </Text>
-            </Box>
+            <Tooltip text="aaaaaaaaahhh">
+              <Box width="full">
+                <Text
+                  align="center"
+                  color="labelTertiary"
+                  size="12pt"
+                  weight="regular"
+                >
+                  {i18n.t('unlock.enter_password')}
+                </Text>
+              </Box>
+            </Tooltip>
+
             <Box width="full" padding="24px" style={{ width: '106px' }}>
               <Separator color="separatorTertiary" strokeWeight="1px" />
             </Box>
