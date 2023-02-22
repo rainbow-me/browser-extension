@@ -1,7 +1,7 @@
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import React, { ReactNode } from 'react';
 
-import { Box, Text } from '~/design-system';
+import { Box, Inline, Text } from '~/design-system';
 
 export const Tooltip = ({
   children,
@@ -16,10 +16,24 @@ export const Tooltip = ({
         <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
         <TooltipPrimitive.Portal>
           <TooltipPrimitive.Content className="TooltipContent" sideOffset={5}>
+            <Inline alignHorizontal="center">
+              <Box
+                background="surfaceSecondaryElevated"
+                backdropFilter="blur(26px)"
+                position="absolute"
+                borderRadius="2px"
+                marginBottom="-3px"
+                bottom="0"
+                style={{
+                  height: 10,
+                  width: 10,
+                  rotate: '45deg',
+                }}
+              />
+            </Inline>
             <Box
               background="surfaceSecondaryElevated"
               padding="7px"
-              boxShadow="24px surfaceSecondaryElevated"
               borderRadius="6px"
               backdropFilter="blur(26px)"
             >
