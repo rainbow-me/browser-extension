@@ -1,5 +1,12 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
-import React, { ReactNode, useCallback, useMemo, useRef } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useAccount } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -44,6 +51,7 @@ type ActivityProps = {
 
 const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 150;
+const ACTIVITY_DEFAULT_LENGTH = 100;
 
 export function Activity({ onSheetSelected }: ActivityProps) {
   const { address } = useAccount();
@@ -52,11 +60,12 @@ export function Activity({ onSheetSelected }: ActivityProps) {
     address,
     currency,
   });
+  const [activityLength, setActivityLength] = useState(ACTIVITY_DEFAULT_LENGTH);
   const listData = useMemo(() => {
     return Object.keys(allTransactionsByDate).reduce((listData, dateKey) => {
       return [...listData, dateKey, ...allTransactionsByDate[dateKey]];
     }, [] as (string | RainbowTransaction)[]);
-  }, [allTransactionsByDate]).slice(0, 200);
+  }, [allTransactionsByDate]).slice(0, activityLength);
   const containerRef = useRef<HTMLDivElement>(null);
   const activityRowVirtualizer = useVirtualizer({
     count: listData.length,
@@ -64,6 +73,19 @@ export function Activity({ onSheetSelected }: ActivityProps) {
     estimateSize: (i) => (typeof listData[i] === 'string' ? 34 : 52),
     overscan: 20,
   });
+  const scrollEndListener = useCallback(() => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+      setActivityLength(activityLength + ACTIVITY_DEFAULT_LENGTH);
+    }
+  }, [activityLength]);
+
+  useEffect(() => {
+    window.removeEventListener('scroll', scrollEndListener);
+    window.addEventListener('scroll', scrollEndListener);
+    return () => {
+      window.removeEventListener('scroll', scrollEndListener);
+    };
+  }, [scrollEndListener]);
 
   const onTransactionSelected = ({
     sheet,
