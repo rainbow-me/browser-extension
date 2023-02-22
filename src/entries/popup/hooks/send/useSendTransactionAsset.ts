@@ -7,6 +7,7 @@ import {
 } from '~/core/resources/_selectors/assets';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 export type SortMethod = 'token' | 'chain';
@@ -23,6 +24,7 @@ const sortBy = (by: SortMethod) => {
 export const useSendTransactionAsset = () => {
   const { address } = useAccount();
   const { currentCurrency } = useCurrentCurrencyStore();
+  const { connectedToHardhat } = useConnectedToHardhatStore();
   const [sortMethod, setSortMethod] = useState<SortMethod>('token');
 
   const [selectedAssetAddress, setSelectedAssetAddress] = useState<
@@ -32,6 +34,7 @@ export const useSendTransactionAsset = () => {
     {
       address,
       currency: currentCurrency,
+      connectedToHardhat,
     },
     { select: sortBy(sortMethod) },
   );

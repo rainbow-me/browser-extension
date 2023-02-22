@@ -227,7 +227,7 @@ export const DropdownMenu = (
   props: DropdownMenuPrimitive.DropdownMenuProps,
 ) => (
   // eslint-disable-next-line react/jsx-props-no-spreading
-  <DropdownMenuPrimitive.Root {...props} modal={false} />
+  <DropdownMenuPrimitive.Root {...props} modal />
 );
 
 export const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;

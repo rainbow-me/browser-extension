@@ -40,6 +40,7 @@ export type ButtonWrapperProps = {
   blur?: string;
   borderRadius?: Radius;
   tabIndex?: number;
+  disabled?: boolean;
 } & ButtonVariantProps;
 
 const shadowValue = (size: ShadowSize, color?: ButtonColor) =>
@@ -212,6 +213,7 @@ export function ButtonWrapper({
   blur = '',
   borderRadius,
   tabIndex,
+  disabled,
 }: ButtonWrapperProps) {
   const { boxShadow } = stylesForHeightAndVariant({
     color: color as ButtonColor,
@@ -238,8 +240,8 @@ export function ButtonWrapper({
     <Box
       as={motion.div}
       initial={{ zIndex: 0 }}
-      whileHover={{ scale: transformScales['1.04'] }}
-      whileTap={{ scale: transformScales['0.96'] }}
+      whileHover={{ scale: disabled ? undefined : transformScales['1.04'] }}
+      whileTap={{ scale: disabled ? undefined : transformScales['0.96'] }}
       transition={transitions.bounce}
       width={width}
       className="bx-button-wrapper"
@@ -269,7 +271,7 @@ export function ButtonWrapper({
             tintedStyles[(color as ButtonColor) || 'accent'],
         ]}
         display="flex"
-        onClick={onClick}
+        onClick={disabled ? () => null : onClick}
         position="relative"
         justifyContent="center"
         width={width}
