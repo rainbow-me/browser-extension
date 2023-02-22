@@ -158,6 +158,7 @@ export const TokenInput = ({
   dropdownClosed = false,
   setSortMethod,
   sortMethod,
+  zIndex,
 }: {
   asset: ParsedAddressAsset | null;
   assets: ParsedAddressAsset[];
@@ -165,6 +166,7 @@ export const TokenInput = ({
   dropdownClosed: boolean;
   setSortMethod: (sortMethod: SortMethod) => void;
   sortMethod: SortMethod;
+  zIndex?: number;
 }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
@@ -226,7 +228,7 @@ export const TokenInput = ({
 
   return (
     <InputWrapper
-      zIndex={1}
+      zIndex={zIndex || 1}
       dropdownHeight={376}
       testId={'token-input'}
       leftComponent={
