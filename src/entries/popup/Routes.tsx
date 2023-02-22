@@ -34,6 +34,7 @@ import { WalletsAndKeys } from './pages/settings/privacy/walletsAndKeys/walletsA
 import { Settings } from './pages/settings/settings';
 import { Transactions } from './pages/settings/transactions';
 import { Sign } from './pages/sign';
+import { Swap } from './pages/swap';
 import { Unlock } from './pages/unlock';
 import { WalletReady } from './pages/walletReady';
 import { WalletSwitcher } from './pages/walletSwitcher';
@@ -431,6 +432,19 @@ const ROUTE_DATA = [
         protectedRoute
       >
         <Send />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SWAP,
+    element: (
+      <AnimatedRoute
+        backTo={ROUTES.HOME}
+        direction="up"
+        title={i18n.t('swap.title')}
+        protectedRoute
+      >
+        <Swap />
       </AnimatedRoute>
     ),
   },

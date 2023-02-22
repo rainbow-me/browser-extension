@@ -31,6 +31,7 @@ export const ROUTES = {
   SETTINGS__TRANSACTIONS: '/settings/transactions', // Transactions
   SETTINGS__CURRENCY: '/settings/currency', // Currency
   SEND: '/send', // Send
+  SWAP: '/swap', // Swap
   SIGN: '/sign', // Sign
   WALLETS: '/wallets', // Wallets
   WALLET_SWITCHER: '/wallet-switcher', // WalletSwitcher
