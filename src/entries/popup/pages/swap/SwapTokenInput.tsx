@@ -36,7 +36,7 @@ import { AssetRow } from '../home/Tokens';
 import {
   swapTokenInputHighlightWrapperStyleDark,
   swapTokenInputHighlightWrapperStyleLight,
-} from './SendTokenInput.css';
+} from './SwapTokenInput.css';
 
 const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
   const { currentTheme } = useCurrentThemeStore();

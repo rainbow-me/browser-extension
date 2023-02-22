@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -12,11 +12,13 @@ import {
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsset';
+import { useSwapInputs } from '../../hooks/swap/useSwapInputs';
 
 import { SwapTokenInput } from './SwapTokenInput';
 
 export function Swap() {
-  const [toAddressDropdownOpen] = useState(false);
+  const { tokenToReceiveDropdownVisible, tokenToSwapDropdownVisible } =
+    useSwapInputs();
 
   const { asset, selectAssetAddress, assets, setSortMethod, sortMethod } =
     useSendTransactionAsset();
@@ -59,7 +61,7 @@ export function Swap() {
             asset={asset}
             assets={assets}
             selectAssetAddress={selectAsset}
-            dropdownClosed={toAddressDropdownOpen}
+            dropdownClosed={tokenToSwapDropdownVisible}
             setSortMethod={setSortMethod}
             sortMethod={sortMethod}
             zIndex={2}
@@ -104,7 +106,7 @@ export function Swap() {
             asset={asset}
             assets={assets}
             selectAssetAddress={selectAsset}
-            dropdownClosed={toAddressDropdownOpen}
+            dropdownClosed={tokenToReceiveDropdownVisible}
             setSortMethod={setSortMethod}
             sortMethod={sortMethod}
             zIndex={1}
