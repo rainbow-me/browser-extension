@@ -125,7 +125,7 @@ const infoButtonOptions = ({
       ]),
 ];
 
-const bottomSpacing = 20 + 20 + 32 + 32 + (process.env.IS_DEV ? 32 + 8 : 0);
+const bottomSpacing = 150 + (process.env.IS_DEV ? 40 : 0);
 const topSpacing = 127;
 
 const NoWalletsWarning = ({
@@ -388,8 +388,8 @@ export function WalletSwitcher() {
       </Box>
       <Box paddingHorizontal="16px" paddingBottom="8px">
         <QuickPromo
-          text="Drag wallets to reorder them"
-          textBold="Tip:"
+          text={i18n.t('wallet_switcher.quick_promo.text')}
+          textBold={i18n.t('wallet_switcher.quick_promo.text_bold')}
           symbol="sparkle"
           promoType="wallet_switcher"
         />
