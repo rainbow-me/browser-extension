@@ -221,7 +221,9 @@
     }
   },
   "swap": {
-    "title": "Swap"
+    "title": "Swap",
+    "input_token_to_swap_placeholder": "Select a token to swap",
+    "input_token_to_receive_placeholder": "Select a token to receive"
   },
   "custom_gas": {
     "title": "Gwei Settings",

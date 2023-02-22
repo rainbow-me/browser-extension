@@ -115,7 +115,7 @@ export const SwapTokenInput = ({
               weight="semibold"
               color={`${asset ? 'label' : 'labelTertiary'}`}
             >
-              {asset?.name ?? i18n.t('send.input_token_placeholder')}
+              {asset?.name ?? i18n.t('swap.input_token_to_swap_placeholder')}
             </TextOverflow>
 
             {asset && (
