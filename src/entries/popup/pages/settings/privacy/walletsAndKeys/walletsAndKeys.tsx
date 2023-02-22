@@ -17,12 +17,12 @@ export function WalletsAndKeys() {
   const [wallets, setWallets] = useState<KeychainWallet[]>([]);
 
   useEffect(() => {
-    chrome.storage.session.set({ wallet: null });
+    chrome.storage.session.set({ settingsWallet: null });
   }, []);
 
   const handleViewWallet = useCallback(
     async (wallet: KeychainWallet) => {
-      await chrome.storage.session.set({ wallet });
+      await chrome.storage.session.set({ settingsWallet: wallet });
       navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS);
     },
     [navigate],

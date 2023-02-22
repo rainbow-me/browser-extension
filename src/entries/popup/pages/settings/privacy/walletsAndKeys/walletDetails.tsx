@@ -108,8 +108,8 @@ export function WalletDetails() {
   const [wallet, setWallet] = useState<KeychainWallet>();
 
   useEffect(() => {
-    chrome.storage.session.get(['wallet'], (result) => {
-      return setWallet(result.wallet as KeychainWallet);
+    chrome.storage.session.get(['settingsWallet'], (result) => {
+      return setWallet(result.settingsWallet as KeychainWallet);
     });
   }, []);
 

@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { IconAndCopyItem } from '~/entries/popup/components/IconAndCopyList.tsx/IconAndCopyList';
@@ -48,8 +47,6 @@ const iconAndCopyList: IconAndCopyItem[] = [
 ];
 
 export function RecoveryPhraseWarning() {
-  const { state } = useLocation();
-
   const [showEnterPassword, setShowEnterPassword] = useState(false);
   const [confirmPasswordRedirect, setConfirmPasswordRedirect] = useState('');
   const openPasswordPrompt = () => {
@@ -72,7 +69,6 @@ export function RecoveryPhraseWarning() {
         show={showEnterPassword}
         onClose={closePasswordPrompt}
         redirect={confirmPasswordRedirect}
-        extraState={{ wallet: state?.wallet }}
       />
       <WarningInfo
         iconAndCopyList={iconAndCopyList}
