@@ -1,20 +1,14 @@
 {
-  "content_security_policy": {
-    "extension_pages": "frame-ancestors 'none'; script-src 'self'; object-src 'self'; connect-src 'self'"
-  },
-  "version": "1.0.40",
-  "minimum_chrome_version": "88",
   "action": {
     "default_icon": {
+      "128": "images/icon-16@8x.png",
       "16": "images/icon-16.png",
       "19": "images/icon-19.png",
       "32": "images/icon-16@2x.png",
       "38": "images/icon-19@2x.png",
-      "64": "images/icon-16@4x.png",
-      "128": "images/icon-16@8x.png",
-      "512": "images/icon-16@32x.png"
+      "512": "images/icon-16@32x.png",
+      "64": "images/icon-16@4x.png"
     },
-    "default_title": "Rainbow",
     "default_popup": "popup.html"
   },
   "author": "https://rainbow.me",
@@ -23,34 +17,38 @@
   },
   "content_scripts": [
     {
+      "all_frames": true,
+      "js": [
+        "contentscript.js"
+      ],
       "matches": [
         "http://*/*",
         "https://*/*"
       ],
-      "js": [
-        "contentscript.js"
-      ],
-      "run_at": "document_start",
-      "all_frames": true
+      "run_at": "document_start"
     }
   ],
+  "content_security_policy": {
+    "extension_pages": "frame-ancestors 'none'; script-src 'self'; object-src 'self'; connect-src 'self'"
+  },
   "default_locale": "en",
-  "description": "Rainbow is a fun, simple, and secure Ethereum wallet that makes managing your assets a joy.",
+  "description": "DEV VERSION",
   "host_permissions": [
     "http://*/*",
     "https://*/*"
   ],
   "icons": {
+    "128": "images/icon-16@8x.png",
     "16": "images/icon-16.png",
     "19": "images/icon-19.png",
     "32": "images/icon-16@2x.png",
     "38": "images/icon-19@2x.png",
-    "64": "images/icon-16@4x.png",
-    "128": "images/icon-16@8x.png",
-    "512": "images/icon-16@32x.png"
+    "512": "images/icon-16@32x.png",
+    "64": "images/icon-16@4x.png"
   },
   "manifest_version": 3,
-  "name": "Rainbow Wallet | DEVELOPMENT BUILD",
+  "minimum_chrome_version": "88",
+  "name": "Rainbow DEVELOPMENT BUILD",
   "permissions": [
     "activeTab",
     "clipboardWrite",
@@ -60,16 +58,17 @@
     "unlimitedStorage"
   ],
   "short_name": "Rainbow",
+  "version": "1.0.39",
   "web_accessible_resources": [
     {
+      "matches": [
+        "<all_urls>"
+      ],
       "resources": [
         "inpage.js",
         "*.woff2",
         "popup.css",
         "assets/badges/*.png"
-      ],
-      "matches": [
-        "<all_urls>"
       ]
     }
   ]
