@@ -38,7 +38,7 @@ export const Prompt = ({
           style={{
             width: '100%',
             height: '100%',
-            zIndex: 10,
+            zIndex: 1000,
           }}
           background="scrim"
           as={motion.div}
@@ -59,7 +59,7 @@ export const Prompt = ({
           style={{
             width: '100%',
             height: '100%',
-            zIndex: 10,
+            zIndex: 1001,
           }}
           as={motion.div}
           initial={{ opacity: 0 }}

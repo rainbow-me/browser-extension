@@ -210,7 +210,7 @@ export const ContextMenuItemIndicator = (
 
 export const ContextMenu = (props: ContextMenuPrimitive.ContextMenuProps) => (
   // eslint-disable-next-line react/jsx-props-no-spreading
-  <ContextMenuPrimitive.Root {...props} />
+  <ContextMenuPrimitive.Root {...props} modal />
 );
 
 export const ContextMenuRadioGroup = ContextMenuPrimitive.RadioGroup;
