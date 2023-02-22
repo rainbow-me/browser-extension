@@ -63,6 +63,7 @@ export function Swap() {
             setSortMethod={setSortMethod}
             sortMethod={sortMethod}
             zIndex={2}
+            placeholder={i18n.t('swap.input_token_to_swap_placeholder')}
           />
           <Box marginVertical="-20px" style={{ zIndex: 3 }}>
             <Inline alignHorizontal="center">
@@ -108,6 +109,7 @@ export function Swap() {
             setSortMethod={setSortMethod}
             sortMethod={sortMethod}
             zIndex={1}
+            placeholder={i18n.t('swap.input_token_to_receive_placeholder')}
           />
         </Stack>
       </Box>

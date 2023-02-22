@@ -66,6 +66,7 @@ export const SwapTokenInput = ({
   setSortMethod,
   sortMethod,
   zIndex,
+  placeholder,
 }: {
   asset: ParsedAddressAsset | null;
   assets: ParsedAddressAsset[];
@@ -74,6 +75,7 @@ export const SwapTokenInput = ({
   setSortMethod: (sortMethod: SortMethod) => void;
   sortMethod: SortMethod;
   zIndex?: number;
+  placeholder: string;
 }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
@@ -115,7 +117,7 @@ export const SwapTokenInput = ({
               weight="semibold"
               color={`${asset ? 'label' : 'labelTertiary'}`}
             >
-              {asset?.name ?? i18n.t('swap.input_token_to_swap_placeholder')}
+              {asset?.name ?? placeholder}
             </TextOverflow>
 
             {asset && (
