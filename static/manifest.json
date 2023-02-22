@@ -32,7 +32,7 @@
     "extension_pages": "frame-ancestors 'none'; script-src 'self'; object-src 'self'; connect-src 'self'"
   },
   "default_locale": "en",
-  "description": "THIS EXTENSION IS FOR BETA TESTING",
+  "description": "DEV VERSION",
   "host_permissions": [
     "http://*/*",
     "https://*/*"
