@@ -58,6 +58,65 @@ const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
 
 const { innerWidth: windowWidth } = window;
 
+const SwapTokenToSwap = ({
+  asset,
+  placeholder,
+}: {
+  asset: ParsedAddressAsset | null;
+  placeholder: string;
+}) => {
+  return (
+    <Box width="fit">
+      <Stack space="8px">
+        <TextOverflow
+          maxWidth={windowWidth / 2}
+          size="16pt"
+          weight="semibold"
+          color={`${asset ? 'label' : 'labelTertiary'}`}
+        >
+          {asset?.name ?? placeholder}
+        </TextOverflow>
+
+        {asset && (
+          <Text as="p" size="12pt" weight="semibold" color="labelTertiary">
+            {asset?.native?.balance?.display}
+          </Text>
+        )}
+      </Stack>
+    </Box>
+  );
+};
+
+const SwapTokenToReceive = ({
+  asset,
+  placeholder,
+}: {
+  asset: ParsedAddressAsset | null;
+  placeholder: string;
+}) => {
+  return (
+    <Box width="fit">
+      <Stack space="8px">
+        <TextOverflow
+          maxWidth={windowWidth / 2}
+          size="16pt"
+          weight="semibold"
+          color={`${asset ? 'label' : 'labelTertiary'}`}
+        >
+          {asset?.name ?? placeholder}
+        </TextOverflow>
+
+        {asset && (
+          <Text as="p" size="12pt" weight="semibold" color="labelTertiary">
+            {handleSignificantDecimals(asset?.balance.amount, asset?.decimals)}{' '}
+            {i18n.t('send.tokens_input.available')}
+          </Text>
+        )}
+      </Stack>
+    </Box>
+  );
+};
+
 export const SwapTokenInput = ({
   asset,
   assets,
@@ -69,6 +128,7 @@ export const SwapTokenInput = ({
   placeholder,
   onDropdownOpen,
   dropdownHeight,
+  type,
 }: {
   asset: ParsedAddressAsset | null;
   assets: ParsedAddressAsset[];
@@ -80,6 +140,7 @@ export const SwapTokenInput = ({
   placeholder: string;
   onDropdownOpen: (open: boolean) => void;
   dropdownHeight?: number;
+  type: 'toSwap' | 'toReceive';
 }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
@@ -115,28 +176,11 @@ export const SwapTokenInput = ({
         </Box>
       }
       centerComponent={
-        <Box width="fit">
-          <Stack space="8px">
-            <TextOverflow
-              maxWidth={windowWidth / 2}
-              size="16pt"
-              weight="semibold"
-              color={`${asset ? 'label' : 'labelTertiary'}`}
-            >
-              {asset?.name ?? placeholder}
-            </TextOverflow>
-
-            {asset && (
-              <Text as="p" size="12pt" weight="semibold" color="labelTertiary">
-                {handleSignificantDecimals(
-                  asset?.balance.amount,
-                  asset?.decimals,
-                )}{' '}
-                {i18n.t('send.tokens_input.available')}
-              </Text>
-            )}
-          </Stack>
-        </Box>
+        type === 'toSwap' ? (
+          <SwapTokenToSwap asset={asset} placeholder={placeholder} />
+        ) : (
+          <SwapTokenToReceive asset={asset} placeholder={placeholder} />
+        )
       }
       showActionClose={!!asset}
       onActionClose={() => onSelectAsset('')}
