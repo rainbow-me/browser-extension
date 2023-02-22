@@ -16,7 +16,11 @@
     "connect_hardware_wallet": "Connect a hardware wallet",
     "search_placeholder": "Search wallets",
     "no_wallets": "No wallets",
-    "no_results": "No results"
+    "no_results": "No results",
+    "quick_promo": {
+      "text": "Drag wallets to reorder them",
+      "text_bold": "Tip:"
+    }
   },
   "add_wallet": {
     "title": "Add another wallet",
@@ -298,8 +302,8 @@
   },
   "import_wallet_selection": {
     "title": "Your wallets",
-    "description_plural": "Rainbow detected %{count} wallets that have been previously recently. You can edit or add more at any time.",
-    "description_singular": "Rainbow detected 1 wallet that have been previously recently. You can add more at any time.",
+    "description_plural": "Rainbow detected %{count} wallets that have been used recently. You can edit or add more at any time.",
+    "description_singular": "Rainbow detected 1 wallet that have been used recently. You can add more at any time.",
     "add_wallets": "Add wallets",
     "edit_wallets": "Edit wallets",
     "loading": "Hold tight while we look up all your wallets...",
