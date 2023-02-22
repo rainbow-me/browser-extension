@@ -2,6 +2,7 @@
 const { inc, valid } = require('semver');
 
 const pkgJson = require('../package.json');
+const manifest = require('../static/manifest.json');
 const currentVersion = valid(pkgJson.version);
 const newVersion = inc(currentVersion, 'patch');
 
