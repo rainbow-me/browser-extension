@@ -16,7 +16,7 @@ import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useToast } from '../../hooks/useToast';
-// import { useWallets } from '../../hooks/useWallets';
+import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
 
@@ -84,7 +84,7 @@ function ActionButtonsSection() {
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
 
-  // const { watchedWallets } = useWallets();
+  const { watchedWallets } = useWallets();
   const { triggerToast } = useToast();
   const { featureFlags } = useFeatureFlagsStore();
 
@@ -96,15 +96,15 @@ function ActionButtonsSection() {
     });
   }, [address, triggerToast]);
 
-  // const isWatchingWallet = React.useMemo(() => {
-  //   const watchedAddresses = watchedWallets.map(({ address }) => address);
-  //   return address && watchedAddresses.includes(address);
-  // }, [address, watchedWallets]);
+  const isWatchingWallet = React.useMemo(() => {
+    const watchedAddresses = watchedWallets.map(({ address }) => address);
+    return address && watchedAddresses.includes(address);
+  }, [address, watchedWallets]);
 
-  // const alertWatchingWallet = React.useCallback(() => {
-  //   // this will be removed so not adding it to lang file
-  //   alert('This wallet is currently in "Watching" mode');
-  // }, []);
+  const alertWatchingWallet = React.useCallback(() => {
+    // this will be removed so not adding it to lang file
+    alert('This wallet is currently in "Watching" mode');
+  }, []);
 
   return (
     <Box style={{ height: 56 }}>
@@ -136,12 +136,9 @@ function ActionButtonsSection() {
 
           <Link
             id="header-link-send"
-            to={
-              // isWatchingWallet ? '#' :
-              ROUTES.SEND
-            }
+            to={isWatchingWallet ? '#' : ROUTES.SEND}
             state={{ from: ROUTES.HOME }}
-            // onClick={isWatchingWallet ? alertWatchingWallet : () => null}
+            onClick={isWatchingWallet ? alertWatchingWallet : () => null}
           >
             <ActionButton
               symbol="paperplane.fill"
