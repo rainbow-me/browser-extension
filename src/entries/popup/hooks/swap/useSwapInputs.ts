@@ -1,28 +1,28 @@
 import { useCallback, useState } from 'react';
 
 export const useSwapInputs = () => {
-  const [tokenToSwapDropdownVisible, setTokenToSwapDropdownVisible] =
+  const [assetToSwapDropdownVisible, setassetToSwapDropdownVisible] =
     useState(false);
-  const [tokenToReceiveDropdownVisible, setTokenToReceiveDropdownVisible] =
+  const [assetToReceiveDropdownVisible, setassetToReceiveDropdownVisible] =
     useState(false);
 
-  const onTokenToSwapInputClick = useCallback(() => {
-    setTokenToSwapDropdownVisible(
-      (tokenToSwapDropdownVisible) => !tokenToSwapDropdownVisible,
+  const onAssetToSwapInputClick = useCallback(() => {
+    setassetToSwapDropdownVisible(
+      (assetToSwapDropdownVisible) => !assetToSwapDropdownVisible,
     );
-    setTokenToReceiveDropdownVisible(false);
+    setassetToReceiveDropdownVisible(false);
   }, []);
-  const onTokenToReceiveInputClick = useCallback(() => {
-    setTokenToReceiveDropdownVisible(
-      (tokenToReceiveDropdownVisible) => !tokenToReceiveDropdownVisible,
+  const onAssetToReceiveInputClick = useCallback(() => {
+    setassetToReceiveDropdownVisible(
+      (assetToReceiveDropdownVisible) => !assetToReceiveDropdownVisible,
     );
-    setTokenToSwapDropdownVisible(false);
+    setassetToSwapDropdownVisible(false);
   }, []);
 
   return {
-    tokenToSwapDropdownVisible,
-    tokenToReceiveDropdownVisible,
-    onTokenToSwapInputClick,
-    onTokenToReceiveInputClick,
+    assetToSwapDropdownVisible,
+    assetToReceiveDropdownVisible,
+    onAssetToSwapInputClick,
+    onAssetToReceiveInputClick,
   };
 };

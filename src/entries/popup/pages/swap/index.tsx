@@ -19,10 +19,10 @@ import { SwapTokenInput } from './SwapTokenInput';
 
 export function Swap() {
   const {
-    tokenToReceiveDropdownVisible,
-    tokenToSwapDropdownVisible,
-    onTokenToSwapInputClick,
-    onTokenToReceiveInputClick,
+    assetToReceiveDropdownVisible,
+    assetToSwapDropdownVisible,
+    onAssetToSwapInputClick,
+    onAssetToReceiveInputClick,
   } = useSwapInputs();
 
   const {
@@ -35,14 +35,14 @@ export function Swap() {
     setAssetToSwapAddress,
   } = useSwapAssets();
 
-  const selectTokenToSwapAddress = useCallback(
+  const selectAssetToSwapAddress = useCallback(
     (address: Address | '') => {
       setAssetToSwapAddress(address);
     },
     [setAssetToSwapAddress],
   );
 
-  const selectTokenToReceiveAddress = useCallback(
+  const selectAssetToReceiveAddress = useCallback(
     (address: Address | '') => {
       setAssetToReceiveAddress(address);
     },
@@ -51,7 +51,6 @@ export function Swap() {
 
   const onFlip = useCallback(() => null, []);
 
-  console.log('---- tokenToSwapDropdownVisible', tokenToSwapDropdownVisible);
   return (
     <>
       <Navbar
@@ -84,9 +83,9 @@ export function Swap() {
             <SwapTokenInput
               asset={assetToSwap}
               assets={assets}
-              selectAssetAddress={selectTokenToSwapAddress}
-              onDropdownOpen={onTokenToSwapInputClick}
-              dropdownClosed={tokenToReceiveDropdownVisible}
+              selectAssetAddress={selectAssetToSwapAddress}
+              onDropdownOpen={onAssetToSwapInputClick}
+              dropdownClosed={assetToReceiveDropdownVisible}
               setSortMethod={setSortMethod}
               sortMethod={sortMethod}
               zIndex={2}
@@ -94,7 +93,10 @@ export function Swap() {
             />
           </AccentColorProviderWrapper>
 
-          <Box marginVertical="-20px" style={{ zIndex: 3 }}>
+          <Box
+            marginVertical="-20px"
+            style={{ zIndex: assetToSwapDropdownVisible ? 1 : 3 }}
+          >
             <Inline alignHorizontal="center">
               <Box
                 as={motion.div}
@@ -138,9 +140,9 @@ export function Swap() {
             <SwapTokenInput
               asset={assetToReceive}
               assets={assets}
-              selectAssetAddress={selectTokenToReceiveAddress}
-              onDropdownOpen={onTokenToReceiveInputClick}
-              dropdownClosed={tokenToSwapDropdownVisible}
+              selectAssetAddress={selectAssetToReceiveAddress}
+              onDropdownOpen={onAssetToReceiveInputClick}
+              dropdownClosed={assetToSwapDropdownVisible}
               setSortMethod={setSortMethod}
               sortMethod={sortMethod}
               zIndex={1}
