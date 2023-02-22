@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import React, { useCallback } from 'react';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import {
@@ -30,8 +29,8 @@ export function Swap() {
   const {
     assetToReceiveDropdownVisible,
     assetToSwapDropdownVisible,
-    onAssetToSwapInputClick,
-    onAssetToReceiveInputClick,
+    onAssetToSwapInputOpen,
+    onAssetToReceiveInputOpen,
   } = useSwapInputs();
 
   const {
@@ -43,20 +42,6 @@ export function Swap() {
     setAssetToReceiveAddress,
     setAssetToSwapAddress,
   } = useSwapAssets();
-
-  const selectAssetToSwapAddress = useCallback(
-    (address: Address | '') => {
-      setAssetToSwapAddress(address);
-    },
-    [setAssetToSwapAddress],
-  );
-
-  const selectAssetToReceiveAddress = useCallback(
-    (address: Address | '') => {
-      setAssetToReceiveAddress(address);
-    },
-    [setAssetToReceiveAddress],
-  );
 
   const onFlip = useCallback(() => null, []);
 
@@ -94,8 +79,8 @@ export function Swap() {
                 <SwapTokenInput
                   asset={assetToSwap}
                   assets={assets}
-                  selectAssetAddress={selectAssetToSwapAddress}
-                  onDropdownOpen={onAssetToSwapInputClick}
+                  selectAssetAddress={setAssetToSwapAddress}
+                  onDropdownOpen={onAssetToSwapInputOpen}
                   dropdownClosed={assetToReceiveDropdownVisible}
                   setSortMethod={setSortMethod}
                   sortMethod={sortMethod}
@@ -151,8 +136,8 @@ export function Swap() {
                 <SwapTokenInput
                   asset={assetToReceive}
                   assets={assets}
-                  selectAssetAddress={selectAssetToReceiveAddress}
-                  onDropdownOpen={onAssetToReceiveInputClick}
+                  selectAssetAddress={setAssetToReceiveAddress}
+                  onDropdownOpen={onAssetToReceiveInputOpen}
                   dropdownClosed={assetToSwapDropdownVisible}
                   setSortMethod={setSortMethod}
                   sortMethod={sortMethod}

@@ -90,9 +90,10 @@ export const SwapTokenInput = ({
   const onSelectAsset = useCallback(
     (address: Address | '') => {
       selectAssetAddress(address);
+      onDropdownOpen(false);
       setDropdownVisible(false);
     },
-    [selectAssetAddress],
+    [onDropdownOpen, selectAssetAddress],
   );
 
   useEffect(() => {

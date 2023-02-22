@@ -6,23 +6,25 @@ export const useSwapInputs = () => {
   const [assetToReceiveDropdownVisible, setassetToReceiveDropdownVisible] =
     useState(false);
 
-  const onAssetToSwapInputClick = useCallback(() => {
-    setassetToSwapDropdownVisible(
-      (assetToSwapDropdownVisible) => !assetToSwapDropdownVisible,
-    );
-    setassetToReceiveDropdownVisible(false);
-  }, []);
-  const onAssetToReceiveInputClick = useCallback(() => {
-    setassetToReceiveDropdownVisible(
-      (assetToReceiveDropdownVisible) => !assetToReceiveDropdownVisible,
-    );
-    setassetToSwapDropdownVisible(false);
-  }, []);
+  const onAssetToSwapInputOpen = useCallback(
+    (assetToSwapDropdownVisible: boolean) => {
+      setassetToSwapDropdownVisible(assetToSwapDropdownVisible);
+      setassetToReceiveDropdownVisible(false);
+    },
+    [],
+  );
+  const onAssetToReceiveInputOpen = useCallback(
+    (assetToReceiveDropdownVisible: boolean) => {
+      setassetToReceiveDropdownVisible(assetToReceiveDropdownVisible);
+      setassetToSwapDropdownVisible(false);
+    },
+    [],
+  );
 
   return {
     assetToSwapDropdownVisible,
     assetToReceiveDropdownVisible,
-    onAssetToSwapInputClick,
-    onAssetToReceiveInputClick,
+    onAssetToSwapInputOpen,
+    onAssetToReceiveInputOpen,
   };
 };
