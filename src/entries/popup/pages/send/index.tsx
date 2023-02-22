@@ -426,6 +426,7 @@ export function Send() {
                   variant="flat"
                   color="surfaceSecondary"
                   width="full"
+                  disabled
                 >
                   <Text color="labelQuaternary" size="14pt" weight="bold">
                     {buttonLabel}
