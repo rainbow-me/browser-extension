@@ -6,20 +6,18 @@ export const useSwapInputs = () => {
   const [tokenToReceiveDropdownVisible, setTokenToReceiveDropdownVisible] =
     useState(false);
 
-  const onTokenToSwapInputClick = useCallback(
-    () =>
-      setTokenToSwapDropdownVisible(
-        (tokenToSwapDropdownVisible) => !tokenToSwapDropdownVisible,
-      ),
-    [],
-  );
-  const onTokenToReceiveInputClick = useCallback(
-    () =>
-      setTokenToReceiveDropdownVisible(
-        (tokenToReceiveDropdownVisible) => !tokenToReceiveDropdownVisible,
-      ),
-    [],
-  );
+  const onTokenToSwapInputClick = useCallback(() => {
+    setTokenToSwapDropdownVisible(
+      (tokenToSwapDropdownVisible) => !tokenToSwapDropdownVisible,
+    );
+    setTokenToReceiveDropdownVisible(false);
+  }, []);
+  const onTokenToReceiveInputClick = useCallback(() => {
+    setTokenToReceiveDropdownVisible(
+      (tokenToReceiveDropdownVisible) => !tokenToReceiveDropdownVisible,
+    );
+    setTokenToSwapDropdownVisible(false);
+  }, []);
 
   return {
     tokenToSwapDropdownVisible,

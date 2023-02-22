@@ -3,6 +3,7 @@ import React, { useCallback } from 'react';
 
 import { i18n } from '~/core/languages';
 import { Box, ButtonSymbol, Inline, Stack } from '~/design-system';
+import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import {
   transformScales,
   transitions,
@@ -55,16 +56,23 @@ export function Swap() {
         paddingHorizontal="12px"
       >
         <Stack space="8px">
-          <SwapTokenInput
-            asset={assetToSwap}
-            assets={assets}
-            selectAssetAddress={setAssetToSwapAddress}
-            dropdownClosed={tokenToSwapDropdownVisible}
-            setSortMethod={setSortMethod}
-            sortMethod={sortMethod}
-            zIndex={2}
-            placeholder={i18n.t('swap.input_token_to_swap_placeholder')}
-          />
+          <AccentColorProviderWrapper
+            color={
+              assetToSwap?.colors?.primary || assetToSwap?.colors?.fallback
+            }
+          >
+            <SwapTokenInput
+              asset={assetToSwap}
+              assets={assets}
+              selectAssetAddress={setAssetToSwapAddress}
+              dropdownClosed={tokenToSwapDropdownVisible}
+              setSortMethod={setSortMethod}
+              sortMethod={sortMethod}
+              zIndex={2}
+              placeholder={i18n.t('swap.input_token_to_swap_placeholder')}
+            />
+          </AccentColorProviderWrapper>
+
           <Box marginVertical="-20px" style={{ zIndex: 3 }}>
             <Inline alignHorizontal="center">
               <Box
@@ -100,17 +108,23 @@ export function Swap() {
               </Box>
             </Inline>
           </Box>
-
-          <SwapTokenInput
-            asset={assetToReceive}
-            assets={assets}
-            selectAssetAddress={setAssetToReceiveAddress}
-            dropdownClosed={tokenToReceiveDropdownVisible}
-            setSortMethod={setSortMethod}
-            sortMethod={sortMethod}
-            zIndex={1}
-            placeholder={i18n.t('swap.input_token_to_receive_placeholder')}
-          />
+          <AccentColorProviderWrapper
+            color={
+              assetToReceive?.colors?.primary ||
+              assetToReceive?.colors?.fallback
+            }
+          >
+            <SwapTokenInput
+              asset={assetToReceive}
+              assets={assets}
+              selectAssetAddress={setAssetToReceiveAddress}
+              dropdownClosed={tokenToReceiveDropdownVisible}
+              setSortMethod={setSortMethod}
+              sortMethod={sortMethod}
+              zIndex={1}
+              placeholder={i18n.t('swap.input_token_to_receive_placeholder')}
+            />
+          </AccentColorProviderWrapper>
         </Stack>
       </Box>
     </>

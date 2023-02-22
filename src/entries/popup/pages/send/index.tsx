@@ -2,7 +2,6 @@ import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useAnimationControls } from 'framer-motion';
 import React, {
   ChangeEvent,
-  ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -14,21 +13,11 @@ import { i18n } from '~/core/languages';
 import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { ChainId } from '~/core/types/chains';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
-import {
-  AccentColorProvider,
-  Box,
-  Button,
-  Inline,
-  Row,
-  Rows,
-  Symbol,
-  Text,
-} from '~/design-system';
-import { foregroundColors } from '~/design-system/styles/designTokens';
+import { Box, Button, Inline, Row, Rows, Symbol, Text } from '~/design-system';
+import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 
 import {
   ExplainerSheet,
@@ -51,25 +40,6 @@ import { ReviewSheet } from './ReviewSheet';
 import { SendTokenInput } from './SendTokenInput';
 import { ToAddressInput } from './ToAddressInput';
 import { ValueInput } from './ValueInput';
-
-export const AccentColorProviderWrapper = ({
-  color,
-  children,
-}: {
-  color?: string;
-  children: ReactNode;
-}) => {
-  const { currentTheme } = useCurrentThemeStore();
-  const defaultColor =
-    currentTheme === 'light'
-      ? foregroundColors.labelQuaternary.dark
-      : foregroundColors.labelQuaternary.light;
-  return (
-    <AccentColorProvider color={color ?? defaultColor}>
-      {children}
-    </AccentColorProvider>
-  );
-};
 
 export function Send() {
   const [waitingForDevice, setWaitingForDevice] = useState(false);
