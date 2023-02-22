@@ -48,8 +48,8 @@ import { ROUTES } from '../../urls';
 import { ContactAction, ContactPrompt } from './ContactPrompt';
 import { NavbarContactButton } from './NavbarContactButton';
 import { ReviewSheet } from './ReviewSheet';
+import { SendTokenInput } from './SendTokenInput';
 import { ToAddressInput } from './ToAddressInput';
-import { TokenInput } from './TokenInput';
 import { ValueInput } from './ValueInput';
 
 export const AccentColorProviderWrapper = ({
@@ -350,7 +350,7 @@ export function Send() {
                   borderRadius="24px"
                   width="full"
                 >
-                  <TokenInput
+                  <SendTokenInput
                     asset={asset}
                     assets={assets}
                     selectAssetAddress={selectAsset}

@@ -151,7 +151,7 @@ const TokenSortMenu = ({
   );
 };
 
-export const TokenInput = ({
+export const SendTokenInput = ({
   asset,
   assets,
   selectAssetAddress,

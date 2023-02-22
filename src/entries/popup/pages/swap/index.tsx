@@ -12,7 +12,7 @@ import {
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsset';
-import { TokenInput } from '../send/TokenInput';
+import { SendTokenInput } from '../send/SendTokenInput';
 
 export function Swap() {
   const [toAddressDropdownOpen] = useState(false);
@@ -54,7 +54,7 @@ export function Swap() {
         paddingHorizontal="12px"
       >
         <Stack space="8px">
-          <TokenInput
+          <SendTokenInput
             asset={asset}
             assets={assets}
             selectAssetAddress={selectAsset}
@@ -99,7 +99,7 @@ export function Swap() {
             </Inline>
           </Box>
 
-          <TokenInput
+          <SendTokenInput
             asset={asset}
             assets={assets}
             selectAssetAddress={selectAsset}
