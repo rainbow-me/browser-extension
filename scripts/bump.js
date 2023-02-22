@@ -12,7 +12,6 @@ pkgJson.version = newVersion;
 
 // Update package.json
 require('fs').writeFileSync('./package.json', JSON.stringify(pkgJson, null, 2));
-
 // Update manifest.json
 manifest.version = newVersion;
 require('fs').writeFileSync(
