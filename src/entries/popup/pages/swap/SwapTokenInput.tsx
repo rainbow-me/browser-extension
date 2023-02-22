@@ -68,6 +68,7 @@ export const SwapTokenInput = ({
   zIndex,
   placeholder,
   onDropdownOpen,
+  dropdownHeight,
 }: {
   asset: ParsedAddressAsset | null;
   assets: ParsedAddressAsset[];
@@ -78,6 +79,7 @@ export const SwapTokenInput = ({
   zIndex?: number;
   placeholder: string;
   onDropdownOpen: (open: boolean) => void;
+  dropdownHeight?: number;
 }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
@@ -105,7 +107,7 @@ export const SwapTokenInput = ({
   return (
     <DropdownInputWrapper
       zIndex={zIndex || 1}
-      dropdownHeight={376}
+      dropdownHeight={dropdownHeight || 376}
       testId={'token-input'}
       leftComponent={
         <Box>

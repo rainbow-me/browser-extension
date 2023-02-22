@@ -77,6 +77,7 @@ export function Swap() {
                 }
               >
                 <SwapTokenInput
+                  dropdownHeight={452}
                   asset={assetToSwap}
                   assets={assets}
                   selectAssetAddress={setAssetToSwapAddress}
