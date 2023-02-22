@@ -28,6 +28,7 @@ export type ButtonProps = {
   paddingLeft?: BoxStyles['paddingLeft'];
   paddingRight?: BoxStyles['paddingRight'];
   tabIndex?: number;
+  disabled?: boolean;
 } & ButtonVariantProps &
   (
     | {

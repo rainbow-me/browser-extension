@@ -1,3 +1,4 @@
+import { TextStyles } from '~/design-system/styles/core.css';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
 import { GasSpeed } from './gas';
@@ -29,4 +30,5 @@ export type ThemeOption = 'light' | 'dark' | 'system';
 export interface ThemeData {
   symbol: SymbolName;
   label: string;
+  color: TextStyles['color'];
 }
