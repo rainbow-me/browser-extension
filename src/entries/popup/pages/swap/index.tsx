@@ -1,8 +1,13 @@
+import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { Box, ButtonSymbol, Inline, Stack } from '~/design-system';
+import {
+  transformScales,
+  transitions,
+} from '~/design-system/styles/designTokens';
 
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 import { Navbar } from '../../components/Navbar/Navbar';
@@ -22,6 +27,8 @@ export function Swap() {
     },
     [selectAssetAddress],
   );
+
+  const onFlip = useCallback(() => null, []);
 
   return (
     <>
@@ -56,32 +63,42 @@ export function Swap() {
             sortMethod={sortMethod}
             zIndex={2}
           />
-          <Box
-            boxShadow="12px surfaceSecondaryElevated"
-            background="surfaceSecondaryElevated"
-            borderRadius="32px"
-            borderWidth={'1px'}
-            borderColor="buttonStroke"
-            style={{ width: 42, height: 32, zIndex: 10 }}
-            marginTop="-50px"
-          >
-            <Box width="full" height="full" alignItems="center">
-              <Inline
-                height="full"
-                alignHorizontal="center"
-                alignVertical="center"
+          <Box marginVertical="-20px" style={{ zIndex: 3 }}>
+            <Inline alignHorizontal="center">
+              <Box
+                as={motion.div}
+                initial={{ zIndex: 0 }}
+                whileHover={{ scale: transformScales['1.04'] }}
+                whileTap={{ scale: transformScales['0.96'] }}
+                transition={transitions.bounce}
+                boxShadow="12px surfaceSecondaryElevated"
+                background="surfaceSecondaryElevated"
+                borderRadius="32px"
+                borderWidth={'1px'}
+                borderColor="buttonStroke"
+                style={{ width: 42, height: 32, zIndex: 10 }}
+                onClick={onFlip}
               >
-                <Stack alignHorizontal="center">
-                  <Box marginBottom="-4px">
-                    <ChevronDown color="labelTertiary" />
-                  </Box>
-                  <Box marginTop="-4px">
-                    <ChevronDown color="labelQuaternary" />
-                  </Box>
-                </Stack>
-              </Inline>
-            </Box>
+                <Box width="full" height="full" alignItems="center">
+                  <Inline
+                    height="full"
+                    alignHorizontal="center"
+                    alignVertical="center"
+                  >
+                    <Stack alignHorizontal="center">
+                      <Box marginBottom="-4px">
+                        <ChevronDown color="labelTertiary" />
+                      </Box>
+                      <Box marginTop="-4px">
+                        <ChevronDown color="labelQuaternary" />
+                      </Box>
+                    </Stack>
+                  </Inline>
+                </Box>
+              </Box>
+            </Inline>
           </Box>
+
           <TokenInput
             asset={asset}
             assets={assets}
