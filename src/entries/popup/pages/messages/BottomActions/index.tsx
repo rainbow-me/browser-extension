@@ -6,6 +6,7 @@ import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { Box, Button, Inline, Stack, Symbol, Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { EthSymbol } from '~/entries/popup/components/EthSymbol/EthSymbol';
+import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useWalletInfo } from '~/entries/popup/hooks/useWalletInfo';
@@ -13,7 +14,6 @@ import { useWallets } from '~/entries/popup/hooks/useWallets';
 
 import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
 import { SwitchMenu } from '../../../components/SwitchMenu/SwitchMenu';
-import { SwitchNetworkMenu } from '../../../components/SwitchMenu/SwitchNetworkMenu';
 
 export const WalletName = ({
   address,
@@ -175,6 +175,7 @@ export const BottomSwitchNetwork = ({
       </Text>
 
       <SwitchNetworkMenu
+        type="dropdown"
         chainId={selectedNetwork.id}
         onChainChanged={(_, chain) => setSelectedNetwork(chain)}
         triggerComponent={

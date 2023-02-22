@@ -160,6 +160,9 @@
       "CAD": "Canadian Dollar",
       "NZD": "New Zealand Dollar",
       "ZAR": "South African Rand"
+    },
+    "feature_flags": {
+      "swaps": "Swaps"
     }
   },
   "transactions": {
@@ -216,6 +219,9 @@
       "complete_checks": "Complete the checks",
       "confirm_hw": "Confirm on your device"
     }
+  },
+  "swap": {
+    "title": "Swap"
   },
   "custom_gas": {
     "title": "Gwei Settings",
