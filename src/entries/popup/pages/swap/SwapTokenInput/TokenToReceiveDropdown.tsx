@@ -29,7 +29,6 @@ export const TokenToReceiveDropdown = ({
   });
   const [selectedNetwork, setSelectedNetwork] = useState<Chain>(chain.mainnet);
 
-  console.log('token to receive dropdown ', asset?.colors?.primary);
   return (
     <Stack space="8px">
       <Box paddingHorizontal="20px">
