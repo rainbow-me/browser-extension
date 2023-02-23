@@ -1,24 +1,12 @@
 import { motion } from 'framer-motion';
-import React, { ReactNode, useState } from 'react';
+import React, { useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { ParsedAddressAsset } from '~/core/types/assets';
-import {
-  Bleed,
-  Box,
-  Inline,
-  Inset,
-  Stack,
-  Symbol,
-  Text,
-} from '~/design-system';
+import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
-import {
-  dropdownContainerVariant,
-  dropdownItemVariant,
-} from '../../../components/DropdownInputWrapper/DropdownInputWrapper';
+import { dropdownContainerVariant } from '../../../components/DropdownInputWrapper/DropdownInputWrapper';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,29 +15,8 @@ import {
   DropdownMenuTrigger,
 } from '../../../components/DropdownMenu/DropdownMenu';
 import { SortMethod } from '../../../hooks/send/useSendTransactionAsset';
-import { AssetRow } from '../../home/Tokens';
-import {
-  swapTokenInputHighlightWrapperStyleDark,
-  swapTokenInputHighlightWrapperStyleLight,
-} from '../SwapTokenInput.css';
 
-const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
-  const { currentTheme } = useCurrentThemeStore();
-  return (
-    <Inset>
-      <Box
-        borderRadius="12px"
-        className={
-          currentTheme === 'dark'
-            ? swapTokenInputHighlightWrapperStyleDark
-            : swapTokenInputHighlightWrapperStyleLight
-        }
-      >
-        {children}
-      </Box>
-    </Inset>
-  );
-};
+import { SwapTokenRow } from './SwapTokenRow';
 
 interface TokenToSwapDropdownProps {
   asset: ParsedAddressAsset | null;
@@ -167,15 +134,7 @@ export const TokenToSwapDropdown = ({
               onClick={() => onSelectAsset(asset.address)}
               testId={`token-input-asset-${asset?.uniqueId}`}
             >
-              <RowHighlightWrapper>
-                <Box
-                  as={motion.div}
-                  variants={dropdownItemVariant}
-                  marginHorizontal="-8px"
-                >
-                  <AssetRow uniqueId={asset?.uniqueId} />
-                </Box>
-              </RowHighlightWrapper>
+              <SwapTokenRow uniqueId={asset?.uniqueId} />
             </Box>
           ))}
         {!assets.length && (
