@@ -106,18 +106,20 @@ const SwapTokenToSwapBottom = ({
         >
           <Box
             as={motion.div}
-            initial={{ zIndex: 0 }}
             whileHover={{ scale: transformScales['1.04'] }}
             whileTap={{ scale: transformScales['0.96'] }}
             transition={transitions.bounce}
           >
             <Inline alignVertical="center" space="4px">
-              <Symbol
-                symbol="wand.and.stars"
-                size={12}
-                weight="heavy"
-                color="accent"
-              />
+              <Box marginVertical="-10px">
+                <Symbol
+                  symbol="wand.and.stars"
+                  size={12}
+                  weight="heavy"
+                  color="accent"
+                />
+              </Box>
+
               <Text size="12pt" weight="heavy" color="accent">
                 {'Max'}
               </Text>
