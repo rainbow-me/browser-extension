@@ -24,6 +24,8 @@ import {
   swapTokenInputHighlightWrapperStyleLight,
 } from '../SwapTokenInput.css';
 
+import { rowHighlightWrapperStyle } from './swapTokenRow.css';
+
 const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 210;
 const BALANCE_TEXT_MAX_WIDTH = 75;
@@ -135,7 +137,7 @@ export function SwapTokenRow({ uniqueId }: AssetRowProps) {
   );
 
   return (
-    <Box style={{ height: '52px' }}>
+    <Box className={rowHighlightWrapperStyle} style={{ height: '52px' }}>
       <RowHighlightWrapper>
         <Inset horizontal="12px" vertical="8px">
           <Rows>
