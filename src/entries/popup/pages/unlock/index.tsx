@@ -80,6 +80,7 @@ export function Unlock() {
                 {i18n.t('unlock.enter_password')}
               </Text>
             </Box>
+
             <Box width="full" padding="24px" style={{ width: '106px' }}>
               <Separator color="separatorTertiary" strokeWeight="1px" />
             </Box>
