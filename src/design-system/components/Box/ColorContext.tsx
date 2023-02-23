@@ -8,11 +8,14 @@ import React, {
   useMemo,
 } from 'react';
 
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+
 import { accentColorHslVars } from '../../styles/core.css';
 import {
   BackgroundColor,
   ColorContext,
   backgroundColors,
+  foregroundColors,
 } from '../../styles/designTokens';
 import { hslObjectForColor } from '../../styles/hslObjectForColor';
 import { themeClasses } from '../../styles/theme';
@@ -135,6 +138,25 @@ export function AccentColorProvider({
     </AccentColorContext.Provider>
   );
 }
+
+export const AccentColorProviderWrapper = ({
+  color,
+  children,
+}: {
+  color?: string;
+  children: ReactNode;
+}) => {
+  const { currentTheme } = useCurrentThemeStore();
+  const defaultColor =
+    currentTheme === 'light'
+      ? foregroundColors.labelQuaternary.dark
+      : foregroundColors.labelQuaternary.light;
+  return (
+    <AccentColorProvider color={color ?? defaultColor}>
+      {children}
+    </AccentColorProvider>
+  );
+};
 
 interface ThemeProviderProps {
   theme: ColorContext;

@@ -12,7 +12,7 @@ const tracks = {
   prod: manifestProd,
 };
 
-const track = process.argv[2];
+const track = process.argv[2] || 'internal';
 if (!Object.keys(tracks).includes(track)) {
   console.error('invalid track: %s', track);
   process.exit();

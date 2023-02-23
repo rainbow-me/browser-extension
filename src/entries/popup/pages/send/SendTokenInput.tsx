@@ -30,6 +30,11 @@ import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverfl
 
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import {
+  DropdownInputWrapper,
+  dropdownContainerVariant,
+  dropdownItemVariant,
+} from '../../components/DropdownInputWrapper/DropdownInputWrapper';
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
@@ -39,11 +44,6 @@ import {
 import { SortMethod } from '../../hooks/send/useSendTransactionAsset';
 import { AssetRow } from '../home/Tokens';
 
-import {
-  InputWrapper,
-  dropdownContainerVariant,
-  dropdownItemVariant,
-} from './InputWrapper';
 import {
   addressToInputHighlightWrapperStyleDark,
   addressToInputHighlightWrapperStyleLight,
@@ -151,13 +151,14 @@ const TokenSortMenu = ({
   );
 };
 
-export const TokenInput = ({
+export const SendTokenInput = ({
   asset,
   assets,
   selectAssetAddress,
   dropdownClosed = false,
   setSortMethod,
   sortMethod,
+  zIndex,
 }: {
   asset: ParsedAddressAsset | null;
   assets: ParsedAddressAsset[];
@@ -165,6 +166,7 @@ export const TokenInput = ({
   dropdownClosed: boolean;
   setSortMethod: (sortMethod: SortMethod) => void;
   sortMethod: SortMethod;
+  zIndex?: number;
 }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
@@ -225,8 +227,8 @@ export const TokenInput = ({
   const inputVisible = useMemo(() => !asset, [asset]);
 
   return (
-    <InputWrapper
-      zIndex={1}
+    <DropdownInputWrapper
+      zIndex={zIndex || 1}
       dropdownHeight={376}
       testId={'token-input'}
       leftComponent={
