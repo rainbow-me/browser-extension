@@ -34,6 +34,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
+import { SwapInputMask } from '../../components/InputMask/SwapInputMask/SwapInputMask';
 import { Tooltip } from '../../components/Tooltip/Tooltip';
 import { SortMethod } from '../../hooks/send/useSendTransactionAsset';
 import { AssetRow } from '../home/Tokens';
@@ -71,7 +72,7 @@ const SwapTokenToSwap = ({
   asset: ParsedAddressAsset | null;
   placeholder: string;
 }) => {
-  return (
+  return !asset ? (
     <Box width="fit">
       <TextOverflow
         maxWidth={windowWidth / 2}
@@ -79,8 +80,22 @@ const SwapTokenToSwap = ({
         weight="semibold"
         color={`${asset ? 'label' : 'labelTertiary'}`}
       >
-        {asset?.name ?? placeholder}
+        {placeholder}
       </TextOverflow>
+    </Box>
+  ) : (
+    <Box width="fit" marginVertical="-20px">
+      <SwapInputMask
+        borderColor="transparent"
+        decimals={asset?.decimals}
+        height="56px"
+        placeholder="0.00"
+        value={''}
+        variant="transparent"
+        onChange={() => null}
+        placeholderSymbol={asset?.symbol}
+        paddingHorizontal={0}
+      />
     </Box>
   );
 };
