@@ -32,8 +32,8 @@ import {
 } from '../../components/DropdownMenu/DropdownMenu';
 import { SortMethod } from '../../hooks/send/useSendTransactionAsset';
 import { AssetRow } from '../home/Tokens';
-import { InputActionButon } from '../send/InputActionButton';
 
+import { SwapInputActionButton } from './SwapInputActionButton';
 import {
   swapTokenInputHighlightWrapperStyleDark,
   swapTokenInputHighlightWrapperStyleLight,
@@ -184,11 +184,12 @@ export const SwapTokenInput = ({
         )
       }
       rightComponent={
-        <InputActionButon
+        <SwapInputActionButton
           showClose={!!asset}
           onClose={() => onSelectAsset('')}
           dropdownVisible={dropdownVisible}
           testId={`input-wrapper-close-${'token-input'}`}
+          asset={asset}
         />
       }
       dropdownComponent={

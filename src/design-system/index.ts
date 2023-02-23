@@ -16,4 +16,5 @@ export { Rows, Row } from './components/Rows/Rows';
 export { Stack } from './components/Stack/Stack';
 export { Symbol } from './components/Symbol/Symbol';
 export { Text } from './components/Text/Text';
+export { TextOverflow } from './components/TextOverflow/TextOverflow';
 export { Separator } from './components/Separator/Separator';
