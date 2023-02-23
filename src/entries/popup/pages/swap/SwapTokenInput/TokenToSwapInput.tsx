@@ -4,7 +4,6 @@ import React, { RefObject } from 'react';
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { Box, Inline, Symbol, Text } from '~/design-system';
-import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import {
   transformScales,
   transitions,
@@ -12,8 +11,6 @@ import {
 import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
 
 import { SwapInputMask } from '../../../components/InputMask/SwapInputMask/SwapInputMask';
-
-const { innerWidth: windowWidth } = window;
 
 export const TokenToSwapBottomComponent = ({
   asset,
@@ -72,14 +69,13 @@ export const TokenToSwapInput = ({
 }) => {
   return !asset ? (
     <Box width="fit">
-      <TextOverflow
-        maxWidth={windowWidth / 2}
+      <Text
         size="16pt"
         weight="semibold"
         color={`${asset ? 'label' : 'labelTertiary'}`}
       >
         {placeholder}
-      </TextOverflow>
+      </Text>
     </Box>
   ) : (
     <Box width="fit" marginVertical="-20px">
