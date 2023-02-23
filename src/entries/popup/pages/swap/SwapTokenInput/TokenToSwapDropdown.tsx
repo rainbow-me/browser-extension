@@ -5,6 +5,7 @@ import { Address } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets';
 
 import { dropdownContainerVariant } from '../../../components/DropdownInputWrapper/DropdownInputWrapper';
 import {
@@ -34,6 +35,9 @@ export const TokenToSwapDropdown = ({
   setSortMethod,
 }: TokenToSwapDropdownProps) => {
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
+  const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
+    assets,
+  });
 
   return (
     <Stack space="8px">
@@ -125,18 +129,23 @@ export const TokenToSwapDropdown = ({
         variants={dropdownContainerVariant}
         initial="hidden"
         animate="show"
+        ref={containerRef}
       >
         {!!assets?.length &&
-          assets?.map((asset, i) => (
-            <Box
-              paddingHorizontal="8px"
-              key={`${asset?.uniqueId}-${i}`}
-              onClick={() => onSelectAsset(asset.address)}
-              testId={`token-input-asset-${asset?.uniqueId}`}
-            >
-              <SwapTokenRow uniqueId={asset?.uniqueId} />
-            </Box>
-          ))}
+          assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
+            const { index } = virtualItem;
+            const rowData = assets?.[index];
+            return (
+              <Box
+                paddingHorizontal="8px"
+                key={`${rowData?.uniqueId}-${i}`}
+                onClick={() => onSelectAsset(rowData.address)}
+                testId={`token-input-asset-${asset?.uniqueId}`}
+              >
+                <SwapTokenRow uniqueId={rowData?.uniqueId} />
+              </Box>
+            );
+          })}
         {!assets.length && (
           <Box alignItems="center" style={{ paddingTop: 119 }}>
             <Stack space="16px">
