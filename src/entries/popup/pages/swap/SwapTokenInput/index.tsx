@@ -20,10 +20,6 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
-import {
-  transformScales,
-  transitions,
-} from '~/design-system/styles/designTokens';
 
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
 import {
@@ -38,7 +34,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '../../../components/DropdownMenu/DropdownMenu';
-import { Tooltip } from '../../../components/Tooltip/Tooltip';
 import { SortMethod } from '../../../hooks/send/useSendTransactionAsset';
 import { AssetRow } from '../../home/Tokens';
 import { SwapInputActionButton } from '../SwapInputActionButton';
@@ -48,7 +43,10 @@ import {
 } from '../SwapTokenInput.css';
 
 import { TokenToReceiveInput } from './TokenToReceiveInput';
-import { TokenToSwapInput } from './TokenToSwapInput';
+import {
+  TokenToSwapBottomComponent,
+  TokenToSwapInput,
+} from './TokenToSwapInput';
 
 const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
   const { currentTheme } = useCurrentThemeStore();
@@ -65,52 +63,6 @@ const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
         {children}
       </Box>
     </Inset>
-  );
-};
-
-const SwapTokenToSwapBottom = ({
-  asset,
-}: {
-  asset: ParsedAddressAsset | null;
-}) => {
-  return (
-    <Box width="full">
-      <Inline alignHorizontal="justify">
-        {asset && (
-          <Text as="p" size="12pt" weight="semibold" color="labelTertiary">
-            {asset?.native?.balance?.display}
-          </Text>
-        )}
-        <Tooltip
-          text={`1.23 ${asset?.symbol}`}
-          textColor="labelSecondary"
-          textSize="12pt"
-          textWeight="medium"
-        >
-          <Box
-            as={motion.div}
-            whileHover={{ scale: transformScales['1.04'] }}
-            whileTap={{ scale: transformScales['0.96'] }}
-            transition={transitions.bounce}
-          >
-            <Inline alignVertical="center" space="4px">
-              <Box marginVertical="-10px">
-                <Symbol
-                  symbol="wand.and.stars"
-                  size={12}
-                  weight="heavy"
-                  color="accent"
-                />
-              </Box>
-
-              <Text size="12pt" weight="heavy" color="accent">
-                {'Max'}
-              </Text>
-            </Inline>
-          </Box>
-        </Tooltip>
-      </Inline>
-    </Box>
   );
 };
 
@@ -187,7 +139,7 @@ export const SwapTokenInput = ({
       }
       bottomComponent={
         type === 'toSwap' && !!asset ? (
-          <SwapTokenToSwapBottom asset={asset} />
+          <TokenToSwapBottomComponent asset={asset} />
         ) : undefined
       }
       rightComponent={

@@ -224,7 +224,8 @@
     "title": "Swap",
     "input_token_to_swap_placeholder": "Select a token to swap",
     "input_token_to_receive_placeholder": "Select a token to receive",
-    "select_tokens_to_swap": "Select tokens to swap"
+    "select_tokens_to_swap": "Select tokens to swap",
+    "max": "Max"
   },
   "custom_gas": {
     "title": "Gwei Settings",
