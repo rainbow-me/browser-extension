@@ -17,6 +17,7 @@ import { SwapInputActionButton } from '../SwapInputActionButton';
 
 import { TokenInput } from './TokenInput';
 import { TokenToReceiveBottomComponent } from './TokenToReceiveBottomComponent';
+import { TokenToReceiveDropdown } from './TokenToReceiveDropdown';
 import { TokenToSwapBottomComponent } from './TokenToSwapBottomComponent';
 import { TokenToSwapDropdown } from './TokenToSwapDropdown';
 
@@ -77,6 +78,31 @@ export const SwapTokenInput = ({
     }
   }, [asset, type]);
 
+  const dropdownComponent = useMemo(() => {
+    switch (type) {
+      case 'toSwap':
+        return (
+          <TokenToSwapDropdown
+            asset={asset}
+            assets={assets}
+            sortMethod={sortMethod}
+            setSortMethod={setSortMethod}
+            onSelectAsset={onSelectAsset}
+          />
+        );
+      case 'toReceive':
+        return (
+          <TokenToReceiveDropdown
+            asset={asset}
+            assets={assets}
+            sortMethod={sortMethod}
+            setSortMethod={setSortMethod}
+            onSelectAsset={onSelectAsset}
+          />
+        );
+    }
+  }, [asset, assets, onSelectAsset, setSortMethod, sortMethod, type]);
+
   useEffect(() => {
     if (dropdownClosed) {
       setDropdownVisible(false);
@@ -110,15 +136,7 @@ export const SwapTokenInput = ({
           asset={asset}
         />
       }
-      dropdownComponent={
-        <TokenToSwapDropdown
-          asset={asset}
-          assets={assets}
-          sortMethod={sortMethod}
-          setSortMethod={setSortMethod}
-          onSelectAsset={onSelectAsset}
-        />
-      }
+      dropdownComponent={dropdownComponent}
       dropdownVisible={dropdownVisible}
       onDropdownAction={onDropdownAction}
       borderVisible
