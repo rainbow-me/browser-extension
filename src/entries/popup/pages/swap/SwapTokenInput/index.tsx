@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import React, {
   ReactNode,
-  RefObject,
   useCallback,
   useEffect,
   useRef,
@@ -12,7 +11,6 @@ import { Address } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { ParsedAddressAsset } from '~/core/types/assets';
-import { handleSignificantDecimals } from '~/core/utils/numbers';
 import {
   Bleed,
   Box,
@@ -22,35 +20,35 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
-import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import {
   transformScales,
   transitions,
 } from '~/design-system/styles/designTokens';
 
-import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
+import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
 import {
   DropdownInputWrapper,
   dropdownContainerVariant,
   dropdownItemVariant,
-} from '../../components/DropdownInputWrapper/DropdownInputWrapper';
+} from '../../../components/DropdownInputWrapper/DropdownInputWrapper';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from '../../components/DropdownMenu/DropdownMenu';
-import { SwapInputMask } from '../../components/InputMask/SwapInputMask/SwapInputMask';
-import { Tooltip } from '../../components/Tooltip/Tooltip';
-import { SortMethod } from '../../hooks/send/useSendTransactionAsset';
-import { AssetRow } from '../home/Tokens';
-
-import { SwapInputActionButton } from './SwapInputActionButton';
+} from '../../../components/DropdownMenu/DropdownMenu';
+import { Tooltip } from '../../../components/Tooltip/Tooltip';
+import { SortMethod } from '../../../hooks/send/useSendTransactionAsset';
+import { AssetRow } from '../../home/Tokens';
+import { SwapInputActionButton } from '../SwapInputActionButton';
 import {
   swapTokenInputHighlightWrapperStyleDark,
   swapTokenInputHighlightWrapperStyleLight,
-} from './SwapTokenInput.css';
+} from '../SwapTokenInput.css';
+
+import { TokenToReceiveInput } from './TokenToReceiveInput';
+import { TokenToSwapInput } from './TokenToSwapInput';
 
 const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
   const { currentTheme } = useCurrentThemeStore();
@@ -67,45 +65,6 @@ const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
         {children}
       </Box>
     </Inset>
-  );
-};
-
-const { innerWidth: windowWidth } = window;
-
-const SwapTokenToSwap = ({
-  asset,
-  placeholder,
-  innerRef,
-}: {
-  asset: ParsedAddressAsset | null;
-  placeholder: string;
-  innerRef?: RefObject<HTMLInputElement>;
-}) => {
-  return !asset ? (
-    <Box width="fit">
-      <TextOverflow
-        maxWidth={windowWidth / 2}
-        size="16pt"
-        weight="semibold"
-        color={`${asset ? 'label' : 'labelTertiary'}`}
-      >
-        {placeholder}
-      </TextOverflow>
-    </Box>
-  ) : (
-    <Box width="fit" marginVertical="-20px">
-      <SwapInputMask
-        borderColor="transparent"
-        decimals={asset?.decimals}
-        height="56px"
-        placeholder="0.00"
-        value={''}
-        variant="transparent"
-        onChange={() => null}
-        paddingHorizontal={0}
-        innerRef={innerRef}
-      />
-    </Box>
   );
 };
 
@@ -151,36 +110,6 @@ const SwapTokenToSwapBottom = ({
           </Box>
         </Tooltip>
       </Inline>
-    </Box>
-  );
-};
-
-const SwapTokenToReceive = ({
-  asset,
-  placeholder,
-}: {
-  asset: ParsedAddressAsset | null;
-  placeholder: string;
-}) => {
-  return (
-    <Box width="fit">
-      <Stack space="8px">
-        <TextOverflow
-          maxWidth={windowWidth / 2}
-          size="16pt"
-          weight="semibold"
-          color={`${asset ? 'label' : 'labelTertiary'}`}
-        >
-          {asset?.name ?? placeholder}
-        </TextOverflow>
-
-        {asset && (
-          <Text as="p" size="12pt" weight="semibold" color="labelTertiary">
-            {handleSignificantDecimals(asset?.balance.amount, asset?.decimals)}{' '}
-            {i18n.t('send.tokens_input.available')}
-          </Text>
-        )}
-      </Stack>
     </Box>
   );
 };
@@ -247,13 +176,13 @@ export const SwapTokenInput = ({
       }
       centerComponent={
         type === 'toSwap' ? (
-          <SwapTokenToSwap
+          <TokenToSwapInput
             innerRef={innerRef}
             asset={asset}
             placeholder={placeholder}
           />
         ) : (
-          <SwapTokenToReceive asset={asset} placeholder={placeholder} />
+          <TokenToReceiveInput asset={asset} placeholder={placeholder} />
         )
       }
       bottomComponent={
