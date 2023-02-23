@@ -15,6 +15,7 @@ import {
   Rows,
   TextOverflow,
 } from '~/design-system';
+import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 import { Asterisks } from '~/entries/popup/components/Asterisks/Asterisks';
 import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
@@ -23,8 +24,6 @@ import {
   swapTokenInputHighlightWrapperStyleDark,
   swapTokenInputHighlightWrapperStyleLight,
 } from '../SwapTokenInput.css';
-
-import { rowHighlightWrapperStyle } from './swapTokenRow.css';
 
 const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 210;
@@ -137,7 +136,11 @@ export function SwapTokenRow({ uniqueId }: AssetRowProps) {
   );
 
   return (
-    <Box className={rowHighlightWrapperStyle} style={{ height: '52px' }}>
+    <Box
+      className={rowTransparentAccentHighlight}
+      borderRadius="12px"
+      style={{ height: '52px' }}
+    >
       <RowHighlightWrapper>
         <Inset horizontal="12px" vertical="8px">
           <Rows>

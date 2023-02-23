@@ -8,11 +8,11 @@ import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { convertAmountAndPriceToNativeDisplay } from '~/core/utils/numbers';
 import { Box, Inline, Row, Rows, Symbol, Text } from '~/design-system';
+import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 
 import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
 import { useWalletName } from '../../hooks/useWalletName';
 import { Asterisks } from '../Asterisks/Asterisks';
-import { rowHighlightWrapperStyle } from '../CoinRow/CoinRow.css';
 import { MenuItem } from '../Menu/MenuItem';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
@@ -69,11 +69,12 @@ export default function AccountItem({
 
   return (
     <Box
-      className={rowHighlight ? rowHighlightWrapperStyle : undefined}
+      className={rowHighlight ? rowTransparentAccentHighlight : undefined}
       onClick={onClick}
       key={account}
       paddingHorizontal="12px"
       paddingVertical="8px"
+      borderRadius="12px"
     >
       <Inline alignHorizontal="justify" alignVertical="center">
         <Inline space="8px" alignHorizontal="left">
