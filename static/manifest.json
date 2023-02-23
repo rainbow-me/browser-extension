@@ -1,13 +1,13 @@
 {
   "action": {
     "default_icon": {
-      "128": "images/icon-16@8x.png",
       "16": "images/icon-16.png",
       "19": "images/icon-19.png",
       "32": "images/icon-16@2x.png",
       "38": "images/icon-19@2x.png",
-      "512": "images/icon-16@32x.png",
-      "64": "images/icon-16@4x.png"
+      "64": "images/icon-16@4x.png",
+      "128": "images/icon-16@8x.png",
+      "512": "images/icon-16@32x.png"
     },
     "default_popup": "popup.html"
   },
@@ -38,13 +38,13 @@
     "https://*/*"
   ],
   "icons": {
-    "128": "images/icon-16@8x.png",
     "16": "images/icon-16.png",
     "19": "images/icon-19.png",
     "32": "images/icon-16@2x.png",
     "38": "images/icon-19@2x.png",
-    "512": "images/icon-16@32x.png",
-    "64": "images/icon-16@4x.png"
+    "64": "images/icon-16@4x.png",
+    "128": "images/icon-16@8x.png",
+    "512": "images/icon-16@32x.png"
   },
   "manifest_version": 3,
   "minimum_chrome_version": "88",
@@ -58,7 +58,7 @@
     "unlimitedStorage"
   ],
   "short_name": "Rainbow",
-  "version": "1.0.39",
+  "version": "1.0.42",
   "web_accessible_resources": [
     {
       "matches": [
