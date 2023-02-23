@@ -93,7 +93,6 @@ const SwapTokenToSwap = ({
         value={''}
         variant="transparent"
         onChange={() => null}
-        placeholderSymbol={asset?.symbol}
         paddingHorizontal={0}
       />
     </Box>

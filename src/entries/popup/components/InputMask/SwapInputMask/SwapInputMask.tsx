@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { CSSProperties, RefObject, useCallback, useMemo } from 'react';
+import React, { CSSProperties, RefObject, useCallback } from 'react';
 
 import { Box } from '~/design-system';
 import { BoxStyles, accentColorAsHsl } from '~/design-system/styles/core.css';
@@ -12,6 +12,19 @@ import { Input } from '../../../../../design-system/components/Input/Input';
 import { InputHeight } from '../../../../../design-system/components/Input/Input.css';
 import { maskInput } from '../utils';
 
+interface SwapInputMaskProps {
+  borderColor: BoxStyles['borderColor'];
+  decimals?: number;
+  height: InputHeight;
+  innerRef?: RefObject<HTMLInputElement>;
+  style?: CSSProperties;
+  value: string;
+  variant: 'surface' | 'bordered' | 'transparent';
+  onChange: (value: string) => void;
+  paddingHorizontal?: number;
+  placeholder: string;
+}
+
 export const SwapInputMask = ({
   borderColor,
   decimals,
@@ -22,32 +35,14 @@ export const SwapInputMask = ({
   value,
   variant,
   onChange,
-  placeholderSymbol,
   paddingHorizontal,
-}: {
-  borderColor: BoxStyles['borderColor'];
-  decimals?: number;
-  height: InputHeight;
-  innerRef?: RefObject<HTMLInputElement>;
-  placeholder: string;
-  style?: CSSProperties;
-  value: string;
-  variant: 'surface' | 'bordered' | 'transparent';
-  onChange: (value: string) => void;
-  placeholderSymbol?: string;
-  paddingHorizontal?: number;
-}) => {
+}: SwapInputMaskProps) => {
   const handleOnChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const maskedValue = maskInput({ inputValue: e.target.value, decimals });
       onChange(maskedValue);
     },
     [decimals, onChange],
-  );
-
-  const symbolPadding = useMemo(
-    () => ((placeholderSymbol?.length || 3) - 3) * 18,
-    [placeholderSymbol],
   );
 
   const onMaskClick = useCallback(() => {
@@ -77,7 +72,7 @@ export const SwapInputMask = ({
           variant={variant}
           innerRef={innerRef}
           style={{
-            paddingRight: paddingHorizontal || value ? 125 + symbolPadding : 0,
+            paddingRight: paddingHorizontal,
             paddingLeft: paddingHorizontal,
             caretColor: accentColorAsHsl,
           }}
