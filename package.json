@@ -9,7 +9,7 @@
     "// Bumps the pkg.json version": "",
     "bump": "node scripts/bump.js",
     "// Generates the manifest with the new pkg.json version": "",
-    "generate-manifest": "node scripts/generate-manifest.js internal",
+    "generate-manifest": "node scripts/generate-manifest.js",
     "generate-manifest:prod": "node scripts/generate-manifest.js prod",
     "// Generates a build using webpack secured by Lavamoat": "",
     "build": "yarn devmode:off && yarn build:webpack",
