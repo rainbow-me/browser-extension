@@ -151,7 +151,7 @@ describe('App interactions flow', () => {
 
     const mmButton = await querySelector(
       driver,
-      '[data-testid="rk-wallet-option-injected"]',
+      '[data-testid="rk-wallet-option-rainbow"]',
     );
     await waitAndClick(mmButton, driver);
 
