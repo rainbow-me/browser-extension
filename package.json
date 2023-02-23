@@ -1,13 +1,16 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.0.40",
+  "version": "1.0.42",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
     "devmode:off": "sed -i'' -e 's/IS_DEV.*/IS_DEV=false/g' .env",
-    "// Bumps the manifest and pkg.json versions": "",
+    "// Bumps the pkg.json version": "",
     "bump": "node scripts/bump.js",
+    "// Generates the manifest with the new pkg.json version": "",
+    "generate-manifest": "node scripts/generate-manifest.js internal",
+    "generate-manifest:prod": "node scripts/generate-manifest.js prod",
     "// Generates a build using webpack secured by Lavamoat": "",
     "build": "yarn devmode:off && yarn build:webpack",
     "// Generates modules via Webpack (without LavaMoat protected modules)": "",

@@ -1,5 +1,10 @@
 {
+  "content_security_policy": {
+    "extension_pages": "frame-ancestors 'none'; script-src 'self'; object-src 'self'; connect-src 'self'"
+  },
+  "minimum_chrome_version": "88",
   "action": {
+    "default_popup": "popup.html",
     "default_icon": {
       "16": "images/icon-16.png",
       "19": "images/icon-19.png",
@@ -8,35 +13,12 @@
       "64": "images/icon-16@4x.png",
       "128": "images/icon-16@8x.png",
       "512": "images/icon-16@32x.png"
-    },
-    "default_popup": "popup.html"
+    }
   },
   "author": "https://rainbow.me",
   "background": {
     "service_worker": "background.js"
   },
-  "content_scripts": [
-    {
-      "all_frames": true,
-      "js": [
-        "contentscript.js"
-      ],
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ],
-      "run_at": "document_start"
-    }
-  ],
-  "content_security_policy": {
-    "extension_pages": "frame-ancestors 'none'; script-src 'self'; object-src 'self'; connect-src 'self'"
-  },
-  "default_locale": "en",
-  "description": "DEV VERSION",
-  "host_permissions": [
-    "http://*/*",
-    "https://*/*"
-  ],
   "icons": {
     "16": "images/icon-16.png",
     "19": "images/icon-19.png",
@@ -46,9 +28,25 @@
     "128": "images/icon-16@8x.png",
     "512": "images/icon-16@32x.png"
   },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "contentscript.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "default_locale": "en",
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
   "manifest_version": 3,
-  "minimum_chrome_version": "88",
-  "name": "Rainbow DEVELOPMENT BUILD",
   "permissions": [
     "activeTab",
     "clipboardWrite",
@@ -58,17 +56,16 @@
     "unlimitedStorage"
   ],
   "short_name": "Rainbow",
-  "version": "1.0.42",
   "web_accessible_resources": [
     {
-      "matches": [
-        "<all_urls>"
-      ],
       "resources": [
         "inpage.js",
         "*.woff2",
         "popup.css",
         "assets/badges/*.png"
+      ],
+      "matches": [
+        "<all_urls>"
       ]
     }
   ]
