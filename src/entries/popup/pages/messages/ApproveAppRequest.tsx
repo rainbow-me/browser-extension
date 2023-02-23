@@ -38,7 +38,7 @@ export const ApproveAppRequest = () => {
     async (payload?: unknown) => {
       backgroundMessenger.send(`message:${pendingRequest?.id}`, payload);
       handleRequestAction();
-      navigate(ROUTES.HOME);
+      navigate(ROUTES.HOME, { state: { isBack: true } });
     },
     [handleRequestAction, navigate, pendingRequest?.id],
   );
@@ -46,7 +46,7 @@ export const ApproveAppRequest = () => {
   const rejectRequest = useCallback(() => {
     backgroundMessenger.send(`message:${pendingRequest?.id}`, null);
     handleRequestAction();
-    navigate(ROUTES.HOME);
+    navigate(ROUTES.HOME, { state: { isBack: true } });
   }, [handleRequestAction, navigate, pendingRequest?.id]);
 
   switch (pendingRequest?.method) {

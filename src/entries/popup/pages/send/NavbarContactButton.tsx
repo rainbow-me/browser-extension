@@ -315,6 +315,7 @@ export const NavbarContactButton = ({
           key="save"
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 1111, damping: 50, mass: 1 }}
           exit={{ opacity: 0 }}
         >
           <NavbarSaveContactButton
@@ -330,6 +331,7 @@ export const NavbarContactButton = ({
           key="edit"
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 1111, damping: 50, mass: 1 }}
           exit={{ opacity: 0 }}
         >
           <NavbarEditContactButton

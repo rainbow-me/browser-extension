@@ -90,7 +90,7 @@ const ROUTE_DATA = [
   {
     path: ROUTES.WELCOME,
     element: (
-      <AnimatedRoute direction="base" protectedRoute={['NEW']}>
+      <AnimatedRoute direction="upRight" protectedRoute={['NEW']}>
         <Welcome />
       </AnimatedRoute>
     ),
@@ -239,7 +239,7 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute
         backTo={ROUTES.HOME}
-        direction="up"
+        direction="upRight"
         navbar
         navbarIcon="ex"
         title={i18n.t('settings.title')}
@@ -469,7 +469,7 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute
         backTo={ROUTES.HOME}
-        direction="up"
+        direction="upRight"
         navbar
         navbarIcon="ex"
         title={i18n.t('wallets.title')}
@@ -485,9 +485,9 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute
         backTo={ROUTES.WALLET_SWITCHER}
-        direction="down"
+        direction="right"
         navbar
-        navbarIcon="ex"
+        navbarIcon="arrow"
         title={i18n.t('add_wallet.title')}
         protectedRoute
         background="surfaceSecondary"
@@ -596,18 +596,12 @@ function CurrentRoute(props: { pathname: string }) {
   const match = matchingRoute(props.pathname);
   const element = match?.element;
   const currentDirection = element?.props.direction;
-  const { state } = useLocation();
-  const previousMatch = matchingRoute(state?.from || '');
-  const previousElement = previousMatch?.element;
-  const previousDirection = previousElement?.props.direction;
   if (!element) {
     // error UI here probably
     return null;
   }
-  const isBack = state?.isBack;
-  const direction = isBack
-    ? directionMap[previousDirection as Direction]
-    : currentDirection;
+  const direction = currentDirection;
+
   return (
     <AnimatePresence mode="popLayout">
       {React.cloneElement(element, {
@@ -617,12 +611,3 @@ function CurrentRoute(props: { pathname: string }) {
     </AnimatePresence>
   );
 }
-
-type Direction = 'right' | 'left' | 'up' | 'down' | 'base';
-const directionMap = {
-  right: 'left',
-  up: 'down',
-  left: 'right',
-  down: 'up',
-  base: 'base',
-};

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import React from 'react';
-import { To } from 'react-router-dom';
+import { To, useLocation } from 'react-router-dom';
 
 import { Box } from '~/design-system';
 import {
@@ -35,7 +35,7 @@ export const animatedRouteValues: Record<
   base: {
     initial: {
       opacity: 0,
-      y: -20,
+      y: 0,
     },
     end: {
       opacity: 1,
@@ -57,7 +57,7 @@ export const animatedRouteValues: Record<
     },
     exit: {
       opacity: 0,
-      x: -12,
+      x: -16,
     },
   },
   left: {
@@ -85,7 +85,24 @@ export const animatedRouteValues: Record<
     },
     exit: {
       opacity: 0,
-      y: 12,
+      y: -16,
+    },
+  },
+  upRight: {
+    initial: {
+      opacity: 0,
+      x: 0,
+      y: 16,
+    },
+    end: {
+      opacity: 1,
+      x: 0,
+      y: 0,
+    },
+    exit: {
+      opacity: 0,
+      x: -16,
+      y: 0,
     },
   },
   down: {
@@ -146,6 +163,8 @@ export const AnimatedRoute = React.forwardRef<
   } = props;
   const { initial, end, exit } = animatedRouteValues[direction];
   const transition = animatedRouteTransitionConfig[direction];
+  const { state } = useLocation();
+  const isBack = state?.isBack;
 
   const content = (
     <Box
@@ -154,9 +173,9 @@ export const AnimatedRoute = React.forwardRef<
       display="flex"
       flexDirection="column"
       height="full"
-      initial={initial}
+      initial={isBack ? exit : initial}
       animate={end}
-      exit={exit}
+      exit={isBack ? initial : exit}
       transition={transition}
       background={background}
       className={animatedRouteStyles}

@@ -309,7 +309,7 @@ export function Send() {
       <Navbar
         title={i18n.t('send.title')}
         background={'surfaceSecondary'}
-        leftComponent={<Navbar.CloseButton />}
+        leftComponent={<Navbar.CloseButton backTo={ROUTES.HOME} />}
         rightComponent={
           <NavbarContactButton
             onSaveAction={setSaveContactAction}

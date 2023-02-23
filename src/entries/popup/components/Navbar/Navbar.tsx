@@ -37,7 +37,7 @@ export function Navbar({
           as={motion.div}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.45 }}
+          transition={{ type: 'spring', stiffness: 1111, damping: 50, mass: 1 }}
           exit={{ opacity: 0 }}
           position="absolute"
           style={{
@@ -65,7 +65,7 @@ export function Navbar({
           as={motion.div}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.45 }}
+          transition={{ type: 'spring', stiffness: 1111, damping: 50, mass: 1 }}
           exit={{ opacity: 0 }}
           position="absolute"
           style={{

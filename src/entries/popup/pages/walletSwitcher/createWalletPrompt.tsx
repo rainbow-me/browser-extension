@@ -51,7 +51,7 @@ export const CreateWalletPrompt = ({
         address,
       });
       setCurrentAddress(address);
-      navigate(ROUTES.HOME);
+      navigate(ROUTES.HOME, { state: { isBack: true } });
       return;
     }
     setError(i18n.t('errors.no_wallet_name_set'));

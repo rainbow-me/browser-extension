@@ -175,7 +175,9 @@ export function WalletSwitcher() {
   const handleSelectAddress = useCallback(
     (address: Address) => {
       setCurrentAddress(address);
-      navigate(ROUTES.HOME);
+      navigate(ROUTES.HOME, {
+        state: { isBack: true },
+      });
     },
     [navigate, setCurrentAddress],
   );

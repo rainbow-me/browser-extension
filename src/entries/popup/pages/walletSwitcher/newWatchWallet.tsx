@@ -10,7 +10,7 @@ const NewWatchWallet = () => {
   const navigate = useRainbowNavigate();
 
   const onFinishImporting = useCallback(async () => {
-    navigate(ROUTES.WALLET_SWITCHER);
+    navigate(ROUTES.WALLET_SWITCHER, { state: { isBack: true } });
   }, [navigate]);
   return (
     <Box
