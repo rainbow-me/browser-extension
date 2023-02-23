@@ -1,5 +1,12 @@
 import { motion } from 'framer-motion';
-import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+import React, {
+  ReactNode,
+  RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -68,9 +75,11 @@ const { innerWidth: windowWidth } = window;
 const SwapTokenToSwap = ({
   asset,
   placeholder,
+  innerRef,
 }: {
   asset: ParsedAddressAsset | null;
   placeholder: string;
+  innerRef?: RefObject<HTMLInputElement>;
 }) => {
   return !asset ? (
     <Box width="fit">
@@ -94,6 +103,7 @@ const SwapTokenToSwap = ({
         variant="transparent"
         onChange={() => null}
         paddingHorizontal={0}
+        innerRef={innerRef}
       />
     </Box>
   );
@@ -202,6 +212,7 @@ export const SwapTokenInput = ({
 }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
+  const innerRef = useRef<HTMLInputElement>(null);
 
   const onDropdownAction = useCallback(() => {
     onDropdownOpen(!dropdownVisible);
@@ -213,6 +224,7 @@ export const SwapTokenInput = ({
       selectAssetAddress(address);
       onDropdownOpen(false);
       setDropdownVisible(false);
+      setTimeout(() => innerRef?.current?.focus(), 300);
     },
     [onDropdownOpen, selectAssetAddress],
   );
@@ -235,7 +247,11 @@ export const SwapTokenInput = ({
       }
       centerComponent={
         type === 'toSwap' ? (
-          <SwapTokenToSwap asset={asset} placeholder={placeholder} />
+          <SwapTokenToSwap
+            innerRef={innerRef}
+            asset={asset}
+            placeholder={placeholder}
+          />
         ) : (
           <SwapTokenToReceive asset={asset} placeholder={placeholder} />
         )

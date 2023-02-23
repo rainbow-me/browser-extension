@@ -75,6 +75,8 @@ export const DropdownInputWrapper = ({
           paddingTop="16px"
           borderWidth={borderVisible ? '1px' : undefined}
           borderColor="buttonStroke"
+          as={motion.div}
+          layout="position"
         >
           <Box
             testId={`input-wrapper-dropdown-${testId}`}
