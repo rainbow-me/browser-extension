@@ -44,6 +44,7 @@ import {
 import { SortMethod } from '../../hooks/send/useSendTransactionAsset';
 import { AssetRow } from '../home/Tokens';
 
+import { InputActionButon } from './InputActionButton';
 import {
   addressToInputHighlightWrapperStyleDark,
   addressToInputHighlightWrapperStyleLight,
@@ -177,6 +178,7 @@ export const SendTokenInput = ({
     setDropdownVisible(!dropdownVisible);
     dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
   }, [dropdownVisible]);
+
   const onSelectAsset = useCallback(
     (address: Address | '') => {
       selectAssetAddress(address);
@@ -280,8 +282,14 @@ export const SendTokenInput = ({
           )}
         </Box>
       }
-      showActionClose={!!asset}
-      onActionClose={onCloseDropdown}
+      rightComponent={
+        <InputActionButon
+          showClose={!!asset}
+          onClose={onCloseDropdown}
+          dropdownVisible={dropdownVisible}
+          testId={`input-wrapper-close-${'token-input'}`}
+        />
+      }
       dropdownComponent={
         <Stack space="8px">
           <Box paddingHorizontal="20px">

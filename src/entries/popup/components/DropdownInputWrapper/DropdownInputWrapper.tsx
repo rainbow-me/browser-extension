@@ -3,8 +3,6 @@ import React, { ReactElement } from 'react';
 
 import { Box, Column, Columns, Separator, Stack } from '~/design-system';
 
-import { InputActionButon } from '../../pages/send/InputActionButton';
-
 const TRANSITION_CONFIG = {
   height: {
     type: 'spring',
@@ -29,33 +27,33 @@ export const dropdownItemVariant = {
   show: { opacity: 1 },
 };
 
+interface DropdownInputWrapperProps {
+  borderVisible?: boolean;
+  centerComponent: ReactElement;
+  dropdownComponent: ReactElement;
+  dropdownHeight?: number;
+  dropdownVisible: boolean;
+  leftComponent: ReactElement;
+  rightComponent: ReactElement;
+  testId?: string;
+  zIndex?: number;
+  onDropdownAction: () => void;
+  onDropdownScroll?: () => void;
+}
+
 export const DropdownInputWrapper = ({
   leftComponent,
   centerComponent,
+  rightComponent,
   dropdownComponent,
   dropdownVisible,
-  showActionClose,
-  onActionClose,
   onDropdownAction,
   zIndex,
   dropdownHeight,
   onDropdownScroll,
   testId,
   borderVisible = true,
-}: {
-  leftComponent: ReactElement;
-  centerComponent: ReactElement;
-  dropdownComponent: ReactElement;
-  showActionClose: boolean;
-  dropdownVisible: boolean;
-  onActionClose: () => void;
-  onDropdownAction: () => void;
-  zIndex?: number;
-  dropdownHeight?: number;
-  onDropdownScroll?: () => void;
-  testId?: string;
-  borderVisible?: boolean;
-}) => {
+}: DropdownInputWrapperProps) => {
   return (
     <Box style={{ height: 68 }}>
       <Box width="full" position="relative" style={{ zIndex: zIndex ?? 1 }}>
@@ -83,14 +81,7 @@ export const DropdownInputWrapper = ({
                 <Box>{centerComponent}</Box>
               </Column>
 
-              <Column width="content">
-                <InputActionButon
-                  showClose={showActionClose}
-                  onClose={onActionClose}
-                  dropdownVisible={dropdownVisible}
-                  testId={`input-wrapper-close-${testId}`}
-                />
-              </Column>
+              <Column width="content">{rightComponent}</Column>
             </Columns>
           </Box>
 
