@@ -17,6 +17,7 @@ export const TokenToSwapBottomComponent = ({
 }: {
   asset: ParsedAddressAsset | null;
 }) => {
+  if (!asset) return null;
   return (
     <Box width="full">
       <Inline alignHorizontal="justify">

@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Address } from 'wagmi';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
@@ -9,12 +15,29 @@ import { DropdownInputWrapper } from '../../../components/DropdownInputWrapper/D
 import { SortMethod } from '../../../hooks/send/useSendTransactionAsset';
 import { SwapInputActionButton } from '../SwapInputActionButton';
 
-import { TokenToReceiveInput } from './TokenToReceiveInput';
+import {
+  TokenToReceiveBottomComponent,
+  TokenToReceiveInput,
+} from './TokenToReceiveInput';
 import { TokenToSwapDropdown } from './TokenToSwapDropdown';
 import {
   TokenToSwapBottomComponent,
   TokenToSwapInput,
 } from './TokenToSwapInput';
+
+interface SwapTokenInputProps {
+  asset: ParsedAddressAsset | null;
+  assets: ParsedAddressAsset[];
+  selectAssetAddress: (address: Address | '') => void;
+  dropdownClosed: boolean;
+  setSortMethod: (sortMethod: SortMethod) => void;
+  sortMethod: SortMethod;
+  zIndex?: number;
+  placeholder: string;
+  onDropdownOpen: (open: boolean) => void;
+  dropdownHeight?: number;
+  type: 'toSwap' | 'toReceive';
+}
 
 export const SwapTokenInput = ({
   asset,
@@ -28,19 +51,7 @@ export const SwapTokenInput = ({
   onDropdownOpen,
   dropdownHeight,
   type,
-}: {
-  asset: ParsedAddressAsset | null;
-  assets: ParsedAddressAsset[];
-  selectAssetAddress: (address: Address | '') => void;
-  dropdownClosed: boolean;
-  setSortMethod: (sortMethod: SortMethod) => void;
-  sortMethod: SortMethod;
-  zIndex?: number;
-  placeholder: string;
-  onDropdownOpen: (open: boolean) => void;
-  dropdownHeight?: number;
-  type: 'toSwap' | 'toReceive';
-}) => {
+}: SwapTokenInputProps) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const innerRef = useRef<HTMLInputElement>(null);
 
@@ -59,6 +70,33 @@ export const SwapTokenInput = ({
     [onDropdownOpen, selectAssetAddress],
   );
 
+  const centerComponent = useMemo(() => {
+    switch (type) {
+      case 'toSwap':
+        return (
+          <TokenToSwapInput
+            innerRef={innerRef}
+            asset={asset}
+            placeholder={placeholder}
+          />
+        );
+      case 'toReceive':
+        return <TokenToReceiveInput asset={asset} placeholder={placeholder} />;
+    }
+  }, [asset, placeholder, type]);
+
+  const bottomComponent = useMemo(() => {
+    if (!asset) return null;
+    switch (type) {
+      case 'toSwap':
+        return <TokenToSwapBottomComponent asset={asset} />;
+      case 'toReceive':
+        return <TokenToReceiveBottomComponent asset={asset} />;
+      default:
+        return null;
+    }
+  }, [asset, type]);
+
   useEffect(() => {
     if (dropdownClosed) {
       setDropdownVisible(false);
@@ -75,22 +113,8 @@ export const SwapTokenInput = ({
           <CoinIcon asset={asset ?? undefined} />
         </Box>
       }
-      centerComponent={
-        type === 'toSwap' ? (
-          <TokenToSwapInput
-            innerRef={innerRef}
-            asset={asset}
-            placeholder={placeholder}
-          />
-        ) : (
-          <TokenToReceiveInput asset={asset} placeholder={placeholder} />
-        )
-      }
-      bottomComponent={
-        type === 'toSwap' && !!asset ? (
-          <TokenToSwapBottomComponent asset={asset} />
-        ) : undefined
-      }
+      centerComponent={centerComponent}
+      bottomComponent={bottomComponent}
       rightComponent={
         <SwapInputActionButton
           showClose={!!asset}
