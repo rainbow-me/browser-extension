@@ -129,6 +129,7 @@ export function Swap() {
                   </Box>
                 </Inline>
               </Box>
+
               <AccentColorProviderWrapper
                 color={
                   assetToReceive?.colors?.primary ||

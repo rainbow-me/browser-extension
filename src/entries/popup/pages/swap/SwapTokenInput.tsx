@@ -16,6 +16,10 @@ import {
   Text,
 } from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
+import {
+  transformScales,
+  transitions,
+} from '~/design-system/styles/designTokens';
 
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import {
@@ -30,6 +34,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
+import { Tooltip } from '../../components/Tooltip/Tooltip';
 import { SortMethod } from '../../hooks/send/useSendTransactionAsset';
 import { AssetRow } from '../home/Tokens';
 
@@ -68,22 +73,58 @@ const SwapTokenToSwap = ({
 }) => {
   return (
     <Box width="fit">
-      <Stack space="8px">
-        <TextOverflow
-          maxWidth={windowWidth / 2}
-          size="16pt"
-          weight="semibold"
-          color={`${asset ? 'label' : 'labelTertiary'}`}
-        >
-          {asset?.name ?? placeholder}
-        </TextOverflow>
+      <TextOverflow
+        maxWidth={windowWidth / 2}
+        size="16pt"
+        weight="semibold"
+        color={`${asset ? 'label' : 'labelTertiary'}`}
+      >
+        {asset?.name ?? placeholder}
+      </TextOverflow>
+    </Box>
+  );
+};
 
+const SwapTokenToSwapBottom = ({
+  asset,
+}: {
+  asset: ParsedAddressAsset | null;
+}) => {
+  return (
+    <Box width="full">
+      <Inline alignHorizontal="justify">
         {asset && (
           <Text as="p" size="12pt" weight="semibold" color="labelTertiary">
             {asset?.native?.balance?.display}
           </Text>
         )}
-      </Stack>
+        <Tooltip
+          text={`1.23 ${asset?.symbol}`}
+          textColor="labelSecondary"
+          textSize="12pt"
+          textWeight="medium"
+        >
+          <Box
+            as={motion.div}
+            initial={{ zIndex: 0 }}
+            whileHover={{ scale: transformScales['1.04'] }}
+            whileTap={{ scale: transformScales['0.96'] }}
+            transition={transitions.bounce}
+          >
+            <Inline alignVertical="center" space="4px">
+              <Symbol
+                symbol="wand.and.stars"
+                size={12}
+                weight="heavy"
+                color="accent"
+              />
+              <Text size="12pt" weight="heavy" color="accent">
+                {'Max'}
+              </Text>
+            </Inline>
+          </Box>
+        </Tooltip>
+      </Inline>
     </Box>
   );
 };
@@ -182,6 +223,11 @@ export const SwapTokenInput = ({
         ) : (
           <SwapTokenToReceive asset={asset} placeholder={placeholder} />
         )
+      }
+      bottomComponent={
+        type === 'toSwap' && !!asset ? (
+          <SwapTokenToSwapBottom asset={asset} />
+        ) : undefined
       }
       rightComponent={
         <SwapInputActionButton
@@ -340,7 +386,7 @@ export const SwapTokenInput = ({
       }
       dropdownVisible={dropdownVisible}
       onDropdownAction={onDropdownAction}
-      borderVisible={!asset}
+      borderVisible
     />
   );
 };

@@ -1,7 +1,15 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { ReactElement } from 'react';
 
-import { Box, Column, Columns, Separator, Stack } from '~/design-system';
+import {
+  Box,
+  Column,
+  Columns,
+  Row,
+  Rows,
+  Separator,
+  Stack,
+} from '~/design-system';
 
 const TRANSITION_CONFIG = {
   height: {
@@ -29,6 +37,7 @@ export const dropdownItemVariant = {
 
 interface DropdownInputWrapperProps {
   borderVisible?: boolean;
+  bottomComponent?: ReactElement;
   centerComponent: ReactElement;
   dropdownComponent: ReactElement;
   dropdownHeight?: number;
@@ -42,6 +51,7 @@ interface DropdownInputWrapperProps {
 }
 
 export const DropdownInputWrapper = ({
+  bottomComponent,
   leftComponent,
   centerComponent,
   rightComponent,
@@ -55,7 +65,7 @@ export const DropdownInputWrapper = ({
   borderVisible = true,
 }: DropdownInputWrapperProps) => {
   return (
-    <Box style={{ height: 68 }}>
+    <Box style={{ height: bottomComponent ? 92 : 68 }}>
       <Box width="full" position="relative" style={{ zIndex: zIndex ?? 1 }}>
         <Box
           height="full"
@@ -70,19 +80,28 @@ export const DropdownInputWrapper = ({
             testId={`input-wrapper-dropdown-${testId}`}
             onClick={onDropdownAction}
           >
-            <Columns
-              alignVertical="center"
-              alignHorizontal="justify"
-              space="8px"
-            >
-              <Column width="content">{leftComponent}</Column>
+            <Rows space="16px">
+              <Row>
+                <Columns
+                  alignVertical="center"
+                  alignHorizontal="justify"
+                  space="8px"
+                >
+                  <Column width="content">{leftComponent}</Column>
 
-              <Column>
-                <Box>{centerComponent}</Box>
-              </Column>
+                  <Column>
+                    <Box>{centerComponent}</Box>
+                  </Column>
 
-              <Column width="content">{rightComponent}</Column>
-            </Columns>
+                  <Column width="content">{rightComponent}</Column>
+                </Columns>
+              </Row>
+              {!!bottomComponent && (
+                <Row>
+                  <Box>{bottomComponent}</Box>
+                </Row>
+              )}
+            </Rows>
           </Box>
 
           <Box
