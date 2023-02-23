@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { RefObject } from 'react';
+import React from 'react';
 
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
@@ -9,8 +9,6 @@ import {
   transitions,
 } from '~/design-system/styles/designTokens';
 import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
-
-import { SwapInputMask } from '../../../components/InputMask/SwapInputMask/SwapInputMask';
 
 export const TokenToSwapBottomComponent = ({
   asset,
@@ -55,42 +53,6 @@ export const TokenToSwapBottomComponent = ({
           </Box>
         </Tooltip>
       </Inline>
-    </Box>
-  );
-};
-
-export const TokenToSwapInput = ({
-  asset,
-  placeholder,
-  innerRef,
-}: {
-  asset: ParsedAddressAsset | null;
-  placeholder: string;
-  innerRef?: RefObject<HTMLInputElement>;
-}) => {
-  return !asset ? (
-    <Box width="fit">
-      <Text
-        size="16pt"
-        weight="semibold"
-        color={`${asset ? 'label' : 'labelTertiary'}`}
-      >
-        {placeholder}
-      </Text>
-    </Box>
-  ) : (
-    <Box width="fit" marginVertical="-20px">
-      <SwapInputMask
-        borderColor="transparent"
-        decimals={asset?.decimals}
-        height="56px"
-        placeholder="0.00"
-        value={''}
-        variant="transparent"
-        onChange={() => null}
-        paddingHorizontal={0}
-        innerRef={innerRef}
-      />
     </Box>
   );
 };

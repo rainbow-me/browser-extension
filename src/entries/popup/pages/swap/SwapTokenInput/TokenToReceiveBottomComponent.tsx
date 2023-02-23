@@ -3,9 +3,7 @@ import React, { useMemo } from 'react';
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
-import { Box, Inline, Text, TextOverflow } from '~/design-system';
-
-const { innerWidth: windowWidth } = window;
+import { Box, Inline, Text } from '~/design-system';
 
 export const TokenToReceiveBottomComponent = ({
   asset,
@@ -39,27 +37,6 @@ export const TokenToReceiveBottomComponent = ({
           </Text>
         </Inline>
       </Inline>
-    </Box>
-  );
-};
-
-export const TokenToReceiveInput = ({
-  asset,
-  placeholder,
-}: {
-  asset: ParsedAddressAsset | null;
-  placeholder: string;
-}) => {
-  return (
-    <Box width="fit">
-      <TextOverflow
-        maxWidth={windowWidth - 140}
-        size="16pt"
-        weight="semibold"
-        color={`${asset ? 'label' : 'labelTertiary'}`}
-      >
-        {asset?.name ?? placeholder}
-      </TextOverflow>
     </Box>
   );
 };

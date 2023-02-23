@@ -15,15 +15,10 @@ import { DropdownInputWrapper } from '../../../components/DropdownInputWrapper/D
 import { SortMethod } from '../../../hooks/send/useSendTransactionAsset';
 import { SwapInputActionButton } from '../SwapInputActionButton';
 
-import {
-  TokenToReceiveBottomComponent,
-  TokenToReceiveInput,
-} from './TokenToReceiveInput';
+import { TokenInput } from './TokenInput';
+import { TokenToReceiveBottomComponent } from './TokenToReceiveBottomComponent';
+import { TokenToSwapBottomComponent } from './TokenToSwapBottomComponent';
 import { TokenToSwapDropdown } from './TokenToSwapDropdown';
-import {
-  TokenToSwapBottomComponent,
-  TokenToSwapInput,
-} from './TokenToSwapInput';
 
 interface SwapTokenInputProps {
   asset: ParsedAddressAsset | null;
@@ -70,21 +65,6 @@ export const SwapTokenInput = ({
     [onDropdownOpen, selectAssetAddress],
   );
 
-  const centerComponent = useMemo(() => {
-    switch (type) {
-      case 'toSwap':
-        return (
-          <TokenToSwapInput
-            innerRef={innerRef}
-            asset={asset}
-            placeholder={placeholder}
-          />
-        );
-      case 'toReceive':
-        return <TokenToReceiveInput asset={asset} placeholder={placeholder} />;
-    }
-  }, [asset, placeholder, type]);
-
   const bottomComponent = useMemo(() => {
     if (!asset) return null;
     switch (type) {
@@ -113,7 +93,13 @@ export const SwapTokenInput = ({
           <CoinIcon asset={asset ?? undefined} />
         </Box>
       }
-      centerComponent={centerComponent}
+      centerComponent={
+        <TokenInput
+          innerRef={innerRef}
+          asset={asset}
+          placeholder={placeholder}
+        />
+      }
       bottomComponent={bottomComponent}
       rightComponent={
         <SwapInputActionButton
