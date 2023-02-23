@@ -106,6 +106,7 @@ export const SwitchNetworkMenuDisconnect = ({
 };
 
 interface SwitchNetworkMenuProps {
+  accentColor?: string;
   chainId: Chain['id'];
   onChainChanged: (chainId: Chain['id'], chain: Chain) => void;
   onDisconnect?: () => void;
@@ -114,6 +115,7 @@ interface SwitchNetworkMenuProps {
 }
 
 export const SwitchNetworkMenu = ({
+  accentColor,
   chainId,
   onChainChanged,
   onDisconnect,
@@ -154,7 +156,7 @@ export const SwitchNetworkMenu = ({
       <MenuTrigger asChild>
         <Box style={{ cursor: 'default' }}>{triggerComponent}</Box>
       </MenuTrigger>
-      <MenuContent sideOffset={1}>
+      <MenuContent accentColor={accentColor} sideOffset={1}>
         <MenuLabel>{i18n.t('menu.network.title')}</MenuLabel>
         <MenuSeparator />
         <MenuRadioGroup

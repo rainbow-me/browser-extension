@@ -51,7 +51,7 @@ export const TokenToSwapDropdown = ({
               size={14}
             />
             <Text size="14pt" weight="semibold" color="labelTertiary">
-              {i18n.t('send.tokens_input.tokens')}
+              {i18n.t('swap.tokens_input.tokens')}
             </Text>
           </Inline>
           <DropdownMenu
@@ -71,7 +71,7 @@ export const TokenToSwapDropdown = ({
                     size={14}
                   />
                   <Text size="14pt" weight="semibold" color="labelTertiary">
-                    {i18n.t('send.tokens_input.sort')}
+                    {i18n.t('swap.tokens_input.sort')}
                   </Text>
                 </Inline>
               </Box>
@@ -99,7 +99,7 @@ export const TokenToSwapDropdown = ({
                     </Bleed>
 
                     <Text size="14pt" weight="semibold" color="label">
-                      {i18n.t('send.tokens_input.token_balance')}
+                      {i18n.t('swap.tokens_input.token_balance')}
                     </Text>
                   </Inline>
                 </DropdownMenuRadioItem>
@@ -115,7 +115,7 @@ export const TokenToSwapDropdown = ({
                     </Bleed>
 
                     <Text size="14pt" weight="semibold" color="label">
-                      {i18n.t('send.tokens_input.networks')}
+                      {i18n.t('swap.tokens_input.networks')}
                     </Text>
                   </Inline>
                 </DropdownMenuRadioItem>
@@ -164,7 +164,7 @@ export const TokenToSwapDropdown = ({
                 weight="semibold"
                 align="center"
               >
-                {i18n.t('send.tokens_input.no_tokens')}
+                {i18n.t('swap.tokens_input.no_tokens')}
               </Text>
             </Stack>
           </Box>

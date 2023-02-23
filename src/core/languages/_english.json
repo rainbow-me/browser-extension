@@ -226,7 +226,17 @@
     "input_token_to_receive_placeholder": "Select a token to receive",
     "select_tokens_to_swap": "Select tokens to swap",
     "max": "Max",
-    "balance": "Balance"
+    "balance": "Balance",
+    "tokens_input": {
+      "tokens": "Tokens",
+      "sort": "Sort",
+      "available": "available",
+      "token_balance": "Token Balance",
+      "networks": "Networks",
+      "no_tokens": "No tokens",
+      "filter_by_network": "Filter by Network",
+      "switch_networks": "Switch Networks"
+    }
   },
   "custom_gas": {
     "title": "Gwei Settings",

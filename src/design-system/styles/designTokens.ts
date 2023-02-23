@@ -815,6 +815,7 @@ export const symbolNames = selectSymbolNames(
   'sparkle',
   'xmark.circle.fill',
   'switch.2',
+  'network',
 );
 export type SymbolName = typeof symbolNames[number];
 
