@@ -39,12 +39,15 @@ export function App() {
   usePendingTransactionWatcher({ address });
 
   React.useEffect(() => {
-    changeI18nLanguage(currentLanguage);
-    initializeSentry('popup');
-    setSentryUser(deviceId);
-    analytics.setDeviceId(deviceId);
-    analytics.identify();
-    analytics.track(event.popupOpened);
+    // Disable analytics for e2e and dev mode
+    if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
+      changeI18nLanguage(currentLanguage);
+      initializeSentry('popup');
+      setSentryUser(deviceId);
+      analytics.setDeviceId(deviceId);
+      analytics.identify();
+      analytics.track(event.popupOpened);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
