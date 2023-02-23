@@ -36,6 +36,7 @@ import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
 
+import { InputActionButon } from './InputActionButton';
 import {
   addressToInputHighlightWrapperStyleDark,
   addressToInputHighlightWrapperStyleLight,
@@ -393,8 +394,6 @@ export const ToAddressInput = ({
             </Stack>
           </Box>
         }
-        showActionClose={!!toAddress}
-        onActionClose={onActionClose}
         dropdownComponent={
           <DropdownWalletsList
             wallets={wallets}
@@ -405,6 +404,14 @@ export const ToAddressInput = ({
         }
         dropdownVisible={dropdownVisible}
         onDropdownAction={onDropdownAction}
+        rightComponent={
+          <InputActionButon
+            showClose={!!toAddress}
+            onClose={onActionClose}
+            dropdownVisible={dropdownVisible}
+            testId={`input-wrapper-close-to-address-input`}
+          />
+        }
       />
     </>
   );
