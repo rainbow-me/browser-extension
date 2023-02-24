@@ -95,8 +95,6 @@ export const SwapTokenInput = ({
           <TokenToReceiveDropdown
             asset={asset}
             assets={assets}
-            sortMethod={sortMethod}
-            setSortMethod={setSortMethod}
             onSelectAsset={onSelectAsset}
           />
         );
