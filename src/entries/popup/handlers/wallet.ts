@@ -315,7 +315,7 @@ export const connectTrezor = async () => {
     const address = await walletAction('import_hw', {
       deviceId,
       wallets: addressesToImport,
-      vendor: 'Ledger',
+      vendor: 'Trezor',
       accountsEnabled,
     });
     const { passwordSet } = await getStatus();
