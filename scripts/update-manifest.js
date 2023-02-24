@@ -2,7 +2,7 @@
 const { merge } = require('lodash');
 const { valid } = require('semver');
 
-const manifestBase = require('../manifest/base.json');
+const manifestBase = require('../build/manifest.json');
 const manifestInternal = require('../manifest/internal.json');
 const manifestProd = require('../manifest/prod.json');
 const pkgJson = require('../package.json');
@@ -18,14 +18,14 @@ if (!Object.keys(tracks).includes(track)) {
   process.exit();
 }
 
-console.log('generating %s manifest.json', track);
+console.log('updating %s manifest.json', track);
 
 const currentVersion = valid(pkgJson.version);
 console.log('applying v%s version to manifest.json', currentVersion);
 manifestBase.version = currentVersion;
 
-console.log('applying %s.json to manifest base.json', track);
-const manifest = merge(tracks[track], manifestBase);
+console.log('overriding manifest for track', track);
+const manifest = merge(manifestBase, tracks[track]);
 
 // Sort manifest.json keys
 function orderedStringify(obj, space) {

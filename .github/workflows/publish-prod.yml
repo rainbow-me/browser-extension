@@ -34,8 +34,8 @@ jobs:
         run: yarn bump
       - name: Build the extension ready for the stores
         run: yarn build:webpack
-      - name: Generate the manifest
-        run: yarn generate-manifest prod
+      - name: Update the manifest
+        run: yarn update-manifest prod
       - name: Zip it
         run: yarn zip
       - name: Submit to the chrome webstore

@@ -87,6 +87,7 @@ export function Swap() {
                   sortMethod={sortMethod}
                   zIndex={2}
                   placeholder={i18n.t('swap.input_token_to_swap_placeholder')}
+                  type="toSwap"
                 />
               </AccentColorProviderWrapper>
 
@@ -128,6 +129,7 @@ export function Swap() {
                   </Box>
                 </Inline>
               </Box>
+
               <AccentColorProviderWrapper
                 color={
                   assetToReceive?.colors?.primary ||
@@ -146,6 +148,7 @@ export function Swap() {
                   placeholder={i18n.t(
                     'swap.input_token_to_receive_placeholder',
                   )}
+                  type="toReceive"
                 />
               </AccentColorProviderWrapper>
             </Stack>
