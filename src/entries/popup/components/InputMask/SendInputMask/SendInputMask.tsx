@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import React, { CSSProperties, RefObject, useCallback, useMemo } from 'react';
 
 import { Box, Inline, Text } from '~/design-system';
+import { Input } from '~/design-system/components/Input/Input';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { BoxStyles, accentColorAsHsl } from '~/design-system/styles/core.css';
 import {
@@ -9,7 +10,6 @@ import {
   transitions,
 } from '~/design-system/styles/designTokens';
 
-import { Input } from '../../../../../design-system/components/Input/Input';
 import { InputHeight } from '../../../../../design-system/components/Input/Input.css';
 import { maskInput } from '../utils';
 
