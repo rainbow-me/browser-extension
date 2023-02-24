@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -16,11 +16,17 @@ export function WalletsAndKeys() {
   const navigate = useRainbowNavigate();
   const [wallets, setWallets] = useState<KeychainWallet[]>([]);
 
-  const handleViewWallet = (wallet: KeychainWallet) => {
-    navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS, {
-      state: { wallet, password: state?.password },
-    });
-  };
+  useEffect(() => {
+    chrome.storage.session.set({ settingsWallet: null });
+  }, []);
+
+  const handleViewWallet = useCallback(
+    async (wallet: KeychainWallet) => {
+      await chrome.storage.session.set({ settingsWallet: wallet });
+      navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS);
+    },
+    [navigate],
+  );
 
   useEffect(() => {
     const fetchWallets = async () => {

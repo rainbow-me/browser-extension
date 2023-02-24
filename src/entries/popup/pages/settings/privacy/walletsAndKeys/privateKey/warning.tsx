@@ -1,11 +1,12 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { IconAndCopyItem } from '~/entries/popup/components/IconAndCopyList.tsx/IconAndCopyList';
 import WarningInfo from '~/entries/popup/components/WarningInfo/WarningInfo';
-import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
+
+import { ConfirmPasswordPrompt } from '../../confirmPasswordPrompt';
 
 const iconAndCopyList: IconAndCopyItem[] = [
   {
@@ -47,22 +48,39 @@ const iconAndCopyList: IconAndCopyItem[] = [
 ];
 export function PrivateKeyWarning() {
   const { state } = useLocation();
-  const navigate = useRainbowNavigate();
+
+  const [showEnterPassword, setShowEnterPassword] = useState(false);
+  const [confirmPasswordRedirect, setConfirmPasswordRedirect] = useState('');
+  const openPasswordPrompt = () => {
+    setShowEnterPassword(true);
+  };
+  const closePasswordPrompt = () => {
+    setShowEnterPassword(false);
+  };
 
   const handleShowPrivkeyClick = useCallback(async () => {
-    navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY, {
-      state: { password: state?.password, account: state?.account },
-    });
-  }, [navigate, state?.account, state?.password]);
+    openPasswordPrompt();
+    setConfirmPasswordRedirect(
+      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY,
+    );
+  }, []);
 
   return (
-    <WarningInfo
-      onProceed={handleShowPrivkeyClick}
-      iconAndCopyList={iconAndCopyList}
-      proceedButtonLabel={i18n.t(
-        'settings.privacy_and_security.wallets_and_keys.private_key.show',
-      )}
-      proceedButtonSymbol="key.fill"
-    />
+    <>
+      <ConfirmPasswordPrompt
+        show={showEnterPassword}
+        onClose={closePasswordPrompt}
+        redirect={confirmPasswordRedirect}
+        extraState={{ account: state?.account }}
+      />
+      <WarningInfo
+        onProceed={handleShowPrivkeyClick}
+        iconAndCopyList={iconAndCopyList}
+        proceedButtonLabel={i18n.t(
+          'settings.privacy_and_security.wallets_and_keys.private_key.show',
+        )}
+        proceedButtonSymbol="key.fill"
+      />
+    </>
   );
 }
