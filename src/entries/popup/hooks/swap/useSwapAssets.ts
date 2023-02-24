@@ -6,7 +6,7 @@ import { selectUserAssetsListByChainId } from '~/core/resources/_selectors/asset
 import { useAssets, useUserAssets } from '~/core/resources/assets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { ParsedAsset } from '~/core/types/assets';
+import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
@@ -22,6 +22,22 @@ const sortBy = (by: SortMethod) => {
   }
 };
 
+const parseParsedAssetToParsedAddressAsset = (
+  parsedAsset: ParsedAsset,
+  parsedAddressAsset?: ParsedAddressAsset,
+) => ({
+  ...parsedAsset,
+  chainId: ChainId.mainnet,
+  native: {
+    balance: {
+      amount: '0',
+      display: '0.00',
+    },
+    price: parsedAsset.native.price,
+  },
+  balance: parsedAddressAsset?.balance || { amount: '0', display: '0.00' },
+});
+
 export const useSwapAssets = () => {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
@@ -33,8 +49,16 @@ export const useSwapAssets = () => {
   const [assetToReceiveAddress, setAssetToReceiveAddress] = useState<
     Address | ''
   >('');
-
   const [sortMethod, setSortMethod] = useState<SortMethod>('token');
+
+  const { data: userAssets = [] } = useUserAssets(
+    {
+      address: currentAddress,
+      currency: currentCurrency,
+      connectedToHardhat,
+    },
+    { select: sortBy(sortMethod) },
+  );
 
   const { results } = useSearchCurrencyLists({
     // inputChainId: ChainId.mainnet,
@@ -51,40 +75,38 @@ export const useSwapAssets = () => {
     assetAddresses: addresses,
     currency: currentCurrency,
   });
-  const assetsToReceive: ParsedAsset[] = Object.values(assets || {}).map(
-    (asset) => ({
-      ...asset,
-      chainId: ChainId.mainnet,
-    }),
-  );
 
-  const { data: assetsToSwap = [] } = useUserAssets(
-    {
-      address: currentAddress,
-      currency: currentCurrency,
-      connectedToHardhat,
-    },
-    { select: sortBy(sortMethod) },
+  const assetsToReceive: ParsedAddressAsset[] = useMemo(
+    () =>
+      Object.values(assets || {}).map((asset) => {
+        const parsedAddressAsset = userAssets.find(
+          (userAsset) =>
+            isLowerCaseMatch(userAsset.address, asset.address) &&
+            userAsset.chainId === asset.chainId,
+        );
+        return parseParsedAssetToParsedAddressAsset(asset, parsedAddressAsset);
+      }),
+    [assets, userAssets],
   );
 
   const assetToSwap = useMemo(
     () =>
-      assetsToSwap?.find(({ address }) =>
+      userAssets?.find(({ address }) =>
         isLowerCaseMatch(address, assetToSwapAddress),
       ) || null,
-    [assetsToSwap, assetToSwapAddress],
+    [userAssets, assetToSwapAddress],
   );
 
   const assetToReceive = useMemo(
     () =>
-      assetsToSwap?.find(({ address }) =>
+      assetsToReceive?.find(({ address }) =>
         isLowerCaseMatch(address, assetToReceiveAddress),
       ) || null,
-    [assetsToSwap, assetToReceiveAddress],
+    [assetsToReceive, assetToReceiveAddress],
   );
 
   return {
-    assetsToSwap,
+    assetsToSwap: userAssets,
     assetsToReceive,
     sortMethod,
     assetToSwap,
