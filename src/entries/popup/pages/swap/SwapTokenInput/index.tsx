@@ -24,29 +24,29 @@ import { TokenToSwapDropdown } from './TokenToSwapDropdown';
 interface SwapTokenInputProps {
   asset: ParsedAddressAsset | null;
   assets?: ParsedAddressAsset[] | ParsedAsset[];
-  selectAssetAddress: (address: Address | '') => void;
   dropdownClosed: boolean;
-  setSortMethod: (sortMethod: SortMethod) => void;
-  sortMethod: SortMethod;
-  zIndex?: number;
-  placeholder: string;
-  onDropdownOpen: (open: boolean) => void;
   dropdownHeight?: number;
+  placeholder: string;
+  sortMethod: SortMethod;
   type: 'toSwap' | 'toReceive';
+  zIndex?: number;
+  onDropdownOpen: (open: boolean) => void;
+  selectAssetAddress: (address: Address | '') => void;
+  setSortMethod: (sortMethod: SortMethod) => void;
 }
 
 export const SwapTokenInput = ({
   asset,
   assets,
-  selectAssetAddress,
   dropdownClosed = false,
-  setSortMethod,
-  sortMethod,
-  zIndex,
-  placeholder,
-  onDropdownOpen,
   dropdownHeight,
+  placeholder,
+  sortMethod,
   type,
+  zIndex,
+  onDropdownOpen,
+  selectAssetAddress,
+  setSortMethod,
 }: SwapTokenInputProps) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const innerRef = useRef<HTMLInputElement>(null);

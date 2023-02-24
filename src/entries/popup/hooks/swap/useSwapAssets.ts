@@ -27,6 +27,7 @@ const parseParsedAssetToParsedAddressAsset = (
   parsedAddressAsset?: ParsedAddressAsset,
 ) => ({
   ...parsedAsset,
+  address: parsedAddressAsset?.address || parsedAsset.address,
   chainId: ChainId.mainnet,
   native: {
     balance: {
@@ -49,6 +50,8 @@ export const useSwapAssets = () => {
   const [assetToReceiveAddress, setAssetToReceiveAddress] = useState<
     Address | ''
   >('');
+  const [outputChainId, setOutputChainId] = useState(ChainId.mainnet);
+
   const [sortMethod, setSortMethod] = useState<SortMethod>('token');
 
   const { data: userAssets = [] } = useUserAssets(
@@ -62,7 +65,7 @@ export const useSwapAssets = () => {
 
   const { results } = useSearchCurrencyLists({
     // inputChainId: ChainId.mainnet,
-    outputChainId: ChainId.mainnet,
+    outputChainId,
   });
 
   const addresses = results
@@ -111,8 +114,10 @@ export const useSwapAssets = () => {
     sortMethod,
     assetToSwap,
     assetToReceive,
+    outputChainId,
     setSortMethod,
     setAssetToSwapAddress,
     setAssetToReceiveAddress,
+    setOutputChainId,
   };
 };
