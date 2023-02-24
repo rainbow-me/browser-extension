@@ -16,9 +16,8 @@ import { SortMethod } from '../../../hooks/send/useSendTransactionAsset';
 import { SwapInputActionButton } from '../SwapInputActionButton';
 
 import { TokenDropdown } from './TokenDropdown';
+import { TokenInfo } from './TokenInfo';
 import { TokenInput } from './TokenInput';
-import { TokenToReceiveBottomComponent } from './TokenToReceiveBottomComponent';
-import { TokenToSwapBottomComponent } from './TokenToSwapBottomComponent';
 
 interface SwapTokenInputProps {
   asset: ParsedAddressAsset | null;
@@ -64,18 +63,6 @@ export const SwapTokenInput = ({
     },
     [onDropdownOpen, selectAssetAddress],
   );
-
-  const bottomComponent = useMemo(() => {
-    if (!asset) return null;
-    switch (type) {
-      case 'toSwap':
-        return <TokenToSwapBottomComponent asset={asset} />;
-      case 'toReceive':
-        return <TokenToReceiveBottomComponent asset={asset} />;
-      default:
-        return null;
-    }
-  }, [asset, type]);
 
   const dropdownComponent = useMemo(() => {
     switch (type) {
@@ -125,7 +112,7 @@ export const SwapTokenInput = ({
           placeholder={placeholder}
         />
       }
-      bottomComponent={bottomComponent}
+      bottomComponent={asset ? <TokenInfo type={type} asset={asset} /> : null}
       rightComponent={
         <SwapInputActionButton
           showClose={!!asset}

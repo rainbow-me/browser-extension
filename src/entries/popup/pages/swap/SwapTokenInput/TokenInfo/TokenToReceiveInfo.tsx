@@ -5,7 +5,7 @@ import { ParsedAddressAsset } from '~/core/types/assets';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { Box, Inline, Text } from '~/design-system';
 
-export const TokenToReceiveBottomComponent = ({
+export const TokenToReceiveInfo = ({
   asset,
 }: {
   asset: ParsedAddressAsset | null;

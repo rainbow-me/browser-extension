@@ -10,7 +10,7 @@ import {
 } from '~/design-system/styles/designTokens';
 import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
 
-export const TokenToSwapBottomComponent = ({
+export const TokenToSwapInfo = ({
   asset,
 }: {
   asset: ParsedAddressAsset | null;
