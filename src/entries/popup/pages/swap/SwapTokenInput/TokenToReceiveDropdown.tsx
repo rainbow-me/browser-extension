@@ -31,25 +31,32 @@ export const TokenToReceiveDropdown = ({
   onSelectAsset,
 }: TokenToReceiveDropdownProps) => {
   const { currentCurrency } = useCurrentCurrencyStore();
+  const [outputChainId, setOutputChainId] = useState<ChainId>(ChainId.mainnet);
+  const [selectedNetwork, setSelectedNetwork] = useState<Chain>(chain.mainnet);
+
   const { results } = useSearchCurrencyLists({
     // inputChainId: ChainId.mainnet,
-    outputChainId: ChainId.mainnet,
+    outputChainId,
   });
 
-  const addresses = results?.[0]?.data
+  const addresses = results
+    ?.map(({ data }) => data)
+    .flat()
     ?.map((asset) => asset?.uniqueId || '')
     ?.filter((address) => !!address);
+
   const { data: assets } = useAssets({
     assetAddresses: addresses,
     currency: currentCurrency,
   });
-  const receiveAssets = Object.values(assets || {});
+  const receiveAssets = Object.values(assets || {}).map((asset) => ({
+    ...asset,
+    chainId: outputChainId,
+  }));
 
   const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
     assets: receiveAssets,
   });
-
-  const [selectedNetwork, setSelectedNetwork] = useState<Chain>(chain.mainnet);
 
   return (
     <Stack space="8px">
@@ -69,8 +76,11 @@ export const TokenToReceiveDropdown = ({
           <SwitchNetworkMenu
             accentColor={asset?.colors?.primary || asset?.colors?.fallback}
             type="dropdown"
-            chainId={selectedNetwork.id}
-            onChainChanged={(_, chain) => setSelectedNetwork(chain)}
+            chainId={outputChainId}
+            onChainChanged={(chainId, chain) => {
+              setOutputChainId(chainId);
+              setSelectedNetwork(chain);
+            }}
             triggerComponent={
               <Box
                 as={motion.div}

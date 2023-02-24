@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Chain, useNetwork } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { ChainId } from '~/core/types/chains';
 import { Box, Inline, Inset, Symbol, Text } from '~/design-system';
 
 import { ChainBadge } from '../ChainBadge/ChainBadge';
@@ -107,8 +108,8 @@ export const SwitchNetworkMenuDisconnect = ({
 
 interface SwitchNetworkMenuProps {
   accentColor?: string;
-  chainId: Chain['id'];
-  onChainChanged: (chainId: Chain['id'], chain: Chain) => void;
+  chainId: ChainId;
+  onChainChanged: (chainId: ChainId, chain: Chain) => void;
   onDisconnect?: () => void;
   triggerComponent: React.ReactNode;
   type: 'dropdown' | 'context';
