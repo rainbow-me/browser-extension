@@ -4,6 +4,7 @@ import { Chain, useNetwork } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';
 import { Box, Inline, Inset, Symbol, Text } from '~/design-system';
+import { Space } from '~/design-system/styles/designTokens';
 
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
@@ -113,6 +114,7 @@ interface SwitchNetworkMenuProps {
   onDisconnect?: () => void;
   triggerComponent: React.ReactNode;
   type: 'dropdown' | 'context';
+  marginRight?: Space;
 }
 
 export const SwitchNetworkMenu = ({
@@ -122,6 +124,7 @@ export const SwitchNetworkMenu = ({
   onDisconnect,
   triggerComponent,
   type,
+  marginRight,
 }: SwitchNetworkMenuProps) => {
   const { chains } = useNetwork();
 
@@ -157,7 +160,11 @@ export const SwitchNetworkMenu = ({
       <MenuTrigger asChild>
         <Box style={{ cursor: 'default' }}>{triggerComponent}</Box>
       </MenuTrigger>
-      <MenuContent accentColor={accentColor} sideOffset={1}>
+      <MenuContent
+        accentColor={accentColor}
+        sideOffset={1}
+        marginRight={marginRight}
+      >
         <MenuLabel>{i18n.t('menu.network.title')}</MenuLabel>
         <MenuSeparator />
         <MenuRadioGroup

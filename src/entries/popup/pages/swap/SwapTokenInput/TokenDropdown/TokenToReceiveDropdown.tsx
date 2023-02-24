@@ -34,6 +34,7 @@ export const TokenToReceiveDropdown = ({
 }: TokenToReceiveDropdownProps) => {
   const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
     assets,
+    size: 10,
   });
 
   return (
@@ -52,6 +53,7 @@ export const TokenToReceiveDropdown = ({
             </Text>
           </Inline>
           <SwitchNetworkMenu
+            marginRight="20px"
             accentColor={asset?.colors?.primary || asset?.colors?.fallback}
             type="dropdown"
             chainId={outputChainId}

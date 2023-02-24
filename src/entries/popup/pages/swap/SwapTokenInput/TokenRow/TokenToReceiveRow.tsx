@@ -105,7 +105,7 @@ export function TokenToReceiveRow({ asset }: TokenToReceiveRowProps) {
               />
             </Box>
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContent marginRight="32px">
             <Stack space="4px">
               <Box paddingTop="8px" paddingBottom="12px">
                 <TextOverflow

@@ -36,6 +36,7 @@ export const TokenToSwapDropdown = ({
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
   const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
     assets,
+    size: 10,
   });
 
   return (
