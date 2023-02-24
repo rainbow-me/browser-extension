@@ -44,6 +44,7 @@ const parseParsedAssetToParsedAddressAsset = ({
   },
   balance: parsedAddressAsset?.balance || { amount: '0', display: '0.00' },
   icon_url: parsedAddressAsset?.icon_url || parsedAsset?.icon_url,
+  colors: parsedAddressAsset?.colors || parsedAsset?.colors,
 });
 
 export const useSwapAssets = () => {
