@@ -1,7 +1,6 @@
-import React, { ReactNode, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
-import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
@@ -21,7 +20,6 @@ import {
   Text,
   TextOverflow,
 } from '~/design-system';
-import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 import {
   DropdownMenu,
@@ -32,33 +30,10 @@ import {
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 
-import {
-  swapTokenInputHighlightWrapperStyleDark,
-  swapTokenInputHighlightWrapperStyleLight,
-} from '../SwapTokenInput.css';
-
 const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 210;
 
-const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
-  const { currentTheme } = useCurrentThemeStore();
-  return (
-    <Inset>
-      <Box
-        borderRadius="12px"
-        className={
-          currentTheme === 'dark'
-            ? swapTokenInputHighlightWrapperStyleDark
-            : swapTokenInputHighlightWrapperStyleLight
-        }
-      >
-        {children}
-      </Box>
-    </Inset>
-  );
-};
-
-type TokenToReceiveRowProps = { asset: ParsedAsset };
+export type TokenToReceiveRowProps = { asset: ParsedAsset };
 
 export function TokenToReceiveRow({ asset }: TokenToReceiveRowProps) {
   const leftColumn = useMemo(
@@ -220,26 +195,18 @@ export function TokenToReceiveRow({ asset }: TokenToReceiveRowProps) {
   );
 
   return (
-    <Box
-      className={rowTransparentAccentHighlight}
-      borderRadius="12px"
-      style={{ height: '52px' }}
-    >
-      <RowHighlightWrapper>
-        <Inset horizontal="12px" vertical="8px">
-          <Rows>
-            <Row>
-              <Columns alignVertical="center" space="8px">
-                <Column width="content">
-                  <CoinIcon asset={asset} />
-                </Column>
-                <Column>{leftColumn}</Column>
-                <Column width="content">{rightColumn}</Column>
-              </Columns>
-            </Row>
-          </Rows>
-        </Inset>
-      </RowHighlightWrapper>
-    </Box>
+    <Inset horizontal="12px" vertical="8px">
+      <Rows>
+        <Row>
+          <Columns alignVertical="center" space="8px">
+            <Column width="content">
+              <CoinIcon asset={asset} />
+            </Column>
+            <Column>{leftColumn}</Column>
+            <Column width="content">{rightColumn}</Column>
+          </Columns>
+        </Row>
+      </Rows>
+    </Inset>
   );
 }
