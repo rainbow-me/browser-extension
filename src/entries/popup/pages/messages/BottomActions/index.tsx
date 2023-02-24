@@ -5,6 +5,7 @@ import { i18n } from '~/core/languages';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { Box, Button, Inline, Stack, Symbol, Text } from '~/design-system';
+import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { EthSymbol } from '~/entries/popup/components/EthSymbol/EthSymbol';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
@@ -118,9 +119,13 @@ export const BottomSwitchWallet = ({
 export const BottomNetwork = ({
   selectedChainId,
   displaySymbol = false,
+  symbolSize,
+  symbol,
 }: {
   selectedChainId: ChainId;
   displaySymbol: boolean;
+  symbolSize?: number;
+  symbol?: SymbolProps['symbol'];
 }) => {
   return (
     <Box id="switch-network-menu">
@@ -137,8 +142,8 @@ export const BottomNetwork = ({
         {displaySymbol && (
           <Symbol
             color="labelSecondary"
-            size={14}
-            symbol="chevron.down.circle"
+            size={symbolSize || 14}
+            symbol={symbol || 'chevron.down.circle'}
             weight="semibold"
           />
         )}

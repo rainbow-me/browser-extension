@@ -72,7 +72,12 @@ export const TokenToReceiveDropdown = ({
                 }}
                 transition={transitions.bounce}
               >
-                <BottomNetwork selectedChainId={outputChainId} displaySymbol />
+                <BottomNetwork
+                  selectedChainId={outputChainId}
+                  displaySymbol
+                  symbolSize={12}
+                  symbol="chevron.down"
+                />
               </Box>
             }
           />
