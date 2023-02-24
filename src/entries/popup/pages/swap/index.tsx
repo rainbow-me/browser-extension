@@ -21,6 +21,7 @@ import {
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { useSwapAssets } from '../../hooks/swap/useSwapAssets';
+import { useSwapDropdownDimensions } from '../../hooks/swap/useSwapDropdownDimensions';
 import { useSwapInputs } from '../../hooks/swap/useSwapInputs';
 
 import { TokenToReceiveInput } from './SwapTokenInput/TokenToReceiveInput';
@@ -46,6 +47,10 @@ export function Swap() {
     setAssetToReceiveAddress,
     setAssetToSwapAddress,
   } = useSwapAssets();
+
+  const { toSwapInputHeight, toReceiveInputHeight } = useSwapDropdownDimensions(
+    { assetToSwap, assetToReceive },
+  );
 
   const onFlip = useCallback(() => null, []);
 
@@ -81,7 +86,7 @@ export function Swap() {
                 }
               >
                 <TokenToSwapInput
-                  dropdownHeight={452}
+                  dropdownHeight={toSwapInputHeight}
                   asset={assetToSwap}
                   assets={assetsToSwap}
                   selectAssetAddress={setAssetToSwapAddress}
@@ -140,6 +145,7 @@ export function Swap() {
                 }
               >
                 <TokenToReceiveInput
+                  dropdownHeight={toReceiveInputHeight}
                   asset={assetToReceive}
                   assets={assetsToReceive}
                   selectAssetAddress={setAssetToReceiveAddress}
