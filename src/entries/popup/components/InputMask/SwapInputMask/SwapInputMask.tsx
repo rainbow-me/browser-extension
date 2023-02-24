@@ -2,13 +2,13 @@ import { motion } from 'framer-motion';
 import React, { CSSProperties, RefObject, useCallback } from 'react';
 
 import { Box } from '~/design-system';
+import { Input } from '~/design-system/components/Input/Input';
 import { BoxStyles, accentColorAsHsl } from '~/design-system/styles/core.css';
 import {
   transformScales,
   transitions,
 } from '~/design-system/styles/designTokens';
 
-import { Input } from '../../../../../design-system/components/Input/Input';
 import { InputHeight } from '../../../../../design-system/components/Input/Input.css';
 import { maskInput } from '../utils';
 
