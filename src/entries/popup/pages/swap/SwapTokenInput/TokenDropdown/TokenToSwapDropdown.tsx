@@ -16,7 +16,7 @@ import {
   DropdownMenuTrigger,
 } from '../../../../components/DropdownMenu/DropdownMenu';
 import { SortMethod } from '../../../../hooks/send/useSendTransactionAsset';
-import { TokenRow } from '../TokenRow';
+import { TokenToSwapRow } from '../TokenRow/TokenToSwapRow';
 
 export type TokenToSwapDropdownProps = {
   asset: ParsedAddressAsset | null;
@@ -141,7 +141,7 @@ export const TokenToSwapDropdown = ({
                 onClick={() => onSelectAsset?.(rowData.address)}
                 testId={`token-input-asset-${asset?.uniqueId}`}
               >
-                <TokenRow type="toSwap" uniqueId={rowData?.uniqueId} />
+                <TokenToSwapRow uniqueId={rowData?.uniqueId} />
               </Box>
             );
           })}
