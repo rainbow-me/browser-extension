@@ -27,15 +27,15 @@ import { Input } from '~/design-system/components/Input/Input';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
+import {
+  DropdownInputWrapper,
+  dropdownContainerVariant,
+  dropdownItemVariant,
+} from '../../components/DropdownInputWrapper/DropdownInputWrapper';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
 
-import {
-  InputWrapper,
-  dropdownContainerVariant,
-  dropdownItemVariant,
-} from './InputWrapper';
 import {
   addressToInputHighlightWrapperStyleDark,
   addressToInputHighlightWrapperStyleLight,
@@ -332,7 +332,7 @@ export const ToAddressInput = ({
 
   return (
     <>
-      <InputWrapper
+      <DropdownInputWrapper
         zIndex={2}
         dropdownHeight={452}
         testId={'to-address-input'}

@@ -820,6 +820,7 @@ export type SymbolName = typeof symbolNames[number];
 
 export const radii = {
   round: 9999,
+  '2px': 2,
   '3px': 3,
   '6px': 6,
   '8px': 8,
