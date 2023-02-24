@@ -13,6 +13,39 @@ const shortAddress = (address: string) => {
   return `${address?.substring(0, 6)}...${address?.substring(38, 42)}`;
 };
 
+const Trezor = ({
+  onTrezorConnected,
+}: {
+  onTrezorConnected: (address: Address) => void;
+}) => {
+  const onTrezorConnect = async () => {
+    const res = await wallet.connectTrezor();
+    if (res) {
+      onTrezorConnected(res as Address);
+    }
+  };
+
+  return (
+    <>
+      <Text as="h1" size="16pt" weight="bold" align="center">
+        Trezor
+      </Text>
+      <Box
+        as="button"
+        background="accent"
+        boxShadow="24px accent"
+        onClick={onTrezorConnect}
+        padding="16px"
+        style={{ borderRadius: 999 }}
+      >
+        <Text color="label" size="14pt" weight="bold">
+          Connect
+        </Text>
+      </Box>
+    </>
+  );
+};
+
 const Ledger = ({
   onLedgerConnected,
 }: {
@@ -357,6 +390,10 @@ export function Wallets() {
     setCurrentAddress(address);
     await updateState();
   };
+  const onTrezorConnected = async (address: Address) => {
+    setCurrentAddress(address);
+    await updateState();
+  };
 
   const handleSecretChange = useCallback(
     (event: { target: { value: React.SetStateAction<string> } }) => {
@@ -473,6 +510,7 @@ export function Wallets() {
         />
       )}
       <Ledger onLedgerConnected={onLedgerConnected} />
+      <Trezor onTrezorConnected={onTrezorConnected} />
     </Box>
   );
 }
