@@ -1,9 +1,15 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { ReactElement } from 'react';
 
-import { Box, Column, Columns, Separator, Stack } from '~/design-system';
-
-import { InputActionButon } from '../../pages/send/InputActionButton';
+import {
+  Box,
+  Column,
+  Columns,
+  Row,
+  Rows,
+  Separator,
+  Stack,
+} from '~/design-system';
 
 const TRANSITION_CONFIG = {
   height: {
@@ -29,35 +35,37 @@ export const dropdownItemVariant = {
   show: { opacity: 1 },
 };
 
+interface DropdownInputWrapperProps {
+  borderVisible?: boolean;
+  bottomComponent?: ReactElement;
+  centerComponent: ReactElement;
+  dropdownComponent: ReactElement;
+  dropdownHeight?: number;
+  dropdownVisible: boolean;
+  leftComponent: ReactElement;
+  rightComponent: ReactElement;
+  testId?: string;
+  zIndex?: number;
+  onDropdownAction: () => void;
+  onDropdownScroll?: () => void;
+}
+
 export const DropdownInputWrapper = ({
+  bottomComponent,
   leftComponent,
   centerComponent,
+  rightComponent,
   dropdownComponent,
   dropdownVisible,
-  showActionClose,
-  onActionClose,
   onDropdownAction,
   zIndex,
   dropdownHeight,
   onDropdownScroll,
   testId,
   borderVisible = true,
-}: {
-  leftComponent: ReactElement;
-  centerComponent: ReactElement;
-  dropdownComponent: ReactElement;
-  showActionClose: boolean;
-  dropdownVisible: boolean;
-  onActionClose: () => void;
-  onDropdownAction: () => void;
-  zIndex?: number;
-  dropdownHeight?: number;
-  onDropdownScroll?: () => void;
-  testId?: string;
-  borderVisible?: boolean;
-}) => {
+}: DropdownInputWrapperProps) => {
   return (
-    <Box style={{ height: 68 }}>
+    <Box style={{ height: bottomComponent ? 92 : 68 }}>
       <Box width="full" position="relative" style={{ zIndex: zIndex ?? 1 }}>
         <Box
           height="full"
@@ -67,31 +75,35 @@ export const DropdownInputWrapper = ({
           paddingTop="16px"
           borderWidth={borderVisible ? '1px' : undefined}
           borderColor="buttonStroke"
+          as={motion.div}
+          layout="position"
         >
           <Box
             testId={`input-wrapper-dropdown-${testId}`}
             onClick={onDropdownAction}
           >
-            <Columns
-              alignVertical="center"
-              alignHorizontal="justify"
-              space="8px"
-            >
-              <Column width="content">{leftComponent}</Column>
+            <Rows space="16px">
+              <Row>
+                <Columns
+                  alignVertical="center"
+                  alignHorizontal="justify"
+                  space="8px"
+                >
+                  <Column width="content">{leftComponent}</Column>
 
-              <Column>
-                <Box>{centerComponent}</Box>
-              </Column>
+                  <Column>
+                    <Box>{centerComponent}</Box>
+                  </Column>
 
-              <Column width="content">
-                <InputActionButon
-                  showClose={showActionClose}
-                  onClose={onActionClose}
-                  dropdownVisible={dropdownVisible}
-                  testId={`input-wrapper-close-${testId}`}
-                />
-              </Column>
-            </Columns>
+                  <Column width="content">{rightComponent}</Column>
+                </Columns>
+              </Row>
+              {!!bottomComponent && (
+                <Row>
+                  <Box>{bottomComponent}</Box>
+                </Row>
+              )}
+            </Rows>
           </Box>
 
           <Box

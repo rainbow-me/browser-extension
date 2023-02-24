@@ -3,13 +3,20 @@ import React, { ReactNode } from 'react';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { Box, Inline, Text, ThemeProvider } from '~/design-system';
+import { TextStyles } from '~/design-system/styles/core.css';
 
 export const Tooltip = ({
   children,
   text,
+  textSize,
+  textWeight,
+  textColor,
 }: {
   children: ReactNode;
   text: string;
+  textSize?: TextStyles['fontSize'];
+  textWeight?: TextStyles['fontWeight'];
+  textColor?: TextStyles['color'];
 }) => {
   const { currentTheme } = useCurrentThemeStore();
 
@@ -42,7 +49,11 @@ export const Tooltip = ({
                   borderRadius="6px"
                   backdropFilter="blur(26px)"
                 >
-                  <Text color="label" size="16pt" weight="bold">
+                  <Text
+                    color={textColor || 'label'}
+                    size={textSize || '16pt'}
+                    weight={textWeight || 'bold'}
+                  >
                     {text}
                   </Text>
                 </Box>

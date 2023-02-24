@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import React, {
   ChangeEvent,
   Dispatch,
-  ReactNode,
   SetStateAction,
   useCallback,
   useEffect,
@@ -13,18 +12,9 @@ import React, {
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
-import {
-  Bleed,
-  Box,
-  Inline,
-  Inset,
-  Stack,
-  Symbol,
-  Text,
-} from '~/design-system';
+import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
@@ -44,28 +34,7 @@ import {
 import { SortMethod } from '../../hooks/send/useSendTransactionAsset';
 import { AssetRow } from '../home/Tokens';
 
-import {
-  addressToInputHighlightWrapperStyleDark,
-  addressToInputHighlightWrapperStyleLight,
-} from './ToAddressInpnut.css';
-
-const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
-  const { currentTheme } = useCurrentThemeStore();
-  return (
-    <Inset>
-      <Box
-        borderRadius="12px"
-        className={
-          currentTheme === 'dark'
-            ? addressToInputHighlightWrapperStyleDark
-            : addressToInputHighlightWrapperStyleLight
-        }
-      >
-        {children}
-      </Box>
-    </Inset>
-  );
-};
+import { InputActionButon } from './InputActionButton';
 
 const { innerWidth: windowWidth } = window;
 
@@ -177,6 +146,7 @@ export const SendTokenInput = ({
     setDropdownVisible(!dropdownVisible);
     dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
   }, [dropdownVisible]);
+
   const onSelectAsset = useCallback(
     (address: Address | '') => {
       selectAssetAddress(address);
@@ -280,8 +250,14 @@ export const SendTokenInput = ({
           )}
         </Box>
       }
-      showActionClose={!!asset}
-      onActionClose={onCloseDropdown}
+      rightComponent={
+        <InputActionButon
+          showClose={!!asset}
+          onClose={onCloseDropdown}
+          dropdownVisible={dropdownVisible}
+          testId={`input-wrapper-close-${'token-input'}`}
+        />
+      }
       dropdownComponent={
         <Stack space="8px">
           <Box paddingHorizontal="20px">
@@ -320,15 +296,13 @@ export const SendTokenInput = ({
                   onClick={() => selectAsset(asset.address)}
                   testId={`token-input-asset-${asset?.uniqueId}`}
                 >
-                  <RowHighlightWrapper>
-                    <Box
-                      as={motion.div}
-                      variants={dropdownItemVariant}
-                      marginHorizontal="-8px"
-                    >
-                      <AssetRow uniqueId={asset?.uniqueId} />
-                    </Box>
-                  </RowHighlightWrapper>
+                  <Box
+                    as={motion.div}
+                    variants={dropdownItemVariant}
+                    marginHorizontal="-8px"
+                  >
+                    <AssetRow uniqueId={asset?.uniqueId} />
+                  </Box>
                 </Box>
               ))}
             {!filteredAssets.length && (
