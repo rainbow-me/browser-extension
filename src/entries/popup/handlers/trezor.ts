@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { TransactionResponse } from '@ethersproject/abstract-provider';
-import AppEth from '@ledgerhq/hw-app-eth';
-import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
+import TrezorConnect from '@trezor/connect-web';
+import { EthereumTransactionEIP1559 } from '@trezor/connect/lib/types';
 import { getProvider } from '@wagmi/core';
 import { Bytes, ethers } from 'ethers';
 import { Address } from 'wagmi';
@@ -22,8 +22,6 @@ export async function sendTransactionFromTrezor(
       chainId: transaction.chainId,
     });
 
-    const transport = await TransportWebUSB.create();
-    const appEth = new AppEth(transport);
     const path = await getPath(address as Address);
 
     const baseTx: ethers.utils.UnsignedTransaction = {
@@ -41,19 +39,35 @@ export async function sendTransactionFromTrezor(
       value: transaction.value || undefined,
     };
 
-    const unsignedTx = ethers.utils.serializeTransaction(baseTx).substring(2);
+    const response = await TrezorConnect.ethereumSignTransaction({
+      path,
+      transaction: baseTx as unknown as EthereumTransactionEIP1559,
+    });
 
-    return Promise.reject(new Error('Not implemented'));
+    if (response.success) {
+      // TODO - Verify that it was signed by the right address
+      const serializedTransaction = ethers.utils.serializeTransaction(baseTx, {
+        r: '0x' + response.payload.r,
+        s: '0x' + response.payload.s,
+        v: ethers.BigNumber.from('0x' + response.payload.v).toNumber(),
+      });
 
-    // return provider.sendTransaction(serializedTransaction);
+      const parsedTx = ethers.utils.parseTransaction(serializedTransaction);
+      if (parsedTx.from?.toLowerCase() !== address?.toLowerCase()) {
+        throw new Error('Transaction was not signed by the right address');
+      }
+
+      return provider.sendTransaction(serializedTransaction);
+    } else {
+      alert('error signing transaction with trezor');
+      console.log('error signing transaction with trezor', response);
+      throw new Error('error signing transaction with trezor');
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    if (e?.name === 'TransportStatusError') {
-      alert(
-        'Please make sure your ledger is unlocked and open the Ethereum app',
-      );
-    }
+    alert('Please make sure your trezor is unlocked');
+    console.log('error signing transaction with trezor', e);
 
     // bubble up the error
     throw e;
@@ -64,9 +78,7 @@ export async function signMessageByTypeFromTrezor(
   msgData: string | Bytes,
   address: Address,
   messageType: string,
-): Promise<string> {
-  const transport = await TransportWebUSB.create();
-  const appEth = new AppEth(transport);
+): Promise<string | undefined> {
   const path = await getPath(address);
   // Personal sign
   if (messageType === 'personal_sign') {
@@ -77,10 +89,19 @@ export async function signMessageByTypeFromTrezor(
 
     const messageHex = ethers.utils.hexlify(msgData).substring(2);
 
-    const sig = await appEth.signPersonalMessage(path, messageHex);
-    sig.r = '0x' + sig.r;
-    sig.s = '0x' + sig.s;
-    return ethers.utils.joinSignature(sig);
+    const response = await TrezorConnect.ethereumSignMessage({
+      path,
+      message: messageHex,
+      hex: true,
+    });
+    if (response.success) {
+      if (response.payload.address.toLowerCase() !== address.toLowerCase()) {
+        throw new Error(
+          'Trezor returned a different address than the one requested',
+        );
+      }
+      return response.payload.signature;
+    }
     // sign typed data
   } else if (messageType === 'sign_typed_data') {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -112,14 +133,27 @@ export async function signMessageByTypeFromTrezor(
       version,
     ).toString('hex');
 
-    const sig = await appEth.signEIP712HashedMessage(
+    const response = await TrezorConnect.ethereumSignTypedData({
       path,
-      domainSeparatorHex,
-      hashStructMessageHex,
-    );
-    sig.r = '0x' + sig.r;
-    sig.s = '0x' + sig.s;
-    return ethers.utils.joinSignature(sig);
+      data: {
+        types,
+        message,
+        domain,
+        primaryType,
+      },
+      metamask_v4_compat: true,
+      domain_separator_hash: domainSeparatorHex,
+      message_hash: hashStructMessageHex,
+    });
+
+    if (response.success) {
+      if (response.payload.address.toLowerCase() !== address.toLowerCase()) {
+        throw new Error(
+          'Trezor returned a different address than the one requested',
+        );
+      }
+      return response.payload.signature;
+    }
   } else {
     throw new Error(`Message type ${messageType} not supported`);
   }

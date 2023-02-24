@@ -329,10 +329,10 @@ export const connectTrezor = async () => {
   } catch (e: any) {
     if (e?.name === 'TransportStatusError') {
       alert(
-        'Please make sure your ledger is unlocked and open the Ethereum app',
+        'Please make sure your trezor is unlocked and open the Ethereum app',
       );
     } else {
-      alert('Unable to connect to your ledger. Please try again.');
+      alert('Unable to connect to your trezor. Please try again.');
     }
     return null;
   }
