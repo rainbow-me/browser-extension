@@ -22,7 +22,7 @@ export type TokenToSwapDropdownProps = {
   asset: ParsedAddressAsset | null;
   assets?: ParsedAddressAsset[];
   sortMethod: SortMethod;
-  onSelectAsset: (address: Address) => void;
+  onSelectAsset?: (address: Address) => void;
   setSortMethod: (sortMethod: SortMethod) => void;
 };
 
@@ -138,7 +138,7 @@ export const TokenToSwapDropdown = ({
               <Box
                 paddingHorizontal="8px"
                 key={`${rowData?.uniqueId}-${i}`}
-                onClick={() => onSelectAsset(rowData.address)}
+                onClick={() => onSelectAsset?.(rowData.address)}
                 testId={`token-input-asset-${asset?.uniqueId}`}
               >
                 <TokenRow type="toSwap" uniqueId={rowData?.uniqueId} />

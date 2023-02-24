@@ -1,51 +1,42 @@
 import React, {
+  ReactElement,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from 'react';
-import { Address } from 'wagmi';
 
-import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
+import { ParsedAddressAsset } from '~/core/types/assets';
 import { Box, Text } from '~/design-system';
 import { SwapInputMask } from '~/entries/popup/components/InputMask/SwapInputMask/SwapInputMask';
 
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
 import { DropdownInputWrapper } from '../../../components/DropdownInputWrapper/DropdownInputWrapper';
-import { SortMethod } from '../../../hooks/send/useSendTransactionAsset';
 import { SwapInputActionButton } from '../SwapInputActionButton';
 
-import { TokenDropdown } from './TokenDropdown';
-import { TokenInfo } from './TokenInfo';
-
-interface SwapTokenInputProps {
+interface TokenInputProps {
   asset: ParsedAddressAsset | null;
-  assets?: ParsedAddressAsset[] | ParsedAsset[];
-  dropdownClosed: boolean;
   dropdownHeight?: number;
+  dropdownComponent: ReactElement;
+  bottomComponent: ReactElement | null;
   placeholder: string;
-  sortMethod: SortMethod;
-  type: 'toSwap' | 'toReceive';
   zIndex?: number;
+  dropdownClosed: boolean;
   onDropdownOpen: (open: boolean) => void;
-  selectAssetAddress: (address: Address | '') => void;
-  setSortMethod: (sortMethod: SortMethod) => void;
+  setOnSelectAsset: (cb: () => void) => void;
 }
 
-export const SwapTokenInput = ({
+export const TokenInput = ({
   asset,
-  assets,
-  dropdownClosed = false,
   dropdownHeight,
+  dropdownComponent,
+  bottomComponent,
   placeholder,
-  sortMethod,
-  type,
   zIndex,
+  dropdownClosed,
   onDropdownOpen,
-  selectAssetAddress,
-  setSortMethod,
-}: SwapTokenInputProps) => {
+  setOnSelectAsset,
+}: TokenInputProps) => {
   const [value, setValue] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const innerRef = useRef<HTMLInputElement>(null);
@@ -55,46 +46,21 @@ export const SwapTokenInput = ({
     setDropdownVisible(!dropdownVisible);
   }, [dropdownVisible, onDropdownOpen]);
 
-  const onSelectAsset = useCallback(
-    (address: Address | '') => {
-      selectAssetAddress(address);
-      onDropdownOpen(false);
-      setDropdownVisible(false);
-      setTimeout(() => innerRef?.current?.focus(), 300);
-    },
-    [onDropdownOpen, selectAssetAddress],
-  );
-
-  const dropdownComponent = useMemo(() => {
-    switch (type) {
-      case 'toSwap':
-        return (
-          <TokenDropdown
-            type={type}
-            asset={asset}
-            assets={assets as ParsedAddressAsset[]}
-            sortMethod={sortMethod}
-            setSortMethod={setSortMethod}
-            onSelectAsset={onSelectAsset}
-          />
-        );
-      case 'toReceive':
-        return (
-          <TokenDropdown
-            type={type}
-            asset={asset}
-            assets={assets as ParsedAsset[]}
-            onSelectAsset={onSelectAsset}
-          />
-        );
-    }
-  }, [asset, assets, onSelectAsset, setSortMethod, sortMethod, type]);
+  const onSelectAsset = useCallback(() => {
+    onDropdownOpen(false);
+    setDropdownVisible(false);
+    setTimeout(() => innerRef?.current?.focus(), 300);
+  }, [onDropdownOpen]);
 
   useEffect(() => {
     if (dropdownClosed) {
       setDropdownVisible(false);
     }
   }, [dropdownClosed]);
+
+  useEffect(() => {
+    setOnSelectAsset(onSelectAsset);
+  }, [onSelectAsset, setOnSelectAsset]);
 
   return (
     <DropdownInputWrapper
@@ -133,11 +99,11 @@ export const SwapTokenInput = ({
           </Box>
         )
       }
-      bottomComponent={asset ? <TokenInfo type={type} asset={asset} /> : null}
+      bottomComponent={bottomComponent}
       rightComponent={
         <SwapInputActionButton
           showClose={!!asset}
-          onClose={() => onSelectAsset('')}
+          onClose={onSelectAsset}
           dropdownVisible={dropdownVisible}
           testId={`input-wrapper-close-token-input`}
           asset={asset}

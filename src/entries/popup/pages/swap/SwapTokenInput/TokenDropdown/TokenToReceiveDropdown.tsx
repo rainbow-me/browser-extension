@@ -20,7 +20,7 @@ import { TokenRow } from '../TokenRow';
 export type TokenToReceiveDropdownProps = {
   asset: ParsedAddressAsset | null;
   assets?: ParsedAsset[];
-  onSelectAsset: (address: Address) => void;
+  onSelectAsset?: (address: Address) => void;
 };
 
 export const TokenToReceiveDropdown = ({
@@ -94,7 +94,7 @@ export const TokenToReceiveDropdown = ({
               <Box
                 paddingHorizontal="8px"
                 key={`${rowData?.uniqueId}-${i}`}
-                onClick={() => onSelectAsset(rowData.address)}
+                onClick={() => onSelectAsset?.(rowData.address)}
                 testId={`token-input-asset-${asset?.uniqueId}`}
               >
                 <TokenRow type="toReceive" asset={rowData} />
