@@ -3,9 +3,7 @@ import React, { useState } from 'react';
 import { Address, Chain, chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useAssets } from '~/core/resources/assets';
-import { useCurrentCurrencyStore } from '~/core/state';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import {
@@ -13,7 +11,6 @@ import {
   transitions,
 } from '~/design-system/styles/designTokens';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
-import { useSearchCurrencyLists } from '~/entries/popup/hooks/useSearchCurrencyLists';
 import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets';
 
 import { dropdownContainerVariant } from '../../../components/DropdownInputWrapper/DropdownInputWrapper';
@@ -23,39 +20,20 @@ import { TokenToReceiveRow } from './TokenToReceiveRow';
 
 interface TokenToReceiveDropdownProps {
   asset: ParsedAddressAsset | null;
+  assets?: ParsedAsset[];
   onSelectAsset: (address: Address) => void;
 }
 
 export const TokenToReceiveDropdown = ({
   asset,
+  assets,
   onSelectAsset,
 }: TokenToReceiveDropdownProps) => {
-  const { currentCurrency } = useCurrentCurrencyStore();
   const [outputChainId, setOutputChainId] = useState<ChainId>(ChainId.mainnet);
   const [selectedNetwork, setSelectedNetwork] = useState<Chain>(chain.mainnet);
 
-  const { results } = useSearchCurrencyLists({
-    // inputChainId: ChainId.mainnet,
-    outputChainId,
-  });
-
-  const addresses = results
-    ?.map(({ data }) => data)
-    .flat()
-    ?.map((asset) => asset?.uniqueId || '')
-    ?.filter((address) => !!address);
-
-  const { data: assets } = useAssets({
-    assetAddresses: addresses,
-    currency: currentCurrency,
-  });
-  const receiveAssets = Object.values(assets || {}).map((asset) => ({
-    ...asset,
-    chainId: outputChainId,
-  }));
-
   const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
-    assets: receiveAssets,
+    assets,
   });
 
   return (
@@ -109,10 +87,10 @@ export const TokenToReceiveDropdown = ({
         animate="show"
         ref={containerRef}
       >
-        {!!receiveAssets?.length &&
+        {!!assets?.length &&
           assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
             const { index } = virtualItem;
-            const rowData = receiveAssets?.[index];
+            const rowData = assets?.[index];
             return (
               <Box
                 paddingHorizontal="8px"
@@ -124,7 +102,7 @@ export const TokenToReceiveDropdown = ({
               </Box>
             );
           })}
-        {!receiveAssets?.length && (
+        {!assets?.length && (
           <Box alignItems="center" style={{ paddingTop: 119 }}>
             <Stack space="16px">
               <Inline alignHorizontal="center">

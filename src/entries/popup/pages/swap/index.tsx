@@ -34,7 +34,8 @@ export function Swap() {
   } = useSwapInputs();
 
   const {
-    assets,
+    assetsToSwap,
+    assetsToReceive,
     sortMethod,
     assetToReceive,
     assetToSwap,
@@ -79,7 +80,7 @@ export function Swap() {
                 <SwapTokenInput
                   dropdownHeight={452}
                   asset={assetToSwap}
-                  assets={assets}
+                  assets={assetsToSwap}
                   selectAssetAddress={setAssetToSwapAddress}
                   onDropdownOpen={onAssetToSwapInputOpen}
                   dropdownClosed={assetToReceiveDropdownVisible}
@@ -138,6 +139,7 @@ export function Swap() {
               >
                 <SwapTokenInput
                   asset={assetToReceive}
+                  assets={assetsToReceive}
                   selectAssetAddress={setAssetToReceiveAddress}
                   onDropdownOpen={onAssetToReceiveInputOpen}
                   dropdownClosed={assetToSwapDropdownVisible}

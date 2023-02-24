@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { Address } from 'wagmi';
 
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
 import { Box } from '~/design-system';
 
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
@@ -23,7 +23,7 @@ import { TokenToSwapDropdown } from './TokenToSwapDropdown';
 
 interface SwapTokenInputProps {
   asset: ParsedAddressAsset | null;
-  assets?: ParsedAddressAsset[];
+  assets?: ParsedAddressAsset[] | ParsedAsset[];
   selectAssetAddress: (address: Address | '') => void;
   dropdownClosed: boolean;
   setSortMethod: (sortMethod: SortMethod) => void;
@@ -84,7 +84,7 @@ export const SwapTokenInput = ({
         return (
           <TokenToSwapDropdown
             asset={asset}
-            assets={assets}
+            assets={assets as ParsedAddressAsset[]}
             sortMethod={sortMethod}
             setSortMethod={setSortMethod}
             onSelectAsset={onSelectAsset}
@@ -92,7 +92,11 @@ export const SwapTokenInput = ({
         );
       case 'toReceive':
         return (
-          <TokenToReceiveDropdown asset={asset} onSelectAsset={onSelectAsset} />
+          <TokenToReceiveDropdown
+            asset={asset}
+            assets={assets as ParsedAsset[]}
+            onSelectAsset={onSelectAsset}
+          />
         );
     }
   }, [asset, assets, onSelectAsset, setSortMethod, sortMethod, type]);

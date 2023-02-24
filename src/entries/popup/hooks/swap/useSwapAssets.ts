@@ -3,12 +3,15 @@ import { Address } from 'wagmi';
 
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { selectUserAssetsListByChainId } from '~/core/resources/_selectors/assets';
-import { useUserAssets } from '~/core/resources/assets';
+import { useAssets, useUserAssets } from '~/core/resources/assets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { ParsedAsset } from '~/core/types/assets';
+import { ChainId } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { SortMethod } from '../send/useSendTransactionAsset';
+import { useSearchCurrencyLists } from '../useSearchCurrencyLists';
 
 const sortBy = (by: SortMethod) => {
   switch (by) {
@@ -33,7 +36,29 @@ export const useSwapAssets = () => {
 
   const [sortMethod, setSortMethod] = useState<SortMethod>('token');
 
-  const { data: assets = [] } = useUserAssets(
+  const { results } = useSearchCurrencyLists({
+    // inputChainId: ChainId.mainnet,
+    outputChainId: ChainId.mainnet,
+  });
+
+  const addresses = results
+    ?.map(({ data }) => data)
+    .flat()
+    ?.map((asset) => asset?.uniqueId || '')
+    ?.filter((address) => !!address);
+
+  const { data: assets } = useAssets({
+    assetAddresses: addresses,
+    currency: currentCurrency,
+  });
+  const assetsToReceive: ParsedAsset[] = Object.values(assets || {}).map(
+    (asset) => ({
+      ...asset,
+      chainId: ChainId.mainnet,
+    }),
+  );
+
+  const { data: assetsToSwap = [] } = useUserAssets(
     {
       address: currentAddress,
       currency: currentCurrency,
@@ -44,22 +69,23 @@ export const useSwapAssets = () => {
 
   const assetToSwap = useMemo(
     () =>
-      assets?.find(({ address }) =>
+      assetsToSwap?.find(({ address }) =>
         isLowerCaseMatch(address, assetToSwapAddress),
       ) || null,
-    [assets, assetToSwapAddress],
+    [assetsToSwap, assetToSwapAddress],
   );
 
   const assetToReceive = useMemo(
     () =>
-      assets?.find(({ address }) =>
+      assetsToSwap?.find(({ address }) =>
         isLowerCaseMatch(address, assetToReceiveAddress),
       ) || null,
-    [assets, assetToReceiveAddress],
+    [assetsToSwap, assetToReceiveAddress],
   );
 
   return {
-    assets,
+    assetsToSwap,
+    assetsToReceive,
     sortMethod,
     assetToSwap,
     assetToReceive,
