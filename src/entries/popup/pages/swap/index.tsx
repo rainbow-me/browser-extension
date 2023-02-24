@@ -23,7 +23,8 @@ import { Navbar } from '../../components/Navbar/Navbar';
 import { useSwapAssets } from '../../hooks/swap/useSwapAssets';
 import { useSwapInputs } from '../../hooks/swap/useSwapInputs';
 
-import { SwapTokenInput } from './SwapTokenInput';
+import { TokenToReceiveInput } from './SwapTokenInput/TokenToReceiveInput';
+import { TokenToSwapInput } from './SwapTokenInput/TokenToSwapInput';
 
 export function Swap() {
   const {
@@ -77,7 +78,7 @@ export function Swap() {
                   assetToSwap?.colors?.primary || assetToSwap?.colors?.fallback
                 }
               >
-                <SwapTokenInput
+                <TokenToSwapInput
                   dropdownHeight={452}
                   asset={assetToSwap}
                   assets={assetsToSwap}
@@ -88,7 +89,6 @@ export function Swap() {
                   sortMethod={sortMethod}
                   zIndex={2}
                   placeholder={i18n.t('swap.input_token_to_swap_placeholder')}
-                  type="toSwap"
                 />
               </AccentColorProviderWrapper>
 
@@ -137,19 +137,16 @@ export function Swap() {
                   assetToReceive?.colors?.fallback
                 }
               >
-                <SwapTokenInput
+                <TokenToReceiveInput
                   asset={assetToReceive}
                   assets={assetsToReceive}
                   selectAssetAddress={setAssetToReceiveAddress}
                   onDropdownOpen={onAssetToReceiveInputOpen}
                   dropdownClosed={assetToSwapDropdownVisible}
-                  setSortMethod={setSortMethod}
-                  sortMethod={sortMethod}
                   zIndex={1}
                   placeholder={i18n.t(
                     'swap.input_token_to_receive_placeholder',
                   )}
-                  type="toReceive"
                 />
               </AccentColorProviderWrapper>
             </Stack>
