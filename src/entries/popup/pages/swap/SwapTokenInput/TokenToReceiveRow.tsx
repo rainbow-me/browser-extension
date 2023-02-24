@@ -143,12 +143,13 @@ export function TokenToReceiveRow({ uniqueId }: AssetRowProps) {
           <DropdownMenuContent>
             <Stack space="4px">
               <Box paddingTop="8px" paddingBottom="12px">
-                <Text
+                <TextOverflow
+                  maxWidth={200}
                   align="center"
                   size="14pt"
                   weight="bold"
                   color="label"
-                >{`${asset?.name} (${asset?.symbol})`}</Text>
+                >{`${asset?.name} (${asset?.symbol})`}</TextOverflow>
               </Box>
               <Stack space="4px">
                 <DropdownMenuSeparator />
