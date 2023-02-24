@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { selectUserAssetsList } from '~/core/resources/_selectors';
@@ -11,6 +11,7 @@ import { ChainId } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { SortMethod } from '../send/useSendTransactionAsset';
+import usePrevious from '../usePrevious';
 import { useSearchCurrencyLists } from '../useSearchCurrencyLists';
 
 const sortBy = (by: SortMethod) => {
@@ -42,6 +43,7 @@ const parseParsedAssetToParsedAddressAsset = ({
     price: parsedAsset.native.price,
   },
   balance: parsedAddressAsset?.balance || { amount: '0', display: '0.00' },
+  icon_url: parsedAddressAsset?.icon_url || parsedAsset?.icon_url,
 });
 
 export const useSwapAssets = () => {
@@ -56,6 +58,7 @@ export const useSwapAssets = () => {
     Address | ''
   >('');
   const [outputChainId, setOutputChainId] = useState(ChainId.mainnet);
+  const prevOutputChainId = usePrevious(outputChainId);
 
   const [sortMethod, setSortMethod] = useState<SortMethod>('token');
 
@@ -98,7 +101,7 @@ export const useSwapAssets = () => {
         const parsedAddressAsset = userAssets.find(
           (userAsset) =>
             isLowerCaseMatch(userAsset.address, asset.address) &&
-            userAsset.chainId === asset.chainId,
+            userAsset.chainId === outputChainId,
         );
         return parseParsedAssetToParsedAddressAsset({
           parsedAsset: asset,
@@ -111,11 +114,19 @@ export const useSwapAssets = () => {
 
   const assetToReceive = useMemo(
     () =>
-      assetsToReceive?.find(({ address }) =>
-        isLowerCaseMatch(address, assetToReceiveAddress),
+      assetsToReceive?.find(
+        ({ address, chainId }) =>
+          isLowerCaseMatch(address, assetToReceiveAddress) &&
+          chainId === outputChainId,
       ) || null,
-    [assetsToReceive, assetToReceiveAddress],
+    [assetsToReceive, assetToReceiveAddress, outputChainId],
   );
+
+  useEffect(() => {
+    if (prevOutputChainId !== outputChainId) {
+      setAssetToReceiveAddress('');
+    }
+  }, [outputChainId, prevOutputChainId]);
 
   return {
     assetsToSwap: userAssets,

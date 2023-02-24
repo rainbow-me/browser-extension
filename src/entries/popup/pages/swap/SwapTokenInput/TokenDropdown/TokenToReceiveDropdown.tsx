@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
-import React, { useState } from 'react';
-import { Address, Chain, chain } from 'wagmi';
+import React from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
@@ -32,8 +32,6 @@ export const TokenToReceiveDropdown = ({
   onSelectAsset,
   setOutputChainId,
 }: TokenToReceiveDropdownProps) => {
-  const [selectedNetwork, setSelectedNetwork] = useState<Chain>(chain.mainnet);
-
   const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
     assets,
   });
@@ -57,9 +55,8 @@ export const TokenToReceiveDropdown = ({
             accentColor={asset?.colors?.primary || asset?.colors?.fallback}
             type="dropdown"
             chainId={outputChainId}
-            onChainChanged={(chainId, chain) => {
+            onChainChanged={(chainId) => {
               setOutputChainId(chainId);
-              setSelectedNetwork(chain);
             }}
             triggerComponent={
               <Box
@@ -73,10 +70,7 @@ export const TokenToReceiveDropdown = ({
                 }}
                 transition={transitions.bounce}
               >
-                <BottomNetwork
-                  selectedNetwork={selectedNetwork}
-                  displaySymbol
-                />
+                <BottomNetwork selectedChainId={outputChainId} displaySymbol />
               </Box>
             }
           />
@@ -97,7 +91,9 @@ export const TokenToReceiveDropdown = ({
               <Box
                 paddingHorizontal="8px"
                 key={`${rowData?.uniqueId}-${i}`}
-                onClick={() => onSelectAsset?.(rowData.address)}
+                onClick={() =>
+                  onSelectAsset?.(rowData.mainnetAddress || rowData.address)
+                }
                 testId={`token-input-asset-${asset?.uniqueId}`}
               >
                 <TokenToReceiveRow asset={rowData} />

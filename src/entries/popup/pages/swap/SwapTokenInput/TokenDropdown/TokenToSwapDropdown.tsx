@@ -138,7 +138,9 @@ export const TokenToSwapDropdown = ({
               <Box
                 paddingHorizontal="8px"
                 key={`${rowData?.uniqueId}-${i}`}
-                onClick={() => onSelectAsset?.(rowData.address)}
+                onClick={() =>
+                  onSelectAsset?.(rowData.mainnetAddress || rowData.address)
+                }
                 testId={`token-input-asset-${asset?.uniqueId}`}
               >
                 <TokenToSwapRow uniqueId={rowData?.uniqueId} />
