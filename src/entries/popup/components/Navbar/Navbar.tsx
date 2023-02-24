@@ -30,7 +30,7 @@ export function Navbar({
       width="full"
       position="relative"
       background={background ?? undefined}
-      style={{ height: 65, zIndex: 999 }}
+      style={{ height: 65, minHeight: 65, zIndex: 999 }}
     >
       {leftComponent && (
         <Box
