@@ -68,8 +68,16 @@ export const useSwapAssets = () => {
     { select: sortBy(sortMethod) },
   );
 
+  const assetToSwap = useMemo(
+    () =>
+      userAssets?.find(({ address }) =>
+        isLowerCaseMatch(address, assetToSwapAddress),
+      ) || null,
+    [userAssets, assetToSwapAddress],
+  );
+
   const { results } = useSearchCurrencyLists({
-    // inputChainId: ChainId.mainnet,
+    inputChainId: assetToSwap?.chainId || undefined,
     outputChainId,
   });
 
@@ -99,14 +107,6 @@ export const useSwapAssets = () => {
         });
       }),
     [assets, outputChainId, userAssets],
-  );
-
-  const assetToSwap = useMemo(
-    () =>
-      userAssets?.find(({ address }) =>
-        isLowerCaseMatch(address, assetToSwapAddress),
-      ) || null,
-    [userAssets, assetToSwapAddress],
   );
 
   const assetToReceive = useMemo(

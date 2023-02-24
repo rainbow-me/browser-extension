@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { Address } from 'wagmi';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { Box, Text } from '~/design-system';
@@ -23,7 +24,8 @@ interface TokenInputProps {
   zIndex?: number;
   dropdownClosed: boolean;
   onDropdownOpen: (open: boolean) => void;
-  setOnSelectAsset: (cb: () => void) => void;
+  setOnSelectAsset: (cb: (address: Address | '') => void) => void;
+  selectAssetAddress: (address: Address | '') => void;
 }
 
 export const TokenInput = ({
@@ -35,6 +37,7 @@ export const TokenInput = ({
   zIndex,
   dropdownClosed,
   onDropdownOpen,
+  selectAssetAddress,
   setOnSelectAsset,
 }: TokenInputProps) => {
   const [value, setValue] = useState('');
@@ -51,6 +54,10 @@ export const TokenInput = ({
     setDropdownVisible(false);
     setTimeout(() => innerRef?.current?.focus(), 300);
   }, [onDropdownOpen]);
+
+  const onClose = useCallback(() => {
+    selectAssetAddress('');
+  }, [selectAssetAddress]);
 
   useEffect(() => {
     if (dropdownClosed) {
@@ -103,7 +110,7 @@ export const TokenInput = ({
       rightComponent={
         <SwapInputActionButton
           showClose={!!asset}
-          onClose={onSelectAsset}
+          onClose={onClose}
           dropdownVisible={dropdownVisible}
           testId={`input-wrapper-close-token-input`}
           asset={asset}

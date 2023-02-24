@@ -36,9 +36,9 @@ export const TokenToReceiveInput = ({
   const onSelectAssetRef = useRef<(address: Address | '') => void>();
 
   const setOnSelectAsset = useCallback(
-    (cb: () => void) => {
+    (cb: (address: Address | '') => void) => {
       onSelectAssetRef.current = (address: Address | '') => {
-        cb();
+        cb(address);
         selectAssetAddress(address);
       };
     },
@@ -64,6 +64,7 @@ export const TokenToReceiveInput = ({
       zIndex={zIndex}
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
+      selectAssetAddress={selectAssetAddress}
     />
   );
 };
