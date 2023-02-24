@@ -15,11 +15,10 @@ import { DropdownInputWrapper } from '../../../components/DropdownInputWrapper/D
 import { SortMethod } from '../../../hooks/send/useSendTransactionAsset';
 import { SwapInputActionButton } from '../SwapInputActionButton';
 
+import { TokenDropdown } from './TokenDropdown';
 import { TokenInput } from './TokenInput';
 import { TokenToReceiveBottomComponent } from './TokenToReceiveBottomComponent';
-import { TokenToReceiveDropdown } from './TokenToReceiveDropdown';
 import { TokenToSwapBottomComponent } from './TokenToSwapBottomComponent';
-import { TokenToSwapDropdown } from './TokenToSwapDropdown';
 
 interface SwapTokenInputProps {
   asset: ParsedAddressAsset | null;
@@ -82,7 +81,8 @@ export const SwapTokenInput = ({
     switch (type) {
       case 'toSwap':
         return (
-          <TokenToSwapDropdown
+          <TokenDropdown
+            type={type}
             asset={asset}
             assets={assets as ParsedAddressAsset[]}
             sortMethod={sortMethod}
@@ -92,7 +92,8 @@ export const SwapTokenInput = ({
         );
       case 'toReceive':
         return (
-          <TokenToReceiveDropdown
+          <TokenDropdown
+            type={type}
             asset={asset}
             assets={assets as ParsedAsset[]}
             onSelectAsset={onSelectAsset}

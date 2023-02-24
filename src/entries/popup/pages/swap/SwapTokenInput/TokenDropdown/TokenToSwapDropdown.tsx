@@ -7,25 +7,24 @@ import { ParsedAddressAsset } from '~/core/types/assets';
 import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets';
 
-import { dropdownContainerVariant } from '../../../components/DropdownInputWrapper/DropdownInputWrapper';
+import { dropdownContainerVariant } from '../../../../components/DropdownInputWrapper/DropdownInputWrapper';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from '../../../components/DropdownMenu/DropdownMenu';
-import { SortMethod } from '../../../hooks/send/useSendTransactionAsset';
+} from '../../../../components/DropdownMenu/DropdownMenu';
+import { SortMethod } from '../../../../hooks/send/useSendTransactionAsset';
+import { TokenRow } from '../TokenRow';
 
-import { TokenRow } from './TokenRow';
-
-interface TokenToSwapDropdownProps {
+export type TokenToSwapDropdownProps = {
   asset: ParsedAddressAsset | null;
   assets?: ParsedAddressAsset[];
   sortMethod: SortMethod;
   onSelectAsset: (address: Address) => void;
   setSortMethod: (sortMethod: SortMethod) => void;
-}
+};
 
 export const TokenToSwapDropdown = ({
   asset,

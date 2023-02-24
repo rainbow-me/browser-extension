@@ -13,16 +13,15 @@ import {
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets';
 
-import { dropdownContainerVariant } from '../../../components/DropdownInputWrapper/DropdownInputWrapper';
-import { BottomNetwork } from '../../messages/BottomActions';
+import { dropdownContainerVariant } from '../../../../components/DropdownInputWrapper/DropdownInputWrapper';
+import { BottomNetwork } from '../../../messages/BottomActions';
+import { TokenRow } from '../TokenRow';
 
-import { TokenRow } from './TokenRow';
-
-interface TokenToReceiveDropdownProps {
+export type TokenToReceiveDropdownProps = {
   asset: ParsedAddressAsset | null;
   assets?: ParsedAsset[];
   onSelectAsset: (address: Address) => void;
-}
+};
 
 export const TokenToReceiveDropdown = ({
   asset,
