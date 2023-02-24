@@ -5,6 +5,10 @@ import { Address, Chain, chain } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import {
+  transformScales,
+  transitions,
+} from '~/design-system/styles/designTokens';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets';
 
@@ -50,7 +54,22 @@ export const TokenToReceiveDropdown = ({
             chainId={selectedNetwork.id}
             onChainChanged={(_, chain) => setSelectedNetwork(chain)}
             triggerComponent={
-              <BottomNetwork selectedNetwork={selectedNetwork} displaySymbol />
+              <Box
+                as={motion.div}
+                initial={{ zIndex: 0 }}
+                whileHover={{
+                  scale: transformScales['1.04'],
+                }}
+                whileTap={{
+                  scale: transformScales['0.96'],
+                }}
+                transition={transitions.bounce}
+              >
+                <BottomNetwork
+                  selectedNetwork={selectedNetwork}
+                  displaySymbol
+                />
+              </Box>
             }
           />
         </Inline>
