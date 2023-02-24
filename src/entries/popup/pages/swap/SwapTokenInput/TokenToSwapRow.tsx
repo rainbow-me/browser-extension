@@ -51,7 +51,7 @@ type AssetRowProps = {
   uniqueId: UniqueId;
 };
 
-export function SwapTokenRow({ uniqueId }: AssetRowProps) {
+export function TokenToSwapRow({ uniqueId }: AssetRowProps) {
   const asset = useUserAsset(uniqueId);
   const name = asset?.name;
   const { hideAssetBalances } = useHideAssetBalancesStore();

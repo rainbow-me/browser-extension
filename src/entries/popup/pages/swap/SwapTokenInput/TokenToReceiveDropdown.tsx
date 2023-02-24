@@ -11,7 +11,7 @@ import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets
 import { dropdownContainerVariant } from '../../../components/DropdownInputWrapper/DropdownInputWrapper';
 import { BottomNetwork } from '../../messages/BottomActions';
 
-import { SwapTokenRow } from './SwapTokenRow';
+import { TokenToSwapRow } from './TokenToSwapRow';
 
 interface TokenToReceiveDropdownProps {
   asset: ParsedAddressAsset | null;
@@ -73,7 +73,7 @@ export const TokenToReceiveDropdown = ({
                 onClick={() => onSelectAsset(rowData.address)}
                 testId={`token-input-asset-${asset?.uniqueId}`}
               >
-                <SwapTokenRow uniqueId={rowData?.uniqueId} />
+                <TokenToSwapRow uniqueId={rowData?.uniqueId} />
               </Box>
             );
           })}
