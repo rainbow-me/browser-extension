@@ -20,15 +20,18 @@ import { TokenToReceiveRow } from '../TokenRow/TokenToReceiveRow';
 export type TokenToReceiveDropdownProps = {
   asset: ParsedAddressAsset | null;
   assets?: ParsedAsset[];
+  outputChainId: ChainId;
   onSelectAsset?: (address: Address) => void;
+  setOutputChainId: (chainId: ChainId) => void;
 };
 
 export const TokenToReceiveDropdown = ({
   asset,
   assets,
+  outputChainId,
   onSelectAsset,
+  setOutputChainId,
 }: TokenToReceiveDropdownProps) => {
-  const [outputChainId, setOutputChainId] = useState<ChainId>(ChainId.mainnet);
   const [selectedNetwork, setSelectedNetwork] = useState<Chain>(chain.mainnet);
 
   const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({

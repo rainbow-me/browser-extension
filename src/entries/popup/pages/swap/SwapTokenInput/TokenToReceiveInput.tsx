@@ -2,6 +2,7 @@ import React, { useCallback, useRef } from 'react';
 import { Address } from 'wagmi';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
+import { ChainId } from '~/core/types/chains';
 
 import { TokenToReceiveDropdown } from './TokenDropdown/TokenToReceiveDropdown';
 import { TokenToReceiveInfo } from './TokenInfo/TokenToReceiveInfo';
@@ -12,10 +13,12 @@ interface TokenToReceiveProps {
   assets?: ParsedAddressAsset[];
   dropdownClosed: boolean;
   dropdownHeight?: number;
+  outputChainId: ChainId;
   placeholder: string;
   zIndex?: number;
   onDropdownOpen: (open: boolean) => void;
   selectAssetAddress: (address: Address | '') => void;
+  setOutputChainId: (chainId: ChainId) => void;
 }
 
 export const TokenToReceiveInput = ({
@@ -23,10 +26,12 @@ export const TokenToReceiveInput = ({
   assets,
   dropdownClosed = false,
   dropdownHeight,
+  outputChainId,
   placeholder,
   zIndex,
   onDropdownOpen,
   selectAssetAddress,
+  setOutputChainId,
 }: TokenToReceiveProps) => {
   const onSelectAssetRef = useRef<(address: Address | '') => void>();
 
@@ -50,6 +55,8 @@ export const TokenToReceiveInput = ({
           asset={asset}
           assets={assets}
           onSelectAsset={onSelectAssetRef?.current}
+          outputChainId={outputChainId}
+          setOutputChainId={setOutputChainId}
         />
       }
       bottomComponent={asset ? <TokenToReceiveInfo asset={asset} /> : null}

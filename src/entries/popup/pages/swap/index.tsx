@@ -40,7 +40,9 @@ export function Swap() {
     sortMethod,
     assetToReceive,
     assetToSwap,
+    outputChainId,
     setSortMethod,
+    setOutputChainId,
     setAssetToReceiveAddress,
     setAssetToSwapAddress,
   } = useSwapAssets();
@@ -147,6 +149,8 @@ export function Swap() {
                   placeholder={i18n.t(
                     'swap.input_token_to_receive_placeholder',
                   )}
+                  setOutputChainId={setOutputChainId}
+                  outputChainId={outputChainId}
                 />
               </AccentColorProviderWrapper>
             </Stack>

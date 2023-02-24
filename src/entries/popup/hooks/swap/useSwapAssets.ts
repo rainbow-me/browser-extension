@@ -22,13 +22,18 @@ const sortBy = (by: SortMethod) => {
   }
 };
 
-const parseParsedAssetToParsedAddressAsset = (
-  parsedAsset: ParsedAsset,
-  parsedAddressAsset?: ParsedAddressAsset,
-) => ({
+const parseParsedAssetToParsedAddressAsset = ({
+  parsedAsset,
+  outputChainId,
+  parsedAddressAsset,
+}: {
+  parsedAsset: ParsedAsset;
+  outputChainId: ChainId;
+  parsedAddressAsset?: ParsedAddressAsset;
+}) => ({
   ...parsedAsset,
   address: parsedAddressAsset?.address || parsedAsset.address,
-  chainId: ChainId.mainnet,
+  chainId: outputChainId,
   native: {
     balance: {
       amount: '0',
@@ -87,9 +92,13 @@ export const useSwapAssets = () => {
             isLowerCaseMatch(userAsset.address, asset.address) &&
             userAsset.chainId === asset.chainId,
         );
-        return parseParsedAssetToParsedAddressAsset(asset, parsedAddressAsset);
+        return parseParsedAssetToParsedAddressAsset({
+          parsedAsset: asset,
+          parsedAddressAsset,
+          outputChainId,
+        });
       }),
-    [assets, userAssets],
+    [assets, outputChainId, userAssets],
   );
 
   const assetToSwap = useMemo(
