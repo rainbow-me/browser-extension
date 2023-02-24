@@ -8,7 +8,8 @@ import React, {
 import { Address } from 'wagmi';
 
 import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
-import { Box } from '~/design-system';
+import { Box, Text } from '~/design-system';
+import { SwapInputMask } from '~/entries/popup/components/InputMask/SwapInputMask/SwapInputMask';
 
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
 import { DropdownInputWrapper } from '../../../components/DropdownInputWrapper/DropdownInputWrapper';
@@ -17,7 +18,6 @@ import { SwapInputActionButton } from '../SwapInputActionButton';
 
 import { TokenDropdown } from './TokenDropdown';
 import { TokenInfo } from './TokenInfo';
-import { TokenInput } from './TokenInput';
 
 interface SwapTokenInputProps {
   asset: ParsedAddressAsset | null;
@@ -46,6 +46,7 @@ export const SwapTokenInput = ({
   selectAssetAddress,
   setSortMethod,
 }: SwapTokenInputProps) => {
+  const [value, setValue] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const innerRef = useRef<HTMLInputElement>(null);
 
@@ -106,11 +107,31 @@ export const SwapTokenInput = ({
         </Box>
       }
       centerComponent={
-        <TokenInput
-          innerRef={innerRef}
-          asset={asset}
-          placeholder={placeholder}
-        />
+        !asset ? (
+          <Box width="fit">
+            <Text
+              size="16pt"
+              weight="semibold"
+              color={`${asset ? 'label' : 'labelTertiary'}`}
+            >
+              {placeholder}
+            </Text>
+          </Box>
+        ) : (
+          <Box width="fit" marginVertical="-20px">
+            <SwapInputMask
+              borderColor="transparent"
+              decimals={asset?.decimals}
+              height="56px"
+              placeholder="0.00"
+              value={value}
+              variant="tinted"
+              onChange={setValue}
+              paddingHorizontal={0}
+              innerRef={innerRef}
+            />
+          </Box>
+        )
       }
       bottomComponent={asset ? <TokenInfo type={type} asset={asset} /> : null}
       rightComponent={
@@ -118,7 +139,7 @@ export const SwapTokenInput = ({
           showClose={!!asset}
           onClose={() => onSelectAsset('')}
           dropdownVisible={dropdownVisible}
-          testId={`input-wrapper-close-${'token-input'}`}
+          testId={`input-wrapper-close-token-input`}
           asset={asset}
         />
       }
