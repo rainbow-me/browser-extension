@@ -53,7 +53,6 @@ type AssetRowProps = {
 
 export function TokenToSwapRow({ uniqueId }: AssetRowProps) {
   const asset = useUserAsset(uniqueId);
-  const name = asset?.name;
   const { hideAssetBalances } = useHideAssetBalancesStore();
   const { currentCurrency } = useCurrentCurrencyStore();
 
@@ -108,7 +107,7 @@ export function TokenToSwapRow({ uniqueId }: AssetRowProps) {
               size="14pt"
               weight="semibold"
             >
-              {name}
+              {asset?.name}
             </TextOverflow>
           </Box>
         </Row>
@@ -117,7 +116,7 @@ export function TokenToSwapRow({ uniqueId }: AssetRowProps) {
         </Row>
       </Rows>
     ),
-    [balanceDisplay, name],
+    [asset?.name, balanceDisplay],
   );
 
   const rightColumn = useMemo(

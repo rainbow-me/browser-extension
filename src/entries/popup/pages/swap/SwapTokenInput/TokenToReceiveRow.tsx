@@ -65,7 +65,6 @@ type AssetRowProps = {
 
 export function TokenToReceiveRow({ uniqueId }: AssetRowProps) {
   const asset = useUserAsset(uniqueId);
-  const name = asset?.name;
 
   const balanceDisplay = useMemo(
     () => (
@@ -91,7 +90,7 @@ export function TokenToReceiveRow({ uniqueId }: AssetRowProps) {
               size="14pt"
               weight="semibold"
             >
-              {name}
+              {asset?.name}
             </TextOverflow>
           </Box>
         </Row>
@@ -100,7 +99,7 @@ export function TokenToReceiveRow({ uniqueId }: AssetRowProps) {
         </Row>
       </Rows>
     ),
-    [balanceDisplay, name],
+    [asset?.name, balanceDisplay],
   );
 
   const viewOnExplorer = useCallback(() => {
@@ -127,101 +126,109 @@ export function TokenToReceiveRow({ uniqueId }: AssetRowProps) {
   );
 
   const rightColumn = useMemo(
-    () => (
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Box>
-            <ButtonSymbol
-              symbol="info"
-              height="24px"
-              variant="plain"
-              color="fillHorizontal"
-              symbolColor="labelSecondary"
-            />
-          </Box>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <Stack space="4px">
-            <Box paddingTop="8px" paddingBottom="12px">
-              <Text
-                align="center"
-                size="14pt"
-                weight="bold"
-                color="label"
-              >{`${asset?.name} (${asset?.symbol})`}</Text>
+    () =>
+      !asset?.isNativeAsset ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Box>
+              <ButtonSymbol
+                symbol="info"
+                height="24px"
+                variant="plain"
+                color="fillHorizontal"
+                symbolColor="labelSecondary"
+              />
             </Box>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
             <Stack space="4px">
-              <DropdownMenuSeparator />
-              <DropdownMenuRadioGroup onValueChange={onValueChange}>
-                <DropdownMenuRadioItem value="copy">
-                  <Box width="full">
-                    <Inline space="8px" alignVertical="center">
-                      <Box>
-                        <Inline alignVertical="center">
-                          <Symbol
-                            symbol="doc.on.doc.fill"
-                            weight="semibold"
-                            size={18}
-                          />
-                        </Inline>
-                      </Box>
+              <Box paddingTop="8px" paddingBottom="12px">
+                <Text
+                  align="center"
+                  size="14pt"
+                  weight="bold"
+                  color="label"
+                >{`${asset?.name} (${asset?.symbol})`}</Text>
+              </Box>
+              <Stack space="4px">
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup onValueChange={onValueChange}>
+                  <DropdownMenuRadioItem value="copy">
+                    <Box width="full">
+                      <Inline space="8px" alignVertical="center">
+                        <Box>
+                          <Inline alignVertical="center">
+                            <Symbol
+                              symbol="doc.on.doc.fill"
+                              weight="semibold"
+                              size={18}
+                            />
+                          </Inline>
+                        </Box>
 
-                      <Box>
-                        <Stack space="6px">
-                          <Text weight="semibold" size="14pt" color="label">
-                            {i18n.t('contacts.copy_address')}
-                          </Text>
-                          <Text
-                            weight="regular"
-                            size="11pt"
-                            color="labelTertiary"
-                          >
-                            {truncateAddress(asset?.address)}
-                          </Text>
-                        </Stack>
-                      </Box>
-                    </Inline>
-                  </Box>
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="view">
-                  <Box width="full">
-                    <Inline alignVertical="center" alignHorizontal="justify">
-                      <Inline alignVertical="center" space="8px">
-                        <Inline alignVertical="center">
-                          <Symbol
-                            size={18}
-                            symbol="binoculars.fill"
-                            weight="semibold"
-                          />
-                        </Inline>
-                        <Text size="14pt" weight="semibold">
-                          {i18n.t(
-                            `contacts.${
-                              isL2Chain(asset?.chainId || ChainId.mainnet)
-                                ? 'view_on_explorer'
-                                : 'view_on_etherscan'
-                            }`,
-                          )}
-                        </Text>
+                        <Box>
+                          <Stack space="6px">
+                            <Text weight="semibold" size="14pt" color="label">
+                              {i18n.t('contacts.copy_address')}
+                            </Text>
+                            <Text
+                              weight="regular"
+                              size="11pt"
+                              color="labelTertiary"
+                            >
+                              {truncateAddress(asset?.address)}
+                            </Text>
+                          </Stack>
+                        </Box>
                       </Inline>
-                      <Bleed vertical="8px">
-                        <Symbol
-                          size={14}
-                          symbol="arrow.up.forward.circle"
-                          weight="semibold"
-                          color="labelTertiary"
-                        />
-                      </Bleed>
-                    </Inline>
-                  </Box>
-                </DropdownMenuRadioItem>
-              </DropdownMenuRadioGroup>
+                    </Box>
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="view">
+                    <Box width="full">
+                      <Inline alignVertical="center" alignHorizontal="justify">
+                        <Inline alignVertical="center" space="8px">
+                          <Inline alignVertical="center">
+                            <Symbol
+                              size={18}
+                              symbol="binoculars.fill"
+                              weight="semibold"
+                            />
+                          </Inline>
+                          <Text size="14pt" weight="semibold">
+                            {i18n.t(
+                              `contacts.${
+                                isL2Chain(asset?.chainId || ChainId.mainnet)
+                                  ? 'view_on_explorer'
+                                  : 'view_on_etherscan'
+                              }`,
+                            )}
+                          </Text>
+                        </Inline>
+                        <Bleed vertical="8px">
+                          <Symbol
+                            size={14}
+                            symbol="arrow.up.forward.circle"
+                            weight="semibold"
+                            color="labelTertiary"
+                          />
+                        </Bleed>
+                      </Inline>
+                    </Box>
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </Stack>
             </Stack>
-          </Stack>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    ),
-    [asset?.address, asset?.chainId, asset?.name, asset?.symbol, onValueChange],
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : null,
+    [
+      asset?.address,
+      asset?.chainId,
+      asset?.isNativeAsset,
+      asset?.name,
+      asset?.symbol,
+      onValueChange,
+    ],
   );
 
   return (
