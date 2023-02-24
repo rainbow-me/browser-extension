@@ -138,7 +138,6 @@ export function Swap() {
               >
                 <SwapTokenInput
                   asset={assetToReceive}
-                  assets={assets}
                   selectAssetAddress={setAssetToReceiveAddress}
                   onDropdownOpen={onAssetToReceiveInputOpen}
                   dropdownClosed={assetToSwapDropdownVisible}

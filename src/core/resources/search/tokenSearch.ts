@@ -76,7 +76,10 @@ async function tokenSearchQueryFunction({
   }
   const url = `/${chainId}/?${qs.stringify(queryParams)}`;
   try {
+    console.log('URL', url);
     const tokenSearch = await tokenSearchHttp.get(url);
+
+    console.log('--- tokenSearch.data?.data', tokenSearch.data?.data);
     return tokenSearch.data?.data as SearchAsset[];
   } catch (e) {
     return [];

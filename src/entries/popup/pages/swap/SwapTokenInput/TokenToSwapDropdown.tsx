@@ -21,7 +21,7 @@ import { TokenToSwapRow } from './TokenToSwapRow';
 
 interface TokenToSwapDropdownProps {
   asset: ParsedAddressAsset | null;
-  assets: ParsedAddressAsset[];
+  assets?: ParsedAddressAsset[];
   sortMethod: SortMethod;
   onSelectAsset: (address: Address) => void;
   setSortMethod: (sortMethod: SortMethod) => void;
@@ -146,7 +146,7 @@ export const TokenToSwapDropdown = ({
               </Box>
             );
           })}
-        {!assets.length && (
+        {!assets?.length && (
           <Box alignItems="center" style={{ paddingTop: 119 }}>
             <Stack space="16px">
               <Inline alignHorizontal="center">

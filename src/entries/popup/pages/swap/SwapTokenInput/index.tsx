@@ -23,7 +23,7 @@ import { TokenToSwapDropdown } from './TokenToSwapDropdown';
 
 interface SwapTokenInputProps {
   asset: ParsedAddressAsset | null;
-  assets: ParsedAddressAsset[];
+  assets?: ParsedAddressAsset[];
   selectAssetAddress: (address: Address | '') => void;
   dropdownClosed: boolean;
   setSortMethod: (sortMethod: SortMethod) => void;
@@ -92,11 +92,7 @@ export const SwapTokenInput = ({
         );
       case 'toReceive':
         return (
-          <TokenToReceiveDropdown
-            asset={asset}
-            assets={assets}
-            onSelectAsset={onSelectAsset}
-          />
+          <TokenToReceiveDropdown asset={asset} onSelectAsset={onSelectAsset} />
         );
     }
   }, [asset, assets, onSelectAsset, setSortMethod, sortMethod, type]);

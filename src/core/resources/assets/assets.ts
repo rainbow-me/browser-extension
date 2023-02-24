@@ -47,6 +47,7 @@ async function assetsQueryFunction({
   const assetCodes = Array.isArray(assetAddresses)
     ? assetAddresses
     : [assetAddresses];
+  console.log('---==-=-=-m assetsCodes', assetCodes);
   refractionAssetsWs.emit('get', {
     payload: {
       asset_codes: assetCodes,
@@ -56,6 +57,7 @@ async function assetsQueryFunction({
   });
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
+      console.log('ASSETS_TIMEOUT_DURATION');
       resolve(
         queryClient.getQueryData(
           assetsQueryKey({ assetAddresses, currency }),
@@ -64,6 +66,7 @@ async function assetsQueryFunction({
     }, ASSETS_TIMEOUT_DURATION);
     const resolver = (message: AssetPricesReceivedMessage) => {
       clearTimeout(timeout);
+      console.log('resolveresolve parseAssets', parseAssets(message, currency));
       resolve(parseAssets(message, currency));
     };
     refractionAssetsWs.once(refractionAssetsMessages.ASSETS.RECEIVED, resolver);

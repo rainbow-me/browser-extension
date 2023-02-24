@@ -2,7 +2,7 @@ import React, { ReactNode, useCallback, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { UniqueId } from '~/core/types/assets';
+import { ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain, isL2Chain } from '~/core/utils/chains';
@@ -31,7 +31,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
-import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 
 import {
   swapTokenInputHighlightWrapperStyleDark,
@@ -59,47 +58,35 @@ const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
   );
 };
 
-type AssetRowProps = {
-  uniqueId: UniqueId;
-};
+type TokenToReceiveRowProps = { asset: ParsedAsset };
 
-export function TokenToReceiveRow({ uniqueId }: AssetRowProps) {
-  const asset = useUserAsset(uniqueId);
-
-  const balanceDisplay = useMemo(
-    () => (
-      <TextOverflow
-        maxWidth={TEXT_MAX_WIDTH}
-        color="labelTertiary"
-        size="12pt"
-        weight="semibold"
-      >
-        {asset?.balance?.display}
-      </TextOverflow>
-    ),
-    [asset?.balance?.display],
-  );
-
+export function TokenToReceiveRow({ asset }: TokenToReceiveRowProps) {
   const leftColumn = useMemo(
     () => (
-      <Rows>
+      <Rows space="8px">
         <Row>
-          <Box paddingVertical="4px">
-            <TextOverflow
-              maxWidth={TEXT_MAX_WIDTH}
-              size="14pt"
-              weight="semibold"
-            >
-              {asset?.name}
-            </TextOverflow>
-          </Box>
+          <TextOverflow
+            maxWidth={TEXT_MAX_WIDTH}
+            size="14pt"
+            weight="semibold"
+            color="label"
+          >
+            {asset?.name}
+          </TextOverflow>
         </Row>
         <Row>
-          <Box paddingVertical="4px">{balanceDisplay}</Box>
+          <TextOverflow
+            maxWidth={TEXT_MAX_WIDTH}
+            size="12pt"
+            weight="semibold"
+            color="labelTertiary"
+          >
+            {asset?.symbol}
+          </TextOverflow>
         </Row>
       </Rows>
     ),
-    [asset?.name, balanceDisplay],
+    [asset?.name, asset?.symbol],
   );
 
   const viewOnExplorer = useCallback(() => {
