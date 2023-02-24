@@ -1,9 +1,10 @@
 import React, { useCallback, useState } from 'react';
-import { Address, Chain, chain } from 'wagmi';
+import { Address } from 'wagmi';
 
 import { initializeMessenger } from '~/core/messengers';
 import { useCurrentAddressStore } from '~/core/state';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import { ChainId } from '~/core/types/chains';
 import { Row, Rows, Separator } from '~/design-system';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 
@@ -28,19 +29,21 @@ export const RequestAccounts = ({
     url: request?.meta?.sender?.url,
     title: request?.meta?.sender?.tab?.title,
   });
-  const [selectedNetwork, setSelectedNetwork] = useState<Chain>(chain.mainnet);
+  const [selectedChainId, setSelectedChainId] = useState<ChainId>(
+    ChainId.mainnet,
+  );
   const [selectedWallet, setSelectedWallet] = useState<Address>(currentAddress);
 
   const onAcceptRequest = useCallback(() => {
     approveRequest({
       address: selectedWallet,
-      chainId: selectedNetwork.id,
+      chainId: selectedChainId,
     });
     messenger.send(`connect:${appHostName}`, {
       address: selectedWallet,
-      chainId: selectedNetwork.id,
+      chainId: selectedChainId,
     });
-  }, [appHostName, approveRequest, selectedNetwork.id, selectedWallet]);
+  }, [appHostName, approveRequest, selectedChainId, selectedWallet]);
 
   return (
     <Rows alignVertical="justify">
@@ -56,8 +59,8 @@ export const RequestAccounts = ({
         <RequestAccountsActions
           selectedWallet={selectedWallet}
           setSelectedWallet={setSelectedWallet}
-          selectedNetwork={selectedNetwork}
-          setSelectedNetwork={setSelectedNetwork}
+          selectedChainId={selectedChainId}
+          setSelectedChainId={setSelectedChainId}
           onAcceptRequest={onAcceptRequest}
           onRejectRequest={rejectRequest}
           appName={appName}
