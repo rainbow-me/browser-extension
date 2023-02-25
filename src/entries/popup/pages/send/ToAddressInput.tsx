@@ -27,15 +27,16 @@ import { Input } from '~/design-system/components/Input/Input';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
+import {
+  DropdownInputWrapper,
+  dropdownContainerVariant,
+  dropdownItemVariant,
+} from '../../components/DropdownInputWrapper/DropdownInputWrapper';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
 
-import {
-  InputWrapper,
-  dropdownContainerVariant,
-  dropdownItemVariant,
-} from './InputWrapper';
+import { InputActionButon } from './InputActionButton';
 import {
   addressToInputHighlightWrapperStyleDark,
   addressToInputHighlightWrapperStyleLight,
@@ -272,11 +273,13 @@ export const ToAddressInput = ({
   const onDropdownAction = useCallback(() => {
     onDropdownOpen(!dropdownVisible);
     setDropdownVisible(!dropdownVisible);
+    dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
   }, [dropdownVisible, onDropdownOpen]);
 
   const openDropdown = useCallback(() => {
     onDropdownOpen(true);
     setDropdownVisible(true);
+    inputRef?.current?.focus();
   }, [onDropdownOpen]);
 
   const closeDropdown = useCallback(() => {
@@ -323,9 +326,14 @@ export const ToAddressInput = ({
     filter: toAddressOrName,
   });
 
+  useEffect(() => {
+    openDropdown();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <>
-      <InputWrapper
+      <DropdownInputWrapper
         zIndex={2}
         dropdownHeight={452}
         testId={'to-address-input'}
@@ -386,8 +394,6 @@ export const ToAddressInput = ({
             </Stack>
           </Box>
         }
-        showActionClose={!!toAddress}
-        onActionClose={onActionClose}
         dropdownComponent={
           <DropdownWalletsList
             wallets={wallets}
@@ -398,6 +404,14 @@ export const ToAddressInput = ({
         }
         dropdownVisible={dropdownVisible}
         onDropdownAction={onDropdownAction}
+        rightComponent={
+          <InputActionButon
+            showClose={!!toAddress}
+            onClose={onActionClose}
+            dropdownVisible={dropdownVisible}
+            testId={`input-wrapper-close-to-address-input`}
+          />
+        }
       />
     </>
   );

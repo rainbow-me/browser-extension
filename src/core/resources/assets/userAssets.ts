@@ -23,13 +23,22 @@ const USER_ASSETS_REFETCH_INTERVAL = 60000;
 export type UserAssetsArgs = {
   address?: Address;
   currency: SupportedCurrencyKey;
+  connectedToHardhat: boolean;
 };
 
 // ///////////////////////////////////////////////
 // Query Key
 
-const userAssetsQueryKey = ({ address, currency }: UserAssetsArgs) =>
-  createQueryKey('userAssets', { address, currency }, { persisterVersion: 1 });
+const userAssetsQueryKey = ({
+  address,
+  currency,
+  connectedToHardhat,
+}: UserAssetsArgs) =>
+  createQueryKey(
+    'userAssets',
+    { address, currency, connectedToHardhat },
+    { persisterVersion: 1 },
+  );
 
 type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;
 
@@ -39,18 +48,17 @@ type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;
 async function userAssetsQueryFunctionByChain({
   address,
   currency,
-}: {
-  address?: Address;
-  currency: SupportedCurrencyKey;
-}): Promise<ParsedAssetsDictByChain> {
+  connectedToHardhat,
+}: UserAssetsArgs): Promise<ParsedAssetsDictByChain> {
   const queries = [];
   const cache = queryClient.getQueryCache();
-  const cachedUserAssets = cache.find(userAssetsQueryKey({ address, currency }))
-    ?.state?.data as ParsedAssetsDictByChain;
+  const cachedUserAssets = cache.find(
+    userAssetsQueryKey({ address, currency, connectedToHardhat }),
+  )?.state?.data as ParsedAssetsDictByChain;
   const getResultsForChain = async (chain: ChainName) => {
     const results =
       (await fetchUserAssetsByChain(
-        { address, chain, currency },
+        { address, chain, currency, connectedToHardhat },
         { cacheTime: 0 },
       )) || {};
     const chainId = chainIdFromChainName(chain);
@@ -68,9 +76,13 @@ async function userAssetsQueryFunctionByChain({
 }
 
 async function userAssetsQueryFunction({
-  queryKey: [{ address, currency }],
+  queryKey: [{ address, currency, connectedToHardhat }],
 }: QueryFunctionArgs<typeof userAssetsQueryKey>) {
-  return await userAssetsQueryFunctionByChain({ address, currency });
+  return await userAssetsQueryFunctionByChain({
+    address,
+    currency,
+    connectedToHardhat,
+  });
 }
 
 type UserAssetsResult = QueryFunctionResult<typeof userAssetsQueryFunction>;
@@ -79,7 +91,7 @@ type UserAssetsResult = QueryFunctionResult<typeof userAssetsQueryFunction>;
 // Query Hook
 
 export function useUserAssets<TSelectResult = UserAssetsResult>(
-  { address, currency }: UserAssetsArgs,
+  { address, currency, connectedToHardhat }: UserAssetsArgs,
   config: QueryConfig<
     UserAssetsResult,
     Error,
@@ -88,7 +100,7 @@ export function useUserAssets<TSelectResult = UserAssetsResult>(
   > = {},
 ) {
   return useQuery(
-    userAssetsQueryKey({ address, currency }),
+    userAssetsQueryKey({ address, currency, connectedToHardhat }),
     userAssetsQueryFunction,
     {
       ...config,

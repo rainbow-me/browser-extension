@@ -10,10 +10,9 @@ import {
   Space,
   globalColors,
 } from '~/design-system/styles/designTokens';
+import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 
 import { useAvatar } from '../../hooks/useAvatar';
-
-import { RadioItemHighlightWrapper } from './RadioItemHighlightWrapper.css';
 
 interface DropdownMenuTriggerProps {
   children: ReactNode;
@@ -169,7 +168,7 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
       alignItems="center"
       className={
         highlightAccentColor && !isSelectedValue
-          ? RadioItemHighlightWrapper
+          ? rowTransparentAccentHighlight
           : null
       }
       style={{
@@ -227,7 +226,7 @@ export const DropdownMenu = (
   props: DropdownMenuPrimitive.DropdownMenuProps,
 ) => (
   // eslint-disable-next-line react/jsx-props-no-spreading
-  <DropdownMenuPrimitive.Root {...props} modal={false} />
+  <DropdownMenuPrimitive.Root {...props} modal />
 );
 
 export const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;

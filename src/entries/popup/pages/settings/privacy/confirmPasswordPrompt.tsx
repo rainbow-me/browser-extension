@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { NavigateOptions } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import {
@@ -19,10 +20,12 @@ import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 
 export const ConfirmPasswordPrompt = ({
   show,
+  extraState,
   onClose,
   redirect,
 }: {
   show: boolean;
+  extraState?: NavigateOptions['state'];
   onClose: () => void;
   redirect: string;
 }) => {
@@ -34,7 +37,7 @@ export const ConfirmPasswordPrompt = ({
     const correctPassword = await verifyPassword(password);
     if (correctPassword) {
       navigate(redirect, {
-        state: { password },
+        state: { password, ...extraState },
       });
       return;
     }
