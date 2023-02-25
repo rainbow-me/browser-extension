@@ -5,7 +5,6 @@ import {
 import AppEth from '@ledgerhq/hw-app-eth';
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import { uuid4 } from '@sentry/utils';
-import TrezorConnect from '@trezor/connect-web';
 import { getProvider } from '@wagmi/core';
 import { Bytes } from 'ethers';
 import { Mnemonic, keccak256 } from 'ethers/lib/utils';
@@ -28,6 +27,8 @@ import {
   sendTransactionFromTrezor,
   signMessageByTypeFromTrezor,
 } from './trezor';
+
+const TrezorConnect = window.TrezorConnect || {};
 
 const messenger = initializeMessenger({ connect: 'background' });
 const DEFAULT_HD_PATH = "44'/60'/0'/0";
@@ -262,12 +263,19 @@ export const exportAccount = async (address: Address, password: string) => {
 
 export const connectTrezor = async () => {
   try {
+    TrezorConnect.on('DEVICE_EVENT', (event: { payload: unknown }) => {
+      if (event && event.payload) {
+        console.log('TREZOR DEVICE EVENT', event.payload);
+      }
+    });
+
     await TrezorConnect.init({
       manifest: {
         email: 'support@rainbow.me',
         appUrl: 'https://rainbow.me',
       },
       lazyLoad: true,
+      env: 'web',
     });
 
     const result = await TrezorConnect.getAddress({
@@ -333,6 +341,7 @@ export const connectTrezor = async () => {
       );
     } else {
       alert('Unable to connect to your trezor. Please try again.');
+      console.log(e);
     }
     return null;
   }

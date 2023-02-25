@@ -78,7 +78,6 @@
     "@tanstack/react-query-persist-client": "4.10.3",
     "@tanstack/react-virtual": "3.0.0-beta.22",
     "@trezor/connect-plugin-ethereum": "9.0.1",
-    "@trezor/connect-web": "9.0.6",
     "@vanilla-extract/css": "1.9.1",
     "@vanilla-extract/css-utils": "0.1.2",
     "@vanilla-extract/dynamic": "2.0.2",
@@ -226,10 +225,7 @@
       "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>ganache-core>websocket>utf-8-validate": false,
       "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>postinstall-postinstall": false,
       "@foundry-rs/hardhat-anvil>hardhat>ethereum-cryptography>keccak": false,
-      "@foundry-rs/hardhat-anvil>hardhat>ethereum-cryptography>secp256k1": false,
-      "@trezor/connect-web>@trezor/connect>@trezor/transport>protobufjs": false,
-      "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>blake-hash": false,
-      "@trezor/connect-web>@trezor/connect>@trezor/utxo-lib>tiny-secp256k1": false
+      "@foundry-rs/hardhat-anvil>hardhat>ethereum-cryptography>secp256k1": false
     }
   },
   "lint-staged": {

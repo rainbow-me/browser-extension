@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
-import TrezorConnect from '@trezor/connect-web';
 import { EthereumTransactionEIP1559 } from '@trezor/connect/lib/types';
 import { getProvider } from '@wagmi/core';
 import { Bytes, ethers } from 'ethers';
 import { Address } from 'wagmi';
 
 import { walletAction } from './wallet';
+
+const TrezorConnect = window.TrezorConnect || {};
 
 const getPath = async (address: Address) => {
   return (await walletAction('get_path', address)) as string;
@@ -78,7 +79,7 @@ export async function signMessageByTypeFromTrezor(
   msgData: string | Bytes,
   address: Address,
   messageType: string,
-): Promise<string | undefined> {
+): Promise<string> {
   const path = await getPath(address);
   // Personal sign
   if (messageType === 'personal_sign') {
@@ -94,14 +95,19 @@ export async function signMessageByTypeFromTrezor(
       message: messageHex,
       hex: true,
     });
-    if (response.success) {
-      if (response.payload.address.toLowerCase() !== address.toLowerCase()) {
-        throw new Error(
-          'Trezor returned a different address than the one requested',
-        );
-      }
-      return response.payload.signature;
+
+    if (response.payload.address.toLowerCase() !== address.toLowerCase()) {
+      throw new Error(
+        'Trezor returned a different address than the one requested',
+      );
     }
+
+    if (!response.success) {
+      throw new Error('Trezor returned an error');
+    }
+
+    return response.payload.signature;
+
     // sign typed data
   } else if (messageType === 'sign_typed_data') {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -146,14 +152,16 @@ export async function signMessageByTypeFromTrezor(
       message_hash: hashStructMessageHex,
     });
 
-    if (response.success) {
-      if (response.payload.address.toLowerCase() !== address.toLowerCase()) {
-        throw new Error(
-          'Trezor returned a different address than the one requested',
-        );
-      }
-      return response.payload.signature;
+    if (!response.success) {
+      throw new Error('Trezor returned an error');
     }
+
+    if (response.payload.address.toLowerCase() !== address.toLowerCase()) {
+      throw new Error(
+        'Trezor returned a different address than the one requested',
+      );
+    }
+    return response.payload.signature;
   } else {
     throw new Error(`Message type ${messageType} not supported`);
   }
