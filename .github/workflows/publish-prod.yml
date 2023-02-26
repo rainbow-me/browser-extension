@@ -38,7 +38,7 @@ jobs:
         run: yarn build:webpack
       - name: Update the manifest
         run: yarn update-manifest prod
-      - name: Upload artifacts
+      - name: Archive the build artifact
         uses: actions/upload-artifact@v3
         with:
           name: rainbowbx-v${{ env.release_version }}.zip
