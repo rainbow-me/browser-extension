@@ -593,6 +593,12 @@ export const fontWeights = {
 } as const;
 export type FontWeight = keyof typeof fontWeights;
 
+export const linearGradients = {
+  rainbow:
+    'radial-gradient(100% 276.79% at 100% 49.98%, #FFB114 0%, #FF54BB 63.54%, #00F0FF 100%)',
+} as const;
+export type LinearGradient = keyof typeof linearGradients;
+
 export const space = {
   '2px': 2,
   '3px': 3,

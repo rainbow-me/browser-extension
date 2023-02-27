@@ -47,7 +47,13 @@ const AssetsToReceiveSection = ({
   return (
     <Box ref={containerRef} paddingTop="12px">
       <Box paddingHorizontal="20px">
-        <Text size="14pt" weight="semibold" color="label">
+        <Text
+          WebkitBackgroundClip="text"
+          background="rainbow"
+          size="14pt"
+          weight="semibold"
+          color="transparent"
+        >
           {title}
         </Text>
       </Box>
