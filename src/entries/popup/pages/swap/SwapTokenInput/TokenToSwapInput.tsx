@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Address } from 'wagmi';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
@@ -11,6 +11,7 @@ import { TokenInput } from './TokenInput';
 
 interface SwapTokenInputProps {
   asset: ParsedAddressAsset | null;
+  assetFilter: string;
   assets?: ParsedAddressAsset[];
   dropdownClosed: boolean;
   dropdownHeight?: number;
@@ -20,10 +21,12 @@ interface SwapTokenInputProps {
   onDropdownOpen: (open: boolean) => void;
   selectAssetAddress: (address: Address | '') => void;
   setSortMethod: (sortMethod: SortMethod) => void;
+  setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const TokenToSwapInput = ({
   asset,
+  assetFilter,
   assets,
   dropdownClosed = false,
   dropdownHeight,
@@ -32,10 +35,10 @@ export const TokenToSwapInput = ({
   zIndex,
   onDropdownOpen,
   selectAssetAddress,
+  setAssetFilter,
   setSortMethod,
 }: SwapTokenInputProps) => {
   const onSelectAssetRef = useRef<(address: Address | '') => void>();
-  const [inputValue, setInputValue] = useState('');
 
   const setOnSelectAsset = useCallback(
     (cb: (address: Address | '') => void) => {
@@ -47,17 +50,6 @@ export const TokenToSwapInput = ({
     [selectAssetAddress],
   );
 
-  const filteredAssets = useMemo(() => {
-    return inputValue
-      ? assets?.filter(
-          ({ name, symbol, address }) =>
-            name.toLowerCase().startsWith(inputValue.toLowerCase()) ||
-            symbol.toLowerCase().startsWith(inputValue.toLowerCase()) ||
-            address.toLowerCase().startsWith(inputValue.toLowerCase()),
-        )
-      : assets;
-  }, [assets, inputValue]);
-
   return (
     <TokenInput
       asset={asset}
@@ -66,7 +58,7 @@ export const TokenToSwapInput = ({
       dropdownComponent={
         <TokenToSwapDropdown
           asset={asset}
-          assets={filteredAssets}
+          assets={assets}
           sortMethod={sortMethod}
           onSelectAsset={onSelectAssetRef?.current}
           setSortMethod={setSortMethod}
@@ -78,8 +70,8 @@ export const TokenToSwapInput = ({
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
       selectAssetAddress={selectAssetAddress}
-      inputValue={inputValue}
-      setInputValue={setInputValue}
+      assetFilter={assetFilter}
+      setAssetFilter={setAssetFilter}
     />
   );
 };

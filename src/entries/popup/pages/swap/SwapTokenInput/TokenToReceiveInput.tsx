@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Address } from 'wagmi';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
@@ -11,6 +11,7 @@ import { TokenInput } from './TokenInput';
 interface TokenToReceiveProps {
   asset: ParsedAddressAsset | null;
   assets?: ParsedAddressAsset[];
+  assetFilter: string;
   dropdownClosed: boolean;
   dropdownHeight?: number;
   outputChainId: ChainId;
@@ -19,10 +20,12 @@ interface TokenToReceiveProps {
   onDropdownOpen: (open: boolean) => void;
   selectAssetAddress: (address: Address | '') => void;
   setOutputChainId: (chainId: ChainId) => void;
+  setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const TokenToReceiveInput = ({
   asset,
+  assetFilter,
   assets,
   dropdownClosed = false,
   dropdownHeight,
@@ -31,10 +34,10 @@ export const TokenToReceiveInput = ({
   zIndex,
   onDropdownOpen,
   selectAssetAddress,
+  setAssetFilter,
   setOutputChainId,
 }: TokenToReceiveProps) => {
   const onSelectAssetRef = useRef<(address: Address | '') => void>();
-  const [inputValue, setInputValue] = useState('');
 
   const setOnSelectAsset = useCallback(
     (cb: (address: Address | '') => void) => {
@@ -46,17 +49,6 @@ export const TokenToReceiveInput = ({
     [selectAssetAddress],
   );
 
-  const filteredAssets = useMemo(() => {
-    return inputValue
-      ? assets?.filter(
-          ({ name, symbol, address }) =>
-            name.toLowerCase().startsWith(inputValue.toLowerCase()) ||
-            symbol.toLowerCase().startsWith(inputValue.toLowerCase()) ||
-            address.toLowerCase().startsWith(inputValue.toLowerCase()),
-        )
-      : assets;
-  }, [assets, inputValue]);
-
   return (
     <TokenInput
       asset={asset}
@@ -65,7 +57,7 @@ export const TokenToReceiveInput = ({
       dropdownComponent={
         <TokenToReceiveDropdown
           asset={asset}
-          assets={filteredAssets}
+          assets={assets}
           onSelectAsset={onSelectAssetRef?.current}
           outputChainId={outputChainId}
           setOutputChainId={setOutputChainId}
@@ -77,8 +69,8 @@ export const TokenToReceiveInput = ({
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
       selectAssetAddress={selectAssetAddress}
-      inputValue={inputValue}
-      setInputValue={setInputValue}
+      assetFilter={assetFilter}
+      setAssetFilter={setAssetFilter}
     />
   );
 };

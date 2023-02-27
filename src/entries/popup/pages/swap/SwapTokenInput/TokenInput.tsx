@@ -19,32 +19,32 @@ import { SwapInputActionButton } from '../SwapInputActionButton';
 
 interface TokenInputProps {
   asset: ParsedAddressAsset | null;
+  assetFilter: string;
   dropdownHeight?: number;
   dropdownComponent: ReactElement;
   bottomComponent: ReactElement | null;
-  inputValue: string;
   placeholder: string;
   zIndex?: number;
   dropdownClosed: boolean;
   onDropdownOpen: (open: boolean) => void;
   setOnSelectAsset: (cb: (address: Address | '') => void) => void;
   selectAssetAddress: (address: Address | '') => void;
-  setInputValue: React.Dispatch<React.SetStateAction<string>>;
+  setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const TokenInput = ({
   asset,
+  assetFilter,
   dropdownHeight,
   dropdownComponent,
   bottomComponent,
-  inputValue,
   placeholder,
   zIndex,
   dropdownClosed,
   onDropdownOpen,
   selectAssetAddress,
   setOnSelectAsset,
-  setInputValue,
+  setAssetFilter,
 }: TokenInputProps) => {
   const [value, setValue] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -68,9 +68,9 @@ export const TokenInput = ({
 
   const onInputValueChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setInputValue(e.target.value);
+      setAssetFilter(e.target.value);
     },
-    [setInputValue],
+    [setAssetFilter],
   );
 
   useEffect(() => {
@@ -98,7 +98,7 @@ export const TokenInput = ({
           <Box>
             <Input
               testId="swap-token-input"
-              value={inputValue}
+              value={assetFilter}
               placeholder={placeholder}
               onChange={onInputValueChange}
               height="32px"

@@ -63,6 +63,9 @@ export const useSwapAssets = () => {
 
   const [sortMethod, setSortMethod] = useState<SortMethod>('token');
 
+  const [assetToSwapFilter, setAssetToSwapFilter] = useState('');
+  const [assetToReceiveFilter, setAssetToReceiveFilter] = useState('');
+
   const { data: userAssets = [] } = useUserAssets(
     {
       address: currentAddress,
@@ -71,6 +74,17 @@ export const useSwapAssets = () => {
     },
     { select: sortBy(sortMethod) },
   );
+
+  const filteredAssetsToSwap = useMemo(() => {
+    return assetToSwapFilter
+      ? userAssets?.filter(
+          ({ name, symbol, address }) =>
+            name.toLowerCase().startsWith(assetToSwapFilter.toLowerCase()) ||
+            symbol.toLowerCase().startsWith(assetToSwapFilter.toLowerCase()) ||
+            address.toLowerCase().startsWith(assetToSwapFilter.toLowerCase()),
+        )
+      : userAssets;
+  }, [userAssets, assetToSwapFilter]);
 
   const assetToSwap = useMemo(
     () =>
@@ -83,6 +97,7 @@ export const useSwapAssets = () => {
   const { results } = useSearchCurrencyLists({
     inputChainId: assetToSwap?.chainId || undefined,
     outputChainId,
+    searchQuery: assetToReceiveFilter,
   });
 
   const addresses = results
@@ -113,6 +128,21 @@ export const useSwapAssets = () => {
     [assets, outputChainId, userAssets],
   );
 
+  const filteredAssetsToReceive = useMemo(() => {
+    return assetToReceiveFilter
+      ? assetsToReceive?.filter(
+          ({ name, symbol, address }) =>
+            name.toLowerCase().startsWith(assetToReceiveFilter.toLowerCase()) ||
+            symbol
+              .toLowerCase()
+              .startsWith(assetToReceiveFilter.toLowerCase()) ||
+            address
+              .toLowerCase()
+              .startsWith(assetToReceiveFilter.toLowerCase()),
+        )
+      : assetsToReceive;
+  }, [assetToReceiveFilter, assetsToReceive]);
+
   const assetToReceive = useMemo(
     () =>
       assetsToReceive?.find(
@@ -130,8 +160,10 @@ export const useSwapAssets = () => {
   }, [outputChainId, prevOutputChainId]);
 
   return {
-    assetsToSwap: userAssets,
-    assetsToReceive,
+    assetsToSwap: filteredAssetsToSwap,
+    assetToSwapFilter,
+    assetsToReceive: filteredAssetsToReceive,
+    assetToReceiveFilter,
     sortMethod,
     assetToSwap,
     assetToReceive,
@@ -140,5 +172,7 @@ export const useSwapAssets = () => {
     setAssetToSwapAddress,
     setAssetToReceiveAddress,
     setOutputChainId,
+    setAssetToSwapFilter,
+    setAssetToReceiveFilter,
   };
 };
