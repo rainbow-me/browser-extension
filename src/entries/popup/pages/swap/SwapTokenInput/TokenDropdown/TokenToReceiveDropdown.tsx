@@ -3,7 +3,7 @@ import React, { useMemo } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
+import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isL2Chain } from '~/core/utils/chains';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
@@ -20,10 +20,57 @@ import { TokenToReceiveRow } from '../TokenRow/TokenToReceiveRow';
 
 export type TokenToReceiveDropdownProps = {
   asset?: ParsedAddressAsset;
-  assets?: ParsedAsset[];
+  assets?: {
+    data: ParsedAddressAsset[];
+    title: string;
+  }[];
   outputChainId: ChainId;
   onSelectAsset?: (address: Address) => void;
   setOutputChainId: (chainId: ChainId) => void;
+};
+
+const AssetsToReceiveSection = ({
+  data,
+  title,
+  onSelectAsset,
+}: {
+  data: ParsedAddressAsset[];
+  title: string;
+  onSelectAsset?: (address: Address) => void;
+}) => {
+  const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
+    assets: data,
+    size: 5,
+  });
+
+  if (!data.length) return null;
+  return (
+    <Box ref={containerRef} paddingTop="12px">
+      <Box paddingHorizontal="20px">
+        <Text size="14pt" weight="semibold" color="label">
+          {title}
+        </Text>
+      </Box>
+      <Box paddingTop="16px">
+        {assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
+          const { index } = virtualItem;
+          const rowData = data?.[index] as ParsedAddressAsset;
+          return (
+            <Box
+              paddingHorizontal="8px"
+              key={`${rowData?.uniqueId}-${i}`}
+              onClick={() =>
+                onSelectAsset?.(rowData?.mainnetAddress || rowData?.address)
+              }
+              testId={`token-input-asset-${rowData?.uniqueId}`}
+            >
+              <TokenToReceiveRow asset={rowData} />
+            </Box>
+          );
+        })}
+      </Box>
+    </Box>
+  );
 };
 
 export const TokenToReceiveDropdown = ({
@@ -33,13 +80,12 @@ export const TokenToReceiveDropdown = ({
   onSelectAsset,
   setOutputChainId,
 }: TokenToReceiveDropdownProps) => {
-  const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
-    assets,
-    size: 10,
-  });
-
   const isL2 = useMemo(() => isL2Chain(outputChainId), [outputChainId]);
 
+  const assetsCount = useMemo(
+    () => assets?.reduce((count, section) => count + section.data.length, 0),
+    [assets],
+  );
   return (
     <Stack space="8px">
       <Box paddingHorizontal="20px">
@@ -86,31 +132,25 @@ export const TokenToReceiveDropdown = ({
           />
         </Inline>
       </Box>
+
       <Box
         as={motion.div}
         variants={dropdownContainerVariant}
         initial="hidden"
         animate="show"
-        ref={containerRef}
       >
-        {!!assets?.length &&
-          assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
-            const { index } = virtualItem;
-            const rowData = assets?.[index];
-            return (
-              <Box
-                paddingHorizontal="8px"
-                key={`${rowData?.uniqueId}-${i}`}
-                onClick={() =>
-                  onSelectAsset?.(rowData.mainnetAddress || rowData.address)
-                }
-                testId={`token-input-asset-${asset?.uniqueId}`}
-              >
-                <TokenToReceiveRow asset={rowData} />
-              </Box>
-            );
-          })}
-        {!assets?.length && (
+        <Stack space="16px">
+          {assets?.map((assetSection, i) => (
+            <AssetsToReceiveSection
+              key={i}
+              data={assetSection.data}
+              title={assetSection.title}
+              onSelectAsset={onSelectAsset}
+            />
+          ))}
+        </Stack>
+
+        {!assetsCount && (
           <Box alignItems="center" style={{ paddingTop: 91 }}>
             <Box paddingHorizontal="44px">
               <Stack space="16px">

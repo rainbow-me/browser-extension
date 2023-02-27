@@ -10,7 +10,10 @@ import { TokenInput } from './TokenInput';
 
 interface TokenToReceiveProps {
   asset?: ParsedAddressAsset;
-  assets?: ParsedAddressAsset[];
+  assets?: {
+    data: ParsedAddressAsset[];
+    title: string;
+  }[];
   assetFilter: string;
   dropdownClosed: boolean;
   dropdownHeight?: number;

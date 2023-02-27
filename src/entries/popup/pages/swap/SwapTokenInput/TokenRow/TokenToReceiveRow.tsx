@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
-import { ParsedAsset } from '~/core/types/assets';
+import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain, isL2Chain } from '~/core/utils/chains';
@@ -36,7 +36,7 @@ import { RowHighlightWrapper } from './RowHighlightWrapper';
 const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 210;
 
-export type TokenToReceiveRowProps = { asset: ParsedAsset };
+export type TokenToReceiveRowProps = { asset: ParsedAddressAsset };
 
 export function TokenToReceiveRow({ asset }: TokenToReceiveRowProps) {
   const leftColumn = useMemo(
