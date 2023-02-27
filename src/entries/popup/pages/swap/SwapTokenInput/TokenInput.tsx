@@ -22,12 +22,14 @@ interface TokenInputProps {
   dropdownHeight?: number;
   dropdownComponent: ReactElement;
   bottomComponent: ReactElement | null;
+  inputValue: string;
   placeholder: string;
   zIndex?: number;
   dropdownClosed: boolean;
   onDropdownOpen: (open: boolean) => void;
   setOnSelectAsset: (cb: (address: Address | '') => void) => void;
   selectAssetAddress: (address: Address | '') => void;
+  setInputValue: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const TokenInput = ({
@@ -35,16 +37,17 @@ export const TokenInput = ({
   dropdownHeight,
   dropdownComponent,
   bottomComponent,
+  inputValue,
   placeholder,
   zIndex,
   dropdownClosed,
   onDropdownOpen,
   selectAssetAddress,
   setOnSelectAsset,
+  setInputValue,
 }: TokenInputProps) => {
   const [value, setValue] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
   const onDropdownAction = useCallback(() => {
