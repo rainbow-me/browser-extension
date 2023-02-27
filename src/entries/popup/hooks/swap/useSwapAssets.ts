@@ -8,6 +8,7 @@ import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { SearchAsset } from '~/core/types/search';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { SortMethod } from '../send/useSendTransactionAsset';
@@ -25,28 +26,33 @@ const sortBy = (by: SortMethod) => {
 };
 
 const parseParsedAssetToParsedAddressAsset = ({
-  parsedAsset,
   outputChainId,
-  parsedAddressAsset,
+  rawAsset,
+  userAsset,
+  searchAsset,
 }: {
-  parsedAsset: ParsedAsset;
+  rawAsset: ParsedAsset;
+  userAsset?: ParsedAddressAsset;
   outputChainId: ChainId;
-  parsedAddressAsset?: ParsedAddressAsset;
-}) => ({
-  ...parsedAsset,
-  address: parsedAddressAsset?.address || parsedAsset.address,
-  chainId: outputChainId,
-  native: {
-    balance: {
-      amount: '0',
-      display: '0.00',
+  searchAsset?: SearchAsset;
+}) => {
+  console.log('ICON URL ', userAsset, '-', rawAsset);
+  return {
+    ...rawAsset,
+    address: userAsset?.address || rawAsset.address,
+    chainId: outputChainId,
+    native: {
+      balance: {
+        amount: '0',
+        display: '0.00',
+      },
+      price: rawAsset.native.price,
     },
-    price: parsedAsset.native.price,
-  },
-  balance: parsedAddressAsset?.balance || { amount: '0', display: '0.00' },
-  icon_url: parsedAddressAsset?.icon_url || parsedAsset?.icon_url,
-  colors: parsedAddressAsset?.colors || parsedAsset?.colors,
-});
+    balance: userAsset?.balance || { amount: '0', display: '0.00' },
+    icon_url:
+      userAsset?.icon_url || rawAsset?.icon_url || searchAsset?.icon_url,
+  };
+};
 
 export const useSwapAssets = () => {
   const { currentAddress } = useCurrentAddressStore();
@@ -104,46 +110,54 @@ export const useSwapAssets = () => {
     [userAssets, assetToSwapAddress],
   );
 
-  const { results: searchReceiveAssetResults } = useSearchCurrencyLists({
+  const { results: searchReceiveAssetsSections } = useSearchCurrencyLists({
     inputChainId: assetToSwap?.chainId,
     outputChainId,
     searchQuery: debouncedAssetToReceiveFilter,
   });
 
-  const searchReceiveAssetAddresses = useMemo(
+  const searchReceiveAssets = useMemo(
     () =>
-      searchReceiveAssetResults
+      searchReceiveAssetsSections
         ?.map(({ data }) => data)
         .flat()
-        ?.map((asset) => asset?.uniqueId || '')
-        ?.filter((address) => !!address),
-    [searchReceiveAssetResults],
+        ?.filter((asset): asset is SearchAsset => !!asset),
+    [searchReceiveAssetsSections],
   );
 
   const { data: rawAssetsToReceive } = useAssets({
-    assetAddresses: searchReceiveAssetAddresses,
+    assetAddresses: searchReceiveAssets.map(({ uniqueId }) => uniqueId),
     currency: currentCurrency,
   });
 
   const assetsToReceive: ParsedAddressAsset[] = useMemo(
     () =>
-      Object.values(rawAssetsToReceive || {}).map((asset) => {
-        const parsedAddressAsset = userAssets.find(
+      Object.values(rawAssetsToReceive || {}).map((rawAsset) => {
+        // to handle "assets on other networks section" we need a chainId
+        // that is not the outputChainId
+
+        const userAsset = userAssets.find(
           (userAsset) =>
-            isLowerCaseMatch(userAsset.address, asset.address) &&
+            isLowerCaseMatch(userAsset.address, rawAsset.address) &&
             userAsset.chainId === outputChainId,
         );
+
+        const searchAsset = searchReceiveAssets.find(
+          (searchAsset) => searchAsset.uniqueId === rawAsset.address,
+        );
+        console.log('--- searchAsset', searchAsset);
         return parseParsedAssetToParsedAddressAsset({
-          parsedAsset: asset,
-          parsedAddressAsset,
+          rawAsset,
+          userAsset,
           outputChainId,
+          searchAsset,
         });
       }),
-    [rawAssetsToReceive, outputChainId, userAssets],
+    [rawAssetsToReceive, userAssets, searchReceiveAssets, outputChainId],
   );
 
   const assetsToReceivee = useMemo(() => {
-    return searchReceiveAssetResults.map(({ data, title }) => {
+    return searchReceiveAssetsSections.map(({ data, title }) => {
       const parsedData: ParsedAddressAsset[] =
         data
           ?.map((asset) =>
@@ -154,7 +168,7 @@ export const useSwapAssets = () => {
           ?.filter((p): p is ParsedAddressAsset => !!p) || [];
       return { data: parsedData, title };
     });
-  }, [assetsToReceive, searchReceiveAssetResults]);
+  }, [assetsToReceive, searchReceiveAssetsSections]);
 
   const assetToReceive = useMemo(
     () =>
