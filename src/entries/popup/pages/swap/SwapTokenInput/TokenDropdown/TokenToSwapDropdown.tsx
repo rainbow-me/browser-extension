@@ -149,26 +149,32 @@ export const TokenToSwapDropdown = ({
             );
           })}
         {!assets?.length && (
-          <Box alignItems="center" style={{ paddingTop: 119 }}>
-            <Stack space="16px">
-              <Inline alignHorizontal="center">
-                <Symbol
-                  color="labelQuaternary"
-                  weight="semibold"
-                  symbol="record.circle.fill"
-                  size={26}
-                />
-              </Inline>
+          <Box alignItems="center" style={{ paddingTop: 121 }}>
+            <Box paddingHorizontal="44px">
+              <Stack space="16px">
+                <Text color="label" size="26pt" weight="bold" align="center">
+                  {'👻'}
+                </Text>
 
-              <Text
-                color="labelQuaternary"
-                size="20pt"
-                weight="semibold"
-                align="center"
-              >
-                {i18n.t('swap.tokens_input.no_tokens')}
-              </Text>
-            </Stack>
+                <Text
+                  color="labelTertiary"
+                  size="20pt"
+                  weight="semibold"
+                  align="center"
+                >
+                  {i18n.t('swap.tokens_input.nothing_found')}
+                </Text>
+
+                <Text
+                  color="labelQuaternary"
+                  size="14pt"
+                  weight="regular"
+                  align="center"
+                >
+                  {i18n.t('swap.tokens_input.nothing_found_description')}
+                </Text>
+              </Stack>
+            </Box>
           </Box>
         )}
       </Box>
