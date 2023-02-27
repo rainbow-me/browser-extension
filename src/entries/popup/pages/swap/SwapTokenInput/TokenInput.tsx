@@ -18,7 +18,7 @@ import { DropdownInputWrapper } from '../../../components/DropdownInputWrapper/D
 import { SwapInputActionButton } from '../SwapInputActionButton';
 
 interface TokenInputProps {
-  asset: ParsedAddressAsset | null;
+  asset?: ParsedAddressAsset;
   assetFilter: string;
   dropdownHeight?: number;
   dropdownComponent: ReactElement;

@@ -90,7 +90,7 @@ export const useSwapAssets = () => {
     () =>
       userAssets?.find(({ address }) =>
         isLowerCaseMatch(address, assetToSwapAddress),
-      ) || null,
+      ),
     [userAssets, assetToSwapAddress],
   );
 
@@ -138,7 +138,7 @@ export const useSwapAssets = () => {
         ({ address, chainId }) =>
           isLowerCaseMatch(address, assetToReceiveAddress) &&
           chainId === outputChainId,
-      ) || null,
+      ),
     [assetsToReceive, assetToReceiveAddress, outputChainId],
   );
 

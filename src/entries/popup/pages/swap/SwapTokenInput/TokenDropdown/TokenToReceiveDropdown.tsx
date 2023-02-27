@@ -18,7 +18,7 @@ import { BottomNetwork } from '../../../messages/BottomActions';
 import { TokenToReceiveRow } from '../TokenRow/TokenToReceiveRow';
 
 export type TokenToReceiveDropdownProps = {
-  asset: ParsedAddressAsset | null;
+  asset?: ParsedAddressAsset;
   assets?: ParsedAsset[];
   outputChainId: ChainId;
   onSelectAsset?: (address: Address) => void;

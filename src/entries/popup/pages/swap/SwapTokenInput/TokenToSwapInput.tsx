@@ -10,7 +10,7 @@ import { TokenToSwapInfo } from './TokenInfo/TokenToSwapInfo';
 import { TokenInput } from './TokenInput';
 
 interface SwapTokenInputProps {
-  asset: ParsedAddressAsset | null;
+  asset?: ParsedAddressAsset;
   assetFilter: string;
   assets?: ParsedAddressAsset[];
   dropdownClosed: boolean;

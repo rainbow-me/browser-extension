@@ -19,7 +19,7 @@ import { SortMethod } from '../../../../hooks/send/useSendTransactionAsset';
 import { TokenToSwapRow } from '../TokenRow/TokenToSwapRow';
 
 export type TokenToSwapDropdownProps = {
-  asset: ParsedAddressAsset | null;
+  asset?: ParsedAddressAsset;
   assets?: ParsedAddressAsset[];
   sortMethod: SortMethod;
   onSelectAsset?: (address: Address) => void;

@@ -9,7 +9,7 @@ import { TokenToReceiveInfo } from './TokenInfo/TokenToReceiveInfo';
 import { TokenInput } from './TokenInput';
 
 interface TokenToReceiveProps {
-  asset: ParsedAddressAsset | null;
+  asset?: ParsedAddressAsset;
   assets?: ParsedAddressAsset[];
   assetFilter: string;
   dropdownClosed: boolean;
