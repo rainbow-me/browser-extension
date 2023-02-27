@@ -7,6 +7,8 @@ import { getProvider } from '@wagmi/core';
 import { Bytes, UnsignedTransaction, ethers } from 'ethers';
 import { Address } from 'wagmi';
 
+import { addHexPrefix } from '~/core/utils/ethereum';
+
 import { walletAction } from './wallet';
 
 export const TREZOR_CONFIG = {
@@ -121,7 +123,7 @@ export async function signMessageByTypeFromTrezor(
       throw new Error('Trezor returned an error');
     }
 
-    return response.payload.signature;
+    return addHexPrefix(response.payload.signature);
 
     // sign typed data
   } else if (messageType === 'sign_typed_data') {
@@ -167,7 +169,7 @@ export async function signMessageByTypeFromTrezor(
         'Trezor returned a different address than the one requested',
       );
     }
-    return response.payload.signature;
+    return addHexPrefix(response.payload.signature);
   } else {
     throw new Error(`Message type ${messageType} not supported`);
   }
