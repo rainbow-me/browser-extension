@@ -28,10 +28,8 @@ export const isL2Chain = (chain: ChainName | ChainId): boolean => {
     case ChainId.bsc:
     case ChainId.optimism:
     case ChainId.polygon:
-      console.log('---- isL2Chain', chain, true);
       return true;
     default:
-      console.log('---- isL2Chain', chain, false);
       return false;
   }
 };
