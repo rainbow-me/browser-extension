@@ -128,21 +128,6 @@ export const useSwapAssets = () => {
     [assets, outputChainId, userAssets],
   );
 
-  const filteredAssetsToReceive = useMemo(() => {
-    return assetToReceiveFilter
-      ? assetsToReceive?.filter(
-          ({ name, symbol, address }) =>
-            name.toLowerCase().startsWith(assetToReceiveFilter.toLowerCase()) ||
-            symbol
-              .toLowerCase()
-              .startsWith(assetToReceiveFilter.toLowerCase()) ||
-            address
-              .toLowerCase()
-              .startsWith(assetToReceiveFilter.toLowerCase()),
-        )
-      : assetsToReceive;
-  }, [assetToReceiveFilter, assetsToReceive]);
-
   const assetToReceive = useMemo(
     () =>
       assetsToReceive?.find(
@@ -162,7 +147,7 @@ export const useSwapAssets = () => {
   return {
     assetsToSwap: filteredAssetsToSwap,
     assetToSwapFilter,
-    assetsToReceive: filteredAssetsToReceive,
+    assetsToReceive: assetsToReceive,
     assetToReceiveFilter,
     sortMethod,
     assetToSwap,
