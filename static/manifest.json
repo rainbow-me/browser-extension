@@ -28,8 +28,8 @@
       "run_at": "document_start"
     },
     {
-      "matches": ["*://connect.trezor.io/*/popup.html"],
-      "js": ["trezor-content-script.js"]
+      "matches": ["*://connect.trezor.io/9/popup.html"],
+      "js": ["./vendor/trezor-content-script.js"]
     }
   ],
   "content_security_policy": {

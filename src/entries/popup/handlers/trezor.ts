@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
+import transformTypedDataPlugin from '@trezor/connect-plugin-ethereum';
 import { EthereumTransactionEIP1559 } from '@trezor/connect/lib/types';
 import { getProvider } from '@wagmi/core';
 import { Bytes, ethers } from 'ethers';
@@ -8,7 +9,13 @@ import { Address } from 'wagmi';
 
 import { walletAction } from './wallet';
 
-const TrezorConnect = window.TrezorConnect || {};
+export const TREZOR_CONFIG = {
+  manifest: {
+    email: 'support@rainbow.me',
+    appUrl: 'https://rainbow.me',
+  },
+  lazyLoad: true,
+};
 
 const getPath = async (address: Address) => {
   return (await walletAction('get_path', address)) as string;
@@ -18,6 +25,7 @@ export async function sendTransactionFromTrezor(
   transaction: ethers.providers.TransactionRequest,
 ): Promise<TransactionResponse> {
   try {
+    window.TrezorConnect.init(TREZOR_CONFIG);
     const { from: address } = transaction;
     const provider = getProvider({
       chainId: transaction.chainId,
@@ -40,7 +48,7 @@ export async function sendTransactionFromTrezor(
       value: transaction.value || undefined,
     };
 
-    const response = await TrezorConnect.ethereumSignTransaction({
+    const response = await window.TrezorConnect.ethereumSignTransaction({
       path,
       transaction: baseTx as unknown as EthereumTransactionEIP1559,
     });
@@ -80,6 +88,7 @@ export async function signMessageByTypeFromTrezor(
   address: Address,
   messageType: string,
 ): Promise<string> {
+  window.TrezorConnect.init(TREZOR_CONFIG);
   const path = await getPath(address);
   // Personal sign
   if (messageType === 'personal_sign') {
@@ -90,11 +99,13 @@ export async function signMessageByTypeFromTrezor(
 
     const messageHex = ethers.utils.hexlify(msgData).substring(2);
 
-    const response = await TrezorConnect.ethereumSignMessage({
+    const response = await window.TrezorConnect.ethereumSignMessage({
       path,
       message: messageHex,
       hex: true,
     });
+
+    console.log('response', response);
 
     if (response.payload.address.toLowerCase() !== address.toLowerCase()) {
       throw new Error(
@@ -123,33 +134,24 @@ export async function signMessageByTypeFromTrezor(
     const { domain, types, primaryType, message } =
       TypedDataUtils.sanitizeData(parsedData);
 
-    const domainSeparatorHex = TypedDataUtils.hashStruct(
-      'EIP712Domain',
-      domain,
+    const eip712Data = {
       types,
-      version,
-    ).toString('hex');
-
-    const hashStructMessageHex = TypedDataUtils.hashStruct(
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       primaryType,
+      domain,
       message,
-      types,
-      version,
-    ).toString('hex');
+    };
 
-    const response = await TrezorConnect.ethereumSignTypedData({
+    const { domain_separator_hash, message_hash } = transformTypedDataPlugin(
+      eip712Data,
+      true,
+    );
+
+    const response = await window.TrezorConnect.ethereumSignTypedData({
       path,
-      data: {
-        types,
-        message,
-        domain,
-        primaryType,
-      },
+      data: eip712Data,
       metamask_v4_compat: true,
-      domain_separator_hash: domainSeparatorHex,
-      message_hash: hashStructMessageHex,
+      domain_separator_hash,
+      message_hash,
     });
 
     if (!response.success) {

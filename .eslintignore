@@ -1,5 +1,5 @@
 build/
 docs/
 .env.d.ts
-scripts/
-static/
+scripts/*.js
+static/*.js

@@ -7,7 +7,7 @@ import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import { uuid4 } from '@sentry/utils';
 import { getProvider } from '@wagmi/core';
 import { Bytes } from 'ethers';
-import { Mnemonic, keccak256 } from 'ethers/lib/utils';
+import { HDNode, Mnemonic, keccak256 } from 'ethers/lib/utils';
 import { Address } from 'wagmi';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';
@@ -26,9 +26,8 @@ import {
 import {
   sendTransactionFromTrezor,
   signMessageByTypeFromTrezor,
+  TREZOR_CONFIG,
 } from './trezor';
-
-const TrezorConnect = window.TrezorConnect || {};
 
 const messenger = initializeMessenger({ connect: 'background' });
 const DEFAULT_HD_PATH = "44'/60'/0'/0";
@@ -133,7 +132,7 @@ export const signTypedData = async (
       case 'Ledger':
         return signMessageByTypeFromLedger(msgData, address, 'sign_typed_data');
       case 'Trezor':
-        throw new Error('Trezor not supported yet');
+        return signMessageByTypeFromTrezor(msgData, address, 'sign_typed_data');
       default:
         throw new Error('Unsupported hardware wallet');
     }
@@ -263,54 +262,49 @@ export const exportAccount = async (address: Address, password: string) => {
 
 export const connectTrezor = async () => {
   try {
-    TrezorConnect.on('DEVICE_EVENT', (event: { payload: unknown }) => {
+    window.TrezorConnect.on('DEVICE_EVENT', (event: { payload: unknown }) => {
       if (event && event.payload) {
         console.log('TREZOR DEVICE EVENT', event.payload);
       }
     });
 
-    await TrezorConnect.init({
-      manifest: {
-        email: 'support@rainbow.me',
-        appUrl: 'https://rainbow.me',
-      },
-      lazyLoad: true,
-      env: 'web',
-    });
+    window.TrezorConnect.init(TREZOR_CONFIG);
+    const path = `m/${DEFAULT_HD_PATH}`;
+    console.log('path', path);
 
-    const result = await TrezorConnect.getAddress({
-      path: `${DEFAULT_HD_PATH}/0`,
-      coin: 'ETH',
+    const result = await window.TrezorConnect.ethereumGetPublicKey({
+      path,
+      coin: 'eth',
+      showOnTrezor: false,
     });
 
     if (!result.success) {
-      throw new Error('TrezorConnect.getAddress failed');
+      console.log('failed', result);
+      throw new Error('window.TrezorConnect.ethereumGetPublicKey failed');
     }
 
-    const addressesToImport = [{ address: result.payload.address, index: 0 }];
-    // The device id is the keccak256 of the address at index 0
+    console.log('RESULT', result);
+
+    const hdNode = HDNode.fromExtendedKey(result.payload.xpub);
+    const firstAccountPath = `0`;
+    console.log('firstAccountPath', firstAccountPath);
+
+    const addressesToImport = [
+      { address: hdNode.derivePath(firstAccountPath).address, index: 0 },
+    ];
     let accountsEnabled = 1;
     // Autodiscover accounts
     let empty = false;
     while (!empty) {
-      // eslint-disable-next-line no-await-in-loop
-      const result = await TrezorConnect.getAddress({
-        path: `${DEFAULT_HD_PATH}/${accountsEnabled}`,
-        coin: 'ETH',
-      });
-
-      if (!result.success) {
-        throw new Error('TrezorConnect.getAddress failed');
-      }
+      const path = `${accountsEnabled}`;
+      const newAddress = hdNode.derivePath(path).address;
 
       // eslint-disable-next-line no-await-in-loop
-      const hasBeenUsed = await hasPreviousTransactions(
-        result.payload.address as Address,
-      );
+      const hasBeenUsed = await hasPreviousTransactions(newAddress as Address);
 
       if (hasBeenUsed) {
         addressesToImport.push({
-          address: result.payload.address,
+          address: newAddress,
           index: accountsEnabled,
         });
         accountsEnabled += 1;
@@ -319,7 +313,8 @@ export const connectTrezor = async () => {
       }
     }
 
-    const deviceId = keccak256(result.payload.address);
+    // The device id is the keccak256 of the address at index 0
+    const deviceId = keccak256(addressesToImport[0].address);
     const address = await walletAction('import_hw', {
       deviceId,
       wallets: addressesToImport,
@@ -358,7 +353,6 @@ export const connectLedger = async () => {
       false,
     );
     const addressesToImport = [{ address: result.address, index: 0 }];
-    // The device id is the keccak256 of the address at index 0
     let accountsEnabled = 1;
     // Autodiscover accounts
     let empty = false;
@@ -386,6 +380,7 @@ export const connectLedger = async () => {
       }
     }
 
+    // The device id is the keccak256 of the address at index 0
     const deviceId = keccak256(result.address);
     const address = await walletAction('import_hw', {
       deviceId,
