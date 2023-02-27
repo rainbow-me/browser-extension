@@ -11,6 +11,7 @@ import { ChainId } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { SortMethod } from '../send/useSendTransactionAsset';
+import { useDebounce } from '../useDebounce';
 import usePrevious from '../usePrevious';
 import { useSearchCurrencyLists } from '../useSearchCurrencyLists';
 
@@ -66,6 +67,9 @@ export const useSwapAssets = () => {
   const [assetToSwapFilter, setAssetToSwapFilter] = useState('');
   const [assetToReceiveFilter, setAssetToReceiveFilter] = useState('');
 
+  const debouncedAssetToSwapFilter = useDebounce(assetToSwapFilter, 500);
+  const debouncedAssetToReceiveFilter = useDebounce(assetToReceiveFilter, 500);
+
   const { data: userAssets = [] } = useUserAssets(
     {
       address: currentAddress,
@@ -76,15 +80,21 @@ export const useSwapAssets = () => {
   );
 
   const filteredAssetsToSwap = useMemo(() => {
-    return assetToSwapFilter
+    return debouncedAssetToSwapFilter
       ? userAssets?.filter(
           ({ name, symbol, address }) =>
-            name.toLowerCase().startsWith(assetToSwapFilter.toLowerCase()) ||
-            symbol.toLowerCase().startsWith(assetToSwapFilter.toLowerCase()) ||
-            address.toLowerCase().startsWith(assetToSwapFilter.toLowerCase()),
+            name
+              .toLowerCase()
+              .startsWith(debouncedAssetToSwapFilter.toLowerCase()) ||
+            symbol
+              .toLowerCase()
+              .startsWith(debouncedAssetToSwapFilter.toLowerCase()) ||
+            address
+              .toLowerCase()
+              .startsWith(debouncedAssetToSwapFilter.toLowerCase()),
         )
       : userAssets;
-  }, [userAssets, assetToSwapFilter]);
+  }, [userAssets, debouncedAssetToSwapFilter]);
 
   const assetToSwap = useMemo(
     () =>
@@ -97,7 +107,7 @@ export const useSwapAssets = () => {
   const { results: searchReceiveAssetResults } = useSearchCurrencyLists({
     inputChainId: assetToSwap?.chainId,
     outputChainId,
-    searchQuery: assetToReceiveFilter,
+    searchQuery: debouncedAssetToReceiveFilter,
   });
 
   const searchReceiveAssetAddresses = useMemo(
