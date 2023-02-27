@@ -4,7 +4,7 @@ import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
 import transformTypedDataPlugin from '@trezor/connect-plugin-ethereum';
 import { EthereumTransactionEIP1559 } from '@trezor/connect/lib/types';
 import { getProvider } from '@wagmi/core';
-import { Bytes, ethers } from 'ethers';
+import { Bytes, UnsignedTransaction, ethers } from 'ethers';
 import { Address } from 'wagmi';
 
 import { walletAction } from './wallet';
@@ -33,36 +33,47 @@ export async function sendTransactionFromTrezor(
 
     const path = await getPath(address as Address);
 
-    const baseTx: ethers.utils.UnsignedTransaction = {
+    const baseTx: UnsignedTransaction = {
       chainId: transaction.chainId || undefined,
       data: transaction.data || undefined,
       gasLimit: transaction.gasLimit || undefined,
       gasPrice: transaction.gasPrice || undefined,
       maxFeePerGas: transaction.maxFeePerGas || undefined,
       maxPriorityFeePerGas: transaction.maxPriorityFeePerGas || undefined,
-      nonce: transaction.nonce
-        ? ethers.BigNumber.from(transaction.nonce).toNumber()
-        : undefined,
+      nonce: ethers.BigNumber.from(transaction.nonce).toNumber(),
       to: transaction.to || undefined,
       type: transaction.gasPrice ? 1 : 2,
       value: transaction.value || undefined,
     };
 
+    console.log('TX OBJ TO SIGN', baseTx);
+    console.log('path to use', path);
+    console.log('address to use', address);
+
     const response = await window.TrezorConnect.ethereumSignTransaction({
       path,
-      transaction: baseTx as unknown as EthereumTransactionEIP1559,
+      transaction: {
+        ...baseTx,
+        nonce: ethers.BigNumber.from(transaction.nonce).toString(),
+      } as unknown as EthereumTransactionEIP1559,
     });
+
+    console.log("Trezor's response", response);
 
     if (response.success) {
       // TODO - Verify that it was signed by the right address
       const serializedTransaction = ethers.utils.serializeTransaction(baseTx, {
-        r: '0x' + response.payload.r,
-        s: '0x' + response.payload.s,
-        v: ethers.BigNumber.from('0x' + response.payload.v).toNumber(),
+        r: response.payload.r,
+        s: response.payload.s,
+        v: ethers.BigNumber.from(response.payload.v).toNumber(),
       });
+
+      console.log('serializedTransaction', serializedTransaction);
 
       const parsedTx = ethers.utils.parseTransaction(serializedTransaction);
       if (parsedTx.from?.toLowerCase() !== address?.toLowerCase()) {
+        console.log('actual signer', parsedTx.from?.toLowerCase());
+        console.log('expected signer', address?.toLowerCase());
         throw new Error('Transaction was not signed by the right address');
       }
 

@@ -24,9 +24,9 @@ import {
   signMessageByTypeFromLedger,
 } from './ledger';
 import {
+  TREZOR_CONFIG,
   sendTransactionFromTrezor,
   signMessageByTypeFromTrezor,
-  TREZOR_CONFIG,
 } from './trezor';
 
 const messenger = initializeMessenger({ connect: 'background' });

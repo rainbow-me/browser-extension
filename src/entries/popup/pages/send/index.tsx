@@ -175,6 +175,7 @@ export function Send() {
         }
       } catch (e) {
         alert('Transaction failed');
+        console.log('error sending transaction', e);
       } finally {
         setWaitingForDevice(false);
       }
