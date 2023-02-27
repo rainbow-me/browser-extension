@@ -36,11 +36,31 @@ const parseParsedAssetToParsedAddressAsset = ({
   outputChainId: ChainId;
   searchAsset?: SearchAsset;
 }) => {
-  console.log('ICON URL ', userAsset, '-', rawAsset);
+  const assetNetworkInformation = searchAsset?.networks[outputChainId];
+
+  // if searchAsset is appearing because it found an exact match
+  // "on other networks" we need to take the first network and address to
+  // use for the asset
+
+  const networks = Object.entries(searchAsset?.networks || {});
+  const assetInOneNetwork = networks.length === 1;
+
+  const address = assetInOneNetwork
+    ? networks[0][1].address
+    : assetNetworkInformation?.address ||
+      userAsset?.address ||
+      rawAsset.address;
+
+  const decimals = assetInOneNetwork
+    ? networks[0][1].decimals
+    : assetNetworkInformation?.decimals || rawAsset.decimals;
+  const chainId = assetInOneNetwork ? Number(networks[0][0]) : outputChainId;
+
   return {
     ...rawAsset,
-    address: userAsset?.address || rawAsset.address,
-    chainId: outputChainId,
+    decimals,
+    address,
+    chainId,
     native: {
       balance: {
         amount: '0',
@@ -133,19 +153,14 @@ export const useSwapAssets = () => {
   const assetsToReceive: ParsedAddressAsset[] = useMemo(
     () =>
       Object.values(rawAssetsToReceive || {}).map((rawAsset) => {
-        // to handle "assets on other networks section" we need a chainId
-        // that is not the outputChainId
-
         const userAsset = userAssets.find(
           (userAsset) =>
             isLowerCaseMatch(userAsset.address, rawAsset.address) &&
             userAsset.chainId === outputChainId,
         );
-
         const searchAsset = searchReceiveAssets.find(
           (searchAsset) => searchAsset.uniqueId === rawAsset.address,
         );
-        console.log('--- searchAsset', searchAsset);
         return parseParsedAssetToParsedAddressAsset({
           rawAsset,
           userAsset,

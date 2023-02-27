@@ -90,6 +90,8 @@ export function TokenToReceiveRow({ asset }: TokenToReceiveRowProps) {
     [asset?.address, viewOnExplorer],
   );
 
+  console.log('--- asset?.chainId', asset?.chainId);
+
   const rightColumn = useMemo(
     () =>
       !asset?.isNativeAsset ? (
