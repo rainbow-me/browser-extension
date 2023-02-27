@@ -1,6 +1,5 @@
 import React from 'react';
 
-import WalletIcon from 'static/assets/wallet.png';
 import { i18n } from '~/core/languages';
 import {
   Box,
@@ -12,6 +11,8 @@ import {
   Text,
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
+
+import { WalletIcon } from '../../components/WalletIcon/WalletIcon';
 
 export const OnboardBeforeConnectSheet = ({
   show,
@@ -25,7 +26,7 @@ export const OnboardBeforeConnectSheet = ({
       <Box paddingHorizontal="32px" paddingVertical="44px">
         <Stack space="20px" alignHorizontal="center">
           <Box style={{ width: '84px', height: '84px' }}>
-            <img src={WalletIcon} width="100%" height="100%" />
+            <WalletIcon width={84} height={84} />
           </Box>
           <Box>
             <Text color="label" size="20pt" weight="heavy">
