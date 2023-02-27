@@ -1,4 +1,5 @@
 import React, {
+  ChangeEvent,
   ReactElement,
   useCallback,
   useEffect,
@@ -8,7 +9,8 @@ import React, {
 import { Address } from 'wagmi';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
-import { Box, Text } from '~/design-system';
+import { Box } from '~/design-system';
+import { Input } from '~/design-system/components/Input/Input';
 import { SwapInputMask } from '~/entries/popup/components/InputMask/SwapInputMask/SwapInputMask';
 
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
@@ -42,22 +44,31 @@ export const TokenInput = ({
 }: TokenInputProps) => {
   const [value, setValue] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const innerRef = useRef<HTMLInputElement>(null);
+  const [inputValue, setInputValue] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const onDropdownAction = useCallback(() => {
     onDropdownOpen(!dropdownVisible);
     setDropdownVisible(!dropdownVisible);
+    dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
   }, [dropdownVisible, onDropdownOpen]);
 
   const onSelectAsset = useCallback(() => {
     onDropdownOpen(false);
     setDropdownVisible(false);
-    setTimeout(() => innerRef?.current?.focus(), 300);
+    setTimeout(() => inputRef?.current?.focus(), 300);
   }, [onDropdownOpen]);
 
   const onClose = useCallback(() => {
     selectAssetAddress('');
   }, [selectAssetAddress]);
+
+  const onInputValueChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setInputValue(e.target.value);
+    },
+    [setInputValue],
+  );
 
   useEffect(() => {
     if (dropdownClosed) {
@@ -81,14 +92,17 @@ export const TokenInput = ({
       }
       centerComponent={
         !asset ? (
-          <Box width="fit">
-            <Text
-              size="16pt"
-              weight="semibold"
-              color={`${asset ? 'label' : 'labelTertiary'}`}
-            >
-              {placeholder}
-            </Text>
+          <Box>
+            <Input
+              testId="swap-token-input"
+              value={inputValue}
+              placeholder={placeholder}
+              onChange={onInputValueChange}
+              height="32px"
+              variant="transparent"
+              style={{ paddingLeft: 0, paddingRight: 0 }}
+              innerRef={inputRef}
+            />
           </Box>
         ) : (
           <Box width="fit" marginVertical="-20px">
@@ -101,7 +115,7 @@ export const TokenInput = ({
               variant="tinted"
               onChange={setValue}
               paddingHorizontal={0}
-              innerRef={innerRef}
+              innerRef={inputRef}
             />
           </Box>
         )
