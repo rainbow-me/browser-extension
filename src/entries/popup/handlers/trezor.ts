@@ -37,50 +37,45 @@ export async function sendTransactionFromTrezor(
       chainId: transaction.chainId || undefined,
       data: transaction.data || undefined,
       gasLimit: transaction.gasLimit || undefined,
-      gasPrice: transaction.gasPrice || undefined,
-      maxFeePerGas: transaction.maxFeePerGas || undefined,
-      maxPriorityFeePerGas: transaction.maxPriorityFeePerGas || undefined,
       nonce: ethers.BigNumber.from(transaction.nonce).toNumber(),
       to: transaction.to || undefined,
-      type: transaction.gasPrice ? 1 : 2,
       value: transaction.value || undefined,
     };
 
-    console.log('TX OBJ TO SIGN', baseTx);
-    console.log('path to use', path);
-    console.log('address to use', address);
+    if (transaction.gasPrice) {
+      baseTx.gasPrice = transaction.gasPrice;
+    } else {
+      baseTx.maxFeePerGas = transaction.maxFeePerGas;
+      baseTx.maxPriorityFeePerGas = transaction.maxPriorityFeePerGas;
+    }
+
+    const nonceHex = ethers.BigNumber.from(transaction.nonce).toHexString();
 
     const response = await window.TrezorConnect.ethereumSignTransaction({
       path,
       transaction: {
         ...baseTx,
-        nonce: ethers.BigNumber.from(transaction.nonce).toString(),
+        nonce: nonceHex,
       } as unknown as EthereumTransactionEIP1559,
     });
 
-    console.log("Trezor's response", response);
-
     if (response.success) {
       // TODO - Verify that it was signed by the right address
+      baseTx.type = baseTx.gasPrice ? 1 : 2;
       const serializedTransaction = ethers.utils.serializeTransaction(baseTx, {
         r: response.payload.r,
         s: response.payload.s,
         v: ethers.BigNumber.from(response.payload.v).toNumber(),
       });
 
-      console.log('serializedTransaction', serializedTransaction);
-
       const parsedTx = ethers.utils.parseTransaction(serializedTransaction);
       if (parsedTx.from?.toLowerCase() !== address?.toLowerCase()) {
-        console.log('actual signer', parsedTx.from?.toLowerCase());
-        console.log('expected signer', address?.toLowerCase());
         throw new Error('Transaction was not signed by the right address');
       }
 
       return provider.sendTransaction(serializedTransaction);
     } else {
       alert('error signing transaction with trezor');
-      console.log('error signing transaction with trezor', response);
       throw new Error('error signing transaction with trezor');
     }
 
@@ -115,8 +110,6 @@ export async function signMessageByTypeFromTrezor(
       message: messageHex,
       hex: true,
     });
-
-    console.log('response', response);
 
     if (response.payload.address.toLowerCase() !== address.toLowerCase()) {
       throw new Error(

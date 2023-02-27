@@ -19,7 +19,7 @@ declare global {
 
 declare global {
   interface Window {
-      TrezorConnect: typeof Window.TrezorConnect;
+    TrezorConnect: typeof Window.TrezorConnect;
   }
 }
 
