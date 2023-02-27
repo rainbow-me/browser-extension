@@ -39,7 +39,7 @@ const parseParsedAssetToParsedAddressAsset = ({
   const assetNetworkInformation = searchAsset?.networks[outputChainId];
 
   // if searchAsset is appearing because it found an exact match
-  // "on other networks" we need to take the first network and address to
+  // "on other networks" we need to take the first network, decimals and address to
   // use for the asset
 
   const networks = Object.entries(searchAsset?.networks || {});
