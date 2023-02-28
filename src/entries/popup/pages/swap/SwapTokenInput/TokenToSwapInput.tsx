@@ -51,6 +51,12 @@ export const TokenToSwapInput = ({
     [selectAssetAddress],
   );
 
+  const onDropdownChange = useCallback((open: boolean) => {
+    if (!open) {
+      setTimeout(() => inputRef?.current?.focus(), 300);
+    }
+  }, []);
+
   return (
     <TokenInput
       inputRef={inputRef}
@@ -59,6 +65,7 @@ export const TokenToSwapInput = ({
       dropdownHeight={dropdownHeight}
       dropdownComponent={
         <TokenToSwapDropdown
+          onDropdownChange={onDropdownChange}
           asset={asset}
           assets={assets}
           sortMethod={sortMethod}

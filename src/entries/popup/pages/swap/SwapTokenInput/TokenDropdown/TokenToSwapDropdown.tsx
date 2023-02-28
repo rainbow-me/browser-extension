@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { useState } from 'react';
+import React from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -24,6 +24,7 @@ export type TokenToSwapDropdownProps = {
   sortMethod: SortMethod;
   onSelectAsset?: (address: Address) => void;
   setSortMethod: (sortMethod: SortMethod) => void;
+  onDropdownChange: (open: boolean) => void;
 };
 
 export const TokenToSwapDropdown = ({
@@ -32,8 +33,8 @@ export const TokenToSwapDropdown = ({
   sortMethod,
   onSelectAsset,
   setSortMethod,
+  onDropdownChange,
 }: TokenToSwapDropdownProps) => {
-  const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
   const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
     assets,
     size: 10,
@@ -54,10 +55,7 @@ export const TokenToSwapDropdown = ({
               {i18n.t('swap.tokens_input.tokens')}
             </Text>
           </Inline>
-          <DropdownMenu
-            onOpenChange={setSortDropdownOpen}
-            open={sortDropdownOpen}
-          >
+          <DropdownMenu onOpenChange={onDropdownChange}>
             <DropdownMenuTrigger
               accentColor={asset?.colors?.primary || asset?.colors?.fallback}
               asChild
