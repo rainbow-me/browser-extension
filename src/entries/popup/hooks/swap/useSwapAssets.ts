@@ -154,10 +154,8 @@ export const useSwapAssets = () => {
   const assetsToReceive: ParsedAddressAsset[] = useMemo(
     () =>
       Object.values(rawAssetsToReceive || {}).map((rawAsset) => {
-        const userAsset = userAssets.find(
-          (userAsset) =>
-            isLowerCaseMatch(userAsset.address, rawAsset.address) &&
-            userAsset.chainId === outputChainId,
+        const userAsset = userAssets.find((userAsset) =>
+          isLowerCaseMatch(userAsset.address, rawAsset.address),
         );
         const searchAsset = searchReceiveAssets.find(
           (searchAsset) => searchAsset.uniqueId === rawAsset.address,
@@ -196,6 +194,8 @@ export const useSwapAssets = () => {
       ),
     [assetsToReceive, assetToReceiveAddress],
   );
+
+  console.log('assetToReceive', assetToReceive);
 
   useEffect(() => {
     if (prevOutputChainId !== outputChainId) {
