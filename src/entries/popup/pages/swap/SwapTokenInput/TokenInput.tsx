@@ -18,6 +18,7 @@ import { DropdownInputWrapper } from '../../../components/DropdownInputWrapper/D
 import { SwapInputActionButton } from '../SwapInputActionButton';
 
 interface TokenInputProps {
+  accentCaretColor?: boolean;
   asset?: ParsedAddressAsset;
   assetFilter: string;
   dropdownHeight?: number;
@@ -26,6 +27,7 @@ interface TokenInputProps {
   placeholder: string;
   zIndex?: number;
   dropdownClosed: boolean;
+  variant: 'surface' | 'bordered' | 'transparent' | 'tinted';
   onDropdownOpen: (open: boolean) => void;
   setOnSelectAsset: (cb: (address: Address | '') => void) => void;
   selectAssetAddress: (address: Address | '') => void;
@@ -33,6 +35,7 @@ interface TokenInputProps {
 }
 
 export const TokenInput = ({
+  accentCaretColor,
   asset,
   assetFilter,
   dropdownHeight,
@@ -41,6 +44,7 @@ export const TokenInput = ({
   placeholder,
   zIndex,
   dropdownClosed,
+  variant,
   onDropdownOpen,
   selectAssetAddress,
   setOnSelectAsset,
@@ -110,12 +114,13 @@ export const TokenInput = ({
         ) : (
           <Box width="fit" marginVertical="-20px">
             <SwapInputMask
+              accentCaretColor={accentCaretColor}
               borderColor="transparent"
               decimals={asset?.decimals}
               height="56px"
               placeholder="0.00"
               value={value}
-              variant="tinted"
+              variant={variant}
               onChange={setValue}
               paddingHorizontal={0}
               innerRef={inputRef}

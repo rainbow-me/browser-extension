@@ -67,6 +67,7 @@ export const TokenToSwapInput = ({
       bottomComponent={asset ? <TokenToSwapInfo asset={asset} /> : null}
       placeholder={placeholder}
       zIndex={zIndex}
+      variant="transparent"
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
       selectAssetAddress={selectAssetAddress}

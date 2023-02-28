@@ -57,6 +57,7 @@ export const TokenToReceiveInput = ({
 
   return (
     <TokenInput
+      accentCaretColor
       asset={asset}
       dropdownClosed={dropdownClosed}
       dropdownHeight={dropdownHeight}
@@ -72,6 +73,7 @@ export const TokenToReceiveInput = ({
       bottomComponent={asset ? <TokenToReceiveInfo asset={asset} /> : null}
       placeholder={placeholder}
       zIndex={zIndex}
+      variant="tinted"
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
       selectAssetAddress={selectAssetAddress}

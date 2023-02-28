@@ -23,9 +23,11 @@ interface SwapInputMaskProps {
   onChange: (value: string) => void;
   paddingHorizontal?: number;
   placeholder: string;
+  accentCaretColor?: boolean;
 }
 
 export const SwapInputMask = ({
+  accentCaretColor = false,
   borderColor,
   decimals,
   height,
@@ -74,7 +76,7 @@ export const SwapInputMask = ({
           style={{
             paddingRight: paddingHorizontal,
             paddingLeft: paddingHorizontal,
-            caretColor: accentColorAsHsl,
+            caretColor: accentCaretColor ? accentColorAsHsl : undefined,
           }}
           enableTapScale={false}
           testId="swap-input-mask"
