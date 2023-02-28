@@ -6,13 +6,14 @@ import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isL2Chain } from '~/core/utils/chains';
-import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { rainbowGradient } from '~/design-system/components/Symbol/gradients';
 import {
   transformScales,
   transitions,
 } from '~/design-system/styles/designTokens';
+import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets';
 
@@ -39,51 +40,67 @@ const AssetsToReceiveSection = ({
   });
 
   const verifiedSection = id === 'verified';
+  const otherNetworksSection = id === 'other_networks';
 
   if (!data.length) return null;
   return (
-    <Box ref={containerRef} paddingTop="12px">
-      <Box paddingHorizontal="20px" width="full">
-        <Inline space="4px" alignVertical="center">
-          <Symbol
-            symbol={symbol}
-            color={verifiedSection ? 'transparent' : 'labelTertiary'}
-            weight="semibold"
-            size={14}
-            gradient={verifiedSection ? rainbowGradient : undefined}
-          />
-          <Box style={{ width: 225 }}>
-            <Text
-              webkitBackgroundClip={verifiedSection ? 'text' : undefined}
-              background={verifiedSection ? 'rainbow' : undefined}
-              size="14pt"
-              weight="semibold"
-              color={verifiedSection ? 'transparent' : 'labelTertiary'}
-            >
-              {title}
-            </Text>
+    <Box paddingTop="12px">
+      <Stack space="16px">
+        {otherNetworksSection ? (
+          <Box borderRadius="12px" style={{ height: '52px' }}>
+            <Inset horizontal="20px" vertical="8px">
+              <Inline space="8px" alignVertical="center">
+                <CoinIcon asset={undefined} />
+                <Text size="14pt" weight="semibold" color={'labelQuaternary'}>
+                  {title}
+                </Text>
+              </Inline>
+            </Inset>
           </Box>
-        </Inline>
-      </Box>
+        ) : null}
 
-      <Box paddingTop="16px">
-        {assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
-          const { index } = virtualItem;
-          const rowData = data?.[index] as ParsedAddressAsset;
-          return (
-            <Box
-              paddingHorizontal="8px"
-              key={`${rowData?.uniqueId}-${i}`}
-              onClick={() =>
-                onSelectAsset?.(rowData?.mainnetAddress || rowData?.address)
-              }
-              testId={`token-input-asset-${rowData?.uniqueId}`}
-            >
-              <TokenToReceiveRow asset={rowData} />
+        <Box paddingHorizontal="20px" width="full">
+          <Inline space="4px" alignVertical="center">
+            <Symbol
+              symbol={symbol}
+              color={verifiedSection ? 'transparent' : 'labelTertiary'}
+              weight="semibold"
+              size={14}
+              gradient={verifiedSection ? rainbowGradient : undefined}
+            />
+            <Box style={{ width: 225 }}>
+              <Text
+                webkitBackgroundClip={verifiedSection ? 'text' : undefined}
+                background={verifiedSection ? 'rainbow' : undefined}
+                size="14pt"
+                weight="semibold"
+                color={verifiedSection ? 'transparent' : 'labelTertiary'}
+              >
+                {title}
+              </Text>
             </Box>
-          );
-        })}
-      </Box>
+          </Inline>
+        </Box>
+
+        <Box ref={containerRef}>
+          {assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
+            const { index } = virtualItem;
+            const rowData = data?.[index] as ParsedAddressAsset;
+            return (
+              <Box
+                paddingHorizontal="8px"
+                key={`${rowData?.uniqueId}-${i}`}
+                onClick={() =>
+                  onSelectAsset?.(rowData?.mainnetAddress || rowData?.address)
+                }
+                testId={`token-input-asset-${rowData?.uniqueId}`}
+              >
+                <TokenToReceiveRow asset={rowData} />
+              </Box>
+            );
+          })}
+        </Box>
+      </Stack>
     </Box>
   );
 };
