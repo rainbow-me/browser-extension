@@ -93,8 +93,8 @@ export const useSwapAssets = () => {
   const [assetToSwapFilter, setAssetToSwapFilter] = useState('');
   const [assetToReceiveFilter, setAssetToReceiveFilter] = useState('');
 
-  const debouncedAssetToSwapFilter = useDebounce(assetToSwapFilter, 500);
-  const debouncedAssetToReceiveFilter = useDebounce(assetToReceiveFilter, 500);
+  const debouncedAssetToSwapFilter = useDebounce(assetToSwapFilter, 200);
+  const debouncedAssetToReceiveFilter = useDebounce(assetToReceiveFilter, 200);
 
   const { data: userAssets = [] } = useUserAssets(
     {
