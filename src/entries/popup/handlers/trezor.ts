@@ -2,7 +2,6 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
 import transformTypedDataPlugin from '@trezor/connect-plugin-ethereum';
-import { EthereumTransactionEIP1559 } from '@trezor/connect/lib/types';
 import { getProvider } from '@wagmi/core';
 import { Bytes, UnsignedTransaction, ethers } from 'ethers';
 import { Address } from 'wagmi';
@@ -58,7 +57,7 @@ export async function sendTransactionFromTrezor(
       transaction: {
         ...baseTx,
         nonce: nonceHex,
-      } as unknown as EthereumTransactionEIP1559,
+      },
     });
 
     if (response.success) {
