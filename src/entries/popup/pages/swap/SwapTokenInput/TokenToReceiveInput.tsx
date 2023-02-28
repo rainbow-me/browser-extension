@@ -43,6 +43,7 @@ export const TokenToReceiveInput = ({
   setAssetFilter,
   setOutputChainId,
 }: TokenToReceiveProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const onSelectAssetRef = useRef<(address: Address | '') => void>();
 
   const setOnSelectAsset = useCallback(
@@ -55,14 +56,22 @@ export const TokenToReceiveInput = ({
     [selectAssetAddress],
   );
 
+  const onDropdownChange = useCallback((open: boolean) => {
+    if (!open) {
+      setTimeout(() => inputRef?.current?.focus(), 300);
+    }
+  }, []);
+
   return (
     <TokenInput
+      inputRef={inputRef}
       accentCaretColor
       asset={asset}
       dropdownClosed={dropdownClosed}
       dropdownHeight={dropdownHeight}
       dropdownComponent={
         <TokenToReceiveDropdown
+          onDropdownChange={onDropdownChange}
           asset={asset}
           assets={assets}
           onSelectAsset={onSelectAssetRef?.current}

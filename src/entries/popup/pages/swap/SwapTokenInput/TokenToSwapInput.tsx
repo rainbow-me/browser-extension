@@ -39,6 +39,7 @@ export const TokenToSwapInput = ({
   setSortMethod,
 }: SwapTokenInputProps) => {
   const onSelectAssetRef = useRef<(address: Address | '') => void>();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const setOnSelectAsset = useCallback(
     (cb: (address: Address | '') => void) => {
@@ -52,6 +53,7 @@ export const TokenToSwapInput = ({
 
   return (
     <TokenInput
+      inputRef={inputRef}
       asset={asset}
       dropdownClosed={dropdownClosed}
       dropdownHeight={dropdownHeight}

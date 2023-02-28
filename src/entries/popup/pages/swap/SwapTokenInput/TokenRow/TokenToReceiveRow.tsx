@@ -36,9 +36,15 @@ import { RowHighlightWrapper } from './RowHighlightWrapper';
 const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 160;
 
-export type TokenToReceiveRowProps = { asset: ParsedAddressAsset };
+export type TokenToReceiveRowProps = {
+  asset: ParsedAddressAsset;
+  onDropdownChange: (open: boolean) => void;
+};
 
-export function TokenToReceiveRow({ asset }: TokenToReceiveRowProps) {
+export function TokenToReceiveRow({
+  asset,
+  onDropdownChange,
+}: TokenToReceiveRowProps) {
   const leftColumn = useMemo(
     () => (
       <Rows space="8px">
@@ -93,7 +99,7 @@ export function TokenToReceiveRow({ asset }: TokenToReceiveRowProps) {
   const rightColumn = useMemo(
     () =>
       !asset?.isNativeAsset ? (
-        <DropdownMenu>
+        <DropdownMenu onOpenChange={onDropdownChange}>
           <DropdownMenuTrigger asChild>
             <Box>
               <ButtonSymbol
@@ -190,6 +196,7 @@ export function TokenToReceiveRow({ asset }: TokenToReceiveRowProps) {
       asset?.name,
       asset?.symbol,
       onValueChange,
+      onDropdownChange,
     ],
   );
 

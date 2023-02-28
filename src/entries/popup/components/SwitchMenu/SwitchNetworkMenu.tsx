@@ -115,6 +115,7 @@ interface SwitchNetworkMenuProps {
   triggerComponent: React.ReactNode;
   type: 'dropdown' | 'context';
   marginRight?: Space;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export const SwitchNetworkMenu = ({
@@ -125,6 +126,7 @@ export const SwitchNetworkMenu = ({
   triggerComponent,
   type,
   marginRight,
+  onOpenChange,
 }: SwitchNetworkMenuProps) => {
   const { chains } = useNetwork();
 
@@ -156,7 +158,7 @@ export const SwitchNetworkMenu = ({
   }, [type]);
 
   return (
-    <Menu>
+    <Menu onOpenChange={onOpenChange}>
       <MenuTrigger asChild>
         <Box style={{ cursor: 'default' }}>{triggerComponent}</Box>
       </MenuTrigger>

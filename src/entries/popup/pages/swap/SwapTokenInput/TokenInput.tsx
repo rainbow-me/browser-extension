@@ -3,7 +3,6 @@ import React, {
   ReactElement,
   useCallback,
   useEffect,
-  useRef,
   useState,
 } from 'react';
 import { Address } from 'wagmi';
@@ -29,6 +28,7 @@ interface TokenInputProps {
   zIndex?: number;
   dropdownClosed: boolean;
   variant: 'surface' | 'bordered' | 'transparent' | 'tinted';
+  inputRef: React.RefObject<HTMLInputElement>;
   onDropdownOpen: (open: boolean) => void;
   setOnSelectAsset: (cb: (address: Address | '') => void) => void;
   selectAssetAddress: (address: Address | '') => void;
@@ -46,6 +46,7 @@ export const TokenInput = ({
   zIndex,
   dropdownClosed,
   variant,
+  inputRef,
   onDropdownOpen,
   selectAssetAddress,
   setOnSelectAsset,
@@ -53,20 +54,19 @@ export const TokenInput = ({
 }: TokenInputProps) => {
   const [value, setValue] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
   const prevDropdownVisible = usePrevious(dropdownVisible);
 
   const onDropdownAction = useCallback(() => {
     onDropdownOpen(!dropdownVisible);
     setDropdownVisible(!dropdownVisible);
     dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
-  }, [dropdownVisible, onDropdownOpen]);
+  }, [dropdownVisible, inputRef, onDropdownOpen]);
 
   const onSelectAsset = useCallback(() => {
     onDropdownOpen(false);
     setDropdownVisible(false);
     setTimeout(() => inputRef?.current?.focus(), 300);
-  }, [onDropdownOpen]);
+  }, [inputRef, onDropdownOpen]);
 
   const onClose = useCallback(() => {
     selectAssetAddress('');

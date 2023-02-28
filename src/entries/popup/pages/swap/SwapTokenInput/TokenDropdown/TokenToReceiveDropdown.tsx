@@ -27,12 +27,14 @@ const AssetsToReceiveSection = ({
   symbol,
   id,
   onSelectAsset,
+  onDropdownChange,
 }: {
   data: ParsedAddressAsset[];
   title: string;
   onSelectAsset?: (address: Address) => void;
   symbol: SymbolProps['symbol'];
   id: string;
+  onDropdownChange: (open: boolean) => void;
 }) => {
   const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
     assets: data,
@@ -95,7 +97,10 @@ const AssetsToReceiveSection = ({
                 }
                 testId={`token-input-asset-${rowData?.uniqueId}`}
               >
-                <TokenToReceiveRow asset={rowData} />
+                <TokenToReceiveRow
+                  onDropdownChange={onDropdownChange}
+                  asset={rowData}
+                />
               </Box>
             );
           })}
@@ -116,6 +121,7 @@ export type TokenToReceiveDropdownProps = {
   outputChainId: ChainId;
   onSelectAsset?: (address: Address) => void;
   setOutputChainId: (chainId: ChainId) => void;
+  onDropdownChange: (open: boolean) => void;
 };
 
 export const TokenToReceiveDropdown = ({
@@ -124,6 +130,7 @@ export const TokenToReceiveDropdown = ({
   outputChainId,
   onSelectAsset,
   setOutputChainId,
+  onDropdownChange,
 }: TokenToReceiveDropdownProps) => {
   const isL2 = useMemo(() => isL2Chain(outputChainId), [outputChainId]);
 
@@ -148,6 +155,7 @@ export const TokenToReceiveDropdown = ({
             </Text>
           </Inline>
           <SwitchNetworkMenu
+            onOpenChange={onDropdownChange}
             marginRight="20px"
             accentColor={asset?.colors?.primary || asset?.colors?.fallback}
             type="dropdown"
@@ -194,6 +202,7 @@ export const TokenToReceiveDropdown = ({
               symbol={assetSection.symbol}
               id={assetSection.id}
               onSelectAsset={onSelectAsset}
+              onDropdownChange={onDropdownChange}
             />
           ))}
         </Stack>
