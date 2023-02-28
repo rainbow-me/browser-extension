@@ -1,14 +1,18 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { selectUserAssetsListByChainId } from '~/core/resources/_selectors/assets';
-import { useUserAssets } from '~/core/resources/assets';
+import { useAssets, useUserAssets } from '~/core/resources/assets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
+import { ChainId } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { SortMethod } from '../send/useSendTransactionAsset';
+import usePrevious from '../usePrevious';
+import { useSearchCurrencyLists } from '../useSearchCurrencyLists';
 
 const sortBy = (by: SortMethod) => {
   switch (by) {
@@ -18,6 +22,30 @@ const sortBy = (by: SortMethod) => {
       return selectUserAssetsListByChainId;
   }
 };
+
+const parseParsedAssetToParsedAddressAsset = ({
+  parsedAsset,
+  outputChainId,
+  parsedAddressAsset,
+}: {
+  parsedAsset: ParsedAsset;
+  outputChainId: ChainId;
+  parsedAddressAsset?: ParsedAddressAsset;
+}) => ({
+  ...parsedAsset,
+  address: parsedAddressAsset?.address || parsedAsset.address,
+  chainId: outputChainId,
+  native: {
+    balance: {
+      amount: '0',
+      display: '0.00',
+    },
+    price: parsedAsset.native.price,
+  },
+  balance: parsedAddressAsset?.balance || { amount: '0', display: '0.00' },
+  icon_url: parsedAddressAsset?.icon_url || parsedAsset?.icon_url,
+  colors: parsedAddressAsset?.colors || parsedAsset?.colors,
+});
 
 export const useSwapAssets = () => {
   const { currentAddress } = useCurrentAddressStore();
@@ -30,10 +58,12 @@ export const useSwapAssets = () => {
   const [assetToReceiveAddress, setAssetToReceiveAddress] = useState<
     Address | ''
   >('');
+  const [outputChainId, setOutputChainId] = useState(ChainId.mainnet);
+  const prevOutputChainId = usePrevious(outputChainId);
 
   const [sortMethod, setSortMethod] = useState<SortMethod>('token');
 
-  const { data: assets = [] } = useUserAssets(
+  const { data: userAssets = [] } = useUserAssets(
     {
       address: currentAddress,
       currency: currentCurrency,
@@ -44,27 +74,71 @@ export const useSwapAssets = () => {
 
   const assetToSwap = useMemo(
     () =>
-      assets?.find(({ address }) =>
+      userAssets?.find(({ address }) =>
         isLowerCaseMatch(address, assetToSwapAddress),
       ) || null,
-    [assets, assetToSwapAddress],
+    [userAssets, assetToSwapAddress],
+  );
+
+  const { results } = useSearchCurrencyLists({
+    inputChainId: assetToSwap?.chainId || undefined,
+    outputChainId,
+  });
+
+  const addresses = results
+    ?.map(({ data }) => data)
+    .flat()
+    ?.map((asset) => asset?.uniqueId || '')
+    ?.filter((address) => !!address);
+
+  const { data: assets } = useAssets({
+    assetAddresses: addresses,
+    currency: currentCurrency,
+  });
+
+  const assetsToReceive: ParsedAddressAsset[] = useMemo(
+    () =>
+      Object.values(assets || {}).map((asset) => {
+        const parsedAddressAsset = userAssets.find(
+          (userAsset) =>
+            isLowerCaseMatch(userAsset.address, asset.address) &&
+            userAsset.chainId === outputChainId,
+        );
+        return parseParsedAssetToParsedAddressAsset({
+          parsedAsset: asset,
+          parsedAddressAsset,
+          outputChainId,
+        });
+      }),
+    [assets, outputChainId, userAssets],
   );
 
   const assetToReceive = useMemo(
     () =>
-      assets?.find(({ address }) =>
-        isLowerCaseMatch(address, assetToReceiveAddress),
+      assetsToReceive?.find(
+        ({ address, chainId }) =>
+          isLowerCaseMatch(address, assetToReceiveAddress) &&
+          chainId === outputChainId,
       ) || null,
-    [assets, assetToReceiveAddress],
+    [assetsToReceive, assetToReceiveAddress, outputChainId],
   );
 
+  useEffect(() => {
+    if (prevOutputChainId !== outputChainId) {
+      setAssetToReceiveAddress('');
+    }
+  }, [outputChainId, prevOutputChainId]);
+
   return {
-    assets,
+    assetsToSwap: userAssets,
+    assetsToReceive,
     sortMethod,
     assetToSwap,
     assetToReceive,
+    outputChainId,
     setSortMethod,
     setAssetToSwapAddress,
     setAssetToReceiveAddress,
+    setOutputChainId,
   };
 };

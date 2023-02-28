@@ -1,7 +1,8 @@
 import React from 'react';
-import { Address, Chain } from 'wagmi';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { ChainId } from '~/core/types/chains';
 import { Box, Column, Columns, Row, Rows, Stack } from '~/design-system';
 
 import {
@@ -14,8 +15,8 @@ import {
 export const RequestAccountsActions = ({
   selectedWallet,
   setSelectedWallet,
-  selectedNetwork,
-  setSelectedNetwork,
+  selectedChainId,
+  setSelectedChainId,
   onAcceptRequest,
   onRejectRequest,
   appName,
@@ -23,8 +24,8 @@ export const RequestAccountsActions = ({
   appName?: string;
   selectedWallet: Address;
   setSelectedWallet: (value: Address) => void;
-  selectedNetwork: Chain;
-  setSelectedNetwork: (value: Chain) => void;
+  selectedChainId: ChainId;
+  setSelectedChainId: (value: ChainId) => void;
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
 }) => {
@@ -40,8 +41,8 @@ export const RequestAccountsActions = ({
           </Column>
           <Column>
             <BottomSwitchNetwork
-              selectedNetwork={selectedNetwork}
-              setSelectedNetwork={setSelectedNetwork}
+              selectedChainId={selectedChainId}
+              setSelectedChainId={setSelectedChainId}
             />
           </Column>
         </Columns>
