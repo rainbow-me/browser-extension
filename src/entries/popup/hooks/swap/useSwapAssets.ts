@@ -171,13 +171,16 @@ export const useSwapAssets = () => {
     [rawAssetsToReceive, userAssets, searchReceiveAssets, outputChainId],
   );
 
-  const assetsToReceivee = useMemo(() => {
+  const assetsToReceiveBySection = useMemo(() => {
     return searchReceiveAssetsSections.map(({ data, title, symbol, id }) => {
       const parsedData: ParsedAddressAsset[] =
         data
           ?.map((asset) =>
             assetsToReceive.find((parsedAsset) =>
-              isLowerCaseMatch(parsedAsset.address, asset?.uniqueId),
+              isLowerCaseMatch(
+                parsedAsset.uniqueId.split('_')[0],
+                asset?.uniqueId,
+              ),
             ),
           )
           ?.filter((p): p is ParsedAddressAsset => !!p) || [];
@@ -204,7 +207,7 @@ export const useSwapAssets = () => {
   return {
     assetsToSwap: filteredAssetsToSwap,
     assetToSwapFilter,
-    assetsToReceive: assetsToReceivee,
+    assetsToReceive: assetsToReceiveBySection,
     assetToReceiveFilter,
     sortMethod,
     assetToSwap,
