@@ -7,6 +7,7 @@ import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isL2Chain } from '~/core/utils/chains';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { rainbowGradient } from '~/design-system/components/Symbol/gradients';
 import {
   transformScales,
@@ -19,30 +20,25 @@ import { dropdownContainerVariant } from '../../../../components/DropdownInputWr
 import { BottomNetwork } from '../../../messages/BottomActions';
 import { TokenToReceiveRow } from '../TokenRow/TokenToReceiveRow';
 
-export type TokenToReceiveDropdownProps = {
-  asset?: ParsedAddressAsset;
-  assets?: {
-    data: ParsedAddressAsset[];
-    title: string;
-  }[];
-  outputChainId: ChainId;
-  onSelectAsset?: (address: Address) => void;
-  setOutputChainId: (chainId: ChainId) => void;
-};
-
 const AssetsToReceiveSection = ({
   data,
   title,
+  symbol,
+  id,
   onSelectAsset,
 }: {
   data: ParsedAddressAsset[];
   title: string;
   onSelectAsset?: (address: Address) => void;
+  symbol: SymbolProps['symbol'];
+  id: string;
 }) => {
   const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
     assets: data,
     size: 5,
   });
+
+  const verifiedSection = id === 'verified';
 
   if (!data.length) return null;
   return (
@@ -50,19 +46,19 @@ const AssetsToReceiveSection = ({
       <Box paddingHorizontal="20px" width="full">
         <Inline space="4px" alignVertical="center">
           <Symbol
-            symbol="checkmark.seal.fill"
-            color="transparent"
+            symbol={symbol}
+            color={verifiedSection ? 'transparent' : 'labelTertiary'}
             weight="semibold"
             size={14}
-            gradient={rainbowGradient}
+            gradient={verifiedSection ? rainbowGradient : undefined}
           />
           <Box style={{ width: 225 }}>
             <Text
-              webkitBackgroundClip="text"
-              background="rainbow"
+              webkitBackgroundClip={verifiedSection ? 'text' : undefined}
+              background={verifiedSection ? 'rainbow' : undefined}
               size="14pt"
               weight="semibold"
-              color="transparent"
+              color={verifiedSection ? 'transparent' : 'labelTertiary'}
             >
               {title}
             </Text>
@@ -92,6 +88,19 @@ const AssetsToReceiveSection = ({
   );
 };
 
+export type TokenToReceiveDropdownProps = {
+  asset?: ParsedAddressAsset;
+  assets?: {
+    data: ParsedAddressAsset[];
+    title: string;
+    id: string;
+    symbol: SymbolProps['symbol'];
+  }[];
+  outputChainId: ChainId;
+  onSelectAsset?: (address: Address) => void;
+  setOutputChainId: (chainId: ChainId) => void;
+};
+
 export const TokenToReceiveDropdown = ({
   asset,
   assets,
@@ -105,6 +114,7 @@ export const TokenToReceiveDropdown = ({
     () => assets?.reduce((count, section) => count + section.data.length, 0),
     [assets],
   );
+
   return (
     <Stack space="8px">
       <Box paddingHorizontal="20px">
@@ -164,6 +174,8 @@ export const TokenToReceiveDropdown = ({
               key={i}
               data={assetSection.data}
               title={assetSection.title}
+              symbol={assetSection.symbol}
+              id={assetSection.id}
               onSelectAsset={onSelectAsset}
             />
           ))}

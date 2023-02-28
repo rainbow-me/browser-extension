@@ -172,7 +172,7 @@ export const useSwapAssets = () => {
   );
 
   const assetsToReceivee = useMemo(() => {
-    return searchReceiveAssetsSections.map(({ data, title }) => {
+    return searchReceiveAssetsSections.map(({ data, title, symbol, id }) => {
       const parsedData: ParsedAddressAsset[] =
         data
           ?.map((asset) =>
@@ -181,7 +181,7 @@ export const useSwapAssets = () => {
             ),
           )
           ?.filter((p): p is ParsedAddressAsset => !!p) || [];
-      return { data: parsedData, title };
+      return { data: parsedData, title, symbol, id };
     });
   }, [assetsToReceive, searchReceiveAssetsSections]);
 

@@ -3,6 +3,7 @@ import { Address } from 'wagmi';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
 import { TokenToReceiveDropdown } from './TokenDropdown/TokenToReceiveDropdown';
 import { TokenToReceiveInfo } from './TokenInfo/TokenToReceiveInfo';
@@ -13,6 +14,8 @@ interface TokenToReceiveProps {
   assets?: {
     data: ParsedAddressAsset[];
     title: string;
+    id: string;
+    symbol: SymbolProps['symbol'];
   }[];
   assetFilter: string;
   dropdownClosed: boolean;
