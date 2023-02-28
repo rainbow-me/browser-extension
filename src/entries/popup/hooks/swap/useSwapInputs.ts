@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
+import { Address } from 'wagmi';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
 import {
@@ -8,10 +9,14 @@ import {
 
 export const useSwapInputs = ({
   assetToSwap,
-}: // assetToReceive,
-{
+  assetToReceive,
+  setAssetToSwapAddress,
+  setAssetToReceiveAddress,
+}: {
   assetToSwap?: ParsedAddressAsset;
   assetToReceive?: ParsedAddressAsset;
+  setAssetToSwapAddress: (address: Address) => void;
+  setAssetToReceiveAddress: (address: Address) => void;
 }) => {
   const [assetToSwapDropdownVisible, setassetToSwapDropdownVisible] =
     useState(false);
@@ -52,12 +57,23 @@ export const useSwapInputs = ({
     setAssetToSwapValue(assetToSwapMaxValue.amount);
   }, [assetToSwapMaxValue.amount]);
 
+  const flipAssets = useCallback(() => {
+    assetToSwap && setAssetToSwapAddress(assetToSwap.address);
+    assetToReceive && setAssetToReceiveAddress(assetToReceive.address);
+  }, [
+    assetToReceive,
+    assetToSwap,
+    setAssetToReceiveAddress,
+    setAssetToSwapAddress,
+  ]);
+
   return {
     assetToSwapMaxValue,
     assetToSwapValue,
     assetToReceiveValue,
     assetToSwapDropdownVisible,
     assetToReceiveDropdownVisible,
+    flipAssets,
     onAssetToSwapInputOpen,
     onAssetToReceiveInputOpen,
     setAssetToReceiveValue,

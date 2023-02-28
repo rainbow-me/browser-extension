@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import { i18n } from '~/core/languages';
 import {
@@ -51,18 +51,22 @@ export function Swap() {
     assetToSwapValue,
     assetToReceiveDropdownVisible,
     assetToSwapDropdownVisible,
+    flipAssets,
     onAssetToSwapInputOpen,
     onAssetToReceiveInputOpen,
     setAssetToSwapMaxValue,
     setAssetToSwapValue,
     setAssetToReceiveValue,
-  } = useSwapInputs({ assetToSwap, assetToReceive });
+  } = useSwapInputs({
+    assetToSwap,
+    assetToReceive,
+    setAssetToSwapAddress,
+    setAssetToReceiveAddress,
+  });
 
   const { toSwapInputHeight, toReceiveInputHeight } = useSwapDropdownDimensions(
     { assetToSwap, assetToReceive },
   );
-
-  const onFlip = useCallback(() => null, []);
 
   return (
     <>
@@ -132,7 +136,7 @@ export function Swap() {
                     borderWidth={'1px'}
                     borderColor="buttonStroke"
                     style={{ width: 42, height: 32, zIndex: 10 }}
-                    onClick={onFlip}
+                    onClick={flipAssets}
                   >
                     <Box width="full" height="full" alignItems="center">
                       <Inline
