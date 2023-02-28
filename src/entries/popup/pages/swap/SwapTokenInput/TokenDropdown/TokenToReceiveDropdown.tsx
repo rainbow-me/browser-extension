@@ -52,7 +52,7 @@ const AssetsToReceiveSection = ({
               <Inline space="8px" alignVertical="center">
                 <CoinIcon asset={undefined} />
                 <Text size="14pt" weight="semibold" color={'labelQuaternary'}>
-                  {title}
+                  {i18n.t('swap.tokens_input.nothing_found')}
                 </Text>
               </Inline>
             </Inset>
