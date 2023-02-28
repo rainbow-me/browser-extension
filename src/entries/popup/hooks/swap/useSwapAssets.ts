@@ -11,7 +11,7 @@ import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
-import { SortMethod } from '../send/useSendTransactionAsset';
+import { SortMethod } from '../send/useSendAsset';
 import { useDebounce } from '../useDebounce';
 import usePrevious from '../usePrevious';
 import { useSearchCurrencyLists } from '../useSearchCurrencyLists';

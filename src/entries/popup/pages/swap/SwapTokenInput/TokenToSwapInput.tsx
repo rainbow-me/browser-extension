@@ -2,8 +2,7 @@ import React, { useCallback, useRef } from 'react';
 import { Address } from 'wagmi';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
-
-import { SortMethod } from '../../../hooks/send/useSendTransactionAsset';
+import { SortMethod } from '~/entries/popup/hooks/send/useSendAsset';
 
 import { TokenToSwapDropdown } from './TokenDropdown/TokenToSwapDropdown';
 import { TokenToSwapInfo } from './TokenInfo/TokenToSwapInfo';

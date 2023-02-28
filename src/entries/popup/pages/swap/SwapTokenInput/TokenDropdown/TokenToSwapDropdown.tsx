@@ -5,6 +5,7 @@ import { Address } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { SortMethod } from '~/entries/popup/hooks/send/useSendAsset';
 import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets';
 
 import { dropdownContainerVariant } from '../../../../components/DropdownInputWrapper/DropdownInputWrapper';
@@ -15,7 +16,6 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '../../../../components/DropdownMenu/DropdownMenu';
-import { SortMethod } from '../../../../hooks/send/useSendTransactionAsset';
 import { TokenToSwapRow } from '../TokenRow/TokenToSwapRow';
 
 export type TokenToSwapDropdownProps = {
