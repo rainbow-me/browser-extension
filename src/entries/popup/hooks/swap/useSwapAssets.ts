@@ -71,6 +71,7 @@ const parseParsedAssetToParsedAddressAsset = ({
     balance: userAsset?.balance || { amount: '0', display: '0.00' },
     icon_url:
       userAsset?.icon_url || rawAsset?.icon_url || searchAsset?.icon_url,
+    colors: searchAsset?.colors || rawAsset?.colors,
   };
 };
 
