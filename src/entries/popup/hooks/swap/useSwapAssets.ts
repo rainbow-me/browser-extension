@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { selectUserAssetsList } from '~/core/resources/_selectors';
@@ -9,10 +9,6 @@ import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connect
 import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
-import {
-  convertAmountToRawAmount,
-  convertRawAmountToBalance,
-} from '~/core/utils/numbers';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { SortMethod } from '../send/useSendTransactionAsset';
@@ -98,9 +94,6 @@ export const useSwapAssets = () => {
   const [assetToSwapFilter, setAssetToSwapFilter] = useState('');
   const [assetToReceiveFilter, setAssetToReceiveFilter] = useState('');
 
-  const [assetToSwapValue, setAssetToSwapValue] = useState('');
-  const [assetToReceiveValue, setAssetToReceiveValue] = useState('');
-
   const debouncedAssetToSwapFilter = useDebounce(assetToSwapFilter, 200);
   const debouncedAssetToReceiveFilter = useDebounce(assetToReceiveFilter, 200);
 
@@ -135,23 +128,6 @@ export const useSwapAssets = () => {
       ),
     [userAssets, assetToSwapAddress],
   );
-
-  const assetToSwapMaxValue = useMemo(() => {
-    const assetBalanceAmount = convertAmountToRawAmount(
-      assetToSwap?.balance?.amount || '0',
-      assetToSwap?.decimals || 18,
-    );
-
-    const assetBalance = convertRawAmountToBalance(assetBalanceAmount, {
-      decimals: assetToSwap?.decimals || 18,
-    });
-
-    return assetBalance;
-  }, [assetToSwap?.balance?.amount, assetToSwap?.decimals]);
-
-  const setAssetToSwapMaxValue = useCallback(() => {
-    setAssetToSwapValue(assetToSwapMaxValue.amount);
-  }, [assetToSwapMaxValue.amount]);
 
   const { results: searchReceiveAssetsSections } = useSearchCurrencyLists({
     inputChainId: assetToSwap?.chainId,
@@ -225,7 +201,6 @@ export const useSwapAssets = () => {
 
   return {
     assetsToSwap: filteredAssetsToSwap,
-    assetToSwapMaxValue,
     assetToSwapFilter,
     assetsToReceive: assetsToReceiveBySection,
     assetToReceiveFilter,
@@ -233,16 +208,11 @@ export const useSwapAssets = () => {
     assetToSwap,
     assetToReceive,
     outputChainId,
-    assetToSwapValue,
-    assetToReceiveValue,
     setSortMethod,
     setAssetToSwapAddress,
-    setAssetToSwapMaxValue,
     setAssetToReceiveAddress,
     setOutputChainId,
     setAssetToSwapFilter,
     setAssetToReceiveFilter,
-    setAssetToSwapValue,
-    setAssetToReceiveValue,
   };
 };

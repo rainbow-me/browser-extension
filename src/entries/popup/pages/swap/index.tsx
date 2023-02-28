@@ -29,13 +29,6 @@ import { TokenToSwapInput } from './SwapTokenInput/TokenToSwapInput';
 
 export function Swap() {
   const {
-    assetToReceiveDropdownVisible,
-    assetToSwapDropdownVisible,
-    onAssetToSwapInputOpen,
-    onAssetToReceiveInputOpen,
-  } = useSwapInputs();
-
-  const {
     assetsToSwap,
     assetToSwapFilter,
     assetsToReceive,
@@ -44,19 +37,26 @@ export function Swap() {
     assetToReceive,
     assetToSwap,
     outputChainId,
-    assetToSwapMaxValue,
-    assetToReceiveValue,
-    assetToSwapValue,
     setSortMethod,
     setOutputChainId,
     setAssetToReceiveAddress,
-    setAssetToSwapMaxValue,
     setAssetToSwapAddress,
     setAssetToSwapFilter,
     setAssetToReceiveFilter,
+  } = useSwapAssets();
+
+  const {
+    assetToSwapMaxValue,
+    assetToReceiveValue,
+    assetToSwapValue,
+    assetToReceiveDropdownVisible,
+    assetToSwapDropdownVisible,
+    onAssetToSwapInputOpen,
+    onAssetToReceiveInputOpen,
+    setAssetToSwapMaxValue,
     setAssetToSwapValue,
     setAssetToReceiveValue,
-  } = useSwapAssets();
+  } = useSwapInputs({ assetToSwap, assetToReceive });
 
   const { toSwapInputHeight, toReceiveInputHeight } = useSwapDropdownDimensions(
     { assetToSwap, assetToReceive },
