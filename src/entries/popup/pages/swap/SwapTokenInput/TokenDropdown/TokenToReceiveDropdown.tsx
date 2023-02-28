@@ -7,6 +7,7 @@ import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { isL2Chain } from '~/core/utils/chains';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { rainbowGradient } from '~/design-system/components/Symbol/gradients';
 import {
   transformScales,
   transitions,
@@ -46,17 +47,29 @@ const AssetsToReceiveSection = ({
   if (!data.length) return null;
   return (
     <Box ref={containerRef} paddingTop="12px">
-      <Box paddingHorizontal="20px">
-        <Text
-          webkitBackgroundClip="text"
-          background="rainbow"
-          size="14pt"
-          weight="semibold"
-          color="transparent"
-        >
-          {title}
-        </Text>
+      <Box paddingHorizontal="20px" width="full">
+        <Inline space="4px" alignVertical="center">
+          <Symbol
+            symbol="checkmark.seal.fill"
+            color="transparent"
+            weight="semibold"
+            size={14}
+            gradient={rainbowGradient}
+          />
+          <Box style={{ width: 225 }}>
+            <Text
+              webkitBackgroundClip="text"
+              background="rainbow"
+              size="14pt"
+              weight="semibold"
+              color="transparent"
+            >
+              {title}
+            </Text>
+          </Box>
+        </Inline>
       </Box>
+
       <Box paddingTop="16px">
         {assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
           const { index } = virtualItem;
@@ -103,13 +116,7 @@ export const TokenToReceiveDropdown = ({
               weight="semibold"
               size={14}
             />
-            <Text
-              webkitBackgroundClip="text"
-              background="rainbow"
-              size="14pt"
-              weight="semibold"
-              color="labelTertiary"
-            >
+            <Text size="14pt" weight="semibold" color="labelTertiary">
               {i18n.t('swap.tokens_input.filter_by_network')}
             </Text>
           </Inline>

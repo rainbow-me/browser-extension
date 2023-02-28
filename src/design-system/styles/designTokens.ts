@@ -800,6 +800,7 @@ export const symbolNames = selectSymbolNames(
   'doc.plaintext',
   'doc.on.doc',
   'checkmark.shield.fill',
+  'checkmark.seal.fill',
   'lock.rotation',
   'doc.text.magnifyingglass',
   'magnifyingglass.circle',
