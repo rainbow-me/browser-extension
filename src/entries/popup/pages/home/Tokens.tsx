@@ -1,5 +1,4 @@
-import { useVirtualizer } from '@tanstack/react-virtual';
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
@@ -26,6 +25,7 @@ import { TokensSkeleton } from '../../components/ActivitySkeleton/ActivitySkelet
 import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
 import { WalletIcon } from '../../components/WalletIcon/WalletIcon';
+import { useVirtualizedAssets } from '../../hooks/useVirtualizedAssets';
 
 const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 150;
@@ -38,12 +38,8 @@ export function Tokens() {
     { address: currentAddress, currency, connectedToHardhat },
     { select: selectUserAssetsList },
   );
-  const containerRef = useRef<HTMLDivElement>(null);
-  const tokenRowVirtualizer = useVirtualizer({
-    count: assets?.length,
-    getScrollElement: () => containerRef.current,
-    estimateSize: () => 52,
-    overscan: 20,
+  const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
+    assets,
   });
 
   if (isInitialLoading) {
@@ -59,7 +55,7 @@ export function Tokens() {
       <Box
         width="full"
         style={{
-          height: tokenRowVirtualizer.getTotalSize(),
+          height: assetsRowVirtualizer.getTotalSize(),
           position: 'relative',
         }}
       ></Box>
@@ -69,7 +65,7 @@ export function Tokens() {
         }}
         marginTop="-16px"
       >
-        {tokenRowVirtualizer.getVirtualItems().map((virtualItem) => {
+        {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
           const { index } = virtualItem;
           const rowData = assets?.[index];
           return (

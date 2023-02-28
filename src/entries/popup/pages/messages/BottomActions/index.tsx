@@ -1,9 +1,11 @@
 import React from 'react';
-import { Address, Chain, useBalance } from 'wagmi';
+import { Address, useBalance } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { Box, Button, Inline, Stack, Symbol, Text } from '~/design-system';
+import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { EthSymbol } from '~/entries/popup/components/EthSymbol/EthSymbol';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
@@ -115,29 +117,33 @@ export const BottomSwitchWallet = ({
 };
 
 export const BottomNetwork = ({
-  selectedNetwork,
+  selectedChainId,
   displaySymbol = false,
+  symbolSize,
+  symbol,
 }: {
-  selectedNetwork: Chain;
+  selectedChainId: ChainId;
   displaySymbol: boolean;
+  symbolSize?: number;
+  symbol?: SymbolProps['symbol'];
 }) => {
   return (
     <Box id="switch-network-menu">
       <Inline alignHorizontal="right" alignVertical="center" space="4px">
-        <ChainBadge chainId={selectedNetwork.id} size={'small'} />
+        <ChainBadge chainId={selectedChainId} size={'small'} />
         <Text
           align="right"
           size="14pt"
           weight="semibold"
           color="labelSecondary"
         >
-          {selectedNetwork.name}
+          {ChainNameDisplay[selectedChainId]}
         </Text>
         {displaySymbol && (
           <Symbol
             color="labelSecondary"
-            size={14}
-            symbol="chevron.down.circle"
+            size={symbolSize || 14}
+            symbol={symbol || 'chevron.down.circle'}
             weight="semibold"
           />
         )}
@@ -147,26 +153,26 @@ export const BottomNetwork = ({
 };
 
 export const BottomDisplayNetwork = ({
-  selectedNetwork,
+  selectedChainId,
 }: {
-  selectedNetwork: Chain;
+  selectedChainId: ChainId;
 }) => {
   return (
     <Stack space="8px">
       <Text align="right" size="12pt" weight="semibold" color="labelQuaternary">
         {i18n.t('approve_request.network')}
       </Text>
-      <BottomNetwork selectedNetwork={selectedNetwork} displaySymbol={false} />
+      <BottomNetwork selectedChainId={selectedChainId} displaySymbol={false} />
     </Stack>
   );
 };
 
 export const BottomSwitchNetwork = ({
-  selectedNetwork,
-  setSelectedNetwork,
+  selectedChainId,
+  setSelectedChainId,
 }: {
-  selectedNetwork: Chain;
-  setSelectedNetwork: (network: Chain) => void;
+  selectedChainId: ChainId;
+  setSelectedChainId: (selectedChainId: ChainId) => void;
 }) => {
   return (
     <Stack space="8px">
@@ -176,10 +182,10 @@ export const BottomSwitchNetwork = ({
 
       <SwitchNetworkMenu
         type="dropdown"
-        chainId={selectedNetwork.id}
-        onChainChanged={(_, chain) => setSelectedNetwork(chain)}
+        chainId={selectedChainId}
+        onChainChanged={(chainId) => setSelectedChainId(chainId)}
         triggerComponent={
-          <BottomNetwork selectedNetwork={selectedNetwork} displaySymbol />
+          <BottomNetwork selectedChainId={selectedChainId} displaySymbol />
         }
       />
     </Stack>

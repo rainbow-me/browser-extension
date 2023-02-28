@@ -97,6 +97,7 @@ export const stylesForHeightAndVariant = ({
   '44px': {
     raised: { boxShadow: shadowValue('30px', color) },
     flat: {},
+    plain: {},
     tinted: {},
     stroked: {},
     disabled: {},
@@ -109,6 +110,7 @@ export const stylesForHeightAndVariant = ({
   '36px': {
     raised: { boxShadow: shadowValue('24px', color) },
     flat: {},
+    plain: {},
     tinted: {},
     stroked: {},
     disabled: {},
@@ -121,6 +123,7 @@ export const stylesForHeightAndVariant = ({
   '32px': {
     raised: { boxShadow: shadowValue('24px', color) },
     flat: {},
+    plain: {},
     tinted: {},
     stroked: {},
     disabled: {},
@@ -133,6 +136,7 @@ export const stylesForHeightAndVariant = ({
   '28px': {
     raised: { boxShadow: shadowValue('12px', color) },
     flat: {},
+    plain: {},
     tinted: {},
     stroked: {},
     disabled: {},
@@ -145,6 +149,7 @@ export const stylesForHeightAndVariant = ({
   '24px': {
     raised: { boxShadow: shadowValue('12px', color) },
     flat: {},
+    plain: {},
     tinted: {},
     stroked: {},
     disabled: {},
@@ -178,6 +183,9 @@ export const stylesForVariant = ({
     background: color as ButtonColor,
     borderColor: 'buttonStroke',
     borderWidth: '1px',
+  },
+  plain: {
+    background: color as ButtonColor,
   },
   tinted: {
     textColor: color as TextColor,

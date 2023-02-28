@@ -37,7 +37,7 @@ export const dropdownItemVariant = {
 
 interface DropdownInputWrapperProps {
   borderVisible?: boolean;
-  bottomComponent?: ReactElement;
+  bottomComponent?: ReactElement | null;
   centerComponent: ReactElement;
   dropdownComponent: ReactElement;
   dropdownHeight?: number;

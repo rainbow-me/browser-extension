@@ -5,26 +5,26 @@ import { Address } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets';
 
-import { dropdownContainerVariant } from '../../../components/DropdownInputWrapper/DropdownInputWrapper';
+import { dropdownContainerVariant } from '../../../../components/DropdownInputWrapper/DropdownInputWrapper';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
-} from '../../../components/DropdownMenu/DropdownMenu';
-import { SortMethod } from '../../../hooks/send/useSendTransactionAsset';
+} from '../../../../components/DropdownMenu/DropdownMenu';
+import { SortMethod } from '../../../../hooks/send/useSendTransactionAsset';
+import { TokenToSwapRow } from '../TokenRow/TokenToSwapRow';
 
-import { SwapTokenRow } from './SwapTokenRow';
-
-interface TokenToSwapDropdownProps {
+export type TokenToSwapDropdownProps = {
   asset: ParsedAddressAsset | null;
-  assets: ParsedAddressAsset[];
+  assets?: ParsedAddressAsset[];
   sortMethod: SortMethod;
-  onSelectAsset: (address: Address) => void;
+  onSelectAsset?: (address: Address) => void;
   setSortMethod: (sortMethod: SortMethod) => void;
-}
+};
 
 export const TokenToSwapDropdown = ({
   asset,
@@ -34,6 +34,10 @@ export const TokenToSwapDropdown = ({
   setSortMethod,
 }: TokenToSwapDropdownProps) => {
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
+  const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
+    assets,
+    size: 10,
+  });
 
   return (
     <Stack space="8px">
@@ -47,7 +51,7 @@ export const TokenToSwapDropdown = ({
               size={14}
             />
             <Text size="14pt" weight="semibold" color="labelTertiary">
-              {i18n.t('send.tokens_input.tokens')}
+              {i18n.t('swap.tokens_input.tokens')}
             </Text>
           </Inline>
           <DropdownMenu
@@ -67,7 +71,7 @@ export const TokenToSwapDropdown = ({
                     size={14}
                   />
                   <Text size="14pt" weight="semibold" color="labelTertiary">
-                    {i18n.t('send.tokens_input.sort')}
+                    {i18n.t('swap.tokens_input.sort')}
                   </Text>
                 </Inline>
               </Box>
@@ -95,7 +99,7 @@ export const TokenToSwapDropdown = ({
                     </Bleed>
 
                     <Text size="14pt" weight="semibold" color="label">
-                      {i18n.t('send.tokens_input.token_balance')}
+                      {i18n.t('swap.tokens_input.token_balance')}
                     </Text>
                   </Inline>
                 </DropdownMenuRadioItem>
@@ -111,7 +115,7 @@ export const TokenToSwapDropdown = ({
                     </Bleed>
 
                     <Text size="14pt" weight="semibold" color="label">
-                      {i18n.t('send.tokens_input.networks')}
+                      {i18n.t('swap.tokens_input.networks')}
                     </Text>
                   </Inline>
                 </DropdownMenuRadioItem>
@@ -125,19 +129,26 @@ export const TokenToSwapDropdown = ({
         variants={dropdownContainerVariant}
         initial="hidden"
         animate="show"
+        ref={containerRef}
       >
         {!!assets?.length &&
-          assets?.map((asset, i) => (
-            <Box
-              paddingHorizontal="8px"
-              key={`${asset?.uniqueId}-${i}`}
-              onClick={() => onSelectAsset(asset.address)}
-              testId={`token-input-asset-${asset?.uniqueId}`}
-            >
-              <SwapTokenRow uniqueId={asset?.uniqueId} />
-            </Box>
-          ))}
-        {!assets.length && (
+          assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
+            const { index } = virtualItem;
+            const rowData = assets?.[index];
+            return (
+              <Box
+                paddingHorizontal="8px"
+                key={`${rowData?.uniqueId}-${i}`}
+                onClick={() =>
+                  onSelectAsset?.(rowData.mainnetAddress || rowData.address)
+                }
+                testId={`token-input-asset-${asset?.uniqueId}`}
+              >
+                <TokenToSwapRow uniqueId={rowData?.uniqueId} />
+              </Box>
+            );
+          })}
+        {!assets?.length && (
           <Box alignItems="center" style={{ paddingTop: 119 }}>
             <Stack space="16px">
               <Inline alignHorizontal="center">
@@ -155,7 +166,7 @@ export const TokenToSwapDropdown = ({
                 weight="semibold"
                 align="center"
               >
-                {i18n.t('send.tokens_input.no_tokens')}
+                {i18n.t('swap.tokens_input.no_tokens')}
               </Text>
             </Stack>
           </Box>

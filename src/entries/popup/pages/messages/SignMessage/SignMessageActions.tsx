@@ -1,7 +1,8 @@
 import React from 'react';
-import { Address, Chain } from 'wagmi';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { ChainId } from '~/core/types/chains';
 import { Box, Column, Columns, Row, Rows, Stack } from '~/design-system';
 
 import {
@@ -14,13 +15,13 @@ import {
 export const SignMessageActions = ({
   waitingForDevice,
   selectedWallet,
-  selectedNetwork,
+  selectedChainId,
   onAcceptRequest,
   onRejectRequest,
 }: {
   waitingForDevice: boolean;
   selectedWallet: Address;
-  selectedNetwork: Chain;
+  selectedChainId: ChainId;
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
 }) => {
@@ -32,7 +33,7 @@ export const SignMessageActions = ({
             <BottomDisplayWallet selectedWallet={selectedWallet} />
           </Column>
           <Column>
-            <BottomDisplayNetwork selectedNetwork={selectedNetwork} />
+            <BottomDisplayNetwork selectedChainId={selectedChainId} />
           </Column>
         </Columns>
         <Rows space="8px">
