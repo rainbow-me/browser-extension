@@ -12,6 +12,7 @@ import { ParsedAddressAsset } from '~/core/types/assets';
 import { Box } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { SwapInputMask } from '~/entries/popup/components/InputMask/SwapInputMask/SwapInputMask';
+import usePrevious from '~/entries/popup/hooks/usePrevious';
 
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
 import { DropdownInputWrapper } from '../../../components/DropdownInputWrapper/DropdownInputWrapper';
@@ -53,6 +54,7 @@ export const TokenInput = ({
   const [value, setValue] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const prevDropdownVisible = usePrevious(dropdownVisible);
 
   const onDropdownAction = useCallback(() => {
     onDropdownOpen(!dropdownVisible);
@@ -80,8 +82,15 @@ export const TokenInput = ({
   useEffect(() => {
     if (dropdownClosed) {
       setDropdownVisible(false);
+      setDropdownVisible(false);
     }
   }, [dropdownClosed]);
+
+  useEffect(() => {
+    if (prevDropdownVisible !== dropdownVisible && dropdownVisible) {
+      setTimeout(() => inputRef?.current?.focus(), 300);
+    }
+  });
 
   useEffect(() => {
     setOnSelectAsset(onSelectAsset);

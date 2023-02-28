@@ -122,30 +122,26 @@ export function TokenToReceiveRow({ asset }: TokenToReceiveRowProps) {
                   <DropdownMenuRadioItem value="copy">
                     <Box width="full">
                       <Inline space="8px" alignVertical="center">
-                        <Box>
-                          <Inline alignVertical="center">
-                            <Symbol
-                              symbol="doc.on.doc.fill"
-                              weight="semibold"
-                              size={18}
-                            />
-                          </Inline>
-                        </Box>
+                        <Inline alignVertical="center">
+                          <Symbol
+                            symbol="doc.on.doc.fill"
+                            weight="semibold"
+                            size={18}
+                          />
+                        </Inline>
 
-                        <Box>
-                          <Stack space="6px">
-                            <Text weight="semibold" size="14pt" color="label">
-                              {i18n.t('contacts.copy_address')}
-                            </Text>
-                            <Text
-                              weight="regular"
-                              size="11pt"
-                              color="labelTertiary"
-                            >
-                              {truncateAddress(asset?.address)}
-                            </Text>
-                          </Stack>
-                        </Box>
+                        <Stack space="6px">
+                          <Text weight="semibold" size="14pt" color="label">
+                            {i18n.t('contacts.copy_address')}
+                          </Text>
+                          <Text
+                            weight="regular"
+                            size="11pt"
+                            color="labelTertiary"
+                          >
+                            {truncateAddress(asset?.address)}
+                          </Text>
+                        </Stack>
                       </Inline>
                     </Box>
                   </DropdownMenuRadioItem>
