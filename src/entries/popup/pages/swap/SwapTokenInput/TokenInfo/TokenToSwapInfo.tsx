@@ -12,8 +12,12 @@ import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
 
 export const TokenToSwapInfo = ({
   asset,
+  assetToSwapMaxValue,
+  setAssetToSwapMaxValue,
 }: {
   asset: ParsedAddressAsset | null;
+  assetToSwapMaxValue: { display: string; amount: string };
+  setAssetToSwapMaxValue: () => void;
 }) => {
   if (!asset) return null;
   return (
@@ -25,7 +29,7 @@ export const TokenToSwapInfo = ({
           </Text>
         )}
         <Tooltip
-          text={`1.23 ${asset?.symbol}`}
+          text={`${assetToSwapMaxValue.display} ${asset?.symbol}`}
           textColor="labelSecondary"
           textSize="12pt"
           textWeight="medium"
@@ -35,6 +39,7 @@ export const TokenToSwapInfo = ({
             whileHover={{ scale: transformScales['1.04'] }}
             whileTap={{ scale: transformScales['0.96'] }}
             transition={transitions.bounce}
+            onClick={setAssetToSwapMaxValue}
           >
             <Inline alignVertical="center" space="4px">
               <Box marginVertical="-10px">

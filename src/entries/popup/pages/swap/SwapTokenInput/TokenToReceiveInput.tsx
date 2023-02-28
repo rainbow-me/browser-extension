@@ -23,10 +23,12 @@ interface TokenToReceiveProps {
   outputChainId: ChainId;
   placeholder: string;
   zIndex?: number;
+  assetToReceiveValue: string;
   onDropdownOpen: (open: boolean) => void;
   selectAssetAddress: (address: Address | '') => void;
   setOutputChainId: (chainId: ChainId) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
+  setAssetToReceiveValue: (value: string) => void;
 }
 
 export const TokenToReceiveInput = ({
@@ -38,10 +40,12 @@ export const TokenToReceiveInput = ({
   outputChainId,
   placeholder,
   zIndex,
+  assetToReceiveValue,
   onDropdownOpen,
   selectAssetAddress,
   setAssetFilter,
   setOutputChainId,
+  setAssetToReceiveValue,
 }: TokenToReceiveProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const onSelectAssetRef = useRef<(address: Address | '') => void>();
@@ -83,11 +87,13 @@ export const TokenToReceiveInput = ({
       placeholder={placeholder}
       zIndex={zIndex}
       variant="tinted"
+      value={assetToReceiveValue}
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
       selectAssetAddress={selectAssetAddress}
       assetFilter={assetFilter}
       setAssetFilter={setAssetFilter}
+      setValue={setAssetToReceiveValue}
     />
   );
 };

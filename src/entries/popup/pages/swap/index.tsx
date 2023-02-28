@@ -44,12 +44,18 @@ export function Swap() {
     assetToReceive,
     assetToSwap,
     outputChainId,
+    assetToSwapMaxValue,
+    assetToReceiveValue,
+    assetToSwapValue,
     setSortMethod,
     setOutputChainId,
     setAssetToReceiveAddress,
+    setAssetToSwapMaxValue,
     setAssetToSwapAddress,
     setAssetToSwapFilter,
     setAssetToReceiveFilter,
+    setAssetToSwapValue,
+    setAssetToReceiveValue,
   } = useSwapAssets();
 
   const { toSwapInputHeight, toReceiveInputHeight } = useSwapDropdownDimensions(
@@ -102,6 +108,10 @@ export function Swap() {
                   sortMethod={sortMethod}
                   zIndex={2}
                   placeholder={i18n.t('swap.input_token_to_swap_placeholder')}
+                  assetToSwapMaxValue={assetToSwapMaxValue}
+                  setAssetToSwapMaxValue={setAssetToSwapMaxValue}
+                  assetToSwapValue={assetToSwapValue}
+                  setAssetToSwapValue={setAssetToSwapValue}
                 />
               </AccentColorProviderWrapper>
 
@@ -165,6 +175,8 @@ export function Swap() {
                   outputChainId={outputChainId}
                   assetFilter={assetToReceiveFilter}
                   setAssetFilter={setAssetToReceiveFilter}
+                  assetToReceiveValue={assetToReceiveValue}
+                  setAssetToReceiveValue={setAssetToReceiveValue}
                 />
               </AccentColorProviderWrapper>
             </Stack>

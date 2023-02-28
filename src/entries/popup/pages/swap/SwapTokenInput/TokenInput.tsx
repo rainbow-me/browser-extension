@@ -29,10 +29,12 @@ interface TokenInputProps {
   dropdownClosed: boolean;
   variant: 'surface' | 'bordered' | 'transparent' | 'tinted';
   inputRef: React.RefObject<HTMLInputElement>;
+  value: string;
   onDropdownOpen: (open: boolean) => void;
   setOnSelectAsset: (cb: (address: Address | '') => void) => void;
   selectAssetAddress: (address: Address | '') => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
+  setValue: (value: string) => void;
 }
 
 export const TokenInput = ({
@@ -47,12 +49,13 @@ export const TokenInput = ({
   dropdownClosed,
   variant,
   inputRef,
+  value,
   onDropdownOpen,
   selectAssetAddress,
   setOnSelectAsset,
   setAssetFilter,
+  setValue,
 }: TokenInputProps) => {
-  const [value, setValue] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const prevDropdownVisible = usePrevious(dropdownVisible);
 

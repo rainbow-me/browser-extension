@@ -10,6 +10,8 @@ import { TokenToSwapInfo } from './TokenInfo/TokenToSwapInfo';
 import { TokenInput } from './TokenInput';
 
 interface SwapTokenInputProps {
+  assetToSwapMaxValue: { display: string; amount: string };
+  assetToSwapValue: string;
   asset?: ParsedAddressAsset;
   assetFilter: string;
   assets?: ParsedAddressAsset[];
@@ -22,9 +24,12 @@ interface SwapTokenInputProps {
   selectAssetAddress: (address: Address | '') => void;
   setSortMethod: (sortMethod: SortMethod) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
+  setAssetToSwapMaxValue: () => void;
+  setAssetToSwapValue: (value: string) => void;
 }
 
 export const TokenToSwapInput = ({
+  assetToSwapMaxValue,
   asset,
   assetFilter,
   assets,
@@ -33,10 +38,13 @@ export const TokenToSwapInput = ({
   placeholder,
   sortMethod,
   zIndex,
+  assetToSwapValue,
   onDropdownOpen,
   selectAssetAddress,
   setAssetFilter,
   setSortMethod,
+  setAssetToSwapMaxValue,
+  setAssetToSwapValue,
 }: SwapTokenInputProps) => {
   const onSelectAssetRef = useRef<(address: Address | '') => void>();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -73,15 +81,25 @@ export const TokenToSwapInput = ({
           setSortMethod={setSortMethod}
         />
       }
-      bottomComponent={asset ? <TokenToSwapInfo asset={asset} /> : null}
+      bottomComponent={
+        asset ? (
+          <TokenToSwapInfo
+            assetToSwapMaxValue={assetToSwapMaxValue}
+            asset={asset}
+            setAssetToSwapMaxValue={setAssetToSwapMaxValue}
+          />
+        ) : null
+      }
       placeholder={placeholder}
       zIndex={zIndex}
       variant="transparent"
+      value={assetToSwapValue}
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
       selectAssetAddress={selectAssetAddress}
       assetFilter={assetFilter}
       setAssetFilter={setAssetFilter}
+      setValue={setAssetToSwapValue}
     />
   );
 };
