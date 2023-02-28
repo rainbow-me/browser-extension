@@ -193,8 +193,6 @@ export const useSwapAssets = () => {
     [assetsToReceive, assetToReceiveAddress],
   );
 
-  console.log('assetToReceive', assetToReceive);
-
   useEffect(() => {
     if (prevOutputChainId !== outputChainId) {
       setAssetToReceiveAddress('');
