@@ -190,12 +190,10 @@ export const useSwapAssets = () => {
 
   const assetToReceive = useMemo(
     () =>
-      assetsToReceive?.find(
-        ({ address, chainId }) =>
-          isLowerCaseMatch(address, assetToReceiveAddress) &&
-          chainId === outputChainId,
+      assetsToReceive?.find(({ address }) =>
+        isLowerCaseMatch(address, assetToReceiveAddress),
       ),
-    [assetsToReceive, assetToReceiveAddress, outputChainId],
+    [assetsToReceive, assetToReceiveAddress],
   );
 
   useEffect(() => {
