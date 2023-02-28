@@ -324,7 +324,7 @@ export const SendTokenInput = ({
                       weight="semibold"
                       align="center"
                     >
-                      {i18n.t('send.tokens_input.nothing_foumd')}
+                      {i18n.t('send.tokens_input.nothing_found')}
                     </Text>
                   </Stack>
                 </Box>
