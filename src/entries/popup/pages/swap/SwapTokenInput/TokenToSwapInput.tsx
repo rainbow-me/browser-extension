@@ -65,6 +65,18 @@ export const TokenToSwapInput = ({
     }
   }, []);
 
+  const setMaxValue = useCallback(() => {
+    setAssetToSwapMaxValue();
+    setTimeout(() => {
+      inputRef?.current?.focus();
+      inputRef?.current?.setSelectionRange(
+        assetToSwapValue.length - 1,
+        assetToSwapValue.length - 1,
+        'forward',
+      );
+    }, 300);
+  }, [assetToSwapValue.length, setAssetToSwapMaxValue]);
+
   return (
     <TokenInput
       inputRef={inputRef}
@@ -86,7 +98,7 @@ export const TokenToSwapInput = ({
           <TokenToSwapInfo
             assetToSwapMaxValue={assetToSwapMaxValue}
             asset={asset}
-            setAssetToSwapMaxValue={setAssetToSwapMaxValue}
+            setAssetToSwapMaxValue={setMaxValue}
           />
         ) : null
       }
