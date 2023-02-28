@@ -48,7 +48,7 @@ const AssetsToReceiveSection = ({
     <Box ref={containerRef} paddingTop="12px">
       <Box paddingHorizontal="20px">
         <Text
-          WebkitBackgroundClip="text"
+          webkitBackgroundClip="text"
           background="rainbow"
           size="14pt"
           weight="semibold"
@@ -103,7 +103,13 @@ export const TokenToReceiveDropdown = ({
               weight="semibold"
               size={14}
             />
-            <Text size="14pt" weight="semibold" color="labelTertiary">
+            <Text
+              webkitBackgroundClip="text"
+              background="rainbow"
+              size="14pt"
+              weight="semibold"
+              color="labelTertiary"
+            >
               {i18n.t('swap.tokens_input.filter_by_network')}
             </Text>
           </Inline>
