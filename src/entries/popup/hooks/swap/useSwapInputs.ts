@@ -22,8 +22,25 @@ export const useSwapInputs = ({
     useState(false);
   const [assetToReceiveDropdownVisible, setassetToReceiveDropdownVisible] =
     useState(false);
-  const [assetToSwapValue, setAssetToSwapValue] = useState('');
-  const [assetToReceiveValue, setAssetToReceiveValue] = useState('');
+  const [assetToSwapValue, setAssetToSwapStateValue] = useState('');
+  const [assetToReceiveValue, setAssetToReceiveStateValue] = useState('');
+
+  const [independentField, setIndependentField] = useState<
+    'toSwap' | 'toReceive'
+  >('toSwap');
+  const [independetValue, setIndependentValue] = useState<string>('');
+
+  const setAssetToSwapValue = useCallback((value: string) => {
+    setAssetToSwapStateValue(value);
+    setIndependentField('toSwap');
+    setIndependentValue(value);
+  }, []);
+
+  const setAssetToReceiveValue = useCallback((value: string) => {
+    setAssetToReceiveStateValue(value);
+    setIndependentField('toReceive');
+    setIndependentValue(value);
+  }, []);
 
   const onAssetToSwapInputOpen = useCallback(
     (assetToSwapDropdownVisible: boolean) => {
@@ -55,16 +72,29 @@ export const useSwapInputs = ({
 
   const setAssetToSwapMaxValue = useCallback(() => {
     setAssetToSwapValue(assetToSwapMaxValue.amount);
-  }, [assetToSwapMaxValue.amount]);
+  }, [assetToSwapMaxValue.amount, setAssetToSwapValue]);
 
   const flipAssets = useCallback(() => {
-    assetToSwap && setAssetToSwapAddress(assetToSwap.address);
-    assetToReceive && setAssetToReceiveAddress(assetToReceive.address);
+    if (independentField === 'toSwap') {
+      setAssetToSwapStateValue('');
+      setAssetToReceiveValue(independetValue);
+      setIndependentField('toReceive');
+    } else {
+      setAssetToReceiveStateValue('');
+      setAssetToSwapValue(independetValue);
+      setIndependentField('toSwap');
+    }
+    assetToSwap && setAssetToReceiveAddress(assetToSwap.address);
+    assetToReceive && setAssetToSwapAddress(assetToReceive.address);
   }, [
     assetToReceive,
     assetToSwap,
+    independentField,
+    independetValue,
     setAssetToReceiveAddress,
+    setAssetToReceiveValue,
     setAssetToSwapAddress,
+    setAssetToSwapValue,
   ]);
 
   return {
