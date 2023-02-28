@@ -34,7 +34,7 @@ import {
 import { RowHighlightWrapper } from './RowHighlightWrapper';
 
 const { innerWidth: windowWidth } = window;
-const TEXT_MAX_WIDTH = windowWidth - 210;
+const TEXT_MAX_WIDTH = windowWidth - 160;
 
 export type TokenToReceiveRowProps = { asset: ParsedAddressAsset };
 
