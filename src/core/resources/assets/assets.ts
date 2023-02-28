@@ -77,7 +77,6 @@ function parseAssets(
   currency: SupportedCurrencyKey,
 ) {
   const data = message?.payload?.prices || {};
-  console.log('parseAssets ', message?.payload, data);
   const parsed = Object.values(data).reduce((dict, asset) => {
     const parsedAsset = parseAsset({
       address: asset?.asset_code,
