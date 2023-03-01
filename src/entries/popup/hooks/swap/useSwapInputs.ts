@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import {
   convertAmountToRawAmount,
   convertRawAmountToBalance,
@@ -74,6 +75,16 @@ export const useSwapInputs = ({
 
   const setAssetToSwapMaxValue = useCallback(() => {
     setAssetToSwapValue(assetToSwapMaxValue.amount);
+    setTimeout(() => {
+      assetToSwapInputRef?.current?.focus();
+      assetToSwapInputRef?.current?.scroll({
+        left: POPUP_DIMENSIONS.width,
+      });
+      assetToSwapInputRef?.current?.setSelectionRange(
+        assetToSwapMaxValue.amount.length,
+        assetToSwapMaxValue.amount.length,
+      );
+    }, 100);
   }, [assetToSwapMaxValue.amount, setAssetToSwapValue]);
 
   const flipAssets = useCallback(() => {
