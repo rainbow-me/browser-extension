@@ -7,6 +7,15 @@ import {
   convertRawAmountToBalance,
 } from '~/core/utils/numbers';
 
+const focusOnInput = (inputRef: React.RefObject<HTMLInputElement>) => {
+  setTimeout(() => {
+    inputRef?.current?.focus();
+    inputRef?.current?.scroll({
+      left: POPUP_DIMENSIONS.width,
+    });
+  }, 100);
+};
+
 export const useSwapInputs = ({
   assetToSwap,
   assetToReceive,
@@ -75,11 +84,8 @@ export const useSwapInputs = ({
 
   const setAssetToSwapMaxValue = useCallback(() => {
     setAssetToSwapValue(assetToSwapMaxValue.amount);
+    focusOnInput(assetToSwapInputRef);
     setTimeout(() => {
-      assetToSwapInputRef?.current?.focus();
-      assetToSwapInputRef?.current?.scroll({
-        left: POPUP_DIMENSIONS.width,
-      });
       assetToSwapInputRef?.current?.setSelectionRange(
         assetToSwapMaxValue.amount.length,
         assetToSwapMaxValue.amount.length,
@@ -92,12 +98,12 @@ export const useSwapInputs = ({
       setAssetToSwapStateValue('');
       setAssetToReceiveValue(independetValue);
       setIndependentField('toReceive');
-      assetToReceieveInputRef?.current?.focus();
+      focusOnInput(assetToReceieveInputRef);
     } else {
       setAssetToReceiveStateValue('');
       setAssetToSwapValue(independetValue);
       setIndependentField('toSwap');
-      assetToSwapInputRef?.current?.focus();
+      focusOnInput(assetToSwapInputRef);
     }
     setAssetToReceive(assetToSwap);
     setAssetToSwap(assetToReceive);
