@@ -109,18 +109,16 @@ export const useSwapAssets = () => {
 
   const filteredAssetsToSwap = useMemo(() => {
     return debouncedAssetToSwapFilter
-      ? userAssets
-          // ?.filter((userAsset) => userAsset.address !== assetToReceive?.address)
-          .filter(({ name, symbol, address }) =>
-            [name, symbol, address].reduce(
-              (res, param) =>
-                res ||
-                param
-                  .toLowerCase()
-                  .startsWith(debouncedAssetToSwapFilter.toLowerCase()),
-              false,
-            ),
-          )
+      ? userAssets.filter(({ name, symbol, address }) =>
+          [name, symbol, address].reduce(
+            (res, param) =>
+              res ||
+              param
+                .toLowerCase()
+                .startsWith(debouncedAssetToSwapFilter.toLowerCase()),
+            false,
+          ),
+        )
       : userAssets;
   }, [debouncedAssetToSwapFilter, userAssets]);
 
