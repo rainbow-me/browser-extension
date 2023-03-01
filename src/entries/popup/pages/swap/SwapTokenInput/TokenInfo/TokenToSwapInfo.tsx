@@ -5,12 +5,15 @@ import { i18n } from '~/core/languages';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { convertAmountAndPriceToNativeDisplay } from '~/core/utils/numbers';
-import { Box, Inline, Symbol, Text } from '~/design-system';
+import { Box, Inline, Symbol, Text, TextOverflow } from '~/design-system';
 import {
   transformScales,
   transitions,
 } from '~/design-system/styles/designTokens';
 import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
+
+const { innerWidth: windowWidth } = window;
+const TEXT_MAX_WIDTH = windowWidth - 120;
 
 export const TokenToSwapInfo = ({
   asset,
@@ -29,7 +32,13 @@ export const TokenToSwapInfo = ({
     <Box width="full">
       <Inline alignHorizontal="justify">
         {asset && (
-          <Text as="p" size="12pt" weight="semibold" color="labelTertiary">
+          <TextOverflow
+            maxWidth={TEXT_MAX_WIDTH}
+            as="p"
+            size="12pt"
+            weight="semibold"
+            color="labelTertiary"
+          >
             {
               convertAmountAndPriceToNativeDisplay(
                 assetToSwapValue || 0,
@@ -37,7 +46,7 @@ export const TokenToSwapInfo = ({
                 currentCurrency,
               ).display
             }
-          </Text>
+          </TextOverflow>
         )}
         <Tooltip
           text={`${assetToSwapMaxValue.display} ${asset?.symbol}`}
