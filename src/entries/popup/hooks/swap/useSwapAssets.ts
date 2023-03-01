@@ -60,13 +60,7 @@ const parseParsedAssetToParsedAddressAsset = ({
     decimals,
     address,
     chainId,
-    native: {
-      balance: {
-        amount: '0',
-        display: '0.00',
-      },
-      price: rawAsset.native.price,
-    },
+    native: userAsset?.native || rawAsset.native,
     balance: userAsset?.balance || { amount: '0', display: '0.00' },
     icon_url:
       userAsset?.icon_url || rawAsset?.icon_url || searchAsset?.icon_url,
