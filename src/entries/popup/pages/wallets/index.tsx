@@ -49,12 +49,6 @@ const ImportAccountAtIndex = ({
   );
 
   const onImportAccountAtIndex = useCallback(async () => {
-    console.log('ready to import ', {
-      silbingAddress,
-      type,
-      index,
-    });
-
     const res = await wallet.importAccountAtIndex(
       silbingAddress as unknown as Address,
       type,

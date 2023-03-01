@@ -127,7 +127,7 @@ export class HdKeychain implements IKeychain {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  addAccountAtIndex(index: number, address: `0x${string}`): Promise<Address> {
+  addAccountAtIndex(index: number, address: Address): Promise<Address> {
     throw new Error('Method not implemented.');
   }
 

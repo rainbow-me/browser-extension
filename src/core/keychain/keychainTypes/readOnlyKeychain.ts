@@ -31,7 +31,7 @@ export class ReadOnlyKeychain implements IKeychain {
     throw new Error('Method not implemented.');
   }
 
-  addAccountAtIndex(index: number, address: `0x${string}`): Promise<Address> {
+  addAccountAtIndex(index: number, address: Address): Promise<Address> {
     throw new Error('Method not implemented.');
   }
 
