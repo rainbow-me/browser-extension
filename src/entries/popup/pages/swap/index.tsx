@@ -23,6 +23,7 @@ import { Navbar } from '../../components/Navbar/Navbar';
 import { useSwapAssets } from '../../hooks/swap/useSwapAssets';
 import { useSwapDropdownDimensions } from '../../hooks/swap/useSwapDropdownDimensions';
 import { useSwapInputs } from '../../hooks/swap/useSwapInputs';
+import { useSwapQuotes } from '../../hooks/swap/useSwapQuotes';
 
 import { TokenToReceiveInput } from './SwapTokenInput/TokenToReceiveInput';
 import { TokenToSwapInput } from './SwapTokenInput/TokenToSwapInput';
@@ -53,6 +54,7 @@ export function Swap() {
     assetToSwapValue,
     assetToSwapDropdownClosed,
     assetToReceiveDropdownClosed,
+    independentField,
     flipAssets,
     onAssetToSwapInputOpen,
     onAssetToReceiveInputOpen,
@@ -65,6 +67,16 @@ export function Swap() {
     setAssetToSwap,
     setAssetToReceive,
   });
+
+  const { data } = useSwapQuotes({
+    assetToSwap,
+    assetToReceive,
+    assetToSwapValue,
+    assetToReceiveValue,
+    independentField,
+  });
+
+  console.log('data', data);
 
   const { toSwapInputHeight, toReceiveInputHeight } = useSwapDropdownDimensions(
     { assetToSwap, assetToReceive },

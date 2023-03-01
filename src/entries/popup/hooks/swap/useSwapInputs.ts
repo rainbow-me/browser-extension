@@ -16,6 +16,8 @@ const focusOnInput = (inputRef: React.RefObject<HTMLInputElement>) => {
   }, 100);
 };
 
+export type IndependentField = 'toSwap' | 'toReceive';
+
 export const useSwapInputs = ({
   assetToSwap,
   assetToReceive,
@@ -37,9 +39,8 @@ export const useSwapInputs = ({
   const assetToSwapInputRef = useRef<HTMLInputElement>(null);
   const assetToReceieveInputRef = useRef<HTMLInputElement>(null);
 
-  const [independentField, setIndependentField] = useState<
-    'toSwap' | 'toReceive'
-  >('toSwap');
+  const [independentField, setIndependentField] =
+    useState<IndependentField>('toSwap');
   const [independetValue, setIndependentValue] = useState<string>('');
 
   const setAssetToSwapValue = useCallback((value: string) => {
@@ -128,6 +129,7 @@ export const useSwapInputs = ({
     assetToReceiveValue,
     assetToSwapDropdownClosed,
     assetToReceiveDropdownClosed,
+    independentField,
     flipAssets,
     onAssetToSwapInputOpen,
     onAssetToReceiveInputOpen,
