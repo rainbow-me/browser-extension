@@ -220,7 +220,7 @@ export function useSearchCurrencyLists({
       const sections: {
         data: (SearchAsset | undefined)[];
         title: string;
-        symbol: string;
+        symbol: SymbolProps['symbol'];
         id: string;
       }[] = [];
 
