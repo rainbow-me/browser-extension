@@ -51,8 +51,8 @@ export function Swap() {
     assetToSwapMaxValue,
     assetToReceiveValue,
     assetToSwapValue,
-    assetToReceiveDropdownVisible,
-    assetToSwapDropdownVisible,
+    assetToSwapDropdownClosed,
+    assetToReceiveDropdownClosed,
     flipAssets,
     onAssetToSwapInputOpen,
     onAssetToReceiveInputOpen,
@@ -69,6 +69,9 @@ export function Swap() {
   const { toSwapInputHeight, toReceiveInputHeight } = useSwapDropdownDimensions(
     { assetToSwap, assetToReceive },
   );
+
+  console.log('assetToReceiveDropdownClosed', assetToReceiveDropdownClosed);
+  console.log('assetToSwapDropdownClosed', assetToSwapDropdownClosed);
 
   return (
     <>
@@ -107,7 +110,7 @@ export function Swap() {
                   assets={assetsToSwap}
                   selectAsset={setAssetToSwap}
                   onDropdownOpen={onAssetToSwapInputOpen}
-                  dropdownClosed={assetToReceiveDropdownVisible}
+                  dropdownClosed={assetToSwapDropdownClosed}
                   setSortMethod={setSortMethod}
                   assetFilter={assetToSwapFilter}
                   setAssetFilter={setAssetToSwapFilter}
@@ -124,7 +127,7 @@ export function Swap() {
 
               <Box
                 marginVertical="-20px"
-                style={{ zIndex: assetToSwapDropdownVisible ? 1 : 3 }}
+                style={{ zIndex: assetToSwapDropdownClosed ? 3 : 1 }}
               >
                 <Inline alignHorizontal="center">
                   <Box
@@ -173,7 +176,7 @@ export function Swap() {
                   assets={assetsToReceive}
                   selectAsset={setAssetToReceive}
                   onDropdownOpen={onAssetToReceiveInputOpen}
-                  dropdownClosed={assetToSwapDropdownVisible}
+                  dropdownClosed={assetToReceiveDropdownClosed}
                   zIndex={1}
                   placeholder={i18n.t(
                     'swap.input_token_to_receive_placeholder',

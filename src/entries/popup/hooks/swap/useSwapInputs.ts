@@ -18,10 +18,10 @@ export const useSwapInputs = ({
   setAssetToSwap: (asset: ParsedAddressAsset | null) => void;
   setAssetToReceive: (asset: ParsedAddressAsset | null) => void;
 }) => {
-  const [assetToSwapDropdownVisible, setassetToSwapDropdownVisible] =
-    useState(false);
-  const [assetToReceiveDropdownVisible, setassetToReceiveDropdownVisible] =
-    useState(false);
+  const [assetToSwapDropdownClosed, setAssetToSwapDropdownClosed] =
+    useState(true);
+  const [assetToReceiveDropdownClosed, setAssetToReceiveDropdownClosed] =
+    useState(true);
   const [assetToSwapValue, setAssetToSwapStateValue] = useState('');
   const [assetToReceiveValue, setAssetToReceiveStateValue] = useState('');
 
@@ -47,15 +47,15 @@ export const useSwapInputs = ({
 
   const onAssetToSwapInputOpen = useCallback(
     (assetToSwapDropdownVisible: boolean) => {
-      setassetToSwapDropdownVisible(assetToSwapDropdownVisible);
-      setassetToReceiveDropdownVisible(false);
+      setAssetToSwapDropdownClosed(!assetToSwapDropdownVisible);
+      setAssetToReceiveDropdownClosed(true);
     },
     [],
   );
   const onAssetToReceiveInputOpen = useCallback(
     (assetToReceiveDropdownVisible: boolean) => {
-      setassetToReceiveDropdownVisible(assetToReceiveDropdownVisible);
-      setassetToSwapDropdownVisible(false);
+      setAssetToSwapDropdownClosed(true);
+      setAssetToReceiveDropdownClosed(!assetToReceiveDropdownVisible);
     },
     [],
   );
@@ -101,6 +101,8 @@ export const useSwapInputs = ({
     }
     setAssetToReceive(assetToSwap);
     setAssetToSwap(assetToReceive);
+    setAssetToSwapDropdownClosed(true);
+    setAssetToReceiveDropdownClosed(true);
   }, [
     assetToReceive,
     assetToSwap,
@@ -118,8 +120,8 @@ export const useSwapInputs = ({
     assetToSwapMaxValue,
     assetToSwapValue,
     assetToReceiveValue,
-    assetToSwapDropdownVisible,
-    assetToReceiveDropdownVisible,
+    assetToSwapDropdownClosed,
+    assetToReceiveDropdownClosed,
     flipAssets,
     onAssetToSwapInputOpen,
     onAssetToReceiveInputOpen,

@@ -84,7 +84,6 @@ export const TokenInput = ({
   useEffect(() => {
     if (dropdownClosed) {
       setDropdownVisible(false);
-      setDropdownVisible(false);
     }
   }, [dropdownClosed]);
 
