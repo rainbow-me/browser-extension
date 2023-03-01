@@ -85,6 +85,8 @@ export const useSwapAssets = () => {
   const [assetToReceive, setAssetToReceive] =
     useState<ParsedAddressAsset | null>(null);
 
+  const prevAssetToSwap = usePrevious<ParsedAddressAsset | null>(assetToSwap);
+
   const [outputChainId, setOutputChainId] = useState(ChainId.mainnet);
   const prevOutputChainId = usePrevious(outputChainId);
 
@@ -107,27 +109,20 @@ export const useSwapAssets = () => {
 
   const filteredAssetsToSwap = useMemo(() => {
     return debouncedAssetToSwapFilter
-      ? userAssets?.filter(({ name, symbol, address }) =>
-          [name, symbol, address].reduce(
-            (res, param) =>
-              res ||
-              param
-                .toLowerCase()
-                .startsWith(debouncedAssetToSwapFilter.toLowerCase()),
-            false,
-          ),
-        )
+      ? userAssets
+          // ?.filter((userAsset) => userAsset.address !== assetToReceive?.address)
+          .filter(({ name, symbol, address }) =>
+            [name, symbol, address].reduce(
+              (res, param) =>
+                res ||
+                param
+                  .toLowerCase()
+                  .startsWith(debouncedAssetToSwapFilter.toLowerCase()),
+              false,
+            ),
+          )
       : userAssets;
-  }, [userAssets, debouncedAssetToSwapFilter]);
-
-  // const assetToSwap = useMemo(
-  //   () =>
-  //     userAssets?.find(({ address }) => {
-  //       console.log('--- assetToSwap find', address, assetToSwapAddress);
-  //       return isLowerCaseMatch(address, assetToSwapAddress);
-  //     }),
-  //   [userAssets, assetToSwapAddress],
-  // );
+  }, [debouncedAssetToSwapFilter, userAssets]);
 
   const { results: searchReceiveAssetsSections } = useSearchCurrencyLists({
     inputChainId: assetToSwap?.chainId,
@@ -151,21 +146,29 @@ export const useSwapAssets = () => {
 
   const assetsToReceive: ParsedAddressAsset[] = useMemo(
     () =>
-      Object.values(rawAssetsToReceive || {}).map((rawAsset) => {
-        const userAsset = userAssets.find((userAsset) =>
-          isLowerCaseMatch(userAsset.address, rawAsset.address),
-        );
-        const searchAsset = searchReceiveAssets.find(
-          (searchAsset) => searchAsset.uniqueId === rawAsset.address,
-        );
-        return parseParsedAssetToParsedAddressAsset({
-          rawAsset,
-          userAsset,
-          outputChainId,
-          searchAsset,
-        });
-      }),
-    [rawAssetsToReceive, userAssets, searchReceiveAssets, outputChainId],
+      Object.values(rawAssetsToReceive || {})
+        .filter((rawAsset) => rawAsset.address !== assetToSwap?.address)
+        .map((rawAsset) => {
+          const userAsset = userAssets.find((userAsset) =>
+            isLowerCaseMatch(userAsset.address, rawAsset.address),
+          );
+          const searchAsset = searchReceiveAssets.find(
+            (searchAsset) => searchAsset.uniqueId === rawAsset.address,
+          );
+          return parseParsedAssetToParsedAddressAsset({
+            rawAsset,
+            userAsset,
+            outputChainId,
+            searchAsset,
+          });
+        }),
+    [
+      rawAssetsToReceive,
+      assetToSwap?.address,
+      userAssets,
+      searchReceiveAssets,
+      outputChainId,
+    ],
   );
 
   const assetsToReceiveBySection = useMemo(() => {
@@ -185,20 +188,19 @@ export const useSwapAssets = () => {
     });
   }, [assetsToReceive, searchReceiveAssetsSections]);
 
-  // const assetToReceive = useMemo(
-  //   () =>
-  //     assetsToReceive?.find(({ address }) => {
-  //       console.log('--- assetToReceive find', address, assetToReceiveAddress);
-  //       return isLowerCaseMatch(address, assetToReceiveAddress);
-  //     }),
-  //   [assetsToReceive, assetToReceiveAddress],
-  // );
-
+  // if output chain id changes we need to clear the receive asset
   useEffect(() => {
     if (prevOutputChainId !== outputChainId) {
       setAssetToReceive(null);
     }
   }, [outputChainId, prevOutputChainId]);
+
+  // if user selects assetToReceive as assetToSwap we need to flip assets
+  useEffect(() => {
+    if (assetToReceive?.address === assetToSwap?.address) {
+      setAssetToReceive(prevAssetToSwap === undefined ? null : prevAssetToSwap);
+    }
+  }, [assetToReceive?.address, assetToSwap?.address, prevAssetToSwap]);
 
   return {
     assetsToSwap: filteredAssetsToSwap,
