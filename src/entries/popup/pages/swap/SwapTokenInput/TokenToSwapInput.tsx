@@ -69,15 +69,7 @@ export const TokenToSwapInput = ({
 
   const setMaxValue = useCallback(() => {
     setAssetToSwapMaxValue();
-    setTimeout(() => {
-      inputRef?.current?.focus();
-      inputRef?.current?.setSelectionRange(
-        assetToSwapValue.length - 1,
-        assetToSwapValue.length - 1,
-        'forward',
-      );
-    }, 300);
-  }, [assetToSwapValue.length, inputRef, setAssetToSwapMaxValue]);
+  }, [setAssetToSwapMaxValue]);
 
   return (
     <TokenInput
@@ -107,7 +99,7 @@ export const TokenToSwapInput = ({
       }
       placeholder={placeholder}
       zIndex={zIndex}
-      variant="transparent"
+      variant="tinted"
       value={assetToSwapValue}
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
