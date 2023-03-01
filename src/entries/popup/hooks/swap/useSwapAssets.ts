@@ -8,6 +8,7 @@ import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connect
 import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
+import { chainNameFromChainId } from '~/core/utils/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { SortMethod } from '../send/useSendAsset';
@@ -34,7 +35,7 @@ const parseParsedAssetToParsedAddressAsset = ({
   userAsset?: ParsedAddressAsset;
   outputChainId: ChainId;
   searchAsset?: SearchAsset;
-}) => {
+}): ParsedAddressAsset => {
   const assetNetworkInformation = searchAsset?.networks[outputChainId];
 
   // if searchAsset is appearing because it found an exact match
@@ -71,6 +72,7 @@ const parseParsedAssetToParsedAddressAsset = ({
     icon_url:
       userAsset?.icon_url || rawAsset?.icon_url || searchAsset?.icon_url,
     colors: searchAsset?.colors || rawAsset?.colors,
+    chainName: chainNameFromChainId(chainId),
   };
 };
 
