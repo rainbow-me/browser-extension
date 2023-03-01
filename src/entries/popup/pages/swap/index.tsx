@@ -39,8 +39,8 @@ export function Swap() {
     outputChainId,
     setSortMethod,
     setOutputChainId,
-    setAssetToReceiveAddress,
-    setAssetToSwapAddress,
+    setAssetToSwap,
+    setAssetToReceive,
     setAssetToSwapFilter,
     setAssetToReceiveFilter,
   } = useSwapAssets();
@@ -60,8 +60,8 @@ export function Swap() {
   } = useSwapInputs({
     assetToSwap,
     assetToReceive,
-    setAssetToSwapAddress,
-    setAssetToReceiveAddress,
+    setAssetToSwap,
+    setAssetToReceive,
   });
 
   const { toSwapInputHeight, toReceiveInputHeight } = useSwapDropdownDimensions(
@@ -103,7 +103,7 @@ export function Swap() {
                   dropdownHeight={toSwapInputHeight}
                   asset={assetToSwap}
                   assets={assetsToSwap}
-                  selectAssetAddress={setAssetToSwapAddress}
+                  selectAsset={setAssetToSwap}
                   onDropdownOpen={onAssetToSwapInputOpen}
                   dropdownClosed={assetToReceiveDropdownVisible}
                   setSortMethod={setSortMethod}
@@ -168,7 +168,7 @@ export function Swap() {
                   dropdownHeight={toReceiveInputHeight}
                   asset={assetToReceive}
                   assets={assetsToReceive}
-                  selectAssetAddress={setAssetToReceiveAddress}
+                  selectAsset={setAssetToReceive}
                   onDropdownOpen={onAssetToReceiveInputOpen}
                   dropdownClosed={assetToSwapDropdownVisible}
                   zIndex={1}

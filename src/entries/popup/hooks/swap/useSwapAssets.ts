@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
 
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { selectUserAssetsListByChainId } from '~/core/resources/_selectors/assets';
@@ -80,12 +79,12 @@ export const useSwapAssets = () => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { connectedToHardhat } = useConnectedToHardhatStore();
 
-  const [assetToSwapAddress, setAssetToSwapAddress] = useState<Address | ''>(
-    '',
+  const [assetToSwap, setAssetToSwap] = useState<ParsedAddressAsset | null>(
+    null,
   );
-  const [assetToReceiveAddress, setAssetToReceiveAddress] = useState<
-    Address | ''
-  >('');
+  const [assetToReceive, setAssetToReceive] =
+    useState<ParsedAddressAsset | null>(null);
+
   const [outputChainId, setOutputChainId] = useState(ChainId.mainnet);
   const prevOutputChainId = usePrevious(outputChainId);
 
@@ -121,13 +120,14 @@ export const useSwapAssets = () => {
       : userAssets;
   }, [userAssets, debouncedAssetToSwapFilter]);
 
-  const assetToSwap = useMemo(
-    () =>
-      userAssets?.find(({ address }) =>
-        isLowerCaseMatch(address, assetToSwapAddress),
-      ),
-    [userAssets, assetToSwapAddress],
-  );
+  // const assetToSwap = useMemo(
+  //   () =>
+  //     userAssets?.find(({ address }) => {
+  //       console.log('--- assetToSwap find', address, assetToSwapAddress);
+  //       return isLowerCaseMatch(address, assetToSwapAddress);
+  //     }),
+  //   [userAssets, assetToSwapAddress],
+  // );
 
   const { results: searchReceiveAssetsSections } = useSearchCurrencyLists({
     inputChainId: assetToSwap?.chainId,
@@ -185,17 +185,18 @@ export const useSwapAssets = () => {
     });
   }, [assetsToReceive, searchReceiveAssetsSections]);
 
-  const assetToReceive = useMemo(
-    () =>
-      assetsToReceive?.find(({ address }) =>
-        isLowerCaseMatch(address, assetToReceiveAddress),
-      ),
-    [assetsToReceive, assetToReceiveAddress],
-  );
+  // const assetToReceive = useMemo(
+  //   () =>
+  //     assetsToReceive?.find(({ address }) => {
+  //       console.log('--- assetToReceive find', address, assetToReceiveAddress);
+  //       return isLowerCaseMatch(address, assetToReceiveAddress);
+  //     }),
+  //   [assetsToReceive, assetToReceiveAddress],
+  // );
 
   useEffect(() => {
     if (prevOutputChainId !== outputChainId) {
-      setAssetToReceiveAddress('');
+      setAssetToReceive(null);
     }
   }, [outputChainId, prevOutputChainId]);
 
@@ -209,8 +210,8 @@ export const useSwapAssets = () => {
     assetToReceive,
     outputChainId,
     setSortMethod,
-    setAssetToSwapAddress,
-    setAssetToReceiveAddress,
+    setAssetToSwap,
+    setAssetToReceive,
     setOutputChainId,
     setAssetToSwapFilter,
     setAssetToReceiveFilter,

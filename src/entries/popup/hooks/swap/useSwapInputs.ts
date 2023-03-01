@@ -1,5 +1,4 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
 import {
@@ -10,13 +9,13 @@ import {
 export const useSwapInputs = ({
   assetToSwap,
   assetToReceive,
-  setAssetToSwapAddress,
-  setAssetToReceiveAddress,
+  setAssetToSwap,
+  setAssetToReceive,
 }: {
-  assetToSwap?: ParsedAddressAsset;
-  assetToReceive?: ParsedAddressAsset;
-  setAssetToSwapAddress: (address: Address) => void;
-  setAssetToReceiveAddress: (address: Address) => void;
+  assetToSwap: ParsedAddressAsset | null;
+  assetToReceive: ParsedAddressAsset | null;
+  setAssetToSwap: (asset: ParsedAddressAsset | null) => void;
+  setAssetToReceive: (asset: ParsedAddressAsset | null) => void;
 }) => {
   const [assetToSwapDropdownVisible, setassetToSwapDropdownVisible] =
     useState(false);
@@ -84,16 +83,16 @@ export const useSwapInputs = ({
       setAssetToSwapValue(independetValue);
       setIndependentField('toSwap');
     }
-    assetToSwap && setAssetToReceiveAddress(assetToSwap.address);
-    assetToReceive && setAssetToSwapAddress(assetToReceive.address);
+    setAssetToReceive(assetToSwap);
+    setAssetToSwap(assetToReceive);
   }, [
     assetToReceive,
     assetToSwap,
     independentField,
     independetValue,
-    setAssetToReceiveAddress,
+    setAssetToReceive,
     setAssetToReceiveValue,
-    setAssetToSwapAddress,
+    setAssetToSwap,
     setAssetToSwapValue,
   ]);
 

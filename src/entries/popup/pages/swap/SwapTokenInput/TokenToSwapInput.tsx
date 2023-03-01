@@ -1,5 +1,4 @@
 import React, { useCallback, useRef } from 'react';
-import { Address } from 'wagmi';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { SortMethod } from '~/entries/popup/hooks/send/useSendAsset';
@@ -11,7 +10,7 @@ import { TokenInput } from './TokenInput';
 interface SwapTokenInputProps {
   assetToSwapMaxValue: { display: string; amount: string };
   assetToSwapValue: string;
-  asset?: ParsedAddressAsset;
+  asset: ParsedAddressAsset | null;
   assetFilter: string;
   assets?: ParsedAddressAsset[];
   dropdownClosed: boolean;
@@ -20,8 +19,8 @@ interface SwapTokenInputProps {
   sortMethod: SortMethod;
   zIndex?: number;
   onDropdownOpen: (open: boolean) => void;
-  selectAssetAddress: (address: Address | '') => void;
   setSortMethod: (sortMethod: SortMethod) => void;
+  selectAsset: (asset: ParsedAddressAsset | null) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
   setAssetToSwapMaxValue: () => void;
   setAssetToSwapValue: (value: string) => void;
@@ -39,23 +38,24 @@ export const TokenToSwapInput = ({
   zIndex,
   assetToSwapValue,
   onDropdownOpen,
-  selectAssetAddress,
+  selectAsset,
   setAssetFilter,
   setSortMethod,
   setAssetToSwapMaxValue,
   setAssetToSwapValue,
 }: SwapTokenInputProps) => {
-  const onSelectAssetRef = useRef<(address: Address | '') => void>();
+  const onSelectAssetRef = useRef<(asset: ParsedAddressAsset) => void>();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const setOnSelectAsset = useCallback(
-    (cb: (address: Address | '') => void) => {
-      onSelectAssetRef.current = (address: Address | '') => {
-        cb(address);
-        selectAssetAddress(address);
+    (cb: (asset: ParsedAddressAsset) => void) => {
+      onSelectAssetRef.current = (asset: ParsedAddressAsset) => {
+        cb(asset);
+        // selectAssetAddress(address);
+        selectAsset(asset);
       };
     },
-    [selectAssetAddress],
+    [selectAsset],
   );
 
   const onDropdownChange = useCallback((open: boolean) => {
@@ -107,7 +107,7 @@ export const TokenToSwapInput = ({
       value={assetToSwapValue}
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
-      selectAssetAddress={selectAssetAddress}
+      selectAsset={selectAsset}
       assetFilter={assetFilter}
       setAssetFilter={setAssetFilter}
       setValue={setAssetToSwapValue}

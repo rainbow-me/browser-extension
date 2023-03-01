@@ -5,7 +5,6 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { Address } from 'wagmi';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { Box } from '~/design-system';
@@ -19,7 +18,7 @@ import { SwapInputActionButton } from '../SwapInputActionButton';
 
 interface TokenInputProps {
   accentCaretColor?: boolean;
-  asset?: ParsedAddressAsset;
+  asset: ParsedAddressAsset | null;
   assetFilter: string;
   dropdownHeight?: number;
   dropdownComponent: ReactElement;
@@ -31,8 +30,8 @@ interface TokenInputProps {
   inputRef: React.RefObject<HTMLInputElement>;
   value: string;
   onDropdownOpen: (open: boolean) => void;
-  setOnSelectAsset: (cb: (address: Address | '') => void) => void;
-  selectAssetAddress: (address: Address | '') => void;
+  selectAsset: (asset: ParsedAddressAsset | null) => void;
+  setOnSelectAsset: (cb: (asset: ParsedAddressAsset | null) => void) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
   setValue: (value: string) => void;
 }
@@ -51,7 +50,7 @@ export const TokenInput = ({
   inputRef,
   value,
   onDropdownOpen,
-  selectAssetAddress,
+  selectAsset,
   setOnSelectAsset,
   setAssetFilter,
   setValue,
@@ -72,8 +71,8 @@ export const TokenInput = ({
   }, [inputRef, onDropdownOpen]);
 
   const onClose = useCallback(() => {
-    selectAssetAddress('');
-  }, [selectAssetAddress]);
+    selectAsset(null);
+  }, [selectAsset]);
 
   const onInputValueChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
