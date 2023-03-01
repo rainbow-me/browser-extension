@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { refractionAssetsMessages, refractionAssetsWs } from '~/core/network';
+import { refractionAssetsWs } from '~/core/network';
 import {
   QueryConfig,
   QueryFunctionArgs,
@@ -67,7 +67,7 @@ async function assetsQueryFunction({
       clearTimeout(timeout);
       resolve(parseAssets({ assetAddresses, currency, message }));
     };
-    refractionAssetsWs.once(refractionAssetsMessages.ASSETS.RECEIVED, resolver);
+    refractionAssetsWs.once('received assets prices', resolver);
   });
 }
 

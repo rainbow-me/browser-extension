@@ -34,6 +34,7 @@ import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { ActivitySkeleton } from '../../components/ActivitySkeleton/ActivitySkeleton';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { useAllTransactions } from '../../hooks/useAllTransactions';
+import { useFavoriteAssets } from '../../hooks/useFavoriteAssets';
 import { SheetMode } from '../speedUpAndCancelSheet';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -60,6 +61,8 @@ export function Activity({ onSheetSelected }: ActivityProps) {
     address,
     currency,
   });
+  const foo = useFavoriteAssets();
+  console.log('FOO: ', foo);
   const [activityLength, setActivityLength] = useState(ACTIVITY_DEFAULT_LENGTH);
   const listData = useMemo(() => {
     return Object.keys(allTransactionsByDate).reduce((listData, dateKey) => {
