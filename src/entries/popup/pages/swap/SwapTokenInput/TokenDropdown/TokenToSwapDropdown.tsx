@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { useState } from 'react';
+import React from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -19,11 +19,12 @@ import { SortMethod } from '../../../../hooks/send/useSendTransactionAsset';
 import { TokenToSwapRow } from '../TokenRow/TokenToSwapRow';
 
 export type TokenToSwapDropdownProps = {
-  asset: ParsedAddressAsset | null;
+  asset?: ParsedAddressAsset;
   assets?: ParsedAddressAsset[];
   sortMethod: SortMethod;
   onSelectAsset?: (address: Address) => void;
   setSortMethod: (sortMethod: SortMethod) => void;
+  onDropdownChange: (open: boolean) => void;
 };
 
 export const TokenToSwapDropdown = ({
@@ -32,8 +33,8 @@ export const TokenToSwapDropdown = ({
   sortMethod,
   onSelectAsset,
   setSortMethod,
+  onDropdownChange,
 }: TokenToSwapDropdownProps) => {
-  const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
   const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
     assets,
     size: 10,
@@ -54,10 +55,7 @@ export const TokenToSwapDropdown = ({
               {i18n.t('swap.tokens_input.tokens')}
             </Text>
           </Inline>
-          <DropdownMenu
-            onOpenChange={setSortDropdownOpen}
-            open={sortDropdownOpen}
-          >
+          <DropdownMenu onOpenChange={onDropdownChange}>
             <DropdownMenuTrigger
               accentColor={asset?.colors?.primary || asset?.colors?.fallback}
               asChild
@@ -139,9 +137,7 @@ export const TokenToSwapDropdown = ({
               <Box
                 paddingHorizontal="8px"
                 key={`${rowData?.uniqueId}-${i}`}
-                onClick={() =>
-                  onSelectAsset?.(rowData.mainnetAddress || rowData.address)
-                }
+                onClick={() => onSelectAsset?.(rowData.address)}
                 testId={`token-input-asset-${asset?.uniqueId}`}
               >
                 <TokenToSwapRow uniqueId={rowData?.uniqueId} />
@@ -149,26 +145,32 @@ export const TokenToSwapDropdown = ({
             );
           })}
         {!assets?.length && (
-          <Box alignItems="center" style={{ paddingTop: 119 }}>
-            <Stack space="16px">
-              <Inline alignHorizontal="center">
-                <Symbol
-                  color="labelQuaternary"
-                  weight="semibold"
-                  symbol="record.circle.fill"
-                  size={26}
-                />
-              </Inline>
+          <Box alignItems="center" style={{ paddingTop: 121 }}>
+            <Box paddingHorizontal="44px">
+              <Stack space="16px">
+                <Text color="label" size="26pt" weight="bold" align="center">
+                  {'👻'}
+                </Text>
 
-              <Text
-                color="labelQuaternary"
-                size="20pt"
-                weight="semibold"
-                align="center"
-              >
-                {i18n.t('swap.tokens_input.no_tokens')}
-              </Text>
-            </Stack>
+                <Text
+                  color="labelTertiary"
+                  size="20pt"
+                  weight="semibold"
+                  align="center"
+                >
+                  {i18n.t('swap.tokens_input.nothing_found')}
+                </Text>
+
+                <Text
+                  color="labelQuaternary"
+                  size="14pt"
+                  weight="regular"
+                  align="center"
+                >
+                  {i18n.t('swap.tokens_input.nothing_found_description')}
+                </Text>
+              </Stack>
+            </Box>
           </Box>
         )}
       </Box>

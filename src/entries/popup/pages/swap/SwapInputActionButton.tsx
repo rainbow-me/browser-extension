@@ -15,7 +15,7 @@ export const SwapInputActionButton = ({
   dropdownVisible: boolean;
   onClose: () => void;
   testId?: string;
-  asset: ParsedAddressAsset | null;
+  asset?: ParsedAddressAsset;
 }) => {
   return showClose ? (
     <Button

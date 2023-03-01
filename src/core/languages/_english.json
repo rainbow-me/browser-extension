@@ -205,7 +205,7 @@
       "available": "available",
       "token_balance": "Token Balance",
       "networks": "Networks",
-      "no_tokens": "No tokens"
+      "nothing_found": "Nothing found"
     },
     "review": {
       "title": "Review & Send",
@@ -233,9 +233,11 @@
       "available": "available",
       "token_balance": "Token Balance",
       "networks": "Networks",
-      "no_tokens": "No tokens",
       "filter_by_network": "Filter by Network",
-      "switch_networks": "Switch Networks"
+      "switch_networks": "Switch Networks",
+      "nothing_found": "Nothing found",
+      "nothing_found_description": "Some tokens don’t have enough liquidity to perform a successful swap.",
+      "nothing_found_description_l2": "Some tokens don’t have enough layer 2 liquidity to perform a successful swap."
     }
   },
   "custom_gas": {

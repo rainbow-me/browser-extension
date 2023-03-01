@@ -10,7 +10,8 @@ import { TokenToSwapInfo } from './TokenInfo/TokenToSwapInfo';
 import { TokenInput } from './TokenInput';
 
 interface SwapTokenInputProps {
-  asset: ParsedAddressAsset | null;
+  asset?: ParsedAddressAsset;
+  assetFilter: string;
   assets?: ParsedAddressAsset[];
   dropdownClosed: boolean;
   dropdownHeight?: number;
@@ -20,10 +21,12 @@ interface SwapTokenInputProps {
   onDropdownOpen: (open: boolean) => void;
   selectAssetAddress: (address: Address | '') => void;
   setSortMethod: (sortMethod: SortMethod) => void;
+  setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const TokenToSwapInput = ({
   asset,
+  assetFilter,
   assets,
   dropdownClosed = false,
   dropdownHeight,
@@ -32,9 +35,11 @@ export const TokenToSwapInput = ({
   zIndex,
   onDropdownOpen,
   selectAssetAddress,
+  setAssetFilter,
   setSortMethod,
 }: SwapTokenInputProps) => {
   const onSelectAssetRef = useRef<(address: Address | '') => void>();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const setOnSelectAsset = useCallback(
     (cb: (address: Address | '') => void) => {
@@ -46,13 +51,21 @@ export const TokenToSwapInput = ({
     [selectAssetAddress],
   );
 
+  const onDropdownChange = useCallback((open: boolean) => {
+    if (!open) {
+      setTimeout(() => inputRef?.current?.focus(), 300);
+    }
+  }, []);
+
   return (
     <TokenInput
+      inputRef={inputRef}
       asset={asset}
       dropdownClosed={dropdownClosed}
       dropdownHeight={dropdownHeight}
       dropdownComponent={
         <TokenToSwapDropdown
+          onDropdownChange={onDropdownChange}
           asset={asset}
           assets={assets}
           sortMethod={sortMethod}
@@ -63,9 +76,12 @@ export const TokenToSwapInput = ({
       bottomComponent={asset ? <TokenToSwapInfo asset={asset} /> : null}
       placeholder={placeholder}
       zIndex={zIndex}
+      variant="transparent"
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
       selectAssetAddress={selectAssetAddress}
+      assetFilter={assetFilter}
+      setAssetFilter={setAssetFilter}
     />
   );
 };

@@ -8,9 +8,11 @@ import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { SearchAsset } from '~/core/types/search';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { SortMethod } from '../send/useSendTransactionAsset';
+import { useDebounce } from '../useDebounce';
 import usePrevious from '../usePrevious';
 import { useSearchCurrencyLists } from '../useSearchCurrencyLists';
 
@@ -24,28 +26,54 @@ const sortBy = (by: SortMethod) => {
 };
 
 const parseParsedAssetToParsedAddressAsset = ({
-  parsedAsset,
   outputChainId,
-  parsedAddressAsset,
+  rawAsset,
+  userAsset,
+  searchAsset,
 }: {
-  parsedAsset: ParsedAsset;
+  rawAsset: ParsedAsset;
+  userAsset?: ParsedAddressAsset;
   outputChainId: ChainId;
-  parsedAddressAsset?: ParsedAddressAsset;
-}) => ({
-  ...parsedAsset,
-  address: parsedAddressAsset?.address || parsedAsset.address,
-  chainId: outputChainId,
-  native: {
-    balance: {
-      amount: '0',
-      display: '0.00',
+  searchAsset?: SearchAsset;
+}) => {
+  const assetNetworkInformation = searchAsset?.networks[outputChainId];
+
+  // if searchAsset is appearing because it found an exact match
+  // "on other networks" we need to take the first network, decimals and address to
+  // use for the asset
+
+  const networks = Object.entries(searchAsset?.networks || {});
+  const assetInOneNetwork = networks.length === 1;
+
+  const address = assetInOneNetwork
+    ? networks[0][1].address
+    : assetNetworkInformation?.address ||
+      userAsset?.address ||
+      rawAsset.address;
+
+  const decimals = assetInOneNetwork
+    ? networks[0][1].decimals
+    : assetNetworkInformation?.decimals || rawAsset.decimals;
+  const chainId = assetInOneNetwork ? Number(networks[0][0]) : outputChainId;
+
+  return {
+    ...rawAsset,
+    decimals,
+    address,
+    chainId,
+    native: {
+      balance: {
+        amount: '0',
+        display: '0.00',
+      },
+      price: rawAsset.native.price,
     },
-    price: parsedAsset.native.price,
-  },
-  balance: parsedAddressAsset?.balance || { amount: '0', display: '0.00' },
-  icon_url: parsedAddressAsset?.icon_url || parsedAsset?.icon_url,
-  colors: parsedAddressAsset?.colors || parsedAsset?.colors,
-});
+    balance: userAsset?.balance || { amount: '0', display: '0.00' },
+    icon_url:
+      userAsset?.icon_url || rawAsset?.icon_url || searchAsset?.icon_url,
+    colors: searchAsset?.colors || rawAsset?.colors,
+  };
+};
 
 export const useSwapAssets = () => {
   const { currentAddress } = useCurrentAddressStore();
@@ -63,6 +91,12 @@ export const useSwapAssets = () => {
 
   const [sortMethod, setSortMethod] = useState<SortMethod>('token');
 
+  const [assetToSwapFilter, setAssetToSwapFilter] = useState('');
+  const [assetToReceiveFilter, setAssetToReceiveFilter] = useState('');
+
+  const debouncedAssetToSwapFilter = useDebounce(assetToSwapFilter, 200);
+  const debouncedAssetToReceiveFilter = useDebounce(assetToReceiveFilter, 200);
+
   const { data: userAssets = [] } = useUserAssets(
     {
       address: currentAddress,
@@ -72,55 +106,91 @@ export const useSwapAssets = () => {
     { select: sortBy(sortMethod) },
   );
 
+  const filteredAssetsToSwap = useMemo(() => {
+    return debouncedAssetToSwapFilter
+      ? userAssets?.filter(({ name, symbol, address }) =>
+          [name, symbol, address].reduce(
+            (res, param) =>
+              res ||
+              param
+                .toLowerCase()
+                .startsWith(debouncedAssetToSwapFilter.toLowerCase()),
+            false,
+          ),
+        )
+      : userAssets;
+  }, [userAssets, debouncedAssetToSwapFilter]);
+
   const assetToSwap = useMemo(
     () =>
       userAssets?.find(({ address }) =>
         isLowerCaseMatch(address, assetToSwapAddress),
-      ) || null,
+      ),
     [userAssets, assetToSwapAddress],
   );
 
-  const { results } = useSearchCurrencyLists({
-    inputChainId: assetToSwap?.chainId || undefined,
+  const { results: searchReceiveAssetsSections } = useSearchCurrencyLists({
+    inputChainId: assetToSwap?.chainId,
     outputChainId,
+    searchQuery: debouncedAssetToReceiveFilter,
   });
 
-  const addresses = results
-    ?.map(({ data }) => data)
-    .flat()
-    ?.map((asset) => asset?.uniqueId || '')
-    ?.filter((address) => !!address);
+  const searchReceiveAssets = useMemo(
+    () =>
+      searchReceiveAssetsSections
+        ?.map(({ data }) => data)
+        .flat()
+        ?.filter((asset): asset is SearchAsset => !!asset),
+    [searchReceiveAssetsSections],
+  );
 
-  const { data: assets } = useAssets({
-    assetAddresses: addresses,
+  const { data: rawAssetsToReceive } = useAssets({
+    assetAddresses: searchReceiveAssets.map(({ uniqueId }) => uniqueId),
     currency: currentCurrency,
   });
 
   const assetsToReceive: ParsedAddressAsset[] = useMemo(
     () =>
-      Object.values(assets || {}).map((asset) => {
-        const parsedAddressAsset = userAssets.find(
-          (userAsset) =>
-            isLowerCaseMatch(userAsset.address, asset.address) &&
-            userAsset.chainId === outputChainId,
+      Object.values(rawAssetsToReceive || {}).map((rawAsset) => {
+        const userAsset = userAssets.find((userAsset) =>
+          isLowerCaseMatch(userAsset.address, rawAsset.address),
+        );
+        const searchAsset = searchReceiveAssets.find(
+          (searchAsset) => searchAsset.uniqueId === rawAsset.address,
         );
         return parseParsedAssetToParsedAddressAsset({
-          parsedAsset: asset,
-          parsedAddressAsset,
+          rawAsset,
+          userAsset,
           outputChainId,
+          searchAsset,
         });
       }),
-    [assets, outputChainId, userAssets],
+    [rawAssetsToReceive, userAssets, searchReceiveAssets, outputChainId],
   );
+
+  const assetsToReceiveBySection = useMemo(() => {
+    return searchReceiveAssetsSections.map(({ data, title, symbol, id }) => {
+      const parsedData: ParsedAddressAsset[] =
+        data
+          ?.map((asset) =>
+            assetsToReceive.find((parsedAsset) =>
+              isLowerCaseMatch(
+                parsedAsset.uniqueId.split('_')[0],
+                asset?.uniqueId,
+              ),
+            ),
+          )
+          ?.filter((p): p is ParsedAddressAsset => !!p) || [];
+      return { data: parsedData, title, symbol, id };
+    });
+  }, [assetsToReceive, searchReceiveAssetsSections]);
 
   const assetToReceive = useMemo(
     () =>
-      assetsToReceive?.find(
-        ({ address, chainId }) =>
-          isLowerCaseMatch(address, assetToReceiveAddress) &&
-          chainId === outputChainId,
-      ) || null,
-    [assetsToReceive, assetToReceiveAddress, outputChainId],
+      assetsToReceive?.find(({ address }) =>
+        isLowerCaseMatch(address, assetToReceiveAddress),
+      ),
+    [assetsToReceive, assetToReceiveAddress],
   );
 
   useEffect(() => {
@@ -130,8 +200,10 @@ export const useSwapAssets = () => {
   }, [outputChainId, prevOutputChainId]);
 
   return {
-    assetsToSwap: userAssets,
-    assetsToReceive,
+    assetsToSwap: filteredAssetsToSwap,
+    assetToSwapFilter,
+    assetsToReceive: assetsToReceiveBySection,
+    assetToReceiveFilter,
     sortMethod,
     assetToSwap,
     assetToReceive,
@@ -140,5 +212,7 @@ export const useSwapAssets = () => {
     setAssetToSwapAddress,
     setAssetToReceiveAddress,
     setOutputChainId,
+    setAssetToSwapFilter,
+    setAssetToReceiveFilter,
   };
 };

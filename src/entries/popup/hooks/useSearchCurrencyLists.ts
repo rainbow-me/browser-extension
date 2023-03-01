@@ -10,6 +10,7 @@ import {
   TokenSearchThreshold,
 } from '~/core/types/search';
 import { isLowerCaseMatch } from '~/core/utils/strings';
+import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
 const VERIFIED_ASSETS_PAYLOAD: {
   keys: TokenSearchAssetKey[];
@@ -22,6 +23,7 @@ const VERIFIED_ASSETS_PAYLOAD: {
   threshold: 'CONTAINS',
   query: '',
 };
+
 export function useSearchCurrencyLists({
   inputChainId,
   outputChainId,
@@ -209,6 +211,8 @@ export function useSearchCurrencyLists({
       const curatedSection = {
         data: curatedAssets[outputChainId],
         title: i18n.t('token_search.section_header.verified'),
+        symbol: 'checkmark.seal.fill' as SymbolProps['symbol'],
+        id: 'verified',
       };
       return [curatedSection];
     } else {
@@ -218,6 +222,8 @@ export function useSearchCurrencyLists({
         const verifiedSection = {
           data: targetVerifiedAssets,
           title: i18n.t('token_search.section_header.verified'),
+          symbol: 'checkmark.seal.fill' as SymbolProps['symbol'],
+          id: 'verified',
         };
         sections.push(verifiedSection);
       }
@@ -226,6 +232,8 @@ export function useSearchCurrencyLists({
         const unverifiedSection = {
           data: targetUnverifiedAssets,
           title: i18n.t('token_search.section_header.unverified'),
+          symbol: 'exclamationmark.triangle.fill' as SymbolProps['symbol'],
+          id: 'unverified',
         };
         sections.push(unverifiedSection);
       }
@@ -234,6 +242,8 @@ export function useSearchCurrencyLists({
         const crosschainSection = {
           data: crosschainExactMatches,
           title: i18n.t('token_search.section_header.on_other_networks'),
+          symbol: 'network' as SymbolProps['symbol'],
+          id: 'other_networks',
         };
         sections.push(crosschainSection);
       }

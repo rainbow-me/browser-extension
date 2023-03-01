@@ -1,15 +1,19 @@
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
+import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { isL2Chain } from '~/core/utils/chains';
+import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
+import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+import { rainbowGradient } from '~/design-system/components/Symbol/gradients';
 import {
   transformScales,
   transitions,
 } from '~/design-system/styles/designTokens';
+import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets';
 
@@ -17,12 +21,107 @@ import { dropdownContainerVariant } from '../../../../components/DropdownInputWr
 import { BottomNetwork } from '../../../messages/BottomActions';
 import { TokenToReceiveRow } from '../TokenRow/TokenToReceiveRow';
 
+const AssetsToReceiveSection = ({
+  data,
+  title,
+  symbol,
+  id,
+  onSelectAsset,
+  onDropdownChange,
+}: {
+  data: ParsedAddressAsset[];
+  title: string;
+  onSelectAsset?: (address: Address) => void;
+  symbol: SymbolProps['symbol'];
+  id: string;
+  onDropdownChange: (open: boolean) => void;
+}) => {
+  const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
+    assets: data,
+    size: 5,
+  });
+
+  const verifiedSection = id === 'verified';
+  const otherNetworksSection = id === 'other_networks';
+
+  if (!data.length) return null;
+  return (
+    <Box paddingTop="12px">
+      <Stack space="16px">
+        {otherNetworksSection ? (
+          <Box borderRadius="12px" style={{ height: '52px' }}>
+            <Inset horizontal="20px" vertical="8px">
+              <Inline space="8px" alignVertical="center">
+                <CoinIcon asset={undefined} />
+                <Text size="14pt" weight="semibold" color={'labelQuaternary'}>
+                  {i18n.t('swap.tokens_input.nothing_found')}
+                </Text>
+              </Inline>
+            </Inset>
+          </Box>
+        ) : null}
+
+        <Box paddingHorizontal="20px" width="full">
+          <Inline space="4px" alignVertical="center">
+            <Symbol
+              symbol={symbol}
+              color={verifiedSection ? 'transparent' : 'labelTertiary'}
+              weight="semibold"
+              size={14}
+              gradient={verifiedSection ? rainbowGradient : undefined}
+            />
+            <Box style={{ width: 225 }}>
+              <Text
+                webkitBackgroundClip={verifiedSection ? 'text' : undefined}
+                background={verifiedSection ? 'rainbow' : undefined}
+                size="14pt"
+                weight="semibold"
+                color={verifiedSection ? 'transparent' : 'labelTertiary'}
+              >
+                {title}
+              </Text>
+            </Box>
+          </Inline>
+        </Box>
+
+        <Box ref={containerRef}>
+          {assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
+            const { index } = virtualItem;
+            const rowData = data?.[index] as ParsedAddressAsset;
+            return (
+              <Box
+                paddingHorizontal="8px"
+                key={`${rowData?.uniqueId}-${i}`}
+                onClick={() =>
+                  onSelectAsset?.(rowData?.mainnetAddress || rowData?.address)
+                }
+                testId={`token-input-asset-${rowData?.uniqueId}`}
+              >
+                <TokenToReceiveRow
+                  onDropdownChange={onDropdownChange}
+                  asset={rowData}
+                />
+              </Box>
+            );
+          })}
+        </Box>
+      </Stack>
+    </Box>
+  );
+};
+
 export type TokenToReceiveDropdownProps = {
-  asset: ParsedAddressAsset | null;
-  assets?: ParsedAsset[];
+  asset?: ParsedAddressAsset;
+  assets?: {
+    data: ParsedAddressAsset[];
+    title: string;
+    id: string;
+    symbol: SymbolProps['symbol'];
+  }[];
   outputChainId: ChainId;
   onSelectAsset?: (address: Address) => void;
   setOutputChainId: (chainId: ChainId) => void;
+  onDropdownChange: (open: boolean) => void;
 };
 
 export const TokenToReceiveDropdown = ({
@@ -31,11 +130,14 @@ export const TokenToReceiveDropdown = ({
   outputChainId,
   onSelectAsset,
   setOutputChainId,
+  onDropdownChange,
 }: TokenToReceiveDropdownProps) => {
-  const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
-    assets,
-    size: 10,
-  });
+  const isL2 = useMemo(() => isL2Chain(outputChainId), [outputChainId]);
+
+  const assetsCount = useMemo(
+    () => assets?.reduce((count, section) => count + section.data.length, 0),
+    [assets],
+  );
 
   return (
     <Stack space="8px">
@@ -53,6 +155,7 @@ export const TokenToReceiveDropdown = ({
             </Text>
           </Inline>
           <SwitchNetworkMenu
+            onOpenChange={onDropdownChange}
             marginRight="20px"
             accentColor={asset?.colors?.primary || asset?.colors?.fallback}
             type="dropdown"
@@ -83,51 +186,60 @@ export const TokenToReceiveDropdown = ({
           />
         </Inline>
       </Box>
+
       <Box
         as={motion.div}
         variants={dropdownContainerVariant}
         initial="hidden"
         animate="show"
-        ref={containerRef}
       >
-        {!!assets?.length &&
-          assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
-            const { index } = virtualItem;
-            const rowData = assets?.[index];
-            return (
-              <Box
-                paddingHorizontal="8px"
-                key={`${rowData?.uniqueId}-${i}`}
-                onClick={() =>
-                  onSelectAsset?.(rowData.mainnetAddress || rowData.address)
-                }
-                testId={`token-input-asset-${asset?.uniqueId}`}
-              >
-                <TokenToReceiveRow asset={rowData} />
-              </Box>
-            );
-          })}
-        {!assets?.length && (
-          <Box alignItems="center" style={{ paddingTop: 119 }}>
-            <Stack space="16px">
-              <Inline alignHorizontal="center">
-                <Symbol
-                  color="labelQuaternary"
-                  weight="semibold"
-                  symbol="record.circle.fill"
-                  size={26}
-                />
-              </Inline>
+        <Stack space="16px">
+          {assets?.map((assetSection, i) => (
+            <AssetsToReceiveSection
+              key={i}
+              data={assetSection.data}
+              title={assetSection.title}
+              symbol={assetSection.symbol}
+              id={assetSection.id}
+              onSelectAsset={onSelectAsset}
+              onDropdownChange={onDropdownChange}
+            />
+          ))}
+        </Stack>
 
-              <Text
-                color="labelQuaternary"
-                size="20pt"
-                weight="semibold"
-                align="center"
-              >
-                {i18n.t('send.tokens_input.no_tokens')}
-              </Text>
-            </Stack>
+        {!assetsCount && (
+          <Box alignItems="center" style={{ paddingTop: 91 }}>
+            <Box paddingHorizontal="44px">
+              <Stack space="16px">
+                <Text color="label" size="26pt" weight="bold" align="center">
+                  {'👻'}
+                </Text>
+
+                <Text
+                  color="labelTertiary"
+                  size="20pt"
+                  weight="semibold"
+                  align="center"
+                >
+                  {i18n.t('swap.tokens_input.nothing_found')}
+                </Text>
+
+                <Text
+                  color="labelQuaternary"
+                  size="14pt"
+                  weight="regular"
+                  align="center"
+                >
+                  {i18n.t(
+                    `swap.tokens_input.${
+                      isL2
+                        ? 'nothing_found_description_l2'
+                        : 'nothing_found_description'
+                    }`,
+                  )}
+                </Text>
+              </Stack>
+            </Box>
           </Box>
         )}
       </Box>
