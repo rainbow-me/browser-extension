@@ -1,95 +1,71 @@
-import { motion } from 'framer-motion';
-import React, { RefObject } from 'react';
+import React, { useCallback, useRef } from 'react';
+import { Address } from 'wagmi';
 
-import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
-import { Box, Inline, Symbol, Text } from '~/design-system';
-import {
-  transformScales,
-  transitions,
-} from '~/design-system/styles/designTokens';
-import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
 
-import { SwapInputMask } from '../../../components/InputMask/SwapInputMask/SwapInputMask';
+import { SortMethod } from '../../../hooks/send/useSendTransactionAsset';
 
-export const TokenToSwapBottomComponent = ({
-  asset,
-}: {
+import { TokenToSwapDropdown } from './TokenDropdown/TokenToSwapDropdown';
+import { TokenToSwapInfo } from './TokenInfo/TokenToSwapInfo';
+import { TokenInput } from './TokenInput';
+
+interface SwapTokenInputProps {
   asset: ParsedAddressAsset | null;
-}) => {
-  return (
-    <Box width="full">
-      <Inline alignHorizontal="justify">
-        {asset && (
-          <Text as="p" size="12pt" weight="semibold" color="labelTertiary">
-            {asset?.native?.balance?.display}
-          </Text>
-        )}
-        <Tooltip
-          text={`1.23 ${asset?.symbol}`}
-          textColor="labelSecondary"
-          textSize="12pt"
-          textWeight="medium"
-        >
-          <Box
-            as={motion.div}
-            whileHover={{ scale: transformScales['1.04'] }}
-            whileTap={{ scale: transformScales['0.96'] }}
-            transition={transitions.bounce}
-          >
-            <Inline alignVertical="center" space="4px">
-              <Box marginVertical="-10px">
-                <Symbol
-                  symbol="wand.and.stars"
-                  size={12}
-                  weight="heavy"
-                  color="accent"
-                />
-              </Box>
-
-              <Text size="12pt" weight="heavy" color="accent">
-                {i18n.t('swap.max')}
-              </Text>
-            </Inline>
-          </Box>
-        </Tooltip>
-      </Inline>
-    </Box>
-  );
-};
+  assets?: ParsedAddressAsset[];
+  dropdownClosed: boolean;
+  dropdownHeight?: number;
+  placeholder: string;
+  sortMethod: SortMethod;
+  zIndex?: number;
+  onDropdownOpen: (open: boolean) => void;
+  selectAssetAddress: (address: Address | '') => void;
+  setSortMethod: (sortMethod: SortMethod) => void;
+}
 
 export const TokenToSwapInput = ({
   asset,
+  assets,
+  dropdownClosed = false,
+  dropdownHeight,
   placeholder,
-  innerRef,
-}: {
-  asset: ParsedAddressAsset | null;
-  placeholder: string;
-  innerRef?: RefObject<HTMLInputElement>;
-}) => {
-  return !asset ? (
-    <Box width="fit">
-      <Text
-        size="16pt"
-        weight="semibold"
-        color={`${asset ? 'label' : 'labelTertiary'}`}
-      >
-        {placeholder}
-      </Text>
-    </Box>
-  ) : (
-    <Box width="fit" marginVertical="-20px">
-      <SwapInputMask
-        borderColor="transparent"
-        decimals={asset?.decimals}
-        height="56px"
-        placeholder="0.00"
-        value={''}
-        variant="transparent"
-        onChange={() => null}
-        paddingHorizontal={0}
-        innerRef={innerRef}
-      />
-    </Box>
+  sortMethod,
+  zIndex,
+  onDropdownOpen,
+  selectAssetAddress,
+  setSortMethod,
+}: SwapTokenInputProps) => {
+  const onSelectAssetRef = useRef<(address: Address | '') => void>();
+
+  const setOnSelectAsset = useCallback(
+    (cb: (address: Address | '') => void) => {
+      onSelectAssetRef.current = (address: Address | '') => {
+        cb(address);
+        selectAssetAddress(address);
+      };
+    },
+    [selectAssetAddress],
+  );
+
+  return (
+    <TokenInput
+      asset={asset}
+      dropdownClosed={dropdownClosed}
+      dropdownHeight={dropdownHeight}
+      dropdownComponent={
+        <TokenToSwapDropdown
+          asset={asset}
+          assets={assets}
+          sortMethod={sortMethod}
+          onSelectAsset={onSelectAssetRef?.current}
+          setSortMethod={setSortMethod}
+        />
+      }
+      bottomComponent={asset ? <TokenToSwapInfo asset={asset} /> : null}
+      placeholder={placeholder}
+      zIndex={zIndex}
+      onDropdownOpen={onDropdownOpen}
+      setOnSelectAsset={setOnSelectAsset}
+      selectAssetAddress={selectAssetAddress}
+    />
   );
 };
