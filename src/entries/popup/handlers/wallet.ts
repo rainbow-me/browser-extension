@@ -323,7 +323,6 @@ export const connectTrezor = async () => {
 
     const hdNode = HDNode.fromExtendedKey(result.payload.xpub);
     const firstAccountPath = `0`;
-    console.log('firstAccountPath', firstAccountPath);
 
     const addressesToImport = [
       { address: hdNode.derivePath(firstAccountPath).address, index: 0 },

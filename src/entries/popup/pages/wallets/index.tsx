@@ -55,7 +55,6 @@ const ImportAccountAtIndex = ({
       index,
     );
     if (res) {
-      console.log(res);
       onAccountImportedAtIndex(res as Address);
     }
   }, [index, onAccountImportedAtIndex, silbingAddress, type]);
