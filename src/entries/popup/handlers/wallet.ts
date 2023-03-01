@@ -260,14 +260,55 @@ export const exportAccount = async (address: Address, password: string) => {
   })) as PrivateKey;
 };
 
+export const importAccountAtIndex = async (
+  silbing: Address,
+  type: string | 'Trezor' | 'Ledger',
+  index: number,
+) => {
+  let address = '';
+  switch (type) {
+    case 'Trezor':
+      {
+        window.TrezorConnect.init(TREZOR_CONFIG);
+        const path = `m/${DEFAULT_HD_PATH}/${index}`;
+        console.log('path', path);
+        const result = await window.TrezorConnect.ethereumGetAddress({
+          path,
+          coin: 'eth',
+          showOnTrezor: false,
+        });
+
+        if (!result.success) {
+          throw new Error('window.TrezorConnect.getAddress failed');
+        }
+        address = result.payload.address;
+      }
+      break;
+    case 'Ledger': {
+      const transport = await TransportWebUSB.create();
+      const appEth = new AppEth(transport);
+      const result = await appEth.getAddress(
+        `${DEFAULT_HD_PATH}/0`,
+        false,
+        false,
+      );
+
+      address = result.address;
+      break;
+    }
+    default:
+      throw new Error('Unknown wallet type');
+  }
+
+  return (await walletAction('add_account_at_index', {
+    silbingAddress: silbing,
+    index,
+    address,
+  })) as Address;
+};
+
 export const connectTrezor = async () => {
   try {
-    window.TrezorConnect.on('DEVICE_EVENT', (event: { payload: unknown }) => {
-      if (event && event.payload) {
-        console.log('TREZOR DEVICE EVENT', event.payload);
-      }
-    });
-
     window.TrezorConnect.init(TREZOR_CONFIG);
     const path = `m/${DEFAULT_HD_PATH}`;
     console.log('path', path);

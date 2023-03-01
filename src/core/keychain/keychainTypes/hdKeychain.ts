@@ -126,6 +126,11 @@ export class HdKeychain implements IKeychain {
     return privates.get(this).wallets as Wallet[];
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  addAccountAtIndex(index: number, address: `0x${string}`): Promise<Address> {
+    throw new Error('Method not implemented.');
+  }
+
   getAccounts(): Promise<Array<Address>> {
     const addresses = privates
       .get(this)

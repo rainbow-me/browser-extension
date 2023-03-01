@@ -53,6 +53,10 @@ export class KeyPairKeychain implements IKeychain {
     throw new Error('Method not implemented.');
   }
 
+  addAccountAtIndex(index: number, address: `0x${string}`): Promise<Address> {
+    throw new Error('Method not implemented.');
+  }
+
   getAccounts(): Promise<Array<Address>> {
     const addresses = privates
       .get(this)
