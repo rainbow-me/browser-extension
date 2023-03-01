@@ -30,7 +30,7 @@ export const TokenToReceiveInfo = ({
 
         <Inline alignVertical="center" space="4px">
           <Text size="12pt" weight="medium" color="labelQuaternary">
-            {i18n.t('swap.balance')}
+            {`${i18n.t('swap.balance')}:`}
           </Text>
           <Text size="12pt" weight="medium" color="labelSecondary">
             {handleSignificantDecimals(asset?.balance?.amount, asset?.decimals)}
