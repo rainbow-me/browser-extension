@@ -5,6 +5,7 @@ import {
   BNB_MAINNET_ADDRESS,
   ETH_ADDRESS,
   MATIC_MAINNET_ADDRESS,
+  OP_ADDRESS,
 } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 
@@ -26,14 +27,11 @@ export interface FavoritesState {
 export const favoritesStore = createStore<FavoritesState>(
   (set, get) => ({
     favorites: {
-      [ChainId.mainnet]: [
-        ETH_ADDRESS as Address,
-        '0x1bC08B2e6537166Ad57c2dD1Ab27241FEa9A14cB',
-      ],
+      [ChainId.mainnet]: [ETH_ADDRESS as Address],
       [ChainId.arbitrum]: [ETH_ADDRESS as Address],
       [ChainId.bsc]: [BNB_MAINNET_ADDRESS],
       [ChainId.polygon]: [MATIC_MAINNET_ADDRESS],
-      [ChainId.optimism]: ['0x4200000000000000000000000000000000000042'],
+      [ChainId.optimism]: [OP_ADDRESS],
     },
     addFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
       const { favorites } = get();
@@ -61,7 +59,7 @@ export const favoritesStore = createStore<FavoritesState>(
   {
     persist: {
       name: 'favorites',
-      version: 0.3,
+      version: 0,
     },
   },
 );
