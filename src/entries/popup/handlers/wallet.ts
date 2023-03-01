@@ -271,7 +271,6 @@ export const importAccountAtIndex = async (
       {
         window.TrezorConnect.init(TREZOR_CONFIG);
         const path = `m/${DEFAULT_HD_PATH}/${index}`;
-        console.log('path', path);
         const result = await window.TrezorConnect.ethereumGetAddress({
           path,
           coin: 'eth',
@@ -311,7 +310,6 @@ export const connectTrezor = async () => {
   try {
     window.TrezorConnect.init(TREZOR_CONFIG);
     const path = `m/${DEFAULT_HD_PATH}`;
-    console.log('path', path);
 
     const result = await window.TrezorConnect.ethereumGetPublicKey({
       path,
@@ -320,11 +318,8 @@ export const connectTrezor = async () => {
     });
 
     if (!result.success) {
-      console.log('failed', result);
       throw new Error('window.TrezorConnect.ethereumGetPublicKey failed');
     }
-
-    console.log('RESULT', result);
 
     const hdNode = HDNode.fromExtendedKey(result.payload.xpub);
     const firstAccountPath = `0`;
