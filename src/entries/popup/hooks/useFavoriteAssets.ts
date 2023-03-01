@@ -5,12 +5,12 @@ import { useFavoritesStore } from '~/core/state/favorites';
 export function useFavoriteAssets() {
   const { favorites, addFavorite, removeFavorite } = useFavoritesStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { data: favoritesMetaData } = useAssets({
+  const { data: favoritesData } = useAssets({
     assetAddresses: favorites,
     currency,
   });
   return {
-    favorites: favoritesMetaData,
+    favorites: favoritesData,
     addFavorite,
     removeFavorite,
   };
