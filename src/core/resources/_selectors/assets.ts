@@ -29,7 +29,13 @@ export function selectUserAssetsListByChainId(assets: ParsedAssetsDictByChain) {
     assets?.[ChainId.bsc],
   ].flat();
   return assetsByNetwork
-    .map((chainAssets) => Object.values(chainAssets))
+    .map((chainAssets) =>
+      Object.values(chainAssets).sort(
+        (a: ParsedAddressAsset, b: ParsedAddressAsset) =>
+          parseFloat(b?.native?.balance?.amount) -
+          parseFloat(a?.native?.balance?.amount),
+      ),
+    )
     .flat();
 }
 

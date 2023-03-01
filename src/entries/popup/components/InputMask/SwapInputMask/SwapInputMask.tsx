@@ -19,7 +19,7 @@ interface SwapInputMaskProps {
   innerRef?: RefObject<HTMLInputElement>;
   style?: CSSProperties;
   value: string;
-  variant: 'surface' | 'bordered' | 'transparent';
+  variant: 'surface' | 'bordered' | 'transparent' | 'tinted';
   onChange: (value: string) => void;
   paddingHorizontal?: number;
   placeholder: string;

@@ -28,7 +28,7 @@ export type InputProps = {
   placeholder?: string;
   borderColor?: BoxStyles['borderColor'];
   testId?: string;
-  variant: 'surface' | 'bordered' | 'transparent';
+  variant: 'surface' | 'bordered' | 'transparent' | 'tinted';
   value?: InputHTMLAttributes<HTMLInputElement>['value'];
   type?: InputHTMLAttributes<HTMLInputElement>['type'];
   innerRef?: React.Ref<HTMLInputElement>;
@@ -81,6 +81,12 @@ export const stylesForVariant: Record<
       default: 'transparent',
     },
     textColor: 'label',
+  },
+  tinted: {
+    borderColor: {
+      default: 'transparent',
+    },
+    textColor: 'accent',
   },
 };
 
