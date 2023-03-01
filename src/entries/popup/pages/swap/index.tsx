@@ -46,6 +46,8 @@ export function Swap() {
   } = useSwapAssets();
 
   const {
+    assetToSwapInputRef,
+    assetToReceieveInputRef,
     assetToSwapMaxValue,
     assetToReceiveValue,
     assetToSwapValue,
@@ -116,6 +118,7 @@ export function Swap() {
                   setAssetToSwapMaxValue={setAssetToSwapMaxValue}
                   assetToSwapValue={assetToSwapValue}
                   setAssetToSwapValue={setAssetToSwapValue}
+                  inputRef={assetToSwapInputRef}
                 />
               </AccentColorProviderWrapper>
 
@@ -181,6 +184,7 @@ export function Swap() {
                   setAssetFilter={setAssetToReceiveFilter}
                   assetToReceiveValue={assetToReceiveValue}
                   setAssetToReceiveValue={setAssetToReceiveValue}
+                  inputRef={assetToReceieveInputRef}
                 />
               </AccentColorProviderWrapper>
             </Stack>

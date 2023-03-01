@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
 import {
@@ -23,6 +23,9 @@ export const useSwapInputs = ({
     useState(false);
   const [assetToSwapValue, setAssetToSwapStateValue] = useState('');
   const [assetToReceiveValue, setAssetToReceiveStateValue] = useState('');
+
+  const assetToSwapInputRef = useRef<HTMLInputElement>(null);
+  const assetToReceieveInputRef = useRef<HTMLInputElement>(null);
 
   const [independentField, setIndependentField] = useState<
     'toSwap' | 'toReceive'
@@ -78,10 +81,12 @@ export const useSwapInputs = ({
       setAssetToSwapStateValue('');
       setAssetToReceiveValue(independetValue);
       setIndependentField('toReceive');
+      assetToReceieveInputRef?.current?.focus();
     } else {
       setAssetToReceiveStateValue('');
       setAssetToSwapValue(independetValue);
       setIndependentField('toSwap');
+      assetToSwapInputRef?.current?.focus();
     }
     setAssetToReceive(assetToSwap);
     setAssetToSwap(assetToReceive);
@@ -97,6 +102,8 @@ export const useSwapInputs = ({
   ]);
 
   return {
+    assetToReceieveInputRef,
+    assetToSwapInputRef,
     assetToSwapMaxValue,
     assetToSwapValue,
     assetToReceiveValue,

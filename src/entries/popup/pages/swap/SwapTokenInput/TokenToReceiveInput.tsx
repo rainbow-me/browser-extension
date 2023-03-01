@@ -23,6 +23,7 @@ interface TokenToReceiveProps {
   placeholder: string;
   zIndex?: number;
   assetToReceiveValue: string;
+  inputRef: React.RefObject<HTMLInputElement>;
   onDropdownOpen: (open: boolean) => void;
   setOutputChainId: (chainId: ChainId) => void;
   selectAsset: (asset: ParsedAddressAsset | null) => void;
@@ -40,13 +41,13 @@ export const TokenToReceiveInput = ({
   placeholder,
   zIndex,
   assetToReceiveValue,
+  inputRef,
   onDropdownOpen,
   selectAsset,
   setAssetFilter,
   setOutputChainId,
   setAssetToReceiveValue,
 }: TokenToReceiveProps) => {
-  const inputRef = useRef<HTMLInputElement>(null);
   const onSelectAssetRef =
     useRef<(address: ParsedAddressAsset | null) => void>();
 
@@ -60,11 +61,14 @@ export const TokenToReceiveInput = ({
     [selectAsset],
   );
 
-  const onDropdownChange = useCallback((open: boolean) => {
-    if (!open) {
-      setTimeout(() => inputRef?.current?.focus(), 300);
-    }
-  }, []);
+  const onDropdownChange = useCallback(
+    (open: boolean) => {
+      if (!open) {
+        setTimeout(() => inputRef?.current?.focus(), 300);
+      }
+    },
+    [inputRef],
+  );
 
   return (
     <TokenInput

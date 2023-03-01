@@ -18,6 +18,7 @@ interface SwapTokenInputProps {
   placeholder: string;
   sortMethod: SortMethod;
   zIndex?: number;
+  inputRef: React.RefObject<HTMLInputElement>;
   onDropdownOpen: (open: boolean) => void;
   setSortMethod: (sortMethod: SortMethod) => void;
   selectAsset: (asset: ParsedAddressAsset | null) => void;
@@ -37,6 +38,7 @@ export const TokenToSwapInput = ({
   sortMethod,
   zIndex,
   assetToSwapValue,
+  inputRef,
   onDropdownOpen,
   selectAsset,
   setAssetFilter,
@@ -45,24 +47,25 @@ export const TokenToSwapInput = ({
   setAssetToSwapValue,
 }: SwapTokenInputProps) => {
   const onSelectAssetRef = useRef<(asset: ParsedAddressAsset) => void>();
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const setOnSelectAsset = useCallback(
     (cb: (asset: ParsedAddressAsset) => void) => {
       onSelectAssetRef.current = (asset: ParsedAddressAsset) => {
         cb(asset);
-        // selectAssetAddress(address);
         selectAsset(asset);
       };
     },
     [selectAsset],
   );
 
-  const onDropdownChange = useCallback((open: boolean) => {
-    if (!open) {
-      setTimeout(() => inputRef?.current?.focus(), 300);
-    }
-  }, []);
+  const onDropdownChange = useCallback(
+    (open: boolean) => {
+      if (!open) {
+        setTimeout(() => inputRef?.current?.focus(), 300);
+      }
+    },
+    [inputRef],
+  );
 
   const setMaxValue = useCallback(() => {
     setAssetToSwapMaxValue();
@@ -74,7 +77,7 @@ export const TokenToSwapInput = ({
         'forward',
       );
     }, 300);
-  }, [assetToSwapValue.length, setAssetToSwapMaxValue]);
+  }, [assetToSwapValue.length, inputRef, setAssetToSwapMaxValue]);
 
   return (
     <TokenInput
