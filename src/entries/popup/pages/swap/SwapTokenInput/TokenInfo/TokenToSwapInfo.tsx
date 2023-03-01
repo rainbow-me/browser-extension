@@ -2,7 +2,9 @@ import { motion } from 'framer-motion';
 import React from 'react';
 
 import { i18n } from '~/core/languages';
+import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedAddressAsset } from '~/core/types/assets';
+import { convertAmountAndPriceToNativeDisplay } from '~/core/utils/numbers';
 import { Box, Inline, Symbol, Text } from '~/design-system';
 import {
   transformScales,
@@ -12,20 +14,29 @@ import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
 
 export const TokenToSwapInfo = ({
   asset,
+  assetToSwapValue,
   assetToSwapMaxValue,
   setAssetToSwapMaxValue,
 }: {
   asset: ParsedAddressAsset | null;
+  assetToSwapValue: string;
   assetToSwapMaxValue: { display: string; amount: string };
   setAssetToSwapMaxValue: () => void;
 }) => {
+  const { currentCurrency } = useCurrentCurrencyStore();
   if (!asset) return null;
   return (
     <Box width="full">
       <Inline alignHorizontal="justify">
         {asset && (
           <Text as="p" size="12pt" weight="semibold" color="labelTertiary">
-            {asset?.native?.balance?.display}
+            {
+              convertAmountAndPriceToNativeDisplay(
+                assetToSwapValue || 0,
+                asset?.price?.value || 0,
+                currentCurrency,
+              ).display
+            }
           </Text>
         )}
         <Tooltip

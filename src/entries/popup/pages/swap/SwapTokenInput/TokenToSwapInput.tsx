@@ -98,6 +98,7 @@ export const TokenToSwapInput = ({
       bottomComponent={
         asset ? (
           <TokenToSwapInfo
+            assetToSwapValue={assetToSwapValue}
             assetToSwapMaxValue={assetToSwapMaxValue}
             asset={asset}
             setAssetToSwapMaxValue={setMaxValue}
