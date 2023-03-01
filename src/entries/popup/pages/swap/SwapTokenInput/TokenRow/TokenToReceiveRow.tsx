@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
-import { ParsedAsset } from '~/core/types/assets';
+import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain, isL2Chain } from '~/core/utils/chains';
@@ -34,11 +34,17 @@ import {
 import { RowHighlightWrapper } from './RowHighlightWrapper';
 
 const { innerWidth: windowWidth } = window;
-const TEXT_MAX_WIDTH = windowWidth - 210;
+const TEXT_MAX_WIDTH = windowWidth - 160;
 
-export type TokenToReceiveRowProps = { asset: ParsedAsset };
+export type TokenToReceiveRowProps = {
+  asset: ParsedAddressAsset;
+  onDropdownChange: (open: boolean) => void;
+};
 
-export function TokenToReceiveRow({ asset }: TokenToReceiveRowProps) {
+export function TokenToReceiveRow({
+  asset,
+  onDropdownChange,
+}: TokenToReceiveRowProps) {
   const leftColumn = useMemo(
     () => (
       <Rows space="8px">
@@ -93,7 +99,7 @@ export function TokenToReceiveRow({ asset }: TokenToReceiveRowProps) {
   const rightColumn = useMemo(
     () =>
       !asset?.isNativeAsset ? (
-        <DropdownMenu>
+        <DropdownMenu onOpenChange={onDropdownChange}>
           <DropdownMenuTrigger asChild>
             <Box>
               <ButtonSymbol
@@ -122,30 +128,26 @@ export function TokenToReceiveRow({ asset }: TokenToReceiveRowProps) {
                   <DropdownMenuRadioItem value="copy">
                     <Box width="full">
                       <Inline space="8px" alignVertical="center">
-                        <Box>
-                          <Inline alignVertical="center">
-                            <Symbol
-                              symbol="doc.on.doc.fill"
-                              weight="semibold"
-                              size={18}
-                            />
-                          </Inline>
-                        </Box>
+                        <Inline alignVertical="center">
+                          <Symbol
+                            symbol="doc.on.doc.fill"
+                            weight="semibold"
+                            size={18}
+                          />
+                        </Inline>
 
-                        <Box>
-                          <Stack space="6px">
-                            <Text weight="semibold" size="14pt" color="label">
-                              {i18n.t('contacts.copy_address')}
-                            </Text>
-                            <Text
-                              weight="regular"
-                              size="11pt"
-                              color="labelTertiary"
-                            >
-                              {truncateAddress(asset?.address)}
-                            </Text>
-                          </Stack>
-                        </Box>
+                        <Stack space="6px">
+                          <Text weight="semibold" size="14pt" color="label">
+                            {i18n.t('contacts.copy_address')}
+                          </Text>
+                          <Text
+                            weight="regular"
+                            size="11pt"
+                            color="labelTertiary"
+                          >
+                            {truncateAddress(asset?.address)}
+                          </Text>
+                        </Stack>
                       </Inline>
                     </Box>
                   </DropdownMenuRadioItem>
@@ -194,6 +196,7 @@ export function TokenToReceiveRow({ asset }: TokenToReceiveRowProps) {
       asset?.name,
       asset?.symbol,
       onValueChange,
+      onDropdownChange,
     ],
   );
 

@@ -10,6 +10,7 @@ export type SymbolProps = {
   symbol: SymbolName;
   weight: FontWeight;
   size: number;
+  gradient?: React.ReactNode;
 };
 
 export function Symbol({
@@ -17,8 +18,10 @@ export function Symbol({
   symbol: name,
   weight,
   size,
+  gradient,
 }: SymbolProps) {
   const symbol = symbols[name as keyof typeof symbols][weight];
+
   return (
     <svg
       viewBox={`0 0 ${symbol.viewBox.width} ${symbol.viewBox.height}`}
@@ -27,7 +30,11 @@ export function Symbol({
       style={{ width: size, height: size }}
       xmlns="http://www.w3.org/2000/svg"
     >
-      <path d={symbol.path} fill="currentColor" />
+      {gradient ? <defs>{gradient}</defs> : null}
+      <path
+        d={symbol.path}
+        fill={gradient ? 'url(#gradient)' : 'currentColor'}
+      />
     </svg>
   );
 }
