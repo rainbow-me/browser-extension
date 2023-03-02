@@ -47,6 +47,7 @@ export const useSwapQuote = ({
 
     return {
       // source?: Source;
+      // feePercentageBasisPoints?: number;
       chainId: assetToSell.chainId,
       fromAddress: currentAddress,
       sellTokenAddress: assetToSell.address,
@@ -66,10 +67,8 @@ export const useSwapQuote = ({
             )
           : undefined,
       slippage: 0.3,
-      // destReceiver?: EthereumAddress;
-      // refuel?: boolean;
+      refuel: false,
       swapType: isCrosschainSwap ? SwapType.crossChain : SwapType.normal,
-      // feePercentageBasisPoints?: number;
       toChainId: isCrosschainSwap ? assetToBuy.chainId : assetToSell.chainId,
     };
   }, [
