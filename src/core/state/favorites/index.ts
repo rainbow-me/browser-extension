@@ -35,7 +35,7 @@ export const favoritesStore = createStore<FavoritesState>(
     },
     addFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
       const { favorites } = get();
-      const currentFavorites = favorites?.[chainId] || [];
+      const currentFavorites = favorites[chainId] || [];
       set({
         favorites: {
           ...favorites,
@@ -45,7 +45,7 @@ export const favoritesStore = createStore<FavoritesState>(
     },
     removeFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
       const { favorites } = get();
-      const currentFavorites = favorites?.[chainId] || [];
+      const currentFavorites = favorites[chainId] || [];
       set({
         favorites: {
           ...favorites,
