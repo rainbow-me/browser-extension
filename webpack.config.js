@@ -8,6 +8,8 @@ const Dotenv = require('dotenv-webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { ProgressPlugin, ProvidePlugin } = require('webpack');
+const BundleAnalyzerPlugin =
+  require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const allowList = require('./static/allowlist.json');
 const manifest = require('./static/manifest.json');
@@ -62,6 +64,10 @@ module.exports = {
     ],
   },
   plugins: [
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      generateStatsFile: true,
+    }),
     new Dotenv({ allowEmptyValues: true }),
     new HtmlWebpackPlugin({
       chunks: ['popup'],
