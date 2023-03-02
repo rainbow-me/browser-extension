@@ -21,9 +21,11 @@ import {
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { useSwapAssets } from '../../hooks/swap/useSwapAssets';
+import { useSwapDropdownDimensions } from '../../hooks/swap/useSwapDropdownDimensions';
 import { useSwapInputs } from '../../hooks/swap/useSwapInputs';
 
-import { SwapTokenInput } from './SwapTokenInput';
+import { TokenToReceiveInput } from './SwapTokenInput/TokenToReceiveInput';
+import { TokenToSwapInput } from './SwapTokenInput/TokenToSwapInput';
 
 export function Swap() {
   const {
@@ -34,14 +36,25 @@ export function Swap() {
   } = useSwapInputs();
 
   const {
-    assets,
+    assetsToSwap,
+    assetToSwapFilter,
+    assetsToReceive,
+    assetToReceiveFilter,
     sortMethod,
     assetToReceive,
     assetToSwap,
+    outputChainId,
     setSortMethod,
+    setOutputChainId,
     setAssetToReceiveAddress,
     setAssetToSwapAddress,
+    setAssetToSwapFilter,
+    setAssetToReceiveFilter,
   } = useSwapAssets();
+
+  const { toSwapInputHeight, toReceiveInputHeight } = useSwapDropdownDimensions(
+    { assetToSwap, assetToReceive },
+  );
 
   const onFlip = useCallback(() => null, []);
 
@@ -76,18 +89,19 @@ export function Swap() {
                   assetToSwap?.colors?.primary || assetToSwap?.colors?.fallback
                 }
               >
-                <SwapTokenInput
-                  dropdownHeight={452}
+                <TokenToSwapInput
+                  dropdownHeight={toSwapInputHeight}
                   asset={assetToSwap}
-                  assets={assets}
+                  assets={assetsToSwap}
                   selectAssetAddress={setAssetToSwapAddress}
                   onDropdownOpen={onAssetToSwapInputOpen}
                   dropdownClosed={assetToReceiveDropdownVisible}
                   setSortMethod={setSortMethod}
+                  assetFilter={assetToSwapFilter}
+                  setAssetFilter={setAssetToSwapFilter}
                   sortMethod={sortMethod}
                   zIndex={2}
                   placeholder={i18n.t('swap.input_token_to_swap_placeholder')}
-                  type="toSwap"
                 />
               </AccentColorProviderWrapper>
 
@@ -136,19 +150,21 @@ export function Swap() {
                   assetToReceive?.colors?.fallback
                 }
               >
-                <SwapTokenInput
+                <TokenToReceiveInput
+                  dropdownHeight={toReceiveInputHeight}
                   asset={assetToReceive}
-                  assets={assets}
+                  assets={assetsToReceive}
                   selectAssetAddress={setAssetToReceiveAddress}
                   onDropdownOpen={onAssetToReceiveInputOpen}
                   dropdownClosed={assetToSwapDropdownVisible}
-                  setSortMethod={setSortMethod}
-                  sortMethod={sortMethod}
                   zIndex={1}
                   placeholder={i18n.t(
                     'swap.input_token_to_receive_placeholder',
                   )}
-                  type="toReceive"
+                  setOutputChainId={setOutputChainId}
+                  outputChainId={outputChainId}
+                  assetFilter={assetToReceiveFilter}
+                  setAssetFilter={setAssetToReceiveFilter}
                 />
               </AccentColorProviderWrapper>
             </Stack>

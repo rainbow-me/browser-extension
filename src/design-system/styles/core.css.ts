@@ -21,6 +21,7 @@ import {
   buttonColors,
   fontWeights,
   foregroundColors,
+  linearGradients,
   negativeSpace,
   positionSpace,
   radii,
@@ -494,6 +495,8 @@ const textProperties = defineProperties({
     },
     fontWeight: fontWeights,
     textAlign: ['left', 'center', 'right'],
+    background: linearGradients,
+    WebkitBackgroundClip: ['border-box', 'text'],
   },
 });
 

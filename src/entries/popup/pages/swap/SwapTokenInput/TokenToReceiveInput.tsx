@@ -1,35 +1,93 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
+import { Address } from 'wagmi';
 
-import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
-import { handleSignificantDecimals } from '~/core/utils/numbers';
-import { Box, Stack, Text } from '~/design-system';
+import { ChainId } from '~/core/types/chains';
+import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+
+import { TokenToReceiveDropdown } from './TokenDropdown/TokenToReceiveDropdown';
+import { TokenToReceiveInfo } from './TokenInfo/TokenToReceiveInfo';
+import { TokenInput } from './TokenInput';
+
+interface TokenToReceiveProps {
+  asset?: ParsedAddressAsset;
+  assets?: {
+    data: ParsedAddressAsset[];
+    title: string;
+    id: string;
+    symbol: SymbolProps['symbol'];
+  }[];
+  assetFilter: string;
+  dropdownClosed: boolean;
+  dropdownHeight?: number;
+  outputChainId: ChainId;
+  placeholder: string;
+  zIndex?: number;
+  onDropdownOpen: (open: boolean) => void;
+  selectAssetAddress: (address: Address | '') => void;
+  setOutputChainId: (chainId: ChainId) => void;
+  setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
+}
 
 export const TokenToReceiveInput = ({
   asset,
+  assetFilter,
+  assets,
+  dropdownClosed = false,
+  dropdownHeight,
+  outputChainId,
   placeholder,
-}: {
-  asset: ParsedAddressAsset | null;
-  placeholder: string;
-}) => {
-  return (
-    <Box width="fit">
-      <Stack space="8px">
-        <Text
-          size="16pt"
-          weight="semibold"
-          color={`${asset ? 'label' : 'labelTertiary'}`}
-        >
-          {asset?.name ?? placeholder}
-        </Text>
+  zIndex,
+  onDropdownOpen,
+  selectAssetAddress,
+  setAssetFilter,
+  setOutputChainId,
+}: TokenToReceiveProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const onSelectAssetRef = useRef<(address: Address | '') => void>();
 
-        {asset && (
-          <Text as="p" size="12pt" weight="semibold" color="labelTertiary">
-            {handleSignificantDecimals(asset?.balance.amount, asset?.decimals)}{' '}
-            {i18n.t('send.tokens_input.available')}
-          </Text>
-        )}
-      </Stack>
-    </Box>
+  const setOnSelectAsset = useCallback(
+    (cb: (address: Address | '') => void) => {
+      onSelectAssetRef.current = (address: Address | '') => {
+        cb(address);
+        selectAssetAddress(address);
+      };
+    },
+    [selectAssetAddress],
+  );
+
+  const onDropdownChange = useCallback((open: boolean) => {
+    if (!open) {
+      setTimeout(() => inputRef?.current?.focus(), 300);
+    }
+  }, []);
+
+  return (
+    <TokenInput
+      inputRef={inputRef}
+      accentCaretColor
+      asset={asset}
+      dropdownClosed={dropdownClosed}
+      dropdownHeight={dropdownHeight}
+      dropdownComponent={
+        <TokenToReceiveDropdown
+          onDropdownChange={onDropdownChange}
+          asset={asset}
+          assets={assets}
+          onSelectAsset={onSelectAssetRef?.current}
+          outputChainId={outputChainId}
+          setOutputChainId={setOutputChainId}
+        />
+      }
+      bottomComponent={asset ? <TokenToReceiveInfo asset={asset} /> : null}
+      placeholder={placeholder}
+      zIndex={zIndex}
+      variant="tinted"
+      onDropdownOpen={onDropdownOpen}
+      setOnSelectAsset={setOnSelectAsset}
+      selectAssetAddress={selectAssetAddress}
+      assetFilter={assetFilter}
+      setAssetFilter={setAssetFilter}
+    />
   );
 };

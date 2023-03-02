@@ -158,6 +158,7 @@ export type ButtonVariant =
   | 'stroked'
   | 'transparent'
   | 'transparentHover'
+  | 'plain'
   | 'disabled';
 
 export const backdropFilter = {
@@ -592,6 +593,12 @@ export const fontWeights = {
 } as const;
 export type FontWeight = keyof typeof fontWeights;
 
+export const linearGradients = {
+  rainbow:
+    'radial-gradient(100% 276.79% at 100% 49.98%, #FFB114 0%, #FF54BB 63.54%, #00F0FF 100%)',
+} as const;
+export type LinearGradient = keyof typeof linearGradients;
+
 export const space = {
   '2px': 2,
   '3px': 3,
@@ -793,6 +800,7 @@ export const symbolNames = selectSymbolNames(
   'doc.plaintext',
   'doc.on.doc',
   'checkmark.shield.fill',
+  'checkmark.seal.fill',
   'lock.rotation',
   'doc.text.magnifyingglass',
   'magnifyingglass.circle',
@@ -807,6 +815,7 @@ export const symbolNames = selectSymbolNames(
   'command',
   'asterisk',
   'info.circle.fill',
+  'info',
   'app.connected.to.app.below.fill',
   'trash.fill',
   'plus.circle',
@@ -815,6 +824,7 @@ export const symbolNames = selectSymbolNames(
   'sparkle',
   'xmark.circle.fill',
   'switch.2',
+  'network',
 );
 export type SymbolName = typeof symbolNames[number];
 

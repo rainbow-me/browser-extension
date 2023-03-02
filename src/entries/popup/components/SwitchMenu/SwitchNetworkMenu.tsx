@@ -2,7 +2,9 @@ import React, { useMemo } from 'react';
 import { Chain, useNetwork } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { ChainId } from '~/core/types/chains';
 import { Box, Inline, Inset, Symbol, Text } from '~/design-system';
+import { Space } from '~/design-system/styles/designTokens';
 
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
@@ -106,19 +108,25 @@ export const SwitchNetworkMenuDisconnect = ({
 };
 
 interface SwitchNetworkMenuProps {
-  chainId: Chain['id'];
-  onChainChanged: (chainId: Chain['id'], chain: Chain) => void;
+  accentColor?: string;
+  chainId: ChainId;
+  onChainChanged: (chainId: ChainId, chain: Chain) => void;
   onDisconnect?: () => void;
   triggerComponent: React.ReactNode;
   type: 'dropdown' | 'context';
+  marginRight?: Space;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export const SwitchNetworkMenu = ({
+  accentColor,
   chainId,
   onChainChanged,
   onDisconnect,
   triggerComponent,
   type,
+  marginRight,
+  onOpenChange,
 }: SwitchNetworkMenuProps) => {
   const { chains } = useNetwork();
 
@@ -150,11 +158,15 @@ export const SwitchNetworkMenu = ({
   }, [type]);
 
   return (
-    <Menu>
+    <Menu onOpenChange={onOpenChange}>
       <MenuTrigger asChild>
         <Box style={{ cursor: 'default' }}>{triggerComponent}</Box>
       </MenuTrigger>
-      <MenuContent sideOffset={1}>
+      <MenuContent
+        accentColor={accentColor}
+        sideOffset={1}
+        marginRight={marginRight}
+      >
         <MenuLabel>{i18n.t('menu.network.title')}</MenuLabel>
         <MenuSeparator />
         <MenuRadioGroup
