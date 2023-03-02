@@ -16,7 +16,7 @@ const focusOnInput = (inputRef: React.RefObject<HTMLInputElement>) => {
   }, 100);
 };
 
-export type IndependentField = 'toSell' | 'toBuy';
+export type IndependentField = 'sellField' | 'buyField';
 
 export const useSwapInputs = ({
   assetToSell,
@@ -40,18 +40,18 @@ export const useSwapInputs = ({
   const assetToReceieveInputRef = useRef<HTMLInputElement>(null);
 
   const [independentField, setIndependentField] =
-    useState<IndependentField>('toSell');
+    useState<IndependentField>('sellField');
   const [independetValue, setIndependentValue] = useState<string>('');
 
   const setAssetToSellValue = useCallback((value: string) => {
     setAssetToSellStateValue(value);
-    setIndependentField('toSell');
+    setIndependentField('sellField');
     setIndependentValue(value);
   }, []);
 
   const setAssetToBuyValue = useCallback((value: string) => {
     setAssetToBuyStateValue(value);
-    setIndependentField('toBuy');
+    setIndependentField('buyField');
     setIndependentValue(value);
   }, []);
 
@@ -95,15 +95,15 @@ export const useSwapInputs = ({
   }, [assetToSellMaxValue.amount, setAssetToSellValue]);
 
   const flipAssets = useCallback(() => {
-    if (independentField === 'toSell') {
+    if (independentField === 'sellField') {
       setAssetToSellStateValue('');
       setAssetToBuyValue(independetValue);
-      setIndependentField('toBuy');
+      setIndependentField('buyField');
       focusOnInput(assetToReceieveInputRef);
     } else {
       setAssetToBuyStateValue('');
       setAssetToSellValue(independetValue);
-      setIndependentField('toSell');
+      setIndependentField('sellField');
       focusOnInput(assetToSellInputRef);
     }
     setAssetToBuy(assetToSell);

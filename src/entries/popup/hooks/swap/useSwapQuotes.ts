@@ -42,7 +42,7 @@ export const useSwapQuotes = ({
     const paramsReady =
       assetToSell &&
       assetToBuy &&
-      (independentField === 'toBuy' ? assetToBuyValue : assetToSellValue);
+      (independentField === 'buyField' ? assetToBuyValue : assetToSellValue);
     if (!paramsReady) return undefined;
 
     return {
@@ -52,14 +52,14 @@ export const useSwapQuotes = ({
       sellTokenAddress: assetToSell.address,
       buyTokenAddress: assetToBuy.address,
       sellAmount:
-        independentField === 'toSell'
+        independentField === 'sellField'
           ? convertAmountToRawAmount(
               assetToSellValue || '0',
               assetToSell.decimals,
             )
           : undefined,
       buyAmount:
-        independentField === 'toBuy'
+        independentField === 'buyField'
           ? convertAmountToRawAmount(
               assetToBuyValue || '0',
               assetToBuy.decimals,

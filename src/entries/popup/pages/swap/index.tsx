@@ -91,11 +91,11 @@ export function Swap() {
   useEffect(() => {
     if (quote) {
       const { sellAmount, buyAmount } = quote as Quote | CrosschainQuote;
-      if (independentField === 'toSell' && assetToBuy) {
+      if (independentField === 'sellField' && assetToBuy) {
         setAssetToBuyValue(
           convertRawAmountToBalance(String(buyAmount), assetToBuy).amount,
         );
-      } else if (independentField === 'toBuy' && assetToSell) {
+      } else if (independentField === 'buyField' && assetToSell) {
         setAssetToSellValue(
           convertRawAmountToBalance(String(sellAmount), assetToSell).amount,
         );
