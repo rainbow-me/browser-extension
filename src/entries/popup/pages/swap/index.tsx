@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import {
@@ -26,10 +26,13 @@ import { useSwapInputs } from '../../hooks/swap/useSwapInputs';
 import { useSwapQuote } from '../../hooks/swap/useSwapQuote';
 import { useSwapQuoteHandler } from '../../hooks/swap/useSwapQuoteHandler';
 
+import { SwapSettings } from './SwapSettings';
 import { TokenToBuyInput } from './SwapTokenInput/TokenToBuyInput';
 import { TokenToSellInput } from './SwapTokenInput/TokenToSellInput';
 
 export function Swap() {
+  const [showSwapSettings, setShowSwapSettings] = useState(false);
+
   const {
     assetsToSell,
     assetToSellFilter,
@@ -103,13 +106,14 @@ export function Swap() {
           <ButtonSymbol
             color="surfaceSecondaryElevated"
             height={'32px'}
-            onClick={() => null}
+            onClick={() => setShowSwapSettings(true)}
             symbol="switch.2"
             symbolColor="labelSecondary"
             variant="flat"
           />
         }
       />
+      <SwapSettings show={showSwapSettings} />
       <Box
         background="surfaceSecondary"
         style={{ height: 535 }}
