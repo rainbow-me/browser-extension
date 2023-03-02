@@ -1,5 +1,6 @@
-import { Signer, Wallet } from 'ethers';
-import { HDNode } from 'ethers/lib/utils';
+import { Signer } from '@ethersproject/abstract-signer';
+import { HDNode } from '@ethersproject/hdnode';
+import { Wallet } from '@ethersproject/wallet';
 import { Address } from 'wagmi';
 
 import { KeychainType } from '~/core/types/keychainTypes';

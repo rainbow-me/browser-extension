@@ -2,12 +2,13 @@ import {
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
+import { Bytes } from '@ethersproject/bytes';
+import { Mnemonic } from '@ethersproject/hdnode';
+import { keccak256 } from '@ethersproject/keccak256';
 import AppEth from '@ledgerhq/hw-app-eth';
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import { uuid4 } from '@sentry/utils';
 import { getProvider } from '@wagmi/core';
-import { Bytes } from 'ethers';
-import { Mnemonic, keccak256 } from 'ethers/lib/utils';
 import { Address } from 'wagmi';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';

@@ -3,11 +3,11 @@ import {
   Provider,
   TransactionRequest,
 } from '@ethersproject/abstract-provider';
+import { getAddress } from '@ethersproject/address';
+import { BigNumberish } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
 import { serialize } from '@ethersproject/transactions';
 import BigNumber from 'bignumber.js';
-import { BigNumberish } from 'ethers';
-import { getAddress } from 'ethers/lib/utils';
 
 import { globalColors } from '~/design-system/styles/designTokens';
 

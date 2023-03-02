@@ -1,4 +1,5 @@
-import { isAddress, isValidMnemonic } from 'ethers/lib/utils';
+import { isAddress } from '@ethersproject/address';
+import { isValidMnemonic } from '@ethersproject/hdnode';
 import { motion } from 'framer-motion';
 import { startsWith } from 'lodash';
 import React, { KeyboardEvent, useCallback, useState } from 'react';

@@ -1,4 +1,4 @@
-import { constants } from 'ethers';
+import { AddressZero } from '@ethersproject/constants';
 
 import { ChainId } from '~/core/types/chains';
 
@@ -13,10 +13,10 @@ export type {
   SupportedCurrencyKey,
 } from './supportedCurrencies';
 export const ETH_ADDRESS = 'eth';
-export const ARBITRUM_ETH_ADDRESS = constants.AddressZero;
-export const BNB_BSC_ADDRESS = constants.AddressZero;
+export const ARBITRUM_ETH_ADDRESS = AddressZero;
+export const BNB_BSC_ADDRESS = AddressZero;
 export const BNB_MAINNET_ADDRESS = '0xb8c77482e45f1f44de1745f52c74426c631bdd52';
-export const OPTIMISM_ETH_ADDRESS = constants.AddressZero;
+export const OPTIMISM_ETH_ADDRESS = AddressZero;
 export const MATIC_MAINNET_ADDRESS =
   '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0';
 export const MATIC_POLYGON_ADDRESS =

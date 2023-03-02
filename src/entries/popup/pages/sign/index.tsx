@@ -1,11 +1,11 @@
+import { getAddress } from '@ethersproject/address';
+import { verifyMessage } from '@ethersproject/wallet';
 import {
   MessageTypes,
   SignTypedDataVersion,
   TypedMessage,
   recoverTypedSignature,
 } from '@metamask/eth-sig-util';
-import { ethers } from 'ethers';
-import { getAddress } from 'ethers/lib/utils';
 import React, { useCallback, useState } from 'react';
 import { useAccount } from 'wagmi';
 
@@ -54,7 +54,7 @@ export function Sign() {
                 signature: result,
                 version: SignTypedDataVersion.V4,
               })
-            : ethers.utils.verifyMessage(msgData, result);
+            : verifyMessage(msgData, result);
 
         if (getAddress(actualAddress) === address) {
           alert(`Message signed succesfully: ${result}`);

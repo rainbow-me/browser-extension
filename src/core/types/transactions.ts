@@ -1,4 +1,4 @@
-import { BigNumberish } from 'ethers';
+import { BigNumberish } from '@ethersproject/bignumber';
 import { Address } from 'wagmi';
 
 import { ParsedAsset, ZerionAsset } from './assets';

@@ -3,13 +3,14 @@ import {
   TransactionRequest,
   TransactionResponse,
 } from '@ethersproject/abstract-provider';
+import { Signer } from '@ethersproject/abstract-signer';
+import { Wallet } from '@ethersproject/wallet';
 import {
   MessageTypeProperty,
   SignTypedDataVersion,
   TypedMessage,
   signTypedData as signTypedDataSigUtil,
 } from '@metamask/eth-sig-util';
-import { Signer, Wallet } from 'ethers';
 import { Address } from 'wagmi';
 
 import {

@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Signer, Wallet } from 'ethers';
-import { Mnemonic, isAddress } from 'ethers/lib/utils';
+import { Signer } from '@ethersproject/abstract-signer';
+import { isAddress } from '@ethersproject/address';
+import { Mnemonic } from '@ethersproject/hdnode';
+import { Wallet } from '@ethersproject/wallet';
 import { Address } from 'wagmi';
 
 import { KeychainType } from '~/core/types/keychainTypes';
