@@ -11,9 +11,19 @@ export class Analytics {
   disabled = false; // to do: check user setting here
 
   constructor() {
-    this.client = AnalyticsBrowser.load({
-      writeKey: process.env.SEGMENT_WRITE_KEY,
-    });
+    /**
+     * Integrations `All` key disables `amplitude-pluginsDestination` and any other
+     * remote plugins that are automatically enabled in 'Device Mode'.
+     * https://segment.com/docs/connections/destinations/catalog/actions-amplitude/#enable-session-tracking-for-analyticsjs-20
+     * https://segment.com/docs/connections/sources/catalog/libraries/website/javascript/#analyticsjs-performance
+     * https://segment.com/docs/connections/sources/catalog/libraries/website/javascript/#managing-data-flow-with-the-integrations-object
+     */
+    this.client = AnalyticsBrowser.load(
+      {
+        writeKey: process.env.SEGMENT_WRITE_KEY,
+      },
+      { integrations: { All: false, 'Segment.io': true } },
+    );
 
     logger.debug(`Segment initialized`);
   }
