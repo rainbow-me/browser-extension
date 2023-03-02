@@ -16,36 +16,36 @@ const focusOnInput = (inputRef: React.RefObject<HTMLInputElement>) => {
   }, 100);
 };
 
-export type IndependentField = 'toSwap' | 'toReceive';
+export type IndependentField = 'toSell' | 'toReceive';
 
 export const useSwapInputs = ({
-  assetToSwap,
+  assetToSell,
   assetToReceive,
-  setAssetToSwap,
+  setAssetToSell,
   setAssetToReceive,
 }: {
-  assetToSwap: ParsedAddressAsset | null;
+  assetToSell: ParsedAddressAsset | null;
   assetToReceive: ParsedAddressAsset | null;
-  setAssetToSwap: (asset: ParsedAddressAsset | null) => void;
+  setAssetToSell: (asset: ParsedAddressAsset | null) => void;
   setAssetToReceive: (asset: ParsedAddressAsset | null) => void;
 }) => {
-  const [assetToSwapDropdownClosed, setAssetToSwapDropdownClosed] =
+  const [assetToSellDropdownClosed, setAssetToSellDropdownClosed] =
     useState(true);
   const [assetToReceiveDropdownClosed, setAssetToReceiveDropdownClosed] =
     useState(true);
-  const [assetToSwapValue, setAssetToSwapStateValue] = useState('');
+  const [assetToSellValue, setAssetToSellStateValue] = useState('');
   const [assetToReceiveValue, setAssetToReceiveStateValue] = useState('');
 
-  const assetToSwapInputRef = useRef<HTMLInputElement>(null);
+  const assetToSellInputRef = useRef<HTMLInputElement>(null);
   const assetToReceieveInputRef = useRef<HTMLInputElement>(null);
 
   const [independentField, setIndependentField] =
-    useState<IndependentField>('toSwap');
+    useState<IndependentField>('toSell');
   const [independetValue, setIndependentValue] = useState<string>('');
 
-  const setAssetToSwapValue = useCallback((value: string) => {
-    setAssetToSwapStateValue(value);
-    setIndependentField('toSwap');
+  const setAssetToSellValue = useCallback((value: string) => {
+    setAssetToSellStateValue(value);
+    setIndependentField('toSell');
     setIndependentValue(value);
   }, []);
 
@@ -55,86 +55,86 @@ export const useSwapInputs = ({
     setIndependentValue(value);
   }, []);
 
-  const onAssetToSwapInputOpen = useCallback(
-    (assetToSwapDropdownVisible: boolean) => {
-      setAssetToSwapDropdownClosed(!assetToSwapDropdownVisible);
+  const onAssetToSellInputOpen = useCallback(
+    (assetToSellDropdownVisible: boolean) => {
+      setAssetToSellDropdownClosed(!assetToSellDropdownVisible);
       setAssetToReceiveDropdownClosed(true);
     },
     [],
   );
   const onAssetToReceiveInputOpen = useCallback(
     (assetToReceiveDropdownVisible: boolean) => {
-      setAssetToSwapDropdownClosed(true);
+      setAssetToSellDropdownClosed(true);
       setAssetToReceiveDropdownClosed(!assetToReceiveDropdownVisible);
     },
     [],
   );
 
-  const assetToSwapMaxValue = useMemo(() => {
+  const assetToSellMaxValue = useMemo(() => {
     const assetBalanceAmount = convertAmountToRawAmount(
-      assetToSwap?.balance?.amount || '0',
-      assetToSwap?.decimals || 18,
+      assetToSell?.balance?.amount || '0',
+      assetToSell?.decimals || 18,
     );
 
     const assetBalance = convertRawAmountToBalance(assetBalanceAmount, {
-      decimals: assetToSwap?.decimals || 18,
+      decimals: assetToSell?.decimals || 18,
     });
 
     return assetBalance;
-  }, [assetToSwap?.balance?.amount, assetToSwap?.decimals]);
+  }, [assetToSell?.balance?.amount, assetToSell?.decimals]);
 
-  const setAssetToSwapMaxValue = useCallback(() => {
-    setAssetToSwapValue(assetToSwapMaxValue.amount);
-    focusOnInput(assetToSwapInputRef);
+  const setAssetToSellMaxValue = useCallback(() => {
+    setAssetToSellValue(assetToSellMaxValue.amount);
+    focusOnInput(assetToSellInputRef);
     setTimeout(() => {
-      assetToSwapInputRef?.current?.setSelectionRange(
-        assetToSwapMaxValue.amount.length,
-        assetToSwapMaxValue.amount.length,
+      assetToSellInputRef?.current?.setSelectionRange(
+        assetToSellMaxValue.amount.length,
+        assetToSellMaxValue.amount.length,
       );
     }, 100);
-  }, [assetToSwapMaxValue.amount, setAssetToSwapValue]);
+  }, [assetToSellMaxValue.amount, setAssetToSellValue]);
 
   const flipAssets = useCallback(() => {
-    if (independentField === 'toSwap') {
-      setAssetToSwapStateValue('');
+    if (independentField === 'toSell') {
+      setAssetToSellStateValue('');
       setAssetToReceiveValue(independetValue);
       setIndependentField('toReceive');
       focusOnInput(assetToReceieveInputRef);
     } else {
       setAssetToReceiveStateValue('');
-      setAssetToSwapValue(independetValue);
-      setIndependentField('toSwap');
-      focusOnInput(assetToSwapInputRef);
+      setAssetToSellValue(independetValue);
+      setIndependentField('toSell');
+      focusOnInput(assetToSellInputRef);
     }
-    setAssetToReceive(assetToSwap);
-    setAssetToSwap(assetToReceive);
-    setAssetToSwapDropdownClosed(true);
+    setAssetToReceive(assetToSell);
+    setAssetToSell(assetToReceive);
+    setAssetToSellDropdownClosed(true);
     setAssetToReceiveDropdownClosed(true);
   }, [
     assetToReceive,
-    assetToSwap,
+    assetToSell,
     independentField,
     independetValue,
     setAssetToReceive,
     setAssetToReceiveValue,
-    setAssetToSwap,
-    setAssetToSwapValue,
+    setAssetToSell,
+    setAssetToSellValue,
   ]);
 
   return {
     assetToReceieveInputRef,
-    assetToSwapInputRef,
-    assetToSwapMaxValue,
-    assetToSwapValue,
+    assetToSellInputRef,
+    assetToSellMaxValue,
+    assetToSellValue,
     assetToReceiveValue,
-    assetToSwapDropdownClosed,
+    assetToSellDropdownClosed,
     assetToReceiveDropdownClosed,
     independentField,
     flipAssets,
-    onAssetToSwapInputOpen,
+    onAssetToSellInputOpen,
     onAssetToReceiveInputOpen,
     setAssetToReceiveValue,
-    setAssetToSwapValue,
-    setAssetToSwapMaxValue,
+    setAssetToSellValue,
+    setAssetToSellMaxValue,
   };
 };

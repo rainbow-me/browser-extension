@@ -16,17 +16,17 @@ import { IndependentField } from './useSwapInputs';
 const SWAP_POLLING_INTERVAL = 5000;
 
 interface UseSwapQuotesProps {
-  assetToSwap: ParsedAddressAsset | null;
+  assetToSell: ParsedAddressAsset | null;
   assetToReceive: ParsedAddressAsset | null;
-  assetToSwapValue?: string;
+  assetToSellValue?: string;
   assetToReceiveValue?: string;
   independentField: IndependentField;
 }
 
 export const useSwapQuotes = ({
-  assetToSwap,
+  assetToSell,
   assetToReceive,
-  assetToSwapValue,
+  assetToSellValue,
   assetToReceiveValue,
   independentField,
 }: UseSwapQuotesProps) => {
@@ -34,32 +34,32 @@ export const useSwapQuotes = ({
 
   const isCrosschainSwap = useMemo(
     () =>
-      assetToSwap &&
+      assetToSell &&
       assetToReceive &&
-      assetToSwap?.chainId !== assetToReceive?.chainId,
-    [assetToReceive, assetToSwap],
+      assetToSell?.chainId !== assetToReceive?.chainId,
+    [assetToReceive, assetToSell],
   );
 
   const quotesParams: QuoteParams | undefined = useMemo(() => {
     const paramsReady =
-      assetToSwap &&
+      assetToSell &&
       assetToReceive &&
       (independentField === 'toReceive'
         ? assetToReceiveValue
-        : assetToSwapValue);
+        : assetToSellValue);
     if (!paramsReady) return undefined;
 
     return {
       // source?: Source;
-      chainId: assetToSwap.chainId,
+      chainId: assetToSell.chainId,
       fromAddress: currentAddress,
-      sellTokenAddress: assetToSwap.address,
+      sellTokenAddress: assetToSell.address,
       buyTokenAddress: assetToReceive.address,
       sellAmount:
-        independentField === 'toSwap'
+        independentField === 'toSell'
           ? convertAmountToRawAmount(
-              assetToSwapValue || '0',
-              assetToSwap.decimals,
+              assetToSellValue || '0',
+              assetToSell.decimals,
             )
           : undefined,
       buyAmount:
@@ -76,13 +76,13 @@ export const useSwapQuotes = ({
       // feePercentageBasisPoints?: number;
       toChainId: isCrosschainSwap
         ? assetToReceive.chainId
-        : assetToSwap.chainId,
+        : assetToSell.chainId,
     };
   }, [
     assetToReceive,
     assetToReceiveValue,
-    assetToSwap,
-    assetToSwapValue,
+    assetToSell,
+    assetToSellValue,
     currentAddress,
     independentField,
     isCrosschainSwap,

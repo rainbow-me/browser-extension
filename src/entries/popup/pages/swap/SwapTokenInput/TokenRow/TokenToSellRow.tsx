@@ -25,11 +25,11 @@ const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 210;
 const BALANCE_TEXT_MAX_WIDTH = 75;
 
-export type TokenToSwapRowProps = {
+export type TokenToSellRowProps = {
   uniqueId: UniqueId;
 };
 
-export function TokenToSwapRow({ uniqueId }: TokenToSwapRowProps) {
+export function TokenToSellRow({ uniqueId }: TokenToSellRowProps) {
   const asset = useUserAsset(uniqueId);
   const { hideAssetBalances } = useHideAssetBalancesStore();
   const { currentCurrency } = useCurrentCurrencyStore();

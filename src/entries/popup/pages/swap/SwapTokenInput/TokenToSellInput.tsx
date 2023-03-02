@@ -3,13 +3,13 @@ import React, { useCallback, useRef } from 'react';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { SortMethod } from '~/entries/popup/hooks/send/useSendAsset';
 
-import { TokenToSwapDropdown } from './TokenDropdown/TokenToSwapDropdown';
-import { TokenToSwapInfo } from './TokenInfo/TokenToSwapInfo';
+import { TokenToSellDropdown } from './TokenDropdown/TokenToSellDropdown';
+import { TokenToSellInfo } from './TokenInfo/TokenToSellInfo';
 import { TokenInput } from './TokenInput';
 
 interface SwapTokenInputProps {
-  assetToSwapMaxValue: { display: string; amount: string };
-  assetToSwapValue: string;
+  assetToSellMaxValue: { display: string; amount: string };
+  assetToSellValue: string;
   asset: ParsedAddressAsset | null;
   assetFilter: string;
   assets?: ParsedAddressAsset[];
@@ -23,12 +23,12 @@ interface SwapTokenInputProps {
   setSortMethod: (sortMethod: SortMethod) => void;
   selectAsset: (asset: ParsedAddressAsset | null) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
-  setAssetToSwapMaxValue: () => void;
-  setAssetToSwapValue: (value: string) => void;
+  setAssetToSellMaxValue: () => void;
+  setAssetToSellValue: (value: string) => void;
 }
 
-export const TokenToSwapInput = ({
-  assetToSwapMaxValue,
+export const TokenToSellInput = ({
+  assetToSellMaxValue,
   asset,
   assetFilter,
   assets,
@@ -37,14 +37,14 @@ export const TokenToSwapInput = ({
   placeholder,
   sortMethod,
   zIndex,
-  assetToSwapValue,
+  assetToSellValue,
   inputRef,
   onDropdownOpen,
   selectAsset,
   setAssetFilter,
   setSortMethod,
-  setAssetToSwapMaxValue,
-  setAssetToSwapValue,
+  setAssetToSellMaxValue,
+  setAssetToSellValue,
 }: SwapTokenInputProps) => {
   const onSelectAssetRef = useRef<(asset: ParsedAddressAsset) => void>();
 
@@ -68,8 +68,8 @@ export const TokenToSwapInput = ({
   );
 
   const setMaxValue = useCallback(() => {
-    setAssetToSwapMaxValue();
-  }, [setAssetToSwapMaxValue]);
+    setAssetToSellMaxValue();
+  }, [setAssetToSellMaxValue]);
 
   return (
     <TokenInput
@@ -78,7 +78,7 @@ export const TokenToSwapInput = ({
       dropdownClosed={dropdownClosed}
       dropdownHeight={dropdownHeight}
       dropdownComponent={
-        <TokenToSwapDropdown
+        <TokenToSellDropdown
           onDropdownChange={onDropdownChange}
           asset={asset}
           assets={assets}
@@ -89,24 +89,24 @@ export const TokenToSwapInput = ({
       }
       bottomComponent={
         asset ? (
-          <TokenToSwapInfo
-            assetToSwapValue={assetToSwapValue}
-            assetToSwapMaxValue={assetToSwapMaxValue}
+          <TokenToSellInfo
+            assetToSellValue={assetToSellValue}
+            assetToSellMaxValue={assetToSellMaxValue}
             asset={asset}
-            setAssetToSwapMaxValue={setMaxValue}
+            setAssetToSellMaxValue={setMaxValue}
           />
         ) : null
       }
       placeholder={placeholder}
       zIndex={zIndex}
       variant="tinted"
-      value={assetToSwapValue}
+      value={assetToSellValue}
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
       selectAsset={selectAsset}
       assetFilter={assetFilter}
       setAssetFilter={setAssetFilter}
-      setValue={setAssetToSwapValue}
+      setValue={setAssetToSellValue}
     />
   );
 };
