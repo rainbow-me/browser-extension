@@ -23,7 +23,7 @@ interface UseSwapQuotesProps {
   independentField: IndependentField;
 }
 
-export const useSwapQuotes = ({
+export const useSwapQuote = ({
   assetToSell,
   assetToBuy,
   assetToSellValue,
@@ -86,7 +86,7 @@ export const useSwapQuotes = ({
     queryFn: () =>
       quotesParams &&
       (isCrosschainSwap ? getCrosschainQuote : getQuote)(quotesParams),
-    queryKey: ['getQuote', quotesParams],
+    queryKey: ['getSwapQuote', quotesParams],
     enabled: !!quotesParams,
     refetchInterval: SWAP_POLLING_INTERVAL,
   });

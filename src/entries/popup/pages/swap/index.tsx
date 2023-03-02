@@ -1,9 +1,7 @@
-import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
 import { motion } from 'framer-motion';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { i18n } from '~/core/languages';
-import { convertRawAmountToBalance } from '~/core/utils/numbers';
 import {
   Box,
   Button,
@@ -25,7 +23,8 @@ import { Navbar } from '../../components/Navbar/Navbar';
 import { useSwapAssets } from '../../hooks/swap/useSwapAssets';
 import { useSwapDropdownDimensions } from '../../hooks/swap/useSwapDropdownDimensions';
 import { useSwapInputs } from '../../hooks/swap/useSwapInputs';
-import { useSwapQuotes } from '../../hooks/swap/useSwapQuotes';
+import { useSwapQuote } from '../../hooks/swap/useSwapQuote';
+import { useSwapQuoteHandler } from '../../hooks/swap/useSwapQuoteHandler';
 
 import { TokenToBuyInput } from './SwapTokenInput/TokenToBuyInput';
 import { TokenToSellInput } from './SwapTokenInput/TokenToSellInput';
@@ -47,6 +46,11 @@ export function Swap() {
     setAssetToSellFilter,
     setAssetToBuyFilter,
   } = useSwapAssets();
+
+  const { toSellInputHeight, toBuyInputHeight } = useSwapDropdownDimensions({
+    assetToSell,
+    assetToBuy,
+  });
 
   const {
     assetToSellInputRef,
@@ -72,7 +76,7 @@ export function Swap() {
     setAssetToBuy,
   });
 
-  const { data: quote } = useSwapQuotes({
+  const { data: quote } = useSwapQuote({
     assetToSell,
     assetToBuy,
     assetToSellValue,
@@ -80,32 +84,14 @@ export function Swap() {
     independentField,
   });
 
-  const { toSellInputHeight, toBuyInputHeight } = useSwapDropdownDimensions({
-    assetToSell,
-    assetToBuy,
-  });
-
-  useEffect(() => {
-    if (quote) {
-      const { sellAmount, buyAmount } = quote as Quote | CrosschainQuote;
-      if (independentField === 'sellField' && assetToBuy) {
-        setAssetToBuyValue(
-          convertRawAmountToBalance(String(buyAmount), assetToBuy).amount,
-        );
-      } else if (independentField === 'buyField' && assetToSell) {
-        setAssetToSellValue(
-          convertRawAmountToBalance(String(sellAmount), assetToSell).amount,
-        );
-      }
-    }
-  }, [
+  useSwapQuoteHandler({
     assetToBuy,
     assetToSell,
-    independentField,
     quote,
+    independentField,
     setAssetToBuyValue,
     setAssetToSellValue,
-  ]);
+  });
 
   return (
     <>
