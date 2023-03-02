@@ -28,7 +28,7 @@ interface TokenToBuyProps {
   setOutputChainId: (chainId: ChainId) => void;
   selectAsset: (asset: ParsedAddressAsset | null) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
-  setAssetToBuyValue: (value: string) => void;
+  setAssetToBuyInputValue: (value: string) => void;
 }
 
 export const TokenToBuyInput = ({
@@ -46,7 +46,7 @@ export const TokenToBuyInput = ({
   selectAsset,
   setAssetFilter,
   setOutputChainId,
-  setAssetToBuyValue,
+  setAssetToBuyInputValue,
 }: TokenToBuyProps) => {
   const onSelectAssetRef =
     useRef<(address: ParsedAddressAsset | null) => void>();
@@ -97,7 +97,7 @@ export const TokenToBuyInput = ({
       selectAsset={selectAsset}
       assetFilter={assetFilter}
       setAssetFilter={setAssetFilter}
-      setValue={setAssetToBuyValue}
+      setValue={setAssetToBuyInputValue}
     />
   );
 };

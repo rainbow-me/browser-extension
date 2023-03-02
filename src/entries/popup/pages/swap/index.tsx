@@ -50,7 +50,7 @@ export function Swap() {
 
   const {
     assetToSellInputRef,
-    assetToReceieveInputRef,
+    assetToBuyInputRef,
     assetToSellMaxValue,
     assetToBuyValue,
     assetToSellValue,
@@ -62,7 +62,9 @@ export function Swap() {
     onAssetToBuyInputOpen,
     setAssetToSellMaxValue,
     setAssetToSellValue,
+    setAssetToSellInputValue,
     setAssetToBuyValue,
+    setAssetToBuyInputValue,
   } = useSwapInputs({
     assetToSell,
     assetToBuy,
@@ -78,15 +80,10 @@ export function Swap() {
     independentField,
   });
 
-  console.log('quote', quote);
-
   const { toSellInputHeight, toBuyInputHeight } = useSwapDropdownDimensions({
     assetToSell,
     assetToBuy,
   });
-
-  console.log('assetToBuyDropdownClosed', assetToBuyDropdownClosed);
-  console.log('assetToSellDropdownClosed', assetToSellDropdownClosed);
 
   useEffect(() => {
     if (quote) {
@@ -157,7 +154,7 @@ export function Swap() {
                   assetToSellMaxValue={assetToSellMaxValue}
                   setAssetToSellMaxValue={setAssetToSellMaxValue}
                   assetToSellValue={assetToSellValue}
-                  setAssetToSellValue={setAssetToSellValue}
+                  setAssetToSellInputValue={setAssetToSellInputValue}
                   inputRef={assetToSellInputRef}
                 />
               </AccentColorProviderWrapper>
@@ -222,8 +219,8 @@ export function Swap() {
                   assetFilter={assetToBuyFilter}
                   setAssetFilter={setAssetToBuyFilter}
                   assetToBuyValue={assetToBuyValue}
-                  setAssetToBuyValue={setAssetToBuyValue}
-                  inputRef={assetToReceieveInputRef}
+                  setAssetToBuyInputValue={setAssetToBuyInputValue}
+                  inputRef={assetToBuyInputRef}
                 />
               </AccentColorProviderWrapper>
             </Stack>

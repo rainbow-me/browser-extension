@@ -33,24 +33,26 @@ export const useSwapInputs = ({
     useState(true);
   const [assetToBuyDropdownClosed, setAssetToBuyDropdownClosed] =
     useState(true);
-  const [assetToSellValue, setAssetToSellStateValue] = useState('');
-  const [assetToBuyValue, setAssetToBuyStateValue] = useState('');
+  const [assetToSellValue, setAssetToSellValue] = useState('');
+  const [assetToBuyValue, setAssetToBuyValue] = useState('');
 
   const assetToSellInputRef = useRef<HTMLInputElement>(null);
-  const assetToReceieveInputRef = useRef<HTMLInputElement>(null);
+  const assetToBuyInputRef = useRef<HTMLInputElement>(null);
 
   const [independentField, setIndependentField] =
     useState<IndependentField>('sellField');
   const [independetValue, setIndependentValue] = useState<string>('');
 
-  const setAssetToSellValue = useCallback((value: string) => {
-    setAssetToSellStateValue(value);
+  const setAssetToSellInputValue = useCallback((value: string) => {
+    setAssetToSellDropdownClosed(true);
+    setAssetToSellValue(value);
     setIndependentField('sellField');
     setIndependentValue(value);
   }, []);
 
-  const setAssetToBuyValue = useCallback((value: string) => {
-    setAssetToBuyStateValue(value);
+  const setAssetToBuyInputValue = useCallback((value: string) => {
+    setAssetToBuyDropdownClosed(true);
+    setAssetToBuyValue(value);
     setIndependentField('buyField');
     setIndependentValue(value);
   }, []);
@@ -62,6 +64,7 @@ export const useSwapInputs = ({
     },
     [],
   );
+
   const onAssetToBuyInputOpen = useCallback(
     (assetToBuyDropdownVisible: boolean) => {
       setAssetToSellDropdownClosed(true);
@@ -75,11 +78,9 @@ export const useSwapInputs = ({
       assetToSell?.balance?.amount || '0',
       assetToSell?.decimals || 18,
     );
-
     const assetBalance = convertRawAmountToBalance(assetBalanceAmount, {
       decimals: assetToSell?.decimals || 18,
     });
-
     return assetBalance;
   }, [assetToSell?.balance?.amount, assetToSell?.decimals]);
 
@@ -96,12 +97,12 @@ export const useSwapInputs = ({
 
   const flipAssets = useCallback(() => {
     if (independentField === 'sellField') {
-      setAssetToSellStateValue('');
+      setAssetToSellValue('');
       setAssetToBuyValue(independetValue);
       setIndependentField('buyField');
-      focusOnInput(assetToReceieveInputRef);
+      focusOnInput(assetToBuyInputRef);
     } else {
-      setAssetToBuyStateValue('');
+      setAssetToBuyValue('');
       setAssetToSellValue(independetValue);
       setIndependentField('sellField');
       focusOnInput(assetToSellInputRef);
@@ -122,7 +123,7 @@ export const useSwapInputs = ({
   ]);
 
   return {
-    assetToReceieveInputRef,
+    assetToBuyInputRef,
     assetToSellInputRef,
     assetToSellMaxValue,
     assetToSellValue,
@@ -134,7 +135,9 @@ export const useSwapInputs = ({
     onAssetToSellInputOpen,
     onAssetToBuyInputOpen,
     setAssetToBuyValue,
+    setAssetToBuyInputValue,
     setAssetToSellValue,
+    setAssetToSellInputValue,
     setAssetToSellMaxValue,
   };
 };
