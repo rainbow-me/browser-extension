@@ -13,6 +13,8 @@ import { convertAmountToRawAmount } from '~/core/utils/numbers';
 
 import { IndependentField } from './useSwapInputs';
 
+const SWAP_POLLING_INTERVAL = 5000;
+
 interface UseSwapQuotesProps {
   assetToSwap: ParsedAddressAsset | null;
   assetToReceive: ParsedAddressAsset | null;
@@ -86,13 +88,14 @@ export const useSwapQuotes = ({
     isCrosschainSwap,
   ]);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryFn: () =>
       quotesParams &&
       (isCrosschainSwap ? getCrosschainQuote : getQuote)(quotesParams),
     queryKey: ['getQuote', quotesParams],
     enabled: !!quotesParams,
+    refetchInterval: SWAP_POLLING_INTERVAL,
   });
 
-  return { data, isLoading };
+  return { data, isLoading, isError };
 };

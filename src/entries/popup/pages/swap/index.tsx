@@ -1,7 +1,9 @@
+import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { i18n } from '~/core/languages';
+import { convertRawAmountToBalance } from '~/core/utils/numbers';
 import {
   Box,
   Button,
@@ -68,7 +70,7 @@ export function Swap() {
     setAssetToReceive,
   });
 
-  const { data } = useSwapQuotes({
+  const { data: quote } = useSwapQuotes({
     assetToSwap,
     assetToReceive,
     assetToSwapValue,
@@ -76,7 +78,7 @@ export function Swap() {
     independentField,
   });
 
-  console.log('data', data);
+  console.log('quote', quote);
 
   const { toSwapInputHeight, toReceiveInputHeight } = useSwapDropdownDimensions(
     { assetToSwap, assetToReceive },
@@ -84,6 +86,28 @@ export function Swap() {
 
   console.log('assetToReceiveDropdownClosed', assetToReceiveDropdownClosed);
   console.log('assetToSwapDropdownClosed', assetToSwapDropdownClosed);
+
+  useEffect(() => {
+    if (quote) {
+      const { sellAmount, buyAmount } = quote as Quote | CrosschainQuote;
+      if (independentField === 'toSwap' && assetToReceive) {
+        setAssetToReceiveValue(
+          convertRawAmountToBalance(String(buyAmount), assetToReceive).amount,
+        );
+      } else if (independentField === 'toReceive' && assetToSwap) {
+        setAssetToSwapValue(
+          convertRawAmountToBalance(String(sellAmount), assetToSwap).amount,
+        );
+      }
+    }
+  }, [
+    assetToReceive,
+    assetToSwap,
+    independentField,
+    quote,
+    setAssetToReceiveValue,
+    setAssetToSwapValue,
+  ]);
 
   return (
     <>
