@@ -17,36 +17,32 @@ const SWAP_POLLING_INTERVAL = 5000;
 
 interface UseSwapQuotesProps {
   assetToSell: ParsedAddressAsset | null;
-  assetToReceive: ParsedAddressAsset | null;
+  assetToBuy: ParsedAddressAsset | null;
   assetToSellValue?: string;
-  assetToReceiveValue?: string;
+  assetToBuyValue?: string;
   independentField: IndependentField;
 }
 
 export const useSwapQuotes = ({
   assetToSell,
-  assetToReceive,
+  assetToBuy,
   assetToSellValue,
-  assetToReceiveValue,
+  assetToBuyValue,
   independentField,
 }: UseSwapQuotesProps) => {
   const { currentAddress } = useCurrentAddressStore();
 
   const isCrosschainSwap = useMemo(
     () =>
-      assetToSell &&
-      assetToReceive &&
-      assetToSell?.chainId !== assetToReceive?.chainId,
-    [assetToReceive, assetToSell],
+      assetToSell && assetToBuy && assetToSell?.chainId !== assetToBuy?.chainId,
+    [assetToBuy, assetToSell],
   );
 
   const quotesParams: QuoteParams | undefined = useMemo(() => {
     const paramsReady =
       assetToSell &&
-      assetToReceive &&
-      (independentField === 'toReceive'
-        ? assetToReceiveValue
-        : assetToSellValue);
+      assetToBuy &&
+      (independentField === 'toBuy' ? assetToBuyValue : assetToSellValue);
     if (!paramsReady) return undefined;
 
     return {
@@ -54,7 +50,7 @@ export const useSwapQuotes = ({
       chainId: assetToSell.chainId,
       fromAddress: currentAddress,
       sellTokenAddress: assetToSell.address,
-      buyTokenAddress: assetToReceive.address,
+      buyTokenAddress: assetToBuy.address,
       sellAmount:
         independentField === 'toSell'
           ? convertAmountToRawAmount(
@@ -63,10 +59,10 @@ export const useSwapQuotes = ({
             )
           : undefined,
       buyAmount:
-        independentField === 'toReceive'
+        independentField === 'toBuy'
           ? convertAmountToRawAmount(
-              assetToReceiveValue || '0',
-              assetToReceive.decimals,
+              assetToBuyValue || '0',
+              assetToBuy.decimals,
             )
           : undefined,
       slippage: 0.3,
@@ -74,13 +70,11 @@ export const useSwapQuotes = ({
       // refuel?: boolean;
       swapType: isCrosschainSwap ? SwapType.crossChain : SwapType.normal,
       // feePercentageBasisPoints?: number;
-      toChainId: isCrosschainSwap
-        ? assetToReceive.chainId
-        : assetToSell.chainId,
+      toChainId: isCrosschainSwap ? assetToBuy.chainId : assetToSell.chainId,
     };
   }, [
-    assetToReceive,
-    assetToReceiveValue,
+    assetToBuy,
+    assetToBuyValue,
     assetToSell,
     assetToSellValue,
     currentAddress,

@@ -4,11 +4,11 @@ import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
-import { TokenToReceiveDropdown } from './TokenDropdown/TokenToReceiveDropdown';
-import { TokenToReceiveInfo } from './TokenInfo/TokenToReceiveInfo';
+import { TokenToBuyDropdown } from './TokenDropdown/TokenToBuyDropdown';
+import { TokenToBuyInfo } from './TokenInfo/TokenToBuyInfo';
 import { TokenInput } from './TokenInput';
 
-interface TokenToReceiveProps {
+interface TokenToBuyProps {
   asset: ParsedAddressAsset | null;
   assets?: {
     data: ParsedAddressAsset[];
@@ -22,16 +22,16 @@ interface TokenToReceiveProps {
   outputChainId: ChainId;
   placeholder: string;
   zIndex?: number;
-  assetToReceiveValue: string;
+  assetToBuyValue: string;
   inputRef: React.RefObject<HTMLInputElement>;
   onDropdownOpen: (open: boolean) => void;
   setOutputChainId: (chainId: ChainId) => void;
   selectAsset: (asset: ParsedAddressAsset | null) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
-  setAssetToReceiveValue: (value: string) => void;
+  setAssetToBuyValue: (value: string) => void;
 }
 
-export const TokenToReceiveInput = ({
+export const TokenToBuyInput = ({
   asset,
   assetFilter,
   assets,
@@ -40,14 +40,14 @@ export const TokenToReceiveInput = ({
   outputChainId,
   placeholder,
   zIndex,
-  assetToReceiveValue,
+  assetToBuyValue,
   inputRef,
   onDropdownOpen,
   selectAsset,
   setAssetFilter,
   setOutputChainId,
-  setAssetToReceiveValue,
-}: TokenToReceiveProps) => {
+  setAssetToBuyValue,
+}: TokenToBuyProps) => {
   const onSelectAssetRef =
     useRef<(address: ParsedAddressAsset | null) => void>();
 
@@ -78,7 +78,7 @@ export const TokenToReceiveInput = ({
       dropdownClosed={dropdownClosed}
       dropdownHeight={dropdownHeight}
       dropdownComponent={
-        <TokenToReceiveDropdown
+        <TokenToBuyDropdown
           onDropdownChange={onDropdownChange}
           asset={asset}
           assets={assets}
@@ -87,17 +87,17 @@ export const TokenToReceiveInput = ({
           setOutputChainId={setOutputChainId}
         />
       }
-      bottomComponent={asset ? <TokenToReceiveInfo asset={asset} /> : null}
+      bottomComponent={asset ? <TokenToBuyInfo asset={asset} /> : null}
       placeholder={placeholder}
       zIndex={zIndex}
       variant="tinted"
-      value={assetToReceiveValue}
+      value={assetToBuyValue}
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
       selectAsset={selectAsset}
       assetFilter={assetFilter}
       setAssetFilter={setAssetFilter}
-      setValue={setAssetToReceiveValue}
+      setValue={setAssetToBuyValue}
     />
   );
 };

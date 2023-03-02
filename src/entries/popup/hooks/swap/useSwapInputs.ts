@@ -16,25 +16,25 @@ const focusOnInput = (inputRef: React.RefObject<HTMLInputElement>) => {
   }, 100);
 };
 
-export type IndependentField = 'toSell' | 'toReceive';
+export type IndependentField = 'toSell' | 'toBuy';
 
 export const useSwapInputs = ({
   assetToSell,
-  assetToReceive,
+  assetToBuy,
   setAssetToSell,
-  setAssetToReceive,
+  setAssetToBuy,
 }: {
   assetToSell: ParsedAddressAsset | null;
-  assetToReceive: ParsedAddressAsset | null;
+  assetToBuy: ParsedAddressAsset | null;
   setAssetToSell: (asset: ParsedAddressAsset | null) => void;
-  setAssetToReceive: (asset: ParsedAddressAsset | null) => void;
+  setAssetToBuy: (asset: ParsedAddressAsset | null) => void;
 }) => {
   const [assetToSellDropdownClosed, setAssetToSellDropdownClosed] =
     useState(true);
-  const [assetToReceiveDropdownClosed, setAssetToReceiveDropdownClosed] =
+  const [assetToBuyDropdownClosed, setAssetToBuyDropdownClosed] =
     useState(true);
   const [assetToSellValue, setAssetToSellStateValue] = useState('');
-  const [assetToReceiveValue, setAssetToReceiveStateValue] = useState('');
+  const [assetToBuyValue, setAssetToBuyStateValue] = useState('');
 
   const assetToSellInputRef = useRef<HTMLInputElement>(null);
   const assetToReceieveInputRef = useRef<HTMLInputElement>(null);
@@ -49,23 +49,23 @@ export const useSwapInputs = ({
     setIndependentValue(value);
   }, []);
 
-  const setAssetToReceiveValue = useCallback((value: string) => {
-    setAssetToReceiveStateValue(value);
-    setIndependentField('toReceive');
+  const setAssetToBuyValue = useCallback((value: string) => {
+    setAssetToBuyStateValue(value);
+    setIndependentField('toBuy');
     setIndependentValue(value);
   }, []);
 
   const onAssetToSellInputOpen = useCallback(
     (assetToSellDropdownVisible: boolean) => {
       setAssetToSellDropdownClosed(!assetToSellDropdownVisible);
-      setAssetToReceiveDropdownClosed(true);
+      setAssetToBuyDropdownClosed(true);
     },
     [],
   );
-  const onAssetToReceiveInputOpen = useCallback(
-    (assetToReceiveDropdownVisible: boolean) => {
+  const onAssetToBuyInputOpen = useCallback(
+    (assetToBuyDropdownVisible: boolean) => {
       setAssetToSellDropdownClosed(true);
-      setAssetToReceiveDropdownClosed(!assetToReceiveDropdownVisible);
+      setAssetToBuyDropdownClosed(!assetToBuyDropdownVisible);
     },
     [],
   );
@@ -97,26 +97,26 @@ export const useSwapInputs = ({
   const flipAssets = useCallback(() => {
     if (independentField === 'toSell') {
       setAssetToSellStateValue('');
-      setAssetToReceiveValue(independetValue);
-      setIndependentField('toReceive');
+      setAssetToBuyValue(independetValue);
+      setIndependentField('toBuy');
       focusOnInput(assetToReceieveInputRef);
     } else {
-      setAssetToReceiveStateValue('');
+      setAssetToBuyStateValue('');
       setAssetToSellValue(independetValue);
       setIndependentField('toSell');
       focusOnInput(assetToSellInputRef);
     }
-    setAssetToReceive(assetToSell);
-    setAssetToSell(assetToReceive);
+    setAssetToBuy(assetToSell);
+    setAssetToSell(assetToBuy);
     setAssetToSellDropdownClosed(true);
-    setAssetToReceiveDropdownClosed(true);
+    setAssetToBuyDropdownClosed(true);
   }, [
-    assetToReceive,
+    assetToBuy,
     assetToSell,
     independentField,
     independetValue,
-    setAssetToReceive,
-    setAssetToReceiveValue,
+    setAssetToBuy,
+    setAssetToBuyValue,
     setAssetToSell,
     setAssetToSellValue,
   ]);
@@ -126,14 +126,14 @@ export const useSwapInputs = ({
     assetToSellInputRef,
     assetToSellMaxValue,
     assetToSellValue,
-    assetToReceiveValue,
+    assetToBuyValue,
     assetToSellDropdownClosed,
-    assetToReceiveDropdownClosed,
+    assetToBuyDropdownClosed,
     independentField,
     flipAssets,
     onAssetToSellInputOpen,
-    onAssetToReceiveInputOpen,
-    setAssetToReceiveValue,
+    onAssetToBuyInputOpen,
+    setAssetToBuyValue,
     setAssetToSellValue,
     setAssetToSellMaxValue,
   };

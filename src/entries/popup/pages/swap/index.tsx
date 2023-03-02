@@ -27,85 +27,86 @@ import { useSwapDropdownDimensions } from '../../hooks/swap/useSwapDropdownDimen
 import { useSwapInputs } from '../../hooks/swap/useSwapInputs';
 import { useSwapQuotes } from '../../hooks/swap/useSwapQuotes';
 
-import { TokenToReceiveInput } from './SwapTokenInput/TokenToReceiveInput';
+import { TokenToBuyInput } from './SwapTokenInput/TokenToBuyInput';
 import { TokenToSellInput } from './SwapTokenInput/TokenToSellInput';
 
 export function Swap() {
   const {
     assetsToSell,
     assetToSellFilter,
-    assetsToReceive,
-    assetToReceiveFilter,
+    assetsToBuy,
+    assetToBuyFilter,
     sortMethod,
-    assetToReceive,
+    assetToBuy,
     assetToSell,
     outputChainId,
     setSortMethod,
     setOutputChainId,
     setAssetToSell,
-    setAssetToReceive,
+    setAssetToBuy,
     setAssetToSellFilter,
-    setAssetToReceiveFilter,
+    setAssetToBuyFilter,
   } = useSwapAssets();
 
   const {
     assetToSellInputRef,
     assetToReceieveInputRef,
     assetToSellMaxValue,
-    assetToReceiveValue,
+    assetToBuyValue,
     assetToSellValue,
     assetToSellDropdownClosed,
-    assetToReceiveDropdownClosed,
+    assetToBuyDropdownClosed,
     independentField,
     flipAssets,
     onAssetToSellInputOpen,
-    onAssetToReceiveInputOpen,
+    onAssetToBuyInputOpen,
     setAssetToSellMaxValue,
     setAssetToSellValue,
-    setAssetToReceiveValue,
+    setAssetToBuyValue,
   } = useSwapInputs({
     assetToSell,
-    assetToReceive,
+    assetToBuy,
     setAssetToSell,
-    setAssetToReceive,
+    setAssetToBuy,
   });
 
   const { data: quote } = useSwapQuotes({
     assetToSell,
-    assetToReceive,
+    assetToBuy,
     assetToSellValue,
-    assetToReceiveValue,
+    assetToBuyValue,
     independentField,
   });
 
   console.log('quote', quote);
 
-  const { toSellInputHeight, toReceiveInputHeight } = useSwapDropdownDimensions(
-    { assetToSell, assetToReceive },
-  );
+  const { toSellInputHeight, toBuyInputHeight } = useSwapDropdownDimensions({
+    assetToSell,
+    assetToBuy,
+  });
 
-  console.log('assetToReceiveDropdownClosed', assetToReceiveDropdownClosed);
+  console.log('assetToBuyDropdownClosed', assetToBuyDropdownClosed);
   console.log('assetToSellDropdownClosed', assetToSellDropdownClosed);
 
   useEffect(() => {
     if (quote) {
       const { sellAmount, buyAmount } = quote as Quote | CrosschainQuote;
-      if (independentField === 'toSell' && assetToReceive) {
-        setAssetToReceiveValue(
-          convertRawAmountToBalance(String(buyAmount), assetToReceive).amount,
+      if (independentField === 'toSell' && assetToBuy) {
+        setAssetToBuyValue(
+          convertRawAmountToBalance(String(buyAmount), assetToBuy).amount,
         );
-      } else if (independentField === 'toReceive' && assetToSell) {
+      } else if (independentField === 'toBuy' && assetToSell) {
         setAssetToSellValue(
           convertRawAmountToBalance(String(sellAmount), assetToSell).amount,
         );
       }
     }
   }, [
-    assetToReceive,
+    assetToBuy,
     assetToSell,
     independentField,
     quote,
-    setAssetToReceiveValue,
+    setAssetToBuyValue,
     setAssetToSellValue,
   ]);
 
@@ -202,27 +203,26 @@ export function Swap() {
 
               <AccentColorProviderWrapper
                 color={
-                  assetToReceive?.colors?.primary ||
-                  assetToReceive?.colors?.fallback
+                  assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback
                 }
               >
-                <TokenToReceiveInput
-                  dropdownHeight={toReceiveInputHeight}
-                  asset={assetToReceive}
-                  assets={assetsToReceive}
-                  selectAsset={setAssetToReceive}
-                  onDropdownOpen={onAssetToReceiveInputOpen}
-                  dropdownClosed={assetToReceiveDropdownClosed}
+                <TokenToBuyInput
+                  dropdownHeight={toBuyInputHeight}
+                  asset={assetToBuy}
+                  assets={assetsToBuy}
+                  selectAsset={setAssetToBuy}
+                  onDropdownOpen={onAssetToBuyInputOpen}
+                  dropdownClosed={assetToBuyDropdownClosed}
                   zIndex={1}
                   placeholder={i18n.t(
                     'swap.input_token_to_receive_placeholder',
                   )}
                   setOutputChainId={setOutputChainId}
                   outputChainId={outputChainId}
-                  assetFilter={assetToReceiveFilter}
-                  setAssetFilter={setAssetToReceiveFilter}
-                  assetToReceiveValue={assetToReceiveValue}
-                  setAssetToReceiveValue={setAssetToReceiveValue}
+                  assetFilter={assetToBuyFilter}
+                  setAssetFilter={setAssetToBuyFilter}
+                  assetToBuyValue={assetToBuyValue}
+                  setAssetToBuyValue={setAssetToBuyValue}
                   inputRef={assetToReceieveInputRef}
                 />
               </AccentColorProviderWrapper>
