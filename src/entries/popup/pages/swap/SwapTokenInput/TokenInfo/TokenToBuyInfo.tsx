@@ -9,7 +9,7 @@ const { innerWidth: windowWidth } = window;
 const HALF_WINDOW_WIDTH = windowWidth / 2;
 const TEXT_MAX_WIDTH = HALF_WINDOW_WIDTH - 90;
 
-export const TokenToReceiveInfo = ({
+export const TokenToBuyInfo = ({
   asset,
 }: {
   asset: ParsedAddressAsset | null;

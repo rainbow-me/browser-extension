@@ -81,24 +81,23 @@ export const useSwapAssets = () => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { connectedToHardhat } = useConnectedToHardhatStore();
 
-  const [assetToSwap, setAssetToSwap] = useState<ParsedAddressAsset | null>(
+  const [assetToSell, setAssetToSell] = useState<ParsedAddressAsset | null>(
     null,
   );
-  const [assetToReceive, setAssetToReceive] =
-    useState<ParsedAddressAsset | null>(null);
+  const [assetToBuy, setAssetToBuy] = useState<ParsedAddressAsset | null>(null);
 
-  const prevAssetToSwap = usePrevious<ParsedAddressAsset | null>(assetToSwap);
+  const prevAssetToSell = usePrevious<ParsedAddressAsset | null>(assetToSell);
 
   const [outputChainId, setOutputChainId] = useState(ChainId.mainnet);
   const prevOutputChainId = usePrevious(outputChainId);
 
   const [sortMethod, setSortMethod] = useState<SortMethod>('token');
 
-  const [assetToSwapFilter, setAssetToSwapFilter] = useState('');
-  const [assetToReceiveFilter, setAssetToReceiveFilter] = useState('');
+  const [assetToSellFilter, setAssetToSellFilter] = useState('');
+  const [assetToBuyFilter, setAssetToBuyFilter] = useState('');
 
-  const debouncedAssetToSwapFilter = useDebounce(assetToSwapFilter, 200);
-  const debouncedAssetToReceiveFilter = useDebounce(assetToReceiveFilter, 200);
+  const debouncedAssetToSellFilter = useDebounce(assetToSellFilter, 200);
+  const debouncedAssetToBuyFilter = useDebounce(assetToBuyFilter, 200);
 
   const { data: userAssets = [] } = useUserAssets(
     {
@@ -109,25 +108,25 @@ export const useSwapAssets = () => {
     { select: sortBy(sortMethod) },
   );
 
-  const filteredAssetsToSwap = useMemo(() => {
-    return debouncedAssetToSwapFilter
+  const filteredAssetsToSell = useMemo(() => {
+    return debouncedAssetToSellFilter
       ? userAssets.filter(({ name, symbol, address }) =>
           [name, symbol, address].reduce(
             (res, param) =>
               res ||
               param
                 .toLowerCase()
-                .startsWith(debouncedAssetToSwapFilter.toLowerCase()),
+                .startsWith(debouncedAssetToSellFilter.toLowerCase()),
             false,
           ),
         )
       : userAssets;
-  }, [debouncedAssetToSwapFilter, userAssets]);
+  }, [debouncedAssetToSellFilter, userAssets]);
 
   const { results: searchReceiveAssetsSections } = useSearchCurrencyLists({
-    inputChainId: assetToSwap?.chainId,
+    inputChainId: assetToSell?.chainId,
     outputChainId,
-    searchQuery: debouncedAssetToReceiveFilter,
+    searchQuery: debouncedAssetToBuyFilter,
   });
 
   const searchReceiveAssets = useMemo(
@@ -139,17 +138,19 @@ export const useSwapAssets = () => {
     [searchReceiveAssetsSections],
   );
 
-  const { data: rawAssetsToReceive } = useAssets({
+  const { data: rawAssetsToBuy } = useAssets({
     assetAddresses: {
-      [outputChainId]: searchReceiveAssets.map(({ uniqueId }) => uniqueId),
+      [outputChainId as ChainId]: searchReceiveAssets.map(
+        ({ uniqueId }) => uniqueId,
+      ),
     },
     currency: currentCurrency,
   });
 
-  const assetsToReceive: ParsedAddressAsset[] = useMemo(
+  const assetsToBuy: ParsedAddressAsset[] = useMemo(
     () =>
-      Object.values(rawAssetsToReceive || {})
-        .filter((rawAsset) => rawAsset.address !== assetToSwap?.address)
+      Object.values(rawAssetsToBuy || {})
+        .filter((rawAsset) => rawAsset.address !== assetToSell?.address)
         .map((rawAsset) => {
           const userAsset = userAssets.find((userAsset) =>
             isLowerCaseMatch(userAsset.address, rawAsset.address),
@@ -165,20 +166,20 @@ export const useSwapAssets = () => {
           });
         }),
     [
-      rawAssetsToReceive,
-      assetToSwap?.address,
+      rawAssetsToBuy,
+      assetToSell?.address,
       userAssets,
       searchReceiveAssets,
       outputChainId,
     ],
   );
 
-  const assetsToReceiveBySection = useMemo(() => {
+  const assetsToBuyBySection = useMemo(() => {
     return searchReceiveAssetsSections.map(({ data, title, symbol, id }) => {
       const parsedData: ParsedAddressAsset[] =
         data
           ?.map((asset) =>
-            assetsToReceive.find((parsedAsset) =>
+            assetsToBuy.find((parsedAsset) =>
               isLowerCaseMatch(
                 parsedAsset.uniqueId.split('_')[0],
                 asset?.uniqueId,
@@ -188,36 +189,36 @@ export const useSwapAssets = () => {
           ?.filter((p): p is ParsedAddressAsset => !!p) || [];
       return { data: parsedData, title, symbol, id };
     });
-  }, [assetsToReceive, searchReceiveAssetsSections]);
+  }, [assetsToBuy, searchReceiveAssetsSections]);
 
   // if output chain id changes we need to clear the receive asset
   useEffect(() => {
     if (prevOutputChainId !== outputChainId) {
-      setAssetToReceive(null);
+      setAssetToBuy(null);
     }
   }, [outputChainId, prevOutputChainId]);
 
-  // if user selects assetToReceive as assetToSwap we need to flip assets
+  // if user selects assetToBuy as assetToSell we need to flip assets
   useEffect(() => {
-    if (assetToReceive?.address === assetToSwap?.address) {
-      setAssetToReceive(prevAssetToSwap === undefined ? null : prevAssetToSwap);
+    if (assetToBuy?.address === assetToSell?.address) {
+      setAssetToBuy(prevAssetToSell === undefined ? null : prevAssetToSell);
     }
-  }, [assetToReceive?.address, assetToSwap?.address, prevAssetToSwap]);
+  }, [assetToBuy?.address, assetToSell?.address, prevAssetToSell]);
 
   return {
-    assetsToSwap: filteredAssetsToSwap,
-    assetToSwapFilter,
-    assetsToReceive: assetsToReceiveBySection,
-    assetToReceiveFilter,
+    assetsToSell: filteredAssetsToSell,
+    assetToSellFilter,
+    assetsToBuy: assetsToBuyBySection,
+    assetToBuyFilter,
     sortMethod,
-    assetToSwap,
-    assetToReceive,
+    assetToSell,
+    assetToBuy,
     outputChainId,
     setSortMethod,
-    setAssetToSwap,
-    setAssetToReceive,
+    setAssetToSell,
+    setAssetToBuy,
     setOutputChainId,
-    setAssetToSwapFilter,
-    setAssetToReceiveFilter,
+    setAssetToSellFilter,
+    setAssetToBuyFilter,
   };
 };

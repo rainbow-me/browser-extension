@@ -1,59 +1,56 @@
 import React, { useCallback, useRef } from 'react';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
-import { ChainId } from '~/core/types/chains';
-import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+import { SortMethod } from '~/entries/popup/hooks/send/useSendAsset';
 
-import { TokenToReceiveDropdown } from './TokenDropdown/TokenToReceiveDropdown';
-import { TokenToReceiveInfo } from './TokenInfo/TokenToReceiveInfo';
+import { TokenToSellDropdown } from './TokenDropdown/TokenToSellDropdown';
+import { TokenToSellInfo } from './TokenInfo/TokenToSellInfo';
 import { TokenInput } from './TokenInput';
 
-interface TokenToReceiveProps {
+interface SwapTokenInputProps {
+  assetToSellMaxValue: { display: string; amount: string };
+  assetToSellValue: string;
   asset: ParsedAddressAsset | null;
-  assets?: {
-    data: ParsedAddressAsset[];
-    title: string;
-    id: string;
-    symbol: SymbolProps['symbol'];
-  }[];
   assetFilter: string;
+  assets?: ParsedAddressAsset[];
   dropdownClosed: boolean;
   dropdownHeight?: number;
-  outputChainId: ChainId;
   placeholder: string;
+  sortMethod: SortMethod;
   zIndex?: number;
-  assetToReceiveValue: string;
   inputRef: React.RefObject<HTMLInputElement>;
   onDropdownOpen: (open: boolean) => void;
-  setOutputChainId: (chainId: ChainId) => void;
+  setSortMethod: (sortMethod: SortMethod) => void;
   selectAsset: (asset: ParsedAddressAsset | null) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
-  setAssetToReceiveValue: (value: string) => void;
+  setAssetToSellMaxValue: () => void;
+  setAssetToSellInputValue: (value: string) => void;
 }
 
-export const TokenToReceiveInput = ({
+export const TokenToSellInput = ({
+  assetToSellMaxValue,
   asset,
   assetFilter,
   assets,
   dropdownClosed = false,
   dropdownHeight,
-  outputChainId,
   placeholder,
+  sortMethod,
   zIndex,
-  assetToReceiveValue,
+  assetToSellValue,
   inputRef,
   onDropdownOpen,
   selectAsset,
   setAssetFilter,
-  setOutputChainId,
-  setAssetToReceiveValue,
-}: TokenToReceiveProps) => {
-  const onSelectAssetRef =
-    useRef<(address: ParsedAddressAsset | null) => void>();
+  setSortMethod,
+  setAssetToSellMaxValue,
+  setAssetToSellInputValue,
+}: SwapTokenInputProps) => {
+  const onSelectAssetRef = useRef<(asset: ParsedAddressAsset) => void>();
 
   const setOnSelectAsset = useCallback(
-    (cb: (asset: ParsedAddressAsset | null) => void) => {
-      onSelectAssetRef.current = (asset: ParsedAddressAsset | null) => {
+    (cb: (asset: ParsedAddressAsset) => void) => {
+      onSelectAssetRef.current = (asset: ParsedAddressAsset) => {
         cb(asset);
         selectAsset(asset);
       };
@@ -70,34 +67,46 @@ export const TokenToReceiveInput = ({
     [inputRef],
   );
 
+  const setMaxValue = useCallback(() => {
+    setAssetToSellMaxValue();
+  }, [setAssetToSellMaxValue]);
+
   return (
     <TokenInput
       inputRef={inputRef}
-      accentCaretColor
       asset={asset}
       dropdownClosed={dropdownClosed}
       dropdownHeight={dropdownHeight}
       dropdownComponent={
-        <TokenToReceiveDropdown
+        <TokenToSellDropdown
           onDropdownChange={onDropdownChange}
           asset={asset}
           assets={assets}
+          sortMethod={sortMethod}
           onSelectAsset={onSelectAssetRef?.current}
-          outputChainId={outputChainId}
-          setOutputChainId={setOutputChainId}
+          setSortMethod={setSortMethod}
         />
       }
-      bottomComponent={asset ? <TokenToReceiveInfo asset={asset} /> : null}
+      bottomComponent={
+        asset ? (
+          <TokenToSellInfo
+            assetToSellValue={assetToSellValue}
+            assetToSellMaxValue={assetToSellMaxValue}
+            asset={asset}
+            setAssetToSellMaxValue={setMaxValue}
+          />
+        ) : null
+      }
       placeholder={placeholder}
       zIndex={zIndex}
       variant="tinted"
-      value={assetToReceiveValue}
+      value={assetToSellValue}
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
       selectAsset={selectAsset}
       assetFilter={assetFilter}
       setAssetFilter={setAssetFilter}
-      setValue={setAssetToReceiveValue}
+      setValue={setAssetToSellInputValue}
     />
   );
 };

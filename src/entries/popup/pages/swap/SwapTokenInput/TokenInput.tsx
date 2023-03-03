@@ -122,7 +122,7 @@ export const TokenInput = ({
             />
           </Box>
         ) : (
-          <Box width="fit" marginVertical="-20px">
+          <Box marginVertical="-20px">
             <SwapInputMask
               accentCaretColor={accentCaretColor}
               borderColor="transparent"
