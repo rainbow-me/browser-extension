@@ -113,7 +113,13 @@ export function Swap() {
           />
         }
       />
-      <SwapSettings show={showSwapSettings} />
+      <SwapSettings
+        show={showSwapSettings}
+        onDone={() => setShowSwapSettings(false)}
+        accentColor={
+          assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback
+        }
+      />
       <Box
         background="surfaceSecondary"
         style={{ height: 535 }}
