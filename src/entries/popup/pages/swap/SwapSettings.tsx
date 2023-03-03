@@ -1,7 +1,7 @@
 import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
 import { Source } from '@rainbow-me/swaps';
 import { motion } from 'framer-motion';
-import React, { ReactNode, useCallback, useRef, useState } from 'react';
+import React, { ReactNode, useCallback, useRef } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -130,19 +130,30 @@ const SwapRouteDropdownMenu = ({
 interface SwapSettingsProps {
   accentColor?: string;
   show: boolean;
+  source: Source | 'auto';
+  slippage: string;
+  flashbotsEnabled: boolean;
+  setSource: (route: Source | 'auto') => void;
+  setSlippage: (slippage: string) => void;
+  setFlashbotsEnabled: (enabled: boolean) => void;
+  setDefaultSettings: () => void;
   onDone: () => void;
 }
 
 export const SwapSettings = ({
   accentColor,
   show,
+  source,
+  slippage,
+  flashbotsEnabled: flashbotsEnabledForSwap,
+  setSource,
+  setSlippage,
+  setFlashbotsEnabled: setFlashbotsEnabledForSwap,
+  setDefaultSettings,
   onDone,
 }: SwapSettingsProps) => {
   const { currentAddress } = useCurrentAddressStore();
   const { avatar } = useAvatar({ address: currentAddress });
-  const [toggleChecked, setToggleChecked] = useState(false);
-  const [source, setSource] = useState<Source | 'auto'>('auto');
-  const [slippage, setSlippage] = useState('1');
   const { flashbotsEnabled } = useFlashbotsEnabledStore();
 
   const slippageInputRef = useRef(null);
@@ -241,8 +252,8 @@ export const SwapSettings = ({
                         </Inline>
                         <Toggle
                           accentColor={settingsAccentColor}
-                          checked={toggleChecked}
-                          handleChange={setToggleChecked}
+                          checked={flashbotsEnabledForSwap}
+                          handleChange={setFlashbotsEnabledForSwap}
                         />
                       </Inline>
                     </Box>
@@ -279,6 +290,7 @@ export const SwapSettings = ({
                 color="fillSecondary"
                 height="28px"
                 variant="plain"
+                onClick={setDefaultSettings}
               >
                 <Text
                   align="center"

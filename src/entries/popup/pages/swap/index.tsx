@@ -25,6 +25,7 @@ import { useSwapDropdownDimensions } from '../../hooks/swap/useSwapDropdownDimen
 import { useSwapInputs } from '../../hooks/swap/useSwapInputs';
 import { useSwapQuote } from '../../hooks/swap/useSwapQuote';
 import { useSwapQuoteHandler } from '../../hooks/swap/useSwapQuoteHandler';
+import { useSwapSettings } from '../../hooks/swap/useSwapSettings';
 
 import { SwapSettings } from './SwapSettings';
 import { TokenToBuyInput } from './SwapTokenInput/TokenToBuyInput';
@@ -54,6 +55,16 @@ export function Swap() {
     assetToSell,
     assetToBuy,
   });
+
+  const {
+    source,
+    slippage,
+    flashbotsEnabled,
+    setSource,
+    setSlippage,
+    setFlashbotsEnabled,
+    setDefaultSettings,
+  } = useSwapSettings();
 
   const {
     assetToSellInputRef,
@@ -119,6 +130,13 @@ export function Swap() {
         accentColor={
           assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback
         }
+        source={source}
+        slippage={slippage}
+        flashbotsEnabled={flashbotsEnabled}
+        setSource={setSource}
+        setSlippage={setSlippage}
+        setFlashbotsEnabled={setFlashbotsEnabled}
+        setDefaultSettings={setDefaultSettings}
       />
       <Box
         background="surfaceSecondary"
