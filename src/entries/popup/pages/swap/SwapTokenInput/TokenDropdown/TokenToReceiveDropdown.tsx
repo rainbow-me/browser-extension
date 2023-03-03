@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import React, { useMemo } from 'react';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
@@ -31,7 +30,7 @@ const AssetsToReceiveSection = ({
 }: {
   data: ParsedAddressAsset[];
   title: string;
-  onSelectAsset?: (address: Address) => void;
+  onSelectAsset?: (asset: ParsedAddressAsset | null) => void;
   symbol: SymbolProps['symbol'];
   id: string;
   onDropdownChange: (open: boolean) => void;
@@ -87,19 +86,17 @@ const AssetsToReceiveSection = ({
         <Box ref={containerRef}>
           {assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
             const { index } = virtualItem;
-            const rowData = data?.[index] as ParsedAddressAsset;
+            const asset = data?.[index] as ParsedAddressAsset;
             return (
               <Box
                 paddingHorizontal="8px"
-                key={`${rowData?.uniqueId}-${i}`}
-                onClick={() =>
-                  onSelectAsset?.(rowData?.mainnetAddress || rowData?.address)
-                }
-                testId={`token-input-asset-${rowData?.uniqueId}`}
+                key={`${asset?.uniqueId}-${i}`}
+                onClick={() => onSelectAsset?.(asset)}
+                testId={`token-input-asset-${asset?.uniqueId}`}
               >
                 <TokenToReceiveRow
                   onDropdownChange={onDropdownChange}
-                  asset={rowData}
+                  asset={asset}
                 />
               </Box>
             );
@@ -111,7 +108,7 @@ const AssetsToReceiveSection = ({
 };
 
 export type TokenToReceiveDropdownProps = {
-  asset?: ParsedAddressAsset;
+  asset: ParsedAddressAsset | null;
   assets?: {
     data: ParsedAddressAsset[];
     title: string;
@@ -119,7 +116,7 @@ export type TokenToReceiveDropdownProps = {
     symbol: SymbolProps['symbol'];
   }[];
   outputChainId: ChainId;
-  onSelectAsset?: (address: Address) => void;
+  onSelectAsset?: (asset: ParsedAddressAsset | null) => void;
   setOutputChainId: (chainId: ChainId) => void;
   onDropdownChange: (open: boolean) => void;
 };

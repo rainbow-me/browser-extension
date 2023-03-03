@@ -16,7 +16,7 @@ import {
   toFixedDecimals,
 } from '~/core/utils/numbers';
 
-export const useSendTransactionInputs = ({
+export const useSendInputs = ({
   asset,
   selectedGas,
 }: {

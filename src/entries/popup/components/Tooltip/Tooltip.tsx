@@ -2,8 +2,11 @@ import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import React, { ReactNode } from 'react';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
-import { Box, Inline, Text, ThemeProvider } from '~/design-system';
+import { Box, Inline, TextOverflow, ThemeProvider } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
+
+const { innerWidth: windowWidth } = window;
+const TEXT_MAX_WIDTH = windowWidth - 60;
 
 export const Tooltip = ({
   children,
@@ -49,13 +52,14 @@ export const Tooltip = ({
                   borderRadius="6px"
                   backdropFilter="blur(26px)"
                 >
-                  <Text
+                  <TextOverflow
+                    maxWidth={TEXT_MAX_WIDTH}
                     color={textColor || 'label'}
                     size={textSize || '16pt'}
                     weight={textWeight || 'bold'}
                   >
                     {text}
-                  </Text>
+                  </TextOverflow>
                 </Box>
               </Box>
             </ThemeProvider>

@@ -1,5 +1,4 @@
 import React, { useCallback, useRef } from 'react';
-import { Address } from 'wagmi';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -10,7 +9,7 @@ import { TokenToReceiveInfo } from './TokenInfo/TokenToReceiveInfo';
 import { TokenInput } from './TokenInput';
 
 interface TokenToReceiveProps {
-  asset?: ParsedAddressAsset;
+  asset: ParsedAddressAsset | null;
   assets?: {
     data: ParsedAddressAsset[];
     title: string;
@@ -23,10 +22,13 @@ interface TokenToReceiveProps {
   outputChainId: ChainId;
   placeholder: string;
   zIndex?: number;
+  assetToReceiveValue: string;
+  inputRef: React.RefObject<HTMLInputElement>;
   onDropdownOpen: (open: boolean) => void;
-  selectAssetAddress: (address: Address | '') => void;
   setOutputChainId: (chainId: ChainId) => void;
+  selectAsset: (asset: ParsedAddressAsset | null) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
+  setAssetToReceiveValue: (value: string) => void;
 }
 
 export const TokenToReceiveInput = ({
@@ -38,29 +40,35 @@ export const TokenToReceiveInput = ({
   outputChainId,
   placeholder,
   zIndex,
+  assetToReceiveValue,
+  inputRef,
   onDropdownOpen,
-  selectAssetAddress,
+  selectAsset,
   setAssetFilter,
   setOutputChainId,
+  setAssetToReceiveValue,
 }: TokenToReceiveProps) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const onSelectAssetRef = useRef<(address: Address | '') => void>();
+  const onSelectAssetRef =
+    useRef<(address: ParsedAddressAsset | null) => void>();
 
   const setOnSelectAsset = useCallback(
-    (cb: (address: Address | '') => void) => {
-      onSelectAssetRef.current = (address: Address | '') => {
-        cb(address);
-        selectAssetAddress(address);
+    (cb: (asset: ParsedAddressAsset | null) => void) => {
+      onSelectAssetRef.current = (asset: ParsedAddressAsset | null) => {
+        cb(asset);
+        selectAsset(asset);
       };
     },
-    [selectAssetAddress],
+    [selectAsset],
   );
 
-  const onDropdownChange = useCallback((open: boolean) => {
-    if (!open) {
-      setTimeout(() => inputRef?.current?.focus(), 300);
-    }
-  }, []);
+  const onDropdownChange = useCallback(
+    (open: boolean) => {
+      if (!open) {
+        setTimeout(() => inputRef?.current?.focus(), 300);
+      }
+    },
+    [inputRef],
+  );
 
   return (
     <TokenInput
@@ -83,11 +91,13 @@ export const TokenToReceiveInput = ({
       placeholder={placeholder}
       zIndex={zIndex}
       variant="tinted"
+      value={assetToReceiveValue}
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
-      selectAssetAddress={selectAssetAddress}
+      selectAsset={selectAsset}
       assetFilter={assetFilter}
       setAssetFilter={setAssetFilter}
+      setValue={setAssetToReceiveValue}
     />
   );
 };

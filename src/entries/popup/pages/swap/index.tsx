@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { useCallback } from 'react';
+import React from 'react';
 
 import { i18n } from '~/core/languages';
 import {
@@ -29,13 +29,6 @@ import { TokenToSwapInput } from './SwapTokenInput/TokenToSwapInput';
 
 export function Swap() {
   const {
-    assetToReceiveDropdownVisible,
-    assetToSwapDropdownVisible,
-    onAssetToSwapInputOpen,
-    onAssetToReceiveInputOpen,
-  } = useSwapInputs();
-
-  const {
     assetsToSwap,
     assetToSwapFilter,
     assetsToReceive,
@@ -46,17 +39,39 @@ export function Swap() {
     outputChainId,
     setSortMethod,
     setOutputChainId,
-    setAssetToReceiveAddress,
-    setAssetToSwapAddress,
+    setAssetToSwap,
+    setAssetToReceive,
     setAssetToSwapFilter,
     setAssetToReceiveFilter,
   } = useSwapAssets();
+
+  const {
+    assetToSwapInputRef,
+    assetToReceieveInputRef,
+    assetToSwapMaxValue,
+    assetToReceiveValue,
+    assetToSwapValue,
+    assetToSwapDropdownClosed,
+    assetToReceiveDropdownClosed,
+    flipAssets,
+    onAssetToSwapInputOpen,
+    onAssetToReceiveInputOpen,
+    setAssetToSwapMaxValue,
+    setAssetToSwapValue,
+    setAssetToReceiveValue,
+  } = useSwapInputs({
+    assetToSwap,
+    assetToReceive,
+    setAssetToSwap,
+    setAssetToReceive,
+  });
 
   const { toSwapInputHeight, toReceiveInputHeight } = useSwapDropdownDimensions(
     { assetToSwap, assetToReceive },
   );
 
-  const onFlip = useCallback(() => null, []);
+  console.log('assetToReceiveDropdownClosed', assetToReceiveDropdownClosed);
+  console.log('assetToSwapDropdownClosed', assetToSwapDropdownClosed);
 
   return (
     <>
@@ -93,21 +108,26 @@ export function Swap() {
                   dropdownHeight={toSwapInputHeight}
                   asset={assetToSwap}
                   assets={assetsToSwap}
-                  selectAssetAddress={setAssetToSwapAddress}
+                  selectAsset={setAssetToSwap}
                   onDropdownOpen={onAssetToSwapInputOpen}
-                  dropdownClosed={assetToReceiveDropdownVisible}
+                  dropdownClosed={assetToSwapDropdownClosed}
                   setSortMethod={setSortMethod}
                   assetFilter={assetToSwapFilter}
                   setAssetFilter={setAssetToSwapFilter}
                   sortMethod={sortMethod}
                   zIndex={2}
                   placeholder={i18n.t('swap.input_token_to_swap_placeholder')}
+                  assetToSwapMaxValue={assetToSwapMaxValue}
+                  setAssetToSwapMaxValue={setAssetToSwapMaxValue}
+                  assetToSwapValue={assetToSwapValue}
+                  setAssetToSwapValue={setAssetToSwapValue}
+                  inputRef={assetToSwapInputRef}
                 />
               </AccentColorProviderWrapper>
 
               <Box
                 marginVertical="-20px"
-                style={{ zIndex: assetToSwapDropdownVisible ? 1 : 3 }}
+                style={{ zIndex: assetToSwapDropdownClosed ? 3 : 1 }}
               >
                 <Inline alignHorizontal="center">
                   <Box
@@ -122,7 +142,7 @@ export function Swap() {
                     borderWidth={'1px'}
                     borderColor="buttonStroke"
                     style={{ width: 42, height: 32, zIndex: 10 }}
-                    onClick={onFlip}
+                    onClick={flipAssets}
                   >
                     <Box width="full" height="full" alignItems="center">
                       <Inline
@@ -154,9 +174,9 @@ export function Swap() {
                   dropdownHeight={toReceiveInputHeight}
                   asset={assetToReceive}
                   assets={assetsToReceive}
-                  selectAssetAddress={setAssetToReceiveAddress}
+                  selectAsset={setAssetToReceive}
                   onDropdownOpen={onAssetToReceiveInputOpen}
-                  dropdownClosed={assetToSwapDropdownVisible}
+                  dropdownClosed={assetToReceiveDropdownClosed}
                   zIndex={1}
                   placeholder={i18n.t(
                     'swap.input_token_to_receive_placeholder',
@@ -165,6 +185,9 @@ export function Swap() {
                   outputChainId={outputChainId}
                   assetFilter={assetToReceiveFilter}
                   setAssetFilter={setAssetToReceiveFilter}
+                  assetToReceiveValue={assetToReceiveValue}
+                  setAssetToReceiveValue={setAssetToReceiveValue}
+                  inputRef={assetToReceieveInputRef}
                 />
               </AccentColorProviderWrapper>
             </Stack>

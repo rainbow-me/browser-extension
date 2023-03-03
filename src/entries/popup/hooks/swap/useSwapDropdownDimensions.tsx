@@ -8,8 +8,8 @@ export const useSwapDropdownDimensions = ({
   assetToSwap,
   assetToReceive,
 }: {
-  assetToSwap?: ParsedAddressAsset;
-  assetToReceive?: ParsedAddressAsset;
+  assetToSwap: ParsedAddressAsset | null;
+  assetToReceive: ParsedAddressAsset | null;
 }) => {
   return {
     toSwapInputHeight:
