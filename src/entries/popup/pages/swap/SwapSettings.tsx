@@ -3,9 +3,9 @@ import { Source } from '@rainbow-me/swaps';
 import { motion } from 'framer-motion';
 import React, { ReactNode, useCallback, useMemo, useState } from 'react';
 
-import Logo0x from 'static/assets/dex/0x.png';
-import Logo1Inch from 'static/assets/dex/1inch.png';
-import LogoRainbow from 'static/assets/dex/rainbow.png';
+import Logo0x from 'static/assets/aggregators/0x.png';
+import Logo1Inch from 'static/assets/aggregators/1inch.png';
+import LogoRainbow from 'static/assets/aggregators/rainbow.png';
 import {
   Box,
   Button,
