@@ -27,6 +27,26 @@ export const event = {
    */
   dappPromptConnectWalletSwitched: 'dapp.prompt.connect.wallet_switched',
   /**
+   * Called when the user approves a sign message request
+   * with the prominent button in the dApp Sign Message prompt.
+   */
+  dappPromptSignMessageApproved: 'dapp.prompt.sign_message.approved',
+  /**
+   * Called when the user rejects a sign message request
+   * with the Cancel button in the dApp Sign Message prompt.
+   */
+  dappPromptSignMessageRejected: 'dapp.prompt.sign_message.rejected',
+  /**
+   * Called when the user approves a sign typed data request
+   * with the prominent button in the dApp Sign Message prompt.
+   */
+  dappPromptSignTypedDataApproved: 'dapp.prompt.sign_typed_data.approved',
+  /**
+   * Called when the user rejects a sign typed data request
+   * with the Cancel button in the dApp Sign Message prompt.
+   */
+  dappPromptSignTypedDataRejected: 'dapp.prompt.sign_typed_data.rejected',
+  /**
    * Called when the user disconnects the extension from the dApp with a `disconnect` event.
    */
   dappProviderDisconnected: 'dapp.provider.disconnected',
@@ -103,6 +123,58 @@ export type EventProperties = {
     dappName: string;
   };
   [event.dappPromptConnectWalletSwitched]: undefined;
+  [event.dappPromptSignMessageApproved]: {
+    /**
+     * Full url of the dApp requesting a sign message request.
+     */
+    dappURL: string;
+    /**
+     * Short name of the dApp displayed to the user.
+     */
+    dappName: string;
+  };
+  [event.dappPromptSignMessageRejected]: {
+    /**
+     * Full url of the dApp requesting a sign message request.
+     */
+    dappURL: string;
+    /**
+     * Short name of the dApp displayed to the user.
+     */
+    dappName: string;
+  };
+  [event.dappPromptSignTypedDataApproved]: {
+    /**
+     * Full url of the dApp requesting a sign typed data request.
+     */
+    dappURL: string;
+    /**
+     * Short name of the dApp displayed to the user.
+     */
+    dappName: string;
+  };
+  [event.dappPromptSignTypedDataRejected]: {
+    /**
+     * Full url of the dApp requesting a sign typed data request.
+     */
+    dappURL: string;
+    /**
+     * Short name of the dApp displayed to the user.
+     */
+    dappName: string;
+  };
+  [event.dappProviderDisconnected]: {
+    /**
+     * Full url of the dApp requesting a `disconnect` event.
+     */
+    dappURL: string;
+  };
+  [event.dappProviderNetworkSwitched]: {
+    /**
+     * `chainId` of the network the dApp requested a switch to.
+     */
+    chainId: number;
+  };
   [event.popupOpened]: undefined;
   [event.settingsAnalyticsTrackingDisabled]: undefined;
   [event.settingsAnalyticsTrackingEnabled]: undefined;
