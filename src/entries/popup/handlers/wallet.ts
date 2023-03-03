@@ -7,7 +7,7 @@ import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import { uuid4 } from '@sentry/utils';
 import { getProvider } from '@wagmi/core';
 import { Bytes } from 'ethers';
-import { Mnemonic, keccak256 } from 'ethers/lib/utils';
+import { HDNode, Mnemonic, keccak256 } from 'ethers/lib/utils';
 import { Address } from 'wagmi';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';
@@ -23,8 +23,14 @@ import {
   sendTransactionFromLedger,
   signMessageByTypeFromLedger,
 } from './ledger';
+import {
+  TREZOR_CONFIG,
+  sendTransactionFromTrezor,
+  signMessageByTypeFromTrezor,
+} from './trezor';
 
 const messenger = initializeMessenger({ connect: 'background' });
+const DEFAULT_HD_PATH = "44'/60'/0'/0";
 
 export const walletAction = async (action: string, payload: unknown) => {
   const { result }: { result: unknown } = await messenger.send(
@@ -81,7 +87,7 @@ export const sendTransaction = async (
       case 'Ledger':
         return sendTransactionFromLedger(params);
       case 'Trezor':
-        throw new Error('Trezor not supported yet');
+        return sendTransactionFromTrezor(params);
       default:
         throw new Error('Unsupported hardware wallet');
     }
@@ -103,7 +109,7 @@ export const personalSign = async (
       case 'Ledger':
         return signMessageByTypeFromLedger(msgData, address, 'personal_sign');
       case 'Trezor':
-        throw new Error('Trezor not supported yet');
+        return signMessageByTypeFromTrezor(msgData, address, 'personal_sign');
       default:
         throw new Error('Unsupported hardware wallet');
     }
@@ -126,7 +132,7 @@ export const signTypedData = async (
       case 'Ledger':
         return signMessageByTypeFromLedger(msgData, address, 'sign_typed_data');
       case 'Trezor':
-        throw new Error('Trezor not supported yet');
+        return signMessageByTypeFromTrezor(msgData, address, 'sign_typed_data');
       default:
         throw new Error('Unsupported hardware wallet');
     }
@@ -254,22 +260,141 @@ export const exportAccount = async (address: Address, password: string) => {
   })) as PrivateKey;
 };
 
+export const importAccountAtIndex = async (
+  silbing: Address,
+  type: string | 'Trezor' | 'Ledger',
+  index: number,
+) => {
+  let address = '';
+  switch (type) {
+    case 'Trezor':
+      {
+        window.TrezorConnect.init(TREZOR_CONFIG);
+        const path = `m/${DEFAULT_HD_PATH}/${index}`;
+        const result = await window.TrezorConnect.ethereumGetAddress({
+          path,
+          coin: 'eth',
+          showOnTrezor: false,
+        });
+
+        if (!result.success) {
+          throw new Error('window.TrezorConnect.getAddress failed');
+        }
+        address = result.payload.address;
+      }
+      break;
+    case 'Ledger': {
+      const transport = await TransportWebUSB.create();
+      const appEth = new AppEth(transport);
+      const result = await appEth.getAddress(
+        `${DEFAULT_HD_PATH}/0`,
+        false,
+        false,
+      );
+
+      address = result.address;
+      break;
+    }
+    default:
+      throw new Error('Unknown wallet type');
+  }
+
+  return (await walletAction('add_account_at_index', {
+    silbingAddress: silbing,
+    index,
+    address,
+  })) as Address;
+};
+
+export const connectTrezor = async () => {
+  try {
+    window.TrezorConnect.init(TREZOR_CONFIG);
+    const path = `m/${DEFAULT_HD_PATH}`;
+
+    const result = await window.TrezorConnect.ethereumGetPublicKey({
+      path,
+      coin: 'eth',
+      showOnTrezor: false,
+    });
+
+    if (!result.success) {
+      throw new Error('window.TrezorConnect.ethereumGetPublicKey failed');
+    }
+
+    const hdNode = HDNode.fromExtendedKey(result.payload.xpub);
+    const firstAccountPath = `0`;
+
+    const addressesToImport = [
+      { address: hdNode.derivePath(firstAccountPath).address, index: 0 },
+    ];
+    let accountsEnabled = 1;
+    // Autodiscover accounts
+    let empty = false;
+    while (!empty) {
+      const path = `${accountsEnabled}`;
+      const newAddress = hdNode.derivePath(path).address;
+
+      // eslint-disable-next-line no-await-in-loop
+      const hasBeenUsed = await hasPreviousTransactions(newAddress as Address);
+
+      if (hasBeenUsed) {
+        addressesToImport.push({
+          address: newAddress,
+          index: accountsEnabled,
+        });
+        accountsEnabled += 1;
+      } else {
+        empty = true;
+      }
+    }
+
+    // The device id is the keccak256 of the address at index 0
+    const deviceId = keccak256(addressesToImport[0].address);
+    const address = await walletAction('import_hw', {
+      deviceId,
+      wallets: addressesToImport,
+      vendor: 'Trezor',
+      accountsEnabled,
+    });
+    const { passwordSet } = await getStatus();
+    if (!passwordSet) {
+      // we probably need to set a password
+      await chrome.storage.session.set({ userStatus: 'NEEDS_PASSWORD' });
+    }
+    return address;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (e: any) {
+    if (e?.name === 'TransportStatusError') {
+      alert(
+        'Please make sure your trezor is unlocked and open the Ethereum app',
+      );
+    } else {
+      alert('Unable to connect to your trezor. Please try again.');
+      console.log(e);
+    }
+    return null;
+  }
+};
+
 export const connectLedger = async () => {
   // Connect to the device
   try {
     const transport = await TransportWebUSB.create();
     const appEth = new AppEth(transport);
-    const result = await appEth.getAddress("44'/60'/0'/0/0", false, false);
+    const result = await appEth.getAddress(
+      `${DEFAULT_HD_PATH}/0`,
+      false,
+      false,
+    );
     const addressesToImport = [{ address: result.address, index: 0 }];
-    // The device id is the keccak256 of the address at index 0
-    // @HW/TODO - discovery
     let accountsEnabled = 1;
     // Autodiscover accounts
     let empty = false;
     while (!empty) {
       // eslint-disable-next-line no-await-in-loop
       const result = await appEth.getAddress(
-        `44'/60'/0'/0/${accountsEnabled}`,
+        `${DEFAULT_HD_PATH}/${accountsEnabled}`,
         false,
         false,
       );
@@ -290,6 +415,7 @@ export const connectLedger = async () => {
       }
     }
 
+    // The device id is the keccak256 of the address at index 0
     const deviceId = keccak256(result.address);
     const address = await walletAction('import_hw', {
       deviceId,
@@ -297,14 +423,11 @@ export const connectLedger = async () => {
       vendor: 'Ledger',
       accountsEnabled,
     });
-    // we probably need to set a password
-    let newStatus = 'NEEDS_PASSWORD';
     const { passwordSet } = await getStatus();
-    // unless we have a password, then we're ready to go
-    if (passwordSet) {
-      newStatus = 'READY';
+    if (!passwordSet) {
+      // we probably need to set a password
+      await chrome.storage.session.set({ userStatus: 'NEEDS_PASSWORD' });
     }
-    await chrome.storage.session.set({ userStatus: newStatus });
     return address;
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

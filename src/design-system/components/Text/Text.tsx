@@ -11,16 +11,20 @@ interface TextProps {
   size: TextStyles['fontSize'];
   weight: TextStyles['fontWeight'];
   testId?: string;
+  background?: TextStyles['background'];
+  webkitBackgroundClip?: TextStyles['WebkitBackgroundClip'];
 }
 
 export function Text({
   align,
   as = 'div',
+  background,
   children,
   color = 'label',
   size,
   weight,
   testId,
+  webkitBackgroundClip,
 }: TextProps) {
   return (
     <Box
@@ -32,8 +36,12 @@ export function Text({
         fontSize: size,
         fontWeight: weight,
         textAlign: align,
+        background,
+        WebkitBackgroundClip: webkitBackgroundClip,
       })}
       testId={testId}
+      marginVertical={webkitBackgroundClip === 'text' ? '-6px' : undefined}
+      paddingVertical={webkitBackgroundClip === 'text' ? '6px' : undefined}
     >
       {children}
     </Box>

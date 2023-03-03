@@ -1,5 +1,4 @@
-import { useVirtualizer } from '@tanstack/react-virtual';
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
@@ -26,6 +25,7 @@ import { TokensSkeleton } from '../../components/ActivitySkeleton/ActivitySkelet
 import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
 import { WalletIcon } from '../../components/WalletIcon/WalletIcon';
+import { useVirtualizedAssets } from '../../hooks/useVirtualizedAssets';
 
 const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 150;
@@ -38,12 +38,8 @@ export function Tokens() {
     { address: currentAddress, currency, connectedToHardhat },
     { select: selectUserAssetsList },
   );
-  const containerRef = useRef<HTMLDivElement>(null);
-  const tokenRowVirtualizer = useVirtualizer({
-    count: assets?.length,
-    getScrollElement: () => containerRef.current,
-    estimateSize: () => 52,
-    overscan: 20,
+  const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
+    assets,
   });
 
   if (isInitialLoading) {
@@ -55,42 +51,48 @@ export function Tokens() {
   }
 
   return (
-    <Box ref={containerRef} width="full" style={{ overflow: 'auto' }}>
+    <Box
+      ref={containerRef}
+      width="full"
+      style={{ overflow: 'auto' }}
+      paddingBottom="8px"
+      marginTop="-16px"
+    >
       <Box
         width="full"
         style={{
-          height: tokenRowVirtualizer.getTotalSize(),
+          height: assetsRowVirtualizer.getTotalSize(),
           position: 'relative',
         }}
-      ></Box>
-      <Box
-        style={{
-          overflow: 'auto',
-        }}
-        marginTop="-16px"
       >
-        {tokenRowVirtualizer.getVirtualItems().map((virtualItem) => {
-          const { index } = virtualItem;
-          const rowData = assets?.[index];
-          return (
-            <Box
-              key={index}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: virtualItem.size,
-                transform: `translateY(${virtualItem.start}px)`,
-              }}
-            >
-              <AssetRow
-                key={`${rowData?.uniqueId}-${index}`}
-                uniqueId={rowData?.uniqueId}
-              />
-            </Box>
-          );
-        })}
+        <Box
+          style={{
+            overflow: 'auto',
+          }}
+        >
+          {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
+            const { index } = virtualItem;
+            const rowData = assets?.[index];
+            return (
+              <Box
+                key={index}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: virtualItem.size,
+                  transform: `translateY(${virtualItem.start}px)`,
+                }}
+              >
+                <AssetRow
+                  key={`${rowData?.uniqueId}-${index}`}
+                  uniqueId={rowData?.uniqueId}
+                />
+              </Box>
+            );
+          })}
+        </Box>
       </Box>
     </Box>
   );

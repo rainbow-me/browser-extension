@@ -3312,6 +3312,11 @@
     "@testing-library/dom" "^8.5.0"
     "@types/react-dom" "^18.0.0"
 
+"@trezor/connect-plugin-ethereum@9.0.1":
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/@trezor/connect-plugin-ethereum/-/connect-plugin-ethereum-9.0.1.tgz#89e940b546ade20dfc810ad0cde968b14dec17ee"
+  integrity sha512-gxTclyM7blS+WUw1hqRXaGMcBN4y9Qr3zZzRCTSUneLPob0yZU9lFHpylXVXNgVoCXA3ogKdudJdRSYBUdlMdA==
+
 "@types/aria-query@^4.2.0":
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/@types/aria-query/-/aria-query-4.2.2.tgz#ed4e0ad92306a704f9fb132a0cfcf77486dbe2bc"

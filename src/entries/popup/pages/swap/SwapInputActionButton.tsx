@@ -5,17 +5,17 @@ import { ParsedAddressAsset } from '~/core/types/assets';
 import { Box, Button, Inline, Symbol, TextOverflow } from '~/design-system';
 
 export const SwapInputActionButton = ({
-  showClose,
-  onClose,
-  dropdownVisible,
-  testId,
   asset,
+  dropdownVisible,
+  showClose,
+  testId,
+  onClose,
 }: {
-  showClose: boolean;
-  dropdownVisible: boolean;
-  onClose: () => void;
-  testId?: string;
   asset: ParsedAddressAsset | null;
+  dropdownVisible: boolean;
+  showClose: boolean;
+  testId?: string;
+  onClose: () => void;
 }) => {
   return showClose ? (
     <Button

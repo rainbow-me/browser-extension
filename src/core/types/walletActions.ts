@@ -22,5 +22,6 @@ export enum walletActions {
   test_sandbox = 'test_sandbox',
   import_hw = 'import_hw',
   get_path = 'get_path',
+  add_account_at_index = 'add_account_at_index',
 }
 export type WalletAction = keyof typeof walletActions;

@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
-import { chain, useNetwork } from 'wagmi';
 
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import { ChainId } from '~/core/types/chains';
 import { RPCMethod } from '~/core/types/rpcMethods';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box } from '~/design-system';
@@ -43,10 +43,8 @@ export function SignMessage({
     url: request?.meta?.sender?.url,
   });
   const { appSession } = useAppSession({ host: appHost });
-  const { chains } = useNetwork();
 
-  const selectedNetwork =
-    chains.find(({ id }) => id === appSession.chainId) ?? chain.mainnet;
+  const selectedChainId = appSession.chainId ?? ChainId.mainnet;
   const selectedWallet = appSession.address;
 
   const onAcceptRequest = useCallback(async () => {
@@ -82,7 +80,7 @@ export function SignMessage({
       <SignMessageActions
         waitingForDevice={waitingForDevice}
         selectedWallet={selectedWallet}
-        selectedNetwork={selectedNetwork}
+        selectedChainId={selectedChainId}
         onAcceptRequest={onAcceptRequest}
         onRejectRequest={rejectRequest}
       />

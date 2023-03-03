@@ -26,6 +26,10 @@
         "https://*/*"
       ],
       "run_at": "document_start"
+    },
+    {
+      "matches": ["*://connect.trezor.io/9/popup.html"],
+      "js": ["./vendor/trezor-content-script.js"]
     }
   ],
   "content_security_policy": {
@@ -58,7 +62,7 @@
     "unlimitedStorage"
   ],
   "short_name": "Rainbow",
-  "version": "1.0.46",
+  "version": "1.0.53",
   "web_accessible_resources": [
     {
       "matches": [

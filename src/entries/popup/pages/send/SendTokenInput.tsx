@@ -31,7 +31,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
-import { SortMethod } from '../../hooks/send/useSendTransactionAsset';
+import { SortMethod } from '../../hooks/send/useSendAsset';
 import { AssetRow } from '../home/Tokens';
 
 import { InputActionButon } from './InputActionButton';
@@ -307,25 +307,27 @@ export const SendTokenInput = ({
               ))}
             {!filteredAssets.length && (
               <Box alignItems="center" style={{ paddingTop: 119 }}>
-                <Stack space="16px">
-                  <Inline alignHorizontal="center">
-                    <Symbol
-                      color="labelQuaternary"
-                      weight="semibold"
-                      symbol="record.circle.fill"
-                      size={26}
-                    />
-                  </Inline>
+                <Box paddingHorizontal="44px">
+                  <Stack space="16px">
+                    <Text
+                      color="label"
+                      size="26pt"
+                      weight="bold"
+                      align="center"
+                    >
+                      {'👻'}
+                    </Text>
 
-                  <Text
-                    color="labelQuaternary"
-                    size="20pt"
-                    weight="semibold"
-                    align="center"
-                  >
-                    {i18n.t('send.tokens_input.no_tokens')}
-                  </Text>
-                </Stack>
+                    <Text
+                      color="labelTertiary"
+                      size="20pt"
+                      weight="semibold"
+                      align="center"
+                    >
+                      {i18n.t('send.tokens_input.nothing_found')}
+                    </Text>
+                  </Stack>
+                </Box>
               </Box>
             )}
           </Box>
