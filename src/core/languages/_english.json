@@ -248,7 +248,11 @@
       "use_flashbots": "Use Flashbots",
       "max_slippage": "Max slippage",
       "use_defaults": "Use defaults",
-      "done": "Done"
+      "done": "Done",
+      "warnings": {
+        "high": "High",
+        "possible_loss": "Possible looss"
+      }
     }
   },
   "custom_gas": {

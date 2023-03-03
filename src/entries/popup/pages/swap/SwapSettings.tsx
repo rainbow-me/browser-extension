@@ -1,10 +1,11 @@
 import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
 import { Source } from '@rainbow-me/swaps';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import React, {
   ReactNode,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -14,6 +15,7 @@ import { useCurrentAddressStore } from '~/core/state';
 import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
 import { ChainId } from '~/core/types/chains';
 import {
+  Bleed,
   Box,
   Button,
   ButtonSymbol,
@@ -136,6 +138,71 @@ const SwapRouteDropdownMenu = ({
   );
 };
 
+const Label = ({
+  label,
+  warning,
+  onClick,
+}: {
+  label: string;
+  warning?: 'loss';
+  onClick: () => void;
+}) => (
+  <Box as={motion.div} layout="position">
+    <Stack space="8px">
+      <Inline space="4px" alignVertical="center">
+        <Box as={motion.div}>
+          <Text align="left" color="label" size="14pt" weight="semibold">
+            {label}
+          </Text>
+        </Box>
+        <AnimatePresence>
+          {!!warning && (
+            <Box as={motion.div} layout marginBottom="-2px">
+              <Bleed vertical="6px" horizontal="6px">
+                <ButtonSymbol
+                  symbol={'exclamationmark.triangle.fill'}
+                  color={'orange'}
+                  height="28px"
+                  variant="transparent"
+                  onClick={onClick}
+                />
+              </Bleed>
+            </Box>
+          )}
+          {!warning && (
+            <Bleed vertical="6px" horizontal="6px">
+              <ButtonSymbol
+                symbol="info.circle.fill"
+                color="labelQuaternary"
+                height="28px"
+                variant="tinted"
+                onClick={onClick}
+              />
+            </Bleed>
+          )}
+        </AnimatePresence>
+      </Inline>
+      <AnimatePresence>
+        {!!warning && (
+          <Box as={motion.div} layout="position">
+            <Inline space="4px">
+              <Text color={'orange'} size="14pt" weight="medium">
+                {i18n.t(`swap.settings.warnings.high`)}
+              </Text>
+              <Text color="label" size="14pt" weight="medium">
+                {'‧'}
+              </Text>
+              <Text color="labelTertiary" size="14pt" weight="medium">
+                {i18n.t(`swap.settings.warnings.possible_loss`)}
+              </Text>
+            </Inline>
+          </Box>
+        )}
+      </AnimatePresence>
+    </Stack>
+  </Box>
+);
+
 interface SwapSettingsProps {
   accentColor?: string;
   chainId?: ChainId;
@@ -182,9 +249,14 @@ export const SwapSettings = ({
   }, [chainId]);
 
   const done = useCallback(() => {
-    setSettings({ source, slippage, flashbotsEnabled });
+    setSettings({ source, slippage: slippage || '0', flashbotsEnabled });
     onDone();
   }, [flashbotsEnabled, onDone, setSettings, slippage, source]);
+
+  const slippageWarning = useMemo(
+    () => (Number(slippage) >= 3 ? 'loss' : undefined),
+    [slippage],
+  );
 
   useEffect(() => {
     if (prevChainId !== chainId) {
@@ -294,18 +366,11 @@ export const SwapSettings = ({
 
                   <Box style={{ height: '32px' }}>
                     <Inline alignVertical="center" alignHorizontal="justify">
-                      <Inline alignVertical="center" space="7px">
-                        <Text color="label" size="14pt" weight="semibold">
-                          {i18n.t('swap.settings.max_slippage')}
-                        </Text>
-                        <ButtonSymbol
-                          symbol="info.circle.fill"
-                          color="labelQuaternary"
-                          height="28px"
-                          variant="transparent"
-                          onClick={() => null}
-                        />
-                      </Inline>
+                      <Label
+                        label={i18n.t('swap.settings.max_slippage')}
+                        onClick={() => null}
+                        warning={slippageWarning}
+                      />
                       <SlippageInputMask
                         variant={'transparent'}
                         onChange={setSlippage}
