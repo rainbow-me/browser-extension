@@ -1,8 +1,11 @@
 import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
 import { Source } from '@rainbow-me/swaps';
 import { motion } from 'framer-motion';
-import React, { ReactNode, useCallback, useState } from 'react';
+import React, { ReactNode, useCallback, useMemo, useState } from 'react';
 
+import Logo0x from 'static/assets/dex/0x.png';
+import Logo1Inch from 'static/assets/dex/1inch.png';
+import LogoRainbow from 'static/assets/dex/rainbow.png';
 import {
   Box,
   Button,
@@ -59,7 +62,9 @@ const SwapRouteDropdownMenu = ({
           <DropdownMenuRadioItem highlightAccentColor value="auto">
             <Box id="settings-link">
               <Inline alignVertical="center" space="8px">
-                <Symbol size={12} symbol="gearshape.fill" weight="semibold" />
+                <Box style={{ height: '16px', width: '16px' }}>
+                  <img src={LogoRainbow} width="100%" height="100%" />
+                </Box>
                 <Text size="14pt" weight="semibold">
                   {'Auto'}
                 </Text>
@@ -71,7 +76,9 @@ const SwapRouteDropdownMenu = ({
             value={Source.Aggregator0x}
           >
             <Inline alignVertical="center" space="8px">
-              <Symbol size={12} symbol="qrcode" weight="semibold" />
+              <Box style={{ height: '16px', width: '16px' }}>
+                <img src={Logo0x} width="100%" height="100%" />
+              </Box>
               <Text size="14pt" weight="semibold">
                 {'0x'}
               </Text>
@@ -83,7 +90,9 @@ const SwapRouteDropdownMenu = ({
           >
             <Box testId="lock">
               <Inline alignVertical="center" space="8px">
-                <Symbol size={12} symbol="lock.fill" weight="semibold" />
+                <Box style={{ height: '16px', width: '16px' }}>
+                  <img src={Logo1Inch} width="100%" height="100%" />
+                </Box>
                 <Text size="14pt" weight="semibold">
                   {'1inch'}
                 </Text>
@@ -109,6 +118,17 @@ export const SwapSettings = ({
 }: SwapSettingsProps) => {
   const [toggleChecked, setToggleChecked] = useState(false);
   const [source, setSource] = useState<Source | 'auto'>('auto');
+
+  const sourceLogo = useMemo(() => {
+    switch (source) {
+      case 'auto':
+        return LogoRainbow;
+      case Source.Aggregator0x:
+        return Logo0x;
+      case Source.Aggregotor1inch:
+        return Logo1Inch;
+    }
+  }, [source]);
 
   return (
     <BottomSheet background="scrim" show={show}>
@@ -164,6 +184,9 @@ export const SwapSettings = ({
                           space="4px"
                           alignVertical="center"
                         >
+                          <Box style={{ height: '16px', width: '16px' }}>
+                            <img src={sourceLogo} width="100%" height="100%" />
+                          </Box>
                           <Text color="label" size="14pt" weight="semibold">
                             {source}
                           </Text>
