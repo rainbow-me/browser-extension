@@ -96,6 +96,8 @@ export function Swap() {
     assetToSellValue,
     assetToBuyValue,
     independentField,
+    source,
+    slippage,
   });
 
   useSwapQuoteHandler({
