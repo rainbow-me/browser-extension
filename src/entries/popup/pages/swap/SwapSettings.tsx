@@ -1,7 +1,13 @@
 import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
 import { Source } from '@rainbow-me/swaps';
 import { motion } from 'framer-motion';
-import React, { ReactNode, useCallback, useRef } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -31,6 +37,7 @@ import {
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
 import { useAvatar } from '../../hooks/useAvatar';
+import usePrevious from '../../hooks/usePrevious';
 
 import { SlippageInputMask } from './SlippageInputMask';
 import { aggregatorInfo } from './utils';
@@ -130,34 +137,52 @@ const SwapRouteDropdownMenu = ({
 interface SwapSettingsProps {
   accentColor?: string;
   show: boolean;
-  source: Source | 'auto';
   slippage: string;
-  flashbotsEnabled: boolean;
-  setSource: (route: Source | 'auto') => void;
-  setSlippage: (slippage: string) => void;
-  setFlashbotsEnabled: (enabled: boolean) => void;
   setDefaultSettings: () => void;
   onDone: () => void;
+  setSettings: ({
+    source,
+    slippage,
+    flashbotsEnabled,
+  }: {
+    source: Source | 'auto';
+    slippage: string;
+    flashbotsEnabled: boolean;
+  }) => void;
 }
 
 export const SwapSettings = ({
   accentColor,
   show,
-  source,
-  slippage,
-  flashbotsEnabled: flashbotsEnabledForSwap,
-  setSource,
-  setSlippage,
-  setFlashbotsEnabled: setFlashbotsEnabledForSwap,
+  slippage: defaultSlippage,
   setDefaultSettings,
+  setSettings,
   onDone,
 }: SwapSettingsProps) => {
   const { currentAddress } = useCurrentAddressStore();
   const { avatar } = useAvatar({ address: currentAddress });
-  const { flashbotsEnabled } = useFlashbotsEnabledStore();
+  const { flashbotsEnabled: flashbotsEnabledGlobal } =
+    useFlashbotsEnabledStore();
+
+  const prevDefaultSlippage = usePrevious(defaultSlippage);
+
+  const [source, setSource] = useState<Source | 'auto'>('auto');
+  const [slippage, setSlippage] = useState<string>(defaultSlippage);
+  const [flashbotsEnabled, setFlashbotsEnabled] = useState<boolean>(false);
 
   const slippageInputRef = useRef(null);
   const settingsAccentColor = accentColor || avatar?.color;
+
+  const done = useCallback(() => {
+    setSettings({ source, slippage, flashbotsEnabled });
+    onDone();
+  }, [flashbotsEnabled, onDone, setSettings, slippage, source]);
+
+  useEffect(() => {
+    if (prevDefaultSlippage !== defaultSlippage) {
+      setSlippage(defaultSlippage);
+    }
+  }, [defaultSlippage, prevDefaultSlippage]);
 
   return (
     <BottomSheet background="scrim" show={show}>
@@ -235,7 +260,7 @@ export const SwapSettings = ({
                     </Inline>
                   </Box>
 
-                  {flashbotsEnabled && (
+                  {flashbotsEnabledGlobal && (
                     <Box style={{ height: '32px' }}>
                       <Inline alignVertical="center" alignHorizontal="justify">
                         <Inline alignVertical="center" space="7px">
@@ -252,8 +277,8 @@ export const SwapSettings = ({
                         </Inline>
                         <Toggle
                           accentColor={settingsAccentColor}
-                          checked={flashbotsEnabledForSwap}
-                          handleChange={setFlashbotsEnabledForSwap}
+                          checked={flashbotsEnabled}
+                          handleChange={setFlashbotsEnabled}
                         />
                       </Inline>
                     </Box>
@@ -276,7 +301,7 @@ export const SwapSettings = ({
                       <SlippageInputMask
                         variant={'transparent'}
                         onChange={setSlippage}
-                        value={slippage}
+                        value={String(slippage)}
                         inputRef={slippageInputRef}
                       />
                     </Inline>
@@ -311,7 +336,7 @@ export const SwapSettings = ({
                 color="accent"
                 height="44px"
                 variant="flat"
-                onClick={onDone}
+                onClick={done}
               >
                 <Text align="center" color="label" size="16pt" weight="bold">
                   {i18n.t('swap.settings.done')}

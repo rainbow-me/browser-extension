@@ -28,7 +28,7 @@ export const SlippageInputMask = ({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const maskedValue = maskInput({
         inputValue: e.target.value,
-        decimals: 0,
+        decimals: 1,
         integers: 2,
       });
       onChange(maskedValue);

@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { ChainId } from '~/core/types/chains';
 import {
   Box,
   Button,
@@ -56,15 +57,9 @@ export function Swap() {
     assetToBuy,
   });
 
-  const {
-    source,
-    slippage,
-    flashbotsEnabled,
-    setSource,
-    setSlippage,
-    setFlashbotsEnabled,
-    setDefaultSettings,
-  } = useSwapSettings();
+  const { source, slippage, setDefaultSettings, setSettings } = useSwapSettings(
+    { chainId: assetToSell?.chainId || ChainId.mainnet },
+  );
 
   const {
     assetToSellInputRef,
@@ -132,13 +127,9 @@ export function Swap() {
         accentColor={
           assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback
         }
-        source={source}
-        slippage={slippage}
-        flashbotsEnabled={flashbotsEnabled}
-        setSource={setSource}
-        setSlippage={setSlippage}
-        setFlashbotsEnabled={setFlashbotsEnabled}
         setDefaultSettings={setDefaultSettings}
+        setSettings={setSettings}
+        slippage={slippage}
       />
       <Box
         background="surfaceSecondary"
