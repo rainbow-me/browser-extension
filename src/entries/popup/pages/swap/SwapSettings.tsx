@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import React, { ReactNode, useCallback, useRef, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
 import {
   Box,
   Button,
@@ -138,6 +139,7 @@ export const SwapSettings = ({
   const [toggleChecked, setToggleChecked] = useState(false);
   const [source, setSource] = useState<Source | 'auto'>('auto');
   const [slippage, setSlippage] = useState('1');
+  const { flashbotsEnabled } = useFlashbotsEnabledStore();
 
   const slippageInputRef = useRef(null);
 
@@ -217,27 +219,29 @@ export const SwapSettings = ({
                     </Inline>
                   </Box>
 
-                  <Box style={{ height: '32px' }}>
-                    <Inline alignVertical="center" alignHorizontal="justify">
-                      <Inline alignVertical="center" space="7px">
-                        <Text color="label" size="14pt" weight="semibold">
-                          {i18n.t('swap.settings.use_flashbots')}
-                        </Text>
-                        <ButtonSymbol
-                          symbol="info.circle.fill"
-                          color="labelQuaternary"
-                          height="28px"
-                          variant="transparent"
-                          onClick={() => null}
+                  {flashbotsEnabled && (
+                    <Box style={{ height: '32px' }}>
+                      <Inline alignVertical="center" alignHorizontal="justify">
+                        <Inline alignVertical="center" space="7px">
+                          <Text color="label" size="14pt" weight="semibold">
+                            {i18n.t('swap.settings.use_flashbots')}
+                          </Text>
+                          <ButtonSymbol
+                            symbol="info.circle.fill"
+                            color="labelQuaternary"
+                            height="28px"
+                            variant="transparent"
+                            onClick={() => null}
+                          />
+                        </Inline>
+                        <Toggle
+                          accentColor={accentColor}
+                          checked={toggleChecked}
+                          handleChange={setToggleChecked}
                         />
                       </Inline>
-                      <Toggle
-                        accentColor={accentColor}
-                        checked={toggleChecked}
-                        handleChange={setToggleChecked}
-                      />
-                    </Inline>
-                  </Box>
+                    </Box>
+                  )}
 
                   <Box style={{ height: '32px' }}>
                     <Inline alignVertical="center" alignHorizontal="justify">
