@@ -121,9 +121,4 @@ module.exports = {
     path: join(__dirname, 'build'),
     publicPath: '/',
   },
-  optimization: {
-    splitChunks: {
-      chunks: 'all',
-    },
-  },
 };

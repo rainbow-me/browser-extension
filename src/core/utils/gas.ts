@@ -16,7 +16,6 @@ import {
   OVM_GAS_PRICE_ORACLE,
   SupportedCurrencyKey,
   ethUnits,
-  optimismGasOracleAbi,
   supportedCurrencies,
 } from '../references';
 import {
@@ -34,6 +33,7 @@ import {
 } from '../types/gas';
 
 import { addHexPrefix, gweiToWei, weiToGwei } from './ethereum';
+import { fetchJsonLocally } from './localJson';
 import {
   add,
   addBuffer,
@@ -468,6 +468,10 @@ export const calculateL1FeeOptimism = async ({
       ...transactionRequest,
       nonce: transactionRequest.nonce as number,
     });
+
+    const optimismGasOracleAbi = await fetchJsonLocally(
+      'abis/optimism-gas-oracle-abi.json',
+    );
 
     const OVM_GasPriceOracle = new Contract(
       OVM_GAS_PRICE_ORACLE,
