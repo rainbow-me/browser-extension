@@ -144,7 +144,6 @@
     "@vanilla-extract/vite-plugin": "3.6.1",
     "@vanilla-extract/webpack-plugin": "2.2.0",
     "audit-ci": "6.3.0",
-    "brotli-webpack-plugin": "1.1.0",
     "browserify": "17.0.0",
     "chromedriver": "109.0.0",
     "copy-webpack-plugin": "11.0.0",
@@ -238,8 +237,7 @@
       "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>ganache-core>websocket>utf-8-validate": false,
       "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>postinstall-postinstall": false,
       "@foundry-rs/hardhat-anvil>hardhat>ethereum-cryptography>keccak": false,
-      "@foundry-rs/hardhat-anvil>hardhat>ethereum-cryptography>secp256k1": false,
-      "brotli-webpack-plugin>iltorb": false
+      "@foundry-rs/hardhat-anvil>hardhat>ethereum-cryptography>secp256k1": false
     }
   },
   "lint-staged": {

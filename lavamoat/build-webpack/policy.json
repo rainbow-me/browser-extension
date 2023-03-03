@@ -951,8 +951,8 @@
         "process": true
       },
       "packages": {
-        "brotli-webpack-plugin>webpack-sources>source-map": true,
-        "browserify>concat-stream>buffer-from": true
+        "browserify>concat-stream>buffer-from": true,
+        "webpack-extension-reloader>@types/webpack>source-map": true
       }
     },
     "jest>@jest/core>jest-snapshot>@babel/generator": {
