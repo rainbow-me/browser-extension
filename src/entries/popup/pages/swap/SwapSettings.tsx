@@ -1,11 +1,8 @@
 import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
 import { Source } from '@rainbow-me/swaps';
 import { motion } from 'framer-motion';
-import React, { ReactNode, useCallback, useMemo, useState } from 'react';
+import React, { ReactNode, useCallback, useState } from 'react';
 
-import Logo0x from 'static/assets/aggregators/0x.png';
-import Logo1Inch from 'static/assets/aggregators/1inch.png';
-import LogoRainbow from 'static/assets/aggregators/rainbow.png';
 import {
   Box,
   Button,
@@ -30,6 +27,8 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
+
+import { aggregatorInfo } from './utils';
 
 interface SwapRouteDropdownMenuProps {
   accentColor?: string;
@@ -63,10 +62,14 @@ const SwapRouteDropdownMenu = ({
             <Box id="settings-link">
               <Inline alignVertical="center" space="8px">
                 <Box style={{ height: '16px', width: '16px' }}>
-                  <img src={LogoRainbow} width="100%" height="100%" />
+                  <img
+                    src={aggregatorInfo['auto'].logo}
+                    width="100%"
+                    height="100%"
+                  />
                 </Box>
                 <Text size="14pt" weight="semibold">
-                  {'Auto'}
+                  {aggregatorInfo['auto'].name}
                 </Text>
               </Inline>
             </Box>
@@ -77,10 +80,14 @@ const SwapRouteDropdownMenu = ({
           >
             <Inline alignVertical="center" space="8px">
               <Box style={{ height: '16px', width: '16px' }}>
-                <img src={Logo0x} width="100%" height="100%" />
+                <img
+                  src={aggregatorInfo['0x'].logo}
+                  width="100%"
+                  height="100%"
+                />
               </Box>
               <Text size="14pt" weight="semibold">
-                {'0x'}
+                {aggregatorInfo['0x'].name}
               </Text>
             </Inline>
           </DropdownMenuRadioItem>
@@ -91,10 +98,14 @@ const SwapRouteDropdownMenu = ({
             <Box testId="lock">
               <Inline alignVertical="center" space="8px">
                 <Box style={{ height: '16px', width: '16px' }}>
-                  <img src={Logo1Inch} width="100%" height="100%" />
+                  <img
+                    src={aggregatorInfo['1inch'].logo}
+                    width="100%"
+                    height="100%"
+                  />
                 </Box>
                 <Text size="14pt" weight="semibold">
-                  {'1inch'}
+                  {aggregatorInfo['1inch'].name}
                 </Text>
               </Inline>
             </Box>
@@ -118,17 +129,6 @@ export const SwapSettings = ({
 }: SwapSettingsProps) => {
   const [toggleChecked, setToggleChecked] = useState(false);
   const [source, setSource] = useState<Source | 'auto'>('auto');
-
-  const sourceLogo = useMemo(() => {
-    switch (source) {
-      case 'auto':
-        return LogoRainbow;
-      case Source.Aggregator0x:
-        return Logo0x;
-      case Source.Aggregotor1inch:
-        return Logo1Inch;
-    }
-  }, [source]);
 
   return (
     <BottomSheet background="scrim" show={show}>
@@ -185,10 +185,14 @@ export const SwapSettings = ({
                           alignVertical="center"
                         >
                           <Box style={{ height: '16px', width: '16px' }}>
-                            <img src={sourceLogo} width="100%" height="100%" />
+                            <img
+                              src={aggregatorInfo[source].logo}
+                              width="100%"
+                              height="100%"
+                            />
                           </Box>
                           <Text color="label" size="14pt" weight="semibold">
-                            {source}
+                            {aggregatorInfo[source].name}
                           </Text>
                           <Symbol
                             size={12}

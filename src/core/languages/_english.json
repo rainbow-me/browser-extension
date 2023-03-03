@@ -238,6 +238,9 @@
       "nothing_found": "Nothing found",
       "nothing_found_description": "Some tokens don’t have enough liquidity to perform a successful swap.",
       "nothing_found_description_l2": "Some tokens don’t have enough layer 2 liquidity to perform a successful swap."
+    },
+    "aggregators": {
+      "rainbow": "Auto"
     }
   },
   "custom_gas": {
