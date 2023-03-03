@@ -26,10 +26,10 @@ import {
 import { Navbar } from '../../components/Navbar/Navbar';
 import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { getWallet, sendTransaction } from '../../handlers/wallet';
-import { useSendTransactionAsset } from '../../hooks/send/useSendTransactionAsset';
-import { useSendTransactionInputs } from '../../hooks/send/useSendTransactionInputs';
-import { useSendTransactionState } from '../../hooks/send/useSendTransactionState';
-import { useSendTransactionValidations } from '../../hooks/send/useTransactionValidations';
+import { useSendAsset } from '../../hooks/send/useSendAsset';
+import { useSendInputs } from '../../hooks/send/useSendInputs';
+import { useSendState } from '../../hooks/send/useSendState';
+import { useSendValidations } from '../../hooks/send/useSendValidations';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -56,7 +56,7 @@ export function Send() {
   const { connectedToHardhat } = useConnectedToHardhatStore();
 
   const { asset, selectAssetAddress, assets, setSortMethod, sortMethod } =
-    useSendTransactionAsset();
+    useSendAsset();
 
   const { clearCustomGasModified, selectedGas } = useGasStore();
 
@@ -70,7 +70,7 @@ export function Send() {
     setIndependentAmount,
     switchIndependentField,
     setMaxAssetAmount,
-  } = useSendTransactionInputs({ asset, selectedGas });
+  } = useSendInputs({ asset, selectedGas });
 
   const {
     currentCurrency,
@@ -83,7 +83,7 @@ export function Send() {
     txToAddress,
     value,
     setToAddressOrName,
-  } = useSendTransactionState({ assetAmount, asset });
+  } = useSendState({ assetAmount, asset });
 
   const {
     buttonLabel,
@@ -91,7 +91,7 @@ export function Send() {
     readyForReview,
     validateToAddress,
     toAddressIsSmartContract,
-  } = useSendTransactionValidations({
+  } = useSendValidations({
     asset,
     assetAmount,
     selectedGas,

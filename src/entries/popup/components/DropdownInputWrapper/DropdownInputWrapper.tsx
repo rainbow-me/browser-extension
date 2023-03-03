@@ -78,25 +78,24 @@ export const DropdownInputWrapper = ({
           as={motion.div}
           layout="position"
         >
-          <Box
-            testId={`input-wrapper-dropdown-${testId}`}
-            onClick={onDropdownAction}
-          >
+          <Box testId={`input-wrapper-dropdown-${testId}`}>
             <Rows space="16px">
               <Row>
-                <Columns
-                  alignVertical="center"
-                  alignHorizontal="justify"
-                  space="8px"
-                >
-                  <Column width="content">{leftComponent}</Column>
+                <Box onClick={onDropdownAction}>
+                  <Columns
+                    alignVertical="center"
+                    alignHorizontal="justify"
+                    space="8px"
+                  >
+                    <Column width="content">{leftComponent}</Column>
 
-                  <Column>
-                    <Box>{centerComponent}</Box>
-                  </Column>
+                    <Column>
+                      <Box>{centerComponent}</Box>
+                    </Column>
 
-                  <Column width="content">{rightComponent}</Column>
-                </Columns>
+                    <Column width="content">{rightComponent}</Column>
+                  </Columns>
+                </Box>
               </Row>
               {!!bottomComponent && (
                 <Row>

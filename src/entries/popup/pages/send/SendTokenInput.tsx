@@ -31,7 +31,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
-import { SortMethod } from '../../hooks/send/useSendTransactionAsset';
+import { SortMethod } from '../../hooks/send/useSendAsset';
 import { AssetRow } from '../home/Tokens';
 
 import { InputActionButon } from './InputActionButton';

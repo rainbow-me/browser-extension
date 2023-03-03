@@ -1,16 +1,16 @@
 import React, { useCallback, useRef } from 'react';
-import { Address } from 'wagmi';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
-
-import { SortMethod } from '../../../hooks/send/useSendTransactionAsset';
+import { SortMethod } from '~/entries/popup/hooks/send/useSendAsset';
 
 import { TokenToSwapDropdown } from './TokenDropdown/TokenToSwapDropdown';
 import { TokenToSwapInfo } from './TokenInfo/TokenToSwapInfo';
 import { TokenInput } from './TokenInput';
 
 interface SwapTokenInputProps {
-  asset?: ParsedAddressAsset;
+  assetToSwapMaxValue: { display: string; amount: string };
+  assetToSwapValue: string;
+  asset: ParsedAddressAsset | null;
   assetFilter: string;
   assets?: ParsedAddressAsset[];
   dropdownClosed: boolean;
@@ -18,13 +18,17 @@ interface SwapTokenInputProps {
   placeholder: string;
   sortMethod: SortMethod;
   zIndex?: number;
+  inputRef: React.RefObject<HTMLInputElement>;
   onDropdownOpen: (open: boolean) => void;
-  selectAssetAddress: (address: Address | '') => void;
   setSortMethod: (sortMethod: SortMethod) => void;
+  selectAsset: (asset: ParsedAddressAsset | null) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
+  setAssetToSwapMaxValue: () => void;
+  setAssetToSwapValue: (value: string) => void;
 }
 
 export const TokenToSwapInput = ({
+  assetToSwapMaxValue,
   asset,
   assetFilter,
   assets,
@@ -33,29 +37,39 @@ export const TokenToSwapInput = ({
   placeholder,
   sortMethod,
   zIndex,
+  assetToSwapValue,
+  inputRef,
   onDropdownOpen,
-  selectAssetAddress,
+  selectAsset,
   setAssetFilter,
   setSortMethod,
+  setAssetToSwapMaxValue,
+  setAssetToSwapValue,
 }: SwapTokenInputProps) => {
-  const onSelectAssetRef = useRef<(address: Address | '') => void>();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const onSelectAssetRef = useRef<(asset: ParsedAddressAsset) => void>();
 
   const setOnSelectAsset = useCallback(
-    (cb: (address: Address | '') => void) => {
-      onSelectAssetRef.current = (address: Address | '') => {
-        cb(address);
-        selectAssetAddress(address);
+    (cb: (asset: ParsedAddressAsset) => void) => {
+      onSelectAssetRef.current = (asset: ParsedAddressAsset) => {
+        cb(asset);
+        selectAsset(asset);
       };
     },
-    [selectAssetAddress],
+    [selectAsset],
   );
 
-  const onDropdownChange = useCallback((open: boolean) => {
-    if (!open) {
-      setTimeout(() => inputRef?.current?.focus(), 300);
-    }
-  }, []);
+  const onDropdownChange = useCallback(
+    (open: boolean) => {
+      if (!open) {
+        setTimeout(() => inputRef?.current?.focus(), 300);
+      }
+    },
+    [inputRef],
+  );
+
+  const setMaxValue = useCallback(() => {
+    setAssetToSwapMaxValue();
+  }, [setAssetToSwapMaxValue]);
 
   return (
     <TokenInput
@@ -73,15 +87,26 @@ export const TokenToSwapInput = ({
           setSortMethod={setSortMethod}
         />
       }
-      bottomComponent={asset ? <TokenToSwapInfo asset={asset} /> : null}
+      bottomComponent={
+        asset ? (
+          <TokenToSwapInfo
+            assetToSwapValue={assetToSwapValue}
+            assetToSwapMaxValue={assetToSwapMaxValue}
+            asset={asset}
+            setAssetToSwapMaxValue={setMaxValue}
+          />
+        ) : null
+      }
       placeholder={placeholder}
       zIndex={zIndex}
-      variant="transparent"
+      variant="tinted"
+      value={assetToSwapValue}
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
-      selectAssetAddress={selectAssetAddress}
+      selectAsset={selectAsset}
       assetFilter={assetFilter}
       setAssetFilter={setAssetFilter}
+      setValue={setAssetToSwapValue}
     />
   );
 };

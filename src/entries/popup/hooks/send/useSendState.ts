@@ -11,7 +11,7 @@ import { getDataForTokenTransfer } from '~/core/utils/transactions';
 
 import { useEns } from '../useEns';
 
-export const useSendTransactionState = ({
+export const useSendState = ({
   assetAmount,
   asset,
 }: {
