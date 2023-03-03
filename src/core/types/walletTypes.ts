@@ -4,4 +4,5 @@ export enum EthereumWalletType {
   readOnly = 'readOnly',
   seed = 'seed',
   ledgerPublicKey = 'ledgerPublicKey',
+  trezorPublicKey = 'trezorPublicKey',
 }
