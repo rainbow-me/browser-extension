@@ -18,9 +18,9 @@ import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets
 
 import { dropdownContainerVariant } from '../../../../components/DropdownInputWrapper/DropdownInputWrapper';
 import { BottomNetwork } from '../../../messages/BottomActions';
-import { TokenToReceiveRow } from '../TokenRow/TokenToReceiveRow';
+import { TokenToBuyRow } from '../TokenRow/TokenToBuyRow';
 
-const AssetsToReceiveSection = ({
+const AssetsToBuySection = ({
   data,
   title,
   symbol,
@@ -94,7 +94,7 @@ const AssetsToReceiveSection = ({
                 onClick={() => onSelectAsset?.(asset)}
                 testId={`token-input-asset-${asset?.uniqueId}`}
               >
-                <TokenToReceiveRow
+                <TokenToBuyRow
                   onDropdownChange={onDropdownChange}
                   asset={asset}
                 />
@@ -107,7 +107,7 @@ const AssetsToReceiveSection = ({
   );
 };
 
-export type TokenToReceiveDropdownProps = {
+export type TokenToBuyDropdownProps = {
   asset: ParsedAddressAsset | null;
   assets?: {
     data: ParsedAddressAsset[];
@@ -121,14 +121,14 @@ export type TokenToReceiveDropdownProps = {
   onDropdownChange: (open: boolean) => void;
 };
 
-export const TokenToReceiveDropdown = ({
+export const TokenToBuyDropdown = ({
   asset,
   assets,
   outputChainId,
   onSelectAsset,
   setOutputChainId,
   onDropdownChange,
-}: TokenToReceiveDropdownProps) => {
+}: TokenToBuyDropdownProps) => {
   const isL2 = useMemo(() => isL2Chain(outputChainId), [outputChainId]);
 
   const assetsCount = useMemo(
@@ -192,7 +192,7 @@ export const TokenToReceiveDropdown = ({
       >
         <Stack space="16px">
           {assets?.map((assetSection, i) => (
-            <AssetsToReceiveSection
+            <AssetsToBuySection
               key={i}
               data={assetSection.data}
               title={assetSection.title}

@@ -36,15 +36,12 @@ import { RowHighlightWrapper } from './RowHighlightWrapper';
 const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 160;
 
-export type TokenToReceiveRowProps = {
+export type TokenToBuyRowProps = {
   asset: ParsedAddressAsset;
   onDropdownChange: (open: boolean) => void;
 };
 
-export function TokenToReceiveRow({
-  asset,
-  onDropdownChange,
-}: TokenToReceiveRowProps) {
+export function TokenToBuyRow({ asset, onDropdownChange }: TokenToBuyRowProps) {
   const leftColumn = useMemo(
     () => (
       <Rows space="8px">

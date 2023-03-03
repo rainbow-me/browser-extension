@@ -5,18 +5,18 @@ const INITIAL_TO_RECEIVE_HEIGHT = 376;
 const EXTRA_INFO_HEIGHT = 24;
 
 export const useSwapDropdownDimensions = ({
-  assetToSwap,
-  assetToReceive,
+  assetToSell,
+  assetToBuy,
 }: {
-  assetToSwap: ParsedAddressAsset | null;
-  assetToReceive: ParsedAddressAsset | null;
+  assetToSell: ParsedAddressAsset | null;
+  assetToBuy: ParsedAddressAsset | null;
 }) => {
   return {
-    toSwapInputHeight:
-      INITIAL_TO_SWAP_HEIGHT - (!assetToSwap ? 0 : EXTRA_INFO_HEIGHT),
-    toReceiveInputHeight:
+    toSellInputHeight:
+      INITIAL_TO_SWAP_HEIGHT - (!assetToSell ? 0 : EXTRA_INFO_HEIGHT),
+    toBuyInputHeight:
       INITIAL_TO_RECEIVE_HEIGHT -
-      (!assetToSwap ? 0 : EXTRA_INFO_HEIGHT) -
-      (!assetToReceive ? 0 : EXTRA_INFO_HEIGHT),
+      (!assetToSell ? 0 : EXTRA_INFO_HEIGHT) -
+      (!assetToBuy ? 0 : EXTRA_INFO_HEIGHT),
   };
 };
