@@ -145,7 +145,9 @@ export const useSwapAssets = () => {
   );
 
   const { data: rawAssetsToReceive } = useAssets({
-    assetAddresses: searchReceiveAssets.map(({ uniqueId }) => uniqueId),
+    assetAddresses: {
+      [outputChainId]: searchReceiveAssets.map(({ uniqueId }) => uniqueId),
+    },
     currency: currentCurrency,
   });
 
