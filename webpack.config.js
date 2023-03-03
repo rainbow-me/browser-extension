@@ -68,6 +68,7 @@ module.exports = {
     new BundleAnalyzerPlugin({
       analyzerMode: 'static',
       generateStatsFile: true,
+      openAnalyzer: false,
     }),
     new Dotenv({ allowEmptyValues: true }),
     new HtmlWebpackPlugin({
