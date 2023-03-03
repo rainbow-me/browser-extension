@@ -21,7 +21,7 @@ const sortBy = (by: SortMethod) => {
   }
 };
 
-export const useSendTransactionAsset = () => {
+export const useSendAsset = () => {
   const { address } = useAccount();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { connectedToHardhat } = useConnectedToHardhatStore();

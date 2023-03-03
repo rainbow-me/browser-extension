@@ -11,7 +11,7 @@ import { ChainId } from '~/core/types/chains';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Row, Rows } from '~/design-system';
-import { useSendTransactionAsset } from '~/entries/popup/hooks/send/useSendTransactionAsset';
+import { useSendAsset } from '~/entries/popup/hooks/send/useSendAsset';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
@@ -44,7 +44,7 @@ export function SendTransaction({
   const { appSession } = useAppSession({ host: appHost });
   const selectedWallet = appSession.address;
   const { connectedToHardhat } = useConnectedToHardhatStore();
-  const { asset, selectAssetAddress } = useSendTransactionAsset();
+  const { asset, selectAssetAddress } = useSendAsset();
 
   useEffect(() => {
     selectAssetAddress(

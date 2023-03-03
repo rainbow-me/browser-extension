@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion';
 import React from 'react';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { SortMethod } from '~/entries/popup/hooks/send/useSendAsset';
 import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets';
 
 import { dropdownContainerVariant } from '../../../../components/DropdownInputWrapper/DropdownInputWrapper';
@@ -15,14 +15,13 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '../../../../components/DropdownMenu/DropdownMenu';
-import { SortMethod } from '../../../../hooks/send/useSendTransactionAsset';
 import { TokenToSwapRow } from '../TokenRow/TokenToSwapRow';
 
 export type TokenToSwapDropdownProps = {
-  asset?: ParsedAddressAsset;
+  asset: ParsedAddressAsset | null;
   assets?: ParsedAddressAsset[];
   sortMethod: SortMethod;
-  onSelectAsset?: (address: Address) => void;
+  onSelectAsset?: (asset: ParsedAddressAsset) => void;
   setSortMethod: (sortMethod: SortMethod) => void;
   onDropdownChange: (open: boolean) => void;
 };
@@ -132,15 +131,15 @@ export const TokenToSwapDropdown = ({
         {!!assets?.length &&
           assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
             const { index } = virtualItem;
-            const rowData = assets?.[index];
+            const asset = assets?.[index];
             return (
               <Box
                 paddingHorizontal="8px"
-                key={`${rowData?.uniqueId}-${i}`}
-                onClick={() => onSelectAsset?.(rowData.address)}
+                key={`${asset?.uniqueId}-${i}`}
+                onClick={() => onSelectAsset?.(asset)}
                 testId={`token-input-asset-${asset?.uniqueId}`}
               >
-                <TokenToSwapRow uniqueId={rowData?.uniqueId} />
+                <TokenToSwapRow uniqueId={asset?.uniqueId} />
               </Box>
             );
           })}

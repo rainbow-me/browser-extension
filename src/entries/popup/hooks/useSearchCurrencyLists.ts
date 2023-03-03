@@ -5,6 +5,7 @@ import { i18n } from '~/core/languages';
 import { useTokenSearch } from '~/core/resources/search';
 import { ChainId } from '~/core/types/chains';
 import {
+  SearchAsset,
   TokenSearchAssetKey,
   TokenSearchListId,
   TokenSearchThreshold,
@@ -216,7 +217,12 @@ export function useSearchCurrencyLists({
       };
       return [curatedSection];
     } else {
-      const sections = [];
+      const sections: {
+        data: (SearchAsset | undefined)[];
+        title: string;
+        symbol: SymbolProps['symbol'];
+        id: string;
+      }[] = [];
 
       if (targetVerifiedAssets?.length) {
         const verifiedSection = {
