@@ -21,6 +21,7 @@ manifestOverride.content_security_policy.extension_pages = `${
 } ${allowList.urls.join(' ')};`;
 
 module.exports = {
+  devtool: 'cheap-module-eval-source-map',
   entry: {
     background: './src/entries/background/index.ts',
     contentscript: './src/entries/content/index.ts',
@@ -118,5 +119,10 @@ module.exports = {
     filename: '[name].js',
     path: join(__dirname, 'build'),
     publicPath: '/',
+  },
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
   },
 };
