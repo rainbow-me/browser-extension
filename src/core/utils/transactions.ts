@@ -4,7 +4,11 @@ import { capitalize, isString } from 'lodash';
 import { Address } from 'wagmi';
 
 import { i18n } from '../languages';
-import { ETH_ADDRESS, SupportedCurrencyKey } from '../references';
+import {
+  ETH_ADDRESS,
+  SupportedCurrencyKey,
+  smartContractMethods,
+} from '../references';
 import { fetchTransactions } from '../resources/transactions/transactions';
 import {
   currentCurrencyStore,
@@ -25,7 +29,6 @@ import {
 
 import { parseAsset } from './assets';
 import { getBlockExplorerHostForChain, isL2Chain } from './chains';
-import { fetchJsonLocally } from './localJson';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountToBalanceDisplay,
@@ -35,10 +38,6 @@ import {
   isZero,
 } from './numbers';
 import { isLowerCaseMatch } from './strings';
-
-const smartContractMethods = fetchJsonLocally(
-  'abis/smart-contract-methods.json',
-);
 
 /**
  * @desc remove hex prefix
@@ -82,8 +81,6 @@ const getDataString = (func: string, arrVals: string[]) => {
  * @return The data string for the transaction.
  */
 export const getDataForTokenTransfer = (value: string, to: string): string => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   const transferMethodHash = smartContractMethods.token_transfer.hash;
   const data = getDataString(transferMethodHash, [
     removeHexPrefix(to),
