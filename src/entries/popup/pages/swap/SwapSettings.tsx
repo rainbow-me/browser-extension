@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
+import { Source } from '@rainbow-me/swaps';
+import { motion } from 'framer-motion';
+import React, { ReactNode, useCallback, useState } from 'react';
 
 import {
   Box,
@@ -7,11 +10,91 @@ import {
   Inline,
   Separator,
   Stack,
+  Symbol,
   Text,
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
+import {
+  transformScales,
+  transitions,
+} from '~/design-system/styles/designTokens';
+
+import {
+  DropdownMenuContent,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuTrigger,
+} from '../../components/DropdownMenu/DropdownMenu';
+
+interface SwapRouteDropdownMenuProps {
+  accentColor?: string;
+  children: ReactNode;
+  setSource: (source: Source | 'auto') => void;
+  source: Source | 'auto';
+}
+
+const SwapRouteDropdownMenu = ({
+  accentColor,
+  children,
+  source,
+  setSource,
+}: SwapRouteDropdownMenuProps) => {
+  const onValueChange = useCallback(
+    (value: Source | 'auto') => {
+      setSource(value);
+    },
+    [setSource],
+  );
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+      <DropdownMenuContent accentColor={accentColor} marginRight="12px">
+        <DropdownMenuRadioGroup
+          onValueChange={(value) => onValueChange(value as Source | 'auto')}
+          value={source}
+        >
+          <DropdownMenuRadioItem highlightAccentColor value="auto">
+            <Box id="settings-link">
+              <Inline alignVertical="center" space="8px">
+                <Symbol size={12} symbol="gearshape.fill" weight="semibold" />
+                <Text size="14pt" weight="semibold">
+                  {'Auto'}
+                </Text>
+              </Inline>
+            </Box>
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem
+            highlightAccentColor
+            value={Source.Aggregator0x}
+          >
+            <Inline alignVertical="center" space="8px">
+              <Symbol size={12} symbol="qrcode" weight="semibold" />
+              <Text size="14pt" weight="semibold">
+                {'0x'}
+              </Text>
+            </Inline>
+          </DropdownMenuRadioItem>
+          <DropdownMenuRadioItem
+            highlightAccentColor
+            value={Source.Aggregotor1inch}
+          >
+            <Box testId="lock">
+              <Inline alignVertical="center" space="8px">
+                <Symbol size={12} symbol="lock.fill" weight="semibold" />
+                <Text size="14pt" weight="semibold">
+                  {'1inch'}
+                </Text>
+              </Inline>
+            </Box>
+          </DropdownMenuRadioItem>
+        </DropdownMenuRadioGroup>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
 
 interface SwapSettingsProps {
   accentColor?: string;
@@ -25,6 +108,8 @@ export const SwapSettings = ({
   onDone,
 }: SwapSettingsProps) => {
   const [toggleChecked, setToggleChecked] = useState(false);
+  const [source, setSource] = useState<Source | 'auto'>('auto');
+
   return (
     <BottomSheet background="scrim" show={show}>
       <AccentColorProviderWrapper color={accentColor}>
@@ -57,11 +142,39 @@ export const SwapSettings = ({
                         onClick={() => null}
                       />
                     </Inline>
-                    <Toggle
+                    <SwapRouteDropdownMenu
                       accentColor={accentColor}
-                      checked={toggleChecked}
-                      handleChange={setToggleChecked}
-                    />
+                      source={source}
+                      setSource={setSource}
+                    >
+                      <Box
+                        as={motion.div}
+                        initial={{ zIndex: 0 }}
+                        whileHover={{
+                          scale: transformScales['1.04'],
+                        }}
+                        whileTap={{
+                          scale: transformScales['0.96'],
+                        }}
+                        transition={transitions.bounce}
+                        style={{ height: '23px' }}
+                      >
+                        <Inline
+                          height="full"
+                          space="4px"
+                          alignVertical="center"
+                        >
+                          <Text color="label" size="14pt" weight="semibold">
+                            {source}
+                          </Text>
+                          <Symbol
+                            size={12}
+                            symbol="chevron.down"
+                            weight="semibold"
+                          />
+                        </Inline>
+                      </Box>
+                    </SwapRouteDropdownMenu>
                   </Inline>
                 </Box>
 

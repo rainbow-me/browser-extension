@@ -26,7 +26,7 @@ export const BottomSheet = ({
           style={{
             width: '100%',
             height: '100%',
-            zIndex: 1000000,
+            zIndex: 100,
           }}
           background={background || 'scrimTertiary'}
           as={motion.div}
@@ -45,7 +45,7 @@ export const BottomSheet = ({
           right="0"
           paddingBottom="20px"
           paddingHorizontal="12px"
-          style={{ zIndex: 1000001 }}
+          style={{ zIndex: 101 }}
           as={motion.div}
           initial={{ opacity: 1, y: 800 }}
           animate={{ opacity: 1, y: 0 }}
