@@ -1,7 +1,7 @@
 import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
 import { Source } from '@rainbow-me/swaps';
 import { motion } from 'framer-motion';
-import React, { ReactNode, useCallback, useState } from 'react';
+import React, { ReactNode, useCallback, useRef, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import {
@@ -29,6 +29,7 @@ import {
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
 
+import { SlippageInputMask } from './SlippageInputMask';
 import { aggregatorInfo } from './utils';
 
 interface SwapRouteDropdownMenuProps {
@@ -136,6 +137,9 @@ export const SwapSettings = ({
 }: SwapSettingsProps) => {
   const [toggleChecked, setToggleChecked] = useState(false);
   const [source, setSource] = useState<Source | 'auto'>('auto');
+  const [slippage, setSlippage] = useState('1');
+
+  const slippageInputRef = useRef(null);
 
   return (
     <BottomSheet background="scrim" show={show}>
@@ -248,11 +252,14 @@ export const SwapSettings = ({
                         onClick={() => null}
                       />
                     </Inline>
-                    <Toggle
-                      accentColor={accentColor}
-                      checked={toggleChecked}
-                      handleChange={setToggleChecked}
-                    />
+                    <Box style={{ width: '50px' }}>
+                      <SlippageInputMask
+                        variant={'transparent'}
+                        onChange={setSlippage}
+                        value={slippage}
+                        inputRef={slippageInputRef}
+                      />
+                    </Box>
                   </Inline>
                 </Box>
               </Stack>
@@ -270,7 +277,7 @@ export const SwapSettings = ({
                   size="14pt"
                   weight="bold"
                 >
-                  {i18n.t('swap.settings.defaults')}
+                  {i18n.t('swap.settings.use_defaults')}
                 </Text>
               </Button>
             </Box>
