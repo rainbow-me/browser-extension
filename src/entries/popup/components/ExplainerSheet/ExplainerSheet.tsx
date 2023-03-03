@@ -96,7 +96,7 @@ export const ExplainerSheet = ({
   }, [linkButton?.url]);
 
   return (
-    <BottomSheet show={show}>
+    <BottomSheet zIndex={3000} show={show}>
       <Box paddingVertical="44px" paddingHorizontal="32px">
         <Stack alignHorizontal="center" space="20px">
           {header?.emoji ? (

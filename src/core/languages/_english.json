@@ -252,6 +252,22 @@
       "warnings": {
         "high": "High",
         "possible_loss": "Possible looss"
+      },
+      "explainers": {
+        "slippage": {
+          "title": "Slippage",
+          "description_1": "Slippage occurs when the price of a swap changes during the time between you submitting your transaction and its confirmation.",
+          "description_2": "Setting a higher slippage tolerance increases the likelihood your swap will be successful, but may result in you getting a worse price."
+        },
+        "flashbots": {
+          "title": "Flashbots",
+          "description": "Flashbots protects your transactions from frontrunning and sandwich attacks which might result in you getting a worse price or your transaction failing."
+        },
+        "routing": {
+          "title": "Swap Routing",
+          "description": "By default, Rainbow chooses the cheapest route possible for your swap. If you prefer to specifically use either 0x or 1inch, you can do that too."
+        },
+        "got_it": "Got it"
       }
     }
   },

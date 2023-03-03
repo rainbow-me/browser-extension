@@ -39,6 +39,10 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
+import {
+  ExplainerSheet,
+  useExplainerSheetParams,
+} from '../../components/ExplainerSheet/ExplainerSheet';
 import { DEFAULT_SLIPPAGE } from '../../hooks/swap/useSwapSettings';
 import { useAvatar } from '../../hooks/useAvatar';
 import usePrevious from '../../hooks/usePrevious';
@@ -242,6 +246,9 @@ export const SwapSettings = ({
   const slippageInputRef = useRef(null);
   const settingsAccentColor = accentColor || avatar?.color;
 
+  const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
+    useExplainerSheetParams();
+
   const setDefaultSettings = useCallback(() => {
     setSource('auto');
     setSlippage(DEFAULT_SLIPPAGE[chainId || ChainId.mainnet]);
@@ -264,161 +271,229 @@ export const SwapSettings = ({
     }
   }, [prevChainId, chainId]);
 
-  return (
-    <BottomSheet background="scrim" show={show}>
-      <AccentColorProviderWrapper color={settingsAccentColor}>
-        <Box paddingHorizontal="20px" paddingBottom="20px">
-          <Stack space="10px">
-            <Box>
-              <Box style={{ height: '64px' }}>
-                <Inline
-                  height="full"
-                  alignVertical="center"
-                  alignHorizontal="center"
-                >
-                  <Text align="center" color="label" size="14pt" weight="heavy">
-                    {i18n.t('swap.settings.title')}
-                  </Text>
-                </Inline>
-              </Box>
-              <Box paddingBottom="8px">
-                <Stack space="12px">
-                  <Box style={{ height: '32px' }}>
-                    <Inline alignVertical="center" alignHorizontal="justify">
-                      <Inline alignVertical="center" space="7px">
-                        <Text color="label" size="14pt" weight="semibold">
-                          {i18n.t('swap.settings.route_swaps')}
-                        </Text>
-                        <ButtonSymbol
-                          symbol="info.circle.fill"
-                          color="labelQuaternary"
-                          height="28px"
-                          variant="transparent"
-                          onClick={() => null}
-                        />
-                      </Inline>
-                      <SwapRouteDropdownMenu
-                        accentColor={settingsAccentColor}
-                        source={source}
-                        setSource={setSource}
-                      >
-                        <Box
-                          as={motion.div}
-                          initial={{ zIndex: 0 }}
-                          whileHover={{
-                            scale: transformScales['1.04'],
-                          }}
-                          whileTap={{
-                            scale: transformScales['0.96'],
-                          }}
-                          transition={transitions.bounce}
-                          style={{ height: '23px' }}
-                        >
-                          <Inline
-                            height="full"
-                            space="4px"
-                            alignVertical="center"
-                          >
-                            <Box style={{ height: '16px', width: '16px' }}>
-                              <img
-                                src={aggregatorInfo[source].logo}
-                                width="100%"
-                                height="100%"
-                              />
-                            </Box>
-                            <Text color="label" size="14pt" weight="semibold">
-                              {aggregatorInfo[source].name}
-                            </Text>
-                            <Symbol
-                              size={12}
-                              symbol="chevron.down"
-                              weight="semibold"
-                            />
-                          </Inline>
-                        </Box>
-                      </SwapRouteDropdownMenu>
-                    </Inline>
-                  </Box>
+  const showSlippageExplainer = useCallback(() => {
+    showExplainerSheet({
+      show: true,
+      header: {
+        emoji: '🌊',
+      },
+      description: [
+        i18n.t('swap.settings.explainers.slippage.description_1'),
+        i18n.t('swap.settings.explainers.slippage.description_2'),
+      ],
+      title: i18n.t('swap.settings.explainers.slippage.title'),
+      actionButton: {
+        label: i18n.t('swap.settings.explainers.got_it'),
+        action: hideExplanerSheet,
+        labelColor: 'label',
+      },
+    });
+  }, [hideExplanerSheet, showExplainerSheet]);
 
-                  {flashbotsEnabledGlobal && (
+  const showFlashbotsExplainer = useCallback(() => {
+    showExplainerSheet({
+      show: true,
+      header: {
+        emoji: '🌊',
+      },
+      description: [i18n.t('swap.settings.explainers.flashbots.description')],
+      title: i18n.t('swap.settings.explainers.flashbots.title'),
+      actionButton: {
+        label: i18n.t('swap.settings.explainers.got_it'),
+        action: hideExplanerSheet,
+        labelColor: 'label',
+      },
+    });
+  }, [hideExplanerSheet, showExplainerSheet]);
+
+  const showRoutingExplainer = useCallback(() => {
+    showExplainerSheet({
+      show: true,
+      header: {
+        emoji: '🌊',
+      },
+      description: [i18n.t('swap.settings.explainers.routing.description')],
+      title: i18n.t('swap.settings.explainers.routing.title'),
+      actionButton: {
+        label: i18n.t('swap.settings.explainers.got_it'),
+        action: hideExplanerSheet,
+        labelColor: 'label',
+      },
+    });
+  }, [hideExplanerSheet, showExplainerSheet]);
+
+  return (
+    <>
+      <ExplainerSheet
+        show={explainerSheetParams.show}
+        header={explainerSheetParams.header}
+        title={explainerSheetParams.title}
+        description={explainerSheetParams.description}
+        actionButton={explainerSheetParams.actionButton}
+      />
+      <BottomSheet background="scrim" show={show}>
+        <AccentColorProviderWrapper color={settingsAccentColor}>
+          <Box paddingHorizontal="20px" paddingBottom="20px">
+            <Stack space="10px">
+              <Box>
+                <Box style={{ height: '64px' }}>
+                  <Inline
+                    height="full"
+                    alignVertical="center"
+                    alignHorizontal="center"
+                  >
+                    <Text
+                      align="center"
+                      color="label"
+                      size="14pt"
+                      weight="heavy"
+                    >
+                      {i18n.t('swap.settings.title')}
+                    </Text>
+                  </Inline>
+                </Box>
+                <Box paddingBottom="8px">
+                  <Stack space="12px">
                     <Box style={{ height: '32px' }}>
                       <Inline alignVertical="center" alignHorizontal="justify">
                         <Inline alignVertical="center" space="7px">
                           <Text color="label" size="14pt" weight="semibold">
-                            {i18n.t('swap.settings.use_flashbots')}
+                            {i18n.t('swap.settings.route_swaps')}
                           </Text>
                           <ButtonSymbol
                             symbol="info.circle.fill"
                             color="labelQuaternary"
                             height="28px"
                             variant="transparent"
-                            onClick={() => null}
+                            onClick={showRoutingExplainer}
                           />
                         </Inline>
-                        <Toggle
+                        <SwapRouteDropdownMenu
                           accentColor={settingsAccentColor}
-                          checked={flashbotsEnabled}
-                          handleChange={setFlashbotsEnabled}
+                          source={source}
+                          setSource={setSource}
+                        >
+                          <Box
+                            as={motion.div}
+                            initial={{ zIndex: 0 }}
+                            whileHover={{
+                              scale: transformScales['1.04'],
+                            }}
+                            whileTap={{
+                              scale: transformScales['0.96'],
+                            }}
+                            transition={transitions.bounce}
+                            style={{ height: '23px' }}
+                          >
+                            <Inline
+                              height="full"
+                              space="4px"
+                              alignVertical="center"
+                            >
+                              <Box style={{ height: '16px', width: '16px' }}>
+                                <img
+                                  src={aggregatorInfo[source].logo}
+                                  width="100%"
+                                  height="100%"
+                                />
+                              </Box>
+                              <Text color="label" size="14pt" weight="semibold">
+                                {aggregatorInfo[source].name}
+                              </Text>
+                              <Symbol
+                                size={12}
+                                symbol="chevron.down"
+                                weight="semibold"
+                              />
+                            </Inline>
+                          </Box>
+                        </SwapRouteDropdownMenu>
+                      </Inline>
+                    </Box>
+
+                    {flashbotsEnabledGlobal && (
+                      <Box style={{ height: '32px' }}>
+                        <Inline
+                          alignVertical="center"
+                          alignHorizontal="justify"
+                        >
+                          <Inline alignVertical="center" space="7px">
+                            <Text color="label" size="14pt" weight="semibold">
+                              {i18n.t('swap.settings.use_flashbots')}
+                            </Text>
+                            <ButtonSymbol
+                              symbol="info.circle.fill"
+                              color="labelQuaternary"
+                              height="28px"
+                              variant="transparent"
+                              onClick={showFlashbotsExplainer}
+                            />
+                          </Inline>
+                          <Toggle
+                            accentColor={settingsAccentColor}
+                            checked={flashbotsEnabled}
+                            handleChange={setFlashbotsEnabled}
+                          />
+                        </Inline>
+                      </Box>
+                    )}
+
+                    <Box style={{ height: '32px' }}>
+                      <Inline alignVertical="center" alignHorizontal="justify">
+                        <Label
+                          label={i18n.t('swap.settings.max_slippage')}
+                          onClick={showSlippageExplainer}
+                          warning={slippageWarning}
+                        />
+                        <SlippageInputMask
+                          variant={'transparent'}
+                          onChange={setSlippage}
+                          value={String(slippage)}
+                          inputRef={slippageInputRef}
                         />
                       </Inline>
                     </Box>
-                  )}
-
-                  <Box style={{ height: '32px' }}>
-                    <Inline alignVertical="center" alignHorizontal="justify">
-                      <Label
-                        label={i18n.t('swap.settings.max_slippage')}
-                        onClick={() => null}
-                        warning={slippageWarning}
-                      />
-                      <SlippageInputMask
-                        variant={'transparent'}
-                        onChange={setSlippage}
-                        value={String(slippage)}
-                        inputRef={slippageInputRef}
-                      />
-                    </Inline>
-                  </Box>
-                </Stack>
+                  </Stack>
+                </Box>
               </Box>
-            </Box>
-            <Box width="full">
-              <Button
-                width="full"
-                color="fillSecondary"
-                height="28px"
-                variant="plain"
-                onClick={setDefaultSettings}
-              >
-                <Text
-                  align="center"
-                  color="labelSecondary"
-                  size="14pt"
-                  weight="bold"
+              <Box width="full">
+                <Button
+                  width="full"
+                  color="fillSecondary"
+                  height="28px"
+                  variant="plain"
+                  onClick={setDefaultSettings}
                 >
-                  {i18n.t('swap.settings.use_defaults')}
-                </Text>
-              </Button>
-            </Box>
-            <Box style={{ width: '102px' }}>
-              <Separator color="separatorTertiary" strokeWeight="1px" />
-            </Box>
-            <Box width="full" paddingTop="20px">
-              <Button
-                width="full"
-                color="accent"
-                height="44px"
-                variant="flat"
-                onClick={done}
-              >
-                <Text align="center" color="label" size="16pt" weight="bold">
-                  {i18n.t('swap.settings.done')}
-                </Text>
-              </Button>
-            </Box>
-          </Stack>
-        </Box>
-      </AccentColorProviderWrapper>
-    </BottomSheet>
+                  <Text
+                    align="center"
+                    color="labelSecondary"
+                    size="14pt"
+                    weight="bold"
+                  >
+                    {i18n.t('swap.settings.use_defaults')}
+                  </Text>
+                </Button>
+              </Box>
+              <Box style={{ width: '102px' }}>
+                <Separator color="separatorTertiary" strokeWeight="1px" />
+              </Box>
+              <Box width="full" paddingTop="20px">
+                <Button
+                  width="full"
+                  color="accent"
+                  height="44px"
+                  variant="flat"
+                  onClick={done}
+                >
+                  <Text align="center" color="label" size="16pt" weight="bold">
+                    {i18n.t('swap.settings.done')}
+                  </Text>
+                </Button>
+              </Box>
+            </Stack>
+          </Box>
+        </AccentColorProviderWrapper>
+      </BottomSheet>
+    </>
   );
 };
