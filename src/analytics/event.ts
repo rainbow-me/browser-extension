@@ -14,18 +14,60 @@ export const event = {
    */
   dappPromptConnectApproved: 'dapp.prompt.connect.approved',
   /**
-   * Called when the user switches networks from the dApp Connect prompt.
+   * Called when the user clicks the network switch dropdown in the dApp Connect prompt.
    */
-  dappPromptConnectNetworkSwitched: 'dapp.prompt.connect.network_switched',
+  dappPromptConnectNetworkClicked: 'dapp.prompt.connect.network.clicked',
+  /**
+   * Called when the user switches networks in the dApp Connect prompt.
+   */
+  dappPromptConnectNetworkSwitched: 'dapp.prompt.connect.network.switched',
   /**
    * Called when the user rejects a connection request
    * with the Cancel button in the dApp Connect prompt.
    */
   dappPromptConnectRejected: 'dapp.prompt.connect.rejected',
   /**
+   * Called when the user clicks the switch wallet dropdown in the dApp Connect prompt.
+   */
+  dappPromptConnectWalletClicked: 'dapp.prompt.connect.wallet.clicked',
+  /**
    * Called when the user switches wallets from the dApp Connect prompt.
    */
-  dappPromptConnectWalletSwitched: 'dapp.prompt.connect.wallet_switched',
+  dappPromptConnectWalletSwitched: 'dapp.prompt.connect.wallet.switched',
+  /**
+   * Called when the user approves a send transaction request
+   * with the prominent button in the dApp Transaction Request prompt.
+   */
+  dappPromptSendTransactionApproved: 'dapp.prompt.send_transaction.approved',
+  /**
+   * Called when the user clicks the Custom Gas
+   * button in the dApp Send Transaction prompt.
+   */
+  dappPromptSendTransactionCustomGasClicked:
+    'dapp.prompt.send_transaction.custom_gas.clicked',
+  /**
+   * Called when the user changes gas defaults with the Gwei
+   * Settings drilldown UI in the Transaction Request prompt.
+   */
+  dappPromptSendTransactionCustomGasSet:
+    'dapp.prompt.send_transaction.custom_gas.set',
+  /**
+   * Called when the user rejects a send transaction request
+   * with the Cancel button in the dApp Transaction Request prompt.
+   */
+  dappPromptSendTransactionRejected: 'dapp.prompt.send_transaction.rejected',
+  /**
+   * Called when the user clicks the gas speed
+   * setting in the Transaction Request prompt.
+   */
+  dappPromptSendTransactionSpeedClicked:
+    'dapp.prompt.send_transaction.speed.clicked',
+  /**
+   * Called when the user changes the default gas setting
+   * with the context menu in the Transaction Request prompt.
+   */
+  dappPromptSendTransactionSpeedSwitched:
+    'dapp.prompt.send_transaction.speed.switched',
   /**
    * Called when the user approves a sign message request
    * with the prominent button in the dApp Sign Message prompt.
@@ -101,12 +143,14 @@ export type EventProperties = {
      */
     dappName: string;
   };
+  [event.dappPromptConnectNetworkClicked]: undefined;
   [event.dappPromptConnectNetworkSwitched]: {
     /**
      * `chainId` of the network the user selected in the prompt.
      */
     chainId: number;
   };
+  [event.dappPromptConnectWalletClicked]: undefined;
   [event.dappPromptConnectRejected]: {
     /**
      * `chainId` of the default network the dApp requested.
@@ -123,6 +167,106 @@ export type EventProperties = {
     dappName: string;
   };
   [event.dappPromptConnectWalletSwitched]: undefined;
+  [event.dappPromptSendTransactionApproved]: {
+    /**
+     * `chainId` of the network where the transaction is sent.
+     */
+    chainId: number;
+    /**
+     * Full url of the dApp requesting a to send a transaction.
+     */
+    dappURL: string;
+    /**
+     * Short name of the dApp displayed to the user.
+     * This will help us spot malformed dApp names to add to our overrides.
+     */
+    dappName: string;
+    /**
+     * Transaction speed setting that the user selected.
+     */
+    speed: 'normal' | 'fast' | 'urgent' | 'custom';
+    /**
+     * Gas base fee in Gwei.
+     */
+    gasBaseFee: number;
+    /**
+     * Gas max base fee in Gwei.
+     */
+    gasMaxBaseFee: number;
+    /**
+     * Gas miner tip in Gwei.
+     */
+    gasMinerTip: number;
+    /**
+     * Max total gas fee in Gwei.
+     */
+    gasFee: number;
+    /**
+     * Max total gas fee in USD.
+     */
+    transactionFee: number;
+  };
+  [event.dappPromptSendTransactionCustomGasClicked]: undefined;
+  [event.dappPromptSendTransactionCustomGasSet]: {
+    /**
+     * Gas base fee in Gwei.
+     */
+    baseFee: number;
+    /**
+     * Gas max base fee in Gwei.
+     */
+    maxBaseFee: number;
+    /**
+     * Gas miner tip in Gwei.
+     */
+    minerTip: number;
+    /**
+     * Warning message for Max base fee input.
+     */
+    minerTipWarning?: 'low.likely_to_fail' | 'low.may_get_stuck';
+    /**
+     * Max total gas fee in Gwei.
+     */
+    maxFee: number;
+    /**
+     * Max total gas fee in USD.
+     */
+    maxFeeUSD: number;
+    /**
+     * Warning message for Max base fee input.
+     */
+    maxBaseFeeWarning?: 'low.likely_to_fail' | 'low.may_get_stuck';
+  };
+  [event.dappPromptSendTransactionRejected]: {
+    /**
+     * `chainId` of the network where the transaction is sent.
+     */
+    chainId: number;
+    /**
+     * Full url of the dApp requesting a to send a transaction.
+     */
+    dappURL: string;
+    /**
+     * Short name of the dApp displayed to the user.
+     * This will help us spot malformed dApp names to add to our overrides.
+     */
+    dappName: string;
+  };
+  [event.dappPromptSendTransactionSpeedClicked]: undefined;
+  [event.dappPromptSendTransactionSpeedSwitched]: {
+    /**
+     * Gas base fee in Gwei.
+     */
+    baseFee: number;
+    /**
+     * Gas max base fee in Gwei.
+     */
+    maxBaseFee: number;
+    /**
+     * Select speed setting.
+     */
+    speed: 'normal' | 'fast' | 'urgent' | 'custom';
+  };
   [event.dappPromptSignMessageApproved]: {
     /**
      * Full url of the dApp requesting a sign message request.
