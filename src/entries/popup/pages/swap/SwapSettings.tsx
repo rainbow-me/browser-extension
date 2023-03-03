@@ -12,6 +12,7 @@ import React, {
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
+import { ChainId } from '~/core/types/chains';
 import {
   Box,
   Button,
@@ -36,6 +37,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
+import { DEFAULT_SLIPPAGE } from '../../hooks/swap/useSwapSettings';
 import { useAvatar } from '../../hooks/useAvatar';
 import usePrevious from '../../hooks/usePrevious';
 
@@ -136,9 +138,9 @@ const SwapRouteDropdownMenu = ({
 
 interface SwapSettingsProps {
   accentColor?: string;
+  chainId?: ChainId;
   show: boolean;
   slippage: string;
-  setDefaultSettings: () => void;
   onDone: () => void;
   setSettings: ({
     source,
@@ -153,9 +155,9 @@ interface SwapSettingsProps {
 
 export const SwapSettings = ({
   accentColor,
+  chainId,
   show,
   slippage: defaultSlippage,
-  setDefaultSettings,
   setSettings,
   onDone,
 }: SwapSettingsProps) => {
@@ -164,7 +166,7 @@ export const SwapSettings = ({
   const { flashbotsEnabled: flashbotsEnabledGlobal } =
     useFlashbotsEnabledStore();
 
-  const prevDefaultSlippage = usePrevious(defaultSlippage);
+  const prevChainId = usePrevious(chainId);
 
   const [source, setSource] = useState<Source | 'auto'>('auto');
   const [slippage, setSlippage] = useState<string>(defaultSlippage);
@@ -173,16 +175,22 @@ export const SwapSettings = ({
   const slippageInputRef = useRef(null);
   const settingsAccentColor = accentColor || avatar?.color;
 
+  const setDefaultSettings = useCallback(() => {
+    setSource('auto');
+    setSlippage(DEFAULT_SLIPPAGE[chainId || ChainId.mainnet]);
+    setFlashbotsEnabled(false);
+  }, [chainId]);
+
   const done = useCallback(() => {
     setSettings({ source, slippage, flashbotsEnabled });
     onDone();
   }, [flashbotsEnabled, onDone, setSettings, slippage, source]);
 
   useEffect(() => {
-    if (prevDefaultSlippage !== defaultSlippage) {
-      setSlippage(defaultSlippage);
+    if (prevChainId !== chainId) {
+      setSlippage(DEFAULT_SLIPPAGE[chainId || ChainId.mainnet]);
     }
-  }, [defaultSlippage, prevDefaultSlippage]);
+  }, [prevChainId, chainId]);
 
   return (
     <BottomSheet background="scrim" show={show}>

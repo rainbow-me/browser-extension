@@ -57,9 +57,9 @@ export function Swap() {
     assetToBuy,
   });
 
-  const { source, slippage, setDefaultSettings, setSettings } = useSwapSettings(
-    { chainId: assetToSell?.chainId || ChainId.mainnet },
-  );
+  const { source, slippage, setSettings } = useSwapSettings({
+    chainId: assetToSell?.chainId || ChainId.mainnet,
+  });
 
   const {
     assetToSellInputRef,
@@ -127,9 +127,9 @@ export function Swap() {
         accentColor={
           assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback
         }
-        setDefaultSettings={setDefaultSettings}
         setSettings={setSettings}
         slippage={slippage}
+        chainId={assetToSell?.chainId}
       />
       <Box
         background="surfaceSecondary"

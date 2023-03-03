@@ -27,12 +27,6 @@ export const useSwapSettings = ({ chainId }: { chainId: ChainId }) => {
   const [flashbotsEnabled, setFlashbotsEnabled] = useState<boolean>(false);
   const prevChainId = usePrevious(chainId);
 
-  const setDefaultSettings = useCallback(() => {
-    setSource('auto');
-    setSlippage(DEFAULT_SLIPPAGE[chainId]);
-    setFlashbotsEnabled(false);
-  }, [chainId]);
-
   const setSettings = useCallback(
     ({
       source,
@@ -63,7 +57,6 @@ export const useSwapSettings = ({ chainId }: { chainId: ChainId }) => {
     setSource,
     setSlippage,
     setFlashbotsEnabled,
-    setDefaultSettings,
     setSettings,
   };
 };
