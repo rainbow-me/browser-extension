@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import React, { useMemo } from 'react';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
@@ -19,9 +18,9 @@ import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets
 
 import { dropdownContainerVariant } from '../../../../components/DropdownInputWrapper/DropdownInputWrapper';
 import { BottomNetwork } from '../../../messages/BottomActions';
-import { TokenToReceiveRow } from '../TokenRow/TokenToReceiveRow';
+import { TokenToBuyRow } from '../TokenRow/TokenToBuyRow';
 
-const AssetsToReceiveSection = ({
+const AssetsToBuySection = ({
   data,
   title,
   symbol,
@@ -31,7 +30,7 @@ const AssetsToReceiveSection = ({
 }: {
   data: ParsedAddressAsset[];
   title: string;
-  onSelectAsset?: (address: Address) => void;
+  onSelectAsset?: (asset: ParsedAddressAsset | null) => void;
   symbol: SymbolProps['symbol'];
   id: string;
   onDropdownChange: (open: boolean) => void;
@@ -87,19 +86,17 @@ const AssetsToReceiveSection = ({
         <Box ref={containerRef}>
           {assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
             const { index } = virtualItem;
-            const rowData = data?.[index] as ParsedAddressAsset;
+            const asset = data?.[index] as ParsedAddressAsset;
             return (
               <Box
                 paddingHorizontal="8px"
-                key={`${rowData?.uniqueId}-${i}`}
-                onClick={() =>
-                  onSelectAsset?.(rowData?.mainnetAddress || rowData?.address)
-                }
-                testId={`token-input-asset-${rowData?.uniqueId}`}
+                key={`${asset?.uniqueId}-${i}`}
+                onClick={() => onSelectAsset?.(asset)}
+                testId={`token-input-asset-${asset?.uniqueId}`}
               >
-                <TokenToReceiveRow
+                <TokenToBuyRow
                   onDropdownChange={onDropdownChange}
-                  asset={rowData}
+                  asset={asset}
                 />
               </Box>
             );
@@ -110,8 +107,8 @@ const AssetsToReceiveSection = ({
   );
 };
 
-export type TokenToReceiveDropdownProps = {
-  asset?: ParsedAddressAsset;
+export type TokenToBuyDropdownProps = {
+  asset: ParsedAddressAsset | null;
   assets?: {
     data: ParsedAddressAsset[];
     title: string;
@@ -119,19 +116,19 @@ export type TokenToReceiveDropdownProps = {
     symbol: SymbolProps['symbol'];
   }[];
   outputChainId: ChainId;
-  onSelectAsset?: (address: Address) => void;
+  onSelectAsset?: (asset: ParsedAddressAsset | null) => void;
   setOutputChainId: (chainId: ChainId) => void;
   onDropdownChange: (open: boolean) => void;
 };
 
-export const TokenToReceiveDropdown = ({
+export const TokenToBuyDropdown = ({
   asset,
   assets,
   outputChainId,
   onSelectAsset,
   setOutputChainId,
   onDropdownChange,
-}: TokenToReceiveDropdownProps) => {
+}: TokenToBuyDropdownProps) => {
   const isL2 = useMemo(() => isL2Chain(outputChainId), [outputChainId]);
 
   const assetsCount = useMemo(
@@ -195,7 +192,7 @@ export const TokenToReceiveDropdown = ({
       >
         <Stack space="16px">
           {assets?.map((assetSection, i) => (
-            <AssetsToReceiveSection
+            <AssetsToBuySection
               key={i}
               data={assetSection.data}
               title={assetSection.title}

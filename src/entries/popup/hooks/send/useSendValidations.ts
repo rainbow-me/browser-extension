@@ -18,7 +18,7 @@ import {
 import { getNetworkNativeAssetUniqueId } from '../useNativeAssetForNetwork';
 import { useUserAsset } from '../useUserAsset';
 
-export const useSendTransactionValidations = ({
+export const useSendValidations = ({
   asset,
   assetAmount,
   selectedGas,

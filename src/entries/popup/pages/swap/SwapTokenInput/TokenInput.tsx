@@ -5,7 +5,6 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { Address } from 'wagmi';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { Box } from '~/design-system';
@@ -19,7 +18,7 @@ import { SwapInputActionButton } from '../SwapInputActionButton';
 
 interface TokenInputProps {
   accentCaretColor?: boolean;
-  asset?: ParsedAddressAsset;
+  asset: ParsedAddressAsset | null;
   assetFilter: string;
   dropdownHeight?: number;
   dropdownComponent: ReactElement;
@@ -29,10 +28,12 @@ interface TokenInputProps {
   dropdownClosed: boolean;
   variant: 'surface' | 'bordered' | 'transparent' | 'tinted';
   inputRef: React.RefObject<HTMLInputElement>;
+  value: string;
   onDropdownOpen: (open: boolean) => void;
-  setOnSelectAsset: (cb: (address: Address | '') => void) => void;
-  selectAssetAddress: (address: Address | '') => void;
+  selectAsset: (asset: ParsedAddressAsset | null) => void;
+  setOnSelectAsset: (cb: (asset: ParsedAddressAsset | null) => void) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
+  setValue: (value: string) => void;
 }
 
 export const TokenInput = ({
@@ -47,12 +48,13 @@ export const TokenInput = ({
   dropdownClosed,
   variant,
   inputRef,
+  value,
   onDropdownOpen,
-  selectAssetAddress,
+  selectAsset,
   setOnSelectAsset,
   setAssetFilter,
+  setValue,
 }: TokenInputProps) => {
-  const [value, setValue] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const prevDropdownVisible = usePrevious(dropdownVisible);
 
@@ -69,8 +71,8 @@ export const TokenInput = ({
   }, [inputRef, onDropdownOpen]);
 
   const onClose = useCallback(() => {
-    selectAssetAddress('');
-  }, [selectAssetAddress]);
+    selectAsset(null);
+  }, [selectAsset]);
 
   const onInputValueChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -81,7 +83,6 @@ export const TokenInput = ({
 
   useEffect(() => {
     if (dropdownClosed) {
-      setDropdownVisible(false);
       setDropdownVisible(false);
     }
   }, [dropdownClosed]);
@@ -121,7 +122,7 @@ export const TokenInput = ({
             />
           </Box>
         ) : (
-          <Box width="fit" marginVertical="-20px">
+          <Box marginVertical="-20px">
             <SwapInputMask
               accentCaretColor={accentCaretColor}
               borderColor="transparent"

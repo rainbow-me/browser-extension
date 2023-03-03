@@ -1,16 +1,15 @@
 import React, { useCallback, useRef } from 'react';
-import { Address } from 'wagmi';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
-import { TokenToReceiveDropdown } from './TokenDropdown/TokenToReceiveDropdown';
-import { TokenToReceiveInfo } from './TokenInfo/TokenToReceiveInfo';
+import { TokenToBuyDropdown } from './TokenDropdown/TokenToBuyDropdown';
+import { TokenToBuyInfo } from './TokenInfo/TokenToBuyInfo';
 import { TokenInput } from './TokenInput';
 
-interface TokenToReceiveProps {
-  asset?: ParsedAddressAsset;
+interface TokenToBuyProps {
+  asset: ParsedAddressAsset | null;
   assets?: {
     data: ParsedAddressAsset[];
     title: string;
@@ -23,13 +22,16 @@ interface TokenToReceiveProps {
   outputChainId: ChainId;
   placeholder: string;
   zIndex?: number;
+  assetToBuyValue: string;
+  inputRef: React.RefObject<HTMLInputElement>;
   onDropdownOpen: (open: boolean) => void;
-  selectAssetAddress: (address: Address | '') => void;
   setOutputChainId: (chainId: ChainId) => void;
+  selectAsset: (asset: ParsedAddressAsset | null) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
+  setAssetToBuyInputValue: (value: string) => void;
 }
 
-export const TokenToReceiveInput = ({
+export const TokenToBuyInput = ({
   asset,
   assetFilter,
   assets,
@@ -38,29 +40,35 @@ export const TokenToReceiveInput = ({
   outputChainId,
   placeholder,
   zIndex,
+  assetToBuyValue,
+  inputRef,
   onDropdownOpen,
-  selectAssetAddress,
+  selectAsset,
   setAssetFilter,
   setOutputChainId,
-}: TokenToReceiveProps) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const onSelectAssetRef = useRef<(address: Address | '') => void>();
+  setAssetToBuyInputValue,
+}: TokenToBuyProps) => {
+  const onSelectAssetRef =
+    useRef<(address: ParsedAddressAsset | null) => void>();
 
   const setOnSelectAsset = useCallback(
-    (cb: (address: Address | '') => void) => {
-      onSelectAssetRef.current = (address: Address | '') => {
-        cb(address);
-        selectAssetAddress(address);
+    (cb: (asset: ParsedAddressAsset | null) => void) => {
+      onSelectAssetRef.current = (asset: ParsedAddressAsset | null) => {
+        cb(asset);
+        selectAsset(asset);
       };
     },
-    [selectAssetAddress],
+    [selectAsset],
   );
 
-  const onDropdownChange = useCallback((open: boolean) => {
-    if (!open) {
-      setTimeout(() => inputRef?.current?.focus(), 300);
-    }
-  }, []);
+  const onDropdownChange = useCallback(
+    (open: boolean) => {
+      if (!open) {
+        setTimeout(() => inputRef?.current?.focus(), 300);
+      }
+    },
+    [inputRef],
+  );
 
   return (
     <TokenInput
@@ -70,7 +78,7 @@ export const TokenToReceiveInput = ({
       dropdownClosed={dropdownClosed}
       dropdownHeight={dropdownHeight}
       dropdownComponent={
-        <TokenToReceiveDropdown
+        <TokenToBuyDropdown
           onDropdownChange={onDropdownChange}
           asset={asset}
           assets={assets}
@@ -79,15 +87,17 @@ export const TokenToReceiveInput = ({
           setOutputChainId={setOutputChainId}
         />
       }
-      bottomComponent={asset ? <TokenToReceiveInfo asset={asset} /> : null}
+      bottomComponent={asset ? <TokenToBuyInfo asset={asset} /> : null}
       placeholder={placeholder}
       zIndex={zIndex}
       variant="tinted"
+      value={assetToBuyValue}
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
-      selectAssetAddress={selectAssetAddress}
+      selectAsset={selectAsset}
       assetFilter={assetFilter}
       setAssetFilter={setAssetFilter}
+      setValue={setAssetToBuyInputValue}
     />
   );
 };
