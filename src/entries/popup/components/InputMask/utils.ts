@@ -28,7 +28,7 @@ export const maskInput = ({
   const cleanDecimalsPart = decimalsPart?.substring(0, decimals ?? 18);
 
   const maskValue =
-    decimalsPart !== undefined
+    decimalsPart !== undefined && decimals !== 0
       ? [cleanIntegerPart, cleanDecimalsPart].join(DECIMAL_POINT)
       : cleanIntegerPart;
 

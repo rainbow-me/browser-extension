@@ -3,6 +3,7 @@ import React, { RefObject, useCallback, useState } from 'react';
 
 import { Box, Inline, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
+import { accentColorAsHsl } from '~/design-system/styles/core.css';
 import {
   transformScales,
   transitions,
@@ -27,7 +28,7 @@ export const SlippageInputMask = ({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const maskedValue = maskInput({
         inputValue: e.target.value,
-        decimals: 1,
+        decimals: 0,
         integers: 2,
       });
       onChange(maskedValue);
@@ -49,7 +50,7 @@ export const SlippageInputMask = ({
 
   return (
     <Box
-      width="full"
+      style={{ width: '72px' }}
       as={motion.div}
       whileTap={
         variant !== 'transparent'
@@ -62,7 +63,7 @@ export const SlippageInputMask = ({
       <Box
         position="absolute"
         paddingHorizontal="12px"
-        style={{ zIndex: 2, width: 98, height: 34 }}
+        style={{ zIndex: 2, width: 72, height: 34 }}
         paddingTop="12px"
       >
         <Inline space="2px" alignVertical="center" alignHorizontal="center">
@@ -94,7 +95,8 @@ export const SlippageInputMask = ({
           testId="gwei-input-mask"
           style={{
             textAlign: 'center',
-            paddingRight: 10,
+            paddingRight: 30,
+            caretColor: accentColorAsHsl,
           }}
         />
       </Box>

@@ -158,111 +158,111 @@ export const SwapSettings = ({
                   </Text>
                 </Inline>
               </Box>
-              <Stack space="12px">
-                <Box style={{ height: '32px' }}>
-                  <Inline alignVertical="center" alignHorizontal="justify">
-                    <Inline alignVertical="center" space="7px">
-                      <Text color="label" size="14pt" weight="semibold">
-                        {i18n.t('swap.settings.route_swaps')}
-                      </Text>
-                      <ButtonSymbol
-                        symbol="info.circle.fill"
-                        color="labelQuaternary"
-                        height="28px"
-                        variant="transparent"
-                        onClick={() => null}
-                      />
-                    </Inline>
-                    <SwapRouteDropdownMenu
-                      accentColor={accentColor}
-                      source={source}
-                      setSource={setSource}
-                    >
-                      <Box
-                        as={motion.div}
-                        initial={{ zIndex: 0 }}
-                        whileHover={{
-                          scale: transformScales['1.04'],
-                        }}
-                        whileTap={{
-                          scale: transformScales['0.96'],
-                        }}
-                        transition={transitions.bounce}
-                        style={{ height: '23px' }}
+              <Box paddingBottom="8px">
+                <Stack space="12px">
+                  <Box style={{ height: '32px' }}>
+                    <Inline alignVertical="center" alignHorizontal="justify">
+                      <Inline alignVertical="center" space="7px">
+                        <Text color="label" size="14pt" weight="semibold">
+                          {i18n.t('swap.settings.route_swaps')}
+                        </Text>
+                        <ButtonSymbol
+                          symbol="info.circle.fill"
+                          color="labelQuaternary"
+                          height="28px"
+                          variant="transparent"
+                          onClick={() => null}
+                        />
+                      </Inline>
+                      <SwapRouteDropdownMenu
+                        accentColor={accentColor}
+                        source={source}
+                        setSource={setSource}
                       >
-                        <Inline
-                          height="full"
-                          space="4px"
-                          alignVertical="center"
+                        <Box
+                          as={motion.div}
+                          initial={{ zIndex: 0 }}
+                          whileHover={{
+                            scale: transformScales['1.04'],
+                          }}
+                          whileTap={{
+                            scale: transformScales['0.96'],
+                          }}
+                          transition={transitions.bounce}
+                          style={{ height: '23px' }}
                         >
-                          <Box style={{ height: '16px', width: '16px' }}>
-                            <img
-                              src={aggregatorInfo[source].logo}
-                              width="100%"
-                              height="100%"
+                          <Inline
+                            height="full"
+                            space="4px"
+                            alignVertical="center"
+                          >
+                            <Box style={{ height: '16px', width: '16px' }}>
+                              <img
+                                src={aggregatorInfo[source].logo}
+                                width="100%"
+                                height="100%"
+                              />
+                            </Box>
+                            <Text color="label" size="14pt" weight="semibold">
+                              {aggregatorInfo[source].name}
+                            </Text>
+                            <Symbol
+                              size={12}
+                              symbol="chevron.down"
+                              weight="semibold"
                             />
-                          </Box>
-                          <Text color="label" size="14pt" weight="semibold">
-                            {aggregatorInfo[source].name}
-                          </Text>
-                          <Symbol
-                            size={12}
-                            symbol="chevron.down"
-                            weight="semibold"
-                          />
-                        </Inline>
-                      </Box>
-                    </SwapRouteDropdownMenu>
-                  </Inline>
-                </Box>
+                          </Inline>
+                        </Box>
+                      </SwapRouteDropdownMenu>
+                    </Inline>
+                  </Box>
 
-                <Box style={{ height: '32px' }}>
-                  <Inline alignVertical="center" alignHorizontal="justify">
-                    <Inline alignVertical="center" space="7px">
-                      <Text color="label" size="14pt" weight="semibold">
-                        {i18n.t('swap.settings.use_flashbots')}
-                      </Text>
-                      <ButtonSymbol
-                        symbol="info.circle.fill"
-                        color="labelQuaternary"
-                        height="28px"
-                        variant="transparent"
-                        onClick={() => null}
+                  <Box style={{ height: '32px' }}>
+                    <Inline alignVertical="center" alignHorizontal="justify">
+                      <Inline alignVertical="center" space="7px">
+                        <Text color="label" size="14pt" weight="semibold">
+                          {i18n.t('swap.settings.use_flashbots')}
+                        </Text>
+                        <ButtonSymbol
+                          symbol="info.circle.fill"
+                          color="labelQuaternary"
+                          height="28px"
+                          variant="transparent"
+                          onClick={() => null}
+                        />
+                      </Inline>
+                      <Toggle
+                        accentColor={accentColor}
+                        checked={toggleChecked}
+                        handleChange={setToggleChecked}
                       />
                     </Inline>
-                    <Toggle
-                      accentColor={accentColor}
-                      checked={toggleChecked}
-                      handleChange={setToggleChecked}
-                    />
-                  </Inline>
-                </Box>
+                  </Box>
 
-                <Box style={{ height: '32px' }}>
-                  <Inline alignVertical="center" alignHorizontal="justify">
-                    <Inline alignVertical="center" space="7px">
-                      <Text color="label" size="14pt" weight="semibold">
-                        {i18n.t('swap.settings.max_slippage')}
-                      </Text>
-                      <ButtonSymbol
-                        symbol="info.circle.fill"
-                        color="labelQuaternary"
-                        height="28px"
-                        variant="transparent"
-                        onClick={() => null}
-                      />
-                    </Inline>
-                    <Box style={{ width: '50px' }}>
+                  <Box style={{ height: '32px' }}>
+                    <Inline alignVertical="center" alignHorizontal="justify">
+                      <Inline alignVertical="center" space="7px">
+                        <Text color="label" size="14pt" weight="semibold">
+                          {i18n.t('swap.settings.max_slippage')}
+                        </Text>
+                        <ButtonSymbol
+                          symbol="info.circle.fill"
+                          color="labelQuaternary"
+                          height="28px"
+                          variant="transparent"
+                          onClick={() => null}
+                        />
+                      </Inline>
                       <SlippageInputMask
                         variant={'transparent'}
                         onChange={setSlippage}
                         value={slippage}
                         inputRef={slippageInputRef}
                       />
-                    </Box>
-                  </Inline>
-                </Box>
-              </Stack>
+                    </Inline>
+                  </Box>
+                </Stack>
+              </Box>
             </Box>
             <Box width="full">
               <Button
