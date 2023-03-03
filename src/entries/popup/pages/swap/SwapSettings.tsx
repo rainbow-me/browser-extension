@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import React, { ReactNode, useCallback, useRef, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useCurrentAddressStore } from '~/core/state';
 import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
 import {
   Box,
@@ -29,6 +30,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
+import { useAvatar } from '../../hooks/useAvatar';
 
 import { SlippageInputMask } from './SlippageInputMask';
 import { aggregatorInfo } from './utils';
@@ -136,16 +138,19 @@ export const SwapSettings = ({
   show,
   onDone,
 }: SwapSettingsProps) => {
+  const { currentAddress } = useCurrentAddressStore();
+  const { avatar } = useAvatar({ address: currentAddress });
   const [toggleChecked, setToggleChecked] = useState(false);
   const [source, setSource] = useState<Source | 'auto'>('auto');
   const [slippage, setSlippage] = useState('1');
   const { flashbotsEnabled } = useFlashbotsEnabledStore();
 
   const slippageInputRef = useRef(null);
+  const settingsAccentColor = accentColor || avatar?.color;
 
   return (
     <BottomSheet background="scrim" show={show}>
-      <AccentColorProviderWrapper color={accentColor}>
+      <AccentColorProviderWrapper color={settingsAccentColor}>
         <Box paddingHorizontal="20px" paddingBottom="20px">
           <Stack space="10px">
             <Box>
@@ -177,7 +182,7 @@ export const SwapSettings = ({
                         />
                       </Inline>
                       <SwapRouteDropdownMenu
-                        accentColor={accentColor}
+                        accentColor={settingsAccentColor}
                         source={source}
                         setSource={setSource}
                       >
@@ -235,7 +240,7 @@ export const SwapSettings = ({
                           />
                         </Inline>
                         <Toggle
-                          accentColor={accentColor}
+                          accentColor={settingsAccentColor}
                           checked={toggleChecked}
                           handleChange={setToggleChecked}
                         />
