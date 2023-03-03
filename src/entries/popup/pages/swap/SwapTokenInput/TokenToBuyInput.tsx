@@ -1,56 +1,59 @@
 import React, { useCallback, useRef } from 'react';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
-import { SortMethod } from '~/entries/popup/hooks/send/useSendAsset';
+import { ChainId } from '~/core/types/chains';
+import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
-import { TokenToSwapDropdown } from './TokenDropdown/TokenToSwapDropdown';
-import { TokenToSwapInfo } from './TokenInfo/TokenToSwapInfo';
+import { TokenToBuyDropdown } from './TokenDropdown/TokenToBuyDropdown';
+import { TokenToBuyInfo } from './TokenInfo/TokenToBuyInfo';
 import { TokenInput } from './TokenInput';
 
-interface SwapTokenInputProps {
-  assetToSwapMaxValue: { display: string; amount: string };
-  assetToSwapValue: string;
+interface TokenToBuyProps {
   asset: ParsedAddressAsset | null;
+  assets?: {
+    data: ParsedAddressAsset[];
+    title: string;
+    id: string;
+    symbol: SymbolProps['symbol'];
+  }[];
   assetFilter: string;
-  assets?: ParsedAddressAsset[];
   dropdownClosed: boolean;
   dropdownHeight?: number;
+  outputChainId: ChainId;
   placeholder: string;
-  sortMethod: SortMethod;
   zIndex?: number;
+  assetToBuyValue: string;
   inputRef: React.RefObject<HTMLInputElement>;
   onDropdownOpen: (open: boolean) => void;
-  setSortMethod: (sortMethod: SortMethod) => void;
+  setOutputChainId: (chainId: ChainId) => void;
   selectAsset: (asset: ParsedAddressAsset | null) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
-  setAssetToSwapMaxValue: () => void;
-  setAssetToSwapValue: (value: string) => void;
+  setAssetToBuyInputValue: (value: string) => void;
 }
 
-export const TokenToSwapInput = ({
-  assetToSwapMaxValue,
+export const TokenToBuyInput = ({
   asset,
   assetFilter,
   assets,
   dropdownClosed = false,
   dropdownHeight,
+  outputChainId,
   placeholder,
-  sortMethod,
   zIndex,
-  assetToSwapValue,
+  assetToBuyValue,
   inputRef,
   onDropdownOpen,
   selectAsset,
   setAssetFilter,
-  setSortMethod,
-  setAssetToSwapMaxValue,
-  setAssetToSwapValue,
-}: SwapTokenInputProps) => {
-  const onSelectAssetRef = useRef<(asset: ParsedAddressAsset) => void>();
+  setOutputChainId,
+  setAssetToBuyInputValue,
+}: TokenToBuyProps) => {
+  const onSelectAssetRef =
+    useRef<(address: ParsedAddressAsset | null) => void>();
 
   const setOnSelectAsset = useCallback(
-    (cb: (asset: ParsedAddressAsset) => void) => {
-      onSelectAssetRef.current = (asset: ParsedAddressAsset) => {
+    (cb: (asset: ParsedAddressAsset | null) => void) => {
+      onSelectAssetRef.current = (asset: ParsedAddressAsset | null) => {
         cb(asset);
         selectAsset(asset);
       };
@@ -67,46 +70,34 @@ export const TokenToSwapInput = ({
     [inputRef],
   );
 
-  const setMaxValue = useCallback(() => {
-    setAssetToSwapMaxValue();
-  }, [setAssetToSwapMaxValue]);
-
   return (
     <TokenInput
       inputRef={inputRef}
+      accentCaretColor
       asset={asset}
       dropdownClosed={dropdownClosed}
       dropdownHeight={dropdownHeight}
       dropdownComponent={
-        <TokenToSwapDropdown
+        <TokenToBuyDropdown
           onDropdownChange={onDropdownChange}
           asset={asset}
           assets={assets}
-          sortMethod={sortMethod}
           onSelectAsset={onSelectAssetRef?.current}
-          setSortMethod={setSortMethod}
+          outputChainId={outputChainId}
+          setOutputChainId={setOutputChainId}
         />
       }
-      bottomComponent={
-        asset ? (
-          <TokenToSwapInfo
-            assetToSwapValue={assetToSwapValue}
-            assetToSwapMaxValue={assetToSwapMaxValue}
-            asset={asset}
-            setAssetToSwapMaxValue={setMaxValue}
-          />
-        ) : null
-      }
+      bottomComponent={asset ? <TokenToBuyInfo asset={asset} /> : null}
       placeholder={placeholder}
       zIndex={zIndex}
       variant="tinted"
-      value={assetToSwapValue}
+      value={assetToBuyValue}
       onDropdownOpen={onDropdownOpen}
       setOnSelectAsset={setOnSelectAsset}
       selectAsset={selectAsset}
       assetFilter={assetFilter}
       setAssetFilter={setAssetFilter}
-      setValue={setAssetToSwapValue}
+      setValue={setAssetToBuyInputValue}
     />
   );
 };

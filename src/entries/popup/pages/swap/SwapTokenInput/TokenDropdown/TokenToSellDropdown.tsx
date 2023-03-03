@@ -15,9 +15,9 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '../../../../components/DropdownMenu/DropdownMenu';
-import { TokenToSwapRow } from '../TokenRow/TokenToSwapRow';
+import { TokenToSellRow } from '../TokenRow/TokenToSellRow';
 
-export type TokenToSwapDropdownProps = {
+export type TokenToSellDropdownProps = {
   asset: ParsedAddressAsset | null;
   assets?: ParsedAddressAsset[];
   sortMethod: SortMethod;
@@ -26,14 +26,14 @@ export type TokenToSwapDropdownProps = {
   onDropdownChange: (open: boolean) => void;
 };
 
-export const TokenToSwapDropdown = ({
+export const TokenToSellDropdown = ({
   asset,
   assets,
   sortMethod,
   onSelectAsset,
   setSortMethod,
   onDropdownChange,
-}: TokenToSwapDropdownProps) => {
+}: TokenToSellDropdownProps) => {
   const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
     assets,
     size: 10,
@@ -139,7 +139,7 @@ export const TokenToSwapDropdown = ({
                 onClick={() => onSelectAsset?.(asset)}
                 testId={`token-input-asset-${asset?.uniqueId}`}
               >
-                <TokenToSwapRow uniqueId={asset?.uniqueId} />
+                <TokenToSellRow uniqueId={asset?.uniqueId} />
               </Box>
             );
           })}

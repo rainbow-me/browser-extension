@@ -15,16 +15,16 @@ import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
 const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 120;
 
-export const TokenToSwapInfo = ({
+export const TokenToSellInfo = ({
   asset,
-  assetToSwapValue,
-  assetToSwapMaxValue,
-  setAssetToSwapMaxValue,
+  assetToSellValue,
+  assetToSellMaxValue,
+  setAssetToSellMaxValue,
 }: {
   asset: ParsedAddressAsset | null;
-  assetToSwapValue: string;
-  assetToSwapMaxValue: { display: string; amount: string };
-  setAssetToSwapMaxValue: () => void;
+  assetToSellValue: string;
+  assetToSellMaxValue: { display: string; amount: string };
+  setAssetToSellMaxValue: () => void;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   if (!asset) return null;
@@ -41,7 +41,7 @@ export const TokenToSwapInfo = ({
           >
             {
               convertAmountAndPriceToNativeDisplay(
-                assetToSwapValue || 0,
+                assetToSellValue || 0,
                 asset?.price?.value || 0,
                 currentCurrency,
               ).display
@@ -49,7 +49,7 @@ export const TokenToSwapInfo = ({
           </TextOverflow>
         )}
         <Tooltip
-          text={`${assetToSwapMaxValue.display} ${asset?.symbol}`}
+          text={`${assetToSellMaxValue.display} ${asset?.symbol}`}
           textColor="labelSecondary"
           textSize="12pt"
           textWeight="medium"
@@ -59,7 +59,7 @@ export const TokenToSwapInfo = ({
             whileHover={{ scale: transformScales['1.04'] }}
             whileTap={{ scale: transformScales['0.96'] }}
             transition={transitions.bounce}
-            onClick={setAssetToSwapMaxValue}
+            onClick={setAssetToSellMaxValue}
           >
             <Inline alignVertical="center" space="4px">
               <Box marginVertical="-10px">
