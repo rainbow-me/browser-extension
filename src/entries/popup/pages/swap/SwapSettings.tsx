@@ -3,6 +3,7 @@ import { Source } from '@rainbow-me/swaps';
 import { motion } from 'framer-motion';
 import React, { ReactNode, useCallback, useState } from 'react';
 
+import { i18n } from '~/core/languages';
 import {
   Box,
   Button,
@@ -58,7 +59,11 @@ const SwapRouteDropdownMenu = ({
           onValueChange={(value) => onValueChange(value as Source | 'auto')}
           value={source}
         >
-          <DropdownMenuRadioItem highlightAccentColor value="auto">
+          <DropdownMenuRadioItem
+            highlightAccentColor
+            value="auto"
+            selectedValue={source}
+          >
             <Box id="settings-link">
               <Inline alignVertical="center" space="8px">
                 <Box style={{ height: '16px', width: '16px' }}>
@@ -77,6 +82,7 @@ const SwapRouteDropdownMenu = ({
           <DropdownMenuRadioItem
             highlightAccentColor
             value={Source.Aggregator0x}
+            selectedValue={source}
           >
             <Inline alignVertical="center" space="8px">
               <Box style={{ height: '16px', width: '16px' }}>
@@ -94,6 +100,7 @@ const SwapRouteDropdownMenu = ({
           <DropdownMenuRadioItem
             highlightAccentColor
             value={Source.Aggregotor1inch}
+            selectedValue={source}
           >
             <Box testId="lock">
               <Inline alignVertical="center" space="8px">
@@ -143,7 +150,7 @@ export const SwapSettings = ({
                   alignHorizontal="center"
                 >
                   <Text align="center" color="label" size="14pt" weight="heavy">
-                    Swap Settings
+                    {i18n.t('swap.settings.title')}
                   </Text>
                 </Inline>
               </Box>
@@ -152,7 +159,7 @@ export const SwapSettings = ({
                   <Inline alignVertical="center" alignHorizontal="justify">
                     <Inline alignVertical="center" space="7px">
                       <Text color="label" size="14pt" weight="semibold">
-                        Route swaps via
+                        {i18n.t('swap.settings.route_swaps')}
                       </Text>
                       <ButtonSymbol
                         symbol="info.circle.fill"
@@ -209,7 +216,7 @@ export const SwapSettings = ({
                   <Inline alignVertical="center" alignHorizontal="justify">
                     <Inline alignVertical="center" space="7px">
                       <Text color="label" size="14pt" weight="semibold">
-                        Use Flashbots
+                        {i18n.t('swap.settings.use_flashbots')}
                       </Text>
                       <ButtonSymbol
                         symbol="info.circle.fill"
@@ -231,7 +238,7 @@ export const SwapSettings = ({
                   <Inline alignVertical="center" alignHorizontal="justify">
                     <Inline alignVertical="center" space="7px">
                       <Text color="label" size="14pt" weight="semibold">
-                        Max slippage
+                        {i18n.t('swap.settings.max_slippage')}
                       </Text>
                       <ButtonSymbol
                         symbol="info.circle.fill"
@@ -263,7 +270,7 @@ export const SwapSettings = ({
                   size="14pt"
                   weight="bold"
                 >
-                  Use defaults
+                  {i18n.t('swap.settings.defaults')}
                 </Text>
               </Button>
             </Box>
@@ -279,7 +286,7 @@ export const SwapSettings = ({
                 onClick={onDone}
               >
                 <Text align="center" color="label" size="16pt" weight="bold">
-                  Done
+                  {i18n.t('swap.settings.done')}
                 </Text>
               </Button>
             </Box>

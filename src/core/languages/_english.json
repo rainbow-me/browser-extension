@@ -241,6 +241,14 @@
     },
     "aggregators": {
       "rainbow": "Auto"
+    },
+    "settings": {
+      "title": "Swap Settings",
+      "route_swaps": "Route swaps via",
+      "use_flashbots": "Use Flashbots",
+      "max_slippage": "Max slippage",
+      "use_defaults": "Use defaults",
+      "done": "Done"
     }
   },
   "custom_gas": {
