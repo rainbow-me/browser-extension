@@ -61,7 +61,6 @@ export async function sendTransactionFromTrezor(
     });
 
     if (response.success) {
-      // TODO - Verify that it was signed by the right address
       baseTx.type = baseTx.gasPrice ? 1 : 2;
       const serializedTransaction = ethers.utils.serializeTransaction(baseTx, {
         r: response.payload.r,
