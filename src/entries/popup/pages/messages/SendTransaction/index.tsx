@@ -4,6 +4,8 @@ import { getAddress } from 'ethers/lib/utils';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Address } from 'wagmi';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -38,7 +40,7 @@ export function SendTransaction({
   request,
 }: ApproveRequestProps) {
   const [waitingForDevice, setWaitingForDevice] = useState(false);
-  const { appHost } = useAppMetadata({
+  const { appHost, appName } = useAppMetadata({
     url: request?.meta?.sender?.url,
   });
   const { appSession } = useAppSession({ host: appHost });
@@ -93,10 +95,18 @@ export function SendTransaction({
 
       approveRequest(result);
       setWaitingForDevice(false);
+
+      analytics.track(event.dappPromptSendTransactionApproved, {
+        chainId: txData.chainId,
+        dappURL: appHost,
+        dappName: appName,
+      });
     } finally {
       setWaitingForDevice(false);
     }
   }, [
+    appHost,
+    appName,
     appSession.chainId,
     approveRequest,
     asset,
@@ -104,6 +114,15 @@ export function SendTransaction({
     request?.params,
     selectedWallet,
   ]);
+
+  const onRejectRequest = useCallback(() => {
+    rejectRequest();
+    analytics.track(event.dappPromptSendTransactionRejected, {
+      chainId: appSession.chainId,
+      dappURL: appHost,
+      dappName: appName,
+    });
+  }, [appHost, appName, appSession.chainId, rejectRequest]);
 
   return (
     <Rows alignVertical="justify">
@@ -116,7 +135,7 @@ export function SendTransaction({
           appHost={appHost}
           selectedWallet={selectedWallet}
           onAcceptRequest={onAcceptRequest}
-          onRejectRequest={rejectRequest}
+          onRejectRequest={onRejectRequest}
         />
       </Row>
     </Rows>

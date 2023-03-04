@@ -191,31 +191,7 @@ export type EventProperties = {
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
      */
-    dappName: string;
-    /**
-     * Transaction speed setting that the user selected.
-     */
-    speed: 'normal' | 'fast' | 'urgent' | 'custom';
-    /**
-     * Gas base fee in Gwei.
-     */
-    gasBaseFee: number;
-    /**
-     * Gas max base fee in Gwei.
-     */
-    gasMaxBaseFee: number;
-    /**
-     * Gas miner tip in Gwei.
-     */
-    gasMinerTip: number;
-    /**
-     * Max total gas fee in Gwei.
-     */
-    gasFee: number;
-    /**
-     * Max total gas fee in USD.
-     */
-    transactionFee: number;
+    dappName?: string;
   };
   [event.dappPromptSendTransactionCustomGasClicked]: undefined;
   [event.dappPromptSendTransactionCustomGasSet]: {
@@ -234,19 +210,15 @@ export type EventProperties = {
     /**
      * Warning message for Max base fee input.
      */
-    minerTipWarning?: 'low.likely_to_fail' | 'low.may_get_stuck';
+    minerTipWarning?: 'stuck' | 'fail';
     /**
      * Max total gas fee in Gwei.
      */
     maxFee: number;
     /**
-     * Max total gas fee in USD.
-     */
-    maxFeeUSD: number;
-    /**
      * Warning message for Max base fee input.
      */
-    maxBaseFeeWarning?: 'low.likely_to_fail' | 'low.may_get_stuck';
+    maxBaseFeeWarning?: 'stuck' | 'fail';
   };
   [event.dappPromptSendTransactionRejected]: {
     /**
@@ -261,18 +233,10 @@ export type EventProperties = {
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
      */
-    dappName: string;
+    dappName?: string;
   };
   [event.dappPromptSendTransactionSpeedClicked]: undefined;
   [event.dappPromptSendTransactionSpeedSwitched]: {
-    /**
-     * Gas base fee in Gwei.
-     */
-    baseFee: number;
-    /**
-     * Gas max base fee in Gwei.
-     */
-    maxBaseFee: number;
     /**
      * Select speed setting.
      */

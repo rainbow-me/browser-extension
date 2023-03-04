@@ -2,6 +2,8 @@ import { TransactionRequest } from '@ethersproject/abstract-provider';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Chain } from 'wagmi';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
@@ -59,8 +61,10 @@ export function TransactionFee({
     () => gasFeeParamsBySpeed?.[selectedSpeed],
     [gasFeeParamsBySpeed, selectedSpeed],
   );
-
-  const openCustomGasSheet = useCallback(() => setShowCustomGasSheet(true), []);
+  const openCustomGasSheet = useCallback(() => {
+    setShowCustomGasSheet(true);
+    analytics.track(event.dappPromptSendTransactionCustomGasClicked);
+  }, []);
 
   const closeCustomGasSheet = useCallback(
     () => setShowCustomGasSheet(false),
@@ -73,9 +77,13 @@ export function TransactionFee({
         openCustomGasSheet();
       }
       setSelectedSpeed(speed);
+      analytics.track(event.dappPromptSendTransactionSpeedSwitched, { speed });
     },
     [openCustomGasSheet, setSelectedSpeed],
   );
+
+  const onSpeedOpenChange = (isOpen: boolean) =>
+    isOpen && analytics.track(event.dappPromptSendTransactionSpeedClicked);
 
   useEffect(() => {
     clearCustomGasModified();
@@ -134,6 +142,7 @@ export function TransactionFee({
               }
               accentColor={accentColor}
               plainTriggerBorder={plainTriggerBorder}
+              onOpenChange={onSpeedOpenChange}
             />
             {chainId === ChainId.mainnet ? (
               <Box
