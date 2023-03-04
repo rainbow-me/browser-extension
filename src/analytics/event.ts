@@ -290,6 +290,10 @@ export type EventProperties = {
   };
   [event.dappProviderNetworkSwitched]: {
     /**
+     * Full url of the dApp requesting a `disconnect` event.
+     */
+    dappURL: string;
+    /**
      * `chainId` of the network the dApp requested a switch to.
      */
     chainId: number;
