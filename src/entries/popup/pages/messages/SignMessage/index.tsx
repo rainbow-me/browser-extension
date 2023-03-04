@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { RPCMethod } from '~/core/types/rpcMethods';
@@ -39,7 +41,7 @@ export function SignMessage({
   request,
 }: ApproveRequestProps) {
   const [waitingForDevice, setWaitingForDevice] = useState(false);
-  const { appHost } = useAppMetadata({
+  const { appHost, appName } = useAppMetadata({
     url: request?.meta?.sender?.url,
   });
   const { appSession } = useAppSession({ host: appHost });
@@ -64,15 +66,39 @@ export function SignMessage({
         requestPayload.msgData,
         requestPayload.address,
       );
+      analytics.track(event.dappPromptSignMessageApproved, {
+        dappURL: appHost,
+        dappName: appName,
+      });
     } else if (walletAction === 'sign_typed_data') {
       result = await wallet.signTypedData(
         requestPayload.msgData,
         requestPayload.address,
       );
+      analytics.track(event.dappPromptSignTypedDataApproved, {
+        dappURL: appHost,
+        dappName: appName,
+      });
     }
     approveRequest(result);
     setWaitingForDevice(false);
-  }, [approveRequest, request, selectedWallet]);
+  }, [appHost, appName, approveRequest, request, selectedWallet]);
+
+  const onRejectRequest = useCallback(() => {
+    rejectRequest();
+    const walletAction = getWalletActionMethod(request?.method);
+    if (walletAction === 'personal_sign') {
+      analytics.track(event.dappPromptSignMessageRejected, {
+        dappURL: appHost,
+        dappName: appName,
+      });
+    } else if (walletAction === 'sign_typed_data') {
+      analytics.track(event.dappPromptSignTypedDataRejected, {
+        dappURL: appHost,
+        dappName: appName,
+      });
+    }
+  }, [appHost, appName, rejectRequest, request?.method]);
 
   return (
     <Box style={{ overflowY: 'hidden' }} width="full" height="full">
@@ -82,7 +108,7 @@ export function SignMessage({
         selectedWallet={selectedWallet}
         selectedChainId={selectedChainId}
         onAcceptRequest={onAcceptRequest}
-        onRejectRequest={rejectRequest}
+        onRejectRequest={onRejectRequest}
       />
     </Box>
   );

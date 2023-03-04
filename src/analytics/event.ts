@@ -250,7 +250,7 @@ export type EventProperties = {
     /**
      * Short name of the dApp displayed to the user.
      */
-    dappName: string;
+    dappName?: string;
   };
   [event.dappPromptSignMessageRejected]: {
     /**
@@ -260,7 +260,7 @@ export type EventProperties = {
     /**
      * Short name of the dApp displayed to the user.
      */
-    dappName: string;
+    dappName?: string;
   };
   [event.dappPromptSignTypedDataApproved]: {
     /**
@@ -270,7 +270,7 @@ export type EventProperties = {
     /**
      * Short name of the dApp displayed to the user.
      */
-    dappName: string;
+    dappName?: string;
   };
   [event.dappPromptSignTypedDataRejected]: {
     /**
@@ -280,7 +280,7 @@ export type EventProperties = {
     /**
      * Short name of the dApp displayed to the user.
      */
-    dappName: string;
+    dappName?: string;
   };
   [event.dappProviderDisconnected]: {
     /**
