@@ -20,5 +20,5 @@
     },
   },
   "include": ["src", ".env.d.ts"],
-  "exclude": ["design-system/docs"]
+  "exclude": ["design-system/docs", "static/", "node_modules", "dist", "build"]
 }

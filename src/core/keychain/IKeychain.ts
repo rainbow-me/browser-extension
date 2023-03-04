@@ -9,6 +9,7 @@ export interface IKeychain {
   serialize(): Promise<unknown>;
   deserialize(options: unknown): Promise<void>;
   addNewAccount(): Promise<Array<Wallet>>;
+  addAccountAtIndex(index: number, address: Address): Promise<Address>;
   getAccounts(): Promise<Array<Address>>;
   getSigner(address: Address): Signer;
   exportAccount(address: Address): Promise<PrivateKey>;
