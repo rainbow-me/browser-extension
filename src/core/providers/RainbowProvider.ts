@@ -1,6 +1,9 @@
 import { Ethereum } from '@wagmi/core';
 import { EventEmitter } from 'eventemitter3';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
+
 import { Messenger } from '../messengers';
 import { providerRequestTransport } from '../transports';
 import { RPCMethod } from '../types/rpcMethods';
@@ -53,10 +56,15 @@ export class RainbowProvider extends EventEmitter {
     });
     messenger?.reply(`chainChanged:${host}`, async (chainId: number) => {
       this.emit('chainChanged', toHex(String(chainId)));
+      analytics.track(event.dappProviderNetworkSwitched, {
+        dappURL: host,
+        chainId,
+      });
     });
     messenger?.reply(`disconnect:${host}`, async () => {
       this.emit('disconnect');
       this.emit('accountsChanged', []);
+      analytics.track(event.dappProviderDisconnected, { dappURL: host });
     });
     messenger?.reply(`connect:${host}`, async (connectionInfo) => {
       this.emit('connect', connectionInfo);
