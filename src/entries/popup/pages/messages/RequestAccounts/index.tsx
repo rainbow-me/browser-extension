@@ -52,6 +52,15 @@ export const RequestAccounts = ({
     });
   }, [appHostName, appName, approveRequest, selectedChainId, selectedWallet]);
 
+  const onRejectRequest = useCallback(() => {
+    rejectRequest();
+    analytics.track(event.dappPromptConnectRejected, {
+      chainId: selectedChainId,
+      dappURL: appHostName,
+      dappName: appName,
+    });
+  }, [appHostName, appName, rejectRequest, selectedChainId]);
+
   return (
     <Rows alignVertical="justify">
       <Row height="content">
@@ -69,14 +78,7 @@ export const RequestAccounts = ({
           selectedChainId={selectedChainId}
           setSelectedChainId={setSelectedChainId}
           onAcceptRequest={onAcceptRequest}
-          onRejectRequest={() => {
-            rejectRequest();
-            analytics.track(event.dappPromptConnectRejected, {
-              chainId: selectedChainId,
-              dappURL: appHostName,
-              dappName: appName,
-            });
-          }}
+          onRejectRequest={onRejectRequest}
           appName={appName}
         />
       </Row>

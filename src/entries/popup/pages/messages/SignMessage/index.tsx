@@ -98,7 +98,7 @@ export function SignMessage({
         dappName: appName,
       });
     }
-  }, [appHost, appName, rejectRequest, request?.method]);
+  }, [appHost, appName, rejectRequest, request]);
 
   return (
     <Box style={{ overflowY: 'hidden' }} width="full" height="full">
