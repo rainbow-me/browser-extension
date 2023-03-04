@@ -21,6 +21,7 @@ interface SwitchMenuProps {
   menuItemIndicator: React.ReactNode;
   menuItems: string[];
   align?: 'start' | 'center' | 'end';
+  onOpenChange?: (open: boolean) => void;
 }
 
 export const SwitchMenu = ({
@@ -32,9 +33,10 @@ export const SwitchMenu = ({
   renderMenuItem,
   menuItemIndicator,
   align,
+  onOpenChange,
 }: SwitchMenuProps) => {
   return (
-    <DropdownMenu>
+    <DropdownMenu onOpenChange={onOpenChange}>
       <DropdownMenuTrigger asChild>
         <Box style={{ cursor: 'default' }}>{renderMenuTrigger}</Box>
       </DropdownMenuTrigger>

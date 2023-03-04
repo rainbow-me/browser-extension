@@ -1,6 +1,8 @@
 import React from 'react';
 import { Address, useBalance } from 'wagmi';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
@@ -110,7 +112,13 @@ export const BottomSwitchWallet = ({
         )}
         menuItems={visibleWallets?.map((wallet) => wallet.address)}
         selectedValue={selectedWallet}
-        onValueChange={(value) => setSelectedWallet(value as Address)}
+        onValueChange={(value) => {
+          setSelectedWallet(value as Address);
+          analytics.track(event.dappPromptConnectWalletSwitched);
+        }}
+        onOpenChange={(isOpen) =>
+          isOpen && analytics.track(event.dappPromptConnectWalletClicked)
+        }
       />
     </Stack>
   );
@@ -183,7 +191,13 @@ export const BottomSwitchNetwork = ({
       <SwitchNetworkMenu
         type="dropdown"
         chainId={selectedChainId}
-        onChainChanged={(chainId) => setSelectedChainId(chainId)}
+        onOpenChange={(isOpen) =>
+          isOpen && analytics.track(event.dappPromptConnectNetworkClicked)
+        }
+        onChainChanged={(chainId) => {
+          setSelectedChainId(chainId);
+          analytics.track(event.dappPromptConnectNetworkSwitched, { chainId });
+        }}
         triggerComponent={
           <BottomNetwork selectedChainId={selectedChainId} displaySymbol />
         }

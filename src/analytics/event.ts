@@ -8,7 +8,12 @@ export const event = {
    * Called when the dApp requests a network change and the extension
    * auto-approves the request and displays a notification in the DOM.
    */
-  dappNotificationNetworkSwitched: 'dapp.notification.network_switched',
+  dappNotificationNetworkSwitched: 'dapp.notification.network.switched',
+  /**
+   * Called when the dApp requests a network change and the extension
+   * denies because the network is unsupported and displays a DOM notification.
+   */
+  dappNotificationNetworkUnsupported: 'dapp.notification.network.unsupported',
   /**
    * Called when the user approves a connection request from the active dApp.
    */
@@ -128,6 +133,12 @@ export type EventProperties = {
      */
     chainId: number;
   };
+  [event.dappNotificationNetworkUnsupported]: {
+    /**
+     * `chainId` of the network the dApp requested a switch to.
+     */
+    chainId: number;
+  };
   [event.dappPromptConnectApproved]: {
     /**
      * `chainId` of the default network the dApp requested.
@@ -141,7 +152,7 @@ export type EventProperties = {
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
      */
-    dappName: string;
+    dappName?: string;
   };
   [event.dappPromptConnectNetworkClicked]: undefined;
   [event.dappPromptConnectNetworkSwitched]: {
@@ -150,7 +161,6 @@ export type EventProperties = {
      */
     chainId: number;
   };
-  [event.dappPromptConnectWalletClicked]: undefined;
   [event.dappPromptConnectRejected]: {
     /**
      * `chainId` of the default network the dApp requested.
@@ -164,8 +174,9 @@ export type EventProperties = {
      * Short name of the dApp displayed to the user.
      * This will help us spot malformed dApp names to add to our overrides.
      */
-    dappName: string;
+    dappName?: string;
   };
+  [event.dappPromptConnectWalletClicked]: undefined;
   [event.dappPromptConnectWalletSwitched]: undefined;
   [event.dappPromptSendTransactionApproved]: {
     /**

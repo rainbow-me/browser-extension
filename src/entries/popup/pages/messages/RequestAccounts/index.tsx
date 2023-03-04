@@ -1,6 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { Address } from 'wagmi';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { initializeMessenger } from '~/core/messengers';
 import { useCurrentAddressStore } from '~/core/state';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -43,7 +45,12 @@ export const RequestAccounts = ({
       address: selectedWallet,
       chainId: selectedChainId,
     });
-  }, [appHostName, approveRequest, selectedChainId, selectedWallet]);
+    analytics.track(event.dappPromptConnectApproved, {
+      chainId: selectedChainId,
+      dappURL: appHostName,
+      dappName: appName,
+    });
+  }, [appHostName, appName, approveRequest, selectedChainId, selectedWallet]);
 
   return (
     <Rows alignVertical="justify">
@@ -62,7 +69,14 @@ export const RequestAccounts = ({
           selectedChainId={selectedChainId}
           setSelectedChainId={setSelectedChainId}
           onAcceptRequest={onAcceptRequest}
-          onRejectRequest={rejectRequest}
+          onRejectRequest={() => {
+            rejectRequest();
+            analytics.track(event.dappPromptConnectRejected, {
+              chainId: selectedChainId,
+              dappURL: appHostName,
+              dappName: appName,
+            });
+          }}
           appName={appName}
         />
       </Row>
