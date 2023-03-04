@@ -5,6 +5,8 @@ import { ChainId } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
 import { Address, UserRejectedRequestError } from 'wagmi';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { hasVault, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import {
@@ -15,7 +17,7 @@ import {
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { isSupportedChainId } from '~/core/utils/chains';
-import { getDappHost } from '~/core/utils/connectedApps';
+import { dappNameOverride, getDappHost } from '~/core/utils/connectedApps';
 import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/numbers';
@@ -91,6 +93,7 @@ export const handleProviderRequest = ({
       appSessionsStore.getState();
     const url = meta?.sender?.url || '';
     const host = getDappHost(url);
+    const dappName = dappNameOverride(url);
     const activeSession = getActiveSession({ host });
 
     try {
@@ -160,6 +163,11 @@ export const handleProviderRequest = ({
             inpageMessenger.send(`chainChanged:${host}`, proposedChainId);
           }
           response = null;
+          analytics.track(event.dappProviderNetworkSwitched, {
+            dappURL: host,
+            dappName,
+            chainId: proposedChainId,
+          });
           break;
         }
         case 'eth_requestAccounts': {
