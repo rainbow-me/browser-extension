@@ -9,7 +9,6 @@ import { providerRequestTransport } from '../transports';
 import { RPCMethod } from '../types/rpcMethods';
 import { dappNameOverride, getDappHost } from '../utils/connectedApps';
 import { toHex } from '../utils/numbers';
-import { isValidUrl } from '../utils/url';
 
 export type ChainIdHex = `0x${string}`;
 
@@ -52,10 +51,8 @@ export class RainbowProvider extends EventEmitter {
 
   constructor({ messenger }: { messenger?: Messenger } = {}) {
     super();
-    const { host, href } = window.location;
-    const [dappURL, dappName] = isValidUrl(href)
-      ? [getDappHost(href), dappNameOverride(href)]
-      : ['', ''];
+    const host = window.location.host;
+    const [dappURL, dappName] = [getDappHost(host), dappNameOverride(host)];
     messenger?.reply(`accountsChanged:${host}`, async (address) => {
       this.emit('accountsChanged', [address]);
     });

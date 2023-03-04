@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion';
 import * as React from 'react';
 
-import { isValidUrl } from '~/core/utils/url';
 import { Box, Inline, Symbol } from '~/design-system';
 import {
   transformScales,
@@ -21,7 +20,19 @@ export const NetworkMenu = () => {
   React.useEffect(() => {
     chrome?.tabs?.query({ active: true, lastFocusedWindow: true }, (tabs) => {
       const url = tabs[0].url;
-      if (isValidUrl(url)) url && setUrl(url);
+      try {
+        if (url) {
+          const urlObject = new URL(url ?? '');
+          if (
+            urlObject.protocol === 'http:' ||
+            urlObject.protocol === 'https:'
+          ) {
+            setUrl(url);
+          }
+        }
+      } catch (e) {
+        //
+      }
     });
   }, []);
 
