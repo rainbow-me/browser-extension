@@ -292,9 +292,15 @@ export const SwapSettings = ({
         labelColor: 'label',
       },
       footerLinkText: {
-        openText: 'Still curious? ',
-        linkText: 'Read more',
-        closeText: ' about slippage and how it affects swaps.',
+        openText: i18n.t(
+          'swap.settings.explainers.slippage.read_more.open_text',
+        ),
+        linkText: i18n.t(
+          'swap.settings.explainers.slippage.read_more.link_text',
+        ),
+        closeText: i18n.t(
+          'swap.settings.explainers.slippage.read_more.close_text',
+        ),
         link: 'https://academy.shrimpy.io/post/what-is-slippage-how-to-avoid-slippage-on-defi-exchanges',
       },
     });
@@ -304,7 +310,7 @@ export const SwapSettings = ({
     showExplainerSheet({
       show: true,
       header: {
-        emoji: '🌊',
+        emoji: '🤖',
       },
       description: [i18n.t('swap.settings.explainers.flashbots.description')],
       title: i18n.t('swap.settings.explainers.flashbots.title'),
@@ -314,9 +320,15 @@ export const SwapSettings = ({
         labelColor: 'label',
       },
       footerLinkText: {
-        openText: 'Still curious? ',
-        linkText: 'Read more',
-        closeText: ' about Flashbots and the protection it offers.',
+        openText: i18n.t(
+          'swap.settings.explainers.flashbots.read_more.open_text',
+        ),
+        linkText: i18n.t(
+          'swap.settings.explainers.flashbots.read_more.link_text',
+        ),
+        closeText: i18n.t(
+          'swap.settings.explainers.flashbots.read_more.close_text',
+        ),
         link: 'https://learn.rainbow.me/protecting-transactions-with-flashbots',
       },
     });
@@ -326,7 +338,7 @@ export const SwapSettings = ({
     showExplainerSheet({
       show: true,
       header: {
-        emoji: '🌊',
+        emoji: '🔀',
       },
       description: [i18n.t('swap.settings.explainers.routing.description')],
       title: i18n.t('swap.settings.explainers.routing.title'),
@@ -336,9 +348,15 @@ export const SwapSettings = ({
         labelColor: 'label',
       },
       footerLinkText: {
-        openText: 'Still curious? ',
-        linkText: 'Read more',
-        closeText: ' about our approach to routing swaps.',
+        openText: i18n.t(
+          'swap.settings.explainers.routing.read_more.open_text',
+        ),
+        linkText: i18n.t(
+          'swap.settings.explainers.routing.read_more.link_text',
+        ),
+        closeText: i18n.t(
+          'swap.settings.explainers.routing.read_more.close_text',
+        ),
         link: 'https://learn.rainbow.me/swap-with-confidence-with-rainbow',
       },
     });
