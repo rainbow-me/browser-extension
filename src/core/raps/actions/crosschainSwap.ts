@@ -1,6 +1,6 @@
+import { Wallet } from '@ethersproject/wallet';
 import { CrosschainQuote, fillCrosschainQuote } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
-import { Wallet } from 'ethers';
 
 import { logger } from '~/logger';
 

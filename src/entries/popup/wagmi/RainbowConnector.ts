@@ -1,5 +1,9 @@
-import { providers } from 'ethers';
-import { getAddress } from 'ethers/lib/utils';
+import { getAddress } from '@ethersproject/address';
+import {
+  ExternalProvider,
+  JsonRpcSigner,
+  Web3Provider,
+} from '@ethersproject/providers';
 import { Chain, Connector } from 'wagmi';
 
 import { ChainIdHex, RainbowProvider } from '~/core/providers';
@@ -14,7 +18,7 @@ function normalizeChainId(chainId: ChainIdHex | number | bigint) {
 export class RainbowConnector extends Connector<
   RainbowProvider,
   Record<string, unknown>,
-  providers.JsonRpcSigner
+  JsonRpcSigner
 > {
   readonly id: string;
   readonly name: string;
@@ -56,9 +60,7 @@ export class RainbowConnector extends Connector<
     return {
       account,
       chain: { id: chainId, unsupported: false },
-      provider: new providers.Web3Provider(
-        <providers.ExternalProvider>(<unknown>provider),
-      ),
+      provider: new Web3Provider(<ExternalProvider>(<unknown>provider)),
     };
   }
 
@@ -92,8 +94,8 @@ export class RainbowConnector extends Connector<
       this.getProvider(),
       this.getAccount(),
     ]);
-    return new providers.Web3Provider(
-      <providers.ExternalProvider>(<unknown>provider),
+    return new Web3Provider(
+      <ExternalProvider>(<unknown>provider),
       chainId,
     ).getSigner(account);
   }

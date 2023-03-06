@@ -1,4 +1,5 @@
-import { isAddress, isValidMnemonic } from 'ethers/lib/utils';
+import { isAddress } from '@ethersproject/address';
+import { isValidMnemonic } from '@ethersproject/hdnode';
 import { motion } from 'framer-motion';
 import { startsWith } from 'lodash';
 import React, { KeyboardEvent, useCallback, useState } from 'react';
@@ -274,7 +275,7 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
             height="44px"
             variant={isValid ? 'flat' : 'disabled'}
             width="full"
-            onClick={handleImportWallet}
+            onClick={isValid ? handleImportWallet : () => null}
             testId="import-wallets-button"
             tabIndex={2}
           >

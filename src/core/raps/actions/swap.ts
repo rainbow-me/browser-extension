@@ -1,4 +1,5 @@
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
+import { Wallet } from '@ethersproject/wallet';
 import {
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
   Quote,
@@ -10,7 +11,6 @@ import {
   wrapNativeAsset,
 } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
-import { Wallet } from 'ethers';
 import { Chain } from 'wagmi';
 
 import { isLowerCaseMatch } from '~/core/utils/strings';
