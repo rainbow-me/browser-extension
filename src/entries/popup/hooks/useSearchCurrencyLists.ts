@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useTokenSearch } from '~/core/resources/search';
+import { ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   SearchAsset,
@@ -12,6 +13,8 @@ import {
 } from '~/core/types/search';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+
+import { useFavoriteAssets } from './useFavoriteAssets';
 
 const VERIFIED_ASSETS_PAYLOAD: {
   keys: TokenSearchAssetKey[];
@@ -205,25 +208,36 @@ export function useSearchCurrencyLists({
     .flat()
     .filter((v) => !!v);
 
+  const { favorites } = useFavoriteAssets();
+
   // favorites/bridge asset are not currently implemented
   // the lists below should be filtered by favorite/bridge asset match
   const results = useMemo(() => {
+    const sections: {
+      data?: (SearchAsset | ParsedAsset | undefined)[];
+      title: string;
+      symbol: SymbolProps['symbol'];
+      id: string;
+    }[] = [];
+    const favoritesByChain = favorites[outputChainId];
     if (query === '') {
+      if (favoritesByChain?.length) {
+        const favoritesSection = {
+          data: favoritesByChain,
+          title: i18n.t('token_search.section_header.favorites'),
+          symbol: 'star.fill' as SymbolProps['symbol'],
+          id: 'favorites',
+        };
+        sections.push(favoritesSection);
+      }
       const curatedSection = {
         data: curatedAssets[outputChainId],
         title: i18n.t('token_search.section_header.verified'),
         symbol: 'checkmark.seal.fill' as SymbolProps['symbol'],
         id: 'verified',
       };
-      return [curatedSection];
+      sections.push(curatedSection);
     } else {
-      const sections: {
-        data: (SearchAsset | undefined)[];
-        title: string;
-        symbol: SymbolProps['symbol'];
-        id: string;
-      }[] = [];
-
       if (targetVerifiedAssets?.length) {
         const verifiedSection = {
           data: targetVerifiedAssets,
@@ -253,13 +267,14 @@ export function useSearchCurrencyLists({
         };
         sections.push(crosschainSection);
       }
-
-      return sections;
     }
+
+    return sections;
   }, [
     crosschainExactMatches,
     curatedAssets,
     outputChainId,
+    favorites,
     query,
     targetUnverifiedAssets,
     targetVerifiedAssets,

@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useFavoritesStore } from '~/core/state/favorites';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
@@ -43,6 +44,12 @@ export type TokenToBuyRowProps = {
 };
 
 export function TokenToBuyRow({ asset, onDropdownChange }: TokenToBuyRowProps) {
+  const { addFavorite, removeFavorite, getIsFavorite } =
+    useFavoritesStore.getState();
+  const isFavorite = getIsFavorite({
+    address: asset?.address,
+    chainId: asset?.chainId,
+  });
   const leftColumn = useMemo(
     () => (
       <Rows space="8px">
@@ -94,105 +101,134 @@ export function TokenToBuyRow({ asset, onDropdownChange }: TokenToBuyRowProps) {
     [asset?.address, viewOnExplorer],
   );
 
-  const rightColumn = useMemo(
-    () =>
-      !asset?.isNativeAsset ? (
-        <DropdownMenu onOpenChange={onDropdownChange}>
-          <DropdownMenuTrigger asChild>
-            <Box>
-              <ButtonSymbol
-                symbol="info"
-                height="24px"
-                variant="plain"
-                color="fillHorizontal"
-                symbolColor="labelSecondary"
-              />
-            </Box>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent marginRight="32px">
-            <Stack space="4px">
-              <Box paddingTop="8px" paddingBottom="12px">
-                <TextOverflow
-                  maxWidth={200}
-                  align="center"
-                  size="14pt"
-                  weight="bold"
-                  color="label"
-                >{`${asset?.name} (${asset?.symbol})`}</TextOverflow>
-              </Box>
-              <Stack space="4px">
-                <DropdownMenuSeparator />
-                <DropdownMenuRadioGroup onValueChange={onValueChange}>
-                  <DropdownMenuRadioItem value="copy">
-                    <Box width="full">
-                      <Inline space="8px" alignVertical="center">
-                        <Inline alignVertical="center">
-                          <Symbol
-                            symbol="doc.on.doc.fill"
-                            weight="semibold"
-                            size={18}
-                          />
-                        </Inline>
+  const onToggleFavorite = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e?.stopPropagation();
+      const { address, chainId } = asset;
+      if (isFavorite) {
+        removeFavorite({ address, chainId });
+      } else {
+        addFavorite({ address, chainId });
+      }
+    },
+    [addFavorite, asset, isFavorite, removeFavorite],
+  );
 
-                        <Stack space="6px">
-                          <Text weight="semibold" size="14pt" color="label">
-                            {i18n.t('contacts.copy_address')}
-                          </Text>
-                          <Text
-                            weight="regular"
-                            size="11pt"
-                            color="labelTertiary"
-                          >
-                            {truncateAddress(asset?.address)}
-                          </Text>
-                        </Stack>
-                      </Inline>
-                    </Box>
-                  </DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="view">
-                    <Box width="full">
-                      <Inline alignVertical="center" alignHorizontal="justify">
-                        <Inline alignVertical="center" space="8px">
+  const rightColumn = useMemo(
+    () => (
+      <Inline space="8px">
+        {!asset?.isNativeAsset ? (
+          <DropdownMenu onOpenChange={onDropdownChange}>
+            <DropdownMenuTrigger asChild>
+              <Box>
+                <ButtonSymbol
+                  symbol="info"
+                  height="24px"
+                  variant="plain"
+                  color="fillHorizontal"
+                  symbolColor="labelSecondary"
+                />
+              </Box>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent marginRight="32px">
+              <Stack space="4px">
+                <Box paddingTop="8px" paddingBottom="12px">
+                  <TextOverflow
+                    maxWidth={200}
+                    align="center"
+                    size="14pt"
+                    weight="bold"
+                    color="label"
+                  >{`${asset?.name} (${asset?.symbol})`}</TextOverflow>
+                </Box>
+                <Stack space="4px">
+                  <DropdownMenuSeparator />
+                  <DropdownMenuRadioGroup onValueChange={onValueChange}>
+                    <DropdownMenuRadioItem value="copy">
+                      <Box width="full">
+                        <Inline space="8px" alignVertical="center">
                           <Inline alignVertical="center">
                             <Symbol
-                              size={18}
-                              symbol="binoculars.fill"
+                              symbol="doc.on.doc.fill"
                               weight="semibold"
+                              size={18}
                             />
                           </Inline>
-                          <Text size="14pt" weight="semibold">
-                            {i18n.t(
-                              `contacts.${
-                                isL2Chain(asset?.chainId || ChainId.mainnet)
-                                  ? 'view_on_explorer'
-                                  : 'view_on_etherscan'
-                              }`,
-                            )}
-                          </Text>
+
+                          <Stack space="6px">
+                            <Text weight="semibold" size="14pt" color="label">
+                              {i18n.t('contacts.copy_address')}
+                            </Text>
+                            <Text
+                              weight="regular"
+                              size="11pt"
+                              color="labelTertiary"
+                            >
+                              {truncateAddress(asset?.address)}
+                            </Text>
+                          </Stack>
                         </Inline>
-                        <Bleed vertical="8px">
-                          <Symbol
-                            size={14}
-                            symbol="arrow.up.forward.circle"
-                            weight="semibold"
-                            color="labelTertiary"
-                          />
-                        </Bleed>
-                      </Inline>
-                    </Box>
-                  </DropdownMenuRadioItem>
-                </DropdownMenuRadioGroup>
+                      </Box>
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="view">
+                      <Box width="full">
+                        <Inline
+                          alignVertical="center"
+                          alignHorizontal="justify"
+                        >
+                          <Inline alignVertical="center" space="8px">
+                            <Inline alignVertical="center">
+                              <Symbol
+                                size={18}
+                                symbol="binoculars.fill"
+                                weight="semibold"
+                              />
+                            </Inline>
+                            <Text size="14pt" weight="semibold">
+                              {i18n.t(
+                                `contacts.${
+                                  isL2Chain(asset?.chainId || ChainId.mainnet)
+                                    ? 'view_on_explorer'
+                                    : 'view_on_etherscan'
+                                }`,
+                              )}
+                            </Text>
+                          </Inline>
+                          <Bleed vertical="8px">
+                            <Symbol
+                              size={14}
+                              symbol="arrow.up.forward.circle"
+                              weight="semibold"
+                              color="labelTertiary"
+                            />
+                          </Bleed>
+                        </Inline>
+                      </Box>
+                    </DropdownMenuRadioItem>
+                  </DropdownMenuRadioGroup>
+                </Stack>
               </Stack>
-            </Stack>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ) : null,
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : null}
+        <ButtonSymbol
+          symbol="star.fill"
+          height="24px"
+          variant="plain"
+          color="fillHorizontal"
+          symbolColor={isFavorite ? 'yellow' : 'labelSecondary'}
+          onClick={onToggleFavorite}
+        />
+      </Inline>
+    ),
     [
       asset?.address,
       asset?.chainId,
       asset?.isNativeAsset,
       asset?.name,
       asset?.symbol,
+      isFavorite,
+      onToggleFavorite,
       onValueChange,
       onDropdownChange,
     ],

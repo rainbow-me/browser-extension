@@ -2,9 +2,9 @@ import { Address } from 'wagmi';
 import create from 'zustand';
 
 import {
-  BNB_MAINNET_ADDRESS,
+  BNB_BSC_ADDRESS,
   ETH_ADDRESS,
-  MATIC_MAINNET_ADDRESS,
+  MATIC_POLYGON_ADDRESS,
   OP_ADDRESS,
 } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
@@ -21,6 +21,7 @@ type UpdateFavoritesFn = ({ address, chainId }: UpdateFavoritesArgs) => void;
 export interface FavoritesState {
   favorites: Record<ChainId, Address[]>;
   addFavorite: UpdateFavoritesFn;
+  getIsFavorite: ({ address, chainId }: UpdateFavoritesArgs) => boolean;
   removeFavorite: UpdateFavoritesFn;
 }
 
@@ -29,8 +30,8 @@ export const favoritesStore = createStore<FavoritesState>(
     favorites: {
       [ChainId.mainnet]: [ETH_ADDRESS as Address],
       [ChainId.arbitrum]: [ETH_ADDRESS as Address],
-      [ChainId.bsc]: [BNB_MAINNET_ADDRESS],
-      [ChainId.polygon]: [MATIC_MAINNET_ADDRESS],
+      [ChainId.bsc]: [BNB_BSC_ADDRESS],
+      [ChainId.polygon]: [MATIC_POLYGON_ADDRESS],
       [ChainId.optimism]: [OP_ADDRESS],
     },
     addFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
@@ -42,6 +43,11 @@ export const favoritesStore = createStore<FavoritesState>(
           [chainId]: [...currentFavorites, address],
         },
       });
+    },
+    getIsFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
+      const { favorites } = get();
+      const currentFavorites = favorites[chainId] || [];
+      return currentFavorites.includes(address);
     },
     removeFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
       const { favorites } = get();

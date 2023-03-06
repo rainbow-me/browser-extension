@@ -41,7 +41,18 @@ const AssetsToBuySection = ({
   });
 
   const verifiedSection = id === 'verified';
+  const favoritesSection = id === 'favorites';
   const otherNetworksSection = id === 'other_networks';
+  const getSectionHeaderColor = () => {
+    if (verifiedSection) {
+      return 'transparent';
+    }
+    if (favoritesSection) {
+      return 'yellow';
+    }
+
+    return 'labelTertiary';
+  };
 
   if (!data.length) return null;
   return (
@@ -64,7 +75,7 @@ const AssetsToBuySection = ({
           <Inline space="4px" alignVertical="center">
             <Symbol
               symbol={symbol}
-              color={verifiedSection ? 'transparent' : 'labelTertiary'}
+              color={getSectionHeaderColor()}
               weight="semibold"
               size={14}
               gradient={verifiedSection ? rainbowGradient : undefined}
@@ -75,7 +86,7 @@ const AssetsToBuySection = ({
                 background={verifiedSection ? 'rainbow' : undefined}
                 size="14pt"
                 weight="semibold"
-                color={verifiedSection ? 'transparent' : 'labelTertiary'}
+                color={getSectionHeaderColor()}
               >
                 {title}
               </Text>
@@ -90,7 +101,7 @@ const AssetsToBuySection = ({
             return (
               <Box
                 paddingHorizontal="8px"
-                key={`${asset?.uniqueId}-${i}`}
+                key={`${asset?.uniqueId}-${i}-${id}`}
                 onClick={() => onSelectAsset?.(asset)}
                 testId={`token-input-asset-${asset?.uniqueId}`}
               >
