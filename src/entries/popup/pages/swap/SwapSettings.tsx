@@ -1,4 +1,3 @@
-import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
 import { Source } from '@rainbow-me/swaps';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, {
@@ -31,6 +30,7 @@ import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 
 import {
+  DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
@@ -70,7 +70,7 @@ const SwapRouteDropdownMenu = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
-      <DropdownMenuContent accentColor={accentColor} marginRight="12px">
+      <DropdownMenuContent accentColor={accentColor}>
         <DropdownMenuRadioGroup
           onValueChange={(value) => onValueChange(value as Source | 'auto')}
           value={source}
@@ -80,7 +80,7 @@ const SwapRouteDropdownMenu = ({
             value="auto"
             selectedValue={source}
           >
-            <Box id="settings-link">
+            <Box>
               <Inline alignVertical="center" space="8px">
                 <Box style={{ height: '16px', width: '16px' }}>
                   <img
@@ -381,29 +381,35 @@ export const SwapSettings = ({
                           source={source}
                           setSource={setSource}
                         >
-                          <ButtonOverflow style={{ height: '23px' }}>
-                            <Inline
-                              height="full"
-                              space="4px"
-                              alignVertical="center"
-                            >
-                              <Box style={{ height: '16px', width: '16px' }}>
-                                <img
-                                  src={aggregatorInfo[source].logo}
-                                  width="100%"
-                                  height="100%"
+                          <Box>
+                            <ButtonOverflow style={{ height: '23px' }}>
+                              <Inline
+                                height="full"
+                                space="4px"
+                                alignVertical="center"
+                              >
+                                <Box style={{ height: '16px', width: '16px' }}>
+                                  <img
+                                    src={aggregatorInfo[source].logo}
+                                    width="100%"
+                                    height="100%"
+                                  />
+                                </Box>
+                                <Text
+                                  color="label"
+                                  size="14pt"
+                                  weight="semibold"
+                                >
+                                  {aggregatorInfo[source].name}
+                                </Text>
+                                <Symbol
+                                  size={12}
+                                  symbol="chevron.down"
+                                  weight="semibold"
                                 />
-                              </Box>
-                              <Text color="label" size="14pt" weight="semibold">
-                                {aggregatorInfo[source].name}
-                              </Text>
-                              <Symbol
-                                size={12}
-                                symbol="chevron.down"
-                                weight="semibold"
-                              />
-                            </Inline>
-                          </ButtonOverflow>
+                              </Inline>
+                            </ButtonOverflow>
+                          </Box>
                         </SwapRouteDropdownMenu>
                       </Inline>
                     </Box>
