@@ -107,8 +107,8 @@ export function Swap() {
   const openSettings = useCallback(() => {
     setShowSwapSettings(true);
     onAssetToSellInputOpen(false);
-    onAssetToSellInputOpen(false);
-  }, [onAssetToSellInputOpen]);
+    onAssetToBuyInputOpen(false);
+  }, [onAssetToBuyInputOpen, onAssetToSellInputOpen]);
 
   return (
     <>
