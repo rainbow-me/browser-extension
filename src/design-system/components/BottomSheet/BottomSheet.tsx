@@ -3,6 +3,7 @@ import React, { ReactNode } from 'react';
 
 import { Box } from '~/design-system';
 import { BackgroundColor } from '~/design-system/styles/designTokens';
+import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 interface BottomSheetProps {
   background?: BackgroundColor;
@@ -28,7 +29,7 @@ export const BottomSheet = ({
           style={{
             width: '100%',
             height: '100%',
-            zIndex: zIndex ?? 2000,
+            zIndex: zIndex ?? zIndexes.BOTTOM_SHEET,
           }}
           background={background || 'scrimTertiary'}
           as={motion.div}
@@ -47,7 +48,9 @@ export const BottomSheet = ({
           right="0"
           paddingBottom="20px"
           paddingHorizontal="12px"
-          style={{ zIndex: zIndex ? zIndex + 1 : 2001 }}
+          style={{
+            zIndex: zIndex ? zIndex + 1 : zIndexes.BOTTOM_SHEET + 1,
+          }}
           as={motion.div}
           initial={{ opacity: 1, y: 800 }}
           animate={{ opacity: 1, y: 0 }}

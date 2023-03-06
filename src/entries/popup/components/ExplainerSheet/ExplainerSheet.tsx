@@ -14,6 +14,8 @@ import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet'
 import { TextStyles } from '~/design-system/styles/core.css';
 import { ButtonVariant } from '~/design-system/styles/designTokens';
 
+import { zIndexes } from '../../utils/zIndexes';
+
 interface ExplainerSheetProps {
   show: boolean;
   header:
@@ -96,7 +98,7 @@ export const ExplainerSheet = ({
   }, [linkButton?.url]);
 
   return (
-    <BottomSheet zIndex={3000} show={show}>
+    <BottomSheet zIndex={zIndexes.EXPLAINER_BOTTOM_SHEET} show={show}>
       <Box paddingVertical="44px" paddingHorizontal="32px">
         <Stack alignHorizontal="center" space="20px">
           {header?.emoji ? (

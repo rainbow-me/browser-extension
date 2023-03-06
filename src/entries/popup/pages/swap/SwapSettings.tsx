@@ -373,39 +373,45 @@ export const SwapSettings = ({
                           source={source}
                           setSource={setSource}
                         >
-                          <Box
-                            as={motion.div}
-                            initial={{ zIndex: 0 }}
-                            whileHover={{
-                              scale: transformScales['1.04'],
-                            }}
-                            whileTap={{
-                              scale: transformScales['0.96'],
-                            }}
-                            transition={transitions.bounce}
-                            style={{ height: '23px' }}
-                          >
-                            <Inline
-                              height="full"
-                              space="4px"
-                              alignVertical="center"
+                          <Box>
+                            <Box
+                              as={motion.div}
+                              initial={{ zIndex: 0 }}
+                              whileHover={{
+                                scale: transformScales['1.04'],
+                              }}
+                              whileTap={{
+                                scale: transformScales['0.96'],
+                              }}
+                              transition={transitions.bounce}
+                              style={{ height: '23px' }}
                             >
-                              <Box style={{ height: '16px', width: '16px' }}>
-                                <img
-                                  src={aggregatorInfo[source].logo}
-                                  width="100%"
-                                  height="100%"
+                              <Inline
+                                height="full"
+                                space="4px"
+                                alignVertical="center"
+                              >
+                                <Box style={{ height: '16px', width: '16px' }}>
+                                  <img
+                                    src={aggregatorInfo[source].logo}
+                                    width="100%"
+                                    height="100%"
+                                  />
+                                </Box>
+                                <Text
+                                  color="label"
+                                  size="14pt"
+                                  weight="semibold"
+                                >
+                                  {aggregatorInfo[source].name}
+                                </Text>
+                                <Symbol
+                                  size={12}
+                                  symbol="chevron.down"
+                                  weight="semibold"
                                 />
-                              </Box>
-                              <Text color="label" size="14pt" weight="semibold">
-                                {aggregatorInfo[source].name}
-                              </Text>
-                              <Symbol
-                                size={12}
-                                symbol="chevron.down"
-                                weight="semibold"
-                              />
-                            </Inline>
+                              </Inline>
+                            </Box>
                           </Box>
                         </SwapRouteDropdownMenu>
                       </Inline>
