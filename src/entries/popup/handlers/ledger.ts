@@ -1,9 +1,13 @@
 import { TransactionResponse } from '@ethersproject/abstract-provider';
+import { BigNumber } from '@ethersproject/bignumber';
+import { Bytes, hexlify, joinSignature } from '@ethersproject/bytes';
+import { TransactionRequest } from '@ethersproject/providers';
+import { toUtf8Bytes } from '@ethersproject/strings';
+import { UnsignedTransaction, serialize } from '@ethersproject/transactions';
 import AppEth, { ledgerService } from '@ledgerhq/hw-app-eth';
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
 import { getProvider } from '@wagmi/core';
-import { Bytes, ethers } from 'ethers';
 import { Address } from 'wagmi';
 
 import { walletAction } from './wallet';
@@ -13,7 +17,7 @@ const getPath = async (address: Address) => {
 };
 
 export async function sendTransactionFromLedger(
-  transaction: ethers.providers.TransactionRequest,
+  transaction: TransactionRequest,
 ): Promise<TransactionResponse> {
   try {
     const { from: address } = transaction;
@@ -25,7 +29,7 @@ export async function sendTransactionFromLedger(
     const appEth = new AppEth(transport);
     const path = await getPath(address as Address);
 
-    const baseTx: ethers.utils.UnsignedTransaction = {
+    const baseTx: UnsignedTransaction = {
       chainId: transaction.chainId || undefined,
       data: transaction.data || undefined,
       gasLimit: transaction.gasLimit || undefined,
@@ -33,14 +37,14 @@ export async function sendTransactionFromLedger(
       maxFeePerGas: transaction.maxFeePerGas || undefined,
       maxPriorityFeePerGas: transaction.maxPriorityFeePerGas || undefined,
       nonce: transaction.nonce
-        ? ethers.BigNumber.from(transaction.nonce).toNumber()
+        ? BigNumber.from(transaction.nonce).toNumber()
         : undefined,
       to: transaction.to || undefined,
       type: transaction.gasPrice ? 1 : 2,
       value: transaction.value || undefined,
     };
 
-    const unsignedTx = ethers.utils.serializeTransaction(baseTx).substring(2);
+    const unsignedTx = serialize(baseTx).substring(2);
 
     const resolution = await ledgerService.resolveTransaction(
       unsignedTx,
@@ -54,10 +58,10 @@ export async function sendTransactionFromLedger(
 
     const sig = await appEth.signTransaction(path, unsignedTx, resolution);
 
-    const serializedTransaction = ethers.utils.serializeTransaction(baseTx, {
+    const serializedTransaction = serialize(baseTx, {
       r: '0x' + sig.r,
       s: '0x' + sig.s,
-      v: ethers.BigNumber.from('0x' + sig.v).toNumber(),
+      v: BigNumber.from('0x' + sig.v).toNumber(),
     });
 
     return provider.sendTransaction(serializedTransaction);
@@ -86,15 +90,15 @@ export async function signMessageByTypeFromLedger(
   if (messageType === 'personal_sign') {
     if (typeof msgData === 'string') {
       // eslint-disable-next-line no-param-reassign
-      msgData = ethers.utils.toUtf8Bytes(msgData);
+      msgData = toUtf8Bytes(msgData);
     }
 
-    const messageHex = ethers.utils.hexlify(msgData).substring(2);
+    const messageHex = hexlify(msgData).substring(2);
 
     const sig = await appEth.signPersonalMessage(path, messageHex);
     sig.r = '0x' + sig.r;
     sig.s = '0x' + sig.s;
-    return ethers.utils.joinSignature(sig);
+    return joinSignature(sig);
     // sign typed data
   } else if (messageType === 'sign_typed_data') {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -133,7 +137,7 @@ export async function signMessageByTypeFromLedger(
     );
     sig.r = '0x' + sig.r;
     sig.s = '0x' + sig.s;
-    return ethers.utils.joinSignature(sig);
+    return joinSignature(sig);
   } else {
     throw new Error(`Message type ${messageType} not supported`);
   }

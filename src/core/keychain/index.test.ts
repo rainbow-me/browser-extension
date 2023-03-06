@@ -1,11 +1,14 @@
+import { getAddress, isAddress } from '@ethersproject/address';
+import { isBytesLike, isHexString } from '@ethersproject/bytes';
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
+import { parseEther } from '@ethersproject/units';
+import { verifyMessage } from '@ethersproject/wallet';
 import {
   MessageTypes,
   SignTypedDataVersion,
   TypedMessage,
   recoverTypedSignature,
 } from '@metamask/eth-sig-util';
-import { ethers } from 'ethers';
-import { getAddress } from 'ethers/lib/utils';
 import { expect, test } from 'vitest';
 
 import { PrivateKey } from './IKeychain';
@@ -36,7 +39,7 @@ test('[keychain/index] :: should be able to create an HD wallet', async () => {
   await createWallet();
   const accounts = await getAccounts();
   expect(accounts.length).toBe(1);
-  expect(ethers.utils.isAddress(accounts[0])).toBe(true);
+  expect(isAddress(accounts[0])).toBe(true);
 });
 
 test('[keychain/index] :: should be able to add an account', async () => {
@@ -45,13 +48,13 @@ test('[keychain/index] :: should be able to add an account', async () => {
   accounts = await getAccounts();
   expect(accounts.length).toBe(2);
   expect(newAccount).toEqual(accounts[1]);
-  expect(ethers.utils.isAddress(accounts[1])).toBe(true);
+  expect(isAddress(accounts[1])).toBe(true);
 });
 
 test('[keychain/index] :: should be able to export a private key for an account', async () => {
   const accounts = await getAccounts();
   privateKey = (await exportAccount(accounts[1], password)) as PrivateKey;
-  expect(ethers.utils.isBytesLike(privateKey)).toBe(true);
+  expect(isBytesLike(privateKey)).toBe(true);
 });
 
 test('[keychain/index] :: should be able to remove an account from an HD keychain...', async () => {
@@ -71,7 +74,7 @@ test('[keychain/index] :: should be able to import a wallet using a private key'
   await importWallet(privateKey);
   const accounts = await getAccounts();
   expect(accounts.length).toBe(2);
-  expect(ethers.utils.isAddress(accounts[1])).toBe(true);
+  expect(isAddress(accounts[1])).toBe(true);
 });
 
 test('[keychain/index] :: should be able to remove an account from a KeyPair keychain...', async () => {
@@ -95,7 +98,7 @@ test('[keychain/index] :: should be able to import a wallet using a seed phrase'
   );
   accounts = await getAccounts();
   expect(accounts.length).toBe(1);
-  expect(ethers.utils.isAddress(accounts[0])).toBe(true);
+  expect(isAddress(accounts[0])).toBe(true);
 });
 
 test('[keychain/index] :: should be able to update the password of the vault', async () => {
@@ -154,8 +157,8 @@ test('[keychain/index] :: should be able to sign personal messages', async () =>
     msgData: msg,
   });
 
-  expect(ethers.utils.isHexString(signature)).toBe(true);
-  const recoveredAddress = ethers.utils.verifyMessage(msg, signature);
+  expect(isHexString(signature)).toBe(true);
+  const recoveredAddress = verifyMessage(msg, signature);
   expect(getAddress(recoveredAddress)).eq(getAddress(accounts[0]));
 });
 
@@ -217,7 +220,7 @@ test('[keychain/index] :: should be able to sign typed data messages ', async ()
     address: accounts[0],
     msgData,
   });
-  expect(ethers.utils.isHexString(signature)).toBe(true);
+  expect(isHexString(signature)).toBe(true);
 
   const recoveredAddress = recoverTypedSignature({
     data: msgData as unknown as TypedMessage<MessageTypes>,
@@ -229,17 +232,15 @@ test('[keychain/index] :: should be able to sign typed data messages ', async ()
 
 test('[keychain/index] :: should be able to send transactions', async () => {
   const accounts = await getAccounts();
-  const provider = new ethers.providers.StaticJsonRpcProvider(
-    'http://127.0.0.1:8545',
-  );
+  const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
   await provider.ready;
   const tx = {
     from: accounts[1],
     to: accounts[2],
-    value: ethers.utils.parseEther('0.001'),
+    value: parseEther('0.001'),
   };
   const result = await sendTransaction(tx, provider);
-  expect(ethers.utils.isHexString(result.hash)).toBe(true);
+  expect(isHexString(result.hash)).toBe(true);
   const receipt = await result.wait();
   expect(receipt.status).toBe(1);
   expect(receipt.blockNumber).toBeGreaterThan(0);

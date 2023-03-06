@@ -1,3 +1,4 @@
+import { Wallet } from '@ethersproject/wallet';
 import {
   CrosschainQuote,
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
@@ -6,7 +7,6 @@ import {
   getCrosschainQuote,
 } from '@rainbow-me/swaps';
 import { chain, getProvider } from '@wagmi/core';
-import { Wallet } from 'ethers';
 import { beforeAll, expect, test } from 'vitest';
 
 import { ChainId } from '~/core/types/chains';

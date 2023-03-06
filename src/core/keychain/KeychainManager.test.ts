@@ -1,4 +1,6 @@
-import { Wallet, ethers } from 'ethers';
+import { isAddress } from '@ethersproject/address';
+import { isBytesLike } from '@ethersproject/bytes';
+import { Wallet } from '@ethersproject/wallet';
 import { expect, test } from 'vitest';
 
 import { KeychainType } from '../types/keychainTypes';
@@ -13,7 +15,7 @@ test('[keychain/KeychainManager] :: should be able to create an HD wallet', asyn
   await keychainManager.addNewKeychain();
   const accounts = await keychainManager.getAccounts();
   expect(accounts.length).toBe(1);
-  expect(ethers.utils.isAddress(accounts[0])).toBe(true);
+  expect(isAddress(accounts[0])).toBe(true);
 });
 
 test('[keychain/KeychainManager] :: should be able to add an account', async () => {
@@ -22,7 +24,7 @@ test('[keychain/KeychainManager] :: should be able to add an account', async () 
   await keychainManager.addNewAccount(hdCreatedKeychain);
   accounts = await keychainManager.getAccounts();
   expect(accounts.length).toBe(2);
-  expect(ethers.utils.isAddress(accounts[1])).toBe(true);
+  expect(isAddress(accounts[1])).toBe(true);
 });
 
 test('[keychain/KeychainManager] :: should be able to export a private key for an account', async () => {
@@ -31,7 +33,7 @@ test('[keychain/KeychainManager] :: should be able to export a private key for a
     accounts[1],
     password,
   )) as PrivateKey;
-  expect(ethers.utils.isBytesLike(privateKey)).toBe(true);
+  expect(isBytesLike(privateKey)).toBe(true);
 });
 
 test('[keychain/KeychainManager] :: should be able to remove an account from an HD keychain...', async () => {
@@ -57,7 +59,7 @@ test('[keychain/KeychainManager] :: should be able to add a read only wallet usi
   });
   const accounts = await keychainManager.getAccounts();
   expect(accounts.length).toBe(2);
-  expect(ethers.utils.isAddress(accounts[1])).toBe(true);
+  expect(isAddress(accounts[1])).toBe(true);
   expect(accounts[1]).toBe('0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4');
 });
 
@@ -72,7 +74,7 @@ test('[keychain/KeychainManager] :: should be able to import a wallet using a pr
   await keychainManager.importKeychain({ type: 'KeyPairKeychain', privateKey });
   const accounts = await keychainManager.getAccounts();
   expect(accounts.length).toBe(2);
-  expect(ethers.utils.isAddress(accounts[1])).toBe(true);
+  expect(isAddress(accounts[1])).toBe(true);
 });
 
 test('[keychain/KeychainManager] :: should be able to remove an account from a KeyPair keychain...', async () => {
@@ -99,13 +101,13 @@ test('[keychain/KeychainManager] :: should be able to import a wallet using a se
   });
   accounts = await keychainManager.getAccounts();
   expect(accounts.length).toBe(1);
-  expect(ethers.utils.isAddress(accounts[0])).toBe(true);
+  expect(isAddress(accounts[0])).toBe(true);
 });
 
 test('[keychain/KeychainManager] :: should be able to get the signer of a specific address', async () => {
   const accounts = await keychainManager.getAccounts();
   const signer = (await keychainManager.getSigner(accounts[0])) as Wallet;
-  expect(signer).toBeInstanceOf(ethers.Wallet);
+  expect(signer).toBeInstanceOf(Wallet);
   expect(signer.address).toBe(accounts[0]);
   expect(signer.sendTransaction).toBeDefined();
 });
