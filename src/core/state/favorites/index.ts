@@ -66,7 +66,7 @@ export const favoritesStore = createStore<FavoritesState>(
   {
     persist: {
       name: 'favorites',
-      version: 0,
+      version: 0.1,
     },
   },
 );
