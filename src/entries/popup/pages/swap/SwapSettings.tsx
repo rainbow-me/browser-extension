@@ -158,7 +158,12 @@ const Label = ({
         </Box>
         <AnimatePresence>
           {!!warning && (
-            <Box as={motion.div} layout marginBottom="-2px">
+            <Box
+              key="swap-settings-warning-icon"
+              as={motion.div}
+              layout
+              marginBottom="-2px"
+            >
               <Bleed vertical="6px" horizontal="6px">
                 <ButtonSymbol
                   symbol={'exclamationmark.triangle.fill'}
@@ -171,21 +176,23 @@ const Label = ({
             </Box>
           )}
           {!warning && (
-            <Bleed vertical="6px" horizontal="6px">
-              <ButtonSymbol
-                symbol="info.circle.fill"
-                color="labelQuaternary"
-                height="28px"
-                variant="tinted"
-                onClick={onClick}
-              />
-            </Bleed>
+            <Box key="swap-settings-warning-icon" as={motion.div} layout>
+              <Bleed vertical="6px" horizontal="6px">
+                <ButtonSymbol
+                  symbol="info.circle.fill"
+                  color="labelQuaternary"
+                  height="28px"
+                  variant="tinted"
+                  onClick={onClick}
+                />
+              </Bleed>
+            </Box>
           )}
         </AnimatePresence>
       </Inline>
       <AnimatePresence>
         {!!warning && (
-          <Box as={motion.div} layout="position">
+          <Box key="swap-settings-warning" as={motion.div} layout="position">
             <Inline space="4px">
               <Text color={'orange'} size="14pt" weight="medium">
                 {i18n.t(`swap.settings.warnings.high`)}
