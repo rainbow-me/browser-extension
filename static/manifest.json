@@ -78,7 +78,8 @@
         "mac": "Alt+Shift+R",
         "chromeos": "Alt+Shift+R",
         "linux": "Alt+Shift+R"
-      }
+      },
+      "description": "Open the Rainbow Wallet extension"
     }
   }
 }
