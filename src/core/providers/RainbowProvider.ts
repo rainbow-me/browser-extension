@@ -47,7 +47,7 @@ export class RainbowProvider extends EventEmitter {
 
   constructor({ messenger }: { messenger?: Messenger } = {}) {
     super();
-    const { host } = window.location;
+    const host = window.location.host;
     messenger?.reply(`accountsChanged:${host}`, async (address) => {
       this.emit('accountsChanged', [address]);
     });
