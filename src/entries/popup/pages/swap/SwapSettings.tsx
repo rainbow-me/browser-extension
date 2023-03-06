@@ -28,6 +28,7 @@ import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet'
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
+import { TextStyles } from '~/design-system/styles/core.css';
 
 import {
   DropdownMenu,
@@ -228,6 +229,68 @@ interface SwapSettingsProps {
   }) => void;
 }
 
+const flashbotsExplainerProps = {
+  show: true,
+  header: {
+    emoji: '🤖',
+  },
+  description: [i18n.t('swap.settings.explainers.flashbots.description')],
+  title: i18n.t('swap.settings.explainers.flashbots.title'),
+  actionButton: {
+    label: i18n.t('swap.settings.explainers.got_it'),
+    labelColor: 'label' as TextStyles['color'],
+  },
+  footerLinkText: {
+    openText: i18n.t('swap.settings.explainers.flashbots.read_more.open_text'),
+    linkText: i18n.t('swap.settings.explainers.flashbots.read_more.link_text'),
+    closeText: i18n.t(
+      'swap.settings.explainers.flashbots.read_more.close_text',
+    ),
+    link: 'https://learn.rainbow.me/protecting-transactions-with-flashbots',
+  },
+};
+
+const routingExplainerProps = {
+  show: true,
+  header: {
+    emoji: '🔀',
+  },
+  description: [i18n.t('swap.settings.explainers.routing.description')],
+  title: i18n.t('swap.settings.explainers.routing.title'),
+  actionButton: {
+    label: i18n.t('swap.settings.explainers.got_it'),
+    labelColor: 'label' as TextStyles['color'],
+  },
+  footerLinkText: {
+    openText: i18n.t('swap.settings.explainers.routing.read_more.open_text'),
+    linkText: i18n.t('swap.settings.explainers.routing.read_more.link_text'),
+    closeText: i18n.t('swap.settings.explainers.routing.read_more.close_text'),
+    link: 'https://learn.rainbow.me/swap-with-confidence-with-rainbow',
+  },
+};
+
+const slippageExplainerProps = {
+  show: true,
+  header: {
+    emoji: '🌊',
+  },
+  description: [
+    i18n.t('swap.settings.explainers.slippage.description_1'),
+    i18n.t('swap.settings.explainers.slippage.description_2'),
+  ],
+  title: i18n.t('swap.settings.explainers.slippage.title'),
+  actionButton: {
+    label: i18n.t('swap.settings.explainers.got_it'),
+    labelColor: 'label' as TextStyles['color'],
+  },
+  footerLinkText: {
+    openText: i18n.t('swap.settings.explainers.slippage.read_more.open_text'),
+    linkText: i18n.t('swap.settings.explainers.slippage.read_more.link_text'),
+    closeText: i18n.t('swap.settings.explainers.slippage.read_more.close_text'),
+    link: 'https://academy.shrimpy.io/post/what-is-slippage-how-to-avoid-slippage-on-defi-exchanges',
+  },
+};
+
 export const SwapSettings = ({
   accentColor,
   chainId,
@@ -277,87 +340,30 @@ export const SwapSettings = ({
 
   const showSlippageExplainer = useCallback(() => {
     showExplainerSheet({
-      show: true,
-      header: {
-        emoji: '🌊',
-      },
-      description: [
-        i18n.t('swap.settings.explainers.slippage.description_1'),
-        i18n.t('swap.settings.explainers.slippage.description_2'),
-      ],
-      title: i18n.t('swap.settings.explainers.slippage.title'),
+      ...slippageExplainerProps,
       actionButton: {
-        label: i18n.t('swap.settings.explainers.got_it'),
+        ...slippageExplainerProps.actionButton,
         action: hideExplanerSheet,
-        labelColor: 'label',
-      },
-      footerLinkText: {
-        openText: i18n.t(
-          'swap.settings.explainers.slippage.read_more.open_text',
-        ),
-        linkText: i18n.t(
-          'swap.settings.explainers.slippage.read_more.link_text',
-        ),
-        closeText: i18n.t(
-          'swap.settings.explainers.slippage.read_more.close_text',
-        ),
-        link: 'https://academy.shrimpy.io/post/what-is-slippage-how-to-avoid-slippage-on-defi-exchanges',
       },
     });
   }, [hideExplanerSheet, showExplainerSheet]);
 
   const showFlashbotsExplainer = useCallback(() => {
     showExplainerSheet({
-      show: true,
-      header: {
-        emoji: '🤖',
-      },
-      description: [i18n.t('swap.settings.explainers.flashbots.description')],
-      title: i18n.t('swap.settings.explainers.flashbots.title'),
+      ...flashbotsExplainerProps,
       actionButton: {
-        label: i18n.t('swap.settings.explainers.got_it'),
+        ...flashbotsExplainerProps.actionButton,
         action: hideExplanerSheet,
-        labelColor: 'label',
-      },
-      footerLinkText: {
-        openText: i18n.t(
-          'swap.settings.explainers.flashbots.read_more.open_text',
-        ),
-        linkText: i18n.t(
-          'swap.settings.explainers.flashbots.read_more.link_text',
-        ),
-        closeText: i18n.t(
-          'swap.settings.explainers.flashbots.read_more.close_text',
-        ),
-        link: 'https://learn.rainbow.me/protecting-transactions-with-flashbots',
       },
     });
   }, [hideExplanerSheet, showExplainerSheet]);
 
   const showRoutingExplainer = useCallback(() => {
     showExplainerSheet({
-      show: true,
-      header: {
-        emoji: '🔀',
-      },
-      description: [i18n.t('swap.settings.explainers.routing.description')],
-      title: i18n.t('swap.settings.explainers.routing.title'),
+      ...routingExplainerProps,
       actionButton: {
-        label: i18n.t('swap.settings.explainers.got_it'),
+        ...routingExplainerProps.actionButton,
         action: hideExplanerSheet,
-        labelColor: 'label',
-      },
-      footerLinkText: {
-        openText: i18n.t(
-          'swap.settings.explainers.routing.read_more.open_text',
-        ),
-        linkText: i18n.t(
-          'swap.settings.explainers.routing.read_more.link_text',
-        ),
-        closeText: i18n.t(
-          'swap.settings.explainers.routing.read_more.close_text',
-        ),
-        link: 'https://learn.rainbow.me/swap-with-confidence-with-rainbow',
       },
     });
   }, [hideExplanerSheet, showExplainerSheet]);
