@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { ethers } from 'ethers';
-import { getAddress } from 'ethers/lib/utils';
+import { getAddress } from '@ethersproject/address';
+import { formatEther } from '@ethersproject/units';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Address } from 'wagmi';
 
@@ -74,7 +74,7 @@ export function SendTransaction({
       const result = await wallet.sendTransaction(txData);
       if (result) {
         const transaction = {
-          amount: ethers.utils.formatEther(result.value),
+          amount: formatEther(result.value),
           asset,
           data: result.data,
           value: result.value,

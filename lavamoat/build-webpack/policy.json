@@ -191,6 +191,11 @@
         "@vanilla-extract/webpack-plugin>loader-utils>json5": true
       }
     },
+    "audit-ci>event-stream>duplexer": {
+      "builtin": {
+        "stream": true
+      }
+    },
     "browserify>concat-stream>buffer-from": {
       "globals": {
         "Buffer": true
@@ -320,7 +325,7 @@
         "css-loader>postcss-modules-scope": true,
         "css-loader>postcss-modules-values": true,
         "css-loader>postcss-value-parser": true,
-        "css-loader>semver": true
+        "semver": true
       }
     },
     "css-loader>postcss": {
@@ -382,15 +387,6 @@
         "process.argv.includes": true,
         "process.env": true,
         "process.platform": true
-      }
-    },
-    "css-loader>semver": {
-      "globals": {
-        "console.error": true,
-        "process": true
-      },
-      "packages": {
-        "semver>lru-cache": true
       }
     },
     "dotenv-webpack": {
@@ -488,12 +484,12 @@
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>gensync": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>semver": true,
         "file-loader>loader-utils>json5": true,
+        "jest>@jest/core>jest-snapshot>@babel/generator": true,
+        "jest>@jest/core>jest-snapshot>@babel/types": true,
         "lavamoat-browserify>convert-source-map": true,
         "lavamoat>@babel/code-frame": true,
         "lavamoat>lavamoat-tofu>@babel/parser": true,
         "lavamoat>lavamoat-tofu>@babel/traverse": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/generator": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
         "vitest>debug": true
       }
     },
@@ -542,31 +538,31 @@
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": true,
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
+        "jest>@jest/core>jest-snapshot>@babel/types": true,
         "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
         "lavamoat>lavamoat-tofu>@babel/traverse": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-environment-visitor": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
         "wagmi>@coinbase/wallet-sdk>eth-block-tracker>@babel/plugin-transform-runtime>@babel/helper-module-imports": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helper-module-transforms>@babel/helper-simple-access": {
       "packages": {
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
+        "jest>@jest/core>jest-snapshot>@babel/types": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/helpers": {
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
+        "jest>@jest/core>jest-snapshot>@babel/types": true,
+        "lavamoat>lavamoat-tofu>@babel/traverse": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": {
       "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/types": true,
         "lavamoat>@babel/code-frame": true,
-        "lavamoat>lavamoat-tofu>@babel/parser": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
+        "lavamoat>lavamoat-tofu>@babel/parser": true
       }
     },
     "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>semver": {
@@ -959,6 +955,16 @@
         "webpack-extension-reloader>@types/webpack>source-map": true
       }
     },
+    "jest>@jest/core>jest-snapshot>@babel/generator": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
+        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true,
+        "jest>@jest/core>jest-snapshot>@babel/types": true
+      }
+    },
     "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": {
       "globals": {
         "define": true
@@ -979,18 +985,27 @@
         "Buffer.isBuffer": true
       }
     },
+    "jest>@jest/core>jest-snapshot>@babel/types": {
+      "globals": {
+        "console.trace": true,
+        "process.env.BABEL_TYPES_8_BREAKING": true
+      },
+      "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/types>@babel/helper-string-parser": true,
+        "jest>@jest/core>jest-snapshot>@babel/types>to-fast-properties": true,
+        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true
+      }
+    },
     "lavamoat-browserify>convert-source-map": {
       "builtin": {
         "fs.readFileSync": true,
         "path.resolve": true
       },
-      "packages": {
-        "lavamoat-browserify>convert-source-map>safe-buffer": true
-      }
-    },
-    "lavamoat-browserify>convert-source-map>safe-buffer": {
-      "builtin": {
-        "buffer": true
+      "globals": {
+        "Buffer": true,
+        "atob": true,
+        "btoa": true,
+        "value": true
       }
     },
     "lavamoat>@babel/code-frame": {
@@ -1056,53 +1071,48 @@
         "console.trace": true
       },
       "packages": {
+        "jest>@jest/core>jest-snapshot>@babel/generator": true,
+        "jest>@jest/core>jest-snapshot>@babel/types": true,
         "lavamoat>@babel/code-frame": true,
         "lavamoat>lavamoat-tofu>@babel/parser": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/generator": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-environment-visitor": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true,
         "lavamoat>lavamoat-tofu>@babel/traverse>globals": true,
         "vitest>debug": true
-      }
-    },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/generator": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/generator>@jridgewell/gen-mapping": true,
-        "jest>@jest/core>jest-snapshot>@babel/generator>jsesc": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
       }
     },
     "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-function-name": {
       "packages": {
         "eslint-config-rainbow>eslint-import-resolver-babel-module>@babel/core>@babel/template": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
+        "jest>@jest/core>jest-snapshot>@babel/types": true
       }
     },
     "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-hoist-variables": {
       "packages": {
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
+        "jest>@jest/core>jest-snapshot>@babel/types": true
       }
     },
     "lavamoat>lavamoat-tofu>@babel/traverse>@babel/helper-split-export-declaration": {
       "packages": {
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
+        "jest>@jest/core>jest-snapshot>@babel/types": true
       }
     },
-    "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": {
-      "globals": {
-        "console.trace": true,
-        "process.env.BABEL_TYPES_8_BREAKING": true
+    "lavamoat>node-gyp-build": {
+      "builtin": {
+        "fs.existsSync": true,
+        "fs.readdirSync": true,
+        "os.arch": true,
+        "os.platform": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.resolve": true
       },
-      "packages": {
-        "jest>@jest/core>jest-snapshot>@babel/types>to-fast-properties": true,
-        "lavamoat>@babel/highlight>@babel/helper-validator-identifier": true,
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types>@babel/helper-string-parser": true
+      "globals": {
+        "__non_webpack_require__": true,
+        "__webpack_require__": true,
+        "process": true
       }
     },
     "lint-staged>execa>merge-stream": {
@@ -1217,6 +1227,33 @@
         "eslint>is-glob": true
       }
     },
+    "selenium-webdriver>ws>bufferutil": {
+      "globals": {
+        "__dirname": true
+      },
+      "native": true,
+      "packages": {
+        "lavamoat>node-gyp-build": true
+      }
+    },
+    "selenium-webdriver>ws>utf-8-validate": {
+      "globals": {
+        "__dirname": true
+      },
+      "native": true,
+      "packages": {
+        "lavamoat>node-gyp-build": true
+      }
+    },
+    "semver": {
+      "globals": {
+        "console.error": true,
+        "process": true
+      },
+      "packages": {
+        "semver>lru-cache": true
+      }
+    },
     "semver>lru-cache": {
       "packages": {
         "semver>lru-cache>yallist": true
@@ -1243,8 +1280,8 @@
       },
       "packages": {
         "eslint>chalk": true,
+        "semver": true,
         "ts-loader>micromatch": true,
-        "ts-loader>semver": true,
         "typescript": true,
         "webpack": true
       }
@@ -1266,15 +1303,6 @@
       "globals": {
         "process.platform": true,
         "process.version.slice": true
-      }
-    },
-    "ts-loader>semver": {
-      "globals": {
-        "console.error": true,
-        "process": true
-      },
-      "packages": {
-        "semver>lru-cache": true
       }
     },
     "typescript": {
@@ -1357,7 +1385,7 @@
         "assert": true
       },
       "packages": {
-        "lavamoat>lavamoat-tofu>@babel/traverse>@babel/types": true
+        "jest>@jest/core>jest-snapshot>@babel/types": true
       }
     },
     "webpack": {
@@ -1467,6 +1495,141 @@
         "webpack>terser-webpack-plugin": true,
         "webpack>watchpack": true,
         "webpack>webpack-sources": true
+      }
+    },
+    "webpack-bundle-analyzer": {
+      "builtin": {
+        "fs.createReadStream": true,
+        "fs.createWriteStream": true,
+        "fs.mkdirSync": true,
+        "fs.promises.mkdir": true,
+        "fs.promises.writeFile": true,
+        "fs.readFileSync": true,
+        "fs.writeFileSync": true,
+        "http.createServer": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.resolve": true,
+        "stream.Readable": true,
+        "util.inspect": true,
+        "util.types.isRegExp": true
+      },
+      "globals": {
+        "Buffer.byteLength": true,
+        "__dirname": true,
+        "console": true,
+        "process.cwd": true,
+        "process.env.npm_package_name": true,
+        "setImmediate": true
+      },
+      "packages": {
+        "eslint>chalk": true,
+        "lodash": true,
+        "webpack-bundle-analyzer>acorn-walk": true,
+        "webpack-bundle-analyzer>gzip-size": true,
+        "webpack-bundle-analyzer>opener": true,
+        "webpack-bundle-analyzer>sirv": true,
+        "webpack-bundle-analyzer>ws": true,
+        "webpack-cli>@discoveryjs/json-ext": true,
+        "webpack>acorn": true
+      }
+    },
+    "webpack-bundle-analyzer>acorn-walk": {
+      "globals": {
+        "define": true
+      }
+    },
+    "webpack-bundle-analyzer>gzip-size": {
+      "builtin": {
+        "fs.createReadStream": true,
+        "fs.readFileSync": true,
+        "stream.PassThrough": true,
+        "util.promisify": true,
+        "zlib.createGzip": true,
+        "zlib.gzip": true,
+        "zlib.gzipSync": true
+      },
+      "packages": {
+        "audit-ci>event-stream>duplexer": true
+      }
+    },
+    "webpack-bundle-analyzer>opener": {
+      "builtin": {
+        "child_process.execFile": true,
+        "os.release": true
+      },
+      "globals": {
+        "process.platform": true
+      }
+    },
+    "webpack-bundle-analyzer>sirv": {
+      "builtin": {
+        "fs.createReadStream": true,
+        "fs.existsSync": true,
+        "fs.statSync": true,
+        "path.join": true,
+        "path.normalize": true,
+        "path.resolve": true
+      },
+      "packages": {
+        "webpack-bundle-analyzer>sirv>@polka/url": true,
+        "webpack-bundle-analyzer>sirv>mrmime": true,
+        "webpack-bundle-analyzer>sirv>totalist": true
+      }
+    },
+    "webpack-bundle-analyzer>sirv>@polka/url": {
+      "builtin": {
+        "querystring.parse": true
+      }
+    },
+    "webpack-bundle-analyzer>sirv>totalist": {
+      "builtin": {
+        "fs.readdirSync": true,
+        "fs.statSync": true,
+        "path.join": true,
+        "path.resolve": true
+      }
+    },
+    "webpack-bundle-analyzer>ws": {
+      "builtin": {
+        "crypto.createHash": true,
+        "crypto.randomBytes": true,
+        "crypto.randomFillSync": true,
+        "events": true,
+        "http.STATUS_CODES": true,
+        "http.createServer": true,
+        "http.get": true,
+        "https": true,
+        "net": true,
+        "stream.Duplex": true,
+        "stream.Readable": true,
+        "stream.Writable": true,
+        "tls": true,
+        "url.URL": true,
+        "zlib.Z_DEFAULT_WINDOWBITS": true,
+        "zlib.Z_SYNC_FLUSH": true,
+        "zlib.createDeflateRaw": true,
+        "zlib.createInflateRaw": true
+      },
+      "globals": {
+        "Buffer.alloc": true,
+        "Buffer.allocUnsafe": true,
+        "Buffer.byteLength": true,
+        "Buffer.from": true,
+        "Buffer.isBuffer": true,
+        "clearTimeout": true,
+        "process.nextTick": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "selenium-webdriver>ws>bufferutil": true,
+        "selenium-webdriver>ws>utf-8-validate": true
+      }
+    },
+    "webpack-cli>@discoveryjs/json-ext": {
+      "builtin": {
+        "stream.Readable": true,
+        "util.TextDecoder": true
       }
     },
     "webpack>@webassemblyjs/ast": {
