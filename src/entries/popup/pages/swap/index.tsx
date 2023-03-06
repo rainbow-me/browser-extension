@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';
@@ -104,6 +104,12 @@ export function Swap() {
     setAssetToSellValue,
   });
 
+  const openSettings = useCallback(() => {
+    setShowSwapSettings(true);
+    onAssetToSellInputOpen(false);
+    onAssetToSellInputOpen(false);
+  }, [onAssetToSellInputOpen]);
+
   return (
     <>
       <Navbar
@@ -114,7 +120,7 @@ export function Swap() {
           <ButtonSymbol
             color="surfaceSecondaryElevated"
             height={'32px'}
-            onClick={() => setShowSwapSettings(true)}
+            onClick={openSettings}
             symbol="switch.2"
             symbolColor="labelSecondary"
             variant="flat"
