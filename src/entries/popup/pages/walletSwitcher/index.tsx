@@ -187,6 +187,7 @@ export function WalletSwitcher() {
         await remove(address);
         fetchWallets();
         deleteWalletName({ address });
+        setTimeout(() => fetchWallets(), 1000);
       } else {
         // hide if imported
         hideWallet({ address });
