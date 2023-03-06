@@ -1,5 +1,6 @@
 import { Block, Provider } from '@ethersproject/abstract-provider';
 import { MaxUint256 } from '@ethersproject/constants';
+import { Contract } from '@ethersproject/contracts';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import {
   ALLOWS_PERMIT,
@@ -7,7 +8,6 @@ import {
   RAINBOW_ROUTER_CONTRACT_ADDRESS,
   getQuoteExecutionDetails,
 } from '@rainbow-me/swaps';
-import { Contract } from 'ethers';
 import { Chain, chain, erc20ABI } from 'wagmi';
 
 import { ethUnits } from '../references';

@@ -1,4 +1,5 @@
-import { getAddress, isAddress, isHexString } from 'ethers/lib/utils';
+import { getAddress, isAddress } from '@ethersproject/address';
+import { isHexString } from '@ethersproject/bytes';
 import { Address } from 'wagmi';
 
 import { supportedCurrencies } from '../references';

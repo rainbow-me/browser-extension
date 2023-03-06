@@ -1,7 +1,8 @@
 import 'chromedriver';
 import 'geckodriver';
-import { ethers } from 'ethers';
-import { getAddress, verifyTypedData } from 'ethers/lib/utils';
+import { getAddress } from '@ethersproject/address';
+import { isHexString } from '@ethersproject/bytes';
+import { verifyMessage, verifyTypedData } from '@ethersproject/wallet';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
@@ -237,8 +238,8 @@ describe('App interactions flow', () => {
     const signatureText = await signatureTextSelector.getText();
     const signature = signatureText.replace('sign message data sig: ', '');
 
-    expect(ethers.utils.isHexString(signature)).toBe(true);
-    const recoveredAddress = ethers.utils.verifyMessage(MESSAGE, signature);
+    expect(isHexString(signature)).toBe(true);
+    const recoveredAddress = verifyMessage(MESSAGE, signature);
     expect(getAddress(recoveredAddress)).eq(getAddress(CONNECTED_ADDRESS));
   });
 
@@ -266,7 +267,7 @@ describe('App interactions flow', () => {
     );
     const signatureText = await signatureTextSelector.getText();
     const signature = signatureText.replace('typed message data sig: ', '');
-    expect(ethers.utils.isHexString(signature)).toBe(true);
+    expect(isHexString(signature)).toBe(true);
 
     const recoveredAddress = verifyTypedData(
       TYPED_MESSAGE.domain,
