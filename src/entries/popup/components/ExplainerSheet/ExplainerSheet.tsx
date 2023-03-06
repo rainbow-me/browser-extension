@@ -140,34 +140,23 @@ export const ExplainerSheet = ({
             </Text>
           ))}
           {footerLinkText && (
-            <Inline alignVertical="center">
+            <Box>
               <Text
-                as="p"
                 align="center"
                 weight="regular"
                 size="14pt"
                 color="labelTertiary"
               >
                 {footerLinkText.openText}
-              </Text>
-              <TextLink
-                weight="regular"
-                size="14pt"
-                color="blue"
-                onClick={() => goToLink(footerLinkText.link)}
-              >
-                {footerLinkText?.linkText}
-              </TextLink>
-              <Text
-                as="p"
-                align="center"
-                weight="regular"
-                size="14pt"
-                color="labelTertiary"
-              >
+                <TextLink
+                  color="blue"
+                  onClick={() => goToLink(footerLinkText.link)}
+                >
+                  {footerLinkText?.linkText}
+                </TextLink>
                 {footerLinkText?.closeText}
               </Text>
-            </Inline>
+            </Box>
           )}
         </Stack>
       </Box>
