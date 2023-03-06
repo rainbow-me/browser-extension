@@ -1,5 +1,5 @@
+import { isAddress } from '@ethersproject/address';
 import { fetchEnsName } from '@wagmi/core';
-import { isAddress } from 'ethers/lib/utils';
 import { useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 

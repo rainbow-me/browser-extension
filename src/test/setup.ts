@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { Crypto } from '@peculiar/webcrypto';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
@@ -16,7 +17,9 @@ vi.stubGlobal('chrome', {
       remove: vi.fn(),
     },
   },
-  runtime: {},
+  runtime: {
+    getURL: (url: string) => `https://local.io/${url}`,
+  },
 });
 
 vi.stubGlobal('window.location', {

@@ -28,8 +28,12 @@
       "run_at": "document_start"
     },
     {
-      "matches": ["*://connect.trezor.io/9/popup.html"],
-      "js": ["./vendor/trezor-content-script.js"]
+      "matches": [
+        "*://connect.trezor.io/9/popup.html"
+      ],
+      "js": [
+        "./vendor/trezor-content-script.js"
+      ]
     }
   ],
   "content_security_policy": {
@@ -62,7 +66,7 @@
     "unlimitedStorage"
   ],
   "short_name": "Rainbow",
-  "version": "1.0.53",
+  "version": "1.0.57",
   "web_accessible_resources": [
     {
       "matches": [
@@ -75,5 +79,16 @@
         "assets/badges/*.png"
       ]
     }
-  ]
+  ],
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "windows": "Alt+Shift+R",
+        "mac": "Alt+Shift+R",
+        "chromeos": "Alt+Shift+R",
+        "linux": "Alt+Shift+R"
+      },
+      "description": "Open the Rainbow Wallet extension"
+    }
+  }
 }

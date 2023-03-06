@@ -1,5 +1,5 @@
+import { isAddress } from '@ethersproject/address';
 import { useQuery } from '@tanstack/react-query';
-import { isAddress } from 'ethers/lib/utils';
 import qs from 'qs';
 
 import { tokenSearchHttp } from '~/core/network/tokenSearch';

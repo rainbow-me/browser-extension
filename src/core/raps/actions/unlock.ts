@@ -1,6 +1,7 @@
 import { MaxUint256 } from '@ethersproject/constants';
+import { Contract } from '@ethersproject/contracts';
+import { Wallet } from '@ethersproject/wallet';
 import { Address, Chain, erc20ABI, getProvider } from '@wagmi/core';
-import { Contract, Wallet } from 'ethers';
 
 import {
   TransactionGasParams,
