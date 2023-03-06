@@ -356,18 +356,10 @@ export const SwapSettings = ({
                   <Stack space="12px">
                     <Box style={{ height: '32px' }}>
                       <Inline alignVertical="center" alignHorizontal="justify">
-                        <Inline alignVertical="center" space="7px">
-                          <Text color="label" size="14pt" weight="semibold">
-                            {i18n.t('swap.settings.route_swaps')}
-                          </Text>
-                          <ButtonSymbol
-                            symbol="info.circle.fill"
-                            color="labelQuaternary"
-                            height="28px"
-                            variant="transparent"
-                            onClick={showRoutingExplainer}
-                          />
-                        </Inline>
+                        <Label
+                          label={i18n.t('swap.settings.route_swaps')}
+                          onClick={showRoutingExplainer}
+                        />
                         <SwapRouteDropdownMenu
                           accentColor={settingsAccentColor}
                           source={source}
@@ -423,18 +415,10 @@ export const SwapSettings = ({
                           alignVertical="center"
                           alignHorizontal="justify"
                         >
-                          <Inline alignVertical="center" space="7px">
-                            <Text color="label" size="14pt" weight="semibold">
-                              {i18n.t('swap.settings.use_flashbots')}
-                            </Text>
-                            <ButtonSymbol
-                              symbol="info.circle.fill"
-                              color="labelQuaternary"
-                              height="28px"
-                              variant="transparent"
-                              onClick={showFlashbotsExplainer}
-                            />
-                          </Inline>
+                          <Label
+                            label={i18n.t('swap.settings.use_flashbots')}
+                            onClick={showFlashbotsExplainer}
+                          />
                           <Toggle
                             accentColor={settingsAccentColor}
                             checked={flashbotsEnabled}
