@@ -8,6 +8,8 @@ const Dotenv = require('dotenv-webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { ProgressPlugin, ProvidePlugin } = require('webpack');
+const BundleAnalyzerPlugin =
+  require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const allowList = require('./static/allowlist.json');
 const manifest = require('./static/manifest.json');
@@ -19,6 +21,7 @@ manifestOverride.content_security_policy.extension_pages = `${
 } ${allowList.urls.join(' ')};`;
 
 module.exports = {
+  devtool: 'cheap-module-eval-source-map',
   entry: {
     background: './src/entries/background/index.ts',
     contentscript: './src/entries/content/index.ts',
@@ -62,6 +65,11 @@ module.exports = {
     ],
   },
   plugins: [
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      generateStatsFile: true,
+      openAnalyzer: false,
+    }),
     new Dotenv({ allowEmptyValues: true }),
     new HtmlWebpackPlugin({
       chunks: ['popup'],

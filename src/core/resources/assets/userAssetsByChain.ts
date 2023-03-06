@@ -1,6 +1,6 @@
+import { Contract } from '@ethersproject/contracts';
 import { useQuery } from '@tanstack/react-query';
 import { getProvider } from '@wagmi/core';
-import { Contract } from 'ethers';
 import { Address, erc20ABI } from 'wagmi';
 
 import { refractionAddressWs } from '~/core/network';

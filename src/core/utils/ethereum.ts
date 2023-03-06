@@ -1,6 +1,7 @@
+import { isAddress } from '@ethersproject/address';
 import { isHexString } from '@ethersproject/bytes';
-import { isValidMnemonic } from '@ethersproject/hdnode';
-import { Mnemonic, isAddress, parseEther } from 'ethers/lib/utils';
+import { Mnemonic, isValidMnemonic } from '@ethersproject/hdnode';
+import { parseEther } from '@ethersproject/units';
 import { startsWith } from 'lodash';
 import { Address } from 'wagmi';
 

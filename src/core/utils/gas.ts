@@ -3,11 +3,11 @@ import {
   Provider,
   TransactionRequest,
 } from '@ethersproject/abstract-provider';
+import { getAddress } from '@ethersproject/address';
+import { BigNumberish } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
 import { serialize } from '@ethersproject/transactions';
 import BigNumber from 'bignumber.js';
-import { BigNumberish } from 'ethers';
-import { getAddress } from 'ethers/lib/utils';
 
 import { globalColors } from '~/design-system/styles/designTokens';
 
@@ -16,7 +16,6 @@ import {
   OVM_GAS_PRICE_ORACLE,
   SupportedCurrencyKey,
   ethUnits,
-  optimismGasOracleAbi,
   supportedCurrencies,
 } from '../references';
 import {
@@ -34,6 +33,7 @@ import {
 } from '../types/gas';
 
 import { addHexPrefix, gweiToWei, weiToGwei } from './ethereum';
+import { fetchJsonLocally } from './localJson';
 import {
   add,
   addBuffer,
@@ -468,6 +468,10 @@ export const calculateL1FeeOptimism = async ({
       ...transactionRequest,
       nonce: transactionRequest.nonce as number,
     });
+
+    const optimismGasOracleAbi = await fetchJsonLocally(
+      'abis/optimism-gas-oracle-abi.json',
+    );
 
     const OVM_GasPriceOracle = new Contract(
       OVM_GAS_PRICE_ORACLE,
