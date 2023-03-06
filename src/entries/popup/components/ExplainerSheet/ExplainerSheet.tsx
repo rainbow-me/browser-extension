@@ -11,6 +11,7 @@ import {
   Text,
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
+import { TextLink } from '~/design-system/components/TextLink/TextLink';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { ButtonVariant } from '~/design-system/styles/designTokens';
 
@@ -47,6 +48,12 @@ interface ExplainerSheetProps {
     label: string;
     url: string;
   };
+  footerLinkText?: {
+    openText: string;
+    linkText: string;
+    closeText: string;
+    link: string;
+  };
 }
 
 export const useExplainerSheetParams = () => {
@@ -56,6 +63,7 @@ export const useExplainerSheetParams = () => {
       header: {},
       title: '',
       description: [''],
+      footerLinkText: undefined,
     });
 
   const hideExplanerSheet = useCallback(
@@ -65,6 +73,7 @@ export const useExplainerSheetParams = () => {
         header: {},
         title: '',
         description: [''],
+        footerLinkText: undefined,
       }),
     [],
   );
@@ -89,13 +98,14 @@ export const ExplainerSheet = ({
   actionButton,
   cancelButton,
   linkButton,
+  footerLinkText,
 }: ExplainerSheetProps) => {
-  const goToLink = useCallback(() => {
-    linkButton?.url &&
+  const goToLink = useCallback((link?: string) => {
+    link &&
       chrome.tabs.create({
-        url: linkButton?.url,
+        url: link,
       });
-  }, [linkButton?.url]);
+  }, []);
 
   return (
     <BottomSheet zIndex={zIndexes.EXPLAINER_BOTTOM_SHEET} show={show}>
@@ -129,6 +139,36 @@ export const ExplainerSheet = ({
               {t}
             </Text>
           ))}
+          {footerLinkText && (
+            <Inline alignVertical="center">
+              <Text
+                as="p"
+                align="center"
+                weight="regular"
+                size="14pt"
+                color="labelTertiary"
+              >
+                {footerLinkText.openText}
+              </Text>
+              <TextLink
+                weight="regular"
+                size="14pt"
+                color="blue"
+                onClick={() => goToLink(footerLinkText.link)}
+              >
+                {footerLinkText?.linkText}
+              </TextLink>
+              <Text
+                as="p"
+                align="center"
+                weight="regular"
+                size="14pt"
+                color="labelTertiary"
+              >
+                {footerLinkText?.closeText}
+              </Text>
+            </Inline>
+          )}
         </Stack>
       </Box>
       <Box width="full" padding="20px">
@@ -142,7 +182,7 @@ export const ExplainerSheet = ({
                     color="fill"
                     height="44px"
                     variant="flat"
-                    onClick={goToLink}
+                    onClick={() => goToLink(linkButton?.url)}
                   >
                     <Text
                       align="center"

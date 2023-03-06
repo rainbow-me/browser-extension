@@ -27,11 +27,8 @@ import {
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
+import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
-import {
-  transformScales,
-  transitions,
-} from '~/design-system/styles/designTokens';
 
 import {
   DropdownMenuContent,
@@ -287,6 +284,12 @@ export const SwapSettings = ({
         action: hideExplanerSheet,
         labelColor: 'label',
       },
+      footerLinkText: {
+        openText: 'Still curious? ',
+        linkText: 'Read more',
+        closeText: ' about slippage and how it affects swaps.',
+        link: 'https://academy.shrimpy.io/post/what-is-slippage-how-to-avoid-slippage-on-defi-exchanges',
+      },
     });
   }, [hideExplanerSheet, showExplainerSheet]);
 
@@ -302,6 +305,12 @@ export const SwapSettings = ({
         label: i18n.t('swap.settings.explainers.got_it'),
         action: hideExplanerSheet,
         labelColor: 'label',
+      },
+      footerLinkText: {
+        openText: 'Still curious? ',
+        linkText: 'Read more',
+        closeText: ' about Flashbots and the protection it offers.',
+        link: 'https://learn.rainbow.me/protecting-transactions-with-flashbots',
       },
     });
   }, [hideExplanerSheet, showExplainerSheet]);
@@ -319,6 +328,12 @@ export const SwapSettings = ({
         action: hideExplanerSheet,
         labelColor: 'label',
       },
+      footerLinkText: {
+        openText: 'Still curious? ',
+        linkText: 'Read more',
+        closeText: ' about our approach to routing swaps.',
+        link: 'https://learn.rainbow.me/swap-with-confidence-with-rainbow',
+      },
     });
   }, [hideExplanerSheet, showExplainerSheet]);
 
@@ -330,6 +345,7 @@ export const SwapSettings = ({
         title={explainerSheetParams.title}
         description={explainerSheetParams.description}
         actionButton={explainerSheetParams.actionButton}
+        footerLinkText={explainerSheetParams.footerLinkText}
       />
       <BottomSheet background="scrim" show={show}>
         <AccentColorProviderWrapper color={settingsAccentColor}>
@@ -365,18 +381,7 @@ export const SwapSettings = ({
                           source={source}
                           setSource={setSource}
                         >
-                          <Box
-                            as={motion.div}
-                            initial={{ zIndex: 0 }}
-                            whileHover={{
-                              scale: transformScales['1.04'],
-                            }}
-                            whileTap={{
-                              scale: transformScales['0.96'],
-                            }}
-                            transition={transitions.bounce}
-                            style={{ height: '23px' }}
-                          >
+                          <ButtonOverflow style={{ height: '23px' }}>
                             <Inline
                               height="full"
                               space="4px"
@@ -398,7 +403,7 @@ export const SwapSettings = ({
                                 weight="semibold"
                               />
                             </Inline>
-                          </Box>
+                          </ButtonOverflow>
                         </SwapRouteDropdownMenu>
                       </Inline>
                     </Box>
