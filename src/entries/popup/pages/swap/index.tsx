@@ -28,7 +28,7 @@ import { useSwapQuote } from '../../hooks/swap/useSwapQuote';
 import { useSwapQuoteHandler } from '../../hooks/swap/useSwapQuoteHandler';
 import { useSwapSettings } from '../../hooks/swap/useSwapSettings';
 
-import { SwapSettings } from './SwapSettings';
+import { SwapSettings } from './SwapSettings/SwapSettings';
 import { TokenToBuyInput } from './SwapTokenInput/TokenToBuyInput';
 import { TokenToSellInput } from './SwapTokenInput/TokenToSellInput';
 

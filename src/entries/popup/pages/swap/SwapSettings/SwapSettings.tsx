@@ -1,7 +1,6 @@
 import { Source } from '@rainbow-me/swaps';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, {
-  ReactNode,
   useCallback,
   useEffect,
   useMemo,
@@ -31,114 +30,16 @@ import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { TextStyles } from '~/design-system/styles/core.css';
 
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from '../../components/DropdownMenu/DropdownMenu';
-import {
   ExplainerSheet,
   useExplainerSheetParams,
-} from '../../components/ExplainerSheet/ExplainerSheet';
-import { DEFAULT_SLIPPAGE } from '../../hooks/swap/useSwapSettings';
-import { useAvatar } from '../../hooks/useAvatar';
-import usePrevious from '../../hooks/usePrevious';
+} from '../../../components/ExplainerSheet/ExplainerSheet';
+import { DEFAULT_SLIPPAGE } from '../../../hooks/swap/useSwapSettings';
+import { useAvatar } from '../../../hooks/useAvatar';
+import usePrevious from '../../../hooks/usePrevious';
+import { SlippageInputMask } from '../SlippageInputMask';
+import { aggregatorInfo } from '../utils';
 
-import { SlippageInputMask } from './SlippageInputMask';
-import { aggregatorInfo } from './utils';
-
-interface SwapRouteDropdownMenuProps {
-  accentColor?: string;
-  children: ReactNode;
-  setSource: (source: Source | 'auto') => void;
-  source: Source | 'auto';
-}
-
-const SwapRouteDropdownMenu = ({
-  accentColor,
-  children,
-  source,
-  setSource,
-}: SwapRouteDropdownMenuProps) => {
-  const onValueChange = useCallback(
-    (value: Source | 'auto') => {
-      setSource(value);
-    },
-    [setSource],
-  );
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
-      <DropdownMenuContent accentColor={accentColor}>
-        <DropdownMenuRadioGroup
-          onValueChange={(value) => onValueChange(value as Source | 'auto')}
-          value={source}
-        >
-          <DropdownMenuRadioItem
-            highlightAccentColor
-            value="auto"
-            selectedValue={source}
-          >
-            <Box>
-              <Inline alignVertical="center" space="8px">
-                <Box style={{ height: '16px', width: '16px' }}>
-                  <img
-                    src={aggregatorInfo['auto'].logo}
-                    width="100%"
-                    height="100%"
-                  />
-                </Box>
-                <Text size="14pt" weight="semibold">
-                  {aggregatorInfo['auto'].name}
-                </Text>
-              </Inline>
-            </Box>
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem
-            highlightAccentColor
-            value={Source.Aggregator0x}
-            selectedValue={source}
-          >
-            <Inline alignVertical="center" space="8px">
-              <Box style={{ height: '16px', width: '16px' }}>
-                <img
-                  src={aggregatorInfo['0x'].logo}
-                  width="100%"
-                  height="100%"
-                />
-              </Box>
-              <Text size="14pt" weight="semibold">
-                {aggregatorInfo['0x'].name}
-              </Text>
-            </Inline>
-          </DropdownMenuRadioItem>
-          <DropdownMenuRadioItem
-            highlightAccentColor
-            value={Source.Aggregotor1inch}
-            selectedValue={source}
-          >
-            <Box testId="lock">
-              <Inline alignVertical="center" space="8px">
-                <Box style={{ height: '16px', width: '16px' }}>
-                  <img
-                    src={aggregatorInfo['1inch'].logo}
-                    width="100%"
-                    height="100%"
-                  />
-                </Box>
-                <Text size="14pt" weight="semibold">
-                  {aggregatorInfo['1inch'].name}
-                </Text>
-              </Inline>
-            </Box>
-          </DropdownMenuRadioItem>
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-};
+import { SwapRouteDropdownMenu } from './SwapRouteDropdownMenu';
 
 const Label = ({
   label,
