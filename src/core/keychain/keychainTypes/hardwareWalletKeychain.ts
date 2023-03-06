@@ -41,7 +41,7 @@ export class HardwareWalletKeychain implements IKeychain {
           address,
           index,
         };
-        privates.get(this).addresses.push(wallet);
+        privates.get(this).wallets.push(wallet);
         return wallet;
       },
     });
@@ -49,6 +49,15 @@ export class HardwareWalletKeychain implements IKeychain {
 
   init(options: SerializedHardwareWalletKeychain) {
     return this.deserialize(options);
+  }
+
+  async addAccountAtIndex(index: number, address: Address): Promise<Address> {
+    const wallet = {
+      address,
+      index,
+    };
+    privates.get(this).wallets.push(wallet);
+    return Promise.resolve(address);
   }
 
   addNewAccount(): Promise<Wallet[]> {

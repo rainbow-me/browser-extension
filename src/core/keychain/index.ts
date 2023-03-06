@@ -245,6 +245,20 @@ export const getPath = async (address: Address) => {
   return keychainManager.getPath(address);
 };
 
+export const addAccountAtIndex = async (
+  silbingAddress: Address,
+  index: number,
+  address: Address,
+) => {
+  const keychain = await keychainManager.getKeychain(silbingAddress);
+  const newAccount = await keychainManager.addAccountAtIndex(
+    keychain,
+    index,
+    address,
+  );
+  return newAccount;
+};
+
 export const signTypedData = async ({
   address,
   msgData,

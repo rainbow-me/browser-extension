@@ -326,6 +326,16 @@ class KeychainManager {
     return accounts[accounts.length - 1];
   }
 
+  async addAccountAtIndex(
+    selectedKeychain: Keychain,
+    index: number,
+    address: Address,
+  ) {
+    selectedKeychain.addAccountAtIndex(index, address);
+    await privates.get(this).persist();
+    return address;
+  }
+
   async removeAccount(address: Address) {
     for (let i = 0; i < this.state.keychains.length; i++) {
       const accounts = await this.state.keychains[i].getAccounts();
@@ -411,6 +421,10 @@ class KeychainManager {
           keychains[i].type === KeychainType.HdKeychain
             ? (keychains[i] as HdKeychain).imported
             : false,
+        vendor:
+          keychains[i].type === KeychainType.HardwareWalletKeychain
+            ? (keychains[i] as HardwareWalletKeychain).vendor
+            : undefined,
       });
     }
     return keychainArrays;
