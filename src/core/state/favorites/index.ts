@@ -2,6 +2,7 @@ import { Address } from 'wagmi';
 import create from 'zustand';
 
 import {
+  ARBITRUM_ETH_ADDRESS,
   BNB_BSC_ADDRESS,
   ETH_ADDRESS,
   MATIC_POLYGON_ADDRESS,
@@ -29,7 +30,7 @@ export const favoritesStore = createStore<FavoritesState>(
   (set, get) => ({
     favorites: {
       [ChainId.mainnet]: [ETH_ADDRESS as Address],
-      [ChainId.arbitrum]: [ETH_ADDRESS as Address],
+      [ChainId.arbitrum]: [ARBITRUM_ETH_ADDRESS],
       [ChainId.bsc]: [BNB_BSC_ADDRESS],
       [ChainId.polygon]: [MATIC_POLYGON_ADDRESS],
       [ChainId.optimism]: [OP_ADDRESS],
