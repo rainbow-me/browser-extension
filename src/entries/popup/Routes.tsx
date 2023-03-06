@@ -3,10 +3,11 @@ import * as React from 'react';
 import { matchRoutes, useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+import { Box } from '~/design-system';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
-import LockPill from './components/LockPill/LockPill';
 import { ConnectedApps } from './pages/ConnectedApps';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
@@ -33,6 +34,7 @@ import { WalletsAndKeys } from './pages/settings/privacy/walletsAndKeys/walletsA
 import { Settings } from './pages/settings/settings';
 import { Transactions } from './pages/settings/transactions';
 import { Sign } from './pages/sign';
+import { Swap } from './pages/swap';
 import { Unlock } from './pages/unlock';
 import { WalletReady } from './pages/walletReady';
 import { WalletSwitcher } from './pages/walletSwitcher';
@@ -106,7 +108,13 @@ const ROUTE_DATA = [
   {
     path: ROUTES.IMPORT_OR_CONNECT,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEW']}>
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW']}
+        navbar
+        navbarIcon="arrow"
+        backTo={ROUTES.WELCOME}
+      >
         <ImportOrConnect />
       </AnimatedRoute>
     ),
@@ -115,7 +123,13 @@ const ROUTE_DATA = [
   {
     path: ROUTES.WATCH,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEW']}>
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW']}
+        navbar
+        navbarIcon="arrow"
+        backTo={ROUTES.IMPORT_OR_CONNECT}
+      >
         <WatchWallet />
       </AnimatedRoute>
     ),
@@ -124,7 +138,13 @@ const ROUTE_DATA = [
   {
     path: ROUTES.IMPORT,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEW']}>
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW']}
+        navbar
+        navbarIcon="arrow"
+        backTo={ROUTES.IMPORT_OR_CONNECT}
+      >
         <ImportWallet />
       </AnimatedRoute>
     ),
@@ -164,7 +184,13 @@ const ROUTE_DATA = [
   {
     path: ROUTES.SEED_BACKUP_PROMPT,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEEDS_PASSWORD']}>
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW']}
+        navbar
+        navbarIcon="arrow"
+        backTo={ROUTES.WELCOME}
+      >
         <SeedBackupPrompt />
       </AnimatedRoute>
     ),
@@ -173,7 +199,13 @@ const ROUTE_DATA = [
   {
     path: ROUTES.SEED_REVEAL,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEEDS_PASSWORD']}>
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW']}
+        navbar
+        navbarIcon="arrow"
+        backTo={ROUTES.SEED_BACKUP_PROMPT}
+      >
         <SeedReveal />
       </AnimatedRoute>
     ),
@@ -182,7 +214,7 @@ const ROUTE_DATA = [
   {
     path: ROUTES.SEED_VERIFY,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEEDS_PASSWORD']}>
+      <AnimatedRoute direction="right" protectedRoute={['NEW']}>
         <SeedVerify />
       </AnimatedRoute>
     ),
@@ -191,7 +223,13 @@ const ROUTE_DATA = [
   {
     path: ROUTES.CREATE_PASSWORD,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEEDS_PASSWORD']}>
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEEDS_PASSWORD']}
+        navbar
+        navbarIcon="arrow"
+        backTo={ROUTES.WELCOME}
+      >
         <CreatePassword />
       </AnimatedRoute>
     ),
@@ -208,7 +246,6 @@ const ROUTE_DATA = [
         title={i18n.t('settings.title')}
         protectedRoute
         background="surfaceSecondary"
-        rightNavbarComponent={<LockPill />}
       >
         <Settings />
       </AnimatedRoute>
@@ -390,11 +427,24 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute
         backTo={ROUTES.HOME}
-        direction="right"
+        direction="up"
         title={i18n.t('send.title')}
         protectedRoute
       >
         <Send />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SWAP,
+    element: (
+      <AnimatedRoute
+        backTo={ROUTES.HOME}
+        direction="up"
+        title={i18n.t('swap.title')}
+        protectedRoute
+      >
+        <Swap />
       </AnimatedRoute>
     ),
   },
@@ -438,6 +488,7 @@ const ROUTE_DATA = [
         navbarIcon="ex"
         title={i18n.t('wallets.title')}
         protectedRoute
+        background="surfacePrimaryElevated"
       >
         <WalletSwitcher />
       </AnimatedRoute>
@@ -538,10 +589,20 @@ export function Routes() {
   const match = matchingRoute(location.pathname);
   const background = match?.background;
   const RoutesContainer = background ?? React.Fragment;
+  const { innerHeight: windowHeight } = window;
   return (
-    <RoutesContainer>
-      <CurrentRoute pathname={location.pathname} />
-    </RoutesContainer>
+    <Box
+      style={{
+        maxWidth:
+          windowHeight === POPUP_DIMENSIONS.height
+            ? POPUP_DIMENSIONS.width
+            : undefined,
+      }}
+    >
+      <RoutesContainer>
+        <CurrentRoute pathname={location.pathname} />
+      </RoutesContainer>
+    </Box>
   );
 }
 

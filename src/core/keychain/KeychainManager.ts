@@ -1,5 +1,13 @@
 /* eslint-disable no-await-in-loop */
-import Encryptor from '@metamask/browser-passworder';
+import {
+  decrypt,
+  decryptWithDetail,
+  decryptWithKey,
+  encryptWithDetail,
+  encryptWithKey,
+  importKey,
+} from '@metamask/browser-passworder';
+import * as Sentry from '@sentry/browser';
 import { Address } from 'wagmi';
 
 import { KeychainType } from '../types/keychainTypes';
@@ -27,6 +35,7 @@ export type Keychain =
 interface KeychainManagerState {
   keychains: Keychain[];
   isUnlocked: boolean;
+  initialized: boolean;
   vault: string;
 }
 
@@ -41,48 +50,53 @@ const privates = new WeakMap();
 
 class KeychainManager {
   state: KeychainManagerState;
-  encryptor: typeof Encryptor;
 
   constructor() {
     this.state = {
+      initialized: false,
       keychains: [],
       isUnlocked: false,
       vault: '',
     };
-    this.encryptor = Encryptor;
 
     privates.set(this, {
       password: '',
-      persist: () => {
-        return Promise.all([
-          privates.get(this).memorize(),
-          privates.get(this).save(),
-        ]);
-      },
-
       rehydrate: async () => {
-        // Attempt to read from memory first
-        const memState = await privates.get(this).getLastMemorizedState();
-        // If it's there, the keychain manager is already unlocked
-        if (memState) {
-          this.state.keychains = memState.keychains || [];
-          this.state.isUnlocked = memState.isUnlocked || false;
-          this.state.vault = memState.vault || '';
-        }
+        try {
+          // Get the vault from storage
+          const storageState = await privates.get(this).getLastStorageState();
+          if (storageState) {
+            this.state.vault = storageState.vault;
+          }
 
-        // Also attempt to read from storage for future unlocks
-        const storageState = await privates.get(this).getLastStorageState();
-        if (storageState) {
-          this.state.vault = storageState.vault;
+          const { encryptionKey } = await privates.get(this).getEncryptionKey();
+          if (encryptionKey) {
+            const key = await importKey(encryptionKey);
+            const vault = (await decryptWithKey(
+              key,
+              JSON.parse(this.state.vault),
+            )) as DecryptedVault;
+
+            await Promise.all(
+              vault.map((serializedKeychain) => {
+                return privates.get(this).restoreKeychain(serializedKeychain);
+              }),
+            );
+            await privates.get(this).persist();
+            this.state.isUnlocked = true;
+          }
+        } catch (e) {
+          console.log('FATAL ERROR: rehydration failed', e);
+          const customError = new Error('Fatal error: rehydration failed');
+          Sentry.captureException(customError, {
+            extra: {
+              error: e,
+            },
+          });
+        } finally {
+          this.state.initialized = true;
         }
       },
-
-      memorize: () => {
-        // This is all the keychains - password decrypted
-        // IMPORTANT: Should never be stored in the fs!!!
-        return chrome.storage.session.set({ keychainManager: this.state });
-      },
-
       deriveAccounts: async (
         opts: SerializedKeypairKeychain | SerializedHdKeychain,
       ): Promise<Address[]> => {
@@ -111,13 +125,7 @@ class KeychainManager {
         }
         return keychain.getAccounts();
       },
-      restoreKeychain: async (
-        opts:
-          | SerializedKeypairKeychain
-          | SerializedHdKeychain
-          | SerializedReadOnlyKeychain
-          | SerializedHardwareWalletKeychain,
-      ): Promise<Keychain> => {
+      restoreKeychain: async (opts: SerializedKeychain): Promise<Keychain> => {
         let keychain;
         switch (opts.type) {
           case KeychainType.HdKeychain:
@@ -141,7 +149,6 @@ class KeychainManager {
         }
         await this.checkForDuplicateInKeychain(keychain);
         this.state.keychains.push(keychain as Keychain);
-        await privates.get(this).persist();
         return keychain;
       },
 
@@ -157,7 +164,7 @@ class KeychainManager {
         this.state.keychains = nonEmptyKeychains;
       },
 
-      save: async () => {
+      persist: async () => {
         // Remove any potential empty keychains
         // Serialize all the keychains
         const serializedKeychains = this.state.keychains?.length
@@ -167,24 +174,54 @@ class KeychainManager {
           : [];
 
         // Encrypt the serialized keychains
+        const pwd = privates.get(this).password;
+        const { encryptionKey } = await privates.get(this).getEncryptionKey();
+        const { salt } = await privates.get(this).getSalt();
+
         if (serializedKeychains.length > 0) {
-          this.state.vault = await this.encryptor.encrypt(
-            privates.get(this).password as string,
-            serializedKeychains,
-          );
+          const result = { vault: '', exportedKeyString: '', salt: '' };
+          if (pwd) {
+            // Generate a new encryption key every time we save and have a password
+            const encryptionResult = await encryptWithDetail(
+              privates.get(this).password as string,
+              serializedKeychains,
+            );
+            result.vault = encryptionResult.vault;
+            result.exportedKeyString = encryptionResult.exportedKeyString;
+            const vaultObj = JSON.parse(encryptionResult.vault);
+            result.salt = vaultObj.salt;
+          } else if (encryptionKey && salt) {
+            const key = await importKey(encryptionKey);
+            const vaultObj = await encryptWithKey(key, serializedKeychains);
+            result.vault = JSON.stringify({ ...vaultObj, salt });
+            result.salt = salt;
+            result.exportedKeyString = encryptionKey;
+          }
+          this.state.vault = result.vault;
+          await privates.get(this).setEncryptionKey(result.exportedKeyString);
+          await privates.get(this).setSalt(result.salt);
         } else {
           this.state.vault = '';
         }
         // Store them in the fs
-        return chrome.storage.local.set({ vault: this.state.vault });
+        await chrome.storage.local.set({ vault: this.state.vault });
+      },
+
+      setSalt: (val: string | null) => {
+        return chrome.storage.session.set({ salt: val });
+      },
+      getSalt: () => {
+        return chrome.storage.session.get('salt');
+      },
+      setEncryptionKey: (val: string | null) => {
+        return chrome.storage.session.set({ encryptionKey: val });
+      },
+      getEncryptionKey: () => {
+        return chrome.storage.session.get('encryptionKey');
       },
 
       getLastStorageState: () => {
         return chrome.storage.local.get('vault');
-      },
-
-      getLastMemorizedState: () => {
-        return chrome.storage.session.get('keychainManager');
       },
     });
 
@@ -197,16 +234,18 @@ class KeychainManager {
     await privates.get(this).persist();
   }
 
-  verifyPassword(password: string) {
-    return privates.get(this).password === password;
-  }
-
-  async verifyPasswordViaDecryption(password: string) {
-    if (!this.state.vault) {
-      throw new Error('Nothing to unlock');
-    }
+  async verifyPassword(password: string) {
     try {
-      if (await this.encryptor.decrypt(password, this.state.vault)) {
+      // Check if we haven't set a password yet
+      if (
+        this.state.vault === '' &&
+        password === '' &&
+        this.state.keychains.length > 0
+      ) {
+        return true;
+      }
+
+      if (await decrypt(password, this.state.vault)) {
         return true;
       }
       // eslint-disable-next-line no-empty
@@ -243,11 +282,13 @@ class KeychainManager {
       | SerializedReadOnlyKeychain
       | SerializedHardwareWalletKeychain,
   ): Promise<Keychain> {
-    return privates.get(this).restoreKeychain({
+    const result = await privates.get(this).restoreKeychain({
       ...opts,
       imported: true,
       autodiscover: true,
     });
+    await privates.get(this).persist();
+    return result;
   }
 
   async deriveAccounts(
@@ -285,6 +326,16 @@ class KeychainManager {
     return accounts[accounts.length - 1];
   }
 
+  async addAccountAtIndex(
+    selectedKeychain: Keychain,
+    index: number,
+    address: Address,
+  ) {
+    selectedKeychain.addAccountAtIndex(index, address);
+    await privates.get(this).persist();
+    return address;
+  }
+
   async removeAccount(address: Address) {
     for (let i = 0; i < this.state.keychains.length; i++) {
       const accounts = await this.state.keychains[i].getAccounts();
@@ -300,7 +351,8 @@ class KeychainManager {
     this.state.keychains = [];
     this.state.isUnlocked = false;
     privates.get(this).password = null;
-    await privates.get(this).memorize();
+    await privates.get(this).setEncryptionKey(null);
+    await privates.get(this).setSalt(null);
   }
 
   async wipe(password: string) {
@@ -315,20 +367,28 @@ class KeychainManager {
 
     await chrome.storage.local.set({ vault: null });
     await chrome.storage.session.set({ keychainManager: null });
+    await privates.get(this).setEncryptionKey(null);
+    await privates.get(this).setSalt(null);
   }
 
   async unlock(password: string) {
     if (!this.state.vault) {
       throw new Error('Nothing to unlock');
     }
-    const vault: DecryptedVault = await this.encryptor.decrypt(
-      password,
-      this.state.vault,
-    );
+
+    const {
+      vault: decryptedVault,
+      exportedKeyString,
+      salt,
+    } = await decryptWithDetail(password, this.state.vault);
+
+    await privates.get(this).setEncryptionKey(exportedKeyString);
+    await privates.get(this).setSalt(salt);
     privates.get(this).password = password;
     this.state.isUnlocked = true;
+
     await Promise.all(
-      vault.map((serializedKeychain) => {
+      (decryptedVault as SerializedKeychain[]).map((serializedKeychain) => {
         return privates.get(this).restoreKeychain(serializedKeychain);
       }),
     );
@@ -361,6 +421,10 @@ class KeychainManager {
           keychains[i].type === KeychainType.HdKeychain
             ? (keychains[i] as HdKeychain).imported
             : false,
+        vendor:
+          keychains[i].type === KeychainType.HardwareWalletKeychain
+            ? (keychains[i] as HardwareWalletKeychain).vendor
+            : undefined,
       });
     }
     return keychainArrays;

@@ -1,39 +1,99 @@
 import React, { useMemo } from 'react';
-import { useAccount } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { useUserAssets } from '~/core/resources/assets';
-import { useCurrentCurrencyStore } from '~/core/state';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { UniqueId } from '~/core/types/assets';
-import { Box, Column, Columns, Inline, Text } from '~/design-system';
+import {
+  Box,
+  Column,
+  Columns,
+  Inline,
+  Inset,
+  Symbol,
+  Text,
+} from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 
+import { TokensSkeleton } from '../../components/ActivitySkeleton/ActivitySkeleton';
 import { Asterisks } from '../../components/Asterisks/Asterisks';
+import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
+import { WalletIcon } from '../../components/WalletIcon/WalletIcon';
+import { useVirtualizedAssets } from '../../hooks/useVirtualizedAssets';
 
 const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 150;
 
 export function Tokens() {
-  const { address } = useAccount();
+  const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { data: assets = [] } = useUserAssets(
-    { address, currency },
+  const { connectedToHardhat } = useConnectedToHardhatStore();
+  const { data: assets = [], isInitialLoading } = useUserAssets(
+    { address: currentAddress, currency, connectedToHardhat },
     { select: selectUserAssetsList },
   );
+  const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
+    assets,
+  });
+
+  if (isInitialLoading) {
+    return <TokensSkeleton />;
+  }
+
+  if (!assets?.length) {
+    return <TokensEmptyState />;
+  }
+
   return (
     <Box
-      style={{
-        overflow: 'auto',
-      }}
+      ref={containerRef}
+      width="full"
+      style={{ overflow: 'auto' }}
+      paddingBottom="8px"
       marginTop="-16px"
     >
-      {assets?.map((asset, i) => (
-        <AssetRow key={`${asset?.uniqueId}-${i}`} uniqueId={asset?.uniqueId} />
-      ))}
+      <Box
+        width="full"
+        style={{
+          height: assetsRowVirtualizer.getTotalSize(),
+          position: 'relative',
+        }}
+      >
+        <Box
+          style={{
+            overflow: 'auto',
+          }}
+        >
+          {assetsRowVirtualizer.getVirtualItems().map((virtualItem) => {
+            const { index } = virtualItem;
+            const rowData = assets?.[index];
+            return (
+              <Box
+                key={index}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: virtualItem.size,
+                  transform: `translateY(${virtualItem.start}px)`,
+                }}
+              >
+                <AssetRow
+                  key={`${rowData?.uniqueId}-${index}`}
+                  uniqueId={rowData?.uniqueId}
+                />
+              </Box>
+            );
+          })}
+        </Box>
+      </Box>
     </Box>
   );
 }
@@ -143,4 +203,83 @@ export function AssetRow({ uniqueId }: AssetRowProps) {
   );
 
   return <CoinRow asset={asset} topRow={topRow} bottomRow={bottomRow} />;
+}
+
+function TokensEmptyState() {
+  return (
+    <Inset horizontal="20px">
+      <Box paddingBottom="8px">
+        <a href="https://www.coinbase.com/" target="_blank" rel="noreferrer">
+          <Box
+            background="surfaceSecondaryElevated"
+            borderRadius="16px"
+            borderColor="separatorTertiary"
+            boxShadow="12px"
+          >
+            <Inset horizontal="16px" vertical="16px">
+              <Box paddingBottom="12px">
+                <Inline alignVertical="center" alignHorizontal="justify">
+                  <Box>
+                    <Inline alignVertical="center" space="8px">
+                      <CoinbaseIcon />
+                      <Text as="p" size="14pt" color="label" weight="semibold">
+                        {i18n.t('tokens_tab.coinbase_title')}
+                      </Text>
+                    </Inline>
+                  </Box>
+                  <Symbol
+                    size={12}
+                    symbol="arrow.up.forward.circle"
+                    weight="semibold"
+                    color="labelTertiary"
+                  />
+                </Inline>
+              </Box>
+              <Text as="p" size="11pt" color="labelSecondary" weight="bold">
+                {i18n.t('tokens_tab.coinbase_description')}
+              </Text>
+            </Inset>
+          </Box>
+        </a>
+      </Box>
+
+      <Box
+        background="surfacePrimaryElevated"
+        borderRadius="16px"
+        borderColor="separatorTertiary"
+        boxShadow="12px"
+        borderWidth="1px"
+      >
+        <Inset horizontal="16px" vertical="16px">
+          <Box paddingBottom="12px">
+            <Inline alignVertical="center" space="8px">
+              <WalletIcon />
+              <Text as="p" size="14pt" color="label" weight="semibold">
+                {i18n.t('tokens_tab.send_from_wallet')}
+              </Text>
+            </Inline>
+          </Box>
+          <Text as="p" size="11pt" color="labelSecondary" weight="bold">
+            {i18n.t('tokens_tab.send_description_1')}
+            <Box
+              background="fillSecondary"
+              as="span"
+              style={{
+                display: 'inline-block',
+                width: '16px',
+                height: '16px',
+                borderRadius: '4px',
+                verticalAlign: 'middle',
+                textAlign: 'center',
+                lineHeight: '16px',
+              }}
+            >
+              C
+            </Box>
+            {i18n.t('tokens_tab.send_description_2')}
+          </Text>
+        </Inset>
+      </Box>
+    </Inset>
+  );
 }

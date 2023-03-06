@@ -1,3 +1,4 @@
+import isURL from 'validator/lib/isURL';
 import { Address } from 'wagmi';
 
 import { SupportedCurrencyKey } from '~/core/references';
@@ -162,4 +163,13 @@ export function parseParsedAddressAsset({
       }),
     },
   };
+}
+
+export function filterAsset(asset: ZerionAsset) {
+  const nameFragments = asset?.name?.split(' ');
+  const nameContainsURL = nameFragments.some((f) => isURL(f));
+  const symbolFragments = asset?.symbol?.split(' ');
+  const symbolContainsURL = symbolFragments.some((f) => isURL(f));
+  const shouldFilter = nameContainsURL || symbolContainsURL;
+  return shouldFilter;
 }

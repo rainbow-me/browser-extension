@@ -21,7 +21,10 @@ export function useAllTransactions({
   currency: SupportedCurrencyKey;
 }) {
   const currentChain = useNetwork();
-  const { data: confirmedTransactions } = useTransactions(
+  const {
+    data: confirmedTransactions,
+    isInitialLoading: confirmedInitialLoading,
+  } = useTransactions(
     {
       address,
       chainId: ChainId.mainnet,
@@ -35,7 +38,10 @@ export function useAllTransactions({
         ),
     },
   );
-  const { data: confirmedArbitrumTransactions } = useTransactions(
+  const {
+    data: confirmedArbitrumTransactions,
+    isInitialLoading: arbitrumInitialLoading,
+  } = useTransactions(
     {
       address,
       chainId: ChainId.arbitrum,
@@ -46,7 +52,10 @@ export function useAllTransactions({
         watchConfirmedTransactions(transactions, ChainId.arbitrum),
     },
   );
-  const { data: confirmedBscTransactions } = useTransactions(
+  const {
+    data: confirmedBscTransactions,
+    isInitialLoading: bscInitialLoading,
+  } = useTransactions(
     {
       address,
       chainId: ChainId.bsc,
@@ -57,7 +66,10 @@ export function useAllTransactions({
         watchConfirmedTransactions(transactions, ChainId.bsc),
     },
   );
-  const { data: confirmedOptimismTransactions } = useTransactions(
+  const {
+    data: confirmedOptimismTransactions,
+    isInitialLoading: optimismInitialLoading,
+  } = useTransactions(
     {
       address,
       chainId: ChainId.optimism,
@@ -68,7 +80,10 @@ export function useAllTransactions({
         watchConfirmedTransactions(transactions, ChainId.optimism),
     },
   );
-  const { data: confirmedPolygonTransactions } = useTransactions(
+  const {
+    data: confirmedPolygonTransactions,
+    isInitialLoading: polygonInitialLoading,
+  } = useTransactions(
     {
       address,
       chainId: ChainId.polygon,
@@ -95,6 +110,12 @@ export function useAllTransactions({
   return {
     allTransactions,
     allTransactionsByDate: selectTransactionsByDate(allTransactions),
+    isInitialLoading:
+      confirmedInitialLoading ||
+      arbitrumInitialLoading ||
+      bscInitialLoading ||
+      optimismInitialLoading ||
+      polygonInitialLoading,
   };
 }
 

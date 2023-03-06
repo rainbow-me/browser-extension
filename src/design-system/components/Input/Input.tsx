@@ -28,7 +28,7 @@ export type InputProps = {
   placeholder?: string;
   borderColor?: BoxStyles['borderColor'];
   testId?: string;
-  variant: 'surface' | 'bordered' | 'transparent';
+  variant: 'surface' | 'bordered' | 'transparent' | 'tinted';
   value?: InputHTMLAttributes<HTMLInputElement>['value'];
   type?: InputHTMLAttributes<HTMLInputElement>['type'];
   innerRef?: React.Ref<HTMLInputElement>;
@@ -36,6 +36,7 @@ export type InputProps = {
   style?: CSSProperties;
   enableTapScale?: boolean;
   textAlign?: TextStyles['textAlign'];
+  tabIndex?: number;
 };
 
 export const stylesForVariant: Record<
@@ -80,6 +81,12 @@ export const stylesForVariant: Record<
       default: 'transparent',
     },
     textColor: 'label',
+  },
+  tinted: {
+    borderColor: {
+      default: 'transparent',
+    },
+    textColor: 'accent',
   },
 };
 
@@ -158,6 +165,7 @@ export function Input({
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...inputProps}
         as="input"
+        tabIndex={inputProps.tabIndex ?? undefined}
         ref={innerRef}
         background={background}
         borderColor={borderColor ? borderColor : borderColorFromVariant}

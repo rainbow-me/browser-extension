@@ -51,7 +51,7 @@ const TYPED_MESSAGE = {
   },
 };
 const MESSAGE = 'rainbow rocks 🌈';
-const CONNECTED_ADDRESS = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8';
+const CONNECTED_ADDRESS = '0x90F79bf6EB2c4f870365E785982E1f101E93b906';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;
@@ -114,6 +114,13 @@ describe('App interactions flow', () => {
     await goToPopup(driver, rootURL);
     await findElementAndClick({ id: 'home-page-header-right', driver });
     await findElementAndClick({ id: 'settings-link', driver });
+  });
+
+  it('should be able to set rainbow as default wallet', async () => {
+    await findElementByTestIdAndClick({
+      id: 'set-rainbow-default-toggle',
+      driver,
+    });
   });
 
   it('should be able to connect to hardhat', async () => {

@@ -1,20 +1,16 @@
-import * as React from 'react';
+import React, { useMemo } from 'react';
 import { useAccount, useBalance } from 'wagmi';
 
-import {
-  SupportedCurrencyKey,
-  supportedCurrencies,
-} from '~/core/references/supportedCurrencies';
+import { supportedCurrencies } from '~/core/references';
+import { useCurrentCurrencyStore } from '~/core/state';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
-import {
-  convertAmountToNativeDisplay,
-  convertRawAmountToBalance,
-} from '~/core/utils/numbers';
 import { Box, Inline, Inset, Text } from '~/design-system';
 
+import { skeletonLine } from '../../components/ActivitySkeleton/ActivitySkeleton.css';
 import { Asterisks } from '../../components/Asterisks/Asterisks';
-import { EthSymbol } from '../../components/EthSymbol/EthSymbol';
 import { Tabs } from '../../components/Tabs/Tabs';
+import { useUserAssetsBalance } from '../../hooks/useUserAssetsBalance';
+import { tabIndexes } from '../../utils/tabIndexes';
 
 import { Tab } from '.';
 
@@ -27,37 +23,33 @@ export function TabBar({
 }) {
   const { address } = useAccount();
   const { hideAssetBalances } = useHideAssetBalancesStore();
-  const { data: balance } = useBalance({ addressOrName: address });
-  const symbol = balance?.symbol as SupportedCurrencyKey;
+  const { data: balance, isLoading } = useBalance({ addressOrName: address });
+  const { display: userAssetsBalanceDisplay } = useUserAssetsBalance();
+  const { currentCurrency } = useCurrentCurrencyStore();
 
-  let displayBalance = symbol
-    ? convertAmountToNativeDisplay(
-        convertRawAmountToBalance(
-          // @ts-expect-error – TODO: fix this
-          balance?.value.hex || balance.value.toString(),
-          supportedCurrencies[symbol],
-        ).amount,
-        symbol,
-      )
-    : '';
-  if (symbol === 'ETH') {
-    // Our font set doesn't seem to like the ether symbol, so we have to omit it and use
-    // an icon instead.
-    displayBalance = displayBalance.replace('Ξ', '');
-  }
-
-  const displayBalanceComponent = hideAssetBalances ? (
-    <Inline alignHorizontal="right">
-      <Asterisks color="label" size={13} />
-    </Inline>
-  ) : (
-    <Text
-      color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
-      size="16pt"
-      weight="bold"
-    >
-      {displayBalance}
-    </Text>
+  const displayBalanceComponent = useMemo(
+    () =>
+      hideAssetBalances ? (
+        <Inline alignHorizontal="right" alignVertical="center">
+          <Text
+            color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
+            size="16pt"
+            weight="bold"
+          >
+            {supportedCurrencies?.[currentCurrency]?.symbol}
+          </Text>
+          <Asterisks color="label" size={13} />
+        </Inline>
+      ) : (
+        <Text
+          color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
+          size="16pt"
+          weight="bold"
+        >
+          {userAssetsBalanceDisplay}
+        </Text>
+      ),
+    [activeTab, currentCurrency, hideAssetBalances, userAssetsBalanceDisplay],
   );
 
   return (
@@ -75,26 +67,30 @@ export function TabBar({
             onClick={() => onSelectTab('tokens')}
             symbol="record.circle.fill"
             text="Tokens"
+            tabIndex={tabIndexes.WALLET_HEADER_TOKENS_TAB}
           />
           <Tabs.Tab
             active={activeTab === 'activity'}
             onClick={() => onSelectTab('activity')}
             symbol="bolt.fill"
             text="Activity"
+            tabIndex={tabIndexes.WALLET_HEADER_ACTIVITY_TAB}
           />
         </Tabs>
       </Box>
       <Inset top="4px">
-        {balance && (
+        {isLoading && (
           <Inline alignVertical="center">
-            {balance?.symbol === 'ETH' && (
-              <EthSymbol
-                color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
-                size={14}
-              />
-            )}
-            {displayBalanceComponent}
+            <Box
+              className={skeletonLine}
+              background="fillHorizontal"
+              style={{ width: '62px', height: '11px' }}
+            ></Box>
           </Inline>
+        )}
+
+        {balance && (
+          <Inline alignVertical="center">{displayBalanceComponent}</Inline>
         )}
       </Inset>
     </Box>

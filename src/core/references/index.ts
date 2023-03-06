@@ -13,6 +13,7 @@ export type {
   SupportedCurrencyKey,
 } from './supportedCurrencies';
 export const ETH_ADDRESS = 'eth';
+export const OP_ADDRESS = '0x4200000000000000000000000000000000000042';
 export const ARBITRUM_ETH_ADDRESS = constants.AddressZero;
 export const BNB_BSC_ADDRESS = constants.AddressZero;
 export const BNB_MAINNET_ADDRESS = '0xb8c77482e45f1f44de1745f52c74426c631bdd52';

@@ -21,6 +21,7 @@ import {
   buttonColors,
   fontWeights,
   foregroundColors,
+  linearGradients,
   negativeSpace,
   positionSpace,
   radii,
@@ -140,6 +141,7 @@ export const semanticColorVars = createThemeContract({
 });
 
 export const foregroundColorVars = semanticColorVars.foregroundColors;
+export const backgroundColorsVars = semanticColorVars.backgroundColors;
 
 interface ShadowDefinition {
   dark: string;
@@ -493,6 +495,8 @@ const textProperties = defineProperties({
     },
     fontWeight: fontWeights,
     textAlign: ['left', 'center', 'right'],
+    background: linearGradients,
+    WebkitBackgroundClip: ['border-box', 'text'],
   },
 });
 

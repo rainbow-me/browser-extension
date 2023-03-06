@@ -1,9 +1,11 @@
 import { ToBufferInputTypes } from '@ethereumjs/util';
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { recoverPersonalSignature } from '@metamask/eth-sig-util';
+import { ChainId } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
 import { Address, UserRejectedRequestError } from 'wagmi';
 
+import { hasVault, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import {
   appSessionsStore,
@@ -12,15 +14,11 @@ import {
 } from '~/core/state';
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
+import { isSupportedChainId } from '~/core/utils/chains';
 import { getDappHost } from '~/core/utils/connectedApps';
+import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/numbers';
-
-export const DEFAULT_ACCOUNT =
-  '0x70c16D2dB6B00683b29602CBAB72CE0Dcbc243C4' as Address;
-export const DEFAULT_ACCOUNT_2 =
-  '0x5B570F0F8E2a29B7bCBbfC000f9C7b78D45b7C35' as Address;
-export const DEFAULT_CHAIN_ID = '0x1';
 
 const openWindow = async () => {
   const { setWindow, window: stateWindow } = notificationWindowStore.getState();
@@ -55,7 +53,14 @@ const messengerProviderRequest = async (
   const { addPendingRequest } = pendingRequestStore.getState();
   // Add pending request to global background state.
   addPendingRequest(request);
-  openWindow();
+
+  if (hasVault() && (await isPasswordSet())) {
+    openWindow();
+  } else {
+    chrome.tabs.create({
+      url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome`,
+    });
+  }
   // Wait for response from the popup.
   const payload: unknown | null = await new Promise((resolve) =>
     // eslint-disable-next-line no-promise-executor-return
@@ -73,14 +78,17 @@ const messengerProviderRequest = async (
  * Handles RPC requests from the provider.
  */
 export const handleProviderRequest = ({
-  messenger,
+  popupMessenger,
+  inpageMessenger,
 }: {
-  messenger: Messenger;
+  popupMessenger: Messenger;
+  inpageMessenger: Messenger;
 }) =>
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
     console.log(meta.sender, method);
 
-    const { getActiveSession, addSession } = appSessionsStore.getState();
+    const { getActiveSession, addSession, updateSessionChainId } =
+      appSessionsStore.getState();
     const url = meta?.sender?.url || '';
     const host = getDappHost(url);
     const activeSession = getActiveSession({ host });
@@ -107,7 +115,7 @@ export const handleProviderRequest = ({
         case 'eth_signTypedData_v3':
         case 'eth_signTypedData_v4': {
           {
-            response = await messengerProviderRequest(messenger, {
+            response = await messengerProviderRequest(popupMessenger, {
               method,
               id,
               params,
@@ -116,15 +124,51 @@ export const handleProviderRequest = ({
           }
           break;
         }
-        case 'wallet_addEthereumChain':
-        case 'wallet_switchEthereumChain':
+        case 'wallet_addEthereumChain': {
+          const proposedChainId = (params?.[0] as { chainId: ChainId })
+            ?.chainId;
+          const supportedChainId = isSupportedChainId(Number(proposedChainId));
+          if (!supportedChainId) throw new Error('Chain Id not supported');
+          response = null;
+          break;
+        }
+        case 'wallet_switchEthereumChain': {
+          const proposedChainId = Number(
+            (params?.[0] as { chainId: ChainId })?.chainId,
+          );
+          const supportedChainId = isSupportedChainId(Number(proposedChainId));
+          const extensionUrl = chrome.runtime.getURL('');
+          if (!supportedChainId) {
+            inpageMessenger?.send('wallet_switchEthereumChain', {
+              chainId: proposedChainId,
+              status: 'failed',
+              extensionUrl,
+              host,
+            });
+            throw new Error('Chain Id not supported');
+          } else {
+            updateSessionChainId({
+              chainId: proposedChainId,
+              host,
+            });
+            inpageMessenger?.send('wallet_switchEthereumChain', {
+              chainId: proposedChainId,
+              status: 'success',
+              extensionUrl,
+              host,
+            });
+            inpageMessenger.send(`chainChanged:${host}`, proposedChainId);
+          }
+          response = null;
+          break;
+        }
         case 'eth_requestAccounts': {
           if (activeSession) {
             response = [activeSession.address];
             break;
           }
           const { address, chainId } = (await messengerProviderRequest(
-            messenger,
+            popupMessenger,
             {
               method,
               id,
@@ -159,6 +203,11 @@ export const handleProviderRequest = ({
           );
           break;
         }
+        case 'eth_gasPrice': {
+          const provider = getProvider({ chainId: activeSession?.chainId });
+          response = await provider.getGasPrice();
+          break;
+        }
         case 'personal_ecRecover': {
           response = recoverPersonalSignature({
             data: params?.[0] as ToBufferInputTypes,
@@ -166,6 +215,7 @@ export const handleProviderRequest = ({
           });
           break;
         }
+
         default: {
           // TODO: handle other methods
         }

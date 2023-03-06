@@ -63,25 +63,24 @@ export const lockVault = () => {
   return keychainManager.lock();
 };
 export const hasVault = () => {
-  return !!keychainManager.state.vault;
+  return (
+    keychainManager.state.keychains.length > 0 || keychainManager.state.vault
+  );
 };
 
 export const isPasswordSet = async () => {
-  const isPasswordEmpty = keychainManager.verifyPassword('');
-  // We don't have it in memory
-  if (isPasswordEmpty) {
-    // check if it was set at all
-    if (await keychainManager.verifyPasswordViaDecryption('')) {
-      return false;
-    }
-    return true;
-  } else {
-    return true;
+  if (await keychainManager.verifyPassword('')) {
+    return false;
   }
+  return true;
 };
 
 export const isVaultUnlocked = (): boolean => {
   return keychainManager.state.isUnlocked;
+};
+
+export const isInitialized = (): boolean => {
+  return keychainManager.state.initialized;
 };
 
 export const createWallet = async (): Promise<Address> => {
@@ -243,6 +242,20 @@ export const getWallet = async (address: Address) => {
 
 export const getPath = async (address: Address) => {
   return keychainManager.getPath(address);
+};
+
+export const addAccountAtIndex = async (
+  silbingAddress: Address,
+  index: number,
+  address: Address,
+) => {
+  const keychain = await keychainManager.getKeychain(silbingAddress);
+  const newAccount = await keychainManager.addAccountAtIndex(
+    keychain,
+    index,
+    address,
+  );
+  return newAccount;
 };
 
 export const signTypedData = async ({

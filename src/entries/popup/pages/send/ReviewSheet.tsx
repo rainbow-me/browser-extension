@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
-import SendSound from 'static/assets/audio/woosh.wav';
+import SendSound from 'static/assets/audio/woosh.mp3';
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
@@ -51,9 +51,9 @@ import {
   useExplainerSheetParams,
 } from '../../components/ExplainerSheet/ExplainerSheet';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
-import { useBackgroundAccounts } from '../../hooks/useBackgroundAccounts';
-import { useContact } from '../../hooks/useContacts';
 import usePrevious from '../../hooks/usePrevious';
+import { useWalletInfo } from '../../hooks/useWalletInfo';
+import { useWallets } from '../../hooks/useWallets';
 
 import { ContactAction } from './ContactPrompt';
 
@@ -75,7 +75,9 @@ const EditContactDropdown = ({
     }>
   >;
 }) => {
-  const contact = useContact({ address: toAddress });
+  const { isContact } = useWalletInfo({
+    address: toAddress,
+  });
 
   const viewOnEtherscan = useCallback(() => {
     const explorer = getBlockExplorerHostForChain(chainId || ChainId.mainnet);
@@ -92,14 +94,14 @@ const EditContactDropdown = ({
           break;
         case 'edit':
           closeReview();
-          onEdit({ show: true, action: contact.isContact ? 'edit' : 'save' });
+          onEdit({ show: true, action: isContact ? 'edit' : 'save' });
           break;
         case 'view':
           viewOnEtherscan();
           break;
       }
     },
-    [closeReview, contact.isContact, onEdit, toAddress, viewOnEtherscan],
+    [closeReview, isContact, onEdit, toAddress, viewOnEtherscan],
   );
 
   return (
@@ -160,7 +162,7 @@ const EditContactDropdown = ({
                     <Inline alignVertical="center">
                       <Symbol
                         symbol={
-                          contact.isContact
+                          isContact
                             ? 'person.crop.circle.fill'
                             : 'person.crop.circle.fill.badge.plus'
                         }
@@ -171,7 +173,7 @@ const EditContactDropdown = ({
                     <Text weight="semibold" size="14pt" color="label">
                       {i18n.t(
                         `contacts.${
-                          contact.isContact ? 'edit_contact' : 'add_to_contacts'
+                          isContact ? 'edit_contact' : 'add_to_contacts'
                         }`,
                       )}
                     </Text>
@@ -250,11 +252,13 @@ export const ReviewSheet = ({
     }>
   >;
 }) => {
-  const { accounts } = useBackgroundAccounts();
+  const { visibleOwnedWallets } = useWallets();
   const [sendingOnL2Checks, setSendingOnL2Checks] = useState([false, false]);
   const prevShow = usePrevious(show);
 
-  const { display: toName } = useContact({ address: toAddress });
+  const { displayName: walletDisplayName } = useWalletInfo({
+    address: toAddress,
+  });
 
   const sendingOnL2 = useMemo(
     () => isL2Chain(asset?.chainId || ChainId.mainnet),
@@ -264,8 +268,11 @@ export const ReviewSheet = ({
   const chainName = ChainNameDisplay[asset?.chainId || ChainId.mainnet];
 
   const isToWalletOwner = useMemo(
-    () => !!accounts.find((account) => isLowerCaseMatch(account, toAddress)),
-    [accounts, toAddress],
+    () =>
+      !!visibleOwnedWallets
+        .map((wallet) => wallet.address)
+        .find((account) => isLowerCaseMatch(account, toAddress)),
+    [toAddress, visibleOwnedWallets],
   );
 
   const sendEnabled = useMemo(() => {
@@ -431,7 +438,7 @@ export const ReviewSheet = ({
                                   weight="bold"
                                   color="label"
                                 >
-                                  {toName || truncateAddress(toAddress)}
+                                  {walletDisplayName}
                                 </TextOverflow>
 
                                 <Box>
@@ -605,7 +612,7 @@ export const ReviewSheet = ({
                       {waitingForDevice
                         ? `👀 ${i18n.t('send.review.confirm_hw')}`
                         : i18n.t('send.review.send_to', {
-                            toName: toName || truncateAddress(toAddress),
+                            toName: walletDisplayName,
                           })}
                     </TextOverflow>
                   </Box>

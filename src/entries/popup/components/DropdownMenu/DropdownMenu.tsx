@@ -10,6 +10,7 @@ import {
   Space,
   globalColors,
 } from '~/design-system/styles/designTokens';
+import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 
 import { useAvatar } from '../../hooks/useAvatar';
 
@@ -145,10 +146,17 @@ interface DropdownMenuRadioItemProps {
   value: string;
   selectedValue?: string;
   selectedColor?: string;
+  highlightAccentColor?: boolean;
 }
 
 export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
-  const { children, value, selectedValue, selectedColor } = props;
+  const {
+    children,
+    value,
+    selectedValue,
+    selectedColor,
+    highlightAccentColor,
+  } = props;
   const isSelectedValue = selectedValue === value;
   return (
     <Box
@@ -158,6 +166,11 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
       paddingHorizontal="8px"
       marginHorizontal="-8px"
       alignItems="center"
+      className={
+        highlightAccentColor && !isSelectedValue
+          ? rowTransparentAccentHighlight
+          : null
+      }
       style={{
         display: 'flex',
         borderRadius: '12px',
@@ -213,7 +226,7 @@ export const DropdownMenu = (
   props: DropdownMenuPrimitive.DropdownMenuProps,
 ) => (
   // eslint-disable-next-line react/jsx-props-no-spreading
-  <DropdownMenuPrimitive.Root {...props} modal={false} />
+  <DropdownMenuPrimitive.Root {...props} modal />
 );
 
 export const DropdownMenuRadioGroup = DropdownMenuPrimitive.RadioGroup;

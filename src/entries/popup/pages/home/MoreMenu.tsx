@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useAccount, useEnsName } from 'wagmi';
 
+import LockSound from 'static/assets/audio/ui_lock.mp3';
 import { i18n } from '~/core/languages';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
@@ -12,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
+import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -27,13 +29,20 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   }, [address, ensName]);
 
   const onValueChange = React.useCallback(
-    (value: 'settings' | 'profile') => {
+    (value: 'settings' | 'profile' | 'lock' | 'qr-code') => {
       switch (value) {
         case 'settings':
           navigate(ROUTES.SETTINGS);
           break;
         case 'profile':
           openProfile();
+          break;
+        case 'lock':
+          new Audio(LockSound).play();
+          wallet.lock();
+          break;
+        case 'qr-code':
+          alert('coming soon!');
           break;
       }
     },
@@ -47,7 +56,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
           {children}
         </Box>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent marginRight="16px" sideOffset={1}>
         <DropdownMenuRadioGroup
           onValueChange={(value) =>
             onValueChange(value as 'settings' | 'profile')
@@ -55,7 +64,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
         >
           <Stack space="4px">
             <Stack>
-              <DropdownMenuRadioItem value="settings">
+              <DropdownMenuRadioItem highlightAccentColor value="settings">
                 <Box id="settings-link">
                   <Inline alignVertical="center" space="8px">
                     <Symbol
@@ -69,7 +78,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
                   </Inline>
                 </Box>
               </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="qr-code">
+              <DropdownMenuRadioItem highlightAccentColor value="qr-code">
                 <Inline alignVertical="center" space="8px">
                   <Symbol size={12} symbol="qrcode" weight="semibold" />
                   <Text size="14pt" weight="semibold">
@@ -77,10 +86,20 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
                   </Text>
                 </Inline>
               </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem highlightAccentColor value="lock">
+                <Box testId="lock">
+                  <Inline alignVertical="center" space="8px">
+                    <Symbol size={12} symbol="lock.fill" weight="semibold" />
+                    <Text size="14pt" weight="semibold">
+                      {i18n.t('menu.home_header_right.lock_rainbow')}
+                    </Text>
+                  </Inline>
+                </Box>
+              </DropdownMenuRadioItem>
             </Stack>
             <Stack space="4px">
               <DropdownMenuSeparator />
-              <DropdownMenuRadioItem value="profile">
+              <DropdownMenuRadioItem highlightAccentColor value="profile">
                 <Box width="full">
                   <Inline alignVertical="center" alignHorizontal="justify">
                     <Inline alignVertical="center" space="8px">

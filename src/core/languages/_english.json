@@ -8,12 +8,19 @@
   "wallet_switcher": {
     "title": "Wallets",
     "rename_wallet": "Rename wallet",
-    "copy_address": "Copy Address",
+    "copy_address": "Copy address",
     "remove_wallet": "Remove wallet",
     "hide_wallet": "Hide wallet",
     "watching": "Watching",
     "add_another_wallet": "Add another wallet",
-    "connect_hardware_wallet": "Connect a hardware wallet"
+    "connect_hardware_wallet": "Connect a hardware wallet",
+    "search_placeholder": "Search wallets",
+    "no_wallets": "No wallets",
+    "no_results": "No results",
+    "quick_promo": {
+      "text": "Drag wallets to reorder them",
+      "text_bold": "Tip:"
+    }
   },
   "add_wallet": {
     "title": "Add another wallet",
@@ -34,7 +41,7 @@
   },
   "rename_wallet_prompt": {
     "rename_wallet": "Rename wallet",
-    "update": "Update"
+    "done": "Done"
   },
   "remove_wallet_prompt": {
     "error": "Error removing wallet",
@@ -153,6 +160,9 @@
       "CAD": "Canadian Dollar",
       "NZD": "New Zealand Dollar",
       "ZAR": "South African Rand"
+    },
+    "feature_flags": {
+      "swaps": "Swaps"
     }
   },
   "transactions": {
@@ -164,7 +174,9 @@
   "connected_apps": {
     "title": "Connected Apps",
     "disconnect": "Disconnect All",
-    "other_wallets": "Other Wallets"
+    "other_wallets": "Other Wallets",
+    "no_connections_title": "No connected apps",
+    "no_connections_copy": "Websites you connect to will show up here"
   },
   "send": {
     "title": "Send",
@@ -192,7 +204,8 @@
       "sort": "Sort",
       "available": "available",
       "token_balance": "Token Balance",
-      "networks": "Networks"
+      "networks": "Networks",
+      "nothing_found": "Nothing found"
     },
     "review": {
       "title": "Review & Send",
@@ -205,6 +218,26 @@
       "sending_on_l2_check_2": "The person I’m sending to has a wallet that support %{chainName}",
       "complete_checks": "Complete the checks",
       "confirm_hw": "Confirm on your device"
+    }
+  },
+  "swap": {
+    "title": "Swap",
+    "input_token_to_swap_placeholder": "Select a token to swap",
+    "input_token_to_receive_placeholder": "Select a token to receive",
+    "select_tokens_to_swap": "Select tokens to swap",
+    "max": "Max",
+    "balance": "Balance",
+    "tokens_input": {
+      "tokens": "Tokens",
+      "sort": "Sort",
+      "available": "available",
+      "token_balance": "Token Balance",
+      "networks": "Networks",
+      "filter_by_network": "Filter by Network",
+      "switch_networks": "Switch Networks",
+      "nothing_found": "Nothing found",
+      "nothing_found_description": "Some tokens don’t have enough liquidity to perform a successful swap.",
+      "nothing_found_description_l2": "Some tokens don’t have enough layer 2 liquidity to perform a successful swap."
     }
   },
   "custom_gas": {
@@ -254,6 +287,11 @@
     "contact": "Contact",
     "rainbow_support": "Rainbow Support"
   },
+  "onboard_before_connect": {
+    "before_connect": "Before you can connect",
+    "almost_done": "You’re almost done. Quickly finish setting up your wallet with Rainbow.",
+    "setup_wallet": "Set up your wallet"
+  },
   "welcome": {
     "title": "Rainbow",
     "subtitle": "Explore the new world of Ethereum",
@@ -287,8 +325,8 @@
   },
   "import_wallet_selection": {
     "title": "Your wallets",
-    "description_plural": "Rainbow detected %{count} wallets that have been previously recently. You can edit or add more at any time.",
-    "description_singular": "Rainbow detected 1 wallet that have been previously recently. You can add more at any time.",
+    "description_plural": "Rainbow detected %{count} wallets that have been used recently. You can edit or add more at any time.",
+    "description_singular": "Rainbow detected 1 wallet that have been used recently. You can add more at any time.",
     "add_wallets": "Add wallets",
     "edit_wallets": "Edit wallets",
     "loading": "Hold tight while we look up all your wallets...",
@@ -340,7 +378,8 @@
     "home_header_right": {
       "settings": "Settings",
       "qr_code": "My QR Code",
-      "rainbow_profile": "Rainbow Profile"
+      "rainbow_profile": "Rainbow Profile",
+      "lock_rainbow": "Lock Rainbow"
     }
   },
   "approve_request": {
@@ -451,7 +490,10 @@
     "set_password": "Set Password",
     "too_weak": "Too weak",
     "weak": "Weak",
-    "strong": "Strong",
+    "good": "Good",
+    "excellent": "Excellent",
+    "8_chars_min": "8 characters min",
+    "try_another_password": "This is a common password that is easy to crack. Try a stronger password.",
     "too_short": "Password needs to be at least 8 chars long"
   },
   "create_password": {
@@ -464,6 +506,13 @@
     "this_month": "This Month",
     "empty_header": "No activity yet",
     "empty_description": "Once you start using your wallet, you will see your transactions here."
+  },
+  "tokens_tab": {
+    "coinbase_title": "Deposit from Coinbase",
+    "coinbase_description": "Buy or transfer from Coinbase",
+    "send_from_wallet": "Send from another wallet",
+    "send_description_1": "Press",
+    "send_description_2": "to copy your address"
   },
   "speed_up_and_cancel": {
     "speed_up": "Speed up",
@@ -493,7 +542,8 @@
   "wallet_header": {
     "copy": "Copy",
     "swap": "Swap",
-    "send": "Send"
+    "send": "Send",
+    "copy_toast": "Address Copied"
   },
   "token_search": {
     "section_header": {
@@ -542,5 +592,10 @@
       "max_priority_explainer": "The miner tip goes directly to the miner who confirms your transaction on the network.\n\nA higher tip makes your transaction more likely to be confirmed quickly.",
       "max_priority_title": "Miner tip"
     }
+  },
+  "injected_notifications": {
+    "network_changed": "Network changed",
+    "network_changed_failed": "Network changed failed",
+    "unsupported_network": "Unsupported network"
   }
 }

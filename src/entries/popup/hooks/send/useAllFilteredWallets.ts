@@ -4,16 +4,17 @@ import { useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { contactsStore, useContactsStore } from '~/core/state/contacts';
-import { KeychainType } from '~/core/types/keychainTypes';
+import { walletNamesStore } from '~/core/state/walletNames';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 
-import { useBackgroundAccounts } from '../useBackgroundAccounts';
-import { useBackgroundWallets } from '../useBackgroundWallets';
+import { useWallets } from '../useWallets';
 
 interface WalletData {
   ensName?: string;
   address: Address;
   name?: string;
+  contactName?: string;
+  walletName?: string;
 }
 
 const getAddressData = async ({
@@ -21,13 +22,15 @@ const getAddressData = async ({
 }: {
   address: Address;
 }): Promise<WalletData> => {
+  const { walletNames } = walletNamesStore.getState();
   const ensName = (await fetchEnsName({ address })) as string;
   const { getContact } = contactsStore.getState();
   const contact = getContact({ address });
   return {
-    ensName,
     address,
-    name: contact?.name,
+    ensName,
+    contactName: contact?.name,
+    walletName: walletNames[address],
   };
 };
 
@@ -41,41 +44,36 @@ const getAddressesData = async ({ addresses }: { addresses: Address[] }) => {
 const filterWalletData = ({
   ensName,
   address,
-  name,
+  contactName,
+  walletName,
   filter,
 }: {
   ensName?: string;
   address: Address;
-  name?: string;
+  contactName?: string;
+  walletName?: string;
   filter: string;
 }) =>
   ensName?.toLowerCase()?.startsWith(filter?.toLowerCase()) ||
   address?.toLowerCase()?.startsWith(filter?.toLowerCase()) ||
-  name?.toLowerCase()?.startsWith(filter?.toLowerCase());
+  contactName?.toLowerCase()?.startsWith(filter?.toLowerCase()) ||
+  walletName?.toLowerCase()?.startsWith(filter?.toLowerCase());
 
 export const useAllFilteredWallets = ({ filter }: { filter: string }) => {
-  const { accounts } = useBackgroundAccounts();
-  const { wallets } = useBackgroundWallets();
   const { contacts: contactsObjects } = useContactsStore();
+  const { visibleOwnedWallets, watchedWallets } = useWallets();
 
   const contacts = useMemo(
     () => Object.keys(contactsObjects) as Address[],
     [contactsObjects],
   );
 
-  const watchedWallets = useMemo(() => {
-    const watchedWallets = wallets.filter(
-      (wallet) => wallet.type === KeychainType.ReadOnlyKeychain,
-    );
-    const newWatchedWallets = watchedWallets
-      .map((watchedWallet) => watchedWallet.accounts)
-      .flat();
-    return newWatchedWallets;
-  }, [wallets]);
-
-  const [filteredWallets, setFilteredWallets] = useState<Address[]>(accounts);
-  const [filteredWatchedWallets, setFilteredWatchedWallets] =
-    useState<Address[]>(watchedWallets);
+  const [filteredWallets, setFilteredWallets] = useState<Address[]>(
+    visibleOwnedWallets.map((wallet) => wallet.address),
+  );
+  const [filteredWatchedWallets, setFilteredWatchedWallets] = useState<
+    Address[]
+  >(watchedWallets.map((wallet) => wallet.address));
   const [filteredContactsWallets, setFilteredContactsWallets] =
     useState<Address[]>(contacts);
 
@@ -87,17 +85,23 @@ export const useAllFilteredWallets = ({ filter }: { filter: string }) => {
 
   useEffect(() => {
     const getWalletsData = async () => {
-      const walletsData = await getAddressesData({ addresses: accounts });
-      const watchedWalletsData = await getAddressesData({
-        addresses: watchedWallets,
+      const walletsDataPromise = getAddressesData({
+        addresses: visibleOwnedWallets.map((wallet) => wallet.address),
       });
-      const contactsData = await getAddressesData({ addresses: contacts });
+      const watchedWalletsDataPromise = getAddressesData({
+        addresses: watchedWallets.map((wallet) => wallet.address),
+      });
+      const contactsDataPromise = getAddressesData({ addresses: contacts });
+
+      const [walletsData, watchedWalletsData, contactsData] = await Promise.all(
+        [walletsDataPromise, watchedWalletsDataPromise, contactsDataPromise],
+      );
       setWalletsData(walletsData);
       setWatchedWalletsData(watchedWalletsData);
       setContactsData(contactsData);
     };
     getWalletsData();
-  }, [accounts, contacts, contactsObjects, wallets, watchedWallets]);
+  }, [contacts, contactsObjects, visibleOwnedWallets, watchedWallets]);
 
   useEffect(() => {
     const filterWallets = async () => {
@@ -110,9 +114,15 @@ export const useAllFilteredWallets = ({ filter }: { filter: string }) => {
         filteredContactsData,
       ] = [walletsData, watchedWalletsData, contactsData].map((data) =>
         data.filter(
-          ({ ensName, address, name }) =>
+          ({ ensName, address, contactName, walletName }) =>
             filterIsAddressOrEns ||
-            filterWalletData({ ensName, address, name, filter }),
+            filterWalletData({
+              ensName,
+              address,
+              contactName,
+              walletName,
+              filter,
+            }),
         ),
       );
 
@@ -128,11 +138,15 @@ export const useAllFilteredWallets = ({ filter }: { filter: string }) => {
       setFilteredContactsWallets(filteredContactsWallets);
     };
     filterWallets();
-  }, [accounts, contactsData, filter, walletsData, watchedWalletsData]);
+  }, [contactsData, filter, walletsData, watchedWalletsData]);
 
   return {
-    wallets: filteredWallets,
-    watchedWallets: filteredWatchedWallets,
-    contacts: filteredContactsWallets,
+    wallets: !filter
+      ? visibleOwnedWallets.map(({ address }) => address)
+      : filteredWallets,
+    watchedWallets: !filter
+      ? watchedWallets.map(({ address }) => address)
+      : filteredWatchedWallets,
+    contacts: !filter ? contacts : filteredContactsWallets,
   };
 };

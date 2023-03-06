@@ -12,6 +12,8 @@ export function PasswordInput({
   onChange,
   onBlur,
   onSubmit,
+  tabIndex,
+  autoFocus,
 }: {
   placeholder: string;
   testId?: string;
@@ -20,6 +22,8 @@ export function PasswordInput({
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
   onSubmit?: () => void;
+  tabIndex?: number;
+  autoFocus?: boolean;
 }) {
   const [visible, setVisible] = useState(false);
   const inputRef = useRef(null);
@@ -72,14 +76,18 @@ export function PasswordInput({
         borderColor={borderColor}
         testId={testId}
         onKeyDown={onKeyDown}
+        tabIndex={tabIndex}
+        autoFocus={autoFocus}
       />
       <Box position="relative">
         <Box
           position="absolute"
           style={{
-            top: '-40.5px',
-            right: '10px',
+            top: '-40px',
+            right: '5px',
+            height: '40px',
           }}
+          paddingVertical="2px"
         >
           <ButtonSymbol
             color="accent"

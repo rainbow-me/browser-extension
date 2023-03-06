@@ -13,14 +13,15 @@ import {
 } from '~/core/react-query';
 import { SupportedCurrencyKey } from '~/core/references';
 import { currentAddressStore } from '~/core/state';
-import { connectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 import { AddressAssetsReceivedMessage } from '~/core/types/refraction';
 import {
+  filterAsset,
   parseAddressAsset,
   parseParsedAddressAsset,
 } from '~/core/utils/assets';
+import { greaterThan } from '~/core/utils/numbers';
 import { ETH_MAINNET_ASSET } from '~/test/utils';
 
 const USER_ASSETS_TIMEOUT_DURATION = 10000;
@@ -33,6 +34,7 @@ export type UserAssetsByChainArgs = {
   address?: Address;
   chain: ChainName;
   currency: SupportedCurrencyKey;
+  connectedToHardhat: boolean;
 };
 
 // ///////////////////////////////////////////////
@@ -42,10 +44,11 @@ export const userAssetsByChainQueryKey = ({
   address,
   chain,
   currency,
+  connectedToHardhat,
 }: UserAssetsByChainArgs) =>
   createQueryKey(
     'userAssetsByChain',
-    { address, chain, currency },
+    { address, chain, currency, connectedToHardhat },
     { persisterVersion: 1 },
   );
 
@@ -57,7 +60,7 @@ type UserAssetsByChainQueryKey = ReturnType<typeof userAssetsByChainQueryKey>;
 export async function fetchUserAssetsByChain<
   TSelectData = UserAssetsByChainResult,
 >(
-  { address, chain, currency }: UserAssetsByChainArgs,
+  { address, chain, currency, connectedToHardhat }: UserAssetsByChainArgs,
   config: QueryConfig<
     UserAssetsByChainResult,
     Error,
@@ -66,7 +69,7 @@ export async function fetchUserAssetsByChain<
   > = {},
 ) {
   return await queryClient.fetchQuery(
-    userAssetsByChainQueryKey({ address, chain, currency }),
+    userAssetsByChainQueryKey({ address, chain, currency, connectedToHardhat }),
     userAssetsByChainQueryFunction,
     config,
   );
@@ -76,11 +79,10 @@ export async function fetchUserAssetsByChain<
 // Query Function
 
 export async function userAssetsByChainQueryFunction({
-  queryKey: [{ address, chain, currency }],
+  queryKey: [{ address, chain, currency, connectedToHardhat }],
 }: QueryFunctionArgs<typeof userAssetsByChainQueryKey>): Promise<
   Record<string, ParsedAddressAsset>
 > {
-  const { connectedToHardhat } = connectedToHardhatStore.getState();
   const { currentAddress } = currentAddressStore.getState();
 
   const isMainnet = chain === ChainName.mainnet;
@@ -99,7 +101,12 @@ export async function userAssetsByChainQueryFunction({
     const timeout = setTimeout(() => {
       resolve(
         queryClient.getQueryData(
-          userAssetsByChainQueryKey({ address, chain, currency }),
+          userAssetsByChainQueryKey({
+            address,
+            chain,
+            currency,
+            connectedToHardhat,
+          }),
         ) || {},
       );
     }, USER_ASSETS_TIMEOUT_DURATION);
@@ -107,8 +114,7 @@ export async function userAssetsByChainQueryFunction({
     const resolver = async (message: AddressAssetsReceivedMessage) => {
       clearTimeout(timeout);
       const parsedUserAssetsByChain = parseUserAssetsByChain(message, currency);
-
-      if (connectedToHardhat) {
+      if (connectedToHardhat && chain === ChainName.mainnet) {
         const provider = getProvider({ chainId: ChainId.hardhat });
         // force checking for ETH if connected to hardhat
         parsedUserAssetsByChain[ETH_MAINNET_ASSET.uniqueId] = ETH_MAINNET_ASSET;
@@ -158,13 +164,16 @@ function parseUserAssetsByChain(
 ) {
   return Object.values(message?.payload?.assets || {}).reduce(
     (dict, assetData) => {
-      const parsedAsset = parseAddressAsset({
-        address: assetData?.asset?.asset_code,
-        asset: assetData?.asset,
-        currency,
-        quantity: assetData?.quantity,
-      });
-      dict[parsedAsset?.uniqueId] = parsedAsset;
+      const shouldFilterToken = filterAsset(assetData?.asset);
+      if (!shouldFilterToken && greaterThan(assetData?.quantity, 0)) {
+        const parsedAsset = parseAddressAsset({
+          address: assetData?.asset?.asset_code,
+          asset: assetData?.asset,
+          currency,
+          quantity: assetData?.quantity,
+        });
+        dict[parsedAsset?.uniqueId] = parsedAsset;
+      }
       return dict;
     },
     {} as Record<string, ParsedAddressAsset>,
@@ -175,7 +184,7 @@ function parseUserAssetsByChain(
 // Query Hook
 
 export function useUserAssetsByChain<TSelectResult = UserAssetsByChainResult>(
-  { address, chain, currency }: UserAssetsByChainArgs,
+  { address, chain, currency, connectedToHardhat }: UserAssetsByChainArgs,
   config: QueryConfig<
     UserAssetsByChainResult,
     Error,
@@ -184,7 +193,7 @@ export function useUserAssetsByChain<TSelectResult = UserAssetsByChainResult>(
   > = {},
 ) {
   return useQuery(
-    userAssetsByChainQueryKey({ address, chain, currency }),
+    userAssetsByChainQueryKey({ address, chain, currency, connectedToHardhat }),
     userAssetsByChainQueryFunction,
     {
       ...config,

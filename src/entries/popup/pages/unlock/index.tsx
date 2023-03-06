@@ -1,5 +1,6 @@
 import React, { SetStateAction, useCallback, useState } from 'react';
 
+import UnlockSound from 'static/assets/audio/ui_unlock.mp3';
 import { i18n } from '~/core/languages';
 import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
@@ -26,6 +27,7 @@ export function Unlock() {
 
   const handleUnlock = useCallback(async () => {
     if (await wallet.unlock(password)) {
+      new Audio(UnlockSound).play();
       navigate(ROUTES.HOME, { state: { isBack: true } });
     } else {
       setError(i18n.t('passwords.wrong_password'));
@@ -78,6 +80,7 @@ export function Unlock() {
                 {i18n.t('unlock.enter_password')}
               </Text>
             </Box>
+
             <Box width="full" padding="24px" style={{ width: '106px' }}>
               <Separator color="separatorTertiary" strokeWeight="1px" />
             </Box>
@@ -108,6 +111,8 @@ export function Unlock() {
                 borderColor={error !== '' ? 'red' : undefined}
                 testId="password-input"
                 onSubmit={handleUnlock}
+                tabIndex={1}
+                autoFocus
               />
             </Box>
             <Box width="fit">
@@ -120,6 +125,7 @@ export function Unlock() {
                 symbolSide="right"
                 onClick={handleUnlock}
                 testId="unlock-button"
+                tabIndex={2}
               >
                 {i18n.t('unlock.unlock')}
               </Button>

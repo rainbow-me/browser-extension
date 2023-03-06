@@ -1,35 +1,35 @@
 import React from 'react';
-import { Address, Chain, useBalance, useEnsName } from 'wagmi';
+import { Address, useBalance } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
-import { truncateAddress } from '~/core/utils/truncateAddress';
 import { Box, Button, Inline, Stack, Symbol, Text } from '~/design-system';
+import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
-import {
-  DEFAULT_ACCOUNT,
-  DEFAULT_ACCOUNT_2,
-} from '~/entries/background/handlers/handleProviderRequest';
 import { EthSymbol } from '~/entries/popup/components/EthSymbol/EthSymbol';
+import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
-import { useBackgroundAccounts } from '~/entries/popup/hooks/useBackgroundAccounts';
+import { useWalletInfo } from '~/entries/popup/hooks/useWalletInfo';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 
 import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
 import { SwitchMenu } from '../../../components/SwitchMenu/SwitchMenu';
-import { SwitchNetworkMenu } from '../../../components/SwitchMenu/SwitchNetworkMenu';
 
-export const EnsName = ({
+export const WalletName = ({
   address,
   color = 'label',
 }: {
   address: Address;
   color: TextStyles['color'];
 }) => {
-  const { data: ensName } = useEnsName({ address });
+  const { displayName: walletDisplayName } = useWalletInfo({
+    address,
+  });
   return (
     <Text color={color} size="14pt" weight="semibold">
-      {ensName || truncateAddress(address)}
+      {walletDisplayName}
     </Text>
   );
 };
@@ -45,7 +45,7 @@ export const BottomWallet = ({
     <Box id={'switch-wallet-menu'}>
       <Inline alignVertical="center" space="4px">
         <WalletAvatar address={selectedWallet} size={18} emojiSize={'12pt'} />
-        <EnsName color="labelSecondary" address={selectedWallet} />
+        <WalletName color="labelSecondary" address={selectedWallet} />
         {displaySymbol && (
           <Symbol
             color="labelSecondary"
@@ -81,11 +81,7 @@ export const BottomSwitchWallet = ({
   selectedWallet: Address;
   setSelectedWallet: (selected: Address) => void;
 }) => {
-  const { accounts } = useBackgroundAccounts();
-  const wallets: Address[] = [
-    DEFAULT_ACCOUNT as Address,
-    DEFAULT_ACCOUNT_2 as Address,
-  ].concat(accounts);
+  const { visibleWallets } = useWallets();
 
   return (
     <Stack space="8px">
@@ -108,11 +104,11 @@ export const BottomSwitchWallet = ({
                 size={18}
                 emojiSize={'12pt'}
               />
-              <EnsName color="label" address={wallet as Address} />
+              <WalletName color="label" address={wallet as Address} />
             </Inline>
           </Box>
         )}
-        menuItems={wallets}
+        menuItems={visibleWallets?.map((wallet) => wallet.address)}
         selectedValue={selectedWallet}
         onValueChange={(value) => setSelectedWallet(value as Address)}
       />
@@ -121,29 +117,33 @@ export const BottomSwitchWallet = ({
 };
 
 export const BottomNetwork = ({
-  selectedNetwork,
+  selectedChainId,
   displaySymbol = false,
+  symbolSize,
+  symbol,
 }: {
-  selectedNetwork: Chain;
+  selectedChainId: ChainId;
   displaySymbol: boolean;
+  symbolSize?: number;
+  symbol?: SymbolProps['symbol'];
 }) => {
   return (
     <Box id="switch-network-menu">
       <Inline alignHorizontal="right" alignVertical="center" space="4px">
-        <ChainBadge chainId={selectedNetwork.id} size={'small'} />
+        <ChainBadge chainId={selectedChainId} size={'small'} />
         <Text
           align="right"
           size="14pt"
           weight="semibold"
           color="labelSecondary"
         >
-          {selectedNetwork.name}
+          {ChainNameDisplay[selectedChainId]}
         </Text>
         {displaySymbol && (
           <Symbol
             color="labelSecondary"
-            size={14}
-            symbol="chevron.down.circle"
+            size={symbolSize || 14}
+            symbol={symbol || 'chevron.down.circle'}
             weight="semibold"
           />
         )}
@@ -153,26 +153,26 @@ export const BottomNetwork = ({
 };
 
 export const BottomDisplayNetwork = ({
-  selectedNetwork,
+  selectedChainId,
 }: {
-  selectedNetwork: Chain;
+  selectedChainId: ChainId;
 }) => {
   return (
     <Stack space="8px">
       <Text align="right" size="12pt" weight="semibold" color="labelQuaternary">
         {i18n.t('approve_request.network')}
       </Text>
-      <BottomNetwork selectedNetwork={selectedNetwork} displaySymbol={false} />
+      <BottomNetwork selectedChainId={selectedChainId} displaySymbol={false} />
     </Stack>
   );
 };
 
 export const BottomSwitchNetwork = ({
-  selectedNetwork,
-  setSelectedNetwork,
+  selectedChainId,
+  setSelectedChainId,
 }: {
-  selectedNetwork: Chain;
-  setSelectedNetwork: (network: Chain) => void;
+  selectedChainId: ChainId;
+  setSelectedChainId: (selectedChainId: ChainId) => void;
 }) => {
   return (
     <Stack space="8px">
@@ -181,10 +181,11 @@ export const BottomSwitchNetwork = ({
       </Text>
 
       <SwitchNetworkMenu
-        chainId={selectedNetwork.id}
-        onChainChanged={(_, chain) => setSelectedNetwork(chain)}
+        type="dropdown"
+        chainId={selectedChainId}
+        onChainChanged={(chainId) => setSelectedChainId(chainId)}
         triggerComponent={
-          <BottomNetwork selectedNetwork={selectedNetwork} displaySymbol />
+          <BottomNetwork selectedChainId={selectedChainId} displaySymbol />
         }
       />
     </Stack>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { autoLockTimerOptions } from '~/core/references/autoLockTimer';
@@ -30,14 +30,14 @@ export function Privacy() {
   const closePasswordPrompt = () => {
     setShowEnterPassword(false);
   };
-  const handleChangePassword = async () => {
+  const handleChangePassword = () => {
     setConfirmPasswordRedirect(ROUTES.SETTINGS__PRIVACY__CHANGE_PASSWORD);
     openPasswordPrompt();
   };
-  const handleWalletsAndKeys = async () => {
-    setConfirmPasswordRedirect(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);
-    openPasswordPrompt();
-  };
+  const handleWalletsAndKeys = useCallback(() => {
+    navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);
+  }, [navigate]);
+
   return (
     <Box>
       <ConfirmPasswordPrompt

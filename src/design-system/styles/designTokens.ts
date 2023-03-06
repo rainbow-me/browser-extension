@@ -135,6 +135,7 @@ export type BackgroundColor =
   | 'surfaceSecondaryElevated'
   | 'surfaceMenu'
   | 'fill'
+  | 'fillHorizontal'
   | 'fillSecondary'
   | 'white'
   | 'blue'
@@ -156,6 +157,8 @@ export type ButtonVariant =
   | 'tinted'
   | 'stroked'
   | 'transparent'
+  | 'transparentHover'
+  | 'plain'
   | 'disabled';
 
 export const backdropFilter = {
@@ -255,6 +258,18 @@ export const backgroundColors: Record<
     },
     dark: {
       color: globalColors.white30,
+      setColorContext: 'dark',
+    },
+  },
+  fillHorizontal: {
+    light: {
+      color:
+        'radial-gradient(100% 100% at 0% 50%, rgba(9, 17, 31, 0.02) 0%, rgba(9, 17, 31, 0.05) 100%)',
+      setColorContext: 'light',
+    },
+    dark: {
+      color:
+        'radial-gradient(100% 100% at 0% 50%, rgba(245, 248, 255, 0.02) 0%, rgba(245, 248, 255, 0.06) 100%)',
       setColorContext: 'dark',
     },
   },
@@ -578,6 +593,12 @@ export const fontWeights = {
 } as const;
 export type FontWeight = keyof typeof fontWeights;
 
+export const linearGradients = {
+  rainbow:
+    'radial-gradient(100% 276.79% at 100% 49.98%, #FFB114 0%, #FF54BB 63.54%, #00F0FF 100%)',
+} as const;
+export type LinearGradient = keyof typeof linearGradients;
+
 export const space = {
   '2px': 2,
   '3px': 3,
@@ -779,6 +800,7 @@ export const symbolNames = selectSymbolNames(
   'doc.plaintext',
   'doc.on.doc',
   'checkmark.shield.fill',
+  'checkmark.seal.fill',
   'lock.rotation',
   'doc.text.magnifyingglass',
   'magnifyingglass.circle',
@@ -793,14 +815,22 @@ export const symbolNames = selectSymbolNames(
   'command',
   'asterisk',
   'info.circle.fill',
+  'info',
   'app.connected.to.app.below.fill',
   'trash.fill',
   'plus.circle',
+  'shield.righthalf.filled',
+  'square.dashed',
+  'sparkle',
+  'xmark.circle.fill',
+  'switch.2',
+  'network',
 );
 export type SymbolName = typeof symbolNames[number];
 
 export const radii = {
   round: 9999,
+  '2px': 2,
   '3px': 3,
   '6px': 6,
   '8px': 8,
@@ -811,6 +841,7 @@ export const radii = {
   '18px': 18,
   '20px': 20,
   '24px': 24,
+  '26px': 26,
   '28px': 28,
   '30px': 30,
   '32px': 32,
@@ -840,32 +871,24 @@ export type AnimatedRouteConfig = Record<
 
 export const animatedRouteTransitionConfig = {
   base: {
-    type: 'spring',
-    duration: 0.3,
+    ease: [0.24, 0, 0, 1],
+    duration: 0.12,
   },
   right: {
-    type: 'spring',
-    stiffness: 1111,
-    damping: 50,
-    mass: 1,
+    ease: [0.05, 0.7, 0.1, 1],
+    duration: 0.26,
   },
   left: {
-    type: 'spring',
-    stiffness: 1111,
-    damping: 50,
-    mass: 1,
+    ease: [0.24, 0, 0, 1],
+    duration: 0.12,
   },
   up: {
-    type: 'spring',
-    stiffness: 1111,
-    damping: 50,
-    mass: 1,
+    ease: [0.05, 0.7, 0.1, 1],
+    duration: 0.26,
   },
   down: {
-    type: 'spring',
-    stiffness: 1111,
-    damping: 50,
-    mass: 1,
+    ease: [0.24, 0, 0, 1],
+    duration: 0.12,
   },
   deceleratedShort: {
     ease: [0, 0, 0, 1],

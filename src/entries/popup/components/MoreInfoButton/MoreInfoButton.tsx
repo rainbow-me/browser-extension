@@ -1,6 +1,14 @@
 import React from 'react';
 
-import { Box, Inline, Row, Rows, Symbol, Text } from '~/design-system';
+import {
+  Box,
+  ButtonSymbol,
+  Inline,
+  Row,
+  Rows,
+  Symbol,
+  Text,
+} from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
 
@@ -27,11 +35,11 @@ const MoreInfoButton = ({ options }: { options: MoreInfoOption[] }) => {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Box style={{ cursor: 'default' }}>
-            <Symbol
-              symbol="ellipsis.circle"
-              weight="bold"
-              size={14}
+            <ButtonSymbol
               color="labelTertiary"
+              height="32px"
+              variant="transparentHover"
+              symbol="ellipsis.circle"
             />
           </Box>
         </DropdownMenuTrigger>

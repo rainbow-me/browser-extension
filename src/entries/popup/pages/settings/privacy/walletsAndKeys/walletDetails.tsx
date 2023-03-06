@@ -5,6 +5,7 @@ import { Address } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
+import { useWalletNamesStore } from '~/core/state/walletNames';
 import { KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, Inline, Symbol } from '~/design-system';
@@ -104,7 +105,14 @@ export function WalletDetails() {
   const [renameAccount, setRenameAccount] = useState<Address | undefined>();
   const [removeAccount, setRemoveAccount] = useState<Address | undefined>();
 
-  const [wallet, setWallet] = useState<KeychainWallet>(state?.wallet);
+  const [wallet, setWallet] = useState<KeychainWallet>();
+
+  useEffect(() => {
+    chrome.storage.session.get(['settingsWallet'], (result) => {
+      return setWallet(result.settingsWallet as KeychainWallet);
+    });
+  }, []);
+
   const handleOpenNewWalletPrompt = () => {
     setShowNewWalletPrompt(true);
   };
@@ -139,11 +147,13 @@ export function WalletDetails() {
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
   const { unhideWallet, hiddenWallets } = useHiddenWalletsStore();
   const { visibleWallets } = useWallets();
+  const { deleteWalletName } = useWalletNamesStore();
 
   const handleRemoveAccount = async (address: Address) => {
     const walletBeforeDeletion = await getWallet(address);
     unhideWallet({ address });
     await remove(address);
+    deleteWalletName({ address });
     // set current address to the next account if you deleted that one
     if (address === currentAddress) {
       const deletedIndex = visibleWallets.findIndex(
@@ -169,11 +179,13 @@ export function WalletDetails() {
 
   return (
     <Box>
-      <NewWalletPrompt
-        wallet={wallet}
-        show={showNewWalletPrompt}
-        onClose={handleCloseNewWalletPrompt}
-      />
+      {wallet && (
+        <NewWalletPrompt
+          wallet={wallet as KeychainWallet}
+          show={showNewWalletPrompt}
+          onClose={handleCloseNewWalletPrompt}
+        />
+      )}
       <RenameWalletPrompt
         show={!!renameAccount}
         account={renameAccount}
@@ -213,7 +225,7 @@ export function WalletDetails() {
             />
           </Menu>
           <Menu paddingVertical="8px">
-            {wallet?.accounts.map((account: Address) => {
+            {wallet?.accounts?.map((account: Address) => {
               return (
                 <AccountItem
                   account={account}

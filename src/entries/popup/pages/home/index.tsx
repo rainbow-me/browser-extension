@@ -9,6 +9,8 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { usePendingRequestStore } from '~/core/state';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
@@ -17,6 +19,7 @@ import { globalColors } from '~/design-system/styles/designTokens';
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { useAvatar } from '../../hooks/useAvatar';
+import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { MainLayout } from '../../layouts/MainLayout';
 import { StickyHeader } from '../../layouts/StickyHeader';
@@ -51,11 +54,15 @@ export function Home() {
 
   const { pendingRequests } = usePendingRequestStore();
 
+  const prevPendingRequest = usePrevious(pendingRequests?.[0]);
   useEffect(() => {
-    if (pendingRequests?.[0]) {
+    if (
+      pendingRequests?.[0] &&
+      pendingRequests?.[0].id !== prevPendingRequest?.id
+    ) {
       navigate(ROUTES.APPROVE_APP_REQUEST);
     }
-  }, [navigate, pendingRequests]);
+  }, [navigate, pendingRequests, prevPendingRequest?.id]);
 
   const [activeTab, setActiveTab] = useState<Tab>(state?.activeTab || 'tokens');
 
@@ -84,6 +91,10 @@ export function Home() {
     });
   }, [scrollAtTop, scrollY]);
 
+  useEffect(() => {
+    analytics.track(event.walletViewed);
+  }, []);
+
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>
       {({ className, style }) => (
@@ -94,7 +105,7 @@ export function Home() {
               ...style,
               position: 'relative',
               overscrollBehavior: 'none',
-              height: window.innerHeight,
+              height: 'auto',
               ...(displayingSheet ? { overflow: 'hidden' } : {}),
             }}
           >
@@ -148,7 +159,11 @@ function TopNav() {
         leftComponent={<NetworkMenu />}
         rightComponent={
           <MoreMenu>
-            <Navbar.SymbolButton symbol="ellipsis" variant="flat" />
+            <Navbar.SymbolButton
+              symbol="ellipsis"
+              variant="flat"
+              tabIndex={3}
+            />
           </MoreMenu>
         }
         titleComponent={
@@ -195,6 +210,7 @@ function Content({
       style={{
         flex: 1,
         position: 'relative',
+        contentVisibility: 'auto',
       }}
     >
       {/** spring transformY to imitate scroll bounce*/}

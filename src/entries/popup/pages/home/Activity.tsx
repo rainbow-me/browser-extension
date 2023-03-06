@@ -1,5 +1,12 @@
 import { useVirtualizer } from '@tanstack/react-virtual';
-import React, { ReactNode, useCallback, useMemo, useRef } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useAccount } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -19,10 +26,12 @@ import {
   Text,
 } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { Space, TextColor } from '~/design-system/styles/designTokens';
 import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 
+import { ActivitySkeleton } from '../../components/ActivitySkeleton/ActivitySkeleton';
 import { Spinner } from '../../components/Spinner/Spinner';
 import { useAllTransactions } from '../../hooks/useAllTransactions';
 import { SheetMode } from '../speedUpAndCancelSheet';
@@ -40,25 +49,43 @@ type ActivityProps = {
   }) => void;
 };
 
+const { innerWidth: windowWidth } = window;
+const TEXT_MAX_WIDTH = windowWidth - 150;
+const ACTIVITY_DEFAULT_LENGTH = 100;
+
 export function Activity({ onSheetSelected }: ActivityProps) {
   const { address } = useAccount();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
-  const { allTransactionsByDate } = useAllTransactions({
+  const { allTransactionsByDate, isInitialLoading } = useAllTransactions({
     address,
     currency,
   });
+  const [activityLength, setActivityLength] = useState(ACTIVITY_DEFAULT_LENGTH);
   const listData = useMemo(() => {
     return Object.keys(allTransactionsByDate).reduce((listData, dateKey) => {
       return [...listData, dateKey, ...allTransactionsByDate[dateKey]];
     }, [] as (string | RainbowTransaction)[]);
-  }, [allTransactionsByDate]);
+  }, [allTransactionsByDate]).slice(0, activityLength);
   const containerRef = useRef<HTMLDivElement>(null);
   const activityRowVirtualizer = useVirtualizer({
     count: listData.length,
     getScrollElement: () => containerRef.current,
     estimateSize: (i) => (typeof listData[i] === 'string' ? 34 : 52),
-    enableSmoothScroll: false,
+    overscan: 20,
   });
+  const scrollEndListener = useCallback(() => {
+    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+      setActivityLength(activityLength + ACTIVITY_DEFAULT_LENGTH);
+    }
+  }, [activityLength]);
+
+  useEffect(() => {
+    window.removeEventListener('scroll', scrollEndListener);
+    window.addEventListener('scroll', scrollEndListener);
+    return () => {
+      window.removeEventListener('scroll', scrollEndListener);
+    };
+  }, [scrollEndListener]);
 
   const onTransactionSelected = ({
     sheet,
@@ -69,6 +96,10 @@ export function Activity({ onSheetSelected }: ActivityProps) {
   }) => {
     onSheetSelected({ sheet, transaction });
   };
+
+  if (isInitialLoading) {
+    return <ActivitySkeleton />;
+  }
 
   if (!listData.length) {
     return (
@@ -106,8 +137,8 @@ export function Activity({ onSheetSelected }: ActivityProps) {
   return (
     <>
       <Box
-        marginTop={'-20px'}
         ref={containerRef}
+        marginTop={'-20px'}
         width="full"
         style={{
           overflow: 'auto',
@@ -116,35 +147,46 @@ export function Activity({ onSheetSelected }: ActivityProps) {
         <Box
           width="full"
           style={{
-            height: `${activityRowVirtualizer.getTotalSize()}px`,
+            height: activityRowVirtualizer.getTotalSize(),
             position: 'relative',
           }}
         >
-          {activityRowVirtualizer.getVirtualItems().map(({ index }) => {
-            const item = listData[index];
-            if (typeof item === 'string') {
-              return (
-                <Inset key={index} horizontal="20px" top="16px" bottom="8px">
-                  <Box>
-                    <Text
-                      size="14pt"
-                      weight={'semibold'}
-                      color={'labelTertiary'}
-                    >
-                      {item}
-                    </Text>
-                  </Box>
-                </Inset>
-              );
-            }
+          {activityRowVirtualizer.getVirtualItems().map((virtualItem) => {
+            const { index } = virtualItem;
+            const rowData = listData?.[index];
             return (
-              <TransactionDetailsMenu
+              <Box
                 key={index}
-                onRowSelection={onTransactionSelected}
-                transaction={item}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: virtualItem.size,
+                  transform: `translateY(${virtualItem.start}px)`,
+                }}
               >
-                <ActivityRow transaction={item} />
-              </TransactionDetailsMenu>
+                {typeof rowData === 'string' ? (
+                  <Inset horizontal="20px" top="16px" bottom="8px">
+                    <Box>
+                      <Text
+                        size="14pt"
+                        weight={'semibold'}
+                        color={'labelTertiary'}
+                      >
+                        {rowData}
+                      </Text>
+                    </Box>
+                  </Inset>
+                ) : (
+                  <TransactionDetailsMenu
+                    onRowSelection={onTransactionSelected}
+                    transaction={rowData}
+                  >
+                    <ActivityRow transaction={rowData} />
+                  </TransactionDetailsMenu>
+                )}
+              </Box>
             );
           })}
         </Box>
@@ -205,7 +247,11 @@ const truncateString = (txt = '', maxLength = 22) => {
   return `${txt?.slice(0, maxLength)}${txt.length > maxLength ? '...' : ''}`;
 };
 
-function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
+const ActivityRow = React.memo(function ({
+  transaction,
+}: {
+  transaction: RainbowTransaction;
+}) {
   const { asset, balance, name, native, status, symbol, title, type } =
     transaction;
   const isTrade = type === TransactionType.trade;
@@ -327,14 +373,16 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
     ],
   );
 
-  const bottomRow = useMemo(
-    () => (
+  const bottomRow = useMemo(() => {
+    const nameMaxWidthDiff = getNativeDisplay().length * 3;
+    const nameMaxWidth = TEXT_MAX_WIDTH - nameMaxWidthDiff;
+    return (
       <Columns>
         <Column width="content">
           <Box paddingVertical="4px">
-            <Text size="14pt" weight="semibold">
-              {truncateString(name, 16)}
-            </Text>
+            <TextOverflow maxWidth={nameMaxWidth} size="14pt" weight="semibold">
+              {name}
+            </TextOverflow>
           </Box>
         </Column>
         <Column>
@@ -350,9 +398,8 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
           </Box>
         </Column>
       </Columns>
-    ),
-    [getNativeDisplay, getNativeDisplayColor, name],
-  );
+    );
+  }, [getNativeDisplay, getNativeDisplayColor, name]);
 
   return asset ? (
     <CoinRow
@@ -364,4 +411,6 @@ function ActivityRow({ transaction }: { transaction: RainbowTransaction }) {
   ) : (
     <CoinRow fallbackText={symbol} topRow={topRow} bottomRow={bottomRow} />
   );
-}
+});
+
+ActivityRow.displayName = 'ActivityRow';

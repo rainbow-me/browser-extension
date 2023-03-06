@@ -3,10 +3,12 @@ import * as React from 'react';
 import { HashRouter } from 'react-router-dom';
 import { WagmiConfig, useAccount } from 'wagmi';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { changeI18nLanguage } from '~/core/languages';
 import { persistOptions, queryClient } from '~/core/react-query';
-import { initializeSentry } from '~/core/sentry';
-import { useCurrentLanguageStore } from '~/core/state';
+import { initializeSentry, setSentryUser } from '~/core/sentry';
+import { useCurrentLanguageStore, useDeviceIdStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { createWagmiClient } from '~/core/wagmi';
@@ -14,6 +16,7 @@ import { Box, ThemeProvider } from '~/design-system';
 
 import { Routes } from './Routes';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
+import { Toast } from './components/Toast/Toast';
 import { AuthProvider } from './hooks/useAuth';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import { usePendingTransactionWatcher } from './hooks/usePendingTransactionWatcher';
@@ -31,12 +34,20 @@ const wagmiClient = createWagmiClient({
 export function App() {
   const { currentLanguage } = useCurrentLanguageStore();
   const { address } = useAccount();
+  const { deviceId } = useDeviceIdStore();
 
   usePendingTransactionWatcher({ address });
 
   React.useEffect(() => {
-    changeI18nLanguage(currentLanguage);
-    initializeSentry('popup');
+    // Disable analytics for e2e and dev mode
+    if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
+      changeI18nLanguage(currentLanguage);
+      initializeSentry('popup');
+      setSentryUser(deviceId);
+      analytics.setDeviceId(deviceId);
+      analytics.identify();
+      analytics.track(event.popupOpened);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -68,6 +79,7 @@ export function App() {
                 </HashRouter>
               </Box>
               <IdleTimer />
+              <Toast />
             </AuthProvider>
           )}
         </ThemeProvider>

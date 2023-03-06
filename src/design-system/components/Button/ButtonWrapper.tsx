@@ -1,7 +1,13 @@
 import { motion } from 'framer-motion';
 import React from 'react';
 
-import { BoxStyles, ShadowSize, TextStyles } from '../../styles/core.css';
+import {
+  BoxStyles,
+  ShadowSize,
+  TextStyles,
+  accentColorAsHsl,
+  foregroundColorVars,
+} from '../../styles/core.css';
 import {
   BackgroundColor,
   ButtonColor,
@@ -33,6 +39,8 @@ export type ButtonWrapperProps = {
   width?: 'fit' | 'full';
   blur?: string;
   borderRadius?: Radius;
+  tabIndex?: number;
+  disabled?: boolean;
 } & ButtonVariantProps;
 
 const shadowValue = (size: ShadowSize, color?: ButtonColor) =>
@@ -89,10 +97,12 @@ export const stylesForHeightAndVariant = ({
   '44px': {
     raised: { boxShadow: shadowValue('30px', color) },
     flat: {},
+    plain: {},
     tinted: {},
     stroked: {},
     disabled: {},
     transparent: {},
+    transparentHover: {},
     white: {
       boxShadow: shadowValue('30px', color),
     },
@@ -100,10 +110,12 @@ export const stylesForHeightAndVariant = ({
   '36px': {
     raised: { boxShadow: shadowValue('24px', color) },
     flat: {},
+    plain: {},
     tinted: {},
     stroked: {},
     disabled: {},
     transparent: {},
+    transparentHover: {},
     white: {
       boxShadow: shadowValue('24px', color),
     },
@@ -111,10 +123,12 @@ export const stylesForHeightAndVariant = ({
   '32px': {
     raised: { boxShadow: shadowValue('24px', color) },
     flat: {},
+    plain: {},
     tinted: {},
     stroked: {},
     disabled: {},
     transparent: {},
+    transparentHover: {},
     white: {
       boxShadow: shadowValue('24px', color),
     },
@@ -122,10 +136,12 @@ export const stylesForHeightAndVariant = ({
   '28px': {
     raised: { boxShadow: shadowValue('12px', color) },
     flat: {},
+    plain: {},
     tinted: {},
     stroked: {},
     disabled: {},
     transparent: {},
+    transparentHover: {},
     white: {
       boxShadow: shadowValue('12px', color),
     },
@@ -133,10 +149,12 @@ export const stylesForHeightAndVariant = ({
   '24px': {
     raised: { boxShadow: shadowValue('12px', color) },
     flat: {},
+    plain: {},
     tinted: {},
     stroked: {},
     disabled: {},
     transparent: {},
+    transparentHover: {},
     white: {
       boxShadow: shadowValue('12px', color),
     },
@@ -166,6 +184,9 @@ export const stylesForVariant = ({
     borderColor: 'buttonStroke',
     borderWidth: '1px',
   },
+  plain: {
+    background: color as ButtonColor,
+  },
   tinted: {
     textColor: color as TextColor,
   },
@@ -175,6 +196,9 @@ export const stylesForVariant = ({
     textColor: 'labelSecondary',
   },
   transparent: {
+    textColor: color as TextColor,
+  },
+  transparentHover: {
     textColor: color as TextColor,
   },
   white: {
@@ -196,6 +220,8 @@ export function ButtonWrapper({
   width = 'fit',
   blur = '',
   borderRadius,
+  tabIndex,
+  disabled,
 }: ButtonWrapperProps) {
   const { boxShadow } = stylesForHeightAndVariant({
     color: color as ButtonColor,
@@ -205,23 +231,47 @@ export function ButtonWrapper({
     color: color ?? 'accent',
   })[variant];
 
-  const styles = (blur && { backdropFilter: `blur(${blur})` }) || {};
+  let outlineColor = undefined;
+  // Only apply outline to buttons with tabIndex
+  if (tabIndex !== undefined) {
+    outlineColor =
+      color && color !== 'accent'
+        ? foregroundColorVars[color as TextColor] || accentColorAsHsl
+        : accentColorAsHsl;
+  }
+  const styles = {
+    ...((blur && { backdropFilter: `blur(${blur})` }) || {}),
+    outlineColor,
+  };
+
   return (
     <Box
       as={motion.div}
       initial={{ zIndex: 0 }}
-      whileHover={{ scale: transformScales['1.04'] }}
-      whileTap={{ scale: transformScales['0.96'] }}
+      whileHover={{ scale: disabled ? undefined : transformScales['1.04'] }}
+      whileTap={{ scale: disabled ? undefined : transformScales['0.96'] }}
       transition={transitions.bounce}
       width={width}
+      className="bx-button-wrapper"
     >
       <Box
         as="button"
         alignItems="center"
-        background={background}
+        background={
+          variant === 'transparentHover'
+            ? {
+                default: background || 'transparent',
+                hover: 'surfaceSecondaryElevated',
+              }
+            : background
+        }
         borderRadius={borderRadius ?? 'round'}
-        borderColor={borderColor}
-        borderWidth={borderWidth}
+        borderColor={
+          variant === 'transparentHover'
+            ? { default: 'transparent', hover: 'buttonStroke' }
+            : borderColor
+        }
+        borderWidth={variant === 'transparentHover' ? '1px' : borderWidth}
         boxShadow={boxShadow}
         className={[
           heightStyles[height],
@@ -229,11 +279,12 @@ export function ButtonWrapper({
             tintedStyles[(color as ButtonColor) || 'accent'],
         ]}
         display="flex"
-        onClick={onClick}
+        onClick={disabled ? () => null : onClick}
         position="relative"
         justifyContent="center"
         width={width}
         style={styles}
+        tabIndex={tabIndex}
       >
         {children}
       </Box>

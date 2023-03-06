@@ -3,7 +3,7 @@
 import { Address, fetchEnsAddress } from '@wagmi/core';
 import { isAddress } from 'ethers/lib/utils';
 import { motion } from 'framer-motion';
-import React, { useCallback, useState } from 'react';
+import React, { KeyboardEvent, useCallback, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -34,6 +34,14 @@ import { Checkbox } from '../Checkbox/Checkbox';
 import { Spinner } from '../Spinner/Spinner';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
+const accountsToWatch = [
+  'vitalik.eth',
+  'bored.eth',
+  'cdixon.eth',
+  'hublot.eth',
+  'rainbowwallet.eth',
+];
+
 const WatchWallet = ({
   onboarding = false,
   onFinishImporting,
@@ -47,13 +55,6 @@ const WatchWallet = ({
   const { setCurrentAddress } = useCurrentAddressStore();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
-  const accountsToWatch = [
-    'vitalik.eth',
-    'bored.eth',
-    'cdixon.eth',
-    'hublot.eth',
-    'rainbowwallet.eth',
-  ];
 
   const toggleAccount = useCallback(
     (address: string) => {
@@ -87,7 +88,9 @@ const WatchWallet = ({
     if (isLoading) return;
     if (address === '' && additionalAccounts.length == 0) return;
     let defaultAccountChosen = false;
-    const allAccounts = [address, ...additionalAccounts];
+    const allAccounts = address
+      ? [address, ...additionalAccounts]
+      : additionalAccounts;
     for (let i = 0; i < allAccounts.length; i++) {
       let addressToImport = allAccounts[i];
       if (isENSAddressFormat(addressToImport)) {
@@ -130,6 +133,21 @@ const WatchWallet = ({
     onFinishImporting,
     setCurrentAddress,
   ]);
+
+  const handleKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        handleWatchWallet();
+      }
+    },
+    [handleWatchWallet],
+  );
+
+  const readyToWatchWallet = useMemo(() => {
+    if (address === '' && additionalAccounts.length) return true;
+    return isValid;
+  }, [additionalAccounts.length, address, isValid]);
+
   return (
     <>
       <Box alignItems="center" paddingBottom="10px">
@@ -220,6 +238,9 @@ const WatchWallet = ({
                   padding="12px"
                   placeholder={i18n.t('watch_wallet.placeholder')}
                   value={address}
+                  onKeyDown={handleKeyDown}
+                  tabIndex={1}
+                  autoFocus
                   onChange={handleAddressChange}
                   className={[
                     placeholderStyle,
@@ -367,9 +388,9 @@ const WatchWallet = ({
             <Button
               symbol="arrow.uturn.down.circle.fill"
               symbolSide="left"
-              color={isValid ? 'accent' : 'labelQuaternary'}
+              color={readyToWatchWallet ? 'accent' : 'labelQuaternary'}
               height="44px"
-              variant={isValid ? 'flat' : 'disabled'}
+              variant={readyToWatchWallet ? 'flat' : 'disabled'}
               width="full"
               onClick={handleWatchWallet}
               testId="watch-wallets-button"

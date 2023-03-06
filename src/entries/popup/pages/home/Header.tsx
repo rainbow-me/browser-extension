@@ -4,13 +4,21 @@ import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import {
+  featureFlagTypes,
+  useFeatureFlagsStore,
+} from '~/core/state/currentSettings/featureFlags';
+import { truncateAddress } from '~/core/utils/address';
 import { Box, ButtonSymbol, Inline, Inset, Stack, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
 import { useAvatar } from '../../hooks/useAvatar';
+import { useToast } from '../../hooks/useToast';
+import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
+import { tabIndexes } from '../../utils/tabIndexes';
 
 export function Header() {
   const { scrollYProgress: progress } = useScroll({ offset: ['0px', '64px'] });
@@ -75,9 +83,29 @@ export function AvatarSection() {
 function ActionButtonsSection() {
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
+
+  const { watchedWallets } = useWallets();
+  const { triggerToast } = useToast();
+  const { featureFlags } = useFeatureFlagsStore();
+
   const handleCopy = React.useCallback(() => {
     navigator.clipboard.writeText(address as string);
-  }, [address]);
+    triggerToast({
+      title: i18n.t('wallet_header.copy_toast'),
+      description: truncateAddress(address),
+    });
+  }, [address, triggerToast]);
+
+  const isWatchingWallet = React.useMemo(() => {
+    const watchedAddresses = watchedWallets.map(({ address }) => address);
+    return address && watchedAddresses.includes(address);
+  }, [address, watchedWallets]);
+
+  const alertWatchingWallet = React.useCallback(() => {
+    // this will be removed so not adding it to lang file
+    alert('This wallet is currently in "Watching" mode');
+  }, []);
+
   return (
     <Box style={{ height: 56 }}>
       {avatar?.color && (
@@ -87,19 +115,35 @@ function ActionButtonsSection() {
             text={i18n.t('wallet_header.copy')}
             onClick={handleCopy}
             testId="header-link-copy"
-          />
-          <ActionButton
-            symbol="arrow.triangle.swap"
-            text={i18n.t('wallet_header.swap')}
+            tabIndex={tabIndexes.WALLET_HEADER_COPY_BUTTON}
           />
           <Link
-            id="header-link-send"
-            to={ROUTES.SEND}
+            id="header-link-swap"
+            to={
+              !isWatchingWallet && featureFlags[featureFlagTypes.swaps]
+                ? ROUTES.SWAP
+                : '#'
+            }
             state={{ from: ROUTES.HOME }}
+            onClick={isWatchingWallet ? alertWatchingWallet : () => null}
+          >
+            <ActionButton
+              symbol="arrow.triangle.swap"
+              text={i18n.t('wallet_header.swap')}
+              tabIndex={tabIndexes.WALLET_HEADER_SWAP_BUTTON}
+            />
+          </Link>
+
+          <Link
+            id="header-link-send"
+            to={isWatchingWallet ? '#' : ROUTES.SEND}
+            state={{ from: ROUTES.HOME }}
+            onClick={isWatchingWallet ? alertWatchingWallet : () => null}
           >
             <ActionButton
               symbol="paperplane.fill"
               text={i18n.t('wallet_header.send')}
+              tabIndex={tabIndexes.WALLET_HEADER_SEND_BUTTON}
             />
           </Link>
         </Inline>
@@ -113,11 +157,13 @@ function ActionButton({
   text,
   onClick,
   testId,
+  tabIndex,
 }: {
   symbol: SymbolProps['symbol'];
   text: string;
   onClick?: () => void;
   testId?: string;
+  tabIndex?: number;
 }) {
   return (
     <Stack alignHorizontal="center" space="10px">
@@ -128,6 +174,7 @@ function ActionButton({
         symbol={symbol}
         testId={testId}
         onClick={onClick}
+        tabIndex={tabIndex}
       />
       <Text color="labelSecondary" size="12pt" weight="semibold">
         {text}
