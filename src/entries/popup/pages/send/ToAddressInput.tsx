@@ -1,4 +1,4 @@
-import { isAddress } from 'ethers/lib/utils';
+import { isAddress } from '@ethersproject/address';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, {
   InputHTMLAttributes,
