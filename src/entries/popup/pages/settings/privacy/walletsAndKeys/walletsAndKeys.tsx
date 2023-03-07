@@ -42,15 +42,17 @@ export function WalletsAndKeys() {
 
   const handleCreateNewRecoveryPhrase = async () => {
     const newWalletAccount = await create();
+    const wallet = {
+      accounts: [newWalletAccount],
+      imported: false,
+      type: KeychainType.HdKeychain,
+    };
+    await chrome.storage.session.set({ settingsWallet: wallet });
     navigate(
       ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
       {
         state: {
-          wallet: {
-            accounts: [newWalletAccount],
-            imported: false,
-            type: KeychainType.HdKeychain,
-          },
+          wallet,
           password: state?.password,
         },
       },
