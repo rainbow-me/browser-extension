@@ -145,7 +145,7 @@ export function WalletDetails() {
       setWallet(wallet);
     };
     getWallet();
-  }, [state?.wallet]);
+  }, []);
 
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
   const { unhideWallet, hiddenWallets } = useHiddenWalletsStore();

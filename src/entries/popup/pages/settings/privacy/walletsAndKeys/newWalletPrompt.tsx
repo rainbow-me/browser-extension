@@ -10,6 +10,7 @@ import { useLocation } from 'react-router-dom';
 import { i18n } from '~/core/languages';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { KeychainWallet } from '~/core/types/keychainTypes';
+import { setSettingWallets } from '~/core/utils/settings';
 import {
   Box,
   Button,
@@ -47,6 +48,10 @@ export const NewWalletPrompt = ({
       saveWalletName({
         name: walletName.trim(),
         address: newAccount,
+      });
+      setSettingWallets({
+        ...wallet,
+        accounts: [...wallet.accounts, newAccount],
       });
       navigate(
         ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
