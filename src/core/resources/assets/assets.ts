@@ -23,16 +23,17 @@ const ASSETS_REFETCH_INTERVAL = 60000;
 
 export type AssetsArgs = {
   assetAddresses: Record<ChainId, string[]>;
+  hash: string;
   currency: SupportedCurrencyKey;
 };
 
 // ///////////////////////////////////////////////
 // Query Key
 
-const assetsQueryKey = ({ assetAddresses, currency }: AssetsArgs) =>
+const assetsQueryKey = ({ assetAddresses, currency, hash }: AssetsArgs) =>
   createQueryKey(
     'assets',
-    { assetAddresses, currency },
+    { assetAddresses, currency, hash },
     { persisterVersion: 1 },
   );
 
@@ -42,7 +43,7 @@ type AssetsQueryKey = ReturnType<typeof assetsQueryKey>;
 // Query Function
 
 async function assetsQueryFunction({
-  queryKey: [{ assetAddresses, currency }],
+  queryKey: [{ assetAddresses, currency, hash }],
 }: QueryFunctionArgs<typeof assetsQueryKey>): Promise<{
   [key: UniqueId]: ParsedAsset;
 } | void> {
@@ -57,14 +58,16 @@ async function assetsQueryFunction({
   });
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
+      console.log('using use assets cache because fucked');
       resolve(
         queryClient.getQueryData(
-          assetsQueryKey({ assetAddresses, currency }),
+          assetsQueryKey({ assetAddresses, currency, hash }),
         ) || {},
       );
     }, ASSETS_TIMEOUT_DURATION);
     const resolver = (message: AssetPricesReceivedMessage) => {
       clearTimeout(timeout);
+      console.log('use assets result: ', message);
       resolve(parseAssets({ assetAddresses, currency, message }));
     };
     refractionAssetsWs.once(refractionAssetsMessages.ASSETS.RECEIVED, resolver);
@@ -122,11 +125,11 @@ function parseAssets({
 // Query Hook
 
 export function useAssets<TSelectData = AssetsResult>(
-  { assetAddresses, currency }: AssetsArgs,
+  { assetAddresses, currency, hash }: AssetsArgs,
   config: QueryConfig<AssetsResult, Error, TSelectData, AssetsQueryKey> = {},
 ) {
   return useQuery(
-    assetsQueryKey({ assetAddresses, currency }),
+    assetsQueryKey({ assetAddresses, currency, hash }),
     assetsQueryFunction,
     {
       ...config,

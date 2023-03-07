@@ -13,6 +13,7 @@ export type TokenSearchListId =
   | 'verifiedAssets';
 
 export type SearchAsset = {
+  address: Address;
   color: string;
   colors: { primary: string; fallback: string };
   decimals: number;
@@ -20,6 +21,7 @@ export type SearchAsset = {
   icon_url: string;
   isRainbowCurated: boolean;
   isVerified: boolean;
+  mainnetAddress: Address;
   name: string;
   networks: Record<ChainId, { address: Address; decimals: number }>;
   rainbowMetadataId: number;

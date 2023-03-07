@@ -17,12 +17,11 @@ const FAVORITES_EMPTY_STATE = {
 };
 
 export function useFavoriteAssets() {
-  const { favorites, addFavorite, removeFavorite } = useFavoritesStore();
+  const { favorites, addFavorite, getIsFavorite, removeFavorite } =
+    useFavoritesStore();
   const [favoritesData, setFavoritesData] = useState<FavoriteAssets>(
     FAVORITES_EMPTY_STATE,
   );
-
-  console.log('USE FAVORITE ASSETS: ', favorites);
 
   const setFavoriteAssetsData = useCallback(async () => {
     const chainIds = Object.keys(favorites).filter(
@@ -83,8 +82,10 @@ export function useFavoriteAssets() {
   }, [setFavoriteAssetsData]);
 
   return {
-    favorites: favoritesData,
     addFavorite,
+    getIsFavorite,
+    favoriteAddresses: favorites,
+    favorites: favoritesData,
     removeFavorite,
   };
 }

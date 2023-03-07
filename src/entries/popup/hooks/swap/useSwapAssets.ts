@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Address } from 'wagmi';
 
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { selectUserAssetsListByChainId } from '~/core/resources/_selectors/assets';
@@ -13,6 +14,7 @@ import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { SortMethod } from '../send/useSendAsset';
 import { useDebounce } from '../useDebounce';
+import { useFavoriteAssets } from '../useFavoriteAssets';
 import usePrevious from '../usePrevious';
 import { useSearchCurrencyLists } from '../useSearchCurrencyLists';
 
@@ -99,6 +101,8 @@ export const useSwapAssets = () => {
   const debouncedAssetToSellFilter = useDebounce(assetToSellFilter, 200);
   const debouncedAssetToBuyFilter = useDebounce(assetToBuyFilter, 200);
 
+  const { favoriteAddresses } = useFavoriteAssets();
+
   const { data: userAssets = [] } = useUserAssets(
     {
       address: currentAddress,
@@ -138,14 +142,21 @@ export const useSwapAssets = () => {
     [searchReceiveAssetsSections],
   );
 
+  const hash = searchReceiveAssets
+    .map(({ mainnetAddress }) => mainnetAddress)
+    .join('');
+
   const { data: rawAssetsToBuy } = useAssets({
     assetAddresses: {
       [outputChainId as ChainId]: searchReceiveAssets.map(
-        ({ uniqueId }) => uniqueId,
+        ({ mainnetAddress }) => mainnetAddress,
       ),
     },
+    hash,
     currency: currentCurrency,
   });
+
+  console.log('raw: ', rawAssetsToBuy);
 
   const assetsToBuy: ParsedAddressAsset[] = useMemo(
     () =>
@@ -156,7 +167,7 @@ export const useSwapAssets = () => {
             isLowerCaseMatch(userAsset.address, rawAsset.address),
           );
           const searchAsset = searchReceiveAssets.find(
-            (searchAsset) => searchAsset.uniqueId === rawAsset.address,
+            (searchAsset) => searchAsset.mainnetAddress === rawAsset.address,
           );
           return parseParsedAssetToParsedAddressAsset({
             rawAsset,
@@ -174,22 +185,33 @@ export const useSwapAssets = () => {
     ],
   );
 
+  console.log('assets to buy: ', assetsToBuy);
+
   const assetsToBuyBySection = useMemo(() => {
     return searchReceiveAssetsSections.map(({ data, title, symbol, id }) => {
       const parsedData: ParsedAddressAsset[] =
         data
           ?.map((asset) =>
             assetsToBuy.find((parsedAsset) =>
-              isLowerCaseMatch(
-                parsedAsset.uniqueId.split('_')[0],
-                asset?.uniqueId,
-              ),
+              isLowerCaseMatch(parsedAsset.uniqueId, asset?.uniqueId),
             ),
           )
-          ?.filter((p): p is ParsedAddressAsset => !!p) || [];
+          ?.filter((p): p is ParsedAddressAsset => {
+            const shouldFilterFavorite =
+              id !== 'favorites' &&
+              favoriteAddresses[outputChainId].includes(
+                (p?.address || '') as Address,
+              );
+            return !!p && !shouldFilterFavorite;
+          }) || [];
       return { data: parsedData, title, symbol, id };
     });
-  }, [assetsToBuy, searchReceiveAssetsSections]);
+  }, [
+    assetsToBuy,
+    favoriteAddresses,
+    outputChainId,
+    searchReceiveAssetsSections,
+  ]);
 
   // if output chain id changes we need to clear the receive asset
   useEffect(() => {
