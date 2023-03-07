@@ -55,7 +55,7 @@ export const NewWalletPrompt = ({
       return;
     }
     setError(i18n.t('errors.no_wallet_name_set'));
-  }, [navigate, saveWalletName, state?.password, wallet?.accounts, walletName]);
+  }, [navigate, saveWalletName, state?.password, wallet, walletName]);
 
   const handleClose = useCallback(() => {
     setError(null);

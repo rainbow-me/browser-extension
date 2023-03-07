@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
+import { setSettingWallets } from '~/core/utils/settings';
 import { Box, Symbol } from '~/design-system';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
@@ -16,8 +17,13 @@ export function WalletsAndKeys() {
   const navigate = useRainbowNavigate();
   const [wallets, setWallets] = useState<KeychainWallet[]>([]);
 
+  useEffect(() => {
+    setSettingWallets(null);
+  }, []);
+
   const handleViewWallet = useCallback(
     async (wallet: KeychainWallet) => {
+      setSettingWallets(wallet);
       navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS, {
         state: { wallet },
       });

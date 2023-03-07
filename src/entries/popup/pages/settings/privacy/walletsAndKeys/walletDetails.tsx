@@ -8,6 +8,7 @@ import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
+import { getSettingWallets } from '~/core/utils/settings';
 import { Box, Inline, Symbol } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import AccountItem, {
@@ -105,11 +106,7 @@ export function WalletDetails() {
   const [renameAccount, setRenameAccount] = useState<Address | undefined>();
   const [removeAccount, setRemoveAccount] = useState<Address | undefined>();
 
-  const [wallet, setWallet] = useState<KeychainWallet>();
-
-  useEffect(() => {
-    setWallet(state?.wallet);
-  }, [state?.wallet]);
+  const [wallet, setWallet] = useState<KeychainWallet | null>();
 
   const handleOpenNewWalletPrompt = useCallback(() => {
     setShowNewWalletPrompt(true);
@@ -143,12 +140,12 @@ export function WalletDetails() {
   );
 
   useEffect(() => {
-    const fetchWallet = async () => {
-      const fetchedWallet = await getWallet(state?.wallet?.accounts?.[0]);
-      setWallet(fetchedWallet);
+    const getWallet = async () => {
+      const wallet = await getSettingWallets();
+      setWallet(wallet);
     };
-    fetchWallet();
-  }, [state?.wallet?.accounts]);
+    getWallet();
+  }, [state?.wallet]);
 
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
   const { unhideWallet, hiddenWallets } = useHiddenWalletsStore();
