@@ -7,6 +7,7 @@ export interface PendingRequestsStore {
   pendingRequests: ProviderRequestPayload[];
   addPendingRequest: (request: ProviderRequestPayload) => void;
   removePendingRequest: (id: number) => void;
+  clearAllPendingRequests: () => void;
 }
 
 export const pendingRequestStore = createStore<PendingRequestsStore>(
@@ -20,6 +21,11 @@ export const pendingRequestStore = createStore<PendingRequestsStore>(
       const pendingRequests = get().pendingRequests;
       set({
         pendingRequests: pendingRequests.filter((request) => request.id !== id),
+      });
+    },
+    clearAllPendingRequests: () => {
+      set({
+        pendingRequests: [],
       });
     },
   }),

@@ -12,21 +12,21 @@ const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export const ApproveAppRequest = () => {
   const { pendingRequests, removePendingRequest } = usePendingRequestStore();
-  const { window } = useNotificationWindowStore();
+  const { notificationWindow } = useNotificationWindowStore();
   const pendingRequest = pendingRequests?.[0];
 
   const handleRequestAction = useCallback(() => {
     removePendingRequest(pendingRequest?.id);
-    if (pendingRequests.length <= 1 && window?.id) {
+    if (pendingRequests.length <= 1 && notificationWindow?.id) {
       setTimeout(() => {
-        window?.id && chrome.windows.remove(window?.id);
+        notificationWindow?.id && chrome.windows.remove(notificationWindow?.id);
       }, 50);
     }
   }, [
     pendingRequest?.id,
     pendingRequests.length,
     removePendingRequest,
-    window?.id,
+    notificationWindow?.id,
   ]);
 
   const approveRequest = useCallback(

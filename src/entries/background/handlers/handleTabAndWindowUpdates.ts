@@ -1,4 +1,4 @@
-import { pendingRequestStore } from '~/core/state';
+import { notificationWindowStore, pendingRequestStore } from '~/core/state';
 
 export const handleTabAndWindowUpdates = () => {
   // When a tab is removed, check if that was the last tab for that host
@@ -16,5 +16,16 @@ export const handleTabAndWindowUpdates = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   chrome.tabs.onRemoved.addListener(function (tabId, _) {
     clearPendingRequestsOnUpdate(tabId);
+  });
+
+  chrome.windows.onRemoved.addListener((id) => {
+    const { setNotificationWindow, notificationWindow } =
+      notificationWindowStore.getState();
+    if (id === notificationWindow?.id) {
+      const { clearAllPendingRequests } = pendingRequestStore.getState();
+      // The popup has been closed
+      clearAllPendingRequests();
+      setNotificationWindow(null);
+    }
   });
 };
