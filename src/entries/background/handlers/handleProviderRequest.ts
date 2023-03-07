@@ -19,6 +19,7 @@ import { getDappHost } from '~/core/utils/connectedApps';
 import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/numbers';
+import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
 
 const openWindow = async () => {
   const { setWindow } = notificationWindowStore.getState();
@@ -62,8 +63,8 @@ const messengerProviderRequest = async (
   if (hasVault() && (await isPasswordSet())) {
     openWindow();
   } else {
-    chrome.tabs.create({
-      url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome`,
+    goToNewTab({
+      url: WELCOME_URL,
     });
   }
   // Wait for response from the popup.

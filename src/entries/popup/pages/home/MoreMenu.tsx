@@ -3,6 +3,7 @@ import { useAccount, useEnsName } from 'wagmi';
 
 import LockSound from 'static/assets/audio/ui_lock.mp3';
 import { i18n } from '~/core/languages';
+import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
 import {
@@ -22,11 +23,13 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   const { data: ensName } = useEnsName({ address });
   const navigate = useRainbowNavigate();
 
-  const openProfile = React.useCallback(() => {
-    chrome.tabs.create({
-      url: `https://rainbow.me/${ensName ?? address}`,
-    });
-  }, [address, ensName]);
+  const openProfile = React.useCallback(
+    () =>
+      goToNewTab({
+        url: getProfileUrl(ensName ?? address),
+      }),
+    [address, ensName],
+  );
 
   const onValueChange = React.useCallback(
     (value: 'settings' | 'profile' | 'lock' | 'qr-code') => {

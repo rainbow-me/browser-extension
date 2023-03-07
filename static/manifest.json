@@ -66,7 +66,7 @@
     "unlimitedStorage"
   ],
   "short_name": "Rainbow",
-  "version": "1.0.57",
+  "version": "1.0.59",
   "web_accessible_resources": [
     {
       "matches": [
@@ -79,5 +79,16 @@
         "assets/badges/*.png"
       ]
     }
-  ]
+  ],
+  "commands": {
+    "_execute_action": {
+      "suggested_key": {
+        "windows": "Alt+Shift+R",
+        "mac": "Alt+Shift+R",
+        "chromeos": "Alt+Shift+R",
+        "linux": "Alt+Shift+R"
+      },
+      "description": "Open the Rainbow Wallet extension"
+    }
+  }
 }

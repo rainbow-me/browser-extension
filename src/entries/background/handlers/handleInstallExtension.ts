@@ -1,5 +1,6 @@
 /* eslint-disable no-await-in-loop */
 import { hasVault, isInitialized, isPasswordSet } from '~/core/keychain';
+import { POPUP_URL, WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
 
 /**
  * Handles the extension installation event.
@@ -17,8 +18,8 @@ export const handleInstallExtension = () =>
       chrome.contextMenus.onClicked.addListener((info) => {
         switch (info.menuItemId) {
           case 'open-tab':
-            chrome.tabs.create({
-              url: `chrome-extension://${chrome.runtime.id}/popup.html`,
+            goToNewTab({
+              url: POPUP_URL,
             });
         }
       });
@@ -38,8 +39,8 @@ export const handleInstallExtension = () =>
       const onboarded = _hasVault && passwordSet;
       // Only show the welcome screen if the user hasn't been onboarded yet
       if (!onboarded) {
-        chrome.tabs.create({
-          url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome`,
+        goToNewTab({
+          url: WELCOME_URL,
         });
       }
     }
