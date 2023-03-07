@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
@@ -33,7 +33,7 @@ export const useWallets = () => {
       return { visibleWallets, visibleOwnedWallets, watchedWallets };
     }, [allWallets, hiddenWallets]);
 
-  const fetchWallets = async () => {
+  const fetchWallets = useCallback(async () => {
     const wallets = await getWallets();
     let accounts: AddressAndType[] = [];
     wallets.forEach((wallet) => {
@@ -48,10 +48,11 @@ export const useWallets = () => {
       ];
     });
     setAllWallets(accounts);
-  };
+  }, []);
+
   useEffect(() => {
     fetchWallets();
-  }, []);
+  }, [fetchWallets]);
 
   return {
     allWallets,
