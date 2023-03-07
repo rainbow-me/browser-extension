@@ -2,8 +2,8 @@ import React, { useCallback, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useFavoritesStore } from '~/core/state/favorites';
-import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { SearchAsset } from '~/core/types/search';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain, isL2Chain } from '~/core/utils/chains';
 import { getExplorerUrl, goToNewTab } from '~/core/utils/tabs';
@@ -39,7 +39,7 @@ const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 180;
 
 export type TokenToBuyRowProps = {
-  asset: ParsedAddressAsset;
+  asset: SearchAsset;
   onDropdownChange: (open: boolean) => void;
 };
 

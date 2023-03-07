@@ -4,7 +4,6 @@ import { useCallback, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useTokenSearch } from '~/core/resources/search';
-import { ParsedAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   SearchAsset,
@@ -234,13 +233,13 @@ export function useSearchCurrencyLists({
       });
     })
     .flat()
-    .filter((v) => !!v);
+    .filter((v): v is SearchAsset => !!v);
 
   // bridge asset are not currently implemented
   // the lists below should be filtered by favorite/bridge asset match
   const results = useMemo(() => {
     const sections: {
-      data?: (SearchAsset | ParsedAsset | undefined)[];
+      data?: SearchAsset[];
       title: string;
       symbol: SymbolProps['symbol'];
       id: string;
@@ -314,8 +313,6 @@ export function useSearchCurrencyLists({
     targetUnverifiedAssets,
     targetVerifiedAssets,
   ]);
-
-  console.log('results: ', results);
 
   return {
     loading,

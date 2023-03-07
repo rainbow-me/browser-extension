@@ -88,6 +88,7 @@ function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
   return assets.map((a) => ({
     ...a,
     address: a.networks[chainId]?.address,
+    chainId,
     mainnetAddress: a.uniqueId,
     uniqueId: `${a.uniqueId}_${chainId}`,
   }));

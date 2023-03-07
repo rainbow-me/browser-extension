@@ -1,6 +1,7 @@
 import React, { useCallback, useRef } from 'react';
 
 import { ParsedAddressAsset } from '~/core/types/assets';
+import { SearchAsset } from '~/core/types/search';
 import { SortMethod } from '~/entries/popup/hooks/send/useSendAsset';
 
 import { TokenToSellDropdown } from './TokenDropdown/TokenToSellDropdown';
@@ -10,9 +11,9 @@ import { TokenInput } from './TokenInput';
 interface SwapTokenInputProps {
   assetToSellMaxValue: { display: string; amount: string };
   assetToSellValue: string;
-  asset: ParsedAddressAsset | null;
+  asset: ParsedAddressAsset | SearchAsset | null;
   assetFilter: string;
-  assets?: ParsedAddressAsset[];
+  assets?: ParsedAddressAsset[] | SearchAsset[];
   dropdownClosed: boolean;
   dropdownHeight?: number;
   placeholder: string;
@@ -21,7 +22,7 @@ interface SwapTokenInputProps {
   inputRef: React.RefObject<HTMLInputElement>;
   onDropdownOpen: (open: boolean) => void;
   setSortMethod: (sortMethod: SortMethod) => void;
-  selectAsset: (asset: ParsedAddressAsset | null) => void;
+  selectAsset: (asset: ParsedAddressAsset | SearchAsset | null) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
   setAssetToSellMaxValue: () => void;
   setAssetToSellInputValue: (value: string) => void;
@@ -46,11 +47,12 @@ export const TokenToSellInput = ({
   setAssetToSellMaxValue,
   setAssetToSellInputValue,
 }: SwapTokenInputProps) => {
-  const onSelectAssetRef = useRef<(asset: ParsedAddressAsset) => void>();
+  const onSelectAssetRef =
+    useRef<(asset: ParsedAddressAsset | SearchAsset) => void>();
 
   const setOnSelectAsset = useCallback(
-    (cb: (asset: ParsedAddressAsset) => void) => {
-      onSelectAssetRef.current = (asset: ParsedAddressAsset) => {
+    (cb: (asset: ParsedAddressAsset | SearchAsset) => void) => {
+      onSelectAssetRef.current = (asset: ParsedAddressAsset | SearchAsset) => {
         cb(asset);
         selectAsset(asset);
       };

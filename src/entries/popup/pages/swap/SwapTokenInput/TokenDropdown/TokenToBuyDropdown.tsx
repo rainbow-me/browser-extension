@@ -4,6 +4,7 @@ import React, { useMemo } from 'react';
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { SearchAsset } from '~/core/types/search';
 import { isL2Chain } from '~/core/utils/chains';
 import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
@@ -28,9 +29,9 @@ const AssetsToBuySection = ({
   onSelectAsset,
   onDropdownChange,
 }: {
-  data: ParsedAddressAsset[];
+  data: SearchAsset[];
   title: string;
-  onSelectAsset?: (asset: ParsedAddressAsset | null) => void;
+  onSelectAsset?: (asset: SearchAsset | null) => void;
   symbol: SymbolProps['symbol'];
   id: string;
   onDropdownChange: (open: boolean) => void;
@@ -97,7 +98,7 @@ const AssetsToBuySection = ({
         <Box ref={containerRef}>
           {assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
             const { index } = virtualItem;
-            const asset = data?.[index] as ParsedAddressAsset;
+            const asset = data?.[index] as SearchAsset;
             return (
               <Box
                 paddingHorizontal="8px"
@@ -121,13 +122,13 @@ const AssetsToBuySection = ({
 export type TokenToBuyDropdownProps = {
   asset: ParsedAddressAsset | null;
   assets?: {
-    data: ParsedAddressAsset[];
+    data: SearchAsset[];
     title: string;
     id: string;
     symbol: SymbolProps['symbol'];
   }[];
   outputChainId: ChainId;
-  onSelectAsset?: (asset: ParsedAddressAsset | null) => void;
+  onSelectAsset?: (asset: SearchAsset | null) => void;
   setOutputChainId: (chainId: ChainId) => void;
   onDropdownChange: (open: boolean) => void;
 };

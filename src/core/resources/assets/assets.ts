@@ -23,17 +23,16 @@ const ASSETS_REFETCH_INTERVAL = 60000;
 
 export type AssetsArgs = {
   assetAddresses: Record<ChainId, string[]>;
-  hash: string;
   currency: SupportedCurrencyKey;
 };
 
 // ///////////////////////////////////////////////
 // Query Key
 
-const assetsQueryKey = ({ assetAddresses, currency, hash }: AssetsArgs) =>
+const assetsQueryKey = ({ assetAddresses, currency }: AssetsArgs) =>
   createQueryKey(
     'assets',
-    { assetAddresses, currency, hash },
+    { assetAddresses, currency },
     { persisterVersion: 1 },
   );
 
@@ -43,7 +42,7 @@ type AssetsQueryKey = ReturnType<typeof assetsQueryKey>;
 // Query Function
 
 async function assetsQueryFunction({
-  queryKey: [{ assetAddresses, currency, hash }],
+  queryKey: [{ assetAddresses, currency }],
 }: QueryFunctionArgs<typeof assetsQueryKey>): Promise<{
   [key: UniqueId]: ParsedAsset;
 } | void> {
@@ -58,16 +57,15 @@ async function assetsQueryFunction({
   });
   return new Promise((resolve) => {
     const timeout = setTimeout(() => {
-      console.log('using use assets cache because fucked');
       resolve(
         queryClient.getQueryData(
-          assetsQueryKey({ assetAddresses, currency, hash }),
+          assetsQueryKey({ assetAddresses, currency }),
         ) || {},
       );
     }, ASSETS_TIMEOUT_DURATION);
     const resolver = (message: AssetPricesReceivedMessage) => {
+      console.log('MESSAGE RESOLVES: ', message);
       clearTimeout(timeout);
-      console.log('use assets result: ', message);
       resolve(parseAssets({ assetAddresses, currency, message }));
     };
     refractionAssetsWs.once(refractionAssetsMessages.ASSETS.RECEIVED, resolver);
@@ -125,11 +123,11 @@ function parseAssets({
 // Query Hook
 
 export function useAssets<TSelectData = AssetsResult>(
-  { assetAddresses, currency, hash }: AssetsArgs,
+  { assetAddresses, currency }: AssetsArgs,
   config: QueryConfig<AssetsResult, Error, TSelectData, AssetsQueryKey> = {},
 ) {
   return useQuery(
-    assetsQueryKey({ assetAddresses, currency, hash }),
+    assetsQueryKey({ assetAddresses, currency }),
     assetsQueryFunction,
     {
       ...config,

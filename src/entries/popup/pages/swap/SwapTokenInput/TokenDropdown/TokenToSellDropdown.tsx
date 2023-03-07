@@ -3,6 +3,7 @@ import React from 'react';
 
 import { i18n } from '~/core/languages';
 import { ParsedAddressAsset } from '~/core/types/assets';
+import { SearchAsset } from '~/core/types/search';
 import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { SortMethod } from '~/entries/popup/hooks/send/useSendAsset';
 import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets';
@@ -19,9 +20,9 @@ import { TokenToSellRow } from '../TokenRow/TokenToSellRow';
 
 export type TokenToSellDropdownProps = {
   asset: ParsedAddressAsset | null;
-  assets?: ParsedAddressAsset[];
+  assets?: ParsedAddressAsset[] | SearchAsset[];
   sortMethod: SortMethod;
-  onSelectAsset?: (asset: ParsedAddressAsset) => void;
+  onSelectAsset?: (asset: ParsedAddressAsset | SearchAsset) => void;
   setSortMethod: (sortMethod: SortMethod) => void;
   onDropdownChange: (open: boolean) => void;
 };
