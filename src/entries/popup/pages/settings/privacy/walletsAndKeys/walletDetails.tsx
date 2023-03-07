@@ -107,12 +107,7 @@ export function WalletDetails() {
 
   const [wallet, setWallet] = useState<KeychainWallet>();
 
-  console.log('----- WalletDetails, state', state);
-
   useEffect(() => {
-    // chrome.storage.session.get(['settingsWallet'], (result) => {
-    //   return setWallet(result.settingsWallet as KeychainWallet);
-    // });
     setWallet(state?.wallet);
   }, [state?.wallet]);
 
@@ -147,17 +142,13 @@ export function WalletDetails() {
     [navigate, state?.password, wallet],
   );
 
-  const fetchWallet = useCallback(async () => {
-    const fetchedWallet = await getWallet(state?.wallet?.accounts?.[0]);
-    setWallet(fetchedWallet);
-  }, [state?.wallet?.accounts]);
-
   useEffect(() => {
-    if (state?.wallet?.accounts?.[0]) {
-      fetchWallet();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state?.wallet?.accounts?.[0]]);
+    const fetchWallet = async () => {
+      const fetchedWallet = await getWallet(state?.wallet?.accounts?.[0]);
+      setWallet(fetchedWallet);
+    };
+    fetchWallet();
+  }, [state?.wallet?.accounts]);
 
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
   const { unhideWallet, hiddenWallets } = useHiddenWalletsStore();
