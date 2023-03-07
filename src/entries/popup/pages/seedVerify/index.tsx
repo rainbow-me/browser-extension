@@ -141,15 +141,15 @@ export function SeedVerify() {
           selectedWord.index === index && selectedWord.word === word,
       );
       if (alreadySelected) {
-        const newSelectedWords = selectedWords.filter(
+        const selectedWordIndex = selectedWords.findIndex(
           (selectedWord) =>
-            selectedWord.index !== index && selectedWord.word !== word,
+            selectedWord.index === index && selectedWord.word === word,
         );
-        setselectedWords([...newSelectedWords]);
-      } else {
-        const newSelectedWords = selectedWords;
-        newSelectedWords.push({ word, index });
-        setselectedWords([...newSelectedWords]);
+        selectedWords.splice(selectedWordIndex, 1);
+        setselectedWords([...selectedWords]);
+      } else if (selectedWords.length < 3) {
+        selectedWords.push({ word, index });
+        setselectedWords([...selectedWords]);
       }
     },
     [selectedWords],
