@@ -1,4 +1,4 @@
-import { isAddress } from 'ethers/lib/utils';
+import { isAddress } from '@ethersproject/address';
 import { Address, useEnsAddress, useEnsName } from 'wagmi';
 
 import { isENSAddressFormat } from '~/core/utils/ethereum';

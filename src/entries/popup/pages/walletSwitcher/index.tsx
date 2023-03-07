@@ -188,11 +188,11 @@ export function WalletSwitcher() {
       if (removed?.type === KeychainType.ReadOnlyKeychain) {
         await remove(address);
         fetchWallets();
+        deleteWalletName({ address });
       } else {
         // hide if imported
         hideWallet({ address });
       }
-      deleteWalletName({ address });
       if (address === currentAddress) {
         const deletedIndex = accounts.findIndex(
           (account) => account.address === address,

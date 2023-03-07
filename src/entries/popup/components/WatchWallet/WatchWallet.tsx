@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 
+import { isAddress } from '@ethersproject/address';
 import { Address, fetchEnsAddress } from '@wagmi/core';
-import { isAddress } from 'ethers/lib/utils';
 import { motion } from 'framer-motion';
 import React, { KeyboardEvent, useCallback, useMemo, useState } from 'react';
 

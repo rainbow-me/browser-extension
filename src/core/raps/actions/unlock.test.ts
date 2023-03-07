@@ -1,6 +1,6 @@
+import { Wallet } from '@ethersproject/wallet';
 import { RAINBOW_ROUTER_CONTRACT_ADDRESS } from '@rainbow-me/swaps';
 import { chain, getProvider } from '@wagmi/core';
-import { Wallet } from 'ethers';
 import { beforeAll, expect, test } from 'vitest';
 
 import {

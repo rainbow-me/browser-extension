@@ -21,8 +21,7 @@ import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/numbers';
 
 const openWindow = async () => {
-  const { setWindow, window: stateWindow } = notificationWindowStore.getState();
-  if (stateWindow) return;
+  const { setWindow } = notificationWindowStore.getState();
   const currentWindow = await chrome.windows.getCurrent();
   const window = await chrome.windows.create({
     url: chrome.runtime.getURL('popup.html'),

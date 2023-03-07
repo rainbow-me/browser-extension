@@ -1,4 +1,4 @@
-import { isAddress } from 'ethers/lib/utils';
+import { isAddress } from '@ethersproject/address';
 import { useCallback, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';

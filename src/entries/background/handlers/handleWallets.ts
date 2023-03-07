@@ -1,6 +1,10 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import {
+  TypedDataDomain,
+  TypedDataField,
+} from '@ethersproject/abstract-signer';
+import { Bytes } from '@ethersproject/bytes';
 import { getProvider } from '@wagmi/core';
-import { Bytes, TypedDataDomain, TypedDataField } from 'ethers';
 import { Address } from 'wagmi';
 
 import {

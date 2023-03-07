@@ -11,9 +11,33 @@ require('html-webpack-plugin');
 require('file-loader');
 require('ts-loader');
 require('typescript');
-require('terser-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
-webpack({ ...config, mode: 'production' }).run((err, stats) => {
+webpack({ ...config, 
+  optimization: {
+    minimize: true,
+    nodeEnv: 'production',
+    sideEffects: true,
+    splitChunks: {
+      chunks: 'async'
+    }
+  }, 
+  devtool: 'hidden-source-map',
+  mode: 'production',
+  plugins: [
+    ...config.plugins,
+    new TerserPlugin({
+      terserOptions: {
+          format: {
+              comments: false,
+          },
+      },
+      extractComments: false,
+      // enable parallel running
+      parallel: true,
+  }),
+  ],
+ }).run((err, stats) => {
   if (err) throw err;
   console.log(stats.toString());
   process.exit(0);
