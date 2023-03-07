@@ -35,72 +35,70 @@ const addLeadingZero = (num: number) => {
   return `0${num}`;
 };
 
-const SeedColumn = ({
-  seed,
+const SeedWord = ({
+  word,
+  index,
   selectedWords,
   validated,
   incorrect,
   handleSelect,
 }: {
-  seed: string[];
+  word: string;
+  index: number;
   selectedWords: string[];
   validated: boolean;
   incorrect: boolean;
   handleSelect: (word: string) => void;
 }) => {
-  const getBackgroundForWord = useCallback(
-    (word: string) => {
-      if (validated) return 'green';
-      if (incorrect) return 'red';
-      if (selectedWords.includes(word)) return 'accent';
-    },
-    [incorrect, selectedWords, validated],
+  const backgroundForWord = useMemo(() => {
+    if (validated) return 'green';
+    if (incorrect) return 'red';
+    if (selectedWords.includes(word)) return 'accent';
+  }, [incorrect, selectedWords, validated, word]);
+
+  const wordIsSelected = useMemo(
+    () => selectedWords.includes(word),
+    [selectedWords, word],
   );
 
   return (
-    <>
-      {seed.map((word, index) => (
-        <Box
-          width="fit"
-          onClick={() => handleSelect(word)}
-          borderColor="separatorTertiary"
-          borderRadius="8px"
-          padding="8px"
-          borderWidth="1px"
-          background={getBackgroundForWord(word)}
-          key={`word_${index + 6}`}
-          style={{
-            width: '102px',
-            marginBottom: '8px',
-            background: selectedWords.includes(word)
-              ? undefined
-              : 'radial-gradient(100% 100% at 0% 50%, rgba(245, 248, 255, 0.02) 0%, rgba(245, 248, 255, 0.06) 100%)',
-            marginLeft: '14px',
-            textOverflow: 'ellipsis',
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-          }}
+    <Box
+      width="fit"
+      onClick={() => handleSelect(word)}
+      borderColor="separatorTertiary"
+      borderRadius="8px"
+      padding="8px"
+      borderWidth="1px"
+      background={backgroundForWord}
+      key={`word_${index + 6}`}
+      style={{
+        width: '102px',
+        marginBottom: '8px',
+        background: wordIsSelected
+          ? undefined
+          : 'radial-gradient(100% 100% at 0% 50%, rgba(245, 248, 255, 0.02) 0%, rgba(245, 248, 255, 0.06) 100%)',
+        marginLeft: '14px',
+        textOverflow: 'ellipsis',
+        overflow: 'hidden',
+        whiteSpace: 'nowrap',
+      }}
+    >
+      <Inline wrap={false} alignVertical="center" space="10px">
+        <Text
+          size="11pt"
+          weight="medium"
+          color={wordIsSelected ? 'labelQuaternary' : 'transparent'}
+          align="center"
         >
-          <Inline wrap={false} alignVertical="center" space="10px">
-            <Text
-              size="11pt"
-              weight="medium"
-              color={
-                selectedWords.includes(word) ? 'labelQuaternary' : 'transparent'
-              }
-              align="center"
-            >
-              {selectedWords.includes(word)
-                ? addLeadingZero((selectedWords.indexOf(word) + 1) * 4)
-                : '00'}
-            </Text>
-            <Text size="14pt" weight="bold" color="label" align="center">
-              {word}
-            </Text>
-          </Inline>
-        </Box>
-      ))}
-    </>
+          {wordIsSelected
+            ? addLeadingZero((selectedWords.indexOf(word) + 1) * 4)
+            : '00'}
+        </Text>
+        <Text size="14pt" weight="bold" color="label" align="center">
+          {word}
+        </Text>
+      </Inline>
+    </Box>
   );
 };
 
@@ -220,13 +218,17 @@ export function SeedVerify() {
         >
           <Columns>
             <Column width="1/3">
-              <SeedColumn
-                seed={randomSeed.slice(0, 6)}
-                validated={validated}
-                incorrect={incorrect}
-                selectedWords={selectedWords}
-                handleSelect={handleSelect}
-              />
+              {randomSeed.slice(0, 6).map((word, i) => (
+                <SeedWord
+                  key={i}
+                  word={word}
+                  index={i}
+                  validated={validated}
+                  incorrect={incorrect}
+                  selectedWords={selectedWords}
+                  handleSelect={handleSelect}
+                />
+              ))}
             </Column>
             <Box
               borderColor="separatorTertiary"
@@ -239,13 +241,17 @@ export function SeedVerify() {
               }}
             ></Box>
             <Column width="1/3">
-              <SeedColumn
-                seed={randomSeed.slice(-6)}
-                validated={validated}
-                incorrect={incorrect}
-                selectedWords={selectedWords}
-                handleSelect={handleSelect}
-              />
+              {randomSeed.slice(-6).map((word, i) => (
+                <SeedWord
+                  key={i}
+                  word={word}
+                  index={i + 6}
+                  validated={validated}
+                  incorrect={incorrect}
+                  selectedWords={selectedWords}
+                  handleSelect={handleSelect}
+                />
+              ))}
             </Column>
           </Columns>
         </Box>
