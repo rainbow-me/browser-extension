@@ -49,6 +49,12 @@ const messengerProviderRequest = async (
   messenger: Messenger,
   request: ProviderRequestPayload,
 ) => {
+  console.log('got provider request from', {
+    tabId: request.meta?.sender?.tab?.id,
+    tabUrl: request.meta?.sender.tab?.url,
+    request,
+  });
+
   const { addPendingRequest } = pendingRequestStore.getState();
   // Add pending request to global background state.
   addPendingRequest(request);
