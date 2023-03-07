@@ -50,7 +50,7 @@ export function WalletsAndKeys() {
       imported: false,
       type: KeychainType.HdKeychain,
     };
-
+    setSettingWallets(wallet);
     navigate(
       ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
       {
