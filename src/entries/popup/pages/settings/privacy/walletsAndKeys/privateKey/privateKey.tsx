@@ -45,7 +45,6 @@ export function PrivateKey() {
         'settings.privacy_and_security.wallets_and_keys.private_key.saved',
       )}
       confirmButtonSymbol="checkmark.circle.fill"
-      confirmButtonTopSpacing={260}
       onConfirm={handleSavedTheseWords}
       onCopy={handleCopy}
       secret={

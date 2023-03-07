@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import SeedPhraseTable from '~/entries/popup/components/SeedPhraseTable/SeedPhaseTable';
+import SeedPhraseTable from '~/entries/popup/components/SeedPhraseTable/SeedPhraseTable';
 import ViewSecret from '~/entries/popup/components/ViewSecret/ViewSecret';
 import { exportWallet } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
@@ -48,7 +48,6 @@ export function RecoveryPhrase() {
         'settings.privacy_and_security.wallets_and_keys.recovery_phrase.saved',
       )}
       confirmButtonSymbol="doc.plaintext"
-      confirmButtonTopSpacing={80}
       onConfirm={handleSavedTheseWords}
       onCopy={handleCopy}
       secret={<SeedPhraseTable seed={seed} />}
