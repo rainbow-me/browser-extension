@@ -4,6 +4,9 @@ import { initializeMessenger } from '~/core/messengers';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
 import { usePendingRequestStore } from '~/core/state/requests';
 
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { ROUTES } from '../../urls';
+
 import { RequestAccounts } from './RequestAccounts';
 import { SendTransaction } from './SendTransaction';
 import { SignMessage } from './SignMessage';
@@ -14,19 +17,23 @@ export const ApproveAppRequest = () => {
   const { pendingRequests, removePendingRequest } = usePendingRequestStore();
   const { notificationWindow } = useNotificationWindowStore();
   const pendingRequest = pendingRequests?.[0];
+  const navigate = useRainbowNavigate();
 
   const handleRequestAction = useCallback(() => {
     removePendingRequest(pendingRequest?.id);
     if (pendingRequests.length <= 1 && notificationWindow?.id) {
       setTimeout(() => {
         notificationWindow?.id && chrome.windows.remove(notificationWindow?.id);
+        console.log('navigated to home');
+        navigate(ROUTES.HOME);
       }, 50);
     }
   }, [
+    removePendingRequest,
     pendingRequest?.id,
     pendingRequests.length,
-    removePendingRequest,
     notificationWindow?.id,
+    navigate,
   ]);
 
   const approveRequest = useCallback(

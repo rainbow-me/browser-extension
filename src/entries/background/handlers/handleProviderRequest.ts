@@ -45,7 +45,6 @@ const focusOnWindow = (windowId: number) => {
 const openWindow = async () => {
   const { notificationWindow } = notificationWindowStore.getState();
   if (notificationWindow) {
-    console.log('notification window already open', notificationWindow);
     chrome.windows.get(
       notificationWindow.id as number,
       async (existingWindow) => {
@@ -74,12 +73,6 @@ const messengerProviderRequest = async (
   messenger: Messenger,
   request: ProviderRequestPayload,
 ) => {
-  console.log('got provider request from', {
-    tabId: request.meta?.sender?.tab?.id,
-    tabUrl: request.meta?.sender.tab?.url,
-    request,
-  });
-
   const { addPendingRequest } = pendingRequestStore.getState();
   // Add pending request to global background state.
   addPendingRequest(request);
