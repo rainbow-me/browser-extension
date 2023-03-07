@@ -19,7 +19,7 @@ import { exportWallet } from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
-const shuffleArray = (array: string[]) => {
+const shuffleArray = (array: { word: string; index: number }[]) => {
   const arrayCopy = [...array];
   for (let i = arrayCopy.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -35,7 +35,9 @@ const addLeadingZero = (num: number) => {
   return `0${num}`;
 };
 
-const SeedWord = ({
+type SeedWord = { word: string; index: number };
+
+const SeedWordRow = ({
   word,
   index,
   selectedWords,
@@ -45,32 +47,40 @@ const SeedWord = ({
 }: {
   word: string;
   index: number;
-  selectedWords: string[];
+  selectedWords: SeedWord[];
   validated: boolean;
   incorrect: boolean;
-  handleSelect: (word: string) => void;
+  handleSelect: ({ word, index }: SeedWord) => void;
 }) => {
+  const wordIsSelected = useMemo(
+    () =>
+      selectedWords.find(
+        (selectedWord) =>
+          selectedWord.index === index && selectedWord.word === word,
+      ),
+    [index, selectedWords, word],
+  );
+
   const backgroundForWord = useMemo(() => {
     if (validated) return 'green';
     if (incorrect) return 'red';
-    if (selectedWords.includes(word)) return 'accent';
-  }, [incorrect, selectedWords, validated, word]);
+    if (wordIsSelected) return 'accent';
+  }, [incorrect, validated, wordIsSelected]);
 
-  const wordIsSelected = useMemo(
-    () => selectedWords.includes(word),
-    [selectedWords, word],
-  );
+  const onClick = useCallback(() => {
+    handleSelect({ word, index });
+  }, [handleSelect, index, word]);
 
   return (
     <Box
       width="fit"
-      onClick={() => handleSelect(word)}
+      onClick={onClick}
       borderColor="separatorTertiary"
       borderRadius="8px"
       padding="8px"
       borderWidth="1px"
       background={backgroundForWord}
-      key={`word_${index + 6}`}
+      key={`word_${index}`}
       style={{
         width: '102px',
         marginBottom: '8px',
@@ -90,9 +100,7 @@ const SeedWord = ({
           color={wordIsSelected ? 'labelQuaternary' : 'transparent'}
           align="center"
         >
-          {wordIsSelected
-            ? addLeadingZero((selectedWords.indexOf(word) + 1) * 4)
-            : '00'}
+          {wordIsSelected ? addLeadingZero((1 + 1) * 4) : '00'}
         </Text>
         <Text size="14pt" weight="bold" color="label" align="center">
           {word}
@@ -104,32 +112,41 @@ const SeedWord = ({
 
 export function SeedVerify() {
   const navigate = useRainbowNavigate();
-  const [seed, setSeed] = useState('');
-  const [randomSeed, setRandomSeed] = useState<string[]>([]);
   const { currentAddress } = useCurrentAddressStore();
-  const [selectedWords, setSelectedWords] = useState<string[]>([]);
+
+  const [seed, setSeed] = useState('');
   const [validated, setValidated] = useState(false);
   const [incorrect, setIncorrect] = useState(false);
+
+  const [randomSeedWithIndex, setRaindomSeedWithIndex] = useState<SeedWord[]>(
+    [],
+  );
+  const [newSelectedWords, setNewSelectedWords] = useState<SeedWord[]>([]);
 
   const seedBoxBorderColor = useMemo(() => {
     if (validated) return globalColors.green90;
     if (incorrect) return globalColors.red90;
   }, [incorrect, validated]);
 
-  const handleSelect = useCallback(
-    (word: string) => {
-      const prev = [...selectedWords];
-
-      let current;
-      if (prev.includes(word)) {
-        current = prev.filter((w) => w !== word);
+  const newHandleSelect = useCallback(
+    ({ word, index }: { word: string; index: number }) => {
+      const alreadySelected = newSelectedWords.find(
+        (selectedWord) =>
+          selectedWord.index === index && selectedWord.word === word,
+      );
+      if (alreadySelected) {
+        const selectedWords = newSelectedWords.filter(
+          (selectedWord) =>
+            selectedWord.index !== index && selectedWord.word !== word,
+        );
+        setNewSelectedWords([...selectedWords]);
       } else {
-        if (prev.length === 3) return;
-        current = [...prev, word];
+        const selectedWords = newSelectedWords;
+        selectedWords.push({ word, index });
+        setNewSelectedWords([...selectedWords]);
       }
-      setSelectedWords(current);
     },
-    [selectedWords],
+    [newSelectedWords],
   );
 
   const handleSkip = useCallback(
@@ -140,21 +157,29 @@ export function SeedVerify() {
   useEffect(() => {
     const init = async () => {
       const seedPhrase = await exportWallet(currentAddress, '');
+      const seedArray = seedPhrase.split(' ');
+      const seedWithIndex = seedArray.map((word, index) => ({
+        word,
+        index,
+      }));
       setSeed(seedPhrase);
-      setRandomSeed(shuffleArray(seed.split(' ')));
+      setRaindomSeedWithIndex(shuffleArray(seedWithIndex));
     };
     init();
   }, [currentAddress, seed]);
 
   useEffect(() => {
-    if (selectedWords.length === 3) {
+    if (newSelectedWords.length === 3) {
       setTimeout(() => {
         // Validate
         const seedWords = seed.split(' ');
         if (
-          seedWords[3] === selectedWords[0] &&
-          seedWords[7] === selectedWords[1] &&
-          seedWords[11] === selectedWords[2]
+          seedWords[3] === newSelectedWords[0].word &&
+          newSelectedWords[0].index === 3 &&
+          seedWords[7] === newSelectedWords[1].word &&
+          newSelectedWords[1].index === 7 &&
+          seedWords[11] === newSelectedWords[2].word &&
+          newSelectedWords[2].index === 11
         ) {
           setValidated(true);
           setTimeout(() => {
@@ -168,7 +193,7 @@ export function SeedVerify() {
       setValidated(false);
       setIncorrect(false);
     }
-  }, [navigate, seed, selectedWords]);
+  }, [navigate, newSelectedWords, seed]);
 
   return (
     <FullScreenContainer>
@@ -219,15 +244,15 @@ export function SeedVerify() {
         >
           <Columns>
             <Column width="1/3">
-              {randomSeed.slice(0, 6).map((word, i) => (
-                <SeedWord
+              {randomSeedWithIndex.slice(0, 6).map(({ word, index }, i) => (
+                <SeedWordRow
                   key={i}
                   word={word}
-                  index={i}
+                  index={index}
                   validated={validated}
                   incorrect={incorrect}
-                  selectedWords={selectedWords}
-                  handleSelect={handleSelect}
+                  selectedWords={newSelectedWords}
+                  handleSelect={newHandleSelect}
                 />
               ))}
             </Column>
@@ -242,15 +267,15 @@ export function SeedVerify() {
               }}
             ></Box>
             <Column width="1/3">
-              {randomSeed.slice(-6).map((word, i) => (
-                <SeedWord
+              {randomSeedWithIndex.slice(-6).map(({ word, index }, i) => (
+                <SeedWordRow
                   key={i}
                   word={word}
-                  index={i + 6}
+                  index={index}
                   validated={validated}
                   incorrect={incorrect}
-                  selectedWords={selectedWords}
-                  handleSelect={handleSelect}
+                  selectedWords={newSelectedWords}
+                  handleSelect={newHandleSelect}
                 />
               ))}
             </Column>
