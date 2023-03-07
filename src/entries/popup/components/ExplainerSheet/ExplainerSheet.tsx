@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
+import { goToNewTab } from '~/core/utils/tabs';
 import {
   Box,
   Button,
@@ -102,7 +103,7 @@ export const ExplainerSheet = ({
 }: ExplainerSheetProps) => {
   const goToLink = useCallback((link?: string) => {
     link &&
-      chrome.tabs.create({
+      goToNewTab({
         url: link,
       });
   }, []);
