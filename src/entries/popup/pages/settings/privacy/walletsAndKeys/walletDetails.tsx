@@ -127,7 +127,7 @@ export function WalletDetails() {
   const handleViewRecoveryPhrase = useCallback(() => {
     navigate(
       ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
-      { state: { wallet: JSON.stringify(wallet), password: state?.password } },
+      { state: { wallet, password: state?.password } },
     );
   }, [navigate, state?.password, wallet]);
 
