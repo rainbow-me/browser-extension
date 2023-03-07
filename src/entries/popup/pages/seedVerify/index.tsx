@@ -111,14 +111,10 @@ export function SeedVerify() {
   const [validated, setValidated] = useState(false);
   const [incorrect, setIncorrect] = useState(false);
 
-  useEffect(() => {
-    const init = async () => {
-      const seedPhrase = await exportWallet(currentAddress, '');
-      setSeed(seedPhrase);
-      setRandomSeed(shuffleArray(seed.split(' ')));
-    };
-    init();
-  }, [currentAddress, seed]);
+  const seedBoxBorderColor = useMemo(() => {
+    if (validated) return globalColors.green90;
+    if (incorrect) return globalColors.red90;
+  }, [incorrect, validated]);
 
   const handleSelect = useCallback(
     (word: string) => {
@@ -135,6 +131,20 @@ export function SeedVerify() {
     },
     [selectedWords],
   );
+
+  const handleSkip = useCallback(
+    () => navigate(ROUTES.CREATE_PASSWORD),
+    [navigate],
+  );
+
+  useEffect(() => {
+    const init = async () => {
+      const seedPhrase = await exportWallet(currentAddress, '');
+      setSeed(seedPhrase);
+      setRandomSeed(shuffleArray(seed.split(' ')));
+    };
+    init();
+  }, [currentAddress, seed]);
 
   useEffect(() => {
     if (selectedWords.length === 3) {
@@ -159,15 +169,6 @@ export function SeedVerify() {
       setIncorrect(false);
     }
   }, [navigate, seed, selectedWords]);
-
-  const handleSkip = useCallback(async () => {
-    navigate(ROUTES.CREATE_PASSWORD);
-  }, [navigate]);
-
-  const seedBoxBorderColor = useMemo(() => {
-    if (validated) return globalColors.green90;
-    if (incorrect) return globalColors.red90;
-  }, [incorrect, validated]);
 
   return (
     <FullScreenContainer>
