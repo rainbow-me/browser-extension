@@ -52,13 +52,18 @@ const SeedWordRow = ({
   incorrect: boolean;
   handleSelect: ({ word, index }: SeedWord) => void;
 }) => {
-  const wordIsSelected = useMemo(
+  const selectedWordPosition = useMemo(
     () =>
-      selectedWords.find(
+      selectedWords.findIndex(
         (selectedWord) =>
           selectedWord.index === index && selectedWord.word === word,
       ),
     [index, selectedWords, word],
+  );
+
+  const wordIsSelected = useMemo(
+    () => selectedWordPosition !== -1,
+    [selectedWordPosition],
   );
 
   const backgroundForWord = useMemo(() => {
@@ -100,7 +105,9 @@ const SeedWordRow = ({
           color={wordIsSelected ? 'labelQuaternary' : 'transparent'}
           align="center"
         >
-          {wordIsSelected ? addLeadingZero((1 + 1) * 4) : '00'}
+          {wordIsSelected
+            ? addLeadingZero((1 + selectedWordPosition) * 4)
+            : '00'}
         </Text>
         <Text size="14pt" weight="bold" color="label" align="center">
           {word}
