@@ -5,6 +5,7 @@ import { ParsedAddressAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain, isL2Chain } from '~/core/utils/chains';
+import { getExplorerUrl, goToNewTab } from '~/core/utils/tabs';
 import {
   Bleed,
   Box,
@@ -74,8 +75,8 @@ export function TokenToBuyRow({ asset, onDropdownChange }: TokenToBuyRowProps) {
     const explorer = getBlockExplorerHostForChain(
       asset?.chainId || ChainId.mainnet,
     );
-    chrome.tabs.create({
-      url: `https://${explorer}/address/${asset?.address}`,
+    goToNewTab({
+      url: getExplorerUrl(explorer, asset?.address),
     });
   }, [asset?.address, asset?.chainId]);
 
