@@ -8,6 +8,7 @@ import {
   Space,
   animatedRouteTransitionConfig,
 } from '~/design-system/styles/designTokens';
+import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 export const Prompt = ({
   show,
@@ -38,7 +39,7 @@ export const Prompt = ({
           style={{
             width: '100%',
             height: '100%',
-            zIndex: 1000,
+            zIndex: zIndexes.PROMPT,
           }}
           background="scrim"
           as={motion.div}
@@ -59,7 +60,7 @@ export const Prompt = ({
           style={{
             width: '100%',
             height: '100%',
-            zIndex: 1001,
+            zIndex: zIndexes.PROMPT + 1,
           }}
           as={motion.div}
           initial={{ opacity: 0 }}

@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { ChainId } from '~/core/types/chains';
 import {
   Box,
   Button,
@@ -25,11 +26,15 @@ import { useSwapDropdownDimensions } from '../../hooks/swap/useSwapDropdownDimen
 import { useSwapInputs } from '../../hooks/swap/useSwapInputs';
 import { useSwapQuote } from '../../hooks/swap/useSwapQuote';
 import { useSwapQuoteHandler } from '../../hooks/swap/useSwapQuoteHandler';
+import { useSwapSettings } from '../../hooks/swap/useSwapSettings';
 
+import { SwapSettings } from './SwapSettings/SwapSettings';
 import { TokenToBuyInput } from './SwapTokenInput/TokenToBuyInput';
 import { TokenToSellInput } from './SwapTokenInput/TokenToSellInput';
 
 export function Swap() {
+  const [showSwapSettings, setShowSwapSettings] = useState(false);
+
   const {
     assetsToSell,
     assetToSellFilter,
@@ -50,6 +55,10 @@ export function Swap() {
   const { toSellInputHeight, toBuyInputHeight } = useSwapDropdownDimensions({
     assetToSell,
     assetToBuy,
+  });
+
+  const { source, slippage, setSettings } = useSwapSettings({
+    chainId: assetToSell?.chainId || ChainId.mainnet,
   });
 
   const {
@@ -82,6 +91,8 @@ export function Swap() {
     assetToSellValue,
     assetToBuyValue,
     independentField,
+    source,
+    slippage,
   });
 
   useSwapQuoteHandler({
@@ -93,6 +104,12 @@ export function Swap() {
     setAssetToSellValue,
   });
 
+  const openSettings = useCallback(() => {
+    setShowSwapSettings(true);
+    onAssetToSellInputOpen(false);
+    onAssetToBuyInputOpen(false);
+  }, [onAssetToBuyInputOpen, onAssetToSellInputOpen]);
+
   return (
     <>
       <Navbar
@@ -103,12 +120,22 @@ export function Swap() {
           <ButtonSymbol
             color="surfaceSecondaryElevated"
             height={'32px'}
-            onClick={() => null}
+            onClick={openSettings}
             symbol="switch.2"
             symbolColor="labelSecondary"
             variant="flat"
           />
         }
+      />
+      <SwapSettings
+        show={showSwapSettings}
+        onDone={() => setShowSwapSettings(false)}
+        accentColor={
+          assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback
+        }
+        setSettings={setSettings}
+        slippage={slippage}
+        chainId={assetToSell?.chainId}
       />
       <Box
         background="surfaceSecondary"
