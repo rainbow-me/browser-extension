@@ -20,8 +20,7 @@ export function PrivateKey() {
       setPrivKey(privateKey);
     };
     fetchPrivateKey();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [state?.account, state?.password]);
 
   const handleSavedTheseWords = useCallback(async () => {
     navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);

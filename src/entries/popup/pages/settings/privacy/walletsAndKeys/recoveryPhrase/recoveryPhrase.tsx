@@ -26,8 +26,7 @@ export function RecoveryPhrase() {
       setSeed(recoveryPhrase);
     };
     fetchRecoveryPhrase();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [state?.password]);
 
   const handleSavedTheseWords = useCallback(async () => {
     navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);

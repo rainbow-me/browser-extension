@@ -40,7 +40,7 @@ export function WalletsAndKeys() {
     fetchWallets();
   }, []);
 
-  const handleCreateNewRecoveryPhrase = async () => {
+  const handleCreateNewRecoveryPhrase = useCallback(async () => {
     const newWalletAccount = await create();
     const wallet = {
       accounts: [newWalletAccount],
@@ -57,7 +57,7 @@ export function WalletsAndKeys() {
         },
       },
     );
-  };
+  }, [navigate, state?.password]);
 
   return (
     <Box>

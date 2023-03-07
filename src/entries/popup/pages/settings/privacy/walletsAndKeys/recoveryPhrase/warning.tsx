@@ -49,19 +49,21 @@ const iconAndCopyList: IconAndCopyItem[] = [
 export function RecoveryPhraseWarning() {
   const [showEnterPassword, setShowEnterPassword] = useState(false);
   const [confirmPasswordRedirect, setConfirmPasswordRedirect] = useState('');
-  const openPasswordPrompt = () => {
-    setShowEnterPassword(true);
-  };
-  const closePasswordPrompt = () => {
-    setShowEnterPassword(false);
-  };
 
-  const handleShowRecoveryPhraseClick = useCallback(async () => {
+  const openPasswordPrompt = useCallback(() => {
+    setShowEnterPassword(true);
+  }, []);
+
+  const closePasswordPrompt = useCallback(() => {
+    setShowEnterPassword(false);
+  }, []);
+
+  const handleShowRecoveryPhraseClick = useCallback(() => {
     openPasswordPrompt();
     setConfirmPasswordRedirect(
       ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE,
     );
-  }, []);
+  }, [openPasswordPrompt]);
 
   return (
     <>

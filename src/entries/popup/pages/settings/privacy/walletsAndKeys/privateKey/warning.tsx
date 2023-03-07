@@ -51,19 +51,21 @@ export function PrivateKeyWarning() {
 
   const [showEnterPassword, setShowEnterPassword] = useState(false);
   const [confirmPasswordRedirect, setConfirmPasswordRedirect] = useState('');
-  const openPasswordPrompt = () => {
+
+  const openPasswordPrompt = useCallback(() => {
     setShowEnterPassword(true);
-  };
-  const closePasswordPrompt = () => {
+  }, []);
+
+  const closePasswordPrompt = useCallback(() => {
     setShowEnterPassword(false);
-  };
+  }, []);
 
   const handleShowPrivkeyClick = useCallback(async () => {
     openPasswordPrompt();
     setConfirmPasswordRedirect(
       ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY,
     );
-  }, []);
+  }, [openPasswordPrompt]);
 
   return (
     <>

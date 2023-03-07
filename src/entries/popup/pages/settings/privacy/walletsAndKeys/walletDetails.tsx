@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
@@ -113,30 +113,36 @@ export function WalletDetails() {
     });
   }, []);
 
-  const handleOpenNewWalletPrompt = () => {
+  const handleOpenNewWalletPrompt = useCallback(() => {
     setShowNewWalletPrompt(true);
-  };
-  const handleCloseNewWalletPrompt = () => {
+  }, []);
+
+  const handleCloseNewWalletPrompt = useCallback(() => {
     setShowNewWalletPrompt(false);
-  };
-  const handleViewRecoveryPhrase = () => {
+  }, []);
+
+  const handleViewRecoveryPhrase = useCallback(() => {
     navigate(
       ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
       { state: { wallet, password: state?.password } },
     );
-  };
+  }, [navigate, state?.password, wallet]);
 
-  const handleViewPrivateKey = (account: Address) => {
-    navigate(
-      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
-      { state: { account, password: state?.password } },
-    );
-  };
+  const handleViewPrivateKey = useCallback(
+    (account: Address) => {
+      navigate(
+        ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
+        { state: { account, password: state?.password } },
+      );
+    },
+    [navigate, state?.password],
+  );
 
-  const fetchWallet = async () => {
+  const fetchWallet = useCallback(async () => {
     const fetchedWallet = await getWallet(state?.wallet?.accounts?.[0]);
     setWallet(fetchedWallet);
-  };
+  }, [state?.wallet?.accounts]);
+
   useEffect(() => {
     if (state?.wallet?.accounts?.[0]) {
       fetchWallet();

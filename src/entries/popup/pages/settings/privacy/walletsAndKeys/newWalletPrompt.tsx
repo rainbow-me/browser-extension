@@ -36,9 +36,10 @@ export const NewWalletPrompt = ({
 }) => {
   const { state } = useLocation();
   const navigate = useRainbowNavigate();
+  const { saveWalletName } = useWalletNamesStore();
+
   const [walletName, setWalletName] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const { saveWalletName } = useWalletNamesStore();
 
   const handleValidateWalletName = useCallback(async () => {
     if (walletName && walletName.trim() !== '') {
@@ -56,11 +57,11 @@ export const NewWalletPrompt = ({
     setError(i18n.t('errors.no_wallet_name_set'));
   }, [navigate, saveWalletName, state?.password, wallet?.accounts, walletName]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setError(null);
     setWalletName('');
     onClose();
-  };
+  }, [onClose]);
 
   useEffect(() => {
     setError(null);
