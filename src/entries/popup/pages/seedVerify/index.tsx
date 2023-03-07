@@ -92,7 +92,6 @@ const SeedWordRow = ({
         background: wordIsSelected
           ? undefined
           : 'radial-gradient(100% 100% at 0% 50%, rgba(245, 248, 255, 0.02) 0%, rgba(245, 248, 255, 0.06) 100%)',
-        marginLeft: '14px',
         textOverflow: 'ellipsis',
         overflow: 'hidden',
         whiteSpace: 'nowrap',
@@ -251,17 +250,19 @@ export function SeedVerify() {
         >
           <Columns>
             <Column width="1/3">
-              {randomSeedWithIndex.slice(0, 6).map(({ word, index }, i) => (
-                <SeedWordRow
-                  key={i}
-                  word={word}
-                  index={index}
-                  validated={validated}
-                  incorrect={incorrect}
-                  selectedWords={newSelectedWords}
-                  handleSelect={newHandleSelect}
-                />
-              ))}
+              <Box paddingRight="14px">
+                {randomSeedWithIndex.slice(0, 6).map(({ word, index }, i) => (
+                  <SeedWordRow
+                    key={i}
+                    word={word}
+                    index={index}
+                    validated={validated}
+                    incorrect={incorrect}
+                    selectedWords={newSelectedWords}
+                    handleSelect={newHandleSelect}
+                  />
+                ))}
+              </Box>
             </Column>
             <Box
               borderColor="separatorTertiary"
@@ -274,17 +275,19 @@ export function SeedVerify() {
               }}
             ></Box>
             <Column width="1/3">
-              {randomSeedWithIndex.slice(-6).map(({ word, index }, i) => (
-                <SeedWordRow
-                  key={i}
-                  word={word}
-                  index={index}
-                  validated={validated}
-                  incorrect={incorrect}
-                  selectedWords={newSelectedWords}
-                  handleSelect={newHandleSelect}
-                />
-              ))}
+              <Box paddingLeft="14px">
+                {randomSeedWithIndex.slice(-6).map(({ word, index }, i) => (
+                  <SeedWordRow
+                    key={i}
+                    word={word}
+                    index={index}
+                    validated={validated}
+                    incorrect={incorrect}
+                    selectedWords={newSelectedWords}
+                    handleSelect={newHandleSelect}
+                  />
+                ))}
+              </Box>
             </Column>
           </Columns>
         </Box>
