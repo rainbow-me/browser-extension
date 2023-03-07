@@ -124,35 +124,35 @@ export function SeedVerify() {
   const [validated, setValidated] = useState(false);
   const [incorrect, setIncorrect] = useState(false);
 
-  const [randomSeedWithIndex, setRaindomSeedWithIndex] = useState<SeedWord[]>(
+  const [randomSeedWithIndex, setRandomSeedWithIndex] = useState<SeedWord[]>(
     [],
   );
-  const [newSelectedWords, setNewSelectedWords] = useState<SeedWord[]>([]);
+  const [selectedWords, setselectedWords] = useState<SeedWord[]>([]);
 
   const seedBoxBorderColor = useMemo(() => {
     if (validated) return globalColors.green90;
     if (incorrect) return globalColors.red90;
   }, [incorrect, validated]);
 
-  const newHandleSelect = useCallback(
+  const handleSelect = useCallback(
     ({ word, index }: { word: string; index: number }) => {
-      const alreadySelected = newSelectedWords.find(
+      const alreadySelected = selectedWords.find(
         (selectedWord) =>
           selectedWord.index === index && selectedWord.word === word,
       );
       if (alreadySelected) {
-        const selectedWords = newSelectedWords.filter(
+        const newSelectedWords = selectedWords.filter(
           (selectedWord) =>
             selectedWord.index !== index && selectedWord.word !== word,
         );
-        setNewSelectedWords([...selectedWords]);
+        setselectedWords([...newSelectedWords]);
       } else {
-        const selectedWords = newSelectedWords;
-        selectedWords.push({ word, index });
-        setNewSelectedWords([...selectedWords]);
+        const newSelectedWords = selectedWords;
+        newSelectedWords.push({ word, index });
+        setselectedWords([...newSelectedWords]);
       }
     },
-    [newSelectedWords],
+    [selectedWords],
   );
 
   const handleSkip = useCallback(
@@ -169,23 +169,23 @@ export function SeedVerify() {
         index,
       }));
       setSeed(seedPhrase);
-      setRaindomSeedWithIndex(shuffleArray(seedWithIndex));
+      setRandomSeedWithIndex(shuffleArray(seedWithIndex));
     };
     init();
   }, [currentAddress, seed]);
 
   useEffect(() => {
-    if (newSelectedWords.length === 3) {
+    if (selectedWords.length === 3) {
       setTimeout(() => {
         // Validate
         const seedWords = seed.split(' ');
         if (
-          seedWords[3] === newSelectedWords[0].word &&
-          newSelectedWords[0].index === 3 &&
-          seedWords[7] === newSelectedWords[1].word &&
-          newSelectedWords[1].index === 7 &&
-          seedWords[11] === newSelectedWords[2].word &&
-          newSelectedWords[2].index === 11
+          seedWords[3] === selectedWords[0].word &&
+          selectedWords[0].index === 3 &&
+          seedWords[7] === selectedWords[1].word &&
+          selectedWords[1].index === 7 &&
+          seedWords[11] === selectedWords[2].word &&
+          selectedWords[2].index === 11
         ) {
           setValidated(true);
           setTimeout(() => {
@@ -199,7 +199,7 @@ export function SeedVerify() {
       setValidated(false);
       setIncorrect(false);
     }
-  }, [navigate, newSelectedWords, seed]);
+  }, [navigate, selectedWords, seed]);
 
   return (
     <FullScreenContainer>
@@ -258,8 +258,8 @@ export function SeedVerify() {
                     index={index}
                     validated={validated}
                     incorrect={incorrect}
-                    selectedWords={newSelectedWords}
-                    handleSelect={newHandleSelect}
+                    selectedWords={selectedWords}
+                    handleSelect={handleSelect}
                   />
                 ))}
               </Box>
@@ -283,8 +283,8 @@ export function SeedVerify() {
                     index={index}
                     validated={validated}
                     incorrect={incorrect}
-                    selectedWords={newSelectedWords}
-                    handleSelect={newHandleSelect}
+                    selectedWords={selectedWords}
+                    handleSelect={handleSelect}
                   />
                 ))}
               </Box>
