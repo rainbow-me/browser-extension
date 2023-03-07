@@ -14,6 +14,16 @@ export function PrivateKey() {
 
   const [privKey, setPrivKey] = useState('');
 
+  const handleSavedTheseWords = useCallback(
+    () => navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS),
+    [navigate],
+  );
+
+  const handleCopy = useCallback(
+    () => navigator.clipboard.writeText(privKey as string),
+    [privKey],
+  );
+
   useEffect(() => {
     const fetchPrivateKey = async () => {
       const privateKey = await exportAccount(state?.account, state?.password);
@@ -21,14 +31,6 @@ export function PrivateKey() {
     };
     fetchPrivateKey();
   }, [state?.account, state?.password]);
-
-  const handleSavedTheseWords = useCallback(async () => {
-    navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);
-  }, [navigate]);
-
-  const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(privKey as string);
-  }, [privKey]);
 
   return (
     <ViewSecret

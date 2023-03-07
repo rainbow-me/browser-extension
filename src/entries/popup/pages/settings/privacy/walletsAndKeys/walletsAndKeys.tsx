@@ -16,14 +16,11 @@ export function WalletsAndKeys() {
   const navigate = useRainbowNavigate();
   const [wallets, setWallets] = useState<KeychainWallet[]>([]);
 
-  useEffect(() => {
-    chrome.storage.session.set({ settingsWallet: null });
-  }, []);
-
   const handleViewWallet = useCallback(
     async (wallet: KeychainWallet) => {
-      await chrome.storage.session.set({ settingsWallet: wallet });
-      navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS);
+      navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS, {
+        state: { wallet },
+      });
     },
     [navigate],
   );
@@ -47,7 +44,7 @@ export function WalletsAndKeys() {
       imported: false,
       type: KeychainType.HdKeychain,
     };
-    await chrome.storage.session.set({ settingsWallet: wallet });
+
     navigate(
       ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
       {

@@ -107,11 +107,14 @@ export function WalletDetails() {
 
   const [wallet, setWallet] = useState<KeychainWallet>();
 
+  console.log('----- WalletDetails, state', state);
+
   useEffect(() => {
-    chrome.storage.session.get(['settingsWallet'], (result) => {
-      return setWallet(result.settingsWallet as KeychainWallet);
-    });
-  }, []);
+    // chrome.storage.session.get(['settingsWallet'], (result) => {
+    //   return setWallet(result.settingsWallet as KeychainWallet);
+    // });
+    setWallet(state?.wallet);
+  }, [state?.wallet]);
 
   const handleOpenNewWalletPrompt = useCallback(() => {
     setShowNewWalletPrompt(true);
@@ -124,7 +127,7 @@ export function WalletDetails() {
   const handleViewRecoveryPhrase = useCallback(() => {
     navigate(
       ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
-      { state: { wallet, password: state?.password } },
+      { state: { wallet: JSON.stringify(wallet), password: state?.password } },
     );
   }, [navigate, state?.password, wallet]);
 
@@ -132,10 +135,16 @@ export function WalletDetails() {
     (account: Address) => {
       navigate(
         ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
-        { state: { account, password: state?.password } },
+        {
+          state: {
+            wallet,
+            account,
+            password: state?.password,
+          },
+        },
       );
     },
-    [navigate, state?.password],
+    [navigate, state?.password, wallet],
   );
 
   const fetchWallet = useCallback(async () => {

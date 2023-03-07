@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { IconAndCopyItem } from '~/entries/popup/components/IconAndCopyList.tsx/IconAndCopyList';
@@ -47,34 +48,29 @@ const iconAndCopyList: IconAndCopyItem[] = [
 ];
 
 export function RecoveryPhraseWarning() {
+  const { state } = useLocation();
   const [showEnterPassword, setShowEnterPassword] = useState(false);
-  const [confirmPasswordRedirect, setConfirmPasswordRedirect] = useState('');
 
-  const openPasswordPrompt = useCallback(() => {
-    setShowEnterPassword(true);
-  }, []);
+  const openPasswordPrompt = useCallback(() => setShowEnterPassword(true), []);
 
-  const closePasswordPrompt = useCallback(() => {
-    setShowEnterPassword(false);
-  }, []);
-
-  const handleShowRecoveryPhraseClick = useCallback(() => {
-    openPasswordPrompt();
-    setConfirmPasswordRedirect(
-      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE,
-    );
-  }, [openPasswordPrompt]);
+  const closePasswordPrompt = useCallback(
+    () => setShowEnterPassword(false),
+    [],
+  );
 
   return (
     <>
       <ConfirmPasswordPrompt
         show={showEnterPassword}
         onClose={closePasswordPrompt}
-        redirect={confirmPasswordRedirect}
+        redirect={
+          ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE
+        }
+        extraState={{ ...state }}
       />
       <WarningInfo
         iconAndCopyList={iconAndCopyList}
-        onProceed={handleShowRecoveryPhraseClick}
+        onProceed={openPasswordPrompt}
         proceedButtonLabel={i18n.t(
           'settings.privacy_and_security.wallets_and_keys.recovery_phrase.show',
         )}

@@ -14,27 +14,26 @@ export function RecoveryPhrase() {
 
   const [seed, setSeed] = useState('');
 
+  const handleSavedTheseWords = useCallback(
+    () => navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS),
+    [navigate],
+  );
+
+  const handleCopy = useCallback(
+    () => navigator.clipboard.writeText(seed as string),
+    [seed],
+  );
+
   useEffect(() => {
     const fetchRecoveryPhrase = async () => {
-      const { settingsWallet } = await chrome.storage.session.get([
-        'settingsWallet',
-      ]);
       const recoveryPhrase = await exportWallet(
-        settingsWallet?.accounts?.[0],
+        state?.wallet?.accounts?.[0],
         state?.password,
       );
       setSeed(recoveryPhrase);
     };
     fetchRecoveryPhrase();
-  }, [state?.password]);
-
-  const handleSavedTheseWords = useCallback(async () => {
-    navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);
-  }, [navigate]);
-
-  const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(seed as string);
-  }, [seed]);
+  }, [state]);
 
   return (
     <ViewSecret
