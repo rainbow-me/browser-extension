@@ -52,7 +52,7 @@ export function PrivateKey() {
         <Box
           background="surfaceSecondaryElevated"
           borderRadius="16px"
-          paddingVertical="12px"
+          paddingVertical="10px"
           paddingHorizontal="16px"
           style={{
             wordBreak: 'break-all',
