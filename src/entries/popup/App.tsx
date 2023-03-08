@@ -5,6 +5,7 @@ import { WagmiConfig, useAccount } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import { Hotkey, HotkeysProvider, Scope, useHotkeys } from '~/core/hotkeys';
 import { changeI18nLanguage } from '~/core/languages';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry, setSentryUser } from '~/core/sentry';
@@ -17,6 +18,7 @@ import { Box, ThemeProvider } from '~/design-system';
 import { Routes } from './Routes';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { Toast } from './components/Toast/Toast';
+import * as wallet from './handlers/wallet';
 import { AuthProvider } from './hooks/useAuth';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import { usePendingTransactionWatcher } from './hooks/usePendingTransactionWatcher';
@@ -51,6 +53,10 @@ export function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useHotkeys(Scope.Global, {
+    [Hotkey.Lock]: () => wallet.lock(),
+  });
+
   const { currentTheme } = useCurrentThemeStore();
   const isFullScreen = useIsFullScreen();
 
@@ -65,21 +71,23 @@ export function App() {
             PlaygroundComponents[playground]
           ) : (
             <AuthProvider>
-              <Box
-                id="main"
-                background="surfacePrimaryElevated"
-                style={{
-                  maxWidth: !isFullScreen
-                    ? `${POPUP_DIMENSIONS.width}px`
-                    : undefined,
-                }}
-              >
-                <HashRouter>
-                  <Routes />
-                </HashRouter>
-              </Box>
-              <IdleTimer />
-              <Toast />
+              <HotkeysProvider>
+                <Box
+                  id="main"
+                  background="surfacePrimaryElevated"
+                  style={{
+                    maxWidth: !isFullScreen
+                      ? `${POPUP_DIMENSIONS.width}px`
+                      : undefined,
+                  }}
+                >
+                  <HashRouter>
+                    <Routes />
+                  </HashRouter>
+                </Box>
+                <IdleTimer />
+                <Toast />
+              </HotkeysProvider>
             </AuthProvider>
           )}
         </ThemeProvider>

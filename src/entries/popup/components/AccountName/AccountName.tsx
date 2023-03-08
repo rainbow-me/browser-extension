@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
 import { useAccount, useEnsAvatar } from 'wagmi';
 
+import { Hotkey, Scope, useHotkeys } from '~/core/hotkeys';
 import { Box, Inline, Symbol, Text } from '~/design-system';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
 import { transformScales } from '~/design-system/styles/designTokens';
@@ -37,6 +38,10 @@ export function AccountName({
   const handleClick = useCallback(() => {
     navigate(ROUTES.WALLET_SWITCHER);
   }, [navigate]);
+
+  useHotkeys(Scope.Home, {
+    [Hotkey.WalletSwitcher]: handleClick,
+  });
 
   return (
     <Box

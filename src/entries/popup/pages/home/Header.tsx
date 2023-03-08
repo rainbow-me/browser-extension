@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
+import { Hotkey, Scope, useHotkeys } from '~/core/hotkeys';
 import { i18n } from '~/core/languages';
 import {
   featureFlagTypes,
@@ -106,6 +107,14 @@ function ActionButtonsSection() {
     alert('This wallet is currently in "Watching" mode');
   }, []);
 
+  const sendButton = React.useRef<HTMLAnchorElement>(null);
+  const swapButton = React.useRef<HTMLAnchorElement>(null);
+  useHotkeys(Scope.Home, {
+    [Hotkey.CopyAddress]: handleCopy,
+    [Hotkey.Send]: () => sendButton.current?.click(),
+    [Hotkey.Swap]: () => swapButton.current?.click(),
+  });
+
   return (
     <Box style={{ height: 56 }}>
       {avatar?.color && (
@@ -126,6 +135,7 @@ function ActionButtonsSection() {
             }
             state={{ from: ROUTES.HOME }}
             onClick={isWatchingWallet ? alertWatchingWallet : () => null}
+            ref={swapButton}
           >
             <ActionButton
               symbol="arrow.triangle.swap"
@@ -139,6 +149,7 @@ function ActionButtonsSection() {
             to={isWatchingWallet ? '#' : ROUTES.SEND}
             state={{ from: ROUTES.HOME }}
             onClick={isWatchingWallet ? alertWatchingWallet : () => null}
+            ref={sendButton}
           >
             <ActionButton
               symbol="paperplane.fill"

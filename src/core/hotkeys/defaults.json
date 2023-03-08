@@ -1,0 +1,15 @@
+{
+  "*": {
+    "lock": "l"
+  },
+  "home": {
+    "connected_apps": "d",
+    "copy_address": "c",
+    "network_switcher": "w",
+    "profile": "p",
+    "send": "z",
+    "settings": [",", "Separator"],
+    "swap": "x",
+    "wallet_switcher": "w"
+  }
+}

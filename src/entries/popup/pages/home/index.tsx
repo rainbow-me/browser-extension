@@ -11,6 +11,7 @@ import { useAccount } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import { Hotkey, Scope, useHotkeys } from '~/core/hotkeys';
 import { usePendingRequestStore } from '~/core/state';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
@@ -94,6 +95,10 @@ export function Home() {
   useEffect(() => {
     analytics.track(event.walletViewed);
   }, []);
+
+  useHotkeys(Scope.Home, {
+    [Hotkey.Settings]: () => navigate(ROUTES.SETTINGS),
+  });
 
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>
