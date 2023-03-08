@@ -36,7 +36,7 @@ const parseParsedAssetToParsedAddressAsset = ({
   rawAsset: ParsedAsset;
   userAsset?: ParsedAddressAsset;
   outputChainId: ChainId;
-  searchAsset?: ParsedAddressAsset | SearchAsset | null;
+  searchAsset?: SearchAsset | null;
 }): ParsedAddressAsset => {
   const assetNetworkInformation = searchAsset?.networks?.[outputChainId];
   // if searchAsset is appearing because it found an exact match
@@ -136,6 +136,10 @@ export const useSwapAssets = () => {
     searchQuery: debouncedAssetToBuyFilter,
   });
 
+  const searchAssets = searchReceiveAssetsSections.reduce((assets, section) => {
+    return [...assets, ...(section?.data || [])];
+  }, [] as SearchAsset[]);
+
   const { data: rawAssetsWithPrice } = useAssets(
     {
       assetAddresses: {
@@ -149,6 +153,9 @@ export const useSwapAssets = () => {
     {
       enabled: !!assetToSell?.address || !!assetToBuy?.address,
       select: (dict) => {
+        console.log('dict: ', dict);
+        console.log('asset to buy: ', assetToBuy);
+        console.log('asset to sell: ', assetToSell);
         const assetToBuyWithPrice = dict?.[assetToBuy?.uniqueId || ''];
         const assetToSellWithPrice = dict?.[assetToSell?.uniqueId || ''];
         return { buy: assetToBuyWithPrice, sell: assetToSellWithPrice };
@@ -162,31 +169,37 @@ export const useSwapAssets = () => {
     const userAsset = userAssets.find((userAsset) =>
       isLowerCaseMatch(userAsset.address, rawAssetToBuy?.address),
     );
+    const searchAsset = searchAssets.find((asset) =>
+      isLowerCaseMatch(asset?.address, rawAssetToBuy?.address),
+    );
     if (rawAssetToBuy) {
       return parseParsedAssetToParsedAddressAsset({
         rawAsset: rawAssetToBuy,
         userAsset,
         outputChainId,
-        searchAsset: assetToBuy,
+        searchAsset,
       });
     }
     return assetToBuy;
-  }, [assetToBuy, outputChainId, rawAssetToBuy, userAssets]);
+  }, [assetToBuy, outputChainId, rawAssetToBuy, searchAssets, userAssets]);
 
   const parsedAssetToSell = useMemo(() => {
     const userAsset = userAssets.find((userAsset) =>
       isLowerCaseMatch(userAsset.address, rawAssetToSell?.address),
+    );
+    const searchAsset = searchAssets.find((asset) =>
+      isLowerCaseMatch(asset?.address, rawAssetToSell?.address),
     );
     if (rawAssetToSell) {
       return parseParsedAssetToParsedAddressAsset({
         rawAsset: rawAssetToSell,
         userAsset,
         outputChainId,
-        searchAsset: assetToSell,
+        searchAsset,
       });
     }
     return assetToSell;
-  }, [assetToSell, outputChainId, rawAssetToSell, userAssets]);
+  }, [assetToSell, outputChainId, rawAssetToSell, searchAssets, userAssets]);
 
   const assetsToBuyBySection = useMemo(() => {
     return searchReceiveAssetsSections.map(({ data, title, symbol, id }) => {
