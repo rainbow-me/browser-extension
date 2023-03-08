@@ -224,7 +224,7 @@ export const AcceptRequestButton = ({
   label,
   waitingForDevice,
 }: {
-  disabled: boolean;
+  disabled?: boolean;
   onClick: () => void;
   label: string;
   waitingForDevice?: boolean;
