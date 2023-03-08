@@ -163,7 +163,7 @@
     },
     "feature_flags": {
       "swaps": "Swaps",
-      "full_watching_wallets": "Allow full access to watchig wallets"
+      "full_watching_wallets": "Allow full access to watching wallets"
     }
   },
   "transactions": {
