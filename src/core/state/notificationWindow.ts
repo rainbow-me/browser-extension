@@ -4,18 +4,30 @@ import { createStore } from './internal/createStore';
 
 export type NotificationWindow = chrome.windows.Window;
 
+export interface NotificationWindows {
+  [key: string]: NotificationWindow | undefined;
+}
+
 export interface NotificationWindowsState {
-  notificationWindow: NotificationWindow | null;
+  notificationWindows: NotificationWindows;
   setNotificationWindow: (
-    notificationWindow: NotificationWindow | null,
+    tabId: string,
+    notificationWindow: NotificationWindow | undefined,
   ) => void;
 }
 
 export const notificationWindowStore = createStore<NotificationWindowsState>(
-  (set) => ({
-    notificationWindow: null,
-    setNotificationWindow: (newNotificationWindow) =>
-      set({ notificationWindow: newNotificationWindow }),
+  (set, get) => ({
+    notificationWindows: {},
+    setNotificationWindow: (tabId, newNotificationWindow) => {
+      const notificationWindows = get().notificationWindows;
+      set({
+        notificationWindows: {
+          ...notificationWindows,
+          [tabId.toString()]: newNotificationWindow,
+        },
+      });
+    },
   }),
   {
     persist: {

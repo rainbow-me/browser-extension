@@ -15,12 +15,28 @@ const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export const ApproveAppRequest = () => {
   const { pendingRequests, removePendingRequest } = usePendingRequestStore();
-  const { notificationWindow } = useNotificationWindowStore();
-  const pendingRequest = pendingRequests?.[0];
+  const { notificationWindows } = useNotificationWindowStore();
+  const isExternalPopup = window.location.href.includes('tabId=');
+  // If we're on an external popup, we only want to show the request that were sent from that tab
+  // otherwise we show all the requests in the extension popup
+  const filteredRequests = isExternalPopup
+    ? pendingRequests.filter((request) => {
+        return (
+          request.meta?.sender?.tab?.id ===
+          Number(window.location.search.split('tabId=')[1])
+        );
+      })
+    : pendingRequests;
+
+  const pendingRequest = filteredRequests?.[0];
   const navigate = useRainbowNavigate();
 
   const handleRequestAction = useCallback(() => {
     removePendingRequest(pendingRequest?.id);
+    const notificationWindow =
+      notificationWindows?.[
+        Number(pendingRequest?.meta?.sender?.tab?.id)?.toString()
+      ];
     if (pendingRequests.length <= 1 && notificationWindow?.id) {
       setTimeout(() => {
         notificationWindow?.id && chrome.windows.remove(notificationWindow?.id);
@@ -31,8 +47,9 @@ export const ApproveAppRequest = () => {
   }, [
     removePendingRequest,
     pendingRequest?.id,
+    pendingRequest?.meta?.sender?.tab?.id,
+    notificationWindows,
     pendingRequests.length,
-    notificationWindow?.id,
     navigate,
   ]);
 

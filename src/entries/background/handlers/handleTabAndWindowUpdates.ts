@@ -19,13 +19,25 @@ export const handleTabAndWindowUpdates = () => {
   });
 
   chrome.windows.onRemoved.addListener((id) => {
-    const { setNotificationWindow, notificationWindow } =
+    const { setNotificationWindow, notificationWindows } =
       notificationWindowStore.getState();
-    if (id === notificationWindow?.id) {
-      const { clearAllPendingRequests } = pendingRequestStore.getState();
-      // The popup has been closed
-      clearAllPendingRequests();
-      setNotificationWindow(null);
+
+    for (const [tabId, notificationWindow] of Object.entries(
+      notificationWindows,
+    )) {
+      if (id === notificationWindow?.id) {
+        const { clearPendingRequestsForTab } = pendingRequestStore.getState();
+        // The popup has been closed
+        clearPendingRequestsForTab(Number(tabId));
+        setNotificationWindow(tabId, undefined);
+      }
     }
+
+    // if (id === notificationWindow?.id) {
+    //   const { clearAllPendingRequests } = pendingRequestStore.getState();
+    //   // The popup has been closed
+    //   clearAllPendingRequests();
+    //   setNotificationWindow(null);
+    // }
   });
 };

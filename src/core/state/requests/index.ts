@@ -7,7 +7,7 @@ export interface PendingRequestsStore {
   pendingRequests: ProviderRequestPayload[];
   addPendingRequest: (request: ProviderRequestPayload) => void;
   removePendingRequest: (id: number) => void;
-  clearAllPendingRequests: () => void;
+  clearPendingRequestsForTab: (tabId: number) => void;
 }
 
 export const pendingRequestStore = createStore<PendingRequestsStore>(
@@ -23,9 +23,12 @@ export const pendingRequestStore = createStore<PendingRequestsStore>(
         pendingRequests: pendingRequests.filter((request) => request.id !== id),
       });
     },
-    clearAllPendingRequests: () => {
+    clearPendingRequestsForTab: (tabId: number) => {
+      const pendingRequests = get().pendingRequests;
       set({
-        pendingRequests: [],
+        pendingRequests: pendingRequests.filter(
+          (request) => request?.meta?.sender?.tab?.id !== tabId,
+        ),
       });
     },
   }),
