@@ -188,7 +188,7 @@ export const handleProviderRequest = ({
         case 'eth_blockNumber': {
           const provider = getProvider({ chainId: activeSession?.chainId });
           const blockNumber = await provider.getBlockNumber();
-          response = blockNumber;
+          response = toHex(blockNumber);
           break;
         }
         case 'eth_call': {
