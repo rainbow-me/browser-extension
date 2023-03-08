@@ -17,8 +17,7 @@ const FAVORITES_EMPTY_STATE = {
 };
 
 export function useFavoriteAssets() {
-  const { favorites, addFavorite, getIsFavorite, removeFavorite } =
-    useFavoritesStore();
+  const { favorites, addFavorite, removeFavorite } = useFavoritesStore();
   const [favoritesData, setFavoritesData] = useState<FavoriteAssets>(
     FAVORITES_EMPTY_STATE,
   );
@@ -83,7 +82,6 @@ export function useFavoriteAssets() {
 
   return {
     addFavorite,
-    getIsFavorite,
     favoriteAddresses: favorites,
     favorites: favoritesData,
     removeFavorite,

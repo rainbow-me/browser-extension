@@ -22,7 +22,6 @@ type UpdateFavoritesFn = ({ address, chainId }: UpdateFavoritesArgs) => void;
 export interface FavoritesState {
   favorites: Record<ChainId, Address[]>;
   addFavorite: UpdateFavoritesFn;
-  getIsFavorite: ({ address, chainId }: UpdateFavoritesArgs) => boolean;
   removeFavorite: UpdateFavoritesFn;
 }
 
@@ -44,11 +43,6 @@ export const favoritesStore = createStore<FavoritesState>(
           [chainId]: [...currentFavorites, address],
         },
       });
-    },
-    getIsFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
-      const { favorites } = get();
-      const currentFavorites = favorites[chainId] || [];
-      return currentFavorites.includes(address);
     },
     removeFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
       const { favorites } = get();
