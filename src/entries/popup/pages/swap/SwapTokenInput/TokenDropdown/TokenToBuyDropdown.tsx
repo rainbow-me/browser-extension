@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import React, { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
 import { isL2Chain } from '~/core/utils/chains';
@@ -31,7 +31,7 @@ const AssetsToBuySection = ({
 }: {
   data: SearchAsset[];
   title: string;
-  onSelectAsset?: (asset: SearchAsset | null) => void;
+  onSelectAsset?: (asset: ParsedSearchAsset | null) => void;
   symbol: SymbolProps['symbol'];
   id: string;
   onDropdownChange: (open: boolean) => void;
@@ -103,7 +103,7 @@ const AssetsToBuySection = ({
               <Box
                 paddingHorizontal="8px"
                 key={`${asset?.uniqueId}-${i}-${id}`}
-                onClick={() => onSelectAsset?.(asset)}
+                onClick={() => onSelectAsset?.(asset as ParsedSearchAsset)}
                 testId={`token-input-asset-${asset?.uniqueId}`}
               >
                 <TokenToBuyRow
@@ -120,7 +120,7 @@ const AssetsToBuySection = ({
 };
 
 export type TokenToBuyDropdownProps = {
-  asset: ParsedAddressAsset | null;
+  asset: ParsedSearchAsset | null;
   assets?: {
     data: SearchAsset[];
     title: string;
@@ -128,7 +128,7 @@ export type TokenToBuyDropdownProps = {
     symbol: SymbolProps['symbol'];
   }[];
   outputChainId: ChainId;
-  onSelectAsset?: (asset: SearchAsset | null) => void;
+  onSelectAsset?: (asset: ParsedSearchAsset | null) => void;
   setOutputChainId: (chainId: ChainId) => void;
   onDropdownChange: (open: boolean) => void;
 };

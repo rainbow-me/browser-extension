@@ -1,4 +1,4 @@
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { SearchAsset } from '~/core/types/search';
 
 const INITIAL_TO_SWAP_HEIGHT = 452;
@@ -9,8 +9,8 @@ export const useSwapDropdownDimensions = ({
   assetToSell,
   assetToBuy,
 }: {
-  assetToSell: ParsedAddressAsset | SearchAsset | null;
-  assetToBuy: ParsedAddressAsset | SearchAsset | null;
+  assetToSell: ParsedSearchAsset | SearchAsset | null;
+  assetToBuy: ParsedSearchAsset | SearchAsset | null;
 }) => {
   return {
     toSellInputHeight:

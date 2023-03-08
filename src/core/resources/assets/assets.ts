@@ -64,7 +64,6 @@ async function assetsQueryFunction({
       );
     }, ASSETS_TIMEOUT_DURATION);
     const resolver = (message: AssetPricesReceivedMessage) => {
-      console.log('MESSAGE RESOLVES: ', message);
       clearTimeout(timeout);
       resolve(parseAssets({ assetAddresses, currency, message }));
     };
