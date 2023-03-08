@@ -147,7 +147,7 @@
     "@vanilla-extract/webpack-plugin": "2.2.0",
     "audit-ci": "6.3.0",
     "browserify": "17.0.0",
-    "chromedriver": "109.0.0",
+    "chromedriver": "110.0.0",
     "copy-webpack-plugin": "11.0.0",
     "css-loader": "6.7.1",
     "dotenv-webpack": "8.0.1",
