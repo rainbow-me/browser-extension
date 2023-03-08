@@ -5,10 +5,7 @@ import { useAccount } from 'wagmi';
 
 import { Hotkey, Scope, useHotkeys } from '~/core/hotkeys';
 import { i18n } from '~/core/languages';
-// import {
-//   featureFlagTypes,
-//   useFeatureFlagsStore,
-// } from '~/core/state/currentSettings/featureFlags';
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, ButtonSymbol, Inline, Inset, Stack, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
@@ -17,7 +14,7 @@ import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useToast } from '../../hooks/useToast';
-// import { useWallets } from '../../hooks/useWallets';
+import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
 
@@ -85,9 +82,9 @@ function ActionButtonsSection() {
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
 
-  // const { watchedWallets } = useWallets();
+  const { watchedWallets } = useWallets();
   const { triggerToast } = useToast();
-  // const { featureFlags } = useFeatureFlagsStore();
+  const { featureFlags } = useFeatureFlagsStore();
 
   const handleCopy = React.useCallback(() => {
     navigator.clipboard.writeText(address as string);
@@ -97,15 +94,27 @@ function ActionButtonsSection() {
     });
   }, [address, triggerToast]);
 
-  // const isWatchingWallet = React.useMemo(() => {
-  //   const watchedAddresses = watchedWallets.map(({ address }) => address);
-  //   return address && watchedAddresses.includes(address);
-  // }, [address, watchedWallets]);
+  const isWatchingWallet = React.useMemo(() => {
+    const watchedAddresses = watchedWallets.map(({ address }) => address);
+    return address && watchedAddresses.includes(address);
+  }, [address, watchedWallets]);
 
-  // const alertWatchingWallet = React.useCallback(() => {
-  //   // this will be removed so not adding it to lang file
-  //   alert('This wallet is currently in "Watching" mode');
-  // }, []);
+  const allowSwap = React.useMemo(
+    () =>
+      (!isWatchingWallet || featureFlags.full_watching_wallets) &&
+      featureFlags.swaps,
+    [featureFlags.full_watching_wallets, featureFlags.swaps, isWatchingWallet],
+  );
+
+  const allowSend = React.useMemo(
+    () => !isWatchingWallet || featureFlags.full_watching_wallets,
+    [featureFlags.full_watching_wallets, isWatchingWallet],
+  );
+
+  const alertWatchingWallet = React.useCallback(() => {
+    // this will be removed so not adding it to lang file
+    alert('This wallet is currently in "Watching" mode');
+  }, []);
 
   const sendButton = React.useRef<HTMLAnchorElement>(null);
   const swapButton = React.useRef<HTMLAnchorElement>(null);
@@ -128,10 +137,10 @@ function ActionButtonsSection() {
           />
           <Link
             id="header-link-swap"
-            to={ROUTES.SWAP}
+            to={allowSwap ? ROUTES.SWAP : '#'}
             state={{ from: ROUTES.HOME }}
+            onClick={allowSwap ? () => null : alertWatchingWallet}
             ref={swapButton}
-            // onClick={isWatchingWallet ? alertWatchingWallet : () => null}
           >
             <ActionButton
               symbol="arrow.triangle.swap"
@@ -142,10 +151,10 @@ function ActionButtonsSection() {
 
           <Link
             id="header-link-send"
-            to={ROUTES.SEND}
+            to={allowSend ? ROUTES.SEND : '#'}
             state={{ from: ROUTES.HOME }}
+            onClick={allowSend ? () => null : alertWatchingWallet}
             ref={sendButton}
-            // onClick={isWatchingWallet ? alertWatchingWallet : () => null}
           >
             <ActionButton
               symbol="paperplane.fill"
