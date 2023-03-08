@@ -2,6 +2,7 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 
 import { usePendingRequestStore } from '~/core/state';
+import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
 
 import { UserStatusResult, useAuth } from './hooks/useAuth';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
@@ -44,8 +45,8 @@ export const ProtectedRoute = ({
         return <Navigate to={ROUTES.UNLOCK} />;
       case 'NEW':
         if (!isFullScreen) {
-          chrome.tabs.create({
-            url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome`,
+          goToNewTab({
+            url: WELCOME_URL,
           });
         }
         return <Navigate to={ROUTES.WELCOME} />;
@@ -58,8 +59,8 @@ export const ProtectedRoute = ({
       default:
         if (status === 'NEEDS_PASSWORD' && (isHome() || isCreatePassword())) {
           if (!isFullScreen) {
-            chrome.tabs.create({
-              url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome`,
+            goToNewTab({
+              url: WELCOME_URL,
             });
           }
           return (

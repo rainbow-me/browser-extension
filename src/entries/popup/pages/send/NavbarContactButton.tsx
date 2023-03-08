@@ -6,6 +6,7 @@ import { i18n } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain, isL2Chain } from '~/core/utils/chains';
+import { getExplorerUrl, goToNewTab } from '~/core/utils/tabs';
 import {
   Bleed,
   Box,
@@ -102,8 +103,8 @@ const EditContactDropdown = ({
 
   const viewOnEtherscan = useCallback(() => {
     const explorer = getBlockExplorerHostForChain(chainId || ChainId.mainnet);
-    chrome.tabs.create({
-      url: `https://${explorer}/address/${toAddress}`,
+    goToNewTab({
+      url: getExplorerUrl(explorer, toAddress),
     });
   }, [chainId, toAddress]);
 
