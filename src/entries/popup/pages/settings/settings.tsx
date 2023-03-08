@@ -80,8 +80,6 @@ export function Settings() {
     [setIsDefaultWallet],
   );
 
-  console.log('---- Object.keys(featureFlags)', Object.keys(featureFlags));
-
   return (
     <Box paddingHorizontal="20px">
       <MenuContainer testId="settings-menu-container">
