@@ -162,7 +162,8 @@
       "ZAR": "South African Rand"
     },
     "feature_flags": {
-      "swaps": "Swaps"
+      "swaps": "Swaps",
+      "full_watching_wallets": "Allow full access to watchig wallets"
     }
   },
   "transactions": {

@@ -4,10 +4,7 @@ import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import {
-  featureFlagTypes,
-  useFeatureFlagsStore,
-} from '~/core/state/currentSettings/featureFlags';
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, ButtonSymbol, Inline, Inset, Stack, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
@@ -101,6 +98,18 @@ function ActionButtonsSection() {
     return address && watchedAddresses.includes(address);
   }, [address, watchedWallets]);
 
+  const allowSwap = React.useMemo(
+    () =>
+      (!isWatchingWallet || featureFlags.full_watching_wallets) &&
+      featureFlags.swaps,
+    [featureFlags.full_watching_wallets, featureFlags.swaps, isWatchingWallet],
+  );
+
+  const allowSend = React.useMemo(
+    () => !isWatchingWallet || featureFlags.full_watching_wallets,
+    [featureFlags.full_watching_wallets, isWatchingWallet],
+  );
+
   const alertWatchingWallet = React.useCallback(() => {
     // this will be removed so not adding it to lang file
     alert('This wallet is currently in "Watching" mode');
@@ -119,13 +128,9 @@ function ActionButtonsSection() {
           />
           <Link
             id="header-link-swap"
-            to={
-              !isWatchingWallet && featureFlags[featureFlagTypes.swaps]
-                ? ROUTES.SWAP
-                : '#'
-            }
+            to={allowSwap ? ROUTES.SWAP : '#'}
             state={{ from: ROUTES.HOME }}
-            onClick={isWatchingWallet ? alertWatchingWallet : () => null}
+            onClick={allowSwap ? () => null : alertWatchingWallet}
           >
             <ActionButton
               symbol="arrow.triangle.swap"
@@ -136,9 +141,9 @@ function ActionButtonsSection() {
 
           <Link
             id="header-link-send"
-            to={isWatchingWallet ? '#' : ROUTES.SEND}
+            to={allowSend ? ROUTES.SEND : '#'}
             state={{ from: ROUTES.HOME }}
-            onClick={isWatchingWallet ? alertWatchingWallet : () => null}
+            onClick={allowSend ? () => null : alertWatchingWallet}
           >
             <ActionButton
               symbol="paperplane.fill"
