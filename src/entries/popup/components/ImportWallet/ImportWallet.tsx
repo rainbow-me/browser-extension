@@ -275,7 +275,7 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
             height="44px"
             variant={isValid ? 'flat' : 'disabled'}
             width="full"
-            onClick={handleImportWallet}
+            onClick={isValid ? handleImportWallet : () => null}
             testId="import-wallets-button"
             tabIndex={2}
           >
