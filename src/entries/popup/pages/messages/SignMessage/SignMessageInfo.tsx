@@ -79,9 +79,15 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
             }}
           >
             <Inset horizontal="20px" vertical="20px">
-              <Text weight="regular" color="label" size="14pt">
-                {typedData ? <pre>{message}</pre> : message}
-              </Text>
+              <Box
+                style={{
+                  wordBreak: 'break-all',
+                }}
+              >
+                <Text weight="regular" color="label" size="14pt">
+                  {typedData ? <pre>{message}</pre> : message}
+                </Text>
+              </Box>
             </Inset>
           </Box>
         </Inset>
