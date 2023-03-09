@@ -188,7 +188,7 @@ export const handleProviderRequest = ({
         case 'eth_blockNumber': {
           const provider = getProvider({ chainId: activeSession?.chainId });
           const blockNumber = await provider.getBlockNumber();
-          response = blockNumber;
+          response = toHex(String(blockNumber));
           break;
         }
         case 'eth_call': {
@@ -206,6 +206,14 @@ export const handleProviderRequest = ({
         case 'eth_gasPrice': {
           const provider = getProvider({ chainId: activeSession?.chainId });
           response = await provider.getGasPrice();
+          break;
+        }
+        case 'eth_getCode': {
+          const provider = getProvider({ chainId: activeSession?.chainId });
+          response = await provider.getCode(
+            params?.[0] as string,
+            params?.[1] as string,
+          );
           break;
         }
         case 'personal_ecRecover': {

@@ -327,9 +327,10 @@ export const ToAddressInput = ({
   });
 
   useEffect(() => {
-    openDropdown();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    setTimeout(() => {
+      openDropdown();
+    }, 200);
+  }, [openDropdown]);
 
   return (
     <>

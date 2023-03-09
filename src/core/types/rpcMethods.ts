@@ -8,6 +8,7 @@ export enum rpcMethods {
   eth_signTypedData = 'eth_signTypedData',
   eth_signTypedData_v3 = 'eth_signTypedData_v3',
   eth_signTypedData_v4 = 'eth_signTypedData_v4',
+  eth_getCode = 'eth_getCode',
   wallet_addEthereumChain = 'wallet_addEthereumChain',
   wallet_switchEthereumChain = 'wallet_switchEthereumChain',
   eth_requestAccounts = 'eth_requestAccounts',
