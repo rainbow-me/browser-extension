@@ -40,7 +40,6 @@ export const ApproveAppRequest = () => {
     if (pendingRequests.length <= 1 && notificationWindow?.id) {
       setTimeout(() => {
         notificationWindow?.id && chrome.windows.remove(notificationWindow?.id);
-        console.log('navigated to home');
         navigate(ROUTES.HOME);
       }, 50);
     }

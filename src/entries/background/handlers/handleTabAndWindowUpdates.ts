@@ -1,3 +1,4 @@
+import { bridgeMessenger } from '~/core/messengers/internal/bridge';
 import { notificationWindowStore, pendingRequestStore } from '~/core/state';
 
 export const handleTabAndWindowUpdates = () => {
@@ -8,6 +9,7 @@ export const handleTabAndWindowUpdates = () => {
       pendingRequestStore.getState();
     pendingRequests.forEach((request) => {
       if (request.meta?.sender?.tab?.id === tabId) {
+        bridgeMessenger.send(`message:${request?.id}`, null);
         removePendingRequest(request.id);
       }
     });
@@ -26,18 +28,10 @@ export const handleTabAndWindowUpdates = () => {
       notificationWindows,
     )) {
       if (id === notificationWindow?.id) {
-        const { clearPendingRequestsForTab } = pendingRequestStore.getState();
         // The popup has been closed
-        clearPendingRequestsForTab(Number(tabId));
+        clearPendingRequestsOnUpdate(Number(tabId));
         setNotificationWindow(tabId, undefined);
       }
     }
-
-    // if (id === notificationWindow?.id) {
-    //   const { clearAllPendingRequests } = pendingRequestStore.getState();
-    //   // The popup has been closed
-    //   clearAllPendingRequests();
-    //   setNotificationWindow(null);
-    // }
   });
 };
