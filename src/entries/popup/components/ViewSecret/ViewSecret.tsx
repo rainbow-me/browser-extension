@@ -91,13 +91,7 @@ export default function ViewSecret({
         </Stack>
       </Stack>
 
-      <Box
-        position="absolute"
-        width="full"
-        bottom="0"
-        padding="20px"
-        // style={{ marginTop: confirmButtonTopSpacing }}
-      >
+      <Box position="absolute" width="full" bottom="0" padding="20px">
         <Button
           color="accent"
           height="44px"
