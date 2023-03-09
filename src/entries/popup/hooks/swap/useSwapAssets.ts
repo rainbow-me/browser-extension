@@ -217,11 +217,12 @@ export const useSwapAssets = () => {
           const shouldFilterFavorite =
             id !== 'favorites' &&
             favorites[outputChainId].includes((p?.address || '') as Address);
-          return !shouldFilterFavorite;
+          const isSellToken = p.uniqueId === assetToSell?.uniqueId;
+          return !shouldFilterFavorite && !isSellToken;
         }) || [];
       return { data: parsedData, title, symbol, id };
     });
-  }, [favorites, outputChainId, searchReceiveAssetsSections]);
+  }, [assetToSell, favorites, outputChainId, searchReceiveAssetsSections]);
 
   // if output chain id changes we need to clear the receive asset
   useEffect(() => {
