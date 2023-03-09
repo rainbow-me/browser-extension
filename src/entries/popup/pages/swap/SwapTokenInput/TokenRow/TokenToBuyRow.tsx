@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useFavoritesStore } from '~/core/state/favorites';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
 import { truncateAddress } from '~/core/utils/address';
@@ -31,7 +32,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
-import { useFavoriteAssets } from '~/entries/popup/hooks/useFavoriteAssets';
 
 import { RowHighlightWrapper } from './RowHighlightWrapper';
 
@@ -44,11 +44,10 @@ export type TokenToBuyRowProps = {
 };
 
 export function TokenToBuyRow({ asset, onDropdownChange }: TokenToBuyRowProps) {
-  const { addFavorite, favoriteAddresses, removeFavorite } =
-    useFavoriteAssets();
+  const { addFavorite, favorites, removeFavorite } = useFavoritesStore();
   const isFavorite = useMemo(
-    () => favoriteAddresses[asset?.chainId]?.includes(asset?.address),
-    [asset, favoriteAddresses],
+    () => favorites[asset?.chainId]?.includes(asset?.address),
+    [asset, favorites],
   );
   const leftColumn = useMemo(
     () => (

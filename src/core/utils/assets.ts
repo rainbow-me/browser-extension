@@ -67,7 +67,8 @@ export function parseAsset({
 }): ParsedAsset {
   const chainName = asset?.network ?? ChainName.mainnet;
   const chainId = chainIdFromChainName(chainName);
-  const uniqueId: UniqueId = `${address}_${chainId}`;
+  const mainnetAddress = asset?.mainnet_address;
+  const uniqueId: UniqueId = `${mainnetAddress || address}_${chainId}`;
   const parsedAsset = {
     address,
     colors: asset?.colors,
@@ -75,7 +76,7 @@ export function parseAsset({
     chainName,
     isNativeAsset: isNativeAsset(address, chainIdFromChainName(chainName)),
     name: asset?.name,
-    mainnetAddress: asset?.mainnet_address,
+    mainnetAddress,
     native: {
       price: getNativeAssetPrice({
         currency,

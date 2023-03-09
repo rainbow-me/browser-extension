@@ -16,8 +16,9 @@ const FAVORITES_EMPTY_STATE = {
   [ChainId.arbitrum]: [],
 };
 
+// expensive hook, only use in top level parent components
 export function useFavoriteAssets() {
-  const { favorites, addFavorite, removeFavorite } = useFavoritesStore();
+  const { favorites } = useFavoritesStore();
   const [favoritesData, setFavoritesData] = useState<FavoriteAssets>(
     FAVORITES_EMPTY_STATE,
   );
@@ -81,9 +82,6 @@ export function useFavoriteAssets() {
   }, [setFavoriteAssetsData]);
 
   return {
-    addFavorite,
-    favoriteAddresses: favorites,
     favorites: favoritesData,
-    removeFavorite,
   };
 }

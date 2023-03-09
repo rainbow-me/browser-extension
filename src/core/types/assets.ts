@@ -2,8 +2,6 @@ import { Address } from 'wagmi';
 
 import { ChainId, ChainName } from '~/core/types/chains';
 
-import { Modify } from '../utils/types';
-
 import { SearchAsset } from './search';
 
 export interface ParsedAsset {
@@ -50,37 +48,7 @@ export interface ParsedAddressAsset extends ParsedAsset {
 }
 
 export type SearchAssetWithPrice = SearchAsset & ParsedAsset;
-export type ParsedSearchAsset = Modify<
-  SearchAssetWithPrice,
-  {
-    balance?: {
-      amount: string;
-      display: string;
-    };
-    colors?: {
-      primary: string;
-      fallback?: string;
-    };
-    highLiquidity?: boolean;
-    icon_url?: string;
-    isRainbowCurated?: boolean;
-    isVerified?: boolean;
-    mainnetAddress?: string;
-    networks?: Record<ChainId, { address: Address; decimals: number }>;
-    native?: {
-      balance: {
-        amount: string;
-        display: string;
-      };
-      price?: {
-        change: string;
-        amount: number;
-        display: string;
-      };
-    };
-    rainbowMetadataId?: number;
-  }
->;
+export type ParsedSearchAsset = SearchAsset & ParsedAddressAsset;
 
 export type ParsedAssetsDict = Record<UniqueId, ParsedAddressAsset>;
 
