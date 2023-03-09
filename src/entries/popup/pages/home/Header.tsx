@@ -24,6 +24,7 @@ export function Header() {
 
   return (
     <Box
+      background="surfacePrimaryElevatedSecondary"
       display="flex"
       flexDirection="column"
       justifyContent="space-between"
