@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.0.60",
+  "version": "1.0.61",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -104,7 +104,7 @@
     "date-fns": "2.29.3",
     "deepmerge": "4.2.2",
     "eventemitter3": "4.0.7",
-    "framer-motion": "7.6.1",
+    "framer-motion": "10.2.3",
     "i18n-js": "4.1.1",
     "lodash": "4.17.21",
     "make-color-more-chill": "0.2.2",

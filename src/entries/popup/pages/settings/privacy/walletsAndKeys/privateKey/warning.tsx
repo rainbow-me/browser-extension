@@ -48,33 +48,27 @@ const iconAndCopyList: IconAndCopyItem[] = [
 ];
 export function PrivateKeyWarning() {
   const { state } = useLocation();
-
   const [showEnterPassword, setShowEnterPassword] = useState(false);
-  const [confirmPasswordRedirect, setConfirmPasswordRedirect] = useState('');
-  const openPasswordPrompt = () => {
-    setShowEnterPassword(true);
-  };
-  const closePasswordPrompt = () => {
-    setShowEnterPassword(false);
-  };
 
-  const handleShowPrivkeyClick = useCallback(async () => {
-    openPasswordPrompt();
-    setConfirmPasswordRedirect(
-      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY,
-    );
-  }, []);
+  const openPasswordPrompt = useCallback(() => setShowEnterPassword(true), []);
+
+  const closePasswordPrompt = useCallback(
+    () => setShowEnterPassword(false),
+    [],
+  );
 
   return (
     <>
       <ConfirmPasswordPrompt
         show={showEnterPassword}
         onClose={closePasswordPrompt}
-        redirect={confirmPasswordRedirect}
-        extraState={{ account: state?.account }}
+        redirect={
+          ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY
+        }
+        extraState={{ ...state }}
       />
       <WarningInfo
-        onProceed={handleShowPrivkeyClick}
+        onProceed={openPasswordPrompt}
         iconAndCopyList={iconAndCopyList}
         proceedButtonLabel={i18n.t(
           'settings.privacy_and_security.wallets_and_keys.private_key.show',
