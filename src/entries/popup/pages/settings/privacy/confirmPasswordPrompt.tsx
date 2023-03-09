@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { NavigateOptions } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -33,21 +33,21 @@ export const ConfirmPasswordPrompt = ({
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  const handleValidatePassword = async () => {
+  const handleValidatePassword = useCallback(async () => {
     const correctPassword = await verifyPassword(password);
     if (correctPassword) {
       navigate(redirect, {
-        state: { password, ...extraState },
+        state: { ...extraState, password },
       });
       return;
     }
     setError(i18n.t('passwords.password_incorrect'));
-  };
+  }, [extraState, navigate, password, redirect]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setPassword('');
     onClose();
-  };
+  }, [onClose]);
 
   useEffect(() => {
     setError(null);
