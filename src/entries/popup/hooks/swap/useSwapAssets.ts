@@ -7,14 +7,10 @@ import { useAssets, useUserAssets } from '~/core/resources/assets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useFavoritesStore } from '~/core/state/favorites';
-import {
-  ParsedAddressAsset,
-  ParsedAsset,
-  ParsedSearchAsset,
-} from '~/core/types/assets';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
-import { chainNameFromChainId } from '~/core/utils/chains';
+import { parseSearchAsset } from '~/core/utils/assets';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { SortMethod } from '../send/useSendAsset';
@@ -29,58 +25,6 @@ const sortBy = (by: SortMethod) => {
     case 'chain':
       return selectUserAssetsListByChainId;
   }
-};
-
-const parseSearchAsset = ({
-  outputChainId,
-  rawAsset,
-  userAsset,
-  searchAsset,
-}: {
-  rawAsset?: ParsedAsset;
-  userAsset?: ParsedAddressAsset;
-  outputChainId: ChainId;
-  searchAsset: ParsedSearchAsset | SearchAsset;
-}): ParsedSearchAsset => {
-  const assetNetworkInformation = searchAsset?.networks?.[outputChainId];
-  // if searchAsset is appearing because it found an exact match
-  // "on other networks" we need to take the first network, decimals and address to
-  // use for the asset
-
-  const networks = Object.entries(searchAsset?.networks || {});
-  const assetInOneNetwork = networks.length === 1;
-
-  const address = assetInOneNetwork
-    ? networks?.[0]?.[1].address
-    : assetNetworkInformation?.address ||
-      userAsset?.address ||
-      rawAsset?.address ||
-      searchAsset?.address;
-
-  const decimals = assetInOneNetwork
-    ? networks?.[0]?.[1].decimals
-    : assetNetworkInformation?.decimals || rawAsset?.decimals || 0;
-  const chainId = assetInOneNetwork ? Number(networks[0][0]) : outputChainId;
-
-  return {
-    ...(rawAsset || {}),
-    ...searchAsset,
-    decimals,
-    address,
-    chainId,
-    native: {
-      balance: userAsset?.native.balance || {
-        amount: '0',
-        display: '0.00',
-      },
-      price: rawAsset?.native.price,
-    },
-    balance: userAsset?.balance || { amount: '0', display: '0.00' },
-    icon_url:
-      userAsset?.icon_url || rawAsset?.icon_url || searchAsset?.icon_url,
-    colors: searchAsset?.colors || rawAsset?.colors,
-    chainName: chainNameFromChainId(chainId),
-  };
 };
 
 export const useSwapAssets = () => {
