@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import {
   convertAmountToRawAmount,
@@ -24,10 +24,10 @@ export const useSwapInputs = ({
   setAssetToSell,
   setAssetToBuy,
 }: {
-  assetToSell: ParsedAddressAsset | null;
-  assetToBuy: ParsedAddressAsset | null;
-  setAssetToSell: (asset: ParsedAddressAsset | null) => void;
-  setAssetToBuy: (asset: ParsedAddressAsset | null) => void;
+  assetToSell: ParsedSearchAsset | null;
+  assetToBuy: ParsedSearchAsset | null;
+  setAssetToSell: (asset: ParsedSearchAsset | null) => void;
+  setAssetToBuy: (asset: ParsedSearchAsset | null) => void;
 }) => {
   const [assetToSellDropdownClosed, setAssetToSellDropdownClosed] =
     useState(true);

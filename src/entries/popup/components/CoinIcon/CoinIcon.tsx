@@ -4,8 +4,13 @@ import { Address } from 'wagmi';
 
 import EthIcon from 'static/assets/ethIcon.png';
 import { ETH_ADDRESS } from '~/core/references';
-import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
+import {
+  ParsedAddressAsset,
+  ParsedAsset,
+  ParsedSearchAsset,
+} from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { SearchAsset } from '~/core/types/search';
 import { AccentColorProvider, Bleed, Box } from '~/design-system';
 import { colors as emojiColors } from '~/entries/popup/utils/emojiAvatarBackgroundColors';
 import { pseudoRandomArrayItemFromString } from '~/entries/popup/utils/pseudoRandomArrayItemFromString';
@@ -24,7 +29,12 @@ export function CoinIcon({
   fallbackText,
   size = 36,
 }: {
-  asset?: ParsedAsset | ParsedAddressAsset | null;
+  asset?:
+    | ParsedAsset
+    | ParsedAddressAsset
+    | ParsedSearchAsset
+    | SearchAsset
+    | null;
   fallbackText?: string;
   size?: number;
 }) {
@@ -41,7 +51,7 @@ export function CoinIcon({
       <CloudinaryCoinIcon
         address={address}
         chainId={chain}
-        mainnetAddress={mainnetAddress}
+        mainnetAddress={(mainnetAddress || '') as Address}
         url={asset?.icon_url}
       >
         <Box

@@ -2,6 +2,8 @@ import { Address } from 'wagmi';
 
 import { ChainId, ChainName } from '~/core/types/chains';
 
+import { SearchAsset } from './search';
+
 export interface ParsedAsset {
   address: Address;
   chainId: ChainId;
@@ -22,7 +24,6 @@ export interface ParsedAsset {
   mainnetAddress?: Address;
   price?: ZerionAssetPrice;
   symbol: string;
-  type: string;
   uniqueId: UniqueId;
   decimals: number;
   icon_url?: string;
@@ -45,6 +46,9 @@ export interface ParsedAddressAsset extends ParsedAsset {
     };
   };
 }
+
+export type SearchAssetWithPrice = SearchAsset & ParsedAsset;
+export type ParsedSearchAsset = SearchAsset & ParsedAddressAsset;
 
 export type ParsedAssetsDict = Record<UniqueId, ParsedAddressAsset>;
 
@@ -76,13 +80,18 @@ export interface ZerionAsset {
     primary: string;
     fallback: string;
   };
-  implementations?: Record<string, { address: Address; decimals: number }>;
+  implementations?: Record<
+    string,
+    { address: Address | null; decimals: number }
+  >;
   mainnet_address?: Address;
   name: string;
   symbol: string;
   decimals: number;
   type?: AssetType;
   icon_url?: string;
+  is_displayable?: boolean;
+  is_verified?: boolean;
   price?: ZerionAssetPrice;
   network?: ChainName;
 }
