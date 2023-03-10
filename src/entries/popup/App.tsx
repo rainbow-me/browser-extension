@@ -13,6 +13,7 @@ import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme'
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { createWagmiClient } from '~/core/wagmi';
 import { Box, ThemeProvider } from '~/design-system';
+import { Alert } from '~/design-system/components/Alert/Alert';
 
 import { Routes } from './Routes';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
@@ -80,6 +81,7 @@ export function App() {
               </Box>
               <IdleTimer />
               <Toast />
+              <Alert />
             </AuthProvider>
           )}
         </ThemeProvider>

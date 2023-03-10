@@ -4,7 +4,6 @@ import { formatEther } from '@ethersproject/units';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
-import { initializeMessenger } from '~/core/messengers';
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -13,6 +12,7 @@ import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Row, Rows } from '~/design-system';
 import { useSendAsset } from '~/entries/popup/hooks/send/useSendAsset';
+import { useAlert } from '~/entries/popup/hooks/useAlert';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
@@ -34,8 +34,6 @@ export interface SelectedNetwork {
   name: string;
 }
 
-const inpageMessenger = initializeMessenger({ connect: 'inpage' });
-
 export function SendTransaction({
   approveRequest,
   rejectRequest,
@@ -50,6 +48,7 @@ export function SendTransaction({
   const { connectedToHardhat } = useConnectedToHardhatStore();
   const { asset, selectAssetAddress } = useSendAsset();
   const { watchedWallets } = useWallets();
+  const { triggerAlert } = useAlert();
 
   const onAcceptRequest = useCallback(async () => {
     try {
@@ -109,15 +108,12 @@ export function SendTransaction({
 
   useEffect(() => {
     if (isWatchingWallet) {
-      setTimeout(() => {
-        inpageMessenger.send('watchingWalletAlert', {
-          text: 'From Rainbow extension: This wallet is currently in "Watching" mode',
-        });
-        // alert('This wallet is currently in "Watching" mode');
-        rejectRequest();
-      }, 500);
+      triggerAlert({
+        text: 'This wallet is currently \n in "Watching" mode',
+        callback: rejectRequest,
+      });
     }
-  }, [isWatchingWallet, rejectRequest]);
+  }, [isWatchingWallet, rejectRequest, triggerAlert]);
 
   useEffect(() => {
     selectAssetAddress(

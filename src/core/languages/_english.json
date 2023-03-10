@@ -644,5 +644,8 @@
     "network_changed": "Network changed",
     "network_changed_failed": "Network changed failed",
     "unsupported_network": "Unsupported network"
+  },
+  "alert": {
+    "ok": "Ok"
   }
 }
