@@ -99,6 +99,7 @@
     "buffer": "6.0.3",
     "check-password-strength": "2.0.7",
     "chroma-js": "2.4.2",
+    "cloudinary": "1.35.0",
     "clsx": "1.2.1",
     "currency.js": "2.0.4",
     "date-fns": "2.29.3",
@@ -106,8 +107,10 @@
     "eventemitter3": "4.0.7",
     "framer-motion": "10.2.3",
     "i18n-js": "4.1.1",
+    "imgix-core-js": "2.3.2",
     "lodash": "4.17.21",
     "make-color-more-chill": "0.2.2",
+    "mnemonist": "0.39.5",
     "node-vibrant": "3.1.6",
     "parse-ms": "3.0.0",
     "react": "18.2.0",
@@ -238,7 +241,8 @@
       "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>ganache-core>websocket>utf-8-validate": false,
       "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>postinstall-postinstall": false,
       "@foundry-rs/hardhat-anvil>hardhat>ethereum-cryptography>keccak": false,
-      "@foundry-rs/hardhat-anvil>hardhat>ethereum-cryptography>secp256k1": false
+      "@foundry-rs/hardhat-anvil>hardhat>ethereum-cryptography>secp256k1": false,
+      "cloudinary>core-js": false
     }
   },
   "lint-staged": {
