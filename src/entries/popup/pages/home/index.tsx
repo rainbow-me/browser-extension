@@ -1,4 +1,5 @@
 import {
+  AnimatePresence,
   MotionValue,
   motion,
   useScroll,
@@ -146,8 +147,7 @@ export function Home() {
 }
 
 function TopNav() {
-  const { scrollYProgress } = useScroll({ offset: ['0px', '64px'] });
-  const opacity = useTransform(scrollYProgress, [0, 1, 1], [0, 0, 1]);
+  const { scrollY } = useScroll({ offset: ['0px', '64px'] });
 
   return (
     <StickyHeader
@@ -167,9 +167,13 @@ function TopNav() {
           </MoreMenu>
         }
         titleComponent={
-          <motion.div style={{ opacity }}>
-            <AccountName id="topNav" includeAvatar size="16pt" />
-          </motion.div>
+          <AnimatePresence>
+            {scrollY.get() && (
+              <Box key="top-nav-account-name" as={motion.div}>
+                <AccountName id="topNav" includeAvatar size="16pt" />
+              </Box>
+            )}
+          </AnimatePresence>
         }
       />
     </StickyHeader>

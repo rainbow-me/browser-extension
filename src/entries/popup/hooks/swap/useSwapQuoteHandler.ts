@@ -1,14 +1,14 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { useEffect } from 'react';
 
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { convertRawAmountToBalance } from '~/core/utils/numbers';
 
 import { IndependentField } from './useSwapInputs';
 
 interface SwapQuoteHandlerProps {
-  assetToBuy: ParsedAddressAsset | null;
-  assetToSell: ParsedAddressAsset | null;
+  assetToBuy: ParsedSearchAsset | null;
+  assetToSell: ParsedSearchAsset | null;
   independentField: IndependentField;
   quote?: Quote | CrosschainQuote | QuoteError | null;
   setAssetToBuyValue: (value: string) => void;
