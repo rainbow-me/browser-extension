@@ -1,8 +1,9 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
+import { goToNewTab } from '~/core/utils/tabs';
 import { getTransactionBlockExplorerUrl } from '~/core/utils/transactions';
 import { Box, Inline, Symbol, Text } from '~/design-system';
 
@@ -34,21 +35,48 @@ export function TransactionDetailsMenu({
   // need to control this manually so that menu closes when sheet appears
   const [closed, setClosed] = useState(false);
   const onOpenChange = () => setClosed(false);
-  const handleRowSelection = (sheet: SheetMode) => () => {
-    onRowSelection({ sheet, transaction });
-    setClosed(true);
-  };
+
+  const viewOnExplorer = useCallback(() => {
+    const explorer = getTransactionBlockExplorerUrl({
+      chainId: transaction?.chainId || ChainId.mainnet,
+      hash: transaction?.hash || '',
+    });
+    goToNewTab({
+      url: explorer,
+    });
+  }, [transaction?.chainId, transaction?.hash]);
+
+  const onValueChange = useCallback(
+    (value: 'view' | 'speedUp' | 'cancel') => {
+      switch (value) {
+        case 'view':
+          viewOnExplorer();
+          break;
+        case 'speedUp':
+        case 'cancel':
+          onRowSelection({ sheet: value, transaction });
+          setClosed(true);
+          break;
+      }
+    },
+    [onRowSelection, transaction, viewOnExplorer],
+  );
+
   return (
     <MenuWrapper closed={closed} onOpenChange={onOpenChange}>
       <ContextMenuTrigger asChild>
         <Box position="relative">{children}</Box>
       </ContextMenuTrigger>
       <ContextMenuContent>
-        <ContextMenuRadioGroup>
+        <ContextMenuRadioGroup
+          onValueChange={(value) =>
+            onValueChange(value as 'view' | 'speedUp' | 'cancel')
+          }
+        >
           {transaction?.pending && (
             <>
               <ContextMenuRadioItem value={'speedUp'}>
-                <MenuRow onClick={handleRowSelection('speedUp')}>
+                <MenuRow>
                   <Inline space="8px" alignVertical="center">
                     <Text weight="semibold" size="14pt">
                       {'🚀'}
@@ -60,7 +88,7 @@ export function TransactionDetailsMenu({
                 </MenuRow>
               </ContextMenuRadioItem>
               <ContextMenuRadioItem value={'cancel'}>
-                <MenuRow onClick={handleRowSelection('cancel')}>
+                <MenuRow>
                   <Inline space="8px" alignVertical="center">
                     <Text weight="semibold" size="14pt">
                       {'☠️'}
@@ -76,31 +104,21 @@ export function TransactionDetailsMenu({
               </Box>
             </>
           )}
-          <ContextMenuRadioItem value={'blockExplorer'}>
+          <ContextMenuRadioItem value="view">
             <MenuRow>
-              <a
-                href={getTransactionBlockExplorerUrl({
-                  chainId: transaction?.chainId || ChainId.mainnet,
-                  hash: transaction?.hash || '',
-                })}
-                target="_blank"
-                rel="noreferrer"
-                style={{ color: 'inherit' }}
-              >
-                <Inline space="8px" alignVertical="center">
-                  <Symbol
-                    weight="medium"
-                    size={18}
-                    symbol="binoculars.fill"
-                    color="label"
-                  />
-                  <Text color="label" size="14pt" weight="semibold">
-                    {transaction?.chainId === ChainId.mainnet
-                      ? i18n.t('speed_up_and_cancel.view_on_etherscan')
-                      : i18n.t('speed_up_and_cancel.view_on_explorer')}
-                  </Text>
-                </Inline>
-              </a>
+              <Inline space="8px" alignVertical="center">
+                <Symbol
+                  weight="medium"
+                  size={18}
+                  symbol="binoculars.fill"
+                  color="label"
+                />
+                <Text color="label" size="14pt" weight="semibold">
+                  {transaction?.chainId === ChainId.mainnet
+                    ? i18n.t('speed_up_and_cancel.view_on_etherscan')
+                    : i18n.t('speed_up_and_cancel.view_on_explorer')}
+                </Text>
+              </Inline>
               <Symbol
                 weight="medium"
                 size={12}
