@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import { initializeMessenger } from '~/core/messengers';
 import { useNotificationWindowStore } from '~/core/state/notificationWindow';
@@ -29,7 +29,14 @@ export const ApproveAppRequest = () => {
     : pendingRequests;
 
   const pendingRequest = filteredRequests?.[0];
+
   const navigate = useRainbowNavigate();
+
+  useEffect(() => {
+    if (pendingRequests.length < 1) {
+      navigate(ROUTES.HOME);
+    }
+  }, [pendingRequests?.length, navigate]);
 
   const handleRequestAction = useCallback(() => {
     removePendingRequest(pendingRequest?.id);
