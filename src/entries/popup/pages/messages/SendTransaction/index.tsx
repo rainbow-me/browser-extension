@@ -109,7 +109,7 @@ export function SendTransaction({
   useEffect(() => {
     if (isWatchingWallet) {
       triggerAlert({
-        text: 'This wallet is currently \n in "Watching" mode',
+        text: 'This wallet is currently in "Watching" mode',
         callback: rejectRequest,
       });
     }
