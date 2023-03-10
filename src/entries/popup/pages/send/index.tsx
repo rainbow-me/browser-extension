@@ -237,13 +237,18 @@ export function Send() {
 
   const prevToAddressIsSmartContract = usePrevious(toAddressIsSmartContract);
   useEffect(() => {
-    if (!prevToAddressIsSmartContract && toAddressIsSmartContract) {
+    if (
+      !prevToAddressIsSmartContract &&
+      toAddressIsSmartContract &&
+      !toEnsName.includes('argent.xyz')
+    ) {
       showToContractExplainer();
     }
   }, [
     prevToAddressIsSmartContract,
     showToContractExplainer,
     toAddressIsSmartContract,
+    toEnsName,
   ]);
 
   return (
