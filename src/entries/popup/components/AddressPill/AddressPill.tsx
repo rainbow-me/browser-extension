@@ -1,11 +1,14 @@
 import React from 'react';
 import { Address } from 'wagmi';
 
-import { Box, Inline, Text } from '~/design-system';
+import { Box, Inline, TextOverflow } from '~/design-system';
 
 import { useAvatar } from '../../hooks/useAvatar';
 import { useWalletName } from '../../hooks/useWalletName';
 import { Avatar } from '../Avatar/Avatar';
+
+const { innerWidth: windowWidth } = window;
+const NAME_MAX_WIDTH = windowWidth - 120;
 
 export default function AddressPill({ address }: { address: Address }) {
   const { avatar, isFetched } = useAvatar({ address });
@@ -32,9 +35,14 @@ export default function AddressPill({ address }: { address: Address }) {
           ) : null}
           <Avatar.Skeleton />
         </Avatar.Wrapper>
-        <Text weight="medium" color="labelTertiary" size="14pt">
+        <TextOverflow
+          maxWidth={NAME_MAX_WIDTH}
+          weight="medium"
+          color="labelTertiary"
+          size="14pt"
+        >
           {displayName}
-        </Text>
+        </TextOverflow>
       </Inline>
     </Box>
   );

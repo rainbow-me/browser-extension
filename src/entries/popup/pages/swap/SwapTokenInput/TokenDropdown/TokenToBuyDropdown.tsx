@@ -2,8 +2,9 @@ import { motion } from 'framer-motion';
 import React, { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { SearchAsset } from '~/core/types/search';
 import { isL2Chain } from '~/core/utils/chains';
 import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
@@ -28,9 +29,9 @@ const AssetsToBuySection = ({
   onSelectAsset,
   onDropdownChange,
 }: {
-  data: ParsedAddressAsset[];
+  data: SearchAsset[];
   title: string;
-  onSelectAsset?: (asset: ParsedAddressAsset | null) => void;
+  onSelectAsset?: (asset: ParsedSearchAsset | null) => void;
   symbol: SymbolProps['symbol'];
   id: string;
   onDropdownChange: (open: boolean) => void;
@@ -41,7 +42,18 @@ const AssetsToBuySection = ({
   });
 
   const verifiedSection = id === 'verified';
+  const favoritesSection = id === 'favorites';
   const otherNetworksSection = id === 'other_networks';
+  const getSectionHeaderColor = () => {
+    if (verifiedSection) {
+      return 'transparent';
+    }
+    if (favoritesSection) {
+      return 'yellow';
+    }
+
+    return 'labelTertiary';
+  };
 
   if (!data.length) return null;
   return (
@@ -64,7 +76,7 @@ const AssetsToBuySection = ({
           <Inline space="4px" alignVertical="center">
             <Symbol
               symbol={symbol}
-              color={verifiedSection ? 'transparent' : 'labelTertiary'}
+              color={getSectionHeaderColor()}
               weight="semibold"
               size={14}
               gradient={verifiedSection ? rainbowGradient : undefined}
@@ -75,7 +87,7 @@ const AssetsToBuySection = ({
                 background={verifiedSection ? 'rainbow' : undefined}
                 size="14pt"
                 weight="semibold"
-                color={verifiedSection ? 'transparent' : 'labelTertiary'}
+                color={getSectionHeaderColor()}
               >
                 {title}
               </Text>
@@ -86,12 +98,12 @@ const AssetsToBuySection = ({
         <Box ref={containerRef}>
           {assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
             const { index } = virtualItem;
-            const asset = data?.[index] as ParsedAddressAsset;
+            const asset = data?.[index] as SearchAsset;
             return (
               <Box
                 paddingHorizontal="8px"
-                key={`${asset?.uniqueId}-${i}`}
-                onClick={() => onSelectAsset?.(asset)}
+                key={`${asset?.uniqueId}-${i}-${id}`}
+                onClick={() => onSelectAsset?.(asset as ParsedSearchAsset)}
                 testId={`token-input-asset-${asset?.uniqueId}`}
               >
                 <TokenToBuyRow
@@ -108,15 +120,15 @@ const AssetsToBuySection = ({
 };
 
 export type TokenToBuyDropdownProps = {
-  asset: ParsedAddressAsset | null;
+  asset: ParsedSearchAsset | null;
   assets?: {
-    data: ParsedAddressAsset[];
+    data: SearchAsset[];
     title: string;
     id: string;
     symbol: SymbolProps['symbol'];
   }[];
   outputChainId: ChainId;
-  onSelectAsset?: (asset: ParsedAddressAsset | null) => void;
+  onSelectAsset?: (asset: ParsedSearchAsset | null) => void;
   setOutputChainId: (chainId: ChainId) => void;
   onDropdownChange: (open: boolean) => void;
 };

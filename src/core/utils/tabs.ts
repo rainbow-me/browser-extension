@@ -8,12 +8,15 @@ export const getExplorerUrl = (explorer: string, address?: string) =>
 export const goToNewTab = ({
   url,
   index,
+  active,
 }: {
   url?: string;
   index?: number;
+  active?: boolean;
 }) => {
   chrome.tabs.create({
     url,
     index,
+    active,
   });
 };

@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.0.61",
+  "version": "1.0.62",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -108,6 +108,7 @@
     "i18n-js": "4.1.1",
     "lodash": "4.17.21",
     "make-color-more-chill": "0.2.2",
+    "match-sorter": "6.3.1",
     "node-vibrant": "3.1.6",
     "parse-ms": "3.0.0",
     "react": "18.2.0",
