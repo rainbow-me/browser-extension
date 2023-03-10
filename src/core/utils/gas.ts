@@ -125,6 +125,11 @@ export const parseCustomGasFeeParams = ({
   blocksToConfirmation: BlocksToConfirmation;
   currency: SupportedCurrencyKey;
 }): GasFeeParams => {
+  console.log('----------');
+  console.log('speed', speed);
+  console.log('baseFeeWei', speed);
+  console.log('maxPriorityFeeWei', maxPriorityFeeWei);
+
   const maxBaseFee = parseGasFeeParam({
     wei: baseFeeWei || '0',
   });
@@ -132,6 +137,9 @@ export const parseCustomGasFeeParams = ({
     wei: maxPriorityFeeWei || '0',
   });
 
+  console.log('maxBaseFee', maxBaseFee);
+  console.log('maxPriorityFeePerGas', maxPriorityFeePerGas);
+  console.log('----------');
   const baseFee = lessThan(currentBaseFee, maxBaseFee.amount)
     ? currentBaseFee
     : maxBaseFee.amount;
@@ -139,7 +147,7 @@ export const parseCustomGasFeeParams = ({
   const display = `${new BigNumber(
     weiToGwei(add(baseFee, maxPriorityFeePerGas.amount)),
   ).toFixed(0)} - ${new BigNumber(
-    weiToGwei(add(baseFeeWei, maxPriorityFeePerGas.amount)),
+    weiToGwei(add(maxBaseFee.amount, maxPriorityFeePerGas.amount)),
   ).toFixed(0)} Gwei`;
 
   const estimatedTime = parseGasDataConfirmationTime(
@@ -218,7 +226,7 @@ export const parseGasFeeParams = ({
   const display = `${new BigNumber(
     weiToGwei(add(baseFee, maxPriorityFeePerGas.amount)),
   ).toFixed(0)} - ${new BigNumber(
-    weiToGwei(add(wei, maxPriorityFeePerGas.amount)),
+    weiToGwei(add(maxBaseFee.amount, maxPriorityFeePerGas.amount)),
   ).toFixed(0)} Gwei`;
 
   const estimatedTime = parseGasDataConfirmationTime(
