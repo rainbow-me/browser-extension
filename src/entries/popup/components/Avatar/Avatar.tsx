@@ -8,7 +8,7 @@ import ExternalImage from '../ExternalImage/ExternalImage';
 function Avatar({ imageUrl, size }: { imageUrl?: string; size: number }) {
   return (
     <AvatarWrapper size={size}>
-      {imageUrl && <AvatarImage imageUrl={imageUrl} />}
+      {imageUrl && <AvatarImage size={size} imageUrl={imageUrl} />}
       <AvatarSkeleton />
     </AvatarWrapper>
   );
@@ -68,10 +68,16 @@ function AvatarContent({
   );
 }
 
-function AvatarImage({ imageUrl }: { imageUrl?: string }) {
+function AvatarImage({
+  imageUrl,
+  size = 60,
+}: {
+  imageUrl?: string;
+  size: number;
+}) {
   return (
     <AvatarContent>
-      <ExternalImage src={imageUrl} width="100%" height="100%" loading="lazy" />
+      <ExternalImage src={imageUrl} width={size} height={size} loading="lazy" />
     </AvatarContent>
   );
 }

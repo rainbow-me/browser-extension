@@ -44,6 +44,7 @@ export function CoinIcon({
         chainId={chain}
         mainnetAddress={mainnetAddress}
         url={asset?.icon_url}
+        size={size}
       >
         <Box
           justifyContent="center"
@@ -123,12 +124,14 @@ function CloudinaryCoinIcon({
   address,
   mainnetAddress,
   children,
+  size = 36,
   url,
 }: {
   address: Address;
   chainId: ChainId;
   mainnetAddress?: Address;
   children: React.ReactNode;
+  size: number;
   url?: string;
 }) {
   let src = url;
@@ -139,7 +142,7 @@ function CloudinaryCoinIcon({
   }
 
   if (src) {
-    return <ExternalImage src={src} width="100%" height="100%" />;
+    return <ExternalImage src={src} width={size} height={size} />;
   }
 
   return <Fragment>{children}</Fragment>;

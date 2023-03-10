@@ -4,8 +4,6 @@ import LRUCache from 'mnemonist/lru-cache';
 
 import { RainbowError, logger } from '~/logger';
 
-import { isCloudinaryStorageLink, signUrl } from '../handlers/cloudinary';
-
 const domain = process.env.IMGIX_DOMAIN;
 const secureURLToken = process.env.IMGIX_TOKEN;
 
@@ -72,19 +70,6 @@ const shouldSignUri = (
       updatedOptions.fm = options.fm;
     }
 
-    // Firstly, we check if the url is a Cloudinary link.
-    // Then, obviously, we use Cloudinary to transform the size and format.
-    if (isCloudinaryStorageLink(externalImageUri)) {
-      const signedExternalImageUri = signUrl(externalImageUri, {
-        format: updatedOptions.fm,
-        height: updatedOptions.h,
-        width: updatedOptions.w,
-      });
-      const signature = `${externalImageUri}-${options?.w}`;
-      staticSignatureLRU.set(signature, signedExternalImageUri);
-      return signedExternalImageUri;
-    }
-
     // We'll only attempt to sign if there's an available client. A client
     // will not exist if the .env hasn't been configured correctly.
     if (staticImgixClient) {
@@ -145,7 +130,7 @@ export const maybeSignUri = (
   skipCaching = false,
 ): string | undefined => {
   // Just in case we try to load a local image
-  if (externalImageUri?.startsWith('chrome-extension://')) {
+  if (!externalImageUri?.startsWith('https://')) {
     return externalImageUri;
   }
 
