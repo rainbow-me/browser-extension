@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
+import { setSettingWallets } from '~/core/utils/settings';
 import { Box, Symbol } from '~/design-system';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
@@ -17,13 +18,15 @@ export function WalletsAndKeys() {
   const [wallets, setWallets] = useState<KeychainWallet[]>([]);
 
   useEffect(() => {
-    chrome.storage.session.set({ settingsWallet: null });
+    setSettingWallets(null);
   }, []);
 
   const handleViewWallet = useCallback(
     async (wallet: KeychainWallet) => {
-      await chrome.storage.session.set({ settingsWallet: wallet });
-      navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS);
+      setSettingWallets(wallet);
+      navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS, {
+        state: { wallet },
+      });
     },
     [navigate],
   );
@@ -40,22 +43,24 @@ export function WalletsAndKeys() {
     fetchWallets();
   }, []);
 
-  const handleCreateNewRecoveryPhrase = async () => {
+  const handleCreateNewRecoveryPhrase = useCallback(async () => {
     const newWalletAccount = await create();
+    const wallet = {
+      accounts: [newWalletAccount],
+      imported: false,
+      type: KeychainType.HdKeychain,
+    };
+    setSettingWallets(wallet);
     navigate(
       ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
       {
         state: {
-          wallet: {
-            accounts: [newWalletAccount],
-            imported: false,
-            type: KeychainType.HdKeychain,
-          },
+          wallet,
           password: state?.password,
         },
       },
     );
-  };
+  }, [navigate, state?.password]);
 
   return (
     <Box>

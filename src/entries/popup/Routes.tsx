@@ -617,7 +617,7 @@ function CurrentRoute(props: { pathname: string }) {
   const direction = currentDirection;
 
   return (
-    <AnimatePresence mode="popLayout">
+    <AnimatePresence key={props.pathname} mode="popLayout">
       {React.cloneElement(element, {
         key: props.pathname,
         direction,

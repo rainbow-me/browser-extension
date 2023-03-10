@@ -10,6 +10,7 @@ import { useLocation } from 'react-router-dom';
 import { i18n } from '~/core/languages';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { KeychainWallet } from '~/core/types/keychainTypes';
+import { setSettingWallets } from '~/core/utils/settings';
 import {
   Box,
   Button,
@@ -36,9 +37,10 @@ export const NewWalletPrompt = ({
 }) => {
   const { state } = useLocation();
   const navigate = useRainbowNavigate();
+  const { saveWalletName } = useWalletNamesStore();
+
   const [walletName, setWalletName] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const { saveWalletName } = useWalletNamesStore();
 
   const handleValidateWalletName = useCallback(async () => {
     if (walletName && walletName.trim() !== '') {
@@ -47,6 +49,10 @@ export const NewWalletPrompt = ({
         name: walletName.trim(),
         address: newAccount,
       });
+      setSettingWallets({
+        ...wallet,
+        accounts: [...wallet.accounts, newAccount],
+      });
       navigate(
         ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
         { state: { account: newAccount, password: state?.password } },
@@ -54,13 +60,13 @@ export const NewWalletPrompt = ({
       return;
     }
     setError(i18n.t('errors.no_wallet_name_set'));
-  }, [navigate, saveWalletName, state?.password, wallet?.accounts, walletName]);
+  }, [navigate, saveWalletName, state?.password, wallet, walletName]);
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setError(null);
     setWalletName('');
     onClose();
-  };
+  }, [onClose]);
 
   useEffect(() => {
     setError(null);

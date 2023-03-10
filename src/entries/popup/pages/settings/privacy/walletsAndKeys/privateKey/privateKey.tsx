@@ -14,22 +14,23 @@ export function PrivateKey() {
 
   const [privKey, setPrivKey] = useState('');
 
+  const handleSavedTheseWords = useCallback(
+    () => navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS),
+    [navigate],
+  );
+
+  const handleCopy = useCallback(
+    () => navigator.clipboard.writeText(privKey as string),
+    [privKey],
+  );
+
   useEffect(() => {
     const fetchPrivateKey = async () => {
       const privateKey = await exportAccount(state?.account, state?.password);
       setPrivKey(privateKey);
     };
     fetchPrivateKey();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleSavedTheseWords = useCallback(async () => {
-    navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);
-  }, [navigate]);
-
-  const handleCopy = useCallback(() => {
-    navigator.clipboard.writeText(privKey as string);
-  }, [privKey]);
+  }, [state?.account, state?.password]);
 
   return (
     <ViewSecret
@@ -44,14 +45,13 @@ export function PrivateKey() {
         'settings.privacy_and_security.wallets_and_keys.private_key.saved',
       )}
       confirmButtonSymbol="checkmark.circle.fill"
-      confirmButtonTopSpacing={260}
       onConfirm={handleSavedTheseWords}
       onCopy={handleCopy}
       secret={
         <Box
           background="surfaceSecondaryElevated"
           borderRadius="16px"
-          paddingVertical="12px"
+          paddingVertical="10px"
           paddingHorizontal="16px"
           style={{
             wordBreak: 'break-all',

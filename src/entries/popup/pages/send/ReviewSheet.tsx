@@ -84,6 +84,7 @@ const EditContactDropdown = ({
     const explorer = getBlockExplorerHostForChain(chainId || ChainId.mainnet);
     goToNewTab({
       url: getExplorerUrl(explorer, toAddress),
+      active: false,
     });
   }, [chainId, toAddress]);
 

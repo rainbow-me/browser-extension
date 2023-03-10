@@ -125,7 +125,7 @@ const infoButtonOptions = ({
       ]),
 ];
 
-const bottomSpacing = 150 + (process.env.IS_DEV ? 40 : 0);
+const bottomSpacing = 150 + (process.env.IS_DEV === 'true' ? 40 : 0);
 const topSpacing = 127;
 
 const NoWalletsWarning = ({
@@ -477,7 +477,7 @@ export function WalletSwitcher() {
           >
             {i18n.t('wallet_switcher.connect_hardware_wallet')}
           </Button>
-          {process.env.IS_DEV && (
+          {process.env.IS_DEV === 'true' && (
             <Link to={ROUTES.WALLETS}>
               <Button
                 color="fillSecondary"
