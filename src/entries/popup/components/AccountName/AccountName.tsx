@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
 import { useAccount, useEnsAvatar } from 'wagmi';
 
-import { Box, Inline, Symbol, Text } from '~/design-system';
+import { Box, Inline, Symbol, TextOverflow } from '~/design-system';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
 import { transformScales } from '~/design-system/styles/designTokens';
 
@@ -11,6 +11,9 @@ import { useWalletName } from '../../hooks/useWalletName';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
 import { Avatar } from '../Avatar/Avatar';
+
+const { innerWidth: windowWidth } = window;
+const TEXT_MAX_WIDTH = windowWidth - 60;
 
 type AccountNameProps = {
   includeAvatar?: boolean;
@@ -63,14 +66,15 @@ export function AccountName({
             </Box>
           )}
           <Box id={`${id ?? ''}-account-name-shuffle`}>
-            <Text
+            <TextOverflow
               color="label"
               size={size}
               weight="heavy"
               testId="account-name"
+              maxWidth={TEXT_MAX_WIDTH}
             >
               {displayName}
-            </Text>
+            </TextOverflow>
           </Box>
           <Symbol
             size={chevronDownSizes[size]}

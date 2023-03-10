@@ -105,6 +105,7 @@ export const ExplainerSheet = ({
     link &&
       goToNewTab({
         url: link,
+        active: false,
       });
   }, []);
 
