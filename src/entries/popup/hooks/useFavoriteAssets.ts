@@ -63,11 +63,13 @@ export function useFavoriteAssets() {
               threshold,
               query,
             });
-            // eslint-disable-next-line require-atomic-updates
-            newSearchData[parseInt(chain)] = [
-              ...(currentFavoritesData || []),
-              unverifiedSearchResults?.[0],
-            ];
+            if (unverifiedSearchResults?.[0]) {
+              // eslint-disable-next-line require-atomic-updates
+              newSearchData[parseInt(chain)] = [
+                ...(currentFavoritesData || []),
+                unverifiedSearchResults?.[0],
+              ];
+            }
           }
         };
         searches.push(searchAddress(address));
