@@ -7,6 +7,7 @@ import {
   transitions,
 } from '~/design-system/styles/designTokens';
 
+import ExternalImage from '../../components/ExternalImage/ExternalImage';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { AppNetworkMenu } from '../../components/SwitchMenu/AppNetworkMenu';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
@@ -95,7 +96,7 @@ export const NetworkMenu = () => {
                 overflow: 'hidden',
               }}
             >
-              <img src={appLogo} width="100%" height="100%" />
+              <ExternalImage src={appLogo} width="100%" height="100%" />
             </Box>
           </Inline>
         </Box>

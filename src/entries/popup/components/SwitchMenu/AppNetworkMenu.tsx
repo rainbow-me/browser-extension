@@ -35,6 +35,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../DropdownMenu/DropdownMenu';
+import ExternalImage from '../ExternalImage/ExternalImage';
 
 import {
   SwitchNetworkMenuDisconnect,
@@ -141,7 +142,7 @@ export const AppNetworkMenu = ({
                     marginRight: 2,
                   }}
                 >
-                  <img src={appLogo} width="100%" height="100%" />
+                  <ExternalImage src={appLogo} width="100%" height="100%" />
                 </Box>
                 <Box
                   id={`${headerHostId}-${

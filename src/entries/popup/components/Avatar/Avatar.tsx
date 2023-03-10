@@ -3,6 +3,8 @@ import * as React from 'react';
 import { AccentColorProvider, Box, Text } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 
+import ExternalImage from '../ExternalImage/ExternalImage';
+
 function Avatar({ imageUrl, size }: { imageUrl?: string; size: number }) {
   return (
     <AvatarWrapper size={size}>
@@ -69,7 +71,7 @@ function AvatarContent({
 function AvatarImage({ imageUrl }: { imageUrl?: string }) {
   return (
     <AvatarContent>
-      <img src={imageUrl} width="100%" height="100%" loading="lazy" />
+      <ExternalImage src={imageUrl} width="100%" height="100%" loading="lazy" />
     </AvatarContent>
   );
 }

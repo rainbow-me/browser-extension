@@ -4,6 +4,7 @@ import { i18n } from '~/core/languages';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box, Inline, Inset, Separator, Stack, Text } from '~/design-system';
+import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 
 interface SignMessageProps {
@@ -36,7 +37,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
                 alignItems="center"
               >
                 {appLogo ? (
-                  <img src={appLogo} width="100%" height="100%" />
+                  <ExternalImage src={appLogo} width="100%" height="100%" />
                 ) : null}
               </Box>
             </Inline>
