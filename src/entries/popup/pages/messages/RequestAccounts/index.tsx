@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { initializeMessenger } from '~/core/messengers';
@@ -6,9 +6,7 @@ import { useCurrentAddressStore } from '~/core/state';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { Row, Rows, Separator } from '~/design-system';
-import { useAlert } from '~/entries/popup/hooks/useAlert';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
-import { useWallets } from '~/entries/popup/hooks/useWallets';
 
 import { RequestAccountsActions } from './RequestAccountsActions';
 import { RequestAccountsInfo } from './RequestAccountsInfo';
@@ -35,8 +33,6 @@ export const RequestAccounts = ({
     ChainId.mainnet,
   );
   const [selectedWallet, setSelectedWallet] = useState<Address>(currentAddress);
-  const { watchedWallets } = useWallets();
-  const { triggerAlert } = useAlert();
 
   const onAcceptRequest = useCallback(() => {
     approveRequest({
@@ -48,20 +44,6 @@ export const RequestAccounts = ({
       chainId: selectedChainId,
     });
   }, [appHostName, approveRequest, selectedChainId, selectedWallet]);
-
-  const isWatchingWallet = useMemo(() => {
-    const watchedAddresses = watchedWallets?.map(({ address }) => address);
-    return selectedWallet && watchedAddresses?.includes(selectedWallet);
-  }, [selectedWallet, watchedWallets]);
-
-  useEffect(() => {
-    if (isWatchingWallet) {
-      triggerAlert({
-        text: 'This wallet is currently in "Watching" mode',
-        callback: rejectRequest,
-      });
-    }
-  }, [isWatchingWallet, rejectRequest, triggerAlert]);
 
   return (
     <Rows alignVertical="justify">
