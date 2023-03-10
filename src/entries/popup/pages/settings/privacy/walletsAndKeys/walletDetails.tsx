@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
@@ -8,6 +8,7 @@ import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
+import { getSettingWallets } from '~/core/utils/settings';
 import { Box, Inline, Symbol } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import AccountItem, {
@@ -105,44 +106,46 @@ export function WalletDetails() {
   const [renameAccount, setRenameAccount] = useState<Address | undefined>();
   const [removeAccount, setRemoveAccount] = useState<Address | undefined>();
 
-  const [wallet, setWallet] = useState<KeychainWallet>();
+  const [wallet, setWallet] = useState<KeychainWallet | null>();
 
-  useEffect(() => {
-    chrome.storage.session.get(['settingsWallet'], (result) => {
-      return setWallet(result.settingsWallet as KeychainWallet);
-    });
+  const handleOpenNewWalletPrompt = useCallback(() => {
+    setShowNewWalletPrompt(true);
   }, []);
 
-  const handleOpenNewWalletPrompt = () => {
-    setShowNewWalletPrompt(true);
-  };
-  const handleCloseNewWalletPrompt = () => {
+  const handleCloseNewWalletPrompt = useCallback(() => {
     setShowNewWalletPrompt(false);
-  };
-  const handleViewRecoveryPhrase = () => {
+  }, []);
+
+  const handleViewRecoveryPhrase = useCallback(() => {
     navigate(
       ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
       { state: { wallet, password: state?.password } },
     );
-  };
+  }, [navigate, state?.password, wallet]);
 
-  const handleViewPrivateKey = (account: Address) => {
-    navigate(
-      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
-      { state: { account, password: state?.password } },
-    );
-  };
+  const handleViewPrivateKey = useCallback(
+    (account: Address) => {
+      navigate(
+        ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
+        {
+          state: {
+            wallet,
+            account,
+            password: state?.password,
+          },
+        },
+      );
+    },
+    [navigate, state?.password, wallet],
+  );
 
-  const fetchWallet = async () => {
-    const fetchedWallet = await getWallet(state?.wallet?.accounts?.[0]);
-    setWallet(fetchedWallet);
-  };
   useEffect(() => {
-    if (state?.wallet?.accounts?.[0]) {
-      fetchWallet();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state?.wallet?.accounts?.[0]]);
+    const getWallet = async () => {
+      const wallet = await getSettingWallets();
+      setWallet(wallet);
+    };
+    getWallet();
+  }, []);
 
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
   const { unhideWallet, hiddenWallets } = useHiddenWalletsStore();

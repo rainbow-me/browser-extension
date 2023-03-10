@@ -76,7 +76,7 @@ export default function WarningInfo({
       <Box width="full" style={{ paddingTop: 76 }}>
         <Rows alignVertical="top" space="8px">
           <Button
-            color="accent"
+            color="orange"
             height="44px"
             variant="flat"
             width="full"

@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useDefaultTxSpeedStore } from '~/core/state/currentSettings/defaultTxSpeed';
 import { ChainId } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
 import {
@@ -39,6 +40,7 @@ export function TransactionFee({
   plainTriggerBorder,
 }: TransactionFeeProps) {
   const [showCustomGasSheet, setShowCustomGasSheet] = useState(false);
+  const { defaultTxSpeed } = useDefaultTxSpeedStore();
   const {
     selectedSpeed,
     setSelectedSpeed,
@@ -51,7 +53,7 @@ export function TransactionFee({
     clearCustomGasModified,
   } = useGas({
     chainId,
-    defaultSpeed,
+    defaultSpeed: defaultSpeed || defaultTxSpeed,
     transactionRequest,
   });
 

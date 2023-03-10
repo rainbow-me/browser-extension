@@ -116,7 +116,7 @@ export default function AccountItem({
                   text={displayName || ''}
                 />
               </Row>
-              <Row height="content">{labelComponent}</Row>
+              {labelComponent && <Row height="content">{labelComponent}</Row>}
             </Rows>
           </Box>
         </Inline>
