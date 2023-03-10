@@ -95,7 +95,6 @@
     "@vanilla-extract/css-utils": "0.1.2",
     "@vanilla-extract/dynamic": "2.0.2",
     "@vanilla-extract/sprinkles": "1.5.0",
-    "add": "2.0.6",
     "bignumber.js": "9.0.1",
     "buffer": "6.0.3",
     "check-password-strength": "2.0.7",
@@ -124,7 +123,6 @@
     "socket.io-client": "4.5.3",
     "validator": "13.9.0",
     "wagmi": "0.7.5",
-    "yarn": "1.22.19",
     "zustand": "4.1.2"
   },
   "devDependencies": {
@@ -243,8 +241,7 @@
       "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>ganache-core>websocket>utf-8-validate": false,
       "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>postinstall-postinstall": false,
       "@foundry-rs/hardhat-anvil>hardhat>ethereum-cryptography>keccak": false,
-      "@foundry-rs/hardhat-anvil>hardhat>ethereum-cryptography>secp256k1": false,
-      "yarn": false
+      "@foundry-rs/hardhat-anvil>hardhat>ethereum-cryptography>secp256k1": false
     }
   },
   "lint-staged": {
