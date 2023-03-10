@@ -1,5 +1,7 @@
-import { bridgeMessenger } from '~/core/messengers/internal/bridge';
+import { initializeMessenger } from '~/core/messengers';
 import { notificationWindowStore, pendingRequestStore } from '~/core/state';
+
+const bridgeMessenger = initializeMessenger({ connect: 'inpage' });
 
 export const handleTabAndWindowUpdates = () => {
   // When a tab is removed, check if that was the last tab for that host
