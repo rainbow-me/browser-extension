@@ -44,7 +44,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
                   alignItems="center"
                 >
                   {appLogo ? (
-                    <ExternalImage src={appLogo} width="100%" height="100%" />
+                    <ExternalImage src={appLogo} width="32" height="32" />
                   ) : null}
                 </Box>
               </Inline>

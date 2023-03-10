@@ -36,7 +36,7 @@ export const RequestAccountsInfo = ({
             alignItems="center"
           >
             {appLogo ? (
-              <ExternalImage src={appLogo} width="100%" height="100%" />
+              <ExternalImage src={appLogo} width="60" height="60" />
             ) : null}
           </Box>
         </Inline>

@@ -96,7 +96,7 @@ export const NetworkMenu = () => {
                 overflow: 'hidden',
               }}
             >
-              <ExternalImage src={appLogo} width="100%" height="100%" />
+              <ExternalImage src={appLogo} width="14" height="14" />
             </Box>
           </Inline>
         </Box>
