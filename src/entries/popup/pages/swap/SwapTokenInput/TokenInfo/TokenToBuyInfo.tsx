@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { Box, Inline, Text, TextOverflow } from '~/design-system';
 
@@ -12,7 +12,7 @@ const TEXT_MAX_WIDTH = HALF_WINDOW_WIDTH - 90;
 export const TokenToBuyInfo = ({
   asset,
 }: {
-  asset: ParsedAddressAsset | null;
+  asset: ParsedSearchAsset | null;
 }) => {
   const priceChangeDisplay = useMemo(() => {
     const priceChange = asset?.native?.price?.change;
@@ -48,7 +48,11 @@ export const TokenToBuyInfo = ({
             weight="medium"
             color="labelSecondary"
           >
-            {handleSignificantDecimals(asset?.balance?.amount, asset?.decimals)}
+            {asset?.balance?.amount &&
+              handleSignificantDecimals(
+                asset?.balance?.amount,
+                asset?.decimals,
+              )}
           </TextOverflow>
         </Inline>
       </Inline>

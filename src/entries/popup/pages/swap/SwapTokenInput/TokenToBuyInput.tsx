@@ -1,7 +1,8 @@
 import React, { useCallback, useRef } from 'react';
 
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { SearchAsset } from '~/core/types/search';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
 import { TokenToBuyDropdown } from './TokenDropdown/TokenToBuyDropdown';
@@ -9,9 +10,9 @@ import { TokenToBuyInfo } from './TokenInfo/TokenToBuyInfo';
 import { TokenInput } from './TokenInput';
 
 interface TokenToBuyProps {
-  asset: ParsedAddressAsset | null;
+  asset: ParsedSearchAsset | null;
   assets?: {
-    data: ParsedAddressAsset[];
+    data: SearchAsset[];
     title: string;
     id: string;
     symbol: SymbolProps['symbol'];
@@ -26,7 +27,7 @@ interface TokenToBuyProps {
   inputRef: React.RefObject<HTMLInputElement>;
   onDropdownOpen: (open: boolean) => void;
   setOutputChainId: (chainId: ChainId) => void;
-  selectAsset: (asset: ParsedAddressAsset | null) => void;
+  selectAsset: (asset: ParsedSearchAsset | null) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
   setAssetToBuyInputValue: (value: string) => void;
 }
@@ -49,11 +50,11 @@ export const TokenToBuyInput = ({
   setAssetToBuyInputValue,
 }: TokenToBuyProps) => {
   const onSelectAssetRef =
-    useRef<(address: ParsedAddressAsset | null) => void>();
+    useRef<(address: ParsedSearchAsset | null) => void>();
 
   const setOnSelectAsset = useCallback(
-    (cb: (asset: ParsedAddressAsset | null) => void) => {
-      onSelectAssetRef.current = (asset: ParsedAddressAsset | null) => {
+    (cb: (asset: ParsedSearchAsset | null) => void) => {
+      onSelectAssetRef.current = (asset: ParsedSearchAsset | null) => {
         cb(asset);
         selectAsset(asset);
       };

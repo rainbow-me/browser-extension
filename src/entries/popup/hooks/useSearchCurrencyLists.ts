@@ -1,4 +1,5 @@
 import { isAddress } from '@ethersproject/address';
+import { rankings } from 'match-sorter';
 import { useCallback, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
@@ -10,8 +11,13 @@ import {
   TokenSearchListId,
   TokenSearchThreshold,
 } from '~/core/types/search';
+import { addHexPrefix } from '~/core/utils/ethereum';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+
+import { filterList } from '../utils/search';
+
+import { useFavoriteAssets } from './useFavoriteAssets';
 
 const VERIFIED_ASSETS_PAYLOAD: {
   keys: TokenSearchAssetKey[];
@@ -125,6 +131,28 @@ export function useSearchCurrencyLists({
     fromChainId,
   });
 
+  const { favorites } = useFavoriteAssets();
+  const favoritesByChain = favorites[outputChainId];
+  const favoritesList = useMemo(() => {
+    if (query === '') {
+      return favoritesByChain;
+    } else {
+      const formattedQuery = queryIsAddress
+        ? addHexPrefix(query).toLowerCase()
+        : query;
+      return filterList<SearchAsset>(
+        favoritesByChain || [],
+        formattedQuery,
+        keys,
+        {
+          threshold: queryIsAddress
+            ? rankings.CASE_SENSITIVE_EQUAL
+            : rankings.CONTAINS,
+        },
+      );
+    }
+  }, [favoritesByChain, keys, query, queryIsAddress]);
+
   // static verified asset lists prefetched to display curated lists
   // we only display crosschain exact matches if located here
   const verifiedAssets = useMemo(
@@ -166,7 +194,9 @@ export function useSearchCurrencyLists({
 
   const getCuratedAssets = useCallback(
     (chainId: ChainId) =>
-      verifiedAssets[chainId].assets?.filter((t) => t.isRainbowCurated),
+      verifiedAssets[chainId].assets?.filter(
+        ({ isRainbowCurated }) => isRainbowCurated,
+      ),
     [verifiedAssets],
   );
 
@@ -203,26 +233,44 @@ export function useSearchCurrencyLists({
       });
     })
     .flat()
-    .filter((v) => !!v);
+    .filter((v): v is SearchAsset => !!v);
 
-  // favorites/bridge asset are not currently implemented
+  // bridge asset are not currently implemented
   // the lists below should be filtered by favorite/bridge asset match
   const results = useMemo(() => {
+    const sections: {
+      data?: SearchAsset[];
+      title: string;
+      symbol: SymbolProps['symbol'];
+      id: string;
+    }[] = [];
     if (query === '') {
+      if (favoritesList?.length) {
+        const favoritesSection = {
+          data: favoritesList,
+          title: i18n.t('token_search.section_header.favorites'),
+          symbol: 'star.fill' as SymbolProps['symbol'],
+          id: 'favorites',
+        };
+        sections.push(favoritesSection);
+      }
       const curatedSection = {
         data: curatedAssets[outputChainId],
         title: i18n.t('token_search.section_header.verified'),
         symbol: 'checkmark.seal.fill' as SymbolProps['symbol'],
         id: 'verified',
       };
-      return [curatedSection];
+      sections.push(curatedSection);
     } else {
-      const sections: {
-        data: (SearchAsset | undefined)[];
-        title: string;
-        symbol: SymbolProps['symbol'];
-        id: string;
-      }[] = [];
+      if (favoritesList?.length) {
+        const favoritesSection = {
+          data: favoritesList,
+          title: i18n.t('token_search.section_header.favorites'),
+          symbol: 'star.fill' as SymbolProps['symbol'],
+          id: 'favorites',
+        };
+        sections.push(favoritesSection);
+      }
 
       if (targetVerifiedAssets?.length) {
         const verifiedSection = {
@@ -253,13 +301,14 @@ export function useSearchCurrencyLists({
         };
         sections.push(crosschainSection);
       }
-
-      return sections;
     }
+
+    return sections;
   }, [
     crosschainExactMatches,
     curatedAssets,
     outputChainId,
+    favoritesList,
     query,
     targetUnverifiedAssets,
     targetVerifiedAssets,
