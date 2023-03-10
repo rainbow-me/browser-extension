@@ -151,6 +151,14 @@ backgroundMessenger.reply(
   },
 );
 
+backgroundMessenger.reply(
+  'watchingWalletAlert',
+  async ({ text }: { text: string }) => {
+    console.log('watchingWalletAlert');
+    alert(text);
+  },
+);
+
 /**
  * Determines if the provider should be injected
  */
