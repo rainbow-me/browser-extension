@@ -1,14 +1,14 @@
 import { Address } from 'wagmi';
 
 import {
-  ARBITRUM_ETH_ADDRESS,
-  BNB_BSC_ADDRESS,
   BNB_MAINNET_ADDRESS,
+  BSC_BNB_ADDRESS,
   ETH_ADDRESS,
+  ETH_ARBITRUM_ADDRESS,
+  ETH_OPTIMISM_ADDRESS,
   MATIC_MAINNET_ADDRESS,
   MATIC_POLYGON_ADDRESS,
   NATIVE_ASSETS_PER_CHAIN,
-  OPTIMISM_ETH_ADDRESS,
 } from '~/core/references';
 import { ParsedAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
@@ -41,13 +41,13 @@ export const getNetworkNativeAssetUniqueId = ({
 }): UniqueId => {
   switch (chainId) {
     case ChainId.arbitrum:
-      return `${ARBITRUM_ETH_ADDRESS}_${chainId}` as UniqueId;
+      return `${ETH_ARBITRUM_ADDRESS}_${chainId}` as UniqueId;
     case ChainId.mainnet:
       return `${ETH_ADDRESS}_${chainId}` as UniqueId;
     case ChainId.optimism:
-      return `${OPTIMISM_ETH_ADDRESS}_${chainId}` as UniqueId;
+      return `${ETH_OPTIMISM_ADDRESS}_${chainId}` as UniqueId;
     case ChainId.bsc:
-      return `${BNB_BSC_ADDRESS}_${chainId}` as UniqueId;
+      return `${BSC_BNB_ADDRESS}_${chainId}` as UniqueId;
     case ChainId.polygon:
       return `${MATIC_POLYGON_ADDRESS}_${chainId}` as UniqueId;
     default:

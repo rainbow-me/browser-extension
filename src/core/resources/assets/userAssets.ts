@@ -16,6 +16,13 @@ import { chainIdFromChainName } from '~/core/utils/chains';
 import { fetchUserAssetsByChain } from './userAssetsByChain';
 
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
+const REFRACTION_SUPPORTED_CHAINS = [
+  ChainName.mainnet,
+  ChainName.optimism,
+  ChainName.polygon,
+  ChainName.arbitrum,
+  ChainName.bsc,
+];
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -50,7 +57,6 @@ async function userAssetsQueryFunctionByChain({
   currency,
   connectedToHardhat,
 }: UserAssetsArgs): Promise<ParsedAssetsDictByChain> {
-  const queries = [];
   const cache = queryClient.getQueryCache();
   const cachedUserAssets = cache.find(
     userAssetsQueryKey({ address, currency, connectedToHardhat }),
@@ -68,9 +74,10 @@ async function userAssetsQueryFunctionByChain({
         results && Object.keys(results).length ? results : cachedDataForChain,
     };
   };
-  for (const chain in ChainName) {
-    queries.push(getResultsForChain(chain as ChainName));
-  }
+  const queries = REFRACTION_SUPPORTED_CHAINS.map((chain) =>
+    getResultsForChain(chain),
+  );
+
   const results = await Promise.all(queries);
   return Object.assign({}, ...results);
 }
