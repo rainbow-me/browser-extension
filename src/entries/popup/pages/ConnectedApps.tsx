@@ -166,7 +166,6 @@ const ConnectedApp = ({
 
   const onMouseEnter = useCallback(() => setDisconnectButtonVisible(true), []);
   const onMouseLeave = useCallback(() => setDisconnectButtonVisible(false), []);
-
   return (
     <Box paddingHorizontal="8px">
       <Box
@@ -208,7 +207,7 @@ const ConnectedApp = ({
                     overflow: 'hidden',
                   }}
                 >
-                  <ExternalImage src={appLogo} width="100%" height="100%" />
+                  <ExternalImage src={appLogo} width="36" height="36" />
                 </Box>
                 <Box>
                   <Stack space="8px">
