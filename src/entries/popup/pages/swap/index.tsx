@@ -1,5 +1,7 @@
+import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { motion } from 'framer-motion';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';
@@ -11,6 +13,7 @@ import {
   Row,
   Rows,
   Stack,
+  Symbol,
   Text,
 } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
@@ -21,6 +24,7 @@ import {
 
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 import { Navbar } from '../../components/Navbar/Navbar';
+import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { useSwapAssets } from '../../hooks/swap/useSwapAssets';
 import { useSwapDropdownDimensions } from '../../hooks/swap/useSwapDropdownDimensions';
 import { useSwapInputs } from '../../hooks/swap/useSwapInputs';
@@ -94,6 +98,26 @@ export function Swap() {
     source,
     slippage,
   });
+
+  const transactionRequest: TransactionRequest | null = useMemo(() => {
+    const q = quote;
+    if (q && !(q as QuoteError).error) {
+      const qu = q as Quote | CrosschainQuote;
+      const to = qu.to;
+      const from = qu.from;
+      const value = qu.value;
+      const chainId = assetToSell?.chainId;
+      const data = qu.data;
+      return {
+        to,
+        from,
+        value,
+        chainId,
+        data,
+      };
+    }
+    return null;
+  }, [assetToSell?.chainId, quote]);
 
   useSwapQuoteHandler({
     assetToBuy,
@@ -239,19 +263,63 @@ export function Swap() {
             </Stack>
           </Row>
           <Row height="content">
-            <Box paddingHorizontal="8px">
-              <Button
-                height="44px"
-                variant="flat"
-                color="surfaceSecondary"
-                width="full"
-                disabled
+            {!!assetToBuy && !!assetToSell && transactionRequest ? (
+              <AccentColorProviderWrapper
+                color={
+                  assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback
+                }
               >
-                <Text color="labelQuaternary" size="14pt" weight="bold">
-                  {i18n.t('swap.select_tokens_to_swap')}
-                </Text>
-              </Button>
-            </Box>
+                <Box paddingHorizontal="8px">
+                  <Rows space="20px">
+                    <Row>
+                      <TransactionFee
+                        chainId={assetToSell?.chainId || ChainId.mainnet}
+                        transactionRequest={transactionRequest}
+                        accentColor={
+                          assetToBuy?.colors?.primary ||
+                          assetToBuy?.colors?.fallback
+                        }
+                      />
+                    </Row>
+                    <Row>
+                      <Button
+                        onClick={() => null}
+                        height="44px"
+                        variant="flat"
+                        color="accent"
+                        width="full"
+                        testId="swap-review-button"
+                      >
+                        <Inline space="8px" alignVertical="center">
+                          <Symbol
+                            symbol="doc.text.magnifyingglass"
+                            weight="bold"
+                            size={16}
+                          />
+                          <Text color="label" size="16pt" weight="bold">
+                            {'Review'}
+                          </Text>
+                        </Inline>
+                      </Button>
+                    </Row>
+                  </Rows>
+                </Box>
+              </AccentColorProviderWrapper>
+            ) : (
+              <Box paddingHorizontal="8px">
+                <Button
+                  height="44px"
+                  variant="flat"
+                  color="surfaceSecondary"
+                  width="full"
+                  disabled
+                >
+                  <Text color="labelQuaternary" size="14pt" weight="bold">
+                    {i18n.t('swap.select_tokens_to_swap')}
+                  </Text>
+                </Button>
+              </Box>
+            )}
           </Row>
         </Rows>
       </Box>
