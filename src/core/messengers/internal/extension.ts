@@ -32,7 +32,7 @@ export const extensionMessenger = createMessenger({
     return new Promise<TResponse>((resolve, reject) => {
       const listener = (
         message: ReplyMessage<TResponse>,
-        _: chrome.runtime.MessageSender,
+        sender: chrome.runtime.MessageSender,
         sendResponse: (response?: unknown) => void,
       ) => {
         if (!isValidReply<TResponse>({ id, message, topic })) return;
@@ -41,7 +41,7 @@ export const extensionMessenger = createMessenger({
 
         const { response: response_, error } = message.payload;
         if (error) reject(new Error(error.message));
-        resolve(response_);
+        resolve({ ...response_, sender });
         sendResponse({});
         return true;
       };
@@ -77,7 +77,7 @@ export const extensionMessenger = createMessenger({
 
         chrome.runtime.sendMessage({
           topic: repliedTopic,
-          payload: { response },
+          payload: { response, sender },
           id: message.id,
         });
       } catch (error_) {
