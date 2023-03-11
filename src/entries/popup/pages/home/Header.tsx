@@ -66,7 +66,7 @@ export function AvatarSection() {
       {isFetched ? (
         <>
           {avatar?.imageUrl ? (
-            <Avatar.Image imageUrl={avatar.imageUrl} />
+            <Avatar.Image size={60} imageUrl={avatar.imageUrl} />
           ) : (
             <Avatar.Emoji color={avatar?.color} emoji={avatar?.emoji} />
           )}
