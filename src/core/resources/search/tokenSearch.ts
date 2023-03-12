@@ -11,6 +11,12 @@ import {
   queryClient,
 } from '~/core/react-query';
 import {
+  BNB_MAINNET_ADDRESS,
+  ETH_ADDRESS,
+  MATIC_MAINNET_ADDRESS,
+} from '~/core/references';
+import { ChainId } from '~/core/types/chains';
+import {
   SearchAsset,
   TokenSearchAssetKey,
   TokenSearchListId,
@@ -21,8 +27,8 @@ import {
 // Query Types
 
 export type TokenSearchArgs = {
-  chainId: number;
-  fromChainId?: number | '';
+  chainId: ChainId;
+  fromChainId?: ChainId | '';
   keys: TokenSearchAssetKey[];
   list: TokenSearchListId;
   threshold: TokenSearchThreshold;
@@ -77,10 +83,25 @@ async function tokenSearchQueryFunction({
   const url = `/${chainId}/?${qs.stringify(queryParams)}`;
   try {
     const tokenSearch = await tokenSearchHttp.get(url);
-    return tokenSearch.data?.data as SearchAsset[];
+    return parseTokenSearch(tokenSearch.data?.data, chainId) as SearchAsset[];
   } catch (e) {
     return [];
   }
+}
+
+function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
+  return assets.map((a) => ({
+    ...a,
+    address: a.networks[chainId]?.address,
+    chainId,
+    isNativeAsset: [
+      ETH_ADDRESS,
+      BNB_MAINNET_ADDRESS,
+      MATIC_MAINNET_ADDRESS,
+    ].includes(a.uniqueId),
+    mainnetAddress: a.uniqueId,
+    uniqueId: `${a.uniqueId}_${chainId}`,
+  }));
 }
 
 type TokenSearchResult = QueryFunctionResult<typeof tokenSearchQueryFunction>;

@@ -11,11 +11,11 @@ import { TransactionFee } from '~/entries/popup/components/TransactionFee/Transa
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 
-interface SignMessageProps {
+interface SendTransactionProps {
   request: ProviderRequestPayload;
 }
 
-export function SendTransactionInfo({ request }: SignMessageProps) {
+export function SendTransactionInfo({ request }: SendTransactionProps) {
   const { appHostName, appLogo, appHost } = useAppMetadata({
     url: request?.meta?.sender?.url,
   });

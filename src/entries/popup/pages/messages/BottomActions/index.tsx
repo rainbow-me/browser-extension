@@ -4,7 +4,15 @@ import { Address, useBalance } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
-import { Box, Button, Inline, Stack, Symbol, Text } from '~/design-system';
+import {
+  Box,
+  Button,
+  Inline,
+  Stack,
+  Symbol,
+  Text,
+  TextOverflow,
+} from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { EthSymbol } from '~/entries/popup/components/EthSymbol/EthSymbol';
@@ -17,6 +25,9 @@ import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
 import { SwitchMenu } from '../../../components/SwitchMenu/SwitchMenu';
 
+const { innerWidth: windowWidth } = window;
+const TITLE_MAX_WIDTH = windowWidth - 240;
+
 export const WalletName = ({
   address,
   color = 'label',
@@ -28,9 +39,14 @@ export const WalletName = ({
     address,
   });
   return (
-    <Text color={color} size="14pt" weight="semibold">
+    <TextOverflow
+      maxWidth={TITLE_MAX_WIDTH}
+      color={color}
+      size="14pt"
+      weight="semibold"
+    >
       {walletDisplayName}
-    </Text>
+    </TextOverflow>
   );
 };
 
@@ -219,10 +235,12 @@ export const WalletBalance = ({ appHost }: { appHost: string }) => {
 };
 
 export const AcceptRequestButton = ({
+  disabled,
   onClick,
   label,
   waitingForDevice,
 }: {
+  disabled?: boolean;
   onClick: () => void;
   label: string;
   waitingForDevice?: boolean;
@@ -235,7 +253,8 @@ export const AcceptRequestButton = ({
       width="full"
       onClick={(!waitingForDevice && onClick) || undefined}
       testId="accept-request-button"
-      variant={waitingForDevice ? 'disabled' : 'flat'}
+      variant={waitingForDevice || disabled ? 'disabled' : 'flat'}
+      disabled={disabled}
     >
       {label}
     </Button>

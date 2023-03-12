@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { Box } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { SwapInputMask } from '~/entries/popup/components/InputMask/SwapInputMask/SwapInputMask';
@@ -18,7 +18,7 @@ import { SwapInputActionButton } from '../SwapInputActionButton';
 
 interface TokenInputProps {
   accentCaretColor?: boolean;
-  asset: ParsedAddressAsset | null;
+  asset: ParsedSearchAsset | null;
   assetFilter: string;
   dropdownHeight?: number;
   dropdownComponent: ReactElement;
@@ -30,8 +30,8 @@ interface TokenInputProps {
   inputRef: React.RefObject<HTMLInputElement>;
   value: string;
   onDropdownOpen: (open: boolean) => void;
-  selectAsset: (asset: ParsedAddressAsset | null) => void;
-  setOnSelectAsset: (cb: (asset: ParsedAddressAsset | null) => void) => void;
+  selectAsset: (asset: ParsedSearchAsset | null) => void;
+  setOnSelectAsset: (cb: (asset: ParsedSearchAsset | null) => void) => void;
   setAssetFilter: React.Dispatch<React.SetStateAction<string>>;
   setValue: (value: string) => void;
 }

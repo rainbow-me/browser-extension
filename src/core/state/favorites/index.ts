@@ -2,10 +2,26 @@ import { Address } from 'wagmi';
 import create from 'zustand';
 
 import {
-  BNB_MAINNET_ADDRESS,
+  DAI_ADDRESS,
+  DAI_ARBITRUM_ADDRESS,
+  DAI_OPTIMISM_ADDRESS,
+  DAI_POLYGON_ADDRESS,
   ETH_ADDRESS,
-  MATIC_MAINNET_ADDRESS,
+  ETH_ARBITRUM_ADDRESS,
+  MATIC_POLYGON_ADDRESS,
   OP_ADDRESS,
+  SOCKS_ADDRESS,
+  SOCKS_ARBITRUM_ADDRESS,
+  USDC_ADDRESS,
+  USDC_ARBITRUM_ADDRESS,
+  USDC_OPTIMISM_ADDRESS,
+  USDC_POLYGON_ADDRESS,
+  WBTC_ADDRESS,
+  WBTC_ARBITRUM_ADDRESS,
+  WBTC_OPTIMISM_ADDRESS,
+  WBTC_POLYGON_ADDRESS,
+  WETH_OPTIMISM_ADDRESS,
+  WETH_POLYGON_ADDRESS,
 } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 
@@ -27,11 +43,35 @@ export interface FavoritesState {
 export const favoritesStore = createStore<FavoritesState>(
   (set, get) => ({
     favorites: {
-      [ChainId.mainnet]: [ETH_ADDRESS as Address],
-      [ChainId.arbitrum]: [ETH_ADDRESS as Address],
-      [ChainId.bsc]: [BNB_MAINNET_ADDRESS],
-      [ChainId.polygon]: [MATIC_MAINNET_ADDRESS],
-      [ChainId.optimism]: [OP_ADDRESS],
+      [ChainId.mainnet]: [
+        ETH_ADDRESS as Address,
+        DAI_ADDRESS,
+        USDC_ADDRESS,
+        WBTC_ADDRESS,
+        SOCKS_ADDRESS,
+      ],
+      [ChainId.arbitrum]: [
+        ETH_ARBITRUM_ADDRESS,
+        DAI_ARBITRUM_ADDRESS,
+        USDC_ARBITRUM_ADDRESS,
+        WBTC_ARBITRUM_ADDRESS,
+        SOCKS_ARBITRUM_ADDRESS,
+      ],
+      [ChainId.bsc]: [],
+      [ChainId.polygon]: [
+        MATIC_POLYGON_ADDRESS,
+        WETH_POLYGON_ADDRESS,
+        DAI_POLYGON_ADDRESS,
+        USDC_POLYGON_ADDRESS,
+        WBTC_POLYGON_ADDRESS,
+      ],
+      [ChainId.optimism]: [
+        OP_ADDRESS,
+        WETH_OPTIMISM_ADDRESS,
+        DAI_OPTIMISM_ADDRESS,
+        USDC_OPTIMISM_ADDRESS,
+        WBTC_OPTIMISM_ADDRESS,
+      ],
     },
     addFavorite: ({ address, chainId }: UpdateFavoritesArgs) => {
       const { favorites } = get();
@@ -59,7 +99,7 @@ export const favoritesStore = createStore<FavoritesState>(
   {
     persist: {
       name: 'favorites',
-      version: 0,
+      version: 1,
     },
   },
 );
