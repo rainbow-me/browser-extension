@@ -3,7 +3,8 @@ import { uuid4 } from '@sentry/utils';
 import { analytics } from '~/analytics';
 import { initializeMessenger } from '~/core/messengers';
 import { initializeSentry, setSentryUser } from '~/core/sentry';
-import { deviceIdStore, syncStores } from '~/core/state';
+import { deviceIdStore, rehydrateStore, syncStores } from '~/core/state';
+import { StoreWithPersist } from '~/core/state/internal/createStore';
 import { createWagmiClient } from '~/core/wagmi';
 
 import { handleInstallExtension } from './handlers/handleInstallExtension';
@@ -27,8 +28,10 @@ handleWallets();
 syncStores();
 uuid4();
 
-// Initialize analytics after stores are synced
-const { deviceId } = deviceIdStore.getState();
-setSentryUser(deviceId);
-analytics.setDeviceId(deviceId);
-analytics.identify();
+(async () => {
+  await rehydrateStore({ store: deviceIdStore as StoreWithPersist<unknown> });
+  const { deviceId } = deviceIdStore.getState();
+  setSentryUser(deviceId);
+  analytics.setDeviceId(deviceId);
+  analytics.identify();
+})();

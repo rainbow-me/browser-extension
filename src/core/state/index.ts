@@ -20,5 +20,6 @@ export {
 } from './pendingTransactions';
 export { pendingRequestStore, usePendingRequestStore } from './requests';
 export { gasStore, useGasStore } from './gas';
-export { syncStores } from './internal/syncStores';
 export { deviceIdStore, useDeviceIdStore } from './device';
+export { syncStores } from './internal/syncStores';
+export { rehydrateStore } from './internal/rehydrateStore';

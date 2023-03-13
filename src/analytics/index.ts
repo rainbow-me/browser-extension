@@ -93,7 +93,7 @@ export class Analytics {
    * `identify()`, you must do that on your own.
    */
   setDeviceId(deviceId: string) {
-    logger.debug(`Set deviceId on analytics instance`);
+    logger.debug(`Set deviceId on analytics instance`, { deviceId });
     this.deviceId = deviceId;
   }
 
