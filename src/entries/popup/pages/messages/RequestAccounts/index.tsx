@@ -27,7 +27,7 @@ export const RequestAccounts = ({
   request,
 }: ApproveRequestProps) => {
   const { currentAddress } = useCurrentAddressStore();
-  const { appHostName, appLogo, appName } = useAppMetadata({
+  const { appHostName, appHost, appLogo, appName } = useAppMetadata({
     url: request?.meta?.sender?.url,
     title: request?.meta?.sender?.tab?.title,
   });
@@ -47,19 +47,26 @@ export const RequestAccounts = ({
     });
     analytics.track(event.dappPromptConnectApproved, {
       chainId: selectedChainId,
-      dappURL: appHostName,
+      dappURL: appHost,
       dappName: appName,
     });
-  }, [appHostName, appName, approveRequest, selectedChainId, selectedWallet]);
+  }, [
+    appHostName,
+    appHost,
+    appName,
+    approveRequest,
+    selectedChainId,
+    selectedWallet,
+  ]);
 
   const onRejectRequest = useCallback(() => {
     rejectRequest();
     analytics.track(event.dappPromptConnectRejected, {
       chainId: selectedChainId,
-      dappURL: appHostName,
+      dappURL: appHost,
       dappName: appName,
     });
-  }, [appHostName, appName, rejectRequest, selectedChainId]);
+  }, [appHost, appName, rejectRequest, selectedChainId]);
 
   return (
     <Rows alignVertical="justify">
