@@ -7,6 +7,7 @@ import { ChainId } from '~/core/types/chains';
 import { getTransactionRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box, Inline, Inset, Separator, Stack, Text } from '~/design-system';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
+import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
 import { TransactionFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
@@ -43,7 +44,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
                   alignItems="center"
                 >
                   {appLogo ? (
-                    <img src={appLogo} width="100%" height="100%" />
+                    <ExternalImage src={appLogo} width="32" height="32" />
                   ) : null}
                 </Box>
               </Inline>
