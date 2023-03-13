@@ -37,7 +37,6 @@ export const ETH_MAINNET_ASSET: ParsedAddressAsset = {
     changed_at: -1,
   },
   symbol: 'ETH',
-  type: 'token',
   uniqueId: 'eth_1',
 };
 export const USDC_MAINNET_ASSET: ParsedAsset = {
@@ -61,7 +60,6 @@ export const USDC_MAINNET_ASSET: ParsedAsset = {
     changed_at: -1,
   },
   symbol: 'USDC',
-  type: 'stablecoin',
   uniqueId: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_1' as UniqueId,
   decimals: 6,
 };
@@ -81,7 +79,6 @@ export const ENS_MAINNET_ASSET: ParsedAsset = {
     value: 13.984137272000002,
   },
   symbol: 'ENS',
-  type: 'token',
   uniqueId: '0xc18360217d8f7ab5e7c516566761ea12ce7f9d72_1',
   decimals: 18,
 };
@@ -107,7 +104,6 @@ export const USDC_ARBITRUM_ASSET: ParsedAsset = {
     changed_at: -1,
   },
   symbol: 'USDC',
-  type: 'stablecoin',
   uniqueId: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_1' as UniqueId,
   decimals: 6,
 };

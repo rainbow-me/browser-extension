@@ -235,10 +235,12 @@ export const WalletBalance = ({ appHost }: { appHost: string }) => {
 };
 
 export const AcceptRequestButton = ({
+  disabled,
   onClick,
   label,
   waitingForDevice,
 }: {
+  disabled?: boolean;
   onClick: () => void;
   label: string;
   waitingForDevice?: boolean;
@@ -251,7 +253,8 @@ export const AcceptRequestButton = ({
       width="full"
       onClick={(!waitingForDevice && onClick) || undefined}
       testId="accept-request-button"
-      variant={waitingForDevice ? 'disabled' : 'flat'}
+      variant={waitingForDevice || disabled ? 'disabled' : 'flat'}
+      disabled={disabled}
     >
       {label}
     </Button>
