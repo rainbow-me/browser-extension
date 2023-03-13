@@ -4,8 +4,8 @@ import { EventProperties, event } from '~/analytics/event';
 import { UserProperties } from '~/analytics/userProperties';
 import { logger } from '~/logger';
 
-const isDev =
-  process.env.IS_TESTING === 'true' || process.env.IS_DEV === 'true';
+const IS_DEV = process.env.IS_DEV === 'true';
+const IS_TESTING = process.env.IS_TESTING === 'true';
 
 export class Analytics {
   client: AnalyticsBrowser;
@@ -37,11 +37,15 @@ export class Analytics {
    * wallet address as a property, if available.
    */
   identify(userProperties?: UserProperties) {
-    if (this.disabled || isDev) return;
+    if (this.disabled || IS_DEV || IS_TESTING) return;
     const metadata = this.getDefaultMetadata();
     this.client.identify(this.deviceId, {
       ...userProperties,
       ...metadata,
+    });
+    logger.info('analytics.identify()', {
+      deviceId: this.deviceId,
+      userProperties,
     });
   }
 
@@ -49,9 +53,13 @@ export class Analytics {
    * Sends a `screen` event to Segment.
    */
   screen(routeName: string, params: Record<string, never> = {}): void {
-    if (this.disabled || isDev) return;
+    if (this.disabled || IS_DEV || IS_TESTING) return;
     const metadata = this.getDefaultMetadata();
     this.client.screen(routeName, { ...params, ...metadata });
+    logger.info('analytics.screen()', {
+      routeName,
+      params,
+    });
   }
 
   /**
@@ -63,9 +71,13 @@ export class Analytics {
     event: T,
     params?: EventProperties[T],
   ) {
-    if (this.disabled || isDev) return;
+    if (this.disabled || IS_DEV || IS_TESTING) return;
     const metadata = this.getDefaultMetadata();
     this.client.track(event, Object.assign(metadata, params));
+    logger.info('analytics.track()', {
+      event,
+      params,
+    });
   }
 
   /**

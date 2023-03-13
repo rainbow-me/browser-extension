@@ -13,14 +13,7 @@ import { handleTabAndWindowUpdates } from './handlers/handleTabAndWindowUpdates'
 import { handleWallets } from './handlers/handleWallets';
 require('../../core/utils/lockdown');
 
-// Disable analytics and sentry for e2e and dev mode
-if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
-  initializeSentry('background');
-  const { deviceId } = deviceIdStore.getState();
-  setSentryUser(deviceId);
-  analytics.setDeviceId(deviceId);
-  analytics.identify();
-}
+initializeSentry('background');
 
 const popupMessenger = initializeMessenger({ connect: 'popup' });
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
@@ -33,3 +26,9 @@ handleSetupInpage();
 handleWallets();
 syncStores();
 uuid4();
+
+// Initialize analytics after stores are synced
+const { deviceId } = deviceIdStore.getState();
+setSentryUser(deviceId);
+analytics.setDeviceId(deviceId);
+analytics.identify();
