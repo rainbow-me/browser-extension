@@ -94,13 +94,9 @@ export const event = {
    */
   dappPromptSignTypedDataRejected: 'dapp.prompt.sign_typed_data.rejected',
   /**
-   * Called when the user disconnects the extension from the dApp with a `disconnect` event.
-   */
-  dappProviderDisconnected: 'dapp.provider.disconnected',
-  /**
    * Called when the user switches networks from the dApp with a `switchNetwork` event.
    */
-  dappProviderNetworkSwitched: 'dapp.provider.network_switched',
+  dappProviderNetworkSwitched: 'dapp.provider.network.switched',
   /**
    * Called when the popup entry is opened, including:
    * - extension popup
@@ -275,16 +271,6 @@ export type EventProperties = {
   [event.dappPromptSignTypedDataRejected]: {
     /**
      * Full url of the dApp requesting a sign typed data request.
-     */
-    dappURL: string;
-    /**
-     * Short name of the dApp displayed to the user.
-     */
-    dappName?: string;
-  };
-  [event.dappProviderDisconnected]: {
-    /**
-     * Full url of the dApp requesting a `disconnect` event.
      */
     dappURL: string;
     /**
