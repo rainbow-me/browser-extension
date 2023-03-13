@@ -2,7 +2,10 @@ import React from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useGasStore } from '~/core/state';
+import { ChainId } from '~/core/types/chains';
 import { Column, Columns, Inset, Row, Rows, Stack } from '~/design-system';
+import { useApproveAppRequestValidations } from '~/entries/popup/hooks/approveAppRequest/useApproveAppRequestValidations';
 
 import {
   AcceptRequestButton,
@@ -13,17 +16,22 @@ import {
 
 export const SendTransactionActions = ({
   appHost,
+  chainId,
   selectedWallet,
   onAcceptRequest,
   onRejectRequest,
   waitingForDevice,
 }: {
   appHost: string;
+  chainId: ChainId;
   selectedWallet: Address;
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
   waitingForDevice: boolean;
 }) => {
+  const { selectedGas } = useGasStore();
+  const { enoughNativeAssetForGas, buttonLabel } =
+    useApproveAppRequestValidations({ chainId, selectedGas });
   return (
     <Inset vertical="20px" horizontal="20px">
       <Stack space="24px">
@@ -38,11 +46,12 @@ export const SendTransactionActions = ({
         <Rows space="8px">
           <Row>
             <AcceptRequestButton
+              disabled={!enoughNativeAssetForGas}
               onClick={onAcceptRequest}
               label={
                 waitingForDevice
                   ? i18n.t('approve_request.confirm_hw')
-                  : i18n.t('approve_request.send_transaction')
+                  : buttonLabel
               }
               waitingForDevice={waitingForDevice}
             />

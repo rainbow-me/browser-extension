@@ -1,14 +1,16 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Address } from 'wagmi';
 
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { selectUserAssetsListByChainId } from '~/core/resources/_selectors/assets';
 import { useAssets, useUserAssets } from '~/core/resources/assets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
+import { useFavoritesStore } from '~/core/state/favorites';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
-import { chainNameFromChainId } from '~/core/utils/chains';
+import { parseSearchAsset } from '~/core/utils/assets';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 import { SortMethod } from '../send/useSendAsset';
@@ -25,68 +27,21 @@ const sortBy = (by: SortMethod) => {
   }
 };
 
-const parseParsedAssetToParsedAddressAsset = ({
-  outputChainId,
-  rawAsset,
-  userAsset,
-  searchAsset,
-}: {
-  rawAsset: ParsedAsset;
-  userAsset?: ParsedAddressAsset;
-  outputChainId: ChainId;
-  searchAsset?: SearchAsset;
-}): ParsedAddressAsset => {
-  const assetNetworkInformation = searchAsset?.networks[outputChainId];
-
-  // if searchAsset is appearing because it found an exact match
-  // "on other networks" we need to take the first network, decimals and address to
-  // use for the asset
-
-  const networks = Object.entries(searchAsset?.networks || {});
-  const assetInOneNetwork = networks.length === 1;
-
-  const address = assetInOneNetwork
-    ? networks[0][1].address
-    : assetNetworkInformation?.address ||
-      userAsset?.address ||
-      rawAsset.address;
-
-  const decimals = assetInOneNetwork
-    ? networks[0][1].decimals
-    : assetNetworkInformation?.decimals || rawAsset.decimals;
-  const chainId = assetInOneNetwork ? Number(networks[0][0]) : outputChainId;
-
-  return {
-    ...rawAsset,
-    decimals,
-    address,
-    chainId,
-    native: {
-      balance: userAsset?.native.balance || {
-        amount: '0',
-        display: '0.00',
-      },
-      price: rawAsset.native.price,
-    },
-    balance: userAsset?.balance || { amount: '0', display: '0.00' },
-    icon_url:
-      userAsset?.icon_url || rawAsset?.icon_url || searchAsset?.icon_url,
-    colors: searchAsset?.colors || rawAsset?.colors,
-    chainName: chainNameFromChainId(chainId),
-  };
-};
-
 export const useSwapAssets = () => {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency } = useCurrentCurrencyStore();
   const { connectedToHardhat } = useConnectedToHardhatStore();
 
-  const [assetToSell, setAssetToSell] = useState<ParsedAddressAsset | null>(
-    null,
-  );
-  const [assetToBuy, setAssetToBuy] = useState<ParsedAddressAsset | null>(null);
+  const [assetToSell, setAssetToSell] = useState<
+    ParsedSearchAsset | SearchAsset | null
+  >(null);
+  const [assetToBuy, setAssetToBuy] = useState<
+    ParsedSearchAsset | SearchAsset | null
+  >(null);
 
-  const prevAssetToSell = usePrevious<ParsedAddressAsset | null>(assetToSell);
+  const prevAssetToSell = usePrevious<ParsedSearchAsset | SearchAsset | null>(
+    assetToSell,
+  );
 
   const [outputChainId, setOutputChainId] = useState(ChainId.mainnet);
   const prevOutputChainId = usePrevious(outputChainId);
@@ -98,6 +53,8 @@ export const useSwapAssets = () => {
 
   const debouncedAssetToSellFilter = useDebounce(assetToSellFilter, 200);
   const debouncedAssetToBuyFilter = useDebounce(assetToBuyFilter, 200);
+
+  const { favorites } = useFavoritesStore();
 
   const { data: userAssets = [] } = useUserAssets(
     {
@@ -121,7 +78,7 @@ export const useSwapAssets = () => {
           ),
         )
       : userAssets;
-  }, [debouncedAssetToSellFilter, userAssets]);
+  }, [debouncedAssetToSellFilter, userAssets]) as ParsedSearchAsset[];
 
   const { results: searchReceiveAssetsSections } = useSearchCurrencyLists({
     inputChainId: assetToSell?.chainId,
@@ -129,67 +86,87 @@ export const useSwapAssets = () => {
     searchQuery: debouncedAssetToBuyFilter,
   });
 
-  const searchReceiveAssets = useMemo(
-    () =>
-      searchReceiveAssetsSections
-        ?.map(({ data }) => data)
-        .flat()
-        ?.filter((asset): asset is SearchAsset => !!asset),
-    [searchReceiveAssetsSections],
-  );
+  const assetAddresses = useMemo(() => {
+    const dict: Record<ChainId, Address[]> = {};
+    if (assetToBuy) {
+      dict[assetToBuy.chainId] = [
+        assetToBuy?.mainnetAddress || assetToBuy?.address || '',
+      ];
+    }
+    if (assetToSell) {
+      const addressesForNetwork = dict[assetToSell.chainId] || [];
+      dict[assetToSell.chainId] = [
+        ...addressesForNetwork,
+        assetToSell?.mainnetAddress || assetToSell?.address || '',
+      ];
+    }
+    return dict;
+  }, [assetToBuy, assetToSell]);
 
-  const { data: rawAssetsToBuy } = useAssets({
-    assetAddresses: {
-      [outputChainId as ChainId]: searchReceiveAssets.map(
-        ({ uniqueId }) => uniqueId,
-      ),
+  const { data: rawAssetsWithPrice } = useAssets(
+    {
+      assetAddresses,
+      currency: currentCurrency,
     },
-    currency: currentCurrency,
-  });
-
-  const assetsToBuy: ParsedAddressAsset[] = useMemo(
-    () =>
-      Object.values(rawAssetsToBuy || {})
-        .filter((rawAsset) => rawAsset.address !== assetToSell?.address)
-        .map((rawAsset) => {
-          const userAsset = userAssets.find((userAsset) =>
-            isLowerCaseMatch(userAsset.address, rawAsset.address),
-          );
-          const searchAsset = searchReceiveAssets.find(
-            (searchAsset) => searchAsset.uniqueId === rawAsset.address,
-          );
-          return parseParsedAssetToParsedAddressAsset({
-            rawAsset,
-            userAsset,
-            outputChainId,
-            searchAsset,
-          });
-        }),
-    [
-      rawAssetsToBuy,
-      assetToSell?.address,
-      userAssets,
-      searchReceiveAssets,
-      outputChainId,
-    ],
+    {
+      enabled: !!assetToSell?.address || !!assetToBuy?.address,
+      select: (assetsWithPrices) => {
+        const assetToBuyWithPrice =
+          assetsWithPrices?.[assetToBuy?.uniqueId || ''];
+        const assetToSellWithPrice =
+          assetsWithPrices?.[assetToSell?.uniqueId || ''];
+        return { buy: assetToBuyWithPrice, sell: assetToSellWithPrice };
+      },
+    },
   );
+
+  const { buy: rawAssetToBuy, sell: rawAssetToSell } = rawAssetsWithPrice || {};
+
+  const parsedAssetToBuy = useMemo(() => {
+    if (assetToBuy) {
+      const userAsset = userAssets.find((userAsset) =>
+        isLowerCaseMatch(userAsset.address, rawAssetToBuy?.address),
+      );
+      if (rawAssetToBuy) {
+        return parseSearchAsset({
+          rawAsset: rawAssetToBuy,
+          userAsset,
+          outputChainId: assetToBuy.chainId,
+          searchAsset: assetToBuy,
+        });
+      }
+    }
+    return null;
+  }, [assetToBuy, rawAssetToBuy, userAssets]);
+
+  const parsedAssetToSell = useMemo(() => {
+    if (assetToSell) {
+      const userAsset = userAssets.find((userAsset) =>
+        isLowerCaseMatch(userAsset.address, rawAssetToSell?.address),
+      );
+      return parseSearchAsset({
+        rawAsset: rawAssetToSell,
+        userAsset,
+        outputChainId: assetToSell.chainId,
+        searchAsset: assetToSell,
+      });
+    }
+    return null;
+  }, [assetToSell, rawAssetToSell, userAssets]);
 
   const assetsToBuyBySection = useMemo(() => {
     return searchReceiveAssetsSections.map(({ data, title, symbol, id }) => {
-      const parsedData: ParsedAddressAsset[] =
-        data
-          ?.map((asset) =>
-            assetsToBuy.find((parsedAsset) =>
-              isLowerCaseMatch(
-                parsedAsset.uniqueId.split('_')[0],
-                asset?.uniqueId,
-              ),
-            ),
-          )
-          ?.filter((p): p is ParsedAddressAsset => !!p) || [];
+      const parsedData: SearchAsset[] =
+        data?.filter((p) => {
+          const shouldFilterFavorite =
+            id !== 'favorites' &&
+            favorites[outputChainId].includes((p?.address || '') as Address);
+          const isSellToken = p.uniqueId === assetToSell?.uniqueId;
+          return !shouldFilterFavorite && !isSellToken;
+        }) || [];
       return { data: parsedData, title, symbol, id };
     });
-  }, [assetsToBuy, searchReceiveAssetsSections]);
+  }, [assetToSell, favorites, outputChainId, searchReceiveAssetsSections]);
 
   // if output chain id changes we need to clear the receive asset
   useEffect(() => {
@@ -211,8 +188,8 @@ export const useSwapAssets = () => {
     assetsToBuy: assetsToBuyBySection,
     assetToBuyFilter,
     sortMethod,
-    assetToSell,
-    assetToBuy,
+    assetToSell: parsedAssetToSell,
+    assetToBuy: parsedAssetToBuy,
     outputChainId,
     setSortMethod,
     setAssetToSell,

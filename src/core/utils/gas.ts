@@ -218,7 +218,7 @@ export const parseGasFeeParams = ({
   const display = `${new BigNumber(
     weiToGwei(add(baseFee, maxPriorityFeePerGas.amount)),
   ).toFixed(0)} - ${new BigNumber(
-    weiToGwei(add(wei, maxPriorityFeePerGas.amount)),
+    weiToGwei(add(maxBaseFee.amount, maxPriorityFeePerGas.amount)),
   ).toFixed(0)} Gwei`;
 
   const estimatedTime = parseGasDataConfirmationTime(
