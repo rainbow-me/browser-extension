@@ -6,7 +6,7 @@ import { TextProps } from '~/design-system/components/Text/Text';
 
 import { maybeSignUri } from '../../handlers/imgix';
 
-const getClosesetSize = (size: number): TextProps['size'] => {
+const getClosestSize = (size: number): TextProps['size'] => {
   const allowedSizes = [11, 12, 14, 16, 20, 23, 26, 32, 44];
   const closestSize = allowedSizes.reduce((prev, curr) => {
     return Math.abs(curr - size) < Math.abs(prev - size) ? curr : prev;
@@ -23,10 +23,14 @@ const ExternalImage = (
   const width = Number(props.width) || undefined;
   const height = Number(props.height) || undefined;
 
-  const signedUrl = maybeSignUri(props.src, {
-    w: width,
-    h: height,
-  });
+  const signedUrl = React.useMemo(
+    () =>
+      maybeSignUri(props.src, {
+        w: width,
+        h: height,
+      }),
+    [height, props.src, width],
+  );
 
   const handleError = React.useCallback(() => {
     setFallback(true);
@@ -40,7 +44,7 @@ const ExternalImage = (
         justifyContent="center"
         display="flex"
       >
-        <Text size={getClosesetSize(Number(width || height))} weight="bold">
+        <Text size={getClosestSize(Number(width || height))} weight="bold">
           {'👽'}
         </Text>
       </Box>
