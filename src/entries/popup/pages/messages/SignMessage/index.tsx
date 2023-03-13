@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { i18n } from '~/core/languages';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { RPCMethod } from '~/core/types/rpcMethods';
@@ -86,7 +87,7 @@ export function SignMessage({
   useEffect(() => {
     if (isWatchingWallet) {
       triggerAlert({
-        text: 'This wallet is currently in "Watching" mode',
+        text: i18n.t('alert.wallet_watching_mode'),
         callback: rejectRequest,
       });
     }

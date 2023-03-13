@@ -4,6 +4,7 @@ import { formatEther } from '@ethersproject/units';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -109,7 +110,7 @@ export function SendTransaction({
   useEffect(() => {
     if (isWatchingWallet) {
       triggerAlert({
-        text: 'This wallet is currently in "Watching" mode',
+        text: i18n.t('alert.wallet_watching_mode'),
         callback: rejectRequest,
       });
     }

@@ -647,6 +647,7 @@
     "unsupported_network": "Unsupported network"
   },
   "alert": {
-    "ok": "Ok"
+    "ok": "Ok",
+    "wallet_watching_mode": "This wallet is currently in 'Watching' mode"
   }
 }
