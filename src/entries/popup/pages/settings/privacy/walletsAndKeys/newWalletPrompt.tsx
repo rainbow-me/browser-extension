@@ -1,10 +1,4 @@
-import React, {
-  KeyboardEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { KeyboardEvent, useCallback, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -40,37 +34,29 @@ export const NewWalletPrompt = ({
   const { saveWalletName } = useWalletNamesStore();
 
   const [walletName, setWalletName] = useState('');
-  const [error, setError] = useState<string | null>(null);
 
   const handleValidateWalletName = useCallback(async () => {
+    const newAccount = await add(wallet?.accounts?.[0]);
     if (walletName && walletName.trim() !== '') {
-      const newAccount = await add(wallet?.accounts?.[0]);
       saveWalletName({
         name: walletName.trim(),
         address: newAccount,
       });
-      setSettingWallets({
-        ...wallet,
-        accounts: [...wallet.accounts, newAccount],
-      });
-      navigate(
-        ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
-        { state: { account: newAccount, password: state?.password } },
-      );
-      return;
     }
-    setError(i18n.t('errors.no_wallet_name_set'));
+    setSettingWallets({
+      ...wallet,
+      accounts: [...wallet.accounts, newAccount],
+    });
+    navigate(
+      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
+      { state: { account: newAccount, password: state?.password } },
+    );
   }, [navigate, saveWalletName, state?.password, wallet, walletName]);
 
   const handleClose = useCallback(() => {
-    setError(null);
     setWalletName('');
     onClose();
   }, [onClose]);
-
-  useEffect(() => {
-    setError(null);
-  }, [walletName]);
 
   const onKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -79,11 +65,6 @@ export const NewWalletPrompt = ({
       }
     },
     [handleValidateWalletName],
-  );
-
-  const isValid = useMemo(
-    () => walletName.length > 0 && walletName.trim() !== '',
-    [walletName],
   );
 
   return (
@@ -122,20 +103,6 @@ export const NewWalletPrompt = ({
                       tabIndex={1}
                     />
                   </Row>
-                  {error && (
-                    <Row>
-                      <Box paddingTop="8px">
-                        <Text
-                          size="14pt"
-                          weight="semibold"
-                          align="center"
-                          color="red"
-                        >
-                          {error}
-                        </Text>
-                      </Box>
-                    </Row>
-                  )}
                 </Rows>
               </Row>
             </Rows>
@@ -144,10 +111,10 @@ export const NewWalletPrompt = ({
             <Rows space="8px">
               <Row>
                 <Button
-                  color={isValid ? 'accent' : 'labelQuaternary'}
-                  variant={isValid ? 'flat' : 'disabled'}
+                  color={'accent'}
+                  variant={'flat'}
                   height="36px"
-                  onClick={isValid ? handleValidateWalletName : undefined}
+                  onClick={handleValidateWalletName}
                   width="full"
                   borderRadius="9px"
                   tabIndex={2}
