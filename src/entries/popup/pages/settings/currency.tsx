@@ -23,7 +23,7 @@ export function Currency() {
               leftComponent={
                 currency === 'ETH' ? (
                   <Inline alignHorizontal="center">
-                    <Box background="blue" style={{ width: 16, height: 16 }}>
+                    <Box style={{ width: 16, height: 16 }}>
                       <img src={EthIcon} width="100%" height="100%" />
                     </Box>
                   </Inline>

@@ -3,17 +3,21 @@ import Switch from 'react-switch';
 
 import { Box } from '../Box/Box';
 
-const Toggle = ({
-  checked,
-  handleChange,
-  disabled = false,
-  testId,
-}: {
+interface ToggleProps {
+  accentColor?: string;
   checked: boolean;
   disabled?: boolean;
   handleChange: (checked: boolean) => void;
   testId?: string;
-}) => {
+}
+
+const Toggle = ({
+  accentColor,
+  checked,
+  handleChange,
+  disabled = false,
+  testId,
+}: ToggleProps) => {
   return (
     <Box testId={testId}>
       <Switch
@@ -25,7 +29,8 @@ const Toggle = ({
         handleDiameter={19}
         uncheckedIcon={false}
         checkedIcon={false}
-        onColor="#268FFF"
+        onColor={accentColor || '#268FFF'}
+        activeBoxShadow={accentColor || '#268FFF'}
         disabled={disabled}
       />
     </Box>

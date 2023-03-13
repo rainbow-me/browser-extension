@@ -162,7 +162,8 @@
       "ZAR": "South African Rand"
     },
     "feature_flags": {
-      "swaps": "Swaps"
+      "swaps": "Swaps",
+      "full_watching_wallets": "Allow full access to watching wallets"
     }
   },
   "transactions": {
@@ -238,6 +239,52 @@
       "nothing_found": "Nothing found",
       "nothing_found_description": "Some tokens don’t have enough liquidity to perform a successful swap.",
       "nothing_found_description_l2": "Some tokens don’t have enough layer 2 liquidity to perform a successful swap."
+    },
+    "aggregators": {
+      "rainbow": "Auto"
+    },
+    "settings": {
+      "title": "Swap Settings",
+      "route_swaps": "Route swaps via",
+      "use_flashbots": "Use Flashbots",
+      "max_slippage": "Max slippage",
+      "use_defaults": "Use defaults",
+      "done": "Done",
+      "warnings": {
+        "high": "High",
+        "possible_loss": "Possible loss"
+      },
+      "explainers": {
+        "slippage": {
+          "title": "Slippage",
+          "description_1": "Slippage occurs when the price of a swap changes during the time between you submitting your transaction and its confirmation.",
+          "description_2": "Setting a higher slippage tolerance increases the likelihood your swap will be successful, but may result in you getting a worse price.",
+          "read_more": {
+            "open_text": "Still curious? ",
+            "link_text": "Read more",
+            "close_text": " about slippage and how it affects swaps."
+          }
+        },
+        "flashbots": {
+          "title": "Flashbots",
+          "description": "Flashbots protects your transactions from frontrunning and sandwich attacks which might result in you getting a worse price or your transaction failing.",
+          "read_more": {
+            "open_text": "Still curious? ",
+            "link_text": "Read more",
+            "close_text": " about Flashbots and the protection it offers."
+          }
+        },
+        "routing": {
+          "title": "Swap Routing",
+          "description": "By default, Rainbow chooses the cheapest route possible for your swap. If you prefer to specifically use either 0x or 1inch, you can do that too.",
+          "read_more": {
+            "open_text": "Still curious? ",
+            "link_text": "Read more",
+            "close_text": " about our approach to routing swaps."
+          }
+        },
+        "got_it": "Got it"
+      }
     }
   },
   "custom_gas": {
@@ -303,8 +350,8 @@
   "seed_backup_prompt": {
     "title": "Before you get started, backup your Secret Recovery Phrase",
     "warning_1": "It's important to write down and store your Secret Recovery Phrase somewhere safe.",
-    "warning_2": "Your Secret Recovery Phrase is the only way to recover your accounts and funds",
-    "warning_3": "Anyone with your Secret Recovery Phrase can access your entire wallet",
+    "warning_2": "Your Secret Recovery Phrase is the only way to recover your accounts and funds.",
+    "warning_3": "Anyone with your Secret Recovery Phrase can access your entire wallet.",
     "reveal_your_recovery_phrase": "Reveal your recovery phrase",
     "skip": "Skip"
   },
@@ -396,7 +443,8 @@
     "confirm_hw": "Confirm on your device",
     "balance": "Balance",
     "send_transaction": "Send Transaction",
-    "transaction_request": "Transaction Request"
+    "transaction_request": "Transaction Request",
+    "insufficient_native_asset_for_gas": "Insufficient %{symbol} for gas"
   },
   "transaction_fee": {
     "title": "Transaction Speed",

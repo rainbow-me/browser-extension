@@ -2,14 +2,22 @@ import { AnimatePresence, motion } from 'framer-motion';
 import React, { ReactNode } from 'react';
 
 import { Box } from '~/design-system';
+import { BackgroundColor } from '~/design-system/styles/designTokens';
+import { zIndexes } from '~/entries/popup/utils/zIndexes';
+
+interface BottomSheetProps {
+  background?: BackgroundColor;
+  children: ReactNode;
+  show: boolean;
+  zIndex?: number;
+}
 
 export const BottomSheet = ({
+  background,
   show,
   children,
-}: {
-  show: boolean;
-  children: ReactNode;
-}) => {
+  zIndex,
+}: BottomSheetProps) => {
   return (
     <AnimatePresence>
       {show && (
@@ -21,9 +29,9 @@ export const BottomSheet = ({
           style={{
             width: '100%',
             height: '100%',
-            zIndex: 100,
+            zIndex: zIndex ?? zIndexes.BOTTOM_SHEET,
           }}
-          background="scrimTertiary"
+          background={background || 'scrimTertiary'}
           as={motion.div}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -40,7 +48,9 @@ export const BottomSheet = ({
           right="0"
           paddingBottom="20px"
           paddingHorizontal="12px"
-          style={{ zIndex: 101 }}
+          style={{
+            zIndex: zIndex ? zIndex + 1 : zIndexes.BOTTOM_SHEET + 1,
+          }}
           as={motion.div}
           initial={{ opacity: 1, y: 800 }}
           animate={{ opacity: 1, y: 0 }}

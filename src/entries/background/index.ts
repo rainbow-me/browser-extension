@@ -9,6 +9,7 @@ import { createWagmiClient } from '~/core/wagmi';
 import { handleInstallExtension } from './handlers/handleInstallExtension';
 import { handleProviderRequest } from './handlers/handleProviderRequest';
 import { handleSetupInpage } from './handlers/handleSetupInpage';
+import { handleTabAndWindowUpdates } from './handlers/handleTabAndWindowUpdates';
 import { handleWallets } from './handlers/handleWallets';
 require('../../core/utils/lockdown');
 
@@ -27,6 +28,7 @@ const inpageMessenger = initializeMessenger({ connect: 'inpage' });
 createWagmiClient();
 handleInstallExtension();
 handleProviderRequest({ popupMessenger, inpageMessenger });
+handleTabAndWindowUpdates();
 handleSetupInpage();
 handleWallets();
 syncStores();

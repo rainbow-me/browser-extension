@@ -35,7 +35,7 @@ export type ButtonVariantProps =
 export type ButtonWrapperProps = {
   children: string | React.ReactNode;
   height: ButtonHeight;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   width?: 'fit' | 'full';
   blur?: string;
   borderRadius?: Radius;

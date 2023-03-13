@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import React from 'react';
 
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { Box, Button, Inline, Symbol, TextOverflow } from '~/design-system';
 
 export const SwapInputActionButton = ({
@@ -11,7 +11,7 @@ export const SwapInputActionButton = ({
   testId,
   onClose,
 }: {
-  asset: ParsedAddressAsset | null;
+  asset: ParsedSearchAsset | null;
   dropdownVisible: boolean;
   showClose: boolean;
   testId?: string;

@@ -81,7 +81,6 @@ export class RainbowProvider extends EventEmitter {
   }: RequestArguments): Promise<RequestResponse | undefined> {
     // eslint-disable-next-line no-plusplus
     const id = this.requestId++;
-
     const response = await providerRequestTransport.send(
       {
         id,

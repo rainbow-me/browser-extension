@@ -16,6 +16,9 @@ import { Asterisks } from '../Asterisks/Asterisks';
 import { MenuItem } from '../Menu/MenuItem';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
+const { innerWidth: windowWidth } = window;
+const TITLE_MAX_WIDTH = windowWidth - 200;
+
 export enum LabelOption {
   address = 'address',
   balance = 'balance',
@@ -108,9 +111,12 @@ export default function AccountItem({
           <Box>
             <Rows space="8px" alignVertical="center">
               <Row height="content">
-                <MenuItem.Title text={displayName || ''} />
+                <MenuItem.Title
+                  maxWidth={TITLE_MAX_WIDTH}
+                  text={displayName || ''}
+                />
               </Row>
-              <Row height="content">{labelComponent}</Row>
+              {labelComponent && <Row height="content">{labelComponent}</Row>}
             </Rows>
           </Box>
         </Inline>

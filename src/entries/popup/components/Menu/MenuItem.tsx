@@ -1,7 +1,14 @@
 import React, { useState } from 'react';
 import { Address } from 'wagmi';
 
-import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import {
+  Box,
+  Inline,
+  Stack,
+  Symbol,
+  Text,
+  TextOverflow,
+} from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 
 import AddressPill from '../AddressPill/AddressPill';
@@ -81,12 +88,13 @@ const AccountList = ({ accounts }: { accounts: Address[] }) => {
 interface TitleProps {
   color?: TextStyles['color'];
   text: string;
+  maxWidth?: number;
 }
 
-const Title = ({ text, color = 'label' }: TitleProps) => (
-  <Text color={color} size="14pt" weight="medium">
+const Title = ({ text, color = 'label', maxWidth }: TitleProps) => (
+  <TextOverflow maxWidth={maxWidth} color={color} size="14pt" weight="medium">
     {text}
-  </Text>
+  </TextOverflow>
 );
 
 interface LabelProps {

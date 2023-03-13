@@ -21,13 +21,13 @@ import { dappNameOverride, getDappHost } from '~/core/utils/connectedApps';
 import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/numbers';
+import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
 
-const openWindow = async () => {
-  const { setWindow, window: stateWindow } = notificationWindowStore.getState();
-  if (stateWindow) return;
+const createNewWindow = async (tabId: string) => {
+  const { setNotificationWindow } = notificationWindowStore.getState();
   const currentWindow = await chrome.windows.getCurrent();
   const window = await chrome.windows.create({
-    url: chrome.runtime.getURL('popup.html'),
+    url: chrome.runtime.getURL('popup.html') + '?tabId=' + tabId,
     type: 'popup',
     height: POPUP_DIMENSIONS.height + 25,
     width: 360,
@@ -35,12 +35,36 @@ const openWindow = async () => {
       (currentWindow.width || POPUP_DIMENSIONS.width) - POPUP_DIMENSIONS.width,
     top: 0,
   });
-  chrome.windows.onRemoved.addListener((id) => {
-    if (id === window.id) {
-      setWindow(null);
-    }
+  setNotificationWindow(tabId, window);
+};
+
+const focusOnWindow = (windowId: number) => {
+  chrome.windows.update(windowId, {
+    focused: true,
   });
-  setWindow(window);
+};
+
+const openWindowForTabId = async (tabId: string) => {
+  const { notificationWindows } = notificationWindowStore.getState();
+  const notificationWindow = notificationWindows[tabId];
+  if (notificationWindow) {
+    chrome.windows.get(
+      notificationWindow.id as number,
+      async (existingWindow) => {
+        if (chrome.runtime.lastError) {
+          createNewWindow(tabId);
+        } else {
+          if (existingWindow) {
+            focusOnWindow(existingWindow.id as number);
+          } else {
+            createNewWindow(tabId);
+          }
+        }
+      },
+    );
+  } else {
+    createNewWindow(tabId);
+  }
 };
 
 /**
@@ -57,10 +81,10 @@ const messengerProviderRequest = async (
   addPendingRequest(request);
 
   if (hasVault() && (await isPasswordSet())) {
-    openWindow();
+    openWindowForTabId(Number(request.meta?.sender.tab?.id).toString());
   } else {
-    chrome.tabs.create({
-      url: `chrome-extension://${chrome.runtime.id}/popup.html#/welcome`,
+    goToNewTab({
+      url: WELCOME_URL,
     });
   }
   // Wait for response from the popup.
@@ -87,8 +111,6 @@ export const handleProviderRequest = ({
   inpageMessenger: Messenger;
 }) =>
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
-    console.log(meta.sender, method);
-
     const { getActiveSession, addSession, updateSessionChainId } =
       appSessionsStore.getState();
     const url = meta?.sender?.url || '';
@@ -196,7 +218,7 @@ export const handleProviderRequest = ({
         case 'eth_blockNumber': {
           const provider = getProvider({ chainId: activeSession?.chainId });
           const blockNumber = await provider.getBlockNumber();
-          response = blockNumber;
+          response = toHex(String(blockNumber));
           break;
         }
         case 'eth_call': {
@@ -216,6 +238,14 @@ export const handleProviderRequest = ({
           response = await provider.getGasPrice();
           break;
         }
+        case 'eth_getCode': {
+          const provider = getProvider({ chainId: activeSession?.chainId });
+          response = await provider.getCode(
+            params?.[0] as string,
+            params?.[1] as string,
+          );
+          break;
+        }
         case 'personal_ecRecover': {
           response = recoverPersonalSignature({
             data: params?.[0] as ToBufferInputTypes,
@@ -228,8 +258,6 @@ export const handleProviderRequest = ({
           // TODO: handle other methods
         }
       }
-      console.log('responding message', response);
-
       return { id, result: response };
     } catch (error) {
       return { id, error: <Error>error };

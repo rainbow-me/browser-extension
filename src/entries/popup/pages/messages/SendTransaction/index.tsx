@@ -131,6 +131,7 @@ export function SendTransaction({
       </Row>
       <Row height="content">
         <SendTransactionActions
+          chainId={appSession.chainId}
           waitingForDevice={waitingForDevice}
           appHost={appHost}
           selectedWallet={selectedWallet}

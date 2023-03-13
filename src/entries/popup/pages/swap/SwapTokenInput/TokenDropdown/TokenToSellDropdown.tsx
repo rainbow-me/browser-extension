@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import React from 'react';
 
 import { i18n } from '~/core/languages';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { SortMethod } from '~/entries/popup/hooks/send/useSendAsset';
 import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets';
@@ -18,10 +18,10 @@ import {
 import { TokenToSellRow } from '../TokenRow/TokenToSellRow';
 
 export type TokenToSellDropdownProps = {
-  asset: ParsedAddressAsset | null;
-  assets?: ParsedAddressAsset[];
+  asset: ParsedSearchAsset | null;
+  assets?: ParsedSearchAsset[];
   sortMethod: SortMethod;
-  onSelectAsset?: (asset: ParsedAddressAsset) => void;
+  onSelectAsset?: (asset: ParsedSearchAsset) => void;
   setSortMethod: (sortMethod: SortMethod) => void;
   onDropdownChange: (open: boolean) => void;
 };
@@ -136,7 +136,7 @@ export const TokenToSellDropdown = ({
               <Box
                 paddingHorizontal="8px"
                 key={`${asset?.uniqueId}-${i}`}
-                onClick={() => onSelectAsset?.(asset)}
+                onClick={() => onSelectAsset?.(asset as ParsedSearchAsset)}
                 testId={`token-input-asset-${asset?.uniqueId}`}
               >
                 <TokenToSellRow uniqueId={asset?.uniqueId} />

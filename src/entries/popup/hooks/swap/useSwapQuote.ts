@@ -1,5 +1,6 @@
 import {
   QuoteParams,
+  Source,
   SwapType,
   getCrosschainQuote,
   getQuote,
@@ -8,7 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
 import { useCurrentAddressStore } from '~/core/state';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { convertAmountToRawAmount } from '~/core/utils/numbers';
 
 import { IndependentField } from './useSwapInputs';
@@ -16,11 +17,13 @@ import { IndependentField } from './useSwapInputs';
 const SWAP_POLLING_INTERVAL = 5000;
 
 interface UseSwapQuotesProps {
-  assetToSell: ParsedAddressAsset | null;
-  assetToBuy: ParsedAddressAsset | null;
+  assetToSell: ParsedSearchAsset | null;
+  assetToBuy: ParsedSearchAsset | null;
   assetToSellValue?: string;
   assetToBuyValue?: string;
   independentField: IndependentField;
+  source: Source | 'auto';
+  slippage: string;
 }
 
 export const useSwapQuote = ({
@@ -29,6 +32,8 @@ export const useSwapQuote = ({
   assetToSellValue,
   assetToBuyValue,
   independentField,
+  slippage,
+  source,
 }: UseSwapQuotesProps) => {
   const { currentAddress } = useCurrentAddressStore();
 
@@ -46,8 +51,7 @@ export const useSwapQuote = ({
     if (!paramsReady) return undefined;
 
     return {
-      // source?: Source;
-      // feePercentageBasisPoints?: number;
+      source: source === 'auto' ? undefined : source,
       chainId: assetToSell.chainId,
       fromAddress: currentAddress,
       sellTokenAddress: assetToSell.address,
@@ -66,7 +70,7 @@ export const useSwapQuote = ({
               assetToBuy.decimals,
             )
           : undefined,
-      slippage: 0.3,
+      slippage: Number(slippage),
       refuel: false,
       swapType: isCrosschainSwap ? SwapType.crossChain : SwapType.normal,
       toChainId: isCrosschainSwap ? assetToBuy.chainId : assetToSell.chainId,
@@ -79,6 +83,8 @@ export const useSwapQuote = ({
     currentAddress,
     independentField,
     isCrosschainSwap,
+    slippage,
+    source,
   ]);
 
   const { data, isLoading, isError } = useQuery({

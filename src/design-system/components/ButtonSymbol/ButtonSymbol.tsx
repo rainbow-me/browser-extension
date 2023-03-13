@@ -16,7 +16,7 @@ import { widthStyles } from './ButtonSymbol.css';
 
 export type ButtonSymbolProps = {
   height: ButtonHeight;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   symbol: SymbolProps['symbol'];
   symbolColor?: TextColor;
   symbolSize?: SymbolProps['size'];

@@ -13,7 +13,7 @@ import {
 } from '~/design-system';
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
-import SeedPhraseTable from '../../components/SeedPhraseTable/SeedPhaseTable';
+import SeedPhraseTable from '../../components/SeedPhraseTable/SeedPhraseTable';
 import { exportWallet } from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';

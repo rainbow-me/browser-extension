@@ -6,6 +6,7 @@ import { Box, Button, ButtonSymbol, Inline, Text } from '~/design-system';
 import { ButtonSymbolProps } from '~/design-system/components/ButtonSymbol/ButtonSymbol';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { BackgroundColor } from '~/design-system/styles/designTokens';
+import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 type NavbarProps = {
   leftComponent?: React.ReactElement;
@@ -30,7 +31,7 @@ export function Navbar({
       width="full"
       position="relative"
       background={background ?? undefined}
-      style={{ height: 65, zIndex: 999 }}
+      style={{ height: 65, zIndex: zIndexes.NAVBAR }}
     >
       {leftComponent && (
         <Box
