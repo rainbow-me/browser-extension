@@ -1,7 +1,5 @@
 import { Ethereum } from '@wagmi/core';
 
-import { analytics } from '~/analytics';
-import { event } from '~/analytics/event';
 import { initializeMessenger } from '~/core/messengers';
 import { RainbowProvider } from '~/core/providers';
 import { ChainId } from '~/core/types/chains';
@@ -149,10 +147,6 @@ backgroundMessenger.reply(
   }) => {
     if (window.location.hostname === host) {
       injectNotificationIframe({ chainId, status, extensionUrl });
-      if (status === 'success')
-        analytics.track(event.dappNotificationNetworkSwitched, { chainId });
-      else if (status === 'failed')
-        analytics.track(event.dappNotificationNetworkUnsupported, { chainId });
     }
   },
 );

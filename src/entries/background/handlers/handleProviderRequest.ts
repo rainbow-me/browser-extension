@@ -170,6 +170,9 @@ export const handleProviderRequest = ({
               extensionUrl,
               host,
             });
+            analytics.track(event.dappNotificationNetworkUnsupported, {
+              chainId: proposedChainId,
+            });
             throw new Error('Chain Id not supported');
           } else {
             updateSessionChainId({
@@ -183,6 +186,9 @@ export const handleProviderRequest = ({
               host,
             });
             inpageMessenger.send(`chainChanged:${host}`, proposedChainId);
+            analytics.track(event.dappNotificationNetworkSwitched, {
+              chainId: proposedChainId,
+            });
           }
           response = null;
           analytics.track(event.dappProviderNetworkSwitched, {
