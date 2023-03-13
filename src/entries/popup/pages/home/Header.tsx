@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { motion, useScroll, useTransform } from 'framer-motion';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
@@ -116,6 +117,10 @@ function ActionButtonsSection() {
     triggerAlert({ text: i18n.t('alert.wallet_watching_mode') });
   }, [triggerAlert]);
 
+  const alertComingSoon = React.useCallback(() => {
+    triggerAlert({ text: i18n.t('alert.coming_soon') });
+  }, [triggerAlert]);
+
   return (
     <Box style={{ height: 56 }}>
       {avatar?.color && (
@@ -131,7 +136,13 @@ function ActionButtonsSection() {
             id="header-link-swap"
             to={allowSwap ? ROUTES.SWAP : '#'}
             state={{ from: ROUTES.HOME }}
-            onClick={allowSwap ? () => null : alertWatchingWallet}
+            onClick={
+              allowSwap
+                ? () => null
+                : isWatchingWallet
+                ? alertWatchingWallet
+                : alertComingSoon
+            }
           >
             <ActionButton
               symbol="arrow.triangle.swap"

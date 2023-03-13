@@ -648,6 +648,7 @@
   },
   "alert": {
     "ok": "Ok",
-    "wallet_watching_mode": "This wallet is currently in 'Watching' mode"
+    "wallet_watching_mode": "This wallet is currently in 'Watching' mode",
+    "coming_soon": "Coming Soon!"
   }
 }
