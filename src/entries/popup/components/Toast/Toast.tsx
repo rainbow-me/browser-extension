@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Inline, Row, Rows, Text } from '~/design-system';
 
 import { useToast } from '../../hooks/useToast';
+import { zIndexes } from '../../utils/zIndexes';
 
 export const Toast = () => {
   const [visible, setVisible] = useState(false);
@@ -25,7 +26,10 @@ export const Toast = () => {
 
   if (!visible) return null;
   return (
-    <Box width="full" style={{ position: 'fixed', zIndex: 999999, bottom: 16 }}>
+    <Box
+      width="full"
+      style={{ position: 'fixed', zIndex: zIndexes.TOAST, bottom: 16 }}
+    >
       <Inline alignHorizontal="center">
         <Box
           borderRadius="26px"
