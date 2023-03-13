@@ -6,13 +6,20 @@ import {
   AssetType,
   ParsedAddressAsset,
   ParsedAsset,
+  ParsedSearchAsset,
   UniqueId,
   ZerionAsset,
   ZerionAssetPrice,
 } from '~/core/types/assets';
-import { ChainName } from '~/core/types/chains';
+import { ChainId, ChainName } from '~/core/types/chains';
 
-import { chainIdFromChainName, isNativeAsset } from './chains';
+import { SearchAsset } from '../types/search';
+
+import {
+  chainIdFromChainName,
+  chainNameFromChainId,
+  isNativeAsset,
+} from './chains';
 import {
   convertAmountAndPriceToNativeDisplay,
   convertAmountToBalanceDisplay,
@@ -67,7 +74,8 @@ export function parseAsset({
 }): ParsedAsset {
   const chainName = asset?.network ?? ChainName.mainnet;
   const chainId = chainIdFromChainName(chainName);
-  const uniqueId: UniqueId = `${address}_${chainId}`;
+  const mainnetAddress = asset?.mainnet_address;
+  const uniqueId: UniqueId = `${mainnetAddress || address}_${chainId}`;
   const parsedAsset = {
     address,
     colors: asset?.colors,
@@ -75,7 +83,7 @@ export function parseAsset({
     chainName,
     isNativeAsset: isNativeAsset(address, chainIdFromChainName(chainName)),
     name: asset?.name,
-    mainnetAddress: asset?.mainnet_address,
+    mainnetAddress,
     native: {
       price: getNativeAssetPrice({
         currency,
@@ -164,6 +172,58 @@ export function parseParsedAddressAsset({
     },
   };
 }
+
+export const parseSearchAsset = ({
+  outputChainId,
+  rawAsset,
+  userAsset,
+  searchAsset,
+}: {
+  rawAsset?: ParsedAsset;
+  userAsset?: ParsedAddressAsset;
+  outputChainId: ChainId;
+  searchAsset: ParsedSearchAsset | SearchAsset;
+}): ParsedSearchAsset => {
+  const assetNetworkInformation = searchAsset?.networks?.[outputChainId];
+  // if searchAsset is appearing because it found an exact match
+  // "on other networks" we need to take the first network, decimals and address to
+  // use for the asset
+
+  const networks = Object.entries(searchAsset?.networks || {});
+  const assetInOneNetwork = networks.length === 1;
+
+  const address = assetInOneNetwork
+    ? networks?.[0]?.[1].address
+    : assetNetworkInformation?.address ||
+      userAsset?.address ||
+      rawAsset?.address ||
+      searchAsset?.address;
+
+  const decimals = assetInOneNetwork
+    ? networks?.[0]?.[1].decimals
+    : assetNetworkInformation?.decimals || rawAsset?.decimals || 0;
+  const chainId = assetInOneNetwork ? Number(networks[0][0]) : outputChainId;
+
+  return {
+    ...(rawAsset || {}),
+    ...searchAsset,
+    decimals,
+    address,
+    chainId,
+    native: {
+      balance: userAsset?.native.balance || {
+        amount: '0',
+        display: '0.00',
+      },
+      price: rawAsset?.native.price,
+    },
+    balance: userAsset?.balance || { amount: '0', display: '0.00' },
+    icon_url:
+      userAsset?.icon_url || rawAsset?.icon_url || searchAsset?.icon_url,
+    colors: searchAsset?.colors || rawAsset?.colors,
+    chainName: chainNameFromChainId(chainId),
+  };
+};
 
 export function filterAsset(asset: ZerionAsset) {
   const nameFragments = asset?.name?.split(' ');

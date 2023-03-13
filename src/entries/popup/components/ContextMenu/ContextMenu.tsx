@@ -13,6 +13,11 @@ import {
 
 import { useAvatar } from '../../hooks/useAvatar';
 
+const { innerWidth: windowWidth } = window;
+
+const WINDOW_LEFT_OFFSET = windowWidth / 2 - 40;
+const WINDOW_RIGHT_OFFSET = windowWidth / 2 + 40;
+
 interface ContextMenuTriggerProps {
   children: ReactNode;
   accentColor?: string;
@@ -28,7 +33,17 @@ export function ContextMenuTrigger(props: ContextMenuTriggerProps) {
     <AccentColorProvider
       color={accentColor || avatar?.color || globalColors.blue60}
     >
-      <ContextMenuPrimitive.Trigger asChild={asChild}>
+      <ContextMenuPrimitive.Trigger
+        asChild={asChild}
+        onContextMenu={(e) => {
+          if (
+            e.clientX > WINDOW_LEFT_OFFSET &&
+            e.clientX < WINDOW_RIGHT_OFFSET
+          ) {
+            e.clientX = WINDOW_LEFT_OFFSET;
+          }
+        }}
+      >
         {children}
       </ContextMenuPrimitive.Trigger>
     </AccentColorProvider>

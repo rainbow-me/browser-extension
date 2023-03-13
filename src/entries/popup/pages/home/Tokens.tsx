@@ -166,9 +166,13 @@ export function AssetRow({ uniqueId }: AssetRowProps) {
       <Columns>
         <Column width="content">
           <Box paddingVertical="4px">
-            <Text size="14pt" weight="semibold">
+            <TextOverflow
+              maxWidth={TEXT_MAX_WIDTH}
+              size="14pt"
+              weight="semibold"
+            >
               {name}
-            </Text>
+            </TextOverflow>
           </Box>
         </Column>
         <Column>

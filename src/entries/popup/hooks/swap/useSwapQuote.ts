@@ -9,7 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useMemo } from 'react';
 
 import { useCurrentAddressStore } from '~/core/state';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { convertAmountToRawAmount } from '~/core/utils/numbers';
 
 import { IndependentField } from './useSwapInputs';
@@ -17,8 +17,8 @@ import { IndependentField } from './useSwapInputs';
 const SWAP_POLLING_INTERVAL = 5000;
 
 interface UseSwapQuotesProps {
-  assetToSell: ParsedAddressAsset | null;
-  assetToBuy: ParsedAddressAsset | null;
+  assetToSell: ParsedSearchAsset | null;
+  assetToBuy: ParsedSearchAsset | null;
   assetToSellValue?: string;
   assetToBuyValue?: string;
   independentField: IndependentField;

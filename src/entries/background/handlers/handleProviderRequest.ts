@@ -21,11 +21,11 @@ import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/numbers';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
 
-const openWindow = async () => {
-  const { setWindow } = notificationWindowStore.getState();
+const createNewWindow = async (tabId: string) => {
+  const { setNotificationWindow } = notificationWindowStore.getState();
   const currentWindow = await chrome.windows.getCurrent();
   const window = await chrome.windows.create({
-    url: chrome.runtime.getURL('popup.html'),
+    url: chrome.runtime.getURL('popup.html') + '?tabId=' + tabId,
     type: 'popup',
     height: POPUP_DIMENSIONS.height + 25,
     width: 360,
@@ -33,12 +33,36 @@ const openWindow = async () => {
       (currentWindow.width || POPUP_DIMENSIONS.width) - POPUP_DIMENSIONS.width,
     top: 0,
   });
-  chrome.windows.onRemoved.addListener((id) => {
-    if (id === window.id) {
-      setWindow(null);
-    }
+  setNotificationWindow(tabId, window);
+};
+
+const focusOnWindow = (windowId: number) => {
+  chrome.windows.update(windowId, {
+    focused: true,
   });
-  setWindow(window);
+};
+
+const openWindowForTabId = async (tabId: string) => {
+  const { notificationWindows } = notificationWindowStore.getState();
+  const notificationWindow = notificationWindows[tabId];
+  if (notificationWindow) {
+    chrome.windows.get(
+      notificationWindow.id as number,
+      async (existingWindow) => {
+        if (chrome.runtime.lastError) {
+          createNewWindow(tabId);
+        } else {
+          if (existingWindow) {
+            focusOnWindow(existingWindow.id as number);
+          } else {
+            createNewWindow(tabId);
+          }
+        }
+      },
+    );
+  } else {
+    createNewWindow(tabId);
+  }
 };
 
 /**
@@ -55,7 +79,7 @@ const messengerProviderRequest = async (
   addPendingRequest(request);
 
   if (hasVault() && (await isPasswordSet())) {
-    openWindow();
+    openWindowForTabId(Number(request.meta?.sender.tab?.id).toString());
   } else {
     goToNewTab({
       url: WELCOME_URL,
@@ -85,8 +109,6 @@ export const handleProviderRequest = ({
   inpageMessenger: Messenger;
 }) =>
   providerRequestTransport.reply(async ({ method, id, params }, meta) => {
-    console.log(meta.sender, method);
-
     const { getActiveSession, addSession, updateSessionChainId } =
       appSessionsStore.getState();
     const url = meta?.sender?.url || '';
@@ -228,8 +250,6 @@ export const handleProviderRequest = ({
           // TODO: handle other methods
         }
       }
-      console.log('responding message', response);
-
       return { id, result: response };
     } catch (error) {
       return { id, error: <Error>error };

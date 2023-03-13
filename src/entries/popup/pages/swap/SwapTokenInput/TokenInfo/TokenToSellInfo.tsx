@@ -3,7 +3,7 @@ import React from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentCurrencyStore } from '~/core/state';
-import { ParsedAddressAsset } from '~/core/types/assets';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { convertAmountAndPriceToNativeDisplay } from '~/core/utils/numbers';
 import { Box, Inline, Symbol, Text, TextOverflow } from '~/design-system';
 import {
@@ -21,7 +21,7 @@ export const TokenToSellInfo = ({
   assetToSellMaxValue,
   setAssetToSellMaxValue,
 }: {
-  asset: ParsedAddressAsset | null;
+  asset: ParsedSearchAsset | null;
   assetToSellValue: string;
   assetToSellMaxValue: { display: string; amount: string };
   setAssetToSellMaxValue: () => void;
