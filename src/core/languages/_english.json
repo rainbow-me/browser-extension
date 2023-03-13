@@ -443,7 +443,8 @@
     "confirm_hw": "Confirm on your device",
     "balance": "Balance",
     "send_transaction": "Send Transaction",
-    "transaction_request": "Transaction Request"
+    "transaction_request": "Transaction Request",
+    "insufficient_native_asset_for_gas": "Insufficient %{symbol} for gas"
   },
   "transaction_fee": {
     "title": "Transaction Speed",
@@ -644,5 +645,9 @@
     "network_changed": "Network changed",
     "network_changed_failed": "Network changed failed",
     "unsupported_network": "Unsupported network"
+  },
+  "alert": {
+    "ok": "Ok",
+    "wallet_watching_mode": "This wallet is currently in 'Watching' mode"
   }
 }
