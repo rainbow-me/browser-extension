@@ -12,8 +12,10 @@ export function PasswordInput({
   onChange,
   onBlur,
   onSubmit,
+  onToggleVisibility,
   tabIndex,
   autoFocus,
+  visible,
 }: {
   placeholder: string;
   testId?: string;
@@ -22,10 +24,11 @@ export function PasswordInput({
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
   onSubmit?: () => void;
+  onToggleVisibility: () => void;
   tabIndex?: number;
   autoFocus?: boolean;
+  visible: boolean;
 }) {
-  const [visible, setVisible] = useState(false);
   const inputRef = useRef(null);
 
   const [cursorPosition, setCursorPosition] = useState(0);
@@ -43,7 +46,7 @@ export function PasswordInput({
   );
 
   const toggleVisibility = useCallback(() => {
-    setVisible(!visible);
+    onToggleVisibility();
     if (inputRef.current) {
       const input = inputRef.current as HTMLInputElement;
       input.focus();
@@ -51,7 +54,7 @@ export function PasswordInput({
         input.setSelectionRange(cursorPosition, cursorPosition);
       });
     }
-  }, [cursorPosition, visible]);
+  }, [cursorPosition, onToggleVisibility]);
 
   const onKeyDown = useCallback(
     (e: KeyboardEvent) => {
