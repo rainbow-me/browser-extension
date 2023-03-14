@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
 
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { selectUserAssetsListByChainId } from '~/core/resources/_selectors/assets';
@@ -80,76 +79,83 @@ export const useSwapAssets = () => {
       : userAssets;
   }, [debouncedAssetToSellFilter, userAssets]) as ParsedSearchAsset[];
 
-  const { results: searchReceiveAssetsSections } = useSearchCurrencyLists({
+  const { results: searchAssetsToBuySections } = useSearchCurrencyLists({
     inputChainId: assetToSell?.chainId,
     outputChainId,
     searchQuery: debouncedAssetToBuyFilter,
   });
 
-  const { data: searchAssetsWithPrice } = useAssets({
-    assetAddresses:
-      searchReceiveAssetsSections
-        .map(
-          (section) => section.data?.map((asset) => asset.mainnetAddress) || [],
-        )
-        .flat() || [],
+  const { data: assetsWithPrice = [] } = useAssets({
+    assetAddresses: searchAssetsToBuySections
+      .map(
+        (section) => section.data?.map((asset) => asset.mainnetAddress) || [],
+      )
+      .flat()
+      .concat(userAssets.map(({ address }) => address)),
     currency: currentCurrency,
   });
 
-  const rawAssetToSell = useMemo(
+  const assetToSellWithPrice = useMemo(
     () =>
-      Object.values(searchAssetsWithPrice || {})?.find(
+      Object.values(assetsWithPrice || {})?.find(
         (asset) => asset.address === assetToSell?.mainnetAddress,
       ),
-    [assetToSell?.mainnetAddress, searchAssetsWithPrice],
+    [assetToSell?.mainnetAddress, assetsWithPrice],
   );
-  const rawAssetToBuy = useMemo(
+
+  const assetToBuyWithPrice = useMemo(
     () =>
-      Object.values(searchAssetsWithPrice || {})?.find(
+      Object.values(assetsWithPrice || {})?.find(
         (asset) => asset.address === assetToBuy?.mainnetAddress,
       ),
-    [assetToBuy?.mainnetAddress, searchAssetsWithPrice],
+    [assetToBuy?.mainnetAddress, assetsWithPrice],
   );
 
   const parsedAssetToBuy = useMemo(() => {
     if (!assetToBuy) return null;
     const userAsset = userAssets.find((userAsset) =>
-      isLowerCaseMatch(userAsset.address, rawAssetToBuy?.address),
+      isLowerCaseMatch(userAsset.address, assetToBuyWithPrice?.address),
     );
     return parseSearchAsset({
-      rawAsset: rawAssetToBuy,
+      assetWithPrice: assetToBuyWithPrice,
       userAsset,
       chainId: outputChainId,
       searchAsset: assetToBuy,
     });
-  }, [assetToBuy, outputChainId, rawAssetToBuy, userAssets]);
+  }, [assetToBuy, userAssets, assetToBuyWithPrice, outputChainId]);
 
   const parsedAssetToSell = useMemo(() => {
     if (!assetToSell) return null;
     const userAsset = userAssets.find((userAsset) =>
-      isLowerCaseMatch(userAsset.address, rawAssetToSell?.address),
+      isLowerCaseMatch(userAsset.address, assetToSellWithPrice?.address),
     );
     return parseSearchAsset({
-      rawAsset: rawAssetToSell,
+      assetWithPrice: assetToSellWithPrice,
       userAsset,
       chainId: assetToSell.chainId,
       searchAsset: assetToSell,
     });
-  }, [assetToSell, rawAssetToSell, userAssets]);
+  }, [assetToSell, assetToSellWithPrice, userAssets]);
 
-  const assetsToBuyBySection = useMemo(() => {
-    return searchReceiveAssetsSections.map(({ data, title, symbol, id }) => {
-      const parsedData: SearchAsset[] =
-        data?.filter((p) => {
+  const assetsToBuyBySection = useMemo(
+    () =>
+      searchAssetsToBuySections.map(({ data = [], title, symbol, id }) => {
+        const parsedData: SearchAsset[] = data.filter((asset) => {
           const shouldFilterFavorite =
             id !== 'favorites' &&
-            favorites[outputChainId].includes((p?.address || '') as Address);
-          const isSellToken = p.uniqueId === assetToSell?.uniqueId;
+            favorites[outputChainId].includes(asset.address);
+          const isSellToken = asset.uniqueId === assetToSell?.uniqueId;
           return !shouldFilterFavorite && !isSellToken;
-        }) || [];
-      return { data: parsedData, title, symbol, id };
-    });
-  }, [assetToSell, favorites, outputChainId, searchReceiveAssetsSections]);
+        });
+        return { data: parsedData, title, symbol, id };
+      }),
+    [
+      assetToSell?.uniqueId,
+      favorites,
+      outputChainId,
+      searchAssetsToBuySections,
+    ],
+  );
 
   // if output chain id changes we need to clear the receive asset
   useEffect(() => {
@@ -169,6 +175,9 @@ export const useSwapAssets = () => {
     prevAssetToSell,
     setAssetToBuy,
   ]);
+
+  console.log('assettosell', assetToSell, parsedAssetToSell);
+  console.log('assetToBuy', assetToBuy, parsedAssetToBuy);
 
   return {
     assetsToSell: filteredAssetsToSell,
