@@ -86,56 +86,46 @@ export const useSwapAssets = () => {
   });
 
   const { data: assetsWithPrice = [] } = useAssets({
-    assetAddresses: searchAssetsToBuySections
-      .map(
-        (section) => section.data?.map((asset) => asset.mainnetAddress) || [],
-      )
-      .flat()
-      .concat(userAssets.map(({ address }) => address)),
+    assetAddresses: [
+      ...searchAssetsToBuySections
+        .map(
+          (section) => section.data?.map((asset) => asset.mainnetAddress) || [],
+        )
+        .flat(),
+    ],
     currency: currentCurrency,
   });
-
-  const assetToSellWithPrice = useMemo(
-    () =>
-      Object.values(assetsWithPrice || {})?.find(
-        (asset) => asset.address === assetToSell?.mainnetAddress,
-      ),
-    [assetToSell?.mainnetAddress, assetsWithPrice],
-  );
 
   const assetToBuyWithPrice = useMemo(
     () =>
       Object.values(assetsWithPrice || {})?.find(
-        (asset) => asset.address === assetToBuy?.mainnetAddress,
+        (asset) => asset.mainnetAddress === assetToBuy?.mainnetAddress,
       ),
-    [assetToBuy?.mainnetAddress, assetsWithPrice],
+    [assetToBuy, assetsWithPrice],
   );
 
   const parsedAssetToBuy = useMemo(() => {
     if (!assetToBuy) return null;
     const userAsset = userAssets.find((userAsset) =>
-      isLowerCaseMatch(userAsset.address, assetToBuyWithPrice?.address),
+      isLowerCaseMatch(userAsset.address, assetToBuy?.address),
     );
     return parseSearchAsset({
       assetWithPrice: assetToBuyWithPrice,
-      userAsset,
-      chainId: outputChainId,
       searchAsset: assetToBuy,
+      userAsset,
     });
-  }, [assetToBuy, userAssets, assetToBuyWithPrice, outputChainId]);
+  }, [assetToBuy, userAssets, assetToBuyWithPrice]);
 
   const parsedAssetToSell = useMemo(() => {
     if (!assetToSell) return null;
     const userAsset = userAssets.find((userAsset) =>
-      isLowerCaseMatch(userAsset.address, assetToSellWithPrice?.address),
+      isLowerCaseMatch(userAsset.address, assetToSell?.address),
     );
     return parseSearchAsset({
-      assetWithPrice: assetToSellWithPrice,
-      userAsset,
-      chainId: assetToSell.chainId,
       searchAsset: assetToSell,
+      userAsset,
     });
-  }, [assetToSell, assetToSellWithPrice, userAssets]);
+  }, [assetToSell, userAssets]);
 
   const assetsToBuyBySection = useMemo(
     () =>
@@ -175,9 +165,6 @@ export const useSwapAssets = () => {
     prevAssetToSell,
     setAssetToBuy,
   ]);
-
-  console.log('assettosell', assetToSell, parsedAssetToSell);
-  console.log('assetToBuy', assetToBuy, parsedAssetToBuy);
 
   return {
     assetsToSell: filteredAssetsToSell,

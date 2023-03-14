@@ -11,7 +11,7 @@ import {
   ZerionAsset,
   ZerionAssetPrice,
 } from '~/core/types/assets';
-import { ChainId, ChainName } from '~/core/types/chains';
+import { ChainName } from '~/core/types/chains';
 
 import { SearchAsset } from '../types/search';
 
@@ -174,62 +174,53 @@ export function parseParsedAddressAsset({
 }
 
 export const parseSearchAsset = ({
-  chainId,
   assetWithPrice,
-  userAsset,
   searchAsset,
+  userAsset,
 }: {
   assetWithPrice?: ParsedAsset;
-  userAsset?: ParsedAddressAsset;
-  chainId: ChainId;
   searchAsset: ParsedSearchAsset | SearchAsset;
+  userAsset?: ParsedAddressAsset;
 }): ParsedSearchAsset => {
-  const assetNetworkInformation = searchAsset?.networks?.[chainId];
+  // const assetNetworkInformation = searchAsset?.networks?.[searchAsset.chainId];
   // if searchAsset is appearing because it found an exact match
   // "on other networks" we need to take the first network, decimals and address to
   // use for the asset
 
-  const networks = Object.entries(searchAsset?.networks || {});
-  const assetInOneNetwork = networks.length === 1;
-  console.log('--- assetNetworkInformation', assetNetworkInformation);
-  const address = assetInOneNetwork
-    ? networks?.[0]?.[1].address
-    : assetNetworkInformation?.address ||
-      userAsset?.address ||
-      assetWithPrice?.address ||
-      searchAsset?.address;
+  // const networks = Object.entries(searchAsset?.networks || {});
+  // const assetInOneNetwork = networks.length === 1;
+  // const address = assetInOneNetwork
+  //   ? networks?.[0]?.[1].address
+  //   : assetNetworkInformation?.address ||
+  //     userAsset?.address ||
+  //     assetWithPrice?.address ||
+  //     searchAsset?.address;
 
-  const decimals =
-    userAsset?.decimals ||
-    assetNetworkInformation?.decimals ||
-    assetWithPrice?.decimals ||
-    0;
-  const assetChainId = assetInOneNetwork ? Number(networks[0][0]) : chainId;
-
-  console.log('--- -userAsset', userAsset);
-  console.log('--- -assetInOneNetwork', assetInOneNetwork);
-  console.log('--- -networks', networks);
-  console.log('--- -assetNetworkInformation', assetNetworkInformation);
-  console.log('--- -assetWithPrice', assetWithPrice);
+  // const decimals =
+  //   userAsset?.decimals ||
+  //   assetNetworkInformation?.decimals ||
+  //   assetWithPrice?.decimals ||
+  //   0;
+  // const assetChainId = assetInOneNetwork
+  //   ? Number(networks[0][0])
+  //   : searchAsset.chainId;
 
   return {
     ...(assetWithPrice || {}),
     ...searchAsset,
-    decimals,
-    address,
-    chainId: assetChainId,
+    chainId: searchAsset.chainId,
+    chainName: chainNameFromChainId(searchAsset.chainId),
     native: {
       balance: userAsset?.native.balance || {
         amount: '0',
         display: '0.00',
       },
-      price: assetWithPrice?.native.price,
+      price: userAsset?.native?.price || assetWithPrice?.native.price,
     },
     balance: userAsset?.balance || { amount: '0', display: '0.00' },
     icon_url:
       userAsset?.icon_url || assetWithPrice?.icon_url || searchAsset?.icon_url,
-    colors: searchAsset?.colors || assetWithPrice?.colors,
-    chainName: chainNameFromChainId(assetChainId),
+    colors: userAsset?.colors || searchAsset?.colors || assetWithPrice?.colors,
   };
 };
 
