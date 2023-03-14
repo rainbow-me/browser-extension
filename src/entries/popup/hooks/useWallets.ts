@@ -12,25 +12,38 @@ export interface AddressAndType {
 }
 
 export const useWallets = () => {
-  const [allWallets, setAllWallets] = useState<AddressAndType[]>([]);
+  const [allWallets, setAllWallets] = useState<AddressAndType[] | null>(null);
   const { hiddenWallets } = useHiddenWalletsStore();
 
-  const { visibleWallets, visibleOwnedWallets, watchedWallets } =
+  const { visibleWallets, visibleOwnedWallets, watchedWallets, walletsReady } =
     useMemo(() => {
-      const visibleWallets: AddressAndType[] = [];
-      const visibleOwnedWallets: AddressAndType[] = [];
-      const watchedWallets: AddressAndType[] = [];
-      allWallets.forEach((wallet) => {
-        if (!hiddenWallets[wallet.address]) {
-          visibleWallets.push(wallet);
-          if (wallet.type !== KeychainType.ReadOnlyKeychain) {
-            visibleOwnedWallets.push(wallet);
-          } else if (wallet.type === KeychainType.ReadOnlyKeychain) {
-            watchedWallets.push(wallet);
+      if (allWallets) {
+        const visibleWallets: AddressAndType[] = [];
+        const visibleOwnedWallets: AddressAndType[] = [];
+        const watchedWallets: AddressAndType[] = [];
+        allWallets.forEach((wallet) => {
+          if (!hiddenWallets[wallet.address]) {
+            visibleWallets.push(wallet);
+            if (wallet.type !== KeychainType.ReadOnlyKeychain) {
+              visibleOwnedWallets.push(wallet);
+            } else if (wallet.type === KeychainType.ReadOnlyKeychain) {
+              watchedWallets.push(wallet);
+            }
           }
-        }
-      });
-      return { visibleWallets, visibleOwnedWallets, watchedWallets };
+        });
+        return {
+          visibleWallets,
+          visibleOwnedWallets,
+          watchedWallets,
+          walletsReady: true,
+        };
+      }
+      return {
+        visibleWallets: [],
+        visibleOwnedWallets: [],
+        watchedWallets: [],
+        walletsReady: false,
+      };
     }, [allWallets, hiddenWallets]);
 
   const fetchWallets = useCallback(async () => {
@@ -59,6 +72,7 @@ export const useWallets = () => {
     visibleWallets,
     visibleOwnedWallets,
     watchedWallets,
+    walletsReady,
     fetchWallets,
   };
 };

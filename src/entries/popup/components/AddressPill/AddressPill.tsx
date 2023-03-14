@@ -27,7 +27,7 @@ export default function AddressPill({ address }: { address: Address }) {
           {isFetched ? (
             <>
               {avatar?.imageUrl ? (
-                <Avatar.Image imageUrl={avatar.imageUrl} />
+                <Avatar.Image size={12} imageUrl={avatar.imageUrl} />
               ) : (
                 <Avatar.Emoji color={avatar?.color} />
               )}

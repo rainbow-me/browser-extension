@@ -1,9 +1,10 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
 import { formatEther } from '@ethersproject/units';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -12,8 +13,10 @@ import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Row, Rows } from '~/design-system';
 import { useSendAsset } from '~/entries/popup/hooks/send/useSendAsset';
+import { useAlert } from '~/entries/popup/hooks/useAlert';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 
 import * as wallet from '../../../handlers/wallet';
 
@@ -45,14 +48,8 @@ export function SendTransaction({
   const selectedWallet = appSession.address;
   const { connectedToHardhat } = useConnectedToHardhatStore();
   const { asset, selectAssetAddress } = useSendAsset();
-
-  useEffect(() => {
-    selectAssetAddress(
-      NATIVE_ASSETS_PER_CHAIN[
-        connectedToHardhat ? ChainId.hardhat : appSession.chainId
-      ] as Address,
-    );
-  }, [appSession.chainId, connectedToHardhat, selectAssetAddress]);
+  const { watchedWallets } = useWallets();
+  const { triggerAlert } = useAlert();
 
   const onAcceptRequest = useCallback(async () => {
     try {
@@ -104,6 +101,28 @@ export function SendTransaction({
     request?.params,
     selectedWallet,
   ]);
+
+  const isWatchingWallet = useMemo(() => {
+    const watchedAddresses = watchedWallets?.map(({ address }) => address);
+    return selectedWallet && watchedAddresses?.includes(selectedWallet);
+  }, [selectedWallet, watchedWallets]);
+
+  useEffect(() => {
+    if (isWatchingWallet) {
+      triggerAlert({
+        text: i18n.t('alert.wallet_watching_mode'),
+        callback: rejectRequest,
+      });
+    }
+  }, [isWatchingWallet, rejectRequest, triggerAlert]);
+
+  useEffect(() => {
+    selectAssetAddress(
+      NATIVE_ASSETS_PER_CHAIN[
+        connectedToHardhat ? ChainId.hardhat : appSession.chainId
+      ] as Address,
+    );
+  }, [appSession.chainId, connectedToHardhat, selectAssetAddress]);
 
   return (
     <Rows alignVertical="justify">

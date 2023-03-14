@@ -16,6 +16,7 @@ import { colors as emojiColors } from '~/entries/popup/utils/emojiAvatarBackgrou
 import { pseudoRandomArrayItemFromString } from '~/entries/popup/utils/pseudoRandomArrayItemFromString';
 
 import { ChainBadge } from '../ChainBadge/ChainBadge';
+import ExternalImage from '../ExternalImage/ExternalImage';
 
 import {
   fallbackTextStyleExtraLarge,
@@ -53,6 +54,7 @@ export function CoinIcon({
         chainId={chain}
         mainnetAddress={(mainnetAddress || '') as Address}
         url={asset?.icon_url}
+        size={size}
       >
         <Box
           justifyContent="center"
@@ -132,12 +134,14 @@ function CloudinaryCoinIcon({
   address,
   mainnetAddress,
   children,
+  size = 36,
   url,
 }: {
   address: Address;
   chainId: ChainId;
   mainnetAddress?: Address;
   children: React.ReactNode;
+  size: number;
   url?: string;
 }) {
   let src = url;
@@ -148,7 +152,7 @@ function CloudinaryCoinIcon({
   }
 
   if (src) {
-    return <img src={src} width="100%" height="100%" />;
+    return <ExternalImage src={src} width={size} height={size} />;
   }
 
   return <Fragment>{children}</Fragment>;
