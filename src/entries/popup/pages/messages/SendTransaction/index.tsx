@@ -61,9 +61,10 @@ export function SendTransaction({
         setWaitingForDevice(true);
       }
       const txData = {
-        from: getAddress(txRequest?.from ?? ''),
+        from: selectedWallet,
         to: getAddress(txRequest?.to ?? ''),
         value: txRequest.value,
+        data: txRequest.data ?? '0x',
         chainId: connectedToHardhat ? ChainId.hardhat : appSession.chainId,
       };
       const result = await wallet.sendTransaction(txData);
@@ -88,7 +89,7 @@ export function SendTransaction({
         });
       }
 
-      approveRequest(result);
+      approveRequest(result.hash);
       setWaitingForDevice(false);
     } finally {
       setWaitingForDevice(false);
