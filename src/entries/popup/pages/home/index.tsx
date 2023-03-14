@@ -114,7 +114,11 @@ export function Home() {
             <Header />
             <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
             <Separator color="separatorTertiary" strokeWeight="1px" />
-            <Content scrollSpring={scrollYTransform} shouldSpring={scrollAtTop}>
+            <Content
+              scrollSpring={scrollYTransform}
+              shouldSpring={scrollAtTop}
+              activeTab={activeTab}
+            >
               {activeTab === 'tokens' && <Tokens />}
               {activeTab === 'activity' && (
                 <Activity
@@ -202,12 +206,32 @@ function Content({
   children,
   scrollSpring,
   shouldSpring,
+  activeTab,
 }: {
   children: React.ReactNode;
   scrollSpring?: MotionValue<number>;
-  shouldSpring: boolean;
+  shouldSpring?: boolean;
+  activeTab: Tab;
 }) {
-  const y = shouldSpring ? scrollSpring : 0;
+  const [prevTab, setPrevTab] = useState<Tab>(activeTab);
+  const [y, setY] = useState<MotionValue | 0 | undefined>(scrollSpring);
+  const [initial, setInitial] = useState(false);
+
+  useEffect(() => {
+    if (prevTab !== activeTab) {
+      setY(0);
+      setInitial(true);
+      setTimeout(() => setPrevTab(activeTab), 600);
+    } else {
+      if (!shouldSpring) {
+        setInitial(false);
+      } else {
+        setY(scrollSpring || 0);
+        setInitial(false);
+      }
+    }
+  }, [activeTab, prevTab, scrollSpring, shouldSpring]);
+
   return (
     <Box
       background="surfacePrimaryElevated"
@@ -218,7 +242,11 @@ function Content({
       }}
     >
       {/** spring transformY to imitate scroll bounce*/}
-      <Box height="full" as={motion.div} style={{ y }}>
+      <Box
+        height="full"
+        as={motion.div}
+        style={initial ? { transform: 'none' } : { y }}
+      >
         <Inset top="20px">{children}</Inset>
       </Box>
     </Box>
