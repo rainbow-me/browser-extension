@@ -33,8 +33,7 @@ export const estimateCrosschainSwapGasLimit = async ({
   requiresApprove?: boolean;
   tradeDetails: CrosschainQuote;
 }): Promise<string> => {
-  const provider = await getProvider({ chainId });
-
+  const provider = getProvider({ chainId });
   if (!provider || !tradeDetails) {
     return gasUnits.basic_swap[chainId];
   }

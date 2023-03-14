@@ -48,7 +48,6 @@ test('[rap/crosschainSwap] :: should estimate crosschain swap gas limit', async 
     requiresApprove: false,
     tradeDetails: crosschainQuote as CrosschainQuote,
   });
-
   expect(Number(swapGasLimit)).toBeGreaterThan(0);
 });
 
