@@ -87,21 +87,6 @@ export const overrideWithFastSpeedIfNeeded = ({
   return gasParams;
 };
 
-export const getBasicSwapGasLimit = (chainId: Chain['id']): string => {
-  switch (chainId) {
-    case ChainId.arbitrum:
-      return `${gasUnits.basic_swap_arbitrum}`;
-    case ChainId.polygon:
-      return `${gasUnits.basic_swap_polygon}`;
-    case ChainId.bsc:
-      return `${gasUnits.basic_swap_bsc}`;
-    case ChainId.optimism:
-      return `${gasUnits.basic_swap_optimism}`;
-    default:
-      return `${gasUnits.basic_swap}`;
-  }
-};
-
 const getStateDiff = async (
   provider: Provider,
   tradeDetails: Quote,
@@ -228,8 +213,7 @@ export const getDefaultGasLimitForTrade = (
     ).toString();
   }
   return (
-    defaultGasLimit ||
-    multiply(getBasicSwapGasLimit(chainId), EXTRA_GAS_PADDING)
+    defaultGasLimit || multiply(gasUnits.basic_swap[chainId], EXTRA_GAS_PADDING)
   );
 };
 
@@ -276,7 +260,10 @@ export const estimateSwapGasLimitWithFakeApproval = async (
         return false;
       }
     });
-    if (gasLimit && greaterThan(gasLimit, gasUnits.basic_swap)) {
+    if (
+      gasLimit &&
+      greaterThan(gasLimit, gasUnits.basic_swap[ChainId.mainnet])
+    ) {
       return gasLimit;
     }
   } catch (e) {

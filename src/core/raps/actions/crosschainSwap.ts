@@ -2,6 +2,7 @@ import { Wallet } from '@ethersproject/wallet';
 import { CrosschainQuote, fillCrosschainQuote } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
 
+import { gasUnits } from '~/core/references';
 import { logger } from '~/logger';
 
 import { gasStore } from '../../state';
@@ -16,7 +17,6 @@ import {
   CHAIN_IDS_WITH_TRACE_SUPPORT,
   SWAP_GAS_PADDING,
   estimateSwapGasLimitWithFakeApproval,
-  getBasicSwapGasLimit,
   getDefaultGasLimitForTrade,
   overrideWithFastSpeedIfNeeded,
 } from '../utils';
@@ -36,7 +36,7 @@ export const estimateCrosschainSwapGasLimit = async ({
   const provider = await getProvider({ chainId });
 
   if (!provider || !tradeDetails) {
-    return getBasicSwapGasLimit(chainId);
+    return gasUnits.basic_swap[chainId];
   }
   try {
     if (requiresApprove) {

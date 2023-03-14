@@ -63,7 +63,7 @@ async function estimateSwapGasLimitQueryFunction({
       });
 
   if (!gasLimit) {
-    return `${gasUnits.basic_swap[chainId]}`;
+    return gasUnits.basic_swap[chainId];
   }
   return gasLimit;
 }
