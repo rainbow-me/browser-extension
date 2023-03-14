@@ -89,7 +89,7 @@ export function SendTransaction({
         });
       }
 
-      approveRequest(result);
+      approveRequest(result.hash);
       setWaitingForDevice(false);
     } finally {
       setWaitingForDevice(false);
