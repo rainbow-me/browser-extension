@@ -1,7 +1,7 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { ethUnits } from '~/core/references';
+import { gasUnits } from '~/core/references';
 import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
 import {
   MeteorologyLegacyResponse,
@@ -80,7 +80,7 @@ export const useGas = ({
         speed: GasSpeed.CUSTOM,
         baseFeeWei: gweiToWei(maxBaseFee || '0'),
         blocksToConfirmation,
-        gasLimit: estimatedGasLimit || `${ethUnits.basic_transfer}`,
+        gasLimit: estimatedGasLimit || `${gasUnits.basic_transfer}`,
         nativeAsset,
         currency: currentCurrency,
       });
@@ -116,7 +116,7 @@ export const useGas = ({
         speed: GasSpeed.CUSTOM,
         baseFeeWei: maxBaseFee,
         blocksToConfirmation,
-        gasLimit: estimatedGasLimit || `${ethUnits.basic_transfer}`,
+        gasLimit: estimatedGasLimit || `${gasUnits.basic_transfer}`,
         nativeAsset,
         currency: currentCurrency,
       });
@@ -144,7 +144,7 @@ export const useGas = ({
       ? parseGasFeeParamsBySpeed({
           chainId,
           data: gasData as MeteorologyLegacyResponse | MeteorologyResponse,
-          gasLimit: estimatedGasLimit || `${ethUnits.basic_transfer}`,
+          gasLimit: estimatedGasLimit || `${gasUnits.basic_transfer}`,
           nativeAsset,
           currency: currentCurrency,
           optimismL1SecurityFee,
