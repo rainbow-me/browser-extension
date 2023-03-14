@@ -164,6 +164,7 @@ export function Send() {
             chainId,
             status: TransactionStatus.sending,
             type: TransactionType.send,
+            nonce: result.nonce,
           };
           await addNewTransaction({
             address: fromAddress,
