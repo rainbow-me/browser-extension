@@ -3,6 +3,7 @@ import React from 'react';
 import { i18n } from '~/core/languages';
 import { Box, Inline, Separator, Stack, Text } from '~/design-system';
 import { TextInline } from '~/design-system/docs/components/TextInline';
+import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
 
 export const RequestAccountsInfo = ({
   appHostName,
@@ -34,7 +35,9 @@ export const RequestAccountsInfo = ({
             borderRadius="18px"
             alignItems="center"
           >
-            {appLogo ? <img src={appLogo} width="100%" height="100%" /> : null}
+            {appLogo ? (
+              <ExternalImage src={appLogo} width="60" height="60" />
+            ) : null}
           </Box>
         </Inline>
 

@@ -1,14 +1,17 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import { i18n } from '~/core/languages';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { RPCMethod } from '~/core/types/rpcMethods';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box } from '~/design-system';
+import { useAlert } from '~/entries/popup/hooks/useAlert';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
+import { useWallets } from '~/entries/popup/hooks/useWallets';
 
 import * as wallet from '../../../handlers/wallet';
 
@@ -45,6 +48,8 @@ export function SignMessage({
     url: request?.meta?.sender?.url,
   });
   const { appSession } = useAppSession({ host: appHost });
+  const { watchedWallets } = useWallets();
+  const { triggerAlert } = useAlert();
 
   const selectedChainId = appSession.chainId ?? ChainId.mainnet;
   const selectedWallet = appSession.address;
@@ -99,6 +104,20 @@ export function SignMessage({
       });
     }
   }, [appHost, appName, rejectRequest, request]);
+
+  const isWatchingWallet = useMemo(() => {
+    const watchedAddresses = watchedWallets?.map(({ address }) => address);
+    return selectedWallet && watchedAddresses?.includes(selectedWallet);
+  }, [selectedWallet, watchedWallets]);
+
+  useEffect(() => {
+    if (isWatchingWallet) {
+      triggerAlert({
+        text: i18n.t('alert.wallet_watching_mode'),
+        callback: rejectRequest,
+      });
+    }
+  }, [isWatchingWallet, rejectRequest, triggerAlert]);
 
   return (
     <Box style={{ overflowY: 'hidden' }} width="full" height="full">

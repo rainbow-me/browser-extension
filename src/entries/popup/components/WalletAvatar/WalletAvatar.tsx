@@ -31,7 +31,7 @@ export function WalletAvatar({
       {isFetched ? (
         <>
           {avatar?.imageUrl ? (
-            <Avatar.Image imageUrl={avatar.imageUrl} />
+            <Avatar.Image size={size} imageUrl={avatar.imageUrl} />
           ) : (
             <Avatar.Emoji
               color={avatar?.color}

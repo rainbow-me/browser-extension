@@ -11,6 +11,7 @@ import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
+import { useAlert } from '../../hooks/useAlert';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useToast } from '../../hooks/useToast';
 import { useWallets } from '../../hooks/useWallets';
@@ -66,7 +67,7 @@ export function AvatarSection() {
       {isFetched ? (
         <>
           {avatar?.imageUrl ? (
-            <Avatar.Image imageUrl={avatar.imageUrl} />
+            <Avatar.Image size={60} imageUrl={avatar.imageUrl} />
           ) : (
             <Avatar.Emoji color={avatar?.color} emoji={avatar?.emoji} />
           )}
@@ -84,6 +85,7 @@ function ActionButtonsSection() {
   const { watchedWallets } = useWallets();
   const { triggerToast } = useToast();
   const { featureFlags } = useFeatureFlagsStore();
+  const { triggerAlert } = useAlert();
 
   const handleCopy = React.useCallback(() => {
     navigator.clipboard.writeText(address as string);
@@ -111,9 +113,8 @@ function ActionButtonsSection() {
   );
 
   const alertWatchingWallet = React.useCallback(() => {
-    // this will be removed so not adding it to lang file
-    alert('This wallet is currently in "Watching" mode');
-  }, []);
+    triggerAlert({ text: i18n.t('alert.wallet_watching_mode') });
+  }, [triggerAlert]);
 
   return (
     <Box style={{ height: 56 }}>
