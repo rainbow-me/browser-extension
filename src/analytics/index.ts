@@ -35,8 +35,6 @@ export class Analytics {
             writeKey: process.env.SEGMENT_WRITE_KEY,
             maxEventsInBatch: 1,
           });
-    if (this.client instanceof AnalyticsNode)
-      this.client.on('error', (err) => console.error(err));
     logger.debug(`Segment initialized`);
   }
 
