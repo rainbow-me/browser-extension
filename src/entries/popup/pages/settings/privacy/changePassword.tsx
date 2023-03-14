@@ -33,12 +33,16 @@ export function ChangePassword() {
   const [isValid, setIsValid] = useState(false);
   const [isMatching, setIsMatching] = useState<boolean | null>(null);
 
+  const [entriesVisible, setEntriesVisible] = useState(false);
+
+  const onToggleVisibility = useCallback(
+    () => setEntriesVisible(!entriesVisible),
+    [entriesVisible],
+  );
+
   // Check if passwords match
   const checkIfPasswordsMatch = useCallback(() => {
-    if (
-      newPassword.length > 0 &&
-      confirmNewPassword.length >= newPassword.length
-    ) {
+    if (newPassword.length > 0) {
       if (newPassword === confirmNewPassword) {
         setIsMatching(true);
         return true;
@@ -173,7 +177,9 @@ export function ChangePassword() {
                   onChange={(e) => setNewPassword(e.target.value)}
                   tabIndex={1}
                   onSubmit={handleUpdatePassword}
+                  onToggleVisibility={onToggleVisibility}
                   autoFocus
+                  visible={entriesVisible}
                 />
               </Row>
             </Rows>
@@ -194,7 +200,9 @@ export function ChangePassword() {
                       onChange={(e) => setConfirmNewPassword(e.target.value)}
                       onBlur={handleOnBlur}
                       tabIndex={2}
+                      onToggleVisibility={onToggleVisibility}
                       onSubmit={handleUpdatePassword}
+                      visible={entriesVisible}
                     />
                   </Row>
                   <Row>

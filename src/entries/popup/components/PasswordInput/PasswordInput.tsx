@@ -24,10 +24,10 @@ export function PasswordInput({
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
   onSubmit?: () => void;
-  onToggleVisibility: () => void;
+  onToggleVisibility?: () => void;
   tabIndex?: number;
   autoFocus?: boolean;
-  visible: boolean;
+  visible?: boolean;
 }) {
   const inputRef = useRef(null);
 
@@ -46,7 +46,7 @@ export function PasswordInput({
   );
 
   const toggleVisibility = useCallback(() => {
-    onToggleVisibility();
+    onToggleVisibility?.();
     if (inputRef.current) {
       const input = inputRef.current as HTMLInputElement;
       input.focus();

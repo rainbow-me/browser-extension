@@ -37,10 +37,7 @@ export function CreatePassword() {
 
   // Check if passwords match
   const checkIfPasswordsMatch = useCallback(() => {
-    if (
-      newPassword.length > 0 &&
-      confirmNewPassword.length >= newPassword.length
-    ) {
+    if (newPassword.length > 0) {
       if (newPassword === confirmNewPassword) {
         setIsMatching(true);
         return true;
