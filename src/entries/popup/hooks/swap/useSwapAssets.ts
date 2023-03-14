@@ -86,72 +86,55 @@ export const useSwapAssets = () => {
     searchQuery: debouncedAssetToBuyFilter,
   });
 
-  const assetAddresses = useMemo(() => {
-    const dict: Record<ChainId, Address[]> = {};
-    if (assetToBuy) {
-      dict[assetToBuy.chainId] = [
-        assetToBuy?.mainnetAddress || assetToBuy?.address || '',
-      ];
-    }
-    if (assetToSell) {
-      const addressesForNetwork = dict[assetToSell.chainId] || [];
-      dict[assetToSell.chainId] = [
-        ...addressesForNetwork,
-        assetToSell?.mainnetAddress || assetToSell?.address || '',
-      ];
-    }
-    return dict;
-  }, [assetToBuy, assetToSell]);
+  const { data: searchAssetsWithPrice } = useAssets({
+    assetAddresses:
+      searchReceiveAssetsSections
+        .map(
+          (section) => section.data?.map((asset) => asset.mainnetAddress) || [],
+        )
+        .flat() || [],
+    currency: currentCurrency,
+  });
 
-  const { data: rawAssetsWithPrice } = useAssets(
-    {
-      assetAddresses,
-      currency: currentCurrency,
-    },
-    {
-      enabled: !!assetToSell?.address || !!assetToBuy?.address,
-      select: (assetsWithPrices) => {
-        const assetToBuyWithPrice =
-          assetsWithPrices?.[assetToBuy?.uniqueId || ''];
-        const assetToSellWithPrice =
-          assetsWithPrices?.[assetToSell?.uniqueId || ''];
-        return { buy: assetToBuyWithPrice, sell: assetToSellWithPrice };
-      },
-    },
+  const rawAssetToSell = useMemo(
+    () =>
+      Object.values(searchAssetsWithPrice || {})?.find(
+        (asset) => asset.address === assetToSell?.mainnetAddress,
+      ),
+    [assetToSell?.mainnetAddress, searchAssetsWithPrice],
+  );
+  const rawAssetToBuy = useMemo(
+    () =>
+      Object.values(searchAssetsWithPrice || {})?.find(
+        (asset) => asset.address === assetToBuy?.mainnetAddress,
+      ),
+    [assetToBuy?.mainnetAddress, searchAssetsWithPrice],
   );
 
-  const { buy: rawAssetToBuy, sell: rawAssetToSell } = rawAssetsWithPrice || {};
-
   const parsedAssetToBuy = useMemo(() => {
-    if (assetToBuy) {
-      const userAsset = userAssets.find((userAsset) =>
-        isLowerCaseMatch(userAsset.address, rawAssetToBuy?.address),
-      );
-      if (rawAssetToBuy) {
-        return parseSearchAsset({
-          rawAsset: rawAssetToBuy,
-          userAsset,
-          outputChainId: assetToBuy.chainId,
-          searchAsset: assetToBuy,
-        });
-      }
-    }
-    return null;
-  }, [assetToBuy, rawAssetToBuy, userAssets]);
+    if (!assetToBuy) return null;
+    const userAsset = userAssets.find((userAsset) =>
+      isLowerCaseMatch(userAsset.address, rawAssetToBuy?.address),
+    );
+    return parseSearchAsset({
+      rawAsset: rawAssetToBuy,
+      userAsset,
+      chainId: outputChainId,
+      searchAsset: assetToBuy,
+    });
+  }, [assetToBuy, outputChainId, rawAssetToBuy, userAssets]);
 
   const parsedAssetToSell = useMemo(() => {
-    if (assetToSell) {
-      const userAsset = userAssets.find((userAsset) =>
-        isLowerCaseMatch(userAsset.address, rawAssetToSell?.address),
-      );
-      return parseSearchAsset({
-        rawAsset: rawAssetToSell,
-        userAsset,
-        outputChainId: assetToSell.chainId,
-        searchAsset: assetToSell,
-      });
-    }
-    return null;
+    if (!assetToSell) return null;
+    const userAsset = userAssets.find((userAsset) =>
+      isLowerCaseMatch(userAsset.address, rawAssetToSell?.address),
+    );
+    return parseSearchAsset({
+      rawAsset: rawAssetToSell,
+      userAsset,
+      chainId: assetToSell.chainId,
+      searchAsset: assetToSell,
+    });
   }, [assetToSell, rawAssetToSell, userAssets]);
 
   const assetsToBuyBySection = useMemo(() => {
@@ -173,14 +156,19 @@ export const useSwapAssets = () => {
     if (prevOutputChainId !== outputChainId) {
       setAssetToBuy(null);
     }
-  }, [outputChainId, prevOutputChainId]);
+  }, [outputChainId, prevOutputChainId, setAssetToBuy]);
 
   // if user selects assetToBuy as assetToSell we need to flip assets
   useEffect(() => {
     if (assetToBuy?.address === assetToSell?.address) {
       setAssetToBuy(prevAssetToSell === undefined ? null : prevAssetToSell);
     }
-  }, [assetToBuy?.address, assetToSell?.address, prevAssetToSell]);
+  }, [
+    assetToBuy?.address,
+    assetToSell?.address,
+    prevAssetToSell,
+    setAssetToBuy,
+  ]);
 
   return {
     assetsToSell: filteredAssetsToSell,

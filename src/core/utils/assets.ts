@@ -174,17 +174,17 @@ export function parseParsedAddressAsset({
 }
 
 export const parseSearchAsset = ({
-  outputChainId,
+  chainId,
   rawAsset,
   userAsset,
   searchAsset,
 }: {
   rawAsset?: ParsedAsset;
   userAsset?: ParsedAddressAsset;
-  outputChainId: ChainId;
+  chainId: ChainId;
   searchAsset: ParsedSearchAsset | SearchAsset;
 }): ParsedSearchAsset => {
-  const assetNetworkInformation = searchAsset?.networks?.[outputChainId];
+  const assetNetworkInformation = searchAsset?.networks?.[chainId];
   // if searchAsset is appearing because it found an exact match
   // "on other networks" we need to take the first network, decimals and address to
   // use for the asset
@@ -202,14 +202,14 @@ export const parseSearchAsset = ({
   const decimals = assetInOneNetwork
     ? networks?.[0]?.[1].decimals
     : assetNetworkInformation?.decimals || rawAsset?.decimals || 0;
-  const chainId = assetInOneNetwork ? Number(networks[0][0]) : outputChainId;
+  const assetChainId = assetInOneNetwork ? Number(networks[0][0]) : chainId;
 
   return {
     ...(rawAsset || {}),
     ...searchAsset,
     decimals,
     address,
-    chainId,
+    chainId: assetChainId,
     native: {
       balance: userAsset?.native.balance || {
         amount: '0',
@@ -221,7 +221,7 @@ export const parseSearchAsset = ({
     icon_url:
       userAsset?.icon_url || rawAsset?.icon_url || searchAsset?.icon_url,
     colors: searchAsset?.colors || rawAsset?.colors,
-    chainName: chainNameFromChainId(chainId),
+    chainName: chainNameFromChainId(assetChainId),
   };
 };
 
