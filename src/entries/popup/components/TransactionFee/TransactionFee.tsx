@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useDefaultTxSpeedStore } from '~/core/state/currentSettings/defaultTxSpeed';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   GasFeeLegacyParamsBySpeed,
@@ -220,6 +221,7 @@ type SwapFeeProps = {
   tradeDetails?: Quote | CrosschainQuote | QuoteError;
   accentColor?: string;
   plainTriggerBorder?: boolean;
+  assetToSell?: ParsedSearchAsset;
 };
 
 export function SwapFee({
@@ -228,6 +230,7 @@ export function SwapFee({
   tradeDetails,
   accentColor,
   plainTriggerBorder,
+  assetToSell,
 }: SwapFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeedStore();
   const {
@@ -244,6 +247,7 @@ export function SwapFee({
     chainId,
     defaultSpeed: defaultSpeed || defaultTxSpeed,
     tradeDetails,
+    assetToSell,
   });
   return (
     <Fee

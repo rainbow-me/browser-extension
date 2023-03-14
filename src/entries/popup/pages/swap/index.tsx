@@ -1,7 +1,5 @@
-import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { motion } from 'framer-motion';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';
@@ -98,26 +96,6 @@ export function Swap() {
     source,
     slippage,
   });
-
-  const transactionRequest: TransactionRequest | null = useMemo(() => {
-    const q = quote;
-    if (q && !(q as QuoteError).error) {
-      const qu = q as Quote | CrosschainQuote;
-      const to = qu.to;
-      const from = qu.from;
-      const value = qu.value;
-      const chainId = assetToSell?.chainId;
-      const data = qu.data;
-      return {
-        to,
-        from,
-        value,
-        chainId,
-        data,
-      };
-    }
-    return null;
-  }, [assetToSell?.chainId, quote]);
 
   useSwapQuoteHandler({
     assetToBuy,
@@ -263,7 +241,7 @@ export function Swap() {
             </Stack>
           </Row>
           <Row height="content">
-            {!!assetToBuy && !!assetToSell && transactionRequest ? (
+            {!!assetToBuy && !!assetToSell ? (
               <AccentColorProviderWrapper
                 color={
                   assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback
@@ -279,6 +257,7 @@ export function Swap() {
                           assetToBuy?.colors?.primary ||
                           assetToBuy?.colors?.fallback
                         }
+                        assetToSell={assetToSell}
                       />
                     </Row>
                     <Row>

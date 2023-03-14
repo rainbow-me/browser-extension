@@ -1,7 +1,13 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
+import {
+  CrosschainQuote,
+  Quote,
+  QuoteError,
+  RAINBOW_ROUTER_CONTRACT_ADDRESS,
+} from '@rainbow-me/swaps';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { assetNeedsUnlocking } from '~/core/raps/actions';
 import { gasUnits } from '~/core/references';
 import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
 import { useEstimateSwapGasLimit } from '~/core/resources/gas/estimateSwapGasLimit';
@@ -10,7 +16,12 @@ import {
   MeteorologyResponse,
 } from '~/core/resources/gas/meteorology';
 import { useOptimismL1SecurityFee } from '~/core/resources/gas/optimismL1SecurityFee';
-import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
+import {
+  useCurrentAddressStore,
+  useCurrentCurrencyStore,
+  useGasStore,
+} from '~/core/state';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   GasFeeLegacyParamsBySpeed,
@@ -231,15 +242,20 @@ export const useSwapGas = ({
   chainId,
   defaultSpeed,
   tradeDetails,
+  assetToSell,
 }: {
   chainId: ChainId;
   defaultSpeed?: GasSpeed;
   tradeDetails?: Quote | CrosschainQuote | QuoteError;
+  assetToSell?: ParsedSearchAsset;
 }) => {
+  const [needsUnlocking, setNeedsUnlocking] = useState(false);
+  const { currentAddress } = useCurrentAddressStore();
+
   const { data: estimatedGasLimit } = useEstimateSwapGasLimit({
     chainId,
     tradeDetails,
-    requiresApprove: true,
+    requiresApprove: needsUnlocking,
   });
 
   const transactionRequest: TransactionRequest | null = useMemo(() => {
@@ -262,6 +278,23 @@ export const useSwapGas = ({
     { transactionRequest: transactionRequest || {} },
     { enabled: chainId === ChainId.optimism && !!transactionRequest },
   );
+
+  useEffect(() => {
+    const checkIfNeedsUnlocking = async () => {
+      if (tradeDetails && !(tradeDetails as QuoteError).error && assetToSell) {
+        const quote = tradeDetails as Quote | CrosschainQuote;
+        const needsUnlocking = await assetNeedsUnlocking({
+          owner: currentAddress,
+          amount: quote?.sellAmount.toString(),
+          assetToUnlock: assetToSell,
+          spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+          chainId,
+        });
+        setNeedsUnlocking(needsUnlocking);
+      }
+    };
+    checkIfNeedsUnlocking();
+  }, [assetToSell, chainId, currentAddress, tradeDetails]);
 
   return useGas({
     chainId,
