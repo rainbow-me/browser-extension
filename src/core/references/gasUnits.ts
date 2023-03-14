@@ -1,12 +1,16 @@
+import { ChainId } from '../types/chains';
+
 export const gasUnits = {
   basic_approval: 55000,
   basic_deposit: 420000,
   basic_deposit_eth: 200000,
-  basic_swap: 200000,
-  basic_swap_arbitrum: 3500000,
-  basic_swap_optimism: 1000000,
-  basic_swap_bsc: 600000,
-  basic_swap_polygon: 600000,
+  basic_swap: {
+    [ChainId.mainnet]: 200000,
+    [ChainId.arbitrum]: 3500000,
+    [ChainId.optimism]: 1000000,
+    [ChainId.bsc]: 600000,
+    [ChainId.polygon]: 600000,
+  },
   basic_swap_permit: 400000,
   ens_register_with_config: 280000,
   ens_commit: 50000,
