@@ -1,14 +1,16 @@
 import { AnalyticsBrowser } from '@segment/analytics-next';
+import { Analytics as AnalyticsNode } from '@segment/analytics-node';
 
 import { EventProperties, event } from '~/analytics/event';
 import { UserProperties } from '~/analytics/userProperties';
+import { detectScriptType } from '~/core/utils/detectScriptType';
 import { logger } from '~/logger';
 
 const IS_DEV = process.env.IS_DEV === 'true';
 const IS_TESTING = process.env.IS_TESTING === 'true';
 
 export class Analytics {
-  client: AnalyticsBrowser;
+  client: AnalyticsBrowser | AnalyticsNode;
   deviceId?: string;
   event = event;
   disabled = false; // to do: check user setting here
@@ -21,13 +23,20 @@ export class Analytics {
      * https://segment.com/docs/connections/sources/catalog/libraries/website/javascript/#analyticsjs-performance
      * https://segment.com/docs/connections/sources/catalog/libraries/website/javascript/#managing-data-flow-with-the-integrations-object
      */
-    this.client = AnalyticsBrowser.load(
-      {
-        writeKey: process.env.SEGMENT_WRITE_KEY,
-      },
-      { integrations: { All: false, 'Segment.io': true } },
-    );
-
+    this.client =
+      detectScriptType() === 'popup'
+        ? AnalyticsBrowser.load(
+            {
+              writeKey: process.env.SEGMENT_WRITE_KEY,
+            },
+            { integrations: { All: false, 'Segment.io': true } },
+          )
+        : new AnalyticsNode({
+            writeKey: process.env.SEGMENT_WRITE_KEY,
+            maxEventsInBatch: 1,
+          });
+    if (this.client instanceof AnalyticsNode)
+      this.client.on('error', (err) => console.error(err));
     logger.debug(`Segment initialized`);
   }
 
@@ -37,25 +46,29 @@ export class Analytics {
    * wallet address as a property, if available.
    */
   identify(userProperties?: UserProperties) {
-    if (this.disabled || IS_DEV || IS_TESTING) return;
+    if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
-    this.client.identify(this.deviceId, {
-      ...userProperties,
-      ...metadata,
-    });
-    logger.info('analytics.identify()', {
-      deviceId: this.deviceId,
-      userProperties,
-    });
+    const traits = { ...userProperties, ...metadata };
+    this.client instanceof AnalyticsBrowser
+      ? this.client.identify(this.deviceId, traits)
+      : this.client.identify({ userId: this.deviceId, traits });
+    logger.info('analytics.identify()', traits);
   }
 
   /**
    * Sends a `screen` event to Segment.
    */
   screen(routeName: string, params: Record<string, never> = {}): void {
-    if (this.disabled || IS_DEV || IS_TESTING) return;
+    if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
-    this.client.screen(routeName, { ...params, ...metadata });
+    const properties = { ...params, ...metadata };
+    this.client instanceof AnalyticsBrowser
+      ? this.client.screen(routeName, properties)
+      : this.client.track({
+          userId: this.deviceId,
+          event: routeName,
+          properties,
+        });
     logger.info('analytics.screen()', {
       routeName,
       params,
@@ -71,9 +84,12 @@ export class Analytics {
     event: T,
     params?: EventProperties[T],
   ) {
-    if (this.disabled || IS_DEV || IS_TESTING) return;
+    if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
-    this.client.track(event, Object.assign(metadata, params));
+    const properties = Object.assign(metadata, params);
+    this.client instanceof AnalyticsBrowser
+      ? this.client.track(event, properties)
+      : this.client.track({ userId: this.deviceId, event, properties });
     logger.info('analytics.track()', {
       event,
       params,

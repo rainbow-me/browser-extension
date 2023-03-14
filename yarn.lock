@@ -2056,6 +2056,17 @@
     tslib "^2.4.1"
     unfetch "^4.1.0"
 
+"@segment/analytics-node@1.0.0-beta.23":
+  version "1.0.0-beta.23"
+  resolved "https://registry.yarnpkg.com/@segment/analytics-node/-/analytics-node-1.0.0-beta.23.tgz#d80af3b0710d5ce9ca4e3e464bc6163dde3915ef"
+  integrity sha512-S1P6opKo1WfBxzX2MeBqFmZ9ViMUmP3RpXNFqeCnkM2c7hqY3FEZJNV7CrOdH3ej5W1S8cUE2/U6dJgzt6jv3g==
+  dependencies:
+    "@segment/analytics-core" "1.2.2"
+    buffer "^6.0.3"
+    node-fetch "^2.6.7"
+    tslib "^2.4.1"
+    uuid "^9.0.0"
+
 "@segment/analytics.js-video-plugins@^0.2.1":
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/@segment/analytics.js-video-plugins/-/analytics.js-video-plugins-0.2.1.tgz#3596fa3887dcd9df5978dc566edf4a0aea2a9b1e"
@@ -12334,6 +12345,11 @@ uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
+
+uuid@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-9.0.0.tgz#592f550650024a38ceb0c562f2f6aa435761efb5"
+  integrity sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==
 
 v8-to-istanbul@^9.0.1:
   version "9.0.1"
