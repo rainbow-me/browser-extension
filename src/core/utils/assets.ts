@@ -193,6 +193,7 @@ export const parseSearchAsset = ({
     },
     price: userAsset?.native?.price || assetWithPrice?.native.price,
   },
+  price: assetWithPrice?.price || userAsset?.price,
   balance: userAsset?.balance || { amount: '0', display: '0.00' },
   icon_url:
     userAsset?.icon_url || assetWithPrice?.icon_url || searchAsset?.icon_url,
