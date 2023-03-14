@@ -27,6 +27,7 @@ import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 
 import { testSandbox } from '../../handlers/wallet';
+import { useAlert } from '../../hooks/useAlert';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -79,6 +80,12 @@ export function Settings() {
     },
     [setIsDefaultWallet],
   );
+
+  const { triggerAlert } = useAlert();
+
+  const alertComingSoon = React.useCallback(() => {
+    triggerAlert({ text: i18n.t('alert.coming_soon') });
+  }, [triggerAlert]);
 
   return (
     <Box paddingHorizontal="20px">
@@ -231,6 +238,7 @@ export function Settings() {
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.contacts')} />
             }
+            onClick={alertComingSoon}
           />
         </Menu>
         <Menu>
