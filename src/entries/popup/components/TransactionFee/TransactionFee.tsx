@@ -1,11 +1,15 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useDefaultTxSpeedStore } from '~/core/state/currentSettings/defaultTxSpeed';
 import { ChainId } from '~/core/types/chains';
-import { GasSpeed } from '~/core/types/gas';
+import {
+  GasFeeLegacyParamsBySpeed,
+  GasFeeParamsBySpeed,
+  GasSpeed,
+} from '~/core/types/gas';
 import {
   Box,
   Column,
@@ -18,44 +22,42 @@ import {
 } from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
-import { useGas } from '../../hooks/useGas';
+import { useSwapGas, useTransactionGas } from '../../hooks/useGas';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 
 import { CustomGasSheet } from './CustomGasSheet';
 import { SwitchTransactionSpeedMenu } from './TransactionSpeedsMenu';
 
-type TransactionFeeProps = {
-  chainId: Chain['id'];
-  defaultSpeed?: GasSpeed;
-  transactionRequest: TransactionRequest;
+type FeeProps = {
+  chainId: ChainId;
   accentColor?: string;
   plainTriggerBorder?: boolean;
+  selectedSpeed: GasSpeed;
+  gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed | null;
+  isLoading: boolean;
+  currentBaseFee: string;
+  baseFeeTrend: number;
+  setSelectedSpeed: React.Dispatch<React.SetStateAction<GasSpeed>>;
+  setCustomMaxBaseFee: (maxBaseFee?: string) => void;
+  setCustomMaxPriorityFee: (maxPriorityFee?: string) => void;
+  clearCustomGasModified: () => void;
 };
 
-export function TransactionFee({
+function Fee({
   chainId,
-  defaultSpeed,
-  transactionRequest,
   accentColor,
   plainTriggerBorder,
-}: TransactionFeeProps) {
+  selectedSpeed,
+  setSelectedSpeed,
+  gasFeeParamsBySpeed,
+  isLoading,
+  setCustomMaxBaseFee,
+  setCustomMaxPriorityFee,
+  currentBaseFee,
+  baseFeeTrend,
+  clearCustomGasModified,
+}: FeeProps) {
   const [showCustomGasSheet, setShowCustomGasSheet] = useState(false);
-  const { defaultTxSpeed } = useDefaultTxSpeedStore();
-  const {
-    selectedSpeed,
-    setSelectedSpeed,
-    gasFeeParamsBySpeed,
-    isLoading,
-    setCustomMaxBaseFee,
-    setCustomMaxPriorityFee,
-    currentBaseFee,
-    baseFeeTrend,
-    clearCustomGasModified,
-  } = useGas({
-    chainId,
-    defaultSpeed: defaultSpeed || defaultTxSpeed,
-    transactionRequest,
-  });
 
   const gasFeeParamsForSelectedSpeed = useMemo(
     () => gasFeeParamsBySpeed?.[selectedSpeed],
@@ -160,5 +162,103 @@ export function TransactionFee({
         </Column>
       </Columns>
     </Box>
+  );
+}
+
+type TransactionFeeProps = {
+  chainId: ChainId;
+  defaultSpeed?: GasSpeed;
+  transactionRequest: TransactionRequest;
+  accentColor?: string;
+  plainTriggerBorder?: boolean;
+};
+
+export function TransactionFee({
+  chainId,
+  defaultSpeed,
+  transactionRequest,
+  accentColor,
+  plainTriggerBorder,
+}: TransactionFeeProps) {
+  const { defaultTxSpeed } = useDefaultTxSpeedStore();
+  const {
+    selectedSpeed,
+    setSelectedSpeed,
+    gasFeeParamsBySpeed,
+    isLoading,
+    setCustomMaxBaseFee,
+    setCustomMaxPriorityFee,
+    currentBaseFee,
+    baseFeeTrend,
+    clearCustomGasModified,
+  } = useTransactionGas({
+    chainId,
+    defaultSpeed: defaultSpeed || defaultTxSpeed,
+    transactionRequest,
+  });
+  return (
+    <Fee
+      chainId={chainId}
+      accentColor={accentColor}
+      plainTriggerBorder={plainTriggerBorder}
+      selectedSpeed={selectedSpeed}
+      setSelectedSpeed={setSelectedSpeed}
+      gasFeeParamsBySpeed={gasFeeParamsBySpeed}
+      isLoading={isLoading}
+      setCustomMaxBaseFee={setCustomMaxBaseFee}
+      setCustomMaxPriorityFee={setCustomMaxPriorityFee}
+      currentBaseFee={currentBaseFee}
+      baseFeeTrend={baseFeeTrend}
+      clearCustomGasModified={clearCustomGasModified}
+    />
+  );
+}
+
+type SwapFeeProps = {
+  chainId: ChainId;
+  defaultSpeed?: GasSpeed;
+  tradeDetails?: Quote | CrosschainQuote | QuoteError;
+  accentColor?: string;
+  plainTriggerBorder?: boolean;
+};
+
+export function SwapFee({
+  chainId,
+  defaultSpeed,
+  tradeDetails,
+  accentColor,
+  plainTriggerBorder,
+}: SwapFeeProps) {
+  const { defaultTxSpeed } = useDefaultTxSpeedStore();
+  const {
+    selectedSpeed,
+    setSelectedSpeed,
+    gasFeeParamsBySpeed,
+    isLoading,
+    setCustomMaxBaseFee,
+    setCustomMaxPriorityFee,
+    currentBaseFee,
+    baseFeeTrend,
+    clearCustomGasModified,
+  } = useSwapGas({
+    chainId,
+    defaultSpeed: defaultSpeed || defaultTxSpeed,
+    tradeDetails,
+  });
+  return (
+    <Fee
+      chainId={chainId}
+      accentColor={accentColor}
+      plainTriggerBorder={plainTriggerBorder}
+      selectedSpeed={selectedSpeed}
+      setSelectedSpeed={setSelectedSpeed}
+      gasFeeParamsBySpeed={gasFeeParamsBySpeed}
+      isLoading={isLoading}
+      setCustomMaxBaseFee={setCustomMaxBaseFee}
+      setCustomMaxPriorityFee={setCustomMaxPriorityFee}
+      currentBaseFee={currentBaseFee}
+      baseFeeTrend={baseFeeTrend}
+      clearCustomGasModified={clearCustomGasModified}
+    />
   );
 }

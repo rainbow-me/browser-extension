@@ -24,7 +24,7 @@ import {
 
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 import { Navbar } from '../../components/Navbar/Navbar';
-import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
+import { SwapFee } from '../../components/TransactionFee/TransactionFee';
 import { useSwapAssets } from '../../hooks/swap/useSwapAssets';
 import { useSwapDropdownDimensions } from '../../hooks/swap/useSwapDropdownDimensions';
 import { useSwapInputs } from '../../hooks/swap/useSwapInputs';
@@ -272,9 +272,9 @@ export function Swap() {
                 <Box paddingHorizontal="8px">
                   <Rows space="20px">
                     <Row>
-                      <TransactionFee
+                      <SwapFee
                         chainId={assetToSell?.chainId || ChainId.mainnet}
-                        transactionRequest={transactionRequest}
+                        tradeDetails={quote}
                         accentColor={
                           assetToBuy?.colors?.primary ||
                           assetToBuy?.colors?.fallback

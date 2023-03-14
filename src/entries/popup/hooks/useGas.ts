@@ -1,8 +1,10 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { gasUnits } from '~/core/references';
 import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
+import { useEstimateSwapGasLimit } from '~/core/resources/gas/estimateSwapGasLimit';
 import {
   MeteorologyLegacyResponse,
   MeteorologyResponse,
@@ -25,27 +27,19 @@ import {
 
 import { useNativeAssetForNetwork } from './useNativeAssetForNetwork';
 
-export const useGas = ({
+const useGas = ({
   chainId,
   defaultSpeed,
-  transactionRequest,
+  estimatedGasLimit,
+  optimismL1SecurityFee,
 }: {
   chainId: ChainId;
   defaultSpeed?: GasSpeed;
-  transactionRequest: TransactionRequest;
+  estimatedGasLimit?: string;
+  optimismL1SecurityFee?: string;
 }) => {
-  const { data: gasData, isLoading } = useGasData({ chainId });
-  const { data: estimatedGasLimit } = useEstimateGasLimit({
-    chainId,
-    transactionRequest,
-  });
-
-  const { data: optimismL1SecurityFee } = useOptimismL1SecurityFee(
-    { transactionRequest },
-    { enabled: chainId === ChainId.optimism },
-  );
-
   const { currentCurrency } = useCurrentCurrencyStore();
+  const { data: gasData, isLoading } = useGasData({ chainId });
   const nativeAsset = useNativeAssetForNetwork({ chainId });
 
   const {
@@ -210,4 +204,69 @@ export const useGas = ({
     ),
     baseFeeTrend: (gasData as MeteorologyResponse)?.data?.baseFeeTrend,
   };
+};
+
+export const useTransactionGas = ({
+  chainId,
+  defaultSpeed,
+  transactionRequest,
+}: {
+  chainId: ChainId;
+  defaultSpeed?: GasSpeed;
+  transactionRequest: TransactionRequest;
+}) => {
+  const { data: estimatedGasLimit } = useEstimateGasLimit({
+    chainId,
+    transactionRequest,
+  });
+
+  return useGas({
+    chainId,
+    defaultSpeed,
+    estimatedGasLimit,
+  });
+};
+
+export const useSwapGas = ({
+  chainId,
+  defaultSpeed,
+  tradeDetails,
+}: {
+  chainId: ChainId;
+  defaultSpeed?: GasSpeed;
+  tradeDetails?: Quote | CrosschainQuote | QuoteError;
+}) => {
+  const { data: estimatedGasLimit } = useEstimateSwapGasLimit({
+    chainId,
+    tradeDetails,
+    requiresApprove: true,
+  });
+
+  const transactionRequest: TransactionRequest | null = useMemo(() => {
+    if (tradeDetails && !(tradeDetails as QuoteError).error) {
+      const quote = tradeDetails as Quote | CrosschainQuote;
+      const { to, from, value, data } = quote;
+      return {
+        to,
+        from,
+        value,
+        chainId,
+        data,
+      };
+    } else {
+      return null;
+    }
+  }, [chainId, tradeDetails]);
+
+  const { data: optimismL1SecurityFee } = useOptimismL1SecurityFee(
+    { transactionRequest: transactionRequest || {} },
+    { enabled: chainId === ChainId.optimism && !!transactionRequest },
+  );
+
+  return useGas({
+    chainId,
+    defaultSpeed,
+    estimatedGasLimit,
+    optimismL1SecurityFee,
+  });
 };

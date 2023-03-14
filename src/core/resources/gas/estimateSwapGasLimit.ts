@@ -1,4 +1,9 @@
-import { ChainId, CrosschainQuote, Quote, SwapType } from '@rainbow-me/swaps';
+import {
+  CrosschainQuote,
+  Quote,
+  QuoteError,
+  SwapType,
+} from '@rainbow-me/swaps';
 import { useQuery } from '@tanstack/react-query';
 
 import { estimateSwapGasLimit } from '~/core/raps/actions';
@@ -11,6 +16,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { gasUnits } from '~/core/references/gasUnits';
+import { ChainId } from '~/core/types/chains';
 
 // ///////////////////////////////////////////////
 // Query Types
@@ -21,7 +27,7 @@ export type EstimateSwapGasLimitResponse = {
 
 export type EstimateSwapGasLimitArgs = {
   chainId: ChainId;
-  tradeDetails: Quote | CrosschainQuote;
+  tradeDetails?: Quote | CrosschainQuote | QuoteError;
   requiresApprove: boolean;
 };
 
@@ -49,17 +55,21 @@ type EstimateSwapGasLimitQueryKey = ReturnType<
 async function estimateSwapGasLimitQueryFunction({
   queryKey: [{ chainId, tradeDetails, requiresApprove }],
 }: QueryFunctionArgs<typeof estimateSwapGasLimitQueryKey>) {
-  const isCrosschainSwap = tradeDetails.swapType === SwapType.crossChain;
+  if (!tradeDetails || (tradeDetails as QuoteError).error) {
+    return gasUnits.basic_swap[chainId];
+  }
+  const quote = tradeDetails as Quote | CrosschainQuote;
+  const isCrosschainSwap = quote.swapType === SwapType.crossChain;
   const gasLimit = isCrosschainSwap
     ? await estimateCrosschainSwapGasLimit({
         chainId,
         requiresApprove,
-        tradeDetails: tradeDetails as CrosschainQuote,
+        tradeDetails: quote as CrosschainQuote,
       })
     : await estimateSwapGasLimit({
         chainId,
         requiresApprove,
-        tradeDetails: tradeDetails as Quote,
+        tradeDetails: quote as Quote,
       });
 
   if (!gasLimit) {
