@@ -7,6 +7,8 @@ import { logger } from '~/logger';
 
 const IS_DEV = process.env.IS_DEV === 'true';
 const IS_TESTING = process.env.IS_TESTING === 'true';
+
+// @ts-expect-error missing type in CI
 const ENVIRONMENT_IS_WORKER = typeof importScripts === 'function';
 
 export class Analytics {
