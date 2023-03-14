@@ -181,48 +181,23 @@ export const parseSearchAsset = ({
   assetWithPrice?: ParsedAsset;
   searchAsset: ParsedSearchAsset | SearchAsset;
   userAsset?: ParsedAddressAsset;
-}): ParsedSearchAsset => {
-  // const assetNetworkInformation = searchAsset?.networks?.[searchAsset.chainId];
-  // if searchAsset is appearing because it found an exact match
-  // "on other networks" we need to take the first network, decimals and address to
-  // use for the asset
-
-  // const networks = Object.entries(searchAsset?.networks || {});
-  // const assetInOneNetwork = networks.length === 1;
-  // const address = assetInOneNetwork
-  //   ? networks?.[0]?.[1].address
-  //   : assetNetworkInformation?.address ||
-  //     userAsset?.address ||
-  //     assetWithPrice?.address ||
-  //     searchAsset?.address;
-
-  // const decimals =
-  //   userAsset?.decimals ||
-  //   assetNetworkInformation?.decimals ||
-  //   assetWithPrice?.decimals ||
-  //   0;
-  // const assetChainId = assetInOneNetwork
-  //   ? Number(networks[0][0])
-  //   : searchAsset.chainId;
-
-  return {
-    ...(assetWithPrice || {}),
-    ...searchAsset,
-    chainId: searchAsset.chainId,
-    chainName: chainNameFromChainId(searchAsset.chainId),
-    native: {
-      balance: userAsset?.native.balance || {
-        amount: '0',
-        display: '0.00',
-      },
-      price: userAsset?.native?.price || assetWithPrice?.native.price,
+}): ParsedSearchAsset => ({
+  ...searchAsset,
+  address: searchAsset.address,
+  chainId: searchAsset.chainId,
+  chainName: chainNameFromChainId(searchAsset.chainId),
+  native: {
+    balance: userAsset?.native.balance || {
+      amount: '0',
+      display: '0.00',
     },
-    balance: userAsset?.balance || { amount: '0', display: '0.00' },
-    icon_url:
-      userAsset?.icon_url || assetWithPrice?.icon_url || searchAsset?.icon_url,
-    colors: userAsset?.colors || searchAsset?.colors || assetWithPrice?.colors,
-  };
-};
+    price: userAsset?.native?.price || assetWithPrice?.native.price,
+  },
+  balance: userAsset?.balance || { amount: '0', display: '0.00' },
+  icon_url:
+    userAsset?.icon_url || assetWithPrice?.icon_url || searchAsset?.icon_url,
+  colors: userAsset?.colors || assetWithPrice?.colors || searchAsset?.colors,
+});
 
 export function filterAsset(asset: ZerionAsset) {
   const nameFragments = asset?.name?.split(' ');
