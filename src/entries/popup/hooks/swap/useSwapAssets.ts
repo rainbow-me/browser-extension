@@ -96,6 +96,14 @@ export const useSwapAssets = () => {
     currency: currentCurrency,
   });
 
+  const assetToSellWithPrice = useMemo(
+    () =>
+      Object.values(assetsWithPrice || {})?.find(
+        (asset) => asset.mainnetAddress === assetToSell?.mainnetAddress,
+      ),
+    [assetToSell, assetsWithPrice],
+  );
+
   const assetToBuyWithPrice = useMemo(
     () =>
       Object.values(assetsWithPrice || {})?.find(
@@ -122,10 +130,11 @@ export const useSwapAssets = () => {
       isLowerCaseMatch(userAsset.address, assetToSell?.address),
     );
     return parseSearchAsset({
+      assetWithPrice: assetToSellWithPrice,
       searchAsset: assetToSell,
       userAsset,
     });
-  }, [assetToSell, userAssets]);
+  }, [assetToSell, assetToSellWithPrice, userAssets]);
 
   const assetsToBuyBySection = useMemo(
     () =>
