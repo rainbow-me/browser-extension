@@ -42,16 +42,21 @@ const useGas = ({
   chainId,
   defaultSpeed,
   estimatedGasLimit,
-  optimismL1SecurityFee,
+  transactionRequest,
 }: {
   chainId: ChainId;
   defaultSpeed?: GasSpeed;
   estimatedGasLimit?: string;
-  optimismL1SecurityFee?: string;
+  transactionRequest: TransactionRequest | null;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: gasData, isLoading } = useGasData({ chainId });
   const nativeAsset = useNativeAssetForNetwork({ chainId });
+
+  const { data: optimismL1SecurityFee } = useOptimismL1SecurityFee(
+    { transactionRequest: transactionRequest || {}, chainId },
+    { enabled: chainId === ChainId.optimism },
+  );
 
   const {
     selectedGas,
@@ -235,6 +240,7 @@ export const useTransactionGas = ({
     chainId,
     defaultSpeed,
     estimatedGasLimit,
+    transactionRequest,
   });
 };
 
@@ -274,11 +280,6 @@ export const useSwapGas = ({
     }
   }, [chainId, tradeDetails]);
 
-  const { data: optimismL1SecurityFee } = useOptimismL1SecurityFee(
-    { transactionRequest: transactionRequest || {} },
-    { enabled: chainId === ChainId.optimism && !!transactionRequest },
-  );
-
   useEffect(() => {
     const checkIfNeedsUnlocking = async () => {
       if (tradeDetails && !(tradeDetails as QuoteError).error && assetToSell) {
@@ -300,6 +301,6 @@ export const useSwapGas = ({
     chainId,
     defaultSpeed,
     estimatedGasLimit,
-    optimismL1SecurityFee,
+    transactionRequest,
   });
 };

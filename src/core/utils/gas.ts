@@ -275,7 +275,7 @@ export const parseGasFeeLegacyParams = ({
   gasLimit: string;
   nativeAsset?: ParsedAsset;
   currency: SupportedCurrencyKey;
-  optimismL1SecurityFee?: string;
+  optimismL1SecurityFee?: string | null;
 }): GasFeeLegacyParams => {
   const wei = gweiToWei(gwei);
   const gasPrice = parseGasFeeParam({
@@ -498,7 +498,7 @@ export const parseGasFeeParamsBySpeed = ({
   gasLimit: string;
   nativeAsset?: ParsedAsset;
   currency: SupportedCurrencyKey;
-  optimismL1SecurityFee?: string;
+  optimismL1SecurityFee?: string | null;
 }) => {
   if (chainId === ChainId.mainnet) {
     const response = data as MeteorologyResponse;
