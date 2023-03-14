@@ -98,6 +98,10 @@ export const event = {
    */
   dappProviderNetworkSwitched: 'dapp.provider.network.switched',
   /**
+   * Called when a dApp sends an RPC request to the provider.
+   */
+  dappProviderRequested: 'dapp.provider.requested',
+  /**
    * Called when the popup entry is opened, including:
    * - extension popup
    * - new window
@@ -291,6 +295,20 @@ export type EventProperties = {
      * `chainId` of the network the dApp requested a switch to.
      */
     chainId: number;
+  };
+  [event.dappProviderRequested]: {
+    /**
+     * Full url of the dApp requesting a `disconnect` event.
+     */
+    dappURL: string;
+    /**
+     * Short name of the dApp displayed to the user.
+     */
+    dappName?: string;
+    /**
+     * RPC method requested.
+     */
+    method: string;
   };
   [event.popupOpened]: undefined;
   [event.settingsAnalyticsTrackingDisabled]: undefined;

@@ -264,6 +264,11 @@ export const handleProviderRequest = ({
           // TODO: handle other methods
         }
       }
+      analytics.track(event.dappProviderRequested, {
+        dappURL: host,
+        dappName,
+        method,
+      });
       return { id, result: response };
     } catch (error) {
       return { id, error: <Error>error };
