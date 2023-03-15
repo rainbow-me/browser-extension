@@ -11,6 +11,7 @@ import {
   Row,
   Rows,
   Stack,
+  Symbol,
   Text,
 } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
@@ -111,6 +112,7 @@ export function Swap() {
     buttonDisabled,
     buttonIcon,
     buttonColor,
+    timeEstimate,
     buttonAction,
   } = useSwapActions({
     quote,
@@ -270,6 +272,45 @@ export function Swap() {
                   inputRef={assetToBuyInputRef}
                 />
               </AccentColorProviderWrapper>
+
+              {timeEstimate?.isLongWait ? (
+                <Box paddingHorizontal="20px">
+                  <Box
+                    paddingVertical="10px"
+                    paddingHorizontal="12px"
+                    borderRadius="round"
+                    borderWidth="1px"
+                    borderColor="buttonStroke"
+                    background="surfacePrimaryElevatedSecondary"
+                  >
+                    <Inline
+                      space="8px"
+                      alignVertical="center"
+                      alignHorizontal="center"
+                    >
+                      <Inline space="4px" alignVertical="center">
+                        <Symbol
+                          symbol="exclamationmark.triangle.fill"
+                          size={16}
+                          color="orange"
+                          weight="bold"
+                        />
+                        <Text color="label" size="14pt" weight="bold">
+                          Long wait
+                        </Text>
+                      </Inline>
+                      <Box
+                        background="fillSecondary"
+                        style={{ width: '14px', height: '2px' }}
+                      />
+
+                      <Text color="orange" size="14pt" weight="semibold">
+                        Up to {timeEstimate?.timeEstimateDisplay} to swap
+                      </Text>
+                    </Inline>
+                  </Box>
+                </Box>
+              ) : null}
             </Stack>
           </Row>
           <Row height="content">

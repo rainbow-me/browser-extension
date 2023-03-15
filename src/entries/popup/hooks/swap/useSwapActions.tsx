@@ -15,6 +15,38 @@ import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import { ExplainerSheetProps } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Spinner } from '../../components/Spinner/Spinner';
 
+export const getCrossChainTimeEstimate = ({
+  serviceTime,
+}: {
+  serviceTime?: number;
+}): {
+  isLongWait: boolean;
+  timeEstimate?: number;
+  timeEstimateDisplay: string;
+} => {
+  let isLongWait = false;
+  let timeEstimateDisplay;
+  const timeEstimate = serviceTime;
+
+  const minutes = Math.floor(timeEstimate || 0 / 60);
+  const hours = Math.floor(minutes / 60);
+
+  if (hours >= 1) {
+    isLongWait = true;
+    timeEstimateDisplay = `>${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+  } else if (minutes >= 1) {
+    timeEstimateDisplay = `~${minutes} min`;
+  } else {
+    timeEstimateDisplay = `~${timeEstimate} sec`;
+  }
+
+  return {
+    isLongWait,
+    timeEstimate,
+    timeEstimateDisplay,
+  };
+};
+
 interface UseSwapErrorProps {
   quote?: Quote | CrosschainQuote | QuoteError;
   isLoading: boolean;
@@ -32,6 +64,8 @@ export const useSwapActions = ({
   hideExplanerSheet,
   showExplainerSheet,
 }: UseSwapErrorProps) => {
+  console.log('QUOTE - ', quote);
+
   if (isLoading) {
     return {
       buttonColor: 'surfaceSecondary' as
@@ -70,6 +104,12 @@ export const useSwapActions = ({
   }
 
   if (!(quote as QuoteError).error) {
+    const serviceTime =
+      (quote as CrosschainQuote)?.routes?.[0]?.serviceTime || 0;
+    const timeEstimate = serviceTime
+      ? getCrossChainTimeEstimate({ serviceTime })
+      : undefined;
+
     return {
       buttonColor: 'accent' as BackgroundColor | ButtonColor | TextColor,
       buttonDisabled: false,
@@ -79,6 +119,7 @@ export const useSwapActions = ({
         <Symbol symbol="doc.text.magnifyingglass" weight="bold" size={16} />
       ),
       buttonAction: () => null,
+      timeEstimate,
     };
   }
 
