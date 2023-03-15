@@ -47,11 +47,11 @@ jobs:
         with:
           name: rainbowbx-v${{ env.release_version }}.zip
           path: build/
-      # - name: Submit to the chrome webstore
-      #   uses: PlasmoHQ/bpp@v3
-      #   with:
-      #     artifact: ./rainbowbx.zip
-      #     keys: ${{ secrets.BPP_KEYS_INTERNAL }}
+      - name: Submit to the chrome webstore
+        uses: PlasmoHQ/bpp@v3
+        with:
+          artifact: ./rainbowbx.zip
+          keys: ${{ secrets.BPP_KEYS_INTERNAL }}
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
@@ -59,8 +59,6 @@ jobs:
           committer_name: GitHub Actions
           committer_email: actions@github.com
           add: '*.json'
-      - name: Check sourcemaps
-        run: ls -la ./build/*.map
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:

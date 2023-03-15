@@ -57,9 +57,6 @@ jobs:
           committer_name: GitHub Actions
           committer_email: actions@github.com
           add: '*.json'
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:
