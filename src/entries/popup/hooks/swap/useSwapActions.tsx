@@ -1,14 +1,19 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import React from 'react';
 
-import { Box, Symbol } from '~/design-system';
+import { ParsedSearchAsset } from '~/core/types/assets';
+import { Box, Inline, Symbol } from '~/design-system';
 
+import { ChevronRightDouble } from '../../components/ChevroRightDouble';
+import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import { ExplainerSheetProps } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Spinner } from '../../components/Spinner/Spinner';
 
 interface UseSwapErrorProps {
   quote?: Quote | CrosschainQuote | QuoteError;
   isLoading: boolean;
+  assetToSell?: ParsedSearchAsset | null;
+  assetToBuy?: ParsedSearchAsset | null;
   hideExplanerSheet: () => void;
   showExplainerSheet: (params: ExplainerSheetProps) => void;
 }
@@ -16,6 +21,8 @@ interface UseSwapErrorProps {
 export const useSwapActions = ({
   quote,
   isLoading,
+  assetToSell,
+  assetToBuy,
   hideExplanerSheet,
   showExplainerSheet,
 }: UseSwapErrorProps) => {
@@ -95,7 +102,22 @@ export const useSwapActions = ({
         buttonAction: () =>
           showExplainerSheet({
             show: true,
-            header: { emoji: '🚧' },
+            header: {
+              icon: (
+                <Inline space="8px" alignVertical="center">
+                  <Box>
+                    <CoinIcon asset={assetToSell} size={40} />
+                  </Box>
+                  <ChevronRightDouble
+                    colorLeft="separatorSecondary"
+                    colorRight="separator"
+                  />
+                  <Box>
+                    <CoinIcon asset={assetToBuy} size={40} />
+                  </Box>
+                </Inline>
+              ),
+            },
             title: 'No routes found',
             description: [
               'We couldn’t find a route for this swap. A route may not exist for this swap, or the amount may be too small.',

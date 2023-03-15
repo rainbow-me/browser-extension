@@ -108,6 +108,8 @@ export function Swap() {
   const { buttonLabel, buttonIcon, buttonAction } = useSwapActions({
     quote,
     isLoading,
+    assetToSell,
+    assetToBuy,
     showExplainerSheet,
     hideExplanerSheet,
   });
