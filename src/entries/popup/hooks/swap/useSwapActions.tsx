@@ -2,7 +2,7 @@ import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import React from 'react';
 
 import { ParsedSearchAsset } from '~/core/types/assets';
-import { Box, Inline, Symbol } from '~/design-system';
+import { Bleed, Box, Inline, Symbol } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 import {
   BackgroundColor,
@@ -64,8 +64,6 @@ export const useSwapActions = ({
   hideExplanerSheet,
   showExplainerSheet,
 }: UseSwapErrorProps) => {
-  console.log('QUOTE - ', quote);
-
   if (isLoading) {
     return {
       buttonColor: 'surfaceSecondary' as
@@ -108,7 +106,7 @@ export const useSwapActions = ({
       (quote as CrosschainQuote)?.routes?.[0]?.serviceTime || 0;
     const timeEstimate = serviceTime
       ? getCrossChainTimeEstimate({ serviceTime })
-      : undefined;
+      : null;
 
     return {
       buttonColor: 'accent' as BackgroundColor | ButtonColor | TextColor,
@@ -118,7 +116,43 @@ export const useSwapActions = ({
       buttonIcon: (
         <Symbol symbol="doc.text.magnifyingglass" weight="bold" size={16} />
       ),
-      buttonAction: () => null,
+      buttonAction: () =>
+        timeEstimate?.isLongWait
+          ? showExplainerSheet({
+              show: true,
+              header: {
+                icon: (
+                  <Box>
+                    <Box>
+                      <CoinIcon asset={assetToSell} size={40} />
+                    </Box>
+                    <Box width="full">
+                      <Inline alignHorizontal="right">
+                        <Bleed right="10px" top="19px">
+                          <Symbol
+                            symbol="exclamationmark.triangle.fill"
+                            size={20}
+                            color="orange"
+                            weight="bold"
+                          />
+                        </Bleed>
+                      </Inline>
+                    </Box>
+                  </Box>
+                ),
+              },
+              title: 'Long wait to swap',
+              description: [
+                'This swap may take a very long time to complete. This is usually due to problems with a cross-chain bridge.',
+              ],
+              actionButton: {
+                label: 'Continue anyway',
+                variant: 'tinted',
+                labelColor: 'blue',
+                action: hideExplanerSheet,
+              },
+            })
+          : null,
       timeEstimate,
     };
   }
@@ -203,7 +237,6 @@ export const useSwapActions = ({
             description: [
               'We couldn’t find a route for this swap. A route may not exist for this swap, or the amount may be too small.',
             ],
-
             actionButton: {
               label: 'Got it',
               variant: 'tinted',
