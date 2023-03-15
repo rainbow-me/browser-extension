@@ -1,6 +1,7 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import React from 'react';
 
+import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { Bleed, Box, Inline, Symbol } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
@@ -33,11 +34,17 @@ export const getCrossChainTimeEstimate = ({
 
   if (hours >= 1) {
     isLongWait = true;
-    timeEstimateDisplay = `>${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+    timeEstimateDisplay = `>${hours} ${i18n.t(
+      `time.hours.long.${hours === 1 ? 'singular' : 'plural'}`,
+    )}`;
   } else if (minutes >= 1) {
-    timeEstimateDisplay = `~${minutes} min`;
+    timeEstimateDisplay = `~${minutes} ${i18n.t(
+      `time.minutes.short.${minutes === 1 ? 'singular' : 'plural'}`,
+    )}`;
   } else {
-    timeEstimateDisplay = `~${timeEstimate} sec`;
+    timeEstimateDisplay = `~${timeEstimate} ${i18n.t(
+      `time.seconds.short.${timeEstimate === 1 ? 'singular' : 'plural'}`,
+    )}`;
   }
 
   return {
@@ -72,7 +79,7 @@ export const useSwapActions = ({
         | TextColor,
       buttonLabelColor: 'labelQuaternary' as TextStyles['color'],
       buttonDisabled: true,
-      buttonLabel: 'Loading',
+      buttonLabel: i18n.t('swap.actions.loading'),
       buttonIcon: (
         <Box
           width="fit"
@@ -94,7 +101,7 @@ export const useSwapActions = ({
         | ButtonColor
         | TextColor,
       buttonDisabled: true,
-      buttonLabel: 'Enter an amount',
+      buttonLabel: i18n.t('swap.actions.enter_an_amount'),
       buttonLabelColor: 'labelQuaternary' as TextStyles['color'],
       buttonIcon: null,
       buttonAction: () => null,
@@ -111,7 +118,7 @@ export const useSwapActions = ({
     return {
       buttonColor: 'accent' as BackgroundColor | ButtonColor | TextColor,
       buttonDisabled: false,
-      buttonLabel: 'Review',
+      buttonLabel: i18n.t('swap.actions.review'),
       buttonLabelColor: 'label' as TextStyles['color'],
       buttonIcon: (
         <Symbol symbol="doc.text.magnifyingglass" weight="bold" size={16} />
@@ -141,12 +148,10 @@ export const useSwapActions = ({
                   </Box>
                 ),
               },
-              title: 'Long wait to swap',
-              description: [
-                'This swap may take a very long time to complete. This is usually due to problems with a cross-chain bridge.',
-              ],
+              title: i18n.t('swap.explainers.long_wait.title'),
+              description: [i18n.t('swap.explainers.long_wait.description')],
               actionButton: {
-                label: 'Continue anyway',
+                label: i18n.t('swap.explainers.long_wait.action_label'),
                 variant: 'tinted',
                 labelColor: 'blue',
                 action: hideExplanerSheet,
@@ -166,7 +171,7 @@ export const useSwapActions = ({
           | ButtonColor
           | TextColor,
         buttonDisabled: false,
-        buttonLabel: 'Insufficient liquidity',
+        buttonLabel: i18n.t('swap.actions.insufficient_liquidity'),
         buttonLabelColor: 'label' as TextStyles['color'],
         buttonIcon: (
           <Symbol
@@ -179,18 +184,26 @@ export const useSwapActions = ({
           showExplainerSheet({
             show: true,
             header: { emoji: '🏦' },
-            title: 'Insufficient liquidity',
+            title: i18n.t('swap.explainers.insufficient_liquidity.title'),
             description: [
-              'We couldn’t find quotes for this swap because this pair doesn’t have enough liquidity on exchanges.',
+              i18n.t('swap.explainers.insufficient_liquidity.description'),
             ],
             footerLinkText: {
-              openText: ' Still curious?',
-              linkText: 'Read more',
-              closeText: 'about AMMs and token liquidity.',
+              openText: i18n.t(
+                'swap.explainers.insufficient_liquidity.footer_text.open_text',
+              ),
+              linkText: i18n.t(
+                'swap.explainers.insufficient_liquidity.footer_text.link_text',
+              ),
+              closeText: i18n.t(
+                'swap.explainers.insufficient_liquidity.footer_text.close_text',
+              ),
               link: 'https://learn.rainbow.me/a-beginners-guide-to-liquidity-providing',
             },
             actionButton: {
-              label: 'Got it',
+              label: i18n.t(
+                'swap.explainers.insufficient_liquidity.action_label',
+              ),
               variant: 'tinted',
               labelColor: 'blue',
               action: hideExplanerSheet,
@@ -205,7 +218,7 @@ export const useSwapActions = ({
           | ButtonColor
           | TextColor,
         buttonDisabled: false,
-        buttonLabel: 'No route found',
+        buttonLabel: i18n.t('swap.actions.no_route'),
         buttonLabelColor: 'label' as TextStyles['color'],
         buttonIcon: (
           <Symbol
@@ -233,12 +246,10 @@ export const useSwapActions = ({
                 </Inline>
               ),
             },
-            title: 'No routes found',
-            description: [
-              'We couldn’t find a route for this swap. A route may not exist for this swap, or the amount may be too small.',
-            ],
+            title: i18n.t('swap.explainers.no_route.title'),
+            description: [i18n.t('swap.explainers.no_route.title')],
             actionButton: {
-              label: 'Got it',
+              label: i18n.t('swap.explainers.no_route.title'),
               variant: 'tinted',
               labelColor: 'blue',
               action: hideExplanerSheet,
@@ -254,7 +265,7 @@ export const useSwapActions = ({
           | ButtonColor
           | TextColor,
         buttonDisabled: false,
-        buttonLabel: 'No quote available',
+        buttonLabel: i18n.t('swap.actions.insufficient_liquidityno_quote'),
         buttonLabelColor: 'label' as TextStyles['color'],
         buttonIcon: (
           <Symbol
@@ -267,13 +278,11 @@ export const useSwapActions = ({
           showExplainerSheet({
             show: true,
             header: { emoji: '🚧' },
-            title: 'No quote available',
-            description: [
-              'We couldn’t find quotes for this swap. This could be because there isn’t enough liqudity to swap or because of problems with how the  token is implemented.',
-            ],
+            title: i18n.t('swap.explainers.no_quote.title'),
+            description: [i18n.t('swap.explainers.no_quote.title')],
 
             actionButton: {
-              label: 'Got it',
+              label: i18n.t('swap.explainers.no_quote.title'),
               variant: 'tinted',
               labelColor: 'blue',
               action: hideExplanerSheet,
