@@ -11,7 +11,6 @@ import {
   Row,
   Rows,
   Stack,
-  Symbol,
   Text,
 } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
@@ -21,10 +20,15 @@ import {
 } from '~/design-system/styles/designTokens';
 
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
+import {
+  ExplainerSheet,
+  useExplainerSheetParams,
+} from '../../components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { SwapFee } from '../../components/TransactionFee/TransactionFee';
 import { useSwapAssets } from '../../hooks/swap/useSwapAssets';
 import { useSwapDropdownDimensions } from '../../hooks/swap/useSwapDropdownDimensions';
+import { useSwapError } from '../../hooks/swap/useSwapError';
 import { useSwapInputs } from '../../hooks/swap/useSwapInputs';
 import { useSwapQuote } from '../../hooks/swap/useSwapQuote';
 import { useSwapQuoteHandler } from '../../hooks/swap/useSwapQuoteHandler';
@@ -36,6 +40,8 @@ import { TokenToSellInput } from './SwapTokenInput/TokenToSellInput';
 
 export function Swap() {
   const [showSwapSettings, setShowSwapSettings] = useState(false);
+  const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
+    useExplainerSheetParams();
 
   const {
     assetsToSell,
@@ -87,7 +93,7 @@ export function Swap() {
     setAssetToBuy,
   });
 
-  const { data: quote } = useSwapQuote({
+  const { data: quote, isLoading } = useSwapQuote({
     assetToSell,
     assetToBuy,
     assetToSellValue,
@@ -95,6 +101,13 @@ export function Swap() {
     independentField,
     source,
     slippage,
+  });
+
+  const { buttonLabel, buttonIcon, buttonAction } = useSwapError({
+    quote,
+    isLoading,
+    showExplainerSheet,
+    hideExplanerSheet,
   });
 
   useSwapQuoteHandler({
@@ -128,6 +141,14 @@ export function Swap() {
             variant="flat"
           />
         }
+      />
+      <ExplainerSheet
+        show={explainerSheetParams.show}
+        header={explainerSheetParams.header}
+        title={explainerSheetParams.title}
+        description={explainerSheetParams.description}
+        actionButton={explainerSheetParams.actionButton}
+        linkButton={explainerSheetParams.linkButton}
       />
       <SwapSettings
         show={showSwapSettings}
@@ -262,7 +283,7 @@ export function Swap() {
                     </Row>
                     <Row>
                       <Button
-                        onClick={() => null}
+                        onClick={buttonAction}
                         height="44px"
                         variant="flat"
                         color="accent"
@@ -270,13 +291,9 @@ export function Swap() {
                         testId="swap-review-button"
                       >
                         <Inline space="8px" alignVertical="center">
-                          <Symbol
-                            symbol="doc.text.magnifyingglass"
-                            weight="bold"
-                            size={16}
-                          />
+                          {buttonIcon}
                           <Text color="label" size="16pt" weight="bold">
-                            {i18n.t('swap.review')}
+                            {buttonLabel}
                           </Text>
                         </Inline>
                       </Button>
