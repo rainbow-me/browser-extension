@@ -95,5 +95,7 @@ export const useSwapValidations = ({
     enoughAssetBalance,
     enoughNativeAssetBalanceForGas,
     buttonLabel,
+    enoughAssetsForSwap:
+      Boolean(enoughAssetBalance) && Boolean(enoughNativeAssetBalanceForGas),
   };
 };

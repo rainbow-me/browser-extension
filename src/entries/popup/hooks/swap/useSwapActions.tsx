@@ -66,8 +66,7 @@ interface UseSwapActionsProps {
   assetToSell?: ParsedSearchAsset | null;
   assetToSellValue?: string;
   assetToBuy?: ParsedSearchAsset | null;
-  enoughAssetBalance?: boolean;
-  enoughNativeAssetBalanceForGas?: boolean;
+  enoughAssetsForSwap?: boolean;
   validationButtonLabel: string;
   hideExplanerSheet: () => void;
   showExplainerSheet: (params: ExplainerSheetProps) => void;
@@ -80,7 +79,6 @@ interface SwapActions {
   buttonLabel: string;
   buttonIcon: React.ReactElement | null;
   timeEstimate?: TimeEstimate | null;
-
   buttonAction: () => void;
 }
 
@@ -89,8 +87,7 @@ export const useSwapActions = ({
   isLoading,
   assetToSell,
   assetToBuy,
-  enoughAssetBalance,
-  enoughNativeAssetBalanceForGas,
+  enoughAssetsForSwap,
   validationButtonLabel,
   hideExplanerSheet,
   showExplainerSheet,
@@ -137,20 +134,15 @@ export const useSwapActions = ({
       : null;
 
     return {
-      buttonColor:
-        !!enoughAssetBalance && !!enoughNativeAssetBalanceForGas
-          ? 'accent'
-          : 'fillSecondary',
-      buttonDisabled: !enoughAssetBalance || !enoughNativeAssetBalanceForGas,
-      buttonLabel:
-        enoughAssetBalance && enoughNativeAssetBalanceForGas
-          ? i18n.t('swap.actions.review')
-          : validationButtonLabel,
+      buttonColor: enoughAssetsForSwap ? 'accent' : 'fillSecondary',
+      buttonDisabled: !enoughAssetsForSwap,
+      buttonLabel: enoughAssetsForSwap
+        ? i18n.t('swap.actions.review')
+        : validationButtonLabel,
       buttonLabelColor: 'label',
-      buttonIcon:
-        !!enoughAssetBalance && !!enoughNativeAssetBalanceForGas ? (
-          <Symbol symbol="doc.text.magnifyingglass" weight="bold" size={16} />
-        ) : null,
+      buttonIcon: enoughAssetsForSwap ? (
+        <Symbol symbol="doc.text.magnifyingglass" weight="bold" size={16} />
+      ) : null,
       buttonAction: () =>
         timeEstimate?.isLongWait
           ? showExplainerSheet({
