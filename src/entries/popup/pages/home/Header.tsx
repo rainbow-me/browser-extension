@@ -9,7 +9,7 @@ import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags'
 import { truncateAddress } from '~/core/utils/address';
 import { Box, ButtonSymbol, Inline, Inset, Stack, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
-import { TextStyles } from '~/design-system/styles/core.css';
+import { BoxStyles, TextStyles } from '~/design-system/styles/core.css';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
@@ -179,7 +179,7 @@ function ActionButton({
   testId,
   tabIndex,
 }: {
-  cursor?: TextStyles['cursor'];
+  cursor?: BoxStyles['cursor'];
   symbol: SymbolProps['symbol'];
   text: string;
   onClick?: () => void;
@@ -200,7 +200,7 @@ function ActionButton({
       />
       <Text
         color="labelSecondary"
-        cursor={cursor}
+        cursor={cursor as TextStyles['cursor']}
         size="12pt"
         weight="semibold"
       >
