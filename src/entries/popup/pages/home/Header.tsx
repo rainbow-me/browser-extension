@@ -9,6 +9,7 @@ import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags'
 import { truncateAddress } from '~/core/utils/address';
 import { Box, ButtonSymbol, Inline, Inset, Stack, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+import { TextStyles } from '~/design-system/styles/core.css';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
@@ -126,6 +127,7 @@ function ActionButtonsSection() {
       {avatar?.color && (
         <Inline space="12px">
           <ActionButton
+            cursor="copy"
             symbol="square.on.square"
             text={i18n.t('wallet_header.copy')}
             onClick={handleCopy}
@@ -170,12 +172,14 @@ function ActionButtonsSection() {
 }
 
 function ActionButton({
+  cursor = 'default',
   symbol,
   text,
   onClick,
   testId,
   tabIndex,
 }: {
+  cursor?: TextStyles['cursor'];
   symbol: SymbolProps['symbol'];
   text: string;
   onClick?: () => void;
@@ -186,6 +190,7 @@ function ActionButton({
     <Stack alignHorizontal="center" space="10px">
       <ButtonSymbol
         color="accent"
+        cursor={cursor}
         height="36px"
         variant="raised"
         symbol={symbol}
@@ -193,7 +198,12 @@ function ActionButton({
         onClick={onClick}
         tabIndex={tabIndex}
       />
-      <Text color="labelSecondary" size="12pt" weight="semibold">
+      <Text
+        color="labelSecondary"
+        cursor={cursor}
+        size="12pt"
+        weight="semibold"
+      >
         {text}
       </Text>
     </Stack>

@@ -45,6 +45,8 @@ export function TabBar({
           color={activeTab === 'tokens' ? 'label' : 'labelTertiary'}
           size="16pt"
           weight="bold"
+          userSelect="all"
+          cursor="text"
         >
           {userAssetsBalanceDisplay}
         </Text>

@@ -17,7 +17,6 @@ globalStyle('*', {
   boxSizing: 'border-box',
   transition: 'background 0.2s ease',
   userSelect: 'none',
-  cursor: 'default !important',
 });
 
 globalStyle('*::-webkit-scrollbar', {

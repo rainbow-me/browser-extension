@@ -7,6 +7,7 @@ import symbols from '../../symbols/generated';
 
 export type SymbolProps = {
   color?: SymbolStyles['color'];
+  cursor?: SymbolStyles['cursor'];
   symbol: SymbolName;
   weight: FontWeight;
   size: number;
@@ -15,6 +16,7 @@ export type SymbolProps = {
 
 export function Symbol({
   color = 'label',
+  cursor = 'default',
   symbol: name,
   weight,
   size,
@@ -24,6 +26,7 @@ export function Symbol({
 
   return (
     <svg
+      cursor={cursor}
       viewBox={`0 0 ${symbol.viewBox.width} ${symbol.viewBox.height}`}
       fill="none"
       className={symbolStyles({ color })}

@@ -13,6 +13,8 @@ export interface TextProps {
   testId?: string;
   background?: TextStyles['background'];
   webkitBackgroundClip?: TextStyles['WebkitBackgroundClip'];
+  cursor?: TextStyles['cursor'];
+  userSelect?: TextStyles['userSelect'];
 }
 
 export function Text({
@@ -25,18 +27,21 @@ export function Text({
   weight,
   testId,
   webkitBackgroundClip,
+  cursor = 'default',
+  userSelect = 'none',
 }: TextProps) {
   return (
     <Box
       as={as}
       className={textStyles({
         color,
-        cursor: 'default',
+        cursor,
         fontFamily: 'rounded',
         fontSize: size,
         fontWeight: weight,
         textAlign: align,
         background,
+        userSelect,
         WebkitBackgroundClip: webkitBackgroundClip,
       })}
       testId={testId}
