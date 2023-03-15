@@ -34,6 +34,10 @@ export const useSwapActions = ({
 }: UseSwapErrorProps) => {
   if (isLoading) {
     return {
+      buttonColor: 'surfaceSecondary' as
+        | BackgroundColor
+        | ButtonColor
+        | TextColor,
       buttonLabelColor: 'labelQuaternary' as TextStyles['color'],
       buttonDisabled: true,
       buttonLabel: 'Loading',
@@ -48,53 +52,47 @@ export const useSwapActions = ({
         </Box>
       ),
       buttonAction: () => null,
-      buttonColor: 'surfaceSecondary' as
-        | BackgroundColor
-        | ButtonColor
-        | TextColor,
     };
   }
 
   if (!quote) {
     return {
-      buttonLabelColor: 'labelQuaternary' as TextStyles['color'],
-      buttonDisabled: true,
-      buttonLabel: 'Enter an amount',
-      buttonIcon: null,
-      buttonAction: () => null,
       buttonColor: 'surfaceSecondary' as
         | BackgroundColor
         | ButtonColor
         | TextColor,
+      buttonDisabled: true,
+      buttonLabel: 'Enter an amount',
+      buttonLabelColor: 'labelQuaternary' as TextStyles['color'],
+      buttonIcon: null,
+      buttonAction: () => null,
     };
   }
 
   if (!(quote as QuoteError).error) {
     return {
-      buttonLabelColor: 'label' as TextStyles['color'],
+      buttonColor: 'accent' as BackgroundColor | ButtonColor | TextColor,
       buttonDisabled: false,
       buttonLabel: 'Review',
+      buttonLabelColor: 'label' as TextStyles['color'],
       buttonIcon: (
         <Symbol symbol="doc.text.magnifyingglass" weight="bold" size={16} />
       ),
       buttonAction: () => null,
-      buttonColor: 'accent' as BackgroundColor | ButtonColor | TextColor,
     };
   }
 
-  const quoteError = quote as QuoteError;
-
-  switch (quoteError.error_code) {
+  switch ((quote as QuoteError).error_code) {
     case 502:
       // insufficient liquidity
       return {
-        buttonLabelColor: 'label' as TextStyles['color'],
-        buttonDisabled: false,
         buttonColor: 'fillSecondary' as
           | BackgroundColor
           | ButtonColor
           | TextColor,
+        buttonDisabled: false,
         buttonLabel: 'Insufficient liquidity',
+        buttonLabelColor: 'label' as TextStyles['color'],
         buttonIcon: (
           <Symbol
             symbol="exclamationmark.circle.fill"
@@ -105,7 +103,7 @@ export const useSwapActions = ({
         buttonAction: () =>
           showExplainerSheet({
             show: true,
-            header: { emoji: '🚧' },
+            header: { emoji: '🏦' },
             title: 'Insufficient liquidity',
             description: [
               'We couldn’t find quotes for this swap because this pair doesn’t have enough liquidity on exchanges.',
@@ -114,7 +112,7 @@ export const useSwapActions = ({
               openText: ' Still curious?',
               linkText: 'Read more',
               closeText: 'about AMMs and token liquidity.',
-              link: 'https://learn.rainbow.me/protecting-transactions-with-flashbots',
+              link: 'https://learn.rainbow.me/a-beginners-guide-to-liquidity-providing',
             },
             actionButton: {
               label: 'Got it',
@@ -127,13 +125,13 @@ export const useSwapActions = ({
     case 504:
       // no route
       return {
-        buttonLabelColor: 'label' as TextStyles['color'],
-        buttonDisabled: false,
         buttonColor: 'fillSecondary' as
           | BackgroundColor
           | ButtonColor
           | TextColor,
+        buttonDisabled: false,
         buttonLabel: 'No route found',
+        buttonLabelColor: 'label' as TextStyles['color'],
         buttonIcon: (
           <Symbol
             symbol="exclamationmark.circle.fill"
@@ -177,13 +175,13 @@ export const useSwapActions = ({
     default:
       // no quote available
       return {
-        buttonLabelColor: 'label' as TextStyles['color'],
-        buttonDisabled: false,
         buttonColor: 'fillSecondary' as
           | BackgroundColor
           | ButtonColor
           | TextColor,
+        buttonDisabled: false,
         buttonLabel: 'No quote available',
+        buttonLabelColor: 'label' as TextStyles['color'],
         buttonIcon: (
           <Symbol
             symbol="exclamationmark.circle.fill"
