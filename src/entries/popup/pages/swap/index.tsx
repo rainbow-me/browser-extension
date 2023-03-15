@@ -110,7 +110,11 @@ export function Swap() {
     slippage,
   });
 
-  useSwapValidations({
+  const {
+    buttonLabel: validationButtonLabel,
+    enoughAssetBalance,
+    enoughNativeAssetBalanceForGas,
+  } = useSwapValidations({
     assetToSell,
     assetToSellValue,
     selectedGas,
@@ -129,6 +133,9 @@ export function Swap() {
     isLoading,
     assetToSell,
     assetToBuy,
+    enoughAssetBalance,
+    enoughNativeAssetBalanceForGas,
+    validationButtonLabel,
     showExplainerSheet,
     hideExplanerSheet,
   });

@@ -16,6 +16,12 @@ import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import { ExplainerSheetProps } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Spinner } from '../../components/Spinner/Spinner';
 
+interface TimeEstimate {
+  isLongWait: boolean;
+  timeEstimate?: number;
+  timeEstimateDisplay: string;
+}
+
 export const getCrossChainTimeEstimate = ({
   serviceTime,
 }: {
@@ -54,13 +60,28 @@ export const getCrossChainTimeEstimate = ({
   };
 };
 
-interface UseSwapErrorProps {
+interface UseSwapActionsProps {
   quote?: Quote | CrosschainQuote | QuoteError;
   isLoading: boolean;
   assetToSell?: ParsedSearchAsset | null;
+  assetToSellValue?: string;
   assetToBuy?: ParsedSearchAsset | null;
+  enoughAssetBalance?: boolean;
+  enoughNativeAssetBalanceForGas?: boolean;
+  validationButtonLabel: string;
   hideExplanerSheet: () => void;
   showExplainerSheet: (params: ExplainerSheetProps) => void;
+}
+
+interface SwapActions {
+  buttonColor: BackgroundColor | ButtonColor | TextColor;
+  buttonLabelColor: TextStyles['color'];
+  buttonDisabled: boolean;
+  buttonLabel: string;
+  buttonIcon: React.ReactElement | null;
+  timeEstimate?: TimeEstimate | null;
+
+  buttonAction: () => void;
 }
 
 export const useSwapActions = ({
@@ -68,9 +89,12 @@ export const useSwapActions = ({
   isLoading,
   assetToSell,
   assetToBuy,
+  enoughAssetBalance,
+  enoughNativeAssetBalanceForGas,
+  validationButtonLabel,
   hideExplanerSheet,
   showExplainerSheet,
-}: UseSwapErrorProps) => {
+}: UseSwapActionsProps): SwapActions => {
   if (isLoading) {
     return {
       buttonColor: 'surfaceSecondary' as
@@ -96,13 +120,10 @@ export const useSwapActions = ({
 
   if (!quote) {
     return {
-      buttonColor: 'surfaceSecondary' as
-        | BackgroundColor
-        | ButtonColor
-        | TextColor,
+      buttonColor: 'surfaceSecondary',
       buttonDisabled: true,
       buttonLabel: i18n.t('swap.actions.enter_an_amount'),
-      buttonLabelColor: 'labelQuaternary' as TextStyles['color'],
+      buttonLabelColor: 'labelQuaternary',
       buttonIcon: null,
       buttonAction: () => null,
     };
@@ -116,13 +137,20 @@ export const useSwapActions = ({
       : null;
 
     return {
-      buttonColor: 'accent' as BackgroundColor | ButtonColor | TextColor,
-      buttonDisabled: false,
-      buttonLabel: i18n.t('swap.actions.review'),
-      buttonLabelColor: 'label' as TextStyles['color'],
-      buttonIcon: (
-        <Symbol symbol="doc.text.magnifyingglass" weight="bold" size={16} />
-      ),
+      buttonColor:
+        !!enoughAssetBalance && !!enoughNativeAssetBalanceForGas
+          ? 'accent'
+          : 'fillSecondary',
+      buttonDisabled: !enoughAssetBalance || !enoughNativeAssetBalanceForGas,
+      buttonLabel:
+        enoughAssetBalance && enoughNativeAssetBalanceForGas
+          ? i18n.t('swap.actions.review')
+          : validationButtonLabel,
+      buttonLabelColor: 'label',
+      buttonIcon:
+        !!enoughAssetBalance && !!enoughNativeAssetBalanceForGas ? (
+          <Symbol symbol="doc.text.magnifyingglass" weight="bold" size={16} />
+        ) : null,
       buttonAction: () =>
         timeEstimate?.isLongWait
           ? showExplainerSheet({
@@ -166,13 +194,10 @@ export const useSwapActions = ({
     case 502:
       // insufficient liquidity
       return {
-        buttonColor: 'fillSecondary' as
-          | BackgroundColor
-          | ButtonColor
-          | TextColor,
+        buttonColor: 'fillSecondary',
         buttonDisabled: false,
         buttonLabel: i18n.t('swap.actions.insufficient_liquidity'),
-        buttonLabelColor: 'label' as TextStyles['color'],
+        buttonLabelColor: 'label',
         buttonIcon: (
           <Symbol
             symbol="exclamationmark.circle.fill"
@@ -213,13 +238,10 @@ export const useSwapActions = ({
     case 504:
       // no route
       return {
-        buttonColor: 'fillSecondary' as
-          | BackgroundColor
-          | ButtonColor
-          | TextColor,
+        buttonColor: 'fillSecondary',
         buttonDisabled: false,
         buttonLabel: i18n.t('swap.actions.no_route'),
-        buttonLabelColor: 'label' as TextStyles['color'],
+        buttonLabelColor: 'label',
         buttonIcon: (
           <Symbol
             symbol="exclamationmark.circle.fill"
@@ -260,13 +282,10 @@ export const useSwapActions = ({
     default:
       // no quote available
       return {
-        buttonColor: 'fillSecondary' as
-          | BackgroundColor
-          | ButtonColor
-          | TextColor,
+        buttonColor: 'fillSecondary',
         buttonDisabled: false,
         buttonLabel: i18n.t('swap.actions.insufficient_liquidityno_quote'),
-        buttonLabelColor: 'label' as TextStyles['color'],
+        buttonLabelColor: 'label',
         buttonIcon: (
           <Symbol
             symbol="exclamationmark.circle.fill"

@@ -56,7 +56,7 @@ export const useSwapValidations = ({
     assetToSellValue,
   ]);
 
-  const enoughNativeAssetForGas = useMemo(() => {
+  const enoughNativeAssetBalanceForGas = useMemo(() => {
     if (assetToSell?.isNativeAsset) {
       return lessOrEqualThan(
         add(toWei(assetToSellValue || '0'), selectedGas?.gasFee?.amount || '0'),
@@ -75,29 +75,25 @@ export const useSwapValidations = ({
   ]);
 
   const buttonLabel = useMemo(() => {
-    if (!assetToSellValue) {
-      return i18n.t('send.button_label.enter_address_and_amount');
-    }
     if (!enoughAssetBalance)
       return i18n.t('send.button_label.insufficient_asset', {
         symbol: assetToSell?.symbol,
       });
-    if (!enoughNativeAssetForGas)
+    if (!enoughNativeAssetBalanceForGas)
       return i18n.t('send.button_label.insufficient_native_asset_for_gas', {
         symbol: nativeAsset?.symbol,
       });
-    return i18n.t('send.button_label.review');
+    return '';
   }, [
     assetToSell?.symbol,
-    assetToSellValue,
     enoughAssetBalance,
-    enoughNativeAssetForGas,
+    enoughNativeAssetBalanceForGas,
     nativeAsset?.symbol,
   ]);
 
   return {
     enoughAssetBalance,
-    enoughNativeAssetForGas,
+    enoughNativeAssetBalanceForGas,
     buttonLabel,
   };
 };
