@@ -276,7 +276,7 @@ export function Swap() {
                             size={16}
                           />
                           <Text color="label" size="16pt" weight="bold">
-                            {'Review'}
+                            {i18n.t('swap.review')}
                           </Text>
                         </Inline>
                       </Button>
