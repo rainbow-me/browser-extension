@@ -94,11 +94,8 @@ export const useSwapActions = ({
 }: UseSwapActionsProps): SwapActions => {
   if (isLoading) {
     return {
-      buttonColor: 'surfaceSecondary' as
-        | BackgroundColor
-        | ButtonColor
-        | TextColor,
-      buttonLabelColor: 'labelQuaternary' as TextStyles['color'],
+      buttonColor: 'surfaceSecondary',
+      buttonLabelColor: 'labelQuaternary',
       buttonDisabled: true,
       buttonLabel: i18n.t('swap.actions.loading'),
       buttonIcon: (
