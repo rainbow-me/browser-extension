@@ -258,9 +258,9 @@ export const useSwapActions = ({
               ),
             },
             title: i18n.t('swap.explainers.no_route.title'),
-            description: [i18n.t('swap.explainers.no_route.title')],
+            description: [i18n.t('swap.explainers.no_route.description')],
             actionButton: {
-              label: i18n.t('swap.explainers.no_route.title'),
+              label: i18n.t('swap.explainers.no_route.action_label'),
               variant: 'tinted',
               labelColor: 'blue',
               action: hideExplanerSheet,
@@ -273,7 +273,7 @@ export const useSwapActions = ({
       return {
         buttonColor: 'fillSecondary',
         buttonDisabled: false,
-        buttonLabel: i18n.t('swap.actions.insufficient_liquidityno_quote'),
+        buttonLabel: i18n.t('swap.actions.no_quote'),
         buttonLabelColor: 'label',
         buttonIcon: (
           <Symbol
@@ -287,10 +287,10 @@ export const useSwapActions = ({
             show: true,
             header: { emoji: '🚧' },
             title: i18n.t('swap.explainers.no_quote.title'),
-            description: [i18n.t('swap.explainers.no_quote.title')],
+            description: [i18n.t('swap.explainers.no_quote.description')],
 
             actionButton: {
-              label: i18n.t('swap.explainers.no_quote.title'),
+              label: i18n.t('swap.explainers.no_quote.action_label'),
               variant: 'tinted',
               labelColor: 'blue',
               action: hideExplanerSheet,
