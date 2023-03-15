@@ -56,10 +56,11 @@ jobs:
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
-          message: Version Bump
+          message: Version Bump (Internal) - v${{ env.release_version }}
           committer_name: GitHub Actions
           committer_email: actions@github.com
           add: '*.json'
+      - uses: actions/checkout@v2
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:
@@ -71,3 +72,4 @@ jobs:
           finalize: true
           sourcemaps: ./build
           version: ${{ env.release_version }}
+          version_prefix: v
