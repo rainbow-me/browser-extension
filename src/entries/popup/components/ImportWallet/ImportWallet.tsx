@@ -31,8 +31,12 @@ import { ROUTES } from '../../urls';
 
 const validateSecret = (secret: string) => {
   // check if it's a private key
-  if (startsWith(secret.trimEnd().trimStart().toLowerCase(), '0x')) {
-    return isValidPrivateKey(secret);
+  const trimmedSecret = secret.trimEnd().trimStart().toLowerCase();
+  if (trimmedSecret.split(' ').length === 1) {
+    const secretToValidate = startsWith(trimmedSecret, '0x')
+      ? trimmedSecret
+      : addHexPrefix(trimmedSecret);
+    return isValidPrivateKey(secretToValidate);
   }
   return isValidMnemonic(secret.trimEnd().trimStart());
 };
