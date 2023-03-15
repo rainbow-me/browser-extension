@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useGasStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import {
   Box,
@@ -36,6 +37,7 @@ import {
   useSwapQuote,
   useSwapQuoteHandler,
   useSwapSettings,
+  useSwapValidations,
 } from '../../hooks/swap';
 
 import { SwapSettings } from './SwapSettings/SwapSettings';
@@ -46,6 +48,7 @@ export function Swap() {
   const [showSwapSettings, setShowSwapSettings] = useState(false);
   const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
     useExplainerSheetParams();
+  const { selectedGas } = useGasStore();
 
   const {
     assetsToSell,
@@ -105,6 +108,12 @@ export function Swap() {
     independentField,
     source,
     slippage,
+  });
+
+  useSwapValidations({
+    assetToSell,
+    assetToSellValue,
+    selectedGas,
   });
 
   const {
