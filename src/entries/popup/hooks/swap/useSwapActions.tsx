@@ -3,6 +3,12 @@ import React from 'react';
 
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { Box, Inline, Symbol } from '~/design-system';
+import { TextStyles } from '~/design-system/styles/core.css';
+import {
+  BackgroundColor,
+  ButtonColor,
+  TextColor,
+} from '~/design-system/styles/designTokens';
 
 import { ChevronRightDouble } from '../../components/ChevroRightDouble';
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
@@ -28,6 +34,8 @@ export const useSwapActions = ({
 }: UseSwapErrorProps) => {
   if (isLoading) {
     return {
+      buttonLabelColor: 'labelQuaternary' as TextStyles['color'],
+      buttonDisabled: true,
       buttonLabel: 'Loading',
       buttonIcon: (
         <Box
@@ -36,19 +44,41 @@ export const useSwapActions = ({
           justifyContent="center"
           style={{ margin: 'auto' }}
         >
-          <Spinner size={16} color={'label'} />
+          <Spinner size={16} color="labelQuaternary" />
         </Box>
       ),
       buttonAction: () => null,
+      buttonColor: 'surfaceSecondary' as
+        | BackgroundColor
+        | ButtonColor
+        | TextColor,
     };
   }
-  if (!quote || !(quote as QuoteError).error) {
+
+  if (!quote) {
     return {
+      buttonLabelColor: 'labelQuaternary' as TextStyles['color'],
+      buttonDisabled: true,
+      buttonLabel: 'Enter an amount',
+      buttonIcon: null,
+      buttonAction: () => null,
+      buttonColor: 'surfaceSecondary' as
+        | BackgroundColor
+        | ButtonColor
+        | TextColor,
+    };
+  }
+
+  if (!(quote as QuoteError).error) {
+    return {
+      buttonLabelColor: 'label' as TextStyles['color'],
+      buttonDisabled: false,
       buttonLabel: 'Review',
       buttonIcon: (
         <Symbol symbol="doc.text.magnifyingglass" weight="bold" size={16} />
       ),
       buttonAction: () => null,
+      buttonColor: 'accent' as BackgroundColor | ButtonColor | TextColor,
     };
   }
 
@@ -58,6 +88,12 @@ export const useSwapActions = ({
     case 502:
       // insufficient liquidity
       return {
+        buttonLabelColor: 'label' as TextStyles['color'],
+        buttonDisabled: false,
+        buttonColor: 'fillSecondary' as
+          | BackgroundColor
+          | ButtonColor
+          | TextColor,
         buttonLabel: 'Insufficient liquidity',
         buttonIcon: (
           <Symbol
@@ -91,6 +127,12 @@ export const useSwapActions = ({
     case 504:
       // no route
       return {
+        buttonLabelColor: 'label' as TextStyles['color'],
+        buttonDisabled: false,
+        buttonColor: 'fillSecondary' as
+          | BackgroundColor
+          | ButtonColor
+          | TextColor,
         buttonLabel: 'No route found',
         buttonIcon: (
           <Symbol
@@ -135,6 +177,12 @@ export const useSwapActions = ({
     default:
       // no quote available
       return {
+        buttonLabelColor: 'label' as TextStyles['color'],
+        buttonDisabled: false,
+        buttonColor: 'fillSecondary' as
+          | BackgroundColor
+          | ButtonColor
+          | TextColor,
         buttonLabel: 'No quote available',
         buttonIcon: (
           <Symbol

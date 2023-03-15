@@ -105,7 +105,14 @@ export function Swap() {
     slippage,
   });
 
-  const { buttonLabel, buttonIcon, buttonAction } = useSwapActions({
+  const {
+    buttonLabel,
+    buttonLabelColor,
+    buttonDisabled,
+    buttonIcon,
+    buttonColor,
+    buttonAction,
+  } = useSwapActions({
     quote,
     isLoading,
     assetToSell,
@@ -290,13 +297,18 @@ export function Swap() {
                         onClick={buttonAction}
                         height="44px"
                         variant="flat"
-                        color="accent"
+                        color={buttonColor}
                         width="full"
                         testId="swap-review-button"
+                        disabled={buttonDisabled}
                       >
                         <Inline space="8px" alignVertical="center">
                           {buttonIcon}
-                          <Text color="label" size="16pt" weight="bold">
+                          <Text
+                            color={buttonLabelColor}
+                            size="16pt"
+                            weight="bold"
+                          >
                             {buttonLabel}
                           </Text>
                         </Inline>
