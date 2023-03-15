@@ -13,7 +13,7 @@ interface UseSwapErrorProps {
   showExplainerSheet: (params: ExplainerSheetProps) => void;
 }
 
-export const useSwapError = ({
+export const useSwapActions = ({
   quote,
   isLoading,
   hideExplanerSheet,

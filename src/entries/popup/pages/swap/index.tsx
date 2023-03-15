@@ -26,13 +26,15 @@ import {
 } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { SwapFee } from '../../components/TransactionFee/TransactionFee';
-import { useSwapAssets } from '../../hooks/swap/useSwapAssets';
-import { useSwapDropdownDimensions } from '../../hooks/swap/useSwapDropdownDimensions';
-import { useSwapError } from '../../hooks/swap/useSwapError';
-import { useSwapInputs } from '../../hooks/swap/useSwapInputs';
-import { useSwapQuote } from '../../hooks/swap/useSwapQuote';
-import { useSwapQuoteHandler } from '../../hooks/swap/useSwapQuoteHandler';
-import { useSwapSettings } from '../../hooks/swap/useSwapSettings';
+import {
+  useSwapActions,
+  useSwapAssets,
+  useSwapDropdownDimensions,
+  useSwapInputs,
+  useSwapQuote,
+  useSwapQuoteHandler,
+  useSwapSettings,
+} from '../../hooks/swap';
 
 import { SwapSettings } from './SwapSettings/SwapSettings';
 import { TokenToBuyInput } from './SwapTokenInput/TokenToBuyInput';
@@ -103,7 +105,7 @@ export function Swap() {
     slippage,
   });
 
-  const { buttonLabel, buttonIcon, buttonAction } = useSwapError({
+  const { buttonLabel, buttonIcon, buttonAction } = useSwapActions({
     quote,
     isLoading,
     showExplainerSheet,
