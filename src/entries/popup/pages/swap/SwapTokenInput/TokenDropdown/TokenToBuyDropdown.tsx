@@ -99,19 +99,17 @@ const AssetsToBuySection = ({
           {assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
             const { index } = virtualItem;
             const asset = data?.[index] as SearchAsset;
-            console.log(
-              `input-wrapper-dropdown-${asset?.uniqueId}-token-to-buy-token-input`,
-            );
             return (
               <Box
                 paddingHorizontal="8px"
                 key={`${asset?.uniqueId}-${i}-${id}`}
                 onClick={() => onSelectAsset?.(asset as ParsedSearchAsset)}
-                testId={`${asset?.uniqueId}-token-to-buy-row`}
+                testId={`${asset?.uniqueId}-${id}-token-to-buy-row`}
               >
                 <TokenToBuyRow
                   onDropdownChange={onDropdownChange}
                   asset={asset}
+                  testId={`${asset?.uniqueId}-${id}-token-to-buy-row`}
                 />
               </Box>
             );

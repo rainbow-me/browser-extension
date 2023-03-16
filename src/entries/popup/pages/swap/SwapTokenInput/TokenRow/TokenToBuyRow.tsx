@@ -40,10 +40,15 @@ const TEXT_MAX_WIDTH = windowWidth - 180;
 
 export type TokenToBuyRowProps = {
   asset: SearchAsset;
+  testId: string;
   onDropdownChange: (open: boolean) => void;
 };
 
-export function TokenToBuyRow({ asset, onDropdownChange }: TokenToBuyRowProps) {
+export function TokenToBuyRow({
+  asset,
+  testId,
+  onDropdownChange,
+}: TokenToBuyRowProps) {
   const { addFavorite, favorites, removeFavorite } = useFavoritesStore();
   const isFavorite = useMemo(
     () => favorites[asset?.chainId]?.includes(asset?.address),
@@ -126,6 +131,7 @@ export function TokenToBuyRow({ asset, onDropdownChange }: TokenToBuyRowProps) {
                   variant="plain"
                   color="fillHorizontal"
                   symbolColor="labelSecondary"
+                  testId={`${testId}-info-button`}
                 />
               </Box>
             </DropdownMenuTrigger>
@@ -144,7 +150,7 @@ export function TokenToBuyRow({ asset, onDropdownChange }: TokenToBuyRowProps) {
                   <DropdownMenuSeparator />
                   <DropdownMenuRadioGroup onValueChange={onValueChange}>
                     <DropdownMenuRadioItem value="copy">
-                      <Box width="full">
+                      <Box testId={`${testId}-info-button-copy`} width="full">
                         <Inline space="8px" alignVertical="center">
                           <Inline alignVertical="center">
                             <Symbol
@@ -217,19 +223,21 @@ export function TokenToBuyRow({ asset, onDropdownChange }: TokenToBuyRowProps) {
           color="fillHorizontal"
           symbolColor={isFavorite ? 'yellow' : 'labelSecondary'}
           onClick={onToggleFavorite}
+          testId={`${testId}-favorite-button`}
         />
       </Inline>
     ),
     [
-      asset?.address,
-      asset?.chainId,
       asset?.isNativeAsset,
       asset?.name,
       asset?.symbol,
+      asset?.address,
+      asset?.chainId,
+      onDropdownChange,
+      onValueChange,
       isFavorite,
       onToggleFavorite,
-      onValueChange,
-      onDropdownChange,
+      testId,
     ],
   );
 

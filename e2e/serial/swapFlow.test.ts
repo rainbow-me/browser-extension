@@ -32,6 +32,7 @@ const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
 const DAI_MAINNET_ID = '0x6b175474e89094c44da98b954eedeac495271d0f_1';
+const ZEROX_MAINNET_ID = '0xe41d2489571d322189246dafa5ebde1f4699f498_1';
 const ETH_MAINNET_ID = 'eth_1';
 
 beforeAll(async () => {
@@ -332,7 +333,7 @@ it('should be able to open token to buy input and select assets', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${DAI_MAINNET_ID}-token-to-buy-row`,
+    id: `${DAI_MAINNET_ID}-favorites-token-to-buy-row`,
     driver,
   });
   expect(elementFound).toBeFalsy();
@@ -343,7 +344,7 @@ it('should be able to open token to buy input and select assets', async () => {
   expect(toBuyInputDaiSelected).toBeTruthy();
 });
 
-it('should be able to open remove token to buy and check favorites and verified list are visible', async () => {
+it('should be able to open remove token to buy and check favorites and verified lists are visible', async () => {
   await findElementByTestIdAndClick({
     id: `${DAI_MAINNET_ID}-token-to-buy-token-input-remove`,
     driver,
@@ -358,9 +359,20 @@ it('should be able to open remove token to buy and check favorites and verified 
     driver,
   });
   expect(verifiedSection).toBeTruthy();
+});
 
+it('should be able to favorite a token and check the info button is present', async () => {
   await findElementByTestIdAndClick({
-    id: `${DAI_MAINNET_ID}-token-to-buy-row`,
+    id: `${ZEROX_MAINNET_ID}-verified-token-to-buy-row-favorite-button`,
+    driver,
+  });
+  await delayTime('short');
+  await findElementByTestIdAndClick({
+    id: `${ZEROX_MAINNET_ID}-favorites-token-to-buy-row-info-button`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `${ZEROX_MAINNET_ID}-favorites-token-to-buy-row-info-button-copy`,
     driver,
   });
   await delayTime('long');
