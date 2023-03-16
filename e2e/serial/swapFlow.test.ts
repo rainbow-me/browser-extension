@@ -9,6 +9,7 @@ import { afterAll, beforeAll, expect, it } from 'vitest';
 
 import {
   delayTime,
+  doNotFindElementByTestId,
   findElementAndClick,
   findElementByTestId,
   findElementByTestIdAndClick,
@@ -300,12 +301,10 @@ it('should be able to remove token to sell and select it again', async () => {
     id: 'eth_1-token-to-sell-input-wrapper-close-token-input',
     driver,
   });
-  await delayTime('long');
   await findElementByTestIdAndClick({
     id: 'token-to-sell-eth_1',
     driver,
   });
-  await delayTime('long');
   const toSellInputEthSelected = await findElementByTestId({
     id: 'input-wrapper-dropdown-eth_1-token-to-sell-token-input',
     driver,
@@ -317,5 +316,23 @@ it('should be able to remove token to sell and select it again', async () => {
     driver,
   });
   expect(ethValueAfterSelection).toEqual('');
+});
+
+it('should be able to open token to buy input and select assets', async () => {
+  await findElementByTestIdAndClick({
+    id: 'input-wrapper-dropdown-token-to-buy-token-input',
+    driver,
+  });
+  // check sell asset is not present as buy option
+  const elementFound = await doNotFindElementByTestId({
+    id: 'token-to-buy-eth_1',
+    driver,
+  });
+  expect(elementFound).toBeFalsy();
+  const toBuyInputDaiSelected = await findElementByTestId({
+    id: 'input-wrapper-dropdown-0x6b175474e89094c44da98b954eedeac495271d0f_1-token-to-buy-token-input',
+    driver,
+  });
+  expect(toBuyInputDaiSelected).toBeTruthy();
   await delayTime('long');
 });
