@@ -337,7 +337,6 @@ export function Settings() {
             {Object.keys(featureFlags).map((key, i) => (
               <MenuItem
                 key={i}
-                testId={`feature-flag-${key}`}
                 titleComponent={
                   <MenuItem.Title
                     text={i18n.t(`settings.feature_flags.${key}`)}
@@ -345,7 +344,7 @@ export function Settings() {
                 }
                 rightComponent={
                   <Toggle
-                    testId="set-rainbow-default-toggle"
+                    testId={`feature-flag-${key}`}
                     checked={featureFlags[key as FeatureFlagTypes]}
                     handleChange={() =>
                       toggleFeatureFlag(key as FeatureFlagTypes)

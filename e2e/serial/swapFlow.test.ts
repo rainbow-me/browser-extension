@@ -89,7 +89,6 @@ it('should be able to connect to hardhat and turn swaps flag on', async () => {
   expect(button).toBeTruthy();
   await findElementByTestIdAndClick({ id: 'feature-flag-swaps', driver });
   await findElementByTestIdAndClick({ id: 'navbar-button-with-back', driver });
-  await findElementAndClick({ id: 'header-link-swap', driver });
 });
 
 it('should be able to go to swap flow', async () => {
