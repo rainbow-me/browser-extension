@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import { motion, useScroll, useTransform } from 'framer-motion';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
@@ -11,6 +12,7 @@ import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
+import { useAlert } from '../../hooks/useAlert';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useToast } from '../../hooks/useToast';
 import { useWallets } from '../../hooks/useWallets';
@@ -66,7 +68,7 @@ export function AvatarSection() {
       {isFetched ? (
         <>
           {avatar?.imageUrl ? (
-            <Avatar.Image imageUrl={avatar.imageUrl} />
+            <Avatar.Image size={60} imageUrl={avatar.imageUrl} />
           ) : (
             <Avatar.Emoji color={avatar?.color} emoji={avatar?.emoji} />
           )}
@@ -84,6 +86,7 @@ function ActionButtonsSection() {
   const { watchedWallets } = useWallets();
   const { triggerToast } = useToast();
   const { featureFlags } = useFeatureFlagsStore();
+  const { triggerAlert } = useAlert();
 
   const handleCopy = React.useCallback(() => {
     navigator.clipboard.writeText(address as string);
@@ -111,9 +114,12 @@ function ActionButtonsSection() {
   );
 
   const alertWatchingWallet = React.useCallback(() => {
-    // this will be removed so not adding it to lang file
-    alert('This wallet is currently in "Watching" mode');
-  }, []);
+    triggerAlert({ text: i18n.t('alert.wallet_watching_mode') });
+  }, [triggerAlert]);
+
+  const alertComingSoon = React.useCallback(() => {
+    triggerAlert({ text: i18n.t('alert.coming_soon') });
+  }, [triggerAlert]);
 
   return (
     <Box style={{ height: 56 }}>
@@ -130,7 +136,13 @@ function ActionButtonsSection() {
             id="header-link-swap"
             to={allowSwap ? ROUTES.SWAP : '#'}
             state={{ from: ROUTES.HOME }}
-            onClick={allowSwap ? () => null : alertWatchingWallet}
+            onClick={
+              allowSwap
+                ? () => null
+                : isWatchingWallet
+                ? alertWatchingWallet
+                : alertComingSoon
+            }
           >
             <ActionButton
               symbol="arrow.triangle.swap"

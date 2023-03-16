@@ -15,7 +15,7 @@ export type TokenSearchListId =
 export type SearchAsset = {
   address: Address;
   chainId: ChainId;
-  colors: { primary: string; fallback: string };
+  colors: { primary: string; fallback?: string };
   decimals: number;
   highLiquidity: boolean;
   icon_url: string;

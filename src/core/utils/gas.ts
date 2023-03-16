@@ -15,7 +15,7 @@ import { i18n } from '../languages';
 import {
   OVM_GAS_PRICE_ORACLE,
   SupportedCurrencyKey,
-  ethUnits,
+  gasUnits,
   supportedCurrencies,
 } from '../references';
 import {
@@ -275,7 +275,7 @@ export const parseGasFeeLegacyParams = ({
   gasLimit: string;
   nativeAsset?: ParsedAsset;
   currency: SupportedCurrencyKey;
-  optimismL1SecurityFee?: string;
+  optimismL1SecurityFee?: string | null;
 }): GasFeeLegacyParams => {
   const wei = gweiToWei(gwei);
   const gasPrice = parseGasFeeParam({
@@ -390,7 +390,7 @@ export const estimateGasWithPadding = async ({
       (!contractCallEstimateGas && !to) ||
       (to && !data && (!code || code === '0x'))
     ) {
-      return ethUnits.basic_tx.toString();
+      return gasUnits.basic_tx;
     }
 
     // 3 - If it is a contract, call the RPC method `estimateGas` with a safe value
@@ -456,8 +456,8 @@ export const calculateL1FeeOptimism = async ({
       transactionRequest.gasLimit = toHex(
         `${
           transactionRequest.data === '0x'
-            ? ethUnits.basic_tx
-            : ethUnits.basic_transfer
+            ? gasUnits.basic_tx
+            : gasUnits.basic_transfer
         }`,
       );
     }
@@ -498,7 +498,7 @@ export const parseGasFeeParamsBySpeed = ({
   gasLimit: string;
   nativeAsset?: ParsedAsset;
   currency: SupportedCurrencyKey;
-  optimismL1SecurityFee?: string;
+  optimismL1SecurityFee?: string | null;
 }) => {
   if (chainId === ChainId.mainnet) {
     const response = data as MeteorologyResponse;

@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { Address } from 'wagmi';
 
 import { refractionAssetsMessages, refractionAssetsWs } from '~/core/network';
 import {
@@ -22,7 +23,7 @@ const ASSETS_REFETCH_INTERVAL = 60000;
 // Query Types
 
 export type AssetsArgs = {
-  assetAddresses: Record<ChainId, string[]>;
+  assetAddresses: Address[];
   currency: SupportedCurrencyKey;
 };
 
@@ -45,8 +46,8 @@ async function assetsQueryFunction({
   queryKey: [{ assetAddresses, currency }],
 }: QueryFunctionArgs<typeof assetsQueryKey>): Promise<{
   [key: UniqueId]: ParsedAsset;
-} | void> {
-  const assetCodes = Object.values(assetAddresses || {}).flat();
+}> {
+  const assetCodes = assetAddresses;
   if (!assetCodes || !assetCodes.length) return {};
   refractionAssetsWs.emit('get', {
     payload: {
@@ -78,7 +79,7 @@ function parseAssets({
   currency,
   message,
 }: {
-  assetAddresses: Record<ChainId, string[]>;
+  assetAddresses: Address[];
   currency: SupportedCurrencyKey;
   message: AssetPricesReceivedMessage;
 }) {

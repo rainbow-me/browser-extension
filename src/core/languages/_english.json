@@ -285,7 +285,8 @@
         },
         "got_it": "Got it"
       }
-    }
+    },
+    "review": "Review"
   },
   "custom_gas": {
     "title": "Gwei Settings",
@@ -646,5 +647,10 @@
     "network_changed": "Network changed",
     "network_changed_failed": "Network changed failed",
     "unsupported_network": "Unsupported network"
+  },
+  "alert": {
+    "ok": "Ok",
+    "wallet_watching_mode": "This wallet is currently in 'Watching' mode",
+    "coming_soon": "Coming Soon!"
   }
 }

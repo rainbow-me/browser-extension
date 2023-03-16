@@ -17,6 +17,7 @@ export const Prompt = ({
   background,
   scrimBackground,
   backdropFilter,
+  zIndex,
 }: {
   show: boolean;
   children: ReactNode;
@@ -24,6 +25,7 @@ export const Prompt = ({
   background?: BackgroundColor;
   scrimBackground?: boolean;
   backdropFilter?: BackdropFilter;
+  zIndex?: number;
 }) => {
   const emphasizedShort = animatedRouteTransitionConfig['emphasizedShort'];
   const deceleratedShort = animatedRouteTransitionConfig['deceleratedShort'];
@@ -39,7 +41,7 @@ export const Prompt = ({
           style={{
             width: '100%',
             height: '100%',
-            zIndex: zIndexes.PROMPT,
+            zIndex: zIndex || zIndexes.PROMPT,
           }}
           background="scrim"
           as={motion.div}
@@ -60,7 +62,7 @@ export const Prompt = ({
           style={{
             width: '100%',
             height: '100%',
-            zIndex: zIndexes.PROMPT + 1,
+            zIndex: zIndex || zIndexes.PROMPT + 1,
           }}
           as={motion.div}
           initial={{ opacity: 0 }}

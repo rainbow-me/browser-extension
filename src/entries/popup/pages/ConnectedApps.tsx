@@ -18,6 +18,7 @@ import {
 } from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 
+import ExternalImage from '../components/ExternalImage/ExternalImage';
 import { AppNetworkMenu } from '../components/SwitchMenu/AppNetworkMenu';
 import { WalletAvatar } from '../components/WalletAvatar/WalletAvatar';
 import { useAppMetadata } from '../hooks/useAppMetadata';
@@ -165,7 +166,6 @@ const ConnectedApp = ({
 
   const onMouseEnter = useCallback(() => setDisconnectButtonVisible(true), []);
   const onMouseLeave = useCallback(() => setDisconnectButtonVisible(false), []);
-
   return (
     <Box paddingHorizontal="8px">
       <Box
@@ -207,7 +207,7 @@ const ConnectedApp = ({
                     overflow: 'hidden',
                   }}
                 >
-                  <img src={appLogo} width="100%" height="100%" />
+                  <ExternalImage src={appLogo} width="36" height="36" />
                 </Box>
                 <Box>
                   <Stack space="8px">
