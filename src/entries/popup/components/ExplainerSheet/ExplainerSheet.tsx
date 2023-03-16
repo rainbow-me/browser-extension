@@ -195,6 +195,7 @@ export const ExplainerSheet = ({
               height="44px"
               variant={actionButton?.variant || 'raised'}
               onClick={actionButton?.action}
+              testId="explainer-action-button"
             >
               <Text
                 align="center"

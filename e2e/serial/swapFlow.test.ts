@@ -106,11 +106,6 @@ it('should be able to go to swap settings and check rows are visible', async () 
     driver,
   });
   expect(routeRow).toBeTruthy();
-  //   const flashbotsRow = await findElementByTestId({
-  //     id: 'swap-settings-flashbots-row',
-  //     driver,
-  //   });
-  //   expect(flashbotsRow).toBeFalsy();
   const slippageRow = await findElementByTestId({
     id: 'swap-settings-slippage-row',
     driver,
@@ -153,4 +148,31 @@ it('should be able to go to swap settings and check flashbots row is visible', a
     driver,
   });
   expect(flashbotsRow).toBeTruthy();
+});
+
+it('should be able to open settings explainers', async () => {
+  await findElementByTestIdAndClick({
+    id: 'swap-settings-route-label',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'explainer-action-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'swap-settings-flashbots-label',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'explainer-action-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'swap-settings-slippage-label',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'explainer-action-button',
+    driver,
+  });
 });

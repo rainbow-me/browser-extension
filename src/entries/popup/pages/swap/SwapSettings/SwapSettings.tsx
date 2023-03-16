@@ -44,10 +44,12 @@ import { SwapRouteDropdownMenu } from './SwapRouteDropdownMenu';
 const Label = ({
   label,
   warning,
+  testId,
   onClick,
 }: {
   label: string;
   warning?: 'loss';
+  testId: string;
   onClick: () => void;
 }) => (
   <Box as={motion.div} layout="position">
@@ -86,6 +88,7 @@ const Label = ({
                   height="28px"
                   variant="tinted"
                   onClick={onClick}
+                  testId={testId}
                 />
               </Bleed>
             </Box>
@@ -310,6 +313,7 @@ export const SwapSettings = ({
                         <Label
                           label={i18n.t('swap.settings.route_swaps')}
                           onClick={showRoutingExplainer}
+                          testId="swap-settings-route-label"
                         />
                         <SwapRouteDropdownMenu
                           accentColor={settingsAccentColor}
@@ -361,6 +365,7 @@ export const SwapSettings = ({
                           <Label
                             label={i18n.t('swap.settings.use_flashbots')}
                             onClick={showFlashbotsExplainer}
+                            testId="swap-settings-flashbots-label"
                           />
                           <Toggle
                             accentColor={settingsAccentColor}
@@ -380,6 +385,7 @@ export const SwapSettings = ({
                           label={i18n.t('swap.settings.max_slippage')}
                           onClick={showSlippageExplainer}
                           warning={slippageWarning}
+                          testId="swap-settings-slippage-label"
                         />
                         <SlippageInputMask
                           variant={'transparent'}
