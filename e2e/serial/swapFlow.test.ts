@@ -375,5 +375,19 @@ it('should be able to favorite a token and check the info button is present', as
     id: `${ZEROX_MAINNET_ID}-favorites-token-to-buy-row-info-button-copy`,
     driver,
   });
+});
+
+it('should be able to check price and balance of token to buy', async () => {
+  const tokenToBuyInfoPrice = await getTextFromText({
+    id: 'token-to-buy-info-price',
+    driver,
+  });
+  expect(tokenToBuyInfoPrice).not.toBe('');
+  const tokenToBuyInfoBalance = await getTextFromText({
+    id: 'token-to-buy-info-balance',
+    driver,
+  });
+  expect(tokenToBuyInfoBalance).not.toBe('');
+
   await delayTime('long');
 });
