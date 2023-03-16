@@ -59,7 +59,7 @@ export const TokenToSellDropdown = ({
               accentColor={asset?.colors?.primary || asset?.colors?.fallback}
               asChild
             >
-              <Box>
+              <Box testId="token-to-sell-sell-sort-trigger">
                 <Inline space="4px" alignVertical="center">
                   <Symbol
                     symbol="arrow.up.arrow.down"
@@ -85,36 +85,40 @@ export const TokenToSellDropdown = ({
                 }}
               >
                 <DropdownMenuRadioItem value="token" selectedValue={sortMethod}>
-                  <Inline space="8px" alignVertical="center">
-                    <Bleed vertical="4px">
-                      <Symbol
-                        weight="semibold"
-                        symbol="record.circle.fill"
-                        size={18}
-                        color="label"
-                      />
-                    </Bleed>
+                  <Box testId="token-to-sell-sell-sort-balance">
+                    <Inline space="8px" alignVertical="center">
+                      <Bleed vertical="4px">
+                        <Symbol
+                          weight="semibold"
+                          symbol="record.circle.fill"
+                          size={18}
+                          color="label"
+                        />
+                      </Bleed>
 
-                    <Text size="14pt" weight="semibold" color="label">
-                      {i18n.t('swap.tokens_input.token_balance')}
-                    </Text>
-                  </Inline>
+                      <Text size="14pt" weight="semibold" color="label">
+                        {i18n.t('swap.tokens_input.token_balance')}
+                      </Text>
+                    </Inline>
+                  </Box>
                 </DropdownMenuRadioItem>
                 <DropdownMenuRadioItem value="chain" selectedValue={sortMethod}>
-                  <Inline space="8px" alignVertical="center">
-                    <Bleed vertical="4px">
-                      <Symbol
-                        weight="semibold"
-                        symbol="network"
-                        size={18}
-                        color="label"
-                      />
-                    </Bleed>
+                  <Box testId="token-to-sell-sell-sort-network">
+                    <Inline space="8px" alignVertical="center">
+                      <Bleed vertical="4px">
+                        <Symbol
+                          weight="semibold"
+                          symbol="network"
+                          size={18}
+                          color="label"
+                        />
+                      </Bleed>
 
-                    <Text size="14pt" weight="semibold" color="label">
-                      {i18n.t('swap.tokens_input.networks')}
-                    </Text>
-                  </Inline>
+                      <Text size="14pt" weight="semibold" color="label">
+                        {i18n.t('swap.tokens_input.networks')}
+                      </Text>
+                    </Inline>
+                  </Box>
                 </DropdownMenuRadioItem>
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
@@ -132,12 +136,13 @@ export const TokenToSellDropdown = ({
           assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
             const { index } = virtualItem;
             const asset = assets?.[index];
+            console.log(`token-to-sell-${asset?.uniqueId}`);
             return (
               <Box
                 paddingHorizontal="8px"
                 key={`${asset?.uniqueId}-${i}`}
                 onClick={() => onSelectAsset?.(asset as ParsedSearchAsset)}
-                testId={`token-input-asset-${asset?.uniqueId}`}
+                testId={`token-to-sell-${asset?.uniqueId}`}
               >
                 <TokenToSellRow uniqueId={asset?.uniqueId} />
               </Box>

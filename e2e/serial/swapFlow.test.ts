@@ -229,9 +229,27 @@ it('should be able to set default values for settings and go back to swap', asyn
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
 });
 
-it('should be able to open token to sell input', async () => {
+it('should be able to open token to sell input and select assets', async () => {
   await findElementByTestIdAndClick({
     id: 'input-wrapper-dropdown-token-to-sell-token-input',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'token-to-sell-sell-sort-trigger',
+    driver,
+  });
+
+  const sortByBalance = await findElementByTestId({
+    id: 'token-to-sell-sell-sort-balance',
+    driver,
+  });
+  expect(sortByBalance).toBeTruthy();
+  await findElementByTestIdAndClick({
+    id: 'token-to-sell-sell-sort-network',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'token-to-sell-eth_1',
     driver,
   });
 });
