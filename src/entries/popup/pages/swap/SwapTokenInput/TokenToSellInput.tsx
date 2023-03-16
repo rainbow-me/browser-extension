@@ -73,6 +73,7 @@ export const TokenToSellInput = ({
 
   return (
     <TokenInput
+      testId="token-to-sell"
       inputRef={inputRef}
       asset={asset}
       dropdownClosed={dropdownClosed}

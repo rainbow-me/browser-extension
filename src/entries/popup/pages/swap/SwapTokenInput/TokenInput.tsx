@@ -29,6 +29,7 @@ interface TokenInputProps {
   variant: 'surface' | 'bordered' | 'transparent' | 'tinted';
   inputRef: React.RefObject<HTMLInputElement>;
   value: string;
+  testId?: string;
   onDropdownOpen: (open: boolean) => void;
   selectAsset: (asset: ParsedSearchAsset | null) => void;
   setOnSelectAsset: (cb: (asset: ParsedSearchAsset | null) => void) => void;
@@ -49,6 +50,7 @@ export const TokenInput = ({
   variant,
   inputRef,
   value,
+  testId,
   onDropdownOpen,
   selectAsset,
   setOnSelectAsset,
@@ -101,7 +103,7 @@ export const TokenInput = ({
     <DropdownInputWrapper
       zIndex={zIndex || 1}
       dropdownHeight={dropdownHeight || 376}
-      testId={'token-input'}
+      testId={`${testId ? testId + '-' : ''}token-input`}
       leftComponent={
         <Box>
           <CoinIcon asset={asset ?? undefined} />

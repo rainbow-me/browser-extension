@@ -228,3 +228,10 @@ it('should be able to set default values for settings and go back to swap', asyn
   expect(text).toBe('1');
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
 });
+
+it('should be able to open token to sell input', async () => {
+  await findElementByTestIdAndClick({
+    id: 'input-wrapper-dropdown-token-to-sell-token-input',
+    driver,
+  });
+});
