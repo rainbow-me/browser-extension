@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useGasStore } from '~/core/state';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   Box,
@@ -152,6 +153,27 @@ export function Swap() {
     onAssetToBuyInputOpen(false);
   }, [onAssetToBuyInputOpen, onAssetToSellInputOpen]);
 
+  const clearInputs = useCallback(() => {
+    setAssetToSellInputValue('');
+    setAssetToBuyInputValue('');
+  }, [setAssetToBuyInputValue, setAssetToSellInputValue]);
+
+  const selectAssetToSell = useCallback(
+    (asset: ParsedSearchAsset | null) => {
+      setAssetToSell(asset);
+      clearInputs();
+    },
+    [clearInputs, setAssetToSell],
+  );
+
+  const selectAssetToBuy = useCallback(
+    (asset: ParsedSearchAsset | null) => {
+      setAssetToBuy(asset);
+      clearInputs();
+    },
+    [clearInputs, setAssetToBuy],
+  );
+
   return (
     <>
       <Navbar
@@ -206,7 +228,7 @@ export function Swap() {
                   dropdownHeight={toSellInputHeight}
                   asset={assetToSell}
                   assets={assetsToSell}
-                  selectAsset={setAssetToSell}
+                  selectAsset={selectAssetToSell}
                   onDropdownOpen={onAssetToSellInputOpen}
                   dropdownClosed={assetToSellDropdownClosed}
                   setSortMethod={setSortMethod}
@@ -272,7 +294,7 @@ export function Swap() {
                   dropdownHeight={toBuyInputHeight}
                   asset={assetToBuy}
                   assets={assetsToBuy}
-                  selectAsset={setAssetToBuy}
+                  selectAsset={selectAssetToBuy}
                   onDropdownOpen={onAssetToBuyInputOpen}
                   dropdownClosed={assetToBuyDropdownClosed}
                   zIndex={1}
