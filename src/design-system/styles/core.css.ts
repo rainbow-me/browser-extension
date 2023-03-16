@@ -333,6 +333,7 @@ const boxBaseProperties = defineProperties({
       borderWidth,
     })),
     bottom: positionSpace,
+    cursor: cursorOpts,
     display: ['none', 'flex', 'block', 'inline'],
     flexDirection: ['row', 'column'],
     flexWrap: ['wrap'],
@@ -413,7 +414,6 @@ const boxColorProperties = defineProperties({
       ...pick(semanticColorVars.backgroundColors, [...buttonColors] as const),
     },
     boxShadow: shadowVars,
-    cursor: cursorOpts,
   },
 });
 
