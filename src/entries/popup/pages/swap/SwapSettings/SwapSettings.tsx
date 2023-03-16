@@ -320,7 +320,7 @@ export const SwapSettings = ({
                           source={source}
                           setSource={setSource}
                         >
-                          <Box>
+                          <Box testId="settings-route-context-trigger">
                             <ButtonOverflow style={{ height: '23px' }}>
                               <Inline
                                 height="full"

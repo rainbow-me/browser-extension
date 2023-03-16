@@ -45,7 +45,7 @@ export const SwapRouteDropdownMenu = ({
             value="auto"
             selectedValue={source}
           >
-            <Box>
+            <Box testId="settings-route-context-auto">
               <Inline alignVertical="center" space="8px">
                 <Box style={{ height: '16px', width: '16px' }}>
                   <img
@@ -65,25 +65,27 @@ export const SwapRouteDropdownMenu = ({
             value={Source.Aggregator0x}
             selectedValue={source}
           >
-            <Inline alignVertical="center" space="8px">
-              <Box style={{ height: '16px', width: '16px' }}>
-                <img
-                  src={aggregatorInfo['0x'].logo}
-                  width="100%"
-                  height="100%"
-                />
-              </Box>
-              <Text size="14pt" weight="semibold">
-                {aggregatorInfo['0x'].name}
-              </Text>
-            </Inline>
+            <Box testId="settings-route-context-0x">
+              <Inline alignVertical="center" space="8px">
+                <Box style={{ height: '16px', width: '16px' }}>
+                  <img
+                    src={aggregatorInfo['0x'].logo}
+                    width="100%"
+                    height="100%"
+                  />
+                </Box>
+                <Text size="14pt" weight="semibold">
+                  {aggregatorInfo['0x'].name}
+                </Text>
+              </Inline>
+            </Box>
           </DropdownMenuRadioItem>
           <DropdownMenuRadioItem
             highlightAccentColor
             value={Source.Aggregotor1inch}
             selectedValue={source}
           >
-            <Box testId="lock">
+            <Box testId="settings-route-context-1inch">
               <Inline alignVertical="center" space="8px">
                 <Box style={{ height: '16px', width: '16px' }}>
                   <img

@@ -150,7 +150,7 @@ it('should be able to go to swap settings and check flashbots row is visible', a
   expect(flashbotsRow).toBeTruthy();
 });
 
-it('should be able to open settings explainers', async () => {
+it('should be able to interact with route settings', async () => {
   await findElementByTestIdAndClick({
     id: 'swap-settings-route-label',
     driver,
@@ -160,6 +160,26 @@ it('should be able to open settings explainers', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
+    id: 'settings-route-context-trigger',
+    driver,
+  });
+
+  await findElementByTestIdAndClick({
+    id: 'settings-route-context-0x',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'settings-route-context-trigger',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'settings-route-context-auto',
+    driver,
+  });
+});
+
+it('should be able to interact with flashbots settings', async () => {
+  await findElementByTestIdAndClick({
     id: 'swap-settings-flashbots-label',
     driver,
   });
@@ -167,6 +187,9 @@ it('should be able to open settings explainers', async () => {
     id: 'explainer-action-button',
     driver,
   });
+});
+
+it('should be able to interact with slippage settings', async () => {
   await findElementByTestIdAndClick({
     id: 'swap-settings-slippage-label',
     driver,
