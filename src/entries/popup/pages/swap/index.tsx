@@ -241,6 +241,7 @@ export function Swap() {
                     borderColor="buttonStroke"
                     style={{ width: 42, height: 32, zIndex: 10 }}
                     onClick={flipAssets}
+                    testId="swap-flip-button"
                   >
                     <Box width="full" height="full" alignItems="center">
                       <Inline

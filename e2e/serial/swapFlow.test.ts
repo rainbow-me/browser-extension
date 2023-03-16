@@ -252,4 +252,18 @@ it('should be able to open token to sell input and select assets', async () => {
     id: 'token-to-sell-eth_1',
     driver,
   });
+  const toSellInputEthSelected = await findElementByTestId({
+    id: 'input-wrapper-dropdown-eth_1-token-to-sell-token-input',
+    driver,
+  });
+  expect(toSellInputEthSelected).toBeTruthy();
+  await findElementByTestIdAndClick({
+    id: 'swap-flip-button',
+    driver,
+  });
+  const toBuyInputEthSelected = await findElementByTestId({
+    id: 'input-wrapper-dropdown-eth_1-token-to-buy-token-input',
+    driver,
+  });
+  expect(toBuyInputEthSelected).toBeTruthy();
 });
