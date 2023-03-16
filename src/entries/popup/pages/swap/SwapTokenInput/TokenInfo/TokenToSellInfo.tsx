@@ -38,7 +38,7 @@ export const TokenToSellInfo = ({
             size="12pt"
             weight="semibold"
             color="labelTertiary"
-            testId="token-to-sell-fiat-value"
+            testId="token-to-sell-info-fiat-value"
           >
             {
               convertAmountAndPriceToNativeDisplay(
@@ -61,7 +61,7 @@ export const TokenToSellInfo = ({
             whileTap={{ scale: transformScales['0.96'] }}
             transition={transitions.bounce}
             onClick={setAssetToSellMaxValue}
-            testId="token-to-sell-max-button"
+            testId="token-to-sell-info-max-button"
           >
             <Inline alignVertical="center" space="4px">
               <Box marginVertical="-10px">

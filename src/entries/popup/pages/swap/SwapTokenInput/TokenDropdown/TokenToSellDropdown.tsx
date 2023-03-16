@@ -59,7 +59,7 @@ export const TokenToSellDropdown = ({
               accentColor={asset?.colors?.primary || asset?.colors?.fallback}
               asChild
             >
-              <Box testId="token-to-sell-sell-sort-trigger">
+              <Box testId="token-to-sell-sort-trigger">
                 <Inline space="4px" alignVertical="center">
                   <Symbol
                     symbol="arrow.up.arrow.down"
@@ -85,7 +85,7 @@ export const TokenToSellDropdown = ({
                 }}
               >
                 <DropdownMenuRadioItem value="token" selectedValue={sortMethod}>
-                  <Box testId="token-to-sell-sell-sort-balance">
+                  <Box testId="token-to-sell-sort-balance">
                     <Inline space="8px" alignVertical="center">
                       <Bleed vertical="4px">
                         <Symbol
@@ -103,7 +103,7 @@ export const TokenToSellDropdown = ({
                   </Box>
                 </DropdownMenuRadioItem>
                 <DropdownMenuRadioItem value="chain" selectedValue={sortMethod}>
-                  <Box testId="token-to-sell-sell-sort-network">
+                  <Box testId="token-to-sell-sort-network">
                     <Inline space="8px" alignVertical="center">
                       <Bleed vertical="4px">
                         <Symbol
@@ -136,13 +136,12 @@ export const TokenToSellDropdown = ({
           assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
             const { index } = virtualItem;
             const asset = assets?.[index];
-            console.log(`token-to-sell-${asset?.uniqueId}`);
             return (
               <Box
                 paddingHorizontal="8px"
                 key={`${asset?.uniqueId}-${i}`}
                 onClick={() => onSelectAsset?.(asset as ParsedSearchAsset)}
-                testId={`token-to-sell-${asset?.uniqueId}`}
+                testId={`${asset?.uniqueId}-token-to-sell-row`}
               >
                 <TokenToSellRow uniqueId={asset?.uniqueId} />
               </Box>

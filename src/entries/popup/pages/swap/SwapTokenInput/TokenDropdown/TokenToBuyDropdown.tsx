@@ -107,7 +107,7 @@ const AssetsToBuySection = ({
                 paddingHorizontal="8px"
                 key={`${asset?.uniqueId}-${i}-${id}`}
                 onClick={() => onSelectAsset?.(asset as ParsedSearchAsset)}
-                testId={`input-wrapper-dropdown-${asset?.uniqueId}-token-to-buy-token-input`}
+                testId={`${asset?.uniqueId}-token-to-buy-row`}
               >
                 <TokenToBuyRow
                   onDropdownChange={onDropdownChange}

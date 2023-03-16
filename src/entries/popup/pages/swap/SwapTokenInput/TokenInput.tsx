@@ -29,7 +29,7 @@ interface TokenInputProps {
   variant: 'surface' | 'bordered' | 'transparent' | 'tinted';
   inputRef: React.RefObject<HTMLInputElement>;
   value: string;
-  testId?: string;
+  testId: string;
   openDropdownOnMount?: boolean;
   onDropdownOpen: (open: boolean) => void;
   selectAsset: (asset: ParsedSearchAsset | null) => void;
@@ -106,13 +106,11 @@ export const TokenInput = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openDropdownOnMount]);
 
-  console.log(`${testId ? testId + '-' : ''}swap-token-input`);
-
   return (
     <DropdownInputWrapper
       zIndex={zIndex || 1}
       dropdownHeight={dropdownHeight || 376}
-      testId={`${testId ? testId + '-' : ''}token-input`}
+      testId={`${testId}-token-input`}
       leftComponent={
         <Box>
           <CoinIcon asset={asset ?? undefined} />
@@ -122,7 +120,7 @@ export const TokenInput = ({
         !asset ? (
           <Box>
             <Input
-              testId="swap-token-input"
+              testId={`${testId}-search-token-input`}
               value={assetFilter}
               placeholder={placeholder}
               onChange={onInputValueChange}
@@ -135,7 +133,7 @@ export const TokenInput = ({
         ) : (
           <Box marginVertical="-20px">
             <SwapInputMask
-              testId={testId}
+              testId={`${testId}-swap-token-input`}
               accentCaretColor={accentCaretColor}
               borderColor="transparent"
               decimals={asset?.decimals}
@@ -156,9 +154,7 @@ export const TokenInput = ({
           showClose={!!asset}
           onClose={onClose}
           dropdownVisible={dropdownVisible}
-          testId={`${
-            testId ? testId + '-' : ''
-          }input-wrapper-close-token-input`}
+          testId={`${testId}-token-input-remove`}
           asset={asset}
         />
       }

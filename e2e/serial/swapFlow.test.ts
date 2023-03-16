@@ -236,29 +236,29 @@ it('should be able to set default values for settings and go back to swap', asyn
 
 it('should be able to open token to sell input and select assets', async () => {
   await findElementByTestIdAndClick({
-    id: 'input-wrapper-dropdown-token-to-sell-token-input',
+    id: 'token-to-sell-search-token-input',
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'token-to-sell-sell-sort-trigger',
+    id: 'token-to-sell-sort-trigger',
     driver,
   });
 
   const sortByBalance = await findElementByTestId({
-    id: 'token-to-sell-sell-sort-balance',
+    id: 'token-to-sell-sort-balance',
     driver,
   });
   expect(sortByBalance).toBeTruthy();
   await findElementByTestIdAndClick({
-    id: 'token-to-sell-sell-sort-network',
+    id: 'token-to-sell-sort-network',
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `token-to-sell-${ETH_MAINNET_ID}`,
+    id: `${ETH_MAINNET_ID}-token-to-sell-row`,
     driver,
   });
   const toSellInputEthSelected = await findElementByTestId({
-    id: `input-wrapper-dropdown-${ETH_MAINNET_ID}-token-to-sell-token-input`,
+    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(toSellInputEthSelected).toBeTruthy();
@@ -267,7 +267,7 @@ it('should be able to open token to sell input and select assets', async () => {
     driver,
   });
   const toBuyInputEthSelected = await findElementByTestId({
-    id: `input-wrapper-dropdown-${ETH_MAINNET_ID}-token-to-buy-token-input`,
+    id: `${ETH_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(toBuyInputEthSelected).toBeTruthy();
@@ -279,21 +279,21 @@ it('should be able to open token to sell input and select assets', async () => {
 
 it('should be able to open press max on token to sell input', async () => {
   const fiatValueText = await getTextFromText({
-    id: 'token-to-sell-fiat-value',
+    id: 'token-to-sell-info-fiat-value',
     driver,
   });
   expect(fiatValueText).toBe('$0.00');
   await findElementByTestIdAndClick({
-    id: 'token-to-sell-max-button',
+    id: 'token-to-sell-info-max-button',
     driver,
   });
   const ethValueBeforeGas = await getTextFromTextInput({
-    id: `${ETH_MAINNET_ID}-token-to-sell-swap-input-mask`,
+    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(ethValueBeforeGas).toEqual('10000');
   const fiatValueTextAfterMax = await getTextFromText({
-    id: 'token-to-sell-fiat-value',
+    id: 'token-to-sell-info-fiat-value',
     driver,
   });
   expect(fiatValueTextAfterMax).not.toEqual('$0.00');
@@ -301,21 +301,21 @@ it('should be able to open press max on token to sell input', async () => {
 
 it('should be able to remove token to sell and select it again', async () => {
   await findElementByTestIdAndClick({
-    id: `${ETH_MAINNET_ID}-token-to-sell-input-wrapper-close-token-input`,
+    id: `${ETH_MAINNET_ID}-token-to-sell-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `token-to-sell-${ETH_MAINNET_ID}`,
+    id: `${ETH_MAINNET_ID}-token-to-sell-row`,
     driver,
   });
   const toSellInputEthSelected = await findElementByTestId({
-    id: `input-wrapper-dropdown-${ETH_MAINNET_ID}-token-to-sell-token-input`,
+    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(toSellInputEthSelected).toBeTruthy();
   // should clear input value
   const ethValueAfterSelection = await getTextFromTextInput({
-    id: `${ETH_MAINNET_ID}-token-to-sell-swap-input-mask`,
+    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(ethValueAfterSelection).toEqual('');
@@ -323,17 +323,21 @@ it('should be able to remove token to sell and select it again', async () => {
 
 it('should be able to open token to buy input and select assets', async () => {
   await findElementByTestIdAndClick({
-    id: 'input-wrapper-dropdown-token-to-buy-token-input',
+    id: 'token-to-buy-search-token-input',
     driver,
   });
   // check sell asset is not present as buy option
   const elementFound = await doNotFindElementByTestId({
-    id: `token-to-buy-${ETH_MAINNET_ID}`,
+    id: `${ETH_MAINNET_ID}-token-to-buy-row`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `${DAI_MAINNET_ID}-token-to-buy-row`,
     driver,
   });
   expect(elementFound).toBeFalsy();
   const toBuyInputDaiSelected = await findElementByTestId({
-    id: `input-wrapper-dropdown-${DAI_MAINNET_ID}-token-to-buy-token-input`,
+    id: `${DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(toBuyInputDaiSelected).toBeTruthy();
