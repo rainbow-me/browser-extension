@@ -24,6 +24,7 @@ interface SwapInputMaskProps {
   paddingHorizontal?: number;
   placeholder: string;
   accentCaretColor?: boolean;
+  testId?: string;
 }
 
 export const SwapInputMask = ({
@@ -38,6 +39,7 @@ export const SwapInputMask = ({
   variant,
   onChange,
   paddingHorizontal,
+  testId,
 }: SwapInputMaskProps) => {
   const handleOnChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -50,7 +52,7 @@ export const SwapInputMask = ({
   const onMaskClick = useCallback(() => {
     innerRef?.current?.focus();
   }, [innerRef]);
-
+  console.log(`${testId ? testId + '-' : ''}swap-input-mask`);
   return (
     <Box
       width="full"
@@ -79,7 +81,7 @@ export const SwapInputMask = ({
             caretColor: accentCaretColor ? accentColorAsHsl : undefined,
           }}
           enableTapScale={false}
-          testId="swap-input-mask"
+          testId={`${testId ? testId + '-' : ''}swap-input-mask`}
         />
       </Box>
     </Box>

@@ -283,9 +283,34 @@ it('should be able to open press max on token to sell input', async () => {
     id: 'token-to-sell-max-button',
     driver,
   });
+  const ethValueBeforeGas = await getTextFromTextInput({
+    id: 'eth_1-token-to-sell-swap-input-mask',
+    driver,
+  });
+  console.log('---- ethValueBeforeGas', ethValueBeforeGas);
+  expect(ethValueBeforeGas).toEqual('10000');
   const fiatValueTextAfterMax = await getTextFromText({
     id: 'token-to-sell-fiat-value',
     driver,
   });
   expect(fiatValueTextAfterMax).not.toEqual('$0.00');
+});
+
+it('should be able to remove token to sell and select it again', async () => {
+  await findElementByTestIdAndClick({
+    id: 'eth_1-token-to-sell-input-wrapper-close-token-input',
+    driver,
+  });
+  await delayTime('long');
+  await findElementByTestIdAndClick({
+    id: 'token-to-sell-eth_1',
+    driver,
+  });
+  await delayTime('long');
+  const toSellInputEthSelected = await findElementByTestId({
+    id: 'input-wrapper-dropdown-eth_1-token-to-sell-token-input',
+    driver,
+  });
+  expect(toSellInputEthSelected).toBeTruthy();
+  await delayTime('long');
 });

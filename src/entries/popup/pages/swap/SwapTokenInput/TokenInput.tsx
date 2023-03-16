@@ -99,6 +99,8 @@ export const TokenInput = ({
     setOnSelectAsset(onSelectAsset);
   }, [onSelectAsset, setOnSelectAsset]);
 
+  console.log(`${testId ? testId + '-' : ''}swap-token-input`);
+
   return (
     <DropdownInputWrapper
       zIndex={zIndex || 1}
@@ -126,6 +128,7 @@ export const TokenInput = ({
         ) : (
           <Box marginVertical="-20px">
             <SwapInputMask
+              testId={testId}
               accentCaretColor={accentCaretColor}
               borderColor="transparent"
               decimals={asset?.decimals}
@@ -146,7 +149,9 @@ export const TokenInput = ({
           showClose={!!asset}
           onClose={onClose}
           dropdownVisible={dropdownVisible}
-          testId={`input-wrapper-close-token-input`}
+          testId={`${
+            testId ? testId + '-' : ''
+          }input-wrapper-close-token-input`}
           asset={asset}
         />
       }
