@@ -341,5 +341,27 @@ it('should be able to open token to buy input and select assets', async () => {
     driver,
   });
   expect(toBuyInputDaiSelected).toBeTruthy();
+});
+
+it('should be able to open remove token to buy and check favorites and verified list are visible', async () => {
+  await findElementByTestIdAndClick({
+    id: `${DAI_MAINNET_ID}-token-to-buy-token-input-remove`,
+    driver,
+  });
+  const favoritesSection = await findElementByTestId({
+    id: 'favorites-token-to-buy-section',
+    driver,
+  });
+  expect(favoritesSection).toBeTruthy();
+  const verifiedSection = await findElementByTestId({
+    id: 'verified-token-to-buy-section',
+    driver,
+  });
+  expect(verifiedSection).toBeTruthy();
+
+  await findElementByTestIdAndClick({
+    id: `${DAI_MAINNET_ID}-token-to-buy-row`,
+    driver,
+  });
   await delayTime('long');
 });

@@ -57,7 +57,7 @@ const AssetsToBuySection = ({
 
   if (!data.length) return null;
   return (
-    <Box paddingTop="12px">
+    <Box testId={`${id}-token-to-buy-section`} paddingTop="12px">
       <Stack space="16px">
         {otherNetworksSection ? (
           <Box borderRadius="12px" style={{ height: '52px' }}>
