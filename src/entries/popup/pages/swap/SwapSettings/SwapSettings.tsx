@@ -67,6 +67,7 @@ const Label = ({
               as={motion.div}
               layout
               marginBottom="-2px"
+              testId="swap-settings-slippage-warning"
             >
               <Bleed vertical="6px" horizontal="6px">
                 <ButtonSymbol
@@ -320,7 +321,9 @@ export const SwapSettings = ({
                           source={source}
                           setSource={setSource}
                         >
-                          <Box testId="settings-route-context-trigger">
+                          <Box
+                            testId={`settings-route-context-trigger-${source}`}
+                          >
                             <ButtonOverflow style={{ height: '23px' }}>
                               <Inline
                                 height="full"
@@ -371,6 +374,7 @@ export const SwapSettings = ({
                             accentColor={settingsAccentColor}
                             checked={flashbotsEnabled}
                             handleChange={setFlashbotsEnabled}
+                            testId="swap-settings-flashbots-toggle"
                           />
                         </Inline>
                       </Box>
@@ -405,6 +409,7 @@ export const SwapSettings = ({
                   height="28px"
                   variant="plain"
                   onClick={setDefaultSettings}
+                  testId="settings-use-defaults-button"
                 >
                   <Text
                     align="center"

@@ -101,6 +101,11 @@ export async function typeOnTextInput({ id, text, driver }) {
   await element.sendKeys(text);
 }
 
+export async function getTextFromTextInput({ id, driver }) {
+  const element = await findElementByTestId({ id, driver });
+  return await element.getAttribute('value');
+}
+
 export async function goToTestApp(driver) {
   await driver.get('https://bx-test-dapp.vercel.app/');
   await delay(1000);

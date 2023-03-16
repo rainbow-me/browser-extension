@@ -14,6 +14,7 @@ import {
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
+  getTextFromTextInput,
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
@@ -160,20 +161,11 @@ it('should be able to interact with route settings', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: 'settings-route-context-trigger',
+    id: 'settings-route-context-trigger-auto',
     driver,
   });
-
   await findElementByTestIdAndClick({
     id: 'settings-route-context-0x',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'settings-route-context-trigger',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'settings-route-context-auto',
     driver,
   });
 });
@@ -187,6 +179,14 @@ it('should be able to interact with flashbots settings', async () => {
     id: 'explainer-action-button',
     driver,
   });
+  await findElementByTestIdAndClick({
+    id: 'swap-settings-flashbots-toggle',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'swap-settings-flashbots-toggle',
+    driver,
+  });
 });
 
 it('should be able to interact with slippage settings', async () => {
@@ -198,4 +198,33 @@ it('should be able to interact with slippage settings', async () => {
     id: 'explainer-action-button',
     driver,
   });
+  await typeOnTextInput({
+    id: 'slippage-input-mask',
+    driver,
+    text: '\b4',
+  });
+
+  const warning = findElementByTestId({
+    id: 'swap-settings-slippage-warning',
+    driver,
+  });
+  expect(warning).toBeTruthy();
+});
+
+it('should be able to set default values for settings and go back to swap', async () => {
+  await findElementByTestIdAndClick({
+    id: 'settings-use-defaults-button',
+    driver,
+  });
+  const routeTriggerAuto = await findElementByTestId({
+    id: 'settings-route-context-trigger-auto',
+    driver,
+  });
+  expect(routeTriggerAuto).toBeTruthy();
+  const text = await getTextFromTextInput({
+    id: 'slippage-input-mask',
+    driver,
+  });
+  expect(text).toBe('1');
+  await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
 });
