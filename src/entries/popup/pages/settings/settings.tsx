@@ -143,6 +143,7 @@ export function Settings() {
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.transactions.title')} />
             }
+            testId="settings-transactions"
           />
           <MenuItem
             hasRightArrow

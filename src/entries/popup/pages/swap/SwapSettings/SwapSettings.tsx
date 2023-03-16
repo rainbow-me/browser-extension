@@ -302,7 +302,10 @@ export const SwapSettings = ({
                 </Box>
                 <Box paddingBottom="8px">
                   <Stack space="12px">
-                    <Box style={{ height: '32px' }}>
+                    <Box
+                      testId="swap-settings-route-row"
+                      style={{ height: '32px' }}
+                    >
                       <Inline alignVertical="center" alignHorizontal="justify">
                         <Label
                           label={i18n.t('swap.settings.route_swaps')}
@@ -347,7 +350,10 @@ export const SwapSettings = ({
                     </Box>
 
                     {flashbotsEnabledGlobal && (
-                      <Box style={{ height: '32px' }}>
+                      <Box
+                        testId="swap-settings-flashbots-row"
+                        style={{ height: '32px' }}
+                      >
                         <Inline
                           alignVertical="center"
                           alignHorizontal="justify"
@@ -365,7 +371,10 @@ export const SwapSettings = ({
                       </Box>
                     )}
 
-                    <Box style={{ height: '32px' }}>
+                    <Box
+                      testId="swap-settings-slippage-row"
+                      style={{ height: '32px' }}
+                    >
                       <Inline alignVertical="center" alignHorizontal="justify">
                         <Label
                           label={i18n.t('swap.settings.max_slippage')}
@@ -411,6 +420,7 @@ export const SwapSettings = ({
                   height="44px"
                   variant="flat"
                   onClick={done}
+                  testId="swap-settings-done"
                 >
                   <Text align="center" color="label" size="16pt" weight="bold">
                     {i18n.t('swap.settings.done')}

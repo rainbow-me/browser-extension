@@ -166,6 +166,7 @@ export function Swap() {
             symbol="switch.2"
             symbolColor="labelSecondary"
             variant="flat"
+            testId="swap-settings-navbar-button"
           />
         }
       />

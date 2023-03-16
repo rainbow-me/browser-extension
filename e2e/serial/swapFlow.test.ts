@@ -10,6 +10,7 @@ import { afterAll, beforeAll, expect, it } from 'vitest';
 import {
   delayTime,
   findElementAndClick,
+  findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
@@ -93,4 +94,63 @@ it('should be able to connect to hardhat and turn swaps flag on', async () => {
 
 it('should be able to go to swap flow', async () => {
   await findElementAndClick({ id: 'header-link-swap', driver });
+});
+
+it('should be able to go to swap settings and check rows are visible', async () => {
+  await findElementByTestIdAndClick({
+    id: 'swap-settings-navbar-button',
+    driver,
+  });
+  const routeRow = await findElementByTestId({
+    id: 'swap-settings-route-row',
+    driver,
+  });
+  expect(routeRow).toBeTruthy();
+  //   const flashbotsRow = await findElementByTestId({
+  //     id: 'swap-settings-flashbots-row',
+  //     driver,
+  //   });
+  //   expect(flashbotsRow).toBeFalsy();
+  const slippageRow = await findElementByTestId({
+    id: 'swap-settings-slippage-row',
+    driver,
+  });
+  expect(slippageRow).toBeTruthy();
+  await findElementByTestIdAndClick({
+    id: 'swap-settings-done',
+    driver,
+  });
+});
+
+it('should be able to go to settings and turn on flashbots', async () => {
+  await findElementByTestIdAndClick({ id: 'navbar-button-with-back', driver });
+  await findElementAndClick({ id: 'home-page-header-right', driver });
+  await findElementAndClick({ id: 'settings-link', driver });
+  await findElementByTestIdAndClick({ id: 'settings-transactions', driver });
+  await findElementByTestIdAndClick({
+    id: 'flashbots-transactions-toggle',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'navbar-button-with-back',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'navbar-button-with-back',
+    driver,
+  });
+  await findElementAndClick({ id: 'header-link-swap', driver });
+});
+
+it('should be able to go to swap settings and check flashbots row is visible', async () => {
+  await findElementByTestIdAndClick({
+    id: 'swap-settings-navbar-button',
+    driver,
+  });
+
+  const flashbotsRow = await findElementByTestId({
+    id: 'swap-settings-flashbots-row',
+    driver,
+  });
+  expect(flashbotsRow).toBeTruthy();
 });
