@@ -35,7 +35,7 @@ export const SwapRouteDropdownMenu = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
-      <DropdownMenuContent accentColor={accentColor}>
+      <DropdownMenuContent accentColor={accentColor} marginRight="12px">
         <DropdownMenuRadioGroup
           onValueChange={(value) => onValueChange(value as Source | 'auto')}
           value={source}
