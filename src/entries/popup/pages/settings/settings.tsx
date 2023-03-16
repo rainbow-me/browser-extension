@@ -337,6 +337,7 @@ export function Settings() {
             {Object.keys(featureFlags).map((key, i) => (
               <MenuItem
                 key={i}
+                testId={`feature-flag-${key}`}
                 titleComponent={
                   <MenuItem.Title
                     text={i18n.t(`settings.feature_flags.${key}`)}
