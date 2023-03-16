@@ -96,6 +96,7 @@ export function Swap() {
   } = useSwapInputs({
     assetToSell,
     assetToBuy,
+    selectedGas,
     setAssetToSell,
     setAssetToBuy,
   });
