@@ -1,9 +1,9 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { ChainId } from '@rainbow-me/swaps';
 import React, { useMemo } from 'react';
 import { Address, useAccount, useBalance, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { ChainId } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
 import {
   RainbowTransaction,

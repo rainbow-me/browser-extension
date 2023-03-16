@@ -4,6 +4,7 @@ import { ChainId } from '~/core/types/chains';
 
 export { supportedCurrencies } from './supportedCurrencies';
 export { ethUnits } from './ethUnits';
+export { gasUnits } from './gasUnits';
 
 export const smartContractMethods = {
   token_transfer: {
