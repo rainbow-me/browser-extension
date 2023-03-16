@@ -106,6 +106,11 @@ export async function getTextFromTextInput({ id, driver }) {
   return await element.getAttribute('value');
 }
 
+export async function getTextFromText({ id, driver }) {
+  const element = await findElementByTestId({ id, driver });
+  return await element.getText();
+}
+
 export async function goToTestApp(driver) {
   await driver.get('https://bx-test-dapp.vercel.app/');
   await delay(1000);

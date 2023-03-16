@@ -14,6 +14,7 @@ import {
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
+  getTextFromText,
   getTextFromTextInput,
   goToPopup,
   goToWelcome,
@@ -266,4 +267,25 @@ it('should be able to open token to sell input and select assets', async () => {
     driver,
   });
   expect(toBuyInputEthSelected).toBeTruthy();
+  await findElementByTestIdAndClick({
+    id: 'swap-flip-button',
+    driver,
+  });
+});
+
+it('should be able to open press max on token to sell input', async () => {
+  const fiatValueText = await getTextFromText({
+    id: 'token-to-sell-fiat-value',
+    driver,
+  });
+  expect(fiatValueText).toBe('$0.00');
+  await findElementByTestIdAndClick({
+    id: 'token-to-sell-max-button',
+    driver,
+  });
+  const fiatValueTextAfterMax = await getTextFromText({
+    id: 'token-to-sell-fiat-value',
+    driver,
+  });
+  expect(fiatValueTextAfterMax).not.toEqual('$0.00');
 });
