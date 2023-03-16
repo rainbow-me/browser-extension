@@ -108,6 +108,7 @@ export const TokenToSellInput = ({
       assetFilter={assetFilter}
       setAssetFilter={setAssetFilter}
       setValue={setAssetToSellInputValue}
+      openDropdownOnMount
     />
   );
 };

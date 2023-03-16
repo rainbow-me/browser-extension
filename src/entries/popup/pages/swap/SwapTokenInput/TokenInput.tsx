@@ -30,6 +30,7 @@ interface TokenInputProps {
   inputRef: React.RefObject<HTMLInputElement>;
   value: string;
   testId?: string;
+  openDropdownOnMount?: boolean;
   onDropdownOpen: (open: boolean) => void;
   selectAsset: (asset: ParsedSearchAsset | null) => void;
   setOnSelectAsset: (cb: (asset: ParsedSearchAsset | null) => void) => void;
@@ -51,6 +52,7 @@ export const TokenInput = ({
   inputRef,
   value,
   testId,
+  openDropdownOnMount,
   onDropdownOpen,
   selectAsset,
   setOnSelectAsset,
@@ -98,6 +100,11 @@ export const TokenInput = ({
   useEffect(() => {
     setOnSelectAsset(onSelectAsset);
   }, [onSelectAsset, setOnSelectAsset]);
+
+  useEffect(() => {
+    if (openDropdownOnMount) setTimeout(() => onDropdownAction(), 300);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openDropdownOnMount]);
 
   console.log(`${testId ? testId + '-' : ''}swap-token-input`);
 
