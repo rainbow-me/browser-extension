@@ -287,7 +287,6 @@ it('should be able to open press max on token to sell input', async () => {
     id: 'eth_1-token-to-sell-swap-input-mask',
     driver,
   });
-  console.log('---- ethValueBeforeGas', ethValueBeforeGas);
   expect(ethValueBeforeGas).toEqual('10000');
   const fiatValueTextAfterMax = await getTextFromText({
     id: 'token-to-sell-fiat-value',
@@ -312,5 +311,11 @@ it('should be able to remove token to sell and select it again', async () => {
     driver,
   });
   expect(toSellInputEthSelected).toBeTruthy();
+  // should clear input value
+  const ethValueAfterSelection = await getTextFromTextInput({
+    id: 'eth_1-token-to-sell-swap-input-mask',
+    driver,
+  });
+  expect(ethValueAfterSelection).toEqual('');
   await delayTime('long');
 });
