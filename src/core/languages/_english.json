@@ -285,7 +285,8 @@
         },
         "got_it": "Got it"
       }
-    }
+    },
+    "review": "Review"
   },
   "custom_gas": {
     "title": "Gwei Settings",

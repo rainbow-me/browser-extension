@@ -11,7 +11,7 @@ import {
   ZerionAsset,
   ZerionAssetPrice,
 } from '~/core/types/assets';
-import { ChainId, ChainName } from '~/core/types/chains';
+import { ChainName } from '~/core/types/chains';
 
 import { SearchAsset } from '../types/search';
 
@@ -174,56 +174,31 @@ export function parseParsedAddressAsset({
 }
 
 export const parseSearchAsset = ({
-  outputChainId,
-  rawAsset,
-  userAsset,
+  assetWithPrice,
   searchAsset,
+  userAsset,
 }: {
-  rawAsset?: ParsedAsset;
-  userAsset?: ParsedAddressAsset;
-  outputChainId: ChainId;
+  assetWithPrice?: ParsedAsset;
   searchAsset: ParsedSearchAsset | SearchAsset;
-}): ParsedSearchAsset => {
-  const assetNetworkInformation = searchAsset?.networks?.[outputChainId];
-  // if searchAsset is appearing because it found an exact match
-  // "on other networks" we need to take the first network, decimals and address to
-  // use for the asset
-
-  const networks = Object.entries(searchAsset?.networks || {});
-  const assetInOneNetwork = networks.length === 1;
-
-  const address = assetInOneNetwork
-    ? networks?.[0]?.[1].address
-    : assetNetworkInformation?.address ||
-      userAsset?.address ||
-      rawAsset?.address ||
-      searchAsset?.address;
-
-  const decimals = assetInOneNetwork
-    ? networks?.[0]?.[1].decimals
-    : assetNetworkInformation?.decimals || rawAsset?.decimals || 0;
-  const chainId = assetInOneNetwork ? Number(networks[0][0]) : outputChainId;
-
-  return {
-    ...(rawAsset || {}),
-    ...searchAsset,
-    decimals,
-    address,
-    chainId,
-    native: {
-      balance: userAsset?.native.balance || {
-        amount: '0',
-        display: '0.00',
-      },
-      price: rawAsset?.native.price,
+  userAsset?: ParsedAddressAsset;
+}): ParsedSearchAsset => ({
+  ...searchAsset,
+  address: searchAsset.address,
+  chainId: searchAsset.chainId,
+  chainName: chainNameFromChainId(searchAsset.chainId),
+  native: {
+    balance: userAsset?.native.balance || {
+      amount: '0',
+      display: '0.00',
     },
-    balance: userAsset?.balance || { amount: '0', display: '0.00' },
-    icon_url:
-      userAsset?.icon_url || rawAsset?.icon_url || searchAsset?.icon_url,
-    colors: searchAsset?.colors || rawAsset?.colors,
-    chainName: chainNameFromChainId(chainId),
-  };
-};
+    price: userAsset?.native?.price || assetWithPrice?.native.price,
+  },
+  price: assetWithPrice?.price || userAsset?.price,
+  balance: userAsset?.balance || { amount: '0', display: '0.00' },
+  icon_url:
+    userAsset?.icon_url || assetWithPrice?.icon_url || searchAsset?.icon_url,
+  colors: userAsset?.colors || assetWithPrice?.colors || searchAsset?.colors,
+});
 
 export function filterAsset(asset: ZerionAsset) {
   const nameFragments = asset?.name?.split(' ');

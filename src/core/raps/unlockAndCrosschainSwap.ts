@@ -8,7 +8,7 @@ import {
 } from '@rainbow-me/swaps';
 import { Address } from 'wagmi';
 
-import { ETH_ADDRESS } from '../references';
+import { ETH_ADDRESS, gasUnits } from '../references';
 import { isNativeAsset } from '../utils/chains';
 import { add } from '../utils/numbers';
 import { isLowerCaseMatch } from '../utils/strings';
@@ -21,7 +21,6 @@ import {
   RapCrosschainSwapActionParameters,
   RapUnlockActionParameters,
 } from './references';
-import { getBasicSwapGasLimit } from './utils';
 
 export const estimateUnlockAndCrosschainSwap = async (
   swapParameters: RapCrosschainSwapActionParameters,
@@ -30,7 +29,7 @@ export const estimateUnlockAndCrosschainSwap = async (
     swapParameters;
 
   if (!inputCurrency || !outputCurrency || !inputAmount) {
-    return getBasicSwapGasLimit(Number(chainId));
+    return gasUnits.basic_swap[chainId];
   }
 
   const {
