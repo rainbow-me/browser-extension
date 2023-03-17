@@ -437,11 +437,33 @@ it('should be able to flip correctly', async () => {
     driver,
   });
   expect(assetToBuyInputTextAfterMax).toEqual('1');
+});
 
+it('should be able to check insufficient asset for swap', async () => {
+  await delayTime('medium');
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button',
     driver,
   });
   expect(confirmButtonText).toEqual('Insufficient DAI');
+});
+
+it('should be able to check insufficient native asset for gas', async () => {
+  await findElementByTestIdAndClick({
+    id: 'swap-flip-button',
+    driver,
+  });
+  await delayTime('short');
+  await typeOnTextInput({
+    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    text: `\b10000`,
+    driver,
+  });
+  await delayTime('very-long');
+  const confirmButtonText = await getTextFromText({
+    id: 'swap-confirmation-button',
+    driver,
+  });
+  expect(confirmButtonText).toEqual('Insufficient ETH for gas');
   await delayTime('very-long');
 });
