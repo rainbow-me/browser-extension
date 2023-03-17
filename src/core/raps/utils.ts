@@ -10,7 +10,7 @@ import {
 } from '@rainbow-me/swaps';
 import { Chain, chain, erc20ABI } from 'wagmi';
 
-import { ethUnits } from '../references';
+import { gasUnits } from '../references';
 import { ChainId } from '../types/chains';
 import {
   GasFeeLegacyParams,
@@ -85,21 +85,6 @@ export const overrideWithFastSpeedIfNeeded = ({
     }
   }
   return gasParams;
-};
-
-export const getBasicSwapGasLimit = (chainId: Chain['id']): string => {
-  switch (chainId) {
-    case ChainId.arbitrum:
-      return `${ethUnits.basic_swap_arbitrum}`;
-    case ChainId.polygon:
-      return `${ethUnits.basic_swap_polygon}`;
-    case ChainId.bsc:
-      return `${ethUnits.basic_swap_bsc}`;
-    case ChainId.optimism:
-      return `${ethUnits.basic_swap_optimism}`;
-    default:
-      return `${ethUnits.basic_swap}`;
-  }
 };
 
 const getStateDiff = async (
@@ -224,12 +209,11 @@ export const getDefaultGasLimitForTrade = (
   if (allowsPermit) {
     defaultGasLimit = Math.max(
       Number(defaultGasLimit),
-      Number(multiply(ethUnits.basic_swap_permit, EXTRA_GAS_PADDING)),
+      Number(multiply(gasUnits.basic_swap_permit, EXTRA_GAS_PADDING)),
     ).toString();
   }
   return (
-    defaultGasLimit ||
-    multiply(getBasicSwapGasLimit(chainId), EXTRA_GAS_PADDING)
+    defaultGasLimit || multiply(gasUnits.basic_swap[chainId], EXTRA_GAS_PADDING)
   );
 };
 
@@ -276,7 +260,10 @@ export const estimateSwapGasLimitWithFakeApproval = async (
         return false;
       }
     });
-    if (gasLimit && greaterThan(gasLimit, ethUnits.basic_swap)) {
+    if (
+      gasLimit &&
+      greaterThan(gasLimit, gasUnits.basic_swap[ChainId.mainnet])
+    ) {
       return gasLimit;
     }
   } catch (e) {

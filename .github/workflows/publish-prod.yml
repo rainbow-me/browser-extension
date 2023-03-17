@@ -53,7 +53,19 @@ jobs:
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
-          message: Version Bump
+          message: Version Bump (Production) - v${{ env.release_version }}
           committer_name: GitHub Actions
           committer_email: actions@github.com
           add: '*.json'
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+        with:
+          environment: production
+          finalize: true
+          sourcemaps: ./build
+          version: ${{ env.release_version }}
+          version_prefix: v

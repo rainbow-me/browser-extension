@@ -324,16 +324,13 @@ test('[utils/assets -> parseSearchAsset] :: combine search asset data with optio
     quantity: '38677330754953265',
   });
   const ethFromSearchData = parseSearchAsset({
-    outputChainId: ChainId.mainnet,
     searchAsset: ETH_FROM_SEARCH,
   });
   const ethFromSearchDataWithPrice = parseSearchAsset({
-    outputChainId: ChainId.mainnet,
     searchAsset: ETH_FROM_SEARCH,
-    rawAsset: eth,
+    assetWithPrice: eth,
   });
   const ethFromSearchDataWithQuantity = parseSearchAsset({
-    outputChainId: ChainId.mainnet,
     searchAsset: ETH_FROM_SEARCH,
     userAsset: ethWithQuantity,
   });
@@ -368,16 +365,13 @@ test('[utils/assets -> parseSearchAsset] :: combine search asset data with optio
     quantity: '38677330754953265',
   });
   const optimismUSDFromSearch = parseSearchAsset({
-    outputChainId: ChainId.optimism,
     searchAsset: OPTIMISM_USD_FROM_SEARCH,
   });
   const optimismUSDFromSearchWithPrice = parseSearchAsset({
-    outputChainId: ChainId.optimism,
     searchAsset: OPTIMISM_USD_FROM_SEARCH,
-    rawAsset: optimismUSD,
+    assetWithPrice: optimismUSD,
   });
   const optimismUSDFromSearchWithQuantity = parseSearchAsset({
-    outputChainId: ChainId.optimism,
     searchAsset: OPTIMISM_USD_FROM_SEARCH,
     userAsset: optimismUSDWithQuantity,
   });

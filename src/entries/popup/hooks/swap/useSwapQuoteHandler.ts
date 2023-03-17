@@ -24,7 +24,6 @@ export const useSwapQuoteHandler = ({
   setAssetToSellValue,
 }: SwapQuoteHandlerProps) => {
   useEffect(() => {
-    console.log('-- quote', quote);
     if (!(quote as QuoteError)?.error) {
       const { sellAmount, buyAmount } = (quote || {}) as
         | Quote
