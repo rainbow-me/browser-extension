@@ -34,6 +34,10 @@ const os = process.env.OS || 'mac';
 const DAI_MAINNET_ID = '0x6b175474e89094c44da98b954eedeac495271d0f_1';
 // const ZEROX_MAINNET_ID = '0xe41d2489571d322189246dafa5ebde1f4699f498_1';
 const ETH_MAINNET_ID = 'eth_1';
+const OP_OPTIMISM_ID = '0x4200000000000000000000000000000000000042_10';
+const MATIC_POLYGON_ID = '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0_137';
+const USDC_ARBITRUM_ID = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_42161';
+const UNI_BNB_ID = '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984_56';
 
 beforeAll(async () => {
   driver = await initDriverWithOptions({
@@ -440,7 +444,6 @@ it('should be able to flip correctly', async () => {
 });
 
 it('should be able to check insufficient asset for swap', async () => {
-  await delayTime('medium');
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button',
     driver,
@@ -465,5 +468,77 @@ it('should be able to check insufficient native asset for gas', async () => {
     driver,
   });
   expect(confirmButtonText).toEqual('Insufficient ETH for gas');
+});
+
+it('should be able to filter assets to buy by network', async () => {
+  // OP
+  await findElementByTestIdAndClick({
+    id: `${DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'asset-to-buy-networks-trigger',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'switch-network-item-2',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `${OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
+    driver,
+  });
+  // POLYGON
+  await findElementByTestIdAndClick({
+    id: `${OP_OPTIMISM_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'asset-to-buy-networks-trigger',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'switch-network-item-1',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `${MATIC_POLYGON_ID}-favorites-token-to-buy-row`,
+    driver,
+  });
+  // ARBITRUM
+  await findElementByTestIdAndClick({
+    id: `${MATIC_POLYGON_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'asset-to-buy-networks-trigger',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'switch-network-item-3',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `${USDC_ARBITRUM_ID}-favorites-token-to-buy-row`,
+    driver,
+  });
+  // BNB
+  await findElementByTestIdAndClick({
+    id: `${USDC_ARBITRUM_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'asset-to-buy-networks-trigger',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'switch-network-item-4',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `${UNI_BNB_ID}-verified-token-to-buy-row`,
+    driver,
+  });
+
   await delayTime('very-long');
 });

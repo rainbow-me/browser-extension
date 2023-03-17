@@ -7,12 +7,9 @@ import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
 import { isL2Chain } from '~/core/utils/chains';
 import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
+import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { rainbowGradient } from '~/design-system/components/Symbol/gradients';
-import {
-  transformScales,
-  transitions,
-} from '~/design-system/styles/designTokens';
 import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets';
@@ -174,24 +171,14 @@ export const TokenToBuyDropdown = ({
               setOutputChainId(chainId);
             }}
             triggerComponent={
-              <Box
-                as={motion.div}
-                initial={{ zIndex: 0 }}
-                whileHover={{
-                  scale: transformScales['1.04'],
-                }}
-                whileTap={{
-                  scale: transformScales['0.96'],
-                }}
-                transition={transitions.bounce}
-              >
+              <ButtonOverflow testId="asset-to-buy-networks-trigger">
                 <BottomNetwork
                   selectedChainId={outputChainId}
                   displaySymbol
                   symbolSize={12}
                   symbol="chevron.down"
                 />
-              </Box>
+              </ButtonOverflow>
             }
           />
         </Inline>
