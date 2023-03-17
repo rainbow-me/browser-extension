@@ -5,6 +5,7 @@ import { WagmiConfig, useAccount } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import { flushQueuedEvents } from '~/analytics/flushQueuedEvents';
 import { changeI18nLanguage } from '~/core/languages';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry, setSentryUser } from '~/core/sentry';
@@ -46,6 +47,7 @@ export function App() {
     analytics.setDeviceId(deviceId);
     analytics.identify();
     analytics.track(event.popupOpened);
+    setTimeout(() => flushQueuedEvents(), 1000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

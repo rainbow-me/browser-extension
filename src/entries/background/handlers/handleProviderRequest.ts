@@ -5,6 +5,8 @@ import { ChainId } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
 import { Address, UserRejectedRequestError } from 'wagmi';
 
+import { event } from '~/analytics/event';
+import { queueEventTracking } from '~/analytics/queueEvent';
 import { hasVault, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import {
@@ -184,6 +186,11 @@ export const handleProviderRequest = ({
               status: 'success',
               extensionUrl,
               host,
+            });
+            queueEventTracking(event.dappProviderNetworkSwitched, {
+              dappURL: host,
+              dappName,
+              chainId: proposedChainId,
             });
             inpageMessenger.send(`chainChanged:${host}`, proposedChainId);
           }

@@ -68,11 +68,6 @@ export class Analytics {
     event: T,
     params?: EventProperties[T],
   ) {
-    console.log('track', {
-      event,
-      params,
-      deviceId: this.deviceId,
-    });
     if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
     const properties = Object.assign(metadata, params);
