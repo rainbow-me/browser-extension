@@ -13,5 +13,5 @@ export const queueEventTracking = async (eventName: string, meta = {}) => {
     },
   };
   events.push(newEvent);
-  console.log('event queued', newEvent);
+  await chrome.storage.session.set({ queuedEvents: events });
 };
