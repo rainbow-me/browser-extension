@@ -170,7 +170,7 @@ describe('App interactions flow', () => {
     await findElementAndClick({ id: 'switch-wallet-item-3', driver });
     // switch network
     await findElementAndClick({ id: 'switch-network-menu', driver });
-    await findElementAndClick({ id: 'switch-network-item-0', driver });
+    await findElementByTestIdAndClick({ id: 'switch-network-item-0', driver });
 
     await delayTime('medium');
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -196,7 +196,7 @@ describe('App interactions flow', () => {
       driver,
     });
     await findElementAndClick({ id: 'switch-network-menu', driver });
-    await findElementAndClick({ id: 'switch-network-item-0', driver });
+    await findElementByTestIdAndClick({ id: 'switch-network-item-0', driver });
 
     await goToTestApp(driver);
     const expectedNetwork = 'Network: Ethereum - homestead';
