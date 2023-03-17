@@ -618,7 +618,7 @@ it('should be able to see no route explainer', async () => {
     text: 1,
   });
 
-  await delayTime('short');
+  await delayTime('medium');
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button',
     driver,
