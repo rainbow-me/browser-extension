@@ -5,8 +5,6 @@ import { ChainId } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
 import { Address, UserRejectedRequestError } from 'wagmi';
 
-import { analytics } from '~/analytics';
-import { event } from '~/analytics/event';
 import { hasVault, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import {
@@ -22,6 +20,7 @@ import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/numbers';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
+import { RainbowError, logger } from '~/logger';
 
 const createNewWindow = async (tabId: string) => {
   const { setNotificationWindow } = notificationWindowStore.getState();
@@ -170,8 +169,9 @@ export const handleProviderRequest = ({
               extensionUrl,
               host,
             });
-            analytics.track(event.dappNotificationNetworkUnsupported, {
-              chainId: proposedChainId,
+            logger.error(new RainbowError('Chain Id not supported'), {
+              proposedChainId,
+              host,
             });
             throw new Error('Chain Id not supported');
           } else {
@@ -186,16 +186,8 @@ export const handleProviderRequest = ({
               host,
             });
             inpageMessenger.send(`chainChanged:${host}`, proposedChainId);
-            analytics.track(event.dappNotificationNetworkSwitched, {
-              chainId: proposedChainId,
-            });
           }
           response = null;
-          analytics.track(event.dappProviderNetworkSwitched, {
-            dappURL: host,
-            dappName,
-            chainId: proposedChainId,
-          });
           break;
         }
         case 'eth_requestAccounts': {
@@ -262,13 +254,13 @@ export const handleProviderRequest = ({
 
         default: {
           // TODO: handle other methods
+          logger.error(new RainbowError('Unhandled provider request'), {
+            dappURL: host,
+            dappName,
+            method,
+          });
         }
       }
-      analytics.track(event.dappProviderRequested, {
-        dappURL: host,
-        dappName,
-        method,
-      });
       return { id, result: response };
     } catch (error) {
       return { id, error: <Error>error };
