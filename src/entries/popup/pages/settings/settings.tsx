@@ -332,7 +332,8 @@ export function Settings() {
             />
           </Menu>
         )}
-        {process.env.IS_DEV === 'true' && (
+        {(process.env.IS_DEV === 'true' ||
+          process.env.IS_TESTING === 'true') && (
           <Menu>
             <MenuItem.Description text="Feature Flags" />
             {Object.keys(featureFlags).map((key, i) => (
