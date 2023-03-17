@@ -153,25 +153,13 @@ export function Swap() {
     onAssetToBuyInputOpen(false);
   }, [onAssetToBuyInputOpen, onAssetToSellInputOpen]);
 
-  const clearInputs = useCallback(() => {
-    setAssetToSellInputValue('');
-    setAssetToBuyInputValue('');
-  }, [setAssetToBuyInputValue, setAssetToSellInputValue]);
-
   const selectAssetToSell = useCallback(
     (asset: ParsedSearchAsset | null) => {
       setAssetToSell(asset);
-      clearInputs();
+      setAssetToSellInputValue('');
+      setAssetToBuyInputValue('');
     },
-    [clearInputs, setAssetToSell],
-  );
-
-  const selectAssetToBuy = useCallback(
-    (asset: ParsedSearchAsset | null) => {
-      setAssetToBuy(asset);
-      clearInputs();
-    },
-    [clearInputs, setAssetToBuy],
+    [setAssetToBuyInputValue, setAssetToSell, setAssetToSellInputValue],
   );
 
   return (
@@ -294,7 +282,7 @@ export function Swap() {
                   dropdownHeight={toBuyInputHeight}
                   asset={assetToBuy}
                   assets={assetsToBuy}
-                  selectAsset={selectAssetToBuy}
+                  selectAsset={setAssetToBuy}
                   onDropdownOpen={onAssetToBuyInputOpen}
                   dropdownClosed={assetToBuyDropdownClosed}
                   zIndex={1}
