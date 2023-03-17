@@ -509,7 +509,7 @@ it('should be able to filter assets to buy by network', async () => {
   await typeOnTextInput({
     id: 'token-to-buy-search-token-input',
     driver,
-    text: '\b\bmatic',
+    text: 'matic',
   });
   await findElementByTestIdAndClick({
     id: `${MATIC_POLYGON_ID}-favorites-token-to-buy-row`,
@@ -531,7 +531,7 @@ it('should be able to filter assets to buy by network', async () => {
   await typeOnTextInput({
     id: 'token-to-buy-search-token-input',
     driver,
-    text: '\b\b\b\b\bgmx',
+    text: 'gmx',
   });
   await findElementByTestIdAndClick({
     id: `${GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
@@ -553,7 +553,7 @@ it('should be able to filter assets to buy by network', async () => {
   await typeOnTextInput({
     id: 'token-to-buy-search-token-input',
     driver,
-    text: '\b\b\buni',
+    text: 'uni',
   });
   await findElementByTestIdAndClick({
     id: `${UNI_BNB_ID}-verified-token-to-buy-row`,
@@ -577,7 +577,7 @@ it('should be able to see no route explainer', async () => {
   await typeOnTextInput({
     id: 'token-to-buy-search-token-input',
     driver,
-    text: '\b\b\bop',
+    text: 'op',
   });
   await findElementByTestIdAndClick({
     id: `${OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
@@ -605,7 +605,7 @@ it('should be able to see no route explainer', async () => {
   await typeOnTextInput({
     id: 'token-to-buy-search-token-input',
     driver,
-    text: '\b\b\b\b\bgmx',
+    text: 'gmx',
   });
   await findElementByTestIdAndClick({
     id: `${GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
@@ -618,7 +618,7 @@ it('should be able to see no route explainer', async () => {
     text: 1,
   });
 
-  await delayTime('very-long');
+  await delayTime('short');
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button',
     driver,
@@ -634,6 +634,48 @@ it('should be able to see no route explainer', async () => {
   expect(noRouteExplainer).toBeTruthy();
   await findElementByTestIdAndClick({
     id: 'explainer-action-button',
+    driver,
+  });
+});
+
+it('should be able to find exact match on other networks', async () => {
+  await findElementByTestIdAndClick({
+    id: `${OP_OPTIMISM_ID}-token-to-sell-token-input-remove`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `token-to-sell-search-token-input`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `${GMX_ARBITRUM_ID}-token-to-buy-token-input-remove`,
+    driver,
+  });
+
+  await findElementByTestIdAndClick({
+    id: 'asset-to-buy-networks-trigger',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'switch-network-item-1',
+    driver,
+  });
+
+  await typeOnTextInput({
+    id: 'token-to-buy-search-token-input',
+    driver,
+    text: 'optimism',
+  });
+
+  const onOtherNetworksSections = await findElementByTestId({
+    id: 'other_networks-token-to-buy-section',
+    driver,
+  });
+
+  expect(onOtherNetworksSections).toBeTruthy();
+
+  await findElementByTestIdAndClick({
+    id: `${OP_OPTIMISM_ID}-other_networks-token-to-buy-row`,
     driver,
   });
   await delayTime('very-long');

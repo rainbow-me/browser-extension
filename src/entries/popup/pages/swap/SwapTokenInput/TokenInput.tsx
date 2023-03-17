@@ -71,8 +71,9 @@ export const TokenInput = ({
   const onSelectAsset = useCallback(() => {
     onDropdownOpen(false);
     setDropdownVisible(false);
+    setAssetFilter('');
     setTimeout(() => inputRef?.current?.focus(), 300);
-  }, [inputRef, onDropdownOpen]);
+  }, [inputRef, onDropdownOpen, setAssetFilter]);
 
   const onClose = useCallback(() => {
     selectAsset(null);
