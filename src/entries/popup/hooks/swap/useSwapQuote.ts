@@ -1,4 +1,7 @@
 import {
+  CrosschainQuote,
+  Quote,
+  QuoteError,
   QuoteParams,
   Source,
   SwapType,
@@ -90,7 +93,9 @@ export const useSwapQuote = ({
   const { data, isLoading, isError } = useQuery({
     queryFn: () =>
       quotesParams &&
-      (isCrosschainSwap ? getCrosschainQuote : getQuote)(quotesParams),
+      ((isCrosschainSwap ? getCrosschainQuote : getQuote)(
+        quotesParams,
+      ) as Promise<Quote | CrosschainQuote | QuoteError>),
     queryKey: ['getSwapQuote', quotesParams],
     enabled: !!quotesParams,
     refetchInterval: SWAP_POLLING_INTERVAL,

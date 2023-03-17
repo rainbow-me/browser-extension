@@ -11,7 +11,7 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
-import { ethUnits } from '~/core/references';
+import { gasUnits } from '~/core/references/gasUnits';
 import { estimateGas } from '~/core/utils/gas';
 
 // ///////////////////////////////////////////////
@@ -55,11 +55,11 @@ async function estimateGasLimitQueryFunction({
 
   if (!gasLimit) {
     if (chainId === ChainId.arbitrum) {
-      return `${ethUnits.arbitrum_basic_tx}`;
+      return `${gasUnits.arbitrum_basic_tx}`;
     }
     return transactionRequest?.data === '0x'
-      ? `${ethUnits.basic_tx}`
-      : `${ethUnits.basic_transfer}`;
+      ? `${gasUnits.basic_tx}`
+      : `${gasUnits.basic_transfer}`;
   }
   return gasLimit;
 }

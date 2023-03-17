@@ -1,14 +1,27 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import {
+  CrosschainQuote,
+  Quote,
+  QuoteError,
+  RAINBOW_ROUTER_CONTRACT_ADDRESS,
+} from '@rainbow-me/swaps';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { ethUnits } from '~/core/references';
+import { assetNeedsUnlocking } from '~/core/raps/actions';
+import { gasUnits } from '~/core/references';
 import { useEstimateGasLimit, useGasData } from '~/core/resources/gas';
+import { useEstimateSwapGasLimit } from '~/core/resources/gas/estimateSwapGasLimit';
 import {
   MeteorologyLegacyResponse,
   MeteorologyResponse,
 } from '~/core/resources/gas/meteorology';
 import { useOptimismL1SecurityFee } from '~/core/resources/gas/optimismL1SecurityFee';
-import { useCurrentCurrencyStore, useGasStore } from '~/core/state';
+import {
+  useCurrentAddressStore,
+  useCurrentCurrencyStore,
+  useGasStore,
+} from '~/core/state';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   GasFeeLegacyParamsBySpeed,
@@ -25,28 +38,25 @@ import {
 
 import { useNativeAssetForNetwork } from './useNativeAssetForNetwork';
 
-export const useGas = ({
+const useGas = ({
   chainId,
   defaultSpeed,
+  estimatedGasLimit,
   transactionRequest,
 }: {
   chainId: ChainId;
   defaultSpeed?: GasSpeed;
-  transactionRequest: TransactionRequest;
+  estimatedGasLimit?: string;
+  transactionRequest: TransactionRequest | null;
 }) => {
+  const { currentCurrency } = useCurrentCurrencyStore();
   const { data: gasData, isLoading } = useGasData({ chainId });
-  const { data: estimatedGasLimit } = useEstimateGasLimit({
-    chainId,
-    transactionRequest,
-  });
+  const nativeAsset = useNativeAssetForNetwork({ chainId });
 
   const { data: optimismL1SecurityFee } = useOptimismL1SecurityFee(
-    { transactionRequest },
+    { transactionRequest: transactionRequest || {}, chainId },
     { enabled: chainId === ChainId.optimism },
   );
-
-  const { currentCurrency } = useCurrentCurrencyStore();
-  const nativeAsset = useNativeAssetForNetwork({ chainId });
 
   const {
     selectedGas,
@@ -80,7 +90,7 @@ export const useGas = ({
         speed: GasSpeed.CUSTOM,
         baseFeeWei: gweiToWei(maxBaseFee || '0'),
         blocksToConfirmation,
-        gasLimit: estimatedGasLimit || `${ethUnits.basic_transfer}`,
+        gasLimit: estimatedGasLimit || `${gasUnits.basic_transfer}`,
         nativeAsset,
         currency: currentCurrency,
       });
@@ -116,7 +126,7 @@ export const useGas = ({
         speed: GasSpeed.CUSTOM,
         baseFeeWei: maxBaseFee,
         blocksToConfirmation,
-        gasLimit: estimatedGasLimit || `${ethUnits.basic_transfer}`,
+        gasLimit: estimatedGasLimit || `${gasUnits.basic_transfer}`,
         nativeAsset,
         currency: currentCurrency,
       });
@@ -144,7 +154,7 @@ export const useGas = ({
       ? parseGasFeeParamsBySpeed({
           chainId,
           data: gasData as MeteorologyLegacyResponse | MeteorologyResponse,
-          gasLimit: estimatedGasLimit || `${ethUnits.basic_transfer}`,
+          gasLimit: estimatedGasLimit || `${gasUnits.basic_transfer}`,
           nativeAsset,
           currency: currentCurrency,
           optimismL1SecurityFee,
@@ -210,4 +220,87 @@ export const useGas = ({
     ),
     baseFeeTrend: (gasData as MeteorologyResponse)?.data?.baseFeeTrend,
   };
+};
+
+export const useTransactionGas = ({
+  chainId,
+  defaultSpeed,
+  transactionRequest,
+}: {
+  chainId: ChainId;
+  defaultSpeed?: GasSpeed;
+  transactionRequest: TransactionRequest;
+}) => {
+  const { data: estimatedGasLimit } = useEstimateGasLimit({
+    chainId,
+    transactionRequest,
+  });
+
+  return useGas({
+    chainId,
+    defaultSpeed,
+    estimatedGasLimit,
+    transactionRequest,
+  });
+};
+
+export const useSwapGas = ({
+  chainId,
+  defaultSpeed,
+  tradeDetails,
+  assetToSell,
+}: {
+  chainId: ChainId;
+  defaultSpeed?: GasSpeed;
+  tradeDetails?: Quote | CrosschainQuote | QuoteError;
+  assetToSell?: ParsedSearchAsset;
+}) => {
+  const [needsUnlocking, setNeedsUnlocking] = useState(false);
+  const { currentAddress } = useCurrentAddressStore();
+
+  const { data: estimatedGasLimit } = useEstimateSwapGasLimit({
+    chainId,
+    tradeDetails,
+    requiresApprove: needsUnlocking,
+  });
+
+  const transactionRequest: TransactionRequest | null = useMemo(() => {
+    if (tradeDetails && !(tradeDetails as QuoteError).error) {
+      const quote = tradeDetails as Quote | CrosschainQuote;
+      const { to, from, value, data } = quote;
+      return {
+        to,
+        from,
+        value,
+        chainId,
+        data,
+      };
+    } else {
+      return null;
+    }
+  }, [chainId, tradeDetails]);
+
+  useEffect(() => {
+    const checkIfNeedsUnlocking = async () => {
+      if (tradeDetails && !(tradeDetails as QuoteError).error && assetToSell) {
+        const quote = tradeDetails as Quote | CrosschainQuote;
+        const needsUnlocking = await assetNeedsUnlocking({
+          owner: currentAddress,
+          amount: quote?.sellAmount.toString(),
+          assetToUnlock: assetToSell,
+          spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+          chainId,
+        });
+        setNeedsUnlocking(needsUnlocking);
+      }
+    };
+    checkIfNeedsUnlocking();
+  }, [assetToSell, chainId, currentAddress, tradeDetails]);
+
+  return useGas({
+    chainId,
+    defaultSpeed,
+    estimatedGasLimit,
+    transactionRequest,
+  });
 };

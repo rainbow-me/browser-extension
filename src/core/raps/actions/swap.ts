@@ -16,7 +16,7 @@ import { Chain } from 'wagmi';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { logger } from '~/logger';
 
-import { ETH_ADDRESS, ethUnits } from '../../references';
+import { ETH_ADDRESS, gasUnits } from '../../references';
 import { gasStore } from '../../state';
 import {
   TransactionGasParams,
@@ -29,7 +29,6 @@ import {
   CHAIN_IDS_WITH_TRACE_SUPPORT,
   SWAP_GAS_PADDING,
   estimateSwapGasLimitWithFakeApproval,
-  getBasicSwapGasLimit,
   getDefaultGasLimitForTrade,
   overrideWithFastSpeedIfNeeded,
 } from '../utils';
@@ -47,7 +46,7 @@ export const estimateSwapGasLimit = async ({
 }): Promise<string> => {
   const provider = getProvider({ chainId });
   if (!provider || !tradeDetails) {
-    return getBasicSwapGasLimit(chainId);
+    return gasUnits.basic_swap[chainId];
   }
 
   const { sellTokenAddress, buyTokenAddress } = tradeDetails;
@@ -62,8 +61,8 @@ export const estimateSwapGasLimit = async ({
   // Wrap / Unwrap Eth
   if (isWrapNativeAsset || isUnwrapNativeAsset) {
     const default_estimate = isWrapNativeAsset
-      ? ethUnits.weth_wrap
-      : ethUnits.weth_unwrap;
+      ? gasUnits.weth_wrap
+      : gasUnits.weth_unwrap;
     try {
       const gasLimit = await estimateGasWithPadding({
         transactionRequest: {

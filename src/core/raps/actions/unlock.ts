@@ -9,7 +9,7 @@ import {
 } from '~/core/types/gas';
 import { logger } from '~/logger';
 
-import { ethUnits } from '../../references';
+import { gasUnits } from '../../references';
 import { gasStore } from '../../state';
 import { ParsedAsset } from '../../types/assets';
 import {
@@ -95,13 +95,13 @@ export const estimateApprove = async ({
         from: owner,
       },
     );
-    return gasLimit ? gasLimit.toString() : `${ethUnits.basic_approval}`;
+    return gasLimit ? gasLimit.toString() : `${gasUnits.basic_approval}`;
   } catch (error) {
     logger.error({
       name: 'unlock: error estimateApprove',
       message: (error as Error)?.message,
     });
-    return `${ethUnits.basic_approval}`;
+    return `${gasUnits.basic_approval}`;
   }
 };
 
