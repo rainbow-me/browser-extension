@@ -36,7 +36,7 @@ const DAI_MAINNET_ID = '0x6b175474e89094c44da98b954eedeac495271d0f_1';
 const ETH_MAINNET_ID = 'eth_1';
 const OP_OPTIMISM_ID = '0x4200000000000000000000000000000000000042_10';
 const MATIC_POLYGON_ID = '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0_137';
-const USDC_ARBITRUM_ID = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_42161';
+const GMX_ARBITRUM_ID = '0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a_42161';
 const UNI_BNB_ID = '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984_56';
 
 beforeAll(async () => {
@@ -484,6 +484,11 @@ it('should be able to filter assets to buy by network', async () => {
     id: 'switch-network-item-2',
     driver,
   });
+  await typeOnTextInput({
+    id: 'token-to-buy-search-token-input',
+    driver,
+    text: 'op',
+  });
   await findElementByTestIdAndClick({
     id: `${OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
     driver,
@@ -500,6 +505,11 @@ it('should be able to filter assets to buy by network', async () => {
   await findElementByTestIdAndClick({
     id: 'switch-network-item-1',
     driver,
+  });
+  await typeOnTextInput({
+    id: 'token-to-buy-search-token-input',
+    driver,
+    text: '\b\bmatic',
   });
   await findElementByTestIdAndClick({
     id: `${MATIC_POLYGON_ID}-favorites-token-to-buy-row`,
@@ -518,13 +528,18 @@ it('should be able to filter assets to buy by network', async () => {
     id: 'switch-network-item-3',
     driver,
   });
+  await typeOnTextInput({
+    id: 'token-to-buy-search-token-input',
+    driver,
+    text: '\b\b\b\b\bgmx',
+  });
   await findElementByTestIdAndClick({
-    id: `${USDC_ARBITRUM_ID}-favorites-token-to-buy-row`,
+    id: `${GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
     driver,
   });
   // BNB
   await findElementByTestIdAndClick({
-    id: `${USDC_ARBITRUM_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${GMX_ARBITRUM_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -534,6 +549,11 @@ it('should be able to filter assets to buy by network', async () => {
   await findElementByTestIdAndClick({
     id: 'switch-network-item-4',
     driver,
+  });
+  await typeOnTextInput({
+    id: 'token-to-buy-search-token-input',
+    driver,
+    text: '\b\b\buni',
   });
   await findElementByTestIdAndClick({
     id: `${UNI_BNB_ID}-verified-token-to-buy-row`,
