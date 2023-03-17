@@ -618,7 +618,7 @@ it('should be able to see no route explainer', async () => {
     text: 1,
   });
 
-  await delayTime('medium');
+  await delayTime('long');
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button',
     driver,
@@ -678,5 +678,4 @@ it('should be able to find exact match on other networks', async () => {
     id: `${OP_OPTIMISM_ID}-other_networks-token-to-buy-row`,
     driver,
   });
-  await delayTime('very-long');
 });
