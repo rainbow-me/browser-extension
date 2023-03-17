@@ -559,6 +559,82 @@ it('should be able to filter assets to buy by network', async () => {
     id: `${UNI_BNB_ID}-verified-token-to-buy-row`,
     driver,
   });
+});
 
+it('should be able to see no route explainer', async () => {
+  await findElementByTestIdAndClick({
+    id: `${UNI_BNB_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'asset-to-buy-networks-trigger',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'switch-network-item-2',
+    driver,
+  });
+  await typeOnTextInput({
+    id: 'token-to-buy-search-token-input',
+    driver,
+    text: '\b\b\bop',
+  });
+  await findElementByTestIdAndClick({
+    id: `${OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
+    driver,
+  });
+
+  await findElementByTestIdAndClick({
+    id: 'swap-flip-button',
+    driver,
+  });
+  await delayTime('short');
+
+  await findElementByTestIdAndClick({
+    id: `${ETH_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'asset-to-buy-networks-trigger',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'switch-network-item-3',
+    driver,
+  });
+  await typeOnTextInput({
+    id: 'token-to-buy-search-token-input',
+    driver,
+    text: '\b\b\b\b\bgmx',
+  });
+  await findElementByTestIdAndClick({
+    id: `${GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
+    driver,
+  });
+
+  await typeOnTextInput({
+    id: `${OP_OPTIMISM_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    driver,
+    text: 1,
+  });
+
+  await delayTime('very-long');
+  const confirmButtonText = await getTextFromText({
+    id: 'swap-confirmation-button',
+    driver,
+  });
+  expect(confirmButtonText).toEqual('No route found');
+
+  await findElementByTestIdAndClick({ id: 'swap-confirmation-button', driver });
+
+  const noRouteExplainer = await findElementByTestId({
+    id: 'explainer-sheet-swap-no-route',
+    driver,
+  });
+  expect(noRouteExplainer).toBeTruthy();
+  await findElementByTestIdAndClick({
+    id: 'explainer-action-button',
+    driver,
+  });
   await delayTime('very-long');
 });

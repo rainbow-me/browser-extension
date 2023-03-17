@@ -187,6 +187,7 @@ export function Swap() {
         description={explainerSheetParams.description}
         actionButton={explainerSheetParams.actionButton}
         linkButton={explainerSheetParams.linkButton}
+        testId={explainerSheetParams.testId}
       />
       <SwapSettings
         show={showSwapSettings}

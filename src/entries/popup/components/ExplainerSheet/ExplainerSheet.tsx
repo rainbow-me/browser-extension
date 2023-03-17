@@ -55,6 +55,7 @@ export interface ExplainerSheetProps {
     closeText: string;
     link: string;
   };
+  testId?: string;
 }
 
 export const useExplainerSheetParams = () => {
@@ -65,6 +66,7 @@ export const useExplainerSheetParams = () => {
       title: '',
       description: [''],
       footerLinkText: undefined,
+      testId: '',
     });
 
   const hideExplanerSheet = useCallback(
@@ -75,6 +77,7 @@ export const useExplainerSheetParams = () => {
         title: '',
         description: [''],
         footerLinkText: undefined,
+        testId: '',
       }),
     [],
   );
@@ -100,6 +103,7 @@ export const ExplainerSheet = ({
   cancelButton,
   linkButton,
   footerLinkText,
+  testId,
 }: ExplainerSheetProps) => {
   const goToLink = useCallback((link?: string) => {
     link &&
@@ -111,122 +115,124 @@ export const ExplainerSheet = ({
 
   return (
     <BottomSheet zIndex={zIndexes.EXPLAINER_BOTTOM_SHEET} show={show}>
-      <Box paddingVertical="44px" paddingHorizontal="32px">
-        <Stack alignHorizontal="center" space="20px">
-          {header?.emoji ? (
-            <Text weight="heavy" size="32pt" color="label">
-              {header?.emoji}
+      <Box testId={`explainer-sheet-${testId}`}>
+        <Box paddingVertical="44px" paddingHorizontal="32px">
+          <Stack alignHorizontal="center" space="20px">
+            {header?.emoji ? (
+              <Text weight="heavy" size="32pt" color="label">
+                {header?.emoji}
+              </Text>
+            ) : (
+              header?.icon
+            )}
+            <Text weight="heavy" size="20pt" color="label">
+              {title}
             </Text>
-          ) : (
-            header?.icon
-          )}
-          <Text weight="heavy" size="20pt" color="label">
-            {title}
-          </Text>
 
-          {header.headerPill && <Box>{header.headerPill}</Box>}
+            {header.headerPill && <Box>{header.headerPill}</Box>}
 
-          <Box style={{ width: 102 }}>
-            <Separator color="separatorTertiary" strokeWeight="1px" />
-          </Box>
+            <Box style={{ width: 102 }}>
+              <Separator color="separatorTertiary" strokeWeight="1px" />
+            </Box>
 
-          {description.map((t, i) => (
-            <Text
-              key={i}
-              align="center"
-              weight="regular"
-              size="14pt"
-              color="labelTertiary"
-            >
-              {t}
-            </Text>
-          ))}
-          {footerLinkText && (
-            <Box>
+            {description.map((t, i) => (
               <Text
+                key={i}
                 align="center"
                 weight="regular"
                 size="14pt"
                 color="labelTertiary"
               >
-                {footerLinkText.openText}
-                <TextLink
-                  color="blue"
-                  onClick={() => goToLink(footerLinkText.link)}
+                {t}
+              </Text>
+            ))}
+            {footerLinkText && (
+              <Box>
+                <Text
+                  align="center"
+                  weight="regular"
+                  size="14pt"
+                  color="labelTertiary"
                 >
-                  {footerLinkText?.linkText}
-                </TextLink>
-                {footerLinkText?.closeText}
-              </Text>
-            </Box>
-          )}
-        </Stack>
-      </Box>
-      <Box width="full" padding="20px">
-        <Rows space="8px">
-          {linkButton && (
-            <Row>
-              <Box width="full" alignItems="center">
-                <Inline alignHorizontal="center">
-                  <Button
-                    width="full"
-                    color="fill"
-                    height="44px"
-                    variant="flat"
-                    onClick={() => goToLink(linkButton?.url)}
+                  {footerLinkText.openText}
+                  <TextLink
+                    color="blue"
+                    onClick={() => goToLink(footerLinkText.link)}
                   >
-                    <Text
-                      align="center"
-                      weight="bold"
-                      size="16pt"
-                      color="labelQuaternary"
-                    >
-                      {linkButton.label}
-                    </Text>
-                  </Button>
-                </Inline>
+                    {footerLinkText?.linkText}
+                  </TextLink>
+                  {footerLinkText?.closeText}
+                </Text>
               </Box>
-            </Row>
-          )}
-          <Row>
-            <Button
-              width="full"
-              color="blue"
-              height="44px"
-              variant={actionButton?.variant || 'raised'}
-              onClick={actionButton?.action}
-              testId="explainer-action-button"
-            >
-              <Text
-                align="center"
-                weight="bold"
-                size="16pt"
-                color={actionButton?.labelColor || 'accent'}
-              >
-                {actionButton?.label}
-              </Text>
-            </Button>
-          </Row>
-
-          {cancelButton && (
+            )}
+          </Stack>
+        </Box>
+        <Box width="full" padding="20px">
+          <Rows space="8px">
+            {linkButton && (
+              <Row>
+                <Box width="full" alignItems="center">
+                  <Inline alignHorizontal="center">
+                    <Button
+                      width="full"
+                      color="fill"
+                      height="44px"
+                      variant="flat"
+                      onClick={() => goToLink(linkButton?.url)}
+                    >
+                      <Text
+                        align="center"
+                        weight="bold"
+                        size="16pt"
+                        color="labelQuaternary"
+                      >
+                        {linkButton.label}
+                      </Text>
+                    </Button>
+                  </Inline>
+                </Box>
+              </Row>
+            )}
             <Row>
-              <Box width="full" alignItems="center">
-                <Inline alignHorizontal="center">
-                  <Button color="transparent" height="44px" variant="tinted">
-                    <Text
-                      align="center"
-                      weight="bold"
-                      size="16pt"
-                      color="labelSecondary"
-                    >
-                      {cancelButton?.label}
-                    </Text>
-                  </Button>
-                </Inline>
-              </Box>
+              <Button
+                width="full"
+                color="blue"
+                height="44px"
+                variant={actionButton?.variant || 'raised'}
+                onClick={actionButton?.action}
+                testId="explainer-action-button"
+              >
+                <Text
+                  align="center"
+                  weight="bold"
+                  size="16pt"
+                  color={actionButton?.labelColor || 'accent'}
+                >
+                  {actionButton?.label}
+                </Text>
+              </Button>
             </Row>
-          )}
-        </Rows>
+
+            {cancelButton && (
+              <Row>
+                <Box width="full" alignItems="center">
+                  <Inline alignHorizontal="center">
+                    <Button color="transparent" height="44px" variant="tinted">
+                      <Text
+                        align="center"
+                        weight="bold"
+                        size="16pt"
+                        color="labelSecondary"
+                      >
+                        {cancelButton?.label}
+                      </Text>
+                    </Button>
+                  </Inline>
+                </Box>
+              </Row>
+            )}
+          </Rows>
+        </Box>
       </Box>
     </BottomSheet>
   );

@@ -173,6 +173,7 @@ export const useSwapActions = ({
                 labelColor: 'blue',
                 action: hideExplanerSheet,
               },
+              testId: 'swap-long-wait',
             })
           : null,
       timeEstimate,
@@ -222,6 +223,7 @@ export const useSwapActions = ({
               labelColor: 'blue',
               action: hideExplanerSheet,
             },
+            testId: 'swap-liquidity',
           }),
       };
     case 504:
@@ -265,6 +267,7 @@ export const useSwapActions = ({
               labelColor: 'blue',
               action: hideExplanerSheet,
             },
+            testId: 'swap-no-route',
           }),
       };
     case 501:
@@ -295,6 +298,7 @@ export const useSwapActions = ({
               labelColor: 'blue',
               action: hideExplanerSheet,
             },
+            testId: 'swap-no-quote',
           }),
       };
   }

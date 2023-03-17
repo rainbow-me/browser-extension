@@ -250,6 +250,7 @@ export const SwapSettings = ({
         ...slippageExplainerProps.actionButton,
         action: hideExplanerSheet,
       },
+      testId: 'swap-slippage',
     });
   }, [hideExplanerSheet, showExplainerSheet]);
 
@@ -260,6 +261,7 @@ export const SwapSettings = ({
         ...flashbotsExplainerProps.actionButton,
         action: hideExplanerSheet,
       },
+      testId: 'swap-flashbots',
     });
   }, [hideExplanerSheet, showExplainerSheet]);
 
@@ -270,6 +272,7 @@ export const SwapSettings = ({
         ...routingExplainerProps.actionButton,
         action: hideExplanerSheet,
       },
+      testId: 'swap-routing',
     });
   }, [hideExplanerSheet, showExplainerSheet]);
 
