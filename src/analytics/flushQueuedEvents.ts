@@ -6,4 +6,5 @@ export const flushQueuedEvents = async () => {
   for (const event of events) {
     analytics.track(event.eventName, event.meta);
   }
+  chrome.storage.session.set({ queuedEvents: [] });
 };
