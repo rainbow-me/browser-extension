@@ -396,6 +396,10 @@ it('should be able to check price and balance of token to buy', async () => {
 });
 
 it('should be able to flip correctly', async () => {
+  await findElementByTestIdAndClick({
+    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    driver,
+  });
   await typeOnTextInput({
     id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: 1,
@@ -406,19 +410,21 @@ it('should be able to flip correctly', async () => {
     driver,
   });
   expect(assetToSellInputText).toBe('1');
-  delayTime('medium');
+
+  await delayTime('very-long');
+
   const assetToBuyInputText = await getTextFromTextInput({
-    id: `${DAI_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
-  expect(assetToBuyInputText).not.toEqual('');
+  expect(assetToBuyInputText).not.toBe('');
 
   await findElementByTestIdAndClick({
     id: 'swap-flip-button',
     driver,
   });
 
-  delayTime('medium');
+  await delayTime('very-long');
 
   const assetToSellInputTextAfterMax = await getTextFromTextInput({
     id: `${DAI_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
@@ -430,6 +436,12 @@ it('should be able to flip correctly', async () => {
     id: `${ETH_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
-  expect(assetToBuyInputTextAfterMax).not.toEqual('1');
+  expect(assetToBuyInputTextAfterMax).toEqual('1');
+
+  const confirmButtonText = await getTextFromText({
+    id: 'swap-confirmation-button',
+    driver,
+  });
+  expect(confirmButtonText).toEqual('Insufficient DAI');
   await delayTime('very-long');
 });
