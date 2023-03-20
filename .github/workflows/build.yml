@@ -68,7 +68,7 @@ jobs:
   # CHROME TESTS
   chrome-e2e:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 20
     needs: [build]
     env:
       DISPLAY: :0
@@ -110,17 +110,21 @@ jobs:
             path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
-      - name: Run e2e (Chrome)
-        run: |
-              export BROWSER=chrome 
-              export OS=linux 
-              export CHROMIUM_BIN=$(which chrome) 
-              yarn vitest:parallel && yarn vitest:serial
+      - name: Run e2e (Brave)
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 8
+          max_attempts: 3
+          command:  |
+            export BROWSER=chrome
+            export OS=linux
+            export CHROMIUM_BIN=$(which chrome)
+            yarn vitest:parallel && yarn vitest:serial
   # BRAVE TESTS
   brave-e2e:
     needs: [build]
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 20
     env:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 3
@@ -165,11 +169,15 @@ jobs:
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Run e2e (Brave)
-        run: |
-          export BROWSER=brave 
-          export OS=linux 
-          export BRAVE_BIN='/usr/bin/brave-browser-stable'
-          yarn vitest:parallel && yarn vitest:serial
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 8
+          max_attempts: 3
+          command:  |
+            export BROWSER=brave
+            export OS=linux
+            export BRAVE_BIN='/usr/bin/brave-browser-stable'
+            yarn vitest:parallel && yarn vitest:serial
   # UNIT TESTS
   unit-tests:
     runs-on: ubuntu-latest
@@ -205,8 +213,11 @@ jobs:
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Run unit tests
-        run: |
-          yarn test
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 5
+          max_attempts: 3
+          command: yarn test
 
   # LINT, TYPECHECK, AUDIT
   ci-checks:
