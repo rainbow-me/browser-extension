@@ -126,7 +126,7 @@ export const AppNetworkMenu = ({
   return (
     <Menu>
       <MenuTrigger asChild>
-        <Box id={menuTriggerId}>{children}</Box>
+        <Box testId={menuTriggerId}>{children}</Box>
       </MenuTrigger>
       <MenuContent sideOffset={sideOffset} align={align}>
         {url ? (
@@ -216,7 +216,7 @@ export const AppNetworkMenu = ({
                 {url ? <MenuSeparator /> : null}
 
                 <MenuRadioItem highlightAccentColor value="connected-apps">
-                  <Box id={connectedAppsId}>
+                  <Box testId={connectedAppsId}>
                     <Inline alignVertical="center" space="8px">
                       <Inline alignVertical="center" alignHorizontal="center">
                         <Symbol

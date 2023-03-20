@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useGasStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import {
   Box,
@@ -15,20 +16,29 @@ import {
   Text,
 } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
+import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import {
   transformScales,
   transitions,
 } from '~/design-system/styles/designTokens';
 
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
+import {
+  ExplainerSheet,
+  useExplainerSheetParams,
+} from '../../components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { SwapFee } from '../../components/TransactionFee/TransactionFee';
-import { useSwapAssets } from '../../hooks/swap/useSwapAssets';
-import { useSwapDropdownDimensions } from '../../hooks/swap/useSwapDropdownDimensions';
-import { useSwapInputs } from '../../hooks/swap/useSwapInputs';
-import { useSwapQuote } from '../../hooks/swap/useSwapQuote';
-import { useSwapQuoteHandler } from '../../hooks/swap/useSwapQuoteHandler';
-import { useSwapSettings } from '../../hooks/swap/useSwapSettings';
+import {
+  useSwapActions,
+  useSwapAssets,
+  useSwapDropdownDimensions,
+  useSwapInputs,
+  useSwapQuote,
+  useSwapQuoteHandler,
+  useSwapSettings,
+  useSwapValidations,
+} from '../../hooks/swap';
 
 import { SwapSettings } from './SwapSettings/SwapSettings';
 import { TokenToBuyInput } from './SwapTokenInput/TokenToBuyInput';
@@ -36,6 +46,9 @@ import { TokenToSellInput } from './SwapTokenInput/TokenToSellInput';
 
 export function Swap() {
   const [showSwapSettings, setShowSwapSettings] = useState(false);
+  const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
+    useExplainerSheetParams();
+  const { selectedGas } = useGasStore();
 
   const {
     assetsToSell,
@@ -83,11 +96,12 @@ export function Swap() {
   } = useSwapInputs({
     assetToSell,
     assetToBuy,
+    selectedGas,
     setAssetToSell,
     setAssetToBuy,
   });
 
-  const { data: quote } = useSwapQuote({
+  const { data: quote, isLoading } = useSwapQuote({
     assetToSell,
     assetToBuy,
     assetToSellValue,
@@ -95,6 +109,32 @@ export function Swap() {
     independentField,
     source,
     slippage,
+  });
+
+  const { buttonLabel: validationButtonLabel, enoughAssetsForSwap } =
+    useSwapValidations({
+      assetToSell,
+      assetToSellValue,
+      selectedGas,
+    });
+
+  const {
+    buttonLabel,
+    buttonLabelColor,
+    buttonDisabled,
+    buttonIcon,
+    buttonColor,
+    timeEstimate,
+    buttonAction,
+  } = useSwapActions({
+    quote,
+    isLoading,
+    assetToSell,
+    assetToBuy,
+    enoughAssetsForSwap,
+    validationButtonLabel,
+    showExplainerSheet,
+    hideExplanerSheet,
   });
 
   useSwapQuoteHandler({
@@ -128,6 +168,14 @@ export function Swap() {
             variant="flat"
           />
         }
+      />
+      <ExplainerSheet
+        show={explainerSheetParams.show}
+        header={explainerSheetParams.header}
+        title={explainerSheetParams.title}
+        description={explainerSheetParams.description}
+        actionButton={explainerSheetParams.actionButton}
+        linkButton={explainerSheetParams.linkButton}
       />
       <SwapSettings
         show={showSwapSettings}
@@ -238,6 +286,47 @@ export function Swap() {
                   inputRef={assetToBuyInputRef}
                 />
               </AccentColorProviderWrapper>
+
+              {timeEstimate?.isLongWait ? (
+                <ButtonOverflow>
+                  <Box paddingHorizontal="20px">
+                    <Box
+                      paddingVertical="10px"
+                      paddingHorizontal="12px"
+                      borderRadius="round"
+                      borderWidth="1px"
+                      borderColor="buttonStroke"
+                      background="surfacePrimaryElevatedSecondary"
+                    >
+                      <Inline
+                        space="8px"
+                        alignVertical="center"
+                        alignHorizontal="center"
+                      >
+                        <Inline space="4px" alignVertical="center">
+                          <Symbol
+                            symbol="exclamationmark.triangle.fill"
+                            size={16}
+                            color="orange"
+                            weight="bold"
+                          />
+                          <Text color="label" size="14pt" weight="bold">
+                            Long wait
+                          </Text>
+                        </Inline>
+                        <Box
+                          background="fillSecondary"
+                          style={{ width: '14px', height: '2px' }}
+                        />
+
+                        <Text color="orange" size="14pt" weight="semibold">
+                          Up to {timeEstimate?.timeEstimateDisplay} to swap
+                        </Text>
+                      </Inline>
+                    </Box>
+                  </Box>
+                </ButtonOverflow>
+              ) : null}
             </Stack>
           </Row>
           <Row height="content">
@@ -262,21 +351,22 @@ export function Swap() {
                     </Row>
                     <Row>
                       <Button
-                        onClick={() => null}
+                        onClick={buttonAction}
                         height="44px"
                         variant="flat"
-                        color="accent"
+                        color={buttonColor}
                         width="full"
                         testId="swap-review-button"
+                        disabled={buttonDisabled}
                       >
                         <Inline space="8px" alignVertical="center">
-                          <Symbol
-                            symbol="doc.text.magnifyingglass"
+                          {buttonIcon}
+                          <Text
+                            color={buttonLabelColor}
+                            size="16pt"
                             weight="bold"
-                            size={16}
-                          />
-                          <Text color="label" size="16pt" weight="bold">
-                            {i18n.t('swap.review')}
+                          >
+                            {buttonLabel}
                           </Text>
                         </Inline>
                       </Button>

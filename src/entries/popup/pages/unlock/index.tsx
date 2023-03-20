@@ -15,6 +15,9 @@ import { AvatarSection } from '../home/Header';
 export function Unlock() {
   const [password, setPassword] = useState('');
   const navigate = useRainbowNavigate();
+  const [visible, setVisible] = useState(false);
+
+  const onToggleVisibility = useCallback(() => setVisible(!visible), [visible]);
 
   const handlePasswordChange = useCallback(
     (event: { target: { value: SetStateAction<string> } }) => {
@@ -111,8 +114,10 @@ export function Unlock() {
                 borderColor={error !== '' ? 'red' : undefined}
                 testId="password-input"
                 onSubmit={handleUnlock}
+                onToggleVisibility={onToggleVisibility}
                 tabIndex={1}
                 autoFocus
+                visible={visible}
               />
             </Box>
             <Box width="fit">

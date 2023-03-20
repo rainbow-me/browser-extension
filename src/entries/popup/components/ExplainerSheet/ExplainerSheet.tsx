@@ -18,7 +18,7 @@ import { ButtonVariant } from '~/design-system/styles/designTokens';
 
 import { zIndexes } from '../../utils/zIndexes';
 
-interface ExplainerSheetProps {
+export interface ExplainerSheetProps {
   show: boolean;
   header:
     | {
