@@ -36,7 +36,7 @@ const ZEROX_MAINNET_ID = '0xe41d2489571d322189246dafa5ebde1f4699f498_1';
 const ETH_MAINNET_ID = 'eth_1';
 const OP_OPTIMISM_ID = '0x4200000000000000000000000000000000000042_10';
 const MATIC_POLYGON_ID = '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0_137';
-const USDC_ARBITRUM_ID = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_42161';
+const GMX_ARBITRUM_ID = '0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a_42161';
 const UNI_BNB_ID = '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984_56';
 
 beforeAll(async () => {
@@ -478,6 +478,11 @@ it('should be able to check price and balance of token to buy', async () => {
       id: 'switch-network-item-2',
       driver,
     });
+    await typeOnTextInput({
+      id: 'token-to-buy-search-token-input',
+      driver,
+      text: 'op',
+    });
     await findElementByTestIdAndClick({
       id: `${OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
       driver,
@@ -494,6 +499,11 @@ it('should be able to check price and balance of token to buy', async () => {
     await findElementByTestIdAndClick({
       id: 'switch-network-item-1',
       driver,
+    });
+    await typeOnTextInput({
+      id: 'token-to-buy-search-token-input',
+      driver,
+      text: 'matic',
     });
     await findElementByTestIdAndClick({
       id: `${MATIC_POLYGON_ID}-favorites-token-to-buy-row`,
@@ -512,13 +522,18 @@ it('should be able to check price and balance of token to buy', async () => {
       id: 'switch-network-item-3',
       driver,
     });
+    await typeOnTextInput({
+      id: 'token-to-buy-search-token-input',
+      driver,
+      text: 'gmx',
+    });
     await findElementByTestIdAndClick({
-      id: `${USDC_ARBITRUM_ID}-favorites-token-to-buy-row`,
+      id: `${GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
       driver,
     });
     // BNB
     await findElementByTestIdAndClick({
-      id: `${USDC_ARBITRUM_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+      id: `${GMX_ARBITRUM_ID}-token-to-buy-swap-token-input-swap-input-mask`,
       driver,
     });
     await findElementByTestIdAndClick({
@@ -529,11 +544,136 @@ it('should be able to check price and balance of token to buy', async () => {
       id: 'switch-network-item-4',
       driver,
     });
+    await typeOnTextInput({
+      id: 'token-to-buy-search-token-input',
+      driver,
+      text: 'uni',
+    });
     await findElementByTestIdAndClick({
       id: `${UNI_BNB_ID}-verified-token-to-buy-row`,
       driver,
     });
+  });
 
-    await delayTime('very-long');
+  it('should be able to see no route explainer', async () => {
+    await findElementByTestIdAndClick({
+      id: `${UNI_BNB_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: 'asset-to-buy-networks-trigger',
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: 'switch-network-item-2',
+      driver,
+    });
+    await typeOnTextInput({
+      id: 'token-to-buy-search-token-input',
+      driver,
+      text: 'op',
+    });
+    await findElementByTestIdAndClick({
+      id: `${OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
+      driver,
+    });
+
+    await findElementByTestIdAndClick({
+      id: 'swap-flip-button',
+      driver,
+    });
+    await delayTime('short');
+
+    await findElementByTestIdAndClick({
+      id: `${ETH_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: 'asset-to-buy-networks-trigger',
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: 'switch-network-item-3',
+      driver,
+    });
+    await typeOnTextInput({
+      id: 'token-to-buy-search-token-input',
+      driver,
+      text: 'gmx',
+    });
+    await findElementByTestIdAndClick({
+      id: `${GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
+      driver,
+    });
+
+    await typeOnTextInput({
+      id: `${OP_OPTIMISM_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+      driver,
+      text: 1,
+    });
+
+    await delayTime('long');
+    const confirmButtonText = await getTextFromText({
+      id: 'swap-confirmation-button',
+      driver,
+    });
+    expect(confirmButtonText).toEqual('No route found');
+
+    await findElementByTestIdAndClick({
+      id: 'swap-confirmation-button',
+      driver,
+    });
+
+    const noRouteExplainer = await findElementByTestId({
+      id: 'explainer-sheet-swap-no-route',
+      driver,
+    });
+    expect(noRouteExplainer).toBeTruthy();
+    await findElementByTestIdAndClick({
+      id: 'explainer-action-button',
+      driver,
+    });
+  });
+
+  it('should be able to find exact match on other networks', async () => {
+    await findElementByTestIdAndClick({
+      id: `${OP_OPTIMISM_ID}-token-to-sell-token-input-remove`,
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: `token-to-sell-search-token-input`,
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: `${GMX_ARBITRUM_ID}-token-to-buy-token-input-remove`,
+      driver,
+    });
+
+    await findElementByTestIdAndClick({
+      id: 'asset-to-buy-networks-trigger',
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: 'switch-network-item-1',
+      driver,
+    });
+
+    await typeOnTextInput({
+      id: 'token-to-buy-search-token-input',
+      driver,
+      text: 'optimism',
+    });
+
+    const onOtherNetworksSections = await findElementByTestId({
+      id: 'other_networks-token-to-buy-section',
+      driver,
+    });
+
+    expect(onOtherNetworksSections).toBeTruthy();
+
+    await findElementByTestIdAndClick({
+      id: `${OP_OPTIMISM_ID}-other_networks-token-to-buy-row`,
+      driver,
+    });
   });
 });
