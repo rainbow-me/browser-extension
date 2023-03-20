@@ -4,6 +4,7 @@ import { formatEther } from '@ethersproject/units';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
@@ -52,6 +53,7 @@ export function SendTransaction({
   const { triggerAlert } = useAlert();
 
   const onAcceptRequest = useCallback(async () => {
+    if (!config.tx_requests_enabled) return;
     try {
       const txRequest = request?.params?.[0] as TransactionRequest;
       const { type } = await wallet.getWallet(selectedWallet);

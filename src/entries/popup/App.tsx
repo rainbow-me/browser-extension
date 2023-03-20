@@ -5,6 +5,8 @@ import { WagmiConfig, useAccount } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import config from '~/core/firebase/remoteConfig';
 import { changeI18nLanguage } from '~/core/languages';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry, setSentryUser } from '~/core/sentry';
