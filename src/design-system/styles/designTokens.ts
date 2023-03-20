@@ -826,6 +826,7 @@ export const symbolNames = selectSymbolNames(
   'switch.2',
   'network',
   'star.fill',
+  'exclamationmark.circle.fill',
 );
 export type SymbolName = typeof symbolNames[number];
 

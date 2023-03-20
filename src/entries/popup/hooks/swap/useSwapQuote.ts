@@ -18,6 +18,7 @@ import { convertAmountToRawAmount } from '~/core/utils/numbers';
 import { IndependentField } from './useSwapInputs';
 
 const SWAP_POLLING_INTERVAL = 5000;
+const CACHE_INTERVAL = 1000;
 
 interface UseSwapQuotesProps {
   assetToSell: ParsedSearchAsset | null;
@@ -90,7 +91,7 @@ export const useSwapQuote = ({
     source,
   ]);
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading, isError, fetchStatus } = useQuery({
     queryFn: () =>
       quotesParams &&
       ((isCrosschainSwap ? getCrosschainQuote : getQuote)(
@@ -99,7 +100,8 @@ export const useSwapQuote = ({
     queryKey: ['getSwapQuote', quotesParams],
     enabled: !!quotesParams,
     refetchInterval: SWAP_POLLING_INTERVAL,
+    cacheTime: CACHE_INTERVAL,
   });
 
-  return { data, isLoading, isError };
+  return { data, isLoading: isLoading && fetchStatus !== 'idle', isError };
 };

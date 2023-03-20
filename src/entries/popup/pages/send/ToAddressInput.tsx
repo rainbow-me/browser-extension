@@ -40,7 +40,7 @@ import { InputActionButon } from './InputActionButton';
 import {
   addressToInputHighlightWrapperStyleDark,
   addressToInputHighlightWrapperStyleLight,
-} from './ToAddressInpnut.css';
+} from './ToAddressInput.css';
 
 const { innerWidth: windowWidth } = window;
 
