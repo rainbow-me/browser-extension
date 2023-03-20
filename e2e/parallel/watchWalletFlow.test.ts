@@ -5,7 +5,6 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
   delayTime,
-  findElementAndClick,
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
@@ -83,7 +82,7 @@ describe('Watch wallet flow', () => {
 
   it('should be able to lock and unlock the extension', async () => {
     // Lock
-    await findElementAndClick({
+    await findElementByTestIdAndClick({
       id: 'home-page-header-right',
       driver,
     });

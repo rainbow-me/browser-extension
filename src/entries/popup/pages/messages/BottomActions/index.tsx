@@ -58,7 +58,7 @@ export const BottomWallet = ({
   displaySymbol: boolean;
 }) => {
   return (
-    <Box id={'switch-wallet-menu'}>
+    <Box testId="switch-wallet-menu">
       <Inline alignVertical="center" space="4px">
         <WalletAvatar address={selectedWallet} size={18} emojiSize={'12pt'} />
         <WalletName color="labelSecondary" address={selectedWallet} />
@@ -113,7 +113,7 @@ export const BottomSwitchWallet = ({
           <Symbol symbol="checkmark" size={11} weight="semibold" />
         }
         renderMenuItem={(wallet, i) => (
-          <Box id={`switch-wallet-item-${i}`}>
+          <Box testId={`switch-wallet-item-${i}`}>
             <Inline space="8px" alignVertical="center">
               <WalletAvatar
                 address={wallet as Address}
@@ -144,7 +144,7 @@ export const BottomNetwork = ({
   symbol?: SymbolProps['symbol'];
 }) => {
   return (
-    <Box id="switch-network-menu">
+    <Box testId="switch-network-menu">
       <Inline alignHorizontal="right" alignVertical="center" space="4px">
         <ChainBadge chainId={selectedChainId} size={'small'} />
         <Text
