@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
+import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
 import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
@@ -19,16 +20,17 @@ import { TokenToBuyRow } from '../TokenRow/TokenToBuyRow';
 interface SectionProp {
   background?: TextStyles['background'];
   gradient?: React.ReactNode;
-  headerColor?: TextStyles['color'];
+  color?: TextStyles['color'];
   symbol: SymbolProps['symbol'];
   title: string;
   webkitBackgroundClip?: TextStyles['WebkitBackgroundClip'];
 }
+
 const sectionProps: { [id in AssetToBuySectionId]: SectionProp } = {
   favorites: {
     title: i18n.t('token_search.section_header.favorites'),
     symbol: 'star.fill' as SymbolProps['symbol'],
-    headerColor: 'yellow' as TextStyles['color'],
+    color: 'yellow' as TextStyles['color'],
     gradient: undefined,
     webkitBackgroundClip: undefined,
     background: undefined,
@@ -36,7 +38,7 @@ const sectionProps: { [id in AssetToBuySectionId]: SectionProp } = {
   bridge: {
     title: i18n.t('token_search.section_header.bridge'),
     symbol: 'shuffle' as SymbolProps['symbol'],
-    headerColor: 'arbitrum' as TextStyles['color'],
+    color: 'label' as TextStyles['color'],
     gradient: undefined,
     webkitBackgroundClip: undefined,
     background: undefined,
@@ -44,7 +46,7 @@ const sectionProps: { [id in AssetToBuySectionId]: SectionProp } = {
   verified: {
     title: i18n.t('token_search.section_header.verified'),
     symbol: 'checkmark.seal.fill' as SymbolProps['symbol'],
-    headerColor: 'transparent' as TextStyles['color'],
+    color: 'transparent' as TextStyles['color'],
     gradient: rainbowGradient,
     webkitBackgroundClip: 'text' as TextStyles['WebkitBackgroundClip'],
     background: 'rainbow' as TextStyles['background'],
@@ -52,7 +54,7 @@ const sectionProps: { [id in AssetToBuySectionId]: SectionProp } = {
   unverified: {
     title: i18n.t('token_search.section_header.unverified'),
     symbol: 'exclamationmark.triangle.fill' as SymbolProps['symbol'],
-    headerColor: 'labelTertiary' as TextStyles['color'],
+    color: 'labelTertiary' as TextStyles['color'],
     gradient: undefined,
     webkitBackgroundClip: undefined,
     background: undefined,
@@ -60,19 +62,29 @@ const sectionProps: { [id in AssetToBuySectionId]: SectionProp } = {
   other_networks: {
     title: i18n.t('token_search.section_header.on_other_networks'),
     symbol: 'network' as SymbolProps['symbol'],
-    headerColor: 'labelTertiary' as TextStyles['color'],
+    color: 'labelTertiary' as TextStyles['color'],
     gradient: undefined,
     webkitBackgroundClip: undefined,
     background: undefined,
   },
 };
 
+const bridgeSectionsColorsByChain = {
+  [ChainId.mainnet]: 'mainnet' as TextStyles['color'],
+  [ChainId.arbitrum]: 'arbitrum' as TextStyles['color'],
+  [ChainId.optimism]: 'optimism' as TextStyles['color'],
+  [ChainId.polygon]: 'polygon' as TextStyles['color'],
+  [ChainId.bsc]: 'bsc' as TextStyles['color'],
+};
+
 export const TokenToBuySection = ({
   assetSection,
+  outputChainId,
   onSelectAsset,
   onDropdownChange,
 }: {
   assetSection: AssetToBuySection;
+  outputChainId?: ChainId;
   onSelectAsset?: (asset: ParsedSearchAsset | null) => void;
   onDropdownChange: (open: boolean) => void;
 }) => {
@@ -81,22 +93,21 @@ export const TokenToBuySection = ({
     size: 5,
   });
 
-  const otherNetworksSection = assetSection.id === 'other_networks';
+  const { background, gradient, symbol, title, webkitBackgroundClip } =
+    sectionProps[assetSection.id];
 
-  const {
-    background,
-    gradient,
-    headerColor,
-    symbol,
-    title,
-    webkitBackgroundClip,
-  } = sectionProps[assetSection.id];
+  const color = useMemo(() => {
+    if (assetSection.id !== 'bridge') {
+      return sectionProps[assetSection.id].color;
+    }
+    return bridgeSectionsColorsByChain[outputChainId || ChainId.mainnet];
+  }, [assetSection.id, outputChainId]);
 
   if (!assetSection.data.length) return null;
   return (
     <Box testId={`${assetSection.id}-token-to-buy-section`} paddingTop="12px">
       <Stack space="16px">
-        {otherNetworksSection ? (
+        {assetSection.id === 'other_networks' ? (
           <Box borderRadius="12px" style={{ height: '52px' }}>
             <Inset horizontal="20px" vertical="8px">
               <Inline space="8px" alignVertical="center">
@@ -113,7 +124,7 @@ export const TokenToBuySection = ({
           <Inline space="4px" alignVertical="center">
             <Symbol
               symbol={symbol}
-              color={headerColor}
+              color={color}
               weight="semibold"
               size={14}
               gradient={gradient}
@@ -124,7 +135,7 @@ export const TokenToBuySection = ({
                 background={background}
                 size="14pt"
                 weight="semibold"
-                color={headerColor}
+                color={color}
               >
                 {title}
               </Text>

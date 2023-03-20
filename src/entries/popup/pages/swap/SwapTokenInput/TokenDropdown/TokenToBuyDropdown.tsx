@@ -90,6 +90,7 @@ export const TokenToBuyDropdown = ({
               assetSection={assetSection}
               onSelectAsset={onSelectAsset}
               onDropdownChange={onDropdownChange}
+              outputChainId={outputChainId}
             />
           ))}
         </Stack>

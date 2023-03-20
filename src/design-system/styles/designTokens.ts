@@ -558,7 +558,7 @@ export const foregroundColors: Record<
   },
   bsc: {
     light: '#EBAF09',
-    dark: '#BE97FF',
+    dark: '#EBAF09',
   },
 };
 
