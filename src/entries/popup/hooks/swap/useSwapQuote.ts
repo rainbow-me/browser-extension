@@ -91,8 +91,6 @@ export const useSwapQuote = ({
     source,
   ]);
 
-  console.log('QUOTE PARAMS', quotesParams);
-
   const { data, isLoading, isError, fetchStatus } = useQuery({
     queryFn: () =>
       quotesParams &&
