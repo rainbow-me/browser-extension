@@ -471,7 +471,12 @@ export type ForegroundColor =
   | 'separatorSecondary'
   | 'separatorTertiary'
   | 'buttonStroke'
-  | 'buttonStrokeSecondary';
+  | 'buttonStrokeSecondary'
+  | 'mainnet'
+  | 'arbitrum'
+  | 'optimism'
+  | 'polygon'
+  | 'bsc';
 
 export const foregroundColors: Record<
   ForegroundColor,
@@ -535,6 +540,26 @@ export const foregroundColors: Record<
     light: globalColors.white20,
     dark: globalColors.white20,
   },
+  mainnet: {
+    light: '#6D6D6D',
+    dark: '#999BA1',
+  },
+  arbitrum: {
+    light: '#1690E4',
+    dark: '#52B8FF',
+  },
+  optimism: {
+    light: '#FF4040',
+    dark: '#FF8A8A',
+  },
+  polygon: {
+    light: '#8247E5',
+    dark: '#BE97FF',
+  },
+  bsc: {
+    light: '#EBAF09',
+    dark: '#BE97FF',
+  },
 };
 
 function selectForegroundColors<
@@ -580,6 +605,11 @@ export const textColors = selectForegroundColors(
   'labelSecondary',
   'labelTertiary',
   'labelQuaternary',
+  'mainnet',
+  'arbitrum',
+  'optimism',
+  'polygon',
+  'bsc',
   ...genericColors,
 );
 export type TextColor = typeof textColors[number];

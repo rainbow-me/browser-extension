@@ -17,12 +17,12 @@ import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets
 import { TokenToBuyRow } from '../TokenRow/TokenToBuyRow';
 
 interface SectionProp {
-  title: string;
-  symbol: SymbolProps['symbol'];
-  headerColor?: TextStyles['color'];
-  gradient?: React.ReactNode;
-  webkitBackgroundClip?: TextStyles['WebkitBackgroundClip'];
   background?: TextStyles['background'];
+  gradient?: React.ReactNode;
+  headerColor?: TextStyles['color'];
+  symbol: SymbolProps['symbol'];
+  title: string;
+  webkitBackgroundClip?: TextStyles['WebkitBackgroundClip'];
 }
 const sectionProps: { [id in AssetToBuySectionId]: SectionProp } = {
   favorites: {
@@ -36,7 +36,7 @@ const sectionProps: { [id in AssetToBuySectionId]: SectionProp } = {
   bridge: {
     title: i18n.t('token_search.section_header.bridge'),
     symbol: 'shuffle' as SymbolProps['symbol'],
-    headerColor: 'labelTertiary' as TextStyles['color'],
+    headerColor: 'arbitrum' as TextStyles['color'],
     gradient: undefined,
     webkitBackgroundClip: undefined,
     background: undefined,

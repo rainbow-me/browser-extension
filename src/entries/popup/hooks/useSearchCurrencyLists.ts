@@ -254,7 +254,7 @@ export function useSearchCurrencyLists({
   );
 
   const crosschainExactMatches = Object.values(verifiedAssets)
-    .map((verifiedList) => {
+    ?.map((verifiedList) => {
       return verifiedList.assets?.filter((t) => {
         const symbolMatch = isLowerCaseMatch(t?.symbol, query);
         const nameMatch = isLowerCaseMatch(t?.name, query);
@@ -279,7 +279,7 @@ export function useSearchCurrencyLists({
       filterAssetsFromBridgeAndAssetToSell(assets)?.filter(
         (curatedAsset) =>
           !favoritesList
-            .map((fav) => fav.address)
+            ?.map((fav) => fav.address)
             .includes(curatedAsset.address),
       ) || [],
     [favoritesList, filterAssetsFromBridgeAndAssetToSell],

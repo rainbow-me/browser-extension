@@ -2,7 +2,7 @@ import React, { useCallback, useRef } from 'react';
 
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { TokenToBuySection } from '~/entries/popup/hooks/useSearchCurrencyLists';
+import { AssetToBuySection } from '~/entries/popup/hooks/useSearchCurrencyLists';
 
 import { TokenToBuyDropdown } from './TokenDropdown/TokenToBuyDropdown';
 import { TokenToBuyInfo } from './TokenInfo/TokenToBuyInfo';
@@ -10,7 +10,7 @@ import { TokenInput } from './TokenInput';
 
 interface TokenToBuyProps {
   asset: ParsedSearchAsset | null;
-  assets?: TokenToBuySection[];
+  assets?: AssetToBuySection[];
   assetFilter: string;
   dropdownClosed: boolean;
   dropdownHeight?: number;
