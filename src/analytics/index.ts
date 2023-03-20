@@ -1,31 +1,43 @@
-import { AnalyticsBrowser } from '@segment/analytics-next';
+import { Analytics as AnalyticsNode } from '@segment/analytics-node';
 
 import { EventProperties, event } from '~/analytics/event';
 import { UserProperties } from '~/analytics/userProperties';
-import { logger } from '~/logger';
+import { RainbowError, logger } from '~/logger';
+
+const IS_DEV = process.env.IS_DEV === 'true';
+const IS_TESTING = process.env.IS_TESTING === 'true';
 
 export class Analytics {
-  client: AnalyticsBrowser;
+  client?: AnalyticsNode;
   deviceId?: string;
   event = event;
   disabled = false; // to do: check user setting here
 
   constructor() {
     /**
-     * Integrations `All` key disables `amplitude-pluginsDestination` and any other
-     * remote plugins that are automatically enabled in 'Device Mode'.
-     * https://segment.com/docs/connections/destinations/catalog/actions-amplitude/#enable-session-tracking-for-analyticsjs-20
-     * https://segment.com/docs/connections/sources/catalog/libraries/website/javascript/#analyticsjs-performance
-     * https://segment.com/docs/connections/sources/catalog/libraries/website/javascript/#managing-data-flow-with-the-integrations-object
+     * Using @segment/analytics-node beta because analytics-node is deprecated.
+     * https://github.com/segmentio/analytics-next/tree/master/packages/node#readme
+     * @segment/analytics-next relies on a remote fetch plugin architecture
+     * that isn't viable in manifest v3 and extensions are not officially supported:
+     * - When connected to Analytics.js 2.0 source, we load a light-weight plugin on the
+     *   webpage for session tracking and enrichment as an alternative to Amplitude SDK.
+     * - We do not provide a way to disable loading the session plugin for Amplitude at
+     *   the moment, unfortunately. With that said, I have logged this as a feature request
+     * - We do not formally support loading Segment, including our Analytics.js library, within
+     *   Chrome extensions. There have been stories of people getting this working, but it's not
+     *   something we would be able to support, although you can go ahead and give it a try.
      */
-    this.client = AnalyticsBrowser.load(
-      {
+    try {
+      this.client = new AnalyticsNode({
+        maxEventsInBatch: 1 /* replicate analytics-next flushing behavior */,
         writeKey: process.env.SEGMENT_WRITE_KEY,
-      },
-      { integrations: { All: false, 'Segment.io': true } },
-    );
-
-    logger.debug(`Segment initialized`);
+      }).on('error', ({ code, reason }) =>
+        logger.error(new RainbowError('Segment error'), { code, reason }),
+      );
+      logger.debug(`Segment initialized`);
+    } catch (e) {
+      logger.debug(`Segment failed to initialize`);
+    }
   }
 
   /**
@@ -34,21 +46,29 @@ export class Analytics {
    * wallet address as a property, if available.
    */
   identify(userProperties?: UserProperties) {
-    if (this.disabled) return;
+    if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
-    this.client.identify(this.deviceId, {
-      ...userProperties,
-      ...metadata,
+    const traits = { ...userProperties, ...metadata };
+    this.client?.identify({ userId: this.deviceId, traits });
+    logger.info('analytics.identify()', {
+      userId: this.deviceId,
+      userProperties,
     });
   }
 
   /**
    * Sends a `screen` event to Segment.
    */
-  screen(routeName: string, params: Record<string, never> = {}): void {
-    if (this.disabled) return;
+  screen(name: string, params: Record<string, never> = {}): void {
+    if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
-    this.client.screen(routeName, { ...params, ...metadata });
+    const properties = { ...params, ...metadata };
+    this.client?.screen({ userId: this.deviceId, name, properties });
+    logger.info('analytics.screen()', {
+      userId: this.deviceId,
+      name,
+      params,
+    });
   }
 
   /**
@@ -60,9 +80,15 @@ export class Analytics {
     event: T,
     params?: EventProperties[T],
   ) {
-    if (this.disabled) return;
+    if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
-    this.client.track(event, Object.assign(metadata, params));
+    const properties = Object.assign(metadata, params);
+    this.client?.track({ userId: this.deviceId, event, properties });
+    logger.info('analytics.track()', {
+      userId: this.deviceId,
+      event,
+      params,
+    });
   }
 
   /**
@@ -78,8 +104,8 @@ export class Analytics {
    * `identify()`, you must do that on your own.
    */
   setDeviceId(deviceId: string) {
-    logger.debug(`Set deviceId on analytics instance`);
     this.deviceId = deviceId;
+    logger.debug(`Set deviceId on analytics instance`, { deviceId });
   }
 
   /**

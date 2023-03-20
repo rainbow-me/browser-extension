@@ -5,6 +5,8 @@ import { ChainId } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
 import { Address, UserRejectedRequestError } from 'wagmi';
 
+import { event } from '~/analytics/event';
+import { queueEventTracking } from '~/analytics/queueEvent';
 import { hasVault, isPasswordSet } from '~/core/keychain';
 import { Messenger } from '~/core/messengers';
 import {
@@ -15,11 +17,12 @@ import {
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { isSupportedChainId } from '~/core/utils/chains';
-import { getDappHost } from '~/core/utils/connectedApps';
+import { dappNameOverride, getDappHost } from '~/core/utils/connectedApps';
 import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/numbers';
 import { WELCOME_URL, goToNewTab } from '~/core/utils/tabs';
+import { RainbowError, logger } from '~/logger';
 
 const createNewWindow = async (tabId: string) => {
   const { setNotificationWindow } = notificationWindowStore.getState();
@@ -113,6 +116,7 @@ export const handleProviderRequest = ({
       appSessionsStore.getState();
     const url = meta?.sender?.url || '';
     const host = getDappHost(url);
+    const dappName = dappNameOverride(url);
     const activeSession = getActiveSession({ host });
 
     try {
@@ -167,6 +171,10 @@ export const handleProviderRequest = ({
               extensionUrl,
               host,
             });
+            logger.error(new RainbowError('Chain Id not supported'), {
+              proposedChainId,
+              host,
+            });
             throw new Error('Chain Id not supported');
           } else {
             updateSessionChainId({
@@ -178,6 +186,11 @@ export const handleProviderRequest = ({
               status: 'success',
               extensionUrl,
               host,
+            });
+            queueEventTracking(event.dappProviderNetworkSwitched, {
+              dappURL: host,
+              dappName,
+              chainId: proposedChainId,
             });
             inpageMessenger.send(`chainChanged:${host}`, proposedChainId);
           }
@@ -248,6 +261,11 @@ export const handleProviderRequest = ({
 
         default: {
           // TODO: handle other methods
+          logger.error(new RainbowError('Unhandled provider request'), {
+            dappURL: host,
+            dappName,
+            method,
+          });
         }
       }
       return { id, result: response };

@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import * as React from 'react';
 import { HashRouter } from 'react-router-dom';
@@ -5,6 +6,8 @@ import { WagmiConfig, useAccount } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import { flushQueuedEvents } from '~/analytics/flushQueuedEvents';
+// !!!! DO NOT REMOVE THE NEXT 2 LINES BELOW !!!!
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import config from '~/core/firebase/remoteConfig';
 import { changeI18nLanguage } from '~/core/languages';
@@ -42,14 +45,16 @@ export function App() {
   usePendingTransactionWatcher({ address });
 
   React.useEffect(() => {
-    // Disable analytics for e2e and dev mode
+    // Disable analytics & sentry for e2e and dev mode
+    changeI18nLanguage(currentLanguage);
+
     if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
-      changeI18nLanguage(currentLanguage);
       initializeSentry('popup');
       setSentryUser(deviceId);
       analytics.setDeviceId(deviceId);
       analytics.identify();
       analytics.track(event.popupOpened);
+      setTimeout(() => flushQueuedEvents(), 1000);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
