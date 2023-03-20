@@ -15,6 +15,8 @@ import {
 import { addHexPrefix } from '~/core/utils/ethereum';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
+import { rainbowGradient } from '~/design-system/components/Symbol/gradients';
+import { TextStyles } from '~/design-system/styles/core.css';
 
 import { filterList } from '../utils/search';
 
@@ -31,6 +33,24 @@ const VERIFIED_ASSETS_PAYLOAD: {
   threshold: 'CONTAINS',
   query: '',
 };
+
+export type TokenToBuySectionId =
+  | 'bridge'
+  | 'favorites'
+  | 'verified'
+  | 'unverified'
+  | 'other_networks';
+
+export interface TokenToBuySection {
+  data: SearchAsset[];
+  title: string;
+  symbol: SymbolProps['symbol'];
+  id: TokenToBuySectionId;
+  headerColor?: TextStyles['color'];
+  gradient?: React.ReactNode;
+  webkitBackgroundClip?: TextStyles['WebkitBackgroundClip'];
+  background?: TextStyles['background'];
+}
 
 export function useSearchCurrencyLists({
   assetToSell,
@@ -275,21 +295,19 @@ export function useSearchCurrencyLists({
     [favoritesList, filterAssetsFromBridgeAndAssetToSell],
   );
 
-  // bridge asset are not currently implemented
   // the lists below should be filtered by favorite/bridge asset match
   const results = useMemo(() => {
-    const sections: {
-      data: SearchAsset[];
-      title: string;
-      symbol: SymbolProps['symbol'];
-      id: string;
-    }[] = [];
+    const sections: TokenToBuySection[] = [];
     if (bridgeAsset) {
       const bridgeSection = {
         data: [bridgeAsset],
         title: i18n.t('token_search.section_header.bridge'),
         symbol: 'shuffle' as SymbolProps['symbol'],
-        id: 'bridge',
+        id: 'bridge' as TokenToBuySectionId,
+        headerColor: 'labelTertiary' as TextStyles['color'],
+        gradient: undefined,
+        webkitBackgroundClip: undefined,
+        background: undefined,
       };
       sections.push(bridgeSection);
     }
@@ -298,7 +316,11 @@ export function useSearchCurrencyLists({
         data: filterAssetsFromBridgeAndAssetToSell(favoritesList),
         title: i18n.t('token_search.section_header.favorites'),
         symbol: 'star.fill' as SymbolProps['symbol'],
-        id: 'favorites',
+        id: 'favorites' as TokenToBuySectionId,
+        headerColor: 'yellow' as TextStyles['color'],
+        gradient: undefined,
+        webkitBackgroundClip: undefined,
+        background: undefined,
       };
       sections.push(favoritesSection);
     }
@@ -310,7 +332,11 @@ export function useSearchCurrencyLists({
         ),
         title: i18n.t('token_search.section_header.verified'),
         symbol: 'checkmark.seal.fill' as SymbolProps['symbol'],
-        id: 'verified',
+        id: 'verified' as TokenToBuySectionId,
+        headerColor: 'transparent' as TextStyles['color'],
+        gradient: rainbowGradient,
+        webkitBackgroundClip: 'text' as TextStyles['WebkitBackgroundClip'],
+        background: 'rainbow' as TextStyles['background'],
       };
       sections.push(curatedSection);
     } else {
@@ -321,7 +347,11 @@ export function useSearchCurrencyLists({
           ),
           title: i18n.t('token_search.section_header.verified'),
           symbol: 'checkmark.seal.fill' as SymbolProps['symbol'],
-          id: 'verified',
+          id: 'verified' as TokenToBuySectionId,
+          headerColor: 'transparent' as TextStyles['color'],
+          gradient: rainbowGradient,
+          webkitBackgroundClip: 'text' as TextStyles['WebkitBackgroundClip'],
+          background: 'rainbow' as TextStyles['background'],
         };
         sections.push(verifiedSection);
       }
@@ -333,7 +363,11 @@ export function useSearchCurrencyLists({
           ),
           title: i18n.t('token_search.section_header.unverified'),
           symbol: 'exclamationmark.triangle.fill' as SymbolProps['symbol'],
-          id: 'unverified',
+          id: 'unverified' as TokenToBuySectionId,
+          headerColor: 'labelTertiary' as TextStyles['color'],
+          gradient: undefined,
+          webkitBackgroundClip: undefined,
+          background: undefined,
         };
         sections.push(unverifiedSection);
       }
@@ -345,7 +379,11 @@ export function useSearchCurrencyLists({
           ),
           title: i18n.t('token_search.section_header.on_other_networks'),
           symbol: 'network' as SymbolProps['symbol'],
-          id: 'other_networks',
+          id: 'other_networks' as TokenToBuySectionId,
+          headerColor: 'labelTertiary' as TextStyles['color'],
+          gradient: undefined,
+          webkitBackgroundClip: undefined,
+          background: undefined,
         };
         sections.push(crosschainSection);
       }

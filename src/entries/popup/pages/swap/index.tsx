@@ -162,7 +162,6 @@ export function Swap() {
     [setAssetToBuyInputValue, setAssetToSell, setAssetToSellInputValue],
   );
 
-  console.log('swap input assetsToBuy', assetsToBuy);
   return (
     <>
       <Navbar
