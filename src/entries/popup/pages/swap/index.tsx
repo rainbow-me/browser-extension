@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useGasStore } from '~/core/state';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   Box,
@@ -152,6 +153,15 @@ export function Swap() {
     onAssetToBuyInputOpen(false);
   }, [onAssetToBuyInputOpen, onAssetToSellInputOpen]);
 
+  const selectAssetToSell = useCallback(
+    (asset: ParsedSearchAsset | null) => {
+      setAssetToSell(asset);
+      setAssetToSellInputValue('');
+      setAssetToBuyInputValue('');
+    },
+    [setAssetToBuyInputValue, setAssetToSell, setAssetToSellInputValue],
+  );
+
   return (
     <>
       <Navbar
@@ -166,6 +176,7 @@ export function Swap() {
             symbol="switch.2"
             symbolColor="labelSecondary"
             variant="flat"
+            testId="swap-settings-navbar-button"
           />
         }
       />
@@ -176,6 +187,7 @@ export function Swap() {
         description={explainerSheetParams.description}
         actionButton={explainerSheetParams.actionButton}
         linkButton={explainerSheetParams.linkButton}
+        testId={explainerSheetParams.testId}
       />
       <SwapSettings
         show={showSwapSettings}
@@ -205,7 +217,7 @@ export function Swap() {
                   dropdownHeight={toSellInputHeight}
                   asset={assetToSell}
                   assets={assetsToSell}
-                  selectAsset={setAssetToSell}
+                  selectAsset={selectAssetToSell}
                   onDropdownOpen={onAssetToSellInputOpen}
                   dropdownClosed={assetToSellDropdownClosed}
                   setSortMethod={setSortMethod}
@@ -240,6 +252,7 @@ export function Swap() {
                     borderColor="buttonStroke"
                     style={{ width: 42, height: 32, zIndex: 10 }}
                     onClick={flipAssets}
+                    testId="swap-flip-button"
                   >
                     <Box width="full" height="full" alignItems="center">
                       <Inline
@@ -362,6 +375,7 @@ export function Swap() {
                         <Inline space="8px" alignVertical="center">
                           {buttonIcon}
                           <Text
+                            testId="swap-confirmation-button"
                             color={buttonLabelColor}
                             size="16pt"
                             weight="bold"

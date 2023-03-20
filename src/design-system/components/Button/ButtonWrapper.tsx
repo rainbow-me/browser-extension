@@ -41,6 +41,7 @@ export type ButtonWrapperProps = {
   borderRadius?: Radius;
   tabIndex?: number;
   disabled?: boolean;
+  testId?: string;
 } & ButtonVariantProps;
 
 const shadowValue = (size: ShadowSize, color?: ButtonColor) =>
@@ -222,6 +223,7 @@ export function ButtonWrapper({
   borderRadius,
   tabIndex,
   disabled,
+  testId,
 }: ButtonWrapperProps) {
   const { boxShadow } = stylesForHeightAndVariant({
     color: color as ButtonColor,
@@ -285,6 +287,7 @@ export function ButtonWrapper({
         width={width}
         style={styles}
         tabIndex={tabIndex}
+        testId={testId}
       >
         {children}
       </Box>

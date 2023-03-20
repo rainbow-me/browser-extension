@@ -61,14 +61,14 @@ export const useSwapQuote = ({
       sellTokenAddress: assetToSell.address,
       buyTokenAddress: assetToBuy.address,
       sellAmount:
-        independentField === 'sellField'
+        independentField === 'sellField' && Number(assetToSellValue)
           ? convertAmountToRawAmount(
               assetToSellValue || '0',
               assetToSell.decimals,
             )
           : undefined,
       buyAmount:
-        independentField === 'buyField'
+        independentField === 'buyField' && Number(assetToBuyValue)
           ? convertAmountToRawAmount(
               assetToBuyValue || '0',
               assetToBuy.decimals,

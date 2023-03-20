@@ -92,7 +92,7 @@ export const SlippageInputMask = ({
           variant={variant}
           innerRef={inputRef}
           enableTapScale={false}
-          testId="gwei-input-mask"
+          testId="slippage-input-mask"
           style={{
             textAlign: 'center',
             paddingRight: 30,

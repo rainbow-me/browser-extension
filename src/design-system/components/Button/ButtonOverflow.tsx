@@ -7,8 +7,9 @@ import { Box } from '../Box/Box';
 interface ButtonOverflowProps {
   children: ReactNode;
   style?: CSSProperties;
+  testId?: string;
 }
-export function ButtonOverflow({ children }: ButtonOverflowProps) {
+export function ButtonOverflow({ children, testId }: ButtonOverflowProps) {
   return (
     <Box
       as={motion.div}
@@ -16,6 +17,7 @@ export function ButtonOverflow({ children }: ButtonOverflowProps) {
       whileHover={{ scale: transformScales['1.04'] }}
       whileTap={{ scale: transformScales['0.96'] }}
       transition={transitions.bounce}
+      testId={testId}
     >
       {children}
     </Box>
