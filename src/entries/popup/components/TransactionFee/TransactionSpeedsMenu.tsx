@@ -102,6 +102,7 @@ interface SwitchTransactionSpeedMenuProps {
   onSpeedChanged: (speed: GasSpeed) => void;
   accentColor?: string | 'accent';
   plainTriggerBorder?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
 export const SwitchTransactionSpeedMenu = ({
@@ -112,6 +113,7 @@ export const SwitchTransactionSpeedMenu = ({
   editable = true,
   accentColor,
   plainTriggerBorder,
+  onOpenChange,
 }: SwitchTransactionSpeedMenuProps) => {
   const menuTrigger = (
     <Box
@@ -146,7 +148,7 @@ export const SwitchTransactionSpeedMenu = ({
   );
   if (!editable) return menuTrigger;
   return (
-    <DropdownMenu>
+    <DropdownMenu onOpenChange={onOpenChange}>
       <DropdownMenuTrigger asChild accentColor={accentColor}>
         {menuTrigger}
       </DropdownMenuTrigger>

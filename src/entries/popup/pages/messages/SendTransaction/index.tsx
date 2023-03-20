@@ -4,6 +4,8 @@ import { formatEther } from '@ethersproject/units';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
@@ -41,7 +43,7 @@ export function SendTransaction({
   request,
 }: ApproveRequestProps) {
   const [waitingForDevice, setWaitingForDevice] = useState(false);
-  const { appHost } = useAppMetadata({
+  const { appHost, appName } = useAppMetadata({
     url: request?.meta?.sender?.url,
   });
   const { appSession } = useAppSession({ host: appHost });
@@ -91,10 +93,18 @@ export function SendTransaction({
 
       approveRequest(result.hash);
       setWaitingForDevice(false);
+
+      analytics.track(event.dappPromptSendTransactionApproved, {
+        chainId: txData.chainId,
+        dappURL: appHost,
+        dappName: appName,
+      });
     } finally {
       setWaitingForDevice(false);
     }
   }, [
+    appHost,
+    appName,
     appSession.chainId,
     approveRequest,
     asset,
@@ -102,6 +112,15 @@ export function SendTransaction({
     request?.params,
     selectedWallet,
   ]);
+
+  const onRejectRequest = useCallback(() => {
+    rejectRequest();
+    analytics.track(event.dappPromptSendTransactionRejected, {
+      chainId: appSession.chainId,
+      dappURL: appHost,
+      dappName: appName,
+    });
+  }, [appHost, appName, appSession.chainId, rejectRequest]);
 
   const isWatchingWallet = useMemo(() => {
     const watchedAddresses = watchedWallets?.map(({ address }) => address);
@@ -137,7 +156,7 @@ export function SendTransaction({
           appHost={appHost}
           selectedWallet={selectedWallet}
           onAcceptRequest={onAcceptRequest}
-          onRejectRequest={rejectRequest}
+          onRejectRequest={onRejectRequest}
         />
       </Row>
     </Rows>
