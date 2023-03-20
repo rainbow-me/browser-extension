@@ -29,6 +29,7 @@ export function CreatePassword() {
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [isMatching, setIsMatching] = useState<boolean | null>(null);
+  const [entriesVisible, setEntriesVisible] = useState(false);
   const { state } = useLocation();
 
   const [showOnboardBeforeConnectSheet, setShowOnboardBeforeConnectSheet] =
@@ -36,10 +37,7 @@ export function CreatePassword() {
 
   // Check if passwords match
   const checkIfPasswordsMatch = useCallback(() => {
-    if (
-      newPassword.length > 0 &&
-      confirmNewPassword.length >= newPassword.length
-    ) {
+    if (newPassword.length > 0) {
       if (newPassword === confirmNewPassword) {
         setIsMatching(true);
         return true;
@@ -52,6 +50,8 @@ export function CreatePassword() {
       return null;
     }
   }, [confirmNewPassword, newPassword]);
+
+  const onToggleVisibility = () => setEntriesVisible(!entriesVisible);
 
   // Check strength && validity
   useEffect(() => {
@@ -177,8 +177,10 @@ export function CreatePassword() {
                     onChange={(e) => setNewPassword(e.target.value)}
                     testId="password-input"
                     onSubmit={handleSetPassword}
+                    onToggleVisibility={onToggleVisibility}
                     tabIndex={1}
                     autoFocus
+                    visible={entriesVisible}
                   />
                 </Row>
               </Rows>
@@ -202,7 +204,9 @@ export function CreatePassword() {
                         onBlur={handleOnBlur}
                         testId="confirm-password-input"
                         onSubmit={handleSetPassword}
+                        onToggleVisibility={onToggleVisibility}
                         tabIndex={2}
+                        visible={entriesVisible}
                       />
                     </Row>
                     <Row>
@@ -253,7 +257,9 @@ export function CreatePassword() {
                   </Box>
                   <Box>
                     <Text size="12pt" weight="regular">
-                      {i18n.t('passwords.try_another_password')}
+                      {strength === 1
+                        ? i18n.t('passwords.try_another_password_weak')
+                        : i18n.t('passwords.try_another_password_common')}
                     </Text>
                   </Box>
                 </Inline>
