@@ -2,6 +2,8 @@ import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { useDefaultTxSpeedStore } from '~/core/state/currentSettings/defaultTxSpeed';
 import { ParsedSearchAsset } from '~/core/types/assets';
@@ -64,8 +66,10 @@ function Fee({
     () => gasFeeParamsBySpeed?.[selectedSpeed],
     [gasFeeParamsBySpeed, selectedSpeed],
   );
-
-  const openCustomGasSheet = useCallback(() => setShowCustomGasSheet(true), []);
+  const openCustomGasSheet = useCallback(() => {
+    setShowCustomGasSheet(true);
+    analytics.track(event.dappPromptSendTransactionCustomGasClicked);
+  }, []);
 
   const closeCustomGasSheet = useCallback(
     () => setShowCustomGasSheet(false),
@@ -78,9 +82,13 @@ function Fee({
         openCustomGasSheet();
       }
       setSelectedSpeed(speed);
+      analytics.track(event.dappPromptSendTransactionSpeedSwitched, { speed });
     },
     [openCustomGasSheet, setSelectedSpeed],
   );
+
+  const onSpeedOpenChange = (isOpen: boolean) =>
+    isOpen && analytics.track(event.dappPromptSendTransactionSpeedClicked);
 
   useEffect(() => {
     clearCustomGasModified();
@@ -139,6 +147,7 @@ function Fee({
               }
               accentColor={accentColor}
               plainTriggerBorder={plainTriggerBorder}
+              onOpenChange={onSpeedOpenChange}
             />
             {chainId === ChainId.mainnet ? (
               <Box
