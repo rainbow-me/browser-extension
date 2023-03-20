@@ -2,7 +2,6 @@ import { isAddress } from '@ethersproject/address';
 import { rankings } from 'match-sorter';
 import { useCallback, useMemo } from 'react';
 
-import { i18n } from '~/core/languages';
 import { useTokenSearch } from '~/core/resources/search';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -14,9 +13,6 @@ import {
 } from '~/core/types/search';
 import { addHexPrefix } from '~/core/utils/ethereum';
 import { isLowerCaseMatch } from '~/core/utils/strings';
-import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
-import { rainbowGradient } from '~/design-system/components/Symbol/gradients';
-import { TextStyles } from '~/design-system/styles/core.css';
 
 import { filterList } from '../utils/search';
 
@@ -34,22 +30,16 @@ const VERIFIED_ASSETS_PAYLOAD: {
   query: '',
 };
 
-export type TokenToBuySectionId =
+export type AssetToBuySectionId =
   | 'bridge'
   | 'favorites'
   | 'verified'
   | 'unverified'
   | 'other_networks';
 
-export interface TokenToBuySection {
+export interface AssetToBuySection {
   data: SearchAsset[];
-  title: string;
-  symbol: SymbolProps['symbol'];
-  id: TokenToBuySectionId;
-  headerColor?: TextStyles['color'];
-  gradient?: React.ReactNode;
-  webkitBackgroundClip?: TextStyles['WebkitBackgroundClip'];
-  background?: TextStyles['background'];
+  id: AssetToBuySectionId;
 }
 
 export function useSearchCurrencyLists({
@@ -297,30 +287,18 @@ export function useSearchCurrencyLists({
 
   // the lists below should be filtered by favorite/bridge asset match
   const results = useMemo(() => {
-    const sections: TokenToBuySection[] = [];
+    const sections: AssetToBuySection[] = [];
     if (bridgeAsset) {
       const bridgeSection = {
         data: [bridgeAsset],
-        title: i18n.t('token_search.section_header.bridge'),
-        symbol: 'shuffle' as SymbolProps['symbol'],
-        id: 'bridge' as TokenToBuySectionId,
-        headerColor: 'labelTertiary' as TextStyles['color'],
-        gradient: undefined,
-        webkitBackgroundClip: undefined,
-        background: undefined,
+        id: 'bridge' as AssetToBuySectionId,
       };
       sections.push(bridgeSection);
     }
     if (favoritesList?.length) {
       const favoritesSection = {
         data: filterAssetsFromBridgeAndAssetToSell(favoritesList),
-        title: i18n.t('token_search.section_header.favorites'),
-        symbol: 'star.fill' as SymbolProps['symbol'],
-        id: 'favorites' as TokenToBuySectionId,
-        headerColor: 'yellow' as TextStyles['color'],
-        gradient: undefined,
-        webkitBackgroundClip: undefined,
-        background: undefined,
+        id: 'favorites' as AssetToBuySectionId,
       };
       sections.push(favoritesSection);
     }
@@ -330,13 +308,7 @@ export function useSearchCurrencyLists({
         data: filterAssetsFromFavoritesBridgeAndAssetToSell(
           curatedAssets[outputChainId],
         ),
-        title: i18n.t('token_search.section_header.verified'),
-        symbol: 'checkmark.seal.fill' as SymbolProps['symbol'],
-        id: 'verified' as TokenToBuySectionId,
-        headerColor: 'transparent' as TextStyles['color'],
-        gradient: rainbowGradient,
-        webkitBackgroundClip: 'text' as TextStyles['WebkitBackgroundClip'],
-        background: 'rainbow' as TextStyles['background'],
+        id: 'verified' as AssetToBuySectionId,
       };
       sections.push(curatedSection);
     } else {
@@ -345,13 +317,7 @@ export function useSearchCurrencyLists({
           data: filterAssetsFromFavoritesBridgeAndAssetToSell(
             targetVerifiedAssets,
           ),
-          title: i18n.t('token_search.section_header.verified'),
-          symbol: 'checkmark.seal.fill' as SymbolProps['symbol'],
-          id: 'verified' as TokenToBuySectionId,
-          headerColor: 'transparent' as TextStyles['color'],
-          gradient: rainbowGradient,
-          webkitBackgroundClip: 'text' as TextStyles['WebkitBackgroundClip'],
-          background: 'rainbow' as TextStyles['background'],
+          id: 'verified' as AssetToBuySectionId,
         };
         sections.push(verifiedSection);
       }
@@ -361,13 +327,7 @@ export function useSearchCurrencyLists({
           data: filterAssetsFromFavoritesBridgeAndAssetToSell(
             targetUnverifiedAssets,
           ),
-          title: i18n.t('token_search.section_header.unverified'),
-          symbol: 'exclamationmark.triangle.fill' as SymbolProps['symbol'],
-          id: 'unverified' as TokenToBuySectionId,
-          headerColor: 'labelTertiary' as TextStyles['color'],
-          gradient: undefined,
-          webkitBackgroundClip: undefined,
-          background: undefined,
+          id: 'unverified' as AssetToBuySectionId,
         };
         sections.push(unverifiedSection);
       }
@@ -377,13 +337,7 @@ export function useSearchCurrencyLists({
           data: filterAssetsFromFavoritesBridgeAndAssetToSell(
             crosschainExactMatches,
           ),
-          title: i18n.t('token_search.section_header.on_other_networks'),
-          symbol: 'network' as SymbolProps['symbol'],
-          id: 'other_networks' as TokenToBuySectionId,
-          headerColor: 'labelTertiary' as TextStyles['color'],
-          gradient: undefined,
-          webkitBackgroundClip: undefined,
-          background: undefined,
+          id: 'other_networks' as AssetToBuySectionId,
         };
         sections.push(crosschainSection);
       }
