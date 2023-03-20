@@ -32,6 +32,9 @@ export const ConfirmPasswordPrompt = ({
   const navigate = useRainbowNavigate();
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [visible, setVisible] = useState(false);
+
+  const onToggleVisibility = useCallback(() => setVisible(!visible), [visible]);
 
   const handleValidatePassword = useCallback(async () => {
     const correctPassword = await verifyPassword(password);
@@ -101,7 +104,9 @@ export const ConfirmPasswordPrompt = ({
                       borderColor={error ? 'red' : undefined}
                       tabIndex={1}
                       onSubmit={handleValidatePassword}
+                      onToggleVisibility={onToggleVisibility}
                       autoFocus
+                      visible={visible}
                     />
                   </Row>
                   {error && (
