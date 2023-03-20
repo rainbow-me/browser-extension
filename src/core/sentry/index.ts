@@ -1,6 +1,8 @@
 import * as Sentry from '@sentry/browser';
 import { BrowserTracing } from '@sentry/tracing';
 
+import { version } from '../../../package.json';
+
 export function initializeSentry(context: 'popup' | 'background') {
   if (process.env.IS_DEV !== 'true' && process.env.SENTRY_DSN) {
     try {
@@ -9,6 +11,9 @@ export function initializeSentry(context: 'popup' | 'background') {
         dsn: process.env.SENTRY_DSN,
         integrations,
         tracesSampleRate: 1.0,
+        release: version,
+        environment:
+          process.env.INTERNAL_BUILD === 'true' ? 'internal' : 'production',
       });
       console.log('sentry initialized correctly!');
     } catch (e) {

@@ -11,6 +11,7 @@ import {
   Row,
   Rows,
   Stack,
+  Symbol,
   Text,
 } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
@@ -21,6 +22,7 @@ import {
 
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 import { Navbar } from '../../components/Navbar/Navbar';
+import { SwapFee } from '../../components/TransactionFee/TransactionFee';
 import { useSwapAssets } from '../../hooks/swap/useSwapAssets';
 import { useSwapDropdownDimensions } from '../../hooks/swap/useSwapDropdownDimensions';
 import { useSwapInputs } from '../../hooks/swap/useSwapInputs';
@@ -239,19 +241,64 @@ export function Swap() {
             </Stack>
           </Row>
           <Row height="content">
-            <Box paddingHorizontal="8px">
-              <Button
-                height="44px"
-                variant="flat"
-                color="surfaceSecondary"
-                width="full"
-                disabled
+            {!!assetToBuy && !!assetToSell ? (
+              <AccentColorProviderWrapper
+                color={
+                  assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback
+                }
               >
-                <Text color="labelQuaternary" size="14pt" weight="bold">
-                  {i18n.t('swap.select_tokens_to_swap')}
-                </Text>
-              </Button>
-            </Box>
+                <Box paddingHorizontal="8px">
+                  <Rows space="20px">
+                    <Row>
+                      <SwapFee
+                        chainId={assetToSell?.chainId || ChainId.mainnet}
+                        tradeDetails={quote}
+                        accentColor={
+                          assetToBuy?.colors?.primary ||
+                          assetToBuy?.colors?.fallback
+                        }
+                        assetToSell={assetToSell}
+                      />
+                    </Row>
+                    <Row>
+                      <Button
+                        onClick={() => null}
+                        height="44px"
+                        variant="flat"
+                        color="accent"
+                        width="full"
+                        testId="swap-review-button"
+                      >
+                        <Inline space="8px" alignVertical="center">
+                          <Symbol
+                            symbol="doc.text.magnifyingglass"
+                            weight="bold"
+                            size={16}
+                          />
+                          <Text color="label" size="16pt" weight="bold">
+                            {i18n.t('swap.review')}
+                          </Text>
+                        </Inline>
+                      </Button>
+                    </Row>
+                  </Rows>
+                </Box>
+              </AccentColorProviderWrapper>
+            ) : (
+              <Box paddingHorizontal="8px">
+                <Button
+                  height="44px"
+                  variant="flat"
+                  color="surfaceSecondary"
+                  width="full"
+                  disabled
+                >
+                  <Text color="labelQuaternary" size="14pt" weight="bold">
+                    {i18n.t('swap.select_tokens_to_swap')}
+                  </Text>
+                </Button>
+              </Box>
+            )}
           </Row>
         </Rows>
       </Box>

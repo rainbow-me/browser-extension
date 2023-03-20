@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
 
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { selectUserAssetsListByChainId } from '~/core/resources/_selectors/assets';
@@ -80,107 +79,101 @@ export const useSwapAssets = () => {
       : userAssets;
   }, [debouncedAssetToSellFilter, userAssets]) as ParsedSearchAsset[];
 
-  const { results: searchReceiveAssetsSections } = useSearchCurrencyLists({
+  const { results: searchAssetsToBuySections } = useSearchCurrencyLists({
     inputChainId: assetToSell?.chainId,
     outputChainId,
     searchQuery: debouncedAssetToBuyFilter,
   });
 
-  const assetAddresses = useMemo(() => {
-    const dict: Record<ChainId, Address[]> = {};
-    if (assetToBuy) {
-      dict[assetToBuy.chainId] = [
-        assetToBuy?.mainnetAddress || assetToBuy?.address || '',
-      ];
-    }
-    if (assetToSell) {
-      const addressesForNetwork = dict[assetToSell.chainId] || [];
-      dict[assetToSell.chainId] = [
-        ...addressesForNetwork,
-        assetToSell?.mainnetAddress || assetToSell?.address || '',
-      ];
-    }
-    return dict;
-  }, [assetToBuy, assetToSell]);
+  const { data: assetsWithPrice = [] } = useAssets({
+    assetAddresses: [
+      ...searchAssetsToBuySections
+        .map(
+          (section) => section.data?.map((asset) => asset.mainnetAddress) || [],
+        )
+        .flat(),
+    ],
+    currency: currentCurrency,
+  });
 
-  const { data: rawAssetsWithPrice } = useAssets(
-    {
-      assetAddresses,
-      currency: currentCurrency,
-    },
-    {
-      enabled: !!assetToSell?.address || !!assetToBuy?.address,
-      select: (assetsWithPrices) => {
-        const assetToBuyWithPrice =
-          assetsWithPrices?.[assetToBuy?.uniqueId || ''];
-        const assetToSellWithPrice =
-          assetsWithPrices?.[assetToSell?.uniqueId || ''];
-        return { buy: assetToBuyWithPrice, sell: assetToSellWithPrice };
-      },
-    },
+  const assetToSellWithPrice = useMemo(
+    () =>
+      Object.values(assetsWithPrice || {})?.find(
+        (asset) => asset.mainnetAddress === assetToSell?.mainnetAddress,
+      ),
+    [assetToSell, assetsWithPrice],
   );
 
-  const { buy: rawAssetToBuy, sell: rawAssetToSell } = rawAssetsWithPrice || {};
+  const assetToBuyWithPrice = useMemo(
+    () =>
+      Object.values(assetsWithPrice || {})?.find(
+        (asset) => asset.mainnetAddress === assetToBuy?.mainnetAddress,
+      ),
+    [assetToBuy, assetsWithPrice],
+  );
 
   const parsedAssetToBuy = useMemo(() => {
-    if (assetToBuy) {
-      const userAsset = userAssets.find((userAsset) =>
-        isLowerCaseMatch(userAsset.address, rawAssetToBuy?.address),
-      );
-      if (rawAssetToBuy) {
-        return parseSearchAsset({
-          rawAsset: rawAssetToBuy,
-          userAsset,
-          outputChainId: assetToBuy.chainId,
-          searchAsset: assetToBuy,
-        });
-      }
-    }
-    return null;
-  }, [assetToBuy, rawAssetToBuy, userAssets]);
+    if (!assetToBuy) return null;
+    const userAsset = userAssets.find((userAsset) =>
+      isLowerCaseMatch(userAsset.address, assetToBuy?.address),
+    );
+    return parseSearchAsset({
+      assetWithPrice: assetToBuyWithPrice,
+      searchAsset: assetToBuy,
+      userAsset,
+    });
+  }, [assetToBuy, userAssets, assetToBuyWithPrice]);
 
   const parsedAssetToSell = useMemo(() => {
-    if (assetToSell) {
-      const userAsset = userAssets.find((userAsset) =>
-        isLowerCaseMatch(userAsset.address, rawAssetToSell?.address),
-      );
-      return parseSearchAsset({
-        rawAsset: rawAssetToSell,
-        userAsset,
-        outputChainId: assetToSell.chainId,
-        searchAsset: assetToSell,
-      });
-    }
-    return null;
-  }, [assetToSell, rawAssetToSell, userAssets]);
+    if (!assetToSell) return null;
+    const userAsset = userAssets.find((userAsset) =>
+      isLowerCaseMatch(userAsset.address, assetToSell?.address),
+    );
+    return parseSearchAsset({
+      assetWithPrice: assetToSellWithPrice,
+      searchAsset: assetToSell,
+      userAsset,
+    });
+  }, [assetToSell, assetToSellWithPrice, userAssets]);
 
-  const assetsToBuyBySection = useMemo(() => {
-    return searchReceiveAssetsSections.map(({ data, title, symbol, id }) => {
-      const parsedData: SearchAsset[] =
-        data?.filter((p) => {
+  const assetsToBuyBySection = useMemo(
+    () =>
+      searchAssetsToBuySections.map(({ data = [], title, symbol, id }) => {
+        const parsedData: SearchAsset[] = data.filter((asset) => {
           const shouldFilterFavorite =
             id !== 'favorites' &&
-            favorites[outputChainId].includes((p?.address || '') as Address);
-          const isSellToken = p.uniqueId === assetToSell?.uniqueId;
+            favorites[outputChainId].includes(asset.address);
+          const isSellToken = asset.uniqueId === assetToSell?.uniqueId;
           return !shouldFilterFavorite && !isSellToken;
-        }) || [];
-      return { data: parsedData, title, symbol, id };
-    });
-  }, [assetToSell, favorites, outputChainId, searchReceiveAssetsSections]);
+        });
+        return { data: parsedData, title, symbol, id };
+      }),
+    [
+      assetToSell?.uniqueId,
+      favorites,
+      outputChainId,
+      searchAssetsToBuySections,
+    ],
+  );
 
   // if output chain id changes we need to clear the receive asset
   useEffect(() => {
     if (prevOutputChainId !== outputChainId) {
       setAssetToBuy(null);
     }
-  }, [outputChainId, prevOutputChainId]);
+  }, [outputChainId, prevOutputChainId, setAssetToBuy]);
 
   // if user selects assetToBuy as assetToSell we need to flip assets
   useEffect(() => {
     if (assetToBuy?.address === assetToSell?.address) {
       setAssetToBuy(prevAssetToSell === undefined ? null : prevAssetToSell);
     }
-  }, [assetToBuy?.address, assetToSell?.address, prevAssetToSell]);
+  }, [
+    assetToBuy?.address,
+    assetToSell?.address,
+    prevAssetToSell,
+    setAssetToBuy,
+  ]);
 
   return {
     assetsToSell: filteredAssetsToSell,
