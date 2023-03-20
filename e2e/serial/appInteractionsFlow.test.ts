@@ -8,7 +8,6 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
   delayTime,
-  findElementAndClick,
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
@@ -113,8 +112,8 @@ describe('App interactions flow', () => {
 
   it('should be able to go to setings', async () => {
     await goToPopup(driver, rootURL);
-    await findElementAndClick({ id: 'home-page-header-right', driver });
-    await findElementAndClick({ id: 'settings-link', driver });
+    await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
+    await findElementByTestIdAndClick({ id: 'settings-link', driver });
   });
 
   it('should be able to set rainbow as default wallet', async () => {
@@ -125,11 +124,7 @@ describe('App interactions flow', () => {
   });
 
   it('should be able to connect to hardhat', async () => {
-    const btn = await querySelector(
-      driver,
-      '[data-testid="connect-to-hardhat"]',
-    );
-    await waitAndClick(btn, driver);
+    await findElementByTestIdAndClick({ id: 'connect-to-hardhat', driver });
     const button = await findElementByText(driver, 'Disconnect from Hardhat');
     expect(button).toBeTruthy();
     await findElementByTestIdAndClick({
@@ -166,10 +161,10 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(popupHandler);
 
     // switch account
-    await findElementAndClick({ id: 'switch-wallet-menu', driver });
-    await findElementAndClick({ id: 'switch-wallet-item-3', driver });
+    await findElementByTestIdAndClick({ id: 'switch-wallet-menu', driver });
+    await findElementByTestIdAndClick({ id: 'switch-wallet-item-3', driver });
     // switch network
-    await findElementAndClick({ id: 'switch-network-menu', driver });
+    await findElementByTestIdAndClick({ id: 'switch-network-menu', driver });
     await findElementByTestIdAndClick({ id: 'switch-network-item-0', driver });
 
     await delayTime('medium');
@@ -190,12 +185,12 @@ describe('App interactions flow', () => {
 
   it('should be able to go back to extension and switch account and chain', async () => {
     await goToPopup(driver, rootURL, '#/home');
-    await findElementAndClick({ id: 'home-page-header-left', driver });
-    await findElementAndClick({
+    await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
+    await findElementByTestIdAndClick({
       id: 'home-page-header-connected-apps',
       driver,
     });
-    await findElementAndClick({ id: 'switch-network-menu', driver });
+    await findElementByTestIdAndClick({ id: 'switch-network-menu', driver });
     await findElementByTestIdAndClick({ id: 'switch-network-item-0', driver });
 
     await goToTestApp(driver);
@@ -304,13 +299,16 @@ describe('App interactions flow', () => {
 
   it('should be able to disconnect from connected dapps', async () => {
     await goToPopup(driver, rootURL, '#/home');
-    await findElementAndClick({ id: 'home-page-header-left', driver });
-    await findElementAndClick({
+    await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
+    await findElementByTestIdAndClick({
       id: 'home-page-header-connected-apps',
       driver,
     });
-    await findElementAndClick({ id: 'switch-network-menu', driver });
-    await findElementAndClick({ id: 'switch-network-menu-disconnect', driver });
+    await findElementByTestIdAndClick({ id: 'switch-network-menu', driver });
+    await findElementByTestIdAndClick({
+      id: 'switch-network-menu-disconnect',
+      driver,
+    });
     await goToTestApp(driver);
     const button = await findElementByText(driver, 'Connect Wallet');
     expect(button).toBeTruthy();
