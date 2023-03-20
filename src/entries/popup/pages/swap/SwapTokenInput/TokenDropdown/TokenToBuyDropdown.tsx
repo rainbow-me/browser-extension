@@ -33,6 +33,7 @@ const AssetsToBuySection = ({
   id: string;
   onDropdownChange: (open: boolean) => void;
 }) => {
+  console.log('assetsToBuySection data', data);
   const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
     assets: data,
     size: 5,
@@ -41,16 +42,16 @@ const AssetsToBuySection = ({
   const verifiedSection = id === 'verified';
   const favoritesSection = id === 'favorites';
   const otherNetworksSection = id === 'other_networks';
-  const getSectionHeaderColor = () => {
+
+  const sectionHeaderColor = useMemo(() => {
     if (verifiedSection) {
       return 'transparent';
     }
     if (favoritesSection) {
       return 'yellow';
     }
-
     return 'labelTertiary';
-  };
+  }, [favoritesSection, verifiedSection]);
 
   if (!data.length) return null;
   return (
@@ -73,7 +74,7 @@ const AssetsToBuySection = ({
           <Inline space="4px" alignVertical="center">
             <Symbol
               symbol={symbol}
-              color={getSectionHeaderColor()}
+              color={sectionHeaderColor}
               weight="semibold"
               size={14}
               gradient={verifiedSection ? rainbowGradient : undefined}
@@ -84,7 +85,7 @@ const AssetsToBuySection = ({
                 background={verifiedSection ? 'rainbow' : undefined}
                 size="14pt"
                 weight="semibold"
-                color={getSectionHeaderColor()}
+                color={sectionHeaderColor}
               >
                 {title}
               </Text>
