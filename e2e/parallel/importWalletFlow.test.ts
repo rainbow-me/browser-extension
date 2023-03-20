@@ -5,7 +5,6 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
   delayTime,
-  findElementAndClick,
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
@@ -76,8 +75,8 @@ describe('Import wallet flow', () => {
 
   it('should be able to test the sandbox for the popup', async () => {
     await goToPopup(driver, rootURL, '#/home');
-    await findElementAndClick({ id: 'home-page-header-right', driver });
-    await findElementAndClick({ id: 'settings-link', driver });
+    await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
+    await findElementByTestIdAndClick({ id: 'settings-link', driver });
     const btn = await querySelector(
       driver,
       '[data-testid="test-sandbox-popup"]',

@@ -62,7 +62,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Box position="relative" id="home-page-header-right">
+        <Box position="relative" testId="home-page-header-right">
           {children}
         </Box>
       </DropdownMenuTrigger>
@@ -75,7 +75,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
           <Stack space="4px">
             <Stack>
               <DropdownMenuRadioItem highlightAccentColor value="settings">
-                <Box id="settings-link">
+                <Box testId="settings-link">
                   <Inline alignVertical="center" space="8px">
                     <Symbol
                       size={12}

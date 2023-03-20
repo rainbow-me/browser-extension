@@ -10,6 +10,7 @@ import { afterAll, beforeAll, expect, it } from 'vitest';
 import {
   delayTime,
   findElementAndClick,
+  findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
@@ -78,8 +79,8 @@ it('should be able import a wallet via seed', async () => {
 
 it('should be able to go to setings', async () => {
   await goToPopup(driver, rootURL);
-  await findElementAndClick({ id: 'home-page-header-right', driver });
-  await findElementAndClick({ id: 'settings-link', driver });
+  await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
+  await findElementByTestIdAndClick({ id: 'settings-link', driver });
 });
 
 it('should be able to connect to hardhat and go to send flow', async () => {
@@ -95,10 +96,10 @@ it('should be able to save contact on send flow', async () => {
   const input = await querySelector(driver, '[data-testid="to-address-input"]');
   await input.sendKeys('rainbowwallet.eth');
   await delayTime('long');
-  const saveButton = await querySelector(
+  const saveButton = await findElementByTestId({
+    id: 'navbar-contact-button-save',
     driver,
-    '[data-testid="navbar-contact-button-save"]',
-  );
+  });
   expect(saveButton).toBeTruthy();
   await waitAndClick(saveButton, driver);
   const confirmContactButton = await querySelector(
@@ -108,110 +109,87 @@ it('should be able to save contact on send flow', async () => {
   expect(confirmContactButton).toBeTruthy();
   await waitAndClick(confirmContactButton, driver);
 
-  const displayName = await querySelector(
+  const displayName = await findElementByTestId({
+    id: 'to-address-input-display',
     driver,
-    '[data-testid="to-address-input-display"]',
-  );
+  });
   const displayNameText = await displayName.getText();
   expect(displayNameText).toBe('rainbowwallet.eth');
 });
 
 it('should be able to edit contact on send flow', async () => {
-  const button = await querySelector(
+  await findElementByTestIdAndClick({
+    id: 'navbar-contact-button-edit',
     driver,
-    '[data-testid="navbar-contact-button-edit"]',
-  );
-  expect(button).toBeTruthy();
-  await waitAndClick(button, driver);
-
-  const editButton = await querySelector(
+  });
+  await findElementByTestIdAndClick({
+    id: 'navbar-contact-button-edit-edit',
     driver,
-    '[data-testid="navbar-contact-button-edit-edit"]',
-  );
-  expect(editButton).toBeTruthy();
-  await waitAndClick(editButton, driver);
+  });
   await delayTime('medium');
 
-  const contactInput = await querySelector(
+  const contactInput = await findElementByTestId({
+    id: 'contact-prompt-input',
     driver,
-    '[data-testid="contact-prompt-input"]',
-  );
+  });
   expect(contactInput).toBeTruthy();
 
   await contactInput.clear();
   await contactInput.sendKeys('rianbo');
 
-  const confirmContactButton = await querySelector(
-    driver,
-    '[data-testid="contact-prompt-confirm"]',
-  );
-  expect(confirmContactButton).toBeTruthy();
-  await waitAndClick(confirmContactButton, driver);
+  await findElementByTestIdAndClick({ id: 'contact-prompt-confirm', driver });
 
-  const displayName = await querySelector(
+  const displayName = await findElementByTestId({
+    id: 'to-address-input-display',
     driver,
-    '[data-testid="to-address-input-display"]',
-  );
+  });
   const displayNameText = await displayName.getText();
   expect(displayNameText).toBe('rianbo');
 });
 
 it('should be able to delete contact on send flow', async () => {
-  const button2 = await querySelector(
+  await findElementByTestIdAndClick({
+    id: 'navbar-contact-button-edit',
     driver,
-    '[data-testid="navbar-contact-button-edit"]',
-  );
-  expect(button2).toBeTruthy();
-  await waitAndClick(button2, driver);
+  });
 
-  const deleteButton = await querySelector(
+  await findElementByTestIdAndClick({
+    id: 'navbar-contact-button-edit-delete',
     driver,
-    '[data-testid="navbar-contact-button-edit-delete"]',
-  );
-  expect(deleteButton).toBeTruthy();
-  await waitAndClick(deleteButton, driver);
+  });
 
-  const confirmContactButton2 = await querySelector(
+  await findElementByTestIdAndClick({
+    id: 'contact-prompt-delete-confirm',
     driver,
-    '[data-testid="contact-prompt-delete-confirm"]',
-  );
-  expect(confirmContactButton2).toBeTruthy();
-  await waitAndClick(confirmContactButton2, driver);
-  const displayName = await querySelector(
+  });
+
+  const displayName = await findElementByTestId({
+    id: 'to-address-input-display',
     driver,
-    '[data-testid="to-address-input-display"]',
-  );
+  });
   const displayNameText = await displayName.getText();
   expect(displayNameText).toBe('rainbowwallet.eth');
 });
 
 it('should be able to clear to address input on send flow', async () => {
-  const clearButton = await querySelector(
+  await findElementByTestIdAndClick({
+    id: 'input-wrapper-close-to-address-input',
     driver,
-    '[data-testid="input-wrapper-close-to-address-input"]',
-  );
-  expect(clearButton).toBeTruthy();
-  await waitAndClick(clearButton, driver);
-
-  const input = await querySelector(driver, '[data-testid="to-address-input"]');
+  });
+  const input = await findElementByTestId({ id: 'to-address-input', driver });
   await input.sendKeys('rainbowwallet.eth');
 });
 
 it('should be able to select token on send flow', async () => {
-  const dropdown = await querySelector(
+  await findElementByTestIdAndClick({
+    id: 'input-wrapper-dropdown-token-input',
     driver,
-    '[data-testid="input-wrapper-dropdown-token-input"]',
-  );
-  expect(dropdown).toBeTruthy();
-  await waitAndClick(dropdown, driver);
-
+  });
   // dai
-  const asset = await querySelector(
+  await findElementByTestIdAndClick({
+    id: 'token-input-asset-0x6b175474e89094c44da98b954eedeac495271d0f_1',
     driver,
-    '[data-testid="token-input-asset-0x6b175474e89094c44da98b954eedeac495271d0f_1"]',
-  );
-  expect(asset).toBeTruthy();
-  await waitAndClick(asset, driver);
+  });
 });
 
 it('should be able to click max and switch on send flow', async () => {
@@ -221,61 +199,43 @@ it('should be able to click max and switch on send flow', async () => {
   );
   expect(switchButton).toBeTruthy();
 
-  const maxButton = await querySelector(
-    driver,
-    '[data-testid="value-input-max"]',
-  );
+  await findElementByTestIdAndClick({ id: 'value-input-max', driver });
 
-  await waitAndClick(maxButton, driver);
-
-  const inputMask = await querySelector(
+  const inputMask = await findElementByTestId({
+    id: 'send-input-mask',
     driver,
-    '[data-testid="send-input-mask"]',
-  );
+  });
   await inputMask.clear();
   await inputMask.sendKeys('0.01');
 });
 
 it('should be able to go to review on send flow', async () => {
-  const reviewButton = await querySelector(
-    driver,
-    '[data-testid="send-review-button"]',
-  );
-  expect(reviewButton).toBeTruthy();
-  await waitAndClick(reviewButton, driver);
+  await findElementByTestIdAndClick({ id: 'send-review-button', driver });
 });
 
 it('should be able to interact with destination menu on review on send flow', async () => {
-  const editContactButton = await querySelector(
+  await findElementByTestIdAndClick({
+    id: 'send-review-edit-contact-trigger',
     driver,
-    '[data-testid="send-review-edit-contact-trigger"]',
-  );
-  expect(editContactButton).toBeTruthy();
-  await waitAndClick(editContactButton, driver);
-
-  const viewContactItem = await querySelector(
+  });
+  const viewContactItem = await findElementByTestId({
+    id: 'send-review-edit-contact-view',
     driver,
-    '[data-testid="send-review-edit-contact-view"]',
-  );
+  });
   expect(viewContactItem).toBeTruthy();
-  const copyContactItem = await querySelector(
+  const copyContactItem = await findElementByTestId({
+    id: 'send-review-edit-contact-copy',
     driver,
-    '[data-testid="send-review-edit-contact-copy"]',
-  );
+  });
   expect(copyContactItem).toBeTruthy();
-  const editContactItem = await querySelector(
+  const editContactItem = await findElementByTestId({
+    id: 'send-review-edit-contact-edit',
     driver,
-    '[data-testid="send-review-edit-contact-edit"]',
-  );
+  });
   expect(editContactItem).toBeTruthy();
   await waitAndClick(copyContactItem, driver);
 });
 
 it('should be able to send transaction on review on send flow', async () => {
-  const sendButton = await querySelector(
-    driver,
-    '[data-testid="review-confirm-button"]',
-  );
-  expect(sendButton).toBeTruthy();
-  await waitAndClick(sendButton, driver);
+  await findElementByTestIdAndClick({ id: 'review-confirm-button', driver });
 });

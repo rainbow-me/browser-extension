@@ -62,7 +62,7 @@ export const SwitchNetworkMenuSelector = ({
             key={i}
             selectedValue={selectedValue}
           >
-            <Box id={`switch-network-item-${i}`}>
+            <Box testId={`switch-network-item-${i}`}>
               <Inline space="8px" alignVertical="center">
                 <ChainBadge chainId={chainId} size="small" />
                 <Text color="label" size="14pt" weight="semibold">
@@ -86,7 +86,11 @@ export const SwitchNetworkMenuDisconnect = ({
   onDisconnect: () => void;
 }) => {
   return (
-    <Box id="switch-network-menu-disconnect" as="button" onClick={onDisconnect}>
+    <Box
+      testId="switch-network-menu-disconnect"
+      as="button"
+      onClick={onDisconnect}
+    >
       <Inset vertical="8px">
         <Inline alignVertical="center" space="8px">
           <Box style={{ width: 18, height: 18 }}>
