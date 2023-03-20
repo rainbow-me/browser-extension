@@ -1,6 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { Address } from 'wagmi';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { initializeMessenger } from '~/core/messengers';
 import { useCurrentAddressStore } from '~/core/state';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
@@ -25,7 +27,7 @@ export const RequestAccounts = ({
   request,
 }: ApproveRequestProps) => {
   const { currentAddress } = useCurrentAddressStore();
-  const { appHostName, appLogo, appName } = useAppMetadata({
+  const { appHostName, appHost, appLogo, appName } = useAppMetadata({
     url: request?.meta?.sender?.url,
     title: request?.meta?.sender?.tab?.title,
   });
@@ -43,7 +45,28 @@ export const RequestAccounts = ({
       address: selectedWallet,
       chainId: selectedChainId,
     });
-  }, [appHostName, approveRequest, selectedChainId, selectedWallet]);
+    analytics.track(event.dappPromptConnectApproved, {
+      chainId: selectedChainId,
+      dappURL: appHost,
+      dappName: appName,
+    });
+  }, [
+    appHostName,
+    appHost,
+    appName,
+    approveRequest,
+    selectedChainId,
+    selectedWallet,
+  ]);
+
+  const onRejectRequest = useCallback(() => {
+    rejectRequest();
+    analytics.track(event.dappPromptConnectRejected, {
+      chainId: selectedChainId,
+      dappURL: appHost,
+      dappName: appName,
+    });
+  }, [appHost, appName, rejectRequest, selectedChainId]);
 
   return (
     <Rows alignVertical="justify">
@@ -62,7 +85,7 @@ export const RequestAccounts = ({
           selectedChainId={selectedChainId}
           setSelectedChainId={setSelectedChainId}
           onAcceptRequest={onAcceptRequest}
-          onRejectRequest={rejectRequest}
+          onRejectRequest={onRejectRequest}
           appName={appName}
         />
       </Row>
