@@ -90,8 +90,8 @@ it('should be able import a wallet via seed', async () => {
 
 it('should be able to go to setings', async () => {
   await goToPopup(driver, rootURL);
-  await findElementAndClick({ id: 'home-page-header-right', driver });
-  await findElementAndClick({ id: 'settings-link', driver });
+  await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
+  await findElementByTestIdAndClick({ id: 'settings-link', driver });
 });
 
 it('should be able to connect to hardhat and turn swaps flag on', async () => {
@@ -130,8 +130,8 @@ it('should be able to go to swap settings and check rows are visible', async () 
 
 it('should be able to go to settings and turn on flashbots', async () => {
   await findElementByTestIdAndClick({ id: 'navbar-button-with-back', driver });
-  await findElementAndClick({ id: 'home-page-header-right', driver });
-  await findElementAndClick({ id: 'settings-link', driver });
+  await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
+  await findElementByTestIdAndClick({ id: 'settings-link', driver });
   await findElementByTestIdAndClick({ id: 'settings-transactions', driver });
   await findElementByTestIdAndClick({
     id: 'flashbots-transactions-toggle',
