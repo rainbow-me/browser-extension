@@ -3,9 +3,18 @@ import React, { useCallback, useState } from 'react';
 
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
-import { Bleed, Box, ButtonSymbol, Inline, Stack, Text } from '~/design-system';
+import {
+  Bleed,
+  Box,
+  ButtonSymbol,
+  Inline,
+  Stack,
+  Symbol,
+  Text,
+} from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
+import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { ChevronDown } from '~/entries/popup/components/ChevronDown/ChevronDown';
 import { useSwapReviewDetails } from '~/entries/popup/hooks/swap/useSwapReviewDetails';
 
@@ -21,7 +30,13 @@ const DetailsRow = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-const CarrouselButton = ({ textArray }: { textArray: string[] }) => {
+const CarrouselButton = ({
+  textArray,
+  symbol,
+}: {
+  textArray: string[];
+  symbol?: SymbolProps['symbol'];
+}) => {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
 
   const goToNextText = useCallback(() => {
@@ -33,9 +48,19 @@ const CarrouselButton = ({ textArray }: { textArray: string[] }) => {
   return (
     <ButtonOverflow>
       <Box onClick={goToNextText}>
-        <Text size="14pt" weight="semibold" color="label">
-          {textArray[currentTextIndex]}
-        </Text>
+        <Inline space="4px" alignHorizontal="center" alignVertical="center">
+          <Text size="14pt" weight="semibold" color="label">
+            {textArray[currentTextIndex]}
+          </Text>
+          {symbol && (
+            <Symbol
+              symbol={symbol}
+              weight="semibold"
+              color="labelQuaternary"
+              size={12}
+            />
+          )}
+        </Inline>
       </Box>
     </ButtonOverflow>
   );
@@ -189,7 +214,7 @@ const SwapReviewSheetWithQuote = ({
               />
             </Inline>
           </Box>
-          <Box>
+          <Box paddingHorizontal="20px">
             <Stack space="4px">
               <DetailsRow>
                 <Label
@@ -217,22 +242,39 @@ const SwapReviewSheetWithQuote = ({
                 />
                 <CarrouselButton textArray={includedFee} />
               </DetailsRow>
-              <DetailsRow>
-                <Label
-                  label="Use Flashbots"
-                  testId="swap-review-flashbots"
-                  infoButton
-                />
-                <Text size="14pt" weight="semibold" color="label">
-                  {flashbotsEnabled}
-                </Text>
-              </DetailsRow>
+              {flashbotsEnabled && (
+                <DetailsRow>
+                  <Label
+                    label="Use Flashbots"
+                    testId="swap-review-flashbots"
+                    infoButton
+                  />
+                  <Inline
+                    space="4px"
+                    alignHorizontal="center"
+                    alignVertical="center"
+                  >
+                    <Text size="14pt" weight="semibold" color="label">
+                      On
+                    </Text>
+                    <Symbol
+                      symbol="checkmark.shield.fill"
+                      weight="semibold"
+                      color="green"
+                      size={12}
+                    />
+                  </Inline>
+                </DetailsRow>
+              )}
               <DetailsRow>
                 <Label
                   label="Exchange rate"
                   testId="swap-review-exchange-rate"
                 />
-                <CarrouselButton textArray={exchangeRate} />
+                <CarrouselButton
+                  symbol="arrow.2.squarepath"
+                  textArray={exchangeRate}
+                />
               </DetailsRow>
               <DetailsRow>
                 <Label
