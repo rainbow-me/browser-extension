@@ -45,23 +45,22 @@ export const useSwapReviewDetails = ({
         decimals: 18,
       },
     ).amount;
-    return {
-      fee:
-        assetToSell.address === ETH_ADDRESS
-          ? convertRawAmountToNativeDisplay(
-              quote.fee.toString(),
-              assetToSell.decimals,
-              assetToSell.price?.value || '0',
-              currentCurrency,
-            ).display
-          : convertRawAmountToNativeDisplay(
-              multiply(quote.buyAmount.toString(), feePercentage),
-              assetToBuy.decimals,
-              assetToBuy.price?.value || '0',
-              currentCurrency,
-            ).display,
-      feePercentage,
-    };
+    return [
+      assetToSell.address === ETH_ADDRESS
+        ? convertRawAmountToNativeDisplay(
+            quote.fee.toString(),
+            assetToSell.decimals,
+            assetToSell.price?.value || '0',
+            currentCurrency,
+          ).display
+        : convertRawAmountToNativeDisplay(
+            multiply(quote.buyAmount.toString(), feePercentage),
+            assetToBuy.decimals,
+            assetToBuy.price?.value || '0',
+            currentCurrency,
+          ).display,
+      `${multiply(feePercentage, 100)}%`,
+    ];
   }, [
     assetToBuy.decimals,
     assetToBuy.price?.value,

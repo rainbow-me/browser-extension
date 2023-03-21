@@ -1,10 +1,11 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
 import { Bleed, Box, ButtonSymbol, Inline, Stack, Text } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
+import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { ChevronDown } from '~/entries/popup/components/ChevronDown/ChevronDown';
 import { useSwapReviewDetails } from '~/entries/popup/hooks/swap/useSwapReviewDetails';
 
@@ -17,6 +18,26 @@ const DetailsRow = ({ children }: { children: React.ReactNode }) => {
         {children}
       </Inline>
     </Box>
+  );
+};
+
+const CarrouselButton = ({ textArray }: { textArray: string[] }) => {
+  const [currentTextIndex, setCurrentTextIndex] = useState(0);
+
+  const goToNextText = useCallback(() => {
+    setCurrentTextIndex((currentTextIndex) =>
+      currentTextIndex + 1 < textArray.length ? currentTextIndex + 1 : 0,
+    );
+  }, [textArray.length]);
+
+  return (
+    <ButtonOverflow>
+      <Box onClick={goToNextText}>
+        <Text size="14pt" weight="semibold" color="label">
+          {textArray[currentTextIndex]}
+        </Text>
+      </Box>
+    </ButtonOverflow>
   );
 };
 
@@ -194,9 +215,7 @@ const SwapReviewSheetWithQuote = ({
                   testId="swap-review-rnbw-fee"
                   infoButton
                 />
-                <Text size="14pt" weight="semibold" color="label">
-                  {`${includedFee.fee} ${includedFee.feePercentage}%`}
-                </Text>
+                <CarrouselButton textArray={includedFee} />
               </DetailsRow>
               <DetailsRow>
                 <Label
@@ -213,9 +232,7 @@ const SwapReviewSheetWithQuote = ({
                   label="Exchange rate"
                   testId="swap-review-exchange-rate"
                 />
-                <Text size="14pt" weight="semibold" color="label">
-                  {`${exchangeRate[0]} ${exchangeRate[1]}`}
-                </Text>
+                <CarrouselButton textArray={exchangeRate} />
               </DetailsRow>
               <DetailsRow>
                 <Label
