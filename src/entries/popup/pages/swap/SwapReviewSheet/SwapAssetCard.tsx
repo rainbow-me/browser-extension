@@ -6,7 +6,7 @@ import {
   convertRawAmountToBalance,
   convertRawAmountToNativeDisplay,
 } from '~/core/utils/numbers';
-import { Box, Inline, Stack, Text } from '~/design-system';
+import { Box, Inline, Stack, Text, TextOverflow } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { transparentAccentColorAsHsl } from '~/design-system/styles/core.css';
 import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
@@ -58,12 +58,28 @@ export const SwapAssetCard = ({ asset, assetAmount }: SwapAssetCardProps) => {
             </Inline>
             <Box>
               <Stack space="10px" alignHorizontal="center">
-                <Text color="label" size="14pt" weight="bold">
-                  {`${amount} ${asset?.symbol}`}
-                </Text>
-                <Text color="labelSecondary" size="12pt" weight="bold">
-                  {secondaryAmount}
-                </Text>
+                <Inline space="4px" alignVertical="center">
+                  <TextOverflow
+                    maxWidth={80}
+                    color="label"
+                    size="14pt"
+                    weight="bold"
+                  >
+                    {`${amount}`}
+                  </TextOverflow>
+                  <Text color="label" size="14pt" weight="bold">
+                    {`${asset?.symbol}`}
+                  </Text>
+                </Inline>
+
+                <TextOverflow
+                  maxWidth={100}
+                  color="labelSecondary"
+                  size="12pt"
+                  weight="bold"
+                >
+                  {`${secondaryAmount}`}
+                </TextOverflow>
               </Stack>
             </Box>
           </Stack>

@@ -2,11 +2,61 @@ import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import React from 'react';
 
 import { ParsedSearchAsset } from '~/core/types/assets';
-import { Box, Inline, Stack, Text } from '~/design-system';
+import { convertRawAmountToBalance } from '~/core/utils/numbers';
+import { Bleed, Box, ButtonSymbol, Inline, Stack, Text } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { ChevronDown } from '~/entries/popup/components/ChevronDown/ChevronDown';
 
 import { SwapAssetCard } from './SwapAssetCard';
+
+const DetailsRow = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <Box style={{ height: '32px' }}>
+      <Inline height="full" alignVertical="center" alignHorizontal="justify">
+        {children}
+      </Inline>
+    </Box>
+  );
+};
+
+const Label = ({
+  label,
+  testId,
+  onClick,
+}: {
+  label: string;
+  testId: string;
+  onClick: () => void;
+}) => (
+  <Box>
+    <Stack space="8px">
+      <Inline space="4px" alignVertical="center">
+        <Box>
+          <Text
+            align="left"
+            color="labelSecondary"
+            size="14pt"
+            weight="semibold"
+          >
+            {label}
+          </Text>
+        </Box>
+        <Box key="swap-settings-warning-icon">
+          <Bleed vertical="6px" horizontal="6px">
+            <ButtonSymbol
+              symbol="info.circle.fill"
+              color="labelQuaternary"
+              height="28px"
+              variant="tinted"
+              onClick={onClick}
+              testId={testId}
+            />
+          </Bleed>
+        </Box>
+      </Inline>
+    </Stack>
+  </Box>
+);
 
 export type SwapReviewSheetProps = {
   show: boolean;
@@ -23,7 +73,6 @@ export const SwapReviewSheet = ({
 }: SwapReviewSheetProps) => {
   if (!quote || !assetToBuy || !assetToSell || (quote as QuoteError)?.error)
     return null;
-
   const q = quote as Quote | CrosschainQuote;
   return (
     <BottomSheet show={show}>
@@ -83,6 +132,76 @@ export const SwapReviewSheet = ({
                 assetAmount={q.buyAmount.toString()}
               />
             </Inline>
+          </Box>
+          <Box>
+            <Stack space="4px">
+              <DetailsRow>
+                <Text size="14pt" weight="semibold" color="labelSecondary">
+                  Minimum received
+                </Text>
+                <Text size="14pt" weight="semibold" color="labelSecondary">
+                  {`${
+                    convertRawAmountToBalance(q.buyAmount.toString(), {
+                      decimals: assetToBuy?.decimals,
+                    }).display
+                  } ${assetToBuy.symbol}`}
+                </Text>
+              </DetailsRow>
+              <DetailsRow>
+                <Text size="14pt" weight="semibold" color="labelSecondary">
+                  Swapping via
+                </Text>
+                <Text size="14pt" weight="semibold" color="labelSecondary">
+                  {`${
+                    convertRawAmountToBalance(q.buyAmount.toString(), {
+                      decimals: assetToBuy?.decimals,
+                    }).display
+                  } ${assetToBuy.symbol}`}
+                </Text>
+              </DetailsRow>
+              <DetailsRow>
+                <Label
+                  label="Included Rainbow fee"
+                  testId="swap-review-rnbw-fee"
+                  onClick={() => null}
+                />
+                <Text size="14pt" weight="semibold" color="labelSecondary">
+                  {`${
+                    convertRawAmountToBalance(q.buyAmount.toString(), {
+                      decimals: assetToBuy?.decimals,
+                    }).display
+                  } ${assetToBuy.symbol}`}
+                </Text>
+              </DetailsRow>
+              <DetailsRow>
+                <Label
+                  label="Use Flashbots"
+                  testId="swap-review-flashbots"
+                  onClick={() => null}
+                />
+                <Text size="14pt" weight="semibold" color="labelSecondary">
+                  {`${
+                    convertRawAmountToBalance(q.buyAmount.toString(), {
+                      decimals: assetToBuy?.decimals,
+                    }).display
+                  } ${assetToBuy.symbol}`}
+                </Text>
+              </DetailsRow>
+              <DetailsRow>
+                <Label
+                  label="More details"
+                  testId="swap-review-details"
+                  onClick={() => null}
+                />
+                <Text size="14pt" weight="semibold" color="labelSecondary">
+                  {`${
+                    convertRawAmountToBalance(q.buyAmount.toString(), {
+                      decimals: assetToBuy?.decimals,
+                    }).display
+                  } ${assetToBuy.symbol}`}
+                </Text>
+              </DetailsRow>
+            </Stack>
           </Box>
         </Stack>
       </Box>
