@@ -11,7 +11,7 @@ import {
   TextColor,
 } from '~/design-system/styles/designTokens';
 
-import { ChevronRightDouble } from '../../components/ChevroRightDouble';
+import { ChevronRightDouble } from '../../components/ChevronRightDouble';
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import { ExplainerSheetProps } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Spinner } from '../../components/Spinner/Spinner';

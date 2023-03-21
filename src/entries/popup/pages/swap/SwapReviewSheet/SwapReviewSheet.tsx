@@ -2,8 +2,9 @@ import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import React from 'react';
 
 import { ParsedSearchAsset } from '~/core/types/assets';
-import { Box, Column, Columns, Inline, Stack, Text } from '~/design-system';
+import { Box, Inline, Stack, Text } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
+import { ChevronDown } from '~/entries/popup/components/ChevronDown/ChevronDown';
 
 import { SwapAssetCard } from './SwapAssetCard';
 
@@ -38,25 +39,50 @@ export const SwapReviewSheet = ({
             </Box>
           </Box>
           <Box>
-            <Columns
+            <Inline
               space="10px"
-              alignHorizontal="center"
               alignVertical="center"
+              alignHorizontal="center"
             >
-              <Column width="content">
-                <SwapAssetCard
-                  asset={assetToSell}
-                  assetAmount={q.sellAmount.toString()}
-                />
-              </Column>
+              <SwapAssetCard
+                asset={assetToSell}
+                assetAmount={q.sellAmount.toString()}
+              />
+              <Box
+                boxShadow="12px surfaceSecondaryElevated"
+                background="surfaceSecondaryElevated"
+                borderRadius="32px"
+                borderWidth={'1px'}
+                borderColor="buttonStroke"
+                style={{
+                  width: 32,
+                  height: 32,
+                  zIndex: 10,
+                  position: 'absolute',
+                  left: '0 auto',
+                }}
+              >
+                <Inline
+                  height="full"
+                  alignHorizontal="center"
+                  alignVertical="center"
+                >
+                  <Inline alignHorizontal="center">
+                    <Box style={{ rotate: '-90deg' }} marginRight="-6px">
+                      <ChevronDown color="labelTertiary" />
+                    </Box>
+                    <Box style={{ rotate: '-90deg' }} marginLeft="-6px">
+                      <ChevronDown color="labelQuaternary" />
+                    </Box>
+                  </Inline>
+                </Inline>
+              </Box>
 
-              <Column width="content">
-                <SwapAssetCard
-                  asset={assetToBuy}
-                  assetAmount={q.buyAmount.toString()}
-                />
-              </Column>
-            </Columns>
+              <SwapAssetCard
+                asset={assetToBuy}
+                assetAmount={q.buyAmount.toString()}
+              />
+            </Inline>
           </Box>
         </Stack>
       </Box>
