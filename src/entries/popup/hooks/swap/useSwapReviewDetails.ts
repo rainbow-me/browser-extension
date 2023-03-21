@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { ETH_ADDRESS } from '~/core/references';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
+import { ChainName } from '~/core/types/chains';
 import {
   convertRawAmountToBalance,
   convertRawAmountToDecimalFormat,
@@ -12,6 +13,27 @@ import {
   handleSignificantDecimals,
   multiply,
 } from '~/core/utils/numbers';
+
+const getExchangeIconUrl = (protocol: string): string | null => {
+  if (!protocol) return null;
+  const parsedProtocol = protocol?.replace(' ', '')?.toLowerCase();
+  return `https://raw.githubusercontent.com/rainbow-me/assets/master/exchanges/${parsedProtocol}.png`;
+};
+
+const parseExchangeName = (name: string) => {
+  const networks = Object.keys(ChainName).map((network) =>
+    network.toLowerCase(),
+  );
+
+  const removeNetworks = (name: string) =>
+    networks.some((network) => name.toLowerCase().includes(network))
+      ? name.slice(name.indexOf('_') + 1, name.length)
+      : name;
+
+  const removeBridge = (name: string) => name.replace('-bridge', '');
+
+  return removeNetworks(removeBridge(name));
+};
 
 export const useSwapReviewDetails = ({
   quote,
@@ -23,6 +45,11 @@ export const useSwapReviewDetails = ({
   quote: Quote | CrosschainQuote;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
+  const bridges = useMemo(
+    () => (quote as CrosschainQuote)?.routes?.[0]?.usedBridgeNames || [],
+    [quote],
+  );
+
   const minimumReceived = useMemo(
     () =>
       `${
@@ -33,10 +60,15 @@ export const useSwapReviewDetails = ({
     [assetToBuy?.decimals, assetToBuy.symbol, quote.buyAmount],
   );
 
-  const swappingRoute = useMemo(() => {
-    const routeNames = quote.protocols?.map(({ name }) => name);
-    return `${routeNames}`;
-  }, [quote.protocols]);
+  const swappingRoute = useMemo(
+    () =>
+      quote.protocols?.map(({ name }) => ({
+        name: parseExchangeName(name),
+        icon: getExchangeIconUrl(parseExchangeName(name)),
+        isBridge: bridges.includes(name),
+      })),
+    [bridges, quote.protocols],
+  );
 
   const includedFee = useMemo(() => {
     const feePercentage = convertRawAmountToBalance(

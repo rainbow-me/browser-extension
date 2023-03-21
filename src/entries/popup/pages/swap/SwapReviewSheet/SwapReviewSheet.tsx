@@ -20,6 +20,7 @@ import { ChevronDown } from '~/entries/popup/components/ChevronDown/ChevronDown'
 import { useSwapReviewDetails } from '~/entries/popup/hooks/swap/useSwapReviewDetails';
 
 import { SwapAssetCard } from './SwapAssetCard';
+import { SwapRoutes } from './SwapRoutes';
 import { SwapViewContractDropdown } from './SwapViewContractDropdown';
 
 const DetailsRow = ({ children }: { children: React.ReactNode }) => {
@@ -232,9 +233,7 @@ const SwapReviewSheetWithQuote = ({
                   label="Swapping via"
                   testId="swap-review-swapping-route"
                 />
-                <Text size="14pt" weight="semibold" color="label">
-                  {swappingRoute}
-                </Text>
+                {!!swappingRoute && <SwapRoutes protocols={swappingRoute} />}
               </DetailsRow>
               <DetailsRow>
                 <Label
