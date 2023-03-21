@@ -195,7 +195,7 @@ const SwapReviewSheetWithQuote = ({
                   infoButton
                 />
                 <Text size="14pt" weight="semibold" color="label">
-                  {`${includedFee.fee} ${includedFee.feePercentageBasisPoints}`}
+                  {`${includedFee.fee} ${includedFee.feePercentage}%`}
                 </Text>
               </DetailsRow>
               <DetailsRow>

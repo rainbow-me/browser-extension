@@ -1,12 +1,16 @@
 import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
 import { useMemo } from 'react';
 
+import { ETH_ADDRESS } from '~/core/references';
+import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import {
   convertRawAmountToBalance,
   convertRawAmountToDecimalFormat,
+  convertRawAmountToNativeDisplay,
   divide,
   handleSignificantDecimals,
+  multiply,
 } from '~/core/utils/numbers';
 
 export const useSwapReviewDetails = ({
@@ -18,6 +22,7 @@ export const useSwapReviewDetails = ({
   assetToSell: ParsedSearchAsset;
   quote: Quote | CrosschainQuote;
 }) => {
+  const { currentCurrency } = useCurrentCurrencyStore();
   const minimumReceived = useMemo(
     () =>
       `${
@@ -34,53 +39,74 @@ export const useSwapReviewDetails = ({
   }, [quote.protocols]);
 
   const includedFee = useMemo(() => {
+    const feePercentage = convertRawAmountToBalance(
+      quote.feePercentageBasisPoints,
+      {
+        decimals: 18,
+      },
+    ).amount;
     return {
-      fee: quote.fee,
-      feePercentageBasisPoints: quote.feePercentageBasisPoints,
+      fee:
+        assetToSell.address === ETH_ADDRESS
+          ? convertRawAmountToNativeDisplay(
+              quote.fee.toString(),
+              assetToSell.decimals,
+              assetToSell.price?.value || '0',
+              currentCurrency,
+            ).display
+          : convertRawAmountToNativeDisplay(
+              multiply(quote.buyAmount.toString(), feePercentage),
+              assetToBuy.decimals,
+              assetToBuy.price?.value || '0',
+              currentCurrency,
+            ).display,
+      feePercentage,
     };
-  }, [quote.fee, quote.feePercentageBasisPoints]);
+  }, [
+    assetToBuy.decimals,
+    assetToBuy.price?.value,
+    assetToSell,
+    currentCurrency,
+    quote.buyAmount,
+    quote.fee,
+    quote.feePercentageBasisPoints,
+  ]);
 
   const exchangeRate = useMemo(() => {
     const convertedSellAmount = convertRawAmountToDecimalFormat(
       quote.sellAmount.toString(),
-      quote.inputTokenDecimals,
+      assetToSell.decimals,
     );
 
     const convertedBuyAmount = convertRawAmountToDecimalFormat(
       quote.buyAmount.toString(),
-      quote.outputTokenDecimals,
+      assetToBuy.decimals,
     );
 
-    const outputExecutionRateRaw = divide(
+    const sellExecutionRateRaw = divide(
       convertedSellAmount,
       convertedBuyAmount,
     );
 
-    const inputExecutionRateRaw = divide(
-      convertedBuyAmount,
-      convertedSellAmount,
-    );
+    const buyExecutionRateRaw = divide(convertedBuyAmount, convertedSellAmount);
 
-    const inputExecutionRate = handleSignificantDecimals(
-      inputExecutionRateRaw,
+    const sellExecutionRate = handleSignificantDecimals(
+      sellExecutionRateRaw,
       2,
     );
 
-    const outputExecutionRate = handleSignificantDecimals(
-      outputExecutionRateRaw,
-      2,
-    );
+    const buyExecutionRate = handleSignificantDecimals(buyExecutionRateRaw, 2);
 
     return [
-      `1 ${assetToSell.symbol} for ${outputExecutionRate} ${assetToBuy.symbol}`,
-      `1 ${assetToBuy.symbol} for ${inputExecutionRate} ${assetToSell.symbol}`,
+      `1 ${assetToSell.symbol} for ${buyExecutionRate} ${assetToBuy.symbol}`,
+      `1 ${assetToBuy.symbol} for ${sellExecutionRate} ${assetToSell.symbol}`,
     ];
   }, [
+    assetToBuy.decimals,
     assetToBuy.symbol,
+    assetToSell.decimals,
     assetToSell.symbol,
     quote.buyAmount,
-    quote.inputTokenDecimals,
-    quote.outputTokenDecimals,
     quote.sellAmount,
   ]);
 
