@@ -2,10 +2,11 @@ import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import React from 'react';
 
 import { ParsedSearchAsset } from '~/core/types/assets';
-import { convertRawAmountToBalance } from '~/core/utils/numbers';
+import { truncateAddress } from '~/core/utils/address';
 import { Bleed, Box, ButtonSymbol, Inline, Stack, Text } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
 import { ChevronDown } from '~/entries/popup/components/ChevronDown/ChevronDown';
+import { useSwapReviewDetails } from '~/entries/popup/hooks/swap/useSwapReviewDetails';
 
 import { SwapAssetCard } from './SwapAssetCard';
 
@@ -22,11 +23,13 @@ const DetailsRow = ({ children }: { children: React.ReactNode }) => {
 const Label = ({
   label,
   testId,
-  onClick,
+  infoButton = false,
+  onClick = () => null,
 }: {
   label: string;
   testId: string;
-  onClick: () => void;
+  infoButton?: boolean;
+  onClick?: () => void;
 }) => (
   <Box>
     <Stack space="8px">
@@ -41,18 +44,20 @@ const Label = ({
             {label}
           </Text>
         </Box>
-        <Box key="swap-settings-warning-icon">
-          <Bleed vertical="6px" horizontal="6px">
-            <ButtonSymbol
-              symbol="info.circle.fill"
-              color="labelQuaternary"
-              height="28px"
-              variant="tinted"
-              onClick={onClick}
-              testId={testId}
-            />
-          </Bleed>
-        </Box>
+        {infoButton && (
+          <Box key="swap-settings-warning-icon">
+            <Bleed vertical="6px" horizontal="6px">
+              <ButtonSymbol
+                symbol="info.circle.fill"
+                color="labelQuaternary"
+                height="28px"
+                variant="tinted"
+                onClick={onClick}
+                testId={testId}
+              />
+            </Bleed>
+          </Box>
+        )}
       </Inline>
     </Stack>
   </Box>
@@ -63,6 +68,7 @@ export type SwapReviewSheetProps = {
   assetToSell?: ParsedSearchAsset | null;
   assetToBuy?: ParsedSearchAsset | null;
   quote?: Quote | CrosschainQuote | QuoteError;
+  flashbotsEnabled: boolean;
 };
 
 export const SwapReviewSheet = ({
@@ -70,10 +76,39 @@ export const SwapReviewSheet = ({
   assetToSell,
   assetToBuy,
   quote,
+  flashbotsEnabled,
 }: SwapReviewSheetProps) => {
   if (!quote || !assetToBuy || !assetToSell || (quote as QuoteError)?.error)
     return null;
-  const q = quote as Quote | CrosschainQuote;
+  return (
+    <SwapReviewSheetWithQuote
+      show={show}
+      assetToSell={assetToSell}
+      assetToBuy={assetToBuy}
+      quote={quote as Quote | CrosschainQuote}
+      flashbotsEnabled={flashbotsEnabled}
+    />
+  );
+};
+
+type SwapReviewSheetWithQuoteProps = {
+  show: boolean;
+  assetToSell: ParsedSearchAsset;
+  assetToBuy: ParsedSearchAsset;
+  quote: Quote | CrosschainQuote;
+  flashbotsEnabled: boolean;
+};
+
+const SwapReviewSheetWithQuote = ({
+  show,
+  assetToSell,
+  assetToBuy,
+  quote,
+  flashbotsEnabled,
+}: SwapReviewSheetWithQuoteProps) => {
+  const { minimumReceived, swappingRoute, includedFee, exchangeRate } =
+    useSwapReviewDetails({ quote, assetToBuy, assetToSell });
+
   return (
     <BottomSheet show={show}>
       <Box>
@@ -95,7 +130,7 @@ export const SwapReviewSheet = ({
             >
               <SwapAssetCard
                 asset={assetToSell}
-                assetAmount={q.sellAmount.toString()}
+                assetAmount={quote.sellAmount.toString()}
               />
               <Box
                 boxShadow="12px surfaceSecondaryElevated"
@@ -129,77 +164,88 @@ export const SwapReviewSheet = ({
 
               <SwapAssetCard
                 asset={assetToBuy}
-                assetAmount={q.buyAmount.toString()}
+                assetAmount={quote.buyAmount.toString()}
               />
             </Inline>
           </Box>
           <Box>
             <Stack space="4px">
               <DetailsRow>
-                <Text size="14pt" weight="semibold" color="labelSecondary">
-                  Minimum received
-                </Text>
-                <Text size="14pt" weight="semibold" color="labelSecondary">
-                  {`${
-                    convertRawAmountToBalance(q.buyAmount.toString(), {
-                      decimals: assetToBuy?.decimals,
-                    }).display
-                  } ${assetToBuy.symbol}`}
+                <Label
+                  label="Minimum received"
+                  testId="swap-review-swapping-route"
+                />
+                <Text size="14pt" weight="semibold" color="label">
+                  {minimumReceived}
                 </Text>
               </DetailsRow>
               <DetailsRow>
-                <Text size="14pt" weight="semibold" color="labelSecondary">
-                  Swapping via
-                </Text>
-                <Text size="14pt" weight="semibold" color="labelSecondary">
-                  {`${
-                    convertRawAmountToBalance(q.buyAmount.toString(), {
-                      decimals: assetToBuy?.decimals,
-                    }).display
-                  } ${assetToBuy.symbol}`}
+                <Label
+                  label="Swapping via"
+                  testId="swap-review-swapping-route"
+                />
+                <Text size="14pt" weight="semibold" color="label">
+                  {swappingRoute}
                 </Text>
               </DetailsRow>
               <DetailsRow>
                 <Label
                   label="Included Rainbow fee"
                   testId="swap-review-rnbw-fee"
-                  onClick={() => null}
+                  infoButton
                 />
-                <Text size="14pt" weight="semibold" color="labelSecondary">
-                  {`${
-                    convertRawAmountToBalance(q.buyAmount.toString(), {
-                      decimals: assetToBuy?.decimals,
-                    }).display
-                  } ${assetToBuy.symbol}`}
+                <Text size="14pt" weight="semibold" color="label">
+                  {`${includedFee.fee} ${includedFee.feePercentageBasisPoints}`}
                 </Text>
               </DetailsRow>
               <DetailsRow>
                 <Label
                   label="Use Flashbots"
                   testId="swap-review-flashbots"
-                  onClick={() => null}
+                  infoButton
                 />
-                <Text size="14pt" weight="semibold" color="labelSecondary">
-                  {`${
-                    convertRawAmountToBalance(q.buyAmount.toString(), {
-                      decimals: assetToBuy?.decimals,
-                    }).display
-                  } ${assetToBuy.symbol}`}
+                <Text size="14pt" weight="semibold" color="label">
+                  {flashbotsEnabled}
                 </Text>
               </DetailsRow>
               <DetailsRow>
                 <Label
-                  label="More details"
-                  testId="swap-review-details"
-                  onClick={() => null}
+                  label="Exchange rate"
+                  testId="swap-review-exchange-rate"
                 />
-                <Text size="14pt" weight="semibold" color="labelSecondary">
-                  {`${
-                    convertRawAmountToBalance(q.buyAmount.toString(), {
-                      decimals: assetToBuy?.decimals,
-                    }).display
-                  } ${assetToBuy.symbol}`}
+                <Text size="14pt" weight="semibold" color="label">
+                  {`${exchangeRate[0]} ${exchangeRate[1]}`}
                 </Text>
+              </DetailsRow>
+              <DetailsRow>
+                <Label
+                  label={`${assetToSell.symbol} contract`}
+                  testId="swap-review-asset-to-sell-contract"
+                />
+                <Text size="14pt" weight="semibold" color="label">
+                  {truncateAddress(assetToSell.address)}
+                </Text>
+              </DetailsRow>
+              <DetailsRow>
+                <Label
+                  label={`${assetToBuy.symbol} contract`}
+                  testId="swap-review-asset-to-buy-contract"
+                />
+                <Text size="14pt" weight="semibold" color="label">
+                  {truncateAddress(assetToBuy.address)}
+                </Text>
+              </DetailsRow>
+              <DetailsRow>
+                <Label label="More details" testId="swap-review-details" />
+                <ButtonSymbol
+                  symbol="chevron.down.circle"
+                  symbolSize={12}
+                  color="labelQuaternary"
+                  height="24px"
+                  variant="tinted"
+                  onClick={() => null}
+                  testId={'swap-review-details-button'}
+                />
               </DetailsRow>
             </Stack>
           </Box>

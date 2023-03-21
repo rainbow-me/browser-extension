@@ -71,7 +71,7 @@ export function Swap() {
     assetToBuy,
   });
 
-  const { source, slippage, setSettings } = useSwapSettings({
+  const { source, slippage, setSettings, flashbotsEnabled } = useSwapSettings({
     chainId: assetToSell?.chainId || ChainId.mainnet,
   });
 
@@ -184,6 +184,7 @@ export function Swap() {
         assetToBuy={assetToBuy}
         assetToSell={assetToSell}
         quote={quote}
+        flashbotsEnabled={flashbotsEnabled}
       />
       <ExplainerSheet
         show={explainerSheetParams.show}

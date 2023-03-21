@@ -173,13 +173,15 @@ export const useSwapActions = ({
                 label: i18n.t('swap.explainers.long_wait.action_label'),
                 variant: 'tinted',
                 labelColor: 'blue',
-                action: hideExplanerSheet,
+                action: () => {
+                  hideExplanerSheet();
+                  setShowSwapReview(true);
+                },
               },
               testId: 'swap-long-wait',
             })
         : () => {
             setShowSwapReview(true);
-            console.log('setShowSwapReview(true)');
           },
       timeEstimate,
     };
