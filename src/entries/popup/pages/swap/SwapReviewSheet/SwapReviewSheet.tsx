@@ -1,6 +1,7 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import React, { useCallback, useState } from 'react';
 
+import { ETH_ADDRESS } from '~/core/references';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
 import {
@@ -19,6 +20,7 @@ import { ChevronDown } from '~/entries/popup/components/ChevronDown/ChevronDown'
 import { useSwapReviewDetails } from '~/entries/popup/hooks/swap/useSwapReviewDetails';
 
 import { SwapAssetCard } from './SwapAssetCard';
+import { SwapViewContractDropdown } from './SwapViewContractDropdown';
 
 const DetailsRow = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -281,19 +283,33 @@ const SwapReviewSheetWithQuote = ({
                   label={`${assetToSell.symbol} contract`}
                   testId="swap-review-asset-to-sell-contract"
                 />
-                <Text size="14pt" weight="semibold" color="label">
-                  {truncateAddress(assetToSell.address)}
-                </Text>
+                {assetToSell.address !== ETH_ADDRESS && (
+                  <SwapViewContractDropdown
+                    address={assetToSell.address}
+                    chainId={assetToSell.chainId}
+                  >
+                    <Text size="14pt" weight="semibold" color="label">
+                      {truncateAddress(assetToSell.address)}
+                    </Text>
+                  </SwapViewContractDropdown>
+                )}
               </DetailsRow>
-              <DetailsRow>
-                <Label
-                  label={`${assetToBuy.symbol} contract`}
-                  testId="swap-review-asset-to-buy-contract"
-                />
-                <Text size="14pt" weight="semibold" color="label">
-                  {truncateAddress(assetToBuy.address)}
-                </Text>
-              </DetailsRow>
+              {assetToBuy.address !== ETH_ADDRESS && (
+                <DetailsRow>
+                  <Label
+                    label={`${assetToBuy.symbol} contract`}
+                    testId="swap-review-asset-to-buy-contract"
+                  />
+                  <SwapViewContractDropdown
+                    address={assetToBuy.address}
+                    chainId={assetToBuy.chainId}
+                  >
+                    <Text size="14pt" weight="semibold" color="label">
+                      {truncateAddress(assetToBuy.address)}
+                    </Text>
+                  </SwapViewContractDropdown>
+                </DetailsRow>
+              )}
               <DetailsRow>
                 <Label label="More details" testId="swap-review-details" />
                 <ButtonSymbol
