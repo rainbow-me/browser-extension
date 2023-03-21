@@ -41,12 +41,15 @@ import {
   useSwapValidations,
 } from '../../hooks/swap';
 
+import { SwapReviewSheet } from './SwapReviewSheet/SwapReviewSheet';
 import { SwapSettings } from './SwapSettings/SwapSettings';
 import { TokenToBuyInput } from './SwapTokenInput/TokenToBuyInput';
 import { TokenToSellInput } from './SwapTokenInput/TokenToSellInput';
 
 export function Swap() {
   const [showSwapSettings, setShowSwapSettings] = useState(false);
+  const [showSwapReview, setShowSwapReview] = useState(false);
+
   const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
     useExplainerSheetParams();
   const { selectedGas } = useGasStore();
@@ -136,6 +139,7 @@ export function Swap() {
     validationButtonLabel,
     showExplainerSheet,
     hideExplanerSheet,
+    setShowSwapReview,
   });
 
   useSwapQuoteHandler({
@@ -162,6 +166,8 @@ export function Swap() {
     [setAssetToBuyInputValue, setAssetToSell, setAssetToSellInputValue],
   );
 
+  console.log('--- showSwapReview', showSwapReview);
+
   return (
     <>
       <Navbar
@@ -180,6 +186,7 @@ export function Swap() {
           />
         }
       />
+      <SwapReviewSheet show={showSwapReview} />
       <ExplainerSheet
         show={explainerSheetParams.show}
         header={explainerSheetParams.header}
@@ -364,7 +371,10 @@ export function Swap() {
                     </Row>
                     <Row>
                       <Button
-                        onClick={buttonAction}
+                        onClick={() => {
+                          buttonAction();
+                          console.log('buttonAction', buttonAction);
+                        }}
                         height="44px"
                         variant="flat"
                         color={buttonColor}

@@ -70,6 +70,7 @@ interface UseSwapActionsProps {
   validationButtonLabel: string;
   hideExplanerSheet: () => void;
   showExplainerSheet: (params: ExplainerSheetProps) => void;
+  setShowSwapReview: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface SwapActions {
@@ -91,6 +92,7 @@ export const useSwapActions = ({
   validationButtonLabel,
   hideExplanerSheet,
   showExplainerSheet,
+  setShowSwapReview,
 }: UseSwapActionsProps): SwapActions => {
   if (isLoading) {
     return {
@@ -140,9 +142,9 @@ export const useSwapActions = ({
       buttonIcon: enoughAssetsForSwap ? (
         <Symbol symbol="doc.text.magnifyingglass" weight="bold" size={16} />
       ) : null,
-      buttonAction: () =>
-        timeEstimate?.isLongWait
-          ? showExplainerSheet({
+      buttonAction: timeEstimate?.isLongWait
+        ? () =>
+            showExplainerSheet({
               show: true,
               header: {
                 icon: (
@@ -175,7 +177,10 @@ export const useSwapActions = ({
               },
               testId: 'swap-long-wait',
             })
-          : null,
+        : () => {
+            setShowSwapReview(true);
+            console.log('setShowSwapReview(true)');
+          },
       timeEstimate,
     };
   }
