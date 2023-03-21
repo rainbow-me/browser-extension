@@ -29,6 +29,8 @@ interface TokenInputProps {
   variant: 'surface' | 'bordered' | 'transparent' | 'tinted';
   inputRef: React.RefObject<HTMLInputElement>;
   value: string;
+  testId: string;
+  openDropdownOnMount?: boolean;
   onDropdownOpen: (open: boolean) => void;
   selectAsset: (asset: ParsedSearchAsset | null) => void;
   setOnSelectAsset: (cb: (asset: ParsedSearchAsset | null) => void) => void;
@@ -49,6 +51,8 @@ export const TokenInput = ({
   variant,
   inputRef,
   value,
+  testId,
+  openDropdownOnMount,
   onDropdownOpen,
   selectAsset,
   setOnSelectAsset,
@@ -67,8 +71,9 @@ export const TokenInput = ({
   const onSelectAsset = useCallback(() => {
     onDropdownOpen(false);
     setDropdownVisible(false);
+    setAssetFilter('');
     setTimeout(() => inputRef?.current?.focus(), 300);
-  }, [inputRef, onDropdownOpen]);
+  }, [inputRef, onDropdownOpen, setAssetFilter]);
 
   const onClose = useCallback(() => {
     selectAsset(null);
@@ -97,11 +102,16 @@ export const TokenInput = ({
     setOnSelectAsset(onSelectAsset);
   }, [onSelectAsset, setOnSelectAsset]);
 
+  useEffect(() => {
+    if (openDropdownOnMount) setTimeout(() => onDropdownAction(), 300);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openDropdownOnMount]);
+
   return (
     <DropdownInputWrapper
       zIndex={zIndex || 1}
       dropdownHeight={dropdownHeight || 376}
-      testId={'token-input'}
+      testId={`${testId}-token-input`}
       leftComponent={
         <Box>
           <CoinIcon asset={asset ?? undefined} />
@@ -111,7 +121,7 @@ export const TokenInput = ({
         !asset ? (
           <Box>
             <Input
-              testId="swap-token-input"
+              testId={`${testId}-search-token-input`}
               value={assetFilter}
               placeholder={placeholder}
               onChange={onInputValueChange}
@@ -124,6 +134,7 @@ export const TokenInput = ({
         ) : (
           <Box marginVertical="-20px">
             <SwapInputMask
+              testId={`${testId}-swap-token-input`}
               accentCaretColor={accentCaretColor}
               borderColor="transparent"
               decimals={asset?.decimals}
@@ -144,7 +155,7 @@ export const TokenInput = ({
           showClose={!!asset}
           onClose={onClose}
           dropdownVisible={dropdownVisible}
-          testId={`input-wrapper-close-token-input`}
+          testId={`${testId}-token-input-remove`}
           asset={asset}
         />
       }

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { selectUserAssetsListByChainId } from '~/core/resources/_selectors/assets';
@@ -31,7 +31,7 @@ export const useSwapAssets = () => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { connectedToHardhat } = useConnectedToHardhatStore();
 
-  const [assetToSell, setAssetToSell] = useState<
+  const [assetToSell, setAssetToSellState] = useState<
     ParsedSearchAsset | SearchAsset | null
   >(null);
   const [assetToBuy, setAssetToBuy] = useState<
@@ -155,6 +155,11 @@ export const useSwapAssets = () => {
       searchAssetsToBuySections,
     ],
   );
+
+  const setAssetToSell = useCallback((asset: ParsedSearchAsset | null) => {
+    setAssetToSellState(asset);
+    asset?.chainId && setOutputChainId(asset?.chainId);
+  }, []);
 
   // if output chain id changes we need to clear the receive asset
   useEffect(() => {

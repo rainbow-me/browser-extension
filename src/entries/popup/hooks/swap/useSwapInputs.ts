@@ -1,10 +1,13 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { ParsedSearchAsset } from '~/core/types/assets';
+import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import {
   convertAmountToRawAmount,
   convertRawAmountToBalance,
+  lessThan,
+  minus,
 } from '~/core/utils/numbers';
 
 const focusOnInput = (inputRef: React.RefObject<HTMLInputElement>) => {
@@ -23,11 +26,13 @@ export const useSwapInputs = ({
   assetToBuy,
   setAssetToSell,
   setAssetToBuy,
+  selectedGas,
 }: {
   assetToSell: ParsedSearchAsset | null;
   assetToBuy: ParsedSearchAsset | null;
   setAssetToSell: (asset: ParsedSearchAsset | null) => void;
   setAssetToBuy: (asset: ParsedSearchAsset | null) => void;
+  selectedGas: GasFeeParams | GasFeeLegacyParams;
 }) => {
   const [assetToSellDropdownClosed, setAssetToSellDropdownClosed] =
     useState(true);
@@ -78,11 +83,23 @@ export const useSwapInputs = ({
       assetToSell?.balance?.amount || '0',
       assetToSell?.decimals || 18,
     );
-    const assetBalance = convertRawAmountToBalance(assetBalanceAmount, {
+
+    const rawAssetBalanceAmount =
+      assetToSell?.isNativeAsset &&
+      lessThan(selectedGas?.gasFee?.amount, assetBalanceAmount)
+        ? minus(assetBalanceAmount, selectedGas?.gasFee?.amount)
+        : assetBalanceAmount;
+
+    const assetBalance = convertRawAmountToBalance(rawAssetBalanceAmount, {
       decimals: assetToSell?.decimals || 18,
     });
     return assetBalance;
-  }, [assetToSell?.balance?.amount, assetToSell?.decimals]);
+  }, [
+    assetToSell?.balance?.amount,
+    assetToSell?.decimals,
+    assetToSell?.isNativeAsset,
+    selectedGas?.gasFee?.amount,
+  ]);
 
   const setAssetToSellMaxValue = useCallback(() => {
     setAssetToSellValue(assetToSellMaxValue.amount);
