@@ -166,8 +166,6 @@ export function Swap() {
     [setAssetToBuyInputValue, setAssetToSell, setAssetToSellInputValue],
   );
 
-  console.log('--- showSwapReview', showSwapReview);
-
   return (
     <>
       <Navbar
@@ -186,7 +184,12 @@ export function Swap() {
           />
         }
       />
-      <SwapReviewSheet show={showSwapReview} />
+      <SwapReviewSheet
+        show={showSwapReview}
+        assetToBuy={assetToBuy}
+        assetToSell={assetToSell}
+        quote={quote}
+      />
       <ExplainerSheet
         show={explainerSheetParams.show}
         header={explainerSheetParams.header}
@@ -371,10 +374,7 @@ export function Swap() {
                     </Row>
                     <Row>
                       <Button
-                        onClick={() => {
-                          buttonAction();
-                          console.log('buttonAction', buttonAction);
-                        }}
+                        onClick={buttonAction}
                         height="44px"
                         variant="flat"
                         color={buttonColor}
