@@ -73,6 +73,7 @@ export const TokenToSellInput = ({
 
   return (
     <TokenInput
+      testId={`${asset ? `${asset.uniqueId}-` : ''}token-to-sell`}
       inputRef={inputRef}
       asset={asset}
       dropdownClosed={dropdownClosed}
@@ -107,6 +108,7 @@ export const TokenToSellInput = ({
       assetFilter={assetFilter}
       setAssetFilter={setAssetFilter}
       setValue={setAssetToSellInputValue}
+      openDropdownOnMount
     />
   );
 };

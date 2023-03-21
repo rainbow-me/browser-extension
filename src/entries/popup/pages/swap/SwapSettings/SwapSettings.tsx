@@ -44,10 +44,12 @@ import { SwapRouteDropdownMenu } from './SwapRouteDropdownMenu';
 const Label = ({
   label,
   warning,
+  testId,
   onClick,
 }: {
   label: string;
   warning?: 'loss';
+  testId: string;
   onClick: () => void;
 }) => (
   <Box as={motion.div} layout="position">
@@ -65,6 +67,7 @@ const Label = ({
               as={motion.div}
               layout
               marginBottom="-2px"
+              testId="swap-settings-slippage-warning"
             >
               <Bleed vertical="6px" horizontal="6px">
                 <ButtonSymbol
@@ -86,6 +89,7 @@ const Label = ({
                   height="28px"
                   variant="tinted"
                   onClick={onClick}
+                  testId={testId}
                 />
               </Bleed>
             </Box>
@@ -246,6 +250,7 @@ export const SwapSettings = ({
         ...slippageExplainerProps.actionButton,
         action: hideExplanerSheet,
       },
+      testId: 'swap-slippage',
     });
   }, [hideExplanerSheet, showExplainerSheet]);
 
@@ -256,6 +261,7 @@ export const SwapSettings = ({
         ...flashbotsExplainerProps.actionButton,
         action: hideExplanerSheet,
       },
+      testId: 'swap-flashbots',
     });
   }, [hideExplanerSheet, showExplainerSheet]);
 
@@ -266,6 +272,7 @@ export const SwapSettings = ({
         ...routingExplainerProps.actionButton,
         action: hideExplanerSheet,
       },
+      testId: 'swap-routing',
     });
   }, [hideExplanerSheet, showExplainerSheet]);
 
@@ -302,18 +309,24 @@ export const SwapSettings = ({
                 </Box>
                 <Box paddingBottom="8px">
                   <Stack space="12px">
-                    <Box style={{ height: '32px' }}>
+                    <Box
+                      testId="swap-settings-route-row"
+                      style={{ height: '32px' }}
+                    >
                       <Inline alignVertical="center" alignHorizontal="justify">
                         <Label
                           label={i18n.t('swap.settings.route_swaps')}
                           onClick={showRoutingExplainer}
+                          testId="swap-settings-route-label"
                         />
                         <SwapRouteDropdownMenu
                           accentColor={settingsAccentColor}
                           source={source}
                           setSource={setSource}
                         >
-                          <Box>
+                          <Box
+                            testId={`settings-route-context-trigger-${source}`}
+                          >
                             <ButtonOverflow style={{ height: '23px' }}>
                               <Inline
                                 height="full"
@@ -347,7 +360,10 @@ export const SwapSettings = ({
                     </Box>
 
                     {flashbotsEnabledGlobal && (
-                      <Box style={{ height: '32px' }}>
+                      <Box
+                        testId="swap-settings-flashbots-row"
+                        style={{ height: '32px' }}
+                      >
                         <Inline
                           alignVertical="center"
                           alignHorizontal="justify"
@@ -355,22 +371,28 @@ export const SwapSettings = ({
                           <Label
                             label={i18n.t('swap.settings.use_flashbots')}
                             onClick={showFlashbotsExplainer}
+                            testId="swap-settings-flashbots-label"
                           />
                           <Toggle
                             accentColor={settingsAccentColor}
                             checked={flashbotsEnabled}
                             handleChange={setFlashbotsEnabled}
+                            testId="swap-settings-flashbots-toggle"
                           />
                         </Inline>
                       </Box>
                     )}
 
-                    <Box style={{ height: '32px' }}>
+                    <Box
+                      testId="swap-settings-slippage-row"
+                      style={{ height: '32px' }}
+                    >
                       <Inline alignVertical="center" alignHorizontal="justify">
                         <Label
                           label={i18n.t('swap.settings.max_slippage')}
                           onClick={showSlippageExplainer}
                           warning={slippageWarning}
+                          testId="swap-settings-slippage-label"
                         />
                         <SlippageInputMask
                           variant={'transparent'}
@@ -390,6 +412,7 @@ export const SwapSettings = ({
                   height="28px"
                   variant="plain"
                   onClick={setDefaultSettings}
+                  testId="settings-use-defaults-button"
                 >
                   <Text
                     align="center"
@@ -411,6 +434,7 @@ export const SwapSettings = ({
                   height="44px"
                   variant="flat"
                   onClick={done}
+                  testId="swap-settings-done"
                 >
                   <Text align="center" color="label" size="16pt" weight="bold">
                     {i18n.t('swap.settings.done')}

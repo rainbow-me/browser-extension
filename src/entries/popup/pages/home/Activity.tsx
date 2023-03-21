@@ -387,14 +387,15 @@ const ActivityRow = React.memo(function ({
         </Column>
         <Column>
           <Box paddingVertical="4px">
-            <Text
+            <TextOverflow
+              maxWidth={nameMaxWidth}
               size="14pt"
               weight="semibold"
               align="right"
               color={getNativeDisplayColor()}
             >
               {getNativeDisplay()}
-            </Text>
+            </TextOverflow>
           </Box>
         </Column>
       </Columns>

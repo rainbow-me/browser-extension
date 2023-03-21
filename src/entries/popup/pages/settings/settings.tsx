@@ -143,6 +143,7 @@ export function Settings() {
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.transactions.title')} />
             }
+            testId="settings-transactions"
           />
           <MenuItem
             hasRightArrow
@@ -331,7 +332,8 @@ export function Settings() {
             />
           </Menu>
         )}
-        {process.env.IS_DEV === 'true' && (
+        {(process.env.IS_DEV === 'true' ||
+          process.env.IS_TESTING === 'true') && (
           <Menu>
             <MenuItem.Description text="Feature Flags" />
             {Object.keys(featureFlags).map((key, i) => (
@@ -344,7 +346,7 @@ export function Settings() {
                 }
                 rightComponent={
                   <Toggle
-                    testId="set-rainbow-default-toggle"
+                    testId={`feature-flag-${key}`}
                     checked={featureFlags[key as FeatureFlagTypes]}
                     handleChange={() =>
                       toggleFeatureFlag(key as FeatureFlagTypes)

@@ -90,6 +90,14 @@ export async function findElementByTestId({ id, driver }) {
   return querySelector(driver, `[data-testid="${id}"]`);
 }
 
+export async function doNotFindElementByTestId({ id, driver }) {
+  const elementFound = await Promise.race([
+    querySelector(driver, `[data-testid="${id}"]`),
+    new Promise((resolve) => setTimeout(() => resolve(false), 1000)),
+  ]);
+  return !!elementFound;
+}
+
 export async function findElementByTestIdAndClick({ id, driver }) {
   await delay(200);
   const element = await findElementByTestId({ id, driver });
@@ -99,6 +107,16 @@ export async function findElementByTestIdAndClick({ id, driver }) {
 export async function typeOnTextInput({ id, text, driver }) {
   const element = await findElementByTestId({ id, driver });
   await element.sendKeys(text);
+}
+
+export async function getTextFromTextInput({ id, driver }) {
+  const element = await findElementByTestId({ id, driver });
+  return await element.getAttribute('value');
+}
+
+export async function getTextFromText({ id, driver }) {
+  const element = await findElementByTestId({ id, driver });
+  return await element.getText();
 }
 
 export async function goToTestApp(driver) {

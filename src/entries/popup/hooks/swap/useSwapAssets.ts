@@ -1,11 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { selectUserAssetsListByChainId } from '~/core/resources/_selectors/assets';
 import { useAssets, useUserAssets } from '~/core/resources/assets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { useFavoritesStore } from '~/core/state/favorites';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
@@ -31,7 +30,7 @@ export const useSwapAssets = () => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { connectedToHardhat } = useConnectedToHardhatStore();
 
-  const [assetToSell, setAssetToSell] = useState<
+  const [assetToSell, setAssetToSellState] = useState<
     ParsedSearchAsset | SearchAsset | null
   >(null);
   const [assetToBuy, setAssetToBuy] = useState<
@@ -52,8 +51,6 @@ export const useSwapAssets = () => {
 
   const debouncedAssetToSellFilter = useDebounce(assetToSellFilter, 200);
   const debouncedAssetToBuyFilter = useDebounce(assetToBuyFilter, 200);
-
-  const { favorites } = useFavoritesStore();
 
   const { data: userAssets = [] } = useUserAssets(
     {
@@ -82,17 +79,16 @@ export const useSwapAssets = () => {
   const { results: searchAssetsToBuySections } = useSearchCurrencyLists({
     inputChainId: assetToSell?.chainId,
     outputChainId,
+    assetToSell,
     searchQuery: debouncedAssetToBuyFilter,
   });
 
   const { data: assetsWithPrice = [] } = useAssets({
-    assetAddresses: [
-      ...searchAssetsToBuySections
-        .map(
-          (section) => section.data?.map((asset) => asset.mainnetAddress) || [],
-        )
-        .flat(),
-    ],
+    assetAddresses: searchAssetsToBuySections
+      .map(
+        (section) => section.data?.map((asset) => asset.mainnetAddress) || [],
+      )
+      .flat(),
     currency: currentCurrency,
   });
 
@@ -136,25 +132,10 @@ export const useSwapAssets = () => {
     });
   }, [assetToSell, assetToSellWithPrice, userAssets]);
 
-  const assetsToBuyBySection = useMemo(
-    () =>
-      searchAssetsToBuySections.map(({ data = [], title, symbol, id }) => {
-        const parsedData: SearchAsset[] = data.filter((asset) => {
-          const shouldFilterFavorite =
-            id !== 'favorites' &&
-            favorites[outputChainId].includes(asset.address);
-          const isSellToken = asset.uniqueId === assetToSell?.uniqueId;
-          return !shouldFilterFavorite && !isSellToken;
-        });
-        return { data: parsedData, title, symbol, id };
-      }),
-    [
-      assetToSell?.uniqueId,
-      favorites,
-      outputChainId,
-      searchAssetsToBuySections,
-    ],
-  );
+  const setAssetToSell = useCallback((asset: ParsedSearchAsset | null) => {
+    setAssetToSellState(asset);
+    asset?.chainId && setOutputChainId(asset?.chainId);
+  }, []);
 
   // if output chain id changes we need to clear the receive asset
   useEffect(() => {
@@ -178,7 +159,7 @@ export const useSwapAssets = () => {
   return {
     assetsToSell: filteredAssetsToSell,
     assetToSellFilter,
-    assetsToBuy: assetsToBuyBySection,
+    assetsToBuy: searchAssetsToBuySections,
     assetToBuyFilter,
     sortMethod,
     assetToSell: parsedAssetToSell,

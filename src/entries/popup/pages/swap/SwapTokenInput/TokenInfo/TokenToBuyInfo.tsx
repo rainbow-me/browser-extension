@@ -25,6 +25,7 @@ export const TokenToBuyInfo = ({
       <Inline alignHorizontal="justify">
         <Inline alignVertical="center" space="4px">
           <TextOverflow
+            testId={'token-to-buy-info-price'}
             maxWidth={TEXT_MAX_WIDTH}
             as="p"
             size="12pt"
@@ -43,6 +44,7 @@ export const TokenToBuyInfo = ({
             {`${i18n.t('swap.balance')}:`}
           </Text>
           <TextOverflow
+            testId={'token-to-buy-info-balance'}
             maxWidth={TEXT_MAX_WIDTH}
             size="12pt"
             weight="medium"

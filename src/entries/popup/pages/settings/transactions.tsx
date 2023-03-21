@@ -77,6 +77,7 @@ export function Transactions() {
           <MenuItem
             rightComponent={
               <Toggle
+                testId="flashbots-transactions-toggle"
                 checked={flashbotsEnabled}
                 handleChange={setFlashbotsEnabled}
               />

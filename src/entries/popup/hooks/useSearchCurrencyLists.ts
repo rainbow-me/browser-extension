@@ -2,8 +2,8 @@ import { isAddress } from '@ethersproject/address';
 import { rankings } from 'match-sorter';
 import { useCallback, useMemo } from 'react';
 
-import { i18n } from '~/core/languages';
 import { useTokenSearch } from '~/core/resources/search';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
   SearchAsset,
@@ -13,7 +13,6 @@ import {
 } from '~/core/types/search';
 import { addHexPrefix } from '~/core/utils/ethereum';
 import { isLowerCaseMatch } from '~/core/utils/strings';
-import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
 import { filterList } from '../utils/search';
 
@@ -31,11 +30,25 @@ const VERIFIED_ASSETS_PAYLOAD: {
   query: '',
 };
 
+export type AssetToBuySectionId =
+  | 'bridge'
+  | 'favorites'
+  | 'verified'
+  | 'unverified'
+  | 'other_networks';
+
+export interface AssetToBuySection {
+  data: SearchAsset[];
+  id: AssetToBuySectionId;
+}
+
 export function useSearchCurrencyLists({
+  assetToSell,
   inputChainId,
   outputChainId,
   searchQuery,
 }: {
+  assetToSell: SearchAsset | ParsedSearchAsset | null;
   // should be provided when swap input currency is selected
   inputChainId?: ChainId;
   // target chain id of current search
@@ -132,8 +145,9 @@ export function useSearchCurrencyLists({
   });
 
   const { favorites } = useFavoriteAssets();
-  const favoritesByChain = favorites[outputChainId];
+
   const favoritesList = useMemo(() => {
+    const favoritesByChain = favorites[outputChainId];
     if (query === '') {
       return favoritesByChain;
     } else {
@@ -151,7 +165,7 @@ export function useSearchCurrencyLists({
         },
       );
     }
-  }, [favoritesByChain, keys, query, queryIsAddress]);
+  }, [favorites, keys, outputChainId, query, queryIsAddress]);
 
   // static verified asset lists prefetched to display curated lists
   // we only display crosschain exact matches if located here
@@ -200,6 +214,21 @@ export function useSearchCurrencyLists({
     [verifiedAssets],
   );
 
+  const bridgeAsset = useMemo(() => {
+    const curatedAssets = getCuratedAssets(outputChainId);
+    const bridgeAsset = curatedAssets?.find((asset) =>
+      isLowerCaseMatch(
+        asset.mainnetAddress,
+        assetToSell?.[
+          assetToSell?.chainId === ChainId.mainnet
+            ? 'address'
+            : 'mainnetAddress'
+        ],
+      ),
+    );
+    return outputChainId === assetToSell?.chainId ? null : bridgeAsset;
+  }, [assetToSell, getCuratedAssets, outputChainId]);
+
   const loading = useMemo(() => {
     return query === ''
       ? verifiedAssets[outputChainId].loading
@@ -225,7 +254,7 @@ export function useSearchCurrencyLists({
   );
 
   const crosschainExactMatches = Object.values(verifiedAssets)
-    .map((verifiedList) => {
+    ?.map((verifiedList) => {
       return verifiedList.assets?.filter((t) => {
         const symbolMatch = isLowerCaseMatch(t?.symbol, query);
         const nameMatch = isLowerCaseMatch(t?.name, query);
@@ -235,69 +264,80 @@ export function useSearchCurrencyLists({
     .flat()
     .filter((v): v is SearchAsset => !!v);
 
-  // bridge asset are not currently implemented
+  const filterAssetsFromBridgeAndAssetToSell = useCallback(
+    (assets?: SearchAsset[]) =>
+      assets?.filter(
+        (curatedAsset) =>
+          !isLowerCaseMatch(curatedAsset?.address, bridgeAsset?.address) &&
+          !isLowerCaseMatch(curatedAsset?.address, assetToSell?.address),
+      ) || [],
+    [assetToSell?.address, bridgeAsset?.address],
+  );
+
+  const filterAssetsFromFavoritesBridgeAndAssetToSell = useCallback(
+    (assets?: SearchAsset[]) =>
+      filterAssetsFromBridgeAndAssetToSell(assets)?.filter(
+        (curatedAsset) =>
+          !favoritesList
+            ?.map((fav) => fav.address)
+            .includes(curatedAsset.address),
+      ) || [],
+    [favoritesList, filterAssetsFromBridgeAndAssetToSell],
+  );
+
   // the lists below should be filtered by favorite/bridge asset match
   const results = useMemo(() => {
-    const sections: {
-      data?: SearchAsset[];
-      title: string;
-      symbol: SymbolProps['symbol'];
-      id: string;
-    }[] = [];
+    const sections: AssetToBuySection[] = [];
+    if (bridgeAsset) {
+      const bridgeSection = {
+        data: [bridgeAsset],
+        id: 'bridge' as AssetToBuySectionId,
+      };
+      sections.push(bridgeSection);
+    }
+    if (favoritesList?.length) {
+      const favoritesSection = {
+        data: filterAssetsFromBridgeAndAssetToSell(favoritesList),
+        id: 'favorites' as AssetToBuySectionId,
+      };
+      sections.push(favoritesSection);
+    }
+
     if (query === '') {
-      if (favoritesList?.length) {
-        const favoritesSection = {
-          data: favoritesList,
-          title: i18n.t('token_search.section_header.favorites'),
-          symbol: 'star.fill' as SymbolProps['symbol'],
-          id: 'favorites',
-        };
-        sections.push(favoritesSection);
-      }
       const curatedSection = {
-        data: curatedAssets[outputChainId],
-        title: i18n.t('token_search.section_header.verified'),
-        symbol: 'checkmark.seal.fill' as SymbolProps['symbol'],
-        id: 'verified',
+        data: filterAssetsFromFavoritesBridgeAndAssetToSell(
+          curatedAssets[outputChainId],
+        ),
+        id: 'verified' as AssetToBuySectionId,
       };
       sections.push(curatedSection);
     } else {
-      if (favoritesList?.length) {
-        const favoritesSection = {
-          data: favoritesList,
-          title: i18n.t('token_search.section_header.favorites'),
-          symbol: 'star.fill' as SymbolProps['symbol'],
-          id: 'favorites',
-        };
-        sections.push(favoritesSection);
-      }
-
       if (targetVerifiedAssets?.length) {
         const verifiedSection = {
-          data: targetVerifiedAssets,
-          title: i18n.t('token_search.section_header.verified'),
-          symbol: 'checkmark.seal.fill' as SymbolProps['symbol'],
-          id: 'verified',
+          data: filterAssetsFromFavoritesBridgeAndAssetToSell(
+            targetVerifiedAssets,
+          ),
+          id: 'verified' as AssetToBuySectionId,
         };
         sections.push(verifiedSection);
       }
 
       if (targetUnverifiedAssets?.length) {
         const unverifiedSection = {
-          data: targetUnverifiedAssets,
-          title: i18n.t('token_search.section_header.unverified'),
-          symbol: 'exclamationmark.triangle.fill' as SymbolProps['symbol'],
-          id: 'unverified',
+          data: filterAssetsFromFavoritesBridgeAndAssetToSell(
+            targetUnverifiedAssets,
+          ),
+          id: 'unverified' as AssetToBuySectionId,
         };
         sections.push(unverifiedSection);
       }
 
       if (!sections.length && crosschainExactMatches?.length) {
         const crosschainSection = {
-          data: crosschainExactMatches,
-          title: i18n.t('token_search.section_header.on_other_networks'),
-          symbol: 'network' as SymbolProps['symbol'],
-          id: 'other_networks',
+          data: filterAssetsFromFavoritesBridgeAndAssetToSell(
+            crosschainExactMatches,
+          ),
+          id: 'other_networks' as AssetToBuySectionId,
         };
         sections.push(crosschainSection);
       }
@@ -305,13 +345,16 @@ export function useSearchCurrencyLists({
 
     return sections;
   }, [
-    crosschainExactMatches,
-    curatedAssets,
-    outputChainId,
+    bridgeAsset,
     favoritesList,
     query,
-    targetUnverifiedAssets,
+    filterAssetsFromBridgeAndAssetToSell,
+    filterAssetsFromFavoritesBridgeAndAssetToSell,
+    curatedAssets,
+    outputChainId,
     targetVerifiedAssets,
+    targetUnverifiedAssets,
+    crosschainExactMatches,
   ]);
 
   return {

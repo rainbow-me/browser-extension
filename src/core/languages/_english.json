@@ -634,7 +634,8 @@
       "favorites": "Favorites",
       "unverified": "Unverified",
       "verified": "Verified",
-      "on_other_networks": "On other networks"
+      "on_other_networks": "On other networks",
+      "bridge": "Bridge"
     }
   },
   "explainers": {
