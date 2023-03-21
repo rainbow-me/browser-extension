@@ -4,127 +4,20 @@ import React, { useMemo } from 'react';
 import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { SearchAsset } from '~/core/types/search';
 import { isL2Chain } from '~/core/utils/chains';
-import { Box, Inline, Inset, Stack, Symbol, Text } from '~/design-system';
+import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
-import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
-import { rainbowGradient } from '~/design-system/components/Symbol/gradients';
-import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
-import { useVirtualizedAssets } from '~/entries/popup/hooks/useVirtualizedAssets';
+import { AssetToBuySection } from '~/entries/popup/hooks/useSearchCurrencyLists';
 
 import { dropdownContainerVariant } from '../../../../components/DropdownInputWrapper/DropdownInputWrapper';
 import { BottomNetwork } from '../../../messages/BottomActions';
-import { TokenToBuyRow } from '../TokenRow/TokenToBuyRow';
 
-const AssetsToBuySection = ({
-  data,
-  title,
-  symbol,
-  id,
-  onSelectAsset,
-  onDropdownChange,
-}: {
-  data: SearchAsset[];
-  title: string;
-  onSelectAsset?: (asset: ParsedSearchAsset | null) => void;
-  symbol: SymbolProps['symbol'];
-  id: string;
-  onDropdownChange: (open: boolean) => void;
-}) => {
-  const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
-    assets: data,
-    size: 5,
-  });
-
-  const verifiedSection = id === 'verified';
-  const favoritesSection = id === 'favorites';
-  const otherNetworksSection = id === 'other_networks';
-  const getSectionHeaderColor = () => {
-    if (verifiedSection) {
-      return 'transparent';
-    }
-    if (favoritesSection) {
-      return 'yellow';
-    }
-
-    return 'labelTertiary';
-  };
-
-  if (!data.length) return null;
-  return (
-    <Box testId={`${id}-token-to-buy-section`} paddingTop="12px">
-      <Stack space="16px">
-        {otherNetworksSection ? (
-          <Box borderRadius="12px" style={{ height: '52px' }}>
-            <Inset horizontal="20px" vertical="8px">
-              <Inline space="8px" alignVertical="center">
-                <CoinIcon asset={undefined} />
-                <Text size="14pt" weight="semibold" color={'labelQuaternary'}>
-                  {i18n.t('swap.tokens_input.nothing_found')}
-                </Text>
-              </Inline>
-            </Inset>
-          </Box>
-        ) : null}
-
-        <Box paddingHorizontal="20px" width="full">
-          <Inline space="4px" alignVertical="center">
-            <Symbol
-              symbol={symbol}
-              color={getSectionHeaderColor()}
-              weight="semibold"
-              size={14}
-              gradient={verifiedSection ? rainbowGradient : undefined}
-            />
-            <Box style={{ width: 225 }}>
-              <Text
-                webkitBackgroundClip={verifiedSection ? 'text' : undefined}
-                background={verifiedSection ? 'rainbow' : undefined}
-                size="14pt"
-                weight="semibold"
-                color={getSectionHeaderColor()}
-              >
-                {title}
-              </Text>
-            </Box>
-          </Inline>
-        </Box>
-
-        <Box ref={containerRef}>
-          {assetsRowVirtualizer?.getVirtualItems().map((virtualItem, i) => {
-            const { index } = virtualItem;
-            const asset = data?.[index] as SearchAsset;
-            return (
-              <Box
-                paddingHorizontal="8px"
-                key={`${asset?.uniqueId}-${i}-${id}`}
-                onClick={() => onSelectAsset?.(asset as ParsedSearchAsset)}
-                testId={`${asset?.uniqueId}-${id}-token-to-buy-row`}
-              >
-                <TokenToBuyRow
-                  onDropdownChange={onDropdownChange}
-                  asset={asset}
-                  testId={`${asset?.uniqueId}-${id}-token-to-buy-row`}
-                />
-              </Box>
-            );
-          })}
-        </Box>
-      </Stack>
-    </Box>
-  );
-};
+import { TokenToBuySection } from './TokenToBuySection';
 
 export type TokenToBuyDropdownProps = {
   asset: ParsedSearchAsset | null;
-  assets?: {
-    data: SearchAsset[];
-    title: string;
-    id: string;
-    symbol: SymbolProps['symbol'];
-  }[];
+  assets?: AssetToBuySection[];
   outputChainId: ChainId;
   onSelectAsset?: (asset: ParsedSearchAsset | null) => void;
   setOutputChainId: (chainId: ChainId) => void;
@@ -192,14 +85,12 @@ export const TokenToBuyDropdown = ({
       >
         <Stack space="16px">
           {assets?.map((assetSection, i) => (
-            <AssetsToBuySection
+            <TokenToBuySection
               key={i}
-              data={assetSection.data}
-              title={assetSection.title}
-              symbol={assetSection.symbol}
-              id={assetSection.id}
+              assetSection={assetSection}
               onSelectAsset={onSelectAsset}
               onDropdownChange={onDropdownChange}
+              outputChainId={outputChainId}
             />
           ))}
         </Stack>
