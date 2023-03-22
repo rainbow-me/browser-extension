@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import { BoxStyles, SymbolStyles } from '~/design-system/styles/core.css';
 import { Radius, TextColor } from '~/design-system/styles/designTokens';
 
 import { Box } from '../Box/Box';
@@ -23,12 +24,14 @@ export type ButtonSymbolProps = {
   borderRadius?: Radius;
   testId?: string;
   tabIndex?: number;
+  cursor?: BoxStyles['cursor'];
 } & ButtonVariantProps;
 
 export function ButtonSymbol({
   height,
   symbol,
   symbolSize,
+  cursor = 'default',
   ...props
 }: ButtonSymbolProps) {
   const { textColor: textColorFromVariant } = stylesForVariant({
@@ -42,11 +45,12 @@ export function ButtonSymbol({
   const { textSize } = stylesForHeight[height];
 
   return (
-    <Box className={widthStyles[height]}>
+    <Box className={widthStyles[height]} cursor={cursor}>
       {/* eslint-disable-next-line react/jsx-props-no-spreading */}
-      <ButtonWrapper height={height} width="full" {...props}>
+      <ButtonWrapper height={height} width="full" {...props} cursor={cursor}>
         <Symbol
           color={symbolColor}
+          cursor={cursor as SymbolStyles['cursor']}
           size={
             symbolSize ??
             (parseInt(
