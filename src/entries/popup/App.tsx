@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import * as React from 'react';
 import { HashRouter } from 'react-router-dom';
@@ -6,6 +7,9 @@ import { WagmiConfig, useAccount } from 'wagmi';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { flushQueuedEvents } from '~/analytics/flushQueuedEvents';
+// !!!! DO NOT REMOVE THE NEXT 2 LINES BELOW !!!!
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import config from '~/core/firebase/remoteConfig';
 import { changeI18nLanguage } from '~/core/languages';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry, setSentryUser } from '~/core/sentry';
