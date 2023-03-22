@@ -204,14 +204,14 @@ const SwapReviewSheetWithQuote = ({
     showExplainerSheet({
       show: true,
       header: { emoji: '🌈' },
-      title: i18n.t('explainers.swap.flashbots.title'),
+      title: i18n.t('explainers.swap.fee.title'),
       description: [
-        i18n.t('explainers.swap.flashbots.description', {
+        i18n.t('explainers.swap.fee.description', {
           feePercentage: includedFee[1],
         }),
       ],
       actionButton: {
-        label: i18n.t('explainers.swap.flashbots.action_label'),
+        label: i18n.t('explainers.swap.fee.action_label'),
         variant: 'tinted',
         labelColor: 'blue',
         action: hideExplainerSheet,
