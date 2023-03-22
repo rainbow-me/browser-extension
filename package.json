@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.0.78",
+  "version": "1.0.79",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -104,6 +104,7 @@
     "date-fns": "2.29.3",
     "deepmerge": "4.2.2",
     "eventemitter3": "4.0.7",
+    "firebase": "9.18.0",
     "framer-motion": "10.2.3",
     "i18n-js": "4.1.1",
     "imgix-core-js": "2.3.2",
@@ -241,7 +242,9 @@
       "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>ganache-core>websocket>utf-8-validate": false,
       "@foundry-rs/hardhat-anvil>ethereum-waffle>@ethereum-waffle/provider>postinstall-postinstall": false,
       "@foundry-rs/hardhat-anvil>hardhat>ethereum-cryptography>keccak": false,
-      "@foundry-rs/hardhat-anvil>hardhat>ethereum-cryptography>secp256k1": false
+      "@foundry-rs/hardhat-anvil>hardhat>ethereum-cryptography>secp256k1": false,
+      "firebase>@firebase/firestore>@grpc/grpc-js>@grpc/proto-loader>protobufjs": false,
+      "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false
     }
   },
   "lint-staged": {
