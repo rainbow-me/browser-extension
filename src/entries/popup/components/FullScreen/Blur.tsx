@@ -14,14 +14,15 @@ export const Blur = () => (
     <svg
       style={{
         minWidth: '140vw',
-        height: '110vh',
+        height: '140vh',
         filter: 'blur(14vh)',
         position: 'absolute',
-        top: '-10vh',
-        left: '-12vw',
+        top: '-30vh',
+        left: '-40vw',
         opacity: '0.18',
         mixBlendMode: 'exclusion',
         backgroundColor: '#191A1C',
+        overflow: 'hidden',
       }}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 600 600"
