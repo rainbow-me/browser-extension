@@ -10,6 +10,7 @@ import {
   Button,
   ButtonSymbol,
   Inline,
+  Separator,
   Stack,
   Symbol,
   Text,
@@ -165,9 +166,12 @@ const SwapReviewSheetWithQuote = ({
   const { minimumReceived, swappingRoute, includedFee, exchangeRate } =
     useSwapReviewDetails({ quote, assetToBuy, assetToSell });
 
+  console.log('assetToSell.address', assetToSell.address);
+  console.log('assetToBuy.address', assetToBuy.address);
+
   return (
     <BottomSheet show={show}>
-      <Box>
+      <Box background="surfacePrimaryElevatedSecondary">
         <Stack space="12px">
           <Box style={{ height: '64px' }}>
             <Box paddingVertical="27px">
@@ -284,12 +288,13 @@ const SwapReviewSheetWithQuote = ({
                   textArray={exchangeRate}
                 />
               </DetailsRow>
-              <DetailsRow>
-                <Label
-                  label={`${assetToSell.symbol} contract`}
-                  testId="swap-review-asset-to-sell-contract"
-                />
-                {assetToSell.address !== ETH_ADDRESS && (
+              {assetToSell.address !== ETH_ADDRESS && (
+                <DetailsRow>
+                  <Label
+                    label={`${assetToSell.symbol} contract`}
+                    testId="swap-review-asset-to-sell-contract"
+                  />
+
                   <SwapViewContractDropdown
                     address={assetToSell.address}
                     chainId={assetToSell.chainId}
@@ -298,8 +303,8 @@ const SwapReviewSheetWithQuote = ({
                       {truncateAddress(assetToSell.address)}
                     </Text>
                   </SwapViewContractDropdown>
-                )}
-              </DetailsRow>
+                </DetailsRow>
+              )}
               {assetToBuy.address !== ETH_ADDRESS && (
                 <DetailsRow>
                   <Label
@@ -332,7 +337,8 @@ const SwapReviewSheetWithQuote = ({
           </Box>
         </Stack>
       </Box>
-      <Box padding="20px">
+      <Box background="surfacePrimaryElevated" padding="20px">
+        <Separator strokeWeight="1px" color="separatorSecondary" />
         <AccentColorProviderWrapper
           color={assetToBuy.colors.primary || assetToBuy.colors.fallback}
         >
@@ -343,18 +349,10 @@ const SwapReviewSheetWithQuote = ({
               variant="flat"
               color={'accent'}
               width="full"
-              testId="swap-review-button"
             >
-              <Inline space="8px" alignVertical="center">
-                <Text
-                  testId="swap-confirmation-button"
-                  color="label"
-                  size="16pt"
-                  weight="bold"
-                >
-                  {'Swap'}
-                </Text>
-              </Inline>
+              <Text color="label" size="16pt" weight="bold">
+                {`Swap ${assetToSell.symbol} to ${assetToBuy.symbol}`}
+              </Text>
             </Button>
 
             <Button
@@ -362,7 +360,6 @@ const SwapReviewSheetWithQuote = ({
               height="44px"
               width="fit"
               onClick={hideSwapReview}
-              testId="reject-request-button"
               variant={'transparent'}
             >
               {'Go back'}
