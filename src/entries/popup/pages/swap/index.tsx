@@ -329,7 +329,7 @@ export function Swap() {
                             weight="bold"
                           />
                           <Text color="label" size="14pt" weight="bold">
-                            Long wait
+                            {i18n.t('swap.long_wait.title')}
                           </Text>
                         </Inline>
                         <Box
@@ -338,7 +338,9 @@ export function Swap() {
                         />
 
                         <Text color="orange" size="14pt" weight="semibold">
-                          Up to {timeEstimate?.timeEstimateDisplay} to swap
+                          {i18n.t('swap.long_wait.description', {
+                            time: timeEstimate?.timeEstimateDisplay,
+                          })}
                         </Text>
                       </Inline>
                     </Box>

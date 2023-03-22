@@ -2,6 +2,7 @@ import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
 
+import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
@@ -187,12 +188,10 @@ const SwapReviewSheetWithQuote = ({
     showExplainerSheet({
       show: true,
       header: { emoji: '🤖' },
-      title: 'Flashbots',
-      description: [
-        'Flashbots protects your transactions from frontrunning and sandwich attacks which might result in you getting a worse price or your transaction failing.',
-      ],
+      title: i18n.t('explainers.swap.flashbots.title'),
+      description: [i18n.t('explainers.swap.flashbots.description')],
       actionButton: {
-        label: 'Got it',
+        label: i18n.t('explainers.swap.flashbots.action_label'),
         variant: 'tinted',
         labelColor: 'blue',
         action: hideExplanerSheet,
@@ -205,12 +204,14 @@ const SwapReviewSheetWithQuote = ({
     showExplainerSheet({
       show: true,
       header: { emoji: '🌈' },
-      title: 'Rainbow Fee',
+      title: i18n.t('explainers.swap.flashbots.title'),
       description: [
-        `Rainbow takes a ${includedFee[1]} fee from swaps. It’s part of what enables us to give you the best Ethereum experience possible.`,
+        i18n.t('explainers.swap.flashbots.description', {
+          feePercentage: includedFee[1],
+        }),
       ],
       actionButton: {
-        label: 'Got it',
+        label: i18n.t('explainers.swap.flashbots.action_label'),
         variant: 'tinted',
         labelColor: 'blue',
         action: hideExplanerSheet,
@@ -243,7 +244,7 @@ const SwapReviewSheetWithQuote = ({
               <Box paddingVertical="27px">
                 <Inline alignHorizontal="center" alignVertical="center">
                   <Text color="label" size="14pt" weight="bold">
-                    Review & Swap
+                    {i18n.t('swap.review.title')}
                   </Text>
                 </Inline>
               </Box>
@@ -298,7 +299,7 @@ const SwapReviewSheetWithQuote = ({
               <Stack space="4px">
                 <DetailsRow>
                   <Label
-                    label="Minimum received"
+                    label={i18n.t('swap.review.minimum_received')}
                     testId="swap-review-swapping-route"
                   />
                   <Text size="14pt" weight="semibold" color="label">
@@ -307,14 +308,14 @@ const SwapReviewSheetWithQuote = ({
                 </DetailsRow>
                 <DetailsRow>
                   <Label
-                    label="Swapping via"
+                    label={i18n.t('swap.review.swapping_via')}
                     testId="swap-review-swapping-route"
                   />
                   {!!swappingRoute && <SwapRoutes protocols={swappingRoute} />}
                 </DetailsRow>
                 <DetailsRow>
                   <Label
-                    label="Included Rainbow fee"
+                    label={i18n.t('swap.review.included_fee')}
                     testId="swap-review-rnbw-fee"
                     infoButton
                     onClick={openFeeExplainer}
@@ -325,7 +326,7 @@ const SwapReviewSheetWithQuote = ({
                 {flashbotsEnabled && (
                   <DetailsRow>
                     <Label
-                      label="Use Flashbots"
+                      label={i18n.t('swap.review.use_flashbots')}
                       testId="swap-review-flashbots"
                       infoButton
                       onClick={openFlashbotsExplainer}
@@ -336,7 +337,7 @@ const SwapReviewSheetWithQuote = ({
                       alignVertical="center"
                     >
                       <Text size="14pt" weight="semibold" color="label">
-                        On
+                        {i18n.t('swap.review.flashbots_on')}
                       </Text>
                       <Symbol
                         symbol="checkmark.shield.fill"
@@ -352,7 +353,7 @@ const SwapReviewSheetWithQuote = ({
                     <Box as={motion.div} key="more-details-shown" layout>
                       <DetailsRow>
                         <Label
-                          label="Exchange rate"
+                          label={i18n.t('swap.review.exchange_rate')}
                           testId="swap-review-exchange-rate"
                         />
                         <CarrouselButton
@@ -363,7 +364,9 @@ const SwapReviewSheetWithQuote = ({
                       {assetToSell.address !== ETH_ADDRESS && (
                         <DetailsRow>
                           <Label
-                            label={`${assetToSell.symbol} contract`}
+                            label={i18n.t('swap.review.asset_contract', {
+                              symbol: assetToSell.symbol,
+                            })}
                             testId="swap-review-asset-to-sell-contract"
                           />
 
@@ -380,7 +383,9 @@ const SwapReviewSheetWithQuote = ({
                       {assetToBuy.address !== ETH_ADDRESS && (
                         <DetailsRow>
                           <Label
-                            label={`${assetToBuy.symbol} contract`}
+                            label={i18n.t('swap.review.asset_contract', {
+                              symbol: assetToBuy.symbol,
+                            })}
                             testId="swap-review-asset-to-buy-contract"
                           />
                           <SwapViewContractDropdown
@@ -399,7 +404,7 @@ const SwapReviewSheetWithQuote = ({
                     <Box as={motion.div} key="more-details-hidden" layout>
                       <DetailsRow>
                         <Label
-                          label="More details"
+                          label={i18n.t('swap.review.more_details')}
                           testId="swap-review-details"
                         />
                         <ButtonSymbol
@@ -409,7 +414,7 @@ const SwapReviewSheetWithQuote = ({
                           height="24px"
                           variant="tinted"
                           onClick={openMoreDetails}
-                          testId={'swap-review-details-button'}
+                          testId="swap-review-details-button"
                         />
                       </DetailsRow>
                     </Box>
@@ -433,7 +438,10 @@ const SwapReviewSheetWithQuote = ({
                 width="full"
               >
                 <Text color="label" size="16pt" weight="bold">
-                  {`Swap ${assetToSell.symbol} to ${assetToBuy.symbol}`}
+                  {i18n.t('swap.review.swap_confirmation', {
+                    sellSymbol: assetToSell.symbol,
+                    buySymbol: assetToBuy.symbol,
+                  })}
                 </Text>
               </Button>
 
@@ -444,7 +452,7 @@ const SwapReviewSheetWithQuote = ({
                 onClick={goBack}
                 variant={'transparent'}
               >
-                {'Go back'}
+                {i18n.t('swap.review.go_back')}
               </Button>
             </Stack>
           </AccentColorProviderWrapper>
