@@ -858,6 +858,7 @@ export const symbolNames = selectSymbolNames(
   'star.fill',
   'exclamationmark.circle.fill',
   'shuffle',
+  'chart.bar.xaxis',
 );
 export type SymbolName = typeof symbolNames[number];
 
