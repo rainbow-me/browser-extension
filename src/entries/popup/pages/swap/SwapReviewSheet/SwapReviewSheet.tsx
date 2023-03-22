@@ -7,6 +7,7 @@ import { truncateAddress } from '~/core/utils/address';
 import {
   Bleed,
   Box,
+  Button,
   ButtonSymbol,
   Inline,
   Stack,
@@ -14,6 +15,7 @@ import {
   Text,
 } from '~/design-system';
 import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet';
+import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { ChevronDown } from '~/entries/popup/components/ChevronDown/ChevronDown';
@@ -118,6 +120,7 @@ export type SwapReviewSheetProps = {
   assetToBuy?: ParsedSearchAsset | null;
   quote?: Quote | CrosschainQuote | QuoteError;
   flashbotsEnabled: boolean;
+  hideSwapReview: () => void;
 };
 
 export const SwapReviewSheet = ({
@@ -126,6 +129,7 @@ export const SwapReviewSheet = ({
   assetToBuy,
   quote,
   flashbotsEnabled,
+  hideSwapReview,
 }: SwapReviewSheetProps) => {
   if (!quote || !assetToBuy || !assetToSell || (quote as QuoteError)?.error)
     return null;
@@ -136,6 +140,7 @@ export const SwapReviewSheet = ({
       assetToBuy={assetToBuy}
       quote={quote as Quote | CrosschainQuote}
       flashbotsEnabled={flashbotsEnabled}
+      hideSwapReview={hideSwapReview}
     />
   );
 };
@@ -146,6 +151,7 @@ type SwapReviewSheetWithQuoteProps = {
   assetToBuy: ParsedSearchAsset;
   quote: Quote | CrosschainQuote;
   flashbotsEnabled: boolean;
+  hideSwapReview: () => void;
 };
 
 const SwapReviewSheetWithQuote = ({
@@ -154,6 +160,7 @@ const SwapReviewSheetWithQuote = ({
   assetToBuy,
   quote,
   flashbotsEnabled,
+  hideSwapReview,
 }: SwapReviewSheetWithQuoteProps) => {
   const { minimumReceived, swappingRoute, includedFee, exchangeRate } =
     useSwapReviewDetails({ quote, assetToBuy, assetToSell });
@@ -325,8 +332,43 @@ const SwapReviewSheetWithQuote = ({
           </Box>
         </Stack>
       </Box>
-      <Box>
-        <Stack space="24px"></Stack>
+      <Box padding="20px">
+        <AccentColorProviderWrapper
+          color={assetToBuy.colors.primary || assetToBuy.colors.fallback}
+        >
+          <Stack alignHorizontal="center" space="8px">
+            <Button
+              onClick={() => null}
+              height="44px"
+              variant="flat"
+              color={'accent'}
+              width="full"
+              testId="swap-review-button"
+            >
+              <Inline space="8px" alignVertical="center">
+                <Text
+                  testId="swap-confirmation-button"
+                  color="label"
+                  size="16pt"
+                  weight="bold"
+                >
+                  {'Swap'}
+                </Text>
+              </Inline>
+            </Button>
+
+            <Button
+              color={'labelSecondary'}
+              height="44px"
+              width="fit"
+              onClick={hideSwapReview}
+              testId="reject-request-button"
+              variant={'transparent'}
+            >
+              {'Go back'}
+            </Button>
+          </Stack>
+        </AccentColorProviderWrapper>
       </Box>
     </BottomSheet>
   );

@@ -161,6 +161,8 @@ export function Swap() {
     [setAssetToBuyInputValue, setAssetToSell, setAssetToSellInputValue],
   );
 
+  const hideSwapReview = useCallback(() => setShowSwapReview(false), []);
+
   return (
     <>
       <Navbar
@@ -185,6 +187,7 @@ export function Swap() {
         assetToSell={assetToSell}
         quote={quote}
         flashbotsEnabled={flashbotsEnabled}
+        hideSwapReview={hideSwapReview}
       />
       <ExplainerSheet
         show={explainerSheetParams.show}

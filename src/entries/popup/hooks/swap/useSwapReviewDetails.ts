@@ -91,7 +91,7 @@ export const useSwapReviewDetails = ({
             assetToBuy.price?.value || '0',
             currentCurrency,
           ).display,
-      `${multiply(feePercentage, 100)}%`,
+      `${handleSignificantDecimals(multiply(feePercentage, 100), 2)}%`,
     ];
   }, [
     assetToBuy.decimals,
