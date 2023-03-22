@@ -180,7 +180,10 @@ const SwapReviewSheetWithQuote = ({
     <BottomSheet show={show}>
       <Box
         background="surfacePrimaryElevatedSecondary"
-        style={{ borderTopLeftRadius: '24px', borderTopRightRadius: '24px' }}
+        style={{
+          borderTopLeftRadius: '24px',
+          borderTopRightRadius: '24px',
+        }}
       >
         <Stack space="12px">
           <Box style={{ height: '64px' }}>
