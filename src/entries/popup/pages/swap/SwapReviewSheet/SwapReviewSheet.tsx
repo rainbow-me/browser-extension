@@ -1,9 +1,9 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { ETH_ADDRESS } from '~/core/references';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
 import {
@@ -362,7 +362,7 @@ const SwapReviewSheetWithQuote = ({
                           textArray={exchangeRate}
                         />
                       </DetailsRow>
-                      {assetToSell.address !== ETH_ADDRESS && (
+                      {!assetToSell.isNativeAsset && (
                         <DetailsRow>
                           <Label
                             label={i18n.t('swap.review.asset_contract', {
@@ -372,7 +372,7 @@ const SwapReviewSheetWithQuote = ({
                           />
 
                           <SwapViewContractDropdown
-                            address={assetToSell.address}
+                            address={assetToSell.address as Address}
                             chainId={assetToSell.chainId}
                           >
                             <Text size="14pt" weight="semibold" color="label">
@@ -381,7 +381,7 @@ const SwapReviewSheetWithQuote = ({
                           </SwapViewContractDropdown>
                         </DetailsRow>
                       )}
-                      {assetToBuy.address !== ETH_ADDRESS && (
+                      {!assetToBuy.isNativeAsset && (
                         <DetailsRow>
                           <Label
                             label={i18n.t('swap.review.asset_contract', {
@@ -390,7 +390,7 @@ const SwapReviewSheetWithQuote = ({
                             testId="swap-review-asset-to-buy-contract"
                           />
                           <SwapViewContractDropdown
-                            address={assetToBuy.address}
+                            address={assetToBuy.address as Address}
                             chainId={assetToBuy.chainId}
                           >
                             <Text size="14pt" weight="semibold" color="label">
