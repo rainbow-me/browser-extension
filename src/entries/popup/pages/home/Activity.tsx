@@ -40,6 +40,7 @@ import { SheetMode } from '../speedUpAndCancelSheet';
 import { TransactionDetailsMenu } from './TransactionDetailsMenu';
 
 type ActivityProps = {
+  currentSheet: SheetMode;
   onSheetSelected: ({
     sheet,
     transaction,
@@ -47,13 +48,18 @@ type ActivityProps = {
     sheet: SheetMode;
     transaction: RainbowTransaction;
   }) => void;
+  setSelectedTransaction: (tx?: RainbowTransaction) => void;
 };
 
 const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 150;
 const ACTIVITY_DEFAULT_LENGTH = 100;
 
-export function Activity({ onSheetSelected }: ActivityProps) {
+export function Activity({
+  currentSheet,
+  onSheetSelected,
+  setSelectedTransaction,
+}: ActivityProps) {
   const { address } = useAccount();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { allTransactionsByDate, isInitialLoading } = useAllTransactions({
@@ -179,12 +185,16 @@ export function Activity({ onSheetSelected }: ActivityProps) {
                     </Box>
                   </Inset>
                 ) : (
-                  <TransactionDetailsMenu
-                    onRowSelection={onTransactionSelected}
-                    transaction={rowData}
-                  >
-                    <ActivityRow transaction={rowData} />
-                  </TransactionDetailsMenu>
+                  <Box onClick={() => console.log('bar')}>
+                    <TransactionDetailsMenu
+                      currentSheet={currentSheet}
+                      onRowSelection={onTransactionSelected}
+                      setSelectedTransaction={setSelectedTransaction}
+                      transaction={rowData}
+                    >
+                      <ActivityRow transaction={rowData} />
+                    </TransactionDetailsMenu>
+                  </Box>
                 )}
               </Box>
             );

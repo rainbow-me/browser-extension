@@ -729,8 +729,7 @@ export function getTransactionBlockExplorerUrl({
   hash: string;
   chainId: ChainId;
 }) {
-  const trimmedHash = hash.replace(/-.*/g, '');
   if (!isString(hash)) return;
   const blockExplorerHost = getBlockExplorerHostForChain(chainId);
-  return `https://${blockExplorerHost}/tx/${trimmedHash}`;
+  return `https://${blockExplorerHost}/tx/${hash}`;
 }

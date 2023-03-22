@@ -1,11 +1,19 @@
-import React, { ReactNode, useCallback, useState } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
+import { truncateAddress } from '~/core/utils/address';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTransactionBlockExplorerUrl } from '~/core/utils/transactions';
-import { Box, Inline, Symbol, Text } from '~/design-system';
+import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
 import {
   ContextMenu,
@@ -15,14 +23,18 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from '../../components/ContextMenu/ContextMenu';
+import { useToast } from '../../hooks/useToast';
 import { SheetMode } from '../speedUpAndCancelSheet';
 
 export function TransactionDetailsMenu({
   children,
+  currentSheet,
   onRowSelection,
+  setSelectedTransaction,
   transaction,
 }: {
   children: ReactNode;
+  currentSheet: SheetMode;
   onRowSelection: ({
     sheet,
     transaction,
@@ -30,27 +42,49 @@ export function TransactionDetailsMenu({
     sheet: SheetMode;
     transaction: RainbowTransaction;
   }) => void;
+  setSelectedTransaction: (tx?: RainbowTransaction) => void;
   transaction: RainbowTransaction;
 }) {
   // need to control this manually so that menu closes when sheet appears
   const [closed, setClosed] = useState(false);
   const onOpenChange = () => setClosed(false);
 
+  const { triggerToast } = useToast();
+  const trimmedHash = useMemo(
+    () => transaction?.hash?.replace(/-.*/g, '') || '',
+    [transaction],
+  );
+  const truncatedAddress = useMemo(
+    () => truncateAddress(trimmedHash as Address),
+    [trimmedHash],
+  );
+
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(trimmedHash);
+    triggerToast({
+      title: i18n.t('speed_up_and_cancel.handle_copy_title'),
+      description: truncatedAddress,
+    });
+  }, [triggerToast, trimmedHash, truncatedAddress]);
+
   const viewOnExplorer = useCallback(() => {
     const explorer = getTransactionBlockExplorerUrl({
       chainId: transaction?.chainId || ChainId.mainnet,
-      hash: transaction?.hash || '',
+      hash: trimmedHash,
     });
     goToNewTab({
       url: explorer,
     });
-  }, [transaction?.chainId, transaction?.hash]);
+  }, [transaction?.chainId, trimmedHash]);
 
   const onValueChange = useCallback(
-    (value: 'view' | 'speedUp' | 'cancel') => {
+    (value: 'copy' | 'view' | 'speedUp' | 'cancel') => {
       switch (value) {
         case 'view':
           viewOnExplorer();
+          break;
+        case 'copy':
+          handleCopy();
           break;
         case 'speedUp':
         case 'cancel':
@@ -59,18 +93,29 @@ export function TransactionDetailsMenu({
           break;
       }
     },
-    [onRowSelection, transaction, viewOnExplorer],
+    [handleCopy, onRowSelection, transaction, viewOnExplorer],
   );
+
+  const onTrigger = useCallback(
+    () => setSelectedTransaction(transaction),
+    [transaction, setSelectedTransaction],
+  );
+
+  useEffect(() => {
+    if (currentSheet !== 'none') {
+      setClosed(true);
+    }
+  }, [currentSheet]);
 
   return (
     <MenuWrapper closed={closed} onOpenChange={onOpenChange}>
-      <ContextMenuTrigger asChild>
+      <ContextMenuTrigger asChild onTrigger={onTrigger}>
         <Box position="relative">{children}</Box>
       </ContextMenuTrigger>
-      <ContextMenuContent>
+      <MenuContentWrapper closed={closed}>
         <ContextMenuRadioGroup
           onValueChange={(value) =>
-            onValueChange(value as 'view' | 'speedUp' | 'cancel')
+            onValueChange(value as 'copy' | 'view' | 'speedUp' | 'cancel')
           }
         >
           {transaction?.pending && (
@@ -85,6 +130,16 @@ export function TransactionDetailsMenu({
                       {i18n.t('speed_up_and_cancel.speed_up')}
                     </Text>
                   </Inline>
+                  <Box
+                    background={'fillSecondary'}
+                    padding="4px"
+                    borderRadius="3px"
+                    boxShadow="1px"
+                  >
+                    <Text size="12pt" color="labelSecondary" weight="semibold">
+                      {'S'}
+                    </Text>
+                  </Box>
                 </MenuRow>
               </ContextMenuRadioItem>
               <ContextMenuRadioItem value={'cancel'}>
@@ -97,6 +152,16 @@ export function TransactionDetailsMenu({
                       {i18n.t('speed_up_and_cancel.cancel')}
                     </Text>
                   </Inline>
+                  <Box
+                    background={'fillSecondary'}
+                    padding="4px"
+                    borderRadius="3px"
+                    boxShadow="1px"
+                  >
+                    <Text size="12pt" color="labelSecondary" weight="semibold">
+                      {'Del'}
+                    </Text>
+                  </Box>
                 </MenuRow>
               </ContextMenuRadioItem>
               <Box paddingVertical="4px">
@@ -127,8 +192,28 @@ export function TransactionDetailsMenu({
               />
             </MenuRow>
           </ContextMenuRadioItem>
+          <ContextMenuRadioItem value="copy">
+            <MenuRow>
+              <Inline space="8px" alignVertical="center">
+                <Symbol
+                  weight="medium"
+                  size={18}
+                  symbol="doc.on.doc.fill"
+                  color="label"
+                />
+                <Stack space="8px">
+                  <Text color="label" size="14pt" weight="semibold">
+                    {i18n.t('speed_up_and_cancel.copy_tx_hash')}
+                  </Text>
+                  <Text color="labelSecondary" size="12pt" weight="semibold">
+                    {truncateAddress(trimmedHash as Address)}
+                  </Text>
+                </Stack>
+              </Inline>
+            </MenuRow>
+          </ContextMenuRadioItem>
         </ContextMenuRadioGroup>
-      </ContextMenuContent>
+      </MenuContentWrapper>
     </MenuWrapper>
   );
 }
@@ -147,6 +232,17 @@ function MenuRow({
       </Inline>
     </Box>
   );
+}
+
+function MenuContentWrapper({
+  children,
+  closed,
+}: {
+  children: ReactNode;
+  closed: boolean;
+}) {
+  if (closed) return null;
+  return <ContextMenuContent>{children}</ContextMenuContent>;
 }
 
 function MenuWrapper({

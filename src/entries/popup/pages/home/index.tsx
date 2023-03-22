@@ -96,6 +96,48 @@ export function Home() {
     analytics.track(event.walletViewed);
   }, []);
 
+  const onSheetSelected = useCallback(
+    ({
+      sheet,
+      transaction,
+    }: {
+      sheet: SheetMode;
+      transaction: RainbowTransaction;
+    }) => {
+      setSheet(sheet);
+      setSpeedUpAndCancelTx(transaction);
+    },
+    [],
+  );
+
+  const onKeyDown = useCallback(
+    (e: KeyboardEvent) => {
+      if (speedUpAndCancelTx?.pending) {
+        if (e.key === 'Backspace') {
+          onSheetSelected({
+            sheet: 'cancel',
+            transaction: speedUpAndCancelTx,
+          });
+        } else if (e.key === 's') {
+          onSheetSelected({
+            sheet: 'speedUp',
+            transaction: speedUpAndCancelTx,
+          });
+        }
+      }
+    },
+    [onSheetSelected, speedUpAndCancelTx],
+  );
+
+  useEffect(() => {
+    if (speedUpAndCancelTx?.pending) {
+      document.addEventListener('keydown', onKeyDown);
+    } else {
+      document.removeEventListener('keydown', onKeyDown);
+    }
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [onKeyDown, speedUpAndCancelTx]);
+
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>
       {({ className, style }) => (
@@ -118,16 +160,11 @@ export function Home() {
               {activeTab === 'tokens' && <Tokens />}
               {activeTab === 'activity' && (
                 <Activity
-                  onSheetSelected={({
-                    sheet,
-                    transaction,
-                  }: {
-                    sheet: SheetMode;
-                    transaction: RainbowTransaction;
-                  }) => {
-                    setSheet(sheet);
-                    setSpeedUpAndCancelTx(transaction);
-                  }}
+                  currentSheet={sheet}
+                  onSheetSelected={onSheetSelected}
+                  setSelectedTransaction={(tx?: RainbowTransaction) =>
+                    setSpeedUpAndCancelTx(tx)
+                  }
                 />
               )}
             </Content>

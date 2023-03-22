@@ -620,6 +620,7 @@
     "cancel": "Cancel",
     "view_on_etherscan": "View on Etherscan",
     "view_on_explorer": "View on Explorer",
+    "copy_tx_hash": "Copy Tx Hash",
     "cancel_explanation": "This will attempt to cancel your pending transaction. It requires broadcasting another transaction.",
     "speed_up_explanation": "This will speed up your pending transaction by replacing it. There's a chance your original transaction will confirm first.",
     "cancel_title": "Cancel transaction",
@@ -629,7 +630,8 @@
     "cancel_cta": "Cancel transaction",
     "speed_up_cta": "Speed up transaction",
     "speed_up_transaction": "Speed up transaction",
-    "close_cta": "Cancel"
+    "close_cta": "Cancel",
+    "handle_copy_title": "Tx Hash Copied"
   },
   "wallet_ready": {
     "title": "Your wallets ready",
