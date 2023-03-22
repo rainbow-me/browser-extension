@@ -238,6 +238,7 @@ const SwapReviewSheetWithQuote = ({
             borderTopLeftRadius: '24px',
             borderTopRightRadius: '24px',
           }}
+          paddingBottom="20px"
         >
           <Stack space="12px">
             <Box style={{ height: '64px' }}>
