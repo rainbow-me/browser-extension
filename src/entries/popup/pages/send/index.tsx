@@ -9,6 +9,7 @@ import React, {
 } from 'react';
 import { Address } from 'wagmi';
 
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
@@ -138,6 +139,8 @@ export function Send() {
 
   const handleSend = useCallback(
     async (callback?: () => void) => {
+      if (!config.send_enabled) return;
+
       try {
         const { type } = await getWallet(fromAddress);
 

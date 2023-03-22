@@ -34,7 +34,7 @@ export function FullScreenBackground({
           width: '100vw',
           height: '100vh',
           backgroundImage: 'url(assets/bg/noise.png)',
-          opacity: 0.35,
+          opacity: 0.4,
           backgroundRepeat: 'repeat',
           mixBlendMode: 'soft-light',
         }}
