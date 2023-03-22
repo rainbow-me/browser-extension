@@ -2,6 +2,7 @@ import { Analytics as AnalyticsNode } from '@segment/analytics-node';
 
 import { EventProperties, event } from '~/analytics/event';
 import { UserProperties } from '~/analytics/userProperties';
+import { analyticsDisabledStore } from '~/core/state/currentSettings/analyticsDisabled';
 import { RainbowError, logger } from '~/logger';
 
 const IS_DEV = process.env.IS_DEV === 'true';
@@ -11,7 +12,7 @@ export class Analytics {
   client?: AnalyticsNode;
   deviceId?: string;
   event = event;
-  disabled = false; // to do: check user setting here
+  disabled = true; // to do: check user setting here
 
   constructor() {
     /**
@@ -27,6 +28,14 @@ export class Analytics {
      *   Chrome extensions. There have been stories of people getting this working, but it's not
      *   something we would be able to support, although you can go ahead and give it a try.
      */
+
+    // wait for analyticsDisabledStore to be initialized and turn it on if enabled
+    setTimeout(() => {
+      if (analyticsDisabledStore.getState().analyticsDisabled !== true) {
+        this.disabled = false;
+      }
+    }, 10);
+
     try {
       this.client = new AnalyticsNode({
         maxEventsInBatch: 1 /* replicate analytics-next flushing behavior */,
