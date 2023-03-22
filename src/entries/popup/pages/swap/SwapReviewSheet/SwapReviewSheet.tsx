@@ -21,6 +21,10 @@ import { AccentColorProviderWrapper } from '~/design-system/components/Box/Color
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { ChevronDown } from '~/entries/popup/components/ChevronDown/ChevronDown';
+import {
+  ExplainerSheet,
+  useExplainerSheetParams,
+} from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
 import { useSwapReviewDetails } from '~/entries/popup/hooks/swap/useSwapReviewDetails';
 
 import { SwapAssetCard } from './SwapAssetCard';
@@ -168,6 +172,9 @@ const SwapReviewSheetWithQuote = ({
   const { minimumReceived, swappingRoute, includedFee, exchangeRate } =
     useSwapReviewDetails({ quote, assetToBuy, assetToSell });
 
+  const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
+    useExplainerSheetParams();
+
   const openMoreDetails = useCallback(() => setShowDetails(true), []);
   const closeMoreDetails = useCallback(() => setShowDetails(false), []);
 
@@ -176,224 +183,273 @@ const SwapReviewSheetWithQuote = ({
     closeMoreDetails();
   }, [closeMoreDetails, hideSwapReview]);
 
+  const openFlashbotsExplainer = useCallback(() => {
+    showExplainerSheet({
+      show: true,
+      header: { emoji: '🤖' },
+      title: 'Flashbots',
+      description: [
+        'Flashbots protects your transactions from frontrunning and sandwich attacks which might result in you getting a worse price or your transaction failing.',
+      ],
+      actionButton: {
+        label: 'Got it',
+        variant: 'tinted',
+        labelColor: 'blue',
+        action: hideExplanerSheet,
+      },
+      testId: 'swap-review-flashbots',
+    });
+  }, [hideExplanerSheet, showExplainerSheet]);
+
+  const openFeeExplainer = useCallback(() => {
+    showExplainerSheet({
+      show: true,
+      header: { emoji: '🌈' },
+      title: 'Rainbow Fee',
+      description: [
+        `Rainbow takes a ${includedFee[1]} fee from swaps. It’s part of what enables us to give you the best Ethereum experience possible.`,
+      ],
+      actionButton: {
+        label: 'Got it',
+        variant: 'tinted',
+        labelColor: 'blue',
+        action: hideExplanerSheet,
+      },
+      testId: 'swap-review-fee',
+    });
+  }, [hideExplanerSheet, includedFee, showExplainerSheet]);
+
   return (
-    <BottomSheet show={show}>
-      <Box
-        background="surfacePrimaryElevatedSecondary"
-        style={{
-          borderTopLeftRadius: '24px',
-          borderTopRightRadius: '24px',
-        }}
-      >
-        <Stack space="12px">
-          <Box style={{ height: '64px' }}>
-            <Box paddingVertical="27px">
-              <Inline alignHorizontal="center" alignVertical="center">
-                <Text color="label" size="14pt" weight="bold">
-                  Review & Swap
-                </Text>
-              </Inline>
-            </Box>
-          </Box>
-          <Box>
-            <Inline
-              space="10px"
-              alignVertical="center"
-              alignHorizontal="center"
-            >
-              <SwapAssetCard
-                asset={assetToSell}
-                assetAmount={quote.sellAmount.toString()}
-              />
-              <Box
-                boxShadow="12px surfaceSecondaryElevated"
-                background="surfaceSecondaryElevated"
-                borderRadius="32px"
-                borderWidth={'1px'}
-                borderColor="buttonStroke"
-                style={{
-                  width: 32,
-                  height: 32,
-                  zIndex: 10,
-                  position: 'absolute',
-                  left: '0 auto',
-                }}
-              >
-                <Inline
-                  height="full"
-                  alignHorizontal="center"
-                  alignVertical="center"
-                >
-                  <Inline alignHorizontal="center">
-                    <Box style={{ rotate: '-90deg' }} marginRight="-6px">
-                      <ChevronDown color="labelTertiary" />
-                    </Box>
-                    <Box style={{ rotate: '-90deg' }} marginLeft="-6px">
-                      <ChevronDown color="labelQuaternary" />
-                    </Box>
-                  </Inline>
+    <>
+      <ExplainerSheet
+        show={explainerSheetParams.show}
+        header={explainerSheetParams.header}
+        title={explainerSheetParams.title}
+        description={explainerSheetParams.description}
+        actionButton={explainerSheetParams.actionButton}
+        linkButton={explainerSheetParams.linkButton}
+        testId={explainerSheetParams.testId}
+      />
+      <BottomSheet show={show}>
+        <Box
+          background="surfacePrimaryElevatedSecondary"
+          style={{
+            borderTopLeftRadius: '24px',
+            borderTopRightRadius: '24px',
+          }}
+        >
+          <Stack space="12px">
+            <Box style={{ height: '64px' }}>
+              <Box paddingVertical="27px">
+                <Inline alignHorizontal="center" alignVertical="center">
+                  <Text color="label" size="14pt" weight="bold">
+                    Review & Swap
+                  </Text>
                 </Inline>
               </Box>
-
-              <SwapAssetCard
-                asset={assetToBuy}
-                assetAmount={quote.buyAmount.toString()}
-              />
-            </Inline>
-          </Box>
-          <Box paddingHorizontal="20px">
-            <Stack space="4px">
-              <DetailsRow>
-                <Label
-                  label="Minimum received"
-                  testId="swap-review-swapping-route"
+            </Box>
+            <Box>
+              <Inline
+                space="10px"
+                alignVertical="center"
+                alignHorizontal="center"
+              >
+                <SwapAssetCard
+                  asset={assetToSell}
+                  assetAmount={quote.sellAmount.toString()}
                 />
-                <Text size="14pt" weight="semibold" color="label">
-                  {minimumReceived}
-                </Text>
-              </DetailsRow>
-              <DetailsRow>
-                <Label
-                  label="Swapping via"
-                  testId="swap-review-swapping-route"
-                />
-                {!!swappingRoute && <SwapRoutes protocols={swappingRoute} />}
-              </DetailsRow>
-              <DetailsRow>
-                <Label
-                  label="Included Rainbow fee"
-                  testId="swap-review-rnbw-fee"
-                  infoButton
-                />
-                <CarrouselButton textArray={includedFee} />
-              </DetailsRow>
-
-              {flashbotsEnabled && (
-                <DetailsRow>
-                  <Label
-                    label="Use Flashbots"
-                    testId="swap-review-flashbots"
-                    infoButton
-                  />
+                <Box
+                  boxShadow="12px surfaceSecondaryElevated"
+                  background="surfaceSecondaryElevated"
+                  borderRadius="32px"
+                  borderWidth={'1px'}
+                  borderColor="buttonStroke"
+                  style={{
+                    width: 32,
+                    height: 32,
+                    zIndex: 10,
+                    position: 'absolute',
+                    left: '0 auto',
+                  }}
+                >
                   <Inline
-                    space="4px"
+                    height="full"
                     alignHorizontal="center"
                     alignVertical="center"
                   >
-                    <Text size="14pt" weight="semibold" color="label">
-                      On
-                    </Text>
-                    <Symbol
-                      symbol="checkmark.shield.fill"
-                      weight="semibold"
-                      color="green"
-                      size={12}
-                    />
+                    <Inline alignHorizontal="center">
+                      <Box style={{ rotate: '-90deg' }} marginRight="-6px">
+                        <ChevronDown color="labelTertiary" />
+                      </Box>
+                      <Box style={{ rotate: '-90deg' }} marginLeft="-6px">
+                        <ChevronDown color="labelQuaternary" />
+                      </Box>
+                    </Inline>
                   </Inline>
+                </Box>
+
+                <SwapAssetCard
+                  asset={assetToBuy}
+                  assetAmount={quote.buyAmount.toString()}
+                />
+              </Inline>
+            </Box>
+            <Box paddingHorizontal="20px">
+              <Stack space="4px">
+                <DetailsRow>
+                  <Label
+                    label="Minimum received"
+                    testId="swap-review-swapping-route"
+                  />
+                  <Text size="14pt" weight="semibold" color="label">
+                    {minimumReceived}
+                  </Text>
                 </DetailsRow>
-              )}
-              <Box as={motion.div} key="more-details" layout>
-                {showMoreDetails && (
-                  <Box as={motion.div} key="more-details-shown" layout>
-                    <DetailsRow>
-                      <Label
-                        label="Exchange rate"
-                        testId="swap-review-exchange-rate"
+                <DetailsRow>
+                  <Label
+                    label="Swapping via"
+                    testId="swap-review-swapping-route"
+                  />
+                  {!!swappingRoute && <SwapRoutes protocols={swappingRoute} />}
+                </DetailsRow>
+                <DetailsRow>
+                  <Label
+                    label="Included Rainbow fee"
+                    testId="swap-review-rnbw-fee"
+                    infoButton
+                    onClick={openFeeExplainer}
+                  />
+                  <CarrouselButton textArray={includedFee} />
+                </DetailsRow>
+
+                {flashbotsEnabled && (
+                  <DetailsRow>
+                    <Label
+                      label="Use Flashbots"
+                      testId="swap-review-flashbots"
+                      infoButton
+                      onClick={openFlashbotsExplainer}
+                    />
+                    <Inline
+                      space="4px"
+                      alignHorizontal="center"
+                      alignVertical="center"
+                    >
+                      <Text size="14pt" weight="semibold" color="label">
+                        On
+                      </Text>
+                      <Symbol
+                        symbol="checkmark.shield.fill"
+                        weight="semibold"
+                        color="green"
+                        size={12}
                       />
-                      <CarrouselButton
-                        symbol="arrow.2.squarepath"
-                        textArray={exchangeRate}
-                      />
-                    </DetailsRow>
-                    {assetToSell.address !== ETH_ADDRESS && (
+                    </Inline>
+                  </DetailsRow>
+                )}
+                <Box as={motion.div} key="more-details" layout>
+                  {showMoreDetails && (
+                    <Box as={motion.div} key="more-details-shown" layout>
                       <DetailsRow>
                         <Label
-                          label={`${assetToSell.symbol} contract`}
-                          testId="swap-review-asset-to-sell-contract"
+                          label="Exchange rate"
+                          testId="swap-review-exchange-rate"
                         />
-
-                        <SwapViewContractDropdown
-                          address={assetToSell.address}
-                          chainId={assetToSell.chainId}
-                        >
-                          <Text size="14pt" weight="semibold" color="label">
-                            {truncateAddress(assetToSell.address)}
-                          </Text>
-                        </SwapViewContractDropdown>
+                        <CarrouselButton
+                          symbol="arrow.2.squarepath"
+                          textArray={exchangeRate}
+                        />
                       </DetailsRow>
-                    )}
-                    {assetToBuy.address !== ETH_ADDRESS && (
+                      {assetToSell.address !== ETH_ADDRESS && (
+                        <DetailsRow>
+                          <Label
+                            label={`${assetToSell.symbol} contract`}
+                            testId="swap-review-asset-to-sell-contract"
+                          />
+
+                          <SwapViewContractDropdown
+                            address={assetToSell.address}
+                            chainId={assetToSell.chainId}
+                          >
+                            <Text size="14pt" weight="semibold" color="label">
+                              {truncateAddress(assetToSell.address)}
+                            </Text>
+                          </SwapViewContractDropdown>
+                        </DetailsRow>
+                      )}
+                      {assetToBuy.address !== ETH_ADDRESS && (
+                        <DetailsRow>
+                          <Label
+                            label={`${assetToBuy.symbol} contract`}
+                            testId="swap-review-asset-to-buy-contract"
+                          />
+                          <SwapViewContractDropdown
+                            address={assetToBuy.address}
+                            chainId={assetToBuy.chainId}
+                          >
+                            <Text size="14pt" weight="semibold" color="label">
+                              {truncateAddress(assetToBuy.address)}
+                            </Text>
+                          </SwapViewContractDropdown>
+                        </DetailsRow>
+                      )}
+                    </Box>
+                  )}
+                  {!showMoreDetails && (
+                    <Box as={motion.div} key="more-details-hidden" layout>
                       <DetailsRow>
                         <Label
-                          label={`${assetToBuy.symbol} contract`}
-                          testId="swap-review-asset-to-buy-contract"
+                          label="More details"
+                          testId="swap-review-details"
                         />
-                        <SwapViewContractDropdown
-                          address={assetToBuy.address}
-                          chainId={assetToBuy.chainId}
-                        >
-                          <Text size="14pt" weight="semibold" color="label">
-                            {truncateAddress(assetToBuy.address)}
-                          </Text>
-                        </SwapViewContractDropdown>
+                        <ButtonSymbol
+                          symbol="chevron.down.circle"
+                          symbolSize={12}
+                          color="labelQuaternary"
+                          height="24px"
+                          variant="tinted"
+                          onClick={openMoreDetails}
+                          testId={'swap-review-details-button'}
+                        />
                       </DetailsRow>
-                    )}
-                  </Box>
-                )}
-                {!showMoreDetails && (
-                  <Box as={motion.div} key="more-details-hidden" layout>
-                    <DetailsRow>
-                      <Label
-                        label="More details"
-                        testId="swap-review-details"
-                      />
-                      <ButtonSymbol
-                        symbol="chevron.down.circle"
-                        symbolSize={12}
-                        color="labelQuaternary"
-                        height="24px"
-                        variant="tinted"
-                        onClick={openMoreDetails}
-                        testId={'swap-review-details-button'}
-                      />
-                    </DetailsRow>
-                  </Box>
-                )}
-              </Box>
-            </Stack>
-          </Box>
-        </Stack>
-      </Box>
-      <Box padding="20px">
-        <Separator strokeWeight="1px" color="separatorSecondary" />
-        <AccentColorProviderWrapper
-          color={assetToBuy.colors.primary || assetToBuy.colors.fallback}
-        >
-          <Stack alignHorizontal="center" space="8px">
-            <Button
-              onClick={() => null}
-              height="44px"
-              variant="flat"
-              color={'accent'}
-              width="full"
-            >
-              <Text color="label" size="16pt" weight="bold">
-                {`Swap ${assetToSell.symbol} to ${assetToBuy.symbol}`}
-              </Text>
-            </Button>
-
-            <Button
-              color={'labelSecondary'}
-              height="44px"
-              width="fit"
-              onClick={goBack}
-              variant={'transparent'}
-            >
-              {'Go back'}
-            </Button>
+                    </Box>
+                  )}
+                </Box>
+              </Stack>
+            </Box>
           </Stack>
-        </AccentColorProviderWrapper>
-      </Box>
-    </BottomSheet>
+        </Box>
+        <Box padding="20px">
+          <Separator strokeWeight="1px" color="separatorSecondary" />
+          <AccentColorProviderWrapper
+            color={assetToBuy.colors.primary || assetToBuy.colors.fallback}
+          >
+            <Stack alignHorizontal="center" space="8px">
+              <Button
+                onClick={() => null}
+                height="44px"
+                variant="flat"
+                color={'accent'}
+                width="full"
+              >
+                <Text color="label" size="16pt" weight="bold">
+                  {`Swap ${assetToSell.symbol} to ${assetToBuy.symbol}`}
+                </Text>
+              </Button>
+
+              <Button
+                color={'labelSecondary'}
+                height="44px"
+                width="fit"
+                onClick={goBack}
+                variant={'transparent'}
+              >
+                {'Go back'}
+              </Button>
+            </Stack>
+          </AccentColorProviderWrapper>
+        </Box>
+      </BottomSheet>
+    </>
   );
 };

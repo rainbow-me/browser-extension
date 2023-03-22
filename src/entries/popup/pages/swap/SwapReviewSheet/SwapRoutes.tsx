@@ -43,7 +43,7 @@ const RoutePath = ({ protocols }: SwapRoutesProps) => {
           ))}
         </Inline>
         <Text color="label" size="14pt" weight="semibold">
-          {`${protocols.length} steps`}
+          {`${protocols.length} ${protocols.length === 1 ? 'step' : 'steps'}`}
         </Text>
       </Inline>
     </Box>
