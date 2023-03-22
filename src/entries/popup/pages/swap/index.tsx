@@ -45,7 +45,7 @@ export function Swap() {
   const [showSwapSettings, setShowSwapSettings] = useState(false);
   const [showSwapReview, setShowSwapReview] = useState(false);
 
-  const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
+  const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
   const { selectedGas } = useGasStore();
 
@@ -133,7 +133,7 @@ export function Swap() {
     enoughAssetsForSwap,
     validationButtonLabel,
     showExplainerSheet,
-    hideExplanerSheet,
+    hideExplainerSheet,
     setShowSwapReview,
   });
 

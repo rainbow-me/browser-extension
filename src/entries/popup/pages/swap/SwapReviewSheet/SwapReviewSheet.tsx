@@ -173,7 +173,7 @@ const SwapReviewSheetWithQuote = ({
   const { minimumReceived, swappingRoute, includedFee, exchangeRate } =
     useSwapReviewDetails({ quote, assetToBuy, assetToSell });
 
-  const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
+  const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
 
   const openMoreDetails = useCallback(() => setShowDetails(true), []);
@@ -194,11 +194,11 @@ const SwapReviewSheetWithQuote = ({
         label: i18n.t('explainers.swap.flashbots.action_label'),
         variant: 'tinted',
         labelColor: 'blue',
-        action: hideExplanerSheet,
+        action: hideExplainerSheet,
       },
       testId: 'swap-review-flashbots',
     });
-  }, [hideExplanerSheet, showExplainerSheet]);
+  }, [hideExplainerSheet, showExplainerSheet]);
 
   const openFeeExplainer = useCallback(() => {
     showExplainerSheet({
@@ -214,11 +214,11 @@ const SwapReviewSheetWithQuote = ({
         label: i18n.t('explainers.swap.flashbots.action_label'),
         variant: 'tinted',
         labelColor: 'blue',
-        action: hideExplanerSheet,
+        action: hideExplainerSheet,
       },
       testId: 'swap-review-fee',
     });
-  }, [hideExplanerSheet, includedFee, showExplainerSheet]);
+  }, [hideExplainerSheet, includedFee, showExplainerSheet]);
 
   return (
     <>

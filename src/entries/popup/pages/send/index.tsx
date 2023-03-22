@@ -218,7 +218,7 @@ export function Send() {
     };
   }, [clearCustomGasModified]);
 
-  const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
+  const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
 
   const showToContractExplainer = useCallback(() => {
@@ -234,11 +234,11 @@ export function Send() {
         label: i18n.t('explainers.send.action_label'),
         variant: 'tinted',
         labelColor: 'blue',
-        action: hideExplanerSheet,
+        action: hideExplainerSheet,
       },
       header: { emoji: '✋' },
     });
-  }, [hideExplanerSheet, showExplainerSheet]);
+  }, [hideExplainerSheet, showExplainerSheet]);
 
   const prevToAddressIsSmartContract = usePrevious(toAddressIsSmartContract);
   useEffect(() => {

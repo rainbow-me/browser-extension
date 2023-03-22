@@ -68,7 +68,7 @@ interface UseSwapActionsProps {
   assetToBuy?: ParsedSearchAsset | null;
   enoughAssetsForSwap?: boolean;
   validationButtonLabel: string;
-  hideExplanerSheet: () => void;
+  hideExplainerSheet: () => void;
   showExplainerSheet: (params: ExplainerSheetProps) => void;
   setShowSwapReview: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -90,7 +90,7 @@ export const useSwapActions = ({
   assetToBuy,
   enoughAssetsForSwap,
   validationButtonLabel,
-  hideExplanerSheet,
+  hideExplainerSheet,
   showExplainerSheet,
   setShowSwapReview,
 }: UseSwapActionsProps): SwapActions => {
@@ -174,7 +174,7 @@ export const useSwapActions = ({
                 variant: 'tinted',
                 labelColor: 'blue',
                 action: () => {
-                  hideExplanerSheet();
+                  hideExplainerSheet();
                   setShowSwapReview(true);
                 },
               },
@@ -228,7 +228,7 @@ export const useSwapActions = ({
               ),
               variant: 'tinted',
               labelColor: 'blue',
-              action: hideExplanerSheet,
+              action: hideExplainerSheet,
             },
             testId: 'swap-liquidity',
           }),
@@ -272,7 +272,7 @@ export const useSwapActions = ({
               label: i18n.t('swap.explainers.no_route.action_label'),
               variant: 'tinted',
               labelColor: 'blue',
-              action: hideExplanerSheet,
+              action: hideExplainerSheet,
             },
             testId: 'swap-no-route',
           }),
@@ -303,7 +303,7 @@ export const useSwapActions = ({
               label: i18n.t('swap.explainers.no_quote.action_label'),
               variant: 'tinted',
               labelColor: 'blue',
-              action: hideExplanerSheet,
+              action: hideExplainerSheet,
             },
             testId: 'swap-no-quote',
           }),
