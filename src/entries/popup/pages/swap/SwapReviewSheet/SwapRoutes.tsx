@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { upperFirst } from '~/core/utils/strings';
 import { Bleed, Box, Inline, Text } from '~/design-system';
@@ -7,7 +7,12 @@ import { ChevronDown } from '~/entries/popup/components/ChevronDown/ChevronDown'
 import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
 
 export type SwapRoutesProps = {
-  protocols: { name: string; icon: string | null; isBridge: boolean }[];
+  protocols: {
+    name: string;
+    icon: string | null;
+    isBridge: boolean;
+    part?: number;
+  }[];
 };
 
 const RoutePath = ({ protocols }: SwapRoutesProps) => {
@@ -47,9 +52,20 @@ const RoutePath = ({ protocols }: SwapRoutesProps) => {
 
 const RouteProtocol = ({
   protocol,
+  routeWithBridge,
 }: {
-  protocol: { name: string; icon: string | null; isBridge: boolean };
+  protocol: {
+    name: string;
+    icon: string | null;
+    isBridge: boolean;
+    part?: number;
+  };
+  routeWithBridge: boolean;
 }) => {
+  const protocolName = protocol.name?.replace('_', ' ')?.toLowerCase();
+  const protocolType = protocol.isBridge ? 'Bridge' : 'Swap';
+  const protocolPart = `${protocol?.part}%`;
+
   return (
     <Inline space="5px" alignVertical="center">
       {protocol.icon && (
@@ -61,11 +77,11 @@ const RouteProtocol = ({
         />
       )}
       <Text color="label" size="14pt" weight="semibold">
-        {upperFirst(protocol.name)}
+        {upperFirst(protocolName)}
       </Text>
       <Box background="fillSecondary" borderRadius="round" padding="4px">
         <Text color="labelSecondary" size="12pt" weight="semibold">
-          {protocol.isBridge ? 'Bridge' : 'Swap'}
+          {routeWithBridge ? protocolType : protocolPart}
         </Text>
       </Box>
     </Inline>
@@ -74,19 +90,31 @@ const RouteProtocol = ({
 
 export const SwapRoutes = ({ protocols }: SwapRoutesProps) => {
   const [currentComponentIndex, setCurrentComponentIndex] = useState(0);
-  const components = [<RoutePath key={0} protocols={protocols} />].concat(
+
+  const routeWithBridge = useMemo(
+    () => !!protocols.find((protocol) => protocol.isBridge),
+    [protocols],
+  );
+
+  const components = (
+    routeWithBridge ? [<RoutePath key={0} protocols={protocols} />] : []
+  ).concat(
     protocols.map((protocol, i) => (
-      <RouteProtocol key={i} protocol={protocol} />
+      <RouteProtocol
+        key={i}
+        protocol={protocol}
+        routeWithBridge={routeWithBridge}
+      />
     )),
   );
 
   const goToNextComponent = useCallback(() => {
     setCurrentComponentIndex((currentComponentIndex) =>
-      currentComponentIndex + 1 < protocols.length + 1
+      currentComponentIndex + 1 < components.length
         ? currentComponentIndex + 1
         : 0,
     );
-  }, [protocols.length]);
+  }, [components.length]);
 
   return (
     <ButtonOverflow>

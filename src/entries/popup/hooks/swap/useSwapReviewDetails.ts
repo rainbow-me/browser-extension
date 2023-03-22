@@ -62,10 +62,11 @@ export const useSwapReviewDetails = ({
 
   const swappingRoute = useMemo(
     () =>
-      quote.protocols?.map(({ name }) => ({
+      quote.protocols?.map(({ name, part }) => ({
         name: parseExchangeName(name),
         icon: getExchangeIconUrl(parseExchangeName(name)),
         isBridge: bridges.includes(name),
+        part,
       })),
     [bridges, quote.protocols],
   );
