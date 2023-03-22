@@ -1,4 +1,5 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
+import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
 
 import { ETH_ADDRESS } from '~/core/references';
@@ -163,15 +164,24 @@ const SwapReviewSheetWithQuote = ({
   flashbotsEnabled,
   hideSwapReview,
 }: SwapReviewSheetWithQuoteProps) => {
+  const [showMoreDetails, setShowDetails] = useState(false);
   const { minimumReceived, swappingRoute, includedFee, exchangeRate } =
     useSwapReviewDetails({ quote, assetToBuy, assetToSell });
 
-  console.log('assetToSell.address', assetToSell.address);
-  console.log('assetToBuy.address', assetToBuy.address);
+  const openMoreDetails = useCallback(() => setShowDetails(true), []);
+  const closeMoreDetails = useCallback(() => setShowDetails(false), []);
+
+  const goBack = useCallback(() => {
+    hideSwapReview();
+    closeMoreDetails();
+  }, [closeMoreDetails, hideSwapReview]);
 
   return (
     <BottomSheet show={show}>
-      <Box background="surfacePrimaryElevatedSecondary">
+      <Box
+        background="surfacePrimaryElevatedSecondary"
+        style={{ borderTopLeftRadius: '24px', borderTopRightRadius: '24px' }}
+      >
         <Stack space="12px">
           <Box style={{ height: '64px' }}>
             <Box paddingVertical="27px">
@@ -254,6 +264,7 @@ const SwapReviewSheetWithQuote = ({
                 />
                 <CarrouselButton textArray={includedFee} />
               </DetailsRow>
+
               {flashbotsEnabled && (
                 <DetailsRow>
                   <Label
@@ -278,66 +289,79 @@ const SwapReviewSheetWithQuote = ({
                   </Inline>
                 </DetailsRow>
               )}
-              <DetailsRow>
-                <Label
-                  label="Exchange rate"
-                  testId="swap-review-exchange-rate"
-                />
-                <CarrouselButton
-                  symbol="arrow.2.squarepath"
-                  textArray={exchangeRate}
-                />
-              </DetailsRow>
-              {assetToSell.address !== ETH_ADDRESS && (
-                <DetailsRow>
-                  <Label
-                    label={`${assetToSell.symbol} contract`}
-                    testId="swap-review-asset-to-sell-contract"
-                  />
+              <Box as={motion.div} key="more-details" layout>
+                {showMoreDetails && (
+                  <Box as={motion.div} key="more-details-shown" layout>
+                    <DetailsRow>
+                      <Label
+                        label="Exchange rate"
+                        testId="swap-review-exchange-rate"
+                      />
+                      <CarrouselButton
+                        symbol="arrow.2.squarepath"
+                        textArray={exchangeRate}
+                      />
+                    </DetailsRow>
+                    {assetToSell.address !== ETH_ADDRESS && (
+                      <DetailsRow>
+                        <Label
+                          label={`${assetToSell.symbol} contract`}
+                          testId="swap-review-asset-to-sell-contract"
+                        />
 
-                  <SwapViewContractDropdown
-                    address={assetToSell.address}
-                    chainId={assetToSell.chainId}
-                  >
-                    <Text size="14pt" weight="semibold" color="label">
-                      {truncateAddress(assetToSell.address)}
-                    </Text>
-                  </SwapViewContractDropdown>
-                </DetailsRow>
-              )}
-              {assetToBuy.address !== ETH_ADDRESS && (
-                <DetailsRow>
-                  <Label
-                    label={`${assetToBuy.symbol} contract`}
-                    testId="swap-review-asset-to-buy-contract"
-                  />
-                  <SwapViewContractDropdown
-                    address={assetToBuy.address}
-                    chainId={assetToBuy.chainId}
-                  >
-                    <Text size="14pt" weight="semibold" color="label">
-                      {truncateAddress(assetToBuy.address)}
-                    </Text>
-                  </SwapViewContractDropdown>
-                </DetailsRow>
-              )}
-              <DetailsRow>
-                <Label label="More details" testId="swap-review-details" />
-                <ButtonSymbol
-                  symbol="chevron.down.circle"
-                  symbolSize={12}
-                  color="labelQuaternary"
-                  height="24px"
-                  variant="tinted"
-                  onClick={() => null}
-                  testId={'swap-review-details-button'}
-                />
-              </DetailsRow>
+                        <SwapViewContractDropdown
+                          address={assetToSell.address}
+                          chainId={assetToSell.chainId}
+                        >
+                          <Text size="14pt" weight="semibold" color="label">
+                            {truncateAddress(assetToSell.address)}
+                          </Text>
+                        </SwapViewContractDropdown>
+                      </DetailsRow>
+                    )}
+                    {assetToBuy.address !== ETH_ADDRESS && (
+                      <DetailsRow>
+                        <Label
+                          label={`${assetToBuy.symbol} contract`}
+                          testId="swap-review-asset-to-buy-contract"
+                        />
+                        <SwapViewContractDropdown
+                          address={assetToBuy.address}
+                          chainId={assetToBuy.chainId}
+                        >
+                          <Text size="14pt" weight="semibold" color="label">
+                            {truncateAddress(assetToBuy.address)}
+                          </Text>
+                        </SwapViewContractDropdown>
+                      </DetailsRow>
+                    )}
+                  </Box>
+                )}
+                {!showMoreDetails && (
+                  <Box as={motion.div} key="more-details-hidden" layout>
+                    <DetailsRow>
+                      <Label
+                        label="More details"
+                        testId="swap-review-details"
+                      />
+                      <ButtonSymbol
+                        symbol="chevron.down.circle"
+                        symbolSize={12}
+                        color="labelQuaternary"
+                        height="24px"
+                        variant="tinted"
+                        onClick={openMoreDetails}
+                        testId={'swap-review-details-button'}
+                      />
+                    </DetailsRow>
+                  </Box>
+                )}
+              </Box>
             </Stack>
           </Box>
         </Stack>
       </Box>
-      <Box background="surfacePrimaryElevated" padding="20px">
+      <Box padding="20px">
         <Separator strokeWeight="1px" color="separatorSecondary" />
         <AccentColorProviderWrapper
           color={assetToBuy.colors.primary || assetToBuy.colors.fallback}
@@ -359,7 +383,7 @@ const SwapReviewSheetWithQuote = ({
               color={'labelSecondary'}
               height="44px"
               width="fit"
-              onClick={hideSwapReview}
+              onClick={goBack}
               variant={'transparent'}
             >
               {'Go back'}

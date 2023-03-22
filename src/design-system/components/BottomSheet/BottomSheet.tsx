@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import React, { ReactNode } from 'react';
 
 import { Box } from '~/design-system';
@@ -19,7 +19,7 @@ export const BottomSheet = ({
   zIndex,
 }: BottomSheetProps) => {
   return (
-    <AnimatePresence>
+    <Box as={motion.div} key="bottom-sheet" layout>
       {show && (
         <Box
           position="fixed"
@@ -57,12 +57,13 @@ export const BottomSheet = ({
           exit={{ opacity: 1, y: 800 }}
           key="bottom"
           transition={{ duration: 0.3 }}
+          layout
         >
           <Box background="surfacePrimaryElevated" borderRadius="24px">
             {children}
           </Box>
         </Box>
       )}
-    </AnimatePresence>
+    </Box>
   );
 };
