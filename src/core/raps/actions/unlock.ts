@@ -151,7 +151,7 @@ export const unlock = async ({
   try {
     gasLimit = await estimateApprove({
       owner: parameters.fromAddress,
-      tokenAddress: assetAddress,
+      tokenAddress: assetAddress as Address,
       spender: contractAddress,
       chainId,
     });
@@ -174,7 +174,7 @@ export const unlock = async ({
   let approval;
   try {
     approval = await executeApprove({
-      tokenAddress: assetAddress,
+      tokenAddress: assetAddress as Address,
       spender: contractAddress,
       gasLimit,
       gasParams,

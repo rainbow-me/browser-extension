@@ -69,7 +69,7 @@ export const useExplainerSheetParams = () => {
       testId: '',
     });
 
-  const hideExplanerSheet = useCallback(
+  const hideExplainerSheet = useCallback(
     () =>
       setExplainerSheetParams({
         show: false,
@@ -91,7 +91,7 @@ export const useExplainerSheetParams = () => {
     [],
   );
 
-  return { explainerSheetParams, hideExplanerSheet, showExplainerSheet };
+  return { explainerSheetParams, hideExplainerSheet, showExplainerSheet };
 };
 
 export const ExplainerSheet = ({

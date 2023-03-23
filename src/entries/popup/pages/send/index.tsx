@@ -11,6 +11,7 @@ import { Address } from 'wagmi';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
+import { ETH_ADDRESS } from '~/core/references';
 import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
@@ -198,7 +199,7 @@ export function Send() {
   );
 
   const selectAsset = useCallback(
-    (address: Address | '') => {
+    (address: Address | typeof ETH_ADDRESS | '') => {
       selectAssetAddress(address);
       setIndependentAmount('');
     },
@@ -217,7 +218,7 @@ export function Send() {
     };
   }, [clearCustomGasModified]);
 
-  const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
+  const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
 
   const showToContractExplainer = useCallback(() => {
@@ -233,11 +234,11 @@ export function Send() {
         label: i18n.t('explainers.send.action_label'),
         variant: 'tinted',
         labelColor: 'blue',
-        action: hideExplanerSheet,
+        action: hideExplainerSheet,
       },
       header: { emoji: '✋' },
     });
-  }, [hideExplanerSheet, showExplainerSheet]);
+  }, [hideExplainerSheet, showExplainerSheet]);
 
   const prevToAddressIsSmartContract = usePrevious(toAddressIsSmartContract);
   useEffect(() => {

@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { Address, useAccount } from 'wagmi';
 
+import { ETH_ADDRESS } from '~/core/references';
 import {
   selectUserAssetsList,
   selectUserAssetsListByChainId,
@@ -28,7 +29,7 @@ export const useSendAsset = () => {
   const [sortMethod, setSortMethod] = useState<SortMethod>('token');
 
   const [selectedAssetAddress, setSelectedAssetAddress] = useState<
-    Address | ''
+    Address | typeof ETH_ADDRESS | ''
   >('');
   const { data: assets = [] } = useUserAssets(
     {
@@ -39,9 +40,12 @@ export const useSendAsset = () => {
     { select: sortBy(sortMethod) },
   );
 
-  const selectAssetAddress = useCallback((address: Address | '') => {
-    setSelectedAssetAddress(address);
-  }, []);
+  const selectAssetAddress = useCallback(
+    (address: Address | typeof ETH_ADDRESS | '') => {
+      setSelectedAssetAddress(address);
+    },
+    [],
+  );
 
   const asset = useMemo(
     () =>

@@ -2,10 +2,12 @@ import { Address } from 'wagmi';
 
 import { ChainId, ChainName } from '~/core/types/chains';
 
+import { ETH_ADDRESS } from '../references';
+
 import { SearchAsset } from './search';
 
 export interface ParsedAsset {
-  address: Address;
+  address: Address | typeof ETH_ADDRESS;
   chainId: ChainId;
   chainName: ChainName;
   colors?: {
