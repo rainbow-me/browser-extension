@@ -21,8 +21,8 @@ import {
   overrideWithFastSpeedIfNeeded,
 } from '../utils';
 
-const getCrosschainSwapDefaultGasLimit = (tradeDetails: CrosschainQuote) =>
-  tradeDetails?.routes?.[0]?.userTxs?.[0]?.gasFees?.gasLimit;
+const getCrosschainSwapDefaultGasLimit = (quote: CrosschainQuote) =>
+  quote?.routes?.[0]?.userTxs?.[0]?.gasFees?.gasLimit;
 
 export const estimateCrosschainSwapGasLimit = async ({
   chainId,

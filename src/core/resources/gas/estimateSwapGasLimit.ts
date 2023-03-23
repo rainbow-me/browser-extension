@@ -28,7 +28,7 @@ export type EstimateSwapGasLimitResponse = {
 
 export type EstimateSwapGasLimitArgs = {
   chainId: ChainId;
-  tradeDetails?: Quote | CrosschainQuote | QuoteError;
+  quote?: Quote | CrosschainQuote | QuoteError;
   assetToSell?: ParsedSearchAsset;
   assetToBuy?: ParsedSearchAsset;
 };
@@ -38,13 +38,13 @@ export type EstimateSwapGasLimitArgs = {
 
 const estimateSwapGasLimitQueryKey = ({
   chainId,
-  tradeDetails,
+  quote,
   assetToSell,
   assetToBuy,
 }: EstimateSwapGasLimitArgs) =>
   createQueryKey(
     'estimateSwapGasLimit',
-    { chainId, tradeDetails, assetToSell, assetToBuy },
+    { chainId, quote, assetToSell, assetToBuy },
     { persisterVersion: 1 },
   );
 
@@ -56,29 +56,24 @@ type EstimateSwapGasLimitQueryKey = ReturnType<
 // Query Function
 
 async function estimateSwapGasLimitQueryFunction({
-  queryKey: [{ chainId, tradeDetails, assetToSell, assetToBuy }],
+  queryKey: [{ chainId, quote, assetToSell, assetToBuy }],
 }: QueryFunctionArgs<typeof estimateSwapGasLimitQueryKey>) {
-  if (
-    !tradeDetails ||
-    (tradeDetails as QuoteError).error ||
-    !assetToSell ||
-    !assetToBuy
-  ) {
+  if (!quote || (quote as QuoteError).error || !assetToSell || !assetToBuy) {
     return gasUnits.basic_swap[chainId];
   }
-  const quote = tradeDetails as Quote | CrosschainQuote;
+  const q = quote as Quote | CrosschainQuote;
   const gasLimit =
-    (await quote.swapType) === SwapType.crossChain
-      ? estimateUnlockAndCrosschainSwap({
+    q.swapType === SwapType.crossChain
+      ? await estimateUnlockAndCrosschainSwap({
           chainId,
           quote: quote as CrosschainQuote,
-          sellAmount: quote.sellAmount.toString(),
+          sellAmount: q.sellAmount.toString(),
           assetToSell,
         })
-      : estimateUnlockAndSwap({
+      : await estimateUnlockAndSwap({
           chainId,
           quote: quote as Quote,
-          sellAmount: quote.sellAmount.toString(),
+          sellAmount: q.sellAmount.toString(),
           assetToSell,
         });
 
@@ -96,7 +91,7 @@ type EstimateSwapGasLimitResult = QueryFunctionResult<
 // Query Fetcher
 
 export async function fetchEstimateSwapGasLimit(
-  { chainId, tradeDetails, assetToSell, assetToBuy }: EstimateSwapGasLimitArgs,
+  { chainId, quote, assetToSell, assetToBuy }: EstimateSwapGasLimitArgs,
   config: QueryConfig<
     EstimateSwapGasLimitResult,
     Error,
@@ -107,7 +102,7 @@ export async function fetchEstimateSwapGasLimit(
   return await queryClient.fetchQuery(
     estimateSwapGasLimitQueryKey({
       chainId,
-      tradeDetails,
+      quote,
       assetToSell,
       assetToBuy,
     }),
@@ -120,7 +115,7 @@ export async function fetchEstimateSwapGasLimit(
 // Query Hook
 
 export function useEstimateSwapGasLimit(
-  { chainId, tradeDetails, assetToSell, assetToBuy }: EstimateSwapGasLimitArgs,
+  { chainId, quote, assetToSell, assetToBuy }: EstimateSwapGasLimitArgs,
   config: QueryConfig<
     EstimateSwapGasLimitResult,
     Error,
@@ -131,7 +126,7 @@ export function useEstimateSwapGasLimit(
   return useQuery(
     estimateSwapGasLimitQueryKey({
       chainId,
-      tradeDetails,
+      quote,
       assetToSell,
       assetToBuy,
     }),

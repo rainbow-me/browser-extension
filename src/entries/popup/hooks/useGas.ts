@@ -237,27 +237,27 @@ export const useTransactionGas = ({
 export const useSwapGas = ({
   chainId,
   defaultSpeed,
-  tradeDetails,
+  quote,
   assetToSell,
   assetToBuy,
 }: {
   chainId: ChainId;
   defaultSpeed?: GasSpeed;
-  tradeDetails?: Quote | CrosschainQuote | QuoteError;
+  quote?: Quote | CrosschainQuote | QuoteError;
   assetToSell?: ParsedSearchAsset;
   assetToBuy?: ParsedSearchAsset;
 }) => {
   const { data: estimatedGasLimit } = useEstimateSwapGasLimit({
     chainId,
-    tradeDetails,
+    quote,
     assetToSell,
     assetToBuy,
   });
 
   const transactionRequest: TransactionRequest | null = useMemo(() => {
-    if (tradeDetails && !(tradeDetails as QuoteError).error) {
-      const quote = tradeDetails as Quote | CrosschainQuote;
-      const { to, from, value, data } = quote;
+    if (quote && !(quote as QuoteError).error) {
+      const q = quote as Quote | CrosschainQuote;
+      const { to, from, value, data } = q;
       return {
         to,
         from,
@@ -268,7 +268,7 @@ export const useSwapGas = ({
     } else {
       return null;
     }
-  }, [chainId, tradeDetails]);
+  }, [chainId, quote]);
 
   return useGas({
     chainId,

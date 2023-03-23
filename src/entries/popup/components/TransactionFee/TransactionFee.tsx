@@ -227,7 +227,7 @@ export function TransactionFee({
 type SwapFeeProps = {
   chainId: ChainId;
   defaultSpeed?: GasSpeed;
-  tradeDetails?: Quote | CrosschainQuote | QuoteError;
+  quote?: Quote | CrosschainQuote | QuoteError;
   accentColor?: string;
   plainTriggerBorder?: boolean;
   assetToSell?: ParsedSearchAsset;
@@ -237,7 +237,7 @@ type SwapFeeProps = {
 export function SwapFee({
   chainId,
   defaultSpeed,
-  tradeDetails,
+  quote,
   accentColor,
   plainTriggerBorder,
   assetToSell,
@@ -257,7 +257,7 @@ export function SwapFee({
   } = useSwapGas({
     chainId,
     defaultSpeed: defaultSpeed || defaultTxSpeed,
-    tradeDetails,
+    quote,
     assetToSell,
     assetToBuy,
   });
