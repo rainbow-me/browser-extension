@@ -27,14 +27,14 @@ const getCrosschainSwapDefaultGasLimit = (tradeDetails: CrosschainQuote) =>
 export const estimateCrosschainSwapGasLimit = async ({
   chainId,
   requiresApprove,
-  tradeDetails,
+  quote,
 }: {
   chainId: number;
   requiresApprove?: boolean;
-  tradeDetails: CrosschainQuote;
+  quote: CrosschainQuote;
 }): Promise<string> => {
   const provider = getProvider({ chainId });
-  if (!provider || !tradeDetails) {
+  if (!provider || !quote) {
     return gasUnits.basic_swap[chainId];
   }
   try {
@@ -45,35 +45,35 @@ export const estimateCrosschainSwapGasLimit = async ({
             await estimateSwapGasLimitWithFakeApproval(
               chainId,
               provider,
-              tradeDetails,
+              quote,
             );
           return gasLimitWithFakeApproval;
         } catch (e) {
-          const routeGasLimit = getCrosschainSwapDefaultGasLimit(tradeDetails);
+          const routeGasLimit = getCrosschainSwapDefaultGasLimit(quote);
           if (routeGasLimit) return routeGasLimit;
         }
       }
 
       return (
-        getCrosschainSwapDefaultGasLimit(tradeDetails) ||
-        getDefaultGasLimitForTrade(tradeDetails, chainId)
+        getCrosschainSwapDefaultGasLimit(quote) ||
+        getDefaultGasLimitForTrade(quote, chainId)
       );
     }
 
     const gasLimit = await estimateGasWithPadding({
       transactionRequest: {
-        data: tradeDetails.data,
-        from: tradeDetails.from,
-        to: tradeDetails.to,
-        value: tradeDetails.value,
+        data: quote.data,
+        from: quote.from,
+        to: quote.to,
+        value: quote.value,
       },
       provider: provider,
       paddingFactor: SWAP_GAS_PADDING,
     });
 
-    return gasLimit || getCrosschainSwapDefaultGasLimit(tradeDetails);
+    return gasLimit || getCrosschainSwapDefaultGasLimit(quote);
   } catch (error) {
-    return getCrosschainSwapDefaultGasLimit(tradeDetails);
+    return getCrosschainSwapDefaultGasLimit(quote);
   }
 };
 
@@ -81,16 +81,16 @@ export const executeCrosschainSwap = async ({
   gasLimit,
   transactionGasParams,
   nonce,
-  tradeDetails,
+  quote,
   wallet,
 }: {
   gasLimit: string;
   transactionGasParams: TransactionGasParams | TransactionLegacyGasParams;
   nonce?: number;
-  tradeDetails: CrosschainQuote;
+  quote: CrosschainQuote;
   wallet: Wallet | null;
 }) => {
-  if (!wallet || !tradeDetails) return null;
+  if (!wallet || !quote) return null;
 
   const transactionParams = {
     gasLimit: toHex(gasLimit) || undefined,
@@ -98,7 +98,7 @@ export const executeCrosschainSwap = async ({
     ...transactionGasParams,
   };
 
-  return fillCrosschainQuote(tradeDetails, transactionParams, wallet);
+  return fillCrosschainQuote(quote, transactionParams, wallet);
 };
 
 export const crosschainSwap = async (
@@ -108,7 +108,7 @@ export const crosschainSwap = async (
   parameters: RapCrosschainSwapActionParameters,
   baseNonce?: number,
 ): Promise<number | undefined> => {
-  const { tradeDetails, chainId, requiresApprove } = parameters;
+  const { quote, chainId, requiresApprove } = parameters;
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
 
   let gasParams = selectedGas.transactionGasParams;
@@ -125,7 +125,7 @@ export const crosschainSwap = async (
     gasLimit = await estimateCrosschainSwapGasLimit({
       chainId,
       requiresApprove,
-      tradeDetails,
+      quote,
     });
   } catch (e) {
     logger.error({
@@ -141,7 +141,7 @@ export const crosschainSwap = async (
     chainId,
     gasLimit,
     nonce,
-    tradeDetails,
+    quote,
     wallet,
     transactionGasParams: gasParams,
   };
