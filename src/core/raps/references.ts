@@ -1,3 +1,4 @@
+import { Wallet } from '@ethersproject/wallet';
 import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
 import { Address } from 'wagmi';
 
@@ -41,6 +42,7 @@ interface RapBaseSwapActionParameters {
   meta?: SwapMetadata;
   assetToSell: ParsedAsset;
   assetToBuy?: ParsedAsset;
+  nonce?: number;
 }
 
 export interface RapSwapActionParameters extends RapBaseSwapActionParameters {
@@ -68,14 +70,20 @@ export interface RapActionTransaction {
   hash: string | null;
 }
 
-export interface RapAction {
-  parameters: RapActionParameters;
+export type RapActionParameterMap = {
+  swap: RapSwapActionParameters;
+  crosschainSwap: RapCrosschainSwapActionParameters;
+  unlock: RapUnlockActionParameters;
+};
+
+export interface RapAction<T extends RapActionTypes> {
+  parameters: RapActionParameterMap[T];
   transaction: RapActionTransaction;
-  type: RapActionTypes;
+  type: T;
 }
 
 export interface Rap {
-  actions: RapAction[];
+  actions: RapAction<'swap' | 'crosschainSwap' | 'unlock'>[];
 }
 
 export enum rapActions {
@@ -85,3 +93,16 @@ export enum rapActions {
 }
 
 export type RapActionTypes = keyof typeof rapActions;
+
+export interface RapActionResponse {
+  baseNonce?: number | null;
+  errorMessage: string | null;
+}
+
+export interface ActionProps<T extends RapActionTypes> {
+  baseNonce?: number;
+  index: number;
+  parameters: RapActionParameterMap[T];
+  wallet: Wallet;
+  currentRap: Rap;
+}

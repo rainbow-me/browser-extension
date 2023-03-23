@@ -18,7 +18,7 @@ import {
   greaterThan,
   toHex,
 } from '../../utils/numbers';
-import { RapUnlockActionParameters } from '../references';
+import { ActionProps } from '../references';
 
 import { overrideWithFastSpeedIfNeeded } from './../utils';
 
@@ -136,12 +136,7 @@ export const unlock = async ({
   index,
   parameters,
   wallet,
-}: {
-  baseNonce?: number;
-  index: number;
-  parameters: RapUnlockActionParameters;
-  wallet: Wallet;
-}): Promise<number | undefined> => {
+}: ActionProps<'unlock'>): Promise<number | undefined> => {
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
 
   const { assetToUnlock, contractAddress, chainId } = parameters;

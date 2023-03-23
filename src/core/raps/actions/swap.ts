@@ -1,6 +1,7 @@
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { Wallet } from '@ethersproject/wallet';
 import {
+  ChainId,
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
   Quote,
   WRAPPED_ASSET,
@@ -11,7 +12,6 @@ import {
   wrapNativeAsset,
 } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
-import { Chain } from 'wagmi';
 
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { logger } from '~/logger';
@@ -24,7 +24,7 @@ import {
 } from '../../types/gas';
 import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/numbers';
-import { Rap, RapSwapActionParameters } from '../references';
+import { ActionProps } from '../references';
 import {
   CHAIN_IDS_WITH_TRACE_SUPPORT,
   SWAP_GAS_PADDING,
@@ -40,7 +40,7 @@ export const estimateSwapGasLimit = async ({
   requiresApprove,
   quote,
 }: {
-  chainId: Chain['id'];
+  chainId: ChainId;
   requiresApprove?: boolean;
   quote: Quote;
 }): Promise<string> => {
@@ -135,7 +135,7 @@ export const executeSwap = async ({
   wallet,
   permit = false,
 }: {
-  chainId: Chain['id'];
+  chainId: ChainId;
   gasLimit: string;
   transactionGasParams: TransactionGasParams | TransactionLegacyGasParams;
   nonce?: number;
@@ -181,13 +181,7 @@ export const swap = async ({
   index,
   parameters,
   baseNonce,
-}: {
-  wallet: Wallet;
-  index: number;
-  parameters: RapSwapActionParameters;
-  baseNonce?: number;
-  currentRap: Rap;
-}): Promise<number | undefined> => {
+}: ActionProps<'swap'>): Promise<number | undefined> => {
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
 
   const { quote, permit, chainId, requiresApprove } = parameters;

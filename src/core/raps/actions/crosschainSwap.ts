@@ -3,6 +3,7 @@ import { CrosschainQuote, fillCrosschainQuote } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
 
 import { gasUnits } from '~/core/references';
+import { ChainId } from '~/core/types/chains';
 import { logger } from '~/logger';
 
 import { gasStore } from '../../state';
@@ -12,7 +13,7 @@ import {
 } from '../../types/gas';
 import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/numbers';
-import { Rap, RapCrosschainSwapActionParameters } from '../references';
+import { ActionProps } from '../references';
 import {
   CHAIN_IDS_WITH_TRACE_SUPPORT,
   SWAP_GAS_PADDING,
@@ -29,7 +30,7 @@ export const estimateCrosschainSwapGasLimit = async ({
   requiresApprove,
   quote,
 }: {
-  chainId: number;
+  chainId: ChainId;
   requiresApprove?: boolean;
   quote: CrosschainQuote;
 }): Promise<string> => {
@@ -88,7 +89,7 @@ export const executeCrosschainSwap = async ({
   transactionGasParams: TransactionGasParams | TransactionLegacyGasParams;
   nonce?: number;
   quote: CrosschainQuote;
-  wallet: Wallet | null;
+  wallet: Wallet;
 }) => {
   if (!wallet || !quote) return null;
 
@@ -101,13 +102,13 @@ export const executeCrosschainSwap = async ({
   return fillCrosschainQuote(quote, transactionParams, wallet);
 };
 
-export const crosschainSwap = async (
-  wallet: Wallet,
-  currentRap: Rap,
-  index: number,
-  parameters: RapCrosschainSwapActionParameters,
-  baseNonce?: number,
-): Promise<number | undefined> => {
+export const crosschainSwap = async ({
+  wallet,
+  currentRap,
+  index,
+  parameters,
+  baseNonce,
+}: ActionProps<'crosschainSwap'>): Promise<number | undefined> => {
   const { quote, chainId, requiresApprove } = parameters;
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
 
