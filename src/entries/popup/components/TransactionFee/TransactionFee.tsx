@@ -231,6 +231,7 @@ type SwapFeeProps = {
   accentColor?: string;
   plainTriggerBorder?: boolean;
   assetToSell?: ParsedSearchAsset;
+  assetToBuy?: ParsedSearchAsset;
 };
 
 export function SwapFee({
@@ -240,6 +241,7 @@ export function SwapFee({
   accentColor,
   plainTriggerBorder,
   assetToSell,
+  assetToBuy,
 }: SwapFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeedStore();
   const {
@@ -257,6 +259,7 @@ export function SwapFee({
     defaultSpeed: defaultSpeed || defaultTxSpeed,
     tradeDetails,
     assetToSell,
+    assetToBuy,
   });
   return (
     <Fee

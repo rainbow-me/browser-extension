@@ -33,8 +33,8 @@ export type SwapMetadata = {
 
 interface RapBaseSwapActionParameters {
   amount?: string | null;
-  inputAmount?: string | null;
-  outputAmount?: string | null;
+  inputAmount: string;
+  outputAmount: string;
   permit?: boolean;
   chainId: number;
   requiresApprove?: boolean;

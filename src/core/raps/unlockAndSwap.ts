@@ -65,6 +65,7 @@ export const estimateUnlockAndSwap = async (
       chainId,
     });
   }
+  console.log('--- estimateUnlockAndSwap', swapAssetNeedsUnlocking);
 
   let unlockGasLimit;
 
@@ -78,15 +79,20 @@ export const estimateUnlockAndSwap = async (
     gasLimits = gasLimits.concat(unlockGasLimit);
   }
 
+  console.log('--- estimateUnlockAndSwap 2', gasLimits);
   const swapGasLimit = await estimateSwapGasLimit({
-    chainId: Number(chainId),
+    chainId,
     requiresApprove: swapAssetNeedsUnlocking,
     tradeDetails,
   });
 
-  gasLimits = gasLimits.concat(swapGasLimit);
+  console.log('--- estimateUnlockAndSwap swapGasLimit', swapGasLimit);
+  const gasLimit = gasLimits
+    .concat(swapGasLimit)
+    .reduce((acc, limit) => add(acc, limit), '0');
 
-  return gasLimits.reduce((acc, limit) => add(acc, limit), '0');
+  console.log('--- estimateUnlockAndSwap gasLimit', gasLimit);
+  return gasLimit.toString();
 };
 
 export const createUnlockAndSwapRap = async (

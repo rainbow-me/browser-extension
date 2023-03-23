@@ -8,7 +8,7 @@ import {
 } from '@rainbow-me/swaps';
 import { Address } from 'wagmi';
 
-import { ETH_ADDRESS, gasUnits } from '../references';
+import { ETH_ADDRESS } from '../references';
 import { isNativeAsset } from '../utils/chains';
 import { add } from '../utils/numbers';
 import { isLowerCaseMatch } from '../utils/strings';
@@ -25,12 +25,7 @@ import {
 export const estimateUnlockAndCrosschainSwap = async (
   swapParameters: RapCrosschainSwapActionParameters,
 ) => {
-  const { inputAmount, tradeDetails, chainId, inputCurrency, outputCurrency } =
-    swapParameters;
-
-  if (!inputCurrency || !outputCurrency || !inputAmount) {
-    return gasUnits.basic_swap[chainId];
-  }
+  const { inputAmount, tradeDetails, chainId, inputCurrency } = swapParameters;
 
   const {
     from: accountAddress,
@@ -78,14 +73,16 @@ export const estimateUnlockAndCrosschainSwap = async (
   }
 
   const swapGasLimit = await estimateCrosschainSwapGasLimit({
-    chainId: Number(chainId),
+    chainId,
     requiresApprove: swapAssetNeedsUnlocking,
     tradeDetails,
   });
 
-  gasLimits = gasLimits.concat(swapGasLimit);
+  const gasLimit = gasLimits
+    .concat(swapGasLimit)
+    .reduce((acc, limit) => add(acc, limit), '0');
 
-  return gasLimits.reduce((acc, limit) => add(acc, limit), '0');
+  return gasLimit.toString();
 };
 
 export const createUnlockAndCrosschainSwapRap = async (
@@ -112,7 +109,7 @@ export const createUnlockAndCrosschainSwapRap = async (
   // Aggregators represent native asset as 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
   const nativeAsset =
     isLowerCaseMatch(ETH_ADDRESS_AGGREGATOR, sellTokenAddress) ||
-    isNativeAsset(inputCurrency?.address, chainId);
+    inputCurrency?.isNativeAsset;
 
   let swapAssetNeedsUnlocking = false;
 

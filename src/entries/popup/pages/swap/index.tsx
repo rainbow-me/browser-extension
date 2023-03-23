@@ -367,6 +367,7 @@ export function Swap() {
                           assetToBuy?.colors?.fallback
                         }
                         assetToSell={assetToSell}
+                        assetToBuy={assetToBuy}
                       />
                     </Row>
                     <Row>
