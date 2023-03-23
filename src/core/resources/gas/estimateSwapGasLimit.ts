@@ -67,14 +67,20 @@ async function estimateSwapGasLimitQueryFunction({
     return gasUnits.basic_swap[chainId];
   }
   const quote = tradeDetails as Quote | CrosschainQuote;
-  const gasLimit = await (quote.swapType === SwapType.crossChain
-    ? estimateUnlockAndCrosschainSwap
-    : estimateUnlockAndSwap)({
-    chainId,
-    quote: quote as CrosschainQuote,
-    sellAmount: quote.sellAmount.toString(),
-    assetToSell,
-  });
+  const gasLimit =
+    (await quote.swapType) === SwapType.crossChain
+      ? estimateUnlockAndCrosschainSwap({
+          chainId,
+          quote: quote as CrosschainQuote,
+          sellAmount: quote.sellAmount.toString(),
+          assetToSell,
+        })
+      : estimateUnlockAndSwap({
+          chainId,
+          quote: quote as Quote,
+          sellAmount: quote.sellAmount.toString(),
+          assetToSell,
+        });
 
   if (!gasLimit) {
     return gasUnits.basic_swap[chainId];
