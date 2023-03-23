@@ -1,5 +1,7 @@
 import { Address } from 'wagmi';
 
+import { ETH_ADDRESS } from '../references';
+
 import { ParsedAsset, UniqueId } from './assets';
 import { ChainId } from './chains';
 
@@ -13,7 +15,7 @@ export type TokenSearchListId =
   | 'verifiedAssets';
 
 export type SearchAsset = {
-  address: Address;
+  address: Address | typeof ETH_ADDRESS;
   chainId: ChainId;
   colors: { primary: string; fallback?: string };
   decimals: number;

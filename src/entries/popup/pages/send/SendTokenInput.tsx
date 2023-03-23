@@ -12,6 +12,7 @@ import React, {
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { ETH_ADDRESS } from '~/core/references';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
@@ -131,7 +132,7 @@ export const SendTokenInput = ({
 }: {
   asset: ParsedAddressAsset | null;
   assets: ParsedAddressAsset[];
-  selectAssetAddress: (address: Address | '') => void;
+  selectAssetAddress: (address: Address | typeof ETH_ADDRESS | '') => void;
   dropdownClosed: boolean;
   setSortMethod: (sortMethod: SortMethod) => void;
   sortMethod: SortMethod;
@@ -148,7 +149,7 @@ export const SendTokenInput = ({
   }, [dropdownVisible]);
 
   const onSelectAsset = useCallback(
-    (address: Address | '') => {
+    (address: Address | typeof ETH_ADDRESS | '') => {
       selectAssetAddress(address);
       setDropdownVisible(false);
     },
@@ -181,7 +182,7 @@ export const SendTokenInput = ({
   }, [onSelectAsset]);
 
   const selectAsset = useCallback(
-    (address: Address) => {
+    (address: Address | typeof ETH_ADDRESS | '') => {
       onSelectAsset(address);
       setInputValue('');
     },

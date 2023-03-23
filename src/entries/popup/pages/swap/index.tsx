@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
@@ -18,10 +17,6 @@ import {
 } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
-import {
-  transformScales,
-  transitions,
-} from '~/design-system/styles/designTokens';
 
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 import {
@@ -41,13 +36,16 @@ import {
   useSwapValidations,
 } from '../../hooks/swap';
 
+import { SwapReviewSheet } from './SwapReviewSheet/SwapReviewSheet';
 import { SwapSettings } from './SwapSettings/SwapSettings';
 import { TokenToBuyInput } from './SwapTokenInput/TokenToBuyInput';
 import { TokenToSellInput } from './SwapTokenInput/TokenToSellInput';
 
 export function Swap() {
   const [showSwapSettings, setShowSwapSettings] = useState(false);
-  const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
+  const [showSwapReview, setShowSwapReview] = useState(false);
+
+  const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
   const { selectedGas } = useGasStore();
 
@@ -73,7 +71,7 @@ export function Swap() {
     assetToBuy,
   });
 
-  const { source, slippage, setSettings } = useSwapSettings({
+  const { source, slippage, setSettings, flashbotsEnabled } = useSwapSettings({
     chainId: assetToSell?.chainId || ChainId.mainnet,
   });
 
@@ -135,7 +133,8 @@ export function Swap() {
     enoughAssetsForSwap,
     validationButtonLabel,
     showExplainerSheet,
-    hideExplanerSheet,
+    hideExplainerSheet,
+    setShowSwapReview,
   });
 
   useSwapQuoteHandler({
@@ -162,6 +161,8 @@ export function Swap() {
     [setAssetToBuyInputValue, setAssetToSell, setAssetToSellInputValue],
   );
 
+  const hideSwapReview = useCallback(() => setShowSwapReview(false), []);
+
   return (
     <>
       <Navbar
@@ -179,6 +180,14 @@ export function Swap() {
             testId="swap-settings-navbar-button"
           />
         }
+      />
+      <SwapReviewSheet
+        show={showSwapReview}
+        assetToBuy={assetToBuy}
+        assetToSell={assetToSell}
+        quote={quote}
+        flashbotsEnabled={flashbotsEnabled}
+        hideSwapReview={hideSwapReview}
       />
       <ExplainerSheet
         show={explainerSheetParams.show}
@@ -239,38 +248,34 @@ export function Swap() {
                 style={{ zIndex: assetToSellDropdownClosed ? 3 : 1 }}
               >
                 <Inline alignHorizontal="center">
-                  <Box
-                    as={motion.div}
-                    initial={{ zIndex: 0 }}
-                    whileHover={{ scale: transformScales['1.04'] }}
-                    whileTap={{ scale: transformScales['0.96'] }}
-                    transition={transitions.bounce}
-                    boxShadow="12px surfaceSecondaryElevated"
-                    background="surfaceSecondaryElevated"
-                    borderRadius="32px"
-                    borderWidth={'1px'}
-                    borderColor="buttonStroke"
-                    style={{ width: 42, height: 32, zIndex: 10 }}
-                    onClick={flipAssets}
-                    testId="swap-flip-button"
-                  >
-                    <Box width="full" height="full" alignItems="center">
-                      <Inline
-                        height="full"
-                        alignHorizontal="center"
-                        alignVertical="center"
-                      >
-                        <Stack alignHorizontal="center">
-                          <Box marginBottom="-4px">
-                            <ChevronDown color="labelTertiary" />
-                          </Box>
-                          <Box marginTop="-4px">
-                            <ChevronDown color="labelQuaternary" />
-                          </Box>
-                        </Stack>
-                      </Inline>
+                  <ButtonOverflow testId="swap-flip-button">
+                    <Box
+                      boxShadow="12px surfaceSecondaryElevated"
+                      background="surfaceSecondaryElevated"
+                      borderRadius="32px"
+                      borderWidth={'1px'}
+                      borderColor="buttonStroke"
+                      style={{ width: 42, height: 32, zIndex: 10 }}
+                      onClick={flipAssets}
+                    >
+                      <Box width="full" height="full" alignItems="center">
+                        <Inline
+                          height="full"
+                          alignHorizontal="center"
+                          alignVertical="center"
+                        >
+                          <Stack alignHorizontal="center">
+                            <Box marginBottom="-4px">
+                              <ChevronDown color="labelTertiary" />
+                            </Box>
+                            <Box marginTop="-4px">
+                              <ChevronDown color="labelQuaternary" />
+                            </Box>
+                          </Stack>
+                        </Inline>
+                      </Box>
                     </Box>
-                  </Box>
+                  </ButtonOverflow>
                 </Inline>
               </Box>
 
@@ -324,7 +329,7 @@ export function Swap() {
                             weight="bold"
                           />
                           <Text color="label" size="14pt" weight="bold">
-                            Long wait
+                            {i18n.t('swap.long_wait.title')}
                           </Text>
                         </Inline>
                         <Box
@@ -333,7 +338,9 @@ export function Swap() {
                         />
 
                         <Text color="orange" size="14pt" weight="semibold">
-                          Up to {timeEstimate?.timeEstimateDisplay} to swap
+                          {i18n.t('swap.long_wait.description', {
+                            time: timeEstimate?.timeEstimateDisplay,
+                          })}
                         </Text>
                       </Inline>
                     </Box>

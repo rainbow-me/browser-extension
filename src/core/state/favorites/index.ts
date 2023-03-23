@@ -28,14 +28,14 @@ import { ChainId } from '~/core/types/chains';
 import { createStore } from '../internal/createStore';
 
 type UpdateFavoritesArgs = {
-  address: Address;
+  address: Address | typeof ETH_ADDRESS;
   chainId: ChainId;
 };
 
 type UpdateFavoritesFn = ({ address, chainId }: UpdateFavoritesArgs) => void;
 
 export interface FavoritesState {
-  favorites: Record<ChainId, Address[]>;
+  favorites: Record<ChainId, (Address | typeof ETH_ADDRESS)[]>;
   addFavorite: UpdateFavoritesFn;
   removeFavorite: UpdateFavoritesFn;
 }

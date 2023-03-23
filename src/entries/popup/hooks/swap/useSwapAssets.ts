@@ -146,12 +146,17 @@ export const useSwapAssets = () => {
 
   // if user selects assetToBuy as assetToSell we need to flip assets
   useEffect(() => {
-    if (assetToBuy?.address === assetToSell?.address) {
+    if (
+      assetToBuy?.address === assetToSell?.address &&
+      assetToBuy?.chainId === assetToSell?.chainId
+    ) {
       setAssetToBuy(prevAssetToSell === undefined ? null : prevAssetToSell);
     }
   }, [
     assetToBuy?.address,
+    assetToBuy?.chainId,
     assetToSell?.address,
+    assetToSell?.chainId,
     prevAssetToSell,
     setAssetToBuy,
   ]);

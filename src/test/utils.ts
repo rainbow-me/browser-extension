@@ -39,7 +39,7 @@ export const ETH_MAINNET_ASSET: ParsedAddressAsset = {
   symbol: 'ETH',
   uniqueId: 'eth_1',
 };
-export const USDC_MAINNET_ASSET: ParsedAsset = {
+export const USDC_MAINNET_ASSET = {
   address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as Address,
   chainId: 1,
   chainName: 'mainnet' as ChainName,
