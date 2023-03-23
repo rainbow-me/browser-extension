@@ -18,6 +18,8 @@ import {
   SignTypedDataArguments,
 } from '~/entries/background/handlers/handleWallets';
 
+import { executeRap } from '../raps/common';
+import { RapActionTypes, RapSwapActionParameters } from '../raps/references';
 import { KeychainType } from '../types/keychainTypes';
 import { EthereumWalletType } from '../types/walletTypes';
 import {
@@ -227,6 +229,21 @@ export const sendTransaction = async (
   const signer = await keychainManager.getSigner(txPayload.from as Address);
   const wallet = signer.connect(provider);
   return wallet.sendTransaction(txPayload);
+};
+
+export const executeRapp = async (
+  rapActionParameters: RapSwapActionParameters,
+  type: RapActionTypes,
+  provider: Provider,
+  callback: (success?: boolean, errorMessage?: string | null) => void,
+): Promise<{ nonce: number | undefined }> => {
+  const from = rapActionParameters.quote.from as Address;
+  if (typeof from === 'undefined') {
+    throw new Error('Missing from address');
+  }
+  const signer = await keychainManager.getSigner(from);
+  const wallet = signer.connect(provider);
+  return executeRap(wallet, type, rapActionParameters, callback);
 };
 
 export const signMessage = async ({

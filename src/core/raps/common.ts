@@ -1,4 +1,4 @@
-import { Wallet } from '@ethersproject/wallet';
+import { Signer } from '@ethersproject/abstract-signer';
 
 import { swap, unlock } from './actions';
 import { crosschainSwap } from './actions/crosschainSwap';
@@ -79,7 +79,7 @@ async function executeAction<T extends RapActionTypes>({
   baseNonce,
 }: {
   action: RapAction<T>;
-  wallet: Wallet;
+  wallet: Signer;
   rap: Rap;
   index: number;
   baseNonce?: number;
@@ -105,11 +105,11 @@ async function executeAction<T extends RapActionTypes>({
 }
 
 export const executeRap = async (
-  wallet: Wallet,
+  wallet: Signer,
   type: RapActionTypes,
   parameters: RapSwapActionParameters,
   callback: (success?: boolean, errorMessage?: string | null) => void,
-) => {
+): Promise<{ nonce: number | undefined }> => {
   const rap: Rap = await createSwapRapByType(type, parameters);
 
   const { actions } = rap;

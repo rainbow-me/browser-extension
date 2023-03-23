@@ -1,6 +1,6 @@
+import { Signer } from '@ethersproject/abstract-signer';
 import { MaxUint256 } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
-import { Wallet } from '@ethersproject/wallet';
 import { Address, erc20ABI, getProvider } from '@wagmi/core';
 
 import { ChainId } from '~/core/types/chains';
@@ -120,7 +120,7 @@ export const executeApprove = async ({
   nonce?: number;
   spender: Address;
   tokenAddress: Address;
-  wallet: Wallet;
+  wallet: Signer;
 }) => {
   const tokenContract = new Contract(tokenAddress, erc20ABI, wallet);
 

@@ -1,4 +1,4 @@
-import { Wallet } from '@ethersproject/wallet';
+import { Signer } from '@ethersproject/abstract-signer';
 import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
 import { Address } from 'wagmi';
 
@@ -103,6 +103,6 @@ export interface ActionProps<T extends RapActionTypes> {
   baseNonce?: number;
   index: number;
   parameters: RapActionParameterMap[T];
-  wallet: Wallet;
+  wallet: Signer;
   currentRap: Rap;
 }

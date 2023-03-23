@@ -1,4 +1,4 @@
-import { Wallet } from '@ethersproject/wallet';
+import { Signer } from '@ethersproject/abstract-signer';
 import { CrosschainQuote, fillCrosschainQuote } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
 
@@ -89,7 +89,7 @@ export const executeCrosschainSwap = async ({
   transactionGasParams: TransactionGasParams | TransactionLegacyGasParams;
   nonce?: number;
   quote: CrosschainQuote;
-  wallet: Wallet;
+  wallet: Signer;
 }) => {
   if (!wallet || !quote) return null;
 

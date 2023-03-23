@@ -1,5 +1,5 @@
+import { Signer } from '@ethersproject/abstract-signer';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
-import { Wallet } from '@ethersproject/wallet';
 import {
   ChainId,
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
@@ -140,7 +140,7 @@ export const executeSwap = async ({
   transactionGasParams: TransactionGasParams | TransactionLegacyGasParams;
   nonce?: number;
   quote: Quote;
-  wallet: Wallet;
+  wallet: Signer;
   permit: boolean;
 }) => {
   if (!wallet || !quote) return null;
