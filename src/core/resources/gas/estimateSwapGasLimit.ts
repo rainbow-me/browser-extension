@@ -66,13 +66,13 @@ async function estimateSwapGasLimitQueryFunction({
     q.swapType === SwapType.crossChain
       ? await estimateUnlockAndCrosschainSwap({
           chainId,
-          quote: quote as CrosschainQuote,
+          quote: q as CrosschainQuote,
           sellAmount: q.sellAmount.toString(),
           assetToSell,
         })
       : await estimateUnlockAndSwap({
           chainId,
-          quote: quote as Quote,
+          quote: q as Quote,
           sellAmount: q.sellAmount.toString(),
           assetToSell,
         });
