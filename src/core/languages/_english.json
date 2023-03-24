@@ -100,6 +100,7 @@
         "wallet_single": "Wallet",
         "wallet_plural": "Wallets",
         "recovery_phrase_label": "Recovery Phrase",
+        "private_key_label": "Private Key",
         "wallet_details": {
           "title": "Wallet Details",
           "view_recovery_phrase": "View Recovery Phrase",
