@@ -1,9 +1,11 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { CrosschainQuote, fillCrosschainQuote } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
+import { Address, getProvider } from '@wagmi/core';
 
 import { gasUnits } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
+import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import { addNewTransaction } from '~/core/utils/transactions';
 import { logger } from '~/logger';
 
 import { gasStore } from '../../state';
@@ -157,6 +159,25 @@ export const crosschainSwap = async ({
     });
     throw e;
   }
+
+  const transaction = {
+    amount: '0',
+    asset: parameters.assetToSell,
+    data: parameters.quote.data,
+    value: parameters.quote.value,
+    from: parameters.quote.from as Address,
+    to: parameters.quote.to as Address,
+    hash: swap?.hash,
+    chainId: parameters.chainId,
+    nonce: swap?.nonce,
+    status: TransactionStatus.swapping,
+    type: TransactionType.trade,
+  };
+  await addNewTransaction({
+    address: parameters.quote.from as Address,
+    chainId: parameters.chainId as ChainId,
+    transaction,
+  });
 
   return swap?.nonce;
 };

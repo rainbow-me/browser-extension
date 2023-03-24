@@ -39,6 +39,8 @@ import {
   useSwapSettings,
   useSwapValidations,
 } from '../../hooks/swap';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { ROUTES } from '../../urls';
 
 import { SwapReviewSheet } from './SwapReviewSheet/SwapReviewSheet';
 import { SwapSettings } from './SwapSettings/SwapSettings';
@@ -53,6 +55,7 @@ export function Swap() {
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
   const { selectedGas } = useGasStore();
+  const navigate = useRainbowNavigate();
 
   const {
     assetsToSell,
@@ -186,7 +189,8 @@ export function Swap() {
       type,
       callback: () => null,
     });
-  }, [assetToBuy, assetToSell, connectedToHardhat, quote]);
+    navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
+  }, [assetToBuy, assetToSell, connectedToHardhat, navigate, quote]);
 
   return (
     <>

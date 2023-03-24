@@ -1,9 +1,10 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
+import { Transaction } from '@ethersproject/transactions';
 import {
-  ChainId,
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
   Quote,
+  ChainId as SwapChainId,
   WRAPPED_ASSET,
   fillQuote,
   getQuoteExecutionDetails,
@@ -11,9 +12,12 @@ import {
   unwrapNativeAsset,
   wrapNativeAsset,
 } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
+import { Address, getProvider } from '@wagmi/core';
 
+import { ChainId } from '~/core/types/chains';
+import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { isLowerCaseMatch } from '~/core/utils/strings';
+import { addNewTransaction } from '~/core/utils/transactions';
 import { logger } from '~/logger';
 
 import { ETH_ADDRESS, gasUnits } from '../../references';
@@ -72,7 +76,7 @@ export const estimateSwapGasLimit = async ({
         contractCallEstimateGas: getWrappedAssetMethod(
           isWrapNativeAsset ? 'deposit' : 'withdraw',
           provider as StaticJsonRpcProvider,
-          chainId,
+          chainId as unknown as SwapChainId,
         ),
         provider,
         paddingFactor: WRAP_GAS_PADDING,
@@ -142,7 +146,7 @@ export const executeSwap = async ({
   quote: Quote;
   wallet: Signer;
   permit: boolean;
-}) => {
+}): Promise<Transaction | null> => {
   if (!wallet || !quote) return null;
 
   const { sellTokenAddress, buyTokenAddress } = quote;
@@ -157,7 +161,12 @@ export const executeSwap = async ({
     sellTokenAddress === ETH_ADDRESS &&
     buyTokenAddress === WRAPPED_ASSET[chainId]
   ) {
-    return wrapNativeAsset(quote.buyAmount, wallet, chainId, transactionParams);
+    return wrapNativeAsset(
+      quote.buyAmount,
+      wallet,
+      chainId as unknown as SwapChainId,
+      transactionParams,
+    );
     // Unwrap Weth
   } else if (
     sellTokenAddress === WRAPPED_ASSET[chainId] &&
@@ -166,12 +175,18 @@ export const executeSwap = async ({
     return unwrapNativeAsset(
       quote.sellAmount,
       wallet,
-      chainId,
+      chainId as unknown as SwapChainId,
       transactionParams,
     );
     // Swap
   } else {
-    return fillQuote(quote, transactionParams, wallet, permit, chainId);
+    return fillQuote(
+      quote,
+      transactionParams,
+      wallet,
+      permit,
+      chainId as unknown as SwapChainId,
+    );
   }
 };
 
@@ -234,6 +249,25 @@ export const swap = async ({
     });
     throw e;
   }
+
+  const transaction = {
+    amount: '0',
+    asset: parameters.assetToSell,
+    data: parameters.quote.data,
+    value: parameters.quote.value,
+    from: parameters.quote.from as Address,
+    to: parameters.quote.to as Address,
+    hash: swap?.hash,
+    chainId: parameters.chainId,
+    nonce: swap?.nonce,
+    status: TransactionStatus.swapping,
+    type: TransactionType.trade,
+  };
+  await addNewTransaction({
+    address: parameters.quote.from as Address,
+    chainId: parameters.chainId as ChainId,
+    transaction,
+  });
 
   return swap?.nonce;
 };

@@ -8,6 +8,8 @@ import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
+import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import { addNewTransaction } from '~/core/utils/transactions';
 import { logger } from '~/logger';
 
 import { ETH_ADDRESS, gasUnits } from '../../references';
@@ -185,6 +187,25 @@ export const unlock = async ({
     });
     throw e;
   }
+
+  const transaction = {
+    amount: approval.value,
+    asset: assetToUnlock,
+    data: approval.data,
+    value: approval.value,
+    from: parameters.fromAddress,
+    to: assetAddress as Address,
+    hash: approval.hash,
+    chainId: approval.chainId,
+    nonce: approval.nonce,
+    status: TransactionStatus.approving,
+    type: TransactionType.send,
+  };
+  await addNewTransaction({
+    address: parameters.fromAddress as Address,
+    chainId: approval.chainId as ChainId,
+    transaction,
+  });
 
   return approval?.nonce;
 };

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
 import { Address } from 'wagmi';
 
+import SendSound from 'static/assets/audio/woosh.mp3';
 import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { truncateAddress } from '~/core/utils/address';
@@ -183,6 +184,11 @@ const SwapReviewSheetWithQuote = ({
 
   const openMoreDetails = useCallback(() => setShowDetails(true), []);
   const closeMoreDetails = useCallback(() => setShowDetails(false), []);
+
+  const handleSwap = useCallback(() => {
+    executeSwap();
+    new Audio(SendSound).play();
+  }, [executeSwap]);
 
   const goBack = useCallback(() => {
     hideSwapReview();
@@ -437,7 +443,7 @@ const SwapReviewSheetWithQuote = ({
           >
             <Stack alignHorizontal="center" space="8px">
               <Button
-                onClick={executeSwap}
+                onClick={handleSwap}
                 height="44px"
                 variant="flat"
                 color={'accent'}
