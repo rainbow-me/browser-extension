@@ -13,7 +13,7 @@ export default function SeedPhraseTable({ seed }: { seed: string }) {
       borderWidth={'1px'}
     >
       <Columns>
-        <Column width="content">
+        <Column>
           <Box paddingRight="14px">
             {seed
               .split(' ')
