@@ -235,12 +235,10 @@ export const executeRap = async ({
   rapActionParameters,
   type,
   provider,
-  callback,
 }: {
   rapActionParameters: RapSwapActionParameters<'swap' | 'crosschainSwap'>;
   type: RapTypes;
   provider: Provider;
-  callback: (success?: boolean, errorMessage?: string | null) => void;
 }): Promise<{ nonce: number | undefined }> => {
   const from = rapActionParameters.quote.from as Address;
   if (typeof from === 'undefined') {
@@ -248,7 +246,7 @@ export const executeRap = async ({
   }
   const signer = await keychainManager.getSigner(from);
   const wallet = signer.connect(provider);
-  return walletExecuteRap(wallet, type, rapActionParameters, callback);
+  return walletExecuteRap(wallet, type, rapActionParameters);
 };
 
 export const signMessage = async ({
