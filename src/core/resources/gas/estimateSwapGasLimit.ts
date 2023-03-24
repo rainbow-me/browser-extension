@@ -6,8 +6,8 @@ import {
 } from '@rainbow-me/swaps';
 import { useQuery } from '@tanstack/react-query';
 
-import { estimateSwapGasLimit } from '~/core/raps/actions';
-import { estimateCrosschainSwapGasLimit } from '~/core/raps/actions/crosschainSwap';
+import { estimateUnlockAndCrosschainSwap } from '~/core/raps/unlockAndCrosschainSwap';
+import { estimateUnlockAndSwap } from '~/core/raps/unlockAndSwap';
 import {
   QueryConfig,
   QueryFunctionArgs,
@@ -16,6 +16,7 @@ import {
   queryClient,
 } from '~/core/react-query';
 import { gasUnits } from '~/core/references/gasUnits';
+import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 
 // ///////////////////////////////////////////////
@@ -27,8 +28,9 @@ export type EstimateSwapGasLimitResponse = {
 
 export type EstimateSwapGasLimitArgs = {
   chainId: ChainId;
-  tradeDetails?: Quote | CrosschainQuote | QuoteError;
-  requiresApprove: boolean;
+  quote?: Quote | CrosschainQuote | QuoteError;
+  assetToSell?: ParsedSearchAsset;
+  assetToBuy?: ParsedSearchAsset;
 };
 
 // ///////////////////////////////////////////////
@@ -36,12 +38,13 @@ export type EstimateSwapGasLimitArgs = {
 
 const estimateSwapGasLimitQueryKey = ({
   chainId,
-  tradeDetails,
-  requiresApprove,
+  quote,
+  assetToSell,
+  assetToBuy,
 }: EstimateSwapGasLimitArgs) =>
   createQueryKey(
     'estimateSwapGasLimit',
-    { chainId, tradeDetails, requiresApprove },
+    { chainId, quote, assetToSell, assetToBuy },
     { persisterVersion: 1 },
   );
 
@@ -53,24 +56,26 @@ type EstimateSwapGasLimitQueryKey = ReturnType<
 // Query Function
 
 async function estimateSwapGasLimitQueryFunction({
-  queryKey: [{ chainId, tradeDetails, requiresApprove }],
+  queryKey: [{ chainId, quote, assetToSell, assetToBuy }],
 }: QueryFunctionArgs<typeof estimateSwapGasLimitQueryKey>) {
-  if (!tradeDetails || (tradeDetails as QuoteError).error) {
+  if (!quote || (quote as QuoteError).error || !assetToSell || !assetToBuy) {
     return gasUnits.basic_swap[chainId];
   }
-  const quote = tradeDetails as Quote | CrosschainQuote;
-  const isCrosschainSwap = quote.swapType === SwapType.crossChain;
-  const gasLimit = isCrosschainSwap
-    ? await estimateCrosschainSwapGasLimit({
-        chainId,
-        requiresApprove,
-        tradeDetails: quote as CrosschainQuote,
-      })
-    : await estimateSwapGasLimit({
-        chainId,
-        requiresApprove,
-        tradeDetails: quote as Quote,
-      });
+  const q = quote as Quote | CrosschainQuote;
+  const gasLimit =
+    q.swapType === SwapType.crossChain
+      ? await estimateUnlockAndCrosschainSwap({
+          chainId,
+          quote: q as CrosschainQuote,
+          sellAmount: q.sellAmount.toString(),
+          assetToSell,
+        })
+      : await estimateUnlockAndSwap({
+          chainId,
+          quote: q as Quote,
+          sellAmount: q.sellAmount.toString(),
+          assetToSell,
+        });
 
   if (!gasLimit) {
     return gasUnits.basic_swap[chainId];
@@ -86,7 +91,7 @@ type EstimateSwapGasLimitResult = QueryFunctionResult<
 // Query Fetcher
 
 export async function fetchEstimateSwapGasLimit(
-  { chainId, tradeDetails, requiresApprove }: EstimateSwapGasLimitArgs,
+  { chainId, quote, assetToSell, assetToBuy }: EstimateSwapGasLimitArgs,
   config: QueryConfig<
     EstimateSwapGasLimitResult,
     Error,
@@ -95,7 +100,12 @@ export async function fetchEstimateSwapGasLimit(
   > = {},
 ) {
   return await queryClient.fetchQuery(
-    estimateSwapGasLimitQueryKey({ chainId, tradeDetails, requiresApprove }),
+    estimateSwapGasLimitQueryKey({
+      chainId,
+      quote,
+      assetToSell,
+      assetToBuy,
+    }),
     estimateSwapGasLimitQueryFunction,
     config,
   );
@@ -105,7 +115,7 @@ export async function fetchEstimateSwapGasLimit(
 // Query Hook
 
 export function useEstimateSwapGasLimit(
-  { chainId, tradeDetails, requiresApprove }: EstimateSwapGasLimitArgs,
+  { chainId, quote, assetToSell, assetToBuy }: EstimateSwapGasLimitArgs,
   config: QueryConfig<
     EstimateSwapGasLimitResult,
     Error,
@@ -114,7 +124,12 @@ export function useEstimateSwapGasLimit(
   > = {},
 ) {
   return useQuery(
-    estimateSwapGasLimitQueryKey({ chainId, tradeDetails, requiresApprove }),
+    estimateSwapGasLimitQueryKey({
+      chainId,
+      quote,
+      assetToSell,
+      assetToBuy,
+    }),
     estimateSwapGasLimitQueryFunction,
     { keepPreviousData: true, ...config },
   );
