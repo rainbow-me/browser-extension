@@ -289,7 +289,7 @@ export const ReviewSheet = ({
     }
   }, [onSend, sendEnabled]);
 
-  const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
+  const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
 
   const showL2Explainer = useCallback(() => {
@@ -317,10 +317,10 @@ export const ReviewSheet = ({
         label: i18n.t('explainers.send.action_label'),
         variant: 'tinted',
         labelColor: 'blue',
-        action: hideExplanerSheet,
+        action: hideExplainerSheet,
       },
     });
-  }, [asset?.chainId, hideExplanerSheet, showExplainerSheet]);
+  }, [asset?.chainId, hideExplainerSheet, showExplainerSheet]);
 
   useEffect(() => {
     if (prevShow && !show) {

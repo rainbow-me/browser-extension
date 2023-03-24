@@ -1,6 +1,6 @@
 import { Address, chain } from 'wagmi';
 
-import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
+import { ETH_ADDRESS, NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { ChainId, ChainName, bsc } from '~/core/types/chains';
 
 import { isLowerCaseMatch } from './strings';
@@ -34,7 +34,10 @@ export const isL2Chain = (chain: ChainName | ChainId): boolean => {
   }
 };
 
-export function isNativeAsset(address: Address, chainId: ChainId) {
+export function isNativeAsset(
+  address: Address | typeof ETH_ADDRESS,
+  chainId: ChainId,
+) {
   return isLowerCaseMatch(NATIVE_ASSETS_PER_CHAIN[chainId], address);
 }
 
