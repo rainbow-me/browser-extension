@@ -322,7 +322,7 @@ export const CustomGasSheet = ({
     [gasFeeParamsBySpeed, setSelectedGas],
   );
 
-  const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
+  const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
 
   const showCurrentBaseFeeExplainer = useCallback(() => {
@@ -348,11 +348,11 @@ export const CustomGasSheet = ({
       title: i18n.t('explainers.custom_gas.current_base_title'),
       actionButton: {
         label: i18n.t('explainers.custom_gas.action_button_label'),
-        action: hideExplanerSheet,
+        action: hideExplainerSheet,
         labelColor: 'label',
       },
     });
-  }, [baseFeeTrend, currentBaseFee, hideExplanerSheet, showExplainerSheet]);
+  }, [baseFeeTrend, currentBaseFee, hideExplainerSheet, showExplainerSheet]);
 
   const showMaxBaseFeeExplainer = useCallback(
     () =>
@@ -366,11 +366,11 @@ export const CustomGasSheet = ({
         title: i18n.t('explainers.custom_gas.max_base_title'),
         actionButton: {
           label: i18n.t('explainers.custom_gas.action_button_label'),
-          action: hideExplanerSheet,
+          action: hideExplainerSheet,
           labelColor: 'label',
         },
       }),
-    [hideExplanerSheet, showExplainerSheet],
+    [hideExplainerSheet, showExplainerSheet],
   );
 
   const showMaxPriorityFeeExplainer = useCallback(
@@ -382,11 +382,11 @@ export const CustomGasSheet = ({
         title: i18n.t('explainers.custom_gas.max_priority_title'),
         actionButton: {
           label: i18n.t('explainers.custom_gas.action_button_label'),
-          action: hideExplanerSheet,
+          action: hideExplainerSheet,
           labelColor: 'label',
         },
       }),
-    [hideExplanerSheet, showExplainerSheet],
+    [hideExplainerSheet, showExplainerSheet],
   );
 
   return (

@@ -1,5 +1,6 @@
 import {
   CrosschainQuote,
+  ETH_ADDRESS,
   Quote,
   QuoteError,
   QuoteParams,
@@ -58,8 +59,12 @@ export const useSwapQuote = ({
       source: source === 'auto' ? undefined : source,
       chainId: assetToSell.chainId,
       fromAddress: currentAddress,
-      sellTokenAddress: assetToSell.address,
-      buyTokenAddress: assetToBuy.address,
+      sellTokenAddress: assetToSell.isNativeAsset
+        ? ETH_ADDRESS
+        : assetToSell.address,
+      buyTokenAddress: assetToBuy.isNativeAsset
+        ? ETH_ADDRESS
+        : assetToBuy.address,
       sellAmount:
         independentField === 'sellField' && Number(assetToSellValue)
           ? convertAmountToRawAmount(

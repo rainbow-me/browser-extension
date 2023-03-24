@@ -394,6 +394,12 @@ export const backgroundColors: Record<
   },
 };
 
+type Cursor = 'copy' | 'default' | 'pointer' | 'text';
+export const cursorOpts: Cursor[] = ['copy', 'default', 'pointer', 'text'];
+
+type UserSelect = 'all' | 'none' | 'text';
+export const userSelectOpts: UserSelect[] = ['all', 'none', 'text'];
+
 function selectBackgroundColors<
   SelectedColors extends readonly BackgroundColor[],
 >(...colors: SelectedColors): SelectedColors {
@@ -859,6 +865,7 @@ export const symbolNames = selectSymbolNames(
   'exclamationmark.circle.fill',
   'shuffle',
   'chart.bar.xaxis',
+  'arrow.2.squarepath',
 );
 export type SymbolName = typeof symbolNames[number];
 

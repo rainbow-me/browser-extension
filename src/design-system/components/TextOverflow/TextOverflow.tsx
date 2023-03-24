@@ -13,6 +13,8 @@ interface TextOverflowProps {
   weight: TextStyles['fontWeight'];
   testId?: string;
   maxWidth?: number;
+  cursor?: TextStyles['cursor'];
+  userSelect?: TextStyles['userSelect'];
 }
 
 export function TextOverflow({
@@ -24,6 +26,8 @@ export function TextOverflow({
   weight,
   testId,
   maxWidth,
+  cursor = 'default',
+  userSelect = 'none',
 }: TextOverflowProps) {
   return (
     <Box style={{ maxWidth }}>
@@ -31,11 +35,12 @@ export function TextOverflow({
         marginVertical="-8px"
         className={textStyles({
           color,
-          cursor: 'default',
+          cursor,
           fontFamily: 'rounded',
           fontSize: size,
           fontWeight: weight,
           textAlign: align,
+          userSelect,
         })}
         testId={testId}
       >

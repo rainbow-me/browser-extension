@@ -34,6 +34,7 @@ export type ButtonVariantProps =
 
 export type ButtonWrapperProps = {
   children: string | React.ReactNode;
+  cursor?: BoxStyles['cursor'];
   height: ButtonHeight;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   width?: 'fit' | 'full';
@@ -214,6 +215,7 @@ export const stylesForVariant = ({
 
 export function ButtonWrapper({
   children,
+  cursor = 'default',
   color,
   height,
   onClick,
@@ -288,6 +290,7 @@ export function ButtonWrapper({
         style={styles}
         tabIndex={tabIndex}
         testId={testId}
+        cursor={cursor}
       >
         {children}
       </Box>

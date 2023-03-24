@@ -102,6 +102,7 @@
         "wallet_single": "Wallet",
         "wallet_plural": "Wallets",
         "recovery_phrase_label": "Recovery Phrase",
+        "private_key_label": "Private Key",
         "wallet_details": {
           "title": "Wallet Details",
           "view_recovery_phrase": "View Recovery Phrase",
@@ -242,6 +243,10 @@
       "nothing_found_description": "Some tokens don’t have enough liquidity to perform a successful swap.",
       "nothing_found_description_l2": "Some tokens don’t have enough layer 2 liquidity to perform a successful swap."
     },
+    "long_wait": {
+      "title": "Long wait",
+      "description": "Up to %{time} to swap"
+    },
     "aggregators": {
       "rainbow": "Auto"
     },
@@ -295,6 +300,19 @@
       "no_route": "No route found",
       "no_quote": "No quote available",
       "enter_an_amount": "Enter an amount"
+    },
+    "review": {
+      "title": "Review & Swap",
+      "flashbots_on": "On",
+      "minimum_received": "Minimum received",
+      "swapping_via": "Swapping via",
+      "included_fee": "Included Rainbow fee",
+      "use_flashbots": "Use Flashbots",
+      "exchange_rate": "Exchange rate",
+      "asset_contract": "%{symbol} contract",
+      "more_details": "More details",
+      "swap_confirmation": "Swap %{sellSymbol} to %{buySymbol}",
+      "go_back": "Go back"
     },
     "explainers": {
       "long_wait": {
@@ -678,6 +696,18 @@
       "max_base_title": "Max base fee",
       "max_priority_explainer": "The miner tip goes directly to the miner who confirms your transaction on the network.\n\nA higher tip makes your transaction more likely to be confirmed quickly.",
       "max_priority_title": "Miner tip"
+    },
+    "swap": {
+      "flashbots": {
+        "title": "Flashbots",
+        "description": "Flashbots protects your transactions from frontrunning and sandwich attacks which might result in you getting a worse price or your transaction failing.",
+        "action_label": "Got it"
+      },
+      "fee": {
+        "title": "Rainbow Fee",
+        "description": "Rainbow takes a %{feePercentage} fee from swaps. It’s part of what enables us to give you the best Ethereum experience possible.",
+        "action_label": "Got it"
+      }
     }
   },
   "injected_notifications": {

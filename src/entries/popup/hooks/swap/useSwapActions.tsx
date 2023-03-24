@@ -11,7 +11,7 @@ import {
   TextColor,
 } from '~/design-system/styles/designTokens';
 
-import { ChevronRightDouble } from '../../components/ChevroRightDouble';
+import { ChevronRightDouble } from '../../components/ChevronRightDouble';
 import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import { ExplainerSheetProps } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Spinner } from '../../components/Spinner/Spinner';
@@ -68,8 +68,9 @@ interface UseSwapActionsProps {
   assetToBuy?: ParsedSearchAsset | null;
   enoughAssetsForSwap?: boolean;
   validationButtonLabel: string;
-  hideExplanerSheet: () => void;
+  hideExplainerSheet: () => void;
   showExplainerSheet: (params: ExplainerSheetProps) => void;
+  setShowSwapReview: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface SwapActions {
@@ -89,8 +90,9 @@ export const useSwapActions = ({
   assetToBuy,
   enoughAssetsForSwap,
   validationButtonLabel,
-  hideExplanerSheet,
+  hideExplainerSheet,
   showExplainerSheet,
+  setShowSwapReview,
 }: UseSwapActionsProps): SwapActions => {
   if (isLoading) {
     return {
@@ -140,9 +142,9 @@ export const useSwapActions = ({
       buttonIcon: enoughAssetsForSwap ? (
         <Symbol symbol="doc.text.magnifyingglass" weight="bold" size={16} />
       ) : null,
-      buttonAction: () =>
-        timeEstimate?.isLongWait
-          ? showExplainerSheet({
+      buttonAction: timeEstimate?.isLongWait
+        ? () =>
+            showExplainerSheet({
               show: true,
               header: {
                 icon: (
@@ -171,11 +173,16 @@ export const useSwapActions = ({
                 label: i18n.t('swap.explainers.long_wait.action_label'),
                 variant: 'tinted',
                 labelColor: 'blue',
-                action: hideExplanerSheet,
+                action: () => {
+                  hideExplainerSheet();
+                  setShowSwapReview(true);
+                },
               },
               testId: 'swap-long-wait',
             })
-          : null,
+        : () => {
+            setShowSwapReview(true);
+          },
       timeEstimate,
     };
   }
@@ -221,7 +228,7 @@ export const useSwapActions = ({
               ),
               variant: 'tinted',
               labelColor: 'blue',
-              action: hideExplanerSheet,
+              action: hideExplainerSheet,
             },
             testId: 'swap-liquidity',
           }),
@@ -265,7 +272,7 @@ export const useSwapActions = ({
               label: i18n.t('swap.explainers.no_route.action_label'),
               variant: 'tinted',
               labelColor: 'blue',
-              action: hideExplanerSheet,
+              action: hideExplainerSheet,
             },
             testId: 'swap-no-route',
           }),
@@ -296,7 +303,7 @@ export const useSwapActions = ({
               label: i18n.t('swap.explainers.no_quote.action_label'),
               variant: 'tinted',
               labelColor: 'blue',
-              action: hideExplanerSheet,
+              action: hideExplainerSheet,
             },
             testId: 'swap-no-quote',
           }),

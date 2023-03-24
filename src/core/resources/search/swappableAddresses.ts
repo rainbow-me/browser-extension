@@ -9,12 +9,13 @@ import {
   createQueryKey,
   queryClient,
 } from '~/core/react-query';
+import { ETH_ADDRESS } from '~/core/references';
 
 // ///////////////////////////////////////////////
 // Query Types
 
 export type SwappableAddressesArgs = {
-  addresses: Address[];
+  addresses: (Address | typeof ETH_ADDRESS)[];
   fromChainId: number;
   toChainId?: number;
 };
@@ -40,7 +41,9 @@ type SwappableAddressesQueryKey = ReturnType<typeof swappableAddressesQueryKey>;
 
 async function swappableAddressesQueryFunction({
   queryKey: [{ addresses, fromChainId, toChainId }],
-}: QueryFunctionArgs<typeof swappableAddressesQueryKey>): Promise<Address[]> {
+}: QueryFunctionArgs<typeof swappableAddressesQueryKey>): Promise<
+  (Address | typeof ETH_ADDRESS)[]
+> {
   const filteredAddresses = await tokenSearchHttp.post(`/${fromChainId}`, {
     addresses,
     toChainId,

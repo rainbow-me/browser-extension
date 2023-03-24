@@ -19,6 +19,7 @@ import {
   backdropFilter,
   backgroundColors,
   buttonColors,
+  cursorOpts,
   fontWeights,
   foregroundColors,
   linearGradients,
@@ -31,6 +32,7 @@ import {
   strokeColors,
   strokeWeights,
   textColors,
+  userSelectOpts,
 } from './designTokens';
 import SFRoundedBold from './fonts/subset-SFRounded-Bold.woff2';
 import SFRoundedHeavy from './fonts/subset-SFRounded-Heavy.woff2';
@@ -331,6 +333,7 @@ const boxBaseProperties = defineProperties({
       borderWidth,
     })),
     bottom: positionSpace,
+    cursor: cursorOpts,
     display: ['none', 'flex', 'block', 'inline'],
     flexDirection: ['row', 'column'],
     flexWrap: ['wrap'],
@@ -423,6 +426,7 @@ const symbolProperties = defineProperties({
       accent: accentColorAsHsl,
       ...pick(semanticColorVars.foregroundColors, textColors),
     },
+    cursor: cursorOpts,
   },
 });
 
@@ -474,7 +478,7 @@ const textProperties = defineProperties({
       accent: accentColorAsHsl,
       ...pick(semanticColorVars.foregroundColors, textColors),
     },
-    cursor: ['default'],
+    cursor: cursorOpts,
     fontFamily: { rounded: 'SFRounded, system-ui' },
     fontSize: {
       '11pt': defineType(11, 13, 0.56),
@@ -497,6 +501,7 @@ const textProperties = defineProperties({
     textAlign: ['left', 'center', 'right'],
     background: linearGradients,
     WebkitBackgroundClip: ['border-box', 'text'],
+    userSelect: userSelectOpts,
   },
 });
 

@@ -52,7 +52,9 @@ export const useSendState = ({
     const isSendingNativeAsset = assetAddress
       ? isNativeAsset(assetAddress, chainId)
       : true;
-    return !isSendingNativeAsset && assetAddress ? assetAddress : toAddress;
+    return (
+      !isSendingNativeAsset && assetAddress ? assetAddress : toAddress
+    ) as Address;
   }, [asset?.address, chainId, toAddress]);
 
   return {
