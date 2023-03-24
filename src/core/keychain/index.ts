@@ -19,8 +19,7 @@ import {
 } from '~/entries/background/handlers/handleWallets';
 
 import { walletExecuteRap } from '../raps/common';
-import { RapActionTypes, RapSwapActionParameters } from '../raps/references';
-import { TransactionGasParams, TransactionLegacyGasParams } from '../types/gas';
+import { RapSwapActionParameters, RapTypes } from '../raps/references';
 import { KeychainType } from '../types/keychainTypes';
 import { EthereumWalletType } from '../types/walletTypes';
 import {
@@ -236,13 +235,11 @@ export const executeRap = async ({
   rapActionParameters,
   type,
   provider,
-  transactionGasParams,
   callback,
 }: {
-  rapActionParameters: RapSwapActionParameters;
-  type: RapActionTypes;
+  rapActionParameters: RapSwapActionParameters<'swap' | 'crosschainSwap'>;
+  type: RapTypes;
   provider: Provider;
-  transactionGasParams: TransactionGasParams | TransactionLegacyGasParams;
   callback: (success?: boolean, errorMessage?: string | null) => void;
 }): Promise<{ nonce: number | undefined }> => {
   const from = rapActionParameters.quote.from as Address;
@@ -251,13 +248,7 @@ export const executeRap = async ({
   }
   const signer = await keychainManager.getSigner(from);
   const wallet = signer.connect(provider);
-  return walletExecuteRap(
-    wallet,
-    type,
-    rapActionParameters,
-    transactionGasParams,
-    callback,
-  );
+  return walletExecuteRap(wallet, type, rapActionParameters, callback);
 };
 
 export const signMessage = async ({

@@ -13,10 +13,7 @@ import { Address } from 'wagmi';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';
 import { initializeMessenger } from '~/core/messengers';
-import {
-  RapActionTypes,
-  RapSwapActionParameters,
-} from '~/core/raps/references';
+import { RapSwapActionParameters, RapTypes } from '~/core/raps/references';
 import { gasStore } from '~/core/state';
 import { KeychainWallet } from '~/core/types/keychainTypes';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
@@ -104,15 +101,15 @@ export const sendTransaction = async (
   }
 };
 
-export const executeRap = async ({
+export async function executeRap<T extends RapTypes>({
   rapActionParameters,
   type,
   callback,
 }: {
-  rapActionParameters: RapSwapActionParameters;
-  type: RapActionTypes;
+  rapActionParameters: RapSwapActionParameters<T>;
+  type: RapTypes;
   callback: (success?: boolean, errorMessage?: string | null) => void;
-}): Promise<TransactionResponse> => {
+}): Promise<TransactionResponse> {
   const { selectedGas } = gasStore.getState();
   // const provider = getProvider({
   //   chainId: rapActionParameters.chainId,
@@ -146,7 +143,7 @@ export const executeRap = async ({
   // } else {
   return walletAction('execute_rap', params) as unknown as TransactionResponse;
   // }
-};
+}
 
 export const signTypedData = async (
   msgData: string | Bytes,

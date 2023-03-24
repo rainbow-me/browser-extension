@@ -1,7 +1,5 @@
 import { Signer } from '@ethersproject/abstract-signer';
 
-import { TransactionGasParams, TransactionLegacyGasParams } from '../types/gas';
-
 import { swap, unlock } from './actions';
 import { crosschainSwap } from './actions/crosschainSwap';
 import {
@@ -11,9 +9,8 @@ import {
   RapActionParameterMap,
   RapActionResponse,
   RapActionTypes,
-  RapCrosschainSwapActionParameters,
   RapSwapActionParameters,
-  rapActions,
+  RapTypes,
 } from './references';
 import { createUnlockAndCrosschainSwapRap } from './unlockAndCrosschainSwap';
 import { createUnlockAndSwapRap } from './unlockAndSwap';
@@ -43,21 +40,23 @@ export function createNewRap<T extends RapActionTypes>(
   };
 }
 
-const createSwapRapByType = (
-  type: keyof typeof rapActions,
-  swapParameters: RapSwapActionParameters,
-) => {
+function createSwapRapByType<T extends RapTypes>(
+  type: T,
+  swapParameters: RapSwapActionParameters<T>,
+) {
   switch (type) {
     case 'crosschainSwap':
       return createUnlockAndCrosschainSwapRap(
-        swapParameters as RapCrosschainSwapActionParameters,
+        swapParameters as RapSwapActionParameters<'crosschainSwap'>,
       );
     case 'swap':
-      return createUnlockAndSwapRap(swapParameters);
+      return createUnlockAndSwapRap(
+        swapParameters as RapSwapActionParameters<'swap'>,
+      );
     default:
       return { actions: [] };
   }
-};
+}
 
 function typeAction<T extends RapActionTypes>(type: T, props: ActionProps<T>) {
   switch (type) {
@@ -108,9 +107,8 @@ async function executeAction<T extends RapActionTypes>({
 
 export const walletExecuteRap = async (
   wallet: Signer,
-  type: RapActionTypes,
-  parameters: RapSwapActionParameters,
-  transactionGasParams: TransactionGasParams | TransactionLegacyGasParams,
+  type: RapTypes,
+  parameters: RapSwapActionParameters<'swap' | 'crosschainSwap'>,
   callback: (success?: boolean, errorMessage?: string | null) => void,
 ): Promise<{ nonce: number | undefined }> => {
   const rap: Rap = await createSwapRapByType(type, parameters);

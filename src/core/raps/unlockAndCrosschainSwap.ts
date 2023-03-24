@@ -18,12 +18,12 @@ import { estimateCrosschainSwapGasLimit } from './actions/crosschainSwap';
 import { createNewAction, createNewRap } from './common';
 import {
   RapAction,
-  RapCrosschainSwapActionParameters,
+  RapSwapActionParameters,
   RapUnlockActionParameters,
 } from './references';
 
 export const estimateUnlockAndCrosschainSwap = async (
-  swapParameters: RapCrosschainSwapActionParameters,
+  swapParameters: RapSwapActionParameters<'crosschainSwap'>,
 ) => {
   const { sellAmount, quote, chainId, assetToSell } = swapParameters;
 
@@ -86,7 +86,7 @@ export const estimateUnlockAndCrosschainSwap = async (
 };
 
 export const createUnlockAndCrosschainSwapRap = async (
-  swapParameters: RapCrosschainSwapActionParameters,
+  swapParameters: RapSwapActionParameters<'crosschainSwap'>,
 ) => {
   let actions: RapAction<'crosschainSwap' | 'unlock'>[] = [];
   const { sellAmount, quote, chainId, assetToSell } = swapParameters;
@@ -149,7 +149,7 @@ export const createUnlockAndCrosschainSwapRap = async (
     meta: swapParameters.meta,
     assetToSell,
     sellAmount,
-  } as RapCrosschainSwapActionParameters);
+  } as RapSwapActionParameters<'crosschainSwap'>);
   actions = actions.concat(swap);
 
   // create the overall rap

@@ -26,7 +26,7 @@ import {
 } from './references';
 
 export const estimateUnlockAndSwap = async (
-  swapParameters: RapSwapActionParameters,
+  swapParameters: RapSwapActionParameters<'swap'>,
 ) => {
   const { sellAmount, quote, chainId, assetToSell } = swapParameters;
 
@@ -88,7 +88,7 @@ export const estimateUnlockAndSwap = async (
 };
 
 export const createUnlockAndSwapRap = async (
-  swapParameters: RapSwapActionParameters,
+  swapParameters: RapSwapActionParameters<'swap'>,
 ) => {
   let actions: RapAction<'swap' | 'unlock'>[] = [];
 
@@ -152,7 +152,7 @@ export const createUnlockAndSwapRap = async (
     quote,
     meta: swapParameters.meta,
     assetToSell,
-  } as RapSwapActionParameters);
+  } as RapSwapActionParameters<'swap'>);
   actions = actions.concat(swap);
 
   // create the overall rap
