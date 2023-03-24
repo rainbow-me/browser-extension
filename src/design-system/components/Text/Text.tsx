@@ -39,7 +39,7 @@ export function Text({
       className={clsx([
         textStyles({
           color,
-          cursor: 'default',
+          cursor,
           fontFamily: 'rounded',
           fontSize: size,
           fontWeight: weight,
