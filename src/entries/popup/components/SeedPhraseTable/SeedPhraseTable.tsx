@@ -13,7 +13,7 @@ export default function SeedPhraseTable({ seed }: { seed: string }) {
       borderWidth={'1px'}
     >
       <Columns>
-        <Column>
+        <Column width="content">
           <Box paddingRight="14px">
             {seed
               .split(' ')
@@ -26,7 +26,7 @@ export default function SeedPhraseTable({ seed }: { seed: string }) {
                   padding="8px"
                   key={`word_${index}`}
                   style={{
-                    width: '102px',
+                    minWidth: 102,
                     marginBottom: '8px',
                     textOverflow: 'ellipsis',
                     overflow: 'hidden',
@@ -55,16 +55,17 @@ export default function SeedPhraseTable({ seed }: { seed: string }) {
               ))}
           </Box>
         </Column>
-        <Box
-          borderColor="separatorTertiary"
-          height="fit"
-          style={{
-            width: '1px',
-            height: '100%',
-            borderRightStyle: 'solid',
-            borderRightWidth: '1px',
-          }}
-        />
+        <Column width="content">
+          <Box
+            borderColor="separatorTertiary"
+            style={{
+              width: '1px',
+              height: '100%',
+              borderRightStyle: 'solid',
+              borderRightWidth: '1px',
+            }}
+          />
+        </Column>
         <Column>
           <Box paddingLeft="14px">
             {seed
@@ -78,7 +79,7 @@ export default function SeedPhraseTable({ seed }: { seed: string }) {
                   borderWidth="1px"
                   key={`word_${index + 6}`}
                   style={{
-                    width: '102px',
+                    minWidth: 102,
                     marginBottom: '8px',
                     textOverflow: 'ellipsis',
                     overflow: 'hidden',
