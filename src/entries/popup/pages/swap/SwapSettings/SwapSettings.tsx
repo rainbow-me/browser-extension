@@ -218,7 +218,7 @@ export const SwapSettings = ({
   const slippageInputRef = useRef(null);
   const settingsAccentColor = accentColor || avatar?.color;
 
-  const { explainerSheetParams, showExplainerSheet, hideExplanerSheet } =
+  const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
 
   const setDefaultSettings = useCallback(() => {
@@ -248,33 +248,33 @@ export const SwapSettings = ({
       ...slippageExplainerProps,
       actionButton: {
         ...slippageExplainerProps.actionButton,
-        action: hideExplanerSheet,
+        action: hideExplainerSheet,
       },
       testId: 'swap-slippage',
     });
-  }, [hideExplanerSheet, showExplainerSheet]);
+  }, [hideExplainerSheet, showExplainerSheet]);
 
   const showFlashbotsExplainer = useCallback(() => {
     showExplainerSheet({
       ...flashbotsExplainerProps,
       actionButton: {
         ...flashbotsExplainerProps.actionButton,
-        action: hideExplanerSheet,
+        action: hideExplainerSheet,
       },
       testId: 'swap-flashbots',
     });
-  }, [hideExplanerSheet, showExplainerSheet]);
+  }, [hideExplainerSheet, showExplainerSheet]);
 
   const showRoutingExplainer = useCallback(() => {
     showExplainerSheet({
       ...routingExplainerProps,
       actionButton: {
         ...routingExplainerProps.actionButton,
-        action: hideExplanerSheet,
+        action: hideExplainerSheet,
       },
       testId: 'swap-routing',
     });
-  }, [hideExplanerSheet, showExplainerSheet]);
+  }, [hideExplainerSheet, showExplainerSheet]);
 
   return (
     <>
