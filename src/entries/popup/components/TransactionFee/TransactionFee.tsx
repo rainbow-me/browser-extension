@@ -5,7 +5,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
-import { useDefaultTxSpeedStore } from '~/core/state/currentSettings/defaultTxSpeed';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -25,6 +24,7 @@ import {
 } from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
+import { useDefaultTxSpeed } from '../../hooks/useDefaultTxSpeed';
 import { useSwapGas, useTransactionGas } from '../../hooks/useGas';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 
@@ -190,7 +190,7 @@ export function TransactionFee({
   accentColor,
   plainTriggerBorder,
 }: TransactionFeeProps) {
-  const { defaultTxSpeed } = useDefaultTxSpeedStore();
+  const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
     selectedSpeed,
     setSelectedSpeed,
@@ -243,7 +243,7 @@ export function SwapFee({
   assetToSell,
   assetToBuy,
 }: SwapFeeProps) {
-  const { defaultTxSpeed } = useDefaultTxSpeedStore();
+  const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
     selectedSpeed,
     setSelectedSpeed,
