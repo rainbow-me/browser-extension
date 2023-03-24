@@ -25,6 +25,7 @@ import {
 } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { SwapFee } from '../../components/TransactionFee/TransactionFee';
+// import * as wallet from '../../handlers/wallet';
 import {
   useSwapActions,
   useSwapAssets,
@@ -163,6 +164,13 @@ export function Swap() {
 
   const hideSwapReview = useCallback(() => setShowSwapReview(false), []);
 
+  // const executeSwap = useCallback(async () => {
+  // await wallet.executeRap({
+  //   rapActionParameters,
+  //   type,
+  //   callback,
+  // });
+  // }, []);
   return (
     <>
       <Navbar

@@ -1,5 +1,7 @@
 import { Signer } from '@ethersproject/abstract-signer';
 
+import { TransactionGasParams, TransactionLegacyGasParams } from '../types/gas';
+
 import { swap, unlock } from './actions';
 import { crosschainSwap } from './actions/crosschainSwap';
 import {
@@ -104,10 +106,11 @@ async function executeAction<T extends RapActionTypes>({
   }
 }
 
-export const executeRap = async (
+export const walletExecuteRap = async (
   wallet: Signer,
   type: RapActionTypes,
   parameters: RapSwapActionParameters,
+  transactionGasParams: TransactionGasParams | TransactionLegacyGasParams,
   callback: (success?: boolean, errorMessage?: string | null) => void,
 ): Promise<{ nonce: number | undefined }> => {
   const rap: Rap = await createSwapRapByType(type, parameters);

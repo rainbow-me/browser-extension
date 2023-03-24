@@ -160,9 +160,9 @@ export const unlock = async ({
   }
 
   const gasParams = overrideWithFastSpeedIfNeeded({
-    selectedGas,
     chainId,
     gasFeeParamsBySpeed,
+    selectedGas,
   });
 
   const nonce = baseNonce ? baseNonce + index : undefined;

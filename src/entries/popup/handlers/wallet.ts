@@ -13,6 +13,10 @@ import { Address } from 'wagmi';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';
 import { initializeMessenger } from '~/core/messengers';
+import {
+  RapActionTypes,
+  RapSwapActionParameters,
+} from '~/core/raps/references';
 import { gasStore } from '~/core/state';
 import { KeychainWallet } from '~/core/types/keychainTypes';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
@@ -100,27 +104,48 @@ export const sendTransaction = async (
   }
 };
 
-export const personalSign = async (
-  msgData: string | Bytes,
-  address: Address,
-): Promise<string> => {
-  const { type, vendor } = await getWallet(address as Address);
-  if (type === 'HardwareWalletKeychain') {
-    switch (vendor) {
-      case 'Ledger':
-        return signMessageByTypeFromLedger(msgData, address, 'personal_sign');
-      case 'Trezor':
-        return signMessageByTypeFromTrezor(msgData, address, 'personal_sign');
-      default:
-        throw new Error('Unsupported hardware wallet');
-    }
-  } else {
-    return (await signMessageByType(
-      msgData,
-      address,
-      'personal_sign',
-    )) as string;
-  }
+export const executeRap = async ({
+  rapActionParameters,
+  type,
+  callback,
+}: {
+  rapActionParameters: RapSwapActionParameters;
+  type: RapActionTypes;
+  callback: (success?: boolean, errorMessage?: string | null) => void;
+}): Promise<TransactionResponse> => {
+  const { selectedGas } = gasStore.getState();
+  // const provider = getProvider({
+  //   chainId: rapActionParameters.chainId,
+  // });
+
+  const nonce = await getNextNonce({
+    address: rapActionParameters.quote.from as Address,
+    chainId: rapActionParameters.chainId as number,
+  });
+
+  const params = {
+    rapActionParameters: { ...rapActionParameters, nonce },
+    type,
+    callback,
+    transactionGasParams: selectedGas.transactionGasParams,
+  };
+
+  // const { type: walletType, vendor } = await getWallet(
+  //   rapActionParameters.quote.from as Address,
+  // );
+  // Check the type of account it is
+  // if (walletType === 'HardwareWalletKeychain') {
+  // switch (vendor) {
+  //   case 'Ledger':
+  //     return sendTransactionFromLedger(params);
+  //   case 'Trezor':
+  //     return sendTransactionFromTrezor(params);
+  //   default:
+  //     throw new Error('Unsupported hardware wallet');
+  // }
+  // } else {
+  return walletAction('execute_rap', params) as unknown as TransactionResponse;
+  // }
 };
 
 export const signTypedData = async (

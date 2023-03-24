@@ -18,8 +18,9 @@ import {
   SignTypedDataArguments,
 } from '~/entries/background/handlers/handleWallets';
 
-import { executeRap } from '../raps/common';
+import { walletExecuteRap } from '../raps/common';
 import { RapActionTypes, RapSwapActionParameters } from '../raps/references';
+import { TransactionGasParams, TransactionLegacyGasParams } from '../types/gas';
 import { KeychainType } from '../types/keychainTypes';
 import { EthereumWalletType } from '../types/walletTypes';
 import {
@@ -231,19 +232,32 @@ export const sendTransaction = async (
   return wallet.sendTransaction(txPayload);
 };
 
-export const executeRapp = async (
-  rapActionParameters: RapSwapActionParameters,
-  type: RapActionTypes,
-  provider: Provider,
-  callback: (success?: boolean, errorMessage?: string | null) => void,
-): Promise<{ nonce: number | undefined }> => {
+export const executeRap = async ({
+  rapActionParameters,
+  type,
+  provider,
+  transactionGasParams,
+  callback,
+}: {
+  rapActionParameters: RapSwapActionParameters;
+  type: RapActionTypes;
+  provider: Provider;
+  transactionGasParams: TransactionGasParams | TransactionLegacyGasParams;
+  callback: (success?: boolean, errorMessage?: string | null) => void;
+}): Promise<{ nonce: number | undefined }> => {
   const from = rapActionParameters.quote.from as Address;
   if (typeof from === 'undefined') {
     throw new Error('Missing from address');
   }
   const signer = await keychainManager.getSigner(from);
   const wallet = signer.connect(provider);
-  return executeRap(wallet, type, rapActionParameters, callback);
+  return walletExecuteRap(
+    wallet,
+    type,
+    rapActionParameters,
+    transactionGasParams,
+    callback,
+  );
 };
 
 export const signMessage = async ({

@@ -80,13 +80,13 @@ export const estimateCrosschainSwapGasLimit = async ({
 
 export const executeCrosschainSwap = async ({
   gasLimit,
-  transactionGasParams,
+  gasParams,
   nonce,
   quote,
   wallet,
 }: {
   gasLimit: string;
-  transactionGasParams: TransactionGasParams | TransactionLegacyGasParams;
+  gasParams: TransactionGasParams | TransactionLegacyGasParams;
   nonce?: number;
   quote: CrosschainQuote;
   wallet: Signer;
@@ -96,7 +96,7 @@ export const executeCrosschainSwap = async ({
   const transactionParams = {
     gasLimit: toHex(gasLimit) || undefined,
     nonce: nonce ? toHex(String(nonce)) : undefined,
-    ...transactionGasParams,
+    ...gasParams,
   };
 
   return fillCrosschainQuote(quote, transactionParams, wallet);
@@ -144,7 +144,7 @@ export const crosschainSwap = async ({
     nonce,
     quote,
     wallet,
-    transactionGasParams: gasParams,
+    gasParams,
   };
 
   let swap;

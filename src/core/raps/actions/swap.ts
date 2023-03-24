@@ -131,13 +131,13 @@ export const executeSwap = async ({
   gasLimit,
   nonce,
   quote,
-  transactionGasParams,
+  gasParams,
   wallet,
   permit = false,
 }: {
   chainId: ChainId;
   gasLimit: string;
-  transactionGasParams: TransactionGasParams | TransactionLegacyGasParams;
+  gasParams: TransactionGasParams | TransactionLegacyGasParams;
   nonce?: number;
   quote: Quote;
   wallet: Signer;
@@ -149,7 +149,7 @@ export const executeSwap = async ({
   const transactionParams = {
     gasLimit: toHex(gasLimit) || undefined,
     nonce: nonce ? toHex(`${nonce}`) : undefined,
-    ...transactionGasParams,
+    ...gasParams,
   };
 
   // Wrap Eth
@@ -218,7 +218,7 @@ export const swap = async ({
     const nonce = baseNonce ? baseNonce + index : undefined;
 
     const swapParams = {
-      transactionGasParams: gasParams,
+      gasParams,
       chainId,
       gasLimit,
       nonce,
