@@ -194,7 +194,7 @@ export const handleWallets = () =>
               ) => void;
             };
             const provider = getProvider({
-              chainId: (payload as TransactionRequest).chainId,
+              chainId: p.rapActionParameters.chainId,
             });
             response = await executeRap({
               ...p,

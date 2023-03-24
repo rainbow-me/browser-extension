@@ -1,7 +1,10 @@
+import { QuoteError } from '@rainbow-me/swaps';
 import React, { useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { QuoteTypeMap } from '~/core/raps/references';
 import { useGasStore } from '~/core/state';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -25,7 +28,7 @@ import {
 } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { SwapFee } from '../../components/TransactionFee/TransactionFee';
-// import * as wallet from '../../handlers/wallet';
+import * as wallet from '../../handlers/wallet';
 import {
   useSwapActions,
   useSwapAssets,
@@ -43,6 +46,7 @@ import { TokenToBuyInput } from './SwapTokenInput/TokenToBuyInput';
 import { TokenToSellInput } from './SwapTokenInput/TokenToSellInput';
 
 export function Swap() {
+  const { connectedToHardhat } = useConnectedToHardhatStore();
   const [showSwapSettings, setShowSwapSettings] = useState(false);
   const [showSwapReview, setShowSwapReview] = useState(false);
 
@@ -164,13 +168,26 @@ export function Swap() {
 
   const hideSwapReview = useCallback(() => setShowSwapReview(false), []);
 
-  // const executeSwap = useCallback(async () => {
-  // await wallet.executeRap({
-  //   rapActionParameters,
-  //   type,
-  //   callback,
-  // });
-  // }, []);
+  const executeSwap = useCallback(async () => {
+    if (!assetToSell || !assetToBuy || !quote || (quote as QuoteError).error)
+      return;
+    const type =
+      assetToSell.chainId !== assetToBuy.chainId ? 'crosschainSwap' : 'swap';
+    const q = quote as QuoteTypeMap[typeof type];
+    await wallet.executeRap<typeof type>({
+      rapActionParameters: {
+        sellAmount: q.sellAmount.toString(),
+        buyAmount: q.buyAmount.toString(),
+        chainId: connectedToHardhat ? ChainId.hardhat : assetToSell.chainId,
+        assetToSell: assetToSell,
+        assetToBuy: assetToBuy,
+        quote: q,
+      },
+      type,
+      callback: () => null,
+    });
+  }, [assetToBuy, assetToSell, connectedToHardhat, quote]);
+
   return (
     <>
       <Navbar
@@ -196,6 +213,7 @@ export function Swap() {
         quote={quote}
         flashbotsEnabled={flashbotsEnabled}
         hideSwapReview={hideSwapReview}
+        executeSwap={executeSwap}
       />
       <ExplainerSheet
         show={explainerSheetParams.show}

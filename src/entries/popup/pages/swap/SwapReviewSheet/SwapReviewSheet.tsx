@@ -128,6 +128,7 @@ export type SwapReviewSheetProps = {
   quote?: Quote | CrosschainQuote | QuoteError;
   flashbotsEnabled: boolean;
   hideSwapReview: () => void;
+  executeSwap: () => void;
 };
 
 export const SwapReviewSheet = ({
@@ -137,6 +138,7 @@ export const SwapReviewSheet = ({
   quote,
   flashbotsEnabled,
   hideSwapReview,
+  executeSwap,
 }: SwapReviewSheetProps) => {
   if (!quote || !assetToBuy || !assetToSell || (quote as QuoteError)?.error)
     return null;
@@ -148,6 +150,7 @@ export const SwapReviewSheet = ({
       quote={quote as Quote | CrosschainQuote}
       flashbotsEnabled={flashbotsEnabled}
       hideSwapReview={hideSwapReview}
+      executeSwap={executeSwap}
     />
   );
 };
@@ -159,6 +162,7 @@ type SwapReviewSheetWithQuoteProps = {
   quote: Quote | CrosschainQuote;
   flashbotsEnabled: boolean;
   hideSwapReview: () => void;
+  executeSwap: () => void;
 };
 
 const SwapReviewSheetWithQuote = ({
@@ -168,6 +172,7 @@ const SwapReviewSheetWithQuote = ({
   quote,
   flashbotsEnabled,
   hideSwapReview,
+  executeSwap,
 }: SwapReviewSheetWithQuoteProps) => {
   const [showMoreDetails, setShowDetails] = useState(false);
   const { minimumReceived, swappingRoute, includedFee, exchangeRate } =
@@ -432,7 +437,7 @@ const SwapReviewSheetWithQuote = ({
           >
             <Stack alignHorizontal="center" space="8px">
               <Button
-                onClick={() => null}
+                onClick={executeSwap}
                 height="44px"
                 variant="flat"
                 color={'accent'}

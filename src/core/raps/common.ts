@@ -116,6 +116,7 @@ export const walletExecuteRap = async (
   const { actions } = rap;
   // const rapName = getRapFullName(rap.actions);
   let nonce = parameters?.nonce;
+  console.log('walletExecuteRap nonce', nonce);
 
   if (actions.length) {
     const firstAction = actions[0];
@@ -140,10 +141,13 @@ export const walletExecuteRap = async (
         });
       }
       nonce = baseNonce + actions.length - 1;
-      callback(true);
+      console.log('action execition true');
+      callback?.(true);
     } else {
       // Callback with failure state
-      callback(false, errorMessage);
+      console.log('action execition false');
+
+      callback?.(false, errorMessage);
     }
   }
   return { nonce };
