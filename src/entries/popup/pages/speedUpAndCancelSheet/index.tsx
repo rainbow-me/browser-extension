@@ -92,6 +92,7 @@ export function SpeedUpAndCancelSheet({
       chainId: cancellationResult?.chainId,
       transaction: cancelTx,
     });
+    onClose();
   };
   const handleSpeedUp = async () => {
     const speedUpResult = await sendTransaction(speedUpTransactionRequest);
