@@ -246,7 +246,6 @@ export const executeRap = async ({
   if (typeof from === 'undefined') {
     throw new Error('Missing from address');
   }
-  console.log('- executeRap provider', provider);
   const signer = await keychainManager.getSigner(from);
   const wallet = signer.connect(provider);
   return walletExecuteRap(wallet, type, rapActionParameters, callback);

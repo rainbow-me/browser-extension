@@ -171,9 +171,6 @@ export const executeSwap = async ({
     );
     // Swap
   } else {
-    console.log('---- fillQuote quote', quote);
-    console.log('---- fillQuote transactionParams', transactionParams);
-    console.log('---- fillQuote chainId', chainId);
     return fillQuote(quote, transactionParams, wallet, permit, chainId);
   }
 };
@@ -188,7 +185,6 @@ export const swap = async ({
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
 
   const { quote, permit, chainId, requiresApprove } = parameters;
-  console.log('SWAP', chainId);
   let gasParams = selectedGas.transactionGasParams;
   // if swap isn't the last action, use fast gas or custom (whatever is faster)
 
@@ -209,7 +205,6 @@ export const swap = async ({
       quote,
     });
   } catch (e) {
-    console.log('swap logger error', e);
     logger.error({
       name: 'swap: error estimateSwapGasLimit',
       message: (e as Error).message,
@@ -233,7 +228,6 @@ export const swap = async ({
 
     swap = await executeSwap(swapParams);
   } catch (e) {
-    console.log('swap logger executeSwap error', e);
     logger.error({
       name: 'swap: error executeSwap',
       message: (e as Error).message,
