@@ -1,7 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
+import { analytics } from '~/analytics';
 import { i18n } from '~/core/languages';
 import { autoLockTimerOptions } from '~/core/references/autoLockTimer';
+import { useAnalyticsDisabledStore } from '~/core/state/currentSettings/analyticsDisabled';
 import { useAutoLockTimerStore } from '~/core/state/currentSettings/autoLockTimer';
 import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAssetBalances';
 import { useHideSmallBalancesStore } from '~/core/state/currentSettings/hideSmallBalances';
@@ -17,6 +19,8 @@ import { ConfirmPasswordPrompt } from './confirmPasswordPrompt';
 
 export function Privacy() {
   const navigate = useRainbowNavigate();
+  const { analyticsDisabled, setAnalyticsDisabled } =
+    useAnalyticsDisabledStore();
   const { hideAssetBalances, setHideAssetBalances } =
     useHideAssetBalancesStore();
   const { hideSmallBalances, setHideSmallBalances } =
@@ -38,6 +42,10 @@ export function Privacy() {
     navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);
   }, [navigate]);
 
+  useEffect(() => {
+    analyticsDisabled ? analytics.disable() : analytics.enable();
+  }, [analyticsDisabled]);
+
   return (
     <Box>
       <ConfirmPasswordPrompt
@@ -47,6 +55,34 @@ export function Privacy() {
       />
       <Box paddingHorizontal="20px">
         <MenuContainer testId="settings-menu-container">
+          <Menu>
+            <MenuItem
+              leftComponent={
+                <Symbol
+                  symbol="chart.bar.xaxis"
+                  size={18}
+                  color="labelQuaternary"
+                  weight="regular"
+                />
+              }
+              rightComponent={
+                <Toggle
+                  checked={!analyticsDisabled}
+                  handleChange={setAnalyticsDisabled}
+                />
+              }
+              titleComponent={
+                <MenuItem.Title
+                  text={i18n.t('settings.privacy_and_security.analytics')}
+                />
+              }
+            />
+            <MenuItem.Description
+              text={i18n.t(
+                'settings.privacy_and_security.analytics_description',
+              )}
+            />
+          </Menu>
           <Menu>
             <MenuItem
               leftComponent={
