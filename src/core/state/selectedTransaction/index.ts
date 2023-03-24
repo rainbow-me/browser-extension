@@ -14,7 +14,6 @@ export const selectedTransactionStore = createStore<SelectedTransactionState>(
   (set, get) => ({
     getSelectedTransaction: () => get()?.selectedTransaction,
     setSelectedTransaction: (selectedTransaction?: RainbowTransaction) => {
-      console.log('setting selected transaction: ', selectedTransaction);
       set({ selectedTransaction });
     },
     selectedTransaction: null,
