@@ -13,7 +13,6 @@ import { useAccount } from 'wagmi';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { usePendingRequestStore } from '~/core/state';
-import { RainbowTransaction } from '~/core/types/transactions';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
 
@@ -22,10 +21,10 @@ import { Navbar } from '../../components/Navbar/Navbar';
 import { useAvatar } from '../../hooks/useAvatar';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import useSheet from '../../hooks/useSheet';
 import { MainLayout } from '../../layouts/MainLayout';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
-import { SheetMode, SpeedUpAndCancelSheet } from '../speedUpAndCancelSheet';
 
 import { Activity } from './Activity';
 import { Header } from './Header';
@@ -44,14 +43,9 @@ export function Home() {
   const { address } = useAccount();
   const { state } = useLocation();
   const { avatar } = useAvatar({ address });
-  const [sheet, setSheet] = useState<SheetMode>('none');
+  const { isDisplayingSheet, renderCurrentSheet } = useSheet();
 
   const navigate = useRainbowNavigate();
-
-  const [speedUpAndCancelTx, setSpeedUpAndCancelTx] =
-    useState<RainbowTransaction>();
-
-  const displayingSheet = sheet !== 'none';
 
   const { pendingRequests } = usePendingRequestStore();
 
@@ -96,48 +90,6 @@ export function Home() {
     analytics.track(event.walletViewed);
   }, []);
 
-  const onSheetSelected = useCallback(
-    ({
-      sheet,
-      transaction,
-    }: {
-      sheet: SheetMode;
-      transaction: RainbowTransaction;
-    }) => {
-      setSheet(sheet);
-      setSpeedUpAndCancelTx(transaction);
-    },
-    [],
-  );
-
-  const onKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (speedUpAndCancelTx?.pending) {
-        if (e.key === 'Backspace') {
-          onSheetSelected({
-            sheet: 'cancel',
-            transaction: speedUpAndCancelTx,
-          });
-        } else if (e.key === 's') {
-          onSheetSelected({
-            sheet: 'speedUp',
-            transaction: speedUpAndCancelTx,
-          });
-        }
-      }
-    },
-    [onSheetSelected, speedUpAndCancelTx],
-  );
-
-  useEffect(() => {
-    if (speedUpAndCancelTx?.pending) {
-      document.addEventListener('keydown', onKeyDown);
-    } else {
-      document.removeEventListener('keydown', onKeyDown);
-    }
-    return () => document.removeEventListener('keydown', onKeyDown);
-  }, [onKeyDown, speedUpAndCancelTx]);
-
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>
       {({ className, style }) => (
@@ -149,7 +101,7 @@ export function Home() {
               position: 'relative',
               overscrollBehavior: 'none',
               height: 'auto',
-              ...(displayingSheet ? { overflow: 'hidden' } : {}),
+              ...(isDisplayingSheet ? { overflow: 'hidden' } : {}),
             }}
           >
             <TopNav />
@@ -158,25 +110,10 @@ export function Home() {
             <Separator color="separatorTertiary" strokeWeight="1px" />
             <Content scrollSpring={scrollYTransform} shouldSpring={scrollAtTop}>
               {activeTab === 'tokens' && <Tokens />}
-              {activeTab === 'activity' && (
-                <Activity
-                  currentSheet={sheet}
-                  onSheetSelected={onSheetSelected}
-                  setSelectedTransaction={(tx?: RainbowTransaction) =>
-                    setSpeedUpAndCancelTx(tx)
-                  }
-                />
-              )}
+              {activeTab === 'activity' && <Activity />}
             </Content>
           </MainLayout>
-          {sheet !== 'none' && (
-            <SpeedUpAndCancelSheet
-              cancel={sheet === 'cancel'}
-              onClose={() => setSheet('none')}
-              show={true}
-              transaction={speedUpAndCancelTx}
-            />
-          )}
+          {renderCurrentSheet()}
         </>
       )}
     </AccentColorProvider>

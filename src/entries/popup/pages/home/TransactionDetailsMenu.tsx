@@ -8,6 +8,9 @@ import React, {
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
+import { useCurrentSheetStore } from '~/core/state/currentSheet';
+import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
@@ -24,27 +27,16 @@ import {
   ContextMenuTrigger,
 } from '../../components/ContextMenu/ContextMenu';
 import { useToast } from '../../hooks/useToast';
-import { SheetMode } from '../speedUpAndCancelSheet';
 
 export function TransactionDetailsMenu({
   children,
-  currentSheet,
-  onRowSelection,
-  setSelectedTransaction,
   transaction,
 }: {
   children: ReactNode;
-  currentSheet: SheetMode;
-  onRowSelection: ({
-    sheet,
-    transaction,
-  }: {
-    sheet: SheetMode;
-    transaction: RainbowTransaction;
-  }) => void;
-  setSelectedTransaction: (tx?: RainbowTransaction) => void;
   transaction: RainbowTransaction;
 }) {
+  const { sheet, setCurrentSheet } = useCurrentSheetStore();
+  const { setSelectedTransaction } = useSelectedTransactionStore();
   // need to control this manually so that menu closes when sheet appears
   const [closed, setClosed] = useState(false);
   const onOpenChange = () => setClosed(false);
@@ -88,12 +80,12 @@ export function TransactionDetailsMenu({
           break;
         case 'speedUp':
         case 'cancel':
-          onRowSelection({ sheet: value, transaction });
+          setCurrentSheet(value);
           setClosed(true);
           break;
       }
     },
-    [handleCopy, onRowSelection, transaction, viewOnExplorer],
+    [handleCopy, setCurrentSheet, viewOnExplorer],
   );
 
   const onTrigger = useCallback(
@@ -102,10 +94,10 @@ export function TransactionDetailsMenu({
   );
 
   useEffect(() => {
-    if (currentSheet !== 'none') {
+    if (sheet !== 'none') {
       setClosed(true);
     }
-  }, [currentSheet]);
+  }, [sheet]);
 
   return (
     <MenuWrapper closed={closed} onOpenChange={onOpenChange}>
@@ -137,7 +129,7 @@ export function TransactionDetailsMenu({
                     boxShadow="1px"
                   >
                     <Text size="12pt" color="labelSecondary" weight="semibold">
-                      {'S'}
+                      {shortcuts.activity.SPEED_UP_TRANSACTION.display}
                     </Text>
                   </Box>
                 </MenuRow>
@@ -159,7 +151,7 @@ export function TransactionDetailsMenu({
                     boxShadow="1px"
                   >
                     <Text size="12pt" color="labelSecondary" weight="semibold">
-                      {'Del'}
+                      {shortcuts.activity.CANCEL_TRANSACTION.display}
                     </Text>
                   </Box>
                 </MenuRow>

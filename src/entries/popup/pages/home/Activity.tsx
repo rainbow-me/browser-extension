@@ -33,33 +33,17 @@ import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 
 import { ActivitySkeleton } from '../../components/ActivitySkeleton/ActivitySkeleton';
 import { Spinner } from '../../components/Spinner/Spinner';
+import { useActivityShortcuts } from '../../hooks/useActivityShortcuts';
 import { useAllTransactions } from '../../hooks/useAllTransactions';
-import { SheetMode } from '../speedUpAndCancelSheet';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { TransactionDetailsMenu } from './TransactionDetailsMenu';
-
-type ActivityProps = {
-  currentSheet: SheetMode;
-  onSheetSelected: ({
-    sheet,
-    transaction,
-  }: {
-    sheet: SheetMode;
-    transaction: RainbowTransaction;
-  }) => void;
-  setSelectedTransaction: (tx?: RainbowTransaction) => void;
-};
 
 const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 150;
 const ACTIVITY_DEFAULT_LENGTH = 100;
 
-export function Activity({
-  currentSheet,
-  onSheetSelected,
-  setSelectedTransaction,
-}: ActivityProps) {
+export function Activity() {
   const { address } = useAccount();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { allTransactionsByDate, isInitialLoading } = useAllTransactions({
@@ -93,15 +77,7 @@ export function Activity({
     };
   }, [scrollEndListener]);
 
-  const onTransactionSelected = ({
-    sheet,
-    transaction,
-  }: {
-    sheet: SheetMode;
-    transaction: RainbowTransaction;
-  }) => {
-    onSheetSelected({ sheet, transaction });
-  };
+  useActivityShortcuts();
 
   if (isInitialLoading) {
     return <ActivitySkeleton />;
@@ -185,16 +161,9 @@ export function Activity({
                     </Box>
                   </Inset>
                 ) : (
-                  <Box onClick={() => console.log('bar')}>
-                    <TransactionDetailsMenu
-                      currentSheet={currentSheet}
-                      onRowSelection={onTransactionSelected}
-                      setSelectedTransaction={setSelectedTransaction}
-                      transaction={rowData}
-                    >
-                      <ActivityRow transaction={rowData} />
-                    </TransactionDetailsMenu>
-                  </Box>
+                  <TransactionDetailsMenu transaction={rowData}>
+                    <ActivityRow transaction={rowData} />
+                  </TransactionDetailsMenu>
                 )}
               </Box>
             );
