@@ -9,5 +9,4 @@ export const selectionStyle = style({
       color: 'black',
     },
   },
-  userSelect: 'text',
 });
