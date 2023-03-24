@@ -114,5 +114,4 @@ export interface ActionProps<T extends RapActionTypes> {
 export interface WalletExecuteRapProps {
   rapActionParameters: RapSwapActionParameters<'swap' | 'crosschainSwap'>;
   type: RapTypes;
-  callback: (success?: boolean, errorMessage?: string | null) => void;
 }

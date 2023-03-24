@@ -108,11 +108,9 @@ export const sendTransaction = async (
 export async function executeRap<T extends RapTypes>({
   rapActionParameters,
   type,
-  callback,
 }: {
   rapActionParameters: RapSwapActionParameters<T>;
   type: RapTypes;
-  callback: (success?: boolean, errorMessage?: string | null) => void;
 }): Promise<TransactionResponse> {
   const nonce = await getNextNonce({
     address: rapActionParameters.quote.from as Address,
@@ -121,7 +119,6 @@ export async function executeRap<T extends RapTypes>({
   const params: WalletExecuteRapProps = {
     rapActionParameters: { ...rapActionParameters, nonce },
     type,
-    callback,
   };
   const { type: walletType, vendor } = await getWallet(
     rapActionParameters.quote.from as Address,

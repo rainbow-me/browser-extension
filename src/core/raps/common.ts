@@ -109,17 +109,16 @@ export const walletExecuteRap = async (
   wallet: Signer,
   type: RapTypes,
   parameters: RapSwapActionParameters<'swap' | 'crosschainSwap'>,
-  callback: (success?: boolean, errorMessage?: string | null) => void,
-): Promise<{ nonce: number | undefined }> => {
+): Promise<{ nonce: number | undefined; errorMessage: string | null }> => {
   const rap: Rap = await createSwapRapByType(type, parameters);
 
   const { actions } = rap;
   // const rapName = getRapFullName(rap.actions);
   let nonce = parameters?.nonce;
-
+  let errorMessage = null;
   if (actions.length) {
     const firstAction = actions[0];
-    const { baseNonce, errorMessage } = await executeAction({
+    const { baseNonce, errorMessage: error } = await executeAction({
       action: firstAction,
       wallet,
       rap,
@@ -140,14 +139,9 @@ export const walletExecuteRap = async (
         });
       }
       nonce = baseNonce + actions.length - 1;
-      console.log('action execition true');
-      callback?.(true);
     } else {
-      // Callback with failure state
-      console.log('action execition false');
-
-      callback?.(false, errorMessage);
+      errorMessage = error;
     }
   }
-  return { nonce };
+  return { nonce, errorMessage };
 };
