@@ -36,7 +36,7 @@ import {
   wipeVault,
 } from '~/core/keychain';
 import { initializeMessenger } from '~/core/messengers';
-import { RapSwapActionParameters, RapTypes } from '~/core/raps/references';
+import { WalletExecuteRapProps } from '~/core/raps/references';
 import { WalletAction } from '~/core/types/walletActions';
 import { EthereumWalletSeed } from '~/core/utils/ethereum';
 
@@ -183,16 +183,7 @@ export const handleWallets = () =>
             break;
           }
           case 'execute_rap': {
-            const p = payload as {
-              rapActionParameters: RapSwapActionParameters<
-                'swap' | 'crosschainSwap'
-              >;
-              type: RapTypes;
-              callback: (
-                success?: boolean,
-                errorMessage?: string | null,
-              ) => void;
-            };
+            const p = payload as WalletExecuteRapProps;
             const provider = getProvider({
               chainId: p.rapActionParameters.chainId,
             });

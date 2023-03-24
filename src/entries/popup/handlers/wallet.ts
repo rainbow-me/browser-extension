@@ -13,7 +13,11 @@ import { Address } from 'wagmi';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';
 import { initializeMessenger } from '~/core/messengers';
-import { RapSwapActionParameters, RapTypes } from '~/core/raps/references';
+import {
+  RapSwapActionParameters,
+  RapTypes,
+  WalletExecuteRapProps,
+} from '~/core/raps/references';
 import { gasStore } from '~/core/state';
 import { KeychainWallet } from '~/core/types/keychainTypes';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
@@ -110,16 +114,14 @@ export async function executeRap<T extends RapTypes>({
   type: RapTypes;
   callback: (success?: boolean, errorMessage?: string | null) => void;
 }): Promise<TransactionResponse> {
-  const { selectedGas } = gasStore.getState();
   const nonce = await getNextNonce({
     address: rapActionParameters.quote.from as Address,
     chainId: rapActionParameters.chainId as number,
   });
-  const params = {
+  const params: WalletExecuteRapProps = {
     rapActionParameters: { ...rapActionParameters, nonce },
     type,
     callback,
-    transactionGasParams: selectedGas.transactionGasParams,
   };
   const { type: walletType, vendor } = await getWallet(
     rapActionParameters.quote.from as Address,

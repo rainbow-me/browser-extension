@@ -161,7 +161,7 @@ export const crosschainSwap = async ({
   }
 
   const transaction = {
-    amount: '0',
+    amount: parameters.quote.value?.toString(),
     asset: parameters.assetToSell,
     data: parameters.quote.data,
     value: parameters.quote.value,

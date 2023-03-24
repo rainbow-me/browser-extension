@@ -116,7 +116,6 @@ export const walletExecuteRap = async (
   const { actions } = rap;
   // const rapName = getRapFullName(rap.actions);
   let nonce = parameters?.nonce;
-  console.log('walletExecuteRap nonce', nonce);
 
   if (actions.length) {
     const firstAction = actions[0];
