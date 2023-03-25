@@ -8,7 +8,7 @@ import {
 } from '@rainbow-me/swaps';
 import { Address } from 'wagmi';
 
-import { ETH_ADDRESS, gasUnits } from '../references';
+import { ETH_ADDRESS } from '../references';
 import { isNativeAsset } from '../utils/chains';
 import { add } from '../utils/numbers';
 import { isLowerCaseMatch } from '../utils/strings';
@@ -28,17 +28,13 @@ import {
 export const estimateUnlockAndSwap = async (
   swapParameters: RapSwapActionParameters,
 ) => {
-  const { inputAmount, tradeDetails, chainId, inputCurrency } = swapParameters;
-
-  if (!inputAmount) {
-    return gasUnits.basic_swap[chainId];
-  }
+  const { sellAmount, quote, chainId, assetToSell } = swapParameters;
 
   const {
     from: accountAddress,
     sellTokenAddress,
     buyTokenAddress,
-  } = tradeDetails as {
+  } = quote as {
     from: Address;
     sellTokenAddress: Address;
     buyTokenAddress: Address;
@@ -59,8 +55,8 @@ export const estimateUnlockAndSwap = async (
   if (!isNativeAssetUnwrapping && !nativeAsset) {
     swapAssetNeedsUnlocking = await assetNeedsUnlocking({
       owner: accountAddress as Address,
-      amount: inputAmount,
-      assetToUnlock: inputCurrency,
+      amount: sellAmount,
+      assetToUnlock: assetToSell,
       spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
       chainId,
     });
@@ -79,14 +75,16 @@ export const estimateUnlockAndSwap = async (
   }
 
   const swapGasLimit = await estimateSwapGasLimit({
-    chainId: Number(chainId),
+    chainId,
     requiresApprove: swapAssetNeedsUnlocking,
-    tradeDetails,
+    quote,
   });
 
-  gasLimits = gasLimits.concat(swapGasLimit);
+  const gasLimit = gasLimits
+    .concat(swapGasLimit)
+    .reduce((acc, limit) => add(acc, limit), '0');
 
-  return gasLimits.reduce((acc, limit) => add(acc, limit), '0');
+  return gasLimit.toString();
 };
 
 export const createUnlockAndSwapRap = async (
@@ -94,13 +92,13 @@ export const createUnlockAndSwapRap = async (
 ) => {
   let actions: RapAction[] = [];
 
-  const { inputAmount, tradeDetails, chainId, inputCurrency } = swapParameters;
+  const { sellAmount, quote, chainId, assetToSell } = swapParameters;
 
   const {
     from: accountAddress,
     sellTokenAddress,
     buyTokenAddress,
-  } = tradeDetails as {
+  } = quote as {
     from: Address;
     sellTokenAddress: Address;
     buyTokenAddress: Address;
@@ -121,8 +119,8 @@ export const createUnlockAndSwapRap = async (
   if (!isNativeAssetUnwrapping && !nativeAsset) {
     swapAssetNeedsUnlocking = await assetNeedsUnlocking({
       owner: accountAddress,
-      amount: inputAmount as string,
-      assetToUnlock: inputCurrency,
+      amount: sellAmount as string,
+      assetToUnlock: assetToSell,
       spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
       chainId,
     });
@@ -131,14 +129,14 @@ export const createUnlockAndSwapRap = async (
     !nativeAsset &&
     chainId === ChainId.mainnet &&
     ALLOWS_PERMIT[
-      inputCurrency.address?.toLowerCase() as keyof PermitSupportedTokenList
+      assetToSell.address?.toLowerCase() as keyof PermitSupportedTokenList
     ];
 
   if (swapAssetNeedsUnlocking && !allowsPermit) {
     const unlock = createNewAction('unlock', {
       fromAddress: accountAddress,
-      amount: inputAmount,
-      assetToUnlock: inputCurrency,
+      amount: sellAmount,
+      assetToUnlock: assetToSell,
       chainId,
       contractAddress: RAINBOW_ROUTER_CONTRACT_ADDRESS,
     } as RapUnlockActionParameters);
@@ -148,11 +146,12 @@ export const createUnlockAndSwapRap = async (
   // create a swap rap
   const swap = createNewAction('swap', {
     chainId,
-    inputAmount,
+    sellAmount,
     permit: swapAssetNeedsUnlocking && allowsPermit,
     requiresApprove: swapAssetNeedsUnlocking && !allowsPermit,
-    tradeDetails,
+    quote,
     meta: swapParameters.meta,
+    assetToSell,
   } as RapSwapActionParameters);
   actions = actions.concat(swap);
 

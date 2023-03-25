@@ -59,11 +59,11 @@ beforeAll(async () => {
 
 test('[rap/unlockAndCrosschainSwap] :: estimate unlock and crosschain swap rap without unlock', async () => {
   const gasLimit = await estimateUnlockAndCrosschainSwap({
-    tradeDetails: doesntNeedUnlockQuote as CrosschainQuote,
+    quote: doesntNeedUnlockQuote as CrosschainQuote,
     chainId: 1,
-    inputCurrency: ETH_MAINNET_ASSET,
-    inputAmount: '1000000000000000000',
-    outputCurrency: USDC_ARBITRUM_ASSET,
+    assetToSell: ETH_MAINNET_ASSET,
+    sellAmount: '1000000000000000000',
+    assetToBuy: USDC_ARBITRUM_ASSET,
   });
   swapGasLimit = Number(gasLimit);
   expect(swapGasLimit).toBeGreaterThan(0);
@@ -71,11 +71,11 @@ test('[rap/unlockAndCrosschainSwap] :: estimate unlock and crosschain swap rap w
 
 test('[rap/unlockAndCrosschainSwap] :: estimate unlock and crosschain swap rap with unlock', async () => {
   const gasLimit = await estimateUnlockAndCrosschainSwap({
-    tradeDetails: needsUnlockQuote as CrosschainQuote,
+    quote: needsUnlockQuote as CrosschainQuote,
     chainId: 1,
-    inputCurrency: ENS_MAINNET_ASSET,
-    inputAmount: '1000000000000000000',
-    outputCurrency: USDC_ARBITRUM_ASSET,
+    assetToSell: ENS_MAINNET_ASSET,
+    sellAmount: '1000000000000000000',
+    assetToBuy: USDC_ARBITRUM_ASSET,
   });
   expect(Number(gasLimit)).toBeGreaterThan(0);
   expect(Number(gasLimit)).toBeGreaterThan(swapGasLimit);
@@ -83,20 +83,22 @@ test('[rap/unlockAndCrosschainSwap] :: estimate unlock and crosschain swap rap w
 
 test('[rap/unlockAndCrosschainSwap] :: create unlock and crosschain swap rap without unlock', async () => {
   const rap = await createUnlockAndCrosschainSwapRap({
-    tradeDetails: doesntNeedUnlockQuote as CrosschainQuote,
+    quote: doesntNeedUnlockQuote as CrosschainQuote,
     chainId: 1,
-    inputCurrency: ETH_MAINNET_ASSET,
-    outputCurrency: USDC_ARBITRUM_ASSET,
+    sellAmount: '1000000000000000000',
+    assetToSell: ETH_MAINNET_ASSET,
+    assetToBuy: USDC_ARBITRUM_ASSET,
   });
   expect(rap.actions.length).toBe(1);
 });
 
 test('[rap/unlockAndCrosschainSwap] :: create unlock and crosschain swap rap with unlock', async () => {
   const rap = await createUnlockAndCrosschainSwapRap({
-    tradeDetails: needsUnlockQuote as CrosschainQuote,
+    quote: needsUnlockQuote as CrosschainQuote,
     chainId: 1,
-    inputCurrency: ENS_MAINNET_ASSET,
-    outputCurrency: USDC_ARBITRUM_ASSET,
+    sellAmount: '1000000000000000000',
+    assetToSell: ENS_MAINNET_ASSET,
+    assetToBuy: USDC_ARBITRUM_ASSET,
   });
   expect(rap.actions.length).toBe(2);
 });
