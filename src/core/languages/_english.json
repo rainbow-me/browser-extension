@@ -243,9 +243,15 @@
       "nothing_found_description": "Some tokens don’t have enough liquidity to perform a successful swap.",
       "nothing_found_description_l2": "Some tokens don’t have enough layer 2 liquidity to perform a successful swap."
     },
-    "long_wait": {
-      "title": "Long wait",
-      "description": "Up to %{time} to swap"
+    "warnings": {
+      "long_wait": {
+        "title": "Long wait",
+        "description": "Up to %{time} to swap"
+      },
+      "price_impact": {
+        "title": "Small market",
+        "description": "Losing %{impactAmount}"
+      }
     },
     "aggregators": {
       "rainbow": "Auto"

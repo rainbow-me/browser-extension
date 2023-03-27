@@ -1,23 +1,33 @@
-import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
+import { CrosschainQuote, Quote, SwapType } from '@rainbow-me/swaps';
 import { useMemo } from 'react';
 
 import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
+import { ChainId } from '~/core/types/chains';
 import {
+  convertAmountToNativeDisplay,
   convertRawAmountToNativeDisplay,
   divide,
   greaterThanOrEqualTo,
   subtract,
 } from '~/core/utils/numbers';
 
+import { useNativeAssetForNetwork } from '../useNativeAssetForNetwork';
+
 const highPriceImpactThreshold = 0.05;
 const severePriceImpactThreshold = 0.1;
 
-export enum SWAP_PRICE_IMPACT {
+export enum SwapPriceImpactType {
   none = 'none',
   high = 'high',
   severe = 'severe',
 }
+
+export interface SwapPriceImpact {
+  type: SwapPriceImpactType;
+  impactDisplay: string;
+}
+
 export const useSwapPriceImpact = ({
   assetToSell,
   assetToBuy,
@@ -28,57 +38,93 @@ export const useSwapPriceImpact = ({
   quote?: Quote | CrosschainQuote;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
+  const nativeAsset = useNativeAssetForNetwork({
+    chainId: assetToSell?.chainId || ChainId.mainnet,
+  });
 
-  //   const isNormalQuote = useMemo(
-  //     () => quote?.swapType === SwapType.normal,
-  //     [quote?.swapType],
-  //   );
+  const isNormalQuote = useMemo(
+    () => quote?.swapType === SwapType.normal,
+    [quote?.swapType],
+  );
 
-  const sellAmount = useMemo(() => {
-    // if (isNormalQuote) return quote?.sellAmountInEth;
-    return convertRawAmountToNativeDisplay(
-      quote?.sellAmount?.toString() || '',
-      assetToSell?.decimals || 18,
-      assetToSell?.price?.value || '0',
-      currentCurrency,
-    ).amount;
+  const sellNativeAmount = useMemo(() => {
+    if (isNormalQuote)
+      return convertRawAmountToNativeDisplay(
+        quote?.sellAmount.toString() || '',
+        nativeAsset?.decimals || 18,
+        nativeAsset?.price?.value || '0',
+        currentCurrency,
+      ).amount;
+    else
+      return convertRawAmountToNativeDisplay(
+        quote?.sellAmount?.toString() || '',
+        assetToSell?.decimals || 18,
+        assetToSell?.price?.value || '0',
+        currentCurrency,
+      ).amount;
   }, [
     assetToSell?.decimals,
     assetToSell?.price?.value,
     currentCurrency,
-    // isNormalQuote,
+    isNormalQuote,
+    nativeAsset?.decimals,
+    nativeAsset?.price?.value,
     quote?.sellAmount,
-    // quote?.sellAmountInEth,
   ]);
 
-  const buyAmount = useMemo(() => {
-    // if (isNormalQuote) return quote?.buyAmountInEth;
-    return convertRawAmountToNativeDisplay(
-      quote?.buyAmount?.toString() || '',
-      assetToBuy?.decimals || 18,
-      assetToBuy?.price?.value || '0',
-      currentCurrency,
-    ).amount;
+  const buyNativeAmount = useMemo(() => {
+    if (isNormalQuote)
+      return convertRawAmountToNativeDisplay(
+        quote?.buyAmount.toString() || '',
+        nativeAsset?.decimals || 18,
+        nativeAsset?.price?.value || '0',
+        currentCurrency,
+      ).amount;
+    else
+      return convertRawAmountToNativeDisplay(
+        quote?.buyAmount?.toString() || '',
+        assetToBuy?.decimals || 18,
+        assetToBuy?.price?.value || '0',
+        currentCurrency,
+      ).amount;
   }, [
     assetToBuy?.decimals,
     assetToBuy?.price?.value,
     currentCurrency,
-    // isNormalQuote,
+    isNormalQuote,
+    nativeAsset?.decimals,
+    nativeAsset?.price?.value,
     quote?.buyAmount,
-    // quote?.buyAmountInEth,
   ]);
 
-  const priceImpact = divide(subtract(sellAmount, buyAmount), sellAmount);
+  const nativeAmountImpact = subtract(sellNativeAmount, buyNativeAmount);
+  const priceImpact = divide(nativeAmountImpact, sellNativeAmount);
+
+  const impactDisplay = convertAmountToNativeDisplay(
+    nativeAmountImpact,
+    currentCurrency,
+  );
 
   if (greaterThanOrEqualTo(priceImpact, highPriceImpactThreshold)) {
     return {
-      priceImpact: SWAP_PRICE_IMPACT.high,
+      priceImpact: {
+        type: SwapPriceImpactType.high,
+        impactDisplay,
+      },
     };
   } else if (greaterThanOrEqualTo(priceImpact, severePriceImpactThreshold)) {
     return {
-      priceImpact: SWAP_PRICE_IMPACT.severe,
+      priceImpact: {
+        type: SwapPriceImpactType.severe,
+        impactDisplay,
+      },
     };
   } else {
-    return { priceImpact: SWAP_PRICE_IMPACT.none };
+    return {
+      priceImpact: {
+        type: SwapPriceImpactType.none,
+        impactDisplay,
+      },
+    };
   }
 };
