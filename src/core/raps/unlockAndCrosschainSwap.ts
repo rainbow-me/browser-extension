@@ -8,7 +8,7 @@ import {
 } from '@rainbow-me/swaps';
 import { Address } from 'wagmi';
 
-import { ETH_ADDRESS, gasUnits } from '../references';
+import { ETH_ADDRESS } from '../references';
 import { isNativeAsset } from '../utils/chains';
 import { add } from '../utils/numbers';
 import { isLowerCaseMatch } from '../utils/strings';
@@ -25,18 +25,13 @@ import {
 export const estimateUnlockAndCrosschainSwap = async (
   swapParameters: RapCrosschainSwapActionParameters,
 ) => {
-  const { inputAmount, tradeDetails, chainId, inputCurrency, outputCurrency } =
-    swapParameters;
-
-  if (!inputCurrency || !outputCurrency || !inputAmount) {
-    return gasUnits.basic_swap[chainId];
-  }
+  const { sellAmount, quote, chainId, assetToSell } = swapParameters;
 
   const {
     from: accountAddress,
     sellTokenAddress,
     buyTokenAddress,
-  } = tradeDetails as {
+  } = quote as {
     from: Address;
     sellTokenAddress: Address;
     buyTokenAddress: Address;
@@ -53,13 +48,13 @@ export const estimateUnlockAndCrosschainSwap = async (
   // Aggregators represent native asset as 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
   const nativeAsset =
     isLowerCaseMatch(ETH_ADDRESS_AGGREGATOR, sellTokenAddress) ||
-    isNativeAsset(inputCurrency.address, chainId);
+    isNativeAsset(assetToSell.address, chainId);
 
   if (!isNativeAssetUnwrapping && !nativeAsset) {
     swapAssetNeedsUnlocking = await assetNeedsUnlocking({
       owner: accountAddress,
-      amount: inputAmount,
-      assetToUnlock: inputCurrency,
+      amount: sellAmount,
+      assetToUnlock: assetToSell,
       spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
       chainId,
     });
@@ -78,27 +73,29 @@ export const estimateUnlockAndCrosschainSwap = async (
   }
 
   const swapGasLimit = await estimateCrosschainSwapGasLimit({
-    chainId: Number(chainId),
+    chainId,
     requiresApprove: swapAssetNeedsUnlocking,
-    tradeDetails,
+    quote,
   });
 
-  gasLimits = gasLimits.concat(swapGasLimit);
+  const gasLimit = gasLimits
+    .concat(swapGasLimit)
+    .reduce((acc, limit) => add(acc, limit), '0');
 
-  return gasLimits.reduce((acc, limit) => add(acc, limit), '0');
+  return gasLimit.toString();
 };
 
 export const createUnlockAndCrosschainSwapRap = async (
   swapParameters: RapCrosschainSwapActionParameters,
 ) => {
   let actions: RapAction[] = [];
-  const { inputAmount, tradeDetails, chainId, inputCurrency } = swapParameters;
+  const { sellAmount, quote, chainId, assetToSell } = swapParameters;
 
   const {
     from: accountAddress,
     sellTokenAddress,
     buyTokenAddress,
-  } = tradeDetails as {
+  } = quote as {
     from: Address;
     sellTokenAddress: Address;
     buyTokenAddress: Address;
@@ -112,15 +109,15 @@ export const createUnlockAndCrosschainSwapRap = async (
   // Aggregators represent native asset as 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
   const nativeAsset =
     isLowerCaseMatch(ETH_ADDRESS_AGGREGATOR, sellTokenAddress) ||
-    isNativeAsset(inputCurrency?.address, chainId);
+    assetToSell?.isNativeAsset;
 
   let swapAssetNeedsUnlocking = false;
 
   if (!isNativeAssetUnwrapping && !nativeAsset) {
     swapAssetNeedsUnlocking = await assetNeedsUnlocking({
       owner: accountAddress,
-      amount: inputAmount as string,
-      assetToUnlock: inputCurrency,
+      amount: sellAmount,
+      assetToUnlock: assetToSell,
       spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
       chainId,
     });
@@ -129,16 +126,16 @@ export const createUnlockAndCrosschainSwapRap = async (
     !nativeAsset &&
     chainId === ChainId.mainnet &&
     ALLOWS_PERMIT[
-      inputCurrency.address?.toLowerCase() as keyof PermitSupportedTokenList
+      assetToSell.address?.toLowerCase() as keyof PermitSupportedTokenList
     ];
 
   if (swapAssetNeedsUnlocking && !allowsPermit) {
     const unlock = createNewAction('unlock', {
       fromAddress: accountAddress,
-      amount: inputAmount,
-      assetToUnlock: inputCurrency,
+      amount: sellAmount,
+      assetToUnlock: assetToSell,
       chainId,
-      contractAddress: tradeDetails.to,
+      contractAddress: quote.to,
     } as RapUnlockActionParameters);
     actions = actions.concat(unlock);
   }
@@ -146,11 +143,12 @@ export const createUnlockAndCrosschainSwapRap = async (
   // create a swap rap
   const swap = createNewAction('crosschainSwap', {
     chainId,
-    inputAmount,
     permit: swapAssetNeedsUnlocking && allowsPermit,
     requiresApprove: swapAssetNeedsUnlocking && !allowsPermit,
-    tradeDetails,
+    quote,
     meta: swapParameters.meta,
+    assetToSell,
+    sellAmount,
   } as RapCrosschainSwapActionParameters);
   actions = actions.concat(swap);
 

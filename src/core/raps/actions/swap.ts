@@ -38,18 +38,18 @@ const WRAP_GAS_PADDING = 1.002;
 export const estimateSwapGasLimit = async ({
   chainId,
   requiresApprove,
-  tradeDetails,
+  quote,
 }: {
   chainId: Chain['id'];
   requiresApprove?: boolean;
-  tradeDetails: Quote;
+  quote: Quote;
 }): Promise<string> => {
   const provider = getProvider({ chainId });
-  if (!provider || !tradeDetails) {
+  if (!provider || !quote) {
     return gasUnits.basic_swap[chainId];
   }
 
-  const { sellTokenAddress, buyTokenAddress } = tradeDetails;
+  const { sellTokenAddress, buyTokenAddress } = quote;
   const isWrapNativeAsset =
     isLowerCaseMatch(sellTokenAddress, ETH_ADDRESS_AGGREGATORS) &&
     isLowerCaseMatch(buyTokenAddress, WRAPPED_ASSET[chainId]);
@@ -66,8 +66,8 @@ export const estimateSwapGasLimit = async ({
     try {
       const gasLimit = await estimateGasWithPadding({
         transactionRequest: {
-          from: tradeDetails.from,
-          value: isWrapNativeAsset ? tradeDetails.buyAmount : '0',
+          from: quote.from,
+          value: isWrapNativeAsset ? quote.buyAmount : '0',
         },
         contractCallEstimateGas: getWrappedAssetMethod(
           isWrapNativeAsset ? 'deposit' : 'withdraw',
@@ -79,19 +79,17 @@ export const estimateSwapGasLimit = async ({
       });
 
       return (
-        gasLimit ||
-        String(tradeDetails?.defaultGasLimit) ||
-        String(default_estimate)
+        gasLimit || String(quote?.defaultGasLimit) || String(default_estimate)
       );
     } catch (e) {
-      return String(tradeDetails?.defaultGasLimit) || String(default_estimate);
+      return String(quote?.defaultGasLimit) || String(default_estimate);
     }
     // Swap
   } else {
     try {
       const { params, method, methodArgs } = getQuoteExecutionDetails(
-        tradeDetails,
-        { from: tradeDetails.from },
+        quote,
+        { from: quote.from },
         provider as StaticJsonRpcProvider,
       );
 
@@ -102,7 +100,7 @@ export const estimateSwapGasLimit = async ({
               await estimateSwapGasLimitWithFakeApproval(
                 chainId,
                 provider,
-                tradeDetails,
+                quote,
               );
             return gasLimitWithFakeApproval;
           } catch (e) {
@@ -110,7 +108,7 @@ export const estimateSwapGasLimit = async ({
           }
         }
 
-        return getDefaultGasLimitForTrade(tradeDetails, chainId);
+        return getDefaultGasLimitForTrade(quote, chainId);
       }
 
       const gasLimit = await estimateGasWithPadding({
@@ -121,9 +119,9 @@ export const estimateSwapGasLimit = async ({
         paddingFactor: SWAP_GAS_PADDING,
       });
 
-      return gasLimit || getDefaultGasLimitForTrade(tradeDetails, chainId);
+      return gasLimit || getDefaultGasLimitForTrade(quote, chainId);
     } catch (error) {
-      return getDefaultGasLimitForTrade(tradeDetails, chainId);
+      return getDefaultGasLimitForTrade(quote, chainId);
     }
   }
 };
@@ -132,7 +130,7 @@ export const executeSwap = async ({
   chainId,
   gasLimit,
   nonce,
-  tradeDetails,
+  quote,
   transactionGasParams,
   wallet,
   permit = false,
@@ -141,13 +139,13 @@ export const executeSwap = async ({
   gasLimit: string;
   transactionGasParams: TransactionGasParams | TransactionLegacyGasParams;
   nonce?: number;
-  tradeDetails: Quote;
+  quote: Quote;
   wallet: Wallet;
   permit: boolean;
 }) => {
-  if (!wallet || !tradeDetails) return null;
+  if (!wallet || !quote) return null;
 
-  const { sellTokenAddress, buyTokenAddress } = tradeDetails;
+  const { sellTokenAddress, buyTokenAddress } = quote;
   const transactionParams = {
     gasLimit: toHex(gasLimit) || undefined,
     nonce: nonce ? toHex(`${nonce}`) : undefined,
@@ -159,26 +157,21 @@ export const executeSwap = async ({
     sellTokenAddress === ETH_ADDRESS &&
     buyTokenAddress === WRAPPED_ASSET[chainId]
   ) {
-    return wrapNativeAsset(
-      tradeDetails.buyAmount,
-      wallet,
-      chainId,
-      transactionParams,
-    );
+    return wrapNativeAsset(quote.buyAmount, wallet, chainId, transactionParams);
     // Unwrap Weth
   } else if (
     sellTokenAddress === WRAPPED_ASSET[chainId] &&
     buyTokenAddress === ETH_ADDRESS
   ) {
     return unwrapNativeAsset(
-      tradeDetails.sellAmount,
+      quote.sellAmount,
       wallet,
       chainId,
       transactionParams,
     );
     // Swap
   } else {
-    return fillQuote(tradeDetails, transactionParams, wallet, permit, chainId);
+    return fillQuote(quote, transactionParams, wallet, permit, chainId);
   }
 };
 
@@ -197,7 +190,7 @@ export const swap = async ({
 }): Promise<number | undefined> => {
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
 
-  const { tradeDetails, permit, chainId, requiresApprove } = parameters;
+  const { quote, permit, chainId, requiresApprove } = parameters;
 
   let gasParams = selectedGas.transactionGasParams;
   // if swap isn't the last action, use fast gas or custom (whatever is faster)
@@ -216,7 +209,7 @@ export const swap = async ({
     gasLimit = await estimateSwapGasLimit({
       chainId,
       requiresApprove,
-      tradeDetails,
+      quote,
     });
   } catch (e) {
     logger.error({
@@ -236,7 +229,7 @@ export const swap = async ({
       gasLimit,
       nonce,
       permit: !!permit,
-      tradeDetails,
+      quote,
       wallet,
     };
 
