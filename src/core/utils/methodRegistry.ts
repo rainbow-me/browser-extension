@@ -37,11 +37,6 @@ export const methodRegistryLookupAndParse = async (
   });
 
   if (response?.contractFunction?.text) {
-    console.log('graphql response for', {
-      methodSignatureBytes,
-      contractAddress,
-      methodName: response?.contractFunction?.text,
-    });
     signature = response.contractFunction.text;
   } else {
     const methodRegistryABI = await fetchJsonLocally('methodRegistryABI.json');
