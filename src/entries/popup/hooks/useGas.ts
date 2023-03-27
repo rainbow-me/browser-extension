@@ -27,10 +27,11 @@ import {
 } from '~/core/utils/gas';
 
 import { useNativeAssetForNetwork } from './useNativeAssetForNetwork';
+import usePrevious from './usePrevious';
 
 const useGas = ({
   chainId,
-  defaultSpeed,
+  defaultSpeed = GasSpeed.NORMAL,
   estimatedGasLimit,
   transactionRequest,
 }: {
@@ -42,6 +43,7 @@ const useGas = ({
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: gasData, isLoading } = useGasData({ chainId });
   const nativeAsset = useNativeAssetForNetwork({ chainId });
+  const prevDefaultSpeed = usePrevious(defaultSpeed);
 
   const { data: optimismL1SecurityFee } = useOptimismL1SecurityFee(
     { transactionRequest: transactionRequest || {}, chainId },
@@ -132,9 +134,7 @@ const useGas = ({
     ],
   );
 
-  const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>(
-    defaultSpeed || GasSpeed.NORMAL,
-  );
+  const [selectedSpeed, setSelectedSpeed] = useState<GasSpeed>(defaultSpeed);
 
   const gasFeeParamsBySpeed:
     | GasFeeParamsBySpeed
@@ -166,6 +166,12 @@ const useGas = ({
     customGasModified,
     storeGasFeeParamsBySpeed.custom,
   ]);
+
+  useEffect(() => {
+    if (prevDefaultSpeed !== defaultSpeed) {
+      setSelectedSpeed(defaultSpeed);
+    }
+  }, [defaultSpeed, prevDefaultSpeed]);
 
   useEffect(() => {
     if (
