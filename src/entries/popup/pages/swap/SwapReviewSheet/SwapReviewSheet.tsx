@@ -1,6 +1,6 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { motion } from 'framer-motion';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import SendSound from 'static/assets/audio/woosh.mp3';
@@ -10,6 +10,7 @@ import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connect
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
   Bleed,
   Box,
@@ -190,6 +191,21 @@ const SwapReviewSheetWithQuote = ({
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
 
+  const isBridge = useMemo(() => {
+    const assetToSellAddressToCompare =
+      assetToSell?.[
+        assetToSell?.chainId === ChainId.mainnet ? 'address' : 'mainnetAddress'
+      ];
+    const assetToBuyAddressToCompare =
+      assetToBuy?.[
+        assetToBuy?.chainId === ChainId.mainnet ? 'address' : 'mainnetAddress'
+      ];
+    return isLowerCaseMatch(
+      assetToSellAddressToCompare,
+      assetToBuyAddressToCompare,
+    );
+  }, [assetToBuy, assetToSell]);
+
   const openMoreDetails = useCallback(() => setShowDetails(true), []);
   const closeMoreDetails = useCallback(() => setShowDetails(false), []);
 
@@ -288,7 +304,9 @@ const SwapReviewSheetWithQuote = ({
               <Box paddingVertical="27px">
                 <Inline alignHorizontal="center" alignVertical="center">
                   <Text color="label" size="14pt" weight="bold">
-                    {i18n.t('swap.review.title')}
+                    {i18n.t(
+                      `swap.review.${isBridge ? 'title_bridge' : 'title_swap'}`,
+                    )}
                   </Text>
                 </Inline>
               </Box>
