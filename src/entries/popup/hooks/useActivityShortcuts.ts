@@ -15,13 +15,11 @@ export function useActivityShortcuts() {
   );
   const handleActivityShortcuts = useCallback(
     (e: KeyboardEvent) => {
-      if (selectedTransaction?.pending) {
-        if (sheet === 'none') {
-          if (e.key === shortcuts.activity.CANCEL_TRANSACTION.key) {
-            setCurrentSheet('cancel');
-          } else if (e.key === shortcuts.activity.SPEED_UP_TRANSACTION.key) {
-            setCurrentSheet('speedUp');
-          }
+      if (selectedTransaction?.pending && sheet === 'none') {
+        if (e.key === shortcuts.activity.CANCEL_TRANSACTION.key) {
+          setCurrentSheet('cancel');
+        } else if (e.key === shortcuts.activity.SPEED_UP_TRANSACTION.key) {
+          setCurrentSheet('speedUp');
         }
       }
     },
