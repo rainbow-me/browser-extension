@@ -33,6 +33,10 @@ import {
   ExplainerSheet,
   useExplainerSheetParams,
 } from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
+import {
+  Navbar,
+  NavbarCloseButton,
+} from '~/entries/popup/components/Navbar/Navbar';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 import { SwapFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
 import { useSwapReviewDetails } from '~/entries/popup/hooks/swap';
@@ -180,8 +184,8 @@ const SwapReviewSheetWithQuote = ({
   assetToBuy,
   quote,
   flashbotsEnabled,
-}: // hideSwapReview,
-SwapReviewSheetWithQuoteProps) => {
+  hideSwapReview,
+}: SwapReviewSheetWithQuoteProps) => {
   const navigate = useRainbowNavigate();
   const { connectedToHardhat } = useConnectedToHardhatStore();
 
@@ -210,7 +214,7 @@ SwapReviewSheetWithQuoteProps) => {
   }, [assetToBuy, assetToSell]);
 
   const openMoreDetails = useCallback(() => setShowDetails(true), []);
-  // const closeMoreDetails = useCallback(() => setShowDetails(false), []);
+  const closeMoreDetails = useCallback(() => setShowDetails(false), []);
 
   const executeSwap = useCallback(async () => {
     if (!assetToSell || !assetToBuy || !quote) return;
@@ -241,10 +245,10 @@ SwapReviewSheetWithQuoteProps) => {
     new Audio(SendSound).play();
   }, [executeSwap]);
 
-  // const goBack = useCallback(() => {
-  //   hideSwapReview();
-  //   closeMoreDetails();
-  // }, [closeMoreDetails, hideSwapReview]);
+  const goBack = useCallback(() => {
+    hideSwapReview();
+    closeMoreDetails();
+  }, [closeMoreDetails, hideSwapReview]);
 
   const openFlashbotsExplainer = useCallback(() => {
     showExplainerSheet({
@@ -303,17 +307,12 @@ SwapReviewSheetWithQuoteProps) => {
           paddingBottom="20px"
         >
           <Stack space="12px">
-            <Box style={{ height: '64px' }}>
-              <Box paddingVertical="27px">
-                <Inline alignHorizontal="center" alignVertical="center">
-                  <Text color="label" size="14pt" weight="bold">
-                    {i18n.t(
-                      `swap.review.${isBridge ? 'title_bridge' : 'title_swap'}`,
-                    )}
-                  </Text>
-                </Inline>
-              </Box>
-            </Box>
+            <Navbar
+              title={i18n.t(
+                `swap.review.${isBridge ? 'title_bridge' : 'title_swap'}`,
+              )}
+              leftComponent={<NavbarCloseButton onClick={goBack} />}
+            />
             <Box>
               <Inline
                 space="10px"
