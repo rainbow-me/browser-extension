@@ -99,25 +99,28 @@ export const useSwapPriceImpact = ({
     quote?.buyAmountInEth,
   ]);
 
-  const nativeAmountImpact = subtract(sellNativeAmount, buyNativeAmount);
-  const priceImpact = divide(nativeAmountImpact, sellNativeAmount);
+  const { impactDisplay, priceImpact } = useMemo(() => {
+    const nativeAmountImpact = subtract(sellNativeAmount, buyNativeAmount);
+    const priceImpact = divide(nativeAmountImpact, sellNativeAmount);
 
-  const impactDisplay = convertAmountToNativeDisplay(
-    nativeAmountImpact,
-    currentCurrency,
-  );
+    const impactDisplay = convertAmountToNativeDisplay(
+      nativeAmountImpact,
+      currentCurrency,
+    );
+    return { impactDisplay, priceImpact };
+  }, [buyNativeAmount, currentCurrency, sellNativeAmount]);
 
-  if (greaterThanOrEqualTo(priceImpact, highPriceImpactThreshold)) {
-    return {
-      priceImpact: {
-        type: SwapPriceImpactType.high,
-        impactDisplay,
-      },
-    };
-  } else if (greaterThanOrEqualTo(priceImpact, severePriceImpactThreshold)) {
+  if (greaterThanOrEqualTo(priceImpact, severePriceImpactThreshold)) {
     return {
       priceImpact: {
         type: SwapPriceImpactType.severe,
+        impactDisplay,
+      },
+    };
+  } else if (greaterThanOrEqualTo(priceImpact, highPriceImpactThreshold)) {
+    return {
+      priceImpact: {
+        type: SwapPriceImpactType.high,
         impactDisplay,
       },
     };

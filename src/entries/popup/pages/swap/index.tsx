@@ -66,12 +66,12 @@ const SwapWarning = ({
     if (priceImpact?.type !== SwapPriceImpactType.none) {
       return {
         warningTitle: i18n.t('swap.warnings.price_impact.title'),
-        warningDescription: i18n.t('swap.warnings.long_wait.description', {
+        warningDescription: i18n.t('swap.warnings.price_impact.description', {
           impactAmount: priceImpact?.impactDisplay,
-          warningColor: (priceImpact?.type === SwapPriceImpactType.high
-            ? 'orange'
-            : 'red') as TextStyles['color'],
         }),
+        warningColor: (priceImpact?.type === SwapPriceImpactType.high
+          ? 'orange'
+          : 'red') as TextStyles['color'],
       };
     } else if (timeEstimate?.isLongWait) {
       return {
