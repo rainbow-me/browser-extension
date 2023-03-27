@@ -378,7 +378,7 @@ const ActivityRow = React.memo(function ({
     const nameMaxWidth = TEXT_MAX_WIDTH - nameMaxWidthDiff;
     return (
       <Columns>
-        <Column width="content">
+        <Column>
           <Box paddingVertical="4px">
             <TextOverflow maxWidth={nameMaxWidth} size="14pt" weight="semibold">
               {name}
