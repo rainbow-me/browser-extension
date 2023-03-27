@@ -5,7 +5,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
-import { useDefaultTxSpeedStore } from '~/core/state/currentSettings/defaultTxSpeed';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -25,6 +24,7 @@ import {
 } from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
+import { useDefaultTxSpeed } from '../../hooks/useDefaultTxSpeed';
 import { useSwapGas, useTransactionGas } from '../../hooks/useGas';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 
@@ -190,7 +190,7 @@ export function TransactionFee({
   accentColor,
   plainTriggerBorder,
 }: TransactionFeeProps) {
-  const { defaultTxSpeed } = useDefaultTxSpeedStore();
+  const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
     selectedSpeed,
     setSelectedSpeed,
@@ -227,21 +227,23 @@ export function TransactionFee({
 type SwapFeeProps = {
   chainId: ChainId;
   defaultSpeed?: GasSpeed;
-  tradeDetails?: Quote | CrosschainQuote | QuoteError;
+  quote?: Quote | CrosschainQuote | QuoteError;
   accentColor?: string;
   plainTriggerBorder?: boolean;
   assetToSell?: ParsedSearchAsset;
+  assetToBuy?: ParsedSearchAsset;
 };
 
 export function SwapFee({
   chainId,
   defaultSpeed,
-  tradeDetails,
+  quote,
   accentColor,
   plainTriggerBorder,
   assetToSell,
+  assetToBuy,
 }: SwapFeeProps) {
-  const { defaultTxSpeed } = useDefaultTxSpeedStore();
+  const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
     selectedSpeed,
     setSelectedSpeed,
@@ -255,8 +257,9 @@ export function SwapFee({
   } = useSwapGas({
     chainId,
     defaultSpeed: defaultSpeed || defaultTxSpeed,
-    tradeDetails,
+    quote,
     assetToSell,
+    assetToBuy,
   });
   return (
     <Fee

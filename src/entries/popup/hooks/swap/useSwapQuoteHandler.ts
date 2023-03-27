@@ -31,13 +31,14 @@ export const useSwapQuoteHandler = ({
       if (independentField === 'sellField' && assetToBuy) {
         setAssetToBuyValue(
           buyAmount
-            ? convertRawAmountToBalance(String(buyAmount), assetToBuy).amount
+            ? convertRawAmountToBalance(buyAmount.toString(), assetToBuy).amount
             : '',
         );
       } else if (independentField === 'buyField' && assetToSell) {
         setAssetToSellValue(
           sellAmount
-            ? convertRawAmountToBalance(String(sellAmount), assetToSell).amount
+            ? convertRawAmountToBalance(sellAmount.toString(), assetToSell)
+                .amount
             : '',
         );
       }

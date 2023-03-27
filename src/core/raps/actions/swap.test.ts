@@ -37,7 +37,7 @@ test('[rap/swap] :: should estimate swap gas limit', async () => {
   const swapGasLimit = await estimateSwapGasLimit({
     chainId: chain.mainnet.id,
     requiresApprove: false,
-    tradeDetails: quote as Quote,
+    quote: quote as Quote,
   });
 
   expect(Number(swapGasLimit)).toBeGreaterThan(0);
@@ -53,7 +53,7 @@ test('[rap/swap] :: should execute swap', async () => {
       maxFeePerGas: '200000000000',
       maxPriorityFeePerGas: '2000000000',
     },
-    tradeDetails: quote as Quote,
+    quote: quote as Quote,
     wallet,
     permit: false,
   });

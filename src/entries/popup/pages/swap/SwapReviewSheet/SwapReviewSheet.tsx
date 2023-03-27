@@ -26,7 +26,7 @@ import {
   ExplainerSheet,
   useExplainerSheetParams,
 } from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
-import { useSwapReviewDetails } from '~/entries/popup/hooks/swap/useSwapReviewDetails';
+import { useSwapReviewDetails } from '~/entries/popup/hooks/swap';
 
 import { SwapAssetCard } from './SwapAssetCard';
 import { SwapRoutes } from './SwapRoutes';
