@@ -103,7 +103,7 @@ async function executeAction<T extends RapActionTypes>({
     return { baseNonce: nonce, errorMessage: null };
   } catch (error) {
     logger.error({
-      name: `rap: error execute action - ${rapName}`,
+      name: `rap: ${rapName} - error execute action`,
       message: (error as Error)?.message,
     });
     if (index === 0) {
