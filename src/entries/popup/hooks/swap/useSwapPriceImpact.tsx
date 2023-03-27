@@ -50,7 +50,7 @@ export const useSwapPriceImpact = ({
   const sellNativeAmount = useMemo(() => {
     if (isNormalQuote)
       return convertRawAmountToNativeDisplay(
-        quote?.sellAmount.toString() || '',
+        quote?.sellAmountInEth.toString() || '',
         nativeAsset?.decimals || 18,
         nativeAsset?.price?.value || '0',
         currentCurrency,
@@ -70,12 +70,13 @@ export const useSwapPriceImpact = ({
     nativeAsset?.decimals,
     nativeAsset?.price?.value,
     quote?.sellAmount,
+    quote?.sellAmountInEth,
   ]);
 
   const buyNativeAmount = useMemo(() => {
     if (isNormalQuote)
       return convertRawAmountToNativeDisplay(
-        quote?.buyAmount.toString() || '',
+        quote?.buyAmountInEth.toString() || '',
         nativeAsset?.decimals || 18,
         nativeAsset?.price?.value || '0',
         currentCurrency,
@@ -95,6 +96,7 @@ export const useSwapPriceImpact = ({
     nativeAsset?.decimals,
     nativeAsset?.price?.value,
     quote?.buyAmount,
+    quote?.buyAmountInEth,
   ]);
 
   const nativeAmountImpact = subtract(sellNativeAmount, buyNativeAmount);
