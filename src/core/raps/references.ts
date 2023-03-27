@@ -33,23 +33,23 @@ export type SwapMetadata = {
 
 interface RapBaseSwapActionParameters {
   amount?: string | null;
-  inputAmount?: string | null;
-  outputAmount?: string | null;
+  sellAmount: string;
+  buyAmount?: string;
   permit?: boolean;
   chainId: number;
   requiresApprove?: boolean;
   meta?: SwapMetadata;
-  inputCurrency: ParsedAsset;
-  outputCurrency: ParsedAsset;
+  assetToSell: ParsedAsset;
+  assetToBuy?: ParsedAsset;
 }
 
 export interface RapSwapActionParameters extends RapBaseSwapActionParameters {
-  tradeDetails: Quote;
+  quote: Quote;
 }
 
 export interface RapCrosschainSwapActionParameters
   extends RapBaseSwapActionParameters {
-  tradeDetails: CrosschainQuote;
+  quote: CrosschainQuote;
 }
 
 export interface RapUnlockActionParameters {
