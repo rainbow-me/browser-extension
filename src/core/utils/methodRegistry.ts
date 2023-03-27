@@ -88,6 +88,8 @@ export const methodRegistryLookupAndParse = async (
     }
   }
 
+  parsedName = parsedName.replace('E T H', 'ETH');
+
   return {
     args,
     name: parsedName,
