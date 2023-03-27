@@ -6,7 +6,7 @@ import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletNamesStore } from '~/core/state/walletNames';
-import { KeychainWallet } from '~/core/types/keychainTypes';
+import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { getSettingWallets } from '~/core/utils/settings';
 import { Box, Inline, Symbol } from '~/design-system';
@@ -139,6 +139,19 @@ export function WalletDetails() {
     [navigate, state?.password, wallet],
   );
 
+  const handleViewSecret = useCallback(() => {
+    if (wallet?.type === KeychainType.HdKeychain) {
+      handleViewRecoveryPhrase();
+    } else {
+      handleViewPrivateKey(wallet?.accounts[0] as Address);
+    }
+  }, [
+    handleViewPrivateKey,
+    handleViewRecoveryPhrase,
+    wallet?.accounts,
+    wallet?.type,
+  ]);
+
   useEffect(() => {
     const getWallet = async () => {
       const wallet = await getSettingWallets();
@@ -211,7 +224,9 @@ export function WalletDetails() {
               titleComponent={
                 <MenuItem.Title
                   text={i18n.t(
-                    'settings.privacy_and_security.wallets_and_keys.wallet_details.view_recovery_phrase',
+                    wallet?.type === KeychainType.HdKeychain
+                      ? 'settings.privacy_and_security.wallets_and_keys.wallet_details.view_recovery_phrase'
+                      : 'settings.privacy_and_security.wallets_and_keys.wallet_details.view_private_key',
                   )}
                 />
               }
@@ -224,7 +239,7 @@ export function WalletDetails() {
                 />
               }
               hasRightArrow
-              onClick={handleViewRecoveryPhrase}
+              onClick={handleViewSecret}
             />
           </Menu>
           <Menu paddingVertical="8px">

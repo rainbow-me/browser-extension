@@ -361,12 +361,13 @@ export function Swap() {
                     <Row>
                       <SwapFee
                         chainId={assetToSell?.chainId || ChainId.mainnet}
-                        tradeDetails={quote}
+                        quote={quote}
                         accentColor={
                           assetToBuy?.colors?.primary ||
                           assetToBuy?.colors?.fallback
                         }
                         assetToSell={assetToSell}
+                        assetToBuy={assetToBuy}
                       />
                     </Row>
                     <Row>
