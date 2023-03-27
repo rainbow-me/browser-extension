@@ -21,7 +21,7 @@ export const useToast = () => {
   );
 
   const triggerToast = useCallback(
-    ({ title, description }: { title: string; description: string }) => {
+    ({ title, description }: { title: string; description?: string }) => {
       eventEmitter.emit('rainbow_toast', { title, description });
     },
     [],
