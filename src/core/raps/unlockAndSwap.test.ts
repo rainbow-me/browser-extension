@@ -53,11 +53,11 @@ beforeAll(async () => {
 
 test('[rap/unlockAndSwap] :: estimate unlock and swap rap without unlock', async () => {
   const gasLimit = await estimateUnlockAndSwap({
-    tradeDetails: doesntNeedUnlockQuote as Quote,
+    quote: doesntNeedUnlockQuote as Quote,
     chainId: 1,
-    inputCurrency: ETH_MAINNET_ASSET,
-    inputAmount: '1000000000000000000',
-    outputCurrency: USDC_MAINNET_ASSET,
+    assetToSell: ETH_MAINNET_ASSET,
+    sellAmount: '1000000000000000000',
+    assetToBuy: USDC_MAINNET_ASSET,
   });
   expect(Number(gasLimit)).toBeGreaterThan(0);
   swapGasLimit = Number(gasLimit);
@@ -65,11 +65,11 @@ test('[rap/unlockAndSwap] :: estimate unlock and swap rap without unlock', async
 
 test('[rap/unlockAndSwap] :: estimate unlock and swap rap with unlock', async () => {
   const gasLimit = await estimateUnlockAndSwap({
-    tradeDetails: needsUnlockQuote as Quote,
+    quote: needsUnlockQuote as Quote,
     chainId: 1,
-    inputCurrency: ENS_MAINNET_ASSET,
-    inputAmount: '1000000000000000000',
-    outputCurrency: USDC_MAINNET_ASSET,
+    assetToSell: ENS_MAINNET_ASSET,
+    sellAmount: '1000000000000000000',
+    assetToBuy: USDC_MAINNET_ASSET,
   });
   expect(Number(gasLimit)).toBeGreaterThan(0);
   expect(Number(gasLimit)).toBeGreaterThan(swapGasLimit);
@@ -77,20 +77,22 @@ test('[rap/unlockAndSwap] :: estimate unlock and swap rap with unlock', async ()
 
 test('[rap/unlockAndSwap] :: create unlock and swap rap without unlock', async () => {
   const rap = await createUnlockAndSwapRap({
-    tradeDetails: doesntNeedUnlockQuote as Quote,
+    quote: doesntNeedUnlockQuote as Quote,
     chainId: 1,
-    inputCurrency: ETH_MAINNET_ASSET,
-    outputCurrency: USDC_MAINNET_ASSET,
+    sellAmount: '1000000000000000000',
+    assetToSell: ETH_MAINNET_ASSET,
+    assetToBuy: USDC_MAINNET_ASSET,
   });
   expect(rap.actions.length).toBe(1);
 });
 
 test('[rap/unlockAndSwap] :: create unlock and swap rap with unlock', async () => {
   const rap = await createUnlockAndSwapRap({
-    tradeDetails: needsUnlockQuote as Quote,
+    quote: needsUnlockQuote as Quote,
     chainId: 1,
-    inputCurrency: ENS_MAINNET_ASSET,
-    outputCurrency: USDC_MAINNET_ASSET,
+    sellAmount: '1000000000000000000',
+    assetToSell: ENS_MAINNET_ASSET,
+    assetToBuy: USDC_MAINNET_ASSET,
   });
   expect(rap.actions.length).toBe(2);
 });

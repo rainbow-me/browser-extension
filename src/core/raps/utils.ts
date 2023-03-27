@@ -89,10 +89,10 @@ export const overrideWithFastSpeedIfNeeded = ({
 
 const getStateDiff = async (
   provider: Provider,
-  tradeDetails: Quote,
+  quote: Quote,
 ): Promise<unknown> => {
-  const tokenAddress = tradeDetails.sellTokenAddress;
-  const fromAddr = tradeDetails.from;
+  const tokenAddress = quote.sellTokenAddress;
+  const fromAddr = quote.from;
   const toAddr = RAINBOW_ROUTER_CONTRACT_ADDRESS;
   const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
 
@@ -197,14 +197,14 @@ const getClosestGasEstimate = async (
 };
 
 export const getDefaultGasLimitForTrade = (
-  tradeDetails: Quote,
+  quote: Quote,
   chainId: Chain['id'],
 ): string => {
   const allowsPermit =
     chainId === chain.mainnet.id &&
-    ALLOWS_PERMIT[tradeDetails?.sellTokenAddress?.toLowerCase()];
+    ALLOWS_PERMIT[quote?.sellTokenAddress?.toLowerCase()];
 
-  let defaultGasLimit = tradeDetails?.defaultGasLimit;
+  let defaultGasLimit = quote?.defaultGasLimit;
 
   if (allowsPermit) {
     defaultGasLimit = Math.max(
@@ -220,15 +220,15 @@ export const getDefaultGasLimitForTrade = (
 export const estimateSwapGasLimitWithFakeApproval = async (
   chainId: number,
   provider: Provider,
-  tradeDetails: Quote,
+  quote: Quote,
 ): Promise<string> => {
   let stateDiff: unknown;
 
   try {
-    stateDiff = await getStateDiff(provider, tradeDetails);
+    stateDiff = await getStateDiff(provider, quote);
     const { router, methodName, params, methodArgs } = getQuoteExecutionDetails(
-      tradeDetails,
-      { from: tradeDetails.from },
+      quote,
+      { from: quote.from },
       provider as StaticJsonRpcProvider,
     );
 
@@ -241,7 +241,7 @@ export const estimateSwapGasLimitWithFakeApproval = async (
       const callParams = [
         {
           data,
-          from: tradeDetails.from,
+          from: quote.from,
           gas: toHexNoLeadingZeros(String(gas)),
           gasPrice: toHexNoLeadingZeros(`100000000000`),
           to: RAINBOW_ROUTER_CONTRACT_ADDRESS,
@@ -269,5 +269,5 @@ export const estimateSwapGasLimitWithFakeApproval = async (
   } catch (e) {
     //
   }
-  return getDefaultGasLimitForTrade(tradeDetails, chainId);
+  return getDefaultGasLimitForTrade(quote, chainId);
 };

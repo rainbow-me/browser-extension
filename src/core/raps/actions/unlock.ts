@@ -1,15 +1,16 @@
 import { MaxUint256 } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
 import { Wallet } from '@ethersproject/wallet';
-import { Address, Chain, erc20ABI, getProvider } from '@wagmi/core';
+import { Address, erc20ABI, getProvider } from '@wagmi/core';
 
+import { ChainId } from '~/core/types/chains';
 import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
 import { logger } from '~/logger';
 
-import { gasUnits } from '../../references';
+import { ETH_ADDRESS, gasUnits } from '../../references';
 import { gasStore } from '../../state';
 import { ParsedAsset } from '../../types/assets';
 import {
@@ -21,21 +22,20 @@ import { RapUnlockActionParameters } from '../references';
 
 import { overrideWithFastSpeedIfNeeded } from './../utils';
 
-export const getRawAllowance = async ({
+export const getAssetRawAllowance = async ({
   owner,
-  token,
+  assetAddress,
   spender,
   chainId,
 }: {
   owner: Address;
-  token: ParsedAsset;
+  assetAddress: Address;
   spender: Address;
-  chainId: Chain['id'];
+  chainId: ChainId;
 }) => {
   try {
     const provider = await getProvider({ chainId });
-    const { address: tokenAddress } = token;
-    const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
+    const tokenContract = new Contract(assetAddress, erc20ABI, provider);
     const allowance = await tokenContract.allowance(owner, spender);
     return allowance.toString();
   } catch (error) {
@@ -58,13 +58,14 @@ export const assetNeedsUnlocking = async ({
   amount: string;
   assetToUnlock: ParsedAsset;
   spender: Address;
-  chainId: Chain['id'];
+  chainId: ChainId;
 }) => {
-  if (assetToUnlock.isNativeAsset) return false;
+  if (assetToUnlock.isNativeAsset || assetToUnlock.address === ETH_ADDRESS)
+    return false;
 
-  const allowance = await getRawAllowance({
+  const allowance = await getAssetRawAllowance({
     owner,
-    token: assetToUnlock,
+    assetAddress: assetToUnlock.address,
     spender,
     chainId,
   });
@@ -83,7 +84,7 @@ export const estimateApprove = async ({
   owner: Address;
   tokenAddress: Address;
   spender: Address;
-  chainId: Chain['id'];
+  chainId: ChainId;
 }): Promise<string> => {
   try {
     const provider = getProvider({ chainId });
@@ -113,7 +114,7 @@ export const executeApprove = async ({
   tokenAddress,
   wallet,
 }: {
-  chainId: Chain['id'];
+  chainId: ChainId;
   gasLimit: string;
   gasParams: TransactionGasParams | TransactionLegacyGasParams;
   nonce?: number;
