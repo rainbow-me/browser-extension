@@ -1,3 +1,4 @@
+import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import React, { useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
@@ -35,6 +36,7 @@ import {
   useSwapSettings,
   useSwapValidations,
 } from '../../hooks/swap';
+import { useSwapPriceImpact } from '../../hooks/swap/useSwapPriceImpact';
 
 import { SwapReviewSheet } from './SwapReviewSheet/SwapReviewSheet';
 import { SwapSettings } from './SwapSettings/SwapSettings';
@@ -108,6 +110,14 @@ export function Swap() {
     independentField,
     source,
     slippage,
+  });
+
+  useSwapPriceImpact({
+    assetToBuy,
+    assetToSell,
+    quote: (quote as QuoteError)?.error
+      ? undefined
+      : (quote as Quote | CrosschainQuote),
   });
 
   const { buttonLabel: validationButtonLabel, enoughAssetsForSwap } =
