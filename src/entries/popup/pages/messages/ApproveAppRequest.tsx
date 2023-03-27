@@ -33,10 +33,10 @@ export const ApproveAppRequest = () => {
   const navigate = useRainbowNavigate();
 
   useEffect(() => {
-    if (pendingRequests.length < 1) {
+    if (pendingRequests.length < 1 && !isExternalPopup) {
       navigate(ROUTES.HOME);
     }
-  }, [pendingRequests?.length, navigate]);
+  }, [pendingRequests.length, navigate, isExternalPopup]);
 
   const handleRequestAction = useCallback(() => {
     removePendingRequest(pendingRequest?.id);

@@ -62,6 +62,11 @@ export function WalletsAndKeys() {
     );
   }, [navigate, state?.password]);
 
+  const walletCountPerType = {
+    hd: 0,
+    pk: 0,
+  };
+
   return (
     <Box>
       <Box paddingHorizontal="20px">
@@ -69,7 +74,7 @@ export function WalletsAndKeys() {
           {wallets.map((wallet, idx) => {
             const singleAccount = wallet.accounts.length === 1;
             const label = `${
-              wallet.imported
+              wallet.imported || wallet.type === KeychainType.KeyPairKeychain
                 ? `${i18n.t(
                     'settings.privacy_and_security.wallets_and_keys.imported',
                   )} ‧ `
@@ -84,14 +89,26 @@ export function WalletsAndKeys() {
                   )
             }`;
 
+            if (wallet.type === KeychainType.HdKeychain) {
+              walletCountPerType.hd += 1;
+            } else if (wallet.type === KeychainType.KeyPairKeychain) {
+              walletCountPerType.pk += 1;
+            }
+
             return (
               <Menu key={idx}>
                 <MenuItem
                   titleComponent={
                     <MenuItem.Title
                       text={`${i18n.t(
-                        'settings.privacy_and_security.wallets_and_keys.recovery_phrase_label',
-                      )} ${idx + 1}`}
+                        wallet.type === KeychainType.HdKeychain
+                          ? 'settings.privacy_and_security.wallets_and_keys.recovery_phrase_label'
+                          : 'settings.privacy_and_security.wallets_and_keys.private_key_label',
+                      )} ${
+                        wallet.type === KeychainType.HdKeychain
+                          ? walletCountPerType.hd
+                          : walletCountPerType.pk
+                      }`}
                     />
                   }
                   labelComponent={<MenuItem.Label text={label} />}

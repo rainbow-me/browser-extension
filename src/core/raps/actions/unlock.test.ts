@@ -16,7 +16,7 @@ import {
   assetNeedsUnlocking,
   estimateApprove,
   executeApprove,
-  getRawAllowance,
+  getAssetRawAllowance,
 } from './unlock';
 
 beforeAll(async () => {
@@ -25,9 +25,9 @@ beforeAll(async () => {
 });
 
 test('[rap/unlock] :: get raw allowance', async () => {
-  const rawAllowance = await getRawAllowance({
+  const rawAllowance = await getAssetRawAllowance({
     owner: RAINBOW_WALLET_ADDRESS,
-    token: USDC_MAINNET_ASSET,
+    assetAddress: USDC_MAINNET_ASSET.address,
     spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
     chainId: chain.mainnet.id,
   });
