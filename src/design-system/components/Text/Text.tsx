@@ -6,7 +6,7 @@ import { Box } from '../Box/Box';
 
 import { selectionStyle } from './Text.css';
 
-interface TextProps {
+export interface TextProps {
   align?: TextStyles['textAlign'];
   as?: 'div' | 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   children: React.ReactNode;
