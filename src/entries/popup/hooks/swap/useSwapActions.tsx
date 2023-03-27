@@ -16,7 +16,7 @@ import { CoinIcon } from '../../components/CoinIcon/CoinIcon';
 import { ExplainerSheetProps } from '../../components/ExplainerSheet/ExplainerSheet';
 import { Spinner } from '../../components/Spinner/Spinner';
 
-interface TimeEstimate {
+export interface SwapTimeEstimate {
   isLongWait: boolean;
   timeEstimate?: number;
   timeEstimateDisplay: string;
@@ -79,7 +79,7 @@ interface SwapActions {
   buttonDisabled: boolean;
   buttonLabel: string;
   buttonIcon: React.ReactElement | null;
-  timeEstimate?: TimeEstimate | null;
+  timeEstimate?: SwapTimeEstimate | null;
   buttonAction: () => void;
 }
 
