@@ -20,7 +20,9 @@ const AuthContext = createContext({
 
 export type UserStatusResult = 'LOCKED' | 'NEEDS_PASSWORD' | 'NEW' | 'READY';
 
-export const getUserStatus = async (): Promise<UserStatusResult> => {
+export const getUserStatus = async (
+  autolockImmediately = false,
+): Promise<UserStatusResult> => {
   // here we'll run the redirect logic
   // if we have a vault set it means onboarding is complete
   let status = await wallet.getStatus();
@@ -32,11 +34,15 @@ export const getUserStatus = async (): Promise<UserStatusResult> => {
   }
 
   const { unlocked, hasVault, passwordSet } = status;
+
   // if we don't have a password set we need to check if there's a wallet
   if (hasVault) {
     // Check if it has a password set
     if (passwordSet) {
       if (unlocked) {
+        if (autolockImmediately) {
+          return 'LOCKED';
+        }
         return 'READY';
       } else {
         return 'LOCKED';
@@ -55,10 +61,11 @@ const useSessionStatus = () => {
   const autoLockTimerMinutes = autoLockTimerOptions[autoLockTimer].mins;
 
   const updateStatus = useCallback(async () => {
-    const newStatus = await getUserStatus();
+    const autolockImmediately = autoLockTimerMinutes === 0;
+    const newStatus = await getUserStatus(autolockImmediately);
     setStatus(newStatus);
     await chrome.storage.session.set({ userStatus: newStatus });
-  }, []);
+  }, [autoLockTimerMinutes]);
 
   useEffect(() => {
     updateStatus();
