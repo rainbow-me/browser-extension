@@ -1,9 +1,12 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import React, { useMemo } from 'react';
+import { BytesLike } from '@ethersproject/bytes';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
+import { methodRegistryLookupAndParse } from '~/core/utils/methodRegistry';
 import { getTransactionRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box, Inline, Inset, Separator, Stack, Text } from '~/design-system';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
@@ -21,6 +24,36 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
     url: request?.meta?.sender?.url,
   });
   const { appSession } = useAppSession({ host: appHost });
+  const [methodName, setMethodName] = useState('');
+
+  useEffect(() => {
+    const fetchMethodName = async (
+      data: BytesLike | undefined,
+      to: Address,
+    ) => {
+      if (!data) return;
+      const methodSignaturePrefix = (data as string)?.substr(0, 10);
+      let fallbackHandler;
+      try {
+        fallbackHandler = setTimeout(() => {
+          setMethodName(i18n.t('approve_request.transaction_request'));
+        }, 5000);
+        const { name } = await methodRegistryLookupAndParse(
+          methodSignaturePrefix,
+          to,
+        );
+        if (name) {
+          setMethodName(name);
+          clearTimeout(fallbackHandler);
+        }
+      } catch (e) {
+        setMethodName(i18n.t('approve_request.transaction_request'));
+        clearTimeout(fallbackHandler);
+      }
+    };
+    const txRequest = request?.params?.[0] as TransactionRequest;
+    fetchMethodName(txRequest.data, txRequest.to as Address);
+  }, [request?.params]);
 
   const { value } = useMemo(() => {
     const { value } = getTransactionRequestDisplayDetails(request);
@@ -58,7 +91,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
                   {appHostName}
                 </Text>
                 <Text align="center" size="20pt" weight="semibold">
-                  {i18n.t('approve_request.transaction_request')}
+                  {methodName}
                 </Text>
               </Stack>
             </Stack>

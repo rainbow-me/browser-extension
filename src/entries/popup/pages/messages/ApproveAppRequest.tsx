@@ -11,6 +11,8 @@ import { RequestAccounts } from './RequestAccounts';
 import { SendTransaction } from './SendTransaction';
 import { SignMessage } from './SignMessage';
 
+// import { methodRegistryLookupAndParse } from '~/utils/methodRegistry';
+
 const backgroundMessenger = initializeMessenger({ connect: 'background' });
 
 export const ApproveAppRequest = () => {
