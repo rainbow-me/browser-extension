@@ -1,5 +1,7 @@
 import { Signer } from '@ethersproject/abstract-signer';
 
+import { logger } from '~/logger';
+
 import { swap, unlock } from './actions';
 import { crosschainSwap } from './actions/crosschainSwap';
 import {
@@ -15,10 +17,10 @@ import {
 import { createUnlockAndCrosschainSwapRap } from './unlockAndCrosschainSwap';
 import { createUnlockAndSwapRap } from './unlockAndSwap';
 
-// function getRapFullName<T extends RapActionTypes>(actions: RapAction<T>[]) {
-//   const actionTypes = actions.map((action) => action.type);
-//   return actionTypes.join(' + ');
-// }
+function getRapFullName<T extends RapActionTypes>(actions: RapAction<T>[]) {
+  const actionTypes = actions.map((action) => action.type);
+  return actionTypes.join(' + ');
+}
 
 export function createNewAction<T extends RapActionTypes>(
   type: T,
@@ -78,12 +80,14 @@ async function executeAction<T extends RapActionTypes>({
   rap,
   index,
   baseNonce,
+  rapName,
 }: {
   action: RapAction<T>;
   wallet: Signer;
   rap: Rap;
   index: number;
   baseNonce?: number;
+  rapName: string;
 }): Promise<RapActionResponse> {
   const { type, parameters } = action;
   let nonce;
@@ -98,6 +102,10 @@ async function executeAction<T extends RapActionTypes>({
     nonce = await typeAction<T>(type, actionProps)();
     return { baseNonce: nonce, errorMessage: null };
   } catch (error) {
+    logger.error({
+      name: `rap: error execute action - ${rapName}`,
+      message: (error as Error)?.message,
+    });
     if (index === 0) {
       return { baseNonce: null, errorMessage: String(error) };
     }
@@ -113,7 +121,7 @@ export const walletExecuteRap = async (
   const rap: Rap = await createSwapRapByType(type, parameters);
 
   const { actions } = rap;
-  // const rapName = getRapFullName(rap.actions);
+  const rapName = getRapFullName(rap.actions);
   let nonce = parameters?.nonce;
   let errorMessage = null;
   if (actions.length) {
@@ -124,6 +132,7 @@ export const walletExecuteRap = async (
       rap,
       index: 0,
       baseNonce: nonce,
+      rapName,
     });
 
     if (typeof baseNonce === 'number') {
@@ -136,6 +145,7 @@ export const walletExecuteRap = async (
           rap,
           index,
           baseNonce,
+          rapName,
         });
       }
       nonce = baseNonce + actions.length - 1;
