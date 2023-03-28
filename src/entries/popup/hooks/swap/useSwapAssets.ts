@@ -140,7 +140,8 @@ export const useSwapAssets = () => {
   useEffect(() => {
     if (
       assetToBuy?.address === assetToSell?.address &&
-      assetToBuy?.chainId === assetToSell?.chainId
+      assetToBuy?.chainId === assetToSell?.chainId &&
+      prevAssetToSell?.uniqueId !== assetToSell?.uniqueId
     ) {
       setAssetToBuy(prevAssetToSell === undefined ? null : prevAssetToSell);
     }
@@ -149,6 +150,7 @@ export const useSwapAssets = () => {
     assetToBuy?.chainId,
     assetToSell?.address,
     assetToSell?.chainId,
+    assetToSell?.uniqueId,
     prevAssetToSell,
     setAssetToBuy,
   ]);
