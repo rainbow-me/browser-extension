@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -43,7 +43,6 @@ type FeeProps = {
   setSelectedSpeed: React.Dispatch<React.SetStateAction<GasSpeed>>;
   setCustomMaxBaseFee: (maxBaseFee?: string) => void;
   setCustomMaxPriorityFee: (maxPriorityFee?: string) => void;
-  clearCustomGasModified: () => void;
 };
 
 function Fee({
@@ -58,7 +57,6 @@ function Fee({
   setCustomMaxPriorityFee,
   currentBaseFee,
   baseFeeTrend,
-  clearCustomGasModified,
 }: FeeProps) {
   const [showCustomGasSheet, setShowCustomGasSheet] = useState(false);
 
@@ -89,11 +87,6 @@ function Fee({
 
   const onSpeedOpenChange = (isOpen: boolean) =>
     isOpen && analytics.track(event.dappPromptSendTransactionSpeedClicked);
-
-  useEffect(() => {
-    clearCustomGasModified();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <Box>
@@ -201,7 +194,6 @@ export function TransactionFee({
     setCustomMaxPriorityFee,
     currentBaseFee,
     baseFeeTrend,
-    clearCustomGasModified,
   } = useTransactionGas({
     chainId,
     defaultSpeed: defaultSpeed || defaultTxSpeed,
@@ -220,7 +212,6 @@ export function TransactionFee({
       setCustomMaxPriorityFee={setCustomMaxPriorityFee}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
-      clearCustomGasModified={clearCustomGasModified}
     />
   );
 }
@@ -254,7 +245,6 @@ export function SwapFee({
     setCustomMaxPriorityFee,
     currentBaseFee,
     baseFeeTrend,
-    clearCustomGasModified,
   } = useSwapGas({
     chainId,
     defaultSpeed: defaultSpeed || defaultTxSpeed,
@@ -275,7 +265,6 @@ export function SwapFee({
       setCustomMaxPriorityFee={setCustomMaxPriorityFee}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
-      clearCustomGasModified={clearCustomGasModified}
     />
   );
 }

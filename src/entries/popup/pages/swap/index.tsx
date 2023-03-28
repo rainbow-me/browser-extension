@@ -1,5 +1,5 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useGasStore } from '~/core/state';
@@ -139,7 +139,7 @@ export function Swap() {
 
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
-  const { selectedGas } = useGasStore();
+  const { selectedGas, clearCustomGasModified } = useGasStore();
 
   const {
     assetsToSell,
@@ -262,6 +262,12 @@ export function Swap() {
   );
 
   const hideSwapReview = useCallback(() => setShowSwapReview(false), []);
+
+  useEffect(() => {
+    return () => {
+      clearCustomGasModified();
+    };
+  }, [clearCustomGasModified]);
 
   return (
     <>

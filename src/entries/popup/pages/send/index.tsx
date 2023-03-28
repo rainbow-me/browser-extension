@@ -210,8 +210,6 @@ export function Send() {
     ? 'edit'
     : 'save';
 
-  useEffect(() => () => clearCustomGasModified(), [clearCustomGasModified]);
-
   useEffect(() => {
     return () => {
       clearCustomGasModified();
