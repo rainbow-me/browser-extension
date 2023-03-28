@@ -2,33 +2,11 @@ import { getAddress, isAddress } from '@ethersproject/address';
 import { isHexString } from '@ethersproject/bytes';
 import { Address } from 'wagmi';
 
-import { supportedCurrencies } from '../references';
 import { ProviderRequestPayload } from '../transports/providerRequestTransport';
 import { RPCMethod } from '../types/rpcMethods';
-import { RainbowTransaction } from '../types/transactions';
-
-import { convertRawAmountToBalance } from './numbers';
 
 export const isSignTypedData = (method: RPCMethod) =>
   method.indexOf('signTypedData') !== -1;
-
-export const getTransactionRequestDisplayDetails = (
-  payload: ProviderRequestPayload,
-) => {
-  switch (payload.method) {
-    case 'eth_sendTransaction':
-    case 'eth_signTransaction': {
-      const tx = payload?.params?.[0] as RainbowTransaction;
-      const value = convertRawAmountToBalance(
-        tx?.value?.toString() ?? 0,
-        supportedCurrencies['ETH'],
-      ).amount;
-      return { value };
-    }
-    default:
-      return {};
-  }
-};
 
 export const getSigningRequestDisplayDetails = (
   payload: ProviderRequestPayload,

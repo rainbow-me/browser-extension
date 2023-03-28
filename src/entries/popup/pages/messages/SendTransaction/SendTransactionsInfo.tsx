@@ -1,16 +1,25 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import React, { useMemo } from 'react';
+import { BytesLike } from '@ethersproject/bytes';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useCurrentCurrencyStore } from '~/core/state';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
-import { getTransactionRequestDisplayDetails } from '~/core/utils/signMessages';
+import { RainbowTransaction } from '~/core/types/transactions';
+import { methodRegistryLookupAndParse } from '~/core/utils/methodRegistry';
+import {
+  convertRawAmountToBalance,
+  convertRawAmountToNativeDisplay,
+} from '~/core/utils/numbers';
 import { Box, Inline, Inset, Separator, Stack, Text } from '~/design-system';
 import { ChainBadge } from '~/entries/popup/components/ChainBadge/ChainBadge';
 import ExternalImage from '~/entries/popup/components/ExternalImage/ExternalImage';
 import { TransactionFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
+import { useNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
 
 interface SendTransactionProps {
   request: ProviderRequestPayload;
@@ -21,11 +30,64 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
     url: request?.meta?.sender?.url,
   });
   const { appSession } = useAppSession({ host: appHost });
+  const [methodName, setMethodName] = useState('');
+  const nativeAsset = useNativeAssetForNetwork({ chainId: appSession.chainId });
+  const { currentCurrency } = useCurrentCurrencyStore();
 
-  const { value } = useMemo(() => {
-    const { value } = getTransactionRequestDisplayDetails(request);
-    return { value };
-  }, [request]);
+  useEffect(() => {
+    const fetchMethodName = async (
+      data: BytesLike | undefined,
+      to: Address,
+    ) => {
+      if (!data) return;
+      const methodSignaturePrefix = (data as string)?.substr(0, 10);
+      let fallbackHandler;
+      try {
+        fallbackHandler = setTimeout(() => {
+          setMethodName(i18n.t('approve_request.transaction_request'));
+        }, 5000);
+        const { name } = await methodRegistryLookupAndParse(
+          methodSignaturePrefix,
+          to,
+        );
+        if (name) {
+          setMethodName(name);
+          clearTimeout(fallbackHandler);
+        }
+      } catch (e) {
+        setMethodName(i18n.t('approve_request.transaction_request'));
+        clearTimeout(fallbackHandler);
+      }
+    };
+    const txRequest = request?.params?.[0] as TransactionRequest;
+    fetchMethodName(txRequest.data, txRequest.to as Address);
+  }, [request?.params]);
+
+  const { nativeAssetAmount, nativeCurrencyAmount } = useMemo(() => {
+    if (!nativeAsset)
+      return { nativeAssetAmount: null, nativeCurrencyAmount: null };
+    switch (request.method) {
+      case 'eth_sendTransaction':
+      case 'eth_signTransaction': {
+        const tx = request?.params?.[0] as RainbowTransaction;
+
+        const nativeAssetAmount = convertRawAmountToBalance(
+          tx?.value?.toString() ?? 0,
+          nativeAsset,
+        ).display;
+
+        const nativeCurrencyAmount = convertRawAmountToNativeDisplay(
+          tx?.value?.toString() ?? 0,
+          nativeAsset?.decimals,
+          nativeAsset?.price?.value as number,
+          currentCurrency,
+        ).display;
+        return { nativeAssetAmount, nativeCurrencyAmount };
+      }
+      default:
+        return { nativeAssetAmount: null, nativeCurrencyAmount: null };
+    }
+  }, [request, nativeAsset, currentCurrency]);
 
   return (
     <Box background="surfacePrimaryElevatedSecondary">
@@ -58,7 +120,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
                   {appHostName}
                 </Text>
                 <Text align="center" size="20pt" weight="semibold">
-                  {i18n.t('approve_request.transaction_request')}
+                  {methodName}
                 </Text>
               </Stack>
             </Stack>
@@ -67,7 +129,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
           <Inset vertical="64px" horizontal="50px">
             <Stack space="16px" alignHorizontal="center">
               <Text align="center" size="32pt" weight="heavy" color="label">
-                {value}
+                {nativeCurrencyAmount || ''}
               </Text>
               <Box background="surfacePrimaryElevated" borderRadius="18px">
                 <Inset vertical="6px" left="8px" right="10px">
@@ -78,7 +140,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
                   >
                     <ChainBadge chainId={ChainId.mainnet} size={'small'} />
                     <Text size="14pt" weight="semibold" color="label">
-                      {value}
+                      {nativeAssetAmount || ''}
                     </Text>
                   </Inline>
                 </Inset>
