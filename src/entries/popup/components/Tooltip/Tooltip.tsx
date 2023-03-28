@@ -1,37 +1,69 @@
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useMemo } from 'react';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { Box, Inline, TextOverflow, ThemeProvider } from '~/design-system';
+import { AlignHorizontal } from '~/design-system/components/Inline/Inline';
 import { TextStyles } from '~/design-system/styles/core.css';
 
 const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 60;
 
 export const Tooltip = ({
+  align,
   children,
   text,
   textSize,
   textWeight,
   textColor,
+  arrowAlignment = 'center',
 }: {
   children: ReactNode;
   text: string;
+  align?: 'start' | 'center' | 'end';
+  arrowAlignment?: 'left' | 'center' | 'right';
   textSize?: TextStyles['fontSize'];
   textWeight?: TextStyles['fontWeight'];
   textColor?: TextStyles['color'];
 }) => {
   const { currentTheme } = useCurrentThemeStore();
 
+  const { alignHorizontal, left, right } = useMemo(() => {
+    switch (arrowAlignment) {
+      case 'left':
+        return {
+          alignHorizontal: 'left' as AlignHorizontal,
+          left: 6,
+          right: undefined,
+        };
+      case 'center':
+        return {
+          alignHorizontal: 'center' as AlignHorizontal,
+          left: undefined,
+          right: undefined,
+        };
+      case 'right':
+        return {
+          alignHorizontal: 'right' as AlignHorizontal,
+          left: undefined,
+          right: 6,
+        };
+    }
+  }, [arrowAlignment]);
+
   return (
     <TooltipPrimitive.Provider>
       <TooltipPrimitive.Root>
         <TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger>
         <TooltipPrimitive.Portal>
-          <TooltipPrimitive.Content className="TooltipContent" sideOffset={10}>
+          <TooltipPrimitive.Content
+            align={align}
+            className="TooltipContent"
+            sideOffset={10}
+          >
             <ThemeProvider theme={currentTheme}>
               <Box borderRadius="6px" boxShadow="24px">
-                <Inline alignHorizontal="center">
+                <Inline alignHorizontal={alignHorizontal}>
                   <Box
                     background="surfaceSecondaryElevated"
                     backdropFilter="blur(26px)"
@@ -43,6 +75,8 @@ export const Tooltip = ({
                       height: 10,
                       width: 10,
                       rotate: '45deg',
+                      left,
+                      right,
                     }}
                   />
                 </Inline>

@@ -663,7 +663,8 @@
       "verified": "Verified",
       "on_other_networks": "On other networks",
       "bridge": "Bridge"
-    }
+    },
+    "verified_by_rainbow": "Verified by Rainbow"
   },
   "explainers": {
     "send": {
