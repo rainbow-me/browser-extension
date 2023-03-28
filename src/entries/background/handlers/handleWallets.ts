@@ -12,6 +12,7 @@ import {
   addNewAccount,
   createWallet,
   deriveAccountsFromSecret,
+  executeRap,
   exportAccount,
   exportKeychain,
   getAccounts,
@@ -35,6 +36,7 @@ import {
   wipeVault,
 } from '~/core/keychain';
 import { initializeMessenger } from '~/core/messengers';
+import { WalletExecuteRapProps } from '~/core/raps/references';
 import { WalletAction } from '~/core/types/walletActions';
 import { EthereumWalletSeed } from '~/core/utils/ethereum';
 
@@ -178,6 +180,17 @@ export const handleWallets = () =>
               payload as TransactionRequest,
               provider,
             );
+            break;
+          }
+          case 'execute_rap': {
+            const p = payload as WalletExecuteRapProps;
+            const provider = getProvider({
+              chainId: p.rapActionParameters.chainId,
+            });
+            response = await executeRap({
+              ...p,
+              provider,
+            });
             break;
           }
           case 'personal_sign':

@@ -57,7 +57,7 @@ test('[rap/crosschainSwap] :: should execute crosschain swap', async () => {
 
   const swapTx = await executeCrosschainSwap({
     gasLimit: '600000',
-    transactionGasParams: {
+    gasParams: {
       maxFeePerGas: '2000000000000',
       maxPriorityFeePerGas: '2000000000',
     },

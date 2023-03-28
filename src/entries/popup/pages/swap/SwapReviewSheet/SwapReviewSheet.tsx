@@ -3,8 +3,12 @@ import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
 import { Address } from 'wagmi';
 
+import SendSound from 'static/assets/audio/woosh.mp3';
 import { i18n } from '~/core/languages';
+import { QuoteTypeMap } from '~/core/raps/references';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ParsedSearchAsset } from '~/core/types/assets';
+import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import {
   Bleed,
@@ -26,7 +30,12 @@ import {
   ExplainerSheet,
   useExplainerSheetParams,
 } from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
+import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 import { useSwapReviewDetails } from '~/entries/popup/hooks/swap';
+import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { ROUTES } from '~/entries/popup/urls';
+
+import * as wallet from '../../../handlers/wallet';
 
 import { SwapAssetCard } from './SwapAssetCard';
 import { SwapRoutes } from './SwapRoutes';
@@ -169,7 +178,12 @@ const SwapReviewSheetWithQuote = ({
   flashbotsEnabled,
   hideSwapReview,
 }: SwapReviewSheetWithQuoteProps) => {
+  const navigate = useRainbowNavigate();
+  const { connectedToHardhat } = useConnectedToHardhatStore();
+
   const [showMoreDetails, setShowDetails] = useState(false);
+  const [sendingSwap, setSendingSwap] = useState(false);
+
   const { minimumReceived, swappingRoute, includedFee, exchangeRate } =
     useSwapReviewDetails({ quote, assetToBuy, assetToSell });
 
@@ -178,6 +192,35 @@ const SwapReviewSheetWithQuote = ({
 
   const openMoreDetails = useCallback(() => setShowDetails(true), []);
   const closeMoreDetails = useCallback(() => setShowDetails(false), []);
+
+  const executeSwap = useCallback(async () => {
+    if (!assetToSell || !assetToBuy || !quote) return;
+    const type =
+      assetToSell.chainId !== assetToBuy.chainId ? 'crosschainSwap' : 'swap';
+    const q = quote as QuoteTypeMap[typeof type];
+    setSendingSwap(true);
+    const { nonce } = await wallet.executeRap<typeof type>({
+      rapActionParameters: {
+        sellAmount: q.sellAmount.toString(),
+        buyAmount: q.buyAmount.toString(),
+        chainId: connectedToHardhat ? ChainId.hardhat : assetToSell.chainId,
+        assetToSell: assetToSell,
+        assetToBuy: assetToBuy,
+        quote: q,
+      },
+      type,
+    });
+    if (nonce) {
+      navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
+    } else {
+      setSendingSwap(false);
+    }
+  }, [assetToBuy, assetToSell, connectedToHardhat, navigate, quote]);
+
+  const handleSwap = useCallback(() => {
+    executeSwap();
+    new Audio(SendSound).play();
+  }, [executeSwap]);
 
   const goBack = useCallback(() => {
     hideSwapReview();
@@ -432,18 +475,29 @@ const SwapReviewSheetWithQuote = ({
           >
             <Stack alignHorizontal="center" space="8px">
               <Button
-                onClick={() => null}
+                onClick={handleSwap}
                 height="44px"
                 variant="flat"
                 color={'accent'}
                 width="full"
               >
-                <Text color="label" size="16pt" weight="bold">
-                  {i18n.t('swap.review.swap_confirmation', {
-                    sellSymbol: assetToSell.symbol,
-                    buySymbol: assetToBuy.symbol,
-                  })}
-                </Text>
+                {sendingSwap ? (
+                  <Box
+                    width="fit"
+                    alignItems="center"
+                    justifyContent="center"
+                    style={{ margin: 'auto' }}
+                  >
+                    <Spinner size={16} color="label" />
+                  </Box>
+                ) : (
+                  <Text color="label" size="16pt" weight="bold">
+                    {i18n.t('swap.review.swap_confirmation', {
+                      sellSymbol: assetToSell.symbol,
+                      buySymbol: assetToBuy.symbol,
+                    })}
+                  </Text>
+                )}
               </Button>
 
               <Button
