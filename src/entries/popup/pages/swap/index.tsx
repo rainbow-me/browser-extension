@@ -140,7 +140,7 @@ export function Swap() {
 
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
-  const { selectedGas } = useGasStore();
+  const { selectedGas, clearCustomGasModified } = useGasStore();
 
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
 
@@ -280,6 +280,12 @@ export function Swap() {
       }
     }
   }, [assetsToSell, selectedToken, selectAssetToSell, setSelectedToken]);
+
+  useEffect(() => {
+    return () => {
+      clearCustomGasModified();
+    };
+  }, [clearCustomGasModified]);
 
   return (
     <>

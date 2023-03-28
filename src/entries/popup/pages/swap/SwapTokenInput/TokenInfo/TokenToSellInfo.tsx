@@ -23,6 +23,7 @@ export const TokenToSellInfo = ({
   setAssetToSellMaxValue: () => void;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
+
   if (!asset) return null;
   return (
     <Box width="full">
