@@ -1,6 +1,6 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import { motion } from 'framer-motion';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import SendSound from 'static/assets/audio/woosh.mp3';
@@ -10,12 +10,15 @@ import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connect
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
   Bleed,
   Box,
   Button,
   ButtonSymbol,
   Inline,
+  Row,
+  Rows,
   Separator,
   Stack,
   Symbol,
@@ -30,7 +33,12 @@ import {
   ExplainerSheet,
   useExplainerSheetParams,
 } from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
+import {
+  Navbar,
+  NavbarCloseButton,
+} from '~/entries/popup/components/Navbar/Navbar';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
+import { SwapFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
 import { useSwapReviewDetails } from '~/entries/popup/hooks/swap';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
@@ -190,6 +198,21 @@ const SwapReviewSheetWithQuote = ({
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
 
+  const isBridge = useMemo(() => {
+    const assetToSellAddressToCompare =
+      assetToSell?.[
+        assetToSell?.chainId === ChainId.mainnet ? 'address' : 'mainnetAddress'
+      ];
+    const assetToBuyAddressToCompare =
+      assetToBuy?.[
+        assetToBuy?.chainId === ChainId.mainnet ? 'address' : 'mainnetAddress'
+      ];
+    return isLowerCaseMatch(
+      assetToSellAddressToCompare,
+      assetToBuyAddressToCompare,
+    );
+  }, [assetToBuy, assetToSell]);
+
   const openMoreDetails = useCallback(() => setShowDetails(true), []);
   const closeMoreDetails = useCallback(() => setShowDetails(false), []);
 
@@ -284,15 +307,12 @@ const SwapReviewSheetWithQuote = ({
           paddingBottom="20px"
         >
           <Stack space="12px">
-            <Box style={{ height: '64px' }}>
-              <Box paddingVertical="27px">
-                <Inline alignHorizontal="center" alignVertical="center">
-                  <Text color="label" size="14pt" weight="bold">
-                    {i18n.t('swap.review.title')}
-                  </Text>
-                </Inline>
-              </Box>
-            </Box>
+            <Navbar
+              title={i18n.t(
+                `swap.review.${isBridge ? 'title_bridge' : 'title_swap'}`,
+              )}
+              leftComponent={<NavbarCloseButton onClick={goBack} />}
+            />
             <Box>
               <Inline
                 space="10px"
@@ -473,43 +493,49 @@ const SwapReviewSheetWithQuote = ({
           <AccentColorProviderWrapper
             color={assetToBuy.colors.primary || assetToBuy.colors.fallback}
           >
-            <Stack alignHorizontal="center" space="8px">
-              <Button
-                onClick={handleSwap}
-                height="44px"
-                variant="flat"
-                color={'accent'}
-                width="full"
-              >
-                {sendingSwap ? (
-                  <Box
-                    width="fit"
-                    alignItems="center"
-                    justifyContent="center"
-                    style={{ margin: 'auto' }}
+            <Box>
+              <Rows space="20px">
+                <Row>
+                  <SwapFee
+                    chainId={assetToSell?.chainId || ChainId.mainnet}
+                    quote={quote}
+                    accentColor={
+                      assetToBuy?.colors?.primary ||
+                      assetToBuy?.colors?.fallback
+                    }
+                    assetToSell={assetToSell}
+                    assetToBuy={assetToBuy}
+                  />
+                </Row>
+                <Row>
+                  <Button
+                    onClick={handleSwap}
+                    height="44px"
+                    variant="flat"
+                    color={'accent'}
+                    width="full"
                   >
-                    <Spinner size={16} color="label" />
-                  </Box>
-                ) : (
-                  <Text color="label" size="16pt" weight="bold">
-                    {i18n.t('swap.review.swap_confirmation', {
-                      sellSymbol: assetToSell.symbol,
-                      buySymbol: assetToBuy.symbol,
-                    })}
-                  </Text>
-                )}
-              </Button>
-
-              <Button
-                color={'labelSecondary'}
-                height="44px"
-                width="fit"
-                onClick={goBack}
-                variant={'transparent'}
-              >
-                {i18n.t('swap.review.go_back')}
-              </Button>
-            </Stack>
+                    {sendingSwap ? (
+                      <Box
+                        width="fit"
+                        alignItems="center"
+                        justifyContent="center"
+                        style={{ margin: 'auto' }}
+                      >
+                        <Spinner size={16} color="label" />
+                      </Box>
+                    ) : (
+                      <Text color="label" size="16pt" weight="bold">
+                        {i18n.t('swap.review.swap_confirmation', {
+                          sellSymbol: assetToSell.symbol,
+                          buySymbol: assetToBuy.symbol,
+                        })}
+                      </Text>
+                    )}
+                  </Button>
+                </Row>
+              </Rows>
+            </Box>
           </AccentColorProviderWrapper>
         </Box>
       </BottomSheet>
