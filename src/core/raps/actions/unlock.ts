@@ -1,6 +1,6 @@
+import { Signer } from '@ethersproject/abstract-signer';
 import { MaxUint256 } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
-import { Wallet } from '@ethersproject/wallet';
 import { Address, erc20ABI, getProvider } from '@wagmi/core';
 
 import { ChainId } from '~/core/types/chains';
@@ -8,6 +8,8 @@ import {
   TransactionGasParams,
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
+import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import { addNewTransaction } from '~/core/utils/transactions';
 import { logger } from '~/logger';
 
 import { ETH_ADDRESS, gasUnits } from '../../references';
@@ -18,7 +20,7 @@ import {
   greaterThan,
   toHex,
 } from '../../utils/numbers';
-import { RapUnlockActionParameters } from '../references';
+import { ActionProps } from '../references';
 
 import { overrideWithFastSpeedIfNeeded } from './../utils';
 
@@ -120,7 +122,7 @@ export const executeApprove = async ({
   nonce?: number;
   spender: Address;
   tokenAddress: Address;
-  wallet: Wallet;
+  wallet: Signer;
 }) => {
   const tokenContract = new Contract(tokenAddress, erc20ABI, wallet);
 
@@ -136,12 +138,7 @@ export const unlock = async ({
   index,
   parameters,
   wallet,
-}: {
-  baseNonce?: number;
-  index: number;
-  parameters: RapUnlockActionParameters;
-  wallet: Wallet;
-}): Promise<number | undefined> => {
+}: ActionProps<'unlock'>): Promise<number | undefined> => {
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
 
   const { assetToUnlock, contractAddress, chainId } = parameters;
@@ -165,9 +162,9 @@ export const unlock = async ({
   }
 
   const gasParams = overrideWithFastSpeedIfNeeded({
-    selectedGas,
     chainId,
     gasFeeParamsBySpeed,
+    selectedGas,
   });
 
   const nonce = baseNonce ? baseNonce + index : undefined;
@@ -190,6 +187,25 @@ export const unlock = async ({
     });
     throw e;
   }
+
+  const transaction = {
+    amount: approval.value,
+    asset: assetToUnlock,
+    data: approval.data,
+    value: approval.value,
+    from: parameters.fromAddress,
+    to: assetAddress as Address,
+    hash: approval.hash,
+    chainId: approval.chainId,
+    nonce: approval.nonce,
+    status: TransactionStatus.approving,
+    type: TransactionType.send,
+  };
+  await addNewTransaction({
+    address: parameters.fromAddress as Address,
+    chainId: approval.chainId as ChainId,
+    transaction,
+  });
 
   return approval?.nonce;
 };
