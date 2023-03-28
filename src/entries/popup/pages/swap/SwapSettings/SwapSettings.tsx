@@ -12,6 +12,7 @@ import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
 import { ChainId } from '~/core/types/chains';
+import { divide } from '~/core/utils/numbers';
 import {
   Bleed,
   Box,
@@ -33,7 +34,7 @@ import {
   ExplainerSheet,
   useExplainerSheetParams,
 } from '../../../components/ExplainerSheet/ExplainerSheet';
-import { DEFAULT_SLIPPAGE } from '../../../hooks/swap/useSwapSettings';
+import { getDefaultSlippage } from '../../../hooks/swap/useSwapSettings';
 import { useAvatar } from '../../../hooks/useAvatar';
 import usePrevious from '../../../hooks/usePrevious';
 import { SlippageInputMask } from '../SlippageInputMask';
@@ -198,7 +199,7 @@ const slippageExplainerProps = {
 
 export const SwapSettings = ({
   accentColor,
-  chainId,
+  chainId = ChainId.mainnet,
   show,
   slippage: defaultSlippage,
   setSettings,
@@ -223,12 +224,17 @@ export const SwapSettings = ({
 
   const setDefaultSettings = useCallback(() => {
     setSource('auto');
-    setSlippage(DEFAULT_SLIPPAGE[chainId || ChainId.mainnet]);
+    const defaultSlippage = getDefaultSlippage(chainId);
+    setSlippage(defaultSlippage);
     setFlashbotsEnabled(false);
   }, [chainId]);
 
   const done = useCallback(() => {
-    setSettings({ source, slippage: slippage || '0', flashbotsEnabled });
+    setSettings({
+      source,
+      slippage: divide(slippage, 100).toString(),
+      flashbotsEnabled,
+    });
     onDone();
   }, [flashbotsEnabled, onDone, setSettings, slippage, source]);
 
@@ -239,7 +245,7 @@ export const SwapSettings = ({
 
   useEffect(() => {
     if (prevChainId !== chainId) {
-      setSlippage(DEFAULT_SLIPPAGE[chainId || ChainId.mainnet]);
+      setSlippage(getDefaultSlippage(chainId));
     }
   }, [prevChainId, chainId]);
 
