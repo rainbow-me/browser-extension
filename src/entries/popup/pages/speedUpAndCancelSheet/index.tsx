@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import { Address, useAccount, useBalance, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useCurrentSheetStore } from '~/core/state/currentSheet';
 import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 import { ChainId } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
@@ -34,6 +33,8 @@ import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { sendTransaction } from '../../handlers/wallet';
 
 type SpeedUpAndCancelSheetProps = {
+  currentSheet: SheetMode;
+  onClose: () => void;
   transaction: RainbowTransaction | null;
 };
 
@@ -43,14 +44,15 @@ type SpeedUpAndCancelSheetProps = {
 export type SheetMode = 'cancel' | 'none' | 'speedUp';
 
 export function SpeedUpAndCancelSheet({
+  currentSheet,
+  onClose,
   transaction,
 }: SpeedUpAndCancelSheetProps) {
-  const { sheet, setCurrentSheet } = useCurrentSheetStore();
   const { setSelectedTransaction } = useSelectedTransactionStore();
-  const cancel = sheet === 'cancel';
-  const onClose = useCallback(() => {
-    setCurrentSheet('none');
-  }, [setCurrentSheet]);
+  const cancel = currentSheet === 'cancel';
+  const handleClose = useCallback(() => {
+    onClose();
+  }, [onClose]);
   const speedUpTransactionRequest: TransactionRequest = useMemo(
     () => ({
       to: transaction?.to,
@@ -92,7 +94,7 @@ export function SpeedUpAndCancelSheet({
       chainId: cancellationResult?.chainId,
       transaction: cancelTx,
     });
-    onClose();
+    handleClose();
   };
   const handleSpeedUp = async () => {
     const speedUpResult = await sendTransaction(speedUpTransactionRequest);
@@ -113,7 +115,7 @@ export function SpeedUpAndCancelSheet({
       chainId: speedUpResult?.chainId,
       transaction: speedUpTransaction,
     });
-    onClose();
+    handleClose();
   };
 
   useEffect(() => {

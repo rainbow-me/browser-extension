@@ -1,14 +1,14 @@
 import { useCallback } from 'react';
 
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentSheetStore } from '~/core/state/currentSheet';
+import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 
 export function useActivityShortcuts() {
   const { selectedTransaction } = useSelectedTransactionStore();
-  const { sheet, setCurrentSheet } = useCurrentSheetStore();
+  const { sheet, setCurrentHomeSheet } = useCurrentHomeSheetStore();
   const getTransactionIsSelected = useCallback(
     () => !!selectedTransaction,
     [selectedTransaction],
@@ -17,13 +17,13 @@ export function useActivityShortcuts() {
     (e: KeyboardEvent) => {
       if (selectedTransaction?.pending && sheet === 'none') {
         if (e.key === shortcuts.activity.CANCEL_TRANSACTION.key) {
-          setCurrentSheet('cancel');
+          setCurrentHomeSheet('cancel');
         } else if (e.key === shortcuts.activity.SPEED_UP_TRANSACTION.key) {
-          setCurrentSheet('speedUp');
+          setCurrentHomeSheet('speedUp');
         }
       }
     },
-    [selectedTransaction, setCurrentSheet, sheet],
+    [selectedTransaction, setCurrentHomeSheet, sheet],
   );
   useKeyboardShortcut({
     condition: getTransactionIsSelected,

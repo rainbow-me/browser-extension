@@ -9,7 +9,7 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentSheetStore } from '~/core/state/currentSheet';
+import { useCurrentHomeSheetStore } from '~/core/state/currentHomeSheet';
 import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
@@ -35,7 +35,7 @@ export function TransactionDetailsMenu({
   children: ReactNode;
   transaction: RainbowTransaction;
 }) {
-  const { sheet, setCurrentSheet } = useCurrentSheetStore();
+  const { sheet, setCurrentHomeSheet } = useCurrentHomeSheetStore();
   const { setSelectedTransaction } = useSelectedTransactionStore();
   // need to control this manually so that menu closes when sheet appears
   const [closed, setClosed] = useState(false);
@@ -80,12 +80,12 @@ export function TransactionDetailsMenu({
           break;
         case 'speedUp':
         case 'cancel':
-          setCurrentSheet(value);
+          setCurrentHomeSheet(value);
           setClosed(true);
           break;
       }
     },
-    [handleCopy, setCurrentSheet, viewOnExplorer],
+    [handleCopy, setCurrentHomeSheet, viewOnExplorer],
   );
 
   const onTrigger = useCallback(

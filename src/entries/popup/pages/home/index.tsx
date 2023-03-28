@@ -19,9 +19,9 @@ import { globalColors } from '~/design-system/styles/designTokens';
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { useAvatar } from '../../hooks/useAvatar';
+import { useCurrentHomeSheet } from '../../hooks/useCurrentHomeSheet';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import useSheet from '../../hooks/useSheet';
 import { MainLayout } from '../../layouts/MainLayout';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
@@ -43,7 +43,7 @@ export function Home() {
   const { address } = useAccount();
   const { state } = useLocation();
   const { avatar } = useAvatar({ address });
-  const { isDisplayingSheet, renderCurrentSheet } = useSheet();
+  const { currentHomeSheet, isDisplayingSheet } = useCurrentHomeSheet();
 
   const navigate = useRainbowNavigate();
 
@@ -113,7 +113,7 @@ export function Home() {
               {activeTab === 'activity' && <Activity />}
             </Content>
           </MainLayout>
-          {renderCurrentSheet()}
+          {currentHomeSheet}
         </>
       )}
     </AccentColorProvider>
