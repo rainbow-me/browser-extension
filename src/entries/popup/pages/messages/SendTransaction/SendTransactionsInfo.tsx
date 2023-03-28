@@ -89,8 +89,6 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
     }
   }, [request, nativeAsset, currentCurrency]);
 
-  console.log(appLogo);
-
   return (
     <Box background="surfacePrimaryElevatedSecondary">
       <Inset top="40px" bottom="16px">

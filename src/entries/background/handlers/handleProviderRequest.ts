@@ -17,7 +17,7 @@ import {
 import { providerRequestTransport } from '~/core/transports';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { isSupportedChainId } from '~/core/utils/chains';
-import { dappNameOverride, getDappHost } from '~/core/utils/connectedApps';
+import { getDappHost } from '~/core/utils/connectedApps';
 import { DEFAULT_CHAIN_ID } from '~/core/utils/defaults';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { toHex } from '~/core/utils/numbers';
@@ -116,7 +116,7 @@ export const handleProviderRequest = ({
       appSessionsStore.getState();
     const url = meta?.sender?.url || '';
     const host = getDappHost(url);
-    const dappName = dappNameOverride(url);
+    const dappName = meta.sender.tab?.title || host;
     const activeSession = getActiveSession({ host });
 
     try {

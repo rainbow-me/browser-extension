@@ -130,6 +130,9 @@ export const maybeSignUri = (
   if (!externalImageUri?.startsWith('https://')) {
     return externalImageUri;
   }
+  if (externalImageUri?.startsWith('https://icons.duckduckgo.com/')) {
+    return externalImageUri;
+  }
 
   // If the image has already been signed, return this quickly.
   const signature = `${externalImageUri}-${options?.w}`;

@@ -1,6 +1,5 @@
 import {
-  dappLogoOverride,
-  dappNameOverride,
+  getConnectedAppIcon,
   getDappHost,
   getDappHostname,
 } from '~/core/utils/connectedApps';
@@ -13,8 +12,8 @@ interface AppMetadata {
 export function useAppMetadata({ url, title }: AppMetadata) {
   const appHostName = url ? getDappHostname(url) : '';
   const appHost = url ? getDappHost(url) : '';
-  const appLogo = url ? dappLogoOverride(url) : '';
-  const appName = url ? dappNameOverride(url) || title : '';
+  const appLogo = url ? getConnectedAppIcon(appHost) : '';
+  const appName = url ? title : '';
 
   return {
     appHost,
