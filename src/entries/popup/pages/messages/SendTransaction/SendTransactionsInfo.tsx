@@ -1,6 +1,7 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import React, { useMemo } from 'react';
 
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
@@ -88,6 +89,14 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
 
           <Inset horizontal="20px">
             <TransactionFee
+              analyticsEvents={{
+                customGasClicked:
+                  event.dappPromptSendTransactionCustomGasClicked,
+                transactionSpeedSwitched:
+                  event.dappPromptSendTransactionSpeedSwitched,
+                transactionSpeedClicked:
+                  event.dappPromptSendTransactionSpeedClicked,
+              }}
               chainId={appSession.chainId}
               transactionRequest={request?.params?.[0] as TransactionRequest}
               plainTriggerBorder
