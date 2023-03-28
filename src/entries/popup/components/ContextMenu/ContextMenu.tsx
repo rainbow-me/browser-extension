@@ -22,6 +22,7 @@ interface ContextMenuTriggerProps {
   children: ReactNode;
   accentColor?: string;
   asChild?: boolean;
+  onTrigger?: () => void;
 }
 
 export function ContextMenuTrigger(props: ContextMenuTriggerProps) {
@@ -42,6 +43,7 @@ export function ContextMenuTrigger(props: ContextMenuTriggerProps) {
           ) {
             e.clientX = WINDOW_LEFT_OFFSET;
           }
+          props.onTrigger?.();
         }}
       >
         {children}

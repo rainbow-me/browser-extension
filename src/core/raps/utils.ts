@@ -38,12 +38,12 @@ export const overrideWithFastSpeedIfNeeded = ({
   gasFeeParamsBySpeed,
 }: {
   selectedGas: GasFeeParams | GasFeeLegacyParams;
-  chainId: Chain['id'];
+  chainId: ChainId;
   gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed;
 }) => {
   const gasParams = selectedGas.transactionGasParams;
   // approvals should always use fast gas or custom (whatever is faster)
-  if (chainId === chain.mainnet.id) {
+  if (chainId === ChainId.mainnet) {
     const transactionGasParams = gasParams as TransactionGasParams;
     if (
       !transactionGasParams.maxFeePerGas ||
@@ -71,7 +71,7 @@ export const overrideWithFastSpeedIfNeeded = ({
           fastTransactionGasParams.maxPriorityFeePerGas;
       }
     }
-  } else if (chainId === chain.polygon.id) {
+  } else if (chainId === ChainId.polygon) {
     const transactionGasParams = gasParams as TransactionLegacyGasParams;
     if (!transactionGasParams.gasPrice) {
       const fastGasPrice = (
