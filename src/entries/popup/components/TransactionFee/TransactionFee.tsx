@@ -92,7 +92,8 @@ function Fee({
 
   useEffect(() => {
     clearCustomGasModified();
-  }, [clearCustomGasModified]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Box>
