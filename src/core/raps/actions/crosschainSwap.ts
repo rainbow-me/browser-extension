@@ -1,8 +1,11 @@
-import { Wallet } from '@ethersproject/wallet';
+import { Signer } from '@ethersproject/abstract-signer';
 import { CrosschainQuote, fillCrosschainQuote } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
+import { Address, getProvider } from '@wagmi/core';
 
 import { gasUnits } from '~/core/references';
+import { ChainId } from '~/core/types/chains';
+import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import { addNewTransaction } from '~/core/utils/transactions';
 import { logger } from '~/logger';
 
 import { gasStore } from '../../state';
@@ -12,7 +15,7 @@ import {
 } from '../../types/gas';
 import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/numbers';
-import { Rap, RapCrosschainSwapActionParameters } from '../references';
+import { ActionProps } from '../references';
 import {
   CHAIN_IDS_WITH_TRACE_SUPPORT,
   SWAP_GAS_PADDING,
@@ -29,7 +32,7 @@ export const estimateCrosschainSwapGasLimit = async ({
   requiresApprove,
   quote,
 }: {
-  chainId: number;
+  chainId: ChainId;
   requiresApprove?: boolean;
   quote: CrosschainQuote;
 }): Promise<string> => {
@@ -79,35 +82,35 @@ export const estimateCrosschainSwapGasLimit = async ({
 
 export const executeCrosschainSwap = async ({
   gasLimit,
-  transactionGasParams,
+  gasParams,
   nonce,
   quote,
   wallet,
 }: {
   gasLimit: string;
-  transactionGasParams: TransactionGasParams | TransactionLegacyGasParams;
+  gasParams: TransactionGasParams | TransactionLegacyGasParams;
   nonce?: number;
   quote: CrosschainQuote;
-  wallet: Wallet | null;
+  wallet: Signer;
 }) => {
   if (!wallet || !quote) return null;
 
   const transactionParams = {
     gasLimit: toHex(gasLimit) || undefined,
     nonce: nonce ? toHex(String(nonce)) : undefined,
-    ...transactionGasParams,
+    ...gasParams,
   };
 
   return fillCrosschainQuote(quote, transactionParams, wallet);
 };
 
-export const crosschainSwap = async (
-  wallet: Wallet,
-  currentRap: Rap,
-  index: number,
-  parameters: RapCrosschainSwapActionParameters,
-  baseNonce?: number,
-): Promise<number | undefined> => {
+export const crosschainSwap = async ({
+  wallet,
+  currentRap,
+  index,
+  parameters,
+  baseNonce,
+}: ActionProps<'crosschainSwap'>): Promise<number | undefined> => {
   const { quote, chainId, requiresApprove } = parameters;
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
 
@@ -143,7 +146,7 @@ export const crosschainSwap = async (
     nonce,
     quote,
     wallet,
-    transactionGasParams: gasParams,
+    gasParams,
   };
 
   let swap;
@@ -156,6 +159,25 @@ export const crosschainSwap = async (
     });
     throw e;
   }
+
+  const transaction = {
+    amount: parameters.quote.value?.toString(),
+    asset: parameters.assetToSell,
+    data: parameters.quote.data,
+    value: parameters.quote.value,
+    from: parameters.quote.from as Address,
+    to: parameters.quote.to as Address,
+    hash: swap?.hash,
+    chainId: parameters.chainId,
+    nonce: swap?.nonce,
+    status: TransactionStatus.swapping,
+    type: TransactionType.trade,
+  };
+  await addNewTransaction({
+    address: parameters.quote.from as Address,
+    chainId: parameters.chainId as ChainId,
+    transaction,
+  });
 
   return swap?.nonce;
 };

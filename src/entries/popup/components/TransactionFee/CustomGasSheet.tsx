@@ -280,10 +280,13 @@ export const CustomGasSheet = ({
   ]);
 
   useEffect(() => {
-    onSelectedGasChange(selectedGas?.option);
-    setTimeout(() => {
-      maxBaseFeeInputRef?.current?.focus();
-    }, 500);
+    if (show) {
+      onSelectedGasChange(selectedGas?.option);
+      setTimeout(() => {
+        maxBaseFeeInputRef?.current?.focus();
+      }, 500);
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show]);
 
