@@ -42,7 +42,6 @@ export const useSwapAssets = () => {
   );
 
   const [outputChainId, setOutputChainId] = useState(ChainId.mainnet);
-  const prevOutputChainId = usePrevious(outputChainId);
 
   const [sortMethod, setSortMethod] = useState<SortMethod>('token');
 
@@ -136,13 +135,6 @@ export const useSwapAssets = () => {
     setAssetToSellState(asset);
     asset?.chainId && setOutputChainId(asset?.chainId);
   }, []);
-
-  // if output chain id changes we need to clear the receive asset
-  useEffect(() => {
-    if (prevOutputChainId !== outputChainId) {
-      setAssetToBuy(null);
-    }
-  }, [outputChainId, prevOutputChainId, setAssetToBuy]);
 
   // if user selects assetToBuy as assetToSell we need to flip assets
   useEffect(() => {
