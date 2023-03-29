@@ -7,11 +7,14 @@ import { zIndexes } from '../../utils/zIndexes';
 
 export const Toast = () => {
   const [visible, setVisible] = useState(false);
-  const [text, setText] = useState({ title: '', description: '' });
+  const [text, setText] = useState<{ title: string; description?: string }>({
+    title: '',
+    description: '',
+  });
   const { listenToast, clearToastListener } = useToast();
 
   listenToast(
-    async ({ title, description }: { title: string; description: string }) => {
+    async ({ title, description }: { title: string; description?: string }) => {
       setText({ title, description });
       setVisible(true);
       setTimeout(() => {
@@ -44,16 +47,18 @@ export const Toast = () => {
                   {text.title}
                 </Text>
               </Row>
-              <Row>
-                <Text
-                  color="labelTertiary"
-                  size="11pt"
-                  weight="medium"
-                  align="center"
-                >
-                  {text.description}
-                </Text>
-              </Row>
+              {text.description && (
+                <Row>
+                  <Text
+                    color="labelTertiary"
+                    size="11pt"
+                    weight="medium"
+                    align="center"
+                  >
+                    {text.description}
+                  </Text>
+                </Row>
+              )}
             </Rows>
           </Box>
         </Box>
