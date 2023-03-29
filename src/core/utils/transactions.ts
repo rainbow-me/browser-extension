@@ -738,7 +738,7 @@ export function getTokenBlockExplorerUrl({
   address,
   chainId,
 }: {
-  address: Address;
+  address: Address | typeof ETH_ADDRESS;
   chainId: ChainId;
 }) {
   const blockExplorerHost = getBlockExplorerHostForChain(chainId);
