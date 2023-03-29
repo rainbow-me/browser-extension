@@ -15,6 +15,7 @@ import { ETH_ADDRESS } from '~/core/references';
 import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ChainId } from '~/core/types/chains';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
@@ -61,6 +62,8 @@ export function Send() {
     useSendAsset();
 
   const { clearCustomGasModified, selectedGas } = useGasStore();
+
+  const { selectedToken, setSelectedToken } = useSelectedTokenStore();
 
   const {
     assetAmount,
@@ -200,7 +203,7 @@ export function Send() {
 
   const selectAsset = useCallback(
     (address: Address | typeof ETH_ADDRESS | '') => {
-      selectAssetAddress(address);
+      selectAssetAddress(address as Address);
       setIndependentAmount('');
     },
     [selectAssetAddress, setIndependentAmount],
@@ -239,6 +242,15 @@ export function Send() {
       header: { emoji: '✋' },
     });
   }, [hideExplainerSheet, showExplainerSheet]);
+
+  useEffect(() => {
+    // navigating from token row
+    if (selectedToken) {
+      selectAsset(selectedToken.address);
+      // clear selected token
+      setSelectedToken();
+    }
+  }, [selectAsset, selectedToken, setSelectedToken]);
 
   const prevToAddressIsSmartContract = usePrevious(toAddressIsSmartContract);
   useEffect(() => {

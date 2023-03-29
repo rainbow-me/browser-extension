@@ -49,7 +49,7 @@ test('[rap/swap] :: should execute swap', async () => {
   const swapTx = await executeSwap({
     chainId: chain.mainnet.id,
     gasLimit: '600000',
-    transactionGasParams: {
+    gasParams: {
       maxFeePerGas: '200000000000',
       maxPriorityFeePerGas: '2000000000',
     },

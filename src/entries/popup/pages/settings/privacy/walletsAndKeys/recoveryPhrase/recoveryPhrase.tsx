@@ -6,11 +6,13 @@ import SeedPhraseTable from '~/entries/popup/components/SeedPhraseTable/SeedPhra
 import ViewSecret from '~/entries/popup/components/ViewSecret/ViewSecret';
 import { exportWallet } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
+import { useToast } from '~/entries/popup/hooks/useToast';
 import { ROUTES } from '~/entries/popup/urls';
 
 export function RecoveryPhrase() {
   const { state } = useLocation();
   const navigate = useRainbowNavigate();
+  const { triggerToast } = useToast();
 
   const [seed, setSeed] = useState('');
 
@@ -19,10 +21,14 @@ export function RecoveryPhrase() {
     [navigate],
   );
 
-  const handleCopy = useCallback(
-    () => navigator.clipboard.writeText(seed as string),
-    [seed],
-  );
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(seed as string);
+    triggerToast({
+      title: i18n.t(
+        'settings.privacy_and_security.wallets_and_keys.recovery_phrase.phrase_copied',
+      ),
+    });
+  }, [seed, triggerToast]);
 
   useEffect(() => {
     const fetchRecoveryPhrase = async () => {

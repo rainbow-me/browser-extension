@@ -84,7 +84,7 @@ function ActionButtonsSection() {
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
 
-  const { watchedWallets } = useWallets();
+  const { isWatchingWallet } = useWallets();
   const { triggerToast } = useToast();
   const { featureFlags } = useFeatureFlagsStore();
   const { triggerAlert } = useAlert();
@@ -96,11 +96,6 @@ function ActionButtonsSection() {
       description: truncateAddress(address),
     });
   }, [address, triggerToast]);
-
-  const isWatchingWallet = React.useMemo(() => {
-    const watchedAddresses = watchedWallets.map(({ address }) => address);
-    return address && watchedAddresses.includes(address);
-  }, [address, watchedWallets]);
 
   const allowSwap = React.useMemo(
     () =>

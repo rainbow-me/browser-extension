@@ -1,3 +1,4 @@
+import { Signer } from '@ethersproject/abstract-signer';
 import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
 import { Address } from 'wagmi';
 
@@ -31,7 +32,12 @@ export type SwapMetadata = {
   independentValue: string;
 };
 
-interface RapBaseSwapActionParameters {
+export type QuoteTypeMap = {
+  swap: Quote;
+  crosschainSwap: CrosschainQuote;
+};
+
+export interface RapSwapActionParameters<T extends 'swap' | 'crosschainSwap'> {
   amount?: string | null;
   sellAmount: string;
   buyAmount?: string;
@@ -41,15 +47,8 @@ interface RapBaseSwapActionParameters {
   meta?: SwapMetadata;
   assetToSell: ParsedAsset;
   assetToBuy?: ParsedAsset;
-}
-
-export interface RapSwapActionParameters extends RapBaseSwapActionParameters {
-  quote: Quote;
-}
-
-export interface RapCrosschainSwapActionParameters
-  extends RapBaseSwapActionParameters {
-  quote: CrosschainQuote;
+  nonce?: number;
+  quote: QuoteTypeMap[T];
 }
 
 export interface RapUnlockActionParameters {
@@ -60,22 +59,28 @@ export interface RapUnlockActionParameters {
 }
 
 export type RapActionParameters =
-  | RapSwapActionParameters
-  | RapCrosschainSwapActionParameters
+  | RapSwapActionParameters<'swap'>
+  | RapSwapActionParameters<'crosschainSwap'>
   | RapUnlockActionParameters;
 
 export interface RapActionTransaction {
   hash: string | null;
 }
 
-export interface RapAction {
-  parameters: RapActionParameters;
+export type RapActionParameterMap = {
+  swap: RapSwapActionParameters<'swap'>;
+  crosschainSwap: RapSwapActionParameters<'crosschainSwap'>;
+  unlock: RapUnlockActionParameters;
+};
+
+export interface RapAction<T extends RapActionTypes> {
+  parameters: RapActionParameterMap[T];
   transaction: RapActionTransaction;
-  type: RapActionTypes;
+  type: T;
 }
 
 export interface Rap {
-  actions: RapAction[];
+  actions: RapAction<'swap' | 'crosschainSwap' | 'unlock'>[];
 }
 
 export enum rapActions {
@@ -85,3 +90,28 @@ export enum rapActions {
 }
 
 export type RapActionTypes = keyof typeof rapActions;
+
+export enum rapTypes {
+  swap = 'swap',
+  crosschainSwap = 'crosschainSwap',
+}
+
+export type RapTypes = keyof typeof rapTypes;
+
+export interface RapActionResponse {
+  baseNonce?: number | null;
+  errorMessage: string | null;
+}
+
+export interface ActionProps<T extends RapActionTypes> {
+  baseNonce?: number;
+  index: number;
+  parameters: RapActionParameterMap[T];
+  wallet: Signer;
+  currentRap: Rap;
+}
+
+export interface WalletExecuteRapProps {
+  rapActionParameters: RapSwapActionParameters<'swap' | 'crosschainSwap'>;
+  type: RapTypes;
+}

@@ -17,6 +17,7 @@ export enum walletActions {
   export_wallet = 'export_wallet',
   export_account = 'export_account',
   send_transaction = 'send_transaction',
+  execute_rap = 'execute_rap',
   personal_sign = 'personal_sign',
   sign_typed_data = 'sign_typed_data',
   test_sandbox = 'test_sandbox',

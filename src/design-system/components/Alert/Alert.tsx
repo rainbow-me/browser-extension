@@ -1,9 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
 import { AlertProps, useAlert } from '~/entries/popup/hooks/useAlert';
+import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 export const Alert = () => {
@@ -27,6 +29,16 @@ export const Alert = () => {
     return () => clearAlertListener();
   }, [clearAlertListener]);
 
+  useKeyboardShortcut({
+    condition: () => visible,
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.global.CLOSE.key) {
+        onClose();
+        e.preventDefault();
+      }
+    },
+  });
+
   if (!visible) return null;
 
   return (
@@ -40,7 +52,7 @@ export const Alert = () => {
           </Box>
           <Inline alignHorizontal="right">
             <Button
-              width="fit"
+              width="full"
               color="accent"
               height="28px"
               variant="flat"

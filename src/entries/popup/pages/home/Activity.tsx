@@ -33,27 +33,17 @@ import { CoinRow } from '~/entries/popup/components/CoinRow/CoinRow';
 
 import { ActivitySkeleton } from '../../components/ActivitySkeleton/ActivitySkeleton';
 import { Spinner } from '../../components/Spinner/Spinner';
+import { useActivityShortcuts } from '../../hooks/useActivityShortcuts';
 import { useAllTransactions } from '../../hooks/useAllTransactions';
-import { SheetMode } from '../speedUpAndCancelSheet';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { TransactionDetailsMenu } from './TransactionDetailsMenu';
-
-type ActivityProps = {
-  onSheetSelected: ({
-    sheet,
-    transaction,
-  }: {
-    sheet: SheetMode;
-    transaction: RainbowTransaction;
-  }) => void;
-};
 
 const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 150;
 const ACTIVITY_DEFAULT_LENGTH = 100;
 
-export function Activity({ onSheetSelected }: ActivityProps) {
+export function Activity() {
   const { address } = useAccount();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { allTransactionsByDate, isInitialLoading } = useAllTransactions({
@@ -87,15 +77,7 @@ export function Activity({ onSheetSelected }: ActivityProps) {
     };
   }, [scrollEndListener]);
 
-  const onTransactionSelected = ({
-    sheet,
-    transaction,
-  }: {
-    sheet: SheetMode;
-    transaction: RainbowTransaction;
-  }) => {
-    onSheetSelected({ sheet, transaction });
-  };
+  useActivityShortcuts();
 
   if (isInitialLoading) {
     return <ActivitySkeleton />;
@@ -179,10 +161,7 @@ export function Activity({ onSheetSelected }: ActivityProps) {
                     </Box>
                   </Inset>
                 ) : (
-                  <TransactionDetailsMenu
-                    onRowSelection={onTransactionSelected}
-                    transaction={rowData}
-                  >
+                  <TransactionDetailsMenu transaction={rowData}>
                     <ActivityRow transaction={rowData} />
                   </TransactionDetailsMenu>
                 )}
@@ -378,7 +357,7 @@ const ActivityRow = React.memo(function ({
     const nameMaxWidth = TEXT_MAX_WIDTH - nameMaxWidthDiff;
     return (
       <Columns>
-        <Column width="content">
+        <Column>
           <Box paddingVertical="4px">
             <TextOverflow maxWidth={nameMaxWidth} size="14pt" weight="semibold">
               {name}

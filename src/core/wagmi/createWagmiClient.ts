@@ -6,7 +6,6 @@ import {
   createClient,
   createStorage,
 } from 'wagmi';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
@@ -28,12 +27,24 @@ const { chains, provider, webSocketProvider } = configureChains(
   [
     jsonRpcProvider({
       rpc: (chain) => {
-        if (chain.id === ChainId.bsc || chain.id === ChainId.hardhat)
-          return { http: chain.rpcUrls.default };
-        return null;
+        switch (chain.id) {
+          case ChainId.hardhat:
+            return { http: chain.rpcUrls.default };
+          case ChainId.mainnet:
+            return { http: process.env.ETH_MAINNET_RPC as string };
+          case ChainId.optimism:
+            return { http: process.env.OPTIMISM_MAINNET_RPC as string };
+          case ChainId.arbitrum:
+            return { http: process.env.ARBITRUM_MAINNET_RPC as string };
+          case ChainId.polygon:
+            return { http: process.env.POLYGON_MAINNET_RPC as string };
+          case ChainId.bsc:
+            return { http: process.env.BSC_MAINNET_RPC as string };
+          default:
+            return null;
+        }
       },
     }),
-    alchemyProvider({ apiKey: process.env.ALCHEMY_API_KEY }),
     infuraProvider({ apiKey: process.env.INFURA_API_KEY }),
   ],
 );

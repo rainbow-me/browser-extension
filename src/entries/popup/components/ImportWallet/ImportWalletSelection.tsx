@@ -178,14 +178,14 @@ const ImportWalletSelection = ({
                         </Inline>
                       </Row>
                       <Row>
-                        <Box width="full" paddingTop="6px">
-                          {index !== accountsToImport.length - 1 ? (
+                        {index !== accountsToImport.length - 1 ? (
+                          <Box width="full" paddingTop="6px">
                             <Separator
                               color="separatorTertiary"
                               strokeWeight="1px"
                             />
-                          ) : null}
-                        </Box>
+                          </Box>
+                        ) : null}
                       </Row>
                     </Rows>
                   </Row>

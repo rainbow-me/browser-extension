@@ -3,9 +3,8 @@ import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { analytics } from '~/analytics';
-import { event } from '~/analytics/event';
+import { EventProperties } from '~/analytics/event';
 import { i18n } from '~/core/languages';
-import { useDefaultTxSpeedStore } from '~/core/state/currentSettings/defaultTxSpeed';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -25,6 +24,7 @@ import {
 } from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
+import { useDefaultTxSpeed } from '../../hooks/useDefaultTxSpeed';
 import { useSwapGas, useTransactionGas } from '../../hooks/useGas';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 
@@ -40,6 +40,11 @@ type FeeProps = {
   isLoading: boolean;
   currentBaseFee: string;
   baseFeeTrend: number;
+  analyticsEvents?: {
+    customGasClicked: keyof EventProperties;
+    transactionSpeedSwitched: keyof EventProperties;
+    transactionSpeedClicked: keyof EventProperties;
+  };
   setSelectedSpeed: React.Dispatch<React.SetStateAction<GasSpeed>>;
   setCustomMaxBaseFee: (maxBaseFee?: string) => void;
   setCustomMaxPriorityFee: (maxPriorityFee?: string) => void;
@@ -47,17 +52,18 @@ type FeeProps = {
 };
 
 function Fee({
-  chainId,
   accentColor,
+  analyticsEvents,
+  baseFeeTrend,
+  chainId,
+  currentBaseFee,
+  gasFeeParamsBySpeed,
+  isLoading,
   plainTriggerBorder,
   selectedSpeed,
   setSelectedSpeed,
-  gasFeeParamsBySpeed,
-  isLoading,
   setCustomMaxBaseFee,
   setCustomMaxPriorityFee,
-  currentBaseFee,
-  baseFeeTrend,
   clearCustomGasModified,
 }: FeeProps) {
   const [showCustomGasSheet, setShowCustomGasSheet] = useState(false);
@@ -68,8 +74,9 @@ function Fee({
   );
   const openCustomGasSheet = useCallback(() => {
     setShowCustomGasSheet(true);
-    analytics.track(event.dappPromptSendTransactionCustomGasClicked);
-  }, []);
+    analyticsEvents?.customGasClicked &&
+      analytics.track(analyticsEvents?.customGasClicked);
+  }, [analyticsEvents?.customGasClicked]);
 
   const closeCustomGasSheet = useCallback(
     () => setShowCustomGasSheet(false),
@@ -82,13 +89,24 @@ function Fee({
         openCustomGasSheet();
       }
       setSelectedSpeed(speed);
-      analytics.track(event.dappPromptSendTransactionSpeedSwitched, { speed });
+      analyticsEvents?.transactionSpeedSwitched &&
+        analytics.track(analyticsEvents?.transactionSpeedSwitched, { speed });
     },
-    [openCustomGasSheet, setSelectedSpeed],
+    [
+      analyticsEvents?.transactionSpeedSwitched,
+      openCustomGasSheet,
+      setSelectedSpeed,
+    ],
   );
 
-  const onSpeedOpenChange = (isOpen: boolean) =>
-    isOpen && analytics.track(event.dappPromptSendTransactionSpeedClicked);
+  const onSpeedOpenChange = useCallback(
+    (isOpen: boolean) => {
+      isOpen &&
+        analyticsEvents?.transactionSpeedClicked &&
+        analytics.track(analyticsEvents?.transactionSpeedClicked);
+    },
+    [analyticsEvents?.transactionSpeedClicked],
+  );
 
   useEffect(() => {
     clearCustomGasModified();
@@ -181,6 +199,11 @@ type TransactionFeeProps = {
   transactionRequest: TransactionRequest;
   accentColor?: string;
   plainTriggerBorder?: boolean;
+  analyticsEvents?: {
+    customGasClicked: keyof EventProperties;
+    transactionSpeedSwitched: keyof EventProperties;
+    transactionSpeedClicked: keyof EventProperties;
+  };
 };
 
 export function TransactionFee({
@@ -189,8 +212,9 @@ export function TransactionFee({
   transactionRequest,
   accentColor,
   plainTriggerBorder,
+  analyticsEvents,
 }: TransactionFeeProps) {
-  const { defaultTxSpeed } = useDefaultTxSpeedStore();
+  const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
     selectedSpeed,
     setSelectedSpeed,
@@ -208,6 +232,7 @@ export function TransactionFee({
   });
   return (
     <Fee
+      analyticsEvents={analyticsEvents}
       chainId={chainId}
       accentColor={accentColor}
       plainTriggerBorder={plainTriggerBorder}
@@ -243,7 +268,7 @@ export function SwapFee({
   assetToSell,
   assetToBuy,
 }: SwapFeeProps) {
-  const { defaultTxSpeed } = useDefaultTxSpeedStore();
+  const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
     selectedSpeed,
     setSelectedSpeed,

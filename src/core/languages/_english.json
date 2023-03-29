@@ -137,7 +137,8 @@
           "warning_2": "Make sure nobody can view your screen when viewing your Recovery Phrase.",
           "warning_3": "Anyone with your Recovery Phrase can access your entire wallet.",
           "warning_4": "Rainbow Support will never ask you for your Recovery Phrase.",
-          "show": "Show Recovery Phrase"
+          "show": "Show Recovery Phrase",
+          "phrase_copied": "Recovery Phrase Copied"
         }
       }
     },
@@ -243,9 +244,15 @@
       "nothing_found_description": "Some tokens don’t have enough liquidity to perform a successful swap.",
       "nothing_found_description_l2": "Some tokens don’t have enough layer 2 liquidity to perform a successful swap."
     },
-    "long_wait": {
-      "title": "Long wait",
-      "description": "Up to %{time} to swap"
+    "warnings": {
+      "long_wait": {
+        "title": "Long wait",
+        "description": "Up to %{time} to swap"
+      },
+      "price_impact": {
+        "title": "Small market",
+        "description": "Losing %{impactAmount}"
+      }
     },
     "aggregators": {
       "rainbow": "Auto"
@@ -302,7 +309,8 @@
       "enter_an_amount": "Enter an amount"
     },
     "review": {
-      "title": "Review & Swap",
+      "title_swap": "Review & Swap",
+      "title_bridge": "Review & Bridge",
       "flashbots_on": "On",
       "minimum_received": "Minimum received",
       "swapping_via": "Swapping via",
@@ -413,7 +421,8 @@
   "seed_reveal": {
     "title": "Your Secret Recovery Phrase",
     "write_down_seed_importance": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
-    "saved_these_words": "I've saved these words"
+    "saved_these_words": "I've saved these words",
+    "phrase_copied": "Recovery Phrase Copied"
   },
   "import_or_connect": {
     "title": "Import or Connect",
@@ -623,6 +632,7 @@
     "cancel": "Cancel",
     "view_on_etherscan": "View on Etherscan",
     "view_on_explorer": "View on Explorer",
+    "copy_tx_hash": "Copy Tx Hash",
     "cancel_explanation": "This will attempt to cancel your pending transaction. It requires broadcasting another transaction.",
     "speed_up_explanation": "This will speed up your pending transaction by replacing it. There's a chance your original transaction will confirm first.",
     "cancel_title": "Cancel transaction",
@@ -632,7 +642,14 @@
     "cancel_cta": "Cancel transaction",
     "speed_up_cta": "Speed up transaction",
     "speed_up_transaction": "Speed up transaction",
-    "close_cta": "Cancel"
+    "close_cta": "Cancel",
+    "handle_copy_title": "Tx Hash Copied"
+  },
+  "asset_details_menu": {
+    "swap": "Swap",
+    "send": "Send",
+    "view_on_etherscan": "View on Etherscan",
+    "view_on_explorer": "View on Explorer"
   },
   "wallet_ready": {
     "title": "Your wallets ready",

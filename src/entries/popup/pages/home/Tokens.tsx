@@ -25,7 +25,10 @@ import { TokensSkeleton } from '../../components/ActivitySkeleton/ActivitySkelet
 import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
 import { WalletIcon } from '../../components/WalletIcon/WalletIcon';
+import { useTokensShortcuts } from '../../hooks/useTokensShortcuts';
 import { useVirtualizedAssets } from '../../hooks/useVirtualizedAssets';
+
+import { TokenDetailsMenu } from './TokenDetailsMenu';
 
 const { innerWidth: windowWidth } = window;
 const TEXT_MAX_WIDTH = windowWidth - 150;
@@ -41,6 +44,8 @@ export function Tokens() {
   const { containerRef, assetsRowVirtualizer } = useVirtualizedAssets({
     assets,
   });
+
+  useTokensShortcuts();
 
   if (isInitialLoading) {
     return <TokensSkeleton />;
@@ -85,10 +90,12 @@ export function Tokens() {
                   transform: `translateY(${virtualItem.start}px)`,
                 }}
               >
-                <AssetRow
-                  key={`${rowData?.uniqueId}-${index}`}
-                  uniqueId={rowData?.uniqueId}
-                />
+                <TokenDetailsMenu token={rowData}>
+                  <AssetRow
+                    key={`${rowData?.uniqueId}-${index}`}
+                    uniqueId={rowData?.uniqueId}
+                  />
+                </TokenDetailsMenu>
               </Box>
             );
           })}

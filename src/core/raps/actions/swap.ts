@@ -1,8 +1,10 @@
+import { Signer } from '@ethersproject/abstract-signer';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
-import { Wallet } from '@ethersproject/wallet';
+import { Transaction } from '@ethersproject/transactions';
 import {
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
   Quote,
+  ChainId as SwapChainId,
   WRAPPED_ASSET,
   fillQuote,
   getQuoteExecutionDetails,
@@ -10,10 +12,12 @@ import {
   unwrapNativeAsset,
   wrapNativeAsset,
 } from '@rainbow-me/swaps';
-import { getProvider } from '@wagmi/core';
-import { Chain } from 'wagmi';
+import { Address, getProvider } from '@wagmi/core';
 
+import { ChainId } from '~/core/types/chains';
+import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { isLowerCaseMatch } from '~/core/utils/strings';
+import { addNewTransaction } from '~/core/utils/transactions';
 import { logger } from '~/logger';
 
 import { ETH_ADDRESS, gasUnits } from '../../references';
@@ -24,7 +28,7 @@ import {
 } from '../../types/gas';
 import { estimateGasWithPadding } from '../../utils/gas';
 import { toHex } from '../../utils/numbers';
-import { Rap, RapSwapActionParameters } from '../references';
+import { ActionProps } from '../references';
 import {
   CHAIN_IDS_WITH_TRACE_SUPPORT,
   SWAP_GAS_PADDING,
@@ -40,7 +44,7 @@ export const estimateSwapGasLimit = async ({
   requiresApprove,
   quote,
 }: {
-  chainId: Chain['id'];
+  chainId: ChainId;
   requiresApprove?: boolean;
   quote: Quote;
 }): Promise<string> => {
@@ -72,7 +76,7 @@ export const estimateSwapGasLimit = async ({
         contractCallEstimateGas: getWrappedAssetMethod(
           isWrapNativeAsset ? 'deposit' : 'withdraw',
           provider as StaticJsonRpcProvider,
-          chainId,
+          chainId as unknown as SwapChainId,
         ),
         provider,
         paddingFactor: WRAP_GAS_PADDING,
@@ -131,25 +135,25 @@ export const executeSwap = async ({
   gasLimit,
   nonce,
   quote,
-  transactionGasParams,
+  gasParams,
   wallet,
   permit = false,
 }: {
-  chainId: Chain['id'];
+  chainId: ChainId;
   gasLimit: string;
-  transactionGasParams: TransactionGasParams | TransactionLegacyGasParams;
+  gasParams: TransactionGasParams | TransactionLegacyGasParams;
   nonce?: number;
   quote: Quote;
-  wallet: Wallet;
+  wallet: Signer;
   permit: boolean;
-}) => {
+}): Promise<Transaction | null> => {
   if (!wallet || !quote) return null;
 
   const { sellTokenAddress, buyTokenAddress } = quote;
   const transactionParams = {
     gasLimit: toHex(gasLimit) || undefined,
     nonce: nonce ? toHex(`${nonce}`) : undefined,
-    ...transactionGasParams,
+    ...gasParams,
   };
 
   // Wrap Eth
@@ -157,7 +161,12 @@ export const executeSwap = async ({
     sellTokenAddress === ETH_ADDRESS &&
     buyTokenAddress === WRAPPED_ASSET[chainId]
   ) {
-    return wrapNativeAsset(quote.buyAmount, wallet, chainId, transactionParams);
+    return wrapNativeAsset(
+      quote.buyAmount,
+      wallet,
+      chainId as unknown as SwapChainId,
+      transactionParams,
+    );
     // Unwrap Weth
   } else if (
     sellTokenAddress === WRAPPED_ASSET[chainId] &&
@@ -166,12 +175,18 @@ export const executeSwap = async ({
     return unwrapNativeAsset(
       quote.sellAmount,
       wallet,
-      chainId,
+      chainId as unknown as SwapChainId,
       transactionParams,
     );
     // Swap
   } else {
-    return fillQuote(quote, transactionParams, wallet, permit, chainId);
+    return fillQuote(
+      quote,
+      transactionParams,
+      wallet,
+      permit,
+      chainId as unknown as SwapChainId,
+    );
   }
 };
 
@@ -181,17 +196,10 @@ export const swap = async ({
   index,
   parameters,
   baseNonce,
-}: {
-  wallet: Wallet;
-  index: number;
-  parameters: RapSwapActionParameters;
-  baseNonce?: number;
-  currentRap: Rap;
-}): Promise<number | undefined> => {
+}: ActionProps<'swap'>): Promise<number | undefined> => {
   const { selectedGas, gasFeeParamsBySpeed } = gasStore.getState();
 
   const { quote, permit, chainId, requiresApprove } = parameters;
-
   let gasParams = selectedGas.transactionGasParams;
   // if swap isn't the last action, use fast gas or custom (whatever is faster)
 
@@ -224,7 +232,7 @@ export const swap = async ({
     const nonce = baseNonce ? baseNonce + index : undefined;
 
     const swapParams = {
-      transactionGasParams: gasParams,
+      gasParams,
       chainId,
       gasLimit,
       nonce,
@@ -241,6 +249,25 @@ export const swap = async ({
     });
     throw e;
   }
+
+  const transaction = {
+    amount: parameters.quote.value?.toString(),
+    asset: parameters.assetToSell,
+    data: parameters.quote.data,
+    value: parameters.quote.value,
+    from: parameters.quote.from as Address,
+    to: parameters.quote.to as Address,
+    hash: swap?.hash,
+    chainId: parameters.chainId,
+    nonce: swap?.nonce,
+    status: TransactionStatus.swapping,
+    type: TransactionType.trade,
+  };
+  await addNewTransaction({
+    address: parameters.quote.from as Address,
+    chainId: parameters.chainId as ChainId,
+    transaction,
+  });
 
   return swap?.nonce;
 };

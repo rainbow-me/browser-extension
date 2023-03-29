@@ -144,29 +144,36 @@ export function NavbarSymbolButton({
 function NavbarButtonWithBack({
   backTo,
   height,
+  onClick,
   symbol,
   symbolSize,
 }: {
   backTo?: To;
   height: ButtonSymbolProps['height'];
+  onClick?: () => void;
   symbol: SymbolProps['symbol'];
   symbolSize?: SymbolProps['size'];
 }) {
   const location = useLocation();
   const navigate = useNavigate();
+
+  const click = React.useCallback(() => {
+    if (onClick) {
+      onClick();
+    } else if (backTo) {
+      navigate(backTo, {
+        state: { isBack: true, from: location.pathname },
+      });
+    } else {
+      navigate(-1);
+    }
+  }, [backTo, location.pathname, navigate, onClick]);
+
   return (
     <Box testId="navbar-button-with-back">
       <NavbarSymbolButton
         height={height}
-        onClick={() => {
-          if (backTo) {
-            navigate(backTo, {
-              state: { isBack: true, from: location.pathname },
-            });
-          } else {
-            navigate(-1);
-          }
-        }}
+        onClick={click}
         symbol={symbol}
         variant="transparentHover"
         symbolSize={symbolSize}
@@ -186,9 +193,16 @@ export function NavbarBackButton({ backTo }: { backTo?: To }) {
   );
 }
 
-export function NavbarCloseButton({ backTo }: { backTo?: To }) {
+export function NavbarCloseButton({
+  backTo,
+  onClick,
+}: {
+  backTo?: To;
+  onClick?: () => void;
+}) {
   return (
     <NavbarButtonWithBack
+      onClick={onClick}
       backTo={backTo}
       height="32px"
       symbolSize={11}
