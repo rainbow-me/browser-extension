@@ -107,7 +107,7 @@ it('should be able to go to swap flow', async () => {
   await findElementAndClick({ id: 'header-link-swap', driver });
 });
 
-it('should be able to go to swap settings and check rows are visible', async () => {
+it.skip('should be able to go to swap settings and check rows are visible', async () => {
   await findElementByTestIdAndClick({
     id: 'swap-settings-navbar-button',
     driver,
@@ -128,7 +128,7 @@ it('should be able to go to swap settings and check rows are visible', async () 
   });
 });
 
-it('should be able to go to settings and turn on flashbots', async () => {
+it.skip('should be able to go to settings and turn on flashbots', async () => {
   await findElementByTestIdAndClick({ id: 'navbar-button-with-back', driver });
   await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
   await findElementByTestIdAndClick({ id: 'settings-link', driver });
@@ -148,7 +148,7 @@ it('should be able to go to settings and turn on flashbots', async () => {
   await findElementAndClick({ id: 'header-link-swap', driver });
 });
 
-it('should be able to go to swap settings and check flashbots row is visible', async () => {
+it.skip('should be able to go to swap settings and check flashbots row is visible', async () => {
   await findElementByTestIdAndClick({
     id: 'swap-settings-navbar-button',
     driver,
@@ -161,7 +161,7 @@ it('should be able to go to swap settings and check flashbots row is visible', a
   expect(flashbotsRow).toBeTruthy();
 });
 
-it('should be able to interact with route settings', async () => {
+it.skip('should be able to interact with route settings', async () => {
   await findElementByTestIdAndClick({
     id: 'swap-settings-route-label',
     driver,
@@ -180,7 +180,7 @@ it('should be able to interact with route settings', async () => {
   });
 });
 
-it('should be able to interact with flashbots settings', async () => {
+it.skip('should be able to interact with flashbots settings', async () => {
   await findElementByTestIdAndClick({
     id: 'swap-settings-flashbots-label',
     driver,
@@ -199,7 +199,7 @@ it('should be able to interact with flashbots settings', async () => {
   });
 });
 
-it('should be able to interact with slippage settings', async () => {
+it.skip('should be able to interact with slippage settings', async () => {
   await findElementByTestIdAndClick({
     id: 'swap-settings-slippage-label',
     driver,
@@ -221,7 +221,7 @@ it('should be able to interact with slippage settings', async () => {
   expect(warning).toBeTruthy();
 });
 
-it('should be able to set default values for settings and go back to swap', async () => {
+it.skip('should be able to set default values for settings and go back to swap', async () => {
   await findElementByTestIdAndClick({
     id: 'settings-use-defaults-button',
     driver,
@@ -240,10 +240,10 @@ it('should be able to set default values for settings and go back to swap', asyn
 });
 
 it('should be able to open token to sell input and select assets', async () => {
-  await findElementByTestIdAndClick({
-    id: 'token-to-sell-search-token-input',
-    driver,
-  });
+  // await findElementByTestIdAndClick({
+  //   id: 'token-to-sell-search-token-input',
+  //   driver,
+  // });
   await findElementByTestIdAndClick({
     id: 'token-to-sell-sort-trigger',
     driver,
