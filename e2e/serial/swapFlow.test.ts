@@ -699,5 +699,38 @@ it.skip('should be able to find exact match on other networks', async () => {
 });
 
 it('should be able to go to review a swap', async () => {
+  // await findElementByTestIdAndClick({
+  //   id: 'token-to-sell-search-token-input',
+  //   driver,
+  // });
+  await findElementByTestIdAndClick({
+    id: `${ETH_MAINNET_ID}-token-to-sell-row`,
+    driver,
+  });
+  const toSellInputEthSelected = await findElementByTestId({
+    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    driver,
+  });
+  expect(toSellInputEthSelected).toBeTruthy();
+  await findElementByTestIdAndClick({
+    id: 'token-to-buy-search-token-input',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `${DAI_MAINNET_ID}-favorites-token-to-buy-row`,
+    driver,
+  });
+  const toBuyInputDaiSelected = await findElementByTestId({
+    id: `${DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    driver,
+  });
+  expect(toBuyInputDaiSelected).toBeTruthy();
+  await typeOnTextInput({
+    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    text: 1,
+    driver,
+  });
+  await delayTime('very-long');
+  await findElementByTestIdAndClick({ id: 'swap-confirmation-button', driver });
   await delayTime('very-long');
 });
