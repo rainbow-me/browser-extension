@@ -393,6 +393,7 @@ it('should be able to check price and balance of token to buy', async () => {
   });
   expect(tokenToBuyInfoBalance).not.toBe('');
 });
+
 it('should be able to flip correctly', async () => {
   await findElementByTestIdAndClick({
     id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
@@ -412,9 +413,10 @@ it('should be able to flip correctly', async () => {
   await delayTime('very-long');
 
   const assetToBuyInputText = await getTextFromTextInput({
-    id: `${DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${ZEROX_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
+  console.log('-- assetToBuyInputText', assetToBuyInputText);
   expect(assetToBuyInputText).not.toBe('');
 
   await findElementByTestIdAndClick({
@@ -422,18 +424,21 @@ it('should be able to flip correctly', async () => {
     driver,
   });
 
-  await delayTime('very-long');
+  await delayTime('long');
 
   const assetToSellInputTextAfterMax = await getTextFromTextInput({
-    id: `${DAI_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${ZEROX_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
+  console.log('-- assetToSellInputTextAfterMax', assetToSellInputTextAfterMax);
+
   expect(assetToSellInputTextAfterMax).not.toEqual('');
 
   const assetToBuyInputTextAfterMax = await getTextFromTextInput({
     id: `${ETH_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
+  console.log('-- assetToBuyInputTextAfterMax', assetToBuyInputTextAfterMax);
   expect(assetToBuyInputTextAfterMax).toEqual('1');
 });
 
@@ -442,7 +447,7 @@ it('should be able to check insufficient asset for swap', async () => {
     id: 'swap-confirmation-button',
     driver,
   });
-  expect(confirmButtonText).toEqual('Insufficient DAI');
+  expect(confirmButtonText).toEqual('Insufficient ZRX');
 });
 
 it('should be able to check insufficient native asset for gas', async () => {
@@ -467,7 +472,7 @@ it('should be able to check insufficient native asset for gas', async () => {
 it('should be able to filter assets to buy by network', async () => {
   // OP
   await findElementByTestIdAndClick({
-    id: `${DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${ZEROX_MAINNET_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -489,7 +494,7 @@ it('should be able to filter assets to buy by network', async () => {
   });
   // POLYGON
   await findElementByTestIdAndClick({
-    id: `${OP_OPTIMISM_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${OP_OPTIMISM_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -511,7 +516,7 @@ it('should be able to filter assets to buy by network', async () => {
   });
   // ARBITRUM
   await findElementByTestIdAndClick({
-    id: `${MATIC_POLYGON_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${MATIC_POLYGON_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -533,7 +538,7 @@ it('should be able to filter assets to buy by network', async () => {
   });
   // BNB
   await findElementByTestIdAndClick({
-    id: `${GMX_ARBITRUM_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${GMX_ARBITRUM_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -557,7 +562,7 @@ it('should be able to filter assets to buy by network', async () => {
 
 it('should be able to see no route explainer', async () => {
   await findElementByTestIdAndClick({
-    id: `${UNI_BNB_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${UNI_BNB_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -585,7 +590,7 @@ it('should be able to see no route explainer', async () => {
   await delayTime('short');
 
   await findElementByTestIdAndClick({
-    id: `${ETH_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${ETH_MAINNET_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
