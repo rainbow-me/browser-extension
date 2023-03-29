@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
+import { Address, useAccount } from 'wagmi';
 
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { KeychainType } from '~/core/types/keychainTypes';
@@ -12,6 +12,7 @@ export interface AddressAndType {
 }
 
 export const useWallets = () => {
+  const { address } = useAccount();
   const [allWallets, setAllWallets] = useState<AddressAndType[] | null>(null);
   const { hiddenWallets } = useHiddenWalletsStore();
 
@@ -63,12 +64,18 @@ export const useWallets = () => {
     setAllWallets(accounts);
   }, []);
 
+  const isWatchingWallet = useMemo(() => {
+    const watchedAddresses = watchedWallets.map(({ address }) => address);
+    return address && watchedAddresses.includes(address);
+  }, [address, watchedWallets]);
+
   useEffect(() => {
     fetchWallets();
   }, [fetchWallets]);
 
   return {
     allWallets,
+    isWatchingWallet,
     visibleWallets,
     visibleOwnedWallets,
     watchedWallets,

@@ -19,13 +19,16 @@ import { getTransactionBlockExplorerUrl } from '~/core/utils/transactions';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
 import {
-  ContextMenu,
-  ContextMenuContent,
   ContextMenuRadioGroup,
   ContextMenuRadioItem,
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from '../../components/ContextMenu/ContextMenu';
+import {
+  DetailsMenuContentWrapper,
+  DetailsMenuRow,
+  DetailsMenuWrapper,
+} from '../../components/DetailsMenu';
 import { useToast } from '../../hooks/useToast';
 
 export function TransactionDetailsMenu({
@@ -100,11 +103,11 @@ export function TransactionDetailsMenu({
   }, [sheet]);
 
   return (
-    <MenuWrapper closed={closed} onOpenChange={onOpenChange}>
+    <DetailsMenuWrapper closed={closed} onOpenChange={onOpenChange}>
       <ContextMenuTrigger asChild onTrigger={onTrigger}>
         <Box position="relative">{children}</Box>
       </ContextMenuTrigger>
-      <MenuContentWrapper closed={closed}>
+      <DetailsMenuContentWrapper closed={closed}>
         <ContextMenuRadioGroup
           onValueChange={(value) =>
             onValueChange(value as 'copy' | 'view' | 'speedUp' | 'cancel')
@@ -113,7 +116,7 @@ export function TransactionDetailsMenu({
           {transaction?.pending && (
             <>
               <ContextMenuRadioItem value={'speedUp'}>
-                <MenuRow>
+                <DetailsMenuRow>
                   <Inline space="8px" alignVertical="center">
                     <Text weight="semibold" size="14pt">
                       {'🚀'}
@@ -132,10 +135,10 @@ export function TransactionDetailsMenu({
                       {shortcuts.activity.SPEED_UP_TRANSACTION.display}
                     </Text>
                   </Box>
-                </MenuRow>
+                </DetailsMenuRow>
               </ContextMenuRadioItem>
               <ContextMenuRadioItem value={'cancel'}>
-                <MenuRow>
+                <DetailsMenuRow>
                   <Inline space="8px" alignVertical="center">
                     <Text weight="semibold" size="14pt">
                       {'☠️'}
@@ -154,7 +157,7 @@ export function TransactionDetailsMenu({
                       {shortcuts.activity.CANCEL_TRANSACTION.display}
                     </Text>
                   </Box>
-                </MenuRow>
+                </DetailsMenuRow>
               </ContextMenuRadioItem>
               <Box paddingVertical="4px">
                 <ContextMenuSeparator />
@@ -162,7 +165,7 @@ export function TransactionDetailsMenu({
             </>
           )}
           <ContextMenuRadioItem value="view">
-            <MenuRow>
+            <DetailsMenuRow>
               <Inline space="8px" alignVertical="center">
                 <Symbol
                   weight="medium"
@@ -182,10 +185,10 @@ export function TransactionDetailsMenu({
                 symbol="arrow.up.forward.circle"
                 color="labelQuaternary"
               />
-            </MenuRow>
+            </DetailsMenuRow>
           </ContextMenuRadioItem>
           <ContextMenuRadioItem value="copy">
-            <MenuRow>
+            <DetailsMenuRow>
               <Inline space="8px" alignVertical="center">
                 <Symbol
                   weight="medium"
@@ -202,53 +205,10 @@ export function TransactionDetailsMenu({
                   </Text>
                 </Stack>
               </Inline>
-            </MenuRow>
+            </DetailsMenuRow>
           </ContextMenuRadioItem>
         </ContextMenuRadioGroup>
-      </MenuContentWrapper>
-    </MenuWrapper>
+      </DetailsMenuContentWrapper>
+    </DetailsMenuWrapper>
   );
-}
-
-function MenuRow({
-  children,
-  onClick,
-}: {
-  children: ReactNode;
-  onClick?: () => void;
-}) {
-  return (
-    <Box onClick={onClick} paddingVertical="2px" width="full">
-      <Inline space="8px" alignVertical="center" alignHorizontal="justify">
-        {children}
-      </Inline>
-    </Box>
-  );
-}
-
-function MenuContentWrapper({
-  children,
-  closed,
-}: {
-  children: ReactNode;
-  closed: boolean;
-}) {
-  if (closed) return null;
-  return <ContextMenuContent>{children}</ContextMenuContent>;
-}
-
-function MenuWrapper({
-  children,
-  closed,
-  onOpenChange,
-}: {
-  children: ReactNode;
-  closed: boolean;
-  onOpenChange: () => void;
-}) {
-  if (closed) {
-    return <ContextMenu onOpenChange={onOpenChange}>{children}</ContextMenu>;
-  }
-
-  return <ContextMenu>{children}</ContextMenu>;
 }

@@ -643,6 +643,12 @@
     "close_cta": "Cancel",
     "handle_copy_title": "Tx Hash Copied"
   },
+  "asset_details_menu": {
+    "swap": "Swap",
+    "send": "Send",
+    "view_on_etherscan": "View on Etherscan",
+    "view_on_explorer": "View on Explorer"
+  },
   "wallet_ready": {
     "title": "Your wallets ready",
     "essentials": "Essentials",
