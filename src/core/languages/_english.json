@@ -244,9 +244,15 @@
       "nothing_found_description": "Some tokens don’t have enough liquidity to perform a successful swap.",
       "nothing_found_description_l2": "Some tokens don’t have enough layer 2 liquidity to perform a successful swap."
     },
-    "long_wait": {
-      "title": "Long wait",
-      "description": "Up to %{time} to swap"
+    "warnings": {
+      "long_wait": {
+        "title": "Long wait",
+        "description": "Up to %{time} to swap"
+      },
+      "price_impact": {
+        "title": "Small market",
+        "description": "Losing %{impactAmount}"
+      }
     },
     "aggregators": {
       "rainbow": "Auto"
@@ -638,6 +644,12 @@
     "speed_up_transaction": "Speed up transaction",
     "close_cta": "Cancel",
     "handle_copy_title": "Tx Hash Copied"
+  },
+  "asset_details_menu": {
+    "swap": "Swap",
+    "send": "Send",
+    "view_on_etherscan": "View on Etherscan",
+    "view_on_explorer": "View on Explorer"
   },
   "wallet_ready": {
     "title": "Your wallets ready",
