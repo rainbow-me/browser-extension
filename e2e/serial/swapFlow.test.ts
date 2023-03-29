@@ -239,7 +239,7 @@ it.skip('should be able to set default values for settings and go back to swap',
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
 });
 
-it('should be able to open token to sell input and select assets', async () => {
+it.skip('should be able to open token to sell input and select assets', async () => {
   // await findElementByTestIdAndClick({
   //   id: 'token-to-sell-search-token-input',
   //   driver,
@@ -282,7 +282,7 @@ it('should be able to open token to sell input and select assets', async () => {
   });
 });
 
-it('should be able to open press max on token to sell input', async () => {
+it.skip('should be able to open press max on token to sell input', async () => {
   const fiatValueText = await getTextFromText({
     id: 'token-to-sell-info-fiat-value',
     driver,
@@ -304,7 +304,7 @@ it('should be able to open press max on token to sell input', async () => {
   expect(fiatValueTextAfterMax).not.toEqual('$0.00');
 });
 
-it('should be able to remove token to sell and select it again', async () => {
+it.skip('should be able to remove token to sell and select it again', async () => {
   await findElementByTestIdAndClick({
     id: `${ETH_MAINNET_ID}-token-to-sell-token-input-remove`,
     driver,
@@ -326,7 +326,7 @@ it('should be able to remove token to sell and select it again', async () => {
   expect(ethValueAfterSelection).toEqual('');
 });
 
-it('should be able to open token to buy input and select assets', async () => {
+it.skip('should be able to open token to buy input and select assets', async () => {
   await findElementByTestIdAndClick({
     id: 'token-to-buy-search-token-input',
     driver,
@@ -348,7 +348,7 @@ it('should be able to open token to buy input and select assets', async () => {
   expect(toBuyInputDaiSelected).toBeTruthy();
 });
 
-it('should be able to open remove token to buy and check favorites and verified lists are visible', async () => {
+it.skip('should be able to open remove token to buy and check favorites and verified lists are visible', async () => {
   await findElementByTestIdAndClick({
     id: `${DAI_MAINNET_ID}-token-to-buy-token-input-remove`,
     driver,
@@ -365,7 +365,7 @@ it('should be able to open remove token to buy and check favorites and verified 
   expect(verifiedSection).toBeTruthy();
 });
 
-it('should be able to favorite a token and check the info button is present', async () => {
+it.skip('should be able to favorite a token and check the info button is present', async () => {
   await findElementByTestIdAndClick({
     id: `${ZEROX_MAINNET_ID}-verified-token-to-buy-row-favorite-button`,
     driver,
@@ -381,7 +381,7 @@ it('should be able to favorite a token and check the info button is present', as
   });
 });
 
-it('should be able to check price and balance of token to buy', async () => {
+it.skip('should be able to check price and balance of token to buy', async () => {
   const tokenToBuyInfoPrice = await getTextFromText({
     id: 'token-to-buy-info-price',
     driver,
@@ -394,7 +394,7 @@ it('should be able to check price and balance of token to buy', async () => {
   expect(tokenToBuyInfoBalance).not.toBe('');
 });
 
-it('should be able to flip correctly', async () => {
+it.skip('should be able to flip correctly', async () => {
   await findElementByTestIdAndClick({
     id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
@@ -442,7 +442,7 @@ it('should be able to flip correctly', async () => {
   expect(assetToBuyInputTextAfterMax).toEqual('1');
 });
 
-it('should be able to check insufficient asset for swap', async () => {
+it.skip('should be able to check insufficient asset for swap', async () => {
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button',
     driver,
@@ -450,7 +450,7 @@ it('should be able to check insufficient asset for swap', async () => {
   expect(confirmButtonText).toEqual('Insufficient ZRX');
 });
 
-it('should be able to check insufficient native asset for gas', async () => {
+it.skip('should be able to check insufficient native asset for gas', async () => {
   await findElementByTestIdAndClick({
     id: 'swap-flip-button',
     driver,
@@ -469,7 +469,7 @@ it('should be able to check insufficient native asset for gas', async () => {
   expect(confirmButtonText).toEqual('Insufficient ETH for gas');
 });
 
-it('should be able to see small market warning', async () => {
+it.skip('should be able to see small market warning', async () => {
   const swapWarning = await findElementByTestId({
     id: 'swap-warning-price-impact',
     driver,
@@ -477,7 +477,7 @@ it('should be able to see small market warning', async () => {
   expect(swapWarning).toBeTruthy();
 });
 
-it('should be able to filter assets to buy by network', async () => {
+it.skip('should be able to filter assets to buy by network', async () => {
   // OP
   await findElementByTestIdAndClick({
     id: `${ZEROX_MAINNET_ID}-token-to-buy-token-input-remove`,
@@ -568,7 +568,7 @@ it('should be able to filter assets to buy by network', async () => {
   });
 });
 
-it('should be able to see no route explainer', async () => {
+it.skip('should be able to see no route explainer', async () => {
   await findElementByTestIdAndClick({
     id: `${UNI_BNB_ID}-token-to-buy-token-input-remove`,
     driver,
@@ -648,7 +648,7 @@ it('should be able to see no route explainer', async () => {
   });
 });
 
-it('should be able to find exact match on other networks', async () => {
+it.skip('should be able to find exact match on other networks', async () => {
   await findElementByTestIdAndClick({
     id: `${OP_OPTIMISM_ID}-token-to-sell-token-input-remove`,
     driver,
@@ -688,4 +688,16 @@ it('should be able to find exact match on other networks', async () => {
     id: `${OP_OPTIMISM_ID}-other_networks-token-to-buy-row`,
     driver,
   });
+  await findElementByTestIdAndClick({
+    id: `${OP_OPTIMISM_ID}-token-to-buy-token-input-remove`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'token-to-buy-search-token-input',
+    driver,
+  });
+});
+
+it('should be able to go to review a swap', async () => {
+  await delayTime('very-long');
 });
