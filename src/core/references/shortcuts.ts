@@ -9,6 +9,16 @@ export const shortcuts = {
       key: 's',
     },
   },
+  tokens: {
+    SWAP_ASSET: {
+      display: 'X',
+      key: 'x',
+    },
+    SEND_ASSET: {
+      display: 'S',
+      key: 's',
+    },
+  },
   global: {
     CLOSE: {
       display: 'Esc', // not currently displayed in any UI

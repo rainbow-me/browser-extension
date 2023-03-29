@@ -1,7 +1,9 @@
-import React, { useCallback, useState } from 'react';
+import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useGasStore } from '~/core/state';
+import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -17,6 +19,7 @@ import {
 } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
+import { TextStyles } from '~/design-system/styles/core.css';
 
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 import {
@@ -35,11 +38,101 @@ import {
   useSwapSettings,
   useSwapValidations,
 } from '../../hooks/swap';
+import { SwapTimeEstimate } from '../../hooks/swap/useSwapActions';
+import {
+  SwapPriceImpact,
+  SwapPriceImpactType,
+  useSwapPriceImpact,
+} from '../../hooks/swap/useSwapPriceImpact';
 
 import { SwapReviewSheet } from './SwapReviewSheet/SwapReviewSheet';
 import { SwapSettings } from './SwapSettings/SwapSettings';
 import { TokenToBuyInput } from './SwapTokenInput/TokenToBuyInput';
 import { TokenToSellInput } from './SwapTokenInput/TokenToSellInput';
+
+const SwapWarning = ({
+  timeEstimate,
+  priceImpact,
+}: {
+  timeEstimate?: SwapTimeEstimate | null;
+  priceImpact?: SwapPriceImpact;
+}) => {
+  const showWarning = useMemo(() => {
+    return (
+      priceImpact?.type !== SwapPriceImpactType.none || timeEstimate?.isLongWait
+    );
+  }, [priceImpact?.type, timeEstimate?.isLongWait]);
+
+  const { warningTitle, warningDescription, warningColor } = useMemo(() => {
+    if (priceImpact?.type !== SwapPriceImpactType.none) {
+      return {
+        warningTitle: i18n.t('swap.warnings.price_impact.title'),
+        warningDescription: i18n.t('swap.warnings.price_impact.description', {
+          impactAmount: priceImpact?.impactDisplay,
+        }),
+        warningColor: (priceImpact?.type === SwapPriceImpactType.high
+          ? 'orange'
+          : 'red') as TextStyles['color'],
+      };
+    } else if (timeEstimate?.isLongWait) {
+      return {
+        warningTitle: i18n.t('swap.warnings.long_wait.title'),
+        warningDescription: i18n.t('swap.warnings.long_wait.description', {
+          time: timeEstimate?.timeEstimateDisplay,
+        }),
+        warningColor: 'orange' as TextStyles['color'],
+      };
+    } else {
+      return {
+        warningTitle: '',
+        warningDescription: '',
+        warningColor: 'orange' as TextStyles['color'],
+      };
+    }
+  }, [
+    priceImpact?.impactDisplay,
+    priceImpact?.type,
+    timeEstimate?.isLongWait,
+    timeEstimate?.timeEstimateDisplay,
+  ]);
+
+  if (!showWarning) return null;
+  return (
+    <ButtonOverflow>
+      <Box paddingHorizontal="20px">
+        <Box
+          paddingVertical="10px"
+          paddingHorizontal="12px"
+          borderRadius="round"
+          borderWidth="1px"
+          borderColor="buttonStroke"
+          background="surfacePrimaryElevatedSecondary"
+        >
+          <Inline space="8px" alignVertical="center" alignHorizontal="center">
+            <Inline space="4px" alignVertical="center">
+              <Symbol
+                symbol="exclamationmark.triangle.fill"
+                size={16}
+                color={warningColor || 'orange'}
+                weight="bold"
+              />
+              <Text color="label" size="14pt" weight="bold">
+                {warningTitle}
+              </Text>
+            </Inline>
+            <Box
+              background="fillSecondary"
+              style={{ width: '14px', height: '2px' }}
+            />
+            <Text color={warningColor} size="14pt" weight="semibold">
+              {warningDescription}
+            </Text>
+          </Inline>
+        </Box>
+      </Box>
+    </ButtonOverflow>
+  );
+};
 
 export function Swap() {
   const [showSwapSettings, setShowSwapSettings] = useState(false);
@@ -48,6 +141,8 @@ export function Swap() {
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
   const { selectedGas } = useGasStore();
+
+  const { selectedToken, setSelectedToken } = useSelectedTokenStore();
 
   const {
     assetsToSell,
@@ -110,6 +205,14 @@ export function Swap() {
     slippage,
   });
 
+  const { priceImpact } = useSwapPriceImpact({
+    assetToBuy,
+    assetToSell,
+    quote: (quote as QuoteError)?.error
+      ? undefined
+      : (quote as Quote | CrosschainQuote),
+  });
+
   const { buttonLabel: validationButtonLabel, enoughAssetsForSwap } =
     useSwapValidations({
       assetToSell,
@@ -162,6 +265,21 @@ export function Swap() {
   );
 
   const hideSwapReview = useCallback(() => setShowSwapReview(false), []);
+
+  useEffect(() => {
+    // navigating from token row
+    if (selectedToken) {
+      const selectedTokenId = selectedToken?.uniqueId;
+      const selectedSearchAsset = assetsToSell.find(
+        (asset) => asset?.uniqueId === selectedTokenId,
+      );
+      if (selectedSearchAsset) {
+        selectAssetToSell(selectedSearchAsset);
+        // clear selected token
+        setSelectedToken();
+      }
+    }
+  }, [assetsToSell, selectedToken, selectAssetToSell, setSelectedToken]);
 
   return (
     <>
@@ -304,49 +422,10 @@ export function Swap() {
                   inputRef={assetToBuyInputRef}
                 />
               </AccentColorProviderWrapper>
-
-              {timeEstimate?.isLongWait ? (
-                <ButtonOverflow>
-                  <Box paddingHorizontal="20px">
-                    <Box
-                      paddingVertical="10px"
-                      paddingHorizontal="12px"
-                      borderRadius="round"
-                      borderWidth="1px"
-                      borderColor="buttonStroke"
-                      background="surfacePrimaryElevatedSecondary"
-                    >
-                      <Inline
-                        space="8px"
-                        alignVertical="center"
-                        alignHorizontal="center"
-                      >
-                        <Inline space="4px" alignVertical="center">
-                          <Symbol
-                            symbol="exclamationmark.triangle.fill"
-                            size={16}
-                            color="orange"
-                            weight="bold"
-                          />
-                          <Text color="label" size="14pt" weight="bold">
-                            {i18n.t('swap.long_wait.title')}
-                          </Text>
-                        </Inline>
-                        <Box
-                          background="fillSecondary"
-                          style={{ width: '14px', height: '2px' }}
-                        />
-
-                        <Text color="orange" size="14pt" weight="semibold">
-                          {i18n.t('swap.long_wait.description', {
-                            time: timeEstimate?.timeEstimateDisplay,
-                          })}
-                        </Text>
-                      </Inline>
-                    </Box>
-                  </Box>
-                </ButtonOverflow>
-              ) : null}
+              <SwapWarning
+                timeEstimate={timeEstimate}
+                priceImpact={priceImpact}
+              />
             </Stack>
           </Row>
           <Row height="content">
