@@ -469,6 +469,14 @@ it('should be able to check insufficient native asset for gas', async () => {
   expect(confirmButtonText).toEqual('Insufficient ETH for gas');
 });
 
+it('should be able to see small market warning', async () => {
+  const swapWarning = await findElementByTestId({
+    id: 'swap-warning-price-impact',
+    driver,
+  });
+  expect(swapWarning).toBeTruthy();
+});
+
 it('should be able to filter assets to buy by network', async () => {
   // OP
   await findElementByTestIdAndClick({
