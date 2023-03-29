@@ -137,7 +137,8 @@
           "warning_2": "Make sure nobody can view your screen when viewing your Recovery Phrase.",
           "warning_3": "Anyone with your Recovery Phrase can access your entire wallet.",
           "warning_4": "Rainbow Support will never ask you for your Recovery Phrase.",
-          "show": "Show Recovery Phrase"
+          "show": "Show Recovery Phrase",
+          "phrase_copied": "Recovery Phrase Copied"
         }
       }
     },
@@ -420,7 +421,8 @@
   "seed_reveal": {
     "title": "Your Secret Recovery Phrase",
     "write_down_seed_importance": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
-    "saved_these_words": "I've saved these words"
+    "saved_these_words": "I've saved these words",
+    "phrase_copied": "Recovery Phrase Copied"
   },
   "import_or_connect": {
     "title": "Import or Connect",
