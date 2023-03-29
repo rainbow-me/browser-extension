@@ -140,8 +140,7 @@ export const useSwapAssets = () => {
   useEffect(() => {
     if (
       assetToBuy?.address === assetToSell?.address &&
-      assetToBuy?.chainId === assetToSell?.chainId &&
-      prevAssetToSell?.uniqueId !== assetToSell?.uniqueId
+      assetToBuy?.chainId === assetToSell?.chainId
     ) {
       setAssetToBuy(prevAssetToSell === undefined ? null : prevAssetToSell);
     }
