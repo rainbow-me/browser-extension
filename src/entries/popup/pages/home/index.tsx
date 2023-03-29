@@ -13,19 +13,18 @@ import { useAccount } from 'wagmi';
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { usePendingRequestStore } from '~/core/state';
-import { RainbowTransaction } from '~/core/types/transactions';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { useAvatar } from '../../hooks/useAvatar';
+import { useCurrentHomeSheet } from '../../hooks/useCurrentHomeSheet';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { MainLayout } from '../../layouts/MainLayout';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
-import { SheetMode, SpeedUpAndCancelSheet } from '../speedUpAndCancelSheet';
 
 import { Activity } from './Activity';
 import { Header } from './Header';
@@ -44,14 +43,9 @@ export function Home() {
   const { address } = useAccount();
   const { state } = useLocation();
   const { avatar } = useAvatar({ address });
-  const [sheet, setSheet] = useState<SheetMode>('none');
+  const { currentHomeSheet, isDisplayingSheet } = useCurrentHomeSheet();
 
   const navigate = useRainbowNavigate();
-
-  const [speedUpAndCancelTx, setSpeedUpAndCancelTx] =
-    useState<RainbowTransaction>();
-
-  const displayingSheet = sheet !== 'none';
 
   const { pendingRequests } = usePendingRequestStore();
 
@@ -107,7 +101,7 @@ export function Home() {
               position: 'relative',
               overscrollBehavior: 'none',
               height: 'auto',
-              ...(displayingSheet ? { overflow: 'hidden' } : {}),
+              ...(isDisplayingSheet ? { overflow: 'hidden' } : {}),
             }}
           >
             <TopNav />
@@ -116,30 +110,10 @@ export function Home() {
             <Separator color="separatorTertiary" strokeWeight="1px" />
             <Content scrollSpring={scrollYTransform} shouldSpring={scrollAtTop}>
               {activeTab === 'tokens' && <Tokens />}
-              {activeTab === 'activity' && (
-                <Activity
-                  onSheetSelected={({
-                    sheet,
-                    transaction,
-                  }: {
-                    sheet: SheetMode;
-                    transaction: RainbowTransaction;
-                  }) => {
-                    setSheet(sheet);
-                    setSpeedUpAndCancelTx(transaction);
-                  }}
-                />
-              )}
+              {activeTab === 'activity' && <Activity />}
             </Content>
           </MainLayout>
-          {sheet !== 'none' && (
-            <SpeedUpAndCancelSheet
-              cancel={sheet === 'cancel'}
-              onClose={() => setSheet('none')}
-              show={true}
-              transaction={speedUpAndCancelTx}
-            />
-          )}
+          {currentHomeSheet}
         </>
       )}
     </AccentColorProvider>

@@ -1,8 +1,9 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { Address, useAccount, useBalance, useEnsName } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 import { ChainId } from '~/core/types/chains';
 import { GasSpeed } from '~/core/types/gas';
 import {
@@ -32,10 +33,9 @@ import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { sendTransaction } from '../../handlers/wallet';
 
 type SpeedUpAndCancelSheetProps = {
-  cancel?: boolean;
+  currentSheet: SheetMode;
   onClose: () => void;
-  show: boolean;
-  transaction?: RainbowTransaction;
+  transaction: RainbowTransaction | null;
 };
 
 // governs type of sheet displayed on top of MainLayout
@@ -44,11 +44,15 @@ type SpeedUpAndCancelSheetProps = {
 export type SheetMode = 'cancel' | 'none' | 'speedUp';
 
 export function SpeedUpAndCancelSheet({
-  cancel,
+  currentSheet,
   onClose,
-  show,
   transaction,
 }: SpeedUpAndCancelSheetProps) {
+  const { setSelectedTransaction } = useSelectedTransactionStore();
+  const cancel = currentSheet === 'cancel';
+  const handleClose = useCallback(() => {
+    onClose();
+  }, [onClose]);
   const speedUpTransactionRequest: TransactionRequest = useMemo(
     () => ({
       to: transaction?.to,
@@ -90,7 +94,7 @@ export function SpeedUpAndCancelSheet({
       chainId: cancellationResult?.chainId,
       transaction: cancelTx,
     });
-    onClose();
+    handleClose();
   };
   const handleSpeedUp = async () => {
     const speedUpResult = await sendTransaction(speedUpTransactionRequest);
@@ -111,10 +115,17 @@ export function SpeedUpAndCancelSheet({
       chainId: speedUpResult?.chainId,
       transaction: speedUpTransaction,
     });
-    onClose();
+    handleClose();
   };
+
+  useEffect(() => {
+    // we keep this outside of `onClose` so that global shortcuts (e.g. Escape) still clear the tx
+    return () => setSelectedTransaction(); // invoke without param to remove selection
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <Prompt show={show} padding="12px">
+    <Prompt show={true} padding="12px">
       <Box
         style={{
           height: window.innerHeight - 64,

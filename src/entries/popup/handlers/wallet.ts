@@ -13,6 +13,11 @@ import { Address } from 'wagmi';
 
 import { PrivateKey } from '~/core/keychain/IKeychain';
 import { initializeMessenger } from '~/core/messengers';
+import {
+  RapSwapActionParameters,
+  RapTypes,
+  WalletExecuteRapProps,
+} from '~/core/raps/references';
 import { gasStore } from '~/core/state';
 import { KeychainWallet } from '~/core/types/keychainTypes';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
@@ -99,6 +104,38 @@ export const sendTransaction = async (
     ) as unknown as TransactionResponse;
   }
 };
+
+export async function executeRap<T extends RapTypes>({
+  rapActionParameters,
+  type,
+}: {
+  rapActionParameters: RapSwapActionParameters<T>;
+  type: RapTypes;
+}): Promise<TransactionResponse> {
+  const nonce = await getNextNonce({
+    address: rapActionParameters.quote.from as Address,
+    chainId: rapActionParameters.chainId as number,
+  });
+  const params: WalletExecuteRapProps = {
+    rapActionParameters: { ...rapActionParameters, nonce },
+    type,
+  };
+  const { type: walletType, vendor } = await getWallet(
+    rapActionParameters.quote.from as Address,
+  );
+  // Check the type of account it is
+  if (walletType === 'HardwareWalletKeychain') {
+    switch (vendor) {
+      default:
+        throw new Error('Unsupported hardware wallet');
+    }
+  } else {
+    return walletAction(
+      'execute_rap',
+      params,
+    ) as unknown as TransactionResponse;
+  }
+}
 
 export const personalSign = async (
   msgData: string | Bytes,

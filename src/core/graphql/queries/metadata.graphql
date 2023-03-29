@@ -1,0 +1,5 @@
+query getContractFunction($chainID: Int!, $hex: String!, $address: String!) {
+  contractFunction(chainID: $chainID, hex: $hex, address: $address) {
+    text
+  }
+}
