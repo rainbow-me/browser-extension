@@ -733,3 +733,14 @@ export function getTransactionBlockExplorerUrl({
   const blockExplorerHost = getBlockExplorerHostForChain(chainId);
   return `https://${blockExplorerHost}/tx/${hash}`;
 }
+
+export function getTokenBlockExplorerUrl({
+  address,
+  chainId,
+}: {
+  address: Address;
+  chainId: ChainId;
+}) {
+  const blockExplorerHost = getBlockExplorerHostForChain(chainId);
+  return `http://${blockExplorerHost}/token/${address}`;
+}

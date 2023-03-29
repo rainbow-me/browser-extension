@@ -1,8 +1,9 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useGasStore } from '~/core/state';
+import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -141,6 +142,8 @@ export function Swap() {
     useExplainerSheetParams();
   const { selectedGas } = useGasStore();
 
+  const { selectedToken, setSelectedToken } = useSelectedTokenStore();
+
   const {
     assetsToSell,
     assetToSellFilter,
@@ -262,6 +265,21 @@ export function Swap() {
   );
 
   const hideSwapReview = useCallback(() => setShowSwapReview(false), []);
+
+  useEffect(() => {
+    // navigating from token row
+    if (selectedToken) {
+      const selectedTokenId = selectedToken?.uniqueId;
+      const selectedSearchAsset = assetsToSell.find(
+        (asset) => asset?.uniqueId === selectedTokenId,
+      );
+      if (selectedSearchAsset) {
+        selectAssetToSell(selectedSearchAsset);
+        // clear selected token
+        setSelectedToken();
+      }
+    }
+  }, [assetsToSell, selectedToken, selectAssetToSell, setSelectedToken]);
 
   return (
     <>
