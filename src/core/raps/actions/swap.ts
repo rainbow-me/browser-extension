@@ -262,6 +262,7 @@ export const swap = async ({
     nonce: swap?.nonce,
     status: TransactionStatus.swapping,
     type: TransactionType.trade,
+    flashbots: parameters.flashbots,
   };
   await addNewTransaction({
     address: parameters.quote.from as Address,
