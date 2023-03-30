@@ -756,11 +756,25 @@ it('should be able to see every information row in review sheet', async () => {
     driver,
   });
   expect(swappingViaDetailsRow).toBeTruthy();
+  await findElementByTestIdAndClick({ id: 'swapping-via-swap-routes', driver });
+  await findElementByTestIdAndClick({ id: 'swapping-via-swap-routes', driver });
+  await findElementByTestIdAndClick({ id: 'swapping-via-swap-routes', driver });
+
   const includedFeeDetailsRow = await findElementByTestId({
     id: `included-fee-details-row`,
     driver,
   });
   expect(includedFeeDetailsRow).toBeTruthy();
+
+  await findElementByTestIdAndClick({
+    id: 'included-fee-carrousel-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'included-fee-carrousel-button',
+    driver,
+  });
+
   // const flashbotsEnabledDetailsRow = await findElementByTestId({
   //   id: `flashbots-enabled-details-row`,
   //   driver,
@@ -788,6 +802,15 @@ it('should be able to see every information row in review sheet', async () => {
     driver,
   });
   expect(exchangeRateDetailsRow).toBeTruthy();
+
+  await findElementByTestIdAndClick({
+    id: 'exchange-rate-carrousel-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'exchange-rate-carrousel-button',
+    driver,
+  });
 
   // ETH is selected as input so there's no contract
   await doNotFindElementByTestId({

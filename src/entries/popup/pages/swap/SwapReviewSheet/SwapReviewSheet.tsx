@@ -68,9 +68,11 @@ const DetailsRow = ({
 const CarrouselButton = ({
   textArray,
   symbol,
+  testId,
 }: {
   textArray: string[];
   symbol?: SymbolProps['symbol'];
+  testId: string;
 }) => {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
 
@@ -82,7 +84,7 @@ const CarrouselButton = ({
 
   return (
     <ButtonOverflow>
-      <Box onClick={goToNextText}>
+      <Box testId={`${testId}-carrousel-button`} onClick={goToNextText}>
         <Inline space="4px" alignHorizontal="center" alignVertical="center">
           <Text size="14pt" weight="semibold" color="label">
             {textArray[currentTextIndex]}
@@ -383,7 +385,12 @@ const SwapReviewSheetWithQuote = ({
                     label={i18n.t('swap.review.swapping_via')}
                     testId="swap-review-swapping-route"
                   />
-                  {!!swappingRoute && <SwapRoutes protocols={swappingRoute} />}
+                  {!!swappingRoute && (
+                    <SwapRoutes
+                      testId="swapping-via"
+                      protocols={swappingRoute}
+                    />
+                  )}
                 </DetailsRow>
                 <DetailsRow testId="included-fee">
                   <Label
@@ -392,7 +399,10 @@ const SwapReviewSheetWithQuote = ({
                     infoButton
                     onClick={openFeeExplainer}
                   />
-                  <CarrouselButton textArray={includedFee} />
+                  <CarrouselButton
+                    testId="included-fee"
+                    textArray={includedFee}
+                  />
                 </DetailsRow>
 
                 {flashbotsEnabled && (
@@ -434,6 +444,7 @@ const SwapReviewSheetWithQuote = ({
                           testId="swap-review-exchange-rate"
                         />
                         <CarrouselButton
+                          testId="exchange-rate"
                           symbol="arrow.2.squarepath"
                           textArray={exchangeRate}
                         />
