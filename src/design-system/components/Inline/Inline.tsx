@@ -11,7 +11,7 @@ const alignHorizontalToJustifyContent = {
   left: 'flex-start',
   right: 'flex-end',
 } as const;
-type AlignHorizontal = keyof typeof alignHorizontalToJustifyContent;
+export type AlignHorizontal = keyof typeof alignHorizontalToJustifyContent;
 
 const alignVerticalToAlignItems = {
   bottom: 'flex-end',
