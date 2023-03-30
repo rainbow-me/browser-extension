@@ -34,6 +34,7 @@ const os = process.env.OS || 'mac';
 const DAI_MAINNET_ID = '0x6b175474e89094c44da98b954eedeac495271d0f_1';
 const ZEROX_MAINNET_ID = '0xe41d2489571d322189246dafa5ebde1f4699f498_1';
 const ETH_MAINNET_ID = 'eth_1';
+const ETH_OPTIMISM_ID = 'eth_10';
 const OP_OPTIMISM_ID = '0x4200000000000000000000000000000000000042_10';
 const MATIC_POLYGON_ID = '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0_137';
 const GMX_ARBITRUM_ID = '0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a_42161';
@@ -437,7 +438,6 @@ it.skip('should be able to flip correctly', async () => {
     id: `${ETH_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
-  console.log('-- assetToBuyInputTextAfterMax', assetToBuyInputTextAfterMax);
   expect(assetToBuyInputTextAfterMax).toEqual('1');
 });
 
@@ -848,6 +848,19 @@ it('should be able to see every information row in review sheet', async () => {
     id: 'asset-to-buy-copy-swap-view-contract-dropdown',
     driver,
   });
+
+  const swapReviewConfirmationText = await getTextFromText({
+    id: 'swap-review-confirmation-text',
+    driver,
+  });
+  expect(swapReviewConfirmationText).toBe('Swap ETH to DAI');
+
+  const swapReviewTitleText = await getTextFromText({
+    id: 'swap-review-title-text',
+    driver,
+  });
+  expect(swapReviewTitleText).toBe('Review & Swap');
+
   await findElementByTestIdAndClick({
     id: 'navbar-button-with-back-swap-review',
     driver,
@@ -1066,6 +1079,198 @@ it('should be able to see every information row in review sheet', async () => {
     id: 'asset-to-buy-copy-swap-view-contract-dropdown',
     driver,
   });
+
+  const swapReviewConfirmationText = await getTextFromText({
+    id: 'swap-review-confirmation-text',
+    driver,
+  });
+  expect(swapReviewConfirmationText).toBe('Swap DAI to USDC');
+
+  const swapReviewTitleText = await getTextFromText({
+    id: 'swap-review-title-text',
+    driver,
+  });
+  expect(swapReviewTitleText).toBe('Review & Swap');
+
+  await findElementByTestIdAndClick({
+    id: 'navbar-button-with-back-swap-review',
+    driver,
+  });
+  await delayTime('very-long');
+});
+
+it('should be able to go to review a bridge', async () => {
+  await findElementByTestIdAndClick({
+    id: `${DAI_MAINNET_ID}-token-to-sell-token-input-remove`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `${ETH_MAINNET_ID}-token-to-sell-row`,
+    driver,
+  });
+  await delayTime('medium');
+  const toSellInputEthSelected = await findElementByTestId({
+    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    driver,
+  });
+  expect(toSellInputEthSelected).toBeTruthy();
+  await findElementByTestIdAndClick({
+    id: `${USDC_ARBITRUM_ID}-token-to-buy-token-input-remove`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'token-to-buy-networks-trigger',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'switch-network-item-2',
+    driver,
+  });
+  await typeOnTextInput({
+    id: 'token-to-buy-search-token-input',
+    driver,
+    text: 'eth',
+  });
+  await findElementByTestIdAndClick({
+    id: `${ETH_OPTIMISM_ID}-bridge-token-to-buy-row`,
+    driver,
+  });
+  const toBuyInputEthSelected = await findElementByTestId({
+    id: `${ETH_OPTIMISM_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    driver,
+  });
+  expect(toBuyInputEthSelected).toBeTruthy();
+  await typeOnTextInput({
+    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    text: 1,
+    driver,
+  });
+
+  await delayTime('very-long');
+
+  await findElementByTestIdAndClick({
+    id: 'swap-confirmation-button',
+    driver,
+  });
+
+  const longWaitExplainerFound = await doNotFindElementByTestId({
+    id: 'explainer-sheet-swap-long-wait',
+    driver,
+  });
+
+  if (longWaitExplainerFound) {
+    await findElementByTestIdAndClick({
+      id: 'explainer-action-button',
+      driver,
+    });
+  }
+
+  await delayTime('very-long');
+});
+
+it('should be able to see every information row in review sheet', async () => {
+  const ethAssetToSellAssetCard = await findElementByTestId({
+    id: `ETH-asset-to-sell-swap-asset-card`,
+    driver,
+  });
+  expect(ethAssetToSellAssetCard).toBeTruthy();
+  const ethAssetToBuyAssetCard = await findElementByTestId({
+    id: `ETH-asset-to-buy-swap-asset-card`,
+    driver,
+  });
+  expect(ethAssetToBuyAssetCard).toBeTruthy();
+  const minimumReceivedDetailsRow = await findElementByTestId({
+    id: `minimum-received-details-row`,
+    driver,
+  });
+  expect(minimumReceivedDetailsRow).toBeTruthy();
+  const swappingViaDetailsRow = await findElementByTestId({
+    id: `swapping-via-details-row`,
+    driver,
+  });
+  expect(swappingViaDetailsRow).toBeTruthy();
+  await findElementByTestIdAndClick({ id: 'swapping-via-swap-routes', driver });
+
+  const includedFeeDetailsRow = await findElementByTestId({
+    id: `included-fee-details-row`,
+    driver,
+  });
+  expect(includedFeeDetailsRow).toBeTruthy();
+
+  await findElementByTestIdAndClick({
+    id: 'included-fee-carrousel-button',
+    driver,
+  });
+
+  await findElementByTestIdAndClick({
+    id: 'swap-review-rnbw-fee-info-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
+
+  // const flashbotsEnabledDetailsRow = await findElementByTestId({
+  //   id: `flashbots-enabled-details-row`,
+  //   driver,
+  // });
+  // expect(flashbotsEnabledDetailsRow).toBeTruthy();
+  // await findElementByTestIdAndClick({
+  //   id: 'swap-review-flashbots-info-button',
+  //   driver,
+  // });
+  // await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
+
+  const moreDetailsHiddendDetailsRow = await findElementByTestId({
+    id: `more-details-hidden-details-row`,
+    driver,
+  });
+  expect(moreDetailsHiddendDetailsRow).toBeTruthy();
+
+  await findElementByTestIdAndClick({
+    id: 'swap-review-more-details-button',
+    driver,
+  });
+
+  const moreDetailsdSection = await findElementByTestId({
+    id: `more-details-section`,
+    driver,
+  });
+  expect(moreDetailsdSection).toBeTruthy();
+
+  const exchangeRateDetailsRow = await findElementByTestId({
+    id: `exchange-rate-details-row`,
+    driver,
+  });
+  expect(exchangeRateDetailsRow).toBeTruthy();
+
+  await findElementByTestIdAndClick({
+    id: 'exchange-rate-carrousel-button',
+    driver,
+  });
+
+  const assetToSellContractRow = await doNotFindElementByTestId({
+    id: `asset-to-sell-contract-details-row`,
+    driver,
+  });
+  expect(assetToSellContractRow).toBeFalsy();
+
+  const assetToBuyContractRow = await doNotFindElementByTestId({
+    id: `asset-to-buy-contract-details-row`,
+    driver,
+  });
+  expect(assetToBuyContractRow).toBeFalsy();
+
+  const swapReviewConfirmationText = await getTextFromText({
+    id: 'swap-review-confirmation-text',
+    driver,
+  });
+  expect(swapReviewConfirmationText).toBe('Bridge ETH');
+
+  const swapReviewTitleText = await getTextFromText({
+    id: 'swap-review-title-text',
+    driver,
+  });
+  expect(swapReviewTitleText).toBe('Review & Bridge');
+
   await findElementByTestIdAndClick({
     id: 'navbar-button-with-back-swap-review',
     driver,

@@ -317,6 +317,7 @@ const SwapReviewSheetWithQuote = ({
                 title={i18n.t(
                   `swap.review.${isBridge ? 'title_bridge' : 'title_swap'}`,
                 )}
+                titleTestId="swap-review-title-text"
                 leftComponent={
                   <Navbar.CloseButton testId="swap-review" onClick={goBack} />
                 }
@@ -554,11 +555,20 @@ const SwapReviewSheetWithQuote = ({
                         <Spinner size={16} color="label" />
                       </Box>
                     ) : (
-                      <Text color="label" size="16pt" weight="bold">
-                        {i18n.t('swap.review.swap_confirmation', {
-                          sellSymbol: assetToSell.symbol,
-                          buySymbol: assetToBuy.symbol,
-                        })}
+                      <Text
+                        testId="swap-review-confirmation-text"
+                        color="label"
+                        size="16pt"
+                        weight="bold"
+                      >
+                        {isBridge
+                          ? i18n.t('swap.review.bridge_confirmation', {
+                              sellSymbol: assetToSell.symbol,
+                            })
+                          : i18n.t('swap.review.swap_confirmation', {
+                              sellSymbol: assetToSell.symbol,
+                              buySymbol: assetToBuy.symbol,
+                            })}
                       </Text>
                     )}
                   </Button>

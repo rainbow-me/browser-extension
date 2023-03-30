@@ -12,6 +12,7 @@ type NavbarProps = {
   leftComponent?: React.ReactElement;
   rightComponent?: React.ReactElement;
   title?: string;
+  titleTestId?: string;
   titleComponent?: React.ReactElement;
   background?: BackgroundColor;
 };
@@ -20,6 +21,7 @@ export function Navbar({
   leftComponent,
   rightComponent,
   title,
+  titleTestId,
   titleComponent,
   background,
 }: NavbarProps) {
@@ -54,7 +56,7 @@ export function Navbar({
       )}
       {title ? (
         <Inline alignVertical="center">
-          <Text size="14pt" weight="heavy" align="center">
+          <Text testId={titleTestId} size="14pt" weight="heavy" align="center">
             {title}
           </Text>
         </Inline>
