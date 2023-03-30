@@ -133,63 +133,19 @@ export const useSwapAssets = () => {
 
   const setAssetToSell = useCallback(
     (asset: ParsedSearchAsset | null) => {
-      asset?.chainId && setOutputChainId(asset?.chainId);
       if (
+        assetToBuy &&
+        asset &&
         assetToBuy?.address === asset?.address &&
         assetToBuy?.chainId === asset?.chainId
       ) {
-        setAssetToBuy(
-          prevAssetToSell === undefined || prevAssetToSell === null
-            ? null
-            : prevAssetToSell,
-        );
+        setAssetToBuy(prevAssetToSell === undefined ? null : prevAssetToSell);
       }
       setAssetToSellState(asset);
+      asset?.chainId && setOutputChainId(asset?.chainId);
     },
-    [assetToBuy?.address, assetToBuy?.chainId, prevAssetToSell],
+    [assetToBuy, prevAssetToSell],
   );
-
-  // console.log('=========== ASSET TO BUy', assetToBuy);
-  // if user selects assetToBuy as assetToSell we need to flip assets
-  // useEffect(() => {
-  //   console.log('------------');
-  //   console.log(
-  //     'USE SWAP EFFECT assetToBuy',
-  //     assetToBuy?.address,
-  //     assetToBuy?.chainId,
-  //   );
-  //   console.log(
-  //     'USE SWAP EFFECT assetToSell',
-  //     assetToSell?.address,
-  //     assetToSell?.chainId,
-  //   );
-  //   console.log('USE SWAP EFFECT prevAssetToSell', prevAssetToSell);
-  //   if (
-  //     assetToBuy?.address === assetToSell?.address &&
-  //     assetToBuy?.chainId === assetToSell?.chainId
-  //   ) {
-  //     console.log('USE SWAP EFFECT in swappp', prevAssetToSell);
-  //     console.log(
-  //       'SETTING ASSET TO BUY',
-  //       prevAssetToSell === undefined || prevAssetToSell === null
-  //         ? null
-  //         : prevAssetToSell,
-  //     );
-  //     setAssetToBuy(
-  //       prevAssetToSell === undefined || prevAssetToSell === null
-  //         ? null
-  //         : prevAssetToSell,
-  //     );
-  //   }
-  // }, [
-  //   assetToBuy?.address,
-  //   assetToBuy?.chainId,
-  //   assetToSell?.address,
-  //   assetToSell?.chainId,
-  //   assetToSell?.uniqueId,
-  //   prevAssetToSell,
-  //   setAssetToBuy,
-  // ]);
 
   return {
     assetsToSell: filteredAssetsToSell,

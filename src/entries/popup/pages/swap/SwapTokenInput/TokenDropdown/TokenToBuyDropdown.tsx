@@ -64,7 +64,7 @@ export const TokenToBuyDropdown = ({
               setOutputChainId(chainId);
             }}
             triggerComponent={
-              <ButtonOverflow testId="asset-to-buy-networks-trigger">
+              <ButtonOverflow testId="token-to-buy-networks-trigger">
                 <BottomNetwork
                   selectedChainId={outputChainId}
                   displaySymbol
