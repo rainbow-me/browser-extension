@@ -459,6 +459,7 @@ const SwapReviewSheetWithQuote = ({
                           />
 
                           <SwapViewContractDropdown
+                            testId="asset-to-sell"
                             address={assetToSell.address as Address}
                             chainId={assetToSell.chainId}
                           >
@@ -477,6 +478,7 @@ const SwapReviewSheetWithQuote = ({
                             testId="swap-review-asset-to-buy-contract"
                           />
                           <SwapViewContractDropdown
+                            testId="asset-to-buy"
                             address={assetToBuy.address as Address}
                             chainId={assetToBuy.chainId}
                           >

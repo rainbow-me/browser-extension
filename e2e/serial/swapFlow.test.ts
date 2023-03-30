@@ -823,4 +823,19 @@ it('should be able to see every information row in review sheet', async () => {
     driver,
   });
   expect(assetToBuyContractDetailsRow).toBeTruthy();
+
+  await findElementByTestIdAndClick({
+    id: 'asset-to-buy-swap-view-contract-dropdown',
+    driver,
+  });
+  const assetToSellContractDropdiwnView = await findElementByTestId({
+    id: 'asset-to-buy-view-swap-view-contract-dropdown',
+    driver,
+  });
+  expect(assetToSellContractDropdiwnView).toBeTruthy();
+  await findElementByTestIdAndClick({
+    id: 'asset-to-buy-copy-swap-view-contract-dropdown',
+    driver,
+  });
+  await delayTime('very-long');
 });

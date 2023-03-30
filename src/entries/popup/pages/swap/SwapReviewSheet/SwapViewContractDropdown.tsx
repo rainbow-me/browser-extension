@@ -20,10 +20,12 @@ export const SwapViewContractDropdown = ({
   address,
   chainId,
   children,
+  testId,
 }: {
   address?: Address;
   chainId?: ChainId;
   children: ReactNode;
+  testId: string;
 }) => {
   const viewOnEtherscan = useCallback(() => {
     const explorer = getBlockExplorerHostForChain(chainId || ChainId.mainnet);
@@ -50,7 +52,10 @@ export const SwapViewContractDropdown = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Box position="relative">
+        <Box
+          testId={`${testId}-swap-view-contract-dropdown`}
+          position="relative"
+        >
           <ButtonOverflow>{children}</ButtonOverflow>
         </Box>
       </DropdownMenuTrigger>
@@ -58,7 +63,11 @@ export const SwapViewContractDropdown = ({
         <DropdownMenuRadioGroup onValueChange={onValueChange}>
           <Stack space="4px">
             <DropdownMenuRadioItem value={'view'}>
-              <Box width="full" paddingVertical="2px">
+              <Box
+                testId={`${testId}-view-swap-view-contract-dropdown`}
+                width="full"
+                paddingVertical="2px"
+              >
                 <Inline alignVertical="center" alignHorizontal="justify">
                   <Inline alignVertical="center" space="8px">
                     <Inline alignVertical="center">
@@ -90,7 +99,11 @@ export const SwapViewContractDropdown = ({
               </Box>
             </DropdownMenuRadioItem>
             <DropdownMenuRadioItem value={'copy'}>
-              <Box width="full" marginVertical="-1px">
+              <Box
+                testId={`${testId}-copy-swap-view-contract-dropdown`}
+                width="full"
+                marginVertical="-1px"
+              >
                 <Inline space="8px" alignVertical="center">
                   <Box>
                     <Inline alignVertical="center">
