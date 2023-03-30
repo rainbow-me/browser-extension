@@ -917,24 +917,158 @@ it('should be able to go to review a crosschain swap', async () => {
     driver,
   });
   await delayTime('very-long');
-  await delayTime('very-long');
 
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button',
     driver,
   });
 
-  const longWaitExplainerNotFound = await doNotFindElementByTestId({
+  const longWaitExplainerFound = await doNotFindElementByTestId({
     id: 'explainer-sheet-swap-long-wait',
     driver,
   });
 
-  if (!longWaitExplainerNotFound) {
+  if (longWaitExplainerFound) {
     await findElementByTestIdAndClick({
       id: 'explainer-action-button',
       driver,
     });
   }
 
+  await delayTime('very-long');
+});
+
+it('should be able to see every information row in review sheet', async () => {
+  const daiAssetToSellAssetCard = await findElementByTestId({
+    id: `DAI-asset-to-sell-swap-asset-card`,
+    driver,
+  });
+  expect(daiAssetToSellAssetCard).toBeTruthy();
+  const usdcAssetToBuyAssetCard = await findElementByTestId({
+    id: `USDC-asset-to-buy-swap-asset-card`,
+    driver,
+  });
+  expect(usdcAssetToBuyAssetCard).toBeTruthy();
+  const minimumReceivedDetailsRow = await findElementByTestId({
+    id: `minimum-received-details-row`,
+    driver,
+  });
+  expect(minimumReceivedDetailsRow).toBeTruthy();
+  const swappingViaDetailsRow = await findElementByTestId({
+    id: `swapping-via-details-row`,
+    driver,
+  });
+  expect(swappingViaDetailsRow).toBeTruthy();
+  await findElementByTestIdAndClick({ id: 'swapping-via-swap-routes', driver });
+  await findElementByTestIdAndClick({ id: 'swapping-via-swap-routes', driver });
+  await findElementByTestIdAndClick({ id: 'swapping-via-swap-routes', driver });
+
+  const includedFeeDetailsRow = await findElementByTestId({
+    id: `included-fee-details-row`,
+    driver,
+  });
+  expect(includedFeeDetailsRow).toBeTruthy();
+
+  await findElementByTestIdAndClick({
+    id: 'included-fee-carrousel-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'included-fee-carrousel-button',
+    driver,
+  });
+
+  await findElementByTestIdAndClick({
+    id: 'swap-review-rnbw-fee-info-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
+
+  // const flashbotsEnabledDetailsRow = await findElementByTestId({
+  //   id: `flashbots-enabled-details-row`,
+  //   driver,
+  // });
+  // expect(flashbotsEnabledDetailsRow).toBeTruthy();
+  // await findElementByTestIdAndClick({
+  //   id: 'swap-review-flashbots-info-button',
+  //   driver,
+  // });
+  // await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
+
+  const moreDetailsHiddendDetailsRow = await findElementByTestId({
+    id: `more-details-hidden-details-row`,
+    driver,
+  });
+  expect(moreDetailsHiddendDetailsRow).toBeTruthy();
+
+  await findElementByTestIdAndClick({
+    id: 'swap-review-more-details-button',
+    driver,
+  });
+
+  const moreDetailsdSection = await findElementByTestId({
+    id: `more-details-section`,
+    driver,
+  });
+  expect(moreDetailsdSection).toBeTruthy();
+
+  const exchangeRateDetailsRow = await findElementByTestId({
+    id: `exchange-rate-details-row`,
+    driver,
+  });
+  expect(exchangeRateDetailsRow).toBeTruthy();
+
+  await findElementByTestIdAndClick({
+    id: 'exchange-rate-carrousel-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'exchange-rate-carrousel-button',
+    driver,
+  });
+
+  const assetToSellContractDetailsRow = await findElementByTestId({
+    id: `asset-to-sell-contract-details-row`,
+    driver,
+  });
+  expect(assetToSellContractDetailsRow).toBeTruthy();
+
+  const assetToBuyContractDetailsRow = await findElementByTestId({
+    id: `asset-to-buy-contract-details-row`,
+    driver,
+  });
+  expect(assetToBuyContractDetailsRow).toBeTruthy();
+
+  await findElementByTestIdAndClick({
+    id: 'asset-to-sell-swap-view-contract-dropdown',
+    driver,
+  });
+  const assetToSellContractDropdownView = await findElementByTestId({
+    id: 'asset-to-sell-view-swap-view-contract-dropdown',
+    driver,
+  });
+  expect(assetToSellContractDropdownView).toBeTruthy();
+  await findElementByTestIdAndClick({
+    id: 'asset-to-sell-copy-swap-view-contract-dropdown',
+    driver,
+  });
+
+  await findElementByTestIdAndClick({
+    id: 'asset-to-buy-swap-view-contract-dropdown',
+    driver,
+  });
+  const assetToBuyContractDropdownView = await findElementByTestId({
+    id: 'asset-to-buy-view-swap-view-contract-dropdown',
+    driver,
+  });
+  expect(assetToBuyContractDropdownView).toBeTruthy();
+  await findElementByTestIdAndClick({
+    id: 'asset-to-buy-copy-swap-view-contract-dropdown',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'navbar-button-with-back-swap-review',
+    driver,
+  });
   await delayTime('very-long');
 });
