@@ -395,7 +395,7 @@ const SwapReviewSheetWithQuote = ({
                 <DetailsRow testId="included-fee">
                   <Label
                     label={i18n.t('swap.review.included_fee')}
-                    testId="swap-review-rnbw-fee"
+                    testId="swap-review-rnbw-fee-info-button"
                     infoButton
                     onClick={openFeeExplainer}
                   />
@@ -409,7 +409,7 @@ const SwapReviewSheetWithQuote = ({
                   <DetailsRow testId="flashbots-enabled">
                     <Label
                       label={i18n.t('swap.review.use_flashbots')}
-                      testId="swap-review-flashbots"
+                      testId="swap-review-flashbots-info-button"
                       infoButton
                       onClick={openFlashbotsExplainer}
                     />

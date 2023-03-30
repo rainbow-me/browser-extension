@@ -775,11 +775,23 @@ it('should be able to see every information row in review sheet', async () => {
     driver,
   });
 
+  await findElementByTestIdAndClick({
+    id: 'swap-review-rnbw-fee-info-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
+
   // const flashbotsEnabledDetailsRow = await findElementByTestId({
   //   id: `flashbots-enabled-details-row`,
   //   driver,
   // });
   // expect(flashbotsEnabledDetailsRow).toBeTruthy();
+  // await findElementByTestIdAndClick({
+  //   id: 'swap-review-flashbots-info-button',
+  //   driver,
+  // });
+  // await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
+
   const moreDetailsHiddendDetailsRow = await findElementByTestId({
     id: `more-details-hidden-details-row`,
     driver,
