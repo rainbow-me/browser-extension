@@ -147,12 +147,14 @@ function NavbarButtonWithBack({
   onClick,
   symbol,
   symbolSize,
+  testId,
 }: {
   backTo?: To;
   height: ButtonSymbolProps['height'];
   onClick?: () => void;
   symbol: SymbolProps['symbol'];
   symbolSize?: SymbolProps['size'];
+  testId?: string;
 }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -170,7 +172,10 @@ function NavbarButtonWithBack({
   }, [backTo, location.pathname, navigate, onClick]);
 
   return (
-    <Box testId="navbar-button-with-back">
+    <Box
+      testId={`navbar-button-with-back${testId ? `-${testId}` : ``}`}
+      style={{ zIndex: 20 }}
+    >
       <NavbarSymbolButton
         height={height}
         onClick={click}
@@ -196,9 +201,11 @@ export function NavbarBackButton({ backTo }: { backTo?: To }) {
 export function NavbarCloseButton({
   backTo,
   onClick,
+  testId,
 }: {
   backTo?: To;
   onClick?: () => void;
+  testId?: string;
 }) {
   return (
     <NavbarButtonWithBack
@@ -207,6 +214,7 @@ export function NavbarCloseButton({
       height="32px"
       symbolSize={11}
       symbol="xmark"
+      testId={testId}
     />
   );
 }

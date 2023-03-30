@@ -33,10 +33,7 @@ import {
   ExplainerSheet,
   useExplainerSheetParams,
 } from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
-import {
-  Navbar,
-  NavbarCloseButton,
-} from '~/entries/popup/components/Navbar/Navbar';
+import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 import { SwapFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
 import { useSwapReviewDetails } from '~/entries/popup/hooks/swap';
@@ -315,12 +312,17 @@ const SwapReviewSheetWithQuote = ({
           paddingBottom="20px"
         >
           <Stack space="12px">
-            <Navbar
-              title={i18n.t(
-                `swap.review.${isBridge ? 'title_bridge' : 'title_swap'}`,
-              )}
-              leftComponent={<NavbarCloseButton onClick={goBack} />}
-            />
+            <Box style={{ zIndex: 10 }}>
+              <Navbar
+                title={i18n.t(
+                  `swap.review.${isBridge ? 'title_bridge' : 'title_swap'}`,
+                )}
+                leftComponent={
+                  <Navbar.CloseButton testId="swap-review" onClick={goBack} />
+                }
+              />
+            </Box>
+
             <Box>
               <Inline
                 space="10px"

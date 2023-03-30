@@ -849,5 +849,9 @@ it('should be able to see every information row in review sheet', async () => {
     id: 'asset-to-buy-copy-swap-view-contract-dropdown',
     driver,
   });
+  await findElementByTestIdAndClick({
+    id: 'navbar-button-with-back-swap-review',
+    driver,
+  });
   await delayTime('very-long');
 });
