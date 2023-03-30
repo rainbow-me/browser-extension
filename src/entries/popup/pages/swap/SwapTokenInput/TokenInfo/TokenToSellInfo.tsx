@@ -1,4 +1,3 @@
-import { motion } from 'framer-motion';
 import React from 'react';
 
 import { i18n } from '~/core/languages';
@@ -6,10 +5,7 @@ import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { convertAmountAndPriceToNativeDisplay } from '~/core/utils/numbers';
 import { Box, Inline, Symbol, Text, TextOverflow } from '~/design-system';
-import {
-  transformScales,
-  transitions,
-} from '~/design-system/styles/designTokens';
+import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
 
 const { innerWidth: windowWidth } = window;
@@ -27,6 +23,7 @@ export const TokenToSellInfo = ({
   setAssetToSellMaxValue: () => void;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
+
   if (!asset) return null;
   return (
     <Box width="full">
@@ -56,27 +53,25 @@ export const TokenToSellInfo = ({
           textWeight="medium"
         >
           <Box
-            as={motion.div}
-            whileHover={{ scale: transformScales['1.04'] }}
-            whileTap={{ scale: transformScales['0.96'] }}
-            transition={transitions.bounce}
             onClick={setAssetToSellMaxValue}
             testId="token-to-sell-info-max-button"
           >
-            <Inline alignVertical="center" space="4px">
-              <Box marginVertical="-10px">
-                <Symbol
-                  symbol="wand.and.stars"
-                  size={12}
-                  weight="heavy"
-                  color="accent"
-                />
-              </Box>
+            <ButtonOverflow>
+              <Inline alignVertical="center" space="4px">
+                <Box marginVertical="-10px">
+                  <Symbol
+                    symbol="wand.and.stars"
+                    size={12}
+                    weight="heavy"
+                    color="accent"
+                  />
+                </Box>
 
-              <Text size="12pt" weight="heavy" color="accent">
-                {i18n.t('swap.max')}
-              </Text>
-            </Inline>
+                <Text size="12pt" weight="heavy" color="accent">
+                  {i18n.t('swap.max')}
+                </Text>
+              </Inline>
+            </ButtonOverflow>
           </Box>
         </Tooltip>
       </Inline>
