@@ -49,9 +49,15 @@ import { SwapAssetCard } from './SwapAssetCard';
 import { SwapRoutes } from './SwapRoutes';
 import { SwapViewContractDropdown } from './SwapViewContractDropdown';
 
-const DetailsRow = ({ children }: { children: React.ReactNode }) => {
+const DetailsRow = ({
+  children,
+  testId,
+}: {
+  children: React.ReactNode;
+  testId: string;
+}) => {
   return (
-    <Box style={{ height: '32px' }}>
+    <Box testId={`${testId}-details-row`} style={{ height: '32px' }}>
       <Inline height="full" alignVertical="center" alignHorizontal="justify">
         {children}
       </Inline>
@@ -320,6 +326,7 @@ const SwapReviewSheetWithQuote = ({
                 alignHorizontal="center"
               >
                 <SwapAssetCard
+                  testId={`${assetToSell.symbol}-asset-to-sell`}
                   asset={assetToSell}
                   assetAmount={quote.sellAmount.toString()}
                 />
@@ -354,6 +361,7 @@ const SwapReviewSheetWithQuote = ({
                 </Box>
 
                 <SwapAssetCard
+                  testId={`${assetToBuy.symbol}-asset-to-buy`}
                   asset={assetToBuy}
                   assetAmount={quote.buyAmount.toString()}
                 />
@@ -361,7 +369,7 @@ const SwapReviewSheetWithQuote = ({
             </Box>
             <Box paddingHorizontal="20px">
               <Stack space="4px">
-                <DetailsRow>
+                <DetailsRow testId="minimum-received">
                   <Label
                     label={i18n.t('swap.review.minimum_received')}
                     testId="swap-review-swapping-route"
@@ -370,14 +378,14 @@ const SwapReviewSheetWithQuote = ({
                     {minimumReceived}
                   </Text>
                 </DetailsRow>
-                <DetailsRow>
+                <DetailsRow testId="swapping-via">
                   <Label
                     label={i18n.t('swap.review.swapping_via')}
                     testId="swap-review-swapping-route"
                   />
                   {!!swappingRoute && <SwapRoutes protocols={swappingRoute} />}
                 </DetailsRow>
-                <DetailsRow>
+                <DetailsRow testId="included-fee">
                   <Label
                     label={i18n.t('swap.review.included_fee')}
                     testId="swap-review-rnbw-fee"
@@ -388,7 +396,7 @@ const SwapReviewSheetWithQuote = ({
                 </DetailsRow>
 
                 {flashbotsEnabled && (
-                  <DetailsRow>
+                  <DetailsRow testId="flashbots-enabled">
                     <Label
                       label={i18n.t('swap.review.use_flashbots')}
                       testId="swap-review-flashbots"
@@ -414,8 +422,13 @@ const SwapReviewSheetWithQuote = ({
                 )}
                 <Box as={motion.div} key="more-details" layout>
                   {showMoreDetails && (
-                    <Box as={motion.div} key="more-details-shown" layout>
-                      <DetailsRow>
+                    <Box
+                      as={motion.div}
+                      key="more-details-shown"
+                      testId="more-details-section"
+                      layout
+                    >
+                      <DetailsRow testId="exchange-rate">
                         <Label
                           label={i18n.t('swap.review.exchange_rate')}
                           testId="swap-review-exchange-rate"
@@ -426,7 +439,7 @@ const SwapReviewSheetWithQuote = ({
                         />
                       </DetailsRow>
                       {!assetToSell.isNativeAsset && (
-                        <DetailsRow>
+                        <DetailsRow testId="asset-to-sell-contract">
                           <Label
                             label={i18n.t('swap.review.asset_contract', {
                               symbol: assetToSell.symbol,
@@ -445,7 +458,7 @@ const SwapReviewSheetWithQuote = ({
                         </DetailsRow>
                       )}
                       {!assetToBuy.isNativeAsset && (
-                        <DetailsRow>
+                        <DetailsRow testId="asset-to-buy-contract">
                           <Label
                             label={i18n.t('swap.review.asset_contract', {
                               symbol: assetToBuy.symbol,
@@ -466,7 +479,7 @@ const SwapReviewSheetWithQuote = ({
                   )}
                   {!showMoreDetails && (
                     <Box as={motion.div} key="more-details-hidden" layout>
-                      <DetailsRow>
+                      <DetailsRow testId="more-details-hidden">
                         <Label
                           label={i18n.t('swap.review.more_details')}
                           testId="swap-review-details"
@@ -478,7 +491,7 @@ const SwapReviewSheetWithQuote = ({
                           height="24px"
                           variant="tinted"
                           onClick={openMoreDetails}
-                          testId="swap-review-details-button"
+                          testId="swap-review-more-details-button"
                         />
                       </DetailsRow>
                     </Box>

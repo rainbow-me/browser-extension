@@ -734,3 +734,70 @@ it('should be able to go to review a swap', async () => {
   await findElementByTestIdAndClick({ id: 'swap-confirmation-button', driver });
   await delayTime('very-long');
 });
+
+it('should be able to see every information row in review sheet', async () => {
+  const ethAssetToSellAssetCard = await findElementByTestId({
+    id: `ETH-asset-to-sell-swap-asset-card`,
+    driver,
+  });
+  expect(ethAssetToSellAssetCard).toBeTruthy();
+  const daiAssetToBuyAssetCard = await findElementByTestId({
+    id: `DAI-asset-to-buy-swap-asset-card`,
+    driver,
+  });
+  expect(daiAssetToBuyAssetCard).toBeTruthy();
+  const minimumReceivedDetailsRow = await findElementByTestId({
+    id: `minimum-received-details-row`,
+    driver,
+  });
+  expect(minimumReceivedDetailsRow).toBeTruthy();
+  const swappingViaDetailsRow = await findElementByTestId({
+    id: `swapping-via-details-row`,
+    driver,
+  });
+  expect(swappingViaDetailsRow).toBeTruthy();
+  const includedFeeDetailsRow = await findElementByTestId({
+    id: `included-fee-details-row`,
+    driver,
+  });
+  expect(includedFeeDetailsRow).toBeTruthy();
+  // const flashbotsEnabledDetailsRow = await findElementByTestId({
+  //   id: `flashbots-enabled-details-row`,
+  //   driver,
+  // });
+  // expect(flashbotsEnabledDetailsRow).toBeTruthy();
+  const moreDetailsHiddendDetailsRow = await findElementByTestId({
+    id: `more-details-hidden-details-row`,
+    driver,
+  });
+  expect(moreDetailsHiddendDetailsRow).toBeTruthy();
+
+  await findElementByTestIdAndClick({
+    id: 'swap-review-more-details-button',
+    driver,
+  });
+
+  const moreDetailsdSection = await findElementByTestId({
+    id: `more-details-section`,
+    driver,
+  });
+  expect(moreDetailsdSection).toBeTruthy();
+
+  const exchangeRateDetailsRow = await findElementByTestId({
+    id: `exchange-rate-details-row`,
+    driver,
+  });
+  expect(exchangeRateDetailsRow).toBeTruthy();
+
+  // ETH is selected as input so there's no contract
+  await doNotFindElementByTestId({
+    id: `asset-to-sell-contract-details-row`,
+    driver,
+  });
+
+  const assetToBuyContractDetailsRow = await findElementByTestId({
+    id: `asset-to-buy-contract-details-row`,
+    driver,
+  });
+  expect(assetToBuyContractDetailsRow).toBeTruthy();
+});
