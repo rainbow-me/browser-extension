@@ -28,7 +28,6 @@ export const useSwapQuoteHandler = ({
   const prevQuote = usePrevious(quote);
   useEffect(() => {
     if (!(quote as QuoteError)?.error) {
-      console.log('useSwapQuoteHandler useeffec');
       const { sellAmount, buyAmount } = (quote || {}) as
         | Quote
         | CrosschainQuote;

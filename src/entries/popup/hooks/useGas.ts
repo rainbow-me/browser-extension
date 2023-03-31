@@ -275,6 +275,8 @@ export const useSwapGas = ({
     assetToBuy,
   });
 
+  console.log('--- estimatedGasLimit', estimatedGasLimit);
+
   const transactionRequest: TransactionRequest | null = useMemo(() => {
     if (quote && !(quote as QuoteError).error) {
       const q = quote as Quote | CrosschainQuote;

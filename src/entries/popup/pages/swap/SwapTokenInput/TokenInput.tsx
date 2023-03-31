@@ -88,20 +88,17 @@ export const TokenInput = ({
 
   useEffect(() => {
     if (dropdownClosed) {
-      console.log('useeffect 1');
       setDropdownVisible(false);
     }
   }, [dropdownClosed]);
 
   useEffect(() => {
     if (prevDropdownVisible !== dropdownVisible && dropdownVisible) {
-      console.log('useeffect 2');
       setTimeout(() => inputRef?.current?.focus(), 300);
     }
   });
 
   useEffect(() => {
-    console.log('useeffect 3');
     setOnSelectAsset(onSelectAsset);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
