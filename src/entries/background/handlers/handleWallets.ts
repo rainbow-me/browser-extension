@@ -201,6 +201,7 @@ export const handleWallets = () =>
                 chainId: p.rapActionParameters.chainId,
               });
             }
+            console.log('execute_rap', p);
             response = await executeRap({
               ...p,
               provider,

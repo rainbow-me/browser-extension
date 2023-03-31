@@ -81,7 +81,7 @@ async function executeAction<T extends RapActionTypes>({
   index,
   baseNonce,
   rapName,
-  flashbots = false,
+  flashbots,
 }: {
   action: RapAction<T>;
   wallet: Signer;
@@ -98,10 +98,10 @@ async function executeAction<T extends RapActionTypes>({
       wallet,
       currentRap: rap,
       index,
-      parameters,
+      parameters: { ...parameters, flashbots },
       baseNonce,
-      flashbots,
     };
+    console.log('executeAction', { actionProps });
     nonce = await typeAction<T>(type, actionProps)();
     return { baseNonce: nonce, errorMessage: null };
   } catch (error) {
@@ -129,7 +129,7 @@ export const walletExecuteRap = async (
   let errorMessage = null;
   if (actions.length) {
     const firstAction = actions[0];
-    const { baseNonce, errorMessage: error } = await executeAction({
+    const actionParams = {
       action: firstAction,
       wallet,
       rap,
@@ -137,20 +137,30 @@ export const walletExecuteRap = async (
       baseNonce: nonce,
       rapName,
       flashbots: parameters?.flashbots,
-    });
+    };
+    console.log('executing action [0] with params', { actionParams });
+
+    const { baseNonce, errorMessage: error } = await executeAction(
+      actionParams,
+    );
 
     if (typeof baseNonce === 'number') {
       for (let index = 1; index < actions.length; index++) {
         const action = actions[index];
-        // eslint-disable-next-line no-await-in-loop
-        await executeAction({
+        const actionParams = {
           action,
           wallet,
           rap,
           index,
           baseNonce,
           rapName,
+        };
+        console.log(`executing action [${index}] with params`, {
+          actionParams,
         });
+
+        // eslint-disable-next-line no-await-in-loop
+        await executeAction(actionParams);
       }
       nonce = baseNonce + actions.length - 1;
     } else {
