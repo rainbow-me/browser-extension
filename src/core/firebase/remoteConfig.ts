@@ -8,6 +8,8 @@ import {
 
 import { RainbowError, logger } from '~/logger';
 
+import { ChainName } from '../types/chains';
+
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
   authDomain: process.env.FIREBASE_AUTH_DOMAIN,
@@ -22,7 +24,13 @@ export interface RainbowConfig extends Record<string, any> {
   tx_requests_enabled: boolean;
   flashbots_enabled: boolean;
   // SWAPS
-  default_slippage_bips: string;
+  default_slippage_bips: {
+    [ChainName.mainnet]: number;
+    [ChainName.optimism]: number;
+    [ChainName.polygon]: number;
+    [ChainName.arbitrum]: number;
+    [ChainName.bsc]: number;
+  };
   trace_call_block_number_offset: number;
 }
 
@@ -33,13 +41,13 @@ const DEFAULT_CONFIG = {
   tx_requests_enabled: true,
   flashbots_enabled: true,
   // SWAPS
-  default_slippage_bips: JSON.stringify({
+  default_slippage_bips: {
     arbitrum: 200,
     mainnet: 100,
     optimism: 200,
     polygon: 200,
     bsc: 200,
-  }),
+  },
   trace_call_block_number_offset: 20,
 };
 
@@ -54,7 +62,12 @@ export const init = async () => {
     // Initialize Remote Config and get a reference to the service
     const remoteConfig = getRemoteConfig(app);
     remoteConfig.settings.minimumFetchIntervalMillis = 120000;
-    remoteConfig.defaultConfig = DEFAULT_CONFIG;
+    remoteConfig.defaultConfig = {
+      ...DEFAULT_CONFIG,
+      default_slippage_bips: JSON.stringify(
+        DEFAULT_CONFIG.default_slippage_bips,
+      ),
+    };
     const fetchedRemotely = await fetchAndActivate(remoteConfig);
 
     if (fetchedRemotely) {

@@ -138,12 +138,27 @@ const SwapWarning = ({
 export function Swap() {
   const [showSwapSettings, setShowSwapSettings] = useState(false);
   const [showSwapReview, setShowSwapReview] = useState(false);
+  const [inReviewSheet, setInReviewSheet] = useState(false);
 
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
-  const { selectedGas } = useGasStore();
+  const { selectedGas, clearCustomGasModified } = useGasStore();
 
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
+
+  const showSwapReviewSheet = useCallback(() => {
+    setShowSwapReview(true);
+    setInReviewSheet(true);
+  }, []);
+
+  const hideSwapReviewSheet = useCallback(() => {
+    setShowSwapReview(false);
+    // to give time for the review sheet to hide after we re enable
+    // gas fee calculations on this component
+    setTimeout(() => {
+      setInReviewSheet(false);
+    }, 1000);
+  }, []);
 
   const {
     assetsToSell,
@@ -240,7 +255,7 @@ export function Swap() {
     validationButtonLabel,
     showExplainerSheet,
     hideExplainerSheet,
-    setShowSwapReview,
+    showSwapReviewSheet,
   });
 
   useSwapQuoteHandler({
@@ -267,8 +282,6 @@ export function Swap() {
     [setAssetToBuyInputValue, setAssetToSell, setAssetToSellInputValue],
   );
 
-  const hideSwapReview = useCallback(() => setShowSwapReview(false), []);
-
   useEffect(() => {
     // navigating from token row
     if (selectedToken) {
@@ -283,6 +296,12 @@ export function Swap() {
       }
     }
   }, [assetsToSell, selectedToken, selectAssetToSell, setSelectedToken]);
+
+  useEffect(() => {
+    return () => {
+      clearCustomGasModified();
+    };
+  }, [clearCustomGasModified]);
 
   return (
     <>
@@ -308,7 +327,7 @@ export function Swap() {
         assetToSell={assetToSell}
         quote={quote}
         flashbotsEnabled={flashbotsEnabledGlobally}
-        hideSwapReview={hideSwapReview}
+        hideSwapReview={hideSwapReviewSheet}
       />
       <ExplainerSheet
         show={explainerSheetParams.show}
@@ -450,6 +469,7 @@ export function Swap() {
                         }
                         assetToSell={assetToSell}
                         assetToBuy={assetToBuy}
+                        enabled={!inReviewSheet}
                       />
                     </Row>
                     <Row>

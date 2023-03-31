@@ -10,6 +10,7 @@ import {
 } from '@rainbow-me/swaps';
 import { Chain, chain, erc20ABI } from 'wagmi';
 
+import config from '../firebase/remoteConfig';
 import { gasUnits } from '../references';
 import { ChainId } from '../types/chains';
 import {
@@ -115,7 +116,8 @@ const getStateDiff = async (
       value: '0x0',
     },
     ['stateDiff'],
-    blockNumber - TRACE_CALL_BLOCK_NUMBER_OFFSET,
+    blockNumber -
+      (config.trace_call_block_number_offset || TRACE_CALL_BLOCK_NUMBER_OFFSET),
   ];
 
   const trace = await (provider as StaticJsonRpcProvider).send(

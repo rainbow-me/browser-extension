@@ -1,8 +1,10 @@
 import { Source } from '@rainbow-me/swaps';
 import { useCallback, useEffect, useState } from 'react';
 
+import config from '~/core/firebase/remoteConfig';
 import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
-import { ChainId } from '~/core/types/chains';
+import { ChainId, ChainName } from '~/core/types/chains';
+import { chainNameFromChainId } from '~/core/utils/chains';
 
 import usePrevious from '../usePrevious';
 
@@ -22,9 +24,25 @@ export const DEFAULT_SLIPPAGE = {
   [ChainId.arbitrum]: '2',
 };
 
+const slippageInBipsToString = (slippageInBips: number) =>
+  (slippageInBips / 100).toString();
+
+export const getDefaultSlippage = (chainId: ChainId) => {
+  const chainName = chainNameFromChainId(chainId) as
+    | ChainName.mainnet
+    | ChainName.optimism
+    | ChainName.polygon
+    | ChainName.arbitrum
+    | ChainName.bsc;
+  return slippageInBipsToString(
+    config.default_slippage_bips[chainName] || DEFAULT_SLIPPAGE_BIPS[chainId],
+  );
+};
+
 export const useSwapSettings = ({ chainId }: { chainId: ChainId }) => {
   const [source, setSource] = useState<Source | 'auto'>('auto');
-  const [slippage, setSlippage] = useState<string>(DEFAULT_SLIPPAGE[chainId]);
+
+  const [slippage, setSlippage] = useState<string>(getDefaultSlippage(chainId));
   const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
   const prevChainId = usePrevious(chainId);
 
@@ -47,7 +65,7 @@ export const useSwapSettings = ({ chainId }: { chainId: ChainId }) => {
 
   useEffect(() => {
     if (prevChainId !== chainId) {
-      setSlippage(DEFAULT_SLIPPAGE[chainId]);
+      setSlippage(getDefaultSlippage(chainId));
     }
   }, [chainId, prevChainId]);
 

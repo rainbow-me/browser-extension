@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { ReactElement, useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
@@ -9,6 +9,7 @@ import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { rainbowGradient } from '~/design-system/components/Symbol/gradients';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
+import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
 import {
   AssetToBuySection,
   AssetToBuySectionId,
@@ -77,6 +78,28 @@ const bridgeSectionsColorsByChain = {
   [ChainId.bsc]: 'bsc' as TextStyles['color'],
 };
 
+const VerifiedWrappedTooltip = ({
+  children,
+  id,
+}: {
+  children: ReactElement;
+  id: string;
+}) => {
+  if (id !== 'verified') return children;
+  return (
+    <Tooltip
+      text={i18n.t('token_search.verified_by_rainbow')}
+      textSize="12pt"
+      textWeight="medium"
+      textColor="labelSecondary"
+      arrowAlignment="left"
+      align="start"
+    >
+      {children}
+    </Tooltip>
+  );
+};
+
 export const TokenToBuySection = ({
   assetSection,
   outputChainId,
@@ -119,28 +142,31 @@ export const TokenToBuySection = ({
             </Inset>
           </Box>
         ) : null}
-
-        <Box paddingHorizontal="20px" width="full">
-          <Inline space="4px" alignVertical="center">
-            <Symbol
-              symbol={symbol}
-              color={color}
-              weight="semibold"
-              size={14}
-              gradient={gradient}
-            />
-            <Box style={{ width: 225 }}>
-              <Text
-                webkitBackgroundClip={webkitBackgroundClip}
-                background={background}
-                size="14pt"
-                weight="semibold"
-                color={color}
-              >
-                {title}
-              </Text>
+        <Box paddingHorizontal="15px">
+          <VerifiedWrappedTooltip id={assetSection.id}>
+            <Box paddingHorizontal="5px" width="full">
+              <Inline space="4px" alignVertical="center">
+                <Symbol
+                  symbol={symbol}
+                  color={color}
+                  weight="semibold"
+                  size={14}
+                  gradient={gradient}
+                />
+                <Box style={{ width: 225 }}>
+                  <Text
+                    webkitBackgroundClip={webkitBackgroundClip}
+                    background={background}
+                    size="14pt"
+                    weight="semibold"
+                    color={color}
+                  >
+                    {title}
+                  </Text>
+                </Box>
+              </Inline>
             </Box>
-          </Inline>
+          </VerifiedWrappedTooltip>
         </Box>
 
         <Box ref={containerRef}>

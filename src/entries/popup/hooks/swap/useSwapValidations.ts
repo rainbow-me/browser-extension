@@ -49,6 +49,7 @@ export const useSwapValidations = ({
         );
       }
     }
+    return true;
   }, [
     assetToSell?.balance?.amount,
     assetToSell?.decimals,

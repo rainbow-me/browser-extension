@@ -26,6 +26,7 @@ import {
   parseGasFeeParamsBySpeed,
 } from '~/core/utils/gas';
 
+import { useDebounce } from './useDebounce';
 import { useNativeAssetForNetwork } from './useNativeAssetForNetwork';
 import usePrevious from './usePrevious';
 
@@ -34,17 +35,20 @@ const useGas = ({
   defaultSpeed = GasSpeed.NORMAL,
   estimatedGasLimit,
   transactionRequest,
+  enabled,
 }: {
   chainId: ChainId;
   defaultSpeed?: GasSpeed;
   estimatedGasLimit?: string;
   transactionRequest: TransactionRequest | null;
+  enabled?: boolean;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: gasData, isLoading } = useGasData({ chainId });
   const nativeAsset = useNativeAssetForNetwork({ chainId });
   const prevDefaultSpeed = usePrevious(defaultSpeed);
 
+  const debouncedEstimatedGasLimit = useDebounce(estimatedGasLimit, 500);
   const { data: optimismL1SecurityFee } = useOptimismL1SecurityFee(
     { transactionRequest: transactionRequest || {}, chainId },
     { enabled: chainId === ChainId.optimism },
@@ -144,7 +148,7 @@ const useGas = ({
       ? parseGasFeeParamsBySpeed({
           chainId,
           data: gasData as MeteorologyLegacyResponse | MeteorologyResponse,
-          gasLimit: estimatedGasLimit || `${gasUnits.basic_transfer}`,
+          gasLimit: debouncedEstimatedGasLimit || `${gasUnits.basic_transfer}`,
           nativeAsset,
           currency: currentCurrency,
           optimismL1SecurityFee,
@@ -159,7 +163,7 @@ const useGas = ({
     isLoading,
     chainId,
     gasData,
-    estimatedGasLimit,
+    debouncedEstimatedGasLimit,
     nativeAsset,
     currentCurrency,
     optimismL1SecurityFee,
@@ -175,6 +179,7 @@ const useGas = ({
 
   useEffect(() => {
     if (
+      enabled &&
       gasFeeParamsBySpeed?.[selectedSpeed] &&
       gasFeeParamsChanged(selectedGas, gasFeeParamsBySpeed?.[selectedSpeed])
     ) {
@@ -182,14 +187,21 @@ const useGas = ({
         selectedGas: gasFeeParamsBySpeed[selectedSpeed],
       });
     }
-  }, [gasFeeParamsBySpeed, selectedGas, selectedSpeed, setSelectedGas]);
+  }, [
+    enabled,
+    gasFeeParamsBySpeed,
+    selectedGas,
+    selectedSpeed,
+    setSelectedGas,
+  ]);
 
   useEffect(() => {
     if (
+      enabled &&
       gasFeeParamsBySpeed?.[selectedSpeed] &&
       gasFeeParamsChanged(
-        gasFeeParamsBySpeed[selectedSpeed],
         storeGasFeeParamsBySpeed[selectedSpeed],
+        gasFeeParamsBySpeed[selectedSpeed],
       )
     ) {
       setGasFeeParamsBySpeed({
@@ -197,6 +209,7 @@ const useGas = ({
       });
     }
   }, [
+    enabled,
     gasFeeParamsBySpeed,
     selectedSpeed,
     setGasFeeParamsBySpeed,
@@ -246,12 +259,14 @@ export const useSwapGas = ({
   quote,
   assetToSell,
   assetToBuy,
+  enabled,
 }: {
   chainId: ChainId;
   defaultSpeed?: GasSpeed;
   quote?: Quote | CrosschainQuote | QuoteError;
   assetToSell?: ParsedSearchAsset;
   assetToBuy?: ParsedSearchAsset;
+  enabled?: boolean;
 }) => {
   const { data: estimatedGasLimit } = useEstimateSwapGasLimit({
     chainId,
@@ -281,5 +296,6 @@ export const useSwapGas = ({
     defaultSpeed,
     estimatedGasLimit,
     transactionRequest,
+    enabled,
   });
 };
