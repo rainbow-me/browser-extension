@@ -70,7 +70,7 @@ interface UseSwapActionsProps {
   validationButtonLabel: string;
   hideExplainerSheet: () => void;
   showExplainerSheet: (params: ExplainerSheetProps) => void;
-  setShowSwapReview: React.Dispatch<React.SetStateAction<boolean>>;
+  showSwapReviewSheet: () => void;
 }
 
 interface SwapActions {
@@ -92,7 +92,7 @@ export const useSwapActions = ({
   validationButtonLabel,
   hideExplainerSheet,
   showExplainerSheet,
-  setShowSwapReview,
+  showSwapReviewSheet,
 }: UseSwapActionsProps): SwapActions => {
   if (isLoading) {
     return {
@@ -175,13 +175,13 @@ export const useSwapActions = ({
                 labelColor: 'blue',
                 action: () => {
                   hideExplainerSheet();
-                  setShowSwapReview(true);
+                  showSwapReviewSheet();
                 },
               },
               testId: 'swap-long-wait',
             })
         : () => {
-            setShowSwapReview(true);
+            showSwapReviewSheet();
           },
       timeEstimate,
     };

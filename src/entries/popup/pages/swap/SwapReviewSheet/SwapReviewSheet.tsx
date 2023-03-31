@@ -505,6 +505,7 @@ const SwapReviewSheetWithQuote = ({
                     }
                     assetToSell={assetToSell}
                     assetToBuy={assetToBuy}
+                    enabled={show}
                   />
                 </Row>
                 <Row>
