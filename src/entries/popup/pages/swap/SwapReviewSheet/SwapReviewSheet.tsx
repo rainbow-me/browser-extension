@@ -222,7 +222,7 @@ const SwapReviewSheetWithQuote = ({
   const closeMoreDetails = useCallback(() => setShowDetails(false), []);
 
   const executeSwap = useCallback(async () => {
-    if (!assetToSell || !assetToBuy || !quote) return;
+    if (!assetToSell || !assetToBuy || !quote || sendingSwap) return;
     const type =
       assetToSell.chainId !== assetToBuy.chainId ? 'crosschainSwap' : 'swap';
     const q = quote as QuoteTypeMap[typeof type];
@@ -243,7 +243,14 @@ const SwapReviewSheetWithQuote = ({
     } else {
       setSendingSwap(false);
     }
-  }, [assetToBuy, assetToSell, connectedToHardhat, navigate, quote]);
+  }, [
+    assetToBuy,
+    assetToSell,
+    connectedToHardhat,
+    navigate,
+    quote,
+    sendingSwap,
+  ]);
 
   const handleSwap = useCallback(() => {
     executeSwap();
