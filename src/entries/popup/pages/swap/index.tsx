@@ -186,7 +186,10 @@ export function Swap() {
     chainId: assetToSell?.chainId || ChainId.mainnet,
   });
 
-  const flashbotsEnabledGlobally = config.flashbots_enabled && flashbotsEnabled;
+  const flashbotsEnabledGlobally =
+    config.flashbots_enabled &&
+    flashbotsEnabled &&
+    assetToSell?.chainId === ChainId.mainnet;
 
   const {
     assetToSellInputRef,
@@ -470,6 +473,7 @@ export function Swap() {
                         assetToSell={assetToSell}
                         assetToBuy={assetToBuy}
                         enabled={!inReviewSheet}
+                        flashbotsEnabled={flashbotsEnabledGlobally}
                       />
                     </Row>
                     <Row>

@@ -250,6 +250,7 @@ type SwapFeeProps = {
   assetToSell?: ParsedSearchAsset;
   assetToBuy?: ParsedSearchAsset;
   enabled?: boolean;
+  flashbotsEnabled?: boolean;
 };
 
 export function SwapFee({
@@ -261,6 +262,7 @@ export function SwapFee({
   assetToSell,
   assetToBuy,
   enabled = true,
+  flashbotsEnabled,
 }: SwapFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
@@ -279,6 +281,7 @@ export function SwapFee({
     assetToSell,
     assetToBuy,
     enabled,
+    flashbotsEnabled,
   });
   return (
     <Fee
