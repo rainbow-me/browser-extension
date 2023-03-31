@@ -332,6 +332,7 @@ export function Swap() {
         quote={quote}
         flashbotsEnabled={flashbotsEnabled}
         hideSwapReview={hideSwapReviewSheet}
+        defaultGasSpeed={selectedGas.option}
       />
       <ExplainerSheet
         show={explainerSheetParams.show}
@@ -474,6 +475,7 @@ export function Swap() {
                         assetToSell={assetToSell}
                         assetToBuy={assetToBuy}
                         enabled={!inReviewSheet}
+                        defaultSpeed={selectedGas.option}
                       />
                     </Row>
                     <Row>

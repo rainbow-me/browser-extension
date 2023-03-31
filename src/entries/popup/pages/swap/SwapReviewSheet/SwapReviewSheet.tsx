@@ -9,6 +9,7 @@ import { QuoteTypeMap } from '~/core/raps/references';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { GasSpeed } from '~/core/types/gas';
 import { truncateAddress } from '~/core/utils/address';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
@@ -149,6 +150,7 @@ export type SwapReviewSheetProps = {
   assetToBuy?: ParsedSearchAsset | null;
   quote?: Quote | CrosschainQuote | QuoteError;
   flashbotsEnabled: boolean;
+  defaultGasSpeed?: GasSpeed;
   hideSwapReview: () => void;
 };
 
@@ -158,6 +160,7 @@ export const SwapReviewSheet = ({
   assetToBuy,
   quote,
   flashbotsEnabled,
+  defaultGasSpeed,
   hideSwapReview,
 }: SwapReviewSheetProps) => {
   if (!quote || !assetToBuy || !assetToSell || (quote as QuoteError)?.error)
@@ -170,6 +173,7 @@ export const SwapReviewSheet = ({
       quote={quote as Quote | CrosschainQuote}
       flashbotsEnabled={flashbotsEnabled}
       hideSwapReview={hideSwapReview}
+      defaultGasSpeed={defaultGasSpeed}
     />
   );
 };
@@ -180,6 +184,7 @@ type SwapReviewSheetWithQuoteProps = {
   assetToBuy: ParsedSearchAsset;
   quote: Quote | CrosschainQuote;
   flashbotsEnabled: boolean;
+  defaultGasSpeed?: GasSpeed;
   hideSwapReview: () => void;
 };
 
@@ -189,6 +194,7 @@ const SwapReviewSheetWithQuote = ({
   assetToBuy,
   quote,
   flashbotsEnabled,
+  defaultGasSpeed,
   hideSwapReview,
 }: SwapReviewSheetWithQuoteProps) => {
   const navigate = useRainbowNavigate();
@@ -542,6 +548,7 @@ const SwapReviewSheetWithQuote = ({
                     assetToSell={assetToSell}
                     assetToBuy={assetToBuy}
                     enabled={show}
+                    defaultSpeed={defaultGasSpeed}
                   />
                 </Row>
                 <Row>
