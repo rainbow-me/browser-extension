@@ -6,10 +6,10 @@ import { Address } from 'wagmi';
 import SendSound from 'static/assets/audio/woosh.mp3';
 import { i18n } from '~/core/languages';
 import { QuoteTypeMap } from '~/core/raps/references';
+import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
-import { GasSpeed } from '~/core/types/gas';
 import { truncateAddress } from '~/core/utils/address';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import {
@@ -37,7 +37,10 @@ import {
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 import { SwapFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
-import { useSwapReviewDetails } from '~/entries/popup/hooks/swap';
+import {
+  useSwapReviewDetails,
+  useSwapValidations,
+} from '~/entries/popup/hooks/swap';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
@@ -147,20 +150,20 @@ const Label = ({
 export type SwapReviewSheetProps = {
   show: boolean;
   assetToSell?: ParsedSearchAsset | null;
+  assetToSellValue?: string;
   assetToBuy?: ParsedSearchAsset | null;
   quote?: Quote | CrosschainQuote | QuoteError;
   flashbotsEnabled: boolean;
-  defaultGasSpeed?: GasSpeed;
   hideSwapReview: () => void;
 };
 
 export const SwapReviewSheet = ({
   show,
   assetToSell,
+  assetToSellValue,
   assetToBuy,
   quote,
   flashbotsEnabled,
-  defaultGasSpeed,
   hideSwapReview,
 }: SwapReviewSheetProps) => {
   if (!quote || !assetToBuy || !assetToSell || (quote as QuoteError)?.error)
@@ -169,11 +172,11 @@ export const SwapReviewSheet = ({
     <SwapReviewSheetWithQuote
       show={show}
       assetToSell={assetToSell}
+      assetToSellValue={assetToSellValue}
       assetToBuy={assetToBuy}
       quote={quote as Quote | CrosschainQuote}
       flashbotsEnabled={flashbotsEnabled}
       hideSwapReview={hideSwapReview}
-      defaultGasSpeed={defaultGasSpeed}
     />
   );
 };
@@ -181,20 +184,20 @@ export const SwapReviewSheet = ({
 type SwapReviewSheetWithQuoteProps = {
   show: boolean;
   assetToSell: ParsedSearchAsset;
+  assetToSellValue?: string;
   assetToBuy: ParsedSearchAsset;
   quote: Quote | CrosschainQuote;
   flashbotsEnabled: boolean;
-  defaultGasSpeed?: GasSpeed;
   hideSwapReview: () => void;
 };
 
 const SwapReviewSheetWithQuote = ({
   show,
   assetToSell,
+  assetToSellValue,
   assetToBuy,
   quote,
   flashbotsEnabled,
-  defaultGasSpeed,
   hideSwapReview,
 }: SwapReviewSheetWithQuoteProps) => {
   const navigate = useRainbowNavigate();
@@ -202,6 +205,14 @@ const SwapReviewSheetWithQuote = ({
 
   const [showMoreDetails, setShowDetails] = useState(false);
   const [sendingSwap, setSendingSwap] = useState(false);
+  const { selectedGas } = useGasStore();
+
+  const { buttonLabel: validationButtonLabel, enoughNativeAssetBalanceForGas } =
+    useSwapValidations({
+      assetToSell,
+      assetToSellValue,
+      selectedGas,
+    });
 
   const { minimumReceived, swappingRoute, includedFee, exchangeRate } =
     useSwapReviewDetails({ quote, assetToBuy, assetToSell });
@@ -259,9 +270,10 @@ const SwapReviewSheetWithQuote = ({
   ]);
 
   const handleSwap = useCallback(() => {
+    if (!enoughNativeAssetBalanceForGas) return;
     executeSwap();
     new Audio(SendSound).play();
-  }, [executeSwap]);
+  }, [enoughNativeAssetBalanceForGas, executeSwap]);
 
   const goBack = useCallback(() => {
     hideSwapReview();
@@ -303,6 +315,31 @@ const SwapReviewSheetWithQuote = ({
       testId: 'swap-review-fee',
     });
   }, [hideExplainerSheet, includedFee, showExplainerSheet]);
+
+  const buttonLabel = useMemo(() => {
+    if (!enoughNativeAssetBalanceForGas) {
+      return validationButtonLabel;
+    }
+    return isBridge
+      ? i18n.t('swap.review.bridge_confirmation', {
+          sellSymbol: assetToSell.symbol,
+        })
+      : i18n.t('swap.review.swap_confirmation', {
+          sellSymbol: assetToSell.symbol,
+          buySymbol: assetToBuy.symbol,
+        });
+  }, [
+    assetToBuy.symbol,
+    assetToSell.symbol,
+    enoughNativeAssetBalanceForGas,
+    isBridge,
+    validationButtonLabel,
+  ]);
+
+  const buttonColor = useMemo(
+    () => (enoughNativeAssetBalanceForGas ? 'accent' : 'fillSecondary'),
+    [enoughNativeAssetBalanceForGas],
+  );
 
   return (
     <>
@@ -548,7 +585,7 @@ const SwapReviewSheetWithQuote = ({
                     assetToSell={assetToSell}
                     assetToBuy={assetToBuy}
                     enabled={show}
-                    defaultSpeed={defaultGasSpeed}
+                    defaultSpeed={selectedGas.option}
                   />
                 </Row>
                 <Row>
@@ -556,7 +593,7 @@ const SwapReviewSheetWithQuote = ({
                     onClick={handleSwap}
                     height="44px"
                     variant="flat"
-                    color={'accent'}
+                    color={buttonColor}
                     width="full"
                     testId="swap-review-execute"
                   >
@@ -576,14 +613,7 @@ const SwapReviewSheetWithQuote = ({
                         size="16pt"
                         weight="bold"
                       >
-                        {isBridge
-                          ? i18n.t('swap.review.bridge_confirmation', {
-                              sellSymbol: assetToSell.symbol,
-                            })
-                          : i18n.t('swap.review.swap_confirmation', {
-                              sellSymbol: assetToSell.symbol,
-                              buySymbol: assetToBuy.symbol,
-                            })}
+                        {buttonLabel}
                       </Text>
                     )}
                   </Button>
