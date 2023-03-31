@@ -577,55 +577,75 @@ it('should be able to filter assets to buy by network', async () => {
 });
 
 it('should be able to see no route explainer', async () => {
+  console.log('no route explainer 1');
   await findElementByTestIdAndClick({
     id: `${UNI_BNB_ID}-token-to-buy-token-input-remove`,
     driver,
   });
+  console.log('no route explainer 2');
   await findElementByTestIdAndClick({
     id: 'token-to-buy-networks-trigger',
     driver,
   });
+  console.log('no route explainer 3');
+
   await findElementByTestIdAndClick({
     id: 'switch-network-item-2',
     driver,
   });
+  console.log('no route explainer 4');
+
   await typeOnTextInput({
     id: 'token-to-buy-search-token-input',
     driver,
     text: 'op',
   });
+  console.log('no route explainer 5');
+
   await findElementByTestIdAndClick({
     id: `${OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
     driver,
   });
+  console.log('no route explainer 6');
 
   await findElementByTestIdAndClick({
     id: 'swap-flip-button',
     driver,
   });
+  console.log('no route explainer 7');
+
   await delayTime('short');
+  console.log('no route explainer 8');
 
   await findElementByTestIdAndClick({
     id: `${ETH_MAINNET_ID}-token-to-buy-token-input-remove`,
     driver,
   });
+  console.log('no route explainer 9');
+
   await findElementByTestIdAndClick({
     id: 'token-to-buy-networks-trigger',
     driver,
   });
+  console.log('no route explainer 1');
+
   await findElementByTestIdAndClick({
     id: 'switch-network-item-3',
     driver,
   });
+  console.log('no route explainer 2');
   await typeOnTextInput({
     id: 'token-to-buy-search-token-input',
     driver,
     text: 'gmx',
   });
+  console.log('no route explainer 3');
+
   await findElementByTestIdAndClick({
     id: `${GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
     driver,
   });
+  console.log('no route explainer 4');
 
   await typeOnTextInput({
     id: `${OP_OPTIMISM_ID}-token-to-sell-swap-token-input-swap-input-mask`,
@@ -633,27 +653,35 @@ it('should be able to see no route explainer', async () => {
     text: 1,
   });
 
+  console.log('no route explainer 5');
   await delayTime('long');
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button',
     driver,
   });
+  console.log('no route explainer 6');
+
   expect(confirmButtonText).toEqual('No route found');
+  console.log('no route explainer 7');
 
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button',
     driver,
   });
+  console.log('no route explainer 8');
 
   const noRouteExplainer = await findElementByTestId({
     id: 'explainer-sheet-swap-no-route',
     driver,
   });
   expect(noRouteExplainer).toBeTruthy();
+  console.log('no route explainer 9');
+
   await findElementByTestIdAndClick({
     id: 'explainer-action-button',
     driver,
   });
+  console.log('no route explainer 1');
 });
 
 it('should be able to find exact match on other networks', async () => {
