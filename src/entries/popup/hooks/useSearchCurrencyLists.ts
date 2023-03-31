@@ -288,7 +288,7 @@ export function useSearchCurrencyLists({
   // the lists below should be filtered by favorite/bridge asset match
   const results = useMemo(() => {
     const sections: AssetToBuySection[] = [];
-    if (bridgeAsset) {
+    if (bridgeAsset && !searchQuery) {
       const bridgeSection = {
         data: [bridgeAsset],
         id: 'bridge' as AssetToBuySectionId,
@@ -346,6 +346,7 @@ export function useSearchCurrencyLists({
     return sections;
   }, [
     bridgeAsset,
+    searchQuery,
     favoritesList,
     query,
     filterAssetsFromBridgeAndAssetToSell,
