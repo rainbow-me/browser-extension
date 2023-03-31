@@ -544,6 +544,7 @@ const SwapReviewSheetWithQuote = ({
                     variant="flat"
                     color={'accent'}
                     width="full"
+                    testId="swap-review-execute"
                   >
                     {sendingSwap ? (
                       <Box

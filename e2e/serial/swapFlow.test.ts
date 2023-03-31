@@ -4,6 +4,7 @@
 
 import 'chromedriver';
 import 'geckodriver';
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 
@@ -24,6 +25,7 @@ import {
   typeOnTextInput,
   waitAndClick,
 } from '../helpers';
+import { convertRawAmountToDecimalFormat, subtract } from '../numbers';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;
@@ -40,6 +42,8 @@ const MATIC_POLYGON_ID = '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0_137';
 const GMX_ARBITRUM_ID = '0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a_42161';
 const USDC_ARBITRUM_ID = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_42161';
 const UNI_BNB_ID = '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984_56';
+
+const TEST_ADDRESS_1 = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
 
 beforeAll(async () => {
   driver = await initDriverWithOptions({
@@ -731,10 +735,9 @@ it('should be able to go to review a swap', async () => {
   });
   await delayTime('very-long');
   await findElementByTestIdAndClick({ id: 'swap-confirmation-button', driver });
-  await delayTime('very-long');
 });
 
-it('should be able to see every information row in review sheet', async () => {
+it('should be able to see swap information in review sheet', async () => {
   const ethAssetToSellAssetCard = await findElementByTestId({
     id: `ETH-asset-to-sell-swap-asset-card`,
     driver,
@@ -860,12 +863,61 @@ it('should be able to see every information row in review sheet', async () => {
     driver,
   });
   expect(swapReviewTitleText).toBe('Review & Swap');
+});
+
+it('should be able to execute swap', async () => {
+  const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
+  await provider.ready;
+  await delayTime('short');
 
   await findElementByTestIdAndClick({
     id: 'navbar-button-with-back-swap-review',
     driver,
   });
+  await delayTime('short');
+
+  await findElementByTestIdAndClick({
+    id: 'swap-settings-navbar-button',
+    driver,
+  });
+  await delayTime('short');
+
+  await typeOnTextInput({
+    id: 'slippage-input-mask',
+    driver,
+    text: '\b99',
+  });
+  await delayTime('medium');
+
+  await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
+
+  const ethBalanceBeforeSwap = await provider.getBalance(TEST_ADDRESS_1);
   await delayTime('very-long');
+
+  await findElementByTestIdAndClick({ id: 'swap-confirmation-button', driver });
+  await delayTime('medium');
+  await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
+  await delayTime('long');
+  const ethBalanceAfterSwap = await provider.getBalance(TEST_ADDRESS_1);
+  const balanceDifference = subtract(
+    ethBalanceBeforeSwap.toString(),
+    ethBalanceAfterSwap.toString(),
+  );
+  const ethDifferenceAmount = convertRawAmountToDecimalFormat(
+    balanceDifference,
+    18,
+  );
+
+  expect(Number(ethDifferenceAmount)).toBeGreaterThan(1);
+});
+
+it('should be able to execute swap', async () => {
+  await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
+});
+
+it('should be able to go to swap flow', async () => {
+  await delayTime('very-long');
+  await findElementAndClick({ id: 'header-link-swap', driver });
 });
 
 it.skip('should be able to clear assets', async () => {
@@ -880,10 +932,7 @@ it.skip('should be able to clear assets', async () => {
 });
 
 it('should be able to go to review a crosschain swap', async () => {
-  await findElementByTestIdAndClick({
-    id: `${ETH_MAINNET_ID}-token-to-sell-token-input-remove`,
-    driver,
-  });
+  await delayTime('long');
   await findElementByTestIdAndClick({
     id: `${DAI_MAINNET_ID}-token-to-sell-row`,
     driver,
@@ -951,7 +1000,7 @@ it('should be able to go to review a crosschain swap', async () => {
   await delayTime('very-long');
 });
 
-it('should be able to see every information row in review sheet', async () => {
+it('should be able to see crosschain swap information in review sheet', async () => {
   const daiAssetToSellAssetCard = await findElementByTestId({
     id: `DAI-asset-to-sell-swap-asset-card`,
     driver,
@@ -1168,7 +1217,7 @@ it('should be able to go to review a bridge', async () => {
   await delayTime('very-long');
 });
 
-it('should be able to see every information row in review sheet', async () => {
+it('should be able to see bridge information in review sheet', async () => {
   const ethAssetToSellAssetCard = await findElementByTestId({
     id: `ETH-asset-to-sell-swap-asset-card`,
     driver,
