@@ -101,7 +101,6 @@ async function executeAction<T extends RapActionTypes>({
       parameters: { ...parameters, flashbots },
       baseNonce,
     };
-    console.log('executeAction', { actionProps });
     nonce = await typeAction<T>(type, actionProps)();
     return { baseNonce: nonce, errorMessage: null };
   } catch (error) {
@@ -138,7 +137,6 @@ export const walletExecuteRap = async (
       rapName,
       flashbots: parameters?.flashbots,
     };
-    console.log('executing action [0] with params', { actionParams });
 
     const { baseNonce, errorMessage: error } = await executeAction(
       actionParams,
@@ -155,10 +153,6 @@ export const walletExecuteRap = async (
           baseNonce,
           rapName,
         };
-        console.log(`executing action [${index}] with params`, {
-          actionParams,
-        });
-
         // eslint-disable-next-line no-await-in-loop
         await executeAction(actionParams);
       }

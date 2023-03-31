@@ -112,7 +112,6 @@ export async function executeRap<T extends RapTypes>({
   rapActionParameters: RapSwapActionParameters<T>;
   type: RapTypes;
 }): Promise<TransactionResponse> {
-  console.log('executeRap', { rapActionParameters });
   const nonce = await getNextNonce({
     address: rapActionParameters.quote.from as Address,
     chainId: rapActionParameters.chainId as number,
@@ -131,8 +130,6 @@ export async function executeRap<T extends RapTypes>({
         throw new Error('Unsupported hardware wallet');
     }
   } else {
-    console.log('executeRap', { params });
-
     return walletAction(
       'execute_rap',
       params,
