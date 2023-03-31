@@ -976,24 +976,34 @@ it('should be able to go to review a unlock and swap', async () => {
 });
 
 it('should be able to execute unlock and swap', async () => {
+  console.log('execute unlock');
   const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
+  console.log('execute unlock', provider);
   await provider.ready;
   await delayTime('short');
+  console.log('execute unlock 1');
   const tokenContract = new Contract(DAI_MAINNET_ADDRESS, erc20ABI, provider);
+  console.log('execute unlock 2');
   const daiBalanceBeforeSwap = await tokenContract.balanceOf(TEST_ADDRESS_1);
+  console.log('execute unlock 3', daiBalanceBeforeSwap.toString());
 
   await delayTime('very-long');
+  console.log('execute unlock 4');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
+  console.log('execute unlock 5');
   await delayTime('long');
   const daiBalanceAfterSwap = await tokenContract.balanceOf(TEST_ADDRESS_1);
+  console.log('execute unlock 3', daiBalanceAfterSwap.toString());
   const balanceDifference = subtract(
     daiBalanceBeforeSwap.toString(),
     daiBalanceAfterSwap.toString(),
   );
+  console.log('execute unlock 6');
   const daiBalanceDifference = convertRawAmountToDecimalFormat(
     balanceDifference.toString(),
     18,
   );
+  console.log('execute unlock 7', daiBalanceDifference);
 
   expect(Number(daiBalanceDifference)).toBe(50);
 });

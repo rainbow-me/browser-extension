@@ -245,6 +245,7 @@ export const SwapSettings = ({
 
   useEffect(() => {
     if (prevChainId !== chainId) {
+      console.log('seetings useeffect');
       setSlippage(getDefaultSlippage(chainId));
     }
   }, [prevChainId, chainId]);
