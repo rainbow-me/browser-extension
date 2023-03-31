@@ -118,7 +118,7 @@ it('should be able to go to swap flow', async () => {
   await findElementAndClick({ id: 'header-link-swap', driver });
 });
 
-it.skip('should be able to go to swap settings and check rows are visible', async () => {
+it('should be able to go to swap settings and check rows are visible', async () => {
   await findElementByTestIdAndClick({
     id: 'swap-settings-navbar-button',
     driver,
@@ -139,7 +139,7 @@ it.skip('should be able to go to swap settings and check rows are visible', asyn
   });
 });
 
-it.skip('should be able to go to settings and turn on flashbots', async () => {
+it('should be able to go to settings and turn on flashbots', async () => {
   await findElementByTestIdAndClick({ id: 'navbar-button-with-back', driver });
   await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
   await findElementByTestIdAndClick({ id: 'settings-link', driver });
@@ -159,7 +159,7 @@ it.skip('should be able to go to settings and turn on flashbots', async () => {
   await findElementAndClick({ id: 'header-link-swap', driver });
 });
 
-it.skip('should be able to go to swap settings and check flashbots row is visible', async () => {
+it('should be able to go to swap settings and check flashbots row is visible', async () => {
   await findElementByTestIdAndClick({
     id: 'swap-settings-navbar-button',
     driver,
@@ -172,7 +172,7 @@ it.skip('should be able to go to swap settings and check flashbots row is visibl
   expect(flashbotsRow).toBeTruthy();
 });
 
-it.skip('should be able to interact with route settings', async () => {
+it('should be able to interact with route settings', async () => {
   await findElementByTestIdAndClick({
     id: 'swap-settings-route-label',
     driver,
@@ -191,7 +191,7 @@ it.skip('should be able to interact with route settings', async () => {
   });
 });
 
-it.skip('should be able to interact with flashbots settings', async () => {
+it('should be able to interact with flashbots settings', async () => {
   await findElementByTestIdAndClick({
     id: 'swap-settings-flashbots-label',
     driver,
@@ -210,7 +210,7 @@ it.skip('should be able to interact with flashbots settings', async () => {
   });
 });
 
-it.skip('should be able to interact with slippage settings', async () => {
+it('should be able to interact with slippage settings', async () => {
   await findElementByTestIdAndClick({
     id: 'swap-settings-slippage-label',
     driver,
@@ -232,7 +232,7 @@ it.skip('should be able to interact with slippage settings', async () => {
   expect(warning).toBeTruthy();
 });
 
-it.skip('should be able to set default values for settings and go back to swap', async () => {
+it('should be able to set default values for settings and go back to swap', async () => {
   await findElementByTestIdAndClick({
     id: 'settings-use-defaults-button',
     driver,
@@ -250,11 +250,11 @@ it.skip('should be able to set default values for settings and go back to swap',
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
 });
 
-it.skip('should be able to open token to sell input and select assets', async () => {
-  // await findElementByTestIdAndClick({
-  //   id: 'token-to-sell-search-token-input',
-  //   driver,
-  // });
+it('should be able to open token to sell input and select assets', async () => {
+  await findElementByTestIdAndClick({
+    id: 'token-to-sell-search-token-input',
+    driver,
+  });
   await findElementByTestIdAndClick({
     id: 'token-to-sell-sort-trigger',
     driver,
@@ -293,7 +293,7 @@ it.skip('should be able to open token to sell input and select assets', async ()
   });
 });
 
-it.skip('should be able to open press max on token to sell input', async () => {
+it('should be able to open press max on token to sell input', async () => {
   const fiatValueText = await getTextFromText({
     id: 'token-to-sell-info-fiat-value',
     driver,
@@ -315,7 +315,7 @@ it.skip('should be able to open press max on token to sell input', async () => {
   expect(fiatValueTextAfterMax).not.toEqual('$0.00');
 });
 
-it.skip('should be able to remove token to sell and select it again', async () => {
+it('should be able to remove token to sell and select it again', async () => {
   await findElementByTestIdAndClick({
     id: `${ETH_MAINNET_ID}-token-to-sell-token-input-remove`,
     driver,
@@ -337,7 +337,7 @@ it.skip('should be able to remove token to sell and select it again', async () =
   expect(ethValueAfterSelection).toEqual('');
 });
 
-it.skip('should be able to open token to buy input and select assets', async () => {
+it('should be able to open token to buy input and select assets', async () => {
   await findElementByTestIdAndClick({
     id: 'token-to-buy-search-token-input',
     driver,
@@ -359,7 +359,7 @@ it.skip('should be able to open token to buy input and select assets', async () 
   expect(toBuyInputDaiSelected).toBeTruthy();
 });
 
-it.skip('should be able to open remove token to buy and check favorites and verified lists are visible', async () => {
+it('should be able to open remove token to buy and check favorites and verified lists are visible', async () => {
   await findElementByTestIdAndClick({
     id: `${DAI_MAINNET_ID}-token-to-buy-token-input-remove`,
     driver,
@@ -376,7 +376,7 @@ it.skip('should be able to open remove token to buy and check favorites and veri
   expect(verifiedSection).toBeTruthy();
 });
 
-it.skip('should be able to favorite a token and check the info button is present', async () => {
+it('should be able to favorite a token and check the info button is present', async () => {
   await findElementByTestIdAndClick({
     id: `${ZEROX_MAINNET_ID}-verified-token-to-buy-row-favorite-button`,
     driver,
@@ -392,7 +392,7 @@ it.skip('should be able to favorite a token and check the info button is present
   });
 });
 
-it.skip('should be able to check price and balance of token to buy', async () => {
+it('should be able to check price and balance of token to buy', async () => {
   const tokenToBuyInfoPrice = await getTextFromText({
     id: 'token-to-buy-info-price',
     driver,
@@ -405,7 +405,7 @@ it.skip('should be able to check price and balance of token to buy', async () =>
   expect(tokenToBuyInfoBalance).not.toBe('');
 });
 
-it.skip('should be able to flip correctly', async () => {
+it('should be able to flip correctly', async () => {
   await findElementByTestIdAndClick({
     id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
@@ -450,7 +450,7 @@ it.skip('should be able to flip correctly', async () => {
   expect(assetToBuyInputTextAfterMax).toEqual('1');
 });
 
-it.skip('should be able to check insufficient asset for swap', async () => {
+it('should be able to check insufficient asset for swap', async () => {
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button',
     driver,
@@ -458,7 +458,7 @@ it.skip('should be able to check insufficient asset for swap', async () => {
   expect(confirmButtonText).toEqual('Insufficient ZRX');
 });
 
-it.skip('should be able to check insufficient native asset for gas', async () => {
+it('should be able to check insufficient native asset for gas', async () => {
   await findElementByTestIdAndClick({
     id: 'swap-flip-button',
     driver,
@@ -477,7 +477,7 @@ it.skip('should be able to check insufficient native asset for gas', async () =>
   expect(confirmButtonText).toEqual('Insufficient ETH for gas');
 });
 
-it.skip('should be able to see small market warning', async () => {
+it('should be able to see small market warning', async () => {
   const swapWarning = await findElementByTestId({
     id: 'swap-warning-price-impact',
     driver,
@@ -485,7 +485,7 @@ it.skip('should be able to see small market warning', async () => {
   expect(swapWarning).toBeTruthy();
 });
 
-it.skip('should be able to filter assets to buy by network', async () => {
+it('should be able to filter assets to buy by network', async () => {
   // OP
   await findElementByTestIdAndClick({
     id: `${ZEROX_MAINNET_ID}-token-to-buy-token-input-remove`,
@@ -576,7 +576,7 @@ it.skip('should be able to filter assets to buy by network', async () => {
   });
 });
 
-it.skip('should be able to see no route explainer', async () => {
+it('should be able to see no route explainer', async () => {
   await findElementByTestIdAndClick({
     id: `${UNI_BNB_ID}-token-to-buy-token-input-remove`,
     driver,
@@ -656,7 +656,7 @@ it.skip('should be able to see no route explainer', async () => {
   });
 });
 
-it.skip('should be able to find exact match on other networks', async () => {
+it('should be able to find exact match on other networks', async () => {
   await findElementByTestIdAndClick({
     id: `${OP_OPTIMISM_ID}-token-to-sell-token-input-remove`,
     driver,
@@ -707,10 +707,10 @@ it.skip('should be able to find exact match on other networks', async () => {
 });
 
 it('should be able to go to review a swap', async () => {
-  // await findElementByTestIdAndClick({
-  //   id: 'token-to-sell-search-token-input',
-  //   driver,
-  // });
+  await findElementByTestIdAndClick({
+    id: 'token-to-sell-search-token-input',
+    driver,
+  });
   await findElementByTestIdAndClick({
     id: `${ETH_MAINNET_ID}-token-to-sell-row`,
     driver,
