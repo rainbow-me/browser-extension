@@ -100,10 +100,13 @@ export const TokenInput = ({
 
   useEffect(() => {
     setOnSelectAsset(onSelectAsset);
-  }, [onSelectAsset, setOnSelectAsset]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
-    if (openDropdownOnMount) setTimeout(() => onDropdownAction(), 300);
+    if (openDropdownOnMount) {
+      setTimeout(() => onDropdownAction(), 300);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openDropdownOnMount]);
 

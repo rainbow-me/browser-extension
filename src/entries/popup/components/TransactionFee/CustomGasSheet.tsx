@@ -291,27 +291,31 @@ export const CustomGasSheet = ({
   }, [show]);
 
   useEffect(() => {
-    if (!maxBaseFee || isZero(maxBaseFee)) {
-      setMaxBaseFeeWarning('fail');
-    } else if (lessThan(maxBaseFee, currentBaseFee)) {
-      setMaxBaseFeeWarning('stuck');
-    } else {
-      setMaxBaseFeeWarning(undefined);
+    if (show) {
+      if (!maxBaseFee || isZero(maxBaseFee)) {
+        setMaxBaseFeeWarning('fail');
+      } else if (lessThan(maxBaseFee, currentBaseFee)) {
+        setMaxBaseFeeWarning('stuck');
+      } else {
+        setMaxBaseFeeWarning(undefined);
+      }
     }
-  }, [currentBaseFee, maxBaseFee]);
+  }, [currentBaseFee, maxBaseFee, show]);
 
   useEffect(() => {
-    const normalSpeed = gasFeeParamsBySpeed?.normal as GasFeeParams;
-    if (!maxPriorityFee || isZero(maxPriorityFee)) {
-      setPriorityBaseFeeWarning('fail');
-    } else if (
-      lessThan(maxPriorityFee, normalSpeed?.maxPriorityFeePerGas?.gwei)
-    ) {
-      setPriorityBaseFeeWarning('stuck');
-    } else {
-      setPriorityBaseFeeWarning(undefined);
+    if (show) {
+      const normalSpeed = gasFeeParamsBySpeed?.normal as GasFeeParams;
+      if (!maxPriorityFee || isZero(maxPriorityFee)) {
+        setPriorityBaseFeeWarning('fail');
+      } else if (
+        lessThan(maxPriorityFee, normalSpeed?.maxPriorityFeePerGas?.gwei)
+      ) {
+        setPriorityBaseFeeWarning('stuck');
+      } else {
+        setPriorityBaseFeeWarning(undefined);
+      }
     }
-  }, [gasFeeParamsBySpeed.normal, maxBaseFee, maxPriorityFee]);
+  }, [gasFeeParamsBySpeed?.normal, maxBaseFee, maxPriorityFee, show]);
 
   const onSelectedGasChange = useCallback(
     (speed: GasSpeed) => {

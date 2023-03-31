@@ -26,6 +26,7 @@ import {
   parseGasFeeParamsBySpeed,
 } from '~/core/utils/gas';
 
+import { useDebounce } from './useDebounce';
 import { useNativeAssetForNetwork } from './useNativeAssetForNetwork';
 import usePrevious from './usePrevious';
 
@@ -45,6 +46,7 @@ const useGas = ({
   const nativeAsset = useNativeAssetForNetwork({ chainId });
   const prevDefaultSpeed = usePrevious(defaultSpeed);
 
+  const debouncedEstimatedGasLimit = useDebounce(estimatedGasLimit, 500);
   const { data: optimismL1SecurityFee } = useOptimismL1SecurityFee(
     { transactionRequest: transactionRequest || {}, chainId },
     { enabled: chainId === ChainId.optimism },
@@ -144,7 +146,7 @@ const useGas = ({
       ? parseGasFeeParamsBySpeed({
           chainId,
           data: gasData as MeteorologyLegacyResponse | MeteorologyResponse,
-          gasLimit: estimatedGasLimit || `${gasUnits.basic_transfer}`,
+          gasLimit: debouncedEstimatedGasLimit || `${gasUnits.basic_transfer}`,
           nativeAsset,
           currency: currentCurrency,
           optimismL1SecurityFee,
@@ -159,7 +161,7 @@ const useGas = ({
     isLoading,
     chainId,
     gasData,
-    estimatedGasLimit,
+    debouncedEstimatedGasLimit,
     nativeAsset,
     currentCurrency,
     optimismL1SecurityFee,
@@ -188,8 +190,8 @@ const useGas = ({
     if (
       gasFeeParamsBySpeed?.[selectedSpeed] &&
       gasFeeParamsChanged(
-        gasFeeParamsBySpeed[selectedSpeed],
         storeGasFeeParamsBySpeed[selectedSpeed],
+        gasFeeParamsBySpeed[selectedSpeed],
       )
     ) {
       setGasFeeParamsBySpeed({
@@ -259,6 +261,8 @@ export const useSwapGas = ({
     assetToSell,
     assetToBuy,
   });
+
+  console.log('--- estimatedGasLimit', estimatedGasLimit);
 
   const transactionRequest: TransactionRequest | null = useMemo(() => {
     if (quote && !(quote as QuoteError).error) {
