@@ -954,7 +954,7 @@ it('should be able to execute unlock and swap', async () => {
   const tokenContract = new Contract(DAI_MAINNET_ADDRESS, erc20ABI, provider);
   const daiBalanceBeforeSwap = await tokenContract.balanceOf(TEST_ADDRESS_1);
 
-  await delayTime('medium');
+  await delayTime('very-long');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
   await delayTime('long');
   const daiBalanceAfterSwap = await tokenContract.balanceOf(TEST_ADDRESS_1);
