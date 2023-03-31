@@ -578,6 +578,7 @@ it('should be able to filter assets to buy by network', async () => {
 
 it('should be able to see no route explainer', async () => {
   console.log('no route explainer 1');
+  await delayTime('long');
   await findElementByTestIdAndClick({
     id: `${UNI_BNB_ID}-token-to-buy-token-input-remove`,
     driver,
