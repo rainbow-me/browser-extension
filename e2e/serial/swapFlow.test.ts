@@ -972,7 +972,6 @@ it('should be able to go to review a unlock and swap', async () => {
     driver,
   });
   await delayTime('very-long');
-  await findElementByTestIdAndClick({ id: 'swap-confirmation-button', driver });
 });
 
 it('should be able to execute unlock and swap', async () => {
@@ -987,6 +986,10 @@ it('should be able to execute unlock and swap', async () => {
   const daiBalanceBeforeSwap = await tokenContract.balanceOf(TEST_ADDRESS_1);
   console.log('execute unlock 3', daiBalanceBeforeSwap.toString());
 
+  console.log('execute unlock 44');
+  await delayTime('very-long');
+  console.log('execute unlock 45');
+  await findElementByTestIdAndClick({ id: 'swap-confirmation-button', driver });
   await delayTime('very-long');
   console.log('execute unlock 4');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
