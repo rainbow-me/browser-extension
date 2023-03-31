@@ -246,6 +246,7 @@ export const executeRap = async ({
   }
   const signer = await keychainManager.getSigner(from);
   const wallet = signer.connect(provider);
+  console.log('connected to provider', provider);
   return walletExecuteRap(wallet, type, rapActionParameters);
 };
 

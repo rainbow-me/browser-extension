@@ -6,6 +6,7 @@
         "https://*.g.alchemy.com",
         "wss://*.rainbow.me",
         "https://*.rainbow.me",
+        "https://*.flashbots.net",
         "https://gateway.ipfs.io",
         "wss://*.alchemyapi.io",
         "wss://*.g.alchemy.com",

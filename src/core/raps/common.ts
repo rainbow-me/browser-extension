@@ -81,6 +81,7 @@ async function executeAction<T extends RapActionTypes>({
   index,
   baseNonce,
   rapName,
+  flashbots = false,
 }: {
   action: RapAction<T>;
   wallet: Signer;
@@ -88,6 +89,7 @@ async function executeAction<T extends RapActionTypes>({
   index: number;
   baseNonce?: number;
   rapName: string;
+  flashbots?: boolean;
 }): Promise<RapActionResponse> {
   const { type, parameters } = action;
   let nonce;
@@ -98,6 +100,7 @@ async function executeAction<T extends RapActionTypes>({
       index,
       parameters,
       baseNonce,
+      flashbots,
     };
     nonce = await typeAction<T>(type, actionProps)();
     return { baseNonce: nonce, errorMessage: null };
@@ -133,6 +136,7 @@ export const walletExecuteRap = async (
       index: 0,
       baseNonce: nonce,
       rapName,
+      flashbots: parameters?.flashbots,
     });
 
     if (typeof baseNonce === 'number') {

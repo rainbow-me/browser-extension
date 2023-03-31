@@ -1,6 +1,7 @@
 import { Source } from '@rainbow-me/swaps';
 import { useCallback, useEffect, useState } from 'react';
 
+import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
 import { ChainId } from '~/core/types/chains';
 
 import usePrevious from '../usePrevious';
@@ -24,7 +25,7 @@ export const DEFAULT_SLIPPAGE = {
 export const useSwapSettings = ({ chainId }: { chainId: ChainId }) => {
   const [source, setSource] = useState<Source | 'auto'>('auto');
   const [slippage, setSlippage] = useState<string>(DEFAULT_SLIPPAGE[chainId]);
-  const [flashbotsEnabled, setFlashbotsEnabled] = useState<boolean>(false);
+  const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
   const prevChainId = usePrevious(chainId);
 
   const setSettings = useCallback(
@@ -41,7 +42,7 @@ export const useSwapSettings = ({ chainId }: { chainId: ChainId }) => {
       setSlippage(slippage);
       setFlashbotsEnabled(flashbotsEnabled);
     },
-    [],
+    [setFlashbotsEnabled],
   );
 
   useEffect(() => {

@@ -6,7 +6,6 @@ import {
   createClient,
   createStorage,
 } from 'wagmi';
-import { infuraProvider } from 'wagmi/providers/infura';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 
 import { queryClient } from '../react-query';
@@ -45,7 +44,6 @@ const { chains, provider, webSocketProvider } = configureChains(
         }
       },
     }),
-    infuraProvider({ apiKey: process.env.INFURA_API_KEY }),
   ],
 );
 

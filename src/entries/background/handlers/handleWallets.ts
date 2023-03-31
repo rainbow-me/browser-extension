@@ -191,6 +191,7 @@ export const handleWallets = () =>
               p.rapActionParameters.flashbots &&
               p.rapActionParameters.chainId === ChainId.mainnet
             ) {
+              console.log('using flashbots rpc!');
               provider = new StaticJsonRpcProvider(
                 'https://rpc.flashbots.net',
                 'mainnet',

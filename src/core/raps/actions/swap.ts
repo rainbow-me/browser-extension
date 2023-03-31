@@ -240,7 +240,7 @@ export const swap = async ({
       quote,
       wallet,
     };
-
+    console.log('about to execute swap with ', swapParams);
     swap = await executeSwap(swapParams);
   } catch (e) {
     logger.error({
