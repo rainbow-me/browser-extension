@@ -35,11 +35,13 @@ const useGas = ({
   defaultSpeed = GasSpeed.NORMAL,
   estimatedGasLimit,
   transactionRequest,
+  enabled,
 }: {
   chainId: ChainId;
   defaultSpeed?: GasSpeed;
   estimatedGasLimit?: string;
   transactionRequest: TransactionRequest | null;
+  enabled?: boolean;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: gasData, isLoading } = useGasData({ chainId });
@@ -177,6 +179,7 @@ const useGas = ({
 
   useEffect(() => {
     if (
+      enabled &&
       gasFeeParamsBySpeed?.[selectedSpeed] &&
       gasFeeParamsChanged(selectedGas, gasFeeParamsBySpeed?.[selectedSpeed])
     ) {
@@ -184,10 +187,17 @@ const useGas = ({
         selectedGas: gasFeeParamsBySpeed[selectedSpeed],
       });
     }
-  }, [gasFeeParamsBySpeed, selectedGas, selectedSpeed, setSelectedGas]);
+  }, [
+    enabled,
+    gasFeeParamsBySpeed,
+    selectedGas,
+    selectedSpeed,
+    setSelectedGas,
+  ]);
 
   useEffect(() => {
     if (
+      enabled &&
       gasFeeParamsBySpeed?.[selectedSpeed] &&
       gasFeeParamsChanged(
         storeGasFeeParamsBySpeed[selectedSpeed],
@@ -199,6 +209,7 @@ const useGas = ({
       });
     }
   }, [
+    enabled,
     gasFeeParamsBySpeed,
     selectedSpeed,
     setGasFeeParamsBySpeed,
@@ -248,12 +259,14 @@ export const useSwapGas = ({
   quote,
   assetToSell,
   assetToBuy,
+  enabled,
 }: {
   chainId: ChainId;
   defaultSpeed?: GasSpeed;
   quote?: Quote | CrosschainQuote | QuoteError;
   assetToSell?: ParsedSearchAsset;
   assetToBuy?: ParsedSearchAsset;
+  enabled?: boolean;
 }) => {
   const { data: estimatedGasLimit } = useEstimateSwapGasLimit({
     chainId,
@@ -261,8 +274,6 @@ export const useSwapGas = ({
     assetToSell,
     assetToBuy,
   });
-
-  console.log('--- estimatedGasLimit', estimatedGasLimit);
 
   const transactionRequest: TransactionRequest | null = useMemo(() => {
     if (quote && !(quote as QuoteError).error) {
@@ -285,5 +296,6 @@ export const useSwapGas = ({
     defaultSpeed,
     estimatedGasLimit,
     transactionRequest,
+    enabled,
   });
 };

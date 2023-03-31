@@ -249,6 +249,7 @@ type SwapFeeProps = {
   plainTriggerBorder?: boolean;
   assetToSell?: ParsedSearchAsset;
   assetToBuy?: ParsedSearchAsset;
+  enabled?: boolean;
 };
 
 export function SwapFee({
@@ -259,6 +260,7 @@ export function SwapFee({
   plainTriggerBorder,
   assetToSell,
   assetToBuy,
+  enabled = true,
 }: SwapFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
@@ -276,6 +278,7 @@ export function SwapFee({
     quote,
     assetToSell,
     assetToBuy,
+    enabled,
   });
   return (
     <Fee
