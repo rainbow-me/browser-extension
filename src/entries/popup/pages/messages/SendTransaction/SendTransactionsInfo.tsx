@@ -151,6 +151,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
 
           <Inset horizontal="20px">
             <TransactionFee
+              flashbotsEnabled={false}
               analyticsEvents={{
                 customGasClicked:
                   event.dappPromptSendTransactionCustomGasClicked,
