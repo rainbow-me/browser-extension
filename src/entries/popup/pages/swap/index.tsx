@@ -311,8 +311,6 @@ export function Swap() {
     };
   }, [clearCustomGasModified]);
 
-  console.log('- inputToOpenOnMount', inputToOpenOnMount);
-
   return (
     <>
       <Navbar
