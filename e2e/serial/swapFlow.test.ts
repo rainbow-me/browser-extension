@@ -642,6 +642,9 @@ it('should be able to see no route explainer', async () => {
     driver,
     text: 'gmx',
   });
+
+  console.log('no route explainer 13a');
+  await delayTime('long');
   console.log('no route explainer 13');
 
   await findElementByTestIdAndClick({
