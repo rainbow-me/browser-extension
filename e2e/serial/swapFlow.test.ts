@@ -570,22 +570,21 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
     text: 'uni',
   });
+  console.log('no bnb select');
   await findElementByTestIdAndClick({
     id: `${UNI_BNB_ID}-verified-token-to-buy-row`,
     driver,
   });
-});
-
-it('should be able to see no route explainer', async () => {
-  console.log('no route explainer 1');
-  await delayTime('long');
-  console.log('no route explainer 2');
+  console.log('no bnb remove');
   await findElementByTestIdAndClick({
     id: `${UNI_BNB_ID}-token-to-buy-token-input-remove`,
     driver,
   });
-  console.log('no route explainer 3');
+  console.log('no bnb end');
+});
 
+it('should be able to see no route explainer', async () => {
+  console.log('no route explainer 3');
   await findElementByTestIdAndClick({
     id: 'token-to-buy-networks-trigger',
     driver,
