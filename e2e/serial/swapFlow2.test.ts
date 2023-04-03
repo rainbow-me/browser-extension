@@ -108,9 +108,8 @@ it('should be able to connect to hardhat and turn swaps flag on', async () => {
 });
 
 it('should be able to go to swap flow', async () => {
-  await delayTime('very-long');
   await findElementAndClick({ id: 'header-link-swap', driver });
-  await delayTime('very-long');
+  await delayTime('long');
 });
 
 it('should be able to go to review a unlock and swap', async () => {
@@ -131,7 +130,7 @@ it('should be able to go to review a unlock and swap', async () => {
     text: `\b50`,
     driver,
   });
-  await delayTime('very-long');
+  await delayTime('long');
 });
 
 it('should be able to execute unlock and swap', async () => {
@@ -141,9 +140,8 @@ it('should be able to execute unlock and swap', async () => {
   const tokenContract = new Contract(DAI_MAINNET_ADDRESS, erc20ABI, provider);
   const daiBalanceBeforeSwap = await tokenContract.balanceOf(TEST_ADDRESS_1);
 
-  await delayTime('very-long');
   await findElementByTestIdAndClick({ id: 'swap-confirmation-button', driver });
-  await delayTime('very-long');
+  await delayTime('long');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
   await delayTime('long');
   const daiBalanceAfterSwap = await tokenContract.balanceOf(TEST_ADDRESS_1);
@@ -160,9 +158,8 @@ it('should be able to execute unlock and swap', async () => {
 });
 
 it('should be able to go to swap flow', async () => {
-  await delayTime('very-long');
   await findElementAndClick({ id: 'header-link-swap', driver });
-  await delayTime('very-long');
+  await delayTime('long');
 });
 
 it('should be able to go to review a crosschain swap', async () => {
@@ -213,7 +210,6 @@ it('should be able to go to review a crosschain swap', async () => {
     driver,
   });
   await delayTime('very-long');
-  await delayTime('very-long');
 
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button',
@@ -232,7 +228,7 @@ it('should be able to go to review a crosschain swap', async () => {
       driver,
     });
   }
-  await delayTime('very-long');
+  await delayTime('long');
 });
 
 it('should be able to see crosschain swap information in review sheet', async () => {
@@ -280,17 +276,6 @@ it('should be able to see crosschain swap information in review sheet', async ()
     driver,
   });
   await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
-
-  // const flashbotsEnabledDetailsRow = await findElementByTestId({
-  //   id: `flashbots-enabled-details-row`,
-  //   driver,
-  // });
-  // expect(flashbotsEnabledDetailsRow).toBeTruthy();
-  // await findElementByTestIdAndClick({
-  //   id: 'swap-review-flashbots-info-button',
-  //   driver,
-  // });
-  // await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
 
   const moreDetailsHiddendDetailsRow = await findElementByTestId({
     id: `more-details-hidden-details-row`,
@@ -380,7 +365,7 @@ it('should be able to see crosschain swap information in review sheet', async ()
     id: 'navbar-button-with-back-swap-review',
     driver,
   });
-  await delayTime('very-long');
+  await delayTime('long');
 });
 
 it('should be able to go to review a bridge', async () => {
@@ -449,7 +434,7 @@ it('should be able to go to review a bridge', async () => {
     });
   }
 
-  await delayTime('very-long');
+  await delayTime('long');
 });
 
 it('should be able to see bridge information in review sheet', async () => {

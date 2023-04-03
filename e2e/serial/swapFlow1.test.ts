@@ -591,6 +591,7 @@ it('should be able to see no route explainer', async () => {
     driver,
     text: 'op',
   });
+  await delayTime('long');
   await findElementByTestIdAndClick({
     id: `${OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
     driver,
@@ -599,7 +600,7 @@ it('should be able to see no route explainer', async () => {
     id: 'swap-flip-button',
     driver,
   });
-  await delayTime('short');
+  await delayTime('long');
   await findElementByTestIdAndClick({
     id: `${ETH_MAINNET_ID}-token-to-buy-token-input-remove`,
     driver,
@@ -676,6 +677,7 @@ it('should be able to find exact match on other networks', async () => {
     driver,
     text: 'optimism',
   });
+  await delayTime('long');
 
   const onOtherNetworksSections = await findElementByTestId({
     id: 'other_networks-token-to-buy-section',
@@ -780,17 +782,6 @@ it('should be able to see swap information in review sheet', async () => {
   });
   await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
 
-  // const flashbotsEnabledDetailsRow = await findElementByTestId({
-  //   id: `flashbots-enabled-details-row`,
-  //   driver,
-  // });
-  // expect(flashbotsEnabledDetailsRow).toBeTruthy();
-  // await findElementByTestIdAndClick({
-  //   id: 'swap-review-flashbots-info-button',
-  //   driver,
-  // });
-  // await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
-
   const moreDetailsHiddendDetailsRow = await findElementByTestId({
     id: `more-details-hidden-details-row`,
     driver,
@@ -891,7 +882,7 @@ it('should be able to execute swap', async () => {
   const ethBalanceBeforeSwap = await provider.getBalance(TEST_ADDRESS_1);
   await delayTime('very-long');
   await findElementByTestIdAndClick({ id: 'swap-confirmation-button', driver });
-  await delayTime('long');
+  await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
   await delayTime('very-long');
   const ethBalanceAfterSwap = await provider.getBalance(TEST_ADDRESS_1);
