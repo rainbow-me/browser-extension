@@ -43,6 +43,7 @@ import {
 } from '~/entries/popup/hooks/swap';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
+import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import * as wallet from '../../../handlers/wallet';
 
@@ -394,7 +395,7 @@ const SwapReviewSheetWithQuote = ({
                   style={{
                     width: 32,
                     height: 32,
-                    zIndex: 10,
+                    zIndex: zIndexes.CUSTOM_GAS_SHEET - 1,
                     position: 'absolute',
                     left: '0 auto',
                   }}

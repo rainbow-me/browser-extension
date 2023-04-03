@@ -34,6 +34,7 @@ import { SymbolStyles, TextStyles } from '~/design-system/styles/core.css';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
 import usePrevious from '../../hooks/usePrevious';
+import { zIndexes } from '../../utils/zIndexes';
 import {
   ExplainerSheet,
   useExplainerSheetParams,
@@ -411,6 +412,7 @@ export const CustomGasSheet = ({
         padding="16px"
         backdropFilter="blur(26px)"
         scrimBackground
+        zIndex={zIndexes.CUSTOM_GAS_SHEET}
       >
         <Box paddingHorizontal="20px">
           <Box paddingVertical="27px">
