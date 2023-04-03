@@ -4,8 +4,11 @@
 
 import 'chromedriver';
 import 'geckodriver';
+import { Contract } from '@ethersproject/contracts';
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
+import { erc20ABI } from 'wagmi';
 
 import {
   delayTime,
@@ -23,6 +26,7 @@ import {
   typeOnTextInput,
   waitAndClick,
 } from '../helpers';
+import { convertRawAmountToDecimalFormat, subtract } from '../numbers';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;
@@ -35,6 +39,9 @@ const DAI_ARBITRUM_ID = '0x6b175474e89094c44da98b954eedeac495271d0f_42161';
 const ETH_MAINNET_ID = 'eth_1';
 const ETH_OPTIMISM_ID = 'eth_10';
 const USDC_ARBITRUM_ID = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_42161';
+const USDC_MAINNET_ID = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_1';
+const DAI_MAINNET_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f';
+const TEST_ADDRESS_1 = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
 
 beforeAll(async () => {
   driver = await initDriverWithOptions({
@@ -98,6 +105,58 @@ it('should be able to connect to hardhat and turn swaps flag on', async () => {
   expect(button).toBeTruthy();
   await findElementByTestIdAndClick({ id: 'feature-flag-swaps', driver });
   await findElementByTestIdAndClick({ id: 'navbar-button-with-back', driver });
+});
+
+it('should be able to go to swap flow', async () => {
+  await delayTime('very-long');
+  await findElementAndClick({ id: 'header-link-swap', driver });
+  await delayTime('very-long');
+});
+
+it('should be able to go to review a unlock and swap', async () => {
+  await findElementByTestIdAndClick({
+    id: `${DAI_MAINNET_ID}-token-to-sell-row`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'token-to-buy-search-token-input',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `${USDC_MAINNET_ID}-favorites-token-to-buy-row`,
+    driver,
+  });
+  await typeOnTextInput({
+    id: `${DAI_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    text: `\b50`,
+    driver,
+  });
+  await delayTime('very-long');
+});
+
+it('should be able to execute unlock and swap', async () => {
+  const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
+  await provider.ready;
+  await delayTime('short');
+  const tokenContract = new Contract(DAI_MAINNET_ADDRESS, erc20ABI, provider);
+  const daiBalanceBeforeSwap = await tokenContract.balanceOf(TEST_ADDRESS_1);
+
+  await delayTime('very-long');
+  await findElementByTestIdAndClick({ id: 'swap-confirmation-button', driver });
+  await delayTime('very-long');
+  await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
+  await delayTime('long');
+  const daiBalanceAfterSwap = await tokenContract.balanceOf(TEST_ADDRESS_1);
+  const balanceDifference = subtract(
+    daiBalanceBeforeSwap.toString(),
+    daiBalanceAfterSwap.toString(),
+  );
+  const daiBalanceDifference = convertRawAmountToDecimalFormat(
+    balanceDifference.toString(),
+    18,
+  );
+
+  expect(Number(daiBalanceDifference)).toBe(50);
 });
 
 it('should be able to go to swap flow', async () => {

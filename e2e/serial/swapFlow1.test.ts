@@ -4,11 +4,9 @@
 
 import 'chromedriver';
 import 'geckodriver';
-import { Contract } from '@ethersproject/contracts';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
-import { erc20ABI } from 'wagmi';
 
 import {
   delayTime,
@@ -42,8 +40,6 @@ const OP_OPTIMISM_ID = '0x4200000000000000000000000000000000000042_10';
 const MATIC_POLYGON_ID = '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0_137';
 const GMX_ARBITRUM_ID = '0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a_42161';
 const UNI_BNB_ID = '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984_56';
-const USDC_MAINNET_ID = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_1';
-const DAI_MAINNET_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f';
 
 const TEST_ADDRESS_1 = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
 
@@ -501,6 +497,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
     text: 'op',
   });
+  await delayTime('long');
   await findElementByTestIdAndClick({
     id: `${OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
     driver,
@@ -523,6 +520,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
     text: 'matic',
   });
+  await delayTime('long');
   await findElementByTestIdAndClick({
     id: `${MATIC_POLYGON_ID}-favorites-token-to-buy-row`,
     driver,
@@ -545,6 +543,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
     text: 'gmx',
   });
+  await delayTime('long');
   await findElementByTestIdAndClick({
     id: `${GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
     driver,
@@ -567,6 +566,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
     text: 'uni',
   });
+  await delayTime('long');
   await findElementByTestIdAndClick({
     id: `${UNI_BNB_ID}-verified-token-to-buy-row`,
     driver,
@@ -905,60 +905,4 @@ it('should be able to execute swap', async () => {
   );
 
   expect(Number(ethDifferenceAmount)).toBeGreaterThan(1);
-});
-
-it('should be able to go to swap flow', async () => {
-  await delayTime('very-long');
-  await findElementAndClick({ id: 'header-link-swap', driver });
-  await delayTime('very-long');
-});
-
-it('should be able to go to review a unlock and swap', async () => {
-  // await findElementByTestIdAndClick({
-  //   id: 'token-to-sell-search-token-input',
-  //   driver,
-  // });
-  await findElementByTestIdAndClick({
-    id: `${DAI_MAINNET_ID}-token-to-sell-row`,
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'token-to-buy-search-token-input',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: `${USDC_MAINNET_ID}-favorites-token-to-buy-row`,
-    driver,
-  });
-  await typeOnTextInput({
-    id: `${DAI_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-    text: `\b50`,
-    driver,
-  });
-  await delayTime('very-long');
-});
-
-it('should be able to execute unlock and swap', async () => {
-  const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
-  await provider.ready;
-  await delayTime('short');
-  const tokenContract = new Contract(DAI_MAINNET_ADDRESS, erc20ABI, provider);
-  const daiBalanceBeforeSwap = await tokenContract.balanceOf(TEST_ADDRESS_1);
-
-  await delayTime('very-long');
-  await findElementByTestIdAndClick({ id: 'swap-confirmation-button', driver });
-  await delayTime('very-long');
-  await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
-  await delayTime('long');
-  const daiBalanceAfterSwap = await tokenContract.balanceOf(TEST_ADDRESS_1);
-  const balanceDifference = subtract(
-    daiBalanceBeforeSwap.toString(),
-    daiBalanceAfterSwap.toString(),
-  );
-  const daiBalanceDifference = convertRawAmountToDecimalFormat(
-    balanceDifference.toString(),
-    18,
-  );
-
-  expect(Number(daiBalanceDifference)).toBe(50);
 });
