@@ -291,7 +291,6 @@ export function Swap() {
         (asset) => asset?.uniqueId === selectedTokenId,
       );
       if (selectedSearchAsset) {
-        console.log('selectAssetToSell useeffect');
         selectAssetToSell(selectedSearchAsset);
         // clear selected token
         setSelectedToken();
@@ -301,8 +300,6 @@ export function Swap() {
 
   useEffect(() => {
     return () => {
-      console.log('clearCustomGasModified useeffect');
-
       clearCustomGasModified();
     };
   }, [clearCustomGasModified]);

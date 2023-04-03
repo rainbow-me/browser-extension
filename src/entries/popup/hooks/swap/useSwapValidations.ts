@@ -32,11 +32,6 @@ export const useSwapValidations = ({
   const enoughAssetBalance = useMemo(() => {
     if (assetToSellValue) {
       if (!assetToSell?.isNativeAsset) {
-        console.log('----');
-        console.log('asset to sell   value', assetToSellValue);
-        console.log('asset to sell balance', assetToSell?.balance?.amount);
-        console.log('asset to sell', assetToSell);
-        console.log('----');
         return lessOrEqualThan(
           convertAmountToRawAmount(
             assetToSellValue,

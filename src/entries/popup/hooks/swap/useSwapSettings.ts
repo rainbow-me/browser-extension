@@ -64,7 +64,6 @@ export const useSwapSettings = ({ chainId }: { chainId: ChainId }) => {
 
   useEffect(() => {
     if (prevChainId !== chainId) {
-      console.log('useSwapQuoteHandler useswapsettings');
       setSlippage(getDefaultSlippage(chainId));
     }
   }, [chainId, prevChainId]);

@@ -162,10 +162,8 @@ export async function userAssetsByChainQueryFunction({
                 currency,
                 provider,
               });
-              console.log('fetchAssetBalanceViaProvider pa 1', pa);
               return pa;
             } catch (e) {
-              console.log('fetchAssetBalanceViaProvider error 2', e);
               return parsedAsset;
             }
           },

@@ -577,76 +577,63 @@ it('should be able to filter assets to buy by network', async () => {
 });
 
 it('should be able to see no route explainer', async () => {
-  console.log('no route explainer 1');
   await delayTime('long');
   await findElementByTestIdAndClick({
     id: `${UNI_BNB_ID}-token-to-buy-token-input-remove`,
     driver,
   });
-  console.log('no route explainer 2');
   await findElementByTestIdAndClick({
     id: 'token-to-buy-networks-trigger',
     driver,
   });
-  console.log('no route explainer 3');
 
   await findElementByTestIdAndClick({
     id: 'switch-network-item-2',
     driver,
   });
-  console.log('no route explainer 4');
 
   await typeOnTextInput({
     id: 'token-to-buy-search-token-input',
     driver,
     text: 'op',
   });
-  console.log('no route explainer 5');
 
   await findElementByTestIdAndClick({
     id: `${OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
     driver,
   });
-  console.log('no route explainer 6');
 
   await findElementByTestIdAndClick({
     id: 'swap-flip-button',
     driver,
   });
-  console.log('no route explainer 7');
 
   await delayTime('short');
-  console.log('no route explainer 8');
 
   await findElementByTestIdAndClick({
     id: `${ETH_MAINNET_ID}-token-to-buy-token-input-remove`,
     driver,
   });
-  console.log('no route explainer 9');
 
   await findElementByTestIdAndClick({
     id: 'token-to-buy-networks-trigger',
     driver,
   });
-  console.log('no route explainer 1');
 
   await findElementByTestIdAndClick({
     id: 'switch-network-item-3',
     driver,
   });
-  console.log('no route explainer 2');
   await typeOnTextInput({
     id: 'token-to-buy-search-token-input',
     driver,
     text: 'gmx',
   });
-  console.log('no route explainer 3');
 
   await findElementByTestIdAndClick({
     id: `${GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
     driver,
   });
-  console.log('no route explainer 4');
 
   await typeOnTextInput({
     id: `${OP_OPTIMISM_ID}-token-to-sell-swap-token-input-swap-input-mask`,
@@ -654,35 +641,29 @@ it('should be able to see no route explainer', async () => {
     text: 1,
   });
 
-  console.log('no route explainer 5');
   await delayTime('long');
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button',
     driver,
   });
-  console.log('no route explainer 6');
 
   expect(confirmButtonText).toEqual('No route found');
-  console.log('no route explainer 7');
 
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button',
     driver,
   });
-  console.log('no route explainer 8');
 
   const noRouteExplainer = await findElementByTestId({
     id: 'explainer-sheet-swap-no-route',
     driver,
   });
   expect(noRouteExplainer).toBeTruthy();
-  console.log('no route explainer 9');
 
   await findElementByTestIdAndClick({
     id: 'explainer-action-button',
     driver,
   });
-  console.log('no route explainer 1');
 });
 
 it('should be able to find exact match on other networks', async () => {
@@ -976,38 +957,26 @@ it('should be able to go to review a unlock and swap', async () => {
 });
 
 it('should be able to execute unlock and swap', async () => {
-  console.log('execute unlock');
   const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
-  console.log('execute unlock', provider);
   await provider.ready;
   await delayTime('short');
-  console.log('execute unlock 1');
   const tokenContract = new Contract(DAI_MAINNET_ADDRESS, erc20ABI, provider);
-  console.log('execute unlock 2');
   const daiBalanceBeforeSwap = await tokenContract.balanceOf(TEST_ADDRESS_1);
-  console.log('execute unlock 3', daiBalanceBeforeSwap.toString());
 
-  console.log('execute unlock 44');
   await delayTime('very-long');
-  console.log('execute unlock 45');
   await findElementByTestIdAndClick({ id: 'swap-confirmation-button', driver });
   await delayTime('very-long');
-  console.log('execute unlock 4');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
-  console.log('execute unlock 5');
   await delayTime('long');
   const daiBalanceAfterSwap = await tokenContract.balanceOf(TEST_ADDRESS_1);
-  console.log('execute unlock 3', daiBalanceAfterSwap.toString());
   const balanceDifference = subtract(
     daiBalanceBeforeSwap.toString(),
     daiBalanceAfterSwap.toString(),
   );
-  console.log('execute unlock 6');
   const daiBalanceDifference = convertRawAmountToDecimalFormat(
     balanceDifference.toString(),
     18,
   );
-  console.log('execute unlock 7', daiBalanceDifference);
 
   expect(Number(daiBalanceDifference)).toBe(50);
 });
