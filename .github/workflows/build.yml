@@ -115,7 +115,7 @@ jobs:
       - name: Run e2e (Brave)
         uses: nick-fields/retry@v2
         with:
-          timeout_minutes: 8
+          timeout_minutes: 10
           max_attempts: 3
           command:  |
             export BROWSER=chrome
@@ -173,7 +173,7 @@ jobs:
       - name: Run e2e (Brave)
         uses: nick-fields/retry@v2
         with:
-          timeout_minutes: 8
+          timeout_minutes: 10
           max_attempts: 3
           command:  |
             export BROWSER=brave

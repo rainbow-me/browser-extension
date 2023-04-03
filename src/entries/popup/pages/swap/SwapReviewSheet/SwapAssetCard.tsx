@@ -14,9 +14,14 @@ import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 export type SwapAssetCardProps = {
   asset: ParsedSearchAsset;
   assetAmount: string;
+  testId: string;
 };
 
-export const SwapAssetCard = ({ asset, assetAmount }: SwapAssetCardProps) => {
+export const SwapAssetCard = ({
+  asset,
+  assetAmount,
+  testId,
+}: SwapAssetCardProps) => {
   const { currentCurrency } = useCurrentCurrencyStore();
 
   const amount = useMemo(
@@ -48,6 +53,7 @@ export const SwapAssetCard = ({ asset, assetAmount }: SwapAssetCardProps) => {
           height: '128px',
           backgroundColor: transparentAccentColorAsHsl,
         }}
+        testId={`${testId}-swap-asset-card`}
       >
         <Box paddingVertical="27px">
           <Stack space="10px">

@@ -63,43 +63,47 @@ const SwapWarning = ({
     );
   }, [priceImpact?.type, timeEstimate?.isLongWait]);
 
-  const { warningTitle, warningDescription, warningColor } = useMemo(() => {
-    if (priceImpact?.type !== SwapPriceImpactType.none) {
-      return {
-        warningTitle: i18n.t('swap.warnings.price_impact.title'),
-        warningDescription: i18n.t('swap.warnings.price_impact.description', {
-          impactAmount: priceImpact?.impactDisplay,
-        }),
-        warningColor: (priceImpact?.type === SwapPriceImpactType.high
-          ? 'orange'
-          : 'red') as TextStyles['color'],
-      };
-    } else if (timeEstimate?.isLongWait) {
-      return {
-        warningTitle: i18n.t('swap.warnings.long_wait.title'),
-        warningDescription: i18n.t('swap.warnings.long_wait.description', {
-          time: timeEstimate?.timeEstimateDisplay,
-        }),
-        warningColor: 'orange' as TextStyles['color'],
-      };
-    } else {
-      return {
-        warningTitle: '',
-        warningDescription: '',
-        warningColor: 'orange' as TextStyles['color'],
-      };
-    }
-  }, [
-    priceImpact?.impactDisplay,
-    priceImpact?.type,
-    timeEstimate?.isLongWait,
-    timeEstimate?.timeEstimateDisplay,
-  ]);
+  const { warningTitle, warningDescription, warningColor, warningType } =
+    useMemo(() => {
+      if (priceImpact?.type !== SwapPriceImpactType.none) {
+        return {
+          warningType: 'price-impact',
+          warningTitle: i18n.t('swap.warnings.price_impact.title'),
+          warningDescription: i18n.t('swap.warnings.price_impact.description', {
+            impactAmount: priceImpact?.impactDisplay,
+          }),
+          warningColor: (priceImpact?.type === SwapPriceImpactType.high
+            ? 'orange'
+            : 'red') as TextStyles['color'],
+        };
+      } else if (timeEstimate?.isLongWait) {
+        return {
+          warningType: 'long-wait',
+          warningTitle: i18n.t('swap.warnings.long_wait.title'),
+          warningDescription: i18n.t('swap.warnings.long_wait.description', {
+            time: timeEstimate?.timeEstimateDisplay,
+          }),
+          warningColor: 'orange' as TextStyles['color'],
+        };
+      } else {
+        return {
+          warningType: '',
+          warningTitle: '',
+          warningDescription: '',
+          warningColor: 'orange' as TextStyles['color'],
+        };
+      }
+    }, [
+      priceImpact?.impactDisplay,
+      priceImpact?.type,
+      timeEstimate?.isLongWait,
+      timeEstimate?.timeEstimateDisplay,
+    ]);
 
   if (!showWarning) return null;
   return (
     <ButtonOverflow>
-      <Box paddingHorizontal="20px">
+      <Box testId={`swap-warning-${warningType}`} paddingHorizontal="20px">
         <Box
           paddingVertical="10px"
           paddingHorizontal="12px"
@@ -325,6 +329,7 @@ export function Swap() {
         quote={quote}
         flashbotsEnabled={flashbotsEnabled}
         hideSwapReview={hideSwapReviewSheet}
+        assetToSellValue={assetToSellValue}
       />
       <ExplainerSheet
         show={explainerSheetParams.show}
@@ -467,6 +472,7 @@ export function Swap() {
                         assetToSell={assetToSell}
                         assetToBuy={assetToBuy}
                         enabled={!inReviewSheet}
+                        defaultSpeed={selectedGas.option}
                       />
                     </Row>
                     <Row>

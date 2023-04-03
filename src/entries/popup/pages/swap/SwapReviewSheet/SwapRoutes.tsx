@@ -13,6 +13,7 @@ export type SwapRoutesProps = {
     isBridge: boolean;
     part?: number;
   }[];
+  testId?: string;
 };
 
 const RoutePath = ({ protocols }: SwapRoutesProps) => {
@@ -88,7 +89,7 @@ const RouteProtocol = ({
   );
 };
 
-export const SwapRoutes = ({ protocols }: SwapRoutesProps) => {
+export const SwapRoutes = ({ protocols, testId }: SwapRoutesProps) => {
   const [currentComponentIndex, setCurrentComponentIndex] = useState(0);
 
   const routeWithBridge = useMemo(
@@ -118,7 +119,9 @@ export const SwapRoutes = ({ protocols }: SwapRoutesProps) => {
 
   return (
     <ButtonOverflow>
-      <Box onClick={goToNextComponent}>{components[currentComponentIndex]}</Box>
+      <Box testId={`${testId}-swap-routes`} onClick={goToNextComponent}>
+        {components[currentComponentIndex]}
+      </Box>
     </ButtonOverflow>
   );
 };

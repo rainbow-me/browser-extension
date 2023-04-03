@@ -88,6 +88,7 @@ export function TokenToBuyRow({
     );
     goToNewTab({
       url: getExplorerUrl(explorer, asset?.address),
+      active: false,
     });
   }, [asset?.address, asset?.chainId]);
 
