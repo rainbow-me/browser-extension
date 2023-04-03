@@ -196,7 +196,6 @@ type TransactionFeeProps = {
   transactionRequest: TransactionRequest;
   accentColor?: string;
   plainTriggerBorder?: boolean;
-  flashbotsEnabled: boolean;
   analyticsEvents?: {
     customGasClicked: keyof EventProperties;
     transactionSpeedSwitched: keyof EventProperties;
@@ -211,7 +210,6 @@ export function TransactionFee({
   accentColor,
   plainTriggerBorder,
   analyticsEvents,
-  flashbotsEnabled,
 }: TransactionFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
@@ -242,7 +240,7 @@ export function TransactionFee({
       setCustomMaxPriorityFee={setCustomMaxPriorityFee}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
-      flashbotsEnabled={!!flashbotsEnabled}
+      flashbotsEnabled={false}
     />
   );
 }
@@ -303,7 +301,7 @@ export function SwapFee({
       setCustomMaxPriorityFee={setCustomMaxPriorityFee}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
-      flashbotsEnabled={!!flashbotsEnabled}
+      flashbotsEnabled={false}
     />
   );
 }
