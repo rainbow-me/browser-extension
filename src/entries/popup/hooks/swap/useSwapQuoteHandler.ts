@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { convertRawAmountToBalance } from '~/core/utils/numbers';
 
+import usePrevious from '../usePrevious';
+
 import { IndependentField } from './useSwapInputs';
 
 interface SwapQuoteHandlerProps {
@@ -23,6 +25,7 @@ export const useSwapQuoteHandler = ({
   setAssetToBuyValue,
   setAssetToSellValue,
 }: SwapQuoteHandlerProps) => {
+  const prevQuote = usePrevious(quote);
   useEffect(() => {
     if (!(quote as QuoteError)?.error) {
       const { sellAmount, buyAmount } = (quote || {}) as
@@ -53,6 +56,7 @@ export const useSwapQuoteHandler = ({
     assetToBuy,
     assetToSell,
     independentField,
+    prevQuote,
     quote,
     setAssetToBuyValue,
     setAssetToSellValue,
