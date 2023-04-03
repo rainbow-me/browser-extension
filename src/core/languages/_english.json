@@ -320,6 +320,7 @@
       "asset_contract": "%{symbol} contract",
       "more_details": "More details",
       "swap_confirmation": "Swap %{sellSymbol} to %{buySymbol}",
+      "bridge_confirmation": "Bridge %{sellSymbol}",
       "go_back": "Go back"
     },
     "explainers": {

@@ -12,6 +12,7 @@ type NavbarProps = {
   leftComponent?: React.ReactElement;
   rightComponent?: React.ReactElement;
   title?: string;
+  titleTestId?: string;
   titleComponent?: React.ReactElement;
   background?: BackgroundColor;
 };
@@ -20,6 +21,7 @@ export function Navbar({
   leftComponent,
   rightComponent,
   title,
+  titleTestId,
   titleComponent,
   background,
 }: NavbarProps) {
@@ -54,7 +56,7 @@ export function Navbar({
       )}
       {title ? (
         <Inline alignVertical="center">
-          <Text size="14pt" weight="heavy" align="center">
+          <Text testId={titleTestId} size="14pt" weight="heavy" align="center">
             {title}
           </Text>
         </Inline>
@@ -147,12 +149,14 @@ function NavbarButtonWithBack({
   onClick,
   symbol,
   symbolSize,
+  testId,
 }: {
   backTo?: To;
   height: ButtonSymbolProps['height'];
   onClick?: () => void;
   symbol: SymbolProps['symbol'];
   symbolSize?: SymbolProps['size'];
+  testId?: string;
 }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -170,7 +174,10 @@ function NavbarButtonWithBack({
   }, [backTo, location.pathname, navigate, onClick]);
 
   return (
-    <Box testId="navbar-button-with-back">
+    <Box
+      testId={`navbar-button-with-back${testId ? `-${testId}` : ``}`}
+      style={{ zIndex: 20 }}
+    >
       <NavbarSymbolButton
         height={height}
         onClick={click}
@@ -196,9 +203,11 @@ export function NavbarBackButton({ backTo }: { backTo?: To }) {
 export function NavbarCloseButton({
   backTo,
   onClick,
+  testId,
 }: {
   backTo?: To;
   onClick?: () => void;
+  testId?: string;
 }) {
   return (
     <NavbarButtonWithBack
@@ -207,6 +216,7 @@ export function NavbarCloseButton({
       height="32px"
       symbolSize={11}
       symbol="xmark"
+      testId={testId}
     />
   );
 }

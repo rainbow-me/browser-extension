@@ -42,6 +42,17 @@ export interface AssetToBuySection {
   id: AssetToBuySectionId;
 }
 
+const filterBridgeAsset = ({
+  asset,
+  filter = '',
+}: {
+  asset?: SearchAsset;
+  filter?: string;
+}) =>
+  asset?.address?.toLowerCase()?.startsWith(filter?.toLowerCase()) ||
+  asset?.name?.toLowerCase()?.startsWith(filter?.toLowerCase()) ||
+  asset?.symbol?.toLowerCase()?.startsWith(filter?.toLowerCase());
+
 export function useSearchCurrencyLists({
   assetToSell,
   inputChainId,
@@ -226,8 +237,14 @@ export function useSearchCurrencyLists({
         ],
       ),
     );
-    return outputChainId === assetToSell?.chainId ? null : bridgeAsset;
-  }, [assetToSell, getCuratedAssets, outputChainId]);
+    const filteredBridgeAsset = filterBridgeAsset({
+      asset: bridgeAsset,
+      filter: query,
+    })
+      ? bridgeAsset
+      : null;
+    return outputChainId === assetToSell?.chainId ? null : filteredBridgeAsset;
+  }, [assetToSell, getCuratedAssets, outputChainId, query]);
 
   const loading = useMemo(() => {
     return query === ''

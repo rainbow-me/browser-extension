@@ -289,6 +289,7 @@ export function SwapFee({
     enabled,
     flashbotsEnabled,
   });
+
   return (
     <Fee
       chainId={chainId}

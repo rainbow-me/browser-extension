@@ -103,6 +103,7 @@ export const useSwapInputs = ({
 
   const setAssetToSellMaxValue = useCallback(() => {
     setAssetToSellValue(assetToSellMaxValue.amount);
+    setIndependentValue(assetToSellMaxValue.amount);
     focusOnInput(assetToSellInputRef);
     setIndependentField('sellField');
     setTimeout(() => {

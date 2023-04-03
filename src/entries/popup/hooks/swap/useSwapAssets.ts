@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { selectUserAssetsListByChainId } from '~/core/resources/_selectors/assets';
@@ -131,28 +131,21 @@ export const useSwapAssets = () => {
     });
   }, [assetToSell, assetToSellWithPrice, userAssets]);
 
-  const setAssetToSell = useCallback((asset: ParsedSearchAsset | null) => {
-    setAssetToSellState(asset);
-    asset?.chainId && setOutputChainId(asset?.chainId);
-  }, []);
-
-  // if user selects assetToBuy as assetToSell we need to flip assets
-  useEffect(() => {
-    if (
-      assetToBuy?.address === assetToSell?.address &&
-      assetToBuy?.chainId === assetToSell?.chainId
-    ) {
-      setAssetToBuy(prevAssetToSell === undefined ? null : prevAssetToSell);
-    }
-  }, [
-    assetToBuy?.address,
-    assetToBuy?.chainId,
-    assetToSell?.address,
-    assetToSell?.chainId,
-    assetToSell?.uniqueId,
-    prevAssetToSell,
-    setAssetToBuy,
-  ]);
+  const setAssetToSell = useCallback(
+    (asset: ParsedSearchAsset | null) => {
+      if (
+        assetToBuy &&
+        asset &&
+        assetToBuy?.address === asset?.address &&
+        assetToBuy?.chainId === asset?.chainId
+      ) {
+        setAssetToBuy(prevAssetToSell === undefined ? null : prevAssetToSell);
+      }
+      setAssetToSellState(asset);
+      asset?.chainId && setOutputChainId(asset?.chainId);
+    },
+    [assetToBuy, prevAssetToSell],
+  );
 
   return {
     assetsToSell: filteredAssetsToSell,

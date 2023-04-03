@@ -652,3 +652,6 @@ export const getBaseFeeTrendParams = (trend: number) => {
       };
   }
 };
+
+export const chainShouldUseDefaultTxSpeed = (chainId: ChainId) =>
+  chainId === ChainId.mainnet || chainId === ChainId.polygon;

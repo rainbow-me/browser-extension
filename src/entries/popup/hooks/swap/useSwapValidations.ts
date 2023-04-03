@@ -50,12 +50,7 @@ export const useSwapValidations = ({
       }
     }
     return true;
-  }, [
-    assetToSell?.balance?.amount,
-    assetToSell?.decimals,
-    assetToSell?.isNativeAsset,
-    assetToSellValue,
-  ]);
+  }, [assetToSell, assetToSellValue]);
 
   const enoughNativeAssetBalanceForGas = useMemo(() => {
     if (assetToSell?.isNativeAsset) {
