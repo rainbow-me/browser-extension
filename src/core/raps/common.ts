@@ -152,6 +152,7 @@ export const walletExecuteRap = async (
           index,
           baseNonce,
           rapName,
+          flashbots: parameters?.flashbots,
         };
         // eslint-disable-next-line no-await-in-loop
         await executeAction(actionParams);
