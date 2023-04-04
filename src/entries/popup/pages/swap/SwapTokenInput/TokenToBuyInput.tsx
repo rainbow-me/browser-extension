@@ -19,6 +19,7 @@ interface TokenToBuyProps {
   zIndex?: number;
   assetToBuyValue: string;
   inputRef: React.RefObject<HTMLInputElement>;
+  openDropdownOnMount?: boolean;
   onDropdownOpen: (open: boolean) => void;
   setOutputChainId: (chainId: ChainId) => void;
   selectAsset: (asset: ParsedSearchAsset | null) => void;
@@ -37,6 +38,7 @@ export const TokenToBuyInput = ({
   zIndex,
   assetToBuyValue,
   inputRef,
+  openDropdownOnMount,
   onDropdownOpen,
   selectAsset,
   setAssetFilter,
@@ -94,6 +96,7 @@ export const TokenToBuyInput = ({
       assetFilter={assetFilter}
       setAssetFilter={setAssetFilter}
       setValue={setAssetToBuyInputValue}
+      openDropdownOnMount={openDropdownOnMount}
     />
   );
 };
