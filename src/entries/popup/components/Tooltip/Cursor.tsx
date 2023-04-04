@@ -10,7 +10,6 @@ export const Cursor = forwardRef(
     return (
       <>
         <Box
-          background="pink"
           ref={ref}
           style={{
             position: 'fixed',

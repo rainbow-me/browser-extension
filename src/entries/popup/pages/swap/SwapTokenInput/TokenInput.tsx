@@ -11,8 +11,7 @@ import { ParsedSearchAsset } from '~/core/types/assets';
 import { Box } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { SwapInputMask } from '~/entries/popup/components/InputMask/SwapInputMask/SwapInputMask';
-import { Cursor } from '~/entries/popup/components/Tooltip/Cursor';
-import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
+import { LiveCursorTooltip } from '~/entries/popup/components/Tooltip/LiveCursorTooltip';
 import usePrevious from '~/entries/popup/hooks/usePrevious';
 
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
@@ -26,24 +25,16 @@ const SwapInputMaskWrapper = ({
   inputDisabled?: boolean;
   children: ReactElement;
 }) => {
-  const [open, setOpen] = useState(false);
   return inputDisabled ? (
     <>
-      <Tooltip
+      <LiveCursorTooltip
         text={i18n.t('swap.tokens_input.output_quotes_disabled')}
         textWeight="semibold"
         textSize="12pt"
         textColor="labelSecondary"
-        open={open}
-      >
-        <Cursor />
-      </Tooltip>
-      <Box
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
       >
         {children}
-      </Box>
+      </LiveCursorTooltip>
     </>
   ) : (
     children
@@ -175,7 +166,7 @@ export const TokenInput = ({
         ) : (
           <Box>
             <SwapInputMaskWrapper inputDisabled={inputDisabled}>
-              <Box marginVertical="-20px" background="green">
+              <Box marginVertical="-20px">
                 <SwapInputMask
                   testId={`${testId}-swap-token-input`}
                   accentCaretColor={accentCaretColor}
