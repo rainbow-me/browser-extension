@@ -18,6 +18,7 @@ export const Tooltip = forwardRef(
     textWeight,
     textColor,
     arrowAlignment = 'center',
+    open,
   }: {
     children: ReactNode;
     text: string;
@@ -26,6 +27,7 @@ export const Tooltip = forwardRef(
     textSize?: TextStyles['fontSize'];
     textWeight?: TextStyles['fontWeight'];
     textColor?: TextStyles['color'];
+    open?: boolean;
   }) => {
     const { currentTheme } = useCurrentThemeStore();
 
@@ -54,7 +56,7 @@ export const Tooltip = forwardRef(
 
     return (
       <TooltipPrimitive.Provider>
-        <TooltipPrimitive.Root>
+        <TooltipPrimitive.Root open={open}>
           <TooltipPrimitive.Trigger asChild>
             {children}
           </TooltipPrimitive.Trigger>
