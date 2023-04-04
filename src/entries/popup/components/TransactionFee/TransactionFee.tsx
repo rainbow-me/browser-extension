@@ -40,6 +40,7 @@ type FeeProps = {
   isLoading: boolean;
   currentBaseFee: string;
   baseFeeTrend: number;
+  flashbotsEnabled: boolean;
   analyticsEvents?: {
     customGasClicked: keyof EventProperties;
     transactionSpeedSwitched: keyof EventProperties;
@@ -60,6 +61,7 @@ function Fee({
   isLoading,
   plainTriggerBorder,
   selectedSpeed,
+  flashbotsEnabled,
   setSelectedSpeed,
   setCustomMaxBaseFee,
   setCustomMaxPriorityFee,
@@ -109,6 +111,7 @@ function Fee({
   return (
     <Box>
       <CustomGasSheet
+        flashbotsEnabled={flashbotsEnabled}
         currentBaseFee={currentBaseFee}
         baseFeeTrend={baseFeeTrend}
         show={showCustomGasSheet}
@@ -237,6 +240,7 @@ export function TransactionFee({
       setCustomMaxPriorityFee={setCustomMaxPriorityFee}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
+      flashbotsEnabled={false}
     />
   );
 }
@@ -250,6 +254,7 @@ type SwapFeeProps = {
   assetToSell?: ParsedSearchAsset;
   assetToBuy?: ParsedSearchAsset;
   enabled?: boolean;
+  flashbotsEnabled?: boolean;
 };
 
 export function SwapFee({
@@ -261,6 +266,7 @@ export function SwapFee({
   assetToSell,
   assetToBuy,
   enabled = true,
+  flashbotsEnabled,
 }: SwapFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
@@ -279,6 +285,7 @@ export function SwapFee({
     assetToSell,
     assetToBuy,
     enabled,
+    flashbotsEnabled,
   });
 
   return (
@@ -294,6 +301,7 @@ export function SwapFee({
       setCustomMaxPriorityFee={setCustomMaxPriorityFee}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
+      flashbotsEnabled={false}
     />
   );
 }

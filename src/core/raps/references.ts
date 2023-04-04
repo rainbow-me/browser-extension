@@ -48,6 +48,7 @@ export interface RapSwapActionParameters<T extends 'swap' | 'crosschainSwap'> {
   assetToSell: ParsedAsset;
   assetToBuy?: ParsedAsset;
   nonce?: number;
+  flashbots?: boolean;
   quote: QuoteTypeMap[T];
 }
 

@@ -36,6 +36,7 @@ export interface RainbowTransaction {
   txTo?: string;
   type?: TransactionType;
   value?: BigNumberish; // for pending tx
+  flashbots?: boolean;
 }
 
 export interface ZerionTransaction {
@@ -100,6 +101,7 @@ export interface NewTransaction {
   type?: TransactionType;
   value?: BigNumberish;
   txTo?: Address;
+  flashbots?: boolean;
 }
 
 export enum ProtocolType {

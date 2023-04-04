@@ -253,6 +253,8 @@ const SwapReviewSheetWithQuote = ({
         assetToSell: assetToSell,
         assetToBuy: assetToBuy,
         quote: q,
+        flashbots:
+          assetToSell.chainId === ChainId.mainnet ? flashbotsEnabled : false,
       },
       type,
     });
@@ -265,9 +267,10 @@ const SwapReviewSheetWithQuote = ({
     assetToBuy,
     assetToSell,
     connectedToHardhat,
+    sendingSwap,
+    flashbotsEnabled,
     navigate,
     quote,
-    sendingSwap,
   ]);
 
   const handleSwap = useCallback(() => {
