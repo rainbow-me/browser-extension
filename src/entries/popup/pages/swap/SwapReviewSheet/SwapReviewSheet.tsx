@@ -590,6 +590,7 @@ const SwapReviewSheetWithQuote = ({
                     assetToBuy={assetToBuy}
                     enabled={show}
                     defaultSpeed={selectedGas.option}
+                    speedMenuMarginRight="12px"
                   />
                 </Row>
                 <Row>
