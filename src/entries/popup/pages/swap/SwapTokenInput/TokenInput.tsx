@@ -6,6 +6,7 @@ import React, {
   useState,
 } from 'react';
 
+import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { Box } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
@@ -16,6 +17,27 @@ import usePrevious from '~/entries/popup/hooks/usePrevious';
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
 import { DropdownInputWrapper } from '../../../components/DropdownInputWrapper/DropdownInputWrapper';
 import { SwapInputActionButton } from '../SwapInputActionButton';
+
+const SwapInputMaskWrapper = ({
+  inputDisabled,
+  children,
+}: {
+  inputDisabled?: boolean;
+  children: ReactElement;
+}) => {
+  return inputDisabled ? (
+    <Tooltip
+      text={i18n.t('swap.tokens_input.output_quotes_disabled')}
+      textWeight="semibold"
+      textSize="12pt"
+      textColor="labelSecondary"
+    >
+      {children}
+    </Tooltip>
+  ) : (
+    children
+  );
+};
 
 interface TokenInputProps {
   accentCaretColor?: boolean;
@@ -140,7 +162,7 @@ export const TokenInput = ({
             />
           </Box>
         ) : (
-          <Tooltip text="bla bla">
+          <SwapInputMaskWrapper inputDisabled={inputDisabled}>
             <Box marginVertical="-20px">
               <SwapInputMask
                 testId={`${testId}-swap-token-input`}
@@ -157,7 +179,7 @@ export const TokenInput = ({
                 disabled={inputDisabled}
               />
             </Box>
-          </Tooltip>
+          </SwapInputMaskWrapper>
         )
       }
       bottomComponent={bottomComponent}
