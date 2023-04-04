@@ -97,6 +97,7 @@ export const TokenToBuyInput = ({
       setAssetFilter={setAssetFilter}
       setValue={setAssetToBuyInputValue}
       openDropdownOnMount={openDropdownOnMount}
+      inputDisabled={true}
     />
   );
 };

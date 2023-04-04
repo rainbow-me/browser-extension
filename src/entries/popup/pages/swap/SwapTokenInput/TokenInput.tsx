@@ -10,6 +10,7 @@ import { ParsedSearchAsset } from '~/core/types/assets';
 import { Box } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { SwapInputMask } from '~/entries/popup/components/InputMask/SwapInputMask/SwapInputMask';
+import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
 import usePrevious from '~/entries/popup/hooks/usePrevious';
 
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
@@ -28,6 +29,7 @@ interface TokenInputProps {
   dropdownClosed: boolean;
   variant: 'surface' | 'bordered' | 'transparent' | 'tinted';
   inputRef: React.RefObject<HTMLInputElement>;
+  inputDisabled?: boolean;
   value: string;
   testId: string;
   openDropdownOnMount?: boolean;
@@ -50,6 +52,7 @@ export const TokenInput = ({
   dropdownClosed,
   variant,
   inputRef,
+  inputDisabled,
   value,
   testId,
   openDropdownOnMount,
@@ -137,21 +140,24 @@ export const TokenInput = ({
             />
           </Box>
         ) : (
-          <Box marginVertical="-20px">
-            <SwapInputMask
-              testId={`${testId}-swap-token-input`}
-              accentCaretColor={accentCaretColor}
-              borderColor="transparent"
-              decimals={asset?.decimals}
-              height="56px"
-              placeholder="0.00"
-              value={value}
-              variant={variant}
-              onChange={setValue}
-              paddingHorizontal={0}
-              innerRef={inputRef}
-            />
-          </Box>
+          <Tooltip text="bla bla">
+            <Box marginVertical="-20px">
+              <SwapInputMask
+                testId={`${testId}-swap-token-input`}
+                accentCaretColor={accentCaretColor}
+                borderColor="transparent"
+                decimals={asset?.decimals}
+                height="56px"
+                placeholder="0.00"
+                value={value}
+                variant={variant}
+                onChange={setValue}
+                paddingHorizontal={0}
+                innerRef={inputRef}
+                disabled={inputDisabled}
+              />
+            </Box>
+          </Tooltip>
         )
       }
       bottomComponent={bottomComponent}
