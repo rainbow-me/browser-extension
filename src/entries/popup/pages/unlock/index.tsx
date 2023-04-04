@@ -4,6 +4,7 @@ import UnlockSound from 'static/assets/audio/ui_unlock.mp3';
 import { i18n } from '~/core/languages';
 import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
+import { RainbowError, logger } from '~/logger';
 
 import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 import { PasswordInput } from '../../components/PasswordInput/PasswordInput';
@@ -32,11 +33,17 @@ export function Unlock() {
 
   const handleUnlock = useCallback(async () => {
     setLoading(true);
-    if (await wallet.unlock(password)) {
-      new Audio(UnlockSound).play();
-      navigate(ROUTES.HOME, { state: { isBack: true } });
-    } else {
-      setError(i18n.t('passwords.wrong_password'));
+    try {
+      if (await wallet.unlock(password)) {
+        new Audio(UnlockSound).play();
+        navigate(ROUTES.HOME, { state: { isBack: true } });
+      } else {
+        setError(i18n.t('passwords.wrong_password'));
+      }
+    } catch (e) {
+      logger.info('Unlock error: exception while trying to unlock');
+      logger.error(e as RainbowError);
+      setLoading(false);
     }
   }, [navigate, password]);
 

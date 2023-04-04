@@ -5,6 +5,7 @@ import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
 import { Box, Button, Inline, Text, ThemeProvider } from '~/design-system';
 import { Rows } from '~/design-system/components/Rows/Rows';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
+import { RainbowError, logger } from '~/logger';
 
 import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 import { LogoWithLetters } from '../../components/LogoWithLetters/LogoWithLetters';
@@ -39,9 +40,15 @@ export function Welcome() {
 
   const handleCreateNewWalletClick = React.useCallback(async () => {
     setLoading(true);
-    const newWalletAddress = await wallet.create();
-    setCurrentAddress(newWalletAddress);
-    navigate(ROUTES.SEED_BACKUP_PROMPT);
+    try {
+      const newWalletAddress = await wallet.create();
+      setCurrentAddress(newWalletAddress);
+      navigate(ROUTES.SEED_BACKUP_PROMPT);
+    } catch (e) {
+      logger.info('Onboarding error: creating new wallet failed');
+      logger.error(e as RainbowError);
+      setLoading(false);
+    }
   }, [navigate, setCurrentAddress]);
 
   return (
