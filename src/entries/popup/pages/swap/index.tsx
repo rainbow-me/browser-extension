@@ -1,6 +1,7 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { useGasStore } from '~/core/state';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
@@ -192,6 +193,11 @@ export function Swap() {
     chainId: assetToSell?.chainId || ChainId.mainnet,
   });
 
+  const flashbotsEnabledGlobally =
+    config.flashbots_enabled &&
+    flashbotsEnabled &&
+    assetToSell?.chainId === ChainId.mainnet;
+
   const {
     assetToSellInputRef,
     assetToBuyInputRef,
@@ -334,7 +340,7 @@ export function Swap() {
         assetToBuy={assetToBuy}
         assetToSell={assetToSell}
         quote={quote}
-        flashbotsEnabled={flashbotsEnabled}
+        flashbotsEnabled={flashbotsEnabledGlobally}
         hideSwapReview={hideSwapReviewSheet}
         assetToSellValue={assetToSellValue}
       />
@@ -482,6 +488,7 @@ export function Swap() {
                         assetToBuy={assetToBuy}
                         enabled={!inReviewSheet}
                         defaultSpeed={selectedGas.option}
+                        flashbotsEnabled={flashbotsEnabledGlobally}
                       />
                     </Row>
                     <Row>

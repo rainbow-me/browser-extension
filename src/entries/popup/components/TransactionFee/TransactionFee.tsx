@@ -23,6 +23,7 @@ import {
   Text,
 } from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
+import { Space } from '~/design-system/styles/designTokens';
 
 import { useDefaultTxSpeed } from '../../hooks/useDefaultTxSpeed';
 import { useSwapGas, useTransactionGas } from '../../hooks/useGas';
@@ -40,11 +41,13 @@ type FeeProps = {
   isLoading: boolean;
   currentBaseFee: string;
   baseFeeTrend: number;
+  flashbotsEnabled: boolean;
   analyticsEvents?: {
     customGasClicked: keyof EventProperties;
     transactionSpeedSwitched: keyof EventProperties;
     transactionSpeedClicked: keyof EventProperties;
   };
+  speedMenuMarginRight?: Space;
   setSelectedSpeed: React.Dispatch<React.SetStateAction<GasSpeed>>;
   setCustomMaxBaseFee: (maxBaseFee?: string) => void;
   setCustomMaxPriorityFee: (maxPriorityFee?: string) => void;
@@ -60,6 +63,8 @@ function Fee({
   isLoading,
   plainTriggerBorder,
   selectedSpeed,
+  flashbotsEnabled,
+  speedMenuMarginRight,
   setSelectedSpeed,
   setCustomMaxBaseFee,
   setCustomMaxPriorityFee,
@@ -109,6 +114,7 @@ function Fee({
   return (
     <Box>
       <CustomGasSheet
+        flashbotsEnabled={flashbotsEnabled}
         currentBaseFee={currentBaseFee}
         baseFeeTrend={baseFeeTrend}
         show={showCustomGasSheet}
@@ -160,6 +166,7 @@ function Fee({
               accentColor={accentColor}
               plainTriggerBorder={plainTriggerBorder}
               onOpenChange={onSpeedOpenChange}
+              dropdownContentMarginRight={speedMenuMarginRight}
             />
             {chainId === ChainId.mainnet ? (
               <Box
@@ -237,6 +244,7 @@ export function TransactionFee({
       setCustomMaxPriorityFee={setCustomMaxPriorityFee}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
+      flashbotsEnabled={false}
     />
   );
 }
@@ -250,6 +258,8 @@ type SwapFeeProps = {
   assetToSell?: ParsedSearchAsset;
   assetToBuy?: ParsedSearchAsset;
   enabled?: boolean;
+  flashbotsEnabled?: boolean;
+  speedMenuMarginRight?: Space;
 };
 
 export function SwapFee({
@@ -261,6 +271,8 @@ export function SwapFee({
   assetToSell,
   assetToBuy,
   enabled = true,
+  flashbotsEnabled,
+  speedMenuMarginRight,
 }: SwapFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
@@ -279,6 +291,7 @@ export function SwapFee({
     assetToSell,
     assetToBuy,
     enabled,
+    flashbotsEnabled,
   });
 
   return (
@@ -294,6 +307,8 @@ export function SwapFee({
       setCustomMaxPriorityFee={setCustomMaxPriorityFee}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
+      flashbotsEnabled={false}
+      speedMenuMarginRight={speedMenuMarginRight}
     />
   );
 }

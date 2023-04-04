@@ -2,6 +2,7 @@ import { Source } from '@rainbow-me/swaps';
 import { useCallback, useEffect, useState } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
+import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
 import { ChainId, ChainName } from '~/core/types/chains';
 import { chainNameFromChainId } from '~/core/utils/chains';
 
@@ -42,7 +43,7 @@ export const useSwapSettings = ({ chainId }: { chainId: ChainId }) => {
   const [source, setSource] = useState<Source | 'auto'>('auto');
 
   const [slippage, setSlippage] = useState<string>(getDefaultSlippage(chainId));
-  const [flashbotsEnabled, setFlashbotsEnabled] = useState<boolean>(false);
+  const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
   const prevChainId = usePrevious(chainId);
 
   const setSettings = useCallback(
@@ -59,7 +60,7 @@ export const useSwapSettings = ({ chainId }: { chainId: ChainId }) => {
       setSlippage(slippage);
       setFlashbotsEnabled(flashbotsEnabled);
     },
-    [],
+    [setFlashbotsEnabled],
   );
 
   useEffect(() => {
