@@ -21,6 +21,7 @@ import {
 } from '~/core/types/gas';
 import { gweiToWei, weiToGwei } from '~/core/utils/ethereum';
 import {
+  FLASHBOTS_MIN_TIP,
   gasFeeParamsChanged,
   parseCustomGasFeeParams,
   parseGasFeeParamsBySpeed,
@@ -36,12 +37,14 @@ const useGas = ({
   estimatedGasLimit,
   transactionRequest,
   enabled,
+  flashbotsEnabled,
 }: {
   chainId: ChainId;
   defaultSpeed?: GasSpeed;
   estimatedGasLimit?: string;
   transactionRequest: TransactionRequest | null;
   enabled?: boolean;
+  flashbotsEnabled?: boolean;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: gasData, isLoading } = useGasData({ chainId });
@@ -93,8 +96,8 @@ const useGas = ({
       setCustomSpeed(newCustomSpeed);
     },
     [
-      storeGasFeeParamsBySpeed?.custom,
       gasData,
+      storeGasFeeParamsBySpeed?.custom,
       estimatedGasLimit,
       nativeAsset,
       currentCurrency,
@@ -116,9 +119,15 @@ const useGas = ({
       const maxBaseFee = (storeGasFeeParamsBySpeed?.custom as GasFeeParams)
         .maxBaseFee.amount;
 
+      let maxPriorityFeeWei = gweiToWei(maxPriorityFee || '0');
+      // Set the flashbots minimum
+      if (flashbotsEnabled && Number(maxPriorityFee) < FLASHBOTS_MIN_TIP) {
+        maxPriorityFeeWei = gweiToWei(FLASHBOTS_MIN_TIP.toString());
+      }
+
       const newCustomSpeed = parseCustomGasFeeParams({
         currentBaseFee,
-        maxPriorityFeeWei: gweiToWei(maxPriorityFee || '0'),
+        maxPriorityFeeWei,
         speed: GasSpeed.CUSTOM,
         baseFeeWei: maxBaseFee,
         blocksToConfirmation,
@@ -131,6 +140,7 @@ const useGas = ({
     [
       currentCurrency,
       estimatedGasLimit,
+      flashbotsEnabled,
       gasData,
       nativeAsset,
       setCustomSpeed,
@@ -152,6 +162,7 @@ const useGas = ({
           nativeAsset,
           currency: currentCurrency,
           optimismL1SecurityFee,
+          flashbotsEnabled,
         })
       : null;
 
@@ -162,6 +173,7 @@ const useGas = ({
   }, [
     isLoading,
     chainId,
+    flashbotsEnabled,
     gasData,
     debouncedEstimatedGasLimit,
     nativeAsset,
@@ -260,6 +272,7 @@ export const useSwapGas = ({
   assetToSell,
   assetToBuy,
   enabled,
+  flashbotsEnabled,
 }: {
   chainId: ChainId;
   defaultSpeed?: GasSpeed;
@@ -267,6 +280,7 @@ export const useSwapGas = ({
   assetToSell?: ParsedSearchAsset;
   assetToBuy?: ParsedSearchAsset;
   enabled?: boolean;
+  flashbotsEnabled?: boolean;
 }) => {
   const { data: estimatedGasLimit } = useEstimateSwapGasLimit({
     chainId,
@@ -297,5 +311,6 @@ export const useSwapGas = ({
     estimatedGasLimit,
     transactionRequest,
     enabled,
+    flashbotsEnabled,
   });
 };

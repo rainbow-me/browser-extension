@@ -6,6 +6,7 @@ import { Address } from 'wagmi';
 import SendSound from 'static/assets/audio/woosh.mp3';
 import { i18n } from '~/core/languages';
 import { QuoteTypeMap } from '~/core/raps/references';
+import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
@@ -33,15 +34,16 @@ import {
   ExplainerSheet,
   useExplainerSheetParams,
 } from '~/entries/popup/components/ExplainerSheet/ExplainerSheet';
-import {
-  Navbar,
-  NavbarCloseButton,
-} from '~/entries/popup/components/Navbar/Navbar';
+import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 import { SwapFee } from '~/entries/popup/components/TransactionFee/TransactionFee';
-import { useSwapReviewDetails } from '~/entries/popup/hooks/swap';
+import {
+  useSwapReviewDetails,
+  useSwapValidations,
+} from '~/entries/popup/hooks/swap';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
+import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import * as wallet from '../../../handlers/wallet';
 
@@ -49,9 +51,15 @@ import { SwapAssetCard } from './SwapAssetCard';
 import { SwapRoutes } from './SwapRoutes';
 import { SwapViewContractDropdown } from './SwapViewContractDropdown';
 
-const DetailsRow = ({ children }: { children: React.ReactNode }) => {
+const DetailsRow = ({
+  children,
+  testId,
+}: {
+  children: React.ReactNode;
+  testId: string;
+}) => {
   return (
-    <Box style={{ height: '32px' }}>
+    <Box testId={`${testId}-details-row`} style={{ height: '32px' }}>
       <Inline height="full" alignVertical="center" alignHorizontal="justify">
         {children}
       </Inline>
@@ -62,9 +70,11 @@ const DetailsRow = ({ children }: { children: React.ReactNode }) => {
 const CarrouselButton = ({
   textArray,
   symbol,
+  testId,
 }: {
   textArray: string[];
   symbol?: SymbolProps['symbol'];
+  testId: string;
 }) => {
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
 
@@ -76,7 +86,7 @@ const CarrouselButton = ({
 
   return (
     <ButtonOverflow>
-      <Box onClick={goToNextText}>
+      <Box testId={`${testId}-carrousel-button`} onClick={goToNextText}>
         <Inline space="4px" alignHorizontal="center" alignVertical="center">
           <Text size="14pt" weight="semibold" color="label">
             {textArray[currentTextIndex]}
@@ -141,6 +151,7 @@ const Label = ({
 export type SwapReviewSheetProps = {
   show: boolean;
   assetToSell?: ParsedSearchAsset | null;
+  assetToSellValue?: string;
   assetToBuy?: ParsedSearchAsset | null;
   quote?: Quote | CrosschainQuote | QuoteError;
   flashbotsEnabled: boolean;
@@ -150,6 +161,7 @@ export type SwapReviewSheetProps = {
 export const SwapReviewSheet = ({
   show,
   assetToSell,
+  assetToSellValue,
   assetToBuy,
   quote,
   flashbotsEnabled,
@@ -161,6 +173,7 @@ export const SwapReviewSheet = ({
     <SwapReviewSheetWithQuote
       show={show}
       assetToSell={assetToSell}
+      assetToSellValue={assetToSellValue}
       assetToBuy={assetToBuy}
       quote={quote as Quote | CrosschainQuote}
       flashbotsEnabled={flashbotsEnabled}
@@ -172,6 +185,7 @@ export const SwapReviewSheet = ({
 type SwapReviewSheetWithQuoteProps = {
   show: boolean;
   assetToSell: ParsedSearchAsset;
+  assetToSellValue?: string;
   assetToBuy: ParsedSearchAsset;
   quote: Quote | CrosschainQuote;
   flashbotsEnabled: boolean;
@@ -181,6 +195,7 @@ type SwapReviewSheetWithQuoteProps = {
 const SwapReviewSheetWithQuote = ({
   show,
   assetToSell,
+  assetToSellValue,
   assetToBuy,
   quote,
   flashbotsEnabled,
@@ -191,6 +206,14 @@ const SwapReviewSheetWithQuote = ({
 
   const [showMoreDetails, setShowDetails] = useState(false);
   const [sendingSwap, setSendingSwap] = useState(false);
+  const { selectedGas } = useGasStore();
+
+  const { buttonLabel: validationButtonLabel, enoughNativeAssetBalanceForGas } =
+    useSwapValidations({
+      assetToSell,
+      assetToSellValue,
+      selectedGas,
+    });
 
   const { minimumReceived, swappingRoute, includedFee, exchangeRate } =
     useSwapReviewDetails({ quote, assetToBuy, assetToSell });
@@ -217,7 +240,7 @@ const SwapReviewSheetWithQuote = ({
   const closeMoreDetails = useCallback(() => setShowDetails(false), []);
 
   const executeSwap = useCallback(async () => {
-    if (!assetToSell || !assetToBuy || !quote) return;
+    if (!assetToSell || !assetToBuy || !quote || sendingSwap) return;
     const type =
       assetToSell.chainId !== assetToBuy.chainId ? 'crosschainSwap' : 'swap';
     const q = quote as QuoteTypeMap[typeof type];
@@ -230,6 +253,8 @@ const SwapReviewSheetWithQuote = ({
         assetToSell: assetToSell,
         assetToBuy: assetToBuy,
         quote: q,
+        flashbots:
+          assetToSell.chainId === ChainId.mainnet ? flashbotsEnabled : false,
       },
       type,
     });
@@ -238,12 +263,21 @@ const SwapReviewSheetWithQuote = ({
     } else {
       setSendingSwap(false);
     }
-  }, [assetToBuy, assetToSell, connectedToHardhat, navigate, quote]);
+  }, [
+    assetToBuy,
+    assetToSell,
+    connectedToHardhat,
+    sendingSwap,
+    flashbotsEnabled,
+    navigate,
+    quote,
+  ]);
 
   const handleSwap = useCallback(() => {
+    if (!enoughNativeAssetBalanceForGas) return;
     executeSwap();
     new Audio(SendSound).play();
-  }, [executeSwap]);
+  }, [enoughNativeAssetBalanceForGas, executeSwap]);
 
   const goBack = useCallback(() => {
     hideSwapReview();
@@ -286,6 +320,31 @@ const SwapReviewSheetWithQuote = ({
     });
   }, [hideExplainerSheet, includedFee, showExplainerSheet]);
 
+  const buttonLabel = useMemo(() => {
+    if (!enoughNativeAssetBalanceForGas) {
+      return validationButtonLabel;
+    }
+    return isBridge
+      ? i18n.t('swap.review.bridge_confirmation', {
+          sellSymbol: assetToSell.symbol,
+        })
+      : i18n.t('swap.review.swap_confirmation', {
+          sellSymbol: assetToSell.symbol,
+          buySymbol: assetToBuy.symbol,
+        });
+  }, [
+    assetToBuy.symbol,
+    assetToSell.symbol,
+    enoughNativeAssetBalanceForGas,
+    isBridge,
+    validationButtonLabel,
+  ]);
+
+  const buttonColor = useMemo(
+    () => (enoughNativeAssetBalanceForGas ? 'accent' : 'fillSecondary'),
+    [enoughNativeAssetBalanceForGas],
+  );
+
   return (
     <>
       <ExplainerSheet
@@ -307,12 +366,18 @@ const SwapReviewSheetWithQuote = ({
           paddingBottom="20px"
         >
           <Stack space="12px">
-            <Navbar
-              title={i18n.t(
-                `swap.review.${isBridge ? 'title_bridge' : 'title_swap'}`,
-              )}
-              leftComponent={<NavbarCloseButton onClick={goBack} />}
-            />
+            <Box style={{ zIndex: 10 }}>
+              <Navbar
+                title={i18n.t(
+                  `swap.review.${isBridge ? 'title_bridge' : 'title_swap'}`,
+                )}
+                titleTestId="swap-review-title-text"
+                leftComponent={
+                  <Navbar.CloseButton testId="swap-review" onClick={goBack} />
+                }
+              />
+            </Box>
+
             <Box>
               <Inline
                 space="10px"
@@ -320,6 +385,7 @@ const SwapReviewSheetWithQuote = ({
                 alignHorizontal="center"
               >
                 <SwapAssetCard
+                  testId={`${assetToSell.symbol}-asset-to-sell`}
                   asset={assetToSell}
                   assetAmount={quote.sellAmount.toString()}
                 />
@@ -332,7 +398,7 @@ const SwapReviewSheetWithQuote = ({
                   style={{
                     width: 32,
                     height: 32,
-                    zIndex: 10,
+                    zIndex: zIndexes.CUSTOM_GAS_SHEET - 1,
                     position: 'absolute',
                     left: '0 auto',
                   }}
@@ -354,6 +420,7 @@ const SwapReviewSheetWithQuote = ({
                 </Box>
 
                 <SwapAssetCard
+                  testId={`${assetToBuy.symbol}-asset-to-buy`}
                   asset={assetToBuy}
                   assetAmount={quote.buyAmount.toString()}
                 />
@@ -361,7 +428,7 @@ const SwapReviewSheetWithQuote = ({
             </Box>
             <Box paddingHorizontal="20px">
               <Stack space="4px">
-                <DetailsRow>
+                <DetailsRow testId="minimum-received">
                   <Label
                     label={i18n.t('swap.review.minimum_received')}
                     testId="swap-review-swapping-route"
@@ -370,28 +437,36 @@ const SwapReviewSheetWithQuote = ({
                     {minimumReceived}
                   </Text>
                 </DetailsRow>
-                <DetailsRow>
+                <DetailsRow testId="swapping-via">
                   <Label
                     label={i18n.t('swap.review.swapping_via')}
                     testId="swap-review-swapping-route"
                   />
-                  {!!swappingRoute && <SwapRoutes protocols={swappingRoute} />}
+                  {!!swappingRoute && (
+                    <SwapRoutes
+                      testId="swapping-via"
+                      protocols={swappingRoute}
+                    />
+                  )}
                 </DetailsRow>
-                <DetailsRow>
+                <DetailsRow testId="included-fee">
                   <Label
                     label={i18n.t('swap.review.included_fee')}
-                    testId="swap-review-rnbw-fee"
+                    testId="swap-review-rnbw-fee-info-button"
                     infoButton
                     onClick={openFeeExplainer}
                   />
-                  <CarrouselButton textArray={includedFee} />
+                  <CarrouselButton
+                    testId="included-fee"
+                    textArray={includedFee}
+                  />
                 </DetailsRow>
 
                 {flashbotsEnabled && (
-                  <DetailsRow>
+                  <DetailsRow testId="flashbots-enabled">
                     <Label
                       label={i18n.t('swap.review.use_flashbots')}
-                      testId="swap-review-flashbots"
+                      testId="swap-review-flashbots-info-button"
                       infoButton
                       onClick={openFlashbotsExplainer}
                     />
@@ -414,19 +489,25 @@ const SwapReviewSheetWithQuote = ({
                 )}
                 <Box as={motion.div} key="more-details" layout>
                   {showMoreDetails && (
-                    <Box as={motion.div} key="more-details-shown" layout>
-                      <DetailsRow>
+                    <Box
+                      as={motion.div}
+                      key="more-details-shown"
+                      testId="more-details-section"
+                      layout
+                    >
+                      <DetailsRow testId="exchange-rate">
                         <Label
                           label={i18n.t('swap.review.exchange_rate')}
                           testId="swap-review-exchange-rate"
                         />
                         <CarrouselButton
+                          testId="exchange-rate"
                           symbol="arrow.2.squarepath"
                           textArray={exchangeRate}
                         />
                       </DetailsRow>
                       {!assetToSell.isNativeAsset && (
-                        <DetailsRow>
+                        <DetailsRow testId="asset-to-sell-contract">
                           <Label
                             label={i18n.t('swap.review.asset_contract', {
                               symbol: assetToSell.symbol,
@@ -435,6 +516,7 @@ const SwapReviewSheetWithQuote = ({
                           />
 
                           <SwapViewContractDropdown
+                            testId="asset-to-sell"
                             address={assetToSell.address as Address}
                             chainId={assetToSell.chainId}
                           >
@@ -445,7 +527,7 @@ const SwapReviewSheetWithQuote = ({
                         </DetailsRow>
                       )}
                       {!assetToBuy.isNativeAsset && (
-                        <DetailsRow>
+                        <DetailsRow testId="asset-to-buy-contract">
                           <Label
                             label={i18n.t('swap.review.asset_contract', {
                               symbol: assetToBuy.symbol,
@@ -453,6 +535,7 @@ const SwapReviewSheetWithQuote = ({
                             testId="swap-review-asset-to-buy-contract"
                           />
                           <SwapViewContractDropdown
+                            testId="asset-to-buy"
                             address={assetToBuy.address as Address}
                             chainId={assetToBuy.chainId}
                           >
@@ -466,7 +549,7 @@ const SwapReviewSheetWithQuote = ({
                   )}
                   {!showMoreDetails && (
                     <Box as={motion.div} key="more-details-hidden" layout>
-                      <DetailsRow>
+                      <DetailsRow testId="more-details-hidden">
                         <Label
                           label={i18n.t('swap.review.more_details')}
                           testId="swap-review-details"
@@ -478,7 +561,7 @@ const SwapReviewSheetWithQuote = ({
                           height="24px"
                           variant="tinted"
                           onClick={openMoreDetails}
-                          testId="swap-review-details-button"
+                          testId="swap-review-more-details-button"
                         />
                       </DetailsRow>
                     </Box>
@@ -488,8 +571,8 @@ const SwapReviewSheetWithQuote = ({
             </Box>
           </Stack>
         </Box>
+        <Separator strokeWeight="1px" color="separatorSecondary" />
         <Box padding="20px">
-          <Separator strokeWeight="1px" color="separatorSecondary" />
           <AccentColorProviderWrapper
             color={assetToBuy.colors.primary || assetToBuy.colors.fallback}
           >
@@ -506,6 +589,8 @@ const SwapReviewSheetWithQuote = ({
                     assetToSell={assetToSell}
                     assetToBuy={assetToBuy}
                     enabled={show}
+                    defaultSpeed={selectedGas.option}
+                    speedMenuMarginRight="12px"
                   />
                 </Row>
                 <Row>
@@ -513,8 +598,9 @@ const SwapReviewSheetWithQuote = ({
                     onClick={handleSwap}
                     height="44px"
                     variant="flat"
-                    color={'accent'}
+                    color={buttonColor}
                     width="full"
+                    testId="swap-review-execute"
                   >
                     {sendingSwap ? (
                       <Box
@@ -526,11 +612,13 @@ const SwapReviewSheetWithQuote = ({
                         <Spinner size={16} color="label" />
                       </Box>
                     ) : (
-                      <Text color="label" size="16pt" weight="bold">
-                        {i18n.t('swap.review.swap_confirmation', {
-                          sellSymbol: assetToSell.symbol,
-                          buySymbol: assetToBuy.symbol,
-                        })}
+                      <Text
+                        testId="swap-review-confirmation-text"
+                        color="label"
+                        size="16pt"
+                        weight="bold"
+                      >
+                        {buttonLabel}
                       </Text>
                     )}
                   </Button>

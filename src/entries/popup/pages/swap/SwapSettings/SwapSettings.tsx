@@ -8,6 +8,7 @@ import React, {
   useState,
 } from 'react';
 
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
@@ -207,14 +208,11 @@ export const SwapSettings = ({
 }: SwapSettingsProps) => {
   const { currentAddress } = useCurrentAddressStore();
   const { avatar } = useAvatar({ address: currentAddress });
-  const { flashbotsEnabled: flashbotsEnabledGlobal } =
-    useFlashbotsEnabledStore();
-
+  const { flashbots_enabled: flashbotsEnabledGlobally } = config;
+  const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
   const prevChainId = usePrevious(chainId);
-
   const [source, setSource] = useState<Source | 'auto'>('auto');
   const [slippage, setSlippage] = useState<string>(defaultSlippage);
-  const [flashbotsEnabled, setFlashbotsEnabled] = useState<boolean>(false);
 
   const slippageInputRef = useRef(null);
   const settingsAccentColor = accentColor || avatar?.color;
@@ -227,7 +225,7 @@ export const SwapSettings = ({
     const defaultSlippage = getDefaultSlippage(chainId);
     setSlippage(defaultSlippage);
     setFlashbotsEnabled(false);
-  }, [chainId]);
+  }, [chainId, setFlashbotsEnabled]);
 
   const done = useCallback(() => {
     setSettings({
@@ -365,7 +363,7 @@ export const SwapSettings = ({
                       </Inline>
                     </Box>
 
-                    {flashbotsEnabledGlobal && (
+                    {flashbotsEnabledGlobally && (
                       <Box
                         testId="swap-settings-flashbots-row"
                         style={{ height: '32px' }}

@@ -1,6 +1,6 @@
 import { Contract } from '@ethersproject/contracts';
 import { useQuery } from '@tanstack/react-query';
-import { getProvider } from '@wagmi/core';
+import { Provider, getProvider } from '@wagmi/core';
 import { Address, erc20ABI } from 'wagmi';
 
 import { refractionAddressWs } from '~/core/network';
@@ -24,6 +24,36 @@ import {
 import { greaterThan } from '~/core/utils/numbers';
 import { ETH_MAINNET_ASSET } from '~/test/utils';
 
+const fetchAssetBalanceViaProvider = async ({
+  parsedAsset,
+  currentAddress,
+  currency,
+  provider,
+}: {
+  parsedAsset: ParsedAddressAsset;
+  currentAddress: Address;
+  currency: SupportedCurrencyKey;
+  provider: Provider;
+}) => {
+  if (parsedAsset.isNativeAsset) {
+    const balance = await provider.getBalance(currentAddress);
+    const updatedAsset = parseParsedAddressAsset({
+      parsedAsset,
+      currency,
+      quantity: balance.toString(),
+    });
+    return updatedAsset;
+  } else {
+    const contract = new Contract(parsedAsset.address, erc20ABI, provider);
+    const balance = await contract.balanceOf(currentAddress);
+    const updatedAsset = parseParsedAddressAsset({
+      parsedAsset,
+      currency,
+      quantity: balance.toString(),
+    });
+    return updatedAsset;
+  }
+};
 const USER_ASSETS_TIMEOUT_DURATION = 10000;
 const USER_ASSETS_REFETCH_INTERVAL = 60000;
 
@@ -113,42 +143,40 @@ export async function userAssetsByChainQueryFunction({
 
     const resolver = async (message: AddressAssetsReceivedMessage) => {
       clearTimeout(timeout);
-      const parsedUserAssetsByChain = parseUserAssetsByChain(message, currency);
+      const parsedUserAssetsByUniqueId = parseUserAssetsByChain(
+        message,
+        currency,
+      );
       if (connectedToHardhat && chain === ChainName.mainnet) {
         const provider = getProvider({ chainId: ChainId.hardhat });
         // force checking for ETH if connected to hardhat
-        parsedUserAssetsByChain[ETH_MAINNET_ASSET.uniqueId] = ETH_MAINNET_ASSET;
-        Object.values(parsedUserAssetsByChain).forEach(async (parsedAsset) => {
-          if (parsedAsset.chainId !== ChainId.mainnet) return parsedAsset;
-          try {
-            if (parsedAsset.isNativeAsset) {
-              const balance = await provider.getBalance(currentAddress);
-              const updatedAsset = parseParsedAddressAsset({
+        parsedUserAssetsByUniqueId[ETH_MAINNET_ASSET.uniqueId] =
+          ETH_MAINNET_ASSET;
+        const pasePromises = Object.values(parsedUserAssetsByUniqueId).map(
+          async (parsedAsset) => {
+            if (parsedAsset.chainId !== ChainId.mainnet) return parsedAsset;
+            try {
+              const pa = await fetchAssetBalanceViaProvider({
                 parsedAsset,
+                currentAddress,
                 currency,
-                quantity: balance.toString(),
-              });
-              parsedUserAssetsByChain[parsedAsset.uniqueId] = updatedAsset;
-            } else {
-              const contract = new Contract(
-                parsedAsset.address,
-                erc20ABI,
                 provider,
-              );
-              const balance = await contract.balanceOf(currentAddress);
-              const updatedAsset = parseParsedAddressAsset({
-                parsedAsset,
-                currency,
-                quantity: balance.toString(),
               });
-              parsedUserAssetsByChain[parsedAsset.uniqueId] = updatedAsset;
+              return pa;
+            } catch (e) {
+              return parsedAsset;
             }
-          } catch (e) {
-            return parsedAsset;
-          }
-        });
+          },
+        );
+        const newParsedUserAssetsByUniqueId = await Promise.all(pasePromises);
+        const a: Record<string, ParsedAddressAsset> = {};
+        newParsedUserAssetsByUniqueId.forEach(
+          (parseAsset) => (a[parseAsset.uniqueId] = parseAsset),
+        );
+        resolve(a);
+      } else {
+        resolve(parsedUserAssetsByUniqueId);
       }
-      resolve(parsedUserAssetsByChain);
     };
     refractionAddressWs.once(event, resolver);
   });

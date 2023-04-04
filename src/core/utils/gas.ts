@@ -49,6 +49,8 @@ import {
 } from './numbers';
 import { getMinimalTimeUnitStringForMs } from './time';
 
+export const FLASHBOTS_MIN_TIP = 6;
+
 export const parseGasDataConfirmationTime = (
   maxBaseFee: string,
   maxPriorityFee: string,
@@ -492,6 +494,7 @@ export const parseGasFeeParamsBySpeed = ({
   nativeAsset,
   currency,
   optimismL1SecurityFee,
+  flashbotsEnabled,
 }: {
   chainId: ChainId;
   data: MeteorologyResponse | MeteorologyLegacyResponse;
@@ -499,6 +502,7 @@ export const parseGasFeeParamsBySpeed = ({
   nativeAsset?: ParsedAsset;
   currency: SupportedCurrencyKey;
   optimismL1SecurityFee?: string | null;
+  flashbotsEnabled?: boolean;
 }) => {
   if (chainId === ChainId.mainnet) {
     const response = data as MeteorologyResponse;
@@ -510,6 +514,16 @@ export const parseGasFeeParamsBySpeed = ({
       byBaseFee: response.data.blocksToConfirmationByBaseFee,
       byPriorityFee: response.data.blocksToConfirmationByPriorityFee,
     };
+
+    if (flashbotsEnabled) {
+      for (const speed in maxPriorityFeeSuggestions) {
+        type gasSpeed = 'fast' | 'normal' | 'urgent';
+        maxPriorityFeeSuggestions[speed as gasSpeed] = Math.max(
+          Number(gweiToWei(FLASHBOTS_MIN_TIP.toString())),
+          Number(maxPriorityFeeSuggestions[speed as gasSpeed]),
+        ).toString();
+      }
+    }
 
     const parseGasFeeParamsSpeed = ({ speed }: { speed: GasSpeed }) =>
       parseGasFeeParams({
@@ -638,3 +652,6 @@ export const getBaseFeeTrendParams = (trend: number) => {
       };
   }
 };
+
+export const chainShouldUseDefaultTxSpeed = (chainId: ChainId) =>
+  chainId === ChainId.mainnet || chainId === ChainId.polygon;

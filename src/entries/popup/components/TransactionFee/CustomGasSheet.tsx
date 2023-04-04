@@ -34,6 +34,7 @@ import { SymbolStyles, TextStyles } from '~/design-system/styles/core.css';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
 import usePrevious from '../../hooks/usePrevious';
+import { zIndexes } from '../../utils/zIndexes';
 import {
   ExplainerSheet,
   useExplainerSheetParams,
@@ -163,6 +164,7 @@ export const CustomGasSheet = ({
   show,
   currentBaseFee,
   baseFeeTrend,
+  flashbotsEnabled,
   setCustomMaxBaseFee,
   setCustomMaxPriorityFee,
   closeCustomGasSheet,
@@ -171,6 +173,7 @@ export const CustomGasSheet = ({
   show: boolean;
   currentBaseFee: string;
   baseFeeTrend: number;
+  flashbotsEnabled: boolean;
   setCustomMaxBaseFee: (maxBaseFee: string) => void;
   setCustomMaxPriorityFee: (maxPriorityFee: string) => void;
   closeCustomGasSheet: () => void;
@@ -236,6 +239,9 @@ export const CustomGasSheet = ({
 
   const updateCustomMaxPriorityFee = useCallback(
     (maxPriorityFee: string) => {
+      if (flashbotsEnabled && Number(maxPriorityFee) < 6) {
+        return;
+      }
       if (prevSelectedGasOption !== GasSpeed.CUSTOM && prevSelectedGasOption) {
         const prevSelectedGas = gasFeeParamsBySpeed[
           prevSelectedGasOption
@@ -250,6 +256,7 @@ export const CustomGasSheet = ({
       setMaxPriorityFee(maxPriorityFee);
     },
     [
+      flashbotsEnabled,
       gasFeeParamsBySpeed,
       prevSelectedGasOption,
       setCustomMaxPriorityFee,
@@ -411,6 +418,7 @@ export const CustomGasSheet = ({
         padding="16px"
         backdropFilter="blur(26px)"
         scrimBackground
+        zIndex={zIndexes.CUSTOM_GAS_SHEET}
       >
         <Box paddingHorizontal="20px">
           <Box paddingVertical="27px">

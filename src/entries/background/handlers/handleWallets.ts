@@ -4,6 +4,8 @@ import {
   TypedDataField,
 } from '@ethersproject/abstract-signer';
 import { Bytes } from '@ethersproject/bytes';
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
+import { ChainId } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
 
@@ -184,9 +186,20 @@ export const handleWallets = () =>
           }
           case 'execute_rap': {
             const p = payload as WalletExecuteRapProps;
-            const provider = getProvider({
-              chainId: p.rapActionParameters.chainId,
-            });
+            let provider;
+            if (
+              p.rapActionParameters.flashbots &&
+              p.rapActionParameters.chainId === ChainId.mainnet
+            ) {
+              provider = new StaticJsonRpcProvider(
+                'https://rpc.flashbots.net',
+                'mainnet',
+              );
+            } else {
+              provider = getProvider({
+                chainId: p.rapActionParameters.chainId,
+              });
+            }
             response = await executeRap({
               ...p,
               provider,

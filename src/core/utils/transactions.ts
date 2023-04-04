@@ -4,6 +4,7 @@ import { capitalize, isString } from 'lodash';
 import { Address } from 'wagmi';
 
 import { i18n } from '../languages';
+import { createHttpClient } from '../network/internal/createHttpClient';
 import {
   ETH_ADDRESS,
   SupportedCurrencyKey,
@@ -377,6 +378,7 @@ export const parseNewTransaction = (
     type: txType,
     txTo,
     value,
+    flashbots,
   } = txDetails;
 
   if (amount && asset) {
@@ -435,6 +437,7 @@ export const parseNewTransaction = (
     txTo: txTo || to,
     type,
     value,
+    flashbots,
   };
 };
 
@@ -555,6 +558,16 @@ export async function watchPendingTransactions({
             const nonceAlreadyIncluded =
               currentNonceForChainId >
               (tx?.nonce || transactionResponse?.nonce);
+            const transactionStatus = await getTransactionReceiptStatus({
+              included: nonceAlreadyIncluded,
+              transaction: tx,
+              transactionResponse,
+            });
+            let pendingTransactionData = getPendingTransactionData({
+              transaction: tx,
+              transactionStatus,
+            });
+
             if (
               (transactionResponse?.blockNumber &&
                 transactionResponse?.blockHash) ||
@@ -571,16 +584,6 @@ export async function watchPendingTransactions({
                   { cacheTime: 0 },
                 );
               const latest = latestTransactionsConfirmedByBackend?.[0];
-              const transactionStatus = await getTransactionReceiptStatus({
-                included: nonceAlreadyIncluded,
-                transaction: tx,
-                transactionResponse,
-              });
-              const pendingTransactionData = getPendingTransactionData({
-                transaction: tx,
-                transactionStatus,
-              });
-
               if (latest && getTransactionHash(latest) === tx?.hash) {
                 updatedTransaction = {
                   ...updatedTransaction,
@@ -591,6 +594,14 @@ export async function watchPendingTransactions({
                   ...updatedTransaction,
                   ...pendingTransactionData,
                 };
+              }
+            } else if (tx.flashbots) {
+              const flashbotsTxStatus = await getTransactionFlashbotStatus(
+                updatedTransaction,
+                txHash,
+              );
+              if (flashbotsTxStatus) {
+                pendingTransactionData = flashbotsTxStatus;
               }
             }
           }
@@ -744,3 +755,31 @@ export function getTokenBlockExplorerUrl({
   const blockExplorerHost = getBlockExplorerHostForChain(chainId);
   return `http://${blockExplorerHost}/token/${address}`;
 }
+
+const flashbotsApi = createHttpClient({
+  baseUrl: 'https://protect.flashbots.net',
+});
+
+export const getTransactionFlashbotStatus = async (
+  transaction: RainbowTransaction,
+  txHash: string,
+) => {
+  try {
+    const fbStatus = await flashbotsApi.get(`/tx/${txHash}`);
+    const flashbotStatus = fbStatus.data.status;
+    // Make sure it wasn't dropped after 25 blocks or never made it
+    if (flashbotStatus === 'FAILED' || flashbotStatus === 'CANCELLED') {
+      const transactionStatus = TransactionStatus.dropped;
+      const minedAt = Math.floor(Date.now() / 1000);
+      const title = getTitle({
+        protocol: transaction.protocol,
+        status: transactionStatus,
+        type: transaction.type,
+      });
+      return { status: transactionStatus, minedAt, pending: false, title };
+    }
+  } catch (e) {
+    //
+  }
+  return null;
+};
