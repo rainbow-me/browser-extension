@@ -22,7 +22,7 @@ import {
   MoreInfoButton,
   MoreInfoOption,
 } from '~/entries/popup/components/MoreInfoButton/MoreInfoButton';
-import { getWallet, remove } from '~/entries/popup/handlers/wallet';
+import { getWallet, remove, wipe } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
@@ -170,26 +170,32 @@ export function WalletDetails() {
     unhideWallet({ address });
     await remove(address);
     deleteWalletName({ address });
-    // set current address to the next account if you deleted that one
-    if (address === currentAddress) {
-      const deletedIndex = visibleWallets.findIndex(
-        (account) => account.address === address,
+
+    if (visibleWallets.length > 1) {
+      // set current address to the next account if you deleted that one
+      if (address === currentAddress) {
+        const deletedIndex = visibleWallets.findIndex(
+          (account) => account.address === address,
+        );
+        const nextIndex =
+          deletedIndex === visibleWallets.length - 1
+            ? deletedIndex - 1
+            : deletedIndex + 1;
+        setCurrentAddress(visibleWallets[nextIndex].address);
+      }
+      // if more accounts in this wallet
+      const otherAccountSameWallet = walletBeforeDeletion.accounts.find(
+        (a) => a !== address,
       );
-      const nextIndex =
-        deletedIndex === visibleWallets.length - 1
-          ? deletedIndex - 1
-          : deletedIndex + 1;
-      setCurrentAddress(visibleWallets[nextIndex].address);
-    }
-    // if more accounts in this wallet
-    const otherAccountSameWallet = walletBeforeDeletion.accounts.find(
-      (a) => a !== address,
-    );
-    if (otherAccountSameWallet) {
-      const walletAfterDeletion = await getWallet(otherAccountSameWallet);
-      setWallet(walletAfterDeletion);
+      if (otherAccountSameWallet) {
+        const walletAfterDeletion = await getWallet(otherAccountSameWallet);
+        setWallet(walletAfterDeletion);
+      } else {
+        navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);
+      }
     } else {
-      navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);
+      await wipe(state?.password);
+      navigate(ROUTES.WELCOME);
     }
   };
 
