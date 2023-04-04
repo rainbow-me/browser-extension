@@ -21,6 +21,7 @@ export const SendTransactionActions = ({
   onAcceptRequest,
   onRejectRequest,
   waitingForDevice,
+  loading = false,
 }: {
   appHost: string;
   chainId: ChainId;
@@ -28,6 +29,7 @@ export const SendTransactionActions = ({
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
   waitingForDevice: boolean;
+  loading: boolean;
 }) => {
   const { selectedGas } = useGasStore();
   const { enoughNativeAssetForGas, buttonLabel } =
@@ -54,6 +56,7 @@ export const SendTransactionActions = ({
                   : buttonLabel
               }
               waitingForDevice={waitingForDevice}
+              loading={loading}
             />
           </Row>
           <Row>

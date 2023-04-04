@@ -44,6 +44,7 @@ export function SendTransaction({
   request,
 }: ApproveRequestProps) {
   const [waitingForDevice, setWaitingForDevice] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { appHost, appName } = useAppMetadata({
     url: request?.meta?.sender?.url,
   });
@@ -56,6 +57,7 @@ export function SendTransaction({
 
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;
+    setLoading(true);
     try {
       const txRequest = request?.params?.[0] as TransactionRequest;
       const { type } = await wallet.getWallet(selectedWallet);
@@ -103,6 +105,7 @@ export function SendTransaction({
       });
     } finally {
       setWaitingForDevice(false);
+      setLoading(false);
     }
   }, [
     appHost,
@@ -159,6 +162,7 @@ export function SendTransaction({
           selectedWallet={selectedWallet}
           onAcceptRequest={onAcceptRequest}
           onRejectRequest={onRejectRequest}
+          loading={loading}
         />
       </Row>
     </Rows>
