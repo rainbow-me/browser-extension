@@ -19,6 +19,7 @@ interface SwapTokenInputProps {
   sortMethod: SortMethod;
   zIndex?: number;
   inputRef: React.RefObject<HTMLInputElement>;
+  openDropdownOnMount?: boolean;
   onDropdownOpen: (open: boolean) => void;
   setSortMethod: (sortMethod: SortMethod) => void;
   selectAsset: (asset: ParsedSearchAsset | null) => void;
@@ -39,6 +40,7 @@ export const TokenToSellInput = ({
   zIndex,
   assetToSellValue,
   inputRef,
+  openDropdownOnMount,
   onDropdownOpen,
   selectAsset,
   setAssetFilter,
@@ -67,10 +69,6 @@ export const TokenToSellInput = ({
     [inputRef],
   );
 
-  const setMaxValue = useCallback(() => {
-    setAssetToSellMaxValue();
-  }, [setAssetToSellMaxValue]);
-
   return (
     <TokenInput
       testId={`${asset ? `${asset.uniqueId}-` : ''}token-to-sell`}
@@ -94,7 +92,7 @@ export const TokenToSellInput = ({
             assetToSellValue={assetToSellValue}
             assetToSellMaxValue={assetToSellMaxValue}
             asset={asset}
-            setAssetToSellMaxValue={setMaxValue}
+            setAssetToSellMaxValue={setAssetToSellMaxValue}
           />
         ) : null
       }
@@ -108,7 +106,7 @@ export const TokenToSellInput = ({
       assetFilter={assetFilter}
       setAssetFilter={setAssetFilter}
       setValue={setAssetToSellInputValue}
-      openDropdownOnMount
+      openDropdownOnMount={openDropdownOnMount}
     />
   );
 };

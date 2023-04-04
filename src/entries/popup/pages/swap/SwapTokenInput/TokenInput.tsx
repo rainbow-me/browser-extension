@@ -104,9 +104,11 @@ export const TokenInput = ({
   }, []);
 
   useEffect(() => {
-    if (openDropdownOnMount) {
-      setTimeout(() => onDropdownAction(), 300);
-    }
+    setTimeout(() => {
+      if (openDropdownOnMount) {
+        onDropdownAction();
+      }
+    }, 300);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [openDropdownOnMount]);
 
