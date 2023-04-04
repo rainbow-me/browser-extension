@@ -142,6 +142,9 @@ export function Swap() {
   const [showSwapSettings, setShowSwapSettings] = useState(false);
   const [showSwapReview, setShowSwapReview] = useState(false);
   const [inReviewSheet, setInReviewSheet] = useState(false);
+  const [inputToOpenOnMount, setInputToOpenOnMount] = useState<
+    'sell' | 'buy' | null
+  >(null);
 
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();
@@ -295,8 +298,12 @@ export function Swap() {
         // clear selected token
         setSelectedToken();
       }
+      setInputToOpenOnMount('buy');
+    } else {
+      setInputToOpenOnMount('sell');
     }
-  }, [assetsToSell, selectedToken, selectAssetToSell, setSelectedToken]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -382,6 +389,7 @@ export function Swap() {
                   assetToSellValue={assetToSellValue}
                   setAssetToSellInputValue={setAssetToSellInputValue}
                   inputRef={assetToSellInputRef}
+                  openDropdownOnMount={inputToOpenOnMount === 'sell'}
                 />
               </AccentColorProviderWrapper>
 
@@ -444,6 +452,7 @@ export function Swap() {
                   assetToBuyValue={assetToBuyValue}
                   setAssetToBuyInputValue={setAssetToBuyInputValue}
                   inputRef={assetToBuyInputRef}
+                  openDropdownOnMount={inputToOpenOnMount === 'buy'}
                 />
               </AccentColorProviderWrapper>
               <SwapWarning
