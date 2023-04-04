@@ -3,8 +3,8 @@ import React, { ReactElement, useState } from 'react';
 import { Box } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 
-import { Cursor } from './Cursor';
 import { Tooltip } from './Tooltip';
+import useMousePosition from './useMousePosition';
 
 export const LiveCursorTooltip = ({
   text,
@@ -22,6 +22,7 @@ export const LiveCursorTooltip = ({
   textColor?: TextStyles['color'];
 }) => {
   const [open, setOpen] = useState(false);
+  const { x, y } = useMousePosition();
   return (
     <>
       <Tooltip
@@ -31,7 +32,14 @@ export const LiveCursorTooltip = ({
         textColor={textColor}
         open={open}
       >
-        <Cursor />
+        <Box
+          style={{
+            position: 'fixed',
+            pointerEvents: 'none',
+            top: `${y}px`,
+            left: `${x}px`,
+          }}
+        />
       </Tooltip>
       <Box
         onMouseEnter={() => setOpen(true)}
