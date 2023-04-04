@@ -12,6 +12,7 @@ const TEXT_MAX_WIDTH = windowWidth - 60;
 export const Tooltip = forwardRef(
   ({
     align,
+    alignOffset,
     children,
     text,
     textSize,
@@ -23,6 +24,7 @@ export const Tooltip = forwardRef(
     children: ReactNode;
     text: string;
     align?: 'start' | 'center' | 'end';
+    alignOffset?: number;
     arrowAlignment?: 'left' | 'center' | 'right';
     textSize?: TextStyles['fontSize'];
     textWeight?: TextStyles['fontWeight'];
@@ -65,6 +67,7 @@ export const Tooltip = forwardRef(
               align={align}
               className="TooltipContent"
               sideOffset={10}
+              alignOffset={alignOffset}
             >
               <ThemeProvider theme={currentTheme}>
                 <Box borderRadius="6px" boxShadow="24px">
