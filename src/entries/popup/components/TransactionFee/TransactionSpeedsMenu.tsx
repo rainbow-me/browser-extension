@@ -10,6 +10,7 @@ import {
   GasSpeed,
 } from '~/core/types/gas';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { Space } from '~/design-system/styles/designTokens';
 
 import {
   DropdownMenu,
@@ -95,6 +96,7 @@ export const SwitchSpeedMenuSelector = ({
 };
 
 interface SwitchTransactionSpeedMenuProps {
+  dropdownContentMarginRight?: Space;
   selectedSpeed: GasSpeed;
   gasFeeParamsBySpeed: GasFeeParamsBySpeed | GasFeeLegacyParamsBySpeed | null;
   chainId: Chain['id'];
@@ -106,6 +108,7 @@ interface SwitchTransactionSpeedMenuProps {
 }
 
 export const SwitchTransactionSpeedMenu = ({
+  dropdownContentMarginRight,
   selectedSpeed,
   gasFeeParamsBySpeed,
   onSpeedChanged,
@@ -152,7 +155,10 @@ export const SwitchTransactionSpeedMenu = ({
       <DropdownMenuTrigger asChild accentColor={accentColor}>
         {menuTrigger}
       </DropdownMenuTrigger>
-      <DropdownMenuContent accentColor={accentColor}>
+      <DropdownMenuContent
+        marginRight={dropdownContentMarginRight}
+        accentColor={accentColor}
+      >
         <DropdownMenuLabel>{i18n.t('transaction_fee.title')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuRadioGroup
