@@ -223,7 +223,11 @@ export function Swap() {
     setAssetToBuy,
   });
 
-  const { data: quote, isLoading } = useSwapQuote({
+  const {
+    data: quote,
+    isLoading,
+    isCrosschainSwap,
+  } = useSwapQuote({
     assetToSell,
     assetToBuy,
     assetToSellValue,
@@ -459,6 +463,7 @@ export function Swap() {
                   setAssetToBuyInputValue={setAssetToBuyInputValue}
                   inputRef={assetToBuyInputRef}
                   openDropdownOnMount={inputToOpenOnMount === 'buy'}
+                  inputDisabled={isCrosschainSwap}
                 />
               </AccentColorProviderWrapper>
               <SwapWarning
