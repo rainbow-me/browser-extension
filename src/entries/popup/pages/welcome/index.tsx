@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore, usePendingRequestStore } from '~/core/state';
-import { Box, Button, Text, ThemeProvider } from '~/design-system';
+import { Box, Button, Inline, Text, ThemeProvider } from '~/design-system';
 import { Rows } from '~/design-system/components/Rows/Rows';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
+import { RainbowError, logger } from '~/logger';
 
 import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 import { LogoWithLetters } from '../../components/LogoWithLetters/LogoWithLetters';
+import { Spinner } from '../../components/Spinner/Spinner';
 import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -15,6 +17,7 @@ import { ROUTES } from '../../urls';
 import { OnboardBeforeConnectSheet } from './OnboardBeforeConnectSheet';
 export function Welcome() {
   const navigate = useRainbowNavigate();
+  const [loading, setLoading] = useState(false);
   const { pendingRequests } = usePendingRequestStore();
   const [showOnboardBeforeConnectSheet, setShowOnboardBeforeConnectSheet] =
     useState(!!pendingRequests.length);
@@ -36,9 +39,16 @@ export function Welcome() {
   }, [navigate]);
 
   const handleCreateNewWalletClick = React.useCallback(async () => {
-    const newWalletAddress = await wallet.create();
-    setCurrentAddress(newWalletAddress);
-    navigate(ROUTES.SEED_BACKUP_PROMPT);
+    setLoading(true);
+    try {
+      const newWalletAddress = await wallet.create();
+      setCurrentAddress(newWalletAddress);
+      navigate(ROUTES.SEED_BACKUP_PROMPT);
+    } catch (e) {
+      logger.info('Onboarding error: creating new wallet failed');
+      logger.error(e as RainbowError);
+      setLoading(false);
+    }
   }, [navigate, setCurrentAddress]);
 
   return (
@@ -82,19 +92,40 @@ export function Welcome() {
           <Box width="full" style={{ marginTop: '226px' }}>
             <Rows alignVertical="top" space="20px">
               <Rows alignVertical="top" space="10px">
-                <Button
-                  color="fill"
-                  height="44px"
-                  variant="flat"
-                  width="full"
-                  symbol="arrow.right"
-                  symbolSide="right"
-                  blur="26px"
-                  onClick={handleCreateNewWalletClick}
-                  testId="create-wallet-button"
-                >
-                  {i18n.t('welcome.create_wallet')}
-                </Button>
+                {loading ? (
+                  <Button
+                    color="fill"
+                    height="44px"
+                    variant="flat"
+                    width="full"
+                    symbol="arrow.right"
+                    symbolSide="right"
+                    blur="26px"
+                    onClick={handleCreateNewWalletClick}
+                    testId="create-wallet-button"
+                  >
+                    <Inline space="8px" alignVertical="center">
+                      <Text color="label" size="16pt" weight="bold">
+                        {i18n.t('welcome.create_wallet')}
+                      </Text>
+                      <Spinner size={16} color="label" />
+                    </Inline>
+                  </Button>
+                ) : (
+                  <Button
+                    color="fill"
+                    height="44px"
+                    variant="flat"
+                    width="full"
+                    symbol="arrow.right"
+                    symbolSide="right"
+                    blur="26px"
+                    onClick={handleCreateNewWalletClick}
+                    testId="create-wallet-button"
+                  >
+                    {i18n.t('welcome.create_wallet')}
+                  </Button>
+                )}
                 <ThemeProvider theme="dark">
                   <Button
                     color="surfaceSecondaryElevated"
