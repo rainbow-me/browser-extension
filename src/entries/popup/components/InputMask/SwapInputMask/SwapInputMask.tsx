@@ -15,6 +15,7 @@ import { maskInput } from '../utils';
 interface SwapInputMaskProps {
   borderColor: BoxStyles['borderColor'];
   decimals?: number;
+  disabled?: boolean;
   height: InputHeight;
   innerRef?: RefObject<HTMLInputElement>;
   style?: CSSProperties;
@@ -31,6 +32,7 @@ export const SwapInputMask = ({
   accentCaretColor = false,
   borderColor,
   decimals,
+  disabled,
   height,
   innerRef,
   placeholder,
@@ -79,9 +81,11 @@ export const SwapInputMask = ({
             paddingRight: paddingHorizontal,
             paddingLeft: paddingHorizontal,
             caretColor: accentCaretColor ? accentColorAsHsl : undefined,
+            cursor: disabled ? 'not-allowed' : 'text',
           }}
           enableTapScale={false}
           testId={`${testId}-swap-input-mask`}
+          disabled={disabled}
         />
       </Box>
     </Box>
