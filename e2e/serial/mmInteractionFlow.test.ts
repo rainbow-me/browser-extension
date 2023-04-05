@@ -6,7 +6,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
   delay,
   delayTime,
-  findElementByTestId,
+  // findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
@@ -97,6 +97,8 @@ describe('App interactions flow', () => {
       driver,
     });
   });
+
+  // connect to dapp
   it('should be able to connect to mm dapp', async () => {
     await delayTime('long');
     await driver.get('https://metamask.github.io/test-dapp/');
@@ -130,6 +132,8 @@ describe('App interactions flow', () => {
     );
     expect(account).toBeTruthy();
   });
+
+  // Personal Sign
   it('should be able to complete a personal sign', async () => {
     const dappHandler = await driver.getWindowHandle();
 
@@ -144,6 +148,15 @@ describe('App interactions flow', () => {
       handlers.find((handler) => handler !== dappHandler) || '';
 
     await driver.switchTo().window(popupHandler);
+
+    const message = await findElementByText(
+      driver,
+      'Example `personal_sign` message',
+    );
+    expect(message).toBeTruthy();
+
+    const address = await findElementByText(driver, '0xf39F...2266');
+    expect(address).toBeTruthy();
 
     await delayTime('medium');
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
