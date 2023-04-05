@@ -128,7 +128,6 @@ export const useSwapActions = ({
   if (!(quote as QuoteError).error) {
     const serviceTime =
       (quote as CrosschainQuote)?.routes?.[0]?.serviceTime || 0;
-    console.log('---- serviceTime', serviceTime);
     const timeEstimate = serviceTime
       ? getCrossChainTimeEstimate({ serviceTime })
       : null;
