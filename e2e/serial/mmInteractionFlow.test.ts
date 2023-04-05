@@ -6,7 +6,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
   delay,
   delayTime,
-  // findElementByTestId,
+  findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
@@ -138,7 +138,6 @@ describe('App interactions flow', () => {
     const dappHandler = await driver.getWindowHandle();
 
     const button = await querySelector(driver, '[id="personalSign"]');
-    expect(button).toBeTruthy();
     await waitAndClick(button, driver);
 
     await delayTime('medium');
@@ -149,10 +148,7 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
-    const message = await findElementByText(
-      driver,
-      'Example `personal_sign` message',
-    );
+    const message = await findElementByTestId({ id: 'text-area', driver });
     expect(message).toBeTruthy();
 
     const address = await findElementByText(driver, '0xf39F...2266');
@@ -172,6 +168,86 @@ describe('App interactions flow', () => {
     const result = await findElementByText(
       driver,
       '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+    );
+    expect(result).toBeTruthy();
+  });
+
+  // Sign Typed Data V3
+  it('should be able to sign typed data (v3)', async () => {
+    const dappHandler = await driver.getWindowHandle();
+    await driver.switchTo().window(dappHandler);
+
+    const button = await querySelector(driver, '[id="signTypedDataV3"]');
+    await waitAndClick(button, driver);
+
+    await delayTime('medium');
+    const handlers = await driver.getAllWindowHandles();
+
+    const popupHandler =
+      handlers.find((handler) => handler !== dappHandler) || '';
+
+    await driver.switchTo().window(popupHandler);
+
+    const message = await findElementByTestId({ id: 'text-area', driver });
+    expect(message).toBeTruthy();
+
+    const address = await findElementByText(driver, '0xf39F...2266');
+    expect(address).toBeTruthy();
+
+    await delayTime('medium');
+    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+
+    await driver.switchTo().window(dappHandler);
+
+    const verifyButton = await querySelector(
+      driver,
+      '[id="signTypedDataV3Verify"]',
+    );
+    await waitAndClick(verifyButton, driver);
+
+    const result = await querySelector(
+      driver,
+      '[id="signTypedDataV3VerifyResult"]',
+    );
+    expect(result).toBeTruthy();
+  });
+
+  // Sign Typed Data V4
+  it('should be able to sign typed data (v4)', async () => {
+    const dappHandler = await driver.getWindowHandle();
+    await driver.switchTo().window(dappHandler);
+
+    const button = await querySelector(driver, '[id="signTypedDataV4"]');
+    await waitAndClick(button, driver);
+
+    await delayTime('medium');
+    const handlers = await driver.getAllWindowHandles();
+
+    const popupHandler =
+      handlers.find((handler) => handler !== dappHandler) || '';
+
+    await driver.switchTo().window(popupHandler);
+
+    const message = await findElementByTestId({ id: 'text-area', driver });
+    expect(message).toBeTruthy();
+
+    const address = await findElementByText(driver, '0xf39F...2266');
+    expect(address).toBeTruthy();
+
+    await delayTime('medium');
+    await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+
+    await driver.switchTo().window(dappHandler);
+
+    const verifyButton = await querySelector(
+      driver,
+      '[id="signTypedDataV4Verify"]',
+    );
+    await waitAndClick(verifyButton, driver);
+
+    const result = await querySelector(
+      driver,
+      '[id="signTypedDataV4VerifyResult"]',
     );
     expect(result).toBeTruthy();
   });
