@@ -23,6 +23,7 @@ import {
   Text,
 } from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
+import { Space } from '~/design-system/styles/designTokens';
 
 import { useDefaultTxSpeed } from '../../hooks/useDefaultTxSpeed';
 import { useSwapGas, useTransactionGas } from '../../hooks/useGas';
@@ -46,6 +47,7 @@ type FeeProps = {
     transactionSpeedSwitched: keyof EventProperties;
     transactionSpeedClicked: keyof EventProperties;
   };
+  speedMenuMarginRight?: Space;
   setSelectedSpeed: React.Dispatch<React.SetStateAction<GasSpeed>>;
   setCustomMaxBaseFee: (maxBaseFee?: string) => void;
   setCustomMaxPriorityFee: (maxPriorityFee?: string) => void;
@@ -62,6 +64,7 @@ function Fee({
   plainTriggerBorder,
   selectedSpeed,
   flashbotsEnabled,
+  speedMenuMarginRight,
   setSelectedSpeed,
   setCustomMaxBaseFee,
   setCustomMaxPriorityFee,
@@ -163,6 +166,7 @@ function Fee({
               accentColor={accentColor}
               plainTriggerBorder={plainTriggerBorder}
               onOpenChange={onSpeedOpenChange}
+              dropdownContentMarginRight={speedMenuMarginRight}
             />
             {chainId === ChainId.mainnet ? (
               <Box
@@ -255,6 +259,7 @@ type SwapFeeProps = {
   assetToBuy?: ParsedSearchAsset;
   enabled?: boolean;
   flashbotsEnabled?: boolean;
+  speedMenuMarginRight?: Space;
 };
 
 export function SwapFee({
@@ -267,6 +272,7 @@ export function SwapFee({
   assetToBuy,
   enabled = true,
   flashbotsEnabled,
+  speedMenuMarginRight,
 }: SwapFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
@@ -302,6 +308,7 @@ export function SwapFee({
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
       flashbotsEnabled={false}
+      speedMenuMarginRight={speedMenuMarginRight}
     />
   );
 }
