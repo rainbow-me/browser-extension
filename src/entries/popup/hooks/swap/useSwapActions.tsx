@@ -33,9 +33,9 @@ export const getCrossChainTimeEstimate = ({
 } => {
   let isLongWait = false;
   let timeEstimateDisplay;
-  const timeEstimate = serviceTime;
+  const timeEstimate = serviceTime || 0;
 
-  const minutes = Math.floor(timeEstimate || 0 / 60);
+  const minutes = Math.floor(timeEstimate / 60);
   const hours = Math.floor(minutes / 60);
 
   if (hours >= 1) {
@@ -128,6 +128,7 @@ export const useSwapActions = ({
   if (!(quote as QuoteError).error) {
     const serviceTime =
       (quote as CrosschainQuote)?.routes?.[0]?.serviceTime || 0;
+    console.log('---- serviceTime', serviceTime);
     const timeEstimate = serviceTime
       ? getCrossChainTimeEstimate({ serviceTime })
       : null;
