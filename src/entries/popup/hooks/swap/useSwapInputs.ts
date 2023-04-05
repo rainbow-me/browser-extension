@@ -115,16 +115,23 @@ export const useSwapInputs = ({
   }, [assetToSellMaxValue.amount, setAssetToSellValue]);
 
   const flipAssets = useCallback(() => {
-    if (independentField === 'sellField') {
-      setAssetToSellValue('');
-      setAssetToBuyValue(independetValue);
-      setIndependentField('buyField');
-      focusOnInput(assetToBuyInputRef);
-    } else {
+    const isCrosschainSwap =
+      assetToSell && assetToBuy && assetToSell.chainId !== assetToBuy.chainId;
+    if (isCrosschainSwap) {
+      setAssetToBuyValue('');
+      setAssetToSellValue(assetToBuyValue);
+      setIndependentField('sellField');
+      focusOnInput(assetToSellInputRef);
+    } else if (independentField === 'buyField') {
       setAssetToBuyValue('');
       setAssetToSellValue(independetValue);
       setIndependentField('sellField');
       focusOnInput(assetToSellInputRef);
+    } else {
+      setAssetToSellValue('');
+      setAssetToBuyValue(independetValue);
+      setIndependentField('buyField');
+      focusOnInput(assetToBuyInputRef);
     }
     setAssetToBuy(assetToSell);
     setAssetToSell(assetToBuy);
@@ -132,13 +139,12 @@ export const useSwapInputs = ({
     setAssetToBuyDropdownClosed(true);
   }, [
     assetToBuy,
+    assetToBuyValue,
     assetToSell,
     independentField,
     independetValue,
     setAssetToBuy,
-    setAssetToBuyValue,
     setAssetToSell,
-    setAssetToSellValue,
   ]);
 
   return {
