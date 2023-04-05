@@ -4,9 +4,10 @@ import { Box } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 
 import { Tooltip } from './Tooltip';
-import useMousePosition from './useMousePosition';
 
-export const LiveCursorTooltip = ({
+export const CursorTooltip = ({
+  marginTop,
+  marginLeft,
   text,
   textWeight,
   textSize,
@@ -14,6 +15,8 @@ export const LiveCursorTooltip = ({
   children,
 }: {
   children: ReactElement;
+  marginTop?: string;
+  marginLeft?: string;
   text: string;
   align?: 'start' | 'center' | 'end';
   arrowAlignment?: 'left' | 'center' | 'right';
@@ -22,7 +25,6 @@ export const LiveCursorTooltip = ({
   textColor?: TextStyles['color'];
 }) => {
   const [open, setOpen] = useState(false);
-  const { x, y } = useMousePosition();
   return (
     <>
       <Tooltip
@@ -33,11 +35,12 @@ export const LiveCursorTooltip = ({
         open={open}
       >
         <Box
+          background="green"
           style={{
             position: 'fixed',
             pointerEvents: 'none',
-            top: `${y}px`,
-            left: `${x}px`,
+            marginTop: marginTop,
+            marginLeft: marginLeft,
           }}
         />
       </Tooltip>

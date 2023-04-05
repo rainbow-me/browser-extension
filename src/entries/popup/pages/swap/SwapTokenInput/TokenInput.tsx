@@ -11,7 +11,7 @@ import { ParsedSearchAsset } from '~/core/types/assets';
 import { Box } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { SwapInputMask } from '~/entries/popup/components/InputMask/SwapInputMask/SwapInputMask';
-import { LiveCursorTooltip } from '~/entries/popup/components/Tooltip/LiveCursorTooltip';
+import { CursorTooltip } from '~/entries/popup/components/Tooltip/CursorTooltip';
 import usePrevious from '~/entries/popup/hooks/usePrevious';
 
 import { CoinIcon } from '../../../components/CoinIcon/CoinIcon';
@@ -26,16 +26,16 @@ const SwapInputMaskWrapper = ({
   children: ReactElement;
 }) => {
   return inputDisabled ? (
-    <>
-      <LiveCursorTooltip
-        text={i18n.t('swap.tokens_input.output_quotes_disabled')}
-        textWeight="semibold"
-        textSize="12pt"
-        textColor="labelSecondary"
-      >
-        {children}
-      </LiveCursorTooltip>
-    </>
+    <CursorTooltip
+      text={i18n.t('swap.tokens_input.output_quotes_disabled')}
+      textWeight="semibold"
+      textSize="12pt"
+      textColor="labelSecondary"
+      marginLeft="20px"
+      marginTop="20px"
+    >
+      {children}
+    </CursorTooltip>
   ) : (
     children
   );
