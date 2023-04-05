@@ -96,6 +96,7 @@ const SeedWordRow = ({
         overflow: 'hidden',
         whiteSpace: 'nowrap',
       }}
+      testId={`word_${word}`}
     >
       <Inline wrap={false} alignVertical="center" space="10px">
         <Text
