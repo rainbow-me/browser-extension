@@ -40,6 +40,7 @@ export const RequestAccounts = ({
 
   const onAcceptRequest = useCallback(() => {
     try {
+      setLoading(true);
       approveRequest({
         address: selectedWallet,
         chainId: selectedChainId,
