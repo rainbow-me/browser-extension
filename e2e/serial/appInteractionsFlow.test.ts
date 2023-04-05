@@ -299,6 +299,7 @@ describe('App interactions flow', () => {
 
   it('should be able to disconnect from connected dapps', async () => {
     await goToPopup(driver, rootURL, '#/home');
+    // await findElementByTestIdAndClick({ id: 'reject-request-button', driver });
     await findElementByTestIdAndClick({ id: 'home-page-header-left', driver });
     await findElementByTestIdAndClick({
       id: 'home-page-header-connected-apps',
