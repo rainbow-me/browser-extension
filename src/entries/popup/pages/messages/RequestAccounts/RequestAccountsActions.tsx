@@ -20,6 +20,7 @@ export const RequestAccountsActions = ({
   onAcceptRequest,
   onRejectRequest,
   appName,
+  loading = false,
 }: {
   appName?: string;
   selectedWallet: Address;
@@ -28,6 +29,7 @@ export const RequestAccountsActions = ({
   setSelectedChainId: (value: ChainId) => void;
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
+  loading?: boolean;
 }) => {
   return (
     <Box padding="20px">
@@ -51,6 +53,7 @@ export const RequestAccountsActions = ({
             <AcceptRequestButton
               onClick={onAcceptRequest}
               label={i18n.t('approve_request.connect', { appName })}
+              loading={loading}
             />
           </Row>
           <Row>

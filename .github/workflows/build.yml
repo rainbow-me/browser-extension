@@ -112,7 +112,7 @@ jobs:
             path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
-      - name: Run e2e (Brave)
+      - name: Run e2e (Chrome)
         uses: nick-fields/retry@v2
         with:
           timeout_minutes: 10
