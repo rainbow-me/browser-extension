@@ -46,7 +46,7 @@ export const useSwapInputs = ({
 
   const [independentField, setIndependentField] =
     useState<IndependentField>('sellField');
-  const [independetValue, setIndependentValue] = useState<string>('');
+  const [independentValue, setIndependentValue] = useState<string>('');
 
   const setAssetToSellInputValue = useCallback((value: string) => {
     setAssetToSellDropdownClosed(true);
@@ -124,12 +124,12 @@ export const useSwapInputs = ({
       focusOnInput(assetToSellInputRef);
     } else if (independentField === 'buyField') {
       setAssetToBuyValue('');
-      setAssetToSellValue(independetValue);
+      setAssetToSellValue(independentValue);
       setIndependentField('sellField');
       focusOnInput(assetToSellInputRef);
     } else {
       setAssetToSellValue('');
-      setAssetToBuyValue(independetValue);
+      setAssetToBuyValue(independentValue);
       setIndependentField('buyField');
       focusOnInput(assetToBuyInputRef);
     }
@@ -142,7 +142,7 @@ export const useSwapInputs = ({
     assetToBuyValue,
     assetToSell,
     independentField,
-    independetValue,
+    independentValue,
     setAssetToBuy,
     setAssetToSell,
   ]);
