@@ -7,6 +7,7 @@ import { useGasStore } from '~/core/state';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { getQuoteServiceTime } from '~/core/utils/swaps';
 import {
   Box,
   Button,
@@ -496,6 +497,9 @@ export function Swap() {
                         enabled={!inReviewSheet}
                         defaultSpeed={selectedGas.option}
                         flashbotsEnabled={flashbotsEnabledGlobally}
+                        quoteServiceTime={getQuoteServiceTime({
+                          quote: quote as CrosschainQuote,
+                        })}
                       />
                     </Row>
                     <Row>
