@@ -183,8 +183,6 @@ export function WalletSwitcher() {
       const walletToDelete = await getWallet(address);
       // remove if read-only
       if (walletToDelete?.type === KeychainType.ReadOnlyKeychain) {
-        // Unhide first, otherwise it will never show up again
-        await unhideWallet({ address });
         await remove(address);
       } else {
         // hide otherwise
@@ -243,20 +241,14 @@ export function WalletSwitcher() {
         setAccountsWithNamesAndEns(accounts as WalletSearchData[]);
       }
       const accountsSearchData = await Promise.all(
-        accounts.map(async (addressAndType) => {
-          try {
-            let accountSearchData: WalletSearchData = {
-              ...addressAndType,
-            };
-            const walletName = walletNames[addressAndType.address];
-            if (walletName) {
-              accountSearchData = { ...accountSearchData, walletName };
-            }
-            return accountSearchData;
-          } catch (e) {
-            return [] as unknown as WalletSearchData;
-          }
-        }),
+        accounts.map(async (addressAndType) =>
+          walletNames[addressAndType.address]
+            ? {
+                ...addressAndType,
+                walletName: walletNames[addressAndType.address],
+              }
+            : (addressAndType as WalletSearchData),
+        ),
       );
       if (accountsSearchData.length !== 0) {
         setAccountsWithNamesAndEns(accountsSearchData);
