@@ -11,7 +11,6 @@ import {
   findElementByText,
   getExtensionIdByName,
   getTextFromDappText,
-  getTextFromText,
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
