@@ -43,7 +43,7 @@ import {
   MoreInfoOption,
 } from '../../components/MoreInfoButton/MoreInfoButton';
 import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
-import { remove } from '../../handlers/wallet';
+import { getWallet, remove, wipe } from '../../handlers/wallet';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { AddressAndType, useWallets } from '../../hooks/useWallets';
@@ -167,7 +167,7 @@ export function WalletSwitcher() {
   const { hideWallet } = useHiddenWalletsStore();
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useRainbowNavigate();
-  const { visibleWallets: accounts, fetchWallets } = useWallets();
+  const { visibleWallets: accounts } = useWallets();
   const { avatar } = useAvatar({ address: currentAddress });
 
   const { deleteWalletName } = useWalletNamesStore();
@@ -181,33 +181,41 @@ export function WalletSwitcher() {
   );
   const handleRemoveAccount = useCallback(
     async (address: Address) => {
-      const removed = accounts.find((account) => account.address === address);
+      const walletToDelete = await getWallet(address);
       // remove if read-only
-      if (removed?.type === KeychainType.ReadOnlyKeychain) {
+      if (walletToDelete?.type === KeychainType.ReadOnlyKeychain) {
         await remove(address);
-        deleteWalletName({ address });
-        setTimeout(() => fetchWallets(), 1000);
       } else {
-        // hide if imported
-        hideWallet({ address });
+        // hide otherwise
+        await hideWallet({ address });
       }
-      if (address === currentAddress) {
-        const deletedIndex = accounts.findIndex(
-          (account) => account.address === address,
-        );
-        const nextIndex =
-          deletedIndex === accounts.length - 1
-            ? deletedIndex - 1
-            : deletedIndex + 1;
-        setCurrentAddress(accounts[nextIndex]?.address);
+
+      await deleteWalletName({ address });
+
+      // Switch to the next account if possible
+      if (accounts.length > 1) {
+        if (address === currentAddress) {
+          const deletedIndex = accounts.findIndex(
+            (account) => account.address === address,
+          );
+          const nextIndex =
+            deletedIndex === accounts.length - 1
+              ? deletedIndex - 1
+              : deletedIndex + 1;
+          setCurrentAddress(accounts[nextIndex]?.address);
+        }
+        // This was the last account wipe and send to welcome screen
+      } else {
+        await wipe();
+        navigate(ROUTES.WELCOME);
       }
     },
     [
       accounts,
       currentAddress,
       deleteWalletName,
-      fetchWallets,
       hideWallet,
+      navigate,
       setCurrentAddress,
     ],
   );

@@ -194,7 +194,7 @@ export function WalletDetails() {
         navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);
       }
     } else {
-      await wipe(state?.password);
+      await wipe();
       navigate(ROUTES.WELCOME);
     }
   };
