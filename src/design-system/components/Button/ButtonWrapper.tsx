@@ -1,7 +1,13 @@
 import { motion } from 'framer-motion';
 import React from 'react';
 
-import { BoxStyles, ShadowSize, TextStyles } from '../../styles/core.css';
+import {
+  BoxStyles,
+  ShadowSize,
+  TextStyles,
+  accentColorAsHsl,
+  foregroundColorVars,
+} from '../../styles/core.css';
 import {
   BackgroundColor,
   ButtonColor,
@@ -13,7 +19,6 @@ import {
   transitions,
 } from '../../styles/designTokens';
 import { Box } from '../Box/Box';
-import { Lens } from '../Lens/Lens';
 
 import { ButtonHeight, heightStyles, tintedStyles } from './ButtonWrapper.css';
 
@@ -230,67 +235,65 @@ export function ButtonWrapper({
     color: color ?? 'accent',
   })[variant];
 
-  const outlineColor = undefined;
+  let outlineColor = undefined;
   // Only apply outline to buttons with tabIndex
-  // if (tabIndex !== undefined) {
-  //   outlineColor =
-  //     color && color !== 'accent'
-  //       ? foregroundColorVars[color as TextColor] || accentColorAsHsl
-  //       : accentColorAsHsl;
-  // }
+  if (tabIndex !== undefined) {
+    outlineColor =
+      color && color !== 'accent'
+        ? foregroundColorVars[color as TextColor] || accentColorAsHsl
+        : accentColorAsHsl;
+  }
   const styles = {
     ...((blur && { backdropFilter: `blur(${blur})` }) || {}),
     outlineColor,
   };
 
   return (
-    <Lens borderRadius={borderRadius ?? 'round'} tabIndex={tabIndex}>
+    <Box
+      as={motion.div}
+      initial={{ zIndex: 0 }}
+      whileHover={{ scale: disabled ? undefined : transformScales['1.04'] }}
+      whileTap={{ scale: disabled ? undefined : transformScales['0.96'] }}
+      transition={transitions.bounce}
+      width={width}
+      className="bx-button-wrapper"
+    >
       <Box
-        as={motion.div}
-        initial={{ zIndex: 0 }}
-        whileHover={{ scale: disabled ? undefined : transformScales['1.04'] }}
-        whileTap={{ scale: disabled ? undefined : transformScales['0.96'] }}
-        transition={transitions.bounce}
+        as="button"
+        alignItems="center"
+        background={
+          variant === 'transparentHover'
+            ? {
+                default: background || 'transparent',
+                hover: 'surfaceSecondaryElevated',
+              }
+            : background
+        }
+        borderRadius={borderRadius ?? 'round'}
+        borderColor={
+          variant === 'transparentHover'
+            ? { default: 'transparent', hover: 'buttonStroke' }
+            : borderColor
+        }
+        borderWidth={variant === 'transparentHover' ? '1px' : borderWidth}
+        boxShadow={boxShadow}
+        className={[
+          heightStyles[height],
+          variant === 'tinted' &&
+            tintedStyles[(color as ButtonColor) || 'accent'],
+        ]}
+        display="flex"
+        onClick={disabled ? () => null : onClick}
+        position="relative"
+        justifyContent="center"
         width={width}
-        className="bx-button-wrapper"
+        style={styles}
+        tabIndex={tabIndex}
+        testId={testId}
+        cursor={cursor}
       >
-        <Box
-          as="button"
-          alignItems="center"
-          background={
-            variant === 'transparentHover'
-              ? {
-                  default: background || 'transparent',
-                  hover: 'surfaceSecondaryElevated',
-                }
-              : background
-          }
-          borderRadius={borderRadius ?? 'round'}
-          borderColor={
-            variant === 'transparentHover'
-              ? { default: 'transparent', hover: 'buttonStroke' }
-              : borderColor
-          }
-          borderWidth={variant === 'transparentHover' ? '1px' : borderWidth}
-          boxShadow={boxShadow}
-          className={[
-            heightStyles[height],
-            variant === 'tinted' &&
-              tintedStyles[(color as ButtonColor) || 'accent'],
-          ]}
-          display="flex"
-          onClick={disabled ? () => null : onClick}
-          position="relative"
-          justifyContent="center"
-          width={width}
-          style={styles}
-          tabIndex={tabIndex}
-          testId={testId}
-          cursor={cursor}
-        >
-          {children}
-        </Box>
+        {children}
       </Box>
-    </Lens>
+    </Box>
   );
 }

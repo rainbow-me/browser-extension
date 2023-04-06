@@ -22,15 +22,21 @@ function simulatePointerEvent(ref: React.RefObject<HTMLDivElement>) {
 
 export function Lens({
   children,
+  forceClick,
   tabIndex,
   ...restProps
-}: BoxProps & { children: ReactNode }) {
+}: BoxProps & { children: ReactNode; forceClick?: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === shortcuts.global.SELECT.key) {
-      simulatePointerEvent(containerRef);
-    }
-  }, []);
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === shortcuts.global.SELECT.key) {
+        if (forceClick) {
+          simulatePointerEvent(containerRef);
+        }
+      }
+    },
+    [forceClick],
+  );
   return (
     <Box
       // eslint-disable-next-line react/jsx-props-no-spreading
