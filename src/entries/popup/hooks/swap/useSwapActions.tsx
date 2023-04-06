@@ -3,6 +3,10 @@ import React from 'react';
 
 import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
+import {
+  getCrossChainTimeEstimate,
+  getQuoteServiceTime,
+} from '~/core/utils/swaps';
 import { Bleed, Box, Inline, Symbol } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 import {
@@ -21,44 +25,6 @@ export interface SwapTimeEstimate {
   timeEstimate?: number;
   timeEstimateDisplay: string;
 }
-
-export const getCrossChainTimeEstimate = ({
-  serviceTime,
-}: {
-  serviceTime?: number;
-}): {
-  isLongWait: boolean;
-  timeEstimate?: number;
-  timeEstimateDisplay: string;
-} => {
-  let isLongWait = false;
-  let timeEstimateDisplay;
-  const timeEstimate = serviceTime || 0;
-
-  const minutes = Math.floor(timeEstimate / 60);
-  const hours = Math.floor(minutes / 60);
-
-  if (hours >= 1) {
-    isLongWait = true;
-    timeEstimateDisplay = `>${hours} ${i18n.t(
-      `time.hours.long.${hours === 1 ? 'singular' : 'plural'}`,
-    )}`;
-  } else if (minutes >= 1) {
-    timeEstimateDisplay = `~${minutes} ${i18n.t(
-      `time.minutes.short.${minutes === 1 ? 'singular' : 'plural'}`,
-    )}`;
-  } else {
-    timeEstimateDisplay = `~${timeEstimate} ${i18n.t(
-      `time.seconds.short.${timeEstimate === 1 ? 'singular' : 'plural'}`,
-    )}`;
-  }
-
-  return {
-    isLongWait,
-    timeEstimate,
-    timeEstimateDisplay,
-  };
-};
 
 interface UseSwapActionsProps {
   quote?: Quote | CrosschainQuote | QuoteError;
@@ -126,10 +92,13 @@ export const useSwapActions = ({
   }
 
   if (!(quote as QuoteError).error) {
-    const serviceTime =
-      (quote as CrosschainQuote)?.routes?.[0]?.serviceTime || 0;
+    const serviceTime = getQuoteServiceTime({
+      quote: quote as CrosschainQuote,
+    });
     const timeEstimate = serviceTime
-      ? getCrossChainTimeEstimate({ serviceTime })
+      ? getCrossChainTimeEstimate({
+          serviceTime,
+        })
       : null;
 
     return {
