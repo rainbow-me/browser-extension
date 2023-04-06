@@ -204,6 +204,8 @@ export function Swap() {
     assetToSellMaxValue,
     assetToBuyValue,
     assetToSellValue,
+    assetToBuyDisplay,
+    assetToSellDisplay,
     assetToSellDropdownClosed,
     assetToBuyDropdownClosed,
     independentField,
@@ -346,7 +348,7 @@ export function Swap() {
         quote={quote}
         flashbotsEnabled={flashbotsEnabledGlobally}
         hideSwapReview={hideSwapReviewSheet}
-        assetToSellValue={assetToSellValue}
+        assetToSellValue={assetToSellDisplay}
       />
       <ExplainerSheet
         show={explainerSheetParams.show}
@@ -396,7 +398,7 @@ export function Swap() {
                   placeholder={i18n.t('swap.input_token_to_swap_placeholder')}
                   assetToSellMaxValue={assetToSellMaxValue}
                   setAssetToSellMaxValue={setAssetToSellMaxValue}
-                  assetToSellValue={assetToSellValue}
+                  assetToSellValue={assetToSellDisplay}
                   setAssetToSellInputValue={setAssetToSellInputValue}
                   inputRef={assetToSellInputRef}
                   openDropdownOnMount={inputToOpenOnMount === 'sell'}
@@ -459,7 +461,7 @@ export function Swap() {
                   outputChainId={outputChainId}
                   assetFilter={assetToBuyFilter}
                   setAssetFilter={setAssetToBuyFilter}
-                  assetToBuyValue={assetToBuyValue}
+                  assetToBuyValue={assetToBuyDisplay}
                   setAssetToBuyInputValue={setAssetToBuyInputValue}
                   inputRef={assetToBuyInputRef}
                   openDropdownOnMount={inputToOpenOnMount === 'buy'}
