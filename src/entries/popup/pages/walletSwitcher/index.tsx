@@ -164,7 +164,7 @@ export function WalletSwitcher() {
     AddressAndType | undefined
   >();
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
-  const { hideWallet } = useHiddenWalletsStore();
+  const { hideWallet, unhideWallet } = useHiddenWalletsStore();
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useRainbowNavigate();
   const { visibleWallets: accounts } = useWallets();
@@ -184,6 +184,8 @@ export function WalletSwitcher() {
       const walletToDelete = await getWallet(address);
       // remove if read-only
       if (walletToDelete?.type === KeychainType.ReadOnlyKeychain) {
+        // Unhide first, otherwise it will never show up again
+        await unhideWallet({ address });
         await remove(address);
       } else {
         // hide otherwise
@@ -206,6 +208,7 @@ export function WalletSwitcher() {
         }
         // This was the last account wipe and send to welcome screen
       } else {
+        await unhideWallet({ address });
         await wipe();
         navigate(ROUTES.WELCOME);
       }
@@ -214,6 +217,7 @@ export function WalletSwitcher() {
       accounts,
       currentAddress,
       deleteWalletName,
+      unhideWallet,
       hideWallet,
       navigate,
       setCurrentAddress,
