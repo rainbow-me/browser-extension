@@ -44,7 +44,9 @@ export const useSwapQuote = ({
 
   const isCrosschainSwap = useMemo(
     () =>
-      assetToSell && assetToBuy && assetToSell?.chainId !== assetToBuy?.chainId,
+      !!assetToSell &&
+      !!assetToBuy &&
+      assetToSell?.chainId !== assetToBuy?.chainId,
     [assetToBuy, assetToSell],
   );
 
@@ -108,5 +110,10 @@ export const useSwapQuote = ({
     cacheTime: CACHE_INTERVAL,
   });
 
-  return { data, isLoading: isLoading && fetchStatus !== 'idle', isError };
+  return {
+    data,
+    isLoading: isLoading && fetchStatus !== 'idle',
+    isError,
+    isCrosschainSwap,
+  };
 };
