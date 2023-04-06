@@ -226,6 +226,21 @@ export const handleProviderRequest = ({
           response = toHex(String(blockNumber));
           break;
         }
+        case 'eth_getBlockByNumber': {
+          const provider = getProvider({ chainId: activeSession?.chainId });
+          response = await provider.getBlock(params?.[0] as string);
+          break;
+        }
+        case 'eth_getBalance': {
+          const provider = getProvider({ chainId: activeSession?.chainId });
+          response = await provider.getBalance(params?.[0] as string);
+          break;
+        }
+        case 'eth_getTransactionByHash': {
+          const provider = getProvider({ chainId: activeSession?.chainId });
+          response = await provider.getTransaction(params?.[0] as string);
+          break;
+        }
         case 'eth_call': {
           const provider = getProvider({ chainId: activeSession?.chainId });
           response = await provider.call(params?.[0] as TransactionRequest);

@@ -6,6 +6,7 @@ import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import {
   convertAmountToRawAmount,
   convertRawAmountToBalance,
+  handleSignificantDecimals,
   lessThan,
   minus,
 } from '~/core/utils/numbers';
@@ -147,12 +148,30 @@ export const useSwapInputs = ({
     setAssetToSell,
   ]);
 
+  const assetToSellDisplay = useMemo(
+    () =>
+      independentField === 'buyField'
+        ? assetToSellValue && handleSignificantDecimals(assetToSellValue, 5)
+        : assetToSellValue,
+    [assetToSellValue, independentField],
+  );
+
+  const assetToBuyDisplay = useMemo(
+    () =>
+      independentField === 'sellField'
+        ? assetToBuyValue && handleSignificantDecimals(assetToBuyValue, 5)
+        : assetToBuyValue,
+    [assetToBuyValue, independentField],
+  );
+
   return {
     assetToBuyInputRef,
     assetToSellInputRef,
     assetToSellMaxValue,
     assetToSellValue,
     assetToBuyValue,
+    assetToSellDisplay,
+    assetToBuyDisplay,
     assetToSellDropdownClosed,
     assetToBuyDropdownClosed,
     independentField,
