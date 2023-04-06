@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { ReactElement, useCallback, useMemo, useState } from 'react';
 
 import { upperFirst } from '~/core/utils/strings';
 import { Bleed, Box, Inline, Text } from '~/design-system';
@@ -89,6 +89,19 @@ const RouteProtocol = ({
   );
 };
 
+const SwapRoutesWrapper = ({
+  components,
+  children,
+}: {
+  components: ReactElement[];
+  children: ReactElement;
+}) => {
+  if (components.length === 1) {
+    return children;
+  }
+  return <ButtonOverflow>{children}</ButtonOverflow>;
+};
+
 export const SwapRoutes = ({ protocols, testId }: SwapRoutesProps) => {
   const [currentComponentIndex, setCurrentComponentIndex] = useState(0);
 
@@ -118,10 +131,10 @@ export const SwapRoutes = ({ protocols, testId }: SwapRoutesProps) => {
   }, [components.length]);
 
   return (
-    <ButtonOverflow>
+    <SwapRoutesWrapper components={components}>
       <Box testId={`${testId}-swap-routes`} onClick={goToNextComponent}>
         {components[currentComponentIndex]}
       </Box>
-    </ButtonOverflow>
+    </SwapRoutesWrapper>
   );
 };
