@@ -10,6 +10,8 @@ import {
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
+  getTextFromDappText,
+  getTextFromText,
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
@@ -23,6 +25,7 @@ let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
+const walletAddress = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
 
 describe('App interactions flow', () => {
   beforeAll(async () => {
@@ -126,10 +129,7 @@ describe('App interactions flow', () => {
     const accounts = await querySelector(driver, '[id="accounts"]');
     expect(accounts).toBeTruthy();
 
-    const account = await findElementByText(
-      driver,
-      '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
-    );
+    const account = await findElementByText(driver, walletAddress);
     expect(account).toBeTruthy();
   });
 
@@ -165,10 +165,7 @@ describe('App interactions flow', () => {
     );
     expect(personalSignData).toBeTruthy();
 
-    const result = await findElementByText(
-      driver,
-      '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
-    );
+    const result = await findElementByText(driver, walletAddress);
     expect(result).toBeTruthy();
   });
 
@@ -205,11 +202,11 @@ describe('App interactions flow', () => {
     );
     await waitAndClick(verifyButton, driver);
 
-    const result = await querySelector(
+    const result = await getTextFromDappText({
+      id: 'signTypedDataV3VerifyResult',
       driver,
-      '[id="signTypedDataV3VerifyResult"]',
-    );
-    expect(result).toBeTruthy();
+    });
+    expect(result).toBe(walletAddress.toLowerCase());
   });
 
   // Sign Typed Data V4
@@ -245,10 +242,10 @@ describe('App interactions flow', () => {
     );
     await waitAndClick(verifyButton, driver);
 
-    const result = await querySelector(
+    const result = await getTextFromDappText({
+      id: 'signTypedDataV4VerifyResult',
       driver,
-      '[id="signTypedDataV4VerifyResult"]',
-    );
-    expect(result).toBeTruthy();
+    });
+    expect(result).toBe(walletAddress.toLowerCase());
   });
 });
