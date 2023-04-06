@@ -120,7 +120,7 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
-    await delayTime('medium');
+    await delayTime('long');
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
     await driver.switchTo().window(dappHandler);
@@ -147,18 +147,19 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
+    await delayTime('long');
     const message = await findElementByTestId({ id: 'text-area', driver });
     expect(message).toBeTruthy();
 
     const address = await findElementByText(driver, '0xf39F...2266');
     expect(address).toBeTruthy();
 
-    await delayTime('long');
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
-
     await delayTime('long');
+
     const personalSignData = await querySelector(
       driver,
       '[id="personalSignResult"]',
@@ -185,17 +186,18 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
+    await delayTime('long');
     const message = await findElementByTestId({ id: 'text-area', driver });
     expect(message).toBeTruthy();
 
     const address = await findElementByText(driver, '0xf39F...2266');
     expect(address).toBeTruthy();
 
-    await delayTime('long');
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
     await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
+    await delayTime('long');
 
     const verifyButton = await querySelector(
       driver,
@@ -226,22 +228,23 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
+    await delayTime('long');
     const message = await findElementByTestId({ id: 'text-area', driver });
     expect(message).toBeTruthy();
 
     const address = await findElementByText(driver, '0xf39F...2266');
     expect(address).toBeTruthy();
 
-    await delayTime('medium');
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
+    await delayTime('long');
 
     const verifyButton = await querySelector(
       driver,
       '[id="signTypedDataV4Verify"]',
     );
-    await delayTime('long');
     await waitAndClick(verifyButton, driver);
 
     const result = await getTextFromDappText({
