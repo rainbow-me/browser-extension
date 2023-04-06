@@ -256,4 +256,4 @@ const displayDappNames: {
 };
 
 export const getHardcodedDappInformation = (hostName: string) =>
-  displayDappNames[hostName];
+  displayDappNames?.[hostName];
