@@ -241,10 +241,8 @@ export function WalletSwitcher() {
       if (accounts.length !== 0) {
         setAccountsWithNamesAndEns(accounts as WalletSearchData[]);
       }
-      console.log('getAccountsWithNamesAndEns::accounts', accounts);
       const accountsSearchData = await Promise.all(
         accounts.map(async (addressAndType) => {
-          console.log('looking up pending...', addressAndType);
           try {
             let accountSearchData: WalletSearchData = {
               ...addressAndType,
@@ -255,13 +253,11 @@ export function WalletSwitcher() {
             }
             return accountSearchData;
           } catch (e) {
-            console.log('getAccountsWithNamesAndEns error', e);
             return [] as unknown as WalletSearchData;
           }
         }),
       );
       if (accountsSearchData.length !== 0) {
-        console.log('setting accountsSearchData', accountsSearchData);
         setAccountsWithNamesAndEns(accountsSearchData);
       }
     };
@@ -373,14 +369,6 @@ export function WalletSwitcher() {
     ) as WalletSearchData[];
     saveWalletOrder(newAccountsWithNamesAndEns.map(({ address }) => address));
   };
-
-  console.log({
-    accounts,
-    accountsWithNamesAndEns,
-    filteredAccounts,
-    filteredAndSortedAccounts,
-    displayedAccounts,
-  });
 
   return (
     <Box height="full">
