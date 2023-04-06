@@ -12,6 +12,7 @@ import { useAlert } from '~/entries/popup/hooks/useAlert';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
+import { RainbowError, logger } from '~/logger';
 
 import * as wallet from '../../../handlers/wallet';
 
@@ -43,6 +44,7 @@ export function SignMessage({
   rejectRequest,
   request,
 }: ApproveRequestProps) {
+  const [loading, setLoading] = useState(false);
   const [waitingForDevice, setWaitingForDevice] = useState(false);
   const { appHost, appName } = useAppMetadata({
     url: request?.meta?.sender?.url,
@@ -61,32 +63,40 @@ export function SignMessage({
     if (!requestPayload.msgData || !requestPayload.address) return;
     let result = null;
 
-    // Change the label while we wait for confirmation
-    if (type === 'HardwareWalletKeychain') {
-      setWaitingForDevice(true);
-    }
+    setLoading(true);
+    try {
+      // Change the label while we wait for confirmation
+      if (type === 'HardwareWalletKeychain') {
+        setWaitingForDevice(true);
+      }
 
-    if (walletAction === 'personal_sign') {
-      result = await wallet.personalSign(
-        requestPayload.msgData,
-        requestPayload.address,
-      );
-      analytics.track(event.dappPromptSignMessageApproved, {
-        dappURL: appHost,
-        dappName: appName,
-      });
-    } else if (walletAction === 'sign_typed_data') {
-      result = await wallet.signTypedData(
-        requestPayload.msgData,
-        requestPayload.address,
-      );
-      analytics.track(event.dappPromptSignTypedDataApproved, {
-        dappURL: appHost,
-        dappName: appName,
-      });
+      if (walletAction === 'personal_sign') {
+        result = await wallet.personalSign(
+          requestPayload.msgData,
+          requestPayload.address,
+        );
+        analytics.track(event.dappPromptSignMessageApproved, {
+          dappURL: appHost,
+          dappName: appName,
+        });
+      } else if (walletAction === 'sign_typed_data') {
+        result = await wallet.signTypedData(
+          requestPayload.msgData,
+          requestPayload.address,
+        );
+        analytics.track(event.dappPromptSignTypedDataApproved, {
+          dappURL: appHost,
+          dappName: appName,
+        });
+      }
+      approveRequest(result);
+    } catch (e) {
+      logger.info('error in sign message');
+      logger.error(e as RainbowError);
+    } finally {
+      setWaitingForDevice(false);
+      setLoading(false);
     }
-    approveRequest(result);
-    setWaitingForDevice(false);
   }, [appHost, appName, approveRequest, request, selectedWallet]);
 
   const onRejectRequest = useCallback(() => {
@@ -128,6 +138,7 @@ export function SignMessage({
         selectedChainId={selectedChainId}
         onAcceptRequest={onAcceptRequest}
         onRejectRequest={onRejectRequest}
+        loading={loading}
       />
     </Box>
   );

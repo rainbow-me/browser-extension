@@ -18,12 +18,14 @@ export const SignMessageActions = ({
   selectedChainId,
   onAcceptRequest,
   onRejectRequest,
+  loading = false,
 }: {
   waitingForDevice: boolean;
   selectedWallet: Address;
   selectedChainId: ChainId;
   onAcceptRequest: () => void;
   onRejectRequest: () => void;
+  loading?: boolean;
 }) => {
   return (
     <Box padding="20px">
@@ -46,6 +48,7 @@ export const SignMessageActions = ({
                   : i18n.t('approve_request.sign_message')
               }
               waitingForDevice={waitingForDevice}
+              loading={loading}
             />
           </Row>
           <Row>

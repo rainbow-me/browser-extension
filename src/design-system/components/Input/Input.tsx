@@ -20,6 +20,7 @@ import {
 export type InputProps = {
   'aria-label'?: InputHTMLAttributes<HTMLInputElement>['aria-label'];
   autoFocus?: InputHTMLAttributes<HTMLInputElement>['autoFocus'];
+  disabled?: boolean;
   height: InputHeight;
   onBlur?: InputHTMLAttributes<HTMLInputElement>['onBlur'];
   onChange?: InputHTMLAttributes<HTMLInputElement>['onChange'];
@@ -132,6 +133,7 @@ export const stylesForHeight: Record<
 };
 
 export function Input({
+  disabled,
   placeholder,
   height,
   variant,
@@ -188,6 +190,7 @@ export function Input({
         placeholder={placeholder}
         testId={testId}
         width="full"
+        disabled={disabled}
       />
     </Box>
   );

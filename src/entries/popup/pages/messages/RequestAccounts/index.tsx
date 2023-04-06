@@ -9,6 +9,7 @@ import { ProviderRequestPayload } from '~/core/transports/providerRequestTranspo
 import { ChainId } from '~/core/types/chains';
 import { Row, Rows, Separator } from '~/design-system';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
+import { RainbowError, logger } from '~/logger';
 
 import { RequestAccountsActions } from './RequestAccountsActions';
 import { RequestAccountsInfo } from './RequestAccountsInfo';
@@ -26,6 +27,7 @@ export const RequestAccounts = ({
   rejectRequest,
   request,
 }: ApproveRequestProps) => {
+  const [loading, setLoading] = useState(false);
   const { currentAddress } = useCurrentAddressStore();
   const { appHostName, appHost, appLogo, appName } = useAppMetadata({
     url: request?.meta?.sender?.url,
@@ -37,19 +39,27 @@ export const RequestAccounts = ({
   const [selectedWallet, setSelectedWallet] = useState<Address>(currentAddress);
 
   const onAcceptRequest = useCallback(() => {
-    approveRequest({
-      address: selectedWallet,
-      chainId: selectedChainId,
-    });
-    messenger.send(`connect:${appHostName}`, {
-      address: selectedWallet,
-      chainId: selectedChainId,
-    });
-    analytics.track(event.dappPromptConnectApproved, {
-      chainId: selectedChainId,
-      dappURL: appHost,
-      dappName: appName,
-    });
+    try {
+      setLoading(true);
+      approveRequest({
+        address: selectedWallet,
+        chainId: selectedChainId,
+      });
+      messenger.send(`connect:${appHostName}`, {
+        address: selectedWallet,
+        chainId: selectedChainId,
+      });
+      analytics.track(event.dappPromptConnectApproved, {
+        chainId: selectedChainId,
+        dappURL: appHost,
+        dappName: appName,
+      });
+    } catch (e) {
+      logger.info('error connecting to dapp');
+      logger.error(e as RainbowError);
+    } finally {
+      setLoading(false);
+    }
   }, [
     appHostName,
     appHost,
@@ -87,6 +97,7 @@ export const RequestAccounts = ({
           onAcceptRequest={onAcceptRequest}
           onRejectRequest={onRejectRequest}
           appName={appName}
+          loading={loading}
         />
       </Row>
     </Rows>
