@@ -6,6 +6,7 @@ import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import {
   convertAmountToRawAmount,
   convertRawAmountToBalance,
+  handleSignificantDecimals,
   lessThan,
   minus,
 } from '~/core/utils/numbers';
@@ -46,7 +47,7 @@ export const useSwapInputs = ({
 
   const [independentField, setIndependentField] =
     useState<IndependentField>('sellField');
-  const [independetValue, setIndependentValue] = useState<string>('');
+  const [independentValue, setIndependentValue] = useState<string>('');
 
   const setAssetToSellInputValue = useCallback((value: string) => {
     setAssetToSellDropdownClosed(true);
@@ -115,16 +116,23 @@ export const useSwapInputs = ({
   }, [assetToSellMaxValue.amount, setAssetToSellValue]);
 
   const flipAssets = useCallback(() => {
-    if (independentField === 'sellField') {
-      setAssetToSellValue('');
-      setAssetToBuyValue(independetValue);
-      setIndependentField('buyField');
-      focusOnInput(assetToBuyInputRef);
-    } else {
+    const isCrosschainSwap =
+      assetToSell && assetToBuy && assetToSell.chainId !== assetToBuy.chainId;
+    if (isCrosschainSwap) {
       setAssetToBuyValue('');
-      setAssetToSellValue(independetValue);
+      setAssetToSellValue(assetToBuyValue);
       setIndependentField('sellField');
       focusOnInput(assetToSellInputRef);
+    } else if (independentField === 'buyField') {
+      setAssetToBuyValue('');
+      setAssetToSellValue(independentValue);
+      setIndependentField('sellField');
+      focusOnInput(assetToSellInputRef);
+    } else {
+      setAssetToSellValue('');
+      setAssetToBuyValue(independentValue);
+      setIndependentField('buyField');
+      focusOnInput(assetToBuyInputRef);
     }
     setAssetToBuy(assetToSell);
     setAssetToSell(assetToBuy);
@@ -132,14 +140,29 @@ export const useSwapInputs = ({
     setAssetToBuyDropdownClosed(true);
   }, [
     assetToBuy,
+    assetToBuyValue,
     assetToSell,
     independentField,
-    independetValue,
+    independentValue,
     setAssetToBuy,
-    setAssetToBuyValue,
     setAssetToSell,
-    setAssetToSellValue,
   ]);
+
+  const assetToSellDisplay = useMemo(
+    () =>
+      independentField === 'buyField'
+        ? assetToSellValue && handleSignificantDecimals(assetToSellValue, 5)
+        : assetToSellValue,
+    [assetToSellValue, independentField],
+  );
+
+  const assetToBuyDisplay = useMemo(
+    () =>
+      independentField === 'sellField'
+        ? assetToBuyValue && handleSignificantDecimals(assetToBuyValue, 5)
+        : assetToBuyValue,
+    [assetToBuyValue, independentField],
+  );
 
   return {
     assetToBuyInputRef,
@@ -147,6 +170,8 @@ export const useSwapInputs = ({
     assetToSellMaxValue,
     assetToSellValue,
     assetToBuyValue,
+    assetToSellDisplay,
+    assetToBuyDisplay,
     assetToSellDropdownClosed,
     assetToBuyDropdownClosed,
     independentField,
