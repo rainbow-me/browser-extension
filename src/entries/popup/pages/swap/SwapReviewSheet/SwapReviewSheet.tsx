@@ -366,17 +366,15 @@ const SwapReviewSheetWithQuote = ({
           paddingBottom="20px"
         >
           <Stack space="12px">
-            <Box style={{ zIndex: 10 }}>
-              <Navbar
-                title={i18n.t(
-                  `swap.review.${isBridge ? 'title_bridge' : 'title_swap'}`,
-                )}
-                titleTestId="swap-review-title-text"
-                leftComponent={
-                  <Navbar.CloseButton testId="swap-review" onClick={goBack} />
-                }
-              />
-            </Box>
+            <Navbar
+              title={i18n.t(
+                `swap.review.${isBridge ? 'title_bridge' : 'title_swap'}`,
+              )}
+              titleTestId="swap-review-title-text"
+              leftComponent={
+                <Navbar.CloseButton testId="swap-review" onClick={goBack} />
+              }
+            />
 
             <Box>
               <Inline

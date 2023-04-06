@@ -4,9 +4,11 @@ import UnlockSound from 'static/assets/audio/ui_unlock.mp3';
 import { i18n } from '~/core/languages';
 import { Box, Button, Inline, Separator, Symbol, Text } from '~/design-system';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
+import { RainbowError, logger } from '~/logger';
 
 import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 import { PasswordInput } from '../../components/PasswordInput/PasswordInput';
+import { Spinner } from '../../components/Spinner/Spinner';
 import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -16,6 +18,7 @@ export function Unlock() {
   const [password, setPassword] = useState('');
   const navigate = useRainbowNavigate();
   const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const onToggleVisibility = useCallback(() => setVisible(!visible), [visible]);
 
@@ -29,11 +32,18 @@ export function Unlock() {
   const [error, setError] = useState('');
 
   const handleUnlock = useCallback(async () => {
-    if (await wallet.unlock(password)) {
-      new Audio(UnlockSound).play();
-      navigate(ROUTES.HOME, { state: { isBack: true } });
-    } else {
-      setError(i18n.t('passwords.wrong_password'));
+    setLoading(true);
+    try {
+      if (await wallet.unlock(password)) {
+        new Audio(UnlockSound).play();
+        navigate(ROUTES.HOME, { state: { isBack: true } });
+      } else {
+        setError(i18n.t('passwords.wrong_password'));
+      }
+    } catch (e) {
+      logger.info('Unlock error: exception while trying to unlock');
+      logger.error(e as RainbowError);
+      setLoading(false);
     }
   }, [navigate, password]);
 
@@ -121,19 +131,38 @@ export function Unlock() {
               />
             </Box>
             <Box width="fit">
-              <Button
-                color="accent"
-                height="36px"
-                variant="flat"
-                width="full"
-                symbol="arrow.right"
-                symbolSide="right"
-                onClick={handleUnlock}
-                testId="unlock-button"
-                tabIndex={2}
-              >
-                {i18n.t('unlock.unlock')}
-              </Button>
+              {loading ? (
+                <Button
+                  color="accent"
+                  height="36px"
+                  variant="flat"
+                  width="full"
+                  onClick={handleUnlock}
+                  testId="unlock-button"
+                  tabIndex={2}
+                >
+                  <Inline space="6px" alignVertical="center">
+                    <Text color="label" size="16pt" weight="bold">
+                      {i18n.t('unlock.unlock')}
+                    </Text>
+                    <Spinner size={16} color="label" />
+                  </Inline>
+                </Button>
+              ) : (
+                <Button
+                  color="accent"
+                  height="36px"
+                  variant="flat"
+                  width="full"
+                  symbol="arrow.right"
+                  symbolSide="right"
+                  onClick={handleUnlock}
+                  testId="unlock-button"
+                  tabIndex={2}
+                >
+                  {i18n.t('unlock.unlock')}
+                </Button>
+              )}
             </Box>
           </Box>
         </Box>

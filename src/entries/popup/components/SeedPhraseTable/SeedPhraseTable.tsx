@@ -31,6 +31,7 @@ export default function SeedPhraseTable({ seed }: { seed: string }) {
                     textOverflow: 'ellipsis',
                     overflow: 'hidden',
                     whiteSpace: 'nowrap',
+                    paddingRight: '0px',
                   }}
                 >
                   <Inline alignVertical="center" space="10px">
@@ -47,6 +48,7 @@ export default function SeedPhraseTable({ seed }: { seed: string }) {
                       weight="semibold"
                       color="label"
                       align="center"
+                      testId={`seed_word_${index + 1}`}
                     >
                       {word}
                     </Text>
@@ -84,6 +86,7 @@ export default function SeedPhraseTable({ seed }: { seed: string }) {
                     textOverflow: 'ellipsis',
                     overflow: 'hidden',
                     whiteSpace: 'nowrap',
+                    paddingLeft: '0px',
                   }}
                 >
                   <Inline alignVertical="center" space="10px">
@@ -101,6 +104,7 @@ export default function SeedPhraseTable({ seed }: { seed: string }) {
                       weight="semibold"
                       color="label"
                       align="center"
+                      testId={`seed_word_${index + 7}`}
                     >
                       {word}
                     </Text>

@@ -18,6 +18,7 @@ import {
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { EthSymbol } from '~/entries/popup/components/EthSymbol/EthSymbol';
+import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
@@ -253,11 +254,13 @@ export const AcceptRequestButton = ({
   onClick,
   label,
   waitingForDevice,
+  loading = false,
 }: {
   disabled?: boolean;
   onClick: () => void;
   label: string;
   waitingForDevice?: boolean;
+  loading?: boolean;
 }) => {
   return (
     <Button
@@ -270,7 +273,7 @@ export const AcceptRequestButton = ({
       variant={waitingForDevice || disabled ? 'disabled' : 'flat'}
       disabled={disabled}
     >
-      {label}
+      {loading ? <Spinner size={16} color="label" /> : label}
     </Button>
   );
 };
