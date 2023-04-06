@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import { fetchEnsName } from '@wagmi/core';
 import { motion } from 'framer-motion';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
@@ -167,7 +166,7 @@ export function WalletSwitcher() {
   const { hideWallet, unhideWallet } = useHiddenWalletsStore();
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useRainbowNavigate();
-  const { visibleWallets: accounts } = useWallets();
+  const { visibleWallets: accounts, fetchWallets } = useWallets();
   const { avatar } = useAvatar({ address: currentAddress });
 
   const { deleteWalletName } = useWalletNamesStore();
@@ -207,6 +206,7 @@ export function WalletSwitcher() {
           setCurrentAddress(accounts[nextIndex]?.address);
         }
         // This was the last account wipe and send to welcome screen
+        await fetchWallets();
       } else {
         await unhideWallet({ address });
         await wipe();
@@ -214,13 +214,14 @@ export function WalletSwitcher() {
       }
     },
     [
-      accounts,
-      currentAddress,
       deleteWalletName,
+      accounts,
       unhideWallet,
       hideWallet,
-      navigate,
+      currentAddress,
+      fetchWallets,
       setCurrentAddress,
+      navigate,
     ],
   );
   const { walletNames } = useWalletNamesStore();
@@ -237,29 +238,32 @@ export function WalletSwitcher() {
 
   useEffect(() => {
     const getAccountsWithNamesAndEns = async () => {
-      if (accounts.length !== 0)
+      if (accounts.length !== 0) {
         setAccountsWithNamesAndEns(accounts as WalletSearchData[]);
+      }
+      console.log('getAccountsWithNamesAndEns::accounts', accounts);
       const accountsSearchData = await Promise.all(
         accounts.map(async (addressAndType) => {
-          let accountSearchData: WalletSearchData = {
-            ...addressAndType,
-          };
-          const walletName = walletNames[addressAndType.address];
-          if (walletName) {
-            accountSearchData = { ...accountSearchData, walletName };
-          } else {
-            const ensName = (await fetchEnsName({
-              address: addressAndType.address,
-            })) as string;
-            if (ensName) {
-              accountSearchData = { ...accountSearchData, ensName };
+          console.log('looking up pending...', addressAndType);
+          try {
+            let accountSearchData: WalletSearchData = {
+              ...addressAndType,
+            };
+            const walletName = walletNames[addressAndType.address];
+            if (walletName) {
+              accountSearchData = { ...accountSearchData, walletName };
             }
+            return accountSearchData;
+          } catch (e) {
+            console.log('getAccountsWithNamesAndEns error', e);
+            return [] as unknown as WalletSearchData;
           }
-          return accountSearchData;
         }),
       );
-      if (accountsSearchData.length !== 0)
+      if (accountsSearchData.length !== 0) {
+        console.log('setting accountsSearchData', accountsSearchData);
         setAccountsWithNamesAndEns(accountsSearchData);
+      }
     };
     getAccountsWithNamesAndEns();
   }, [accounts, walletNames]);
@@ -369,6 +373,14 @@ export function WalletSwitcher() {
     ) as WalletSearchData[];
     saveWalletOrder(newAccountsWithNamesAndEns.map(({ address }) => address));
   };
+
+  console.log({
+    accounts,
+    accountsWithNamesAndEns,
+    filteredAccounts,
+    filteredAndSortedAccounts,
+    displayedAccounts,
+  });
 
   return (
     <Box height="full">
