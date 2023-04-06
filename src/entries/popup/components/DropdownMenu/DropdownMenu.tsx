@@ -33,7 +33,7 @@ export function DropdownMenuTrigger(props: DropdownMenuTriggerProps) {
     >
       <DropdownMenuPrimitive.Trigger
         asChild={asChild}
-        onPointerDown={(e: React.MouseEvent) => console.log('pointer down', e)}
+        onPointerDown={() => console.log('pointer down')}
       >
         {children}
       </DropdownMenuPrimitive.Trigger>
@@ -47,6 +47,7 @@ interface DropdownMenuContentProps {
   marginRight?: Space;
   accentColor?: string;
   sideOffset?: number;
+  onPointerDownOutside?: () => void;
 }
 
 export function DropdownMenuContent(props: DropdownMenuContentProps) {
@@ -89,7 +90,9 @@ const DropdownMenuContentBody = React.forwardRef<
           borderWidth="1px"
           borderRadius="16px"
           ref={ref}
+          onPointerDownOutside={props?.onPointerDownOutside}
           hideWhenDetached
+          tabIndex={-1}
         >
           {children}
         </Box>

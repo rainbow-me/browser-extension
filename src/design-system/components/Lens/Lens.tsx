@@ -24,11 +24,16 @@ export function Lens({
   onKeyDown,
   tabIndex,
   ...restProps
-}: BoxProps & { children: ReactNode; onKeyDown?: () => void }) {
+}: BoxProps & {
+  children: ReactNode;
+  onKeyDown?: () => void;
+  onClick?: () => void;
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === shortcuts.global.SELECT.key) {
+        e.preventDefault();
         simulatePointerEvent(containerRef);
         onKeyDown?.();
       }

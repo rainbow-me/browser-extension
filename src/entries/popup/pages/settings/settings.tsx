@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
@@ -44,6 +44,8 @@ export function Settings() {
     useCurrentThemeStore();
   const { connectedToHardhat, setConnectedToHardhat } =
     useConnectedToHardhatStore();
+
+  const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
 
   const testSandboxBackground = useCallback(async () => {
     const response = await testSandbox();
@@ -92,116 +94,95 @@ export function Settings() {
     <Box paddingHorizontal="20px">
       <MenuContainer testId="settings-menu-container">
         <Menu>
-          <Lens
-            style={{
-              borderTopRightRadius: 15,
-              borderTopLeftRadius: 15,
-              borderBottomLeftRadius: 6,
-              borderBottomRightRadius: 6,
-            }}
-            onKeyDown={() => {
-              setRainbowAsDefaultWallet(!isDefaultWallet);
-            }}
-          >
-            <MenuItem
-              titleComponent={
-                <MenuItem.Title
-                  text={i18n.t('settings.use_rainbow_as_default_wallet')}
-                />
-              }
-              rightComponent={
-                <Toggle
-                  testId="set-rainbow-default-toggle"
-                  checked={isDefaultWallet}
-                  handleChange={setRainbowAsDefaultWallet}
-                />
-              }
-            />
-          </Lens>
+          <MenuItem
+            first
+            titleComponent={
+              <MenuItem.Title
+                text={i18n.t('settings.use_rainbow_as_default_wallet')}
+              />
+            }
+            rightComponent={
+              <Toggle
+                testId="set-rainbow-default-toggle"
+                checked={isDefaultWallet}
+                handleChange={setRainbowAsDefaultWallet}
+                tabIndex={-1}
+              />
+            }
+            onToggle={() => setRainbowAsDefaultWallet(!isDefaultWallet)}
+          />
           <MenuItem.Description
             text={i18n.t('settings.default_wallet_description')}
           />
         </Menu>
         <Menu>
-          <Lens
-            style={{ borderRadius: 15 }}
-            onKeyDown={() => navigate(ROUTES.SETTINGS__PRIVACY)}
-          >
-            <MenuItem
-              leftComponent={
-                <Symbol
-                  symbol="lock.fill"
-                  weight="medium"
-                  size={18}
-                  color="blue"
-                />
-              }
-              hasRightArrow
-              onClick={() => navigate(ROUTES.SETTINGS__PRIVACY)}
-              titleComponent={
-                <MenuItem.Title
-                  text={i18n.t('settings.privacy_and_security.title')}
-                />
-              }
-            />
-          </Lens>
+          <MenuItem
+            first
+            last
+            leftComponent={
+              <Symbol
+                symbol="lock.fill"
+                weight="medium"
+                size={18}
+                color="blue"
+              />
+            }
+            hasRightArrow
+            onClick={() => navigate(ROUTES.SETTINGS__PRIVACY)}
+            titleComponent={
+              <MenuItem.Title
+                text={i18n.t('settings.privacy_and_security.title')}
+              />
+            }
+          />
         </Menu>
         <Menu>
+          <MenuItem
+            first
+            hasRightArrow
+            leftComponent={
+              <Symbol
+                symbol="bolt.fill"
+                color="red"
+                weight="medium"
+                size={18}
+              />
+            }
+            onClick={() => navigate(ROUTES.SETTINGS__TRANSACTIONS)}
+            titleComponent={
+              <MenuItem.Title text={i18n.t('settings.transactions.title')} />
+            }
+            testId="settings-transactions"
+          />
+          <MenuItem
+            hasRightArrow
+            leftComponent={
+              <Box style={{ width: 18 }}>
+                <Text color="green" size="20pt" weight="regular">
+                  {supportedCurrencies[currentCurrency].glyph}
+                </Text>
+              </Box>
+            }
+            onClick={() => navigate(ROUTES.SETTINGS__CURRENCY)}
+            rightComponent={
+              <MenuItem.Selection
+                text={supportedCurrencies[currentCurrency].label}
+              />
+            }
+            titleComponent={
+              <MenuItem.Title text={i18n.t('settings.currency.title')} />
+            }
+          />
           <Lens
-            style={{
-              borderTopRightRadius: 15,
-              borderTopLeftRadius: 15,
-              borderBottomLeftRadius: 6,
-              borderBottomRightRadius: 6,
-            }}
-            onKeyDown={() => navigate(ROUTES.SETTINGS__TRANSACTIONS)}
+            borderRadius="6px"
+            onKeyDown={() => setThemeDropdownOpen(true)}
+            onClick={() => setThemeDropdownOpen(true)}
           >
-            <MenuItem
-              hasRightArrow
-              leftComponent={
-                <Symbol
-                  symbol="bolt.fill"
-                  color="red"
-                  weight="medium"
-                  size={18}
-                />
-              }
-              onClick={() => navigate(ROUTES.SETTINGS__TRANSACTIONS)}
-              titleComponent={
-                <MenuItem.Title text={i18n.t('settings.transactions.title')} />
-              }
-              testId="settings-transactions"
-            />
-          </Lens>
-          <Lens
-            style={{
-              borderRadius: 6,
-            }}
-            onKeyDown={() => navigate(ROUTES.SETTINGS__CURRENCY)}
-          >
-            <MenuItem
-              hasRightArrow
-              leftComponent={
-                <Box style={{ width: 18 }}>
-                  <Text color="green" size="20pt" weight="regular">
-                    {supportedCurrencies[currentCurrency].glyph}
-                  </Text>
-                </Box>
-              }
-              onClick={() => navigate(ROUTES.SETTINGS__CURRENCY)}
-              rightComponent={
-                <MenuItem.Selection
-                  text={supportedCurrencies[currentCurrency].label}
-                />
-              }
-              titleComponent={
-                <MenuItem.Title text={i18n.t('settings.currency.title')} />
-              }
-            />
-          </Lens>
-          <Lens style={{ borderRadius: 6 }}>
             <SwitchMenu
               align="end"
+              controlled
+              onClose={() => setThemeDropdownOpen(false)}
+              open={themeDropdownOpen}
               renderMenuTrigger={
                 <MenuItem
                   hasChevron
@@ -266,6 +247,7 @@ export function Settings() {
             />
           </Lens>
           <MenuItem
+            last
             leftComponent={
               <Symbol
                 symbol="person.text.rectangle.fill"
@@ -283,6 +265,7 @@ export function Settings() {
         </Menu>
         <Menu>
           <MenuItem
+            first
             leftComponent={<MenuItem.TextIcon icon="🌈" />}
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.share_rainbow')} />
@@ -328,6 +311,7 @@ export function Settings() {
             onClick={() => window.open(RAINBOW_TWITTER_URL, '_blank')}
           />
           <MenuItem
+            last
             leftComponent={<MenuItem.TextIcon icon="💬" />}
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.feedback_and_support')} />
@@ -357,6 +341,7 @@ export function Settings() {
               testId="test-sandbox-background"
             />
             <MenuItem
+              last
               titleComponent={
                 <MenuItem.Title
                   text={
@@ -377,6 +362,7 @@ export function Settings() {
             <MenuItem.Description text="Feature Flags" />
             {Object.keys(featureFlags).map((key, i) => (
               <MenuItem
+                last={Object.keys(featureFlags).length - 1 === i}
                 key={i}
                 titleComponent={
                   <MenuItem.Title
@@ -385,6 +371,7 @@ export function Settings() {
                 }
                 rightComponent={
                   <Toggle
+                    tabIndex={-1}
                     testId={`feature-flag-${key}`}
                     checked={featureFlags[key as FeatureFlagTypes]}
                     handleChange={() =>
@@ -392,6 +379,7 @@ export function Settings() {
                     }
                   />
                 }
+                onToggle={() => toggleFeatureFlag(key as FeatureFlagTypes)}
               />
             ))}
           </Menu>

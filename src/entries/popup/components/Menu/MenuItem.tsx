@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Address } from 'wagmi';
 
 import {
@@ -9,6 +9,7 @@ import {
   Text,
   TextOverflow,
 } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { TextStyles } from '~/design-system/styles/core.css';
 
 import AddressPill from '../AddressPill/AddressPill';
@@ -133,16 +134,21 @@ interface MenuItemProps {
   leftComponent?: React.ReactNode;
   hasRightArrow?: boolean;
   onClick?: () => void;
+  onToggle?: () => void;
   titleComponent: React.ReactNode;
   labelComponent?: React.ReactNode;
   disabled?: boolean;
   hasChevron?: boolean;
   testId?: string;
+  first?: boolean;
+  last?: boolean;
+  tabIndex?: number;
 }
 
 const MenuItem = ({
   hasRightArrow,
   onClick,
+  onToggle,
   leftComponent,
   rightComponent,
   titleComponent,
@@ -150,59 +156,102 @@ const MenuItem = ({
   disabled,
   hasChevron,
   testId,
-}: MenuItemProps) => (
-  <Box
-    justifyContent="center"
-    paddingHorizontal="16px"
-    paddingVertical="16px"
-    testId={testId}
-    width="full"
-    onClick={onClick}
-    style={{
-      cursor: disabled ? 'default' : 'pointer',
-    }}
-  >
-    <Box
-      flexDirection="column"
-      alignItems="center"
-      justifyContent="center"
-      style={{ height: 18 }}
+  first,
+  last,
+  tabIndex,
+}: MenuItemProps) => {
+  const handleKeyDown = useCallback(() => {
+    onClick?.();
+    onToggle?.();
+  }, [onClick, onToggle]);
+  return (
+    <Lens
+      onKeyDown={handleKeyDown}
+      style={{
+        borderRadius: 6,
+        ...(first
+          ? {
+              borderTopRightRadius: 15,
+              borderTopLeftRadius: 15,
+            }
+          : {}),
+        ...(last
+          ? {
+              borderBottomRightRadius: 15,
+              borderBottomLeftRadius: 15,
+            }
+          : {}),
+      }}
+      tabIndex={tabIndex}
     >
-      <Inline alignHorizontal="justify" alignVertical="center" height="full">
-        <Inline alignVertical="center" space="16px" height="full" wrap={false}>
-          {leftComponent && (
-            <Box alignItems="center" justifyContent="center">
-              {leftComponent}
-            </Box>
-          )}
-          <Stack space="8px">
-            {titleComponent}
-            {labelComponent}
-          </Stack>
-        </Inline>
-        <Inline alignVertical="center" space="8px" height="full" wrap={false}>
-          {rightComponent}
-          {hasRightArrow && (
-            <Symbol
-              symbol="chevron.right"
-              size={10}
-              color="labelTertiary"
-              weight="semibold"
-            />
-          )}
-          {hasChevron && (
-            <Symbol
-              symbol="chevron.up.chevron.down"
-              size={12}
-              color="labelTertiary"
-              weight="semibold"
-            />
-          )}
-        </Inline>
-      </Inline>
-    </Box>
-  </Box>
-);
+      <Box
+        justifyContent="center"
+        paddingHorizontal="16px"
+        paddingVertical="16px"
+        testId={testId}
+        width="full"
+        onClick={onClick}
+        style={{
+          cursor: disabled ? 'default' : 'pointer',
+        }}
+      >
+        <Box
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          style={{ height: 18 }}
+        >
+          <Inline
+            alignHorizontal="justify"
+            alignVertical="center"
+            height="full"
+          >
+            <Inline
+              alignVertical="center"
+              space="16px"
+              height="full"
+              wrap={false}
+            >
+              {leftComponent && (
+                <Box alignItems="center" justifyContent="center">
+                  {leftComponent}
+                </Box>
+              )}
+              <Stack space="8px">
+                {titleComponent}
+                {labelComponent}
+              </Stack>
+            </Inline>
+            <Inline
+              alignVertical="center"
+              space="8px"
+              height="full"
+              wrap={false}
+            >
+              {rightComponent}
+              {hasRightArrow && (
+                <Symbol
+                  symbol="chevron.right"
+                  size={10}
+                  color="labelTertiary"
+                  weight="semibold"
+                />
+              )}
+              {hasChevron && (
+                <Symbol
+                  symbol="chevron.up.chevron.down"
+                  size={12}
+                  color="labelTertiary"
+                  weight="semibold"
+                />
+              )}
+            </Inline>
+          </Inline>
+        </Box>
+      </Box>
+    </Lens>
+  );
+};
 
 MenuItem.Label = Label;
 MenuItem.Selection = Selection;

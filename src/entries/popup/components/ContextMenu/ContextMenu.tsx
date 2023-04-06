@@ -47,6 +47,7 @@ export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
           }
           props.onTrigger?.();
         }}
+        onPointerDown={() => console.log('pointer down')}
       >
         {children}
       </ContextMenuPrimitive.Trigger>
