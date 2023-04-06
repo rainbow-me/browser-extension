@@ -153,11 +153,12 @@ describe('App interactions flow', () => {
     const address = await findElementByText(driver, '0xf39F...2266');
     expect(address).toBeTruthy();
 
-    await delayTime('medium');
+    await delayTime('long');
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
     await driver.switchTo().window(dappHandler);
 
+    await delayTime('long');
     const personalSignData = await querySelector(
       driver,
       '[id="personalSignResult"]',
@@ -190,8 +191,9 @@ describe('App interactions flow', () => {
     const address = await findElementByText(driver, '0xf39F...2266');
     expect(address).toBeTruthy();
 
-    await delayTime('medium');
+    await delayTime('long');
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
+    await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
 
@@ -239,6 +241,7 @@ describe('App interactions flow', () => {
       driver,
       '[id="signTypedDataV4Verify"]',
     );
+    await delayTime('long');
     await waitAndClick(verifyButton, driver);
 
     const result = await getTextFromDappText({
