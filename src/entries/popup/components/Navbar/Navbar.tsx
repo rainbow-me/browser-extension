@@ -4,6 +4,7 @@ import { To, useLocation, useNavigate } from 'react-router-dom';
 
 import { Box, Button, ButtonSymbol, Inline, Text } from '~/design-system';
 import { ButtonSymbolProps } from '~/design-system/components/ButtonSymbol/ButtonSymbol';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { BackgroundColor } from '~/design-system/styles/designTokens';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
@@ -51,7 +52,7 @@ export function Navbar({
           height="full"
           id="navbar-left-component"
         >
-          {leftComponent}
+          <Lens>{leftComponent}</Lens>
         </Box>
       )}
       {title ? (

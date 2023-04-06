@@ -24,5 +24,9 @@ export const shortcuts = {
       display: 'Esc', // not currently displayed in any UI
       key: 'Escape',
     },
+    SELECT: {
+      display: 'Enter', // not currently displayed in any UI
+      key: 'Enter',
+    },
   },
 };
