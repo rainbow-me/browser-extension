@@ -205,9 +205,10 @@ export function WalletSwitcher() {
               : deletedIndex + 1;
           setCurrentAddress(accounts[nextIndex]?.address);
         }
-        // This was the last account wipe and send to welcome screen
+        // fetch the wallets from the keychain again
         await fetchWallets();
       } else {
+        // This was the last account wipe and send to welcome screen
         await unhideWallet({ address });
         await wipe();
         navigate(ROUTES.WELCOME);
