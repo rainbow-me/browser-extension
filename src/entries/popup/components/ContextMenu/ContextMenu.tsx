@@ -5,7 +5,7 @@ import { useAccount } from 'wagmi';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { AccentColorProvider, Box, Text, ThemeProvider } from '~/design-system';
-import { focusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
+import { menuFocuseVisibleStyle } from '~/design-system/components/Lens/Lens.css';
 import { TextStyles, boxStyles } from '~/design-system/styles/core.css';
 import {
   BackgroundColor,
@@ -138,6 +138,7 @@ export const ContextMenuItem = (props: ContextMenuItemProps) => {
   return (
     <Box
       as={ContextMenuPrimitive.Item}
+      className={menuFocuseVisibleStyle}
       paddingVertical="8px"
       paddingHorizontal="8px"
       marginHorizontal="-8px"
@@ -169,10 +170,6 @@ export const ContextMenuRadioItem = (props: ContextMenuRadioItemProps) => {
   const { children, value, selectedValue, selectedColor } = props;
   const isSelectedValue = selectedValue === value;
   const containerRef = useRef<HTMLDivElement>(null);
-  const itemData = containerRef?.current?.dataset || {};
-  const highlighted = itemData?.highlighted;
-  console.log('item data: ', itemData);
-  console.log('highlighted: ', highlighted);
   return (
     <Box
       as={ContextMenuPrimitive.RadioItem}
@@ -187,7 +184,7 @@ export const ContextMenuRadioItem = (props: ContextMenuRadioItemProps) => {
           borderRadius: '12px',
           outline: 'none',
         }),
-        focusVisibleStyle,
+        menuFocuseVisibleStyle,
       ])}
       background={{
         default: isSelectedValue

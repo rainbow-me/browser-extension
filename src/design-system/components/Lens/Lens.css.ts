@@ -10,9 +10,15 @@ export const focusVisibleStyle = style({
     '&:focus': {
       backgroundColor: transparentAccentColorAsHsl,
       outline: '1px solid',
-      outlineOffset: '2px',
       outlineColor: accentColorAsHsl,
-      outlineStyle: 'solid',
+    },
+  },
+});
+
+export const menuFocuseVisibleStyle = style({
+  selectors: {
+    '&:focus': {
+      backgroundColor: transparentAccentColorAsHsl,
     },
   },
 });

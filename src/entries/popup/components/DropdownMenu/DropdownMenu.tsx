@@ -1,9 +1,11 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
+import clsx from 'clsx';
 import React, { CSSProperties, ReactNode } from 'react';
 import { useAccount } from 'wagmi';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { AccentColorProvider, Box, Text, ThemeProvider } from '~/design-system';
+import { menuFocuseVisibleStyle } from '~/design-system/components/Lens/Lens.css';
 import { TextStyles } from '~/design-system/styles/core.css';
 import {
   BackgroundColor,
@@ -29,7 +31,10 @@ export function DropdownMenuTrigger(props: DropdownMenuTriggerProps) {
     <AccentColorProvider
       color={accentColor || avatar?.color || globalColors.blue60}
     >
-      <DropdownMenuPrimitive.Trigger asChild={asChild}>
+      <DropdownMenuPrimitive.Trigger
+        asChild={asChild}
+        onPointerDown={(e: React.MouseEvent) => console.log('pointer down', e)}
+      >
         {children}
       </DropdownMenuPrimitive.Trigger>
     </AccentColorProvider>
@@ -166,11 +171,12 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
       paddingHorizontal="8px"
       marginHorizontal="-8px"
       alignItems="center"
-      className={
+      className={clsx([
         highlightAccentColor && !isSelectedValue
           ? rowTransparentAccentHighlight
-          : null
-      }
+          : null,
+        !isSelectedValue && menuFocuseVisibleStyle,
+      ])}
       style={{
         display: 'flex',
         borderRadius: '12px',

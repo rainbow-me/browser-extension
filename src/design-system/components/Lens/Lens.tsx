@@ -14,7 +14,6 @@ function simulatePointerEvent(ref: React.RefObject<HTMLDivElement>) {
       bubbles: true,
       clientX: box.left + (box.right - box.left) / 2,
       clientY: box.top + (box.bottom - box.top) / 2,
-      view: window,
     });
     el.dispatchEvent(e);
   }
@@ -22,20 +21,19 @@ function simulatePointerEvent(ref: React.RefObject<HTMLDivElement>) {
 
 export function Lens({
   children,
-  forceClick,
+  onKeyDown,
   tabIndex,
   ...restProps
-}: BoxProps & { children: ReactNode; forceClick?: boolean }) {
+}: BoxProps & { children: ReactNode; onKeyDown?: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === shortcuts.global.SELECT.key) {
-        if (forceClick) {
-          simulatePointerEvent(containerRef);
-        }
+        simulatePointerEvent(containerRef);
+        onKeyDown?.();
       }
     },
-    [forceClick],
+    [onKeyDown],
   );
   return (
     <Box

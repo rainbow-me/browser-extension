@@ -20,6 +20,7 @@ import {
 import { useIsDefaultWalletStore } from '~/core/state/currentSettings/isDefaultWallet';
 import { ThemeOption } from '~/core/types/settings';
 import { Box, Inline, Symbol, Text } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
@@ -91,141 +92,179 @@ export function Settings() {
     <Box paddingHorizontal="20px">
       <MenuContainer testId="settings-menu-container">
         <Menu>
-          <MenuItem
-            titleComponent={
-              <MenuItem.Title
-                text={i18n.t('settings.use_rainbow_as_default_wallet')}
-              />
-            }
-            rightComponent={
-              <Toggle
-                testId="set-rainbow-default-toggle"
-                checked={isDefaultWallet}
-                handleChange={setRainbowAsDefaultWallet}
-              />
-            }
-          />
+          <Lens
+            style={{
+              borderTopRightRadius: 15,
+              borderTopLeftRadius: 15,
+              borderBottomLeftRadius: 6,
+              borderBottomRightRadius: 6,
+            }}
+            onKeyDown={() => {
+              setRainbowAsDefaultWallet(!isDefaultWallet);
+            }}
+          >
+            <MenuItem
+              titleComponent={
+                <MenuItem.Title
+                  text={i18n.t('settings.use_rainbow_as_default_wallet')}
+                />
+              }
+              rightComponent={
+                <Toggle
+                  testId="set-rainbow-default-toggle"
+                  checked={isDefaultWallet}
+                  handleChange={setRainbowAsDefaultWallet}
+                />
+              }
+            />
+          </Lens>
           <MenuItem.Description
             text={i18n.t('settings.default_wallet_description')}
           />
         </Menu>
         <Menu>
-          <MenuItem
-            leftComponent={
-              <Symbol
-                symbol="lock.fill"
-                weight="medium"
-                size={18}
-                color="blue"
-              />
-            }
-            hasRightArrow
-            onClick={() => navigate(ROUTES.SETTINGS__PRIVACY)}
-            titleComponent={
-              <MenuItem.Title
-                text={i18n.t('settings.privacy_and_security.title')}
-              />
-            }
-          />
+          <Lens
+            style={{ borderRadius: 15 }}
+            onKeyDown={() => navigate(ROUTES.SETTINGS__PRIVACY)}
+          >
+            <MenuItem
+              leftComponent={
+                <Symbol
+                  symbol="lock.fill"
+                  weight="medium"
+                  size={18}
+                  color="blue"
+                />
+              }
+              hasRightArrow
+              onClick={() => navigate(ROUTES.SETTINGS__PRIVACY)}
+              titleComponent={
+                <MenuItem.Title
+                  text={i18n.t('settings.privacy_and_security.title')}
+                />
+              }
+            />
+          </Lens>
         </Menu>
         <Menu>
-          <MenuItem
-            hasRightArrow
-            leftComponent={
-              <Symbol
-                symbol="bolt.fill"
-                color="red"
-                weight="medium"
-                size={18}
-              />
-            }
-            onClick={() => navigate(ROUTES.SETTINGS__TRANSACTIONS)}
-            titleComponent={
-              <MenuItem.Title text={i18n.t('settings.transactions.title')} />
-            }
-            testId="settings-transactions"
-          />
-          <MenuItem
-            hasRightArrow
-            leftComponent={
-              <Box style={{ width: 18 }}>
-                <Text color="green" size="20pt" weight="regular">
-                  {supportedCurrencies[currentCurrency].glyph}
-                </Text>
-              </Box>
-            }
-            onClick={() => navigate(ROUTES.SETTINGS__CURRENCY)}
-            rightComponent={
-              <MenuItem.Selection
-                text={supportedCurrencies[currentCurrency].label}
-              />
-            }
-            titleComponent={
-              <MenuItem.Title text={i18n.t('settings.currency.title')} />
-            }
-          />
-          <SwitchMenu
-            align="end"
-            renderMenuTrigger={
-              <MenuItem
-                hasChevron
-                leftComponent={
-                  <Symbol
-                    symbol={currentTheme === 'light' ? 'sun.max' : 'moon.stars'}
-                    color={themeOptions[currentTheme as ThemeOption].color}
-                    size={18}
-                    weight="medium"
-                  />
-                }
-                rightComponent={
-                  <MenuItem.Selection
-                    text={
-                      themeOptions[currentUserSelectedTheme as ThemeOption]
-                        .label
-                    }
-                  />
-                }
-                titleComponent={
-                  <MenuItem.Title text={i18n.t('settings.theme.title')} />
-                }
-              />
-            }
-            menuItemIndicator={
-              <Symbol
-                symbol="checkmark"
-                color="label"
-                size={12}
-                weight="semibold"
-              />
-            }
-            renderMenuItem={(option, i) => {
-              const { label, symbol, color } =
-                themeOptions[option as ThemeOption];
-
-              return (
-                <Box id={`switch-option-item-${i}`}>
-                  <Inline space="8px" alignVertical="center">
-                    <Inline alignVertical="center" space="8px">
-                      <Symbol
-                        size={14}
-                        symbol={symbol}
-                        color={color}
-                        weight="semibold"
-                      />
-                    </Inline>
-                    <Text weight="regular" size="14pt">
-                      {label}
-                    </Text>
-                  </Inline>
+          <Lens
+            style={{
+              borderTopRightRadius: 15,
+              borderTopLeftRadius: 15,
+              borderBottomLeftRadius: 6,
+              borderBottomRightRadius: 6,
+            }}
+            onKeyDown={() => navigate(ROUTES.SETTINGS__TRANSACTIONS)}
+          >
+            <MenuItem
+              hasRightArrow
+              leftComponent={
+                <Symbol
+                  symbol="bolt.fill"
+                  color="red"
+                  weight="medium"
+                  size={18}
+                />
+              }
+              onClick={() => navigate(ROUTES.SETTINGS__TRANSACTIONS)}
+              titleComponent={
+                <MenuItem.Title text={i18n.t('settings.transactions.title')} />
+              }
+              testId="settings-transactions"
+            />
+          </Lens>
+          <Lens
+            style={{
+              borderRadius: 6,
+            }}
+            onKeyDown={() => navigate(ROUTES.SETTINGS__CURRENCY)}
+          >
+            <MenuItem
+              hasRightArrow
+              leftComponent={
+                <Box style={{ width: 18 }}>
+                  <Text color="green" size="20pt" weight="regular">
+                    {supportedCurrencies[currentCurrency].glyph}
+                  </Text>
                 </Box>
-              );
-            }}
-            menuItems={Object.keys(themeOptions)}
-            selectedValue={currentUserSelectedTheme}
-            onValueChange={(value) => {
-              setCurrentTheme(value as ThemeOption);
-            }}
-          />
+              }
+              onClick={() => navigate(ROUTES.SETTINGS__CURRENCY)}
+              rightComponent={
+                <MenuItem.Selection
+                  text={supportedCurrencies[currentCurrency].label}
+                />
+              }
+              titleComponent={
+                <MenuItem.Title text={i18n.t('settings.currency.title')} />
+              }
+            />
+          </Lens>
+          <Lens style={{ borderRadius: 6 }}>
+            <SwitchMenu
+              align="end"
+              renderMenuTrigger={
+                <MenuItem
+                  hasChevron
+                  leftComponent={
+                    <Symbol
+                      symbol={
+                        currentTheme === 'light' ? 'sun.max' : 'moon.stars'
+                      }
+                      color={themeOptions[currentTheme as ThemeOption].color}
+                      size={18}
+                      weight="medium"
+                    />
+                  }
+                  rightComponent={
+                    <MenuItem.Selection
+                      text={
+                        themeOptions[currentUserSelectedTheme as ThemeOption]
+                          .label
+                      }
+                    />
+                  }
+                  titleComponent={
+                    <MenuItem.Title text={i18n.t('settings.theme.title')} />
+                  }
+                />
+              }
+              menuItemIndicator={
+                <Symbol
+                  symbol="checkmark"
+                  color="label"
+                  size={12}
+                  weight="semibold"
+                />
+              }
+              renderMenuItem={(option, i) => {
+                const { label, symbol, color } =
+                  themeOptions[option as ThemeOption];
+
+                return (
+                  <Box id={`switch-option-item-${i}`}>
+                    <Inline space="8px" alignVertical="center">
+                      <Inline alignVertical="center" space="8px">
+                        <Symbol
+                          size={14}
+                          symbol={symbol}
+                          color={color}
+                          weight="semibold"
+                        />
+                      </Inline>
+                      <Text weight="regular" size="14pt">
+                        {label}
+                      </Text>
+                    </Inline>
+                  </Box>
+                );
+              }}
+              menuItems={Object.keys(themeOptions)}
+              selectedValue={currentUserSelectedTheme}
+              onValueChange={(value) => {
+                setCurrentTheme(value as ThemeOption);
+              }}
+            />
+          </Lens>
           <MenuItem
             leftComponent={
               <Symbol

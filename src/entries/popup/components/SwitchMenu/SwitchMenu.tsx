@@ -22,6 +22,7 @@ interface SwitchMenuProps {
   menuItems: string[];
   align?: 'start' | 'center' | 'end';
   onOpenChange?: (open: boolean) => void;
+  open?: boolean;
 }
 
 export const SwitchMenu = ({

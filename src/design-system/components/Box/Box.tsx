@@ -41,6 +41,7 @@ export type BoxProps = Omit<BoxStyles, 'background'> & {
   testId?: string;
   onKeyDown?: React.KeyboardEventHandler;
   tabIndex?: number;
+  style?: React.CSSProperties;
 };
 
 type PolymorphicBox = Polymorphic.ForwardRefComponent<'div', BoxProps>;
