@@ -5,7 +5,7 @@ import { useAccount } from 'wagmi';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { AccentColorProvider, Box, Text, ThemeProvider } from '~/design-system';
-import { menuFocuseVisibleStyle } from '~/design-system/components/Lens/Lens.css';
+import { menuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
 import { TextStyles, boxStyles } from '~/design-system/styles/core.css';
 import {
   BackgroundColor,
@@ -47,7 +47,6 @@ export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
           }
           props.onTrigger?.();
         }}
-        onPointerDown={() => console.log('pointer down')}
       >
         {children}
       </ContextMenuPrimitive.Trigger>
@@ -139,7 +138,7 @@ export const ContextMenuItem = (props: ContextMenuItemProps) => {
   return (
     <Box
       as={ContextMenuPrimitive.Item}
-      className={menuFocuseVisibleStyle}
+      className={menuFocusVisibleStyle}
       paddingVertical="8px"
       paddingHorizontal="8px"
       marginHorizontal="-8px"
@@ -185,7 +184,7 @@ export const ContextMenuRadioItem = (props: ContextMenuRadioItemProps) => {
           borderRadius: '12px',
           outline: 'none',
         }),
-        menuFocuseVisibleStyle,
+        menuFocusVisibleStyle,
       ])}
       background={{
         default: isSelectedValue

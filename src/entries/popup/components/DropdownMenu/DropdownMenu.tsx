@@ -31,10 +31,7 @@ export function DropdownMenuTrigger(props: DropdownMenuTriggerProps) {
     <AccentColorProvider
       color={accentColor || avatar?.color || globalColors.blue60}
     >
-      <DropdownMenuPrimitive.Trigger
-        asChild={asChild}
-        onPointerDown={() => console.log('pointer down')}
-      >
+      <DropdownMenuPrimitive.Trigger asChild={asChild}>
         {children}
       </DropdownMenuPrimitive.Trigger>
     </AccentColorProvider>
