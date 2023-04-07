@@ -147,7 +147,7 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
-    await delayTime('medium');
+    await delayTime('long');
     const message = await findElementByTestId({ id: 'text-area', driver });
     expect(message).toBeTruthy();
 
@@ -186,7 +186,7 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
-    await delayTime('medium');
+    await delayTime('long');
     const message = await findElementByTestId({ id: 'text-area', driver });
     expect(message).toBeTruthy();
 
@@ -228,7 +228,7 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
-    await delayTime('medium');
+    await delayTime('long');
     const message = await findElementByTestId({ id: 'text-area', driver });
     expect(message).toBeTruthy();
 
