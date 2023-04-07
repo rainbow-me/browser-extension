@@ -185,6 +185,7 @@ export function Settings() {
               open={themeDropdownOpen}
               renderMenuTrigger={
                 <MenuItem
+                  tabIndex={-1}
                   hasChevron
                   leftComponent={
                     <Symbol
