@@ -147,7 +147,7 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
-    await delayTime('long');
+    await delayTime('medium');
     const message = await findElementByTestId({ id: 'text-area', driver });
     expect(message).toBeTruthy();
 
@@ -155,10 +155,10 @@ describe('App interactions flow', () => {
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('long');
+    await delayTime('medium');
 
     await driver.switchTo().window(dappHandler);
-    await delayTime('long');
+    await delayTime('medium');
 
     const personalSignData = await querySelector(
       driver,
@@ -186,7 +186,7 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
-    await delayTime('long');
+    await delayTime('medium');
     const message = await findElementByTestId({ id: 'text-area', driver });
     expect(message).toBeTruthy();
 
@@ -194,10 +194,10 @@ describe('App interactions flow', () => {
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('long');
+    await delayTime('medium');
 
     await driver.switchTo().window(dappHandler);
-    await delayTime('long');
+    await delayTime('medium');
 
     const verifyButton = await querySelector(
       driver,
@@ -228,7 +228,7 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
-    await delayTime('long');
+    await delayTime('medium');
     const message = await findElementByTestId({ id: 'text-area', driver });
     expect(message).toBeTruthy();
 
@@ -236,10 +236,10 @@ describe('App interactions flow', () => {
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('long');
+    await delayTime('medium');
 
     await driver.switchTo().window(dappHandler);
-    await delayTime('long');
+    await delayTime('medium');
 
     const verifyButton = await querySelector(
       driver,
