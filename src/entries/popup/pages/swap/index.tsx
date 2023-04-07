@@ -7,6 +7,7 @@ import { useGasStore } from '~/core/state';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { getQuoteServiceTime } from '~/core/utils/swaps';
 import {
   Box,
   Button,
@@ -204,6 +205,8 @@ export function Swap() {
     assetToSellMaxValue,
     assetToBuyValue,
     assetToSellValue,
+    assetToBuyDisplay,
+    assetToSellDisplay,
     assetToSellDropdownClosed,
     assetToBuyDropdownClosed,
     independentField,
@@ -223,7 +226,11 @@ export function Swap() {
     setAssetToBuy,
   });
 
-  const { data: quote, isLoading } = useSwapQuote({
+  const {
+    data: quote,
+    isLoading,
+    isCrosschainSwap,
+  } = useSwapQuote({
     assetToSell,
     assetToBuy,
     assetToSellValue,
@@ -342,7 +349,7 @@ export function Swap() {
         quote={quote}
         flashbotsEnabled={flashbotsEnabledGlobally}
         hideSwapReview={hideSwapReviewSheet}
-        assetToSellValue={assetToSellValue}
+        assetToSellValue={assetToSellDisplay}
       />
       <ExplainerSheet
         show={explainerSheetParams.show}
@@ -392,7 +399,7 @@ export function Swap() {
                   placeholder={i18n.t('swap.input_token_to_swap_placeholder')}
                   assetToSellMaxValue={assetToSellMaxValue}
                   setAssetToSellMaxValue={setAssetToSellMaxValue}
-                  assetToSellValue={assetToSellValue}
+                  assetToSellValue={assetToSellDisplay}
                   setAssetToSellInputValue={setAssetToSellInputValue}
                   inputRef={assetToSellInputRef}
                   openDropdownOnMount={inputToOpenOnMount === 'sell'}
@@ -455,10 +462,11 @@ export function Swap() {
                   outputChainId={outputChainId}
                   assetFilter={assetToBuyFilter}
                   setAssetFilter={setAssetToBuyFilter}
-                  assetToBuyValue={assetToBuyValue}
+                  assetToBuyValue={assetToBuyDisplay}
                   setAssetToBuyInputValue={setAssetToBuyInputValue}
                   inputRef={assetToBuyInputRef}
                   openDropdownOnMount={inputToOpenOnMount === 'buy'}
+                  inputDisabled={isCrosschainSwap}
                 />
               </AccentColorProviderWrapper>
               <SwapWarning
@@ -489,6 +497,9 @@ export function Swap() {
                         enabled={!inReviewSheet}
                         defaultSpeed={selectedGas.option}
                         flashbotsEnabled={flashbotsEnabledGlobally}
+                        quoteServiceTime={getQuoteServiceTime({
+                          quote: quote as CrosschainQuote,
+                        })}
                       />
                     </Row>
                     <Row>
