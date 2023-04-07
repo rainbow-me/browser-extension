@@ -15,7 +15,7 @@ export const focusVisibleStyle = style({
   },
 });
 
-export const menuFocuseVisibleStyle = style({
+export const menuFocusVisibleStyle = style({
   selectors: {
     '&:focus': {
       backgroundColor: transparentAccentColorAsHsl,

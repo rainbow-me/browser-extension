@@ -5,8 +5,8 @@ import { useAccount } from 'wagmi';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { AccentColorProvider, Box, Text, ThemeProvider } from '~/design-system';
-import { menuFocuseVisibleStyle } from '~/design-system/components/Lens/Lens.css';
-import { TextStyles } from '~/design-system/styles/core.css';
+import { menuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
+import { TextStyles, boxStyles } from '~/design-system/styles/core.css';
 import {
   BackgroundColor,
   Space,
@@ -132,17 +132,21 @@ export const DropdownMenuItem = (props: DropdownMenuItemProps) => {
       paddingVertical="8px"
       paddingHorizontal="8px"
       marginHorizontal="-8px"
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        borderRadius: '12px',
-        outline: 'none',
-      }}
+      className={clsx([
+        boxStyles({
+          display: 'flex',
+          alignItems: 'center',
+          borderRadius: '12px',
+          outline: 'none',
+        }),
+        menuFocusVisibleStyle,
+      ])}
       onSelect={onSelect}
       background={{
         default: 'transparent',
         hover: 'surfaceSecondary',
       }}
+      tabIndex={0}
     >
       {children}
     </Box>
@@ -178,7 +182,7 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
         highlightAccentColor && !isSelectedValue
           ? rowTransparentAccentHighlight
           : null,
-        !isSelectedValue && menuFocuseVisibleStyle,
+        !isSelectedValue && menuFocusVisibleStyle,
       ])}
       style={{
         display: 'flex',
