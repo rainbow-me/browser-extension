@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 import { useAccount, useEnsAvatar } from 'wagmi';
 
 import { Box, Inline, Symbol, TextOverflow } from '~/design-system';
-import { accentColorAsHsl } from '~/design-system/styles/core.css';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { transformScales } from '~/design-system/styles/designTokens';
 
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -42,48 +42,52 @@ export function AccountName({
   }, [navigate]);
 
   return (
-    <Box
-      as={motion.div}
-      id={`${id ?? ''}-account-name-shuffle`}
-      onClick={handleClick}
-      tabIndex={
-        includeAvatar ? undefined : tabIndexes.WALLET_HEADER_ACCOUNT_NAME
-      }
-      style={{
-        outlineColor: accentColorAsHsl,
-        borderRadius: 6,
-      }}
-      whileHover={{ scale: transformScales['1.04'] }}
-      whileTap={{ scale: transformScales['0.96'] }}
-      onHoverStart={() => setHover(true)}
-      onHoverEnd={() => setHover(false)}
+    <Lens
+      tabIndex={includeAvatar ? -1 : tabIndexes.WALLET_HEADER_ACCOUNT_NAME}
+      onKeyDown={handleClick}
+      borderRadius="6px"
+      style={{ padding: includeAvatar ? 0 : 2 }}
     >
-      <Inline alignVertical="center" space="4px">
+      <Box
+        as={motion.div}
+        id={`${id ?? ''}-account-name-shuffle`}
+        onClick={handleClick}
+        tabIndex={
+          includeAvatar ? undefined : tabIndexes.WALLET_HEADER_ACCOUNT_NAME
+        }
+        whileHover={{ scale: transformScales['1.04'] }}
+        whileTap={{ scale: transformScales['0.96'] }}
+        onHoverStart={() => setHover(true)}
+        onHoverEnd={() => setHover(false)}
+        padding="4px"
+      >
         <Inline alignVertical="center" space="4px">
-          {includeAvatar && (
-            <Box paddingRight="2px">
-              <Avatar imageUrl={ensAvatar || ''} size={16} />
+          <Inline alignVertical="center" space="4px">
+            {includeAvatar && (
+              <Box paddingRight="2px">
+                <Avatar imageUrl={ensAvatar || ''} size={16} />
+              </Box>
+            )}
+            <Box id={`${id ?? ''}-account-name-shuffle`}>
+              <TextOverflow
+                color="label"
+                size={size}
+                weight="heavy"
+                testId="account-name"
+                maxWidth={TEXT_MAX_WIDTH}
+              >
+                {displayName}
+              </TextOverflow>
             </Box>
-          )}
-          <Box id={`${id ?? ''}-account-name-shuffle`}>
-            <TextOverflow
-              color="label"
-              size={size}
-              weight="heavy"
-              testId="account-name"
-              maxWidth={TEXT_MAX_WIDTH}
-            >
-              {displayName}
-            </TextOverflow>
-          </Box>
-          <Symbol
-            size={chevronDownSizes[size]}
-            symbol="chevron.down"
-            color={hover ? 'label' : 'labelTertiary'}
-            weight="semibold"
-          />
+            <Symbol
+              size={chevronDownSizes[size]}
+              symbol="chevron.down"
+              color={hover ? 'label' : 'labelTertiary'}
+              weight="semibold"
+            />
+          </Inline>
         </Inline>
-      </Inline>
-    </Box>
+      </Box>
+    </Lens>
   );
 }
