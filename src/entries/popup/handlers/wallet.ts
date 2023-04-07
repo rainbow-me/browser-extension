@@ -197,8 +197,8 @@ export const unlock = async (password: string): Promise<boolean> => {
   return res as boolean;
 };
 
-export const wipe = async (password: string) => {
-  await walletAction('wipe', password);
+export const wipe = async () => {
+  await walletAction('wipe', {});
   await chrome.storage.session.set({ userStatus: 'NEW' });
   return;
 };
