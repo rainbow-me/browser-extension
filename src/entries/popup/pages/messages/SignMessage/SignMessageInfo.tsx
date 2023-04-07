@@ -89,7 +89,7 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
                   weight="regular"
                   color="label"
                   size="14pt"
-                  testId="text-area"
+                  testId="sign-message-text"
                 >
                   {typedData ? <pre>{message}</pre> : message}
                 </Text>

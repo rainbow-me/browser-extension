@@ -6,6 +6,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
   delay,
   delayTime,
+  findElementById,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
@@ -25,6 +26,8 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 const walletAddress = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
+// eslint-disable-next-line prettier/prettier
+const shortenedAddress = `${walletAddress.substring(0, 6)}...${walletAddress.substring(38, 42)}`;
 
 describe('App interactions flow', () => {
   beforeAll(async () => {
@@ -103,7 +106,7 @@ describe('App interactions flow', () => {
   // connect to dapp
   it('should be able to connect to mm dapp', async () => {
     await delayTime('long');
-    await driver.get('https://metamask.github.io/test-dapp/');
+    await driver.get('https://bx-e2e-dapp.vercel.app/');
     await delay(1000);
     const dappHandler = await driver.getWindowHandle();
 
@@ -125,18 +128,18 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(dappHandler);
 
-    const accounts = await querySelector(driver, '[id="accounts"]');
+    const accounts = await findElementById({ id: 'accounts', driver });
     expect(accounts).toBeTruthy();
 
-    const account = await findElementByText(driver, walletAddress);
-    expect(account).toBeTruthy();
+    const connectedAddress = await accounts.getText();
+    expect(connectedAddress).toBe(walletAddress);
   });
 
   // Personal Sign
   it('should be able to complete a personal sign', async () => {
     const dappHandler = await driver.getWindowHandle();
 
-    const button = await querySelector(driver, '[id="personalSign"]');
+    const button = await findElementById({ id: 'personalSign', driver });
     await waitAndClick(button, driver);
 
     await delayTime('medium');
@@ -151,7 +154,7 @@ describe('App interactions flow', () => {
     const message = await findElementByTestId({ id: 'text-area', driver });
     expect(message).toBeTruthy();
 
-    const address = await findElementByText(driver, '0xf39F...2266');
+    const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -160,14 +163,12 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(dappHandler);
     await delayTime('medium');
 
-    const personalSignData = await querySelector(
+    const personalSignResult = await findElementById({
+      id: 'personalSignResult',
       driver,
-      '[id="personalSignResult"]',
-    );
-    expect(personalSignData).toBeTruthy();
-
-    const result = await findElementByText(driver, walletAddress);
-    expect(result).toBeTruthy();
+    });
+    const personalSignText = await personalSignResult.getText();
+    expect(personalSignText).toBeTruthy;
   });
 
   // Sign Typed Data V3
@@ -175,7 +176,7 @@ describe('App interactions flow', () => {
     const dappHandler = await driver.getWindowHandle();
     await driver.switchTo().window(dappHandler);
 
-    const button = await querySelector(driver, '[id="signTypedDataV3"]');
+    const button = await findElementById({ id: 'signTypedDataV3', driver });
     await waitAndClick(button, driver);
 
     await delayTime('medium');
@@ -190,7 +191,7 @@ describe('App interactions flow', () => {
     const message = await findElementByTestId({ id: 'text-area', driver });
     expect(message).toBeTruthy();
 
-    const address = await findElementByText(driver, '0xf39F...2266');
+    const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -199,10 +200,10 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(dappHandler);
     await delayTime('medium');
 
-    const verifyButton = await querySelector(
+    const verifyButton = await findElementById({
+      id: 'signTypedDataV3Verify',
       driver,
-      '[id="signTypedDataV3Verify"]',
-    );
+    });
     await waitAndClick(verifyButton, driver);
 
     const result = await getTextFromDappText({
@@ -217,7 +218,7 @@ describe('App interactions flow', () => {
     const dappHandler = await driver.getWindowHandle();
     await driver.switchTo().window(dappHandler);
 
-    const button = await querySelector(driver, '[id="signTypedDataV4"]');
+    const button = await findElementById({ id: 'signTypedDataV4', driver });
     await waitAndClick(button, driver);
 
     await delayTime('medium');
@@ -232,7 +233,7 @@ describe('App interactions flow', () => {
     const message = await findElementByTestId({ id: 'text-area', driver });
     expect(message).toBeTruthy();
 
-    const address = await findElementByText(driver, '0xf39F...2266');
+    const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
@@ -241,10 +242,10 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(dappHandler);
     await delayTime('medium');
 
-    const verifyButton = await querySelector(
+    const verifyButton = await findElementById({
+      id: 'signTypedDataV4Verify',
       driver,
-      '[id="signTypedDataV4Verify"]',
-    );
+    });
     await waitAndClick(verifyButton, driver);
 
     const result = await getTextFromDappText({
