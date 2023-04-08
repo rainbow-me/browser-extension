@@ -15,7 +15,6 @@ import {
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
-  querySelector,
   typeOnTextInput,
   waitAndClick,
 } from '../helpers';
