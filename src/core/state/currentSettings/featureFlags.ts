@@ -4,7 +4,6 @@ import { createStore } from '~/core/state/internal/createStore';
 
 export enum featureFlagTypes {
   full_watching_wallets = 'full_watching_wallets',
-  swaps = 'swaps',
 }
 export type FeatureFlagTypes = keyof typeof featureFlagTypes;
 
