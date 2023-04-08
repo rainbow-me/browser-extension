@@ -110,7 +110,7 @@ describe('App interactions flow', () => {
     await delay(1000);
     const dappHandler = await driver.getWindowHandle();
 
-    const button = await querySelector(driver, '[id="connectButton"]');
+    const button = await findElementById({ id: 'connectButton', driver });
     expect(button).toBeTruthy();
     await waitAndClick(button, driver);
 
@@ -137,6 +137,7 @@ describe('App interactions flow', () => {
 
   // Personal Sign
   it('should be able to complete a personal sign', async () => {
+    await delayTime('long');
     const dappHandler = await driver.getWindowHandle();
 
     const button = await findElementById({ id: 'personalSign', driver });
@@ -173,6 +174,7 @@ describe('App interactions flow', () => {
 
   // Sign Typed Data V3
   it('should be able to sign typed data (v3)', async () => {
+    await delayTime('long');
     const dappHandler = await driver.getWindowHandle();
     await driver.switchTo().window(dappHandler);
 
@@ -215,6 +217,7 @@ describe('App interactions flow', () => {
 
   // Sign Typed Data V4
   it('should be able to sign typed data (v4)', async () => {
+    await delayTime('long');
     const dappHandler = await driver.getWindowHandle();
     await driver.switchTo().window(dappHandler);
 
