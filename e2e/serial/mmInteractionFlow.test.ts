@@ -151,7 +151,10 @@ describe('App interactions flow', () => {
     await driver.switchTo().window(popupHandler);
 
     await delayTime('long');
-    const message = await findElementByTestId({ id: 'text-area', driver });
+    const message = await findElementByTestId({
+      id: 'sign-message-text',
+      driver,
+    });
     expect(message).toBeTruthy();
 
     const address = await findElementByText(driver, shortenedAddress);
