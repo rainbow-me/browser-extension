@@ -38,6 +38,7 @@ const useGas = ({
   transactionRequest,
   enabled,
   flashbotsEnabled,
+  additionalTime,
 }: {
   chainId: ChainId;
   defaultSpeed?: GasSpeed;
@@ -45,6 +46,7 @@ const useGas = ({
   transactionRequest: TransactionRequest | null;
   enabled?: boolean;
   flashbotsEnabled?: boolean;
+  additionalTime?: number;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { data: gasData, isLoading } = useGasData({ chainId });
@@ -163,6 +165,7 @@ const useGas = ({
           currency: currentCurrency,
           optimismL1SecurityFee,
           flashbotsEnabled,
+          additionalTime,
         })
       : null;
 
@@ -171,6 +174,7 @@ const useGas = ({
     }
     return newGasFeeParamsBySpeed;
   }, [
+    additionalTime,
     isLoading,
     chainId,
     flashbotsEnabled,
@@ -273,6 +277,7 @@ export const useSwapGas = ({
   assetToBuy,
   enabled,
   flashbotsEnabled,
+  quoteServiceTime,
 }: {
   chainId: ChainId;
   defaultSpeed?: GasSpeed;
@@ -281,6 +286,7 @@ export const useSwapGas = ({
   assetToBuy?: ParsedSearchAsset;
   enabled?: boolean;
   flashbotsEnabled?: boolean;
+  quoteServiceTime?: number;
 }) => {
   const { data: estimatedGasLimit } = useEstimateSwapGasLimit({
     chainId,
@@ -312,5 +318,6 @@ export const useSwapGas = ({
     transactionRequest,
     enabled,
     flashbotsEnabled,
+    additionalTime: quoteServiceTime,
   });
 };
