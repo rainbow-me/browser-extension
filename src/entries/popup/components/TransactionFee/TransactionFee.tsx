@@ -132,19 +132,29 @@ function Fee({
               </Text>
             </Row>
             <Row>
-              <Inline alignVertical="center" space="4px">
-                <ChainBadge chainId={chainId} size="small" />
-                <TextOverflow weight="semibold" color="label" size="14pt">
-                  {isLoading
-                    ? '~'
-                    : `${gasFeeParamsForSelectedSpeed?.gasFee.display}`}
-                </TextOverflow>
-                <Text weight="semibold" color="labelTertiary" size="14pt">
-                  {isLoading
-                    ? ''
-                    : `${gasFeeParamsForSelectedSpeed?.estimatedTime.display}`}
-                </Text>
-              </Inline>
+              <Columns alignVertical="center" space="4px">
+                <Column width="content">
+                  <ChainBadge chainId={chainId} size="small" />
+                </Column>
+                <Column>
+                  <TextOverflow weight="semibold" color="label" size="14pt">
+                    {isLoading
+                      ? '~'
+                      : `${gasFeeParamsForSelectedSpeed?.gasFee.display}`}
+                  </TextOverflow>
+                </Column>
+                <Column>
+                  <TextOverflow
+                    weight="semibold"
+                    color="labelTertiary"
+                    size="14pt"
+                  >
+                    {isLoading
+                      ? ''
+                      : `${gasFeeParamsForSelectedSpeed?.estimatedTime.display}`}
+                  </TextOverflow>
+                </Column>
+              </Columns>
             </Row>
           </Rows>
         </Column>

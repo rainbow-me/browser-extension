@@ -104,7 +104,7 @@ export function TokenToSellRow({ uniqueId }: TokenToSellRowProps) {
                   <CoinIcon asset={asset} />
                 </Column>
                 <Column>{leftColumn}</Column>
-                <Column width="content">{rightColumn}</Column>
+                <Column>{rightColumn}</Column>
               </Columns>
             </Row>
           </Rows>
