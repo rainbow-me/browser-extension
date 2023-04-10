@@ -35,9 +35,6 @@ import {
 
 import { RowHighlightWrapper } from './RowHighlightWrapper';
 
-const { innerWidth: windowWidth } = window;
-const TEXT_MAX_WIDTH = windowWidth - 180;
-
 export type TokenToBuyRowProps = {
   asset: SearchAsset;
   testId: string;
@@ -58,22 +55,12 @@ export function TokenToBuyRow({
     () => (
       <Rows space="8px">
         <Row>
-          <TextOverflow
-            maxWidth={TEXT_MAX_WIDTH}
-            size="14pt"
-            weight="semibold"
-            color="label"
-          >
+          <TextOverflow size="14pt" weight="semibold" color="label">
             {asset?.name}
           </TextOverflow>
         </Row>
         <Row>
-          <TextOverflow
-            maxWidth={TEXT_MAX_WIDTH}
-            size="12pt"
-            weight="semibold"
-            color="labelTertiary"
-          >
+          <TextOverflow size="12pt" weight="semibold" color="labelTertiary">
             {asset?.symbol}
           </TextOverflow>
         </Row>
@@ -140,7 +127,6 @@ export function TokenToBuyRow({
               <Stack space="4px">
                 <Box paddingTop="8px" paddingBottom="12px">
                   <TextOverflow
-                    maxWidth={200}
                     align="center"
                     size="14pt"
                     weight="bold"

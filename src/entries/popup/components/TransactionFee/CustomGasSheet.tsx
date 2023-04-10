@@ -43,9 +43,6 @@ import { GweiInputMask } from '../InputMask/GweiInputMask/GweiInputMask';
 
 const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
 
-const { innerWidth: windowWidth } = window;
-const TEXT_OVERFLOW_WIDTH = windowWidth / 2 - 30;
-
 const GasLabel = ({
   label,
   warning,
@@ -551,7 +548,6 @@ export const CustomGasSheet = ({
                     {i18n.t('custom_gas.max_transaction_fee')}
                   </Text>
                   <TextOverflow
-                    maxWidth={TEXT_OVERFLOW_WIDTH}
                     color="label"
                     align="right"
                     size="14pt"
@@ -611,7 +607,6 @@ export const CustomGasSheet = ({
                         {i18n.t(`transaction_fee.custom`)}
                       </Text>
                       <TextOverflow
-                        maxWidth={TEXT_OVERFLOW_WIDTH - 50}
                         align="left"
                         color="label"
                         size="11pt"
@@ -624,7 +619,6 @@ export const CustomGasSheet = ({
 
                   <Stack space="12px">
                     <TextOverflow
-                      maxWidth={TEXT_OVERFLOW_WIDTH}
                       align="right"
                       color="label"
                       size="14pt"
@@ -633,7 +627,6 @@ export const CustomGasSheet = ({
                       {customSpeed?.display}
                     </TextOverflow>
                     <TextOverflow
-                      maxWidth={TEXT_OVERFLOW_WIDTH}
                       align="right"
                       color="label"
                       size="11pt"
@@ -680,7 +673,6 @@ export const CustomGasSheet = ({
                             {i18n.t(`transaction_fee.${speed}`)}
                           </Text>
                           <TextOverflow
-                            maxWidth={TEXT_OVERFLOW_WIDTH}
                             align="left"
                             color="label"
                             size="11pt"
@@ -693,7 +685,6 @@ export const CustomGasSheet = ({
 
                       <Stack space="12px">
                         <TextOverflow
-                          maxWidth={TEXT_OVERFLOW_WIDTH}
                           align="right"
                           color="label"
                           size="14pt"
@@ -702,7 +693,6 @@ export const CustomGasSheet = ({
                           {gasFeeParamsBySpeed?.[speed]?.display}
                         </TextOverflow>
                         <TextOverflow
-                          maxWidth={TEXT_OVERFLOW_WIDTH}
                           align="right"
                           color="label"
                           size="11pt"

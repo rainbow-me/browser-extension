@@ -134,12 +134,7 @@ function Fee({
             <Row>
               <Inline alignVertical="center" space="4px">
                 <ChainBadge chainId={chainId} size="small" />
-                <TextOverflow
-                  maxWidth={75}
-                  weight="semibold"
-                  color="label"
-                  size="14pt"
-                >
+                <TextOverflow weight="semibold" color="label" size="14pt">
                   {isLoading
                     ? '~'
                     : `${gasFeeParamsForSelectedSpeed?.gasFee.display}`}

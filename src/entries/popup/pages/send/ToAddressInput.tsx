@@ -42,8 +42,6 @@ import {
   addressToInputHighlightWrapperStyleLight,
 } from './ToAddressInput.css';
 
-const { innerWidth: windowWidth } = window;
-
 const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
   const { currentTheme } = useCurrentThemeStore();
   return (
@@ -137,12 +135,7 @@ const WalletRow = ({
       <Inline alignVertical="center" space="8px">
         <WalletAvatar size={36} address={wallet} emojiSize="20pt" />
         <Stack space="8px">
-          <TextOverflow
-            maxWidth={(2 * windowWidth) / 3}
-            weight="semibold"
-            size="14pt"
-            color="label"
-          >
+          <TextOverflow weight="semibold" size="14pt" color="label">
             {name}
           </TextOverflow>
 
@@ -369,7 +362,6 @@ export const ToAddressInput = ({
                   ) : (
                     <Box as={motion.div} layout="position">
                       <TextOverflow
-                        maxWidth={windowWidth / 2}
                         weight="semibold"
                         size="14pt"
                         color="label"

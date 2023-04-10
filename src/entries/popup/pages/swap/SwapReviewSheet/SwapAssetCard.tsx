@@ -65,12 +65,7 @@ export const SwapAssetCard = ({
             <Box>
               <Stack space="10px" alignHorizontal="center">
                 <Inline space="4px" alignVertical="center">
-                  <TextOverflow
-                    maxWidth={80}
-                    color="label"
-                    size="14pt"
-                    weight="bold"
-                  >
+                  <TextOverflow color="label" size="14pt" weight="bold">
                     {`${amount}`}
                   </TextOverflow>
                   <Text color="label" size="14pt" weight="bold">
@@ -78,12 +73,7 @@ export const SwapAssetCard = ({
                   </Text>
                 </Inline>
 
-                <TextOverflow
-                  maxWidth={100}
-                  color="labelSecondary"
-                  size="12pt"
-                  weight="bold"
-                >
+                <TextOverflow color="labelSecondary" size="12pt" weight="bold">
                   {`${secondaryAmount}`}
                 </TextOverflow>
               </Stack>

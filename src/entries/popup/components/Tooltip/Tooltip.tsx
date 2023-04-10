@@ -6,9 +6,6 @@ import { Box, Inline, TextOverflow, ThemeProvider } from '~/design-system';
 import { AlignHorizontal } from '~/design-system/components/Inline/Inline';
 import { TextStyles } from '~/design-system/styles/core.css';
 
-const { innerWidth: windowWidth } = window;
-const TEXT_MAX_WIDTH = windowWidth - 60;
-
 export const Tooltip = forwardRef(
   ({
     align,
@@ -95,7 +92,6 @@ export const Tooltip = forwardRef(
                     backdropFilter="blur(26px)"
                   >
                     <TextOverflow
-                      maxWidth={TEXT_MAX_WIDTH}
                       color={textColor || 'label'}
                       size={textSize || '16pt'}
                       weight={textWeight || 'bold'}

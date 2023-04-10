@@ -89,11 +89,10 @@ const AccountList = ({ accounts }: { accounts: Address[] }) => {
 interface TitleProps {
   color?: TextStyles['color'];
   text: string;
-  maxWidth?: number;
 }
 
-const Title = ({ text, color = 'label', maxWidth }: TitleProps) => (
-  <TextOverflow maxWidth={maxWidth} color={color} size="14pt" weight="medium">
+const Title = ({ text, color = 'label' }: TitleProps) => (
+  <TextOverflow color={color} size="14pt" weight="medium">
     {text}
   </TextOverflow>
 );

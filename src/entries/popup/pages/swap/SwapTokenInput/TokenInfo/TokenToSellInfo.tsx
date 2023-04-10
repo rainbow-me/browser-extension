@@ -8,9 +8,6 @@ import { Box, Inline, Symbol, Text, TextOverflow } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { Tooltip } from '~/entries/popup/components/Tooltip/Tooltip';
 
-const { innerWidth: windowWidth } = window;
-const TEXT_MAX_WIDTH = windowWidth - 120;
-
 export const TokenToSellInfo = ({
   asset,
   assetToSellValue,
@@ -30,7 +27,6 @@ export const TokenToSellInfo = ({
       <Inline alignHorizontal="justify">
         {asset && (
           <TextOverflow
-            maxWidth={TEXT_MAX_WIDTH}
             as="p"
             size="12pt"
             weight="semibold"

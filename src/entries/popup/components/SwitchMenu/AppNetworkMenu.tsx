@@ -151,12 +151,7 @@ export const AppNetworkMenu = ({
                 >
                   <Rows space="10px">
                     <Row>
-                      <TextOverflow
-                        maxWidth={140}
-                        size="14pt"
-                        weight="bold"
-                        color="label"
-                      >
+                      <TextOverflow size="14pt" weight="bold" color="label">
                         {appName ?? appHost}
                       </TextOverflow>
                     </Row>

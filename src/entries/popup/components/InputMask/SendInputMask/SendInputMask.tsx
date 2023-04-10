@@ -99,7 +99,6 @@ export const SendInputMask = ({
               </Box>
               <Box paddingLeft="2px">
                 <TextOverflow
-                  maxWidth={100}
                   size="23pt"
                   weight="semibold"
                   color="labelTertiary"

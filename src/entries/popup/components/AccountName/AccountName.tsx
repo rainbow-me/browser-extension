@@ -13,9 +13,6 @@ import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
 import { Avatar } from '../Avatar/Avatar';
 
-const { innerWidth: windowWidth } = window;
-const TEXT_MAX_WIDTH = windowWidth - 60;
-
 type AccountNameProps = {
   includeAvatar?: boolean;
   id?: string;
@@ -82,7 +79,6 @@ export function AccountName({
               size={size}
               weight="heavy"
               testId="account-name"
-              maxWidth={TEXT_MAX_WIDTH}
             >
               {displayName}
             </TextOverflow>

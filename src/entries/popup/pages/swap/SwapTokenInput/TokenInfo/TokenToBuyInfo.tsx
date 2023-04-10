@@ -5,10 +5,6 @@ import { ParsedSearchAsset } from '~/core/types/assets';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { Box, Inline, Text, TextOverflow } from '~/design-system';
 
-const { innerWidth: windowWidth } = window;
-const HALF_WINDOW_WIDTH = windowWidth / 2;
-const TEXT_MAX_WIDTH = HALF_WINDOW_WIDTH - 90;
-
 export const TokenToBuyInfo = ({
   asset,
 }: {
@@ -26,7 +22,6 @@ export const TokenToBuyInfo = ({
         <Inline alignVertical="center" space="4px">
           <TextOverflow
             testId={'token-to-buy-info-price'}
-            maxWidth={TEXT_MAX_WIDTH}
             as="p"
             size="12pt"
             weight="semibold"
@@ -45,7 +40,6 @@ export const TokenToBuyInfo = ({
           </Text>
           <TextOverflow
             testId={'token-to-buy-info-balance'}
-            maxWidth={TEXT_MAX_WIDTH}
             size="12pt"
             weight="medium"
             color="labelSecondary"

@@ -37,8 +37,6 @@ import { AssetRow } from '../home/Tokens';
 
 import { InputActionButon } from './InputActionButton';
 
-const { innerWidth: windowWidth } = window;
-
 const TokenSortMenu = ({
   asset,
   setSortDropdownOpen,
@@ -225,7 +223,6 @@ export const SendTokenInput = ({
           ) : (
             <Stack space="8px">
               <TextOverflow
-                maxWidth={windowWidth / 2}
                 size="16pt"
                 weight="semibold"
                 color={`${asset ? 'label' : 'labelTertiary'}`}

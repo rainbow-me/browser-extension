@@ -12,7 +12,6 @@ interface TextOverflowProps {
   size: TextStyles['fontSize'];
   weight: TextStyles['fontWeight'];
   testId?: string;
-  maxWidth?: number;
   cursor?: TextStyles['cursor'];
   userSelect?: TextStyles['userSelect'];
 }
@@ -25,7 +24,6 @@ export function TextOverflow({
   size,
   weight,
   testId,
-  // maxWidth,
   cursor = 'default',
   userSelect = 'none',
 }: TextOverflowProps) {

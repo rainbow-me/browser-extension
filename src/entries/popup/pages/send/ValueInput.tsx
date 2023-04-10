@@ -18,9 +18,6 @@ import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverfl
 
 import { SendInputMask } from '../../components/InputMask/SendInputMask/SendInputMask';
 
-const { innerWidth: windowWidth } = window;
-const INFO_COLUMN_MAX_WIDTH = windowWidth / 2 - 50;
-
 export const ValueInput = ({
   asset,
   currentCurrency,
@@ -106,7 +103,6 @@ export const ValueInput = ({
               <Inline alignHorizontal="justify" alignVertical="center">
                 <TextOverflow
                   as="p"
-                  maxWidth={INFO_COLUMN_MAX_WIDTH}
                   size="11pt"
                   weight="bold"
                   color={`${asset ? 'label' : 'labelTertiary'}`}
@@ -124,12 +120,7 @@ export const ValueInput = ({
                       weight="bold"
                       symbol="arrow.up.arrow.down"
                     />
-                    <TextOverflow
-                      maxWidth={INFO_COLUMN_MAX_WIDTH}
-                      color="accent"
-                      size="12pt"
-                      weight="bold"
-                    >
+                    <TextOverflow color="accent" size="12pt" weight="bold">
                       {i18n.t('send.switch_to', {
                         currency:
                           independentField === 'asset'
