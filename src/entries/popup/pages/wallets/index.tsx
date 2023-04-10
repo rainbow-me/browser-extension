@@ -526,10 +526,9 @@ export function Wallets() {
   }, [updateState]);
 
   const wipe = useCallback(async () => {
-    const pwd = password || prompt('Enter password');
-    await wallet.wipe(pwd as string);
+    await wallet.wipe();
     await updateState();
-  }, [password, updateState]);
+  }, [updateState]);
 
   const addAccount = useCallback(async () => {
     const silbing = accounts[0];

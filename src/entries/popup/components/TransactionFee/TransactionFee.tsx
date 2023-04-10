@@ -260,6 +260,7 @@ type SwapFeeProps = {
   enabled?: boolean;
   flashbotsEnabled?: boolean;
   speedMenuMarginRight?: Space;
+  quoteServiceTime?: number;
 };
 
 export function SwapFee({
@@ -273,6 +274,7 @@ export function SwapFee({
   enabled = true,
   flashbotsEnabled,
   speedMenuMarginRight,
+  quoteServiceTime,
 }: SwapFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
@@ -292,6 +294,7 @@ export function SwapFee({
     assetToBuy,
     enabled,
     flashbotsEnabled,
+    quoteServiceTime,
   });
 
   return (
