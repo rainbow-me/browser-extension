@@ -124,6 +124,9 @@ export function Activity() {
         width="full"
         style={{
           overflow: 'auto',
+          // prevent coin icon shadow from clipping in empty space when list is small
+          paddingBottom:
+            activityRowVirtualizer.getVirtualItems().length > 6 ? 8 : 60,
         }}
       >
         <Box
