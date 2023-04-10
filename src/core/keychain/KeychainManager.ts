@@ -355,10 +355,8 @@ class KeychainManager {
     await privates.get(this).setSalt(null);
   }
 
-  async wipe(password: string) {
-    if (!this.verifyPassword(password)) {
-      throw new Error('Wrong password');
-    }
+  async wipe() {
+    if (!this.state.isUnlocked) return;
     this.state.keychains = [];
     this.state.isUnlocked = false;
     this.state.vault = '';
