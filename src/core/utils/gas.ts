@@ -51,11 +51,17 @@ import { getMinimalTimeUnitStringForMs } from './time';
 
 export const FLASHBOTS_MIN_TIP = 6;
 
-export const parseGasDataConfirmationTime = (
-  maxBaseFee: string,
-  maxPriorityFee: string,
-  blocksToConfirmation: BlocksToConfirmation,
-) => {
+export const parseGasDataConfirmationTime = ({
+  maxBaseFee,
+  maxPriorityFee,
+  blocksToConfirmation,
+  additionalTime = 0,
+}: {
+  maxBaseFee: string;
+  maxPriorityFee: string;
+  blocksToConfirmation: BlocksToConfirmation;
+  additionalTime?: number;
+}) => {
   let blocksToWaitForPriorityFee = 0;
   let blocksToWaitForBaseFee = 0;
   const { byPriorityFee, byBaseFee } = blocksToConfirmation;
@@ -90,7 +96,7 @@ export const parseGasDataConfirmationTime = (
   const totalBlocksToWait =
     blocksToWaitForBaseFee +
     (blocksToWaitForBaseFee < 240 ? blocksToWaitForPriorityFee : 0);
-  const timeAmount = 15 * totalBlocksToWait;
+  const timeAmount = 15 * totalBlocksToWait + additionalTime;
   return {
     amount: timeAmount,
     display: `${timeAmount >= 3600 ? '>' : '~'} ${getMinimalTimeUnitStringForMs(
@@ -117,6 +123,7 @@ export const parseCustomGasFeeParams = ({
   gasLimit,
   nativeAsset,
   currency,
+  additionalTime,
 }: {
   baseFeeWei: string;
   speed: GasSpeed;
@@ -126,6 +133,7 @@ export const parseCustomGasFeeParams = ({
   nativeAsset?: ParsedAsset;
   blocksToConfirmation: BlocksToConfirmation;
   currency: SupportedCurrencyKey;
+  additionalTime?: number;
 }): GasFeeParams => {
   const maxBaseFee = parseGasFeeParam({
     wei: baseFeeWei || '0',
@@ -144,11 +152,12 @@ export const parseCustomGasFeeParams = ({
     weiToGwei(add(baseFeeWei, maxPriorityFeePerGas.amount)),
   ).toFixed(0)} Gwei`;
 
-  const estimatedTime = parseGasDataConfirmationTime(
-    maxBaseFee.amount,
-    maxPriorityFeePerGas.amount,
+  const estimatedTime = parseGasDataConfirmationTime({
+    maxBaseFee: maxBaseFee.amount,
+    maxPriorityFee: maxPriorityFeePerGas.amount,
     blocksToConfirmation,
-  );
+    additionalTime,
+  });
 
   const transactionGasParams = {
     maxPriorityFeePerGas: addHexPrefix(
@@ -192,6 +201,7 @@ export const parseGasFeeParams = ({
   gasLimit,
   nativeAsset,
   currency,
+  additionalTime,
 }: {
   wei: string;
   speed: GasSpeed;
@@ -205,6 +215,7 @@ export const parseGasFeeParams = ({
   nativeAsset?: ParsedAsset;
   blocksToConfirmation: BlocksToConfirmation;
   currency: SupportedCurrencyKey;
+  additionalTime?: number;
 }): GasFeeParams => {
   const maxBaseFee = parseGasFeeParam({
     wei: new BigNumber(multiply(wei, getBaseFeeMultiplier(speed))).toFixed(0),
@@ -223,11 +234,12 @@ export const parseGasFeeParams = ({
     weiToGwei(add(maxBaseFee.amount, maxPriorityFeePerGas.amount)),
   ).toFixed(0)} Gwei`;
 
-  const estimatedTime = parseGasDataConfirmationTime(
-    maxBaseFee.amount,
-    maxPriorityFeePerGas.amount,
+  const estimatedTime = parseGasDataConfirmationTime({
+    maxBaseFee: maxBaseFee.amount,
+    maxPriorityFee: maxPriorityFeePerGas.amount,
     blocksToConfirmation,
-  );
+    additionalTime,
+  });
 
   const transactionGasParams = {
     maxPriorityFeePerGas: addHexPrefix(
@@ -495,6 +507,7 @@ export const parseGasFeeParamsBySpeed = ({
   currency,
   optimismL1SecurityFee,
   flashbotsEnabled,
+  additionalTime = 0,
 }: {
   chainId: ChainId;
   data: MeteorologyResponse | MeteorologyLegacyResponse;
@@ -503,6 +516,7 @@ export const parseGasFeeParamsBySpeed = ({
   currency: SupportedCurrencyKey;
   optimismL1SecurityFee?: string | null;
   flashbotsEnabled?: boolean;
+  additionalTime?: number;
 }) => {
   if (chainId === ChainId.mainnet) {
     const response = data as MeteorologyResponse;
@@ -535,6 +549,7 @@ export const parseGasFeeParamsBySpeed = ({
         gasLimit,
         nativeAsset,
         currency,
+        additionalTime,
       });
 
     return {
@@ -577,22 +592,22 @@ export const parseGasFeeParamsBySpeed = ({
       custom: parseGasFeeParamsSpeed({
         gwei: response?.data.legacy.fastGasPrice,
         speed: GasSpeed.CUSTOM,
-        waitTime: chainWaitTime.fastWait,
+        waitTime: chainWaitTime.fastWait + additionalTime,
       }),
       urgent: parseGasFeeParamsSpeed({
         gwei: response?.data.legacy.fastGasPrice,
         speed: GasSpeed.URGENT,
-        waitTime: chainWaitTime.fastWait,
+        waitTime: chainWaitTime.fastWait + additionalTime,
       }),
       fast: parseGasFeeParamsSpeed({
         gwei: response?.data.legacy.proposeGasPrice,
         speed: GasSpeed.FAST,
-        waitTime: chainWaitTime.proposedWait,
+        waitTime: chainWaitTime.proposedWait + additionalTime,
       }),
       normal: parseGasFeeParamsSpeed({
         gwei: response?.data.legacy.safeGasPrice,
         speed: GasSpeed.NORMAL,
-        waitTime: chainWaitTime.safeWait,
+        waitTime: chainWaitTime.safeWait + additionalTime,
       }),
     };
   }

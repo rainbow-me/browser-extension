@@ -26,7 +26,7 @@ export function Welcome() {
     const wipeIncompleteWallet = async () => {
       const { hasVault, passwordSet } = await wallet.getStatus();
       if (hasVault && !passwordSet) {
-        wallet.wipe('');
+        wallet.wipe();
       }
     };
     wipeIncompleteWallet();
