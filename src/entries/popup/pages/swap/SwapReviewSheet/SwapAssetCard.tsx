@@ -6,7 +6,15 @@ import {
   convertRawAmountToBalance,
   convertRawAmountToNativeDisplay,
 } from '~/core/utils/numbers';
-import { Box, Inline, Stack, Text, TextOverflow } from '~/design-system';
+import {
+  Box,
+  Column,
+  Columns,
+  Inline,
+  Stack,
+  Text,
+  TextOverflow,
+} from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { transparentAccentColorAsHsl } from '~/design-system/styles/core.css';
 import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
@@ -55,7 +63,7 @@ export const SwapAssetCard = ({
         }}
         testId={`${testId}-swap-asset-card`}
       >
-        <Box paddingVertical="27px">
+        <Box paddingVertical="27px" paddingHorizontal="8px">
           <Stack space="10px">
             <Inline alignHorizontal="center">
               <Box>
@@ -64,14 +72,18 @@ export const SwapAssetCard = ({
             </Inline>
             <Box>
               <Stack space="10px" alignHorizontal="center">
-                <Inline space="4px" alignVertical="center">
-                  <TextOverflow color="label" size="14pt" weight="bold">
-                    {`${amount}`}
-                  </TextOverflow>
-                  <Text color="label" size="14pt" weight="bold">
-                    {`${asset?.symbol}`}
-                  </Text>
-                </Inline>
+                <Columns space="4px" alignVertical="center">
+                  <Column>
+                    <TextOverflow color="label" size="14pt" weight="bold">
+                      {`${amount}`}
+                    </TextOverflow>
+                  </Column>
+                  <Column width="content">
+                    <Text color="label" size="14pt" weight="bold">
+                      {`${asset?.symbol}`}
+                    </Text>
+                  </Column>
+                </Columns>
 
                 <TextOverflow color="labelSecondary" size="12pt" weight="bold">
                   {`${secondaryAmount}`}
