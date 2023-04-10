@@ -16,6 +16,7 @@ import { ImportWallet } from './pages/importWallet';
 import { ImportWalletSelection } from './pages/importWalletSelection';
 import { EditImportWalletSelection } from './pages/importWalletSelection/EditImportWalletSelection';
 import { ApproveAppRequest } from './pages/messages/ApproveAppRequest';
+import { QRCodePage } from './pages/qrcode';
 import { RootHandler } from './pages/rootHandler/RootHandler';
 import { SeedBackupPrompt } from './pages/seedBackupPrompt';
 import { SeedReveal } from './pages/seedReveal';
@@ -234,6 +235,21 @@ const ROUTE_DATA = [
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
+  },
+  {
+    path: ROUTES.QR_CODE,
+    element: (
+      <AnimatedRoute
+        backTo={ROUTES.HOME}
+        direction="up"
+        navbar
+        navbarIcon="ex"
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <QRCodePage />
+      </AnimatedRoute>
+    ),
   },
   {
     path: ROUTES.SETTINGS,

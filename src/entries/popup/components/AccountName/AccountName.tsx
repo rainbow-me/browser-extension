@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
 import { useAccount, useEnsAvatar } from 'wagmi';
@@ -19,6 +20,7 @@ type AccountNameProps = {
   includeAvatar?: boolean;
   id?: string;
   size?: '16pt' | '20pt';
+  chevron?: boolean;
 };
 
 const chevronDownSizes = {
@@ -30,6 +32,7 @@ export function AccountName({
   includeAvatar = false,
   size = '20pt',
   id,
+  chevron = true,
 }: AccountNameProps) {
   const { address } = useAccount();
   const { displayName } = useWalletName({ address: address || '0x' });
@@ -40,6 +43,15 @@ export function AccountName({
   const handleClick = useCallback(() => {
     navigate(ROUTES.WALLET_SWITCHER);
   }, [navigate]);
+
+  const chevronProps = chevron
+    ? {
+        whileHover: { scale: transformScales['1.04'] },
+        whileTap: { scale: transformScales['0.96'] },
+        onHoverStart: () => setHover(true),
+        onHoverEnd: () => setHover(false),
+      }
+    : {};
 
   return (
     <Box
@@ -53,10 +65,7 @@ export function AccountName({
         outlineColor: accentColorAsHsl,
         borderRadius: 6,
       }}
-      whileHover={{ scale: transformScales['1.04'] }}
-      whileTap={{ scale: transformScales['0.96'] }}
-      onHoverStart={() => setHover(true)}
-      onHoverEnd={() => setHover(false)}
+      {...chevronProps}
     >
       <Inline alignVertical="center" space="4px">
         <Inline alignVertical="center" space="4px">
@@ -76,12 +85,14 @@ export function AccountName({
               {displayName}
             </TextOverflow>
           </Box>
-          <Symbol
-            size={chevronDownSizes[size]}
-            symbol="chevron.down"
-            color={hover ? 'label' : 'labelTertiary'}
-            weight="semibold"
-          />
+          {chevron && (
+            <Symbol
+              size={chevronDownSizes[size]}
+              symbol="chevron.down"
+              color={hover ? 'label' : 'labelTertiary'}
+              weight="semibold"
+            />
+          )}
         </Inline>
       </Inline>
     </Box>

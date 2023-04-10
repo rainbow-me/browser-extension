@@ -15,7 +15,6 @@ import {
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
 import * as wallet from '../../handlers/wallet';
-import { useAlert } from '../../hooks/useAlert';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -24,8 +23,6 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   const { data: ensName } = useEnsName({ address });
   const navigate = useRainbowNavigate();
 
-  const { triggerAlert } = useAlert();
-
   const openProfile = React.useCallback(
     () =>
       goToNewTab({
@@ -33,10 +30,6 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
       }),
     [address, ensName],
   );
-
-  const alertComingSoon = React.useCallback(() => {
-    triggerAlert({ text: i18n.t('alert.coming_soon') });
-  }, [triggerAlert]);
 
   const onValueChange = React.useCallback(
     (value: 'settings' | 'profile' | 'lock' | 'qr-code') => {
@@ -52,11 +45,11 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
           wallet.lock();
           break;
         case 'qr-code':
-          alertComingSoon();
+          navigate(ROUTES.QR_CODE);
           break;
       }
     },
-    [alertComingSoon, navigate, openProfile],
+    [navigate, openProfile],
   );
 
   return (
