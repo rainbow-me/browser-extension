@@ -25,12 +25,12 @@ export function TextOverflow({
   size,
   weight,
   testId,
-  maxWidth,
+  // maxWidth,
   cursor = 'default',
   userSelect = 'none',
 }: TextOverflowProps) {
   return (
-    <Box style={{ maxWidth }}>
+    <Box style={{ display: 'grid' }}>
       <Box
         marginVertical="-8px"
         className={textStyles({
@@ -41,6 +41,9 @@ export function TextOverflow({
           fontWeight: weight,
           textAlign: align,
           userSelect,
+          textOverflow: 'ellipsis',
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
         })}
         testId={testId}
       >

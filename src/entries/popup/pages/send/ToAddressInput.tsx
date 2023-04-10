@@ -47,18 +47,16 @@ const { innerWidth: windowWidth } = window;
 const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
   const { currentTheme } = useCurrentThemeStore();
   return (
-    <Inset>
-      <Box
-        borderRadius="12px"
-        className={
-          currentTheme === 'dark'
-            ? addressToInputHighlightWrapperStyleDark
-            : addressToInputHighlightWrapperStyleLight
-        }
-      >
-        {children}
-      </Box>
-    </Inset>
+    <Box
+      borderRadius="12px"
+      className={
+        currentTheme === 'dark'
+          ? addressToInputHighlightWrapperStyleDark
+          : addressToInputHighlightWrapperStyleLight
+      }
+    >
+      {children}
+    </Box>
   );
 };
 
