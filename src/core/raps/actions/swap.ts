@@ -48,10 +48,12 @@ export const estimateSwapGasLimit = async ({
   requiresApprove?: boolean;
   quote: Quote;
 }): Promise<string> => {
+  console.log('estimateSwapGasLimit 1');
   const provider = getProvider({ chainId });
   if (!provider || !quote) {
     return gasUnits.basic_swap[chainId];
   }
+  console.log('estimateSwapGasLimit 2');
 
   const { sellTokenAddress, buyTokenAddress } = quote;
   const isWrapNativeAsset =
@@ -62,6 +64,7 @@ export const estimateSwapGasLimit = async ({
     isLowerCaseMatch(sellTokenAddress, WRAPPED_ASSET[chainId]) &&
     isLowerCaseMatch(buyTokenAddress, ETH_ADDRESS_AGGREGATORS);
 
+  console.log('estimateSwapGasLimit 3');
   // Wrap / Unwrap Eth
   if (isWrapNativeAsset || isUnwrapNativeAsset) {
     const default_estimate = isWrapNativeAsset
@@ -91,13 +94,16 @@ export const estimateSwapGasLimit = async ({
     // Swap
   } else {
     try {
+      console.log('estimateSwapGasLimit 4');
       const { params, method, methodArgs } = getQuoteExecutionDetails(
         quote,
         { from: quote.from },
         provider as StaticJsonRpcProvider,
       );
 
+      console.log('estimateSwapGasLimit 5');
       if (requiresApprove) {
+        console.log('estimateSwapGasLimit 5 requiresApprove');
         if (CHAIN_IDS_WITH_TRACE_SUPPORT.includes(chainId)) {
           try {
             const gasLimitWithFakeApproval =
@@ -115,6 +121,7 @@ export const estimateSwapGasLimit = async ({
         return getDefaultGasLimitForTrade(quote, chainId);
       }
 
+      console.log('estimateSwapGasLimit 6 estimateGasWithPadding');
       const gasLimit = await estimateGasWithPadding({
         transactionRequest: params,
         contractCallEstimateGas: method,
@@ -122,9 +129,10 @@ export const estimateSwapGasLimit = async ({
         provider,
         paddingFactor: SWAP_GAS_PADDING,
       });
-
+      console.log('estimateSwapGasLimit 6 estimateGasWithPadding out');
       return gasLimit || getDefaultGasLimitForTrade(quote, chainId);
     } catch (error) {
+      console.log('estimateSwapGasLimit 6 error', error);
       return getDefaultGasLimitForTrade(quote, chainId);
     }
   }
