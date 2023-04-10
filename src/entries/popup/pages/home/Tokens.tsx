@@ -158,14 +158,14 @@ export function AssetRow({ uniqueId }: AssetRowProps) {
   const topRow = useMemo(
     () => (
       <Columns>
-        <Column width="content">
+        <Column>
           <Box paddingVertical="4px">
             <TextOverflow size="14pt" weight="semibold">
               {name}
             </TextOverflow>
           </Box>
         </Column>
-        <Column>
+        <Column width="content">
           <Box paddingVertical="4px">{nativeBalanceDisplay}</Box>
         </Column>
       </Columns>
@@ -176,10 +176,10 @@ export function AssetRow({ uniqueId }: AssetRowProps) {
   const bottomRow = useMemo(
     () => (
       <Columns>
-        <Column width="content">
+        <Column>
           <Box paddingVertical="4px">{balanceDisplay}</Box>
         </Column>
-        <Column>
+        <Column width="content">
           <Box paddingVertical="4px">
             <Text
               color={priceChangeColor}

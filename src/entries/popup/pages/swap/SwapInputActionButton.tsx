@@ -32,9 +32,11 @@ export const SwapInputActionButton = ({
         alignVertical="center"
       >
         <Symbol size={8} symbol="xmark" weight="bold" color="label" />
-        <TextOverflow size="14pt" weight="bold" color="label">
-          {asset?.symbol}
-        </TextOverflow>
+        <Box style={{ maxWidth: '75px' }}>
+          <TextOverflow size="14pt" weight="bold" color="label">
+            {asset?.symbol}
+          </TextOverflow>
+        </Box>
       </Inline>
     </Button>
   ) : (
