@@ -92,6 +92,11 @@ const AppInteractionItem = ({
   );
 };
 
+const NETWORK_MENU_HEADER_X = 23;
+const NETWORK_MENU_HEADER_Y = 72;
+const NETWORK_MENU_HEADER_WIDTH = 190;
+const NETWORK_MENU_HEADER_HEIGHT = 52;
+
 interface AppNetworkMenuProps {
   children: ReactNode;
   url: string;
@@ -244,9 +249,18 @@ export const AppNetworkMenu = ({
               top={51.5}
               position="absolute"
               onInteractOutside={(e) => {
+                const x = (e.detail.originalEvent as PointerEvent).x;
+                const y = (e.detail.originalEvent as PointerEvent).y;
                 e.preventDefault();
                 setShowNetworks(false);
-                setMenuOpen(false);
+                if (
+                  x < NETWORK_MENU_HEADER_X ||
+                  x > NETWORK_MENU_HEADER_X + NETWORK_MENU_HEADER_WIDTH ||
+                  y < NETWORK_MENU_HEADER_Y ||
+                  y > NETWORK_MENU_HEADER_Y + NETWORK_MENU_HEADER_HEIGHT
+                ) {
+                  setMenuOpen(false);
+                }
               }}
             >
               <AppInteractionItem
@@ -263,7 +277,11 @@ export const AppNetworkMenu = ({
                   type="dropdown"
                   highlightAccentColor
                   selectedValue={`${appSession?.chainId}`}
-                  onNetworkSelect={(e) => e.preventDefault()}
+                  onNetworkSelect={(e) => {
+                    e.preventDefault();
+                    setShowNetworks(false);
+                    setMenuOpen(false);
+                  }}
                 />
               </DropdownMenuRadioGroup>
               <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />

@@ -1,4 +1,5 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
+import { DismissableLayerProps } from '@radix-ui/react-menu';
 import clsx from 'clsx';
 import React, { CSSProperties, ReactNode } from 'react';
 import { useAccount } from 'wagmi';
@@ -53,7 +54,7 @@ interface DropdownMenuContentProps {
   width?: number;
   top?: number;
   position?: BoxStyles['position'];
-  onInteractOutside?: (e: Event) => void;
+  onInteractOutside?: DismissableLayerProps['onInteractOutside'];
 }
 
 export function DropdownMenuContent(props: DropdownMenuContentProps) {
