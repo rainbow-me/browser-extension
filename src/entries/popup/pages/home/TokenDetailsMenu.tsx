@@ -109,7 +109,7 @@ export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
 
   return (
     <DetailsMenuWrapper closed={closed} onOpenChange={onOpenChange}>
-      <ContextMenuTrigger asChild onTrigger={onTrigger}>
+      <ContextMenuTrigger onTrigger={onTrigger}>
         <Box position="relative">{children}</Box>
       </ContextMenuTrigger>
       <DetailsMenuContentWrapper closed={closed}>

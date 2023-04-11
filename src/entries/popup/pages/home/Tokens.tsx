@@ -61,6 +61,7 @@ export function Tokens() {
       width="full"
       style={{ overflow: 'auto' }}
       paddingBottom="8px"
+      paddingTop="2px"
       marginTop="-16px"
     >
       <Box
