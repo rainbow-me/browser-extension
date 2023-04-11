@@ -32,10 +32,12 @@ export const SwitchNetworkMenuSelector = ({
   selectedValue,
   highlightAccentColor,
   type,
+  onNetworkSelect,
 }: {
   selectedValue?: string;
   highlightAccentColor?: boolean;
   type: 'dropdown' | 'context';
+  onNetworkSelect?: (event: Event) => void;
 }) => {
   const { chains } = useNetwork();
 
@@ -61,6 +63,7 @@ export const SwitchNetworkMenuSelector = ({
             value={String(chainId)}
             key={i}
             selectedValue={selectedValue}
+            onSelect={onNetworkSelect}
           >
             <Box testId={`switch-network-item-${i}`}>
               <Inline space="8px" alignVertical="center">

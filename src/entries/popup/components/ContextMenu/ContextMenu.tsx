@@ -164,10 +164,11 @@ interface ContextMenuRadioItemProps {
   value: string;
   selectedValue?: string;
   selectedColor?: string;
+  onSelect?: (event: Event) => void;
 }
 
 export const ContextMenuRadioItem = (props: ContextMenuRadioItemProps) => {
-  const { children, value, selectedValue, selectedColor } = props;
+  const { children, value, selectedValue, selectedColor, onSelect } = props;
   const isSelectedValue = selectedValue === value;
   const containerRef = useRef<HTMLDivElement>(null);
   return (
@@ -178,6 +179,7 @@ export const ContextMenuRadioItem = (props: ContextMenuRadioItemProps) => {
       paddingHorizontal="8px"
       marginHorizontal="-8px"
       alignItems="center"
+      onSelect={onSelect}
       className={clsx([
         boxStyles({
           display: 'flex',

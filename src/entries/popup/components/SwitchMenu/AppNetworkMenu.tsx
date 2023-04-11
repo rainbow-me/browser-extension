@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback } from 'react';
+import React, { ReactNode, useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import {
@@ -30,6 +30,11 @@ import {
 } from '../DropdownMenu/DropdownMenu';
 import ExternalImage from '../ExternalImage/ExternalImage';
 
+import {
+  SwitchNetworkMenuDisconnect,
+  SwitchNetworkMenuSelector,
+} from './SwitchNetworkMenu';
+
 interface AppNetworkMenuProps {
   children: ReactNode;
   url: string;
@@ -49,16 +54,33 @@ export const AppNetworkMenu = ({
   headerHostId,
   connectedAppsId,
 }: AppNetworkMenuProps) => {
+  const [showNetworks, setShowNetworks] = useState(false);
   const { appHost, appLogo, appName } = useAppMetadata({ url });
   const navigate = useRainbowNavigate();
 
-  const { appSession } = useAppSession({ host: appHost });
+  const { updateAppSessionChainId, disconnectAppSession, appSession } =
+    useAppSession({ host: appHost });
+
+  const changeChainId = useCallback(
+    (chainId: string) => {
+      updateAppSessionChainId(Number(chainId));
+    },
+    [updateAppSessionChainId],
+  );
+
+  const disconnect = useCallback(
+    () => disconnectAppSession(),
+    [disconnectAppSession],
+  );
 
   const onValueChange = useCallback(
     (value: 'connected-apps' | 'switch-networks') => {
       switch (value) {
         case 'connected-apps':
           navigate(ROUTES.CONNECTED);
+          break;
+        case 'switch-networks':
+          setShowNetworks((showNetworks) => !showNetworks);
           break;
       }
     },
@@ -113,58 +135,76 @@ export const AppNetworkMenu = ({
           </Inline>
         </Inset>
 
-        <Stack space="4px">
-          <DropdownMenuRadioGroup
-            onValueChange={(value) =>
-              onValueChange(value as 'connected-apps' | 'switch-networks')
-            }
+        <DropdownMenuRadioGroup
+          onValueChange={(value) =>
+            onValueChange(value as 'connected-apps' | 'switch-networks')
+          }
+        >
+          <DropdownMenuRadioItem
+            onSelect={(e) => {
+              e.preventDefault();
+            }}
+            highlightAccentColor
+            value="switch-networks"
           >
+            <Box width="full" testId={connectedAppsId}>
+              <Columns alignVertical="center" space="8px">
+                <Column width="content">
+                  <Inline alignVertical="center" alignHorizontal="center">
+                    <Symbol size={12} symbol="network" weight="semibold" />
+                  </Inline>
+                </Column>
+                <Column>
+                  <Text size="14pt" weight="semibold">
+                    Switch networks
+                  </Text>
+                </Column>
+                <Column width="content">
+                  <Box style={{ rotate: '-90deg' }}>
+                    <ChevronDown color="labelTertiary" />
+                  </Box>
+                </Column>
+              </Columns>
+            </Box>
+          </DropdownMenuRadioItem>
+
+          {showNetworks && (
+            <Box paddingTop="4px">
+              <DropdownMenuRadioGroup
+                value={`${appSession?.chainId}`}
+                onValueChange={changeChainId}
+              >
+                <SwitchNetworkMenuSelector
+                  type="dropdown"
+                  highlightAccentColor
+                  selectedValue={`${appSession?.chainId}`}
+                />
+              </DropdownMenuRadioGroup>
+              <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
+            </Box>
+          )}
+
+          <Stack space="4px">
+            {url ? <DropdownMenuSeparator /> : null}
+
             <DropdownMenuRadioItem highlightAccentColor value="connected-apps">
-              <Box width="full" testId={connectedAppsId}>
-                <Columns alignVertical="center" space="8px">
-                  <Column width="content">
-                    <Inline alignVertical="center" alignHorizontal="center">
-                      <Symbol size={12} symbol="network" weight="semibold" />
-                    </Inline>
-                  </Column>
-                  <Column>
-                    <Text size="14pt" weight="semibold">
-                      Switch networks
-                    </Text>
-                  </Column>
-                  <Column width="content">
-                    <Box style={{ rotate: '-90deg' }}>
-                      <ChevronDown color="labelTertiary" />
-                    </Box>
-                  </Column>
-                </Columns>
+              <Box testId={connectedAppsId}>
+                <Inline alignVertical="center" space="8px">
+                  <Inline alignVertical="center" alignHorizontal="center">
+                    <Symbol
+                      size={12}
+                      symbol="square.on.square.dashed"
+                      weight="semibold"
+                    />
+                  </Inline>
+                  <Text size="14pt" weight="semibold">
+                    {i18n.t('menu.home_header_left.all_connected_apps')}
+                  </Text>
+                </Inline>
               </Box>
             </DropdownMenuRadioItem>
-            <Stack space="4px">
-              {url ? <DropdownMenuSeparator /> : null}
-
-              <DropdownMenuRadioItem
-                highlightAccentColor
-                value="connected-apps"
-              >
-                <Box testId={connectedAppsId}>
-                  <Inline alignVertical="center" space="8px">
-                    <Inline alignVertical="center" alignHorizontal="center">
-                      <Symbol
-                        size={12}
-                        symbol="square.on.square.dashed"
-                        weight="semibold"
-                      />
-                    </Inline>
-                    <Text size="14pt" weight="semibold">
-                      {i18n.t('menu.home_header_left.all_connected_apps')}
-                    </Text>
-                  </Inline>
-                </Box>
-              </DropdownMenuRadioItem>
-            </Stack>
-          </DropdownMenuRadioGroup>
-        </Stack>
+          </Stack>
+        </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
   );

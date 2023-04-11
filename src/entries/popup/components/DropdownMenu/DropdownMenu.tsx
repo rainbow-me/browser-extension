@@ -156,6 +156,7 @@ interface DropdownMenuRadioItemProps {
   selectedValue?: string;
   selectedColor?: string;
   highlightAccentColor?: boolean;
+  onSelect?: (event: Event) => void;
 }
 
 export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
@@ -165,6 +166,7 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
     selectedValue,
     selectedColor,
     highlightAccentColor,
+    onSelect,
   } = props;
   const isSelectedValue = selectedValue === value;
   return (
@@ -175,6 +177,7 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
       paddingHorizontal="8px"
       marginHorizontal="-8px"
       alignItems="center"
+      onSelect={onSelect}
       className={clsx([
         highlightAccentColor && !isSelectedValue
           ? rowTransparentAccentHighlight
