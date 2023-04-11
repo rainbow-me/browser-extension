@@ -5,6 +5,7 @@ import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
 import { useCurrentAddressStore } from '~/core/state';
 import { AppSession } from '~/core/state/appSessions';
+import { ChainNameDisplay } from '~/core/types/chains';
 import {
   Box,
   Column,
@@ -140,6 +141,10 @@ export const AppNetworkMenu = ({
         chainId: Number(chainId),
         url,
       });
+      inpageMessenger.send(`connect:${appHost}`, {
+        address: currentAddress,
+        chainId: Number(chainId),
+      });
       inpageMessenger.send('rainbow_reload', null);
     },
     [addSession, appHost, currentAddress, url],
@@ -201,13 +206,13 @@ export const AppNetworkMenu = ({
                         {appName ?? appHost}
                       </TextOverflow>
                     </Row>
-                    {!appSession && (
-                      <Row>
-                        <Text size="11pt" weight="bold">
-                          {i18n.t('menu.home_header_left.not_connected')}
-                        </Text>
-                      </Row>
-                    )}
+                    <Row>
+                      <Text size="11pt" weight="bold">
+                        {!appSession
+                          ? i18n.t('menu.home_header_left.not_connected')
+                          : ChainNameDisplay[appSession.chainId] || ''}
+                      </Text>
+                    </Row>
                   </Rows>
                 </Box>
               </Inline>
@@ -236,7 +241,7 @@ export const AppNetworkMenu = ({
 
           {showNetworks && (
             <DropdownMenuContent
-              top={!appSession ? 50.5 : 37}
+              top={51.5}
               position="absolute"
               onInteractOutside={(e) => {
                 e.preventDefault();
