@@ -1,6 +1,10 @@
+import { motion } from 'framer-motion';
 import React, { ReactNode, useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
+import { initializeMessenger } from '~/core/messengers';
+import { useCurrentAddressStore } from '~/core/state';
+import { AppSession } from '~/core/state/appSessions';
 import {
   Box,
   Column,
@@ -35,6 +39,58 @@ import {
   SwitchNetworkMenuSelector,
 } from './SwitchNetworkMenu';
 
+const inpageMessenger = initializeMessenger({ connect: 'inpage' });
+
+const AppInteractionItem = ({
+  connectedAppsId,
+  appSession,
+  chevronDirection,
+}: {
+  connectedAppsId?: string;
+  appSession: AppSession;
+  chevronDirection: 'right' | 'down';
+}) => {
+  return (
+    <DropdownMenuRadioItem
+      onSelect={(e) => {
+        e.preventDefault();
+      }}
+      highlightAccentColor
+      value="switch-networks"
+    >
+      <Box width="full" testId={connectedAppsId}>
+        <Columns alignVertical="center" space="8px">
+          <Column width="content">
+            <Inline alignVertical="center" alignHorizontal="center">
+              <Symbol
+                size={12}
+                symbol={
+                  !appSession ? 'app.connected.to.app.below.fill' : 'network'
+                }
+                weight="semibold"
+              />
+            </Inline>
+          </Column>
+          <Column>
+            <Text size="14pt" weight="semibold">
+              {!appSession ? 'Connect' : 'Switch networks'}
+            </Text>
+          </Column>
+          <Column width="content">
+            <Box
+              as={motion.div}
+              animate={{ rotate: chevronDirection === 'right' ? -90 : 0 }}
+              initial={{ rotate: chevronDirection === 'right' ? 0 : -90 }}
+            >
+              <ChevronDown color="labelTertiary" />
+            </Box>
+          </Column>
+        </Columns>
+      </Box>
+    </DropdownMenuRadioItem>
+  );
+};
+
 interface AppNetworkMenuProps {
   children: ReactNode;
   url: string;
@@ -57,17 +113,36 @@ export const AppNetworkMenu = ({
   const [showNetworks, setShowNetworks] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const { currentAddress } = useCurrentAddressStore();
+
   const { appHost, appLogo, appName } = useAppMetadata({ url });
   const navigate = useRainbowNavigate();
 
-  const { updateAppSessionChainId, disconnectAppSession, appSession } =
-    useAppSession({ host: appHost });
+  const {
+    addSession,
+    updateAppSessionChainId,
+    disconnectAppSession,
+    appSession,
+  } = useAppSession({ host: appHost });
 
   const changeChainId = useCallback(
     (chainId: string) => {
       updateAppSessionChainId(Number(chainId));
     },
     [updateAppSessionChainId],
+  );
+
+  const connectToApp = useCallback(
+    (chainId: string) => {
+      addSession({
+        host: appHost,
+        address: currentAddress,
+        chainId: Number(chainId),
+        url,
+      });
+      inpageMessenger.send('rainbow_reload', null);
+    },
+    [addSession, appHost, currentAddress, url],
   );
 
   const disconnect = useCallback(
@@ -151,33 +226,13 @@ export const AppNetworkMenu = ({
             onValueChange(value as 'connected-apps' | 'switch-networks')
           }
         >
-          <DropdownMenuRadioItem
-            onSelect={(e) => {
-              e.preventDefault();
-            }}
-            highlightAccentColor
-            value="switch-networks"
-          >
-            <Box width="full" testId={connectedAppsId}>
-              <Columns alignVertical="center" space="8px">
-                <Column width="content">
-                  <Inline alignVertical="center" alignHorizontal="center">
-                    <Symbol size={12} symbol="network" weight="semibold" />
-                  </Inline>
-                </Column>
-                <Column>
-                  <Text size="14pt" weight="semibold">
-                    Switch networks
-                  </Text>
-                </Column>
-                <Column width="content">
-                  <Box style={{ rotate: '-90deg' }}>
-                    <ChevronDown color="labelTertiary" />
-                  </Box>
-                </Column>
-              </Columns>
-            </Box>
-          </DropdownMenuRadioItem>
+          {!showNetworks && (
+            <AppInteractionItem
+              connectedAppsId={connectedAppsId}
+              appSession={appSession}
+              chevronDirection="right"
+            />
+          )}
 
           {showNetworks && (
             <DropdownMenuContent
@@ -189,35 +244,15 @@ export const AppNetworkMenu = ({
                 setMenuOpen(false);
               }}
             >
-              <DropdownMenuRadioItem
-                onSelect={(e) => {
-                  e.preventDefault();
-                }}
-                highlightAccentColor
-                value="switch-networks"
-              >
-                <Box width="full" testId={connectedAppsId}>
-                  <Columns alignVertical="center" space="8px">
-                    <Column width="content">
-                      <Inline alignVertical="center" alignHorizontal="center">
-                        <Symbol size={12} symbol="network" weight="semibold" />
-                      </Inline>
-                    </Column>
-                    <Column>
-                      <Text size="14pt" weight="semibold">
-                        Switch networks
-                      </Text>
-                    </Column>
-                    <Column width="content">
-                      <ChevronDown color="labelTertiary" />
-                    </Column>
-                  </Columns>
-                </Box>
-              </DropdownMenuRadioItem>
+              <AppInteractionItem
+                connectedAppsId={connectedAppsId}
+                appSession={appSession}
+                chevronDirection="down"
+              />
 
               <DropdownMenuRadioGroup
                 value={`${appSession?.chainId}`}
-                onValueChange={changeChainId}
+                onValueChange={appSession ? changeChainId : connectToApp}
               >
                 <SwitchNetworkMenuSelector
                   type="dropdown"
