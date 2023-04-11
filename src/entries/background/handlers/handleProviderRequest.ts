@@ -1,5 +1,6 @@
 import { ToBufferInputTypes } from '@ethereumjs/util';
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import { isAddress } from '@ethersproject/address';
 import { recoverPersonalSignature } from '@metamask/eth-sig-util';
 import { ChainId } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
@@ -141,6 +142,28 @@ export const handleProviderRequest = ({
         case 'eth_signTypedData_v3':
         case 'eth_signTypedData_v4': {
           {
+            // If we need to validate the input before showing the UI, it should go here.
+            if (method === 'eth_signTypedData_v4') {
+              // we don't trust the params order
+              let dataParam = params?.[1];
+              if (!isAddress(params?.[0] as Address)) {
+                dataParam = params?.[0];
+              }
+
+              let data = dataParam as {
+                domain: { chainId: string };
+              };
+              if (typeof dataParam === 'string') {
+                data = JSON.parse(dataParam);
+              }
+              const {
+                domain: { chainId },
+              } = data;
+              if (Number(chainId) !== Number(activeSession?.chainId)) {
+                throw new Error('ChainId mismatch');
+              }
+            }
+
             response = await messengerProviderRequest(popupMessenger, {
               method,
               id,
