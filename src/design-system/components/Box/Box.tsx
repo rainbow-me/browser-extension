@@ -17,33 +17,33 @@ import {
   useColorContext,
 } from './ColorContext';
 
-type PolymorphicBox = Polymorphic.ForwardRefComponent<
-  'div',
-  Omit<BoxStyles, 'background'> & {
-    background?:
-      | 'accent'
-      | BackgroundColor
-      | {
-          default: 'accent' | BackgroundColor;
-          hover?: 'accent' | BackgroundColor;
-          focus?: 'accent' | BackgroundColor;
-          active?: 'accent' | BackgroundColor;
-          hoverActive?: 'accent' | BackgroundColor;
-        };
-    borderColor?:
-      | BoxStyles['borderColor']
-      | {
-          default: BoxStyles['borderColor'];
-          hover?: BoxStyles['borderColor'];
-          focus?: BoxStyles['borderColor'];
-          active?: BoxStyles['borderColor'];
-          hoverActive?: BoxStyles['borderColor'];
-        };
-    className?: ClassValue;
-    testId?: string;
-    onKeyDown?: React.KeyboardEventHandler;
-  }
->;
+export type BoxProps = Omit<BoxStyles, 'background'> & {
+  background?:
+    | 'accent'
+    | BackgroundColor
+    | {
+        default: 'accent' | BackgroundColor;
+        hover?: 'accent' | BackgroundColor;
+        focus?: 'accent' | BackgroundColor;
+        active?: 'accent' | BackgroundColor;
+        hoverActive?: 'accent' | BackgroundColor;
+      };
+  borderColor?:
+    | BoxStyles['borderColor']
+    | {
+        default: BoxStyles['borderColor'];
+        hover?: BoxStyles['borderColor'];
+        focus?: BoxStyles['borderColor'];
+        active?: BoxStyles['borderColor'];
+        hoverActive?: BoxStyles['borderColor'];
+      };
+  className?: ClassValue;
+  testId?: string;
+  onKeyDown?: React.KeyboardEventHandler;
+  tabIndex?: number;
+};
+
+type PolymorphicBox = Polymorphic.ForwardRefComponent<'div', BoxProps>;
 
 export const Box = forwardRef(
   ({ as: Component = 'div', className, testId, ...props }, ref) => {
@@ -64,6 +64,7 @@ export const Box = forwardRef(
     const { lightThemeColorContext, darkThemeColorContext } = useColorContext();
     const accentColorContext = useAccentColorContext();
     const background = props.background;
+    const tabIndex = typeof props?.tabIndex === 'number' ? props.tabIndex : -1;
 
     const lightThemeBackgroundColor =
       typeof background === 'string' ? background : background?.default ?? null;
@@ -113,6 +114,7 @@ export const Box = forwardRef(
         // Since Box is a primitive component, it needs to spread props
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...restProps}
+        tabIndex={tabIndex}
       />
     );
 

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
@@ -20,6 +20,7 @@ import {
 import { useIsDefaultWalletStore } from '~/core/state/currentSettings/isDefaultWallet';
 import { ThemeOption } from '~/core/types/settings';
 import { Box, Inline, Symbol, Text } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { Toggle } from '~/design-system/components/Toggle/Toggle';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
@@ -43,6 +44,8 @@ export function Settings() {
     useCurrentThemeStore();
   const { connectedToHardhat, setConnectedToHardhat } =
     useConnectedToHardhatStore();
+
+  const [themeDropdownOpen, setThemeDropdownOpen] = useState(false);
 
   const testSandboxBackground = useCallback(async () => {
     const response = await testSandbox();
@@ -92,6 +95,7 @@ export function Settings() {
       <MenuContainer testId="settings-menu-container">
         <Menu>
           <MenuItem
+            first
             titleComponent={
               <MenuItem.Title
                 text={i18n.t('settings.use_rainbow_as_default_wallet')}
@@ -102,8 +106,10 @@ export function Settings() {
                 testId="set-rainbow-default-toggle"
                 checked={isDefaultWallet}
                 handleChange={setRainbowAsDefaultWallet}
+                tabIndex={-1}
               />
             }
+            onToggle={() => setRainbowAsDefaultWallet(!isDefaultWallet)}
           />
           <MenuItem.Description
             text={i18n.t('settings.default_wallet_description')}
@@ -111,6 +117,8 @@ export function Settings() {
         </Menu>
         <Menu>
           <MenuItem
+            first
+            last
             leftComponent={
               <Symbol
                 symbol="lock.fill"
@@ -130,6 +138,7 @@ export function Settings() {
         </Menu>
         <Menu>
           <MenuItem
+            first
             hasRightArrow
             leftComponent={
               <Symbol
@@ -164,69 +173,82 @@ export function Settings() {
               <MenuItem.Title text={i18n.t('settings.currency.title')} />
             }
           />
-          <SwitchMenu
-            align="end"
-            renderMenuTrigger={
-              <MenuItem
-                hasChevron
-                leftComponent={
-                  <Symbol
-                    symbol={currentTheme === 'light' ? 'sun.max' : 'moon.stars'}
-                    color={themeOptions[currentTheme as ThemeOption].color}
-                    size={18}
-                    weight="medium"
-                  />
-                }
-                rightComponent={
-                  <MenuItem.Selection
-                    text={
-                      themeOptions[currentUserSelectedTheme as ThemeOption]
-                        .label
-                    }
-                  />
-                }
-                titleComponent={
-                  <MenuItem.Title text={i18n.t('settings.theme.title')} />
-                }
-              />
-            }
-            menuItemIndicator={
-              <Symbol
-                symbol="checkmark"
-                color="label"
-                size={12}
-                weight="semibold"
-              />
-            }
-            renderMenuItem={(option, i) => {
-              const { label, symbol, color } =
-                themeOptions[option as ThemeOption];
+          <Lens
+            borderRadius="6px"
+            onKeyDown={() => setThemeDropdownOpen(true)}
+            onClick={() => setThemeDropdownOpen(true)}
+          >
+            <SwitchMenu
+              align="end"
+              controlled
+              onClose={() => setThemeDropdownOpen(false)}
+              open={themeDropdownOpen}
+              renderMenuTrigger={
+                <MenuItem
+                  tabIndex={-1}
+                  hasChevron
+                  leftComponent={
+                    <Symbol
+                      symbol={
+                        currentTheme === 'light' ? 'sun.max' : 'moon.stars'
+                      }
+                      color={themeOptions[currentTheme as ThemeOption].color}
+                      size={18}
+                      weight="medium"
+                    />
+                  }
+                  rightComponent={
+                    <MenuItem.Selection
+                      text={
+                        themeOptions[currentUserSelectedTheme as ThemeOption]
+                          .label
+                      }
+                    />
+                  }
+                  titleComponent={
+                    <MenuItem.Title text={i18n.t('settings.theme.title')} />
+                  }
+                />
+              }
+              menuItemIndicator={
+                <Symbol
+                  symbol="checkmark"
+                  color="label"
+                  size={12}
+                  weight="semibold"
+                />
+              }
+              renderMenuItem={(option, i) => {
+                const { label, symbol, color } =
+                  themeOptions[option as ThemeOption];
 
-              return (
-                <Box id={`switch-option-item-${i}`}>
-                  <Inline space="8px" alignVertical="center">
-                    <Inline alignVertical="center" space="8px">
-                      <Symbol
-                        size={14}
-                        symbol={symbol}
-                        color={color}
-                        weight="semibold"
-                      />
+                return (
+                  <Box id={`switch-option-item-${i}`}>
+                    <Inline space="8px" alignVertical="center">
+                      <Inline alignVertical="center" space="8px">
+                        <Symbol
+                          size={14}
+                          symbol={symbol}
+                          color={color}
+                          weight="semibold"
+                        />
+                      </Inline>
+                      <Text weight="regular" size="14pt">
+                        {label}
+                      </Text>
                     </Inline>
-                    <Text weight="regular" size="14pt">
-                      {label}
-                    </Text>
-                  </Inline>
-                </Box>
-              );
-            }}
-            menuItems={Object.keys(themeOptions)}
-            selectedValue={currentUserSelectedTheme}
-            onValueChange={(value) => {
-              setCurrentTheme(value as ThemeOption);
-            }}
-          />
+                  </Box>
+                );
+              }}
+              menuItems={Object.keys(themeOptions)}
+              selectedValue={currentUserSelectedTheme}
+              onValueChange={(value) => {
+                setCurrentTheme(value as ThemeOption);
+              }}
+            />
+          </Lens>
           <MenuItem
+            last
             leftComponent={
               <Symbol
                 symbol="person.text.rectangle.fill"
@@ -244,6 +266,7 @@ export function Settings() {
         </Menu>
         <Menu>
           <MenuItem
+            first
             leftComponent={<MenuItem.TextIcon icon="🌈" />}
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.share_rainbow')} />
@@ -289,6 +312,7 @@ export function Settings() {
             onClick={() => window.open(RAINBOW_TWITTER_URL, '_blank')}
           />
           <MenuItem
+            last
             leftComponent={<MenuItem.TextIcon icon="💬" />}
             titleComponent={
               <MenuItem.Title text={i18n.t('settings.feedback_and_support')} />
@@ -318,6 +342,7 @@ export function Settings() {
               testId="test-sandbox-background"
             />
             <MenuItem
+              last
               titleComponent={
                 <MenuItem.Title
                   text={
@@ -338,6 +363,7 @@ export function Settings() {
             <MenuItem.Description text="Feature Flags" />
             {Object.keys(featureFlags).map((key, i) => (
               <MenuItem
+                last={Object.keys(featureFlags).length - 1 === i}
                 key={i}
                 titleComponent={
                   <MenuItem.Title
@@ -346,6 +372,7 @@ export function Settings() {
                 }
                 rightComponent={
                   <Toggle
+                    tabIndex={-1}
                     testId={`feature-flag-${key}`}
                     checked={featureFlags[key as FeatureFlagTypes]}
                     handleChange={() =>
@@ -353,6 +380,7 @@ export function Settings() {
                     }
                   />
                 }
+                onToggle={() => toggleFeatureFlag(key as FeatureFlagTypes)}
               />
             ))}
           </Menu>

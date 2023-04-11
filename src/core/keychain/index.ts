@@ -58,8 +58,8 @@ export const unlockVault = async (password: string) => {
   }
 };
 
-export const wipeVault = async (password: string) => {
-  return keychainManager.wipe(password);
+export const wipeVault = async () => {
+  return keychainManager.wipe();
 };
 
 export const lockVault = () => {

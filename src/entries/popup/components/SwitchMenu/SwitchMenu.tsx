@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
+import { shortcuts } from '~/core/references/shortcuts';
 import { Box } from '~/design-system';
 import {
   DropdownMenu,
@@ -12,6 +13,8 @@ import {
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
 
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+
 interface SwitchMenuProps {
   title?: string;
   selectedValue: string;
@@ -22,6 +25,9 @@ interface SwitchMenuProps {
   menuItems: string[];
   align?: 'start' | 'center' | 'end';
   onOpenChange?: (open: boolean) => void;
+  open?: boolean;
+  controlled?: boolean;
+  onClose?: () => void;
 }
 
 export const SwitchMenu = ({
@@ -34,13 +40,36 @@ export const SwitchMenu = ({
   menuItemIndicator,
   align,
   onOpenChange,
+  open,
+  controlled,
+  onClose,
 }: SwitchMenuProps) => {
+  useKeyboardShortcut({
+    condition: () => !!controlled,
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.global.CLOSE.key) {
+        e.preventDefault();
+        onClose?.();
+      }
+    },
+  });
   return (
-    <DropdownMenu onOpenChange={onOpenChange}>
+    <SwitchMenuContainer
+      controlled={controlled}
+      onOpenChange={onOpenChange}
+      open={open}
+    >
       <DropdownMenuTrigger asChild>
         <Box style={{ cursor: 'default' }}>{renderMenuTrigger}</Box>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align={align}>
+      <DropdownMenuContent
+        align={align}
+        onPointerDownOutside={() => {
+          if (controlled) {
+            onClose?.();
+          }
+        }}
+      >
         {title ? (
           <>
             <DropdownMenuLabel>{title}</DropdownMenuLabel>
@@ -67,6 +96,28 @@ export const SwitchMenu = ({
           })}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
-    </DropdownMenu>
+    </SwitchMenuContainer>
   );
+};
+
+const SwitchMenuContainer = ({
+  controlled,
+  children,
+  onOpenChange,
+  open,
+}: {
+  controlled?: boolean;
+  children: ReactNode;
+  onOpenChange?: (v: boolean) => void;
+  open?: boolean;
+}) => {
+  if (controlled) {
+    return (
+      <DropdownMenu open={open} onOpenChange={onOpenChange}>
+        {children}
+      </DropdownMenu>
+    );
+  }
+
+  return <DropdownMenu onOpenChange={onOpenChange}>{children}</DropdownMenu>;
 };

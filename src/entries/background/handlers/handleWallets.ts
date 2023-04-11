@@ -101,7 +101,7 @@ export const handleWallets = () =>
             break;
           }
           case 'wipe':
-            response = await wipeVault(payload as string);
+            response = await wipeVault();
             break;
           case 'unlock':
             response = await unlockVault(payload as string);

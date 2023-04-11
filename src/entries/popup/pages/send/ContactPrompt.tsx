@@ -155,7 +155,7 @@ const DeleteContact = ({
           <Text weight="bold" size="16pt" color="label">
             {i18n.t('contacts.remove_contact_title')}
           </Text>
-          <Box width="full">
+          <Box width="full" style={{ wordBreak: 'break-all' }}>
             <Text
               weight="medium"
               color="labelTertiary"

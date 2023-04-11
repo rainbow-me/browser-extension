@@ -184,6 +184,7 @@ function NavbarButtonWithBack({
         symbol={symbol}
         variant="transparentHover"
         symbolSize={symbolSize}
+        tabIndex={0}
       />
     </Box>
   );
