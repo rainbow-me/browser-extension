@@ -59,8 +59,12 @@ export function Tokens() {
     <Box
       ref={containerRef}
       width="full"
-      style={{ overflow: 'auto' }}
-      paddingBottom="8px"
+      style={{
+        overflow: 'auto',
+        // prevent coin icon shadow from clipping in empty space when list is small
+        paddingBottom:
+          assetsRowVirtualizer.getVirtualItems().length > 6 ? 8 : 60,
+      }}
       paddingTop="2px"
       marginTop="-16px"
     >
