@@ -44,7 +44,6 @@ export const NetworkMenu = () => {
       connectedAppsId="home-page-header-connected-apps"
       sideOffset={1}
       url={url}
-      type="dropdown"
     >
       {appSession ? (
         <Box
