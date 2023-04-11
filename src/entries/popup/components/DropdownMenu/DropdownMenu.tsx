@@ -6,7 +6,11 @@ import { useAccount } from 'wagmi';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { AccentColorProvider, Box, Text, ThemeProvider } from '~/design-system';
 import { menuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
-import { TextStyles, boxStyles } from '~/design-system/styles/core.css';
+import {
+  BoxStyles,
+  TextStyles,
+  boxStyles,
+} from '~/design-system/styles/core.css';
 import {
   BackgroundColor,
   Space,
@@ -42,9 +46,13 @@ interface DropdownMenuContentProps {
   children: ReactNode;
   align?: 'start' | 'center' | 'end';
   marginRight?: Space;
+  marginLeft?: Space | number;
   accentColor?: string;
   sideOffset?: number;
   onPointerDownOutside?: () => void;
+  width?: number;
+  top?: number;
+  position?: BoxStyles['position'];
 }
 
 export function DropdownMenuContent(props: DropdownMenuContentProps) {
@@ -62,7 +70,16 @@ const DropdownMenuContentBody = React.forwardRef<
   HTMLDivElement,
   DropdownMenuContentProps
 >((props: DropdownMenuContentProps, ref) => {
-  const { children, align = 'start', marginRight, accentColor } = props;
+  const {
+    children,
+    align = 'start',
+    marginRight,
+    marginLeft,
+    accentColor,
+    width,
+    top,
+    position,
+  } = props;
   const { currentTheme } = useCurrentThemeStore();
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
@@ -74,11 +91,13 @@ const DropdownMenuContentBody = React.forwardRef<
         <Box
           as={DropdownMenuPrimitive.Content}
           style={{
-            width: 204,
-            backdropFilter: 'blur(26px)',
+            width: width ?? '204px',
             boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
             marginRight: marginRight ?? '0px',
+            marginLeft: marginLeft ?? '0px',
+            top: top ?? '0px',
           }}
+          backdropFilter="blur(26px)"
           paddingHorizontal="12px"
           paddingVertical="4px"
           align={align}
@@ -86,6 +105,7 @@ const DropdownMenuContentBody = React.forwardRef<
           borderColor="separatorTertiary"
           borderWidth="1px"
           borderRadius="16px"
+          position={position}
           ref={ref}
           onPointerDownOutside={props?.onPointerDownOutside}
           hideWhenDetached

@@ -92,48 +92,57 @@ export const AppNetworkMenu = ({
       <DropdownMenuTrigger asChild>
         <Box testId={menuTriggerId}>{children}</Box>
       </DropdownMenuTrigger>
-      <DropdownMenuContent sideOffset={sideOffset} align={align}>
-        <Inset top="10px" bottom="14px">
-          <Inline alignHorizontal="justify" alignVertical="center">
-            <Inline space="10px" alignVertical="center">
-              <Box
-                style={{
-                  height: 14,
-                  width: 14,
-                  borderRadius: 3.5,
-                  overflow: 'hidden',
-                  marginRight: 2,
-                }}
-              >
-                <ExternalImage src={appLogo} width="14" height="14" />
-              </Box>
-              <Box
-                id={`${headerHostId}-${appSession ? appHost : 'not-connected'}`}
-              >
-                <Rows space="10px">
-                  <Row>
-                    <TextOverflow size="14pt" weight="bold" color="label">
-                      {appName ?? appHost}
-                    </TextOverflow>
-                  </Row>
-                  {!appSession && (
+      <DropdownMenuContent
+        width={showNetworks ? 190 : undefined}
+        marginLeft={showNetworks ? 7 : undefined}
+        sideOffset={sideOffset}
+        align={align}
+      >
+        <Box opacity={showNetworks ? '0.5' : undefined}>
+          <Inset top="10px" bottom="14px">
+            <Inline alignHorizontal="justify" alignVertical="center">
+              <Inline space="10px" alignVertical="center">
+                <Box
+                  style={{
+                    height: 14,
+                    width: 14,
+                    borderRadius: 3.5,
+                    overflow: 'hidden',
+                    marginRight: 2,
+                  }}
+                >
+                  <ExternalImage src={appLogo} width="14" height="14" />
+                </Box>
+                <Box
+                  id={`${headerHostId}-${
+                    appSession ? appHost : 'not-connected'
+                  }`}
+                >
+                  <Rows space="10px">
                     <Row>
-                      <Text size="11pt" weight="bold">
-                        {i18n.t('menu.home_header_left.not_connected')}
-                      </Text>
+                      <TextOverflow size="14pt" weight="bold" color="label">
+                        {appName ?? appHost}
+                      </TextOverflow>
                     </Row>
-                  )}
-                </Rows>
-              </Box>
+                    {!appSession && (
+                      <Row>
+                        <Text size="11pt" weight="bold">
+                          {i18n.t('menu.home_header_left.not_connected')}
+                        </Text>
+                      </Row>
+                    )}
+                  </Rows>
+                </Box>
+              </Inline>
+              <Symbol
+                size={6}
+                color={appSession ? 'green' : 'labelQuaternary'}
+                symbol="circle.fill"
+                weight="semibold"
+              />
             </Inline>
-            <Symbol
-              size={6}
-              color={appSession ? 'green' : 'labelQuaternary'}
-              symbol="circle.fill"
-              weight="semibold"
-            />
-          </Inline>
-        </Inset>
+          </Inset>
+        </Box>
 
         <DropdownMenuRadioGroup
           onValueChange={(value) =>
@@ -169,7 +178,36 @@ export const AppNetworkMenu = ({
           </DropdownMenuRadioItem>
 
           {showNetworks && (
-            <Box paddingTop="4px">
+            <DropdownMenuContent
+              top={!appSession ? 50.5 : 37}
+              position="absolute"
+            >
+              <DropdownMenuRadioItem
+                onSelect={(e) => {
+                  e.preventDefault();
+                }}
+                highlightAccentColor
+                value="switch-networks"
+              >
+                <Box width="full" testId={connectedAppsId}>
+                  <Columns alignVertical="center" space="8px">
+                    <Column width="content">
+                      <Inline alignVertical="center" alignHorizontal="center">
+                        <Symbol size={12} symbol="network" weight="semibold" />
+                      </Inline>
+                    </Column>
+                    <Column>
+                      <Text size="14pt" weight="semibold">
+                        Switch networks
+                      </Text>
+                    </Column>
+                    <Column width="content">
+                      <ChevronDown color="labelTertiary" />
+                    </Column>
+                  </Columns>
+                </Box>
+              </DropdownMenuRadioItem>
+
               <DropdownMenuRadioGroup
                 value={`${appSession?.chainId}`}
                 onValueChange={changeChainId}
@@ -181,7 +219,7 @@ export const AppNetworkMenu = ({
                 />
               </DropdownMenuRadioGroup>
               <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
-            </Box>
+            </DropdownMenuContent>
           )}
 
           <Stack space="4px">
