@@ -21,7 +21,7 @@ import {
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 
 import ExternalImage from '../components/ExternalImage/ExternalImage';
-import { AppNetworkMenu } from '../components/SwitchMenu/AppNetworkMenu';
+import { ConnectedAppNetworkMenu } from '../components/SwitchMenu/ConnectedAppNetworkMenu';
 import { WalletAvatar } from '../components/WalletAvatar/WalletAvatar';
 import { useAppMetadata } from '../hooks/useAppMetadata';
 import { useAppSession } from '../hooks/useAppSession';
@@ -192,12 +192,7 @@ const ConnectedApp = ({
             />
           </Box>
         )}
-        <AppNetworkMenu
-          displayConnectedRoute={false}
-          url={url}
-          menuTriggerId="switch-network-menu"
-          type="context"
-        >
+        <ConnectedAppNetworkMenu url={url} menuTriggerId="switch-network-menu">
           <Inset horizontal="12px" vertical="8px">
             <Inline alignHorizontal="justify" alignVertical="center">
               <Columns space="8px">
@@ -257,7 +252,7 @@ const ConnectedApp = ({
               </Columns>
             </Inline>
           </Inset>
-        </AppNetworkMenu>
+        </ConnectedAppNetworkMenu>
       </Box>
     </Box>
   );
