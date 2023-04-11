@@ -370,6 +370,7 @@ const boxBaseProperties = defineProperties({
     marginRight: negativeSpace,
     marginTop: negativeSpace,
     opacity: ['1', '0.1', '0.2', '0.04'],
+    outline: ['none'],
     paddingBottom: space,
     paddingLeft: space,
     paddingRight: space,
@@ -395,10 +396,11 @@ const boxBaseProperties = defineProperties({
 
 const boxColorProperties = defineProperties({
   conditions: {
-    default: {},
-    hover: { selector: '&:hover' },
-    focus: { selector: '&:focus' },
     active: { selector: '&:active' },
+    default: {},
+    focus: { selector: '&:focus' },
+    focusVisible: { selector: '&:focus-visible' },
+    hover: { selector: '&:hover' },
     hoverActive: { selector: '&:hover:active' },
   },
   defaultCondition: 'default',

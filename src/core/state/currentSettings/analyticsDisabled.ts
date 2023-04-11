@@ -11,7 +11,7 @@ export const analyticsDisabledStore = createStore<AnalyticsDisabledState>(
   (set) => ({
     analyticsDisabled: undefined,
     setAnalyticsDisabled: (newanalyticsDisabled) =>
-      set({ analyticsDisabled: !newanalyticsDisabled }),
+      set({ analyticsDisabled: newanalyticsDisabled }),
   }),
   {
     persist: {
