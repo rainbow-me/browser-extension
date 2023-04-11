@@ -57,6 +57,7 @@ export function Privacy() {
         <MenuContainer testId="settings-menu-container">
           <Menu>
             <MenuItem
+              first
               leftComponent={
                 <Symbol
                   symbol="chart.bar.xaxis"
@@ -67,6 +68,7 @@ export function Privacy() {
               }
               rightComponent={
                 <Toggle
+                  tabIndex={-1}
                   checked={!analyticsDisabled}
                   handleChange={setAnalyticsDisabled}
                 />
@@ -76,6 +78,7 @@ export function Privacy() {
                   text={i18n.t('settings.privacy_and_security.analytics')}
                 />
               }
+              onToggle={() => setAnalyticsDisabled(!analyticsDisabled)}
             />
             <MenuItem.Description
               text={i18n.t(
@@ -85,6 +88,7 @@ export function Privacy() {
           </Menu>
           <Menu>
             <MenuItem
+              first
               leftComponent={
                 <Symbol
                   symbol="eye.slash.circle.fill"
@@ -95,6 +99,7 @@ export function Privacy() {
               }
               rightComponent={
                 <Toggle
+                  tabIndex={-1}
                   checked={hideAssetBalances}
                   handleChange={setHideAssetBalances}
                 />
@@ -106,6 +111,7 @@ export function Privacy() {
                   )}
                 />
               }
+              onToggle={() => setHideAssetBalances(!hideAssetBalances)}
             />
             <MenuItem.Description
               text={i18n.t(
@@ -113,6 +119,7 @@ export function Privacy() {
               )}
             />
             <MenuItem
+              last
               rightComponent={
                 <Toggle
                   checked={hideSmallBalances}
@@ -127,10 +134,15 @@ export function Privacy() {
                   )}
                 />
               }
+              onToggle={() => {
+                // uncomment when this is enabled
+                // setHideSmallBalances(!hideSmallBalances);
+              }}
             />
           </Menu>
           <Menu>
             <MenuItem
+              first
               hasRightArrow
               titleComponent={
                 <MenuItem.Title
@@ -142,6 +154,7 @@ export function Privacy() {
               onClick={handleChangePassword}
             />
             <MenuItem
+              last
               hasRightArrow
               rightComponent={
                 <MenuItem.Selection
@@ -160,6 +173,8 @@ export function Privacy() {
           </Menu>
           <Menu>
             <MenuItem
+              first
+              last
               hasRightArrow
               titleComponent={
                 <MenuItem.Title

@@ -10,6 +10,8 @@ import {
   Box,
   Button,
   ButtonSymbol,
+  Column,
+  Columns,
   Inline,
   Inset,
   Stack,
@@ -198,51 +200,61 @@ const ConnectedApp = ({
         >
           <Inset horizontal="12px" vertical="8px">
             <Inline alignHorizontal="justify" alignVertical="center">
-              <Inline space="8px" alignVertical="center">
-                <Box
-                  background="fill"
-                  borderRadius="12px"
-                  style={{
-                    width: '36px',
-                    height: '36px',
-                    overflow: 'hidden',
-                  }}
-                >
-                  <ExternalImage src={appLogo} width="36" height="36" />
-                </Box>
-                <Box>
-                  <Stack space="8px">
-                    <Text
-                      align="left"
-                      size="14pt"
-                      weight="semibold"
-                      color="label"
-                    >
-                      {appName || appHost}
-                    </Text>
-                    <Inline space="4px" alignVertical="center">
-                      <Box
-                        background="fill"
-                        borderRadius="30px"
-                        style={{
-                          width: '16px',
-                          height: '16px',
-                          overflow: 'hidden',
-                        }}
-                      >
-                        <WalletAvatar
-                          address={address}
-                          size={16}
-                          emojiSize="12pt"
-                        />
+              <Columns space="8px">
+                <Column width="content">
+                  <Box
+                    background="fill"
+                    borderRadius="12px"
+                    style={{
+                      width: '36px',
+                      height: '36px',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <ExternalImage src={appLogo} width="36" height="36" />
+                  </Box>
+                </Column>
+                <Column>
+                  <Box>
+                    <Stack space="8px">
+                      <Box style={{ wordBreak: 'break-all' }}>
+                        <Text
+                          align="left"
+                          size="14pt"
+                          weight="semibold"
+                          color="label"
+                        >
+                          {appName || appHost}
+                        </Text>
                       </Box>
-                      <Text color="labelTertiary" size="12pt" weight="semibold">
-                        {ensName || truncateAddress(address)}
-                      </Text>
-                    </Inline>
-                  </Stack>
-                </Box>
-              </Inline>
+                      <Inline space="4px" alignVertical="center">
+                        <Box
+                          background="fill"
+                          borderRadius="30px"
+                          style={{
+                            width: '16px',
+                            height: '16px',
+                            overflow: 'hidden',
+                          }}
+                        >
+                          <WalletAvatar
+                            address={address}
+                            size={16}
+                            emojiSize="12pt"
+                          />
+                        </Box>
+                        <Text
+                          color="labelTertiary"
+                          size="12pt"
+                          weight="semibold"
+                        >
+                          {ensName || truncateAddress(address)}
+                        </Text>
+                      </Inline>
+                    </Stack>
+                  </Box>
+                </Column>
+              </Columns>
             </Inline>
           </Inset>
         </AppNetworkMenu>

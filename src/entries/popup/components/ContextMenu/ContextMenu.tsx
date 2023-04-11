@@ -1,10 +1,12 @@
 import * as ContextMenuPrimitive from '@radix-ui/react-context-menu';
-import React, { CSSProperties, ReactNode } from 'react';
+import clsx from 'clsx';
+import React, { CSSProperties, ReactNode, useRef } from 'react';
 import { useAccount } from 'wagmi';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { AccentColorProvider, Box, Text, ThemeProvider } from '~/design-system';
-import { TextStyles } from '~/design-system/styles/core.css';
+import { menuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
+import { TextStyles, boxStyles } from '~/design-system/styles/core.css';
 import {
   BackgroundColor,
   Space,
@@ -25,7 +27,7 @@ interface ContextMenuTriggerProps {
   onTrigger?: () => void;
 }
 
-export function ContextMenuTrigger(props: ContextMenuTriggerProps) {
+export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
   const { children, accentColor, asChild } = props;
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
@@ -50,7 +52,7 @@ export function ContextMenuTrigger(props: ContextMenuTriggerProps) {
       </ContextMenuPrimitive.Trigger>
     </AccentColorProvider>
   );
-}
+};
 
 interface ContextMenuContentProps {
   children: ReactNode;
@@ -136,6 +138,7 @@ export const ContextMenuItem = (props: ContextMenuItemProps) => {
   return (
     <Box
       as={ContextMenuPrimitive.Item}
+      className={menuFocusVisibleStyle}
       paddingVertical="8px"
       paddingHorizontal="8px"
       marginHorizontal="-8px"
@@ -166,6 +169,7 @@ interface ContextMenuRadioItemProps {
 export const ContextMenuRadioItem = (props: ContextMenuRadioItemProps) => {
   const { children, value, selectedValue, selectedColor } = props;
   const isSelectedValue = selectedValue === value;
+  const containerRef = useRef<HTMLDivElement>(null);
   return (
     <Box
       as={ContextMenuPrimitive.RadioItem}
@@ -174,11 +178,14 @@ export const ContextMenuRadioItem = (props: ContextMenuRadioItemProps) => {
       paddingHorizontal="8px"
       marginHorizontal="-8px"
       alignItems="center"
-      style={{
-        display: 'flex',
-        borderRadius: '12px',
-        outline: 'none',
-      }}
+      className={clsx([
+        boxStyles({
+          display: 'flex',
+          borderRadius: '12px',
+          outline: 'none',
+        }),
+        menuFocusVisibleStyle,
+      ])}
       background={{
         default: isSelectedValue
           ? (selectedColor as BackgroundColor) ?? 'accent'
@@ -189,6 +196,7 @@ export const ContextMenuRadioItem = (props: ContextMenuRadioItemProps) => {
       }}
       borderColor={isSelectedValue ? 'buttonStrokeSecondary' : 'transparent'}
       borderWidth="1px"
+      ref={containerRef}
     >
       {children}
     </Box>

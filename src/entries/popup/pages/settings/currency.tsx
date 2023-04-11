@@ -18,8 +18,10 @@ export function Currency() {
     <Box paddingHorizontal="20px">
       <MenuContainer testId="settings-menu-container">
         <Menu>
-          {supportedCurrencyKeys.map((currency) => (
+          {supportedCurrencyKeys.map((currency, index) => (
             <MenuItem
+              first={index === 0}
+              last={index === supportedCurrencyKeys.length - 1}
               leftComponent={
                 currency === 'ETH' ? (
                   <Inline alignHorizontal="center">
