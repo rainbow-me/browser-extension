@@ -119,6 +119,7 @@ export const ConnectedApps = () => {
           bottom="0"
           left="0"
           right="0"
+          style={{ overflow: 'hidden' }}
         >
           <Inline alignHorizontal="center">
             <Button
