@@ -53,6 +53,7 @@ interface DropdownMenuContentProps {
   width?: number;
   top?: number;
   position?: BoxStyles['position'];
+  onInteractOutside?: (e: Event) => void;
 }
 
 export function DropdownMenuContent(props: DropdownMenuContentProps) {
@@ -79,6 +80,7 @@ const DropdownMenuContentBody = React.forwardRef<
     width,
     top,
     position,
+    onInteractOutside,
   } = props;
   const { currentTheme } = useCurrentThemeStore();
   const { address } = useAccount();
@@ -110,6 +112,7 @@ const DropdownMenuContentBody = React.forwardRef<
           onPointerDownOutside={props?.onPointerDownOutside}
           hideWhenDetached
           tabIndex={-1}
+          onInteractOutside={onInteractOutside}
         >
           {children}
         </Box>

@@ -55,6 +55,8 @@ export const AppNetworkMenu = ({
   connectedAppsId,
 }: AppNetworkMenuProps) => {
   const [showNetworks, setShowNetworks] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
   const { appHost, appLogo, appName } = useAppMetadata({ url });
   const navigate = useRainbowNavigate();
 
@@ -88,7 +90,7 @@ export const AppNetworkMenu = ({
   );
 
   return (
-    <DropdownMenu>
+    <DropdownMenu onOpenChange={setMenuOpen} open={menuOpen}>
       <DropdownMenuTrigger asChild>
         <Box testId={menuTriggerId}>{children}</Box>
       </DropdownMenuTrigger>
@@ -181,6 +183,11 @@ export const AppNetworkMenu = ({
             <DropdownMenuContent
               top={!appSession ? 50.5 : 37}
               position="absolute"
+              onInteractOutside={(e) => {
+                e.preventDefault();
+                setShowNetworks(false);
+                setMenuOpen(false);
+              }}
             >
               <DropdownMenuRadioItem
                 onSelect={(e) => {
@@ -216,6 +223,7 @@ export const AppNetworkMenu = ({
                   type="dropdown"
                   highlightAccentColor
                   selectedValue={`${appSession?.chainId}`}
+                  onNetworkSelect={(e) => e.preventDefault()}
                 />
               </DropdownMenuRadioGroup>
               <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
