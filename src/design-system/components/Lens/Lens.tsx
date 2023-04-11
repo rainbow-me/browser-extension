@@ -28,6 +28,7 @@ export function Lens({
   children: ReactNode;
   onKeyDown?: () => void;
   onClick?: () => void;
+  style?: React.CSSProperties;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleKeyDown = useCallback(
