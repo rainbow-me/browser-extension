@@ -1,10 +1,12 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
+import clsx from 'clsx';
 import React, { CSSProperties, ReactNode } from 'react';
 import { useAccount } from 'wagmi';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { AccentColorProvider, Box, Text, ThemeProvider } from '~/design-system';
-import { TextStyles } from '~/design-system/styles/core.css';
+import { menuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
+import { TextStyles, boxStyles } from '~/design-system/styles/core.css';
 import {
   BackgroundColor,
   Space,
@@ -42,6 +44,7 @@ interface DropdownMenuContentProps {
   marginRight?: Space;
   accentColor?: string;
   sideOffset?: number;
+  onPointerDownOutside?: () => void;
 }
 
 export function DropdownMenuContent(props: DropdownMenuContentProps) {
@@ -84,7 +87,9 @@ const DropdownMenuContentBody = React.forwardRef<
           borderWidth="1px"
           borderRadius="16px"
           ref={ref}
+          onPointerDownOutside={props?.onPointerDownOutside}
           hideWhenDetached
+          tabIndex={-1}
         >
           {children}
         </Box>
@@ -124,17 +129,21 @@ export const DropdownMenuItem = (props: DropdownMenuItemProps) => {
       paddingVertical="8px"
       paddingHorizontal="8px"
       marginHorizontal="-8px"
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        borderRadius: '12px',
-        outline: 'none',
-      }}
+      className={clsx([
+        boxStyles({
+          display: 'flex',
+          alignItems: 'center',
+          borderRadius: '12px',
+          outline: 'none',
+        }),
+        menuFocusVisibleStyle,
+      ])}
       onSelect={onSelect}
       background={{
         default: 'transparent',
         hover: 'surfaceSecondary',
       }}
+      tabIndex={0}
     >
       {children}
     </Box>
@@ -166,11 +175,12 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
       paddingHorizontal="8px"
       marginHorizontal="-8px"
       alignItems="center"
-      className={
+      className={clsx([
         highlightAccentColor && !isSelectedValue
           ? rowTransparentAccentHighlight
-          : null
-      }
+          : null,
+        !isSelectedValue && menuFocusVisibleStyle,
+      ])}
       style={{
         display: 'flex',
         borderRadius: '12px',
