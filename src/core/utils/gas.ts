@@ -401,7 +401,7 @@ export const estimateGasWithPadding = async ({
     const code = to ? await provider.getCode(to) : undefined;
     // 2 - if it's not a contract AND it doesn't have any data use the default gas limit
     if (
-      (!contractCallEstimateGas && !to) ||
+      (!contractCallEstimateGas && to) ||
       (to && !data && (!code || code === '0x'))
     ) {
       return gasUnits.basic_tx;
