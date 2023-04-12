@@ -13,10 +13,10 @@ export function DetailsMenuRow({
 }) {
   return (
     <Box
+      marginVertical="-5px"
       onClick={onClick}
       paddingVertical="2px"
       width="full"
-      marginVertical="-5px"
     >
       <Inline space="8px" alignVertical="center" alignHorizontal="justify">
         {children}

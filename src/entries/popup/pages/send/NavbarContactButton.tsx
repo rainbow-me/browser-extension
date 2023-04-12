@@ -15,6 +15,7 @@ import {
   Stack,
   Symbol,
   Text,
+  TextOverflow,
 } from '~/design-system';
 
 import {
@@ -139,9 +140,15 @@ const EditContactDropdown = ({
       <DropdownMenuContent marginRight="12px">
         <Stack space="4px">
           <Box paddingTop="8px" paddingBottom="12px">
-            <Text weight="bold" size="14pt" color="label" align="center">
+            <TextOverflow
+              maxWidth={180}
+              weight="bold"
+              size="14pt"
+              color="label"
+              align="center"
+            >
               {contact?.display || truncateAddress(toAddress)}
-            </Text>
+            </TextOverflow>
           </Box>
           <DropdownMenuRadioGroup onValueChange={onValueChange}>
             <Stack space="4px">

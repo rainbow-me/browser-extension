@@ -57,6 +57,7 @@ export const Alert = () => {
               height="28px"
               variant="flat"
               onClick={onClose}
+              tabIndex={0}
             >
               <Text color="label" size="16pt" weight="bold">
                 {i18n.t('alert.ok')}

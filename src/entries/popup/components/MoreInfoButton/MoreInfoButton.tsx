@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
+import { shortcuts } from '~/core/references/shortcuts';
 import {
   Box,
   ButtonSymbol,
@@ -12,6 +13,7 @@ import {
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
 
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,10 +31,30 @@ export interface MoreInfoOption {
   color?: TextStyles['color'];
 }
 
-const MoreInfoButton = ({ options }: { options: MoreInfoOption[] }) => {
+interface MoreInfoButtonProps {
+  options: MoreInfoOption[];
+  open?: boolean;
+  controlled?: boolean;
+  onClose?: () => void;
+}
+
+const MoreInfoButton = ({
+  controlled,
+  onClose,
+  open,
+  options,
+}: MoreInfoButtonProps) => {
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.global.CLOSE.key) {
+        e.preventDefault();
+        onClose?.();
+      }
+    },
+  });
   return (
     <Box onClick={(e) => e.stopPropagation()}>
-      <DropdownMenu>
+      <MoreInfoMenuContainer open={open} controlled={controlled}>
         <DropdownMenuTrigger asChild>
           <Box style={{ cursor: 'default' }}>
             <ButtonSymbol
@@ -43,7 +65,14 @@ const MoreInfoButton = ({ options }: { options: MoreInfoOption[] }) => {
             />
           </Box>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent
+          onPointerDownOutside={() => {
+            if (controlled) {
+              onClose?.();
+            }
+          }}
+          align="end"
+        >
           {options.map((option) => (
             <Box key={option.symbol}>
               <DropdownMenuItem onSelect={option.onSelect}>
@@ -83,9 +112,31 @@ const MoreInfoButton = ({ options }: { options: MoreInfoOption[] }) => {
             </Box>
           ))}
         </DropdownMenuContent>
-      </DropdownMenu>
+      </MoreInfoMenuContainer>
     </Box>
   );
+};
+
+const MoreInfoMenuContainer = ({
+  controlled,
+  children,
+  onOpenChange,
+  open,
+}: {
+  controlled?: boolean;
+  children: ReactNode;
+  onOpenChange?: (v: boolean) => void;
+  open?: boolean;
+}) => {
+  if (controlled) {
+    return (
+      <DropdownMenu open={open} onOpenChange={onOpenChange}>
+        {children}
+      </DropdownMenu>
+    );
+  }
+
+  return <DropdownMenu onOpenChange={onOpenChange}>{children}</DropdownMenu>;
 };
 
 export { MoreInfoButton };

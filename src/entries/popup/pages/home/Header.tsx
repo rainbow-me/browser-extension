@@ -130,6 +130,7 @@ function ActionButtonsSection() {
             tabIndex={tabIndexes.WALLET_HEADER_COPY_BUTTON}
           />
           <Link
+            tabIndex={-1}
             id="header-link-swap"
             to={allowSwap ? ROUTES.SWAP : '#'}
             state={{ from: ROUTES.HOME }}
@@ -149,6 +150,7 @@ function ActionButtonsSection() {
           </Link>
 
           <Link
+            tabIndex={-1}
             id="header-link-send"
             to={allowSend ? ROUTES.SEND : '#'}
             state={{ from: ROUTES.HOME, to: ROUTES.SEND }}
