@@ -45,10 +45,12 @@ export function DropdownMenuTrigger(props: DropdownMenuTriggerProps) {
 }
 
 interface DropdownMenuContentProps {
+  animate?: boolean;
   children: ReactNode;
   align?: 'start' | 'center' | 'end';
   marginRight?: Space;
   marginLeft?: Space | number;
+  marginTop?: Space | number;
   accentColor?: string;
   sideOffset?: number;
   onPointerDownOutside?: () => void;
@@ -60,7 +62,7 @@ interface DropdownMenuContentProps {
 
 export function DropdownMenuContent(props: DropdownMenuContentProps) {
   return (
-    <DropdownMenuPrimitive.Portal>
+    <DropdownMenuPrimitive.Portal style={{ zIndex: 11 }}>
       <DropdownMenuContentBody
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...props}
@@ -77,11 +79,14 @@ const DropdownMenuContentBody = React.forwardRef<
     children,
     align = 'start',
     marginRight,
+    marginLeft,
+    marginTop,
     accentColor,
     width,
     top,
     position,
     onInteractOutside,
+    animate = false,
   } = props;
   const { currentTheme } = useCurrentThemeStore();
   const { address } = useAccount();
@@ -106,13 +111,18 @@ const DropdownMenuContentBody = React.forwardRef<
         >
           <Box
             as={motion.div}
-            initial={false}
+            initial={{ width: width ?? '204px', opacity: animate ? 0 : 1 }}
             animate={{
               width: width ?? '204px',
+              opacity: 1,
             }}
+            exit={{ width: width ?? '204px', opacity: animate ? 0 : 1 }}
+            transition={{ duration: 0.2 }}
             style={{
               boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
               marginRight: marginRight ?? '0px',
+              marginLeft: marginLeft ?? '0px',
+              marginTop: marginTop ?? '0px',
               top: top ?? '0px',
             }}
             width="fit"
