@@ -53,7 +53,7 @@ export const QRCodePage = () => {
             variant="raised"
             onClick={handleCopy}
           >
-            Copy address
+            {i18n.t('qr_code.copy_address')}
           </Button>
         </Box>
       </Stack>

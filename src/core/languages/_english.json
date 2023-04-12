@@ -22,6 +22,9 @@
       "text_bold": "Tip:"
     }
   },
+  "qr_code": {
+    "copy_address": "Copy address"
+  },
   "add_wallet": {
     "title": "Add another wallet",
     "create_wallet": "Create a new wallet",
