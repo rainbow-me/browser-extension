@@ -117,6 +117,7 @@ export const AppNetworkMenu = ({
   connectedAppsId,
 }: AppNetworkMenuProps) => {
   const [showNetworks, setShowNetworks] = useState(false);
+  const [showMenUHeader, setShowMenuHeader] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { currentAddress } = useCurrentAddressStore();
@@ -167,11 +168,17 @@ export const AppNetworkMenu = ({
           navigate(ROUTES.CONNECTED);
           break;
         case 'switch-networks':
-          setShowNetworks((showNetworks) => !showNetworks);
+          setTimeout(
+            () => {
+              setShowNetworks(!showNetworks);
+            },
+            showNetworks ? 200 : 0,
+          );
+          setShowMenuHeader((showMenuHeader) => !showMenuHeader);
           break;
       }
     },
-    [navigate],
+    [navigate, showNetworks],
   );
 
   return (
@@ -180,12 +187,12 @@ export const AppNetworkMenu = ({
         <Box testId={menuTriggerId}>{children}</Box>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        width={showNetworks ? 190 : undefined}
-        marginLeft={showNetworks ? 7 : undefined}
+        width={showMenUHeader ? 190 : undefined}
+        // marginLeft={showNetworks ? 7 : undefined}
         sideOffset={sideOffset}
         align={align}
       >
-        <Box opacity={showNetworks ? '0.5' : undefined}>
+        <Box opacity={showMenUHeader ? '0.5' : undefined}>
           <Inset top="10px" bottom="14px">
             <Inline alignHorizontal="justify" alignVertical="center">
               <Inline space="10px" alignVertical="center">
@@ -247,12 +254,16 @@ export const AppNetworkMenu = ({
           {showNetworks && (
             <DropdownMenuContent
               top={51.5}
+              width={204}
               position="absolute"
               onInteractOutside={(e) => {
                 const x = (e.detail.originalEvent as PointerEvent).x;
                 const y = (e.detail.originalEvent as PointerEvent).y;
                 e.preventDefault();
-                setShowNetworks(false);
+                setTimeout(() => {
+                  setShowNetworks(false);
+                }, 200);
+                setShowMenuHeader(false);
                 if (
                   x < NETWORK_MENU_HEADER_X ||
                   x > NETWORK_MENU_HEADER_X + NETWORK_MENU_HEADER_WIDTH ||
@@ -279,12 +290,17 @@ export const AppNetworkMenu = ({
                   selectedValue={`${appSession?.chainId}`}
                   onNetworkSelect={(e) => {
                     e.preventDefault();
-                    setShowNetworks(false);
+                    setTimeout(() => {
+                      setShowNetworks(false);
+                    }, 200);
+                    setShowMenuHeader(false);
                     setMenuOpen(false);
                   }}
                 />
               </DropdownMenuRadioGroup>
-              <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
+              {appSession && (
+                <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
+              )}
             </DropdownMenuContent>
           )}
 

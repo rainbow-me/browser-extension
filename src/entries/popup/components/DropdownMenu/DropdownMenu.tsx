@@ -1,6 +1,7 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { DismissableLayerProps } from '@radix-ui/react-menu';
 import clsx from 'clsx';
+import { motion } from 'framer-motion';
 import React, { CSSProperties, ReactNode } from 'react';
 import { useAccount } from 'wagmi';
 
@@ -76,7 +77,6 @@ const DropdownMenuContentBody = React.forwardRef<
     children,
     align = 'start',
     marginRight,
-    marginLeft,
     accentColor,
     width,
     top,
@@ -93,29 +93,40 @@ const DropdownMenuContentBody = React.forwardRef<
       <ThemeProvider theme={currentTheme}>
         <Box
           as={DropdownMenuPrimitive.Content}
-          style={{
-            width: width ?? '204px',
-            boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
-            marginRight: marginRight ?? '0px',
-            marginLeft: marginLeft ?? '0px',
-            top: top ?? '0px',
-          }}
-          backdropFilter="blur(26px)"
-          paddingHorizontal="12px"
-          paddingVertical="4px"
-          align={align}
-          background="surfaceMenu"
-          borderColor="separatorTertiary"
-          borderWidth="1px"
-          borderRadius="16px"
-          position={position}
           ref={ref}
           onPointerDownOutside={props?.onPointerDownOutside}
           hideWhenDetached
           tabIndex={-1}
           onInteractOutside={onInteractOutside}
+          align={align}
+          style={{ width: '204px' }}
+          alignItems="center"
+          justifyContent="center"
+          display="flex"
         >
-          {children}
+          <Box
+            as={motion.div}
+            initial={false}
+            animate={{
+              width: width ?? '204px',
+            }}
+            style={{
+              boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
+              marginRight: marginRight ?? '0px',
+              top: top ?? '0px',
+            }}
+            width="fit"
+            backdropFilter="blur(26px)"
+            paddingHorizontal="12px"
+            paddingVertical="4px"
+            background="surfaceMenu"
+            borderColor="separatorTertiary"
+            borderWidth="1px"
+            borderRadius="16px"
+            position={position}
+          >
+            {children}
+          </Box>
         </Box>
       </ThemeProvider>
     </AccentColorProvider>
