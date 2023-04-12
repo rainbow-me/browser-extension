@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import React, { ReactNode, useCallback, useState } from 'react';
 
 import { i18n } from '~/core/languages';
@@ -78,12 +78,14 @@ const AppInteractionItem = ({
             </Text>
           </Column>
           <Column width="content">
-            <Box
-              as={motion.div}
-              animate={{ rotate: chevronDirection === 'right' ? -90 : 0 }}
-              initial={{ rotate: chevronDirection === 'right' ? 0 : -90 }}
-            >
-              <ChevronDown color="labelTertiary" />
+            <Box style={{ rotate: '-90deg' }}>
+              <Box
+                as={motion.div}
+                animate={{ rotate: chevronDirection === 'right' ? 0 : 90 }}
+                initial={{ rotate: chevronDirection === 'right' ? 90 : 0 }}
+              >
+                <ChevronDown color="labelTertiary" />
+              </Box>
             </Box>
           </Column>
         </Columns>
@@ -188,11 +190,14 @@ export const AppNetworkMenu = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent
         width={showMenUHeader ? 190 : undefined}
-        // marginLeft={showNetworks ? 7 : undefined}
         sideOffset={sideOffset}
         align={align}
       >
-        <Box opacity={showMenUHeader ? '0.5' : undefined}>
+        <Box
+          as={motion.div}
+          initial={false}
+          animate={{ opacity: showMenUHeader ? 0.5 : 1 }}
+        >
           <Inset top="10px" bottom="14px">
             <Inline alignHorizontal="justify" alignVertical="center">
               <Inline space="10px" alignVertical="center">
@@ -251,58 +256,70 @@ export const AppNetworkMenu = ({
             />
           )}
 
-          {showNetworks && (
-            <DropdownMenuContent
-              top={51.5}
-              width={204}
-              position="absolute"
-              onInteractOutside={(e) => {
-                const x = (e.detail.originalEvent as PointerEvent).x;
-                const y = (e.detail.originalEvent as PointerEvent).y;
-                e.preventDefault();
-                setTimeout(() => {
-                  setShowNetworks(false);
-                }, 200);
-                setShowMenuHeader(false);
-                if (
-                  x < NETWORK_MENU_HEADER_X ||
-                  x > NETWORK_MENU_HEADER_X + NETWORK_MENU_HEADER_WIDTH ||
-                  y < NETWORK_MENU_HEADER_Y ||
-                  y > NETWORK_MENU_HEADER_Y + NETWORK_MENU_HEADER_HEIGHT
-                ) {
-                  setMenuOpen(false);
-                }
-              }}
-            >
-              <AppInteractionItem
-                connectedAppsId={connectedAppsId}
-                appSession={appSession}
-                chevronDirection="down"
-              />
-
-              <DropdownMenuRadioGroup
-                value={`${appSession?.chainId}`}
-                onValueChange={appSession ? changeChainId : connectToApp}
+          <AnimatePresence initial={false}>
+            {showNetworks && (
+              <Box
+                as={motion.div}
+                animate={{ opacity: 1 }}
+                initial={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                key="ijioiij"
               >
-                <SwitchNetworkMenuSelector
-                  type="dropdown"
-                  highlightAccentColor
-                  selectedValue={`${appSession?.chainId}`}
-                  onNetworkSelect={(e) => {
+                <DropdownMenuContent
+                  key="kjgiuyg"
+                  top={51.5}
+                  width={204}
+                  position="absolute"
+                  onInteractOutside={(e) => {
+                    const x = (e.detail.originalEvent as PointerEvent).x;
+                    const y = (e.detail.originalEvent as PointerEvent).y;
                     e.preventDefault();
                     setTimeout(() => {
                       setShowNetworks(false);
                     }, 200);
                     setShowMenuHeader(false);
-                    setMenuOpen(false);
+                    if (
+                      x < NETWORK_MENU_HEADER_X ||
+                      x > NETWORK_MENU_HEADER_X + NETWORK_MENU_HEADER_WIDTH ||
+                      y < NETWORK_MENU_HEADER_Y ||
+                      y > NETWORK_MENU_HEADER_Y + NETWORK_MENU_HEADER_HEIGHT
+                    ) {
+                      setMenuOpen(false);
+                    }
                   }}
-                />
-              </DropdownMenuRadioGroup>
-              {appSession && (
-                <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
-              )}
-            </DropdownMenuContent>
-          )}
+                >
+                  <AppInteractionItem
+                    connectedAppsId={connectedAppsId}
+                    appSession={appSession}
+                    chevronDirection="down"
+                  />
+
+                  <DropdownMenuRadioGroup
+                    value={`${appSession?.chainId}`}
+                    onValueChange={appSession ? changeChainId : connectToApp}
+                  >
+                    <SwitchNetworkMenuSelector
+                      type="dropdown"
+                      highlightAccentColor
+                      selectedValue={`${appSession?.chainId}`}
+                      onNetworkSelect={(e) => {
+                        e.preventDefault();
+                        setTimeout(() => {
+                          setShowNetworks(false);
+                        }, 200);
+                        setShowMenuHeader(false);
+                        setMenuOpen(false);
+                      }}
+                    />
+                  </DropdownMenuRadioGroup>
+                  {appSession && (
+                    <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
+                  )}
+                </DropdownMenuContent>
+              </Box>
+            )}
+          </AnimatePresence>
 
           <Stack space="4px">
             {url ? <DropdownMenuSeparator /> : null}
