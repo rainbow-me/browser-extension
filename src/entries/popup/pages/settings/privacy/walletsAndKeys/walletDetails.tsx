@@ -10,6 +10,7 @@ import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { getSettingWallets } from '~/core/utils/settings';
 import { Box, Inline, Symbol } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import AccountItem, {
   LabelOption,
@@ -227,6 +228,8 @@ export function WalletDetails() {
         <MenuContainer testId="settings-menu-container">
           <Menu>
             <MenuItem
+              first
+              last
               titleComponent={
                 <MenuItem.Title
                   text={i18n.t(
@@ -248,41 +251,25 @@ export function WalletDetails() {
               onClick={handleViewSecret}
             />
           </Menu>
-          <Menu paddingVertical="8px">
+          <Menu>
             {wallet?.accounts?.map((account: Address) => {
               return (
-                <AccountItem
-                  account={account}
+                <WalletRow
                   key={account}
-                  rightComponent={
-                    <Inline alignVertical="center" space="10px">
-                      {hiddenWallets[account] && (
-                        <LabelPill
-                          label={i18n.t(
-                            'settings.privacy_and_security.wallets_and_keys.wallet_details.hidden',
-                          )}
-                        />
-                      )}
-                      <MoreInfoButton
-                        options={InfoButtonOptions({
-                          account,
-                          handleViewPrivateKey,
-                          setRenameAccount,
-                          setRemoveAccount,
-                          unhideWallet: hiddenWallets[account]
-                            ? (address: Address) => unhideWallet({ address })
-                            : undefined,
-                        })}
-                      />
-                    </Inline>
-                  }
-                  labelType={LabelOption.address}
+                  account={account}
+                  hiddenWallets={hiddenWallets}
+                  handleViewPrivateKey={handleViewPrivateKey}
+                  setRenameAccount={setRenameAccount}
+                  setRemoveAccount={setRemoveAccount}
+                  unhideWallet={unhideWallet}
                 />
               );
             })}
           </Menu>
           <Menu>
             <MenuItem
+              first
+              last
               leftComponent={
                 <Symbol
                   size={18}
@@ -307,3 +294,59 @@ export function WalletDetails() {
     </Box>
   );
 }
+
+const WalletRow = ({
+  account,
+  hiddenWallets,
+  handleViewPrivateKey,
+  setRenameAccount,
+  setRemoveAccount,
+  unhideWallet,
+}: {
+  account: Address;
+  hiddenWallets: Record<Address, boolean>;
+  handleViewPrivateKey: (account: Address) => void;
+  setRenameAccount: React.Dispatch<React.SetStateAction<Address | undefined>>;
+  setRemoveAccount: React.Dispatch<React.SetStateAction<Address | undefined>>;
+  unhideWallet: ({ address }: { address: Address }) => void;
+}) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+  return (
+    <Lens
+      style={{ borderRadius: 15 }}
+      onKeyDown={() => setMenuOpen(true)}
+      onClick={() => setMenuOpen(true)}
+    >
+      <AccountItem
+        key={account}
+        account={account}
+        rightComponent={
+          <Inline alignVertical="center" space="10px">
+            {hiddenWallets[account] && (
+              <LabelPill
+                label={i18n.t(
+                  'settings.privacy_and_security.wallets_and_keys.wallet_details.hidden',
+                )}
+              />
+            )}
+            <MoreInfoButton
+              controlled
+              open={menuOpen}
+              onClose={() => setMenuOpen(false)}
+              options={InfoButtonOptions({
+                account,
+                handleViewPrivateKey,
+                setRenameAccount,
+                setRemoveAccount,
+                unhideWallet: hiddenWallets[account]
+                  ? (address: Address) => unhideWallet({ address })
+                  : undefined,
+              })}
+            />
+          </Inline>
+        }
+        labelType={LabelOption.address}
+      />
+    </Lens>
+  );
+};

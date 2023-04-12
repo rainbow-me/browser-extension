@@ -14,8 +14,10 @@ export function AutoLockTimer() {
     <Box paddingHorizontal="20px">
       <MenuContainer testId="settings-menu-container">
         <Menu>
-          {Object.keys(autoLockTimerOptions).map((lockTimer) => (
+          {Object.keys(autoLockTimerOptions).map((lockTimer, index) => (
             <MenuItem
+              first={index === 0}
+              last={index === Object.keys(autoLockTimerOptions).length - 1}
               rightComponent={
                 autoLockTimer === lockTimer ? <MenuItem.SelectionIcon /> : null
               }

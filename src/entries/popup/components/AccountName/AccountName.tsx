@@ -4,7 +4,7 @@ import React, { useCallback, useState } from 'react';
 import { useAccount, useEnsAvatar } from 'wagmi';
 
 import { Box, Inline, Symbol, TextOverflow } from '~/design-system';
-import { accentColorAsHsl } from '~/design-system/styles/core.css';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { transformScales } from '~/design-system/styles/designTokens';
 
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -54,20 +54,22 @@ export function AccountName({
     : {};
 
   return (
-    <Box
-      as={motion.div}
-      id={`${id ?? ''}-account-name-shuffle`}
-      onClick={handleClick}
-      tabIndex={
-        includeAvatar ? undefined : tabIndexes.WALLET_HEADER_ACCOUNT_NAME
-      }
-      style={{
-        outlineColor: accentColorAsHsl,
-        borderRadius: 6,
-      }}
-      {...chevronProps}
+    <Lens
+      tabIndex={includeAvatar ? -1 : tabIndexes.WALLET_HEADER_ACCOUNT_NAME}
+      onKeyDown={handleClick}
+      borderRadius="6px"
+      style={{ padding: includeAvatar ? 0 : 2 }}
     >
-      <Inline alignVertical="center" space="4px">
+      <Box
+        as={motion.div}
+        id={`${id ?? ''}-account-name-shuffle`}
+        onClick={handleClick}
+        tabIndex={
+          includeAvatar ? undefined : tabIndexes.WALLET_HEADER_ACCOUNT_NAME
+        }
+        padding="4px"
+        {...chevronProps}
+      >
         <Inline alignVertical="center" space="4px">
           {includeAvatar && (
             <Box paddingRight="2px">
@@ -94,7 +96,7 @@ export function AccountName({
             />
           )}
         </Inline>
-      </Inline>
-    </Box>
+      </Box>
+    </Lens>
   );
 }

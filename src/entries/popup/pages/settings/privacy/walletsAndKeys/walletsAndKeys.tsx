@@ -98,6 +98,7 @@ export function WalletsAndKeys() {
             return (
               <Menu key={idx}>
                 <MenuItem
+                  first
                   titleComponent={
                     <MenuItem.Title
                       text={`${i18n.t(
@@ -133,6 +134,8 @@ export function WalletsAndKeys() {
           })}
           <Menu>
             <MenuItem
+              first
+              last
               leftComponent={
                 <Symbol
                   size={18}

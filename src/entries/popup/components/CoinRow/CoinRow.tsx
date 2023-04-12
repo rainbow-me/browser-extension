@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react';
 
 import { ParsedAddressAsset, ParsedAsset } from '~/core/types/assets';
 import { Box, Column, Columns, Inset, Row, Rows } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 
 import { CoinIcon } from '../CoinIcon/CoinIcon';
@@ -9,9 +10,11 @@ import { CoinIcon } from '../CoinIcon/CoinIcon';
 function RowHighlightWrapper({ children }: { children: ReactNode }) {
   return (
     <Inset horizontal="8px">
-      <Box borderRadius="12px" className={rowTransparentAccentHighlight}>
-        {children}
-      </Box>
+      <Lens borderRadius="12px">
+        <Box borderRadius="12px" className={rowTransparentAccentHighlight}>
+          {children}
+        </Box>
+      </Lens>
     </Inset>
   );
 }
