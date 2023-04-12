@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
 import { useAccount, useEnsAvatar } from 'wagmi';
@@ -19,6 +20,7 @@ type AccountNameProps = {
   includeAvatar?: boolean;
   id?: string;
   size?: '16pt' | '20pt';
+  chevron?: boolean;
 };
 
 const chevronDownSizes = {
@@ -30,6 +32,7 @@ export function AccountName({
   includeAvatar = false,
   size = '20pt',
   id,
+  chevron = true,
 }: AccountNameProps) {
   const { address } = useAccount();
   const { displayName } = useWalletName({ address: address || '0x' });
@@ -40,6 +43,15 @@ export function AccountName({
   const handleClick = useCallback(() => {
     navigate(ROUTES.WALLET_SWITCHER);
   }, [navigate]);
+
+  const chevronProps = chevron
+    ? {
+        whileHover: { scale: transformScales['1.04'] },
+        whileTap: { scale: transformScales['0.96'] },
+        onHoverStart: () => setHover(true),
+        onHoverEnd: () => setHover(false),
+      }
+    : {};
 
   return (
     <Lens
@@ -55,37 +67,34 @@ export function AccountName({
         tabIndex={
           includeAvatar ? undefined : tabIndexes.WALLET_HEADER_ACCOUNT_NAME
         }
-        whileHover={{ scale: transformScales['1.04'] }}
-        whileTap={{ scale: transformScales['0.96'] }}
-        onHoverStart={() => setHover(true)}
-        onHoverEnd={() => setHover(false)}
         padding="4px"
+        {...chevronProps}
       >
         <Inline alignVertical="center" space="4px">
-          <Inline alignVertical="center" space="4px">
-            {includeAvatar && (
-              <Box paddingRight="2px">
-                <Avatar imageUrl={ensAvatar || ''} size={16} />
-              </Box>
-            )}
-            <Box id={`${id ?? ''}-account-name-shuffle`}>
-              <TextOverflow
-                color="label"
-                size={size}
-                weight="heavy"
-                testId="account-name"
-                maxWidth={TEXT_MAX_WIDTH}
-              >
-                {displayName}
-              </TextOverflow>
+          {includeAvatar && (
+            <Box paddingRight="2px">
+              <Avatar imageUrl={ensAvatar || ''} size={16} />
             </Box>
+          )}
+          <Box id={`${id ?? ''}-account-name-shuffle`}>
+            <TextOverflow
+              color="label"
+              size={size}
+              weight="heavy"
+              testId="account-name"
+              maxWidth={TEXT_MAX_WIDTH}
+            >
+              {displayName}
+            </TextOverflow>
+          </Box>
+          {chevron && (
             <Symbol
               size={chevronDownSizes[size]}
               symbol="chevron.down"
               color={hover ? 'label' : 'labelTertiary'}
               weight="semibold"
             />
-          </Inline>
+          )}
         </Inline>
       </Box>
     </Lens>
