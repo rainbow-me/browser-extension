@@ -98,12 +98,11 @@ it('should be able to go to setings', async () => {
   await findElementByTestIdAndClick({ id: 'settings-link', driver });
 });
 
-it('should be able to connect to hardhat and turn swaps flag on', async () => {
+it('should be able to connect to hardhat', async () => {
   const btn = await querySelector(driver, '[data-testid="connect-to-hardhat"]');
   await waitAndClick(btn, driver);
   const button = await findElementByText(driver, 'Disconnect from Hardhat');
   expect(button).toBeTruthy();
-  await findElementByTestIdAndClick({ id: 'feature-flag-swaps', driver });
   await findElementByTestIdAndClick({ id: 'navbar-button-with-back', driver });
 });
 
