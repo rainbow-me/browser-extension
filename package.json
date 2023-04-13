@@ -51,7 +51,7 @@
     "// Build and zip": "",
     "bundle": "yarn build && yarn zip",
     "// Runs tests": "",
-    "anvil": "ALCHEMY_API_KEY=$(grep ALCHEMY_API_KEY .env | cut -d '=' -f2) && anvil --fork-url https://eth-mainnet.alchemyapi.io/v2/$ALCHEMY_API_KEY --chain-id 1337",
+    "anvil": "ALCHEMY_API_KEY=$(grep ALCHEMY_API_KEY .env | cut -d '=' -f2) && anvil --fork-url https://eth-mainnet.alchemyapi.io/v2/$ALCHEMY_API_KEY",
     "anvil:kill": "lsof -i :8545|tail -n +2|awk '{print $2}'|xargs -r kill -s SIGINT",
     "test": "./scripts/unit-tests.sh",
     "test:watch": "yarn anvil & vitest --watch",
