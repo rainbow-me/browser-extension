@@ -3,7 +3,14 @@ import React, { useMemo } from 'react';
 import { i18n } from '~/core/languages';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
-import { Box, Column, Columns, Text, TextOverflow } from '~/design-system';
+import {
+  Box,
+  Column,
+  Columns,
+  Inline,
+  Text,
+  TextOverflow,
+} from '~/design-system';
 
 export const TokenToBuyInfo = ({
   asset,
@@ -17,11 +24,11 @@ export const TokenToBuyInfo = ({
 
   if (!asset) return null;
   return (
-    <Box width="full">
+    <Box>
       <Columns alignHorizontal="justify" space="4px">
         <Column>
           <Columns alignVertical="center" space="4px">
-            <Column>
+            <Column width="content">
               <TextOverflow
                 testId={'token-to-buy-info-price'}
                 as="p"
@@ -42,28 +49,32 @@ export const TokenToBuyInfo = ({
         </Column>
 
         <Column>
-          <Columns alignVertical="center" space="4px">
-            <Column width="content">
-              <Text size="12pt" weight="medium" color="labelQuaternary">
-                {`${i18n.t('swap.balance')}:`}
-              </Text>
-            </Column>
+          <Inline alignHorizontal="right">
+            <Columns alignVertical="center" alignHorizontal="right" space="4px">
+              <Column width="content">
+                <Text size="12pt" weight="medium" color="labelQuaternary">
+                  {`${i18n.t('swap.balance')}:`}
+                </Text>
+              </Column>
 
-            <Column>
-              <TextOverflow
-                testId={'token-to-buy-info-balance'}
-                size="12pt"
-                weight="medium"
-                color="labelSecondary"
-              >
-                {asset?.balance?.amount &&
-                  handleSignificantDecimals(
-                    asset?.balance?.amount,
-                    asset?.decimals,
-                  )}
-              </TextOverflow>
-            </Column>
-          </Columns>
+              <Column>
+                <Box width="fit">
+                  <TextOverflow
+                    testId={'token-to-buy-info-balance'}
+                    size="12pt"
+                    weight="medium"
+                    color="labelSecondary"
+                  >
+                    {asset?.balance?.amount &&
+                      handleSignificantDecimals(
+                        asset?.balance?.amount,
+                        asset?.decimals,
+                      )}
+                  </TextOverflow>
+                </Box>
+              </Column>
+            </Columns>
+          </Inline>
         </Column>
       </Columns>
     </Box>

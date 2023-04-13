@@ -86,15 +86,17 @@ export function AccountName({
                 {displayName}
               </TextOverflow>
             </Box>
-            {chevron && (
+          </Column>
+          {chevron && (
+            <Column width="content">
               <Symbol
                 size={chevronDownSizes[size]}
                 symbol="chevron.down"
                 color={hover ? 'label' : 'labelTertiary'}
                 weight="semibold"
               />
-            )}
-          </Column>
+            </Column>
+          )}
         </Columns>
       </Box>
     </Lens>
