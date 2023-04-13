@@ -265,7 +265,7 @@ export const AcceptRequestButton = ({
       variant={waitingForDevice || disabled ? 'disabled' : 'flat'}
       disabled={disabled}
     >
-      <TextOverflow maxWidth={248} weight="bold" size="16pt" color="label">
+      <TextOverflow weight="bold" size="16pt" color="label">
         {loading ? <Spinner size={16} color="label" /> : label}
       </TextOverflow>
     </Button>
