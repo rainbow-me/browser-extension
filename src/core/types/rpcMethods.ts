@@ -22,4 +22,4 @@ export enum rpcMethods {
   eth_getTransactionByHash = 'eth_getTransactionByHash',
 }
 
-export type RPCMethod = keyof typeof rpcMethods;
+export type RPCMethod = keyof typeof rpcMethods | string;

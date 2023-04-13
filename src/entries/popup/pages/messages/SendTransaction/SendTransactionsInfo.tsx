@@ -38,9 +38,13 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
   useEffect(() => {
     const fetchMethodName = async (
       data: BytesLike | undefined,
-      to: Address,
+      to?: Address,
     ) => {
       if (!data) return;
+      if (!to) {
+        setMethodName(i18n.t('approve_request.contract_deployment'));
+        return;
+      }
       const methodSignaturePrefix = (data as string)?.substr(0, 10);
       let fallbackHandler;
       try {

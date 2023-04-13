@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { ChainId, bsc } from '~/core/types/chains';
 import { GasFeeLegacyParams, GasFeeParams } from '~/core/types/gas';
 import { toWei } from '~/core/utils/ethereum';
@@ -24,8 +25,11 @@ export const useApproveAppRequestValidations = ({
   chainId: ChainId;
   selectedGas?: GasFeeParams | GasFeeLegacyParams;
 }) => {
+  const { connectedToHardhat } = useConnectedToHardhatStore();
+  const chainIdToUse = connectedToHardhat ? ChainId.mainnet : chainId;
+
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
-    chainId,
+    chainId: chainIdToUse,
   });
   const nativeAsset = useUserAsset(nativeAssetUniqueId || '');
 
@@ -39,10 +43,11 @@ export const useApproveAppRequestValidations = ({
   const buttonLabel = useMemo(() => {
     if (!enoughNativeAssetForGas)
       return i18n.t('approve_request.insufficient_native_asset_for_gas', {
-        symbol: nativeAsset?.symbol || DEFAULT_NATIVE_ASSET_SYMBOL[chainId],
+        symbol:
+          nativeAsset?.symbol || DEFAULT_NATIVE_ASSET_SYMBOL[chainIdToUse],
       });
     return i18n.t('approve_request.send_transaction');
-  }, [chainId, enoughNativeAssetForGas, nativeAsset?.symbol]);
+  }, [chainIdToUse, enoughNativeAssetForGas, nativeAsset?.symbol]);
 
   return {
     enoughNativeAssetForGas,
