@@ -14,7 +14,7 @@ export interface FeatureFlagsStore {
 
 export const featureFlagsStore = createStore<FeatureFlagsStore>(
   (set, get) => ({
-    featureFlags: { swaps: false, full_watching_wallets: false },
+    featureFlags: { full_watching_wallets: false },
     setFeatureFlag: (key, value) => {
       const { featureFlags } = get();
       const newFeatureFlags = {
