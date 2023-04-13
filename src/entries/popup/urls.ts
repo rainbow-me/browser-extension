@@ -14,6 +14,7 @@ export const ROUTES = {
   SEED_VERIFY: '/seed-verify', // SeedVerify
   CREATE_PASSWORD: '/create-password', // CreatePassword
   SETTINGS: '/settings', // Settings
+  QR_CODE: '/qr-code', // QR Code
   SETTINGS__PRIVACY: '/settings/privacy', // Privacy
   SETTINGS__PRIVACY__AUTOLOCK: '/settings/privacy/autolock', // AutoLockTimer
   SETTINGS__PRIVACY__CHANGE_PASSWORD: '/settings/privacy/change-password', // ChangePassword

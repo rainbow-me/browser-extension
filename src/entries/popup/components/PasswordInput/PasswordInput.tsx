@@ -2,7 +2,7 @@ import React, { KeyboardEvent, useCallback, useRef, useState } from 'react';
 
 import { Box, ButtonSymbol } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
-import { BoxStyles } from '~/design-system/styles/core.css';
+import { BoxStyles, accentColorAsHsl } from '~/design-system/styles/core.css';
 
 export function PasswordInput({
   placeholder,
@@ -81,6 +81,9 @@ export function PasswordInput({
         onKeyDown={onKeyDown}
         tabIndex={tabIndex}
         autoFocus={autoFocus}
+        style={{
+          caretColor: accentColorAsHsl,
+        }}
       />
       <Box position="relative">
         <Box

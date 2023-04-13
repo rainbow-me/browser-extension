@@ -90,6 +90,10 @@ export async function findElementByTestId({ id, driver }) {
   return querySelector(driver, `[data-testid="${id}"]`);
 }
 
+export async function findElementById({ id, driver }) {
+  return querySelector(driver, `[id="${id}"]`);
+}
+
 export async function doNotFindElementByTestId({ id, driver }) {
   const elementFound = await Promise.race([
     querySelector(driver, `[data-testid="${id}"]`),
@@ -116,6 +120,11 @@ export async function getTextFromTextInput({ id, driver }) {
 
 export async function getTextFromText({ id, driver }) {
   const element = await findElementByTestId({ id, driver });
+  return await element.getText();
+}
+
+export async function getTextFromDappText({ id, driver }) {
+  const element = await findElementById({ id, driver });
   return await element.getText();
 }
 

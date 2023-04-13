@@ -85,7 +85,12 @@ export const SignMessageInfo = ({ request }: SignMessageProps) => {
                   wordBreak: 'break-all',
                 }}
               >
-                <Text weight="regular" color="label" size="14pt">
+                <Text
+                  weight="regular"
+                  color="label"
+                  size="14pt"
+                  testId="sign-message-text"
+                >
                   {typedData ? <pre>{message}</pre> : message}
                 </Text>
               </Box>

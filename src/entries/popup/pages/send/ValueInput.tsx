@@ -13,13 +13,13 @@ import {
   Separator,
   Stack,
   Symbol,
-  Text,
 } from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
 import { SendInputMask } from '../../components/InputMask/SendInputMask/SendInputMask';
 
 const { innerWidth: windowWidth } = window;
+const INFO_COLUMN_MAX_WIDTH = windowWidth / 2 - 50;
 
 export const ValueInput = ({
   asset,
@@ -106,7 +106,7 @@ export const ValueInput = ({
               <Inline alignHorizontal="justify" alignVertical="center">
                 <TextOverflow
                   as="p"
-                  maxWidth={windowWidth / 2}
+                  maxWidth={INFO_COLUMN_MAX_WIDTH}
                   size="11pt"
                   weight="bold"
                   color={`${asset ? 'label' : 'labelTertiary'}`}
@@ -124,14 +124,19 @@ export const ValueInput = ({
                       weight="bold"
                       symbol="arrow.up.arrow.down"
                     />
-                    <Text color="accent" size="12pt" weight="bold">
+                    <TextOverflow
+                      maxWidth={INFO_COLUMN_MAX_WIDTH}
+                      color="accent"
+                      size="12pt"
+                      weight="bold"
+                    >
                       {i18n.t('send.switch_to', {
                         currency:
                           independentField === 'asset'
                             ? currentCurrency
                             : asset?.symbol,
                       })}
-                    </Text>
+                    </TextOverflow>
                   </Inline>
                 </Box>
               </Inline>

@@ -1,9 +1,10 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
 import { useAccount, useEnsAvatar } from 'wagmi';
 
 import { Box, Inline, Symbol, TextOverflow } from '~/design-system';
-import { accentColorAsHsl } from '~/design-system/styles/core.css';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { transformScales } from '~/design-system/styles/designTokens';
 
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -19,6 +20,7 @@ type AccountNameProps = {
   includeAvatar?: boolean;
   id?: string;
   size?: '16pt' | '20pt';
+  chevron?: boolean;
 };
 
 const chevronDownSizes = {
@@ -30,6 +32,7 @@ export function AccountName({
   includeAvatar = false,
   size = '20pt',
   id,
+  chevron = true,
 }: AccountNameProps) {
   const { address } = useAccount();
   const { displayName } = useWalletName({ address: address || '0x' });
@@ -41,24 +44,32 @@ export function AccountName({
     navigate(ROUTES.WALLET_SWITCHER);
   }, [navigate]);
 
-  return (
-    <Box
-      as={motion.div}
-      id={`${id ?? ''}-account-name-shuffle`}
-      onClick={handleClick}
-      tabIndex={
-        includeAvatar ? undefined : tabIndexes.WALLET_HEADER_ACCOUNT_NAME
+  const chevronProps = chevron
+    ? {
+        whileHover: { scale: transformScales['1.04'] },
+        whileTap: { scale: transformScales['0.96'] },
+        onHoverStart: () => setHover(true),
+        onHoverEnd: () => setHover(false),
       }
-      style={{
-        outlineColor: accentColorAsHsl,
-        borderRadius: 6,
-      }}
-      whileHover={{ scale: transformScales['1.04'] }}
-      whileTap={{ scale: transformScales['0.96'] }}
-      onHoverStart={() => setHover(true)}
-      onHoverEnd={() => setHover(false)}
+    : {};
+
+  return (
+    <Lens
+      tabIndex={includeAvatar ? -1 : tabIndexes.WALLET_HEADER_ACCOUNT_NAME}
+      onKeyDown={handleClick}
+      borderRadius="6px"
+      style={{ padding: includeAvatar ? 0 : 2 }}
     >
-      <Inline alignVertical="center" space="4px">
+      <Box
+        as={motion.div}
+        id={`${id ?? ''}-account-name-shuffle`}
+        onClick={handleClick}
+        tabIndex={
+          includeAvatar ? undefined : tabIndexes.WALLET_HEADER_ACCOUNT_NAME
+        }
+        padding="4px"
+        {...chevronProps}
+      >
         <Inline alignVertical="center" space="4px">
           {includeAvatar && (
             <Box paddingRight="2px">
@@ -76,14 +87,16 @@ export function AccountName({
               {displayName}
             </TextOverflow>
           </Box>
-          <Symbol
-            size={chevronDownSizes[size]}
-            symbol="chevron.down"
-            color={hover ? 'label' : 'labelTertiary'}
-            weight="semibold"
-          />
+          {chevron && (
+            <Symbol
+              size={chevronDownSizes[size]}
+              symbol="chevron.down"
+              color={hover ? 'label' : 'labelTertiary'}
+              weight="semibold"
+            />
+          )}
         </Inline>
-      </Inline>
-    </Box>
+      </Box>
+    </Lens>
   );
 }

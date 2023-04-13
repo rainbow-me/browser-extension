@@ -1,7 +1,8 @@
 import {
-  getConnectedAppIcon,
   getDappHost,
   getDappHostname,
+  getHardcodedDappInformation,
+  getPublicAppIcon,
 } from '~/core/utils/connectedApps';
 
 interface AppMetadata {
@@ -12,8 +13,10 @@ interface AppMetadata {
 export function useAppMetadata({ url, title }: AppMetadata) {
   const appHostName = url ? getDappHostname(url) : '';
   const appHost = url ? getDappHost(url) : '';
-  const appLogo = url ? getConnectedAppIcon(appHost) : '';
-  const appName = url ? title : '';
+  const appLogo = url ? getPublicAppIcon(appHost) : '';
+  const appName = url
+    ? getHardcodedDappInformation(appHostName)?.name || title
+    : '';
 
   return {
     appHost,

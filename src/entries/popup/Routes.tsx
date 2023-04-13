@@ -3,11 +3,14 @@ import * as React from 'react';
 import { matchRoutes, useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
+import { useCurrentAddressStore } from '~/core/state';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
-import { Box } from '~/design-system';
+import { AccentColorProvider, Box } from '~/design-system';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
+import { globalColors } from '~/design-system/styles/designTokens';
 
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
+import { useAvatar } from './hooks/useAvatar';
 import { ConnectedApps } from './pages/ConnectedApps';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
@@ -16,6 +19,7 @@ import { ImportWallet } from './pages/importWallet';
 import { ImportWalletSelection } from './pages/importWalletSelection';
 import { EditImportWalletSelection } from './pages/importWalletSelection/EditImportWalletSelection';
 import { ApproveAppRequest } from './pages/messages/ApproveAppRequest';
+import { QRCodePage } from './pages/qrcode';
 import { RootHandler } from './pages/rootHandler/RootHandler';
 import { SeedBackupPrompt } from './pages/seedBackupPrompt';
 import { SeedReveal } from './pages/seedReveal';
@@ -234,6 +238,21 @@ const ROUTE_DATA = [
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
+  },
+  {
+    path: ROUTES.QR_CODE,
+    element: (
+      <AnimatedRoute
+        backTo={ROUTES.HOME}
+        direction="up"
+        navbar
+        navbarIcon="ex"
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <QRCodePage />
+      </AnimatedRoute>
+    ),
   },
   {
     path: ROUTES.SETTINGS,
@@ -607,6 +626,9 @@ export function Routes() {
 }
 
 function CurrentRoute(props: { pathname: string }) {
+  const { currentAddress } = useCurrentAddressStore();
+  const { avatar } = useAvatar({ address: currentAddress });
+
   const match = matchingRoute(props.pathname);
   const element = match?.element;
   const currentDirection = element?.props.direction;
@@ -623,12 +645,14 @@ function CurrentRoute(props: { pathname: string }) {
     ? directionMap[previousDirection as Direction]
     : currentDirection;
   return (
-    <AnimatePresence key={props.pathname} mode="popLayout">
-      {React.cloneElement(element, {
-        key: props.pathname,
-        direction,
-      })}
-    </AnimatePresence>
+    <AccentColorProvider color={avatar?.color ?? globalColors.blue60}>
+      <AnimatePresence key={props.pathname} mode="popLayout">
+        {React.cloneElement(element, {
+          key: props.pathname,
+          direction,
+        })}
+      </AnimatePresence>
+    </AccentColorProvider>
   );
 }
 
