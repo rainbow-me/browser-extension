@@ -52,13 +52,11 @@ async function estimateGasLimitQueryFunction({
     transactionRequest,
     provider,
   });
-  console.log('gas limit from estimateGasLimitQueryFunction', gasLimit);
 
   if (!gasLimit) {
     if (chainId === ChainId.arbitrum) {
       return `${gasUnits.arbitrum_basic_tx}`;
     }
-    console.log('returning default 21k');
     return transactionRequest?.data === '0x'
       ? `${gasUnits.basic_tx}`
       : `${gasUnits.basic_transfer}`;

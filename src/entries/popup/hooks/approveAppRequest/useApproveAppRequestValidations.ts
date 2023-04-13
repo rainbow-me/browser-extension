@@ -26,10 +26,10 @@ export const useApproveAppRequestValidations = ({
   selectedGas?: GasFeeParams | GasFeeLegacyParams;
 }) => {
   const { connectedToHardhat } = useConnectedToHardhatStore();
-  const realChainId = connectedToHardhat ? ChainId.mainnet : chainId;
+  const chainIdToUse = connectedToHardhat ? ChainId.mainnet : chainId;
 
   const nativeAssetUniqueId = getNetworkNativeAssetUniqueId({
-    chainId: realChainId,
+    chainId: chainIdToUse,
   });
   const nativeAsset = useUserAsset(nativeAssetUniqueId || '');
 
@@ -43,10 +43,11 @@ export const useApproveAppRequestValidations = ({
   const buttonLabel = useMemo(() => {
     if (!enoughNativeAssetForGas)
       return i18n.t('approve_request.insufficient_native_asset_for_gas', {
-        symbol: nativeAsset?.symbol || DEFAULT_NATIVE_ASSET_SYMBOL[realChainId],
+        symbol:
+          nativeAsset?.symbol || DEFAULT_NATIVE_ASSET_SYMBOL[chainIdToUse],
       });
     return i18n.t('approve_request.send_transaction');
-  }, [realChainId, enoughNativeAssetForGas, nativeAsset?.symbol]);
+  }, [chainIdToUse, enoughNativeAssetForGas, nativeAsset?.symbol]);
 
   return {
     enoughNativeAssetForGas,

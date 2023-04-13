@@ -72,7 +72,6 @@ export const sendTransaction = async (
     transactionRequest,
     provider,
   });
-  console.log('gas limit is', gasLimit);
 
   const nonce = await getNextNonce({
     address: transactionRequest.from as Address,
