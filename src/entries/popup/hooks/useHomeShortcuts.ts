@@ -12,6 +12,7 @@ import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 
 import * as wallet from '../handlers/wallet';
 import { ROUTES } from '../urls';
+import { clickHeaderRight } from '../utils/clickHeader';
 
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 import { useRainbowNavigate } from './useRainbowNavigate';
@@ -45,19 +46,6 @@ export function useHomeShortcuts() {
     [address, ensName],
   );
 
-  const getButton = () => {
-    const btn = document.querySelector('#navbar-left-component button');
-    const box = btn?.getBoundingClientRect();
-    if (box) {
-      const e = new MouseEvent('pointerdown', {
-        bubbles: true,
-        clientX: box.left + (box?.right - box.left) / 2,
-        clientY: box.top + (box.bottom - box.top) / 2,
-      });
-      btn?.dispatchEvent(e);
-    }
-  };
-
   const navigate = useRainbowNavigate();
   const handleHomeShortcuts = useCallback(
     (e: KeyboardEvent) => {
@@ -84,14 +72,14 @@ export function useHomeShortcuts() {
         case shortcuts.home.GO_TO_WALLETS.key:
           navigate(ROUTES.WALLET_SWITCHER);
           break;
-        // case shortcuts.home.GO_TO_QR.key:
-        //   navigate(ROUTES.QR);
-        //   break;
+        case shortcuts.home.GO_TO_QR.key:
+          navigate(ROUTES.QR_CODE);
+          break;
         case shortcuts.home.LOCK.key:
           wallet.lock();
           break;
         case shortcuts.home.OPEN_MORE_MENU.key:
-          getButton();
+          clickHeaderRight();
           break;
       }
     },
