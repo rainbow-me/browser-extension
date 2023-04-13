@@ -401,9 +401,10 @@ export const estimateGasWithPadding = async ({
     const code = to ? await provider.getCode(to) : undefined;
     // 2 - if it's not a contract AND it doesn't have any data use the default gas limit
     if (
-      (!contractCallEstimateGas && to) ||
+      (!contractCallEstimateGas && !to && !data) ||
       (to && !data && (!code || code === '0x'))
     ) {
+      console.log('sending with basic_tx');
       return gasUnits.basic_tx;
     }
 
@@ -425,15 +426,19 @@ export const estimateGasWithPadding = async ({
 
     // If the safe estimation is above the last block gas limit, use it
     if (greaterThan(estimatedGas.toString(), lastBlockGasLimit)) {
+      console.log('sending above last block gas limit');
       return estimatedGas.toString();
     }
     // If the estimation is below the last block gas limit, use the padded estimate
     if (greaterThan(lastBlockGasLimit, paddedGas)) {
+      console.log('sending with padded gas');
       return paddedGas;
     }
     // otherwise default to the last block gas limit
+    console.log('sending last block gas limit');
     return lastBlockGasLimit;
   } catch (error) {
+    console.log('it blew up', error);
     return null;
   }
 };
