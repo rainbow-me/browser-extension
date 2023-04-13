@@ -20,6 +20,7 @@ import { AccountName } from '../../components/AccountName/AccountName';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useCurrentHomeSheet } from '../../hooks/useCurrentHomeSheet';
+import { useHomeShortcuts } from '../../hooks/useHomeShortcuts';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { MainLayout } from '../../layouts/MainLayout';
@@ -89,6 +90,8 @@ export function Home() {
   useEffect(() => {
     analytics.track(event.walletViewed);
   }, []);
+
+  useHomeShortcuts();
 
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>

@@ -77,6 +77,7 @@ export function Navbar({
             height: 32,
           }}
           height="full"
+          id="navbar-right-component"
         >
           {rightComponent}
         </Box>

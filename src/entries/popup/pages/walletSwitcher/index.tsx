@@ -388,7 +388,6 @@ export function WalletSwitcher() {
           placeholder={i18n.t('wallet_switcher.search_placeholder')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          autoFocus
         />
       </Box>
       <Box paddingHorizontal="16px" paddingBottom="8px">
