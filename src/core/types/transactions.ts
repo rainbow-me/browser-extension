@@ -97,7 +97,7 @@ export interface NewTransaction {
   nonce?: number;
   protocol?: ProtocolType;
   status?: TransactionStatus;
-  to: Address;
+  to?: Address;
   type?: TransactionType;
   value?: BigNumberish;
   txTo?: Address;

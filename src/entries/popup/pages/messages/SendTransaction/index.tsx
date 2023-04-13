@@ -68,8 +68,8 @@ export function SendTransaction({
       }
       const txData = {
         from: selectedWallet,
-        to: getAddress(txRequest?.to ?? ''),
-        value: txRequest.value,
+        to: txRequest?.to ? getAddress(txRequest?.to) : undefined,
+        value: txRequest.value || '0x0',
         data: txRequest.data ?? '0x',
         chainId: connectedToHardhat ? ChainId.hardhat : appSession.chainId,
       };

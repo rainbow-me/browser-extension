@@ -512,6 +512,7 @@
     "confirm_hw": "Confirm on your device",
     "balance": "Balance",
     "send_transaction": "Send Transaction",
+    "contract_deployment": "Contract Deployment",
     "transaction_request": "Transaction Request",
     "insufficient_native_asset_for_gas": "Insufficient %{symbol} for gas"
   },
