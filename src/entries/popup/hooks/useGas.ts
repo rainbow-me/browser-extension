@@ -266,6 +266,7 @@ export const useTransactionGas = ({
     defaultSpeed,
     estimatedGasLimit,
     transactionRequest,
+    enabled: true,
   });
 };
 
