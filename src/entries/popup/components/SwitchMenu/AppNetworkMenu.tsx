@@ -239,12 +239,14 @@ export const AppNetworkMenu = ({
   connectedAppsId,
 }: AppNetworkMenuProps) => {
   const [showNetworks, setShowNetworks] = useState(false);
+  const [showNetworksMenu, setShowNetworksMenu] = useState(false);
   const [showMenuHeader, setshowMenuHeader] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { currentAddress } = useCurrentAddressStore();
 
   const { appHost, appLogo, appName } = useAppMetadata({ url });
+  console.log('network menu appLofo', appLogo);
   const navigate = useRainbowNavigate();
 
   const {
@@ -290,9 +292,10 @@ export const AppNetworkMenu = ({
           navigate(ROUTES.CONNECTED);
           break;
         case 'switch-networks':
+          setShowNetworks(!showNetworks);
           setTimeout(
             () => {
-              setShowNetworks(!showNetworks);
+              setShowNetworksMenu(!showNetworksMenu);
             },
             showNetworks ? 200 : 0,
           );
@@ -300,7 +303,7 @@ export const AppNetworkMenu = ({
           break;
       }
     },
-    [navigate, showNetworks],
+    [navigate, showNetworks, showNetworksMenu],
   );
 
   return (
@@ -326,7 +329,7 @@ export const AppNetworkMenu = ({
             onValueChange(value as 'connected-apps' | 'switch-networks')
           }
         >
-          <DropdownMenu open={showNetworks}>
+          <DropdownMenu open={showNetworksMenu}>
             <AppInteractionItem
               connectedAppsId={connectedAppsId}
               appSession={appSession}
@@ -344,8 +347,9 @@ export const AppNetworkMenu = ({
                 e.preventDefault();
                 const x = (e.detail.originalEvent as PointerEvent).x;
                 const y = (e.detail.originalEvent as PointerEvent).y;
+                setShowNetworks(false);
                 setTimeout(() => {
-                  setShowNetworks(false);
+                  setShowNetworksMenu(false);
                 }, 200);
                 setshowMenuHeader(false);
                 if (
@@ -377,6 +381,7 @@ export const AppNetworkMenu = ({
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
                   >
                     <DropdownMenuRadioGroup
                       value={`${appSession?.chainId}`}
@@ -388,8 +393,9 @@ export const AppNetworkMenu = ({
                         selectedValue={`${appSession?.chainId}`}
                         onNetworkSelect={(e) => {
                           e.preventDefault();
+                          setShowNetworks(false);
                           setTimeout(() => {
-                            setShowNetworks(false);
+                            setShowNetworksMenu(false);
                           }, 200);
                           setshowMenuHeader(false);
                           setMenuOpen(false);

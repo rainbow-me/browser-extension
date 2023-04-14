@@ -17,7 +17,7 @@ export const NetworkMenu = () => {
   const [url, setUrl] = React.useState('');
   const { appLogo, appHost } = useAppMetadata({ url });
   const { appSession } = useAppSession({ host: appHost });
-
+  console.log('maion appLogo', appLogo);
   React.useEffect(() => {
     chrome?.tabs?.query({ active: true, lastFocusedWindow: true }, (tabs) => {
       const url = tabs[0].url;
