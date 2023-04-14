@@ -1,7 +1,3 @@
-// import {
-//   DropdownMenuGroup,
-//   DropdownMenuItem,
-// } from '@radix-ui/react-dropdown-menu';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { ReactNode, useCallback, useState } from 'react';
 
@@ -169,55 +165,6 @@ const MenuHeader = ({
   );
 };
 
-export const ActionButtons = ({
-  appSession,
-  connectedAppsId,
-  url,
-  showChevron,
-  onValueChange,
-}: {
-  appSession: AppSession;
-  connectedAppsId?: string;
-  url?: string;
-  showChevron: boolean;
-  onValueChange: (value: 'connected-apps' | 'switch-networks') => void;
-}) => {
-  return (
-    <DropdownMenuRadioGroup
-      onValueChange={(value) =>
-        onValueChange(value as 'connected-apps' | 'switch-networks')
-      }
-    >
-      <AppInteractionItem
-        connectedAppsId={connectedAppsId}
-        appSession={appSession}
-        chevronDirection="right"
-        showChevron={showChevron}
-      />
-      <Stack space="4px">
-        {url ? <DropdownMenuSeparator /> : null}
-
-        <DropdownMenuRadioItem highlightAccentColor value="connected-apps">
-          <Box testId={connectedAppsId}>
-            <Inline alignVertical="center" space="8px">
-              <Inline alignVertical="center" alignHorizontal="center">
-                <Symbol
-                  size={12}
-                  symbol="square.on.square.dashed"
-                  weight="semibold"
-                />
-              </Inline>
-              <Text size="14pt" weight="semibold">
-                {i18n.t('menu.home_header_left.all_connected_apps')}
-              </Text>
-            </Inline>
-          </Box>
-        </DropdownMenuRadioItem>
-      </Stack>
-    </DropdownMenuRadioGroup>
-  );
-};
-
 const NETWORK_MENU_HEADER_X = 23;
 const NETWORK_MENU_HEADER_Y = 72;
 const NETWORK_MENU_HEADER_WIDTH = 190;
@@ -250,7 +197,6 @@ export const AppNetworkMenu = ({
   const { currentAddress } = useCurrentAddressStore();
 
   const { appHost, appLogo, appName } = useAppMetadata({ url });
-  console.log('network menu appLofo', appLogo);
   const navigate = useRainbowNavigate();
 
   const {
@@ -346,23 +292,16 @@ export const AppNetworkMenu = ({
               top={100.5}
               marginLeft={30}
               position="absolute"
-              // backdropFilter="opacity(0%)"
               onInteractOutside={(e) => {
                 e.preventDefault();
               }}
             >
-              <DropdownMenuRadioGroup
-                onValueChange={(value) =>
-                  onValueChange(value as 'connected-apps' | 'switch-networks')
-                }
-              >
-                <AppInteractionItem
-                  connectedAppsId={connectedAppsId}
-                  appSession={appSession}
-                  chevronDirection={showNetworks ? 'down' : 'right'}
-                  showChevron
-                />
-              </DropdownMenuRadioGroup>
+              <AppInteractionItem
+                connectedAppsId={connectedAppsId}
+                appSession={appSession}
+                chevronDirection={showNetworks ? 'down' : 'right'}
+                showChevron
+              />
             </DropdownMenuContent>
             <AnimatePresence>
               {showNetworks && (
@@ -393,20 +332,12 @@ export const AppNetworkMenu = ({
                     }
                   }}
                 >
-                  <DropdownMenuRadioGroup
-                    onValueChange={(value) =>
-                      onValueChange(
-                        value as 'connected-apps' | 'switch-networks',
-                      )
-                    }
-                  >
-                    <AppInteractionItem
-                      connectedAppsId={connectedAppsId}
-                      appSession={appSession}
-                      chevronDirection="down"
-                      showChevron
-                    />
-                  </DropdownMenuRadioGroup>
+                  <AppInteractionItem
+                    connectedAppsId={connectedAppsId}
+                    appSession={appSession}
+                    chevronDirection="down"
+                    showChevron
+                  />
 
                   <Box
                     as={motion.div}
