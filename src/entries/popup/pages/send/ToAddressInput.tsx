@@ -13,6 +13,7 @@ import React, {
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { truncateAddress } from '~/core/utils/address';
 import {
@@ -37,6 +38,7 @@ import {
 } from '../../components/DropdownInputWrapper/DropdownInputWrapper';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
 
 import { InputActionButon } from './InputActionButton';
@@ -338,6 +340,29 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     const { wallets, watchedWallets, contacts } = useAllFilteredWallets({
       filter: toAddressOrName,
     });
+
+    useKeyboardShortcut({
+      handler: (e: KeyboardEvent) => {
+        if (e.altKey) {
+          if (e.key === shortcuts.send.FOCUS_TO_ADDRESS.key) {
+            if (dropdownVisible) {
+              closeDropdown();
+            } else {
+              openDropdown();
+            }
+          } else if (e.key === shortcuts.send.FOCUS_ASSET.key) {
+            closeDropdown();
+            inputRef?.current?.blur();
+          }
+        }
+      },
+    });
+
+    useEffect(() => {
+      setTimeout(() => {
+        openDropdown();
+      }, 200);
+    }, [openDropdown]);
 
     useEffect(() => {
       setTimeout(() => {
