@@ -1,3 +1,7 @@
+// import {
+//   DropdownMenuGroup,
+//   DropdownMenuItem,
+// } from '@radix-ui/react-dropdown-menu';
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { ReactNode, useCallback, useState } from 'react';
 
@@ -214,10 +218,10 @@ export const ActionButtons = ({
   );
 };
 
-const NETWORK_MENU_HEADER_X = 23;
-const NETWORK_MENU_HEADER_Y = 72;
-const NETWORK_MENU_HEADER_WIDTH = 190;
-const NETWORK_MENU_HEADER_HEIGHT = 52;
+// const NETWORK_MENU_HEADER_X = 23;
+// const NETWORK_MENU_HEADER_Y = 72;
+// const NETWORK_MENU_HEADER_WIDTH = 190;
+// const NETWORK_MENU_HEADER_HEIGHT = 52;
 
 interface AppNetworkMenuProps {
   children: ReactNode;
@@ -297,7 +301,7 @@ export const AppNetworkMenu = ({
             () => {
               setShowNetworksMenu(!showNetworksMenu);
             },
-            showNetworks ? 200 : 0,
+            showNetworks ? 250 : 0,
           );
           setshowMenuHeader((showMenuHeader) => !showMenuHeader);
           break;
@@ -338,28 +342,28 @@ export const AppNetworkMenu = ({
             />
             <DropdownMenuContent
               animate={false}
-              key="kjgiuyg"
-              top={102}
+              key="kjgiuygjgdyrd"
+              top={100}
               width={204}
               marginLeft={30}
               position="absolute"
               onInteractOutside={(e) => {
                 e.preventDefault();
-                const x = (e.detail.originalEvent as PointerEvent).x;
-                const y = (e.detail.originalEvent as PointerEvent).y;
-                setShowNetworks(false);
-                setTimeout(() => {
-                  setShowNetworksMenu(false);
-                }, 200);
-                setshowMenuHeader(false);
-                if (
-                  x < NETWORK_MENU_HEADER_X ||
-                  x > NETWORK_MENU_HEADER_X + NETWORK_MENU_HEADER_WIDTH ||
-                  y < NETWORK_MENU_HEADER_Y ||
-                  y > NETWORK_MENU_HEADER_Y + NETWORK_MENU_HEADER_HEIGHT
-                ) {
-                  setMenuOpen(false);
-                }
+                //   const x = (e.detail.originalEvent as PointerEvent).x;
+                //   const y = (e.detail.originalEvent as PointerEvent).y;
+                //   setShowNetworks(false);
+                //   setTimeout(() => {
+                //     setShowNetworksMenu(false);
+                //   }, 250);
+                //   setshowMenuHeader(false);
+                //   if (
+                //     x < NETWORK_MENU_HEADER_X ||
+                //     x > NETWORK_MENU_HEADER_X + NETWORK_MENU_HEADER_WIDTH ||
+                //     y < NETWORK_MENU_HEADER_Y ||
+                //     y > NETWORK_MENU_HEADER_Y + NETWORK_MENU_HEADER_HEIGHT
+                //   ) {
+                //     setMenuOpen(false);
+                //   }
               }}
             >
               <DropdownMenuRadioGroup
@@ -373,9 +377,76 @@ export const AppNetworkMenu = ({
                   chevronDirection="down"
                   showChevron
                 />
+
+                <Stack space="4px">
+                  {url ? <DropdownMenuSeparator /> : null}
+
+                  <DropdownMenuRadioItem
+                    highlightAccentColor
+                    value="connected-apps"
+                  >
+                    <Box testId={connectedAppsId}>
+                      <Inline alignVertical="center" space="8px">
+                        <Inline alignVertical="center" alignHorizontal="center">
+                          <Symbol
+                            size={12}
+                            symbol="square.on.square.dashed"
+                            weight="semibold"
+                          />
+                        </Inline>
+                        <Text size="14pt" weight="semibold">
+                          {i18n.t('menu.home_header_left.all_connected_apps')}
+                        </Text>
+                      </Inline>
+                    </Box>
+                  </DropdownMenuRadioItem>
+                </Stack>
               </DropdownMenuRadioGroup>
-              <AnimatePresence>
-                {showNetworks && (
+            </DropdownMenuContent>
+            <AnimatePresence>
+              {showNetworks && (
+                <DropdownMenuContent
+                  animate
+                  key="kjgiuyg"
+                  top={100}
+                  width={204}
+                  marginLeft={30}
+                  position="absolute"
+                  onInteractOutside={(e) => {
+                    console.log('---- onInteractOutside');
+                    e.preventDefault();
+                    // const x = (e.detail.originalEvent as PointerEvent).x;
+                    // const y = (e.detail.originalEvent as PointerEvent).y;
+                    // setShowNetworks(false);
+                    // setTimeout(() => {
+                    //   setShowNetworksMenu(false);
+                    // }, 250);
+                    // setshowMenuHeader(false);
+                    // if (
+                    //   x < NETWORK_MENU_HEADER_X ||
+                    //   x > NETWORK_MENU_HEADER_X + NETWORK_MENU_HEADER_WIDTH ||
+                    //   y < NETWORK_MENU_HEADER_Y ||
+                    //   y > NETWORK_MENU_HEADER_Y + NETWORK_MENU_HEADER_HEIGHT
+                    // ) {
+                    //   setMenuOpen(false);
+                    // }
+                  }}
+                >
+                  <DropdownMenuRadioGroup
+                    onValueChange={(value) =>
+                      onValueChange(
+                        value as 'connected-apps' | 'switch-networks',
+                      )
+                    }
+                  >
+                    <AppInteractionItem
+                      connectedAppsId={connectedAppsId}
+                      appSession={appSession}
+                      chevronDirection="down"
+                      showChevron
+                    />
+                  </DropdownMenuRadioGroup>
+
                   <Box
                     as={motion.div}
                     initial={{ opacity: 0 }}
@@ -396,7 +467,7 @@ export const AppNetworkMenu = ({
                           setShowNetworks(false);
                           setTimeout(() => {
                             setShowNetworksMenu(false);
-                          }, 200);
+                          }, 250);
                           setshowMenuHeader(false);
                           setMenuOpen(false);
                         }}
@@ -406,10 +477,19 @@ export const AppNetworkMenu = ({
                       <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
                     )}
                   </Box>
-                )}
-              </AnimatePresence>
-            </DropdownMenuContent>
+                </DropdownMenuContent>
+              )}
+            </AnimatePresence>
           </DropdownMenu>
+
+          {/* <Box background="blue" position="absolute">
+            <AppInteractionItem
+              connectedAppsId={connectedAppsId}
+              appSession={appSession}
+              chevronDirection="down"
+              showChevron
+            />
+          </Box> */}
           <Stack space="4px">
             {url ? <DropdownMenuSeparator /> : null}
 

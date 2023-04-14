@@ -117,7 +117,7 @@ const DropdownMenuContentBody = React.forwardRef<
               opacity: 1,
             }}
             exit={{ width: width ?? '204px', opacity: animate ? 0 : 1 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.1 }}
             style={{
               boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
               marginRight: marginRight ?? '0px',
