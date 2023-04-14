@@ -61,6 +61,18 @@ export const shortcuts = {
       key: '.',
     },
   },
+  send: {
+    FOCUS_ASSET: {
+      display: '',
+      key: 'ArrowDown',
+      modifier: 'altKey',
+    },
+    FOCUS_TO_ADDRESS: {
+      display: '',
+      key: 'ArrowUp',
+      modifier: 'altKey',
+    },
+  },
   tokens: {
     SWAP_ASSET: {
       display: 'X',

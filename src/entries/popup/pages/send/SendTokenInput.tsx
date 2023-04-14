@@ -13,6 +13,7 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
+import { shortcuts } from '~/core/references/shortcuts';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
@@ -33,6 +34,7 @@ import {
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
 import { SortMethod } from '../../hooks/send/useSendAsset';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { AssetRow } from '../home/Tokens';
 
 import { InputActionButon } from './InputActionButton';
@@ -194,6 +196,21 @@ export const SendTokenInput = ({
   }, [dropdownClosed]);
 
   const inputVisible = useMemo(() => !asset, [asset]);
+
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.altKey) {
+        if (e.key === shortcuts.send.FOCUS_ASSET.key) {
+          console.log('send token dd vis: ', dropdownVisible);
+          setDropdownVisible(!dropdownVisible);
+          inputRef?.current?.focus();
+        }
+        if (e.key === shortcuts.send.FOCUS_TO_ADDRESS.key) {
+          setDropdownVisible(false);
+        }
+      }
+    },
+  });
 
   return (
     <DropdownInputWrapper
