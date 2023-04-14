@@ -11,7 +11,7 @@ import React, {
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
-import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
+import { useSwapFlashbotsEnabledStore } from '~/core/state/currentSettings/swapFlashbotsEnabled';
 import { ChainId } from '~/core/types/chains';
 import { divide } from '~/core/utils/numbers';
 import {
@@ -128,11 +128,11 @@ interface SwapSettingsProps {
   setSettings: ({
     source,
     slippage,
-    flashbotsEnabled,
+    swapFlashbotsEnabled,
   }: {
     source: Source | 'auto';
     slippage: string;
-    flashbotsEnabled: boolean;
+    swapFlashbotsEnabled: boolean;
   }) => void;
 }
 
@@ -209,7 +209,8 @@ export const SwapSettings = ({
   const { currentAddress } = useCurrentAddressStore();
   const { avatar } = useAvatar({ address: currentAddress });
   const { flashbots_enabled: flashbotsEnabledGlobally } = config;
-  const { flashbotsEnabled, setFlashbotsEnabled } = useFlashbotsEnabledStore();
+  const { swapFlashbotsEnabled, setSwapFlashbotsEnabled } =
+    useSwapFlashbotsEnabledStore();
   const prevChainId = usePrevious(chainId);
   const [source, setSource] = useState<Source | 'auto'>('auto');
   const [slippage, setSlippage] = useState<string>(defaultSlippage);
@@ -224,17 +225,17 @@ export const SwapSettings = ({
     setSource('auto');
     const defaultSlippage = getDefaultSlippage(chainId);
     setSlippage(defaultSlippage);
-    setFlashbotsEnabled(false);
-  }, [chainId, setFlashbotsEnabled]);
+    setSwapFlashbotsEnabled(false);
+  }, [chainId, setSwapFlashbotsEnabled]);
 
   const done = useCallback(() => {
     setSettings({
       source,
       slippage: divide(slippage, 100).toString(),
-      flashbotsEnabled,
+      swapFlashbotsEnabled,
     });
     onDone();
-  }, [flashbotsEnabled, onDone, setSettings, slippage, source]);
+  }, [swapFlashbotsEnabled, onDone, setSettings, slippage, source]);
 
   const slippageWarning = useMemo(
     () => (Number(slippage) >= 3 ? 'loss' : undefined),
@@ -379,8 +380,8 @@ export const SwapSettings = ({
                           />
                           <Toggle
                             accentColor={settingsAccentColor}
-                            checked={flashbotsEnabled}
-                            handleChange={setFlashbotsEnabled}
+                            checked={swapFlashbotsEnabled}
+                            handleChange={setSwapFlashbotsEnabled}
                             testId="swap-settings-flashbots-toggle"
                           />
                         </Inline>
