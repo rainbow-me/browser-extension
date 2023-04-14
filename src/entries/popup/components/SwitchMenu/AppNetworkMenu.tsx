@@ -291,6 +291,8 @@ export const AppNetworkMenu = ({
               key="kjgiuygjgdyrd"
               top={100.5}
               marginLeft={30}
+              border={false}
+              boxShadow=""
               position="absolute"
               onInteractOutside={(e) => {
                 e.preventDefault();
@@ -338,6 +340,7 @@ export const AppNetworkMenu = ({
                     chevronDirection="down"
                     showChevron
                   />
+                  {url ? <DropdownMenuSeparator /> : null}
 
                   <Box
                     as={motion.div}

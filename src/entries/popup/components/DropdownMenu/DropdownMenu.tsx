@@ -46,6 +46,8 @@ export function DropdownMenuTrigger(props: DropdownMenuTriggerProps) {
 
 interface DropdownMenuContentProps {
   animate?: boolean;
+  border?: boolean;
+  boxShadow?: string;
   children: ReactNode;
   align?: 'start' | 'center' | 'end';
   backdropFilter?: BoxStyles['backdropFilter'];
@@ -77,6 +79,8 @@ export const DropdownMenuContentBody = React.forwardRef<
   DropdownMenuContentProps
 >((props: DropdownMenuContentProps, ref) => {
   const {
+    border,
+    boxShadow,
     children,
     align = 'start',
     backdropFilter,
@@ -122,7 +126,7 @@ export const DropdownMenuContentBody = React.forwardRef<
             exit={{ scale: 1, width: '204px', opacity: animate ? 0 : 1 }}
             transition={{ duration: 0.1 }}
             style={{
-              boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
+              boxShadow: boxShadow ?? '0px 10px 30px rgba(0, 0, 0, 0.2)',
               marginRight: marginRight ?? '0px',
               marginLeft: marginLeft ?? '0px',
               marginTop: marginTop ?? '0px',
@@ -134,7 +138,7 @@ export const DropdownMenuContentBody = React.forwardRef<
             paddingVertical="4px"
             background="surfaceMenu"
             borderColor="separatorTertiary"
-            borderWidth="1px"
+            borderWidth={border && '1px'}
             borderRadius="16px"
             position={position}
           >
