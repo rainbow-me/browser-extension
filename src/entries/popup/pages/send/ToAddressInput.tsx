@@ -17,6 +17,8 @@ import { truncateAddress } from '~/core/utils/address';
 import {
   Bleed,
   Box,
+  Column,
+  Columns,
   Inline,
   Inset,
   Stack,
@@ -42,23 +44,19 @@ import {
   addressToInputHighlightWrapperStyleLight,
 } from './ToAddressInput.css';
 
-const { innerWidth: windowWidth } = window;
-
 const RowHighlightWrapper = ({ children }: { children: ReactNode }) => {
   const { currentTheme } = useCurrentThemeStore();
   return (
-    <Inset>
-      <Box
-        borderRadius="12px"
-        className={
-          currentTheme === 'dark'
-            ? addressToInputHighlightWrapperStyleDark
-            : addressToInputHighlightWrapperStyleLight
-        }
-      >
-        {children}
-      </Box>
-    </Inset>
+    <Box
+      borderRadius="12px"
+      className={
+        currentTheme === 'dark'
+          ? addressToInputHighlightWrapperStyleDark
+          : addressToInputHighlightWrapperStyleLight
+      }
+    >
+      {children}
+    </Box>
   );
 };
 
@@ -136,25 +134,24 @@ const WalletRow = ({
       onClick={() => onClick(wallet)}
       paddingVertical="8px"
     >
-      <Inline alignVertical="center" space="8px">
-        <WalletAvatar size={36} address={wallet} emojiSize="20pt" />
-        <Stack space="8px">
-          <TextOverflow
-            maxWidth={(2 * windowWidth) / 3}
-            weight="semibold"
-            size="14pt"
-            color="label"
-          >
-            {name}
-          </TextOverflow>
+      <Columns alignVertical="center" space="8px">
+        <Column width="content">
+          <WalletAvatar size={36} address={wallet} emojiSize="20pt" />
+        </Column>
+        <Column>
+          <Stack space="8px">
+            <TextOverflow weight="semibold" size="14pt" color="label">
+              {name}
+            </TextOverflow>
 
-          {isNameDefined && (
-            <Text weight="semibold" size="12pt" color="labelTertiary">
-              {truncateAddress(wallet)}
-            </Text>
-          )}
-        </Stack>
-      </Inline>
+            {isNameDefined && (
+              <Text weight="semibold" size="12pt" color="labelTertiary">
+                {truncateAddress(wallet)}
+              </Text>
+            )}
+          </Stack>
+        </Column>
+      </Columns>
     </Box>
   );
 };
@@ -371,7 +368,6 @@ export const ToAddressInput = ({
                   ) : (
                     <Box as={motion.div} layout="position">
                       <TextOverflow
-                        maxWidth={windowWidth / 2}
                         weight="semibold"
                         size="14pt"
                         color="label"

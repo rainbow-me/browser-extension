@@ -512,6 +512,9 @@ const textProperties = defineProperties({
     background: linearGradients,
     WebkitBackgroundClip: ['border-box', 'text'],
     userSelect: userSelectOpts,
+    textOverflow: ['ellipsis'],
+    whiteSpace: ['nowrap'],
+    overflow: ['hidden'],
   },
 });
 

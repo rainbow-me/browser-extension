@@ -224,10 +224,6 @@ const EditContactDropdown = ({
   );
 };
 
-const { innerWidth: windowWidth } = window;
-
-const TEXT_OVERFLOW_WIDTH = windowWidth - 160;
-
 export const ReviewSheet = ({
   show,
   toAddress,
@@ -361,7 +357,6 @@ export const ReviewSheet = ({
                           <Rows space="10px" alignVertical="center">
                             <Row>
                               <TextOverflow
-                                maxWidth={TEXT_OVERFLOW_WIDTH}
                                 size="20pt"
                                 weight="bold"
                                 color="label"
@@ -371,7 +366,6 @@ export const ReviewSheet = ({
                             </Row>
                             <Row>
                               <TextOverflow
-                                maxWidth={TEXT_OVERFLOW_WIDTH}
                                 size="12pt"
                                 weight="bold"
                                 color="labelTertiary"
@@ -435,7 +429,6 @@ export const ReviewSheet = ({
                             <Row height="content">
                               <Inline space="7px" alignVertical="center">
                                 <TextOverflow
-                                  maxWidth={TEXT_OVERFLOW_WIDTH}
                                   size="20pt"
                                   weight="bold"
                                   color="label"
@@ -605,12 +598,7 @@ export const ReviewSheet = ({
               >
                 {sendEnabled ? (
                   <Box>
-                    <TextOverflow
-                      maxWidth={TEXT_OVERFLOW_WIDTH + 20}
-                      weight="bold"
-                      size="16pt"
-                      color="label"
-                    >
+                    <TextOverflow weight="bold" size="16pt" color="label">
                       {waitingForDevice
                         ? `👀 ${i18n.t('send.review.confirm_hw')}`
                         : i18n.t('send.review.send_to', {
@@ -631,12 +619,7 @@ export const ReviewSheet = ({
                         weight="bold"
                         size={16}
                       />
-                      <TextOverflow
-                        maxWidth={TEXT_OVERFLOW_WIDTH + 20}
-                        weight="bold"
-                        size="16pt"
-                        color="label"
-                      >
+                      <TextOverflow weight="bold" size="16pt" color="label">
                         {i18n.t('send.review.complete_checks')}
                       </TextOverflow>
                     </Inline>

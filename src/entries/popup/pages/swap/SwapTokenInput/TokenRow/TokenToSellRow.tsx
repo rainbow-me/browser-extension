@@ -21,10 +21,6 @@ import { useUserAsset } from '~/entries/popup/hooks/useUserAsset';
 
 import { RowHighlightWrapper } from './RowHighlightWrapper';
 
-const { innerWidth: windowWidth } = window;
-const TEXT_MAX_WIDTH = windowWidth - 210;
-const BALANCE_TEXT_MAX_WIDTH = 75;
-
 export type TokenToSellRowProps = {
   uniqueId: UniqueId;
 };
@@ -36,12 +32,7 @@ export function TokenToSellRow({ uniqueId }: TokenToSellRowProps) {
 
   const balanceDisplay = useMemo(
     () => (
-      <TextOverflow
-        maxWidth={TEXT_MAX_WIDTH}
-        color="labelTertiary"
-        size="12pt"
-        weight="semibold"
-      >
+      <TextOverflow color="labelTertiary" size="12pt" weight="semibold">
         {asset?.balance?.display}
       </TextOverflow>
     ),
@@ -52,23 +43,13 @@ export function TokenToSellRow({ uniqueId }: TokenToSellRowProps) {
     () =>
       hideAssetBalances ? (
         <Inline alignHorizontal="right">
-          <TextOverflow
-            maxWidth={TEXT_MAX_WIDTH}
-            size="14pt"
-            weight="semibold"
-            align="right"
-          >
+          <TextOverflow size="14pt" weight="semibold" align="right">
             {supportedCurrencies[currentCurrency].symbol}
           </TextOverflow>
           <Asterisks color="label" size={10} />
         </Inline>
       ) : (
-        <TextOverflow
-          maxWidth={BALANCE_TEXT_MAX_WIDTH}
-          size="14pt"
-          weight="semibold"
-          align="right"
-        >
+        <TextOverflow size="14pt" weight="semibold" align="right">
           {asset?.native?.balance?.display}
         </TextOverflow>
       ),
@@ -80,11 +61,7 @@ export function TokenToSellRow({ uniqueId }: TokenToSellRowProps) {
       <Rows>
         <Row>
           <Box paddingVertical="4px">
-            <TextOverflow
-              maxWidth={TEXT_MAX_WIDTH}
-              size="14pt"
-              weight="semibold"
-            >
+            <TextOverflow size="14pt" weight="semibold">
               {asset?.name}
             </TextOverflow>
           </Box>

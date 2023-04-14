@@ -1,6 +1,7 @@
 import { ToBufferInputTypes } from '@ethereumjs/util';
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { isAddress } from '@ethersproject/address';
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { recoverPersonalSignature } from '@metamask/eth-sig-util';
 import { ChainId } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
@@ -298,12 +299,26 @@ export const handleProviderRequest = ({
         }
 
         default: {
-          // TODO: handle other methods
-          logger.error(new RainbowError('Unhandled provider request'), {
-            dappURL: host,
-            dappName,
-            method,
-          });
+          try {
+            if (method?.substring(0, 7) === 'wallet_') {
+              // Generic error that will be hanlded correctly in the catch
+              throw new Error('next');
+            }
+            // Let's try to fwd the request to the provider
+            const provider = getProvider({
+              chainId: activeSession?.chainId,
+            }) as StaticJsonRpcProvider;
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            response = await provider.send(method, params as any[]);
+          } catch (e) {
+            // TODO: handle other methods
+            logger.error(new RainbowError('Unhandled provider request'), {
+              dappURL: host,
+              dappName,
+              method,
+            });
+            throw new Error('Method not supported');
+          }
         }
       }
       return { id, result: response };

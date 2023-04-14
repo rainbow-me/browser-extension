@@ -30,9 +30,6 @@ import { useVirtualizedAssets } from '../../hooks/useVirtualizedAssets';
 
 import { TokenDetailsMenu } from './TokenDetailsMenu';
 
-const { innerWidth: windowWidth } = window;
-const TEXT_MAX_WIDTH = windowWidth - 150;
-
 export function Tokens() {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
@@ -130,22 +127,12 @@ export function AssetRow({ uniqueId }: AssetRowProps) {
       hideAssetBalances ? (
         <Inline space="4px">
           <Asterisks color="labelTertiary" size={8} />
-          <TextOverflow
-            maxWidth={TEXT_MAX_WIDTH}
-            color="labelTertiary"
-            size="12pt"
-            weight="semibold"
-          >
+          <TextOverflow color="labelTertiary" size="12pt" weight="semibold">
             {asset?.symbol}
           </TextOverflow>
         </Inline>
       ) : (
-        <TextOverflow
-          maxWidth={TEXT_MAX_WIDTH}
-          color="labelTertiary"
-          size="12pt"
-          weight="semibold"
-        >
+        <TextOverflow color="labelTertiary" size="12pt" weight="semibold">
           {asset?.balance?.display}
         </TextOverflow>
       ),
@@ -155,12 +142,7 @@ export function AssetRow({ uniqueId }: AssetRowProps) {
     () =>
       hideAssetBalances ? (
         <Inline alignHorizontal="right">
-          <TextOverflow
-            maxWidth={TEXT_MAX_WIDTH}
-            size="14pt"
-            weight="semibold"
-            align="right"
-          >
+          <TextOverflow size="14pt" weight="semibold" align="right">
             {supportedCurrencies[currentCurrency].symbol}
           </TextOverflow>
           <Asterisks color="label" size={10} />
@@ -176,18 +158,14 @@ export function AssetRow({ uniqueId }: AssetRowProps) {
   const topRow = useMemo(
     () => (
       <Columns>
-        <Column width="content">
+        <Column>
           <Box paddingVertical="4px">
-            <TextOverflow
-              maxWidth={TEXT_MAX_WIDTH}
-              size="14pt"
-              weight="semibold"
-            >
+            <TextOverflow size="14pt" weight="semibold">
               {name}
             </TextOverflow>
           </Box>
         </Column>
-        <Column>
+        <Column width="content">
           <Box paddingVertical="4px">{nativeBalanceDisplay}</Box>
         </Column>
       </Columns>
@@ -198,10 +176,10 @@ export function AssetRow({ uniqueId }: AssetRowProps) {
   const bottomRow = useMemo(
     () => (
       <Columns>
-        <Column width="content">
+        <Column>
           <Box paddingVertical="4px">{balanceDisplay}</Box>
         </Column>
-        <Column>
+        <Column width="content">
           <Box paddingVertical="4px">
             <Text
               color={priceChangeColor}

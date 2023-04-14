@@ -28,9 +28,6 @@ import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
 import { SwitchMenu } from '../../../components/SwitchMenu/SwitchMenu';
 
-const { innerWidth: windowWidth } = window;
-const TITLE_MAX_WIDTH = windowWidth - 240;
-
 export const WalletName = ({
   address,
   color = 'label',
@@ -42,12 +39,7 @@ export const WalletName = ({
     address,
   });
   return (
-    <TextOverflow
-      maxWidth={TITLE_MAX_WIDTH}
-      color={color}
-      size="14pt"
-      weight="semibold"
-    >
+    <TextOverflow color={color} size="14pt" weight="semibold">
       {walletDisplayName}
     </TextOverflow>
   );
@@ -273,7 +265,7 @@ export const AcceptRequestButton = ({
       variant={waitingForDevice || disabled ? 'disabled' : 'flat'}
       disabled={disabled}
     >
-      <TextOverflow maxWidth={248} weight="bold" size="16pt" color="label">
+      <TextOverflow weight="bold" size="16pt" color="label">
         {loading ? <Spinner size={16} color="label" /> : label}
       </TextOverflow>
     </Button>

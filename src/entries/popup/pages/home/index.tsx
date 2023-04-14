@@ -146,7 +146,11 @@ function TopNav() {
         titleComponent={
           <AnimatePresence>
             {scrollY.get() && (
-              <Box key="top-nav-account-name" as={motion.div}>
+              <Box
+                key="top-nav-account-name"
+                as={motion.div}
+                paddingHorizontal="60px"
+              >
                 <AccountName id="topNav" includeAvatar size="16pt" />
               </Box>
             )}
