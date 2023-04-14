@@ -7,7 +7,6 @@ import { AlignHorizontal } from '~/design-system/components/Inline/Inline';
 import { TextStyles } from '~/design-system/styles/core.css';
 
 const { innerWidth: windowWidth } = window;
-const TEXT_MAX_WIDTH = windowWidth - 60;
 
 export const Tooltip = forwardRef(
   ({
@@ -70,7 +69,11 @@ export const Tooltip = forwardRef(
               alignOffset={alignOffset}
             >
               <ThemeProvider theme={currentTheme}>
-                <Box borderRadius="6px" boxShadow="24px">
+                <Box
+                  style={{ maxWidth: windowWidth - 60 }}
+                  borderRadius="6px"
+                  boxShadow="24px"
+                >
                   <Inline alignHorizontal={alignHorizontal}>
                     <Box
                       background="surfaceSecondaryElevated"
@@ -95,7 +98,6 @@ export const Tooltip = forwardRef(
                     backdropFilter="blur(26px)"
                   >
                     <TextOverflow
-                      maxWidth={TEXT_MAX_WIDTH}
                       color={textColor || 'label'}
                       size={textSize || '16pt'}
                       weight={textWeight || 'bold'}

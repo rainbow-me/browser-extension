@@ -52,7 +52,10 @@ export function Header() {
           >
             <AvatarSection />
           </Box>
-          <AccountName id="header" />
+          <Box paddingHorizontal="12px">
+            <AccountName id="header" />
+          </Box>
+
           <ActionButtonsSection />
         </Stack>
       </Inset>

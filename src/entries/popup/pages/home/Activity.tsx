@@ -39,8 +39,6 @@ import { useAllTransactions } from '../../hooks/useAllTransactions';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { TransactionDetailsMenu } from './TransactionDetailsMenu';
 
-const { innerWidth: windowWidth } = window;
-const TEXT_MAX_WIDTH = windowWidth - 150;
 const ACTIVITY_DEFAULT_LENGTH = 100;
 
 export function Activity() {
@@ -356,13 +354,11 @@ const ActivityRow = React.memo(function ({
   );
 
   const bottomRow = useMemo(() => {
-    const nameMaxWidthDiff = getNativeDisplay().length * 3;
-    const nameMaxWidth = TEXT_MAX_WIDTH - nameMaxWidthDiff;
     return (
       <Columns>
         <Column>
           <Box paddingVertical="4px">
-            <TextOverflow maxWidth={nameMaxWidth} size="14pt" weight="semibold">
+            <TextOverflow size="14pt" weight="semibold">
               {name}
             </TextOverflow>
           </Box>
@@ -370,7 +366,6 @@ const ActivityRow = React.memo(function ({
         <Column>
           <Box paddingVertical="4px">
             <TextOverflow
-              maxWidth={nameMaxWidth}
               size="14pt"
               weight="semibold"
               align="right"
