@@ -48,13 +48,14 @@ interface DropdownMenuContentProps {
   animate?: boolean;
   children: ReactNode;
   align?: 'start' | 'center' | 'end';
+  backdropFilter?: BoxStyles['backdropFilter'];
   marginRight?: Space;
   marginLeft?: Space | number;
   marginTop?: Space | number;
   accentColor?: string;
   sideOffset?: number;
   onPointerDownOutside?: () => void;
-  width?: number;
+  scale?: number;
   top?: number;
   position?: BoxStyles['position'];
   onInteractOutside?: DismissableLayerProps['onInteractOutside'];
@@ -71,18 +72,19 @@ export function DropdownMenuContent(props: DropdownMenuContentProps) {
   );
 }
 
-const DropdownMenuContentBody = React.forwardRef<
+export const DropdownMenuContentBody = React.forwardRef<
   HTMLDivElement,
   DropdownMenuContentProps
 >((props: DropdownMenuContentProps, ref) => {
   const {
     children,
     align = 'start',
+    backdropFilter,
     marginRight,
     marginLeft,
     marginTop,
     accentColor,
-    width,
+    scale,
     top,
     position,
     onInteractOutside,
@@ -111,12 +113,13 @@ const DropdownMenuContentBody = React.forwardRef<
         >
           <Box
             as={motion.div}
-            initial={{ width: width ?? '204px', opacity: animate ? 0 : 1 }}
+            initial={{ scale: 1, width: '204px', opacity: animate ? 0 : 1 }}
             animate={{
-              width: width ?? '204px',
+              scale: scale ?? 1,
+              width: '204px',
               opacity: 1,
             }}
-            exit={{ width: width ?? '204px', opacity: animate ? 0 : 1 }}
+            exit={{ scale: 1, width: '204px', opacity: animate ? 0 : 1 }}
             transition={{ duration: 0.1 }}
             style={{
               boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
@@ -126,7 +129,7 @@ const DropdownMenuContentBody = React.forwardRef<
               top: top ?? '0px',
             }}
             width="fit"
-            backdropFilter="blur(26px)"
+            backdropFilter={backdropFilter || 'blur(26px)'}
             paddingHorizontal="12px"
             paddingVertical="4px"
             background="surfaceMenu"
