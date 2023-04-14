@@ -321,87 +321,88 @@ export const AppNetworkMenu = ({
           appSession={appSession}
           appName={appName}
         />
-
         <DropdownMenuRadioGroup
           onValueChange={(value) =>
             onValueChange(value as 'connected-apps' | 'switch-networks')
           }
         >
-          <AppInteractionItem
-            connectedAppsId={connectedAppsId}
-            appSession={appSession}
-            chevronDirection="right"
-            showChevron={true}
-          />
           <DropdownMenu open={showNetworks}>
-            {/* <DropdownMenuTrigger>
-              
-            </DropdownMenuTrigger> */}
-            <AnimatePresence>
-              {showNetworks && (
-                <DropdownMenuContent
-                  animate
-                  key="kjgiuyg"
-                  top={102}
-                  width={204}
-                  marginLeft={30}
-                  position="absolute"
-                  onInteractOutside={(e) => {
-                    e.preventDefault();
-                    const x = (e.detail.originalEvent as PointerEvent).x;
-                    const y = (e.detail.originalEvent as PointerEvent).y;
-                    setTimeout(() => {
-                      setShowNetworks(false);
-                    }, 200);
-                    setshowMenuHeader(false);
-                    if (
-                      x < NETWORK_MENU_HEADER_X ||
-                      x > NETWORK_MENU_HEADER_X + NETWORK_MENU_HEADER_WIDTH ||
-                      y < NETWORK_MENU_HEADER_Y ||
-                      y > NETWORK_MENU_HEADER_Y + NETWORK_MENU_HEADER_HEIGHT
-                    ) {
-                      setMenuOpen(false);
-                    }
-                  }}
-                >
-                  <DropdownMenuRadioGroup
-                    onValueChange={(value) =>
-                      onValueChange(
-                        value as 'connected-apps' | 'switch-networks',
-                      )
-                    }
+            <AppInteractionItem
+              connectedAppsId={connectedAppsId}
+              appSession={appSession}
+              chevronDirection="right"
+              showChevron={true}
+            />
+            <DropdownMenuContent
+              animate={false}
+              key="kjgiuyg"
+              top={102}
+              width={204}
+              marginLeft={30}
+              position="absolute"
+              onInteractOutside={(e) => {
+                e.preventDefault();
+                const x = (e.detail.originalEvent as PointerEvent).x;
+                const y = (e.detail.originalEvent as PointerEvent).y;
+                setTimeout(() => {
+                  setShowNetworks(false);
+                }, 200);
+                setshowMenuHeader(false);
+                if (
+                  x < NETWORK_MENU_HEADER_X ||
+                  x > NETWORK_MENU_HEADER_X + NETWORK_MENU_HEADER_WIDTH ||
+                  y < NETWORK_MENU_HEADER_Y ||
+                  y > NETWORK_MENU_HEADER_Y + NETWORK_MENU_HEADER_HEIGHT
+                ) {
+                  setMenuOpen(false);
+                }
+              }}
+            >
+              <DropdownMenuRadioGroup
+                onValueChange={(value) =>
+                  onValueChange(value as 'connected-apps' | 'switch-networks')
+                }
+              >
+                <AppInteractionItem
+                  connectedAppsId={connectedAppsId}
+                  appSession={appSession}
+                  chevronDirection="down"
+                  showChevron
+                />
+              </DropdownMenuRadioGroup>
+              <AnimatePresence>
+                {showNetworks && (
+                  <Box
+                    as={motion.div}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
                   >
-                    <AppInteractionItem
-                      connectedAppsId={connectedAppsId}
-                      appSession={appSession}
-                      chevronDirection="down"
-                      showChevron
-                    />
-                  </DropdownMenuRadioGroup>
-                  <DropdownMenuRadioGroup
-                    value={`${appSession?.chainId}`}
-                    onValueChange={appSession ? changeChainId : connectToApp}
-                  >
-                    <SwitchNetworkMenuSelector
-                      type="dropdown"
-                      highlightAccentColor
-                      selectedValue={`${appSession?.chainId}`}
-                      onNetworkSelect={(e) => {
-                        e.preventDefault();
-                        setTimeout(() => {
-                          setShowNetworks(false);
-                        }, 200);
-                        setshowMenuHeader(false);
-                        setMenuOpen(false);
-                      }}
-                    />
-                  </DropdownMenuRadioGroup>
-                  {appSession && (
-                    <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
-                  )}
-                </DropdownMenuContent>
-              )}
-            </AnimatePresence>
+                    <DropdownMenuRadioGroup
+                      value={`${appSession?.chainId}`}
+                      onValueChange={appSession ? changeChainId : connectToApp}
+                    >
+                      <SwitchNetworkMenuSelector
+                        type="dropdown"
+                        highlightAccentColor
+                        selectedValue={`${appSession?.chainId}`}
+                        onNetworkSelect={(e) => {
+                          e.preventDefault();
+                          setTimeout(() => {
+                            setShowNetworks(false);
+                          }, 200);
+                          setshowMenuHeader(false);
+                          setMenuOpen(false);
+                        }}
+                      />
+                    </DropdownMenuRadioGroup>
+                    {appSession && (
+                      <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
+                    )}
+                  </Box>
+                )}
+              </AnimatePresence>
+            </DropdownMenuContent>
           </DropdownMenu>
           <Stack space="4px">
             {url ? <DropdownMenuSeparator /> : null}
@@ -425,82 +426,6 @@ export const AppNetworkMenu = ({
           </Stack>
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
-
-      {/* {(showMenuHeader || showNetworks) && (
-        <DropdownMenuContent align={align} marginTop={51.5}>
-          {showNetworks && (
-            <ActionButtons
-              appSession={appSession}
-              connectedAppsId={connectedAppsId}
-              url={url}
-              onValueChange={onValueChange}
-              showChevron={false}
-            />
-          )}
-        </DropdownMenuContent>
-      )} */}
-      {/* <AnimatePresence>
-        {showNetworks && (
-          <DropdownMenuContent
-            animate
-            key="kjgiuyg"
-            top={51.5}
-            width={204}
-            position="absolute"
-            onInteractOutside={(e) => {
-              e.preventDefault();
-              const x = (e.detail.originalEvent as PointerEvent).x;
-              const y = (e.detail.originalEvent as PointerEvent).y;
-              setTimeout(() => {
-                setShowNetworks(false);
-              }, 200);
-              setshowMenuHeader(false);
-              if (
-                x < NETWORK_MENU_HEADER_X ||
-                x > NETWORK_MENU_HEADER_X + NETWORK_MENU_HEADER_WIDTH ||
-                y < NETWORK_MENU_HEADER_Y ||
-                y > NETWORK_MENU_HEADER_Y + NETWORK_MENU_HEADER_HEIGHT
-              ) {
-                setMenuOpen(false);
-              }
-            }}
-          >
-            <DropdownMenuRadioGroup
-              onValueChange={(value) =>
-                onValueChange(value as 'connected-apps' | 'switch-networks')
-              }
-            >
-              <AppInteractionItem
-                connectedAppsId={connectedAppsId}
-                appSession={appSession}
-                chevronDirection="down"
-                showChevron
-              />
-            </DropdownMenuRadioGroup>
-            <DropdownMenuRadioGroup
-              value={`${appSession?.chainId}`}
-              onValueChange={appSession ? changeChainId : connectToApp}
-            >
-              <SwitchNetworkMenuSelector
-                type="dropdown"
-                highlightAccentColor
-                selectedValue={`${appSession?.chainId}`}
-                onNetworkSelect={(e) => {
-                  e.preventDefault();
-                  setTimeout(() => {
-                    setShowNetworks(false);
-                  }, 200);
-                  setshowMenuHeader(false);
-                  setMenuOpen(false);
-                }}
-              />
-            </DropdownMenuRadioGroup>
-            {appSession && (
-              <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
-            )}
-          </DropdownMenuContent>
-        )}
-      </AnimatePresence> */}
     </DropdownMenu>
   );
 };
