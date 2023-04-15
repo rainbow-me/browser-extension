@@ -169,7 +169,7 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
-    await delayTime('medium');
+    await delayTime('long');
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
@@ -206,7 +206,7 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
-    await delayTime('medium');
+    await delayTime('long');
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
@@ -243,7 +243,7 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
-    await delayTime('medium');
+    await delayTime('long');
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
@@ -280,7 +280,7 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
-    await delayTime('medium');
+    await delayTime('long');
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
@@ -317,7 +317,7 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
-    await delayTime('medium');
+    await delayTime('long');
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
@@ -354,7 +354,7 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
-    await delayTime('medium');
+    await delayTime('long');
 
     const address = await findElementByText(driver, shortenedAddress);
     expect(address).toBeTruthy();
