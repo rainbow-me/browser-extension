@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { ReactNode, useCallback, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
@@ -53,9 +53,9 @@ export const AppConnectionMenu = ({
   headerHostId,
   connectedAppsId,
 }: AppConnectionMenuProps) => {
-  const [showNetworks, setShowNetworks] = useState(false);
-  const [showNetworksMenu, setShowNetworksMenu] = useState(false);
-  const [showMenuHeader, setshowMenuHeader] = useState(false);
+  const [subMenuContentOpen, setSubMenuContentOpen] = useState(false);
+  const [subMenuOpenDelayed, setSubMenuOpenDelayed] = useState(false);
+  const [subMenuOpen, setSubMenuOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { currentAddress } = useCurrentAddressStore();
@@ -106,19 +106,22 @@ export const AppConnectionMenu = ({
           navigate(ROUTES.CONNECTED);
           break;
         case 'switch-networks':
-          setShowNetworks(!showNetworks);
-          setTimeout(
-            () => {
-              setShowNetworksMenu(!showNetworksMenu);
-            },
-            showNetworks ? 250 : 0,
-          );
-          setshowMenuHeader((showMenuHeader) => !showMenuHeader);
+          setSubMenuContentOpen(!subMenuContentOpen);
+          setSubMenuOpen((subMenuOpen) => !subMenuOpen);
           break;
       }
     },
-    [navigate, showNetworks, showNetworksMenu],
+    [navigate, subMenuContentOpen],
   );
+
+  useEffect(() => {
+    setTimeout(
+      () => {
+        setSubMenuOpenDelayed(subMenuOpen);
+      },
+      subMenuOpen ? 0 : 250,
+    );
+  }, [subMenuOpen]);
 
   return (
     <DropdownMenu onOpenChange={setMenuOpen} open={menuOpen}>
@@ -126,13 +129,13 @@ export const AppConnectionMenu = ({
         <Box testId={menuTriggerId}>{children}</Box>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        scale={showMenuHeader ? 0.94 : 1}
+        scale={subMenuOpen ? 0.94 : 1}
         sideOffset={sideOffset}
         align={align}
       >
         {url ? (
           <AppConnectionMenuHeader
-            showMenuHeader={showMenuHeader}
+            opacity={subMenuOpen ? 0.5 : 1}
             appLogo={appLogo}
             appHost={appHost}
             headerHostId={headerHostId}
@@ -147,8 +150,8 @@ export const AppConnectionMenu = ({
           }
         >
           <DropdownSubMenu
-            open={showNetworksMenu}
-            openContent={showNetworks}
+            open={subMenuOpenDelayed}
+            openContent={subMenuContentOpen}
             top={100.5}
             marginLeft={30}
             subMenuContent={
@@ -172,11 +175,8 @@ export const AppConnectionMenu = ({
                       selectedValue={`${appSession?.chainId}`}
                       onNetworkSelect={(e) => {
                         e.preventDefault();
-                        setShowNetworks(false);
-                        setTimeout(() => {
-                          setShowNetworksMenu(false);
-                        }, 250);
-                        setshowMenuHeader(false);
+                        setSubMenuContentOpen(false);
+                        setSubMenuOpen(false);
                         setMenuOpen(false);
                       }}
                     />
@@ -191,7 +191,7 @@ export const AppConnectionMenu = ({
               <AppInteractionItem
                 connectedAppsId={connectedAppsId}
                 appSession={appSession}
-                chevronDirection={showNetworks ? 'down' : 'right'}
+                chevronDirection={subMenuContentOpen ? 'down' : 'right'}
                 showChevron
               />
             }
@@ -200,11 +200,9 @@ export const AppConnectionMenu = ({
               const x = (e.detail.originalEvent as PointerEvent).x;
               const y = (e.detail.originalEvent as PointerEvent).y;
               if (x && y) {
-                setShowNetworks(false);
-                setTimeout(() => {
-                  setShowNetworksMenu(false);
-                }, 250);
-                setshowMenuHeader(false);
+                setSubMenuContentOpen(false);
+
+                setSubMenuOpen(false);
                 if (
                   x < NETWORK_MENU_HEADER_X ||
                   x > NETWORK_MENU_HEADER_X + NETWORK_MENU_HEADER_WIDTH ||

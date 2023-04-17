@@ -9,27 +9,25 @@ import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverfl
 
 import ExternalImage from '../ExternalImage/ExternalImage';
 
-export const AppConnectionMenuHeader = ({
-  showMenuHeader,
-  appLogo,
-  headerHostId,
-  appSession,
-  appHost,
-  appName,
-}: {
-  showMenuHeader: boolean;
+interface AppConnectionMenuHeaderProps {
+  opacity: number;
   appLogo?: string;
   headerHostId?: string;
   appSession?: AppSession;
   appHost?: string;
   appName?: string;
-}) => {
+}
+
+export const AppConnectionMenuHeader = ({
+  opacity,
+  appLogo,
+  headerHostId,
+  appSession,
+  appHost,
+  appName,
+}: AppConnectionMenuHeaderProps) => {
   return (
-    <Box
-      as={motion.div}
-      initial={false}
-      animate={{ opacity: showMenuHeader ? 0.5 : 1 }}
-    >
+    <Box as={motion.div} initial={false} animate={{ opacity: opacity }}>
       <Inset top="10px" bottom="14px">
         <Inline alignHorizontal="justify" alignVertical="center">
           <Inline space="10px" alignVertical="center">
