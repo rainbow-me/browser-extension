@@ -5,6 +5,7 @@ import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
 import { useCurrentAddressStore } from '~/core/state';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
@@ -64,7 +65,7 @@ export const AppConnectionMenu = ({
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { currentAddress } = useCurrentAddressStore();
-  const { appHost, appLogo, appName } = useAppMetadata({ url });
+  const { appHost, appLogo, appName, appColor } = useAppMetadata({ url });
   const navigate = useRainbowNavigate();
 
   const {
@@ -167,16 +168,18 @@ export const AppConnectionMenu = ({
                     value={`${appSession?.chainId}`}
                     onValueChange={appSession ? changeChainId : connectToApp}
                   >
-                    <SwitchNetworkMenuSelector
-                      type="dropdown"
-                      highlightAccentColor
-                      selectedValue={`${appSession?.chainId}`}
-                      onNetworkSelect={(e) => {
-                        e.preventDefault();
-                        setSubMenuOpen(false);
-                        setMenuOpen(false);
-                      }}
-                    />
+                    <AccentColorProviderWrapper color={appColor || undefined}>
+                      <SwitchNetworkMenuSelector
+                        type="dropdown"
+                        highlightAccentColor
+                        selectedValue={`${appSession?.chainId}`}
+                        onNetworkSelect={(e) => {
+                          e.preventDefault();
+                          setSubMenuOpen(false);
+                          setMenuOpen(false);
+                        }}
+                      />
+                    </AccentColorProviderWrapper>
                   </DropdownMenuRadioGroup>
                   {appSession && (
                     <SwitchNetworkMenuDisconnect
