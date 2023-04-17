@@ -3,7 +3,7 @@ import React from 'react';
 
 import { i18n } from '~/core/languages';
 import { AppSession } from '~/core/state/appSessions';
-import { Box, Column, Columns, Inline, Symbol, Text } from '~/design-system';
+import { Box, Column, Columns, Symbol, Text } from '~/design-system';
 
 import { ChevronDown } from '../ChevronDown/ChevronDown';
 import { DropdownMenuRadioItem } from '../DropdownMenu/DropdownMenu';
@@ -30,15 +30,13 @@ export const AppInteractionItem = ({
       <Box width="full" testId={connectedAppsId}>
         <Columns alignVertical="center" space="8px">
           <Column width="content">
-            <Inline alignVertical="center" alignHorizontal="center">
-              <Symbol
-                size={12}
-                symbol={
-                  !appSession ? 'app.connected.to.app.below.fill' : 'network'
-                }
-                weight="semibold"
-              />
-            </Inline>
+            <Symbol
+              size={12}
+              symbol={
+                !appSession ? 'app.connected.to.app.below.fill' : 'network'
+              }
+              weight="semibold"
+            />
           </Column>
           <Column>
             <Text size="14pt" weight="semibold">

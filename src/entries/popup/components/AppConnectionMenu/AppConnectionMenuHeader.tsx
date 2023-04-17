@@ -4,7 +4,16 @@ import React from 'react';
 import { i18n } from '~/core/languages';
 import { AppSession } from '~/core/state/appSessions';
 import { ChainNameDisplay } from '~/core/types/chains';
-import { Box, Inline, Inset, Row, Rows, Symbol, Text } from '~/design-system';
+import {
+  Box,
+  Column,
+  Columns,
+  Inset,
+  Row,
+  Rows,
+  Symbol,
+  Text,
+} from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
 import ExternalImage from '../ExternalImage/ExternalImage';
@@ -29,8 +38,8 @@ export const AppConnectionMenuHeader = ({
   return (
     <Box as={motion.div} initial={false} animate={{ opacity: opacity }}>
       <Inset top="10px" bottom="14px">
-        <Inline alignHorizontal="justify" alignVertical="center">
-          <Inline space="10px" alignVertical="center">
+        <Columns space="10px" alignVertical="center">
+          <Column width="content">
             <Box
               style={{
                 height: 14,
@@ -42,14 +51,29 @@ export const AppConnectionMenuHeader = ({
             >
               <ExternalImage src={appLogo} width="14" height="14" />
             </Box>
+          </Column>
+          <Column>
             <Box
               id={`${headerHostId}-${appSession ? appHost : 'not-connected'}`}
             >
               <Rows space="10px">
                 <Row>
-                  <TextOverflow size="14pt" weight="bold" color="label">
-                    {appName ?? appHost}
-                  </TextOverflow>
+                  <Columns>
+                    <Column>
+                      <TextOverflow size="14pt" weight="bold" color="label">
+                        {appName ?? appHost}
+                        {/* {'ewfigewiuyfgewiuyfgeuwygfuyewgfuyewgfuewgfuyew'} */}
+                      </TextOverflow>
+                    </Column>
+                    <Column width="content">
+                      <Symbol
+                        size={6}
+                        color={appSession ? 'green' : 'labelQuaternary'}
+                        symbol="circle.fill"
+                        weight="semibold"
+                      />
+                    </Column>
+                  </Columns>
                 </Row>
                 <Row>
                   <Text size="11pt" weight="bold">
@@ -60,14 +84,8 @@ export const AppConnectionMenuHeader = ({
                 </Row>
               </Rows>
             </Box>
-          </Inline>
-          <Symbol
-            size={6}
-            color={appSession ? 'green' : 'labelQuaternary'}
-            symbol="circle.fill"
-            weight="semibold"
-          />
-        </Inline>
+          </Column>
+        </Columns>
       </Inset>
     </Box>
   );
