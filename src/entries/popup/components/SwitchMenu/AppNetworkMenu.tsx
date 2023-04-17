@@ -3,6 +3,8 @@ import React, { ReactNode, useCallback, useMemo } from 'react';
 import { i18n } from '~/core/languages';
 import {
   Box,
+  Column,
+  Columns,
   Inline,
   Inset,
   Row,
@@ -131,52 +133,59 @@ export const AppNetworkMenu = ({
       <MenuContent sideOffset={sideOffset} align={align}>
         {url ? (
           <Inset top="10px" bottom="14px">
-            <Inline alignHorizontal="justify" alignVertical="center">
-              <Inline space="10px" alignVertical="center">
-                <Box
-                  style={{
-                    height: 14,
-                    width: 14,
-                    borderRadius: 3.5,
-                    overflow: 'hidden',
-                    marginRight: 2,
-                  }}
-                >
-                  <ExternalImage src={appLogo} width="14" height="14" />
-                </Box>
-                <Box
-                  id={`${headerHostId}-${
-                    appSession ? appHost : 'not-connected'
-                  }`}
-                >
-                  <Rows space="10px">
-                    <Row>
-                      <TextOverflow
-                        maxWidth={140}
-                        size="14pt"
-                        weight="bold"
-                        color="label"
-                      >
-                        {appName ?? appHost}
-                      </TextOverflow>
-                    </Row>
-                    {!appSession && (
-                      <Row>
-                        <Text size="11pt" weight="bold">
-                          {i18n.t('menu.home_header_left.not_connected')}
-                        </Text>
-                      </Row>
-                    )}
-                  </Rows>
-                </Box>
-              </Inline>
-              <Symbol
-                size={6}
-                color={appSession ? 'green' : 'labelQuaternary'}
-                symbol="circle.fill"
-                weight="semibold"
-              />
-            </Inline>
+            <Columns
+              alignHorizontal="justify"
+              alignVertical="center"
+              space="4px"
+            >
+              <Column>
+                <Columns space="10px" alignVertical="center">
+                  <Column width="content">
+                    <Box
+                      style={{
+                        height: 14,
+                        width: 14,
+                        borderRadius: 3.5,
+                        overflow: 'hidden',
+                        marginRight: 2,
+                      }}
+                    >
+                      <ExternalImage src={appLogo} width="14" height="14" />
+                    </Box>
+                  </Column>
+                  <Column>
+                    <Box
+                      id={`${headerHostId}-${
+                        appSession ? appHost : 'not-connected'
+                      }`}
+                    >
+                      <Rows space="10px">
+                        <Row>
+                          <TextOverflow size="14pt" weight="bold" color="label">
+                            {appName ?? appHost}
+                          </TextOverflow>
+                        </Row>
+                        {!appSession && (
+                          <Row>
+                            <Text size="11pt" weight="bold">
+                              {i18n.t('menu.home_header_left.not_connected')}
+                            </Text>
+                          </Row>
+                        )}
+                      </Rows>
+                    </Box>
+                  </Column>
+                </Columns>
+              </Column>
+              <Column width="content">
+                <Symbol
+                  size={6}
+                  color={appSession ? 'green' : 'labelQuaternary'}
+                  symbol="circle.fill"
+                  weight="semibold"
+                />
+              </Column>
+            </Columns>
           </Inset>
         ) : null}
 

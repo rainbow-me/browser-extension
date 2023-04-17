@@ -7,7 +7,16 @@ import { useHideAssetBalancesStore } from '~/core/state/currentSettings/hideAsse
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { convertAmountAndPriceToNativeDisplay } from '~/core/utils/numbers';
-import { Box, Inline, Row, Rows, Symbol, Text } from '~/design-system';
+import {
+  Box,
+  Column,
+  Columns,
+  Inline,
+  Row,
+  Rows,
+  Symbol,
+  Text,
+} from '~/design-system';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 
 import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
@@ -15,9 +24,6 @@ import { useWalletName } from '../../hooks/useWalletName';
 import { Asterisks } from '../Asterisks/Asterisks';
 import { MenuItem } from '../Menu/MenuItem';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
-
-const { innerWidth: windowWidth } = window;
-const TITLE_MAX_WIDTH = windowWidth - 200;
 
 export enum LabelOption {
   address = 'address',
@@ -78,9 +84,10 @@ export default function AccountItem({
       paddingHorizontal="12px"
       paddingVertical="8px"
       borderRadius="12px"
+      width="full"
     >
-      <Inline alignHorizontal="justify" alignVertical="center">
-        <Inline space="8px" alignHorizontal="left">
+      <Columns space="8px" alignVertical="center" alignHorizontal="justify">
+        <Column width="content">
           <Box height="fit" position="relative">
             {isSelected && (
               <Box
@@ -108,21 +115,21 @@ export default function AccountItem({
             )}
             <WalletAvatar address={account} size={36} emojiSize="20pt" />
           </Box>
+        </Column>
+        <Column>
           <Box>
             <Rows space="8px" alignVertical="center">
               <Row height="content">
-                <MenuItem.Title
-                  maxWidth={TITLE_MAX_WIDTH}
-                  text={displayName || ''}
-                />
+                <MenuItem.Title text={displayName || ''} />
               </Row>
               {labelComponent && <Row height="content">{labelComponent}</Row>}
             </Rows>
           </Box>
-        </Inline>
-
-        <Box>{rightComponent}</Box>
-      </Inline>
+        </Column>
+        <Column width="content">
+          <Box>{rightComponent}</Box>
+        </Column>
+      </Columns>
     </Box>
   );
 }

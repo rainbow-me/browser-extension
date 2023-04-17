@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import React, { RefObject, useCallback, useState } from 'react';
 
 import { Box, Inline, Text } from '~/design-system';
-import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import {
   transformScales,
   transitions,
@@ -74,9 +73,9 @@ export const GweiInputMask = ({
             </Text>
           </Box>
           <Box>
-            <TextOverflow size="14pt" weight="semibold" color="label">
+            <Text size="14pt" weight="semibold" color="label">
               Gwei
-            </TextOverflow>
+            </Text>
           </Box>
         </Inline>
       </Box>

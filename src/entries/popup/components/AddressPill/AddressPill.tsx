@@ -7,9 +7,6 @@ import { useAvatar } from '../../hooks/useAvatar';
 import { useWalletName } from '../../hooks/useWalletName';
 import { Avatar } from '../Avatar/Avatar';
 
-const { innerWidth: windowWidth } = window;
-const NAME_MAX_WIDTH = windowWidth - 120;
-
 export default function AddressPill({ address }: { address: Address }) {
   const { avatar, isFetched } = useAvatar({ address });
   const { displayName } = useWalletName({ address });
@@ -35,12 +32,7 @@ export default function AddressPill({ address }: { address: Address }) {
           ) : null}
           <Avatar.Skeleton />
         </Avatar.Wrapper>
-        <TextOverflow
-          maxWidth={NAME_MAX_WIDTH}
-          weight="medium"
-          color="labelTertiary"
-          size="14pt"
-        >
+        <TextOverflow weight="medium" color="labelTertiary" size="14pt">
           {displayName}
         </TextOverflow>
       </Inline>

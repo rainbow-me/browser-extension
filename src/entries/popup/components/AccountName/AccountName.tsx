@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
 import { useAccount, useEnsAvatar } from 'wagmi';
 
-import { Box, Inline, Symbol, TextOverflow } from '~/design-system';
+import { Box, Column, Columns, Symbol, TextOverflow } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { transformScales } from '~/design-system/styles/designTokens';
 
@@ -12,9 +12,6 @@ import { useWalletName } from '../../hooks/useWalletName';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
 import { Avatar } from '../Avatar/Avatar';
-
-const { innerWidth: windowWidth } = window;
-const TEXT_MAX_WIDTH = windowWidth - 60;
 
 type AccountNameProps = {
   includeAvatar?: boolean;
@@ -70,32 +67,37 @@ export function AccountName({
         padding="4px"
         {...chevronProps}
       >
-        <Inline alignVertical="center" space="4px">
+        <Columns alignVertical="center" space="4px">
           {includeAvatar && (
-            <Box paddingRight="2px">
-              <Avatar imageUrl={ensAvatar || ''} size={16} />
+            <Column width="content">
+              <Box paddingRight="2px">
+                <Avatar imageUrl={ensAvatar || ''} size={16} />
+              </Box>
+            </Column>
+          )}
+          <Column>
+            <Box id={`${id ?? ''}-account-name-shuffle`}>
+              <TextOverflow
+                color="label"
+                size={size}
+                weight="heavy"
+                testId="account-name"
+              >
+                {displayName}
+              </TextOverflow>
             </Box>
-          )}
-          <Box id={`${id ?? ''}-account-name-shuffle`}>
-            <TextOverflow
-              color="label"
-              size={size}
-              weight="heavy"
-              testId="account-name"
-              maxWidth={TEXT_MAX_WIDTH}
-            >
-              {displayName}
-            </TextOverflow>
-          </Box>
+          </Column>
           {chevron && (
-            <Symbol
-              size={chevronDownSizes[size]}
-              symbol="chevron.down"
-              color={hover ? 'label' : 'labelTertiary'}
-              weight="semibold"
-            />
+            <Column width="content">
+              <Symbol
+                size={chevronDownSizes[size]}
+                symbol="chevron.down"
+                color={hover ? 'label' : 'labelTertiary'}
+                weight="semibold"
+              />
+            </Column>
           )}
-        </Inline>
+        </Columns>
       </Box>
     </Lens>
   );

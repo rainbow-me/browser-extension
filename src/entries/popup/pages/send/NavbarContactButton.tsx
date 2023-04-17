@@ -141,7 +141,6 @@ const EditContactDropdown = ({
         <Stack space="4px">
           <Box paddingTop="8px" paddingBottom="12px">
             <TextOverflow
-              maxWidth={180}
               weight="bold"
               size="14pt"
               color="label"
@@ -155,11 +154,7 @@ const EditContactDropdown = ({
               <DropdownMenuSeparator />
               <Box>
                 <DropdownMenuRadioItem value={'copy'}>
-                  <Box
-                    testId="navbar-contact-button-edit-copy"
-                    width="full"
-                    // marginVertical="-1px"
-                  >
+                  <Box testId="navbar-contact-button-edit-copy" width="full">
                     <Inline space="8px" alignVertical="center">
                       <Box>
                         <Inline alignVertical="center">
