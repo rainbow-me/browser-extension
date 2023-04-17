@@ -100,7 +100,7 @@ export const SwitchNetworkMenuSelector = ({
             selectedValue={selectedValue}
             onSelect={onNetworkSelect}
           >
-            <Box width="full">
+            <Box width="full" testId={`switch-network-item-${i}`}>
               <Columns alignHorizontal="justify" alignVertical="center">
                 <Column>
                   <Box testId={`switch-network-item-${i}`}>

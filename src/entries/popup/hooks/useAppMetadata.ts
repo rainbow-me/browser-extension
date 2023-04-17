@@ -22,7 +22,6 @@ export function useAppMetadata({ url, title }: AppMetadata) {
   const { data: appColor } = useDominantColor({
     imageUrl: appLogo ?? undefined,
   });
-  console.log('useDominantColor', appLogo, appColor);
 
   return {
     appHost,

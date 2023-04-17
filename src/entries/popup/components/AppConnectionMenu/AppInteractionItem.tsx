@@ -9,12 +9,10 @@ import { ChevronDown } from '../ChevronDown/ChevronDown';
 import { DropdownMenuRadioItem } from '../DropdownMenu/DropdownMenu';
 
 export const AppInteractionItem = ({
-  connectedAppsId,
   appSession,
   chevronDirection,
   showChevron,
 }: {
-  connectedAppsId?: string;
   appSession: AppSession;
   chevronDirection: 'right' | 'down';
   showChevron: boolean;
@@ -27,7 +25,7 @@ export const AppInteractionItem = ({
       highlightAccentColor
       value="switch-networks"
     >
-      <Box width="full" testId={connectedAppsId}>
+      <Box width="full">
         <Columns alignVertical="center" space="8px">
           <Column width="content">
             <Symbol

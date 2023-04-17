@@ -169,8 +169,9 @@ const ConnectedApp = ({
 
   const onMouseEnter = useCallback(() => setDisconnectButtonVisible(true), []);
   const onMouseLeave = useCallback(() => setDisconnectButtonVisible(false), []);
+
   return (
-    <Box paddingHorizontal="8px">
+    <Box paddingHorizontal="8px" testId={`connected-app-${appHost}`}>
       <Box
         background={{
           default: 'transparent',
@@ -192,7 +193,10 @@ const ConnectedApp = ({
             />
           </Box>
         )}
-        <ConnectedAppNetworkMenu url={url} menuTriggerId="switch-network-menu">
+        <ConnectedAppNetworkMenu
+          url={url}
+          menuTriggerId={`connected-app-menu-${appHost}`}
+        >
           <Inset horizontal="12px" vertical="8px">
             <Inline alignHorizontal="justify" alignVertical="center">
               <Columns space="8px">
