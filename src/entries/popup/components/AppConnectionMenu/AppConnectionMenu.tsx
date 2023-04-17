@@ -113,6 +113,12 @@ export const AppConnectionMenu = ({
     [navigate],
   );
 
+  const disconnect = useCallback(() => {
+    disconnectAppSession();
+    setSubMenuOpen(false);
+    setMenuOpen(false);
+  }, [disconnectAppSession]);
+
   useEffect(() => {
     setTimeout(
       () => {
@@ -182,9 +188,7 @@ export const AppConnectionMenu = ({
                     </AccentColorProviderWrapper>
                   </DropdownMenuRadioGroup>
                   {appSession && (
-                    <SwitchNetworkMenuDisconnect
-                      onDisconnect={disconnectAppSession}
-                    />
+                    <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
                   )}
                 </Box>
               </>
