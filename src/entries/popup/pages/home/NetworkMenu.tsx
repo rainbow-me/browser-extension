@@ -7,9 +7,9 @@ import {
   transitions,
 } from '~/design-system/styles/designTokens';
 
+import { AppConnectionMenu } from '../../components/AppConnectionMenu/AppConnectionMenu';
 import ExternalImage from '../../components/ExternalImage/ExternalImage';
 import { Navbar } from '../../components/Navbar/Navbar';
-import { AppNetworkMenu } from '../../components/SwitchMenu/AppNetworkMenu';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
 
@@ -38,7 +38,7 @@ export const NetworkMenu = () => {
   }, []);
 
   return (
-    <AppNetworkMenu
+    <AppConnectionMenu
       menuTriggerId="home-page-header-left"
       headerHostId="home-page-header-host"
       connectedAppsId="home-page-header-connected-apps"
@@ -106,6 +106,6 @@ export const NetworkMenu = () => {
           tabIndex={1}
         />
       )}
-    </AppNetworkMenu>
+    </AppConnectionMenu>
   );
 };

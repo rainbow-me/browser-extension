@@ -20,11 +20,11 @@ import {
 } from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 
-import ExternalImage from '../components/ExternalImage/ExternalImage';
-import { ConnectedAppNetworkMenu } from '../components/SwitchMenu/ConnectedAppNetworkMenu';
-import { WalletAvatar } from '../components/WalletAvatar/WalletAvatar';
-import { useAppMetadata } from '../hooks/useAppMetadata';
-import { useAppSession } from '../hooks/useAppSession';
+import ExternalImage from '../../components/ExternalImage/ExternalImage';
+import { ConnectedAppNetworkMenu } from '../../components/SwitchMenu/ConnectedAppNetworkMenu';
+import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
+import { useAppMetadata } from '../../hooks/useAppMetadata';
+import { useAppSession } from '../../hooks/useAppSession';
 
 export const ConnectedApps = () => {
   const { appSessions, clearSessions } = useAppSessionsStore();

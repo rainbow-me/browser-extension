@@ -34,11 +34,10 @@ import {
   DropdownMenuTrigger,
 } from '../DropdownMenu/DropdownMenu';
 import ExternalImage from '../ExternalImage/ExternalImage';
-
 import {
   SwitchNetworkMenuDisconnect,
   SwitchNetworkMenuSelector,
-} from './SwitchNetworkMenu';
+} from '../SwitchMenu/SwitchNetworkMenu';
 
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
 
@@ -170,7 +169,7 @@ const NETWORK_MENU_HEADER_Y = 72;
 const NETWORK_MENU_HEADER_WIDTH = 190;
 const NETWORK_MENU_HEADER_HEIGHT = 52;
 
-interface AppNetworkMenuProps {
+interface AppConnectionMenuProps {
   children: ReactNode;
   url: string;
   align?: 'center' | 'end' | 'start';
@@ -180,7 +179,7 @@ interface AppNetworkMenuProps {
   connectedAppsId?: string;
 }
 
-export const AppNetworkMenu = ({
+export const AppConnectionMenu = ({
   children,
   url,
   align,
@@ -188,7 +187,7 @@ export const AppNetworkMenu = ({
   menuTriggerId,
   headerHostId,
   connectedAppsId,
-}: AppNetworkMenuProps) => {
+}: AppConnectionMenuProps) => {
   const [showNetworks, setShowNetworks] = useState(false);
   const [showNetworksMenu, setShowNetworksMenu] = useState(false);
   const [showMenuHeader, setshowMenuHeader] = useState(false);
