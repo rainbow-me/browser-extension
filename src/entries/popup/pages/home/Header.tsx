@@ -4,6 +4,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { truncateAddress } from '~/core/utils/address';
@@ -103,8 +104,8 @@ function ActionButtonsSection() {
   const allowSwap = React.useMemo(
     () =>
       (!isWatchingWallet || featureFlags.full_watching_wallets) &&
-      featureFlags.swaps,
-    [featureFlags.full_watching_wallets, featureFlags.swaps, isWatchingWallet],
+      config.swaps_enabled,
+    [featureFlags.full_watching_wallets, isWatchingWallet],
   );
 
   const allowSend = React.useMemo(

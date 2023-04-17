@@ -4,7 +4,6 @@ import { createStore } from '~/core/state/internal/createStore';
 
 export enum featureFlagTypes {
   full_watching_wallets = 'full_watching_wallets',
-  swaps = 'swaps',
 }
 export type FeatureFlagTypes = keyof typeof featureFlagTypes;
 
@@ -15,7 +14,7 @@ export interface FeatureFlagsStore {
 
 export const featureFlagsStore = createStore<FeatureFlagsStore>(
   (set, get) => ({
-    featureFlags: { swaps: false, full_watching_wallets: false },
+    featureFlags: { full_watching_wallets: false },
     setFeatureFlag: (key, value) => {
       const { featureFlags } = get();
       const newFeatureFlags = {
