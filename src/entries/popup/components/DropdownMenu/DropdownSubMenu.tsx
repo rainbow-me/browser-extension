@@ -53,7 +53,6 @@ export const DropdownSubMenu = ({
             position="absolute"
             onInteractOutside={onInteractOutsideContent}
           >
-            {subMenuElement}
             {subMenuContent}
           </DropdownMenuContent>
         )}

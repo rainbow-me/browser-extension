@@ -154,69 +154,74 @@ export const AppConnectionMenu = ({
             onValueChange(value as 'connected-apps' | 'switch-networks')
           }
         >
-          <DropdownSubMenu
-            open={subMenuOpenDelayed}
-            openContent={subMenuOpen}
-            top={100.5}
-            marginLeft={30}
-            subMenuContent={
-              <>
-                {url ? <DropdownMenuSeparator /> : null}
-
-                <Box
-                  as={motion.div}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <DropdownMenuRadioGroup
-                    value={`${appSession?.chainId}`}
-                    onValueChange={appSession ? changeChainId : connectToApp}
-                  >
-                    <AccentColorProviderWrapper color={appColor || undefined}>
-                      <SwitchNetworkMenuSelector
-                        type="dropdown"
-                        highlightAccentColor
-                        selectedValue={`${appSession?.chainId}`}
-                        onNetworkSelect={(e) => {
-                          e?.preventDefault();
-                          setSubMenuOpen(false);
-                          setMenuOpen(false);
-                        }}
-                        onShortcutPress={
-                          appSession ? changeChainId : connectToApp
-                        }
-                      />
-                    </AccentColorProviderWrapper>
-                  </DropdownMenuRadioGroup>
-                  {appSession && (
-                    <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
-                  )}
-                </Box>
-              </>
-            }
-            subMenuElement={
-              <AppInteractionItem
-                connectedAppsId={connectedAppsId}
-                appSession={appSession}
-                chevronDirection={subMenuOpen ? 'down' : 'right'}
-                showChevron
-              />
-            }
-            onInteractOutsideContent={(e) => {
-              e.preventDefault();
-              const { x, y } = (e.detail.originalEvent as PointerEvent) || {};
-              if (x && y) {
-                setSubMenuOpen(false);
-                if (isClickingMenuHeader({ x, y })) {
-                  setMenuOpen(false);
-                }
-              }
-            }}
-          />
-
           <Stack space="4px">
+            <DropdownSubMenu
+              open={subMenuOpenDelayed}
+              openContent={subMenuOpen}
+              top={100.5}
+              marginLeft={30}
+              subMenuContent={
+                <Stack space="4px">
+                  <AppInteractionItem
+                    connectedAppsId={connectedAppsId}
+                    appSession={appSession}
+                    chevronDirection={subMenuOpen ? 'down' : 'right'}
+                    showChevron
+                  />
+                  {url ? <DropdownMenuSeparator /> : null}
+                  <Box
+                    as={motion.div}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <DropdownMenuRadioGroup
+                      value={`${appSession?.chainId}`}
+                      onValueChange={appSession ? changeChainId : connectToApp}
+                    >
+                      <AccentColorProviderWrapper color={appColor || undefined}>
+                        <SwitchNetworkMenuSelector
+                          type="dropdown"
+                          highlightAccentColor
+                          selectedValue={`${appSession?.chainId}`}
+                          onNetworkSelect={(e) => {
+                            e?.preventDefault();
+                            setSubMenuOpen(false);
+                            setMenuOpen(false);
+                          }}
+                          onShortcutPress={
+                            appSession ? changeChainId : connectToApp
+                          }
+                        />
+                      </AccentColorProviderWrapper>
+                    </DropdownMenuRadioGroup>
+                    {appSession && (
+                      <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
+                    )}
+                  </Box>
+                </Stack>
+              }
+              subMenuElement={
+                <AppInteractionItem
+                  connectedAppsId={connectedAppsId}
+                  appSession={appSession}
+                  chevronDirection={subMenuOpen ? 'down' : 'right'}
+                  showChevron
+                />
+              }
+              onInteractOutsideContent={(e) => {
+                e.preventDefault();
+                const { x, y } = (e.detail.originalEvent as PointerEvent) || {};
+                if (x && y) {
+                  setSubMenuOpen(false);
+                  if (isClickingMenuHeader({ x, y })) {
+                    setMenuOpen(false);
+                  }
+                }
+              }}
+            />
+
             {url ? <DropdownMenuSeparator /> : null}
 
             <DropdownMenuRadioItem highlightAccentColor value="connected-apps">
