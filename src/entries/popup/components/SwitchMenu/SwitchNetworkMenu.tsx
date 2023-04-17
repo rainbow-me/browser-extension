@@ -41,12 +41,16 @@ export const SwitchNetworkMenuSelector = ({
   selectedValue,
   highlightAccentColor,
   type,
+  showDisconnect,
+  disconnect,
   onNetworkSelect,
   onShortcutPress,
 }: {
   selectedValue?: string;
   highlightAccentColor?: boolean;
   type: 'dropdown' | 'context';
+  showDisconnect: boolean;
+  disconnect?: () => void;
   onNetworkSelect?: (event?: Event) => void;
   onShortcutPress: (chainId: string) => void;
 }) => {
@@ -69,11 +73,15 @@ export const SwitchNetworkMenuSelector = ({
       const chainNumber = Number(e.key);
       if (chainNumber) {
         const chain = chains[chainNumber - 1];
-        onShortcutPress(String(chain.id));
-        onNetworkSelect?.();
+        if (chain) {
+          onShortcutPress(String(chain.id));
+          onNetworkSelect?.();
+        } else if (chainNumber === chains.length + 1) {
+          disconnect?.();
+        }
       }
     },
-    [chains, onNetworkSelect, onShortcutPress],
+    [chains, disconnect, onNetworkSelect, onShortcutPress],
   );
 
   useKeyboardShortcut({
@@ -112,7 +120,7 @@ export const SwitchNetworkMenuSelector = ({
                     </MenuItemIndicator>
                   ) : (
                     <Box
-                      background={'fillSecondary'}
+                      background="fillSecondary"
                       padding="4px"
                       borderRadius="3px"
                       boxShadow="1px"
@@ -132,13 +140,21 @@ export const SwitchNetworkMenuSelector = ({
           </MenuRadioItem>
         );
       })}
+      {showDisconnect && disconnect && (
+        <SwitchNetworkMenuDisconnect
+          onDisconnect={disconnect}
+          shortcutLabel={String(chains.length + 1)}
+        />
+      )}
     </>
   );
 };
 
 export const SwitchNetworkMenuDisconnect = ({
+  shortcutLabel,
   onDisconnect,
 }: {
+  shortcutLabel: string;
   onDisconnect: () => void;
 }) => {
   return (
@@ -146,22 +162,39 @@ export const SwitchNetworkMenuDisconnect = ({
       testId="switch-network-menu-disconnect"
       as="button"
       onClick={onDisconnect}
+      width="full"
     >
       <Inset vertical="8px">
-        <Inline alignVertical="center" space="8px">
-          <Box style={{ width: 18, height: 18 }}>
-            <Inline
-              height="full"
-              alignVertical="center"
-              alignHorizontal="center"
-            >
-              <Symbol size={12} symbol="xmark" weight="semibold" />
+        <Columns alignHorizontal="justify" alignVertical="center">
+          <Column>
+            <Inline alignVertical="center" space="8px">
+              <Box style={{ width: 18, height: 18 }}>
+                <Inline
+                  height="full"
+                  alignVertical="center"
+                  alignHorizontal="center"
+                >
+                  <Symbol size={12} symbol="xmark" weight="semibold" />
+                </Inline>
+              </Box>
+              <Text size="14pt" weight="bold">
+                {i18n.t('menu.network.disconnect')}
+              </Text>
             </Inline>
-          </Box>
-          <Text size="14pt" weight="bold">
-            {i18n.t('menu.network.disconnect')}
-          </Text>
-        </Inline>
+          </Column>
+          <Column width="content">
+            <Box
+              background="fillSecondary"
+              padding="4px"
+              borderRadius="3px"
+              boxShadow="1px"
+            >
+              <Text size="12pt" color="labelSecondary" weight="semibold">
+                {shortcutLabel}
+              </Text>
+            </Box>
+          </Column>
+        </Columns>
       </Inset>
     </Box>
   );
@@ -247,11 +280,10 @@ export const SwitchNetworkMenu = ({
               ) as Chain;
               onChainChanged(chain?.id, chain);
             }}
+            showDisconnect={!!onDisconnect}
+            disconnect={onDisconnect}
           />
         </MenuRadioGroup>
-        {onDisconnect ? (
-          <SwitchNetworkMenuDisconnect onDisconnect={onDisconnect} />
-        ) : null}
       </MenuContent>
     </Menu>
   );

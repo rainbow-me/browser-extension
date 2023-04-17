@@ -20,10 +20,7 @@ import {
   DropdownMenuTrigger,
 } from '../DropdownMenu/DropdownMenu';
 import { DropdownSubMenu } from '../DropdownMenu/DropdownSubMenu';
-import {
-  SwitchNetworkMenuDisconnect,
-  SwitchNetworkMenuSelector,
-} from '../SwitchMenu/SwitchNetworkMenu';
+import { SwitchNetworkMenuSelector } from '../SwitchMenu/SwitchNetworkMenu';
 
 import { AppConnectionMenuHeader } from './AppConnectionMenuHeader';
 import { AppInteractionItem } from './AppInteractionItem';
@@ -193,12 +190,11 @@ export const AppConnectionMenu = ({
                           onShortcutPress={
                             appSession ? changeChainId : connectToApp
                           }
+                          showDisconnect={!!appSession}
+                          disconnect={disconnect}
                         />
                       </AccentColorProviderWrapper>
                     </DropdownMenuRadioGroup>
-                    {appSession && (
-                      <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
-                    )}
                   </Box>
                 </Stack>
               }

@@ -25,10 +25,7 @@ import {
 } from '../ContextMenu/ContextMenu';
 import ExternalImage from '../ExternalImage/ExternalImage';
 
-import {
-  SwitchNetworkMenuDisconnect,
-  SwitchNetworkMenuSelector,
-} from './SwitchNetworkMenu';
+import { SwitchNetworkMenuSelector } from './SwitchNetworkMenu';
 
 interface ConnectedAppNetworkMenuProps {
   children: ReactNode;
@@ -131,9 +128,10 @@ export const ConnectedAppNetworkMenu = ({
                 highlightAccentColor
                 selectedValue={`${appSession?.chainId}`}
                 onShortcutPress={changeChainId}
+                disconnect={disconnect}
+                showDisconnect
               />
             </ContextMenuRadioGroup>
-            <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
           </Box>
         </Stack>
 
