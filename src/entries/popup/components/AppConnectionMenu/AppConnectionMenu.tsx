@@ -34,6 +34,12 @@ const NETWORK_MENU_HEADER_Y = 72;
 const NETWORK_MENU_HEADER_WIDTH = 190;
 const NETWORK_MENU_HEADER_HEIGHT = 52;
 
+const isClickingMenuHeader = ({ x, y }: { x: number; y: number }) =>
+  x < NETWORK_MENU_HEADER_X ||
+  x > NETWORK_MENU_HEADER_X + NETWORK_MENU_HEADER_WIDTH ||
+  y < NETWORK_MENU_HEADER_Y ||
+  y > NETWORK_MENU_HEADER_Y + NETWORK_MENU_HEADER_HEIGHT;
+
 interface AppConnectionMenuProps {
   children: ReactNode;
   url: string;
@@ -58,7 +64,6 @@ export const AppConnectionMenu = ({
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { currentAddress } = useCurrentAddressStore();
-
   const { appHost, appLogo, appName } = useAppMetadata({ url });
   const navigate = useRainbowNavigate();
 
@@ -91,11 +96,6 @@ export const AppConnectionMenu = ({
       inpageMessenger.send('rainbow_reload', null);
     },
     [addSession, appHost, currentAddress, url],
-  );
-
-  const disconnect = useCallback(
-    () => disconnectAppSession(),
-    [disconnectAppSession],
   );
 
   const onValueChange = useCallback(
@@ -179,7 +179,9 @@ export const AppConnectionMenu = ({
                     />
                   </DropdownMenuRadioGroup>
                   {appSession && (
-                    <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />
+                    <SwitchNetworkMenuDisconnect
+                      onDisconnect={disconnectAppSession}
+                    />
                   )}
                 </Box>
               </>
@@ -194,16 +196,10 @@ export const AppConnectionMenu = ({
             }
             onInteractOutsideContent={(e) => {
               e.preventDefault();
-              const x = (e.detail.originalEvent as PointerEvent).x;
-              const y = (e.detail.originalEvent as PointerEvent).y;
+              const { x, y } = (e.detail.originalEvent as PointerEvent) || {};
               if (x && y) {
                 setSubMenuOpen(false);
-                if (
-                  x < NETWORK_MENU_HEADER_X ||
-                  x > NETWORK_MENU_HEADER_X + NETWORK_MENU_HEADER_WIDTH ||
-                  y < NETWORK_MENU_HEADER_Y ||
-                  y > NETWORK_MENU_HEADER_Y + NETWORK_MENU_HEADER_HEIGHT
-                ) {
+                if (isClickingMenuHeader({ x, y })) {
                   setMenuOpen(false);
                 }
               }
