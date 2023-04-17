@@ -32,13 +32,9 @@ const ExternalImage = (
     [height, props.src, width],
   );
 
-  const handleError = React.useCallback(
-    (e) => {
-      console.log('handleError', e);
-      setFallback(true);
-    },
-    [setFallback],
-  );
+  const handleError = React.useCallback(() => {
+    setFallback(true);
+  }, [setFallback]);
 
   if (fallback) {
     return (
