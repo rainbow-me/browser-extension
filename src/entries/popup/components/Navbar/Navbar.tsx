@@ -8,6 +8,11 @@ import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { BackgroundColor } from '~/design-system/styles/designTokens';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
+import {
+  NAVBAR_LEFT_COMPONENT_ID,
+  NAVBAR_RIGHT_COMPONENT_ID,
+} from '../../utils/clickHeader';
+
 type NavbarProps = {
   leftComponent?: React.ReactElement;
   rightComponent?: React.ReactElement;
@@ -49,7 +54,7 @@ export function Navbar({
             height: 32,
           }}
           height="full"
-          id="navbar-left-component"
+          id={NAVBAR_LEFT_COMPONENT_ID}
         >
           {leftComponent}
         </Box>
@@ -77,6 +82,7 @@ export function Navbar({
             height: 32,
           }}
           height="full"
+          id={NAVBAR_RIGHT_COMPONENT_ID}
         >
           {rightComponent}
         </Box>
