@@ -53,7 +53,6 @@ export const AppConnectionMenu = ({
   headerHostId,
   connectedAppsId,
 }: AppConnectionMenuProps) => {
-  const [subMenuContentOpen, setSubMenuContentOpen] = useState(false);
   const [subMenuOpenDelayed, setSubMenuOpenDelayed] = useState(false);
   const [subMenuOpen, setSubMenuOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -106,12 +105,11 @@ export const AppConnectionMenu = ({
           navigate(ROUTES.CONNECTED);
           break;
         case 'switch-networks':
-          setSubMenuContentOpen(!subMenuContentOpen);
           setSubMenuOpen((subMenuOpen) => !subMenuOpen);
           break;
       }
     },
-    [navigate, subMenuContentOpen],
+    [navigate],
   );
 
   useEffect(() => {
@@ -151,7 +149,7 @@ export const AppConnectionMenu = ({
         >
           <DropdownSubMenu
             open={subMenuOpenDelayed}
-            openContent={subMenuContentOpen}
+            openContent={subMenuOpen}
             top={100.5}
             marginLeft={30}
             subMenuContent={
@@ -175,7 +173,6 @@ export const AppConnectionMenu = ({
                       selectedValue={`${appSession?.chainId}`}
                       onNetworkSelect={(e) => {
                         e.preventDefault();
-                        setSubMenuContentOpen(false);
                         setSubMenuOpen(false);
                         setMenuOpen(false);
                       }}
@@ -191,7 +188,7 @@ export const AppConnectionMenu = ({
               <AppInteractionItem
                 connectedAppsId={connectedAppsId}
                 appSession={appSession}
-                chevronDirection={subMenuContentOpen ? 'down' : 'right'}
+                chevronDirection={subMenuOpen ? 'down' : 'right'}
                 showChevron
               />
             }
@@ -200,8 +197,6 @@ export const AppConnectionMenu = ({
               const x = (e.detail.originalEvent as PointerEvent).x;
               const y = (e.detail.originalEvent as PointerEvent).y;
               if (x && y) {
-                setSubMenuContentOpen(false);
-
                 setSubMenuOpen(false);
                 if (
                   x < NETWORK_MENU_HEADER_X ||
