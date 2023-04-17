@@ -1,23 +1,25 @@
 import { motion } from 'framer-motion';
 import * as React from 'react';
 
-import { Box, Inline, Symbol } from '~/design-system';
+import appConnectionImageMask from 'static/assets/appConnectionImageMask.svg';
+import { Bleed, Box, Inline, Symbol } from '~/design-system';
 import {
   transformScales,
   transitions,
 } from '~/design-system/styles/designTokens';
 
 import { AppConnectionMenu } from '../../components/AppConnectionMenu/AppConnectionMenu';
+import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
 import ExternalImage from '../../components/ExternalImage/ExternalImage';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
 
-export const NetworkMenu = () => {
+export const AppConnection = () => {
   const [url, setUrl] = React.useState('');
   const { appLogo, appHost } = useAppMetadata({ url });
   const { appSession } = useAppSession({ host: appHost });
-  console.log('maion appLogo', appLogo);
+
   React.useEffect(() => {
     chrome?.tabs?.query({ active: true, lastFocusedWindow: true }, (tabs) => {
       const url = tabs[0].url;
@@ -45,7 +47,7 @@ export const NetworkMenu = () => {
       sideOffset={1}
       url={url}
     >
-      {appSession ? (
+      {url ? (
         <Box
           as={motion.div}
           initial={{ zIndex: 0 }}
@@ -71,7 +73,7 @@ export const NetworkMenu = () => {
             >
               <Box
                 background="surfacePrimaryElevated"
-                style={{ height: 8, width: 8, borderRadius: 4.5 }}
+                style={{ height: 8, width: 8, borderRadius: 4 }}
               >
                 <Inline
                   alignHorizontal="center"
@@ -88,14 +90,44 @@ export const NetworkMenu = () => {
               </Box>
             </Box>
             <Box
+              position="absolute"
               style={{
-                height: 14,
-                width: 14,
-                borderRadius: 4,
+                marginRight: 16,
+                marginTop: 8,
+              }}
+            >
+              <Box
+                style={{
+                  height: 10,
+                  width: 10,
+                  borderRadius: 5,
+                }}
+              >
+                <Inline
+                  alignHorizontal="center"
+                  alignVertical="center"
+                  height="full"
+                >
+                  <Bleed top="7px">
+                    <ChainBadge chainId={appSession?.chainId} size="micro" />
+                  </Bleed>
+                </Inline>
+              </Box>
+            </Box>
+            <Box
+              style={{
+                height: 16,
+                width: 16,
+                borderRadius: 3,
                 overflow: 'hidden',
               }}
             >
-              <ExternalImage src={appLogo} width="14" height="14" />
+              <ExternalImage
+                mask={appSession ? appConnectionImageMask : undefined}
+                src={appLogo}
+                width="16"
+                height="16"
+              />
             </Box>
           </Inline>
         </Box>
