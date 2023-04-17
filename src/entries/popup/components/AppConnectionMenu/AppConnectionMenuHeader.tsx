@@ -54,7 +54,7 @@ export const AppConnectionMenuHeader = ({
                 <Row>
                   <Text size="11pt" weight="bold">
                     {!appSession
-                      ? i18n.t('menu.home_header_left.not_connected')
+                      ? i18n.t('menu.app_connection_menu.not_connected')
                       : ChainNameDisplay[appSession.chainId] || ''}
                   </Text>
                 </Row>

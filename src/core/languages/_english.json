@@ -486,10 +486,12 @@
       "title": "Switch Networks",
       "disconnect": "Disconnect"
     },
-    "home_header_left": {
+    "app_connection_menu": {
       "all_connected_apps": "All connected apps",
       "not_connected": "Not connected",
-      "networks": "Networks"
+      "networks": "Networks",
+      "connect": "Connect",
+      "switch_networks": "Switch networks"
     },
     "home_header_right": {
       "settings": "Settings",

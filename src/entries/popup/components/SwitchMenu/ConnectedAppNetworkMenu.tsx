@@ -93,7 +93,7 @@ export const ConnectedAppNetworkMenu = ({
                     {!appSession && (
                       <Row>
                         <Text size="11pt" weight="bold">
-                          {i18n.t('menu.home_header_left.not_connected')}
+                          {i18n.t('menu.app_connection_menu.not_connected')}
                         </Text>
                       </Row>
                     )}
@@ -114,7 +114,7 @@ export const ConnectedAppNetworkMenu = ({
           <Stack space="12px">
             <ContextMenuSeparator />
             <Text color="labelTertiary" size="11pt" weight="bold">
-              {i18n.t('menu.home_header_left.networks')}
+              {i18n.t('menu.app_connection_menu.networks')}
             </Text>
           </Stack>
 

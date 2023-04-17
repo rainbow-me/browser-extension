@@ -65,7 +65,7 @@ interface DropdownMenuContentProps {
 
 export function DropdownMenuContent(props: DropdownMenuContentProps) {
   return (
-    <DropdownMenuPrimitive.Portal style={{ zIndex: 11 }}>
+    <DropdownMenuPrimitive.Portal>
       <DropdownMenuContentBody
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...props}

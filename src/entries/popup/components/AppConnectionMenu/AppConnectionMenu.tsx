@@ -173,28 +173,42 @@ export const AppConnectionMenu = ({
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <DropdownMenuRadioGroup
-                      value={`${appSession?.chainId}`}
-                      onValueChange={appSession ? changeChainId : connectToApp}
-                    >
-                      <AccentColorProviderWrapper color={appColor || undefined}>
-                        <SwitchNetworkMenuSelector
-                          type="dropdown"
-                          highlightAccentColor
-                          selectedValue={`${appSession?.chainId}`}
-                          onNetworkSelect={(e) => {
-                            e?.preventDefault();
-                            setSubMenuOpen(false);
-                            setMenuOpen(false);
-                          }}
-                          onShortcutPress={
-                            appSession ? changeChainId : connectToApp
-                          }
-                          showDisconnect={!!appSession}
-                          disconnect={disconnect}
-                        />
-                      </AccentColorProviderWrapper>
-                    </DropdownMenuRadioGroup>
+                    <Stack space="4px">
+                      {!appSession ? (
+                        <Box paddingTop="12px">
+                          <Text weight="bold" color="labelTertiary" size="11pt">
+                            {i18n.t('menu.app_connection_menu.networks')}
+                          </Text>
+                        </Box>
+                      ) : null}
+
+                      <DropdownMenuRadioGroup
+                        value={`${appSession?.chainId}`}
+                        onValueChange={
+                          appSession ? changeChainId : connectToApp
+                        }
+                      >
+                        <AccentColorProviderWrapper
+                          color={appColor || undefined}
+                        >
+                          <SwitchNetworkMenuSelector
+                            type="dropdown"
+                            highlightAccentColor
+                            selectedValue={`${appSession?.chainId}`}
+                            onNetworkSelect={(e) => {
+                              e?.preventDefault();
+                              setSubMenuOpen(false);
+                              setMenuOpen(false);
+                            }}
+                            onShortcutPress={
+                              appSession ? changeChainId : connectToApp
+                            }
+                            showDisconnect={!!appSession}
+                            disconnect={disconnect}
+                          />
+                        </AccentColorProviderWrapper>
+                      </DropdownMenuRadioGroup>
+                    </Stack>
                   </Box>
                 </Stack>
               }
@@ -231,7 +245,7 @@ export const AppConnectionMenu = ({
                     />
                   </Inline>
                   <Text size="14pt" weight="semibold">
-                    {i18n.t('menu.home_header_left.all_connected_apps')}
+                    {i18n.t('menu.app_connection_menu.all_connected_apps')}
                   </Text>
                 </Inline>
               </Box>

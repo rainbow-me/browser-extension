@@ -76,12 +76,12 @@ export const SwitchNetworkMenuSelector = ({
         if (chain) {
           onShortcutPress(String(chain.id));
           onNetworkSelect?.();
-        } else if (chainNumber === chains.length + 1) {
+        } else if (showDisconnect && chainNumber === chains.length + 1) {
           disconnect?.();
         }
       }
     },
-    [chains, disconnect, onNetworkSelect, onShortcutPress],
+    [chains, disconnect, onNetworkSelect, onShortcutPress, showDisconnect],
   );
 
   useKeyboardShortcut({

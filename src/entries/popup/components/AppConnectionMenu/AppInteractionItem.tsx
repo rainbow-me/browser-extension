@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import React from 'react';
 
+import { i18n } from '~/core/languages';
 import { AppSession } from '~/core/state/appSessions';
 import { Box, Column, Columns, Inline, Symbol, Text } from '~/design-system';
 
@@ -41,7 +42,11 @@ export const AppInteractionItem = ({
           </Column>
           <Column>
             <Text size="14pt" weight="semibold">
-              {!appSession ? 'Connect' : 'Switch networks'}
+              {i18n.t(
+                `menu.app_connection_menu.${
+                  !appSession ? 'connect' : 'switch_networks'
+                }`,
+              )}
             </Text>
           </Column>
           {showChevron && (
