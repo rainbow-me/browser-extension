@@ -130,6 +130,7 @@ export const ConnectedAppNetworkMenu = ({
                 type="context"
                 highlightAccentColor
                 selectedValue={`${appSession?.chainId}`}
+                onShortcutPress={changeChainId}
               />
             </ContextMenuRadioGroup>
             <SwitchNetworkMenuDisconnect onDisconnect={disconnect} />

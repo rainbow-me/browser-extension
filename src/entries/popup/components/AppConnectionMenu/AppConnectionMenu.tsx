@@ -180,10 +180,13 @@ export const AppConnectionMenu = ({
                         highlightAccentColor
                         selectedValue={`${appSession?.chainId}`}
                         onNetworkSelect={(e) => {
-                          e.preventDefault();
+                          e?.preventDefault();
                           setSubMenuOpen(false);
                           setMenuOpen(false);
                         }}
+                        onShortcutPress={
+                          appSession ? changeChainId : connectToApp
+                        }
                       />
                     </AccentColorProviderWrapper>
                   </DropdownMenuRadioGroup>

@@ -1,11 +1,20 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Chain, useNetwork } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';
-import { Box, Inline, Inset, Symbol, Text } from '~/design-system';
+import {
+  Box,
+  Column,
+  Columns,
+  Inline,
+  Inset,
+  Symbol,
+  Text,
+} from '~/design-system';
 import { Space } from '~/design-system/styles/designTokens';
 
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
   ContextMenu,
@@ -33,11 +42,13 @@ export const SwitchNetworkMenuSelector = ({
   highlightAccentColor,
   type,
   onNetworkSelect,
+  onShortcutPress,
 }: {
   selectedValue?: string;
   highlightAccentColor?: boolean;
   type: 'dropdown' | 'context';
-  onNetworkSelect?: (event: Event) => void;
+  onNetworkSelect?: (event?: Event) => void;
+  onShortcutPress: (chainId: string) => void;
 }) => {
   const { chains } = useNetwork();
 
@@ -53,6 +64,22 @@ export const SwitchNetworkMenuSelector = ({
         };
   }, [type]);
 
+  const handleTokenShortcuts = useCallback(
+    (e: KeyboardEvent) => {
+      const chainNumber = Number(e.key);
+      if (chainNumber) {
+        const chain = chains[chainNumber - 1];
+        onShortcutPress(String(chain.id));
+        onNetworkSelect?.();
+      }
+    },
+    [chains, onNetworkSelect, onShortcutPress],
+  );
+
+  useKeyboardShortcut({
+    handler: handleTokenShortcuts,
+  });
+
   return (
     <>
       {chains.map((chain, i) => {
@@ -65,17 +92,43 @@ export const SwitchNetworkMenuSelector = ({
             selectedValue={selectedValue}
             onSelect={onNetworkSelect}
           >
-            <Box testId={`switch-network-item-${i}`}>
-              <Inline space="8px" alignVertical="center">
-                <ChainBadge chainId={chainId} size="small" />
-                <Text color="label" size="14pt" weight="semibold">
-                  {name}
-                </Text>
-              </Inline>
+            <Box width="full">
+              <Columns alignHorizontal="justify" alignVertical="center">
+                <Column>
+                  <Box testId={`switch-network-item-${i}`}>
+                    <Inline space="8px" alignVertical="center">
+                      <ChainBadge chainId={chainId} size="small" />
+                      <Text color="label" size="14pt" weight="semibold">
+                        {name}
+                      </Text>
+                    </Inline>
+                  </Box>
+                </Column>
+
+                <Column width="content">
+                  {selectedValue === String(chainId) ? (
+                    <MenuItemIndicator style={{ marginLeft: 'auto' }}>
+                      <Symbol weight="medium" symbol="checkmark" size={11} />
+                    </MenuItemIndicator>
+                  ) : (
+                    <Box
+                      background={'fillSecondary'}
+                      padding="4px"
+                      borderRadius="3px"
+                      boxShadow="1px"
+                    >
+                      <Text
+                        size="12pt"
+                        color="labelSecondary"
+                        weight="semibold"
+                      >
+                        {i + 1}
+                      </Text>
+                    </Box>
+                  )}
+                </Column>
+              </Columns>
             </Box>
-            <MenuItemIndicator style={{ marginLeft: 'auto' }}>
-              <Symbol weight="medium" symbol="checkmark" size={11} />
-            </MenuItemIndicator>
           </MenuRadioItem>
         );
       })}
@@ -188,6 +241,12 @@ export const SwitchNetworkMenu = ({
           <SwitchNetworkMenuSelector
             type={type}
             selectedValue={String(chainId)}
+            onShortcutPress={(chainId) => {
+              const chain = chains.find(
+                ({ id }) => String(id) === chainId,
+              ) as Chain;
+              onChainChanged(chain?.id, chain);
+            }}
           />
         </MenuRadioGroup>
         {onDisconnect ? (
