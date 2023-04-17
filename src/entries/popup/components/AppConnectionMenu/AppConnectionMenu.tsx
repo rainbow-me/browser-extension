@@ -155,7 +155,7 @@ export const AppConnectionMenu = ({
             <DropdownSubMenu
               open={subMenuOpenDelayed}
               openContent={subMenuOpen}
-              top={106}
+              top={104}
               marginLeft={30}
               subMenuContent={
                 <Stack space="4px">

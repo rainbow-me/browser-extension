@@ -38,7 +38,7 @@ export const AppConnectionMenuHeader = ({
   return (
     <Box as={motion.div} initial={false} animate={{ opacity: opacity }}>
       <Inset top="10px" bottom="14px">
-        <Columns space="10px" alignVertical="center">
+        <Columns space="8px" alignVertical="center">
           <Column width="content">
             <Box
               style={{
@@ -56,13 +56,12 @@ export const AppConnectionMenuHeader = ({
             <Box
               id={`${headerHostId}-${appSession ? appHost : 'not-connected'}`}
             >
-              <Rows space="10px">
+              <Rows space="8px">
                 <Row>
                   <Columns>
                     <Column>
                       <TextOverflow size="14pt" weight="bold" color="label">
                         {appName ?? appHost}
-                        {/* {'ewfigewiuyfgewiuyfgeuwygfuyewgfuyewgfuewgfuyew'} */}
                       </TextOverflow>
                     </Column>
                     <Column width="content">
