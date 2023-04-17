@@ -190,13 +190,14 @@ export function Swap() {
     assetToBuy,
   });
 
-  const { source, slippage, setSettings, flashbotsEnabled } = useSwapSettings({
-    chainId: assetToSell?.chainId || ChainId.mainnet,
-  });
+  const { source, slippage, setSettings, swapFlashbotsEnabled } =
+    useSwapSettings({
+      chainId: assetToSell?.chainId || ChainId.mainnet,
+    });
 
   const flashbotsEnabledGlobally =
     config.flashbots_enabled &&
-    flashbotsEnabled &&
+    swapFlashbotsEnabled &&
     assetToSell?.chainId === ChainId.mainnet;
 
   const {

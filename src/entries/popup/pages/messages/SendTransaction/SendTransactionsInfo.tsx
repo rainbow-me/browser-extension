@@ -4,8 +4,10 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { event } from '~/analytics/event';
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { useCurrentCurrencyStore } from '~/core/state';
+import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
@@ -31,16 +33,25 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
     url: request?.meta?.sender?.url,
   });
   const { appSession } = useAppSession({ host: appHost });
+  const { flashbotsEnabled } = useFlashbotsEnabledStore();
   const [methodName, setMethodName] = useState('');
   const nativeAsset = useNativeAssetForNetwork({ chainId: appSession.chainId });
   const { currentCurrency } = useCurrentCurrencyStore();
+  const flashbotsEnabledGlobally =
+    config.flashbots_enabled &&
+    flashbotsEnabled &&
+    appSession?.chainId === ChainId.mainnet;
 
   useEffect(() => {
     const fetchMethodName = async (
       data: BytesLike | undefined,
-      to: Address,
+      to?: Address,
     ) => {
       if (!data) return;
+      if (!to) {
+        setMethodName(i18n.t('approve_request.contract_deployment'));
+        return;
+      }
       const methodSignaturePrefix = (data as string)?.substr(0, 10);
       let fallbackHandler;
       try {
@@ -162,6 +173,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
               chainId={appSession.chainId}
               transactionRequest={request?.params?.[0] as TransactionRequest}
               plainTriggerBorder
+              flashbotsEnabled={flashbotsEnabledGlobally}
             />
           </Inset>
         </Stack>

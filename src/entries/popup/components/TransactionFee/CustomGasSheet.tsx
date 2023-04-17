@@ -43,9 +43,6 @@ import { GweiInputMask } from '../InputMask/GweiInputMask/GweiInputMask';
 
 const speeds = [GasSpeed.URGENT, GasSpeed.FAST, GasSpeed.NORMAL];
 
-const { innerWidth: windowWidth } = window;
-const TEXT_OVERFLOW_WIDTH = windowWidth / 2 - 30;
-
 const GasLabel = ({
   label,
   warning,
@@ -541,25 +538,28 @@ export const CustomGasSheet = ({
                 </Inline>
               </Box>
               <Box paddingVertical="12px">
-                <Inline alignHorizontal="justify" alignVertical="center">
-                  <Text
-                    color="label"
-                    align="left"
-                    size="14pt"
-                    weight="semibold"
-                  >
-                    {i18n.t('custom_gas.max_transaction_fee')}
-                  </Text>
-                  <TextOverflow
-                    maxWidth={TEXT_OVERFLOW_WIDTH}
-                    color="label"
-                    align="right"
-                    size="14pt"
-                    weight="semibold"
-                  >
-                    {customSpeed?.gasFee?.display}
-                  </TextOverflow>
-                </Inline>
+                <Columns alignHorizontal="justify" alignVertical="center">
+                  <Column>
+                    <Text
+                      color="label"
+                      align="left"
+                      size="14pt"
+                      weight="semibold"
+                    >
+                      {i18n.t('custom_gas.max_transaction_fee')}
+                    </Text>
+                  </Column>
+                  <Column>
+                    <TextOverflow
+                      color="label"
+                      align="right"
+                      size="14pt"
+                      weight="semibold"
+                    >
+                      {customSpeed?.gasFee?.display}
+                    </TextOverflow>
+                  </Column>
+                </Columns>
               </Box>
             </Stack>
           </Box>
@@ -596,53 +596,58 @@ export const CustomGasSheet = ({
                 }}
                 onClick={() => onSelectedGasChange(GasSpeed.CUSTOM)}
               >
-                <Inline alignVertical="center" alignHorizontal="justify">
-                  <Inline space="10px" alignVertical="center">
-                    <Text weight="semibold" size="14pt">
-                      {txSpeedEmoji[GasSpeed.CUSTOM]}
-                    </Text>
+                <Columns alignVertical="center" alignHorizontal="justify">
+                  <Column width="2/5">
+                    <Columns space="10px" alignVertical="center">
+                      <Column width="content">
+                        <Text weight="semibold" size="14pt">
+                          {txSpeedEmoji[GasSpeed.CUSTOM]}
+                        </Text>
+                      </Column>
+                      <Column>
+                        <Stack space="12px">
+                          <Text
+                            align="left"
+                            color="label"
+                            size="14pt"
+                            weight="semibold"
+                          >
+                            {i18n.t(`transaction_fee.custom`)}
+                          </Text>
+                          <TextOverflow
+                            align="left"
+                            color="label"
+                            size="11pt"
+                            weight="semibold"
+                          >
+                            {customSpeed?.gasFee?.display}
+                          </TextOverflow>
+                        </Stack>
+                      </Column>
+                    </Columns>
+                  </Column>
+
+                  <Column width="3/5">
                     <Stack space="12px">
-                      <Text
-                        align="left"
+                      <TextOverflow
+                        align="right"
                         color="label"
                         size="14pt"
                         weight="semibold"
                       >
-                        {i18n.t(`transaction_fee.custom`)}
-                      </Text>
+                        {customSpeed?.display}
+                      </TextOverflow>
                       <TextOverflow
-                        maxWidth={TEXT_OVERFLOW_WIDTH - 50}
-                        align="left"
+                        align="right"
                         color="label"
                         size="11pt"
                         weight="semibold"
                       >
-                        {customSpeed?.gasFee?.display}
+                        {customSpeed?.estimatedTime?.display}
                       </TextOverflow>
                     </Stack>
-                  </Inline>
-
-                  <Stack space="12px">
-                    <TextOverflow
-                      maxWidth={TEXT_OVERFLOW_WIDTH}
-                      align="right"
-                      color="label"
-                      size="14pt"
-                      weight="semibold"
-                    >
-                      {customSpeed?.display}
-                    </TextOverflow>
-                    <TextOverflow
-                      maxWidth={TEXT_OVERFLOW_WIDTH}
-                      align="right"
-                      color="label"
-                      size="11pt"
-                      weight="semibold"
-                    >
-                      {customSpeed?.estimatedTime?.display}
-                    </TextOverflow>
-                  </Stack>
-                </Inline>
+                  </Column>
+                </Columns>
               </Box>
 
               <Box>
@@ -665,53 +670,60 @@ export const CustomGasSheet = ({
                     }}
                     onClick={() => onSelectedGasChange(speed)}
                   >
-                    <Inline alignVertical="center" alignHorizontal="justify">
-                      <Inline space="10px" alignVertical="center">
-                        <Text weight="semibold" size="14pt">
-                          {txSpeedEmoji[speed]}
-                        </Text>
+                    <Columns alignVertical="center" alignHorizontal="justify">
+                      <Column width="2/5">
+                        <Columns space="10px" alignVertical="center">
+                          <Column width="content">
+                            <Text weight="semibold" size="14pt">
+                              {txSpeedEmoji[speed]}
+                            </Text>
+                          </Column>
+                          <Column>
+                            <Stack space="12px">
+                              <Text
+                                align="left"
+                                color="label"
+                                size="14pt"
+                                weight="semibold"
+                              >
+                                {i18n.t(`transaction_fee.${speed}`)}
+                              </Text>
+                              <TextOverflow
+                                align="left"
+                                color="label"
+                                size="11pt"
+                                weight="semibold"
+                              >
+                                {gasFeeParamsBySpeed[speed]?.gasFee?.display}
+                              </TextOverflow>
+                            </Stack>
+                          </Column>
+                        </Columns>
+                      </Column>
+                      <Column width="3/5">
                         <Stack space="12px">
-                          <Text
-                            align="left"
+                          <TextOverflow
+                            align="right"
                             color="label"
                             size="14pt"
                             weight="semibold"
                           >
-                            {i18n.t(`transaction_fee.${speed}`)}
-                          </Text>
+                            {gasFeeParamsBySpeed?.[speed]?.display}
+                          </TextOverflow>
                           <TextOverflow
-                            maxWidth={TEXT_OVERFLOW_WIDTH}
-                            align="left"
+                            align="right"
                             color="label"
                             size="11pt"
                             weight="semibold"
                           >
-                            {gasFeeParamsBySpeed[speed]?.gasFee?.display}
+                            {
+                              gasFeeParamsBySpeed?.[speed]?.estimatedTime
+                                ?.display
+                            }
                           </TextOverflow>
                         </Stack>
-                      </Inline>
-
-                      <Stack space="12px">
-                        <TextOverflow
-                          maxWidth={TEXT_OVERFLOW_WIDTH}
-                          align="right"
-                          color="label"
-                          size="14pt"
-                          weight="semibold"
-                        >
-                          {gasFeeParamsBySpeed?.[speed]?.display}
-                        </TextOverflow>
-                        <TextOverflow
-                          maxWidth={TEXT_OVERFLOW_WIDTH}
-                          align="right"
-                          color="label"
-                          size="11pt"
-                          weight="semibold"
-                        >
-                          {gasFeeParamsBySpeed?.[speed]?.estimatedTime?.display}
-                        </TextOverflow>
-                      </Stack>
-                    </Inline>
+                      </Column>
+                    </Columns>
                   </Box>
                   {i !== speeds.length - 1 && (
                     <Box paddingHorizontal="20px">

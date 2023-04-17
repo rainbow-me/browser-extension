@@ -20,6 +20,7 @@ import { AccountName } from '../../components/AccountName/AccountName';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useCurrentHomeSheet } from '../../hooks/useCurrentHomeSheet';
+import { useHomeShortcuts } from '../../hooks/useHomeShortcuts';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { MainLayout } from '../../layouts/MainLayout';
@@ -90,6 +91,8 @@ export function Home() {
     analytics.track(event.walletViewed);
   }, []);
 
+  useHomeShortcuts();
+
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>
       {({ className, style }) => (
@@ -143,7 +146,11 @@ function TopNav() {
         titleComponent={
           <AnimatePresence>
             {scrollY.get() && (
-              <Box key="top-nav-account-name" as={motion.div}>
+              <Box
+                key="top-nav-account-name"
+                as={motion.div}
+                paddingHorizontal="60px"
+              >
                 <AccountName id="topNav" includeAvatar size="16pt" />
               </Box>
             )}

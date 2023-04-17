@@ -132,24 +132,29 @@ function Fee({
               </Text>
             </Row>
             <Row>
-              <Inline alignVertical="center" space="4px">
-                <ChainBadge chainId={chainId} size="small" />
-                <TextOverflow
-                  maxWidth={75}
-                  weight="semibold"
-                  color="label"
-                  size="14pt"
-                >
-                  {isLoading
-                    ? '~'
-                    : `${gasFeeParamsForSelectedSpeed?.gasFee.display}`}
-                </TextOverflow>
-                <Text weight="semibold" color="labelTertiary" size="14pt">
-                  {isLoading
-                    ? ''
-                    : `${gasFeeParamsForSelectedSpeed?.estimatedTime.display}`}
-                </Text>
-              </Inline>
+              <Columns alignVertical="center" space="4px">
+                <Column width="content">
+                  <ChainBadge chainId={chainId} size="small" />
+                </Column>
+                <Column>
+                  <TextOverflow weight="semibold" color="label" size="14pt">
+                    {isLoading
+                      ? '~'
+                      : `${gasFeeParamsForSelectedSpeed?.gasFee.display}`}
+                  </TextOverflow>
+                </Column>
+                <Column>
+                  <TextOverflow
+                    weight="semibold"
+                    color="labelTertiary"
+                    size="14pt"
+                  >
+                    {isLoading
+                      ? ''
+                      : `${gasFeeParamsForSelectedSpeed?.estimatedTime.display}`}
+                  </TextOverflow>
+                </Column>
+              </Columns>
             </Row>
           </Rows>
         </Column>
@@ -200,6 +205,7 @@ type TransactionFeeProps = {
   transactionRequest: TransactionRequest;
   accentColor?: string;
   plainTriggerBorder?: boolean;
+  flashbotsEnabled?: boolean;
   analyticsEvents?: {
     customGasClicked: keyof EventProperties;
     transactionSpeedSwitched: keyof EventProperties;
@@ -214,6 +220,7 @@ export function TransactionFee({
   accentColor,
   plainTriggerBorder,
   analyticsEvents,
+  flashbotsEnabled,
 }: TransactionFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
@@ -244,7 +251,7 @@ export function TransactionFee({
       setCustomMaxPriorityFee={setCustomMaxPriorityFee}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
-      flashbotsEnabled={false}
+      flashbotsEnabled={!!flashbotsEnabled}
     />
   );
 }
@@ -310,7 +317,7 @@ export function SwapFee({
       setCustomMaxPriorityFee={setCustomMaxPriorityFee}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
-      flashbotsEnabled={false}
+      flashbotsEnabled={!!flashbotsEnabled}
       speedMenuMarginRight={speedMenuMarginRight}
     />
   );
