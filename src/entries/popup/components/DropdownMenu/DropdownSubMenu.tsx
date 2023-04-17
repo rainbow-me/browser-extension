@@ -7,29 +7,33 @@ import {
   DropdownMenuContent,
 } from '../DropdownMenu/DropdownMenu';
 
-interface AppConnectionSubMenuProps {
+interface DropdownSubMenuProps {
   open: boolean;
   openContent: boolean;
   subMenuElement: ReactNode;
   subMenuContent: ReactNode;
+  top?: number;
+  marginLeft?: number;
   onInteractOutsideContent: DismissableLayerProps['onInteractOutside'];
 }
 
-export const AppConnectionSubMenu = ({
+export const DropdownSubMenu = ({
   open,
   openContent,
   subMenuElement,
   subMenuContent,
+  top,
+  marginLeft,
   onInteractOutsideContent,
-}: AppConnectionSubMenuProps) => {
+}: DropdownSubMenuProps) => {
   return (
     <DropdownMenu open={open}>
       {subMenuElement}
       <DropdownMenuContent
         animate={false}
         key="sub-menu-element"
-        top={100.5}
-        marginLeft={30}
+        top={top}
+        marginLeft={marginLeft}
         border={false}
         boxShadow=""
         position="absolute"
@@ -44,8 +48,8 @@ export const AppConnectionSubMenu = ({
           <DropdownMenuContent
             animate
             key="sub-menu-content"
-            top={100.5}
-            marginLeft={30}
+            top={top}
+            marginLeft={marginLeft}
             position="absolute"
             onInteractOutside={onInteractOutsideContent}
           >

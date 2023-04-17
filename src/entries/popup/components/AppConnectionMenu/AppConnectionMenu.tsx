@@ -18,13 +18,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../DropdownMenu/DropdownMenu';
+import { DropdownSubMenu } from '../DropdownMenu/DropdownSubMenu';
 import {
   SwitchNetworkMenuDisconnect,
   SwitchNetworkMenuSelector,
 } from '../SwitchMenu/SwitchNetworkMenu';
 
 import { AppConnectionMenuHeader } from './AppConnectionMenuHeader';
-import { AppConnectionSubMenu } from './AppConnectionSubMenu';
 import { AppInteractionItem } from './AppInteractionItem';
 
 const inpageMessenger = initializeMessenger({ connect: 'inpage' });
@@ -146,9 +146,11 @@ export const AppConnectionMenu = ({
             onValueChange(value as 'connected-apps' | 'switch-networks')
           }
         >
-          <AppConnectionSubMenu
+          <DropdownSubMenu
             open={showNetworksMenu}
             openContent={showNetworks}
+            top={100.5}
+            marginLeft={30}
             subMenuContent={
               <>
                 {url ? <DropdownMenuSeparator /> : null}

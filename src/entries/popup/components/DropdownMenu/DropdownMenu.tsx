@@ -138,7 +138,7 @@ export const DropdownMenuContentBody = React.forwardRef<
             paddingVertical="4px"
             background="surfaceMenu"
             borderColor="separatorTertiary"
-            borderWidth={border && '1px'}
+            borderWidth={border ? '1px' : undefined}
             borderRadius="16px"
             position={position}
           >
