@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import * as React from 'react';
 
 import appConnectionImageMask from 'static/assets/appConnectionImageMask.svg';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { Bleed, Box, Inline, Symbol } from '~/design-system';
 import {
   transformScales,
@@ -19,6 +20,7 @@ export const AppConnection = () => {
   const [url, setUrl] = React.useState('');
   const { appLogo, appHost } = useAppMetadata({ url });
   const { appSession } = useAppSession({ host: appHost });
+  const { currentTheme } = useCurrentThemeStore();
 
   React.useEffect(() => {
     chrome?.tabs?.query({ active: true, lastFocusedWindow: true }, (tabs) => {
@@ -72,8 +74,14 @@ export const AppConnection = () => {
               }}
             >
               <Box
-                background="surfacePrimaryElevated"
-                style={{ height: 8, width: 8, borderRadius: 4 }}
+                backdropFilter="opacity(0%)"
+                style={{
+                  height: 10,
+                  width: 10,
+                  borderRadius: 5,
+                  backgroundColor:
+                    currentTheme === 'dark' ? '#1D1E21' : '#F8F8F9',
+                }}
               >
                 <Inline
                   alignHorizontal="center"
@@ -89,31 +97,33 @@ export const AppConnection = () => {
                 </Inline>
               </Box>
             </Box>
-            <Box
-              position="absolute"
-              style={{
-                marginRight: 16,
-                marginTop: 8,
-              }}
-            >
+            {appSession ? (
               <Box
+                position="absolute"
                 style={{
-                  height: 10,
-                  width: 10,
-                  borderRadius: 5,
+                  marginRight: 16,
+                  marginTop: 8,
                 }}
               >
-                <Inline
-                  alignHorizontal="center"
-                  alignVertical="center"
-                  height="full"
+                <Box
+                  style={{
+                    height: 10,
+                    width: 10,
+                    borderRadius: 5,
+                  }}
                 >
-                  <Bleed top="7px">
-                    <ChainBadge chainId={appSession?.chainId} size="micro" />
-                  </Bleed>
-                </Inline>
+                  <Inline
+                    alignHorizontal="center"
+                    alignVertical="center"
+                    height="full"
+                  >
+                    <Bleed top="7px">
+                      <ChainBadge chainId={appSession?.chainId} size="micro" />
+                    </Bleed>
+                  </Inline>
+                </Box>
               </Box>
-            </Box>
+            ) : null}
             <Box
               style={{
                 height: 16,
