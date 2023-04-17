@@ -91,6 +91,7 @@ export const DropdownMenuContentBody = React.forwardRef<
     scale,
     top,
     position,
+    sideOffset,
     onInteractOutside,
     animate = false,
   } = props;
@@ -106,7 +107,6 @@ export const DropdownMenuContentBody = React.forwardRef<
           as={DropdownMenuPrimitive.Content}
           ref={ref}
           onPointerDownOutside={props?.onPointerDownOutside}
-          hideWhenDetached
           tabIndex={-1}
           onInteractOutside={onInteractOutside}
           align={align}
@@ -114,6 +114,8 @@ export const DropdownMenuContentBody = React.forwardRef<
           alignItems="center"
           justifyContent="center"
           display="flex"
+          sideOffset={sideOffset}
+          hideWhenDetached
         >
           <Box
             as={motion.div}
