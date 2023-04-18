@@ -193,24 +193,58 @@ const parseTransactionWithEmptyChanges = ({
     currency,
   );
 
+  const transactionLabel = getTransactionLabel({
+    direction: tx.direction,
+    pending: false,
+    protocol: tx?.protocol,
+    status: tx.status,
+    type: tx?.type,
+  });
+
+  const name = tx.meta.asset?.name || methodName;
+  const address = tx.meta.asset?.mainnet_address || (ETH_ADDRESS as Address);
+
+  const parsedAsset = tx.meta?.asset
+    ? parseAsset({
+        address: tx.meta.asset.mainnet_address as Address,
+        asset: tx.meta?.asset,
+        currency,
+      })
+    : null;
+
+  const title = getTitle({
+    protocol: tx.protocol,
+    status: transactionLabel,
+    type: tx.type,
+  });
+
+  const description = getDescription({
+    name: name,
+    status: transactionLabel,
+    type: tx.type,
+  });
+
   return {
-    address: ETH_ADDRESS as Address,
+    address: (address.toLowerCase() === ETH_ADDRESS
+      ? ETH_ADDRESS
+      : address) as Address,
     balance: isL2Chain(chainId)
       ? { amount: '', display: '-' }
       : convertRawAmountToBalance(valueUnit, updatedAsset),
-    description: methodName || 'Signed',
+    description: description,
+    asset: parsedAsset,
     from: tx?.address_from as Address,
     hash: `${tx.hash}-${0}`,
     minedAt: tx.mined_at,
-    name: methodName || 'Signed',
+    name,
     native: nativeDisplay,
     chainId,
     nonce: tx.nonce,
     pending: false,
     protocol: tx.protocol,
-    status: TransactionStatus.contract_interaction,
-    symbol: 'contract',
-    title: i18n.t('transactions.contract_interaction'),
+    status: transactionLabel || TransactionStatus.contract_interaction,
+    symbol: parsedAsset?.symbol || 'contract',
+    title: title || i18n.t('transactions.contract_interaction'),
     to: tx.address_to as Address,
     type: TransactionType.contract_interaction,
   };

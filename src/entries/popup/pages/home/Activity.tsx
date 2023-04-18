@@ -181,22 +181,32 @@ const titleIcons: {
     element?: ReactNode;
     space?: Space;
     type: 'icon' | 'emoji' | 'spinner';
+    size?: number;
   };
 } = {
   'xmark.circle': {
     color: 'labelTertiary',
     space: '2px',
     type: 'icon',
+    size: 9,
   },
   'paperplane.fill': {
     color: 'labelTertiary',
     space: '2px',
     type: 'icon',
+    size: 9,
   },
   'arrow.triangle.swap': {
     color: 'purple',
     space: '2px',
     type: 'icon',
+    size: 9,
+  },
+  'circle.fill': {
+    color: 'labelTertiary',
+    space: '2px',
+    type: 'icon',
+    size: 6,
   },
   robot: {
     color: 'labelTertiary',
@@ -213,6 +223,7 @@ const titleIcons: {
     color: 'labelTertiary',
     type: 'icon',
     space: '2px',
+    size: 9,
   },
   spinner: {
     color: 'blue',
@@ -238,6 +249,7 @@ const ActivityRow = React.memo(function ({
   const received = status === TransactionStatus.received;
   const receivedViaSwap = status === TransactionStatus.received && isTrade;
   const sent = status === TransactionStatus.sent;
+  const approved = status === TransactionStatus.approved;
   const sentViaSwap = status === TransactionStatus.swapped && isTrade;
   const failed = status === TransactionStatus.failed;
   const isContractInteraction =
@@ -282,6 +294,8 @@ const ActivityRow = React.memo(function ({
       iconSymbol = 'arrow.down';
     } else if (cancelling || sending || speedingUp || swapping) {
       iconSymbol = 'spinner';
+    } else if (approved) {
+      iconSymbol = 'circle.fill';
     }
 
     if (iconSymbol) {
@@ -294,7 +308,7 @@ const ActivityRow = React.memo(function ({
           <Symbol
             symbol={iconSymbol as SymbolProps['symbol']}
             color={iconConfig.color}
-            size={9}
+            size={iconConfig.size || 9}
             weight="semibold"
           />
         ),
@@ -303,16 +317,17 @@ const ActivityRow = React.memo(function ({
 
     return null;
   }, [
-    cancelling,
-    failed,
     isContractInteraction,
-    received,
-    receivedViaSwap,
+    failed,
     sent,
     sentViaSwap,
+    received,
+    receivedViaSwap,
+    cancelling,
     sending,
     speedingUp,
     swapping,
+    approved,
   ]);
 
   const topRow = useMemo(
@@ -321,7 +336,16 @@ const ActivityRow = React.memo(function ({
         <Column width="content">
           <Box paddingVertical="4px">
             <Inline space={titleIconConfig?.space} alignVertical="center">
-              {titleIconConfig?.icon}
+              <Box style={{ width: 9, height: 9 }}>
+                <Inline
+                  height="full"
+                  alignHorizontal="center"
+                  alignVertical="center"
+                >
+                  {titleIconConfig?.icon}
+                </Inline>
+              </Box>
+
               <Text color={titleColor} size="12pt" weight="semibold">
                 {truncateString(title, 20)}
               </Text>
