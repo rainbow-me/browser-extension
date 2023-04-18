@@ -10,6 +10,7 @@ import {
   SupportedCurrencyKey,
   smartContractMethods,
 } from '../references';
+import { fetchRegistryLookup } from '../resources/transactions/registryLookup';
 import { fetchTransactions } from '../resources/transactions/transactions';
 import {
   currentCurrencyStore,
@@ -96,11 +97,11 @@ type ParseTransactionArgs = {
   chainId: ChainId;
 };
 
-export function parseTransaction({
+export async function parseTransaction({
   tx,
   currency,
   chainId,
-}: ParseTransactionArgs): RainbowTransaction | RainbowTransaction[] {
+}: ParseTransactionArgs): Promise<RainbowTransaction | RainbowTransaction[]> {
   if (tx.changes.length) {
     return tx.changes.map((internalTxn, index) => {
       const address = (internalTxn?.asset?.asset_code?.toLowerCase() ??
@@ -172,12 +173,17 @@ export function parseTransaction({
   });
 }
 
-const parseTransactionWithEmptyChanges = ({
+const parseTransactionWithEmptyChanges = async ({
   tx,
   currency,
   chainId,
-}: ParseTransactionArgs): RainbowTransaction => {
-  const methodName = 'Signed'; // let's ask BE to grab this for us: https://github.com/rainbow-me/rainbow/blob/develop/src/handlers/transactions.ts#L79
+}: ParseTransactionArgs): Promise<RainbowTransaction> => {
+  const methodName = await fetchRegistryLookup({
+    data: null,
+    to: tx.address_to,
+    chainId,
+    hash: tx.hash,
+  });
   const updatedAsset = {
     address: ETH_ADDRESS,
     decimals: 18,
