@@ -39,7 +39,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
     appSession?.chainId === ChainId.mainnet;
   const txRequest = request?.params?.[0] as TransactionRequest;
 
-  const { data: methodName } = useRegistryLookup({
+  const { data: methodName = '' } = useRegistryLookup({
     data: (txRequest?.data as string) || null,
     to: txRequest?.to || null,
     chainId: appSession.chainId,

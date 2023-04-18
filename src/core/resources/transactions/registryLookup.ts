@@ -54,17 +54,9 @@ async function registryLookupQueryFunction({
     const tx = await provider.getTransaction(hash);
     dataToLookup = tx.data;
   }
-  if (
-    hash ===
-    '0x861e43b472e0d2eda3e8468c6f7b893ba640b6e481e832fb6cc0fb58ca97bb01'
-  ) {
-    console.log('--- dataToLookup', dataToLookup);
-    console.log('--- data', data);
-    console.log('--- to', to);
-  }
 
   if (!dataToLookup || dataToLookup === '0x') {
-    return 'Signed';
+    return '';
   }
   const methodSignaturePrefix = dataToLookup?.substr(0, 10);
 

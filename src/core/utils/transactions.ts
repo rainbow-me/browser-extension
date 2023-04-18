@@ -3,6 +3,8 @@ import { getProvider } from '@wagmi/core';
 import { capitalize, isString } from 'lodash';
 import { Address } from 'wagmi';
 
+import { getNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
+
 import { i18n } from '../languages';
 import { createHttpClient } from '../network/internal/createHttpClient';
 import {
@@ -141,6 +143,17 @@ export async function parseTransaction({
         status,
         type: tx.type,
       });
+
+      if (
+        tx.hash ===
+        '0x1bf67c75e829abcc078b5853338b9433407fc72e43359094feee1fa1056b360c'
+      ) {
+        console.log('222 parsedAsset', parsedAsset);
+        console.log('222 status', status);
+        console.log('222 title', title);
+        console.log('222 description', description);
+      }
+
       return {
         address: (parsedAsset.address.toLowerCase() === ETH_ADDRESS
           ? ETH_ADDRESS
@@ -184,12 +197,7 @@ const parseTransactionWithEmptyChanges = async ({
     chainId,
     hash: tx.hash,
   });
-  const updatedAsset = {
-    address: ETH_ADDRESS,
-    decimals: 18,
-    name: 'ethereum',
-    symbol: 'ETH',
-  };
+
   const priceUnit = 0;
   const valueUnit = 0;
   const nativeDisplay = convertRawAmountToNativeDisplay(
@@ -216,7 +224,7 @@ const parseTransactionWithEmptyChanges = async ({
         asset: tx.meta?.asset,
         currency,
       })
-    : null;
+    : await getNativeAssetForNetwork({ chainId });
 
   const title = getTitle({
     protocol: tx.protocol,
@@ -230,13 +238,23 @@ const parseTransactionWithEmptyChanges = async ({
     type: tx.type,
   });
 
+  if (
+    tx.hash ===
+    '0x86abac21cced12b5d8ba56b1165c2c55b4c6ac9a5eaa99e6909d905e6d30c690'
+  ) {
+    console.log('- parsedAsset', parsedAsset);
+    console.log('- title', title);
+    console.log('- description', description);
+    console.log('- name', name);
+  }
+
   return {
     address: (address.toLowerCase() === ETH_ADDRESS
       ? ETH_ADDRESS
       : address) as Address,
     balance: isL2Chain(chainId)
       ? { amount: '', display: '-' }
-      : convertRawAmountToBalance(valueUnit, updatedAsset),
+      : convertRawAmountToBalance(valueUnit, { decimals: 18 }),
     description: description,
     asset: parsedAsset,
     from: tx?.address_from as Address,
