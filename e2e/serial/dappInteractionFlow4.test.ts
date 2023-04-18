@@ -175,10 +175,10 @@ describe('App interactions flow', () => {
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('medium');
+    await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
-    await delayTime('medium');
+    await delayTime('long');
 
     const confirmation = await findElementById({
       id: 'collectiblesStatus',
@@ -212,10 +212,10 @@ describe('App interactions flow', () => {
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('medium');
+    await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
-    await delayTime('medium');
+    await delayTime('long');
 
     const confirmation = await findElementById({
       id: 'collectiblesStatus',
@@ -249,7 +249,7 @@ describe('App interactions flow', () => {
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('medium');
+    await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
     await delayTime('long');
@@ -286,7 +286,7 @@ describe('App interactions flow', () => {
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('medium');
+    await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
     await delayTime('long');
@@ -323,7 +323,7 @@ describe('App interactions flow', () => {
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('medium');
+    await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
     await delayTime('long');
@@ -360,7 +360,7 @@ describe('App interactions flow', () => {
     expect(address).toBeTruthy();
 
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('medium');
+    await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
     await delayTime('long');
