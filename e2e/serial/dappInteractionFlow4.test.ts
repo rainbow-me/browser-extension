@@ -178,7 +178,7 @@ describe('App interactions flow', () => {
     await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
-    await delayTime('long');
+    await delayTime('very-long');
 
     const confirmation = await findElementById({
       id: 'collectiblesStatus',
@@ -215,7 +215,7 @@ describe('App interactions flow', () => {
     await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
-    await delayTime('long');
+    await delayTime('very-long');
 
     const confirmation = await findElementById({
       id: 'collectiblesStatus',
@@ -252,7 +252,7 @@ describe('App interactions flow', () => {
     await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
-    await delayTime('long');
+    await delayTime('very-long');
 
     const confirmation = await findElementById({
       id: 'collectiblesStatus',
@@ -289,7 +289,7 @@ describe('App interactions flow', () => {
     await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
-    await delayTime('long');
+    await delayTime('very-long');
 
     const confirmation = await findElementById({
       id: 'collectiblesStatus',
@@ -326,7 +326,7 @@ describe('App interactions flow', () => {
     await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
-    await delayTime('long');
+    await delayTime('very-long');
 
     const confirmation = await findElementById({
       id: 'collectiblesStatus',
@@ -363,7 +363,7 @@ describe('App interactions flow', () => {
     await delayTime('long');
 
     await driver.switchTo().window(dappHandler);
-    await delayTime('long');
+    await delayTime('very-long');
 
     const confirmation = await findElementById({
       id: 'collectiblesStatus',
