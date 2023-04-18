@@ -144,16 +144,6 @@ export async function parseTransaction({
         type: tx.type,
       });
 
-      if (
-        tx.hash ===
-        '0x1bf67c75e829abcc078b5853338b9433407fc72e43359094feee1fa1056b360c'
-      ) {
-        console.log('222 parsedAsset', parsedAsset);
-        console.log('222 status', status);
-        console.log('222 title', title);
-        console.log('222 description', description);
-      }
-
       return {
         address: (parsedAsset.address.toLowerCase() === ETH_ADDRESS
           ? ETH_ADDRESS
@@ -198,6 +188,15 @@ const parseTransactionWithEmptyChanges = async ({
     hash: tx.hash,
   });
 
+  const parsedAsset = tx.meta.asset
+    ? parseAsset({
+        address: tx.meta.asset.asset_code,
+        asset: tx.meta.asset,
+        currency,
+        chainId,
+      })
+    : await getNativeAssetForNetwork({ chainId });
+
   const priceUnit = 0;
   const valueUnit = 0;
   const nativeDisplay = convertRawAmountToNativeDisplay(
@@ -207,68 +206,48 @@ const parseTransactionWithEmptyChanges = async ({
     currency,
   );
 
-  const transactionLabel = getTransactionLabel({
+  const status = getTransactionLabel({
     direction: tx.direction,
     pending: false,
-    protocol: tx?.protocol,
+    protocol: tx.protocol,
     status: tx.status,
-    type: tx?.type,
+    type: tx.type,
   });
-
-  const name = tx.meta.asset?.name || methodName;
-  const address = tx.meta.asset?.mainnet_address || (ETH_ADDRESS as Address);
-
-  const parsedAsset = tx.meta?.asset
-    ? parseAsset({
-        address: tx.meta.asset.mainnet_address as Address,
-        asset: tx.meta?.asset,
-        currency,
-      })
-    : await getNativeAssetForNetwork({ chainId });
 
   const title = getTitle({
     protocol: tx.protocol,
-    status: transactionLabel,
+    status,
     type: tx.type,
   });
 
   const description = getDescription({
-    name: name,
-    status: transactionLabel,
+    name: parsedAsset?.name || '',
+    status,
     type: tx.type,
   });
 
-  if (
-    tx.hash ===
-    '0x86abac21cced12b5d8ba56b1165c2c55b4c6ac9a5eaa99e6909d905e6d30c690'
-  ) {
-    console.log('- parsedAsset', parsedAsset);
-    console.log('- title', title);
-    console.log('- description', description);
-    console.log('- name', name);
-  }
-
   return {
-    address: (address.toLowerCase() === ETH_ADDRESS
-      ? ETH_ADDRESS
-      : address) as Address,
+    asset: parsedAsset,
+    address: ETH_ADDRESS as Address,
     balance: isL2Chain(chainId)
       ? { amount: '', display: '-' }
       : convertRawAmountToBalance(valueUnit, { decimals: 18 }),
-    description: description,
-    asset: parsedAsset,
+    description: description || methodName || 'Signed',
     from: tx?.address_from as Address,
     hash: `${tx.hash}-${0}`,
     minedAt: tx.mined_at,
-    name,
+    name:
+      status === TransactionStatus.contract_interaction
+        ? methodName
+        : parsedAsset?.name || 'Signed',
     native: nativeDisplay,
     chainId,
     nonce: tx.nonce,
     pending: false,
     protocol: tx.protocol,
-    status: transactionLabel || TransactionStatus.contract_interaction,
-    symbol: parsedAsset?.symbol || 'contract',
-    title: title || i18n.t('transactions.contract_interaction'),
+    status,
+    symbol: 'contract',
+    title: title ?? i18n.t('transactions.contract_interaction'),
     to: tx.address_to as Address,
     type: TransactionType.contract_interaction,
   };
@@ -380,8 +359,10 @@ export const getTransactionLabel = ({
     }
   }
 
-  if (isSelf) return TransactionStatus.self;
+  if (isSelf) return TransactionStatus.sent;
 
+  if (type === TransactionType.execution)
+    return TransactionStatus.contract_interaction;
   if (isFromAccount) return TransactionStatus.sent;
   if (isToAccount) return TransactionStatus.received;
 
