@@ -9,6 +9,8 @@ import { i18n } from '../languages';
 import { connectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
 import { ChainId } from '../types/chains';
 
+import { isLowerCaseMatch } from './strings';
+
 export const getQuoteServiceTime = ({
   quote,
 }: {
@@ -63,10 +65,10 @@ export const isUnwrapEth = ({
 }) => {
   const { connectedToHardhat } = connectedToHardhatStore.getState();
   return (
-    sellTokenAddress ===
-      WRAPPED_ASSET[
-        WRAPPED_ASSET[connectedToHardhat ? ChainId.mainnet : chainId]
-      ] && buyTokenAddress === ETH_ADDRESS
+    isLowerCaseMatch(
+      sellTokenAddress,
+      WRAPPED_ASSET[connectedToHardhat ? ChainId.mainnet : chainId],
+    ) && isLowerCaseMatch(buyTokenAddress, ETH_ADDRESS)
   );
 };
 
@@ -80,9 +82,21 @@ export const isWrapEth = ({
   buyTokenAddress: string;
 }) => {
   const { connectedToHardhat } = connectedToHardhatStore.getState();
+  console.log(
+    'in isWrapEth sellTokenAddress, ETH_ADDRESS',
+    sellTokenAddress,
+    ETH_ADDRESS,
+  );
+  console.log(
+    'in isWrapEth buyTokenAddress, WRAPPED_ASSET',
+    buyTokenAddress,
+    WRAPPED_ASSET[connectedToHardhat ? ChainId.mainnet : chainId],
+  );
   return (
-    sellTokenAddress === ETH_ADDRESS &&
-    buyTokenAddress ===
-      WRAPPED_ASSET[connectedToHardhat ? ChainId.mainnet : chainId]
+    isLowerCaseMatch(sellTokenAddress, ETH_ADDRESS) &&
+    isLowerCaseMatch(
+      buyTokenAddress,
+      WRAPPED_ASSET[connectedToHardhat ? ChainId.mainnet : chainId],
+    )
   );
 };

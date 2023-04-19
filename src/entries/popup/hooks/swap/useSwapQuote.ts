@@ -112,6 +112,8 @@ export const useSwapQuote = ({
     cacheTime: CACHE_INTERVAL,
   });
 
+  console.log('quotee data', assetToBuy);
+
   return {
     data,
     isLoading: isLoading && fetchStatus !== 'idle',
