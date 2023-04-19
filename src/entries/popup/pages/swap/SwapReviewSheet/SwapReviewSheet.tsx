@@ -12,6 +12,7 @@ import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { isLowerCaseMatch } from '~/core/utils/strings';
+import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 import {
   Bleed,
   Box,
@@ -204,6 +205,7 @@ const SwapReviewSheetWithQuote = ({
   const navigate = useRainbowNavigate();
   const { connectedToHardhat } = useConnectedToHardhatStore();
 
+  console.log('quote', quote);
   const [showMoreDetails, setShowDetails] = useState(false);
   const [sendingSwap, setSendingSwap] = useState(false);
   const { selectedGas } = useGasStore();
@@ -235,6 +237,21 @@ const SwapReviewSheetWithQuote = ({
       assetToBuyAddressToCompare,
     );
   }, [assetToBuy, assetToSell]);
+
+  const isWrapOrUnwrapEth = useMemo(() => {
+    return (
+      isWrapEth({
+        buyTokenAddress: quote.buyTokenAddress,
+        sellTokenAddress: quote.sellTokenAddress,
+        chainId: assetToSell.chainId,
+      }) ||
+      isUnwrapEth({
+        buyTokenAddress: quote.buyTokenAddress,
+        sellTokenAddress: quote.sellTokenAddress,
+        chainId: assetToSell.chainId,
+      })
+    );
+  }, [assetToSell.chainId, quote.buyTokenAddress, quote.sellTokenAddress]);
 
   const openMoreDetails = useCallback(() => setShowDetails(true), []);
   const closeMoreDetails = useCallback(() => setShowDetails(false), []);
@@ -435,18 +452,20 @@ const SwapReviewSheetWithQuote = ({
                     {minimumReceived}
                   </Text>
                 </DetailsRow>
-                <DetailsRow testId="swapping-via">
-                  <Label
-                    label={i18n.t('swap.review.swapping_via')}
-                    testId="swap-review-swapping-route"
-                  />
-                  {!!swappingRoute && (
-                    <SwapRoutes
-                      testId="swapping-via"
-                      protocols={swappingRoute}
+                {!isWrapOrUnwrapEth && (
+                  <DetailsRow testId="swapping-via">
+                    <Label
+                      label={i18n.t('swap.review.swapping_via')}
+                      testId="swap-review-swapping-route"
                     />
-                  )}
-                </DetailsRow>
+                    {!!swappingRoute && (
+                      <SwapRoutes
+                        testId="swapping-via"
+                        protocols={swappingRoute}
+                      />
+                    )}
+                  </DetailsRow>
+                )}
                 <DetailsRow testId="included-fee">
                   <Label
                     label={i18n.t('swap.review.included_fee')}

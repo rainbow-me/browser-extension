@@ -1,6 +1,13 @@
-import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
+import {
+  CrosschainQuote,
+  ETH_ADDRESS,
+  Quote,
+  WRAPPED_ASSET,
+} from '@rainbow-me/swaps';
 
 import { i18n } from '../languages';
+import { connectedToHardhatStore } from '../state/currentSettings/connectedToHardhat';
+import { ChainId } from '../types/chains';
 
 export const getQuoteServiceTime = ({
   quote,
@@ -44,4 +51,38 @@ export const getCrossChainTimeEstimate = ({
     timeEstimate,
     timeEstimateDisplay,
   };
+};
+export const isUnwrapEth = ({
+  buyTokenAddress,
+  chainId,
+  sellTokenAddress,
+}: {
+  chainId: ChainId;
+  sellTokenAddress: string;
+  buyTokenAddress: string;
+}) => {
+  const { connectedToHardhat } = connectedToHardhatStore.getState();
+  return (
+    sellTokenAddress ===
+      WRAPPED_ASSET[
+        WRAPPED_ASSET[connectedToHardhat ? ChainId.mainnet : chainId]
+      ] && buyTokenAddress === ETH_ADDRESS
+  );
+};
+
+export const isWrapEth = ({
+  buyTokenAddress,
+  chainId,
+  sellTokenAddress,
+}: {
+  chainId: ChainId;
+  sellTokenAddress: string;
+  buyTokenAddress: string;
+}) => {
+  const { connectedToHardhat } = connectedToHardhatStore.getState();
+  return (
+    sellTokenAddress === ETH_ADDRESS &&
+    buyTokenAddress ===
+      WRAPPED_ASSET[connectedToHardhat ? ChainId.mainnet : chainId]
+  );
 };
