@@ -19,17 +19,19 @@ export function Unlock() {
   const navigate = useRainbowNavigate();
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const onToggleVisibility = useCallback(() => setVisible(!visible), [visible]);
 
   const handlePasswordChange = useCallback(
     (event: { target: { value: SetStateAction<string> } }) => {
       setPassword(event.target.value);
+      if (error) {
+        setError('');
+      }
     },
-    [],
+    [error],
   );
-
-  const [error, setError] = useState('');
 
   const handleUnlock = useCallback(async () => {
     setLoading(true);
@@ -39,6 +41,7 @@ export function Unlock() {
         navigate(ROUTES.HOME, { state: { isBack: true } });
       } else {
         setError(i18n.t('passwords.wrong_password'));
+        setLoading(false);
       }
     } catch (e) {
       logger.info('Unlock error: exception while trying to unlock');
@@ -121,7 +124,7 @@ export function Unlock() {
                 placeholder={i18n.t('passwords.password')}
                 value={password}
                 onChange={handlePasswordChange}
-                borderColor={error !== '' ? 'red' : undefined}
+                borderColor={error !== '' ? 'red' : 'accent'}
                 testId="password-input"
                 onSubmit={handleUnlock}
                 onToggleVisibility={onToggleVisibility}
