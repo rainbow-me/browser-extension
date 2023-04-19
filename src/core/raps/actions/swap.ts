@@ -245,12 +245,12 @@ export const swap = async ({
   }
 
   const transaction = {
-    amount: parameters.quote.value?.toString(),
+    amount: swap?.value?.toString(),
     asset: parameters.assetToSell,
-    data: parameters.quote.data,
-    value: parameters.quote.value,
-    from: parameters.quote.from as Address,
-    to: parameters.quote.to as Address,
+    data: swap?.data,
+    value: swap?.value,
+    from: swap?.from as Address,
+    to: swap?.to as Address,
     hash: swap?.hash,
     chainId: parameters.chainId,
     nonce: swap?.nonce,
