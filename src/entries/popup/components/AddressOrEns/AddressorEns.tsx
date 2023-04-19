@@ -27,6 +27,8 @@ export function AddressOrEns({
   size = '20pt',
   weight = 'heavy',
 }: AddressOrEnsProps) {
+  console.log('address', address);
+  if (!address) return null;
   return (
     <Text color="label" size={size} weight={weight}>
       {isENSAddressFormat(address)

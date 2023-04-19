@@ -14,6 +14,10 @@ import { useAvatar } from './hooks/useAvatar';
 import { ConnectedApps } from './pages/ConnectedApps';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
+import { ChooseHW } from './pages/hw/chooseHW';
+import { ConnectLedger } from './pages/hw/ledger';
+import { ConnectTrezor } from './pages/hw/trezor';
+import { WalletListHW } from './pages/hw/walletList';
 import { ImportOrConnect } from './pages/importOrConnect';
 import { ImportWallet } from './pages/importWallet';
 import { ImportWalletSelection } from './pages/importWalletSelection';
@@ -120,6 +124,68 @@ const ROUTE_DATA = [
         backTo={ROUTES.WELCOME}
       >
         <ImportOrConnect />
+      </AnimatedRoute>
+    ),
+    background: FullScreenBackground,
+  },
+  {
+    path: ROUTES.HW_CHOOSE,
+    element: (
+      <AnimatedRoute
+        protectedRoute
+        direction="up"
+        navbar
+        navbarIcon="ex"
+        title={i18n.t('hw.choose_title')}
+        background="surfaceSecondary"
+      >
+        <ChooseHW />
+      </AnimatedRoute>
+    ),
+    background: FullScreenBackground,
+  },
+  {
+    path: ROUTES.HW_LEDGER,
+    element: (
+      <AnimatedRoute
+        protectedRoute
+        direction="up"
+        navbar
+        navbarIcon="ex"
+        background="surfaceSecondary"
+      >
+        <ConnectLedger />
+        <ConnectLedger />
+      </AnimatedRoute>
+    ),
+    background: FullScreenBackground,
+  },
+  {
+    path: ROUTES.HW_TREZOR,
+    element: (
+      <AnimatedRoute
+        protectedRoute
+        direction="up"
+        navbar
+        navbarIcon="ex"
+        background="surfaceSecondary"
+      >
+        <ConnectTrezor />
+      </AnimatedRoute>
+    ),
+    background: FullScreenBackground,
+  },
+  {
+    path: ROUTES.HW_WALLET_LIST,
+    element: (
+      <AnimatedRoute
+        protectedRoute
+        direction="up"
+        navbar
+        navbarIcon="ex"
+        background="surfaceSecondary"
+      >
+        <WalletListHW />
       </AnimatedRoute>
     ),
     background: FullScreenBackground,

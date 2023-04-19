@@ -462,18 +462,19 @@ export function WalletSwitcher() {
               {i18n.t('wallet_switcher.add_another_wallet')}
             </Button>
           </Link>
-          <Button
-            onClick={() => alert('Coming soon!')}
-            color="fillSecondary"
-            variant="flat"
-            symbol="app.connected.to.app.below.fill"
-            symbolSide="left"
-            height="32px"
-            width="full"
-            borderRadius="9px"
-          >
-            {i18n.t('wallet_switcher.connect_hardware_wallet')}
-          </Button>
+          <Link to={ROUTES.HW_CHOOSE}>
+            <Button
+              color="fillSecondary"
+              variant="flat"
+              symbol="app.connected.to.app.below.fill"
+              symbolSide="left"
+              height="32px"
+              width="full"
+              borderRadius="9px"
+            >
+              {i18n.t('wallet_switcher.connect_hardware_wallet')}
+            </Button>
+          </Link>
           {process.env.IS_DEV === 'true' && (
             <Link to={ROUTES.WALLETS}>
               <Button

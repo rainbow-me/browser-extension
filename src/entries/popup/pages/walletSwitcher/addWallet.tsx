@@ -62,9 +62,7 @@ const AddWallet = () => {
           />
           <OnboardMenu.Separator />
           <OnboardMenu.Item
-            onClick={() => {
-              alert('coming soon!');
-            }}
+            onClick={() => navigateTo(ROUTES.HW_CHOOSE)}
             title={i18n.t('add_wallet.hardware_wallet')}
             subtitle={i18n.t('add_wallet.hardware_wallet_description')}
             symbolColor="blue"

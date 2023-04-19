@@ -743,5 +743,23 @@
     "ok": "Ok",
     "wallet_watching_mode": "This wallet is currently in 'Watching' mode",
     "coming_soon": "Coming Soon!"
+  },
+  "hw": {
+    "choose_title": "Connect a hardware wallet",
+    "ledger_support": "Supports Ledger Nano S, Nano S Plus, Nano X, and Stax devices.",
+    "trezor_support": "Supports Model One or Model T devices.",
+    "connect_ledger_title": "Complete your Ledger set up",
+    "connect_ledger_description": "Connect your Ledger to Rainbow by plugging it into your computer using the USB-C cable.",
+    "connect_trezor_title": "Complete your Trezor set up",
+    "connect_trezor_description": "Continue to connect your Trezor to Rainbow through the web interface.",
+    "learn_more": "Learn more",
+    "connect_wallets_title": "Connect your wallets",
+    "connect_wallets_found": "We’ve found wallets on your Ledger with a balance or activity. Select which to connect.",
+    "connect_wallets_not_found": "Some text about how this looks like a new device, so select from empty accounts?",
+    "connect_wallet": "Connect 1 wallet",
+    "connect_n_wallets": "Connect %{count} wallets",
+    "wallets_found": "%{count} wallets found",
+    "add_by_index": "Add by index"
+
   }
 }

@@ -362,7 +362,7 @@ export const connectTrezor = async () => {
     const hdNode = HDNode.fromExtendedKey(result.payload.xpub);
     const firstAccountPath = `0`;
 
-    const addressesToImport = [
+    const accountsToImport = [
       { address: hdNode.derivePath(firstAccountPath).address, index: 0 },
     ];
     let accountsEnabled = 1;
@@ -376,7 +376,7 @@ export const connectTrezor = async () => {
       const hasBeenUsed = await hasPreviousTransactions(newAddress as Address);
 
       if (hasBeenUsed) {
-        addressesToImport.push({
+        accountsToImport.push({
           address: newAddress,
           index: accountsEnabled,
         });
@@ -386,27 +386,14 @@ export const connectTrezor = async () => {
       }
     }
 
-    // The device id is the keccak256 of the address at index 0
-    const deviceId = keccak256(addressesToImport[0].address);
-    const address = await walletAction('import_hw', {
-      deviceId,
-      wallets: addressesToImport,
-      vendor: 'Trezor',
-      accountsEnabled,
-    });
-    const { passwordSet } = await getStatus();
-    if (!passwordSet) {
-      // we probably need to set a password
-      await chrome.storage.session.set({ userStatus: 'NEEDS_PASSWORD' });
-    }
-    return address;
+    const deviceId = keccak256(accountsToImport[0].address);
+
+    return { accountsToImport, deviceId, accountsEnabled };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     if (e?.name === 'TransportStatusError') {
-      alert(
-        'Please make sure your trezor is unlocked and open the Ethereum app',
-      );
+      alert('Please make sure your trezor is connected and unlocked');
     } else {
       alert('Unable to connect to your trezor. Please try again.');
       console.log(e);
@@ -425,7 +412,7 @@ export const connectLedger = async () => {
       false,
       false,
     );
-    const addressesToImport = [{ address: result.address, index: 0 }];
+    const accountsToImport = [{ address: result.address, index: 0 }];
     let accountsEnabled = 1;
     // Autodiscover accounts
     let empty = false;
@@ -443,7 +430,7 @@ export const connectLedger = async () => {
       );
 
       if (hasBeenUsed) {
-        addressesToImport.push({
+        accountsToImport.push({
           address: result.address,
           index: accountsEnabled,
         });
@@ -453,20 +440,9 @@ export const connectLedger = async () => {
       }
     }
 
-    // The device id is the keccak256 of the address at index 0
-    const deviceId = keccak256(result.address);
-    const address = await walletAction('import_hw', {
-      deviceId,
-      wallets: addressesToImport,
-      vendor: 'Ledger',
-      accountsEnabled,
-    });
-    const { passwordSet } = await getStatus();
-    if (!passwordSet) {
-      // we probably need to set a password
-      await chrome.storage.session.set({ userStatus: 'NEEDS_PASSWORD' });
-    }
-    return address;
+    const deviceId = keccak256(accountsToImport[0].address);
+
+    return { accountsToImport, deviceId, accountsEnabled };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
@@ -479,4 +455,27 @@ export const connectLedger = async () => {
     }
     return null;
   }
+};
+
+export const importAccountsFromHW = async (
+  accountsToImport: {
+    address: string;
+    index: number;
+  }[],
+  accountsEnabled: number,
+  deviceId: string,
+  vendor: 'Ledger' | 'Trezor',
+) => {
+  const address = await walletAction('import_hw', {
+    deviceId,
+    wallets: accountsToImport,
+    vendor,
+    accountsEnabled,
+  });
+  const { passwordSet } = await getStatus();
+  if (!passwordSet) {
+    // we probably need to set a password
+    await chrome.storage.session.set({ userStatus: 'NEEDS_PASSWORD' });
+  }
+  return address;
 };

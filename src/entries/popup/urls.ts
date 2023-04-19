@@ -43,4 +43,8 @@ export const ROUTES = {
   NEW_IMPORT_WALLET_SELECTION_EDIT: '/add-wallet/import/select/edit', // NewImportWalletSelectionEdit
   READY: '/ready', // WalletReady
   APPROVE_APP_REQUEST: '/approve-request',
+  HW_CHOOSE: '/hw/choose',
+  HW_LEDGER: '/hw/ledger',
+  HW_TREZOR: '/hw/trezor',
+  HW_WALLET_LIST: '/hw/wallet-list',
 };

@@ -64,7 +64,7 @@ export function ImportOrConnect() {
           />
           <OnboardMenu.Separator />
           <OnboardMenu.Item
-            onClick={() => alert('coming soon!')}
+            onClick={() => navigateTo(ROUTES.HW_CHOOSE)}
             title={i18n.t('import_or_connect.connect_wallet')}
             subtitle={i18n.t('import_or_connect.connect_wallet_description')}
             symbol="doc.text.magnifyingglass"
