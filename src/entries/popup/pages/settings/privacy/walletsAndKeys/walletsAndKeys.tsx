@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -65,6 +66,7 @@ export function WalletsAndKeys() {
   const walletCountPerType = {
     hd: 0,
     pk: 0,
+    hw: 0,
   };
 
   return (
@@ -93,6 +95,8 @@ export function WalletsAndKeys() {
               walletCountPerType.hd += 1;
             } else if (wallet.type === KeychainType.KeyPairKeychain) {
               walletCountPerType.pk += 1;
+            } else if (wallet.type === KeychainType.HardwareWalletKeychain) {
+              walletCountPerType.hw += 1;
             }
 
             return (
@@ -104,10 +108,14 @@ export function WalletsAndKeys() {
                       text={`${i18n.t(
                         wallet.type === KeychainType.HdKeychain
                           ? 'settings.privacy_and_security.wallets_and_keys.recovery_phrase_label'
+                          : wallet.type === KeychainType.HardwareWalletKeychain
+                          ? 'settings.privacy_and_security.wallets_and_keys.hardware_wallet_label'
                           : 'settings.privacy_and_security.wallets_and_keys.private_key_label',
                       )} ${
                         wallet.type === KeychainType.HdKeychain
                           ? walletCountPerType.hd
+                          : wallet.type === KeychainType.HardwareWalletKeychain
+                          ? walletCountPerType.hw
                           : walletCountPerType.pk
                       }`}
                     />

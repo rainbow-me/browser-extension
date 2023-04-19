@@ -285,6 +285,8 @@ export function WalletSwitcher() {
     return sortedAccounts;
   }, [filteredAccounts, walletOrder]);
 
+  console.log(filteredAndSortedAccounts);
+
   const displayedAccounts = useMemo(
     () =>
       filteredAndSortedAccounts.map((account, index) => (
@@ -317,6 +319,14 @@ export function WalletSwitcher() {
                   <Inline alignVertical="center" space="6px">
                     {account.type === KeychainType.ReadOnlyKeychain && (
                       <LabelPill label={i18n.t('wallet_switcher.watching')} />
+                    )}
+                    {account.type === KeychainType.HardwareWalletKeychain && (
+                      <LabelPill
+                        dot
+                        label={i18n.t(
+                          `wallet_switcher.${account.vendor?.toLowerCase()}`,
+                        )}
+                      />
                     )}
                     <MoreInfoButton
                       options={infoButtonOptions({

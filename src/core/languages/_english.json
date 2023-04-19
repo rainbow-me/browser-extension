@@ -12,6 +12,8 @@
     "remove_wallet": "Remove wallet",
     "hide_wallet": "Hide wallet",
     "watching": "Watching",
+    "ledger": "Ledger",
+    "trezor": "Trezor",
     "add_another_wallet": "Add another wallet",
     "connect_hardware_wallet": "Connect a hardware wallet",
     "search_placeholder": "Search wallets",
@@ -106,6 +108,7 @@
         "wallet_plural": "Wallets",
         "recovery_phrase_label": "Recovery Phrase",
         "private_key_label": "Private Key",
+        "hardware_wallet_label": "Hardware Wallet",
         "wallet_details": {
           "title": "Wallet Details",
           "view_recovery_phrase": "View Recovery Phrase",
@@ -759,7 +762,9 @@
     "connect_wallet": "Connect 1 wallet",
     "connect_n_wallets": "Connect %{count} wallets",
     "wallets_found": "%{count} wallets found",
-    "add_by_index": "Add by index"
-
+    "add_by_index": "Add by index",
+    "connection_successful_title": "Connected successful",
+    "connection_successful_description": "Something about how we imported N wallets and they will be labeled with the badge?",
+    "done": "Done"
   }
 }

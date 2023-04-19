@@ -25,8 +25,11 @@ import { FullScreenContainer } from '../../components/FullScreen/FullScreenConta
 import { Spinner } from '../../components/Spinner/Spinner';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import * as wallet from '../../handlers/wallet';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { ROUTES } from '../../urls';
 
 const WalletListHW = () => {
+  const navigate = useRainbowNavigate();
   const { state } = useLocation();
   const [accountsIgnored, setAccountsIgnored] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -70,20 +73,25 @@ const WalletListHW = () => {
       defaultAccountChosen = true;
       setCurrentAddress(address);
     }
-    // TODO
-    // GO TO THE SCREEN WITH THE PIRAMYD
+
+    navigate(ROUTES.HW_SUCCESS, {
+      state: {
+        accounts: filteredAccounts.map(
+          (account: { address: Address }) => account.address,
+        ),
+      },
+    });
   }, [
-    accountsIgnored,
     isLoading,
     selectedAccounts,
-    setCurrentAddress,
-    state.accountsEnabled,
     accountsToImport,
     state.deviceId,
+    state.accountsEnabled,
     state.vendor,
+    accountsIgnored,
+    navigate,
+    setCurrentAddress,
   ]);
-
-  console.log(accountsToImport);
 
   const toggleAccount = useCallback(
     (address: Address) => {

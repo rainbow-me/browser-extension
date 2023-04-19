@@ -16,6 +16,7 @@ import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
 import { ChooseHW } from './pages/hw/chooseHW';
 import { ConnectLedger } from './pages/hw/ledger';
+import { SuccessHW } from './pages/hw/success';
 import { ConnectTrezor } from './pages/hw/trezor';
 import { WalletListHW } from './pages/hw/walletList';
 import { ImportOrConnect } from './pages/importOrConnect';
@@ -186,6 +187,19 @@ const ROUTE_DATA = [
         background="surfaceSecondary"
       >
         <WalletListHW />
+      </AnimatedRoute>
+    ),
+    background: FullScreenBackground,
+  },
+  {
+    path: ROUTES.HW_SUCCESS,
+    element: (
+      <AnimatedRoute
+        protectedRoute
+        direction="up"
+        background="surfaceSecondary"
+      >
+        <SuccessHW />
       </AnimatedRoute>
     ),
     background: FullScreenBackground,

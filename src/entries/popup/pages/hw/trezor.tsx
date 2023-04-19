@@ -21,7 +21,7 @@ export function ConnectTrezor() {
         navigate(ROUTES.HW_WALLET_LIST, {
           state: {
             ...res,
-            vendor: 'Ledger',
+            vendor: 'Trezor',
           },
         });
       }
