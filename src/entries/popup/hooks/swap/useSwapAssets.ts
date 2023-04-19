@@ -121,16 +121,11 @@ export const useSwapAssets = () => {
     const userAsset = userAssets.find((userAsset) =>
       isLowerCaseMatch(userAsset.address, assetToBuy?.address),
     );
-    const parsedAssetToBuy = parseSearchAsset({
+    return parseSearchAsset({
       assetWithPrice: assetToBuyWithPrice,
       searchAsset: assetToBuy,
       userAsset,
     });
-    console.log('PARSED ASSET TO BUY assetToBuyWithPrice', assetToBuyWithPrice);
-    console.log('PARSED ASSET TO BUY assetToBuy', assetToBuy);
-    console.log('PARSED ASSET TO BUY userAsset', userAsset);
-    console.log('PARSED ASSET TO BUY parsedAssetToBuy', parsedAssetToBuy);
-    return parsedAssetToBuy;
   }, [assetToBuy, userAssets, assetToBuyWithPrice]);
 
   const parsedAssetToSell = useMemo(() => {
