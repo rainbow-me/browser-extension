@@ -122,7 +122,6 @@ export const estimateSwapGasLimit = async ({
         provider,
         paddingFactor: SWAP_GAS_PADDING,
       });
-      console.log('estimateGasWithPadding', gasLimit);
 
       return gasLimit || getDefaultGasLimitForTrade(quote, chainId);
     } catch (error) {
