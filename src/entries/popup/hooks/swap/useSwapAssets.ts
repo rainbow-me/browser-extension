@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
+import { Address } from 'wagmi';
 
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { selectUserAssetsListByChainId } from '~/core/resources/_selectors/assets';
@@ -82,12 +83,20 @@ export const useSwapAssets = () => {
     searchQuery: debouncedAssetToBuyFilter,
   });
 
-  const { data: assetsWithPrice = [] } = useAssets({
-    assetAddresses: searchAssetsToBuySections
+  const assetAddressesToFetchPrices = useMemo(() => {
+    const assetAddressesFromSearch = searchAssetsToBuySections
       .map(
         (section) => section.data?.map((asset) => asset.mainnetAddress) || [],
       )
-      .flat(),
+      .flat();
+    if (assetToBuy) {
+      assetAddressesFromSearch.push(assetToBuy?.address as Address);
+    }
+    return assetAddressesFromSearch;
+  }, [assetToBuy, searchAssetsToBuySections]);
+
+  const { data: assetsWithPrice = [] } = useAssets({
+    assetAddresses: useDebounce(assetAddressesToFetchPrices, 500),
     currency: currentCurrency,
   });
 
@@ -112,11 +121,16 @@ export const useSwapAssets = () => {
     const userAsset = userAssets.find((userAsset) =>
       isLowerCaseMatch(userAsset.address, assetToBuy?.address),
     );
-    return parseSearchAsset({
+    const parsedAssetToBuy = parseSearchAsset({
       assetWithPrice: assetToBuyWithPrice,
       searchAsset: assetToBuy,
       userAsset,
     });
+    console.log('PARSED ASSET TO BUY assetToBuyWithPrice', assetToBuyWithPrice);
+    console.log('PARSED ASSET TO BUY assetToBuy', assetToBuy);
+    console.log('PARSED ASSET TO BUY userAsset', userAsset);
+    console.log('PARSED ASSET TO BUY parsedAssetToBuy', parsedAssetToBuy);
+    return parsedAssetToBuy;
   }, [assetToBuy, userAssets, assetToBuyWithPrice]);
 
   const parsedAssetToSell = useMemo(() => {
