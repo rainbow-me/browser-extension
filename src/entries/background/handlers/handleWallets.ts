@@ -4,7 +4,6 @@ import {
   TypedDataField,
 } from '@ethersproject/abstract-signer';
 import { Bytes } from '@ethersproject/bytes';
-import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { ChainId } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
@@ -39,8 +38,10 @@ import {
 } from '~/core/keychain';
 import { initializeMessenger } from '~/core/messengers';
 import { WalletExecuteRapProps } from '~/core/raps/references';
+import { flashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
 import { WalletAction } from '~/core/types/walletActions';
 import { EthereumWalletSeed } from '~/core/utils/ethereum';
+import { getFlashbotsProvider } from '~/core/utils/flashbots';
 
 type WalletActionArguments = {
   action: WalletAction;
@@ -175,9 +176,17 @@ export const handleWallets = () =>
             break;
           }
           case 'send_transaction': {
-            const provider = getProvider({
-              chainId: (payload as TransactionRequest).chainId,
-            });
+            let provider;
+            if (
+              flashbotsEnabledStore.getState().flashbotsEnabled &&
+              (payload as TransactionRequest).chainId === ChainId.mainnet
+            ) {
+              provider = getFlashbotsProvider();
+            } else {
+              provider = getProvider({
+                chainId: (payload as TransactionRequest).chainId,
+              });
+            }
             response = await sendTransaction(
               payload as TransactionRequest,
               provider,
@@ -191,10 +200,7 @@ export const handleWallets = () =>
               p.rapActionParameters.flashbots &&
               p.rapActionParameters.chainId === ChainId.mainnet
             ) {
-              provider = new StaticJsonRpcProvider(
-                'https://rpc.flashbots.net',
-                'mainnet',
-              );
+              provider = getFlashbotsProvider();
             } else {
               provider = getProvider({
                 chainId: p.rapActionParameters.chainId,

@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
@@ -22,8 +23,8 @@ export function useTokensShortcuts() {
   const allowSwap = useMemo(
     () =>
       (!isWatchingWallet || featureFlags.full_watching_wallets) &&
-      featureFlags.swaps,
-    [featureFlags.full_watching_wallets, featureFlags.swaps, isWatchingWallet],
+      config.swaps_enabled,
+    [featureFlags.full_watching_wallets, isWatchingWallet],
   );
 
   const handleTokenShortcuts = useCallback(
