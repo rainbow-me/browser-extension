@@ -82,16 +82,6 @@ export const isWrapEth = ({
   buyTokenAddress: string;
 }) => {
   const { connectedToHardhat } = connectedToHardhatStore.getState();
-  console.log(
-    'in isWrapEth sellTokenAddress, ETH_ADDRESS',
-    sellTokenAddress,
-    ETH_ADDRESS,
-  );
-  console.log(
-    'in isWrapEth buyTokenAddress, WRAPPED_ASSET',
-    buyTokenAddress,
-    WRAPPED_ASSET[connectedToHardhat ? ChainId.mainnet : chainId],
-  );
   return (
     isLowerCaseMatch(sellTokenAddress, ETH_ADDRESS) &&
     isLowerCaseMatch(
