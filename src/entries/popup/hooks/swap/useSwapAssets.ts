@@ -41,6 +41,9 @@ export const useSwapAssets = () => {
   const prevAssetToSell = usePrevious<ParsedSearchAsset | SearchAsset | null>(
     assetToSell,
   );
+  const prevAssetToBuy = usePrevious<ParsedSearchAsset | SearchAsset | null>(
+    assetToBuy,
+  );
 
   const [outputChainId, setOutputChainId] = useState(ChainId.mainnet);
 
@@ -89,14 +92,17 @@ export const useSwapAssets = () => {
         (section) => section.data?.map((asset) => asset.mainnetAddress) || [],
       )
       .flat();
-    if (assetToBuy) {
-      assetAddressesFromSearch.push(assetToBuy?.address as Address);
+
+    if (assetToBuy || prevAssetToBuy) {
+      assetAddressesFromSearch.push(
+        (assetToBuy?.address || prevAssetToBuy?.address) as Address,
+      );
     }
     return assetAddressesFromSearch;
-  }, [assetToBuy, searchAssetsToBuySections]);
+  }, [assetToBuy, prevAssetToBuy, searchAssetsToBuySections]);
 
   const { data: assetsWithPrice = [] } = useAssets({
-    assetAddresses: useDebounce(assetAddressesToFetchPrices, 500),
+    assetAddresses: assetAddressesToFetchPrices,
     currency: currentCurrency,
   });
 

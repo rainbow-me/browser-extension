@@ -19,7 +19,7 @@ export const TokenToBuyInfo = ({
 }) => {
   const priceChangeDisplay = useMemo(() => {
     const priceChange = asset?.native?.price?.change;
-    return priceChange?.length ? priceChange : '-';
+    return priceChange?.length ? priceChange : null;
   }, [asset?.native?.price?.change]);
 
   if (!asset) return null;
@@ -42,7 +42,7 @@ export const TokenToBuyInfo = ({
 
             <Column width="content">
               <Text as="p" size="12pt" weight="medium" color="labelQuaternary">
-                ({priceChangeDisplay})
+                {priceChangeDisplay ? `(${priceChangeDisplay})` : ''}
               </Text>
             </Column>
           </Columns>
