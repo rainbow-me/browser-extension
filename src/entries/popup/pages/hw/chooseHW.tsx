@@ -3,22 +3,31 @@ import React, { useCallback } from 'react';
 import ledgerLogo from 'static/assets/hw/ledger-logo.png';
 import trezorLogo from 'static/assets/hw/trezor-logo.png';
 import { i18n } from '~/core/languages';
+import { POPUP_URL, goToNewTab } from '~/core/utils/tabs';
 import { Box } from '~/design-system';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
+import { useIsFullScreen } from '../../hooks/useIsFullScreen';
 import { ROUTES } from '../../urls';
 
 export function ChooseHW() {
   const navigate = useRainbowNavigate();
+  const isFullScreen = useIsFullScreen();
 
   const handleLedgerChoice = useCallback(() => {
     navigate(ROUTES.HW_LEDGER);
   }, [navigate]);
 
   const handleTrezorChoice = useCallback(() => {
-    navigate(ROUTES.HW_TREZOR);
-  }, [navigate]);
+    if (!isFullScreen) {
+      goToNewTab({
+        url: POPUP_URL + `#${ROUTES.HW_TREZOR}`,
+      });
+    } else {
+      navigate(ROUTES.HW_TREZOR);
+    }
+  }, [isFullScreen, navigate]);
 
   return (
     <Box height="full">
