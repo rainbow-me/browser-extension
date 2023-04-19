@@ -73,10 +73,12 @@ export const sendTransaction = async (
     provider,
   });
 
-  const nonce = await getNextNonce({
-    address: transactionRequest.from as Address,
-    chainId: transactionRequest.chainId as number,
-  });
+  const nonce =
+    transactionRequest.nonce ??
+    (await getNextNonce({
+      address: transactionRequest.from as Address,
+      chainId: transactionRequest.chainId as number,
+    }));
 
   const params = {
     ...transactionRequest,
