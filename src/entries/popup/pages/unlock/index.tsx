@@ -131,6 +131,9 @@ export function Unlock() {
                 tabIndex={1}
                 autoFocus
                 visible={visible}
+                style={{
+                  caretColor: accentColorAsHsl,
+                }}
               />
             </Box>
             <Box width="fit">
