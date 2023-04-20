@@ -61,7 +61,7 @@ const calcGasParamRetryValue = (prevWeiValue?: string) => {
 type SpeedUpAndCancelSheetProps = {
   currentSheet: SheetMode;
   onClose: () => void;
-  transaction: RainbowTransaction;
+  transaction?: RainbowTransaction;
 };
 
 // governs type of sheet displayed on top of MainLayout
@@ -78,8 +78,8 @@ export function SpeedUpAndCancelSheet({
   const { selectedGas } = useGasStore();
 
   const { data: transactionResponse } = useTransaction({
-    chainId: transaction.chainId,
-    hash: transaction.hash as `0x${string}`,
+    chainId: transaction?.chainId,
+    hash: transaction?.hash as `0x${string}`,
   });
   const cancel = currentSheet === 'cancel';
   const handleClose = useCallback(() => {
@@ -87,12 +87,12 @@ export function SpeedUpAndCancelSheet({
   }, [onClose]);
 
   const getNewTransactionGasParams = useCallback(() => {
-    if (transaction.chainId === ChainId.mainnet) {
+    if (transaction?.chainId === ChainId.mainnet) {
       const transactionMaxFeePerGas =
-        transactionResponse?.maxFeePerGas || transaction.maxFeePerGas;
+        transactionResponse?.maxFeePerGas || transaction?.maxFeePerGas;
       const transactionMaxPriorityFeePerGas =
         transactionResponse?.maxPriorityFeePerGas ||
-        transaction.maxPriorityFeePerGas;
+        transaction?.maxPriorityFeePerGas;
       const minMaxFeePerGas = calcGasParamRetryValue(
         transactionMaxFeePerGas?.toString(),
       );
@@ -119,7 +119,7 @@ export function SpeedUpAndCancelSheet({
       return { maxFeePerGas, maxPriorityFeePerGas };
     } else {
       const transactionGasPrice =
-        transactionResponse?.gasPrice || transaction.gasPrice;
+        transactionResponse?.gasPrice || transaction?.gasPrice;
 
       const minGasPrice = calcGasParamRetryValue(
         transactionGasPrice?.toString(),
@@ -134,10 +134,10 @@ export function SpeedUpAndCancelSheet({
       };
     }
   }, [
-    transaction.gasPrice,
-    transaction.maxFeePerGas,
-    transaction.maxPriorityFeePerGas,
-    transaction.chainId,
+    transaction?.gasPrice,
+    transaction?.maxFeePerGas,
+    transaction?.maxPriorityFeePerGas,
+    transaction?.chainId,
     transactionResponse?.gasPrice,
     transactionResponse?.maxFeePerGas,
     transactionResponse?.maxPriorityFeePerGas,
