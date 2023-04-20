@@ -1,18 +1,35 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
+import BigNumber from 'bignumber.js';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { Address, useAccount, useBalance, useEnsName } from 'wagmi';
+import {
+  Address,
+  useAccount,
+  useBalance,
+  useEnsName,
+  useTransaction,
+} from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useGasStore } from '~/core/state';
 import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 import { ChainId } from '~/core/types/chains';
-import { GasSpeed } from '~/core/types/gas';
+import {
+  GasSpeed,
+  TransactionGasParams,
+  TransactionLegacyGasParams,
+} from '~/core/types/gas';
 import {
   RainbowTransaction,
   TransactionStatus,
   TransactionType,
 } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
-import { handleSignificantDecimals, toHex } from '~/core/utils/numbers';
+import { weiToGwei } from '~/core/utils/ethereum';
+import {
+  greaterThan,
+  handleSignificantDecimals,
+  toHex,
+} from '~/core/utils/numbers';
 import { updateTransaction } from '~/core/utils/transactions';
 import {
   Box,
@@ -32,10 +49,20 @@ import { TransactionFee } from '../../components/TransactionFee/TransactionFee';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { sendTransaction } from '../../handlers/wallet';
 
+const calcGasParamRetryValue = (prevWeiValue?: string) => {
+  const prevWeiValueBN = new BigNumber(prevWeiValue || 0);
+
+  const newWeiValueBN = prevWeiValueBN
+    .times(new BigNumber('110'))
+    .dividedBy(new BigNumber('100'));
+
+  return newWeiValueBN.toFixed(0);
+};
+
 type SpeedUpAndCancelSheetProps = {
   currentSheet: SheetMode;
   onClose: () => void;
-  transaction: RainbowTransaction | null;
+  transaction: RainbowTransaction;
 };
 
 // governs type of sheet displayed on top of MainLayout
@@ -49,32 +76,127 @@ export function SpeedUpAndCancelSheet({
   transaction,
 }: SpeedUpAndCancelSheetProps) {
   const { setSelectedTransaction } = useSelectedTransactionStore();
+  const { selectedGas } = useGasStore();
+
+  const { data: transactionResponse } = useTransaction({
+    chainId: transaction.chainId,
+    hash: transaction.hash as `0x${string}`,
+  });
   const cancel = currentSheet === 'cancel';
   const handleClose = useCallback(() => {
     onClose();
   }, [onClose]);
-  const speedUpTransactionRequest: TransactionRequest = useMemo(
-    () => ({
+
+  const getNewTransactionGasParams = useCallback(() => {
+    if (transaction.chainId === ChainId.mainnet) {
+      const transactionMaxFeePerGas =
+        transactionResponse?.maxFeePerGas || transaction.maxFeePerGas;
+      const transactionMaxPriorityFeePerGas =
+        transactionResponse?.maxPriorityFeePerGas ||
+        transaction.maxPriorityFeePerGas;
+      const minMaxFeePerGas = calcGasParamRetryValue(
+        transactionMaxFeePerGas?.toString(),
+      );
+      const minMaxPriorityFeePerGas = calcGasParamRetryValue(
+        transactionMaxPriorityFeePerGas?.toString(),
+      );
+      const rawMaxPriorityFeePerGas = (
+        selectedGas.transactionGasParams as TransactionGasParams
+      ).maxPriorityFeePerGas;
+      const rawMaxFeePerGas = (
+        selectedGas.transactionGasParams as TransactionGasParams
+      ).maxFeePerGas;
+
+      const maxPriorityFeePerGas = greaterThan(
+        rawMaxPriorityFeePerGas,
+        minMaxPriorityFeePerGas,
+      )
+        ? toHex(rawMaxPriorityFeePerGas)
+        : toHex(minMaxPriorityFeePerGas);
+
+      const maxFeePerGas = greaterThan(rawMaxFeePerGas, minMaxFeePerGas)
+        ? toHex(rawMaxFeePerGas)
+        : toHex(minMaxFeePerGas);
+      return { maxFeePerGas, maxPriorityFeePerGas };
+    } else {
+      const transactionGasPrice =
+        transactionResponse?.gasPrice || transaction.gasPrice;
+
+      const minGasPrice = calcGasParamRetryValue(
+        transactionGasPrice?.toString(),
+      );
+      const rawGasPrice = (
+        selectedGas.transactionGasParams as TransactionLegacyGasParams
+      ).gasPrice;
+      return {
+        gasPrice: greaterThan(rawGasPrice, minGasPrice)
+          ? toHex(rawGasPrice)
+          : toHex(minGasPrice),
+      };
+    }
+  }, [
+    transaction.gasPrice,
+    transaction.maxFeePerGas,
+    transaction.maxPriorityFeePerGas,
+    transaction.chainId,
+    transactionResponse?.gasPrice,
+    transactionResponse?.maxFeePerGas,
+    transactionResponse?.maxPriorityFeePerGas,
+    selectedGas.transactionGasParams,
+  ]);
+
+  const speedUpTransactionRequest: TransactionRequest = useMemo(() => {
+    const gasParams = getNewTransactionGasParams();
+    console.log('speedUpTransactionRequest', gasParams);
+    console.log(
+      'speedUpTransactionRequest - gasParams.gasPrice',
+      weiToGwei(gasParams.gasPrice || ''),
+    );
+    console.log(
+      'speedUpTransactionRequest - gasParams.maxFeePerGas',
+      weiToGwei(gasParams.maxFeePerGas || ''),
+    );
+    console.log(
+      'speedUpTransactionRequest - gasParams.maxPriorityFeePerGas',
+      weiToGwei(gasParams.maxPriorityFeePerGas || ''),
+    );
+
+    return {
       to: transaction?.to,
       from: transaction?.from,
       value: transaction?.value,
       chainId: transaction?.chainId,
       data: transaction?.data,
       nonce: transaction?.nonce,
-    }),
-    [transaction],
-  );
-  const cancelTransactionRequest: TransactionRequest = useMemo(
-    () => ({
+      ...gasParams,
+    };
+  }, [
+    getNewTransactionGasParams,
+    transaction?.chainId,
+    transaction?.data,
+    transaction?.from,
+    transaction?.nonce,
+    transaction?.to,
+    transaction?.value,
+  ]);
+  const cancelTransactionRequest: TransactionRequest = useMemo(() => {
+    const gasParams = getNewTransactionGasParams();
+    return {
       to: transaction?.from,
       from: transaction?.from,
       value: toHex('0'),
       chainId: transaction?.chainId,
       data: undefined,
       nonce: transaction?.nonce,
-    }),
-    [transaction],
-  );
+      ...gasParams,
+    };
+  }, [
+    getNewTransactionGasParams,
+    transaction?.chainId,
+    transaction?.from,
+    transaction?.nonce,
+  ]);
+
   const handleCancellation = async () => {
     const cancellationResult = await sendTransaction(cancelTransactionRequest);
     const cancelTx = {

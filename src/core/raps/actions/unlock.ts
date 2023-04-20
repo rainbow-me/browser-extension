@@ -200,6 +200,13 @@ export const unlock = async ({
     nonce: approval.nonce,
     status: TransactionStatus.approving,
     type: TransactionType.send,
+    gasPrice: (selectedGas.transactionGasParams as TransactionLegacyGasParams)
+      .gasPrice,
+    maxFeePerGas: (selectedGas.transactionGasParams as TransactionGasParams)
+      .maxFeePerGas,
+    maxPriorityFeePerGas: (
+      selectedGas.transactionGasParams as TransactionGasParams
+    ).maxPriorityFeePerGas,
   };
   await addNewTransaction({
     address: parameters.fromAddress as Address,

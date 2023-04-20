@@ -257,6 +257,10 @@ export const swap = async ({
     status: TransactionStatus.swapping,
     type: TransactionType.trade,
     flashbots: parameters.flashbots,
+    gasPrice: (gasParams as TransactionLegacyGasParams).gasPrice,
+    maxFeePerGas: (gasParams as TransactionGasParams).maxFeePerGas,
+    maxPriorityFeePerGas: (gasParams as TransactionGasParams)
+      .maxPriorityFeePerGas,
   };
   await addNewTransaction({
     address: parameters.quote.from as Address,
