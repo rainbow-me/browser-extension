@@ -25,6 +25,12 @@ export type RequestResponse =
       result: any;
     };
 
+const getMetaMaskProvider = () => {
+  return window.walletRouter.providers.find(
+    (provider) => provider.isMetaMask && !provider.isRainbow,
+  );
+};
+
 /**
  * The provider injected into `window.ethereum`.
  *
@@ -44,6 +50,7 @@ export class RainbowProvider extends EventEmitter {
 
   #isUnlocked = true;
   requestId = 0;
+  rainbowIsDefaultProvider = false;
 
   constructor({ messenger }: { messenger?: Messenger } = {}) {
     super();
@@ -61,6 +68,12 @@ export class RainbowProvider extends EventEmitter {
     messenger?.reply(`connect:${host}`, async (connectionInfo) => {
       this.emit('connect', connectionInfo);
     });
+    messenger?.reply(
+      'rainbow_setDefaultProvider',
+      async ({ rainbowAsDefault }: { rainbowAsDefault: boolean }) => {
+        this.rainbowIsDefaultProvider = rainbowAsDefault;
+      },
+    );
   }
 
   /**
@@ -79,6 +92,14 @@ export class RainbowProvider extends EventEmitter {
     method,
     params,
   }: RequestArguments): Promise<RequestResponse | undefined> {
+    if (!this.rainbowIsDefaultProvider) {
+      const provider = getMetaMaskProvider();
+      if (provider) {
+        const response = await provider.request({ method, params });
+        return response;
+      }
+    }
+
     // eslint-disable-next-line no-plusplus
     const id = this.requestId++;
     const response = await providerRequestTransport.send(
