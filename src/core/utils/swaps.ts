@@ -21,7 +21,7 @@ export const getCrossChainTimeEstimate = ({
   let timeEstimateDisplay;
   const timeEstimate = serviceTime;
 
-  const minutes = Math.floor(timeEstimate || 0 / 60);
+  const minutes = Math.floor((timeEstimate || 0) / 60);
   const hours = Math.floor(minutes / 60);
 
   if (hours >= 1) {
