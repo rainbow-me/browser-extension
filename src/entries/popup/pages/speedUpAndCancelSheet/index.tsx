@@ -61,7 +61,7 @@ const calcGasParamRetryValue = (prevWeiValue?: string) => {
 type SpeedUpAndCancelSheetProps = {
   currentSheet: SheetMode;
   onClose: () => void;
-  transaction?: RainbowTransaction;
+  transaction: RainbowTransaction | null;
 };
 
 // governs type of sheet displayed on top of MainLayout
