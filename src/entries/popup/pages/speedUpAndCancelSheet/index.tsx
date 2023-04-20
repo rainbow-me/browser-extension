@@ -24,7 +24,6 @@ import {
   TransactionType,
 } from '~/core/types/transactions';
 import { truncateAddress } from '~/core/utils/address';
-import { weiToGwei } from '~/core/utils/ethereum';
 import {
   greaterThan,
   handleSignificantDecimals,
@@ -147,20 +146,6 @@ export function SpeedUpAndCancelSheet({
 
   const speedUpTransactionRequest: TransactionRequest = useMemo(() => {
     const gasParams = getNewTransactionGasParams();
-    console.log('speedUpTransactionRequest', gasParams);
-    console.log(
-      'speedUpTransactionRequest - gasParams.gasPrice',
-      weiToGwei(gasParams.gasPrice || ''),
-    );
-    console.log(
-      'speedUpTransactionRequest - gasParams.maxFeePerGas',
-      weiToGwei(gasParams.maxFeePerGas || ''),
-    );
-    console.log(
-      'speedUpTransactionRequest - gasParams.maxPriorityFeePerGas',
-      weiToGwei(gasParams.maxPriorityFeePerGas || ''),
-    );
-
     return {
       to: transaction?.to,
       from: transaction?.from,
