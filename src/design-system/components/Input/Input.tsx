@@ -12,6 +12,7 @@ import { Box } from '../Box/Box';
 
 import {
   InputHeight,
+  accentSelectionStyle,
   backgroundStyle,
   heightStyles,
   placeholderStyle,
@@ -184,6 +185,7 @@ export function Input({
             textAlign,
           }),
           placeholderStyle,
+          borderColor === 'accent' ? accentSelectionStyle : null,
         ]}
         paddingHorizontal={paddingHorizontal}
         paddingVertical={paddingVertical}
