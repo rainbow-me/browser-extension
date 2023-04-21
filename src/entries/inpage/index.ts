@@ -151,6 +151,10 @@ backgroundMessenger.reply(
   },
 );
 
+backgroundMessenger.reply('rainbow_reload', async () => {
+  window.location.reload();
+});
+
 /**
  * Determines if the provider should be injected
  */

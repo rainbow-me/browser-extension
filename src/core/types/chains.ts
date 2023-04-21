@@ -62,4 +62,5 @@ export const ChainNameDisplay = {
   [ChainId.optimism]: 'Optimism',
   [ChainId.polygon]: 'Polygon',
   [ChainId.mainnet]: 'Ethereum',
+  [ChainId.hardhat]: 'Hardhat',
 };

@@ -22,7 +22,7 @@ const ASSETS_REFETCH_INTERVAL = 60000;
 // ///////////////////////////////////////////////
 // Query Types
 
-export type AssetsArgs = {
+export type AssetsQueryArgs = {
   assetAddresses: Address[];
   currency: SupportedCurrencyKey;
 };
@@ -30,7 +30,7 @@ export type AssetsArgs = {
 // ///////////////////////////////////////////////
 // Query Key
 
-const assetsQueryKey = ({ assetAddresses, currency }: AssetsArgs) =>
+const assetsQueryKey = ({ assetAddresses, currency }: AssetsQueryArgs) =>
   createQueryKey(
     'assets',
     { assetAddresses, currency },
@@ -42,7 +42,7 @@ type AssetsQueryKey = ReturnType<typeof assetsQueryKey>;
 // ///////////////////////////////////////////////
 // Query Function
 
-async function assetsQueryFunction({
+export async function assetsQueryFunction({
   queryKey: [{ assetAddresses, currency }],
 }: QueryFunctionArgs<typeof assetsQueryKey>): Promise<{
   [key: UniqueId]: ParsedAsset;
@@ -72,7 +72,26 @@ async function assetsQueryFunction({
   });
 }
 
-type AssetsResult = QueryFunctionResult<typeof assetsQueryFunction>;
+type AssetsQueryResult = QueryFunctionResult<typeof assetsQueryFunction>;
+
+// ///////////////////////////////////////////////
+// Query Fetcher
+
+export async function fetchAssets(
+  { assetAddresses, currency }: AssetsQueryArgs,
+  config: QueryConfig<
+    AssetsQueryResult,
+    Error,
+    AssetsQueryResult,
+    AssetsQueryKey
+  > = {},
+) {
+  return await queryClient.fetchQuery(
+    assetsQueryKey({ assetAddresses, currency }),
+    assetsQueryFunction,
+    config,
+  );
+}
 
 function parseAssets({
   assetAddresses,
@@ -122,9 +141,14 @@ function parseAssets({
 // ///////////////////////////////////////////////
 // Query Hook
 
-export function useAssets<TSelectData = AssetsResult>(
-  { assetAddresses, currency }: AssetsArgs,
-  config: QueryConfig<AssetsResult, Error, TSelectData, AssetsQueryKey> = {},
+export function useAssets<TSelectData = AssetsQueryResult>(
+  { assetAddresses, currency }: AssetsQueryArgs,
+  config: QueryConfig<
+    AssetsQueryResult,
+    Error,
+    TSelectData,
+    AssetsQueryKey
+  > = {},
 ) {
   return useQuery(
     assetsQueryKey({ assetAddresses, currency }),

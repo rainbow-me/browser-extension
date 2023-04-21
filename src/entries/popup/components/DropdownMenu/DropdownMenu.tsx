@@ -1,12 +1,18 @@
 import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
+import { DismissableLayerProps } from '@radix-ui/react-menu';
 import clsx from 'clsx';
+import { motion } from 'framer-motion';
 import React, { CSSProperties, ReactNode } from 'react';
 import { useAccount } from 'wagmi';
 
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { AccentColorProvider, Box, Text, ThemeProvider } from '~/design-system';
 import { menuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
-import { TextStyles, boxStyles } from '~/design-system/styles/core.css';
+import {
+  BoxStyles,
+  TextStyles,
+  boxStyles,
+} from '~/design-system/styles/core.css';
 import {
   BackgroundColor,
   Space,
@@ -39,12 +45,22 @@ export function DropdownMenuTrigger(props: DropdownMenuTriggerProps) {
 }
 
 interface DropdownMenuContentProps {
+  animate?: boolean;
+  border?: boolean;
+  boxShadow?: string;
   children: ReactNode;
   align?: 'start' | 'center' | 'end';
+  backdropFilter?: BoxStyles['backdropFilter'];
   marginRight?: Space;
+  marginLeft?: Space | number;
+  marginTop?: Space | number;
   accentColor?: string;
   sideOffset?: number;
   onPointerDownOutside?: () => void;
+  scale?: number;
+  top?: number;
+  position?: BoxStyles['position'];
+  onInteractOutside?: DismissableLayerProps['onInteractOutside'];
 }
 
 export function DropdownMenuContent(props: DropdownMenuContentProps) {
@@ -58,11 +74,27 @@ export function DropdownMenuContent(props: DropdownMenuContentProps) {
   );
 }
 
-const DropdownMenuContentBody = React.forwardRef<
+export const DropdownMenuContentBody = React.forwardRef<
   HTMLDivElement,
   DropdownMenuContentProps
 >((props: DropdownMenuContentProps, ref) => {
-  const { children, align = 'start', marginRight, accentColor } = props;
+  const {
+    border,
+    boxShadow,
+    children,
+    align = 'start',
+    backdropFilter,
+    marginRight,
+    marginLeft,
+    marginTop,
+    accentColor,
+    scale,
+    top,
+    position,
+    sideOffset,
+    onInteractOutside,
+    animate = false,
+  } = props;
   const { currentTheme } = useCurrentThemeStore();
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
@@ -73,25 +105,47 @@ const DropdownMenuContentBody = React.forwardRef<
       <ThemeProvider theme={currentTheme}>
         <Box
           as={DropdownMenuPrimitive.Content}
-          style={{
-            width: 204,
-            backdropFilter: 'blur(26px)',
-            boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.2)',
-            marginRight: marginRight ?? '0px',
-          }}
-          paddingHorizontal="12px"
-          paddingVertical="4px"
-          align={align}
-          background="surfaceMenu"
-          borderColor="separatorTertiary"
-          borderWidth="1px"
-          borderRadius="16px"
           ref={ref}
           onPointerDownOutside={props?.onPointerDownOutside}
-          hideWhenDetached
           tabIndex={-1}
+          onInteractOutside={onInteractOutside}
+          align={align}
+          style={{ width: '204px' }}
+          alignItems="center"
+          justifyContent="center"
+          display="flex"
+          sideOffset={sideOffset}
+          hideWhenDetached
         >
-          {children}
+          <Box
+            as={motion.div}
+            initial={{ scale: 1, width: '204px', opacity: animate ? 0 : 1 }}
+            animate={{
+              scale: scale ?? 1,
+              width: '204px',
+              opacity: 1,
+            }}
+            exit={{ scale: 1, width: '204px', opacity: animate ? 0 : 1 }}
+            transition={{ duration: 0.1 }}
+            style={{
+              boxShadow: boxShadow ?? '0px 10px 30px rgba(0, 0, 0, 0.2)',
+              marginRight: marginRight ?? '0px',
+              marginLeft: marginLeft ?? '0px',
+              marginTop: marginTop ?? '0px',
+              top: top ?? '0px',
+            }}
+            width="fit"
+            backdropFilter={backdropFilter || 'blur(26px)'}
+            paddingHorizontal="12px"
+            paddingVertical="4px"
+            background="surfaceMenu"
+            borderColor="separatorTertiary"
+            borderWidth={border ? '1px' : undefined}
+            borderRadius="16px"
+            position={position}
+          >
+            {children}
+          </Box>
         </Box>
       </ThemeProvider>
     </AccentColorProvider>
@@ -156,6 +210,7 @@ interface DropdownMenuRadioItemProps {
   selectedValue?: string;
   selectedColor?: string;
   highlightAccentColor?: boolean;
+  onSelect?: (event: Event) => void;
 }
 
 export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
@@ -165,6 +220,7 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
     selectedValue,
     selectedColor,
     highlightAccentColor,
+    onSelect,
   } = props;
   const isSelectedValue = selectedValue === value;
   return (
@@ -175,6 +231,7 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
       paddingHorizontal="8px"
       marginHorizontal="-8px"
       alignItems="center"
+      onSelect={onSelect}
       className={clsx([
         highlightAccentColor && !isSelectedValue
           ? rowTransparentAccentHighlight

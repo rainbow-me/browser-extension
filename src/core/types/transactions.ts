@@ -13,6 +13,7 @@ export interface RainbowTransaction {
   };
   data?: string; // for pending tx
   description?: string;
+  direction?: string;
   from?: Address;
   gasLimit?: BigNumberish;
   gasPrice?: BigNumberish;
@@ -136,6 +137,7 @@ export enum TransactionStatus {
   cancelled = 'cancelled',
   cancelling = 'cancelling',
   contract_interaction = 'contract interaction',
+  confirmed = 'confirmed',
   deposited = 'deposited',
   depositing = 'depositing',
   dropped = 'dropped',
