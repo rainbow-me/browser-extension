@@ -190,7 +190,11 @@ describe('App interactions flow', () => {
       id: 'home-page-header-connected-apps',
       driver,
     });
-    await findElementByTestIdAndClick({ id: 'switch-network-menu', driver });
+    await findElementByTestIdAndClick({
+      id: 'connected-app-menu-bx-test-dapp.vercel.app',
+      driver,
+    });
+
     await findElementByTestIdAndClick({ id: 'switch-network-item-0', driver });
 
     await goToTestApp(driver);
@@ -304,7 +308,10 @@ describe('App interactions flow', () => {
       id: 'home-page-header-connected-apps',
       driver,
     });
-    await findElementByTestIdAndClick({ id: 'switch-network-menu', driver });
+    await findElementByTestIdAndClick({
+      id: 'connected-app-menu-bx-test-dapp.vercel.app',
+      driver,
+    });
     await findElementByTestIdAndClick({
       id: 'switch-network-menu-disconnect',
       driver,

@@ -6,7 +6,21 @@ import {
   MATIC_MAINNET_ADDRESS,
 } from '~/core/references';
 import { useAssets } from '~/core/resources/assets';
-import { useCurrentCurrencyStore } from '~/core/state';
+import { fetchAssets } from '~/core/resources/assets/assets';
+import { currentCurrencyStore, useCurrentCurrencyStore } from '~/core/state';
+
+export async function getNativeAssets() {
+  const { currentCurrency } = currentCurrencyStore.getState();
+  const assets = await fetchAssets({
+    assetAddresses: [
+      ETH_ADDRESS as Address,
+      BNB_MAINNET_ADDRESS,
+      MATIC_MAINNET_ADDRESS,
+    ],
+    currency: currentCurrency,
+  });
+  return assets;
+}
 
 export function useNativeAssets() {
   const { currentCurrency: currency } = useCurrentCurrencyStore();

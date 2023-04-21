@@ -1,8 +1,14 @@
-import React, { KeyboardEvent, useCallback, useRef, useState } from 'react';
+import React, {
+  CSSProperties,
+  KeyboardEvent,
+  useCallback,
+  useRef,
+  useState,
+} from 'react';
 
 import { Box, ButtonSymbol } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
-import { BoxStyles, accentColorAsHsl } from '~/design-system/styles/core.css';
+import { BoxStyles } from '~/design-system/styles/core.css';
 
 export function PasswordInput({
   placeholder,
@@ -16,6 +22,7 @@ export function PasswordInput({
   tabIndex,
   autoFocus,
   visible,
+  style,
 }: {
   placeholder: string;
   testId?: string;
@@ -28,6 +35,7 @@ export function PasswordInput({
   tabIndex?: number;
   autoFocus?: boolean;
   visible?: boolean;
+  style?: CSSProperties;
 }) {
   const inputRef = useRef(null);
 
@@ -81,9 +89,7 @@ export function PasswordInput({
         onKeyDown={onKeyDown}
         tabIndex={tabIndex}
         autoFocus={autoFocus}
-        style={{
-          caretColor: accentColorAsHsl,
-        }}
+        style={style}
       />
       <Box position="relative">
         <Box
