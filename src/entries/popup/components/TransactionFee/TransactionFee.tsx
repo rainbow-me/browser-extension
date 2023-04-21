@@ -136,7 +136,7 @@ function Fee({
                 <Column width="content">
                   <ChainBadge chainId={chainId} size="small" />
                 </Column>
-                <Column>
+                <Column width="content">
                   <TextOverflow weight="semibold" color="label" size="14pt">
                     {isLoading
                       ? '~'
