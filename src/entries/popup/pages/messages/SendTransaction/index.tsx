@@ -10,6 +10,7 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
@@ -54,6 +55,7 @@ export function SendTransaction({
   const { asset, selectAssetAddress } = useSendAsset();
   const { watchedWallets } = useWallets();
   const { triggerAlert } = useAlert();
+  const { featureFlags } = useFeatureFlagsStore();
 
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;
@@ -133,13 +135,18 @@ export function SendTransaction({
   }, [selectedWallet, watchedWallets]);
 
   useEffect(() => {
-    if (isWatchingWallet) {
+    if (!featureFlags.full_watching_wallets && isWatchingWallet) {
       triggerAlert({
         text: i18n.t('alert.wallet_watching_mode'),
         callback: rejectRequest,
       });
     }
-  }, [isWatchingWallet, rejectRequest, triggerAlert]);
+  }, [
+    featureFlags.full_watching_wallets,
+    isWatchingWallet,
+    rejectRequest,
+    triggerAlert,
+  ]);
 
   useEffect(() => {
     selectAssetAddress(

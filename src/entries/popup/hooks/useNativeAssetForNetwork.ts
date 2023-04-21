@@ -8,8 +8,9 @@ import {
 } from '~/core/references';
 import { ParsedAsset, UniqueId } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
+import { chainNameFromChainId } from '~/core/utils/chains';
 
-import { useNativeAssets } from './useNativeAssets';
+import { getNativeAssets, useNativeAssets } from './useNativeAssets';
 
 const getNetworkNativeMainnetAssetAddress = ({
   chainId,
@@ -50,6 +51,31 @@ export const getNetworkNativeAssetUniqueId = ({
       return `${ETH_ADDRESS}_${chainId}` as UniqueId;
   }
 };
+
+export async function getNativeAssetForNetwork({
+  chainId,
+}: {
+  chainId: ChainId;
+}) {
+  const nativeAssets = await getNativeAssets();
+  const mainnetAddress = getNetworkNativeMainnetAssetAddress({ chainId });
+  const nativeAsset = nativeAssets?.[`${mainnetAddress}_${ChainId.mainnet}`];
+  if (nativeAsset) {
+    return {
+      ...nativeAsset,
+      chainId: chainId || nativeAsset?.chainId || ChainId.mainnet,
+      chainName:
+        chainNameFromChainId(chainId) ||
+        nativeAsset?.chainName ||
+        ChainName.mainnet,
+      uniqueId: getNetworkNativeAssetUniqueId({ chainId }),
+      address: NATIVE_ASSETS_PER_CHAIN[chainId] as Address,
+      mainnetAddress,
+      isNativeAsset: true,
+    };
+  }
+  return undefined;
+}
 
 export function useNativeAssetForNetwork({
   chainId,

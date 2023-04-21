@@ -1,11 +1,20 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Chain, useNetwork } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ChainId } from '~/core/types/chains';
-import { Box, Inline, Inset, Symbol, Text } from '~/design-system';
+import {
+  Box,
+  Column,
+  Columns,
+  Inline,
+  Inset,
+  Symbol,
+  Text,
+} from '~/design-system';
 import { Space } from '~/design-system/styles/designTokens';
 
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
   ContextMenu,
@@ -32,10 +41,18 @@ export const SwitchNetworkMenuSelector = ({
   selectedValue,
   highlightAccentColor,
   type,
+  showDisconnect,
+  disconnect,
+  onNetworkSelect,
+  onShortcutPress,
 }: {
   selectedValue?: string;
   highlightAccentColor?: boolean;
   type: 'dropdown' | 'context';
+  showDisconnect: boolean;
+  disconnect?: () => void;
+  onNetworkSelect?: (event?: Event) => void;
+  onShortcutPress: (chainId: string) => void;
 }) => {
   const { chains } = useNetwork();
 
@@ -51,6 +68,26 @@ export const SwitchNetworkMenuSelector = ({
         };
   }, [type]);
 
+  const handleTokenShortcuts = useCallback(
+    (e: KeyboardEvent) => {
+      const chainNumber = Number(e.key);
+      if (chainNumber) {
+        const chain = chains[chainNumber - 1];
+        if (chain) {
+          onShortcutPress(String(chain.id));
+          onNetworkSelect?.();
+        } else if (showDisconnect && chainNumber === chains.length + 1) {
+          disconnect?.();
+        }
+      }
+    },
+    [chains, disconnect, onNetworkSelect, onShortcutPress, showDisconnect],
+  );
+
+  useKeyboardShortcut({
+    handler: handleTokenShortcuts,
+  });
+
   return (
     <>
       {chains.map((chain, i) => {
@@ -61,28 +98,63 @@ export const SwitchNetworkMenuSelector = ({
             value={String(chainId)}
             key={i}
             selectedValue={selectedValue}
+            onSelect={onNetworkSelect}
           >
-            <Box testId={`switch-network-item-${i}`}>
-              <Inline space="8px" alignVertical="center">
-                <ChainBadge chainId={chainId} size="small" />
-                <Text color="label" size="14pt" weight="semibold">
-                  {name}
-                </Text>
-              </Inline>
+            <Box width="full" testId={`switch-network-item-${i}`}>
+              <Columns alignHorizontal="justify" alignVertical="center">
+                <Column>
+                  <Box testId={`switch-network-item-${i}`}>
+                    <Inline space="8px" alignVertical="center">
+                      <ChainBadge chainId={chainId} size="small" />
+                      <Text color="label" size="14pt" weight="semibold">
+                        {name}
+                      </Text>
+                    </Inline>
+                  </Box>
+                </Column>
+
+                <Column width="content">
+                  {selectedValue === String(chainId) ? (
+                    <MenuItemIndicator style={{ marginLeft: 'auto' }}>
+                      <Symbol weight="medium" symbol="checkmark" size={11} />
+                    </MenuItemIndicator>
+                  ) : (
+                    <Box
+                      background="fillSecondary"
+                      padding="4px"
+                      borderRadius="3px"
+                      boxShadow="1px"
+                    >
+                      <Text
+                        size="12pt"
+                        color="labelSecondary"
+                        weight="semibold"
+                      >
+                        {i + 1}
+                      </Text>
+                    </Box>
+                  )}
+                </Column>
+              </Columns>
             </Box>
-            <MenuItemIndicator style={{ marginLeft: 'auto' }}>
-              <Symbol weight="medium" symbol="checkmark" size={11} />
-            </MenuItemIndicator>
           </MenuRadioItem>
         );
       })}
+      {showDisconnect && disconnect && (
+        <SwitchNetworkMenuDisconnect
+          onDisconnect={disconnect}
+          shortcutLabel={String(chains.length + 1)}
+        />
+      )}
     </>
   );
 };
 
 export const SwitchNetworkMenuDisconnect = ({
+  shortcutLabel,
   onDisconnect,
 }: {
+  shortcutLabel: string;
   onDisconnect: () => void;
 }) => {
   return (
@@ -90,22 +162,39 @@ export const SwitchNetworkMenuDisconnect = ({
       testId="switch-network-menu-disconnect"
       as="button"
       onClick={onDisconnect}
+      width="full"
     >
       <Inset vertical="8px">
-        <Inline alignVertical="center" space="8px">
-          <Box style={{ width: 18, height: 18 }}>
-            <Inline
-              height="full"
-              alignVertical="center"
-              alignHorizontal="center"
-            >
-              <Symbol size={12} symbol="xmark" weight="semibold" />
+        <Columns alignHorizontal="justify" alignVertical="center">
+          <Column>
+            <Inline alignVertical="center" space="8px">
+              <Box style={{ width: 18, height: 18 }}>
+                <Inline
+                  height="full"
+                  alignVertical="center"
+                  alignHorizontal="center"
+                >
+                  <Symbol size={12} symbol="xmark" weight="semibold" />
+                </Inline>
+              </Box>
+              <Text size="14pt" weight="bold">
+                {i18n.t('menu.network.disconnect')}
+              </Text>
             </Inline>
-          </Box>
-          <Text size="14pt" weight="bold">
-            {i18n.t('menu.network.disconnect')}
-          </Text>
-        </Inline>
+          </Column>
+          <Column width="content">
+            <Box
+              background="fillSecondary"
+              padding="4px"
+              borderRadius="3px"
+              boxShadow="1px"
+            >
+              <Text size="12pt" color="labelSecondary" weight="semibold">
+                {shortcutLabel}
+              </Text>
+            </Box>
+          </Column>
+        </Columns>
       </Inset>
     </Box>
   );
@@ -185,11 +274,16 @@ export const SwitchNetworkMenu = ({
           <SwitchNetworkMenuSelector
             type={type}
             selectedValue={String(chainId)}
+            onShortcutPress={(chainId) => {
+              const chain = chains.find(
+                ({ id }) => String(id) === chainId,
+              ) as Chain;
+              onChainChanged(chain?.id, chain);
+            }}
+            showDisconnect={!!onDisconnect}
+            disconnect={onDisconnect}
           />
         </MenuRadioGroup>
-        {onDisconnect ? (
-          <SwitchNetworkMenuDisconnect onDisconnect={onDisconnect} />
-        ) : null}
       </MenuContent>
     </Menu>
   );

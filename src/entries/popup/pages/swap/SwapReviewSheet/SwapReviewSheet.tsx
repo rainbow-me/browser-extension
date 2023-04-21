@@ -247,8 +247,8 @@ const SwapReviewSheetWithQuote = ({
     setSendingSwap(true);
     const { nonce } = await wallet.executeRap<typeof type>({
       rapActionParameters: {
-        sellAmount: q.sellAmount.toString(),
-        buyAmount: q.buyAmount.toString(),
+        sellAmount: q.sellAmount?.toString(),
+        buyAmount: q.buyAmount?.toString(),
         chainId: connectedToHardhat ? ChainId.hardhat : assetToSell.chainId,
         assetToSell: assetToSell,
         assetToBuy: assetToBuy,
@@ -385,7 +385,7 @@ const SwapReviewSheetWithQuote = ({
                 <SwapAssetCard
                   testId={`${assetToSell.symbol}-asset-to-sell`}
                   asset={assetToSell}
-                  assetAmount={quote.sellAmount.toString()}
+                  assetAmount={quote.sellAmount?.toString()}
                 />
                 <Box
                   boxShadow="12px surfaceSecondaryElevated"
@@ -420,7 +420,7 @@ const SwapReviewSheetWithQuote = ({
                 <SwapAssetCard
                   testId={`${assetToBuy.symbol}-asset-to-buy`}
                   asset={assetToBuy}
-                  assetAmount={quote.buyAmount.toString()}
+                  assetAmount={quote.buyAmount?.toString()}
                 />
               </Inline>
             </Box>
