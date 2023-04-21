@@ -108,6 +108,33 @@ export const USDC_ARBITRUM_ASSET: ParsedAsset = {
   decimals: 6,
 };
 
+export const WETH_MAINNET_ASSET: ParsedAsset = {
+  address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  chainId: 1,
+  chainName: 'mainnet' as ChainName,
+  colors: { primary: '#25292E', fallback: '#B6B6B7' },
+  decimals: 18,
+  icon_url:
+    'https://rainbowme-res.cloudinary.com/image/upload/v1668633499/assets/ethereum/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png',
+  isNativeAsset: false,
+  mainnetAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  name: 'Wrapped Ether',
+  native: {
+    price: {
+      change: '-4.93%',
+      amount: 1996.9499999999998,
+      display: '$1,996.95',
+    },
+  },
+  price: {
+    value: 1997.0000000000002,
+    relative_change_24h: -4.92966127918878,
+    changed_at: -1,
+  },
+  symbol: 'WETH',
+  uniqueId: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2_1',
+};
+
 export async function delay(ms: number) {
   // eslint-disable-next-line no-promise-executor-return
   return new Promise((resolve) => setTimeout(resolve, ms));

@@ -12,6 +12,7 @@ import { ETH_ADDRESS } from '../references';
 import { isNativeAsset } from '../utils/chains';
 import { add } from '../utils/numbers';
 import { isLowerCaseMatch } from '../utils/strings';
+import { isUnwrapEth } from '../utils/swaps';
 
 import {
   assetNeedsUnlocking,
@@ -105,8 +106,7 @@ export const createUnlockAndSwapRap = async (
   };
 
   const isNativeAssetUnwrapping =
-    isLowerCaseMatch(sellTokenAddress, WRAPPED_ASSET[`${chainId}`]) &&
-    isLowerCaseMatch(buyTokenAddress, ETH_ADDRESS) &&
+    isUnwrapEth({ buyTokenAddress, chainId, sellTokenAddress }) &&
     chainId === ChainId.mainnet;
 
   // Aggregators represent native asset as 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE
