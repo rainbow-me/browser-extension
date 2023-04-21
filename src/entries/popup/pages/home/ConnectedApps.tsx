@@ -20,11 +20,11 @@ import {
 } from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 
-import ExternalImage from '../components/ExternalImage/ExternalImage';
-import { AppNetworkMenu } from '../components/SwitchMenu/AppNetworkMenu';
-import { WalletAvatar } from '../components/WalletAvatar/WalletAvatar';
-import { useAppMetadata } from '../hooks/useAppMetadata';
-import { useAppSession } from '../hooks/useAppSession';
+import ExternalImage from '../../components/ExternalImage/ExternalImage';
+import { ConnectedAppNetworkMenu } from '../../components/SwitchMenu/ConnectedAppNetworkMenu';
+import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
+import { useAppMetadata } from '../../hooks/useAppMetadata';
+import { useAppSession } from '../../hooks/useAppSession';
 
 export const ConnectedApps = () => {
   const { appSessions, clearSessions } = useAppSessionsStore();
@@ -169,8 +169,9 @@ const ConnectedApp = ({
 
   const onMouseEnter = useCallback(() => setDisconnectButtonVisible(true), []);
   const onMouseLeave = useCallback(() => setDisconnectButtonVisible(false), []);
+
   return (
-    <Box paddingHorizontal="8px">
+    <Box paddingHorizontal="8px" testId={`connected-app-${appHost}`}>
       <Box
         background={{
           default: 'transparent',
@@ -192,11 +193,9 @@ const ConnectedApp = ({
             />
           </Box>
         )}
-        <AppNetworkMenu
-          displayConnectedRoute={false}
+        <ConnectedAppNetworkMenu
           url={url}
-          menuTriggerId="switch-network-menu"
-          type="context"
+          menuTriggerId={`connected-app-menu-${appHost}`}
         >
           <Inset horizontal="12px" vertical="8px">
             <Inline alignHorizontal="justify" alignVertical="center">
@@ -257,7 +256,7 @@ const ConnectedApp = ({
               </Columns>
             </Inline>
           </Inset>
-        </AppNetworkMenu>
+        </ConnectedAppNetworkMenu>
       </Box>
     </Box>
   );

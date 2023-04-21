@@ -11,7 +11,7 @@ import {
   ZerionAsset,
   ZerionAssetPrice,
 } from '~/core/types/assets';
-import { ChainName } from '~/core/types/chains';
+import { ChainId, ChainName } from '~/core/types/chains';
 
 import { SearchAsset } from '../types/search';
 
@@ -67,13 +67,15 @@ export function parseAsset({
   address,
   asset,
   currency,
+  chainId: opChainId,
 }: {
   address: Address;
   asset: ZerionAsset;
   currency: SupportedCurrencyKey;
+  chainId?: ChainId;
 }): ParsedAsset {
   const chainName = asset?.network ?? ChainName.mainnet;
-  const chainId = chainIdFromChainName(chainName);
+  const chainId = opChainId || chainIdFromChainName(chainName);
   const mainnetAddress = asset?.mainnet_address;
   const uniqueId: UniqueId = `${mainnetAddress || address}_${chainId}`;
   const parsedAsset = {
