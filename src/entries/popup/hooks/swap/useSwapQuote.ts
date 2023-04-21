@@ -54,7 +54,9 @@ export const useSwapQuote = ({
     const paramsReady =
       assetToSell &&
       assetToBuy &&
-      (independentField === 'buyField' ? assetToBuyValue : assetToSellValue);
+      (independentField === 'buyField'
+        ? Number(assetToBuyValue)
+        : Number(assetToSellValue));
     if (!paramsReady) return undefined;
 
     return {
