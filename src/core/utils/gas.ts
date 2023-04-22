@@ -299,7 +299,9 @@ export const parseGasFeeLegacyParams = ({
 
   const estimatedTime = {
     amount: waitTime,
-    display: getMinimalTimeUnitStringForMs(Number(multiply(waitTime, 1000))),
+    display: `${waitTime >= 3600 ? '>' : '~'} ${getMinimalTimeUnitStringForMs(
+      Number(multiply(waitTime, 1000)),
+    )}`,
   };
   const transactionGasParams = {
     gasPrice: toHex(gasPrice.amount),

@@ -5,5 +5,6 @@ declare module '*.woff2' {
   export default path;
 }
 
+declare module '*.svg';
 declare module '*.png';
 declare module '*.mp3';

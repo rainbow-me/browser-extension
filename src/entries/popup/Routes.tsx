@@ -11,9 +11,9 @@ import { globalColors } from '~/design-system/styles/designTokens';
 
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
 import { useAvatar } from './hooks/useAvatar';
-import { ConnectedApps } from './pages/ConnectedApps';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
+import { ConnectedApps } from './pages/home/ConnectedApps';
 import { ImportOrConnect } from './pages/importOrConnect';
 import { ImportWallet } from './pages/importWallet';
 import { ImportWalletSelection } from './pages/importWalletSelection';
