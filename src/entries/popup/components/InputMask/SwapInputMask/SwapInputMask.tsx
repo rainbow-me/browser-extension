@@ -76,7 +76,7 @@ export const SwapInputMask = ({
           onChange={handleOnChange}
           height={height}
           variant={variant}
-          innerRef={innerRef}
+          ref={innerRef}
           style={{
             paddingRight: paddingHorizontal,
             paddingLeft: paddingHorizontal,
