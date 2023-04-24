@@ -8,15 +8,12 @@ import { ParsedAddressAsset } from '~/core/types/assets';
 import {
   Box,
   Button,
-  Column,
-  Columns,
   Inline,
   Row,
   Rows,
   Separator,
   Stack,
   Symbol,
-  Text,
 } from '~/design-system';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
@@ -93,7 +90,7 @@ export const ValueInput = ({
                     onChange={setIndependentAmount}
                     height="56px"
                     variant="bordered"
-                    ref={independentFieldRef}
+                    innerRef={independentFieldRef}
                     placeholderSymbol={
                       independentField === 'asset'
                         ? truncatedAssetSymbol
@@ -118,41 +115,37 @@ export const ValueInput = ({
             </Row>
 
             <Row height="content">
-              <Columns alignHorizontal="justify" alignVertical="center">
-                <Column>
-                  <TextOverflow
-                    as="p"
-                    size="11pt"
-                    weight="bold"
-                    color={`${asset ? 'label' : 'labelTertiary'}`}
-                  >
-                    {dependentAmount.display}
-                  </TextOverflow>
-                </Column>
-                <Column width="content">
-                  <Box
-                    testId="value-input-switch"
-                    onClick={switchIndependentField}
-                  >
-                    <Inline alignVertical="center" space="4px">
-                      <Symbol
-                        color="accent"
-                        size={14}
-                        weight="bold"
-                        symbol="arrow.up.arrow.down"
-                      />
-                      <Text color="accent" size="12pt" weight="bold">
-                        {i18n.t('send.switch_to', {
-                          currency:
-                            independentField === 'asset'
-                              ? currentCurrency
-                              : asset?.symbol,
-                        })}
-                      </Text>
-                    </Inline>
-                  </Box>
-                </Column>
-              </Columns>
+              <Inline alignHorizontal="justify" alignVertical="center">
+                <TextOverflow
+                  as="p"
+                  size="11pt"
+                  weight="bold"
+                  color={`${asset ? 'label' : 'labelTertiary'}`}
+                >
+                  {dependentAmount.display}
+                </TextOverflow>
+                <Box
+                  testId="value-input-switch"
+                  onClick={switchIndependentField}
+                >
+                  <Inline alignVertical="center" space="4px">
+                    <Symbol
+                      color="accent"
+                      size={14}
+                      weight="bold"
+                      symbol="arrow.up.arrow.down"
+                    />
+                    <TextOverflow color="accent" size="12pt" weight="bold">
+                      {i18n.t('send.switch_to', {
+                        currency:
+                          independentField === 'asset'
+                            ? currentCurrency
+                            : asset?.symbol,
+                      })}
+                    </TextOverflow>
+                  </Inline>
+                </Box>
+              </Inline>
             </Row>
           </Rows>
         </Box>
