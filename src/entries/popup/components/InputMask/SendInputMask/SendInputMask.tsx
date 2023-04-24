@@ -119,7 +119,7 @@ export const SendInputMask = ({
           onChange={handleOnChange}
           height={height}
           variant={variant}
-          innerRef={innerRef}
+          ref={innerRef}
           style={{
             paddingRight: value ? 125 + symbolPadding : 0,
             caretColor: accentColorAsHsl,

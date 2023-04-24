@@ -93,7 +93,7 @@ export const ValueInput = ({
                     onChange={setIndependentAmount}
                     height="56px"
                     variant="bordered"
-                    innerRef={independentFieldRef}
+                    ref={independentFieldRef}
                     placeholderSymbol={
                       independentField === 'asset'
                         ? truncatedAssetSymbol
