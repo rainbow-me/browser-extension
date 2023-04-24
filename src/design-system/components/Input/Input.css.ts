@@ -1,6 +1,9 @@
 import { style, styleVariants } from '@vanilla-extract/css';
 
-import { semanticColorVars } from '../../styles/core.css';
+import {
+  semanticColorVars,
+  transparentAccentColorAsHsl,
+} from '../../styles/core.css';
 
 export const backgroundStyle = style({
   // Have to apply this so that the border opacity applies to the parent background
@@ -25,5 +28,11 @@ export const heightStyles = styleVariants(inputHeights, (height) => [
 export const placeholderStyle = style({
   '::placeholder': {
     color: semanticColorVars.foregroundColors.labelTertiary,
+  },
+});
+
+export const accentSelectionStyle = style({
+  '::selection': {
+    background: transparentAccentColorAsHsl,
   },
 });

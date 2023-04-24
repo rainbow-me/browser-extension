@@ -12,6 +12,7 @@ export function useAppSession({ host }: { host: string }) {
     updateSessionChainId,
     removeSession,
     appSessions,
+    addSession,
   } = useAppSessionsStore();
 
   const updateAppSessionAddress = React.useCallback(
@@ -41,6 +42,7 @@ export function useAppSession({ host }: { host: string }) {
   }, [host, removeSession]);
 
   return {
+    addSession,
     updateAppSessionAddress,
     updateAppSessionChainId,
     disconnectAppSession,

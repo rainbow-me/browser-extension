@@ -30,7 +30,7 @@ import { ROUTES } from '../../urls';
 import { Activity } from './Activity';
 import { Header } from './Header';
 import { MoreMenu } from './MoreMenu';
-import { NetworkMenu } from './NetworkMenu';
+import { AppConnection } from './NetworkMenu';
 import { TabBar as TabBar_ } from './TabBar';
 import { Tokens } from './Tokens';
 
@@ -133,7 +133,7 @@ function TopNav() {
       topOffset={0}
     >
       <Navbar
-        leftComponent={<NetworkMenu />}
+        leftComponent={<AppConnection />}
         rightComponent={
           <MoreMenu>
             <Navbar.SymbolButton

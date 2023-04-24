@@ -101,9 +101,10 @@ async function transactionsQueryFunction({
         ) || [],
       );
     }, TRANSACTIONS_TIMEOUT_DURATION);
-    const resolver = (message: TransactionsReceivedMessage) => {
+    const resolver = async (message: TransactionsReceivedMessage) => {
       clearTimeout(timeout);
-      resolve(parseTransactions(message, currency));
+      const transactions = await parseTransactions(message, currency);
+      resolve(transactions);
     };
     refractionAddressWs.once(event, resolver);
   });
@@ -111,22 +112,24 @@ async function transactionsQueryFunction({
 
 type TransactionsResult = QueryFunctionResult<typeof transactionsQueryFunction>;
 
-function parseTransactions(
+async function parseTransactions(
   message: TransactionsReceivedMessage,
   currency: SupportedCurrencyKey,
 ) {
   const data = message?.payload?.transactions || [];
-  const parsedTransactions = data
-    .map((tx) =>
-      parseTransaction({
-        tx,
-        currency,
-        chainId: chainIdFromChainName(
-          (message?.meta?.chain_id as ChainName) ?? ChainName.mainnet,
-        ),
-      }),
-    )
-    .flat();
+  const parsedTransactionPromises = data.map((tx) =>
+    parseTransaction({
+      tx,
+      currency,
+      chainId: chainIdFromChainName(
+        (message?.meta?.chain_id as ChainName) ?? ChainName.mainnet,
+      ),
+    }),
+  );
+
+  const parsedTransactions = (
+    await Promise.all(parsedTransactionPromises)
+  ).flat();
   return parsedTransactions;
 }
 

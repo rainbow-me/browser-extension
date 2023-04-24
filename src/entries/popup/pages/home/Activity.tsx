@@ -181,22 +181,32 @@ const titleIcons: {
     element?: ReactNode;
     space?: Space;
     type: 'icon' | 'emoji' | 'spinner';
+    size?: number;
   };
 } = {
   'xmark.circle': {
     color: 'labelTertiary',
     space: '2px',
     type: 'icon',
+    size: 9,
   },
   'paperplane.fill': {
     color: 'labelTertiary',
     space: '2px',
     type: 'icon',
+    size: 9,
   },
   'arrow.triangle.swap': {
     color: 'purple',
     space: '2px',
     type: 'icon',
+    size: 9,
+  },
+  'circle.fill': {
+    color: 'labelTertiary',
+    space: '2px',
+    type: 'icon',
+    size: 6,
   },
   robot: {
     color: 'labelTertiary',
@@ -213,6 +223,7 @@ const titleIcons: {
     color: 'labelTertiary',
     type: 'icon',
     space: '2px',
+    size: 9,
   },
   spinner: {
     color: 'blue',
@@ -238,6 +249,7 @@ const ActivityRow = React.memo(function ({
   const received = status === TransactionStatus.received;
   const receivedViaSwap = status === TransactionStatus.received && isTrade;
   const sent = status === TransactionStatus.sent;
+  const approved = status === TransactionStatus.approved;
   const sentViaSwap = status === TransactionStatus.swapped && isTrade;
   const failed = status === TransactionStatus.failed;
   const isContractInteraction =
@@ -247,27 +259,27 @@ const ActivityRow = React.memo(function ({
   const speedingUp = status === TransactionStatus.speeding_up;
   const cancelling = status === TransactionStatus.cancelling;
 
-  const getNativeDisplay = useCallback(() => {
+  const nativeDisplay = useMemo(() => {
     const isDebit = sent || sentViaSwap || sending || swapping;
 
     return `${isDebit ? '- ' : ''}${native?.display}`;
   }, [native?.display, sent, sentViaSwap, sending, swapping]);
 
-  const getNativeDisplayColor = useCallback(() => {
+  const nativeDisplayColor = useMemo(() => {
     if (received) {
       return 'green';
     }
     return receivedViaSwap ? 'purple' : 'labelTertiary';
   }, [received, receivedViaSwap]);
 
-  const getTitleColor = useCallback((): TextStyles['color'] => {
+  const titleColor = useMemo((): TextStyles['color'] => {
     if (cancelling || sending || speedingUp || swapping) {
       return 'blue';
     }
     return sentViaSwap ? 'purple' : 'labelTertiary';
   }, [cancelling, sentViaSwap, sending, speedingUp, swapping]);
 
-  const getTitleIcon = useCallback(() => {
+  const titleIconConfig = useMemo(() => {
     let iconSymbol: keyof typeof titleIcons | undefined;
 
     if (isContractInteraction) {
@@ -282,6 +294,8 @@ const ActivityRow = React.memo(function ({
       iconSymbol = 'arrow.down';
     } else if (cancelling || sending || speedingUp || swapping) {
       iconSymbol = 'spinner';
+    } else if (approved) {
+      iconSymbol = 'circle.fill';
     }
 
     if (iconSymbol) {
@@ -294,7 +308,7 @@ const ActivityRow = React.memo(function ({
           <Symbol
             symbol={iconSymbol as SymbolProps['symbol']}
             color={iconConfig.color}
-            size={9}
+            size={iconConfig.size || 9}
             weight="semibold"
           />
         ),
@@ -303,19 +317,18 @@ const ActivityRow = React.memo(function ({
 
     return null;
   }, [
-    cancelling,
-    failed,
     isContractInteraction,
-    received,
-    receivedViaSwap,
+    failed,
     sent,
     sentViaSwap,
+    received,
+    receivedViaSwap,
+    cancelling,
     sending,
     speedingUp,
     swapping,
+    approved,
   ]);
-
-  const titleIconConfig = getTitleIcon();
 
   const topRow = useMemo(
     () => (
@@ -323,8 +336,17 @@ const ActivityRow = React.memo(function ({
         <Column width="content">
           <Box paddingVertical="4px">
             <Inline space={titleIconConfig?.space} alignVertical="center">
-              {titleIconConfig?.icon}
-              <Text color={getTitleColor()} size="12pt" weight="semibold">
+              <Box style={{ width: 9, height: 9 }}>
+                <Inline
+                  height="full"
+                  alignHorizontal="center"
+                  alignVertical="center"
+                >
+                  {titleIconConfig?.icon}
+                </Inline>
+              </Box>
+
+              <Text color={titleColor} size="12pt" weight="semibold">
                 {truncateString(title, 20)}
               </Text>
             </Inline>
@@ -346,8 +368,8 @@ const ActivityRow = React.memo(function ({
     ),
     [
       balance?.display,
-      getTitleColor,
       title,
+      titleColor,
       titleIconConfig?.icon,
       titleIconConfig?.space,
     ],
@@ -369,15 +391,15 @@ const ActivityRow = React.memo(function ({
               size="14pt"
               weight="semibold"
               align="right"
-              color={getNativeDisplayColor()}
+              color={nativeDisplayColor}
             >
-              {getNativeDisplay()}
+              {nativeDisplay}
             </TextOverflow>
           </Box>
         </Column>
       </Columns>
     );
-  }, [getNativeDisplay, getNativeDisplayColor, name]);
+  }, [nativeDisplay, nativeDisplayColor, name]);
 
   return asset ? (
     <CoinRow

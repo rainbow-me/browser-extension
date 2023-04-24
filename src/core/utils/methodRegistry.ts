@@ -39,7 +39,9 @@ export const methodRegistryLookupAndParse = async (
   if (response?.contractFunction?.text) {
     signature = response.contractFunction.text;
   } else {
-    const methodRegistryABI = await fetchJsonLocally('methodRegistryABI.json');
+    const methodRegistryABI = await fetchJsonLocally(
+      'abis/method-registry-abi.json',
+    );
     const provider = getProvider({ chainId: 1 });
 
     const registry = new Contract(
