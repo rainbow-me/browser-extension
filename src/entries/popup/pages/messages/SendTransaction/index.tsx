@@ -84,7 +84,7 @@ export function SendTransaction({
       const result = await wallet.sendTransaction(txData);
       if (result) {
         const transaction = {
-          amount: formatEther(result.value),
+          amount: formatEther(result?.value || ''),
           asset,
           data: result.data,
           value: result.value,
@@ -97,13 +97,13 @@ export function SendTransaction({
           type: TransactionType.send,
           gasPrice: (
             selectedGas.transactionGasParams as TransactionLegacyGasParams
-          ).gasPrice,
+          )?.gasPrice,
           maxFeePerGas: (
             selectedGas.transactionGasParams as TransactionGasParams
-          ).maxFeePerGas,
+          )?.maxFeePerGas,
           maxPriorityFeePerGas: (
             selectedGas.transactionGasParams as TransactionGasParams
-          ).maxPriorityFeePerGas,
+          )?.maxPriorityFeePerGas,
         };
         await addNewTransaction({
           address: txData.from as Address,

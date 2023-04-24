@@ -178,13 +178,13 @@ export function Send() {
             nonce: result.nonce,
             gasPrice: (
               selectedGas.transactionGasParams as TransactionLegacyGasParams
-            ).gasPrice,
+            )?.gasPrice,
             maxFeePerGas: (
               selectedGas.transactionGasParams as TransactionGasParams
-            ).maxFeePerGas,
+            )?.maxFeePerGas,
             maxPriorityFeePerGas: (
               selectedGas.transactionGasParams as TransactionGasParams
-            ).maxPriorityFeePerGas,
+            )?.maxPriorityFeePerGas,
           };
           await addNewTransaction({
             address: fromAddress,
