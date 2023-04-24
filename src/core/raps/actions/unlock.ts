@@ -1,6 +1,7 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { MaxUint256 } from '@ethersproject/constants';
 import { Contract } from '@ethersproject/contracts';
+import { formatEther } from '@ethersproject/units';
 import { Address, erc20ABI, getProvider } from '@wagmi/core';
 
 import { ChainId } from '~/core/types/chains';
@@ -189,7 +190,7 @@ export const unlock = async ({
   }
 
   const transaction = {
-    amount: approval.value,
+    amount: formatEther(approval.value),
     asset: assetToUnlock,
     data: approval.data,
     value: approval.value,

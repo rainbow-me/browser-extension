@@ -1,6 +1,7 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { Transaction } from '@ethersproject/transactions';
+import { formatEther } from '@ethersproject/units';
 import {
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
   Quote,
@@ -245,7 +246,7 @@ export const swap = async ({
   }
 
   const transaction = {
-    amount: swap?.value?.toString(),
+    amount: formatEther(swap?.value?.toString() || ''),
     asset: parameters.assetToSell,
     data: swap?.data,
     value: swap?.value,
