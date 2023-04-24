@@ -15,10 +15,12 @@
 
 ### 1. Set up Node
 
+Use node v14 or if you use nvm follow the instructions below
+
 ```bash
-nvm install 14
+nvm install
 # or
-nvm use 14
+nvm use
 ```
 
 ### 2. Install project dependencies
