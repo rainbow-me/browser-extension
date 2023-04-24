@@ -205,7 +205,6 @@ const SwapReviewSheetWithQuote = ({
   const navigate = useRainbowNavigate();
   const { connectedToHardhat } = useConnectedToHardhatStore();
 
-  console.log('quote', quote);
   const [showMoreDetails, setShowDetails] = useState(false);
   const [sendingSwap, setSendingSwap] = useState(false);
   const { selectedGas } = useGasStore();
