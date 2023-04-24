@@ -93,10 +93,13 @@ export const useSwapAssets = () => {
       )
       .flat();
 
-    if (assetToBuy || prevAssetToBuy) {
-      assetAddressesFromSearch.push(
-        (assetToBuy?.address || prevAssetToBuy?.address) as Address,
-      );
+    const assetToBuyAddress = (assetToBuy?.address ||
+      prevAssetToBuy?.address) as Address;
+    if (
+      assetToBuyAddress &&
+      !assetAddressesFromSearch.includes(assetToBuyAddress)
+    ) {
+      assetAddressesFromSearch.push(assetToBuyAddress);
     }
     return assetAddressesFromSearch;
   }, [assetToBuy, prevAssetToBuy, searchAssetsToBuySections]);
