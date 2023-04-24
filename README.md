@@ -1,4 +1,4 @@
-# 🌈  Browser Extension
+# 🌈 Browser Extension
 
 > the Ethereum wallet that lives in your browser!
 
@@ -16,9 +16,9 @@
 ### 1. Set up Node
 
 ```bash
-nvm install
+nvm install 14
 # or
-nvm use
+nvm use 14
 ```
 
 ### 2. Install project dependencies
@@ -51,7 +51,7 @@ Go to `chrome://extensions/` and enable `Developer mode`.
 
 Click on `Load unpacked` and select the `build` folder.
 
-## Development 
+## Development
 
 ### 1. Start the development build
 
@@ -77,8 +77,8 @@ You can run a development build as a "playground". The following playgrounds are
 Run `curl -L https://foundry.paradigm.xyz | bash` to install foundry.
 You'll need to restart the terminal.
 
-
 ### 2. Run the tests
+
 To run the Browser Extension test suites:
 
 - `yarn e2e` – runs end-to-end tests against Chrome & Brave browsers.
