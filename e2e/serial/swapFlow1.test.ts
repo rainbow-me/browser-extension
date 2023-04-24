@@ -385,6 +385,7 @@ it('should be able to favorite a token and check the info button is present', as
 });
 
 it('should be able to check price and balance of token to buy', async () => {
+  await delayTime('medium');
   const tokenToBuyInfoPrice = await getTextFromText({
     id: 'token-to-buy-info-price',
     driver,
