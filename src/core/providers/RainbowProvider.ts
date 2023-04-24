@@ -9,7 +9,7 @@ import { toHex } from '../utils/numbers';
 export type ChainIdHex = `0x${string}`;
 
 export type RequestArguments = {
-  method: RPCMethod;
+  method: RPCMethod | string;
   params?: Array<unknown>;
 };
 export type RequestResponse =
@@ -27,7 +27,8 @@ export type RequestResponse =
 
 const getMetaMaskProvider = () => {
   return window.walletRouter.providers.find(
-    (provider) => provider.isMetaMask && !provider.isRainbow,
+    (provider) =>
+      provider.isMetaMask && !(provider as RainbowProvider).isRainbow,
   );
 };
 
@@ -95,7 +96,11 @@ export class RainbowProvider extends EventEmitter {
     if (!this.rainbowIsDefaultProvider) {
       const provider = getMetaMaskProvider();
       if (provider) {
-        const response = await provider.request({ method, params });
+        // using RainbowProvider as type since wagmi Ethereum type is different
+        const response = await (provider as RainbowProvider).request({
+          method,
+          params,
+        });
         return response;
       }
     }
