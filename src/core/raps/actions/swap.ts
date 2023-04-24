@@ -17,10 +17,11 @@ import { Address, getProvider } from '@wagmi/core';
 import { ChainId } from '~/core/types/chains';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { isLowerCaseMatch } from '~/core/utils/strings';
+import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { logger } from '~/logger';
 
-import { ETH_ADDRESS, gasUnits } from '../../references';
+import { gasUnits } from '../../references';
 import { gasStore } from '../../state';
 import {
   TransactionGasParams,
@@ -157,10 +158,7 @@ export const executeSwap = async ({
   };
 
   // Wrap Eth
-  if (
-    sellTokenAddress === ETH_ADDRESS &&
-    buyTokenAddress === WRAPPED_ASSET[chainId]
-  ) {
+  if (isWrapEth({ buyTokenAddress, sellTokenAddress, chainId })) {
     return wrapNativeAsset(
       quote.buyAmount,
       wallet,
@@ -168,10 +166,7 @@ export const executeSwap = async ({
       transactionParams,
     );
     // Unwrap Weth
-  } else if (
-    sellTokenAddress === WRAPPED_ASSET[chainId] &&
-    buyTokenAddress === ETH_ADDRESS
-  ) {
+  } else if (isUnwrapEth({ buyTokenAddress, sellTokenAddress, chainId })) {
     return unwrapNativeAsset(
       quote.sellAmount,
       wallet,

@@ -54,7 +54,9 @@ export const useSwapQuote = ({
     const paramsReady =
       assetToSell &&
       assetToBuy &&
-      (independentField === 'buyField' ? assetToBuyValue : assetToSellValue);
+      (independentField === 'buyField'
+        ? Number(assetToBuyValue)
+        : Number(assetToSellValue));
     if (!paramsReady) return undefined;
 
     return {
@@ -109,6 +111,8 @@ export const useSwapQuote = ({
     refetchInterval: SWAP_POLLING_INTERVAL,
     cacheTime: CACHE_INTERVAL,
   });
+
+  console.log('quotee data', assetToBuy);
 
   return {
     data,

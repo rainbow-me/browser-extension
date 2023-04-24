@@ -1,0 +1,60 @@
+<svg
+  width="28"
+  height="28"
+  viewBox="0 0 28 28"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <g filter="url(#filter0_d_8505_260957)">
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M6.32698 5.63803C6 6.27976 6 7.11984 6 8.8V10.2C6 10.4778 6 10.6167 6.04419 10.7148C6.08759 10.811 6.1368 10.8687 6.22498 10.9268C6.31477 10.9859 6.47547 11.0117 6.79687 11.0632C9.17955 11.4448 11 13.5098 11 16C11 16.9857 10.7148 17.9048 10.2223 18.6793C9.95828 19.0945 9.82628 19.3021 9.80679 19.3831C9.73725 19.6725 9.84923 19.8764 10.1307 19.9729C10.2096 20 10.4064 20 10.8 20H17.2C18.8802 20 19.7202 20 20.362 19.673C20.9265 19.3854 21.3854 18.9265 21.673 18.362C22 17.7202 22 16.8802 22 15.2V8.8C22 7.11984 22 6.27976 21.673 5.63803C21.3854 5.07354 20.9265 4.6146 20.362 4.32698C19.7202 4 18.8802 4 17.2 4H10.8C9.11984 4 8.27976 4 7.63803 4.32698C7.07354 4.6146 6.6146 5.07354 6.32698 5.63803Z"
+      fill="url(#pattern0)"
+    />
+  </g>
+  <defs>
+    <filter
+      id="filter0_d_8505_260957"
+      x="0"
+      y="0"
+      width="28"
+      height="28"
+      filterUnits="userSpaceOnUse"
+      colorInterpolationFilters="sRGB"
+    >
+      <feFlood floodOpacity="0" result="BackgroundImageFix" />
+      <feColorMatrix
+        in="SourceAlpha"
+        type="matrix"
+        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"
+        result="hardAlpha"
+      />
+      <feOffset dy="2" />
+      <feGaussianBlur stdDeviation="3" />
+      <feColorMatrix
+        type="matrix"
+        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.1 0"
+      />
+      <feBlend
+        mode="normal"
+        in2="BackgroundImageFix"
+        result="effect1_dropShadow_8505_260957"
+      />
+      <feBlend
+        mode="normal"
+        in="SourceGraphic"
+        in2="effect1_dropShadow_8505_260957"
+        result="shape"
+      />
+    </filter>
+    <pattern
+      id="pattern0"
+      patternContentUnits="objectBoundingBox"
+      width="1"
+      height="1"
+    >
+      <use xlinkHref="#image0_8505_260957" transform="scale(0.0025)" />
+    </pattern>
+  </defs>
+</svg>;
