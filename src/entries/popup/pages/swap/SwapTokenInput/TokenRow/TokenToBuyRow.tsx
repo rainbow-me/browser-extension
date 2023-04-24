@@ -123,7 +123,7 @@ export function TokenToBuyRow({
                 />
               </Box>
             </DropdownMenuTrigger>
-            <DropdownMenuContent marginRight="32px">
+            <DropdownMenuContent>
               <Stack space="4px">
                 <Box paddingTop="8px" paddingBottom="12px">
                   <TextOverflow
