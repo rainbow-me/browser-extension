@@ -304,9 +304,8 @@ export function Send() {
           sendTokenInputRef.current?.focus();
         }
       } else {
-        switch (e.key) {
-          case shortcuts.send.OPEN_CONTACT_MENU.key:
-            clickHeaderRight();
+        if (e.key === shortcuts.send.OPEN_CONTACT_MENU.key) {
+          clickHeaderRight();
         }
       }
     },
