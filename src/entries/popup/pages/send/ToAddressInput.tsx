@@ -5,6 +5,7 @@ import React, {
   ReactNode,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
@@ -12,7 +13,6 @@ import React, {
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { truncateAddress } from '~/core/utils/address';
 import {
@@ -37,7 +37,6 @@ import {
 } from '../../components/DropdownInputWrapper/DropdownInputWrapper';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
-import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
 
 import { InputActionButon } from './InputActionButton';
@@ -246,16 +245,12 @@ const DropdownWalletsList = ({
   );
 };
 
-export const ToAddressInput = ({
-  toAddressOrName,
-  toEnsName,
-  toAddress,
-  handleToAddressChange,
-  clearToAddress,
-  setToAddressOrName,
-  onDropdownOpen,
-  validateToAddress,
-}: {
+interface InputRefAPI {
+  blur: () => void;
+  focus: () => void;
+}
+
+interface ToAddressProps {
   toAddressOrName: string;
   toEnsName?: string;
   toAddress: Address;
@@ -264,171 +259,176 @@ export const ToAddressInput = ({
   setToAddressOrName: (adrressOrName: string) => void;
   onDropdownOpen: (open: boolean) => void;
   validateToAddress: (address?: Address) => void;
-}) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+}
 
-  const [dropdownVisible, setDropdownVisible] = useState(false);
+export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
+  (props, forwardedRef) => {
+    const {
+      toAddressOrName,
+      toEnsName,
+      toAddress,
+      handleToAddressChange,
+      clearToAddress,
+      setToAddressOrName,
+      onDropdownOpen,
+      validateToAddress,
+    } = props;
+    const [dropdownVisible, setDropdownVisible] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
 
-  const onDropdownAction = useCallback(() => {
-    onDropdownOpen(!dropdownVisible);
-    setDropdownVisible(!dropdownVisible);
-    dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
-  }, [dropdownVisible, onDropdownOpen]);
+    useImperativeHandle(forwardedRef, () => ({
+      blur: () => closeDropdown(),
+      focus: () => openDropdown(),
+    }));
 
-  const openDropdown = useCallback(() => {
-    onDropdownOpen(true);
-    setDropdownVisible(true);
-    inputRef?.current?.focus();
-  }, [onDropdownOpen]);
+    const onDropdownAction = useCallback(() => {
+      onDropdownOpen(!dropdownVisible);
+      setDropdownVisible(!dropdownVisible);
+      dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
+    }, [dropdownVisible, onDropdownOpen]);
 
-  const closeDropdown = useCallback(() => {
-    onDropdownOpen(false);
-    setDropdownVisible(false);
-  }, [onDropdownOpen]);
+    const openDropdown = useCallback(() => {
+      onDropdownOpen(true);
+      setDropdownVisible(true);
+      inputRef?.current?.focus();
+    }, [onDropdownOpen]);
 
-  const inputVisible = useMemo(
-    () =>
-      ((!toAddressOrName || !toEnsName) && !isAddress(toAddressOrName)) ||
-      !isAddress(toAddress),
-    [toAddress, toAddressOrName, toEnsName],
-  );
+    const closeDropdown = useCallback(() => {
+      onDropdownOpen(false);
+      setDropdownVisible(false);
+    }, [onDropdownOpen]);
 
-  const selectWalletAndCloseDropdown = useCallback(
-    (address: Address) => {
-      setToAddressOrName(address);
-      onDropdownAction();
-      validateToAddress(address);
-    },
-    [onDropdownAction, validateToAddress, setToAddressOrName],
-  );
+    const inputVisible = useMemo(
+      () =>
+        ((!toAddressOrName || !toEnsName) && !isAddress(toAddressOrName)) ||
+        !isAddress(toAddress),
+      [toAddress, toAddressOrName, toEnsName],
+    );
 
-  const onInputClick = useCallback(() => {
-    if (!dropdownVisible) {
-      openDropdown();
-    }
-  }, [dropdownVisible, openDropdown]);
+    const selectWalletAndCloseDropdown = useCallback(
+      (address: Address) => {
+        setToAddressOrName(address);
+        onDropdownAction();
+        validateToAddress(address);
+      },
+      [onDropdownAction, validateToAddress, setToAddressOrName],
+    );
 
-  const onActionClose = useCallback(() => {
-    clearToAddress();
-    setTimeout(() => inputRef?.current?.focus(), 500);
-  }, [clearToAddress]);
-
-  useEffect(() => {
-    if (!inputVisible) {
-      closeDropdown();
-      validateToAddress();
-    }
-  }, [closeDropdown, inputVisible, validateToAddress]);
-
-  const { displayName, isNameDefined } = useWalletInfo({ address: toAddress });
-  const { wallets, watchedWallets, contacts } = useAllFilteredWallets({
-    filter: toAddressOrName,
-  });
-
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
-      if (e.altKey) {
-        if (e.key === shortcuts.send.FOCUS_TO_ADDRESS.key) {
-          if (dropdownVisible) {
-            closeDropdown();
-          } else {
-            openDropdown();
-          }
-        } else if (e.key === shortcuts.send.FOCUS_ASSET.key) {
-          closeDropdown();
-          inputRef?.current?.blur();
-        }
+    const onInputClick = useCallback(() => {
+      if (!dropdownVisible) {
+        openDropdown();
       }
-    },
-  });
+    }, [dropdownVisible, openDropdown]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      openDropdown();
-    }, 200);
-  }, [openDropdown]);
+    const onActionClose = useCallback(() => {
+      clearToAddress();
+      setTimeout(() => inputRef?.current?.focus(), 500);
+    }, [clearToAddress]);
 
-  return (
-    <>
-      <DropdownInputWrapper
-        zIndex={2}
-        dropdownHeight={452}
-        testId={'to-address-input'}
-        leftComponent={
-          <Box borderRadius="18px">
-            <WalletAvatar address={toAddress} size={36} emojiSize="20pt" />
-          </Box>
-        }
-        centerComponent={
-          <Box as={motion.div} layout>
-            <Stack space="8px">
-              <Box
-                as={motion.div}
-                key="input"
-                onClick={onInputClick}
-                layout="position"
-              >
+    useEffect(() => {
+      if (!inputVisible) {
+        closeDropdown();
+        validateToAddress();
+      }
+    }, [closeDropdown, inputVisible, validateToAddress]);
+
+    const { displayName, isNameDefined } = useWalletInfo({
+      address: toAddress,
+    });
+    const { wallets, watchedWallets, contacts } = useAllFilteredWallets({
+      filter: toAddressOrName,
+    });
+
+    useEffect(() => {
+      setTimeout(() => {
+        openDropdown();
+      }, 200);
+    }, [openDropdown]);
+
+    return (
+      <>
+        <DropdownInputWrapper
+          zIndex={2}
+          dropdownHeight={452}
+          testId={'to-address-input'}
+          leftComponent={
+            <Box borderRadius="18px">
+              <WalletAvatar address={toAddress} size={36} emojiSize="20pt" />
+            </Box>
+          }
+          centerComponent={
+            <Box as={motion.div} layout>
+              <Stack space="8px">
+                <Box
+                  as={motion.div}
+                  key="input"
+                  onClick={onInputClick}
+                  layout="position"
+                >
+                  <AnimatePresence>
+                    {inputVisible ? (
+                      <Box as={motion.div} layout="position">
+                        <Input
+                          testId="to-address-input"
+                          value={toAddressOrName}
+                          placeholder={i18n.t(
+                            'send.input_to_address_placeholder',
+                          )}
+                          onChange={handleToAddressChange}
+                          height="32px"
+                          variant="transparent"
+                          style={{ paddingLeft: 0, paddingRight: 0 }}
+                          ref={inputRef}
+                        />
+                      </Box>
+                    ) : (
+                      <Box as={motion.div} layout="position">
+                        <TextOverflow
+                          weight="semibold"
+                          size="14pt"
+                          color="label"
+                          testId="to-address-input-display"
+                        >
+                          {displayName}
+                        </TextOverflow>
+                      </Box>
+                    )}
+                  </AnimatePresence>
+                </Box>
                 <AnimatePresence>
-                  {inputVisible ? (
-                    <Box as={motion.div} layout="position">
-                      <Input
-                        testId="to-address-input"
-                        value={toAddressOrName}
-                        placeholder={i18n.t(
-                          'send.input_to_address_placeholder',
-                        )}
-                        onChange={handleToAddressChange}
-                        height="32px"
-                        variant="transparent"
-                        style={{ paddingLeft: 0, paddingRight: 0 }}
-                        innerRef={inputRef}
-                      />
-                    </Box>
-                  ) : (
-                    <Box as={motion.div} layout="position">
-                      <TextOverflow
-                        weight="semibold"
-                        size="14pt"
-                        color="label"
-                        testId="to-address-input-display"
-                      >
-                        {displayName}
-                      </TextOverflow>
+                  {!inputVisible && isNameDefined && (
+                    <Box as={motion.div} key="wallet" layout="position">
+                      <Text weight="semibold" size="12pt" color="labelTertiary">
+                        {truncateAddress(toAddress)}
+                      </Text>
                     </Box>
                   )}
                 </AnimatePresence>
-              </Box>
-              <AnimatePresence>
-                {!inputVisible && isNameDefined && (
-                  <Box as={motion.div} key="wallet" layout="position">
-                    <Text weight="semibold" size="12pt" color="labelTertiary">
-                      {truncateAddress(toAddress)}
-                    </Text>
-                  </Box>
-                )}
-              </AnimatePresence>
-            </Stack>
-          </Box>
-        }
-        dropdownComponent={
-          <DropdownWalletsList
-            wallets={wallets}
-            watchedWallets={watchedWallets}
-            contacts={contacts}
-            selectWalletAndCloseDropdown={selectWalletAndCloseDropdown}
-          />
-        }
-        dropdownVisible={dropdownVisible}
-        onDropdownAction={onDropdownAction}
-        rightComponent={
-          <InputActionButon
-            showClose={!!toAddress}
-            onClose={onActionClose}
-            dropdownVisible={dropdownVisible}
-            testId={`input-wrapper-close-to-address-input`}
-          />
-        }
-      />
-    </>
-  );
-};
+              </Stack>
+            </Box>
+          }
+          dropdownComponent={
+            <DropdownWalletsList
+              wallets={wallets}
+              watchedWallets={watchedWallets}
+              contacts={contacts}
+              selectWalletAndCloseDropdown={selectWalletAndCloseDropdown}
+            />
+          }
+          dropdownVisible={dropdownVisible}
+          onDropdownAction={onDropdownAction}
+          rightComponent={
+            <InputActionButon
+              showClose={!!toAddress}
+              onClose={onActionClose}
+              dropdownVisible={dropdownVisible}
+              testId={`input-wrapper-close-to-address-input`}
+            />
+          }
+        />
+      </>
+    );
+  },
+);
+
+ToAddressInput.displayName = 'ToAddressInput';

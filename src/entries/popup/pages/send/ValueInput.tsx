@@ -3,6 +3,7 @@ import React from 'react';
 
 import { i18n } from '~/core/languages';
 import { SupportedCurrencyKey, supportedCurrencies } from '~/core/references';
+import { shortcuts } from '~/core/references/shortcuts';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import {
   Box,
@@ -20,6 +21,7 @@ import {
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 
 import { SendInputMask } from '../../components/InputMask/SendInputMask/SendInputMask';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 
 export const ValueInput = ({
   asset,
@@ -48,6 +50,19 @@ export const ValueInput = ({
   inputAnimationControls: AnimationControls;
 }) => {
   const truncatedAssetSymbol = asset?.symbol?.slice(0, 5) ?? '';
+
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      switch (e.key) {
+        case shortcuts.send.SET_MAX_AMOUNT.key:
+          setMaxAssetAmount();
+          break;
+        case shortcuts.send.SWITCH_CURRENCY_LABEL.key:
+          switchIndependentField();
+          break;
+      }
+    },
+  });
 
   return (
     <Box paddingBottom="20px" paddingHorizontal="20px">

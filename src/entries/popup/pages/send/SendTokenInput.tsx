@@ -5,6 +5,7 @@ import React, {
   SetStateAction,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
@@ -13,7 +14,6 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
-import { shortcuts } from '~/core/references/shortcuts';
 import { ParsedAddressAsset } from '~/core/types/assets';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
@@ -34,7 +34,6 @@ import {
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
 import { SortMethod } from '../../hooks/send/useSendAsset';
-import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { AssetRow } from '../home/Tokens';
 
 import { InputActionButon } from './InputActionButton';
@@ -121,15 +120,12 @@ const TokenSortMenu = ({
   );
 };
 
-export const SendTokenInput = ({
-  asset,
-  assets,
-  selectAssetAddress,
-  dropdownClosed = false,
-  setSortMethod,
-  sortMethod,
-  zIndex,
-}: {
+interface InputRefAPI {
+  blur: () => void;
+  focus: () => void;
+}
+
+interface SendTokenInputProps {
   asset: ParsedAddressAsset | null;
   assets: ParsedAddressAsset[];
   selectAssetAddress: (address: Address | typeof ETH_ADDRESS | '') => void;
@@ -137,16 +133,41 @@ export const SendTokenInput = ({
   setSortMethod: (sortMethod: SortMethod) => void;
   sortMethod: SortMethod;
   zIndex?: number;
-}) => {
+}
+
+export const SendTokenInput = React.forwardRef<
+  InputRefAPI,
+  SendTokenInputProps
+>((props, forwardedRef) => {
+  const {
+    asset,
+    assets,
+    selectAssetAddress,
+    dropdownClosed = false,
+    setSortMethod,
+    sortMethod,
+    zIndex,
+  } = props;
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
+  useImperativeHandle(forwardedRef, () => ({
+    blur: () => {
+      inputRef.current?.blur();
+      setDropdownVisible(false);
+    },
+    focus: () => {
+      inputRef?.current?.focus();
+      setDropdownVisible(true);
+    },
+  }));
+
   const onDropdownAction = useCallback(() => {
     setDropdownVisible(!dropdownVisible);
     dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
-  }, [dropdownVisible]);
+  }, [dropdownVisible, inputRef]);
 
   const onSelectAsset = useCallback(
     (address: Address | typeof ETH_ADDRESS | '') => {
@@ -179,7 +200,7 @@ export const SendTokenInput = ({
     setTimeout(() => {
       inputRef?.current?.focus();
     }, 200);
-  }, [onSelectAsset]);
+  }, [inputRef, onSelectAsset]);
 
   const selectAsset = useCallback(
     (address: Address | typeof ETH_ADDRESS | '') => {
@@ -196,21 +217,6 @@ export const SendTokenInput = ({
   }, [dropdownClosed]);
 
   const inputVisible = useMemo(() => !asset, [asset]);
-
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
-      if (e.altKey) {
-        if (e.key === shortcuts.send.FOCUS_ASSET.key) {
-          console.log('send token dd vis: ', dropdownVisible);
-          setDropdownVisible(!dropdownVisible);
-          inputRef?.current?.focus();
-        }
-        if (e.key === shortcuts.send.FOCUS_TO_ADDRESS.key) {
-          setDropdownVisible(false);
-        }
-      }
-    },
-  });
 
   return (
     <DropdownInputWrapper
@@ -234,7 +240,7 @@ export const SendTokenInput = ({
                 height="32px"
                 variant="transparent"
                 style={{ paddingLeft: 0, paddingRight: 0 }}
-                innerRef={inputRef}
+                ref={inputRef}
               />
             </Box>
           ) : (
@@ -353,4 +359,6 @@ export const SendTokenInput = ({
       borderVisible={!asset}
     />
   );
-};
+});
+
+SendTokenInput.displayName = 'SendTokenInput';

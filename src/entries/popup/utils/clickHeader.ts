@@ -15,4 +15,5 @@ export const clickHeaderRight = () => {
     `#${NAVBAR_RIGHT_COMPONENT_ID} button`,
   );
   simulateClick(rightActionButton);
+  (rightActionButton as HTMLButtonElement)?.click?.();
 };

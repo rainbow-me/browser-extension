@@ -5,6 +5,7 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { analytics } from '~/analytics';
 import { EventProperties } from '~/analytics/event';
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -27,6 +28,7 @@ import { Space } from '~/design-system/styles/designTokens';
 
 import { useDefaultTxSpeed } from '../../hooks/useDefaultTxSpeed';
 import { useSwapGas, useTransactionGas } from '../../hooks/useGas';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 
 import { CustomGasSheet } from './CustomGasSheet';
@@ -110,6 +112,14 @@ function Fee({
     },
     [analyticsEvents?.transactionSpeedClicked],
   );
+
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.global.OPEN_GAS_MENU.key) {
+        openCustomGasSheet();
+      }
+    },
+  });
 
   return (
     <Box>
