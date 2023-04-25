@@ -72,7 +72,7 @@ describe('App interactions flow', () => {
     rootURL += extensionId;
   });
 
-  afterAll(async () => driver.quit());
+  afterAll(() => driver.quit());
 
   // Import a wallet
   it('should be able import a wallet via seed', async () => {
