@@ -42,6 +42,7 @@ import {
   MoreInfoOption,
 } from '../../components/MoreInfoButton/MoreInfoButton';
 import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
+import { triggerToast } from '../../components/Toast/Toast';
 import { getWallet, remove, wipe } from '../../handlers/wallet';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -95,6 +96,10 @@ const infoButtonOptions = ({
   {
     onSelect: () => {
       navigator.clipboard.writeText(account.address as string);
+      triggerToast({
+        title: i18n.t('wallet_header.copy_toast'),
+        description: truncateAddress(account.address),
+      });
     },
     label: i18n.t('wallet_switcher.copy_address'),
     subLabel: truncateAddress(account.address),

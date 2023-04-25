@@ -14,9 +14,9 @@ import {
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import SeedPhraseTable from '../../components/SeedPhraseTable/SeedPhraseTable';
+import { triggerToast } from '../../components/Toast/Toast';
 import { exportWallet } from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { useToast } from '../../hooks/useToast';
 import { ROUTES } from '../../urls';
 
 export function SeedReveal() {
@@ -24,7 +24,6 @@ export function SeedReveal() {
 
   const [seed, setSeed] = useState('');
   const { currentAddress } = useCurrentAddressStore();
-  const { triggerToast } = useToast();
 
   useEffect(() => {
     const init = async () => {
@@ -43,7 +42,7 @@ export function SeedReveal() {
     triggerToast({
       title: i18n.t('seed_reveal.phrase_copied'),
     });
-  }, [seed, triggerToast]);
+  }, [seed]);
 
   return (
     <FullScreenContainer>
