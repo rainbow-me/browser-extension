@@ -575,6 +575,7 @@ export function Wallets() {
       gap="24px"
       padding="20px"
       style={{ overflow: 'auto' }}
+      testId={'wallet-address-or-ens'}
     >
       {isUnlocked ? (
         <Fragment>

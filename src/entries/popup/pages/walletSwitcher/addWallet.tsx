@@ -59,6 +59,7 @@ const AddWallet = () => {
             subtitle={i18n.t('add_wallet.import_wallet_description')}
             symbolColor="purple"
             symbol="lock.rotation"
+            testId={'import-secret-option'}
           />
           <OnboardMenu.Separator />
           <OnboardMenu.Item
@@ -77,6 +78,7 @@ const AddWallet = () => {
             subtitle={i18n.t('add_wallet.watch_address_description')}
             symbolColor="green"
             symbol="magnifyingglass.circle"
+            testId={'watch-wallet-option'}
           />
         </OnboardMenu>
       </Box>
