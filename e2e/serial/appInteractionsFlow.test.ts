@@ -152,7 +152,7 @@ describe('App interactions flow', () => {
     await waitAndClick(mmButton, driver);
 
     // wait for window handlers to update
-    await delayTime('medium');
+    await delayTime('long');
     const handlers = await driver.getAllWindowHandles();
 
     const popupHandler =
@@ -217,7 +217,7 @@ describe('App interactions flow', () => {
     expect(button).toBeTruthy();
     await button.click();
 
-    await delayTime('medium');
+    await delayTime('long');
     const handlers = await driver.getAllWindowHandles();
 
     const popupHandler =
@@ -249,7 +249,7 @@ describe('App interactions flow', () => {
     const button = await querySelector(driver, '[id="signTypedData"]');
     expect(button).toBeTruthy();
     await waitAndClick(button, driver);
-    await delayTime('medium');
+    await delayTime('long');
     const handlers = await driver.getAllWindowHandles();
 
     const popupHandler =
@@ -288,7 +288,7 @@ describe('App interactions flow', () => {
 
     expect(button).toBeTruthy();
     await waitAndClick(button, driver);
-    await delayTime('medium');
+    await delayTime('long');
 
     const handlers = await driver.getAllWindowHandles();
     const popupHandler =
