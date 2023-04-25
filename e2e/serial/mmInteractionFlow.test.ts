@@ -4,14 +4,15 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
-  delay,
   delayTime,
   findElementById,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
+  getAllWindowHandles,
   getExtensionIdByName,
   getTextFromDappText,
+  getWindowHandle,
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
@@ -106,19 +107,14 @@ describe('App interactions flow', () => {
   it('should be able to connect to mm dapp', async () => {
     await delayTime('long');
     await driver.get('https://bx-e2e-dapp.vercel.app/');
-    await delay(1000);
-    const dappHandler = await driver.getWindowHandle();
+    const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({ id: 'connectButton', driver });
     expect(button).toBeTruthy();
     await waitAndClick(button, driver);
 
     // wait for window handlers to update
-    await delayTime('medium');
-    const handlers = await driver.getAllWindowHandles();
-
-    const popupHandler =
-      handlers.find((handler) => handler !== dappHandler) || '';
+    const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await driver.switchTo().window(popupHandler);
 
@@ -136,17 +132,12 @@ describe('App interactions flow', () => {
 
   // Personal Sign
   it('should be able to complete a personal sign', async () => {
-    await delayTime('long');
-    const dappHandler = await driver.getWindowHandle();
+    const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({ id: 'personalSign', driver });
     await waitAndClick(button, driver);
 
-    await delayTime('medium');
-    const handlers = await driver.getAllWindowHandles();
-
-    const popupHandler =
-      handlers.find((handler) => handler !== dappHandler) || '';
+    const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await driver.switchTo().window(popupHandler);
 
@@ -176,18 +167,13 @@ describe('App interactions flow', () => {
 
   // Sign Typed Data V3
   it('should be able to sign typed data (v3)', async () => {
-    await delayTime('long');
-    const dappHandler = await driver.getWindowHandle();
+    const dappHandler = await getWindowHandle({ driver });
     await driver.switchTo().window(dappHandler);
 
     const button = await findElementById({ id: 'signTypedDataV3', driver });
     await waitAndClick(button, driver);
 
-    await delayTime('medium');
-    const handlers = await driver.getAllWindowHandles();
-
-    const popupHandler =
-      handlers.find((handler) => handler !== dappHandler) || '';
+    const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await driver.switchTo().window(popupHandler);
 
@@ -222,18 +208,14 @@ describe('App interactions flow', () => {
 
   // Sign Typed Data V4
   it('should be able to sign typed data (v4)', async () => {
-    await delayTime('long');
-    const dappHandler = await driver.getWindowHandle();
+    const dappHandler = await getWindowHandle({ driver });
+
     await driver.switchTo().window(dappHandler);
 
     const button = await findElementById({ id: 'signTypedDataV4', driver });
     await waitAndClick(button, driver);
 
-    await delayTime('medium');
-    const handlers = await driver.getAllWindowHandles();
-
-    const popupHandler =
-      handlers.find((handler) => handler !== dappHandler) || '';
+    const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await driver.switchTo().window(popupHandler);
 

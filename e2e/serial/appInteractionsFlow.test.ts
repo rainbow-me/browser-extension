@@ -10,7 +10,9 @@ import {
   delayTime,
   findElementByTestIdAndClick,
   findElementByText,
+  getAllWindowHandles,
   getExtensionIdByName,
+  getWindowHandle,
   goToPopup,
   goToTestApp,
   goToWelcome,
@@ -136,7 +138,7 @@ describe('App interactions flow', () => {
   it('should be able to connect to bx test dapp', async () => {
     await delayTime('long');
     await goToTestApp(driver);
-    const dappHandler = await driver.getWindowHandle();
+    const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementByText(driver, 'Connect Wallet');
     expect(button).toBeTruthy();
@@ -151,12 +153,7 @@ describe('App interactions flow', () => {
     );
     await waitAndClick(mmButton, driver);
 
-    // wait for window handlers to update
-    await delayTime('long');
-    const handlers = await driver.getAllWindowHandles();
-
-    const popupHandler =
-      handlers.find((handler) => handler !== dappHandler) || '';
+    const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await driver.switchTo().window(popupHandler);
 
@@ -212,16 +209,12 @@ describe('App interactions flow', () => {
   it('should be able to accept a signing request', async () => {
     await goToTestApp(driver);
 
-    const dappHandler = await driver.getWindowHandle();
+    const dappHandler = await getWindowHandle({ driver });
     const button = await querySelector(driver, '[id="signTx"]');
     expect(button).toBeTruthy();
     await button.click();
 
-    await delayTime('long');
-    const handlers = await driver.getAllWindowHandles();
-
-    const popupHandler =
-      handlers.find((handler) => handler !== dappHandler) || '';
+    const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await driver.switchTo().window(popupHandler);
 
@@ -243,17 +236,13 @@ describe('App interactions flow', () => {
   });
 
   it('should be able to accept a typed data signing request', async () => {
-    await delayTime('long');
-    const dappHandler = await driver.getWindowHandle();
+    const dappHandler = await getWindowHandle({ driver });
 
     const button = await querySelector(driver, '[id="signTypedData"]');
     expect(button).toBeTruthy();
     await waitAndClick(button, driver);
-    await delayTime('long');
-    const handlers = await driver.getAllWindowHandles();
 
-    const popupHandler =
-      handlers.find((handler) => handler !== dappHandler) || '';
+    const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await driver.switchTo().window(popupHandler);
     await delayTime('medium');
@@ -281,18 +270,15 @@ describe('App interactions flow', () => {
     await delayTime('long');
     await goToTestApp(driver);
 
-    const dappHandler = await driver.getWindowHandle();
+    const dappHandler = await getWindowHandle({ driver });
 
     await delayTime('long');
     const button = await querySelector(driver, '[id="sendTx"]');
 
     expect(button).toBeTruthy();
     await waitAndClick(button, driver);
-    await delayTime('long');
 
-    const handlers = await driver.getAllWindowHandles();
-    const popupHandler =
-      handlers.find((handler) => handler !== dappHandler) || '';
+    const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await driver.switchTo().window(popupHandler);
     await delayTime('long');
