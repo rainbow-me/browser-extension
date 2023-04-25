@@ -215,7 +215,7 @@ it('should be able to go to review a crosschain swap', async () => {
     driver,
   });
 
-  await delayTime('medium');
+  await delayTime('long');
   const longWaitExplainerFound = await doNotFindElementByTestId({
     id: 'explainer-sheet-swap-long-wait',
     driver,
@@ -227,11 +227,14 @@ it('should be able to go to review a crosschain swap', async () => {
       driver,
     });
   }
-  await delayTime('long');
+  console.log(
+    ' ----------------- longWaitExplainerFound',
+    longWaitExplainerFound,
+  );
 });
 
 it('should be able to see crosschain swap information in review sheet', async () => {
-  await delayTime('medium');
+  await delayTime('long');
   const daiAssetToSellAssetCard = await findElementByTestId({
     id: `DAI-asset-to-sell-swap-asset-card`,
     driver,
