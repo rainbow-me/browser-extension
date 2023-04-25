@@ -9,7 +9,7 @@ import { toHex } from '../utils/numbers';
 export type ChainIdHex = `0x${string}`;
 
 export type RequestArguments = {
-  method: RPCMethod | string;
+  method: RPCMethod;
   params?: Array<unknown>;
 };
 export type RequestResponse =
