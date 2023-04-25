@@ -231,6 +231,7 @@ it('should be able to go to review a crosschain swap', async () => {
 });
 
 it('should be able to see crosschain swap information in review sheet', async () => {
+  await delayTime('medium');
   const daiAssetToSellAssetCard = await findElementByTestId({
     id: `DAI-asset-to-sell-swap-asset-card`,
     driver,
