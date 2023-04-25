@@ -1,10 +1,11 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-nested-ternary */
-import React, { useCallback, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
+import { Address, chain, getProvider } from '@wagmi/core';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
+import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
+import { convertRawAmountToNativeDisplay } from '~/core/utils/numbers';
 import {
   Box,
   Button,
@@ -14,6 +15,7 @@ import {
   Row,
   Rows,
   Separator,
+  Stack,
   Symbol,
   Text,
 } from '~/design-system';
@@ -24,6 +26,7 @@ import { FullScreenContainer } from '../../components/FullScreen/FullScreenConta
 import { Spinner } from '../../components/Spinner/Spinner';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import * as wallet from '../../handlers/wallet';
+import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -35,8 +38,12 @@ const WalletListHW = () => {
   const [showAddByIndexSheet, setShowAddByIndexSheet] =
     useState<boolean>(false);
   const navigate = useRainbowNavigate();
+  const { currentCurrency } = useCurrentCurrencyStore();
+  const nativeAsset = useNativeAssetForNetwork({ chainId: chain.mainnet.id });
+
   // const { state } = useLocation();
   const [accountsIgnored, setAccountsIgnored] = useState<Address[]>([]);
+  const [balances, setBalances] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { setCurrentAddress } = useCurrentAddressStore();
 
@@ -60,6 +67,33 @@ const WalletListHW = () => {
   const [accountsToImport, setAccountsToImport] = useState(
     state.accountsToImport,
   );
+
+  useEffect(() => {
+    const fetchBalances = async () => {
+      const provider = getProvider({ chainId: chain.mainnet.id });
+      const _balances = await Promise.all(
+        accountsToImport.map(async (account) => {
+          const balance = await provider.getBalance(account.address);
+          const nativeCurrencyAmount = convertRawAmountToNativeDisplay(
+            balance.toString() ?? 0,
+            nativeAsset?.decimals ?? 18,
+            nativeAsset?.price?.value as number,
+            currentCurrency,
+          ).display;
+          return nativeCurrencyAmount;
+        }),
+      );
+      setBalances(_balances);
+    };
+    if (accountsToImport.length > 0) {
+      fetchBalances();
+    }
+  }, [
+    accountsToImport,
+    currentCurrency,
+    nativeAsset?.decimals,
+    nativeAsset?.price?.value,
+  ]);
 
   const selectedAccounts = useMemo(
     () => accountsToImport?.length - accountsIgnored.length,
@@ -124,6 +158,7 @@ const WalletListHW = () => {
     ({
       address,
       index,
+      balance,
     }: {
       address?: Address;
       balance?: string;
@@ -131,15 +166,16 @@ const WalletListHW = () => {
     } = {}) => {
       if (address && index) {
         const newAccountsToImport = [...accountsToImport];
-        newAccountsToImport.push({
+        newAccountsToImport.unshift({
           address: address as Address,
           index: index as number,
         });
+        balances.unshift(balance as string);
         setAccountsToImport(newAccountsToImport);
       }
       setShowAddByIndexSheet(false);
     },
-    [accountsToImport],
+    [accountsToImport, balances],
   );
 
   return (
@@ -276,12 +312,21 @@ const WalletListHW = () => {
                                     emojiSize={'16pt'}
                                   />
                                   <Box justifyContent="flex-start" width="fit">
-                                    <AddressOrEns
-                                      size="14pt"
-                                      weight="bold"
-                                      color="label"
-                                      address={address as Address}
-                                    />
+                                    <Stack space="8px">
+                                      <AddressOrEns
+                                        size="14pt"
+                                        weight="bold"
+                                        color="label"
+                                        address={address as Address}
+                                      />
+                                      <Text
+                                        color="labelTertiary"
+                                        size="12pt"
+                                        weight="regular"
+                                      >
+                                        {balances?.[index as number] as string}
+                                      </Text>
+                                    </Stack>
                                   </Box>
                                 </Inline>
                               </Box>

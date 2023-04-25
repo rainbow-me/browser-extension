@@ -349,6 +349,7 @@ export const AddByIndexSheet = ({
                   </Box>
                 )}
               </Box>
+              {!newAccount && <Box style={{ height: '64px', width: '100%' }} />}
             </Box>
 
             <Box width="full" paddingTop="20px">
