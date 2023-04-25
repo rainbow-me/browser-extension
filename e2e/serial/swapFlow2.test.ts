@@ -227,10 +227,6 @@ it('should be able to go to review a crosschain swap', async () => {
       driver,
     });
   }
-  console.log(
-    ' ----------------- longWaitExplainerFound',
-    longWaitExplainerFound,
-  );
 });
 
 it('should be able to see crosschain swap information in review sheet', async () => {
