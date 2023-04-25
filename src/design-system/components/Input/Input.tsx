@@ -33,6 +33,7 @@ export type InputProps = {
   variant: 'surface' | 'bordered' | 'transparent' | 'tinted';
   value?: InputHTMLAttributes<HTMLInputElement>['value'];
   type?: InputHTMLAttributes<HTMLInputElement>['type'];
+  innerRef?: React.Ref<HTMLInputElement>;
   selectionColor?: BoxStyles['borderColor'];
   style?: CSSProperties;
   enableTapScale?: boolean;
@@ -132,73 +133,67 @@ export const stylesForHeight: Record<
   },
 };
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  (
-    {
-      disabled,
-      placeholder,
-      height,
-      variant,
-      testId,
-      borderColor,
-      textAlign,
-      enableTapScale = true,
-      ...inputProps
-    },
-    forwardedRef,
-  ) => {
-    const {
-      background,
-      borderColor: borderColorFromVariant,
-      textColor,
-    } = stylesForVariant[variant];
-    const { borderRadius, fontSize, paddingHorizontal, paddingVertical } =
-      stylesForHeight[height];
-    return (
+export function Input({
+  disabled,
+  placeholder,
+  height,
+  variant,
+  testId,
+  innerRef,
+  borderColor,
+  textAlign,
+  enableTapScale = true,
+  ...inputProps
+}: InputProps) {
+  const {
+    background,
+    borderColor: borderColorFromVariant,
+    textColor,
+  } = stylesForVariant[variant];
+  const { borderRadius, fontSize, paddingHorizontal, paddingVertical } =
+    stylesForHeight[height];
+  return (
+    <Box
+      as={motion.div}
+      whileTap={
+        variant !== 'transparent' && enableTapScale
+          ? { scale: transformScales['0.96'] }
+          : undefined
+      }
+      transition={transitions.bounce}
+      height="full"
+      width="full"
+    >
       <Box
-        as={motion.div}
-        whileTap={
-          variant !== 'transparent' && enableTapScale
-            ? { scale: transformScales['0.96'] }
-            : undefined
-        }
-        transition={transitions.bounce}
-        height="full"
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        {...inputProps}
+        as="input"
+        tabIndex={inputProps.tabIndex ?? undefined}
+        ref={innerRef}
+        background={background}
+        borderColor={borderColor ? borderColor : borderColorFromVariant}
+        borderWidth="1px"
+        borderRadius={borderRadius}
+        className={[
+          backgroundStyle,
+          heightStyles[height],
+          textStyles({
+            color: textColor,
+            fontSize,
+            fontWeight: 'semibold',
+            fontFamily: 'rounded',
+            textAlign,
+          }),
+          placeholderStyle,
+          borderColor === 'accent' ? accentSelectionStyle : null,
+        ]}
+        paddingHorizontal={paddingHorizontal}
+        paddingVertical={paddingVertical}
+        placeholder={placeholder}
+        testId={testId}
         width="full"
-      >
-        <Box
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          {...inputProps}
-          as="input"
-          tabIndex={inputProps.tabIndex ?? undefined}
-          ref={forwardedRef}
-          background={background}
-          borderColor={borderColor ? borderColor : borderColorFromVariant}
-          borderWidth="1px"
-          borderRadius={borderRadius}
-          className={[
-            backgroundStyle,
-            heightStyles[height],
-            textStyles({
-              color: textColor,
-              fontSize,
-              fontWeight: 'semibold',
-              fontFamily: 'rounded',
-              textAlign,
-            }),
-            placeholderStyle,
-            borderColor === 'accent' ? accentSelectionStyle : null,
-          ]}
-          paddingHorizontal={paddingHorizontal}
-          paddingVertical={paddingVertical}
-          placeholder={placeholder}
-          testId={testId}
-          width="full"
-          disabled={disabled}
-        />
-      </Box>
-    );
-  },
-);
-
-Input.displayName = 'Input';
+        disabled={disabled}
+      />
+    </Box>
+  );
+}

@@ -83,7 +83,7 @@ export function PasswordInput({
         onChange={handleOnChange}
         onBlur={onBlur}
         type={visible ? 'text' : 'password'}
-        ref={inputRef}
+        innerRef={inputRef}
         borderColor={borderColor}
         testId={testId}
         onKeyDown={onKeyDown}

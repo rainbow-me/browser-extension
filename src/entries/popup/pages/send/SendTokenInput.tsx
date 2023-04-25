@@ -240,7 +240,7 @@ export const SendTokenInput = React.forwardRef<
                 height="32px"
                 variant="transparent"
                 style={{ paddingLeft: 0, paddingRight: 0 }}
-                ref={inputRef}
+                innerRef={inputRef}
               />
             </Box>
           ) : (
