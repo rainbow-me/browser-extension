@@ -4,7 +4,11 @@ import { Address, getProvider } from '@wagmi/core';
 
 import { gasUnits } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
-import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import {
+  NewTransaction,
+  TransactionStatus,
+  TransactionType,
+} from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { logger } from '~/logger';
 
@@ -160,7 +164,7 @@ export const crosschainSwap = async ({
     throw e;
   }
 
-  const transaction = {
+  const transaction: NewTransaction = {
     amount: parameters.quote.value?.toString(),
     asset: parameters.assetToSell,
     data: parameters.quote.data,
@@ -173,6 +177,10 @@ export const crosschainSwap = async ({
     status: TransactionStatus.swapping,
     type: TransactionType.trade,
     flashbots: parameters.flashbots,
+    gasPrice: (gasParams as TransactionLegacyGasParams).gasPrice,
+    maxFeePerGas: (gasParams as TransactionGasParams).maxFeePerGas,
+    maxPriorityFeePerGas: (gasParams as TransactionGasParams)
+      .maxPriorityFeePerGas,
   };
   await addNewTransaction({
     address: parameters.quote.from as Address,
