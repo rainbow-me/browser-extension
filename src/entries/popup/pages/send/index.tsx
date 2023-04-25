@@ -17,6 +17,10 @@ import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ChainId } from '~/core/types/chains';
+import {
+  TransactionGasParams,
+  TransactionLegacyGasParams,
+} from '~/core/types/gas';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Box, Button, Inline, Row, Rows, Symbol, Text } from '~/design-system';
@@ -172,6 +176,15 @@ export function Send() {
             status: TransactionStatus.sending,
             type: TransactionType.send,
             nonce: result.nonce,
+            gasPrice: (
+              selectedGas.transactionGasParams as TransactionLegacyGasParams
+            )?.gasPrice,
+            maxFeePerGas: (
+              selectedGas.transactionGasParams as TransactionGasParams
+            )?.maxFeePerGas,
+            maxPriorityFeePerGas: (
+              selectedGas.transactionGasParams as TransactionGasParams
+            )?.maxPriorityFeePerGas,
           };
           await addNewTransaction({
             address: fromAddress,
@@ -197,6 +210,7 @@ export function Send() {
       data,
       assetAmount,
       asset,
+      selectedGas.transactionGasParams,
       navigate,
     ],
   );

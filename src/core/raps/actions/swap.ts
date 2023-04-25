@@ -1,6 +1,7 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { Transaction } from '@ethersproject/transactions';
+import { formatEther } from '@ethersproject/units';
 import {
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
   Quote,
@@ -245,18 +246,22 @@ export const swap = async ({
   }
 
   const transaction = {
-    amount: parameters.quote.value?.toString(),
+    amount: formatEther(swap?.value?.toString() || ''),
     asset: parameters.assetToSell,
-    data: parameters.quote.data,
-    value: parameters.quote.value,
-    from: parameters.quote.from as Address,
-    to: parameters.quote.to as Address,
+    data: swap?.data,
+    value: swap?.value,
+    from: swap?.from as Address,
+    to: swap?.to as Address,
     hash: swap?.hash,
     chainId: parameters.chainId,
     nonce: swap?.nonce,
     status: TransactionStatus.swapping,
     type: TransactionType.trade,
     flashbots: parameters.flashbots,
+    gasPrice: (gasParams as TransactionLegacyGasParams)?.gasPrice,
+    maxFeePerGas: (gasParams as TransactionGasParams)?.maxFeePerGas,
+    maxPriorityFeePerGas: (gasParams as TransactionGasParams)
+      ?.maxPriorityFeePerGas,
   };
   await addNewTransaction({
     address: parameters.quote.from as Address,

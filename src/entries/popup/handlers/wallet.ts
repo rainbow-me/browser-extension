@@ -19,6 +19,10 @@ import {
   WalletExecuteRapProps,
 } from '~/core/raps/references';
 import { gasStore } from '~/core/state';
+import {
+  TransactionGasParams,
+  TransactionLegacyGasParams,
+} from '~/core/types/gas';
 import { KeychainWallet } from '~/core/types/keychainTypes';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
@@ -73,14 +77,29 @@ export const sendTransaction = async (
     provider,
   });
 
-  const nonce = await getNextNonce({
-    address: transactionRequest.from as Address,
-    chainId: transactionRequest.chainId as number,
-  });
+  const nonce =
+    transactionRequest.nonce ??
+    (await getNextNonce({
+      address: transactionRequest.from as Address,
+      chainId: transactionRequest.chainId as number,
+    }));
+
+  const transactionGasParams = {
+    maxFeePerGas:
+      transactionRequest.maxFeePerGas ||
+      (selectedGas.transactionGasParams as TransactionGasParams).maxFeePerGas,
+    maxPriorityFeePerGas:
+      transactionRequest.maxPriorityFeePerGas ||
+      (selectedGas.transactionGasParams as TransactionGasParams)
+        .maxPriorityFeePerGas,
+    gasPrice:
+      transactionRequest.gasPrice ||
+      (selectedGas.transactionGasParams as TransactionLegacyGasParams).gasPrice,
+  };
 
   const params = {
     ...transactionRequest,
-    ...selectedGas.transactionGasParams,
+    ...transactionGasParams,
     gasLimit: toHex(gasLimit || '0'),
     value: transactionRequest?.value,
     nonce,
