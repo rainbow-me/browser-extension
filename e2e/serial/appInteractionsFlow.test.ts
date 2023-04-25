@@ -153,7 +153,10 @@ describe('App interactions flow', () => {
     );
     await waitAndClick(mmButton, driver);
 
-    const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
+    const { popupHandler } = await getAllWindowHandles({
+      driver,
+      dappHandler,
+    });
 
     await driver.switchTo().window(popupHandler);
 

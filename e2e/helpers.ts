@@ -170,10 +170,10 @@ export async function getAllWindowHandles({
   await delayTime('long');
   const handlers = await driver.getAllWindowHandles();
   const popupHandlerFromHandlers =
-    handlers.find((handler) => handler !== popupHandler) || '';
+    handlers.find((handler) => handler !== dappHandler) || '';
 
   const dappHandlerFromHandlers =
-    handlers.find((handler) => handler !== dappHandler) || '';
+    handlers.find((handler) => handler !== popupHandler) || '';
 
   return {
     handlers,
