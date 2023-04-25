@@ -1,33 +1,47 @@
+import EventEmitter from 'events';
+
 import React, { useEffect, useState } from 'react';
 
 import { Box, Inline, Row, Rows, Text } from '~/design-system';
 
-import { useToast } from '../../hooks/useToast';
 import { zIndexes } from '../../utils/zIndexes';
 
-export const Toast = () => {
-  const [visible, setVisible] = useState(false);
-  const [text, setText] = useState<{ title: string; description?: string }>({
-    title: '',
-    description: '',
-  });
-  const { listenToast, clearToastListener } = useToast();
+const eventEmitter = new EventEmitter();
 
-  listenToast(
-    async ({ title, description }: { title: string; description?: string }) => {
-      setText({ title, description });
-      setVisible(true);
-      setTimeout(() => {
-        setVisible(false);
-      }, 3000);
-    },
-  );
+type ToastInfo = { title: string; description?: string };
+
+const toastListener = (
+  callback: ({ title, description }: ToastInfo) => void,
+) => {
+  eventEmitter.addListener('rainbow_toast', callback);
+  return () => {
+    eventEmitter.removeListener('rainbow_toast', callback);
+  };
+};
+
+export const triggerToast = ({ title, description }: ToastInfo) => {
+  eventEmitter.emit('rainbow_toast', { title, description });
+};
+
+export const Toast = () => {
+  const [toastInfo, setToastInfo] = useState<ToastInfo | null>(null);
 
   useEffect(() => {
-    return () => clearToastListener();
-  }, [clearToastListener]);
+    let timeout: NodeJS.Timeout;
+    const clearToastListener = toastListener(({ title, description }) => {
+      setToastInfo({ title, description });
+      timeout = setTimeout(() => {
+        setToastInfo(null);
+      }, 3000);
+    });
 
-  if (!visible) return null;
+    return () => {
+      clearToastListener();
+      clearTimeout(timeout);
+    };
+  }, []);
+
+  if (!toastInfo) return null;
   return (
     <Box
       width="full"
@@ -44,10 +58,10 @@ export const Toast = () => {
             <Rows space="6px">
               <Row>
                 <Text color="label" size="12pt" weight="bold" align="center">
-                  {text.title}
+                  {toastInfo.title}
                 </Text>
               </Row>
-              {text.description && (
+              {toastInfo.description && (
                 <Row>
                   <Text
                     color="labelTertiary"
@@ -55,7 +69,7 @@ export const Toast = () => {
                     weight="medium"
                     align="center"
                   >
-                    {text.description}
+                    {toastInfo.description}
                   </Text>
                 </Row>
               )}
