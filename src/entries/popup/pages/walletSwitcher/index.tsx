@@ -285,8 +285,6 @@ export function WalletSwitcher() {
     return sortedAccounts;
   }, [filteredAccounts, walletOrder]);
 
-  console.log(filteredAndSortedAccounts);
-
   const displayedAccounts = useMemo(
     () =>
       filteredAndSortedAccounts.map((account, index) => (

@@ -765,6 +765,9 @@
     "add_by_index": "Add by index",
     "connection_successful_title": "Connected successful",
     "connection_successful_description": "Something about how we imported N wallets and they will be labeled with the badge?",
-    "done": "Done"
+    "done": "Done",
+    "add_wallet": "Add wallet",
+    "add_by_index_title": "Add a wallet by its index",
+    "add_by_index_description": "Enter the derivation path for the wallet you would like to import from your Ledger."
   }
 }

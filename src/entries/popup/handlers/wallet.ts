@@ -299,7 +299,7 @@ export const exportAccount = async (address: Address, password: string) => {
 };
 
 export const importAccountAtIndex = async (
-  silbing: Address,
+  // silbing: Address,
   type: string | 'Trezor' | 'Ledger',
   index: number,
 ) => {
@@ -337,11 +337,12 @@ export const importAccountAtIndex = async (
       throw new Error('Unknown wallet type');
   }
 
-  return (await walletAction('add_account_at_index', {
-    silbingAddress: silbing,
-    index,
-    address,
-  })) as Address;
+  // return (await walletAction('add_account_at_index', {
+  //   silbingAddress: silbing,
+  //   index,
+  //   address,
+  // })) as Address;
+  return address;
 };
 
 export const connectTrezor = async () => {
