@@ -29,7 +29,7 @@ import {
   DetailsMenuRow,
   DetailsMenuWrapper,
 } from '../../components/DetailsMenu';
-import { useToast } from '../../hooks/useToast';
+import { triggerToast } from '../../components/Toast/Toast';
 
 export function TransactionDetailsMenu({
   children,
@@ -44,7 +44,6 @@ export function TransactionDetailsMenu({
   const [closed, setClosed] = useState(false);
   const onOpenChange = () => setClosed(false);
 
-  const { triggerToast } = useToast();
   const trimmedHash = useMemo(
     () => transaction?.hash?.replace(/-.*/g, '') || '',
     [transaction],
@@ -60,7 +59,7 @@ export function TransactionDetailsMenu({
       title: i18n.t('speed_up_and_cancel.handle_copy_title'),
       description: truncatedAddress,
     });
-  }, [triggerToast, trimmedHash, truncatedAddress]);
+  }, [trimmedHash, truncatedAddress]);
 
   const viewOnExplorer = useCallback(() => {
     const explorer = getTransactionBlockExplorerUrl({

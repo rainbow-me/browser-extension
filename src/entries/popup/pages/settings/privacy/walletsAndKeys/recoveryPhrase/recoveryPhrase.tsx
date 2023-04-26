@@ -3,16 +3,15 @@ import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import SeedPhraseTable from '~/entries/popup/components/SeedPhraseTable/SeedPhraseTable';
+import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import ViewSecret from '~/entries/popup/components/ViewSecret/ViewSecret';
 import { exportWallet } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
-import { useToast } from '~/entries/popup/hooks/useToast';
 import { ROUTES } from '~/entries/popup/urls';
 
 export function RecoveryPhrase() {
   const { state } = useLocation();
   const navigate = useRainbowNavigate();
-  const { triggerToast } = useToast();
 
   const [seed, setSeed] = useState('');
 
@@ -28,7 +27,7 @@ export function RecoveryPhrase() {
         'settings.privacy_and_security.wallets_and_keys.recovery_phrase.phrase_copied',
       ),
     });
-  }, [seed, triggerToast]);
+  }, [seed]);
 
   useEffect(() => {
     const fetchRecoveryPhrase = async () => {
