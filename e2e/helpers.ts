@@ -209,3 +209,16 @@ export async function getWindowHandle({ driver }) {
   const windowHandle = await driver.getWindowHandle();
   return windowHandle;
 }
+
+export async function handleBraveWallet({ driver }: { driver: WebDriver }) {
+  await delayTime('long');
+  const pageTitle = await driver.getTitle();
+  if (pageTitle === 'Wallet') {
+    const braveHandler = await getWindowHandle({ driver });
+    const { handlers } = await getAllWindowHandles({ driver });
+    const dappHandler =
+      handlers.find((handler) => handler !== braveHandler) || '';
+    driver.switchTo().window(dappHandler);
+    driver.navigate().refresh();
+  }
+}

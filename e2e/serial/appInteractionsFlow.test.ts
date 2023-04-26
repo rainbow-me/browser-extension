@@ -16,6 +16,7 @@ import {
   goToPopup,
   goToTestApp,
   goToWelcome,
+  handleBraveWallet,
   initDriverWithOptions,
   querySelector,
   typeOnTextInput,
@@ -217,6 +218,8 @@ describe('App interactions flow', () => {
     expect(button).toBeTruthy();
     await button.click();
 
+    await handleBraveWallet({ driver });
+
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await driver.switchTo().window(popupHandler);
@@ -244,6 +247,8 @@ describe('App interactions flow', () => {
     const button = await querySelector(driver, '[id="signTypedData"]');
     expect(button).toBeTruthy();
     await waitAndClick(button, driver);
+
+    await handleBraveWallet({ driver });
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
@@ -280,6 +285,8 @@ describe('App interactions flow', () => {
 
     expect(button).toBeTruthy();
     await waitAndClick(button, driver);
+
+    await handleBraveWallet({ driver });
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
