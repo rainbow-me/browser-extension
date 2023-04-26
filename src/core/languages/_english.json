@@ -425,13 +425,13 @@
   },
   "seed_reveal": {
     "title": "Your Secret Recovery Phrase",
-    "write_down_seed_importance": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
+    "write_down_seed_importance": "Anyone with these words can access your entire wallet! Store them somewhere safe and never share them.",
     "saved_these_words": "I've saved these words",
     "phrase_copied": "Recovery Phrase Copied"
   },
   "import_or_connect": {
     "title": "Restore or Connect",
-    "explanation": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
+    "explanation": "Anyone with your Secret Recovery Phrase can access your entire wallet! Store it somewhere safe and never share it.",
     "import_wallet": "Import with a Secret Recovery Phrase or Private Key",
     "import_wallet_description": "Add a wallet using your Secret Recovery Phrase or a Private Key.",
     "connect_wallet": "Connect your hardware wallet",
