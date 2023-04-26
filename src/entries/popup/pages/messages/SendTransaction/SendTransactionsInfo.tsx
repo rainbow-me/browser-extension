@@ -121,7 +121,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
                     alignVertical="center"
                     alignHorizontal="center"
                   >
-                    <ChainBadge chainId={ChainId.mainnet} size={'small'} />
+                    <ChainBadge chainId={appSession.chainId} size={'small'} />
                     <Text size="14pt" weight="semibold" color="label">
                       {nativeAssetAmount || ''}
                     </Text>
