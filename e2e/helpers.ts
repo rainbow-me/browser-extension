@@ -135,7 +135,7 @@ export async function typeOnTextInput({ id, text, driver }) {
   await element.sendKeys(text);
 }
 
-export async function getTextFromTextInput({ id, driver }) {
+export async function dInput({ id, driver }) {
   const element = await findElementByTestId({ id, driver });
   return await element.getAttribute('value');
 }
