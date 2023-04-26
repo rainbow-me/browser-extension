@@ -1,5 +1,5 @@
 import { AnimationControls, motion } from 'framer-motion';
-import React from 'react';
+import React, { useImperativeHandle } from 'react';
 
 import { i18n } from '~/core/languages';
 import { SupportedCurrencyKey, supportedCurrencies } from '~/core/references';
@@ -20,18 +20,13 @@ import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverfl
 import { SendInputMask } from '../../components/InputMask/SendInputMask/SendInputMask';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 
-export const ValueInput = ({
-  asset,
-  currentCurrency,
-  dependentAmount,
-  independentAmount,
-  independentField,
-  independentFieldRef,
-  setIndependentAmount,
-  setMaxAssetAmount,
-  switchIndependentField,
-  inputAnimationControls,
-}: {
+interface InputAPI {
+  blur: () => void;
+  focus: () => void;
+  isFocused?: () => boolean;
+}
+
+interface ValueInputProps {
   asset: ParsedAddressAsset;
   currentCurrency: SupportedCurrencyKey;
   dependentAmount: {
@@ -45,111 +40,137 @@ export const ValueInput = ({
   setMaxAssetAmount: () => void;
   switchIndependentField: () => void;
   inputAnimationControls: AnimationControls;
-}) => {
-  const truncatedAssetSymbol = asset?.symbol?.slice(0, 5) ?? '';
+}
 
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
-      switch (e.key) {
-        case shortcuts.send.SET_MAX_AMOUNT.key:
-          setMaxAssetAmount();
-          break;
-        case shortcuts.send.SWITCH_CURRENCY_LABEL.key:
-          switchIndependentField();
-          break;
-      }
-    },
-  });
+export const ValueInput = React.forwardRef<InputAPI, ValueInputProps>(
+  (
+    {
+      asset,
+      currentCurrency,
+      dependentAmount,
+      independentAmount,
+      independentField,
+      independentFieldRef,
+      setIndependentAmount,
+      setMaxAssetAmount,
+      switchIndependentField,
+      inputAnimationControls,
+    }: ValueInputProps,
+    forwardedRef,
+  ) => {
+    const truncatedAssetSymbol = asset?.symbol?.slice(0, 5) ?? '';
 
-  return (
-    <Box paddingBottom="20px" paddingHorizontal="20px">
-      <Stack space="16px">
-        <Separator color="separatorSecondary" />
-        <Box width="full">
-          <Rows space="16px">
-            <Row>
-              <Inline alignVertical="center" alignHorizontal="justify">
-                <Box
-                  as={motion.div}
-                  width="full"
-                  animate={inputAnimationControls}
-                >
-                  <SendInputMask
-                    value={`${independentAmount}`}
-                    placeholder={`0.00 ${
-                      independentField === 'asset'
-                        ? truncatedAssetSymbol
-                        : currentCurrency
-                    }`}
-                    decimals={
-                      independentField === 'asset'
-                        ? asset?.decimals
-                        : supportedCurrencies[currentCurrency].decimals
-                    }
-                    borderColor="accent"
-                    onChange={setIndependentAmount}
-                    height="56px"
-                    variant="bordered"
-                    innerRef={independentFieldRef}
-                    placeholderSymbol={
-                      independentField === 'asset'
-                        ? truncatedAssetSymbol
-                        : currentCurrency
-                    }
-                  />
-                </Box>
+    useImperativeHandle(forwardedRef, () => ({
+      blur: () => independentFieldRef.current?.blur(),
+      focus: () => independentFieldRef.current?.focus(),
+      isFocused: () => independentFieldRef.current === document.activeElement,
+    }));
 
-                <Box position="absolute" style={{ right: 48 }}>
-                  <Button
-                    onClick={setMaxAssetAmount}
-                    color="accent"
-                    height="24px"
-                    borderRadius="8px"
-                    variant="raised"
-                    testId="value-input-max"
+    useKeyboardShortcut({
+      handler: (e: KeyboardEvent) => {
+        switch (e.key) {
+          case shortcuts.send.SET_MAX_AMOUNT.key:
+            setMaxAssetAmount();
+            break;
+          case shortcuts.send.SWITCH_CURRENCY_LABEL.key:
+            switchIndependentField();
+            break;
+        }
+      },
+    });
+
+    return (
+      <Box paddingBottom="20px" paddingHorizontal="20px">
+        <Stack space="16px">
+          <Separator color="separatorSecondary" />
+          <Box width="full">
+            <Rows space="16px">
+              <Row>
+                <Inline alignVertical="center" alignHorizontal="justify">
+                  <Box
+                    as={motion.div}
+                    width="full"
+                    animate={inputAnimationControls}
                   >
-                    {i18n.t('send.max')}
-                  </Button>
-                </Box>
-              </Inline>
-            </Row>
-
-            <Row height="content">
-              <Inline alignHorizontal="justify" alignVertical="center">
-                <TextOverflow
-                  as="p"
-                  size="11pt"
-                  weight="bold"
-                  color={`${asset ? 'label' : 'labelTertiary'}`}
-                >
-                  {dependentAmount.display}
-                </TextOverflow>
-                <Box
-                  testId="value-input-switch"
-                  onClick={switchIndependentField}
-                >
-                  <Inline alignVertical="center" space="4px">
-                    <Symbol
-                      color="accent"
-                      size={14}
-                      weight="bold"
-                      symbol="arrow.up.arrow.down"
+                    <SendInputMask
+                      value={`${independentAmount}`}
+                      placeholder={`0.00 ${
+                        independentField === 'asset'
+                          ? truncatedAssetSymbol
+                          : currentCurrency
+                      }`}
+                      decimals={
+                        independentField === 'asset'
+                          ? asset?.decimals
+                          : supportedCurrencies[currentCurrency].decimals
+                      }
+                      borderColor="accent"
+                      onChange={setIndependentAmount}
+                      height="56px"
+                      variant="bordered"
+                      innerRef={independentFieldRef}
+                      placeholderSymbol={
+                        independentField === 'asset'
+                          ? truncatedAssetSymbol
+                          : currentCurrency
+                      }
                     />
-                    <TextOverflow color="accent" size="12pt" weight="bold">
-                      {i18n.t('send.switch_to', {
-                        currency:
-                          independentField === 'asset'
-                            ? currentCurrency
-                            : asset?.symbol,
-                      })}
-                    </TextOverflow>
-                  </Inline>
-                </Box>
-              </Inline>
-            </Row>
-          </Rows>
-        </Box>
-      </Stack>
-    </Box>
-  );
-};
+                  </Box>
+
+                  <Box position="absolute" style={{ right: 48 }}>
+                    <Button
+                      onClick={setMaxAssetAmount}
+                      color="accent"
+                      height="24px"
+                      borderRadius="8px"
+                      variant="raised"
+                      testId="value-input-max"
+                    >
+                      {i18n.t('send.max')}
+                    </Button>
+                  </Box>
+                </Inline>
+              </Row>
+
+              <Row height="content">
+                <Inline alignHorizontal="justify" alignVertical="center">
+                  <TextOverflow
+                    as="p"
+                    size="11pt"
+                    weight="bold"
+                    color={`${asset ? 'label' : 'labelTertiary'}`}
+                  >
+                    {dependentAmount.display}
+                  </TextOverflow>
+                  <Box
+                    testId="value-input-switch"
+                    onClick={switchIndependentField}
+                  >
+                    <Inline alignVertical="center" space="4px">
+                      <Symbol
+                        color="accent"
+                        size={14}
+                        weight="bold"
+                        symbol="arrow.up.arrow.down"
+                      />
+                      <TextOverflow color="accent" size="12pt" weight="bold">
+                        {i18n.t('send.switch_to', {
+                          currency:
+                            independentField === 'asset'
+                              ? currentCurrency
+                              : asset?.symbol,
+                        })}
+                      </TextOverflow>
+                    </Inline>
+                  </Box>
+                </Inline>
+              </Row>
+            </Rows>
+          </Box>
+        </Stack>
+      </Box>
+    );
+  },
+);
+
+ValueInput.displayName = 'ValueInput';

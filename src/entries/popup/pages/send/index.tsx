@@ -55,6 +55,7 @@ import { ValueInput } from './ValueInput';
 interface ChildInputAPI {
   blur: () => void;
   focus: () => void;
+  isFocused?: () => boolean;
 }
 
 export function Send() {
@@ -78,8 +79,9 @@ export function Send() {
 
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
 
-  const toAddressInputRef = useRef<ChildInputAPI | null>(null);
-  const sendTokenInputRef = useRef<HTMLInputElement>(null);
+  const toAddressInputRef = useRef<ChildInputAPI>(null);
+  const sendTokenInputRef = useRef<ChildInputAPI>(null);
+  const valueInputRef = useRef<ChildInputAPI>(null);
 
   const {
     assetAmount,
@@ -304,7 +306,10 @@ export function Send() {
           sendTokenInputRef.current?.focus();
         }
       } else {
-        if (e.key === shortcuts.send.OPEN_CONTACT_MENU.key) {
+        if (
+          e.key === shortcuts.send.OPEN_CONTACT_MENU.key &&
+          !valueInputRef.current?.isFocused?.()
+        ) {
           clickHeaderRight();
         }
       }
@@ -408,6 +413,7 @@ export function Send() {
                       setMaxAssetAmount={setMaxAssetAmount}
                       switchIndependentField={switchIndependentField}
                       inputAnimationControls={controls}
+                      ref={valueInputRef}
                     />
                   ) : null}
                 </Box>
