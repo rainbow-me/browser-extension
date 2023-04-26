@@ -312,11 +312,7 @@ const WalletRow = ({
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <Lens
-      style={{ borderRadius: 15 }}
-      onKeyDown={() => setMenuOpen(true)}
-      // onClick={() => setMenuOpen(true)}
-    >
+    <Lens style={{ borderRadius: 15 }} onKeyDown={() => setMenuOpen(true)}>
       <AccountItem
         key={account}
         account={account}
