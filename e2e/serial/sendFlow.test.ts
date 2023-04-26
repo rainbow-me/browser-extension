@@ -38,7 +38,7 @@ beforeAll(async () => {
   rootURL += extensionId;
 });
 
-afterAll(async () => driver.quit());
+afterAll(() => driver.quit());
 
 it('should be able import a wallet via seed', async () => {
   //  Start from welcome screen

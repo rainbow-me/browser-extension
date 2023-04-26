@@ -6,20 +6,20 @@ import { truncateAddress } from '~/core/utils/address';
 import { Box, Button, Stack, Text } from '~/design-system';
 
 import { AccountName } from '../../components/AccountName/AccountName';
-import { useToast } from '../../hooks/useToast';
+import { triggerToast } from '../../components/Toast/Toast';
 
 import { QRCode } from './qrcode';
 
 export const QRCodePage = () => {
   const { address } = useAccount();
-  const { triggerToast } = useToast();
+
   const handleCopy = React.useCallback(() => {
     navigator.clipboard.writeText(address as string);
     triggerToast({
       title: i18n.t('wallet_header.copy_toast'),
       description: truncateAddress(address),
     });
-  }, [address, triggerToast]);
+  }, [address]);
 
   return (
     <Box

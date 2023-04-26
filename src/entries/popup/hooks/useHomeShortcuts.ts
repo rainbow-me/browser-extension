@@ -10,13 +10,13 @@ import { useSelectedTransactionStore } from '~/core/state/selectedTransaction';
 import { truncateAddress } from '~/core/utils/address';
 import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 
+import { triggerToast } from '../components/Toast/Toast';
 import * as wallet from '../handlers/wallet';
 import { ROUTES } from '../urls';
 import { clickHeaderRight } from '../utils/clickHeader';
 
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 import { useRainbowNavigate } from './useRainbowNavigate';
-import { useToast } from './useToast';
 
 export function useHomeShortcuts() {
   const { currentAddress: address } = useCurrentAddressStore();
@@ -24,7 +24,6 @@ export function useHomeShortcuts() {
   const { selectedToken } = useSelectedTokenStore();
   const { selectedTransaction } = useSelectedTransactionStore();
   const { sheet } = useCurrentHomeSheetStore();
-  const { triggerToast } = useToast();
 
   const getHomeShortcutsAreActive = useCallback(() => {
     return sheet === 'none' && !selectedTransaction && !selectedToken;
@@ -36,7 +35,7 @@ export function useHomeShortcuts() {
       title: i18n.t('wallet_header.copy_toast'),
       description: truncateAddress(address),
     });
-  }, [address, triggerToast]);
+  }, [address]);
 
   const openProfile = useCallback(
     () =>
