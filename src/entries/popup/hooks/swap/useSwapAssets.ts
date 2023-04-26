@@ -29,7 +29,7 @@ const sortBy = (by: SortMethod) => {
 const isSameAsset = (
   a1: Pick<ParsedAsset, 'chainId' | 'address'>,
   a2: Pick<ParsedAsset, 'chainId' | 'address'>,
-) => a1.chainId === a2.chainId && isLowerCaseMatch(a1.address, a2?.address);
+) => a1.chainId === a2.chainId && isLowerCaseMatch(a1.address, a2.address);
 
 export const useSwapAssets = () => {
   const { currentAddress } = useCurrentAddressStore();
