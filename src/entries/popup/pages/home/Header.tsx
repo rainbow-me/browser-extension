@@ -14,9 +14,9 @@ import { BoxStyles, TextStyles } from '~/design-system/styles/core.css';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
+import { triggerToast } from '../../components/Toast/Toast';
 import { useAlert } from '../../hooks/useAlert';
 import { useAvatar } from '../../hooks/useAvatar';
-import { useToast } from '../../hooks/useToast';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
@@ -89,7 +89,6 @@ function ActionButtonsSection() {
   const { avatar } = useAvatar({ address });
 
   const { isWatchingWallet } = useWallets();
-  const { triggerToast } = useToast();
   const { featureFlags } = useFeatureFlagsStore();
   const { triggerAlert } = useAlert();
 
@@ -99,7 +98,7 @@ function ActionButtonsSection() {
       title: i18n.t('wallet_header.copy_toast'),
       description: truncateAddress(address),
     });
-  }, [address, triggerToast]);
+  }, [address]);
 
   const allowSwap = React.useMemo(
     () =>
