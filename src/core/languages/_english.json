@@ -432,12 +432,12 @@
   "import_or_connect": {
     "title": "Restore or Connect",
     "explanation": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
-    "import_wallet": "Import with a Secret Recovery Phrase or Private Key",
+    "import_wallet": "Import with a Secret Recovery Phrase or Private Key.",
     "import_wallet_description": "Add a wallet using your Secret Recovery Phrase or a Private Key.",
     "connect_wallet": "Connect your hardware wallet",
-    "connect_wallet_description": "Add accounts from your hardware wallet",
+    "connect_wallet_description": "Add accounts from your Bluetooth hardware wallet.",
     "watch_address": "Watch an Ethereum address",
-    "watch_address_description": "Watch a public address or ENS name"
+    "watch_address_description": "Watch a public address or ENS name."
   },
   "import_wallet_selection": {
     "title": "Your wallets",
