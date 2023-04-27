@@ -26,7 +26,7 @@ const fetchWallets = async () => {
 export const useWallets = () => {
   const { hiddenWallets } = useHiddenWalletsStore();
 
-  const { data: allWallets } = useQuery(['accounts'], fetchWallets, {
+  const { data: allWallets, refetch } = useQuery(['accounts'], fetchWallets, {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });
@@ -42,6 +42,7 @@ export const useWallets = () => {
         watchedWallets: [],
         walletsReady: false,
         isWatchingWallet: false,
+        fetchWallets: refetch,
       };
 
     const visibleWallets = allWallets.filter((a) => !hiddenWallets[a.address]);
@@ -59,6 +60,7 @@ export const useWallets = () => {
       watchedWallets,
       walletsReady: true,
       isWatchingWallet: address && watchedAddresses.includes(address),
+      fetchWallets: refetch,
     };
-  }, [allWallets, hiddenWallets, address]);
+  }, [allWallets, hiddenWallets, address, refetch]);
 };
