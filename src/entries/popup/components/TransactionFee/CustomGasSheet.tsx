@@ -10,7 +10,6 @@ import React, {
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
-import { shortcuts } from '~/core/references/shortcuts';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
 import { useGasStore } from '~/core/state';
 import { GasFeeParams, GasSpeed } from '~/core/types/gas';
@@ -34,7 +33,6 @@ import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverfl
 import { SymbolStyles, TextStyles } from '~/design-system/styles/core.css';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
-import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import usePrevious from '../../hooks/usePrevious';
 import { zIndexes } from '../../utils/zIndexes';
 import {
@@ -401,14 +399,6 @@ export const CustomGasSheet = ({
       }),
     [hideExplainerSheet, showExplainerSheet],
   );
-
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
-      if (e.key === shortcuts.global.SELECT_CUSTOM_GAS.key) {
-        onSelectedGasChange(GasSpeed.CUSTOM);
-      }
-    },
-  });
 
   return (
     <>
