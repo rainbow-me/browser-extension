@@ -175,7 +175,6 @@ describe('App interactions flow', () => {
   it('should be able to sign typed data (v3)', async () => {
     await driver.navigate().refresh();
     const dappHandler = await getWindowHandle({ driver });
-    // await driver.switchTo().window(dappHandler);
 
     const button = await findElementById({ id: 'signTypedDataV3', driver });
     await waitAndClick(button, driver);
@@ -216,7 +215,6 @@ describe('App interactions flow', () => {
   it('should be able to sign typed data (v4)', async () => {
     await driver.navigate().refresh();
     const dappHandler = await getWindowHandle({ driver });
-    // await driver.switchTo().window(dappHandler);
 
     const button = await findElementById({ id: 'signTypedDataV4', driver });
     await waitAndClick(button, driver);
@@ -272,8 +270,6 @@ describe('App interactions flow', () => {
     await driver.get('https://bx-e2e-dapp.vercel.app/');
     // const dappHandler = await getWindowHandle({ driver });
 
-    // await driver.switchTo().window(dappHandler);
-
     const chain = await findElementById({ id: 'chainId', driver });
     const chainText = await chain.getText();
     await expect(chainText).toBe('0x539');
@@ -281,7 +277,6 @@ describe('App interactions flow', () => {
 
   it.skip('should be able to create token', async () => {
     const dappHandler = await getWindowHandle({ driver });
-    // await driver.switchTo().window(dappHandler);
 
     const button = await findElementById({ id: 'createToken', driver });
     await waitAndClick(button, driver);
@@ -311,8 +306,6 @@ describe('App interactions flow', () => {
   });
 
   it.skip('should be able to transfer token', async () => {
-    // await driver.navigate().refresh();
-
     // get token contract address
     await delayTime('medium');
     const token = await findElementById({ id: 'tokenAddress', driver });
@@ -330,7 +323,6 @@ describe('App interactions flow', () => {
     );
 
     const dappHandler = await getWindowHandle({ driver });
-    // await driver.switchTo().window(dappHandler);
 
     const watchButton = await findElementById({ id: 'transferTokens', driver });
     await waitAndClick(watchButton, driver);
@@ -371,9 +363,7 @@ describe('App interactions flow', () => {
   });
 
   it.skip('should be able to approve tokens', async () => {
-    // await driver.navigate().refresh();
     const dappHandler = await getWindowHandle({ driver });
-    // await driver.switchTo().window(dappHandler);
 
     const watchButton = await findElementById({ id: 'approveTokens', driver });
     await waitAndClick(watchButton, driver);
@@ -397,7 +387,6 @@ describe('App interactions flow', () => {
   });
 
   it.skip('should be able to transfer tokens without gas', async () => {
-    // await driver.navigate().refresh();
     // get token contract address
     await delayTime('medium');
     const token = await findElementById({ id: 'tokenAddress', driver });
@@ -415,7 +404,6 @@ describe('App interactions flow', () => {
     );
 
     const dappHandler = await getWindowHandle({ driver });
-    // await driver.switchTo().window(dappHandler);
 
     const watchButton = await findElementById({
       id: 'transferTokensWithoutGas',
@@ -459,9 +447,7 @@ describe('App interactions flow', () => {
   });
 
   it.skip('should be able to approve token without gas', async () => {
-    // await driver.navigate().refresh();
     const dappHandler = await getWindowHandle({ driver });
-    // await driver.switchTo().window(dappHandler);
 
     const watchButton = await findElementById({
       id: 'approveTokensWithoutGas',
@@ -488,7 +474,6 @@ describe('App interactions flow', () => {
   });
 
   it.skip('should be able to do a legacy send', async () => {
-    // await driver.navigate().refresh();
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({ id: 'sendButton', driver });
@@ -511,7 +496,6 @@ describe('App interactions flow', () => {
   });
 
   it.skip('should be able to do a EIP 1559 send', async () => {
-    // await driver.navigate().refresh();
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({ id: 'sendEIP1559Button', driver });
@@ -534,7 +518,6 @@ describe('App interactions flow', () => {
   });
 
   it.skip('should be able to deploy a collection', async () => {
-    // await driver.navigate().refresh();
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({
@@ -567,7 +550,6 @@ describe('App interactions flow', () => {
   });
 
   it.skip('should be able to mint a collectible', async () => {
-    // await driver.navigate().refresh();
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({
@@ -600,7 +582,6 @@ describe('App interactions flow', () => {
   });
 
   it.skip('should be able to approve a collectible', async () => {
-    // await driver.navigate().refresh();
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({
@@ -633,7 +614,6 @@ describe('App interactions flow', () => {
   });
 
   it.skip('should be able to set approval for all for a collectible', async () => {
-    // await driver.navigate().refresh();
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({
@@ -666,8 +646,6 @@ describe('App interactions flow', () => {
   });
 
   it.skip('should be able to revoke approval for a collectible', async () => {
-    // await driver.navigate().refresh();
-
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({
@@ -700,7 +678,6 @@ describe('App interactions flow', () => {
   });
 
   it.skip('should be able to transfer a collectible', async () => {
-    // await driver.navigate().refresh();
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({
