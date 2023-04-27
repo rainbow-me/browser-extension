@@ -36,11 +36,13 @@ interface MoreInfoButtonProps {
   open?: boolean;
   controlled?: boolean;
   onClose?: () => void;
+  onOpen?: () => void;
 }
 
 const MoreInfoButton = ({
   controlled,
   onClose,
+  onOpen,
   open,
   options,
 }: MoreInfoButtonProps) => {
@@ -53,7 +55,7 @@ const MoreInfoButton = ({
     },
   });
   return (
-    <Box onClick={(e) => e.stopPropagation()}>
+    <Box onClick={onOpen}>
       <MoreInfoMenuContainer open={open} controlled={controlled}>
         <DropdownMenuTrigger asChild>
           <Box style={{ cursor: 'default' }}>
