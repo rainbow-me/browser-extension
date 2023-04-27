@@ -430,7 +430,7 @@
     "phrase_copied": "Recovery Phrase Copied"
   },
   "import_or_connect": {
-    "title": "Import or Connect",
+    "title": "Restore or Connect",
     "explanation": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
     "import_wallet": "Import with a Secret Recovery Phrase or Private Key",
     "import_wallet_description": "Add a wallet using your Secret Recovery Phrase or a Private Key.",
