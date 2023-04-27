@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 
 import { analytics } from '~/analytics';
 import { EventProperties } from '~/analytics/event';
@@ -72,7 +72,7 @@ function Fee({
   setCustomMaxPriorityFee,
 }: FeeProps) {
   const [showCustomGasSheet, setShowCustomGasSheet] = useState(false);
-
+  const switchTransactionSpeedMenuRef = useRef<{ open: () => void }>(null);
   const gasFeeParamsForSelectedSpeed = useMemo(
     () => gasFeeParamsBySpeed?.[selectedSpeed],
     [gasFeeParamsBySpeed, selectedSpeed],
@@ -115,8 +115,11 @@ function Fee({
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
-      if (e.key === shortcuts.global.OPEN_GAS_MENU.key) {
-        openCustomGasSheet();
+      if (e.key === shortcuts.global.OPEN_CUSTOM_GAS_MENU.key) {
+        // hackery preventing GweiInputMask from firing an onChange event when opening the menu with KB
+        setTimeout(() => openCustomGasSheet(), 0);
+      } else if (e.key === shortcuts.global.OPEN_GAS_MENU.key) {
+        switchTransactionSpeedMenuRef?.current?.open();
       }
     },
   });
@@ -182,6 +185,7 @@ function Fee({
               plainTriggerBorder={plainTriggerBorder}
               onOpenChange={onSpeedOpenChange}
               dropdownContentMarginRight={speedMenuMarginRight}
+              ref={switchTransactionSpeedMenuRef}
             />
             {chainId === ChainId.mainnet ? (
               <Box

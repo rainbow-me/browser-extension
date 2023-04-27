@@ -15,15 +15,15 @@ export const shortcuts = {
       key: 'Escape',
     },
     OPEN_GAS_MENU: {
-      display: '',
+      display: 'G',
       key: 'g',
     },
     SELECT: {
       display: 'Enter',
       key: 'Enter',
     },
-    SELECT_CUSTOM_GAS: {
-      display: '',
+    OPEN_CUSTOM_GAS_MENU: {
+      display: 'C',
       key: 'c',
     },
   },
