@@ -12,9 +12,7 @@ import {
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
-  querySelector,
   typeOnTextInput,
-  waitAndClick,
 } from '../helpers';
 
 let rootURL = 'chrome-extension://';
@@ -37,7 +35,7 @@ describe('Import wallet flow', () => {
   afterAll(async () => driver.quit());
 
   // Import a wallet
-  it('should be able import a wallet via seed', async () => {
+  it('should be able import a wallet via pkey', async () => {
     //  Start from welcome screen
     await goToWelcome(driver, rootURL);
     await findElementByTestIdAndClick({
@@ -52,17 +50,14 @@ describe('Import wallet flow', () => {
     await typeOnTextInput({
       id: 'secret-textarea',
       driver,
-      text: 'test test test test test test test test test test test junk',
+      text: '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
     });
 
     await findElementByTestIdAndClick({
       id: 'import-wallets-button',
       driver,
     });
-    await findElementByTestIdAndClick({
-      id: 'add-wallets-button',
-      driver,
-    });
+
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
     await typeOnTextInput({
       id: 'confirm-password-input',
@@ -77,31 +72,5 @@ describe('Import wallet flow', () => {
     await delayTime('short');
     const account = await getTextFromText({ id: 'account-name', driver });
     expect(account).toBe('0xf39F...2266');
-  });
-
-  it('should be able to test the sandbox for the popup', async () => {
-    await goToPopup(driver, rootURL, '#/home');
-    await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
-    await findElementByTestIdAndClick({ id: 'settings-link', driver });
-    const btn = await querySelector(
-      driver,
-      '[data-testid="test-sandbox-popup"]',
-    );
-    await waitAndClick(btn, driver);
-    const text = await driver.switchTo().alert().getText();
-    expect(text).toBe('Popup sandboxed!');
-    await driver.switchTo().alert().accept();
-  });
-
-  it('should be able to test the sandbox for the background', async () => {
-    const btn = await querySelector(
-      driver,
-      '[data-testid="test-sandbox-background"]',
-    );
-    await waitAndClick(btn, driver);
-    await delayTime('long');
-    const text = await driver.switchTo().alert().getText();
-    expect(text).toBe('Background sandboxed!');
-    await driver.switchTo().alert().accept();
   });
 });
