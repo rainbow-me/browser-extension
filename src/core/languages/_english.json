@@ -32,7 +32,7 @@
     "import_wallet": "Import with a Secret Recovery Phrase or Private Key",
     "import_wallet_description": "Add a wallet using your Secret Recovery Phrase or a Private Key.",
     "hardware_wallet": "Add from your hardware wallet",
-    "hardware_wallet_description": "Add more accounts from your Bluetooth hardware wallet.",
+    "hardware_wallet_description": "Add more accounts from your hardware wallet.",
     "watch_address": "Watch an Ethereum address",
     "watch_address_description": "Watch a public address or ENS name."
   },
@@ -435,7 +435,7 @@
     "import_wallet": "Import with a Secret Recovery Phrase or Private Key",
     "import_wallet_description": "Add a wallet using your Secret Recovery Phrase or a Private Key.",
     "connect_wallet": "Connect your hardware wallet",
-    "connect_wallet_description": "Add accounts from your Bluetooth hardware wallet.",
+    "connect_wallet_description": "Add accounts from your hardware wallet.",
     "watch_address": "Watch an Ethereum address",
     "watch_address_description": "Watch a public address or ENS name."
   },
