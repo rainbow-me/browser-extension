@@ -39,6 +39,7 @@ import { useSendState } from '../../hooks/send/useSendState';
 import { useSendValidations } from '../../hooks/send/useSendValidations';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 
 import { ContactAction, ContactPrompt } from './ContactPrompt';
@@ -60,6 +61,10 @@ export function Send() {
   const navigate = useRainbowNavigate();
 
   const { isContact } = useContactsStore();
+  const { allWallets } = useWallets();
+  const isMyWallet = (address: Address) =>
+    allWallets?.some((w) => w.address === address);
+
   const { connectedToHardhat } = useConnectedToHardhatStore();
 
   const { asset, selectAssetAddress, assets, setSortMethod, sortMethod } =
@@ -223,10 +228,6 @@ export function Send() {
     [selectAssetAddress, setIndependentAmount],
   );
 
-  const navbarButtonAction = isContact({ address: toAddress })
-    ? 'edit'
-    : 'save';
-
   useEffect(() => {
     return () => {
       clearCustomGasModified();
@@ -316,13 +317,15 @@ export function Send() {
         background={'surfaceSecondary'}
         leftComponent={<Navbar.CloseButton />}
         rightComponent={
-          <NavbarContactButton
-            onSaveAction={setSaveContactAction}
-            toAddress={toAddress}
-            action={navbarButtonAction}
-            enabled={!!toAddress}
-            chainId={asset?.chainId}
-          />
+          isMyWallet(toAddress) ? undefined : (
+            <NavbarContactButton
+              onSaveAction={setSaveContactAction}
+              toAddress={toAddress}
+              action={isContact({ address: toAddress }) ? 'edit' : 'save'}
+              enabled={!!toAddress}
+              chainId={asset?.chainId}
+            />
+          )
         }
       />
       <Box
