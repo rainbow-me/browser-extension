@@ -312,11 +312,7 @@ const WalletRow = ({
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   return (
-    <Lens
-      style={{ borderRadius: 15 }}
-      onKeyDown={() => setMenuOpen(true)}
-      onClick={() => setMenuOpen(true)}
-    >
+    <Lens style={{ borderRadius: 15 }} onKeyDown={() => setMenuOpen(true)}>
       <AccountItem
         key={account}
         account={account}
@@ -333,6 +329,7 @@ const WalletRow = ({
               controlled
               open={menuOpen}
               onClose={() => setMenuOpen(false)}
+              onOpen={() => setMenuOpen(true)}
               options={InfoButtonOptions({
                 account,
                 handleViewPrivateKey,
