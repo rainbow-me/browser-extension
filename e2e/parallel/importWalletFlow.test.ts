@@ -12,9 +12,7 @@ import {
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
-  querySelector,
   typeOnTextInput,
-  waitAndClick,
 } from '../helpers';
 
 let rootURL = 'chrome-extension://';
@@ -77,31 +75,5 @@ describe('Import wallet flow', () => {
     await delayTime('short');
     const account = await getTextFromText({ id: 'account-name', driver });
     expect(account).toBe('0xf39F...2266');
-  });
-
-  it('should be able to test the sandbox for the popup', async () => {
-    await goToPopup(driver, rootURL, '#/home');
-    await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
-    await findElementByTestIdAndClick({ id: 'settings-link', driver });
-    const btn = await querySelector(
-      driver,
-      '[data-testid="test-sandbox-popup"]',
-    );
-    await waitAndClick(btn, driver);
-    const text = await driver.switchTo().alert().getText();
-    expect(text).toBe('Popup sandboxed!');
-    await driver.switchTo().alert().accept();
-  });
-
-  it('should be able to test the sandbox for the background', async () => {
-    const btn = await querySelector(
-      driver,
-      '[data-testid="test-sandbox-background"]',
-    );
-    await waitAndClick(btn, driver);
-    await delayTime('long');
-    const text = await driver.switchTo().alert().getText();
-    expect(text).toBe('Background sandboxed!');
-    await driver.switchTo().alert().accept();
   });
 });

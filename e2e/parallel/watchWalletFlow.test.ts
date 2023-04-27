@@ -5,6 +5,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
   delayTime,
+  findElementByIdAndClick,
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
@@ -13,6 +14,7 @@ import {
   initDriverWithOptions,
   querySelector,
   typeOnTextInput,
+  waitAndClick,
 } from '../helpers';
 
 let rootURL = 'chrome-extension://';
@@ -91,5 +93,40 @@ describe('Watch wallet flow', () => {
     // Unlock
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
     await findElementByTestIdAndClick({ id: 'unlock-button', driver });
+  });
+
+  it('should be able to test the sandbox for the popup', async () => {
+    await goToPopup(driver, rootURL, '#/home');
+    await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
+    await findElementByTestIdAndClick({ id: 'settings-link', driver });
+    const btn = await querySelector(
+      driver,
+      '[data-testid="test-sandbox-popup"]',
+    );
+    await waitAndClick(btn, driver);
+    const text = await driver.switchTo().alert().getText();
+    expect(text).toBe('Popup sandboxed!');
+    await driver.switchTo().alert().accept();
+  });
+
+  it('should be able to test the sandbox for the background', async () => {
+    const btn = await querySelector(
+      driver,
+      '[data-testid="test-sandbox-background"]',
+    );
+    await waitAndClick(btn, driver);
+    await delayTime('long');
+    const text = await driver.switchTo().alert().getText();
+    expect(text).toBe('Background sandboxed!');
+    await driver.switchTo().alert().accept();
+  });
+
+  it('should be able to add a new wallet', async () => {
+    await goToPopup(driver, rootURL, '#/home');
+    await findElementByIdAndClick({
+      id: 'header-account-name-shuffle',
+      driver,
+    });
+    await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
   });
 });
