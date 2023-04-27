@@ -27,6 +27,8 @@ import { importAccountAtIndex } from '../../handlers/wallet';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
 
+import { AccountIndex } from './walletList';
+
 export const AddByIndexSheet = ({
   show,
   onDone,
@@ -314,11 +316,14 @@ export const AddByIndexSheet = ({
                                   }}
                                 />
                               ) : (
-                                <AddressOrEns
-                                  address={newAccount.address}
-                                  size="14pt"
-                                  weight="medium"
-                                />
+                                <Inline space="8px">
+                                  <AddressOrEns
+                                    address={newAccount.address}
+                                    size="14pt"
+                                    weight="medium"
+                                  />
+                                  <AccountIndex index={Number(newIndex)} />
+                                </Inline>
                               )}
                             </Row>
                             <Row height="content">
@@ -364,9 +369,7 @@ export const AddByIndexSheet = ({
                 onClick={handleAddWallet}
                 testId="hw-add-by-index-done"
               >
-                <Text align="center" color="label" size="16pt" weight="bold">
-                  {i18n.t('hw.add_wallet')}
-                </Text>
+                {i18n.t('hw.add_wallet')}
               </Button>
             </Box>
           </Stack>

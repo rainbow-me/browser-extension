@@ -34,6 +34,22 @@ import { AddByIndexSheet } from './addByIndexSheet';
 
 type Vendor = 'Ledger' | 'Trezor';
 
+export const AccountIndex = ({ index }: { index: number }) => {
+  return (
+    <Box
+      borderRadius="8px"
+      borderWidth="2px"
+      borderColor={'separatorSecondary'}
+      padding={'6px'}
+      marginTop={'-5px'}
+    >
+      <Text size="11pt" weight="bold" color={'labelTertiary'} align="center">
+        # {index}
+      </Text>
+    </Box>
+  );
+};
+
 const WalletListHW = () => {
   const [showAddByIndexSheet, setShowAddByIndexSheet] =
     useState<boolean>(false);
@@ -248,7 +264,6 @@ const WalletListHW = () => {
                 </Box>
                 <Box style={{ width: '50%' }}>
                   <a
-                    href="javasscript:void(0);"
                     onClick={() => {
                       setShowAddByIndexSheet(true);
                     }}
@@ -313,12 +328,15 @@ const WalletListHW = () => {
                                   />
                                   <Box justifyContent="flex-start" width="fit">
                                     <Stack space="8px">
-                                      <AddressOrEns
-                                        size="14pt"
-                                        weight="bold"
-                                        color="label"
-                                        address={address as Address}
-                                      />
+                                      <Inline space="8px">
+                                        <AddressOrEns
+                                          size="14pt"
+                                          weight="bold"
+                                          color="label"
+                                          address={address as Address}
+                                        />
+                                        <AccountIndex index={index} />
+                                      </Inline>
                                       <Text
                                         color="labelTertiary"
                                         size="12pt"
