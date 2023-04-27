@@ -213,6 +213,8 @@ describe('App interactions flow', () => {
   it('should be able to accept a signing request', async () => {
     await goToTestApp(driver);
 
+    await driver.navigate().refresh();
+
     const dappHandler = await getWindowHandle({ driver });
     const button = await querySelector(driver, '[id="signTx"]');
     expect(button).toBeTruthy();
@@ -242,6 +244,7 @@ describe('App interactions flow', () => {
   });
 
   it('should be able to accept a typed data signing request', async () => {
+    await driver.navigate().refresh();
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await querySelector(driver, '[id="signTypedData"]');
@@ -277,6 +280,8 @@ describe('App interactions flow', () => {
   it('should be able to accept a transaction request', async () => {
     await delayTime('long');
     await goToTestApp(driver);
+
+    await driver.navigate().refresh();
 
     const dappHandler = await getWindowHandle({ driver });
 
