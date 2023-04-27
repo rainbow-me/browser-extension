@@ -1,8 +1,10 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable @typescript-eslint/no-var-requires */
+import { ethers } from 'ethers';
 import { Builder, By, WebDriver, until } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
+import { erc20ABI } from 'wagmi';
 
 const waitUntilTime = 20000;
 
@@ -62,6 +64,26 @@ export async function getExtensionIdByName(driver, extensionName) {
       }
       return undefined
     `);
+}
+
+export async function getOnchainBalance(addy, contract) {
+  const provider = ethers.getDefaultProvider('http://127.0.0.1:8545');
+  const testContract = new ethers.Contract(contract, erc20ABI, provider);
+  const balance = await testContract.balanceOf(addy);
+
+  return balance;
+}
+
+export async function transactionStatus() {
+  const provider = ethers.getDefaultProvider('http://127.0.0.1:8545');
+  const blockData = await provider.getBlock('latest');
+  const txn = await provider.getTransaction(blockData.transactions[0]);
+  const txnData = txn.wait();
+
+  // transactionResponse.wait.status returns '1' if the txn was sent successfully and '0' if its a failure
+  const txnStatus = (await txnData).status === 1 ? 'success' : 'failure';
+
+  return txnStatus;
 }
 
 export async function delay(ms) {
