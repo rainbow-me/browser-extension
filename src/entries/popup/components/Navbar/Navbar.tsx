@@ -2,12 +2,14 @@ import { motion } from 'framer-motion';
 import * as React from 'react';
 import { To, useLocation, useNavigate } from 'react-router-dom';
 
+import { shortcuts } from '~/core/references/shortcuts';
 import { Box, Button, ButtonSymbol, Inline, Text } from '~/design-system';
 import { ButtonSymbolProps } from '~/design-system/components/ButtonSymbol/ButtonSymbol';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { BackgroundColor } from '~/design-system/styles/designTokens';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import {
   NAVBAR_LEFT_COMPONENT_ID,
   NAVBAR_RIGHT_COMPONENT_ID,
@@ -166,6 +168,16 @@ function NavbarButtonWithBack({
 }) {
   const location = useLocation();
   const navigate = useNavigate();
+
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.global.CLOSE.key) {
+        e.preventDefault();
+        e.stopPropagation();
+        click();
+      }
+    },
+  });
 
   const click = React.useCallback(() => {
     if (onClick) {
