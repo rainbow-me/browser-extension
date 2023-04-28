@@ -10,10 +10,9 @@ import { flushQueuedEvents } from '~/analytics/flushQueuedEvents';
 // !!!! DO NOT REMOVE THE NEXT 2 LINES BELOW !!!!
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import config from '~/core/firebase/remoteConfig';
-import { changeI18nLanguage } from '~/core/languages';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry, setSentryUser } from '~/core/sentry';
-import { useCurrentLanguageStore, useDeviceIdStore } from '~/core/state';
+import { deviceIdStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { createWagmiClient } from '~/core/wagmi';
@@ -37,31 +36,27 @@ const wagmiClient = createWagmiClient({
   persist: true,
 });
 
+{
+  // Disable analytics & sentry for e2e and dev mode
+  const deviceId = deviceIdStore.getState().deviceId;
+  if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
+    initializeSentry('popup');
+    setSentryUser(deviceId);
+    analytics.setDeviceId(deviceId);
+    analytics.identify();
+    analytics.track(event.popupOpened);
+    setTimeout(() => flushQueuedEvents(), 1000);
+  }
+
+  if (process.env.IS_DEV !== 'true') {
+    document.addEventListener('contextmenu', (e) => e.preventDefault());
+  }
+}
+
 export function App() {
-  const { currentLanguage } = useCurrentLanguageStore();
   const { address } = useAccount();
-  const { deviceId } = useDeviceIdStore();
 
   usePendingTransactionWatcher({ address });
-
-  React.useEffect(() => {
-    // Disable analytics & sentry for e2e and dev mode
-    changeI18nLanguage(currentLanguage);
-
-    if (process.env.IS_TESTING !== 'true' && process.env.IS_DEV !== 'true') {
-      initializeSentry('popup');
-      setSentryUser(deviceId);
-      analytics.setDeviceId(deviceId);
-      analytics.identify();
-      analytics.track(event.popupOpened);
-      setTimeout(() => flushQueuedEvents(), 1000);
-    }
-
-    if (process.env.IS_DEV !== 'true') {
-      document.addEventListener('contextmenu', (e) => e.preventDefault());
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const { currentTheme } = useCurrentThemeStore();
   const isFullScreen = useIsFullScreen();
