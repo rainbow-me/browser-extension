@@ -1,7 +1,8 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { Chain, useNetwork } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { ChainId } from '~/core/types/chains';
 import {
   Box,
@@ -15,6 +16,7 @@ import {
 import { Space } from '~/design-system/styles/designTokens';
 
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+import { simulateClick } from '../../utils/simulateClick';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 import {
   ContextMenu,
@@ -222,6 +224,19 @@ export const SwitchNetworkMenu = ({
   onOpenChange,
 }: SwitchNetworkMenuProps) => {
   const { chains } = useNetwork();
+  const triggerRef = useRef<HTMLDivElement>(null);
+
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.swap.OPEN_NETWORK_MENU.key) {
+        const activeElement = document.activeElement;
+        const tagName = activeElement?.tagName;
+        if (tagName !== 'INPUT') {
+          simulateClick(triggerRef?.current);
+        }
+      }
+    },
+  });
 
   const {
     Menu,
@@ -253,7 +268,9 @@ export const SwitchNetworkMenu = ({
   return (
     <Menu onOpenChange={onOpenChange}>
       <MenuTrigger asChild>
-        <Box style={{ cursor: 'default' }}>{triggerComponent}</Box>
+        <Box style={{ cursor: 'default' }} ref={triggerRef}>
+          {triggerComponent}
+        </Box>
       </MenuTrigger>
       <MenuContent
         accentColor={accentColor}

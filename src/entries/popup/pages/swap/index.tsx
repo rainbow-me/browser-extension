@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedSearchAsset } from '~/core/types/assets';
@@ -46,6 +47,7 @@ import {
   SwapPriceImpactType,
   useSwapPriceImpact,
 } from '../../hooks/swap/useSwapPriceImpact';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 
 import { SwapReviewSheet } from './SwapReviewSheet/SwapReviewSheet';
 import { SwapSettings } from './SwapSettings/SwapSettings';
@@ -324,6 +326,14 @@ export function Swap() {
       clearCustomGasModified();
     };
   }, [clearCustomGasModified]);
+
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.swap.FLIP_ASSETS.key) {
+        flipAssets();
+      }
+    },
+  });
 
   return (
     <>

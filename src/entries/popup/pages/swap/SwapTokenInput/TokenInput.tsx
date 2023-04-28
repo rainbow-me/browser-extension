@@ -3,6 +3,7 @@ import React, {
   ReactElement,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useState,
 } from 'react';
 
@@ -64,142 +65,160 @@ interface TokenInputProps {
   setValue: (value: string) => void;
 }
 
-export const TokenInput = ({
-  accentCaretColor,
-  asset,
-  assetFilter,
-  dropdownHeight,
-  dropdownComponent,
-  bottomComponent,
-  placeholder,
-  zIndex,
-  dropdownClosed,
-  variant,
-  inputRef,
-  inputDisabled,
-  value,
-  testId,
-  openDropdownOnMount,
-  onDropdownOpen,
-  selectAsset,
-  setOnSelectAsset,
-  setAssetFilter,
-  setValue,
-}: TokenInputProps) => {
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-  const prevDropdownVisible = usePrevious(dropdownVisible);
+export const TokenInput = React.forwardRef<
+  { openDropdown: () => void },
+  TokenInputProps
+>(
+  (
+    {
+      accentCaretColor,
+      asset,
+      assetFilter,
+      dropdownHeight,
+      dropdownComponent,
+      bottomComponent,
+      placeholder,
+      zIndex,
+      dropdownClosed,
+      variant,
+      inputRef,
+      inputDisabled,
+      value,
+      testId,
+      openDropdownOnMount,
+      onDropdownOpen,
+      selectAsset,
+      setOnSelectAsset,
+      setAssetFilter,
+      setValue,
+    }: TokenInputProps,
+    forwardedRef,
+  ) => {
+    const [dropdownVisible, setDropdownVisible] = useState(false);
+    const prevDropdownVisible = usePrevious(dropdownVisible);
 
-  const onDropdownAction = useCallback(() => {
-    onDropdownOpen(!dropdownVisible);
-    setDropdownVisible(!dropdownVisible);
-    dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
-  }, [dropdownVisible, inputRef, onDropdownOpen]);
+    useImperativeHandle(forwardedRef, () => ({
+      openDropdown: () => {
+        onDropdownOpen(true);
+        setDropdownVisible(true);
+        inputRef?.current?.focus();
+      },
+    }));
 
-  const onSelectAsset = useCallback(() => {
-    onDropdownOpen(false);
-    setDropdownVisible(false);
-    setAssetFilter('');
-    setTimeout(() => inputRef?.current?.focus(), 300);
-  }, [inputRef, onDropdownOpen, setAssetFilter]);
+    const onDropdownAction = useCallback(() => {
+      onDropdownOpen(!dropdownVisible);
+      setDropdownVisible(!dropdownVisible);
+      dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
+    }, [dropdownVisible, inputRef, onDropdownOpen]);
 
-  const onClose = useCallback(() => {
-    selectAsset(null);
-  }, [selectAsset]);
-
-  const onInputValueChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      setAssetFilter(e.target.value);
-    },
-    [setAssetFilter],
-  );
-
-  useEffect(() => {
-    if (dropdownClosed) {
+    const onSelectAsset = useCallback(() => {
+      onDropdownOpen(false);
       setDropdownVisible(false);
-    }
-  }, [dropdownClosed]);
-
-  useEffect(() => {
-    if (prevDropdownVisible !== dropdownVisible && dropdownVisible) {
+      setAssetFilter('');
       setTimeout(() => inputRef?.current?.focus(), 300);
-    }
-  });
+    }, [inputRef, onDropdownOpen, setAssetFilter]);
 
-  useEffect(() => {
-    setOnSelectAsset(onSelectAsset);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const onClose = useCallback(() => {
+      selectAsset(null);
+    }, [selectAsset]);
 
-  useEffect(() => {
-    setTimeout(() => {
-      if (openDropdownOnMount) {
-        onDropdownAction();
+    const onInputValueChange = useCallback(
+      (e: ChangeEvent<HTMLInputElement>) => {
+        setAssetFilter(e.target.value);
+      },
+      [setAssetFilter],
+    );
+
+    useEffect(() => {
+      if (dropdownClosed) {
+        setDropdownVisible(false);
       }
-    }, 300);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [openDropdownOnMount]);
+    }, [dropdownClosed]);
 
-  return (
-    <DropdownInputWrapper
-      zIndex={zIndex || 1}
-      dropdownHeight={dropdownHeight || 376}
-      testId={`${testId}-token-input`}
-      leftComponent={
-        <Box>
-          <CoinIcon asset={asset ?? undefined} />
-        </Box>
+    useEffect(() => {
+      if (prevDropdownVisible !== dropdownVisible && dropdownVisible) {
+        setTimeout(() => inputRef?.current?.focus(), 300);
       }
-      centerComponent={
-        !asset ? (
+    });
+
+    useEffect(() => {
+      setOnSelectAsset(onSelectAsset);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    useEffect(() => {
+      setTimeout(() => {
+        if (openDropdownOnMount) {
+          onDropdownAction();
+        }
+      }, 300);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [openDropdownOnMount]);
+
+    return (
+      <DropdownInputWrapper
+        zIndex={zIndex || 1}
+        dropdownHeight={dropdownHeight || 376}
+        testId={`${testId}-token-input`}
+        leftComponent={
           <Box>
-            <Input
-              testId={`${testId}-search-token-input`}
-              value={assetFilter}
-              placeholder={placeholder}
-              onChange={onInputValueChange}
-              height="32px"
-              variant="transparent"
-              style={{ paddingLeft: 0, paddingRight: 0 }}
-              innerRef={inputRef}
-            />
+            <CoinIcon asset={asset ?? undefined} />
           </Box>
-        ) : (
-          <Box>
-            <SwapInputMaskWrapper inputDisabled={inputDisabled}>
-              <Box marginVertical="-20px">
-                <SwapInputMask
-                  testId={`${testId}-swap-token-input`}
-                  accentCaretColor={accentCaretColor}
-                  borderColor="transparent"
-                  decimals={asset?.decimals}
-                  height="56px"
-                  placeholder="0.00"
-                  value={value}
-                  variant={variant}
-                  onChange={setValue}
-                  paddingHorizontal={0}
-                  innerRef={inputRef}
-                  disabled={inputDisabled}
-                />
-              </Box>
-            </SwapInputMaskWrapper>
-          </Box>
-        )
-      }
-      bottomComponent={bottomComponent}
-      rightComponent={
-        <SwapInputActionButton
-          showClose={!!asset}
-          onClose={onClose}
-          dropdownVisible={dropdownVisible}
-          testId={`${testId}-token-input-remove`}
-          asset={asset}
-        />
-      }
-      dropdownComponent={dropdownComponent}
-      dropdownVisible={dropdownVisible}
-      onDropdownAction={onDropdownAction}
-      borderVisible
-    />
-  );
-};
+        }
+        centerComponent={
+          !asset ? (
+            <Box>
+              <Input
+                testId={`${testId}-search-token-input`}
+                value={assetFilter}
+                placeholder={placeholder}
+                onChange={onInputValueChange}
+                height="32px"
+                variant="transparent"
+                style={{ paddingLeft: 0, paddingRight: 0 }}
+                innerRef={inputRef}
+              />
+            </Box>
+          ) : (
+            <Box>
+              <SwapInputMaskWrapper inputDisabled={inputDisabled}>
+                <Box marginVertical="-20px">
+                  <SwapInputMask
+                    testId={`${testId}-swap-token-input`}
+                    accentCaretColor={accentCaretColor}
+                    borderColor="transparent"
+                    decimals={asset?.decimals}
+                    height="56px"
+                    placeholder="0.00"
+                    value={value}
+                    variant={variant}
+                    onChange={setValue}
+                    paddingHorizontal={0}
+                    innerRef={inputRef}
+                    disabled={inputDisabled}
+                  />
+                </Box>
+              </SwapInputMaskWrapper>
+            </Box>
+          )
+        }
+        bottomComponent={bottomComponent}
+        rightComponent={
+          <SwapInputActionButton
+            showClose={!!asset}
+            onClose={onClose}
+            dropdownVisible={dropdownVisible}
+            testId={`${testId}-token-input-remove`}
+            asset={asset}
+          />
+        }
+        dropdownComponent={dropdownComponent}
+        dropdownVisible={dropdownVisible}
+        onDropdownAction={onDropdownAction}
+        borderVisible
+      />
+    );
+  },
+);
+
+TokenInput.displayName = 'TokenInput';

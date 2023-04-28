@@ -93,6 +93,26 @@ export const shortcuts = {
       key: 'f',
     },
   },
+  swap: {
+    FLIP_ASSETS: {
+      display: 'F',
+      key: 'f',
+    },
+    FOCUS_ASSET_TO_BUY: {
+      display: '\u2191',
+      key: 'ArrowUp',
+      modifier: 'altKey',
+    },
+    FOCUS_ASSET_TO_SELL: {
+      display: '\u2193',
+      key: 'ArrowDown',
+      modifier: 'altKey',
+    },
+    OPEN_NETWORK_MENU: {
+      display: 'N',
+      key: 'n',
+    },
+  },
   tokens: {
     SWAP_ASSET: {
       display: 'X',
