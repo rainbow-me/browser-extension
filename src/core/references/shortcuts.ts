@@ -11,54 +11,86 @@ export const shortcuts = {
   },
   global: {
     CLOSE: {
-      display: 'Esc', // not currently displayed in any UI
+      display: 'Esc',
       key: 'Escape',
     },
+    OPEN_GAS_MENU: {
+      display: 'G',
+      key: 'g',
+    },
     SELECT: {
-      display: 'Enter', // not currently displayed in any UI
+      display: 'Enter',
       key: 'Enter',
+    },
+    OPEN_CUSTOM_GAS_MENU: {
+      display: 'C',
+      key: 'c',
     },
   },
   home: {
     COPY_ADDRESS: {
-      display: '',
+      display: 'C',
       key: 'c',
     },
     GO_TO_CONNECTED_APPS: {
-      display: '',
+      display: 'D',
       key: 'd',
     },
     GO_TO_SEND: {
-      display: '',
+      display: 'S',
       key: 's',
     },
     GO_TO_SETTINGS: {
-      display: '',
+      display: "'",
       key: "'",
     },
     GO_TO_SWAP: {
-      display: '',
+      display: 'X',
       key: 'x',
     },
     GO_TO_PROFILE: {
-      display: '',
+      display: 'P',
       key: 'p',
     },
     GO_TO_QR: {
-      display: '',
+      display: 'Q',
       key: 'q',
     },
     GO_TO_WALLETS: {
-      display: '',
+      display: 'W',
       key: 'w',
     },
     LOCK: {
-      display: '',
+      display: 'L',
       key: 'l',
     },
     OPEN_MORE_MENU: {
-      display: '',
+      display: '.',
       key: '.',
+    },
+  },
+  send: {
+    FOCUS_ASSET: {
+      display: '\u2193',
+      key: 'ArrowDown',
+      modifier: 'altKey',
+    },
+    FOCUS_TO_ADDRESS: {
+      display: '\u2191',
+      key: 'ArrowUp',
+      modifier: 'altKey',
+    },
+    OPEN_CONTACT_MENU: {
+      display: '.',
+      key: '.',
+    },
+    SET_MAX_AMOUNT: {
+      display: 'M',
+      key: 'm',
+    },
+    SWITCH_CURRENCY_LABEL: {
+      display: 'F',
+      key: 'f',
     },
   },
   tokens: {

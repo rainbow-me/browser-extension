@@ -5,6 +5,7 @@ import React, {
   SetStateAction,
   useCallback,
   useEffect,
+  useImperativeHandle,
   useMemo,
   useRef,
   useState,
@@ -119,15 +120,12 @@ const TokenSortMenu = ({
   );
 };
 
-export const SendTokenInput = ({
-  asset,
-  assets,
-  selectAssetAddress,
-  dropdownClosed = false,
-  setSortMethod,
-  sortMethod,
-  zIndex,
-}: {
+interface InputRefAPI {
+  blur: () => void;
+  focus: () => void;
+}
+
+interface SendTokenInputProps {
   asset: ParsedAddressAsset | null;
   assets: ParsedAddressAsset[];
   selectAssetAddress: (address: Address | typeof ETH_ADDRESS | '') => void;
@@ -135,16 +133,41 @@ export const SendTokenInput = ({
   setSortMethod: (sortMethod: SortMethod) => void;
   sortMethod: SortMethod;
   zIndex?: number;
-}) => {
+}
+
+export const SendTokenInput = React.forwardRef<
+  InputRefAPI,
+  SendTokenInputProps
+>((props, forwardedRef) => {
+  const {
+    asset,
+    assets,
+    selectAssetAddress,
+    dropdownClosed = false,
+    setSortMethod,
+    sortMethod,
+    zIndex,
+  } = props;
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
+  useImperativeHandle(forwardedRef, () => ({
+    blur: () => {
+      inputRef.current?.blur();
+      setDropdownVisible(false);
+    },
+    focus: () => {
+      inputRef?.current?.focus();
+      setDropdownVisible(true);
+    },
+  }));
+
   const onDropdownAction = useCallback(() => {
     setDropdownVisible(!dropdownVisible);
     dropdownVisible ? inputRef?.current?.blur() : inputRef?.current?.focus();
-  }, [dropdownVisible]);
+  }, [dropdownVisible, inputRef]);
 
   const onSelectAsset = useCallback(
     (address: Address | typeof ETH_ADDRESS | '') => {
@@ -177,7 +200,7 @@ export const SendTokenInput = ({
     setTimeout(() => {
       inputRef?.current?.focus();
     }, 200);
-  }, [onSelectAsset]);
+  }, [inputRef, onSelectAsset]);
 
   const selectAsset = useCallback(
     (address: Address | typeof ETH_ADDRESS | '') => {
@@ -336,4 +359,6 @@ export const SendTokenInput = ({
       borderVisible={!asset}
     />
   );
-};
+});
+
+SendTokenInput.displayName = 'SendTokenInput';
