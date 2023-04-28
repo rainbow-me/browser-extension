@@ -2,6 +2,7 @@
 /* eslint-disable no-nested-ternary */
 import { Address, chain, getProvider } from '@wagmi/core';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
@@ -57,28 +58,11 @@ const WalletListHW = () => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const nativeAsset = useNativeAssetForNetwork({ chainId: chain.mainnet.id });
 
-  // const { state } = useLocation();
+  const { state } = useLocation();
   const [accountsIgnored, setAccountsIgnored] = useState<Address[]>([]);
   const [balances, setBalances] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { setCurrentAddress } = useCurrentAddressStore();
-
-  // Debugging purposes only DELETE!!!
-  const state = {
-    accountsToImport: [
-      {
-        address: '0x2419EB3D5E048f50D386f6217Cd5033eBfc36b83' as Address,
-        index: 0,
-      },
-      {
-        address: '0x37bD75826582532373D738F83b913C97447b0906' as Address,
-        index: 1,
-      },
-    ],
-    deviceId: 'lol',
-    accountsEnabled: 2,
-    vendor: 'Trezor',
-  };
 
   const [accountsToImport, setAccountsToImport] = useState(
     state.accountsToImport,
@@ -88,7 +72,7 @@ const WalletListHW = () => {
     const fetchBalances = async () => {
       const provider = getProvider({ chainId: chain.mainnet.id });
       const _balances = await Promise.all(
-        accountsToImport.map(async (account) => {
+        accountsToImport.map(async (account: { address: string }) => {
           const balance = await provider.getBalance(account.address);
           const nativeCurrencyAmount = convertRawAmountToNativeDisplay(
             balance.toString() ?? 0,

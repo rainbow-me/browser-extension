@@ -303,6 +303,7 @@ export const importAccountAtIndex = async (
   type: string | 'Trezor' | 'Ledger',
   index: number,
 ) => {
+  return '0x2e67869829c734ac13723A138a952F7A8B56e774';
   let address = '';
   switch (type) {
     case 'Trezor':
@@ -336,16 +337,26 @@ export const importAccountAtIndex = async (
     default:
       throw new Error('Unknown wallet type');
   }
-
-  // return (await walletAction('add_account_at_index', {
-  //   silbingAddress: silbing,
-  //   index,
-  //   address,
-  // })) as Address;
   return address;
 };
 
 export const connectTrezor = async () => {
+  // TODO: DELETE
+  //  Debugging purposes only DELETE!!!
+  return {
+    accountsToImport: [
+      {
+        address: '0x2419EB3D5E048f50D386f6217Cd5033eBfc36b83' as Address,
+        index: 0,
+      },
+      {
+        address: '0x37bD75826582532373D738F83b913C97447b0906' as Address,
+        index: 1,
+      },
+    ],
+    deviceId: 'lol',
+    accountsEnabled: 2,
+  };
   try {
     window.TrezorConnect.init(TREZOR_CONFIG);
     const path = `m/${DEFAULT_HD_PATH}`;
@@ -404,6 +415,23 @@ export const connectTrezor = async () => {
 };
 
 export const connectLedger = async () => {
+  // TODO: DELETE
+  //  Debugging purposes only DELETE!!!
+  return {
+    accountsToImport: [
+      {
+        address: '0x2419EB3D5E048f50D386f6217Cd5033eBfc36b83' as Address,
+        index: 0,
+      },
+      {
+        address: '0x37bD75826582532373D738F83b913C97447b0906' as Address,
+        index: 1,
+      },
+    ],
+    deviceId: 'lol',
+    accountsEnabled: 2,
+  };
+
   // Connect to the device
   try {
     const transport = await TransportWebUSB.create();
