@@ -9,12 +9,14 @@ import {
   findElementByTestIdAndClick,
   findElementByText,
   getExtensionIdByName,
+  getTextFromText,
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
   querySelector,
+  shortenAddress,
+  switchWallet,
   typeOnTextInput,
-  waitAndClick,
 } from '../helpers';
 
 let rootURL = 'chrome-extension://';
@@ -22,8 +24,11 @@ let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
+const watchedWallet = 'djweth.eth';
+const seedWallet = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
+const pkWallet = '0x38eDa688Cd8DFC6FeE8016c85803a584A0564dDC';
 
-describe('Watch wallet flow', () => {
+describe('Watch wallet then add more and switch between them', () => {
   beforeAll(async () => {
     driver = await initDriverWithOptions({
       browser,
@@ -52,7 +57,7 @@ describe('Watch wallet flow', () => {
     await typeOnTextInput({
       id: 'secret-textarea',
       driver,
-      text: 'djweth.eth',
+      text: watchedWallet,
     });
 
     await findElementByTestIdAndClick({
@@ -70,7 +75,7 @@ describe('Watch wallet flow', () => {
     await findElementByText(driver, 'Your wallets ready');
   });
 
-  it('should display account name', async () => {
+  it('should display watched account name', async () => {
     await goToPopup(driver, rootURL);
     const label = await querySelector(
       driver,
@@ -78,7 +83,7 @@ describe('Watch wallet flow', () => {
     );
 
     const actual = await label.getText();
-    const expected = ['0x70c1...43C4', 'djweth.eth'];
+    const expected = ['0x70c1...43C4', watchedWallet];
     expect(expected.includes(actual)).toEqual(true);
   });
 
@@ -121,12 +126,85 @@ describe('Watch wallet flow', () => {
     await driver.switchTo().alert().accept();
   });
 
-  it('should be able to add a new wallet', async () => {
+  it('should be able to add a new wallet via pkey', async () => {
     await goToPopup(driver, rootURL, '#/home');
     await findElementByIdAndClick({
       id: 'header-account-name-shuffle',
       driver,
     });
     await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
+    await findElementByTestIdAndClick({
+      id: 'import-wallets-button',
+      driver,
+    });
+
+    await typeOnTextInput({
+      id: 'secret-textarea',
+      driver,
+      text: '0xaeb5635a53c33d3c0d92c32881d7613ee9fe18be77772054f5e025bc4fa8c851',
+    });
+
+    await findElementByTestIdAndClick({
+      id: 'import-wallets-button',
+      driver,
+    });
+    await delayTime('medium');
+
+    it('should display pk account wallet name', async () => {
+      const account = await getTextFromText({ id: 'account-name', driver });
+      expect(account).toBe(await shortenAddress(pkWallet));
+    });
+  });
+
+  it('should be able to add a new wallet via seed', async () => {
+    await goToPopup(driver, rootURL, '#/home');
+    await findElementByIdAndClick({
+      id: 'header-account-name-shuffle',
+      driver,
+    });
+    await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
+    await findElementByTestIdAndClick({
+      id: 'import-wallets-button',
+      driver,
+    });
+
+    await typeOnTextInput({
+      id: 'secret-textarea',
+      driver,
+      text: 'test test test test test test test test test test test junk',
+    });
+
+    await findElementByTestIdAndClick({
+      id: 'import-wallets-button',
+      driver,
+    });
+    await findElementByTestIdAndClick({
+      id: 'add-wallets-button',
+      driver,
+    });
+    await delayTime('medium');
+
+    it('should display seed account name', async () => {
+      const account = await getTextFromText({ id: 'account-name', driver });
+      expect(account).toBe(await shortenAddress(pkWallet));
+    });
+  });
+
+  it('should be able to switch to the watched wallet', async () => {
+    await switchWallet(watchedWallet, rootURL, driver);
+    const wallet = await getTextFromText({ id: 'account-name', driver });
+    expect(wallet).toBe(await shortenAddress(watchedWallet));
+  });
+
+  it('should be able to switch to the pk wallet', async () => {
+    await switchWallet(pkWallet, rootURL, driver);
+    const wallet = await getTextFromText({ id: 'account-name', driver });
+    expect(wallet).toBe(await shortenAddress(pkWallet));
+  });
+
+  it('should be able to switch to the seed wallet', async () => {
+    await switchWallet(seedWallet, rootURL, driver);
+    const wallet = await getTextFromText({ id: 'account-name', driver });
+    expect(wallet).toBe(await shortenAddress(seedWallet));
   });
 });

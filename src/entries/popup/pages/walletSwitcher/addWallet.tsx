@@ -51,6 +51,7 @@ const AddWallet = () => {
             subtitle={i18n.t('add_wallet.create_wallet_description')}
             symbolColor="pink"
             symbol="plus.circle"
+            testId={'create-wallets-button'}
           />
           <OnboardMenu.Separator />
           <OnboardMenu.Item
@@ -59,7 +60,7 @@ const AddWallet = () => {
             subtitle={i18n.t('add_wallet.import_wallet_description')}
             symbolColor="purple"
             symbol="lock.rotation"
-            testId={'import-secret-option'}
+            testId={'import-wallets-button'}
           />
           <OnboardMenu.Separator />
           <OnboardMenu.Item
@@ -70,6 +71,7 @@ const AddWallet = () => {
             subtitle={i18n.t('add_wallet.hardware_wallet_description')}
             symbolColor="blue"
             symbol="doc.text.magnifyingglass"
+            testId={'hardware-wallet-button'}
           />
           <OnboardMenu.Separator />
           <OnboardMenu.Item
@@ -78,7 +80,7 @@ const AddWallet = () => {
             subtitle={i18n.t('add_wallet.watch_address_description')}
             symbolColor="green"
             symbol="magnifyingglass.circle"
-            testId={'watch-wallet-option'}
+            testId={'import-wallet-button'}
           />
         </OnboardMenu>
       </Box>
