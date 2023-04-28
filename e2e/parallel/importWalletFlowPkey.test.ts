@@ -12,6 +12,7 @@ import {
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
+  shortenAddress,
   typeOnTextInput,
 } from '../helpers';
 
@@ -20,6 +21,7 @@ let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
+const wallet = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
 
 describe('Import wallet flow', () => {
   beforeAll(async () => {
@@ -71,6 +73,6 @@ describe('Import wallet flow', () => {
     goToPopup(driver, rootURL);
     await delayTime('short');
     const account = await getTextFromText({ id: 'account-name', driver });
-    expect(account).toBe('0xf39F...2266');
+    expect(account).toBe(await shortenAddress(wallet));
   });
 });
