@@ -20,7 +20,8 @@ export const currentLanguageStore = createStore<CurrentLanguageState>(
     persist: {
       name: 'currentLanguage',
       version: 0,
-      onRehydrateStorage: (lang) => changeI18nLanguage(lang.currentLanguage),
+      onRehydrateStorage: ({ currentLanguage } = {} as CurrentLanguageState) =>
+        currentLanguage && changeI18nLanguage(currentLanguage),
     },
   },
 );
