@@ -7,5 +7,6 @@ export const simulateClick = (el: Element | null) => {
       clientY: box.top + (box.bottom - box.top) / 2,
     });
     el?.dispatchEvent(e);
+    (el as HTMLDivElement)?.click();
   }
 };
