@@ -6,7 +6,7 @@ import { selectUserAssetsListByChainId } from '~/core/resources/_selectors/asset
 import { useAssets, useUserAssets } from '~/core/resources/assets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
-import { ParsedSearchAsset } from '~/core/types/assets';
+import { ParsedAsset, ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { SearchAsset } from '~/core/types/search';
 import { parseSearchAsset } from '~/core/utils/assets';
@@ -25,6 +25,11 @@ const sortBy = (by: SortMethod) => {
       return selectUserAssetsListByChainId;
   }
 };
+
+const isSameAsset = (
+  a1: Pick<ParsedAsset, 'chainId' | 'address'>,
+  a2: Pick<ParsedAsset, 'chainId' | 'address'>,
+) => a1.chainId === a2.chainId && isLowerCaseMatch(a1.address, a2.address);
 
 export const useSwapAssets = () => {
   const { currentAddress } = useCurrentAddressStore();
@@ -128,7 +133,7 @@ export const useSwapAssets = () => {
   const parsedAssetToBuy = useMemo(() => {
     if (!assetToBuy) return null;
     const userAsset = userAssets.find((userAsset) =>
-      isLowerCaseMatch(userAsset.address, assetToBuy?.address),
+      isSameAsset(userAsset, assetToBuy),
     );
     return parseSearchAsset({
       assetWithPrice: assetToBuyWithPrice,
@@ -140,7 +145,7 @@ export const useSwapAssets = () => {
   const parsedAssetToSell = useMemo(() => {
     if (!assetToSell) return null;
     const userAsset = userAssets.find((userAsset) =>
-      isLowerCaseMatch(userAsset.address, assetToSell?.address),
+      isSameAsset(userAsset, assetToSell),
     );
     return parseSearchAsset({
       assetWithPrice: assetToSellWithPrice,

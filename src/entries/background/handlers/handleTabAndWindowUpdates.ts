@@ -1,5 +1,6 @@
 import { initializeMessenger } from '~/core/messengers';
 import { notificationWindowStore, pendingRequestStore } from '~/core/state';
+import { isDefaultWalletStore } from '~/core/state/currentSettings/isDefaultWallet';
 
 const bridgeMessenger = initializeMessenger({ connect: 'inpage' });
 
@@ -20,6 +21,12 @@ export const handleTabAndWindowUpdates = () => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   chrome.tabs.onRemoved.addListener(function (tabId, _) {
     clearPendingRequestsOnUpdate(tabId);
+  });
+
+  chrome.tabs.onActivated.addListener(() => {
+    bridgeMessenger.send('rainbow_setDefaultProvider', {
+      rainbowAsDefault: isDefaultWalletStore.getState().isDefaultWallet,
+    });
   });
 
   chrome.windows.onRemoved.addListener((id) => {

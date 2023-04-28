@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useImperativeHandle, useRef } from 'react';
 import { Chain } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -12,6 +12,7 @@ import {
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { Space } from '~/design-system/styles/designTokens';
 
+import { simulateClick } from '../../utils/simulateClick';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -107,71 +108,92 @@ interface SwitchTransactionSpeedMenuProps {
   onOpenChange?: (open: boolean) => void;
 }
 
-export const SwitchTransactionSpeedMenu = ({
-  dropdownContentMarginRight,
-  selectedSpeed,
-  gasFeeParamsBySpeed,
-  onSpeedChanged,
-  chainId,
-  editable = true,
-  accentColor,
-  plainTriggerBorder,
-  onOpenChange,
-}: SwitchTransactionSpeedMenuProps) => {
-  const menuTrigger = (
-    <Box
-      style={{
-        height: 28,
-      }}
-      borderWidth="2px"
-      borderColor={plainTriggerBorder ? 'fillSecondary' : 'accent'}
-      paddingVertical="5px"
-      paddingHorizontal="6px"
-      borderRadius="24px"
-      as="button"
-    >
-      <Inline space="6px" alignVertical="center">
-        <Text color="label" weight="bold" size="14pt">
-          {txSpeedEmoji[selectedSpeed]}
-        </Text>
+export const SwitchTransactionSpeedMenu = React.forwardRef<
+  { open: () => void },
+  SwitchTransactionSpeedMenuProps
+>(
+  (
+    {
+      dropdownContentMarginRight,
+      selectedSpeed,
+      gasFeeParamsBySpeed,
+      onSpeedChanged,
+      chainId,
+      editable = true,
+      accentColor,
+      plainTriggerBorder,
+      onOpenChange,
+    }: SwitchTransactionSpeedMenuProps,
+    forwardedRef,
+  ) => {
+    const triggerRef = useRef<HTMLButtonElement>(null);
 
-        <Text color="label" weight="bold" size="14pt">
-          {i18n.t(`transaction_fee.${selectedSpeed}`)}
-        </Text>
-        {editable ? (
-          <Symbol
-            weight="medium"
-            color="label"
-            size={14}
-            symbol="chevron.down.circle"
-          />
-        ) : null}
-      </Inline>
-    </Box>
-  );
-  if (!editable) return menuTrigger;
-  return (
-    <DropdownMenu onOpenChange={onOpenChange}>
-      <DropdownMenuTrigger asChild accentColor={accentColor}>
-        {menuTrigger}
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        marginRight={dropdownContentMarginRight}
-        accentColor={accentColor}
+    useImperativeHandle(forwardedRef, () => ({
+      open: () => {
+        simulateClick(triggerRef?.current);
+      },
+    }));
+
+    const menuTrigger = (
+      <Box
+        style={{
+          height: 28,
+        }}
+        borderWidth="2px"
+        borderColor={plainTriggerBorder ? 'fillSecondary' : 'accent'}
+        paddingVertical="5px"
+        paddingHorizontal="6px"
+        borderRadius="24px"
+        as="button"
+        ref={triggerRef}
       >
-        <DropdownMenuLabel>{i18n.t('transaction_fee.title')}</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup
-          value={selectedSpeed}
-          onValueChange={(speed) => onSpeedChanged(speed as GasSpeed)}
+        <Inline space="6px" alignVertical="center">
+          <Text color="label" weight="bold" size="14pt">
+            {txSpeedEmoji[selectedSpeed]}
+          </Text>
+
+          <Text color="label" weight="bold" size="14pt">
+            {i18n.t(`transaction_fee.${selectedSpeed}`)}
+          </Text>
+          {editable ? (
+            <Symbol
+              weight="medium"
+              color="label"
+              size={14}
+              symbol="chevron.down.circle"
+            />
+          ) : null}
+        </Inline>
+      </Box>
+    );
+    if (!editable) return menuTrigger;
+    return (
+      <DropdownMenu onOpenChange={onOpenChange}>
+        <DropdownMenuTrigger asChild accentColor={accentColor}>
+          {menuTrigger}
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          marginRight={dropdownContentMarginRight}
+          accentColor={accentColor}
         >
-          <SwitchSpeedMenuSelector
-            chainId={chainId}
-            gasFeeParamsBySpeed={gasFeeParamsBySpeed}
-            selectedValue={selectedSpeed}
-          />
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-};
+          <DropdownMenuLabel>
+            {i18n.t('transaction_fee.title')}
+          </DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuRadioGroup
+            value={selectedSpeed}
+            onValueChange={(speed) => onSpeedChanged(speed as GasSpeed)}
+          >
+            <SwitchSpeedMenuSelector
+              chainId={chainId}
+              gasFeeParamsBySpeed={gasFeeParamsBySpeed}
+              selectedValue={selectedSpeed}
+            />
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
+  },
+);
+
+SwitchTransactionSpeedMenu.displayName = 'SwitchTransactionSpeedMenu';
