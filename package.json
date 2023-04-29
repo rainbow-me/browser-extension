@@ -20,7 +20,7 @@
     "dev": "yarn devmode:on && webpack --config ./webpack.config.dev.js --watch",
     "playground": "PLAYGROUND=default webpack --config ./webpack.config.dev.js --watch",
     "playground:ds": "PLAYGROUND=ds webpack --config ./webpack.config.dev.js --watch",
-    "lint": "eslint . --cache --max-warnings 0",
+    "lint": "eslint --cache --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "// Design System scripts": "",
     "// GraphQL scripts": "",
@@ -256,8 +256,8 @@
     }
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx},!*.d.ts": [
-      "yarn lint --fix"
+    "*.{js,jsx,ts,tsx}": [
+      "yarn lint --fix --ignore-pattern '!*.d.ts'"
     ]
   }
 }
