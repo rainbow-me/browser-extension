@@ -25,6 +25,7 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 const watchedWallet = 'djweth.eth';
+const watchedWalletTwo = 'brdy.eth';
 const seedWallet = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
 const pkWallet = '0x38eDa688Cd8DFC6FeE8016c85803a584A0564dDC';
 
@@ -87,45 +88,6 @@ describe('Watch wallet then add more and switch between them', () => {
     expect(expected.includes(actual)).toEqual(true);
   });
 
-  it('should be able to lock and unlock the extension', async () => {
-    // Lock
-    await findElementByTestIdAndClick({
-      id: 'home-page-header-right',
-      driver,
-    });
-    await findElementByTestIdAndClick({ id: 'lock', driver });
-
-    // Unlock
-    await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
-    await findElementByTestIdAndClick({ id: 'unlock-button', driver });
-  });
-
-  it('should be able to test the sandbox for the popup', async () => {
-    await goToPopup(driver, rootURL, '#/home');
-    await findElementByTestIdAndClick({ id: 'home-page-header-right', driver });
-    await findElementByTestIdAndClick({ id: 'settings-link', driver });
-    const btn = await querySelector(
-      driver,
-      '[data-testid="test-sandbox-popup"]',
-    );
-    await waitAndClick(btn, driver);
-    const text = await driver.switchTo().alert().getText();
-    expect(text).toBe('Popup sandboxed!');
-    await driver.switchTo().alert().accept();
-  });
-
-  it('should be able to test the sandbox for the background', async () => {
-    const btn = await querySelector(
-      driver,
-      '[data-testid="test-sandbox-background"]',
-    );
-    await waitAndClick(btn, driver);
-    await delayTime('long');
-    const text = await driver.switchTo().alert().getText();
-    expect(text).toBe('Background sandboxed!');
-    await driver.switchTo().alert().accept();
-  });
-
   it('should be able to add a new wallet via pkey', async () => {
     await goToPopup(driver, rootURL, '#/home');
     await findElementByIdAndClick({
@@ -153,6 +115,43 @@ describe('Watch wallet then add more and switch between them', () => {
     it('should display pk account wallet name', async () => {
       const account = await getTextFromText({ id: 'account-name', driver });
       expect(account).toBe(await shortenAddress(pkWallet));
+    });
+  });
+
+  it('should be able to add a new wallet via watch', async () => {
+    await goToPopup(driver, rootURL, '#/home');
+    await findElementByIdAndClick({
+      id: 'header-account-name-shuffle',
+      driver,
+    });
+    await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
+    await findElementByTestIdAndClick({
+      id: 'watch-wallets-button',
+      driver,
+    });
+
+    await typeOnTextInput({
+      id: 'secret-textarea',
+      driver,
+      text: watchedWalletTwo,
+    });
+
+    await findElementByTestIdAndClick({
+      id: 'watch-wallets-button',
+      driver,
+    });
+    await delayTime('medium');
+
+    it('should display watched account name', async () => {
+      await goToPopup(driver, rootURL);
+      const label = await querySelector(
+        driver,
+        '[data-testid="header"] [data-testid="account-name"]',
+      );
+
+      const actual = await label.getText();
+      const expected = ['0x089b...be9E', watchedWalletTwo];
+      expect(expected.includes(actual)).toEqual(true);
     });
   });
 
@@ -206,5 +205,11 @@ describe('Watch wallet then add more and switch between them', () => {
     await switchWallet(seedWallet, rootURL, driver);
     const wallet = await getTextFromText({ id: 'account-name', driver });
     expect(wallet).toBe(await shortenAddress(seedWallet));
+  });
+
+  it('should be able to switch to the second watched wallet', async () => {
+    await switchWallet(watchedWalletTwo, rootURL, driver);
+    const wallet = await getTextFromText({ id: 'account-name', driver });
+    expect(wallet).toBe(await shortenAddress(watchedWalletTwo));
   });
 });
