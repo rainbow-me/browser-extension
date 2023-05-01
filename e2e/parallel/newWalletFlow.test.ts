@@ -99,6 +99,7 @@ describe('New wallet flow', () => {
   });
 
   it('should be able to lock and unlock the extension', async () => {
+    await goToPopup(driver, rootURL, '#/home');
     // Lock
     await findElementByTestIdAndClick({
       id: 'home-page-header-right',
