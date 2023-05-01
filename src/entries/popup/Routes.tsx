@@ -219,14 +219,7 @@ const ROUTE_DATA = [
   {
     path: ROUTES.SEED_VERIFY,
     element: (
-      <AnimatedRoute
-        direction="right"
-        // navbar
-        // navbarIcon="arrow"
-        // background="surfaceSecondary"
-        // protectedRoute
-        protectedRoute={['NEW']}
-      >
+      <AnimatedRoute direction="right" protectedRoute={['NEW']}>
         <SeedVerify />
       </AnimatedRoute>
     ),
@@ -406,7 +399,7 @@ const ROUTE_DATA = [
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE,
     element: (
       <AnimatedRoute
-        backTo={ROUTES.HOME}
+        backTo={ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS}
         direction="right"
         navbar
         navbarIcon="ex"
@@ -421,7 +414,7 @@ const ROUTE_DATA = [
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_VERIFY,
     element: (
       <AnimatedRoute
-        backTo={ROUTES.HOME}
+        backTo={ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS}
         direction="right"
         navbar
         navbarIcon="ex"
