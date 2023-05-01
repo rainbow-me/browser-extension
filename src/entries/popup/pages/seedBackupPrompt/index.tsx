@@ -157,7 +157,7 @@ export function SeedBackupPrompt() {
                   onClick={handleSkipClick}
                   testId="skip-button"
                 >
-                  {i18n.t('seed_backup_prompt.skip')}
+                  {i18n.t('seed_backup_prompt.take_me_to_wallet')}
                 </Button>
               </Rows>
             </Box>

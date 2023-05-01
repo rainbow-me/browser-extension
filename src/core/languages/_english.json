@@ -421,7 +421,7 @@
     "warning_2": "Your Secret Recovery Phrase is the only way to recover your accounts and funds.",
     "warning_3": "Anyone with your Secret Recovery Phrase can access your entire wallet.",
     "reveal_your_recovery_phrase": "Reveal your recovery phrase",
-    "skip": "Skip"
+    "take_me_to_wallet": "Take me to my wallet"
   },
   "seed_reveal": {
     "title": "Your Secret Recovery Phrase",
