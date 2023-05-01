@@ -44,7 +44,7 @@ export function IconAndCopyList({
             </Inline>
           </Row>
           {i < iconAndCopyList.length - 1 && (
-            <Row>
+            <Row key={`${icon?.symbol}-sep`}>
               <Box style={{ width: '148px' }}>
                 <Separator color="separatorTertiary" strokeWeight="1px" />
               </Box>
