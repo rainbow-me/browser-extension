@@ -17,6 +17,7 @@
     "e2e:mac:chrome": {
       "dependsOn": ["build"]
     },
+    "setup:ci": {},
     "test": {},
     "lint": {},
     "typecheck": {}

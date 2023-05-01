@@ -20,7 +20,9 @@ jobs:
           node-version: '14.20.1'
           cache: 'yarn'
       - name: Install deps via Yarn
-        run: yarn setup
+        run: yarn install && yarn ds:install
+      - name: Setup
+        run: turbo run setup:ci
       - name: Check for frozen lockfile
         run: yarn check-lockfile
       - name: Zip node_modules
