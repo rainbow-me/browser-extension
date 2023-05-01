@@ -218,7 +218,14 @@ const ROUTE_DATA = [
   {
     path: ROUTES.SEED_VERIFY,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEW']}>
+      <AnimatedRoute
+        direction="right"
+        // navbar
+        // navbarIcon="arrow"
+        // background="surfaceSecondary"
+        // protectedRoute
+        protectedRoute={['NEW']}
+      >
         <SeedVerify />
       </AnimatedRoute>
     ),
