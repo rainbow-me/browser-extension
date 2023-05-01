@@ -11,12 +11,13 @@
     "dev": {
       "outputs": ["build/**"]
     },
-    "test": {
-      "dependsOn": ["build"]
-    },
     "e2e": {
       "dependsOn": ["build"]
     },
+    "e2e:mac:chrome": {
+      "dependsOn": ["build"]
+    },
+    "test": {},
     "lint": {},
     "typecheck": {}
   }

@@ -117,10 +117,8 @@ jobs:
           timeout_minutes: 16
           max_attempts: 3
           command: |
-            export BROWSER=chrome
-            export OS=linux
             export CHROMIUM_BIN=$(which chrome)
-            yarn vitest:parallel && yarn vitest:serial
+            turbo run e2e:mac:chrome
   # BRAVE TESTS
   # brave-e2e:
   #   needs: [build]
