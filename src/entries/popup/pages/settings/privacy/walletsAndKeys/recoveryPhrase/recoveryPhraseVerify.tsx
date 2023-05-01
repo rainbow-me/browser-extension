@@ -14,8 +14,12 @@ export function RecoveryPhraseVerify() {
     <Box padding="20px">
       <SeedVerifyQuiz
         address={state?.wallet?.accounts?.[0]}
-        onQuizValidated={() => navigate(ROUTES.CREATE_PASSWORD)}
-        handleSkip={() => navigate(ROUTES.CREATE_PASSWORD)}
+        onQuizValidated={() =>
+          navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS)
+        }
+        handleSkip={() =>
+          navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS)
+        }
       />
     </Box>
   );
