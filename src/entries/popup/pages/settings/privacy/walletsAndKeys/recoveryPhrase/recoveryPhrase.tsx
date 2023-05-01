@@ -14,11 +14,12 @@ export function RecoveryPhrase() {
   const navigate = useRainbowNavigate();
 
   const [seed, setSeed] = useState('');
+  console.log('RECOVERY PHRASE REVEAL');
 
-  const handleSavedTheseWords = useCallback(
-    () => navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS),
-    [navigate],
-  );
+  const handleSavedTheseWords = useCallback(() => {
+    console.log('goinf to SEED_VERIFY');
+    navigate(ROUTES.SEED_VERIFY);
+  }, [navigate]);
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(seed as string);
@@ -42,7 +43,7 @@ export function RecoveryPhrase() {
 
   return (
     <ViewSecret
-      titleSymbol="key.fill"
+      titleSymbol="doc.plaintext"
       title={i18n.t(
         'settings.privacy_and_security.wallets_and_keys.recovery_phrase.title',
       )}
