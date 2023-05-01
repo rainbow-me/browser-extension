@@ -20,7 +20,9 @@ jobs:
           node-version: '14.20.1'
           cache: 'yarn'
       - name: Install deps via Yarn
-        run: yarn install && yarn ds:install
+        run: yarn install --frozen-lockfile && yarn ds:install --frozen-lockfile
+      - name: Install Turbo global
+        run: yarn global add turbo
       - name: Setup
         run: turbo run setup:ci
       - name: Check for frozen lockfile
