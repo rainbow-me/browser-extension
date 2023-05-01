@@ -309,7 +309,7 @@ export function WalletSwitcher() {
     if (!destination) return;
     if (destination.index === source.index) return;
     const newAccountsWithNamesAndEns = reorder(
-      filteredAndSortedAccounts,
+      sortedAccounts,
       source.index,
       destination.index,
     ) as WalletSearchData[];
