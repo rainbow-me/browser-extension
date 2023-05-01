@@ -200,7 +200,7 @@ function NavbarButtonWithBack({
         height={height}
         onClick={click}
         symbol={symbol}
-        variant="transparentHover"
+        variant="flat"
         symbolSize={symbolSize}
         tabIndex={0}
       />
