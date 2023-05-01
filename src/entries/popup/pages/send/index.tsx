@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { Address } from 'wagmi';
@@ -12,6 +13,7 @@ import { Address } from 'wagmi';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
@@ -37,9 +39,11 @@ import { useSendAsset } from '../../hooks/send/useSendAsset';
 import { useSendInputs } from '../../hooks/send/useSendInputs';
 import { useSendState } from '../../hooks/send/useSendState';
 import { useSendValidations } from '../../hooks/send/useSendValidations';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
+import { clickHeaderRight } from '../../utils/clickHeader';
 
 import { ContactAction, ContactPrompt } from './ContactPrompt';
 import { NavbarContactButton } from './NavbarContactButton';
@@ -47,6 +51,12 @@ import { ReviewSheet } from './ReviewSheet';
 import { SendTokenInput } from './SendTokenInput';
 import { ToAddressInput } from './ToAddressInput';
 import { ValueInput } from './ValueInput';
+
+interface ChildInputAPI {
+  blur: () => void;
+  focus: () => void;
+  isFocused?: () => boolean;
+}
 
 export function Send() {
   const [waitingForDevice, setWaitingForDevice] = useState(false);
@@ -68,6 +78,10 @@ export function Send() {
   const { clearCustomGasModified, selectedGas } = useGasStore();
 
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
+
+  const toAddressInputRef = useRef<ChildInputAPI>(null);
+  const sendTokenInputRef = useRef<ChildInputAPI>(null);
+  const valueInputRef = useRef<ChildInputAPI>(null);
 
   const {
     assetAmount,
@@ -280,6 +294,28 @@ export function Send() {
     toEnsName,
   ]);
 
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.altKey) {
+        if (e.key === shortcuts.send.FOCUS_TO_ADDRESS.key) {
+          toAddressInputRef?.current?.focus();
+          sendTokenInputRef?.current?.blur();
+        }
+        if (e.key === shortcuts.send.FOCUS_ASSET.key) {
+          toAddressInputRef?.current?.blur();
+          sendTokenInputRef.current?.focus();
+        }
+      } else {
+        if (
+          e.key === shortcuts.send.OPEN_CONTACT_MENU.key &&
+          !valueInputRef.current?.isFocused?.()
+        ) {
+          clickHeaderRight();
+        }
+      }
+    },
+  });
+
   return (
     <>
       <ExplainerSheet
@@ -343,6 +379,7 @@ export function Send() {
                 setToAddressOrName={setToAddressOrName}
                 onDropdownOpen={setToAddressDropdownOpen}
                 validateToAddress={validateToAddress}
+                ref={toAddressInputRef}
               />
             </Row>
 
@@ -362,6 +399,7 @@ export function Send() {
                     dropdownClosed={toAddressDropdownOpen}
                     setSortMethod={setSortMethod}
                     sortMethod={sortMethod}
+                    ref={sendTokenInputRef}
                   />
                   {asset ? (
                     <ValueInput
@@ -375,6 +413,7 @@ export function Send() {
                       setMaxAssetAmount={setMaxAssetAmount}
                       switchIndependentField={switchIndependentField}
                       inputAnimationControls={controls}
+                      ref={valueInputRef}
                     />
                   ) : null}
                 </Box>

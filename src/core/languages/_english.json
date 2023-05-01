@@ -32,7 +32,7 @@
     "import_wallet": "Import with a Secret Recovery Phrase or Private Key",
     "import_wallet_description": "Add a wallet using your Secret Recovery Phrase or a Private Key.",
     "hardware_wallet": "Add from your hardware wallet",
-    "hardware_wallet_description": "Add more accounts from your Bluetooth hardware wallet.",
+    "hardware_wallet_description": "Add more accounts from your hardware wallet.",
     "watch_address": "Watch an Ethereum address",
     "watch_address_description": "Watch a public address or ENS name."
   },
@@ -425,19 +425,19 @@
   },
   "seed_reveal": {
     "title": "Your Secret Recovery Phrase",
-    "write_down_seed_importance": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
+    "write_down_seed_importance": "Anyone with these words can access your entire wallet! Store them somewhere safe and don't share them with anyone.",
     "saved_these_words": "I've saved these words",
     "phrase_copied": "Recovery Phrase Copied"
   },
   "import_or_connect": {
     "title": "Restore or Connect",
-    "explanation": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
+    "explanation": "Anyone with your Secret Recovery Phrase can access your entire wallet! Store it somewhere safe and don't share it with anyone.",
     "import_wallet": "Import with a Secret Recovery Phrase or Private Key",
     "import_wallet_description": "Add a wallet using your Secret Recovery Phrase or a Private Key.",
     "connect_wallet": "Connect your hardware wallet",
-    "connect_wallet_description": "Add accounts from your hardware wallet",
+    "connect_wallet_description": "Add accounts from your hardware wallet.",
     "watch_address": "Watch an Ethereum address",
-    "watch_address_description": "Watch a public address or ENS name"
+    "watch_address_description": "Watch a public address or ENS name."
   },
   "import_wallet_selection": {
     "title": "Your wallets",
