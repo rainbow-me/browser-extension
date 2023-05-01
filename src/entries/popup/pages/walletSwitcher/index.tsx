@@ -44,6 +44,7 @@ import {
 import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
 import { triggerToast } from '../../components/Toast/Toast';
 import { getWallet, remove, wipe } from '../../handlers/wallet';
+import { useAccounts } from '../../hooks/useAccounts';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { AddressAndType, useWallets } from '../../hooks/useWallets';
@@ -243,25 +244,12 @@ export function WalletSwitcher() {
       navigate,
     ],
   );
-  const { walletNames } = useWalletNamesStore();
 
   const isSearching = !!searchQuery;
 
-  const { walletOrder, saveWalletOrder } = useWalletOrderStore();
-  const sortedAccounts = useMemo(
-    () =>
-      walletOrder
-        .map((address) => {
-          const account = accounts.find((a) => address === a.address);
-          return account && { ...account, walletName: walletNames[address] };
-        })
-        .filter(Boolean),
-    [accounts, walletNames, walletOrder],
-  );
-  const filteredAndSortedAccounts = useMemo(
-    () => searchWallets(sortedAccounts, searchQuery),
-    [sortedAccounts, searchQuery],
-  );
+  const { saveWalletOrder } = useWalletOrderStore();
+
+  const filteredAndSortedAccounts = useAccounts(searchQuery);
 
   const displayedAccounts = useMemo(
     () =>
@@ -334,7 +322,7 @@ export function WalletSwitcher() {
     if (!destination) return;
     if (destination.index === source.index) return;
     const newAccountsWithNamesAndEns = reorder(
-      sortedAccounts,
+      filteredAndSortedAccounts,
       source.index,
       destination.index,
     ) as WalletSearchData[];

@@ -13,7 +13,11 @@ import config from '~/core/firebase/remoteConfig';
 import { changeI18nLanguage } from '~/core/languages';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry, setSentryUser } from '~/core/sentry';
-import { useCurrentLanguageStore, useDeviceIdStore } from '~/core/state';
+import {
+  useCurrentAddressStore,
+  useCurrentLanguageStore,
+  useDeviceIdStore,
+} from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { createWagmiClient } from '~/core/wagmi';
@@ -23,8 +27,10 @@ import { Alert } from '~/design-system/components/Alert/Alert';
 import { Routes } from './Routes';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { Toast } from './components/Toast/Toast';
+import { useAccounts } from './hooks/useAccounts';
 import { AuthProvider } from './hooks/useAuth';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
+import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
 import { usePendingTransactionWatcher } from './hooks/usePendingTransactionWatcher';
 import { PlaygroundComponents } from './pages/_playgrounds';
 import { RainbowConnector } from './wagmi/RainbowConnector';
@@ -41,8 +47,27 @@ export function App() {
   const { currentLanguage } = useCurrentLanguageStore();
   const { address } = useAccount();
   const { deviceId } = useDeviceIdStore();
+  const accounts = useAccounts();
+  const { setCurrentAddress } = useCurrentAddressStore();
 
   usePendingTransactionWatcher({ address });
+
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      const activeElement = document.activeElement;
+      const tagName = activeElement?.tagName;
+      if (tagName !== 'INPUT') {
+        const regex = /^[1-9]$/;
+        if (regex.test(e.key)) {
+          const accountIndex = parseInt(e.key, 10) - 1;
+          console.log('accountIndex: ', accountIndex);
+          if (accounts[accountIndex]) {
+            setCurrentAddress(accounts[accountIndex]?.address);
+          }
+        }
+      }
+    },
+  });
 
   React.useEffect(() => {
     // Disable analytics & sentry for e2e and dev mode
