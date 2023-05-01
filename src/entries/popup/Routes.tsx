@@ -32,6 +32,7 @@ import { Privacy } from './pages/settings/privacy/privacy';
 import { PrivateKey } from './pages/settings/privacy/walletsAndKeys/privateKey/privateKey';
 import { PrivateKeyWarning } from './pages/settings/privacy/walletsAndKeys/privateKey/warning';
 import { RecoveryPhrase } from './pages/settings/privacy/walletsAndKeys/recoveryPhrase/recoveryPhrase';
+import { RecoveryPhraseVerify } from './pages/settings/privacy/walletsAndKeys/recoveryPhrase/recoveryPhraseVerify';
 import { RecoveryPhraseWarning } from './pages/settings/privacy/walletsAndKeys/recoveryPhrase/warning';
 import { WalletDetails } from './pages/settings/privacy/walletsAndKeys/walletDetails';
 import { WalletsAndKeys } from './pages/settings/privacy/walletsAndKeys/walletsAndKeys';
@@ -405,14 +406,31 @@ const ROUTE_DATA = [
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE,
     element: (
       <AnimatedRoute
-        backTo={ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS}
+        // backTo={ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS}
         direction="right"
         navbar
-        navbarIcon="arrow"
+        navbarIcon="ex"
         background="surfaceSecondary"
         protectedRoute
       >
         <RecoveryPhrase />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_VERIFY,
+    element: (
+      <AnimatedRoute
+        // backTo={
+        //   ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE
+        // }
+        direction="right"
+        navbar
+        navbarIcon="ex"
+        background="surfaceSecondary"
+        protectedRoute
+      >
+        <RecoveryPhraseVerify />
       </AnimatedRoute>
     ),
   },

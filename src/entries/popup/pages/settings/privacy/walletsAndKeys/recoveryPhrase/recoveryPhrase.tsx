@@ -16,8 +16,11 @@ export function RecoveryPhrase() {
   const [seed, setSeed] = useState('');
 
   const handleSavedTheseWords = useCallback(() => {
-    navigate(ROUTES.SEED_VERIFY);
-  }, [navigate]);
+    navigate(
+      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_VERIFY,
+      { state: { wallet: state?.wallet, password: state?.password } },
+    );
+  }, [navigate, state?.password, state?.wallet]);
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(seed as string);
@@ -34,7 +37,9 @@ export function RecoveryPhrase() {
         state?.wallet?.accounts?.[0],
         state?.password,
       );
-      setSeed(recoveryPhrase);
+      if (recoveryPhrase) {
+        setSeed(recoveryPhrase);
+      }
     };
     fetchRecoveryPhrase();
   }, [state]);

@@ -14,7 +14,6 @@ import {
 } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
 
-import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { exportWallet } from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 
@@ -204,8 +203,8 @@ export function SeedVerifyQuiz({
   }, [navigate, selectedWords, seed, onQuizValidated]);
 
   return (
-    <FullScreenContainer>
-      <Box alignItems="center" paddingBottom="10px">
+    <Box display="flex" flexDirection="column" alignItems="center">
+      <Box paddingBottom="10px">
         <Inline
           wrap={false}
           alignVertical="center"
@@ -238,6 +237,8 @@ export function SeedVerifyQuiz({
       </Box>
       <Box paddingTop="28px">
         <Box
+          flexBasis="0"
+          width="fit"
           background="surfaceSecondaryElevated"
           borderRadius="16px"
           padding="12px"
@@ -251,7 +252,7 @@ export function SeedVerifyQuiz({
           }}
         >
           <Columns>
-            <Column width="1/3">
+            <Column>
               <Box paddingRight="14px">
                 {randomSeedWithIndex.slice(0, 6).map(({ word, index }, i) => (
                   <SeedWordRow
@@ -266,17 +267,20 @@ export function SeedVerifyQuiz({
                 ))}
               </Box>
             </Column>
-            <Box
-              borderColor="separatorTertiary"
-              height="fit"
-              style={{
-                width: '1px',
-                height: '100%',
-                borderRightStyle: 'solid',
-                borderRightWidth: '1px',
-              }}
-            />
-            <Column width="1/3">
+            <Column width="content">
+              <Box
+                borderColor="separatorTertiary"
+                height="fit"
+                style={{
+                  width: '1px',
+                  height: '100%',
+                  borderRightStyle: 'solid',
+                  borderRightWidth: '1px',
+                }}
+              />
+            </Column>
+
+            <Column>
               <Box paddingLeft="14px">
                 {randomSeedWithIndex.slice(-6).map(({ word, index }, i) => (
                   <SeedWordRow
@@ -307,8 +311,6 @@ export function SeedVerifyQuiz({
           {i18n.t('seed_verify.skip')}
         </Button>
       </Box>
-
-      <Box width="full" paddingTop="80px" paddingBottom="60px"></Box>
-    </FullScreenContainer>
+    </Box>
   );
 }
