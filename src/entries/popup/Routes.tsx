@@ -406,7 +406,7 @@ const ROUTE_DATA = [
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE,
     element: (
       <AnimatedRoute
-        // backTo={ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS}
+        backTo={ROUTES.HOME}
         direction="right"
         navbar
         navbarIcon="ex"
@@ -421,9 +421,7 @@ const ROUTE_DATA = [
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_VERIFY,
     element: (
       <AnimatedRoute
-        // backTo={
-        //   ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE
-        // }
+        backTo={ROUTES.HOME}
         direction="right"
         navbar
         navbarIcon="ex"

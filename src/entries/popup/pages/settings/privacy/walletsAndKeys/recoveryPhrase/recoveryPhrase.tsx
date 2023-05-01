@@ -17,10 +17,12 @@ export function RecoveryPhrase() {
 
   const handleSavedTheseWords = useCallback(() => {
     navigate(
-      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_VERIFY,
+      state?.showQuiz
+        ? ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_VERIFY
+        : ROUTES.HOME,
       { state: { wallet: state?.wallet, password: state?.password } },
     );
-  }, [navigate, state?.password, state?.wallet]);
+  }, [navigate, state?.password, state?.showQuiz, state?.wallet]);
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(seed as string);
