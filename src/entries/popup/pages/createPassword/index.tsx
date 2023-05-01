@@ -89,23 +89,11 @@ export function CreatePassword() {
         onClick={() => setShowOnboardBeforeConnectSheet(false)}
       />
       <FullScreenContainer>
-        <Box alignItems="center" paddingBottom="10px">
-          <Inline
-            wrap={false}
-            alignVertical="center"
-            alignHorizontal="center"
-            space="5px"
-          >
-            <Symbol
-              symbol="doc.plaintext"
-              size={16}
-              color="transparent"
-              weight={'bold'}
-            />
-            <Text size="16pt" weight="bold" color="label" align="center">
-              {i18n.t('create_password.title')}
-            </Text>
-          </Inline>
+        <Box alignItems="center" paddingBottom="10px" paddingTop="8px">
+          <Text size="16pt" weight="bold" color="label" align="center">
+            {i18n.t('create_password.title')}
+          </Text>
+
           <Box padding="16px" paddingTop="10px">
             <Text
               size="12pt"

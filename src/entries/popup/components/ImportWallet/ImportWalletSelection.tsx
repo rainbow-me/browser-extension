@@ -148,10 +148,9 @@ const ImportWalletSelection = ({
               background="surfaceSecondaryElevated"
               borderRadius="16px"
               padding="12px"
-              borderColor={'separatorSecondary'}
-              borderWidth={'1px'}
-              paddingTop="16px"
+              paddingTop={accountsToImport.length > 1 ? '16px' : '10px'}
               paddingBottom="10px"
+              boxShadow="12px surfaceSecondaryElevated"
             >
               <Rows space="6px">
                 {accountsToImport.map((address, index) => (
