@@ -39,6 +39,7 @@ export function Welcome() {
   }, [navigate]);
 
   const handleCreateNewWalletClick = React.useCallback(async () => {
+    if (loading) return;
     setLoading(true);
     try {
       const newWalletAddress = await wallet.create();
@@ -49,7 +50,7 @@ export function Welcome() {
       logger.error(e as RainbowError);
       setLoading(false);
     }
-  }, [navigate, setCurrentAddress]);
+  }, [loading, navigate, setCurrentAddress]);
 
   return (
     <>

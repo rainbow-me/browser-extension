@@ -11,4 +11,4 @@ setTimeout(() => {
   inpageMessenger.send('rainbow_setDefaultProvider', {
     rainbowAsDefault: isDefaultWalletStore.getState().isDefaultWallet,
   });
-}, 100);
+}, 1);
