@@ -1,4 +1,3 @@
-
 name: CI
 
 on:
@@ -11,14 +10,14 @@ jobs:
   # INSTALL DEPS
   install:
     runs-on: ubuntu-latest
-    concurrency: 
+    concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "14.20.1"
+          node-version: '14.20.1'
           cache: 'yarn'
       - name: Install deps via Yarn
         run: yarn setup
@@ -31,7 +30,7 @@ jobs:
         with:
           name: node_modules.tar.gz
           path: node_modules.tar.gz
-      
+
   # BUILD THE EXTENSION
   build:
     runs-on: ubuntu-latest
@@ -40,7 +39,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "14.20.1"
+          node-version: '14.20.1'
           cache: 'yarn'
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
@@ -50,9 +49,9 @@ jobs:
         run: tar xzvf node_modules.tar.gz
       - uses: actions/checkout@v3
         with:
-            repository: 'rainbow-me/browser-extension-env'
-            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-            path: tmp
+          repository: 'rainbow-me/browser-extension-env'
+          token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+          path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Set IS_TESTING=true
@@ -61,7 +60,7 @@ jobs:
       - name: Graphql Setup
         run: yarn graphql-setup
       - name: Build the extension
-        run: yarn build:webpack      
+        run: turbo run build:webpack
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -79,7 +78,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "14.20.1"
+          node-version: '14.20.1'
           cache: 'yarn'
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
@@ -100,16 +99,16 @@ jobs:
       - name: Install chrome
         uses: browser-actions/setup-chrome@latest
         with:
-              chrome-version: 'stable'
+          chrome-version: 'stable'
       - name: Install Anvil
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: nightly
       - uses: actions/checkout@v3
         with:
-            repository: 'rainbow-me/browser-extension-env'
-            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-            path: tmp
+          repository: 'rainbow-me/browser-extension-env'
+          token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+          path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Run e2e (Chrome)
@@ -117,7 +116,7 @@ jobs:
         with:
           timeout_minutes: 16
           max_attempts: 3
-          command:  |
+          command: |
             export BROWSER=chrome
             export OS=linux
             export CHROMIUM_BIN=$(which chrome)
@@ -188,7 +187,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "14.20.1"
+          node-version: '14.20.1'
           cache: 'yarn'
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
@@ -211,9 +210,9 @@ jobs:
           version: nightly
       - uses: actions/checkout@v3
         with:
-            repository: 'rainbow-me/browser-extension-env'
-            token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
-            path: tmp
+          repository: 'rainbow-me/browser-extension-env'
+          token: ${{ secrets.DOTENV_GITHUB_ACCESS_TOKEN }}
+          path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
       - name: Run unit tests
@@ -221,7 +220,7 @@ jobs:
         with:
           timeout_minutes: 5
           max_attempts: 3
-          command: yarn test
+          command: turbo run test
 
   # LINT, TYPECHECK, AUDIT
   ci-checks:
@@ -231,7 +230,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: "14.20.1"
+          node-version: '14.20.1'
           cache: 'yarn'
       - name: Download deps cache artifacts
         uses: actions/download-artifact@v3
@@ -244,13 +243,13 @@ jobs:
       - name: Graphql Setup
         run: yarn graphql-setup
       - name: Lint
-        run: yarn lint
+        run: turbo run lint
       - name: Audit CI
-        run:  yarn audit:ci
+        run: yarn audit:ci
       - name: Check types
-        run: yarn typecheck
+        run: turbo run typecheck
   cleanup:
-    runs-on:  ubuntu-latest
+    runs-on: ubuntu-latest
     needs: [chrome-e2e, unit-tests, ci-checks]
     steps:
       - uses: geekyeggo/delete-artifact@v2

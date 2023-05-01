@@ -1,0 +1,23 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalDependencies": [".env"],
+  "pipeline": {
+    "build": {
+      "outputs": ["build/**"]
+    },
+    "build:webpack": {
+      "outputs": ["build/**"]
+    },
+    "dev": {
+      "outputs": ["build/**"]
+    },
+    "test": {
+      "dependsOn": ["build"]
+    },
+    "e2e": {
+      "dependsOn": ["build"]
+    },
+    "lint": {},
+    "typecheck": {}
+  }
+}
