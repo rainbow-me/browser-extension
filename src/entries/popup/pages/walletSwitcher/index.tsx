@@ -163,20 +163,6 @@ interface WalletSearchData extends AddressAndType {
   ensName?: string;
 }
 
-const searchWallets = <T extends WalletSearchData[]>(
-  wallets: T,
-  searchQuery: string,
-) => {
-  if (!searchQuery) return wallets;
-  const search = searchQuery.toLowerCase();
-  return wallets.filter(
-    ({ address, walletName, ensName }) =>
-      address.toLowerCase().includes(search) ||
-      walletName?.toLowerCase().includes(search) ||
-      ensName?.toLowerCase().includes(search),
-  ) as T;
-};
-
 export function WalletSwitcher() {
   const [renameAccount, setRenameAccount] = useState<Address | undefined>();
   const [removeAccount, setRemoveAccount] = useState<
@@ -249,7 +235,8 @@ export function WalletSwitcher() {
 
   const { saveWalletOrder } = useWalletOrderStore();
 
-  const filteredAndSortedAccounts = useAccounts(searchQuery);
+  const { filteredAndSortedAccounts, sortedAccounts } =
+    useAccounts(searchQuery);
 
   const displayedAccounts = useMemo(
     () =>
@@ -322,7 +309,7 @@ export function WalletSwitcher() {
     if (!destination) return;
     if (destination.index === source.index) return;
     const newAccountsWithNamesAndEns = reorder(
-      filteredAndSortedAccounts,
+      sortedAccounts,
       source.index,
       destination.index,
     ) as WalletSearchData[];

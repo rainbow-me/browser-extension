@@ -33,7 +33,6 @@ export const useAccounts = (searchQuery?: string) => {
             : (addressAndType as WalletSearchData),
         ),
       );
-      console.log('accounts search data: ', accountsSearchData);
       if (accountsSearchData.length !== 0) {
         setAccountsWithNamesAndEns(accountsSearchData);
       }
@@ -67,5 +66,8 @@ export const useAccounts = (searchQuery?: string) => {
     return sortedAccounts;
   }, [filteredAccounts, walletOrder]);
 
-  return filteredAndSortedAccounts;
+  return {
+    filteredAndSortedAccounts,
+    sortedAccounts: accountsWithNamesAndEns,
+  };
 };

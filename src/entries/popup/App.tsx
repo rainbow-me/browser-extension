@@ -47,7 +47,7 @@ export function App() {
   const { currentLanguage } = useCurrentLanguageStore();
   const { address } = useAccount();
   const { deviceId } = useDeviceIdStore();
-  const accounts = useAccounts();
+  const { sortedAccounts } = useAccounts();
   const { setCurrentAddress } = useCurrentAddressStore();
 
   usePendingTransactionWatcher({ address });
@@ -60,9 +60,8 @@ export function App() {
         const regex = /^[1-9]$/;
         if (regex.test(e.key)) {
           const accountIndex = parseInt(e.key, 10) - 1;
-          console.log('accountIndex: ', accountIndex);
-          if (accounts[accountIndex]) {
-            setCurrentAddress(accounts[accountIndex]?.address);
+          if (sortedAccounts[accountIndex]) {
+            setCurrentAddress(sortedAccounts[accountIndex]?.address);
           }
         }
       }
