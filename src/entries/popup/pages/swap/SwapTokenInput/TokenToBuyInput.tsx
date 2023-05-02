@@ -75,7 +75,7 @@ export const TokenToBuyInput = ({
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.altKey) {
-        if (e.key === shortcuts.send.FOCUS_ASSET.key) {
+        if (e.key === shortcuts.swap.FOCUS_ASSET_TO_BUY.key) {
           dropdownRef?.current?.openDropdown();
         }
       }

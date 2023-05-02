@@ -100,12 +100,12 @@ export const shortcuts = {
     },
     FOCUS_ASSET_TO_BUY: {
       display: '\u2191',
-      key: 'ArrowUp',
+      key: 'ArrowDown',
       modifier: 'altKey',
     },
     FOCUS_ASSET_TO_SELL: {
       display: '\u2193',
-      key: 'ArrowDown',
+      key: 'ArrowUp',
       modifier: 'altKey',
     },
     OPEN_NETWORK_MENU: {
