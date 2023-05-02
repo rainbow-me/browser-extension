@@ -3,14 +3,11 @@ import * as React from 'react';
 import { matchRoutes, useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
-import { AccentColorProvider, Box } from '~/design-system';
+import { Box } from '~/design-system';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
-import { globalColors } from '~/design-system/styles/designTokens';
 
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
-import { useAvatar } from './hooks/useAvatar';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
 import { ConnectedApps } from './pages/home/ConnectedApps';
@@ -626,9 +623,6 @@ export function Routes() {
 }
 
 function CurrentRoute(props: { pathname: string }) {
-  const { currentAddress } = useCurrentAddressStore();
-  const { avatar } = useAvatar({ address: currentAddress });
-
   const match = matchingRoute(props.pathname);
   const element = match?.element;
   const currentDirection = element?.props.direction;
@@ -645,14 +639,12 @@ function CurrentRoute(props: { pathname: string }) {
     ? directionMap[previousDirection as Direction]
     : currentDirection;
   return (
-    <AccentColorProvider color={avatar?.color ?? globalColors.blue60}>
-      <AnimatePresence key={props.pathname} mode="popLayout">
-        {React.cloneElement(element, {
-          key: props.pathname,
-          direction,
-        })}
-      </AnimatePresence>
-    </AccentColorProvider>
+    <AnimatePresence key={props.pathname} mode="popLayout">
+      {React.cloneElement(element, {
+        key: props.pathname,
+        direction,
+      })}
+    </AnimatePresence>
   );
 }
 
