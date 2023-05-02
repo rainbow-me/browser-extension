@@ -10,6 +10,9 @@ jobs:
   # INSTALL DEPS
   install:
     runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: U4fFVEVe5rC5uZr3mEMetd6y
+      TURBO_TEAM: rainbowdotme
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: true
@@ -36,6 +39,9 @@ jobs:
   # BUILD THE EXTENSION
   build:
     runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: U4fFVEVe5rC5uZr3mEMetd6y
+      TURBO_TEAM: rainbowdotme
     needs: [install]
     steps:
       - uses: actions/checkout@v3
@@ -71,6 +77,9 @@ jobs:
   # CHROME TESTS
   chrome-e2e:
     runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: U4fFVEVe5rC5uZr3mEMetd6y
+      TURBO_TEAM: rainbowdotme
     timeout-minutes: 20
     needs: [build]
     env:
@@ -182,6 +191,9 @@ jobs:
   # UNIT TESTS
   unit-tests:
     runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: U4fFVEVe5rC5uZr3mEMetd6y
+      TURBO_TEAM: rainbowdotme
     needs: [install]
     steps:
       - uses: actions/checkout@v3
@@ -225,6 +237,9 @@ jobs:
   # LINT, TYPECHECK, AUDIT
   ci-checks:
     runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: U4fFVEVe5rC5uZr3mEMetd6y
+      TURBO_TEAM: rainbowdotme
     needs: [install]
     steps:
       - uses: actions/checkout@v3

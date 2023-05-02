@@ -12,7 +12,7 @@
     "update-manifest": "node scripts/update-manifest.js",
     "update-manifest:prod": "node scripts/update-manifest.js prod",
     "// Generates a build using webpack secured by Lavamoat": "",
-    "build": "yarn devmode:off && yarn build:webpack",
+    "build": "yarn devmode:off && turbo run build:webpack",
     "// Generates modules via Webpack (without LavaMoat protected modules)": "",
     "build:webpack": "lavamoat ./scripts/webpack.js --policy ./lavamoat/build-webpack/policy.json --override ./lavamoat/build-webpack/policy-override.json",
     "// Generates LavaMoat secured modules from the Webpack build": "",
