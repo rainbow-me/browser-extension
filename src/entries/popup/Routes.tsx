@@ -92,7 +92,11 @@ const ROUTE_DATA = [
   {
     path: ROUTES.WELCOME,
     element: (
-      <AnimatedRoute direction="base" protectedRoute={['NEW']}>
+      <AnimatedRoute
+        direction="base"
+        protectedRoute={['NEW']}
+        accentColor={false}
+      >
         <Welcome />
       </AnimatedRoute>
     ),
@@ -101,7 +105,11 @@ const ROUTE_DATA = [
   {
     path: ROUTES.READY,
     element: (
-      <AnimatedRoute direction="deceleratedShort" protectedRoute={['READY']}>
+      <AnimatedRoute
+        direction="deceleratedShort"
+        protectedRoute={['READY']}
+        accentColor={false}
+      >
         <WalletReady />
       </AnimatedRoute>
     ),
@@ -115,6 +123,7 @@ const ROUTE_DATA = [
         navbar
         navbarIcon="arrow"
         backTo={ROUTES.WELCOME}
+        accentColor={false}
       >
         <ImportOrConnect />
       </AnimatedRoute>
@@ -130,6 +139,7 @@ const ROUTE_DATA = [
         navbar
         navbarIcon="arrow"
         backTo={ROUTES.IMPORT_OR_CONNECT}
+        accentColor={false}
       >
         <WatchWallet />
       </AnimatedRoute>
@@ -145,6 +155,7 @@ const ROUTE_DATA = [
         navbar
         navbarIcon="arrow"
         backTo={ROUTES.IMPORT_OR_CONNECT}
+        accentColor={false}
       >
         <ImportWallet />
       </AnimatedRoute>
@@ -154,7 +165,11 @@ const ROUTE_DATA = [
   {
     path: ROUTES.IMPORT__SELECT,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEW']}>
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW']}
+        accentColor={false}
+      >
         <ImportWalletSelection />
       </AnimatedRoute>
     ),
@@ -167,6 +182,7 @@ const ROUTE_DATA = [
         direction="right"
         title={i18n.t('edit_import_wallet_selection.title')}
         protectedRoute={['NEW']}
+        accentColor={false}
       >
         <EditImportWalletSelection />
       </AnimatedRoute>
@@ -191,6 +207,7 @@ const ROUTE_DATA = [
         navbar
         navbarIcon="arrow"
         backTo={ROUTES.WELCOME}
+        accentColor={false}
       >
         <SeedBackupPrompt />
       </AnimatedRoute>
@@ -206,6 +223,7 @@ const ROUTE_DATA = [
         navbar
         navbarIcon="arrow"
         backTo={ROUTES.SEED_BACKUP_PROMPT}
+        accentColor={false}
       >
         <SeedReveal />
       </AnimatedRoute>
@@ -215,7 +233,11 @@ const ROUTE_DATA = [
   {
     path: ROUTES.SEED_VERIFY,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEW']}>
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW']}
+        accentColor={false}
+      >
         <SeedVerify />
       </AnimatedRoute>
     ),
@@ -230,6 +252,7 @@ const ROUTE_DATA = [
         navbar
         navbarIcon="arrow"
         backTo={ROUTES.WELCOME}
+        accentColor={false}
       >
         <CreatePassword />
       </AnimatedRoute>
