@@ -12,24 +12,24 @@ import {
 // ///////////////////////////////////////////////
 // Query Types
 
-export type WalletsSummaryArgs = {
+export type AddysSummaryArgs = {
   addresses: Address[];
 };
 
 // ///////////////////////////////////////////////
 // Query Key
 
-const walletsSummaryQueryKey = ({ addresses }: WalletsSummaryArgs) =>
-  createQueryKey('walletsSummary', { addresses }, { persisterVersion: 1 });
+const addysSummaryQueryKey = ({ addresses }: AddysSummaryArgs) =>
+  createQueryKey('addysSummary', { addresses }, { persisterVersion: 1 });
 
-type WalletsSummaryQueryKey = ReturnType<typeof walletsSummaryQueryKey>;
+type AddysSummaryQueryKey = ReturnType<typeof addysSummaryQueryKey>;
 
 // ///////////////////////////////////////////////
 // Query Function
 
-async function walletsSummaryQueryFunction({
+async function addysSummaryQueryFunction({
   queryKey: [{ addresses }],
-}: QueryFunctionArgs<typeof walletsSummaryQueryKey>) {
+}: QueryFunctionArgs<typeof addysSummaryQueryKey>) {
   const summaryPromises = addresses?.map(async (address) => {
     const summaryResponse = await addysHttp.get(`/summary?=${address}`);
     return summaryResponse;
@@ -38,25 +38,23 @@ async function walletsSummaryQueryFunction({
   return summaries;
 }
 
-type WalletsSumaryResult = QueryFunctionResult<
-  typeof walletsSummaryQueryFunction
->;
+type AddysSumaryResult = QueryFunctionResult<typeof addysSummaryQueryFunction>;
 
 // ///////////////////////////////////////////////
 // Query Hook
 
-export function useWalletsSummary(
-  { addresses }: WalletsSummaryArgs,
+export function useAddysSummary(
+  { addresses }: AddysSummaryArgs,
   config: QueryConfig<
-    WalletsSumaryResult,
+    AddysSumaryResult,
     Error,
-    WalletsSumaryResult,
-    WalletsSummaryQueryKey
+    AddysSumaryResult,
+    AddysSummaryQueryKey
   > = {},
 ) {
   return useQuery(
-    walletsSummaryQueryKey({ addresses }),
-    walletsSummaryQueryFunction,
+    addysSummaryQueryKey({ addresses }),
+    addysSummaryQueryFunction,
     {
       ...config,
     },
