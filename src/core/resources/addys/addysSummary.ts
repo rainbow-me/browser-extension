@@ -8,19 +8,64 @@ import {
   QueryFunctionResult,
   createQueryKey,
 } from '~/core/react-query';
+import { SupportedCurrencyKey } from '~/core/references';
+import { ChainId } from '~/core/types/chains';
+
+interface AddySummary {
+  data: {
+    addresses: {
+      [key: Address]: {
+        summary: {
+          native_balance_by_symbol: {
+            [key in 'ETH' | 'MATIC' | 'BNB']: {
+              symbol: string;
+              quantity: string;
+              decimals: number;
+            };
+          };
+          num_erc20s: number;
+          last_activity: number;
+          asset_value: number;
+        };
+      };
+      summary_by_chain: {
+        [key in
+          | ChainId.mainnet
+          | ChainId.optimism
+          | ChainId.polygon
+          | ChainId.arbitrum
+          | ChainId.bsc]: {
+          native_balance: {
+            symbol: string;
+            quantity: string;
+            decimals: number;
+          };
+          num_erc20s: number;
+          last_activity: number;
+          asset_value: number;
+        };
+      };
+    };
+  };
+}
 
 // ///////////////////////////////////////////////
 // Query Types
 
 export type AddysSummaryArgs = {
   addresses: Address[];
+  currency: SupportedCurrencyKey;
 };
 
 // ///////////////////////////////////////////////
 // Query Key
 
-const addysSummaryQueryKey = ({ addresses }: AddysSummaryArgs) =>
-  createQueryKey('addysSummary', { addresses }, { persisterVersion: 1 });
+const addysSummaryQueryKey = ({ addresses, currency }: AddysSummaryArgs) =>
+  createQueryKey(
+    'addysSummary',
+    { addresses, currency },
+    { persisterVersion: 1 },
+  );
 
 type AddysSummaryQueryKey = ReturnType<typeof addysSummaryQueryKey>;
 
@@ -28,14 +73,15 @@ type AddysSummaryQueryKey = ReturnType<typeof addysSummaryQueryKey>;
 // Query Function
 
 async function addysSummaryQueryFunction({
-  queryKey: [{ addresses }],
+  queryKey: [{ addresses, currency }],
 }: QueryFunctionArgs<typeof addysSummaryQueryKey>) {
-  const summaryPromises = addresses?.map(async (address) => {
-    const summaryResponse = await addysHttp.get(`/summary?=${address}`);
-    return summaryResponse;
+  const addysSummary = await addysHttp.get(`/summary`, {
+    body: JSON.stringify({
+      currency,
+      addresses,
+    }),
   });
-  const summaries = await Promise.all(summaryPromises);
-  return summaries;
+  return addysSummary as AddySummary;
 }
 
 type AddysSumaryResult = QueryFunctionResult<typeof addysSummaryQueryFunction>;
@@ -44,7 +90,7 @@ type AddysSumaryResult = QueryFunctionResult<typeof addysSummaryQueryFunction>;
 // Query Hook
 
 export function useAddysSummary(
-  { addresses }: AddysSummaryArgs,
+  { addresses, currency }: AddysSummaryArgs,
   config: QueryConfig<
     AddysSumaryResult,
     Error,
@@ -53,7 +99,7 @@ export function useAddysSummary(
   > = {},
 ) {
   return useQuery(
-    addysSummaryQueryKey({ addresses }),
+    addysSummaryQueryKey({ addresses, currency }),
     addysSummaryQueryFunction,
     {
       ...config,
