@@ -76,14 +76,12 @@ async function tokenSearchQueryFunction({
     queryParams.fromChainId = fromChainId;
   }
   if (isAddress(query)) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     queryParams.keys = `networks.${chainId}.address`;
   }
   const url = `/${chainId}/?${qs.stringify(queryParams)}`;
   try {
-    const tokenSearch = await tokenSearchHttp.get(url);
-    return parseTokenSearch(tokenSearch.data?.data, chainId) as SearchAsset[];
+    const tokenSearch = await tokenSearchHttp.get<{ data: SearchAsset[] }>(url);
+    return parseTokenSearch(tokenSearch.data.data, chainId);
   } catch (e) {
     return [];
   }

@@ -40,16 +40,13 @@ export const getSigningRequestDisplayDetails = (
       // and switch order if needed to ensure max compatibility with dapps
       if (isSignTypedData(payload.method)) {
         if (payload?.params?.length && payload?.params?.[0]) {
-          const firstParamIsAddresss = isAddress(
-            (payload?.params?.[0] as string) ?? '',
-          );
-          const data = payload?.params?.[firstParamIsAddresss ? 1 : 0];
-          const address = payload?.params?.[
-            firstParamIsAddresss ? 0 : 1
-          ] as Address;
-          let msgData = data as string;
+          const params = payload.params as string[];
+          const [address, data] = isAddress(params[0])
+            ? [params[0], params[1]]
+            : [params[1], params[0]];
+          let msgData: string | object = data;
           try {
-            msgData = JSON.parse(data as string);
+            msgData = JSON.parse(data) as object;
             // eslint-disable-next-line no-empty
           } catch (e) {}
           return {
