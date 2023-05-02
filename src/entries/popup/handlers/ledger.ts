@@ -16,15 +16,11 @@ const getPath = async (address: Address) => {
   return (await walletAction('get_path', address)) as string;
 };
 
-export async function sendTransactionFromLedger(
+export async function signTransactionFromLedger(
   transaction: TransactionRequest,
-): Promise<TransactionResponse> {
+): Promise<string> {
   try {
     const { from: address } = transaction;
-    const provider = getProvider({
-      chainId: transaction.chainId,
-    });
-
     const transport = await TransportWebUSB.create();
     const appEth = new AppEth(transport);
     const path = await getPath(address as Address);
@@ -64,7 +60,7 @@ export async function sendTransactionFromLedger(
       v: BigNumber.from('0x' + sig.v).toNumber(),
     });
 
-    return provider.sendTransaction(serializedTransaction);
+    return serializedTransaction;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     if (e?.name === 'TransportStatusError') {
@@ -76,6 +72,17 @@ export async function sendTransactionFromLedger(
     // bubble up the error
     throw e;
   }
+}
+
+export async function sendTransactionFromLedger(
+  transaction: TransactionRequest,
+): Promise<TransactionResponse> {
+  const serializedTransaction = await signTransactionFromLedger(transaction);
+  const provider = getProvider({
+    chainId: transaction.chainId,
+  });
+
+  return provider.sendTransaction(serializedTransaction);
 }
 
 export async function signMessageByTypeFromLedger(

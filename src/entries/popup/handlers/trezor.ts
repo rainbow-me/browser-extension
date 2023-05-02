@@ -22,9 +22,9 @@ const getPath = async (address: Address) => {
   return (await walletAction('get_path', address)) as string;
 };
 
-export async function sendTransactionFromTrezor(
+export async function signTransactionFromTrezor(
   transaction: ethers.providers.TransactionRequest,
-): Promise<TransactionResponse> {
+): Promise<string> {
   try {
     window.TrezorConnect.init(TREZOR_CONFIG);
     const { from: address } = transaction;
@@ -73,7 +73,7 @@ export async function sendTransactionFromTrezor(
         throw new Error('Transaction was not signed by the right address');
       }
 
-      return provider.sendTransaction(serializedTransaction);
+      return serializedTransaction;
     } else {
       alert('error signing transaction with trezor');
       throw new Error('error signing transaction with trezor');
@@ -84,6 +84,22 @@ export async function sendTransactionFromTrezor(
     alert('Please make sure your trezor is unlocked');
     console.log('error signing transaction with trezor', e);
 
+    // bubble up the error
+    throw e;
+  }
+}
+export async function sendTransactionFromTrezor(
+  transaction: ethers.providers.TransactionRequest,
+): Promise<TransactionResponse> {
+  try {
+    const serializedTransaction = await signTransactionFromTrezor(transaction);
+    const provider = getProvider({
+      chainId: transaction.chainId,
+    });
+    return provider.sendTransaction(serializedTransaction);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (e: any) {
+    console.log('error signing transaction with trezor', e);
     // bubble up the error
     throw e;
   }

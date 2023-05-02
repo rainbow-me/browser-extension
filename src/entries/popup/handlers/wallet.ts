@@ -28,11 +28,13 @@ import { getNextNonce } from '~/core/utils/transactions';
 import {
   sendTransactionFromLedger,
   signMessageByTypeFromLedger,
+  signTransactionFromLedger,
 } from './ledger';
 import {
   TREZOR_CONFIG,
   sendTransactionFromTrezor,
   signMessageByTypeFromTrezor,
+  signTransactionFromTrezor,
 } from './trezor';
 
 const messenger = initializeMessenger({ connect: 'background' });
@@ -59,6 +61,39 @@ const signMessageByType = async (
     address,
     msgData,
   });
+};
+
+export const signTransactionFromHW = async (
+  transactionRequest: TransactionRequest,
+  vendor: string,
+): Promise<string | undefined> => {
+  const { selectedGas } = gasStore.getState();
+  const provider = getProvider({
+    chainId: transactionRequest.chainId,
+  });
+  const gasLimit = await estimateGasWithPadding({
+    transactionRequest,
+    provider,
+  });
+
+  const nonce = await getNextNonce({
+    address: transactionRequest.from as Address,
+    chainId: transactionRequest.chainId as number,
+  });
+
+  const params = {
+    ...transactionRequest,
+    ...selectedGas.transactionGasParams,
+    gasLimit: toHex(gasLimit || '0'),
+    value: transactionRequest?.value,
+    nonce,
+  };
+
+  if (vendor === 'Ledger') {
+    return signTransactionFromLedger(params);
+  } else if (vendor === 'Trezor') {
+    return signTransactionFromTrezor(params);
+  }
 };
 
 export const sendTransaction = async (
