@@ -1,5 +1,5 @@
 import { getAddress, isAddress } from '@ethersproject/address';
-import { isHexString } from '@ethersproject/bytes';
+import { Bytes, isHexString } from '@ethersproject/bytes';
 import { Address } from 'wagmi';
 
 import { ProviderRequestPayload } from '../transports/providerRequestTransport';
@@ -44,9 +44,9 @@ export const getSigningRequestDisplayDetails = (
           const [address, data] = isAddress(params[0])
             ? [params[0], params[1]]
             : [params[1], params[0]];
-          let msgData: string | object = data;
+          let msgData: string | Bytes = data;
           try {
-            msgData = JSON.parse(data) as object;
+            msgData = JSON.parse(data) as Bytes;
             // eslint-disable-next-line no-empty
           } catch (e) {}
           return {

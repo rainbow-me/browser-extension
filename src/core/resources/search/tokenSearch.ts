@@ -1,6 +1,7 @@
 import { isAddress } from '@ethersproject/address';
 import { useQuery } from '@tanstack/react-query';
 import qs from 'qs';
+import { Address } from 'wagmi';
 
 import { tokenSearchHttp } from '~/core/network/tokenSearch';
 import {
@@ -97,7 +98,7 @@ function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
       BNB_MAINNET_ADDRESS,
       MATIC_MAINNET_ADDRESS,
     ].includes(a.uniqueId),
-    mainnetAddress: a.uniqueId,
+    mainnetAddress: a.uniqueId as Address,
     uniqueId: `${a.uniqueId}_${chainId}`,
   }));
 }

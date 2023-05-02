@@ -52,10 +52,7 @@ export function useFavoriteAssets() {
 
           const currentFavoritesData = newSearchData[chain];
           if (results?.[0]) {
-            newSearchData[chain] = [
-              ...(currentFavoritesData || []),
-              results?.[0],
-            ];
+            newSearchData[chain] = [...currentFavoritesData, results[0]];
           } else {
             const unverifiedSearchResults = await fetchTokenSearch({
               chainId: chain,
@@ -67,8 +64,8 @@ export function useFavoriteAssets() {
             if (unverifiedSearchResults?.[0]) {
               // eslint-disable-next-line require-atomic-updates
               newSearchData[chain] = [
-                ...(currentFavoritesData || []),
-                unverifiedSearchResults?.[0],
+                ...currentFavoritesData,
+                unverifiedSearchResults[0],
               ];
             }
           }
