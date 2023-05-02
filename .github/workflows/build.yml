@@ -77,14 +77,13 @@ jobs:
   # CHROME TESTS
   chrome-e2e:
     runs-on: ubuntu-latest
-    env:
-      TURBO_TOKEN: U4fFVEVe5rC5uZr3mEMetd6y
-      TURBO_TEAM: rainbowdotme
     timeout-minutes: 20
     needs: [build]
     env:
       DISPLAY: :0
       VITEST_SEGFAULT_RETRY: 3
+      TURBO_TOKEN: U4fFVEVe5rC5uZr3mEMetd6y
+      TURBO_TEAM: rainbowdotme
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
