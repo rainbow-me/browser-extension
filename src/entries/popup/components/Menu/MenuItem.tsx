@@ -152,7 +152,6 @@ const MenuItem = ({
   rightComponent,
   titleComponent,
   labelComponent,
-  // disabled,
   hasChevron,
   testId,
   first,
