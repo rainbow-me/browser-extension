@@ -23,6 +23,7 @@ export function FullScreenContainer({
         minHeight: POPUP_DIMENSIONS.height,
         minWidth: POPUP_DIMENSIONS.width,
         overflowX: 'hidden',
+        height: '100%',
       }}
     >
       {children}

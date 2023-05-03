@@ -40,7 +40,6 @@ export default function ViewSecret({
       flexDirection="column"
       alignItems="center"
       padding="20px"
-      paddingTop="2px"
     >
       <Stack alignHorizontal="center" space="24px">
         <Stack space="12px">
