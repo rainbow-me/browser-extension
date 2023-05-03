@@ -41,14 +41,14 @@ type SwappableAddressesQueryKey = ReturnType<typeof swappableAddressesQueryKey>;
 
 async function swappableAddressesQueryFunction({
   queryKey: [{ addresses, fromChainId, toChainId }],
-}: QueryFunctionArgs<typeof swappableAddressesQueryKey>): Promise<
-  (Address | typeof ETH_ADDRESS)[]
-> {
-  const filteredAddresses = await tokenSearchHttp.post(`/${fromChainId}`, {
+}: QueryFunctionArgs<typeof swappableAddressesQueryKey>) {
+  const filteredAddresses = await tokenSearchHttp.post<{
+    data?: (Address | typeof ETH_ADDRESS)[];
+  }>(`/${fromChainId}`, {
     addresses,
     toChainId,
   });
-  return filteredAddresses?.data?.data || [];
+  return filteredAddresses.data.data || [];
 }
 
 type SwappableAddressesResult = QueryFunctionResult<

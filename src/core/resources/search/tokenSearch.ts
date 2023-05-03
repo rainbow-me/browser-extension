@@ -1,6 +1,7 @@
 import { isAddress } from '@ethersproject/address';
 import { useQuery } from '@tanstack/react-query';
 import qs from 'qs';
+import { Address } from 'wagmi';
 
 import { tokenSearchHttp } from '~/core/network/tokenSearch';
 import {
@@ -76,14 +77,12 @@ async function tokenSearchQueryFunction({
     queryParams.fromChainId = fromChainId;
   }
   if (isAddress(query)) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     queryParams.keys = `networks.${chainId}.address`;
   }
   const url = `/${chainId}/?${qs.stringify(queryParams)}`;
   try {
-    const tokenSearch = await tokenSearchHttp.get(url);
-    return parseTokenSearch(tokenSearch.data?.data, chainId) as SearchAsset[];
+    const tokenSearch = await tokenSearchHttp.get<{ data: SearchAsset[] }>(url);
+    return parseTokenSearch(tokenSearch.data.data, chainId);
   } catch (e) {
     return [];
   }
@@ -99,7 +98,7 @@ function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
       BNB_MAINNET_ADDRESS,
       MATIC_MAINNET_ADDRESS,
     ].includes(a.uniqueId),
-    mainnetAddress: a.uniqueId,
+    mainnetAddress: a.uniqueId as Address,
     uniqueId: `${a.uniqueId}_${chainId}`,
   }));
 }
