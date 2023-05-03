@@ -9,7 +9,6 @@ import {
   Droppable,
   NotDraggingStyle,
 } from 'react-beautiful-dnd';
-import { Link } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -36,6 +35,7 @@ import AccountItem, {
   LabelOption,
 } from '../../components/AccountItem/AccountItem';
 import { LabelPill } from '../../components/LabelPill/LabelPill';
+import { Link } from '../../components/Link/Link';
 import { MenuContainer } from '../../components/Menu/MenuContainer';
 import {
   MoreInfoButton,
