@@ -389,7 +389,8 @@
     "copy_address": "Copy address",
     "view_on_etherscan": "View on Etherscan",
     "view_on_explorer": "View on Explorer",
-    "delete_contact": "Delete contact"
+    "delete_contact": "Delete contact",
+    "contact_address_copied": "Address Copied"
   },
   "sign": {
     "title": "Sign"
