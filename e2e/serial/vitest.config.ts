@@ -8,6 +8,17 @@ export default mergeConfig(
   defineConfig({
     test: {
       threads: false,
+      sequence: {
+        shuffle: false,
+        sequencer: class Sequencer {
+          sort(files) {
+            return files;
+          }
+          shard(files) {
+            return files;
+          }
+        },
+      },
     },
   }),
 );
