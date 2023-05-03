@@ -1,6 +1,14 @@
 import React from 'react';
 
-import { Box, Inline, Rows, Symbol, Text } from '~/design-system';
+import {
+  Box,
+  Inline,
+  Row,
+  Rows,
+  Separator,
+  Symbol,
+  Text,
+} from '~/design-system';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 
 export interface IconAndCopyItem {
@@ -17,29 +25,33 @@ export function IconAndCopyList({
   iconAndCopyList: IconAndCopyItem[];
 }) {
   return (
-    <Box paddingHorizontal="8px">
-      <Rows alignVertical="top" space="40px">
-        {iconAndCopyList?.map(({ icon, copy }) => (
-          <Inline
-            key={icon?.symbol}
-            space="16px"
-            wrap={false}
-            alignVertical="center"
-          >
-            <Box display="flex" alignItems="center">
-              <Symbol
-                symbol={icon.symbol}
-                size={18}
-                color={icon.color}
-                weight="semibold"
-              />
-            </Box>
-            <Text size="14pt" weight="medium" color="label">
-              {copy}
-            </Text>
-          </Inline>
-        ))}
-      </Rows>
-    </Box>
+    <Rows alignHorizontal="center" alignVertical="top" space="20px">
+      {iconAndCopyList?.map(({ icon, copy }, i) => (
+        <>
+          <Row key={icon?.symbol}>
+            <Inline wrap={false} space="16px" alignVertical="center">
+              <Box display="flex" alignItems="center">
+                <Symbol
+                  symbol={icon.symbol}
+                  size={18}
+                  color={icon.color}
+                  weight="semibold"
+                />
+              </Box>
+              <Text size="14pt" weight="medium" color="label">
+                {copy}
+              </Text>
+            </Inline>
+          </Row>
+          {i < iconAndCopyList.length - 1 && (
+            <Row key={`${icon?.symbol}-sep`}>
+              <Box style={{ width: '148px' }}>
+                <Separator color="separatorTertiary" strokeWeight="1px" />
+              </Box>
+            </Row>
+          )}
+        </>
+      ))}
+    </Rows>
   );
 }
