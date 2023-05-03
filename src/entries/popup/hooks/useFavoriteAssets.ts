@@ -50,7 +50,7 @@ export function useFavoriteAssets() {
             query,
           });
 
-          const currentFavoritesData = newSearchData[chain];
+          const currentFavoritesData = newSearchData[chain] || [];
           if (results?.[0]) {
             newSearchData[chain] = [...currentFavoritesData, results[0]];
           } else {
