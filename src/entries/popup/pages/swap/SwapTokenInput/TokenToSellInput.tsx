@@ -1,7 +1,9 @@
 import React, { useCallback, useRef } from 'react';
 
+import { shortcuts } from '~/core/references/shortcuts';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { SortMethod } from '~/entries/popup/hooks/send/useSendAsset';
+import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import { TokenToSellDropdown } from './TokenDropdown/TokenToSellDropdown';
 import { TokenToSellInfo } from './TokenInfo/TokenToSellInfo';
@@ -49,6 +51,7 @@ export const TokenToSellInput = ({
   setAssetToSellInputValue,
 }: SwapTokenInputProps) => {
   const onSelectAssetRef = useRef<(asset: ParsedSearchAsset) => void>();
+  const dropdownRef = useRef<{ openDropdown: () => void }>(null);
 
   const setOnSelectAsset = useCallback(
     (cb: (asset: ParsedSearchAsset) => void) => {
@@ -68,6 +71,16 @@ export const TokenToSellInput = ({
     },
     [inputRef],
   );
+
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.altKey) {
+        if (e.key === shortcuts.swap.FOCUS_ASSET_TO_SELL.key) {
+          dropdownRef?.current?.openDropdown();
+        }
+      }
+    },
+  });
 
   return (
     <TokenInput
@@ -107,6 +120,7 @@ export const TokenToSellInput = ({
       setAssetFilter={setAssetFilter}
       setValue={setAssetToSellInputValue}
       openDropdownOnMount={openDropdownOnMount}
+      ref={dropdownRef}
     />
   );
 };
