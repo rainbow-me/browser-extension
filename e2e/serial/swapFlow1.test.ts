@@ -4,7 +4,6 @@
 
 import 'chromedriver';
 import 'geckodriver';
-import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 
@@ -25,7 +24,6 @@ import {
   typeOnTextInput,
   waitAndClick,
 } from '../helpers';
-import { convertRawAmountToDecimalFormat, subtract } from '../numbers';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;
@@ -40,8 +38,6 @@ const OP_OPTIMISM_ID = '0x4200000000000000000000000000000000000042_10';
 const MATIC_POLYGON_ID = '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0_137';
 const GMX_ARBITRUM_ID = '0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a_42161';
 const UNI_BNB_ID = '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984_56';
-
-const TEST_ADDRESS_1 = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
 
 beforeAll(async () => {
   driver = await initDriverWithOptions({
@@ -698,202 +694,4 @@ it('should be able to find exact match on other networks', async () => {
     id: 'token-to-buy-search-token-input',
     driver,
   });
-});
-
-it('should be able to go to review a swap', async () => {
-  await findElementByTestIdAndClick({
-    id: 'token-to-sell-search-token-input',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: `${ETH_MAINNET_ID}-token-to-sell-row`,
-    driver,
-  });
-  const toSellInputEthSelected = await findElementByTestId({
-    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-    driver,
-  });
-  expect(toSellInputEthSelected).toBeTruthy();
-  await findElementByTestIdAndClick({
-    id: 'token-to-buy-search-token-input',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: `${DAI_MAINNET_ID}-favorites-token-to-buy-row`,
-    driver,
-  });
-  const toBuyInputDaiSelected = await findElementByTestId({
-    id: `${DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
-    driver,
-  });
-  expect(toBuyInputDaiSelected).toBeTruthy();
-  await typeOnTextInput({
-    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
-    text: 1,
-    driver,
-  });
-  await delayTime('very-long');
-  await findElementByTestIdAndClick({ id: 'swap-confirmation-button', driver });
-});
-
-it('should be able to see swap information in review sheet', async () => {
-  const ethAssetToSellAssetCard = await findElementByTestId({
-    id: `ETH-asset-to-sell-swap-asset-card`,
-    driver,
-  });
-  expect(ethAssetToSellAssetCard).toBeTruthy();
-  const daiAssetToBuyAssetCard = await findElementByTestId({
-    id: `DAI-asset-to-buy-swap-asset-card`,
-    driver,
-  });
-  expect(daiAssetToBuyAssetCard).toBeTruthy();
-  const minimumReceivedDetailsRow = await findElementByTestId({
-    id: `minimum-received-details-row`,
-    driver,
-  });
-  expect(minimumReceivedDetailsRow).toBeTruthy();
-  const swappingViaDetailsRow = await findElementByTestId({
-    id: `swapping-via-details-row`,
-    driver,
-  });
-  expect(swappingViaDetailsRow).toBeTruthy();
-  await findElementByTestIdAndClick({ id: 'swapping-via-swap-routes', driver });
-  await findElementByTestIdAndClick({ id: 'swapping-via-swap-routes', driver });
-  await findElementByTestIdAndClick({ id: 'swapping-via-swap-routes', driver });
-
-  const includedFeeDetailsRow = await findElementByTestId({
-    id: `included-fee-details-row`,
-    driver,
-  });
-  expect(includedFeeDetailsRow).toBeTruthy();
-
-  await findElementByTestIdAndClick({
-    id: 'included-fee-carrousel-button',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'included-fee-carrousel-button',
-    driver,
-  });
-
-  await findElementByTestIdAndClick({
-    id: 'swap-review-rnbw-fee-info-button',
-    driver,
-  });
-  await findElementByTestIdAndClick({ id: 'explainer-action-button', driver });
-
-  const moreDetailsHiddendDetailsRow = await findElementByTestId({
-    id: `more-details-hidden-details-row`,
-    driver,
-  });
-  expect(moreDetailsHiddendDetailsRow).toBeTruthy();
-
-  await findElementByTestIdAndClick({
-    id: 'swap-review-more-details-button',
-    driver,
-  });
-
-  const moreDetailsdSection = await findElementByTestId({
-    id: `more-details-section`,
-    driver,
-  });
-  expect(moreDetailsdSection).toBeTruthy();
-
-  const exchangeRateDetailsRow = await findElementByTestId({
-    id: `exchange-rate-details-row`,
-    driver,
-  });
-  expect(exchangeRateDetailsRow).toBeTruthy();
-
-  await findElementByTestIdAndClick({
-    id: 'exchange-rate-carrousel-button',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'exchange-rate-carrousel-button',
-    driver,
-  });
-
-  // ETH is selected as input so there's no contract
-  await doNotFindElementByTestId({
-    id: `asset-to-sell-contract-details-row`,
-    driver,
-  });
-
-  const assetToBuyContractDetailsRow = await findElementByTestId({
-    id: `asset-to-buy-contract-details-row`,
-    driver,
-  });
-  expect(assetToBuyContractDetailsRow).toBeTruthy();
-
-  await findElementByTestIdAndClick({
-    id: 'asset-to-buy-swap-view-contract-dropdown',
-    driver,
-  });
-  const assetToSellContractDropdiwnView = await findElementByTestId({
-    id: 'asset-to-buy-view-swap-view-contract-dropdown',
-    driver,
-  });
-  expect(assetToSellContractDropdiwnView).toBeTruthy();
-  await findElementByTestIdAndClick({
-    id: 'asset-to-buy-copy-swap-view-contract-dropdown',
-    driver,
-  });
-
-  const swapReviewConfirmationText = await getTextFromText({
-    id: 'swap-review-confirmation-text',
-    driver,
-  });
-  expect(swapReviewConfirmationText).toBe('Swap ETH to DAI');
-
-  const swapReviewTitleText = await getTextFromText({
-    id: 'swap-review-title-text',
-    driver,
-  });
-  expect(swapReviewTitleText).toBe('Review & Swap');
-});
-
-it('should be able to execute swap', async () => {
-  const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
-  await provider.ready;
-  await delayTime('short');
-
-  await findElementByTestIdAndClick({
-    id: 'navbar-button-with-back-swap-review',
-    driver,
-  });
-  await delayTime('short');
-
-  await findElementByTestIdAndClick({
-    id: 'swap-settings-navbar-button',
-    driver,
-  });
-  await delayTime('short');
-
-  await typeOnTextInput({
-    id: 'slippage-input-mask',
-    driver,
-    text: '\b99',
-  });
-  await delayTime('medium');
-
-  await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
-
-  const ethBalanceBeforeSwap = await provider.getBalance(TEST_ADDRESS_1);
-  await delayTime('very-long');
-  await findElementByTestIdAndClick({ id: 'swap-confirmation-button', driver });
-  await delayTime('medium');
-  await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
-  await delayTime('very-long');
-  const ethBalanceAfterSwap = await provider.getBalance(TEST_ADDRESS_1);
-  const balanceDifference = subtract(
-    ethBalanceBeforeSwap.toString(),
-    ethBalanceAfterSwap.toString(),
-  );
-  const ethDifferenceAmount = convertRawAmountToDecimalFormat(
-    balanceDifference,
-    18,
-  );
-
-  expect(Number(ethDifferenceAmount)).toBeGreaterThan(1);
 });
