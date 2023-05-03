@@ -9,7 +9,15 @@ export default mergeConfig(
     test: {
       threads: false,
       sequence: {
-        hooks: 'list',
+        shuffle: false,
+        sequencer: class Sequencer {
+          sort(files) {
+            return files;
+          }
+          shard(files) {
+            return files;
+          }
+        },
       },
     },
   }),
