@@ -35,6 +35,6 @@ module.exports = {
         ignoreMemberSort: false,
       },
     ],
-    'prettier/prettier': ['error', require('./.prettierrc.cjs')],
+    'prettier/prettier': ['error', require('./.prettierrc.js')],
   },
 };

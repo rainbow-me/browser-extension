@@ -2,7 +2,6 @@
   "name": "browser-extension",
   "license": "GPL-3.0-only",
   "version": "1.0.128",
-  "type": "module",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
