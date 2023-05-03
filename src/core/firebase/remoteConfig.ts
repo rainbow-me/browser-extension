@@ -81,7 +81,9 @@ export const init = async () => {
     Object.entries(parameters).forEach(($) => {
       const [key, entry] = $;
       if (key === 'default_slippage_bips') {
-        config[key] = JSON.parse(entry.asString());
+        config[key] = JSON.parse(
+          entry.asString(),
+        ) as RainbowConfig['default_slippage_bips'];
       } else if (
         key === 'send_enabled' ||
         key === 'swaps_enabled' ||

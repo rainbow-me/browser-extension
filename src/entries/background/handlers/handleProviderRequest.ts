@@ -151,15 +151,15 @@ export const handleProviderRequest = ({
                 dataParam = params?.[0];
               }
 
-              let data = dataParam as {
-                domain: { chainId: string };
-              };
-              if (typeof dataParam === 'string') {
-                data = JSON.parse(dataParam);
-              }
+              const data =
+                typeof dataParam === 'string'
+                  ? JSON.parse(dataParam)
+                  : dataParam;
+
               const {
                 domain: { chainId },
-              } = data;
+              } = data as { domain: { chainId: string } };
+
               if (Number(chainId) !== Number(activeSession?.chainId)) {
                 throw new Error('ChainId mismatch');
               }
