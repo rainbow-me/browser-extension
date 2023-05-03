@@ -74,7 +74,9 @@ class KeychainManager {
             const key = await importKey(encryptionKey);
             const vault = (await decryptWithKey(
               key,
-              JSON.parse(this.state.vault),
+              JSON.parse(this.state.vault) as Awaited<
+                ReturnType<typeof encryptWithKey>
+              >,
             )) as DecryptedVault;
 
             await Promise.all(
@@ -188,7 +190,9 @@ class KeychainManager {
             );
             result.vault = encryptionResult.vault;
             result.exportedKeyString = encryptionResult.exportedKeyString;
-            const vaultObj = JSON.parse(encryptionResult.vault);
+            const vaultObj = JSON.parse(encryptionResult.vault) as Awaited<
+              ReturnType<typeof decryptWithDetail>
+            >;
             result.salt = vaultObj.salt;
           } else if (encryptionKey && salt) {
             const key = await importKey(encryptionKey);

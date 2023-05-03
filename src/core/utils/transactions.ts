@@ -799,12 +799,21 @@ const flashbotsApi = createHttpClient({
   baseUrl: 'https://protect.flashbots.net',
 });
 
+type FlashbotsStatus =
+  | 'PENDING'
+  | 'INCLUDED'
+  | 'FAILED'
+  | 'CANCELLED'
+  | 'UNKNOWN';
+
 export const getTransactionFlashbotStatus = async (
   transaction: RainbowTransaction,
   txHash: string,
 ) => {
   try {
-    const fbStatus = await flashbotsApi.get(`/tx/${txHash}`);
+    const fbStatus = await flashbotsApi.get<{ status: FlashbotsStatus }>(
+      `/tx/${txHash}`,
+    );
     const flashbotStatus = fbStatus.data.status;
     // Make sure it wasn't dropped after 25 blocks or never made it
     if (flashbotStatus === 'FAILED' || flashbotStatus === 'CANCELLED') {
