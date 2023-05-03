@@ -4,27 +4,24 @@ import {
   BNB_MAINNET_ADDRESS,
   ETH_ADDRESS,
   MATIC_MAINNET_ADDRESS,
-  SupportedCurrencyKey,
 } from '~/core/references';
 import { useAddysSummary } from '~/core/resources/addys/addysSummary';
 import { useCurrentCurrencyStore } from '~/core/state';
 import {
   add,
   convertAmountAndPriceToNativeDisplay,
+  convertAmountToNativeDisplay,
 } from '~/core/utils/numbers';
 
 import { useNativeAssets } from './useNativeAssets';
 
-export const useWalletsSummary = ({
-  addresses,
-  currency,
-}: {
-  addresses: Address[];
-  currency: SupportedCurrencyKey;
-}) => {
+export const useWalletsSummary = ({ addresses }: { addresses: Address[] }) => {
   const nativeAssets = useNativeAssets();
   const { currentCurrency } = useCurrentCurrencyStore();
-  const { data, isLoading } = useAddysSummary({ addresses, currency });
+  const { data, isLoading } = useAddysSummary({
+    addresses,
+    currency: currentCurrency,
+  });
 
   const address = addresses[0];
   const {
@@ -56,5 +53,15 @@ export const useWalletsSummary = ({
     maticCurrencyBalance,
   );
 
-  return { balance, isLoading };
+  const balanceDisplay = convertAmountToNativeDisplay(balance, currentCurrency);
+  const lastTx = data?.data.addresses[address].summary.last_activity;
+
+  return {
+    balance: {
+      amount: balance,
+      display: balanceDisplay,
+    },
+    lastTx,
+    isLoading,
+  };
 };

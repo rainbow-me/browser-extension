@@ -24,6 +24,7 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useWalletsSummary } from '../../hooks/useWalletsSummary';
 import { ROUTES } from '../../urls';
 
 export function ImportWalletSelectionEdit({
@@ -36,6 +37,17 @@ export function ImportWalletSelectionEdit({
   const [accountsIgnored, setAccountsIgnored] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { setCurrentAddress } = useCurrentAddressStore();
+  const {
+    isLoading: walletsSummaryIsLoading,
+    balance,
+    lastTx,
+  } = useWalletsSummary({
+    addresses: state.accountsToImport,
+  });
+
+  console.log('-- walletsSummaryIsLoading', walletsSummaryIsLoading);
+  console.log('-- balance', balance);
+  console.log('-- lastTx', lastTx);
 
   const selectedAccounts = useMemo(
     () => state.accountsToImport.length - accountsIgnored.length,
