@@ -90,11 +90,9 @@ export const hasPreviousTransactions = async (
       return false;
     }
 
-    const parsedResponse: {
-      data: {
-        addresses: Record<string, boolean>;
-      };
-    } = await response.json();
+    const parsedResponse = (await response.json()) as {
+      data: { addresses: Record<string, boolean> };
+    };
 
     return parsedResponse?.data?.addresses[address.toLowerCase()] === true;
   } catch (e) {

@@ -14,6 +14,7 @@ const FAVORITES_EMPTY_STATE = {
   [ChainId.bsc]: [],
   [ChainId.polygon]: [],
   [ChainId.arbitrum]: [],
+  [ChainId.hardhat]: [],
 };
 
 // expensive hook, only use in top level parent components
@@ -24,13 +25,13 @@ export function useFavoriteAssets() {
   );
 
   const setFavoriteAssetsData = useCallback(async () => {
-    const chainIds = Object.keys(favorites).filter(
-      (k) => favorites?.[parseInt(k)],
-    );
+    const chainIds = Object.keys(favorites)
+      .filter((k) => favorites?.[parseInt(k)])
+      .map((c) => +c);
     const searches: Promise<void>[] = [];
     const newSearchData = {} as Record<ChainId, SearchAsset[]>;
     for (const chain of chainIds) {
-      const addressesByChain = favorites[parseInt(chain)];
+      const addressesByChain = favorites[chain];
       addressesByChain?.forEach((address) => {
         const searchAddress = async (add: string) => {
           const query = add.toLocaleLowerCase();
@@ -42,22 +43,19 @@ export function useFavoriteAssets() {
             ? 'CASE_SENSITIVE_EQUAL'
             : 'CONTAINS';
           const results = await fetchTokenSearch({
-            chainId: parseInt(chain),
+            chainId: chain,
             keys,
             list: 'verifiedAssets',
             threshold,
             query,
           });
 
-          const currentFavoritesData = newSearchData[parseInt(chain)];
+          const currentFavoritesData = newSearchData[chain];
           if (results?.[0]) {
-            newSearchData[parseInt(chain)] = [
-              ...(currentFavoritesData || []),
-              results?.[0],
-            ];
+            newSearchData[chain] = [...currentFavoritesData, results[0]];
           } else {
             const unverifiedSearchResults = await fetchTokenSearch({
-              chainId: parseInt(chain),
+              chainId: chain,
               keys,
               list: 'highLiquidityAssets',
               threshold,
@@ -65,9 +63,9 @@ export function useFavoriteAssets() {
             });
             if (unverifiedSearchResults?.[0]) {
               // eslint-disable-next-line require-atomic-updates
-              newSearchData[parseInt(chain)] = [
-                ...(currentFavoritesData || []),
-                unverifiedSearchResults?.[0],
+              newSearchData[chain] = [
+                ...currentFavoritesData,
+                unverifiedSearchResults[0],
               ];
             }
           }
