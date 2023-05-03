@@ -15,10 +15,14 @@ export function RecoveryPhrase() {
 
   const [seed, setSeed] = useState('');
 
-  const handleSavedTheseWords = useCallback(
-    () => navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS),
-    [navigate],
-  );
+  const handleSavedTheseWords = useCallback(() => {
+    navigate(
+      state?.showQuiz
+        ? ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_VERIFY
+        : ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS,
+      { state: { wallet: state?.wallet, password: state?.password } },
+    );
+  }, [navigate, state?.password, state?.showQuiz, state?.wallet]);
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(seed as string);
@@ -35,14 +39,16 @@ export function RecoveryPhrase() {
         state?.wallet?.accounts?.[0],
         state?.password,
       );
-      setSeed(recoveryPhrase);
+      if (recoveryPhrase) {
+        setSeed(recoveryPhrase);
+      }
     };
     fetchRecoveryPhrase();
   }, [state]);
 
   return (
     <ViewSecret
-      titleSymbol="key.fill"
+      titleSymbol="doc.plaintext"
       title={i18n.t(
         'settings.privacy_and_security.wallets_and_keys.recovery_phrase.title',
       )}

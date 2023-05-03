@@ -33,7 +33,7 @@ export function SeedReveal() {
     init();
   }, [currentAddress]);
 
-  const handleSavedTheseWords = React.useCallback(async () => {
+  const handleSavedTheseWords = React.useCallback(() => {
     navigate(ROUTES.SEED_VERIFY);
   }, [navigate]);
 
