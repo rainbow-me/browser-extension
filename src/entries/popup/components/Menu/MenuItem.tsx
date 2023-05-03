@@ -152,7 +152,7 @@ const MenuItem = ({
   rightComponent,
   titleComponent,
   labelComponent,
-  disabled,
+  // disabled,
   hasChevron,
   testId,
   first,
@@ -168,18 +168,14 @@ const MenuItem = ({
       onKeyDown={handleKeyDown}
       style={{
         borderRadius: 6,
-        ...(first
-          ? {
-              borderTopRightRadius: 15,
-              borderTopLeftRadius: 15,
-            }
-          : {}),
-        ...(last
-          ? {
-              borderBottomRightRadius: 15,
-              borderBottomLeftRadius: 15,
-            }
-          : {}),
+        ...(first && {
+          borderTopRightRadius: 15,
+          borderTopLeftRadius: 15,
+        }),
+        ...(last && {
+          borderBottomRightRadius: 15,
+          borderBottomLeftRadius: 15,
+        }),
       }}
       tabIndex={tabIndex}
     >
@@ -190,9 +186,6 @@ const MenuItem = ({
         testId={testId}
         width="full"
         onClick={onClick}
-        style={{
-          cursor: disabled ? 'default' : 'pointer',
-        }}
       >
         <Box
           flexDirection="column"
