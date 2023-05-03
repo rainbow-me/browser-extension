@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.0.126",
+  "version": "1.0.128",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -20,7 +20,7 @@
     "dev": "yarn devmode:on && webpack --config ./webpack.config.dev.js --watch",
     "playground": "PLAYGROUND=default webpack --config ./webpack.config.dev.js --watch",
     "playground:ds": "PLAYGROUND=ds webpack --config ./webpack.config.dev.js --watch",
-    "lint": "eslint . --cache --max-warnings 0",
+    "lint": "eslint --cache --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "// Design System scripts": "",
     "// GraphQL scripts": "",
@@ -138,6 +138,7 @@
     "@lavamoat/preinstall-always-fail": "1.0.0",
     "@peculiar/webcrypto": "1.4.1",
     "@testing-library/react": "13.4.0",
+    "@total-typescript/ts-reset": "0.4.2",
     "@types/chroma-js": "2.1.4",
     "@types/chrome": "0.0.200",
     "@types/fs-extra": "9.0.13",

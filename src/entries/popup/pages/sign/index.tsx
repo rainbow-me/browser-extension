@@ -1,4 +1,5 @@
 import { getAddress } from '@ethersproject/address';
+import { Bytes } from '@ethersproject/bytes';
 import { verifyMessage } from '@ethersproject/wallet';
 import {
   MessageTypes,
@@ -29,12 +30,12 @@ export function Sign() {
 
   const handleSign = useCallback(async () => {
     if (!address) return;
-    let msgData = message;
+    let msgData: string | Bytes = message;
     let action: WalletAction = 'personal_sign';
     let result: string;
     setSigning(true);
     try {
-      msgData = JSON.parse(message);
+      msgData = JSON.parse(message) as string | Bytes;
       action = 'sign_typed_data';
     } catch (e) {
       console.log('not json string, falling back to personal sign');

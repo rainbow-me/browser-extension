@@ -14,6 +14,7 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { truncateAddress } from '~/core/utils/address';
 import {
   Bleed,
@@ -122,10 +123,7 @@ const WalletRow = ({
   const { displayName, contactName, isNameDefined } = useWalletInfo({
     address: wallet,
   });
-  const name = useMemo(
-    () => (section === 'contacts' ? contactName : displayName),
-    [section, contactName, displayName],
-  );
+  const name = section === 'contacts' ? contactName : displayName;
 
   return (
     <Box
@@ -157,6 +155,11 @@ const WalletRow = ({
   );
 };
 
+const sortWallets = (order: Address[], wallets: Address[]) =>
+  order
+    .map((orderAddress) => wallets.find((address) => address === orderAddress))
+    .filter(Boolean);
+
 const DropdownWalletsList = ({
   wallets,
   contacts,
@@ -168,9 +171,18 @@ const DropdownWalletsList = ({
   watchedWallets: Address[];
   selectWalletAndCloseDropdown: (address: Address) => void;
 }) => {
+  const { walletOrder } = useWalletOrderStore();
+  const sortedWallets = useMemo(
+    () => sortWallets(walletOrder, wallets),
+    [wallets, walletOrder],
+  );
+  const sortedWatchedWallets = useMemo(
+    () => sortWallets(walletOrder, watchedWallets),
+    [watchedWallets, walletOrder],
+  );
   const walletsExist = useMemo(
-    () => wallets.length + contacts.length + watchedWallets.length > 0,
-    [contacts.length, wallets.length, watchedWallets.length],
+    () => sortedWallets.length + contacts.length + watchedWallets.length > 0,
+    [contacts.length, sortedWallets.length, watchedWallets.length],
   );
 
   return (
@@ -189,7 +201,7 @@ const DropdownWalletsList = ({
             <WalletSection
               symbol="lock.square.stack.fill"
               title={i18n.t('send.wallets_list.my_wallets')}
-              wallets={wallets}
+              wallets={sortedWallets}
               onClickWallet={selectWalletAndCloseDropdown}
               section="my_wallets"
             />
@@ -203,7 +215,7 @@ const DropdownWalletsList = ({
             <WalletSection
               symbol="eyes.inverse"
               title={i18n.t('send.wallets_list.watched_wallets')}
-              wallets={watchedWallets}
+              wallets={sortedWatchedWallets}
               onClickWallet={selectWalletAndCloseDropdown}
               section="watching"
             />
@@ -298,12 +310,9 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
       setDropdownVisible(false);
     }, [onDropdownOpen]);
 
-    const inputVisible = useMemo(
-      () =>
-        ((!toAddressOrName || !toEnsName) && !isAddress(toAddressOrName)) ||
-        !isAddress(toAddress),
-      [toAddress, toAddressOrName, toEnsName],
-    );
+    const inputVisible =
+      ((!toAddressOrName || !toEnsName) && !isAddress(toAddressOrName)) ||
+      !isAddress(toAddress);
 
     const selectWalletAndCloseDropdown = useCallback(
       (address: Address) => {

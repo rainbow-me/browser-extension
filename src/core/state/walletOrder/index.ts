@@ -4,8 +4,8 @@ import create from 'zustand';
 import { createStore } from '../internal/createStore';
 
 export interface WalletOrderStore {
-  walletOrder: string[];
-  saveWalletOrder: (newWalletOrder: string[]) => void;
+  walletOrder: Address[];
+  saveWalletOrder: (newWalletOrder: Address[]) => void;
   deleteWalletOrder: ({ removedAddress }: { removedAddress: Address }) => void;
 }
 
