@@ -2,16 +2,21 @@ import { motion } from 'framer-motion';
 import React from 'react';
 import { To } from 'react-router-dom';
 
+import { useCurrentAddressStore } from '~/core/state';
 import { Box } from '~/design-system';
 import {
   AnimatedRouteConfig,
   AnimatedRouteDirection,
   BackgroundColor,
   animatedRouteTransitionConfig,
+  globalColors,
 } from '~/design-system/styles/designTokens';
 import { ProtectedRoute } from '~/entries/popup/ProtectedRoute';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { UserStatusResult } from '~/entries/popup/hooks/useAuth';
+import { useAvatar } from '~/entries/popup/hooks/useAvatar';
+
+import { AccentColorProviderWrapper } from '../Box/ColorContext';
 
 import { animatedRouteStyles } from './AnimatedRoute.css';
 
@@ -26,6 +31,7 @@ type AnimatedRouteProps = {
   title?: string;
   protectedRoute?: UserStatusResult[] | true;
   rightNavbarComponent?: React.ReactElement;
+  accentColor?: boolean;
 };
 
 export const animatedRouteValues: Record<
@@ -143,40 +149,48 @@ export const AnimatedRoute = React.forwardRef<
     navbarBackground,
     protectedRoute,
     rightNavbarComponent,
+    accentColor = true,
   } = props;
   const { initial, end, exit } = animatedRouteValues[direction];
   const transition = animatedRouteTransitionConfig[direction];
 
+  const { currentAddress } = useCurrentAddressStore();
+  const { avatar } = useAvatar({ address: currentAddress });
+
   const content = (
-    <Box
-      as={motion.div}
-      ref={ref}
-      display="flex"
-      flexDirection="column"
-      height="full"
-      initial={initial}
-      animate={end}
-      exit={exit}
-      transition={transition}
-      background={background}
-      className={animatedRouteStyles}
+    <AccentColorProviderWrapper
+      color={accentColor ? avatar?.color : globalColors.blue60}
     >
-      {navbar && (
-        <Navbar
-          title={title || ''}
-          background={navbarBackground}
-          leftComponent={
-            navbarIcon === 'arrow' ? (
-              <Navbar.BackButton backTo={backTo} />
-            ) : (
-              <Navbar.CloseButton backTo={backTo} />
-            )
-          }
-          rightComponent={rightNavbarComponent}
-        />
-      )}
-      {children}
-    </Box>
+      <Box
+        as={motion.div}
+        ref={ref}
+        display="flex"
+        flexDirection="column"
+        height="full"
+        initial={initial}
+        animate={end}
+        exit={exit}
+        transition={transition}
+        background={background}
+        className={animatedRouteStyles}
+      >
+        {navbar && (
+          <Navbar
+            title={title || ''}
+            background={navbarBackground}
+            leftComponent={
+              navbarIcon === 'arrow' ? (
+                <Navbar.BackButton backTo={backTo} />
+              ) : (
+                <Navbar.CloseButton backTo={backTo} />
+              )
+            }
+            rightComponent={rightNavbarComponent}
+          />
+        )}
+        {children}
+      </Box>
+    </AccentColorProviderWrapper>
   );
 
   if (protectedRoute) {

@@ -3,14 +3,11 @@ import * as React from 'react';
 import { matchRoutes, useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
-import { AccentColorProvider, Box } from '~/design-system';
+import { Box } from '~/design-system';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
-import { globalColors } from '~/design-system/styles/designTokens';
 
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
-import { useAvatar } from './hooks/useAvatar';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
 import { ConnectedApps } from './pages/home/ConnectedApps';
@@ -96,7 +93,11 @@ const ROUTE_DATA = [
   {
     path: ROUTES.WELCOME,
     element: (
-      <AnimatedRoute direction="base" protectedRoute={['NEW']}>
+      <AnimatedRoute
+        direction="base"
+        protectedRoute={['NEW']}
+        accentColor={false}
+      >
         <Welcome />
       </AnimatedRoute>
     ),
@@ -105,7 +106,11 @@ const ROUTE_DATA = [
   {
     path: ROUTES.READY,
     element: (
-      <AnimatedRoute direction="deceleratedShort" protectedRoute={['READY']}>
+      <AnimatedRoute
+        direction="deceleratedShort"
+        protectedRoute={['READY']}
+        accentColor={false}
+      >
         <WalletReady />
       </AnimatedRoute>
     ),
@@ -119,6 +124,7 @@ const ROUTE_DATA = [
         navbar
         navbarIcon="arrow"
         backTo={ROUTES.WELCOME}
+        accentColor={false}
       >
         <ImportOrConnect />
       </AnimatedRoute>
@@ -134,6 +140,7 @@ const ROUTE_DATA = [
         navbar
         navbarIcon="arrow"
         backTo={ROUTES.IMPORT_OR_CONNECT}
+        accentColor={false}
       >
         <WatchWallet />
       </AnimatedRoute>
@@ -149,6 +156,7 @@ const ROUTE_DATA = [
         navbar
         navbarIcon="arrow"
         backTo={ROUTES.IMPORT_OR_CONNECT}
+        accentColor={false}
       >
         <ImportWallet />
       </AnimatedRoute>
@@ -158,7 +166,11 @@ const ROUTE_DATA = [
   {
     path: ROUTES.IMPORT__SELECT,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEW']}>
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW']}
+        accentColor={false}
+      >
         <ImportWalletSelection />
       </AnimatedRoute>
     ),
@@ -171,6 +183,7 @@ const ROUTE_DATA = [
         direction="right"
         title={i18n.t('edit_import_wallet_selection.title')}
         protectedRoute={['NEW']}
+        accentColor={false}
       >
         <EditImportWalletSelection />
       </AnimatedRoute>
@@ -195,6 +208,7 @@ const ROUTE_DATA = [
         navbar
         navbarIcon="arrow"
         backTo={ROUTES.WELCOME}
+        accentColor={false}
       >
         <SeedBackupPrompt />
       </AnimatedRoute>
@@ -210,6 +224,7 @@ const ROUTE_DATA = [
         navbar
         navbarIcon="arrow"
         backTo={ROUTES.SEED_BACKUP_PROMPT}
+        accentColor={false}
       >
         <SeedReveal />
       </AnimatedRoute>
@@ -219,7 +234,11 @@ const ROUTE_DATA = [
   {
     path: ROUTES.SEED_VERIFY,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEW']}>
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW']}
+        accentColor={false}
+      >
         <SeedVerify />
       </AnimatedRoute>
     ),
@@ -234,6 +253,7 @@ const ROUTE_DATA = [
         navbar
         navbarIcon="arrow"
         backTo={ROUTES.WELCOME}
+        accentColor={false}
       >
         <CreatePassword />
       </AnimatedRoute>
@@ -642,9 +662,6 @@ export function Routes() {
 }
 
 function CurrentRoute(props: { pathname: string }) {
-  const { currentAddress } = useCurrentAddressStore();
-  const { avatar } = useAvatar({ address: currentAddress });
-
   const match = matchingRoute(props.pathname);
   const element = match?.element;
   const currentDirection = element?.props.direction;
@@ -661,14 +678,12 @@ function CurrentRoute(props: { pathname: string }) {
     ? directionMap[previousDirection as Direction]
     : currentDirection;
   return (
-    <AccentColorProvider color={avatar?.color ?? globalColors.blue60}>
-      <AnimatePresence key={props.pathname} mode="popLayout">
-        {React.cloneElement(element, {
-          key: props.pathname,
-          direction,
-        })}
-      </AnimatePresence>
-    </AccentColorProvider>
+    <AnimatePresence key={props.pathname} mode="popLayout">
+      {React.cloneElement(element, {
+        key: props.pathname,
+        direction,
+      })}
+    </AnimatePresence>
   );
 }
 
