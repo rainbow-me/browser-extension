@@ -6,26 +6,15 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
-import {
-  Box,
-  Button,
-  Column,
-  Columns,
-  Inline,
-  Row,
-  Rows,
-  Separator,
-  Text,
-} from '~/design-system';
+import { Box, Button, Text } from '~/design-system';
 
-import { AddressOrEns } from '../../components/AddressOrEns/AddressorEns';
-import { Checkbox } from '../../components/Checkbox/Checkbox';
 import { Spinner } from '../../components/Spinner/Spinner';
-import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWalletsSummary } from '../../hooks/useWalletsSummary';
 import { ROUTES } from '../../urls';
+
+import { AccountToImportRow } from './AccountToImportRows';
 
 export function ImportWalletSelectionEdit({
   onboarding = false,
@@ -41,10 +30,6 @@ export function ImportWalletSelectionEdit({
     useWalletsSummary({
       addresses: state.accountsToImport,
     });
-
-  console.log('IMPORT WALLET EDIT state', state);
-  console.log('-- walletsSummaryIsLoading', walletsSummaryIsLoading);
-  console.log('-- walletsSummary', walletsSummary);
 
   const selectedAccounts = useMemo(
     () => state.accountsToImport.length - accountsIgnored.length,
@@ -98,7 +83,7 @@ export function ImportWalletSelectionEdit({
 
   return (
     <Box alignItems="center" width="full">
-      {isLoading ? (
+      {isLoading || walletsSummaryIsLoading ? (
         <Box
           alignItems="center"
           justifyContent="center"
@@ -144,118 +129,13 @@ export function ImportWalletSelectionEdit({
             width="full"
             position="relative"
           >
-            <Rows space="14px">
-              {state.accountsToImport.map((address: Address, index: number) => (
-                <Row key={`avatar_${address}`}>
-                  <Rows>
-                    <Row>
-                      <Columns>
-                        <Column>
-                          <Box onClick={() => toggleAccount(address)}>
-                            <Inline
-                              space="8px"
-                              alignHorizontal="left"
-                              alignVertical="center"
-                            >
-                              <WalletAvatar
-                                address={address as Address}
-                                size={32}
-                                emojiSize={'16pt'}
-                              />
-                              <Box justifyContent="flex-start" width="fit">
-                                <AddressOrEns
-                                  size="14pt"
-                                  weight="bold"
-                                  color="label"
-                                  address={address as Address}
-                                />
-                              </Box>
-                            </Inline>
-                          </Box>
-                        </Column>
-                        <Column width="content">
-                          <Box
-                            alignItems="center"
-                            justifyContent="flex-end"
-                            width="fit"
-                            onClick={() => toggleAccount(address)}
-                          >
-                            <Checkbox
-                              selected={!accountsIgnored.includes(address)}
-                            />
-                          </Box>
-                        </Column>
-                      </Columns>
-                    </Row>
-                    <Row>
-                      <Box width="full" paddingTop="6px">
-                        {index !== state.accountsToImport.length - 1 ? (
-                          <Separator
-                            color="separatorTertiary"
-                            strokeWeight="1px"
-                          />
-                        ) : null}
-                      </Box>
-                    </Row>
-                  </Rows>
-                </Row>
-              ))}
-              {state.accountsToImport.map((address: Address, index: number) => (
-                <Row key={`avatar_${address}`}>
-                  <Rows>
-                    <Row>
-                      <Columns>
-                        <Column>
-                          <Box onClick={() => toggleAccount(address)}>
-                            <Inline
-                              space="8px"
-                              alignHorizontal="left"
-                              alignVertical="center"
-                            >
-                              <WalletAvatar
-                                address={address as Address}
-                                size={32}
-                                emojiSize={'16pt'}
-                              />
-                              <Box justifyContent="flex-start" width="fit">
-                                <AddressOrEns
-                                  size="14pt"
-                                  weight="bold"
-                                  color="label"
-                                  address={address as Address}
-                                />
-                              </Box>
-                            </Inline>
-                          </Box>
-                        </Column>
-                        <Column width="content">
-                          <Box
-                            alignItems="center"
-                            justifyContent="flex-end"
-                            width="fit"
-                            onClick={() => toggleAccount(address)}
-                          >
-                            <Checkbox
-                              selected={!accountsIgnored.includes(address)}
-                            />
-                          </Box>
-                        </Column>
-                      </Columns>
-                    </Row>
-                    <Row>
-                      <Box width="full" paddingTop="6px">
-                        {index !== state.accountsToImport.length - 1 ? (
-                          <Separator
-                            color="separatorTertiary"
-                            strokeWeight="1px"
-                          />
-                        ) : null}
-                      </Box>
-                    </Row>
-                  </Rows>
-                </Row>
-              ))}
-            </Rows>
+            <AccountToImportRow
+              accountsIgnored={accountsIgnored}
+              accountsToImport={state.accountsToImport}
+              toggleAccount={toggleAccount}
+              walletsSummary={walletsSummary}
+              showCheckbox
+            />
           </Box>
         </Box>
       )}

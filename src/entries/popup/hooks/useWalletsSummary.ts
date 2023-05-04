@@ -21,7 +21,7 @@ import {
 
 import { useNativeAssets } from './useNativeAssets';
 
-interface WalletSummary {
+export interface WalletSummary {
   balance: {
     amount: string;
     display: string;
