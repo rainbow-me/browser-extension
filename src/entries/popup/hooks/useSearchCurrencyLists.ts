@@ -279,7 +279,7 @@ export function useSearchCurrencyLists({
       });
     })
     .flat()
-    .filter((v): v is SearchAsset => !!v);
+    .filter(Boolean);
 
   const filterAssetsFromBridgeAndAssetToSell = useCallback(
     (assets?: SearchAsset[]) =>

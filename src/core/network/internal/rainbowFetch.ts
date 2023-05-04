@@ -11,7 +11,7 @@ export interface RainbowFetchRequestOpts extends RequestInit {
 /**
  * rainbowFetch fetches data and handles response edge cases and error handling.
  */
-export async function rainbowFetch(
+export async function rainbowFetch<TData>(
   url: RequestInfo,
   opts: RainbowFetchRequestOpts,
 ) {
@@ -46,7 +46,7 @@ export async function rainbowFetch(
 
   clearTimeout(id);
 
-  const responseBody = await getBody(response);
+  const responseBody = (await getBody(response)) as TData;
 
   if (response.ok) {
     const { headers, status } = response;
@@ -124,8 +124,8 @@ export class RainbowFetchClient {
   /**
    * Perform a GET request with the RainbowFetchClient.
    */
-  get(url?: RequestInfo, opts?: RainbowFetchRequestOpts) {
-    return rainbowFetch(`${this.baseUrl}${url}`, {
+  get<TData>(url?: RequestInfo, opts?: RainbowFetchRequestOpts) {
+    return rainbowFetch<TData>(`${this.baseUrl}${url}`, {
       ...merge(this.opts, opts || {}),
       method: 'get',
     });
@@ -164,8 +164,8 @@ export class RainbowFetchClient {
   /**
    * Perform a POST request with the RainbowFetchClient.
    */
-  post(url?: RequestInfo, body?: any, opts?: RainbowFetchRequestOpts) {
-    return rainbowFetch(`${this.baseUrl}${url}`, {
+  post<TData>(url?: RequestInfo, body?: any, opts?: RainbowFetchRequestOpts) {
+    return rainbowFetch<TData>(`${this.baseUrl}${url}`, {
       ...merge(this.opts, opts || {}),
       body,
       method: 'post',
@@ -175,8 +175,8 @@ export class RainbowFetchClient {
   /**
    * Perform a PUT request with the RainbowFetchClient.
    */
-  put(url?: RequestInfo, body?: any, opts?: RainbowFetchRequestOpts) {
-    return rainbowFetch(`${this.baseUrl}${url}`, {
+  put<TData>(url?: RequestInfo, body?: any, opts?: RainbowFetchRequestOpts) {
+    return rainbowFetch<TData>(`${this.baseUrl}${url}`, {
       ...merge(this.opts, opts || {}),
       body,
       method: 'put',
@@ -186,8 +186,8 @@ export class RainbowFetchClient {
   /**
    * Perform a PATCH request with the RainbowFetchClient.
    */
-  patch(url?: RequestInfo, body?: any, opts?: RainbowFetchRequestOpts) {
-    return rainbowFetch(`${this.baseUrl}${url}`, {
+  patch<TData>(url?: RequestInfo, body?: any, opts?: RainbowFetchRequestOpts) {
+    return rainbowFetch<TData>(`${this.baseUrl}${url}`, {
       ...merge(this.opts, opts || {}),
       body,
       method: 'patch',
