@@ -34,6 +34,8 @@ const ImportWalletSelection = ({
   const [isImporting, setIsImporting] = useState(false);
   const { setCurrentAddress } = useCurrentAddressStore();
   const [accountsToImport, setAccountsToImport] = useState<string[]>([]);
+
+  console.log('IMPORT WALLET SELECT state', state);
   useEffect(() => {
     const init = async () => {
       let addresses: Address[] = [];

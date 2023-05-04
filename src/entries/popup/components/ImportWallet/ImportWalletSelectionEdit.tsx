@@ -42,6 +42,7 @@ export function ImportWalletSelectionEdit({
       addresses: state.accountsToImport,
     });
 
+  console.log('IMPORT WALLET EDIT state', state);
   console.log('-- walletsSummaryIsLoading', walletsSummaryIsLoading);
   console.log('-- walletsSummary', walletsSummary);
 

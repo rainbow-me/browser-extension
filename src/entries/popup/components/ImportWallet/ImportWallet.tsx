@@ -2,7 +2,8 @@ import { isAddress } from '@ethersproject/address';
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { motion } from 'framer-motion';
 import { startsWith } from 'lodash';
-import React, { KeyboardEvent, useCallback, useState } from 'react';
+import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -42,9 +43,10 @@ const validateSecret = (secret: string) => {
 };
 
 const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
+  const { state } = useLocation();
   const navigate = useRainbowNavigate();
   const [isValid, setIsValid] = useState(false);
-  const [secrets, setSecrets] = useState(['']);
+  const [secrets, setSecrets] = useState((state.secrets as string[]) || ['']);
   const { setCurrentAddress } = useCurrentAddressStore();
 
   const [validity, setValidity] = useState<
@@ -81,6 +83,13 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
       setIsValid(false);
     }
     setValidity(newValidity);
+  }, []);
+
+  useEffect(() => {
+    if (state.secrets) {
+      updateValidity(state.secrets);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSeedChange = useCallback(

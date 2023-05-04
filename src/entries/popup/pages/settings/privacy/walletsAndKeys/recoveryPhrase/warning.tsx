@@ -50,6 +50,7 @@ const iconAndCopyList: IconAndCopyItem[] = [
 export function RecoveryPhraseWarning() {
   const { state } = useLocation();
   const [showEnterPassword, setShowEnterPassword] = useState(false);
+  console.log('RECOVERY PHRASE warning STATE', state);
 
   const openPasswordPrompt = useCallback(() => setShowEnterPassword(true), []);
 

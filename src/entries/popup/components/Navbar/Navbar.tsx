@@ -154,6 +154,7 @@ export function NavbarSymbolButton({
 function NavbarButtonWithBack({
   backTo,
   height,
+  maintainLocationState,
   onClick,
   symbol,
   symbolSize,
@@ -161,6 +162,7 @@ function NavbarButtonWithBack({
 }: {
   backTo?: To;
   height: ButtonSymbolProps['height'];
+  maintainLocationState?: boolean;
   onClick?: () => void;
   symbol: SymbolProps['symbol'];
   symbolSize?: SymbolProps['size'];
@@ -184,12 +186,23 @@ function NavbarButtonWithBack({
       onClick();
     } else if (backTo) {
       navigate(backTo, {
-        state: { isBack: true, from: location.pathname },
+        state: {
+          isBack: true,
+          from: location.pathname,
+          ...(maintainLocationState ? location.state : {}),
+        },
       });
     } else {
       navigate(-1);
     }
-  }, [backTo, location.pathname, navigate, onClick]);
+  }, [
+    backTo,
+    location.pathname,
+    location.state,
+    maintainLocationState,
+    navigate,
+    onClick,
+  ]);
 
   return (
     <Box
@@ -208,11 +221,21 @@ function NavbarButtonWithBack({
   );
 }
 
-export function NavbarBackButton({ backTo }: { backTo?: To }) {
+export function NavbarBackButton({
+  backTo,
+  maintainLocationState,
+  onClick,
+}: {
+  backTo?: To;
+  maintainLocationState?: boolean;
+  onClick?: () => void;
+}) {
   return (
     <NavbarButtonWithBack
+      onClick={onClick}
       backTo={backTo}
       height="32px"
+      maintainLocationState={maintainLocationState}
       symbolSize={14}
       symbol="arrow.left"
     />
@@ -221,10 +244,12 @@ export function NavbarBackButton({ backTo }: { backTo?: To }) {
 
 export function NavbarCloseButton({
   backTo,
+  maintainLocationState,
   onClick,
   testId,
 }: {
   backTo?: To;
+  maintainLocationState?: boolean;
   onClick?: () => void;
   testId?: string;
 }) {
@@ -233,6 +258,7 @@ export function NavbarCloseButton({
       onClick={onClick}
       backTo={backTo}
       height="32px"
+      maintainLocationState={maintainLocationState}
       symbolSize={11}
       symbol="xmark"
       testId={testId}

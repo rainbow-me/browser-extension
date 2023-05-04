@@ -107,6 +107,7 @@ export function WalletDetails() {
   const [renameAccount, setRenameAccount] = useState<Address | undefined>();
   const [removeAccount, setRemoveAccount] = useState<Address | undefined>();
 
+  console.log('WALLET DETAILS STATE', state);
   const [wallet, setWallet] = useState<KeychainWallet | null>();
 
   const handleOpenNewWalletPrompt = useCallback(() => {
