@@ -128,6 +128,7 @@ export function ImportWalletSelectionEdit({
             borderWidth={'1px'}
             width="full"
             position="relative"
+            height="full"
           >
             <AccountToImportRows
               accountsIgnored={accountsIgnored}

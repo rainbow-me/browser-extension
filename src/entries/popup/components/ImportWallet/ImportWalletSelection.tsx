@@ -154,7 +154,6 @@ const ImportWalletSelection = ({
               <AccountToImportRows
                 accountsIgnored={[]}
                 accountsToImport={accountsToImport}
-                // toggleAccount={toggleAccount}
                 walletsSummary={walletsSummary}
               />
             </Box>
