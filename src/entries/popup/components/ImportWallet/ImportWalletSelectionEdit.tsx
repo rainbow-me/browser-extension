@@ -14,7 +14,7 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWalletsSummary } from '../../hooks/useWalletsSummary';
 import { ROUTES } from '../../urls';
 
-import { AccountToImportRow } from './AccountToImportRows';
+import { AccountToImportRows } from './AccountToImportRows';
 
 export function ImportWalletSelectionEdit({
   onboarding = false,
@@ -129,7 +129,7 @@ export function ImportWalletSelectionEdit({
             width="full"
             position="relative"
           >
-            <AccountToImportRow
+            <AccountToImportRows
               accountsIgnored={accountsIgnored}
               accountsToImport={state.accountsToImport}
               toggleAccount={toggleAccount}

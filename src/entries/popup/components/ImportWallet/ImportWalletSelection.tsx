@@ -15,7 +15,7 @@ import { useWalletsSummary } from '../../hooks/useWalletsSummary';
 import { ROUTES } from '../../urls';
 import { Spinner } from '../Spinner/Spinner';
 
-import { AccountToImportRow } from './AccountToImportRows';
+import { AccountToImportRows } from './AccountToImportRows';
 
 const ImportWalletSelection = ({
   onboarding = false,
@@ -151,7 +151,7 @@ const ImportWalletSelection = ({
               paddingBottom="10px"
               boxShadow="12px surfaceSecondaryElevated"
             >
-              <AccountToImportRow
+              <AccountToImportRows
                 accountsIgnored={[]}
                 accountsToImport={accountsToImport}
                 // toggleAccount={toggleAccount}

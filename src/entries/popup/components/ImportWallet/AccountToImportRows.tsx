@@ -16,7 +16,7 @@ import { AddressOrEns } from '../AddressOrEns/AddressorEns';
 import { Checkbox } from '../Checkbox/Checkbox';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
-export const AccountToImportRow = ({
+export const AccountToImportRows = ({
   accountsIgnored = [],
   accountsToImport,
   showCheckbox,
