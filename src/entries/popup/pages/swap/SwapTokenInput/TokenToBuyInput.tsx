@@ -1,7 +1,9 @@
 import React, { useCallback, useRef } from 'react';
 
+import { shortcuts } from '~/core/references/shortcuts';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { AssetToBuySection } from '~/entries/popup/hooks/useSearchCurrencyLists';
 
 import { TokenToBuyDropdown } from './TokenDropdown/TokenToBuyDropdown';
@@ -49,6 +51,7 @@ export const TokenToBuyInput = ({
 }: TokenToBuyProps) => {
   const onSelectAssetRef =
     useRef<(address: ParsedSearchAsset | null) => void>();
+  const dropdownRef = useRef<{ openDropdown: () => void }>(null);
 
   const setOnSelectAsset = useCallback(
     (cb: (asset: ParsedSearchAsset | null) => void) => {
@@ -68,6 +71,16 @@ export const TokenToBuyInput = ({
     },
     [inputRef],
   );
+
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.altKey) {
+        if (e.key === shortcuts.swap.FOCUS_ASSET_TO_BUY.key) {
+          dropdownRef?.current?.openDropdown();
+        }
+      }
+    },
+  });
 
   return (
     <TokenInput
@@ -100,6 +113,7 @@ export const TokenToBuyInput = ({
       setValue={setAssetToBuyInputValue}
       openDropdownOnMount={openDropdownOnMount}
       inputDisabled={inputDisabled}
+      ref={dropdownRef}
     />
   );
 };
