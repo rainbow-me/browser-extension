@@ -192,6 +192,7 @@ export const DropdownMenuItem = (props: DropdownMenuItemProps) => {
         }),
         menuFocusVisibleStyle,
       ])}
+      onClick={(e) => e.stopPropagation()}
       onSelect={onSelect}
       background={{
         default: 'transparent',
