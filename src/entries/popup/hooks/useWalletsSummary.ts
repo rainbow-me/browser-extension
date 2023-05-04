@@ -4,9 +4,14 @@ import {
   BNB_MAINNET_ADDRESS,
   ETH_ADDRESS,
   MATIC_MAINNET_ADDRESS,
+  SupportedCurrencyKey,
 } from '~/core/references';
-import { useAddysSummary } from '~/core/resources/addys/addysSummary';
+import {
+  AddySummary,
+  useAddysSummary,
+} from '~/core/resources/addys/addysSummary';
 import { useCurrentCurrencyStore } from '~/core/state';
+import { ParsedAsset } from '~/core/types/assets';
 import {
   add,
   convertAmountAndPriceToNativeDisplay,
@@ -16,17 +21,31 @@ import {
 
 import { useNativeAssets } from './useNativeAssets';
 
-export const useWalletsSummary = ({ addresses }: { addresses: Address[] }) => {
-  const nativeAssets = useNativeAssets();
-  const { currentCurrency } = useCurrentCurrencyStore();
-  const { data, isLoading } = useAddysSummary({
-    addresses,
-    currency: currentCurrency,
-  });
+interface WalletSummary {
+  balance: {
+    amount: string;
+    display: string;
+  };
+  lastTx?: number;
+}
 
-  const address = addresses[0].toLowerCase() as Address;
-  const dataAddresses = data?.data.addresses;
-  const addressData = dataAddresses?.[address];
+const parseAddressSummary = ({
+  address,
+  addysSummary,
+  currentCurrency,
+  nativeAssets,
+}: {
+  address: Address;
+  addysSummary?: AddySummary;
+  currentCurrency: SupportedCurrencyKey;
+  nativeAssets:
+    | {
+        [key: string]: ParsedAsset;
+      }
+    | undefined;
+}): WalletSummary => {
+  const addressData =
+    addysSummary?.data.addresses[address.toLowerCase() as Address];
   const {
     ETH: ethRawBalance,
     BNB: bnbRawBalance,
@@ -77,6 +96,27 @@ export const useWalletsSummary = ({ addresses }: { addresses: Address[] }) => {
       display: balanceDisplay,
     },
     lastTx,
-    isLoading,
   };
+};
+
+export const useWalletsSummary = ({ addresses }: { addresses: Address[] }) => {
+  const nativeAssets = useNativeAssets();
+  const { currentCurrency } = useCurrentCurrencyStore();
+  const { data, isLoading } = useAddysSummary({
+    addresses,
+    currency: currentCurrency,
+  });
+
+  const walletsSummary: { [key: Address]: WalletSummary } = {};
+
+  addresses.forEach((address) => {
+    walletsSummary[address] = parseAddressSummary({
+      address,
+      addysSummary: data,
+      currentCurrency,
+      nativeAssets,
+    });
+  });
+
+  return { walletsSummary, isLoading };
 };

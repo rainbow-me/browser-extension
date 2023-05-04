@@ -11,7 +11,7 @@ import {
 import { SupportedCurrencyKey } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 
-interface AddySummary {
+export interface AddySummary {
   data: {
     addresses: {
       [key: Address]: {

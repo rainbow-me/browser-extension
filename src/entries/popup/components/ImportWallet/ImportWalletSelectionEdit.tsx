@@ -37,17 +37,13 @@ export function ImportWalletSelectionEdit({
   const [accountsIgnored, setAccountsIgnored] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { setCurrentAddress } = useCurrentAddressStore();
-  const {
-    isLoading: walletsSummaryIsLoading,
-    balance,
-    lastTx,
-  } = useWalletsSummary({
-    addresses: state.accountsToImport,
-  });
+  const { isLoading: walletsSummaryIsLoading, walletsSummary } =
+    useWalletsSummary({
+      addresses: state.accountsToImport,
+    });
 
   console.log('-- walletsSummaryIsLoading', walletsSummaryIsLoading);
-  console.log('-- balance', balance);
-  console.log('-- lastTx', lastTx);
+  console.log('-- walletsSummary', walletsSummary);
 
   const selectedAccounts = useMemo(
     () => state.accountsToImport.length - accountsIgnored.length,
