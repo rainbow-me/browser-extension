@@ -75,13 +75,14 @@ type AddysSummaryQueryKey = ReturnType<typeof addysSummaryQueryKey>;
 async function addysSummaryQueryFunction({
   queryKey: [{ addresses, currency }],
 }: QueryFunctionArgs<typeof addysSummaryQueryKey>) {
-  const addysSummary = await addysHttp.get(`/summary`, {
-    body: JSON.stringify({
+  const { data } = await addysHttp.post(
+    `/summary`,
+    JSON.stringify({
       currency,
       addresses,
     }),
-  });
-  return addysSummary as AddySummary;
+  );
+  return data as AddySummary;
 }
 
 type AddysSumaryResult = QueryFunctionResult<typeof addysSummaryQueryFunction>;

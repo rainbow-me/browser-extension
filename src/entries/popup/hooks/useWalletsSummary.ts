@@ -11,6 +11,7 @@ import {
   add,
   convertAmountAndPriceToNativeDisplay,
   convertAmountToNativeDisplay,
+  convertRawAmountToBalance,
 } from '~/core/utils/numbers';
 
 import { useNativeAssets } from './useNativeAssets';
@@ -23,28 +24,42 @@ export const useWalletsSummary = ({ addresses }: { addresses: Address[] }) => {
     currency: currentCurrency,
   });
 
-  const address = addresses[0];
+  const address = addresses[0].toLowerCase() as Address;
+  const dataAddresses = data?.data.addresses;
+  const addressData = dataAddresses?.[address];
   const {
-    ETH: ethBalance,
-    BNB: bnbBalance,
-    MATIC: maticBalance,
-  } = data?.data.addresses[address].summary.native_balance_by_symbol || {};
+    ETH: ethRawBalance,
+    BNB: bnbRawBalance,
+    MATIC: maticRawBalance,
+  } = addressData?.summary.native_balance_by_symbol || {};
 
+  const ethBalance = convertRawAmountToBalance(ethRawBalance?.quantity || 0, {
+    decimals: 18,
+  }).amount;
   const ethCurrencyBalance = convertAmountAndPriceToNativeDisplay(
-    ethBalance?.quantity || 0,
-    nativeAssets?.[ETH_ADDRESS].price?.value || 0,
+    ethBalance || 0,
+    nativeAssets?.[`${ETH_ADDRESS}_1`]?.price?.value || 0,
     currentCurrency,
   ).amount;
 
+  const bnbBalance = convertRawAmountToBalance(bnbRawBalance?.quantity || 0, {
+    decimals: 18,
+  }).amount;
   const bnbCurrencyBalance = convertAmountAndPriceToNativeDisplay(
-    bnbBalance?.quantity || 0,
-    nativeAssets?.[BNB_MAINNET_ADDRESS].price?.value || 0,
+    bnbBalance || 0,
+    nativeAssets?.[`${BNB_MAINNET_ADDRESS}_1`]?.price?.value || 0,
     currentCurrency,
   ).amount;
 
+  const maticBalance = convertRawAmountToBalance(
+    maticRawBalance?.quantity || 0,
+    {
+      decimals: 18,
+    },
+  ).amount;
   const maticCurrencyBalance = convertAmountAndPriceToNativeDisplay(
-    maticBalance?.quantity || 0,
-    nativeAssets?.[MATIC_MAINNET_ADDRESS].price?.value || 0,
+    maticBalance || 0,
+    nativeAssets?.[`${MATIC_MAINNET_ADDRESS}_1`]?.price?.value || 0,
     currentCurrency,
   ).amount;
 
@@ -54,7 +69,7 @@ export const useWalletsSummary = ({ addresses }: { addresses: Address[] }) => {
   );
 
   const balanceDisplay = convertAmountToNativeDisplay(balance, currentCurrency);
-  const lastTx = data?.data.addresses[address].summary.last_activity;
+  const lastTx = addressData?.summary.last_activity;
 
   return {
     balance: {
