@@ -446,7 +446,8 @@
     "add_wallets": "Add wallets",
     "edit_wallets": "Edit wallets",
     "loading": "Hold tight while we look up all your wallets...",
-    "importing": "Importing your wallets..."
+    "importing": "Importing your wallets...",
+    "account_summary": "Tokens: %{tokensAmount} ‧ Last tx: %{lastTx} ago"
   },
   "watch_wallet": {
     "title": "Watch an Ethereum address",

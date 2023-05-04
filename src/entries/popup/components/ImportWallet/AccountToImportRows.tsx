@@ -1,6 +1,8 @@
+import { formatDistanceStrict } from 'date-fns';
 import React from 'react';
 import { Address } from 'wagmi';
 
+import { i18n } from '~/core/languages';
 import {
   Box,
   Column,
@@ -66,7 +68,20 @@ export const AccountToImportRows = ({
                               size="12pt"
                               weight="semibold"
                             >
-                              {`Tokens: ${walletsSummary[address].balance.display} ‧ Last tx: ${walletsSummary[address].lastTx}`}
+                              {i18n.t(
+                                'import_wallet_selection.account_summary',
+                                {
+                                  tokensAmount:
+                                    walletsSummary[address].balance.display,
+                                  lastTx: formatDistanceStrict(
+                                    new Date(),
+                                    new Date(
+                                      Number(walletsSummary[address].lastTx) *
+                                        1000,
+                                    ),
+                                  ),
+                                },
+                              )}
                             </Text>
                           </Row>
                         </Rows>
