@@ -5,8 +5,10 @@ import { Box } from '~/design-system';
 
 export function FullScreenContainer({
   children,
+  paddingTop,
 }: {
   children: React.ReactNode;
+  paddingTop?: number;
 }) {
   return (
     <Box
@@ -19,7 +21,7 @@ export function FullScreenContainer({
       padding="20px"
       position="absolute"
       style={{
-        paddingTop: '56px',
+        paddingTop: paddingTop ?? '56px',
         minHeight: POPUP_DIMENSIONS.height,
         minWidth: POPUP_DIMENSIONS.width,
         overflowX: 'hidden',
