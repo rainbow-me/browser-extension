@@ -851,6 +851,7 @@ export const symbolNames = selectSymbolNames(
   'doc.on.doc.fill',
   'trash',
   'wand.and.stars',
+  'wand.and.stars.inverse',
   'network',
   'command',
   'asterisk',

@@ -1,13 +1,23 @@
 import React, { useState } from 'react';
 
 import { i18n } from '~/core/languages';
-import { Bleed, Box, Button, Inline, Symbol, Text } from '~/design-system';
+import {
+  Bleed,
+  Box,
+  Button,
+  Inline,
+  Row,
+  Rows,
+  Symbol,
+  Text,
+} from '~/design-system';
 
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
@@ -15,9 +25,13 @@ import { ImportWalletSelectionEdit } from '../../components/ImportWallet/ImportW
 import { Navbar } from '../../components/Navbar/Navbar';
 import { ROUTES } from '../../urls';
 
-type SortMethod = 'default' | 'token-balance' | 'last-transaction';
+export type WalletsSortMethod =
+  | 'default'
+  | 'token-balance'
+  | 'last-transaction';
+
 export function EditImportWalletSelection() {
-  const [sortMethod, setSortMethod] = useState<SortMethod>('default');
+  const [sortMethod, setSortMethod] = useState<WalletsSortMethod>('default');
   return (
     <>
       <Navbar
@@ -48,59 +62,102 @@ export function EditImportWalletSelection() {
                       size={14}
                     />
                     <Text size="14pt" weight="semibold" color="label">
-                      {i18n.t('send.tokens_input.sort')}
+                      {i18n.t('edit_import_wallet_selection.sort.title')}
                     </Text>
                   </Inline>
                 </Button>
               </Box>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent align="end" marginRight="4px">
+            <DropdownMenuContent sideOffset={1} align="end" marginRight="4px">
               <DropdownMenuRadioGroup
                 value={sortMethod}
                 onValueChange={(method) => {
-                  setSortMethod(method as SortMethod);
+                  setSortMethod(method as WalletsSortMethod);
                 }}
               >
-                <DropdownMenuRadioItem value="token" selectedValue={sortMethod}>
-                  <Inline space="8px" alignVertical="center">
-                    <Bleed vertical="4px">
-                      <Symbol
-                        weight="semibold"
-                        symbol="record.circle.fill"
-                        size={18}
-                        color="label"
-                      />
-                    </Bleed>
+                <Rows space="4px">
+                  <Row>
+                    <DropdownMenuRadioItem
+                      value="default"
+                      selectedValue={sortMethod}
+                    >
+                      <Inline space="8px" alignVertical="center">
+                        <Bleed vertical="4px">
+                          <Symbol
+                            weight="semibold"
+                            symbol="wand.and.stars.inverse"
+                            size={18}
+                            color="label"
+                          />
+                        </Bleed>
 
-                    <Text size="14pt" weight="semibold" color="label">
-                      {i18n.t('send.tokens_input.token_balance')}
-                    </Text>
-                  </Inline>
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="chain" selectedValue={sortMethod}>
-                  <Inline space="8px" alignVertical="center">
-                    <Bleed vertical="4px">
-                      <Symbol
-                        weight="semibold"
-                        symbol="network"
-                        size={18}
-                        color="label"
-                      />
-                    </Bleed>
+                        <Text size="14pt" weight="semibold" color="label">
+                          {i18n.t('edit_import_wallet_selection.sort.default')}
+                        </Text>
+                      </Inline>
+                    </DropdownMenuRadioItem>
+                  </Row>
 
-                    <Text size="14pt" weight="semibold" color="label">
-                      {i18n.t('send.tokens_input.networks')}
-                    </Text>
-                  </Inline>
-                </DropdownMenuRadioItem>
+                  <Row>
+                    <DropdownMenuSeparator />
+                  </Row>
+
+                  <Row>
+                    <Box>
+                      <DropdownMenuRadioItem
+                        value="token-balance"
+                        selectedValue={sortMethod}
+                      >
+                        <Inline space="8px" alignVertical="center">
+                          <Bleed vertical="4px">
+                            <Symbol
+                              weight="semibold"
+                              symbol="record.circle.fill"
+                              size={18}
+                              color="label"
+                            />
+                          </Bleed>
+
+                          <Text size="14pt" weight="semibold" color="label">
+                            {i18n.t(
+                              'edit_import_wallet_selection.sort.token_balance',
+                            )}
+                          </Text>
+                        </Inline>
+                      </DropdownMenuRadioItem>
+
+                      <DropdownMenuRadioItem
+                        value="last-transaction"
+                        selectedValue={sortMethod}
+                      >
+                        <Inline space="8px" alignVertical="center">
+                          <Bleed vertical="4px">
+                            <Symbol
+                              weight="semibold"
+                              symbol="bolt.fill"
+                              size={18}
+                              color="label"
+                            />
+                          </Bleed>
+
+                          <Text size="14pt" weight="semibold" color="label">
+                            {i18n.t(
+                              'edit_import_wallet_selection.sort.last_transaction',
+                            )}
+                          </Text>
+                        </Inline>
+                      </DropdownMenuRadioItem>
+                    </Box>
+                  </Row>
+                </Rows>
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
           </DropdownMenu>
         }
       />
       <FullScreenContainer paddingTop={62}>
-        <ImportWalletSelectionEdit />
+        <ImportWalletSelectionEdit sortMethod={sortMethod} />
       </FullScreenContainer>
     </>
   );

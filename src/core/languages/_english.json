@@ -475,7 +475,13 @@
     "add_n_wallets": "Add %{count} wallets",
     "add_wallet": "Add wallet",
     "importing_your_wallet": "Importing your wallet...",
-    "importing_your_wallets": "Importing your wallets..."
+    "importing_your_wallets": "Importing your wallets...",
+    "sort": {
+      "title": "Sort",
+      "default": "Default",
+      "token_balance": "Token Balance",
+      "last_transaction": "Last Transaction"
+    }
   },
   "seed_verify": {
     "title": "Verify your Secret Recovery Phrase",

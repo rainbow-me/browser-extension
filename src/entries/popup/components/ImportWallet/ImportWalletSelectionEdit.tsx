@@ -12,14 +12,17 @@ import { Spinner } from '../../components/Spinner/Spinner';
 import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWalletsSummary } from '../../hooks/useWalletsSummary';
+import { WalletsSortMethod } from '../../pages/importWalletSelection/EditImportWalletSelection';
 import { ROUTES } from '../../urls';
 
 import { AccountToImportRows } from './AccountToImportRows';
 
 export function ImportWalletSelectionEdit({
   onboarding = false,
-}: {
+}: // sortMethod,
+{
   onboarding?: boolean;
+  sortMethod?: WalletsSortMethod;
 }) {
   const navigate = useRainbowNavigate();
   const { state } = useLocation();
