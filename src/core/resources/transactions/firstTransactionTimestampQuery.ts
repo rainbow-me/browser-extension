@@ -39,7 +39,9 @@ async function firstTransactionTimestampQueryFunction({
   queryKey: [{ address }],
 }: QueryFunctionArgs<typeof firstTransactionTimestampQueryKey>) {
   if (!address) return undefined;
-  const parsedResponse = await etherscanHttp.get('/', {
+  const parsedResponse = await etherscanHttp.get<{
+    result: { timeStamp: number }[];
+  }>('/', {
     params: {
       module: 'account',
       action: 'txlist',
@@ -47,7 +49,7 @@ async function firstTransactionTimestampQueryFunction({
       sort: 'asc',
     },
   });
-  const timestamp = parsedResponse.data.result[0]?.timeStamp;
+  const timestamp = parsedResponse.data?.result[0]?.timeStamp;
   return timestamp ? timestamp * 1000 : null;
 }
 

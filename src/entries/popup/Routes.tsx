@@ -5,12 +5,12 @@ import { matchRoutes, useLocation } from 'react-router-dom';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
-import { AccentColorProvider, Box } from '~/design-system';
+import { Box } from '~/design-system';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
-import { globalColors } from '~/design-system/styles/designTokens';
 
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
-import { useAvatar } from './hooks/useAvatar';
+import { useAccounts } from './hooks/useAccounts';
+import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
 import { ConnectedApps } from './pages/home/ConnectedApps';
@@ -32,6 +32,7 @@ import { Privacy } from './pages/settings/privacy/privacy';
 import { PrivateKey } from './pages/settings/privacy/walletsAndKeys/privateKey/privateKey';
 import { PrivateKeyWarning } from './pages/settings/privacy/walletsAndKeys/privateKey/warning';
 import { RecoveryPhrase } from './pages/settings/privacy/walletsAndKeys/recoveryPhrase/recoveryPhrase';
+import { RecoveryPhraseVerify } from './pages/settings/privacy/walletsAndKeys/recoveryPhrase/recoveryPhraseVerify';
 import { RecoveryPhraseWarning } from './pages/settings/privacy/walletsAndKeys/recoveryPhrase/warning';
 import { WalletDetails } from './pages/settings/privacy/walletsAndKeys/walletDetails';
 import { WalletsAndKeys } from './pages/settings/privacy/walletsAndKeys/walletsAndKeys';
@@ -95,16 +96,25 @@ const ROUTE_DATA = [
   {
     path: ROUTES.WELCOME,
     element: (
-      <AnimatedRoute direction="upRight" protectedRoute={['NEW']}>
+      <AnimatedRoute
+        direction="upRight"
+        protectedRoute={['NEW']}
+        accentColor={false}
+      >
         <Welcome />
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
+    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.READY,
     element: (
-      <AnimatedRoute direction="deceleratedShort" protectedRoute={['READY']}>
+      <AnimatedRoute
+        direction="deceleratedShort"
+        protectedRoute={['READY']}
+        accentColor={false}
+      >
         <WalletReady />
       </AnimatedRoute>
     ),
@@ -118,11 +128,13 @@ const ROUTE_DATA = [
         navbar
         navbarIcon="arrow"
         backTo={ROUTES.WELCOME}
+        accentColor={false}
       >
         <ImportOrConnect />
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
+    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.WATCH,
@@ -133,11 +145,13 @@ const ROUTE_DATA = [
         navbar
         navbarIcon="arrow"
         backTo={ROUTES.IMPORT_OR_CONNECT}
+        accentColor={false}
       >
         <WatchWallet />
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
+    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.IMPORT,
@@ -148,20 +162,27 @@ const ROUTE_DATA = [
         navbar
         navbarIcon="arrow"
         backTo={ROUTES.IMPORT_OR_CONNECT}
+        accentColor={false}
       >
         <ImportWallet />
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
+    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.IMPORT__SELECT,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEW']}>
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW']}
+        accentColor={false}
+      >
         <ImportWalletSelection />
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
+    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.IMPORT__EDIT,
@@ -170,11 +191,13 @@ const ROUTE_DATA = [
         direction="right"
         title={i18n.t('edit_import_wallet_selection.title')}
         protectedRoute={['NEW']}
+        accentColor={false}
       >
         <EditImportWalletSelection />
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
+    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.UNLOCK,
@@ -184,6 +207,7 @@ const ROUTE_DATA = [
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
+    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.SEED_BACKUP_PROMPT,
@@ -194,11 +218,13 @@ const ROUTE_DATA = [
         navbar
         navbarIcon="arrow"
         backTo={ROUTES.WELCOME}
+        accentColor={false}
       >
         <SeedBackupPrompt />
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
+    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.SEED_REVEAL,
@@ -209,20 +235,27 @@ const ROUTE_DATA = [
         navbar
         navbarIcon="arrow"
         backTo={ROUTES.SEED_BACKUP_PROMPT}
+        accentColor={false}
       >
         <SeedReveal />
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
+    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.SEED_VERIFY,
     element: (
-      <AnimatedRoute direction="right" protectedRoute={['NEW']}>
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW']}
+        accentColor={false}
+      >
         <SeedVerify />
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
+    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.CREATE_PASSWORD,
@@ -233,11 +266,13 @@ const ROUTE_DATA = [
         navbar
         navbarIcon="arrow"
         backTo={ROUTES.WELCOME}
+        accentColor={false}
       >
         <CreatePassword />
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
+    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.QR_CODE,
@@ -401,11 +436,26 @@ const ROUTE_DATA = [
         backTo={ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS}
         direction="right"
         navbar
-        navbarIcon="arrow"
+        navbarIcon="ex"
         background="surfaceSecondary"
         protectedRoute
       >
         <RecoveryPhrase />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_VERIFY,
+    element: (
+      <AnimatedRoute
+        backTo={ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS}
+        direction="right"
+        navbar
+        navbarIcon="ex"
+        background="surfaceSecondary"
+        protectedRoute
+      >
+        <RecoveryPhraseVerify />
       </AnimatedRoute>
     ),
   },
@@ -600,7 +650,7 @@ const matchingRoute = (pathName: string) => {
 export function Routes() {
   const location = useLocation();
   React.useEffect(() => {
-    // need to wait a tick for the page to render=
+    // need to wait a tick for the page to render
     setTimeout(() => {
       window.scrollTo(0, 0);
     }, 0);
@@ -626,12 +676,12 @@ export function Routes() {
 }
 
 function CurrentRoute(props: { pathname: string }) {
-  const { currentAddress } = useCurrentAddressStore();
-  const { avatar } = useAvatar({ address: currentAddress });
-
   const match = matchingRoute(props.pathname);
   const element = match?.element;
   const currentDirection = element?.props.direction;
+
+  useGlobalShortcuts(match?.disableGlobalShortcuts);
+
   if (!element) {
     // error UI here probably
     return null;
@@ -639,13 +689,32 @@ function CurrentRoute(props: { pathname: string }) {
   const direction = currentDirection;
 
   return (
-    <AccentColorProvider color={avatar?.color ?? globalColors.blue60}>
-      <AnimatePresence key={props.pathname} mode="popLayout">
-        {React.cloneElement(element, {
-          key: props.pathname,
-          direction,
-        })}
-      </AnimatePresence>
-    </AccentColorProvider>
+    <AnimatePresence key={props.pathname} mode="popLayout">
+      {React.cloneElement(element, {
+        key: props.pathname,
+        direction,
+      })}
+    </AnimatePresence>
   );
 }
+
+const useGlobalShortcuts = (disable?: boolean) => {
+  const { sortedAccounts } = useAccounts();
+  const { setCurrentAddress } = useCurrentAddressStore();
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      const activeElement = document.activeElement;
+      const tagName = activeElement?.tagName;
+      if (tagName !== 'INPUT') {
+        const regex = /^[1-9]$/;
+        if (regex.test(e.key)) {
+          const accountIndex = parseInt(e.key, 10) - 1;
+          if (sortedAccounts[accountIndex]) {
+            setCurrentAddress(sortedAccounts[accountIndex]?.address);
+          }
+        }
+      }
+    },
+    condition: () => !disable,
+  });
+};

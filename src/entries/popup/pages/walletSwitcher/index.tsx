@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { motion } from 'framer-motion';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   DragDropContext,
   Draggable,
@@ -44,6 +44,7 @@ import {
 import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
 import { triggerToast } from '../../components/Toast/Toast';
 import { getWallet, remove, wipe } from '../../handlers/wallet';
+import { useAccounts } from '../../hooks/useAccounts';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { AddressAndType, useWallets } from '../../hooks/useWallets';
@@ -185,6 +186,7 @@ export function WalletSwitcher() {
     },
     [navigate, setCurrentAddress],
   );
+
   const handleRemoveAccount = useCallback(
     async (address: Address) => {
       const walletToDelete = await getWallet(address);
@@ -230,67 +232,13 @@ export function WalletSwitcher() {
       navigate,
     ],
   );
-  const { walletNames } = useWalletNamesStore();
 
-  const [accountsWithNamesAndEns, setAccountsWithNamesAndEns] = useState<
-    WalletSearchData[]
-  >([]);
+  const isSearching = !!searchQuery;
 
-  const isSearching = useMemo(() => {
-    return !!searchQuery;
-  }, [searchQuery]);
+  const { saveWalletOrder } = useWalletOrderStore();
 
-  const { walletOrder, saveWalletOrder } = useWalletOrderStore();
-
-  useEffect(() => {
-    const getAccountsWithNamesAndEns = async () => {
-      if (accounts.length !== 0) {
-        setAccountsWithNamesAndEns(accounts as WalletSearchData[]);
-      }
-      const accountsSearchData = await Promise.all(
-        accounts.map(async (addressAndType) =>
-          walletNames[addressAndType.address]
-            ? {
-                ...addressAndType,
-                walletName: walletNames[addressAndType.address],
-              }
-            : (addressAndType as WalletSearchData),
-        ),
-      );
-      if (accountsSearchData.length !== 0) {
-        setAccountsWithNamesAndEns(accountsSearchData);
-      }
-    };
-    getAccountsWithNamesAndEns();
-  }, [accounts, walletNames]);
-
-  const filteredAccounts = useMemo(() => {
-    if (!searchQuery) return accountsWithNamesAndEns;
-    return accountsWithNamesAndEns.filter(
-      ({ address, walletName, ensName }) =>
-        address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        walletName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        ensName?.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-  }, [accountsWithNamesAndEns, searchQuery]);
-
-  const filteredAndSortedAccounts = useMemo(() => {
-    const sortedAccounts = filteredAccounts.sort((a, b) => {
-      const aIndex = walletOrder.indexOf(a.address);
-      const bIndex = walletOrder.indexOf(b.address);
-      if (aIndex === -1 && bIndex === -1) {
-        return 0;
-      }
-      if (aIndex === -1) {
-        return 1;
-      }
-      if (bIndex === -1) {
-        return -1;
-      }
-      return aIndex - bIndex;
-    });
-    return sortedAccounts;
-  }, [filteredAccounts, walletOrder]);
+  const { filteredAndSortedAccounts, sortedAccounts } =
+    useAccounts(searchQuery);
 
   const displayedAccounts = useMemo(
     () =>
@@ -363,7 +311,7 @@ export function WalletSwitcher() {
     if (!destination) return;
     if (destination.index === source.index) return;
     const newAccountsWithNamesAndEns = reorder(
-      accountsWithNamesAndEns,
+      sortedAccounts,
       source.index,
       destination.index,
     ) as WalletSearchData[];

@@ -29,6 +29,8 @@ export const ROUTES = {
     '/settings/privacy/wallets-and-keys/wallet-details/recovery-phrase-warning', // RecoveryPhraseWarning
   SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE:
     '/settings/privacy/wallets-and-keys/wallet-details/recovery-phrase', // RecoveryPhrase
+  SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_VERIFY:
+    '/settings/privacy/wallets-and-keys/wallet-details/recovery-phrase-verify', // RecoveryPhraseVerify
   SETTINGS__TRANSACTIONS: '/settings/transactions', // Transactions
   SETTINGS__CURRENCY: '/settings/currency', // Currency
   SEND: '/send', // Send
