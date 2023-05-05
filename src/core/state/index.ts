@@ -7,6 +7,7 @@ export {
   useCurrentCurrencyStore,
   currentLanguageStore,
   useCurrentLanguageStore,
+  setCurrentAddress,
 } from './currentSettings';
 export {
   notificationWindowStore,
