@@ -1,5 +1,3 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-nested-ternary */
 import React, { useState } from 'react';
 
 import { i18n } from '~/core/languages';
