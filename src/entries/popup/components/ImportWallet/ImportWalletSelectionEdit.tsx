@@ -6,6 +6,7 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
+import { minus } from '~/core/utils/numbers';
 import { Box, Button, Text } from '~/design-system';
 
 import { Spinner } from '../../components/Spinner/Spinner';
@@ -19,8 +20,8 @@ import { AccountToImportRows } from './AccountToImportRows';
 
 export function ImportWalletSelectionEdit({
   onboarding = false,
-}: // sortMethod,
-{
+  sortMethod,
+}: {
   onboarding?: boolean;
   sortMethod?: WalletsSortMethod;
 }) {
@@ -33,6 +34,28 @@ export function ImportWalletSelectionEdit({
     useWalletsSummary({
       addresses: state.accountsToImport,
     });
+
+  const sortedAccountsToImport = useMemo(() => {
+    switch (sortMethod) {
+      case 'token-balance': {
+        const accountsInfo = Object.values(walletsSummary);
+        const sortedAccounts = accountsInfo.sort((a, b) =>
+          Number(minus(b.balance.amount, a.balance.amount)),
+        );
+        return sortedAccounts.map((account) => account.address);
+      }
+      case 'last-transaction': {
+        const accountsInfo = Object.values(walletsSummary);
+        const sortedAccounts = accountsInfo.sort((a, b) =>
+          Number(minus(b.lastTx || 0, a.lastTx || 0)),
+        );
+        return sortedAccounts.map((account) => account.address);
+      }
+      case 'default':
+      default:
+        return state.accountsToImport;
+    }
+  }, [sortMethod, state.accountsToImport, walletsSummary]);
 
   const selectedAccounts = useMemo(
     () => state.accountsToImport.length - accountsIgnored.length,
@@ -135,7 +158,7 @@ export function ImportWalletSelectionEdit({
           >
             <AccountToImportRows
               accountsIgnored={accountsIgnored}
-              accountsToImport={state.accountsToImport}
+              accountsToImport={sortedAccountsToImport}
               toggleAccount={toggleAccount}
               walletsSummary={walletsSummary}
               showCheckbox

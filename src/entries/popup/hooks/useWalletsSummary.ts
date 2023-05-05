@@ -27,6 +27,7 @@ export interface WalletSummary {
     display: string;
   };
   lastTx?: number;
+  address: Address;
 }
 
 const parseAddressSummary = ({
@@ -96,6 +97,7 @@ const parseAddressSummary = ({
       display: balanceDisplay,
     },
     lastTx,
+    address,
   };
 };
 
