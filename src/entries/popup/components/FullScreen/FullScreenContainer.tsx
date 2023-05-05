@@ -18,7 +18,8 @@ export function FullScreenContainer({
       display="flex"
       flexDirection="column"
       alignItems="center"
-      padding="20px"
+      paddingHorizontal="16px"
+      paddingVertical="20px"
       position="absolute"
       style={{
         paddingTop: paddingTop ?? '56px',

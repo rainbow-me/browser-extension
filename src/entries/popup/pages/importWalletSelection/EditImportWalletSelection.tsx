@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { i18n } from '~/core/languages';
-import { Bleed, Button, Inline, Symbol, Text } from '~/design-system';
+import { Bleed, Box, Button, Inline, Symbol, Text } from '~/design-system';
 
 import {
   DropdownMenu,
@@ -32,28 +32,30 @@ export function EditImportWalletSelection() {
         rightComponent={
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                color="surfaceSecondaryElevated"
-                height="28px"
-                variant="flat"
-                paddingLeft="8px"
-                paddingRight="12px"
-              >
-                <Inline space="4px" alignVertical="center">
-                  <Symbol
-                    symbol="arrow.up.arrow.down"
-                    color="label"
-                    weight="semibold"
-                    size={14}
-                  />
-                  <Text size="14pt" weight="semibold" color="label">
-                    {i18n.t('send.tokens_input.sort')}
-                  </Text>
-                </Inline>
-              </Button>
+              <Box>
+                <Button
+                  color="surfaceSecondaryElevated"
+                  height="28px"
+                  variant="flat"
+                  paddingLeft="8px"
+                  paddingRight="12px"
+                >
+                  <Inline space="4px" alignVertical="center">
+                    <Symbol
+                      symbol="arrow.up.arrow.down"
+                      color="label"
+                      weight="semibold"
+                      size={14}
+                    />
+                    <Text size="14pt" weight="semibold" color="label">
+                      {i18n.t('send.tokens_input.sort')}
+                    </Text>
+                  </Inline>
+                </Button>
+              </Box>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent marginRight="32px">
+            <DropdownMenuContent align="end" marginRight="4px">
               <DropdownMenuRadioGroup
                 value={sortMethod}
                 onValueChange={(method) => {
