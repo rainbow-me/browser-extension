@@ -3,6 +3,7 @@ import { Chain, useNetwork } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
+import { useNetworkSwitcherIsOpenStore } from '~/core/state/networkSwitcherIsOpen';
 import { ChainId } from '~/core/types/chains';
 import {
   Box,
@@ -265,8 +266,15 @@ export const SwitchNetworkMenu = ({
         };
   }, [type]);
 
+  const { setNetworkSwitcherIsOpen } = useNetworkSwitcherIsOpenStore();
+
+  const handleOpenChange = (isOpen: boolean) => {
+    setNetworkSwitcherIsOpen(isOpen);
+    onOpenChange?.(isOpen);
+  };
+
   return (
-    <Menu onOpenChange={onOpenChange}>
+    <Menu onOpenChange={handleOpenChange}>
       <MenuTrigger asChild>
         <Box style={{ cursor: 'default' }} ref={triggerRef}>
           {triggerComponent}

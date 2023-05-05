@@ -4,6 +4,7 @@ import { matchRoutes, useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
+import { useNetworkSwitcherIsOpenStore } from '~/core/state/networkSwitcherIsOpen';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
@@ -721,16 +722,19 @@ const directionMap = {
 const useGlobalShortcuts = (disable?: boolean) => {
   const { sortedAccounts } = useAccounts();
   const { setCurrentAddress } = useCurrentAddressStore();
+  const { networkSwitcherIsOpen } = useNetworkSwitcherIsOpenStore();
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       const activeElement = document.activeElement;
       const tagName = activeElement?.tagName;
-      if (tagName !== 'INPUT') {
-        const regex = /^[1-9]$/;
-        if (regex.test(e.key)) {
-          const accountIndex = parseInt(e.key, 10) - 1;
-          if (sortedAccounts[accountIndex]) {
-            setCurrentAddress(sortedAccounts[accountIndex]?.address);
+      if (!networkSwitcherIsOpen) {
+        if (tagName !== 'INPUT') {
+          const regex = /^[1-9]$/;
+          if (regex.test(e.key)) {
+            const accountIndex = parseInt(e.key, 10) - 1;
+            if (sortedAccounts[accountIndex]) {
+              setCurrentAddress(sortedAccounts[accountIndex]?.address);
+            }
           }
         }
       }

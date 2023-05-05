@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { motion } from 'framer-motion';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   DragDropContext,
   Draggable,
@@ -12,6 +12,7 @@ import {
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletNamesStore } from '~/core/state/walletNames';
@@ -46,6 +47,7 @@ import { triggerToast } from '../../components/Toast/Toast';
 import { getWallet, remove, wipe } from '../../handlers/wallet';
 import { useAccounts } from '../../hooks/useAccounts';
 import { useAvatar } from '../../hooks/useAvatar';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { AddressAndType, useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
@@ -191,6 +193,8 @@ export function WalletSwitcher() {
 
   const { deleteWalletName } = useWalletNamesStore();
 
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
   const handleSelectAddress = useCallback(
     (address: Address) => {
       setCurrentAddress(address);
@@ -332,6 +336,17 @@ export function WalletSwitcher() {
     saveWalletOrder(newAccountsWithNamesAndEns.map(({ address }) => address));
   };
 
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (
+        e.key === shortcuts.wallet_switcher.SEARCH.key &&
+        document.activeElement !== searchInputRef.current
+      ) {
+        setTimeout(() => searchInputRef.current?.focus(), 0);
+      }
+    },
+  });
+
   return (
     <Box height="full">
       <RenameWalletPrompt
@@ -357,6 +372,7 @@ export function WalletSwitcher() {
           placeholder={i18n.t('wallet_switcher.search_placeholder')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          innerRef={searchInputRef}
         />
       </Box>
       <Box paddingHorizontal="16px" paddingBottom="8px">
