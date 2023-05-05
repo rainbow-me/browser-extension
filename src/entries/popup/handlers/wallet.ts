@@ -155,21 +155,7 @@ export async function executeRap<T extends RapTypes>({
     rapActionParameters: { ...rapActionParameters, nonce },
     type,
   };
-  const { type: walletType, vendor } = await getWallet(
-    rapActionParameters.quote.from as Address,
-  );
-  // Check the type of account it is
-  if (walletType === 'HardwareWalletKeychain') {
-    switch (vendor) {
-      default:
-        throw new Error('Unsupported hardware wallet');
-    }
-  } else {
-    return walletAction(
-      'execute_rap',
-      params,
-    ) as unknown as TransactionResponse;
-  }
+  return walletAction('execute_rap', params) as unknown as TransactionResponse;
 }
 
 export const personalSign = async (
@@ -452,20 +438,20 @@ export const connectTrezor = async () => {
 export const connectLedger = async () => {
   // TODO: DELETE
   //  Debugging purposes only DELETE!!!
-  return {
-    accountsToImport: [
-      {
-        address: '0x2419EB3D5E048f50D386f6217Cd5033eBfc36b83' as Address,
-        index: 0,
-      },
-      {
-        address: '0x37bD75826582532373D738F83b913C97447b0906' as Address,
-        index: 1,
-      },
-    ],
-    deviceId: 'lol',
-    accountsEnabled: 2,
-  };
+  // return {
+  //   accountsToImport: [
+  //     {
+  //       address: '0x2419EB3D5E048f50D386f6217Cd5033eBfc36b83' as Address,
+  //       index: 0,
+  //     },
+  //     {
+  //       address: '0x37bD75826582532373D738F83b913C97447b0906' as Address,
+  //       index: 1,
+  //     },
+  //   ],
+  //   deviceId: 'lol',
+  //   accountsEnabled: 2,
+  // };
 
   // Connect to the device
   try {

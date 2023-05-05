@@ -1,11 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { TransactionRequest } from '@ethersproject/providers';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { Bytes } from 'ethers';
 import * as React from 'react';
 import { HashRouter } from 'react-router-dom';
-import { Address, WagmiConfig, useAccount } from 'wagmi';
+import { WagmiConfig, useAccount } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -14,7 +11,6 @@ import { flushQueuedEvents } from '~/analytics/flushQueuedEvents';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import config from '~/core/firebase/remoteConfig';
 import { changeI18nLanguage } from '~/core/languages';
-import { initializeMessenger } from '~/core/messengers';
 import { persistOptions, queryClient } from '~/core/react-query';
 import { initializeSentry, setSentryUser } from '~/core/sentry';
 import { useCurrentLanguageStore, useDeviceIdStore } from '~/core/state';
@@ -25,13 +21,9 @@ import { Box, ThemeProvider } from '~/design-system';
 import { Alert } from '~/design-system/components/Alert/Alert';
 
 import { Routes } from './Routes';
+import { HWRequestListener } from './components/HWRequestListener/HWRequestListener';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { Toast } from './components/Toast/Toast';
-import {
-  personalSign,
-  signTransactionFromHW,
-  signTypedData,
-} from './handlers/wallet';
 import { AuthProvider } from './hooks/useAuth';
 import { useIsFullScreen } from './hooks/useIsFullScreen';
 import { usePendingTransactionWatcher } from './hooks/usePendingTransactionWatcher';
@@ -110,58 +102,3 @@ export function App() {
     </PersistQueryClientProvider>
   );
 }
-
-export const HWRequestListener = () => {
-  const bgMessenger = initializeMessenger({ connect: 'background' });
-
-  interface HWSigningRequest {
-    action: 'signTransaction' | 'signMessage' | 'signTypedData';
-    vendor: 'Ledger' | 'Trezor';
-    payload:
-      | TransactionRequest
-      | { message: string; address: string }
-      | { data: string | Bytes; address: string };
-  }
-
-  function isMessagePayload(
-    payload: any,
-  ): payload is { message: string; address: string } {
-    return 'message' in payload && 'address' in payload;
-  }
-  function isTypedDataPayload(
-    payload: any,
-  ): payload is { data: any; address: string } {
-    return 'data' in payload && 'address' in payload;
-  }
-
-  bgMessenger.reply('hwRequest', async (data: HWSigningRequest) => {
-    let response;
-    switch (data.action) {
-      case 'signTransaction':
-        response = await signTransactionFromHW(
-          data.payload as TransactionRequest,
-          data.vendor,
-        );
-        break;
-      case 'signMessage':
-        if (isMessagePayload(data.payload)) {
-          response = await personalSign(
-            data.payload.message,
-            data.payload.address as Address,
-          );
-        }
-        break;
-      case 'signTypedData':
-        if (isTypedDataPayload(data.payload)) {
-          response = await signTypedData(
-            data.payload.data,
-            data.payload.address as Address,
-          );
-        }
-        break;
-    }
-
-    bgMessenger.send('hwResponse', response);
-  });
-  return null;
-};

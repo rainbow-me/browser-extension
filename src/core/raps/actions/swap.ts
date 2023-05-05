@@ -18,7 +18,7 @@ import { ChainId } from '~/core/types/chains';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { addNewTransaction } from '~/core/utils/transactions';
-import { logger } from '~/logger';
+import { RainbowError, logger } from '~/logger';
 
 import { ETH_ADDRESS, gasUnits } from '../../references';
 import { gasStore } from '../../state';
@@ -220,8 +220,7 @@ export const swap = async ({
       quote,
     });
   } catch (e) {
-    logger.error({
-      name: 'swap: error estimateSwapGasLimit',
+    logger.error(new RainbowError('swap: error estimateSwapGasLimit'), {
       message: (e as Error).message,
     });
     throw e;
@@ -242,8 +241,7 @@ export const swap = async ({
     };
     swap = await executeSwap(swapParams);
   } catch (e) {
-    logger.error({
-      name: 'swap: error executeSwap',
+    logger.error(new RainbowError('swap: error executeSwap'), {
       message: (e as Error).message,
     });
     throw e;
