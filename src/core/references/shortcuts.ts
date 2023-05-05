@@ -123,4 +123,10 @@ export const shortcuts = {
       key: 's',
     },
   },
+  transaction_request: {
+    CANCEL: {
+      display: 'Esc',
+      key: 'Escape',
+    },
+  },
 };
