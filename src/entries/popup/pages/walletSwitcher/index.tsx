@@ -257,7 +257,9 @@ export function WalletSwitcher() {
     if (!walletOrder.length) return accountsWithCustomName;
 
     return walletOrder
-      .map((address) => accounts.find((a) => address === a.address))
+      .map((address) =>
+        accountsWithCustomName.find((a) => address === a.address),
+      )
       .filter(Boolean);
   }, [accounts, walletNames, walletOrder]);
 
