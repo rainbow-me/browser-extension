@@ -870,6 +870,8 @@ export const symbolNames = selectSymbolNames(
   'shuffle',
   'chart.bar.xaxis',
   'arrow.2.squarepath',
+  'person.crop.circle.badge.xmark',
+  'person.crop.circle.badge.checkmark',
 );
 export type SymbolName = typeof symbolNames[number];
 

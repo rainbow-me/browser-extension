@@ -39,6 +39,7 @@ import {
 import { placeholderStyle } from '~/design-system/components/Input/Input.css';
 import { textStyles } from '~/design-system/styles/core.css';
 import {
+  SymbolName,
   transformScales,
   transitions,
 } from '~/design-system/styles/designTokens';
@@ -187,13 +188,38 @@ const useEnsAddresses = ({
     queries: names.map((name) => createEnsNameQuery({ chainId, name })),
   });
 
-const getErrorMessage = (
-  inputAddress: string,
+const ensAddedAsStorageKey = 'ens added as';
+const watchedEnsNames = () =>
+  JSON.parse(localStorage.getItem(ensAddedAsStorageKey) || '') as string[];
+const saveAddedAsEnsName = (name: string) => {
+  const savedWatchedEnses = watchedEnsNames();
+  savedWatchedEnses.push(name);
+  localStorage.setItem(ensAddedAsStorageKey, JSON.stringify(savedWatchedEnses));
+};
+
+const getError = (
+  address: string,
+  input: string,
   allWallets: AddressAndType[],
-) => {
-  if (!isAddress(inputAddress)) return 'Invalid address';
-  if (allWallets.some((w) => inputAddress === w.address))
-    return 'Address already added';
+): { message: string; symbol: SymbolName } | undefined => {
+  if (!isAddress(address))
+    return {
+      message: 'Invalid address',
+      symbol: 'person.crop.circle.badge.xmark',
+    };
+
+  if (allWallets.some((w) => address === w.address)) {
+    const addedAs = watchedEnsNames().find((n) => n === input);
+    if (addedAs)
+      return {
+        message: `Address already added as ${addedAs}`,
+        symbol: 'person.crop.circle.badge.checkmark',
+      };
+    return {
+      message: 'Address already added',
+      symbol: 'person.crop.circle.badge.checkmark',
+    };
+  }
 };
 
 const useValidateInput = (input: string) => {
@@ -210,16 +236,17 @@ const useValidateInput = (input: string) => {
   const address = isAddress(inputAddress) ? inputAddress : undefined;
 
   const { allWallets } = useWallets();
-  const errorMessage = getErrorMessage(inputAddress, allWallets);
-
-  if (isLoading || !debouncedInput.length || debouncedInput !== input)
-    return { isError: true, isLoading, address };
+  const error =
+    !isLoading &&
+    !!debouncedInput &&
+    debouncedInput !== input &&
+    getError(inputAddress, input, allWallets);
 
   return {
+    ensName: addressFromEns && input,
     address,
-    isError: !isLoading && !!errorMessage,
     isLoading,
-    errorMessage,
+    error,
   };
 };
 
@@ -238,7 +265,7 @@ export const WatchWallet = ({
     '',
   );
 
-  const { address, isError, isLoading, errorMessage } = useValidateInput(input);
+  const { address, ensName, isLoading, error } = useValidateInput(input);
 
   const addressesToImport = useMemo(
     () => ({
@@ -252,9 +279,10 @@ export const WatchWallet = ({
     const importedAddresses = await Promise.all(
       Object.keys(addressesToImport).map(wallet.importWithSecret),
     );
+    if (ensName) saveAddedAsEnsName(ensName);
     setCurrentAddress(importedAddresses[0]);
     onFinishImporting?.();
-  }, [addressesToImport, onFinishImporting]);
+  }, [addressesToImport, ensName, onFinishImporting]);
 
   return (
     <>
@@ -344,16 +372,16 @@ export const WatchWallet = ({
                   <Spinner size={11} color="labelTertiary" />
                 </Box>
               )}
-              {isError && !!errorMessage && (
+              {error && (
                 <Inline space="4px" alignVertical="center">
                   <Symbol
-                    symbol={'exclamationmark.triangle.fill'}
+                    symbol={error.symbol}
                     size={11}
                     color={'orange'}
                     weight={'bold'}
                   />
                   <Text size="11pt" weight="regular" color={'orange'}>
-                    {errorMessage}
+                    {error.message}
                     {/* {i18n.t('watch_wallet.invalid_address_or_ens_name')} */}
                   </Text>
                 </Inline>
@@ -378,9 +406,9 @@ export const WatchWallet = ({
         <Button
           emoji="👀"
           height="44px"
-          color={!isError ? 'accent' : 'labelQuaternary'}
-          variant={!isError ? 'flat' : 'disabled'}
-          disabled={isError}
+          color={!error ? 'accent' : 'labelQuaternary'}
+          variant={!error ? 'flat' : 'disabled'}
+          disabled={!!error}
           width="full"
           onClick={handleWatchWallet}
           testId="watch-wallets-button"
