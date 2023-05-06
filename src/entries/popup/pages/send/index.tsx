@@ -71,9 +71,9 @@ export function Send() {
   const navigate = useRainbowNavigate();
 
   const { isContact } = useContactsStore();
-  const { allWallets } = useWallets();
+  const { allAccounts } = useWallets();
   const isMyWallet = (address: Address) =>
-    allWallets?.some((w) => w.address === address);
+    allAccounts?.some((w) => w.address === address);
 
   const { connectedToHardhat } = useConnectedToHardhatStore();
 

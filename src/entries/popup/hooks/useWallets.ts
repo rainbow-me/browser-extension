@@ -1,5 +1,4 @@
 import { useQuery } from '@tanstack/react-query';
-import { useMemo } from 'react';
 import { Address, useAccount } from 'wagmi';
 
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
@@ -12,55 +11,49 @@ export interface AddressAndType {
   type: KeychainType;
 }
 
-const fetchWallets = async () => {
-  const wallets = await getWallets();
-  return wallets.reduce(
-    (accounts, wallet) => [
-      ...accounts,
-      ...wallet.accounts.map((address) => ({ address, type: wallet.type })),
-    ],
-    [] as AddressAndType[],
-  );
-};
-
 export const useWallets = () => {
   const { hiddenWallets } = useHiddenWalletsStore();
 
-  const { data: allWallets, refetch } = useQuery(['accounts'], fetchWallets, {
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-  });
-
   const { address } = useAccount();
 
-  return useMemo(() => {
-    if (!allWallets)
-      return {
-        allWallets: [],
-        visibleWallets: [],
-        visibleOwnedWallets: [],
-        watchedWallets: [],
-        walletsReady: false,
-        isWatchingWallet: false,
-        fetchWallets: refetch,
-      };
+  const { data } = useQuery(['wallets'], getWallets, {
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    initialData: [],
+    initialDataUpdatedAt: 0,
+    select(wallets) {
+      const allAccounts = wallets.reduce(
+        (accounts, wallet) => [
+          ...accounts,
+          ...wallet.accounts.map((address) => ({
+            address,
+            type: wallet.type,
+          })),
+        ],
+        [] as AddressAndType[],
+      );
 
-    const visibleWallets = allWallets.filter((a) => !hiddenWallets[a.address]);
-    const visibleOwnedWallets = visibleWallets.filter(
-      (a) => a.type !== KeychainType.ReadOnlyKeychain,
-    );
-    const watchedWallets = visibleWallets.filter(
-      (a) => a.type === KeychainType.ReadOnlyKeychain,
-    );
-    const watchedAddresses = watchedWallets.map(({ address }) => address);
-    return {
-      allWallets,
-      visibleWallets,
-      visibleOwnedWallets,
-      watchedWallets,
-      walletsReady: true,
-      isWatchingWallet: address && watchedAddresses.includes(address),
-      fetchWallets: refetch,
-    };
-  }, [allWallets, hiddenWallets, address, refetch]);
+      const visibleWallets = allAccounts.filter(
+        (a) => !hiddenWallets[a.address],
+      );
+      const visibleOwnedWallets = visibleWallets.filter(
+        (a) => a.type !== KeychainType.ReadOnlyKeychain,
+      );
+      const watchedWallets = visibleWallets.filter(
+        (a) => a.type === KeychainType.ReadOnlyKeychain,
+      );
+
+      return {
+        allAccounts,
+        allWallets: wallets,
+        visibleWallets,
+        visibleOwnedWallets,
+        watchedWallets,
+        isWatchingAccount:
+          !!address && watchedWallets.some(({ address }) => address),
+      };
+    },
+  });
+
+  return data;
 };
