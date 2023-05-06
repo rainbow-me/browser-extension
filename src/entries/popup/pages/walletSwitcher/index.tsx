@@ -248,16 +248,19 @@ export function WalletSwitcher() {
   const isSearching = !!searchQuery;
 
   const { walletOrder, saveWalletOrder } = useWalletOrderStore();
-  const sortedAccounts = useMemo(
-    () =>
-      walletOrder
-        .map((address) => {
-          const account = accounts.find((a) => address === a.address);
-          return account && { ...account, walletName: walletNames[address] };
-        })
-        .filter(Boolean),
-    [accounts, walletNames, walletOrder],
-  );
+  const sortedAccounts = useMemo(() => {
+    const accountsWithCustomName = accounts.map((a) => ({
+      ...a,
+      walletName: walletNames[a.address],
+    }));
+
+    if (!walletOrder.length) return accountsWithCustomName;
+
+    return walletOrder
+      .map((address) => accounts.find((a) => address === a.address))
+      .filter(Boolean);
+  }, [accounts, walletNames, walletOrder]);
+
   const filteredAndSortedAccounts = useMemo(
     () => searchWallets(sortedAccounts, searchQuery),
     [sortedAccounts, searchQuery],
