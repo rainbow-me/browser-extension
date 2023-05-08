@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Contract } from '@ethersproject/contracts';
+import { Contract, ContractInterface } from '@ethersproject/contracts';
 import { Address, getProvider } from '@wagmi/core';
 
 import { metadataClient } from '~/core/graphql';
@@ -39,7 +39,9 @@ export const methodRegistryLookupAndParse = async (
   if (response?.contractFunction?.text) {
     signature = response.contractFunction.text;
   } else {
-    const methodRegistryABI = await fetchJsonLocally('methodRegistryABI.json');
+    const methodRegistryABI = (await fetchJsonLocally(
+      'abis/method-registry-abi.json',
+    )) as ContractInterface;
     const provider = getProvider({ chainId: 1 });
 
     const registry = new Contract(

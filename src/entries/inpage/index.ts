@@ -55,12 +55,10 @@ if (shouldInjectProvider()) {
       setDefaultProvider: (rainbowAsDefault: boolean) => {
         if (rainbowAsDefault) {
           window.walletRouter.currentProvider = window.rainbow;
-          window.ethereum = window.rainbow;
         } else {
-          window.walletRouter.currentProvider =
+          const nonDefaultProvider =
             window.walletRouter.lastInjectedProvider ?? window.ethereum;
-          window.ethereum =
-            window.walletRouter.lastInjectedProvider ?? window.ethereum;
+          window.walletRouter.currentProvider = nonDefaultProvider;
         }
       },
       addProvider: (provider: RainbowProvider | Ethereum) => {
@@ -150,6 +148,10 @@ backgroundMessenger.reply(
     }
   },
 );
+
+backgroundMessenger.reply('rainbow_reload', async () => {
+  window.location.reload();
+});
 
 /**
  * Determines if the provider should be injected

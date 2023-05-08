@@ -3,6 +3,8 @@ import { getProvider } from '@wagmi/core';
 import { capitalize, isString } from 'lodash';
 import { Address } from 'wagmi';
 
+import { getNativeAssetForNetwork } from '~/entries/popup/hooks/useNativeAssetForNetwork';
+
 import { i18n } from '../languages';
 import { createHttpClient } from '../network/internal/createHttpClient';
 import {
@@ -10,6 +12,7 @@ import {
   SupportedCurrencyKey,
   smartContractMethods,
 } from '../references';
+import { fetchRegistryLookup } from '../resources/transactions/registryLookup';
 import { fetchTransactions } from '../resources/transactions/transactions';
 import {
   currentCurrencyStore,
@@ -96,11 +99,11 @@ type ParseTransactionArgs = {
   chainId: ChainId;
 };
 
-export function parseTransaction({
+export async function parseTransaction({
   tx,
   currency,
   chainId,
-}: ParseTransactionArgs): RainbowTransaction | RainbowTransaction[] {
+}: ParseTransactionArgs): Promise<RainbowTransaction | RainbowTransaction[]> {
   if (tx.changes.length) {
     return tx.changes.map((internalTxn, index) => {
       const address = (internalTxn?.asset?.asset_code?.toLowerCase() ??
@@ -140,6 +143,7 @@ export function parseTransaction({
         status,
         type: tx.type,
       });
+
       return {
         address: (parsedAsset.address.toLowerCase() === ETH_ADDRESS
           ? ETH_ADDRESS
@@ -172,18 +176,27 @@ export function parseTransaction({
   });
 }
 
-const parseTransactionWithEmptyChanges = ({
+const parseTransactionWithEmptyChanges = async ({
   tx,
   currency,
   chainId,
-}: ParseTransactionArgs): RainbowTransaction => {
-  const methodName = 'Signed'; // let's ask BE to grab this for us: https://github.com/rainbow-me/rainbow/blob/develop/src/handlers/transactions.ts#L79
-  const updatedAsset = {
-    address: ETH_ADDRESS,
-    decimals: 18,
-    name: 'ethereum',
-    symbol: 'ETH',
-  };
+}: ParseTransactionArgs): Promise<RainbowTransaction> => {
+  const methodName = await fetchRegistryLookup({
+    data: null,
+    to: tx.address_to,
+    chainId,
+    hash: tx.hash,
+  });
+
+  const parsedAsset = tx.meta.asset
+    ? parseAsset({
+        address: tx.meta.asset.asset_code,
+        asset: tx.meta.asset,
+        currency,
+        chainId,
+      })
+    : await getNativeAssetForNetwork({ chainId });
+
   const priceUnit = 0;
   const valueUnit = 0;
   const nativeDisplay = convertRawAmountToNativeDisplay(
@@ -193,24 +206,48 @@ const parseTransactionWithEmptyChanges = ({
     currency,
   );
 
+  const status = getTransactionLabel({
+    direction: tx.direction,
+    pending: false,
+    protocol: tx.protocol,
+    status: tx.status,
+    type: tx.type,
+  });
+
+  const title = getTitle({
+    protocol: tx.protocol,
+    status,
+    type: tx.type,
+  });
+
+  const description = getDescription({
+    name: parsedAsset?.name || '',
+    status,
+    type: tx.type,
+  });
+
   return {
+    asset: parsedAsset,
     address: ETH_ADDRESS as Address,
     balance: isL2Chain(chainId)
       ? { amount: '', display: '-' }
-      : convertRawAmountToBalance(valueUnit, updatedAsset),
-    description: methodName || 'Signed',
+      : convertRawAmountToBalance(valueUnit, { decimals: 18 }),
+    description: description || methodName || 'Signed',
     from: tx?.address_from as Address,
     hash: `${tx.hash}-${0}`,
     minedAt: tx.mined_at,
-    name: methodName || 'Signed',
+    name:
+      status === TransactionStatus.contract_interaction
+        ? methodName
+        : parsedAsset?.name || 'Signed',
     native: nativeDisplay,
     chainId,
     nonce: tx.nonce,
     pending: false,
     protocol: tx.protocol,
-    status: TransactionStatus.contract_interaction,
+    status,
     symbol: 'contract',
-    title: i18n.t('transactions.contract_interaction'),
+    title: title ?? i18n.t('transactions.contract_interaction'),
     to: tx.address_to as Address,
     type: TransactionType.contract_interaction,
   };
@@ -322,8 +359,10 @@ export const getTransactionLabel = ({
     }
   }
 
-  if (isSelf) return TransactionStatus.self;
+  if (isSelf) return TransactionStatus.sent;
 
+  if (type === TransactionType.execution)
+    return TransactionStatus.contract_interaction;
   if (isFromAccount) return TransactionStatus.sent;
   if (isToAccount) return TransactionStatus.received;
 
@@ -760,12 +799,21 @@ const flashbotsApi = createHttpClient({
   baseUrl: 'https://protect.flashbots.net',
 });
 
+type FlashbotsStatus =
+  | 'PENDING'
+  | 'INCLUDED'
+  | 'FAILED'
+  | 'CANCELLED'
+  | 'UNKNOWN';
+
 export const getTransactionFlashbotStatus = async (
   transaction: RainbowTransaction,
   txHash: string,
 ) => {
   try {
-    const fbStatus = await flashbotsApi.get(`/tx/${txHash}`);
+    const fbStatus = await flashbotsApi.get<{ status: FlashbotsStatus }>(
+      `/tx/${txHash}`,
+    );
     const flashbotStatus = fbStatus.data.status;
     // Make sure it wasn't dropped after 25 blocks or never made it
     if (flashbotStatus === 'FAILED' || flashbotStatus === 'CANCELLED') {

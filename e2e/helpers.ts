@@ -1,8 +1,10 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Builder, By, until } from 'selenium-webdriver';
+import { ethers } from 'ethers';
+import { Builder, By, WebDriver, until } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
+import { erc20ABI } from 'wagmi';
 
 const waitUntilTime = 20000;
 
@@ -62,6 +64,26 @@ export async function getExtensionIdByName(driver, extensionName) {
       }
       return undefined
     `);
+}
+
+export async function getOnchainBalance(addy, contract) {
+  const provider = ethers.getDefaultProvider('http://127.0.0.1:8545');
+  const testContract = new ethers.Contract(contract, erc20ABI, provider);
+  const balance = await testContract.balanceOf(addy);
+
+  return balance;
+}
+
+export async function transactionStatus() {
+  const provider = ethers.getDefaultProvider('http://127.0.0.1:8545');
+  const blockData = await provider.getBlock('latest');
+  const txn = await provider.getTransaction(blockData.transactions[0]);
+  const txnData = txn.wait();
+
+  // transactionResponse.wait.status returns '1' if the txn was sent successfully and '0' if its a failure
+  const txnStatus = (await txnData).status === 1 ? 'success' : 'failure';
+
+  return txnStatus;
 }
 
 export async function delay(ms) {
@@ -156,4 +178,34 @@ export async function delayTime(
     case 'very-long':
       return await delay(5000);
   }
+}
+
+export async function getAllWindowHandles({
+  driver,
+  popupHandler,
+  dappHandler,
+}: {
+  driver: WebDriver;
+  popupHandler?: string;
+  dappHandler?: string;
+}) {
+  await delayTime('long');
+  const handlers = await driver.getAllWindowHandles();
+  const popupHandlerFromHandlers =
+    handlers.find((handler) => handler !== dappHandler) || '';
+
+  const dappHandlerFromHandlers =
+    handlers.find((handler) => handler !== popupHandler) || '';
+
+  return {
+    handlers,
+    popupHandler: popupHandler || popupHandlerFromHandlers,
+    dappHandler: dappHandler || dappHandlerFromHandlers,
+  };
+}
+
+export async function getWindowHandle({ driver }) {
+  await delayTime('long');
+  const windowHandle = await driver.getWindowHandle();
+  return windowHandle;
 }

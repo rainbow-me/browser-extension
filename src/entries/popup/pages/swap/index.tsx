@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedSearchAsset } from '~/core/types/assets';
@@ -46,6 +47,7 @@ import {
   SwapPriceImpactType,
   useSwapPriceImpact,
 } from '../../hooks/swap/useSwapPriceImpact';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 
 import { SwapReviewSheet } from './SwapReviewSheet/SwapReviewSheet';
 import { SwapSettings } from './SwapSettings/SwapSettings';
@@ -190,13 +192,14 @@ export function Swap() {
     assetToBuy,
   });
 
-  const { source, slippage, setSettings, flashbotsEnabled } = useSwapSettings({
-    chainId: assetToSell?.chainId || ChainId.mainnet,
-  });
+  const { source, slippage, setSettings, swapFlashbotsEnabled } =
+    useSwapSettings({
+      chainId: assetToSell?.chainId || ChainId.mainnet,
+    });
 
   const flashbotsEnabledGlobally =
     config.flashbots_enabled &&
-    flashbotsEnabled &&
+    swapFlashbotsEnabled &&
     assetToSell?.chainId === ChainId.mainnet;
 
   const {
@@ -323,6 +326,33 @@ export function Swap() {
       clearCustomGasModified();
     };
   }, [clearCustomGasModified]);
+
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.swap.FLIP_ASSETS.key) {
+        const activeElement = document.activeElement;
+        const focusingAssetToSell =
+          activeElement === assetToSellInputRef.current;
+        const focusingAssetToBuy = activeElement === assetToBuyInputRef.current;
+        const focusNewInput = () => {
+          setTimeout(() => {
+            if (focusingAssetToSell) {
+              assetToBuyInputRef.current?.focus();
+            } else if (focusingAssetToBuy) {
+              assetToSellInputRef.current?.focus();
+            }
+          }, 100);
+        };
+        if (focusingAssetToSell && assetToSell) {
+          flipAssets();
+          focusNewInput();
+        } else if (focusingAssetToBuy && assetToBuy) {
+          flipAssets();
+          focusNewInput();
+        }
+      }
+    },
+  });
 
   return (
     <>

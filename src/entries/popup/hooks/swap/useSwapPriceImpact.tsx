@@ -1,4 +1,4 @@
-import { CrosschainQuote, Quote, SwapType } from '@rainbow-me/swaps';
+import { CrosschainQuote, Quote } from '@rainbow-me/swaps';
 import { useMemo } from 'react';
 
 import { useCurrentCurrencyStore } from '~/core/state';
@@ -38,64 +38,39 @@ export const useSwapPriceImpact = ({
   quote?: Quote | CrosschainQuote;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
-  const nativeAsset = useNativeAssetForNetwork({
+  const sellNativeAsset = useNativeAssetForNetwork({
     chainId: assetToSell?.chainId || ChainId.mainnet,
   });
 
-  const isNormalQuote = useMemo(
-    () => quote?.swapType === SwapType.normal,
-    [quote?.swapType],
-  );
+  const buyNativeAsset = useNativeAssetForNetwork({
+    chainId: assetToBuy?.chainId || ChainId.mainnet,
+  });
 
   const sellNativeAmount = useMemo(() => {
-    if (isNormalQuote)
-      return convertRawAmountToNativeDisplay(
-        quote?.sellAmountInEth.toString() || '',
-        nativeAsset?.decimals || 18,
-        nativeAsset?.price?.value || '0',
-        currentCurrency,
-      ).amount;
-    else
-      return convertRawAmountToNativeDisplay(
-        quote?.sellAmount?.toString() || '',
-        assetToSell?.decimals || 18,
-        assetToSell?.price?.value || '0',
-        currentCurrency,
-      ).amount;
+    return convertRawAmountToNativeDisplay(
+      quote?.sellAmountInEth.toString() || '',
+      sellNativeAsset?.decimals || 18,
+      sellNativeAsset?.price?.value || '0',
+      currentCurrency,
+    ).amount;
   }, [
-    assetToSell?.decimals,
-    assetToSell?.price?.value,
     currentCurrency,
-    isNormalQuote,
-    nativeAsset?.decimals,
-    nativeAsset?.price?.value,
-    quote?.sellAmount,
+    sellNativeAsset?.decimals,
+    sellNativeAsset?.price?.value,
     quote?.sellAmountInEth,
   ]);
 
   const buyNativeAmount = useMemo(() => {
-    if (isNormalQuote)
-      return convertRawAmountToNativeDisplay(
-        quote?.buyAmountInEth.toString() || '',
-        nativeAsset?.decimals || 18,
-        nativeAsset?.price?.value || '0',
-        currentCurrency,
-      ).amount;
-    else
-      return convertRawAmountToNativeDisplay(
-        quote?.buyAmount?.toString() || '',
-        assetToBuy?.decimals || 18,
-        assetToBuy?.price?.value || '0',
-        currentCurrency,
-      ).amount;
+    return convertRawAmountToNativeDisplay(
+      quote?.buyAmountInEth.toString() || '',
+      buyNativeAsset?.decimals || 18,
+      buyNativeAsset?.price?.value || '0',
+      currentCurrency,
+    ).amount;
   }, [
-    assetToBuy?.decimals,
-    assetToBuy?.price?.value,
     currentCurrency,
-    isNormalQuote,
-    nativeAsset?.decimals,
-    nativeAsset?.price?.value,
-    quote?.buyAmount,
+    buyNativeAsset?.decimals,
+    buyNativeAsset?.price?.value,
     quote?.buyAmountInEth,
   ]);
 

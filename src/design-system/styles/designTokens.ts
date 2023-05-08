@@ -768,6 +768,7 @@ export const transitions = {
 export type Transition = keyof typeof transitions;
 
 export const strokeWeights = {
+  '0px': 0,
   '1px': 1,
   '2px': 2,
 };

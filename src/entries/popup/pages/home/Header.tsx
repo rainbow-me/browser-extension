@@ -1,9 +1,9 @@
 /* eslint-disable no-nested-ternary */
 import { motion, useScroll, useTransform } from 'framer-motion';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { truncateAddress } from '~/core/utils/address';
@@ -13,9 +13,10 @@ import { BoxStyles, TextStyles } from '~/design-system/styles/core.css';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
+import { Link } from '../../components/Link/Link';
+import { triggerToast } from '../../components/Toast/Toast';
 import { useAlert } from '../../hooks/useAlert';
 import { useAvatar } from '../../hooks/useAvatar';
-import { useToast } from '../../hooks/useToast';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
@@ -88,7 +89,6 @@ function ActionButtonsSection() {
   const { avatar } = useAvatar({ address });
 
   const { isWatchingWallet } = useWallets();
-  const { triggerToast } = useToast();
   const { featureFlags } = useFeatureFlagsStore();
   const { triggerAlert } = useAlert();
 
@@ -98,13 +98,13 @@ function ActionButtonsSection() {
       title: i18n.t('wallet_header.copy_toast'),
       description: truncateAddress(address),
     });
-  }, [address, triggerToast]);
+  }, [address]);
 
   const allowSwap = React.useMemo(
     () =>
       (!isWatchingWallet || featureFlags.full_watching_wallets) &&
-      featureFlags.swaps,
-    [featureFlags.full_watching_wallets, featureFlags.swaps, isWatchingWallet],
+      config.swaps_enabled,
+    [featureFlags.full_watching_wallets, isWatchingWallet],
   );
 
   const allowSend = React.useMemo(
@@ -125,7 +125,6 @@ function ActionButtonsSection() {
       {avatar?.color && (
         <Inline space="12px">
           <ActionButton
-            cursor="copy"
             symbol="square.on.square"
             text={i18n.t('wallet_header.copy')}
             onClick={handleCopy}

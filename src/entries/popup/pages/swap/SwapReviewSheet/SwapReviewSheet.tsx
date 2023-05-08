@@ -12,6 +12,7 @@ import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { isLowerCaseMatch } from '~/core/utils/strings';
+import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 import {
   Bleed,
   Box,
@@ -236,6 +237,21 @@ const SwapReviewSheetWithQuote = ({
     );
   }, [assetToBuy, assetToSell]);
 
+  const isWrapOrUnwrapEth = useMemo(() => {
+    return (
+      isWrapEth({
+        buyTokenAddress: quote.buyTokenAddress,
+        sellTokenAddress: quote.sellTokenAddress,
+        chainId: assetToSell.chainId,
+      }) ||
+      isUnwrapEth({
+        buyTokenAddress: quote.buyTokenAddress,
+        sellTokenAddress: quote.sellTokenAddress,
+        chainId: assetToSell.chainId,
+      })
+    );
+  }, [assetToSell.chainId, quote.buyTokenAddress, quote.sellTokenAddress]);
+
   const openMoreDetails = useCallback(() => setShowDetails(true), []);
   const closeMoreDetails = useCallback(() => setShowDetails(false), []);
 
@@ -247,8 +263,8 @@ const SwapReviewSheetWithQuote = ({
     setSendingSwap(true);
     const { nonce } = await wallet.executeRap<typeof type>({
       rapActionParameters: {
-        sellAmount: q.sellAmount.toString(),
-        buyAmount: q.buyAmount.toString(),
+        sellAmount: q.sellAmount?.toString(),
+        buyAmount: q.buyAmount?.toString(),
         chainId: connectedToHardhat ? ChainId.hardhat : assetToSell.chainId,
         assetToSell: assetToSell,
         assetToBuy: assetToBuy,
@@ -385,7 +401,7 @@ const SwapReviewSheetWithQuote = ({
                 <SwapAssetCard
                   testId={`${assetToSell.symbol}-asset-to-sell`}
                   asset={assetToSell}
-                  assetAmount={quote.sellAmount.toString()}
+                  assetAmount={quote.sellAmount?.toString()}
                 />
                 <Box
                   boxShadow="12px surfaceSecondaryElevated"
@@ -420,7 +436,7 @@ const SwapReviewSheetWithQuote = ({
                 <SwapAssetCard
                   testId={`${assetToBuy.symbol}-asset-to-buy`}
                   asset={assetToBuy}
-                  assetAmount={quote.buyAmount.toString()}
+                  assetAmount={quote.buyAmount?.toString()}
                 />
               </Inline>
             </Box>
@@ -435,18 +451,20 @@ const SwapReviewSheetWithQuote = ({
                     {minimumReceived}
                   </Text>
                 </DetailsRow>
-                <DetailsRow testId="swapping-via">
-                  <Label
-                    label={i18n.t('swap.review.swapping_via')}
-                    testId="swap-review-swapping-route"
-                  />
-                  {!!swappingRoute && (
-                    <SwapRoutes
-                      testId="swapping-via"
-                      protocols={swappingRoute}
+                {!isWrapOrUnwrapEth && (
+                  <DetailsRow testId="swapping-via">
+                    <Label
+                      label={i18n.t('swap.review.swapping_via')}
+                      testId="swap-review-swapping-route"
                     />
-                  )}
-                </DetailsRow>
+                    {!!swappingRoute && (
+                      <SwapRoutes
+                        testId="swapping-via"
+                        protocols={swappingRoute}
+                      />
+                    )}
+                  </DetailsRow>
+                )}
                 <DetailsRow testId="included-fee">
                   <Label
                     label={i18n.t('swap.review.included_fee')}

@@ -61,9 +61,6 @@ export function AccountName({
         as={motion.div}
         id={`${id ?? ''}-account-name-shuffle`}
         onClick={handleClick}
-        tabIndex={
-          includeAvatar ? undefined : tabIndexes.WALLET_HEADER_ACCOUNT_NAME
-        }
         padding="4px"
         {...chevronProps}
       >

@@ -17,7 +17,7 @@ const getClosestSize = (size: number): TextProps['size'] => {
 const ExternalImage = (
   props: JSX.IntrinsicAttributes &
     React.ClassAttributes<HTMLImageElement> &
-    React.ImgHTMLAttributes<HTMLImageElement>,
+    React.ImgHTMLAttributes<HTMLImageElement> & { mask?: string },
 ) => {
   const [fallback, setFallback] = React.useState(false);
   const width = Number(props.width) || undefined;
@@ -50,7 +50,22 @@ const ExternalImage = (
       </Box>
     );
   }
-  return <img {...props} src={signedUrl} onError={handleError} />;
+
+  return (
+    <img
+      {...props}
+      style={
+        props.mask
+          ? {
+              maskImage: `url(${props.mask})`,
+              WebkitMaskImage: `url(${props.mask})`,
+            }
+          : {}
+      }
+      src={signedUrl}
+      onError={handleError}
+    />
+  );
 };
 
 export default ExternalImage;

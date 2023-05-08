@@ -53,7 +53,7 @@ beforeAll(async () => {
   rootURL += extensionId;
 });
 
-afterAll(async () => driver.quit());
+afterAll(() => driver.quit());
 
 it('should be able import a wallet via seed', async () => {
   //  Start from welcome screen
@@ -98,12 +98,11 @@ it('should be able to go to setings', async () => {
   await findElementByTestIdAndClick({ id: 'settings-link', driver });
 });
 
-it('should be able to connect to hardhat and turn swaps flag on', async () => {
+it('should be able to connect to hardhat', async () => {
   const btn = await querySelector(driver, '[data-testid="connect-to-hardhat"]');
   await waitAndClick(btn, driver);
   const button = await findElementByText(driver, 'Disconnect from Hardhat');
   expect(button).toBeTruthy();
-  await findElementByTestIdAndClick({ id: 'feature-flag-swaps', driver });
   await findElementByTestIdAndClick({ id: 'navbar-button-with-back', driver });
 });
 
@@ -216,7 +215,7 @@ it('should be able to go to review a crosschain swap', async () => {
     driver,
   });
 
-  await delayTime('medium');
+  await delayTime('long');
   const longWaitExplainerFound = await doNotFindElementByTestId({
     id: 'explainer-sheet-swap-long-wait',
     driver,
@@ -228,10 +227,10 @@ it('should be able to go to review a crosschain swap', async () => {
       driver,
     });
   }
-  await delayTime('long');
 });
 
 it('should be able to see crosschain swap information in review sheet', async () => {
+  await delayTime('long');
   const daiAssetToSellAssetCard = await findElementByTestId({
     id: `DAI-asset-to-sell-swap-asset-card`,
     driver,

@@ -34,7 +34,7 @@
     "import_wallet": "Import with a Secret Recovery Phrase or Private Key",
     "import_wallet_description": "Add a wallet using your Secret Recovery Phrase or a Private Key.",
     "hardware_wallet": "Add from your hardware wallet",
-    "hardware_wallet_description": "Add more accounts from your Bluetooth hardware wallet.",
+    "hardware_wallet_description": "Add more accounts from your hardware wallet.",
     "watch_address": "Watch an Ethereum address",
     "watch_address_description": "Watch a public address or ENS name."
   },
@@ -424,7 +424,7 @@
     "warning_2": "Your Secret Recovery Phrase is the only way to recover your accounts and funds.",
     "warning_3": "Anyone with your Secret Recovery Phrase can access your entire wallet.",
     "reveal_your_recovery_phrase": "Reveal your recovery phrase",
-    "skip": "Skip"
+    "take_me_to_wallet": "Take me to my wallet"
   },
   "seed_reveal": {
     "title": "Your Secret Recovery Phrase",
@@ -433,14 +433,14 @@
     "phrase_copied": "Recovery Phrase Copied"
   },
   "import_or_connect": {
-    "title": "Import or Connect",
-    "explanation": "Store these words can access your entire wallet! Store them somewhere safe never share them.",
+    "title": "Restore or Connect",
+    "explanation": "Anyone with your Secret Recovery Phrase can access your entire wallet! Store it somewhere safe and don't share it with anyone.",
     "import_wallet": "Import with a Secret Recovery Phrase or Private Key",
     "import_wallet_description": "Add a wallet using your Secret Recovery Phrase or a Private Key.",
     "connect_wallet": "Connect your hardware wallet",
-    "connect_wallet_description": "Add accounts from your hardware wallet",
+    "connect_wallet_description": "Add accounts from your hardware wallet.",
     "watch_address": "Watch an Ethereum address",
-    "watch_address_description": "Watch a public address or ENS name"
+    "watch_address_description": "Watch a public address or ENS name."
   },
   "import_wallet_selection": {
     "title": "Your wallets",
@@ -489,10 +489,12 @@
       "title": "Switch Networks",
       "disconnect": "Disconnect"
     },
-    "home_header_left": {
+    "app_connection_menu": {
       "all_connected_apps": "All connected apps",
       "not_connected": "Not connected",
-      "networks": "Networks"
+      "networks": "Networks",
+      "connect": "Connect",
+      "switch_networks": "Switch networks"
     },
     "home_header_right": {
       "settings": "Settings",

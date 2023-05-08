@@ -1,15 +1,14 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
-import { BytesLike } from '@ethersproject/bytes';
-import React, { useEffect, useMemo, useState } from 'react';
-import { Address } from 'wagmi';
+import React, { useMemo } from 'react';
 
 import { event } from '~/analytics/event';
-import { i18n } from '~/core/languages';
+import config from '~/core/firebase/remoteConfig';
+import { useRegistryLookup } from '~/core/resources/transactions/registryLookup';
 import { useCurrentCurrencyStore } from '~/core/state';
+import { useFlashbotsEnabledStore } from '~/core/state/currentSettings/flashbotsEnabled';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
-import { methodRegistryLookupAndParse } from '~/core/utils/methodRegistry';
 import {
   convertRawAmountToBalance,
   convertRawAmountToNativeDisplay,
@@ -31,42 +30,21 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
     url: request?.meta?.sender?.url,
   });
   const { appSession } = useAppSession({ host: appHost });
-  const [methodName, setMethodName] = useState('');
+  const { flashbotsEnabled } = useFlashbotsEnabledStore();
   const nativeAsset = useNativeAssetForNetwork({ chainId: appSession.chainId });
   const { currentCurrency } = useCurrentCurrencyStore();
+  const flashbotsEnabledGlobally =
+    config.flashbots_enabled &&
+    flashbotsEnabled &&
+    appSession?.chainId === ChainId.mainnet;
+  const txRequest = request?.params?.[0] as TransactionRequest;
 
-  useEffect(() => {
-    const fetchMethodName = async (
-      data: BytesLike | undefined,
-      to?: Address,
-    ) => {
-      if (!data) return;
-      if (!to) {
-        setMethodName(i18n.t('approve_request.contract_deployment'));
-        return;
-      }
-      const methodSignaturePrefix = (data as string)?.substr(0, 10);
-      let fallbackHandler;
-      try {
-        fallbackHandler = setTimeout(() => {
-          setMethodName(i18n.t('approve_request.transaction_request'));
-        }, 5000);
-        const { name } = await methodRegistryLookupAndParse(
-          methodSignaturePrefix,
-          to,
-        );
-        if (name) {
-          setMethodName(name);
-          clearTimeout(fallbackHandler);
-        }
-      } catch (e) {
-        setMethodName(i18n.t('approve_request.transaction_request'));
-        clearTimeout(fallbackHandler);
-      }
-    };
-    const txRequest = request?.params?.[0] as TransactionRequest;
-    fetchMethodName(txRequest.data, txRequest.to as Address);
-  }, [request?.params]);
+  const { data: methodName = '' } = useRegistryLookup({
+    data: (txRequest?.data as string) || null,
+    to: txRequest?.to || null,
+    chainId: appSession.chainId,
+    hash: null,
+  });
 
   const { nativeAssetAmount, nativeCurrencyAmount } = useMemo(() => {
     if (!nativeAsset)
@@ -143,7 +121,10 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
                     alignVertical="center"
                     alignHorizontal="center"
                   >
-                    <ChainBadge chainId={ChainId.mainnet} size={'small'} />
+                    <ChainBadge
+                      chainId={nativeAsset?.chainId || ChainId.mainnet}
+                      size={'small'}
+                    />
                     <Text size="14pt" weight="semibold" color="label">
                       {nativeAssetAmount || ''}
                     </Text>
@@ -166,6 +147,7 @@ export function SendTransactionInfo({ request }: SendTransactionProps) {
               chainId={appSession.chainId}
               transactionRequest={request?.params?.[0] as TransactionRequest}
               plainTriggerBorder
+              flashbotsEnabled={flashbotsEnabledGlobally}
             />
           </Inset>
         </Stack>

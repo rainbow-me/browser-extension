@@ -5,6 +5,7 @@ import React, {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from 'react';
 import { Address } from 'wagmi';
@@ -12,11 +13,16 @@ import { Address } from 'wagmi';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ChainId } from '~/core/types/chains';
+import {
+  TransactionGasParams,
+  TransactionLegacyGasParams,
+} from '~/core/types/gas';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Box, Button, Inline, Row, Rows, Symbol, Text } from '~/design-system';
@@ -33,9 +39,12 @@ import { useSendAsset } from '../../hooks/send/useSendAsset';
 import { useSendInputs } from '../../hooks/send/useSendInputs';
 import { useSendState } from '../../hooks/send/useSendState';
 import { useSendValidations } from '../../hooks/send/useSendValidations';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
+import { clickHeaderRight } from '../../utils/clickHeader';
 
 import { ContactAction, ContactPrompt } from './ContactPrompt';
 import { NavbarContactButton } from './NavbarContactButton';
@@ -43,6 +52,12 @@ import { ReviewSheet } from './ReviewSheet';
 import { SendTokenInput } from './SendTokenInput';
 import { ToAddressInput } from './ToAddressInput';
 import { ValueInput } from './ValueInput';
+
+interface ChildInputAPI {
+  blur: () => void;
+  focus: () => void;
+  isFocused?: () => boolean;
+}
 
 export function Send() {
   const [waitingForDevice, setWaitingForDevice] = useState(false);
@@ -56,6 +71,10 @@ export function Send() {
   const navigate = useRainbowNavigate();
 
   const { isContact } = useContactsStore();
+  const { allWallets } = useWallets();
+  const isMyWallet = (address: Address) =>
+    allWallets?.some((w) => w.address === address);
+
   const { connectedToHardhat } = useConnectedToHardhatStore();
 
   const { asset, selectAssetAddress, assets, setSortMethod, sortMethod } =
@@ -64,6 +83,10 @@ export function Send() {
   const { clearCustomGasModified, selectedGas } = useGasStore();
 
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
+
+  const toAddressInputRef = useRef<ChildInputAPI>(null);
+  const sendTokenInputRef = useRef<ChildInputAPI>(null);
+  const valueInputRef = useRef<ChildInputAPI>(null);
 
   const {
     assetAmount,
@@ -172,6 +195,15 @@ export function Send() {
             status: TransactionStatus.sending,
             type: TransactionType.send,
             nonce: result.nonce,
+            gasPrice: (
+              selectedGas.transactionGasParams as TransactionLegacyGasParams
+            )?.gasPrice,
+            maxFeePerGas: (
+              selectedGas.transactionGasParams as TransactionGasParams
+            )?.maxFeePerGas,
+            maxPriorityFeePerGas: (
+              selectedGas.transactionGasParams as TransactionGasParams
+            )?.maxPriorityFeePerGas,
           };
           await addNewTransaction({
             address: fromAddress,
@@ -197,6 +229,7 @@ export function Send() {
       data,
       assetAmount,
       asset,
+      selectedGas.transactionGasParams,
       navigate,
     ],
   );
@@ -208,10 +241,6 @@ export function Send() {
     },
     [selectAssetAddress, setIndependentAmount],
   );
-
-  const navbarButtonAction = isContact({ address: toAddress })
-    ? 'edit'
-    : 'save';
 
   useEffect(() => {
     return () => {
@@ -266,6 +295,28 @@ export function Send() {
     toEnsName,
   ]);
 
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.altKey) {
+        if (e.key === shortcuts.send.FOCUS_TO_ADDRESS.key) {
+          toAddressInputRef?.current?.focus();
+          sendTokenInputRef?.current?.blur();
+        }
+        if (e.key === shortcuts.send.FOCUS_ASSET.key) {
+          toAddressInputRef?.current?.blur();
+          sendTokenInputRef.current?.focus();
+        }
+      } else {
+        if (
+          e.key === shortcuts.send.OPEN_CONTACT_MENU.key &&
+          !valueInputRef.current?.isFocused?.()
+        ) {
+          clickHeaderRight();
+        }
+      }
+    },
+  });
+
   return (
     <>
       <ExplainerSheet
@@ -302,13 +353,15 @@ export function Send() {
         background={'surfaceSecondary'}
         leftComponent={<Navbar.CloseButton />}
         rightComponent={
-          <NavbarContactButton
-            onSaveAction={setSaveContactAction}
-            toAddress={toAddress}
-            action={navbarButtonAction}
-            enabled={!!toAddress}
-            chainId={asset?.chainId}
-          />
+          isMyWallet(toAddress) ? undefined : (
+            <NavbarContactButton
+              onSaveAction={setSaveContactAction}
+              toAddress={toAddress}
+              action={isContact({ address: toAddress }) ? 'edit' : 'save'}
+              enabled={!!toAddress}
+              chainId={asset?.chainId}
+            />
+          )
         }
       />
       <Box
@@ -329,6 +382,7 @@ export function Send() {
                 setToAddressOrName={setToAddressOrName}
                 onDropdownOpen={setToAddressDropdownOpen}
                 validateToAddress={validateToAddress}
+                ref={toAddressInputRef}
               />
             </Row>
 
@@ -348,6 +402,7 @@ export function Send() {
                     dropdownClosed={toAddressDropdownOpen}
                     setSortMethod={setSortMethod}
                     sortMethod={sortMethod}
+                    ref={sendTokenInputRef}
                   />
                   {asset ? (
                     <ValueInput
@@ -361,6 +416,7 @@ export function Send() {
                       setMaxAssetAmount={setMaxAssetAmount}
                       switchIndependentField={switchIndependentField}
                       inputAnimationControls={controls}
+                      ref={valueInputRef}
                     />
                   ) : null}
                 </Box>

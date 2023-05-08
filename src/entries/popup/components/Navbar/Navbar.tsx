@@ -2,11 +2,18 @@ import { motion } from 'framer-motion';
 import * as React from 'react';
 import { To, useLocation, useNavigate } from 'react-router-dom';
 
+import { shortcuts } from '~/core/references/shortcuts';
 import { Box, Button, ButtonSymbol, Inline, Text } from '~/design-system';
 import { ButtonSymbolProps } from '~/design-system/components/ButtonSymbol/ButtonSymbol';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { BackgroundColor } from '~/design-system/styles/designTokens';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
+
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+import {
+  NAVBAR_LEFT_COMPONENT_ID,
+  NAVBAR_RIGHT_COMPONENT_ID,
+} from '../../utils/clickHeader';
 
 type NavbarProps = {
   leftComponent?: React.ReactElement;
@@ -49,7 +56,7 @@ export function Navbar({
             height: 32,
           }}
           height="full"
-          id="navbar-left-component"
+          id={NAVBAR_LEFT_COMPONENT_ID}
         >
           {leftComponent}
         </Box>
@@ -77,6 +84,7 @@ export function Navbar({
             height: 32,
           }}
           height="full"
+          id={NAVBAR_RIGHT_COMPONENT_ID}
         >
           {rightComponent}
         </Box>
@@ -161,6 +169,16 @@ function NavbarButtonWithBack({
   const location = useLocation();
   const navigate = useNavigate();
 
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.global.CLOSE.key) {
+        e.preventDefault();
+        e.stopPropagation();
+        click();
+      }
+    },
+  });
+
   const click = React.useCallback(() => {
     if (onClick) {
       onClick();
@@ -182,7 +200,7 @@ function NavbarButtonWithBack({
         height={height}
         onClick={click}
         symbol={symbol}
-        variant="transparentHover"
+        variant="flat"
         symbolSize={symbolSize}
         tabIndex={0}
       />

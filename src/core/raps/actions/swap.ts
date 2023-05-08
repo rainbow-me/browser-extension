@@ -1,6 +1,7 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { Transaction } from '@ethersproject/transactions';
+import { formatEther } from '@ethersproject/units';
 import {
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATORS,
   Quote,
@@ -17,10 +18,11 @@ import { Address, getProvider } from '@wagmi/core';
 import { ChainId } from '~/core/types/chains';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { isLowerCaseMatch } from '~/core/utils/strings';
+import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { RainbowError, logger } from '~/logger';
 
-import { ETH_ADDRESS, gasUnits } from '../../references';
+import { gasUnits } from '../../references';
 import { gasStore } from '../../state';
 import {
   TransactionGasParams,
@@ -157,10 +159,7 @@ export const executeSwap = async ({
   };
 
   // Wrap Eth
-  if (
-    sellTokenAddress === ETH_ADDRESS &&
-    buyTokenAddress === WRAPPED_ASSET[chainId]
-  ) {
+  if (isWrapEth({ buyTokenAddress, sellTokenAddress, chainId })) {
     return wrapNativeAsset(
       quote.buyAmount,
       wallet,
@@ -168,10 +167,7 @@ export const executeSwap = async ({
       transactionParams,
     );
     // Unwrap Weth
-  } else if (
-    sellTokenAddress === WRAPPED_ASSET[chainId] &&
-    buyTokenAddress === ETH_ADDRESS
-  ) {
+  } else if (isUnwrapEth({ buyTokenAddress, sellTokenAddress, chainId })) {
     return unwrapNativeAsset(
       quote.sellAmount,
       wallet,
@@ -248,18 +244,22 @@ export const swap = async ({
   }
 
   const transaction = {
-    amount: parameters.quote.value?.toString(),
+    amount: formatEther(swap?.value?.toString() || ''),
     asset: parameters.assetToSell,
-    data: parameters.quote.data,
-    value: parameters.quote.value,
-    from: parameters.quote.from as Address,
-    to: parameters.quote.to as Address,
+    data: swap?.data,
+    value: swap?.value,
+    from: swap?.from as Address,
+    to: swap?.to as Address,
     hash: swap?.hash,
     chainId: parameters.chainId,
     nonce: swap?.nonce,
     status: TransactionStatus.swapping,
     type: TransactionType.trade,
     flashbots: parameters.flashbots,
+    gasPrice: (gasParams as TransactionLegacyGasParams)?.gasPrice,
+    maxFeePerGas: (gasParams as TransactionGasParams)?.maxFeePerGas,
+    maxPriorityFeePerGas: (gasParams as TransactionGasParams)
+      ?.maxPriorityFeePerGas,
   };
   await addNewTransaction({
     address: parameters.quote.from as Address,

@@ -4,6 +4,7 @@ module.exports = {
   root: true,
   rules: {
     'import/no-default-export': 'off',
+    'react/react-in-jsx-scope': 'off',
     'import/order': [
       'error',
       {

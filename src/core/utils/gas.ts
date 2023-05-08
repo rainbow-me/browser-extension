@@ -5,7 +5,7 @@ import {
 } from '@ethersproject/abstract-provider';
 import { getAddress } from '@ethersproject/address';
 import { BigNumberish } from '@ethersproject/bignumber';
-import { Contract } from '@ethersproject/contracts';
+import { Contract, ContractInterface } from '@ethersproject/contracts';
 import { serialize } from '@ethersproject/transactions';
 import BigNumber from 'bignumber.js';
 
@@ -299,7 +299,9 @@ export const parseGasFeeLegacyParams = ({
 
   const estimatedTime = {
     amount: waitTime,
-    display: getMinimalTimeUnitStringForMs(Number(multiply(waitTime, 1000))),
+    display: `${waitTime >= 3600 ? '>' : '~'} ${getMinimalTimeUnitStringForMs(
+      Number(multiply(waitTime, 1000)),
+    )}`,
   };
   const transactionGasParams = {
     gasPrice: toHex(gasPrice.amount),
@@ -483,9 +485,9 @@ export const calculateL1FeeOptimism = async ({
       nonce: transactionRequest.nonce as number,
     });
 
-    const optimismGasOracleAbi = await fetchJsonLocally(
+    const optimismGasOracleAbi = (await fetchJsonLocally(
       'abis/optimism-gas-oracle-abi.json',
-    );
+    )) as ContractInterface;
 
     const OVM_GasPriceOracle = new Contract(
       OVM_GAS_PRICE_ORACLE,

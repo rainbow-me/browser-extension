@@ -1,22 +1,28 @@
 import { motion } from 'framer-motion';
 import * as React from 'react';
 
-import { Box, Inline, Symbol } from '~/design-system';
+import appConnectionImageMask from 'static/assets/appConnectionImageMask.svg';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { Bleed, Box, Inline, Symbol } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import {
   transformScales,
   transitions,
 } from '~/design-system/styles/designTokens';
 
+import { AppConnectionMenu } from '../../components/AppConnectionMenu/AppConnectionMenu';
+import { ChainBadge } from '../../components/ChainBadge/ChainBadge';
 import ExternalImage from '../../components/ExternalImage/ExternalImage';
 import { Navbar } from '../../components/Navbar/Navbar';
-import { AppNetworkMenu } from '../../components/SwitchMenu/AppNetworkMenu';
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
+import { tabIndexes } from '../../utils/tabIndexes';
 
-export const NetworkMenu = () => {
+export const AppConnection = () => {
   const [url, setUrl] = React.useState('');
   const { appLogo, appHost } = useAppMetadata({ url });
   const { appSession } = useAppSession({ host: appHost });
+  const { currentTheme } = useCurrentThemeStore();
 
   React.useEffect(() => {
     chrome?.tabs?.query({ active: true, lastFocusedWindow: true }, (tabs) => {
@@ -38,75 +44,124 @@ export const NetworkMenu = () => {
   }, []);
 
   return (
-    <AppNetworkMenu
+    <AppConnectionMenu
       menuTriggerId="home-page-header-left"
       headerHostId="home-page-header-host"
       connectedAppsId="home-page-header-connected-apps"
       sideOffset={1}
       url={url}
-      type="dropdown"
     >
-      {appSession ? (
-        <Box
-          as={motion.div}
-          initial={{ zIndex: 0 }}
-          whileHover={{ scale: transformScales['1.04'] }}
-          whileTap={{ scale: transformScales['0.96'] }}
-          transition={transitions.bounce}
-          style={{
-            height: 32,
-            width: 32,
-          }}
+      {url ? (
+        <Lens
+          tabIndex={tabIndexes.WALLET_HEADER_LEFT_BUTTON}
           borderRadius="round"
-          background="surfaceSecondaryElevated"
-          borderColor="separatorTertiary"
-          borderWidth="1px"
         >
-          <Inline alignHorizontal="center" alignVertical="center" height="full">
-            <Box
-              position="absolute"
-              style={{
-                paddingLeft: 24,
-                paddingBottom: 24,
-              }}
+          <Box
+            as={motion.div}
+            initial={{ zIndex: 0 }}
+            whileHover={{ scale: transformScales['1.04'] }}
+            whileTap={{ scale: transformScales['0.96'] }}
+            transition={transitions.bounce}
+            style={{
+              height: 32,
+              width: 32,
+            }}
+            borderRadius="round"
+            background="surfaceSecondaryElevated"
+            borderColor="separatorTertiary"
+            borderWidth="1px"
+          >
+            <Inline
+              alignHorizontal="center"
+              alignVertical="center"
+              height="full"
             >
               <Box
-                background="surfacePrimaryElevated"
-                style={{ height: 8, width: 8, borderRadius: 4.5 }}
+                position="absolute"
+                style={{
+                  paddingLeft: 24,
+                  paddingBottom: 24,
+                }}
               >
-                <Inline
-                  alignHorizontal="center"
-                  alignVertical="center"
-                  height="full"
+                <Box
+                  backdropFilter="opacity(0%)"
+                  style={{
+                    height: 10,
+                    width: 10,
+                    borderRadius: 5,
+                    backgroundColor:
+                      currentTheme === 'dark' ? '#1D1E21' : '#F8F8F9',
+                  }}
                 >
-                  <Symbol
-                    size={6}
-                    color={appSession ? 'green' : 'labelQuaternary'}
-                    symbol="circle.fill"
-                    weight="semibold"
-                  />
-                </Inline>
+                  <Inline
+                    alignHorizontal="center"
+                    alignVertical="center"
+                    height="full"
+                  >
+                    <Symbol
+                      size={6}
+                      color={appSession ? 'green' : 'labelQuaternary'}
+                      symbol="circle.fill"
+                      weight="semibold"
+                    />
+                  </Inline>
+                </Box>
               </Box>
-            </Box>
-            <Box
-              style={{
-                height: 14,
-                width: 14,
-                borderRadius: 4,
-                overflow: 'hidden',
-              }}
-            >
-              <ExternalImage src={appLogo} width="14" height="14" />
-            </Box>
-          </Inline>
-        </Box>
+              {appSession ? (
+                <Box
+                  position="absolute"
+                  style={{
+                    marginRight: 16,
+                    marginTop: 8,
+                  }}
+                >
+                  <Box
+                    style={{
+                      height: 10,
+                      width: 10,
+                      borderRadius: 5,
+                    }}
+                  >
+                    <Inline
+                      alignHorizontal="center"
+                      alignVertical="center"
+                      height="full"
+                    >
+                      <Bleed top="7px">
+                        <ChainBadge
+                          chainId={appSession?.chainId}
+                          size="micro"
+                        />
+                      </Bleed>
+                    </Inline>
+                  </Box>
+                </Box>
+              ) : null}
+              <Box
+                style={{
+                  height: 16,
+                  width: 16,
+                  borderRadius: 3,
+                  overflow: 'hidden',
+                }}
+              >
+                <ExternalImage
+                  mask={appSession ? appConnectionImageMask : undefined}
+                  src={appLogo}
+                  width="16"
+                  height="16"
+                />
+              </Box>
+            </Inline>
+          </Box>
+        </Lens>
       ) : (
         <Navbar.SymbolButton
           symbol="app.badge.checkmark"
           variant="flat"
-          tabIndex={1}
+          tabIndex={tabIndexes.WALLET_HEADER_LEFT_BUTTON}
         />
       )}
-    </AppNetworkMenu>
+    </AppConnectionMenu>
   );
 };

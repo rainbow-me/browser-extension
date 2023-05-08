@@ -53,7 +53,7 @@ beforeAll(async () => {
   rootURL += extensionId;
 });
 
-afterAll(async () => driver.quit());
+afterAll(() => driver.quit());
 
 it('should be able import a wallet via seed', async () => {
   //  Start from welcome screen
@@ -98,12 +98,11 @@ it('should be able to go to setings', async () => {
   await findElementByTestIdAndClick({ id: 'settings-link', driver });
 });
 
-it('should be able to connect to hardhat and turn swaps flag on', async () => {
+it('should be able to connect to hardhat', async () => {
   const btn = await querySelector(driver, '[data-testid="connect-to-hardhat"]');
   await waitAndClick(btn, driver);
   const button = await findElementByText(driver, 'Disconnect from Hardhat');
   expect(button).toBeTruthy();
-  await findElementByTestIdAndClick({ id: 'feature-flag-swaps', driver });
   await findElementByTestIdAndClick({ id: 'navbar-button-with-back', driver });
 });
 
@@ -386,6 +385,7 @@ it('should be able to favorite a token and check the info button is present', as
 });
 
 it('should be able to check price and balance of token to buy', async () => {
+  await delayTime('medium');
   const tokenToBuyInfoPrice = await getTextFromText({
     id: 'token-to-buy-info-price',
     driver,

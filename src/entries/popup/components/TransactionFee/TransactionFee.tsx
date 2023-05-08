@@ -1,10 +1,11 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 
 import { analytics } from '~/analytics';
 import { EventProperties } from '~/analytics/event';
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -27,6 +28,7 @@ import { Space } from '~/design-system/styles/designTokens';
 
 import { useDefaultTxSpeed } from '../../hooks/useDefaultTxSpeed';
 import { useSwapGas, useTransactionGas } from '../../hooks/useGas';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { ChainBadge } from '../ChainBadge/ChainBadge';
 
 import { CustomGasSheet } from './CustomGasSheet';
@@ -70,7 +72,7 @@ function Fee({
   setCustomMaxPriorityFee,
 }: FeeProps) {
   const [showCustomGasSheet, setShowCustomGasSheet] = useState(false);
-
+  const switchTransactionSpeedMenuRef = useRef<{ open: () => void }>(null);
   const gasFeeParamsForSelectedSpeed = useMemo(
     () => gasFeeParamsBySpeed?.[selectedSpeed],
     [gasFeeParamsBySpeed, selectedSpeed],
@@ -111,6 +113,17 @@ function Fee({
     [analyticsEvents?.transactionSpeedClicked],
   );
 
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.global.OPEN_CUSTOM_GAS_MENU.key) {
+        // hackery preventing GweiInputMask from firing an onChange event when opening the menu with KB
+        setTimeout(() => openCustomGasSheet(), 0);
+      } else if (e.key === shortcuts.global.OPEN_GAS_MENU.key) {
+        switchTransactionSpeedMenuRef?.current?.open();
+      }
+    },
+  });
+
   return (
     <Box>
       <CustomGasSheet
@@ -136,7 +149,7 @@ function Fee({
                 <Column width="content">
                   <ChainBadge chainId={chainId} size="small" />
                 </Column>
-                <Column>
+                <Column width="content">
                   <TextOverflow weight="semibold" color="label" size="14pt">
                     {isLoading
                       ? '~'
@@ -172,6 +185,7 @@ function Fee({
               plainTriggerBorder={plainTriggerBorder}
               onOpenChange={onSpeedOpenChange}
               dropdownContentMarginRight={speedMenuMarginRight}
+              ref={switchTransactionSpeedMenuRef}
             />
             {chainId === ChainId.mainnet ? (
               <Box
@@ -205,6 +219,7 @@ type TransactionFeeProps = {
   transactionRequest: TransactionRequest;
   accentColor?: string;
   plainTriggerBorder?: boolean;
+  flashbotsEnabled?: boolean;
   analyticsEvents?: {
     customGasClicked: keyof EventProperties;
     transactionSpeedSwitched: keyof EventProperties;
@@ -219,6 +234,7 @@ export function TransactionFee({
   accentColor,
   plainTriggerBorder,
   analyticsEvents,
+  flashbotsEnabled,
 }: TransactionFeeProps) {
   const { defaultTxSpeed } = useDefaultTxSpeed({ chainId });
   const {
@@ -249,7 +265,7 @@ export function TransactionFee({
       setCustomMaxPriorityFee={setCustomMaxPriorityFee}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
-      flashbotsEnabled={false}
+      flashbotsEnabled={!!flashbotsEnabled}
     />
   );
 }
@@ -315,7 +331,7 @@ export function SwapFee({
       setCustomMaxPriorityFee={setCustomMaxPriorityFee}
       currentBaseFee={currentBaseFee}
       baseFeeTrend={baseFeeTrend}
-      flashbotsEnabled={false}
+      flashbotsEnabled={!!flashbotsEnabled}
       speedMenuMarginRight={speedMenuMarginRight}
     />
   );

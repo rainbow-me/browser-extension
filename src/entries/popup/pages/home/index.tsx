@@ -20,6 +20,7 @@ import { AccountName } from '../../components/AccountName/AccountName';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useCurrentHomeSheet } from '../../hooks/useCurrentHomeSheet';
+import { useHomeShortcuts } from '../../hooks/useHomeShortcuts';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { MainLayout } from '../../layouts/MainLayout';
@@ -29,7 +30,7 @@ import { ROUTES } from '../../urls';
 import { Activity } from './Activity';
 import { Header } from './Header';
 import { MoreMenu } from './MoreMenu';
-import { NetworkMenu } from './NetworkMenu';
+import { AppConnection } from './NetworkMenu';
 import { TabBar as TabBar_ } from './TabBar';
 import { Tokens } from './Tokens';
 
@@ -90,6 +91,8 @@ export function Home() {
     analytics.track(event.walletViewed);
   }, []);
 
+  useHomeShortcuts();
+
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>
       {({ className, style }) => (
@@ -130,7 +133,7 @@ function TopNav() {
       topOffset={0}
     >
       <Navbar
-        leftComponent={<NetworkMenu />}
+        leftComponent={<AppConnection />}
         rightComponent={
           <MoreMenu>
             <Navbar.SymbolButton

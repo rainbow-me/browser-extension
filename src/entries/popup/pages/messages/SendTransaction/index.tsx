@@ -9,9 +9,15 @@ import { event } from '~/analytics/event';
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { NATIVE_ASSETS_PER_CHAIN } from '~/core/references';
+import { useGasStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { ProviderRequestPayload } from '~/core/transports/providerRequestTransport';
 import { ChainId } from '~/core/types/chains';
+import {
+  TransactionGasParams,
+  TransactionLegacyGasParams,
+} from '~/core/types/gas';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Row, Rows } from '~/design-system';
@@ -49,11 +55,13 @@ export function SendTransaction({
     url: request?.meta?.sender?.url,
   });
   const { appSession } = useAppSession({ host: appHost });
+  const { selectedGas } = useGasStore();
   const selectedWallet = appSession.address;
   const { connectedToHardhat } = useConnectedToHardhatStore();
   const { asset, selectAssetAddress } = useSendAsset();
   const { watchedWallets } = useWallets();
   const { triggerAlert } = useAlert();
+  const { featureFlags } = useFeatureFlagsStore();
 
   const onAcceptRequest = useCallback(async () => {
     if (!config.tx_requests_enabled) return;
@@ -76,7 +84,7 @@ export function SendTransaction({
       const result = await wallet.sendTransaction(txData);
       if (result) {
         const transaction = {
-          amount: formatEther(result.value),
+          amount: formatEther(result?.value || ''),
           asset,
           data: result.data,
           value: result.value,
@@ -87,6 +95,15 @@ export function SendTransaction({
           nonce: result.nonce,
           status: TransactionStatus.sending,
           type: TransactionType.send,
+          gasPrice: (
+            selectedGas.transactionGasParams as TransactionLegacyGasParams
+          )?.gasPrice,
+          maxFeePerGas: (
+            selectedGas.transactionGasParams as TransactionGasParams
+          )?.maxFeePerGas,
+          maxPriorityFeePerGas: (
+            selectedGas.transactionGasParams as TransactionGasParams
+          )?.maxPriorityFeePerGas,
         };
         await addNewTransaction({
           address: txData.from as Address,
@@ -115,6 +132,7 @@ export function SendTransaction({
     asset,
     connectedToHardhat,
     request?.params,
+    selectedGas.transactionGasParams,
     selectedWallet,
   ]);
 
@@ -133,13 +151,18 @@ export function SendTransaction({
   }, [selectedWallet, watchedWallets]);
 
   useEffect(() => {
-    if (isWatchingWallet) {
+    if (!featureFlags.full_watching_wallets && isWatchingWallet) {
       triggerAlert({
         text: i18n.t('alert.wallet_watching_mode'),
         callback: rejectRequest,
       });
     }
-  }, [isWatchingWallet, rejectRequest, triggerAlert]);
+  }, [
+    featureFlags.full_watching_wallets,
+    isWatchingWallet,
+    rejectRequest,
+    triggerAlert,
+  ]);
 
   useEffect(() => {
     selectAssetAddress(

@@ -3,23 +3,26 @@ import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import SeedPhraseTable from '~/entries/popup/components/SeedPhraseTable/SeedPhraseTable';
+import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import ViewSecret from '~/entries/popup/components/ViewSecret/ViewSecret';
 import { exportWallet } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
-import { useToast } from '~/entries/popup/hooks/useToast';
 import { ROUTES } from '~/entries/popup/urls';
 
 export function RecoveryPhrase() {
   const { state } = useLocation();
   const navigate = useRainbowNavigate();
-  const { triggerToast } = useToast();
 
   const [seed, setSeed] = useState('');
 
-  const handleSavedTheseWords = useCallback(
-    () => navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS),
-    [navigate],
-  );
+  const handleSavedTheseWords = useCallback(() => {
+    navigate(
+      state?.showQuiz
+        ? ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_VERIFY
+        : ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS,
+      { state: { wallet: state?.wallet, password: state?.password } },
+    );
+  }, [navigate, state?.password, state?.showQuiz, state?.wallet]);
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(seed as string);
@@ -28,7 +31,7 @@ export function RecoveryPhrase() {
         'settings.privacy_and_security.wallets_and_keys.recovery_phrase.phrase_copied',
       ),
     });
-  }, [seed, triggerToast]);
+  }, [seed]);
 
   useEffect(() => {
     const fetchRecoveryPhrase = async () => {
@@ -36,14 +39,16 @@ export function RecoveryPhrase() {
         state?.wallet?.accounts?.[0],
         state?.password,
       );
-      setSeed(recoveryPhrase);
+      if (recoveryPhrase) {
+        setSeed(recoveryPhrase);
+      }
     };
     fetchRecoveryPhrase();
   }, [state]);
 
   return (
     <ViewSecret
-      titleSymbol="key.fill"
+      titleSymbol="doc.plaintext"
       title={i18n.t(
         'settings.privacy_and_security.wallets_and_keys.recovery_phrase.title',
       )}

@@ -127,7 +127,7 @@ export function WalletDetails() {
   const handleViewRecoveryPhrase = useCallback(() => {
     navigate(
       ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
-      { state: { wallet, password: state?.password } },
+      { state: { wallet, password: state?.password, showQuiz: false } },
     );
   }, [navigate, state?.password, wallet]);
 
@@ -340,11 +340,7 @@ const WalletRow = ({
   } as unknown as typeof InfoButtonOptions;
 
   return (
-    <Lens
-      style={{ borderRadius: 15 }}
-      onKeyDown={() => setMenuOpen(true)}
-      onClick={() => setMenuOpen(true)}
-    >
+    <Lens style={{ borderRadius: 15 }} onKeyDown={() => setMenuOpen(true)}>
       <AccountItem
         key={account}
         account={account}
@@ -361,6 +357,7 @@ const WalletRow = ({
               controlled
               open={menuOpen}
               onClose={() => setMenuOpen(false)}
+              onOpen={() => setMenuOpen(true)}
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               options={InfoButtonOptions(opts)}

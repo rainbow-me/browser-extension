@@ -116,6 +116,7 @@ export function WalletsAndKeys() {
         state: {
           wallet,
           password: state?.password,
+          showQuiz: true,
         },
       },
     );
