@@ -28,9 +28,9 @@ export function ImportWalletSelectionEdit({
   const navigate = useRainbowNavigate();
   const { state } = useLocation();
   const [accountsIgnored, setAccountsIgnored] = useState<Address[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isAddingWallets, setIsAddingWallets] = useState(false);
   const { setCurrentAddress } = useCurrentAddressStore();
-  const { isLoading: walletsSummaryIsLoading, walletsSummary } =
+  const { isLoading: walletsSummaryisAddingWallets, walletsSummary } =
     useWalletsSummary({
       addresses: state.accountsToImport,
     });
@@ -63,9 +63,9 @@ export function ImportWalletSelectionEdit({
   );
 
   const handleAddWallets = useCallback(async () => {
-    if (isLoading) return;
+    if (isAddingWallets) return;
     if (selectedAccounts === 0) return;
-    setIsLoading(true);
+    setIsAddingWallets(true);
     let defaultAccountChosen = false;
     // Import all the secrets
     for (let i = 0; i < state.secrets.length; i++) {
@@ -87,7 +87,7 @@ export function ImportWalletSelectionEdit({
     onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
   }, [
     accountsIgnored,
-    isLoading,
+    isAddingWallets,
     onboarding,
     navigate,
     selectedAccounts,
@@ -97,19 +97,19 @@ export function ImportWalletSelectionEdit({
 
   const toggleAccount = useCallback(
     (address: Address) => {
-      if (isLoading) return;
+      if (isAddingWallets) return;
       if (accountsIgnored.includes(address)) {
         setAccountsIgnored(accountsIgnored.filter((a) => a !== address));
       } else {
         setAccountsIgnored([...accountsIgnored, address]);
       }
     },
-    [accountsIgnored, isLoading],
+    [accountsIgnored, isAddingWallets],
   );
 
   return (
     <Box alignItems="center" width="full">
-      {isLoading || walletsSummaryIsLoading ? (
+      {isAddingWallets || walletsSummaryisAddingWallets ? (
         <Box
           alignItems="center"
           justifyContent="center"
@@ -166,7 +166,7 @@ export function ImportWalletSelectionEdit({
           </Box>
         </Box>
       )}
-      {!isLoading && (
+      {!isAddingWallets && (
         <Box width="full" paddingTop="16px">
           <Button
             symbol="arrow.uturn.down.circle.fill"
