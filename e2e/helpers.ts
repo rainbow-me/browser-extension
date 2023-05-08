@@ -66,7 +66,7 @@ export async function getExtensionIdByName(driver, extensionName) {
     `);
 }
 
-export async function shortenAddress(address) {
+export function shortenAddress(address) {
   // if address is 42 in length and starts with 0x, then shorten it
   // otherwise return the base value. this is so it doesn't break incase an ens, etc is input
   return address.substring(0, 2) === '0x' && address.length === 42
@@ -76,7 +76,7 @@ export async function shortenAddress(address) {
 
 export async function switchWallet(address, rootURL, driver) {
   // find shortened address, go to popup, find header, click, find wallet you want to switch to and click
-  const shortenedAddress = await shortenAddress(address);
+  const shortenedAddress = shortenAddress(address);
 
   await goToPopup(driver, rootURL, '#/home');
   await findElementByIdAndClick({

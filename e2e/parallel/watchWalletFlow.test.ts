@@ -28,6 +28,8 @@ const watchedWallet = 'djweth.eth';
 const watchedWalletTwo = 'brdy.eth';
 const seedWallet = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
 const pkWallet = '0x38eDa688Cd8DFC6FeE8016c85803a584A0564dDC';
+const privateKey =
+  '0xaeb5635a53c33d3c0d92c32881d7613ee9fe18be77772054f5e025bc4fa8c851';
 
 describe('Watch wallet then add more and switch between them', () => {
   beforeAll(async () => {
@@ -103,7 +105,7 @@ describe('Watch wallet then add more and switch between them', () => {
     await typeOnTextInput({
       id: 'secret-textarea',
       driver,
-      text: '0xaeb5635a53c33d3c0d92c32881d7613ee9fe18be77772054f5e025bc4fa8c851',
+      text: privateKey,
     });
 
     await findElementByTestIdAndClick({
