@@ -11,6 +11,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { globalColors } from '~/design-system/styles/designTokens';
 
 import {
   DropdownMenu,
@@ -45,7 +46,7 @@ export function EditImportWalletSelection() {
         }
         rightComponent={
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger accentColor={globalColors.blue60} asChild>
               <Box>
                 <Button
                   color="surfaceSecondaryElevated"
@@ -69,7 +70,12 @@ export function EditImportWalletSelection() {
               </Box>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent sideOffset={1} align="end" marginRight="4px">
+            <DropdownMenuContent
+              accentColor={globalColors.blue60}
+              sideOffset={1}
+              align="end"
+              marginRight="4px"
+            >
               <DropdownMenuRadioGroup
                 value={sortMethod}
                 onValueChange={(method) => {
