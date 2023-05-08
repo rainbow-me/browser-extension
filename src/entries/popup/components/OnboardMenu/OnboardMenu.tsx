@@ -18,9 +18,9 @@ const OnboardMenu = ({ children }: { children: React.ReactNode }) => {
     <Box
       background="surfaceSecondaryElevated"
       borderRadius="16px"
-      paddingHorizontal="20px"
+      paddingHorizontal="16px"
     >
-      {children}
+      <Stack space="20px">{children}</Stack>
     </Box>
   );
 };
@@ -43,7 +43,7 @@ const OnboardItem = ({
   testId,
 }: OnboardItemProps) => {
   return (
-    <Box width="full" paddingVertical="20px" onClick={onClick} testId={testId}>
+    <Box width="full" onClick={onClick} testId={testId}>
       <Columns alignHorizontal="center" alignVertical="center">
         <Column>
           <Symbol
