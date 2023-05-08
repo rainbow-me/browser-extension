@@ -62,7 +62,6 @@ it('should be able import a wallet via seed', async () => {
     id: 'import-wallets-button',
     driver,
   });
-  await delayTime('medium');
   await findElementByTestIdAndClick({
     id: 'add-wallets-button',
     driver,
