@@ -58,7 +58,7 @@ describe('Import wallet flow', () => {
       id: 'import-wallets-button',
       driver,
     });
-    await delayTime('long');
+    await delayTime('medium');
     await findElementByTestIdAndClick({
       id: 'add-wallets-button',
       driver,
