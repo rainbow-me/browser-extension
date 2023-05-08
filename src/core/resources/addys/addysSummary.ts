@@ -11,12 +11,13 @@ import {
 import { SupportedCurrencyKey } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 
-type SUMMARY_SUPPORTED_CHAINS =
-  | ChainId.mainnet
-  | ChainId.optimism
-  | ChainId.polygon
-  | ChainId.arbitrum
-  | ChainId.bsc;
+enum SummarySupportedChainId {
+  mainnet = ChainId.mainnet as number,
+  optimism = ChainId.optimism as number,
+  polygon = ChainId.polygon as number,
+  arbitrum = ChainId.arbitrum as number,
+  bsc = ChainId.bsc as number,
+}
 
 export interface AddySummary {
   data: {
@@ -36,7 +37,7 @@ export interface AddySummary {
         };
       };
       summary_by_chain: {
-        [key in SUMMARY_SUPPORTED_CHAINS]: {
+        [key in keyof typeof SummarySupportedChainId]: {
           native_balance: {
             symbol: string;
             quantity: string;
