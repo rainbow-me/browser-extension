@@ -40,7 +40,7 @@ export function EditImportWalletSelection() {
         leftComponent={
           <Navbar.CloseButton
             maintainLocationState
-            backTo={ROUTES.NEW_IMPORT_WALLET_SELECTION}
+            backTo={ROUTES.IMPORT__SELECT}
           />
         }
         rightComponent={
@@ -156,7 +156,7 @@ export function EditImportWalletSelection() {
           </DropdownMenu>
         }
       />
-      <FullScreenContainer paddingTop={62}>
+      <FullScreenContainer>
         <ImportWalletSelectionEdit sortMethod={sortMethod} />
       </FullScreenContainer>
     </>

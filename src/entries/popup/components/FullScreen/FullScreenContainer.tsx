@@ -5,28 +5,27 @@ import { Box } from '~/design-system';
 
 export function FullScreenContainer({
   children,
-  paddingTop,
 }: {
   children: React.ReactNode;
-  paddingTop?: number;
 }) {
   return (
     <Box
-      borderColor="separatorSecondary"
-      borderWidth="1px"
-      background="surfaceSecondary"
+      // borderColor="separatorSecondary"
+      // borderWidth="1px"
+      // background="green"
       display="flex"
       flexDirection="column"
       alignItems="center"
       paddingHorizontal="16px"
       paddingVertical="20px"
-      position="absolute"
+      // position="absolute"
       style={{
-        paddingTop: paddingTop ?? '56px',
-        minHeight: POPUP_DIMENSIONS.height,
-        minWidth: POPUP_DIMENSIONS.width,
+        // paddingTop: paddingTop ?? '56px',
+        minHeight: POPUP_DIMENSIONS.height - 65,
+        // minWidth: POPUP_DIMENSIONS.width,
         overflowX: 'hidden',
         height: '100%',
+        // position: 'absolute',
       }}
     >
       {children}
