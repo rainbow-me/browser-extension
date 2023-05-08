@@ -20,6 +20,7 @@ import {
 } from '~/core/raps/references';
 import { gasStore } from '~/core/state';
 import { KeychainWallet } from '~/core/types/keychainTypes';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
 import { toHex } from '~/core/utils/numbers';
@@ -63,10 +64,54 @@ const signMessageByType = async (
   });
 };
 
+const checkIfNeedsTrezorPopup = async (
+  action: 'signTransaction' | 'signTypedData' | 'signMessage',
+  payload:
+    | TransactionRequest
+    | { message: string; address: string }
+    | { data: string | Bytes; address: string },
+) => {
+  // if it's a trezor request and we don't have a
+  const isExternalPopup = window.location.href.includes('tabId=');
+  const isFullScreen =
+    window.innerHeight > POPUP_DIMENSIONS.height &&
+    window.innerWidth > POPUP_DIMENSIONS.width;
+  if (!isExternalPopup && !isFullScreen) {
+    // check if we opened a popup before
+    const hwRequestPending = await chrome.storage.session.get(
+      'hwRequestPending',
+    );
+    if (hwRequestPending) {
+      return; // don't open a new popup
+    } else {
+      await chrome.windows.create({
+        url: chrome.runtime.getURL('popup.html') + '?',
+        type: 'popup',
+        height: POPUP_DIMENSIONS.height + 25,
+        width: 360,
+        top: 0,
+      });
+
+      await chrome.storage.session.set({
+        hwRequestPending: {
+          action,
+          vendor: 'Trezor',
+          payload,
+        },
+      });
+    }
+  }
+};
+
 export const signTransactionFromHW = async (
   transactionRequest: TransactionRequest,
   vendor: string,
 ): Promise<string | undefined> => {
+  const needsTrezorPopup =
+    vendor === 'Trezor' &&
+    (await checkIfNeedsTrezorPopup('signTransaction', transactionRequest));
+  if (needsTrezorPopup) return;
+
   const { selectedGas } = gasStore.getState();
   const provider = getProvider({
     chainId: transactionRequest.chainId,
@@ -161,14 +206,22 @@ export async function executeRap<T extends RapTypes>({
 export const personalSign = async (
   msgData: string | Bytes,
   address: Address,
-): Promise<string> => {
+): Promise<string | undefined> => {
   const { type, vendor } = await getWallet(address as Address);
   if (type === 'HardwareWalletKeychain') {
     switch (vendor) {
       case 'Ledger':
         return signMessageByTypeFromLedger(msgData, address, 'personal_sign');
-      case 'Trezor':
+      case 'Trezor': {
+        const needsTrezorPopup =
+          vendor === 'Trezor' &&
+          (await checkIfNeedsTrezorPopup('signMessage', {
+            message: msgData as string,
+            address: address as string,
+          }));
+        if (needsTrezorPopup) return;
         return signMessageByTypeFromTrezor(msgData, address, 'personal_sign');
+      }
       default:
         throw new Error('Unsupported hardware wallet');
     }
@@ -190,8 +243,16 @@ export const signTypedData = async (
     switch (vendor) {
       case 'Ledger':
         return signMessageByTypeFromLedger(msgData, address, 'sign_typed_data');
-      case 'Trezor':
+      case 'Trezor': {
+        const needsTrezorPopup =
+          vendor === 'Trezor' &&
+          (await checkIfNeedsTrezorPopup('signTypedData', {
+            message: msgData as string,
+            address: address as string,
+          }));
+        if (needsTrezorPopup) return;
         return signMessageByTypeFromTrezor(msgData, address, 'sign_typed_data');
+      }
       default:
         throw new Error('Unsupported hardware wallet');
     }
@@ -324,7 +385,7 @@ export const importAccountAtIndex = async (
   type: string | 'Trezor' | 'Ledger',
   index: number,
 ) => {
-  return '0x2e67869829c734ac13723A138a952F7A8B56e774';
+  // return '0x2e67869829c734ac13723A138a952F7A8B56e774';
   let address = '';
   switch (type) {
     case 'Trezor':
@@ -364,20 +425,20 @@ export const importAccountAtIndex = async (
 export const connectTrezor = async () => {
   // TODO: DELETE
   //  Debugging purposes only DELETE!!!
-  return {
-    accountsToImport: [
-      {
-        address: '0x2419EB3D5E048f50D386f6217Cd5033eBfc36b83' as Address,
-        index: 0,
-      },
-      {
-        address: '0x37bD75826582532373D738F83b913C97447b0906' as Address,
-        index: 1,
-      },
-    ],
-    deviceId: 'lol',
-    accountsEnabled: 2,
-  };
+  // return {
+  //   accountsToImport: [
+  //     {
+  //       address: '0x2419EB3D5E048f50D386f6217Cd5033eBfc36b83' as Address,
+  //       index: 0,
+  //     },
+  //     {
+  //       address: '0x37bD75826582532373D738F83b913C97447b0906' as Address,
+  //       index: 1,
+  //     },
+  //   ],
+  //   deviceId: 'lol',
+  //   accountsEnabled: 2,
+  // };
   try {
     window.TrezorConnect.init(TREZOR_CONFIG);
     const path = `m/${DEFAULT_HD_PATH}`;

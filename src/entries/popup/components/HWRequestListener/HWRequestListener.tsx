@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TransactionRequest } from '@ethersproject/providers';
 import { Bytes } from 'ethers';
+import { useEffect } from 'react';
 import { Address } from 'wagmi';
 
 import { initializeMessenger } from '~/core/messengers';
@@ -34,8 +35,23 @@ export const HWRequestListener = () => {
     return 'data' in payload && 'address' in payload;
   }
 
-  bgMessenger.reply('hwRequest', async (data: HWSigningRequest) => {
-    console.log('POPUP :: REQUEST LISTENER :: hwRequest event received', data);
+  useEffect(() => {
+    const init = async () => {
+      // check if there's a request in session
+      const data = await chrome.storage.session.get('hwRequestPending');
+      if (data) {
+        console.log('POPUP :: SESSION LISTENER :: hwRequest event found', data);
+        const response = await processHwSigningRequest(
+          data as HWSigningRequest,
+        );
+        console.log('POPUP :: SESSION LISTENER :: hwResponse ready', response);
+        bgMessenger.send('hwResponse', response);
+      }
+    };
+    init();
+  });
+
+  const processHwSigningRequest = async (data: HWSigningRequest) => {
     let response;
     switch (data.action) {
       case 'signTransaction':
@@ -61,6 +77,12 @@ export const HWRequestListener = () => {
         }
         break;
     }
+    return response;
+  };
+
+  bgMessenger.reply('hwRequest', async (data: HWSigningRequest) => {
+    console.log('POPUP :: REQUEST LISTENER :: hwRequest event received', data);
+    const response = await processHwSigningRequest(data);
     console.log('POPUP :: REQUEST LISTENER :: hwResponse ready', response);
     bgMessenger.send('hwResponse', response);
   });
