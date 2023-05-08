@@ -11,6 +11,13 @@ import {
 import { SupportedCurrencyKey } from '~/core/references';
 import { ChainId } from '~/core/types/chains';
 
+type SUMMARY_SUPPORTED_CHAINS =
+  | ChainId.mainnet
+  | ChainId.optimism
+  | ChainId.polygon
+  | ChainId.arbitrum
+  | ChainId.bsc;
+
 export interface AddySummary {
   data: {
     addresses: {
@@ -29,12 +36,7 @@ export interface AddySummary {
         };
       };
       summary_by_chain: {
-        [key in
-          | ChainId.mainnet
-          | ChainId.optimism
-          | ChainId.polygon
-          | ChainId.arbitrum
-          | ChainId.bsc]: {
+        [key in SUMMARY_SUPPORTED_CHAINS]: {
           native_balance: {
             symbol: string;
             quantity: string;
