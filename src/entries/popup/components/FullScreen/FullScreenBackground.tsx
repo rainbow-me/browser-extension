@@ -50,7 +50,6 @@ export function FullScreenBackground({
         borderRadius="32px"
         background="surfaceSecondary"
         borderColor="separatorSecondary"
-        borderWidth="1px"
         style={{
           width: POPUP_DIMENSIONS.width,
           height: POPUP_DIMENSIONS.height,
