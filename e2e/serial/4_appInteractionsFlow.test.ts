@@ -97,6 +97,7 @@ describe('App interactions flow', () => {
       id: 'import-wallets-button',
       driver,
     });
+    await delayTime('medium');
     await findElementByTestIdAndClick({
       id: 'add-wallets-button',
       driver,
