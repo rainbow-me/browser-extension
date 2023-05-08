@@ -1,7 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import { motion, useScroll, useTransform } from 'framer-motion';
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
 import config from '~/core/firebase/remoteConfig';
@@ -14,6 +13,7 @@ import { BoxStyles, TextStyles } from '~/design-system/styles/core.css';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
+import { Link } from '../../components/Link/Link';
 import { triggerToast } from '../../components/Toast/Toast';
 import { useAlert } from '../../hooks/useAlert';
 import { useAvatar } from '../../hooks/useAvatar';
@@ -125,7 +125,6 @@ function ActionButtonsSection() {
       {avatar?.color && (
         <Inline space="12px">
           <ActionButton
-            cursor="copy"
             symbol="square.on.square"
             text={i18n.t('wallet_header.copy')}
             onClick={handleCopy}
