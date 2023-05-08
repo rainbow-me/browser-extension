@@ -19,16 +19,19 @@ import { ROUTES } from '../../urls';
 import { AccountToImportRows } from './AccountToImportRows';
 
 export function ImportWalletSelectionEdit({
+  isAddingWallets,
   onboarding = false,
   sortMethod,
+  setIsAddingWallets,
 }: {
+  isAddingWallets: boolean;
   onboarding?: boolean;
   sortMethod?: WalletsSortMethod;
+  setIsAddingWallets: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const navigate = useRainbowNavigate();
   const { state } = useLocation();
   const [accountsIgnored, setAccountsIgnored] = useState<Address[]>([]);
-  const [isAddingWallets, setIsAddingWallets] = useState(false);
   const { setCurrentAddress } = useCurrentAddressStore();
   const { isLoading: walletsSummaryisAddingWallets, walletsSummary } =
     useWalletsSummary({
@@ -86,13 +89,14 @@ export function ImportWalletSelectionEdit({
 
     onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
   }, [
-    accountsIgnored,
     isAddingWallets,
+    selectedAccounts,
+    setIsAddingWallets,
     onboarding,
     navigate,
-    selectedAccounts,
-    setCurrentAddress,
     state.secrets,
+    accountsIgnored,
+    setCurrentAddress,
   ]);
 
   const toggleAccount = useCallback(

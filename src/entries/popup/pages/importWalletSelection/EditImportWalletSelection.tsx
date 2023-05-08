@@ -13,15 +13,22 @@ export type WalletsSortMethod =
 
 export function EditImportWalletSelection() {
   const [sortMethod, setSortMethod] = useState<WalletsSortMethod>('default');
+  const [isAddingWallets, setIsAddingWallets] = useState(false);
+
   return (
     <>
       <ImportWalletEditNavbar
+        isAddingWallets={isAddingWallets}
         accentColor={globalColors.blue60}
         sortMethod={sortMethod}
         setSortMethod={setSortMethod}
       />
       <FullScreenContainer>
-        <ImportWalletSelectionEdit sortMethod={sortMethod} />
+        <ImportWalletSelectionEdit
+          isAddingWallets={isAddingWallets}
+          sortMethod={sortMethod}
+          setIsAddingWallets={setIsAddingWallets}
+        />
       </FullScreenContainer>
     </>
   );
