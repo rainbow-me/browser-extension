@@ -15,6 +15,8 @@ import {
   NAVBAR_RIGHT_COMPONENT_ID,
 } from '../../utils/clickHeader';
 
+export const NAVBAR_HEIGHT = 65;
+
 type NavbarProps = {
   leftComponent?: React.ReactElement;
   rightComponent?: React.ReactElement;
@@ -40,7 +42,7 @@ export function Navbar({
       width="full"
       position="relative"
       background={background ?? undefined}
-      style={{ height: 65, zIndex: zIndexes.NAVBAR }}
+      style={{ height: NAVBAR_HEIGHT, zIndex: zIndexes.NAVBAR }}
     >
       {leftComponent && (
         <Box
