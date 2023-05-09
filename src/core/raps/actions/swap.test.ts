@@ -50,7 +50,7 @@ test('[rap/swap] :: should execute swap', async () => {
     chainId: chain.mainnet.id,
     gasLimit: '600000',
     gasParams: {
-      maxFeePerGas: '200000000000',
+      maxFeePerGas: '800000000000',
       maxPriorityFeePerGas: '2000000000',
     },
     quote: quote as Quote,
