@@ -9,7 +9,6 @@ import {
   Droppable,
   NotDraggingStyle,
 } from 'react-beautiful-dnd';
-import { Link } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -36,6 +35,7 @@ import AccountItem, {
   LabelOption,
 } from '../../components/AccountItem/AccountItem';
 import { LabelPill } from '../../components/LabelPill/LabelPill';
+import { Link } from '../../components/Link/Link';
 import { MenuContainer } from '../../components/Menu/MenuContainer';
 import {
   MoreInfoButton,
@@ -44,6 +44,7 @@ import {
 import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
 import { triggerToast } from '../../components/Toast/Toast';
 import { getWallet, remove, wipe } from '../../handlers/wallet';
+import { useAccounts } from '../../hooks/useAccounts';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { AddressAndType, useWallets } from '../../hooks/useWallets';
@@ -163,20 +164,6 @@ interface WalletSearchData extends AddressAndType {
   ensName?: string;
 }
 
-const searchWallets = <T extends WalletSearchData[]>(
-  wallets: T,
-  searchQuery: string,
-) => {
-  if (!searchQuery) return wallets;
-  const search = searchQuery.toLowerCase();
-  return wallets.filter(
-    ({ address, walletName, ensName }) =>
-      address.toLowerCase().includes(search) ||
-      walletName?.toLowerCase().includes(search) ||
-      ensName?.toLowerCase().includes(search),
-  ) as T;
-};
-
 export function WalletSwitcher() {
   const [renameAccount, setRenameAccount] = useState<Address | undefined>();
   const [removeAccount, setRemoveAccount] = useState<
@@ -244,25 +231,13 @@ export function WalletSwitcher() {
       navigate,
     ],
   );
-  const { walletNames } = useWalletNamesStore();
 
   const isSearching = !!searchQuery;
 
-  const { walletOrder, saveWalletOrder } = useWalletOrderStore();
-  const sortedAccounts = useMemo(
-    () =>
-      walletOrder
-        .map((address) => {
-          const account = accounts.find((a) => address === a.address);
-          return account && { ...account, walletName: walletNames[address] };
-        })
-        .filter(Boolean),
-    [accounts, walletNames, walletOrder],
-  );
-  const filteredAndSortedAccounts = useMemo(
-    () => searchWallets(sortedAccounts, searchQuery),
-    [sortedAccounts, searchQuery],
-  );
+  const { saveWalletOrder } = useWalletOrderStore();
+
+  const { filteredAndSortedAccounts, sortedAccounts } =
+    useAccounts(searchQuery);
 
   const displayedAccounts = useMemo(
     () =>
