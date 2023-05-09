@@ -172,7 +172,7 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
           width="full"
           style={{
             overflow: 'auto',
-            height: '375px',
+            height: '364px',
           }}
         >
           <Stack space="10px">
@@ -275,12 +275,7 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
         </Box>
       </Stack>
 
-      <Box
-        width="full"
-        paddingTop="10px"
-        paddingBottom="20px"
-        paddingHorizontal="4px"
-      >
+      <Box width="full" paddingTop="10px" paddingBottom="20px">
         <Button
           symbol="arrow.uturn.down.circle.fill"
           symbolSide="left"
