@@ -51,8 +51,8 @@ const SELECTED_GAS = {
   },
   option: GasSpeed.NORMAL,
   transactionGasParams: {
-    maxPriorityFeePerGas: '0x3b9aca00',
-    maxFeePerGas: '0x1422542310',
+    maxPriorityFeePerGas: '0xb2d05e00',
+    maxFeePerGas: '0xba43b74000',
   },
 };
 
