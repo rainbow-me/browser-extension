@@ -145,4 +145,10 @@ export const shortcuts = {
       key: 'v',
     },
   },
+  transaction_request: {
+    CANCEL: {
+      display: 'Esc',
+      key: 'Escape',
+    },
+  },
 };
