@@ -48,56 +48,48 @@ export function SeedReveal() {
 
   return (
     <FullScreenContainer>
-      <Box height="full">
-        <Rows alignHorizontal="center" alignVertical="justify">
-          <Row height="content">
-            <Rows alignHorizontal="center" space="24px">
-              <Row>
-                <Stack space="12px">
-                  <Inline
-                    wrap={false}
-                    alignVertical="center"
-                    alignHorizontal="center"
-                    space="5px"
-                  >
-                    <Symbol
-                      symbol="doc.plaintext"
-                      size={16}
-                      color="orange"
-                      weight={'bold'}
-                    />
-                    <Text
-                      size="16pt"
-                      weight="bold"
-                      color="label"
-                      align="center"
-                    >
-                      {i18n.t('seed_reveal.title')}
-                    </Text>
-                  </Inline>
-                  <Text
-                    size="12pt"
-                    weight="regular"
-                    color="labelTertiary"
-                    align="center"
-                  >
-                    {i18n.t('seed_reveal.write_down_seed_importance')}
+      <Rows alignVertical="justify">
+        <Row height="content">
+          <Rows alignHorizontal="center" space="24px">
+            <Row>
+              <Stack space="12px">
+                <Inline
+                  wrap={false}
+                  alignVertical="center"
+                  alignHorizontal="center"
+                  space="5px"
+                >
+                  <Symbol
+                    symbol="doc.plaintext"
+                    size={16}
+                    color="orange"
+                    weight={'bold'}
+                  />
+                  <Text size="16pt" weight="bold" color="label" align="center">
+                    {i18n.t('seed_reveal.title')}
                   </Text>
-                </Stack>
-              </Row>
+                </Inline>
+                <Text
+                  size="12pt"
+                  weight="regular"
+                  color="labelTertiary"
+                  align="center"
+                >
+                  {i18n.t('seed_reveal.write_down_seed_importance')}
+                </Text>
+              </Stack>
+            </Row>
 
-              <Row>
-                <Box width="full" style={{ width: '106px' }}>
-                  <Separator color="separatorTertiary" strokeWeight="1px" />
-                </Box>
-              </Row>
-            </Rows>
-          </Row>
-          <Row>
-            <Box paddingTop="36px">
-              <Stack space="10px">
+            <Row>
+              <Box width="full" style={{ width: '106px' }}>
+                <Separator color="separatorTertiary" strokeWeight="1px" />
+              </Box>
+            </Row>
+            <Row height="content">
+              <Stack space="10px" alignHorizontal="center">
                 <SeedPhraseTable seed={seed} />
-                <Box>
+
+                <Box width="full">
                   <Button
                     color="accent"
                     height="44px"
@@ -110,26 +102,27 @@ export function SeedReveal() {
                   </Button>
                 </Box>
               </Stack>
-            </Box>
-          </Row>
-          <Row height="content">
-            <Box>
-              <Button
-                color="accent"
-                height="44px"
-                variant="flat"
-                width="full"
-                symbol="checkmark.circle.fill"
-                blur="26px"
-                onClick={handleSavedTheseWords}
-                testId="saved-these-words-button"
-              >
-                {i18n.t('seed_reveal.saved_these_words')}
-              </Button>
-            </Box>
-          </Row>
-        </Rows>
-      </Box>
+            </Row>
+          </Rows>
+        </Row>
+
+        <Row height="content">
+          <Box paddingBottom="20px" paddingTop="10px" width="full">
+            <Button
+              color="accent"
+              height="44px"
+              variant="flat"
+              width="full"
+              symbol="checkmark.circle.fill"
+              blur="26px"
+              onClick={handleSavedTheseWords}
+              testId="saved-these-words-button"
+            >
+              {i18n.t('seed_reveal.saved_these_words')}
+            </Button>
+          </Box>
+        </Row>
+      </Rows>
     </FullScreenContainer>
   );
 }
