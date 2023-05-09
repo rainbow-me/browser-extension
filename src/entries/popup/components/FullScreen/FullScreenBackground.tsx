@@ -19,14 +19,20 @@ export function FullScreenBackground({
       position="absolute"
       display="flex"
       width="full"
+      height="full"
       alignItems="center"
       justifyContent="center"
       flexDirection="column"
-      height="full"
       background="surfacePrimary"
+      style={{
+        width: '100vw',
+        height: '100vh',
+      }}
     >
       <Blur />
       <Box
+        width="full"
+        height="full"
         style={{
           position: 'absolute',
           top: '0px',
@@ -42,6 +48,8 @@ export function FullScreenBackground({
       />
       <Box
         borderRadius="32px"
+        background="surfaceSecondary"
+        borderColor="separatorSecondary"
         style={{
           width: POPUP_DIMENSIONS.width,
           height: POPUP_DIMENSIONS.height,

@@ -6,23 +6,16 @@ import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
-import {
-  Box,
-  Button,
-  Inline,
-  Row,
-  Rows,
-  Separator,
-  Text,
-} from '~/design-system';
+import { Box, Button, Inline, Rows, Separator, Text } from '~/design-system';
 
 import { deriveAccountsFromSecret } from '../../handlers/wallet';
 import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useWalletsSummary } from '../../hooks/useWalletsSummary';
 import { ROUTES } from '../../urls';
-import { AddressOrEns } from '../AddressOrEns/AddressorEns';
 import { Spinner } from '../Spinner/Spinner';
-import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
+
+import { AccountToImportRows } from './AccountToImportRows';
 
 const ImportWalletSelection = ({
   onboarding = false,
@@ -33,7 +26,13 @@ const ImportWalletSelection = ({
   const { state } = useLocation();
   const [isImporting, setIsImporting] = useState(false);
   const { setCurrentAddress } = useCurrentAddressStore();
-  const [accountsToImport, setAccountsToImport] = useState<string[]>([]);
+  const [accountsToImport, setAccountsToImport] = useState<Address[]>([]);
+
+  const { isLoading: walletsSummaryIsLoading, walletsSummary } =
+    useWalletsSummary({
+      addresses: accountsToImport,
+    });
+
   useEffect(() => {
     const init = async () => {
       let addresses: Address[] = [];
@@ -106,7 +105,7 @@ const ImportWalletSelection = ({
       <Box width="full" style={{ width: '106px' }} paddingBottom="28px">
         <Separator color="separatorTertiary" strokeWeight="1px" />
       </Box>
-      {!accountsToImport.length || isImporting ? (
+      {!accountsToImport.length || isImporting || walletsSummaryIsLoading ? (
         <Box
           alignItems="center"
           justifyContent="center"
@@ -152,44 +151,11 @@ const ImportWalletSelection = ({
               paddingBottom="10px"
               boxShadow="12px surfaceSecondaryElevated"
             >
-              <Rows space="6px">
-                {accountsToImport.map((address, index) => (
-                  <Row key={`avatar_${address}`}>
-                    <Rows>
-                      <Row>
-                        <Inline
-                          space="8px"
-                          alignHorizontal="left"
-                          alignVertical="center"
-                        >
-                          <WalletAvatar
-                            address={address as Address}
-                            size={32}
-                            emojiSize={'16pt'}
-                          />
-
-                          <AddressOrEns
-                            size="14pt"
-                            weight="bold"
-                            color="label"
-                            address={address as Address}
-                          />
-                        </Inline>
-                      </Row>
-                      <Row>
-                        {index !== accountsToImport.length - 1 ? (
-                          <Box width="full" paddingTop="6px">
-                            <Separator
-                              color="separatorTertiary"
-                              strokeWeight="1px"
-                            />
-                          </Box>
-                        ) : null}
-                      </Row>
-                    </Rows>
-                  </Row>
-                ))}
-              </Rows>
+              <AccountToImportRows
+                accountsIgnored={[]}
+                accountsToImport={accountsToImport}
+                walletsSummary={walletsSummary}
+              />
             </Box>
           </Box>
 
