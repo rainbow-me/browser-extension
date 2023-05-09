@@ -73,6 +73,7 @@ const getItemStyle = (
   draggableStyle: DraggingStyle | NotDraggingStyle | undefined,
 ) => ({
   ...draggableStyle,
+  cursor: isDragging ? 'grabbing' : 'default',
 });
 
 const infoButtonOptions = ({
