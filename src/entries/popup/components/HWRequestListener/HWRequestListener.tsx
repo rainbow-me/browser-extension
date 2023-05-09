@@ -37,15 +37,34 @@ export const HWRequestListener = () => {
 
   useEffect(() => {
     const init = async () => {
-      // check if there's a request in session
-      const data = await chrome.storage.session.get('hwRequestPending');
-      if (data) {
-        console.log('POPUP :: SESSION LISTENER :: hwRequest event found', data);
-        const response = await processHwSigningRequest(
-          data as HWSigningRequest,
-        );
-        console.log('POPUP :: SESSION LISTENER :: hwResponse ready', response);
-        bgMessenger.send('hwResponse', response);
+      const isExternalPopup = window.location.href.includes('tabId=');
+      if (!isExternalPopup) return;
+      try {
+        // check if there's a request in session
+        const data = await chrome.storage.session.get('hwRequestPending');
+        console.log('checked in session and found', data);
+        if (data.hwRequestPending && data.hwRequestPending.payload) {
+          console.log(
+            'POPUP :: SESSION LISTENER :: hwRequest event found',
+            data.hwRequestPending,
+          );
+          const response = await processHwSigningRequest(
+            data.hwRequestPending as HWSigningRequest,
+          );
+          console.log(
+            'POPUP :: SESSION LISTENER :: hwResponse ready',
+            response,
+          );
+          if (response) {
+            bgMessenger.send('hwResponse', response);
+            chrome.storage.session.remove('hwRequestPending');
+          }
+        }
+
+        // TODO - Redirect to success page
+      } catch (e: any) {
+        console.log('POPUP :: SESSION LISTENER :: error', e);
+        alert('check logs');
       }
     };
     init();
@@ -84,7 +103,9 @@ export const HWRequestListener = () => {
     console.log('POPUP :: REQUEST LISTENER :: hwRequest event received', data);
     const response = await processHwSigningRequest(data);
     console.log('POPUP :: REQUEST LISTENER :: hwResponse ready', response);
-    bgMessenger.send('hwResponse', response);
+    if (response) {
+      bgMessenger.send('hwResponse', response);
+    }
   });
   return null;
 };

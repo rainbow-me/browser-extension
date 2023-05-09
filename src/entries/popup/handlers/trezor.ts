@@ -40,7 +40,8 @@ export async function signTransactionFromTrezor(
       gasLimit: transaction.gasLimit || undefined,
       nonce: ethers.BigNumber.from(transaction.nonce).toNumber(),
       to: transaction.to || undefined,
-      value: transaction.value || undefined,
+      value:
+        ethers.BigNumber.from(transaction.value).toHexString() || undefined,
     };
 
     if (transaction.gasPrice) {
@@ -51,7 +52,8 @@ export async function signTransactionFromTrezor(
     }
 
     const nonceHex = ethers.BigNumber.from(transaction.nonce).toHexString();
-
+    console.log('path', path);
+    console.log('baseTx', baseTx);
     const response = await window.TrezorConnect.ethereumSignTransaction({
       path,
       transaction: {
@@ -61,7 +63,7 @@ export async function signTransactionFromTrezor(
     });
 
     if (response.success) {
-      baseTx.type = baseTx.gasPrice ? 1 : 2;
+      // baseTx.type = baseTx.gasPrice ? 1 : 2;
       const serializedTransaction = ethers.utils.serializeTransaction(baseTx, {
         r: response.payload.r,
         s: response.payload.s,
@@ -70,6 +72,9 @@ export async function signTransactionFromTrezor(
 
       const parsedTx = ethers.utils.parseTransaction(serializedTransaction);
       if (parsedTx.from?.toLowerCase() !== address?.toLowerCase()) {
+        console.log('parsedTx.from', parsedTx.from?.toLowerCase());
+        console.log('address.from', address?.toLowerCase());
+        console.log('parsedTx', parsedTx);
         throw new Error('Transaction was not signed by the right address');
       }
 

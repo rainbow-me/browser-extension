@@ -1,39 +1,18 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
-import ledgerDevice from 'static/assets/hw/ledger-device.png';
+import trezorDevice from 'static/assets/hw/trezor-device.png';
 import { i18n } from '~/core/languages';
 import { Box, Separator, Text } from '~/design-system';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
-import * as wallet from '../../handlers/wallet';
-import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { ROUTES } from '../../urls';
 
-export function ConnectLedger() {
-  const navigate = useRainbowNavigate();
-  useEffect(() => {
-    setTimeout(async () => {
-      console.log('calling...');
-      const res = await wallet.connectLedger();
-      console.log('connect to ledger res', res);
-      if (res?.accountsToImport?.length) {
-        navigate(ROUTES.HW_WALLET_LIST, {
-          state: {
-            ...res,
-            vendor: 'Ledger',
-          },
-        });
-      }
-    }, 1500);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+export function LoadingTrezor() {
   return (
     <FullScreenContainer>
       <Box alignItems="center" paddingBottom="10px">
         <Text size="16pt" weight="bold" color="label" align="center">
-          {i18n.t('hw.connect_ledger_title')}
+          {i18n.t('hw.connect_trezor_title')}
         </Text>
         <Box padding="16px" paddingTop="10px">
           <Text
@@ -42,7 +21,7 @@ export function ConnectLedger() {
             color="labelTertiary"
             align="center"
           >
-            {i18n.t('hw.connect_ledger_description')}
+            {i18n.t('hw.connect_trezor_description')}
             <a
               href="https://learn.rainbow.me/"
               target="_blank"
@@ -64,7 +43,7 @@ export function ConnectLedger() {
         justifyContent="center"
         display="flex"
       >
-        <img src={ledgerDevice} width="130" />
+        <img src={trezorDevice} width="160" />
       </Box>
     </FullScreenContainer>
   );

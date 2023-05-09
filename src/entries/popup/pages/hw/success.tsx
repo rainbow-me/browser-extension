@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { POPUP_URL, goToNewTab } from '~/core/utils/tabs';
 import {
   Box,
   Button,
@@ -15,6 +16,8 @@ import {
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
+import { useAuth } from '../../hooks/useAuth';
+import { useIsFullScreen } from '../../hooks/useIsFullScreen';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -98,8 +101,11 @@ const PyramidAvatar = ({ accounts }: { accounts: Address[] }) => {
 
 export function SuccessHW() {
   const navigate = useRainbowNavigate();
+  const isFullScreen = useIsFullScreen();
   const { state } = useLocation();
   const { accounts } = state;
+
+  const { status } = useAuth();
   // Only for testing purposes, to confirm the pyramid logic works fine.
 
   //   const accounts = [
@@ -124,11 +130,21 @@ export function SuccessHW() {
   //   ] as Address[];
 
   const goHome = useCallback(() => {
-    navigate(ROUTES.HOME);
-    setTimeout(() => {
-      navigate(ROUTES.WALLET_SWITCHER);
-    }, 300);
-  }, [navigate]);
+    if (status === 'NEEDS_PASSWORD') {
+      if (!isFullScreen) {
+        goToNewTab({
+          url: POPUP_URL + `#${ROUTES.CREATE_PASSWORD}`,
+        });
+      } else {
+        navigate(ROUTES.CREATE_PASSWORD);
+      }
+    } else {
+      navigate(ROUTES.HOME);
+      setTimeout(() => {
+        navigate(ROUTES.WALLET_SWITCHER);
+      }, 300);
+    }
+  }, [isFullScreen, navigate, status]);
 
   return (
     <FullScreenContainer>

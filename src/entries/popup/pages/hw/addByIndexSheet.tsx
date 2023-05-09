@@ -356,13 +356,12 @@ export const AddByIndexSheet = ({
               </Box>
               {!newAccount && <Box style={{ height: '64px', width: '100%' }} />}
             </Box>
-
             <Box width="full" paddingTop="20px">
               <Button
                 symbol="return.left"
                 symbolSide="left"
                 width="full"
-                color="accent"
+                color={newAccount ? 'accent' : 'labelQuaternary'}
                 height="44px"
                 variant={newAccount ? 'flat' : 'disabled'}
                 disabled={!newAccount}

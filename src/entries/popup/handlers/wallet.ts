@@ -28,7 +28,10 @@ import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
 import { toHex } from '~/core/utils/numbers';
+import { POPUP_URL } from '~/core/utils/tabs';
 import { getNextNonce } from '~/core/utils/transactions';
+
+import { ROUTES } from '../urls';
 
 import {
   sendTransactionFromLedger,
@@ -80,22 +83,19 @@ const checkIfNeedsTrezorPopup = async (
   const isFullScreen =
     window.innerHeight > POPUP_DIMENSIONS.height &&
     window.innerWidth > POPUP_DIMENSIONS.width;
+  console.log('CHECKING IF NEEDS TREZOR POPUP', {
+    isExternalPopup,
+    isFullScreen,
+  });
   if (!isExternalPopup && !isFullScreen) {
     // check if we opened a popup before
     const hwRequestPending = await chrome.storage.session.get(
       'hwRequestPending',
     );
-    if (hwRequestPending) {
-      return; // don't open a new popup
+    if (hwRequestPending && hwRequestPending.payload) {
+      console.log('HAS REQUEST PENDING', hwRequestPending);
+      return false; // don't open a new popup
     } else {
-      await chrome.windows.create({
-        url: chrome.runtime.getURL('popup.html') + '?',
-        type: 'popup',
-        height: POPUP_DIMENSIONS.height + 25,
-        width: 360,
-        top: 0,
-      });
-
       await chrome.storage.session.set({
         hwRequestPending: {
           action,
@@ -103,8 +103,17 @@ const checkIfNeedsTrezorPopup = async (
           payload,
         },
       });
+      await chrome.windows.create({
+        url: POPUP_URL + `?tabId=trezor#${ROUTES.HW_TREZOR_LOADING}`,
+        type: 'popup',
+        height: POPUP_DIMENSIONS.height + 25,
+        width: 360,
+        top: 0,
+      });
+      return true;
     }
   }
+  return false;
 };
 
 export const signTransactionFromHW = async (
@@ -138,9 +147,12 @@ export const signTransactionFromHW = async (
     nonce,
   };
 
+  console.log('signTransactionFromHW', vendor, params);
+
   if (vendor === 'Ledger') {
     return signTransactionFromLedger(params);
   } else if (vendor === 'Trezor') {
+    console.log('should open trezor popup');
     return signTransactionFromTrezor(params);
   }
 };
@@ -232,13 +244,13 @@ export const personalSign = async (
       case 'Ledger':
         return signMessageByTypeFromLedger(msgData, address, 'personal_sign');
       case 'Trezor': {
-        const needsTrezorPopup =
-          vendor === 'Trezor' &&
-          (await checkIfNeedsTrezorPopup('signMessage', {
-            message: msgData as string,
-            address: address as string,
-          }));
-        if (needsTrezorPopup) return;
+        // const needsTrezorPopup =
+        //   vendor === 'Trezor' &&
+        //   (await checkIfNeedsTrezorPopup('signMessage', {
+        //     message: msgData as string,
+        //     address: address as string,
+        //   }));
+        // if (needsTrezorPopup) return;
         return signMessageByTypeFromTrezor(msgData, address, 'personal_sign');
       }
       default:
@@ -263,13 +275,13 @@ export const signTypedData = async (
       case 'Ledger':
         return signMessageByTypeFromLedger(msgData, address, 'sign_typed_data');
       case 'Trezor': {
-        const needsTrezorPopup =
-          vendor === 'Trezor' &&
-          (await checkIfNeedsTrezorPopup('signTypedData', {
-            message: msgData as string,
-            address: address as string,
-          }));
-        if (needsTrezorPopup) return;
+        // const needsTrezorPopup =
+        //   vendor === 'Trezor' &&
+        //   (await checkIfNeedsTrezorPopup('signTypedData', {
+        //     message: msgData as string,
+        //     address: address as string,
+        //   }));
+        // if (needsTrezorPopup) return;
         return signMessageByTypeFromTrezor(msgData, address, 'sign_typed_data');
       }
       default:
@@ -427,7 +439,7 @@ export const importAccountAtIndex = async (
       const transport = await TransportWebUSB.create();
       const appEth = new AppEth(transport);
       const result = await appEth.getAddress(
-        `${DEFAULT_HD_PATH}/0`,
+        `${DEFAULT_HD_PATH}/${index}`,
         false,
         false,
       );
@@ -576,12 +588,19 @@ export const connectLedger = async () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    if (e?.name === 'TransportStatusError') {
-      alert(
-        'Please make sure your ledger is unlocked and open the Ethereum app',
-      );
-    } else {
-      alert('Unable to connect to your ledger. Please try again.');
+    console.log('error name', e?.name);
+    switch (e?.name) {
+      case 'InvalidStateError':
+        // ignoring this error since it's likely a re-render
+        // that triggered the connection twice
+        break;
+      case 'TransportStatusError':
+        alert(
+          'Please make sure your ledger is unlocked and open the Ethereum app',
+        );
+        break;
+      default:
+        alert('Unable to connect to your ledger. Please try again.');
     }
     return null;
   }
@@ -596,6 +615,12 @@ export const importAccountsFromHW = async (
   deviceId: string,
   vendor: 'Ledger' | 'Trezor',
 ) => {
+  console.log('importing accounts from hw', {
+    deviceId,
+    wallets: accountsToImport,
+    vendor,
+    accountsEnabled,
+  });
   const address = await walletAction('import_hw', {
     deviceId,
     wallets: accountsToImport,
@@ -606,6 +631,7 @@ export const importAccountsFromHW = async (
   if (!passwordSet) {
     // we probably need to set a password
     await chrome.storage.session.set({ userStatus: 'NEEDS_PASSWORD' });
+    console.log('needs password set!');
   }
   return address;
 };

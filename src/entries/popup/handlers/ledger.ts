@@ -8,6 +8,7 @@ import AppEth, { ledgerService } from '@ledgerhq/hw-app-eth';
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
 import { getProvider } from '@wagmi/core';
+import { ethers } from 'ethers';
 import { Address } from 'wagmi';
 
 import { walletAction } from './wallet';
@@ -29,16 +30,24 @@ export async function signTransactionFromLedger(
       chainId: transaction.chainId || undefined,
       data: transaction.data || undefined,
       gasLimit: transaction.gasLimit || undefined,
-      gasPrice: transaction.gasPrice || undefined,
-      maxFeePerGas: transaction.maxFeePerGas || undefined,
-      maxPriorityFeePerGas: transaction.maxPriorityFeePerGas || undefined,
       nonce: transaction.nonce
         ? BigNumber.from(transaction.nonce).toNumber()
         : undefined,
       to: transaction.to || undefined,
-      type: transaction.gasPrice ? 1 : 2,
-      value: transaction.value || undefined,
+      value: transaction.value
+        ? BigNumber.from(transaction.value).toHexString()
+        : undefined,
     };
+
+    if (transaction.gasPrice) {
+      baseTx.gasPrice = transaction.gasPrice;
+    } else {
+      baseTx.maxFeePerGas = transaction.maxFeePerGas || undefined;
+      baseTx.maxPriorityFeePerGas =
+        transaction.maxPriorityFeePerGas || undefined;
+    }
+
+    console.log('usniged tx', { ...baseTx });
 
     const unsignedTx = serialize(baseTx).substring(2);
 
@@ -53,16 +62,28 @@ export async function signTransactionFromLedger(
     );
 
     const sig = await appEth.signTransaction(path, unsignedTx, resolution);
-
+    console.log('ledger sig', sig);
     const serializedTransaction = serialize(baseTx, {
       r: '0x' + sig.r,
       s: '0x' + sig.s,
       v: BigNumber.from('0x' + sig.v).toNumber(),
     });
 
+    const parsedTx = ethers.utils.parseTransaction(serializedTransaction);
+    console.log('parsedTx', parsedTx);
+    if (parsedTx.from?.toLowerCase() !== address?.toLowerCase()) {
+      console.log('parsedTx.from', parsedTx.from?.toLowerCase());
+      console.log('address.from', address?.toLowerCase());
+      console.log('parsedTx', parsedTx);
+      throw new Error('Transaction was not signed by the right address');
+    }
+
+    console.log('serializedTransaction', serializedTransaction);
+
     return serializedTransaction;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
+    console.log('ledger error', e);
     if (e?.name === 'TransportStatusError') {
       alert(
         'Please make sure your ledger is unlocked and open the Ethereum app',

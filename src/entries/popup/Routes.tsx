@@ -16,6 +16,7 @@ import { Home } from './pages/home';
 import { ConnectedApps } from './pages/home/ConnectedApps';
 import { ChooseHW } from './pages/hw/chooseHW';
 import { ConnectLedger } from './pages/hw/ledger';
+import { LoadingTrezor } from './pages/hw/loadingTrezor';
 import { SuccessHW } from './pages/hw/success';
 import { ConnectTrezor } from './pages/hw/trezor';
 import { WalletListHW } from './pages/hw/walletList';
@@ -145,7 +146,7 @@ const ROUTE_DATA = [
     path: ROUTES.HW_CHOOSE,
     element: (
       <AnimatedRoute
-        protectedRoute
+        protectedRoute={['NEW', 'READY']}
         direction="up"
         navbar
         navbarIcon="ex"
@@ -161,7 +162,7 @@ const ROUTE_DATA = [
     path: ROUTES.HW_LEDGER,
     element: (
       <AnimatedRoute
-        protectedRoute
+        protectedRoute={['NEW', 'READY']}
         direction="up"
         navbar
         navbarIcon="ex"
@@ -177,7 +178,7 @@ const ROUTE_DATA = [
     path: ROUTES.HW_TREZOR,
     element: (
       <AnimatedRoute
-        protectedRoute
+        protectedRoute={['NEW', 'READY']}
         direction="up"
         navbar
         navbarIcon="ex"
@@ -189,10 +190,25 @@ const ROUTE_DATA = [
     background: FullScreenBackground,
   },
   {
+    path: ROUTES.HW_TREZOR_LOADING,
+    element: (
+      <AnimatedRoute
+        protectedRoute={['NEW', 'READY']}
+        direction="up"
+        navbar
+        navbarIcon="ex"
+        background="surfaceSecondary"
+      >
+        <LoadingTrezor />
+      </AnimatedRoute>
+    ),
+    background: FullScreenBackground,
+  },
+  {
     path: ROUTES.HW_WALLET_LIST,
     element: (
       <AnimatedRoute
-        protectedRoute
+        protectedRoute={['NEW', 'READY']}
         direction="up"
         navbar
         navbarIcon="ex"
@@ -207,7 +223,7 @@ const ROUTE_DATA = [
     path: ROUTES.HW_SUCCESS,
     element: (
       <AnimatedRoute
-        protectedRoute
+        protectedRoute={['NEW', 'READY']}
         direction="up"
         background="surfaceSecondary"
       >
