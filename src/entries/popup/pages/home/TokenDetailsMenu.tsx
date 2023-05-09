@@ -189,12 +189,16 @@ export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
                         : i18n.t('asset_details_menu.view_on_explorer')}
                     </Text>
                   </Inline>
-                  <Symbol
-                    weight="medium"
-                    size={12}
-                    symbol="arrow.up.forward.circle"
-                    color="labelQuaternary"
-                  />
+                  <Box
+                    background={'fillSecondary'}
+                    padding="4px"
+                    borderRadius="3px"
+                    boxShadow="1px"
+                  >
+                    <Text size="12pt" color="labelSecondary" weight="semibold">
+                      {shortcuts.tokens.VIEW_ASSET.display}
+                    </Text>
+                  </Box>
                 </DetailsMenuRow>
               </ContextMenuRadioItem>
             </>

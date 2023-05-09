@@ -3,6 +3,8 @@ import React from 'react';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 
+import { NAVBAR_HEIGHT } from '../Navbar/Navbar';
+
 export function FullScreenContainer({
   children,
 }: {
@@ -10,18 +12,12 @@ export function FullScreenContainer({
 }) {
   return (
     <Box
-      borderColor="separatorSecondary"
-      borderWidth="1px"
-      background="surfaceSecondary"
       display="flex"
       flexDirection="column"
       alignItems="center"
-      padding="20px"
-      position="absolute"
+      paddingHorizontal="16px"
       style={{
-        paddingTop: '56px',
-        minHeight: POPUP_DIMENSIONS.height,
-        minWidth: POPUP_DIMENSIONS.width,
+        minHeight: POPUP_DIMENSIONS.height - NAVBAR_HEIGHT,
         overflowX: 'hidden',
         height: '100%',
       }}
