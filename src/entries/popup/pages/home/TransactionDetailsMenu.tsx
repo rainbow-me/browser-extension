@@ -178,12 +178,16 @@ export function TransactionDetailsMenu({
                     : i18n.t('speed_up_and_cancel.view_on_explorer')}
                 </Text>
               </Inline>
-              <Symbol
-                weight="medium"
-                size={12}
-                symbol="arrow.up.forward.circle"
-                color="labelQuaternary"
-              />
+              <Box
+                background={'fillSecondary'}
+                padding="4px"
+                borderRadius="3px"
+                boxShadow="1px"
+              >
+                <Text size="12pt" color="labelSecondary" weight="semibold">
+                  {shortcuts.activity.VIEW_TRANSACTION.display}
+                </Text>
+              </Box>
             </DetailsMenuRow>
           </ContextMenuRadioItem>
           <ContextMenuRadioItem value="copy">
@@ -204,6 +208,16 @@ export function TransactionDetailsMenu({
                   </Text>
                 </Stack>
               </Inline>
+              <Box
+                background={'fillSecondary'}
+                padding="4px"
+                borderRadius="3px"
+                boxShadow="1px"
+              >
+                <Text size="12pt" color="labelSecondary" weight="semibold">
+                  {shortcuts.activity.COPY_TRANSACTION.display}
+                </Text>
+              </Box>
             </DetailsMenuRow>
           </ContextMenuRadioItem>
         </ContextMenuRadioGroup>
