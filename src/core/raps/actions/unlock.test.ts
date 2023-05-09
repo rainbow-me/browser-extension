@@ -62,7 +62,7 @@ test('[rap/unlock] :: should execute approve', async () => {
     chainId: chain.mainnet.id,
     gasLimit: '60000',
     gasParams: {
-      maxFeePerGas: '200000000000',
+      maxFeePerGas: '800000000000',
       maxPriorityFeePerGas: '2000000000',
     },
     spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
