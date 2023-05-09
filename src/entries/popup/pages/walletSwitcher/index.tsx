@@ -9,10 +9,10 @@ import {
   Droppable,
   NotDraggingStyle,
 } from 'react-beautiful-dnd';
-import { Link } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { queryClient } from '~/core/react-query';
 import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletNamesStore } from '~/core/state/walletNames';
@@ -36,6 +36,7 @@ import AccountItem, {
   LabelOption,
 } from '../../components/AccountItem/AccountItem';
 import { LabelPill } from '../../components/LabelPill/LabelPill';
+import { Link } from '../../components/Link/Link';
 import { MenuContainer } from '../../components/Menu/MenuContainer';
 import {
   MoreInfoButton,
@@ -72,6 +73,7 @@ const getItemStyle = (
   draggableStyle: DraggingStyle | NotDraggingStyle | undefined,
 ) => ({
   ...draggableStyle,
+  cursor: isDragging ? 'grabbing' : 'default',
 });
 
 const infoButtonOptions = ({
@@ -185,7 +187,7 @@ export function WalletSwitcher() {
   const { hideWallet, unhideWallet } = useHiddenWalletsStore();
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useRainbowNavigate();
-  const { visibleWallets: accounts, fetchWallets } = useWallets();
+  const { visibleWallets: accounts } = useWallets();
   const { avatar } = useAvatar({ address: currentAddress });
 
   const { deleteWalletName } = useWalletNamesStore();
@@ -224,7 +226,7 @@ export function WalletSwitcher() {
           setCurrentAddress(accounts[nextIndex]?.address);
         }
         // fetch the wallets from the keychain again
-        await fetchWallets();
+        queryClient.invalidateQueries(['wallets']);
       } else {
         // This was the last account wipe and send to welcome screen
         await unhideWallet({ address });
@@ -238,16 +240,16 @@ export function WalletSwitcher() {
       unhideWallet,
       hideWallet,
       currentAddress,
-      fetchWallets,
       setCurrentAddress,
       navigate,
     ],
   );
-  const { walletNames } = useWalletNamesStore();
 
   const isSearching = !!searchQuery;
 
   const { walletOrder, saveWalletOrder } = useWalletOrderStore();
+  const { walletNames } = useWalletNamesStore();
+
   const sortedAccounts = useMemo(() => {
     const accountsWithCustomName = accounts.map((a) => ({
       ...a,
