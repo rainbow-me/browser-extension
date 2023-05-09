@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { POPUP_URL, goToNewTab } from '~/core/utils/tabs';
 import {
   Box,
   Button,
@@ -15,7 +16,9 @@ import {
 } from '~/design-system';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
 
+import { wipe } from '../../handlers/wallet';
 import { useWalletName } from '../../hooks/useWalletName';
+import { useWallets } from '../../hooks/useWallets';
 
 export const RemoveWalletPrompt = ({
   show,
@@ -32,11 +35,51 @@ export const RemoveWalletPrompt = ({
 }) => {
   const { displayName } = useWalletName({ address: account });
   const [error, setError] = useState<string>();
+
+  const { allWallets } = useWallets();
+
+  const isLastWallet = useMemo(
+    () => allWallets?.length === 1,
+    [allWallets?.length],
+  );
+
+  const { title, description, confirmText } = useMemo(() => {
+    if (hide) {
+      return {
+        title: i18n.t(`remove_wallet_prompt.hide_title`, { name: displayName }),
+        description: i18n.t(`remove_wallet_prompt.hide_description`),
+        confirmText: i18n.t(`remove_wallet_prompt.hide`),
+      };
+    } else if (isLastWallet) {
+      return {
+        title: i18n.t(`remove_wallet_prompt.remove_last_wallet_title`, {
+          name: displayName,
+        }),
+        description: i18n.t(
+          `remove_wallet_prompt.remove_last_wallet_description`,
+        ),
+        confirmText: i18n.t(`remove_wallet_prompt.remove`),
+      };
+    }
+    return {
+      title: i18n.t(`remove_wallet_prompt.remove_title`, {
+        name: displayName,
+      }),
+      description: i18n.t(`remove_wallet_prompt.remove_description`),
+      confirmText: i18n.t(`remove_wallet_prompt.remove`),
+    };
+  }, [displayName, hide, isLastWallet]);
+
   const handleRemoveWallet = async () => {
     if (account) {
       try {
         await onRemoveAccount(account);
-        onClose();
+        if (isLastWallet) {
+          await wipe();
+          goToNewTab({ url: POPUP_URL });
+        } else {
+          onClose();
+        }
       } catch (e) {
         setError(i18n.t('remove_wallet_prompt.error'));
       }
@@ -52,9 +95,7 @@ export const RemoveWalletPrompt = ({
               <Row>
                 <Box paddingTop="12px">
                   <Text size="16pt" weight="bold" align="center">
-                    {`${i18n.t(
-                      `remove_wallet_prompt.${hide ? 'hide' : 'remove'}`,
-                    )} ${displayName}?`}
+                    {title}
                   </Text>
                 </Box>
               </Row>
@@ -72,11 +113,7 @@ export const RemoveWalletPrompt = ({
                       align="center"
                       color="labelTertiary"
                     >
-                      {i18n.t(
-                        `remove_wallet_prompt.${
-                          hide ? 'hide_description' : 'remove_description'
-                        }`,
-                      )}
+                      {description}
                     </Text>
                   </Row>
                   {error && (
@@ -108,7 +145,7 @@ export const RemoveWalletPrompt = ({
                   width="full"
                   borderRadius="9px"
                 >
-                  Cancel
+                  {i18n.t(`remove_wallet_prompt.cancel`)}
                 </Button>
               </Column>
               <Column>
@@ -120,7 +157,7 @@ export const RemoveWalletPrompt = ({
                   width="full"
                   borderRadius="9px"
                 >
-                  {i18n.t(`remove_wallet_prompt.${hide ? 'hide' : 'remove'}`)}
+                  {confirmText}
                 </Button>
               </Column>
             </Columns>
