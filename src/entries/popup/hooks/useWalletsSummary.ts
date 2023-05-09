@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Address } from 'wagmi';
 
 import {
@@ -109,16 +110,19 @@ export const useWalletsSummary = ({ addresses }: { addresses: Address[] }) => {
     currency: currentCurrency,
   });
 
-  const walletsSummary: { [key: Address]: WalletSummary } = {};
-
-  addresses.forEach((address) => {
-    walletsSummary[address] = parseAddressSummary({
-      address,
-      addysSummary: data,
-      currentCurrency,
-      nativeAssets,
-    });
-  });
+  const walletsSummary: { [key: Address]: WalletSummary } = useMemo(
+    () =>
+      addresses.reduce((prev: { [key: Address]: WalletSummary }, address) => {
+        prev[address] = parseAddressSummary({
+          address,
+          addysSummary: data,
+          currentCurrency,
+          nativeAssets,
+        });
+        return prev;
+      }, {}),
+    [addresses, currentCurrency, data, nativeAssets],
+  );
 
   return { walletsSummary, isLoading };
 };
