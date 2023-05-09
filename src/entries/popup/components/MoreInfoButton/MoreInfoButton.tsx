@@ -1,5 +1,3 @@
-import React, { ReactNode } from 'react';
-
 import { shortcuts } from '~/core/references/shortcuts';
 import {
   Box,
@@ -34,13 +32,11 @@ export interface MoreInfoOption {
 interface MoreInfoButtonProps {
   options: MoreInfoOption[];
   open?: boolean;
-  controlled?: boolean;
   onClose?: () => void;
   onOpen?: () => void;
 }
 
 const MoreInfoButton = ({
-  controlled,
   onClose,
   onOpen,
   open,
@@ -55,8 +51,11 @@ const MoreInfoButton = ({
     },
   });
   return (
-    <Box onClick={onOpen}>
-      <MoreInfoMenuContainer open={open} controlled={controlled}>
+    <Box onClick={(e) => e.stopPropagation()}>
+      <DropdownMenu
+        onOpenChange={(openState) => (openState ? onOpen?.() : onClose?.())}
+        open={open}
+      >
         <DropdownMenuTrigger asChild>
           <Box style={{ cursor: 'default' }}>
             <ButtonSymbol
@@ -67,22 +66,11 @@ const MoreInfoButton = ({
             />
           </Box>
         </DropdownMenuTrigger>
-        <DropdownMenuContent
-          onPointerDownOutside={() => {
-            if (controlled) {
-              onClose?.();
-            }
-          }}
-          align="end"
-        >
+
+        <DropdownMenuContent align="end">
           {options.map((option) => (
             <Box key={option.symbol}>
-              <DropdownMenuItem
-                onSelect={() => {
-                  option.onSelect();
-                  onClose?.();
-                }}
-              >
+              <DropdownMenuItem onSelect={option.onSelect}>
                 <Inline alignVertical="center" space="10px" wrap={false}>
                   <Symbol
                     size={18}
@@ -119,31 +107,9 @@ const MoreInfoButton = ({
             </Box>
           ))}
         </DropdownMenuContent>
-      </MoreInfoMenuContainer>
+      </DropdownMenu>
     </Box>
   );
-};
-
-const MoreInfoMenuContainer = ({
-  controlled,
-  children,
-  onOpenChange,
-  open,
-}: {
-  controlled?: boolean;
-  children: ReactNode;
-  onOpenChange?: (v: boolean) => void;
-  open?: boolean;
-}) => {
-  if (controlled) {
-    return (
-      <DropdownMenu open={open} onOpenChange={onOpenChange}>
-        {children}
-      </DropdownMenu>
-    );
-  }
-
-  return <DropdownMenu onOpenChange={onOpenChange}>{children}</DropdownMenu>;
 };
 
 export { MoreInfoButton };
