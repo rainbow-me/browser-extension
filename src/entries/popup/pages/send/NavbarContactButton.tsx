@@ -1,14 +1,14 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { ChainId } from '~/core/types/chains';
 import { truncateAddress } from '~/core/utils/address';
 import { getBlockExplorerHostForChain, isL2Chain } from '~/core/utils/chains';
 import { getExplorerUrl, goToNewTab } from '~/core/utils/tabs';
 import {
-  Bleed,
   Box,
   Button,
   Inline,
@@ -27,8 +27,11 @@ import {
   DropdownMenuTrigger,
 } from '../../components/DropdownMenu/DropdownMenu';
 import { Navbar } from '../../components/Navbar/Navbar';
+import { triggerToast } from '../../components/Toast/Toast';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useContact } from '../../hooks/useContacts';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+import { simulateClick } from '../../utils/simulateClick';
 
 import { ContactAction } from './ContactPrompt';
 
@@ -102,6 +105,14 @@ const EditContactDropdown = ({
 }) => {
   const contact = useContact({ address: toAddress });
 
+  const handleCopy = useCallback(() => {
+    navigator.clipboard.writeText(toAddress as string);
+    triggerToast({
+      title: i18n.t('contacts.contact_address_copied'),
+      description: truncateAddress(toAddress),
+    });
+  }, [toAddress]);
+
   const viewOnEtherscan = useCallback(() => {
     const explorer = getBlockExplorerHostForChain(chainId || ChainId.mainnet);
     goToNewTab({
@@ -113,7 +124,7 @@ const EditContactDropdown = ({
     (value: string) => {
       switch (value) {
         case 'copy':
-          navigator.clipboard.writeText(toAddress as string);
+          handleCopy();
           break;
         case 'edit':
           onEdit({ show: true, action: 'edit' });
@@ -127,7 +138,7 @@ const EditContactDropdown = ({
           break;
       }
     },
-    [onEdit, toAddress, viewOnEtherscan],
+    [handleCopy, onEdit, viewOnEtherscan],
   );
 
   return (
@@ -155,32 +166,7 @@ const EditContactDropdown = ({
               <Box>
                 <DropdownMenuRadioItem value={'copy'}>
                   <Box testId="navbar-contact-button-edit-copy" width="full">
-                    <Inline space="8px" alignVertical="center">
-                      <Box>
-                        <Inline alignVertical="center">
-                          <Symbol
-                            symbol="doc.on.doc.fill"
-                            weight="semibold"
-                            size={18}
-                          />
-                        </Inline>
-                      </Box>
-
-                      <Box>
-                        <Stack space="6px">
-                          <Text weight="semibold" size="14pt" color="label">
-                            {i18n.t('contacts.copy_address')}
-                          </Text>
-                          <Text
-                            weight="regular"
-                            size="11pt"
-                            color="labelTertiary"
-                          >
-                            {truncateAddress(toAddress)}
-                          </Text>
-                        </Stack>
-                      </Box>
-                    </Inline>
+                    <EditContactDropdownCopyAddressRow />
                   </Box>
                 </DropdownMenuRadioItem>
                 <DropdownMenuRadioItem value={'edit'}>
@@ -189,18 +175,7 @@ const EditContactDropdown = ({
                     width="full"
                     paddingVertical="2px"
                   >
-                    <Inline space="8px" alignVertical="center">
-                      <Inline alignVertical="center">
-                        <Symbol
-                          symbol="person.crop.circle.fill"
-                          weight="semibold"
-                          size={18}
-                        />
-                      </Inline>
-                      <Text weight="semibold" size="14pt" color="label">
-                        {i18n.t('contacts.edit_contact')}
-                      </Text>
-                    </Inline>
+                    <EditContactDropdownEditContactRow />
                   </Box>
                 </DropdownMenuRadioItem>
 
@@ -229,14 +204,12 @@ const EditContactDropdown = ({
                           )}
                         </Text>
                       </Inline>
-                      <Bleed vertical="8px">
-                        <Symbol
-                          size={14}
-                          symbol="arrow.up.forward.circle"
-                          weight="semibold"
-                          color="labelTertiary"
-                        />
-                      </Bleed>
+                      <Symbol
+                        size={14}
+                        symbol="arrow.up.forward.circle"
+                        weight="semibold"
+                        color="labelTertiary"
+                      />
                     </Inline>
                   </Box>
                 </DropdownMenuRadioItem>
@@ -264,6 +237,93 @@ const EditContactDropdown = ({
         </Stack>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+};
+
+const EditContactDropdownCopyAddressRow = ({
+  toAddress,
+}: {
+  toAddress?: Address;
+}) => {
+  const rowRef = useRef<HTMLDivElement>(null);
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.contact_menu.COPY_CONTACT_ADDRESS.key) {
+        simulateClick(rowRef?.current);
+      }
+    },
+  });
+  return (
+    <Box ref={rowRef}>
+      <Inline space="8px" alignVertical="center" alignHorizontal="justify">
+        <Inline space="8px" alignVertical="center">
+          <Box>
+            <Inline alignVertical="center">
+              <Symbol symbol="doc.on.doc.fill" weight="semibold" size={18} />
+            </Inline>
+          </Box>
+          <Box>
+            <Stack space="6px">
+              <Text weight="semibold" size="14pt" color="label">
+                {i18n.t('contacts.copy_address')}
+              </Text>
+              <Text weight="regular" size="11pt" color="labelTertiary">
+                {truncateAddress(toAddress)}
+              </Text>
+            </Stack>
+          </Box>
+        </Inline>
+        <Box
+          background={'fillSecondary'}
+          padding="4px"
+          borderRadius="3px"
+          boxShadow="1px"
+        >
+          <Text size="12pt" color="labelSecondary" weight="semibold">
+            {shortcuts.contact_menu.COPY_CONTACT_ADDRESS.display}
+          </Text>
+        </Box>
+      </Inline>
+    </Box>
+  );
+};
+
+const EditContactDropdownEditContactRow = () => {
+  const rowRef = useRef<HTMLDivElement>(null);
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.contact_menu.EDIT_CONTACT.key) {
+        simulateClick(rowRef?.current);
+      }
+    },
+  });
+  return (
+    <Box ref={rowRef}>
+      <Inline space="8px" alignVertical="center" alignHorizontal="justify">
+        <Inline space="8px" alignVertical="center">
+          <Inline alignVertical="center">
+            <Symbol
+              symbol="person.crop.circle.fill"
+              weight="semibold"
+              size={18}
+            />
+          </Inline>
+          <Text weight="semibold" size="14pt" color="label">
+            {i18n.t('contacts.edit_contact')}
+          </Text>
+        </Inline>
+        <Box
+          background={'fillSecondary'}
+          padding="4px"
+          borderRadius="3px"
+          boxShadow="1px"
+        >
+          <Text size="12pt" color="labelSecondary" weight="semibold">
+            {shortcuts.contact_menu.EDIT_CONTACT.display}
+          </Text>
+        </Box>
+      </Inline>
+    </Box>
   );
 };
 
