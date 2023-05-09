@@ -77,7 +77,12 @@ const MoreInfoButton = ({
         >
           {options.map((option) => (
             <Box key={option.symbol}>
-              <DropdownMenuItem onSelect={option.onSelect}>
+              <DropdownMenuItem
+                onSelect={() => {
+                  option.onSelect();
+                  onClose?.();
+                }}
+              >
                 <Inline alignVertical="center" space="10px" wrap={false}>
                   <Symbol
                     size={18}
