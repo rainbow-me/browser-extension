@@ -120,14 +120,10 @@ export const walletExecuteRap = async (
   type: RapTypes,
   parameters: RapSwapActionParameters<'swap' | 'crosschainSwap'>,
 ): Promise<{ nonce: number | undefined; errorMessage: string | null }> => {
-  console.log('walletExecuteRap');
   const rap: Rap = await createSwapRapByType(type, parameters);
-
-  console.log('walletExecuteRap', rap);
 
   const { actions } = rap;
   const rapName = getRapFullName(rap.actions);
-  console.log('walletExecuteRap rapName', rapName);
   let nonce = parameters?.nonce;
   let errorMessage = null;
   if (actions.length) {
@@ -141,13 +137,10 @@ export const walletExecuteRap = async (
       rapName,
       flashbots: parameters?.flashbots,
     };
-    console.log('walletExecuteRap about o executeAction');
 
     const { baseNonce, errorMessage: error } = await executeAction(
       actionParams,
     );
-
-    console.log('walletExecuteRap after o executeAction', baseNonce, error);
 
     if (typeof baseNonce === 'number') {
       for (let index = 1; index < actions.length; index++) {
@@ -169,6 +162,5 @@ export const walletExecuteRap = async (
       errorMessage = error;
     }
   }
-  console.log('walletExecuteRap after o final nonce', nonce, errorMessage);
   return { nonce, errorMessage };
 };
