@@ -461,8 +461,8 @@
     "invalid_address_or_ens_name": "Invalid address",
     "watch_top_ens_wallets": "Watch top ENS wallets",
     "placeholder": "Ethereum address or ENS name",
-    "watch_wallet": "Watch Wallet",
-    "watch_wallets": "Watch Wallets",
+    "watch_wallet": "Watch wallet",
+    "watch_wallets": "Watch wallets",
     "loading": "Hold tight while we start watching these wallets..."
   },
   "import_wallet": {

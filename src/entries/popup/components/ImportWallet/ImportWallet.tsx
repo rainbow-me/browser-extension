@@ -193,7 +193,7 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
                   borderWidth="1px"
                   borderColor={{
                     default: 'buttonStroke',
-                    focus: 'blue',
+                    focus: 'accent',
                   }}
                   width="full"
                   padding="12px"
