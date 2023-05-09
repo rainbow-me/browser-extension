@@ -203,7 +203,12 @@ function TokensEmptyState() {
   return (
     <Inset horizontal="20px">
       <Box paddingBottom="8px">
-        <a href="https://www.coinbase.com/" target="_blank" rel="noreferrer">
+        <a
+          style={{ cursor: 'default' }}
+          href="https://www.coinbase.com/"
+          target="_blank"
+          rel="noreferrer"
+        >
           <Box
             background="surfaceSecondaryElevated"
             borderRadius="16px"
