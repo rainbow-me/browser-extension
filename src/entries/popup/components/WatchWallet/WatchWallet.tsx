@@ -28,6 +28,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { BoxProps } from '~/design-system/components/Box/Box';
 import { placeholderStyle } from '~/design-system/components/Input/Input.css';
 import { textStyles } from '~/design-system/styles/core.css';
 import {
@@ -282,6 +283,10 @@ export const WatchWallet = ({
     onFinishImporting?.();
   }, [addressesToImport, ensName, address, onFinishImporting]);
 
+  let borderColor: BoxProps['borderColor'] = 'buttonStroke';
+  if (error) borderColor = 'orange';
+  if (input) borderColor = 'blue';
+
   return (
     <>
       <Box alignItems="center" paddingBottom="10px">
@@ -338,7 +343,7 @@ export const WatchWallet = ({
               background="surfaceSecondaryElevated"
               borderRadius="12px"
               borderWidth="1px"
-              borderColor={error ? 'orange' : 'buttonStroke'}
+              borderColor={borderColor}
               width="full"
               padding="12px"
               placeholder={i18n.t('watch_wallet.placeholder')}
