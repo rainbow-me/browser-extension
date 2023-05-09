@@ -473,8 +473,8 @@
     "add_another": "Add another",
     "remove": "Remove",
     "placeholder": "Paste your Secret Recovery Phrase or a Private Key from another wallet",
-    "import_wallet": "Import Wallet",
-    "import_wallet_plural": "Import Wallets"
+    "import_wallet": "Restore wallet",
+    "import_wallet_plural": "Restore wallets"
   },
   "edit_import_wallet_selection": {
     "title": "All wallets",

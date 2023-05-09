@@ -13,7 +13,6 @@ import {
   Box,
   Button,
   Inline,
-  Rows,
   Separator,
   Stack,
   Symbol,
@@ -276,24 +275,27 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
         </Box>
       </Stack>
 
-      <Box width="full" paddingTop="20px">
-        <Rows alignVertical="top" space="8px">
-          <Button
-            symbol="arrow.uturn.down.circle.fill"
-            symbolSide="left"
-            color={isValid ? 'accent' : 'labelQuaternary'}
-            height="44px"
-            variant={isValid ? 'flat' : 'disabled'}
-            width="full"
-            onClick={isValid ? handleImportWallet : () => null}
-            testId="import-wallets-button"
-            tabIndex={2}
-          >
-            {secrets.length > 1
-              ? i18n.t('import_wallet.import_wallet_plural')
-              : i18n.t('import_wallet.import_wallet')}
-          </Button>
-        </Rows>
+      <Box
+        width="full"
+        paddingTop="10px"
+        paddingBottom="20px"
+        paddingHorizontal="4px"
+      >
+        <Button
+          symbol="arrow.uturn.down.circle.fill"
+          symbolSide="left"
+          color={isValid ? 'accent' : 'labelQuaternary'}
+          height="44px"
+          variant={isValid ? 'flat' : 'disabled'}
+          width="full"
+          onClick={isValid ? handleImportWallet : () => null}
+          testId="import-wallets-button"
+          tabIndex={2}
+        >
+          {secrets.length > 1
+            ? i18n.t('import_wallet.import_wallet_plural')
+            : i18n.t('import_wallet.import_wallet')}
+        </Button>
       </Box>
     </>
   );
