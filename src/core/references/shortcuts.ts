@@ -4,9 +4,27 @@ export const shortcuts = {
       display: 'Del',
       key: 'Backspace',
     },
+    COPY_TRANSACTION: {
+      display: 'C',
+      key: 'c',
+    },
     SPEED_UP_TRANSACTION: {
       display: 'S',
       key: 's',
+    },
+    VIEW_TRANSACTION: {
+      display: 'V',
+      key: 'v',
+    },
+  },
+  contact_menu: {
+    COPY_CONTACT_ADDRESS: {
+      display: 'C',
+      key: 'c',
+    },
+    EDIT_CONTACT: {
+      display: 'E',
+      key: 'e',
     },
   },
   global: {
@@ -121,6 +139,10 @@ export const shortcuts = {
     SEND_ASSET: {
       display: 'S',
       key: 's',
+    },
+    VIEW_ASSET: {
+      display: 'V',
+      key: 'v',
     },
   },
   transaction_request: {
