@@ -145,126 +145,129 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
 
   return (
     <>
-      <Box alignItems="center" paddingBottom="10px">
-        <Text size="16pt" weight="bold" color="label" align="center">
-          {i18n.t('import_wallet.title')}
-        </Text>
-        <Box padding="16px" paddingTop="12px">
-          <Text
-            size="12pt"
-            weight="regular"
-            color="labelTertiary"
-            align="center"
-          >
-            {i18n.t('import_wallet.description')}
-          </Text>
-        </Box>
-      </Box>
-      <Box style={{ width: '106px' }}>
-        <Separator color="separatorTertiary" strokeWeight="1px" />
-      </Box>
-      <Box
-        paddingTop="28px"
-        width="full"
-        style={{
-          overflow: 'auto',
-          height: '375px',
-        }}
-      >
-        <Stack space="10px">
-          {secrets.map((_, i) => (
-            <Box
-              as={motion.div}
-              whileTap={{ scale: transformScales['0.96'] }}
-              transition={transitions.bounce}
-              height="full"
-              width="full"
-              key={`seed_${i}`}
-              position="relative"
-            >
-              <Box
-                as="textarea"
-                background="surfaceSecondaryElevated"
-                borderRadius="12px"
-                borderWidth="1px"
-                borderColor="buttonStroke"
-                width="full"
-                padding="12px"
-                placeholder={i18n.t('import_wallet.placeholder')}
-                value={secrets[i]}
-                testId="secret-textarea"
-                onKeyDown={handleKeyDown}
-                tabIndex={1}
-                autoFocus
-                onChange={(e) => handleSeedChange(e, i)}
-                className={[
-                  placeholderStyle,
-                  textStyles({
-                    color: 'label',
-                    fontSize: '14pt',
-                    fontWeight: 'regular',
-                    fontFamily: 'rounded',
-                  }),
-                ]}
-                style={{
-                  height: '96px',
-                  resize: 'none',
-                }}
-              ></Box>
-              {validity[i]?.valid === false && validity[i]?.too_long && (
-                <Box position="absolute" marginTop="-24px" paddingLeft="12px">
-                  <Inline space="4px" alignVertical="center">
-                    <Symbol
-                      symbol={'exclamationmark.triangle.fill'}
-                      size={11}
-                      color={'orange'}
-                      weight={'bold'}
-                    />
-                    <Text size="11pt" weight="regular" color={'orange'}>
-                      {validity[i].type === 'pkey'
-                        ? i18n.t('import_wallet.too_many_chars')
-                        : i18n.t('import_wallet.too_many_words')}
-                    </Text>
-                  </Inline>
-                </Box>
-              )}
-              {i > 0 && i === secrets.length - 1 && secrets[i].length === 0 && (
-                <Box
-                  position="absolute"
-                  marginTop="-30px"
-                  paddingLeft="12px"
-                  style={{
-                    right: '0px',
-                  }}
-                >
-                  <Button
-                    color="red"
-                    height="24px"
-                    variant="transparent"
-                    width="full"
-                    onClick={handleRemove}
-                  >
-                    {i18n.t('import_wallet.remove')}
-                  </Button>
-                </Box>
-              )}
+      <Stack space="24px" alignHorizontal="center">
+        <Box alignItems="center">
+          <Stack space="12px">
+            <Text size="16pt" weight="bold" color="label" align="center">
+              {i18n.t('import_wallet.title')}
+            </Text>
+            <Box paddingHorizontal="32px">
+              <Text
+                size="12pt"
+                weight="regular"
+                color="labelTertiary"
+                align="center"
+              >
+                {i18n.t('import_wallet.description')}
+              </Text>
             </Box>
-          ))}
-          {isValid && (
-            <Button
-              symbol="plus.circle.fill"
-              symbolSide="left"
-              color="accent"
-              height="44px"
-              variant="transparent"
-              width="full"
-              onClick={handleAddAnotherOne}
-            >
-              {i18n.t('import_wallet.add_another')}
-            </Button>
-          )}
-        </Stack>
-      </Box>
+          </Stack>
+        </Box>
+        <Box alignItems="center" style={{ width: '106px' }}>
+          <Separator color="separatorTertiary" strokeWeight="1px" />
+        </Box>
+        <Box
+          width="full"
+          style={{
+            overflow: 'auto',
+            height: '375px',
+          }}
+        >
+          <Stack space="10px">
+            {secrets.map((_, i) => (
+              <Box
+                as={motion.div}
+                whileTap={{ scale: transformScales['0.96'] }}
+                transition={transitions.bounce}
+                height="full"
+                width="full"
+                key={`seed_${i}`}
+                position="relative"
+              >
+                <Box
+                  as="textarea"
+                  background="surfaceSecondaryElevated"
+                  borderRadius="12px"
+                  borderWidth="1px"
+                  borderColor="buttonStroke"
+                  width="full"
+                  padding="12px"
+                  placeholder={i18n.t('import_wallet.placeholder')}
+                  value={secrets[i]}
+                  testId="secret-textarea"
+                  onKeyDown={handleKeyDown}
+                  tabIndex={1}
+                  autoFocus
+                  onChange={(e) => handleSeedChange(e, i)}
+                  className={[
+                    placeholderStyle,
+                    textStyles({
+                      color: 'label',
+                      fontSize: '14pt',
+                      fontWeight: 'regular',
+                      fontFamily: 'rounded',
+                    }),
+                  ]}
+                  style={{
+                    height: '96px',
+                    resize: 'none',
+                  }}
+                ></Box>
+                {validity[i]?.valid === false && validity[i]?.too_long && (
+                  <Box position="absolute" marginTop="-24px" paddingLeft="12px">
+                    <Inline space="4px" alignVertical="center">
+                      <Symbol
+                        symbol={'exclamationmark.triangle.fill'}
+                        size={11}
+                        color={'orange'}
+                        weight={'bold'}
+                      />
+                      <Text size="11pt" weight="regular" color={'orange'}>
+                        {validity[i].type === 'pkey'
+                          ? i18n.t('import_wallet.too_many_chars')
+                          : i18n.t('import_wallet.too_many_words')}
+                      </Text>
+                    </Inline>
+                  </Box>
+                )}
+                {i > 0 && i === secrets.length - 1 && secrets[i].length === 0 && (
+                  <Box
+                    position="absolute"
+                    marginTop="-30px"
+                    paddingLeft="12px"
+                    style={{
+                      right: '0px',
+                    }}
+                  >
+                    <Button
+                      color="red"
+                      height="24px"
+                      variant="transparent"
+                      width="full"
+                      onClick={handleRemove}
+                    >
+                      {i18n.t('import_wallet.remove')}
+                    </Button>
+                  </Box>
+                )}
+              </Box>
+            ))}
+            {isValid && (
+              <Button
+                symbol="plus.circle.fill"
+                symbolSide="left"
+                color="accent"
+                height="44px"
+                variant="transparent"
+                width="full"
+                onClick={handleAddAnotherOne}
+              >
+                {i18n.t('import_wallet.add_another')}
+              </Button>
+            )}
+          </Stack>
+        </Box>
+      </Stack>
 
       <Box width="full" paddingTop="20px">
         <Rows alignVertical="top" space="8px">

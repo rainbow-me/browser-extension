@@ -21,15 +21,13 @@ export function ImportOrConnect() {
 
   return (
     <FullScreenContainer>
-      <Stack space="24px">
+      <Stack space="24px" alignHorizontal="center">
         <Box alignItems="center">
-          <Stack space="20px">
-            <Box paddingTop="2px">
-              <Text size="16pt" weight="bold" color="label" align="center">
-                {i18n.t('import_or_connect.title')}
-              </Text>
-            </Box>
-            <Box paddingHorizontal="35px">
+          <Stack space="12px">
+            <Text size="16pt" weight="bold" color="label" align="center">
+              {i18n.t('import_or_connect.title')}
+            </Text>
+            <Box paddingHorizontal="19px">
               <Text
                 size="12pt"
                 weight="regular"
@@ -41,7 +39,7 @@ export function ImportOrConnect() {
             </Box>
           </Stack>
         </Box>
-        <Box width="full" style={{ width: '106px' }}>
+        <Box alignItems="center" width="full" style={{ width: '106px' }}>
           <Separator color="separatorTertiary" strokeWeight="1px" />
         </Box>
         <Box>
