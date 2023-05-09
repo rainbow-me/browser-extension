@@ -18,7 +18,6 @@ export function FullScreenContainer({
       paddingHorizontal="16px"
       style={{
         minHeight: POPUP_DIMENSIONS.height - NAVBAR_HEIGHT,
-        overflowX: 'hidden',
         height: '100%',
       }}
     >
