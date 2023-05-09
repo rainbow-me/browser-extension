@@ -1,17 +1,10 @@
 /* eslint-disable no-await-in-loop */
 
 import { isAddress } from '@ethersproject/address';
-import { QueryOptions, useQueries } from '@tanstack/react-query';
-import {
-  Address,
-  FetchEnsAddressArgs,
-  FetchEnsAddressResult,
-  fetchEnsAddress,
-} from '@wagmi/core';
+import { Address } from '@wagmi/core';
 import { motion } from 'framer-motion';
 import React, {
   ChangeEvent,
-  memo,
   useCallback,
   useMemo,
   useReducer,
@@ -21,7 +14,6 @@ import { useEnsAddress } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { setCurrentAddress } from '~/core/state';
-import { ChainId } from '~/core/types/chains';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 import {
   Box,
@@ -52,22 +44,21 @@ import { Checkbox } from '../Checkbox/Checkbox';
 import { Spinner } from '../Spinner/Spinner';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
-const accountsToWatch = [
-  'vitalik.eth',
-  'bored.eth',
-  'cdixon.eth',
-  'hublot.eth',
-  'rainbowwallet.eth',
+const recommendedTopAccounts: [string, Address][] = [
+  ['vitalik.eth', '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'],
+  ['bored.eth', '0xf56345338Cb4CddaF915ebeF3bfde63E70FE3053'],
+  ['cdixon.eth', '0xe11BFCBDd43745d4Aa6f4f18E24aD24f4623af04'],
+  ['hublot.eth', '0xDCD589BC5E95Bc6a4A530Cdb14F56A5fEbf6bCe7'],
+  ['rainbowwallet.eth', '0x7a3d05c70581bD345fe117c06e45f9669205384f'],
 ];
 
-const RecommendedWatchWallets = memo(function RecommendedWatchWallets({
+function RecommendedWatchWallets({
   onToggle,
   selected,
 }: {
   onToggle: (address: Address) => void;
   selected: Record<Address, boolean>;
 }) {
-  const addresses = useEnsAddresses({ names: accountsToWatch, chainId: 1 });
   return (
     <>
       <Box paddingVertical="24px" width="full" style={{ width: '106px' }}>
@@ -101,11 +92,11 @@ const RecommendedWatchWallets = memo(function RecommendedWatchWallets({
             position="relative"
           >
             <Rows space="6px">
-              {addresses.map(({ data: address }, index) => (
-                <Row key={`avatar_${address}`}>
+              {recommendedTopAccounts.map(([name, address], index) => (
+                <Row key={`avatar_${name}`}>
                   <Rows space="6px">
                     <Row>
-                      <Box onClick={() => !!address && onToggle(address)}>
+                      <Box onClick={() => onToggle(address)}>
                         <Columns>
                           <Column>
                             <Inline
@@ -114,7 +105,7 @@ const RecommendedWatchWallets = memo(function RecommendedWatchWallets({
                               alignVertical="center"
                             >
                               <WalletAvatar
-                                address={address as Address}
+                                address={address}
                                 size={32}
                                 emojiSize={'16pt'}
                               />
@@ -123,7 +114,7 @@ const RecommendedWatchWallets = memo(function RecommendedWatchWallets({
                                   size="14pt"
                                   weight="bold"
                                   color="label"
-                                  address={address || accountsToWatch[index]}
+                                  address={name}
                                 />
                               </Box>
                             </Inline>
@@ -133,7 +124,6 @@ const RecommendedWatchWallets = memo(function RecommendedWatchWallets({
                               alignItems="center"
                               justifyContent="flex-end"
                               width="fit"
-                              // onClick={() => toggleAccount(address)}
                               paddingTop="6px"
                             >
                               <Checkbox
@@ -145,7 +135,7 @@ const RecommendedWatchWallets = memo(function RecommendedWatchWallets({
                       </Box>
                     </Row>
 
-                    {index !== accountsToWatch.length - 1 && (
+                    {index !== recommendedTopAccounts.length - 1 && (
                       <Row>
                         <Box width="full">
                           <Separator
@@ -167,34 +157,35 @@ const RecommendedWatchWallets = memo(function RecommendedWatchWallets({
       </Box>
     </>
   );
-});
+}
 
-const createEnsNameQuery = ({
-  chainId,
-  name,
-}: FetchEnsAddressArgs): QueryOptions<FetchEnsAddressResult> => ({
-  queryFn: () => fetchEnsAddress({ chainId, name }),
-  queryKey: [{ entity: 'ensAddress', chainId, name }],
-});
+// const createEnsNameQuery = ({
+//   chainId,
+//   name,
+// }: FetchEnsAddressArgs): QueryOptions<FetchEnsAddressResult> => ({
+//   queryFn: () => fetchEnsAddress({ chainId, name }),
+//   queryKey: [{ entity: 'ensAddress', chainId, name }],
+// });
 
-const useEnsAddresses = ({
-  names,
-  chainId,
-}: {
-  chainId: ChainId;
-  names: string[];
-}) =>
-  useQueries({
-    queries: names.map((name) => createEnsNameQuery({ chainId, name })),
-  });
-
-const ensAddedAsStorageKey = 'ens added as';
-const watchedEnsNames = () =>
-  JSON.parse(localStorage.getItem(ensAddedAsStorageKey) || '') as string[];
-const saveAddedAsEnsName = (name: string) => {
-  const savedWatchedEnses = watchedEnsNames();
-  savedWatchedEnses.push(name);
-  localStorage.setItem(ensAddedAsStorageKey, JSON.stringify(savedWatchedEnses));
+const watchedEnsNames = {
+  storageKey: 'address saved with name',
+  get: () => {
+    try {
+      return (JSON.parse(
+        localStorage.getItem(watchedEnsNames.storageKey) || '',
+      ) || {}) as Record<Address, string>;
+    } catch {
+      return {};
+    }
+  },
+  save: (name: string, address: Address) => {
+    const savedWatchedEnses = watchedEnsNames.get();
+    savedWatchedEnses[address] = name;
+    localStorage.setItem(
+      watchedEnsNames.storageKey,
+      JSON.stringify(savedWatchedEnses),
+    );
+  },
 };
 
 const getError = (
@@ -202,6 +193,13 @@ const getError = (
   input: string,
   allWallets: AddressAndType[],
 ): { message: string; symbol: SymbolName } | undefined => {
+  const tld = input.split('.').at(-1);
+  if (tld && tld !== input && !isENSAddressFormat(input))
+    return {
+      message: `${tld} is not supported`,
+      symbol: 'person.crop.circle.badge.xmark',
+    };
+
   if (!isAddress(address))
     return {
       message: 'Invalid address',
@@ -209,14 +207,10 @@ const getError = (
     };
 
   if (allWallets.some((w) => address === w.address)) {
-    const addedAs = watchedEnsNames().find((n) => n === input);
-    if (addedAs)
-      return {
-        message: `Address already added as ${addedAs}`,
-        symbol: 'person.crop.circle.badge.checkmark',
-      };
+    const addedAs = watchedEnsNames.get()[address];
+    const msg = addedAs && addedAs !== input ? ` as ${addedAs}` : '';
     return {
-      message: 'Address already added',
+      message: `Address already added${msg}`,
       symbol: 'person.crop.circle.badge.checkmark',
     };
   }
@@ -230,22 +224,25 @@ const useValidateInput = (input: string) => {
 
   const isLoading = isFetchingEns;
 
-  const debouncedInput = useDebounce(input, 1000);
-
   const inputAddress = addressFromEns || input;
   const address = isAddress(inputAddress) ? inputAddress : undefined;
 
   const { allWallets } = useWallets();
+
+  const debouncedInput = useDebounce(input, 1000);
   const error =
     !isLoading &&
+    !!input &&
     !!debouncedInput &&
-    debouncedInput !== input &&
     getError(inputAddress, input, allWallets);
 
+  const isValid = !!input && debouncedInput === input && !error;
+
   return {
-    ensName: addressFromEns && input,
+    ensName: !!addressFromEns && input,
     address,
     isLoading,
+    isValid,
     error,
   };
 };
@@ -265,24 +262,25 @@ export const WatchWallet = ({
     '',
   );
 
-  const { address, ensName, isLoading, error } = useValidateInput(input);
+  const { address, ensName, isLoading, isValid, error } =
+    useValidateInput(input);
 
   const addressesToImport = useMemo(
-    () => ({
-      ...selectedAddresses,
-      ...(address && { [address]: true }),
-    }),
+    () => [address, ...Object.keys(selectedAddresses)].filter(Boolean),
     [address, selectedAddresses],
   );
 
   const handleWatchWallet = useCallback(async () => {
     const importedAddresses = await Promise.all(
-      Object.keys(addressesToImport).map(wallet.importWithSecret),
+      addressesToImport.map(wallet.importWithSecret),
     );
-    if (ensName) saveAddedAsEnsName(ensName);
+    // we save the ens name saved in localstorage to be able to tell
+    // if the user try to add the same address with a different name later
+    // (already added as foo.eth)
+    if (ensName && address) watchedEnsNames.save(ensName, address);
     setCurrentAddress(importedAddresses[0]);
     onFinishImporting?.();
-  }, [addressesToImport, ensName, onFinishImporting]);
+  }, [addressesToImport, ensName, address, onFinishImporting]);
 
   return (
     <>
@@ -340,7 +338,7 @@ export const WatchWallet = ({
               background="surfaceSecondaryElevated"
               borderRadius="12px"
               borderWidth="1px"
-              borderColor="buttonStroke"
+              borderColor={error ? 'orange' : 'buttonStroke'}
               width="full"
               padding="12px"
               placeholder={i18n.t('watch_wallet.placeholder')}
@@ -362,6 +360,7 @@ export const WatchWallet = ({
                 }),
               ]}
               style={{
+                transition: 'border-color 200ms',
                 height: '96px',
                 resize: 'none',
               }}
@@ -406,14 +405,14 @@ export const WatchWallet = ({
         <Button
           emoji="👀"
           height="44px"
-          color={!error ? 'accent' : 'labelQuaternary'}
-          variant={!error ? 'flat' : 'disabled'}
-          disabled={!!error}
+          color={isValid ? 'accent' : 'labelQuaternary'}
+          variant={isValid ? 'flat' : 'disabled'}
+          disabled={!isValid}
           width="full"
           onClick={handleWatchWallet}
           testId="watch-wallets-button"
         >
-          {Object.keys(addressesToImport).length > 1
+          {addressesToImport.length > 1
             ? i18n.t('watch_wallet.watch_wallets')
             : i18n.t('watch_wallet.watch_wallet')}
         </Button>
