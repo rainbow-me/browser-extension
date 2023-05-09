@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 
+import { i18n } from '~/core/languages';
 import { Box } from '~/design-system';
 
 import { ImportWalletEditNavbar } from '../../components/ImportWallet/ImportWalletEditNavbar';
 import { ImportWalletSelectionEdit } from '../../components/ImportWallet/ImportWalletSelectionEdit';
+import { ROUTES } from '../../urls';
 import { WalletsSortMethod } from '../importWalletSelection/EditImportWalletSelection';
 
 const NewImportWalletSelectionEdit = () => {
@@ -13,9 +15,11 @@ const NewImportWalletSelectionEdit = () => {
   return (
     <>
       <ImportWalletEditNavbar
-        isAddingWallets={isAddingWallets}
+        backTo={ROUTES.IMPORT__SELECT}
+        showSortMenu={!isAddingWallets}
         sortMethod={sortMethod}
         setSortMethod={setSortMethod}
+        title={i18n.t('edit_import_wallet_selection.title')}
       />
       <Box
         height="full"

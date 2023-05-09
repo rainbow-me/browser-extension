@@ -1,4 +1,5 @@
 import React from 'react';
+import { To } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import {
@@ -13,7 +14,6 @@ import {
 } from '~/design-system';
 
 import { WalletsSortMethod } from '../../pages/importWalletSelection/EditImportWalletSelection';
-import { ROUTES } from '../../urls';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,27 +26,34 @@ import { Navbar } from '../Navbar/Navbar';
 
 export const ImportWalletEditNavbar = ({
   accentColor,
-  isAddingWallets,
+  backTo,
+  navbarIcon,
+  showSortMenu,
   sortMethod,
+  title,
   setSortMethod,
 }: {
   accentColor?: string;
-  isAddingWallets: boolean;
+  backTo: To;
+  navbarIcon?: 'arrow' | 'ex';
+  showSortMenu: boolean;
   sortMethod?: WalletsSortMethod;
-  setSortMethod: React.Dispatch<React.SetStateAction<WalletsSortMethod>>;
+  title?: string;
+  setSortMethod?: React.Dispatch<React.SetStateAction<WalletsSortMethod>>;
 }) => {
   return (
     <Navbar
-      title={i18n.t('edit_import_wallet_selection.title')}
+      title={title}
       background={'surfaceSecondary'}
       leftComponent={
-        <Navbar.CloseButton
-          maintainLocationState
-          backTo={ROUTES.IMPORT__SELECT}
-        />
+        navbarIcon === 'arrow' ? (
+          <Navbar.BackButton maintainLocationState backTo={backTo} />
+        ) : (
+          <Navbar.CloseButton maintainLocationState backTo={backTo} />
+        )
       }
       rightComponent={
-        !isAddingWallets ? (
+        showSortMenu ? (
           <DropdownMenu>
             <DropdownMenuTrigger accentColor={accentColor} asChild>
               <Box>
@@ -81,7 +88,7 @@ export const ImportWalletEditNavbar = ({
               <DropdownMenuRadioGroup
                 value={sortMethod}
                 onValueChange={(method) => {
-                  setSortMethod(method as WalletsSortMethod);
+                  setSortMethod?.(method as WalletsSortMethod);
                 }}
               >
                 <Rows space="4px">

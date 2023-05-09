@@ -178,8 +178,8 @@ const ROUTE_DATA = [
         protectedRoute={['NEW']}
         accentColor={false}
         maintainLocationState
-        navbar
-        navbarIcon="arrow"
+        // navbar
+        // navbarIcon="arrow"
         backTo={ROUTES.IMPORT}
       >
         <ImportWalletSelection />
