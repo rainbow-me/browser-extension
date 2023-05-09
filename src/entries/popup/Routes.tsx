@@ -636,8 +636,6 @@ const ROUTE_DATA = [
       <AnimatedRoute
         backTo={ROUTES.NEW_IMPORT_WALLET_SELECTION}
         direction="right"
-        // navbar
-        // navbarIcon="arrow"
         protectedRoute
         background="surfaceSecondary"
       >
