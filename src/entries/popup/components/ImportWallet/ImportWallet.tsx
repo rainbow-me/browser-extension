@@ -20,7 +20,10 @@ import {
   Text,
   textStyles,
 } from '~/design-system';
-import { placeholderStyle } from '~/design-system/components/Input/Input.css';
+import {
+  accentSelectionStyle,
+  placeholderStyle,
+} from '~/design-system/components/Input/Input.css';
 import {
   transformScales,
   transitions,
@@ -189,7 +192,10 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
                   background="surfaceSecondaryElevated"
                   borderRadius="12px"
                   borderWidth="1px"
-                  borderColor="buttonStroke"
+                  borderColor={{
+                    default: 'buttonStroke',
+                    focus: 'blue',
+                  }}
                   width="full"
                   padding="12px"
                   placeholder={i18n.t('import_wallet.placeholder')}
@@ -207,12 +213,13 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
                       fontWeight: 'regular',
                       fontFamily: 'rounded',
                     }),
+                    accentSelectionStyle,
                   ]}
                   style={{
                     height: '96px',
                     resize: 'none',
                   }}
-                ></Box>
+                />
                 {validity[i]?.valid === false && validity[i]?.too_long && (
                   <Box position="absolute" marginTop="-24px" paddingLeft="12px">
                     <Inline space="4px" alignVertical="center">
