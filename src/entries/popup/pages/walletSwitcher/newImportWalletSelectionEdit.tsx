@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { i18n } from '~/core/languages';
 import { Box } from '~/design-system';
 
-import { ImportWalletEditNavbar } from '../../components/ImportWallet/ImportWalletEditNavbar';
+import { ImportWalletNavbar } from '../../components/ImportWallet/ImportWalletNavbar';
 import { ImportWalletSelectionEdit } from '../../components/ImportWallet/ImportWalletSelectionEdit';
 import { ROUTES } from '../../urls';
 import { WalletsSortMethod } from '../importWalletSelection/EditImportWalletSelection';
@@ -14,7 +14,7 @@ const NewImportWalletSelectionEdit = () => {
 
   return (
     <>
-      <ImportWalletEditNavbar
+      <ImportWalletNavbar
         backTo={ROUTES.IMPORT__SELECT}
         showSortMenu={!isAddingWallets}
         sortMethod={sortMethod}

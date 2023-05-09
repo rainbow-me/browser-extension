@@ -24,7 +24,7 @@ import {
 } from '../DropdownMenu/DropdownMenu';
 import { Navbar } from '../Navbar/Navbar';
 
-export const ImportWalletEditNavbar = ({
+export const ImportWalletNavbar = ({
   accentColor,
   backTo,
   navbarIcon,
