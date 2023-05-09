@@ -15,7 +15,7 @@ export function FullScreenContainer({
       display="flex"
       flexDirection="column"
       alignItems="center"
-      paddingHorizontal="16px"
+      paddingHorizontal="20px"
       style={{
         minHeight: POPUP_DIMENSIONS.height - NAVBAR_HEIGHT,
         height: '100%',
