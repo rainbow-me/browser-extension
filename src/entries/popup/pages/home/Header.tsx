@@ -15,9 +15,9 @@ import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
 import { Link } from '../../components/Link/Link';
 import { triggerToast } from '../../components/Toast/Toast';
+import { useCurrentAccount } from '../../hooks/useAccounts';
 import { useAlert } from '../../hooks/useAlert';
 import { useAvatar } from '../../hooks/useAvatar';
-import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
 
@@ -88,7 +88,7 @@ function ActionButtonsSection() {
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
 
-  const { isWatchingWallet } = useWallets();
+  const currentAccount = useCurrentAccount();
   const { featureFlags } = useFeatureFlagsStore();
   const { triggerAlert } = useAlert();
 
@@ -102,14 +102,14 @@ function ActionButtonsSection() {
 
   const allowSwap = React.useMemo(
     () =>
-      (!isWatchingWallet || featureFlags.full_watching_wallets) &&
+      (!currentAccount.isWatched || featureFlags.full_watching_wallets) &&
       config.swaps_enabled,
-    [featureFlags.full_watching_wallets, isWatchingWallet],
+    [featureFlags.full_watching_wallets, currentAccount.isWatched],
   );
 
   const allowSend = React.useMemo(
-    () => !isWatchingWallet || featureFlags.full_watching_wallets,
-    [featureFlags.full_watching_wallets, isWatchingWallet],
+    () => !currentAccount.isWatched || featureFlags.full_watching_wallets,
+    [featureFlags.full_watching_wallets, currentAccount.isWatched],
   );
 
   const alertWatchingWallet = React.useCallback(() => {
@@ -139,7 +139,7 @@ function ActionButtonsSection() {
             onClick={
               allowSwap
                 ? () => null
-                : isWatchingWallet
+                : currentAccount.isWatched
                 ? alertWatchingWallet
                 : alertComingSoon
             }

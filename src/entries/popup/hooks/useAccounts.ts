@@ -11,6 +11,7 @@ import {
   useQueryClient as useWagmiQueryClient,
 } from 'wagmi';
 
+import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { useWalletOrderStore } from '~/core/state/walletOrder';
@@ -108,17 +109,31 @@ export const useAccounts = <TSelect = Account[]>(
 
 export const useVisibleAccounts = () => {
   const { hiddenWallets } = useHiddenWalletsStore();
-  return useAccounts((accounts) => {
-    const visibleAccounts = accounts.filter((a) => !hiddenWallets[a.address]);
-    const [watchedAccounts, visibleOwnedAccounts] = partition(
+  return useAccounts((allAccounts) => {
+    const visibleAccounts = allAccounts.filter(
+      (a) => !hiddenWallets[a.address],
+    );
+    const [watchedAccounts, ownedAccounts] = partition(
       visibleAccounts,
       ({ type }) => type === KeychainType.ReadOnlyKeychain,
     );
 
     return {
-      visibleAccounts,
-      visibleOwnedAccounts,
+      accounts: visibleAccounts,
+      ownedAccounts,
       watchedAccounts,
+    };
+  });
+};
+
+export const useCurrentAccount = () => {
+  const { currentAddress } = useCurrentAddressStore();
+  return useAccounts((accounts) => {
+    const currentAccount = accounts.find((a) => a.address === currentAddress);
+    return {
+      ...currentAccount,
+      isWatched: currentAccount?.type === KeychainType.ReadOnlyKeychain,
+      isOwned: currentAccount?.type !== KeychainType.ReadOnlyKeychain,
     };
   });
 };

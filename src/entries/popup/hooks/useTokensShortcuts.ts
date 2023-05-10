@@ -8,13 +8,13 @@ import { useSelectedTokenStore } from '~/core/state/selectedToken';
 
 import { ROUTES } from '../urls';
 
+import { useCurrentAccount } from './useAccounts';
 import { useAlert } from './useAlert';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 import { useRainbowNavigate } from './useRainbowNavigate';
-import { useWallets } from './useWallets';
 
 export function useTokensShortcuts() {
-  const { isWatchingWallet } = useWallets();
+  const currentAccount = useCurrentAccount();
   const { featureFlags } = useFeatureFlagsStore();
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
   const { triggerAlert } = useAlert();
@@ -22,9 +22,9 @@ export function useTokensShortcuts() {
 
   const allowSwap = useMemo(
     () =>
-      (!isWatchingWallet || featureFlags.full_watching_wallets) &&
+      (!currentAccount.isWatched || featureFlags.full_watching_wallets) &&
       config.swaps_enabled,
-    [featureFlags.full_watching_wallets, isWatchingWallet],
+    [featureFlags.full_watching_wallets, currentAccount.isWatched],
   );
 
   const handleTokenShortcuts = useCallback(

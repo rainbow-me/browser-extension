@@ -1,10 +1,4 @@
-import React, {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
@@ -29,9 +23,9 @@ import {
   DetailsMenuRow,
   DetailsMenuWrapper,
 } from '../../components/DetailsMenu';
+import { useCurrentAccount } from '../../hooks/useAccounts';
 import { useAlert } from '../../hooks/useAlert';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 
 type TokenDetailsMenuOption = 'swap' | 'send' | 'view';
@@ -44,7 +38,7 @@ export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
   const [closed, setClosed] = useState(false);
   const onOpenChange = () => setClosed(false);
 
-  const { isWatchingWallet } = useWallets();
+  const currentAccount = useCurrentAccount();
   const { featureFlags } = useFeatureFlagsStore();
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
   const { triggerAlert } = useAlert();
@@ -63,9 +57,9 @@ export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
 
   const allowSwap = useMemo(
     () =>
-      (!isWatchingWallet || featureFlags.full_watching_wallets) &&
+      (!currentAccount.isWatched || featureFlags.full_watching_wallets) &&
       config.swaps_enabled,
-    [featureFlags.full_watching_wallets, isWatchingWallet],
+    [featureFlags.full_watching_wallets, currentAccount.isWatched],
   );
 
   const goToSwap = useCallback(() => {
