@@ -36,7 +36,7 @@ const os = process.env.OS || 'mac';
 const DAI_MAINNET_ID = '0x6b175474e89094c44da98b954eedeac495271d0f_1';
 const ZEROX_MAINNET_ID = '0xe41d2489571d322189246dafa5ebde1f4699f498_1';
 const ETH_MAINNET_ID = 'eth_1';
-const OP_OPTIMISM_ID = '0x4200000000000000000000000000000000000042_10';
+const ETH_OPTIMISM_ID = '0x0000000000000000000000000000000000000000_10';
 const MATIC_POLYGON_ID = '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0_137';
 const GMX_ARBITRUM_ID = '0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a_42161';
 const UNI_BNB_ID = '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984_56';
@@ -499,12 +499,12 @@ it('should be able to filter assets to buy by network', async () => {
   });
   await delayTime('long');
   await findElementByTestIdAndClick({
-    id: `${OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
+    id: `${ETH_OPTIMISM_ID}-favorites-token-to-buy-row`,
     driver,
   });
   // POLYGON
   await findElementByTestIdAndClick({
-    id: `${OP_OPTIMISM_ID}-token-to-buy-token-input-remove`,
+    id: `${ETH_OPTIMISM_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -593,7 +593,7 @@ it('should be able to see no route explainer', async () => {
   });
   await delayTime('long');
   await findElementByTestIdAndClick({
-    id: `${OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
+    id: `${ETH_OPTIMISM_ID}-favorites-token-to-buy-row`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -624,7 +624,7 @@ it('should be able to see no route explainer', async () => {
     driver,
   });
   await typeOnTextInput({
-    id: `${OP_OPTIMISM_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${ETH_OPTIMISM_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
     text: 1,
   });
@@ -651,7 +651,7 @@ it('should be able to see no route explainer', async () => {
 
 it('should be able to find exact match on other networks', async () => {
   await findElementByTestIdAndClick({
-    id: `${OP_OPTIMISM_ID}-token-to-sell-token-input-remove`,
+    id: `${ETH_OPTIMISM_ID}-token-to-sell-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -687,11 +687,11 @@ it('should be able to find exact match on other networks', async () => {
   expect(onOtherNetworksSections).toBeTruthy();
 
   await findElementByTestIdAndClick({
-    id: `${OP_OPTIMISM_ID}-other_networks-token-to-buy-row`,
+    id: `${ETH_OPTIMISM_ID}-other_networks-token-to-buy-row`,
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${OP_OPTIMISM_ID}-token-to-buy-token-input-remove`,
+    id: `${ETH_OPTIMISM_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
