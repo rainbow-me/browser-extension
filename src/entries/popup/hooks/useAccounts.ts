@@ -1,73 +1,124 @@
-import { useEffect, useMemo, useState } from 'react';
+import {
+  Address,
+  FetchEnsNameArgs,
+  FetchEnsNameResult,
+  fetchEnsName,
+} from '@wagmi/core';
+import { partition } from 'lodash';
+import { useCallback } from 'react';
+import {
+  useQuery as useWagmiQuery,
+  useQueryClient as useWagmiQueryClient,
+} from 'wagmi';
 
+import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { useWalletOrderStore } from '~/core/state/walletOrder';
+import { ChainId } from '~/core/types/chains';
+import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 
 import { AddressAndType, useWallets } from './useWallets';
 
-interface WalletSearchData extends AddressAndType {
+export type Account = AddressAndType & {
   walletName?: string;
-  ensName?: string;
-}
+  ensName?: string | null;
+};
 
-export const useAccounts = (searchQuery?: string) => {
-  const { visibleWallets: accounts } = useWallets();
-  const [accountsWithNamesAndEns, setAccountsWithNamesAndEns] = useState<
-    WalletSearchData[]
-  >([]);
+// wagmi doesn't export it's query keys
+// import { queryKey as wagmiEnsNameQueryKey } from 'wagmi/dist/declarations/src/hooks/ens/useEnsName';
+const wagmiEnsNameQueryKey = ({
+  address,
+  chainId,
+}: Partial<FetchEnsNameArgs>) => [
+  {
+    entity: 'ensName',
+    address,
+    chainId,
+  },
+];
+
+const updateWagmiEnsNameCache = (
+  wagmiQueryClient: ReturnType<typeof useWagmiQueryClient>,
+  entries: { address: Address; ensName: FetchEnsNameResult }[],
+  chainId: ChainId = ChainId.mainnet,
+) => {
+  entries.forEach(({ address, ensName }) => {
+    wagmiQueryClient.setQueryData(
+      wagmiEnsNameQueryKey({ chainId, address }),
+      ensName,
+    );
+  });
+};
+
+const noop = (w: unknown) => w;
+export const useAccounts = <TSelect = Account[]>(
+  select: (wallets: Account[]) => TSelect = noop as () => TSelect,
+) => {
   const { walletNames } = useWalletNamesStore();
   const { walletOrder } = useWalletOrderStore();
+  const accounts = useWallets(
+    useCallback<(wallets: KeychainWallet[]) => Account[]>(
+      (wallets) => {
+        const accounts = wallets.reduce(
+          (accounts, wallet) => [
+            ...accounts,
+            ...wallet.accounts.map((address) => ({
+              address,
+              type: wallet.type,
+              walletName: walletNames[address],
+            })),
+          ],
+          [] as Account[],
+        );
 
-  useEffect(() => {
-    const getAccountsWithNamesAndEns = async () => {
-      if (accounts.length !== 0) {
-        setAccountsWithNamesAndEns(accounts as WalletSearchData[]);
-      }
-      const accountsSearchData = await Promise.all(
-        accounts.map(async (addressAndType) =>
-          walletNames[addressAndType.address]
-            ? {
-                ...addressAndType,
-                walletName: walletNames[addressAndType.address],
-              }
-            : (addressAndType as WalletSearchData),
-        ),
+        if (!walletOrder.length) return accounts;
+
+        return walletOrder
+          .map((address) => accounts.find((a) => address === a.address))
+          .filter(Boolean);
+      },
+      [walletNames, walletOrder],
+    ),
+  );
+
+  const wagmiQueryClient = useWagmiQueryClient();
+  const chainId = ChainId.mainnet;
+  const { data: accountsWithEnsNames } = useWagmiQuery(
+    [{ entity: 'ensNames', accounts, chainId }],
+    async () => {
+      const result = await Promise.all(
+        accounts.map(async (account) => ({
+          ...account,
+          ensName: await fetchEnsName({ chainId, address: account.address }),
+        })),
       );
-      if (accountsSearchData.length !== 0) {
-        setAccountsWithNamesAndEns(accountsSearchData);
-      }
-    };
-    getAccountsWithNamesAndEns();
-  }, [accounts, walletNames]);
-  const filteredAccounts = useMemo(() => {
-    if (!searchQuery) return accountsWithNamesAndEns;
-    return accountsWithNamesAndEns.filter(
-      ({ address, walletName, ensName }) =>
-        address.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        walletName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        ensName?.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
-  }, [accountsWithNamesAndEns, searchQuery]);
-  const filteredAndSortedAccounts = useMemo(() => {
-    const sortedAccounts = filteredAccounts.sort((a, b) => {
-      const aIndex = walletOrder.indexOf(a.address);
-      const bIndex = walletOrder.indexOf(b.address);
-      if (aIndex === -1 && bIndex === -1) {
-        return 0;
-      }
-      if (aIndex === -1) {
-        return 1;
-      }
-      if (bIndex === -1) {
-        return -1;
-      }
-      return aIndex - bIndex;
-    });
-    return sortedAccounts;
-  }, [filteredAccounts, walletOrder]);
+      // update wagmi cache to already have it on useEnsName later
+      updateWagmiEnsNameCache(wagmiQueryClient, result);
+      return result;
+    },
+    {
+      refetchOnWindowFocus: false,
+      initialData: accounts,
+      initialDataUpdatedAt: 0,
+    },
+  );
 
-  return {
-    filteredAndSortedAccounts,
-    sortedAccounts: accountsWithNamesAndEns,
-  };
+  return select(accountsWithEnsNames);
+};
+
+export const useVisibleAccounts = () => {
+  const { hiddenWallets } = useHiddenWalletsStore();
+  return useAccounts((accounts) => {
+    const visibleAccounts = accounts.filter((a) => !hiddenWallets[a.address]);
+    const [watchedAccounts, visibleOwnedAccounts] = partition(
+      visibleAccounts,
+      ({ type }) => type === KeychainType.ReadOnlyKeychain,
+    );
+
+    return {
+      visibleAccounts,
+      visibleOwnedAccounts,
+      watchedAccounts,
+    };
+  });
 };

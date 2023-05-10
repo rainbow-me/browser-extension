@@ -9,7 +9,7 @@ import { Box } from '~/design-system';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
-import { useAccounts } from './hooks/useAccounts';
+import { useVisibleAccounts } from './hooks/useAccounts';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
@@ -715,7 +715,7 @@ const directionMap = {
 };
 
 const useGlobalShortcuts = (disable?: boolean) => {
-  const { sortedAccounts } = useAccounts();
+  const { visibleAccounts: accounts } = useVisibleAccounts();
   const { setCurrentAddress } = useCurrentAddressStore();
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
@@ -725,8 +725,8 @@ const useGlobalShortcuts = (disable?: boolean) => {
         const regex = /^[1-9]$/;
         if (regex.test(e.key)) {
           const accountIndex = parseInt(e.key, 10) - 1;
-          if (sortedAccounts[accountIndex]) {
-            setCurrentAddress(sortedAccounts[accountIndex]?.address);
+          if (accounts[accountIndex]) {
+            setCurrentAddress(accounts[accountIndex].address);
           }
         }
       }

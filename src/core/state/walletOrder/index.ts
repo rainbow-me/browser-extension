@@ -32,3 +32,8 @@ export const walletOrderStore = createStore<WalletOrderStore>(
 );
 
 export const useWalletOrderStore = create(walletOrderStore);
+
+export const saveWalletOrder = (newWalletOrder: Address[]) =>
+  walletOrderStore.setState(() => ({
+    walletOrder: newWalletOrder,
+  }));

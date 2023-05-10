@@ -12,11 +12,10 @@ import {
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { queryClient } from '~/core/react-query';
 import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletNamesStore } from '~/core/state/walletNames';
-import { useWalletOrderStore } from '~/core/state/walletOrder';
+import { saveWalletOrder } from '~/core/state/walletOrder';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import {
@@ -45,9 +44,10 @@ import {
 import { QuickPromo } from '../../components/QuickPromo/QuickPromo';
 import { triggerToast } from '../../components/Toast/Toast';
 import { getWallet, remove, wipe } from '../../handlers/wallet';
+import { Account, useVisibleAccounts } from '../../hooks/useAccounts';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { AddressAndType, useWallets } from '../../hooks/useWallets';
+import { AddressAndType, refetchWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 
 import { WalletActionsMenu } from './WalletSwitcher.css';
@@ -56,8 +56,8 @@ import { RenameWalletPrompt } from './renameWalletPrompt';
 
 const { innerHeight: windowHeight } = window;
 
-const reorder = (
-  list: Iterable<unknown>,
+const reorder = <Item,>(
+  list: Iterable<Item>,
   startIndex: number,
   endIndex: number,
 ) => {
@@ -159,23 +159,15 @@ const NoWalletsWarning = ({
   </Box>
 );
 
-interface WalletSearchData extends AddressAndType {
-  walletName?: string;
-  ensName?: string;
-}
-
-const searchWallets = <T extends WalletSearchData[]>(
-  wallets: T,
-  searchQuery: string,
-) => {
-  if (!searchQuery) return wallets;
+const searchAccounts = (accounts: Account[], searchQuery: string) => {
+  if (!searchQuery) return accounts;
   const search = searchQuery.toLowerCase();
-  return wallets.filter(
+  return accounts.filter(
     ({ address, walletName, ensName }) =>
       address.toLowerCase().includes(search) ||
       walletName?.toLowerCase().includes(search) ||
       ensName?.toLowerCase().includes(search),
-  ) as T;
+  );
 };
 
 export function WalletSwitcher() {
@@ -187,7 +179,7 @@ export function WalletSwitcher() {
   const { hideWallet, unhideWallet } = useHiddenWalletsStore();
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useRainbowNavigate();
-  const { visibleWallets: accounts } = useWallets();
+  const { visibleAccounts: accounts } = useVisibleAccounts();
   const { avatar } = useAvatar({ address: currentAddress });
 
   const { deleteWalletName } = useWalletNamesStore();
@@ -226,7 +218,7 @@ export function WalletSwitcher() {
           setCurrentAddress(accounts[nextIndex]?.address);
         }
         // fetch the wallets from the keychain again
-        queryClient.invalidateQueries(['wallets']);
+        refetchWallets();
       } else {
         // This was the last account wipe and send to welcome screen
         await unhideWallet({ address });
@@ -247,27 +239,9 @@ export function WalletSwitcher() {
 
   const isSearching = !!searchQuery;
 
-  const { walletOrder, saveWalletOrder } = useWalletOrderStore();
-  const { walletNames } = useWalletNamesStore();
-
-  const sortedAccounts = useMemo(() => {
-    const accountsWithCustomName = accounts.map((a) => ({
-      ...a,
-      walletName: walletNames[a.address],
-    }));
-
-    if (!walletOrder.length) return accountsWithCustomName;
-
-    return walletOrder
-      .map((address) =>
-        accountsWithCustomName.find((a) => address === a.address),
-      )
-      .filter(Boolean);
-  }, [accounts, walletNames, walletOrder]);
-
   const filteredAndSortedAccounts = useMemo(
-    () => searchWallets(sortedAccounts, searchQuery),
-    [sortedAccounts, searchQuery],
+    () => searchAccounts(accounts, searchQuery),
+    [accounts, searchQuery],
   );
 
   const displayedAccounts = useMemo(
@@ -340,12 +314,8 @@ export function WalletSwitcher() {
     const { destination, source } = result;
     if (!destination) return;
     if (destination.index === source.index) return;
-    const newAccountsWithNamesAndEns = reorder(
-      sortedAccounts,
-      source.index,
-      destination.index,
-    ) as WalletSearchData[];
-    saveWalletOrder(newAccountsWithNamesAndEns.map(({ address }) => address));
+    const newOrder = reorder(accounts, source.index, destination.index);
+    saveWalletOrder(newOrder.map((a) => a.address));
   };
 
   return (
