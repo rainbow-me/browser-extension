@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import * as React from 'react';
-import { HashRouter } from 'react-router-dom';
+import { RouterProvider, createHashRouter } from 'react-router-dom';
 import { WagmiConfig, useAccount } from 'wagmi';
 
 import { analytics } from '~/analytics';
@@ -20,7 +20,7 @@ import { createWagmiClient } from '~/core/wagmi';
 import { Box, ThemeProvider } from '~/design-system';
 import { Alert } from '~/design-system/components/Alert/Alert';
 
-import { Routes } from './Routes';
+import { ROUTE_DATA, RouteWrapper } from './Routes';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { Toast } from './components/Toast/Toast';
 import { AuthProvider } from './hooks/useAuth';
@@ -86,9 +86,15 @@ export function App() {
                     : undefined,
                 }}
               >
-                <HashRouter>
-                  <Routes />
-                </HashRouter>
+                <RouterProvider
+                  router={createHashRouter(
+                    ROUTE_DATA.map((data) => ({
+                      ...data,
+                      element: <RouteWrapper element={data.element} />,
+                    })),
+                    {},
+                  )}
+                />
               </Box>
               <IdleTimer />
               <Toast />
