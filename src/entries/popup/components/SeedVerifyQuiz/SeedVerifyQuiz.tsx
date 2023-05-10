@@ -11,7 +11,7 @@ import {
   Columns,
   Inline,
   Separator,
-  Symbol,
+  Stack,
   Text,
 } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
@@ -208,38 +208,28 @@ export function SeedVerifyQuiz({
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
-      <Box paddingBottom="10px">
-        <Inline
-          wrap={false}
-          alignVertical="center"
-          alignHorizontal="center"
-          space="5px"
-        >
-          <Symbol
-            symbol="doc.plaintext"
-            size={16}
-            color="transparent"
-            weight={'bold'}
-          />
+      <Stack space="24px">
+        <Stack space="12px">
           <Text size="16pt" weight="bold" color="label" align="center">
             {i18n.t('seed_verify.title')}
           </Text>
-        </Inline>
-        <Box padding="16px" paddingTop="10px">
-          <Text
-            size="12pt"
-            weight="regular"
-            color="labelTertiary"
-            align="center"
-          >
-            {i18n.t('seed_verify.explanation')}
-          </Text>
+          <Box paddingHorizontal="15px">
+            <Text
+              size="12pt"
+              weight="regular"
+              color="labelTertiary"
+              align="center"
+            >
+              {i18n.t('seed_verify.explanation')}
+            </Text>
+          </Box>
+        </Stack>
+        <Box width="full" style={{ width: '106px' }}>
+          <Separator color="separatorTertiary" strokeWeight="1px" />
         </Box>
-      </Box>
-      <Box width="full" style={{ width: '106px' }}>
-        <Separator color="separatorTertiary" strokeWeight="1px" />
-      </Box>
-      <Box paddingTop="28px">
+      </Stack>
+
+      <Box paddingTop="36px">
         <Box
           flexBasis="0"
           width="fit"
@@ -303,7 +293,7 @@ export function SeedVerifyQuiz({
         </Box>
       </Box>
 
-      <Box>
+      <Box paddingTop="19px">
         <Button
           color="labelTertiary"
           height="44px"
