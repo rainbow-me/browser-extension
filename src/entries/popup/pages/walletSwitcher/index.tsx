@@ -434,6 +434,7 @@ export function WalletSwitcher() {
               height="32px"
               width="full"
               borderRadius="9px"
+              testId={'add-wallet-button'}
             >
               {i18n.t('wallet_switcher.add_another_wallet')}
             </Button>
