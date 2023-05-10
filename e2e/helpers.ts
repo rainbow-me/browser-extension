@@ -79,13 +79,15 @@ export async function switchWallet(address, rootURL, driver) {
   const shortenedAddress = shortenAddress(address);
 
   await goToPopup(driver, rootURL, '#/home');
+  await delayTime('medium');
   await findElementByIdAndClick({
     id: 'header-account-name-shuffle',
     driver,
   });
+  await delayTime('short');
 
   await findElementByTextAndClick(driver, shortenedAddress);
-  await delayTime('short');
+  await delayTime('medium');
 }
 
 export async function getOnchainBalance(addy, contract) {
