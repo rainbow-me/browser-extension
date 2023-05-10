@@ -349,10 +349,12 @@ describe('App interactions flow', () => {
 
     // test dapp hardcodes the amount of tokens created and transfered. expected values are as below
     expect(Number(senderPreSendbalance)).toBe(100000);
-    expect(Number(senderPostSendbalance)).toBe(senderPreSendbalance - 15000);
+    expect(Number(senderPostSendbalance)).toBe(
+      Number(senderPreSendbalance) - 15000,
+    );
     expect(Number(recipientPreSendBalance)).toBe(0);
     expect(Number(recipientPostSendBalance)).toBe(
-      recipientPreSendBalance + 15000,
+      Number(recipientPreSendBalance) + 15000,
     );
 
     const txnStatus = await transactionStatus();
@@ -437,10 +439,12 @@ describe('App interactions flow', () => {
 
     // test dapp hardcodes the amount of tokens created and transfered. expected values are as below
     expect(Number(senderPreSendbalance)).toBe(85000);
-    expect(Number(senderPostSendbalance)).toBe(senderPreSendbalance - 15000);
+    expect(Number(senderPostSendbalance)).toBe(
+      Number(senderPreSendbalance) - 15000,
+    );
     expect(Number(recipientPreSendBalance)).toBe(15000);
     expect(Number(recipientPostSendBalance)).toBe(
-      recipientPreSendBalance - 15000,
+      Number(recipientPreSendBalance) + 15000,
     );
 
     const txnStatus = await transactionStatus();
