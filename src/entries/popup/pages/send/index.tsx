@@ -1,6 +1,6 @@
 import { TransactionRequest } from '@ethersproject/abstract-provider';
 import { useAnimationControls } from 'framer-motion';
-import React, {
+import {
   ChangeEvent,
   useCallback,
   useEffect,
@@ -39,10 +39,10 @@ import { useSendAsset } from '../../hooks/send/useSendAsset';
 import { useSendInputs } from '../../hooks/send/useSendInputs';
 import { useSendState } from '../../hooks/send/useSendState';
 import { useSendValidations } from '../../hooks/send/useSendValidations';
+import { useAccounts } from '../../hooks/useAccounts';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 import { clickHeaderRight } from '../../utils/clickHeader';
 
@@ -71,9 +71,9 @@ export function Send() {
   const navigate = useRainbowNavigate();
 
   const { isContact } = useContactsStore();
-  const { allAccounts } = useWallets();
+  const accounts = useAccounts();
   const isMyWallet = (address: Address) =>
-    allAccounts?.some((w) => w.address === address);
+    accounts?.some((w) => w.address === address);
 
   const { connectedToHardhat } = useConnectedToHardhatStore();
 

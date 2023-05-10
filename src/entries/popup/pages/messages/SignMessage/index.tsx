@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
@@ -8,10 +8,10 @@ import { ChainId } from '~/core/types/chains';
 import { RPCMethod } from '~/core/types/rpcMethods';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box } from '~/design-system';
+import { useVisibleAccounts } from '~/entries/popup/hooks/useAccounts';
 import { useAlert } from '~/entries/popup/hooks/useAlert';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
-import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { RainbowError, logger } from '~/logger';
 
 import * as wallet from '../../../handlers/wallet';
@@ -50,7 +50,7 @@ export function SignMessage({
     url: request?.meta?.sender?.url,
   });
   const { appSession } = useAppSession({ host: appHost });
-  const { watchedWallets } = useWallets();
+  const { watchedAccounts } = useVisibleAccounts();
   const { triggerAlert } = useAlert();
 
   const selectedChainId = appSession.chainId ?? ChainId.mainnet;
@@ -116,9 +116,9 @@ export function SignMessage({
   }, [appHost, appName, rejectRequest, request]);
 
   const isWatchingWallet = useMemo(() => {
-    const watchedAddresses = watchedWallets?.map(({ address }) => address);
+    const watchedAddresses = watchedAccounts?.map(({ address }) => address);
     return selectedWallet && watchedAddresses?.includes(selectedWallet);
-  }, [selectedWallet, watchedWallets]);
+  }, [selectedWallet, watchedAccounts]);
 
   useEffect(() => {
     if (isWatchingWallet) {

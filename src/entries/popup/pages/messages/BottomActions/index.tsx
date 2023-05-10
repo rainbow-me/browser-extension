@@ -1,4 +1,3 @@
-import React from 'react';
 import { Address, useBalance } from 'wagmi';
 
 import { analytics } from '~/analytics';
@@ -21,9 +20,9 @@ import { EthSymbol } from '~/entries/popup/components/EthSymbol/EthSymbol';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
+import { useVisibleAccounts } from '~/entries/popup/hooks/useAccounts';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useWalletInfo } from '~/entries/popup/hooks/useWalletInfo';
-import { useWallets } from '~/entries/popup/hooks/useWallets';
 
 import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
 import { SwitchMenu } from '../../../components/SwitchMenu/SwitchMenu';
@@ -92,7 +91,7 @@ export const BottomSwitchWallet = ({
   selectedWallet: Address;
   setSelectedWallet: (selected: Address) => void;
 }) => {
-  const { visibleWallets } = useWallets();
+  const { accounts } = useVisibleAccounts();
 
   return (
     <Stack space="8px">
@@ -119,7 +118,7 @@ export const BottomSwitchWallet = ({
             </Inline>
           </Box>
         )}
-        menuItems={visibleWallets?.map((wallet) => wallet.address)}
+        menuItems={accounts?.map((account) => account.address)}
         selectedValue={selectedWallet}
         onValueChange={(value) => {
           setSelectedWallet(value as Address);

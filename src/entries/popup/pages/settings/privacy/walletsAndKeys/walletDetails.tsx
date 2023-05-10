@@ -25,8 +25,8 @@ import {
 } from '~/entries/popup/components/MoreInfoButton/MoreInfoButton';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { getWallet, remove, wipe } from '~/entries/popup/handlers/wallet';
+import { useVisibleAccounts } from '~/entries/popup/hooks/useAccounts';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
-import { useWallets } from '~/entries/popup/hooks/useWallets';
 import { ROUTES } from '~/entries/popup/urls';
 
 import { RemoveWalletPrompt } from '../../../walletSwitcher/removeWalletPrompt';
@@ -168,7 +168,7 @@ export function WalletDetails() {
 
   const { currentAddress, setCurrentAddress } = useCurrentAddressStore();
   const { unhideWallet, hiddenWallets } = useHiddenWalletsStore();
-  const { visibleWallets } = useWallets();
+  const { accounts } = useVisibleAccounts();
   const { deleteWalletName } = useWalletNamesStore();
 
   const handleRemoveAccount = async (address: Address) => {
@@ -177,17 +177,17 @@ export function WalletDetails() {
     await remove(address);
     deleteWalletName({ address });
 
-    if (visibleWallets.length > 1) {
+    if (accounts.length > 1) {
       // set current address to the next account if you deleted that one
       if (address === currentAddress) {
-        const deletedIndex = visibleWallets.findIndex(
+        const deletedIndex = accounts.findIndex(
           (account) => account.address === address,
         );
         const nextIndex =
-          deletedIndex === visibleWallets.length - 1
+          deletedIndex === accounts.length - 1
             ? deletedIndex - 1
             : deletedIndex + 1;
-        setCurrentAddress(visibleWallets[nextIndex].address);
+        setCurrentAddress(accounts[nextIndex].address);
       }
       // if more accounts in this wallet
       const otherAccountSameWallet = walletBeforeDeletion.accounts.find(

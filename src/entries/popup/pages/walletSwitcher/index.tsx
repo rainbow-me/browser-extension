@@ -179,7 +179,7 @@ export function WalletSwitcher() {
   const { hideWallet, unhideWallet } = useHiddenWalletsStore();
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useRainbowNavigate();
-  const { visibleAccounts: accounts } = useVisibleAccounts();
+  const { accounts } = useVisibleAccounts();
   const { avatar } = useAvatar({ address: currentAddress });
 
   const { deleteWalletName } = useWalletNamesStore();

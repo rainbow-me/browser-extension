@@ -52,9 +52,9 @@ import {
   useExplainerSheetParams,
 } from '../../components/ExplainerSheet/ExplainerSheet';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
+import { useVisibleAccounts } from '../../hooks/useAccounts';
 import usePrevious from '../../hooks/usePrevious';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
-import { useWallets } from '../../hooks/useWallets';
 
 import { ContactAction } from './ContactPrompt';
 
@@ -250,7 +250,7 @@ export const ReviewSheet = ({
     }>
   >;
 }) => {
-  const { visibleOwnedWallets } = useWallets();
+  const { ownedAccounts } = useVisibleAccounts();
   const [sendingOnL2Checks, setSendingOnL2Checks] = useState([false, false]);
   const prevShow = usePrevious(show);
 
@@ -267,10 +267,10 @@ export const ReviewSheet = ({
 
   const isToWalletOwner = useMemo(
     () =>
-      !!visibleOwnedWallets
+      !!ownedAccounts
         .map((wallet) => wallet.address)
         .find((account) => isLowerCaseMatch(account, toAddress)),
-    [toAddress, visibleOwnedWallets],
+    [toAddress, ownedAccounts],
   );
 
   const sendEnabled = useMemo(() => {

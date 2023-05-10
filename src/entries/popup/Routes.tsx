@@ -715,7 +715,7 @@ const directionMap = {
 };
 
 const useGlobalShortcuts = (disable?: boolean) => {
-  const { visibleAccounts: accounts } = useVisibleAccounts();
+  const { accounts } = useVisibleAccounts();
   const { setCurrentAddress } = useCurrentAddressStore();
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {

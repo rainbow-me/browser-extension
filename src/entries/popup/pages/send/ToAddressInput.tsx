@@ -344,9 +344,8 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     const { displayName, isNameDefined } = useWalletInfo({
       address: toAddress,
     });
-    const { wallets, watchedWallets, contacts } = useAllFilteredWallets({
-      filter: toAddressOrName,
-    });
+    const { wallets, watchedWallets, contacts } =
+      useAllFilteredWallets(toAddressOrName);
 
     useEffect(() => {
       setTimeout(() => {

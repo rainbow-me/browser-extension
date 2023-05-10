@@ -22,10 +22,10 @@ import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Row, Rows } from '~/design-system';
 import { useSendAsset } from '~/entries/popup/hooks/send/useSendAsset';
+import { useVisibleAccounts } from '~/entries/popup/hooks/useAccounts';
 import { useAlert } from '~/entries/popup/hooks/useAlert';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
-import { useWallets } from '~/entries/popup/hooks/useWallets';
 
 import * as wallet from '../../../handlers/wallet';
 
@@ -59,7 +59,7 @@ export function SendTransaction({
   const selectedWallet = appSession.address;
   const { connectedToHardhat } = useConnectedToHardhatStore();
   const { asset, selectAssetAddress } = useSendAsset();
-  const { watchedWallets } = useWallets();
+  const { watchedAccounts } = useVisibleAccounts();
   const { triggerAlert } = useAlert();
   const { featureFlags } = useFeatureFlagsStore();
 
@@ -146,9 +146,9 @@ export function SendTransaction({
   }, [appHost, appName, appSession.chainId, rejectRequest]);
 
   const isWatchingWallet = useMemo(() => {
-    const watchedAddresses = watchedWallets?.map(({ address }) => address);
+    const watchedAddresses = watchedAccounts?.map(({ address }) => address);
     return selectedWallet && watchedAddresses?.includes(selectedWallet);
-  }, [selectedWallet, watchedWallets]);
+  }, [selectedWallet, watchedAccounts]);
 
   useEffect(() => {
     if (!featureFlags.full_watching_wallets && isWatchingWallet) {
