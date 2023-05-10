@@ -48,10 +48,15 @@
   },
   "remove_wallet_prompt": {
     "error": "Error removing wallet",
-    "hide": "Hide",
     "remove": "Remove",
+    "remove_title": "Remove %{name}",
+    "remove_last_wallet_title": "Remove %{name} and your Secret Recovery Phrase",
+    "remove_description": "This will remove the wallet from this list and delete all data associated with it.",
+    "remove_last_wallet_description": "This will permanently delete your wallet and Secret Recovery Phrase and all associated data",
+    "hide": "Hide",
+    "hide_title": "Hide %{name}",
     "hide_description": "This only removes the wallet from this list. You can find this wallet and additional management options in settings.",
-    "remove_description": "This will remove the wallet from this list and delete all data associated with it."
+    "cancel": "Cancel"
   },
   "settings": {
     "title": "Settings",
@@ -389,7 +394,8 @@
     "copy_address": "Copy address",
     "view_on_etherscan": "View on Etherscan",
     "view_on_explorer": "View on Explorer",
-    "delete_contact": "Delete contact"
+    "delete_contact": "Delete contact",
+    "contact_address_copied": "Address Copied"
   },
   "sign": {
     "title": "Sign"
@@ -446,7 +452,8 @@
     "add_wallets": "Add wallets",
     "edit_wallets": "Edit wallets",
     "loading": "Hold tight while we look up all your wallets...",
-    "importing": "Importing your wallets..."
+    "importing": "Importing your wallets...",
+    "account_summary": "Tokens: %{tokensAmount} ‧ Last tx: %{lastTx} ago"
   },
   "watch_wallet": {
     "title": "Watch an Ethereum address",
@@ -474,7 +481,13 @@
     "add_n_wallets": "Add %{count} wallets",
     "add_wallet": "Add wallet",
     "importing_your_wallet": "Importing your wallet...",
-    "importing_your_wallets": "Importing your wallets..."
+    "importing_your_wallets": "Importing your wallets...",
+    "sort": {
+      "title": "Sort",
+      "default": "Default",
+      "token_balance": "Token Balance",
+      "last_transaction": "Last Transaction"
+    }
   },
   "seed_verify": {
     "title": "Verify your Secret Recovery Phrase",
