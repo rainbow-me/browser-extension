@@ -27,7 +27,7 @@ export function ImportOrConnect() {
             <Text size="16pt" weight="bold" color="label" align="center">
               {i18n.t('import_or_connect.title')}
             </Text>
-            <Box paddingHorizontal="19px">
+            <Box paddingHorizontal="15px">
               <Text
                 size="12pt"
                 weight="regular"

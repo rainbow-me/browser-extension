@@ -153,7 +153,7 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
             <Text size="16pt" weight="bold" color="label" align="center">
               {i18n.t('import_wallet.title')}
             </Text>
-            <Box paddingHorizontal="32px">
+            <Box paddingHorizontal="28px">
               <Text
                 size="12pt"
                 weight="regular"

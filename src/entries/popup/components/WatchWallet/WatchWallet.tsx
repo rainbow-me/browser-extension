@@ -155,7 +155,7 @@ const WatchWallet = ({
           <Text size="16pt" weight="bold" color="label" align="center">
             {i18n.t('watch_wallet.title')}
           </Text>
-          <Box paddingHorizontal="24px">
+          <Box paddingHorizontal="14px">
             <Text
               size="12pt"
               weight="regular"

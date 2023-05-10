@@ -71,14 +71,16 @@ export function SeedReveal() {
                   {i18n.t('seed_reveal.title')}
                 </Text>
               </Inline>
-              <Text
-                size="12pt"
-                weight="regular"
-                color="labelTertiary"
-                align="center"
-              >
-                {i18n.t('seed_reveal.write_down_seed_importance')}
-              </Text>
+              <Box paddingHorizontal="24px">
+                <Text
+                  size="12pt"
+                  weight="regular"
+                  color="labelTertiary"
+                  align="center"
+                >
+                  {i18n.t('seed_reveal.write_down_seed_importance')}
+                </Text>
+              </Box>
             </Stack>
 
             <Box width="full" style={{ width: '106px' }}>

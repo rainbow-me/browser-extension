@@ -97,14 +97,16 @@ export function CreatePassword() {
                 <Text size="16pt" weight="bold" color="label" align="center">
                   {i18n.t('create_password.title')}
                 </Text>
-                <Text
-                  size="12pt"
-                  weight="regular"
-                  color="labelTertiary"
-                  align="center"
-                >
-                  {i18n.t('create_password.description')}
-                </Text>
+                <Box paddingHorizontal="15px">
+                  <Text
+                    size="12pt"
+                    weight="regular"
+                    color="labelTertiary"
+                    align="center"
+                  >
+                    {i18n.t('create_password.description')}
+                  </Text>
+                </Box>
               </Stack>
               <Box width="full" style={{ width: '106px' }}>
                 <Separator color="separatorTertiary" strokeWeight="1px" />
