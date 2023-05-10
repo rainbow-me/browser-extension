@@ -26,23 +26,13 @@ import {
   waitAndClick,
 } from '../helpers';
 import { convertRawAmountToDecimalFormat, subtract } from '../numbers';
+import { SWAP_VARIABLES, TEST_VARIABLES } from '../walletVariables';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
-
-const DAI_MAINNET_ID = '0x6b175474e89094c44da98b954eedeac495271d0f_1';
-const ZEROX_MAINNET_ID = '0xe41d2489571d322189246dafa5ebde1f4699f498_1';
-const ETH_MAINNET_ID = 'eth_1';
-const OP_OPTIMISM_ID = '0x4200000000000000000000000000000000000042_10';
-const MATIC_POLYGON_ID = '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0_137';
-const GMX_ARBITRUM_ID = '0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a_42161';
-const UNI_BNB_ID = '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984_56';
-const WBTC_MAINNET_ID = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599_1';
-
-const TEST_ADDRESS_1 = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
 
 beforeAll(async () => {
   driver = await initDriverWithOptions({
@@ -263,11 +253,11 @@ it('should be able to open token to sell input and select assets', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${ETH_MAINNET_ID}-token-to-sell-row`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-row`,
     driver,
   });
   const toSellInputEthSelected = await findElementByTestId({
-    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(toSellInputEthSelected).toBeTruthy();
@@ -276,7 +266,7 @@ it('should be able to open token to sell input and select assets', async () => {
     driver,
   });
   const toBuyInputEthSelected = await findElementByTestId({
-    id: `${ETH_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(toBuyInputEthSelected).toBeTruthy();
@@ -297,7 +287,7 @@ it('should be able to open press max on token to sell input', async () => {
     driver,
   });
   const ethValueBeforeGas = await getTextFromTextInput({
-    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(ethValueBeforeGas).toEqual('10000');
@@ -310,21 +300,21 @@ it('should be able to open press max on token to sell input', async () => {
 
 it('should be able to remove token to sell and select it again', async () => {
   await findElementByTestIdAndClick({
-    id: `${ETH_MAINNET_ID}-token-to-sell-token-input-remove`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${ETH_MAINNET_ID}-token-to-sell-row`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-row`,
     driver,
   });
   const toSellInputEthSelected = await findElementByTestId({
-    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(toSellInputEthSelected).toBeTruthy();
   // should clear input value
   const ethValueAfterSelection = await getTextFromTextInput({
-    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(ethValueAfterSelection).toEqual('');
@@ -337,16 +327,16 @@ it('should be able to open token to buy input and select assets', async () => {
   });
   // check sell asset is not present as buy option
   const elementFound = await doNotFindElementByTestId({
-    id: `${ETH_MAINNET_ID}-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-buy-row`,
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${DAI_MAINNET_ID}-favorites-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-favorites-token-to-buy-row`,
     driver,
   });
   expect(elementFound).toBeFalsy();
   const toBuyInputDaiSelected = await findElementByTestId({
-    id: `${DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(toBuyInputDaiSelected).toBeTruthy();
@@ -354,7 +344,7 @@ it('should be able to open token to buy input and select assets', async () => {
 
 it('should be able to open remove token to buy and check favorites and verified lists are visible', async () => {
   await findElementByTestIdAndClick({
-    id: `${DAI_MAINNET_ID}-token-to-buy-token-input-remove`,
+    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   const favoritesSection = await findElementByTestId({
@@ -371,20 +361,20 @@ it('should be able to open remove token to buy and check favorites and verified 
 
 it('should be able to favorite a token and check the info button is present', async () => {
   await findElementByTestIdAndClick({
-    id: `${ZEROX_MAINNET_ID}-verified-token-to-buy-row-favorite-button`,
+    id: `${SWAP_VARIABLES.ZEROX_MAINNET_ID}-verified-token-to-buy-row-favorite-button`,
     driver,
   });
   await delayTime('short');
   await findElementByTestIdAndClick({
-    id: `${ZEROX_MAINNET_ID}-favorites-token-to-buy-row-info-button`,
+    id: `${SWAP_VARIABLES.ZEROX_MAINNET_ID}-favorites-token-to-buy-row-info-button`,
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${ZEROX_MAINNET_ID}-favorites-token-to-buy-row-info-button-copy`,
+    id: `${SWAP_VARIABLES.ZEROX_MAINNET_ID}-favorites-token-to-buy-row-info-button-copy`,
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${WBTC_MAINNET_ID}-favorites-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-favorites-token-to-buy-row`,
     driver,
   });
 });
@@ -405,16 +395,16 @@ it('should be able to check price and balance of token to buy', async () => {
 
 it('should be able to flip correctly', async () => {
   await findElementByTestIdAndClick({
-    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
   await typeOnTextInput({
-    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: 1,
     driver,
   });
   const assetToSellInputText = await getTextFromTextInput({
-    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(assetToSellInputText).toBe('1');
@@ -422,7 +412,7 @@ it('should be able to flip correctly', async () => {
   await delayTime('very-long');
 
   const assetToBuyInputText = await getTextFromTextInput({
-    id: `${WBTC_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(assetToBuyInputText).not.toBe('');
@@ -435,14 +425,14 @@ it('should be able to flip correctly', async () => {
   await delayTime('very-long');
 
   const assetToSellInputTextAfterFlip = await getTextFromTextInput({
-    id: `${WBTC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
 
   expect(assetToSellInputTextAfterFlip).not.toEqual('');
 
   const assetToBuyInputTextAfterFlip = await getTextFromTextInput({
-    id: `${ETH_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(assetToBuyInputTextAfterFlip).toEqual('1');
@@ -463,7 +453,7 @@ it('should be able to check insufficient native asset for gas', async () => {
   });
   await delayTime('short');
   await typeOnTextInput({
-    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: `\b10000`,
     driver,
   });
@@ -486,7 +476,7 @@ it.skip('should be able to see small market warning', async () => {
 it('should be able to filter assets to buy by network', async () => {
   // OP
   await findElementByTestIdAndClick({
-    id: `${WBTC_MAINNET_ID}-token-to-buy-token-input-remove`,
+    id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -504,12 +494,12 @@ it('should be able to filter assets to buy by network', async () => {
   });
   await delayTime('long');
   await findElementByTestIdAndClick({
-    id: `${OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
     driver,
   });
   // POLYGON
   await findElementByTestIdAndClick({
-    id: `${OP_OPTIMISM_ID}-token-to-buy-token-input-remove`,
+    id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -527,12 +517,12 @@ it('should be able to filter assets to buy by network', async () => {
   });
   await delayTime('long');
   await findElementByTestIdAndClick({
-    id: `${MATIC_POLYGON_ID}-favorites-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.MATIC_POLYGON_ID}-favorites-token-to-buy-row`,
     driver,
   });
   // ARBITRUM
   await findElementByTestIdAndClick({
-    id: `${MATIC_POLYGON_ID}-token-to-buy-token-input-remove`,
+    id: `${SWAP_VARIABLES.MATIC_POLYGON_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -550,12 +540,12 @@ it('should be able to filter assets to buy by network', async () => {
   });
   await delayTime('long');
   await findElementByTestIdAndClick({
-    id: `${GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
     driver,
   });
   // BNB
   await findElementByTestIdAndClick({
-    id: `${GMX_ARBITRUM_ID}-token-to-buy-token-input-remove`,
+    id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -573,11 +563,11 @@ it('should be able to filter assets to buy by network', async () => {
   });
   await delayTime('long');
   await findElementByTestIdAndClick({
-    id: `${UNI_BNB_ID}-verified-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.UNI_BNB_ID}-verified-token-to-buy-row`,
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${UNI_BNB_ID}-token-to-buy-token-input-remove`,
+    id: `${SWAP_VARIABLES.UNI_BNB_ID}-token-to-buy-token-input-remove`,
     driver,
   });
 });
@@ -598,7 +588,7 @@ it('should be able to see no route explainer', async () => {
   });
   await delayTime('long');
   await findElementByTestIdAndClick({
-    id: `${OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -607,7 +597,7 @@ it('should be able to see no route explainer', async () => {
   });
   await delayTime('long');
   await findElementByTestIdAndClick({
-    id: `${ETH_MAINNET_ID}-token-to-buy-token-input-remove`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -625,11 +615,11 @@ it('should be able to see no route explainer', async () => {
   });
   await delayTime('long');
   await findElementByTestIdAndClick({
-    id: `${GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
     driver,
   });
   await typeOnTextInput({
-    id: `${OP_OPTIMISM_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
     text: 1,
   });
@@ -656,7 +646,7 @@ it('should be able to see no route explainer', async () => {
 
 it('should be able to find exact match on other networks', async () => {
   await findElementByTestIdAndClick({
-    id: `${OP_OPTIMISM_ID}-token-to-sell-token-input-remove`,
+    id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-token-to-sell-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -664,7 +654,7 @@ it('should be able to find exact match on other networks', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${GMX_ARBITRUM_ID}-token-to-buy-token-input-remove`,
+    id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-token-to-buy-token-input-remove`,
     driver,
   });
 
@@ -692,11 +682,11 @@ it('should be able to find exact match on other networks', async () => {
   expect(onOtherNetworksSections).toBeTruthy();
 
   await findElementByTestIdAndClick({
-    id: `${OP_OPTIMISM_ID}-other_networks-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-other_networks-token-to-buy-row`,
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${OP_OPTIMISM_ID}-token-to-buy-token-input-remove`,
+    id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -711,11 +701,11 @@ it('should be able to go to review a swap', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${ETH_MAINNET_ID}-token-to-sell-row`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-row`,
     driver,
   });
   const toSellInputEthSelected = await findElementByTestId({
-    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(toSellInputEthSelected).toBeTruthy();
@@ -724,16 +714,16 @@ it('should be able to go to review a swap', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${DAI_MAINNET_ID}-favorites-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-favorites-token-to-buy-row`,
     driver,
   });
   const toBuyInputDaiSelected = await findElementByTestId({
-    id: `${DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(toBuyInputDaiSelected).toBeTruthy();
   await typeOnTextInput({
-    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: 1,
     driver,
   });
@@ -884,13 +874,17 @@ it('should be able to execute swap', async () => {
 
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
 
-  const ethBalanceBeforeSwap = await provider.getBalance(TEST_ADDRESS_1);
+  const ethBalanceBeforeSwap = await provider.getBalance(
+    TEST_VARIABLES.SEED_WALLET.ADDRESS,
+  );
   await delayTime('very-long');
   await findElementByTestIdAndClick({ id: 'swap-confirmation-button', driver });
   await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
   await delayTime('very-long');
-  const ethBalanceAfterSwap = await provider.getBalance(TEST_ADDRESS_1);
+  const ethBalanceAfterSwap = await provider.getBalance(
+    TEST_VARIABLES.SEED_WALLET.ADDRESS,
+  );
   const balanceDifference = subtract(
     ethBalanceBeforeSwap.toString(),
     ethBalanceAfterSwap.toString(),

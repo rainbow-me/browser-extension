@@ -18,18 +18,13 @@ import {
   switchWallet,
   typeOnTextInput,
 } from '../helpers';
+import { TEST_VARIABLES } from '../walletVariables';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
-const watchedWallet = 'djweth.eth';
-const watchedWalletTwo = 'brdy.eth';
-const seedWallet = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
-const pkWallet = '0x38eDa688Cd8DFC6FeE8016c85803a584A0564dDC';
-const privateKey =
-  '0xaeb5635a53c33d3c0d92c32881d7613ee9fe18be77772054f5e025bc4fa8c851';
 
 describe('Watch wallet then add more and switch between them', () => {
   beforeAll(async () => {
@@ -60,7 +55,7 @@ describe('Watch wallet then add more and switch between them', () => {
     await typeOnTextInput({
       id: 'secret-textarea',
       driver,
-      text: watchedWallet,
+      text: TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
     });
 
     await findElementByTestIdAndClick({
@@ -86,7 +81,10 @@ describe('Watch wallet then add more and switch between them', () => {
     );
 
     const actual = await label.getText();
-    const expected = ['0x70c1...43C4', watchedWallet];
+    const expected = [
+      '0x70c1...43C4',
+      TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
+    ];
     expect(expected.includes(actual)).toEqual(true);
   });
 
@@ -105,7 +103,7 @@ describe('Watch wallet then add more and switch between them', () => {
     await typeOnTextInput({
       id: 'secret-textarea',
       driver,
-      text: privateKey,
+      text: TEST_VARIABLES.PRIVATE_KEY_WALLET.SECRET,
     });
 
     await findElementByTestIdAndClick({
@@ -116,7 +114,9 @@ describe('Watch wallet then add more and switch between them', () => {
 
     it('should display pk account wallet name', async () => {
       const account = await getTextFromText({ id: 'account-name', driver });
-      expect(account).toBe(await shortenAddress(pkWallet));
+      expect(account).toBe(
+        await shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),
+      );
     });
   });
 
@@ -135,7 +135,7 @@ describe('Watch wallet then add more and switch between them', () => {
     await typeOnTextInput({
       id: 'secret-textarea',
       driver,
-      text: watchedWalletTwo,
+      text: TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
     });
 
     await findElementByTestIdAndClick({
@@ -152,7 +152,10 @@ describe('Watch wallet then add more and switch between them', () => {
       );
 
       const actual = await label.getText();
-      const expected = ['0x089b...be9E', watchedWalletTwo];
+      const expected = [
+        '0x089b...be9E',
+        TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
+      ];
       expect(expected.includes(actual)).toEqual(true);
     });
   });
@@ -187,31 +190,53 @@ describe('Watch wallet then add more and switch between them', () => {
 
     it('should display seed account name', async () => {
       const account = await getTextFromText({ id: 'account-name', driver });
-      expect(account).toBe(await shortenAddress(pkWallet));
+      expect(account).toBe(
+        await shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),
+      );
     });
   });
 
   it('should be able to switch to the watched wallet', async () => {
-    await switchWallet(watchedWallet, rootURL, driver);
+    await switchWallet(
+      TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
+      rootURL,
+      driver,
+    );
     const wallet = await getTextFromText({ id: 'account-name', driver });
-    expect(wallet).toBe(await shortenAddress(watchedWallet));
+    expect(wallet).toBe(
+      await shortenAddress(TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS),
+    );
   });
 
   it('should be able to switch to the pk wallet', async () => {
-    await switchWallet(pkWallet, rootURL, driver);
+    await switchWallet(
+      TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS,
+      rootURL,
+      driver,
+    );
     const wallet = await getTextFromText({ id: 'account-name', driver });
-    expect(wallet).toBe(await shortenAddress(pkWallet));
+    expect(wallet).toBe(
+      await shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),
+    );
   });
 
   it('should be able to switch to the seed wallet', async () => {
-    await switchWallet(seedWallet, rootURL, driver);
+    await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
     const wallet = await getTextFromText({ id: 'account-name', driver });
-    expect(wallet).toBe(await shortenAddress(seedWallet));
+    expect(wallet).toBe(
+      await shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS),
+    );
   });
 
   it('should be able to switch to the second watched wallet', async () => {
-    await switchWallet(watchedWalletTwo, rootURL, driver);
+    await switchWallet(
+      TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
+      rootURL,
+      driver,
+    );
     const wallet = await getTextFromText({ id: 'account-name', driver });
-    expect(wallet).toBe(await shortenAddress(watchedWalletTwo));
+    expect(wallet).toBe(
+      await shortenAddress(TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS),
+    );
   });
 });

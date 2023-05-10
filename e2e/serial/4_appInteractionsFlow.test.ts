@@ -21,6 +21,7 @@ import {
   typeOnTextInput,
   waitAndClick,
 } from '../helpers';
+import { TEST_VARIABLES } from '../walletVariables';
 
 const TYPED_MESSAGE = {
   domain: {
@@ -90,7 +91,7 @@ describe('App interactions flow', () => {
     await typeOnTextInput({
       id: 'secret-textarea',
       driver,
-      text: 'test test test test test test test test test test test junk',
+      text: TEST_VARIABLES.SEED_WALLET.SECRET,
     });
 
     await findElementByTestIdAndClick({

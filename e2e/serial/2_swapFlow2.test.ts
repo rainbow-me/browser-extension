@@ -27,21 +27,13 @@ import {
   waitAndClick,
 } from '../helpers';
 import { convertRawAmountToDecimalFormat, subtract } from '../numbers';
+import { SWAP_VARIABLES, TEST_VARIABLES } from '../walletVariables';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
-
-const DAI_MAINNET_ID = '0x6b175474e89094c44da98b954eedeac495271d0f_1';
-const DAI_ARBITRUM_ID = '0x6b175474e89094c44da98b954eedeac495271d0f_42161';
-const ETH_MAINNET_ID = 'eth_1';
-const ETH_OPTIMISM_ID = 'eth_10';
-const USDC_ARBITRUM_ID = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_42161';
-const USDC_MAINNET_ID = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48_1';
-const DAI_MAINNET_ADDRESS = '0x6b175474e89094c44da98b954eedeac495271d0f';
-const TEST_ADDRESS_1 = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
 
 beforeAll(async () => {
   driver = await initDriverWithOptions({
@@ -113,7 +105,7 @@ it('should be able to go to swap flow', async () => {
 
 it('should be able to go to review a unlock and swap', async () => {
   await findElementByTestIdAndClick({
-    id: `${DAI_MAINNET_ID}-token-to-sell-row`,
+    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-sell-row`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -121,11 +113,11 @@ it('should be able to go to review a unlock and swap', async () => {
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${USDC_MAINNET_ID}-favorites-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.USDC_MAINNET_ID}-favorites-token-to-buy-row`,
     driver,
   });
   await typeOnTextInput({
-    id: `${DAI_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: `\b50`,
     driver,
   });
@@ -136,14 +128,22 @@ it('should be able to execute unlock and swap', async () => {
   const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
   await provider.ready;
   await delayTime('short');
-  const tokenContract = new Contract(DAI_MAINNET_ADDRESS, erc20ABI, provider);
-  const daiBalanceBeforeSwap = await tokenContract.balanceOf(TEST_ADDRESS_1);
+  const tokenContract = new Contract(
+    SWAP_VARIABLES.DAI_MAINNET_ADDRESS,
+    erc20ABI,
+    provider,
+  );
+  const daiBalanceBeforeSwap = await tokenContract.balanceOf(
+    TEST_VARIABLES.SEED_WALLET.ADDRESS,
+  );
 
   await findElementByTestIdAndClick({ id: 'swap-confirmation-button', driver });
   await delayTime('long');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
   await delayTime('long');
-  const daiBalanceAfterSwap = await tokenContract.balanceOf(TEST_ADDRESS_1);
+  const daiBalanceAfterSwap = await tokenContract.balanceOf(
+    TEST_VARIABLES.SEED_WALLET.ADDRESS,
+  );
   const balanceDifference = subtract(
     daiBalanceBeforeSwap.toString(),
     daiBalanceAfterSwap.toString(),
@@ -163,12 +163,12 @@ it('should be able to go to swap flow', async () => {
 
 it('should be able to go to review a crosschain swap', async () => {
   await findElementByTestIdAndClick({
-    id: `${DAI_MAINNET_ID}-token-to-sell-row`,
+    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-sell-row`,
     driver,
   });
   await delayTime('medium');
   const toSellInputDaiSelected = await findElementByTestId({
-    id: `${DAI_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(toSellInputDaiSelected).toBeTruthy();
@@ -185,7 +185,7 @@ it('should be able to go to review a crosschain swap', async () => {
     driver,
   });
   const daiBridge = await findElementByTestId({
-    id: `${DAI_ARBITRUM_ID}-bridge-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.DAI_ARBITRUM_ID}-bridge-token-to-buy-row`,
     driver,
   });
   expect(daiBridge).toBeTruthy();
@@ -196,11 +196,11 @@ it('should be able to go to review a crosschain swap', async () => {
     text: 'USDC',
   });
   await findElementByTestIdAndClick({
-    id: `${USDC_ARBITRUM_ID}-favorites-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.USDC_ARBITRUM_ID}-favorites-token-to-buy-row`,
     driver,
   });
   const toBuyInputUsdcSelected = await findElementByTestId({
-    id: `${USDC_ARBITRUM_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.USDC_ARBITRUM_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(toBuyInputUsdcSelected).toBeTruthy();
@@ -369,21 +369,21 @@ it('should be able to see crosschain swap information in review sheet', async ()
 
 it('should be able to go to review a bridge', async () => {
   await findElementByTestIdAndClick({
-    id: `${DAI_MAINNET_ID}-token-to-sell-token-input-remove`,
+    id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-sell-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
-    id: `${ETH_MAINNET_ID}-token-to-sell-row`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-row`,
     driver,
   });
   await delayTime('medium');
   const toSellInputEthSelected = await findElementByTestId({
-    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(toSellInputEthSelected).toBeTruthy();
   await findElementByTestIdAndClick({
-    id: `${USDC_ARBITRUM_ID}-token-to-buy-token-input-remove`,
+    id: `${SWAP_VARIABLES.USDC_ARBITRUM_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({
@@ -400,16 +400,16 @@ it('should be able to go to review a bridge', async () => {
     text: 'eth',
   });
   await findElementByTestIdAndClick({
-    id: `${ETH_OPTIMISM_ID}-bridge-token-to-buy-row`,
+    id: `${SWAP_VARIABLES.ETH_OPTIMISM_ID}-bridge-token-to-buy-row`,
     driver,
   });
   const toBuyInputEthSelected = await findElementByTestId({
-    id: `${ETH_OPTIMISM_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.ETH_OPTIMISM_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(toBuyInputEthSelected).toBeTruthy();
   await typeOnTextInput({
-    id: `${ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: 1,
     driver,
   });
