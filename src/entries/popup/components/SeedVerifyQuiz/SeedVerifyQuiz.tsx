@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
+import CorrectSeedQuiz from 'static/assets/audio/correct_seed_quiz.mp3';
+import IncorrectSeedQuiz from 'static/assets/audio/incorrect_seed_quiz.mp3';
 import { i18n } from '~/core/languages';
 import {
   Box,
@@ -189,10 +191,12 @@ export function SeedVerifyQuiz({
           selectedWords[2].index === 11
         ) {
           setValidated(true);
+          new Audio(CorrectSeedQuiz).play();
           setTimeout(() => {
             onQuizValidated();
           }, 1200);
         } else {
+          new Audio(IncorrectSeedQuiz).play();
           setIncorrect(true);
         }
       }, 100);

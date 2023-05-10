@@ -23,6 +23,7 @@ import {
   MoreInfoButton,
   MoreInfoOption,
 } from '~/entries/popup/components/MoreInfoButton/MoreInfoButton';
+import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import { getWallet, remove, wipe } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
@@ -59,6 +60,10 @@ const InfoButtonOptions = ({
     {
       onSelect: () => {
         navigator.clipboard.writeText(account as string);
+        triggerToast({
+          title: i18n.t('wallet_header.copy_toast'),
+          description: truncateAddress(account),
+        });
       },
       label: i18n.t(
         'settings.privacy_and_security.wallets_and_keys.wallet_details.copy_address',
@@ -354,7 +359,6 @@ const WalletRow = ({
               />
             )}
             <MoreInfoButton
-              controlled
               open={menuOpen}
               onClose={() => setMenuOpen(false)}
               onOpen={() => setMenuOpen(true)}
