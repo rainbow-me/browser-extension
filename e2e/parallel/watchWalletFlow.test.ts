@@ -197,6 +197,7 @@ describe('Watch wallet then add more and switch between them', () => {
   });
 
   it('should be able to switch to the watched wallet', async () => {
+    await delayTime('medium');
     await switchWallet(
       TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
       rootURL,
@@ -209,6 +210,7 @@ describe('Watch wallet then add more and switch between them', () => {
   });
 
   it('should be able to switch to the pk wallet', async () => {
+    await delayTime('medium');
     await switchWallet(
       TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS,
       rootURL,
@@ -221,6 +223,7 @@ describe('Watch wallet then add more and switch between them', () => {
   });
 
   it('should be able to switch to the seed wallet', async () => {
+    await delayTime('medium');
     await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
     const wallet = await getTextFromText({ id: 'account-name', driver });
     expect(wallet).toBe(
@@ -229,6 +232,7 @@ describe('Watch wallet then add more and switch between them', () => {
   });
 
   it('should be able to switch to the second watched wallet', async () => {
+    await delayTime('medium');
     await switchWallet(
       TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
       rootURL,
