@@ -208,7 +208,7 @@ export function SeedVerifyQuiz({
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
-      <Stack space="24px">
+      <Stack space="24px" alignHorizontal="center">
         <Stack space="12px">
           <Text size="16pt" weight="bold" color="label" align="center">
             {i18n.t('seed_verify.title')}
@@ -293,7 +293,7 @@ export function SeedVerifyQuiz({
         </Box>
       </Box>
 
-      <Box paddingTop="19px">
+      <Box paddingTop="10px">
         <Button
           color="labelTertiary"
           height="44px"
