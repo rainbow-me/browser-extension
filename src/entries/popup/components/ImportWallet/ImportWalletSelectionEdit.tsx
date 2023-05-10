@@ -1,7 +1,10 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-nested-ternary */
 import React, { useCallback, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import {
+  unstable_useBlocker as useBlocker,
+  useLocation,
+} from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -37,6 +40,8 @@ export function ImportWalletSelectionEdit({
     useWalletsSummary({
       addresses: state.accountsToImport,
     });
+
+  const blocker = useBlocker(isAddingWallets);
 
   const sortedAccountsToImport = useMemo(() => {
     switch (sortMethod) {
@@ -87,16 +92,20 @@ export function ImportWalletSelectionEdit({
       await wallet.remove(accountsIgnored[i] as Address);
     }
 
+    setIsAddingWallets(false);
+    blocker?.proceed?.();
+
     onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
   }, [
     isAddingWallets,
     selectedAccounts,
     setIsAddingWallets,
-    onboarding,
-    navigate,
+    blocker,
     state.secrets,
     accountsIgnored,
     setCurrentAddress,
+    onboarding,
+    navigate,
   ]);
 
   const toggleAccount = useCallback(

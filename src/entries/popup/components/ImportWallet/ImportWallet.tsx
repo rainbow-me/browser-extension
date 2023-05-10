@@ -3,7 +3,10 @@ import { isValidMnemonic } from '@ethersproject/hdnode';
 import { motion } from 'framer-motion';
 import { startsWith } from 'lodash';
 import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import {
+  unstable_useBlocker as useBlocker,
+  useLocation,
+} from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -48,8 +51,11 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
   const { state } = useLocation();
   const navigate = useRainbowNavigate();
   const [isValid, setIsValid] = useState(false);
+  const [isAddingWallets, setIsAddingWallets] = useState(false);
   const [secrets, setSecrets] = useState((state.secrets as string[]) || ['']);
   const { setCurrentAddress } = useCurrentAddressStore();
+
+  const blocker = useBlocker(isAddingWallets);
 
   const [validity, setValidity] = useState<
     { valid: boolean; too_long: boolean; type: string | undefined }[]
@@ -105,13 +111,23 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
   );
   const handleImportWallet = useCallback(async () => {
     if (secrets.length === 1 && secrets[0] === '') return;
+    if (isAddingWallets) return;
     // If it's only one private key or address, import it directly and go to wallet screen
     if (secrets.length === 1) {
       if (isValidPrivateKey(secrets[0]) || isAddress(secrets[0])) {
-        const address = (await wallet.importWithSecret(secrets[0])) as Address;
-        setCurrentAddress(address);
-        onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
-        return;
+        try {
+          setIsAddingWallets(true);
+          const address = (await wallet.importWithSecret(
+            secrets[0],
+          )) as Address;
+          setCurrentAddress(address);
+          blocker?.proceed?.();
+          onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
+          return;
+        } finally {
+          blocker?.proceed?.();
+          setIsAddingWallets(false);
+        }
       }
     }
 
@@ -122,7 +138,14 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
       : navigate(ROUTES.NEW_IMPORT_WALLET_SELECTION, {
           state: { secrets },
         });
-  }, [navigate, onboarding, secrets, setCurrentAddress]);
+  }, [
+    blocker,
+    isAddingWallets,
+    navigate,
+    onboarding,
+    secrets,
+    setCurrentAddress,
+  ]);
 
   const handleAddAnotherOne = useCallback(() => {
     const newSecrets = [...secrets, ''];

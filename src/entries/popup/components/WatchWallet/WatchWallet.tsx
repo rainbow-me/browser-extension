@@ -4,6 +4,7 @@ import { isAddress } from '@ethersproject/address';
 import { Address, fetchEnsAddress } from '@wagmi/core';
 import { motion } from 'framer-motion';
 import React, { KeyboardEvent, useCallback, useMemo, useState } from 'react';
+import { unstable_useBlocker as useBlocker } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -55,6 +56,8 @@ const WatchWallet = ({
   const { setCurrentAddress } = useCurrentAddressStore();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
+
+  const blocker = useBlocker(isLoading);
 
   const toggleAccount = useCallback(
     (address: string) => {
@@ -119,6 +122,10 @@ const WatchWallet = ({
       const importedAddress = (await wallet.importWithSecret(
         addressToImport,
       )) as Address;
+
+      setIsLoading(false);
+      blocker?.proceed?.();
+
       // Select the first wallet
       if (!defaultAccountChosen) {
         defaultAccountChosen = true;
@@ -131,6 +138,7 @@ const WatchWallet = ({
     address,
     additionalAccounts,
     onFinishImporting,
+    blocker,
     setCurrentAddress,
   ]);
 
