@@ -178,23 +178,25 @@ const WatchWallet = ({
             width="full"
             paddingTop="80px"
           >
-            <Text
-              size="14pt"
-              weight="regular"
-              color="labelSecondary"
-              align="center"
-            >
-              {i18n.t('watch_wallet.loading')}
-            </Text>
+            <Stack space="20px">
+              <Text
+                size="14pt"
+                weight="regular"
+                color="labelSecondary"
+                align="center"
+              >
+                {i18n.t('watch_wallet.loading')}
+              </Text>
 
-            <Box
-              width="fit"
-              alignItems="center"
-              justifyContent="center"
-              style={{ margin: 'auto' }}
-            >
-              <Spinner size={32} />
-            </Box>
+              <Box
+                width="fit"
+                alignItems="center"
+                justifyContent="center"
+                style={{ margin: 'auto' }}
+              >
+                <Spinner size={32} />
+              </Box>
+            </Stack>
           </Box>
         ) : (
           <Box width="full">
