@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -17,8 +17,8 @@ import {
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
 
 import { wipe } from '../../handlers/wallet';
+import { useAccounts } from '../../hooks/useAccounts';
 import { useWalletName } from '../../hooks/useWalletName';
-import { useWallets } from '../../hooks/useWallets';
 
 export const RemoveWalletPrompt = ({
   show,
@@ -36,11 +36,11 @@ export const RemoveWalletPrompt = ({
   const { displayName } = useWalletName({ address: account });
   const [error, setError] = useState<string>();
 
-  const { allWallets } = useWallets();
+  const accounts = useAccounts();
 
   const isLastWallet = useMemo(
-    () => allWallets?.length === 1,
-    [allWallets?.length],
+    () => accounts?.length === 1,
+    [accounts?.length],
   );
 
   const { title, description, confirmText } = useMemo(() => {
