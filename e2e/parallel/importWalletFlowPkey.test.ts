@@ -37,7 +37,7 @@ describe('Import wallet flow', () => {
   afterAll(async () => driver.quit());
 
   // Import a wallet
-  it('should be able import a wallet via seed', async () => {
+  it('should be able import a wallet via pkey', async () => {
     //  Start from welcome screen
     await goToWelcome(driver, rootURL);
     await findElementByTestIdAndClick({
@@ -52,17 +52,14 @@ describe('Import wallet flow', () => {
     await typeOnTextInput({
       id: 'secret-textarea',
       driver,
-      text: 'test test test test test test test test test test test junk',
+      text: '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
     });
 
     await findElementByTestIdAndClick({
       id: 'import-wallets-button',
       driver,
     });
-    await findElementByTestIdAndClick({
-      id: 'add-wallets-button',
-      driver,
-    });
+
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
     await typeOnTextInput({
       id: 'confirm-password-input',

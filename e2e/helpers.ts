@@ -66,6 +66,28 @@ export async function getExtensionIdByName(driver, extensionName) {
     `);
 }
 
+export function shortenAddress(address) {
+  // if address is 42 in length and starts with 0x, then shorten it
+  // otherwise return the base value. this is so it doesn't break incase an ens, etc is input
+  return address.substring(0, 2) === '0x' && address.length === 42
+    ? `${address.substring(0, 6)}...${address.substring(38, 42)}`
+    : address;
+}
+
+export async function switchWallet(address, rootURL, driver) {
+  // find shortened address, go to popup, find header, click, find wallet you want to switch to and click
+  const shortenedAddress = shortenAddress(address);
+
+  await goToPopup(driver, rootURL, '#/home');
+  await findElementByIdAndClick({
+    id: 'header-account-name-shuffle',
+    driver,
+  });
+
+  await findElementByTextAndClick(driver, shortenedAddress);
+  await delayTime('short');
+}
+
 export async function getOnchainBalance(addy, contract) {
   const provider = ethers.getDefaultProvider('http://127.0.0.1:8545');
   const testContract = new ethers.Contract(contract, erc20ABI, provider);
@@ -92,6 +114,13 @@ export async function delay(ms) {
 
 export async function findElementByText(driver, text) {
   return driver.findElement(By.xpath("//*[contains(text(),'" + text + "')]"));
+}
+
+export async function findElementByTextAndClick(driver, text) {
+  const element = await driver.findElement(
+    By.xpath("//*[contains(text(),'" + text + "')]"),
+  );
+  await waitAndClick(element, driver);
 }
 
 export async function waitAndClick(element, driver) {
@@ -127,6 +156,12 @@ export async function doNotFindElementByTestId({ id, driver }) {
 export async function findElementByTestIdAndClick({ id, driver }) {
   await delay(200);
   const element = await findElementByTestId({ id, driver });
+  await waitAndClick(element, driver);
+}
+
+export async function findElementByIdAndClick({ id, driver }) {
+  await delay(200);
+  const element = await findElementById({ id, driver });
   await waitAndClick(element, driver);
 }
 
