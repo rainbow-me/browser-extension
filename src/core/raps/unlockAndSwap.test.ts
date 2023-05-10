@@ -40,19 +40,19 @@ const SELECTED_GAS = {
   estimatedTime: { amount: 15, display: '~ 15 sec' },
   gasFee: { amount: '4323764263200000', display: '$8.64' },
   maxBaseFee: {
-    amount: '85475285264',
-    display: '85.475285264 Gwei',
-    gwei: '85.5',
+    amount: '800000000000',
+    display: '800 Gwei',
+    gwei: '800',
   },
   maxPriorityFeePerGas: {
-    amount: '1000000000',
-    display: '1 Gwei',
-    gwei: '1',
+    amount: '3000000000',
+    display: '3 Gwei',
+    gwei: '3',
   },
   option: GasSpeed.NORMAL,
   transactionGasParams: {
-    maxPriorityFeePerGas: '0x3b9aca00',
-    maxFeePerGas: '0x1422542310',
+    maxPriorityFeePerGas: '0xb2d05e00',
+    maxFeePerGas: '0xba43b74000',
   },
 };
 

@@ -73,62 +73,71 @@ const getItemStyle = (
   draggableStyle: DraggingStyle | NotDraggingStyle | undefined,
 ) => ({
   ...draggableStyle,
+  cursor: isDragging ? 'grabbing' : 'default',
 });
 
 const infoButtonOptions = ({
   account,
+  isLastWallet,
   setRenameAccount,
   setRemoveAccount,
 }: {
   account: AddressAndType;
+  isLastWallet: boolean;
   setRenameAccount: React.Dispatch<React.SetStateAction<Address | undefined>>;
   setRemoveAccount: React.Dispatch<
     React.SetStateAction<AddressAndType | undefined>
   >;
   hide?: boolean;
-}): MoreInfoOption[] => [
-  {
-    onSelect: () => {
-      setRenameAccount(account.address);
+}): MoreInfoOption[] => {
+  const options: MoreInfoOption[] = [
+    {
+      onSelect: () => {
+        setRenameAccount(account.address);
+      },
+      label: i18n.t('wallet_switcher.rename_wallet'),
+      symbol: 'person.crop.circle.fill',
     },
-    label: i18n.t('wallet_switcher.rename_wallet'),
-    symbol: 'person.crop.circle.fill',
-  },
-  {
-    onSelect: () => {
-      navigator.clipboard.writeText(account.address as string);
-      triggerToast({
-        title: i18n.t('wallet_header.copy_toast'),
-        description: truncateAddress(account.address),
-      });
+    {
+      onSelect: () => {
+        navigator.clipboard.writeText(account.address as string);
+        triggerToast({
+          title: i18n.t('wallet_header.copy_toast'),
+          description: truncateAddress(account.address),
+        });
+      },
+      label: i18n.t('wallet_switcher.copy_address'),
+      subLabel: truncateAddress(account.address),
+      symbol: 'doc.on.doc.fill',
+      separator: !isLastWallet,
     },
-    label: i18n.t('wallet_switcher.copy_address'),
-    subLabel: truncateAddress(account.address),
-    symbol: 'doc.on.doc.fill',
-    separator: true,
-  },
-  ...(account.type === KeychainType.ReadOnlyKeychain
-    ? [
-        {
-          onSelect: () => {
-            setRemoveAccount(account);
+  ];
+
+  const removeOption =
+    account.type === KeychainType.ReadOnlyKeychain
+      ? [
+          {
+            onSelect: () => {
+              setRemoveAccount(account);
+            },
+            label: i18n.t('wallet_switcher.remove_wallet'),
+            symbol: 'trash.fill' as SymbolProps['symbol'],
+            color: 'red' as TextStyles['color'],
           },
-          label: i18n.t('wallet_switcher.remove_wallet'),
-          symbol: 'trash.fill' as SymbolProps['symbol'],
-          color: 'red' as TextStyles['color'],
-        },
-      ]
-    : [
-        {
-          onSelect: () => {
-            setRemoveAccount(account);
+        ]
+      : [
+          {
+            onSelect: () => {
+              setRemoveAccount(account);
+            },
+            label: i18n.t('wallet_switcher.hide_wallet'),
+            symbol: 'eye.slash.circle.fill' as SymbolProps['symbol'],
+            color: 'red' as TextStyles['color'],
           },
-          label: i18n.t('wallet_switcher.hide_wallet'),
-          symbol: 'eye.slash.circle.fill' as SymbolProps['symbol'],
-          color: 'red' as TextStyles['color'],
-        },
-      ]),
-];
+        ];
+
+  return isLastWallet ? options : options.concat(removeOption);
+};
 
 const bottomSpacing = 150 + (process.env.IS_DEV === 'true' ? 40 : 0);
 const topSpacing = 127;
@@ -172,8 +181,13 @@ export function WalletSwitcher() {
   const { hideWallet, unhideWallet } = useHiddenWalletsStore();
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useRainbowNavigate();
-  const { visibleWallets: accounts, fetchWallets } = useWallets();
+  const { visibleWallets: accounts, allWallets, fetchWallets } = useWallets();
   const { avatar } = useAvatar({ address: currentAddress });
+
+  const isLastWallet = useMemo(
+    () => allWallets?.length === 1,
+    [allWallets?.length],
+  );
 
   const { deleteWalletName } = useWalletNamesStore();
 
@@ -278,6 +292,7 @@ export function WalletSwitcher() {
                         account,
                         setRenameAccount,
                         setRemoveAccount,
+                        isLastWallet,
                       })}
                     />
                   </Inline>
@@ -293,6 +308,7 @@ export function WalletSwitcher() {
       currentAddress,
       filteredAndSortedAccounts,
       handleSelectAddress,
+      isLastWallet,
       isSearching,
     ],
   );
@@ -418,6 +434,7 @@ export function WalletSwitcher() {
               height="32px"
               width="full"
               borderRadius="9px"
+              testId={'add-wallet-button'}
             >
               {i18n.t('wallet_switcher.add_another_wallet')}
             </Button>

@@ -32,6 +32,7 @@ type AnimatedRouteProps = {
   protectedRoute?: UserStatusResult[] | true;
   rightNavbarComponent?: React.ReactElement;
   accentColor?: boolean;
+  maintainLocationState?: boolean;
 };
 
 export const animatedRouteValues: Record<
@@ -167,6 +168,7 @@ export const AnimatedRoute = React.forwardRef<
     protectedRoute,
     rightNavbarComponent,
     accentColor = true,
+    maintainLocationState,
   } = props;
   const { initial, end, exit } = animatedRouteValues[direction];
   const transition = animatedRouteTransitionConfig[direction];
@@ -199,9 +201,15 @@ export const AnimatedRoute = React.forwardRef<
             background={navbarBackground}
             leftComponent={
               navbarIcon === 'arrow' ? (
-                <Navbar.BackButton backTo={backTo} />
+                <Navbar.BackButton
+                  maintainLocationState={maintainLocationState}
+                  backTo={backTo}
+                />
               ) : (
-                <Navbar.CloseButton backTo={backTo} />
+                <Navbar.CloseButton
+                  maintainLocationState={maintainLocationState}
+                  backTo={backTo}
+                />
               )
             }
             rightComponent={rightNavbarComponent}
