@@ -81,8 +81,7 @@ export function CreatePassword() {
     navigate(ROUTES.READY);
   }, [isMatching, isValid, navigate, newPassword]);
 
-  const showSoftAlert = true;
-  // const showSoftAlert = strength !== null && strength > 0 && strength < 3;
+  const showSoftAlert = strength !== null && strength > 0 && strength < 3;
 
   return (
     <>
