@@ -29,7 +29,13 @@ export const useEnchanceWithEnsNames = <
   });
 
   return useMemo(
-    () => queries.map(({ data }, i) => data || accounts[i]),
+    () =>
+      queries.map(
+        ({ data }, i) =>
+          (data || accounts[i]) as TAccounts[number] & {
+            ensName?: FetchEnsNameResult;
+          },
+      ),
     [queries, accounts],
   );
 };
