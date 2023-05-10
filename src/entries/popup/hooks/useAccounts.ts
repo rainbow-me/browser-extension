@@ -38,9 +38,11 @@ export const useAccounts = <TSelect = Account[]>(
 
         if (!walletOrder.length) return accounts;
 
-        return walletOrder
-          .map((address) => accounts.find((a) => address === a.address))
-          .filter(Boolean);
+        const order = walletOrder;
+        return accounts.sort((a, b) => {
+          if (order.indexOf(a.address) > order.indexOf(b.address)) return 1;
+          return -1;
+        });
       },
       [walletNames, walletOrder],
     ),

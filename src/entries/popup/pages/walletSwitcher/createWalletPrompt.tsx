@@ -1,4 +1,4 @@
-import React, {
+import {
   KeyboardEvent,
   useCallback,
   useEffect,
