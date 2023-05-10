@@ -237,7 +237,6 @@ const ROUTE_DATA = [
         direction="right"
         protectedRoute={['NEW']}
         navbar
-        navbarIcon="arrow"
         backTo={ROUTES.SEED_BACKUP_PROMPT}
         accentColor={false}
       >
@@ -254,7 +253,6 @@ const ROUTE_DATA = [
         direction="right"
         protectedRoute={['NEW']}
         navbar
-        navbarIcon="arrow"
         accentColor={false}
       >
         <SeedVerify />
