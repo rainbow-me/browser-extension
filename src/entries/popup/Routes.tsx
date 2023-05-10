@@ -177,6 +177,10 @@ const ROUTE_DATA = [
         direction="right"
         protectedRoute={['NEW']}
         accentColor={false}
+        maintainLocationState
+        navbar
+        navbarIcon="arrow"
+        backTo={ROUTES.IMPORT}
       >
         <ImportWalletSelection />
       </AnimatedRoute>
@@ -192,6 +196,8 @@ const ROUTE_DATA = [
         title={i18n.t('edit_import_wallet_selection.title')}
         protectedRoute={['NEW']}
         accentColor={false}
+        maintainLocationState
+        backTo={ROUTES.IMPORT__SELECT}
       >
         <EditImportWalletSelection />
       </AnimatedRoute>
@@ -630,8 +636,6 @@ const ROUTE_DATA = [
       <AnimatedRoute
         backTo={ROUTES.NEW_IMPORT_WALLET_SELECTION}
         direction="right"
-        navbar
-        navbarIcon="arrow"
         protectedRoute
         background="surfaceSecondary"
       >

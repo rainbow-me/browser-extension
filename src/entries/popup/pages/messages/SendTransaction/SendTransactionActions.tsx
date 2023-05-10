@@ -2,10 +2,12 @@ import React from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { ChainId } from '~/core/types/chains';
 import { Column, Columns, Inset, Row, Rows, Stack } from '~/design-system';
 import { useApproveAppRequestValidations } from '~/entries/popup/hooks/approveAppRequest/useApproveAppRequestValidations';
+import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 
 import {
   AcceptRequestButton,
@@ -34,6 +36,14 @@ export const SendTransactionActions = ({
   const { selectedGas } = useGasStore();
   const { enoughNativeAssetForGas, buttonLabel } =
     useApproveAppRequestValidations({ chainId, selectedGas });
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.transaction_request.CANCEL.key) {
+        e.preventDefault();
+        onRejectRequest();
+      }
+    },
+  });
   return (
     <Inset vertical="20px" horizontal="20px">
       <Stack space="24px">

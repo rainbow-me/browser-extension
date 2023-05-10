@@ -9,6 +9,7 @@ import {
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
+  findElementByTextAndClick,
   getAllWindowHandles,
   getExtensionIdByName,
   getOnchainBalance,
@@ -17,6 +18,7 @@ import {
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
+  shortenAddress,
   transactionStatus,
   typeOnTextInput,
   waitAndClick,
@@ -30,7 +32,7 @@ const os = process.env.OS || 'mac';
 const walletAddress = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
 const recipientWalletAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 // eslint-disable-next-line prettier/prettier
-const shortenedAddress = `${walletAddress.substring(0, 6)}...${walletAddress.substring(38, 42)}`;
+const shortenedAddress = await shortenAddress(walletAddress);
 
 describe('App interactions flow', () => {
   beforeAll(async () => {
@@ -253,11 +255,7 @@ describe('App interactions flow', () => {
       driver,
     });
 
-    const connection = await findElementByText(
-      driver,
-      'bx-e2e-dapp.vercel.app',
-    );
-    await waitAndClick(connection, driver);
+    await findElementByTextAndClick(driver, 'bx-e2e-dapp.vercel.app');
     await findElementByTestIdAndClick({ id: 'switch-network-item-5', driver });
 
     await driver.get('https://bx-e2e-dapp.vercel.app/');

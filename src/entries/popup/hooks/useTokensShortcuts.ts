@@ -1,10 +1,14 @@
 import { useCallback, useMemo } from 'react';
+import { Address } from 'wagmi';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
+import { ChainId } from '~/core/types/chains';
+import { goToNewTab } from '~/core/utils/tabs';
+import { getTokenBlockExplorerUrl } from '~/core/utils/transactions';
 
 import { ROUTES } from '../urls';
 
@@ -27,6 +31,16 @@ export function useTokensShortcuts() {
     [featureFlags.full_watching_wallets, currentAccount.isWatched],
   );
 
+  const viewOnExplorer = useCallback(() => {
+    const explorer = getTokenBlockExplorerUrl({
+      chainId: selectedToken?.chainId || ChainId.mainnet,
+      address: selectedToken?.address || ('' as Address),
+    });
+    goToNewTab({
+      url: explorer,
+    });
+  }, [selectedToken]);
+
   const handleTokenShortcuts = useCallback(
     (e: KeyboardEvent) => {
       if (selectedToken) {
@@ -38,12 +52,23 @@ export function useTokensShortcuts() {
             // clear selected token
             setSelectedToken();
           }
-        } else if (e.key === shortcuts.tokens.SEND_ASSET.key) {
+        }
+        if (e.key === shortcuts.tokens.SEND_ASSET.key) {
           navigate(ROUTES.SEND);
+        }
+        if (e.key === shortcuts.tokens.VIEW_ASSET.key) {
+          viewOnExplorer();
         }
       }
     },
-    [allowSwap, navigate, selectedToken, setSelectedToken, triggerAlert],
+    [
+      allowSwap,
+      navigate,
+      selectedToken,
+      setSelectedToken,
+      triggerAlert,
+      viewOnExplorer,
+    ],
   );
   useKeyboardShortcut({
     condition: () => !!selectedToken,
