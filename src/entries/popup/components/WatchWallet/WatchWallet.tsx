@@ -217,12 +217,7 @@ const WatchWallet = ({
           ) : (
             <Box width="full">
               <Stack space="24px" alignHorizontal="center">
-                <Box
-                  width="full"
-                  // style={{
-                  //   height: onboarding ? 'undefined' : '375px',
-                  // }}
-                >
+                <Box width="full">
                   <Stack space="10px">
                     <Box
                       as={motion.div}

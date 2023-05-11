@@ -137,27 +137,34 @@ const ImportWalletSelection = ({
         </Stack>
       </Row>
 
-      <Row height="content">
+      <Row>
         {!isReady ? (
-          <Box alignItems="center" justifyContent="center" width="full">
-            <Text
-              size="14pt"
-              weight="regular"
-              color="labelSecondary"
-              align="center"
-            >
-              {isImporting
-                ? i18n.t('import_wallet_selection.importing')
-                : i18n.t('import_wallet_selection.loading')}
-            </Text>
-            <Box
-              width="fit"
-              alignItems="center"
-              justifyContent="center"
-              style={{ margin: 'auto' }}
-            >
-              <Spinner size={32} />
-            </Box>
+          <Box
+            alignItems="center"
+            justifyContent="center"
+            width="full"
+            paddingTop="80px"
+          >
+            <Stack space="20px">
+              <Text
+                size="14pt"
+                weight="regular"
+                color="labelSecondary"
+                align="center"
+              >
+                {isImporting
+                  ? i18n.t('import_wallet_selection.importing')
+                  : i18n.t('import_wallet_selection.loading')}
+              </Text>
+              <Box
+                width="fit"
+                alignItems="center"
+                justifyContent="center"
+                style={{ margin: 'auto' }}
+              >
+                <Spinner size={32} />
+              </Box>
+            </Stack>
           </Box>
         ) : (
           <>

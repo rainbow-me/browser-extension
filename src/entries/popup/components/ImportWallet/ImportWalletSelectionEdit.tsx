@@ -7,7 +7,7 @@ import { Address } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { minus } from '~/core/utils/numbers';
-import { Box, Button, Text } from '~/design-system';
+import { Box, Button, Stack, Text } from '~/design-system';
 
 import { Spinner } from '../../components/Spinner/Spinner';
 import * as wallet from '../../handlers/wallet';
@@ -128,27 +128,26 @@ export function ImportWalletSelectionEdit({
           width="full"
           paddingTop="80px"
         >
-          <Text
-            size="14pt"
-            weight="regular"
-            color="labelSecondary"
-            align="center"
-          >
-            {selectedAccounts === 1
-              ? i18n.t('edit_import_wallet_selection.importing_your_wallet')
-              : i18n.t('edit_import_wallet_selection.importing_your_wallets')}
-          </Text>
-          <br />
-          <br />
-          <br />
-          <Box
-            width="fit"
-            alignItems="center"
-            justifyContent="center"
-            style={{ margin: 'auto' }}
-          >
-            <Spinner size={32} />
-          </Box>
+          <Stack space="20px">
+            <Text
+              size="14pt"
+              weight="regular"
+              color="labelSecondary"
+              align="center"
+            >
+              {selectedAccounts === 1
+                ? i18n.t('edit_import_wallet_selection.importing_your_wallet')
+                : i18n.t('edit_import_wallet_selection.importing_your_wallets')}
+            </Text>
+            <Box
+              width="fit"
+              alignItems="center"
+              justifyContent="center"
+              style={{ margin: 'auto' }}
+            >
+              <Spinner size={32} />
+            </Box>
+          </Stack>
         </Box>
       ) : (
         <Box
