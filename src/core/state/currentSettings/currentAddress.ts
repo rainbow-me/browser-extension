@@ -22,6 +22,6 @@ export const currentAddressStore = createStore<CurrentAddressState>(
 );
 
 export const setCurrentAddress = (address: Address) =>
-  useCurrentAddressStore.setState((s) => ({ ...s, currentAddress: address }));
+  useCurrentAddressStore.setState({ currentAddress: address });
 
 export const useCurrentAddressStore = create(currentAddressStore);
