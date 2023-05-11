@@ -32,7 +32,7 @@ export const useSendAsset = () => {
   const [selectedAssetAddress, setSelectedAssetAddress] = useState<
     Address | typeof ETH_ADDRESS | ''
   >('');
-  const [selectedAssetChain, setSelectedAssetChain] = useState<ChainId>(1);
+  const [selectedAssetChain, setSelectedAssetChain] = useState<ChainId>(ChainId.mainnet);
   const { data: assets = [] } = useUserAssets(
     {
       address,
