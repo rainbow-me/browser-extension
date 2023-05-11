@@ -24,8 +24,8 @@ export function Welcome() {
 
   useEffect(() => {
     const wipeIncompleteWallet = async () => {
-      const { hasVault, passwordSet } = await wallet.getStatus();
-      if (hasVault && !passwordSet) {
+      const { hasVault } = await wallet.getStatus();
+      if (hasVault) {
         wallet.wipe();
       }
     };
