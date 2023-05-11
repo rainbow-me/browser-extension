@@ -1,10 +1,7 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-nested-ternary */
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  unstable_useBlocker as useBlocker,
-  useLocation,
-} from 'react-router-dom';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -14,6 +11,7 @@ import { Box, Button, Text } from '~/design-system';
 
 import { Spinner } from '../../components/Spinner/Spinner';
 import * as wallet from '../../handlers/wallet';
+import { useNavigationBlocker } from '../../hooks/useNavigationBlocker';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWalletsSummary } from '../../hooks/useWalletsSummary';
 import { WalletsSortMethod } from '../../pages/importWalletSelection/EditImportWalletSelection';
@@ -34,7 +32,6 @@ export function ImportWalletSelectionEdit({
 }) {
   const navigate = useRainbowNavigate();
   const { state } = useLocation();
-  const [shouldNavigate, setShouldNavigate] = useState(false);
   const [accountsIgnored, setAccountsIgnored] = useState<Address[]>([]);
   const { setCurrentAddress } = useCurrentAddressStore();
   const { isLoading: walletsSummaryisAddingWallets, walletsSummary } =
@@ -42,7 +39,10 @@ export function ImportWalletSelectionEdit({
       addresses: state.accountsToImport,
     });
 
-  const blocker = useBlocker(isAddingWallets);
+  const { proceedNavigation, blockNavigation } = useNavigationBlocker({
+    onProceed: () =>
+      onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME),
+  });
 
   const sortedAccountsToImport = useMemo(() => {
     switch (sortMethod) {
@@ -75,6 +75,7 @@ export function ImportWalletSelectionEdit({
     if (isAddingWallets) return;
     if (selectedAccounts === 0) return;
     setIsAddingWallets(true);
+    blockNavigation();
     let defaultAccountChosen = false;
     // Import all the secrets
     for (let i = 0; i < state.secrets.length; i++) {
@@ -94,25 +95,17 @@ export function ImportWalletSelectionEdit({
     }
 
     setIsAddingWallets(false);
-    blocker?.reset?.();
-
-    setShouldNavigate(true);
+    proceedNavigation();
   }, [
     isAddingWallets,
     selectedAccounts,
     setIsAddingWallets,
-    blocker,
+    blockNavigation,
+    proceedNavigation,
     state.secrets,
     accountsIgnored,
     setCurrentAddress,
   ]);
-
-  useEffect(() => {
-    if (shouldNavigate) {
-      console.log('----- should navigate onboarding', onboarding);
-      onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
-    }
-  }, [navigate, onboarding, shouldNavigate]);
 
   const toggleAccount = useCallback(
     (address: Address) => {

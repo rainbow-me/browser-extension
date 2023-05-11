@@ -3,10 +3,7 @@ import { isValidMnemonic } from '@ethersproject/hdnode';
 import { motion } from 'framer-motion';
 import { startsWith } from 'lodash';
 import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
-import {
-  unstable_useBlocker as useBlocker,
-  useLocation,
-} from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -32,6 +29,7 @@ import {
 } from '~/design-system/styles/designTokens';
 
 import * as wallet from '../../handlers/wallet';
+import { useNavigationBlocker } from '../../hooks/useNavigationBlocker';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -52,11 +50,14 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
   const navigate = useRainbowNavigate();
   const [isValid, setIsValid] = useState(false);
   const [isAddingWallets, setIsAddingWallets] = useState(false);
-  const [shouldNavigate, setShouldNavigate] = useState(false);
   const [secrets, setSecrets] = useState((state.secrets as string[]) || ['']);
   const { setCurrentAddress } = useCurrentAddressStore();
 
-  const blocker = useBlocker(isAddingWallets);
+  const { proceedNavigation, blockNavigation, unblockNavigation } =
+    useNavigationBlocker({
+      onProceed: () =>
+        onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME),
+    });
 
   const [validity, setValidity] = useState<
     { valid: boolean; too_long: boolean; type: string | undefined }[]
@@ -118,18 +119,17 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
       if (isValidPrivateKey(secrets[0]) || isAddress(secrets[0])) {
         try {
           setIsAddingWallets(true);
+          blockNavigation();
           const address = (await wallet.importWithSecret(
             secrets[0],
           )) as Address;
           setCurrentAddress(address);
           setIsAddingWallets(false);
-          blocker?.reset?.();
-          setShouldNavigate(true);
+          proceedNavigation();
           return;
         } finally {
           setIsAddingWallets(false);
-          blocker?.reset?.();
-          setIsAddingWallets(false);
+          unblockNavigation();
         }
       }
     }
@@ -142,19 +142,15 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
           state: { secrets },
         });
   }, [
-    blocker,
+    blockNavigation,
     isAddingWallets,
     navigate,
     onboarding,
+    proceedNavigation,
     secrets,
     setCurrentAddress,
+    unblockNavigation,
   ]);
-
-  useEffect(() => {
-    if (shouldNavigate) {
-      onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
-    }
-  }, [navigate, onboarding, shouldNavigate]);
 
   const handleAddAnotherOne = useCallback(() => {
     const newSecrets = [...secrets, ''];

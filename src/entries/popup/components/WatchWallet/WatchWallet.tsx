@@ -3,14 +3,7 @@
 import { isAddress } from '@ethersproject/address';
 import { Address, fetchEnsAddress } from '@wagmi/core';
 import { motion } from 'framer-motion';
-import React, {
-  KeyboardEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import { unstable_useBlocker as useBlocker } from 'react-router-dom';
+import React, { KeyboardEvent, useCallback, useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -36,6 +29,7 @@ import {
 } from '~/design-system/styles/designTokens';
 
 import * as wallet from '../../handlers/wallet';
+import { useNavigationBlocker } from '../../hooks/useNavigationBlocker';
 import { AddressOrEns } from '../AddressOrEns/AddressorEns';
 import { Checkbox } from '../Checkbox/Checkbox';
 import { Spinner } from '../Spinner/Spinner';
@@ -62,9 +56,11 @@ const WatchWallet = ({
   const { setCurrentAddress } = useCurrentAddressStore();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
-  const [shouldNavigate, setShouldNavigate] = useState(false);
 
-  const blocker = useBlocker(isLoading);
+  const { proceedNavigation, blockNavigation, unblockNavigation } =
+    useNavigationBlocker({
+      onProceed: () => onFinishImporting?.(),
+    });
 
   const toggleAccount = useCallback(
     (address: string) => {
@@ -98,6 +94,7 @@ const WatchWallet = ({
     if (isLoading) return;
     if (address === '' && additionalAccounts.length == 0) return;
     setIsLoading(true);
+    blockNavigation();
     let defaultAccountChosen = false;
     const allAccounts = address
       ? [address, ...additionalAccounts]
@@ -112,16 +109,19 @@ const WatchWallet = ({
           if (!addressToImport) {
             setError(true);
             setIsLoading(false);
+            unblockNavigation();
             return;
           }
         } catch (e) {
           setError(true);
           setIsLoading(false);
+          unblockNavigation();
           return;
         }
       } else if (!isAddress(addressToImport)) {
         setError(true);
         setIsLoading(false);
+        unblockNavigation();
         return;
       }
       if (i === 0) {
@@ -137,16 +137,17 @@ const WatchWallet = ({
         setCurrentAddress(importedAddress);
       }
     }
-    blocker?.reset?.();
     setIsLoading(false);
-    setShouldNavigate(true);
-  }, [isLoading, address, additionalAccounts, blocker, setCurrentAddress]);
-
-  useEffect(() => {
-    if (shouldNavigate) {
-      onFinishImporting?.();
-    }
-  }, [onFinishImporting, shouldNavigate]);
+    proceedNavigation();
+  }, [
+    isLoading,
+    address,
+    additionalAccounts,
+    blockNavigation,
+    proceedNavigation,
+    unblockNavigation,
+    setCurrentAddress,
+  ]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {

@@ -1,10 +1,7 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-nested-ternary */
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  unstable_useBlocker as useBlocker,
-  useLocation,
-} from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -22,6 +19,7 @@ import {
 
 import { deriveAccountsFromSecret } from '../../handlers/wallet';
 import * as wallet from '../../handlers/wallet';
+import { useNavigationBlocker } from '../../hooks/useNavigationBlocker';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWalletsSummary } from '../../hooks/useWalletsSummary';
 import { ROUTES } from '../../urls';
@@ -39,16 +37,16 @@ const ImportWalletSelection = ({
   const [isImporting, setIsImporting] = useState(false);
   const { setCurrentAddress } = useCurrentAddressStore();
   const [accountsToImport, setAccountsToImport] = useState<Address[]>([]);
-  const [shouldNavigate, setShouldNavigate] = useState(false);
 
   const { isLoading: walletsSummaryIsLoading, walletsSummary } =
     useWalletsSummary({
       addresses: accountsToImport,
     });
 
-  const blocker = useBlocker(
-    isImporting || walletsSummaryIsLoading || !accountsToImport.length,
-  );
+  const { proceedNavigation, blockNavigation } = useNavigationBlocker({
+    onProceed: () =>
+      onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME),
+  });
 
   useEffect(() => {
     const init = async () => {
@@ -65,6 +63,7 @@ const ImportWalletSelection = ({
   const handleAddWallets = useCallback(async () => {
     if (isImporting) return;
     setIsImporting(true);
+    blockNavigation();
     // Import all the secrets
     for (let i = 0; i < state.secrets.length; i++) {
       const address = (await wallet.importWithSecret(
@@ -76,15 +75,14 @@ const ImportWalletSelection = ({
       }
     }
     setIsImporting(false);
-    blocker?.reset?.();
-    setShouldNavigate(true);
-  }, [blocker, isImporting, setCurrentAddress, state.secrets]);
-
-  useEffect(() => {
-    if (shouldNavigate) {
-      onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
-    }
-  }, [navigate, onboarding, shouldNavigate]);
+    proceedNavigation();
+  }, [
+    blockNavigation,
+    isImporting,
+    proceedNavigation,
+    setCurrentAddress,
+    state.secrets,
+  ]);
 
   const handleEditWallets = useCallback(async () => {
     onboarding
