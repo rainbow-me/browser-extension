@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Box, Inline, Row, Rows, Text } from '~/design-system';
 
@@ -24,7 +24,7 @@ export const triggerToast = ({ title, description }: ToastInfo) => {
 };
 
 export const Toast = () => {
-  const [toastInfo, setToastInfo] = useState<ToastInfo | null>(null);
+  const [toastInfo, setToastInfo] = useState<ToastInfo | null>();
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
@@ -45,7 +45,9 @@ export const Toast = () => {
   return (
     <Box
       width="full"
-      style={{ position: 'fixed', zIndex: zIndexes.TOAST, bottom: 16 }}
+      position="sticky"
+      bottom="16px"
+      style={{ zIndex: zIndexes.TOAST }}
     >
       <Inline alignHorizontal="center">
         <Box

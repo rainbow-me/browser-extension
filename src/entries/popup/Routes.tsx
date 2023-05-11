@@ -651,7 +651,7 @@ const matchingRoute = (pathName: string) => {
   return match;
 };
 
-export function Routes() {
+export function Routes({ children }: React.PropsWithChildren) {
   const location = useLocation();
   React.useEffect(() => {
     // need to wait a tick for the page to render
@@ -674,6 +674,7 @@ export function Routes() {
     >
       <RoutesContainer>
         <CurrentRoute pathname={location.pathname} />
+        {children}
       </RoutesContainer>
     </Box>
   );
