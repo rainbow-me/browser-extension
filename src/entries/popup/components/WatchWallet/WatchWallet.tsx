@@ -3,13 +3,7 @@
 import { isAddress } from '@ethersproject/address';
 import { Address } from '@wagmi/core';
 import { motion } from 'framer-motion';
-import React, {
-  ChangeEvent,
-  useCallback,
-  useMemo,
-  useReducer,
-  useState,
-} from 'react';
+import { ChangeEvent, useCallback, useMemo, useReducer, useState } from 'react';
 import { useEnsAddress } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -28,7 +22,6 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
-import { BoxProps } from '~/design-system/components/Box/Box';
 import { placeholderStyle } from '~/design-system/components/Input/Input.css';
 import { textStyles } from '~/design-system/styles/core.css';
 import {
@@ -160,14 +153,6 @@ function RecommendedWatchWallets({
   );
 }
 
-// const createEnsNameQuery = ({
-//   chainId,
-//   name,
-// }: FetchEnsAddressArgs): QueryOptions<FetchEnsAddressResult> => ({
-//   queryFn: () => fetchEnsAddress({ chainId, name }),
-//   queryKey: [{ entity: 'ensAddress', chainId, name }],
-// });
-
 const watchedEnsNames = {
   storageKey: 'address saved with name',
   get: () => {
@@ -249,7 +234,7 @@ const useValidateInput = (input: string) => {
 };
 
 export const WatchWallet = ({
-  onboarding = true,
+  onboarding = false,
   onFinishImporting,
 }: {
   onboarding?: boolean;
@@ -282,10 +267,6 @@ export const WatchWallet = ({
     setCurrentAddress(importedAddresses[0]);
     onFinishImporting?.();
   }, [addressesToImport, ensName, address, onFinishImporting]);
-
-  let borderColor: BoxProps['borderColor'] = 'buttonStroke';
-  if (error) borderColor = 'orange';
-  if (input) borderColor = 'blue';
 
   return (
     <>
@@ -343,7 +324,10 @@ export const WatchWallet = ({
               background="surfaceSecondaryElevated"
               borderRadius="12px"
               borderWidth="1px"
-              borderColor={borderColor}
+              borderColor={{
+                focus: error ? 'orange' : 'accent',
+                default: 'separator',
+              }}
               width="full"
               padding="12px"
               placeholder={i18n.t('watch_wallet.placeholder')}
