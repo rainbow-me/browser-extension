@@ -24,7 +24,7 @@ export const triggerToast = ({ title, description }: ToastInfo) => {
 };
 
 export const Toast = () => {
-  const [toastInfo, setToastInfo] = useState<ToastInfo | null>();
+  const [toastInfo, setToastInfo] = useState<ToastInfo | null>(null);
 
   useEffect(() => {
     let timeout: NodeJS.Timeout;
