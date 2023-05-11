@@ -278,7 +278,6 @@ export function Send() {
   useEffect(() => {
     // navigating from token row
     if (selectedToken) {
-      console.log('selecting token', selectedToken);
       selectAsset(selectedToken.address, selectedToken.chainId);
       // clear selected token
       setSelectedToken();
