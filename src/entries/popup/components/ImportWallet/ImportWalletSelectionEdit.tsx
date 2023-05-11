@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-nested-ternary */
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   unstable_useBlocker as useBlocker,
   useLocation,
@@ -34,6 +34,7 @@ export function ImportWalletSelectionEdit({
 }) {
   const navigate = useRainbowNavigate();
   const { state } = useLocation();
+  const [shouldNavigate, setShouldNavigate] = useState(false);
   const [accountsIgnored, setAccountsIgnored] = useState<Address[]>([]);
   const { setCurrentAddress } = useCurrentAddressStore();
   const { isLoading: walletsSummaryisAddingWallets, walletsSummary } =
@@ -93,9 +94,9 @@ export function ImportWalletSelectionEdit({
     }
 
     setIsAddingWallets(false);
-    blocker?.proceed?.();
+    blocker?.reset?.();
 
-    onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
+    setShouldNavigate(true);
   }, [
     isAddingWallets,
     selectedAccounts,
@@ -104,9 +105,13 @@ export function ImportWalletSelectionEdit({
     state.secrets,
     accountsIgnored,
     setCurrentAddress,
-    onboarding,
-    navigate,
   ]);
+
+  useEffect(() => {
+    if (shouldNavigate) {
+      onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
+    }
+  }, [navigate, onboarding, shouldNavigate]);
 
   const toggleAccount = useCallback(
     (address: Address) => {

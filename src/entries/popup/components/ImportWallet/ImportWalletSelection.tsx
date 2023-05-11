@@ -39,6 +39,7 @@ const ImportWalletSelection = ({
   const [isImporting, setIsImporting] = useState(false);
   const { setCurrentAddress } = useCurrentAddressStore();
   const [accountsToImport, setAccountsToImport] = useState<Address[]>([]);
+  const [shouldNavigate, setShouldNavigate] = useState(false);
 
   const { isLoading: walletsSummaryIsLoading, walletsSummary } =
     useWalletsSummary({
@@ -62,7 +63,6 @@ const ImportWalletSelection = ({
   }, [state?.secrets]);
 
   const handleAddWallets = useCallback(async () => {
-    console.log('--- handleAddWallets');
     if (isImporting) return;
     setIsImporting(true);
     // Import all the secrets
@@ -76,20 +76,15 @@ const ImportWalletSelection = ({
       }
     }
     setIsImporting(false);
-    blocker?.proceed?.();
-    onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME),
-      console.log(
-        'handleAddWallets',
-        onboarding ? ROUTES.CREATE_PASSWORD : ROUTES.HOME,
-      );
-  }, [
-    blocker,
-    isImporting,
-    navigate,
-    onboarding,
-    setCurrentAddress,
-    state.secrets,
-  ]);
+    blocker?.reset?.();
+    setShouldNavigate(true);
+  }, [blocker, isImporting, setCurrentAddress, state.secrets]);
+
+  useEffect(() => {
+    if (shouldNavigate) {
+      onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
+    }
+  }, [navigate, onboarding, shouldNavigate]);
 
   const handleEditWallets = useCallback(async () => {
     onboarding

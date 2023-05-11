@@ -52,6 +52,7 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
   const navigate = useRainbowNavigate();
   const [isValid, setIsValid] = useState(false);
   const [isAddingWallets, setIsAddingWallets] = useState(false);
+  const [shouldNavigate, setShouldNavigate] = useState(false);
   const [secrets, setSecrets] = useState((state.secrets as string[]) || ['']);
   const { setCurrentAddress } = useCurrentAddressStore();
 
@@ -121,11 +122,13 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
             secrets[0],
           )) as Address;
           setCurrentAddress(address);
-          blocker?.proceed?.();
-          onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
+          setIsAddingWallets(false);
+          blocker?.reset?.();
+          setShouldNavigate(true);
           return;
         } finally {
-          blocker?.proceed?.();
+          setIsAddingWallets(false);
+          blocker?.reset?.();
           setIsAddingWallets(false);
         }
       }
@@ -146,6 +149,12 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
     secrets,
     setCurrentAddress,
   ]);
+
+  useEffect(() => {
+    if (shouldNavigate) {
+      onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
+    }
+  }, [navigate, onboarding, shouldNavigate]);
 
   const handleAddAnotherOne = useCallback(() => {
     const newSecrets = [...secrets, ''];
