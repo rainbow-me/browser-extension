@@ -182,21 +182,24 @@ const getError = (
   const tld = input.split('.').at(-1);
   if (tld && tld !== input && !isENSAddressFormat(input))
     return {
-      message: `${tld} is not supported`,
+      message: i18n.t('watch_wallet.unsupported_tld', { tld }),
       symbol: 'person.crop.circle.badge.xmark',
     };
 
   if (!isAddress(address))
     return {
-      message: 'Invalid address',
+      message: i18n.t('watch_wallet.invalid_address'),
       symbol: 'person.crop.circle.badge.xmark',
     };
 
   if (allWallets.some((w) => address === w.address)) {
     const addedAs = watchedEnsNames.get()[address];
-    const msg = addedAs && addedAs !== input ? ` as ${addedAs}` : '';
     return {
-      message: `Address already added${msg}`,
+      message:
+        addedAs && addedAs !== input
+          ? i18n.t('watch_wallet.address_already_added_as', { addedAs })
+          : i18n.t('watch_wallet.address_already_added'),
+
       symbol: 'person.crop.circle.badge.checkmark',
     };
   }
@@ -367,7 +370,6 @@ export const WatchWallet = ({
                   />
                   <Text size="11pt" weight="regular" color={'orange'}>
                     {error.message}
-                    {/* {i18n.t('watch_wallet.invalid_address_or_ens_name')} */}
                   </Text>
                 </Inline>
               )}
