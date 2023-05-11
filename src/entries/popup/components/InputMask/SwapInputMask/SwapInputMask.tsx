@@ -86,6 +86,8 @@ export const SwapInputMask = ({
           enableTapScale={false}
           testId={`${testId}-swap-input-mask`}
           disabled={disabled}
+          tabIndex={disabled ? -1 : 0}
+          id={'swap-input-mask'}
         />
       </Box>
     </Box>

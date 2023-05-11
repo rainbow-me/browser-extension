@@ -2,8 +2,9 @@ import { motion } from 'framer-motion';
 import React from 'react';
 
 import { Box, Inline, Symbol } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 
-export const InputActionButon = ({
+export const InputActionButton = ({
   showClose,
   dropdownVisible,
   onClose,
@@ -17,7 +18,7 @@ export const InputActionButon = ({
   testId?: string;
 }) => {
   return showClose ? (
-    <Box
+    <Lens
       style={{
         width: 24,
         height: 24,
@@ -30,7 +31,7 @@ export const InputActionButon = ({
       <Inline height="full" alignHorizontal="center" alignVertical="center">
         <Symbol size={8} symbol="xmark" weight="bold" color="label" />
       </Inline>
-    </Box>
+    </Lens>
   ) : (
     <Box
       as={motion.div}

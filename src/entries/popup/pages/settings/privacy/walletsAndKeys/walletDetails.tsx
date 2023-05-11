@@ -362,9 +362,15 @@ const WalletRow = ({
               open={menuOpen}
               onClose={() => setMenuOpen(false)}
               onOpen={() => setMenuOpen(true)}
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              options={InfoButtonOptions(opts)}
+              options={InfoButtonOptions({
+                account,
+                handleViewPrivateKey,
+                setRenameAccount,
+                setRemoveAccount,
+                unhideWallet: hiddenWallets[account]
+                  ? (address: Address) => unhideWallet({ address })
+                  : undefined,
+              })}
             />
           </Inline>
         }

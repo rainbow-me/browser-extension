@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { To } from 'react-router-dom';
 
 import { useCurrentAddressStore } from '~/core/state';
@@ -16,7 +16,10 @@ import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { UserStatusResult } from '~/entries/popup/hooks/useAuth';
 import { useAvatar } from '~/entries/popup/hooks/useAvatar';
 
-import { AccentColorProviderWrapper } from '../Box/ColorContext';
+import {
+  AccentColorProviderWrapper,
+  AvatarColorProvider,
+} from '../Box/ColorContext';
 
 import { animatedRouteStyles } from './AnimatedRoute.css';
 
@@ -176,34 +179,40 @@ export const AnimatedRoute = React.forwardRef<
       );
     } else return undefined;
   }, [backTo, maintainLocationState, navbarIcon]);
+  useEffect(() => {
+    const app = document.getElementById('app');
+    app?.focus();
+  }, []);
 
   const content = (
     <AccentColorProviderWrapper
       color={accentColor ? avatar?.color : globalColors.blue60}
     >
-      <Box
-        as={motion.div}
-        ref={ref}
-        display="flex"
-        flexDirection="column"
-        height="full"
-        initial={initial}
-        animate={end}
-        exit={exit}
-        transition={transition}
-        background={background}
-        className={animatedRouteStyles}
-      >
-        {navbar && (
-          <Navbar
-            title={title || ''}
-            background={navbarBackground}
-            leftComponent={leftNavbarIcon}
-            rightComponent={rightNavbarComponent}
-          />
-        )}
-        {children}
-      </Box>
+      <AvatarColorProvider color={avatar?.color || globalColors.blue60}>
+        <Box
+          as={motion.div}
+          ref={ref}
+          display="flex"
+          flexDirection="column"
+          height="full"
+          initial={initial}
+          animate={end}
+          exit={exit}
+          transition={transition}
+          background={background}
+          className={animatedRouteStyles}
+        >
+          {navbar && (
+            <Navbar
+              title={title || ''}
+              background={navbarBackground}
+              leftComponent={leftNavbarIcon}
+              rightComponent={rightNavbarComponent}
+            />
+          )}
+          {children}
+        </Box>
+      </AvatarColorProvider>
     </AccentColorProviderWrapper>
   );
 

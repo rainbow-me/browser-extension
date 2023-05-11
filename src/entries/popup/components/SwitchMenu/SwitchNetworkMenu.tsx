@@ -231,7 +231,7 @@ export const SwitchNetworkMenu = ({
       if (e.key === shortcuts.swap.OPEN_NETWORK_MENU.key) {
         const activeElement = document.activeElement;
         const tagName = activeElement?.tagName;
-        if (tagName !== 'INPUT') {
+        if (tagName !== 'INPUT' || activeElement?.id === 'swap-input-mask') {
           simulateClick(triggerRef?.current);
         }
       }

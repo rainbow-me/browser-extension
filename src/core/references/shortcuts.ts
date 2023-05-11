@@ -38,9 +38,21 @@ export const shortcuts = {
     },
   },
   global: {
+    BACK: {
+      display: '\u2190',
+      key: 'ArrowLeft',
+    },
     CLOSE: {
       display: 'Esc',
       key: 'Escape',
+    },
+    DOWN: {
+      display: '\u2993',
+      key: 'ArrowDown',
+    },
+    FORWARD: {
+      display: '\u2192',
+      key: 'ArrowRight',
     },
     OPEN_GAS_MENU: {
       display: 'G',
@@ -50,9 +62,21 @@ export const shortcuts = {
       display: 'Enter',
       key: 'Enter',
     },
+    OPEN_CONTEXT_MENU: {
+      display: 'Space',
+      key: ' ',
+    },
     OPEN_CUSTOM_GAS_MENU: {
       display: 'C',
       key: 'c',
+    },
+    TAB: {
+      display: 'Tab',
+      key: 'Tab',
+    },
+    UP: {
+      display: '\u2991',
+      key: 'ArrowUp',
     },
   },
   home: {
@@ -131,12 +155,12 @@ export const shortcuts = {
       key: 'f',
     },
     FOCUS_ASSET_TO_BUY: {
-      display: '\u2191',
+      display: '\u2193',
       key: 'ArrowDown',
       modifier: 'altKey',
     },
     FOCUS_ASSET_TO_SELL: {
-      display: '\u2193',
+      display: '\u2191',
       key: 'ArrowUp',
       modifier: 'altKey',
     },
