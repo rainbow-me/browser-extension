@@ -77,8 +77,13 @@ export function Send() {
 
   const { connectedToHardhat } = useConnectedToHardhatStore();
 
-  const { asset, selectAssetAddress, assets, setSortMethod, sortMethod } =
-    useSendAsset();
+  const {
+    asset,
+    selectAssetAddressAndChain,
+    assets,
+    setSortMethod,
+    sortMethod,
+  } = useSendAsset();
 
   const { clearCustomGasModified, selectedGas } = useGasStore();
 
@@ -235,11 +240,11 @@ export function Send() {
   );
 
   const selectAsset = useCallback(
-    (address: Address | typeof ETH_ADDRESS | '') => {
-      selectAssetAddress(address as Address);
+    (address: Address | typeof ETH_ADDRESS | '', chainId: ChainId) => {
+      selectAssetAddressAndChain(address as Address, chainId);
       setIndependentAmount('');
     },
-    [selectAssetAddress, setIndependentAmount],
+    [selectAssetAddressAndChain, setIndependentAmount],
   );
 
   useEffect(() => {
@@ -273,7 +278,8 @@ export function Send() {
   useEffect(() => {
     // navigating from token row
     if (selectedToken) {
-      selectAsset(selectedToken.address);
+      console.log('selecting token', selectedToken);
+      selectAsset(selectedToken.address, selectedToken.chainId);
       // clear selected token
       setSelectedToken();
     }
@@ -398,7 +404,7 @@ export function Send() {
                   <SendTokenInput
                     asset={asset}
                     assets={assets}
-                    selectAssetAddress={selectAsset}
+                    selectAssetAddressAndChain={selectAsset}
                     dropdownClosed={toAddressDropdownOpen}
                     setSortMethod={setSortMethod}
                     sortMethod={sortMethod}
