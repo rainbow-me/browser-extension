@@ -23,7 +23,7 @@ import {
   Text,
 } from '~/design-system';
 import { placeholderStyle } from '~/design-system/components/Input/Input.css';
-import { textStyles } from '~/design-system/styles/core.css';
+import { accentColorAsHsl, textStyles } from '~/design-system/styles/core.css';
 import {
   SymbolName,
   transformScales,
@@ -216,13 +216,9 @@ const useValidateInput = (input: string) => {
   const { allWallets } = useWallets();
 
   const debouncedInput = useDebounce(input, 1000);
-  const error =
-    !isLoading &&
-    !!input &&
-    !!debouncedInput &&
-    getError(inputAddress, input, allWallets);
-
-  const isValid = !!input && debouncedInput === input && !error;
+  const shouldValidate = !isLoading && !!input && debouncedInput === input;
+  const error = shouldValidate && getError(inputAddress, input, allWallets);
+  const isValid = shouldValidate && !error;
 
   return {
     ensName: !!addressFromEns && input,
@@ -349,6 +345,7 @@ export const WatchWallet = ({
                 }),
               ]}
               style={{
+                caretColor: accentColorAsHsl,
                 transition: 'border-color 200ms',
                 height: '96px',
                 resize: 'none',
