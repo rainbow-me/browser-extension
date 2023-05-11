@@ -142,10 +142,13 @@ export const signTransactionFromHW = async (
   const params = {
     ...transactionRequest,
     ...selectedGas.transactionGasParams,
-    gasLimit: toHex(gasLimit || '0'),
     value: transactionRequest?.value,
     nonce,
   };
+
+  if (gasLimit) {
+    params.gasLimit = toHex(gasLimit);
+  }
 
   console.log('signTransactionFromHW', vendor, params);
 

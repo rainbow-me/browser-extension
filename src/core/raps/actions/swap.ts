@@ -216,7 +216,6 @@ export const swap = async ({
       quote,
     });
   } catch (e) {
-    console.log('error estimateSwapGasLimit', e);
     logger.error(new RainbowError('swap: error estimateSwapGasLimit'), {
       message: (e as Error)?.message,
     });
@@ -227,7 +226,6 @@ export const swap = async ({
   let swap;
   try {
     const nonce = baseNonce ? baseNonce + index : undefined;
-
     const swapParams = {
       gasParams,
       chainId,
@@ -239,7 +237,6 @@ export const swap = async ({
     };
     swap = await executeSwap(swapParams);
   } catch (e) {
-    console.log('error executing swap', e);
     logger.error(new RainbowError('swap: error executeSwap'), {
       message: (e as Error)?.message,
     });

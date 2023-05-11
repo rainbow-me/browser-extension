@@ -66,12 +66,12 @@ module.exports = {
     ],
   },
   plugins: [
-    analyzeBundle &&
-      new BundleAnalyzerPlugin({
-        analyzerMode: 'static',
-        generateStatsFile: true,
-        openAnalyzer: false,
-      }),
+    // analyzeBundle &&
+    //   new BundleAnalyzerPlugin({
+    //     analyzerMode: 'static',
+    //     generateStatsFile: true,
+    //     openAnalyzer: false,
+    //   }),
     new Dotenv({ allowEmptyValues: true }),
     new HtmlWebpackPlugin({
       chunks: ['popup'],
