@@ -7,6 +7,7 @@ import { Box, Button, Stack, Text } from '~/design-system';
 
 import { AccountName } from '../../components/AccountName/AccountName';
 import { triggerToast } from '../../components/Toast/Toast';
+import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 
 import { QRCode } from './qrcode';
 
@@ -20,6 +21,8 @@ export const QRCodePage = () => {
       description: truncateAddress(address),
     });
   }, [address]);
+
+  useSwitchWalletShortcuts();
 
   return (
     <Box

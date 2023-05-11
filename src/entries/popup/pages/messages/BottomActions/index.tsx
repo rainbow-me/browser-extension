@@ -5,8 +5,8 @@ import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useNetworkSwitcherIsOpenStore } from '~/core/state/networkSwitcherIsOpen';
-import { useWalletSwitcherIsOpenStore } from '~/core/state/walletSwitcherIsOpen';
+import { useCurrentAddressStore } from '~/core/state';
+import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import {
@@ -29,6 +29,11 @@ import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { useWalletInfo } from '~/entries/popup/hooks/useWalletInfo';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
+import {
+  getInputIsFocused,
+  radixIsActive,
+  switchNetworkMenuIsActive,
+} from '~/entries/popup/utils/activeElement';
 import { simulateClick } from '~/entries/popup/utils/simulateClick';
 
 import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
@@ -106,39 +111,32 @@ export const BottomSwitchWallet = ({
   selectedWallet: Address;
   setSelectedWallet: (selected: Address) => void;
 }) => {
+  const { setCurrentAddress } = useCurrentAddressStore();
   const { sortedAccounts } = useAccounts();
   const { visibleWallets } = useWallets();
-  const { networkSwitcherIsOpen } = useNetworkSwitcherIsOpenStore();
-  const { setWalletSwitcherIsOpen } = useWalletSwitcherIsOpenStore();
+  const { walletOrder } = useWalletOrderStore();
 
-  const onOpenChange = useCallback(
-    (isOpen: boolean) => {
-      isOpen && analytics.track(event.dappPromptConnectWalletClicked);
-      setWalletSwitcherIsOpen(isOpen);
-    },
-    [setWalletSwitcherIsOpen],
-  );
+  const onOpenChange = useCallback((isOpen: boolean) => {
+    isOpen && analytics.track(event.dappPromptConnectWalletClicked);
+  }, []);
 
   const onValueChange = useCallback(
     (address: string) => {
+      setCurrentAddress(address as Address);
       setSelectedWallet(address as Address);
       analytics.track(event.dappPromptConnectWalletSwitched);
     },
-    [setSelectedWallet],
+    [setCurrentAddress, setSelectedWallet],
   );
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
-      const activeElement = document.activeElement;
-      const tagName = activeElement?.tagName;
-      if (!networkSwitcherIsOpen) {
-        if (tagName !== 'INPUT') {
-          const regex = /^[1-9]$/;
-          if (regex.test(e.key)) {
-            const accountIndex = parseInt(e.key, 10) - 1;
-            if (sortedAccounts[accountIndex]) {
-              onValueChange(sortedAccounts[accountIndex]?.address);
-            }
+      if (!switchNetworkMenuIsActive() && !getInputIsFocused()) {
+        const regex = /^[1-9]$/;
+        if (regex.test(e.key)) {
+          const accountIndex = parseInt(e.key, 10) - 1;
+          if (sortedAccounts[accountIndex]) {
+            onValueChange(sortedAccounts[accountIndex]?.address);
           }
         }
       }
@@ -170,7 +168,22 @@ export const BottomSwitchWallet = ({
             </Inline>
           </Box>
         )}
-        menuItems={visibleWallets?.map((wallet) => wallet.address)}
+        menuItems={visibleWallets
+          ?.sort((a, b) => {
+            const aIndex = walletOrder.indexOf(a.address);
+            const bIndex = walletOrder.indexOf(b.address);
+            if (aIndex === -1 && bIndex === -1) {
+              return 0;
+            }
+            if (aIndex === -1) {
+              return 1;
+            }
+            if (bIndex === -1) {
+              return -1;
+            }
+            return aIndex - bIndex;
+          })
+          ?.map((wallet) => wallet.address)}
         selectedValue={selectedWallet}
         onValueChange={onValueChange}
         onOpenChange={onOpenChange}
@@ -325,12 +338,10 @@ export const RejectRequestButton = ({
   onClick: () => void;
   label: string;
 }) => {
-  const { networkSwitcherIsOpen } = useNetworkSwitcherIsOpenStore();
-  const { walletSwitcherIsOpen } = useWalletSwitcherIsOpenStore();
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.connect.CANCEL.key) {
-        if (!networkSwitcherIsOpen && !walletSwitcherIsOpen) {
+        if (!radixIsActive()) {
           onClick?.();
         }
       }

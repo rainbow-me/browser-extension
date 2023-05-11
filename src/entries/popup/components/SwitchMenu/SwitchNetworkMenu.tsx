@@ -3,7 +3,6 @@ import { Chain, useNetwork } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useNetworkSwitcherIsOpenStore } from '~/core/state/networkSwitcherIsOpen';
 import { ChainId } from '~/core/types/chains';
 import {
   Box,
@@ -92,7 +91,7 @@ export const SwitchNetworkMenuSelector = ({
   });
 
   return (
-    <>
+    <Box id="switch-network-menu-selector">
       {chains.map((chain, i) => {
         const { id: chainId, name } = chain;
         return (
@@ -149,7 +148,7 @@ export const SwitchNetworkMenuSelector = ({
           shortcutLabel={String(chains.length + 1)}
         />
       )}
-    </>
+    </Box>
   );
 };
 
@@ -266,10 +265,7 @@ export const SwitchNetworkMenu = ({
         };
   }, [type]);
 
-  const { setNetworkSwitcherIsOpen } = useNetworkSwitcherIsOpenStore();
-
   const handleOpenChange = (isOpen: boolean) => {
-    setNetworkSwitcherIsOpen(isOpen);
     onOpenChange?.(isOpen);
   };
 

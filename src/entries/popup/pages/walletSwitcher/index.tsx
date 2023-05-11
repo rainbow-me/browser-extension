@@ -49,6 +49,7 @@ import { useAccounts } from '../../hooks/useAccounts';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { AddressAndType, useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 
@@ -346,6 +347,9 @@ export function WalletSwitcher() {
       }
     },
   });
+
+  // separate because this is used on other screens
+  useSwitchWalletShortcuts();
 
   return (
     <Box height="full">

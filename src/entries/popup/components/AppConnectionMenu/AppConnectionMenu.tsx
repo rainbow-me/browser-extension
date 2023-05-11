@@ -5,7 +5,6 @@ import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
-import { useNetworkSwitcherIsOpenStore } from '~/core/state/networkSwitcherIsOpen';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 
@@ -65,7 +64,6 @@ export const AppConnectionMenu = ({
   const [menuOpen, setMenuOpen] = useState(false);
 
   const { currentAddress } = useCurrentAddressStore();
-  const { setNetworkSwitcherIsOpen } = useNetworkSwitcherIsOpenStore();
   const { appHost, appLogo, appName, appColor } = useAppMetadata({ url });
   const navigate = useRainbowNavigate();
 
@@ -100,13 +98,9 @@ export const AppConnectionMenu = ({
     [addSession, appHost, currentAddress, url],
   );
 
-  const toggleSubMenu = useCallback(
-    (open: boolean) => {
-      setSubMenuOpen(open);
-      setNetworkSwitcherIsOpen(open);
-    },
-    [setNetworkSwitcherIsOpen],
-  );
+  const toggleSubMenu = useCallback((open: boolean) => {
+    setSubMenuOpen(open);
+  }, []);
 
   const onValueChange = useCallback(
     (value: 'connected-apps' | 'switch-networks') => {
