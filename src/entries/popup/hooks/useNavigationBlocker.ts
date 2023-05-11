@@ -10,17 +10,17 @@ export const useNavigationBlocker = ({
   const [shouldProceed, setShouldProceed] = useState(false);
   const blocker = useBlocker(shouldBlock);
 
-  const proceedNavigation = useCallback(() => {
-    setShouldBlock(false);
-    blocker?.reset?.();
-    setShouldProceed(true);
-  }, [blocker]);
-
   const blockNavigation = () => setShouldBlock(true);
+
   const unblockNavigation = useCallback(() => {
     setShouldBlock(false);
     blocker?.reset?.();
   }, [blocker]);
+
+  const proceedNavigation = useCallback(() => {
+    unblockNavigation();
+    setShouldProceed(true);
+  }, [unblockNavigation]);
 
   useEffect(() => {
     if (shouldProceed) {
