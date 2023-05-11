@@ -218,8 +218,9 @@ export const swap = async ({
   } catch (e) {
     console.log('error estimateSwapGasLimit', e);
     logger.error(new RainbowError('swap: error estimateSwapGasLimit'), {
-      message: (e as Error).message,
+      message: (e as Error)?.message,
     });
+
     throw e;
   }
 
@@ -240,7 +241,7 @@ export const swap = async ({
   } catch (e) {
     console.log('error executing swap', e);
     logger.error(new RainbowError('swap: error executeSwap'), {
-      message: (e as Error).message,
+      message: (e as Error)?.message,
     });
     throw e;
   }
