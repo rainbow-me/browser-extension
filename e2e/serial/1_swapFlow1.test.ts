@@ -425,7 +425,6 @@ it('should be able to flip correctly', async () => {
     id: `${WBTC_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
-  console.log('---- assetToBuyInputText', assetToBuyInputText);
   expect(assetToBuyInputText).not.toBe('');
 
   await findElementByTestIdAndClick({
@@ -439,10 +438,6 @@ it('should be able to flip correctly', async () => {
     id: `${WBTC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
-  console.log(
-    '---- assetToSellInputTextAfterFlip',
-    assetToSellInputTextAfterFlip,
-  );
 
   expect(assetToSellInputTextAfterFlip).not.toEqual('');
 
@@ -450,10 +445,6 @@ it('should be able to flip correctly', async () => {
     id: `${ETH_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
-  console.log(
-    '---- assetToBuyInputTextAfterFlip',
-    assetToBuyInputTextAfterFlip,
-  );
   expect(assetToBuyInputTextAfterFlip).toEqual('1');
 });
 
