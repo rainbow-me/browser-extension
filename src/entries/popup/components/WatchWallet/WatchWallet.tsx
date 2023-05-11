@@ -3,7 +3,13 @@
 import { isAddress } from '@ethersproject/address';
 import { Address, fetchEnsAddress } from '@wagmi/core';
 import { motion } from 'framer-motion';
-import React, { KeyboardEvent, useCallback, useMemo, useState } from 'react';
+import React, {
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { unstable_useBlocker as useBlocker } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -56,6 +62,7 @@ const WatchWallet = ({
   const { setCurrentAddress } = useCurrentAddressStore();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [shouldNavigate, setShouldNavigate] = useState(false);
 
   const blocker = useBlocker(isLoading);
 
@@ -90,6 +97,7 @@ const WatchWallet = ({
   const handleWatchWallet = useCallback(async () => {
     if (isLoading) return;
     if (address === '' && additionalAccounts.length == 0) return;
+    setIsLoading(true);
     let defaultAccountChosen = false;
     const allAccounts = address
       ? [address, ...additionalAccounts]
@@ -123,24 +131,22 @@ const WatchWallet = ({
         addressToImport,
       )) as Address;
 
-      setIsLoading(false);
-      blocker?.proceed?.();
-
       // Select the first wallet
       if (!defaultAccountChosen) {
         defaultAccountChosen = true;
         setCurrentAddress(importedAddress);
       }
     }
-    onFinishImporting?.();
-  }, [
-    isLoading,
-    address,
-    additionalAccounts,
-    onFinishImporting,
-    blocker,
-    setCurrentAddress,
-  ]);
+    blocker?.reset?.();
+    setIsLoading(false);
+    setShouldNavigate(true);
+  }, [isLoading, address, additionalAccounts, blocker, setCurrentAddress]);
+
+  useEffect(() => {
+    if (shouldNavigate) {
+      onFinishImporting?.();
+    }
+  }, [onFinishImporting, shouldNavigate]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
