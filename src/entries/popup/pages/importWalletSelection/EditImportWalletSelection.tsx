@@ -32,6 +32,7 @@ export function EditImportWalletSelection() {
           isAddingWallets={isAddingWallets}
           sortMethod={sortMethod}
           setIsAddingWallets={setIsAddingWallets}
+          onboarding
         />
       </FullScreenContainer>
     </>

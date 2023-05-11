@@ -109,6 +109,7 @@ export function ImportWalletSelectionEdit({
 
   useEffect(() => {
     if (shouldNavigate) {
+      console.log('----- should navigate onboarding', onboarding);
       onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
     }
   }, [navigate, onboarding, shouldNavigate]);
