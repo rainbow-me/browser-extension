@@ -6,6 +6,7 @@ import { useEnsAddress } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
+import { createStore } from '~/core/state/internal/createStore';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 import {
   Box,
@@ -160,26 +161,22 @@ function RecommendedWatchWallets({
   );
 }
 
-const watchedEnsNames = {
-  storageKey: 'address saved with name',
-  get: () => {
-    try {
-      return (JSON.parse(
-        localStorage.getItem(watchedEnsNames.storageKey) || '',
-      ) || {}) as Record<Address, string>;
-    } catch {
-      return {};
-    }
-  },
-  save: (name: string, address: Address) => {
-    const savedWatchedEnses = watchedEnsNames.get();
-    savedWatchedEnses[address] = name;
-    localStorage.setItem(
-      watchedEnsNames.storageKey,
-      JSON.stringify(savedWatchedEnses),
-    );
-  },
+type SavedNamesStore = {
+  savedNames: Record<Address, string>;
+  save: (name: string, address: Address) => void;
 };
+const savedNamesStore = createStore<SavedNamesStore>(
+  (set, get) => ({
+    savedNames: {},
+    save(name, address) {
+      const savedNames = get().savedNames;
+      savedNames[address] = name;
+      set({ savedNames });
+    },
+  }),
+  { persist: { name: 'address saved with name' } },
+);
+const getSavedNamesStore = () => savedNamesStore.getState();
 
 const getError = (
   address: string,
@@ -200,7 +197,7 @@ const getError = (
     };
 
   if (allWallets.some((w) => address === w.address)) {
-    const addedAs = watchedEnsNames.get()[address];
+    const addedAs = getSavedNamesStore().savedNames[address];
     return {
       message:
         addedAs && addedAs !== input
@@ -271,7 +268,7 @@ export const WatchWallet = ({
     // we save the ens name saved in localstorage to be able to tell
     // if the user try to add the same address with a different name later
     // (already added as foo.eth)
-    if (ensName && address) watchedEnsNames.save(ensName, address);
+    if (ensName && address) getSavedNamesStore().save(ensName, address);
     setCurrentAddress(importedAddresses[0]);
     onFinishImporting?.();
   }, [
