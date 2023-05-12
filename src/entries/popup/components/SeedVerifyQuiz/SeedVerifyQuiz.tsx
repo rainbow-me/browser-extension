@@ -35,6 +35,8 @@ const addLeadingZero = (num: number) => {
   return `0${num}`;
 };
 
+const CHARACTER_WIDTH = 10;
+
 type SeedWord = { word: string; index: number };
 
 const SeedWordRow = ({
@@ -44,6 +46,7 @@ const SeedWordRow = ({
   validated,
   incorrect,
   handleSelect,
+  additionalWidth,
 }: {
   word: string;
   index: number;
@@ -51,6 +54,7 @@ const SeedWordRow = ({
   validated: boolean;
   incorrect: boolean;
   handleSelect: ({ word, index }: SeedWord) => void;
+  additionalWidth: number;
 }) => {
   const selectedWordPosition = useMemo(
     () =>
@@ -87,7 +91,7 @@ const SeedWordRow = ({
       background={backgroundForWord}
       key={`word_${index}`}
       style={{
-        width: '102px',
+        maxWidth: '136px',
         marginBottom: '8px',
         background: wordIsSelected
           ? undefined
@@ -109,9 +113,11 @@ const SeedWordRow = ({
             ? addLeadingZero((1 + selectedWordPosition) * 4)
             : '00'}
         </Text>
-        <Text size="14pt" weight="bold" color="label" align="center">
-          {word}
-        </Text>
+        <Box style={{ width: 57 + additionalWidth }}>
+          <Text size="14pt" weight="bold" color="label" align="center">
+            {word}
+          </Text>
+        </Box>
       </Inline>
     </Box>
   );
@@ -166,6 +172,8 @@ export function SeedVerifyQuiz({
   useEffect(() => {
     const init = async () => {
       const seedPhrase = await exportWallet(address, '');
+      // const word = 'december';
+      // const seedPhrase = `${word} ${word} ${word} ${word} ${word} ${word} ${word} ${word} ${word} ${word} ${word} ${word}`;
       const seedArray = seedPhrase.split(' ');
       const seedWithIndex = seedArray.map((word, index) => ({
         word,
@@ -176,6 +184,19 @@ export function SeedVerifyQuiz({
     };
     init();
   }, [address, seed]);
+
+  const additionalWordWith = useMemo(() => {
+    const longestWordLength = seed
+      .split(' ')
+      .reduce(
+        (prevLength, word) =>
+          word.length > prevLength ? word.length : prevLength,
+        0,
+      );
+    const adittionalCharacters =
+      longestWordLength - 6 > 0 ? longestWordLength - 6 : 0;
+    return adittionalCharacters * CHARACTER_WIDTH;
+  }, [seed]);
 
   useEffect(() => {
     if (selectedWords.length === 3) {
@@ -257,6 +278,7 @@ export function SeedVerifyQuiz({
                     incorrect={incorrect}
                     selectedWords={selectedWords}
                     handleSelect={handleSelect}
+                    additionalWidth={additionalWordWith}
                   />
                 ))}
               </Box>
@@ -285,6 +307,7 @@ export function SeedVerifyQuiz({
                     incorrect={incorrect}
                     selectedWords={selectedWords}
                     handleSelect={handleSelect}
+                    additionalWidth={additionalWordWith}
                   />
                 ))}
               </Box>
