@@ -87,12 +87,13 @@ export function App() {
                 }}
               >
                 <HashRouter>
-                  <Routes />
+                  <Routes>
+                    <Toast />
+                    <Alert />
+                  </Routes>
                 </HashRouter>
               </Box>
               <IdleTimer />
-              <Toast />
-              <Alert />
             </AuthProvider>
           )}
         </ThemeProvider>
