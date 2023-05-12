@@ -32,9 +32,9 @@ export const AccountToImportRows = ({
   toggleAccount?: (address: Address) => void;
 }) => {
   return (
-    <Rows space="14px">
+    <Rows space="14px" alignVertical="top">
       {accountsToImport?.map((address: Address, index: number) => (
-        <Row key={`avatar_${address}`}>
+        <Row key={`avatar_${address}`} height="content">
           <Rows>
             <Row>
               <Columns alignVertical="center">
