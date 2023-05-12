@@ -4,13 +4,11 @@ import { matchRoutes, useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
-import { useCurrentAddressStore } from '~/core/state';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
-import { useAccounts } from './hooks/useAccounts';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
@@ -773,6 +771,8 @@ function CurrentRoute(props: { pathname: string }) {
   const previousElement = previousMatch?.element;
   const previousDirection = previousElement?.props.direction;
 
+  useGlobalShortcuts();
+
   if (!element) {
     // error UI here probably
     return null;
@@ -801,9 +801,7 @@ const directionMap = {
   base: 'base',
 };
 
-const useGlobalShortcuts = (disable?: boolean) => {
-  const { sortedAccounts } = useAccounts();
-  const { setCurrentAddress } = useCurrentAddressStore();
+const useGlobalShortcuts = () => {
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       // prevent scrolling with space
@@ -828,6 +826,5 @@ const useGlobalShortcuts = (disable?: boolean) => {
         simulateTab(!e.shiftKey);
       }
     },
-    condition: () => !disable,
   });
 };
