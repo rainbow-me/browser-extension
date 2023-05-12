@@ -50,7 +50,7 @@ import { WatchWallet } from './pages/watchWallet';
 import { Welcome } from './pages/welcome';
 import { ROUTES } from './urls';
 
-export const ROUTE_DATA = [
+const ROUTE_DATA = [
   {
     path: ROUTES.ROOT,
     element: (
