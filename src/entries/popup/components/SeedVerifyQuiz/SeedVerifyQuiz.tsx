@@ -175,8 +175,6 @@ export function SeedVerifyQuiz({
   useEffect(() => {
     const init = async () => {
       const seedPhrase = await exportWallet(address, '');
-      // const word = 'december';
-      // const seedPhrase = `${word} ${word} ${word} ${word} ${word} ${word} ${word} ${word} ${word} ${word} ${word} ${word}`;
       const seedArray = seedPhrase.split(' ');
       const seedWithIndex = seedArray.map((word, index) => ({
         word,
