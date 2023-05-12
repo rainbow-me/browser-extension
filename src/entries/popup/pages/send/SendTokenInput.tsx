@@ -15,6 +15,7 @@ import { Address } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
 import { ParsedAddressAsset } from '~/core/types/assets';
+import { ChainId } from '~/core/types/chains';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
@@ -128,7 +129,10 @@ interface InputRefAPI {
 interface SendTokenInputProps {
   asset: ParsedAddressAsset | null;
   assets: ParsedAddressAsset[];
-  selectAssetAddress: (address: Address | typeof ETH_ADDRESS | '') => void;
+  selectAssetAddressAndChain: (
+    address: Address | typeof ETH_ADDRESS | '',
+    chainId: ChainId,
+  ) => void;
   dropdownClosed: boolean;
   setSortMethod: (sortMethod: SortMethod) => void;
   sortMethod: SortMethod;
@@ -142,7 +146,7 @@ export const SendTokenInput = React.forwardRef<
   const {
     asset,
     assets,
-    selectAssetAddress,
+    selectAssetAddressAndChain,
     dropdownClosed = false,
     setSortMethod,
     sortMethod,
@@ -170,11 +174,11 @@ export const SendTokenInput = React.forwardRef<
   }, [dropdownVisible, inputRef]);
 
   const onSelectAsset = useCallback(
-    (address: Address | typeof ETH_ADDRESS | '') => {
-      selectAssetAddress(address);
+    (address: Address | typeof ETH_ADDRESS | '', chainId: ChainId) => {
+      selectAssetAddressAndChain(address, chainId);
       setDropdownVisible(false);
     },
-    [selectAssetAddress],
+    [selectAssetAddressAndChain],
   );
 
   const onInputValueChange = useCallback(
@@ -196,15 +200,15 @@ export const SendTokenInput = React.forwardRef<
   }, [assets, inputValue]);
 
   const onCloseDropdown = useCallback(() => {
-    onSelectAsset('');
+    onSelectAsset('', ChainId.mainnet);
     setTimeout(() => {
       inputRef?.current?.focus();
     }, 200);
   }, [inputRef, onSelectAsset]);
 
   const selectAsset = useCallback(
-    (address: Address | typeof ETH_ADDRESS | '') => {
-      onSelectAsset(address);
+    (address: Address | typeof ETH_ADDRESS | '', chainId: ChainId) => {
+      onSelectAsset(address, chainId);
       setInputValue('');
     },
     [onSelectAsset],
@@ -314,7 +318,7 @@ export const SendTokenInput = React.forwardRef<
                 <Box
                   paddingHorizontal="8px"
                   key={`${asset?.uniqueId}-${i}`}
-                  onClick={() => selectAsset(asset.address)}
+                  onClick={() => selectAsset(asset.address, asset.chainId)}
                   testId={`token-input-asset-${asset?.uniqueId}`}
                 >
                   <Box

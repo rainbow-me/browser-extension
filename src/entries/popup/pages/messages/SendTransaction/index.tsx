@@ -58,7 +58,7 @@ export function SendTransaction({
   const { selectedGas } = useGasStore();
   const selectedWallet = appSession.address;
   const { connectedToHardhat } = useConnectedToHardhatStore();
-  const { asset, selectAssetAddress } = useSendAsset();
+  const { asset, selectAssetAddressAndChain } = useSendAsset();
   const { watchedWallets } = useWallets();
   const { triggerAlert } = useAlert();
   const { featureFlags } = useFeatureFlagsStore();
@@ -165,12 +165,13 @@ export function SendTransaction({
   ]);
 
   useEffect(() => {
-    selectAssetAddress(
+    selectAssetAddressAndChain(
       NATIVE_ASSETS_PER_CHAIN[
         connectedToHardhat ? ChainId.hardhat : appSession.chainId
       ] as Address,
+      connectedToHardhat ? ChainId.hardhat : appSession.chainId,
     );
-  }, [appSession.chainId, connectedToHardhat, selectAssetAddress]);
+  }, [appSession.chainId, connectedToHardhat, selectAssetAddressAndChain]);
 
   return (
     <Rows alignVertical="justify">

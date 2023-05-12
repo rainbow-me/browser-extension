@@ -23,6 +23,7 @@ import { useCurrentHomeSheet } from '../../hooks/useCurrentHomeSheet';
 import { useHomeShortcuts } from '../../hooks/useHomeShortcuts';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { MainLayout } from '../../layouts/MainLayout';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
@@ -92,6 +93,7 @@ export function Home() {
   }, []);
 
   useHomeShortcuts();
+  useSwitchWalletShortcuts();
 
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>
