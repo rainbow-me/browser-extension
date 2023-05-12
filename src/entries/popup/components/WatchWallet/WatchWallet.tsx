@@ -406,7 +406,8 @@ export const WatchWallet = ({
       )}
       <Box width="full" paddingTop="20px">
         <Button
-          emoji="👀"
+          symbol="eyes.inverse"
+          symbolSide="left"
           height="44px"
           color={isValid ? 'accent' : 'labelQuaternary'}
           variant={isValid ? 'flat' : 'disabled'}
