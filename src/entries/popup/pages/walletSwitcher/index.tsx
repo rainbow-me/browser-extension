@@ -388,7 +388,7 @@ export function WalletSwitcher() {
         />
       </Box>
       {!hasSeenPromo && (
-        <Box paddingHorizontal="16px" paddingBottom="8px" background="red">
+        <Box paddingHorizontal="16px" paddingBottom="8px">
           <QuickPromo
             text={i18n.t('wallet_switcher.quick_promo.text')}
             textBold={i18n.t('wallet_switcher.quick_promo.text_bold')}
@@ -397,12 +397,7 @@ export function WalletSwitcher() {
           />
         </Box>
       )}
-      <Box
-        style={{ overflow: 'scroll' }}
-        background="green"
-        paddingHorizontal="8px"
-        height="full"
-      >
+      <Box style={{ overflow: 'scroll' }} paddingHorizontal="8px" height="full">
         <MenuContainer>
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable">
