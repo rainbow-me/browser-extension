@@ -102,19 +102,22 @@ const SeedWordRow = ({
       }}
       testId={`word_${word}`}
     >
-      <Inline wrap={false} alignVertical="center" space="10px">
-        <Text
-          size="11pt"
-          weight="medium"
-          color={wordIsSelected ? 'labelQuaternary' : 'transparent'}
-          align="center"
-        >
-          {wordIsSelected
-            ? addLeadingZero((1 + selectedWordPosition) * 4)
-            : '00'}
-        </Text>
+      <Inline wrap={false} alignVertical="bottom" space="10px">
+        <Box style={{ width: '15px' }}>
+          <Text
+            size="11pt"
+            weight="bold"
+            color={wordIsSelected ? 'label' : 'transparent'}
+            align="center"
+          >
+            {wordIsSelected
+              ? addLeadingZero((1 + selectedWordPosition) * 4)
+              : '00'}
+          </Text>
+        </Box>
+
         <Box style={{ width: 57 + additionalWidth }}>
-          <Text size="14pt" weight="bold" color="label" align="center">
+          <Text size="14pt" weight="bold" color="label" align="left">
             {word}
           </Text>
         </Box>
