@@ -464,8 +464,8 @@
     "address_already_added_as": "Address already added as %{addedAs}",
     "watch_top_ens_wallets": "Watch top ENS wallets",
     "placeholder": "Ethereum address or ENS name",
-    "watch_wallet": "Watch Wallet",
-    "watch_wallets": "Watch Wallets",
+    "watch_wallet": "Watch wallet",
+    "watch_wallets": "Watch wallets",
     "loading": "Hold tight while we start watching these wallets..."
   },
   "import_wallet": {
@@ -476,8 +476,8 @@
     "add_another": "Add another",
     "remove": "Remove",
     "placeholder": "Paste your Secret Recovery Phrase or a Private Key from another wallet",
-    "import_wallet": "Import Wallet",
-    "import_wallet_plural": "Import Wallets"
+    "import_wallet": "Restore wallet",
+    "import_wallet_plural": "Restore wallets"
   },
   "edit_import_wallet_selection": {
     "title": "All wallets",
@@ -623,7 +623,7 @@
     "new_password": "New password",
     "confirm_password": "Confirm password",
     "update_password": "Update Password",
-    "set_password": "Set Password",
+    "set_password": "Set password",
     "too_weak": "Too weak",
     "weak": "Weak",
     "good": "Good",

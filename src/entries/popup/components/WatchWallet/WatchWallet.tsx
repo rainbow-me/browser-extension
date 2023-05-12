@@ -94,70 +94,51 @@ function RecommendedWatchWallets({
   selected: Record<Address, boolean>;
 }) {
   return (
-    <>
-      <Box paddingVertical="24px" width="full" style={{ width: '106px' }}>
-        <Separator color="separatorTertiary" strokeWeight="1px" />
+    <Box width="full">
+      <Box paddingLeft="16px" paddingBottom="12px">
+        <Text size="14pt" weight="regular" color="labelSecondary" align="left">
+          {i18n.t('watch_wallet.watch_top_ens_wallets')}
+        </Text>
       </Box>
-      <Box width="full">
-        <Box paddingLeft="16px" paddingBottom="12px">
-          <Text
-            size="14pt"
-            weight="regular"
-            color="labelSecondary"
-            align="left"
-          >
-            {i18n.t('watch_wallet.watch_top_ens_wallets')}
-          </Text>
-        </Box>
+      <Box width="full" style={{ overflow: 'auto', height: '191px' }}>
         <Box
+          background="surfaceSecondaryElevated"
+          borderRadius="16px"
+          padding="16px"
+          borderColor={'separatorSecondary'}
+          borderWidth={'1px'}
           width="full"
-          style={{
-            overflow: 'auto',
-            height: '191px',
-          }}
+          position="relative"
         >
-          <Box
-            background="surfaceSecondaryElevated"
-            borderRadius="16px"
-            padding="16px"
-            borderColor={'separatorSecondary'}
-            borderWidth={'1px'}
-            width="full"
-            position="relative"
-          >
-            <Rows space="6px">
-              {recommendedTopAccounts.map((name, index) => (
-                <Row key={`avatar_${name}`}>
-                  <Rows space="6px">
-                    <Row>
-                      <RecommendedAccountRow
-                        name={name}
-                        onToggle={onToggle}
-                        selected={selected}
-                      />
-                    </Row>
+          <Rows space="6px">
+            {recommendedTopAccounts.map((name, index) => (
+              <Row key={`avatar_${name}`}>
+                <Rows space="6px">
+                  <Row>
+                    <RecommendedAccountRow
+                      name={name}
+                      onToggle={onToggle}
+                      selected={selected}
+                    />
+                  </Row>
 
-                    {index !== recommendedTopAccounts.length - 1 && (
-                      <Row>
-                        <Box width="full">
-                          <Separator
-                            color="separatorTertiary"
-                            strokeWeight="1px"
-                          />
-                        </Box>
-                      </Row>
-                    )}
-                  </Rows>
-                </Row>
-              ))}
-            </Rows>
-          </Box>
+                  {index !== recommendedTopAccounts.length - 1 && (
+                    <Row>
+                      <Box width="full">
+                        <Separator
+                          color="separatorTertiary"
+                          strokeWeight="1px"
+                        />
+                      </Box>
+                    </Row>
+                  )}
+                </Rows>
+              </Row>
+            ))}
+          </Rows>
         </Box>
       </Box>
-      <Box width="full" position="absolute" style={{ bottom: '83px' }}>
-        <Separator color="separatorTertiary" strokeWeight="1px" />
-      </Box>
-    </>
+    </Box>
   );
 }
 
@@ -280,144 +261,150 @@ export const WatchWallet = ({
   ]);
 
   return (
-    <>
-      <Box alignItems="center" paddingBottom="10px">
-        <Inline
-          wrap={false}
-          alignVertical="center"
-          alignHorizontal="center"
-          space="5px"
-        >
-          <Symbol
-            symbol="doc.plaintext"
-            size={16}
-            color="transparent"
-            weight={'bold'}
-          />
-          <Text size="16pt" weight="bold" color="label" align="center">
-            {i18n.t('watch_wallet.title')}
-          </Text>
-        </Inline>
-        <Box padding="16px" paddingTop="10px">
-          <Text
-            size="12pt"
-            weight="regular"
-            color="labelTertiary"
-            align="center"
-          >
-            {i18n.t('watch_wallet.description')}
-          </Text>
-        </Box>
-      </Box>
-      <Box width="full" style={{ width: '106px' }}>
-        <Separator color="separatorTertiary" strokeWeight="1px" />
-      </Box>
-      <Box
-        paddingTop="24px"
-        width="full"
-        style={{
-          height: onboarding ? 'undefined' : '375px',
-        }}
-      >
-        <Stack space="10px">
-          <Box
-            as={motion.div}
-            whileTap={{ scale: transformScales['0.96'] }}
-            transition={transitions.bounce}
-            height="full"
-            width="full"
-            key={`address_1`}
-            position="relative"
-          >
-            <Box
-              as="textarea"
-              testId="secret-textarea"
-              background="surfaceSecondaryElevated"
-              borderRadius="12px"
-              borderWidth="1px"
-              borderColor={{
-                focus: error ? 'orange' : 'accent',
-                default: 'separator',
-              }}
-              width="full"
-              padding="12px"
-              placeholder={i18n.t('watch_wallet.placeholder')}
-              value={input}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') handleWatchWallet();
-              }}
-              tabIndex={1}
-              autoFocus
-              spellCheck={false}
-              onChange={onInputChange}
-              className={[
-                placeholderStyle,
-                textStyles({
-                  color: 'label',
-                  fontSize: '14pt',
-                  fontWeight: 'regular',
-                  fontFamily: 'rounded',
-                }),
-              ]}
-              style={{
-                caretColor: accentColorAsHsl,
-                transition: 'border-color 200ms',
-                height: '96px',
-                resize: 'none',
-              }}
-            />
-            <Box position="absolute" marginTop="-24px" paddingLeft="12px">
-              {isLoading && (
-                <Box width="fit" alignItems="center" justifyContent="center">
-                  <Spinner size={11} color="labelTertiary" />
-                </Box>
-              )}
-              {error && (
-                <Inline space="4px" alignVertical="center">
-                  <Symbol
-                    symbol={error.symbol}
-                    size={11}
-                    color={'orange'}
-                    weight={'bold'}
-                  />
-                  <Text size="11pt" weight="regular" color={'orange'}>
-                    {error.message}
-                  </Text>
-                </Inline>
-              )}
+    <Rows alignVertical="justify">
+      <Row height="content">
+        <Stack space="24px" alignHorizontal="center">
+          <Stack space="12px">
+            <Text size="16pt" weight="bold" color="label" align="center">
+              {i18n.t('watch_wallet.title')}
+            </Text>
+            <Box paddingHorizontal="14px">
+              <Text
+                size="12pt"
+                weight="regular"
+                color="labelTertiary"
+                align="center"
+              >
+                {i18n.t('watch_wallet.description')}
+              </Text>
             </Box>
+          </Stack>
+
+          <Box alignItems="center" width="full" style={{ width: '106px' }}>
+            <Separator color="separatorTertiary" strokeWeight="1px" />
           </Box>
+
+          <Box width="full">
+            <Stack space="24px" alignHorizontal="center">
+              <Box width="full">
+                <Stack space="10px">
+                  <Box
+                    as={motion.div}
+                    whileTap={{ scale: transformScales['0.96'] }}
+                    transition={transitions.bounce}
+                    height="full"
+                    width="full"
+                    key={`address_1`}
+                    position="relative"
+                  >
+                    <Box
+                      as="textarea"
+                      testId="secret-textarea"
+                      background="surfaceSecondaryElevated"
+                      borderRadius="12px"
+                      borderWidth="1px"
+                      borderColor={{
+                        focus: error ? 'orange' : 'accent',
+                        default: 'buttonStroke',
+                      }}
+                      width="full"
+                      padding="12px"
+                      placeholder={i18n.t('watch_wallet.placeholder')}
+                      value={input}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') handleWatchWallet();
+                      }}
+                      tabIndex={1}
+                      autoFocus
+                      spellCheck={false}
+                      onChange={onInputChange}
+                      className={[
+                        placeholderStyle,
+                        textStyles({
+                          color: 'label',
+                          fontSize: '14pt',
+                          fontWeight: 'regular',
+                          fontFamily: 'rounded',
+                        }),
+                      ]}
+                      style={{
+                        caretColor: accentColorAsHsl,
+                        transition: 'border-color 200ms',
+                        height: '96px',
+                        resize: 'none',
+                      }}
+                    />
+                    <Box
+                      position="absolute"
+                      marginTop="-24px"
+                      paddingLeft="12px"
+                    >
+                      {isLoading && (
+                        <Box
+                          width="fit"
+                          alignItems="center"
+                          justifyContent="center"
+                        >
+                          <Spinner size={11} color="labelTertiary" />
+                        </Box>
+                      )}
+                      {error && (
+                        <Inline space="4px" alignVertical="center">
+                          <Symbol
+                            symbol={error.symbol}
+                            size={11}
+                            color={'orange'}
+                            weight={'bold'}
+                          />
+                          <Text size="11pt" weight="regular" color={'orange'}>
+                            {error.message}
+                          </Text>
+                        </Inline>
+                      )}
+                    </Box>
+                  </Box>
+                </Stack>
+              </Box>
+            </Stack>
+          </Box>
+          {onboarding && (
+            <>
+              <Box width="full" style={{ width: '106px' }}>
+                <Separator color="separatorTertiary" strokeWeight="1px" />
+              </Box>
+              <RecommendedWatchWallets
+                selected={selectedAddresses}
+                onToggle={(address) =>
+                  setSelectedAddresses((all) => {
+                    if (all[address]) delete all[address];
+                    else all[address] = true;
+                    return { ...all };
+                  })
+                }
+              />
+            </>
+          )}
         </Stack>
-      </Box>
-      {onboarding && (
-        <RecommendedWatchWallets
-          selected={selectedAddresses}
-          onToggle={(address) =>
-            setSelectedAddresses((all) => {
-              if (all[address]) delete all[address];
-              else all[address] = true;
-              return { ...all };
-            })
-          }
-        />
-      )}
-      <Box width="full" paddingTop="20px">
-        <Button
-          symbol="eyes.inverse"
-          symbolSide="left"
-          height="44px"
-          color={isValid ? 'accent' : 'labelQuaternary'}
-          variant={isValid ? 'flat' : 'disabled'}
-          disabled={!isValid}
-          width="full"
-          onClick={handleWatchWallet}
-          testId="watch-wallets-button"
-        >
-          {addressesToImport.length > 1
-            ? i18n.t('watch_wallet.watch_wallets')
-            : i18n.t('watch_wallet.watch_wallet')}
-        </Button>
-      </Box>
-    </>
+      </Row>
+      <Row height="content">
+        <Box width="full" paddingVertical="20px">
+          <Button
+            symbol="eyes.inverse"
+            symbolSide="left"
+            height="44px"
+            color={isValid ? 'accent' : 'labelQuaternary'}
+            variant={isValid ? 'flat' : 'disabled'}
+            disabled={!isValid}
+            width="full"
+            onClick={handleWatchWallet}
+            testId="watch-wallets-button"
+          >
+            {addressesToImport.length > 1
+              ? i18n.t('watch_wallet.watch_wallets')
+              : i18n.t('watch_wallet.watch_wallet')}
+          </Button>
+        </Box>
+      </Row>
+    </Rows>
   );
 };
