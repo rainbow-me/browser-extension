@@ -29,7 +29,6 @@ import {
 } from '~/design-system/styles/designTokens';
 
 import * as wallet from '../../handlers/wallet';
-import { useNavigationBlocker } from '../../hooks/useNavigationBlocker';
 import { AddressOrEns } from '../AddressOrEns/AddressorEns';
 import { Checkbox } from '../Checkbox/Checkbox';
 import { Spinner } from '../Spinner/Spinner';
@@ -56,11 +55,6 @@ const WatchWallet = ({
   const { setCurrentAddress } = useCurrentAddressStore();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
-
-  const { proceedNavigation, blockNavigation, unblockNavigation } =
-    useNavigationBlocker({
-      onProceed: () => onFinishImporting?.(),
-    });
 
   const toggleAccount = useCallback(
     (address: string) => {
@@ -94,7 +88,6 @@ const WatchWallet = ({
     if (isLoading) return;
     if (address === '' && additionalAccounts.length == 0) return;
     setIsLoading(true);
-    blockNavigation();
     let defaultAccountChosen = false;
     const allAccounts = address
       ? [address, ...additionalAccounts]
@@ -109,19 +102,16 @@ const WatchWallet = ({
           if (!addressToImport) {
             setError(true);
             setIsLoading(false);
-            unblockNavigation();
             return;
           }
         } catch (e) {
           setError(true);
           setIsLoading(false);
-          unblockNavigation();
           return;
         }
       } else if (!isAddress(addressToImport)) {
         setError(true);
         setIsLoading(false);
-        unblockNavigation();
         return;
       }
       if (i === 0) {
@@ -138,14 +128,12 @@ const WatchWallet = ({
       }
     }
     setIsLoading(false);
-    proceedNavigation();
+    onFinishImporting?.();
   }, [
     isLoading,
     address,
     additionalAccounts,
-    blockNavigation,
-    proceedNavigation,
-    unblockNavigation,
+    onFinishImporting,
     setCurrentAddress,
   ]);
 

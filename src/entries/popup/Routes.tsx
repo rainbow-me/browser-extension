@@ -663,68 +663,6 @@ export function Routes() {
   );
 }
 
-export function RouteWrapper({ element }: { element: React.ReactElement }) {
-  const location = useLocation();
-  React.useEffect(() => {
-    // need to wait a tick for the page to render
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-    }, 0);
-  }, [location.pathname]);
-  const match = matchingRoute(location.pathname);
-  const background = match?.background;
-  const RoutesContainer = background ?? React.Fragment;
-  const { innerHeight: windowHeight } = window;
-  return (
-    <Box
-      style={{
-        maxWidth:
-          windowHeight === POPUP_DIMENSIONS.height
-            ? POPUP_DIMENSIONS.width
-            : undefined,
-      }}
-    >
-      <RoutesContainer>
-        <CurrentRoutee pathname={location.pathname} element={element} />
-      </RoutesContainer>
-    </Box>
-  );
-}
-
-function CurrentRoutee({
-  element,
-  pathname,
-}: {
-  element: React.ReactElement;
-  pathname: string;
-}) {
-  const currentDirection = element?.props.direction;
-  const { state } = useLocation();
-  const previousMatch = matchingRoute(state?.from || '');
-  const previousElement = previousMatch?.element;
-  const previousDirection = previousElement?.props.direction;
-
-  useGlobalShortcuts(false);
-
-  if (!element) {
-    // error UI here probably
-    return null;
-  }
-  const isBack = state?.isBack;
-  const direction = isBack
-    ? directionMap[previousDirection as Direction]
-    : currentDirection;
-
-  return (
-    <AnimatePresence key={pathname} mode="popLayout">
-      {React.cloneElement(element, {
-        key: pathname,
-        direction,
-      })}
-    </AnimatePresence>
-  );
-}
-
 function CurrentRoute(props: { pathname: string }) {
   const match = matchingRoute(props.pathname);
   const element = match?.element;

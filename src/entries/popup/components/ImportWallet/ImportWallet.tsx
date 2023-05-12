@@ -29,7 +29,6 @@ import {
 } from '~/design-system/styles/designTokens';
 
 import * as wallet from '../../handlers/wallet';
-import { useNavigationBlocker } from '../../hooks/useNavigationBlocker';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -52,12 +51,6 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
   const [isAddingWallets, setIsAddingWallets] = useState(false);
   const [secrets, setSecrets] = useState((state.secrets as string[]) || ['']);
   const { setCurrentAddress } = useCurrentAddressStore();
-
-  const { proceedNavigation, blockNavigation, unblockNavigation } =
-    useNavigationBlocker({
-      onProceed: () =>
-        onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME),
-    });
 
   const [validity, setValidity] = useState<
     { valid: boolean; too_long: boolean; type: string | undefined }[]
@@ -119,17 +112,15 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
       if (isValidPrivateKey(secrets[0]) || isAddress(secrets[0])) {
         try {
           setIsAddingWallets(true);
-          blockNavigation();
           const address = (await wallet.importWithSecret(
             secrets[0],
           )) as Address;
           setCurrentAddress(address);
           setIsAddingWallets(false);
-          proceedNavigation();
+          onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
           return;
         } finally {
           setIsAddingWallets(false);
-          unblockNavigation();
         }
       }
     }
@@ -141,16 +132,7 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
       : navigate(ROUTES.NEW_IMPORT_WALLET_SELECTION, {
           state: { secrets },
         });
-  }, [
-    blockNavigation,
-    isAddingWallets,
-    navigate,
-    onboarding,
-    proceedNavigation,
-    secrets,
-    setCurrentAddress,
-    unblockNavigation,
-  ]);
+  }, [isAddingWallets, navigate, onboarding, secrets, setCurrentAddress]);
 
   const handleAddAnotherOne = useCallback(() => {
     const newSecrets = [...secrets, ''];
