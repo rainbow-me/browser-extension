@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { To } from 'react-router-dom';
 
 import { useCurrentAddressStore } from '~/core/state';
@@ -159,6 +159,24 @@ export const AnimatedRoute = React.forwardRef<
   const { currentAddress } = useCurrentAddressStore();
   const { avatar } = useAvatar({ address: currentAddress });
 
+  const leftNavbarIcon = useMemo(() => {
+    if (navbarIcon === 'arrow') {
+      return (
+        <Navbar.BackButton
+          maintainLocationState={maintainLocationState}
+          backTo={backTo}
+        />
+      );
+    } else if (navbarIcon === 'ex') {
+      return (
+        <Navbar.CloseButton
+          maintainLocationState={maintainLocationState}
+          backTo={backTo}
+        />
+      );
+    } else return undefined;
+  }, [backTo, maintainLocationState, navbarIcon]);
+
   const content = (
     <AccentColorProviderWrapper
       color={accentColor ? avatar?.color : globalColors.blue60}
@@ -180,19 +198,7 @@ export const AnimatedRoute = React.forwardRef<
           <Navbar
             title={title || ''}
             background={navbarBackground}
-            leftComponent={
-              navbarIcon === 'arrow' ? (
-                <Navbar.BackButton
-                  maintainLocationState={maintainLocationState}
-                  backTo={backTo}
-                />
-              ) : (
-                <Navbar.CloseButton
-                  maintainLocationState={maintainLocationState}
-                  backTo={backTo}
-                />
-              )
-            }
+            leftComponent={leftNavbarIcon}
             rightComponent={rightNavbarComponent}
           />
         )}
