@@ -91,7 +91,7 @@ export const SwitchNetworkMenuSelector = ({
   });
 
   return (
-    <>
+    <Box id="switch-network-menu-selector">
       {chains.map((chain, i) => {
         const { id: chainId, name } = chain;
         return (
@@ -148,7 +148,7 @@ export const SwitchNetworkMenuSelector = ({
           shortcutLabel={String(chains.length + 1)}
         />
       )}
-    </>
+    </Box>
   );
 };
 
@@ -265,8 +265,12 @@ export const SwitchNetworkMenu = ({
         };
   }, [type]);
 
+  const handleOpenChange = (isOpen: boolean) => {
+    onOpenChange?.(isOpen);
+  };
+
   return (
-    <Menu onOpenChange={onOpenChange}>
+    <Menu onOpenChange={handleOpenChange}>
       <MenuTrigger asChild>
         <Box style={{ cursor: 'default' }} ref={triggerRef}>
           {triggerComponent}

@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Address, useBalance } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
+import { useCurrentAddressStore } from '~/core/state';
+import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import {
@@ -21,9 +24,17 @@ import { EthSymbol } from '~/entries/popup/components/EthSymbol/EthSymbol';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
+import { useAccounts } from '~/entries/popup/hooks/useAccounts';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
+import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { useWalletInfo } from '~/entries/popup/hooks/useWalletInfo';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
+import {
+  getInputIsFocused,
+  radixIsActive,
+  switchNetworkMenuIsActive,
+} from '~/entries/popup/utils/activeElement';
+import { simulateClick } from '~/entries/popup/utils/simulateClick';
 
 import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
 import { SwitchMenu } from '../../../components/SwitchMenu/SwitchMenu';
@@ -52,8 +63,16 @@ export const BottomWallet = ({
   selectedWallet: Address;
   displaySymbol: boolean;
 }) => {
+  const triggerRef = useRef<HTMLDivElement>(null);
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.connect.OPEN_WALLET_SWITCHER.key) {
+        simulateClick(triggerRef?.current);
+      }
+    },
+  });
   return (
-    <Box testId="switch-wallet-menu">
+    <Box testId="switch-wallet-menu" ref={triggerRef}>
       <Inline alignVertical="center" space="4px">
         <WalletAvatar address={selectedWallet} size={18} emojiSize={'12pt'} />
         <WalletName color="labelSecondary" address={selectedWallet} />
@@ -92,7 +111,37 @@ export const BottomSwitchWallet = ({
   selectedWallet: Address;
   setSelectedWallet: (selected: Address) => void;
 }) => {
+  const { setCurrentAddress } = useCurrentAddressStore();
+  const { sortedAccounts } = useAccounts();
   const { visibleWallets } = useWallets();
+  const { walletOrder } = useWalletOrderStore();
+
+  const onOpenChange = useCallback((isOpen: boolean) => {
+    isOpen && analytics.track(event.dappPromptConnectWalletClicked);
+  }, []);
+
+  const onValueChange = useCallback(
+    (address: string) => {
+      setCurrentAddress(address as Address);
+      setSelectedWallet(address as Address);
+      analytics.track(event.dappPromptConnectWalletSwitched);
+    },
+    [setCurrentAddress, setSelectedWallet],
+  );
+
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (!switchNetworkMenuIsActive() && !getInputIsFocused()) {
+        const regex = /^[1-9]$/;
+        if (regex.test(e.key)) {
+          const accountIndex = parseInt(e.key, 10) - 1;
+          if (sortedAccounts[accountIndex]) {
+            onValueChange(sortedAccounts[accountIndex]?.address);
+          }
+        }
+      }
+    },
+  });
 
   return (
     <Stack space="8px">
@@ -119,15 +168,25 @@ export const BottomSwitchWallet = ({
             </Inline>
           </Box>
         )}
-        menuItems={visibleWallets?.map((wallet) => wallet.address)}
+        menuItems={visibleWallets
+          ?.sort((a, b) => {
+            const aIndex = walletOrder.indexOf(a.address);
+            const bIndex = walletOrder.indexOf(b.address);
+            if (aIndex === -1 && bIndex === -1) {
+              return 0;
+            }
+            if (aIndex === -1) {
+              return 1;
+            }
+            if (bIndex === -1) {
+              return -1;
+            }
+            return aIndex - bIndex;
+          })
+          ?.map((wallet) => wallet.address)}
         selectedValue={selectedWallet}
-        onValueChange={(value) => {
-          setSelectedWallet(value as Address);
-          analytics.track(event.dappPromptConnectWalletSwitched);
-        }}
-        onOpenChange={(isOpen) =>
-          isOpen && analytics.track(event.dappPromptConnectWalletClicked)
-        }
+        onValueChange={onValueChange}
+        onOpenChange={onOpenChange}
       />
     </Stack>
   );
@@ -279,6 +338,15 @@ export const RejectRequestButton = ({
   onClick: () => void;
   label: string;
 }) => {
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.connect.CANCEL.key) {
+        if (!radixIsActive()) {
+          onClick?.();
+        }
+      }
+    },
+  });
   return (
     <Button
       color={'labelSecondary'}
