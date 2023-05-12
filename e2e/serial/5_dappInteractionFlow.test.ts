@@ -30,9 +30,7 @@ let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
-const shortenedAddress = await shortenAddress(
-  TEST_VARIABLES.SEED_WALLET.ADDRESS,
-);
+const shortenedAddress = shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS);
 
 describe('App interactions flow', () => {
   beforeAll(async () => {

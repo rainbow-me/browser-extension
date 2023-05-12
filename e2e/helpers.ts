@@ -84,10 +84,10 @@ export async function switchWallet(address, rootURL, driver) {
     id: 'header-account-name-shuffle',
     driver,
   });
-  await delayTime('short');
+  await delayTime('medium');
 
   await findElementByTextAndClick(driver, shortenedAddress);
-  await delayTime('medium');
+  await delayTime('long');
 }
 
 export async function getOnchainBalance(addy, contract) {

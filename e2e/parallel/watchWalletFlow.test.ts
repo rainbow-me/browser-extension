@@ -115,7 +115,7 @@ describe('Watch wallet then add more and switch between them', () => {
     it('should display pk account wallet name', async () => {
       const account = await getTextFromText({ id: 'account-name', driver });
       expect(account).toBe(
-        await shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),
+        shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),
       );
     });
   });
@@ -191,7 +191,7 @@ describe('Watch wallet then add more and switch between them', () => {
     it('should display seed account name', async () => {
       const account = await getTextFromText({ id: 'account-name', driver });
       expect(account).toBe(
-        await shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),
+        shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),
       );
     });
   });
@@ -205,7 +205,7 @@ describe('Watch wallet then add more and switch between them', () => {
     );
     const wallet = await getTextFromText({ id: 'account-name', driver });
     expect(wallet).toBe(
-      await shortenAddress(TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS),
+      shortenAddress(TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS),
     );
   });
 
@@ -218,7 +218,7 @@ describe('Watch wallet then add more and switch between them', () => {
     );
     const wallet = await getTextFromText({ id: 'account-name', driver });
     expect(wallet).toBe(
-      await shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),
+      shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),
     );
   });
 
@@ -226,9 +226,7 @@ describe('Watch wallet then add more and switch between them', () => {
     await delayTime('medium');
     await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
     const wallet = await getTextFromText({ id: 'account-name', driver });
-    expect(wallet).toBe(
-      await shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS),
-    );
+    expect(wallet).toBe(shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS));
   });
 
   it('should be able to switch to the second watched wallet', async () => {
@@ -240,7 +238,7 @@ describe('Watch wallet then add more and switch between them', () => {
     );
     const wallet = await getTextFromText({ id: 'account-name', driver });
     expect(wallet).toBe(
-      await shortenAddress(TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS),
+      shortenAddress(TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS),
     );
   });
 });
