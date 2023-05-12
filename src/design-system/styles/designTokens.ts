@@ -752,6 +752,7 @@ export const spaceToNegativeSpace: Record<
 
 export const positionSpace = {
   '0': 0,
+  '16px': '16px',
 } as const;
 
 export type Space = keyof typeof space;
