@@ -3,14 +3,11 @@ import * as React from 'react';
 import { matchRoutes, useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
-import { useAccounts } from './hooks/useAccounts';
-import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
 import { ConnectedApps } from './pages/home/ConnectedApps';
@@ -105,7 +102,6 @@ const ROUTE_DATA = [
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
-    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.READY,
@@ -134,7 +130,6 @@ const ROUTE_DATA = [
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
-    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.WATCH,
@@ -151,7 +146,6 @@ const ROUTE_DATA = [
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
-    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.IMPORT,
@@ -168,7 +162,6 @@ const ROUTE_DATA = [
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
-    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.IMPORT__SELECT,
@@ -184,7 +177,6 @@ const ROUTE_DATA = [
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
-    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.IMPORT__EDIT,
@@ -201,7 +193,6 @@ const ROUTE_DATA = [
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
-    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.UNLOCK,
@@ -211,7 +202,6 @@ const ROUTE_DATA = [
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
-    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.SEED_BACKUP_PROMPT,
@@ -228,7 +218,6 @@ const ROUTE_DATA = [
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
-    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.SEED_REVEAL,
@@ -244,7 +233,6 @@ const ROUTE_DATA = [
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
-    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.SEED_VERIFY,
@@ -259,7 +247,6 @@ const ROUTE_DATA = [
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
-    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.CREATE_PASSWORD,
@@ -276,7 +263,6 @@ const ROUTE_DATA = [
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
-    disableGlobalShortcuts: true,
   },
   {
     path: ROUTES.QR_CODE,
@@ -686,8 +672,6 @@ function CurrentRoute(props: { pathname: string }) {
   const previousElement = previousMatch?.element;
   const previousDirection = previousElement?.props.direction;
 
-  useGlobalShortcuts(match?.disableGlobalShortcuts);
-
   if (!element) {
     // error UI here probably
     return null;
@@ -714,25 +698,4 @@ const directionMap = {
   left: 'right',
   down: 'up',
   base: 'base',
-};
-
-const useGlobalShortcuts = (disable?: boolean) => {
-  const { sortedAccounts } = useAccounts();
-  const { setCurrentAddress } = useCurrentAddressStore();
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
-      const activeElement = document.activeElement;
-      const tagName = activeElement?.tagName;
-      if (tagName !== 'INPUT') {
-        const regex = /^[1-9]$/;
-        if (regex.test(e.key)) {
-          const accountIndex = parseInt(e.key, 10) - 1;
-          if (sortedAccounts[accountIndex]) {
-            setCurrentAddress(sortedAccounts[accountIndex]?.address);
-          }
-        }
-      }
-    },
-    condition: () => !disable,
-  });
 };
