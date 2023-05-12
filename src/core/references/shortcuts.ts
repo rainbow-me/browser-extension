@@ -27,6 +27,16 @@ export const shortcuts = {
       key: 'e',
     },
   },
+  connect: {
+    CANCEL: {
+      display: 'Esc',
+      key: 'Escape',
+    },
+    OPEN_WALLET_SWITCHER: {
+      display: 'W',
+      key: 'w',
+    },
+  },
   global: {
     CLOSE: {
       display: 'Esc',
@@ -85,6 +95,10 @@ export const shortcuts = {
     OPEN_MORE_MENU: {
       display: '.',
       key: '.',
+    },
+    SWITCH_NETWORK: {
+      display: 'N',
+      key: 'n',
     },
   },
   send: {
@@ -149,6 +163,12 @@ export const shortcuts = {
     CANCEL: {
       display: 'Esc',
       key: 'Escape',
+    },
+  },
+  wallet_switcher: {
+    SEARCH: {
+      display: '/',
+      key: '/',
     },
   },
 };
