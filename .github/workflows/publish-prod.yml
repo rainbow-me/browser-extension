@@ -68,4 +68,4 @@ jobs:
           finalize: true
           sourcemaps: ./build
           version: ${{ env.release_version }}
-          version_prefix: v
+          

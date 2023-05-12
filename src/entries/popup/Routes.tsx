@@ -171,8 +171,6 @@ const ROUTE_DATA = [
         protectedRoute={['NEW']}
         accentColor={false}
         maintainLocationState
-        navbar
-        navbarIcon="arrow"
         backTo={ROUTES.IMPORT}
       >
         <ImportWalletSelection />
@@ -228,7 +226,6 @@ const ROUTE_DATA = [
         direction="right"
         protectedRoute={['NEW']}
         navbar
-        navbarIcon="arrow"
         backTo={ROUTES.SEED_BACKUP_PROMPT}
         accentColor={false}
       >
@@ -243,6 +240,7 @@ const ROUTE_DATA = [
       <AnimatedRoute
         direction="right"
         protectedRoute={['NEW']}
+        navbar
         accentColor={false}
       >
         <SeedVerify />
@@ -637,7 +635,7 @@ const matchingRoute = (pathName: string) => {
   return match;
 };
 
-export function Routes() {
+export function Routes({ children }: React.PropsWithChildren) {
   const location = useLocation();
   React.useEffect(() => {
     // need to wait a tick for the page to render
@@ -660,6 +658,7 @@ export function Routes() {
     >
       <RoutesContainer>
         <CurrentRoute pathname={location.pathname} />
+        {children}
       </RoutesContainer>
     </Box>
   );
