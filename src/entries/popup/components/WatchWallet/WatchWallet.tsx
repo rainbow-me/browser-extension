@@ -1,5 +1,3 @@
-/* eslint-disable no-await-in-loop */
-
 import { isAddress } from '@ethersproject/address';
 import { Address } from '@wagmi/core';
 import { motion } from 'framer-motion';
@@ -7,7 +5,7 @@ import { ChangeEvent, useCallback, useMemo, useReducer, useState } from 'react';
 import { useEnsAddress } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { setCurrentAddress } from '~/core/state';
+import { useCurrentAddressStore } from '~/core/state';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 import {
   Box,
@@ -38,13 +36,54 @@ import { Checkbox } from '../Checkbox/Checkbox';
 import { Spinner } from '../Spinner/Spinner';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
-const recommendedTopAccounts: [string, Address][] = [
-  ['vitalik.eth', '0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045'],
-  ['bored.eth', '0xf56345338Cb4CddaF915ebeF3bfde63E70FE3053'],
-  ['cdixon.eth', '0xe11BFCBDd43745d4Aa6f4f18E24aD24f4623af04'],
-  ['hublot.eth', '0xDCD589BC5E95Bc6a4A530Cdb14F56A5fEbf6bCe7'],
-  ['rainbowwallet.eth', '0x7a3d05c70581bD345fe117c06e45f9669205384f'],
+const recommendedTopAccounts = [
+  'vitalik.eth',
+  'bored.eth',
+  'cdixon.eth',
+  'hublot.eth',
+  'rainbowwallet.eth',
 ];
+
+function RecommendedAccountRow({
+  name,
+  onToggle,
+  selected,
+}: {
+  name: string;
+  onToggle: (address: Address) => void;
+  selected: Record<Address, boolean>;
+}) {
+  const { data: address } = useEnsAddress({ name });
+  return (
+    <Box onClick={() => address && onToggle(address)}>
+      <Columns>
+        <Column>
+          <Inline space="8px" alignHorizontal="left" alignVertical="center">
+            <WalletAvatar address={name} size={32} emojiSize={'16pt'} />
+            <Box justifyContent="flex-start" width="fit">
+              <AddressOrEns
+                size="14pt"
+                weight="bold"
+                color="label"
+                address={name}
+              />
+            </Box>
+          </Inline>
+        </Column>
+        <Column width="content">
+          <Box
+            alignItems="center"
+            justifyContent="flex-end"
+            width="fit"
+            paddingTop="6px"
+          >
+            <Checkbox selected={!!address && !!selected[address]} />
+          </Box>
+        </Column>
+      </Columns>
+    </Box>
+  );
+}
 
 function RecommendedWatchWallets({
   onToggle,
@@ -86,47 +125,15 @@ function RecommendedWatchWallets({
             position="relative"
           >
             <Rows space="6px">
-              {recommendedTopAccounts.map(([name, address], index) => (
+              {recommendedTopAccounts.map((name, index) => (
                 <Row key={`avatar_${name}`}>
                   <Rows space="6px">
                     <Row>
-                      <Box onClick={() => onToggle(address)}>
-                        <Columns>
-                          <Column>
-                            <Inline
-                              space="8px"
-                              alignHorizontal="left"
-                              alignVertical="center"
-                            >
-                              <WalletAvatar
-                                address={address}
-                                size={32}
-                                emojiSize={'16pt'}
-                              />
-                              <Box justifyContent="flex-start" width="fit">
-                                <AddressOrEns
-                                  size="14pt"
-                                  weight="bold"
-                                  color="label"
-                                  address={name}
-                                />
-                              </Box>
-                            </Inline>
-                          </Column>
-                          <Column width="content">
-                            <Box
-                              alignItems="center"
-                              justifyContent="flex-end"
-                              width="fit"
-                              paddingTop="6px"
-                            >
-                              <Checkbox
-                                selected={!!address && !!selected[address]}
-                              />
-                            </Box>
-                          </Column>
-                        </Columns>
-                      </Box>
+                      <RecommendedAccountRow
+                        name={name}
+                        onToggle={onToggle}
+                        selected={selected}
+                      />
                     </Row>
 
                     {index !== recommendedTopAccounts.length - 1 && (
@@ -255,6 +262,8 @@ export const WatchWallet = ({
     [address, selectedAddresses],
   );
 
+  const { setCurrentAddress } = useCurrentAddressStore();
+
   const handleWatchWallet = useCallback(async () => {
     const importedAddresses = await Promise.all(
       addressesToImport.map(wallet.importWithSecret),
@@ -265,7 +274,13 @@ export const WatchWallet = ({
     if (ensName && address) watchedEnsNames.save(ensName, address);
     setCurrentAddress(importedAddresses[0]);
     onFinishImporting?.();
-  }, [addressesToImport, ensName, address, onFinishImporting]);
+  }, [
+    addressesToImport,
+    ensName,
+    address,
+    onFinishImporting,
+    setCurrentAddress,
+  ]);
 
   return (
     <>
