@@ -15,6 +15,7 @@ import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
+import { useQuickPromoStore } from '~/core/state/quickPromo';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { KeychainType } from '~/core/types/keychainTypes';
@@ -142,8 +143,9 @@ const infoButtonOptions = ({
   return isLastWallet ? options : options.concat(removeOption);
 };
 
-const bottomSpacing = 150 + (process.env.IS_DEV === 'true' ? 40 : 0);
-const topSpacing = 127;
+const BOTTOM_SPACING = 150 + (process.env.IS_DEV === 'true' ? 40 : 0);
+const TOP_SPACING = 127;
+const TOP_SPACING_NO_PROMO = 73;
 
 const NoWalletsWarning = ({
   symbol,
@@ -193,6 +195,12 @@ export function WalletSwitcher() {
   );
 
   const { deleteWalletName } = useWalletNamesStore();
+  const { seenPromos } = useQuickPromoStore();
+
+  const hasSeenPromo = useMemo(
+    () => seenPromos['wallet_switcher'],
+    [seenPromos],
+  );
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -379,15 +387,17 @@ export function WalletSwitcher() {
           innerRef={searchInputRef}
         />
       </Box>
-      <Box paddingHorizontal="16px" paddingBottom="8px">
-        <QuickPromo
-          text={i18n.t('wallet_switcher.quick_promo.text')}
-          textBold={i18n.t('wallet_switcher.quick_promo.text_bold')}
-          symbol="sparkle"
-          promoType="wallet_switcher"
-        />
-      </Box>
-      <Box style={{ overflow: 'scroll' }} paddingHorizontal="8px">
+      {!hasSeenPromo && (
+        <Box paddingHorizontal="16px" paddingBottom="8px">
+          <QuickPromo
+            text={i18n.t('wallet_switcher.quick_promo.text')}
+            textBold={i18n.t('wallet_switcher.quick_promo.text_bold')}
+            symbol="sparkle"
+            promoType="wallet_switcher"
+          />
+        </Box>
+      )}
+      <Box style={{ overflow: 'scroll' }} paddingHorizontal="8px" height="full">
         <MenuContainer>
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable">
@@ -396,9 +406,13 @@ export function WalletSwitcher() {
                   <Box
                     width="full"
                     height="full"
+                    background="orange"
                     style={{
                       overflow: 'scroll',
-                      height: windowHeight - bottomSpacing - topSpacing,
+                      height:
+                        windowHeight -
+                        BOTTOM_SPACING -
+                        (hasSeenPromo ? TOP_SPACING_NO_PROMO : TOP_SPACING),
                     }}
                   >
                     <Stack>

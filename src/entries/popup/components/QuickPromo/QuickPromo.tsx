@@ -17,7 +17,7 @@ export const QuickPromo = ({
 }) => {
   const { seenPromos, setSeenPromo } = useQuickPromoStore();
 
-  const seenPromo = useMemo(
+  const hasSeenPromo = useMemo(
     () => seenPromos[promoType],
     [promoType, seenPromos],
   );
@@ -27,7 +27,7 @@ export const QuickPromo = ({
     [promoType, setSeenPromo],
   );
 
-  if (seenPromo) return null;
+  if (hasSeenPromo) return null;
 
   return (
     <Box background="fillSecondary" padding="12px" borderRadius="20px">
@@ -43,7 +43,7 @@ export const QuickPromo = ({
             {text}
           </Text>
         </Inline>
-        {!seenPromo && (
+        {!hasSeenPromo && (
           <Box marginVertical="-4px">
             <ButtonSymbol
               color="labelQuaternary"
