@@ -216,10 +216,18 @@ describe('Watch wallet then add more and switch between them', () => {
       rootURL,
       driver,
     );
-    const wallet = await getTextFromText({ id: 'account-name', driver });
-    expect(wallet).toBe(
-      shortenAddress(TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS),
+
+    const label = await querySelector(
+      driver,
+      '[data-testid="header"] [data-testid="account-name"]',
     );
+
+    const actual = await label.getText();
+    const expected = [
+      '0x70c1...43C4',
+      TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
+    ];
+    expect(expected.includes(actual)).toEqual(true);
   });
 
   it('should be able to switch to the seed wallet', async () => {
@@ -236,9 +244,17 @@ describe('Watch wallet then add more and switch between them', () => {
       rootURL,
       driver,
     );
-    const wallet = await getTextFromText({ id: 'account-name', driver });
-    expect(wallet).toBe(
-      shortenAddress(TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS),
+
+    const label = await querySelector(
+      driver,
+      '[data-testid="header"] [data-testid="account-name"]',
     );
+
+    const actual = await label.getText();
+    const expected = [
+      '0x089b...be9E',
+      TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
+    ];
+    expect(expected.includes(actual)).toEqual(true);
   });
 });
