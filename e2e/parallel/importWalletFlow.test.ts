@@ -76,8 +76,6 @@ describe('Import wallet flow', () => {
     goToPopup(driver, rootURL);
     await delayTime('short');
     const account = await getTextFromText({ id: 'account-name', driver });
-    expect(account).toBe(
-      await shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS),
-    );
+    expect(account).toBe(shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS));
   });
 });
