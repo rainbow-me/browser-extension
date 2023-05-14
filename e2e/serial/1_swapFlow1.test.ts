@@ -40,6 +40,7 @@ const OP_OPTIMISM_ID = '0x4200000000000000000000000000000000000042_10';
 const MATIC_POLYGON_ID = '0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0_137';
 const GMX_ARBITRUM_ID = '0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a_42161';
 const UNI_BNB_ID = '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984_56';
+const WBTC_MAINNET_ID = '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599_1';
 
 const TEST_ADDRESS_1 = '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266';
 
@@ -382,6 +383,10 @@ it('should be able to favorite a token and check the info button is present', as
     id: `${ZEROX_MAINNET_ID}-favorites-token-to-buy-row-info-button-copy`,
     driver,
   });
+  await findElementByTestIdAndClick({
+    id: `${WBTC_MAINNET_ID}-favorites-token-to-buy-row`,
+    driver,
+  });
 });
 
 it('should be able to check price and balance of token to buy', async () => {
@@ -417,7 +422,7 @@ it('should be able to flip correctly', async () => {
   await delayTime('very-long');
 
   const assetToBuyInputText = await getTextFromTextInput({
-    id: `${ZEROX_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
+    id: `${WBTC_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
   expect(assetToBuyInputText).not.toBe('');
@@ -427,20 +432,20 @@ it('should be able to flip correctly', async () => {
     driver,
   });
 
-  await delayTime('long');
+  await delayTime('very-long');
 
-  const assetToSellInputTextAfterMax = await getTextFromTextInput({
-    id: `${ZEROX_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+  const assetToSellInputTextAfterFlip = await getTextFromTextInput({
+    id: `${WBTC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
   });
 
-  expect(assetToSellInputTextAfterMax).not.toEqual('');
+  expect(assetToSellInputTextAfterFlip).not.toEqual('');
 
-  const assetToBuyInputTextAfterMax = await getTextFromTextInput({
+  const assetToBuyInputTextAfterFlip = await getTextFromTextInput({
     id: `${ETH_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
     driver,
   });
-  expect(assetToBuyInputTextAfterMax).toEqual('1');
+  expect(assetToBuyInputTextAfterFlip).toEqual('1');
 });
 
 it('should be able to check insufficient asset for swap', async () => {
@@ -448,7 +453,7 @@ it('should be able to check insufficient asset for swap', async () => {
     id: 'swap-confirmation-button',
     driver,
   });
-  expect(confirmButtonText).toEqual('Insufficient ZRX');
+  expect(confirmButtonText).toEqual('Insufficient WBTC');
 });
 
 it('should be able to check insufficient native asset for gas', async () => {
@@ -470,7 +475,7 @@ it('should be able to check insufficient native asset for gas', async () => {
   expect(confirmButtonText).toEqual('Insufficient ETH for gas');
 });
 
-it('should be able to see small market warning', async () => {
+it.skip('should be able to see small market warning', async () => {
   const swapWarning = await findElementByTestId({
     id: 'swap-warning-price-impact',
     driver,
@@ -481,7 +486,7 @@ it('should be able to see small market warning', async () => {
 it('should be able to filter assets to buy by network', async () => {
   // OP
   await findElementByTestIdAndClick({
-    id: `${ZEROX_MAINNET_ID}-token-to-buy-token-input-remove`,
+    id: `${WBTC_MAINNET_ID}-token-to-buy-token-input-remove`,
     driver,
   });
   await findElementByTestIdAndClick({

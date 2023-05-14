@@ -9,6 +9,7 @@ import {
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentCurrencyStore } from '~/core/state';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { ChainId } from '~/core/types/chains';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
 export type SortMethod = 'token' | 'chain';
@@ -31,6 +32,9 @@ export const useSendAsset = () => {
   const [selectedAssetAddress, setSelectedAssetAddress] = useState<
     Address | typeof ETH_ADDRESS | ''
   >('');
+  const [selectedAssetChain, setSelectedAssetChain] = useState<ChainId>(
+    ChainId.mainnet,
+  );
   const { data: assets = [] } = useUserAssets(
     {
       address,
@@ -40,23 +44,26 @@ export const useSendAsset = () => {
     { select: sortBy(sortMethod) },
   );
 
-  const selectAssetAddress = useCallback(
-    (address: Address | typeof ETH_ADDRESS | '') => {
+  const selectAssetAddressAndChain = useCallback(
+    (address: Address | typeof ETH_ADDRESS | '', chainId: ChainId) => {
       setSelectedAssetAddress(address);
+      setSelectedAssetChain(chainId);
     },
     [],
   );
 
   const asset = useMemo(
     () =>
-      assets?.find(({ address }) =>
-        isLowerCaseMatch(address, selectedAssetAddress),
+      assets?.find(
+        ({ address, chainId }) =>
+          isLowerCaseMatch(address, selectedAssetAddress) &&
+          chainId === selectedAssetChain,
       ) || null,
-    [assets, selectedAssetAddress],
+    [assets, selectedAssetAddress, selectedAssetChain],
   );
 
   return {
-    selectAssetAddress,
+    selectAssetAddressAndChain,
     asset,
     assets,
     sortMethod,
