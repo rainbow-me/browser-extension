@@ -50,11 +50,26 @@ const RAINBOWS_POSITION: {
     },
   },
   invite_code: {
-    rainbowPixel: {},
-    rainbowWhite: {},
-    rainbowOg: {},
-    rainbowLight: {},
-    rainbowNeon: {},
+    rainbowPixel: {
+      right: '-15.64px',
+      top: '-79px',
+    },
+    rainbowWhite: {
+      left: '-58.66px',
+      top: '-45.44px',
+    },
+    rainbowOg: {
+      left: '-30px',
+      top: '392px',
+    },
+    rainbowLight: {
+      left: '4.89px',
+      top: '509.26px',
+    },
+    rainbowNeon: {
+      right: '-68.93px',
+      bottom: '-9.36px',
+    },
   },
 };
 
