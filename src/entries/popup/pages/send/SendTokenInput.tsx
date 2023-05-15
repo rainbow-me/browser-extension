@@ -200,11 +200,12 @@ export const SendTokenInput = React.forwardRef<
   }, [assets, inputValue]);
 
   const onCloseDropdown = useCallback(() => {
+    onDropdownAction();
     onSelectAsset('', ChainId.mainnet);
     setTimeout(() => {
       inputRef?.current?.focus();
     }, 200);
-  }, [inputRef, onSelectAsset]);
+  }, [inputRef, onSelectAsset, onDropdownAction]);
 
   const selectAsset = useCallback(
     (address: Address | typeof ETH_ADDRESS | '', chainId: ChainId) => {
