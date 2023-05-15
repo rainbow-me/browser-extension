@@ -41,12 +41,8 @@ export const TokenToBuyInfo = ({
     return nativeDisplay.display;
   }, [assetToBuy?.native?.price?.amount, currentCurrency, assetToBuyValue]);
 
-  const priceChangeDisplay = useMemo(() => {
-    const priceChange = assetToBuy?.native?.price?.change;
-    return priceChange?.length ? priceChange : null;
-  }, [assetToBuy?.native?.price?.change]);
-
   const nativeValueDifferenceDisplay = useMemo(() => {
+    if (!assetToBuyValue || !assetToSellValue) return null;
     const assetToBuyNativeValue = convertAmountAndPriceToNativeDisplay(
       assetToBuyValue || '0',
       assetToBuy?.native?.price?.amount || '0',
@@ -92,7 +88,9 @@ export const TokenToBuyInfo = ({
 
             <Column width="content">
               <Text as="p" size="12pt" weight="medium" color="labelQuaternary">
-                {priceChangeDisplay ? `(${nativeValueDifferenceDisplay})` : ''}
+                {nativeValueDifferenceDisplay
+                  ? `(${nativeValueDifferenceDisplay})`
+                  : ''}
               </Text>
             </Column>
           </Columns>
