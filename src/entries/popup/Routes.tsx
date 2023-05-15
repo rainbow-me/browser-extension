@@ -57,6 +57,7 @@ import { Wallets } from './pages/wallets';
 import { WatchWallet } from './pages/watchWallet';
 import { Welcome } from './pages/welcome';
 import { ROUTES } from './urls';
+import { getInputIsFocused } from './utils/activeElement';
 import { simulateTab } from './utils/simulateTab';
 
 const ROUTE_DATA = [
@@ -806,7 +807,9 @@ const useGlobalShortcuts = () => {
     handler: (e: KeyboardEvent) => {
       // prevent scrolling with space
       if (e.key === shortcuts.global.OPEN_CONTEXT_MENU.key) {
-        e.preventDefault();
+        if (!getInputIsFocused()) {
+          e.preventDefault();
+        }
       }
 
       // traverse tabIndex with arrow keys
