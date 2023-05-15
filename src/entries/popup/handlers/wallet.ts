@@ -233,7 +233,7 @@ export async function executeRap<T extends RapTypes>({
 export const personalSign = async (
   msgData: string | Bytes,
   address: Address,
-): Promise<string | undefined> => {
+): Promise<string> => {
   const { type, vendor } = await getWallet(address as Address);
   if (type === 'HardwareWalletKeychain') {
     switch (vendor) {
@@ -242,9 +242,8 @@ export const personalSign = async (
       case 'Trezor': {
         return signMessageByTypeFromTrezor(msgData, address, 'personal_sign');
       }
-      default:
-        throw new Error('Unsupported hardware wallet');
     }
+    return '';
   } else {
     return (await signMessageByType(
       msgData,
@@ -394,7 +393,6 @@ export const exportAccount = async (address: Address, password: string) => {
 };
 
 export const importAccountAtIndex = async (
-  silbing: Address,
   type: string | 'Trezor' | 'Ledger',
   index: number,
 ) => {
