@@ -1,49 +1,47 @@
 import React from 'react';
 
-import trezorDevice from 'static/assets/hw/trezor-device.png';
 import { i18n } from '~/core/languages';
-import { Box, Separator, Text } from '~/design-system';
-import { accentColorAsHsl } from '~/design-system/styles/core.css';
+import { Box, Text } from '~/design-system';
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
+import { Spinner } from '../../components/Spinner/Spinner';
 
 export function LoadingTrezor() {
   return (
     <FullScreenContainer>
-      <Box alignItems="center" paddingBottom="10px">
+      <Box alignItems="center">
         <Text size="16pt" weight="bold" color="label" align="center">
-          {i18n.t('hw.connect_trezor_title')}
+          {i18n.t('hw.waiting_for_trezor_connect')}
         </Text>
-        <Box padding="16px" paddingTop="10px">
+      </Box>
+
+      <Box alignItems="center" width="full">
+        <Box
+          alignItems="center"
+          justifyContent="center"
+          width="full"
+          paddingTop="80px"
+        >
           <Text
-            size="12pt"
+            size="14pt"
             weight="regular"
-            color="labelTertiary"
+            color="labelSecondary"
             align="center"
           >
-            {i18n.t('hw.connect_trezor_description')}
-            <a
-              href="https://learn.rainbow.me/"
-              target="_blank"
-              style={{ color: accentColorAsHsl }}
-              rel="noreferrer"
-            >
-              {i18n.t('hw.learn_more')}
-            </a>
-            .
+            {i18n.t('hw.continue_on_trezor_connect')}
           </Text>
+          <br />
+          <br />
+          <br />
+          <Box
+            width="fit"
+            alignItems="center"
+            justifyContent="center"
+            style={{ margin: 'auto' }}
+          >
+            <Spinner size={32} />
+          </Box>
         </Box>
-      </Box>
-      <Box width="full" style={{ width: '106px' }}>
-        <Separator color="separatorTertiary" strokeWeight="1px" />
-      </Box>
-      <Box
-        paddingTop="28px"
-        alignItems="center"
-        justifyContent="center"
-        display="flex"
-      >
-        <img src={trezorDevice} width="160" />
       </Box>
     </FullScreenContainer>
   );
