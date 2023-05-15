@@ -11,7 +11,8 @@ import { TokenToBuyInfo } from './TokenInfo/TokenToBuyInfo';
 import { TokenInput } from './TokenInput';
 
 interface TokenToBuyProps {
-  asset: ParsedSearchAsset | null;
+  assetToBuy: ParsedSearchAsset | null;
+  assetToSell: ParsedSearchAsset | null;
   assets?: AssetToBuySection[];
   assetFilter: string;
   dropdownClosed: boolean;
@@ -20,6 +21,7 @@ interface TokenToBuyProps {
   placeholder: string;
   zIndex?: number;
   assetToBuyValue: string;
+  assetToSellValue: string;
   inputRef: React.RefObject<HTMLInputElement>;
   inputDisabled?: boolean;
   openDropdownOnMount?: boolean;
@@ -31,7 +33,8 @@ interface TokenToBuyProps {
 }
 
 export const TokenToBuyInput = ({
-  asset,
+  assetToBuy,
+  assetToSell,
   assetFilter,
   assets,
   dropdownClosed = false,
@@ -40,6 +43,7 @@ export const TokenToBuyInput = ({
   placeholder,
   zIndex,
   assetToBuyValue,
+  assetToSellValue,
   inputRef,
   inputDisabled,
   openDropdownOnMount,
@@ -84,23 +88,32 @@ export const TokenToBuyInput = ({
 
   return (
     <TokenInput
-      testId={`${asset ? `${asset.uniqueId}-` : ''}token-to-buy`}
+      testId={`${assetToBuy ? `${assetToBuy.uniqueId}-` : ''}token-to-buy`}
       inputRef={inputRef}
       accentCaretColor
-      asset={asset}
+      asset={assetToBuy}
       dropdownClosed={dropdownClosed}
       dropdownHeight={dropdownHeight}
       dropdownComponent={
         <TokenToBuyDropdown
           onDropdownChange={onDropdownChange}
-          asset={asset}
+          asset={assetToBuy}
           assets={assets}
           onSelectAsset={onSelectAssetRef?.current}
           outputChainId={outputChainId}
           setOutputChainId={setOutputChainId}
         />
       }
-      bottomComponent={asset ? <TokenToBuyInfo asset={asset} /> : null}
+      bottomComponent={
+        assetToBuy ? (
+          <TokenToBuyInfo
+            assetToBuy={assetToBuy}
+            assetToSell={assetToSell}
+            assetToBuyValue={assetToBuyValue}
+            assetToSellValue={assetToSellValue}
+          />
+        ) : null
+      }
       placeholder={placeholder}
       zIndex={zIndex}
       variant="tinted"
