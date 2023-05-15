@@ -480,7 +480,8 @@ export function Swap() {
               >
                 <TokenToBuyInput
                   dropdownHeight={toBuyInputHeight}
-                  asset={assetToBuy}
+                  assetToBuy={assetToBuy}
+                  assetToSell={assetToSell}
                   assets={assetsToBuy}
                   selectAsset={setAssetToBuy}
                   onDropdownOpen={onAssetToBuyInputOpen}
@@ -494,6 +495,7 @@ export function Swap() {
                   assetFilter={assetToBuyFilter}
                   setAssetFilter={setAssetToBuyFilter}
                   assetToBuyValue={assetToBuyDisplay}
+                  assetToSellValue={assetToSellValue}
                   setAssetToBuyInputValue={setAssetToBuyInputValue}
                   inputRef={assetToBuyInputRef}
                   openDropdownOnMount={inputToOpenOnMount === 'buy'}
