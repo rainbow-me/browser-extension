@@ -12,14 +12,15 @@ import { Box } from '~/design-system';
 import { useIsFullScreen } from '../../hooks/useIsFullScreen';
 
 type FlyingRainbowsScreen = 'unlock' | 'invite_code';
+type RainbowType =
+  | 'rainbowPixel'
+  | 'rainbowWhite'
+  | 'rainbowOg'
+  | 'rainbowLight'
+  | 'rainbowNeon';
 
 const RAINBOWS_POSITION: {
-  [key in
-    | 'rainbowPixel'
-    | 'rainbowWhite'
-    | 'rainbowOg'
-    | 'rainbowLight'
-    | 'rainbowNeon']: {
+  [key in RainbowType]: {
     [key in FlyingRainbowsScreen]: {
       left?: string;
       right?: string;
@@ -81,12 +82,7 @@ const RAINBOWS_POSITION: {
 };
 
 export const RAINBOWS_ANIMATION: {
-  [key in
-    | 'rainbowPixel'
-    | 'rainbowWhite'
-    | 'rainbowOg'
-    | 'rainbowLight'
-    | 'rainbowNeon']: {
+  [key in RainbowType]: {
     [key in FlyingRainbowsScreen]: {
       initial?: TargetAndTransition;
       animate?: TargetAndTransition;
