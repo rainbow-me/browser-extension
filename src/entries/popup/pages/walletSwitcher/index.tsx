@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { motion } from 'framer-motion';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   DragDropContext,
   Draggable,
@@ -12,8 +12,10 @@ import {
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
+import { useQuickPromoStore } from '~/core/state/quickPromo';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { KeychainType } from '~/core/types/keychainTypes';
@@ -46,7 +48,9 @@ import { triggerToast } from '../../components/Toast/Toast';
 import { getWallet, remove, wipe } from '../../handlers/wallet';
 import { useAccounts } from '../../hooks/useAccounts';
 import { useAvatar } from '../../hooks/useAvatar';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { AddressAndType, useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 
@@ -139,8 +143,9 @@ const infoButtonOptions = ({
   return isLastWallet ? options : options.concat(removeOption);
 };
 
-const bottomSpacing = 150 + (process.env.IS_DEV === 'true' ? 40 : 0);
-const topSpacing = 127;
+const BOTTOM_SPACING = 150 + (process.env.IS_DEV === 'true' ? 40 : 0);
+const TOP_SPACING = 127;
+const TOP_SPACING_NO_PROMO = 73;
 
 const NoWalletsWarning = ({
   symbol,
@@ -190,6 +195,14 @@ export function WalletSwitcher() {
   );
 
   const { deleteWalletName } = useWalletNamesStore();
+  const { seenPromos } = useQuickPromoStore();
+
+  const hasSeenPromo = useMemo(
+    () => seenPromos['wallet_switcher'],
+    [seenPromos],
+  );
+
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const handleSelectAddress = useCallback(
     (address: Address) => {
@@ -340,6 +353,20 @@ export function WalletSwitcher() {
     saveWalletOrder(newAccountsWithNamesAndEns.map(({ address }) => address));
   };
 
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (
+        e.key === shortcuts.wallet_switcher.SEARCH.key &&
+        document.activeElement !== searchInputRef.current
+      ) {
+        setTimeout(() => searchInputRef.current?.focus(), 0);
+      }
+    },
+  });
+
+  // separate because this is used on other screens
+  useSwitchWalletShortcuts();
+
   return (
     <Box height="full">
       <RenameWalletPrompt
@@ -365,17 +392,20 @@ export function WalletSwitcher() {
           placeholder={i18n.t('wallet_switcher.search_placeholder')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          innerRef={searchInputRef}
         />
       </Box>
-      <Box paddingHorizontal="16px" paddingBottom="8px">
-        <QuickPromo
-          text={i18n.t('wallet_switcher.quick_promo.text')}
-          textBold={i18n.t('wallet_switcher.quick_promo.text_bold')}
-          symbol="sparkle"
-          promoType="wallet_switcher"
-        />
-      </Box>
-      <Box style={{ overflow: 'scroll' }} paddingHorizontal="8px">
+      {!hasSeenPromo && (
+        <Box paddingHorizontal="16px" paddingBottom="8px">
+          <QuickPromo
+            text={i18n.t('wallet_switcher.quick_promo.text')}
+            textBold={i18n.t('wallet_switcher.quick_promo.text_bold')}
+            symbol="sparkle"
+            promoType="wallet_switcher"
+          />
+        </Box>
+      )}
+      <Box style={{ overflow: 'scroll' }} paddingHorizontal="8px" height="full">
         <MenuContainer>
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable">
@@ -386,7 +416,10 @@ export function WalletSwitcher() {
                     height="full"
                     style={{
                       overflow: 'scroll',
-                      height: windowHeight - bottomSpacing - topSpacing,
+                      height:
+                        windowHeight -
+                        BOTTOM_SPACING -
+                        (hasSeenPromo ? TOP_SPACING_NO_PROMO : TOP_SPACING),
                     }}
                   >
                     <Stack>

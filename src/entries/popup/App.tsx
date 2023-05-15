@@ -88,11 +88,14 @@ export function App() {
                 }}
               >
                 <HashRouter>
-                  <Routes />
+                  <Routes>
+                    <Toast />
+                    <Alert />
+                    <HWRequestListener />
+                  </Routes>
                 </HashRouter>
               </Box>
               <IdleTimer />
-              <HWRequestListener />
               <Toast />
               <Alert />
             </AuthProvider>

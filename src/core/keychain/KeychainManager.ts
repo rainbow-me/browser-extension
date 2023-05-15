@@ -360,7 +360,7 @@ class KeychainManager {
   }
 
   async wipe() {
-    if (!this.state.isUnlocked) return;
+    if (!this.state.isUnlocked && !!privates.get(this).password) return;
     this.state.keychains = [];
     this.state.isUnlocked = false;
     this.state.vault = '';

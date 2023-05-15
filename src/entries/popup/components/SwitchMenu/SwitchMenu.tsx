@@ -49,6 +49,7 @@ export const SwitchMenu = ({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.CLOSE.key) {
         e.preventDefault();
+        e.stopPropagation();
         onClose?.();
       }
     },
