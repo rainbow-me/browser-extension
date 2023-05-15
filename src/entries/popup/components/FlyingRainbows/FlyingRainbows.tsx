@@ -22,7 +22,8 @@ export function FlyingRainbows({ children }: { children: React.ReactNode }) {
       flexDirection="column"
       alignItems="center"
       borderRadius={isFullscreen ? '32px' : undefined}
-      padding="24px"
+      paddingHorizontal="24px"
+      paddingVertical="16px"
       style={{
         width: POPUP_DIMENSIONS.width,
         height: POPUP_DIMENSIONS.height,
