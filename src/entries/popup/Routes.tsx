@@ -114,6 +114,7 @@ const ROUTE_DATA = [
         <WalletReady />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.IMPORT_OR_CONNECT,

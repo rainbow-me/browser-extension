@@ -673,12 +673,13 @@
     "view_on_explorer": "View on Explorer"
   },
   "wallet_ready": {
-    "title": "Your wallets ready",
-    "essentials": "Essentials",
+    "title": "Rainbow is ready to use",
+    "subtitle": "To access your wallet, just click Rainbow from the Extensions drop-down, or use the speedy keyboard shortcut",
+    "open": "Open Rainbow",
     "get_started_with_rainbow": "Get started with Rainbow",
     "get_started_with_rainbow_desc": "Welcome to Rainbow! We're so glad you're here. We’ve created this guide to help with the basics of Rainbow.",
     "discover_shortcuts": "Discover shortcuts",
-    "discover_shortcuts_desc": "Welcome to Rainbow! We're so glad you're here. We’ve created this guide to help with the basics of Rainbow and get you started on your new We... ",
+    "discover_shortcuts_desc": "Looking to discover more shortcuts? Check out this helpful guide we’ve put together for you.",
     "pin_rainbow_to_your_toolbar": "Pin Rainbow to your toolbar:"
   },
   "wallet_header": {
