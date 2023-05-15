@@ -45,6 +45,7 @@ interface SwapActions {
   buttonDisabled: boolean;
   buttonLabel: string;
   buttonIcon: React.ReactElement | null;
+  status: 'loading' | 'ready' | 'error';
   timeEstimate?: SwapTimeEstimate | null;
   buttonAction: () => void;
 }
@@ -77,6 +78,7 @@ export const useSwapActions = ({
         </Box>
       ),
       buttonAction: () => null,
+      status: 'loading',
     };
   }
 
@@ -88,6 +90,7 @@ export const useSwapActions = ({
       buttonLabelColor: 'labelQuaternary',
       buttonIcon: null,
       buttonAction: () => null,
+      status: 'error',
     };
   }
 
@@ -153,6 +156,7 @@ export const useSwapActions = ({
             showSwapReviewSheet();
           },
       timeEstimate,
+      status: 'ready',
     };
   }
 
@@ -201,6 +205,7 @@ export const useSwapActions = ({
             },
             testId: 'swap-liquidity',
           }),
+        status: 'ready',
       };
     case 504:
       // no route
@@ -245,6 +250,7 @@ export const useSwapActions = ({
             },
             testId: 'swap-no-route',
           }),
+        status: 'error',
       };
     case 501:
     default:
@@ -276,6 +282,7 @@ export const useSwapActions = ({
             },
             testId: 'swap-no-quote',
           }),
+        status: 'error',
       };
   }
 };
