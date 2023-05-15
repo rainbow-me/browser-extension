@@ -52,8 +52,6 @@ export async function signTransactionFromTrezor(
     }
 
     const nonceHex = ethers.BigNumber.from(transaction.nonce).toHexString();
-    console.log('path', path);
-    console.log('baseTx', baseTx);
     const response = await window.TrezorConnect.ethereumSignTransaction({
       path,
       transaction: {
@@ -63,7 +61,6 @@ export async function signTransactionFromTrezor(
     });
 
     if (response.success) {
-      // baseTx.type = baseTx.gasPrice ? 1 : 2;
       const serializedTransaction = ethers.utils.serializeTransaction(baseTx, {
         r: response.payload.r,
         s: response.payload.s,
@@ -72,9 +69,6 @@ export async function signTransactionFromTrezor(
 
       const parsedTx = ethers.utils.parseTransaction(serializedTransaction);
       if (parsedTx.from?.toLowerCase() !== address?.toLowerCase()) {
-        console.log('parsedTx.from', parsedTx.from?.toLowerCase());
-        console.log('address.from', address?.toLowerCase());
-        console.log('parsedTx', parsedTx);
         throw new Error('Transaction was not signed by the right address');
       }
 
@@ -87,7 +81,6 @@ export async function signTransactionFromTrezor(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     alert('Please make sure your trezor is unlocked');
-    console.log('error signing transaction with trezor', e);
 
     // bubble up the error
     throw e;
@@ -96,18 +89,12 @@ export async function signTransactionFromTrezor(
 export async function sendTransactionFromTrezor(
   transaction: ethers.providers.TransactionRequest,
 ): Promise<TransactionResponse> {
-  try {
-    const serializedTransaction = await signTransactionFromTrezor(transaction);
-    const provider = getProvider({
-      chainId: transaction.chainId,
-    });
-    return provider.sendTransaction(serializedTransaction);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (e: any) {
-    console.log('error signing transaction with trezor', e);
-    // bubble up the error
-    throw e;
-  }
+  const serializedTransaction = await signTransactionFromTrezor(transaction);
+  const provider = getProvider({
+    chainId: transaction.chainId,
+  });
+  return provider.sendTransaction(serializedTransaction);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 }
 
 export async function signMessageByTypeFromTrezor(

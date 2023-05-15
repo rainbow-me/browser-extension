@@ -83,17 +83,13 @@ const checkIfNeedsTrezorPopup = async (
   const isFullScreen =
     window.innerHeight > POPUP_DIMENSIONS.height &&
     window.innerWidth > POPUP_DIMENSIONS.width;
-  console.log('CHECKING IF NEEDS TREZOR POPUP', {
-    isExternalPopup,
-    isFullScreen,
-  });
+
   if (!isExternalPopup && !isFullScreen) {
     // check if we opened a popup before
     const hwRequestPending = await chrome.storage.session.get(
       'hwRequestPending',
     );
     if (hwRequestPending && hwRequestPending.payload) {
-      console.log('HAS REQUEST PENDING', hwRequestPending);
       return false; // don't open a new popup
     } else {
       await chrome.storage.session.set({
@@ -150,12 +146,9 @@ export const signTransactionFromHW = async (
     params.gasLimit = toHex(gasLimit);
   }
 
-  console.log('signTransactionFromHW', vendor, params);
-
   if (vendor === 'Ledger') {
     return signTransactionFromLedger(params);
   } else if (vendor === 'Trezor') {
-    console.log('should open trezor popup');
     return signTransactionFromTrezor(params);
   }
 };
@@ -247,13 +240,6 @@ export const personalSign = async (
       case 'Ledger':
         return signMessageByTypeFromLedger(msgData, address, 'personal_sign');
       case 'Trezor': {
-        // const needsTrezorPopup =
-        //   vendor === 'Trezor' &&
-        //   (await checkIfNeedsTrezorPopup('signMessage', {
-        //     message: msgData as string,
-        //     address: address as string,
-        //   }));
-        // if (needsTrezorPopup) return;
         return signMessageByTypeFromTrezor(msgData, address, 'personal_sign');
       }
       default:
@@ -278,13 +264,6 @@ export const signTypedData = async (
       case 'Ledger':
         return signMessageByTypeFromLedger(msgData, address, 'sign_typed_data');
       case 'Trezor': {
-        // const needsTrezorPopup =
-        //   vendor === 'Trezor' &&
-        //   (await checkIfNeedsTrezorPopup('signTypedData', {
-        //     message: msgData as string,
-        //     address: address as string,
-        //   }));
-        // if (needsTrezorPopup) return;
         return signMessageByTypeFromTrezor(msgData, address, 'sign_typed_data');
       }
       default:
@@ -415,11 +394,10 @@ export const exportAccount = async (address: Address, password: string) => {
 };
 
 export const importAccountAtIndex = async (
-  // silbing: Address,
+  silbing: Address,
   type: string | 'Trezor' | 'Ledger',
   index: number,
 ) => {
-  // return '0x2e67869829c734ac13723A138a952F7A8B56e774';
   let address = '';
   switch (type) {
     case 'Trezor':
@@ -458,7 +436,7 @@ export const importAccountAtIndex = async (
 
 export const connectTrezor = async () => {
   // TODO: DELETE
-  //  Debugging purposes only DELETE!!!
+  // Debugging purposes only - useful if you don't have a real device
   // return {
   //   accountsToImport: [
   //     {
@@ -524,7 +502,6 @@ export const connectTrezor = async () => {
       alert('Please make sure your trezor is connected and unlocked');
     } else {
       alert('Unable to connect to your trezor. Please try again.');
-      console.log(e);
     }
     return null;
   }
@@ -532,7 +509,7 @@ export const connectTrezor = async () => {
 
 export const connectLedger = async () => {
   // TODO: DELETE
-  //  Debugging purposes only DELETE!!!
+  //  Debugging purposes only - useful if you don't have a real device
   // return {
   //   accountsToImport: [
   //     {
@@ -591,7 +568,6 @@ export const connectLedger = async () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    console.log('error name', e?.name);
     switch (e?.name) {
       case 'InvalidStateError':
         // ignoring this error since it's likely a re-render
@@ -618,12 +594,6 @@ export const importAccountsFromHW = async (
   deviceId: string,
   vendor: 'Ledger' | 'Trezor',
 ) => {
-  console.log('importing accounts from hw', {
-    deviceId,
-    wallets: accountsToImport,
-    vendor,
-    accountsEnabled,
-  });
   const address = await walletAction('import_hw', {
     deviceId,
     wallets: accountsToImport,
@@ -634,7 +604,6 @@ export const importAccountsFromHW = async (
   if (!passwordSet) {
     // we probably need to set a password
     await chrome.storage.session.set({ userStatus: 'NEEDS_PASSWORD' });
-    console.log('needs password set!');
   }
   return address;
 };

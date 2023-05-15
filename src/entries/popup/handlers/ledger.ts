@@ -47,8 +47,6 @@ export async function signTransactionFromLedger(
         transaction.maxPriorityFeePerGas || undefined;
     }
 
-    console.log('usniged tx', { ...baseTx });
-
     const unsignedTx = serialize(baseTx).substring(2);
 
     const resolution = await ledgerService.resolveTransaction(
@@ -62,7 +60,6 @@ export async function signTransactionFromLedger(
     );
 
     const sig = await appEth.signTransaction(path, unsignedTx, resolution);
-    console.log('ledger sig', sig);
     const serializedTransaction = serialize(baseTx, {
       r: '0x' + sig.r,
       s: '0x' + sig.s,
@@ -70,20 +67,13 @@ export async function signTransactionFromLedger(
     });
 
     const parsedTx = ethers.utils.parseTransaction(serializedTransaction);
-    console.log('parsedTx', parsedTx);
     if (parsedTx.from?.toLowerCase() !== address?.toLowerCase()) {
-      console.log('parsedTx.from', parsedTx.from?.toLowerCase());
-      console.log('address.from', address?.toLowerCase());
-      console.log('parsedTx', parsedTx);
       throw new Error('Transaction was not signed by the right address');
     }
-
-    console.log('serializedTransaction', serializedTransaction);
 
     return serializedTransaction;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    console.log('ledger error', e);
     if (e?.name === 'TransportStatusError') {
       alert(
         'Please make sure your ledger is unlocked and open the Ethereum app',

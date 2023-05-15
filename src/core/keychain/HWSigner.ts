@@ -37,18 +37,12 @@ export class HWSigner extends ethers.Signer {
 
   async fwdHWSignRequest(action: string, payload: any): Promise<string> {
     return new Promise((resolve) => {
-      console.log('BG :: HWSigner :: fwd request to popup', action, payload);
       this.messenger.send('hwRequest', {
         action,
         vendor: this.vendor,
         payload,
       });
       this.messenger.reply('hwResponse', async (response: string) => {
-        console.log(
-          'BG :: HWSigner :: received response from popup',
-          action,
-          payload,
-        );
         resolve(response);
       });
     });

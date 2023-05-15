@@ -14,9 +14,7 @@ export function ConnectLedger() {
   const navigate = useRainbowNavigate();
   useEffect(() => {
     setTimeout(async () => {
-      console.log('calling...');
       const res = await wallet.connectLedger();
-      console.log('connect to ledger res', res);
       if (res?.accountsToImport?.length) {
         navigate(ROUTES.HW_WALLET_LIST, {
           state: {

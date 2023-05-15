@@ -17,7 +17,6 @@ export function ConnectTrezor() {
       const res = await wallet.connectTrezor();
       if (!res) alert('error connecting to trezor');
       if (res?.accountsToImport?.length) {
-        console.log('navigating with', res);
         navigate(ROUTES.HW_WALLET_LIST, {
           state: {
             ...res,

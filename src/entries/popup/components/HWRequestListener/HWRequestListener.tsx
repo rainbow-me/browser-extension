@@ -42,18 +42,9 @@ export const HWRequestListener = () => {
       try {
         // check if there's a request in session
         const data = await chrome.storage.session.get('hwRequestPending');
-        console.log('checked in session and found', data);
         if (data.hwRequestPending && data.hwRequestPending.payload) {
-          console.log(
-            'POPUP :: SESSION LISTENER :: hwRequest event found',
-            data.hwRequestPending,
-          );
           const response = await processHwSigningRequest(
             data.hwRequestPending as HWSigningRequest,
-          );
-          console.log(
-            'POPUP :: SESSION LISTENER :: hwResponse ready',
-            response,
           );
           if (response) {
             bgMessenger.send('hwResponse', response);
@@ -61,11 +52,9 @@ export const HWRequestListener = () => {
           }
         }
 
-        // TODO - Redirect to success page
-      } catch (e: any) {
-        console.log('POPUP :: SESSION LISTENER :: error', e);
-        alert('check logs');
-      }
+        // TODO - Redirect to success page (see BX-678)
+        // eslint-disable-next-line no-empty
+      } catch (e: any) {}
     };
     init();
   });
@@ -100,9 +89,7 @@ export const HWRequestListener = () => {
   };
 
   bgMessenger.reply('hwRequest', async (data: HWSigningRequest) => {
-    console.log('POPUP :: REQUEST LISTENER :: hwRequest event received', data);
     const response = await processHwSigningRequest(data);
-    console.log('POPUP :: REQUEST LISTENER :: hwResponse ready', response);
     if (response) {
       bgMessenger.send('hwResponse', response);
     }
