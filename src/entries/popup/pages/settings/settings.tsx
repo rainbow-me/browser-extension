@@ -39,6 +39,7 @@ export function Settings() {
   const { currentCurrency } = useCurrentCurrencyStore();
   const { isDefaultWallet, setIsDefaultWallet } = useIsDefaultWalletStore();
   const { featureFlags, setFeatureFlag } = useFeatureFlagsStore();
+  console.log('featureFlags', featureFlags);
 
   const { currentUserSelectedTheme, currentTheme, setCurrentTheme } =
     useCurrentThemeStore();

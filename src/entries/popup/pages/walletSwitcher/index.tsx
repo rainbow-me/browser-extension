@@ -14,6 +14,7 @@ import { Address } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useQuickPromoStore } from '~/core/state/quickPromo';
 import { useWalletNamesStore } from '~/core/state/walletNames';
@@ -188,6 +189,7 @@ export function WalletSwitcher() {
   const navigate = useRainbowNavigate();
   const { visibleWallets: accounts, allWallets, fetchWallets } = useWallets();
   const { avatar } = useAvatar({ address: currentAddress });
+  const { featureFlags } = useFeatureFlagsStore();
 
   const isLastWallet = useMemo(
     () => allWallets?.length === 1,
@@ -472,19 +474,21 @@ export function WalletSwitcher() {
               {i18n.t('wallet_switcher.add_another_wallet')}
             </Button>
           </Link>
-          <Link to={ROUTES.HW_CHOOSE}>
-            <Button
-              color="fillSecondary"
-              variant="flat"
-              symbol="app.connected.to.app.below.fill"
-              symbolSide="left"
-              height="32px"
-              width="full"
-              borderRadius="9px"
-            >
-              {i18n.t('wallet_switcher.connect_hardware_wallet')}
-            </Button>
-          </Link>
+          {featureFlags.hw_wallets_enabled && (
+            <Link to={ROUTES.HW_CHOOSE}>
+              <Button
+                color="fillSecondary"
+                variant="flat"
+                symbol="app.connected.to.app.below.fill"
+                symbolSide="left"
+                height="32px"
+                width="full"
+                borderRadius="9px"
+              >
+                {i18n.t('wallet_switcher.connect_hardware_wallet')}
+              </Button>
+            </Link>
+          )}
           {process.env.IS_DEV === 'true' && (
             <Link to={ROUTES.WALLETS}>
               <Button

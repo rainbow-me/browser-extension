@@ -96,8 +96,6 @@ export function App() {
                 </HashRouter>
               </Box>
               <IdleTimer />
-              <Toast />
-              <Alert />
             </AuthProvider>
           )}
         </ThemeProvider>

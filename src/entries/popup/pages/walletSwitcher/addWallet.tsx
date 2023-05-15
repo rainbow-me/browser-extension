@@ -2,17 +2,21 @@ import React, { useCallback, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { Box } from '~/design-system';
 
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
 import * as wallet from '../../handlers/wallet';
+import { useAlert } from '../../hooks/useAlert';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 import { CreateWalletPrompt } from './createWalletPrompt';
 
 const AddWallet = () => {
+  const { triggerAlert } = useAlert();
   const navigate = useRainbowNavigate();
+  const { featureFlags } = useFeatureFlagsStore();
   const navigateTo = useCallback(
     (route: string) => {
       navigate(route);
@@ -64,7 +68,11 @@ const AddWallet = () => {
           />
           <OnboardMenu.Separator />
           <OnboardMenu.Item
-            onClick={() => navigateTo(ROUTES.HW_CHOOSE)}
+            onClick={() =>
+              featureFlags.hw_wallets_enabled
+                ? navigateTo(ROUTES.HW_CHOOSE)
+                : triggerAlert({ text: i18n.t('alert.coming_soon') })
+            }
             title={i18n.t('add_wallet.hardware_wallet')}
             subtitle={i18n.t('add_wallet.hardware_wallet_description')}
             symbolColor="blue"

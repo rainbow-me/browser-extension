@@ -177,8 +177,8 @@
       "ZAR": "South African Rand"
     },
     "feature_flags": {
-      "swaps": "Swaps",
-      "full_watching_wallets": "Allow full access to watching wallets"
+      "full_watching_wallets": "Allow full access to watching wallets",
+      "hw_wallets_enabled": "Enable Hardware Wallets support"
     }
   },
   "transactions": {
