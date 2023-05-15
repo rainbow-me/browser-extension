@@ -10,12 +10,14 @@ export const SwapInputActionButton = ({
   showClose,
   testId,
   onClose,
+  onDropdownAction,
 }: {
   asset: ParsedSearchAsset | null;
   dropdownVisible: boolean;
   showClose: boolean;
   testId?: string;
   onClose: () => void;
+  onDropdownAction: () => void;
 }) => {
   return showClose ? (
     <Button
@@ -43,6 +45,7 @@ export const SwapInputActionButton = ({
     <Box
       as={motion.div}
       animate={dropdownVisible ? { rotate: 180 } : { rotate: 0 }}
+      onClick={onDropdownAction}
     >
       <Inline alignVertical="center">
         <Symbol
