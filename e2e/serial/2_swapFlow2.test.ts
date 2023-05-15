@@ -25,6 +25,7 @@ import {
   querySelector,
   typeOnTextInput,
   waitAndClick,
+  waitUntilElementByTestIdIsPresent,
 } from '../helpers';
 import { convertRawAmountToDecimalFormat, subtract } from '../numbers';
 
@@ -139,7 +140,15 @@ it('should be able to execute unlock and swap', async () => {
   const tokenContract = new Contract(DAI_MAINNET_ADDRESS, erc20ABI, provider);
   const daiBalanceBeforeSwap = await tokenContract.balanceOf(TEST_ADDRESS_1);
 
-  await findElementByTestIdAndClick({ id: 'swap-confirmation-button', driver });
+  await waitUntilElementByTestIdIsPresent({
+    id: 'swap-confirmation-button-ready',
+    driver,
+  });
+
+  await findElementByTestIdAndClick({
+    id: 'swap-confirmation-button-ready',
+    driver,
+  });
   await delayTime('long');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
   await delayTime('long');
@@ -208,10 +217,17 @@ it('should be able to go to review a crosschain swap', async () => {
     id: 'token-to-sell-info-max-button',
     driver,
   });
-  await delayTime('very-long');
+  // await delayTime('very-long');
+  // ///
+  console.log('--- waiting for swap confirmation button');
+  await waitUntilElementByTestIdIsPresent({
+    id: 'swap-confirmation-button-ready',
+    driver,
+  });
+  console.log('--- out of waiting for swap confirmation button');
 
   await findElementByTestIdAndClick({
-    id: 'swap-confirmation-button',
+    id: 'swap-confirmation-button-ready',
     driver,
   });
 
@@ -414,10 +430,13 @@ it('should be able to go to review a bridge', async () => {
     driver,
   });
 
-  await delayTime('very-long');
+  await waitUntilElementByTestIdIsPresent({
+    id: 'swap-confirmation-button-ready',
+    driver,
+  });
 
   await findElementByTestIdAndClick({
-    id: 'swap-confirmation-button',
+    id: 'swap-confirmation-button-ready',
     driver,
   });
 
