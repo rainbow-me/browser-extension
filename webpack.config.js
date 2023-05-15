@@ -11,7 +11,6 @@ const { ProgressPlugin, ProvidePlugin } = require('webpack');
 const BundleAnalyzerPlugin =
   require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-const analyzeBundle = false;
 const allowList = require('./static/allowlist.json');
 const manifest = require('./static/manifest.json');
 const manifestFilePath = resolve(__dirname, './build/manifest.json');
@@ -66,12 +65,11 @@ module.exports = {
     ],
   },
   plugins: [
-    // analyzeBundle &&
-    //   new BundleAnalyzerPlugin({
-    //     analyzerMode: 'static',
-    //     generateStatsFile: true,
-    //     openAnalyzer: false,
-    //   }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      generateStatsFile: true,
+      openAnalyzer: false,
+    }),
     new Dotenv({ allowEmptyValues: true }),
     new HtmlWebpackPlugin({
       chunks: ['popup'],
