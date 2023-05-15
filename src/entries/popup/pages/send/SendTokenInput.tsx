@@ -200,10 +200,10 @@ export const SendTokenInput = React.forwardRef<
   }, [assets, inputValue]);
 
   const onCloseDropdown = useCallback(() => {
-    onDropdownAction();
     onSelectAsset('', ChainId.mainnet);
     setTimeout(() => {
       inputRef?.current?.focus();
+      onDropdownAction();
     }, 200);
   }, [inputRef, onSelectAsset, onDropdownAction]);
 
@@ -236,7 +236,7 @@ export const SendTokenInput = React.forwardRef<
       centerComponent={
         <Box width="full">
           {inputVisible ? (
-            <Box as={motion.div} layout="position">
+            <Box as={motion.div} layout="position" onClick={onDropdownAction}>
               <Input
                 testId="token-input"
                 value={inputValue}
