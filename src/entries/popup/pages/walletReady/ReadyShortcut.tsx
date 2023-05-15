@@ -3,6 +3,7 @@ import React from 'react';
 import { Box } from '~/design-system';
 
 export function ReadyShortcut() {
+  const highlight = true;
   return (
     <Box>
       <svg

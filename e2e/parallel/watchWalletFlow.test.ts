@@ -75,7 +75,7 @@ describe('Watch wallet then add more and switch between them', () => {
     });
     await findElementByTestIdAndClick({ id: 'set-password-button', driver });
     await delayTime('long');
-    await findElementByText(driver, 'Your wallets ready');
+    await findElementByText(driver, 'Rainbow is ready to use');
   });
 
   it('should display watched account name', async () => {
