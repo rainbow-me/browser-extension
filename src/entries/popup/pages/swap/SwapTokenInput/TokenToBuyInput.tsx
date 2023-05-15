@@ -76,10 +76,6 @@ export const TokenToBuyInput = ({
     [inputRef],
   );
 
-  const onFocus = useCallback(() => {
-    dropdownRef?.current?.openDropdown();
-  }, []);
-
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.altKey) {
@@ -123,7 +119,6 @@ export const TokenToBuyInput = ({
       variant="tinted"
       value={assetToBuyValue}
       onDropdownOpen={onDropdownOpen}
-      onFocus={onFocus}
       setOnSelectAsset={setOnSelectAsset}
       selectAsset={selectAsset}
       assetFilter={assetFilter}

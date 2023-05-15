@@ -246,10 +246,6 @@ export const SendTokenInput = React.forwardRef<
                 variant="transparent"
                 style={{ paddingLeft: 0, paddingRight: 0 }}
                 innerRef={inputRef}
-                tabIndex={0}
-                onFocus={() => {
-                  setDropdownVisible(true);
-                }}
               />
             </Box>
           ) : (
