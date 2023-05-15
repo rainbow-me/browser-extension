@@ -66,8 +66,8 @@ export function Welcome() {
         onClick={() => setShowOnboardBeforeConnectSheet(false)}
       />
       <FlyingRainbows>
-        <Box width="full" style={{ zIndex: 1 }} background="red">
-          <Box style={{ marginTop: 135 }} background="blue">
+        <Box width="full" style={{ zIndex: 1 }}>
+          <Box style={{ marginTop: 135 }}>
             <Stack space="4px">
               <Box width="full" display="flex" justifyContent="center">
                 <LogoWithLetters color="label" />
@@ -90,7 +90,7 @@ export function Welcome() {
             </Stack>
           </Box>
 
-          <Box width="full" style={{ marginTop: '226px' }} background="green">
+          <Box width="full" style={{ marginTop: '226px' }}>
             <Rows space="20px">
               <Row>
                 <Rows space="10px">

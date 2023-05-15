@@ -10,7 +10,61 @@ import { Box } from '~/design-system';
 
 import { useIsFullScreen } from '../../hooks/useIsFullScreen';
 
-export function FlyingRainbows({ children }: { children: React.ReactNode }) {
+type FlyingRainbowsScreen = 'unlock' | 'invite_code';
+
+const RAINBOWS_POSITION: {
+  [key in FlyingRainbowsScreen]: {
+    [key in
+      | 'rainbowPixel'
+      | 'rainbowWhite'
+      | 'rainbowOg'
+      | 'rainbowLight'
+      | 'rainbowNeon']: {
+      left?: string;
+      right?: string;
+      top?: string;
+      bottom?: string;
+    };
+  };
+} = {
+  unlock: {
+    rainbowPixel: {
+      right: '0px',
+      top: '0px',
+    },
+    rainbowWhite: {
+      left: '0px',
+      top: '0px',
+    },
+    rainbowOg: {
+      left: '0px',
+      top: '362px',
+    },
+    rainbowLight: {
+      left: '100px',
+      top: '370px',
+    },
+    rainbowNeon: {
+      right: '-5px',
+      bottom: '0px',
+    },
+  },
+  invite_code: {
+    rainbowPixel: {},
+    rainbowWhite: {},
+    rainbowOg: {},
+    rainbowLight: {},
+    rainbowNeon: {},
+  },
+};
+
+export function FlyingRainbows({
+  children,
+  screen = 'unlock',
+}: {
+  children: React.ReactNode;
+  screen?: FlyingRainbowsScreen;
+}) {
   const isFullscreen = useIsFullScreen();
 
   return (
@@ -46,8 +100,7 @@ export function FlyingRainbows({ children }: { children: React.ReactNode }) {
           height="150"
           style={{
             position: 'absolute',
-            right: '0px',
-            top: '0px',
+            ...RAINBOWS_POSITION[screen].rainbowPixel,
           }}
         />
         <img
@@ -55,8 +108,7 @@ export function FlyingRainbows({ children }: { children: React.ReactNode }) {
           width="171"
           style={{
             position: 'absolute',
-            left: '0px',
-            top: '0px',
+            ...RAINBOWS_POSITION[screen].rainbowWhite,
           }}
         />
         <img
@@ -64,8 +116,7 @@ export function FlyingRainbows({ children }: { children: React.ReactNode }) {
           height="130"
           style={{
             position: 'absolute',
-            left: '0px',
-            top: '362px',
+            ...RAINBOWS_POSITION[screen].rainbowOg,
           }}
         />
         <img
@@ -73,8 +124,7 @@ export function FlyingRainbows({ children }: { children: React.ReactNode }) {
           width="170"
           style={{
             position: 'absolute',
-            left: '100px',
-            top: '370px',
+            ...RAINBOWS_POSITION[screen].rainbowLight,
           }}
         />
         <img
@@ -82,8 +132,7 @@ export function FlyingRainbows({ children }: { children: React.ReactNode }) {
           width="155"
           style={{
             position: 'absolute',
-            right: '-5px',
-            bottom: '0px',
+            ...RAINBOWS_POSITION[screen].rainbowNeon,
           }}
         />
       </Box>
