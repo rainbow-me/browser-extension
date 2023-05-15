@@ -266,6 +266,7 @@ export function Swap() {
     buttonColor,
     timeEstimate,
     buttonAction,
+    status,
   } = useSwapActions({
     quote,
     isLoading,
@@ -547,7 +548,7 @@ export function Swap() {
                         <Inline space="8px" alignVertical="center">
                           {buttonIcon}
                           <Text
-                            testId="swap-confirmation-button"
+                            testId={`swap-confirmation-button-${status}`}
                             color={buttonLabelColor}
                             size="16pt"
                             weight="bold"

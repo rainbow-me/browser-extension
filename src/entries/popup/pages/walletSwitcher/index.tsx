@@ -406,7 +406,6 @@ export function WalletSwitcher() {
                   <Box
                     width="full"
                     height="full"
-                    background="orange"
                     style={{
                       overflow: 'scroll',
                       height:
