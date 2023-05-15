@@ -217,14 +217,10 @@ it('should be able to go to review a crosschain swap', async () => {
     id: 'token-to-sell-info-max-button',
     driver,
   });
-  // await delayTime('very-long');
-  // ///
-  console.log('--- waiting for swap confirmation button');
   await waitUntilElementByTestIdIsPresent({
     id: 'swap-confirmation-button-ready',
     driver,
   });
-  console.log('--- out of waiting for swap confirmation button');
 
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',
