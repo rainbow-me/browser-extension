@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import * as React from 'react';
 
 import rainbowLight from 'static/assets/rainbow/light-rainbow.png';
@@ -109,44 +110,89 @@ export function FlyingRainbows({
         right="0"
         bottom="0"
       >
-        <img
+        <Box
+          as={motion.img}
           src={rainbowPixel}
-          width="150"
-          height="150"
+          position="absolute"
           style={{
-            position: 'absolute',
+            width: '150px',
+            height: '150px',
+          }}
+          initial={{
+            ...RAINBOWS_POSITION[screen].rainbowPixel,
+          }}
+          animate={{
+            ...RAINBOWS_POSITION.invite_code.rainbowPixel,
+          }}
+          exit={{
             ...RAINBOWS_POSITION[screen].rainbowPixel,
           }}
         />
-        <img
+        <Box
+          as={motion.img}
           src={rainbowWhite}
-          width="171"
+          position="absolute"
           style={{
-            position: 'absolute',
+            width: '171px',
+          }}
+          initial={{
+            ...RAINBOWS_POSITION[screen].rainbowWhite,
+          }}
+          animate={{
+            ...RAINBOWS_POSITION.invite_code.rainbowWhite,
+          }}
+          exit={{
             ...RAINBOWS_POSITION[screen].rainbowWhite,
           }}
         />
-        <img
+        <Box
+          as={motion.img}
           src={rainbowOg}
-          height="130"
+          position="absolute"
           style={{
-            position: 'absolute',
+            height: '130px',
+          }}
+          initial={{
+            ...RAINBOWS_POSITION[screen].rainbowOg,
+          }}
+          animate={{
+            ...RAINBOWS_POSITION.invite_code.rainbowOg,
+          }}
+          exit={{
             ...RAINBOWS_POSITION[screen].rainbowOg,
           }}
         />
-        <img
+        <Box
+          as={motion.img}
           src={rainbowLight}
-          width="170"
+          position="absolute"
           style={{
-            position: 'absolute',
+            width: '170px',
+          }}
+          initial={{
+            ...RAINBOWS_POSITION[screen].rainbowLight,
+          }}
+          animate={{
+            ...RAINBOWS_POSITION.invite_code.rainbowLight,
+          }}
+          exit={{
             ...RAINBOWS_POSITION[screen].rainbowLight,
           }}
         />
-        <img
+        <Box
+          as={motion.img}
           src={rainbowNeon}
-          width="155"
+          position="absolute"
           style={{
-            position: 'absolute',
+            width: '155px',
+          }}
+          initial={{
+            ...RAINBOWS_POSITION[screen].rainbowNeon,
+          }}
+          animate={{
+            ...RAINBOWS_POSITION.invite_code.rainbowNeon,
+          }}
+          exit={{
             ...RAINBOWS_POSITION[screen].rainbowNeon,
           }}
         />
