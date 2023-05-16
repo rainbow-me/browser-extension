@@ -87,6 +87,7 @@ const WatchWallet = ({
   const handleWatchWallet = useCallback(async () => {
     if (isLoading) return;
     if (address === '' && additionalAccounts.length == 0) return;
+    setIsLoading(true);
     let defaultAccountChosen = false;
     const allAccounts = address
       ? [address, ...additionalAccounts]
@@ -119,12 +120,14 @@ const WatchWallet = ({
       const importedAddress = (await wallet.importWithSecret(
         addressToImport,
       )) as Address;
+
       // Select the first wallet
       if (!defaultAccountChosen) {
         defaultAccountChosen = true;
         setCurrentAddress(importedAddress);
       }
     }
+    setIsLoading(false);
     onFinishImporting?.();
   }, [
     isLoading,
@@ -202,12 +205,7 @@ const WatchWallet = ({
           ) : (
             <Box width="full">
               <Stack space="24px" alignHorizontal="center">
-                <Box
-                  width="full"
-                  // style={{
-                  //   height: onboarding ? 'undefined' : '375px',
-                  // }}
-                >
+                <Box width="full">
                   <Stack space="10px">
                     <Box
                       as={motion.div}

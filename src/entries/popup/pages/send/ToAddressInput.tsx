@@ -330,9 +330,10 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     }, [dropdownVisible, openDropdown]);
 
     const onActionClose = useCallback(() => {
+      onDropdownAction();
       clearToAddress();
       setTimeout(() => inputRef?.current?.focus(), 500);
-    }, [clearToAddress]);
+    }, [clearToAddress, onDropdownAction]);
 
     useEffect(() => {
       if (!inputVisible) {
@@ -376,7 +377,11 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
                 >
                   <AnimatePresence>
                     {inputVisible ? (
-                      <Box as={motion.div} layout="position">
+                      <Box
+                        as={motion.div}
+                        layout="position"
+                        onClick={onDropdownAction}
+                      >
                         <Input
                           testId="to-address-input"
                           value={toAddressOrName}
@@ -425,11 +430,11 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
             />
           }
           dropdownVisible={dropdownVisible}
-          onDropdownAction={onDropdownAction}
           rightComponent={
             <InputActionButon
               showClose={!!toAddress}
               onClose={onActionClose}
+              onDropdownAction={onDropdownAction}
               dropdownVisible={dropdownVisible}
               testId={`input-wrapper-close-to-address-input`}
             />

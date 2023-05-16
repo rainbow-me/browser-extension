@@ -79,13 +79,15 @@ export async function switchWallet(address, rootURL, driver) {
   const shortenedAddress = shortenAddress(address);
 
   await goToPopup(driver, rootURL, '#/home');
+  await delayTime('medium');
   await findElementByIdAndClick({
     id: 'header-account-name-shuffle',
     driver,
   });
+  await delayTime('medium');
 
   await findElementByTextAndClick(driver, shortenedAddress);
-  await delayTime('short');
+  await delayTime('long');
 }
 
 export async function getOnchainBalance(addy, contract) {
@@ -157,6 +159,15 @@ export async function findElementByTestIdAndClick({ id, driver }) {
   await delay(200);
   const element = await findElementByTestId({ id, driver });
   await waitAndClick(element, driver);
+}
+
+export async function waitUntilElementByTestIdIsPresent({ id, driver }) {
+  await delay(500);
+  const element = await findElementByTestId({ id, driver });
+  if (element) {
+    return;
+  }
+  return waitUntilElementByTestIdIsPresent({ id, driver });
 }
 
 export async function findElementByIdAndClick({ id, driver }) {
