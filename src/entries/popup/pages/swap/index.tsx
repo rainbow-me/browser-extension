@@ -19,6 +19,7 @@ import {
   Stack,
   Symbol,
   Text,
+  TextOverflow,
 } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
@@ -132,9 +133,9 @@ const SwapWarning = ({
               background="fillSecondary"
               style={{ width: '14px', height: '2px' }}
             />
-            <Text color={warningColor} size="14pt" weight="semibold">
+            <TextOverflow color={warningColor} size="14pt" weight="semibold">
               {warningDescription}
-            </Text>
+            </TextOverflow>
           </Inline>
         </Box>
       </Box>
@@ -266,6 +267,7 @@ export function Swap() {
     buttonColor,
     timeEstimate,
     buttonAction,
+    status,
   } = useSwapActions({
     quote,
     isLoading,
@@ -479,7 +481,8 @@ export function Swap() {
               >
                 <TokenToBuyInput
                   dropdownHeight={toBuyInputHeight}
-                  asset={assetToBuy}
+                  assetToBuy={assetToBuy}
+                  assetToSell={assetToSell}
                   assets={assetsToBuy}
                   selectAsset={setAssetToBuy}
                   onDropdownOpen={onAssetToBuyInputOpen}
@@ -493,6 +496,7 @@ export function Swap() {
                   assetFilter={assetToBuyFilter}
                   setAssetFilter={setAssetToBuyFilter}
                   assetToBuyValue={assetToBuyDisplay}
+                  assetToSellValue={assetToSellValue}
                   setAssetToBuyInputValue={setAssetToBuyInputValue}
                   inputRef={assetToBuyInputRef}
                   openDropdownOnMount={inputToOpenOnMount === 'buy'}
@@ -545,7 +549,7 @@ export function Swap() {
                         <Inline space="8px" alignVertical="center">
                           {buttonIcon}
                           <Text
-                            testId="swap-confirmation-button"
+                            testId={`swap-confirmation-button-${status}`}
                             color={buttonLabelColor}
                             size="16pt"
                             weight="bold"
