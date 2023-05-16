@@ -141,27 +141,25 @@ export const AddByIndexSheet = ({
             />
           </Box>
           <Stack space="10px">
-            <Box>
-              <Box style={{ height: '64px' }}>
-                <Inline
-                  height="full"
-                  alignVertical="center"
-                  alignHorizontal="center"
+            <Box style={{ height: '64px' }}>
+              <Inline
+                height="full"
+                alignVertical="center"
+                alignHorizontal="center"
+              >
+                <Text align="center" color="label" size="14pt" weight="heavy">
+                  {i18n.t('hw.add_by_index_title')}
+                </Text>
+              </Inline>
+              <Box>
+                <Text
+                  align="center"
+                  color="labelSecondary"
+                  size="12pt"
+                  weight="medium"
                 >
-                  <Text align="center" color="label" size="14pt" weight="heavy">
-                    {i18n.t('hw.add_by_index_title')}
-                  </Text>
-                </Inline>
-                <Box>
-                  <Text
-                    align="center"
-                    color="labelSecondary"
-                    size="12pt"
-                    weight="medium"
-                  >
-                    {i18n.t('hw.add_by_index_description')}
-                  </Text>
-                </Box>
+                  {i18n.t('hw.add_by_index_description')}
+                </Text>
               </Box>
             </Box>
             <Box
