@@ -5,13 +5,15 @@ import { Box, Inline, Symbol } from '~/design-system';
 
 export const InputActionButon = ({
   showClose,
-  onClose,
   dropdownVisible,
+  onClose,
+  onDropdownAction,
   testId,
 }: {
   showClose: boolean;
   dropdownVisible: boolean;
   onClose: () => void;
+  onDropdownAction: () => void;
   testId?: string;
 }) => {
   return showClose ? (
@@ -33,6 +35,7 @@ export const InputActionButon = ({
     <Box
       as={motion.div}
       animate={dropdownVisible ? { rotate: 180 } : { rotate: 0 }}
+      onClick={onDropdownAction}
     >
       <Inline alignVertical="center">
         <Symbol

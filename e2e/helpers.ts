@@ -159,6 +159,15 @@ export async function findElementByTestIdAndClick({ id, driver }) {
   await waitAndClick(element, driver);
 }
 
+export async function waitUntilElementByTestIdIsPresent({ id, driver }) {
+  await delay(500);
+  const element = await findElementByTestId({ id, driver });
+  if (element) {
+    return;
+  }
+  return waitUntilElementByTestIdIsPresent({ id, driver });
+}
+
 export async function findElementByIdAndClick({ id, driver }) {
   await delay(200);
   const element = await findElementById({ id, driver });
