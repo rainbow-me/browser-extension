@@ -190,9 +190,7 @@ describe('Watch wallet then add more and switch between them', () => {
 
     it('should display seed account name', async () => {
       const account = await getTextFromText({ id: 'account-name', driver });
-      expect(account).toBe(
-        shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),
-      );
+      expect(account).toBe(shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS));
     });
   });
 
