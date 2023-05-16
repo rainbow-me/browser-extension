@@ -25,6 +25,7 @@ import { OnboardBeforeConnectSheet } from './OnboardBeforeConnectSheet';
 export function Welcome() {
   const navigate = useRainbowNavigate();
   const [loading, setLoading] = useState(false);
+  const [screen] = useState<'invite_code' | 'unlock'>('invite_code');
   const { pendingRequests } = usePendingRequestStore();
   const [showOnboardBeforeConnectSheet, setShowOnboardBeforeConnectSheet] =
     useState(!!pendingRequests.length);
@@ -59,13 +60,14 @@ export function Welcome() {
     }
   }, [loading, navigate, setCurrentAddress]);
 
+  console.log('-- screen', screen);
   return (
     <>
       <OnboardBeforeConnectSheet
         show={showOnboardBeforeConnectSheet}
         onClick={() => setShowOnboardBeforeConnectSheet(false)}
       />
-      <FlyingRainbows>
+      <FlyingRainbows screen={screen}>
         <Box width="full" style={{ zIndex: 1 }}>
           <Box style={{ marginTop: 135 }}>
             <Stack space="4px">

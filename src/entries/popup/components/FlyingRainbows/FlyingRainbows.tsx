@@ -1,4 +1,8 @@
-import { TargetAndTransition, motion } from 'framer-motion';
+import {
+  TargetAndTransition,
+  motion,
+  useAnimationControls,
+} from 'framer-motion';
 import * as React from 'react';
 
 import rainbowLight from 'static/assets/rainbow/light-rainbow.png';
@@ -10,6 +14,7 @@ import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 
 import { useIsFullScreen } from '../../hooks/useIsFullScreen';
+import usePrevious from '../../hooks/usePrevious';
 
 type FlyingRainbowsScreen = 'unlock' | 'invite_code';
 type RainbowType =
@@ -120,6 +125,56 @@ export function FlyingRainbows({
   screen?: FlyingRainbowsScreen;
 }) {
   const isFullscreen = useIsFullScreen();
+  const rainbowPixelControls = useAnimationControls();
+  const rainbowWhiteControls = useAnimationControls();
+  const rainbowOgControls = useAnimationControls();
+  const rainbowLightControls = useAnimationControls();
+  const rainbowNeonControls = useAnimationControls();
+  const prevScreen = usePrevious(screen);
+
+  React.useEffect(() => {
+    if (prevScreen === 'invite_code' && screen === 'unlock') {
+      rainbowPixelControls.start({
+        ...RAINBOWS_POSITION.rainbowPixel.unlock,
+      });
+      rainbowWhiteControls.start({
+        ...RAINBOWS_POSITION.rainbowWhite.unlock,
+      });
+      rainbowOgControls.start({
+        ...RAINBOWS_POSITION.rainbowOg.unlock,
+      });
+      rainbowLightControls.start({
+        ...RAINBOWS_POSITION.rainbowLight.unlock,
+      });
+      rainbowNeonControls.start({
+        ...RAINBOWS_POSITION.rainbowNeon.unlock,
+      });
+    } else if (prevScreen === 'unlock' && screen === 'invite_code') {
+      rainbowPixelControls.start({
+        ...RAINBOWS_POSITION.rainbowPixel.invite_code,
+      });
+      rainbowWhiteControls.start({
+        ...RAINBOWS_POSITION.rainbowWhite.invite_code,
+      });
+      rainbowOgControls.start({
+        ...RAINBOWS_POSITION.rainbowOg.invite_code,
+      });
+      rainbowLightControls.start({
+        ...RAINBOWS_POSITION.rainbowLight.invite_code,
+      });
+      rainbowNeonControls.start({
+        ...RAINBOWS_POSITION.rainbowNeon.invite_code,
+      });
+    }
+  }, [
+    prevScreen,
+    rainbowLightControls,
+    rainbowNeonControls,
+    rainbowOgControls,
+    rainbowPixelControls,
+    rainbowWhiteControls,
+    screen,
+  ]);
 
   return (
     <Box
@@ -156,15 +211,8 @@ export function FlyingRainbows({
             width: '150px',
             height: '150px',
           }}
-          initial={{
-            ...RAINBOWS_POSITION.rainbowPixel[screen],
-          }}
-          animate={{
-            ...RAINBOWS_POSITION.rainbowPixel.invite_code,
-          }}
-          exit={{
-            ...RAINBOWS_POSITION.rainbowPixel[screen],
-          }}
+          initial={RAINBOWS_POSITION.rainbowPixel[screen]}
+          animate={rainbowPixelControls}
         />
         <Box
           as={motion.img}
@@ -173,15 +221,8 @@ export function FlyingRainbows({
           style={{
             width: '171px',
           }}
-          initial={{
-            ...RAINBOWS_POSITION.rainbowWhite[screen],
-          }}
-          animate={{
-            ...RAINBOWS_POSITION.rainbowWhite.invite_code,
-          }}
-          exit={{
-            ...RAINBOWS_POSITION.rainbowWhite[screen],
-          }}
+          initial={RAINBOWS_POSITION.rainbowWhite[screen]}
+          animate={rainbowWhiteControls}
         />
         <Box
           as={motion.img}
@@ -190,15 +231,8 @@ export function FlyingRainbows({
           style={{
             height: '130px',
           }}
-          initial={{
-            ...RAINBOWS_POSITION.rainbowOg[screen],
-          }}
-          animate={{
-            ...RAINBOWS_POSITION.rainbowOg.invite_code,
-          }}
-          exit={{
-            ...RAINBOWS_POSITION.rainbowOg[screen],
-          }}
+          initial={RAINBOWS_POSITION.rainbowOg[screen]}
+          animate={rainbowOgControls}
         />
         <Box
           as={motion.img}
@@ -207,15 +241,8 @@ export function FlyingRainbows({
           style={{
             width: '170px',
           }}
-          initial={{
-            ...RAINBOWS_POSITION.rainbowLight[screen],
-          }}
-          animate={{
-            ...RAINBOWS_POSITION.rainbowLight.invite_code,
-          }}
-          exit={{
-            ...RAINBOWS_POSITION.rainbowLight[screen],
-          }}
+          initial={RAINBOWS_POSITION.rainbowLight[screen]}
+          animate={rainbowLightControls}
         />
         <Box
           as={motion.img}
@@ -224,15 +251,8 @@ export function FlyingRainbows({
           style={{
             width: '155px',
           }}
-          initial={{
-            ...RAINBOWS_POSITION.rainbowNeon[screen],
-          }}
-          animate={{
-            ...RAINBOWS_POSITION.rainbowNeon.invite_code,
-          }}
-          exit={{
-            ...RAINBOWS_POSITION.rainbowNeon[screen],
-          }}
+          initial={RAINBOWS_POSITION.rainbowNeon[screen]}
+          animate={rainbowNeonControls}
         />
       </Box>
       {children}
