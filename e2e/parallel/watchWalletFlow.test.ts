@@ -4,6 +4,7 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
+  delay,
   delayTime,
   findElementByIdAndClick,
   findElementByTestIdAndClick,
@@ -58,10 +59,10 @@ describe('Watch wallet then add more and switch between them', () => {
       text: TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
     });
 
-    await findElementByTestIdAndClick({
-      id: 'watch-wallets-button',
-      driver,
-    });
+    await delay(1000);
+
+    await findElementByTestIdAndClick({ id: 'watch-wallets-button', driver });
+
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
     await typeOnTextInput({
       id: 'confirm-password-input',
