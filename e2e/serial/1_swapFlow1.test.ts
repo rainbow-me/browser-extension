@@ -440,7 +440,7 @@ it('should be able to flip correctly', async () => {
 
 it('should be able to check insufficient asset for swap', async () => {
   const confirmButtonText = await getTextFromText({
-    id: 'swap-confirmation-button',
+    id: 'swap-confirmation-button-ready',
     driver,
   });
   expect(confirmButtonText).toEqual('Insufficient WBTC');
@@ -459,7 +459,7 @@ it('should be able to check insufficient native asset for gas', async () => {
   });
   await delayTime('very-long');
   const confirmButtonText = await getTextFromText({
-    id: 'swap-confirmation-button',
+    id: 'swap-confirmation-button-ready',
     driver,
   });
   expect(confirmButtonText).toEqual('Insufficient ETH for gas');
@@ -625,12 +625,12 @@ it('should be able to see no route explainer', async () => {
   });
   await delayTime('long');
   const confirmButtonText = await getTextFromText({
-    id: 'swap-confirmation-button',
+    id: 'swap-confirmation-button-error',
     driver,
   });
   expect(confirmButtonText).toEqual('No route found');
   await findElementByTestIdAndClick({
-    id: 'swap-confirmation-button',
+    id: 'swap-confirmation-button-error',
     driver,
   });
   const noRouteExplainer = await findElementByTestId({
@@ -728,7 +728,10 @@ it('should be able to go to review a swap', async () => {
     driver,
   });
   await delayTime('very-long');
-  await findElementByTestIdAndClick({ id: 'swap-confirmation-button', driver });
+  await findElementByTestIdAndClick({
+    id: 'swap-confirmation-button-ready',
+    driver,
+  });
 });
 
 it('should be able to see swap information in review sheet', async () => {
@@ -878,7 +881,10 @@ it('should be able to execute swap', async () => {
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
   await delayTime('very-long');
-  await findElementByTestIdAndClick({ id: 'swap-confirmation-button', driver });
+  await findElementByTestIdAndClick({
+    id: 'swap-confirmation-button-ready',
+    driver,
+  });
   await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
   await delayTime('very-long');

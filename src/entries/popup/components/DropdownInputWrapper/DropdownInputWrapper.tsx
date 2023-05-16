@@ -46,7 +46,6 @@ interface DropdownInputWrapperProps {
   rightComponent: ReactElement;
   testId?: string;
   zIndex?: number;
-  onDropdownAction: () => void;
   onDropdownScroll?: () => void;
 }
 
@@ -57,7 +56,6 @@ export const DropdownInputWrapper = ({
   rightComponent,
   dropdownComponent,
   dropdownVisible,
-  onDropdownAction,
   zIndex,
   dropdownHeight,
   onDropdownScroll,
@@ -81,21 +79,19 @@ export const DropdownInputWrapper = ({
           <Box testId={`input-wrapper-dropdown-${testId}`}>
             <Rows space="16px">
               <Row>
-                <Box onClick={onDropdownAction}>
-                  <Columns
-                    alignVertical="center"
-                    alignHorizontal="justify"
-                    space="8px"
-                  >
-                    <Column width="content">{leftComponent}</Column>
+                <Columns
+                  alignVertical="center"
+                  alignHorizontal="justify"
+                  space="8px"
+                >
+                  <Column width="content">{leftComponent}</Column>
 
-                    <Column>
-                      <Box>{centerComponent}</Box>
-                    </Column>
+                  <Column>
+                    <Box>{centerComponent}</Box>
+                  </Column>
 
-                    <Column width="content">{rightComponent}</Column>
-                  </Columns>
-                </Box>
+                  <Column width="content">{rightComponent}</Column>
+                </Columns>
               </Row>
               {!!bottomComponent && (
                 <Row>
