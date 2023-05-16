@@ -1,3 +1,4 @@
+import clsx, { ClassValue } from 'clsx';
 import React, { ReactNode, useCallback, useRef } from 'react';
 
 import { shortcuts } from '~/core/references/shortcuts';
@@ -9,6 +10,7 @@ import { accentFocusVisibleStyle, avatarFocusVisibleStyle } from './Lens.css';
 
 export function Lens({
   children,
+  className,
   forceAvatarColor,
   forwardNav,
   handleOpenMenu,
@@ -17,6 +19,7 @@ export function Lens({
   ...restProps
 }: BoxProps & {
   children: ReactNode;
+  className?: ClassValue & string;
   forceAvatarColor?: boolean;
   forwardNav?: boolean;
   onKeyDown?: (e: React.KeyboardEvent<HTMLDivElement>) => void;
@@ -45,9 +48,10 @@ export function Lens({
     <Box
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...restProps}
-      className={
-        forceAvatarColor ? avatarFocusVisibleStyle : accentFocusVisibleStyle
-      }
+      className={clsx(
+        forceAvatarColor ? avatarFocusVisibleStyle : accentFocusVisibleStyle,
+        className ?? undefined,
+      )}
       tabIndex={typeof tabIndex === 'number' ? tabIndex : 0}
       onKeyDown={handleKeyDown}
       ref={containerRef}
