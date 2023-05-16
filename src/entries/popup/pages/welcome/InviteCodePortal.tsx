@@ -1,31 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import { i18n } from '~/core/languages';
-import {
-  Box,
-  Button,
-  Inline,
-  Stack,
-  Text,
-  ThemeProvider,
-} from '~/design-system';
-import { Row, Rows } from '~/design-system/components/Rows/Rows';
+import { Bleed, Box, Button, Inline, Stack, Text } from '~/design-system';
+import { Input } from '~/design-system/components/Input/Input';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
 
+import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 import { LogoWithLetters } from '../../components/LogoWithLetters/LogoWithLetters';
-import { Spinner } from '../../components/Spinner/Spinner';
 import * as wallet from '../../handlers/wallet';
-import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { ROUTES } from '../../urls';
 
 export function InviteCodePortal({
   onInviteCodeValidated,
 }: {
   onInviteCodeValidated: () => void;
 }) {
-  const navigate = useRainbowNavigate();
-  const [loading] = useState(false);
-
   useEffect(() => {
     const wipeIncompleteWallet = async () => {
       const { hasVault } = await wallet.getStatus();
@@ -35,10 +23,6 @@ export function InviteCodePortal({
     };
     wipeIncompleteWallet();
   }, []);
-
-  const handleImportWalletClick = React.useCallback(async () => {
-    navigate(ROUTES.IMPORT_OR_CONNECT);
-  }, [navigate]);
 
   const inviteCodeValidated = React.useCallback(async () => {
     onInviteCodeValidated();
@@ -68,85 +52,41 @@ export function InviteCodePortal({
           </Box>
         </Stack>
       </Box>
-
-      <Box width="full" style={{ marginTop: '226px' }}>
-        <Rows space="20px">
-          <Row>
-            <Rows space="10px">
-              <Row>
-                {loading ? (
-                  <Button
-                    color="fill"
-                    height="44px"
-                    variant="flat"
-                    width="full"
-                    symbol="arrow.right"
-                    symbolSide="right"
-                    blur="26px"
-                    onClick={inviteCodeValidated}
-                    testId="create-wallet-button"
-                  >
-                    <Inline space="8px" alignVertical="center">
-                      <Text color="label" size="16pt" weight="bold">
-                        {i18n.t('welcome.create_wallet')}
-                      </Text>
-                      <Spinner size={16} color="label" />
-                    </Inline>
-                  </Button>
-                ) : (
-                  <Button
-                    color="fill"
-                    height="44px"
-                    variant="flat"
-                    width="full"
-                    symbol="arrow.right"
-                    symbolSide="right"
-                    blur="26px"
-                    onClick={inviteCodeValidated}
-                    testId="create-wallet-button"
-                  >
-                    {i18n.t('welcome.create_wallet')}
-                  </Button>
-                )}
-              </Row>
-              <Row>
-                <ThemeProvider theme="dark">
-                  <Button
-                    color="surfaceSecondaryElevated"
-                    height="44px"
-                    variant="flat"
-                    width="full"
-                    onClick={handleImportWalletClick}
-                    testId="import-wallet-button"
-                  >
-                    {i18n.t('welcome.import_wallet')}
-                  </Button>
-                </ThemeProvider>
-              </Row>
-            </Rows>
-          </Row>
-          <Row>
-            <Box display="flex" style={{ width: '210px', margin: 'auto' }}>
-              <Text
-                align="center"
-                color="labelTertiary"
-                size="12pt"
-                weight="regular"
-                as="p"
+      <Box>
+        <Inline>
+          <Input
+            height="44px"
+            placeholder="Enter your beta code"
+            variant="bordered"
+            borderColor="accent"
+            style={{
+              paddingRight: 87,
+              caretColor: accentColorAsHsl,
+            }}
+          />
+          <Box position="absolute" style={{ right: '24px' }}>
+            <Box padding="7px">
+              <Button
+                onClick={inviteCodeValidated}
+                color="fillSecondary"
+                height="30px"
+                borderRadius="6px"
+                variant="raised"
               >
-                {i18n.t('welcome.disclaimer_tos')}&nbsp;
-                <a
-                  href="https://rainbow.me/terms-of-use"
-                  target="_blank"
-                  style={{ color: accentColorAsHsl }}
-                  rel="noreferrer"
-                >
-                  {i18n.t('welcome.disclaimer_tos_link')}
-                </a>
-              </Text>
+                <Inline alignVertical="center" space="6px">
+                  <Text align="center" color="label" size="14pt" weight="heavy">
+                    {'Join'}
+                  </Text>
+                  <Box style={{ rotate: '-90deg' }}>
+                    <Bleed vertical="4px" horizontal="4px">
+                      <ChevronDown color="label" />
+                    </Bleed>
+                  </Box>
+                </Inline>
+              </Button>
             </Box>
-          </Row>
-        </Rows>
+          </Box>
+        </Inline>
       </Box>
     </Box>
   );
