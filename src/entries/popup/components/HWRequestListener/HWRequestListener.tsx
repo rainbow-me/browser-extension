@@ -11,6 +11,7 @@ import {
   signTransactionFromHW,
   signTypedData,
 } from '../../handlers/wallet';
+import { isExternalPopup } from '../../utils/windows';
 
 export const HWRequestListener = () => {
   const bgMessenger = initializeMessenger({ connect: 'background' });
@@ -37,7 +38,6 @@ export const HWRequestListener = () => {
 
   useEffect(() => {
     const init = async () => {
-      const isExternalPopup = window.location.href.includes('tabId=');
       if (!isExternalPopup) return;
       try {
         // check if there's a request in session

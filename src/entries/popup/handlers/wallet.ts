@@ -32,6 +32,7 @@ import { POPUP_URL } from '~/core/utils/tabs';
 import { getNextNonce } from '~/core/utils/transactions';
 
 import { ROUTES } from '../urls';
+import { isExternalPopup, isFullScreen } from '../utils/windows';
 
 import {
   sendTransactionFromLedger,
@@ -78,12 +79,6 @@ const checkIfNeedsTrezorPopup = async (
     | { message: string; address: string }
     | { data: string | Bytes; address: string },
 ) => {
-  // if it's a trezor request and we don't have a
-  const isExternalPopup = window.location.href.includes('tabId=');
-  const isFullScreen =
-    window.innerHeight > POPUP_DIMENSIONS.height &&
-    window.innerWidth > POPUP_DIMENSIONS.width;
-
   if (!isExternalPopup && !isFullScreen) {
     // check if we opened a popup before
     const hwRequestPending = await chrome.storage.session.get(
