@@ -2,19 +2,11 @@ import React, { useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
-import {
-  Box,
-  Button,
-  Inline,
-  Stack,
-  Text,
-  ThemeProvider,
-} from '~/design-system';
+import { Box, Button, Inline, Text, ThemeProvider } from '~/design-system';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
 import { RainbowError, logger } from '~/logger';
 
-import { LogoWithLetters } from '../../components/LogoWithLetters/LogoWithLetters';
 import { Spinner } from '../../components/Spinner/Spinner';
 import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -56,29 +48,6 @@ export function ImportOrCreateWallet() {
 
   return (
     <Box width="full" style={{ zIndex: 1 }}>
-      <Box style={{ marginTop: 135 }}>
-        <Stack space="4px">
-          <Box width="full" display="flex" justifyContent="center">
-            <LogoWithLetters color="label" />
-          </Box>
-          <Box
-            width="full"
-            justifyContent="center"
-            alignItems="center"
-            display="flex"
-          >
-            <Text
-              align="center"
-              color="labelTertiary"
-              size="16pt"
-              weight="bold"
-            >
-              {i18n.t('welcome.subtitle')}
-            </Text>
-          </Box>
-        </Stack>
-      </Box>
-
       <Box width="full" style={{ marginTop: '226px' }}>
         <Rows space="20px">
           <Row>
