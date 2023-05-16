@@ -40,6 +40,10 @@ export const GweiInputMask = ({
     inputRef?.current?.focus();
   }, [inputRef]);
 
+  const onFocus = useCallback(() => {
+    setIsFocused(true);
+  }, []);
+
   const onBlur = useCallback(() => {
     setIsFocused(false);
   }, []);
@@ -78,6 +82,7 @@ export const GweiInputMask = ({
 
       <Box backdropFilter="opacity(0%)">
         <Input
+          onFocus={onFocus}
           onBlur={onBlur}
           value={`${value}`}
           placeholder={'0'}
