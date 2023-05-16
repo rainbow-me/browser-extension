@@ -567,10 +567,6 @@ export const connectLedger = async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     switch (e?.name) {
-      case 'InvalidStateError':
-        // ignoring this error since it's likely a re-render
-        // that triggered the connection twice
-        break;
       case 'TransportStatusError':
         alert(
           'Please make sure your ledger is unlocked and open the Ethereum app',

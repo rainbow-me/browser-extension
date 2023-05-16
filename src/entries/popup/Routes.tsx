@@ -164,7 +164,6 @@ const ROUTE_DATA = [
         background="surfaceSecondary"
       >
         <ConnectLedger />
-        <ConnectLedger />
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
