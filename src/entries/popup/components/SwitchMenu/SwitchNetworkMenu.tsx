@@ -38,6 +38,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../DropdownMenu/DropdownMenu';
+import { SWAP_INPUT_MASK_ID } from '../InputMask/SwapInputMask/SwapInputMask';
 
 export const SwitchNetworkMenuSelector = ({
   selectedValue,
@@ -231,7 +232,7 @@ export const SwitchNetworkMenu = ({
       if (e.key === shortcuts.swap.OPEN_NETWORK_MENU.key) {
         const activeElement = document.activeElement;
         const tagName = activeElement?.tagName;
-        if (tagName !== 'INPUT' || activeElement?.id === 'swap-input-mask') {
+        if (tagName !== 'INPUT' || activeElement?.id === SWAP_INPUT_MASK_ID) {
           simulateClick(triggerRef?.current);
         }
       }

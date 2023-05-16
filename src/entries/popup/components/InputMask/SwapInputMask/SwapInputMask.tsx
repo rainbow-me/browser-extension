@@ -28,6 +28,8 @@ interface SwapInputMaskProps {
   testId: string;
 }
 
+export const SWAP_INPUT_MASK_ID = 'swap-input-mask';
+
 export const SwapInputMask = ({
   accentCaretColor = false,
   borderColor,
@@ -87,7 +89,7 @@ export const SwapInputMask = ({
           testId={`${testId}-swap-input-mask`}
           disabled={disabled}
           tabIndex={disabled ? -1 : 0}
-          id={'swap-input-mask'}
+          id={SWAP_INPUT_MASK_ID}
         />
       </Box>
     </Box>
