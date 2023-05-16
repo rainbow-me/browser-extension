@@ -1,4 +1,4 @@
-import { motion, useAnimationControls } from 'framer-motion';
+import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
 import React, { useState } from 'react';
 
 import { i18n } from '~/core/languages';
@@ -65,11 +65,36 @@ export function Welcome() {
             </Box>
           </Stack>
         </Box>
-        {screen === 'invite_code' ? (
-          <InviteCodePortal onInviteCodeValidated={() => setScreen('unlock')} />
-        ) : (
-          <ImportOrCreateWallet />
-        )}
+        <AnimatePresence>
+          {screen === 'invite_code' ? (
+            <Box
+              width="full"
+              key="invite_code"
+              as={motion.div}
+              initial={{ opacity: 1 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              layout
+            >
+              <InviteCodePortal
+                onInviteCodeValidated={() => setScreen('unlock')}
+              />
+            </Box>
+          ) : null}
+          {screen === 'unlock' ? (
+            <Box
+              width="full"
+              key="welcome"
+              as={motion.div}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 1 }}
+              layout="position"
+            >
+              <ImportOrCreateWallet />
+            </Box>
+          ) : null}
+        </AnimatePresence>
       </FlyingRainbows>
     </>
   );
