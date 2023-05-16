@@ -84,7 +84,7 @@ export async function switchWallet(address, rootURL, driver) {
     id: 'header-account-name-shuffle',
     driver,
   });
-  await delayTime('medium');
+  await delayTime('long');
 
   await findElementByTextAndClick(driver, shortenedAddress);
   await delayTime('long');
