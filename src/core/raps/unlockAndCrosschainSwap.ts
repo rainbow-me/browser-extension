@@ -3,7 +3,6 @@ import {
   ChainId,
   ETH_ADDRESS as ETH_ADDRESS_AGGREGATOR,
   PermitSupportedTokenList,
-  RAINBOW_ROUTER_CONTRACT_ADDRESS,
   WRAPPED_ASSET,
 } from '@rainbow-me/swaps';
 import { Address } from 'wagmi';
@@ -97,10 +96,12 @@ export const createUnlockAndCrosschainSwapRap = async (
     from: accountAddress,
     sellTokenAddress,
     buyTokenAddress,
+    allowanceTarget,
   } = quote as {
     from: Address;
     sellTokenAddress: Address;
     buyTokenAddress: Address;
+    allowanceTarget: Address;
   };
 
   const isNativeAssetUnwrapping =
@@ -120,7 +121,7 @@ export const createUnlockAndCrosschainSwapRap = async (
       owner: accountAddress,
       amount: sellAmount,
       assetToUnlock: assetToSell,
-      spender: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+      spender: allowanceTarget,
       chainId,
     });
   }
