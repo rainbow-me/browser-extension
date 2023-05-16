@@ -19,6 +19,7 @@ import {
   Stack,
   Symbol,
   Text,
+  TextOverflow,
 } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
@@ -132,9 +133,9 @@ const SwapWarning = ({
               background="fillSecondary"
               style={{ width: '14px', height: '2px' }}
             />
-            <Text color={warningColor} size="14pt" weight="semibold">
+            <TextOverflow color={warningColor} size="14pt" weight="semibold">
               {warningDescription}
-            </Text>
+            </TextOverflow>
           </Inline>
         </Box>
       </Box>
