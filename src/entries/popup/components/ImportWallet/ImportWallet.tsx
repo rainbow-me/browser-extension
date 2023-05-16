@@ -1,10 +1,7 @@
-import { isAddress } from '@ethersproject/address';
 import { isValidMnemonic } from '@ethersproject/hdnode';
-import { motion } from 'framer-motion';
-import { startsWith } from 'lodash';
-import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
+import { wordlists } from '@ethersproject/wordlists';
+import { Fragment, useCallback, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -17,143 +14,84 @@ import {
   Stack,
   Symbol,
   Text,
-  textStyles,
 } from '~/design-system';
-import {
-  accentSelectionStyle,
-  placeholderStyle,
-} from '~/design-system/components/Input/Input.css';
-import {
-  transformScales,
-  transitions,
-} from '~/design-system/styles/designTokens';
 
 import * as wallet from '../../handlers/wallet';
+import { useDebounce } from '../../hooks/useDebounce';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
+import { ImportWalletTextarea } from '../ImportWalletTextarea/ImportWalletTextarea';
 
-const validateSecret = (secret: string) => {
-  // check if it's a private key
-  const trimmedSecret = secret.trimEnd().trimStart().toLowerCase();
-  if (trimmedSecret.split(' ').length === 1) {
-    const secretToValidate = startsWith(trimmedSecret, '0x')
-      ? trimmedSecret
-      : addHexPrefix(trimmedSecret);
-    return isValidPrivateKey(secretToValidate);
+function ErrorMessage({ message }: { message: string }) {
+  return (
+    <Inline space="4px" alignVertical="center">
+      <Symbol
+        symbol={'exclamationmark.triangle.fill'}
+        size={11}
+        color={'orange'}
+        weight={'bold'}
+      />
+      <Text size="11pt" weight="regular" color={'orange'}>
+        {message}
+      </Text>
+    </Inline>
+  );
+}
+
+const wordlist = wordlists['en']; // ethers uses 'en' as default, I'm just making it explicit here
+const getError = (secret: string): string | boolean => {
+  if (!secret) return true; // true = error but no msg
+
+  if (secret.startsWith('0x')) {
+    if (secret.length > 66) return i18n.t('import_wallet.too_many_chars');
+    if (isValidPrivateKey(addHexPrefix(secret.toLowerCase()))) return false; // false = no error
+    return 'Invalid Private Key';
   }
-  return isValidMnemonic(secret.trimEnd().trimStart());
+
+  if (isValidMnemonic(secret, wordlist)) return false; // false = no error
+  const words = secret.split(' ');
+  if (words.length < 10) return true; // user prolly still typing let's not bother him with and error msg
+  if (words.length > 12) return i18n.t('import_wallet.too_many_words');
+  if (words.length < 12) return `missing ${12 - words.length} words`;
+  const invalidWord = words.find((word) => wordlist.getWordIndex(word) === -1);
+  if (invalidWord) return `Invalid word ${invalidWord}`;
+
+  return `Invalid recovery phrase`;
 };
 
-const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
+export const ImportWallet = ({ onboarding = false }) => {
   const { state } = useLocation();
   const navigate = useRainbowNavigate();
-  const [isValid, setIsValid] = useState(false);
-  const [isAddingWallets, setIsAddingWallets] = useState(false);
-  const [secrets, setSecrets] = useState((state.secrets as string[]) || ['']);
   const { setCurrentAddress } = useCurrentAddressStore();
+  const [secrets, setSecrets] = useState<string[]>(state.secrets || ['']);
 
-  const [validity, setValidity] = useState<
-    { valid: boolean; too_long: boolean; type: string | undefined }[]
-  >([]);
+  const importWallets = useCallback(
+    async (_secrets: string[]) => {
+      const secrets = [...new Set(_secrets)]; // remove duplicates
+      if (secrets.length > 1)
+        return navigate(
+          onboarding
+            ? ROUTES.IMPORT__SELECT
+            : ROUTES.NEW_IMPORT_WALLET_SELECTION,
+          { state: { secrets } },
+        );
 
-  const updateValidity = useCallback((newSecrets: string[]) => {
-    const newValidity = newSecrets.map((secret) => {
-      let too_long = false;
-      let type = undefined;
-      const valid = validateSecret(secret);
-      if (!valid) {
-        if (startsWith(secret.toLowerCase(), '0x')) {
-          type = 'pkey';
-          if (addHexPrefix(secret).length > 66) {
-            too_long = true;
-          }
-        } else {
-          if (secret.split(' ').length > 12) {
-            too_long = true;
-            type = 'seed';
-          }
-        }
-      }
-      return {
-        valid,
-        too_long,
-        type,
-      };
-    });
-    if (newValidity.filter((word) => !word.valid).length === 0) {
-      setIsValid(true);
-    } else {
-      setIsValid(false);
-    }
-    setValidity(newValidity);
+      const address = await wallet.importWithSecret(secrets[0]);
+      setCurrentAddress(address);
+      navigate(onboarding ? ROUTES.CREATE_PASSWORD : ROUTES.HOME);
+    },
+    [navigate, onboarding, setCurrentAddress],
+  );
+
+  const addAnotherOne = useCallback(() => {
+    setSecrets((secrets) => [...secrets, '']);
   }, []);
 
-  useEffect(() => {
-    if (state.secrets) {
-      updateValidity(state.secrets);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleSeedChange = useCallback(
-    (e: { target: { value: string } }, index: number) => {
-      const newSecrets = [...secrets] as string[];
-      newSecrets[index] = e.target.value;
-      updateValidity(newSecrets);
-      setSecrets(newSecrets);
-    },
-    [secrets, updateValidity],
+  const debouncedSecrets = useDebounce(secrets, 500);
+  const errors = debouncedSecrets.map(
+    (dsecret, i) => dsecret === secrets[i] && getError(dsecret.trim()),
   );
-  const handleImportWallet = useCallback(async () => {
-    if (secrets.length === 1 && secrets[0] === '') return;
-    if (isAddingWallets) return;
-    // If it's only one private key or address, import it directly and go to wallet screen
-    if (secrets.length === 1) {
-      if (isValidPrivateKey(secrets[0]) || isAddress(secrets[0])) {
-        try {
-          setIsAddingWallets(true);
-          const address = (await wallet.importWithSecret(
-            secrets[0],
-          )) as Address;
-          setCurrentAddress(address);
-          setIsAddingWallets(false);
-          onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
-          return;
-        } finally {
-          setIsAddingWallets(false);
-        }
-      }
-    }
-
-    onboarding
-      ? navigate(ROUTES.IMPORT__SELECT, {
-          state: { secrets },
-        })
-      : navigate(ROUTES.NEW_IMPORT_WALLET_SELECTION, {
-          state: { secrets },
-        });
-  }, [isAddingWallets, navigate, onboarding, secrets, setCurrentAddress]);
-
-  const handleAddAnotherOne = useCallback(() => {
-    const newSecrets = [...secrets, ''];
-    setSecrets(newSecrets);
-    updateValidity(newSecrets);
-  }, [secrets, updateValidity]);
-
-  const handleRemove = useCallback(() => {
-    const newSecrets = secrets.slice(0, -1);
-    setSecrets(newSecrets);
-    updateValidity(newSecrets);
-  }, [secrets, updateValidity]);
-
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        handleImportWallet();
-      }
-    },
-    [handleImportWallet],
-  );
+  const disabled = errors.some((e) => e !== true);
 
   return (
     <>
@@ -175,112 +113,70 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
             </Box>
           </Stack>
         </Box>
+
         <Box alignItems="center" style={{ width: '106px' }}>
           <Separator color="separatorTertiary" strokeWeight="1px" />
         </Box>
-        <Box
-          width="full"
-          style={{
-            overflow: 'auto',
-            height: '364px',
-          }}
-        >
+
+        <Box width="full" style={{ overflow: 'auto', height: '364px' }}>
           <Stack space="10px">
-            {secrets.map((_, i) => (
-              <Box
-                as={motion.div}
-                whileTap={{ scale: transformScales['0.96'] }}
-                transition={transitions.bounce}
-                height="full"
-                width="full"
-                key={`seed_${i}`}
-                position="relative"
-              >
-                <Box
-                  as="textarea"
-                  background="surfaceSecondaryElevated"
-                  borderRadius="12px"
-                  borderWidth="1px"
-                  borderColor={{
-                    default: 'buttonStroke',
-                    focus: 'accent',
-                  }}
-                  width="full"
-                  padding="12px"
-                  placeholder={i18n.t('import_wallet.placeholder')}
-                  value={secrets[i]}
-                  testId="secret-textarea"
-                  onKeyDown={handleKeyDown}
-                  tabIndex={1}
-                  autoFocus
-                  onChange={(e) => handleSeedChange(e, i)}
-                  className={[
-                    placeholderStyle,
-                    textStyles({
-                      color: 'label',
-                      fontSize: '14pt',
-                      fontWeight: 'regular',
-                      fontFamily: 'rounded',
-                    }),
-                    accentSelectionStyle,
-                  ]}
-                  style={{
-                    height: '96px',
-                    resize: 'none',
-                  }}
-                />
-                {validity[i]?.valid === false && validity[i]?.too_long && (
-                  <Box position="absolute" marginTop="-24px" paddingLeft="12px">
-                    <Inline space="4px" alignVertical="center">
-                      <Symbol
-                        symbol={'exclamationmark.triangle.fill'}
-                        size={11}
-                        color={'orange'}
-                        weight={'bold'}
-                      />
-                      <Text size="11pt" weight="regular" color={'orange'}>
-                        {validity[i].type === 'pkey'
-                          ? i18n.t('import_wallet.too_many_chars')
-                          : i18n.t('import_wallet.too_many_words')}
-                      </Text>
-                    </Inline>
-                  </Box>
-                )}
-                {i > 0 && i === secrets.length - 1 && secrets[i].length === 0 && (
-                  <Box
-                    position="absolute"
-                    marginTop="-30px"
-                    paddingLeft="12px"
-                    style={{
-                      right: '0px',
+            {secrets.map((secret, i) => {
+              const isLast = i === secrets.length - 1;
+              const error = errors[i];
+              const errorMsg = typeof error === 'string' && error;
+              return (
+                <Fragment key={`seed_${i}`}>
+                  <ImportWalletTextarea
+                    tabIndex={1}
+                    autoFocus
+                    error={!!errorMsg && <ErrorMessage message={errorMsg} />}
+                    placeholder={i18n.t('import_wallet.placeholder')}
+                    value={secret}
+                    onChange={(e) => {
+                      setSecrets((secrets) => {
+                        const newSecrets = [...secrets];
+                        newSecrets[i] = e.target.value;
+                        return newSecrets;
+                      });
                     }}
                   >
+                    {i !== 0 && isLast && !secret && (
+                      <Box
+                        position="absolute"
+                        marginTop="-30px"
+                        paddingLeft="12px"
+                        style={{ right: '0px' }}
+                      >
+                        <Button
+                          color="red"
+                          height="24px"
+                          variant="transparent"
+                          width="full"
+                          onClick={() =>
+                            setSecrets((scts) => scts.slice(0, -1))
+                          }
+                        >
+                          {i18n.t('import_wallet.remove')}
+                        </Button>
+                      </Box>
+                    )}
+                  </ImportWalletTextarea>
+                  {isLast && !error && (
                     <Button
-                      color="red"
-                      height="24px"
+                      symbol="plus.circle.fill"
+                      symbolSide="left"
+                      color="accent"
+                      height="44px"
                       variant="transparent"
                       width="full"
-                      onClick={handleRemove}
+                      onClick={addAnotherOne}
                     >
-                      {i18n.t('import_wallet.remove')}
+                      {i18n.t('import_wallet.add_another')}
                     </Button>
-                  </Box>
-                )}
-              </Box>
-            ))}
-            {isValid && (
-              <Button
-                symbol="plus.circle.fill"
-                symbolSide="left"
-                color="accent"
-                height="44px"
-                variant="transparent"
-                width="full"
-                onClick={handleAddAnotherOne}
-              >
-                {i18n.t('import_wallet.add_another')}
-              </Button>
-            )}
+                  )}
+                </Fragment>
+              );
+            })}
           </Stack>
         </Box>
       </Stack>
@@ -289,21 +185,18 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
         <Button
           symbol="arrow.uturn.down.circle.fill"
           symbolSide="left"
-          color={isValid ? 'accent' : 'labelQuaternary'}
+          color={!disabled ? 'accent' : 'labelQuaternary'}
           height="44px"
-          variant={isValid ? 'flat' : 'disabled'}
+          variant={!disabled ? 'flat' : 'disabled'}
           width="full"
-          onClick={isValid ? handleImportWallet : () => null}
+          onClick={() => importWallets(secrets)}
+          disabled={disabled}
           testId="import-wallets-button"
           tabIndex={2}
         >
-          {secrets.length > 1
-            ? i18n.t('import_wallet.import_wallet_plural')
-            : i18n.t('import_wallet.import_wallet')}
+          {i18n.t('import_wallet.import_wallet', { count: secrets.length })}
         </Button>
       </Box>
     </>
   );
 };
-
-export { ImportWallet };
