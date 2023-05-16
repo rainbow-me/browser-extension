@@ -203,8 +203,9 @@ export const SendTokenInput = React.forwardRef<
     onSelectAsset('', ChainId.mainnet);
     setTimeout(() => {
       inputRef?.current?.focus();
+      onDropdownAction();
     }, 200);
-  }, [inputRef, onSelectAsset]);
+  }, [inputRef, onSelectAsset, onDropdownAction]);
 
   const selectAsset = useCallback(
     (address: Address | typeof ETH_ADDRESS | '', chainId: ChainId) => {
@@ -235,7 +236,7 @@ export const SendTokenInput = React.forwardRef<
       centerComponent={
         <Box width="full">
           {inputVisible ? (
-            <Box as={motion.div} layout="position">
+            <Box as={motion.div} layout="position" onClick={onDropdownAction}>
               <Input
                 testId="token-input"
                 value={inputValue}
@@ -279,6 +280,7 @@ export const SendTokenInput = React.forwardRef<
         <InputActionButon
           showClose={!!asset}
           onClose={onCloseDropdown}
+          onDropdownAction={onDropdownAction}
           dropdownVisible={dropdownVisible}
           testId={`input-wrapper-close-${'token-input'}`}
         />
@@ -359,7 +361,6 @@ export const SendTokenInput = React.forwardRef<
         </Stack>
       }
       dropdownVisible={dropdownVisible}
-      onDropdownAction={onDropdownAction}
       borderVisible={!asset}
     />
   );
