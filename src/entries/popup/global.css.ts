@@ -55,3 +55,7 @@ globalStyle('.home-tab-wrapper:focus-visible', {
   outlineOffset: '2px',
   outlineColor: 'transparent',
 });
+
+globalStyle('.transition', {
+  transition: 'fill 0.5s ease',
+});
