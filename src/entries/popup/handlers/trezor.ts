@@ -22,9 +22,9 @@ const getPath = async (address: Address) => {
   return (await walletAction('get_path', address)) as string;
 };
 
-export async function sendTransactionFromTrezor(
+export async function signTransactionFromTrezor(
   transaction: ethers.providers.TransactionRequest,
-): Promise<TransactionResponse> {
+): Promise<string> {
   try {
     window.TrezorConnect.init(TREZOR_CONFIG);
     const { from: address } = transaction;
@@ -40,7 +40,8 @@ export async function sendTransactionFromTrezor(
       gasLimit: transaction.gasLimit || undefined,
       nonce: ethers.BigNumber.from(transaction.nonce).toNumber(),
       to: transaction.to || undefined,
-      value: transaction.value || undefined,
+      value:
+        ethers.BigNumber.from(transaction.value).toHexString() || undefined,
     };
 
     if (transaction.gasPrice) {
@@ -51,7 +52,6 @@ export async function sendTransactionFromTrezor(
     }
 
     const nonceHex = ethers.BigNumber.from(transaction.nonce).toHexString();
-
     const response = await window.TrezorConnect.ethereumSignTransaction({
       path,
       transaction: {
@@ -61,7 +61,6 @@ export async function sendTransactionFromTrezor(
     });
 
     if (response.success) {
-      baseTx.type = baseTx.gasPrice ? 1 : 2;
       const serializedTransaction = ethers.utils.serializeTransaction(baseTx, {
         r: response.payload.r,
         s: response.payload.s,
@@ -73,7 +72,7 @@ export async function sendTransactionFromTrezor(
         throw new Error('Transaction was not signed by the right address');
       }
 
-      return provider.sendTransaction(serializedTransaction);
+      return serializedTransaction;
     } else {
       alert('error signing transaction with trezor');
       throw new Error('error signing transaction with trezor');
@@ -82,11 +81,19 @@ export async function sendTransactionFromTrezor(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     alert('Please make sure your trezor is unlocked');
-    console.log('error signing transaction with trezor', e);
 
     // bubble up the error
     throw e;
   }
+}
+export async function sendTransactionFromTrezor(
+  transaction: ethers.providers.TransactionRequest,
+): Promise<TransactionResponse> {
+  const serializedTransaction = await signTransactionFromTrezor(transaction);
+  const provider = getProvider({
+    chainId: transaction.chainId,
+  });
+  return provider.sendTransaction(serializedTransaction);
 }
 
 export async function signMessageByTypeFromTrezor(

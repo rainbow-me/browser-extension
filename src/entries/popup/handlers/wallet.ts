@@ -24,19 +24,26 @@ import {
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
 import { KeychainWallet } from '~/core/types/keychainTypes';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
 import { toHex } from '~/core/utils/numbers';
+import { POPUP_URL } from '~/core/utils/tabs';
 import { getNextNonce } from '~/core/utils/transactions';
+
+import { ROUTES } from '../urls';
+import { isExternalPopup, isFullScreen } from '../utils/windows';
 
 import {
   sendTransactionFromLedger,
   signMessageByTypeFromLedger,
+  signTransactionFromLedger,
 } from './ledger';
 import {
   TREZOR_CONFIG,
   sendTransactionFromTrezor,
   signMessageByTypeFromTrezor,
+  signTransactionFromTrezor,
 } from './trezor';
 
 const messenger = initializeMessenger({ connect: 'background' });
@@ -63,6 +70,82 @@ const signMessageByType = async (
     address,
     msgData,
   });
+};
+
+const checkIfNeedsTrezorPopup = async (
+  action: 'signTransaction' | 'signTypedData' | 'signMessage',
+  payload:
+    | TransactionRequest
+    | { message: string; address: string }
+    | { data: string | Bytes; address: string },
+) => {
+  if (!isExternalPopup && !isFullScreen) {
+    // check if we opened a popup before
+    const hwRequestPending = await chrome.storage.session.get(
+      'hwRequestPending',
+    );
+    if (hwRequestPending && hwRequestPending.payload) {
+      return false; // don't open a new popup
+    } else {
+      await chrome.storage.session.set({
+        hwRequestPending: {
+          action,
+          vendor: 'Trezor',
+          payload,
+        },
+      });
+      await chrome.windows.create({
+        url: POPUP_URL + `?tabId=trezor#${ROUTES.HW_TREZOR_LOADING}`,
+        type: 'popup',
+        height: POPUP_DIMENSIONS.height + 25,
+        width: 360,
+        top: 0,
+      });
+      return true;
+    }
+  }
+  return false;
+};
+
+export const signTransactionFromHW = async (
+  transactionRequest: TransactionRequest,
+  vendor: string,
+): Promise<string | undefined> => {
+  const needsTrezorPopup =
+    vendor === 'Trezor' &&
+    (await checkIfNeedsTrezorPopup('signTransaction', transactionRequest));
+  if (needsTrezorPopup) return;
+
+  const { selectedGas } = gasStore.getState();
+  const provider = getProvider({
+    chainId: transactionRequest.chainId,
+  });
+  const gasLimit = await estimateGasWithPadding({
+    transactionRequest,
+    provider,
+  });
+
+  const nonce = await getNextNonce({
+    address: transactionRequest.from as Address,
+    chainId: transactionRequest.chainId as number,
+  });
+
+  const params = {
+    ...transactionRequest,
+    ...selectedGas.transactionGasParams,
+    value: transactionRequest?.value,
+    nonce,
+  };
+
+  if (gasLimit) {
+    params.gasLimit = toHex(gasLimit);
+  }
+
+  if (vendor === 'Ledger') {
+    return signTransactionFromLedger(params);
+  } else if (vendor === 'Trezor') {
+    return signTransactionFromTrezor(params);
+  }
 };
 
 export const sendTransaction = async (
@@ -139,21 +222,7 @@ export async function executeRap<T extends RapTypes>({
     rapActionParameters: { ...rapActionParameters, nonce },
     type,
   };
-  const { type: walletType, vendor } = await getWallet(
-    rapActionParameters.quote.from as Address,
-  );
-  // Check the type of account it is
-  if (walletType === 'HardwareWalletKeychain') {
-    switch (vendor) {
-      default:
-        throw new Error('Unsupported hardware wallet');
-    }
-  } else {
-    return walletAction(
-      'execute_rap',
-      params,
-    ) as unknown as TransactionResponse;
-  }
+  return walletAction('execute_rap', params) as unknown as TransactionResponse;
 }
 
 export const personalSign = async (
@@ -165,11 +234,11 @@ export const personalSign = async (
     switch (vendor) {
       case 'Ledger':
         return signMessageByTypeFromLedger(msgData, address, 'personal_sign');
-      case 'Trezor':
+      case 'Trezor': {
         return signMessageByTypeFromTrezor(msgData, address, 'personal_sign');
-      default:
-        throw new Error('Unsupported hardware wallet');
+      }
     }
+    return '';
   } else {
     return (await signMessageByType(
       msgData,
@@ -188,8 +257,9 @@ export const signTypedData = async (
     switch (vendor) {
       case 'Ledger':
         return signMessageByTypeFromLedger(msgData, address, 'sign_typed_data');
-      case 'Trezor':
+      case 'Trezor': {
         return signMessageByTypeFromTrezor(msgData, address, 'sign_typed_data');
+      }
       default:
         throw new Error('Unsupported hardware wallet');
     }
@@ -318,7 +388,6 @@ export const exportAccount = async (address: Address, password: string) => {
 };
 
 export const importAccountAtIndex = async (
-  silbing: Address,
   type: string | 'Trezor' | 'Ledger',
   index: number,
 ) => {
@@ -344,7 +413,7 @@ export const importAccountAtIndex = async (
       const transport = await TransportWebUSB.create();
       const appEth = new AppEth(transport);
       const result = await appEth.getAddress(
-        `${DEFAULT_HD_PATH}/0`,
+        `${DEFAULT_HD_PATH}/${index}`,
         false,
         false,
       );
@@ -355,15 +424,26 @@ export const importAccountAtIndex = async (
     default:
       throw new Error('Unknown wallet type');
   }
-
-  return (await walletAction('add_account_at_index', {
-    silbingAddress: silbing,
-    index,
-    address,
-  })) as Address;
+  return address;
 };
 
 export const connectTrezor = async () => {
+  // TODO: DELETE
+  // Debugging purposes only - useful if you don't have a real device
+  // return {
+  //   accountsToImport: [
+  //     {
+  //       address: '0x2419EB3D5E048f50D386f6217Cd5033eBfc36b83' as Address,
+  //       index: 0,
+  //     },
+  //     {
+  //       address: '0x37bD75826582532373D738F83b913C97447b0906' as Address,
+  //       index: 1,
+  //     },
+  //   ],
+  //   deviceId: 'lol',
+  //   accountsEnabled: 2,
+  // };
   try {
     window.TrezorConnect.init(TREZOR_CONFIG);
     const path = `m/${DEFAULT_HD_PATH}`;
@@ -381,7 +461,7 @@ export const connectTrezor = async () => {
     const hdNode = HDNode.fromExtendedKey(result.payload.xpub);
     const firstAccountPath = `0`;
 
-    const addressesToImport = [
+    const accountsToImport = [
       { address: hdNode.derivePath(firstAccountPath).address, index: 0 },
     ];
     let accountsEnabled = 1;
@@ -395,7 +475,7 @@ export const connectTrezor = async () => {
       const hasBeenUsed = await hasPreviousTransactions(newAddress as Address);
 
       if (hasBeenUsed) {
-        addressesToImport.push({
+        accountsToImport.push({
           address: newAddress,
           index: accountsEnabled,
         });
@@ -405,36 +485,39 @@ export const connectTrezor = async () => {
       }
     }
 
-    // The device id is the keccak256 of the address at index 0
-    const deviceId = keccak256(addressesToImport[0].address);
-    const address = await walletAction('import_hw', {
-      deviceId,
-      wallets: addressesToImport,
-      vendor: 'Trezor',
-      accountsEnabled,
-    });
-    const { passwordSet } = await getStatus();
-    if (!passwordSet) {
-      // we probably need to set a password
-      await chrome.storage.session.set({ userStatus: 'NEEDS_PASSWORD' });
-    }
-    return address;
+    const deviceId = keccak256(accountsToImport[0].address);
+
+    return { accountsToImport, deviceId, accountsEnabled };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     if (e?.name === 'TransportStatusError') {
-      alert(
-        'Please make sure your trezor is unlocked and open the Ethereum app',
-      );
+      alert('Please make sure your trezor is connected and unlocked');
     } else {
       alert('Unable to connect to your trezor. Please try again.');
-      console.log(e);
     }
     return null;
   }
 };
 
 export const connectLedger = async () => {
+  // TODO: DELETE
+  //  Debugging purposes only - useful if you don't have a real device
+  // return {
+  //   accountsToImport: [
+  //     {
+  //       address: '0x2419EB3D5E048f50D386f6217Cd5033eBfc36b83' as Address,
+  //       index: 0,
+  //     },
+  //     {
+  //       address: '0x37bD75826582532373D738F83b913C97447b0906' as Address,
+  //       index: 1,
+  //     },
+  //   ],
+  //   deviceId: 'lol',
+  //   accountsEnabled: 2,
+  // };
+
   // Connect to the device
   try {
     const transport = await TransportWebUSB.create();
@@ -444,7 +527,7 @@ export const connectLedger = async () => {
       false,
       false,
     );
-    const addressesToImport = [{ address: result.address, index: 0 }];
+    const accountsToImport = [{ address: result.address, index: 0 }];
     let accountsEnabled = 1;
     // Autodiscover accounts
     let empty = false;
@@ -462,7 +545,7 @@ export const connectLedger = async () => {
       );
 
       if (hasBeenUsed) {
-        addressesToImport.push({
+        accountsToImport.push({
           address: result.address,
           index: accountsEnabled,
         });
@@ -472,30 +555,44 @@ export const connectLedger = async () => {
       }
     }
 
-    // The device id is the keccak256 of the address at index 0
-    const deviceId = keccak256(result.address);
-    const address = await walletAction('import_hw', {
-      deviceId,
-      wallets: addressesToImport,
-      vendor: 'Ledger',
-      accountsEnabled,
-    });
-    const { passwordSet } = await getStatus();
-    if (!passwordSet) {
-      // we probably need to set a password
-      await chrome.storage.session.set({ userStatus: 'NEEDS_PASSWORD' });
-    }
-    return address;
+    const deviceId = keccak256(accountsToImport[0].address);
+
+    return { accountsToImport, deviceId, accountsEnabled };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
-    if (e?.name === 'TransportStatusError') {
-      alert(
-        'Please make sure your ledger is unlocked and open the Ethereum app',
-      );
-    } else {
-      alert('Unable to connect to your ledger. Please try again.');
+    switch (e?.name) {
+      case 'TransportStatusError':
+        alert(
+          'Please make sure your ledger is unlocked and open the Ethereum app',
+        );
+        break;
+      default:
+        alert('Unable to connect to your ledger. Please try again.');
     }
     return null;
   }
+};
+
+export const importAccountsFromHW = async (
+  accountsToImport: {
+    address: string;
+    index: number;
+  }[],
+  accountsEnabled: number,
+  deviceId: string,
+  vendor: 'Ledger' | 'Trezor',
+) => {
+  const address = await walletAction('import_hw', {
+    deviceId,
+    wallets: accountsToImport,
+    vendor,
+    accountsEnabled,
+  });
+  const { passwordSet } = await getStatus();
+  if (!passwordSet) {
+    // we probably need to set a password
+    await chrome.storage.session.set({ userStatus: 'NEEDS_PASSWORD' });
+  }
+  return address;
 };
