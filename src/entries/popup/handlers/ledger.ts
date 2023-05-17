@@ -71,6 +71,7 @@ export async function signTransactionFromLedger(
     if (parsedTx.from?.toLowerCase() !== address?.toLowerCase()) {
       throw new Error('Transaction was not signed by the right address');
     }
+
     transport?.close();
     return serializedTransaction;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
