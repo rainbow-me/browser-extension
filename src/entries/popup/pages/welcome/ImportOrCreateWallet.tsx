@@ -47,7 +47,7 @@ export function ImportOrCreateWallet() {
   }, [loading, navigate, setCurrentAddress]);
 
   return (
-    <Box style={{ marginTop: '226px', zIndex: 1 }}>
+    <Box style={{ marginTop: '226px' }}>
       <Rows space="20px">
         <Row>
           <Rows space="10px">

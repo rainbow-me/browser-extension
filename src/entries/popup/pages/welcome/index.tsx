@@ -71,9 +71,9 @@ export function Welcome() {
               width="full"
               key="invite_code"
               as={motion.div}
-              initial={{ opacity: 1 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ opacity: 1, marginTop: 0 }}
+              animate={{ opacity: 1, marginTop: 0 }}
+              exit={{ opacity: 0, marginTop: -51 }}
               layout
             >
               <InviteCodePortal
