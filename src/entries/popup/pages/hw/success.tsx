@@ -190,7 +190,7 @@ export function SuccessHW() {
           display="flex"
         >
           <Button
-            symbol="arrow.uturn.down.circle.fill"
+            symbol="return.left"
             symbolSide="left"
             color="surfaceSecondaryElevated"
             height="44px"
