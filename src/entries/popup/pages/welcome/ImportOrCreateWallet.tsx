@@ -47,74 +47,72 @@ export function ImportOrCreateWallet() {
   }, [loading, navigate, setCurrentAddress]);
 
   return (
-    <Box width="full" style={{ zIndex: 1 }}>
-      <Box width="full" style={{ marginTop: '226px' }}>
-        <Rows space="20px">
-          <Row>
-            <Rows space="10px">
-              <Row>
+    <Box style={{ marginTop: '226px', zIndex: 1 }}>
+      <Rows space="20px">
+        <Row>
+          <Rows space="10px">
+            <Row>
+              <Button
+                color="fill"
+                height="44px"
+                variant="flat"
+                width="full"
+                symbol="arrow.right"
+                symbolSide="right"
+                blur="26px"
+                onClick={handleCreateNewWalletClick}
+                testId="create-wallet-button"
+              >
+                {loading ? (
+                  <Inline space="8px" alignVertical="center">
+                    <Text color="label" size="16pt" weight="bold">
+                      {i18n.t('welcome.create_wallet')}
+                    </Text>
+                    <Spinner size={16} color="label" />
+                  </Inline>
+                ) : (
+                  i18n.t('welcome.create_wallet')
+                )}
+              </Button>
+            </Row>
+            <Row>
+              <ThemeProvider theme="dark">
                 <Button
-                  color="fill"
+                  color="surfaceSecondaryElevated"
                   height="44px"
                   variant="flat"
                   width="full"
-                  symbol="arrow.right"
-                  symbolSide="right"
-                  blur="26px"
-                  onClick={handleCreateNewWalletClick}
-                  testId="create-wallet-button"
+                  onClick={handleImportWalletClick}
+                  testId="import-wallet-button"
                 >
-                  {loading ? (
-                    <Inline space="8px" alignVertical="center">
-                      <Text color="label" size="16pt" weight="bold">
-                        {i18n.t('welcome.create_wallet')}
-                      </Text>
-                      <Spinner size={16} color="label" />
-                    </Inline>
-                  ) : (
-                    i18n.t('welcome.create_wallet')
-                  )}
+                  {i18n.t('welcome.import_wallet')}
                 </Button>
-              </Row>
-              <Row>
-                <ThemeProvider theme="dark">
-                  <Button
-                    color="surfaceSecondaryElevated"
-                    height="44px"
-                    variant="flat"
-                    width="full"
-                    onClick={handleImportWalletClick}
-                    testId="import-wallet-button"
-                  >
-                    {i18n.t('welcome.import_wallet')}
-                  </Button>
-                </ThemeProvider>
-              </Row>
-            </Rows>
-          </Row>
-          <Row>
-            <Box display="flex" style={{ width: '210px', margin: 'auto' }}>
-              <Text
-                align="center"
-                color="labelTertiary"
-                size="12pt"
-                weight="regular"
-                as="p"
+              </ThemeProvider>
+            </Row>
+          </Rows>
+        </Row>
+        <Row>
+          <Box display="flex" style={{ width: '210px', margin: 'auto' }}>
+            <Text
+              align="center"
+              color="labelTertiary"
+              size="12pt"
+              weight="regular"
+              as="p"
+            >
+              {i18n.t('welcome.disclaimer_tos')}&nbsp;
+              <a
+                href="https://rainbow.me/terms-of-use"
+                target="_blank"
+                style={{ color: accentColorAsHsl }}
+                rel="noreferrer"
               >
-                {i18n.t('welcome.disclaimer_tos')}&nbsp;
-                <a
-                  href="https://rainbow.me/terms-of-use"
-                  target="_blank"
-                  style={{ color: accentColorAsHsl }}
-                  rel="noreferrer"
-                >
-                  {i18n.t('welcome.disclaimer_tos_link')}
-                </a>
-              </Text>
-            </Box>
-          </Row>
-        </Rows>
-      </Box>
+                {i18n.t('welcome.disclaimer_tos_link')}
+              </a>
+            </Text>
+          </Box>
+        </Row>
+      </Rows>
     </Box>
   );
 }
