@@ -11,9 +11,13 @@ import {
   signTransactionFromHW,
   signTypedData,
 } from '../../handlers/wallet';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { ROUTES } from '../../urls';
 import { isExternalPopup } from '../../utils/windows';
 
 export const HWRequestListener = () => {
+  const navigate = useRainbowNavigate();
+
   const bgMessenger = initializeMessenger({ connect: 'background' });
 
   interface HWSigningRequest {
@@ -48,11 +52,10 @@ export const HWRequestListener = () => {
           );
           if (response) {
             bgMessenger.send('hwResponse', response);
+            navigate(ROUTES.HW_TREZOR_SUCCESS);
             chrome.storage.session.remove('hwRequestPending');
           }
         }
-
-        // TODO - Redirect to success page (see BX-678)
         // eslint-disable-next-line no-empty
       } catch (e: any) {}
     };
