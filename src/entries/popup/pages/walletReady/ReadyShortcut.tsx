@@ -55,7 +55,12 @@ export function ReadyShortcut() {
 
   return (
     <Box>
-      <Box display="flex" alignItems="center" justifyContent="center">
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        paddingBottom="24px"
+      >
         <OpenText
           isButtonPressed={isShiftPressed || isOptionPressed || isRPressed}
         />
