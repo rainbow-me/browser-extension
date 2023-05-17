@@ -1,5 +1,6 @@
 import {
   TargetAndTransition,
+  Transition,
   motion,
   useAnimationControls,
 } from 'framer-motion';
@@ -84,6 +85,13 @@ const RAINBOWS_POSITION: {
       bottom: '-9.36px',
     },
   },
+};
+
+const RAINBOW_TRANSITION: Transition = {
+  type: 'spring',
+  stiffness: 100,
+  damping: 15,
+  mass: 1,
 };
 
 export const RAINBOWS_ANIMATION: {
@@ -213,6 +221,7 @@ export function FlyingRainbows({
           }}
           initial={RAINBOWS_POSITION.rainbowPixel[screen]}
           animate={rainbowPixelControls}
+          transition={RAINBOW_TRANSITION}
         />
         <Box
           as={motion.img}
@@ -223,6 +232,7 @@ export function FlyingRainbows({
           }}
           initial={RAINBOWS_POSITION.rainbowWhite[screen]}
           animate={rainbowWhiteControls}
+          transition={RAINBOW_TRANSITION}
         />
         <Box
           as={motion.img}
@@ -233,6 +243,7 @@ export function FlyingRainbows({
           }}
           initial={RAINBOWS_POSITION.rainbowOg[screen]}
           animate={rainbowOgControls}
+          transition={RAINBOW_TRANSITION}
         />
         <Box
           as={motion.img}
@@ -243,6 +254,7 @@ export function FlyingRainbows({
           }}
           initial={RAINBOWS_POSITION.rainbowLight[screen]}
           animate={rainbowLightControls}
+          transition={RAINBOW_TRANSITION}
         />
         <Box
           as={motion.img}
@@ -253,6 +265,7 @@ export function FlyingRainbows({
           }}
           initial={RAINBOWS_POSITION.rainbowNeon[screen]}
           animate={rainbowNeonControls}
+          transition={RAINBOW_TRANSITION}
         />
       </Box>
       {children}
