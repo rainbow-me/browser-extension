@@ -65,7 +65,7 @@ export function Welcome() {
             </Box>
           </Stack>
         </Box>
-        <AnimatePresence>
+        <AnimatePresence mode="popLayout">
           {screen === 'invite_code' ? (
             <Box
               width="full"
@@ -86,10 +86,10 @@ export function Welcome() {
               width="full"
               key="welcome"
               as={motion.div}
-              initial={{ opacity: 0 }}
+              initial={{ opacity: 1 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 1 }}
-              layout="position"
+              layout
             >
               <ImportOrCreateWallet />
             </Box>

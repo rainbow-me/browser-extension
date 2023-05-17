@@ -53,40 +53,28 @@ export function ImportOrCreateWallet() {
           <Row>
             <Rows space="10px">
               <Row>
-                {loading ? (
-                  <Button
-                    color="fill"
-                    height="44px"
-                    variant="flat"
-                    width="full"
-                    symbol="arrow.right"
-                    symbolSide="right"
-                    blur="26px"
-                    onClick={handleCreateNewWalletClick}
-                    testId="create-wallet-button"
-                  >
+                <Button
+                  color="fill"
+                  height="44px"
+                  variant="flat"
+                  width="full"
+                  symbol="arrow.right"
+                  symbolSide="right"
+                  blur="26px"
+                  onClick={handleCreateNewWalletClick}
+                  testId="create-wallet-button"
+                >
+                  {loading ? (
                     <Inline space="8px" alignVertical="center">
                       <Text color="label" size="16pt" weight="bold">
                         {i18n.t('welcome.create_wallet')}
                       </Text>
                       <Spinner size={16} color="label" />
                     </Inline>
-                  </Button>
-                ) : (
-                  <Button
-                    color="fill"
-                    height="44px"
-                    variant="flat"
-                    width="full"
-                    symbol="arrow.right"
-                    symbolSide="right"
-                    blur="26px"
-                    onClick={handleCreateNewWalletClick}
-                    testId="create-wallet-button"
-                  >
-                    {i18n.t('welcome.create_wallet')}
-                  </Button>
-                )}
+                  ) : (
+                    i18n.t('welcome.create_wallet')
+                  )}
+                </Button>
               </Row>
               <Row>
                 <ThemeProvider theme="dark">
