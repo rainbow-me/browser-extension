@@ -86,7 +86,7 @@ export function Welcome() {
               width="full"
               key="welcome"
               as={motion.div}
-              initial={{ opacity: 1 }}
+              initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 1 }}
               layout

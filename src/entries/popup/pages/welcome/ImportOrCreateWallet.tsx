@@ -47,7 +47,7 @@ export function ImportOrCreateWallet() {
   }, [loading, navigate, setCurrentAddress]);
 
   return (
-    <Box style={{ marginTop: '226px' }}>
+    <Box style={{ marginTop: '234px' }}>
       <Rows space="20px">
         <Row>
           <Rows space="10px">
@@ -59,7 +59,7 @@ export function ImportOrCreateWallet() {
                 width="full"
                 symbol="arrow.right"
                 symbolSide="right"
-                blur="26px"
+                blur="80px"
                 onClick={handleCreateNewWalletClick}
                 testId="create-wallet-button"
               >
