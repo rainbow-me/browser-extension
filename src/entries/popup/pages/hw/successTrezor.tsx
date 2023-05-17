@@ -6,7 +6,7 @@ import { Box, Text } from '~/design-system';
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { Spinner } from '../../components/Spinner/Spinner';
 
-export function LoadingTrezor() {
+export function SuccessTrezor() {
   return (
     <FullScreenContainer>
       <Box alignItems="center">
