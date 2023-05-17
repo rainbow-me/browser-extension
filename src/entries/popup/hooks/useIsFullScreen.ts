@@ -1,8 +1,5 @@
-import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
+import { isFullScreen } from '../utils/windows';
 
 export function useIsFullScreen() {
-  return (
-    window.innerHeight > POPUP_DIMENSIONS.height &&
-    window.innerWidth > POPUP_DIMENSIONS.width
-  );
+  return isFullScreen;
 }

@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import * as React from 'react';
 import { HashRouter } from 'react-router-dom';
@@ -21,6 +21,7 @@ import { Box, ThemeProvider } from '~/design-system';
 import { Alert } from '~/design-system/components/Alert/Alert';
 
 import { Routes } from './Routes';
+import { HWRequestListener } from './components/HWRequestListener/HWRequestListener';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { Toast } from './components/Toast/Toast';
 import { AuthProvider } from './hooks/useAuth';
@@ -90,6 +91,7 @@ export function App() {
                   <Routes>
                     <Toast />
                     <Alert />
+                    <HWRequestListener />
                   </Routes>
                 </HashRouter>
               </Box>
