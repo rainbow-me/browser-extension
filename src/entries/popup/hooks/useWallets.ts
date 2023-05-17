@@ -10,6 +10,7 @@ import { getWallets } from '../handlers/wallet';
 export interface AddressAndType {
   address: Address;
   type: KeychainType;
+  vendor: string | undefined;
 }
 
 const fetchWallets = async () => {
@@ -17,7 +18,11 @@ const fetchWallets = async () => {
   return wallets.reduce(
     (accounts, wallet) => [
       ...accounts,
-      ...wallet.accounts.map((address) => ({ address, type: wallet.type })),
+      ...wallet.accounts.map((address) => ({
+        address,
+        type: wallet.type,
+        vendor: wallet.vendor,
+      })),
     ],
     [] as AddressAndType[],
   );

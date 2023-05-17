@@ -8,6 +8,7 @@ import AppEth, { ledgerService } from '@ledgerhq/hw-app-eth';
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
 import { getProvider } from '@wagmi/core';
+import { ethers } from 'ethers';
 import { Address } from 'wagmi';
 
 import { walletAction } from './wallet';
@@ -16,15 +17,11 @@ const getPath = async (address: Address) => {
   return (await walletAction('get_path', address)) as string;
 };
 
-export async function sendTransactionFromLedger(
+export async function signTransactionFromLedger(
   transaction: TransactionRequest,
-): Promise<TransactionResponse> {
+): Promise<string> {
   try {
     const { from: address } = transaction;
-    const provider = getProvider({
-      chainId: transaction.chainId,
-    });
-
     const transport = await TransportWebUSB.create();
     const appEth = new AppEth(transport);
     const path = await getPath(address as Address);
@@ -33,16 +30,22 @@ export async function sendTransactionFromLedger(
       chainId: transaction.chainId || undefined,
       data: transaction.data || undefined,
       gasLimit: transaction.gasLimit || undefined,
-      gasPrice: transaction.gasPrice || undefined,
-      maxFeePerGas: transaction.maxFeePerGas || undefined,
-      maxPriorityFeePerGas: transaction.maxPriorityFeePerGas || undefined,
       nonce: transaction.nonce
         ? BigNumber.from(transaction.nonce).toNumber()
         : undefined,
       to: transaction.to || undefined,
-      type: transaction.gasPrice ? 1 : 2,
-      value: transaction.value || undefined,
+      value: transaction.value
+        ? BigNumber.from(transaction.value).toHexString()
+        : undefined,
     };
+
+    if (transaction.gasPrice) {
+      baseTx.gasPrice = transaction.gasPrice;
+    } else {
+      baseTx.maxFeePerGas = transaction.maxFeePerGas || undefined;
+      baseTx.maxPriorityFeePerGas =
+        transaction.maxPriorityFeePerGas || undefined;
+    }
 
     const unsignedTx = serialize(baseTx).substring(2);
 
@@ -57,14 +60,18 @@ export async function sendTransactionFromLedger(
     );
 
     const sig = await appEth.signTransaction(path, unsignedTx, resolution);
-
     const serializedTransaction = serialize(baseTx, {
       r: '0x' + sig.r,
       s: '0x' + sig.s,
       v: BigNumber.from('0x' + sig.v).toNumber(),
     });
 
-    return provider.sendTransaction(serializedTransaction);
+    const parsedTx = ethers.utils.parseTransaction(serializedTransaction);
+    if (parsedTx.from?.toLowerCase() !== address?.toLowerCase()) {
+      throw new Error('Transaction was not signed by the right address');
+    }
+
+    return serializedTransaction;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     if (e?.name === 'TransportStatusError') {
@@ -76,6 +83,17 @@ export async function sendTransactionFromLedger(
     // bubble up the error
     throw e;
   }
+}
+
+export async function sendTransactionFromLedger(
+  transaction: TransactionRequest,
+): Promise<TransactionResponse> {
+  const serializedTransaction = await signTransactionFromLedger(transaction);
+  const provider = getProvider({
+    chainId: transaction.chainId,
+  });
+
+  return provider.sendTransaction(serializedTransaction);
 }
 
 export async function signMessageByTypeFromLedger(
