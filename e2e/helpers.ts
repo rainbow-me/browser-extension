@@ -84,7 +84,7 @@ export async function switchWallet(address, rootURL, driver) {
     id: 'header-account-name-shuffle',
     driver,
   });
-  await delayTime('long');
+  await delayTime('medium');
 
   await findElementByTextAndClick(driver, shortenedAddress);
   await delayTime('long');
@@ -128,7 +128,6 @@ export async function findElementByTextAndClick(driver, text) {
 export async function waitAndClick(element, driver) {
   await delay(200);
   await driver.wait(until.elementIsVisible(element), waitUntilTime);
-  await driver.wait(until.elementIsEnabled(element), waitUntilTime);
   return element.click();
 }
 
