@@ -226,7 +226,6 @@ export const swap = async ({
   let swap;
   try {
     const nonce = baseNonce ? baseNonce + index : undefined;
-
     const swapParams = {
       gasParams,
       chainId,
