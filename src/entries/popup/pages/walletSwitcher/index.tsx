@@ -479,7 +479,7 @@ export function WalletSwitcher() {
               <Button
                 color="fillSecondary"
                 variant="flat"
-                symbol="app.connected.to.app.below.fill"
+                symbol="doc.text.magnifyingglass"
                 symbolSide="left"
                 height="32px"
                 width="full"
