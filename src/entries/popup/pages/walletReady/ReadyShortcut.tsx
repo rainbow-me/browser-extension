@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
+import shiftPressed from 'static/shift_button.png';
+import shiftInactive from 'static/shift_button_inactive.png';
+import { Position } from 'vitest';
 import { Box } from '~/design-system';
 
 export function ReadyShortcut() {
@@ -53,11 +56,15 @@ export function ReadyShortcut() {
 
   return (
     <Box>
-      <Box>
+      <Box display="flex" alignItems="center" justifyContent="center">
         <OpenText isShiftPressed={isShiftPressed} />
       </Box>
       <Box>
-        <Regular />
+        <ShortcutsViewer
+          isShiftPressed={isShiftPressed}
+          isOptionPressed={isOptionPressed}
+          isRPressed={isRPressed}
+        />
       </Box>
     </Box>
   );
@@ -97,51 +104,80 @@ function OpenText({ isShiftPressed }: { isShiftPressed: boolean }) {
   );
 }
 
-function Regular() {
+function ShortcutsViewer({
+  isShiftPressed,
+  isOptionPressed,
+  isRPressed,
+}: {
+  isShiftPressed: boolean;
+  isOptionPressed: boolean;
+  isRPressed: boolean;
+}) {
+  const buttonStyles = {
+    transition: 'opacity 0.25s ease-in-out',
+    position: 'absolute',
+    width: '100%',
+  };
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="210" height="45" fill="none">
-      <rect width="102" height="44" y=".5" fill="#242529" rx="18" />
-      <path
-        fill="#fff"
-        d="M37.284 27.703c2.368 0 3.953-1.125 3.953-2.906 0-1.274-.789-1.969-2.617-2.328l-1.476-.29c-.813-.163-1.07-.398-1.07-.765 0-.46.453-.758 1.124-.758.813 0 1.235.438 1.657.86.234.218.633.343.945.343.719 0 1.055-.39 1.055-.922 0-.132-.024-.265-.07-.398-.305-.937-1.618-1.75-3.563-1.75-2.352 0-3.813 1.07-3.813 2.781 0 1.29.868 2.172 2.547 2.5l1.485.297c.773.156 1.046.36 1.046.735 0 .46-.46.734-1.18.734-.773 0-1.304-.234-1.773-.75-.398-.39-.765-.57-1.203-.57-.625 0-1.078.43-1.078 1.039 0 .14.04.304.102.468.398.977 1.758 1.68 3.93 1.68Zm6.718-.023c.804 0 1.382-.47 1.382-1.438v-3.539c0-.953.524-1.617 1.453-1.617.915 0 1.391.594 1.391 1.555v3.601c0 .969.57 1.438 1.383 1.438.812 0 1.383-.47 1.383-1.438V22.04c0-2.008-1.055-3.21-2.953-3.21-1.297 0-2.227.624-2.664 1.765h-.055V17.46c0-.898-.492-1.414-1.352-1.414-.86 0-1.36.515-1.36 1.406v8.79c0 .968.58 1.437 1.392 1.437Zm10.053-9.555c.804 0 1.414-.586 1.414-1.352 0-.773-.61-1.359-1.414-1.359-.805 0-1.422.586-1.422 1.36 0 .765.617 1.351 1.422 1.351Zm0 9.555c.867 0 1.383-.524 1.383-1.438V20.25c0-.906-.516-1.438-1.383-1.438-.875 0-1.383.532-1.383 1.438v5.992c0 .914.508 1.438 1.383 1.438Zm5.17 0c.813 0 1.383-.461 1.383-1.43v-5.219h.75c.547 0 .976-.351.976-.992 0-.633-.43-.984-.976-.984h-.828v-.36c0-.5.258-.742.953-.78a1.78 1.78 0 0 0 .445-.071c.344-.094.516-.305.516-.664 0-.617-.57-1.07-2.04-1.07-1.718.015-2.57.75-2.57 2.453v.492h-.304c-.54 0-.977.351-.977.984 0 .64.438.992.977.992h.304v5.219c0 .969.57 1.43 1.391 1.43Zm5.1-2.461c0 1.578.836 2.39 2.477 2.39h.07c1.07 0 1.945-.406 1.945-1.21 0-.641-.36-.915-.976-.985l-.172-.023c-.39-.04-.57-.25-.57-.782v-3.57h.671c.618 0 1.024-.406 1.024-1.023 0-.618-.406-1.024-1.024-1.024h-.672v-.68c0-.898-.507-1.437-1.382-1.437-.883 0-1.391.54-1.391 1.438v.68h-.305c-.617 0-1.023.398-1.023 1.023 0 .617.406 1.023 1.023 1.023h.305v4.18Z"
-      />
-      <rect
-        width="101"
-        height="43"
-        x=".5"
-        y="1"
-        stroke="#fff"
-        strokeOpacity=".03"
-        rx="17.5"
-      />
-      <rect width="44" height="44" x="112" y=".5" fill="#242529" rx="18" />
-      <path
-        fill="#fff"
-        d="M130.609 15.68h-3.554c-.766 0-1.352.578-1.352 1.312 0 .75.586 1.32 1.352 1.32h2.968c.18 0 .313.079.383.227l4.93 10.18c.453.937 1.062 1.328 2.031 1.328h3.578c.758 0 1.352-.578 1.352-1.313 0-.75-.586-1.32-1.352-1.32h-2.984c-.18 0-.32-.078-.391-.227l-4.906-10.171c-.43-.86-1.148-1.336-2.055-1.336Zm10.336 0h-4.523c-.766 0-1.352.578-1.352 1.312 0 .75.578 1.313 1.352 1.313h4.523c.766 0 1.352-.563 1.352-1.313 0-.742-.586-1.312-1.352-1.312Z"
-      />
-      <rect
-        width="43"
-        height="43"
-        x="112.5"
-        y="1"
-        stroke="#fff"
-        strokeOpacity=".03"
-        rx="17.5"
-      />
-      <rect width="44" height="44" x="166" y=".5" fill="#242529" rx="18" />
-      <path
-        fill="#fff"
-        d="M184.992 28.68c.906 0 1.43-.547 1.43-1.492v-2.633h1.64l1.672 3.008c.485.875.782 1.117 1.477 1.117.836 0 1.43-.547 1.43-1.305 0-.336-.055-.57-.305-.984l-1.383-2.352c1.149-.578 1.758-1.766 1.758-3.094 0-2.328-1.516-3.718-4.328-3.718h-3.391c-.906 0-1.437.546-1.437 1.5v8.46c0 .946.531 1.493 1.437 1.493Zm1.43-6.086V19.39h1.672c1.023 0 1.687.648 1.687 1.609 0 .977-.625 1.594-1.679 1.594h-1.68Z"
-      />
-      <rect
-        width="43"
-        height="43"
-        x="166.5"
-        y="1"
-        stroke="#fff"
-        strokeOpacity=".03"
-        rx="17.5"
-      />
-    </svg>
+    <>
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box position="relative" style={{ width: '102px' }}>
+          <img
+            style={{
+              opacity: isShiftPressed ? 1 : 0,
+              ...(buttonStyles as any),
+            }}
+            src={shiftPressed}
+            alt="Shift Pressed"
+          />
+          <img
+            style={{
+              opacity: isShiftPressed ? 0 : 1,
+              ...(buttonStyles as any),
+            }}
+            src={shiftInactive}
+            alt="Shift Pressed"
+          />
+        </Box>
+
+        <Box position="relative" style={{ width: '102px' }}>
+          <img
+            style={{
+              opacity: isOptionPressed ? 1 : 0,
+              ...(buttonStyles as any),
+            }}
+            src={shiftPressed}
+            alt="Shift Pressed"
+          />
+          <img
+            style={{
+              opacity: isOptionPressed ? 0 : 1,
+              ...(buttonStyles as any),
+            }}
+            src={shiftInactive}
+            alt="Shift Pressed"
+          />
+        </Box>
+
+        <Box position="relative" style={{ width: '102px' }}>
+          <img
+            style={{
+              opacity: isRPressed ? 1 : 0,
+              ...(buttonStyles as any),
+            }}
+            src={shiftPressed}
+            alt="Shift Pressed"
+          />
+          <img
+            style={{
+              opacity: isRPressed ? 0 : 1,
+              ...(buttonStyles as any),
+            }}
+            src={shiftInactive}
+            alt="Shift Pressed"
+          />
+        </Box>
+      </Box>
+    </>
   );
 }
