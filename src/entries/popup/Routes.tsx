@@ -11,6 +11,12 @@ import { FullScreenBackground } from './components/FullScreen/FullScreenBackgrou
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
 import { ConnectedApps } from './pages/home/ConnectedApps';
+import { ChooseHW } from './pages/hw/chooseHW';
+import { ConnectLedger } from './pages/hw/ledger';
+import { LoadingTrezor } from './pages/hw/loadingTrezor';
+import { SuccessHW } from './pages/hw/success';
+import { ConnectTrezor } from './pages/hw/trezor';
+import { WalletListHW } from './pages/hw/walletList';
 import { ImportOrConnect } from './pages/importOrConnect';
 import { ImportWallet } from './pages/importWallet';
 import { ImportWalletSelection } from './pages/importWalletSelection';
@@ -127,6 +133,95 @@ const ROUTE_DATA = [
         accentColor={false}
       >
         <ImportOrConnect />
+      </AnimatedRoute>
+    ),
+    background: FullScreenBackground,
+  },
+  {
+    path: ROUTES.HW_CHOOSE,
+    element: (
+      <AnimatedRoute
+        protectedRoute={['NEW', 'READY']}
+        direction="up"
+        navbar
+        navbarIcon="ex"
+        title={i18n.t('hw.choose_title')}
+        background="surfaceSecondary"
+      >
+        <ChooseHW />
+      </AnimatedRoute>
+    ),
+    background: FullScreenBackground,
+  },
+  {
+    path: ROUTES.HW_LEDGER,
+    element: (
+      <AnimatedRoute
+        protectedRoute={['NEW', 'READY']}
+        direction="up"
+        navbar
+        navbarIcon="ex"
+        background="surfaceSecondary"
+      >
+        <ConnectLedger />
+      </AnimatedRoute>
+    ),
+    background: FullScreenBackground,
+  },
+  {
+    path: ROUTES.HW_TREZOR,
+    element: (
+      <AnimatedRoute
+        protectedRoute={['NEW', 'READY']}
+        direction="up"
+        navbar
+        navbarIcon="ex"
+        background="surfaceSecondary"
+      >
+        <ConnectTrezor />
+      </AnimatedRoute>
+    ),
+    background: FullScreenBackground,
+  },
+  {
+    path: ROUTES.HW_TREZOR_LOADING,
+    element: (
+      <AnimatedRoute
+        protectedRoute={['NEW', 'READY']}
+        direction="up"
+        navbar
+        navbarIcon="ex"
+        background="surfaceSecondary"
+      >
+        <LoadingTrezor />
+      </AnimatedRoute>
+    ),
+    background: FullScreenBackground,
+  },
+  {
+    path: ROUTES.HW_WALLET_LIST,
+    element: (
+      <AnimatedRoute
+        protectedRoute={['NEW', 'READY']}
+        direction="up"
+        navbar
+        navbarIcon="ex"
+        background="surfaceSecondary"
+      >
+        <WalletListHW />
+      </AnimatedRoute>
+    ),
+    background: FullScreenBackground,
+  },
+  {
+    path: ROUTES.HW_SUCCESS,
+    element: (
+      <AnimatedRoute
+        protectedRoute={['NEW', 'READY']}
+        direction="up"
+        background="surfaceSecondary"
+      >
+        <SuccessHW />
       </AnimatedRoute>
     ),
     background: FullScreenBackground,

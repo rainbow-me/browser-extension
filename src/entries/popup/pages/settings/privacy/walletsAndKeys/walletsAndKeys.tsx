@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -5,9 +6,11 @@ import { i18n } from '~/core/languages';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { setSettingWallets } from '~/core/utils/settings';
 import { Box, Symbol } from '~/design-system';
+import { LedgerIcon } from '~/entries/popup/components/LedgerIcon/LedgerIcon';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
+import { TrezorIcon } from '~/entries/popup/components/TrezorIcon/TrezorIcon';
 import { create, getWallets } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
@@ -66,6 +69,7 @@ export function WalletsAndKeys() {
   const walletCountPerType = {
     hd: 0,
     pk: 0,
+    hw: 0,
   };
 
   return (
@@ -94,6 +98,8 @@ export function WalletsAndKeys() {
               walletCountPerType.hd += 1;
             } else if (wallet.type === KeychainType.KeyPairKeychain) {
               walletCountPerType.pk += 1;
+            } else if (wallet.type === KeychainType.HardwareWalletKeychain) {
+              walletCountPerType.hw += 1;
             }
 
             return (
@@ -105,10 +111,14 @@ export function WalletsAndKeys() {
                       text={`${i18n.t(
                         wallet.type === KeychainType.HdKeychain
                           ? 'settings.privacy_and_security.wallets_and_keys.recovery_phrase_label'
+                          : wallet.type === KeychainType.HardwareWalletKeychain
+                          ? 'settings.privacy_and_security.wallets_and_keys.hardware_wallet_label'
                           : 'settings.privacy_and_security.wallets_and_keys.private_key_label',
                       )} ${
                         wallet.type === KeychainType.HdKeychain
                           ? walletCountPerType.hd
+                          : wallet.type === KeychainType.HardwareWalletKeychain
+                          ? walletCountPerType.hw
                           : walletCountPerType.pk
                       }`}
                     />
@@ -116,16 +126,24 @@ export function WalletsAndKeys() {
                   labelComponent={<MenuItem.Label text={label} />}
                   onClick={() => handleViewWallet(wallet)}
                   leftComponent={
-                    <Symbol
-                      symbol={
-                        singleAccount
-                          ? 'lock.square.fill'
-                          : 'lock.square.stack.fill'
-                      }
-                      weight="medium"
-                      size={18}
-                      color="labelTertiary"
-                    />
+                    wallet.type === KeychainType.HardwareWalletKeychain ? (
+                      wallet.vendor === 'trezor' ? (
+                        <TrezorIcon />
+                      ) : (
+                        <LedgerIcon />
+                      )
+                    ) : (
+                      <Symbol
+                        symbol={
+                          singleAccount
+                            ? 'lock.square.fill'
+                            : 'lock.square.stack.fill'
+                        }
+                        weight="medium"
+                        size={18}
+                        color="labelTertiary"
+                      />
+                    )
                   }
                   hasRightArrow
                 />
