@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { usePendingRequestStore } from '~/core/state';
-import { Box, Button, Stack, Text } from '~/design-system';
+import { Box, Stack, Text } from '~/design-system';
 
 import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 import { LogoWithLetters } from '../../components/LogoWithLetters/LogoWithLetters';
@@ -91,38 +91,8 @@ export function Welcome() {
             </Box>
           ) : null}
           {screen === 'unlock' ? (
-            <Box
-              width="full"
-              key="welcome"
-              as={motion.div}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 1 }}
-              layout
-            >
-              <>
-                <Box
-                  as={motion.div}
-                  initial={{ backdropFilter: 'blur(0px)' }}
-                  animate={{ backdropFilter: 'blur(80px)' }}
-                  exit={{ backdropFilter: 'blur(80px)' }}
-                >
-                  <Button
-                    color="label"
-                    height="44px"
-                    variant="tinted"
-                    width="full"
-                    symbol="arrow.right"
-                    symbolSide="right"
-                    // blur="80px"
-                    onClick={() => null}
-                    testId="create-wallet-button"
-                  >
-                    {i18n.t('welcome.create_wallet')}
-                  </Button>
-                </Box>
-                <ImportOrCreateWallet />
-              </>
+            <Box width="full">
+              <ImportOrCreateWallet />
             </Box>
           ) : null}
         </AnimatePresence>

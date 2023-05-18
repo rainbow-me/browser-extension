@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
@@ -53,57 +53,72 @@ export function ImportOrCreateWallet() {
         <Row>
           <Rows space="10px">
             <Row>
-              <AnimatePresence>
-                <Box
-                  as={motion.div}
-                  initial={{ backdropFilter: 'blur(0px)' }}
-                  animate={{ backdropFilter: 'blur(80px)' }}
-                  exit={{ backdropFilter: 'blur(80px)' }}
-                  key="buttonnn"
+              <Box
+                as={motion.div}
+                initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+                animate={{ opacity: 1, backdropFilter: 'blur(80px)' }}
+                exit={{ opacity: 1, backdropFilter: 'blur(80px)' }}
+                key="button"
+                borderRadius="round"
+              >
+                <Button
+                  color="label"
+                  height="44px"
+                  variant="tinted"
+                  width="full"
+                  symbol="arrow.right"
+                  symbolSide="right"
+                  onClick={handleCreateNewWalletClick}
+                  testId="create-wallet-button"
                 >
-                  <Button
-                    color="label"
-                    height="44px"
-                    variant="tinted"
-                    width="full"
-                    symbol="arrow.right"
-                    symbolSide="right"
-                    // blur="80px"
-                    onClick={handleCreateNewWalletClick}
-                    testId="create-wallet-button"
-                  >
-                    {loading ? (
-                      <Inline space="8px" alignVertical="center">
-                        <Text color="label" size="16pt" weight="bold">
-                          {i18n.t('welcome.create_wallet')}
-                        </Text>
-                        <Spinner size={16} color="label" />
-                      </Inline>
-                    ) : (
-                      i18n.t('welcome.create_wallet')
-                    )}
-                  </Button>
-                </Box>
-              </AnimatePresence>
+                  {loading ? (
+                    <Inline space="8px" alignVertical="center">
+                      <Text color="label" size="16pt" weight="bold">
+                        {i18n.t('welcome.create_wallet')}
+                      </Text>
+                      <Spinner size={16} color="label" />
+                    </Inline>
+                  ) : (
+                    i18n.t('welcome.create_wallet')
+                  )}
+                </Button>
+              </Box>
             </Row>
             <Row>
-              <ThemeProvider theme="dark">
-                <Button
-                  color="surfaceSecondaryElevated"
-                  height="44px"
-                  variant="flat"
-                  width="full"
-                  onClick={handleImportWalletClick}
-                  testId="import-wallet-button"
-                >
-                  {i18n.t('welcome.import_wallet')}
-                </Button>
-              </ThemeProvider>
+              <Box
+                as={motion.div}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 1 }}
+                key="button2"
+                borderRadius="round"
+              >
+                <ThemeProvider theme="dark">
+                  <Button
+                    color="surfaceSecondaryElevated"
+                    height="44px"
+                    variant="flat"
+                    width="full"
+                    onClick={handleImportWalletClick}
+                    testId="import-wallet-button"
+                  >
+                    {i18n.t('welcome.import_wallet')}
+                  </Button>
+                </ThemeProvider>
+              </Box>
             </Row>
           </Rows>
         </Row>
         <Row>
-          <Box display="flex" style={{ width: '210px', margin: 'auto' }}>
+          <Box
+            as={motion.div}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 1 }}
+            key="text"
+            display="flex"
+            style={{ width: '210px', margin: 'auto' }}
+          >
             <Text
               align="center"
               color="labelTertiary"
