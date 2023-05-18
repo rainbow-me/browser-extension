@@ -2,10 +2,12 @@ import { style } from '@vanilla-extract/css';
 
 import {
   accentColorAsHsl,
+  avatarColorAsHsl,
   transparentAccentColorAsHsl,
+  transparentAvatarColorAsHsl,
 } from '../../styles/core.css';
 
-export const focusVisibleStyle = style({
+export const accentFocusVisibleStyle = style({
   selectors: {
     '&:focus': {
       backgroundColor: transparentAccentColorAsHsl,
@@ -15,10 +17,20 @@ export const focusVisibleStyle = style({
   },
 });
 
-export const menuFocusVisibleStyle = style({
+export const accentMenuFocusVisibleStyle = style({
   selectors: {
     '&:focus': {
       backgroundColor: transparentAccentColorAsHsl,
+    },
+  },
+});
+
+export const avatarFocusVisibleStyle = style({
+  selectors: {
+    '&:focus': {
+      backgroundColor: transparentAvatarColorAsHsl,
+      outline: '1px solid',
+      outlineColor: avatarColorAsHsl,
     },
   },
 });

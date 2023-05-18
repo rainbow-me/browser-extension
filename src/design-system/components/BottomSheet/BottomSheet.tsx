@@ -19,7 +19,7 @@ export const BottomSheet = ({
   zIndex,
 }: BottomSheetProps) => {
   return (
-    <Box as={motion.div} key="bottom-sheet" layout>
+    <Box as={motion.div} key="bottom-sheet" layout isModal={show}>
       <AnimatePresence>
         {show && (
           <Box
