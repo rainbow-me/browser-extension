@@ -283,7 +283,8 @@ export function ButtonWrapper({
             tintedStyles[(color as ButtonColor) || 'accent'],
         ]}
         display="flex"
-        onClick={disabled ? () => null : onClick}
+        onClick={onClick}
+        disabled={disabled}
         position="relative"
         justifyContent="center"
         width={width}
