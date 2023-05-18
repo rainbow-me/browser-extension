@@ -14,7 +14,9 @@ import { ImportOrCreateWallet } from './ImportOrCreateWallet';
 import { InviteCodePortal } from './InviteCodePortal';
 import { OnboardBeforeConnectSheet } from './OnboardBeforeConnectSheet';
 
-const BYPASS_INVITE_CODE = false;
+const BYPASS_INVITE_CODE =
+  process.env.IS_TESTING === 'true' || process.env.IS_DEV === 'true';
+
 export function Welcome() {
   const { pendingRequests } = usePendingRequestStore();
   const [showOnboardBeforeConnectSheet, setShowOnboardBeforeConnectSheet] =
