@@ -8,6 +8,7 @@ import {
   DAI_POLYGON_ADDRESS,
   ETH_ADDRESS,
   ETH_ARBITRUM_ADDRESS,
+  ETH_OPTIMISM_ADDRESS,
   MATIC_POLYGON_ADDRESS,
   OP_ADDRESS,
   SOCKS_ADDRESS,
@@ -66,6 +67,7 @@ export const favoritesStore = createStore<FavoritesState>(
         WBTC_POLYGON_ADDRESS,
       ],
       [ChainId.optimism]: [
+        ETH_OPTIMISM_ADDRESS,
         OP_ADDRESS,
         WETH_OPTIMISM_ADDRESS,
         DAI_OPTIMISM_ADDRESS,
