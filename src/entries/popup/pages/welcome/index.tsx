@@ -1,5 +1,5 @@
 import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { usePendingRequestStore } from '~/core/state';
@@ -26,7 +26,7 @@ export function Welcome() {
   );
   const prevScreen = usePrevious(screen);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (prevScreen === 'invite_code' && screen === 'unlock') {
       headerControls.start({
         marginTop: 135,
@@ -71,7 +71,10 @@ export function Welcome() {
           {screen === 'invite_code' ? (
             <Box width="full">
               <InviteCodePortal
-                onInviteCodeValidated={() => setScreen('unlock')}
+                onInviteCodeValidated={() => {
+                  // setInviteCodeValidated(true);
+                  setScreen('unlock');
+                }}
               />
             </Box>
           ) : null}

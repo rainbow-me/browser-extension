@@ -1,34 +1,41 @@
 import { motion } from 'framer-motion';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { RAINBOW_WAITLIST_URL } from '~/core/references/links';
+import { postInviteCode } from '~/core/resources/inviteCode';
 import { Bleed, Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
 
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
-import * as wallet from '../../handlers/wallet';
 
 export function InviteCodePortal({
   onInviteCodeValidated,
 }: {
-  onInviteCodeValidated: () => void;
+  onInviteCodeValidated: (validated: boolean) => void;
 }) {
   const [inviteCode, setInviteCode] = useState('');
+  const [validCode, setValidCode] = useState<null | boolean>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const onInviteCodeChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setInviteCode(e.target.value);
+      setValidCode(null);
+    },
+    [],
+  );
+
+  const inviteCodeValidated = useCallback(async () => {
+    inputRef?.current?.focus();
+    const result = await postInviteCode({ code: inviteCode });
+    onInviteCodeValidated(result.valid);
+    setValidCode(result.valid);
+  }, [onInviteCodeValidated, inviteCode]);
 
   useEffect(() => {
-    const wipeIncompleteWallet = async () => {
-      const { hasVault } = await wallet.getStatus();
-      if (hasVault) {
-        wallet.wipe();
-      }
-    };
-    wipeIncompleteWallet();
+    inputRef?.current?.focus();
   }, []);
-
-  const inviteCodeValidated = React.useCallback(async () => {
-    onInviteCodeValidated();
-  }, [onInviteCodeValidated]);
 
   return (
     <Box
@@ -56,18 +63,19 @@ export function InviteCodePortal({
         <Box style={{ height: '44px' }} width="full">
           <Box position="absolute" style={{ width: '310px' }}>
             <Input
+              innerRef={inputRef}
               height="44px"
               placeholder="Enter your beta code"
               variant="bordered"
-              borderColor="accent"
-              onChange={(value) => setInviteCode(value.target.value)}
+              borderColor={validCode === false ? 'red' : 'accent'}
+              onChange={onInviteCodeChange}
               value={inviteCode}
               style={{
                 paddingRight: 87,
                 paddingTop: 17,
                 paddingBottom: 17,
                 paddingLeft: 16,
-                caretColor: accentColorAsHsl,
+                caretColor: validCode === false ? 'red' : accentColorAsHsl,
                 fontSize: 14,
               }}
             />
