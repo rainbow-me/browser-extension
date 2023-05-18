@@ -125,6 +125,7 @@ export const ValueInput = React.forwardRef<InputAPI, ValueInputProps>(
                       borderRadius="8px"
                       variant="raised"
                       testId="value-input-max"
+                      tabIndex={0}
                     >
                       {i18n.t('send.max')}
                     </Button>

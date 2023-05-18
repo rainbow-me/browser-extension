@@ -101,7 +101,6 @@ export const TokenInput = React.forwardRef<
       openDropdown: () => {
         onDropdownOpen(true);
         setDropdownVisible(true);
-        inputRef?.current?.focus();
       },
     }));
 

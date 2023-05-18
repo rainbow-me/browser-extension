@@ -22,6 +22,7 @@ import {
   Text,
   TextOverflow,
 } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 import {
@@ -252,26 +253,28 @@ export function TokenToBuyRow({
   );
 
   return (
-    <Box
-      className={rowTransparentAccentHighlight}
-      borderRadius="12px"
-      style={{ height: '52px' }}
-    >
-      <RowHighlightWrapper>
-        <Inset horizontal="12px" vertical="8px">
-          <Rows>
-            <Row>
-              <Columns alignVertical="center" space="8px">
-                <Column width="content">
-                  <CoinIcon asset={asset} />
-                </Column>
-                <Column>{leftColumn}</Column>
-                <Column width="content">{rightColumn}</Column>
-              </Columns>
-            </Row>
-          </Rows>
-        </Inset>
-      </RowHighlightWrapper>
-    </Box>
+    <Lens borderRadius="12px" forceAvatarColor>
+      <Box
+        className={rowTransparentAccentHighlight}
+        borderRadius="12px"
+        style={{ height: '52px' }}
+      >
+        <RowHighlightWrapper>
+          <Inset horizontal="12px" vertical="8px">
+            <Rows>
+              <Row>
+                <Columns alignVertical="center" space="8px">
+                  <Column width="content">
+                    <CoinIcon asset={asset} />
+                  </Column>
+                  <Column>{leftColumn}</Column>
+                  <Column width="content">{rightColumn}</Column>
+                </Columns>
+              </Row>
+            </Rows>
+          </Inset>
+        </RowHighlightWrapper>
+      </Box>
+    </Lens>
   );
 }

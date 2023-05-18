@@ -53,6 +53,7 @@ export const Prompt = ({
       )}
       {show && (
         <Box
+          isModal
           key="content"
           position="fixed"
           top="0"
