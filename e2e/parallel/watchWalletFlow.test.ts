@@ -1,15 +1,11 @@
 import 'chromedriver';
 import 'geckodriver';
-import {
-  By,
-  Locator,
-  WebDriver,
-  WebElementCondition,
-  until,
-} from 'selenium-webdriver';
+import { Locator, WebDriver, until } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
+  byTestId,
+  byText,
   delayTime,
   findElementByIdAndClick,
   findElementByTestIdAndClick,
@@ -22,6 +18,7 @@ import {
   shortenAddress,
   switchWallet,
   typeOnTextInput,
+  untilIsClickable,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
@@ -31,23 +28,7 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
-const byTestId = (id: string) => By.css(`[data-testid="${id}"]`);
-const byText = (text: string) => By.xpath(`//*[contains(text(),"${text}")]`);
-
 const findElement = (locator: Locator) => driver.findElement(locator);
-// const { findElement } = createHelpers(driver);
-
-const waitUntilIsClickable = (locator: Locator, timeout: number) =>
-  driver.wait(
-    new WebElementCondition('until element is clickable', async () => {
-      const element = findElement(locator);
-      const isDisplayed = await element.isDisplayed();
-      const isEnabled = await element.isEnabled();
-      if (isDisplayed && isEnabled) return element;
-      return null;
-    }),
-    timeout,
-  );
 
 describe('Watch wallet then add more and switch between them', () => {
   beforeAll(async () => {
@@ -73,10 +54,12 @@ describe('Watch wallet then add more and switch between them', () => {
       TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
     );
 
-    await waitUntilIsClickable(
-      byTestId('watch-wallets-button'),
-      60_000, // depends ens resolution
-    ).click();
+    await driver
+      .wait(
+        untilIsClickable(byTestId('watch-wallets-button')),
+        60_000, // long timeout, because depends on ens resolution
+      )
+      .click();
 
     await driver.wait(until.elementLocated(byTestId('password-input')));
 
