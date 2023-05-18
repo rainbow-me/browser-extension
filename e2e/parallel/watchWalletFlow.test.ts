@@ -201,6 +201,7 @@ describe('Watch wallet then add more and switch between them', () => {
       rootURL,
       driver,
     );
+    await delayTime('medium');
     const wallet = await getTextFromText({ id: 'account-name', driver });
     expect(wallet).toBe(
       shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),
