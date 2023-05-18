@@ -58,7 +58,7 @@ export function ImportOrCreateWallet() {
                 initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
                 animate={{ opacity: 1, backdropFilter: 'blur(80px)' }}
                 exit={{ opacity: 1, backdropFilter: 'blur(80px)' }}
-                key="button"
+                key="create-button"
                 borderRadius="round"
               >
                 <Button
@@ -90,7 +90,7 @@ export function ImportOrCreateWallet() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 1 }}
-                key="button2"
+                key="import-button"
                 borderRadius="round"
               >
                 <ThemeProvider theme="dark">
@@ -115,7 +115,7 @@ export function ImportOrCreateWallet() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 1 }}
-            key="text"
+            key="description"
             display="flex"
             style={{ width: '210px', margin: 'auto' }}
           >

@@ -67,24 +67,7 @@ export function Welcome() {
         </Box>
         <AnimatePresence mode="popLayout">
           {screen === 'invite_code' ? (
-            <Box
-              width="full"
-              key="invite_code"
-              as={motion.div}
-              initial={{
-                opacity: 1,
-                marginTop: 0,
-              }}
-              animate={{
-                opacity: 1,
-                marginTop: 0,
-              }}
-              exit={{
-                opacity: 0,
-                marginTop: -51,
-              }}
-              layout
-            >
+            <Box width="full">
               <InviteCodePortal
                 onInviteCodeValidated={() => setScreen('unlock')}
               />

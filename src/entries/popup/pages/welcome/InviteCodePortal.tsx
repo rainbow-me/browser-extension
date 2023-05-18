@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 
 import { RAINBOW_WAITLIST_URL } from '~/core/references/links';
@@ -30,7 +31,25 @@ export function InviteCodePortal({
   }, [onInviteCodeValidated]);
 
   return (
-    <Box paddingTop="32px">
+    <Box
+      width="full"
+      key="invite-code"
+      as={motion.div}
+      initial={{
+        opacity: 1,
+        marginTop: 0,
+      }}
+      animate={{
+        opacity: 1,
+        marginTop: 0,
+      }}
+      exit={{
+        opacity: 0,
+        marginTop: -51,
+      }}
+      layout
+      paddingTop="32px"
+    >
       <Stack space="16px">
         {/* all of these margins and paddings were needed for the animations we have */}
         {/* AnimatePresence was messing up with position absolute */}
