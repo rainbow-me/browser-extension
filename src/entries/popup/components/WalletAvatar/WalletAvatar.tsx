@@ -1,6 +1,3 @@
-import * as React from 'react';
-import { Address } from 'wagmi';
-
 import { Box } from '~/design-system';
 import { TextStyles } from '~/design-system/styles/core.css';
 
@@ -12,7 +9,7 @@ export function WalletAvatar({
   size,
   emojiSize,
 }: {
-  address: Address;
+  address: string;
   size: number;
   emojiSize?: TextStyles['fontSize'];
 }) {
