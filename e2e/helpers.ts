@@ -85,7 +85,7 @@ export function shortenAddress(address) {
     : address;
 }
 
-export async function switchWallet(address, rootURL, driver) {
+export async function switchWallet(address, rootURL, driver: WebDriver) {
   // find shortened address, go to popup, find header, click, find wallet you want to switch to and click
   const shortenedAddress = shortenAddress(address);
 
@@ -95,9 +95,13 @@ export async function switchWallet(address, rootURL, driver) {
     id: 'header-account-name-shuffle',
     driver,
   });
-  await delayTime('medium');
 
-  await findElementByTextAndClick(driver, shortenedAddress);
+  // await delayTime('medium');
+  await driver
+    .wait(until.elementLocated(byText(shortenedAddress)), waitUntilTime)
+    .click();
+  // await findElementByTextAndClick(driver, shortenedAddress);
+
   await delayTime('long');
 }
 
