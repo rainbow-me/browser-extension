@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { usePendingRequestStore } from '~/core/state';
-import { Box, Stack, Text } from '~/design-system';
+import { Box, Button, Stack, Text } from '~/design-system';
 
 import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
 import { LogoWithLetters } from '../../components/LogoWithLetters/LogoWithLetters';
@@ -71,9 +71,18 @@ export function Welcome() {
               width="full"
               key="invite_code"
               as={motion.div}
-              initial={{ opacity: 1, marginTop: 0 }}
-              animate={{ opacity: 1, marginTop: 0 }}
-              exit={{ opacity: 0, marginTop: -51 }}
+              initial={{
+                opacity: 1,
+                marginTop: 0,
+              }}
+              animate={{
+                opacity: 1,
+                marginTop: 0,
+              }}
+              exit={{
+                opacity: 0,
+                marginTop: -51,
+              }}
               layout
             >
               <InviteCodePortal
@@ -91,7 +100,29 @@ export function Welcome() {
               exit={{ opacity: 1 }}
               layout
             >
-              <ImportOrCreateWallet />
+              <>
+                <Box
+                  as={motion.div}
+                  initial={{ backdropFilter: 'blur(0px)' }}
+                  animate={{ backdropFilter: 'blur(80px)' }}
+                  exit={{ backdropFilter: 'blur(80px)' }}
+                >
+                  <Button
+                    color="label"
+                    height="44px"
+                    variant="tinted"
+                    width="full"
+                    symbol="arrow.right"
+                    symbolSide="right"
+                    // blur="80px"
+                    onClick={() => null}
+                    testId="create-wallet-button"
+                  >
+                    {i18n.t('welcome.create_wallet')}
+                  </Button>
+                </Box>
+                <ImportOrCreateWallet />
+              </>
             </Box>
           ) : null}
         </AnimatePresence>

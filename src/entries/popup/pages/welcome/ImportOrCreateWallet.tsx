@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
@@ -52,28 +53,38 @@ export function ImportOrCreateWallet() {
         <Row>
           <Rows space="10px">
             <Row>
-              <Button
-                color="fill"
-                height="44px"
-                variant="flat"
-                width="full"
-                symbol="arrow.right"
-                symbolSide="right"
-                blur="80px"
-                onClick={handleCreateNewWalletClick}
-                testId="create-wallet-button"
-              >
-                {loading ? (
-                  <Inline space="8px" alignVertical="center">
-                    <Text color="label" size="16pt" weight="bold">
-                      {i18n.t('welcome.create_wallet')}
-                    </Text>
-                    <Spinner size={16} color="label" />
-                  </Inline>
-                ) : (
-                  i18n.t('welcome.create_wallet')
-                )}
-              </Button>
+              <AnimatePresence>
+                <Box
+                  as={motion.div}
+                  initial={{ backdropFilter: 'blur(0px)' }}
+                  animate={{ backdropFilter: 'blur(80px)' }}
+                  exit={{ backdropFilter: 'blur(80px)' }}
+                  key="buttonnn"
+                >
+                  <Button
+                    color="label"
+                    height="44px"
+                    variant="tinted"
+                    width="full"
+                    symbol="arrow.right"
+                    symbolSide="right"
+                    // blur="80px"
+                    onClick={handleCreateNewWalletClick}
+                    testId="create-wallet-button"
+                  >
+                    {loading ? (
+                      <Inline space="8px" alignVertical="center">
+                        <Text color="label" size="16pt" weight="bold">
+                          {i18n.t('welcome.create_wallet')}
+                        </Text>
+                        <Spinner size={16} color="label" />
+                      </Inline>
+                    ) : (
+                      i18n.t('welcome.create_wallet')
+                    )}
+                  </Button>
+                </Box>
+              </AnimatePresence>
             </Row>
             <Row>
               <ThemeProvider theme="dark">
