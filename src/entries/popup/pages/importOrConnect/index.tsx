@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { useCallback } from 'react';
+import { NavigateOptions } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
@@ -18,8 +19,8 @@ export function ImportOrConnect() {
   const { featureFlags } = useFeatureFlagsStore();
 
   const navigateTo = useCallback(
-    (route: string) => {
-      navigate(route);
+    (route: string, options?: NavigateOptions) => {
+      navigate(route, options);
     },
     [navigate],
   );
@@ -31,7 +32,9 @@ export function ImportOrConnect() {
 
   const onConnectHardwareWallet = useCallback(() => {
     featureFlags.hw_wallets_enabled
-      ? navigateTo(ROUTES.HW_CHOOSE)
+      ? navigateTo(ROUTES.HW_CHOOSE, {
+          state: { direction: 'right', navbarIcon: 'arrow' },
+        })
       : triggerAlert({ text: i18n.t('alert.coming_soon') });
   }, [featureFlags.hw_wallets_enabled, navigateTo, triggerAlert]);
 

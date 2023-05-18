@@ -1,6 +1,10 @@
 import { motion } from 'framer-motion';
+<<<<<<< HEAD
 import React, { useEffect, useMemo } from 'react';
 import { To } from 'react-router-dom';
+=======
+import React, { useMemo } from 'react';
+>>>>>>> 466c1a3d (add optional direction and icon overrides to navbar)
 
 import { useCurrentAddressStore } from '~/core/state';
 import { Box } from '~/design-system';
@@ -26,7 +30,6 @@ import { animatedRouteStyles } from './AnimatedRoute.css';
 
 type AnimatedRouteProps = {
   background?: BackgroundColor;
-  backTo?: To;
   children: React.ReactNode;
   direction: AnimatedRouteDirection;
   navbar?: boolean;
@@ -145,7 +148,6 @@ export const AnimatedRoute = React.forwardRef<
 >((props: AnimatedRouteProps, ref) => {
   const {
     background,
-    backTo,
     children,
     direction,
     navbar,
@@ -155,7 +157,6 @@ export const AnimatedRoute = React.forwardRef<
     protectedRoute,
     rightNavbarComponent,
     accentColor = true,
-    maintainLocationState,
   } = props;
   const { initial, end, exit } = animatedRouteValues[direction];
   const transition = animatedRouteTransitionConfig[direction];
@@ -165,21 +166,12 @@ export const AnimatedRoute = React.forwardRef<
 
   const leftNavbarIcon = useMemo(() => {
     if (navbarIcon === 'arrow') {
-      return (
-        <Navbar.BackButton
-          maintainLocationState={maintainLocationState}
-          backTo={backTo}
-        />
-      );
+      return <Navbar.BackButton />;
     } else if (navbarIcon === 'ex') {
-      return (
-        <Navbar.CloseButton
-          maintainLocationState={maintainLocationState}
-          backTo={backTo}
-        />
-      );
+      return <Navbar.CloseButton />;
     } else return undefined;
-  }, [backTo, maintainLocationState, navbarIcon]);
+  }, [navbarIcon]);
+
   useEffect(() => {
     const app = document.getElementById('app');
     setTimeout(() => {
