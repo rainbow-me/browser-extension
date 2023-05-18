@@ -3,11 +3,13 @@ import * as React from 'react';
 import { matchRoutes, useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
+import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
 import { ConnectedApps } from './pages/home/ConnectedApps';
@@ -55,6 +57,8 @@ import { Wallets } from './pages/wallets';
 import { WatchWallet } from './pages/watchWallet';
 import { Welcome } from './pages/welcome';
 import { ROUTES } from './urls';
+import { getInputIsFocused } from './utils/activeElement';
+import { simulateTab } from './utils/simulateTab';
 
 const ROUTE_DATA = [
   {
@@ -768,6 +772,8 @@ function CurrentRoute(props: { pathname: string }) {
   const previousElement = previousMatch?.element;
   const previousDirection = previousElement?.props.direction;
 
+  useGlobalShortcuts();
+
   if (!element) {
     // error UI here probably
     return null;
@@ -794,4 +800,34 @@ const directionMap = {
   left: 'right',
   down: 'up',
   base: 'base',
+};
+
+const useGlobalShortcuts = () => {
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      // prevent scrolling with space
+      if (e.key === shortcuts.global.OPEN_CONTEXT_MENU.key) {
+        if (!getInputIsFocused()) {
+          e.preventDefault();
+        }
+      }
+
+      // traverse tabIndex with arrow keys
+      if (!e.altKey) {
+        if (e.key === shortcuts.global.DOWN.key) {
+          e.preventDefault();
+          simulateTab(true);
+        }
+        if (e.key === shortcuts.global.UP.key) {
+          e.preventDefault();
+          simulateTab(false);
+        }
+      }
+
+      if (e.key === shortcuts.global.TAB.key) {
+        e.preventDefault();
+        simulateTab(!e.shiftKey);
+      }
+    },
+  });
 };
