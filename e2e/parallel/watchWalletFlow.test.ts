@@ -18,7 +18,7 @@ import {
   shortenAddress,
   switchWallet,
   typeOnTextInput,
-  untilIsClickable,
+  waitUntilElementByTestIdIsPresent,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
@@ -53,9 +53,16 @@ describe('Watch wallet then add more and switch between them', () => {
     await findElement(byTestId('secret-textarea')).sendKeys(
       TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
     );
-    await driver
-      .wait(untilIsClickable(byTestId('watch-wallets-button')), 60_000) // long timeout, because depends on ens resolution
-      .click();
+
+    await waitUntilElementByTestIdIsPresent({
+      id: 'watch-wallets-button-ready',
+      driver,
+    });
+
+    await findElementByTestIdAndClick({
+      id: 'watch-wallets-button-ready',
+      driver,
+    });
 
     await driver.wait(until.elementLocated(byTestId('password-input')));
     await findElement(byTestId('password-input')).sendKeys('test1234');
@@ -119,6 +126,7 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
     });
     await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
+
     await findElementByTestIdAndClick({
       id: 'watch-wallets-button',
       driver,
@@ -130,9 +138,15 @@ describe('Watch wallet then add more and switch between them', () => {
       text: TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
     });
 
-    await driver
-      .wait(untilIsClickable(byTestId('watch-wallets-button')), 60_000) // long timeout, because depends on ens resolution
-      .click();
+    await waitUntilElementByTestIdIsPresent({
+      id: 'watch-wallets-button-ready',
+      driver,
+    });
+
+    await findElementByTestIdAndClick({
+      id: 'watch-wallets-button-ready',
+      driver,
+    });
 
     await delayTime('medium');
 
@@ -193,6 +207,7 @@ describe('Watch wallet then add more and switch between them', () => {
       rootURL,
       driver,
     );
+    await delayTime('medium');
     const wallet = await getTextFromText({ id: 'account-name', driver });
     expect(wallet).toBe(
       shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),
