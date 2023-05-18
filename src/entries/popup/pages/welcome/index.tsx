@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useAnimationControls } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 
+import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { usePendingRequestStore } from '~/core/state';
 import { useInviteCodeStore } from '~/core/state/inviteCode';
@@ -25,7 +26,11 @@ export function Welcome() {
 
   const { inviteCodeValidated, setInviteCodeValidated } = useInviteCodeStore();
   const [screen, setScreen] = useState<'invite_code' | 'welcome'>(
-    inviteCodeValidated || BYPASS_INVITE_CODE ? 'welcome' : 'invite_code',
+    BYPASS_INVITE_CODE ||
+      !config.beta_code_required ||
+      (config.beta_code_required && inviteCodeValidated)
+      ? 'welcome'
+      : 'invite_code',
   );
   const prevScreen = usePrevious(screen);
 
