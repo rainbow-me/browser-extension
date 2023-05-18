@@ -1,13 +1,14 @@
 import 'chromedriver';
 import 'geckodriver';
-import { WebDriver } from 'selenium-webdriver';
+import { Locator, WebDriver, until } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
+  byTestId,
+  byText,
   delayTime,
   findElementByIdAndClick,
   findElementByTestIdAndClick,
-  findElementByText,
   getExtensionIdByName,
   getTextFromText,
   goToPopup,
@@ -17,6 +18,7 @@ import {
   shortenAddress,
   switchWallet,
   typeOnTextInput,
+  waitUntilElementByTestIdIsPresent,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
@@ -25,6 +27,8 @@ let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
+
+const findElement = (locator: Locator) => driver.findElement(locator);
 
 describe('Watch wallet then add more and switch between them', () => {
   beforeAll(async () => {
@@ -43,34 +47,29 @@ describe('Watch wallet then add more and switch between them', () => {
   it('should be able watch a wallet', async () => {
     //  Start from welcome screen
     await goToWelcome(driver, rootURL);
-    await findElementByTestIdAndClick({
-      id: 'import-wallet-button',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'watch-wallet-option',
+    await findElement(byTestId('import-wallet-button')).click();
+    await findElement(byTestId('watch-wallet-option')).click();
+
+    await findElement(byTestId('secret-textarea')).sendKeys(
+      TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
+    );
+
+    await waitUntilElementByTestIdIsPresent({
+      id: 'watch-wallets-button-ready',
       driver,
     });
 
-    await typeOnTextInput({
-      id: 'secret-textarea',
+    await findElementByTestIdAndClick({
+      id: 'watch-wallets-button-ready',
       driver,
-      text: TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
     });
 
-    await findElementByTestIdAndClick({
-      id: 'watch-wallets-button',
-      driver,
-    });
-    await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
-    await typeOnTextInput({
-      id: 'confirm-password-input',
-      driver,
-      text: 'test1234',
-    });
-    await findElementByTestIdAndClick({ id: 'set-password-button', driver });
-    await delayTime('long');
-    await findElementByText(driver, 'Your wallets ready');
+    await driver.wait(until.elementLocated(byTestId('password-input')));
+    await findElement(byTestId('password-input')).sendKeys('test1234');
+    await findElement(byTestId('confirm-password-input')).sendKeys('test1234');
+    await findElement(byTestId('set-password-button')).click();
+
+    await driver.wait(until.elementLocated(byText('Your wallets ready')));
   });
 
   it('should display watched account name', async () => {
@@ -127,6 +126,7 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
     });
     await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
+
     await findElementByTestIdAndClick({
       id: 'watch-wallets-button',
       driver,
@@ -138,10 +138,16 @@ describe('Watch wallet then add more and switch between them', () => {
       text: TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
     });
 
-    await findElementByTestIdAndClick({
-      id: 'watch-wallets-button',
+    await waitUntilElementByTestIdIsPresent({
+      id: 'watch-wallets-button-ready',
       driver,
     });
+
+    await findElementByTestIdAndClick({
+      id: 'watch-wallets-button-ready',
+      driver,
+    });
+
     await delayTime('medium');
 
     it('should display watched account name', async () => {
@@ -201,6 +207,7 @@ describe('Watch wallet then add more and switch between them', () => {
       rootURL,
       driver,
     );
+    await delayTime('medium');
     const wallet = await getTextFromText({ id: 'account-name', driver });
     expect(wallet).toBe(
       shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),

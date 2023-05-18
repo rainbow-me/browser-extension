@@ -35,6 +35,8 @@ const addLeadingZero = (num: number) => {
   return `0${num}`;
 };
 
+const CHARACTER_WIDTH = 10;
+
 type SeedWord = { word: string; index: number };
 
 const SeedWordRow = ({
@@ -44,6 +46,7 @@ const SeedWordRow = ({
   validated,
   incorrect,
   handleSelect,
+  additionalWidth,
 }: {
   word: string;
   index: number;
@@ -51,6 +54,7 @@ const SeedWordRow = ({
   validated: boolean;
   incorrect: boolean;
   handleSelect: ({ word, index }: SeedWord) => void;
+  additionalWidth: number;
 }) => {
   const selectedWordPosition = useMemo(
     () =>
@@ -87,7 +91,7 @@ const SeedWordRow = ({
       background={backgroundForWord}
       key={`word_${index}`}
       style={{
-        width: '102px',
+        maxWidth: '136px',
         marginBottom: '8px',
         background: wordIsSelected
           ? undefined
@@ -98,20 +102,25 @@ const SeedWordRow = ({
       }}
       testId={`word_${word}`}
     >
-      <Inline wrap={false} alignVertical="center" space="10px">
-        <Text
-          size="11pt"
-          weight="medium"
-          color={wordIsSelected ? 'labelQuaternary' : 'transparent'}
-          align="center"
-        >
-          {wordIsSelected
-            ? addLeadingZero((1 + selectedWordPosition) * 4)
-            : '00'}
-        </Text>
-        <Text size="14pt" weight="bold" color="label" align="center">
-          {word}
-        </Text>
+      <Inline wrap={false} alignVertical="bottom" space="10px">
+        <Box style={{ width: '15px' }}>
+          <Text
+            size="11pt"
+            weight="bold"
+            color={wordIsSelected ? 'label' : 'transparent'}
+            align="center"
+          >
+            {wordIsSelected
+              ? addLeadingZero((1 + selectedWordPosition) * 4)
+              : '00'}
+          </Text>
+        </Box>
+
+        <Box style={{ width: 57 + additionalWidth }}>
+          <Text size="14pt" weight="bold" color="label" align="left">
+            {word}
+          </Text>
+        </Box>
       </Inline>
     </Box>
   );
@@ -176,6 +185,19 @@ export function SeedVerifyQuiz({
     };
     init();
   }, [address, seed]);
+
+  const additionalWordWith = useMemo(() => {
+    const longestWordLength = seed
+      .split(' ')
+      .reduce(
+        (prevLength, word) =>
+          word.length > prevLength ? word.length : prevLength,
+        0,
+      );
+    const adittionalCharacters =
+      longestWordLength - 6 > 0 ? longestWordLength - 6 : 0;
+    return adittionalCharacters * CHARACTER_WIDTH;
+  }, [seed]);
 
   useEffect(() => {
     if (selectedWords.length === 3) {
@@ -257,6 +279,7 @@ export function SeedVerifyQuiz({
                     incorrect={incorrect}
                     selectedWords={selectedWords}
                     handleSelect={handleSelect}
+                    additionalWidth={additionalWordWith}
                   />
                 ))}
               </Box>
@@ -285,6 +308,7 @@ export function SeedVerifyQuiz({
                     incorrect={incorrect}
                     selectedWords={selectedWords}
                     handleSelect={handleSelect}
+                    additionalWidth={additionalWordWith}
                   />
                 ))}
               </Box>

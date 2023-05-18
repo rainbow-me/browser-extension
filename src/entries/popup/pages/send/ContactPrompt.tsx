@@ -79,6 +79,7 @@ const SaveOrEditContact = ({
                   placeholder="Name"
                   style={{ textAlign: 'center' }}
                   testId="contact-prompt-input"
+                  tabIndex={1}
                 />
               </Box>
 
@@ -99,6 +100,7 @@ const SaveOrEditContact = ({
             variant="flat"
             borderRadius="9px"
             onClick={onSave}
+            tabIndex={2}
             testId="contact-prompt-confirm"
           >
             {i18n.t(
@@ -114,6 +116,7 @@ const SaveOrEditContact = ({
             variant="flat"
             borderRadius="9px"
             onClick={onCancel}
+            tabIndex={3}
           >
             {i18n.t(`contacts.cancel`)}
           </Button>
