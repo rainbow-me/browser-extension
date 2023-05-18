@@ -461,7 +461,10 @@
   "watch_wallet": {
     "title": "Watch an Ethereum address",
     "description": "Enter any Ethereum address or ENS name. You'll have to import it later to send or sign transactions.",
-    "invalid_address_or_ens_name": "Invalid address",
+    "invalid_address": "Invalid address",
+    "unsupported_tld": "%{tld} is not supported",
+    "address_already_added": "Address already added",
+    "address_already_added_as": "Address already added as %{addedAs}",
     "watch_top_ens_wallets": "Watch top ENS wallets",
     "placeholder": "Ethereum address or ENS name",
     "watch_wallet": "Watch wallet",
