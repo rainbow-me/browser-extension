@@ -1500,7 +1500,7 @@ exports.v = {
     comment: ['EIP-712 domain-only signing, when primaryType=EIP712Domain']
   }, {
     capabilities: ['coinjoin'],
-    methods: ['authorizeCoinJoin', 'getOwnershipId', 'getOwnershipProof'],
+    methods: ['authorizeCoinjoin', 'getOwnershipId', 'getOwnershipProof'],
     min: ['0', '2.5.3']
   }]
 };
@@ -1530,7 +1530,7 @@ const initialSettings = {
   popup: true,
   popupSrc: `${version_1.DEFAULT_DOMAIN}popup.html`,
   webusbSrc: `${version_1.DEFAULT_DOMAIN}webusb.html`,
-  webusb: true,
+  transports: undefined,
   pendingTransportEvent: true,
   supportedBrowser: typeof navigator !== 'undefined' ? !/Trident|MSIE|Edge/.test(navigator.userAgent) : true,
   env: 'web',
@@ -1615,6 +1615,9 @@ const parseConnectSettings = (input = {}) => {
   if (typeof input.webusb === 'boolean') {
     settings.webusb = input.webusb;
   }
+  if (Array.isArray(input.transports)) {
+    settings.transports = input.transports;
+  }
   if (typeof input.popup === 'boolean') {
     settings.popup = input.popup;
   }
@@ -1661,7 +1664,7 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.DEFAULT_DOMAIN = exports.VERSION = void 0;
-exports.VERSION = '9.0.6';
+exports.VERSION = '9.0.7';
 const versionN = exports.VERSION.split('.').map(s => parseInt(s, 10));
 exports.DEFAULT_DOMAIN = `https://connect.trezor.io/${versionN[0]}/`;
 
@@ -2309,9 +2312,9 @@ const factory = ({
       ...params,
       method: 'applySettings'
     }),
-    authorizeCoinJoin: params => call({
+    authorizeCoinjoin: params => call({
       ...params,
-      method: 'authorizeCoinJoin'
+      method: 'authorizeCoinjoin'
     }),
     backupDevice: params => call({
       ...params,
@@ -4377,7 +4380,7 @@ class LowlevelTransportWithSharedConnections {
     this.defereds = {};
     this.isOutdated = false;
     this.latestId = 0;
-    this.name = 'LowlevelTransportWithSharedConnections';
+    this.name = 'WebUsbTransport';
     this.requestNeeded = false;
     this.sharedWorker = null;
     this.stopped = false;
@@ -5168,6 +5171,55 @@ exports.isPrimitiveField = isPrimitiveField;
 
 /***/ }),
 
+/***/ 3954:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.AbortablePromise = exports.AbortError = void 0;
+class AbortError extends Error {
+  constructor(message = 'Aborted') {
+    super(message);
+    this.name = 'AbortError';
+  }
+}
+exports.AbortError = AbortError;
+class AbortablePromise extends Promise {
+  get abortReason() {
+    return this._abortReason;
+  }
+  constructor(executor, abortControllerParam) {
+    const abortController = abortControllerParam || new AbortController();
+    const abortSignal = abortController.signal;
+    const normalExecutor = (resolve, reject) => {
+      abortSignal.addEventListener('abort', () => {
+        reject(new AbortError(this.abortReason));
+      });
+      executor(resolve, reject, abortSignal);
+    };
+    super(normalExecutor);
+    this.abort = reason => {
+      this._abortReason = reason || 'Aborted';
+      abortController.abort();
+    };
+  }
+}
+exports.AbortablePromise = AbortablePromise;
+AbortablePromise.from = promise => {
+  if (promise instanceof AbortablePromise) {
+    return promise;
+  }
+  return new AbortablePromise((resolve, reject) => {
+    promise.then(resolve).catch(reject);
+  });
+};
+
+/***/ }),
+
 /***/ 3746:
 /***/ ((__unused_webpack_module, exports) => {
 
@@ -5492,6 +5544,7 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.xssFilters = exports.versionUtils = exports.enumUtils = exports.bufferUtils = void 0;
+__exportStar(__webpack_require__(3954), exports);
 __exportStar(__webpack_require__(3746), exports);
 __exportStar(__webpack_require__(3451), exports);
 __exportStar(__webpack_require__(7060), exports);
@@ -5813,6 +5866,7 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 exports.scheduleAction = void 0;
+const isArray = attempts => Array.isArray(attempts);
 const abortedBySignal = () => new Error('Aborted by signal');
 const abortedByDeadline = () => new Error('Aborted by deadline');
 const abortedByTimeout = () => new Error('Aborted by timeout');
@@ -5863,13 +5917,19 @@ const resolveAction = (action, clear) => __awaiter(void 0, void 0, void 0, funct
 const attemptLoop = (attempts, attempt, failure, clear) => __awaiter(void 0, void 0, void 0, function* () {
   for (let a = 0; a < attempts - 1; a++) {
     if (clear.aborted) break;
+    const aborter = new AbortController();
+    const onClear = () => aborter.abort();
+    clear.addEventListener('abort', onClear);
     try {
-      return yield attempt();
+      return yield attempt(a, aborter.signal);
     } catch (_a) {
-      yield failure();
+      onClear();
+      yield failure(a);
+    } finally {
+      clear.removeEventListener('abort', onClear);
     }
   }
-  return clear.aborted ? Promise.reject() : attempt();
+  return clear.aborted ? Promise.reject() : attempt(attempts - 1, clear);
 });
 const scheduleAction = (action, params) => __awaiter(void 0, void 0, void 0, function* () {
   const {
@@ -5881,11 +5941,18 @@ const scheduleAction = (action, params) => __awaiter(void 0, void 0, void 0, fun
     gap
   } = params;
   const deadlineMs = deadline && deadline - Date.now();
-  const attemptCount = attempts !== null && attempts !== void 0 ? attempts : deadline ? Infinity : 1;
+  const attemptCount = isArray(attempts) ? attempts.length : attempts !== null && attempts !== void 0 ? attempts : deadline ? Infinity : 1;
   const clearAborter = new AbortController();
   const clear = clearAborter.signal;
+  const getParams = isArray(attempts) ? attempt => attempts[attempt] : () => ({
+    timeout,
+    gap
+  });
   try {
-    return yield Promise.race([rejectWhenAborted(signal, clear), rejectAfterMs(deadlineMs, abortedByDeadline, clear), resolveAfterMs(delay, clear).then(() => attemptLoop(attemptCount, () => Promise.race([rejectAfterMs(timeout, abortedByTimeout, clear), resolveAction(action, clear)]), () => resolveAfterMs(gap !== null && gap !== void 0 ? gap : 0, clear), clear))]);
+    return yield Promise.race([rejectWhenAborted(signal, clear), rejectAfterMs(deadlineMs, abortedByDeadline, clear), resolveAfterMs(delay, clear).then(() => attemptLoop(attemptCount, (attempt, abort) => Promise.race([rejectAfterMs(getParams(attempt).timeout, abortedByTimeout, clear), resolveAction(action, abort)]), attempt => {
+      var _a;
+      return resolveAfterMs((_a = getParams(attempt).gap) !== null && _a !== void 0 ? _a : 0, clear);
+    }, clear))]);
   } finally {
     clearAborter.abort();
   }
@@ -5952,7 +6019,7 @@ const truncateMiddle = (text, startChars, endChars) => {
   if (text.length <= startChars + endChars) return text;
   const start = text.substring(0, startChars);
   const end = text.substring(text.length - endChars, text.length);
-  return `${start}…${end}`;
+  return `${start}â€¦${end}`;
 };
 exports.truncateMiddle = truncateMiddle;
 
@@ -20292,6 +20359,9 @@ const init = async settings => {
   }
   instance.setAttribute('src', src);
   if (settings.webusb) {
+    console.warn('webusb option is deprecated. use `transports: ["WebUsbTransport"] instead`');
+  }
+  if (settings.webusb || settings.transports?.includes('WebUsbTransport')) {
     instance.setAttribute('allow', 'usb');
   }
   origin = (0,urlUtils/* getOrigin */.P$)(instance.src);
@@ -20873,6 +20943,11 @@ const src_init = async (settings = {}) => {
   });
   if (!_settings.manifest) {
     throw lib_exports.ERRORS.TypedError('Init_ManifestMissing');
+  }
+
+  // defaults for connect-web
+  if (!_settings.transports?.length) {
+    _settings.transports = ['BridgeTransport', 'WebUsbTransport'];
   }
   if (_settings.lazyLoad) {
     // reset "lazyLoad" after first use

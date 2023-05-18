@@ -880,6 +880,7 @@ export const symbolNames = selectSymbolNames(
   'arrow.2.squarepath',
   'person.crop.circle.badge.xmark',
   'person.crop.circle.badge.checkmark',
+  'return.left',
 );
 export type SymbolName = typeof symbolNames[number];
 
