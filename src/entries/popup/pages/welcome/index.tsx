@@ -14,6 +14,9 @@ import { ImportOrCreateWallet } from './ImportOrCreateWallet';
 import { InviteCodePortal } from './InviteCodePortal';
 import { OnboardBeforeConnectSheet } from './OnboardBeforeConnectSheet';
 
+const BYPASS_INVITE_CODE =
+  process.env.IS_TESTING === 'true' || process.env.IS_DEV === 'true';
+
 export function Welcome() {
   const { pendingRequests } = usePendingRequestStore();
   const [showOnboardBeforeConnectSheet, setShowOnboardBeforeConnectSheet] =
@@ -22,7 +25,7 @@ export function Welcome() {
 
   const { inviteCodeValidated, setInviteCodeValidated } = useInviteCodeStore();
   const [screen, setScreen] = useState<'invite_code' | 'unlock'>(
-    inviteCodeValidated ? 'unlock' : 'invite_code',
+    inviteCodeValidated || BYPASS_INVITE_CODE ? 'unlock' : 'invite_code',
   );
   const prevScreen = usePrevious(screen);
 
