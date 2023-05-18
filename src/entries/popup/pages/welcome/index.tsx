@@ -24,13 +24,13 @@ export function Welcome() {
   const headerControls = useAnimationControls();
 
   const { inviteCodeValidated, setInviteCodeValidated } = useInviteCodeStore();
-  const [screen, setScreen] = useState<'invite_code' | 'unlock'>(
-    inviteCodeValidated || BYPASS_INVITE_CODE ? 'unlock' : 'invite_code',
+  const [screen, setScreen] = useState<'invite_code' | 'welcome'>(
+    inviteCodeValidated || BYPASS_INVITE_CODE ? 'welcome' : 'invite_code',
   );
   const prevScreen = usePrevious(screen);
 
   useEffect(() => {
-    if (prevScreen === 'invite_code' && screen === 'unlock') {
+    if (prevScreen === 'invite_code' && screen === 'welcome') {
       headerControls.start({
         marginTop: 135,
       });
@@ -46,7 +46,7 @@ export function Welcome() {
       <FlyingRainbows screen={screen}>
         <Box
           as={motion.div}
-          initial={{ marginTop: screen === 'unlock' ? 135 : 186 }}
+          initial={{ marginTop: screen === 'welcome' ? 135 : 186 }}
           animate={headerControls}
         >
           <Stack space="4px">
@@ -77,13 +77,13 @@ export function Welcome() {
                 onInviteCodeValidated={(valid: boolean) => {
                   setInviteCodeValidated(valid);
                   if (valid) {
-                    setScreen('unlock');
+                    setScreen('welcome');
                   }
                 }}
               />
             </Box>
           ) : null}
-          {screen === 'unlock' ? (
+          {screen === 'welcome' ? (
             <Box width="full">
               <ImportOrCreateWallet />
             </Box>

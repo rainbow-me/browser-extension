@@ -1,6 +1,6 @@
 import { Transition } from 'framer-motion';
 
-export type FlyingRainbowsScreen = 'unlock' | 'invite_code';
+export type FlyingRainbowsScreen = 'welcome' | 'invite_code';
 export type RainbowType =
   | 'rainbowPixel'
   | 'rainbowWhite'
@@ -19,7 +19,7 @@ export const RAINBOW_POSITION: {
   };
 } = {
   rainbowPixel: {
-    unlock: {
+    welcome: {
       left: '207.36px',
       top: '-77px',
     },
@@ -29,7 +29,7 @@ export const RAINBOW_POSITION: {
     },
   },
   rainbowWhite: {
-    unlock: {
+    welcome: {
       left: '-33.98px',
       top: '-4.21px',
     },
@@ -39,7 +39,7 @@ export const RAINBOW_POSITION: {
     },
   },
   rainbowOg: {
-    unlock: {
+    welcome: {
       left: '-46.1px',
       top: '378.17px',
     },
@@ -49,7 +49,7 @@ export const RAINBOW_POSITION: {
     },
   },
   rainbowLight: {
-    unlock: {
+    welcome: {
       left: '120.92px',
       top: '385.78px',
     },
@@ -59,7 +59,7 @@ export const RAINBOW_POSITION: {
     },
   },
   rainbowNeon: {
-    unlock: {
+    welcome: {
       left: '234.12px',
       top: '549.4px',
     },

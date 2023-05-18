@@ -21,7 +21,7 @@ import {
 
 export function FlyingRainbows({
   children,
-  screen = 'unlock',
+  screen = 'welcome',
 }: {
   children: React.ReactNode;
   screen?: FlyingRainbowsScreen;
@@ -35,12 +35,12 @@ export function FlyingRainbows({
   const prevScreen = usePrevious(screen);
 
   useEffect(() => {
-    if (prevScreen === 'invite_code' && screen === 'unlock') {
-      rainbowPixelControls.start(RAINBOW_POSITION.rainbowPixel.unlock);
-      rainbowWhiteControls.start(RAINBOW_POSITION.rainbowWhite.unlock);
-      rainbowOgControls.start(RAINBOW_POSITION.rainbowOg.unlock);
-      rainbowLightControls.start(RAINBOW_POSITION.rainbowLight.unlock);
-      rainbowNeonControls.start(RAINBOW_POSITION.rainbowNeon.unlock);
+    if (prevScreen === 'invite_code' && screen === 'welcome') {
+      rainbowPixelControls.start(RAINBOW_POSITION.rainbowPixel.welcome);
+      rainbowWhiteControls.start(RAINBOW_POSITION.rainbowWhite.welcome);
+      rainbowOgControls.start(RAINBOW_POSITION.rainbowOg.welcome);
+      rainbowLightControls.start(RAINBOW_POSITION.rainbowLight.welcome);
+      rainbowNeonControls.start(RAINBOW_POSITION.rainbowNeon.welcome);
     }
   }, [
     prevScreen,
