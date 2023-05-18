@@ -28,7 +28,6 @@ type InviteCodeQueryKey = ReturnType<typeof inviteCodeQueryKey>;
 export async function inviteCodeQueryFunction({
   queryKey: [{ code }],
 }: QueryFunctionArgs<typeof inviteCodeQueryKey>) {
-  console.log('posting with codee', code);
   const { data } = await betaInviteCodesHttp.post(
     `/validate`,
     JSON.stringify({
@@ -52,7 +51,6 @@ export async function postInviteCode(
     InviteCodeQueryKey
   > = {},
 ) {
-  console.log('query client code', code);
   return await queryClient.fetchQuery(
     inviteCodeQueryKey({ code }),
     inviteCodeQueryFunction,
