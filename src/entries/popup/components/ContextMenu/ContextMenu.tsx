@@ -3,9 +3,10 @@ import clsx from 'clsx';
 import React, { CSSProperties, ReactNode, useRef } from 'react';
 import { useAccount } from 'wagmi';
 
+import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { AccentColorProvider, Box, Text, ThemeProvider } from '~/design-system';
-import { menuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
+import { accentMenuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
 import { TextStyles, boxStyles } from '~/design-system/styles/core.css';
 import {
   BackgroundColor,
@@ -14,6 +15,7 @@ import {
 } from '~/design-system/styles/designTokens';
 
 import { useAvatar } from '../../hooks/useAvatar';
+import { simulateClick } from '../../utils/simulateClick';
 
 const { innerWidth: windowWidth } = window;
 
@@ -31,6 +33,7 @@ export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
   const { children, accentColor, asChild } = props;
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
+  const triggerRef = useRef<HTMLDivElement>(null);
 
   return (
     <AccentColorProvider
@@ -47,6 +50,18 @@ export const ContextMenuTrigger = (props: ContextMenuTriggerProps) => {
           }
           props.onTrigger?.();
         }}
+        onKeyDown={(e) => {
+          if (e.key === shortcuts.global.CLOSE.key) {
+            e.stopPropagation();
+          }
+          if (e.key === shortcuts.global.DOWN.key) {
+            e.preventDefault();
+          }
+          if (e.key === shortcuts.global.OPEN_CONTEXT_MENU.key) {
+            simulateClick(triggerRef?.current);
+          }
+        }}
+        ref={triggerRef}
       >
         {children}
       </ContextMenuPrimitive.Trigger>
@@ -138,7 +153,7 @@ export const ContextMenuItem = (props: ContextMenuItemProps) => {
   return (
     <Box
       as={ContextMenuPrimitive.Item}
-      className={menuFocusVisibleStyle}
+      className={accentMenuFocusVisibleStyle}
       paddingVertical="8px"
       paddingHorizontal="8px"
       marginHorizontal="-8px"
@@ -186,7 +201,7 @@ export const ContextMenuRadioItem = (props: ContextMenuRadioItemProps) => {
           borderRadius: '12px',
           outline: 'none',
         }),
-        menuFocusVisibleStyle,
+        accentMenuFocusVisibleStyle,
       ])}
       background={{
         default: isSelectedValue

@@ -26,6 +26,7 @@ export const SwapInputActionButton = ({
       variant="flat"
       onClick={onClose}
       testId={testId}
+      tabIndex={0}
     >
       <Inline
         space="8px"

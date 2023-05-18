@@ -12,11 +12,13 @@ import {
   Column,
   Columns,
   Inline,
+  Inset,
   Row,
   Rows,
   Symbol,
   Text,
 } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 
 import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
@@ -77,59 +79,61 @@ export default function AccountItem({
   }
 
   return (
-    <Box
-      className={rowHighlight ? rowTransparentAccentHighlight : undefined}
-      onClick={onClick}
-      key={account}
-      paddingHorizontal="12px"
-      paddingVertical="8px"
-      borderRadius="12px"
-      width="full"
-    >
-      <Columns space="8px" alignVertical="center" alignHorizontal="justify">
-        <Column width="content">
-          <Box height="fit" position="relative">
-            {isSelected && (
-              <Box
-                style={{
-                  width: 20,
-                  height: 20,
-                  zIndex: 1,
-                  bottom: -4,
-                  left: -4,
-                }}
-                position="absolute"
-                padding="3px"
-                borderRadius="round"
-                background="surfacePrimaryElevated"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Symbol
-                  symbol="checkmark.circle.fill"
-                  color="accent"
-                  weight="bold"
-                  size={14}
-                />
-              </Box>
-            )}
-            <WalletAvatar address={account} size={36} emojiSize="20pt" />
-          </Box>
-        </Column>
-        <Column>
-          <Box>
-            <Rows space="8px" alignVertical="center">
-              <Row height="content">
-                <MenuItem.Title text={displayName || ''} />
-              </Row>
-              {labelComponent && <Row height="content">{labelComponent}</Row>}
-            </Rows>
-          </Box>
-        </Column>
-        <Column width="content">
-          <Box>{rightComponent}</Box>
-        </Column>
-      </Columns>
-    </Box>
+    <Inset space="2px">
+      <Lens
+        className={rowHighlight ? rowTransparentAccentHighlight : undefined}
+        handleOpenMenu={onClick}
+        key={account}
+        onClick={onClick}
+        paddingHorizontal="14px"
+        paddingVertical="10px"
+        borderRadius="12px"
+      >
+        <Columns space="8px" alignVertical="center" alignHorizontal="justify">
+          <Column width="content">
+            <Box height="fit" position="relative">
+              {isSelected && (
+                <Box
+                  style={{
+                    width: 20,
+                    height: 20,
+                    zIndex: 1,
+                    bottom: -4,
+                    left: -4,
+                  }}
+                  position="absolute"
+                  padding="3px"
+                  borderRadius="round"
+                  background="surfacePrimaryElevated"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Symbol
+                    symbol="checkmark.circle.fill"
+                    color="accent"
+                    weight="bold"
+                    size={14}
+                  />
+                </Box>
+              )}
+              <WalletAvatar address={account} size={36} emojiSize="20pt" />
+            </Box>
+          </Column>
+          <Column>
+            <Box>
+              <Rows space="8px" alignVertical="center">
+                <Row height="content">
+                  <MenuItem.Title text={displayName || ''} />
+                </Row>
+                {labelComponent && <Row height="content">{labelComponent}</Row>}
+              </Rows>
+            </Box>
+          </Column>
+          <Column width="content">
+            <Box>{rightComponent}</Box>
+          </Column>
+        </Columns>
+      </Lens>
+    </Inset>
   );
 }

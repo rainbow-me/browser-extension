@@ -126,6 +126,7 @@ export const SendInputMask = ({
           }}
           enableTapScale={false}
           testId="send-input-mask"
+          tabIndex={0}
         />
       </Box>
     </Box>

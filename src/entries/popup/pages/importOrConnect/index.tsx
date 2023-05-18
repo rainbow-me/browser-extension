@@ -2,15 +2,19 @@
 import React, { useCallback } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { Box, Separator, Stack, Text } from '~/design-system';
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
+import { useAlert } from '../../hooks/useAlert';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 export function ImportOrConnect() {
   const navigate = useRainbowNavigate();
+  const { triggerAlert } = useAlert();
+  const { featureFlags } = useFeatureFlagsStore();
 
   const navigateTo = useCallback(
     (route: string) => {
@@ -54,7 +58,11 @@ export function ImportOrConnect() {
             />
             <OnboardMenu.Separator />
             <OnboardMenu.Item
-              onClick={() => alert('coming soon!')}
+              onClick={() =>
+                featureFlags.hw_wallets_enabled
+                  ? navigateTo(ROUTES.HW_CHOOSE)
+                  : triggerAlert({ text: i18n.t('alert.coming_soon') })
+              }
               title={i18n.t('import_or_connect.connect_wallet')}
               subtitle={i18n.t('import_or_connect.connect_wallet_description')}
               symbol="doc.text.magnifyingglass"

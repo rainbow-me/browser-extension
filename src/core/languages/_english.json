@@ -12,8 +12,10 @@
     "remove_wallet": "Remove wallet",
     "hide_wallet": "Hide wallet",
     "watching": "Watching",
+    "ledger": "Ledger",
+    "trezor": "Trezor",
     "add_another_wallet": "Add another wallet",
-    "connect_hardware_wallet": "Connect a hardware wallet",
+    "connect_hardware_wallet": "Add from your hardware wallet",
     "search_placeholder": "Search wallets",
     "no_wallets": "No wallets",
     "no_results": "No results",
@@ -111,6 +113,7 @@
         "wallet_plural": "Wallets",
         "recovery_phrase_label": "Recovery Phrase",
         "private_key_label": "Private Key",
+        "hardware_wallet_label": "Hardware Wallet",
         "wallet_details": {
           "title": "Wallet Details",
           "view_recovery_phrase": "View Recovery Phrase",
@@ -174,8 +177,8 @@
       "ZAR": "South African Rand"
     },
     "feature_flags": {
-      "swaps": "Swaps",
-      "full_watching_wallets": "Allow full access to watching wallets"
+      "full_watching_wallets": "Allow full access to watching wallets",
+      "hw_wallets_enabled": "Enable Hardware Wallets support"
     }
   },
   "transactions": {
@@ -458,7 +461,10 @@
   "watch_wallet": {
     "title": "Watch an Ethereum address",
     "description": "Enter any Ethereum address or ENS name. You'll have to import it later to send or sign transactions.",
-    "invalid_address_or_ens_name": "Invalid address",
+    "invalid_address": "Invalid address",
+    "unsupported_tld": "%{tld} is not supported",
+    "address_already_added": "Address already added",
+    "address_already_added_as": "Address already added as %{addedAs}",
     "watch_top_ens_wallets": "Watch top ENS wallets",
     "placeholder": "Ethereum address or ENS name",
     "watch_wallet": "Watch wallet",
@@ -758,5 +764,30 @@
     "ok": "Ok",
     "wallet_watching_mode": "This wallet is currently in 'Watching' mode",
     "coming_soon": "Coming Soon!"
+  },
+  "hw": {
+    "choose_title": "Connect a hardware wallet",
+    "ledger_support": "Supports Ledger Nano S, Nano S Plus, Nano X, and Stax devices.",
+    "trezor_support": "Supports Model One or Model T devices.",
+    "connect_ledger_title": "Complete your Ledger set up",
+    "connect_ledger_description": "Connect your Ledger to Rainbow by plugging it into your computer using the USB-C cable.",
+    "connect_trezor_title": "Complete your Trezor set up",
+    "connect_trezor_description": "Continue to connect your Trezor to Rainbow through the web interface.",
+    "learn_more": "Learn more",
+    "connect_wallets_title": "Connect your wallets",
+    "connect_wallets_found": "We’ve found wallets on your Ledger with a balance or activity. Select which to connect.",
+    "connect_wallets_not_found": "Some text about how this looks like a new device, so select from empty accounts?",
+    "connect_wallet": "Connect 1 wallet",
+    "connect_n_wallets": "Connect %{count} wallets",
+    "wallets_found": "%{count} wallets found",
+    "add_by_index": "Add by index",
+    "connection_successful_title": "Connected successful",
+    "connection_successful_description": "Something about how we imported N wallets and they will be labeled with the badge?",
+    "done": "Done",
+    "add_wallet": "Add wallet",
+    "add_by_index_title": "Add a wallet by its index",
+    "add_by_index_description": "Enter the derivation path for the wallet you would like to import from your Ledger.",
+    "waiting_for_trezor_connect": "Waiting for Trezor Connect",
+    "continue_on_trezor_connect": "Please follow the instructions on the Trezor Connect window"
   }
 }

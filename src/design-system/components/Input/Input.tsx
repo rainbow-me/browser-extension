@@ -39,6 +39,7 @@ export type InputProps = {
   enableTapScale?: boolean;
   textAlign?: TextStyles['textAlign'];
   tabIndex?: number;
+  id?: string;
 };
 
 export const stylesForVariant: Record<
