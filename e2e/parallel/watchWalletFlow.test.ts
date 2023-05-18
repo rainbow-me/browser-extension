@@ -19,6 +19,7 @@ import {
   switchWallet,
   typeOnTextInput,
   untilIsClickable,
+  waitUntilElementByTestIdIsPresent,
 } from '../helpers';
 import { TEST_VARIABLES } from '../walletVariables';
 
@@ -53,9 +54,16 @@ describe('Watch wallet then add more and switch between them', () => {
     await findElement(byTestId('secret-textarea')).sendKeys(
       TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
     );
-    await driver
-      .wait(untilIsClickable(byTestId('watch-wallets-button')), 60_000) // long timeout, because depends on ens resolution
-      .click();
+
+    await waitUntilElementByTestIdIsPresent({
+      id: 'watch-wallets-button-ready',
+      driver,
+    });
+
+    await findElementByTestIdAndClick({
+      id: 'watch-wallets-button-ready',
+      driver,
+    });
 
     await driver.wait(until.elementLocated(byTestId('password-input')));
     await findElement(byTestId('password-input')).sendKeys('test1234');
