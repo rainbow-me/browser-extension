@@ -37,7 +37,7 @@ import {
 import { SortMethod } from '../../hooks/send/useSendAsset';
 import { AssetRow } from '../home/Tokens';
 
-import { InputActionButon } from './InputActionButton';
+import { InputActionButton } from './InputActionButton';
 
 const TokenSortMenu = ({
   asset,
@@ -277,7 +277,7 @@ export const SendTokenInput = React.forwardRef<
         </Box>
       }
       rightComponent={
-        <InputActionButon
+        <InputActionButton
           showClose={!!asset}
           onClose={onCloseDropdown}
           onDropdownAction={onDropdownAction}

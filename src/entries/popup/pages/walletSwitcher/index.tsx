@@ -287,6 +287,7 @@ export function WalletSwitcher() {
               )}
               background={snapshot.isDragging ? 'surfaceSecondary' : undefined}
               borderRadius="12px"
+              tabIndex={-1}
             >
               <AccountItem
                 rowHighlight
@@ -395,6 +396,7 @@ export function WalletSwitcher() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           innerRef={searchInputRef}
+          tabIndex={0}
         />
       </Box>
       {!hasSeenPromo && (

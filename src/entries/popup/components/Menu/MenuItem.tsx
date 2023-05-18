@@ -164,6 +164,7 @@ const MenuItem = ({
   }, [onClick, onToggle]);
   return (
     <Lens
+      forwardNav={hasRightArrow}
       onKeyDown={handleKeyDown}
       style={{
         borderRadius: 6,
