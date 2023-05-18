@@ -2,12 +2,13 @@ import * as DropdownMenuPrimitive from '@radix-ui/react-dropdown-menu';
 import { DismissableLayerProps } from '@radix-ui/react-menu';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
-import React, { CSSProperties, ReactNode } from 'react';
+import React, { CSSProperties, ReactNode, useRef } from 'react';
 import { useAccount } from 'wagmi';
 
+import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { AccentColorProvider, Box, Text, ThemeProvider } from '~/design-system';
-import { menuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
+import { accentMenuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
 import {
   BoxStyles,
   TextStyles,
@@ -21,6 +22,7 @@ import {
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 
 import { useAvatar } from '../../hooks/useAvatar';
+import { simulateClick } from '../../utils/simulateClick';
 
 interface DropdownMenuTriggerProps {
   children: ReactNode;
@@ -32,12 +34,24 @@ export function DropdownMenuTrigger(props: DropdownMenuTriggerProps) {
   const { children, accentColor, asChild } = props;
   const { address } = useAccount();
   const { avatar } = useAvatar({ address });
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   return (
     <AccentColorProvider
       color={accentColor || avatar?.color || globalColors.blue60}
     >
-      <DropdownMenuPrimitive.Trigger asChild={asChild}>
+      <DropdownMenuPrimitive.Trigger
+        asChild={asChild}
+        onKeyDown={(e) => {
+          if (e.key === shortcuts.global.DOWN.key) {
+            e.preventDefault();
+          }
+          if (e.key === shortcuts.global.OPEN_CONTEXT_MENU.key) {
+            simulateClick(triggerRef?.current);
+          }
+        }}
+        ref={triggerRef}
+      >
         {children}
       </DropdownMenuPrimitive.Trigger>
     </AccentColorProvider>
@@ -190,7 +204,7 @@ export const DropdownMenuItem = (props: DropdownMenuItemProps) => {
           borderRadius: '12px',
           outline: 'none',
         }),
-        menuFocusVisibleStyle,
+        accentMenuFocusVisibleStyle,
       ])}
       onSelect={onSelect}
       background={{
@@ -236,7 +250,7 @@ export const DropdownMenuRadioItem = (props: DropdownMenuRadioItemProps) => {
         highlightAccentColor && !isSelectedValue
           ? rowTransparentAccentHighlight
           : null,
-        !isSelectedValue && menuFocusVisibleStyle,
+        !isSelectedValue && accentMenuFocusVisibleStyle,
       ])}
       style={{
         display: 'flex',
