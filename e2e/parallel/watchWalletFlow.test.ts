@@ -44,7 +44,7 @@ describe('Watch wallet then add more and switch between them', () => {
   afterAll(async () => driver.quit());
 
   // Watch a wallet
-  it.only('should be able watch a wallet', async () => {
+  it('should be able watch a wallet', async () => {
     //  Start from welcome screen
     await goToWelcome(driver, rootURL);
     await findElement(byTestId('import-wallet-button')).click();
