@@ -20,7 +20,7 @@ export function Welcome() {
     useState(!!pendingRequests.length);
   const headerControls = useAnimationControls();
 
-  const { inviteCodeValidated } = useInviteCodeStore();
+  const { inviteCodeValidated, setInviteCodeValidated } = useInviteCodeStore();
   const [screen, setScreen] = useState<'invite_code' | 'unlock'>(
     inviteCodeValidated ? 'unlock' : 'invite_code',
   );
@@ -67,13 +67,15 @@ export function Welcome() {
             </Box>
           </Stack>
         </Box>
-        <AnimatePresence mode="popLayout">
+        <AnimatePresence mode="popLayout" initial={false}>
           {screen === 'invite_code' ? (
             <Box width="full">
               <InviteCodePortal
-                onInviteCodeValidated={() => {
-                  // setInviteCodeValidated(true);
-                  setScreen('unlock');
+                onInviteCodeValidated={(valid: boolean) => {
+                  setInviteCodeValidated(valid);
+                  if (valid) {
+                    setScreen('unlock');
+                  }
                 }}
               />
             </Box>

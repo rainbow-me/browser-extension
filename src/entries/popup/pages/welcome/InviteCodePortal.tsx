@@ -1,9 +1,17 @@
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { RAINBOW_WAITLIST_URL } from '~/core/references/links';
 import { postInviteCode } from '~/core/resources/inviteCode';
-import { Bleed, Box, Button, Inline, Stack, Text } from '~/design-system';
+import {
+  Bleed,
+  Box,
+  Button,
+  Inline,
+  Stack,
+  Symbol,
+  Text,
+} from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
 
@@ -29,8 +37,10 @@ export function InviteCodePortal({
   const inviteCodeValidated = useCallback(async () => {
     inputRef?.current?.focus();
     const result = await postInviteCode({ code: inviteCode });
-    onInviteCodeValidated(result.valid);
     setValidCode(result.valid);
+    setTimeout(() => {
+      onInviteCodeValidated(result.valid);
+    }, 500);
   }, [onInviteCodeValidated, inviteCode]);
 
   useEffect(() => {
@@ -61,6 +71,36 @@ export function InviteCodePortal({
         {/* all of these margins and paddings were needed for the animations we have */}
         {/* AnimatePresence was messing up with position absolute */}
         <Box style={{ height: '44px' }} width="full">
+          <AnimatePresence initial={false}>
+            {validCode === false ? (
+              <Box
+                as={motion.div}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                key="invalid-code-message"
+                exit={{ opacity: 0 }}
+                position="absolute"
+                width="full"
+                style={{ width: '310px', marginTop: '-18px' }}
+              >
+                <Inline
+                  alignVertical="center"
+                  space="4px"
+                  alignHorizontal="center"
+                >
+                  <Symbol
+                    symbol={'exclamationmark.triangle.fill'}
+                    color="red"
+                    size={12}
+                    weight="medium"
+                  />
+                  <Text align="center" color="red" size="11pt" weight="medium">
+                    {'Invalid code'}
+                  </Text>
+                </Inline>
+              </Box>
+            ) : null}
+          </AnimatePresence>
           <Box position="absolute" style={{ width: '310px' }}>
             <Input
               innerRef={inputRef}
@@ -84,7 +124,7 @@ export function InviteCodePortal({
             <Box padding="7px">
               <Button
                 onClick={inviteCodeValidated}
-                color="fillSecondary"
+                color={validCode ? 'blue' : 'fillSecondary'}
                 height="30px"
                 borderRadius="6px"
                 variant="raised"
