@@ -398,6 +398,7 @@ export const WatchWallet = ({
             width="full"
             onClick={handleWatchWallet}
             testId="watch-wallets-button"
+            tabIndex={onboarding ? 0 : 2}
           >
             {addressesToImport.length > 1
               ? i18n.t('watch_wallet.watch_wallets')
