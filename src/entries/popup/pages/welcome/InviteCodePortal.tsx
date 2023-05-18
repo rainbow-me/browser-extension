@@ -5,6 +5,7 @@ import { i18n } from '~/core/languages';
 import { RAINBOW_WAITLIST_URL } from '~/core/references/links';
 import { postInviteCode } from '~/core/resources/inviteCode';
 import {
+  AccentColorProvider,
   Bleed,
   Box,
   Button,
@@ -15,6 +16,7 @@ import {
 } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
+import { globalColors } from '~/design-system/styles/designTokens';
 
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
 
@@ -103,23 +105,27 @@ export function InviteCodePortal({
             ) : null}
           </AnimatePresence>
           <Box position="absolute" style={{ width: '310px' }}>
-            <Input
-              innerRef={inputRef}
-              height="44px"
-              placeholder="Enter your beta code"
-              variant="bordered"
-              borderColor={validCode === false ? 'red' : 'accent'}
-              onChange={onInviteCodeChange}
-              value={inviteCode}
-              style={{
-                paddingRight: 87,
-                paddingTop: 17,
-                paddingBottom: 17,
-                paddingLeft: 16,
-                caretColor: validCode === false ? 'red' : accentColorAsHsl,
-                fontSize: 14,
-              }}
-            />
+            <AccentColorProvider
+              color={validCode === false ? 'red' : globalColors.blue60}
+            >
+              <Input
+                innerRef={inputRef}
+                height="44px"
+                placeholder={i18n.t('welcome.enter_code')}
+                variant="bordered"
+                borderColor={'accent'}
+                onChange={onInviteCodeChange}
+                value={inviteCode}
+                style={{
+                  paddingRight: 87,
+                  paddingTop: 17,
+                  paddingBottom: 17,
+                  paddingLeft: 16,
+                  caretColor: accentColorAsHsl,
+                  fontSize: 14,
+                }}
+              />
+            </AccentColorProvider>
           </Box>
           <Box style={{ marginLeft: '227px' }}>
             <Box padding="7px">
