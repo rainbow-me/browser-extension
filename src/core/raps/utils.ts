@@ -4,6 +4,7 @@ import { Contract } from '@ethersproject/contracts';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import {
   ALLOWS_PERMIT,
+  CrosschainQuote,
   Quote,
   RAINBOW_ROUTER_CONTRACT_ADDRESS,
   getQuoteExecutionDetails,
@@ -89,11 +90,14 @@ export const overrideWithFastSpeedIfNeeded = ({
 
 const getStateDiff = async (
   provider: Provider,
-  quote: Quote,
+  quote: Quote | CrosschainQuote,
 ): Promise<unknown> => {
   const tokenAddress = quote.sellTokenAddress;
   const fromAddr = quote.from;
-  const toAddr = RAINBOW_ROUTER_CONTRACT_ADDRESS;
+  const toAddr =
+    quote.swapType === 'normal'
+      ? RAINBOW_ROUTER_CONTRACT_ADDRESS
+      : (quote as CrosschainQuote).allowanceTarget;
   const tokenContract = new Contract(tokenAddress, erc20ABI, provider);
 
   const { number: blockNumber } = await (
@@ -220,7 +224,7 @@ export const getDefaultGasLimitForTrade = (
 export const estimateSwapGasLimitWithFakeApproval = async (
   chainId: number,
   provider: Provider,
-  quote: Quote,
+  quote: Quote | CrosschainQuote,
 ): Promise<string> => {
   let stateDiff: unknown;
 
@@ -244,7 +248,10 @@ export const estimateSwapGasLimitWithFakeApproval = async (
           from: quote.from,
           gas: toHexNoLeadingZeros(String(gas)),
           gasPrice: toHexNoLeadingZeros(`100000000000`),
-          to: RAINBOW_ROUTER_CONTRACT_ADDRESS,
+          to:
+            quote.swapType === 'normal'
+              ? RAINBOW_ROUTER_CONTRACT_ADDRESS
+              : (quote as CrosschainQuote).allowanceTarget,
           value: '0x0', // 100 gwei
         },
         'latest',
