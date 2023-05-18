@@ -1,10 +1,5 @@
 import { motion } from 'framer-motion';
-<<<<<<< HEAD
 import React, { useEffect, useMemo } from 'react';
-import { To } from 'react-router-dom';
-=======
-import React, { useMemo } from 'react';
->>>>>>> 466c1a3d (add optional direction and icon overrides to navbar)
 
 import { useCurrentAddressStore } from '~/core/state';
 import { Box } from '~/design-system';
