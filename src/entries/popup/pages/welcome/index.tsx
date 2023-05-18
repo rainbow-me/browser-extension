@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { usePendingRequestStore } from '~/core/state';
+import { useInviteCodeStore } from '~/core/state/inviteCode';
 import { Box, Stack, Text } from '~/design-system';
 
 import { FlyingRainbows } from '../../components/FlyingRainbows/FlyingRainbows';
@@ -14,20 +15,21 @@ import { InviteCodePortal } from './InviteCodePortal';
 import { OnboardBeforeConnectSheet } from './OnboardBeforeConnectSheet';
 
 export function Welcome() {
-  const [screen, setScreen] = useState<'invite_code' | 'unlock'>('invite_code');
   const { pendingRequests } = usePendingRequestStore();
   const [showOnboardBeforeConnectSheet, setShowOnboardBeforeConnectSheet] =
     useState(!!pendingRequests.length);
   const headerControls = useAnimationControls();
+
+  const { inviteCodeValidated } = useInviteCodeStore();
+  const [screen, setScreen] = useState<'invite_code' | 'unlock'>(
+    inviteCodeValidated ? 'unlock' : 'invite_code',
+  );
   const prevScreen = usePrevious(screen);
+
   React.useEffect(() => {
     if (prevScreen === 'invite_code' && screen === 'unlock') {
       headerControls.start({
         marginTop: 135,
-      });
-    } else if (prevScreen === 'unlock' && screen === 'invite_code') {
-      headerControls.start({
-        marginTop: 186,
       });
     }
   }, [headerControls, prevScreen, screen]);
