@@ -545,6 +545,7 @@ export function Swap() {
                         width="full"
                         testId="swap-review-button"
                         disabled={buttonDisabled}
+                        tabIndex={0}
                       >
                         <Inline space="8px" alignVertical="center">
                           {buttonIcon}
