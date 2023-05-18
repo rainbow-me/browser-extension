@@ -27,8 +27,8 @@ export function Welcome() {
   const { inviteCodeValidated, setInviteCodeValidated } = useInviteCodeStore();
   const [screen, setScreen] = useState<'invite_code' | 'welcome'>(
     BYPASS_INVITE_CODE ||
-      !config.beta_code_required ||
-      (config.beta_code_required && inviteCodeValidated)
+      !config.invite_code_required ||
+      (config.invite_code_required && inviteCodeValidated)
       ? 'welcome'
       : 'invite_code',
   );

@@ -19,12 +19,14 @@ import { accentColorAsHsl } from '~/design-system/styles/core.css';
 import { globalColors } from '~/design-system/styles/designTokens';
 
 import { ChevronDown } from '../../components/ChevronDown/ChevronDown';
+import { Spinner } from '../../components/Spinner/Spinner';
 
 export function InviteCodePortal({
   onInviteCodeValidated,
 }: {
   onInviteCodeValidated: (validated: boolean) => void;
 }) {
+  const [validatingCode, setValidatingCode] = useState(false);
   const [inviteCode, setInviteCode] = useState('');
   const [validCode, setValidCode] = useState<null | boolean>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -38,12 +40,20 @@ export function InviteCodePortal({
   );
 
   const inviteCodeValidated = useCallback(async () => {
+    setValidatingCode(true);
     inputRef?.current?.focus();
-    const result = await postInviteCode({ code: inviteCode });
-    setValidCode(result.valid);
-    setTimeout(() => {
-      onInviteCodeValidated(result.valid);
-    }, 500);
+    try {
+      const result = await postInviteCode({ code: inviteCode });
+      setValidCode(result.valid);
+      if (!result.valid) {
+        setValidatingCode(false);
+      }
+      setTimeout(() => {
+        onInviteCodeValidated(result.valid);
+      }, 500);
+    } catch (e) {
+      setValidatingCode(false);
+    }
   }, [onInviteCodeValidated, inviteCode]);
 
   useEffect(() => {
@@ -140,11 +150,15 @@ export function InviteCodePortal({
                   <Text align="center" color="label" size="14pt" weight="heavy">
                     {i18n.t('welcome.join')}
                   </Text>
-                  <Box style={{ rotate: '-90deg' }}>
-                    <Bleed vertical="4px" horizontal="4px">
-                      <ChevronDown color="label" />
-                    </Bleed>
-                  </Box>
+                  {!validatingCode ? (
+                    <Box style={{ rotate: '-90deg' }}>
+                      <Bleed vertical="4px" horizontal="4px">
+                        <ChevronDown color="label" />
+                      </Bleed>
+                    </Box>
+                  ) : (
+                    <Spinner size={10} color="label" />
+                  )}
                 </Inline>
               </Button>
             </Box>
