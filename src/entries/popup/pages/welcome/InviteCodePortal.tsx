@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 
+import { i18n } from '~/core/languages';
 import { RAINBOW_WAITLIST_URL } from '~/core/references/links';
 import { postInviteCode } from '~/core/resources/inviteCode';
 import {
@@ -95,7 +96,7 @@ export function InviteCodePortal({
                     weight="medium"
                   />
                   <Text align="center" color="red" size="11pt" weight="medium">
-                    {'Invalid code'}
+                    {i18n.t('welcome.invalid_code')}
                   </Text>
                 </Inline>
               </Box>
@@ -131,7 +132,7 @@ export function InviteCodePortal({
               >
                 <Inline alignVertical="center" space="6px">
                   <Text align="center" color="label" size="14pt" weight="heavy">
-                    {'Join'}
+                    {i18n.t('welcome.join')}
                   </Text>
                   <Box style={{ rotate: '-90deg' }}>
                     <Bleed vertical="4px" horizontal="4px">
@@ -151,9 +152,7 @@ export function InviteCodePortal({
             size="12pt"
             weight="semibold"
           >
-            {
-              'Rainbow is currently in a private beta stage and an invite code is required to gain access. If you need one, you can'
-            }
+            {i18n.t('welcome.invite_code_explanation')}
             &nbsp;
             <a
               href={RAINBOW_WAITLIST_URL}
@@ -161,7 +160,7 @@ export function InviteCodePortal({
               style={{ color: accentColorAsHsl }}
               rel="noreferrer"
             >
-              {'get one here'}
+              {i18n.t('welcome.invite_code_explanation_link')}
             </a>
             {'.'}
           </Text>
