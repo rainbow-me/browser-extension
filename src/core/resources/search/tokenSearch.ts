@@ -89,7 +89,7 @@ async function tokenSearchQueryFunction({
 }
 
 function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
-  const a = assets.map((a) => ({
+  return assets.map((a) => ({
     ...a,
     address: a.networks[chainId]?.address,
     chainId,
@@ -103,7 +103,6 @@ function parseTokenSearch(assets: SearchAsset[], chainId: ChainId) {
     mainnetAddress: a.uniqueId as Address,
     uniqueId: `${a.uniqueId}_${chainId}`,
   }));
-  return a;
 }
 
 type TokenSearchResult = QueryFunctionResult<typeof tokenSearchQueryFunction>;
