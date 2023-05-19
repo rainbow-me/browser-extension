@@ -10,7 +10,6 @@ import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { getSettingWallets } from '~/core/utils/settings';
 import { Box, Inline, Symbol } from '~/design-system';
-import { Lens } from '~/design-system/components/Lens/Lens';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import AccountItem, {
   LabelOption,
@@ -345,31 +344,30 @@ const WalletRow = ({
   } as unknown as typeof InfoButtonOptions;
 
   return (
-    <Lens style={{ borderRadius: 15 }} onKeyDown={() => setMenuOpen(true)}>
-      <AccountItem
-        key={account}
-        account={account}
-        rightComponent={
-          <Inline alignVertical="center" space="10px">
-            {hiddenWallets[account] && (
-              <LabelPill
-                label={i18n.t(
-                  'settings.privacy_and_security.wallets_and_keys.wallet_details.hidden',
-                )}
-              />
-            )}
-            <MoreInfoButton
-              open={menuOpen}
-              onClose={() => setMenuOpen(false)}
-              onOpen={() => setMenuOpen(true)}
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              options={InfoButtonOptions(opts)}
+    <AccountItem
+      onClick={() => setMenuOpen(true)}
+      key={account}
+      account={account}
+      rightComponent={
+        <Inline alignVertical="center" space="10px">
+          {hiddenWallets[account] && (
+            <LabelPill
+              label={i18n.t(
+                'settings.privacy_and_security.wallets_and_keys.wallet_details.hidden',
+              )}
             />
-          </Inline>
-        }
-        labelType={LabelOption.address}
-      />
-    </Lens>
+          )}
+          <MoreInfoButton
+            open={menuOpen}
+            onClose={() => setMenuOpen(false)}
+            onOpen={() => setMenuOpen(true)}
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            options={InfoButtonOptions(opts)}
+          />
+        </Inline>
+      }
+      labelType={LabelOption.address}
+    />
   );
 };

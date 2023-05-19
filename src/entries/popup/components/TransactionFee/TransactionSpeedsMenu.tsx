@@ -10,6 +10,7 @@ import {
   GasSpeed,
 } from '~/core/types/gas';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { accentFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
 import { Space } from '~/design-system/styles/designTokens';
 
 import { simulateClick } from '../../utils/simulateClick';
@@ -146,6 +147,8 @@ export const SwitchTransactionSpeedMenu = React.forwardRef<
         borderRadius="24px"
         as="button"
         ref={triggerRef}
+        className={accentFocusVisibleStyle}
+        tabIndex={editable ? 0 : -1}
       >
         <Inline space="6px" alignVertical="center">
           <Text color="label" weight="bold" size="14pt">

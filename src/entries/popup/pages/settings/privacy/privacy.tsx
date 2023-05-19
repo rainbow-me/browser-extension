@@ -123,8 +123,9 @@ export function Privacy() {
               rightComponent={
                 <Toggle
                   checked={hideSmallBalances}
-                  handleChange={setHideSmallBalances}
                   disabled
+                  handleChange={setHideSmallBalances}
+                  tabIndex={-1}
                 />
               }
               titleComponent={

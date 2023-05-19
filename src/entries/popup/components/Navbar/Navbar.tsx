@@ -10,6 +10,7 @@ import { BackgroundColor } from '~/design-system/styles/designTokens';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+import { getInputIsFocused, radixIsActive } from '../../utils/activeElement';
 import {
   NAVBAR_LEFT_COMPONENT_ID,
   NAVBAR_RIGHT_COMPONENT_ID,
@@ -179,7 +180,10 @@ function NavbarButtonWithBack({
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
-      if (e.key === shortcuts.global.CLOSE.key) {
+      if (
+        (e.key === shortcuts.global.CLOSE.key && !radixIsActive()) ||
+        (!getInputIsFocused() && e.key === shortcuts.global.BACK.key)
+      ) {
         e.preventDefault();
         e.stopPropagation();
         click();

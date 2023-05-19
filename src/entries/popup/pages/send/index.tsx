@@ -453,6 +453,7 @@ export function Send() {
                         color="accent"
                         width="full"
                         testId="send-review-button"
+                        tabIndex={0}
                       >
                         <Inline space="8px" alignVertical="center">
                           {readyForReview && (
