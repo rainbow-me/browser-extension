@@ -1,4 +1,8 @@
-import { useMutation, useQueries } from '@tanstack/react-query';
+import {
+  UseMutationOptions,
+  useMutation,
+  useQueries,
+} from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
@@ -42,14 +46,14 @@ const useDeriveAccountsFromSecrets = (secrets: string[]) => {
   );
 };
 
-const useImportSecrets = (secrets: string[], ) => {
-  const { mutate: import, isLoading: isImporting } = useMutation(
-    ['import secrets', secrets],
-    () => Promise.all(secrets.map(wallet.importWithSecret)),
-    
+const useImportSecrets = (options: UseMutationOptions<Address[]>) => {
+  const { mutate, isLoading } = useMutation(
+    ['import secrets'],
+    (secrets: string[]) => Promise.all(secrets.map(wallet.importWithSecret)),
+    // options,
   );
-  return { import, isImporting }
-}
+  return { importSecrets: mutate, isImporting: isLoading };
+};
 
 export const ImportWalletSelection = ({ onboarding = false }) => {
   const navigate = useRainbowNavigate();
@@ -59,20 +63,19 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
   const secrets = state.secrets || [];
 
   const accountsToImport = useDeriveAccountsFromSecrets(secrets);
-  const { import, isImporting } = useImportSecrets(secrets, {
-    onSuccess(addresses) {
-      setCurrentAddress(addresses[0]);
-      if (onboarding) navigate(ROUTES.CREATE_PASSWORD);
-      else navigate(ROUTES.HOME);
-    },
-  })
+  const { importSecrets, isImporting } = useImportSecrets({});
+  // , {
+  //   onSuccess(addresses) {
+  //     setCurrentAddress(addresses[0]);
+  //     if (onboarding) navigate(ROUTES.CREATE_PASSWORD);
+  //     else navigate(ROUTES.HOME);
+  //   },
+  // });
 
   const { isLoading: walletsSummaryIsLoading, walletsSummary } =
     useWalletsSummary({
       addresses: accountsToImport,
     });
-
-  
 
   const handleEditWallets = () => {
     navigate(
@@ -185,7 +188,7 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
                   height="44px"
                   variant={'flat'}
                   width="full"
-                  onClick={handleAddWallets}
+                  onClick={() => importSecrets(secrets)}
                   testId="add-wallets-button"
                 >
                   {i18n.t('import_wallet_selection.add_wallets')}
