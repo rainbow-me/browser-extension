@@ -1,7 +1,6 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-nested-ternary */
 import React, { useCallback, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -17,6 +16,7 @@ import {
   Text,
 } from '~/design-system';
 
+import { getImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { deriveAccountsFromSecret } from '../../handlers/wallet';
 import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -32,7 +32,6 @@ const ImportWalletSelection = ({
   onboarding?: boolean;
 }) => {
   const navigate = useRainbowNavigate();
-  const { state } = useLocation();
   const [isImporting, setIsImporting] = useState(false);
   const { setCurrentAddress } = useCurrentAddressStore();
   const [accountsToImport, setAccountsToImport] = useState<Address[]>([]);
@@ -45,47 +44,47 @@ const ImportWalletSelection = ({
   useEffect(() => {
     const init = async () => {
       let addresses: Address[] = [];
-      for (const secret of state.secrets) {
+      const secrets = await getImportWalletSecrets();
+      for (const secret of secrets) {
         const derivedAddresses = await deriveAccountsFromSecret(secret);
         addresses = [...addresses, ...derivedAddresses];
       }
       setAccountsToImport(addresses);
     };
     init();
-  }, [state?.secrets]);
+  }, []);
 
   const handleAddWallets = useCallback(async () => {
     if (isImporting) return;
     setIsImporting(true);
     // Import all the secrets
-    for (let i = 0; i < state.secrets.length; i++) {
-      const address = (await wallet.importWithSecret(
-        state.secrets[i],
-      )) as Address;
+    const secrets = await getImportWalletSecrets();
+    for (let i = 0; i < secrets.length; i++) {
+      const address = (await wallet.importWithSecret(secrets[i])) as Address;
       // Select the first wallet
       if (i === 0) {
         setCurrentAddress(address);
       }
     }
     setIsImporting(false);
-    onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
-  }, [isImporting, navigate, onboarding, setCurrentAddress, state.secrets]);
+    onboarding
+      ? navigate(ROUTES.CREATE_PASSWORD, { state: { backTo: ROUTES.WELCOME } })
+      : navigate(ROUTES.HOME);
+  }, [isImporting, navigate, onboarding, setCurrentAddress]);
 
   const handleEditWallets = useCallback(async () => {
     onboarding
       ? navigate(ROUTES.IMPORT__EDIT, {
           state: {
-            secrets: state.secrets,
             accountsToImport,
           },
         })
       : navigate(ROUTES.NEW_IMPORT_WALLET_SELECTION_EDIT, {
           state: {
-            secrets: state.secrets,
             accountsToImport,
           },
         });
-  }, [accountsToImport, navigate, onboarding, state.secrets]);
+  }, [accountsToImport, navigate, onboarding]);
 
   const isReady =
     accountsToImport.length && !isImporting && !walletsSummaryIsLoading;

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import * as React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { Box, Button, ButtonSymbol, Inline, Text } from '~/design-system';
@@ -162,12 +162,12 @@ function NavbarButtonWithBack({
   testId,
 }: {
   height: ButtonSymbolProps['height'];
-  maintainLocationState?: boolean;
   onClick?: () => void;
   symbol: SymbolProps['symbol'];
   symbolSize?: SymbolProps['size'];
   testId?: string;
 }) {
+  const { state } = useLocation();
   const navigate = useNavigate();
 
   useKeyboardShortcut({
@@ -186,10 +186,13 @@ function NavbarButtonWithBack({
   const click = React.useCallback(() => {
     if (onClick) {
       onClick();
+    } else if (state?.backTo) {
+      navigate(state?.backTo, { replace: true });
     } else {
-      navigate(-1);
+      const popDiff = typeof state?.popTo === 'number' ? state?.popTo : -1;
+      navigate(popDiff);
     }
-  }, [navigate, onClick]);
+  }, [navigate, onClick, state]);
 
   return (
     <Box

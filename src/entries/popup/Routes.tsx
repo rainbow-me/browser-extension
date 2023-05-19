@@ -265,7 +265,6 @@ const ROUTE_DATA = [
         direction="right"
         protectedRoute={['NEW']}
         accentColor={false}
-        maintainLocationState
       >
         <ImportWalletSelection />
       </AnimatedRoute>
@@ -280,7 +279,6 @@ const ROUTE_DATA = [
         title={i18n.t('edit_import_wallet_selection.title')}
         protectedRoute={['NEW']}
         accentColor={false}
-        maintainLocationState
       >
         <EditImportWalletSelection />
       </AnimatedRoute>

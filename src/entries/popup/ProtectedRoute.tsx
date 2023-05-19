@@ -66,7 +66,10 @@ export const ProtectedRoute = ({
           return (
             <Navigate
               to={ROUTES.CREATE_PASSWORD}
-              state={{ pendingRequest: isWelcome() && !!pendingRequests?.[0] }}
+              state={{
+                pendingRequest: isWelcome() && !!pendingRequests?.[0],
+                backTo: ROUTES.WELCOME,
+              }}
             />
           );
         }

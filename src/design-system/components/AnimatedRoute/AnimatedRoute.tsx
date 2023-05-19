@@ -34,7 +34,6 @@ type AnimatedRouteProps = {
   protectedRoute?: UserStatusResult[] | true;
   rightNavbarComponent?: React.ReactElement;
   accentColor?: boolean;
-  maintainLocationState?: boolean;
 };
 
 export const animatedRouteValues: Record<
