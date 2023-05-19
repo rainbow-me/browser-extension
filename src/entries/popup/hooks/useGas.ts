@@ -57,9 +57,9 @@ const useGas = ({
   const [internalMaxBaseFee, setInternalMaxBaseFee] = useState('');
 
   const debouncedEstimatedGasLimit = useDebounce(estimatedGasLimit, 500);
-  const debouncedMaxPriorityFee = useDebounce(internalMaxPriorityFee, 500);
+  const debouncedMaxPriorityFee = useDebounce(internalMaxPriorityFee, 300);
   const prevDebouncedMaxPriorityFee = usePrevious(debouncedMaxPriorityFee);
-  const debouncedMaxBaseFee = useDebounce(internalMaxBaseFee, 500);
+  const debouncedMaxBaseFee = useDebounce(internalMaxBaseFee, 300);
   const prevDebouncedMaxBaseFee = usePrevious(debouncedMaxBaseFee);
 
   const { data: optimismL1SecurityFee } = useOptimismL1SecurityFee(
