@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-nested-ternary */
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
@@ -17,8 +17,8 @@ import {
   Text,
 } from '~/design-system';
 
-import { deriveAccountsFromSecret } from '../../handlers/wallet';
 import * as wallet from '../../handlers/wallet';
+import { deriveAccountsFromSecret } from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWalletsSummary } from '../../hooks/useWalletsSummary';
 import { ROUTES } from '../../urls';
@@ -33,9 +33,10 @@ const ImportWalletSelection = ({
 }) => {
   const navigate = useRainbowNavigate();
   const { state } = useLocation();
-  const [isImporting, setIsImporting] = useState(false);
   const { setCurrentAddress } = useCurrentAddressStore();
+
   const [accountsToImport, setAccountsToImport] = useState<Address[]>([]);
+  const [isImporting, setIsImporting] = useState(false);
 
   const { isLoading: walletsSummaryIsLoading, walletsSummary } =
     useWalletsSummary({

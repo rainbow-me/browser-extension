@@ -38,11 +38,12 @@ function ErrorMessage({ message }: { message: string }) {
   );
 }
 
-const wordlist = wordlists['en']; // ethers uses 'en' as default, I'm just making it explicit here
+const wordlist = wordlists['en']; // ethers uses the 'en' wordlist as default, I'm just making it explicit here
 const getError = (secret: string): string | boolean => {
   if (!secret) return true; // true = error but no msg
 
   if (secret.startsWith('0x')) {
+    if (secret.length < 4) return true;
     if (secret.length > 66) return i18n.t('import_wallet.too_many_chars');
     if (isValidPrivateKey(addHexPrefix(secret.toLowerCase()))) return false; // false = no error
     return 'Invalid Private Key';
@@ -68,13 +69,14 @@ export const ImportWallet = ({ onboarding = false }) => {
   const importWallets = useCallback(
     async (_secrets: string[]) => {
       const secrets = [...new Set(_secrets)]; // remove duplicates
-      if (secrets.length > 1)
+      if (secrets.length > 1) {
         return navigate(
           onboarding
             ? ROUTES.IMPORT__SELECT
             : ROUTES.NEW_IMPORT_WALLET_SELECTION,
           { state: { secrets } },
         );
+      }
 
       const address = await wallet.importWithSecret(secrets[0]);
       setCurrentAddress(address);
@@ -89,9 +91,9 @@ export const ImportWallet = ({ onboarding = false }) => {
 
   const debouncedSecrets = useDebounce(secrets, 500);
   const errors = debouncedSecrets.map(
-    (dsecret, i) => dsecret === secrets[i] && getError(dsecret.trim()),
+    (dsecret, i) => dsecret !== secrets[i] || getError(dsecret.trim()),
   );
-  const disabled = errors.some((e) => e !== true);
+  const disabled = errors.some((e) => e !== false);
 
   return (
     <>
