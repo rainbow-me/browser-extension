@@ -519,8 +519,9 @@ export const connectLedger = async () => {
   // };
 
   // Connect to the device
+  let transport;
   try {
-    const transport = await TransportWebUSB.create();
+    transport = await TransportWebUSB.create();
     const appEth = new AppEth(transport);
     const result = await appEth.getAddress(
       `${DEFAULT_HD_PATH}/0`,
@@ -556,6 +557,7 @@ export const connectLedger = async () => {
     }
 
     const deviceId = keccak256(accountsToImport[0].address);
+    transport?.close();
 
     return { accountsToImport, deviceId, accountsEnabled };
 
@@ -570,6 +572,7 @@ export const connectLedger = async () => {
       default:
         alert('Unable to connect to your ledger. Please try again.');
     }
+    transport?.close();
     return null;
   }
 };

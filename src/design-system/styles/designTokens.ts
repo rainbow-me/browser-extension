@@ -164,6 +164,7 @@ export type ButtonVariant =
 export const backdropFilter = {
   'blur(12px)': 'blur(12px)',
   'blur(26px)': 'blur(26px)',
+  'blur(80px)': 'blur(80px)',
   'opacity(80%)': 'opacity(80%)',
   'opacity(5%)': 'opacity(5%)',
   'opacity(30%)': 'opacity(30%)',
@@ -878,6 +879,8 @@ export const symbolNames = selectSymbolNames(
   'shuffle',
   'chart.bar.xaxis',
   'arrow.2.squarepath',
+  'person.crop.circle.badge.xmark',
+  'person.crop.circle.badge.checkmark',
   'return.left',
 );
 export type SymbolName = typeof symbolNames[number];

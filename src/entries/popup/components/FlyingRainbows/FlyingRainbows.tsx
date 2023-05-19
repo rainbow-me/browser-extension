@@ -1,4 +1,5 @@
-import * as React from 'react';
+import { motion, useAnimationControls } from 'framer-motion';
+import React, { useEffect } from 'react';
 
 import rainbowLight from 'static/assets/rainbow/light-rainbow.png';
 import rainbowNeon from 'static/assets/rainbow/neon-rainbow.png';
@@ -9,9 +10,47 @@ import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 
 import { useIsFullScreen } from '../../hooks/useIsFullScreen';
+import usePrevious from '../../hooks/usePrevious';
 
-export function FlyingRainbows({ children }: { children: React.ReactNode }) {
+import {
+  FlyingRainbowsScreen,
+  RAINBOW_POSITION,
+  RAINBOW_STYLE,
+  RAINBOW_TRANSITION,
+} from './utils';
+
+export function FlyingRainbows({
+  children,
+  screen = 'welcome',
+}: {
+  children: React.ReactNode;
+  screen?: FlyingRainbowsScreen;
+}) {
   const isFullscreen = useIsFullScreen();
+  const rainbowPixelControls = useAnimationControls();
+  const rainbowWhiteControls = useAnimationControls();
+  const rainbowOgControls = useAnimationControls();
+  const rainbowLightControls = useAnimationControls();
+  const rainbowNeonControls = useAnimationControls();
+  const prevScreen = usePrevious(screen);
+
+  useEffect(() => {
+    if (prevScreen === 'invite_code' && screen === 'welcome') {
+      rainbowPixelControls.start(RAINBOW_POSITION.rainbowPixel.welcome);
+      rainbowWhiteControls.start(RAINBOW_POSITION.rainbowWhite.welcome);
+      rainbowOgControls.start(RAINBOW_POSITION.rainbowOg.welcome);
+      rainbowLightControls.start(RAINBOW_POSITION.rainbowLight.welcome);
+      rainbowNeonControls.start(RAINBOW_POSITION.rainbowNeon.welcome);
+    }
+  }, [
+    prevScreen,
+    rainbowLightControls,
+    rainbowNeonControls,
+    rainbowOgControls,
+    rainbowPixelControls,
+    rainbowWhiteControls,
+    screen,
+  ]);
 
   return (
     <Box
@@ -22,7 +61,8 @@ export function FlyingRainbows({ children }: { children: React.ReactNode }) {
       flexDirection="column"
       alignItems="center"
       borderRadius={isFullscreen ? '32px' : undefined}
-      padding="24px"
+      paddingHorizontal="24px"
+      paddingVertical="16px"
       style={{
         width: POPUP_DIMENSIONS.width,
         height: POPUP_DIMENSIONS.height,
@@ -39,51 +79,50 @@ export function FlyingRainbows({ children }: { children: React.ReactNode }) {
         right="0"
         bottom="0"
       >
-        <img
-          src={rainbowPixel}
-          width="150"
-          height="150"
-          style={{
-            position: 'absolute',
-            right: '0px',
-            top: '0px',
-          }}
-        />
-        <img
+        <Box
+          as={motion.img}
           src={rainbowWhite}
-          width="171"
-          style={{
-            position: 'absolute',
-            left: '0px',
-            top: '0px',
-          }}
+          position="absolute"
+          style={RAINBOW_STYLE.rainbowWhite}
+          initial={RAINBOW_POSITION.rainbowWhite[screen]}
+          animate={rainbowWhiteControls}
+          transition={RAINBOW_TRANSITION}
         />
-        <img
+        <Box
+          as={motion.img}
+          src={rainbowPixel}
+          position="absolute"
+          style={RAINBOW_STYLE.rainbowPixel}
+          initial={RAINBOW_POSITION.rainbowPixel[screen]}
+          animate={rainbowPixelControls}
+          transition={RAINBOW_TRANSITION}
+        />
+        <Box
+          as={motion.img}
           src={rainbowOg}
-          height="130"
-          style={{
-            position: 'absolute',
-            left: '0px',
-            top: '362px',
-          }}
+          position="absolute"
+          style={RAINBOW_STYLE.rainbowOg}
+          initial={RAINBOW_POSITION.rainbowOg[screen]}
+          animate={rainbowOgControls}
+          transition={RAINBOW_TRANSITION}
         />
-        <img
+        <Box
+          as={motion.img}
           src={rainbowLight}
-          width="170"
-          style={{
-            position: 'absolute',
-            left: '100px',
-            top: '370px',
-          }}
+          position="absolute"
+          style={RAINBOW_STYLE.rainbowLight}
+          initial={RAINBOW_POSITION.rainbowLight[screen]}
+          animate={rainbowLightControls}
+          transition={RAINBOW_TRANSITION}
         />
-        <img
+        <Box
+          as={motion.img}
           src={rainbowNeon}
-          width="155"
-          style={{
-            position: 'absolute',
-            right: '-5px',
-            bottom: '0px',
-          }}
+          position="absolute"
+          style={RAINBOW_STYLE.rainbowNeon}
+          initial={RAINBOW_POSITION.rainbowNeon[screen]}
+          animate={rainbowNeonControls}
+          transition={RAINBOW_TRANSITION}
         />
       </Box>
       {children}
