@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { NavigateOptions } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -9,6 +9,7 @@ import { Lens } from '~/design-system/components/Lens/Lens';
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
+import { setImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { useAlert } from '../../hooks/useAlert';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -42,6 +43,10 @@ export function ImportOrConnect() {
     () => navigateTo(ROUTES.WATCH),
     [navigateTo],
   );
+  useEffect(() => {
+    // clear secrets if the user backs out of flow entirely
+    setImportWalletSecrets(['']);
+  }, []);
 
   return (
     <FullScreenContainer>

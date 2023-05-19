@@ -16,7 +16,10 @@ import {
   Text,
 } from '~/design-system';
 
-import { getImportWalletSecrets } from '../../handlers/importWalletSecrets';
+import {
+  getImportWalletSecrets,
+  setImportWalletSecrets,
+} from '../../handlers/importWalletSecrets';
 import { deriveAccountsFromSecret } from '../../handlers/wallet';
 import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -67,6 +70,7 @@ const ImportWalletSelection = ({
       }
     }
     setIsImporting(false);
+    setImportWalletSecrets(['']);
     onboarding
       ? navigate(ROUTES.CREATE_PASSWORD, { state: { backTo: ROUTES.WELCOME } })
       : navigate(ROUTES.HOME);

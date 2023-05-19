@@ -3,7 +3,6 @@ import { isValidMnemonic } from '@ethersproject/hdnode';
 import { motion } from 'framer-motion';
 import { startsWith } from 'lodash';
 import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -49,7 +48,6 @@ const validateSecret = (secret: string) => {
 };
 
 const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
-  const { state } = useLocation();
   const navigate = useRainbowNavigate();
   const [isValid, setIsValid] = useState(false);
   const [isAddingWallets, setIsAddingWallets] = useState(false);
@@ -59,7 +57,6 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
   useEffect(() => {
     const getSecrets = async () => {
       const secrets = await getImportWalletSecrets();
-      console.log('secrets: ', secrets);
       setSecrets(secrets);
     };
     getSecrets();
@@ -102,9 +99,12 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
   }, []);
 
   useEffect(() => {
-    if (state.secrets) {
-      updateValidity(state.secrets);
-    }
+    const getSecrets = async () => {
+      const secrets = await getImportWalletSecrets();
+      setSecrets(secrets);
+      updateValidity(secrets);
+    };
+    getSecrets();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

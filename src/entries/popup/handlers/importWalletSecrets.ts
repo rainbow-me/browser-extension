@@ -1,7 +1,6 @@
 export const getImportWalletSecrets = async () => {
   try {
     const result = await chrome.storage.session.get('importWalletSecrets');
-    console.log('result: ', result);
     return (result['importWalletSecrets'] as string[]) || [''];
   } catch (e) {
     console.log('Error while getting import wallet secrets: ', e);
