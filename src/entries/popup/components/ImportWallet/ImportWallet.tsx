@@ -69,18 +69,15 @@ export const ImportWallet = ({ onboarding = false }) => {
   const importWallets = useCallback(
     async (_secrets: string[]) => {
       const secrets = [...new Set(_secrets)]; // remove duplicates
-      if (secrets.length > 1) {
-        return navigate(
-          onboarding
-            ? ROUTES.IMPORT__SELECT
-            : ROUTES.NEW_IMPORT_WALLET_SELECTION,
-          { state: { secrets } },
-        );
+      if (secrets.length === 1 && isValidPrivateKey(secrets[0])) {
+        const address = await wallet.importWithSecret(secrets[0]);
+        setCurrentAddress(address);
+        return navigate(onboarding ? ROUTES.CREATE_PASSWORD : ROUTES.HOME);
       }
-
-      const address = await wallet.importWithSecret(secrets[0]);
-      setCurrentAddress(address);
-      navigate(onboarding ? ROUTES.CREATE_PASSWORD : ROUTES.HOME);
+      return navigate(
+        onboarding ? ROUTES.IMPORT__SELECT : ROUTES.NEW_IMPORT_WALLET_SELECTION,
+        { state: { secrets } },
+      );
     },
     [navigate, onboarding, setCurrentAddress],
   );
@@ -89,7 +86,7 @@ export const ImportWallet = ({ onboarding = false }) => {
     setSecrets((secrets) => [...secrets, '']);
   }, []);
 
-  const debouncedSecrets = useDebounce(secrets, 500);
+  const debouncedSecrets = useDebounce(secrets, 1000);
   const errors = debouncedSecrets.map(
     (dsecret, i) => dsecret !== secrets[i] || getError(dsecret.trim()),
   );
