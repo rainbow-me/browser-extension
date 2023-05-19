@@ -105,10 +105,16 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
     [secrets, updateValidity],
   );
   const handleImportWallet = useCallback(async () => {
+    console.log('--- secrets', secrets);
     if (secrets.length === 1 && secrets[0] === '') return;
     if (isAddingWallets) return;
     // If it's only one private key or address, import it directly and go to wallet screen
     if (secrets.length === 1) {
+      console.log(
+        '--- isValidPrivateKey(secrets[0]',
+        isValidPrivateKey(secrets[0]),
+      );
+      console.log('--- isAddress(secrets[0]', isAddress(secrets[0]));
       if (isValidPrivateKey(secrets[0]) || isAddress(secrets[0])) {
         try {
           setIsAddingWallets(true);
@@ -121,17 +127,16 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
           return;
         } finally {
           setIsAddingWallets(false);
+          onboarding
+            ? navigate(ROUTES.IMPORT__SELECT, {
+                state: { secrets },
+              })
+            : navigate(ROUTES.NEW_IMPORT_WALLET_SELECTION, {
+                state: { secrets },
+              });
         }
       }
     }
-
-    onboarding
-      ? navigate(ROUTES.IMPORT__SELECT, {
-          state: { secrets },
-        })
-      : navigate(ROUTES.NEW_IMPORT_WALLET_SELECTION, {
-          state: { secrets },
-        });
   }, [isAddingWallets, navigate, onboarding, secrets, setCurrentAddress]);
 
   const handleAddAnotherOne = useCallback(() => {
