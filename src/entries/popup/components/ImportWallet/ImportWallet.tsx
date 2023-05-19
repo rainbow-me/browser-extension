@@ -54,14 +54,6 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
   const [secrets, setSecrets] = useState<string[]>(['']);
   const { setCurrentAddress } = useCurrentAddressStore();
 
-  useEffect(() => {
-    const getSecrets = async () => {
-      const secrets = await getImportWalletSecrets();
-      setSecrets(secrets);
-    };
-    getSecrets();
-  }, []);
-
   const [validity, setValidity] = useState<
     { valid: boolean; too_long: boolean; type: string | undefined }[]
   >([]);
