@@ -192,6 +192,13 @@ const DropdownWalletsList = ({
     [contacts.length, sortedWallets.length, watchedWallets.length],
   );
 
+  console.log('--- walletOrder,', walletOrder);
+  console.log('--- wallets,', wallets);
+  console.log('--- sortedWallets,', sortedWallets);
+  console.log('--- watchedWallets,', watchedWallets);
+  console.log('--- contacts,', contacts);
+  console.log('--- walletsExist,', walletsExist);
+
   return (
     <>
       {walletsExist && (
