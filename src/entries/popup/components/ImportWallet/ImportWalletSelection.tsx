@@ -1,6 +1,5 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-nested-ternary */
-import { useCallback, useEffect, useState } from 'react';
+import { useMutation, useQueries } from '@tanstack/react-query';
+import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
@@ -26,70 +25,67 @@ import { Spinner } from '../Spinner/Spinner';
 
 import { AccountToImportRows } from './AccountToImportRows';
 
-const ImportWalletSelection = ({
-  onboarding = false,
-}: {
-  onboarding?: boolean;
-}) => {
+const useDeriveAccountsFromSecrets = (secrets: string[]) => {
+  const accountsFromSecrets = useQueries({
+    queries: secrets.map((s) => ({
+      queryKey: ['accounts from secret', s], // no persisterVersion so secrets are not persisted to storage, only in memory cache
+      queryFn: () => deriveAccountsFromSecret(s),
+    })),
+  });
+  return useMemo(
+    () =>
+      accountsFromSecrets.reduce(
+        (all, { data = [] }) => [...all, ...data],
+        [] as Address[],
+      ),
+    [accountsFromSecrets],
+  );
+};
+
+const useImportSecrets = (secrets: string[], ) => {
+  const { mutate: import, isLoading: isImporting } = useMutation(
+    ['import secrets', secrets],
+    () => Promise.all(secrets.map(wallet.importWithSecret)),
+    
+  );
+  return { import, isImporting }
+}
+
+export const ImportWalletSelection = ({ onboarding = false }) => {
   const navigate = useRainbowNavigate();
-  const { state } = useLocation();
+  const { state }: { state: { secrets?: string[] } } = useLocation();
   const { setCurrentAddress } = useCurrentAddressStore();
 
-  const [accountsToImport, setAccountsToImport] = useState<Address[]>([]);
-  const [isImporting, setIsImporting] = useState(false);
+  const secrets = state.secrets || [];
+
+  const accountsToImport = useDeriveAccountsFromSecrets(secrets);
+  const { import, isImporting } = useImportSecrets(secrets, {
+    onSuccess(addresses) {
+      setCurrentAddress(addresses[0]);
+      if (onboarding) navigate(ROUTES.CREATE_PASSWORD);
+      else navigate(ROUTES.HOME);
+    },
+  })
 
   const { isLoading: walletsSummaryIsLoading, walletsSummary } =
     useWalletsSummary({
       addresses: accountsToImport,
     });
 
-  useEffect(() => {
-    const init = async () => {
-      let addresses: Address[] = [];
-      for (const secret of state.secrets) {
-        const derivedAddresses = await deriveAccountsFromSecret(secret);
-        addresses = [...addresses, ...derivedAddresses];
-      }
-      setAccountsToImport(addresses);
-    };
-    init();
-  }, [state?.secrets]);
+  
 
-  const handleAddWallets = useCallback(async () => {
-    if (isImporting) return;
-    setIsImporting(true);
-    // Import all the secrets
-    for (let i = 0; i < state.secrets.length; i++) {
-      const address = (await wallet.importWithSecret(
-        state.secrets[i],
-      )) as Address;
-      // Select the first wallet
-      if (i === 0) {
-        setCurrentAddress(address);
-      }
-    }
-    setIsImporting(false);
-    onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
-  }, [isImporting, navigate, onboarding, setCurrentAddress, state.secrets]);
-
-  const handleEditWallets = useCallback(async () => {
-    onboarding
-      ? navigate(ROUTES.IMPORT__EDIT, {
-          state: {
-            secrets: state.secrets,
-            accountsToImport,
-          },
-        })
-      : navigate(ROUTES.NEW_IMPORT_WALLET_SELECTION_EDIT, {
-          state: {
-            secrets: state.secrets,
-            accountsToImport,
-          },
-        });
-  }, [accountsToImport, navigate, onboarding, state.secrets]);
+  const handleEditWallets = () => {
+    navigate(
+      onboarding
+        ? ROUTES.IMPORT__EDIT
+        : ROUTES.NEW_IMPORT_WALLET_SELECTION_EDIT,
+      { state: { secrets: state.secrets, accountsToImport } },
+    );
+  };
 
   const isReady =
     accountsToImport.length && !isImporting && !walletsSummaryIsLoading;
+
   return (
     <Rows space="20px" alignVertical="justify">
       <Row height="content">
@@ -212,5 +208,3 @@ const ImportWalletSelection = ({
     </Rows>
   );
 };
-
-export { ImportWalletSelection };

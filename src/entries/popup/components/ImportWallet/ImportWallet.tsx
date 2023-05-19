@@ -67,11 +67,10 @@ export const ImportWallet = ({ onboarding = false }) => {
   const [secrets, setSecrets] = useState<string[]>(state.secrets || ['']);
 
   const importWallets = useCallback(
-    async (_secrets: string[]) => {
+    (_secrets: string[]) => {
       const secrets = [...new Set(_secrets)]; // remove duplicates
       if (secrets.length === 1 && isValidPrivateKey(secrets[0])) {
-        const address = await wallet.importWithSecret(secrets[0]);
-        setCurrentAddress(address);
+        wallet.importWithSecret(secrets[0]).then(setCurrentAddress);
         return navigate(onboarding ? ROUTES.CREATE_PASSWORD : ROUTES.HOME);
       }
       return navigate(
@@ -82,14 +81,13 @@ export const ImportWallet = ({ onboarding = false }) => {
     [navigate, onboarding, setCurrentAddress],
   );
 
-  const addAnotherOne = useCallback(() => {
-    setSecrets((secrets) => [...secrets, '']);
-  }, []);
+  const addAnotherOne = () => setSecrets((secrets) => [...secrets, '']);
 
   const debouncedSecrets = useDebounce(secrets, 1000);
-  const errors = debouncedSecrets.map(
-    (dsecret, i) => dsecret !== secrets[i] || getError(dsecret.trim()),
-  );
+  const errors = debouncedSecrets.map((dsecret, i) => {
+    const s = dsecret.trim();
+    return s !== secrets[i].trim() || getError(s);
+  });
   const disabled = errors.some((e) => e !== false);
 
   return (
