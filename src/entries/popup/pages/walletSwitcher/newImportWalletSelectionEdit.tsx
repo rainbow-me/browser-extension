@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { Box } from '~/design-system';
@@ -23,7 +23,7 @@ const NewImportWalletSelectionEdit = () => {
       />
       <Box
         height="full"
-        paddingHorizontal="20px"
+        paddingHorizontal="16px"
         background="surfaceSecondary"
         display="flex"
         flexDirection="column"

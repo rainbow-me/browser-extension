@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { Box } from '~/design-system';
 
 import { ImportWalletSelection } from '../../components/ImportWallet/ImportWalletSelection';
@@ -8,7 +6,7 @@ const NewImportWalletSelection = () => {
   return (
     <Box
       height="full"
-      paddingHorizontal="20px"
+      paddingHorizontal="16px"
       background="surfaceSecondary"
       display="flex"
       flexDirection="column"

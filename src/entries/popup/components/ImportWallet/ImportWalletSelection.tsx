@@ -46,11 +46,13 @@ const useDeriveAccountsFromSecrets = (secrets: string[]) => {
   );
 };
 
-const useImportSecrets = (options: UseMutationOptions<Address[]>) => {
+export const useImportWalletsFromSecrets = (
+  options: UseMutationOptions<Address[], unknown, string[]>,
+) => {
   const { mutate, isLoading } = useMutation(
     ['import secrets'],
     (secrets: string[]) => Promise.all(secrets.map(wallet.importWithSecret)),
-    // options,
+    options,
   );
   return { importSecrets: mutate, isImporting: isLoading };
 };
@@ -63,14 +65,13 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
   const secrets = state.secrets || [];
 
   const accountsToImport = useDeriveAccountsFromSecrets(secrets);
-  const { importSecrets, isImporting } = useImportSecrets({});
-  // , {
-  //   onSuccess(addresses) {
-  //     setCurrentAddress(addresses[0]);
-  //     if (onboarding) navigate(ROUTES.CREATE_PASSWORD);
-  //     else navigate(ROUTES.HOME);
-  //   },
-  // });
+  const { importSecrets, isImporting } = useImportWalletsFromSecrets({
+    onSuccess(addresses) {
+      setCurrentAddress(addresses[0]);
+      if (onboarding) navigate(ROUTES.CREATE_PASSWORD);
+      else navigate(ROUTES.HOME);
+    },
+  });
 
   const { isLoading: walletsSummaryIsLoading, walletsSummary } =
     useWalletsSummary({
@@ -99,28 +100,27 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
                 {i18n.t('import_wallet_selection.title')}
               </Text>
             </Inline>
-            <Box paddingHorizontal="28px">
-              <Text
-                size="12pt"
-                weight="regular"
-                color="labelTertiary"
-                align="center"
-              >
-                {accountsToImport.length && !isImporting
-                  ? accountsToImport.length === 1
-                    ? i18n.t('import_wallet_selection.description_singular')
-                    : i18n.t('import_wallet_selection.description_plural', {
-                        count: accountsToImport.length,
-                      })
-                  : ''}
-              </Text>
-            </Box>
+            {!walletsSummaryIsLoading && (
+              <Box paddingHorizontal="28px">
+                <Text
+                  size="12pt"
+                  weight="regular"
+                  color="labelTertiary"
+                  align="center"
+                >
+                  {i18n.t('import_wallet_selection.description', {
+                    count: accountsToImport.length,
+                  })}
+                </Text>
+              </Box>
+            )}
           </Stack>
-          {isReady ? (
+
+          {isReady && (
             <Box width="full" style={{ width: '106px' }}>
               <Separator color="separatorTertiary" strokeWeight="1px" />
             </Box>
-          ) : null}
+          )}
         </Stack>
       </Row>
 
@@ -158,21 +158,17 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
             <Box
               width="full"
               background="surfaceSecondary"
-              style={{
-                overflow: 'auto',
-                height: '291px',
-              }}
+              style={{ overflow: 'auto', height: '291px' }}
             >
               <Box
                 background="surfaceSecondaryElevated"
                 borderRadius="16px"
-                padding="12px"
+                paddingHorizontal="12px"
                 paddingTop={accountsToImport.length > 1 ? '16px' : '10px'}
                 paddingBottom="10px"
                 boxShadow="12px surfaceSecondaryElevated"
               >
                 <AccountToImportRows
-                  accountsIgnored={[]}
                   accountsToImport={accountsToImport}
                   walletsSummary={walletsSummary}
                 />
@@ -186,7 +182,7 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
                   symbolSide="left"
                   color={'accent'}
                   height="44px"
-                  variant={'flat'}
+                  variant="raised"
                   width="full"
                   onClick={() => importSecrets(secrets)}
                   testId="add-wallets-button"

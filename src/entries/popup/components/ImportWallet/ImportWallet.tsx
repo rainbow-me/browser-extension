@@ -39,7 +39,7 @@ function ErrorMessage({ message }: { message: string }) {
 }
 
 const wordlist = wordlists['en']; // ethers uses the 'en' wordlist as default, I'm just making it explicit here
-const getError = (secret: string): string | boolean => {
+const validateSecret = (secret: string): string | boolean => {
   if (!secret) return true; // true = error but no msg
 
   if (secret.startsWith('0x')) {
@@ -70,6 +70,7 @@ export const ImportWallet = ({ onboarding = false }) => {
     (_secrets: string[]) => {
       const secrets = [...new Set(_secrets)]; // remove duplicates
       if (secrets.length === 1 && isValidPrivateKey(secrets[0])) {
+        // setIsLoading(true)
         wallet.importWithSecret(secrets[0]).then(setCurrentAddress);
         return navigate(onboarding ? ROUTES.CREATE_PASSWORD : ROUTES.HOME);
       }
@@ -85,8 +86,12 @@ export const ImportWallet = ({ onboarding = false }) => {
 
   const debouncedSecrets = useDebounce(secrets, 1000);
   const errors = debouncedSecrets.map((dsecret, i) => {
-    const s = dsecret.trim();
-    return s !== secrets[i].trim() || getError(s);
+    const debouncedValue = dsecret.trim();
+    const inputValue = secrets[i].trim();
+    const error = validateSecret(inputValue);
+    if (!error) return false;
+    if (debouncedValue !== inputValue) return false;
+    return error;
   });
   const disabled = errors.some((e) => e !== false);
 
@@ -184,7 +189,7 @@ export const ImportWallet = ({ onboarding = false }) => {
           symbolSide="left"
           color={!disabled ? 'accent' : 'labelQuaternary'}
           height="44px"
-          variant={!disabled ? 'flat' : 'disabled'}
+          variant={!disabled ? 'raised' : 'disabled'}
           width="full"
           onClick={() => importWallets(secrets)}
           disabled={disabled}

@@ -1,17 +1,8 @@
-import { formatDistanceStrict } from 'date-fns';
-import React from 'react';
+import { formatDistanceToNowStrict } from 'date-fns';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import {
-  Box,
-  Column,
-  Columns,
-  Row,
-  Rows,
-  Separator,
-  Text,
-} from '~/design-system';
+import { Box, Column, Columns, Separator, Stack, Text } from '~/design-system';
 
 import { WalletSummary } from '../../hooks/useWalletsSummary';
 import { AddressOrEns } from '../AddressOrEns/AddressorEns';
@@ -19,100 +10,75 @@ import { Checkbox } from '../Checkbox/Checkbox';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
 export const AccountToImportRows = ({
-  accountsIgnored = [],
+  selectedAccounts = {},
   accountsToImport,
   showCheckbox,
   walletsSummary,
   toggleAccount,
 }: {
-  accountsIgnored?: Address[];
+  selectedAccounts?: Record<Address, boolean>;
   accountsToImport?: Address[];
   showCheckbox?: boolean;
   walletsSummary: { [key: Address]: WalletSummary };
   toggleAccount?: (address: Address) => void;
 }) => {
   return (
-    <Rows space="14px" alignVertical="top">
-      {accountsToImport?.map((address: Address, index: number) => (
-        <Row key={`avatar_${address}`} height="content">
-          <Rows>
-            <Row>
-              <Columns alignVertical="center">
-                <Column>
-                  <Box onClick={() => toggleAccount?.(address)}>
-                    <Columns
-                      space="8px"
-                      alignHorizontal="left"
-                      alignVertical="center"
-                    >
-                      <Column width="content">
-                        <WalletAvatar
-                          address={address as Address}
-                          size={32}
-                          emojiSize={'16pt'}
-                        />
-                      </Column>
-                      <Column>
-                        <Rows space="8px">
-                          <Row>
-                            <AddressOrEns
-                              size="14pt"
-                              weight="bold"
-                              color="label"
-                              address={address as Address}
-                            />
-                          </Row>
-                          <Row>
-                            <Text
-                              color="labelTertiary"
-                              size="12pt"
-                              weight="semibold"
-                            >
-                              {i18n.t(
-                                'import_wallet_selection.account_summary',
-                                {
-                                  tokensAmount:
-                                    walletsSummary[address].balance.display,
-                                  lastTx: formatDistanceStrict(
-                                    new Date(),
-                                    new Date(
-                                      Number(walletsSummary[address].lastTx) *
-                                        1000,
-                                    ),
-                                  ),
-                                },
-                              )}
-                            </Text>
-                          </Row>
-                        </Rows>
-                      </Column>
-                    </Columns>
-                  </Box>
+    <Stack
+      space="6px"
+      separator={
+        <Box width="full">
+          <Separator color="separatorTertiary" strokeWeight="1px" />
+        </Box>
+      }
+    >
+      {accountsToImport?.map((address) => (
+        <Box onClick={() => toggleAccount?.(address)} key={`avatar_${address}`}>
+          <Columns alignVertical="center" space="16px">
+            <Column>
+              <Columns
+                space="8px"
+                alignHorizontal="left"
+                alignVertical="center"
+              >
+                <Column width="content">
+                  <WalletAvatar
+                    address={address}
+                    size={36}
+                    emojiSize={'16pt'}
+                  />
                 </Column>
-                {showCheckbox ? (
-                  <Column width="content">
-                    <Box
-                      alignItems="center"
-                      justifyContent="flex-end"
-                      width="fit"
-                      onClick={() => toggleAccount?.(address)}
-                    >
-                      <Checkbox selected={!accountsIgnored.includes(address)} />
-                    </Box>
-                  </Column>
-                ) : null}
+                <Column>
+                  <Stack space="8px">
+                    <AddressOrEns
+                      size="14pt"
+                      weight="bold"
+                      color="label"
+                      address={address}
+                    />
+                    <Text color="labelTertiary" size="12pt" weight="semibold">
+                      {i18n.t('import_wallet_selection.account_summary', {
+                        tokensAmount: walletsSummary[address].balance.display,
+                        lastTx: formatDistanceToNowStrict(
+                          new Date(
+                            Number(walletsSummary[address].lastTx) * 1000,
+                          ),
+                        ),
+                      })}
+                    </Text>
+                  </Stack>
+                </Column>
               </Columns>
-            </Row>
-            <Row>
-              <Box width="full" paddingTop="6px">
-                {index !== accountsToImport.length - 1 ? (
-                  <Separator color="separatorTertiary" strokeWeight="1px" />
-                ) : null}
-              </Box>
-            </Row>
-          </Rows>
-        </Row>
+            </Column>
+            {showCheckbox && (
+              <Column width="content">
+                <Box alignItems="center" justifyContent="flex-end" width="fit">
+                  <Checkbox selected={!!selectedAccounts[address]} />
+                </Box>
+              </Column>
+            )}
+          </Columns>
+        </Box>
       ))}
-    </Rows>
+    </Stack>
   );
 };
