@@ -159,9 +159,13 @@ const WalletRow = ({
 };
 
 const sortWallets = (order: Address[], wallets: Address[]) =>
-  order
-    .map((orderAddress) => wallets.find((address) => address === orderAddress))
-    .filter(Boolean);
+  order.length
+    ? order
+        .map((orderAddress) =>
+          wallets.find((address) => address === orderAddress),
+        )
+        .filter(Boolean)
+    : wallets;
 
 const DropdownWalletsList = ({
   wallets,
@@ -187,6 +191,13 @@ const DropdownWalletsList = ({
     () => sortedWallets.length + contacts.length + watchedWallets.length > 0,
     [contacts.length, sortedWallets.length, watchedWallets.length],
   );
+
+  console.log('--- walletOrder,', walletOrder);
+  console.log('--- wallets,', wallets);
+  console.log('--- sortedWallets,', sortedWallets);
+  console.log('--- watchedWallets,', watchedWallets);
+  console.log('--- contacts,', contacts);
+  console.log('--- walletsExist,', walletsExist);
 
   return (
     <>
