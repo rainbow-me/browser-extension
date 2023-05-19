@@ -96,11 +96,14 @@ export async function switchWallet(address, rootURL, driver: WebDriver) {
     driver,
   });
 
-  // await delayTime('medium');
-  await driver
-    .wait(until.elementLocated(byText(shortenedAddress)), 60_000)
-    .click();
-  // await findElementByTextAndClick(driver, shortenedAddress);
+  await waitUntilElementByTestIdIsPresent({
+    id: `account-item-${shortenedAddress}`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `account-item-${shortenedAddress}`,
+    driver,
+  });
 
   await delayTime('long');
 }
