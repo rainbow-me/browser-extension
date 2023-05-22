@@ -57,9 +57,9 @@ export const useImportWalletsFromSecrets = (
     ['import secrets'],
     async ({ secrets, ignoreAddresses = [] }) => {
       const imported = await Promise.all(secrets.map(wallet.importWithSecret));
-      if (ignoreAddresses.length)
-        await Promise.all(ignoreAddresses.map(wallet.remove));
-      return imported;
+      if (!ignoreAddresses.length) return imported;
+      await Promise.all(ignoreAddresses.map(wallet.remove));
+      return wallet.getAccounts();
     },
     options,
   );
