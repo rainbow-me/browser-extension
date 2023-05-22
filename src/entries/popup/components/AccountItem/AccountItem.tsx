@@ -88,6 +88,7 @@ export default function AccountItem({
         paddingHorizontal="14px"
         paddingVertical="10px"
         borderRadius="12px"
+        testId={`account-item-${displayName}`}
       >
         <Columns space="8px" alignVertical="center" alignHorizontal="justify">
           <Column width="content">
