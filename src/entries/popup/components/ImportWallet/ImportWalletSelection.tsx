@@ -89,6 +89,7 @@ const ImportWalletSelection = ({
 
   const isReady =
     accountsToImport.length && !isImporting && !walletsSummaryIsLoading;
+
   return (
     <Rows space="20px" alignVertical="justify">
       <Row height="content">
@@ -99,22 +100,24 @@ const ImportWalletSelection = ({
                 {i18n.t('import_wallet_selection.title')}
               </Text>
             </Inline>
-            <Box paddingHorizontal="28px">
-              <Text
-                size="12pt"
-                weight="regular"
-                color="labelTertiary"
-                align="center"
-              >
-                {accountsToImport.length && !isImporting
-                  ? accountsToImport.length === 1
-                    ? i18n.t('import_wallet_selection.description_singular')
-                    : i18n.t('import_wallet_selection.description_plural', {
-                        count: accountsToImport.length,
-                      })
-                  : ''}
-              </Text>
-            </Box>
+            {isReady ? (
+              <Box paddingHorizontal="28px">
+                <Text
+                  size="12pt"
+                  weight="regular"
+                  color="labelTertiary"
+                  align="center"
+                >
+                  {accountsToImport.length && !isImporting
+                    ? accountsToImport.length === 1
+                      ? i18n.t('import_wallet_selection.description_singular')
+                      : i18n.t('import_wallet_selection.description_plural', {
+                          count: accountsToImport.length,
+                        })
+                    : ''}
+                </Text>
+              </Box>
+            ) : null}
           </Stack>
           {isReady ? (
             <Box width="full" style={{ width: '106px' }}>
