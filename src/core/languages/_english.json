@@ -486,6 +486,13 @@
     "add_another": "Add another",
     "remove": "Remove",
     "placeholder": "Paste your Secret Recovery Phrase or a Private Key from another wallet",
+    "invalid_word": "Invalid word: %{word}",
+    "invalid_private_key": "Invalid Private Key",
+    "invalid_recovery_phrase": "Invalid recovery phrase",
+    "missing_words": {
+      "one": "missing 1 word",
+      "other": "missing %{count} words"
+    },
     "import_wallet": {
       "one": "Restore wallet",
       "other": "Restore wallets"

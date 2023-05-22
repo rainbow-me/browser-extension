@@ -46,18 +46,20 @@ const validateSecret = (secret: string): string | boolean => {
     if (secret.length < 4) return true;
     if (secret.length > 66) return i18n.t('import_wallet.too_many_chars');
     if (isValidPrivateKey(addHexPrefix(secret.toLowerCase()))) return false; // false = no error
-    return 'Invalid Private Key';
+    return i18n.t('import_wallet.invalid_private_key');
   }
 
   if (isValidMnemonic(secret, wordlist)) return false; // false = no error
   const words = secret.split(' ');
   if (words.length < 10) return true; // user prolly still typing let's not bother him with and error msg
   if (words.length > 12) return i18n.t('import_wallet.too_many_words');
-  if (words.length < 12) return `missing ${12 - words.length} words`;
+  if (words.length < 12)
+    return i18n.t('import_wallet.missing_words', { count: 12 - words.length });
   const invalidWord = words.find((word) => wordlist.getWordIndex(word) === -1);
-  if (invalidWord) return `Invalid word ${invalidWord}`;
+  if (invalidWord)
+    return i18n.t('import_wallet.invalid_word', { word: invalidWord });
 
-  return `Invalid recovery phrase`;
+  return i18n.t('import_wallet.invalid_recovery_phrase');
 };
 
 export const ImportWallet = ({ onboarding = false }) => {
@@ -86,6 +88,7 @@ export const ImportWallet = ({ onboarding = false }) => {
 
   const debouncedSecrets = useDebounce(secrets, 1000);
   const errors = debouncedSecrets.map((dsecret, i) => {
+    if (!secrets[i]) return false;
     const debouncedValue = dsecret.trim();
     const inputValue = secrets[i].trim();
     const error = validateSecret(inputValue);
