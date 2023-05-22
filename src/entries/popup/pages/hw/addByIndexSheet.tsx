@@ -1,5 +1,5 @@
 import { chain, getProvider } from '@wagmi/core';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -26,6 +26,7 @@ import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { importAccountAtIndex } from '../../handlers/wallet';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
+import usePrevious from '../../hooks/usePrevious';
 
 import { AccountIndex } from './walletList';
 
@@ -48,6 +49,8 @@ export const AddByIndexSheet = ({
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const nativeAsset = useNativeAssetForNetwork({ chainId: chain.mainnet.id });
+  const inputRef = useRef<HTMLInputElement>(null);
+  const prevShow = usePrevious(show);
   const [loading, setLoading] = useState<boolean>(false);
   const [newIndex, setNewIndex] = useState<string>('');
   const [newAccount, setNewAccount] = useState<{
@@ -123,6 +126,14 @@ export const AddByIndexSheet = ({
   useEffect(() => {
     show && debouncedNewIndex !== '' && fetchWalletAtIndex();
   }, [debouncedNewIndex, fetchWalletAtIndex, show]);
+
+  useEffect(() => {
+    if (prevShow !== show && show) {
+      setTimeout(() => {
+        inputRef?.current?.focus();
+      }, 300);
+    }
+  }, [prevShow, show]);
 
   return (
     <>
@@ -249,10 +260,10 @@ export const AddByIndexSheet = ({
                         onChange={handleNewIndexChange}
                         height="32px"
                         textAlign="center"
-                        autoFocus
                         tabIndex={1}
                         variant="bordered"
                         style={{ width: '50px' }}
+                        innerRef={inputRef}
                       />
                     </Box>
                   </Inline>
