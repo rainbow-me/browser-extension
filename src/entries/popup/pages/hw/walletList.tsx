@@ -8,6 +8,7 @@ import { i18n } from '~/core/languages';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
 import { convertRawAmountToNativeDisplay } from '~/core/utils/numbers';
 import {
+  Bleed,
   Box,
   Button,
   Column,
@@ -42,7 +43,6 @@ export const AccountIndex = ({ index }: { index: number }) => {
       borderWidth="2px"
       borderColor={'separatorSecondary'}
       padding={'6px'}
-      marginTop={'-5px'}
     >
       <Text size="11pt" weight="bold" color={'labelTertiary'} align="center">
         # {index}
@@ -186,168 +186,194 @@ const WalletListHW = () => {
   return (
     <>
       <FullScreenContainer>
-        <Box alignItems="center">
-          <Text size="16pt" weight="bold" color="label" align="center">
-            {i18n.t('hw.connect_wallets_title')}
-          </Text>
-          <Box padding="16px" paddingTop="10px">
-            <Text
-              size="12pt"
-              weight="regular"
-              color="labelTertiary"
-              align="center"
-            >
-              {accountsToImport?.length > 1
-                ? i18n.t('hw.connect_wallets_found')
-                : i18n.t('hw.connect_wallets_not_found')}
-            </Text>
-          </Box>
-        </Box>
-
         <Box alignItems="center" width="full">
           {isLoading ? (
             <Box
+              paddingTop="80px"
               alignItems="center"
               justifyContent="center"
               width="full"
-              paddingTop="80px"
             >
-              <Text
-                size="14pt"
-                weight="regular"
-                color="labelSecondary"
-                align="center"
-              >
-                {selectedAccounts === 1
-                  ? i18n.t('edit_import_wallet_selection.importing_your_wallet')
-                  : i18n.t(
-                      'edit_import_wallet_selection.importing_your_wallets',
-                    )}
-              </Text>
-              <br />
-              <br />
-              <br />
-              <Box
-                width="fit"
-                alignItems="center"
-                justifyContent="center"
-                style={{ margin: 'auto' }}
-              >
-                <Spinner size={32} />
-              </Box>
+              <Stack space="20px">
+                <Text
+                  size="14pt"
+                  weight="regular"
+                  color="labelSecondary"
+                  align="center"
+                >
+                  {selectedAccounts === 1
+                    ? i18n.t(
+                        'edit_import_wallet_selection.importing_your_wallet',
+                      )
+                    : i18n.t(
+                        'edit_import_wallet_selection.importing_your_wallets',
+                      )}
+                </Text>
+                <Box
+                  width="fit"
+                  alignItems="center"
+                  justifyContent="center"
+                  style={{ margin: 'auto' }}
+                >
+                  <Spinner size={32} />
+                </Box>
+              </Stack>
             </Box>
           ) : (
-            <Box paddingTop="30px">
-              {!newDevice && (
-                <Inline>
-                  <Box style={{ width: '50%' }}>
+            <Stack space="24px">
+              <Box paddingHorizontal="28px">
+                <Stack space="12px">
+                  <Text size="16pt" weight="bold" color="label" align="center">
+                    {i18n.t('hw.connect_wallets_title')}
+                  </Text>
+                  <Box>
                     <Text
-                      size="14pt"
+                      size="12pt"
                       weight="regular"
-                      color="labelSecondary"
-                      align="left"
+                      color="labelTertiary"
+                      align="center"
                     >
-                      {i18n.t('hw.wallets_found', {
-                        count: selectedAccounts,
-                      })}
+                      {accountsToImport?.length > 1
+                        ? i18n.t('hw.connect_wallets_found')
+                        : i18n.t('hw.connect_wallets_not_found')}
                     </Text>
                   </Box>
-                  <Box style={{ width: '50%' }}>
-                    <a
-                      onClick={() => {
-                        setShowAddByIndexSheet(true);
-                      }}
-                    >
-                      <Text
-                        size="14pt"
-                        weight="regular"
-                        color="labelSecondary"
-                        align="right"
-                      >
-                        <Symbol
-                          color={'labelSecondary'}
-                          size={12}
-                          symbol={'plus.circle.fill'}
+                </Stack>
+              </Box>
+              <Box width="full" style={{ width: '106px' }}>
+                <Separator color="separatorTertiary" strokeWeight="1px" />
+              </Box>
+              <Box>
+                <Stack space="12px">
+                  {!newDevice && (
+                    <Columns alignHorizontal="justify">
+                      <Column>
+                        <Text
+                          size="14pt"
                           weight="regular"
-                        />{' '}
-                        {i18n.t('hw.add_by_index')}
-                      </Text>
-                    </a>
-                  </Box>
-                </Inline>
-              )}
-              <Box
-                width="full"
-                style={{
-                  marginTop: '12px',
-                  overflow: 'auto',
-                  height: '331px',
-                }}
-              >
-                <Box
-                  background="surfaceSecondaryElevated"
-                  borderRadius="16px"
-                  padding="16px"
-                  borderColor={'separatorSecondary'}
-                  borderWidth={'1px'}
-                  width="full"
-                  position="relative"
-                  paddingBottom={'10px'}
-                >
-                  <Rows space="12px">
-                    {accountsToImport.map(
-                      ({
-                        address,
-                        index,
-                      }: {
-                        address: Address;
-                        index: number;
-                      }) => (
-                        <Row key={`avatar_${address}`}>
-                          <Columns>
-                            <Column>
-                              <Box
-                                onClick={() => toggleAccount(address)}
-                                justifyContent="flex-end"
-                                width="fit"
-                              >
-                                <Inline
-                                  space="8px"
-                                  alignHorizontal="left"
-                                  alignVertical="center"
-                                >
-                                  <WalletAvatar
-                                    address={address as Address}
-                                    size={32}
-                                    emojiSize={'16pt'}
-                                  />
-                                  <Box justifyContent="flex-start" width="fit">
-                                    <Stack space="8px">
-                                      <Inline space="8px">
-                                        <AddressOrEns
-                                          size="14pt"
-                                          weight="bold"
-                                          color="label"
-                                          address={address as Address}
-                                        />
-                                        <AccountIndex index={index} />
-                                      </Inline>
-                                      <Text
-                                        color="labelTertiary"
-                                        size="12pt"
-                                        weight="regular"
-                                      >
-                                        {balances?.[index as number] as string}
-                                      </Text>
-                                    </Stack>
-                                  </Box>
-                                </Inline>
-                              </Box>
-                            </Column>
-                            <Column width="content">
-                              <Rows alignVertical="center">
-                                <Row height="content">
+                          color="labelSecondary"
+                          align="left"
+                        >
+                          {i18n.t('hw.wallets_found', {
+                            count: selectedAccounts,
+                          })}
+                        </Text>
+                      </Column>
+                      <Column>
+                        <a
+                          onClick={() => {
+                            setShowAddByIndexSheet(true);
+                          }}
+                        >
+                          <Text
+                            size="14pt"
+                            weight="regular"
+                            color="labelSecondary"
+                            align="right"
+                          >
+                            <Symbol
+                              color={'labelSecondary'}
+                              size={12}
+                              symbol={'plus.circle.fill'}
+                              weight="regular"
+                            />{' '}
+                            {i18n.t('hw.add_by_index')}
+                          </Text>
+                        </a>
+                      </Column>
+                    </Columns>
+                  )}
+                  <Box
+                    width="full"
+                    style={{
+                      overflow: 'auto',
+                      // height: '331px',
+                    }}
+                  >
+                    <Box
+                      background="surfaceSecondaryElevated"
+                      borderRadius="16px"
+                      padding="16px"
+                      borderColor={'separatorSecondary'}
+                      borderWidth={'1px'}
+                      width="full"
+                      position="relative"
+                      paddingBottom={'10px'}
+                    >
+                      <Stack
+                        space="6px"
+                        separator={
+                          <Separator
+                            color="separatorTertiary"
+                            strokeWeight="1px"
+                          />
+                        }
+                      >
+                        {accountsToImport.map(
+                          ({
+                            address,
+                            index,
+                          }: {
+                            address: Address;
+                            index: number;
+                          }) => (
+                            <Box key={`avatar_${address}`}>
+                              <Columns alignVertical="center">
+                                <Column>
                                   <Box
+                                    onClick={() => toggleAccount(address)}
+                                    justifyContent="flex-end"
+                                    width="fit"
+                                  >
+                                    <Inline
+                                      space="8px"
+                                      alignHorizontal="left"
+                                      alignVertical="center"
+                                    >
+                                      <WalletAvatar
+                                        address={address as Address}
+                                        size={36}
+                                        emojiSize={'16pt'}
+                                      />
+                                      <Box
+                                        justifyContent="flex-start"
+                                        width="fit"
+                                      >
+                                        <Stack space="8px">
+                                          <Inline
+                                            space="8px"
+                                            alignVertical="center"
+                                          >
+                                            <AddressOrEns
+                                              size="14pt"
+                                              weight="bold"
+                                              color="label"
+                                              address={address as Address}
+                                            />
+                                            <Bleed vertical="8px">
+                                              <AccountIndex index={index} />
+                                            </Bleed>
+                                          </Inline>
+                                          <Text
+                                            color="labelTertiary"
+                                            size="12pt"
+                                            weight="regular"
+                                          >
+                                            {
+                                              balances?.[
+                                                index as number
+                                              ] as string
+                                            }
+                                          </Text>
+                                        </Stack>
+                                      </Box>
+                                    </Inline>
+                                  </Box>
+                                </Column>
+                                <Column width="content">
+                                  <Box
+                                    alignItems="center"
+                                    justifyContent="flex-end"
                                     width="fit"
                                     onClick={() => toggleAccount(address)}
                                   >
@@ -357,74 +383,63 @@ const WalletListHW = () => {
                                       }
                                     />
                                   </Box>
-                                </Row>
-                              </Rows>
-                            </Column>
-                          </Columns>
-                          <Box width="full" paddingTop="6px">
-                            {index !== accountsToImport.length - 1 ? (
-                              <Separator
-                                color="separatorTertiary"
-                                strokeWeight="1px"
-                              />
-                            ) : null}
-                          </Box>
-                        </Row>
-                      ),
-                    )}
-                  </Rows>
-                </Box>
-                {newDevice && balances.length <= 6 && (
-                  <Rows>
-                    <Row>
-                      <Columns alignHorizontal="center">
-                        <Column width="content">
-                          <Box
-                            borderRadius="28px"
-                            background="surfaceSecondaryElevated"
-                            borderColor="separatorSecondary"
-                            borderWidth="1px"
-                            paddingHorizontal="12px"
-                            paddingVertical="9px"
-                            style={{ marginTop: 24 }}
-                          >
-                            <a
-                              onClick={() => {
-                                setShowAddByIndexSheet(true);
-                              }}
+                                </Column>
+                              </Columns>
+                            </Box>
+                          ),
+                        )}
+                      </Stack>
+                    </Box>
+                  </Box>
+                  {newDevice && balances.length <= 6 && (
+                    <Rows>
+                      <Row>
+                        <Columns alignHorizontal="center">
+                          <Column width="content">
+                            <Box
+                              borderRadius="28px"
+                              background="surfaceSecondaryElevated"
+                              borderColor="separatorSecondary"
+                              borderWidth="1px"
+                              paddingHorizontal="12px"
+                              paddingVertical="9px"
                             >
-                              <Box paddingTop="2px">
-                                <Inline space="4px">
-                                  <Box style={{ marginTop: -1 }}>
+                              <a
+                                onClick={() => {
+                                  setShowAddByIndexSheet(true);
+                                }}
+                              >
+                                <Box paddingTop="2px">
+                                  <Inline space="4px" alignVertical="center">
                                     <Symbol
                                       color="label"
                                       size={12}
                                       symbol={'plus.circle.fill'}
                                       weight="regular"
                                     />
-                                  </Box>
-                                  <Text
-                                    size="14pt"
-                                    weight="regular"
-                                    color="label"
-                                    align="center"
-                                  >
-                                    {i18n.t('hw.add_by_index')}
-                                  </Text>
-                                </Inline>
-                              </Box>
-                            </a>
-                          </Box>
-                        </Column>
-                      </Columns>
-                    </Row>
-                  </Rows>
-                )}
+                                    <Text
+                                      size="14pt"
+                                      weight="regular"
+                                      color="label"
+                                      align="center"
+                                    >
+                                      {i18n.t('hw.add_by_index')}
+                                    </Text>
+                                  </Inline>
+                                </Box>
+                              </a>
+                            </Box>
+                          </Column>
+                        </Columns>
+                      </Row>
+                    </Rows>
+                  )}
+                </Stack>
               </Box>
-            </Box>
+            </Stack>
           )}
           {!isLoading && (
-            <Box width="full" paddingTop="20px">
+            <Box width="full" padding="20px">
               <Button
                 symbol="arrow.uturn.down.circle.fill"
                 symbolSide="left"
