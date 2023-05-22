@@ -90,7 +90,7 @@ export const ImportWallet = ({ onboarding = false }) => {
     const inputValue = secrets[i].trim();
     const error = validateSecret(inputValue);
     if (!error) return false;
-    if (debouncedValue !== inputValue) return false;
+    if (debouncedValue !== inputValue) return true;
     return error;
   });
   const disabled = errors.some((e) => e !== false);

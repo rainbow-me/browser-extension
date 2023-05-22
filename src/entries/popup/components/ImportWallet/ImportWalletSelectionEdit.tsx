@@ -74,6 +74,7 @@ export function ImportWalletSelectionEdit({
   );
   const amountOfAddressesBeingAdded =
     accountsToImport.length - accountsIgnored.length;
+  const isButtonDisabled = amountOfAddressesBeingAdded === 0;
 
   const sortedAccountsToImport = useMemo(
     () => sortAccounts(sortMethod, accountsToImport, walletsSummary),
@@ -152,10 +153,11 @@ export function ImportWalletSelectionEdit({
             <Button
               symbol="arrow.uturn.down.circle.fill"
               symbolSide="left"
-              color={'accent'}
+              color={isButtonDisabled ? 'labelQuaternary' : 'accent'}
               height="44px"
-              variant="raised"
+              variant={isButtonDisabled ? 'disabled' : 'raised'}
               width="full"
+              disabled={isButtonDisabled}
               onClick={() =>
                 importSecrets({ secrets, ignoreAddresses: accountsIgnored })
               }

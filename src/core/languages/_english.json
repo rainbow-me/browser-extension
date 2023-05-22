@@ -494,6 +494,7 @@
   "edit_import_wallet_selection": {
     "title": "All wallets",
     "add_wallet": {
+      "zero": "Select a wallet",
       "one": "Add wallet",
       "other": "Add %{count} wallets"
     },
