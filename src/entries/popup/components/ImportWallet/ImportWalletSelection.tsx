@@ -108,13 +108,11 @@ const ImportWalletSelection = ({
                   color="labelTertiary"
                   align="center"
                 >
-                  {accountsToImport.length && !isImporting
-                    ? accountsToImport.length === 1
-                      ? i18n.t('import_wallet_selection.description_singular')
-                      : i18n.t('import_wallet_selection.description_plural', {
-                          count: accountsToImport.length,
-                        })
-                    : ''}
+                  {accountsToImport.length === 1
+                    ? i18n.t('import_wallet_selection.description_singular')
+                    : i18n.t('import_wallet_selection.description_plural', {
+                        count: accountsToImport.length,
+                      })}
                 </Text>
               </Box>
             ) : null}
