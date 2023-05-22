@@ -118,21 +118,31 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
           setCurrentAddress(address);
           setIsAddingWallets(false);
           onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
-          return;
-        } finally {
           setIsAddingWallets(false);
+          return;
+        } catch (e) {
+          //
         }
       }
+      if (isValid) {
+        setIsAddingWallets(false);
+        onboarding
+          ? navigate(ROUTES.IMPORT__SELECT, {
+              state: { secrets },
+            })
+          : navigate(ROUTES.NEW_IMPORT_WALLET_SELECTION, {
+              state: { secrets },
+            });
+      }
     }
-
-    onboarding
-      ? navigate(ROUTES.IMPORT__SELECT, {
-          state: { secrets },
-        })
-      : navigate(ROUTES.NEW_IMPORT_WALLET_SELECTION, {
-          state: { secrets },
-        });
-  }, [isAddingWallets, navigate, onboarding, secrets, setCurrentAddress]);
+  }, [
+    isAddingWallets,
+    isValid,
+    navigate,
+    onboarding,
+    secrets,
+    setCurrentAddress,
+  ]);
 
   const handleAddAnotherOne = useCallback(() => {
     const newSecrets = [...secrets, ''];
