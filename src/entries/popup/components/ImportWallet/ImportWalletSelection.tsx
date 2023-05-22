@@ -50,15 +50,22 @@ export const useImportWalletsFromSecrets = (
   options: UseMutationOptions<
     Address[],
     unknown,
-    { secrets: string[]; ignoreAddresses?: Address[] }
+    { secrets: string[]; accountsIgnored?: Address[] }
   >,
 ) => {
   const { mutate, isLoading } = useMutation(
-    ['import secrets'],
-    async ({ secrets, ignoreAddresses = [] }) => {
-      const imported = await Promise.all(secrets.map(wallet.importWithSecret));
-      if (!ignoreAddresses.length) return imported;
-      await Promise.all(ignoreAddresses.map(wallet.remove));
+    async ({ secrets, accountsIgnored = [] }) => {
+      const prevAccounts = await wallet.getAccounts();
+      await Promise.all(secrets.map(wallet.importWithSecret));
+
+      if (!accountsIgnored.length) return wallet.getAccounts();
+
+      // when importing another account from a seed that was already imported earlier
+      // don't remove accounts that where already in the keychain before importing these secrets
+      const addressesToRemove = accountsIgnored.filter((address) =>
+        prevAccounts.includes(address),
+      );
+      await Promise.all(addressesToRemove.map(wallet.remove));
       return wallet.getAccounts();
     },
     options,
@@ -167,7 +174,7 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
             <Box
               width="full"
               background="surfaceSecondary"
-              style={{ overflow: 'auto', height: '291px' }}
+              style={{ overflow: 'auto', height: '292px' }}
             >
               <Box
                 background="surfaceSecondaryElevated"

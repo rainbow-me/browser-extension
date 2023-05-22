@@ -1,5 +1,5 @@
 import { xor } from 'lodash';
-import React, { useMemo, useReducer } from 'react';
+import { useMemo, useReducer, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
@@ -14,14 +14,19 @@ import {
   WalletSummary,
   useWalletsSummary,
 } from '../../hooks/useWalletsSummary';
-import { WalletsSortMethod } from '../../pages/importWalletSelection/EditImportWalletSelection';
 import { ROUTES } from '../../urls';
 
 import { AccountToImportRows } from './AccountToImportRows';
+import { ImportWalletNavbar } from './ImportWalletNavbar';
 import { useImportWalletsFromSecrets } from './ImportWalletSelection';
 
+export type WalletsSortMethod =
+  | 'default'
+  | 'token-balance'
+  | 'last-transaction';
+
 const sortAccounts = (
-  sortBy: WalletsSortMethod | undefined,
+  sortBy: WalletsSortMethod,
   accounts: Address[],
   summaries: Record<Address, WalletSummary>,
 ) => {
@@ -46,18 +51,11 @@ const sortAccounts = (
   }
 };
 
+const arrayAddOrRemove = <T,>(arr: T[], item: T) => xor(arr, [item]);
+const addOrRemoveAddy: typeof arrayAddOrRemove<Address> = arrayAddOrRemove;
+
 const emptyArray: unknown[] = [];
-export function ImportWalletSelectionEdit({
-  isAddingWallets,
-  onboarding = false,
-  sortMethod,
-  setIsAddingWallets,
-}: {
-  isAddingWallets: boolean;
-  onboarding?: boolean;
-  sortMethod?: WalletsSortMethod;
-  setIsAddingWallets: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+export function ImportWalletSelectionEdit({ onboarding = false }) {
   const navigate = useRainbowNavigate();
   const { setCurrentAddress } = useCurrentAddressStore();
 
@@ -68,107 +66,121 @@ export function ImportWalletSelectionEdit({
   const { isLoading: walletsSummaryisAddingWallets, walletsSummary } =
     useWalletsSummary({ addresses: accountsToImport });
 
-  const [accountsIgnored, toggleAccount] = useReducer(
-    (s: Address[], a: Address) => xor(s, [a]),
-    [],
-  );
+  const [accountsIgnored, toggleAccount] = useReducer(addOrRemoveAddy, []);
   const amountOfAddressesBeingAdded =
     accountsToImport.length - accountsIgnored.length;
   const isButtonDisabled = amountOfAddressesBeingAdded === 0;
 
+  const [sortMethod, setSortMethod] = useState<WalletsSortMethod>('default');
   const sortedAccountsToImport = useMemo(
     () => sortAccounts(sortMethod, accountsToImport, walletsSummary),
     [sortMethod, accountsToImport, walletsSummary],
   );
 
-  const { importSecrets } = useImportWalletsFromSecrets({
-    onMutate: () => setIsAddingWallets(true),
-    onSettled: () => setIsAddingWallets(false),
+  const { importSecrets, isImporting } = useImportWalletsFromSecrets({
     onSuccess(addresses) {
       setCurrentAddress(addresses[0]);
       if (onboarding) navigate(ROUTES.CREATE_PASSWORD);
-      navigate(ROUTES.HOME);
+      else navigate(ROUTES.HOME);
     },
   });
 
+  const onImport = () => importSecrets({ secrets, accountsIgnored });
+
   return (
-    <Box alignItems="center" width="full">
-      {isAddingWallets || walletsSummaryisAddingWallets ? (
-        <Box
-          alignItems="center"
-          justifyContent="center"
-          width="full"
-          paddingTop="80px"
-        >
-          <Stack space="20px">
-            <Text
-              size="14pt"
-              weight="regular"
-              color="labelSecondary"
-              align="center"
-            >
-              {i18n.t('edit_import_wallet_selection.importing_your_wallet', {
-                count: amountOfAddressesBeingAdded,
-              })}
-            </Text>
-            <Box
-              width="fit"
-              alignItems="center"
-              justifyContent="center"
-              style={{ margin: 'auto' }}
-            >
-              <Spinner size={32} />
-            </Box>
-          </Stack>
-        </Box>
-      ) : (
-        <>
+    <>
+      <ImportWalletNavbar
+        backTo={ROUTES.IMPORT__SELECT}
+        navbarIcon="arrow"
+        showSortMenu={!isImporting}
+        sortMethod={sortMethod}
+        setSortMethod={setSortMethod}
+        title={i18n.t('edit_import_wallet_selection.title')}
+      />
+      <Box
+        height="full"
+        paddingHorizontal="16px"
+        background="surfaceSecondary"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        width="full"
+      >
+        {isImporting || walletsSummaryisAddingWallets ? (
           <Box
+            alignItems="center"
+            justifyContent="center"
             width="full"
-            style={{
-              overflow: 'auto',
-              height: '454px',
-            }}
+            paddingTop="80px"
           >
+            <Stack space="20px">
+              <Text
+                size="14pt"
+                weight="regular"
+                color="labelSecondary"
+                align="center"
+              >
+                {i18n.t('edit_import_wallet_selection.importing_your_wallet', {
+                  count: amountOfAddressesBeingAdded,
+                })}
+              </Text>
+              <Box
+                width="fit"
+                alignItems="center"
+                justifyContent="center"
+                style={{ margin: 'auto' }}
+              >
+                <Spinner size={32} />
+              </Box>
+            </Stack>
+          </Box>
+        ) : (
+          <>
             <Box
-              background="surfaceSecondaryElevated"
-              borderRadius="16px"
-              padding="16px"
-              borderColor={'separatorSecondary'}
-              borderWidth={'1px'}
               width="full"
-              position="relative"
-              height="full"
+              style={{
+                overflow: 'auto',
+                height: '454px',
+              }}
             >
-              <AccountToImportRows
-                accountsIgnored={accountsIgnored}
-                accountsToImport={sortedAccountsToImport}
-                toggleAccount={toggleAccount}
-                walletsSummary={walletsSummary}
-                showCheckbox
-              />
+              <Box
+                background="surfaceSecondaryElevated"
+                borderRadius="16px"
+                padding="16px"
+                borderColor={'separatorSecondary'}
+                borderWidth={'1px'}
+                width="full"
+                position="relative"
+                height="full"
+              >
+                <AccountToImportRows
+                  accountsIgnored={accountsIgnored}
+                  accountsToImport={sortedAccountsToImport}
+                  toggleAccount={toggleAccount}
+                  walletsSummary={walletsSummary}
+                  showCheckbox
+                />
+              </Box>
             </Box>
-          </Box>
-          <Box width="full" paddingTop="16px">
-            <Button
-              symbol="arrow.uturn.down.circle.fill"
-              symbolSide="left"
-              color={isButtonDisabled ? 'labelQuaternary' : 'accent'}
-              height="44px"
-              variant={isButtonDisabled ? 'disabled' : 'raised'}
-              width="full"
-              disabled={isButtonDisabled}
-              onClick={() =>
-                importSecrets({ secrets, ignoreAddresses: accountsIgnored })
-              }
-            >
-              {i18n.t('edit_import_wallet_selection.add_wallet', {
-                count: amountOfAddressesBeingAdded,
-              })}
-            </Button>
-          </Box>
-        </>
-      )}
-    </Box>
+            <Box width="full" paddingTop="16px">
+              <Button
+                symbol="arrow.uturn.down.circle.fill"
+                symbolSide="left"
+                color={isButtonDisabled ? 'labelQuaternary' : 'accent'}
+                height="44px"
+                variant={isButtonDisabled ? 'disabled' : 'raised'}
+                width="full"
+                disabled={isButtonDisabled}
+                onClick={onImport}
+              >
+                {i18n.t('edit_import_wallet_selection.add_wallet', {
+                  count: amountOfAddressesBeingAdded,
+                })}
+              </Button>
+            </Box>
+          </>
+        )}
+      </Box>
+    </>
   );
 }

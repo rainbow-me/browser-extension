@@ -13,7 +13,6 @@ import {
   Text,
 } from '~/design-system';
 
-import { WalletsSortMethod } from '../../pages/importWalletSelection/EditImportWalletSelection';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,6 +22,8 @@ import {
   DropdownMenuTrigger,
 } from '../DropdownMenu/DropdownMenu';
 import { Navbar } from '../Navbar/Navbar';
+
+import { WalletsSortMethod } from './ImportWalletSelectionEdit';
 
 export const ImportWalletNavbar = ({
   accentColor,
