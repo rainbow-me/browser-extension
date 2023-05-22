@@ -230,7 +230,10 @@ export const WatchWallet = ({
   const isValid = useMemo(() => {
     if (!onboarding) return inputIsValid;
 
-    return !address && Object.values(selectedAddresses).some(Boolean);
+    return (
+      (!address && Object.values(selectedAddresses).some(Boolean)) ||
+      inputIsValid
+    );
   }, [address, inputIsValid, onboarding, selectedAddresses]);
 
   const addressesToImport = useMemo(
