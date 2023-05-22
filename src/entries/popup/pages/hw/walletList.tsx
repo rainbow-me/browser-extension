@@ -220,7 +220,7 @@ const WalletListHW = () => {
               </Stack>
             </Box>
           ) : (
-            <Stack space="24px">
+            <Stack space="24px" alignHorizontal="center">
               <Box paddingHorizontal="28px">
                 <Stack space="12px">
                   <Text size="16pt" weight="bold" color="label" align="center">
@@ -240,49 +240,52 @@ const WalletListHW = () => {
                   </Box>
                 </Stack>
               </Box>
-              <Box width="full" style={{ width: '106px' }}>
+              <Box width="full" alignItems="center" style={{ width: '106px' }}>
                 <Separator color="separatorTertiary" strokeWeight="1px" />
               </Box>
-              <Box>
+              <Box width="full">
                 <Stack space="12px">
                   {!newDevice && (
-                    <Columns alignHorizontal="justify">
-                      <Column>
-                        <Text
-                          size="14pt"
-                          weight="regular"
-                          color="labelSecondary"
-                          align="left"
-                        >
-                          {i18n.t('hw.wallets_found', {
-                            count: selectedAccounts,
-                          })}
-                        </Text>
-                      </Column>
-                      <Column>
-                        <a
-                          onClick={() => {
-                            setShowAddByIndexSheet(true);
-                          }}
-                        >
+                    <Box paddingHorizontal="16px">
+                      <Columns alignHorizontal="justify">
+                        <Column>
                           <Text
                             size="14pt"
                             weight="regular"
                             color="labelSecondary"
-                            align="right"
+                            align="left"
                           >
-                            <Symbol
-                              color={'labelSecondary'}
-                              size={12}
-                              symbol={'plus.circle.fill'}
-                              weight="regular"
-                            />{' '}
-                            {i18n.t('hw.add_by_index')}
+                            {i18n.t('hw.wallets_found', {
+                              count: selectedAccounts,
+                            })}
                           </Text>
-                        </a>
-                      </Column>
-                    </Columns>
+                        </Column>
+                        <Column>
+                          <a
+                            onClick={() => {
+                              setShowAddByIndexSheet(true);
+                            }}
+                          >
+                            <Text
+                              size="14pt"
+                              weight="regular"
+                              color="labelSecondary"
+                              align="right"
+                            >
+                              <Symbol
+                                color={'labelSecondary'}
+                                size={12}
+                                symbol={'plus.circle.fill'}
+                                weight="regular"
+                              />{' '}
+                              {i18n.t('hw.add_by_index')}
+                            </Text>
+                          </a>
+                        </Column>
+                      </Columns>
+                    </Box>
                   )}
+
                   <Box
                     width="full"
                     style={{
@@ -297,8 +300,6 @@ const WalletListHW = () => {
                       borderColor={'separatorSecondary'}
                       borderWidth={'1px'}
                       width="full"
-                      position="relative"
-                      paddingBottom={'10px'}
                     >
                       <Stack
                         space="6px"
@@ -317,7 +318,7 @@ const WalletListHW = () => {
                             address: Address;
                             index: number;
                           }) => (
-                            <Box key={`avatar_${address}`}>
+                            <Box width="full" key={`avatar_${address}`}>
                               <Columns alignVertical="center">
                                 <Column>
                                   <Box
@@ -354,17 +355,19 @@ const WalletListHW = () => {
                                               <AccountIndex index={index} />
                                             </Bleed>
                                           </Inline>
-                                          <Text
-                                            color="labelTertiary"
-                                            size="12pt"
-                                            weight="regular"
-                                          >
-                                            {
-                                              balances?.[
-                                                index as number
-                                              ] as string
-                                            }
-                                          </Text>
+                                          <Box style={{ height: 9 }}>
+                                            <Text
+                                              color="labelTertiary"
+                                              size="12pt"
+                                              weight="regular"
+                                            >
+                                              {
+                                                balances?.[
+                                                  index as number
+                                                ] as string
+                                              }
+                                            </Text>
+                                          </Box>
                                         </Stack>
                                       </Box>
                                     </Inline>
@@ -439,15 +442,16 @@ const WalletListHW = () => {
             </Stack>
           )}
           {!isLoading && (
-            <Box width="full" padding="20px">
+            <Box width="full" paddingVertical="20px">
               <Button
                 symbol="arrow.uturn.down.circle.fill"
                 symbolSide="left"
-                color={'accent'}
+                color={selectedAccounts > 0 ? 'accent' : 'labelQuaternary'}
+                variant={selectedAccounts > 0 ? 'flat' : 'disabled'}
                 height="44px"
-                variant={'flat'}
                 width="full"
                 onClick={handleAddWallets}
+                disabled={selectedAccounts === 0}
               >
                 {selectedAccounts > 1
                   ? i18n.t('hw.connect_n_wallets', {
