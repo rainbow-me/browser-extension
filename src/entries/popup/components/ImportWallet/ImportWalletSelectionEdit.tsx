@@ -10,13 +10,43 @@ import { Box, Button, Stack, Text } from '~/design-system';
 
 import { Spinner } from '../../components/Spinner/Spinner';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { useWalletsSummary } from '../../hooks/useWalletsSummary';
+import {
+  WalletSummary,
+  useWalletsSummary,
+} from '../../hooks/useWalletsSummary';
 import { WalletsSortMethod } from '../../pages/importWalletSelection/EditImportWalletSelection';
 import { ROUTES } from '../../urls';
 
 import { AccountToImportRows } from './AccountToImportRows';
 import { useImportWalletsFromSecrets } from './ImportWalletSelection';
 
+const sortAccounts = (
+  sortBy: WalletsSortMethod | undefined,
+  accounts: Address[],
+  summaries: Record<Address, WalletSummary>,
+) => {
+  switch (sortBy) {
+    case 'token-balance': {
+      const accountsInfo = Object.values(summaries);
+      const sortedAccounts = accountsInfo.sort((a, b) =>
+        Number(minus(b.balance.amount, a.balance.amount)),
+      );
+      return sortedAccounts.map((account) => account.address);
+    }
+    case 'last-transaction': {
+      const accountsInfo = Object.values(summaries);
+      const sortedAccounts = accountsInfo.sort((a, b) =>
+        Number(minus(b.lastTx || 0, a.lastTx || 0)),
+      );
+      return sortedAccounts.map((account) => account.address);
+    }
+    case 'default':
+    default:
+      return accounts;
+  }
+};
+
+const emptyArray: unknown[] = [];
 export function ImportWalletSelectionEdit({
   isAddingWallets,
   onboarding = false,
@@ -32,8 +62,8 @@ export function ImportWalletSelectionEdit({
   const { setCurrentAddress } = useCurrentAddressStore();
 
   const { state } = useLocation();
-  const accountsToImport: Address[] = state.accountsToImport || [];
-  const secrets: string[] = state.secrets || [];
+  const accountsToImport: Address[] = state.accountsToImport || emptyArray;
+  const secrets: string[] = state.secrets || emptyArray;
 
   const { isLoading: walletsSummaryisAddingWallets, walletsSummary } =
     useWalletsSummary({ addresses: accountsToImport });
@@ -45,27 +75,10 @@ export function ImportWalletSelectionEdit({
   const amountOfAddressesBeingAdded =
     accountsToImport.length - accountsIgnored.length;
 
-  const sortedAccountsToImport = useMemo(() => {
-    switch (sortMethod) {
-      case 'token-balance': {
-        const accountsInfo = Object.values(walletsSummary);
-        const sortedAccounts = accountsInfo.sort((a, b) =>
-          Number(minus(b.balance.amount, a.balance.amount)),
-        );
-        return sortedAccounts.map((account) => account.address);
-      }
-      case 'last-transaction': {
-        const accountsInfo = Object.values(walletsSummary);
-        const sortedAccounts = accountsInfo.sort((a, b) =>
-          Number(minus(b.lastTx || 0, a.lastTx || 0)),
-        );
-        return sortedAccounts.map((account) => account.address);
-      }
-      case 'default':
-      default:
-        return state.accountsToImport;
-    }
-  }, [sortMethod, state.accountsToImport, walletsSummary]);
+  const sortedAccountsToImport = useMemo(
+    () => sortAccounts(sortMethod, accountsToImport, walletsSummary),
+    [sortMethod, accountsToImport, walletsSummary],
+  );
 
   const { importSecrets } = useImportWalletsFromSecrets({
     onMutate: () => setIsAddingWallets(true),
