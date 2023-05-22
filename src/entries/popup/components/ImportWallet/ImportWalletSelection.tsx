@@ -62,10 +62,11 @@ export const useImportWalletsFromSecrets = (
 
       // when importing another account from a seed that was already imported earlier
       // don't remove accounts that where already in the keychain before importing these secrets
-      const addressesToRemove = accountsIgnored.filter((address) =>
-        prevAccounts.includes(address),
+      const accountsToRemove = accountsIgnored.filter(
+        (address) => !prevAccounts.includes(address),
       );
-      await Promise.all(addressesToRemove.map(wallet.remove));
+
+      await Promise.all(accountsToRemove.map(wallet.remove));
       return wallet.getAccounts();
     },
     options,
