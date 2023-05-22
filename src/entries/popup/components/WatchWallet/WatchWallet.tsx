@@ -219,8 +219,19 @@ export const WatchWallet = ({
     '',
   );
 
-  const { address, ensName, isLoading, isValid, error } =
-    useValidateInput(input);
+  const {
+    address,
+    ensName,
+    isLoading,
+    isValid: inputIsValid,
+    error,
+  } = useValidateInput(input);
+
+  const isValid = useMemo(() => {
+    if (!onboarding) return inputIsValid;
+
+    return !address && Object.values(selectedAddresses).some(Boolean);
+  }, [address, inputIsValid, onboarding, selectedAddresses]);
 
   const addressesToImport = useMemo(
     () => [address, ...Object.keys(selectedAddresses)].filter(Boolean),
