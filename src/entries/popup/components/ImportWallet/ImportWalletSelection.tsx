@@ -56,10 +56,11 @@ export const useImportWalletsFromSecrets = (
   const { mutate, isLoading } = useMutation(
     ['import secrets'],
     async ({ secrets, ignoreAddresses = [] }) => {
-      const addys = await Promise.all(secrets.map(wallet.importWithSecret));
+      const imported = await Promise.all(secrets.map(wallet.importWithSecret));
+      if (!ignoreAddresses.length) return imported;
+      const allAccounts = wallet.getAccounts();
       await Promise.all(ignoreAddresses.map(wallet.remove));
-      const importedAddresses = addys.filter(ignoreAddresses.includes);
-      return importedAddresses;
+      return (await allAccounts).filter((a) => !ignoreAddresses.includes(a));
     },
     options,
   );
@@ -97,7 +98,7 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
   };
 
   const isReady =
-    accountsToImport.length && !isImporting && !walletsSummaryIsLoading;
+    !!accountsToImport.length && !isImporting && !walletsSummaryIsLoading;
 
   return (
     <Rows space="20px" alignVertical="justify">
@@ -109,7 +110,7 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
                 {i18n.t('import_wallet_selection.title')}
               </Text>
             </Inline>
-            {!walletsSummaryIsLoading && (
+            {isReady && (
               <Box paddingHorizontal="28px">
                 <Text
                   size="12pt"

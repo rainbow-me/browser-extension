@@ -33,6 +33,7 @@ export function ImportWalletSelectionEdit({
 
   const { state } = useLocation();
   const accountsToImport: Address[] = state.accountsToImport || [];
+  const secrets: string[] = state.secrets || [];
 
   const { isLoading: walletsSummaryisAddingWallets, walletsSummary } =
     useWalletsSummary({ addresses: accountsToImport });
@@ -66,17 +67,15 @@ export function ImportWalletSelectionEdit({
     }
   }, [sortMethod, state.accountsToImport, walletsSummary]);
 
-  const { importSecrets, isImporting } = useImportWalletsFromSecrets({
+  const { importSecrets } = useImportWalletsFromSecrets({
+    onMutate: () => setIsAddingWallets(true),
+    onSettled: () => setIsAddingWallets(false),
     onSuccess(addresses) {
       setCurrentAddress(addresses[0]);
       if (onboarding) navigate(ROUTES.CREATE_PASSWORD);
       navigate(ROUTES.HOME);
     },
   });
-
-  const importSelectedWallets = async () => {
-    importSecrets({ secrets, ignoreAddresses: accountsIgnored });
-  };
 
   return (
     <Box alignItems="center" width="full">
@@ -109,49 +108,52 @@ export function ImportWalletSelectionEdit({
           </Stack>
         </Box>
       ) : (
-        <Box
-          width="full"
-          style={{
-            overflow: 'auto',
-            height: '454px',
-          }}
-        >
+        <>
           <Box
-            background="surfaceSecondaryElevated"
-            borderRadius="16px"
-            padding="16px"
-            borderColor={'separatorSecondary'}
-            borderWidth={'1px'}
             width="full"
-            position="relative"
-            height="full"
+            style={{
+              overflow: 'auto',
+              height: '454px',
+            }}
           >
-            <AccountToImportRows
-              accountsIgnored={accountsIgnored}
-              accountsToImport={sortedAccountsToImport}
-              toggleAccount={toggleAccount}
-              walletsSummary={walletsSummary}
-              showCheckbox
-            />
+            <Box
+              background="surfaceSecondaryElevated"
+              borderRadius="16px"
+              padding="16px"
+              borderColor={'separatorSecondary'}
+              borderWidth={'1px'}
+              width="full"
+              position="relative"
+              height="full"
+            >
+              <AccountToImportRows
+                accountsIgnored={accountsIgnored}
+                accountsToImport={sortedAccountsToImport}
+                toggleAccount={toggleAccount}
+                walletsSummary={walletsSummary}
+                showCheckbox
+              />
+            </Box>
           </Box>
-        </Box>
+          <Box width="full" paddingTop="16px">
+            <Button
+              symbol="arrow.uturn.down.circle.fill"
+              symbolSide="left"
+              color={'accent'}
+              height="44px"
+              variant="raised"
+              width="full"
+              onClick={() =>
+                importSecrets({ secrets, ignoreAddresses: accountsIgnored })
+              }
+            >
+              {i18n.t('edit_import_wallet_selection.add_wallet', {
+                count: amountOfAddressesBeingAdded,
+              })}
+            </Button>
+          </Box>
+        </>
       )}
-      <Box width="full" paddingTop="16px">
-        <Button
-          symbol="arrow.uturn.down.circle.fill"
-          symbolSide="left"
-          color={'accent'}
-          height="44px"
-          variant="raised"
-          width="full"
-          disabled={isImporting}
-          // onClick={() => importSecrets()}
-        >
-          {i18n.t('edit_import_wallet_selection.add_wallet', {
-            count: amountOfAddressesBeingAdded,
-          })}
-        </Button>
-      </Box>
     </Box>
   );
 }
