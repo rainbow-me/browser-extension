@@ -32,6 +32,7 @@ export interface RainbowConfig extends Record<string, any> {
     [ChainName.bsc]: number;
   };
   trace_call_block_number_offset: number;
+  invite_code_required: boolean;
 }
 
 const DEFAULT_CONFIG = {
@@ -49,6 +50,7 @@ const DEFAULT_CONFIG = {
     bsc: 200,
   },
   trace_call_block_number_offset: 20,
+  invite_code_required: false,
 };
 
 // Initialize with defaults in case firebase doesn't respond
