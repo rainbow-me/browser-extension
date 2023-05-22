@@ -12,6 +12,7 @@ import {
   Row,
   Rows,
   Separator,
+  Stack,
   Symbol,
   Text,
 } from '~/design-system';
@@ -23,7 +24,7 @@ import { useIsFullScreen } from '../../hooks/useIsFullScreen';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
-const AVATAR_MARGIN_LEFT = '2.26px';
+const AVATAR_MARGIN_LEFT = '-2.26px';
 
 const PyramidAvatar = ({ accounts }: { accounts: Address[] }) => {
   let rows: Address[][] = [];
@@ -155,58 +156,49 @@ export function SuccessHW() {
   return (
     <FullScreenContainer>
       <Box
-        justifyContent={'center'}
         display="flex"
         alignItems="center"
-        paddingBottom="10px"
+        justifyContent="center"
         flexDirection="column"
         style={{ flex: 1 }}
       >
-        <PyramidAvatar accounts={accounts} />
-
-        <Box
-          justifyContent={'center'}
-          display="flex"
-          alignItems="center"
-          paddingBottom="10px"
-          flexDirection="column"
-          style={{ marginTop: '24px' }}
-        >
-          <Text size="16pt" weight="bold" color="label" align="center">
-            {i18n.t('hw.connection_successful_title')}
-          </Text>
-          <Box padding="16px" paddingTop="10px">
-            <Text
-              size="12pt"
-              weight="regular"
-              color="labelTertiary"
-              align="center"
-            >
-              {i18n.t('hw.connection_successful_description')}
-            </Text>
+        <Stack alignHorizontal="center" space="24px">
+          <Box style={{ flex: 1 }}>
+            <PyramidAvatar accounts={accounts} />
           </Box>
-        </Box>
-        <Box width="full" style={{ width: '106px' }}>
-          <Separator color="separatorTertiary" strokeWeight="1px" />
-        </Box>
-        <Box
-          paddingTop="28px"
-          alignItems="center"
-          justifyContent="center"
-          display="flex"
-        >
-          <Button
-            symbol="return.left"
-            symbolSide="left"
-            color="surfaceSecondaryElevated"
-            height="44px"
-            variant="flat"
-            width="full"
-            onClick={goHome}
-          >
-            {i18n.t('hw.done')}
-          </Button>
-        </Box>
+
+          <Box paddingHorizontal="28px">
+            <Stack space="12px">
+              <Text size="16pt" weight="bold" color="label" align="center">
+                {i18n.t('hw.connection_successful_title')}
+              </Text>
+              <Text
+                size="12pt"
+                weight="regular"
+                color="labelTertiary"
+                align="center"
+              >
+                {i18n.t('hw.connection_successful_description')}
+              </Text>
+            </Stack>
+          </Box>
+          <Box width="full" style={{ width: '106px' }}>
+            <Separator color="separatorTertiary" strokeWeight="1px" />
+          </Box>
+          <Box alignItems="center" justifyContent="center" display="flex">
+            <Button
+              symbol="return.left"
+              symbolSide="left"
+              color="surfaceSecondaryElevated"
+              height="44px"
+              variant="flat"
+              width="full"
+              onClick={goHome}
+            >
+              {i18n.t('hw.done')}
+            </Button>
+          </Box>
+        </Stack>
       </Box>
     </FullScreenContainer>
   );
