@@ -47,11 +47,20 @@ const useDeriveAccountsFromSecrets = (secrets: string[]) => {
 };
 
 export const useImportWalletsFromSecrets = (
-  options: UseMutationOptions<Address[], unknown, string[]>,
+  options: UseMutationOptions<
+    Address[],
+    unknown,
+    { secrets: string[]; ignoreAddresses?: Address[] }
+  >,
 ) => {
   const { mutate, isLoading } = useMutation(
     ['import secrets'],
-    (secrets: string[]) => Promise.all(secrets.map(wallet.importWithSecret)),
+    async ({ secrets, ignoreAddresses = [] }) => {
+      const addys = await Promise.all(secrets.map(wallet.importWithSecret));
+      await Promise.all(ignoreAddresses.map(wallet.remove));
+      const importedAddresses = addys.filter(ignoreAddresses.includes);
+      return importedAddresses;
+    },
     options,
   );
   return { importSecrets: mutate, isImporting: isLoading };
@@ -184,7 +193,7 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
                   height="44px"
                   variant="raised"
                   width="full"
-                  onClick={() => importSecrets(secrets)}
+                  onClick={() => importSecrets({ secrets })}
                   testId="add-wallets-button"
                 >
                   {i18n.t('import_wallet_selection.add_wallets')}

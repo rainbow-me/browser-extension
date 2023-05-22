@@ -10,13 +10,13 @@ import { Checkbox } from '../Checkbox/Checkbox';
 import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
 export const AccountToImportRows = ({
-  selectedAccounts = {},
+  accountsIgnored = [],
   accountsToImport,
   showCheckbox,
   walletsSummary,
   toggleAccount,
 }: {
-  selectedAccounts?: Record<Address, boolean>;
+  accountsIgnored?: Address[];
   accountsToImport?: Address[];
   showCheckbox?: boolean;
   walletsSummary: { [key: Address]: WalletSummary };
@@ -72,7 +72,7 @@ export const AccountToImportRows = ({
             {showCheckbox && (
               <Column width="content">
                 <Box alignItems="center" justifyContent="flex-end" width="fit">
-                  <Checkbox selected={!!selectedAccounts[address]} />
+                  <Checkbox selected={!accountsIgnored.includes(address)} />
                 </Box>
               </Column>
             )}

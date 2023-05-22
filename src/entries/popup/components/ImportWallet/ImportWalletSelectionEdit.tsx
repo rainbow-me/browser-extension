@@ -1,3 +1,4 @@
+import { xor } from 'lodash';
 import React, { useMemo, useReducer } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
@@ -15,18 +16,6 @@ import { ROUTES } from '../../urls';
 
 import { AccountToImportRows } from './AccountToImportRows';
 import { useImportWalletsFromSecrets } from './ImportWalletSelection';
-
-const useToggles = <T extends string | number>(array: T[]) => {
-  const [itemsObj, toggle] = useReducer(
-    (items: Record<T, boolean>, item: T) => {
-      if (items[item]) delete items[item];
-      else items[item] = true;
-      return { ...items };
-    },
-    array.reduce((all, a) => (all[a] = true) && all, {} as Record<T, boolean>),
-  );
-  return [itemsObj, toggle] as const;
-};
 
 export function ImportWalletSelectionEdit({
   isAddingWallets,
@@ -48,8 +37,12 @@ export function ImportWalletSelectionEdit({
   const { isLoading: walletsSummaryisAddingWallets, walletsSummary } =
     useWalletsSummary({ addresses: accountsToImport });
 
-  const [_selectedAccounts, toggleAccount] = useToggles(accountsToImport);
-  const selectedAccounts = Object.keys(_selectedAccounts);
+  const [accountsIgnored, toggleAccount] = useReducer(
+    (s: Address[], a: Address) => xor(s, [a]),
+    [],
+  );
+  const amountOfAddressesBeingAdded =
+    accountsToImport.length - accountsIgnored.length;
 
   const sortedAccountsToImport = useMemo(() => {
     switch (sortMethod) {
@@ -81,6 +74,10 @@ export function ImportWalletSelectionEdit({
     },
   });
 
+  const importSelectedWallets = async () => {
+    importSecrets({ secrets, ignoreAddresses: accountsIgnored });
+  };
+
   return (
     <Box alignItems="center" width="full">
       {isAddingWallets || walletsSummaryisAddingWallets ? (
@@ -98,7 +95,7 @@ export function ImportWalletSelectionEdit({
               align="center"
             >
               {i18n.t('edit_import_wallet_selection.importing_your_wallet', {
-                count: selectedAccounts.length,
+                count: amountOfAddressesBeingAdded,
               })}
             </Text>
             <Box
@@ -130,7 +127,7 @@ export function ImportWalletSelectionEdit({
             height="full"
           >
             <AccountToImportRows
-              selectedAccounts={_selectedAccounts}
+              accountsIgnored={accountsIgnored}
               accountsToImport={sortedAccountsToImport}
               toggleAccount={toggleAccount}
               walletsSummary={walletsSummary}
@@ -151,7 +148,7 @@ export function ImportWalletSelectionEdit({
           // onClick={() => importSecrets()}
         >
           {i18n.t('edit_import_wallet_selection.add_wallet', {
-            count: selectedAccounts.length,
+            count: amountOfAddressesBeingAdded,
           })}
         </Button>
       </Box>
