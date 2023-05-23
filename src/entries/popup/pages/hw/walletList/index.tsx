@@ -35,6 +35,7 @@ import { ROUTES } from '../../../urls';
 import { AddByIndexSheet } from '../addByIndexSheet';
 
 import {
+  accountIndexHiddenHoverSiblingStyle,
   accountIndexHiddenHoverStyle,
   accountIndexHoverContainerStyle,
 } from './walletList.css';
@@ -67,9 +68,16 @@ export const AccountIndex = ({ index }: { index: number }) => {
             Index
           </Text>
         </Box>
-        <Text size="11pt" weight="bold" color={'labelTertiary'} align="center">
-          # {index}
-        </Text>
+        <Box className={accountIndexHiddenHoverSiblingStyle}>
+          <Text
+            size="11pt"
+            weight="bold"
+            color={'labelTertiary'}
+            align="center"
+          >
+            # {index}
+          </Text>
+        </Box>
       </Inline>
     </Box>
   );
