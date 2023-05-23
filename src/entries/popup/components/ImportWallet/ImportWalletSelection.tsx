@@ -1,3 +1,4 @@
+import { keccak256 } from '@ethersproject/keccak256';
 import {
   UseMutationOptions,
   useMutation,
@@ -31,9 +32,9 @@ import { AccountToImportRows } from './AccountToImportRows';
 
 const useDeriveAccountsFromSecrets = (secrets: string[]) => {
   const accountsFromSecrets = useQueries({
-    queries: secrets.map((s) => ({
-      queryKey: ['accountsFromSecret', s], // no persisterVersion so secrets are not persisted to storage, only in memory cache
-      queryFn: () => deriveAccountsFromSecret(s),
+    queries: secrets.map((secret) => ({
+      queryKey: ['accountsFromSecret', keccak256(secret)], // no persisterVersion so secrets are not persisted to storage, only in memory cache
+      queryFn: () => deriveAccountsFromSecret(secret),
     })),
   });
   return useMemo(
