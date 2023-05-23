@@ -4,6 +4,7 @@ import React, { useCallback } from 'react';
 import { i18n } from '~/core/languages';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { Box, Separator, Stack, Text } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
@@ -21,6 +22,22 @@ export function ImportOrConnect() {
       navigate(route);
     },
     [navigate],
+  );
+
+  const onImportWalletClick = useCallback(
+    () => navigateTo(ROUTES.IMPORT),
+    [navigateTo],
+  );
+
+  const onConnectHardwareWallet = useCallback(() => {
+    featureFlags.hw_wallets_enabled
+      ? navigateTo(ROUTES.HW_CHOOSE)
+      : triggerAlert({ text: i18n.t('alert.coming_soon') });
+  }, [featureFlags.hw_wallets_enabled, navigateTo, triggerAlert]);
+
+  const onWatchEthereumAddress = useCallback(
+    () => navigateTo(ROUTES.WATCH),
+    [navigateTo],
   );
 
   return (
@@ -48,36 +65,57 @@ export function ImportOrConnect() {
         </Box>
         <Box>
           <OnboardMenu>
-            <OnboardMenu.Item
-              onClick={() => navigateTo(ROUTES.IMPORT)}
-              title={i18n.t('import_or_connect.import_wallet')}
-              subtitle={i18n.t('import_or_connect.import_wallet_description')}
-              symbol="lock.rotation"
-              symbolColor="purple"
-              testId="import-wallet-option"
-            />
+            <Lens
+              onKeyDown={onImportWalletClick}
+              borderRadius="16px"
+              marginHorizontal="-20px"
+              paddingHorizontal="20px"
+            >
+              <OnboardMenu.Item
+                onClick={onImportWalletClick}
+                title={i18n.t('import_or_connect.import_wallet')}
+                subtitle={i18n.t('import_or_connect.import_wallet_description')}
+                symbol="lock.rotation"
+                symbolColor="purple"
+                testId="import-wallet-option"
+              />
+            </Lens>
+
             <OnboardMenu.Separator />
-            <OnboardMenu.Item
-              onClick={() =>
-                featureFlags.hw_wallets_enabled
-                  ? navigateTo(ROUTES.HW_CHOOSE)
-                  : triggerAlert({ text: i18n.t('alert.coming_soon') })
-              }
-              title={i18n.t('import_or_connect.connect_wallet')}
-              subtitle={i18n.t('import_or_connect.connect_wallet_description')}
-              symbol="doc.text.magnifyingglass"
-              symbolColor="blue"
-              testId="connect-wallet-option"
-            />
+            <Lens
+              onKeyDown={onConnectHardwareWallet}
+              borderRadius="16px"
+              marginHorizontal="-20px"
+              paddingHorizontal="20px"
+            >
+              <OnboardMenu.Item
+                onClick={onConnectHardwareWallet}
+                title={i18n.t('import_or_connect.connect_wallet')}
+                subtitle={i18n.t(
+                  'import_or_connect.connect_wallet_description',
+                )}
+                symbol="doc.text.magnifyingglass"
+                symbolColor="blue"
+                testId="connect-wallet-option"
+              />
+            </Lens>
+
             <OnboardMenu.Separator />
-            <OnboardMenu.Item
-              onClick={() => navigateTo(ROUTES.WATCH)}
-              title={i18n.t('import_or_connect.watch_address')}
-              subtitle={i18n.t('import_or_connect.watch_address_description')}
-              symbol="magnifyingglass.circle"
-              symbolColor="green"
-              testId="watch-wallet-option"
-            />
+            <Lens
+              onKeyDown={onWatchEthereumAddress}
+              borderRadius="16px"
+              marginHorizontal="-20px"
+              paddingHorizontal="20px"
+            >
+              <OnboardMenu.Item
+                onClick={onWatchEthereumAddress}
+                title={i18n.t('import_or_connect.watch_address')}
+                subtitle={i18n.t('import_or_connect.watch_address_description')}
+                symbol="magnifyingglass.circle"
+                symbolColor="green"
+                testId="watch-wallet-option"
+              />
+            </Lens>
           </OnboardMenu>
         </Box>
       </Stack>
