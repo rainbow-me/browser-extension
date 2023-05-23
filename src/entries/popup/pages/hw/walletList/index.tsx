@@ -65,7 +65,7 @@ export const AccountIndex = ({ index }: { index: number }) => {
             color={'labelTertiary'}
             align="center"
           >
-            Index
+            {i18n.t('hw.index_label')}
           </Text>
         </Box>
         <Box className={accountIndexHiddenHoverSiblingStyle}>
