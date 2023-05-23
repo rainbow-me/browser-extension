@@ -211,6 +211,7 @@ const ROUTE_DATA = [
         navbar
         navbarIcon="ex"
         background="surfaceSecondary"
+        accentColor={false}
       >
         <WalletListHW />
       </AnimatedRoute>
