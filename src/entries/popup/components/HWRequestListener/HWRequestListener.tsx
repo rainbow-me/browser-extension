@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { TransactionRequest } from '@ethersproject/providers';
 import { Bytes } from 'ethers';
-import { useEffect } from 'react';
 import { Address } from 'wagmi';
 
 import { initializeMessenger } from '~/core/messengers';
@@ -11,13 +10,8 @@ import {
   signTransactionFromHW,
   signTypedData,
 } from '../../handlers/wallet';
-import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { ROUTES } from '../../urls';
-import { isExternalPopup } from '../../utils/windows';
 
 export const HWRequestListener = () => {
-  const navigate = useRainbowNavigate();
-
   const bgMessenger = initializeMessenger({ connect: 'background' });
 
   interface HWSigningRequest {
@@ -39,28 +33,6 @@ export const HWRequestListener = () => {
   ): payload is { data: any; address: string } {
     return 'data' in payload && 'address' in payload;
   }
-
-  useEffect(() => {
-    const init = async () => {
-      if (!isExternalPopup) return;
-      try {
-        // check if there's a request in session
-        const data = await chrome.storage.session.get('hwRequestPending');
-        if (data.hwRequestPending && data.hwRequestPending.payload) {
-          const response = await processHwSigningRequest(
-            data.hwRequestPending as HWSigningRequest,
-          );
-          if (response) {
-            bgMessenger.send('hwResponse', response);
-            await chrome.storage.session.remove('hwRequestPending');
-            navigate(ROUTES.HW_TREZOR_SUCCESS);
-          }
-        }
-        // eslint-disable-next-line no-empty
-      } catch (e: any) {}
-    };
-    init();
-  });
 
   const processHwSigningRequest = async (data: HWSigningRequest) => {
     let response;

@@ -48,8 +48,6 @@ export const ROUTES = {
   HW_CHOOSE: '/hw/choose',
   HW_LEDGER: '/hw/ledger',
   HW_TREZOR: '/hw/trezor',
-  HW_TREZOR_LOADING: '/hw/trezor/loading',
-  HW_TREZOR_SUCCESS: '/hw/trezor/success',
   HW_WALLET_LIST: '/hw/wallet-list',
   HW_SUCCESS: '/hw/success',
 };

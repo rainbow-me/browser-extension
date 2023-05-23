@@ -15,9 +15,7 @@ import { Home } from './pages/home';
 import { ConnectedApps } from './pages/home/ConnectedApps';
 import { ChooseHW } from './pages/hw/chooseHW';
 import { ConnectLedger } from './pages/hw/ledger';
-import { LoadingTrezor } from './pages/hw/loadingTrezor';
 import { SuccessHW } from './pages/hw/success';
-import { SuccessTrezor } from './pages/hw/successTrezor';
 import { ConnectTrezor } from './pages/hw/trezor';
 import { WalletListHW } from './pages/hw/walletList';
 import { ImportOrConnect } from './pages/importOrConnect';
@@ -184,32 +182,6 @@ const ROUTE_DATA = [
         background="surfaceSecondary"
       >
         <ConnectTrezor />
-      </AnimatedRoute>
-    ),
-    background: FullScreenBackground,
-  },
-  {
-    path: ROUTES.HW_TREZOR_LOADING,
-    element: (
-      <AnimatedRoute
-        protectedRoute={['READY']}
-        direction="up"
-        background="surfaceSecondary"
-      >
-        <LoadingTrezor />
-      </AnimatedRoute>
-    ),
-    background: FullScreenBackground,
-  },
-  {
-    path: ROUTES.HW_TREZOR_SUCCESS,
-    element: (
-      <AnimatedRoute
-        protectedRoute={['READY']}
-        direction="up"
-        background="surfaceSecondary"
-      >
-        <SuccessTrezor />
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
