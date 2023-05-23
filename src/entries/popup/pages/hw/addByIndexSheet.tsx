@@ -1,5 +1,5 @@
 import { chain, getProvider } from '@wagmi/core';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -8,7 +8,6 @@ import { convertRawAmountToNativeDisplay } from '~/core/utils/numbers';
 import {
   Box,
   Button,
-  ButtonSymbol,
   Column,
   Columns,
   Inline,
@@ -22,10 +21,12 @@ import { BottomSheet } from '~/design-system/components/BottomSheet/BottomSheet'
 import { Input } from '~/design-system/components/Input/Input';
 
 import { AddressOrEns } from '../../components/AddressOrEns/AddressorEns';
+import { Navbar } from '../../components/Navbar/Navbar';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { importAccountAtIndex } from '../../handlers/wallet';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
+import usePrevious from '../../hooks/usePrevious';
 
 import { AccountIndex } from './walletList';
 
@@ -48,6 +49,8 @@ export const AddByIndexSheet = ({
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const nativeAsset = useNativeAssetForNetwork({ chainId: chain.mainnet.id });
+  const inputRef = useRef<HTMLInputElement>(null);
+  const prevShow = usePrevious(show);
   const [loading, setLoading] = useState<boolean>(false);
   const [newIndex, setNewIndex] = useState<string>('');
   const [newAccount, setNewAccount] = useState<{
@@ -124,254 +127,246 @@ export const AddByIndexSheet = ({
     show && debouncedNewIndex !== '' && fetchWalletAtIndex();
   }, [debouncedNewIndex, fetchWalletAtIndex, show]);
 
+  useEffect(() => {
+    if (prevShow !== show && show) {
+      setTimeout(() => {
+        inputRef?.current?.focus();
+      }, 300);
+    }
+  }, [prevShow, show]);
+
   return (
-    <>
-      <BottomSheet background="scrim" show={show}>
-        <Box paddingHorizontal="20px" paddingBottom="20px">
-          <Box position="absolute" style={{ marginTop: 10 }}>
-            <ButtonSymbol
-              color="surfaceSecondaryElevated"
-              height="32px"
-              symbolSize={11}
-              onClick={handleAddWallet}
-              symbol={'xmark'}
-              symbolColor="labelSecondary"
-              variant={'transparentHover'}
-              tabIndex={0}
-            />
+    <BottomSheet background="scrim" show={show}>
+      <Navbar
+        leftComponent={
+          <Navbar.CloseButton testId="swap-review" onClick={handleAddWallet} />
+        }
+      />
+      <Box paddingHorizontal="20px" marginTop="-19px">
+        <Stack space="24px">
+          <Box paddingHorizontal="16px">
+            <Stack space="12px">
+              <Text align="center" color="label" size="14pt" weight="heavy">
+                {i18n.t('hw.add_by_index_title')}
+              </Text>
+              <Text
+                align="center"
+                color="labelSecondary"
+                size="12pt"
+                weight="medium"
+              >
+                {i18n.t('hw.add_by_index_description')}
+              </Text>
+            </Stack>
           </Box>
-          <Stack space="10px">
-            <Box style={{ height: '64px' }}>
-              <Inline
-                height="full"
-                alignVertical="center"
-                alignHorizontal="center"
+
+          <Box
+            display="block"
+            style={{
+              margin: 'auto',
+              marginTop: '21px',
+              marginBottom: '24px',
+              width: '102px',
+            }}
+          >
+            <Separator color="separatorTertiary" strokeWeight="1px" />
+          </Box>
+          <Box>
+            <Box background={'fillSecondary'} borderRadius="28px">
+              <Box
+                padding="16px"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
               >
-                <Text align="center" color="label" size="14pt" weight="heavy">
-                  {i18n.t('hw.add_by_index_title')}
-                </Text>
-              </Inline>
-              <Box>
-                <Text
-                  align="center"
-                  color="labelSecondary"
-                  size="12pt"
-                  weight="medium"
-                >
-                  {i18n.t('hw.add_by_index_description')}
-                </Text>
-              </Box>
-            </Box>
-            <Box
-              display="block"
-              style={{
-                margin: 'auto',
-                marginTop: '21px',
-                marginBottom: '24px',
-                width: '102px',
-              }}
-            >
-              <Separator color="separatorTertiary" strokeWeight="1px" />
-            </Box>
-            <Box>
-              <Box background={'fillSecondary'} borderRadius="28px">
-                <Box
-                  padding="15px"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  style={{ marginLeft: '20px' }}
-                >
-                  <Inline>
-                    <Box
-                      paddingRight="19px"
-                      alignItems="center"
-                      justifyContent="center"
-                      display="flex"
-                    >
-                      <Text color="label" size="14pt" weight="heavy">
-                        44
-                      </Text>
-                    </Box>
-                    <Box
-                      paddingRight="19px"
-                      alignItems="center"
-                      justifyContent="center"
-                      display="flex"
-                    >
-                      <Text color="labelTertiary" size="14pt" weight="regular">
-                        /
-                      </Text>
-                    </Box>
-                    <Box
-                      paddingRight="19px"
-                      alignItems="center"
-                      justifyContent="center"
-                      display="flex"
-                    >
-                      <Text color="label" size="14pt" weight="heavy">
-                        61
-                      </Text>
-                    </Box>
-                    <Box
-                      paddingRight="19px"
-                      alignItems="center"
-                      justifyContent="center"
-                      display="flex"
-                    >
-                      <Text color="labelTertiary" size="14pt" weight="regular">
-                        /
-                      </Text>
-                    </Box>
-                    <Box
-                      paddingRight="19px"
-                      alignItems="center"
-                      justifyContent="center"
-                      display="flex"
-                    >
-                      <Text color="label" size="14pt" weight="heavy">
-                        0
-                      </Text>
-                    </Box>
-                    <Box
-                      paddingRight="19px"
-                      alignItems="center"
-                      justifyContent="center"
-                      display="flex"
-                    >
-                      <Text color="labelTertiary" size="14pt" weight="regular">
-                        /
-                      </Text>
-                    </Box>
-                    <Box paddingRight="19px">
-                      <Input
-                        value={newIndex}
-                        onChange={handleNewIndexChange}
-                        height="32px"
-                        textAlign="center"
-                        autoFocus
-                        tabIndex={1}
-                        variant="bordered"
-                        style={{ width: '50px' }}
-                      />
-                    </Box>
-                  </Inline>
-                </Box>
-                {newAccount && (
+                <Inline space="6px">
                   <Box
-                    paddingBottom="16px"
-                    paddingLeft="16px"
-                    paddingRight="16px"
+                    style={{ width: '53px' }}
+                    alignItems="center"
+                    justifyContent="center"
+                    display="flex"
                   >
-                    <Box
-                      display="block"
-                      style={{
-                        margin: 'auto',
-                        marginBottom: '12px',
-                        width: '102px',
-                      }}
-                    >
-                      <Separator color="separatorTertiary" strokeWeight="1px" />
-                    </Box>
-                    <Columns
-                      space="8px"
-                      alignVertical="center"
-                      alignHorizontal="justify"
-                    >
-                      <Column width="content">
-                        <Box height="fit" position="relative">
-                          {loading ? (
-                            <Box
-                              style={{
-                                borderRadius: '99px',
-                                background:
-                                  'radial-gradient(887.5% 887.5% at 0% 50%, rgba(245, 248, 255, 0.02) 0%, rgba(245, 248, 255, 0.06) 100%)',
-                                width: '36px',
-                                height: '36px',
-                              }}
-                            />
-                          ) : (
-                            <WalletAvatar
-                              address={newAccount.address}
-                              size={36}
-                              emojiSize="20pt"
-                            />
-                          )}
-                        </Box>
-                      </Column>
-                      <Column>
-                        <Box>
-                          <Rows space="8px" alignVertical="center">
-                            <Row height="content">
-                              {loading ? (
-                                <Box
-                                  style={{
-                                    borderRadius: '99px',
-                                    background:
-                                      'radial-gradient(887.5% 887.5% at 0% 50%, rgba(245, 248, 255, 0.02) 0%, rgba(245, 248, 255, 0.06) 100%)',
-                                    width: '88px',
-                                    height: '10px',
-                                  }}
-                                />
-                              ) : (
-                                <Inline space="8px">
-                                  <AddressOrEns
-                                    address={newAccount.address}
-                                    size="14pt"
-                                    weight="medium"
-                                  />
-                                  <AccountIndex index={Number(newIndex)} />
-                                </Inline>
-                              )}
-                            </Row>
-                            <Row height="content">
-                              {loading ? (
-                                <Box
-                                  style={{
-                                    borderRadius: '99px',
-                                    background:
-                                      'radial-gradient(887.5% 887.5% at 0% 50%, rgba(245, 248, 255, 0.02) 0%, rgba(245, 248, 255, 0.06) 100%)',
-                                    width: '62px',
-                                    height: '10px',
-                                  }}
-                                />
-                              ) : (
-                                <Text
-                                  color="labelTertiary"
-                                  size="12pt"
-                                  weight="regular"
-                                >
-                                  {newAccount.balance}
-                                </Text>
-                              )}
-                            </Row>
-                          </Rows>
-                        </Box>
-                      </Column>
-                    </Columns>
+                    <Text color="label" size="14pt" weight="heavy">
+                      44
+                    </Text>
                   </Box>
-                )}
+                  <Box
+                    alignItems="center"
+                    justifyContent="center"
+                    display="flex"
+                  >
+                    <Text color="labelTertiary" size="14pt" weight="regular">
+                      /
+                    </Text>
+                  </Box>
+                  <Box
+                    style={{ width: '53px' }}
+                    alignItems="center"
+                    justifyContent="center"
+                    display="flex"
+                  >
+                    <Text color="label" size="14pt" weight="heavy">
+                      61
+                    </Text>
+                  </Box>
+                  <Box
+                    alignItems="center"
+                    justifyContent="center"
+                    display="flex"
+                  >
+                    <Text color="labelTertiary" size="14pt" weight="regular">
+                      /
+                    </Text>
+                  </Box>
+                  <Box
+                    style={{ width: '53px' }}
+                    alignItems="center"
+                    justifyContent="center"
+                    display="flex"
+                  >
+                    <Text color="label" size="14pt" weight="heavy">
+                      0
+                    </Text>
+                  </Box>
+                  <Box
+                    alignItems="center"
+                    justifyContent="center"
+                    display="flex"
+                  >
+                    <Text color="labelTertiary" size="14pt" weight="regular">
+                      /
+                    </Text>
+                  </Box>
+                  <Box style={{ width: '53px' }}>
+                    <Input
+                      value={newIndex}
+                      onChange={handleNewIndexChange}
+                      height="32px"
+                      textAlign="center"
+                      tabIndex={1}
+                      variant="bordered"
+                      style={{ width: '50px' }}
+                      innerRef={inputRef}
+                      placeholder="0"
+                    />
+                  </Box>
+                </Inline>
               </Box>
-              {!newAccount && <Box style={{ height: '64px', width: '100%' }} />}
+              {newAccount && (
+                <Box
+                  paddingBottom="16px"
+                  paddingLeft="16px"
+                  paddingRight="16px"
+                >
+                  <Box
+                    display="block"
+                    style={{
+                      margin: 'auto',
+                      marginBottom: '12px',
+                      width: '102px',
+                    }}
+                  >
+                    <Separator color="separatorTertiary" strokeWeight="1px" />
+                  </Box>
+                  <Columns
+                    space="8px"
+                    alignVertical="center"
+                    alignHorizontal="justify"
+                  >
+                    <Column width="content">
+                      <Box height="fit" position="relative">
+                        {loading ? (
+                          <Box
+                            style={{
+                              borderRadius: '99px',
+                              background:
+                                'radial-gradient(887.5% 887.5% at 0% 50%, rgba(245, 248, 255, 0.02) 0%, rgba(245, 248, 255, 0.06) 100%)',
+                              width: '36px',
+                              height: '36px',
+                            }}
+                          />
+                        ) : (
+                          <WalletAvatar
+                            address={newAccount.address}
+                            size={36}
+                            emojiSize="20pt"
+                          />
+                        )}
+                      </Box>
+                    </Column>
+                    <Column>
+                      <Box>
+                        <Rows space="8px" alignVertical="center">
+                          <Row height="content">
+                            {loading ? (
+                              <Box
+                                style={{
+                                  borderRadius: '99px',
+                                  background:
+                                    'radial-gradient(887.5% 887.5% at 0% 50%, rgba(245, 248, 255, 0.02) 0%, rgba(245, 248, 255, 0.06) 100%)',
+                                  width: '88px',
+                                  height: '10px',
+                                }}
+                              />
+                            ) : (
+                              <Inline space="8px">
+                                <AddressOrEns
+                                  address={newAccount.address}
+                                  size="14pt"
+                                  weight="medium"
+                                />
+                                <AccountIndex index={Number(newIndex)} />
+                              </Inline>
+                            )}
+                          </Row>
+                          <Row height="content">
+                            {loading ? (
+                              <Box
+                                style={{
+                                  borderRadius: '99px',
+                                  background:
+                                    'radial-gradient(887.5% 887.5% at 0% 50%, rgba(245, 248, 255, 0.02) 0%, rgba(245, 248, 255, 0.06) 100%)',
+                                  width: '62px',
+                                  height: '10px',
+                                }}
+                              />
+                            ) : (
+                              <Text
+                                color="labelTertiary"
+                                size="12pt"
+                                weight="regular"
+                              >
+                                {newAccount.balance}
+                              </Text>
+                            )}
+                          </Row>
+                        </Rows>
+                      </Box>
+                    </Column>
+                  </Columns>
+                </Box>
+              )}
             </Box>
-            <Box width="full" paddingTop="20px">
-              <Button
-                symbol="return.left"
-                symbolSide="left"
-                width="full"
-                color={newAccount ? 'accent' : 'labelQuaternary'}
-                height="44px"
-                variant={newAccount ? 'flat' : 'disabled'}
-                disabled={!newAccount}
-                onClick={handleAddWallet}
-                testId="hw-add-by-index-done"
-              >
-                {i18n.t('hw.add_wallet')}
-              </Button>
-            </Box>
-          </Stack>
-        </Box>
-      </BottomSheet>
-    </>
+            {!newAccount && <Box style={{ height: '64px', width: '100%' }} />}
+          </Box>
+
+          <Box width="full" paddingVertical="20px">
+            <Button
+              symbol="return.left"
+              symbolSide="left"
+              width="full"
+              color={newAccount ? 'accent' : 'labelQuaternary'}
+              height="44px"
+              variant={newAccount ? 'flat' : 'disabled'}
+              disabled={!newAccount}
+              onClick={handleAddWallet}
+              testId="hw-add-by-index-done"
+            >
+              {i18n.t('hw.add_wallet')}
+            </Button>
+          </Box>
+        </Stack>
+      </Box>
+    </BottomSheet>
   );
 };
