@@ -85,21 +85,18 @@ export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
           viewOnExplorer();
           break;
         case 'send':
+          setSelectedToken(token);
           navigate(ROUTES.SEND);
           setClosed(true);
           break;
         case 'swap':
+          setSelectedToken(token);
           goToSwap();
           setClosed(true);
           break;
       }
     },
-    [goToSwap, navigate, viewOnExplorer],
-  );
-
-  const onTrigger = useCallback(
-    () => setSelectedToken(token),
-    [setSelectedToken, token],
+    [goToSwap, navigate, setSelectedToken, token, viewOnExplorer],
   );
 
   useEffect(() => {
@@ -110,7 +107,7 @@ export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
 
   return (
     <DetailsMenuWrapper closed={closed} onOpenChange={onOpenChange}>
-      <ContextMenuTrigger onTrigger={onTrigger}>
+      <ContextMenuTrigger>
         <Box position="relative">{children}</Box>
       </ContextMenuTrigger>
       <DetailsMenuContentWrapper closed={closed}>
