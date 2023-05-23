@@ -1,4 +1,3 @@
-import { xor } from 'lodash';
 import { useMemo, useReducer, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
@@ -51,8 +50,11 @@ const sortAccounts = (
   }
 };
 
-const arrayAddOrRemove = <T,>(arr: T[], item: T) => xor(arr, [item]);
-const addOrRemoveAddy: typeof arrayAddOrRemove<Address> = arrayAddOrRemove;
+const addOrRemoveAddy = (addresses: Address[], address: Address) => {
+  if (addresses.includes(address))
+    return addresses.filter((a) => a !== address);
+  return [address, ...addresses];
+};
 
 const emptyArray: unknown[] = [];
 export function ImportWalletSelectionEdit({ onboarding = false }) {
