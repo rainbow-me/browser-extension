@@ -219,13 +219,20 @@ export const WatchWallet = ({
     '',
   );
 
-  const { address, ensName, isLoading, isValid, error } =
-    useValidateInput(input);
+  const {
+    address,
+    ensName,
+    isLoading,
+    isValid: inputIsValid,
+    error,
+  } = useValidateInput(input);
 
   const addressesToImport = useMemo(
     () => [address, ...Object.keys(selectedAddresses)].filter(Boolean),
     [address, selectedAddresses],
   );
+
+  const isValid = input ? inputIsValid : !!addressesToImport.length;
 
   const { setCurrentAddress } = useCurrentAddressStore();
   const { save } = useSavedEnsNames();

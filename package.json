@@ -214,7 +214,8 @@
     "loader-utils": "2.0.4",
     "nth-check": "2.0.1",
     "decode-uri-component": "0.2.1",
-    "http-cache-semantics": "4.1.1"
+    "http-cache-semantics": "4.1.1",
+    "socket.io-parser": "4.2.3"
   },
   "lavamoat": {
     "allowScripts": {
