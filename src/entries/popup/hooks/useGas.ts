@@ -82,7 +82,12 @@ const useGas = ({
   }, []);
 
   useEffect(() => {
-    if (!gasData || prevDebouncedMaxBaseFee === debouncedMaxBaseFee || !enabled)
+    if (
+      !gasData ||
+      prevDebouncedMaxBaseFee === debouncedMaxBaseFee ||
+      !enabled ||
+      chainId !== ChainId.mainnet
+    )
       return;
 
     const { data } = gasData as MeteorologyResponse;
@@ -95,7 +100,7 @@ const useGas = ({
 
     const maxPriorityFeePerGas = (
       storeGasFeeParamsBySpeed?.custom as GasFeeParams
-    ).maxPriorityFeePerGas.amount;
+    )?.maxPriorityFeePerGas.amount;
 
     const newCustomSpeed = parseCustomGasFeeParams({
       currentBaseFee,
@@ -109,6 +114,7 @@ const useGas = ({
     });
     setCustomSpeed(newCustomSpeed);
   }, [
+    chainId,
     currentCurrency,
     debouncedMaxBaseFee,
     enabled,
@@ -128,7 +134,8 @@ const useGas = ({
     if (
       !gasData ||
       prevDebouncedMaxPriorityFee === debouncedMaxPriorityFee ||
-      !enabled
+      !enabled ||
+      chainId !== ChainId.mainnet
     )
       return;
     const { data } = gasData as MeteorologyResponse;
@@ -140,7 +147,7 @@ const useGas = ({
     };
 
     const maxBaseFee = (storeGasFeeParamsBySpeed?.custom as GasFeeParams)
-      .maxBaseFee.amount;
+      ?.maxBaseFee.amount;
 
     let maxPriorityFeeWei = gweiToWei(debouncedMaxPriorityFee || '0');
     // Set the flashbots minimum
@@ -163,6 +170,7 @@ const useGas = ({
     });
     setCustomSpeed(newCustomSpeed);
   }, [
+    chainId,
     currentCurrency,
     debouncedMaxPriorityFee,
     enabled,
