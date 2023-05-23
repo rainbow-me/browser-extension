@@ -32,7 +32,7 @@ import { AccountToImportRows } from './AccountToImportRows';
 const useDeriveAccountsFromSecrets = (secrets: string[]) => {
   const accountsFromSecrets = useQueries({
     queries: secrets.map((s) => ({
-      queryKey: ['accounts from secret', s], // no persisterVersion so secrets are not persisted to storage, only in memory cache
+      queryKey: ['accountsFromSecret', s], // no persisterVersion so secrets are not persisted to storage, only in memory cache
       queryFn: () => deriveAccountsFromSecret(s),
     })),
   });
