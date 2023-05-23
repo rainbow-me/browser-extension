@@ -2,7 +2,14 @@ import { formatDistanceToNowStrict } from 'date-fns';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { Box, Column, Columns, Separator, Stack, Text } from '~/design-system';
+import {
+  Box,
+  Column,
+  Columns,
+  Separator,
+  Stack,
+  TextOverflow,
+} from '~/design-system';
 
 import { WalletSummary } from '../../hooks/useWalletsSummary';
 import { AddressOrEns } from '../AddressOrEns/AddressorEns';
@@ -55,7 +62,11 @@ export const AccountToImportRows = ({
                       color="label"
                       address={address}
                     />
-                    <Text color="labelTertiary" size="12pt" weight="semibold">
+                    <TextOverflow
+                      color="labelTertiary"
+                      size="12pt"
+                      weight="semibold"
+                    >
                       {i18n.t('import_wallet_selection.account_summary', {
                         tokensAmount: walletsSummary[address].balance.display,
                         lastTx: formatDistanceToNowStrict(
@@ -64,7 +75,7 @@ export const AccountToImportRows = ({
                           ),
                         ),
                       })}
-                    </Text>
+                    </TextOverflow>
                   </Stack>
                 </Column>
               </Columns>
