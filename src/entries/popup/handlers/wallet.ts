@@ -79,7 +79,17 @@ const checkIfNeedsTrezorPopup = async (
     | { message: string; address: string }
     | { data: string | Bytes; address: string },
 ) => {
-  if (!isExternalPopup && !isFullScreen) {
+  const data = await chrome.storage.session.get('hwRequestPending');
+  const isSuccessUrl = window.location.href.includes(
+    'tabId=trezor#/hw/trezor/success',
+  );
+
+  if (
+    !isExternalPopup &&
+    !isFullScreen &&
+    !data?.hwRequestPending &&
+    !isSuccessUrl
+  ) {
     // check if we opened a popup before
     const hwRequestPending = await chrome.storage.session.get(
       'hwRequestPending',
@@ -94,6 +104,15 @@ const checkIfNeedsTrezorPopup = async (
           payload,
         },
       });
+
+      console.log('opening trezor popup', {
+        isExternalPopup,
+        isFullScreen,
+        data,
+        isSuccessUrl,
+        currentUrl: window.location.href,
+      });
+
       await chrome.windows.create({
         url: POPUP_URL + `?tabId=trezor#${ROUTES.HW_TREZOR_LOADING}`,
         type: 'popup',

@@ -192,10 +192,8 @@ const ROUTE_DATA = [
     path: ROUTES.HW_TREZOR_LOADING,
     element: (
       <AnimatedRoute
-        protectedRoute={['NEW', 'READY']}
+        protectedRoute={['READY']}
         direction="up"
-        navbar
-        navbarIcon="ex"
         background="surfaceSecondary"
       >
         <LoadingTrezor />
@@ -207,10 +205,8 @@ const ROUTE_DATA = [
     path: ROUTES.HW_TREZOR_SUCCESS,
     element: (
       <AnimatedRoute
-        protectedRoute={['NEW', 'READY']}
+        protectedRoute={['READY']}
         direction="up"
-        navbar
-        navbarIcon="ex"
         background="surfaceSecondary"
       >
         <SuccessTrezor />

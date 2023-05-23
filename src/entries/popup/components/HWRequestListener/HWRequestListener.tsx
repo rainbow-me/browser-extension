@@ -52,8 +52,8 @@ export const HWRequestListener = () => {
           );
           if (response) {
             bgMessenger.send('hwResponse', response);
+            await chrome.storage.session.remove('hwRequestPending');
             navigate(ROUTES.HW_TREZOR_SUCCESS);
-            chrome.storage.session.remove('hwRequestPending');
           }
         }
         // eslint-disable-next-line no-empty

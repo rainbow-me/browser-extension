@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { i18n } from '~/core/languages';
-import { Box, Text } from '~/design-system';
-
-import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
-import { Spinner } from '../../components/Spinner/Spinner';
+import { Box, Button, Text } from '~/design-system';
 
 export function SuccessTrezor() {
+  const onClose = useCallback(() => {
+    window.close();
+  }, []);
+
   return (
-    <FullScreenContainer>
+    <Box padding="24px">
       <Box alignItems="center">
         <Text size="16pt" weight="bold" color="label" align="center">
           {i18n.t('hw.trezor_success')}
@@ -39,10 +40,21 @@ export function SuccessTrezor() {
             justifyContent="center"
             style={{ margin: 'auto' }}
           >
-            <Spinner size={32} />
+            <Button
+              width="full"
+              color="accent"
+              height="28px"
+              variant="flat"
+              onClick={onClose}
+              tabIndex={0}
+            >
+              <Text color="label" size="16pt" weight="bold">
+                {i18n.t('alert.ok')}
+              </Text>
+            </Button>
           </Box>
         </Box>
       </Box>
-    </FullScreenContainer>
+    </Box>
   );
 }

@@ -3,12 +3,11 @@ import React from 'react';
 import { i18n } from '~/core/languages';
 import { Box, Text } from '~/design-system';
 
-import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { Spinner } from '../../components/Spinner/Spinner';
 
 export function LoadingTrezor() {
   return (
-    <FullScreenContainer>
+    <Box padding="24px">
       <Box alignItems="center">
         <Text size="16pt" weight="bold" color="label" align="center">
           {i18n.t('hw.waiting_for_trezor_connect')}
@@ -43,6 +42,6 @@ export function LoadingTrezor() {
           </Box>
         </Box>
       </Box>
-    </FullScreenContainer>
+    </Box>
   );
 }
