@@ -30,7 +30,6 @@ import {
   ExplainerSheet,
   useExplainerSheetParams,
 } from '../../components/ExplainerSheet/ExplainerSheet';
-import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { SwapFee } from '../../components/TransactionFee/TransactionFee';
 import {
@@ -50,7 +49,6 @@ import {
   useSwapPriceImpact,
 } from '../../hooks/swap/useSwapPriceImpact';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
-import { isFullScreen } from '../../utils/windows';
 
 import { SwapReviewSheet } from './SwapReviewSheet/SwapReviewSheet';
 import { SwapSettings } from './SwapSettings/SwapSettings';
@@ -357,13 +355,8 @@ export function Swap() {
     },
   });
 
-  const Container = useMemo(
-    () => (isFullScreen ? FullScreenContainer : React.Fragment),
-    [],
-  );
-
   return (
-    <Container>
+    <>
       <Navbar
         title={i18n.t('swap.title')}
         background={'surfaceSecondary'}
@@ -587,6 +580,6 @@ export function Swap() {
           </Row>
         </Rows>
       </Box>
-    </Container>
+    </>
   );
 }
