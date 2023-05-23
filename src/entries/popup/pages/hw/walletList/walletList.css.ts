@@ -4,14 +4,14 @@ export const accountIndexHoverContainerStyle = style([]);
 
 export const accountIndexHiddenHoverStyle = style([
   {
-    maxWidth: 0,
+    width: 0,
     overflow: 'hidden',
-    transition: 'all .5s',
+    transition: 'all .5s cubic-bezier(0.175, 0.885, 0.32, 1.15)',
   },
   {
     selectors: {
       [`${accountIndexHoverContainerStyle}:hover &`]: {
-        maxWidth: 100,
+        width: 31,
       },
     },
   },
