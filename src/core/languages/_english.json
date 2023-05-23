@@ -790,7 +790,7 @@
     "choose_title": "Connect a hardware wallet",
     "ledger_support": "Supports Ledger Nano S, Nano S Plus, Nano X, and Stax devices.",
     "trezor_support": "Supports Model One or Model T devices.",
-    "connect_ledger_title": "Complete your Ledger set up",
+    "connect_ledger_title": "Connect your Ledger",
     "connect_ledger_description": "Connect your Ledger to Rainbow by plugging it into your computer using the USB-C cable.",
     "connect_trezor_title": "Complete your Trezor set up",
     "connect_trezor_description": "Continue to connect your Trezor to Rainbow through the web interface.",

@@ -5,10 +5,18 @@ import { TextStyles } from '~/design-system/styles/core.css';
 
 import ExternalImage from '../ExternalImage/ExternalImage';
 
-function Avatar({ imageUrl, size }: { imageUrl?: string; size: number }) {
+function Avatar({
+  imageUrl,
+  size,
+  mask,
+}: {
+  imageUrl?: string;
+  size: number;
+  mask?: string;
+}) {
   return (
     <AvatarWrapper size={size}>
-      {imageUrl && <AvatarImage size={size} imageUrl={imageUrl} />}
+      {imageUrl && <AvatarImage mask={mask} size={size} imageUrl={imageUrl} />}
       <AvatarSkeleton />
     </AvatarWrapper>
   );
@@ -44,9 +52,11 @@ function AvatarWrapper({
 function AvatarContent({
   backgroundColor,
   children,
+  mask,
 }: {
   backgroundColor?: string;
   children: React.ReactNode;
+  mask?: string;
 }) {
   return (
     <Box
@@ -61,6 +71,12 @@ function AvatarContent({
       style={{
         backgroundColor,
         zIndex: 1,
+        ...(mask
+          ? {
+              maskImage: `url(${mask})`,
+              WebkitMaskImage: `url(${mask})`,
+            }
+          : {}),
       }}
     >
       {children}
@@ -71,13 +87,21 @@ function AvatarContent({
 function AvatarImage({
   imageUrl,
   size = 60,
+  mask,
 }: {
   imageUrl?: string;
   size: number;
+  mask?: string;
 }) {
   return (
     <AvatarContent>
-      <ExternalImage src={imageUrl} width={size} height={size} loading="lazy" />
+      <ExternalImage
+        mask={mask}
+        src={imageUrl}
+        width={size}
+        height={size}
+        loading="lazy"
+      />
     </AvatarContent>
   );
 }
@@ -86,13 +110,15 @@ function AvatarEmoji({
   color,
   emoji,
   size,
+  mask,
 }: {
   color?: string;
   emoji?: string;
   size?: TextStyles['fontSize'];
+  mask?: string;
 }) {
   return (
-    <AvatarContent backgroundColor={color}>
+    <AvatarContent mask={mask} backgroundColor={color}>
       <Text size={size ?? '32pt'} weight="bold">
         {emoji}
       </Text>

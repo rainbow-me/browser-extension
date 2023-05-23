@@ -225,8 +225,16 @@ export const CustomGasSheet = ({
       setSelectedSpeedOption(GasSpeed.CUSTOM);
       setCustomMaxBaseFee(maxBaseFee);
       setMaxBaseFee(maxBaseFee);
+      if (!maxBaseFee || isZero(maxBaseFee)) {
+        setMaxBaseFeeWarning('fail');
+      } else if (lessThan(maxBaseFee, currentBaseFee)) {
+        setMaxBaseFeeWarning('stuck');
+      } else {
+        setMaxBaseFeeWarning(undefined);
+      }
     },
     [
+      currentBaseFee,
       gasFeeParamsBySpeed,
       prevSelectedGasOption,
       setCustomMaxBaseFee,
@@ -251,6 +259,16 @@ export const CustomGasSheet = ({
       setSelectedSpeedOption(GasSpeed.CUSTOM);
       setCustomMaxPriorityFee(maxPriorityFee);
       setMaxPriorityFee(maxPriorityFee);
+      const normalSpeed = gasFeeParamsBySpeed?.normal as GasFeeParams;
+      if (!maxPriorityFee || isZero(maxPriorityFee)) {
+        setPriorityBaseFeeWarning('fail');
+      } else if (
+        lessThan(maxPriorityFee, normalSpeed?.maxPriorityFeePerGas?.gwei)
+      ) {
+        setPriorityBaseFeeWarning('stuck');
+      } else {
+        setPriorityBaseFeeWarning(undefined);
+      }
     },
     [
       flashbotsEnabled,
@@ -293,33 +311,6 @@ export const CustomGasSheet = ({
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show]);
-
-  useEffect(() => {
-    if (show) {
-      if (!maxBaseFee || isZero(maxBaseFee)) {
-        setMaxBaseFeeWarning('fail');
-      } else if (lessThan(maxBaseFee, currentBaseFee)) {
-        setMaxBaseFeeWarning('stuck');
-      } else {
-        setMaxBaseFeeWarning(undefined);
-      }
-    }
-  }, [currentBaseFee, maxBaseFee, show]);
-
-  useEffect(() => {
-    if (show) {
-      const normalSpeed = gasFeeParamsBySpeed?.normal as GasFeeParams;
-      if (!maxPriorityFee || isZero(maxPriorityFee)) {
-        setPriorityBaseFeeWarning('fail');
-      } else if (
-        lessThan(maxPriorityFee, normalSpeed?.maxPriorityFeePerGas?.gwei)
-      ) {
-        setPriorityBaseFeeWarning('stuck');
-      } else {
-        setPriorityBaseFeeWarning(undefined);
-      }
-    }
-  }, [gasFeeParamsBySpeed?.normal, maxBaseFee, maxPriorityFee, show]);
 
   const onSelectedGasChange = useCallback(
     (speed: GasSpeed) => {
