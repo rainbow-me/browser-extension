@@ -518,6 +518,7 @@ export const connectLedger = async () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
+    console.log('connect error', e);
     switch (e?.name) {
       case 'TransportStatusError':
         alert(
