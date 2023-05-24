@@ -23,16 +23,14 @@ import {
   typeOnTextInput,
   waitAndClick,
 } from '../helpers';
+import { TEST_VARIABLES } from '../walletVariables';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
-const walletAddress = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
-const recipientWalletAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
-// eslint-disable-next-line prettier/prettier
-const shortenedAddress = await shortenAddress(walletAddress);
+const shortenedAddress = shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS);
 
 describe('App interactions flow', () => {
   beforeAll(async () => {
@@ -63,7 +61,7 @@ describe('App interactions flow', () => {
     await typeOnTextInput({
       id: 'secret-textarea',
       driver,
-      text: 'test test test test test test test test test test test junk',
+      text: TEST_VARIABLES.SEED_WALLET.SECRET,
     });
 
     await findElementByTestIdAndClick({
@@ -130,7 +128,7 @@ describe('App interactions flow', () => {
     expect(accounts).toBeTruthy();
 
     const connectedAddress = await accounts.getText();
-    expect(connectedAddress).toBe(walletAddress);
+    expect(connectedAddress).toBe(TEST_VARIABLES.SEED_WALLET.ADDRESS);
   });
 
   it('should be able to complete a personal sign', async () => {
@@ -204,7 +202,7 @@ describe('App interactions flow', () => {
       id: 'signTypedDataV3VerifyResult',
       driver,
     });
-    expect(result).toBe(walletAddress.toLowerCase());
+    expect(result).toBe(TEST_VARIABLES.SEED_WALLET.ADDRESS.toLowerCase());
   });
 
   it('should be able to sign typed data (v4)', async () => {
@@ -244,7 +242,7 @@ describe('App interactions flow', () => {
       id: 'signTypedDataV4VerifyResult',
       driver,
     });
-    expect(result).toBe(walletAddress.toLowerCase());
+    expect(result).toBe(TEST_VARIABLES.SEED_WALLET.ADDRESS.toLowerCase());
   });
 
   it('should be able to switch network to hardhat', async () => {
@@ -307,12 +305,12 @@ describe('App interactions flow', () => {
 
     // find pre-send balance of token created in last test
     const senderPreSendbalance = await getOnchainBalance(
-      walletAddress,
+      TEST_VARIABLES.SEED_WALLET.ADDRESS,
       tokenText,
     );
     // recipient address hardcoded on test dapp and used here
     const recipientPreSendBalance = await getOnchainBalance(
-      recipientWalletAddress,
+      TEST_VARIABLES.DAPP_RECIPIENT.ADDRESS,
       tokenText,
     );
 
@@ -338,20 +336,24 @@ describe('App interactions flow', () => {
 
     // find post-send token address
     const senderPostSendbalance = await getOnchainBalance(
-      walletAddress,
+      TEST_VARIABLES.SEED_WALLET.ADDRESS,
       tokenText,
     );
     // recipient address hardcoded on test dapp and used here
     const recipientPostSendBalance = await getOnchainBalance(
-      recipientWalletAddress,
+      TEST_VARIABLES.DAPP_RECIPIENT.ADDRESS,
       tokenText,
     );
 
     // test dapp hardcodes the amount of tokens created and transfered. expected values are as below
     expect(Number(senderPreSendbalance)).toBe(100000);
-    expect(Number(senderPostSendbalance)).toBe(85000);
+    expect(Number(senderPostSendbalance)).toBe(
+      Number(senderPreSendbalance) - 15000,
+    );
     expect(Number(recipientPreSendBalance)).toBe(0);
-    expect(Number(recipientPostSendBalance)).toBe(15000);
+    expect(Number(recipientPostSendBalance)).toBe(
+      Number(recipientPreSendBalance) + 15000,
+    );
 
     const txnStatus = await transactionStatus();
     expect(txnStatus).toBe('success');
@@ -390,12 +392,12 @@ describe('App interactions flow', () => {
 
     // find pre-send balance of token created in last test
     const senderPreSendbalance = await getOnchainBalance(
-      walletAddress,
+      TEST_VARIABLES.SEED_WALLET.ADDRESS,
       tokenText,
     );
     // recipient address hardcoded on test dapp and used here
     const recipientPreSendBalance = await getOnchainBalance(
-      recipientWalletAddress,
+      TEST_VARIABLES.DAPP_RECIPIENT.ADDRESS,
       tokenText,
     );
 
@@ -424,20 +426,24 @@ describe('App interactions flow', () => {
 
     // find post-send token address
     const senderPostSendbalance = await getOnchainBalance(
-      walletAddress,
+      TEST_VARIABLES.SEED_WALLET.ADDRESS,
       tokenText,
     );
     // recipient address hardcoded on test dapp and used here
     const recipientPostSendBalance = await getOnchainBalance(
-      recipientWalletAddress,
+      TEST_VARIABLES.DAPP_RECIPIENT.ADDRESS,
       tokenText,
     );
 
     // test dapp hardcodes the amount of tokens created and transfered. expected values are as below
     expect(Number(senderPreSendbalance)).toBe(85000);
-    expect(Number(senderPostSendbalance)).toBe(70000);
+    expect(Number(senderPostSendbalance)).toBe(
+      Number(senderPreSendbalance) - 15000,
+    );
     expect(Number(recipientPreSendBalance)).toBe(15000);
-    expect(Number(recipientPostSendBalance)).toBe(30000);
+    expect(Number(recipientPostSendBalance)).toBe(
+      Number(recipientPreSendBalance) + 15000,
+    );
 
     const txnStatus = await transactionStatus();
     expect(txnStatus).toBe('success');

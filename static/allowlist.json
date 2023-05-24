@@ -19,6 +19,7 @@
         "https://rainbow.imgix.net",
         "https://firebaseinstallations.googleapis.com/v1/projects/rainbow-bx/",
         "https://firebaseremoteconfig.googleapis.com/v1/projects/rainbow-bx/",
-        "https://icons.duckduckgo.com"
+        "https://icons.duckduckgo.com",
+        "https://*.live.ledger.com"
     ]
 }

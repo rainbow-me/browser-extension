@@ -28,6 +28,7 @@ import {
   Text,
 } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
@@ -40,7 +41,7 @@ import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
 
-import { InputActionButon } from './InputActionButton';
+import { InputActionButton } from './InputActionButton';
 import {
   addressToInputHighlightWrapperStyleDark,
   addressToInputHighlightWrapperStyleLight,
@@ -94,16 +95,18 @@ const WalletSection = ({
       <Box>
         {wallets.map((wallet, i) => (
           <Bleed horizontal="12px" key={i}>
-            <RowHighlightWrapper key={i}>
-              <Inset horizontal="12px" key={i}>
-                <WalletRow
-                  onClick={onClickWallet}
-                  key={wallet}
-                  section={section}
-                  wallet={wallet}
-                />
-              </Inset>
-            </RowHighlightWrapper>
+            <Lens borderRadius="12px" onKeyDown={() => onClickWallet(wallet)}>
+              <RowHighlightWrapper key={i}>
+                <Inset horizontal="12px" key={i}>
+                  <WalletRow
+                    onClick={onClickWallet}
+                    key={wallet}
+                    section={section}
+                    wallet={wallet}
+                  />
+                </Inset>
+              </RowHighlightWrapper>
+            </Lens>
           </Bleed>
         ))}
       </Box>
@@ -156,9 +159,13 @@ const WalletRow = ({
 };
 
 const sortWallets = (order: Address[], wallets: Address[]) =>
-  order
-    .map((orderAddress) => wallets.find((address) => address === orderAddress))
-    .filter(Boolean);
+  order.length
+    ? order
+        .map((orderAddress) =>
+          wallets.find((address) => address === orderAddress),
+        )
+        .filter(Boolean)
+    : wallets;
 
 const DropdownWalletsList = ({
   wallets,
@@ -393,6 +400,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
                           variant="transparent"
                           style={{ paddingLeft: 0, paddingRight: 0 }}
                           innerRef={inputRef}
+                          tabIndex={0}
                         />
                       </Box>
                     ) : (
@@ -431,7 +439,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
           }
           dropdownVisible={dropdownVisible}
           rightComponent={
-            <InputActionButon
+            <InputActionButton
               showClose={!!toAddress}
               onClose={onActionClose}
               onDropdownAction={onDropdownAction}

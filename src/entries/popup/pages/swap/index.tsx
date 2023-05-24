@@ -19,6 +19,7 @@ import {
   Stack,
   Symbol,
   Text,
+  TextOverflow,
 } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
@@ -132,9 +133,9 @@ const SwapWarning = ({
               background="fillSecondary"
               style={{ width: '14px', height: '2px' }}
             />
-            <Text color={warningColor} size="14pt" weight="semibold">
+            <TextOverflow color={warningColor} size="14pt" weight="semibold">
               {warningDescription}
-            </Text>
+            </TextOverflow>
           </Inline>
         </Box>
       </Box>
@@ -208,7 +209,6 @@ export function Swap() {
     assetToSellMaxValue,
     assetToBuyValue,
     assetToSellValue,
-    assetToBuyDisplay,
     assetToSellDisplay,
     assetToSellDropdownClosed,
     assetToBuyDropdownClosed,
@@ -430,7 +430,7 @@ export function Swap() {
                   placeholder={i18n.t('swap.input_token_to_swap_placeholder')}
                   assetToSellMaxValue={assetToSellMaxValue}
                   setAssetToSellMaxValue={setAssetToSellMaxValue}
-                  assetToSellValue={assetToSellDisplay}
+                  assetToSellValue={assetToSellValue}
                   setAssetToSellInputValue={setAssetToSellInputValue}
                   inputRef={assetToSellInputRef}
                   openDropdownOnMount={inputToOpenOnMount === 'sell'}
@@ -494,7 +494,7 @@ export function Swap() {
                   outputChainId={outputChainId}
                   assetFilter={assetToBuyFilter}
                   setAssetFilter={setAssetToBuyFilter}
-                  assetToBuyValue={assetToBuyDisplay}
+                  assetToBuyValue={assetToBuyValue}
                   assetToSellValue={assetToSellValue}
                   setAssetToBuyInputValue={setAssetToBuyInputValue}
                   inputRef={assetToBuyInputRef}
@@ -544,6 +544,7 @@ export function Swap() {
                         width="full"
                         testId="swap-review-button"
                         disabled={buttonDisabled}
+                        tabIndex={0}
                       >
                         <Inline space="8px" alignVertical="center">
                           {buttonIcon}

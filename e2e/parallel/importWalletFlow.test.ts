@@ -15,13 +15,13 @@ import {
   shortenAddress,
   typeOnTextInput,
 } from '../helpers';
+import { TEST_VARIABLES } from '../walletVariables';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
-const wallet = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
 
 describe('Import wallet flow', () => {
   beforeAll(async () => {
@@ -52,7 +52,7 @@ describe('Import wallet flow', () => {
     await typeOnTextInput({
       id: 'secret-textarea',
       driver,
-      text: 'test test test test test test test test test test test junk',
+      text: TEST_VARIABLES.SEED_WALLET.SECRET,
     });
 
     await findElementByTestIdAndClick({
@@ -76,6 +76,6 @@ describe('Import wallet flow', () => {
     goToPopup(driver, rootURL);
     await delayTime('short');
     const account = await getTextFromText({ id: 'account-name', driver });
-    expect(account).toBe(await shortenAddress(wallet));
+    expect(account).toBe(shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS));
   });
 });

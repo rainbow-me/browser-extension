@@ -2,7 +2,14 @@
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable @typescript-eslint/no-var-requires */
 import { ethers } from 'ethers';
-import { Builder, By, WebDriver, until } from 'selenium-webdriver';
+import {
+  Builder,
+  By,
+  Locator,
+  WebDriver,
+  WebElementCondition,
+  until,
+} from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
 import { erc20ABI } from 'wagmi';
 
@@ -18,6 +25,10 @@ const BINARY_PATHS = {
     brave: process.env.BRAVE_BIN,
   },
 };
+
+export const byTestId = (id: string) => By.css(`[data-testid="${id}"]`);
+export const byText = (text: string) =>
+  By.xpath(`//*[contains(text(),"${text}")]`);
 
 export async function querySelector(driver, selector) {
   const el = await driver.wait(
@@ -74,18 +85,27 @@ export function shortenAddress(address) {
     : address;
 }
 
-export async function switchWallet(address, rootURL, driver) {
+export async function switchWallet(address, rootURL, driver: WebDriver) {
   // find shortened address, go to popup, find header, click, find wallet you want to switch to and click
   const shortenedAddress = shortenAddress(address);
 
   await goToPopup(driver, rootURL, '#/home');
+  await delayTime('medium');
   await findElementByIdAndClick({
     id: 'header-account-name-shuffle',
     driver,
   });
 
-  await findElementByTextAndClick(driver, shortenedAddress);
-  await delayTime('short');
+  await waitUntilElementByTestIdIsPresent({
+    id: `account-item-${shortenedAddress}`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `account-item-${shortenedAddress}`,
+    driver,
+  });
+
+  await delayTime('long');
 }
 
 export async function getOnchainBalance(addy, contract) {
@@ -253,3 +273,12 @@ export async function getWindowHandle({ driver }) {
   const windowHandle = await driver.getWindowHandle();
   return windowHandle;
 }
+
+export const untilIsClickable = (locator: Locator) =>
+  new WebElementCondition('until element is clickable', async (driver) => {
+    const element = driver.findElement(locator);
+    const isDisplayed = await element.isDisplayed();
+    const isEnabled = await element.isEnabled();
+    if (isDisplayed && isEnabled) return element;
+    return null;
+  });
