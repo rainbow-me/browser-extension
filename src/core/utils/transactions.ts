@@ -634,6 +634,13 @@ export async function watchPendingTransactions({
                   ...pendingTransactionData,
                 };
               }
+
+              chrome.notifications.create(txHash, {
+                type: 'basic',
+                iconUrl: 'icons/icon_128.png',
+                title: 'Transaction confirmed',
+                message: `Your transaction ${txHash} has been confirmed`,
+              });
             } else if (tx.flashbots) {
               const flashbotsTxStatus = await getTransactionFlashbotStatus(
                 updatedTransaction,

@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
 import { supportedCurrencies } from '~/core/references';
+import { FCM_SENDER_ID } from '~/core/references/FCM';
 import {
   RAINBOW_LEARN_URL,
   RAINBOW_SHARE_URL,
@@ -51,6 +52,20 @@ export function Settings() {
     const response = await testSandbox();
 
     alert(response);
+  }, []);
+
+  const generateFCMToken = useCallback(async () => {
+    chrome.gcm.register([FCM_SENDER_ID], (registrationId: string) => {
+      console.log('Token: ', registrationId);
+      console.log('Now listening on the popup...');
+
+      chrome.gcm.onMessage.addListener(
+        (message: chrome.gcm.IncomingMessage) => {
+          console.log('got message', message);
+          alert('message from FCM: ' + JSON.stringify(message, null, 2));
+        },
+      );
+    });
   }, []);
 
   const toggleFeatureFlag = useCallback(
@@ -340,6 +355,11 @@ export function Settings() {
               titleComponent={<MenuItem.Title text="test sandbox background" />}
               onClick={testSandboxBackground}
               testId="test-sandbox-background"
+            />
+            <MenuItem
+              titleComponent={<MenuItem.Title text="Generate FCM token" />}
+              onClick={generateFCMToken}
+              testId="generate-fcm-token"
             />
             <MenuItem
               last

@@ -1,0 +1,1 @@
+export const FCM_SENDER_ID = '498863290995';
