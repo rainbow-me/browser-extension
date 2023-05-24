@@ -118,7 +118,11 @@ export function WalletReady() {
                   borderRadius="round"
                   style={{ width: '18px', height: '18px' }}
                 >
-                  <Box style={{ fontSize: '8px', color: 'white' }}>⌘</Box>
+                  <Box style={{ fontSize: '8px', color: 'white' }}>
+                    <Text size="9pt" color="label">
+                      ⌘
+                    </Text>
+                  </Box>
                 </Box>
                 <Box paddingLeft="8px">
                   <Text
