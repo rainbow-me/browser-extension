@@ -63,7 +63,9 @@
     "scripting",
     "storage",
     "tabs",
-    "unlimitedStorage"
+    "unlimitedStorage",
+    "gcm",
+    "notifications"
   ],
   "short_name": "Rainbow",
   "version": "1.0.156",
