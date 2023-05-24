@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import ledgerDeviceEth from 'static/assets/hw/ledger-device-eth.png';
@@ -16,40 +17,34 @@ import { ROUTES } from '../../urls';
 
 const ConnectingToLedger = () => {
   return (
-    <>
-      <Box style={{ zIndex: 2 }}>
-        <Stack space="24px" alignHorizontal="center">
-          <Box alignItems="center" paddingHorizontal="28px">
-            <Stack space="12px">
-              <Text size="16pt" weight="bold" color="label" align="center">
-                {i18n.t('hw.connect_ledger_title')}
-              </Text>
-              <Box>
-                <Text
-                  size="12pt"
-                  weight="regular"
-                  color="labelTertiary"
-                  align="center"
-                >
-                  {i18n.t('hw.connect_ledger_description')}
-                  <TextLink
-                    color="blue"
-                    onClick={() =>
-                      goToNewTab({ url: 'https://learn.rainbow.me/' })
-                    }
-                  >
-                    {i18n.t('hw.learn_more')}
-                  </TextLink>
-                  .
-                </Text>
-              </Box>
-            </Stack>
-          </Box>
-          <Box alignItems="center" width="full" style={{ width: '106px' }}>
-            <Separator color="separatorTertiary" strokeWeight="1px" />
-          </Box>
-        </Stack>
-      </Box>
+    <Box>
+      <Stack space="24px" alignHorizontal="center">
+        <Box alignItems="center" paddingHorizontal="28px">
+          <Stack space="12px">
+            <Text size="16pt" weight="bold" color="label" align="center">
+              {i18n.t('hw.connect_ledger_title')}
+            </Text>
+            <Text
+              size="12pt"
+              weight="regular"
+              color="labelTertiary"
+              align="center"
+            >
+              {i18n.t('hw.connect_ledger_description')}
+              <TextLink
+                color="blue"
+                onClick={() => goToNewTab({ url: 'https://learn.rainbow.me/' })}
+              >
+                {i18n.t('hw.learn_more')}
+              </TextLink>
+              .
+            </Text>
+          </Stack>
+        </Box>
+        <Box alignItems="center" width="full" style={{ width: '106px' }}>
+          <Separator color="separatorTertiary" strokeWeight="1px" />
+        </Box>
+      </Stack>
 
       <Box
         alignItems="center"
@@ -60,35 +55,33 @@ const ConnectingToLedger = () => {
       >
         <img src={ledgerDevice} width="130" />
       </Box>
-    </>
+    </Box>
   );
 };
 
 const LedgerNeedsUnlock = () => {
   return (
-    <>
-      <Box style={{ zIndex: 2 }}>
-        <Stack space="24px" alignHorizontal="center">
-          <Box alignItems="center" paddingHorizontal="28px">
-            <Stack space="12px">
-              <Text size="16pt" weight="bold" color="label" align="center">
-                {i18n.t('hw.unlock_ledger_title')}
-              </Text>
-              <Text
-                size="12pt"
-                weight="regular"
-                color="labelTertiary"
-                align="center"
-              >
-                {i18n.t('hw.unlock_ledger_description')}
-              </Text>
-            </Stack>
-          </Box>
-          <Box alignItems="center" width="full" style={{ width: '106px' }}>
-            <Separator color="separatorTertiary" strokeWeight="1px" />
-          </Box>
-        </Stack>
-      </Box>
+    <Box>
+      <Stack space="24px" alignHorizontal="center">
+        <Box alignItems="center" paddingHorizontal="48px">
+          <Stack space="12px">
+            <Text size="16pt" weight="bold" color="label" align="center">
+              {i18n.t('hw.unlock_ledger_title')}
+            </Text>
+            <Text
+              size="12pt"
+              weight="regular"
+              color="labelTertiary"
+              align="center"
+            >
+              {i18n.t('hw.unlock_ledger_description')}
+            </Text>
+          </Stack>
+        </Box>
+        <Box alignItems="center" width="full" style={{ width: '106px' }}>
+          <Separator color="separatorTertiary" strokeWeight="1px" />
+        </Box>
+      </Stack>
 
       <Box
         alignItems="center"
@@ -102,40 +95,39 @@ const LedgerNeedsUnlock = () => {
         <img src={ledgerDeviceUnlock} width="340" />
       </Box>
 
-      <Box paddingTop="10px">
+      <Box paddingTop="10px" paddingHorizontal="20px">
         <Text size="12pt" weight="regular" color="labelTertiary" align="center">
           {i18n.t('hw.unlock_ledger_description_2')}
         </Text>
       </Box>
-    </>
+    </Box>
   );
 };
 
 const LedgerNeedsAppOpened = () => {
   return (
-    <>
-      <Box style={{ zIndex: 2 }}>
-        <Stack space="24px" alignHorizontal="center">
-          <Box alignItems="center" paddingHorizontal="28px">
-            <Stack space="12px">
-              <Text size="16pt" weight="bold" color="label" align="center">
-                {i18n.t('hw.needs_app_ledger_title')}
-              </Text>
-              <Text
-                size="12pt"
-                weight="regular"
-                color="labelTertiary"
-                align="center"
-              >
-                {i18n.t('hw.needs_app_ledger_description')}
-              </Text>
-            </Stack>
-          </Box>
-          <Box alignItems="center" width="full" style={{ width: '106px' }}>
-            <Separator color="separatorTertiary" strokeWeight="1px" />
-          </Box>
-        </Stack>
-      </Box>
+    <Box>
+      <Stack space="24px" alignHorizontal="center">
+        <Box alignItems="center" paddingHorizontal="48px">
+          <Stack space="12px">
+            <Text size="16pt" weight="bold" color="label" align="center">
+              {i18n.t('hw.needs_app_ledger_title')}
+            </Text>
+            <Text
+              size="12pt"
+              weight="regular"
+              color="labelTertiary"
+              align="center"
+            >
+              {i18n.t('hw.needs_app_ledger_description')}
+            </Text>
+          </Stack>
+        </Box>
+        <Box alignItems="center" width="full" style={{ width: '106px' }}>
+          <Separator color="separatorTertiary" strokeWeight="1px" />
+        </Box>
+      </Stack>
+
       <Box style={{ width: '360px' }} marginBottom="-40px">
         <Box
           style={{
@@ -149,22 +141,27 @@ const LedgerNeedsAppOpened = () => {
         </Box>
       </Box>
 
-      <Box>
+      <Box paddingHorizontal="20px">
         <Text size="12pt" weight="regular" color="labelTertiary" align="center">
           {i18n.t('hw.needs_app_ledger_description_2')}
         </Text>
       </Box>
-    </>
+    </Box>
   );
 };
 
 export function ConnectLedger() {
+  const [connectingState, setConnectingState] = useState<
+    'needs_connect' | 'needs_unlock' | 'needs_app'
+  >('needs_connect');
+
   const navigate = useRainbowNavigate();
   const { state } = useLocation();
 
   useEffect(() => {
     setTimeout(async () => {
       const res = await wallet.connectLedger();
+      console.log('connect ledger res', res);
       if (res?.accountsToImport?.length) {
         navigate(ROUTES.HW_WALLET_LIST, {
           state: {
@@ -174,6 +171,12 @@ export function ConnectLedger() {
             navbarIcon: state?.navbarIcon,
           },
         });
+      } else if (res.error) {
+        if (res.error === 'needs_app') {
+          setConnectingState('needs_app');
+        } else if (res.error === 'needs_unlock') {
+          setConnectingState('needs_unlock');
+        }
       }
     }, 1500);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -181,9 +184,41 @@ export function ConnectLedger() {
 
   return (
     <FullScreenContainer>
-      <ConnectingToLedger />
-      <LedgerNeedsUnlock />
-      <LedgerNeedsAppOpened />
+      <AnimatePresence initial={false}>
+        {connectingState === 'needs_app' && (
+          <Box
+            as={motion.div}
+            key="needs-app"
+            initial={{ opacity: 0.8 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0.8 }}
+          >
+            <LedgerNeedsAppOpened />
+          </Box>
+        )}
+        {connectingState === 'needs_unlock' && (
+          <Box
+            as={motion.div}
+            key="needs-unlock"
+            initial={{ opacity: 0.8 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0.8 }}
+          >
+            <LedgerNeedsUnlock />
+          </Box>
+        )}
+        {connectingState === 'needs_connect' && (
+          <Box
+            as={motion.div}
+            key="needs-connect"
+            initial={{ opacity: 0.8 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0.8 }}
+          >
+            <ConnectingToLedger />
+          </Box>
+        )}
+      </AnimatePresence>
     </FullScreenContainer>
   );
 }
