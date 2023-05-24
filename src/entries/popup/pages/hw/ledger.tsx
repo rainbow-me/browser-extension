@@ -150,28 +150,10 @@ const LedgerNeedsAppOpened = () => {
   );
 };
 
-const useLedgerConnectionStatus = ({ onReady }: { onReady: () => void }) => {
-  const [status, setStatus] = useState<
-    'ready' | 'needs_connect' | 'needs_unlock' | 'needs_app'
-  >('needs_connect');
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const { status } = await wallet.getLedgerStatus();
-      if (status === 'ready') {
-        onReady();
-      } else {
-        setStatus(status);
-      }
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [onReady]);
-  return { status };
-};
-
 export function ConnectLedger() {
-  // const [connectingState, setConnectingState] = useState<
-  //   'needs_connect' | 'needs_unlock' | 'needs_app'
-  // >('needs_connect');
+  const [connectingState, setConnectingState] = useState<
+    'needs_connect' | 'needs_unlock' | 'needs_app'
+  >('needs_connect');
 
   const navigate = useRainbowNavigate();
   const { state } = useLocation();
@@ -187,29 +169,39 @@ export function ConnectLedger() {
           navbarIcon: state?.navbarIcon,
         },
       });
+    } else if (res.error) {
+      setConnectingState(
+        res.error as 'needs_connect' | 'needs_unlock' | 'needs_app',
+      );
     }
   }, [navigate, state?.direction, state?.navbarIcon]);
 
-  const { status: ledgerStatus } = useLedgerConnectionStatus({
-    onReady: connectLedger,
-  });
+  useEffect(() => {
+    const interval = setInterval(async () => connectLedger(), 5000);
+    return () => clearInterval(interval);
+  }, [connectLedger, navigate]);
 
-  console.log('--- ledgerStatus', ledgerStatus);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      connectLedger();
+    }, 1500);
+    return () => clearTimeout(timeout);
+  }, [connectLedger]);
 
   return (
     <FullScreenContainer>
       <AnimatePresence initial={false}>
-        {ledgerStatus === 'needs_app' && (
+        {connectingState === 'needs_app' && (
           <Box as={motion.div} key="needs-app">
             <LedgerNeedsAppOpened />
           </Box>
         )}
-        {ledgerStatus === 'needs_unlock' && (
+        {connectingState === 'needs_unlock' && (
           <Box as={motion.div} key="needs-unlock">
             <LedgerNeedsUnlock />
           </Box>
         )}
-        {ledgerStatus === 'needs_connect' && (
+        {connectingState === 'needs_connect' && (
           <Box as={motion.div} key="needs-connect">
             <ConnectingToLedger />
           </Box>
