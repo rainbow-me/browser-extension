@@ -1,7 +1,30 @@
 import React, { useEffect, useState } from 'react';
 
-import shiftPressed from 'static/shift_button.png';
-import shiftInactive from 'static/shift_button_inactive.png';
+import OptionInactiveBottom from 'static/assets/onboarding/dark_option_bottom@2x.png';
+import OptionPressedBottom from 'static/assets/onboarding/dark_option_pressed_bottom@2x.png';
+import OptionPressed from 'static/assets/onboarding/dark_option_pressed_top@2x.png';
+import OptionInactive from 'static/assets/onboarding/dark_option_top@2x.png';
+import rInactiveBottom from 'static/assets/onboarding/dark_r_bottom@2x.png';
+import rPressedBottom from 'static/assets/onboarding/dark_r_pressed_bottom@2x.png';
+import rPressed from 'static/assets/onboarding/dark_r_pressed_top@2x.png';
+import rInactive from 'static/assets/onboarding/dark_r_top@2x.png';
+import ShiftInactiveBottom from 'static/assets/onboarding/dark_shift_bottom@2x.png';
+import ShiftPressedBottom from 'static/assets/onboarding/dark_shift_pressed_bottom@2x.png';
+import ShiftPressed from 'static/assets/onboarding/dark_shift_pressed_top@2x.png';
+import ShiftInactive from 'static/assets/onboarding/dark_shift_top@2x.png';
+import OptionInactiveBottomLight from 'static/assets/onboarding/light_option_bottom@2x.png';
+import OptionPressedBottomLight from 'static/assets/onboarding/light_option_pressed_bottom@2x.png';
+import OptionPressedLight from 'static/assets/onboarding/light_option_pressed_top@2x.png';
+import OptionInactiveLight from 'static/assets/onboarding/light_option_top@2x.png';
+import rInactiveBottomLight from 'static/assets/onboarding/light_r_bottom@2x.png';
+import rPressedBottomLight from 'static/assets/onboarding/light_r_pressed_bottom@2x.png';
+import rPressedLight from 'static/assets/onboarding/light_r_pressed_top@2x.png';
+import rInactiveLight from 'static/assets/onboarding/light_r_top@2x.png';
+import ShiftInactiveBottomLight from 'static/assets/onboarding/light_shift_bottom@2x.png';
+import ShiftPressedBottomLight from 'static/assets/onboarding/light_shift_pressed_bottom@2x.png';
+import ShiftPressedLight from 'static/assets/onboarding/light_shift_pressed_top@2x.png';
+import ShiftInactiveLight from 'static/assets/onboarding/light_shift_top@2x.png';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { Box } from '~/design-system';
 
 export function ReadyShortcut() {
@@ -54,23 +77,14 @@ export function ReadyShortcut() {
   }, []);
 
   return (
-    <Box>
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        paddingBottom="24px"
-      >
-        <OpenText
-          isButtonPressed={isShiftPressed || isOptionPressed || isRPressed}
-        />
+    <Box paddingBottom="60px">
+      <Box display="flex" justifyContent="center" paddingBottom="20px">
+        <OpenText isShiftPressed={isShiftPressed} />
       </Box>
-      <Box>
-        <ShortcutsViewer
-          isShiftPressed={isShiftPressed}
-          isOptionPressed={isOptionPressed}
-          isRPressed={isRPressed}
-        />
+      <Box display="flex" width="full">
+        <ShiftPressAnimation isShiftPressed={isShiftPressed} />
+        <OptionPressAnimation isOptionPressed={isOptionPressed} />
+        <RPressAnimation isRPressed={isRPressed} />
       </Box>
     </Box>
   );
@@ -110,80 +124,172 @@ function OpenText({ isButtonPressed }: { isButtonPressed: boolean }) {
   );
 }
 
-function ShortcutsViewer({
-  isShiftPressed,
-  isOptionPressed,
-  isRPressed,
-}: {
-  isShiftPressed: boolean;
-  isOptionPressed: boolean;
-  isRPressed: boolean;
-}) {
-  const buttonStyles = {
-    transition: 'opacity 0.25s ease-in-out',
-    position: 'absolute',
-    width: '100%',
-  };
+function ShiftPressAnimation({ isShiftPressed }: { isShiftPressed: boolean }) {
+  const { currentTheme } = useCurrentThemeStore();
   return (
-    <>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Box position="relative" style={{ width: '102px' }}>
-          <img
-            style={{
-              opacity: isShiftPressed ? 1 : 0,
-              ...(buttonStyles as any),
-            }}
-            src={shiftPressed}
-            alt="Shift Pressed"
-          />
-          <img
-            style={{
-              opacity: isShiftPressed ? 0 : 1,
-              ...(buttonStyles as any),
-            }}
-            src={shiftInactive}
-            alt="Shift Pressed"
-          />
-        </Box>
-
-        <Box position="relative" style={{ width: '102px' }}>
-          <img
-            style={{
-              opacity: isOptionPressed ? 1 : 0,
-              ...(buttonStyles as any),
-            }}
-            src={shiftPressed}
-            alt="Shift Pressed"
-          />
-          <img
-            style={{
-              opacity: isOptionPressed ? 0 : 1,
-              ...(buttonStyles as any),
-            }}
-            src={shiftInactive}
-            alt="Shift Pressed"
-          />
-        </Box>
-
-        <Box position="relative" style={{ width: '102px' }}>
-          <img
-            style={{
-              opacity: isRPressed ? 1 : 0,
-              ...(buttonStyles as any),
-            }}
-            src={shiftPressed}
-            alt="Shift Pressed"
-          />
-          <img
-            style={{
-              opacity: isRPressed ? 0 : 1,
-              ...(buttonStyles as any),
-            }}
-            src={shiftInactive}
-            alt="Shift Pressed"
-          />
-        </Box>
+    <Box paddingHorizontal="5px">
+      <Box position="relative" style={{ width: '102px' }}>
+        {isShiftPressed ? (
+          <>
+            <Box
+              as="img"
+              position="absolute"
+              src={currentTheme === 'dark' ? ShiftPressed : ShiftPressedLight}
+              style={{ width: '102px', zIndex: 1, top: '2px' }}
+              alt="Shift"
+            />
+            <Box
+              as="img"
+              position="absolute"
+              top="0"
+              src={
+                currentTheme === 'dark'
+                  ? ShiftPressedBottom
+                  : ShiftPressedBottomLight
+              }
+              style={{ width: '102px' }}
+              alt="Shift"
+            />
+          </>
+        ) : (
+          <>
+            <Box
+              as="img"
+              position="absolute"
+              top="0"
+              src={currentTheme === 'dark' ? ShiftInactive : ShiftInactiveLight}
+              style={{ width: '102px', zIndex: 1 }}
+              alt="Shift"
+            />
+            <Box
+              as="img"
+              position="absolute"
+              top="0"
+              src={
+                currentTheme === 'dark'
+                  ? ShiftInactiveBottom
+                  : ShiftInactiveBottomLight
+              }
+              style={{ width: '102px' }}
+              alt="Shift"
+            />
+          </>
+        )}
       </Box>
-    </>
+    </Box>
+  );
+}
+
+function OptionPressAnimation({
+  isOptionPressed,
+}: {
+  isOptionPressed: boolean;
+}) {
+  const { currentTheme } = useCurrentThemeStore();
+  return (
+    <Box paddingHorizontal="5px">
+      <Box position="relative" style={{ width: '44px' }}>
+        {isOptionPressed ? (
+          <>
+            <Box
+              as="img"
+              position="absolute"
+              src={currentTheme === 'dark' ? OptionPressed : OptionPressedLight}
+              style={{ width: '44px', zIndex: 1, top: '2px' }}
+              alt="Shift"
+            />
+            <Box
+              as="img"
+              position="absolute"
+              top="0"
+              src={
+                currentTheme === 'dark'
+                  ? OptionPressedBottom
+                  : OptionPressedBottomLight
+              }
+              style={{ width: '44px' }}
+              alt="Shift"
+            />
+          </>
+        ) : (
+          <>
+            <Box
+              as="img"
+              position="absolute"
+              top="0"
+              src={
+                currentTheme === 'dark' ? OptionInactive : OptionInactiveLight
+              }
+              style={{ width: '44px', zIndex: 1 }}
+              alt="Shift"
+            />
+            <Box
+              as="img"
+              position="absolute"
+              top="0"
+              src={
+                currentTheme === 'dark'
+                  ? OptionInactiveBottom
+                  : OptionInactiveBottomLight
+              }
+              style={{ width: '44px' }}
+              alt="Shift"
+            />
+          </>
+        )}
+      </Box>
+    </Box>
+  );
+}
+
+function RPressAnimation({ isRPressed }: { isRPressed: boolean }) {
+  const { currentTheme } = useCurrentThemeStore();
+  return (
+    <Box paddingHorizontal="5px">
+      <Box position="relative" style={{ width: '44px' }}>
+        {isRPressed ? (
+          <>
+            <Box
+              as="img"
+              position="absolute"
+              src={currentTheme === 'dark' ? rPressed : rPressedLight}
+              style={{ width: '44px', zIndex: 1, top: '2px' }}
+              alt="Shift"
+            />
+            <Box
+              as="img"
+              position="absolute"
+              top="0"
+              src={
+                currentTheme === 'dark' ? rPressedBottom : rPressedBottomLight
+              }
+              style={{ width: '44px' }}
+              alt="Shift"
+            />
+          </>
+        ) : (
+          <>
+            <Box
+              as="img"
+              position="absolute"
+              top="0"
+              src={currentTheme === 'dark' ? rInactive : rInactiveLight}
+              style={{ width: '44px', zIndex: 1 }}
+              alt="Shift"
+            />
+            <Box
+              as="img"
+              position="absolute"
+              top="0"
+              src={
+                currentTheme === 'dark' ? rInactiveBottom : rInactiveBottomLight
+              }
+              style={{ width: '44px' }}
+              alt="Shift"
+            />
+          </>
+        )}
+      </Box>
+    </Box>
   );
 }
