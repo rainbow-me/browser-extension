@@ -455,6 +455,43 @@ export const connectTrezor = async () => {
   }
 };
 
+export const getLedgerStatus = async (): Promise<{
+  status: 'ready' | 'needs_connect' | 'needs_unlock' | 'needs_app';
+}> => {
+  let transport;
+  try {
+    transport = await TransportWebUSB.create();
+    const appEth = new AppEth(transport);
+    const result = await appEth.getAddress(
+      `${DEFAULT_HD_PATH}/0`,
+      false,
+      false,
+    );
+    console.log('getLedgerStatus result', result);
+
+    transport?.close();
+    return { status: 'ready' };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (e: any) {
+    let status: 'ready' | 'needs_connect' | 'needs_unlock' | 'needs_app' =
+      'needs_connect';
+    console.log('getLedgerStatus e', e);
+    switch (e?.name) {
+      case 'TransportWebUSBGestureRequired':
+        status = 'needs_unlock';
+        break;
+      case 'TransportStatusError':
+        status = 'needs_app';
+        break;
+      case 'TransportOpenUserCancelled':
+      default:
+        status = 'needs_connect';
+    }
+    transport?.close();
+    return { status };
+  }
+};
+
 export const connectLedger = async () => {
   // TODO: DELETE
   //  Debugging purposes only - useful if you don't have a real device

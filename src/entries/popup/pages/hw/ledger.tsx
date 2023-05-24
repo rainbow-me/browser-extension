@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import ledgerDeviceEth from 'static/assets/hw/ledger-device-eth.png';
@@ -150,71 +150,67 @@ const LedgerNeedsAppOpened = () => {
   );
 };
 
-export function ConnectLedger() {
-  const [connectingState, setConnectingState] = useState<
-    'needs_connect' | 'needs_unlock' | 'needs_app'
+const useLedgerConnectionStatus = ({ onReady }: { onReady: () => void }) => {
+  const [status, setStatus] = useState<
+    'ready' | 'needs_connect' | 'needs_unlock' | 'needs_app'
   >('needs_connect');
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const { status } = await wallet.getLedgerStatus();
+      if (status === 'ready') {
+        onReady();
+      } else {
+        setStatus(status);
+      }
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [onReady]);
+  return { status };
+};
+
+export function ConnectLedger() {
+  // const [connectingState, setConnectingState] = useState<
+  //   'needs_connect' | 'needs_unlock' | 'needs_app'
+  // >('needs_connect');
 
   const navigate = useRainbowNavigate();
   const { state } = useLocation();
 
-  useEffect(() => {
-    setTimeout(async () => {
-      const res = await wallet.connectLedger();
-      console.log('connect ledger res', res);
-      if (res?.accountsToImport?.length) {
-        navigate(ROUTES.HW_WALLET_LIST, {
-          state: {
-            ...res,
-            vendor: 'Ledger',
-            direction: state?.direction,
-            navbarIcon: state?.navbarIcon,
-          },
-        });
-      } else if (res.error) {
-        if (res.error === 'needs_app') {
-          setConnectingState('needs_app');
-        } else if (res.error === 'needs_unlock') {
-          setConnectingState('needs_unlock');
-        }
-      }
-    }, 1500);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const connectLedger = useCallback(async () => {
+    const res = await wallet.connectLedger();
+    if (res?.accountsToImport?.length) {
+      navigate(ROUTES.HW_WALLET_LIST, {
+        state: {
+          ...res,
+          vendor: 'Ledger',
+          direction: state?.direction,
+          navbarIcon: state?.navbarIcon,
+        },
+      });
+    }
+  }, [navigate, state?.direction, state?.navbarIcon]);
+
+  const { status: ledgerStatus } = useLedgerConnectionStatus({
+    onReady: connectLedger,
+  });
+
+  console.log('--- ledgerStatus', ledgerStatus);
 
   return (
     <FullScreenContainer>
       <AnimatePresence initial={false}>
-        {connectingState === 'needs_app' && (
-          <Box
-            as={motion.div}
-            key="needs-app"
-            initial={{ opacity: 0.8 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0.8 }}
-          >
+        {ledgerStatus === 'needs_app' && (
+          <Box as={motion.div} key="needs-app">
             <LedgerNeedsAppOpened />
           </Box>
         )}
-        {connectingState === 'needs_unlock' && (
-          <Box
-            as={motion.div}
-            key="needs-unlock"
-            initial={{ opacity: 0.8 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0.8 }}
-          >
+        {ledgerStatus === 'needs_unlock' && (
+          <Box as={motion.div} key="needs-unlock">
             <LedgerNeedsUnlock />
           </Box>
         )}
-        {connectingState === 'needs_connect' && (
-          <Box
-            as={motion.div}
-            key="needs-connect"
-            initial={{ opacity: 0.8 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0.8 }}
-          >
+        {ledgerStatus === 'needs_connect' && (
+          <Box as={motion.div} key="needs-connect">
             <ConnectingToLedger />
           </Box>
         )}
