@@ -133,52 +133,70 @@ function ShiftPressAnimation({ isShiftPressed }: { isShiftPressed: boolean }) {
   return (
     <Box paddingHorizontal="5px">
       <Box position="relative" style={{ width: '102px' }}>
-        {isShiftPressed ? (
-          <>
-            <Box
-              as="img"
-              position="absolute"
-              src={currentTheme === 'dark' ? ShiftPressed : ShiftPressedLight}
-              style={{ width: '102px', zIndex: 1, top: '2px' }}
-              alt="Shift"
-            />
-            <Box
-              as="img"
-              position="absolute"
-              top="0"
-              src={
-                currentTheme === 'dark'
-                  ? ShiftPressedBottom
-                  : ShiftPressedBottomLight
-              }
-              style={{ width: '102px' }}
-              alt="Shift"
-            />
-          </>
-        ) : (
-          <>
-            <Box
-              as="img"
-              position="absolute"
-              top="0"
-              src={currentTheme === 'dark' ? ShiftInactive : ShiftInactiveLight}
-              style={{ width: '102px', zIndex: 1 }}
-              alt="Shift"
-            />
-            <Box
-              as="img"
-              position="absolute"
-              top="0"
-              src={
-                currentTheme === 'dark'
-                  ? ShiftInactiveBottom
-                  : ShiftInactiveBottomLight
-              }
-              style={{ width: '102px' }}
-              alt="Shift"
-            />
-          </>
-        )}
+        <>
+          <Box
+            as="img"
+            position="absolute"
+            src={currentTheme === 'dark' ? ShiftPressed : ShiftPressedLight}
+            style={{
+              width: '102px',
+              zIndex: 1,
+              top: isShiftPressed ? '2px' : 0,
+              opacity: isShiftPressed ? 1 : 0,
+              transition: 'opacity 0.2s ease-in-out, top 0.2s ease-in-out',
+              transitionProperty: 'top',
+              transitionDelay: '0.4s',
+            }}
+            alt="Shift"
+          />
+          <Box
+            as="img"
+            position="absolute"
+            top="0"
+            src={
+              currentTheme === 'dark'
+                ? ShiftPressedBottom
+                : ShiftPressedBottomLight
+            }
+            style={{
+              width: '102px',
+              opacity: isShiftPressed ? 1 : 0,
+              transition: 'opacity 0.2s ease-in-out',
+            }}
+            alt="Shift"
+          />
+        </>
+        <>
+          <Box
+            as="img"
+            position="absolute"
+            top="0"
+            src={currentTheme === 'dark' ? ShiftInactive : ShiftInactiveLight}
+            style={{
+              width: '102px',
+              zIndex: 1,
+              opacity: isShiftPressed ? 0 : 1,
+              transition: 'opacity 0.2s ease-in-out',
+            }}
+            alt="Shift"
+          />
+          <Box
+            as="img"
+            position="absolute"
+            top="0"
+            src={
+              currentTheme === 'dark'
+                ? ShiftInactiveBottom
+                : ShiftInactiveBottomLight
+            }
+            style={{
+              width: '102px',
+              opacity: isShiftPressed ? 0 : 1,
+              transition: 'opacity 0.2s ease-in-out',
+            }}
+            alt="Shift"
+          />
+        </>
       </Box>
     </Box>
   );
@@ -193,54 +211,71 @@ function OptionPressAnimation({
   return (
     <Box paddingHorizontal="5px">
       <Box position="relative" style={{ width: '44px' }}>
-        {isOptionPressed ? (
-          <>
-            <Box
-              as="img"
-              position="absolute"
-              src={currentTheme === 'dark' ? OptionPressed : OptionPressedLight}
-              style={{ width: '44px', zIndex: 1, top: '2px' }}
-              alt="Shift"
-            />
-            <Box
-              as="img"
-              position="absolute"
-              top="0"
-              src={
-                currentTheme === 'dark'
-                  ? OptionPressedBottom
-                  : OptionPressedBottomLight
-              }
-              style={{ width: '44px' }}
-              alt="Shift"
-            />
-          </>
-        ) : (
-          <>
-            <Box
-              as="img"
-              position="absolute"
-              top="0"
-              src={
-                currentTheme === 'dark' ? OptionInactive : OptionInactiveLight
-              }
-              style={{ width: '44px', zIndex: 1 }}
-              alt="Shift"
-            />
-            <Box
-              as="img"
-              position="absolute"
-              top="0"
-              src={
-                currentTheme === 'dark'
-                  ? OptionInactiveBottom
-                  : OptionInactiveBottomLight
-              }
-              style={{ width: '44px' }}
-              alt="Shift"
-            />
-          </>
-        )}
+        <>
+          <Box
+            as="img"
+            position="absolute"
+            src={currentTheme === 'dark' ? OptionPressed : OptionPressedLight}
+            style={{
+              width: '44px',
+              zIndex: 1,
+              top: isOptionPressed ? '2px' : 0,
+              opacity: isOptionPressed ? 1 : 0,
+              transition: 'opacity 0.2s ease-in-out, top 0.2s ease-in-out',
+              transitionProperty: 'top',
+              transitionDelay: '0.4s',
+            }}
+            alt="Shift"
+          />
+          <Box
+            as="img"
+            position="absolute"
+            top="0"
+            src={
+              currentTheme === 'dark'
+                ? OptionPressedBottom
+                : OptionPressedBottomLight
+            }
+            style={{
+              width: '44px',
+              opacity: isOptionPressed ? 1 : 0,
+              transition: 'opacity 0.2s ease-in-out',
+            }}
+            alt="Shift"
+          />
+        </>
+
+        <>
+          <Box
+            as="img"
+            position="absolute"
+            top="0"
+            src={currentTheme === 'dark' ? OptionInactive : OptionInactiveLight}
+            style={{
+              width: '44px',
+              zIndex: 1,
+              opacity: isOptionPressed ? 0 : 1,
+              transition: 'opacity 0.2s ease-in-out',
+            }}
+            alt="Shift"
+          />
+          <Box
+            as="img"
+            position="absolute"
+            top="0"
+            src={
+              currentTheme === 'dark'
+                ? OptionInactiveBottom
+                : OptionInactiveBottomLight
+            }
+            style={{
+              width: '44px',
+              opacity: isOptionPressed ? 0 : 1,
+              transition: 'opacity 0.2s ease-in-out',
+            }}
+            alt="Shift"
+          />
+        </>
       </Box>
     </Box>
   );
@@ -251,48 +286,65 @@ function RPressAnimation({ isRPressed }: { isRPressed: boolean }) {
   return (
     <Box paddingHorizontal="5px">
       <Box position="relative" style={{ width: '44px' }}>
-        {isRPressed ? (
-          <>
-            <Box
-              as="img"
-              position="absolute"
-              src={currentTheme === 'dark' ? rPressed : rPressedLight}
-              style={{ width: '44px', zIndex: 1, top: '2px' }}
-              alt="Shift"
-            />
-            <Box
-              as="img"
-              position="absolute"
-              top="0"
-              src={
-                currentTheme === 'dark' ? rPressedBottom : rPressedBottomLight
-              }
-              style={{ width: '44px' }}
-              alt="Shift"
-            />
-          </>
-        ) : (
-          <>
-            <Box
-              as="img"
-              position="absolute"
-              top="0"
-              src={currentTheme === 'dark' ? rInactive : rInactiveLight}
-              style={{ width: '44px', zIndex: 1 }}
-              alt="Shift"
-            />
-            <Box
-              as="img"
-              position="absolute"
-              top="0"
-              src={
-                currentTheme === 'dark' ? rInactiveBottom : rInactiveBottomLight
-              }
-              style={{ width: '44px' }}
-              alt="Shift"
-            />
-          </>
-        )}
+        <>
+          <Box
+            as="img"
+            position="absolute"
+            src={currentTheme === 'dark' ? rPressed : rPressedLight}
+            style={{
+              width: '44px',
+              zIndex: 1,
+              top: isRPressed ? '2px' : 0,
+              opacity: isRPressed ? 1 : 0,
+              transition: 'opacity 0.2s ease-in-out, top 0.2s ease-in-out',
+              transitionProperty: 'top',
+              transitionDelay: '0.4s',
+            }}
+            alt="Shift"
+          />
+          <Box
+            as="img"
+            position="absolute"
+            top="0"
+            src={currentTheme === 'dark' ? rPressedBottom : rPressedBottomLight}
+            style={{
+              width: '44px',
+              opacity: isRPressed ? 1 : 0,
+              transition: 'opacity 0.2s ease-in-out',
+            }}
+            alt="Shift"
+          />
+        </>
+
+        <>
+          <Box
+            as="img"
+            position="absolute"
+            top="0"
+            src={currentTheme === 'dark' ? rInactive : rInactiveLight}
+            style={{
+              width: '44px',
+              zIndex: 1,
+              opacity: isRPressed ? 0 : 1,
+              transition: 'opacity 0.2s ease-in-out',
+            }}
+            alt="Shift"
+          />
+          <Box
+            as="img"
+            position="absolute"
+            top="0"
+            src={
+              currentTheme === 'dark' ? rInactiveBottom : rInactiveBottomLight
+            }
+            style={{
+              width: '44px',
+              opacity: isRPressed ? 0 : 1,
+              transition: 'opacity 0.2s ease-in-out',
+            }}
+            alt="Shift"
+          />
+        </>
       </Box>
     </Box>
   );
