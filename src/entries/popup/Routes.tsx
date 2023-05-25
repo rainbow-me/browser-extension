@@ -622,7 +622,6 @@ const ROUTE_DATA = [
         direction="down"
         navbar
         navbarIcon="arrow"
-        // title={i18n.t('choose_wallet_group.title')}
         protectedRoute
         background="surfaceSecondary"
       >
