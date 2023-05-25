@@ -79,15 +79,14 @@ export function ImportWalletSelectionEdit({ onboarding = false }) {
     [sortMethod, accountsToImport, walletsSummary],
   );
 
-  const { importSecrets, isImporting } = useImportWalletsFromSecrets({
-    onSuccess(addresses) {
+  const { importSecrets, isImporting } = useImportWalletsFromSecrets();
+
+  const onImport = () =>
+    importSecrets({ secrets, accountsIgnored }).then((addresses) => {
       setCurrentAddress(addresses[0]);
       if (onboarding) navigate(ROUTES.CREATE_PASSWORD);
       else navigate(ROUTES.HOME);
-    },
-  });
-
-  const onImport = () => importSecrets({ secrets, accountsIgnored });
+    });
 
   return (
     <>

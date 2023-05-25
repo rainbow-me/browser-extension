@@ -1,11 +1,4 @@
-import { keccak256 } from '@ethersproject/keccak256';
-import { toUtf8Bytes } from '@ethersproject/strings';
-import {
-  UseMutationOptions,
-  useMutation,
-  useQueries,
-} from '@tanstack/react-query';
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
@@ -31,49 +24,85 @@ import { Spinner } from '../Spinner/Spinner';
 
 import { AccountToImportRows } from './AccountToImportRows';
 
-const useDeriveAccountsFromSecrets = (secrets: string[]) => {
-  const accountsFromSecrets = useQueries({
-    queries: secrets.map((secret) => ({
-      queryKey: ['accountsFromSecret', keccak256(toUtf8Bytes(secret))],
-      queryFn: () => deriveAccountsFromSecret(secret),
-    })),
-  });
-  return useMemo(
-    () =>
-      accountsFromSecrets.reduce(
-        (all, { data = [] }) => [...all, ...data],
-        [] as Address[],
-      ),
-    [accountsFromSecrets],
-  );
+const derivedAccountsStore = {
+  get: () =>
+    chrome.storage.session.get({
+      derivedAccountsFromSecrets: {},
+    }) as Promise<Record<string, Address[]>>,
+  set: (secret: string, accounts: Address[]) =>
+    chrome.storage.session.set({
+      derivedAccountsFromSecrets: {
+        [secret]: accounts,
+      },
+    }),
+  clear: () => chrome.storage.session.set({ derivedAccountsFromSecrets: {} }),
 };
 
-export const useImportWalletsFromSecrets = (
-  options: UseMutationOptions<
-    Address[],
-    unknown,
-    { secrets: string[]; accountsIgnored?: Address[] }
-  >,
-) => {
-  const { mutate, isLoading } = useMutation(
-    async ({ secrets, accountsIgnored = [] }) => {
-      const prevAccounts = await wallet.getAccounts();
-      await Promise.all(secrets.map(wallet.importWithSecret));
+const derivedAccountsFromSecret = async (secret: string) => {
+  const cache = await derivedAccountsStore.get();
+  if (cache[secret]) return cache[secret];
 
-      if (!accountsIgnored.length) return wallet.getAccounts();
+  const accounts = await deriveAccountsFromSecret(secret);
+  derivedAccountsStore.set(secret, accounts);
 
-      // when importing another account from a seed that was already imported earlier
-      // don't remove accounts that where already in the keychain before importing these secrets
-      const accountsToRemove = accountsIgnored.filter(
-        (address) => !prevAccounts.includes(address),
+  return accounts;
+};
+
+const useDeriveAccountsFromSecrets = (secrets: string[]) => {
+  const [accounts, setAccounts] = useState<Address[]>([]);
+
+  useEffect(() => {
+    let ignore = false;
+
+    Promise.all(secrets.map(derivedAccountsFromSecret)).then((results) => {
+      if (ignore) return;
+      const allAccounts = results.reduce(
+        (allAccounts, accounts) => [...allAccounts, ...accounts],
+        [],
       );
+      setAccounts(allAccounts);
+    });
 
-      await Promise.all(accountsToRemove.map(wallet.remove));
+    return () => {
+      ignore = true;
+    };
+  }, [secrets]);
+
+  return accounts;
+};
+
+export const useImportWalletsFromSecrets = () => {
+  const [isImporting, setIsImporting] = useState(false);
+
+  const importSecrets = async ({
+    secrets,
+    accountsIgnored = [],
+  }: {
+    secrets: string[];
+    accountsIgnored?: Address[];
+  }) => {
+    setIsImporting(true);
+    const prevAccounts = await wallet.getAccounts();
+    await Promise.all(secrets.map(wallet.importWithSecret));
+
+    if (!accountsIgnored.length) {
+      setIsImporting(false);
       return wallet.getAccounts();
-    },
-    options,
-  );
-  return { importSecrets: mutate, isImporting: isLoading };
+    }
+
+    // when importing another account from a seed that was already imported earlier
+    // don't remove accounts that where already in the keychain before importing these secrets
+    const accountsToRemove = accountsIgnored.filter(
+      (address) => !prevAccounts.includes(address),
+    );
+
+    await Promise.all(accountsToRemove.map(wallet.remove));
+
+    setIsImporting(false);
+    return wallet.getAccounts();
+  };
+
+  return { importSecrets, isImporting };
 };
 
 export const ImportWalletSelection = ({ onboarding = false }) => {
@@ -84,13 +113,7 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
   const secrets = state.secrets || [];
 
   const accountsToImport = useDeriveAccountsFromSecrets(secrets);
-  const { importSecrets, isImporting } = useImportWalletsFromSecrets({
-    onSuccess(addresses) {
-      setCurrentAddress(addresses[0]);
-      if (onboarding) navigate(ROUTES.CREATE_PASSWORD);
-      else navigate(ROUTES.HOME);
-    },
-  });
+  const { importSecrets, isImporting } = useImportWalletsFromSecrets();
 
   const { isLoading: walletsSummaryIsLoading, walletsSummary } =
     useWalletsSummary({
@@ -203,7 +226,13 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
                   height="44px"
                   variant="raised"
                   width="full"
-                  onClick={() => importSecrets({ secrets })}
+                  onClick={() =>
+                    importSecrets({ secrets }).then((addresses) => {
+                      setCurrentAddress(addresses[0]);
+                      if (onboarding) navigate(ROUTES.CREATE_PASSWORD);
+                      else navigate(ROUTES.HOME);
+                    })
+                  }
                   testId="add-wallets-button"
                 >
                   {i18n.t('import_wallet_selection.add_wallets')}
