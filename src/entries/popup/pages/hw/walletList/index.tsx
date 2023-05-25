@@ -1,5 +1,3 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-nested-ternary */
 import { Address } from '@wagmi/core';
 import clsx from 'clsx';
 import React, { useCallback, useMemo, useState } from 'react';
@@ -29,7 +27,6 @@ import { FullScreenContainer } from '../../../components/FullScreen/FullScreenCo
 import { Spinner } from '../../../components/Spinner/Spinner';
 import { WalletAvatar } from '../../../components/WalletAvatar/WalletAvatar';
 import * as wallet from '../../../handlers/wallet';
-import { useNativeAssetForNetwork } from '../../../hooks/useNativeAssetForNetwork';
 import { useRainbowNavigate } from '../../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../../urls';
 import { AddByIndexSheet } from '../addByIndexSheet';
