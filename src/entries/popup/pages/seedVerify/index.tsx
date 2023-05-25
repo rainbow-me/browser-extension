@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useCurrentAddressStore } from '~/core/state';
 
@@ -10,13 +10,17 @@ import { ROUTES } from '../../urls';
 export function SeedVerify() {
   const navigate = useRainbowNavigate();
   const { currentAddress } = useCurrentAddressStore();
-
+  const goToCreatePassword = useCallback(
+    () =>
+      navigate(ROUTES.CREATE_PASSWORD, { state: { backTo: ROUTES.WELCOME } }),
+    [navigate],
+  );
   return (
     <FullScreenContainer>
       <SeedVerifyQuiz
         address={currentAddress}
-        onQuizValidated={() => navigate(ROUTES.CREATE_PASSWORD)}
-        handleSkip={() => navigate(ROUTES.CREATE_PASSWORD)}
+        onQuizValidated={goToCreatePassword}
+        handleSkip={goToCreatePassword}
       />
     </FullScreenContainer>
   );

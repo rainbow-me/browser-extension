@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import * as React from 'react';
-import { To, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { Box, Button, ButtonSymbol, Inline, Text } from '~/design-system';
@@ -155,23 +155,19 @@ export function NavbarSymbolButton({
 }
 
 function NavbarButtonWithBack({
-  backTo,
   height,
-  maintainLocationState,
   onClick,
   symbol,
   symbolSize,
   testId,
 }: {
-  backTo?: To;
   height: ButtonSymbolProps['height'];
-  maintainLocationState?: boolean;
   onClick?: () => void;
   symbol: SymbolProps['symbol'];
   symbolSize?: SymbolProps['size'];
   testId?: string;
 }) {
-  const location = useLocation();
+  const { state } = useLocation();
   const navigate = useNavigate();
 
   useKeyboardShortcut({
@@ -190,25 +186,13 @@ function NavbarButtonWithBack({
   const click = React.useCallback(() => {
     if (onClick) {
       onClick();
-    } else if (backTo) {
-      navigate(backTo, {
-        state: {
-          isBack: true,
-          from: location.pathname,
-          ...(maintainLocationState ? location.state : {}),
-        },
-      });
+    } else if (state?.backTo) {
+      navigate(state?.backTo, { replace: true });
     } else {
-      navigate(-1);
+      const popDiff = typeof state?.popTo === 'number' ? state?.popTo : -1;
+      navigate(popDiff);
     }
-  }, [
-    backTo,
-    location.pathname,
-    location.state,
-    maintainLocationState,
-    navigate,
-    onClick,
-  ]);
+  }, [navigate, onClick, state]);
 
   return (
     <Box
@@ -227,21 +211,11 @@ function NavbarButtonWithBack({
   );
 }
 
-export function NavbarBackButton({
-  backTo,
-  maintainLocationState,
-  onClick,
-}: {
-  backTo?: To;
-  maintainLocationState?: boolean;
-  onClick?: () => void;
-}) {
+export function NavbarBackButton({ onClick }: { onClick?: () => void }) {
   return (
     <NavbarButtonWithBack
       onClick={onClick}
-      backTo={backTo}
       height="32px"
-      maintainLocationState={maintainLocationState}
       symbolSize={14}
       symbol="arrow.left"
     />
@@ -249,22 +223,16 @@ export function NavbarBackButton({
 }
 
 export function NavbarCloseButton({
-  backTo,
-  maintainLocationState,
   onClick,
   testId,
 }: {
-  backTo?: To;
-  maintainLocationState?: boolean;
   onClick?: () => void;
   testId?: string;
 }) {
   return (
     <NavbarButtonWithBack
       onClick={onClick}
-      backTo={backTo}
       height="32px"
-      maintainLocationState={maintainLocationState}
       symbolSize={11}
       symbol="xmark"
       testId={testId}

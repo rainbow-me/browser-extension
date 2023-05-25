@@ -11,7 +11,7 @@ export function useRainbowNavigate() {
 
   return function (to: To, options?: NavigateOptions) {
     navigate(to, {
-      ...options,
+      ...(options || {}),
       state: { ...options?.state, from: location.pathname },
     });
   };

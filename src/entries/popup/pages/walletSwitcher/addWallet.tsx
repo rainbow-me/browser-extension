@@ -6,6 +6,7 @@ import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags'
 import { Box } from '~/design-system';
 
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
+import { setImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import * as wallet from '../../handlers/wallet';
 import { useAlert } from '../../hooks/useAlert';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -17,12 +18,6 @@ const AddWallet = () => {
   const { triggerAlert } = useAlert();
   const navigate = useRainbowNavigate();
   const { featureFlags } = useFeatureFlagsStore();
-  const navigateTo = useCallback(
-    (route: string) => {
-      navigate(route);
-    },
-    [navigate],
-  );
 
   const [createWalletAddress, setCreateWalletAddress] = useState<Address>();
   const handleCreateWallet = useCallback(async () => {
@@ -59,7 +54,13 @@ const AddWallet = () => {
           />
           <OnboardMenu.Separator />
           <OnboardMenu.Item
-            onClick={() => navigateTo(ROUTES.NEW_IMPORT_WALLET)}
+            onClick={() =>
+              navigate(ROUTES.NEW_IMPORT_WALLET, {
+                state: {
+                  onBack: () => setImportWalletSecrets(['']),
+                },
+              })
+            }
             title={i18n.t('add_wallet.import_wallet')}
             subtitle={i18n.t('add_wallet.import_wallet_description')}
             symbolColor="purple"
@@ -70,7 +71,7 @@ const AddWallet = () => {
           <OnboardMenu.Item
             onClick={() =>
               featureFlags.hw_wallets_enabled
-                ? navigateTo(ROUTES.HW_CHOOSE)
+                ? navigate(ROUTES.HW_CHOOSE)
                 : triggerAlert({ text: i18n.t('alert.coming_soon') })
             }
             title={i18n.t('add_wallet.hardware_wallet')}
@@ -81,7 +82,7 @@ const AddWallet = () => {
           />
           <OnboardMenu.Separator />
           <OnboardMenu.Item
-            onClick={() => navigateTo(ROUTES.NEW_WATCH_WALLET)}
+            onClick={() => navigate(ROUTES.NEW_WATCH_WALLET)}
             title={i18n.t('add_wallet.watch_address')}
             subtitle={i18n.t('add_wallet.watch_address_description')}
             symbolColor="green"

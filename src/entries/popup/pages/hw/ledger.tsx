@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import ledgerDevice from 'static/assets/hw/ledger-device.png';
 import { i18n } from '~/core/languages';
@@ -12,6 +13,7 @@ import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 export function ConnectLedger() {
+  const { state } = useLocation();
   const navigate = useRainbowNavigate();
   useEffect(() => {
     setTimeout(async () => {
@@ -21,6 +23,8 @@ export function ConnectLedger() {
           state: {
             ...res,
             vendor: 'Ledger',
+            direction: state?.direction,
+            navbarIcon: state?.navbarIcon,
           },
         });
       }

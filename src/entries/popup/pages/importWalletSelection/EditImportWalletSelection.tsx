@@ -6,7 +6,6 @@ import { globalColors } from '~/design-system/styles/designTokens';
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { ImportWalletNavbar } from '../../components/ImportWallet/ImportWalletNavbar';
 import { ImportWalletSelectionEdit } from '../../components/ImportWallet/ImportWalletSelectionEdit';
-import { ROUTES } from '../../urls';
 
 export type WalletsSortMethod =
   | 'default'
@@ -20,7 +19,6 @@ export function EditImportWalletSelection() {
   return (
     <>
       <ImportWalletNavbar
-        backTo={ROUTES.IMPORT__SELECT}
         showSortMenu={!isAddingWallets}
         accentColor={globalColors.blue60}
         sortMethod={sortMethod}
