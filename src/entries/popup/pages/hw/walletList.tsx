@@ -21,6 +21,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 
 import { AddressOrEns } from '../../components/AddressOrEns/AddressorEns';
 import { Checkbox } from '../../components/Checkbox/Checkbox';
@@ -273,26 +274,34 @@ const WalletListHW = () => {
                                 </Text>
                               </Column>
                               <Column>
-                                <a
-                                  onClick={() => {
-                                    setShowAddByIndexSheet(true);
-                                  }}
-                                >
-                                  <Text
-                                    size="14pt"
-                                    weight="regular"
-                                    color="labelSecondary"
-                                    align="right"
+                                <ButtonOverflow>
+                                  <Box
+                                    onClick={() => {
+                                      setShowAddByIndexSheet(true);
+                                    }}
                                   >
-                                    <Symbol
-                                      color={'labelSecondary'}
-                                      size={12}
-                                      symbol={'plus.circle.fill'}
-                                      weight="regular"
-                                    />{' '}
-                                    {i18n.t('hw.add_by_index')}
-                                  </Text>
-                                </a>
+                                    <Inline
+                                      alignHorizontal="right"
+                                      alignVertical="center"
+                                      space="4px"
+                                    >
+                                      <Symbol
+                                        color={'labelSecondary'}
+                                        size={12}
+                                        symbol={'plus.circle.fill'}
+                                        weight="regular"
+                                      />
+                                      <Text
+                                        size="14pt"
+                                        weight="regular"
+                                        color="labelSecondary"
+                                        align="right"
+                                      >
+                                        {i18n.t('hw.add_by_index')}
+                                      </Text>
+                                    </Inline>
+                                  </Box>
+                                </ButtonOverflow>
                               </Column>
                             </Columns>
                           </Box>
