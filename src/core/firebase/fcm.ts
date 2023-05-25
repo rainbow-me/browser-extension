@@ -34,24 +34,22 @@ export const initFCM = async () => {
           vapidKey: process.env.FIREBASE_VAPID_BX,
         });
         console.log('Token', token); 
-      
+    
 
-
-
-    // onBackgroundMessage(getMessagingSw(getApp()), (payload: MessagePayload) => {
-    //   console.log('[SW] Incoming Message: ', payload);
-    //   chrome.notifications.create(
-    //     {
-    //       type: 'basic',
-    //       iconUrl: 'images/icon-16@32x.png',
-    //       title: 'TEST NOTIFICATION FROM BG',
-    //       message: JSON.stringify(payload, null, 2),
-    //       priority: 2,
-    //     },
-    //     (notificationId: string) => {
-    //       console.log('[SW] notification created with id', notificationId);
-    //     },
-    //   );
-    // });
+    onBackgroundMessage(getMessagingSw(getApp()), (payload: MessagePayload) => {
+      console.log('[SW] Incoming Message: ', payload);
+      chrome.notifications.create(
+        {
+          type: 'basic',
+          iconUrl: 'images/icon-16@32x.png',
+          title: 'TEST NOTIFICATION FROM BG',
+          message: JSON.stringify(payload, null, 2),
+          priority: 2,
+        },
+        (notificationId: string) => {
+          console.log('[SW] notification created with id', notificationId);
+        },
+      );
+    });
     }
 };
