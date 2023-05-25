@@ -93,8 +93,8 @@ export const shortcuts = {
       key: 's',
     },
     GO_TO_SETTINGS: {
-      display: "'",
-      key: "'",
+      display: ',',
+      key: ',',
     },
     GO_TO_SWAP: {
       display: 'X',
