@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Box } from '~/design-system';
+import { Box, Separator } from '~/design-system';
 
 import { OpenText } from './ReadyHotkeys/OpenText';
 import { OptionAltPress } from './ReadyHotkeys/OptionAltPress';
@@ -59,17 +59,22 @@ export function ReadyShortcut() {
   }, []);
 
   return (
-    <Box paddingBottom="60px">
-      <Box display="flex" justifyContent="center" paddingBottom="15px">
-        <OpenText
-          isButtonPressed={isShiftPressed || isRPressed || isOptionPressed}
-        />
+    <>
+      <Box paddingBottom="60px">
+        <Box display="flex" justifyContent="center" paddingBottom="15px">
+          <OpenText
+            isButtonPressed={isShiftPressed || isRPressed || isOptionPressed}
+          />
+        </Box>
+        <Box display="flex" width="full">
+          <ShiftPress isShiftPressed={isShiftPressed} />
+          <OptionAltPress isOptionPressed={isOptionPressed} />
+          <RPress isRPressed={isRPressed} />
+        </Box>
       </Box>
-      <Box display="flex" width="full">
-        <ShiftPress isShiftPressed={isShiftPressed} />
-        <OptionAltPress isOptionPressed={isOptionPressed} />
-        <RPress isRPressed={isRPressed} />
+      <Box style={{ width: '106px' }}>
+        <Separator color="separatorTertiary" strokeWeight="1px" />
       </Box>
-    </Box>
+    </>
   );
 }

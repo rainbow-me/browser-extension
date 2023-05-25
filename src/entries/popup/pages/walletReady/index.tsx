@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { i18n } from '~/core/languages';
-import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
+import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
 
 import { ReadyShortcut } from './ReadyShortcut';
 
@@ -33,6 +33,10 @@ export function WalletReady() {
             {i18n.t('wallet_ready.subtitle')}
           </Text>
         </Box>
+      </Box>
+
+      <Box style={{ width: '106px' }}>
+        <Separator color="separatorTertiary" strokeWeight="1px" />
       </Box>
 
       <ReadyShortcut />
