@@ -40,7 +40,7 @@ export function WalletReady() {
       <Box paddingHorizontal="20px">
         <Stack space="8px">
           <Box
-            borderWidth="2px"
+            borderWidth="1px"
             borderColor="separatorSecondary"
             borderRadius="12px"
             paddingHorizontal="16px"
@@ -94,7 +94,7 @@ export function WalletReady() {
             </Box>
           </Box>
           <Box
-            borderWidth="2px"
+            borderWidth="1px"
             borderColor="separatorSecondary"
             borderRadius="12px"
             paddingHorizontal="16px"
