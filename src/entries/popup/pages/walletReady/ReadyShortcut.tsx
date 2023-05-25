@@ -60,7 +60,7 @@ export function ReadyShortcut() {
 
   return (
     <>
-      <Box paddingBottom="60px">
+      <Box paddingBottom="50px">
         <Box display="flex" justifyContent="center" paddingBottom="15px">
           <OpenText
             isButtonPressed={isShiftPressed || isRPressed || isOptionPressed}
