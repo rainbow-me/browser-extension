@@ -311,7 +311,6 @@ const WalletListHW = () => {
                           width="full"
                           style={{
                             overflow: 'auto',
-                            // height: '331px',
                           }}
                         >
                           <Box
