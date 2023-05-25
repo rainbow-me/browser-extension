@@ -15,7 +15,7 @@ export interface FeatureFlagsStore {
 
 export const featureFlagsStore = createStore<FeatureFlagsStore>(
   (set, get) => ({
-    featureFlags: { full_watching_wallets: false, hw_wallets_enabled: false },
+    featureFlags: { full_watching_wallets: false, hw_wallets_enabled: true },
     setFeatureFlag: (key, value) => {
       const { featureFlags } = get();
       const newFeatureFlags = {
