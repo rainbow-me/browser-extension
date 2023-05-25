@@ -116,99 +116,97 @@ const WalletGroups = ({
   }, []);
 
   return (
-    <Box padding="20px">
+    <Stack space="16px">
+      <GroupRow
+        onClick={onCreateNewWallet}
+        leftcomponent={
+          <Box
+            borderRadius="9px"
+            style={{
+              width: '30px',
+              height: '30px',
+              border: '2px dashed rgba(38, 143, 255, 0.2)',
+            }}
+            alignItems="center"
+            justifyContent="center"
+            display="flex"
+          >
+            <Symbol weight="bold" symbol="plus" size={14} color="blue" />
+          </Box>
+        }
+        centerComponent={
+          <Stack space="8px">
+            <Text size="14pt" color="label" align="left" weight="regular">
+              New Wallet Group
+            </Text>
+            <Text
+              size="12pt"
+              color="labelTertiary"
+              align="left"
+              weight="regular"
+            >
+              Create a new recovery phrase
+            </Text>
+          </Stack>
+        }
+        rightComponent={
+          <Box
+            background={'fillSecondary'}
+            padding="4px"
+            borderRadius="3px"
+            boxShadow="1px"
+          >
+            <Text size="12pt" color="labelSecondary" weight="semibold">
+              {shortcuts.wallets.CHOOSE_WALLET_GROUP_NEW.display}
+            </Text>
+          </Box>
+        }
+      />
+      <Box>
+        <Separator color="separatorTertiary" strokeWeight="1px" />
+      </Box>
       <Stack space="16px">
-        <GroupRow
-          onClick={onCreateNewWallet}
-          leftcomponent={
-            <Box
-              borderRadius="9px"
-              style={{
-                width: '30px',
-                height: '30px',
-                border: '2px dashed rgba(38, 143, 255, 0.2)',
-              }}
-              alignItems="center"
-              justifyContent="center"
-              display="flex"
-            >
-              <Symbol weight="bold" symbol="plus" size={14} color="blue" />
-            </Box>
-          }
-          centerComponent={
-            <Stack space="8px">
-              <Text size="14pt" color="label" align="left" weight="regular">
-                New Wallet Group
-              </Text>
-              <Text
-                size="12pt"
-                color="labelTertiary"
-                align="left"
-                weight="regular"
-              >
-                Create a new recovery phrase
-              </Text>
-            </Stack>
-          }
-          rightComponent={
-            <Box
-              background={'fillSecondary'}
-              padding="4px"
-              borderRadius="3px"
-              boxShadow="1px"
-            >
-              <Text size="12pt" color="labelSecondary" weight="semibold">
-                {shortcuts.wallets.CHOOSE_WALLET_GROUP_NEW.display}
-              </Text>
-            </Box>
-          }
-        />
-        <Box>
-          <Separator color="separatorTertiary" strokeWeight="1px" />
-        </Box>
-        <Stack space="16px">
-          {wallets.map((wallet, i) => {
-            return (
-              <GroupRow
-                key={i}
-                onClick={() => onCreateNewWalletOnGroup(i)}
-                leftcomponent={<GroupAvatar accounts={wallet.accounts} />}
-                centerComponent={
-                  <Stack space="8px">
-                    <Text
-                      size="14pt"
-                      color="label"
-                      align="left"
-                      weight="semibold"
-                    >
-                      Wallet Group {i + 1}
-                    </Text>
-                    <AddressOrEns
-                      address={wallet.accounts[0]}
-                      size={'12pt'}
-                      weight="regular"
-                      color="labelTertiary"
-                    />
-                  </Stack>
-                }
-                rightComponent={
-                  <Box
-                    background={'fillSecondary'}
-                    padding="4px"
-                    borderRadius="3px"
-                    boxShadow="1px"
+        {wallets.map((wallet, i) => {
+          return (
+            <GroupRow
+              key={i}
+              onClick={() => onCreateNewWalletOnGroup(i)}
+              leftcomponent={<GroupAvatar accounts={wallet.accounts} />}
+              centerComponent={
+                <Stack space="8px">
+                  <Text
+                    size="14pt"
+                    color="label"
+                    align="left"
+                    weight="semibold"
                   >
-                    <Text size="12pt" color="labelSecondary" weight="semibold">
-                      {i + 1}
-                    </Text>
-                  </Box>
-                }
-              />
-            );
-          })}
-        </Stack>
+                    Wallet Group {i + 1}
+                  </Text>
+                  <AddressOrEns
+                    address={wallet.accounts[0]}
+                    size={'12pt'}
+                    weight="regular"
+                    color="labelTertiary"
+                  />
+                </Stack>
+              }
+              rightComponent={
+                <Box
+                  background={'fillSecondary'}
+                  padding="4px"
+                  borderRadius="3px"
+                  boxShadow="1px"
+                >
+                  <Text size="12pt" color="labelSecondary" weight="semibold">
+                    {i + 1}
+                  </Text>
+                </Box>
+              }
+            />
+          );
+        })}
       </Stack>
-    </Box>
+    </Stack>
   );
 };
 
@@ -236,46 +234,46 @@ const ChooseWalletGroup = () => {
         onClose={onClose}
         address={createWalletAddress}
       />
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        paddingHorizontal="20px"
-        paddingBottom="20px"
-        height="full"
-      >
-        <Box paddingHorizontal="28px" paddingBottom="44px">
-          <Text
-            size="12pt"
-            color="labelTertiary"
-            align="center"
-            weight="regular"
-          >
-            {i18n.t('choose_wallet_group.description')}
-          </Text>
-        </Box>
-        <Box
-          width="full"
-          background="surfaceSecondary"
-          style={{
-            overflow: 'auto',
-            height: '291px',
-          }}
-        >
-          <Box
-            background="surfaceSecondaryElevated"
-            borderRadius="16px"
-            padding="12px"
-            paddingTop={'16px'}
-            paddingBottom="10px"
-            boxShadow="12px surfaceSecondaryElevated"
-          >
-            <WalletGroups
-              onCreateNewWallet={handleCreateWallet}
-              onCreateNewWalletOnGroup={handleCreateWalletOnGroup}
-            />
+      <Box paddingHorizontal="20px" height="full">
+        <Stack space="24px">
+          <Box paddingHorizontal="28px">
+            <Stack space="8px">
+              <Text size="16pt" color="label" align="center" weight="bold">
+                {i18n.t('choose_wallet_group.title')}
+              </Text>
+              <Text
+                size="12pt"
+                color="labelTertiary"
+                align="center"
+                weight="regular"
+              >
+                {i18n.t('choose_wallet_group.description')}
+              </Text>
+            </Stack>
           </Box>
-        </Box>
+          <Box style={{ width: '106px' }}>
+            <Separator color="separatorTertiary" strokeWeight="1px" />
+          </Box>
+          <Box
+            width="full"
+            style={{
+              overflow: 'auto',
+              height: '420px',
+            }}
+          >
+            <Box
+              background="surfaceSecondaryElevated"
+              borderRadius="28px"
+              boxShadow="12px surfaceSecondaryElevated"
+              padding="20px"
+            >
+              <WalletGroups
+                onCreateNewWallet={handleCreateWallet}
+                onCreateNewWalletOnGroup={handleCreateWalletOnGroup}
+              />
+            </Box>
+          </Box>
+        </Stack>
       </Box>
     </Box>
   );
