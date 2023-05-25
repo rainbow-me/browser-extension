@@ -28,6 +28,7 @@ import { Spinner } from '../../../components/Spinner/Spinner';
 import { WalletAvatar } from '../../../components/WalletAvatar/WalletAvatar';
 import * as wallet from '../../../handlers/wallet';
 import { useRainbowNavigate } from '../../../hooks/useRainbowNavigate';
+import { useWalletsSummary } from '../../../hooks/useWalletsSummary';
 import { ROUTES } from '../../../urls';
 import { AddByIndexSheet } from '../addByIndexSheet';
 
