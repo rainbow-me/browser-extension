@@ -22,6 +22,7 @@ export function ReadyShortcut() {
           setIsOptionPressed(true);
           break;
         case 'r':
+        case '®':
         case 'R':
           setIsRPressed(true);
           break;
@@ -39,6 +40,7 @@ export function ReadyShortcut() {
           setIsOptionPressed(false);
           break;
         case 'r':
+        case '®':
         case 'R':
           setIsRPressed(false);
           break;
