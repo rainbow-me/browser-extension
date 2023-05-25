@@ -182,12 +182,29 @@ const WalletGroups = ({
                   >
                     Wallet Group {i + 1}
                   </Text>
-                  <AddressOrEns
-                    address={wallet.accounts[0]}
-                    size={'12pt'}
-                    weight="regular"
-                    color="labelTertiary"
-                  />
+                  <Inline alignVertical="center" space="4px">
+                    <AddressOrEns
+                      address={wallet.accounts[0]}
+                      size={'12pt'}
+                      weight="regular"
+                      color="labelTertiary"
+                    />
+                    {wallet.accounts.length > 1 && (
+                      <Box
+                        borderWidth="1px"
+                        borderColor="separatorSecondary"
+                        borderRadius="5px"
+                        padding="3px"
+                      >
+                        <Text
+                          size="10pt"
+                          color="labelQuaternary"
+                          align="left"
+                          weight="bold"
+                        >{`+${wallet.accounts.length - 1}`}</Text>
+                      </Box>
+                    )}
+                  </Inline>
                 </Stack>
               }
               rightComponent={
