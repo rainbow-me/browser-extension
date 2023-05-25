@@ -18,7 +18,6 @@ import OptionPressedMacOSLight from 'static/assets/onboarding/light_option_press
 import OptionInactiveMacOSLight from 'static/assets/onboarding/light_option_top@2x.png';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { Box } from '~/design-system';
-import { useIsWindows } from '~/entries/popup/hooks/useIsWindows';
 
 export function OptionAltPress({
   isOptionPressed,
@@ -26,7 +25,7 @@ export function OptionAltPress({
   isOptionPressed: boolean;
 }) {
   const { currentTheme } = useCurrentThemeStore();
-  const isWindows = useIsWindows();
+  const isWindows = navigator.userAgent.indexOf('Win') !== -1;
   const OptionPressed = isWindows ? OptionPressedWindows : OptionPressedMacOS;
 
   const OptionPressedBottom = isWindows
