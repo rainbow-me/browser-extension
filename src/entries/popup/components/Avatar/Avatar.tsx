@@ -119,7 +119,7 @@ function AvatarEmoji({
 }) {
   return (
     <AvatarContent mask={mask} backgroundColor={color}>
-      <Text size={size ?? '32pt'} weight="bold">
+      <Text align="center" size={size ?? '32pt'} weight="bold">
         {emoji}
       </Text>
     </AvatarContent>

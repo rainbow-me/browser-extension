@@ -9,6 +9,8 @@ import {
   Column,
   Columns,
   Inline,
+  Row,
+  Rows,
   Separator,
   Stack,
   Symbol,
@@ -16,9 +18,55 @@ import {
 } from '~/design-system';
 
 import { AddressOrEns } from '../../components/AddressOrEns/AddressorEns';
+import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import * as wallet from '../../handlers/wallet';
 
 import { CreateWalletPrompt } from './createWalletPrompt';
+
+const GroupAvatar = ({ accounts }: { accounts: Address[] }) => {
+  return (
+    <Box
+      borderRadius="8px"
+      style={{
+        width: '36px',
+        height: '36px',
+        backgroundColor: 'rgba(245, 248, 255, 0.06)',
+      }}
+      padding="5px"
+    >
+      <Rows space="2px">
+        <Row>
+          <Columns space="2px">
+            <Column>
+              {accounts[0] && (
+                <WalletAvatar size={12} emojiSize="8pt" address={accounts[0]} />
+              )}
+            </Column>
+            <Column>
+              {accounts[1] && (
+                <WalletAvatar size={12} emojiSize="8pt" address={accounts[1]} />
+              )}
+            </Column>
+          </Columns>
+        </Row>
+        <Row>
+          <Columns space="2px">
+            <Column>
+              {accounts[2] && (
+                <WalletAvatar size={12} emojiSize="8pt" address={accounts[2]} />
+              )}
+            </Column>
+            <Column>
+              {accounts[3] && (
+                <WalletAvatar size={12} emojiSize="8pt" address={accounts[3]} />
+              )}
+            </Column>
+          </Columns>
+        </Row>
+      </Rows>
+    </Box>
+  );
+};
 
 const GroupRow = ({
   leftcomponent,
@@ -35,7 +83,7 @@ const GroupRow = ({
     <Box onClick={onClick}>
       <Columns alignHorizontal="justify">
         <Column width="content">
-          <Inline space="10px" alignHorizontal="center">
+          <Inline space="10px" alignHorizontal="center" alignVertical="center">
             {leftcomponent}
             {centerComponent}
           </Inline>
@@ -124,19 +172,7 @@ const WalletGroups = ({
               <GroupRow
                 key={i}
                 onClick={() => onCreateNewWalletOnGroup(i)}
-                leftcomponent={
-                  <Box
-                    borderRadius="9px"
-                    style={{
-                      width: '30px',
-                      height: '30px',
-                      backgroundColor: 'rgba(245, 248, 255, 0.06)',
-                    }}
-                    alignItems="center"
-                    justifyContent="center"
-                    display="flex"
-                  />
-                }
+                leftcomponent={<GroupAvatar accounts={wallet.accounts} />}
                 centerComponent={
                   <Stack space="8px">
                     <Text

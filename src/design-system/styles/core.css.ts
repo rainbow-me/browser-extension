@@ -512,6 +512,7 @@ const textProperties = defineProperties({
     cursor: cursorOpts,
     fontFamily: { rounded: 'SFRounded, system-ui' },
     fontSize: {
+      '8pt': defineType(8, 11, 0.56),
       '11pt': defineType(11, 13, 0.56),
       '12pt': defineType(12, 15, 0.52),
       '14pt': defineType(14, 19, 0.48),
