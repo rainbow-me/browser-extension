@@ -419,50 +419,33 @@ const WalletListHW = () => {
                         </Box>
                       </Stack>
                       {newDevice && balances.length <= 6 && (
-                        <Rows>
-                          <Row>
-                            <Columns alignHorizontal="center">
-                              <Column width="content">
-                                <Box
-                                  borderRadius="28px"
-                                  background="surfaceSecondaryElevated"
-                                  borderColor="separatorSecondary"
-                                  borderWidth="1px"
-                                  paddingHorizontal="12px"
-                                  paddingVertical="9px"
-                                >
-                                  <a
-                                    onClick={() => {
-                                      setShowAddByIndexSheet(true);
-                                    }}
-                                  >
-                                    <Box paddingTop="2px">
-                                      <Inline
-                                        space="4px"
-                                        alignVertical="center"
-                                      >
-                                        <Symbol
-                                          color="label"
-                                          size={12}
-                                          symbol={'plus.circle.fill'}
-                                          weight="regular"
-                                        />
-                                        <Text
-                                          size="14pt"
-                                          weight="regular"
-                                          color="label"
-                                          align="center"
-                                        >
-                                          {i18n.t('hw.add_by_index')}
-                                        </Text>
-                                      </Inline>
-                                    </Box>
-                                  </a>
-                                </Box>
-                              </Column>
-                            </Columns>
-                          </Row>
-                        </Rows>
+                        <Inline alignHorizontal="center">
+                          <Button
+                            color="surfaceSecondaryElevated"
+                            height="28px"
+                            variant="flat"
+                            onClick={() => {
+                              setShowAddByIndexSheet(true);
+                            }}
+                          >
+                            <Inline space="4px" alignVertical="center">
+                              <Symbol
+                                color="label"
+                                size={12}
+                                symbol={'plus.circle.fill'}
+                                weight="regular"
+                              />
+                              <Text
+                                size="14pt"
+                                weight="regular"
+                                color="label"
+                                align="center"
+                              >
+                                {i18n.t('hw.add_by_index')}
+                              </Text>
+                            </Inline>
+                          </Button>
+                        </Inline>
                       )}
                     </Stack>
                   </Box>
