@@ -17,9 +17,10 @@
         "https://api.segment.io",
         "https://cdn.segment.com",
         "https://rainbow.imgix.net",
-        "https://firebaseinstallations.googleapis.com/v1/projects/rainbow-bx/",
-        "https://firebaseremoteconfig.googleapis.com/v1/projects/rainbow-bx/",
         "https://icons.duckduckgo.com",
-        "https://*.live.ledger.com"
+        "https://*.live.ledger.com",
+        "https://*.googleapis.com",
+        "https://*.google.com",
+        "https://*.firebaseapp.com"
     ]
 }

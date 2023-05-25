@@ -64,7 +64,6 @@
     "storage",
     "tabs",
     "unlimitedStorage",
-    "gcm",
     "notifications"
   ],
   "short_name": "Rainbow",
