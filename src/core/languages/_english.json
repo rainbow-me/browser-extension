@@ -788,7 +788,7 @@
     "connect_wallets_title": "Connect your wallets",
     "connect_wallets_found": "We’ve found wallets on your Ledger with a balance or activity. Select which to connect.",
     "connect_wallets_not_found": "Some text about how this looks like a new device, so select from empty accounts?",
-    "connect_wallet": "Connect 1 wallet",
+    "connect_wallet": "Connect wallet",
     "connect_n_wallets": "Connect %{count} wallets",
     "wallets_found": "%{count} wallets found",
     "add_by_index": "Add by index",
