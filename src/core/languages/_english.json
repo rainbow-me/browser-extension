@@ -793,6 +793,8 @@
     "add_by_index_title": "Add a wallet by its index",
     "add_by_index_description": "Enter the derivation path for the wallet you would like to import from your Ledger.",
     "waiting_for_trezor_connect": "Waiting for Trezor Connect",
-    "continue_on_trezor_connect": "Please follow the instructions on the Trezor Connect window"
+    "continue_on_trezor_connect": "Please follow the instructions on the Trezor Connect window",
+    "trezor_success": "Success!",
+    "you_can_close_this_window": "You can close this window"
   }
 }

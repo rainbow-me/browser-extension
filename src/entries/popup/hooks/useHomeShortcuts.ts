@@ -16,6 +16,7 @@ import { ROUTES } from '../urls';
 import { clickHeaderRight } from '../utils/clickHeader';
 
 import { useKeyboardShortcut } from './useKeyboardShortcut';
+import { useNavigateToSwaps } from './useNavigateToSwaps';
 import { useRainbowNavigate } from './useRainbowNavigate';
 
 export function useHomeShortcuts() {
@@ -24,6 +25,7 @@ export function useHomeShortcuts() {
   const { selectedToken } = useSelectedTokenStore();
   const { selectedTransaction } = useSelectedTransactionStore();
   const { sheet } = useCurrentHomeSheetStore();
+  const navigateToSwaps = useNavigateToSwaps();
 
   const getHomeShortcutsAreActive = useCallback(() => {
     return sheet === 'none' && !selectedTransaction && !selectedToken;
@@ -63,7 +65,7 @@ export function useHomeShortcuts() {
           navigate(ROUTES.SETTINGS);
           break;
         case shortcuts.home.GO_TO_SWAP.key:
-          navigate(ROUTES.SWAP);
+          navigateToSwaps();
           break;
         case shortcuts.home.GO_TO_PROFILE.key:
           openProfile();
@@ -82,7 +84,7 @@ export function useHomeShortcuts() {
           break;
       }
     },
-    [handleCopy, navigate, openProfile],
+    [handleCopy, navigate, navigateToSwaps, openProfile],
   );
   useKeyboardShortcut({
     condition: getHomeShortcutsAreActive,
