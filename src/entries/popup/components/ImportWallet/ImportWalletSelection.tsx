@@ -82,24 +82,26 @@ export const useImportWalletsFromSecrets = () => {
     accountsIgnored?: Address[];
   }) => {
     setIsImporting(true);
-    const prevAccounts = await wallet.getAccounts();
-    await Promise.all(secrets.map(wallet.importWithSecret));
+    (async () => {
+      const prevAccounts = await wallet.getAccounts();
+      await Promise.all(secrets.map(wallet.importWithSecret));
 
-    if (!accountsIgnored.length) {
-      setIsImporting(false);
+      if (!accountsIgnored.length) return wallet.getAccounts();
+
+      // when importing another account from a seed that was already imported earlier
+      // don't remove accounts that where already in the keychain before importing these secrets
+      const accountsToRemove = accountsIgnored.filter(
+        (address) => !prevAccounts.includes(address),
+      );
+
+      await Promise.all(accountsToRemove.map(wallet.remove));
+
       return wallet.getAccounts();
-    }
-
-    // when importing another account from a seed that was already imported earlier
-    // don't remove accounts that where already in the keychain before importing these secrets
-    const accountsToRemove = accountsIgnored.filter(
-      (address) => !prevAccounts.includes(address),
-    );
-
-    await Promise.all(accountsToRemove.map(wallet.remove));
-
-    setIsImporting(false);
-    return wallet.getAccounts();
+    })().then((accounts) => {
+      setIsImporting(false);
+      derivedAccountsStore.clear();
+      return accounts;
+    });
   };
 
   return { importSecrets, isImporting };
