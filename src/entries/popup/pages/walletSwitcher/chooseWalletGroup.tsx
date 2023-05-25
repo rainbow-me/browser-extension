@@ -81,7 +81,7 @@ const GroupRow = ({
 }) => {
   return (
     <Box onClick={onClick}>
-      <Columns alignHorizontal="justify">
+      <Columns alignHorizontal="justify" alignVertical="center">
         <Column width="content">
           <Inline space="10px" alignHorizontal="center" alignVertical="center">
             {leftcomponent}
@@ -137,7 +137,7 @@ const WalletGroups = ({
         centerComponent={
           <Stack space="8px">
             <Text size="14pt" color="label" align="left" weight="regular">
-              New Wallet Group
+              {i18n.t('choose_wallet_group.new_wallet_group')}
             </Text>
             <Text
               size="12pt"
@@ -145,7 +145,7 @@ const WalletGroups = ({
               align="left"
               weight="regular"
             >
-              Create a new recovery phrase
+              {i18n.t('choose_wallet_group.create_recovery_phrase')}
             </Text>
           </Stack>
         }
@@ -180,7 +180,9 @@ const WalletGroups = ({
                     align="left"
                     weight="semibold"
                   >
-                    Wallet Group {i + 1}
+                    {i18n.t('choose_wallet_group.wallet_group', {
+                      number: i + 1,
+                    })}
                   </Text>
                   <Inline alignVertical="center" space="4px">
                     <AddressOrEns
