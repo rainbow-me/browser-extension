@@ -11,7 +11,6 @@ import { afterAll, beforeAll, expect, it } from 'vitest';
 import {
   delayTime,
   doNotFindElementByTestId,
-  findElementAndClick,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
@@ -98,7 +97,7 @@ it('should be able to connect to hardhat', async () => {
 });
 
 it('should be able to go to swap flow', async () => {
-  await findElementAndClick({ id: 'header-link-swap', driver });
+  await findElementByTestIdAndClick({ id: 'header-link-swap', driver });
 });
 
 it('should be able to go to swap settings and check rows are visible', async () => {
@@ -139,7 +138,7 @@ it('should be able to go to settings and turn on flashbots', async () => {
     id: 'navbar-button-with-back',
     driver,
   });
-  await findElementAndClick({ id: 'header-link-swap', driver });
+  await findElementByTestIdAndClick({ id: 'header-link-swap', driver });
 });
 
 it('should be able to go to swap settings and check flashbots row is visible', async () => {
