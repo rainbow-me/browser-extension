@@ -796,5 +796,9 @@
     "continue_on_trezor_connect": "Please follow the instructions on the Trezor Connect window",
     "trezor_success": "Success!",
     "you_can_close_this_window": "You can close this window"
+  },
+  "choose_wallet_group": {
+    "title": "Choose wallet group",
+    "description": "Choose the wallet group you'd like to create a new wallet within, or create a new one"
   }
 }

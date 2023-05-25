@@ -885,6 +885,7 @@ export const symbolNames = selectSymbolNames(
   'person.crop.circle.badge.xmark',
   'person.crop.circle.badge.checkmark',
   'return.left',
+  'plus',
 );
 export type SymbolName = typeof symbolNames[number];
 
