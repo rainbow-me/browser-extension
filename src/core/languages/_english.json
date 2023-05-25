@@ -783,7 +783,7 @@
     "connect_wallets_title": "Connect your wallets",
     "connect_wallets_found": "We’ve found wallets on your Ledger with a balance or activity. Select which to connect.",
     "connect_wallets_not_found": "Some text about how this looks like a new device, so select from empty accounts?",
-    "connect_wallet": "Connect 1 wallet",
+    "connect_wallet": "Connect wallet",
     "connect_n_wallets": "Connect %{count} wallets",
     "wallets_found": "%{count} wallets found",
     "add_by_index": "Add by index",
@@ -794,6 +794,8 @@
     "add_by_index_title": "Add a wallet by its index",
     "add_by_index_description": "Enter the derivation path for the wallet you would like to import from your Ledger.",
     "waiting_for_trezor_connect": "Waiting for Trezor Connect",
-    "continue_on_trezor_connect": "Please follow the instructions on the Trezor Connect window"
+    "continue_on_trezor_connect": "Please follow the instructions on the Trezor Connect window",
+    "trezor_success": "Success!",
+    "you_can_close_this_window": "You can close this window"
   }
 }
