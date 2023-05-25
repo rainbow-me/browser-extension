@@ -10,6 +10,7 @@ import { minus } from '~/core/utils/numbers';
 import { Box, Button, Stack, Text } from '~/design-system';
 
 import { Spinner } from '../../components/Spinner/Spinner';
+import { getImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWalletsSummary } from '../../hooks/useWalletsSummary';
@@ -71,10 +72,9 @@ export function ImportWalletSelectionEdit({
     setIsAddingWallets(true);
     let defaultAccountChosen = false;
     // Import all the secrets
-    for (let i = 0; i < state.secrets.length; i++) {
-      const address = (await wallet.importWithSecret(
-        state.secrets[i],
-      )) as Address;
+    const secrets = await getImportWalletSecrets();
+    for (let i = 0; i < secrets.length; i++) {
+      const address = (await wallet.importWithSecret(secrets[i])) as Address;
       // Select the first wallet
       if (!defaultAccountChosen && !accountsIgnored.includes(address)) {
         defaultAccountChosen = true;
@@ -88,14 +88,15 @@ export function ImportWalletSelectionEdit({
     }
 
     setIsAddingWallets(false);
-    onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
+    onboarding
+      ? navigate(ROUTES.CREATE_PASSWORD, { state: { backTo: ROUTES.WELCOME } })
+      : navigate(ROUTES.HOME);
   }, [
     isAddingWallets,
     selectedAccounts,
     setIsAddingWallets,
     onboarding,
     navigate,
-    state.secrets,
     accountsIgnored,
     setCurrentAddress,
   ]);

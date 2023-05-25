@@ -143,7 +143,7 @@ export function SuccessHW() {
           url: POPUP_URL + `#${ROUTES.CREATE_PASSWORD}`,
         });
       } else {
-        navigate(ROUTES.CREATE_PASSWORD);
+        navigate(ROUTES.CREATE_PASSWORD, { state: { backTo: ROUTES.WELCOME } });
       }
     } else {
       navigate(ROUTES.HOME);
