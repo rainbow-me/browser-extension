@@ -5,16 +5,6 @@
  */
 export const event = {
   /**
-   * Called when the dApp requests a network change and the extension
-   * auto-approves the request and displays a notification in the DOM.
-   */
-  dappNotificationNetworkSwitched: 'dapp.notification.network.switched',
-  /**
-   * Called when the dApp requests a network change and the extension
-   * denies because the network is unsupported and displays a DOM notification.
-   */
-  dappNotificationNetworkUnsupported: 'dapp.notification.network.unsupported',
-  /**
    * Called when the user approves a connection request from the active dApp.
    */
   dappPromptConnectApproved: 'dapp.prompt.connect.approved',
@@ -98,10 +88,6 @@ export const event = {
    */
   dappProviderNetworkSwitched: 'dapp.provider.network.switched',
   /**
-   * Called when a dApp sends an RPC request to the provider.
-   */
-  dappProviderRequested: 'dapp.provider.requested',
-  /**
    * Called when the popup entry is opened, including:
    * - extension popup
    * - new window
@@ -127,18 +113,6 @@ export const event = {
  * Properties corresponding to each event
  */
 export type EventProperties = {
-  [event.dappNotificationNetworkSwitched]: {
-    /**
-     * `chainId` of the network the dApp requested a switch to.
-     */
-    chainId: number;
-  };
-  [event.dappNotificationNetworkUnsupported]: {
-    /**
-     * `chainId` of the network the dApp requested a switch to.
-     */
-    chainId: number;
-  };
   [event.dappPromptConnectApproved]: {
     /**
      * `chainId` of the default network the dApp requested.
@@ -295,20 +269,6 @@ export type EventProperties = {
      * `chainId` of the network the dApp requested a switch to.
      */
     chainId: number;
-  };
-  [event.dappProviderRequested]: {
-    /**
-     * Full url of the dApp requesting a `disconnect` event.
-     */
-    dappURL: string;
-    /**
-     * Short name of the dApp displayed to the user.
-     */
-    dappName?: string;
-    /**
-     * RPC method requested.
-     */
-    method: string;
   };
   [event.popupOpened]: undefined;
   [event.settingsAnalyticsTrackingDisabled]: undefined;
