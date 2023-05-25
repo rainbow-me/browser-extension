@@ -16,6 +16,7 @@ const LabelPill = ({ label, dot }: { label: string; dot?: boolean }) => (
             width: '7px',
             height: '7px',
             borderRadius: '7px',
+            boxShadow: '0px 0px 10px rgba(62, 207, 91, 0.4)',
           }}
           background="green"
         />
