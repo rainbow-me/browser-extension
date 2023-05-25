@@ -6,7 +6,6 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import {
   Box,
-  Button,
   Column,
   Columns,
   Inline,
@@ -70,107 +69,108 @@ const WalletGroups = ({
 
   return (
     <Box padding="20px">
-      <GroupRow
-        onClick={onCreateNewWallet}
-        leftcomponent={
-          <Box
-            borderRadius="9px"
-            style={{
-              width: '30px',
-              height: '30px',
-              border: '2px dashed rgba(38, 143, 255, 0.2)',
-            }}
-            alignItems="center"
-            justifyContent="center"
-            display="flex"
-          >
-            <Symbol weight="bold" symbol="plus" size={14} color="blue" />
-          </Box>
-        }
-        centerComponent={
-          <Stack space="8px">
-            <Text size="14pt" color="label" align="left" weight="regular">
-              New Wallet Group
-            </Text>
-            <Text
-              size="12pt"
-              color="labelTertiary"
-              align="left"
-              weight="regular"
-            >
-              Create a new recovery phrase
-            </Text>
-          </Stack>
-        }
-        rightComponent={
-          <Box
-            background={'fillSecondary'}
-            padding="4px"
-            borderRadius="3px"
-            boxShadow="1px"
-          >
-            <Text size="12pt" color="labelSecondary" weight="semibold">
-              {shortcuts.wallets.CHOOSE_WALLET_GROUP_NEW.display}
-            </Text>
-          </Box>
-        }
-      />
-
-      <Box padding="16px">
-        <Separator color="separatorTertiary" strokeWeight="1px" />
-      </Box>
       <Stack space="16px">
-        {wallets.map((wallet, i) => {
-          return (
-            <GroupRow
-              key={i}
-              onClick={() => onCreateNewWalletOnGroup(i)}
-              leftcomponent={
-                <Box
-                  borderRadius="9px"
-                  style={{
-                    width: '30px',
-                    height: '30px',
-                    backgroundColor: 'rgba(245, 248, 255, 0.06)',
-                  }}
-                  alignItems="center"
-                  justifyContent="center"
-                  display="flex"
-                />
-              }
-              centerComponent={
-                <Stack space="8px">
-                  <Text
-                    size="14pt"
-                    color="label"
-                    align="left"
-                    weight="semibold"
-                  >
-                    Wallet Group {i + 1}
-                  </Text>
-                  <AddressOrEns
-                    address={wallet.accounts[0]}
-                    size={'12pt'}
-                    weight="regular"
-                    color="labelTertiary"
+        <GroupRow
+          onClick={onCreateNewWallet}
+          leftcomponent={
+            <Box
+              borderRadius="9px"
+              style={{
+                width: '30px',
+                height: '30px',
+                border: '2px dashed rgba(38, 143, 255, 0.2)',
+              }}
+              alignItems="center"
+              justifyContent="center"
+              display="flex"
+            >
+              <Symbol weight="bold" symbol="plus" size={14} color="blue" />
+            </Box>
+          }
+          centerComponent={
+            <Stack space="8px">
+              <Text size="14pt" color="label" align="left" weight="regular">
+                New Wallet Group
+              </Text>
+              <Text
+                size="12pt"
+                color="labelTertiary"
+                align="left"
+                weight="regular"
+              >
+                Create a new recovery phrase
+              </Text>
+            </Stack>
+          }
+          rightComponent={
+            <Box
+              background={'fillSecondary'}
+              padding="4px"
+              borderRadius="3px"
+              boxShadow="1px"
+            >
+              <Text size="12pt" color="labelSecondary" weight="semibold">
+                {shortcuts.wallets.CHOOSE_WALLET_GROUP_NEW.display}
+              </Text>
+            </Box>
+          }
+        />
+        <Box>
+          <Separator color="separatorTertiary" strokeWeight="1px" />
+        </Box>
+        <Stack space="16px">
+          {wallets.map((wallet, i) => {
+            return (
+              <GroupRow
+                key={i}
+                onClick={() => onCreateNewWalletOnGroup(i)}
+                leftcomponent={
+                  <Box
+                    borderRadius="9px"
+                    style={{
+                      width: '30px',
+                      height: '30px',
+                      backgroundColor: 'rgba(245, 248, 255, 0.06)',
+                    }}
+                    alignItems="center"
+                    justifyContent="center"
+                    display="flex"
                   />
-                </Stack>
-              }
-              rightComponent={
-                <Box
-                  background={'fillSecondary'}
-                  padding="4px"
-                  borderRadius="3px"
-                  boxShadow="1px"
-                >
-                  <Text size="12pt" color="labelSecondary" weight="semibold">
-                    {i + 1}
-                  </Text>
-                </Box>
-              }
-            />
-          );
-        })}
+                }
+                centerComponent={
+                  <Stack space="8px">
+                    <Text
+                      size="14pt"
+                      color="label"
+                      align="left"
+                      weight="semibold"
+                    >
+                      Wallet Group {i + 1}
+                    </Text>
+                    <AddressOrEns
+                      address={wallet.accounts[0]}
+                      size={'12pt'}
+                      weight="regular"
+                      color="labelTertiary"
+                    />
+                  </Stack>
+                }
+                rightComponent={
+                  <Box
+                    background={'fillSecondary'}
+                    padding="4px"
+                    borderRadius="3px"
+                    boxShadow="1px"
+                  >
+                    <Text size="12pt" color="labelSecondary" weight="semibold">
+                      {i + 1}
+                    </Text>
+                  </Box>
+                }
+              />
+            );
+          })}
+        </Stack>
       </Stack>
     </Box>
   );
