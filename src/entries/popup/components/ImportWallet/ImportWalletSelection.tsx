@@ -82,7 +82,7 @@ export const useImportWalletsFromSecrets = () => {
     accountsIgnored?: Address[];
   }) => {
     setIsImporting(true);
-    (async () => {
+    return (async () => {
       const prevAccounts = await wallet.getAccounts();
       await Promise.all(secrets.map(wallet.importWithSecret));
 
@@ -97,10 +97,9 @@ export const useImportWalletsFromSecrets = () => {
       await Promise.all(accountsToRemove.map(wallet.remove));
 
       return wallet.getAccounts();
-    })().then((accounts) => {
+    })().finally(() => {
       setIsImporting(false);
       derivedAccountsStore.clear();
-      return accounts;
     });
   };
 
