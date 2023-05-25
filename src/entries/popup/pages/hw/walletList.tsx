@@ -68,6 +68,11 @@ const WalletListHW = () => {
     state.accountsToImport,
   );
 
+  const newDevice = useMemo(
+    () => !!balances.length && balances.every((b) => !parseFloat(b)),
+    [balances],
+  );
+
   useEffect(() => {
     const fetchBalances = async () => {
       const provider = getProvider({ chainId: chain.mainnet.id });
@@ -232,43 +237,45 @@ const WalletListHW = () => {
               </Box>
             </Box>
           ) : (
-            <Box paddingTop="44px">
-              <Inline>
-                <Box style={{ width: '50%' }}>
-                  <Text
-                    size="14pt"
-                    weight="regular"
-                    color="labelSecondary"
-                    align="left"
-                  >
-                    {i18n.t('hw.wallets_found', {
-                      count: selectedAccounts,
-                    })}
-                  </Text>
-                </Box>
-                <Box style={{ width: '50%' }}>
-                  <a
-                    onClick={() => {
-                      setShowAddByIndexSheet(true);
-                    }}
-                  >
+            <Box paddingTop="30px">
+              {!newDevice && (
+                <Inline>
+                  <Box style={{ width: '50%' }}>
                     <Text
                       size="14pt"
                       weight="regular"
                       color="labelSecondary"
-                      align="right"
+                      align="left"
                     >
-                      <Symbol
-                        color={'labelSecondary'}
-                        size={12}
-                        symbol={'plus.circle.fill'}
-                        weight="regular"
-                      />{' '}
-                      {i18n.t('hw.add_by_index')}
+                      {i18n.t('hw.wallets_found', {
+                        count: selectedAccounts,
+                      })}
                     </Text>
-                  </a>
-                </Box>
-              </Inline>
+                  </Box>
+                  <Box style={{ width: '50%' }}>
+                    <a
+                      onClick={() => {
+                        setShowAddByIndexSheet(true);
+                      }}
+                    >
+                      <Text
+                        size="14pt"
+                        weight="regular"
+                        color="labelSecondary"
+                        align="right"
+                      >
+                        <Symbol
+                          color={'labelSecondary'}
+                          size={12}
+                          symbol={'plus.circle.fill'}
+                          weight="regular"
+                        />{' '}
+                        {i18n.t('hw.add_by_index')}
+                      </Text>
+                    </a>
+                  </Box>
+                </Inline>
+              )}
               <Box
                 width="full"
                 style={{
@@ -299,7 +306,11 @@ const WalletListHW = () => {
                         <Row key={`avatar_${address}`}>
                           <Columns>
                             <Column>
-                              <Box onClick={() => toggleAccount(address)}>
+                              <Box
+                                onClick={() => toggleAccount(address)}
+                                justifyContent="flex-end"
+                                width="fit"
+                              >
                                 <Inline
                                   space="8px"
                                   alignHorizontal="left"
@@ -334,16 +345,20 @@ const WalletListHW = () => {
                               </Box>
                             </Column>
                             <Column width="content">
-                              <Box
-                                alignItems="center"
-                                justifyContent="flex-end"
-                                width="fit"
-                                onClick={() => toggleAccount(address)}
-                              >
-                                <Checkbox
-                                  selected={!accountsIgnored.includes(address)}
-                                />
-                              </Box>
+                              <Rows alignVertical="center">
+                                <Row height="content">
+                                  <Box
+                                    width="fit"
+                                    onClick={() => toggleAccount(address)}
+                                  >
+                                    <Checkbox
+                                      selected={
+                                        !accountsIgnored.includes(address)
+                                      }
+                                    />
+                                  </Box>
+                                </Row>
+                              </Rows>
                             </Column>
                           </Columns>
                           <Box width="full" paddingTop="6px">
@@ -359,6 +374,52 @@ const WalletListHW = () => {
                     )}
                   </Rows>
                 </Box>
+                {newDevice && balances.length <= 6 && (
+                  <Rows>
+                    <Row>
+                      <Columns alignHorizontal="center">
+                        <Column width="content">
+                          <Box
+                            borderRadius="28px"
+                            background="surfaceSecondaryElevated"
+                            borderColor="separatorSecondary"
+                            borderWidth="1px"
+                            paddingHorizontal="12px"
+                            paddingVertical="9px"
+                            style={{ marginTop: 24 }}
+                          >
+                            <a
+                              onClick={() => {
+                                setShowAddByIndexSheet(true);
+                              }}
+                            >
+                              <Box paddingTop="2px">
+                                <Inline space="4px">
+                                  <Box style={{ marginTop: -1 }}>
+                                    <Symbol
+                                      color="label"
+                                      size={12}
+                                      symbol={'plus.circle.fill'}
+                                      weight="regular"
+                                    />
+                                  </Box>
+                                  <Text
+                                    size="14pt"
+                                    weight="regular"
+                                    color="label"
+                                    align="center"
+                                  >
+                                    {i18n.t('hw.add_by_index')}
+                                  </Text>
+                                </Inline>
+                              </Box>
+                            </a>
+                          </Box>
+                        </Column>
+                      </Columns>
+                    </Row>
+                  </Rows>
+                )}
               </Box>
             </Box>
           )}
