@@ -72,7 +72,6 @@ export const ImportWallet = ({ onboarding = false }) => {
     (_secrets: string[]) => {
       const secrets = [...new Set(_secrets)]; // remove duplicates
       if (secrets.length === 1 && isValidPrivateKey(secrets[0])) {
-        // setIsLoading(true)
         wallet.importWithSecret(secrets[0]).then(setCurrentAddress);
         return navigate(onboarding ? ROUTES.CREATE_PASSWORD : ROUTES.HOME);
       }
