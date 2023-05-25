@@ -1,12 +1,9 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-nested-ternary */
-import { Address, chain, getProvider } from '@wagmi/core';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Address } from '@wagmi/core';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
-import { convertRawAmountToNativeDisplay } from '~/core/utils/numbers';
+import { useCurrentAddressStore } from '~/core/state';
 import {
   Bleed,
   Box,
@@ -29,8 +26,8 @@ import { FullScreenContainer } from '../../components/FullScreen/FullScreenConta
 import { Spinner } from '../../components/Spinner/Spinner';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import * as wallet from '../../handlers/wallet';
-import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useWalletsSummary } from '../../hooks/useWalletsSummary';
 import { ROUTES } from '../../urls';
 
 import { AddByIndexSheet } from './addByIndexSheet';
@@ -56,50 +53,26 @@ const WalletListHW = () => {
   const [showAddByIndexSheet, setShowAddByIndexSheet] =
     useState<boolean>(false);
   const navigate = useRainbowNavigate();
-  const { currentCurrency } = useCurrentCurrencyStore();
-  const nativeAsset = useNativeAssetForNetwork({ chainId: chain.mainnet.id });
-
   const { state } = useLocation();
   const [accountsIgnored, setAccountsIgnored] = useState<Address[]>([]);
-  const [balances, setBalances] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { setCurrentAddress } = useCurrentAddressStore();
 
-  const [accountsToImport, setAccountsToImport] = useState(
-    state.accountsToImport,
-  );
+  const [accountsToImport, setAccountsToImport] = useState<
+    { address: Address; index: number }[]
+  >(state.accountsToImport);
+
+  const { isLoading: walletsSummaryIsLoading, walletsSummary } =
+    useWalletsSummary({
+      addresses: accountsToImport.map((account) => account.address),
+    });
 
   const newDevice = useMemo(
-    () => !!balances.length && balances.every((b) => !parseFloat(b)),
-    [balances],
+    () =>
+      !!Object.values(walletsSummary).length &&
+      Object.values(walletsSummary).every((b) => !parseFloat(b.balance.amount)),
+    [walletsSummary],
   );
-
-  useEffect(() => {
-    const fetchBalances = async () => {
-      const provider = getProvider({ chainId: chain.mainnet.id });
-      const _balances = await Promise.all(
-        accountsToImport.map(async (account: { address: string }) => {
-          const balance = await provider.getBalance(account.address);
-          const nativeCurrencyAmount = convertRawAmountToNativeDisplay(
-            balance.toString() ?? 0,
-            nativeAsset?.decimals ?? 18,
-            nativeAsset?.price?.value as number,
-            currentCurrency,
-          ).display;
-          return nativeCurrencyAmount;
-        }),
-      );
-      setBalances(_balances);
-    };
-    if (accountsToImport.length > 0) {
-      fetchBalances();
-    }
-  }, [
-    accountsToImport,
-    currentCurrency,
-    nativeAsset?.decimals,
-    nativeAsset?.price?.value,
-  ]);
 
   const selectedAccounts = useMemo(
     () => accountsToImport?.length - accountsIgnored.length,
@@ -164,10 +137,8 @@ const WalletListHW = () => {
     ({
       address,
       index,
-      balance,
     }: {
       address?: Address;
-      balance?: string;
       index?: number;
     } = {}) => {
       if (address && index) {
@@ -176,12 +147,11 @@ const WalletListHW = () => {
           address: address as Address,
           index: index as number,
         });
-        balances.unshift(balance as string);
         setAccountsToImport(newAccountsToImport);
       }
       setShowAddByIndexSheet(false);
     },
-    [accountsToImport, balances],
+    [accountsToImport],
   );
 
   return (
@@ -330,94 +300,83 @@ const WalletListHW = () => {
                                 />
                               }
                             >
-                              {accountsToImport.map(
-                                ({
-                                  address,
-                                  index,
-                                }: {
-                                  address: Address;
-                                  index: number;
-                                }) => (
-                                  <Box width="full" key={`avatar_${address}`}>
-                                    <Columns alignVertical="center">
-                                      <Column>
-                                        <Box
-                                          onClick={() => toggleAccount(address)}
-                                          justifyContent="flex-end"
-                                          width="fit"
+                              {accountsToImport.map(({ address, index }) => (
+                                <Box width="full" key={`avatar_${address}`}>
+                                  <Columns alignVertical="center">
+                                    <Column>
+                                      <Box
+                                        onClick={() => toggleAccount(address)}
+                                      >
+                                        <Inline
+                                          space="8px"
+                                          alignHorizontal="left"
+                                          alignVertical="center"
                                         >
-                                          <Inline
-                                            space="8px"
-                                            alignHorizontal="left"
-                                            alignVertical="center"
+                                          <WalletAvatar
+                                            address={address as Address}
+                                            size={36}
+                                            emojiSize={'16pt'}
+                                          />
+                                          <Box
+                                            justifyContent="flex-start"
+                                            width="fit"
                                           >
-                                            <WalletAvatar
-                                              address={address as Address}
-                                              size={36}
-                                              emojiSize={'16pt'}
-                                            />
-                                            <Box
-                                              justifyContent="flex-start"
-                                              width="fit"
-                                            >
-                                              <Stack space="8px">
-                                                <Inline
-                                                  space="8px"
-                                                  alignVertical="center"
-                                                >
-                                                  <AddressOrEns
-                                                    size="14pt"
-                                                    weight="bold"
-                                                    color="label"
-                                                    address={address as Address}
-                                                  />
-                                                  <Bleed vertical="8px">
-                                                    <AccountIndex
-                                                      index={index}
-                                                    />
-                                                  </Bleed>
-                                                </Inline>
-                                                <Box style={{ height: 9 }}>
+                                            <Stack space="8px">
+                                              <Inline
+                                                space="8px"
+                                                alignVertical="center"
+                                              >
+                                                <AddressOrEns
+                                                  size="14pt"
+                                                  weight="bold"
+                                                  color="label"
+                                                  address={address as Address}
+                                                />
+                                                <Bleed vertical="8px">
+                                                  <AccountIndex index={index} />
+                                                </Bleed>
+                                              </Inline>
+                                              <Box style={{ height: 9 }}>
+                                                {!walletsSummaryIsLoading ? (
                                                   <Text
                                                     color="labelTertiary"
                                                     size="12pt"
                                                     weight="regular"
                                                   >
                                                     {
-                                                      balances?.[
-                                                        index as number
-                                                      ] as string
+                                                      walletsSummary?.[address]
+                                                        .balance.display
                                                     }
                                                   </Text>
-                                                </Box>
-                                              </Stack>
-                                            </Box>
-                                          </Inline>
-                                        </Box>
-                                      </Column>
-                                      <Column width="content">
-                                        <Box
-                                          alignItems="center"
-                                          justifyContent="flex-end"
-                                          width="fit"
-                                          onClick={() => toggleAccount(address)}
-                                        >
-                                          <Checkbox
-                                            selected={
-                                              !accountsIgnored.includes(address)
-                                            }
-                                          />
-                                        </Box>
-                                      </Column>
-                                    </Columns>
-                                  </Box>
-                                ),
-                              )}
+                                                ) : null}
+                                              </Box>
+                                            </Stack>
+                                          </Box>
+                                        </Inline>
+                                      </Box>
+                                    </Column>
+                                    <Column width="content">
+                                      <Box
+                                        alignItems="center"
+                                        justifyContent="flex-end"
+                                        width="fit"
+                                        onClick={() => toggleAccount(address)}
+                                      >
+                                        <Checkbox
+                                          selected={
+                                            !accountsIgnored.includes(address)
+                                          }
+                                        />
+                                      </Box>
+                                    </Column>
+                                  </Columns>
+                                </Box>
+                              ))}
                             </Stack>
                           </Box>
                         </Box>
                       </Stack>
-                      {newDevice && balances.length <= 6 && (
+                      {newDevice && Object.values(walletsSummary).length <= 6 && (
                         <Inline alignHorizontal="center">
                           <Button
                             color="surfaceSecondaryElevated"
