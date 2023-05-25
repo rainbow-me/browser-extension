@@ -799,6 +799,9 @@
   },
   "choose_wallet_group": {
     "title": "Choose wallet group",
-    "description": "Choose the wallet group you'd like to create a new wallet within, or create a new one"
+    "description": "Choose the wallet group you'd like to create a new wallet within, or create a new one",
+    "wallet_group": "Wallet Group %{number}",
+    "new_wallet_group": "New Wallet Group",
+    "create_recovery_phrase": "Create a new recovery phrase"
   }
 }
