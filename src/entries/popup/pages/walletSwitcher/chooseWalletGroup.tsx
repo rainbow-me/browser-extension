@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { ReactElement, useCallback, useEffect, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -7,6 +7,8 @@ import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import {
   Box,
   Button,
+  Column,
+  Columns,
   Inline,
   Separator,
   Stack,
@@ -16,9 +18,34 @@ import {
 
 import { AddressOrEns } from '../../components/AddressOrEns/AddressorEns';
 import * as wallet from '../../handlers/wallet';
-import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 
 import { CreateWalletPrompt } from './createWalletPrompt';
+
+const GroupRow = ({
+  leftcomponent,
+  centerComponent,
+  rightComponent,
+  onClick,
+}: {
+  leftcomponent: ReactElement;
+  centerComponent: ReactElement;
+  rightComponent: ReactElement;
+  onClick: () => void;
+}) => {
+  return (
+    <Box onClick={onClick}>
+      <Columns alignHorizontal="justify">
+        <Column width="content">
+          <Inline space="10px" alignHorizontal="center">
+            {leftcomponent}
+            {centerComponent}
+          </Inline>
+        </Column>
+        <Column width="content">{rightComponent}</Column>
+      </Columns>
+    </Box>
+  );
+};
 
 const WalletGroups = ({
   onCreateNewWallet,
@@ -43,14 +70,9 @@ const WalletGroups = ({
 
   return (
     <Box padding="20px">
-      <Button
-        color={'label'}
-        variant={'transparent'}
-        width="full"
-        height="44px"
+      <GroupRow
         onClick={onCreateNewWallet}
-      >
-        <Inline space={'10px'}>
+        leftcomponent={
           <Box
             borderRadius="9px"
             style={{
@@ -64,6 +86,8 @@ const WalletGroups = ({
           >
             <Symbol weight="bold" symbol="plus" size={14} color="blue" />
           </Box>
+        }
+        centerComponent={
           <Stack space="8px">
             <Text size="14pt" color="label" align="left" weight="regular">
               New Wallet Group
@@ -77,35 +101,31 @@ const WalletGroups = ({
               Create a new recovery phrase
             </Text>
           </Stack>
-          <Box display="flex" alignItems="flex-end">
-            <Box
-              background={'fillSecondary'}
-              padding="4px"
-              borderRadius="3px"
-              boxShadow="1px"
-            >
-              <Text size="12pt" color="labelSecondary" weight="semibold">
-                {shortcuts.wallets.CHOOSE_WALLET_GROUP_NEW.display}
-              </Text>
-            </Box>
+        }
+        rightComponent={
+          <Box
+            background={'fillSecondary'}
+            padding="4px"
+            borderRadius="3px"
+            boxShadow="1px"
+          >
+            <Text size="12pt" color="labelSecondary" weight="semibold">
+              {shortcuts.wallets.CHOOSE_WALLET_GROUP_NEW.display}
+            </Text>
           </Box>
-        </Inline>
-      </Button>
+        }
+      />
+
       <Box padding="16px">
         <Separator color="separatorTertiary" strokeWeight="1px" />
       </Box>
       <Stack space="16px">
         {wallets.map((wallet, i) => {
           return (
-            <Button
-              color={'label'}
-              variant={'transparent'}
-              width="full"
-              height="44px"
+            <GroupRow
+              key={i}
               onClick={() => onCreateNewWalletOnGroup(i)}
-              key={`wallet_group_${i}`}
-            >
-              <Inline space={'10px'}>
+              leftcomponent={
                 <Box
                   borderRadius="9px"
                   style={{
@@ -116,42 +136,39 @@ const WalletGroups = ({
                   alignItems="center"
                   justifyContent="center"
                   display="flex"
-                ></Box>
+                />
+              }
+              centerComponent={
                 <Stack space="8px">
-                  <Text size="14pt" color="label" align="left" weight="regular">
+                  <Text
+                    size="14pt"
+                    color="label"
+                    align="left"
+                    weight="semibold"
+                  >
                     Wallet Group {i + 1}
                   </Text>
-                  <Text
-                    size="12pt"
-                    color="labelTertiary"
-                    align="left"
+                  <AddressOrEns
+                    address={wallet.accounts[0]}
+                    size={'12pt'}
                     weight="regular"
-                  >
-                    <AddressOrEns
-                      address={wallet.accounts[0]}
-                      size={'12pt'}
-                      weight="regular"
-                    ></AddressOrEns>
-                  </Text>
+                    color="labelTertiary"
+                  />
                 </Stack>
+              }
+              rightComponent={
                 <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="flex-end"
+                  background={'fillSecondary'}
+                  padding="4px"
+                  borderRadius="3px"
+                  boxShadow="1px"
                 >
-                  <Box
-                    background={'fillSecondary'}
-                    padding="4px"
-                    borderRadius="3px"
-                    boxShadow="1px"
-                  >
-                    <Text size="12pt" color="labelSecondary" weight="semibold">
-                      {i + 1}
-                    </Text>
-                  </Box>
+                  <Text size="12pt" color="labelSecondary" weight="semibold">
+                    {i + 1}
+                  </Text>
                 </Box>
-              </Inline>
-            </Button>
+              }
+            />
           );
         })}
       </Stack>
@@ -160,8 +177,6 @@ const WalletGroups = ({
 };
 
 const ChooseWalletGroup = () => {
-  const navigate = useRainbowNavigate();
-
   const [createWalletAddress, setCreateWalletAddress] = useState<Address>();
 
   const handleCreateWallet = useCallback(async () => {
