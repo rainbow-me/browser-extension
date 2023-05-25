@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import ledgerDeviceEth from 'static/assets/hw/ledger-device-eth.png';
@@ -157,6 +157,7 @@ export function ConnectLedger() {
 
   const navigate = useRainbowNavigate();
   const { state } = useLocation();
+  const timer = useRef<NodeJS.Timeout>();
 
   const connectLedger = useCallback(async () => {
     const res = await wallet.connectLedger();
@@ -173,13 +174,12 @@ export function ConnectLedger() {
       setConnectingState(
         res.error as 'needs_connect' | 'needs_unlock' | 'needs_app',
       );
+      clearTimeout(timer.current);
+      timer.current = setTimeout(() => {
+        connectLedger();
+      }, 5000);
     }
   }, [navigate, state?.direction, state?.navbarIcon]);
-
-  useEffect(() => {
-    const interval = setInterval(async () => connectLedger(), 5000);
-    return () => clearInterval(interval);
-  }, [connectLedger, navigate]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -187,6 +187,10 @@ export function ConnectLedger() {
     }, 1500);
     return () => clearTimeout(timeout);
   }, [connectLedger]);
+
+  useEffect(() => {
+    return () => clearTimeout(timer.current);
+  }, []);
 
   return (
     <FullScreenContainer>
