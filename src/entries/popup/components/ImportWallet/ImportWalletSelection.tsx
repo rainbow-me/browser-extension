@@ -50,10 +50,10 @@ const useDeriveAccountsFromSecrets = (secrets: string[]) => {
   const [accounts, setAccounts] = useState<Address[]>([]);
 
   useEffect(() => {
-    let ignore = false;
+    let mounted = true;
 
     Promise.all(secrets.map(derivedAccountsFromSecret)).then((results) => {
-      if (ignore) return;
+      if (!mounted) return;
       const allAccounts = results.reduce(
         (allAccounts, accounts) => [...allAccounts, ...accounts],
         [],
@@ -62,7 +62,7 @@ const useDeriveAccountsFromSecrets = (secrets: string[]) => {
     });
 
     return () => {
-      ignore = true;
+      mounted = false;
     };
   }, [secrets]);
 
