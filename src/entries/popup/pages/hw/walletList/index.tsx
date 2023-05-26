@@ -1,4 +1,5 @@
 import { Address } from '@wagmi/core';
+import clsx from 'clsx';
 import React, { useCallback, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -20,17 +21,22 @@ import {
 } from '~/design-system';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 
-import { AddressOrEns } from '../../components/AddressOrEns/AddressorEns';
-import { Checkbox } from '../../components/Checkbox/Checkbox';
-import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
-import { Spinner } from '../../components/Spinner/Spinner';
-import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
-import * as wallet from '../../handlers/wallet';
-import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { useWalletsSummary } from '../../hooks/useWalletsSummary';
-import { ROUTES } from '../../urls';
+import { AddressOrEns } from '../../../components/AddressOrEns/AddressorEns';
+import { Checkbox } from '../../../components/Checkbox/Checkbox';
+import { FullScreenContainer } from '../../../components/FullScreen/FullScreenContainer';
+import { Spinner } from '../../../components/Spinner/Spinner';
+import { WalletAvatar } from '../../../components/WalletAvatar/WalletAvatar';
+import * as wallet from '../../../handlers/wallet';
+import { useRainbowNavigate } from '../../../hooks/useRainbowNavigate';
+import { useWalletsSummary } from '../../../hooks/useWalletsSummary';
+import { ROUTES } from '../../../urls';
+import { AddByIndexSheet } from '../addByIndexSheet';
 
-import { AddByIndexSheet } from './addByIndexSheet';
+import {
+  accountIndexHiddenHoverSiblingStyle,
+  accountIndexHiddenHoverStyle,
+  accountIndexHoverContainerStyle,
+} from './walletList.css';
 
 type Vendor = 'Ledger' | 'Trezor';
 
@@ -41,10 +47,36 @@ export const AccountIndex = ({ index }: { index: number }) => {
       borderWidth="2px"
       borderColor={'separatorSecondary'}
       padding={'6px'}
+      marginTop={'-5px'}
+      className={accountIndexHoverContainerStyle}
     >
-      <Text size="11pt" weight="bold" color={'labelTertiary'} align="center">
-        # {index}
-      </Text>
+      <Inline space="2px">
+        <Box
+          className={clsx([
+            accountIndexHiddenHoverStyle,
+            'account-index-hidden',
+          ])}
+        >
+          <Text
+            size="11pt"
+            weight="bold"
+            color={'labelTertiary'}
+            align="center"
+          >
+            {i18n.t('hw.index_label')}
+          </Text>
+        </Box>
+        <Box className={accountIndexHiddenHoverSiblingStyle}>
+          <Text
+            size="11pt"
+            weight="bold"
+            color={'labelTertiary'}
+            align="center"
+          >
+            # {index}
+          </Text>
+        </Box>
+      </Inline>
     </Box>
   );
 };
