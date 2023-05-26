@@ -13,34 +13,23 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { add, create, getWallets } from '~/entries/popup/handlers/wallet';
 
 import { AddressOrEns } from '../../components/AddressOrEns/AddressorEns';
-import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { ROUTES } from '../../urls';
 
 import { CreateWalletPrompt } from './createWalletPrompt';
 
 const WalletGroups = ({
   onCreateNewWallet,
   onCreateNewWalletOnGroup,
+  wallets,
 }: {
   onCreateNewWallet: () => Promise<void>;
   onCreateNewWalletOnGroup: (index: number) => Promise<void>;
+  wallets: KeychainWallet[];
 }) => {
-  const [wallets, setWallets] = useState<KeychainWallet[]>([]);
-
-  useEffect(() => {
-    const fetchWallets = async () => {
-      const walletsFromKeychain = await wallet.getWallets();
-      const controlledWallets = walletsFromKeychain.filter(
-        (wallet) => wallet.type !== KeychainType.ReadOnlyKeychain,
-      );
-
-      setWallets(controlledWallets);
-    };
-    fetchWallets();
-  }, []);
-
   return (
     <Box padding="20px">
       <Button
@@ -161,18 +150,56 @@ const WalletGroups = ({
 
 const ChooseWalletGroup = () => {
   const navigate = useRainbowNavigate();
+  const [wallets, setWallets] = useState<KeychainWallet[]>([]);
+
+  useEffect(() => {
+    const fetchWallets = async () => {
+      const walletsFromKeychain = await getWallets();
+      const controlledWallets = walletsFromKeychain.filter(
+        (wallet) => wallet.type !== KeychainType.ReadOnlyKeychain,
+      );
+
+      setWallets(controlledWallets);
+
+      const sessionData = await chrome.storage.session.get('walletToAdd');
+      if (sessionData.walletToAdd) {
+        setCreateWalletAddress(sessionData.walletToAdd);
+        chrome.storage.session.remove('walletToAdd');
+      }
+    };
+    fetchWallets();
+  }, []);
 
   const [createWalletAddress, setCreateWalletAddress] = useState<Address>();
 
   const handleCreateWallet = useCallback(async () => {
-    console.log('should create a new seed and go through backup flow');
-  }, []);
+    const newWalletAccount = await create();
+    const wallet = {
+      accounts: [newWalletAccount],
+      imported: false,
+      type: KeychainType.HdKeychain,
+    };
+    navigate(
+      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
+      {
+        state: {
+          wallet,
+          showQuiz: true,
+          fromChooseGroup: true,
+        },
+      },
+    );
+  }, [navigate]);
 
-  const handleCreateWalletOnGroup = useCallback(async (index: number) => {
-    console.log('should create wallet in group', index);
-    // const address = await wallet.create();
-    // setCreateWalletAddress(address);
-  }, []);
+  const handleCreateWalletOnGroup = useCallback(
+    async (index: number) => {
+      const wallet = wallets[index];
+      const silbing = wallet.accounts[0];
+      const address = await add(silbing);
+      setCreateWalletAddress(address);
+    },
+    [wallets],
+  );
 
   const onClose = () => {
     setCreateWalletAddress(undefined);
@@ -203,14 +230,7 @@ const ChooseWalletGroup = () => {
             {i18n.t('choose_wallet_group.description')}
           </Text>
         </Box>
-        <Box
-          width="full"
-          background="surfaceSecondary"
-          style={{
-            overflow: 'auto',
-            height: '291px',
-          }}
-        >
+        <Box width="full" background="surfaceSecondary">
           <Box
             background="surfaceSecondaryElevated"
             borderRadius="16px"
@@ -222,6 +242,7 @@ const ChooseWalletGroup = () => {
             <WalletGroups
               onCreateNewWallet={handleCreateWallet}
               onCreateNewWalletOnGroup={handleCreateWalletOnGroup}
+              wallets={wallets}
             />
           </Box>
         </Box>
