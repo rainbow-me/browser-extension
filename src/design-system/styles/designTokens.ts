@@ -637,6 +637,7 @@ export const linearGradients = {
 export type LinearGradient = keyof typeof linearGradients;
 
 export const space = {
+  '1px': 1,
   '2px': 2,
   '3px': 3,
   '4px': 4,
@@ -717,6 +718,7 @@ export const spaceToNegativeSpace: Record<
   keyof typeof space,
   keyof typeof negativeSpace
 > = {
+  '1px': '-1px',
   '2px': '-2px',
   '3px': '-3px',
   '4px': '-4px',

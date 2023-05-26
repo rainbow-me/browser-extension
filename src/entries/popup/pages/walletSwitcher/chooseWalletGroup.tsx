@@ -39,12 +39,24 @@ const GroupAvatar = ({ accounts }: { accounts: Address[] }) => {
           <Columns space="2px">
             <Column>
               {accounts[0] && (
-                <WalletAvatar size={12} emojiSize="8pt" address={accounts[0]} />
+                <WalletAvatar
+                  size={12}
+                  emojiSize="7pt"
+                  address={accounts[0]}
+                  emojiPaddingLeft="1px"
+                  emojiPaddingTop="1px"
+                />
               )}
             </Column>
             <Column>
               {accounts[1] && (
-                <WalletAvatar size={12} emojiSize="8pt" address={accounts[1]} />
+                <WalletAvatar
+                  size={12}
+                  emojiSize="7pt"
+                  address={accounts[1]}
+                  emojiPaddingLeft="1px"
+                  emojiPaddingTop="1px"
+                />
               )}
             </Column>
           </Columns>
@@ -53,12 +65,24 @@ const GroupAvatar = ({ accounts }: { accounts: Address[] }) => {
           <Columns space="2px">
             <Column>
               {accounts[2] && (
-                <WalletAvatar size={12} emojiSize="8pt" address={accounts[2]} />
+                <WalletAvatar
+                  size={12}
+                  emojiSize="7pt"
+                  address={accounts[2]}
+                  emojiPaddingLeft="1px"
+                  emojiPaddingTop="1px"
+                />
               )}
             </Column>
             <Column>
               {accounts[3] && (
-                <WalletAvatar size={12} emojiSize="8pt" address={accounts[3]} />
+                <WalletAvatar
+                  size={12}
+                  emojiSize="7pt"
+                  address={accounts[3]}
+                  emojiPaddingLeft="1px"
+                  emojiPaddingTop="1px"
+                />
               )}
             </Column>
           </Columns>
