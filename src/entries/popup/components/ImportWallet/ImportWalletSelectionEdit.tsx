@@ -84,8 +84,11 @@ export function ImportWalletSelectionEdit({ onboarding = false }) {
   const { importSecrets, isImporting } = useImportWalletsFromSecrets();
 
   const onImport = () =>
-    importSecrets({ secrets, accountsIgnored }).then((addresses) => {
-      setCurrentAddress(addresses[0]);
+    importSecrets({ secrets, accountsIgnored }).then(() => {
+      const importedAccounts = sortedAccountsToImport.filter((a) =>
+        accountsIgnored.includes(a),
+      );
+      setCurrentAddress(importedAccounts[0]);
       if (onboarding) navigate(ROUTES.CREATE_PASSWORD);
       else navigate(ROUTES.HOME);
     });

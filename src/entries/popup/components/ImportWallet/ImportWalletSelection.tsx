@@ -26,24 +26,22 @@ import { useImportWalletSessionSecrets } from './ImportWallet';
 
 const derivedAccountsStore = {
   get: () =>
-    chrome.storage.session.get({
-      derivedAccountsFromSecrets: {},
-    }) as Promise<Record<string, Address[]>>,
-  set: (secret: string, accounts: Address[]) =>
-    chrome.storage.session.set({
-      derivedAccountsFromSecrets: {
-        [secret]: accounts,
-      },
-    }),
+    chrome.storage.session
+      .get({ derivedAccountsFromSecrets: {} })
+      .then((r) => r.derivedAccountsFromSecrets) as Promise<
+      Record<string, Address[]>
+    >,
+  set: async (derivedAccountsFromSecrets: Record<string, Address[]>) =>
+    chrome.storage.session.set({ derivedAccountsFromSecrets }),
   clear: () => chrome.storage.session.set({ derivedAccountsFromSecrets: {} }),
 };
 
 const derivedAccountsFromSecret = async (secret: string) => {
-  const cache = await derivedAccountsStore.get();
-  if (cache[secret]) return cache[secret];
+  const current = await derivedAccountsStore.get();
+  if (current[secret]) return current[secret];
 
   const accounts = await deriveAccountsFromSecret(secret);
-  derivedAccountsStore.set(secret, accounts);
+  derivedAccountsStore.set({ ...current, [secret]: accounts });
 
   return accounts;
 };
@@ -128,6 +126,13 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
       { state: { accountsToImport } },
     );
   };
+
+  const onImport = () =>
+    importSecrets({ secrets }).then(() => {
+      setCurrentAddress(accountsToImport[0]);
+      if (onboarding) navigate(ROUTES.CREATE_PASSWORD);
+      else navigate(ROUTES.HOME);
+    });
 
   const isReady =
     !!accountsToImport.length && !isImporting && !walletsSummaryIsLoading;
@@ -226,13 +231,7 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
                   height="44px"
                   variant="raised"
                   width="full"
-                  onClick={() =>
-                    importSecrets({ secrets }).then((addresses) => {
-                      setCurrentAddress(addresses[0]);
-                      if (onboarding) navigate(ROUTES.CREATE_PASSWORD);
-                      else navigate(ROUTES.HOME);
-                    })
-                  }
+                  onClick={onImport}
                   testId="add-wallets-button"
                 >
                   {i18n.t('import_wallet_selection.add_wallets')}
