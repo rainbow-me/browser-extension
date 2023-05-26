@@ -130,25 +130,6 @@ const WalletGroups = ({
   onCreateNewWalletOnGroup: (index: number) => Promise<void>;
   wallets: KeychainWallet[];
 }) => {
-  const handleGroupShortcuts = useCallback(
-    (e: KeyboardEvent) => {
-      const key = e.key;
-      if (key === 'n' || key === 'N') {
-        onCreateNewWallet();
-        return;
-      }
-      const number = Number(key);
-      if (number <= wallets.length) {
-        onCreateNewWalletOnGroup(Number(key) - 1);
-      }
-    },
-    [onCreateNewWallet, onCreateNewWalletOnGroup, wallets.length],
-  );
-
-  useKeyboardShortcut({
-    handler: handleGroupShortcuts,
-  });
-
   return (
     <Stack space="16px">
       <GroupRow
@@ -317,6 +298,31 @@ const ChooseWalletGroup = () => {
     },
     [wallets],
   );
+
+  const handleGroupShortcuts = useCallback(
+    (e: KeyboardEvent) => {
+      if (createWalletAddress) return;
+      const key = e.key;
+      if (key === 'n' || key === 'N') {
+        handleCreateWallet();
+        return;
+      }
+      const number = Number(key);
+      if (number <= wallets.length) {
+        handleCreateWalletOnGroup(Number(key) - 1);
+      }
+    },
+    [
+      createWalletAddress,
+      handleCreateWallet,
+      handleCreateWalletOnGroup,
+      wallets.length,
+    ],
+  );
+
+  useKeyboardShortcut({
+    handler: handleGroupShortcuts,
+  });
 
   const onClose = () => {
     setCreateWalletAddress(undefined);

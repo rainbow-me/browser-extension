@@ -91,9 +91,11 @@ export const CreateWalletPrompt = ({
           <Row>
             <Rows space="20px">
               <Row>
-                <Text size="16pt" weight="bold" color="label" align="center">
-                  {i18n.t('create_wallet_prompt.title')}
-                </Text>
+                <Box paddingTop="12px">
+                  <Text size="16pt" weight="bold" color="label" align="center">
+                    {i18n.t('create_wallet_prompt.title')}
+                  </Text>
+                </Box>
               </Row>
               <Row>
                 <Inset horizontal="104px">
