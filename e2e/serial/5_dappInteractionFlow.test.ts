@@ -80,7 +80,7 @@ describe('App interactions flow', () => {
     });
     await findElementByTestIdAndClick({ id: 'set-password-button', driver });
     await delayTime('long');
-    await findElementByText(driver, 'Rainbow is ready to use');
+    await findElementByText(driver, 'Your wallets ready');
   });
 
   it('should be able to go to setings', async () => {
