@@ -101,7 +101,7 @@ const GroupRow = ({
 }: {
   leftcomponent: ReactElement;
   centerComponent: ReactElement;
-  rightComponent: ReactElement;
+  rightComponent: ReactElement | null;
   onClick: () => void;
 }) => {
   return (
@@ -136,8 +136,8 @@ const WalletGroups = ({
         return;
       }
       const number = Number(key);
-      if (wallets.length > number) {
-        onCreateNewWalletOnGroup(Number(key));
+      if (number <= wallets.length) {
+        onCreateNewWalletOnGroup(Number(key) - 1);
       }
     },
     [onCreateNewWallet, onCreateNewWalletOnGroup, wallets.length],
@@ -254,16 +254,18 @@ const WalletGroups = ({
                 </Stack>
               }
               rightComponent={
-                <Box
-                  background={'fillSecondary'}
-                  padding="4px"
-                  borderRadius="3px"
-                  boxShadow="1px"
-                >
-                  <Text size="12pt" color="labelSecondary" weight="semibold">
-                    {i + 1}
-                  </Text>
-                </Box>
+                i < 9 ? (
+                  <Box
+                    background={'fillSecondary'}
+                    padding="4px"
+                    borderRadius="3px"
+                    boxShadow="1px"
+                  >
+                    <Text size="12pt" color="labelSecondary" weight="semibold">
+                      {i + 1}
+                    </Text>
+                  </Box>
+                ) : null
               }
             />
           );
