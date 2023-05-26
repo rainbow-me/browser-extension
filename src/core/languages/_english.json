@@ -39,9 +39,9 @@
     "watch_address_description": "Watch a public address or ENS name."
   },
   "create_wallet_prompt": {
-    "title": "Create a new wallet",
+    "title": "Name your wallet",
     "create_wallet": "Create wallet",
-    "create": "Create Wallet",
+    "create": "Create",
     "input_placeholder": "Name"
   },
   "rename_wallet_prompt": {
@@ -612,6 +612,7 @@
     "title": "Wallets"
   },
   "common_actions": {
+    "back": "Back",
     "cancel": "Cancel",
     "continue": "Continue",
     "copy_to_clipboard": "Copy to clipboard"
