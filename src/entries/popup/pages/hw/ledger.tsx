@@ -37,7 +37,6 @@ const ConnectingToLedger = () => {
               >
                 {i18n.t('hw.learn_more')}
               </TextLink>
-              .
             </Text>
           </Stack>
         </Box>

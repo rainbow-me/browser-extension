@@ -784,7 +784,7 @@
     "needs_app_ledger_description_2": "Enter your passcode to unlock your Ledger. Once unlocked, open the Ethereum app by pressing both buttons at once.",
     "connect_trezor_title": "Complete your Trezor set up",
     "connect_trezor_description": "Continue to connect your Trezor to Rainbow through the web interface.",
-    "learn_more": "Learn more",
+    "learn_more": "Learn more.",
     "connect_wallets_title": "Connect your wallets",
     "connect_wallets_found": "We’ve found wallets on your Ledger with a balance or activity. Select which to connect.",
     "connect_wallets_not_found": "Some text about how this looks like a new device, so select from empty accounts?",
