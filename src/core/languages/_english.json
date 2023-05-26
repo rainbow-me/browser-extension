@@ -794,7 +794,7 @@
     "add_by_index": "Add by index",
     "index_label": "Index",
     "connection_successful_title": "Connected successful",
-    "connection_successful_description": "Something about how we imported N wallets and they will be labeled with the badge?",
+    "connection_successful_description": "You’ve successfully added 12 wallets. They’re easy to identify in your wallet list with the Ledger badge. You can add more at any time.",
     "done": "Done",
     "add_wallet": "Add wallet",
     "add_by_index_title": "Add a wallet by its index",
