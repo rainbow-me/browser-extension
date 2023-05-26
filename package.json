@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.0.155",
+  "version": "1.0.158",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -214,7 +214,8 @@
     "loader-utils": "2.0.4",
     "nth-check": "2.0.1",
     "decode-uri-component": "0.2.1",
-    "http-cache-semantics": "4.1.1"
+    "http-cache-semantics": "4.1.1",
+    "socket.io-parser": "4.2.3"
   },
   "lavamoat": {
     "allowScripts": {

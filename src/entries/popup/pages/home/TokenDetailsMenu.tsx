@@ -30,6 +30,7 @@ import {
   DetailsMenuWrapper,
 } from '../../components/DetailsMenu';
 import { useAlert } from '../../hooks/useAlert';
+import { useNavigateToSwaps } from '../../hooks/useNavigateToSwaps';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
@@ -43,6 +44,7 @@ interface TokenDetailsMenuProps {
 export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
   const [closed, setClosed] = useState(false);
   const onOpenChange = () => setClosed(false);
+  const navigateToSwaps = useNavigateToSwaps();
 
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
@@ -70,13 +72,13 @@ export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
 
   const goToSwap = useCallback(() => {
     if (allowSwap) {
-      navigate(ROUTES.SWAP);
+      navigateToSwaps();
     } else {
       triggerAlert({ text: i18n.t('alert.coming_soon') });
       // clear selected token
       setSelectedToken();
     }
-  }, [allowSwap, navigate, setSelectedToken, triggerAlert]);
+  }, [allowSwap, navigateToSwaps, setSelectedToken, triggerAlert]);
 
   const onValueChange = useCallback(
     (value: TokenDetailsMenuOption) => {

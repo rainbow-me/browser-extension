@@ -1,5 +1,4 @@
 import React from 'react';
-import { To } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import {
@@ -27,7 +26,6 @@ import { WalletsSortMethod } from './ImportWalletSelectionEdit';
 
 export const ImportWalletNavbar = ({
   accentColor,
-  backTo,
   navbarIcon,
   showSortMenu,
   sortMethod,
@@ -35,7 +33,6 @@ export const ImportWalletNavbar = ({
   setSortMethod,
 }: {
   accentColor?: string;
-  backTo: To;
   navbarIcon?: 'arrow' | 'ex';
   showSortMenu: boolean;
   sortMethod?: WalletsSortMethod;
@@ -47,11 +44,7 @@ export const ImportWalletNavbar = ({
       title={title}
       background={'surfaceSecondary'}
       leftComponent={
-        navbarIcon === 'arrow' ? (
-          <Navbar.BackButton maintainLocationState backTo={backTo} />
-        ) : (
-          <Navbar.CloseButton maintainLocationState backTo={backTo} />
-        )
+        navbarIcon === 'arrow' ? <Navbar.BackButton /> : <Navbar.CloseButton />
       }
       rightComponent={
         showSortMenu ? (

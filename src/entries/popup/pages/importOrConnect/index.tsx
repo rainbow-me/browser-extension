@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary */
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
+import { NavigateOptions } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
@@ -8,6 +9,7 @@ import { Lens } from '~/design-system/components/Lens/Lens';
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
+import { setImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { useAlert } from '../../hooks/useAlert';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -18,8 +20,8 @@ export function ImportOrConnect() {
   const { featureFlags } = useFeatureFlagsStore();
 
   const navigateTo = useCallback(
-    (route: string) => {
-      navigate(route);
+    (route: string, options?: NavigateOptions) => {
+      navigate(route, options);
     },
     [navigate],
   );
@@ -31,7 +33,9 @@ export function ImportOrConnect() {
 
   const onConnectHardwareWallet = useCallback(() => {
     featureFlags.hw_wallets_enabled
-      ? navigateTo(ROUTES.HW_CHOOSE)
+      ? navigateTo(ROUTES.HW_CHOOSE, {
+          state: { direction: 'right', navbarIcon: 'arrow' },
+        })
       : triggerAlert({ text: i18n.t('alert.coming_soon') });
   }, [featureFlags.hw_wallets_enabled, navigateTo, triggerAlert]);
 
@@ -39,6 +43,10 @@ export function ImportOrConnect() {
     () => navigateTo(ROUTES.WATCH),
     [navigateTo],
   );
+  useEffect(() => {
+    // clear secrets if the user backs out of flow entirely
+    setImportWalletSecrets(['']);
+  }, []);
 
   return (
     <FullScreenContainer>

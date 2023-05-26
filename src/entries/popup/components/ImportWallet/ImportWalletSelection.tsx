@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -23,6 +22,7 @@ import { ROUTES } from '../../urls';
 import { Spinner } from '../Spinner/Spinner';
 
 import { AccountToImportRows } from './AccountToImportRows';
+import { useImportWalletSessionSecrets } from './ImportWallet';
 
 const derivedAccountsStore = {
   get: () =>
@@ -108,10 +108,9 @@ export const useImportWalletsFromSecrets = () => {
 
 export const ImportWalletSelection = ({ onboarding = false }) => {
   const navigate = useRainbowNavigate();
-  const { state }: { state: { secrets?: string[] } } = useLocation();
   const { setCurrentAddress } = useCurrentAddressStore();
 
-  const secrets = state.secrets || [];
+  const [secrets] = useImportWalletSessionSecrets();
 
   const accountsToImport = useDeriveAccountsFromSecrets(secrets);
   const { importSecrets, isImporting } = useImportWalletsFromSecrets();
@@ -126,7 +125,7 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
       onboarding
         ? ROUTES.IMPORT__EDIT
         : ROUTES.NEW_IMPORT_WALLET_SELECTION_EDIT,
-      { state: { secrets: state.secrets, accountsToImport } },
+      { state: { accountsToImport } },
     );
   };
 

@@ -1,7 +1,6 @@
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlists } from '@ethersproject/wordlists';
-import { Fragment, useCallback, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useCallback, useEffect, useReducer } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -16,6 +15,10 @@ import {
   Text,
 } from '~/design-system';
 
+import {
+  getImportWalletSecrets,
+  setImportWalletSecrets,
+} from '../../handlers/importWalletSecrets';
 import * as wallet from '../../handlers/wallet';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -62,11 +65,36 @@ const validateSecret = (secret: string): string | boolean => {
   return i18n.t('import_wallet.invalid_recovery_phrase');
 };
 
+const secretsReducer = (
+  oldSecrets: string[],
+  updater: string[] | ((s: string[]) => string[]),
+) => {
+  const newSecrets =
+    typeof updater === 'function' ? updater(oldSecrets) : updater;
+  setImportWalletSecrets(newSecrets);
+  return newSecrets;
+};
+export const useImportWalletSessionSecrets = () => {
+  const [secrets, setSecrets] = useReducer(secretsReducer, ['']);
+
+  useEffect(() => {
+    let mounted = true;
+    getImportWalletSecrets().then((secrets) => {
+      if (mounted) setSecrets(secrets);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  return [secrets, setSecrets] as const;
+};
+
 export const ImportWallet = ({ onboarding = false }) => {
-  const { state } = useLocation();
   const navigate = useRainbowNavigate();
   const { setCurrentAddress } = useCurrentAddressStore();
-  const [secrets, setSecrets] = useState<string[]>(state.secrets || ['']);
+
+  const [secrets, setSecrets] = useImportWalletSessionSecrets();
 
   const importWallets = useCallback(
     (_secrets: string[]) => {
@@ -77,7 +105,6 @@ export const ImportWallet = ({ onboarding = false }) => {
       }
       return navigate(
         onboarding ? ROUTES.IMPORT__SELECT : ROUTES.NEW_IMPORT_WALLET_SELECTION,
-        { state: { secrets } },
       );
     },
     [navigate, onboarding, setCurrentAddress],
@@ -86,6 +113,7 @@ export const ImportWallet = ({ onboarding = false }) => {
   const addAnotherOne = () => setSecrets((secrets) => [...secrets, '']);
 
   const debouncedSecrets = useDebounce(secrets, 1000);
+
   const errors = debouncedSecrets.map((dsecret, i) => {
     if (!secrets[i]) return false;
     const debouncedValue = dsecret.trim();
@@ -129,58 +157,55 @@ export const ImportWallet = ({ onboarding = false }) => {
               const error = errors[i];
               const errorMsg = typeof error === 'string' && error;
               return (
-                <Fragment key={`seed_${i}`}>
-                  <ImportWalletTextarea
-                    tabIndex={1}
-                    autoFocus
-                    error={!!errorMsg && <ErrorMessage message={errorMsg} />}
-                    placeholder={i18n.t('import_wallet.placeholder')}
-                    value={secret}
-                    onChange={(e) => {
-                      setSecrets((secrets) => {
-                        const newSecrets = [...secrets];
-                        newSecrets[i] = e.target.value;
-                        return newSecrets;
-                      });
-                    }}
-                  >
-                    {i !== 0 && isLast && !secret && (
-                      <Box
-                        position="absolute"
-                        marginTop="-30px"
-                        paddingLeft="12px"
-                        style={{ right: '0px' }}
-                      >
-                        <Button
-                          color="red"
-                          height="24px"
-                          variant="transparent"
-                          width="full"
-                          onClick={() =>
-                            setSecrets((scts) => scts.slice(0, -1))
-                          }
-                        >
-                          {i18n.t('import_wallet.remove')}
-                        </Button>
-                      </Box>
-                    )}
-                  </ImportWalletTextarea>
-                  {isLast && !error && (
-                    <Button
-                      symbol="plus.circle.fill"
-                      symbolSide="left"
-                      color="accent"
-                      height="44px"
-                      variant="transparent"
-                      width="full"
-                      onClick={addAnotherOne}
+                <ImportWalletTextarea
+                  key={`seed_${i}`}
+                  tabIndex={1}
+                  autoFocus
+                  error={!!errorMsg && <ErrorMessage message={errorMsg} />}
+                  placeholder={i18n.t('import_wallet.placeholder')}
+                  value={secret}
+                  onChange={(e) => {
+                    setSecrets((secrets) => {
+                      const newSecrets = [...secrets];
+                      newSecrets[i] = e.target.value;
+                      return newSecrets;
+                    });
+                  }}
+                >
+                  {i !== 0 && isLast && !secret && (
+                    <Box
+                      position="absolute"
+                      marginTop="-30px"
+                      paddingLeft="12px"
+                      style={{ right: '0px' }}
                     >
-                      {i18n.t('import_wallet.add_another')}
-                    </Button>
+                      <Button
+                        color="red"
+                        height="24px"
+                        variant="transparent"
+                        width="full"
+                        onClick={() => setSecrets((scts) => scts.slice(0, -1))}
+                      >
+                        {i18n.t('import_wallet.remove')}
+                      </Button>
+                    </Box>
                   )}
-                </Fragment>
+                </ImportWalletTextarea>
               );
             })}
+            {errors.every((e) => e === false) && (
+              <Button
+                symbol="plus.circle.fill"
+                symbolSide="left"
+                color="accent"
+                height="44px"
+                variant="transparent"
+                width="full"
+                onClick={addAnotherOne}
+              >
+                {i18n.t('import_wallet.add_another')}
+              </Button>
+            )}
           </Stack>
         </Box>
       </Stack>

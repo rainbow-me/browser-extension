@@ -16,6 +16,7 @@ import {
 import { ROUTES } from '../../urls';
 
 import { AccountToImportRows } from './AccountToImportRows';
+import { useImportWalletSessionSecrets } from './ImportWallet';
 import { ImportWalletNavbar } from './ImportWalletNavbar';
 import { useImportWalletsFromSecrets } from './ImportWalletSelection';
 
@@ -63,7 +64,8 @@ export function ImportWalletSelectionEdit({ onboarding = false }) {
 
   const { state } = useLocation();
   const accountsToImport: Address[] = state.accountsToImport || emptyArray;
-  const secrets: string[] = state.secrets || emptyArray;
+
+  const [secrets] = useImportWalletSessionSecrets();
 
   const { isLoading: walletsSummaryisAddingWallets, walletsSummary } =
     useWalletsSummary({ addresses: accountsToImport });
@@ -91,7 +93,6 @@ export function ImportWalletSelectionEdit({ onboarding = false }) {
   return (
     <>
       <ImportWalletNavbar
-        backTo={ROUTES.IMPORT__SELECT}
         navbarIcon="arrow"
         showSortMenu={!isImporting}
         sortMethod={sortMethod}
