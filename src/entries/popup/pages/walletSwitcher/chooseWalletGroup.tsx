@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { ReactElement, useCallback, useEffect, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -6,8 +6,11 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import {
   Box,
-  Button,
+  Column,
+  Columns,
   Inline,
+  Row,
+  Rows,
   Separator,
   Stack,
   Symbol,
@@ -16,10 +19,107 @@ import {
 import { add, create, getWallets } from '~/entries/popup/handlers/wallet';
 
 import { AddressOrEns } from '../../components/AddressOrEns/AddressorEns';
+import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 import { CreateWalletPrompt } from './createWalletPrompt';
+
+const GroupAvatar = ({ accounts }: { accounts: Address[] }) => {
+  return (
+    <Box
+      borderRadius="8px"
+      style={{
+        width: '36px',
+        height: '36px',
+        backgroundColor: 'rgba(245, 248, 255, 0.06)',
+      }}
+      padding="5px"
+    >
+      <Rows space="2px">
+        <Row>
+          <Columns space="2px">
+            <Column>
+              {accounts[0] && (
+                <WalletAvatar
+                  size={12}
+                  emojiSize="7pt"
+                  address={accounts[0]}
+                  emojiPaddingLeft="1px"
+                  emojiPaddingTop="1px"
+                />
+              )}
+            </Column>
+            <Column>
+              {accounts[1] && (
+                <WalletAvatar
+                  size={12}
+                  emojiSize="7pt"
+                  address={accounts[1]}
+                  emojiPaddingLeft="1px"
+                  emojiPaddingTop="1px"
+                />
+              )}
+            </Column>
+          </Columns>
+        </Row>
+        <Row>
+          <Columns space="2px">
+            <Column>
+              {accounts[2] && (
+                <WalletAvatar
+                  size={12}
+                  emojiSize="7pt"
+                  address={accounts[2]}
+                  emojiPaddingLeft="1px"
+                  emojiPaddingTop="1px"
+                />
+              )}
+            </Column>
+            <Column>
+              {accounts[3] && (
+                <WalletAvatar
+                  size={12}
+                  emojiSize="7pt"
+                  address={accounts[3]}
+                  emojiPaddingLeft="1px"
+                  emojiPaddingTop="1px"
+                />
+              )}
+            </Column>
+          </Columns>
+        </Row>
+      </Rows>
+    </Box>
+  );
+};
+
+const GroupRow = ({
+  leftcomponent,
+  centerComponent,
+  rightComponent,
+  onClick,
+}: {
+  leftcomponent: ReactElement;
+  centerComponent: ReactElement;
+  rightComponent: ReactElement | null;
+  onClick: () => void;
+}) => {
+  return (
+    <Box onClick={onClick}>
+      <Columns alignHorizontal="justify" alignVertical="center">
+        <Column width="content">
+          <Inline space="10px" alignHorizontal="center" alignVertical="center">
+            {leftcomponent}
+            {centerComponent}
+          </Inline>
+        </Column>
+        <Column width="content">{rightComponent}</Column>
+      </Columns>
+    </Box>
+  );
+};
 
 const WalletGroups = ({
   onCreateNewWallet,
@@ -30,16 +130,30 @@ const WalletGroups = ({
   onCreateNewWalletOnGroup: (index: number) => Promise<void>;
   wallets: KeychainWallet[];
 }) => {
+  const handleGroupShortcuts = useCallback(
+    (e: KeyboardEvent) => {
+      const key = e.key;
+      if (key === 'n' || key === 'N') {
+        onCreateNewWallet();
+        return;
+      }
+      const number = Number(key);
+      if (number <= wallets.length) {
+        onCreateNewWalletOnGroup(Number(key) - 1);
+      }
+    },
+    [onCreateNewWallet, onCreateNewWalletOnGroup, wallets.length],
+  );
+
+  useKeyboardShortcut({
+    handler: handleGroupShortcuts,
+  });
+
   return (
-    <Box padding="20px">
-      <Button
-        color={'label'}
-        variant={'transparent'}
-        width="full"
-        height="44px"
+    <Stack space="16px">
+      <GroupRow
         onClick={onCreateNewWallet}
-      >
-        <Inline space={'10px'}>
+        leftcomponent={
           <Box
             borderRadius="9px"
             style={{
@@ -53,9 +167,11 @@ const WalletGroups = ({
           >
             <Symbol weight="bold" symbol="plus" size={14} color="blue" />
           </Box>
+        }
+        centerComponent={
           <Stack space="8px">
             <Text size="14pt" color="label" align="left" weight="regular">
-              New Wallet Group
+              {i18n.t('choose_wallet_group.new_wallet_group')}
             </Text>
             <Text
               size="12pt"
@@ -63,71 +179,72 @@ const WalletGroups = ({
               align="left"
               weight="regular"
             >
-              Create a new recovery phrase
+              {i18n.t('choose_wallet_group.create_recovery_phrase')}
             </Text>
           </Stack>
-          <Box display="flex" alignItems="flex-end">
-            <Box
-              background={'fillSecondary'}
-              padding="4px"
-              borderRadius="3px"
-              boxShadow="1px"
-            >
-              <Text size="12pt" color="labelSecondary" weight="semibold">
-                {shortcuts.wallets.CHOOSE_WALLET_GROUP_NEW.display}
-              </Text>
-            </Box>
+        }
+        rightComponent={
+          <Box
+            background={'fillSecondary'}
+            padding="4px"
+            borderRadius="3px"
+            boxShadow="1px"
+          >
+            <Text size="12pt" color="labelSecondary" weight="semibold">
+              {shortcuts.wallets.CHOOSE_WALLET_GROUP_NEW.display}
+            </Text>
           </Box>
-        </Inline>
-      </Button>
-      <Box padding="16px">
+        }
+      />
+      <Box>
         <Separator color="separatorTertiary" strokeWeight="1px" />
       </Box>
       <Stack space="16px">
         {wallets.map((wallet, i) => {
           return (
-            <Button
-              color={'label'}
-              variant={'transparent'}
-              width="full"
-              height="44px"
+            <GroupRow
+              key={i}
               onClick={() => onCreateNewWalletOnGroup(i)}
-              key={`wallet_group_${i}`}
-            >
-              <Inline space={'10px'}>
-                <Box
-                  borderRadius="9px"
-                  style={{
-                    width: '30px',
-                    height: '30px',
-                    backgroundColor: 'rgba(245, 248, 255, 0.06)',
-                  }}
-                  alignItems="center"
-                  justifyContent="center"
-                  display="flex"
-                ></Box>
+              leftcomponent={<GroupAvatar accounts={wallet.accounts} />}
+              centerComponent={
                 <Stack space="8px">
-                  <Text size="14pt" color="label" align="left" weight="regular">
-                    Wallet Group {i + 1}
-                  </Text>
                   <Text
-                    size="12pt"
-                    color="labelTertiary"
+                    size="14pt"
+                    color="label"
                     align="left"
-                    weight="regular"
+                    weight="semibold"
                   >
+                    {i18n.t('choose_wallet_group.wallet_group', {
+                      number: i + 1,
+                    })}
+                  </Text>
+                  <Inline alignVertical="center" space="4px">
                     <AddressOrEns
                       address={wallet.accounts[0]}
                       size={'12pt'}
                       weight="regular"
-                    ></AddressOrEns>
-                  </Text>
+                      color="labelTertiary"
+                    />
+                    {wallet.accounts.length > 1 && (
+                      <Box
+                        borderWidth="1px"
+                        borderColor="separatorSecondary"
+                        borderRadius="5px"
+                        padding="3px"
+                      >
+                        <Text
+                          size="10pt"
+                          color="labelQuaternary"
+                          align="left"
+                          weight="bold"
+                        >{`+${wallet.accounts.length - 1}`}</Text>
+                      </Box>
+                    )}
+                  </Inline>
                 </Stack>
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="flex-end"
-                >
+              }
+              rightComponent={
+                i < 9 ? (
                   <Box
                     background={'fillSecondary'}
                     padding="4px"
@@ -138,13 +255,13 @@ const WalletGroups = ({
                       {i + 1}
                     </Text>
                   </Box>
-                </Box>
-              </Inline>
-            </Button>
+                ) : null
+              }
+            />
           );
         })}
       </Stack>
-    </Box>
+    </Stack>
   );
 };
 
@@ -212,40 +329,47 @@ const ChooseWalletGroup = () => {
         onClose={onClose}
         address={createWalletAddress}
       />
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        paddingHorizontal="20px"
-        paddingBottom="20px"
-        height="full"
-      >
-        <Box paddingHorizontal="28px" paddingBottom="44px">
-          <Text
-            size="12pt"
-            color="labelTertiary"
-            align="center"
-            weight="regular"
-          >
-            {i18n.t('choose_wallet_group.description')}
-          </Text>
-        </Box>
-        <Box width="full" background="surfaceSecondary">
-          <Box
-            background="surfaceSecondaryElevated"
-            borderRadius="16px"
-            padding="12px"
-            paddingTop={'16px'}
-            paddingBottom="10px"
-            boxShadow="12px surfaceSecondaryElevated"
-          >
-            <WalletGroups
-              onCreateNewWallet={handleCreateWallet}
-              onCreateNewWalletOnGroup={handleCreateWalletOnGroup}
-              wallets={wallets}
-            />
+      <Box paddingHorizontal="20px" height="full">
+        <Stack space="24px">
+          <Box paddingHorizontal="28px">
+            <Stack space="8px">
+              <Text size="16pt" color="label" align="center" weight="bold">
+                {i18n.t('choose_wallet_group.title')}
+              </Text>
+              <Text
+                size="12pt"
+                color="labelTertiary"
+                align="center"
+                weight="regular"
+              >
+                {i18n.t('choose_wallet_group.description')}
+              </Text>
+            </Stack>
           </Box>
-        </Box>
+          <Box style={{ width: '106px' }}>
+            <Separator color="separatorTertiary" strokeWeight="1px" />
+          </Box>
+          <Box
+            width="full"
+            style={{
+              overflow: 'auto',
+              height: '420px',
+            }}
+          >
+            <Box
+              background="surfaceSecondaryElevated"
+              borderRadius="28px"
+              boxShadow="12px surfaceSecondaryElevated"
+              padding="20px"
+            >
+              <WalletGroups
+                onCreateNewWallet={handleCreateWallet}
+                onCreateNewWalletOnGroup={handleCreateWalletOnGroup}
+                wallets={wallets}
+              />
+            </Box>
+          </Box>
+        </Stack>
       </Box>
     </Box>
   );

@@ -621,8 +621,7 @@ const ROUTE_DATA = [
       <AnimatedRoute
         direction="down"
         navbar
-        navbarIcon="ex"
-        title={i18n.t('choose_wallet_group.title')}
+        navbarIcon="arrow"
         protectedRoute
         background="surfaceSecondary"
       >
