@@ -518,17 +518,20 @@ export const connectLedger = async () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
+    let error = '';
     switch (e?.name) {
-      case 'TransportStatusError':
-        alert(
-          'Please make sure your ledger is unlocked and open the Ethereum app',
-        );
+      case 'TransportWebUSBGestureRequired':
+        error = 'needs_unlock';
         break;
+      case 'TransportStatusError':
+        error = 'needs_app';
+        break;
+      case 'TransportOpenUserCancelled':
       default:
-        alert('Unable to connect to your ledger. Please try again.');
+        error = 'needs_connect';
     }
     transport?.close();
-    return null;
+    return { error };
   }
 };
 
