@@ -1,6 +1,6 @@
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlists } from '@ethersproject/wordlists';
-import { useCallback, useEffect, useReducer } from 'react';
+import { useCallback, useReducer } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -15,10 +15,7 @@ import {
   Text,
 } from '~/design-system';
 
-import {
-  getImportWalletSecrets,
-  setImportWalletSecrets,
-} from '../../handlers/importWalletSecrets';
+import { setImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import * as wallet from '../../handlers/wallet';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -74,27 +71,12 @@ const secretsReducer = (
   setImportWalletSecrets(newSecrets);
   return newSecrets;
 };
-export const useImportWalletSessionSecrets = () => {
-  const [secrets, setSecrets] = useReducer(secretsReducer, ['']);
-
-  useEffect(() => {
-    let mounted = true;
-    getImportWalletSecrets().then((secrets) => {
-      if (mounted) setSecrets(secrets);
-    });
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  return [secrets, setSecrets] as const;
-};
 
 export const ImportWallet = ({ onboarding = false }) => {
   const navigate = useRainbowNavigate();
   const { setCurrentAddress } = useCurrentAddressStore();
 
-  const [secrets, setSecrets] = useImportWalletSessionSecrets();
+  const [secrets, setSecrets] = useReducer(secretsReducer, ['']);
 
   const importWallets = useCallback(
     (_secrets: string[]) => {

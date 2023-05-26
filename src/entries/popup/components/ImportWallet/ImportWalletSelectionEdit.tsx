@@ -16,9 +16,9 @@ import {
 import { ROUTES } from '../../urls';
 
 import { AccountToImportRows } from './AccountToImportRows';
-import { useImportWalletSessionSecrets } from './ImportWallet';
 import { ImportWalletNavbar } from './ImportWalletNavbar';
 import { useImportWalletsFromSecrets } from './ImportWalletSelection';
+import { useImportWalletSessionSecrets } from './useImportWalletSessionSecrets';
 
 export type WalletsSortMethod =
   | 'default'
@@ -65,7 +65,7 @@ export function ImportWalletSelectionEdit({ onboarding = false }) {
   const { state } = useLocation();
   const accountsToImport: Address[] = state.accountsToImport || emptyArray;
 
-  const [secrets] = useImportWalletSessionSecrets();
+  const secrets = useImportWalletSessionSecrets();
 
   const { isLoading: walletsSummaryisAddingWallets, walletsSummary } =
     useWalletsSummary({ addresses: accountsToImport });
@@ -85,8 +85,8 @@ export function ImportWalletSelectionEdit({ onboarding = false }) {
 
   const onImport = () =>
     importSecrets({ secrets, accountsIgnored }).then(() => {
-      const importedAccounts = sortedAccountsToImport.filter((a) =>
-        accountsIgnored.includes(a),
+      const importedAccounts = sortedAccountsToImport.filter(
+        (a) => !accountsIgnored.includes(a),
       );
       setCurrentAddress(importedAccounts[0]);
       if (onboarding) navigate(ROUTES.CREATE_PASSWORD);

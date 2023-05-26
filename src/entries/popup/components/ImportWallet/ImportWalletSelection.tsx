@@ -22,7 +22,7 @@ import { ROUTES } from '../../urls';
 import { Spinner } from '../Spinner/Spinner';
 
 import { AccountToImportRows } from './AccountToImportRows';
-import { useImportWalletSessionSecrets } from './ImportWallet';
+import { useImportWalletSessionSecrets } from './useImportWalletSessionSecrets';
 
 const derivedAccountsStore = {
   get: () =>
@@ -108,7 +108,7 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
   const navigate = useRainbowNavigate();
   const { setCurrentAddress } = useCurrentAddressStore();
 
-  const [secrets] = useImportWalletSessionSecrets();
+  const secrets = useImportWalletSessionSecrets();
 
   const accountsToImport = useDeriveAccountsFromSecrets(secrets);
   const { importSecrets, isImporting } = useImportWalletsFromSecrets();
