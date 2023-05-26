@@ -41,7 +41,7 @@ export function ConnectTrezor() {
             color="labelTertiary"
             align="center"
           >
-            {i18n.t('hw.connect_trezor_description')}
+            {i18n.t('hw.connect_trezor_description')}{' '}
             <TextLink
               color="blue"
               onClick={() => goToNewTab({ url: 'https://learn.rainbow.me/' })}
