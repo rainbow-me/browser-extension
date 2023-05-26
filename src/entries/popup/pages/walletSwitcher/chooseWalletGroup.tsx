@@ -20,6 +20,7 @@ import {
 import { AddressOrEns } from '../../components/AddressOrEns/AddressorEns';
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import * as wallet from '../../handlers/wallet';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 
 import { CreateWalletPrompt } from './createWalletPrompt';
 
@@ -126,6 +127,25 @@ const WalletGroups = ({
   onCreateNewWalletOnGroup: (index: number) => Promise<void>;
 }) => {
   const [wallets, setWallets] = useState<KeychainWallet[]>([]);
+
+  const handleGroupShortcuts = useCallback(
+    (e: KeyboardEvent) => {
+      const key = e.key;
+      if (key === 'n' || key === 'N') {
+        onCreateNewWallet();
+        return;
+      }
+      const number = Number(key);
+      if (wallets.length > number) {
+        onCreateNewWalletOnGroup(Number(key));
+      }
+    },
+    [onCreateNewWallet, onCreateNewWalletOnGroup, wallets.length],
+  );
+
+  useKeyboardShortcut({
+    handler: handleGroupShortcuts,
+  });
 
   useEffect(() => {
     const fetchWallets = async () => {
