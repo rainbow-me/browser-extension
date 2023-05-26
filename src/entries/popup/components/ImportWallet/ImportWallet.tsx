@@ -81,10 +81,13 @@ export const ImportWallet = ({ onboarding = false }) => {
   const importWallets = useCallback(
     (_secrets: string[]) => {
       const secrets = [...new Set(_secrets)]; // remove duplicates
-      if (secrets.length === 1 && isValidPrivateKey(secrets[0])) {
-        wallet.importWithSecret(secrets[0]).then(setCurrentAddress);
-        return navigate(onboarding ? ROUTES.CREATE_PASSWORD : ROUTES.HOME);
-      }
+
+      if (secrets.length === 1 && isValidPrivateKey(secrets[0]))
+        return wallet.importWithSecret(secrets[0]).then((address) => {
+          navigate(onboarding ? ROUTES.CREATE_PASSWORD : ROUTES.HOME);
+          setCurrentAddress(address);
+        });
+
       return navigate(
         onboarding ? ROUTES.IMPORT__SELECT : ROUTES.NEW_IMPORT_WALLET_SELECTION,
       );
