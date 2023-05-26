@@ -1,12 +1,12 @@
 import 'chromedriver';
 import 'geckodriver';
-import { WebDriver } from 'selenium-webdriver';
+import { WebDriver, until } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
+  byText,
   delayTime,
   findElementByTestIdAndClick,
-  findElementByText,
   getExtensionIdByName,
   getTextFromText,
   goToPopup,
@@ -67,8 +67,11 @@ describe('Import wallet flow', () => {
       text: 'test1234',
     });
     await findElementByTestIdAndClick({ id: 'set-password-button', driver });
-    await delayTime('long');
-    await findElementByText(driver, 'Your wallets ready');
+
+    await driver.wait(
+      until.elementLocated(byText('Your wallets ready')),
+      20_000,
+    );
 
     goToPopup(driver, rootURL);
     await delayTime('short');
