@@ -490,8 +490,8 @@
     "invalid_private_key": "Invalid Private Key",
     "invalid_recovery_phrase": "Invalid recovery phrase",
     "missing_words": {
-      "one": "missing 1 word",
-      "other": "missing %{count} words"
+      "one": "Missing 1 word",
+      "other": "Missing %{count} words"
     },
     "import_wallet": {
       "one": "Restore wallet",

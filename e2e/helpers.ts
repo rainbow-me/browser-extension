@@ -134,7 +134,11 @@ export async function delay(ms) {
 }
 
 export async function findElementByText(driver, text) {
-  return driver.findElement(By.xpath("//*[contains(text(),'" + text + "')]"));
+  const el = await driver.wait(
+    until.elementLocated(byText(text)),
+    waitUntilTime,
+  );
+  return driver.wait(until.elementIsVisible(el), waitUntilTime);
 }
 
 export async function findElementByTextAndClick(driver, text) {
