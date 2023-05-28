@@ -12,6 +12,7 @@ import {
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
+  passSecretQuiz,
   querySelector,
   typeOnTextInput,
   waitAndClick,
@@ -48,32 +49,7 @@ describe('New wallet flow', () => {
       driver,
     });
 
-    const requiredWordsIndexes = [4, 8, 12];
-    const requiredWords: string[] = [];
-    for (let i = 0; i < requiredWordsIndexes.length; i++) {
-      const wordElement = await querySelector(
-        driver,
-        `[data-testid="seed_word_${requiredWordsIndexes[i]}"]`,
-      );
-      const wordText = await wordElement.getText();
-      requiredWords.push(wordText as string);
-    }
-
-    await findElementByTestIdAndClick({
-      id: 'saved-these-words-button',
-      driver,
-    });
-
-    await delayTime('long');
-
-    for (let i = 0; i < requiredWords.length; i++) {
-      await findElementByTestIdAndClick({
-        id: `word_${requiredWords[i]}`,
-        driver,
-      });
-    }
-
-    await delayTime('long');
+    await passSecretQuiz(driver);
 
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
     await typeOnTextInput({
