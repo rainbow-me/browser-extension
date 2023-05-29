@@ -18,6 +18,7 @@ import {
 
 import {
   getImportWalletSecrets,
+  removeImportWalletSecrets,
   setImportWalletSecrets,
 } from '../../handlers/importWalletSecrets';
 import { deriveAccountsFromSecret } from '../../handlers/wallet';
@@ -71,6 +72,7 @@ const ImportWalletSelection = ({
     }
     setIsImporting(false);
     setImportWalletSecrets(['']);
+    removeImportWalletSecrets();
     onboarding
       ? navigate(ROUTES.CREATE_PASSWORD, { state: { backTo: ROUTES.WELCOME } })
       : navigate(ROUTES.HOME);
@@ -93,6 +95,9 @@ const ImportWalletSelection = ({
   const isReady =
     accountsToImport.length && !isImporting && !walletsSummaryIsLoading;
 
+  console.log('accountsToImport.length', accountsToImport.length);
+  console.log('isImporting', isImporting);
+  console.log('walletsSummaryIsLoading', walletsSummaryIsLoading);
   return (
     <Rows space="20px" alignVertical="justify">
       <Row height="content">

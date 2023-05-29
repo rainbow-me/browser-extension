@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import * as React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { Box, Button, ButtonSymbol, Inline, Text } from '~/design-system';
@@ -10,6 +10,7 @@ import { BackgroundColor } from '~/design-system/styles/designTokens';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { getInputIsFocused, radixIsActive } from '../../utils/activeElement';
 import {
   NAVBAR_LEFT_COMPONENT_ID,
@@ -168,7 +169,7 @@ function NavbarButtonWithBack({
   testId?: string;
 }) {
   const { state } = useLocation();
-  const navigate = useNavigate();
+  const navigate = useRainbowNavigate();
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
