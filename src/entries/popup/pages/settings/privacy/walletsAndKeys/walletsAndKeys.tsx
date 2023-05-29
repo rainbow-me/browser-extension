@@ -127,7 +127,7 @@ export function WalletsAndKeys() {
                   onClick={() => handleViewWallet(wallet)}
                   leftComponent={
                     wallet.type === KeychainType.HardwareWalletKeychain ? (
-                      wallet.vendor === 'trezor' ? (
+                      wallet.vendor === 'Trezor' ? (
                         <TrezorIcon />
                       ) : (
                         <LedgerIcon />
