@@ -99,7 +99,10 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
       setSecrets(secrets);
       updateValidity(secrets);
     };
-    if (location?.state?.from === ROUTES.NEW_IMPORT_WALLET_SELECTION) {
+    if (
+      location?.state?.from === ROUTES.NEW_IMPORT_WALLET_SELECTION ||
+      location?.state?.from === ROUTES.IMPORT__SELECT
+    ) {
       getSecrets();
     } else {
       removeImportWalletSecrets();
@@ -146,13 +149,14 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
 
     if (isValid) {
       setIsAddingWallets(false);
-      onboarding
-        ? navigate(ROUTES.IMPORT__SELECT, {
-            state: { backTo: ROUTES.NEW_IMPORT_WALLET },
-          })
-        : navigate(ROUTES.NEW_IMPORT_WALLET_SELECTION, {
-            state: { backTo: ROUTES.NEW_IMPORT_WALLET },
-          });
+      navigate(
+        onboarding ? ROUTES.IMPORT__SELECT : ROUTES.NEW_IMPORT_WALLET_SELECTION,
+        {
+          state: {
+            backTo: onboarding ? ROUTES.IMPORT : ROUTES.NEW_IMPORT_WALLET,
+          },
+        },
+      );
     }
   }, [
     isAddingWallets,
