@@ -1,5 +1,5 @@
 import { Box } from '~/design-system';
-import { TextStyles } from '~/design-system/styles/core.css';
+import { BoxStyles, TextStyles } from '~/design-system/styles/core.css';
 import { BackgroundColor } from '~/design-system/styles/designTokens';
 
 import { Avatar } from '../../components/Avatar/Avatar';
@@ -11,12 +11,16 @@ export function WalletAvatar({
   emojiSize,
   mask,
   background,
+  emojiPaddingLeft,
+  emojiPaddingTop,
 }: {
   address: string;
   size: number;
   emojiSize?: TextStyles['fontSize'];
   mask?: string;
   background?: BackgroundColor;
+  emojiPaddingLeft?: BoxStyles['paddingLeft'];
+  emojiPaddingTop?: BoxStyles['paddingTop'];
 }) {
   const { avatar, isFetched } = useAvatar({ address });
   return (
@@ -40,6 +44,8 @@ export function WalletAvatar({
               emoji={avatar?.emoji}
               size={emojiSize}
               mask={mask}
+              paddingLeft={emojiPaddingLeft}
+              paddingTop={emojiPaddingTop}
             />
           )}
         </>

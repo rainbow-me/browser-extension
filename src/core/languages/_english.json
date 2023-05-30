@@ -39,9 +39,9 @@
     "watch_address_description": "Watch a public address or ENS name."
   },
   "create_wallet_prompt": {
-    "title": "Create a new wallet",
+    "title": "Name your wallet",
     "create_wallet": "Create wallet",
-    "create": "Create Wallet",
+    "create": "Create",
     "input_placeholder": "Name"
   },
   "rename_wallet_prompt": {
@@ -107,7 +107,7 @@
       },
       "wallets_and_keys": {
         "title": "Wallets & Keys",
-        "new_secret_phrase_and_wallet": "New Secret Phrase & Wallet",
+        "create_a_new_wallet": "Create a new wallet",
         "imported": "Imported",
         "wallet_single": "Wallet",
         "wallet_plural": "Wallets",
@@ -612,6 +612,7 @@
     "title": "Wallets"
   },
   "common_actions": {
+    "back": "Back",
     "cancel": "Cancel",
     "continue": "Continue",
     "copy_to_clipboard": "Copy to clipboard"
@@ -793,6 +794,7 @@
     "connect_n_wallets": "Connect %{count} wallets",
     "wallets_found": "%{count} wallets found",
     "add_by_index": "Add by index",
+    "index_label": "Index",
     "connection_successful_title": "Connected successful",
     "connection_successful_description": "Something about how we imported N wallets and they will be labeled with the badge?",
     "done": "Done",
@@ -803,5 +805,12 @@
     "continue_on_trezor_connect": "Please follow the instructions on the Trezor Connect window",
     "trezor_success": "Success!",
     "you_can_close_this_window": "You can close this window"
+  },
+  "choose_wallet_group": {
+    "title": "Choose wallet group",
+    "description": "Choose the wallet group you'd like to create a new wallet within, or create a new one",
+    "wallet_group": "Wallet Group %{number}",
+    "new_wallet_group": "New Wallet Group",
+    "create_recovery_phrase": "Create a new recovery phrase"
   }
 }
