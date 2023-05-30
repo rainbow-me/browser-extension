@@ -95,6 +95,7 @@ export async function switchWallet(address, rootURL, driver: WebDriver) {
     id: 'header-account-name-shuffle',
     driver,
   });
+  await delayTime('medium');
 
   await waitUntilElementByTestIdIsPresent({
     id: `account-item-${shortenedAddress}`,

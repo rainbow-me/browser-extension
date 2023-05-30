@@ -100,7 +100,7 @@ const useGas = ({
 
     const maxPriorityFeePerGas = (
       storeGasFeeParamsBySpeed?.custom as GasFeeParams
-    )?.maxPriorityFeePerGas.amount;
+    )?.maxPriorityFeePerGas?.amount;
 
     const newCustomSpeed = parseCustomGasFeeParams({
       currentBaseFee,
@@ -147,7 +147,7 @@ const useGas = ({
     };
 
     const maxBaseFee = (storeGasFeeParamsBySpeed?.custom as GasFeeParams)
-      ?.maxBaseFee.amount;
+      ?.maxBaseFee?.amount;
 
     let maxPriorityFeeWei = gweiToWei(debouncedMaxPriorityFee || '0');
     // Set the flashbots minimum

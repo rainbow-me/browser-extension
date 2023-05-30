@@ -13,7 +13,6 @@ import { erc20ABI } from 'wagmi';
 import {
   delayTime,
   doNotFindElementByTestId,
-  findElementAndClick,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
@@ -100,7 +99,7 @@ it('should be able to connect to hardhat', async () => {
 });
 
 it('should be able to go to swap flow', async () => {
-  await findElementAndClick({ id: 'header-link-swap', driver });
+  await findElementByTestIdAndClick({ id: 'header-link-swap', driver });
   await delayTime('long');
 });
 
@@ -166,7 +165,7 @@ it('should be able to execute unlock and swap', async () => {
 });
 
 it('should be able to go to swap flow', async () => {
-  await findElementAndClick({ id: 'header-link-swap', driver });
+  await findElementByTestIdAndClick({ id: 'header-link-swap', driver });
   await delayTime('long');
 });
 

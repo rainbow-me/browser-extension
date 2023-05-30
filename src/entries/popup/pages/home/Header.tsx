@@ -17,6 +17,7 @@ import { Link } from '../../components/Link/Link';
 import { triggerToast } from '../../components/Toast/Toast';
 import { useAlert } from '../../hooks/useAlert';
 import { useAvatar } from '../../hooks/useAvatar';
+import { useNavigateToSwaps } from '../../hooks/useNavigateToSwaps';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
@@ -91,6 +92,7 @@ function ActionButtonsSection() {
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
   const { triggerAlert } = useAlert();
+  const navigateToSwaps = useNavigateToSwaps();
 
   const handleCopy = React.useCallback(() => {
     navigator.clipboard.writeText(address as string);
@@ -131,25 +133,20 @@ function ActionButtonsSection() {
             testId="header-link-copy"
             tabIndex={tabIndexes.WALLET_HEADER_COPY_BUTTON}
           />
-          <Link
-            tabIndex={-1}
-            id="header-link-swap"
-            to={allowSwap ? ROUTES.SWAP : '#'}
-            state={{ from: ROUTES.HOME }}
+
+          <ActionButton
+            symbol="arrow.triangle.swap"
+            testId="header-link-swap"
+            text={i18n.t('wallet_header.swap')}
+            tabIndex={tabIndexes.WALLET_HEADER_SWAP_BUTTON}
             onClick={
               allowSwap
-                ? () => null
+                ? () => navigateToSwaps()
                 : isWatchingWallet
                 ? alertWatchingWallet
                 : alertComingSoon
             }
-          >
-            <ActionButton
-              symbol="arrow.triangle.swap"
-              text={i18n.t('wallet_header.swap')}
-              tabIndex={tabIndexes.WALLET_HEADER_SWAP_BUTTON}
-            />
-          </Link>
+          />
 
           <Link
             tabIndex={-1}

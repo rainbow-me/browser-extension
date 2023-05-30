@@ -37,11 +37,14 @@ export async function signTransactionFromTrezor(
     const baseTx: UnsignedTransaction = {
       chainId: transaction.chainId || undefined,
       data: transaction.data || undefined,
-      gasLimit: transaction.gasLimit || undefined,
+      gasLimit: transaction.gasLimit
+        ? ethers.BigNumber.from(transaction.gasLimit).toHexString()
+        : undefined,
       nonce: ethers.BigNumber.from(transaction.nonce).toNumber(),
       to: transaction.to || undefined,
-      value:
-        ethers.BigNumber.from(transaction.value).toHexString() || undefined,
+      value: transaction?.value
+        ? ethers.BigNumber.from(transaction.value).toHexString()
+        : '0x0',
     };
 
     if (transaction.gasPrice) {
@@ -74,12 +77,14 @@ export async function signTransactionFromTrezor(
 
       return serializedTransaction;
     } else {
+      console.log('trezor error', response, baseTx);
       alert('error signing transaction with trezor');
       throw new Error('error signing transaction with trezor');
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
+    console.log('trezor error', e);
     alert('Please make sure your trezor is unlocked');
 
     // bubble up the error
