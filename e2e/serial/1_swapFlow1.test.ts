@@ -234,6 +234,11 @@ it('should be able to set default values for settings and go back to swap', asyn
   //   driver,
   // });
   // expect(text).toBe('1');
+  const foundclick = await doNotFindElementByTestId({
+    id: 'swap-settings-done',
+    driver,
+  });
+  console.log('about to click button', foundclick);
   await findElementByTestIdAndClick({
     id: 'swap-settings-done',
     driver,
