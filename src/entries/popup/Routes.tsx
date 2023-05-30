@@ -48,6 +48,7 @@ import { Unlock } from './pages/unlock';
 import { WalletReady } from './pages/walletReady';
 import { WalletSwitcher } from './pages/walletSwitcher';
 import { AddWallet } from './pages/walletSwitcher/addWallet';
+import { ChooseWalletGroup } from './pages/walletSwitcher/chooseWalletGroup';
 import { NewImportWallet } from './pages/walletSwitcher/newImportWallet';
 import { NewImportWalletSelection } from './pages/walletSwitcher/newImportWalletSelection';
 import { NewWatchWallet } from './pages/walletSwitcher/newWatchWallet';
@@ -611,6 +612,20 @@ const ROUTE_DATA = [
         background="surfaceSecondary"
       >
         <AddWallet />
+      </AnimatedRoute>
+    ),
+  },
+  {
+    path: ROUTES.CHOOSE_WALLET_GROUP,
+    element: (
+      <AnimatedRoute
+        direction="down"
+        navbar
+        navbarIcon="arrow"
+        protectedRoute
+        background="surfaceSecondary"
+      >
+        <ChooseWalletGroup />
       </AnimatedRoute>
     ),
   },
