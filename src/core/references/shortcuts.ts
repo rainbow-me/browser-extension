@@ -125,6 +125,11 @@ export const shortcuts = {
       key: 'n',
     },
   },
+  wallets: {
+    CHOOSE_WALLET_GROUP_NEW: {
+      display: 'N',
+    },
+  },
   send: {
     FOCUS_ASSET: {
       display: '\u2193',

@@ -1,5 +1,4 @@
-import React, { useCallback, useState } from 'react';
-import { Address } from 'wagmi';
+import React, { useCallback } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
@@ -7,34 +6,21 @@ import { Box } from '~/design-system';
 
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
 import { setImportWalletSecrets } from '../../handlers/importWalletSecrets';
-import * as wallet from '../../handlers/wallet';
 import { useAlert } from '../../hooks/useAlert';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
-
-import { CreateWalletPrompt } from './createWalletPrompt';
 
 const AddWallet = () => {
   const { triggerAlert } = useAlert();
   const navigate = useRainbowNavigate();
   const { featureFlags } = useFeatureFlagsStore();
 
-  const [createWalletAddress, setCreateWalletAddress] = useState<Address>();
   const handleCreateWallet = useCallback(async () => {
-    const address = await wallet.create();
-    setCreateWalletAddress(address);
-  }, []);
-  const onClose = () => {
-    setCreateWalletAddress(undefined);
-  };
+    navigate(ROUTES.CHOOSE_WALLET_GROUP);
+  }, [navigate]);
 
   return (
     <Box height="full">
-      <CreateWalletPrompt
-        show={!!createWalletAddress}
-        onClose={onClose}
-        address={createWalletAddress}
-      />
       <Box
         display="flex"
         flexDirection="column"
