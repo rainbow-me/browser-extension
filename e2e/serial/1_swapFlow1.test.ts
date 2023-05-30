@@ -9,7 +9,6 @@ import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, expect, it } from 'vitest';
 
 import {
-  delay,
   delayTime,
   doNotFindElementByTestId,
   findElementByTestId,
@@ -125,8 +124,8 @@ it('should be able to go to swap settings and check rows are visible', async () 
     id: 'swap-settings-done',
     driver,
   });
+  await delayTime('medium');
   console.log('start 1111111 found2', found2);
-  await delay(10000);
 });
 
 it('should be able to go to settings and turn on flashbots', async () => {
