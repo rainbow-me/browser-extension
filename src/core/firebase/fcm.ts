@@ -7,12 +7,12 @@ import {
   onBackgroundMessage,
 } from 'firebase/messaging/sw';
 
+import { logger } from '~/logger';
+
 export const initFCM = async () => {
 
   const supported = await isSwSupported();
-  console.log('supported?', supported);
   if(supported){
-    console.log('INIT FCM');
     initializeApp({
       apiKey: process.env.FIREBASE_API_KEY_BX,
       authDomain: process.env.FIREBASE_AUTH_DOMAIN_BX,
@@ -24,20 +24,23 @@ export const initFCM = async () => {
     const app = getApp();
 
     const messaging = getMessagingSw(app);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const scope = globalThis as any;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const token = await getToken(messaging, {
+      serviceWorkerRegistration: scope.registration,
+      vapidKey: process.env.FIREBASE_VAPID_BX,
+    });
 
-    console.log('app', app);
-    console.log('messaging', messaging);
-
-        const scope = globalThis as any;
-        const token = await getToken(messaging, {
-          serviceWorkerRegistration: scope.registration,
-          vapidKey: process.env.FIREBASE_VAPID_BX,
-        });
-        console.log('Token', token); 
+    // Whenever we want to start watching an address we need
+    // to subscribe to the topic through our backend
+    // Which requires us to send this token. 
+    // See BX-732 for more info
     
 
+    // This is the listener for when the app is in the bg
     onBackgroundMessage(getMessagingSw(getApp()), (payload: MessagePayload) => {
-      console.log('[SW] Incoming Message: ', payload);
+      logger.info('[SW] Incoming Message: ', {payload});
       chrome.notifications.create(
         {
           type: 'basic',
@@ -47,7 +50,7 @@ export const initFCM = async () => {
           priority: 2,
         },
         (notificationId: string) => {
-          console.log('[SW] notification created with id', notificationId);
+          logger.info('[SW] notification created with id', {notificationId});
         },
       );
     });

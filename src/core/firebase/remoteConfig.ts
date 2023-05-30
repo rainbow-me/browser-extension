@@ -11,10 +11,10 @@ import { RainbowError, logger } from '~/logger';
 import { ChainName } from '../types/chains';
 
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
-  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  appId: process.env.FIREBASE_APP_ID,
+  apiKey: process.env.FIREBASE_API_KEY_BX,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN_BX,
+  projectId: process.env.FIREBASE_PROJECT_ID_BX,
+  appId: process.env.FIREBASE_APP_ID_BX,
 };
 
 export interface RainbowConfig extends Record<string, any> {
