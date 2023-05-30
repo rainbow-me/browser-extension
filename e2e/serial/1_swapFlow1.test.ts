@@ -193,29 +193,24 @@ it('should be able to interact with flashbots settings', async () => {
 });
 
 it('should be able to interact with slippage settings', async () => {
-  console.log('interact with slippage settings 1');
   await findElementByTestIdAndClick({
     id: 'swap-settings-slippage-label',
     driver,
   });
-  console.log('interact with slippage settings 2');
   await findElementByTestIdAndClick({
     id: 'explainer-action-button',
     driver,
   });
-  console.log('interact with slippage settings 3');
   await typeOnTextInput({
     id: 'slippage-input-mask',
     driver,
     text: '\b4',
   });
   await delayTime('short');
-  console.log('interact with slippage settings 4');
-  const warning = findElementByTestId({
+  const warning = await findElementByTestId({
     id: 'swap-settings-slippage-warning',
     driver,
   });
-  console.log('interact with slippage settings 5 warning', warning);
   expect(warning).toBeTruthy();
 });
 
