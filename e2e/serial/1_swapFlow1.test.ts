@@ -229,6 +229,7 @@ it('should be able to set default values for settings and go back to swap', asyn
     driver,
   });
   expect(text).toBe('1');
+  await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
 });
 
