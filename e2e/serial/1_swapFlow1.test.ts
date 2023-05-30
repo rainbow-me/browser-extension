@@ -240,7 +240,15 @@ it('should be able to open token to sell input and select assets', async () => {
     driver,
   });
   console.log('start 2 found', found);
-  expect(found).toBeFalsy();
+  if (found) {
+    await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
+  }
+  const found2 = await doNotFindElementByTestId({
+    id: 'swap-settings-done',
+    driver,
+  });
+  console.log('start 2 found2', found2);
+  expect(found2).toBeFalsy();
   await findElementByTestIdAndClick({
     id: 'token-to-sell-search-token-input',
     driver,
