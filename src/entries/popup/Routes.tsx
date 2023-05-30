@@ -556,6 +556,7 @@ const ROUTE_DATA = [
         <Swap />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.SIGN,
