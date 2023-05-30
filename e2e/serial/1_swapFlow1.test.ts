@@ -229,11 +229,18 @@ it('should be able to set default values for settings and go back to swap', asyn
     driver,
   });
   expect(text).toBe('1');
-  await delayTime('medium');
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
+  await delayTime('medium');
 });
 
 it('should be able to open token to sell input and select assets', async () => {
+  console.log('start 1');
+  const found = await doNotFindElementByTestId({
+    id: 'swap-settings-done',
+    driver,
+  });
+  console.log('start 2 found', found);
+  expect(found).toBeFalsy();
   await findElementByTestIdAndClick({
     id: 'token-to-sell-search-token-input',
     driver,
