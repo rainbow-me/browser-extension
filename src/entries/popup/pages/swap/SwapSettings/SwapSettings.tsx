@@ -436,14 +436,13 @@ export const SwapSettings = ({
               <Box style={{ width: '102px' }}>
                 <Separator color="separatorTertiary" strokeWeight="1px" />
               </Box>
-              <Box width="full" paddingTop="20px">
+              <Box testId="swap-settings-done" width="full" paddingTop="20px">
                 <Button
                   width="full"
                   color="accent"
                   height="44px"
                   variant="flat"
                   onClick={done}
-                  testId="swap-settings-done"
                 >
                   <Text align="center" color="label" size="16pt" weight="bold">
                     {i18n.t('swap.settings.done')}
