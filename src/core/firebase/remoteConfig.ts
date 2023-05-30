@@ -23,6 +23,7 @@ export interface RainbowConfig extends Record<string, any> {
   swaps_enabled: boolean;
   tx_requests_enabled: boolean;
   flashbots_enabled: boolean;
+  invite_code_required: boolean;
   // SWAPS
   default_slippage_bips: {
     [ChainName.mainnet]: number;
@@ -31,8 +32,6 @@ export interface RainbowConfig extends Record<string, any> {
     [ChainName.arbitrum]: number;
     [ChainName.bsc]: number;
   };
-  trace_call_block_number_offset: number;
-  invite_code_required: boolean;
 }
 
 const DEFAULT_CONFIG = {
@@ -41,6 +40,7 @@ const DEFAULT_CONFIG = {
   swaps_enabled: true,
   tx_requests_enabled: true,
   flashbots_enabled: true,
+  invite_code_required: false,
   // SWAPS
   default_slippage_bips: {
     arbitrum: 200,
@@ -49,8 +49,6 @@ const DEFAULT_CONFIG = {
     polygon: 200,
     bsc: 200,
   },
-  trace_call_block_number_offset: 20,
-  invite_code_required: false,
 };
 
 // Initialize with defaults in case firebase doesn't respond
@@ -82,24 +80,24 @@ export const init = async () => {
     const parameters = getAll(remoteConfig);
     Object.entries(parameters).forEach(($) => {
       const [key, entry] = $;
-      if (key === 'default_slippage_bips') {
-        config[key] = JSON.parse(
-          entry.asString(),
-        ) as RainbowConfig['default_slippage_bips'];
-      } else if (
-        key === 'send_enabled' ||
-        key === 'swaps_enabled' ||
-        key === 'tx_requests_enabled' ||
-        key === 'f2c_ratio_enabled' ||
-        key === 'flashbots_enabled' ||
-        key === 'op_rewards_enabled' ||
-        key === 'profiles_enabled'
-      ) {
-        config[key] = entry.asBoolean();
-      } else if (key === 'trace_call_block_number_offset') {
-        config[key] = entry.asNumber();
-      } else {
-        config[key] = entry.asString();
+      const realKey = key.replace('BX_', '');
+      // Ignore non BX keys
+      if (key.startsWith('BX_')) {
+        if (key === 'BX_default_slippage_bips') {
+          config[realKey] = JSON.parse(
+            entry.asString(),
+          ) as RainbowConfig['default_slippage_bips'];
+        } else if (
+          key === 'BX_send_enabled' ||
+          key === 'BX_swaps_enabled' ||
+          key === 'BX_tx_requests_enabled' ||
+          key === 'BX_flashbots_enabled' ||
+          key === 'BX_invite_code_required'
+        ) {
+          config[realKey] = entry.asBoolean();
+        } else {
+          config[realKey] = entry.asString();
+        }
       }
     });
   } catch (e) {
