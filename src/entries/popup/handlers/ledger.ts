@@ -31,7 +31,9 @@ export async function signTransactionFromLedger(
     const baseTx: UnsignedTransaction = {
       chainId: transaction.chainId || undefined,
       data: transaction.data || undefined,
-      gasLimit: transaction.gasLimit || undefined,
+      gasLimit: transaction.gasLimit
+        ? BigNumber.from(transaction.gasLimit).toHexString()
+        : undefined,
       nonce: transaction.nonce
         ? BigNumber.from(transaction.nonce).toNumber()
         : undefined,
