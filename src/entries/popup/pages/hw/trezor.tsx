@@ -2,8 +2,9 @@ import React, { useEffect } from 'react';
 
 import trezorDevice from 'static/assets/hw/trezor-device.png';
 import { i18n } from '~/core/languages';
+import { goToNewTab } from '~/core/utils/tabs';
 import { Box, Separator, Text } from '~/design-system';
-import { accentColorAsHsl } from '~/design-system/styles/core.css';
+import { TextLink } from '~/design-system/components/TextLink/TextLink';
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import * as wallet from '../../handlers/wallet';
@@ -40,16 +41,13 @@ export function ConnectTrezor() {
             color="labelTertiary"
             align="center"
           >
-            {i18n.t('hw.connect_trezor_description')}
-            <a
-              href="https://learn.rainbow.me/"
-              target="_blank"
-              style={{ color: accentColorAsHsl }}
-              rel="noreferrer"
+            {i18n.t('hw.connect_trezor_description')}{' '}
+            <TextLink
+              color="blue"
+              onClick={() => goToNewTab({ url: 'https://learn.rainbow.me/' })}
             >
               {i18n.t('hw.learn_more')}
-            </a>
-            .
+            </TextLink>
           </Text>
         </Box>
       </Box>
