@@ -116,13 +116,14 @@ const ROUTE_DATA = [
     path: ROUTES.READY,
     element: (
       <AnimatedRoute
-        direction="deceleratedShort"
+        direction="right"
         protectedRoute={['READY']}
         accentColor={false}
       >
         <WalletReady />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.IMPORT_OR_CONNECT,

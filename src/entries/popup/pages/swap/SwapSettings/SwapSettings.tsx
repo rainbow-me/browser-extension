@@ -229,12 +229,16 @@ export const SwapSettings = ({
   }, [chainId, setSwapFlashbotsEnabled]);
 
   const done = useCallback(() => {
-    setSettings({
-      source,
-      slippage: divide(slippage, 100).toString(),
-      swapFlashbotsEnabled,
-    });
-    onDone();
+    try {
+      setSettings({
+        source,
+        slippage: divide(slippage, 100).toString(),
+        swapFlashbotsEnabled,
+      });
+      onDone();
+    } catch (e) {
+      console.log('DONEEEEEEE e', e);
+    }
   }, [swapFlashbotsEnabled, onDone, setSettings, slippage, source]);
 
   const slippageWarning = useMemo(
