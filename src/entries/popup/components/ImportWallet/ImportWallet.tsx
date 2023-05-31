@@ -3,6 +3,7 @@ import { isValidMnemonic } from '@ethersproject/hdnode';
 import { motion } from 'framer-motion';
 import { startsWith } from 'lodash';
 import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -29,6 +30,7 @@ import {
 
 import {
   getImportWalletSecrets,
+  removeImportWalletSecrets,
   setImportWalletSecrets,
 } from '../../handlers/importWalletSecrets';
 import * as wallet from '../../handlers/wallet';
@@ -49,6 +51,7 @@ const validateSecret = (secret: string) => {
 
 const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
   const navigate = useRainbowNavigate();
+  const location = useLocation();
   const [isValid, setIsValid] = useState(false);
   const [isAddingWallets, setIsAddingWallets] = useState(false);
   const [secrets, setSecrets] = useState<string[]>(['']);
@@ -96,7 +99,14 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
       setSecrets(secrets);
       updateValidity(secrets);
     };
-    getSecrets();
+    if (
+      location?.state?.from === ROUTES.NEW_IMPORT_WALLET_SELECTION ||
+      location?.state?.from === ROUTES.IMPORT__SELECT
+    ) {
+      getSecrets();
+    } else {
+      removeImportWalletSecrets();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -129,7 +139,7 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
               })
             : navigate(ROUTES.HOME);
           setIsAddingWallets(false);
-          setImportWalletSecrets(['']);
+          removeImportWalletSecrets();
           return;
         } catch (e) {
           //
@@ -139,9 +149,14 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
 
     if (isValid) {
       setIsAddingWallets(false);
-      onboarding
-        ? navigate(ROUTES.IMPORT__SELECT)
-        : navigate(ROUTES.NEW_IMPORT_WALLET_SELECTION);
+      navigate(
+        onboarding ? ROUTES.IMPORT__SELECT : ROUTES.NEW_IMPORT_WALLET_SELECTION,
+        {
+          state: {
+            backTo: onboarding ? ROUTES.IMPORT : ROUTES.NEW_IMPORT_WALLET,
+          },
+        },
+      );
     }
   }, [
     isAddingWallets,

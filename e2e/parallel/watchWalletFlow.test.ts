@@ -69,7 +69,7 @@ describe('Watch wallet then add more and switch between them', () => {
     await findElement(byTestId('confirm-password-input')).sendKeys('test1234');
     await findElement(byTestId('set-password-button')).click();
 
-    await driver.wait(until.elementLocated(byText('Your wallets ready')));
+    await driver.wait(until.elementLocated(byText('Rainbow is ready to use')));
   });
 
   it('should display watched account name', async () => {
@@ -207,7 +207,7 @@ describe('Watch wallet then add more and switch between them', () => {
       rootURL,
       driver,
     );
-    await delayTime('medium');
+    await delayTime('very-long');
     const wallet = await getTextFromText({ id: 'account-name', driver });
     expect(wallet).toBe(
       shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),

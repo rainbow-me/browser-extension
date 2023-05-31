@@ -513,6 +513,7 @@ const textProperties = defineProperties({
     fontFamily: { rounded: 'SFRounded, system-ui' },
     fontSize: {
       '7pt': defineType(7, 11, 0.64),
+      '9pt': defineType(9, 11, 0.56),
       '10pt': defineType(10, 12, 0.6),
       '11pt': defineType(11, 13, 0.56),
       '12pt': defineType(12, 15, 0.52),
