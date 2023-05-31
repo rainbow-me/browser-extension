@@ -76,6 +76,7 @@ const ROUTE_DATA = [
         <Home />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.APPROVE_APP_REQUEST,
@@ -98,6 +99,7 @@ const ROUTE_DATA = [
         <ConnectedApps />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.WELCOME,
@@ -351,6 +353,7 @@ const ROUTE_DATA = [
         <QRCodePage />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS,
@@ -366,6 +369,7 @@ const ROUTE_DATA = [
         <Settings />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY,
@@ -381,6 +385,7 @@ const ROUTE_DATA = [
         <Privacy />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY__AUTOLOCK,
@@ -396,6 +401,7 @@ const ROUTE_DATA = [
         <AutoLockTimer />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY__CHANGE_PASSWORD,
@@ -408,6 +414,7 @@ const ROUTE_DATA = [
         <ChangePassword />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS,
@@ -423,6 +430,7 @@ const ROUTE_DATA = [
         <WalletsAndKeys />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS,
@@ -440,6 +448,7 @@ const ROUTE_DATA = [
         <WalletDetails />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY_WARNING,
@@ -454,6 +463,7 @@ const ROUTE_DATA = [
         <PrivateKeyWarning />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__PKEY,
@@ -468,6 +478,7 @@ const ROUTE_DATA = [
         <PrivateKey />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
@@ -482,6 +493,7 @@ const ROUTE_DATA = [
         <RecoveryPhraseWarning />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE,
@@ -496,6 +508,7 @@ const ROUTE_DATA = [
         <RecoveryPhrase />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_VERIFY,
@@ -510,6 +523,7 @@ const ROUTE_DATA = [
         <RecoveryPhraseVerify />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__TRANSACTIONS,
@@ -525,6 +539,7 @@ const ROUTE_DATA = [
         <Transactions />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.SETTINGS__CURRENCY,
@@ -540,6 +555,7 @@ const ROUTE_DATA = [
         <Currency />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.SEND,
@@ -548,6 +564,7 @@ const ROUTE_DATA = [
         <Send />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.SWAP,
@@ -556,8 +573,7 @@ const ROUTE_DATA = [
         <Swap />
       </AnimatedRoute>
     ),
-    background:
-      process.env.IS_TESTING === 'true' ? undefined : FullScreenBackground,
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.SIGN,
@@ -586,6 +602,7 @@ const ROUTE_DATA = [
         <Wallets />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.WALLET_SWITCHER,
@@ -601,6 +618,7 @@ const ROUTE_DATA = [
         <WalletSwitcher />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.ADD_WALLET,
@@ -616,6 +634,7 @@ const ROUTE_DATA = [
         <AddWallet />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.CHOOSE_WALLET_GROUP,
@@ -630,6 +649,7 @@ const ROUTE_DATA = [
         <ChooseWalletGroup />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.NEW_WATCH_WALLET,
@@ -644,6 +664,7 @@ const ROUTE_DATA = [
         <NewWatchWallet />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.NEW_IMPORT_WALLET,
@@ -658,6 +679,7 @@ const ROUTE_DATA = [
         <NewImportWallet />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.NEW_IMPORT_WALLET_SELECTION,
@@ -672,6 +694,7 @@ const ROUTE_DATA = [
         <NewImportWalletSelection />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
   {
     path: ROUTES.NEW_IMPORT_WALLET_SELECTION_EDIT,
@@ -684,6 +707,7 @@ const ROUTE_DATA = [
         <NewImportWalletSelectionEdit />
       </AnimatedRoute>
     ),
+    background: FullScreenBackground,
   },
 ];
 
