@@ -11,6 +11,8 @@ import { getProvider } from '@wagmi/core';
 import { ethers } from 'ethers';
 import { Address } from 'wagmi';
 
+import { ChainId } from '~/core/types/chains';
+
 import { walletAction } from './wallet';
 
 const getPath = async (address: Address) => {
@@ -30,7 +32,9 @@ export async function signTransactionFromLedger(
     const baseTx: UnsignedTransaction = {
       chainId: transaction.chainId || undefined,
       data: transaction.data || undefined,
-      gasLimit: transaction.gasLimit || undefined,
+      gasLimit: transaction.gasLimit
+        ? BigNumber.from(transaction.gasLimit).toHexString()
+        : undefined,
       nonce: transaction.nonce
         ? BigNumber.from(transaction.nonce).toNumber()
         : undefined,
@@ -46,6 +50,9 @@ export async function signTransactionFromLedger(
       baseTx.maxFeePerGas = transaction.maxFeePerGas || undefined;
       baseTx.maxPriorityFeePerGas =
         transaction.maxPriorityFeePerGas || undefined;
+      if (transaction.chainId === ChainId.mainnet) {
+        baseTx.type = 2;
+      }
     }
 
     const unsignedTx = serialize(baseTx).substring(2);
