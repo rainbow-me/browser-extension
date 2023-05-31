@@ -68,38 +68,40 @@ export function App() {
   const isFullScreen = useIsFullScreen();
 
   return (
-    <PersistQueryClientProvider
-      client={queryClient}
-      persistOptions={persistOptions}
-    >
-      <WagmiConfig client={wagmiClient}>
-        <ThemeProvider theme={currentTheme}>
-          {playground ? (
-            PlaygroundComponents[playground]
-          ) : (
-            <AuthProvider>
-              <Box
-                id="main"
-                background="surfacePrimaryElevated"
-                style={{
-                  maxWidth: !isFullScreen
-                    ? `${POPUP_DIMENSIONS.width}px`
-                    : undefined,
-                }}
-              >
-                <HashRouter>
-                  <Routes>
-                    <Toast />
-                    <Alert />
-                    <HWRequestListener />
-                  </Routes>
-                </HashRouter>
-              </Box>
-              <IdleTimer />
-            </AuthProvider>
-          )}
-        </ThemeProvider>
-      </WagmiConfig>
-    </PersistQueryClientProvider>
+    <>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={persistOptions}
+      >
+        <WagmiConfig client={wagmiClient}>
+          <ThemeProvider theme={currentTheme}>
+            {playground ? (
+              PlaygroundComponents[playground]
+            ) : (
+              <AuthProvider>
+                <Box
+                  id="main"
+                  background="surfacePrimaryElevated"
+                  style={{
+                    maxWidth: !isFullScreen
+                      ? `${POPUP_DIMENSIONS.width}px`
+                      : undefined,
+                  }}
+                >
+                  <HashRouter>
+                    <Routes>
+                      <Toast />
+                      <Alert />
+                    </Routes>
+                  </HashRouter>
+                </Box>
+                <IdleTimer />
+              </AuthProvider>
+            )}
+          </ThemeProvider>
+        </WagmiConfig>
+      </PersistQueryClientProvider>
+      <HWRequestListener />
+    </>
   );
 }
