@@ -21,6 +21,7 @@ import { useWalletNamesStore } from '~/core/state/walletNames';
 import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import {
   AccentColorProvider,
   Box,
@@ -55,7 +56,6 @@ import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { AddressAndType, useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 
-import { WalletActionsMenu } from './WalletSwitcher.css';
 import { RemoveWalletPrompt } from './removeWalletPrompt';
 import { RenameWalletPrompt } from './renameWalletPrompt';
 
@@ -409,7 +409,10 @@ export function WalletSwitcher() {
           />
         </Box>
       )}
-      <Box style={{ overflow: 'scroll' }} paddingHorizontal="8px" height="full">
+      <Box
+        style={{ overflow: 'scroll', height: POPUP_DIMENSIONS.height - 200 }}
+        paddingHorizontal="8px"
+      >
         <MenuContainer>
           <DragDropContext onDragEnd={onDragEnd}>
             <Droppable droppableId="droppable">
@@ -451,62 +454,66 @@ export function WalletSwitcher() {
             </Droppable>
           </DragDropContext>
         </MenuContainer>
-      </Box>
-      <Box
-        className={WalletActionsMenu}
-        width="full"
-        backdropFilter="opacity(5%)"
-        padding="20px"
-        borderWidth="1px"
-        borderColor="separatorTertiary"
-        background="surfaceSecondary"
-      >
-        <Stack space="8px">
-          <Link to={ROUTES.ADD_WALLET}>
-            <Button
-              color="blue"
-              variant="flat"
-              symbol="plus.circle.fill"
-              symbolSide="left"
-              height="32px"
-              width="full"
-              borderRadius="9px"
-              testId={'add-wallet-button'}
-            >
-              {i18n.t('wallet_switcher.add_another_wallet')}
-            </Button>
-          </Link>
-          {featureFlags.hw_wallets_enabled && (
-            <Link to={ROUTES.HW_CHOOSE}>
+        <Box
+          style={{
+            zIndex: 2,
+            bottom: '0',
+            position: 'absolute',
+          }}
+          width="full"
+          backdropFilter="opacity(5%)"
+          padding="20px"
+          borderWidth="1px"
+          borderColor="separatorTertiary"
+          background="surfaceSecondary"
+        >
+          <Stack space="8px">
+            <Link to={ROUTES.ADD_WALLET}>
               <Button
-                color="fillSecondary"
+                color="blue"
                 variant="flat"
-                symbol="doc.text.magnifyingglass"
+                symbol="plus.circle.fill"
                 symbolSide="left"
                 height="32px"
                 width="full"
                 borderRadius="9px"
+                testId={'add-wallet-button'}
               >
-                {i18n.t('wallet_switcher.connect_hardware_wallet')}
+                {i18n.t('wallet_switcher.add_another_wallet')}
               </Button>
             </Link>
-          )}
-          {process.env.IS_DEV === 'true' && (
-            <Link to={ROUTES.WALLETS}>
-              <Button
-                color="fillSecondary"
-                variant="flat"
-                symbol="gearshape.fill"
-                symbolSide="left"
-                height="32px"
-                width="full"
-                borderRadius="9px"
-              >
-                Old Wallets UI [DEV]
-              </Button>
-            </Link>
-          )}
-        </Stack>
+            {featureFlags.hw_wallets_enabled && (
+              <Link to={ROUTES.HW_CHOOSE}>
+                <Button
+                  color="fillSecondary"
+                  variant="flat"
+                  symbol="doc.text.magnifyingglass"
+                  symbolSide="left"
+                  height="32px"
+                  width="full"
+                  borderRadius="9px"
+                >
+                  {i18n.t('wallet_switcher.connect_hardware_wallet')}
+                </Button>
+              </Link>
+            )}
+            {process.env.IS_DEV === 'true' && (
+              <Link to={ROUTES.WALLETS}>
+                <Button
+                  color="fillSecondary"
+                  variant="flat"
+                  symbol="gearshape.fill"
+                  symbolSide="left"
+                  height="32px"
+                  width="full"
+                  borderRadius="9px"
+                >
+                  Old Wallets UI [DEV]
+                </Button>
+              </Link>
+            )}
+          </Stack>
+        </Box>
       </Box>
     </Box>
   );

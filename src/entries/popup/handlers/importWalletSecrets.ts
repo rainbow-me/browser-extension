@@ -17,3 +17,11 @@ export const setImportWalletSecrets = async (importWalletSecrets: string[]) => {
     console.log('Error while setting import wallet secrets: ', e);
   }
 };
+
+export const removeImportWalletSecrets = async () => {
+  try {
+    await chrome.storage.session.remove('importWalletSecrets');
+  } catch (e) {
+    console.log('Error while removing import wallet secrets: ', e);
+  }
+};
