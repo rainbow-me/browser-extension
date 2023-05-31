@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { ReactNode } from 'react';
 
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box, Row, Rows } from '~/design-system';
 import {
   BackdropFilter,
@@ -86,6 +87,10 @@ export const Prompt = ({
                 borderRadius="16px"
                 borderColor="separatorTertiary"
                 borderWidth="1px"
+                style={{
+                  maxWidth: POPUP_DIMENSIONS.width,
+                  margin: '0 auto',
+                }}
               >
                 {children}
               </Box>
