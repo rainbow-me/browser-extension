@@ -1,6 +1,7 @@
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlists } from '@ethersproject/wordlists';
-import { useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -15,7 +16,11 @@ import {
   Text,
 } from '~/design-system';
 
-import { setImportWalletSecrets } from '../../handlers/importWalletSecrets';
+import {
+  getImportWalletSecrets,
+  removeImportWalletSecrets,
+  setImportWalletSecrets,
+} from '../../handlers/importWalletSecrets';
 import * as wallet from '../../handlers/wallet';
 import { useDebounce } from '../../hooks/useDebounce';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
@@ -77,6 +82,23 @@ export const ImportWallet = ({ onboarding = false }) => {
   const { setCurrentAddress } = useCurrentAddressStore();
 
   const [secrets, setSecrets] = useReducer(secretsReducer, ['']);
+
+  const location = useLocation();
+  useEffect(() => {
+    const getSecrets = async () => {
+      const secrets = await getImportWalletSecrets();
+      setSecrets(secrets);
+    };
+    if (
+      location?.state?.from === ROUTES.NEW_IMPORT_WALLET_SELECTION ||
+      location?.state?.from === ROUTES.IMPORT__SELECT
+    ) {
+      getSecrets();
+    } else {
+      removeImportWalletSecrets();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onImport = () => {
     const _secrets = [...new Set(secrets)]; // remove duplicates
