@@ -93,8 +93,8 @@ export const shortcuts = {
       key: 's',
     },
     GO_TO_SETTINGS: {
-      display: "'",
-      key: "'",
+      display: ',',
+      key: ',',
     },
     GO_TO_SWAP: {
       display: 'X',
@@ -123,6 +123,11 @@ export const shortcuts = {
     SWITCH_NETWORK: {
       display: 'N',
       key: 'n',
+    },
+  },
+  wallets: {
+    CHOOSE_WALLET_GROUP_NEW: {
+      display: 'N',
     },
   },
   send: {
