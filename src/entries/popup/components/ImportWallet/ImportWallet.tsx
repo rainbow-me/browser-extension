@@ -1,6 +1,6 @@
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlists } from '@ethersproject/wordlists';
-import { useCallback, useReducer } from 'react';
+import { useReducer } from 'react';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
@@ -78,24 +78,18 @@ export const ImportWallet = ({ onboarding = false }) => {
 
   const [secrets, setSecrets] = useReducer(secretsReducer, ['']);
 
-  const importWallets = useCallback(
-    (_secrets: string[]) => {
-      const secrets = [...new Set(_secrets)]; // remove duplicates
+  const onImport = () => {
+    const _secrets = [...new Set(secrets)]; // remove duplicates
+    if (_secrets.length === 1 && isValidPrivateKey(_secrets[0]))
+      return wallet.importWithSecret(_secrets[0]).then((address) => {
+        navigate(onboarding ? ROUTES.CREATE_PASSWORD : ROUTES.HOME);
+        setCurrentAddress(address);
+      });
 
-      if (secrets.length === 1 && isValidPrivateKey(secrets[0]))
-        return wallet.importWithSecret(secrets[0]).then((address) => {
-          navigate(onboarding ? ROUTES.CREATE_PASSWORD : ROUTES.HOME);
-          setCurrentAddress(address);
-        });
-
-      return navigate(
-        onboarding ? ROUTES.IMPORT__SELECT : ROUTES.NEW_IMPORT_WALLET_SELECTION,
-      );
-    },
-    [navigate, onboarding, setCurrentAddress],
-  );
-
-  const addAnotherOne = () => setSecrets((secrets) => [...secrets, '']);
+    return navigate(
+      onboarding ? ROUTES.IMPORT__SELECT : ROUTES.NEW_IMPORT_WALLET_SELECTION,
+    );
+  };
 
   const debouncedSecrets = useDebounce(secrets, 1000);
 
@@ -109,6 +103,18 @@ export const ImportWallet = ({ onboarding = false }) => {
     return error;
   });
   const disabled = errors.some((e) => e !== false);
+
+  const onSecretChange =
+    (secretIndex: number) => (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      setSecrets((secrets) => {
+        const newSecrets = [...secrets];
+        newSecrets[secretIndex] = e.target.value;
+        return newSecrets;
+      });
+    };
+
+  const onRemoveLastSecret = () => setSecrets((scts) => scts.slice(0, -1));
+  const onAddAnother = () => setSecrets((secrets) => [...secrets, '']);
 
   return (
     <>
@@ -149,13 +155,7 @@ export const ImportWallet = ({ onboarding = false }) => {
                   error={!!errorMsg && <ErrorMessage message={errorMsg} />}
                   placeholder={i18n.t('import_wallet.placeholder')}
                   value={secret}
-                  onChange={(e) => {
-                    setSecrets((secrets) => {
-                      const newSecrets = [...secrets];
-                      newSecrets[i] = e.target.value;
-                      return newSecrets;
-                    });
-                  }}
+                  onChange={onSecretChange(i)}
                 >
                   {i !== 0 && isLast && !secret && (
                     <Box
@@ -169,7 +169,7 @@ export const ImportWallet = ({ onboarding = false }) => {
                         height="24px"
                         variant="transparent"
                         width="full"
-                        onClick={() => setSecrets((scts) => scts.slice(0, -1))}
+                        onClick={onRemoveLastSecret}
                       >
                         {i18n.t('import_wallet.remove')}
                       </Button>
@@ -186,7 +186,7 @@ export const ImportWallet = ({ onboarding = false }) => {
                 height="44px"
                 variant="transparent"
                 width="full"
-                onClick={addAnotherOne}
+                onClick={onAddAnother}
               >
                 {i18n.t('import_wallet.add_another')}
               </Button>
@@ -203,7 +203,7 @@ export const ImportWallet = ({ onboarding = false }) => {
           height="44px"
           variant={!disabled ? 'raised' : 'disabled'}
           width="full"
-          onClick={() => importWallets(secrets)}
+          onClick={onImport}
           disabled={disabled}
           testId="import-wallets-button"
           tabIndex={2}
