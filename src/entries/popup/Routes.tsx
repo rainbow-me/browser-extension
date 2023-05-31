@@ -556,7 +556,8 @@ const ROUTE_DATA = [
         <Swap />
       </AnimatedRoute>
     ),
-    background: FullScreenBackground,
+    background:
+      process.env.IS_TESTING === 'true' ? undefined : FullScreenBackground,
   },
   {
     path: ROUTES.SIGN,
