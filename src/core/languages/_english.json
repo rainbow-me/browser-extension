@@ -364,7 +364,7 @@
     }
   },
   "custom_gas": {
-    "title": "Gwei Settings",
+    "title": "Gas Settings",
     "current_base_fee": "Current base fee",
     "max_base_fee": "Max base fee",
     "miner_tip": "Miner tip",
