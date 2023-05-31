@@ -1,14 +1,13 @@
 import 'chromedriver';
 import 'geckodriver';
-import { Locator, WebDriver, until } from 'selenium-webdriver';
+import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
-  byTestId,
-  byText,
   delayTime,
   findElementByIdAndClick,
   findElementByTestIdAndClick,
+  findElementByText,
   getExtensionIdByName,
   getTextFromText,
   goToPopup,
@@ -28,8 +27,6 @@ let driver: WebDriver;
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
 
-const findElement = (locator: Locator) => driver.findElement(locator);
-
 describe('Watch wallet then add more and switch between them', () => {
   beforeAll(async () => {
     driver = await initDriverWithOptions({
@@ -47,12 +44,17 @@ describe('Watch wallet then add more and switch between them', () => {
   it('should be able watch a wallet', async () => {
     //  Start from welcome screen
     await goToWelcome(driver, rootURL);
-    await findElement(byTestId('import-wallet-button')).click();
-    await findElement(byTestId('watch-wallet-option')).click();
+    await findElementByTestIdAndClick({
+      id: 'import-wallet-button',
+      driver,
+    });
+    await findElementByTestIdAndClick({ id: 'watch-wallet-option', driver });
 
-    await findElement(byTestId('secret-textarea')).sendKeys(
-      TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
-    );
+    await typeOnTextInput({
+      id: 'secret-textarea',
+      text: TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
+      driver,
+    });
 
     await waitUntilElementByTestIdIsPresent({
       id: 'watch-wallets-button-ready',
@@ -64,12 +66,15 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
     });
 
-    await driver.wait(until.elementLocated(byTestId('password-input')));
-    await findElement(byTestId('password-input')).sendKeys('test1234');
-    await findElement(byTestId('confirm-password-input')).sendKeys('test1234');
-    await findElement(byTestId('set-password-button')).click();
-
-    await driver.wait(until.elementLocated(byText('Rainbow is ready to use')));
+    await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
+    await typeOnTextInput({
+      id: 'confirm-password-input',
+      driver,
+      text: 'test1234',
+    });
+    await findElementByTestIdAndClick({ id: 'set-password-button', driver });
+    await delayTime('long');
+    await findElementByText(driver, 'Rainbow is ready to use');
   });
 
   it('should display watched account name', async () => {
