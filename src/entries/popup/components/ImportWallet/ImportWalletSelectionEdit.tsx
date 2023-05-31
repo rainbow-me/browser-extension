@@ -10,7 +10,10 @@ import { minus } from '~/core/utils/numbers';
 import { Box, Button, Stack, Text } from '~/design-system';
 
 import { Spinner } from '../../components/Spinner/Spinner';
-import { getImportWalletSecrets } from '../../handlers/importWalletSecrets';
+import {
+  getImportWalletSecrets,
+  removeImportWalletSecrets,
+} from '../../handlers/importWalletSecrets';
 import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWalletsSummary } from '../../hooks/useWalletsSummary';
@@ -88,6 +91,7 @@ export function ImportWalletSelectionEdit({
     }
 
     setIsAddingWallets(false);
+    removeImportWalletSecrets();
     onboarding
       ? navigate(ROUTES.CREATE_PASSWORD, { state: { backTo: ROUTES.WELCOME } })
       : navigate(ROUTES.HOME);
