@@ -254,7 +254,11 @@ const ChooseWalletGroup = () => {
     const fetchWallets = async () => {
       const walletsFromKeychain = await getWallets();
       const controlledWallets = walletsFromKeychain.filter(
-        (wallet) => wallet.type !== KeychainType.ReadOnlyKeychain,
+        (wallet) =>
+          ![
+            KeychainType.ReadOnlyKeychain,
+            KeychainType.HardwareWalletKeychain,
+          ].includes(wallet.type),
       );
 
       setWallets(controlledWallets);
