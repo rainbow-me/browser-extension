@@ -1,9 +1,9 @@
 import * as SelectPrimitive from '@radix-ui/react-select';
 import clsx from 'clsx';
 import React, { PropsWithChildren } from 'react';
-import { useAccount } from 'wagmi';
 
 import { shortcuts } from '~/core/references/shortcuts';
+import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { AccentColorProvider, Box, Text, ThemeProvider } from '~/design-system';
 import { accentMenuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
@@ -52,8 +52,8 @@ const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
     ref,
   ) {
     const { currentTheme } = useCurrentThemeStore();
-    const { address } = useAccount();
-    const { avatar } = useAvatar({ address });
+    const { currentAddress } = useCurrentAddressStore();
+    const { avatar } = useAvatar({ address: currentAddress });
     return (
       <SelectPrimitive.Portal>
         <AccentColorProvider color={avatar?.color || globalColors.blue60}>
