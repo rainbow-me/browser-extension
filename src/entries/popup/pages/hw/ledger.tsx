@@ -30,14 +30,13 @@ const ConnectingToLedger = () => {
               color="labelTertiary"
               align="center"
             >
-              {i18n.t('hw.connect_ledger_description')}
+              {i18n.t('hw.connect_ledger_description')}{' '}
               <TextLink
                 color="blue"
                 onClick={() => goToNewTab({ url: 'https://learn.rainbow.me/' })}
               >
                 {i18n.t('hw.learn_more')}
               </TextLink>
-              .
             </Text>
           </Stack>
         </Box>
