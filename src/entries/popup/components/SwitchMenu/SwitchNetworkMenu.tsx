@@ -13,6 +13,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { Space } from '~/design-system/styles/designTokens';
 
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
@@ -274,7 +275,13 @@ export const SwitchNetworkMenu = ({
     <Menu onOpenChange={handleOpenChange}>
       <MenuTrigger asChild>
         <Box style={{ cursor: 'default' }} ref={triggerRef}>
-          {triggerComponent}
+          <Lens
+            borderRadius="round"
+            onKeyDown={() => simulateClick(triggerRef?.current)}
+            padding="2px"
+          >
+            {triggerComponent}
+          </Lens>
         </Box>
       </MenuTrigger>
       <MenuContent

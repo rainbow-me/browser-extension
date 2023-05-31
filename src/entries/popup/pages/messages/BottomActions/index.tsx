@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import React, { useCallback, useImperativeHandle, useRef } from 'react';
 import { Address, useBalance } from 'wagmi';
 
 import { analytics } from '~/analytics';
@@ -17,6 +17,7 @@ import {
   Text,
   TextOverflow,
 } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { EthSymbol } from '~/entries/popup/components/EthSymbol/EthSymbol';
@@ -54,38 +55,48 @@ export const WalletName = ({
   );
 };
 
-export const BottomWallet = ({
-  selectedWallet,
-  displaySymbol = false,
-}: {
-  selectedWallet: Address;
-  displaySymbol: boolean;
-}) => {
-  const triggerRef = useRef<HTMLDivElement>(null);
-  useKeyboardShortcut({
-    handler: (e: KeyboardEvent) => {
-      if (e.key === shortcuts.connect.OPEN_WALLET_SWITCHER.key) {
-        simulateClick(triggerRef?.current);
-      }
+export const BottomWallet = React.forwardRef(
+  (
+    {
+      selectedWallet,
+      displaySymbol = false,
+    }: {
+      selectedWallet: Address;
+      displaySymbol: boolean;
     },
-  });
-  return (
-    <Box testId="switch-wallet-menu" ref={triggerRef}>
-      <Inline alignVertical="center" space="4px">
-        <WalletAvatar address={selectedWallet} size={18} emojiSize={'12pt'} />
-        <WalletName color="labelSecondary" address={selectedWallet} />
-        {displaySymbol && (
-          <Symbol
-            color="labelSecondary"
-            size={14}
-            symbol="chevron.down.circle"
-            weight="semibold"
-          />
-        )}
-      </Inline>
-    </Box>
-  );
-};
+    ref,
+  ) => {
+    const triggerRef = useRef<HTMLDivElement>(null);
+    useImperativeHandle(ref, () => ({
+      triggerMenu: () => simulateClick(triggerRef?.current),
+    }));
+    useKeyboardShortcut({
+      handler: (e: KeyboardEvent) => {
+        if (e.key === shortcuts.connect.OPEN_WALLET_SWITCHER.key) {
+          simulateClick(triggerRef?.current);
+        }
+      },
+    });
+    return (
+      <Box testId="switch-wallet-menu" ref={triggerRef}>
+        <Inline alignVertical="center" space="4px">
+          <WalletAvatar address={selectedWallet} size={18} emojiSize={'12pt'} />
+          <WalletName color="labelSecondary" address={selectedWallet} />
+          {displaySymbol && (
+            <Symbol
+              color="labelSecondary"
+              size={14}
+              symbol="chevron.down.circle"
+              weight="semibold"
+            />
+          )}
+        </Inline>
+      </Box>
+    );
+  },
+);
+
+BottomWallet.displayName = 'BottomWallet';
 
 export const BottomDisplayWallet = ({
   selectedWallet,
@@ -111,6 +122,7 @@ export const BottomSwitchWallet = ({
 }) => {
   const { setCurrentAddress } = useCurrentAddressStore();
   const { sortedAccounts } = useAccounts();
+  const menuTriggerRef = useRef<{ triggerMenu: () => void }>(null);
 
   const onOpenChange = useCallback((isOpen: boolean) => {
     isOpen && analytics.track(event.dappPromptConnectWalletClicked);
@@ -144,31 +156,41 @@ export const BottomSwitchWallet = ({
       <Text size="12pt" weight="semibold" color="labelQuaternary">
         {i18n.t('approve_request.wallet')}
       </Text>
-      <SwitchMenu
-        title={i18n.t('approve_request.switch_wallets')}
-        renderMenuTrigger={
-          <BottomWallet selectedWallet={selectedWallet} displaySymbol />
-        }
-        menuItemIndicator={
-          <Symbol symbol="checkmark" size={11} weight="semibold" />
-        }
-        renderMenuItem={(wallet, i) => (
-          <Box testId={`switch-wallet-item-${i}`}>
-            <Inline space="8px" alignVertical="center">
-              <WalletAvatar
-                address={wallet as Address}
-                size={18}
-                emojiSize={'12pt'}
-              />
-              <WalletName color="label" address={wallet as Address} />
-            </Inline>
-          </Box>
-        )}
-        menuItems={sortedAccounts.map((a) => a.address)}
-        selectedValue={selectedWallet}
-        onValueChange={onValueChange}
-        onOpenChange={onOpenChange}
-      />
+      <Lens
+        onKeyDown={menuTriggerRef.current?.triggerMenu}
+        padding="2px"
+        borderRadius="round"
+      >
+        <SwitchMenu
+          title={i18n.t('approve_request.switch_wallets')}
+          renderMenuTrigger={
+            <BottomWallet
+              selectedWallet={selectedWallet}
+              displaySymbol
+              ref={menuTriggerRef}
+            />
+          }
+          menuItemIndicator={
+            <Symbol symbol="checkmark" size={11} weight="semibold" />
+          }
+          renderMenuItem={(wallet, i) => (
+            <Box testId={`switch-wallet-item-${i}`}>
+              <Inline space="8px" alignVertical="center">
+                <WalletAvatar
+                  address={wallet as Address}
+                  size={18}
+                  emojiSize={'12pt'}
+                />
+                <WalletName color="label" address={wallet as Address} />
+              </Inline>
+            </Box>
+          )}
+          menuItems={sortedAccounts.map((a) => a.address)}
+          selectedValue={selectedWallet}
+          onValueChange={onValueChange}
+          onOpenChange={onOpenChange}
+        />
+      </Lens>
     </Stack>
   );
 };
@@ -304,6 +326,7 @@ export const AcceptRequestButton = ({
       testId="accept-request-button"
       variant={waitingForDevice || disabled ? 'disabled' : 'flat'}
       disabled={disabled}
+      tabIndex={0}
     >
       <TextOverflow weight="bold" size="16pt" color="label">
         {loading ? <Spinner size={16} color="label" /> : label}
@@ -336,6 +359,7 @@ export const RejectRequestButton = ({
       onClick={onClick}
       testId="reject-request-button"
       variant={'transparent'}
+      tabIndex={0}
     >
       {label}
     </Button>
