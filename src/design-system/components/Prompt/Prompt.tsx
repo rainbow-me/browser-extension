@@ -30,6 +30,8 @@ export const Prompt = ({
 }) => {
   const emphasizedShort = animatedRouteTransitionConfig['emphasizedShort'];
   const deceleratedShort = animatedRouteTransitionConfig['deceleratedShort'];
+  const maxWidth =
+    POPUP_DIMENSIONS.width - Number(padding?.replace('px', '')) * 2;
 
   return (
     <AnimatePresence>
@@ -79,9 +81,7 @@ export const Prompt = ({
             <Row height="content">
               <Box
                 style={{
-                  maxWidth:
-                    POPUP_DIMENSIONS.width -
-                    Number(padding?.replace('px', '')) * 2,
+                  maxWidth,
                   margin: 'auto',
                 }}
               >
