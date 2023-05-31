@@ -7,10 +7,11 @@ import { UnsignedTransaction, serialize } from '@ethersproject/transactions';
 import AppEth, { ledgerService } from '@ledgerhq/hw-app-eth';
 import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
-import { ChainId } from '@rainbow-me/swaps';
 import { getProvider } from '@wagmi/core';
 import { ethers } from 'ethers';
 import { Address } from 'wagmi';
+
+import { ChainId } from '~/core/types/chains';
 
 import { walletAction } from './wallet';
 
