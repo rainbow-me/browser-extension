@@ -17,7 +17,10 @@ export function useRainbowNavigate() {
 
     navigate(to as To, {
       ...(options || {}),
-      state: { ...options?.state, from: location.pathname },
+      state: {
+        ...options?.state,
+        from: location.pathname,
+      },
     });
   };
 }
