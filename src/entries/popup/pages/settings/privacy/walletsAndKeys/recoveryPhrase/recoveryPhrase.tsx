@@ -20,9 +20,21 @@ export function RecoveryPhrase() {
       state?.showQuiz
         ? ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_VERIFY
         : ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS,
-      { state: { wallet: state?.wallet, password: state?.password } },
+      {
+        state: {
+          wallet: state?.wallet,
+          password: state?.password,
+          fromChooseGroup: state?.fromChooseGroup,
+        },
+      },
     );
-  }, [navigate, state?.password, state?.showQuiz, state?.wallet]);
+  }, [
+    navigate,
+    state?.fromChooseGroup,
+    state?.password,
+    state?.showQuiz,
+    state?.wallet,
+  ]);
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(seed as string);
