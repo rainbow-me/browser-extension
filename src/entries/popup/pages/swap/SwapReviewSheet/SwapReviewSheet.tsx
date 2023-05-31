@@ -441,7 +441,7 @@ const SwapReviewSheetWithQuote = ({
             </Box>
             <Box
               paddingHorizontal="20px"
-              style={{ overflow: 'scroll', maxHeight: 176 + 35 }}
+              style={{ overflow: 'scroll', maxHeight: 211 }}
               paddingBottom="20px"
             >
               <Stack space="4px">
