@@ -1,7 +1,7 @@
 /** THIS IS THE PRODUCTION WEBPACK CONFIG FILE  **/
 
 /* eslint-disable @typescript-eslint/no-var-requires */
-// const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
+const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
 const BundleAnalyzerPlugin =
   require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
@@ -19,14 +19,14 @@ if (process.env.ANALYZE_BUNDLE === 'true') {
 }
 
 if (process.env.SENTRY_AUTH_TOKEN) {
-  // sentryWebpackPlugin({
-  //   org: 'rainbow-me',
-  //   project: 'rainbow-browser-extension',
-  //   authToken: process.env.SENTRY_AUTH_TOKEN,
-  //   env: process.env.SENTRY_ENVIRONMENT,
-  //   finalize: true,
-  //   version: process.env.SENTRY_RELEASE_VERSION,
-  // });
+  sentryWebpackPlugin({
+    org: 'rainbow-me',
+    project: 'rainbow-browser-extension',
+    authToken: process.env.SENTRY_AUTH_TOKEN,
+    env: process.env.SENTRY_ENVIRONMENT,
+    finalize: true,
+    version: process.env.SENTRY_RELEASE_VERSION,
+  });
 }
 
 module.exports = {

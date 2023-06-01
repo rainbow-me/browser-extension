@@ -1,5 +1,525 @@
 {
   "resources": {
+    "@sentry/browser>@sentry/core": {
+      "globals": {
+        "__SENTRY_DEBUG__": true,
+        "__SENTRY_TRACING__": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.warn": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@sentry/browser>@sentry/utils": true
+      }
+    },
+    "@sentry/browser>@sentry/utils": {
+      "globals": {
+        "CustomEvent": true,
+        "DOMError": true,
+        "DOMException": true,
+        "Element": true,
+        "ErrorEvent": true,
+        "Event": true,
+        "Headers": true,
+        "Request": true,
+        "Response": true,
+        "TextEncoder": true,
+        "URL": true,
+        "XMLHttpRequest.prototype": true,
+        "__SENTRY_BROWSER_BUNDLE__": true,
+        "__SENTRY_DEBUG__": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "document": true,
+        "new": true,
+        "process": true,
+        "setTimeout": true,
+        "target": true
+      }
+    },
+    "@sentry/tracing>@sentry-internal/tracing": {
+      "globals": {
+        "Headers": true,
+        "PerformanceObserver": true,
+        "Request": true,
+        "__SENTRY_DEBUG__": true,
+        "addEventListener": true,
+        "performance.getEntriesByType": true,
+        "removeEventListener": true
+      },
+      "packages": {
+        "@sentry/browser>@sentry/core": true,
+        "@sentry/browser>@sentry/utils": true
+      }
+    },
+    "@sentry/webpack-plugin": {
+      "builtin": {
+        "path": true
+      },
+      "packages": {
+        "@sentry/webpack-plugin>@sentry/bundler-plugin-core": true,
+        "@sentry/webpack-plugin>uuid": true,
+        "webpack": true
+      }
+    },
+    "@sentry/webpack-plugin>@sentry/bundler-plugin-core": {
+      "builtin": {
+        "child_process": true,
+        "crypto": true,
+        "fs": true,
+        "os": true,
+        "path": true,
+        "util": true
+      },
+      "globals": {
+        "URL": true,
+        "console": true,
+        "process.cwd": true,
+        "process.env": true,
+        "process.on": true,
+        "process.version": true
+      },
+      "packages": {
+        "@sentry/webpack-plugin>@sentry/bundler-plugin-core>@sentry/cli": true,
+        "@sentry/webpack-plugin>@sentry/bundler-plugin-core>@sentry/node": true,
+        "@sentry/webpack-plugin>@sentry/bundler-plugin-core>find-up": true,
+        "@sentry/webpack-plugin>@sentry/bundler-plugin-core>glob": true,
+        "@sentry/webpack-plugin>@sentry/bundler-plugin-core>magic-string": true,
+        "@sentry/webpack-plugin>unplugin": true
+      }
+    },
+    "@sentry/webpack-plugin>@sentry/bundler-plugin-core>@sentry/cli": {
+      "builtin": {
+        "child_process.execFile": true,
+        "child_process.spawn": true,
+        "path.resolve": true
+      },
+      "globals": {
+        "__dirname": true,
+        "process.env": true,
+        "process.platform": true
+      }
+    },
+    "@sentry/webpack-plugin>@sentry/bundler-plugin-core>@sentry/node": {
+      "builtin": {
+        "async_hooks.AsyncLocalStorage": true,
+        "child_process.execFile": true,
+        "domain.active": true,
+        "domain.create": true,
+        "fs.existsSync": true,
+        "fs.readFile": true,
+        "fs.readFileSync": true,
+        "fs.readdir": true,
+        "fs.readdirSync": true,
+        "fs.statSync": true,
+        "http": true,
+        "https": true,
+        "inspector.Session": true,
+        "os.arch": true,
+        "os.cpus": true,
+        "os.freemem": true,
+        "os.hostname": true,
+        "os.platform": true,
+        "os.release": true,
+        "os.totalmem": true,
+        "os.uptime": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.posix.parse": true,
+        "path.relative": true,
+        "path.resolve": true,
+        "path.sep": true,
+        "stream.Readable": true,
+        "url.URL": true,
+        "url.parse": true,
+        "util.TextEncoder": true,
+        "util.format.apply": true,
+        "util.promisify": true,
+        "zlib.createGzip": true
+      },
+      "globals": {
+        "Intl.DateTimeFormat": true,
+        "URL": true,
+        "__SENTRY_DEBUG__": true,
+        "console": true,
+        "process.cwd": true,
+        "process.env.COMMIT_REF": true,
+        "process.env.GITHUB_SHA": true,
+        "process.env.SENTRY_DSN": true,
+        "process.env.SENTRY_ENVIRONMENT": true,
+        "process.env.SENTRY_NAME": true,
+        "process.env.SENTRY_RELEASE": true,
+        "process.env.SENTRY_TRACES_SAMPLE_RATE": true,
+        "process.env.VERCEL_BITBUCKET_COMMIT_SHA": true,
+        "process.env.VERCEL_GITHUB_COMMIT_SHA": true,
+        "process.env.VERCEL_GITLAB_COMMIT_SHA": true,
+        "process.env.VERCEL_GIT_COMMIT_SHA": true,
+        "process.env.ZEIT_BITBUCKET_COMMIT_SHA": true,
+        "process.env.ZEIT_GITHUB_COMMIT_SHA": true,
+        "process.env.ZEIT_GITLAB_COMMIT_SHA": true,
+        "process.env.http_proxy": true,
+        "process.env.https_proxy": true,
+        "process.env.no_proxy": true,
+        "process.exit": true,
+        "process.listeners": true,
+        "process.memoryUsage": true,
+        "process.on": true,
+        "process.uptime": true,
+        "process.version": true,
+        "process.versions.icu": true,
+        "process.versions.node": true,
+        "setImmediate": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@sentry/browser>@sentry/core": true,
+        "@sentry/browser>@sentry/utils": true,
+        "@sentry/tracing>@sentry-internal/tracing": true,
+        "@sentry/webpack-plugin>@sentry/bundler-plugin-core>@sentry/node>lru_map": true,
+        "geckodriver>https-proxy-agent": true,
+        "msw>cookie": true
+      }
+    },
+    "@sentry/webpack-plugin>@sentry/bundler-plugin-core>@sentry/node>lru_map": {
+      "globals": {
+        "define": true
+      }
+    },
+    "@sentry/webpack-plugin>@sentry/bundler-plugin-core>find-up": {
+      "builtin": {
+        "path.dirname": true,
+        "path.parse": true,
+        "path.resolve": true
+      },
+      "packages": {
+        "@sentry/webpack-plugin>@sentry/bundler-plugin-core>find-up>locate-path": true,
+        "eslint>find-up>path-exists": true
+      }
+    },
+    "@sentry/webpack-plugin>@sentry/bundler-plugin-core>find-up>locate-path": {
+      "builtin": {
+        "fs.lstat": true,
+        "fs.lstatSync": true,
+        "fs.stat": true,
+        "fs.statSync": true,
+        "path.resolve": true,
+        "util.promisify": true
+      },
+      "globals": {
+        "process.cwd": true
+      },
+      "packages": {
+        "@sentry/webpack-plugin>@sentry/bundler-plugin-core>find-up>locate-path>p-locate": true
+      }
+    },
+    "@sentry/webpack-plugin>@sentry/bundler-plugin-core>find-up>locate-path>p-locate": {
+      "packages": {
+        "jest>@jest/core>jest-runner>p-limit": true
+      }
+    },
+    "@sentry/webpack-plugin>@sentry/bundler-plugin-core>glob": {
+      "builtin": {
+        "url.fileURLToPath": true
+      },
+      "globals": {
+        "URL": true,
+        "aborted": true,
+        "absolute": true,
+        "absoluteChildren": true,
+        "childrenIgnored": true,
+        "cwd": true,
+        "dot": true,
+        "dotRelative": true,
+        "follow": true,
+        "followGlobstar": true,
+        "globList": true,
+        "globString": true,
+        "hasWalkedCache": true,
+        "ignore": true,
+        "ignored": true,
+        "index": true,
+        "isAbsolute": true,
+        "isDrive": true,
+        "isUNC": true,
+        "length": true,
+        "magicalBraces": true,
+        "mark": true,
+        "matchBase": true,
+        "matches": true,
+        "maxDepth": true,
+        "nobrace": true,
+        "nocase": true,
+        "nodir": true,
+        "noext": true,
+        "noglobstar": true,
+        "onResume": true,
+        "opts": true,
+        "path": true,
+        "pattern": true,
+        "patternList": true,
+        "patterns": true,
+        "paused": true,
+        "platform": true,
+        "process": true,
+        "realpath": true,
+        "relative": true,
+        "relativeChildren": true,
+        "rest": true,
+        "results": true,
+        "root": true,
+        "scurry": true,
+        "seen": true,
+        "sep": true,
+        "signal": true,
+        "stat": true,
+        "store": true,
+        "subwalks": true,
+        "windowsPathsNoEscape": true,
+        "withFileTypes": true
+      },
+      "packages": {
+        "@sentry/webpack-plugin>@sentry/bundler-plugin-core>glob>minipass": true,
+        "@sentry/webpack-plugin>@sentry/bundler-plugin-core>glob>path-scurry": true,
+        "eslint>minimatch": true
+      }
+    },
+    "@sentry/webpack-plugin>@sentry/bundler-plugin-core>glob>minipass": {
+      "builtin": {
+        "events": true,
+        "stream": true,
+        "string_decoder.StringDecoder": true
+      },
+      "globals": {
+        "Buffer.concat": true,
+        "Buffer.from": true,
+        "Buffer.isBuffer": true,
+        "_MP_NO_ITERATOR_SYMBOLS_": true,
+        "process": true
+      }
+    },
+    "@sentry/webpack-plugin>@sentry/bundler-plugin-core>glob>path-scurry": {
+      "builtin": {
+        "fs": true,
+        "fs/promises.lstat": true,
+        "fs/promises.readdir": true,
+        "fs/promises.readlink": true,
+        "fs/promises.realpath": true,
+        "path.posix": true,
+        "path.win32": true,
+        "url.fileURLToPath": true
+      },
+      "globals": {
+        "URL": true,
+        "applyStat": true,
+        "asyncReaddirInFlight": true,
+        "atime": true,
+        "atimeMs": true,
+        "birthtime": true,
+        "birthtimeMs": true,
+        "blksize": true,
+        "blocks": true,
+        "callOnReaddirCB": true,
+        "children": true,
+        "ctime": true,
+        "ctimeMs": true,
+        "cwd": true,
+        "depth": true,
+        "dev": true,
+        "fs": true,
+        "fullpath": true,
+        "fullpathPosix": true,
+        "gid": true,
+        "ino": true,
+        "linkTarget": true,
+        "lstatFail": true,
+        "markChildrenENOENT": true,
+        "markENOENT": true,
+        "markENOREALPATH": true,
+        "markENOTDIR": true,
+        "matchName": true,
+        "mode": true,
+        "mtime": true,
+        "mtimeMs": true,
+        "name": true,
+        "nlink": true,
+        "nocase": true,
+        "onReaddirCB": true,
+        "parent": true,
+        "process.cwd": true,
+        "process.platform": true,
+        "queueMicrotask": true,
+        "rdev": true,
+        "readdirAddChild": true,
+        "readdirAddNewChild": true,
+        "readdirCBInFlight": true,
+        "readdirFail": true,
+        "readdirMaybePromoteChild": true,
+        "readdirPromoteChild": true,
+        "readdirSuccess": true,
+        "readlinkFail": true,
+        "realpath": true,
+        "relative": true,
+        "relativePosix": true,
+        "resolveCache": true,
+        "resolveParts": true,
+        "resolvePosixCache": true,
+        "root": true,
+        "rootPath": true,
+        "roots": true,
+        "sep": true,
+        "size": true,
+        "splitSep": true,
+        "type": true,
+        "uid": true
+      },
+      "packages": {
+        "@sentry/webpack-plugin>@sentry/bundler-plugin-core>glob>path-scurry>lru-cache": true,
+        "@sentry/webpack-plugin>@sentry/bundler-plugin-core>glob>path-scurry>minipass": true
+      }
+    },
+    "@sentry/webpack-plugin>@sentry/bundler-plugin-core>glob>path-scurry>lru-cache": {
+      "globals": {
+        "AbortController": true,
+        "AbortSignal": true,
+        "_onabort": true,
+        "aborted": true,
+        "addItemSize": true,
+        "allowStale": true,
+        "allowStaleOnFetchAbort": true,
+        "allowStaleOnFetchRejection": true,
+        "backgroundFetch": true,
+        "calculatedSize": true,
+        "connect": true,
+        "console.error": true,
+        "constructing": true,
+        "dispose": true,
+        "disposeAfter": true,
+        "disposed": true,
+        "evict": true,
+        "fetchMethod": true,
+        "free": true,
+        "hasDispose": true,
+        "hasDisposeAfter": true,
+        "hasFetchMethod": true,
+        "head": true,
+        "heap": true,
+        "ignoreFetchAbort": true,
+        "indexes": true,
+        "initializeSizeTracking": true,
+        "initializeTTLTracking": true,
+        "isBackgroundFetch": true,
+        "isStale": true,
+        "isValidIndex": true,
+        "keyList": true,
+        "keyMap": true,
+        "length": true,
+        "max": true,
+        "maxEntrySize": true,
+        "maxSize": true,
+        "moveToTail": true,
+        "next": true,
+        "noDeleteOnFetchRejection": true,
+        "noDeleteOnStaleGet": true,
+        "noDisposeOnSet": true,
+        "noUpdateTTL": true,
+        "onabort": true,
+        "performance": true,
+        "prev": true,
+        "process": true,
+        "reason": true,
+        "removeItemSize": true,
+        "requireSize": true,
+        "rindexes": true,
+        "setItemTTL": true,
+        "setTimeout": true,
+        "signal": true,
+        "size": true,
+        "sizeCalculation": true,
+        "sizes": true,
+        "starts": true,
+        "statusTTL": true,
+        "tail": true,
+        "ttl": true,
+        "ttlAutopurge": true,
+        "ttlResolution": true,
+        "ttls": true,
+        "updateAgeOnGet": true,
+        "updateAgeOnHas": true,
+        "updateItemAge": true,
+        "valList": true
+      }
+    },
+    "@sentry/webpack-plugin>@sentry/bundler-plugin-core>glob>path-scurry>minipass": {
+      "builtin": {
+        "events": true,
+        "stream": true,
+        "string_decoder.StringDecoder": true
+      },
+      "globals": {
+        "Buffer.concat": true,
+        "Buffer.from": true,
+        "Buffer.isBuffer": true,
+        "_MP_NO_ITERATOR_SYMBOLS_": true,
+        "process": true
+      }
+    },
+    "@sentry/webpack-plugin>@sentry/bundler-plugin-core>magic-string": {
+      "globals": {
+        "Buffer": true,
+        "btoa": true,
+        "console.warn": true
+      },
+      "packages": {
+        "@sentry/webpack-plugin>@sentry/bundler-plugin-core>magic-string>@jridgewell/sourcemap-codec": true
+      }
+    },
+    "@sentry/webpack-plugin>@sentry/bundler-plugin-core>magic-string>@jridgewell/sourcemap-codec": {
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "define": true
+      }
+    },
+    "@sentry/webpack-plugin>unplugin": {
+      "builtin": {
+        "fs": true,
+        "path": true,
+        "url.fileURLToPath": true
+      },
+      "globals": {
+        "Buffer": true,
+        "TextDecoder": true,
+        "__dirname": true,
+        "process.cwd": true
+      },
+      "packages": {
+        "@sentry/webpack-plugin>unplugin>webpack-virtual-modules": true,
+        "msw>chokidar": true,
+        "webpack>acorn": true,
+        "webpack>webpack-sources": true
+      }
+    },
+    "@sentry/webpack-plugin>unplugin>webpack-virtual-modules": {
+      "builtin": {
+        "constants": true,
+        "path": true
+      },
+      "globals": {
+        "console.log": true,
+        "process.env.DEBUG": true,
+        "process.env.WVM_DEBUG": true
+      }
+    },
+    "@sentry/webpack-plugin>uuid": {
+      "builtin": {
+        "crypto": true
+      },
+      "globals": {
+        "Buffer.from": true
+      }
+    },
     "@vanilla-extract/css": {
       "globals": {
         "process.env.NODE_ENV": true
@@ -610,6 +1130,23 @@
         "eslint>is-glob>is-extglob": true
       }
     },
+    "eslint>minimatch": {
+      "builtin": {
+        "path": true
+      },
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
+        "eslint>minimatch>brace-expansion": true
+      }
+    },
+    "eslint>minimatch>brace-expansion": {
+      "packages": {
+        "eslint>minimatch>brace-expansion>balanced-match": true,
+        "eslint>minimatch>brace-expansion>concat-map": true
+      }
+    },
     "eslint>strip-ansi": {
       "packages": {
         "eslint>strip-ansi>ansi-regex": true
@@ -653,6 +1190,34 @@
     "file-loader>loader-utils>json5": {
       "globals": {
         "console.warn": true
+      }
+    },
+    "geckodriver>https-proxy-agent": {
+      "builtin": {
+        "assert": true,
+        "net": true,
+        "tls": true,
+        "url": true
+      },
+      "globals": {
+        "Buffer.concat": true,
+        "Buffer.from": true
+      },
+      "packages": {
+        "geckodriver>https-proxy-agent>agent-base": true,
+        "vitest>debug": true
+      }
+    },
+    "geckodriver>https-proxy-agent>agent-base": {
+      "builtin": {
+        "events.EventEmitter": true
+      },
+      "globals": {
+        "clearTimeout": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "vitest>debug": true
       }
     },
     "globby>dir-glob": {
@@ -1200,6 +1765,58 @@
         "process.argv": true
       }
     },
+    "msw>chokidar": {
+      "builtin": {
+        "events.EventEmitter": true,
+        "fs.close": true,
+        "fs.lstat": true,
+        "fs.open": true,
+        "fs.readdir": true,
+        "fs.realpath": true,
+        "fs.stat": true,
+        "fs.unwatchFile": true,
+        "fs.watch": true,
+        "fs.watchFile": true,
+        "os.type": true,
+        "path.basename": true,
+        "path.dirname": true,
+        "path.extname": true,
+        "path.isAbsolute": true,
+        "path.join": true,
+        "path.normalize": true,
+        "path.relative": true,
+        "path.resolve": true,
+        "path.sep": true,
+        "util.promisify": true
+      },
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "process.env.CHOKIDAR_INTERVAL": true,
+        "process.env.CHOKIDAR_PRINT_FSEVENTS_REQUIRE_ERROR": true,
+        "process.env.CHOKIDAR_USEPOLLING": true,
+        "process.nextTick": true,
+        "process.platform": true,
+        "process.version.match": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "eslint>is-glob": true,
+        "lint-staged>normalize-path": true,
+        "msw>chokidar>anymatch": true,
+        "msw>chokidar>braces": true,
+        "msw>chokidar>fsevents": true,
+        "msw>chokidar>glob-parent": true,
+        "msw>chokidar>is-binary-path": true,
+        "msw>chokidar>readdirp": true
+      }
+    },
+    "msw>chokidar>anymatch": {
+      "packages": {
+        "lint-staged>normalize-path": true,
+        "ts-loader>micromatch>picomatch": true
+      }
+    },
     "msw>chokidar>braces": {
       "packages": {
         "msw>chokidar>braces>fill-range": true
@@ -1218,6 +1835,12 @@
         "msw>chokidar>braces>fill-range>to-regex-range>is-number": true
       }
     },
+    "msw>chokidar>fsevents": {
+      "globals": {
+        "process.platform": true
+      },
+      "native": true
+    },
     "msw>chokidar>glob-parent": {
       "builtin": {
         "os.platform": true,
@@ -1225,6 +1848,32 @@
       },
       "packages": {
         "eslint>is-glob": true
+      }
+    },
+    "msw>chokidar>is-binary-path": {
+      "builtin": {
+        "path.extname": true
+      },
+      "packages": {
+        "msw>chokidar>is-binary-path>binary-extensions": true
+      }
+    },
+    "msw>chokidar>readdirp": {
+      "builtin": {
+        "fs": true,
+        "path.join": true,
+        "path.relative": true,
+        "path.resolve": true,
+        "path.sep": true,
+        "stream.Readable": true,
+        "util.promisify": true
+      },
+      "globals": {
+        "process.platform": true,
+        "process.versions.node.split": true
+      },
+      "packages": {
+        "ts-loader>micromatch>picomatch": true
       }
     },
     "selenium-webdriver>ws>bufferutil": {

@@ -35,7 +35,12 @@ jobs:
       - name: Bump the version
         run: yarn bump
       - name: Fetch the current version number
-        run: echo "release_version=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
+        run: echo "RELEASE_VERSION=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
+      - name: Set sentry env vars
+        run: |
+          echo "SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}" >> .env
+          echo "SENTRY_ENVIRONMENT=internal" >> .env
+          echo "SENTRY_RELEASE_VERSION=${{ env.RELEASE_VERSION }}" >> .env
       - name: Build the extension ready for the stores
         run: yarn build:webpack
       - name: Update the manifest
@@ -45,28 +50,28 @@ jobs:
       - name: Archive the build artifact
         uses: actions/upload-artifact@v3
         with:
-          name: rainbowbx-v${{ env.release_version }}.zip
+          name: rainbowbx-v${{ env.RELEASE_VERSION }}.zip
           path: build/
-      - name: Submit to the chrome webstore
-        uses: PlasmoHQ/bpp@v3
-        with:
-          artifact: ./rainbowbx.zip
-          keys: ${{ secrets.BPP_KEYS_INTERNAL }}
+      # - name: Submit to the chrome webstore
+      #   uses: PlasmoHQ/bpp@v3
+      #   with:
+      #     artifact: ./rainbowbx.zip
+      #     keys: ${{ secrets.BPP_KEYS_INTERNAL }}
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
-          message: Version Bump (Internal) - v${{ env.release_version }}
+          message: Version Bump (Internal) - v${{ env.RELEASE_VERSION }}
           committer_name: GitHub Actions
           committer_email: actions@github.com
           add: '*.json'
-      - name: Create Sentry release
-        uses: getsentry/action-release@v1
-        env:
-          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
-          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
-        with:
-          environment: internal
-          finalize: true
-          sourcemaps: ./build
-          version: ${{ env.release_version }}
+      # - name: Create Sentry release
+      #   uses: getsentry/action-release@v1
+      #   env:
+      #     SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      #     SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+      #     SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
+      #   with:
+      #     environment: internal
+      #     finalize: true
+      #     sourcemaps: ./build
+      #     version: ${{ env.RELEASE_VERSION }}
