@@ -1,3 +1,5 @@
+/** THIS IS THE DEVELOPMENT WEBPACK CONFIG FILE  **/
+
 /* eslint-disable @typescript-eslint/no-var-requires */
 const fs = require('fs');
 const { resolve } = require('path');
@@ -6,7 +8,7 @@ const { EnvironmentPlugin } = require('webpack');
 const ExtensionReloader = require('webpack-extension-reloader');
 
 const manifest = require('./static/manifest.json');
-const config = require('./webpack.config');
+const config = require('./webpack.config.base');
 
 const basicPermissions = manifest.permissions;
 
