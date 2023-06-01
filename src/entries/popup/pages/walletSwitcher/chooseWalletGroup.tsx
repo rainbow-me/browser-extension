@@ -340,7 +340,7 @@ const ChooseWalletGroup = () => {
         address={createWalletAddress}
       />
       <Box paddingHorizontal="20px" height="full">
-        <Stack space="24px">
+        <Stack space="24px" alignHorizontal="center">
           <Box paddingHorizontal="28px">
             <Stack space="8px">
               <Text size="16pt" color="label" align="center" weight="bold">
@@ -356,7 +356,7 @@ const ChooseWalletGroup = () => {
               </Text>
             </Stack>
           </Box>
-          <Box style={{ width: '106px' }}>
+          <Box background="blue" style={{ width: '106px' }}>
             <Separator color="separatorTertiary" strokeWeight="1px" />
           </Box>
           <Box
