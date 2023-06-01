@@ -18,7 +18,7 @@ import { useLocation } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
 import { analytics } from '~/analytics';
-import { event } from '~/analytics/event';
+import { screen } from '~/analytics/screen';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { usePendingRequestStore } from '~/core/state/requests';
@@ -131,7 +131,7 @@ export function Home() {
   }, [navigate, pendingRequests, prevPendingRequest?.id]);
 
   useEffect(() => {
-    analytics.track(event.walletViewed);
+    analytics.screen(screen.wallet);
     removeImportWalletSecrets();
   }, []);
 
