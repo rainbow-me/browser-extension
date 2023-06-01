@@ -26,7 +26,7 @@ webpack({ ...config,
     ...config.output,
     clean: true,
   },
-  devtool: 'sourcemap',
+  devtool: 'source-map',
   mode: 'production',
   plugins: [
     ...config.plugins,
