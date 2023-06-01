@@ -356,7 +356,7 @@ const ChooseWalletGroup = () => {
               </Text>
             </Stack>
           </Box>
-          <Box background="blue" style={{ width: '106px' }}>
+          <Box style={{ width: '106px' }}>
             <Separator color="separatorTertiary" strokeWeight="1px" />
           </Box>
           <Box
