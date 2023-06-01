@@ -379,7 +379,6 @@ const SwapReviewSheetWithQuote = ({
             borderTopLeftRadius: '24px',
             borderTopRightRadius: '24px',
           }}
-          paddingBottom="20px"
         >
           <Stack space="12px">
             <Navbar
@@ -440,7 +439,11 @@ const SwapReviewSheetWithQuote = ({
                 />
               </Inline>
             </Box>
-            <Box paddingHorizontal="20px">
+            <Box
+              paddingHorizontal="20px"
+              style={{ overflow: 'scroll', maxHeight: 211 }}
+              paddingBottom="20px"
+            >
               <Stack space="4px">
                 <DetailsRow testId="minimum-received">
                   <Label
