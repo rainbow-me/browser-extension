@@ -180,7 +180,6 @@ export function Settings() {
           >
             <SwitchMenu
               align="end"
-              controlled
               onClose={() => setThemeDropdownOpen(false)}
               open={themeDropdownOpen}
               renderMenuTrigger={
