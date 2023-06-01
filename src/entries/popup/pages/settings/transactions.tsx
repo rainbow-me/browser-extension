@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { txSpeedEmoji } from '~/core/references/txSpeed';
@@ -34,7 +34,6 @@ export function Transactions() {
           >
             <SwitchMenu
               align="end"
-              controlled
               open={speedDropdownOpen}
               onClose={() => setSpeedDropdownOpen(false)}
               renderMenuTrigger={
