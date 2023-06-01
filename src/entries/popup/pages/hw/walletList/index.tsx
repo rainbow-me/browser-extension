@@ -139,6 +139,7 @@ const WalletListHW = () => {
         accounts: filteredAccounts.map(
           (account: { address: Address }) => account.address,
         ),
+        vendor: state.vendor,
       },
     });
   }, [
@@ -244,8 +245,13 @@ const WalletListHW = () => {
                           align="center"
                         >
                           {accountsToImport?.length > 1
-                            ? i18n.t('hw.connect_wallets_found')
-                            : i18n.t('hw.connect_wallets_not_found')}
+                            ? i18n.t('hw.connect_wallets_found', {
+                                count: accountsToImport?.length,
+                                vendor: state.vendor,
+                              })
+                            : i18n.t('hw.connect_wallets_not_found', {
+                                vendor: state.vendor,
+                              })}
                         </Text>
                       </Box>
                     </Stack>
