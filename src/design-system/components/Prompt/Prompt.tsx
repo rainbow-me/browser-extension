@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React, { ReactNode } from 'react';
 
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box, Row, Rows } from '~/design-system';
 import {
   BackdropFilter,
@@ -13,7 +14,7 @@ import { zIndexes } from '~/entries/popup/utils/zIndexes';
 export const Prompt = ({
   show,
   children,
-  padding,
+  padding = '40px',
   background,
   scrimBackground,
   backdropFilter,
@@ -29,6 +30,8 @@ export const Prompt = ({
 }) => {
   const emphasizedShort = animatedRouteTransitionConfig['emphasizedShort'];
   const deceleratedShort = animatedRouteTransitionConfig['deceleratedShort'];
+  const maxWidth =
+    POPUP_DIMENSIONS.width - Number(padding?.replace('px', '')) * 2;
 
   return (
     <AnimatePresence>
@@ -72,22 +75,29 @@ export const Prompt = ({
           transition={emphasizedShort}
           backdropFilter={backdropFilter ?? 'blur(12px)'}
           background="scrim"
-          padding={padding ?? '40px'}
+          padding={padding}
         >
           <Rows alignVertical="center">
             <Row height="content">
               <Box
-                as={motion.div}
-                initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={deceleratedShort}
-                background={background ?? 'surfaceMenu'}
-                borderRadius="16px"
-                borderColor="separatorTertiary"
-                borderWidth="1px"
+                style={{
+                  maxWidth,
+                  margin: 'auto',
+                }}
               >
-                {children}
+                <Box
+                  as={motion.div}
+                  initial={{ opacity: 0, scale: 1.1 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={deceleratedShort}
+                  background={background ?? 'surfaceMenu'}
+                  borderRadius="16px"
+                  borderColor="separatorTertiary"
+                  borderWidth="1px"
+                >
+                  {children}
+                </Box>
               </Box>
             </Row>
           </Rows>
