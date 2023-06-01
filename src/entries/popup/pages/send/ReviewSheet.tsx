@@ -281,6 +281,7 @@ export const ReviewSheet = ({
 
   const handleSend = useCallback(async () => {
     if (sendEnabled && !sending) {
+      setSending(true);
       try {
         await onSend();
         new Audio(SendSound).play();
