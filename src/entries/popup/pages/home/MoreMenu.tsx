@@ -3,6 +3,10 @@ import { useAccount, useEnsName } from 'wagmi';
 
 import LockSound from 'static/assets/audio/ui_lock.mp3';
 import { i18n } from '~/core/languages';
+import {
+  RAINBOW_FEEDBACK_URL,
+  RAINBOW_SUPPORT_URL,
+} from '~/core/references/links';
 import { getProfileUrl, goToNewTab } from '~/core/utils/tabs';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 
@@ -32,7 +36,15 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
   );
 
   const onValueChange = React.useCallback(
-    (value: 'settings' | 'profile' | 'lock' | 'qr-code') => {
+    (
+      value:
+        | 'settings'
+        | 'profile'
+        | 'lock'
+        | 'qr-code'
+        | 'support'
+        | 'feedback',
+    ) => {
       switch (value) {
         case 'settings':
           navigate(ROUTES.SETTINGS);
@@ -46,6 +58,12 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
           break;
         case 'qr-code':
           navigate(ROUTES.QR_CODE);
+          break;
+        case 'support':
+          goToNewTab({ url: RAINBOW_SUPPORT_URL });
+          break;
+        case 'feedback':
+          goToNewTab({ url: RAINBOW_FEEDBACK_URL });
           break;
       }
     },
@@ -62,7 +80,9 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
       <DropdownMenuContent marginRight="16px" sideOffset={1}>
         <DropdownMenuRadioGroup
           onValueChange={(value) =>
-            onValueChange(value as 'settings' | 'profile')
+            onValueChange(
+              value as 'settings' | 'profile' | 'support' | 'feedback',
+            )
           }
         >
           <Stack space="4px">
@@ -113,6 +133,50 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
                       />
                       <Text size="14pt" weight="semibold">
                         {i18n.t('menu.home_header_right.rainbow_profile')}
+                      </Text>
+                    </Inline>
+                    <Symbol
+                      size={12}
+                      symbol="arrow.up.forward.circle"
+                      weight="semibold"
+                      color="labelTertiary"
+                    />
+                  </Inline>
+                </Box>
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem highlightAccentColor value="support">
+                <Box width="full">
+                  <Inline alignVertical="center" alignHorizontal="justify">
+                    <Inline alignVertical="center" space="8px">
+                      <Symbol
+                        size={12}
+                        symbol="book.closed.fill"
+                        weight="semibold"
+                      />
+                      <Text size="14pt" weight="semibold">
+                        {i18n.t('menu.home_header_right.guides_and_support')}
+                      </Text>
+                    </Inline>
+                    <Symbol
+                      size={12}
+                      symbol="arrow.up.forward.circle"
+                      weight="semibold"
+                      color="labelTertiary"
+                    />
+                  </Inline>
+                </Box>
+              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem highlightAccentColor value="feedback">
+                <Box width="full">
+                  <Inline alignVertical="center" alignHorizontal="justify">
+                    <Inline alignVertical="center" space="8px">
+                      <Symbol
+                        size={12}
+                        symbol="message.fill"
+                        weight="semibold"
+                      />
+                      <Text size="14pt" weight="semibold">
+                        {i18n.t('menu.home_header_right.share_feedback')}
                       </Text>
                     </Inline>
                     <Symbol

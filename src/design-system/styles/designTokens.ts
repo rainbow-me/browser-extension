@@ -888,6 +888,8 @@ export const symbolNames = selectSymbolNames(
   'person.crop.circle.badge.checkmark',
   'return.left',
   'plus',
+  'book.closed.fill',
+  'message.fill',
 );
 export type SymbolName = typeof symbolNames[number];
 

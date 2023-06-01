@@ -65,10 +65,10 @@
     "use_rainbow_as_default_wallet": "Use Rainbow as default wallet",
     "default_wallet_description": "Allow Apps to prioritize Rainbow when looking for an extension to connect with.",
     "contacts": "Contacts",
-    "share_rainbow": "Share Rainbow",
+    "guides_and_support": "Guides & Support",
     "learn_about_ethereum": "Learn about Ethereum",
     "follow_us_on_twitter": "Follow us on Twitter",
-    "feedback_and_support": "Feedback & Support",
+    "share_beta_feedback": "Share Beta Feedback",
     "theme": {
       "title": "Theme",
       "system": "System",
@@ -537,6 +537,8 @@
       "settings": "Settings",
       "qr_code": "My QR Code",
       "rainbow_profile": "Rainbow Profile",
+      "guides_and_support": "Guides & Support",
+      "share_feedback": "Share Feedback",
       "lock_rainbow": "Lock Rainbow"
     }
   },
