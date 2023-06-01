@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -31,6 +31,12 @@ export const RequestAccountsActions = ({
   onRejectRequest: () => void;
   loading?: boolean;
 }) => {
+  useEffect(() => {
+    const confirmCta = document.querySelector(
+      '[data-testid="accept-request-button"]',
+    ) as HTMLButtonElement;
+    setTimeout(() => confirmCta.focus(), 300);
+  }, []);
   return (
     <Box padding="20px">
       <Stack space="24px">

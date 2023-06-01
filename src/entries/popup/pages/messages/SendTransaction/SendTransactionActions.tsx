@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -44,6 +44,12 @@ export const SendTransactionActions = ({
       }
     },
   });
+  useEffect(() => {
+    const confirmCta = document.querySelector(
+      '[data-testid="reject-request-button"]',
+    ) as HTMLButtonElement;
+    setTimeout(() => confirmCta.focus(), 300);
+  }, []);
   return (
     <Inset vertical="20px" horizontal="20px">
       <Stack space="24px">
