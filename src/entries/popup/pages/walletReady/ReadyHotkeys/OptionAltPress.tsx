@@ -71,7 +71,7 @@ export function OptionAltPress({
               opacity: isOptionPressed ? 1 : 0,
               transition: 'opacity 0.2s ease-in-out, top 0.2s ease-in-out',
               transitionProperty: 'top',
-              transitionDelay: '0.4s',
+              transitionDelay: '0.17s',
             }}
             alt="Option"
           />
