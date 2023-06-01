@@ -26,6 +26,7 @@ import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
+import { logger } from '~/logger';
 
 import { testSandbox } from '../../handlers/wallet';
 import { useAlert } from '../../hooks/useAlert';
@@ -51,6 +52,24 @@ export function Settings() {
     const response = await testSandbox();
 
     alert(response);
+  }, []);
+
+  // Dev only!
+  const generateFCMToken = useCallback(async () => {
+    chrome.gcm.register(
+      [process.env.FIREBASE_SENDER_ID_BX],
+      (registrationId: string) => {
+        logger.info('Token: ', { registrationId });
+        logger.info('Now listening on the popup...');
+
+        chrome.gcm.onMessage.addListener(
+          (message: chrome.gcm.IncomingMessage) => {
+            logger.info('got message', { message });
+            alert('message from FCM: ' + JSON.stringify(message, null, 2));
+          },
+        );
+      },
+    );
   }, []);
 
   const toggleFeatureFlag = useCallback(
@@ -383,6 +402,11 @@ export function Settings() {
                 onToggle={() => toggleFeatureFlag(key as FeatureFlagTypes)}
               />
             ))}
+            <MenuItem
+              titleComponent={<MenuItem.Title text="Generate FCM token" />}
+              onClick={generateFCMToken}
+              testId="generate-fcm-token"
+            />
           </Menu>
         )}
         {process.env.IS_TESTING === 'true' && (
