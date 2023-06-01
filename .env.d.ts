@@ -12,10 +12,12 @@ declare global {
       PLAYGROUND: 'default' | 'ds';
       LOG_LEVEL: 'debug' | 'info' | 'warn' | 'error';
       LOG_DEBUG: string;
-      FIREBASE_API_KEY: string;
-      FIREBASE_AUTH_DOMAIN: string;
-      FIREBASE_PROJECT_ID: string;
-      FIREBASE_APP_ID: string;
+      FIREBASE_API_KEY_BX: string;
+      FIREBASE_AUTH_DOMAIN_BX: string;
+      FIREBASE_PROJECT_ID_BX: string;
+      FIREBASE_SENDER_ID_BX: string;
+      FIREBASE_APP_ID_BX: string;
+      FIREBASE_VAPID_BX: string;
       IMGIX_DOMAIN: string;
       IMGIX_TOKEN: string;
     }
