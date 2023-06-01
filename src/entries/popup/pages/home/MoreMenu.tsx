@@ -150,7 +150,7 @@ export const MoreMenu = ({ children }: { children: React.ReactNode }) => {
                     <Inline alignVertical="center" space="8px">
                       <Symbol
                         size={12}
-                        symbol="book.closed.circle.fill"
+                        symbol="book.closed.fill"
                         weight="semibold"
                       />
                       <Text size="14pt" weight="semibold">
