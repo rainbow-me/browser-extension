@@ -120,12 +120,6 @@ it('should be able to go to swap settings and check rows are visible', async () 
     driver,
   });
   await delayTime('medium');
-  const found2 = await doNotFindElementByTestId({
-    id: 'swap-settings-done',
-    driver,
-  });
-  await delayTime('medium');
-  console.log('start 1111111 found2', found2);
 });
 
 it('should be able to go to settings and turn on flashbots', async () => {
@@ -240,16 +234,11 @@ it.skip('should be able to set default values for settings and go back to swap',
     driver,
   });
   expect(routeTriggerAuto).toBeTruthy();
-  // const text = await getTextFromTextInput({
-  //   id: 'slippage-input-mask',
-  //   driver,
-  // });
-  // expect(text).toBe('1');
-  const foundclick = await doNotFindElementByTestId({
-    id: 'swap-settings-done',
+  const text = await getTextFromTextInput({
+    id: 'slippage-input-mask',
     driver,
   });
-  console.log('about to click button', foundclick);
+  expect(text).toBe('1');
   await findElementByTestIdAndClick({
     id: 'swap-settings-done',
     driver,
@@ -258,21 +247,6 @@ it.skip('should be able to set default values for settings and go back to swap',
 });
 
 it('should be able to open token to sell input and select assets', async () => {
-  // console.log('start 1');
-  // const found = await doNotFindElementByTestId({
-  //   id: 'swap-settings-done',
-  //   driver,
-  // });
-  // console.log('start 2 found', found);
-  // if (found) {
-  //   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
-  // }
-  // const found2 = await doNotFindElementByTestId({
-  //   id: 'swap-settings-done',
-  //   driver,
-  // });
-  // console.log('start 2 found2', found2);
-  // expect(found2).toBeFalsy();
   await findElementByTestIdAndClick({
     id: 'token-to-sell-search-token-input',
     driver,
