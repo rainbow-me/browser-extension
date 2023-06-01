@@ -9,10 +9,10 @@ import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ChainId } from '~/core/types/chains';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTokenBlockExplorerUrl } from '~/core/utils/transactions';
+import { triggerAlert } from '~/design-system/components/Alert/util';
 
 import { ROUTES } from '../urls';
 
-import { useAlert } from './useAlert';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 import { useNavigateToSwaps } from './useNavigateToSwaps';
 import { useRainbowNavigate } from './useRainbowNavigate';
@@ -22,7 +22,6 @@ export function useTokensShortcuts() {
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
-  const { triggerAlert } = useAlert();
   const navigate = useRainbowNavigate();
   const navigateToSwaps = useNavigateToSwaps();
 
@@ -69,7 +68,6 @@ export function useTokensShortcuts() {
       navigateToSwaps,
       selectedToken,
       setSelectedToken,
-      triggerAlert,
       viewOnExplorer,
     ],
   );
