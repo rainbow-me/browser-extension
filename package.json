@@ -85,6 +85,7 @@
     "@radix-ui/react-context-menu": "2.1.1",
     "@radix-ui/react-dropdown-menu": "2.0.1",
     "@radix-ui/react-polymorphic": "0.0.14",
+    "@radix-ui/react-select": "1.2.1",
     "@radix-ui/react-tooltip": "1.0.3",
     "@rainbow-me/swaps": "0.4.2",
     "@segment/analytics-node": "1.0.0-beta.24",
