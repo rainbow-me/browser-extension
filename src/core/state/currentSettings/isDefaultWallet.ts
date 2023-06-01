@@ -9,7 +9,7 @@ export interface IsDefaultWalletState {
 
 export const isDefaultWalletStore = createStore<IsDefaultWalletState>(
   (set) => ({
-    isDefaultWallet: false,
+    isDefaultWallet: true,
     setIsDefaultWallet: (newIsDefaultWallet) =>
       set({ isDefaultWallet: newIsDefaultWallet }),
   }),
