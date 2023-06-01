@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
 import { supportedCurrencies } from '~/core/references';
@@ -97,6 +99,11 @@ export function Settings() {
 
   const setRainbowAsDefaultWallet = useCallback(
     async (rainbowAsDefault: boolean) => {
+      analytics.track(
+        rainbowAsDefault
+          ? event.settingsRainbowDefaultProviderEnabled
+          : event.settingsRainbowDefaultProviderDisabled,
+      );
       setIsDefaultWallet(rainbowAsDefault);
       messenger.send('rainbow_setDefaultProvider', { rainbowAsDefault });
     },
