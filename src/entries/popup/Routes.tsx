@@ -2,6 +2,8 @@ import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
 import { matchRoutes, useLocation } from 'react-router-dom';
 
+import { analytics } from '~/analytics';
+import { screen } from '~/analytics/screen';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
@@ -764,6 +766,7 @@ const ROUTE_DATA = [
 const matchingRoute = (pathName: string) => {
   const routeMatch = matchRoutes(ROUTE_DATA, pathName);
   const match = routeMatch?.[0].route;
+  if (match) analytics.screen(screen[match.path], { path: match.path });
   return match;
 };
 

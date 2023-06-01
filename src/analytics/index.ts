@@ -68,7 +68,7 @@ export class Analytics {
   /**
    * Sends a `screen` event to Segment.
    */
-  screen(name: string, params: Record<string, never> = {}): void {
+  screen(name: string, params: Record<string, string> = {}): void {
     if (this.disabled || IS_DEV || IS_TESTING || !this.deviceId) return;
     const metadata = this.getDefaultMetadata();
     const properties = { ...params, ...metadata };
