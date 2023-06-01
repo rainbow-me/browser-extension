@@ -11,7 +11,7 @@ import { useLocation } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
 import { analytics } from '~/analytics';
-import { event } from '~/analytics/event';
+import { screen } from '~/analytics/screen';
 import { shortcuts } from '~/core/references/shortcuts';
 import { usePendingRequestStore } from '~/core/state';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
@@ -91,7 +91,7 @@ export function Home() {
   }, [scrollAtTop, scrollY]);
 
   useEffect(() => {
-    analytics.track(event.walletViewed);
+    analytics.screen(screen.wallet);
   }, []);
 
   useKeyboardShortcut({

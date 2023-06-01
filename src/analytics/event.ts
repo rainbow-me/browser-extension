@@ -102,11 +102,6 @@ export const event = {
    * Called when user enables tracking in Settings.
    */
   settingsAnalyticsTrackingEnabled: 'settings.analytics_tracking.enabled',
-  /**
-   * Called when the core wallet Tokens & Activity
-   * screen is viewed or opened in the extension popup.
-   */
-  walletViewed: 'wallet.viewed',
 } as const;
 
 /**
@@ -273,5 +268,4 @@ export type EventProperties = {
   [event.popupOpened]: undefined;
   [event.settingsAnalyticsTrackingDisabled]: undefined;
   [event.settingsAnalyticsTrackingEnabled]: undefined;
-  [event.walletViewed]: undefined;
 };
