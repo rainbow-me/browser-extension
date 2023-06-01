@@ -132,6 +132,7 @@
     "zustand": "4.1.2"
   },
   "devDependencies": {
+    "@sentry/webpack-plugin": "2.2.0",
     "@foundry-rs/hardhat-anvil": "0.1.7",
     "@lavamoat/allow-scripts": "2.0.3",
     "@lavamoat/preinstall-always-fail": "1.0.0",
@@ -253,7 +254,8 @@
       "@foundry-rs/hardhat-anvil>hardhat>ethereum-cryptography>secp256k1": false,
       "firebase>@firebase/firestore>@grpc/grpc-js>@grpc/proto-loader>protobufjs": false,
       "firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false,
-      "@ledgerhq/hw-app-eth>@ledgerhq/domain-service>eip55>keccak": false
+      "@ledgerhq/hw-app-eth>@ledgerhq/domain-service>eip55>keccak": false,
+      "@sentry/webpack-plugin>@sentry/bundler-plugin-core>@sentry/cli": false
     }
   },
   "lint-staged": {
