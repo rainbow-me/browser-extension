@@ -47,15 +47,16 @@ const wordlist = wordlists['en']; // ethers uses the 'en' wordlist as default, I
 const validateSecret = (secret: string): string | boolean => {
   if (!secret) return true; // true = error but no msg
 
-  if (secret.startsWith('0x')) {
-    if (secret.length < 4) return true;
+  const words = secret.split(' ');
+
+  if (words.length === 1) {
+    if (secret.length < 6) return true;
     if (secret.length > 66) return i18n.t('import_wallet.too_many_chars');
     if (isValidPrivateKey(addHexPrefix(secret.toLowerCase()))) return false; // false = no error
     return i18n.t('import_wallet.invalid_private_key');
   }
 
   if (isValidMnemonic(secret, wordlist)) return false; // false = no error
-  const words = secret.split(' ');
   if (words.length < 10) return true; // user prolly still typing let's not bother him with and error msg
   if (words.length > 12) return i18n.t('import_wallet.too_many_words');
   if (words.length < 12)
