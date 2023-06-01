@@ -1805,7 +1805,6 @@
         "lint-staged>normalize-path": true,
         "msw>chokidar>anymatch": true,
         "msw>chokidar>braces": true,
-        "msw>chokidar>fsevents": true,
         "msw>chokidar>glob-parent": true,
         "msw>chokidar>is-binary-path": true,
         "msw>chokidar>readdirp": true
@@ -1834,12 +1833,6 @@
       "packages": {
         "msw>chokidar>braces>fill-range>to-regex-range>is-number": true
       }
-    },
-    "msw>chokidar>fsevents": {
-      "globals": {
-        "process.platform": true
-      },
-      "native": true
     },
     "msw>chokidar>glob-parent": {
       "builtin": {
