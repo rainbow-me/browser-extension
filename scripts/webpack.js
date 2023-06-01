@@ -22,7 +22,11 @@ webpack({ ...config,
       chunks: 'async'
     }
   }, 
-  devtool: 'hidden-source-map',
+  output: {
+    ...config.output,
+    clean: true,
+  },
+  devtool: 'sourcemap',
   mode: 'production',
   plugins: [
     ...config.plugins,
