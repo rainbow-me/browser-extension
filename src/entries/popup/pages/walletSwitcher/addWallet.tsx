@@ -5,7 +5,7 @@ import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags'
 import { Box } from '~/design-system';
 
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
-import { setImportWalletSecrets } from '../../handlers/importWalletSecrets';
+import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { useAlert } from '../../hooks/useAlert';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -43,7 +43,7 @@ const AddWallet = () => {
             onClick={() =>
               navigate(ROUTES.NEW_IMPORT_WALLET, {
                 state: {
-                  onBack: () => setImportWalletSecrets(['']),
+                  onBack: () => removeImportWalletSecrets(),
                 },
               })
             }

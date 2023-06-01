@@ -9,6 +9,7 @@ import { accentColorAsHsl } from '~/design-system/styles/core.css';
 import { RainbowError, logger } from '~/logger';
 
 import { Spinner } from '../../components/Spinner/Spinner';
+import { setImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -39,6 +40,8 @@ export function ImportOrCreateWallet() {
     try {
       const newWalletAddress = await wallet.create();
       setCurrentAddress(newWalletAddress);
+      const seedPhrase = await wallet.exportWallet(newWalletAddress, '');
+      setImportWalletSecrets([seedPhrase]);
       navigate(ROUTES.SEED_BACKUP_PROMPT);
     } catch (e) {
       logger.info('Onboarding error: creating new wallet failed');
