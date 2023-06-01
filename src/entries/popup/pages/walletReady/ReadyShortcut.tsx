@@ -7,10 +7,18 @@ import { OptionAltPress } from './ReadyHotkeys/OptionAltPress';
 import { RPress } from './ReadyHotkeys/RPress';
 import { ShiftPress } from './ReadyHotkeys/ShiftPress';
 
-export function ReadyShortcut() {
+export function ReadyShortcut({ highlight }: { highlight: boolean }) {
   const [isShiftPressed, setIsShiftPressed] = useState(false);
   const [isOptionPressed, setIsOptionPressed] = useState(false);
   const [isRPressed, setIsRPressed] = useState(false);
+
+  useEffect(() => {
+    if (highlight) {
+      setIsOptionPressed(false);
+      setIsRPressed(false);
+      setIsShiftPressed(false);
+    }
+  }, [highlight]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -63,13 +71,15 @@ export function ReadyShortcut() {
       <Box paddingBottom="50px">
         <Box display="flex" justifyContent="center" paddingBottom="15px">
           <OpenText
-            isButtonPressed={isShiftPressed || isRPressed || isOptionPressed}
+            isButtonPressed={
+              isShiftPressed || isRPressed || isOptionPressed || highlight
+            }
           />
         </Box>
         <Box display="flex" width="full">
-          <ShiftPress isShiftPressed={isShiftPressed} />
-          <OptionAltPress isOptionPressed={isOptionPressed} />
-          <RPress isRPressed={isRPressed} />
+          <ShiftPress isShiftPressed={isShiftPressed || highlight} />
+          <OptionAltPress isOptionPressed={isOptionPressed || highlight} />
+          <RPress isRPressed={isRPressed || highlight} />
         </Box>
       </Box>
       <Box style={{ width: '106px' }}>
