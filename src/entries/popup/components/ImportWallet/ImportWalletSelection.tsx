@@ -98,6 +98,7 @@ export const useImportWalletsFromSecrets = () => {
     })().finally(() => {
       setIsImporting(false);
       derivedAccountsStore.clear();
+      removeImportWalletSecrets();
     });
   };
 
