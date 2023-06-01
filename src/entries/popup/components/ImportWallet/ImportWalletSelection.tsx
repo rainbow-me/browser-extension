@@ -14,6 +14,7 @@ import {
   Text,
 } from '~/design-system';
 
+import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import * as wallet from '../../handlers/wallet';
 import { deriveAccountsFromSecret } from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
