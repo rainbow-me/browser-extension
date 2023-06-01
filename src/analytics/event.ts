@@ -103,6 +103,16 @@ export const event = {
    */
   settingsAnalyticsTrackingEnabled: 'settings.analytics_tracking.enabled',
   /**
+   * Called when user disables Rainbow as default provider in Settings.
+   */
+  settingsRainbowDefaultProviderDisabled:
+    'settings.rainbow_default_provider.disabled',
+  /**
+   * Called when user enables Rainbow as default provider in Settings.
+   */
+  settingsRainbowDefaultProviderEnabled:
+    'settings.rainbow_default_provider.enabled',
+  /**
    * Called when the core wallet Tokens & Activity
    * screen is viewed or opened in the extension popup.
    */
@@ -273,5 +283,7 @@ export type EventProperties = {
   [event.popupOpened]: undefined;
   [event.settingsAnalyticsTrackingDisabled]: undefined;
   [event.settingsAnalyticsTrackingEnabled]: undefined;
+  [event.settingsRainbowDefaultProviderDisabled]: undefined;
+  [event.settingsRainbowDefaultProviderEnabled]: undefined;
   [event.walletViewed]: undefined;
 };
