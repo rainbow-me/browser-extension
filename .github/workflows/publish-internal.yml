@@ -42,7 +42,7 @@ jobs:
           echo "SENTRY_ENVIRONMENT=internal" >> .env
           echo "SENTRY_RELEASE_VERSION=${{ env.RELEASE_VERSION }}" >> .env
       - name: Build the extension ready for the stores
-        run: yarn build:webpack
+        run: source .env && yarn build:webpack
       - name: Update the manifest
         run: yarn update-manifest internal
       - name: Zip it
