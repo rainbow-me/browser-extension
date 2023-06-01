@@ -114,7 +114,6 @@ function ActionButtonsSection() {
   );
 
   const alertWatchingWallet = React.useCallback(() => {
-    console.log('----- alertWatchingWallet');
     triggerAlert({ text: i18n.t('alert.wallet_watching_mode') });
   }, []);
 
