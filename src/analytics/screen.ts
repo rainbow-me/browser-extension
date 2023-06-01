@@ -1,12 +1,11 @@
 /* eslint sort-keys: "error"*/
 
+import { ROUTES } from '~/entries/popup/urls';
+
 /**
- * All screens, used by `analytics.screen()`
+ * All screen names by path, used by `analytics.screen()`.
+ * We're flipping the key/value pairs from `ROUTES` to avoid maintenance.
  */
-export const screen = {
-  /**
-   * Called when the core wallet Tokens & Activity
-   * screen is viewed or opened in the extension popup.
-   */
-  wallet: 'wallet',
-};
+export const screen = Object.fromEntries(
+  Object.entries(ROUTES).map(([key, value]) => [value, key]),
+);

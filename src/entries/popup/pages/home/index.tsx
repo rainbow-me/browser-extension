@@ -10,8 +10,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useAccount } from 'wagmi';
 
-import { analytics } from '~/analytics';
-import { screen } from '~/analytics/screen';
 import { shortcuts } from '~/core/references/shortcuts';
 import { usePendingRequestStore } from '~/core/state';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
@@ -89,10 +87,6 @@ export function Home() {
       else if (!isAtTop && scrollAtTop) setScrollAtTop(false);
     });
   }, [scrollAtTop, scrollY]);
-
-  useEffect(() => {
-    analytics.screen(screen.wallet);
-  }, []);
 
   useKeyboardShortcut({
     handler: (e) => {
