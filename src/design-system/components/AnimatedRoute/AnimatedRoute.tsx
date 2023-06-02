@@ -16,7 +16,7 @@ import { ProtectedRoute } from '~/entries/popup/ProtectedRoute';
 import { Navbar } from '~/entries/popup/components/Navbar/Navbar';
 import { UserStatusResult } from '~/entries/popup/hooks/useAuth';
 import { useAvatar } from '~/entries/popup/hooks/useAvatar';
-import { getInputIsFocused } from '~/entries/popup/utils/activeElement';
+import { getActiveElement } from '~/entries/popup/utils/activeElement';
 
 import {
   AccentColorProviderWrapper,
@@ -193,7 +193,7 @@ export const AnimatedRoute = React.forwardRef<
   useEffect(() => {
     const app = document.getElementById('app');
     setTimeout(() => {
-      if (!getInputIsFocused()) {
+      if (getActiveElement()?.tagName === 'BODY') {
         app?.focus();
       }
     }, 150);

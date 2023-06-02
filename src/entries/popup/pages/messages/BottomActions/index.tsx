@@ -304,12 +304,14 @@ export const WalletBalance = ({ appHost }: { appHost: string }) => {
 };
 
 export const AcceptRequestButton = ({
+  autoFocus,
   disabled,
   onClick,
   label,
   waitingForDevice,
   loading = false,
 }: {
+  autoFocus?: boolean;
   disabled?: boolean;
   onClick: () => void;
   label: string;
@@ -318,6 +320,7 @@ export const AcceptRequestButton = ({
 }) => {
   return (
     <Button
+      autoFocus={autoFocus}
       emoji={waitingForDevice ? '👀' : undefined}
       color={waitingForDevice ? 'label' : 'accent'}
       height="44px"
@@ -336,9 +339,11 @@ export const AcceptRequestButton = ({
 };
 
 export const RejectRequestButton = ({
+  autoFocus,
   onClick,
   label,
 }: {
+  autoFocus?: boolean;
   onClick: () => void;
   label: string;
 }) => {
@@ -353,6 +358,7 @@ export const RejectRequestButton = ({
   });
   return (
     <Button
+      autoFocus={autoFocus}
       color={'labelSecondary'}
       height="44px"
       width="full"

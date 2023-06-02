@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -31,12 +31,6 @@ export const RequestAccountsActions = ({
   onRejectRequest: () => void;
   loading?: boolean;
 }) => {
-  useEffect(() => {
-    const confirmCta = document.querySelector(
-      '[data-testid="accept-request-button"]',
-    ) as HTMLButtonElement;
-    setTimeout(() => confirmCta.focus(), 300);
-  }, []);
   return (
     <Box padding="20px">
       <Stack space="24px">
@@ -57,6 +51,7 @@ export const RequestAccountsActions = ({
         <Rows space="8px">
           <Row>
             <AcceptRequestButton
+              autoFocus
               onClick={onAcceptRequest}
               label={i18n.t('approve_request.connect', { appName })}
               loading={loading}
