@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import { useCallback, useRef } from 'react';
 import { Address, useBalance } from 'wagmi';
 
 import { analytics } from '~/analytics';
@@ -6,7 +6,6 @@ import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
-import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import {
@@ -22,13 +21,13 @@ import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { TextStyles } from '~/design-system/styles/core.css';
 import { EthSymbol } from '~/entries/popup/components/EthSymbol/EthSymbol';
 import { Spinner } from '~/entries/popup/components/Spinner/Spinner';
+import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
 import { SwitchNetworkMenu } from '~/entries/popup/components/SwitchMenu/SwitchNetworkMenu';
 import { WalletAvatar } from '~/entries/popup/components/WalletAvatar/WalletAvatar';
 import { useAccounts } from '~/entries/popup/hooks/useAccounts';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { useWalletInfo } from '~/entries/popup/hooks/useWalletInfo';
-import { useWallets } from '~/entries/popup/hooks/useWallets';
 import {
   getInputIsFocused,
   radixIsActive,
@@ -37,7 +36,6 @@ import {
 import { simulateClick } from '~/entries/popup/utils/simulateClick';
 
 import { ChainBadge } from '../../../components/ChainBadge/ChainBadge';
-import { SwitchMenu } from '../../../components/SwitchMenu/SwitchMenu';
 
 export const WalletName = ({
   address,
@@ -113,8 +111,6 @@ export const BottomSwitchWallet = ({
 }) => {
   const { setCurrentAddress } = useCurrentAddressStore();
   const { sortedAccounts } = useAccounts();
-  const { visibleWallets } = useWallets();
-  const { walletOrder } = useWalletOrderStore();
 
   const onOpenChange = useCallback((isOpen: boolean) => {
     isOpen && analytics.track(event.dappPromptConnectWalletClicked);
@@ -168,22 +164,7 @@ export const BottomSwitchWallet = ({
             </Inline>
           </Box>
         )}
-        menuItems={visibleWallets
-          ?.sort((a, b) => {
-            const aIndex = walletOrder.indexOf(a.address);
-            const bIndex = walletOrder.indexOf(b.address);
-            if (aIndex === -1 && bIndex === -1) {
-              return 0;
-            }
-            if (aIndex === -1) {
-              return 1;
-            }
-            if (bIndex === -1) {
-              return -1;
-            }
-            return aIndex - bIndex;
-          })
-          ?.map((wallet) => wallet.address)}
+        menuItems={sortedAccounts.map((a) => a.address)}
         selectedValue={selectedWallet}
         onValueChange={onValueChange}
         onOpenChange={onOpenChange}
