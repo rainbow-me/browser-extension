@@ -47,11 +47,11 @@ jobs:
         with:
           name: rainbowbx-v${{ env.release_version }}.zip
           path: build/
-      # - name: Submit to the chrome webstore
-      #   uses: PlasmoHQ/bpp@v3
-      #   with:
-      #     artifact: ./rainbowbx.zip
-      #     keys: ${{ secrets.BPP_KEYS_INTERNAL }}
+      - name: Submit to the chrome webstore
+        uses: PlasmoHQ/bpp@v3
+        with:
+          artifact: ./rainbowbx.zip
+          keys: ${{ secrets.BPP_KEYS_INTERNAL }}
       - name: Commit changes
         uses: EndBug/add-and-commit@v9
         with:
