@@ -254,7 +254,11 @@ const ChooseWalletGroup = () => {
     const fetchWallets = async () => {
       const walletsFromKeychain = await getWallets();
       const controlledWallets = walletsFromKeychain.filter(
-        (wallet) => wallet.type !== KeychainType.ReadOnlyKeychain,
+        (wallet) =>
+          ![
+            KeychainType.ReadOnlyKeychain,
+            KeychainType.HardwareWalletKeychain,
+          ].includes(wallet.type),
       );
 
       setWallets(controlledWallets);
@@ -336,7 +340,7 @@ const ChooseWalletGroup = () => {
         address={createWalletAddress}
       />
       <Box paddingHorizontal="20px" height="full">
-        <Stack space="24px">
+        <Stack space="24px" alignHorizontal="center">
           <Box paddingHorizontal="28px">
             <Stack space="8px">
               <Text size="16pt" color="label" align="center" weight="bold">

@@ -139,6 +139,7 @@ const WalletListHW = () => {
         accounts: filteredAccounts.map(
           (account: { address: Address }) => account.address,
         ),
+        vendor: state.vendor,
       },
     });
   }, [

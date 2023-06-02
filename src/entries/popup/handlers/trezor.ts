@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { TransactionResponse } from '@ethersproject/abstract-provider';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
+import { ChainId } from '@rainbow-me/swaps';
 import transformTypedDataPlugin from '@trezor/connect-plugin-ethereum';
 import { getProvider } from '@wagmi/core';
 import { Bytes, UnsignedTransaction, ethers } from 'ethers';
@@ -64,6 +65,9 @@ export async function signTransactionFromTrezor(
     });
 
     if (response.success) {
+      if (transaction.chainId === ChainId.mainnet) {
+        baseTx.type = 2;
+      }
       const serializedTransaction = ethers.utils.serializeTransaction(baseTx, {
         r: response.payload.r,
         s: response.payload.s,
