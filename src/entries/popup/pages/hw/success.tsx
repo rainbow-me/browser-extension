@@ -110,7 +110,7 @@ export function SuccessHW() {
   const navigate = useRainbowNavigate();
   const isFullScreen = useIsFullScreen();
   const { state } = useLocation();
-  const { accounts } = state;
+  const { accounts, vendor } = state;
 
   const { status } = useAuth();
   // Only for testing purposes, to confirm the pyramid logic works fine.
@@ -178,7 +178,11 @@ export function SuccessHW() {
                 color="labelTertiary"
                 align="center"
               >
-                {i18n.t('hw.connection_successful_description')}
+                {i18n.t('hw.connection_successful_description', {
+                  vendor:
+                    vendor.substring(0, 1).toUpperCase() + vendor.substring(1),
+                  count: accounts.length,
+                })}
               </Text>
             </Stack>
           </Box>

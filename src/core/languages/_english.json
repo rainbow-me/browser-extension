@@ -65,10 +65,10 @@
     "use_rainbow_as_default_wallet": "Use Rainbow as default wallet",
     "default_wallet_description": "Allow Apps to prioritize Rainbow when looking for an extension to connect with.",
     "contacts": "Contacts",
-    "share_rainbow": "Share Rainbow",
+    "guides_and_support": "Guides & Support",
     "learn_about_ethereum": "Learn about Ethereum",
     "follow_us_on_twitter": "Follow us on Twitter",
-    "feedback_and_support": "Feedback & Support",
+    "share_beta_feedback": "Share Beta Feedback",
     "theme": {
       "title": "Theme",
       "system": "System",
@@ -364,7 +364,7 @@
     }
   },
   "custom_gas": {
-    "title": "Gwei Settings",
+    "title": "Gas Settings",
     "current_base_fee": "Current base fee",
     "max_base_fee": "Max base fee",
     "miner_tip": "Miner tip",
@@ -521,6 +521,8 @@
       "settings": "Settings",
       "qr_code": "My QR Code",
       "rainbow_profile": "Rainbow Profile",
+      "guides_and_support": "Guides & Support",
+      "share_feedback": "Share Feedback",
       "lock_rainbow": "Lock Rainbow"
     }
   },
@@ -796,7 +798,7 @@
     "add_by_index": "Add by index",
     "index_label": "Index",
     "connection_successful_title": "Connected successful",
-    "connection_successful_description": "You’ve successfully added 12 wallets. They’re easy to identify in your wallet list with the Ledger badge. You can add more at any time.",
+    "connection_successful_description": "You’ve successfully added %{count} wallets. They’re easy to identify in your wallet list with the %{vendor} badge. You can add more at any time.",
     "done": "Done",
     "add_wallet": "Add wallet",
     "add_by_index_title": "Add a wallet by its index",
