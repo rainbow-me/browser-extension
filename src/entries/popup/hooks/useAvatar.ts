@@ -1,11 +1,10 @@
-import { useEnsAvatar } from 'wagmi';
-
 import { emojiAvatarForAddress } from '../utils/emojiAvatarForAddress';
 
 import { useDominantColor } from './useDominantColor';
+import { useENSAvatar } from './useENSAvatar';
 
 export function useAvatar({ address }: { address?: string }) {
-  const { data: ensAvatar, isFetched } = useEnsAvatar({
+  const { data: ensAvatar, isFetched } = useENSAvatar({
     addressOrName: address,
   });
 
