@@ -14,10 +14,10 @@ import chrome from 'selenium-webdriver/chrome';
 import { expect } from 'vitest';
 import { erc20ABI } from 'wagmi';
 
-// variables
+// consts
 
 const waitUntilTime = 20000;
-
+const testPassword = 'test1234';
 const BINARY_PATHS = {
   mac: {
     chrome: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
@@ -234,17 +234,21 @@ export function shortenAddress(address) {
 }
 
 export async function switchWallet(address, rootURL, driver: WebDriver) {
-  // find shortened address, go to popup, find header, click, find wallet you want to switch to and click
+  // find shortened address
   const shortenedAddress = shortenAddress(address);
 
+  // go to popup
   await goToPopup(driver, rootURL, '#/home');
   await delayTime('medium');
+
+  // find header and click
   await findElementByIdAndClick({
     id: 'header-account-name-shuffle',
     driver,
   });
   await delayTime('medium');
 
+  // find wallet you want to switch to and click
   await waitUntilElementByTestIdIsPresent({
     id: `account-item-${shortenedAddress}`,
     driver,
@@ -271,7 +275,8 @@ export async function transactionStatus() {
   const txn = await provider.getTransaction(blockData.transactions[0]);
   const txnData = txn.wait();
 
-  // transactionResponse.wait.status returns '1' if the txn was sent successfully and '0' if its a failure
+  // transactionResponse.wait.status returns '1' if txn is successful
+  // it returns '0' if the txn is a failure
   const txnStatus = (await txnData).status === 1 ? 'success' : 'failure';
 
   return txnStatus;
@@ -309,11 +314,11 @@ export async function importWalletFlow(driver, rootURL, walletSecret) {
     });
   }
 
-  await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
+  await typeOnTextInput({ id: 'password-input', driver, text: testPassword });
   await typeOnTextInput({
     id: 'confirm-password-input',
     driver,
-    text: 'test1234',
+    text: testPassword,
   });
   await findElementByTestIdAndClick({ id: 'set-password-button', driver });
   await delayTime('long');
