@@ -18,7 +18,7 @@ import {
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import SeedPhraseTable from '../../components/SeedPhraseTable/SeedPhraseTable';
 import { triggerToast } from '../../components/Toast/Toast';
-import { exportWallet } from '../../handlers/wallet';
+import { getImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -30,8 +30,8 @@ export function SeedReveal() {
 
   useEffect(() => {
     const init = async () => {
-      const seedPhrase = await exportWallet(currentAddress, '');
-      setSeed(seedPhrase);
+      const secrets = await getImportWalletSecrets();
+      setSeed(secrets[0]);
     };
     init();
   }, [currentAddress]);
