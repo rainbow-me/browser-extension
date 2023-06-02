@@ -9,7 +9,7 @@ import { Lens } from '~/design-system/components/Lens/Lens';
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
-import { setImportWalletSecrets } from '../../handlers/importWalletSecrets';
+import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { useAlert } from '../../hooks/useAlert';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -45,7 +45,7 @@ export function ImportOrConnect() {
   );
   useEffect(() => {
     // clear secrets if the user backs out of flow entirely
-    setImportWalletSecrets(['']);
+    removeImportWalletSecrets();
   }, []);
 
   return (
