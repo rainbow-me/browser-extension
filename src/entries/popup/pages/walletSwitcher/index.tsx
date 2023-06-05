@@ -349,8 +349,7 @@ export function WalletSwitcher() {
 
   return (
     <Box
-      height="full"
-      style={{ minHeight: 0 }}
+      style={{ minHeight: 0, height: '100vh' }}
       display="flex"
       flexDirection="column"
     >
@@ -427,6 +426,7 @@ export function WalletSwitcher() {
       </DragDropContext>
       <Box
         width="full"
+        style={{ marginTop: 'auto' }}
         backdropFilter="opacity(5%)"
         padding="20px"
         borderWidth="1px"
