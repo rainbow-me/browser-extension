@@ -8,7 +8,7 @@ import { ChainId } from '~/core/types/chains';
 import { RPCMethod } from '~/core/types/rpcMethods';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box } from '~/design-system';
-import { useAlert } from '~/entries/popup/hooks/useAlert';
+import { triggerAlert } from '~/design-system/components/Alert/util';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
@@ -51,7 +51,6 @@ export function SignMessage({
   });
   const { appSession } = useAppSession({ host: appHost });
   const { watchedWallets } = useWallets();
-  const { triggerAlert } = useAlert();
 
   const selectedChainId = appSession.chainId ?? ChainId.mainnet;
   const selectedWallet = appSession.address;
@@ -127,7 +126,7 @@ export function SignMessage({
         callback: rejectRequest,
       });
     }
-  }, [isWatchingWallet, rejectRequest, triggerAlert]);
+  }, [isWatchingWallet, rejectRequest]);
 
   return (
     <Box style={{ overflowY: 'hidden' }} width="full" height="full">
