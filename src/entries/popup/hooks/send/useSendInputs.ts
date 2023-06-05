@@ -13,6 +13,7 @@ import {
   convertRawAmountToBalance,
   lessThan,
   minus,
+  multiply,
   toFixedDecimals,
 } from '~/core/utils/numbers';
 
@@ -110,6 +111,24 @@ export const useSendInputs = ({
     setIndependentField(independentField === 'asset' ? 'native' : 'asset');
   }, [assetAmount, dependentAmountDisplay, independentField, setInputValue]);
 
+  const rawMaxAssetBalanceAmount = useMemo(() => {
+    const assetBalanceAmount = convertAmountToRawAmount(
+      asset?.balance?.amount || '0',
+      asset?.decimals || 18,
+    );
+    const rawAssetBalanceAmount =
+      asset?.isNativeAsset &&
+      lessThan(selectedGas?.gasFee?.amount, assetBalanceAmount)
+        ? minus(assetBalanceAmount, multiply(selectedGas?.gasFee?.amount, 1))
+        : assetBalanceAmount;
+    return rawAssetBalanceAmount;
+  }, [
+    asset?.balance?.amount,
+    asset?.decimals,
+    asset?.isNativeAsset,
+    selectedGas?.gasFee?.amount,
+  ]);
+
   const setMaxAssetAmount = useCallback(() => {
     const assetBalanceAmount = convertAmountToRawAmount(
       asset?.balance?.amount || '0',
@@ -149,12 +168,13 @@ export const useSendInputs = ({
     asset?.price?.value,
     currentCurrency,
     independentField,
-    selectedGas?.gasFee?.amount,
+    selectedGas,
     setInputValue,
   ]);
 
   return {
     assetAmount,
+    rawMaxAssetBalanceAmount,
     independentAmount,
     independentField,
     independentFieldRef,
