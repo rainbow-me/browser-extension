@@ -12,20 +12,20 @@ export function ReadyShortcut() {
   const [isOptionPressed, setIsOptionPressed] = useState(false);
   const [isRPressed, setIsRPressed] = useState(false);
 
-  const [isHighlighted, setHiglighted] = useState(false);
+  const [isHighlighted, setHighlighted] = useState(false);
 
   useEffect(() => {
     const onFocus = () => {
       setIsOptionPressed(false);
       setIsRPressed(false);
       setIsShiftPressed(false);
-      setHiglighted(false);
+      setHighlighted(false);
     };
     const onBlur = () => {
       setIsOptionPressed(false);
       setIsRPressed(false);
       setIsShiftPressed(false);
-      setHiglighted(!!chrome.extension.getViews({ type: 'popup' }).length);
+      setHighlighted(!!chrome.extension.getViews({ type: 'popup' }).length);
     };
     window.addEventListener('blur', onBlur);
     window.addEventListener('focus', onFocus);
