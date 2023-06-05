@@ -17,6 +17,7 @@ import { SymbolName, TextColor } from '~/design-system/styles/designTokens';
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { PasswordInput } from '../../components/PasswordInput/PasswordInput';
+import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { updatePassword } from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -78,6 +79,7 @@ export function CreatePassword() {
   const handleSetPassword = useCallback(async () => {
     if (!isValid || !isMatching) return;
     await updatePassword('', newPassword);
+    await removeImportWalletSecrets();
     navigate(ROUTES.READY);
   }, [isMatching, isValid, navigate, newPassword]);
 
