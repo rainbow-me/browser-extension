@@ -1,22 +1,9 @@
-import React, { useEffect, useState } from 'react';
-
 import { i18n } from '~/core/languages';
 import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
 
 import { ReadyShortcut } from './ReadyShortcut';
 
 export function WalletReady() {
-  const [windowLostFocus, setWindowLostFocus] = useState(false);
-  const onWindowBlur = () => setWindowLostFocus(true);
-  const onWindowFocus = () => setWindowLostFocus(false);
-  useEffect(() => {
-    window.addEventListener('blur', onWindowBlur);
-    window.addEventListener('focus', onWindowFocus);
-    return () => {
-      window.removeEventListener('blur', onWindowBlur);
-      window.removeEventListener('focus', onWindowFocus);
-    };
-  }, []);
   return (
     <Box
       display="flex"
@@ -50,7 +37,7 @@ export function WalletReady() {
         <Separator color="separatorTertiary" strokeWeight="1px" />
       </Box>
 
-      <ReadyShortcut highlight={windowLostFocus} />
+      <ReadyShortcut />
 
       <Box paddingHorizontal="20px">
         <Stack space="8px">
