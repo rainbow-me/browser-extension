@@ -6,8 +6,8 @@ import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
 import { supportedCurrencies } from '~/core/references';
 import {
+  RAINBOW_FEEDBACK_URL,
   RAINBOW_LEARN_URL,
-  RAINBOW_SHARE_URL,
   RAINBOW_SUPPORT_URL,
   RAINBOW_TWITTER_URL,
 } from '~/core/references/links';
@@ -206,7 +206,6 @@ export function Settings() {
           >
             <SwitchMenu
               align="end"
-              controlled
               onClose={() => setThemeDropdownOpen(false)}
               open={themeDropdownOpen}
               renderMenuTrigger={
@@ -293,9 +292,9 @@ export function Settings() {
         <Menu>
           <MenuItem
             first
-            leftComponent={<MenuItem.TextIcon icon="🌈" />}
+            leftComponent={<MenuItem.TextIcon icon="📚" />}
             titleComponent={
-              <MenuItem.Title text={i18n.t('settings.share_rainbow')} />
+              <MenuItem.Title text={i18n.t('settings.guides_and_support')} />
             }
             rightComponent={
               <Symbol
@@ -305,7 +304,7 @@ export function Settings() {
                 weight="semibold"
               />
             }
-            onClick={() => window.open(RAINBOW_SHARE_URL, '_blank')}
+            onClick={() => window.open(RAINBOW_SUPPORT_URL, '_blank')}
           />
           <MenuItem
             leftComponent={<MenuItem.TextIcon icon="🧠" />}
@@ -341,7 +340,7 @@ export function Settings() {
             last
             leftComponent={<MenuItem.TextIcon icon="💬" />}
             titleComponent={
-              <MenuItem.Title text={i18n.t('settings.feedback_and_support')} />
+              <MenuItem.Title text={i18n.t('settings.share_beta_feedback')} />
             }
             rightComponent={
               <Symbol
@@ -351,7 +350,7 @@ export function Settings() {
                 weight="semibold"
               />
             }
-            onClick={() => window.open(RAINBOW_SUPPORT_URL, '_blank')}
+            onClick={() => window.open(RAINBOW_FEEDBACK_URL, '_blank')}
           />
         </Menu>
         {process.env.IS_TESTING === 'true' && (
