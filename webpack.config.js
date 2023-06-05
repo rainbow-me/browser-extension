@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const fs = require('fs');
 const { join, resolve } = require('path');
+require('dotenv').config();
 
 const { VanillaExtractPlugin } = require('@vanilla-extract/webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
@@ -14,6 +15,15 @@ const BundleAnalyzerPlugin =
 const allowList = require('./static/allowlist.json');
 const manifest = require('./static/manifest.json');
 const manifestFilePath = resolve(__dirname, './build/manifest.json');
+
+const optionalPlugins = [];
+if (process.env.ANALYZE_BUNDLE === 'true') {
+  optionalPlugins.push(new BundleAnalyzerPlugin(), {
+    analyzerMode: 'static',
+    generateStatsFile: true,
+    openAnalyzer: false,
+  });
+}
 
 const manifestOverride = manifest;
 manifestOverride.content_security_policy.extension_pages = `${
@@ -65,11 +75,7 @@ module.exports = {
     ],
   },
   plugins: [
-    new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
-      generateStatsFile: true,
-      openAnalyzer: false,
-    }),
+    ...optionalPlugins,
     new Dotenv({ allowEmptyValues: true }),
     new HtmlWebpackPlugin({
       chunks: ['popup'],
