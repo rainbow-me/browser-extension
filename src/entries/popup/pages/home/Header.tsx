@@ -8,6 +8,7 @@ import { i18n } from '~/core/languages';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, ButtonSymbol, Inline, Inset, Stack, Text } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/util';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { BoxStyles, TextStyles } from '~/design-system/styles/core.css';
 
@@ -15,7 +16,6 @@ import { AccountName } from '../../components/AccountName/AccountName';
 import { Avatar } from '../../components/Avatar/Avatar';
 import { Link } from '../../components/Link/Link';
 import { triggerToast } from '../../components/Toast/Toast';
-import { useAlert } from '../../hooks/useAlert';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useNavigateToSwaps } from '../../hooks/useNavigateToSwaps';
 import { useWallets } from '../../hooks/useWallets';
@@ -91,7 +91,6 @@ function ActionButtonsSection() {
 
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
-  const { triggerAlert } = useAlert();
   const navigateToSwaps = useNavigateToSwaps();
 
   const handleCopy = React.useCallback(() => {
@@ -116,11 +115,11 @@ function ActionButtonsSection() {
 
   const alertWatchingWallet = React.useCallback(() => {
     triggerAlert({ text: i18n.t('alert.wallet_watching_mode') });
-  }, [triggerAlert]);
+  }, []);
 
   const alertComingSoon = React.useCallback(() => {
     triggerAlert({ text: i18n.t('alert.coming_soon') });
-  }, [triggerAlert]);
+  }, []);
 
   return (
     <Box style={{ height: 56 }}>
