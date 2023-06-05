@@ -19,7 +19,6 @@ import {
 import {
   getImportWalletSecrets,
   removeImportWalletSecrets,
-  setImportWalletSecrets,
 } from '../../handlers/importWalletSecrets';
 import { deriveAccountsFromSecret } from '../../handlers/wallet';
 import * as wallet from '../../handlers/wallet';
@@ -71,7 +70,6 @@ const ImportWalletSelection = ({
       }
     }
     setIsImporting(false);
-    setImportWalletSecrets(['']);
     removeImportWalletSecrets();
     onboarding
       ? navigate(ROUTES.CREATE_PASSWORD, { state: { backTo: ROUTES.WELCOME } })
