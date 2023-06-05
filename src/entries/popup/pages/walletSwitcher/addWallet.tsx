@@ -3,15 +3,14 @@ import React, { useCallback } from 'react';
 import { i18n } from '~/core/languages';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { Box } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/util';
 
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
-import { setImportWalletSecrets } from '../../handlers/importWalletSecrets';
-import { useAlert } from '../../hooks/useAlert';
+import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 const AddWallet = () => {
-  const { triggerAlert } = useAlert();
   const navigate = useRainbowNavigate();
   const { featureFlags } = useFeatureFlagsStore();
 
@@ -43,7 +42,7 @@ const AddWallet = () => {
             onClick={() =>
               navigate(ROUTES.NEW_IMPORT_WALLET, {
                 state: {
-                  onBack: () => setImportWalletSecrets(['']),
+                  onBack: () => removeImportWalletSecrets(),
                 },
               })
             }

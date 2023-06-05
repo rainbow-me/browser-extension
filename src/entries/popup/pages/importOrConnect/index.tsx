@@ -5,18 +5,17 @@ import { NavigateOptions } from 'react-router-dom';
 import { i18n } from '~/core/languages';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { Box, Separator, Stack, Text } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/util';
 import { Lens } from '~/design-system/components/Lens/Lens';
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
 import { OnboardMenu } from '../../components/OnboardMenu/OnboardMenu';
-import { setImportWalletSecrets } from '../../handlers/importWalletSecrets';
-import { useAlert } from '../../hooks/useAlert';
+import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
 export function ImportOrConnect() {
   const navigate = useRainbowNavigate();
-  const { triggerAlert } = useAlert();
   const { featureFlags } = useFeatureFlagsStore();
 
   const navigateTo = useCallback(
@@ -37,7 +36,7 @@ export function ImportOrConnect() {
           state: { direction: 'right', navbarIcon: 'arrow' },
         })
       : triggerAlert({ text: i18n.t('alert.coming_soon') });
-  }, [featureFlags.hw_wallets_enabled, navigateTo, triggerAlert]);
+  }, [featureFlags.hw_wallets_enabled, navigateTo]);
 
   const onWatchEthereumAddress = useCallback(
     () => navigateTo(ROUTES.WATCH),
@@ -45,7 +44,7 @@ export function ImportOrConnect() {
   );
   useEffect(() => {
     // clear secrets if the user backs out of flow entirely
-    setImportWalletSecrets(['']);
+    removeImportWalletSecrets();
   }, []);
 
   return (
