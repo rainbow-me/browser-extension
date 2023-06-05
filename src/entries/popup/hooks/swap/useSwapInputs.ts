@@ -115,38 +115,47 @@ export const useSwapInputs = ({
     }, 100);
   }, [assetToSellMaxValue.amount, setAssetToSellValue]);
 
-  const flipAssets = useCallback(() => {
-    const isCrosschainSwap =
-      assetToSell && assetToBuy && assetToSell.chainId !== assetToBuy.chainId;
-    if (isCrosschainSwap) {
-      setAssetToBuyValue('');
-      setAssetToSellValue(assetToBuyValue);
-      setIndependentField('sellField');
-      focusOnInput(assetToSellInputRef);
-    } else if (independentField === 'buyField') {
-      setAssetToBuyValue('');
-      setAssetToSellValue(independentValue);
-      setIndependentField('sellField');
-      focusOnInput(assetToSellInputRef);
-    } else {
-      setAssetToSellValue('');
-      setAssetToBuyValue(independentValue);
-      setIndependentField('buyField');
-      focusOnInput(assetToBuyInputRef);
-    }
-    setAssetToBuy(assetToSell);
-    setAssetToSell(assetToBuy);
-    setAssetToSellDropdownClosed(true);
-    setAssetToBuyDropdownClosed(true);
-  }, [
-    assetToBuy,
-    assetToBuyValue,
-    assetToSell,
-    independentField,
-    independentValue,
-    setAssetToBuy,
-    setAssetToSell,
-  ]);
+  const flipAssets = useCallback(
+    (noFocus?: boolean) => {
+      const isCrosschainSwap =
+        assetToSell && assetToBuy && assetToSell.chainId !== assetToBuy.chainId;
+      if (isCrosschainSwap) {
+        setAssetToBuyValue('');
+        setAssetToSellValue(assetToBuyValue);
+        setIndependentField('sellField');
+        if (!noFocus) {
+          focusOnInput(assetToSellInputRef);
+        }
+      } else if (independentField === 'buyField') {
+        setAssetToBuyValue('');
+        setAssetToSellValue(independentValue);
+        setIndependentField('sellField');
+        if (!noFocus) {
+          focusOnInput(assetToSellInputRef);
+        }
+      } else {
+        setAssetToSellValue('');
+        setAssetToBuyValue(independentValue);
+        setIndependentField('buyField');
+        if (!noFocus) {
+          focusOnInput(assetToBuyInputRef);
+        }
+      }
+      setAssetToBuy(assetToSell);
+      setAssetToSell(assetToBuy);
+      setAssetToSellDropdownClosed(true);
+      setAssetToBuyDropdownClosed(true);
+    },
+    [
+      assetToBuy,
+      assetToBuyValue,
+      assetToSell,
+      independentField,
+      independentValue,
+      setAssetToBuy,
+      setAssetToSell,
+    ],
+  );
 
   const assetToSellDisplay = useMemo(
     () =>

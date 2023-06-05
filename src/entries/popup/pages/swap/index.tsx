@@ -335,6 +335,8 @@ export function Swap() {
         const focusingAssetToSell =
           activeElement === assetToSellInputRef.current;
         const focusingAssetToBuy = activeElement === assetToBuyInputRef.current;
+        const noFocus = !focusingAssetToSell && !focusingAssetToBuy;
+        const tokenSelected = assetToSell || assetToBuy;
         const focusNewInput = () => {
           setTimeout(() => {
             if (focusingAssetToSell) {
@@ -350,6 +352,8 @@ export function Swap() {
         } else if (focusingAssetToBuy && assetToBuy) {
           flipAssets();
           focusNewInput();
+        } else if (noFocus && tokenSelected) {
+          flipAssets(true);
         }
       }
     },
@@ -450,7 +454,7 @@ export function Swap() {
                       borderWidth={'1px'}
                       borderColor="buttonStroke"
                       style={{ width: 42, height: 32, zIndex: 10 }}
-                      onClick={flipAssets}
+                      onClick={() => flipAssets()}
                     >
                       <Box width="full" height="full" alignItems="center">
                         <Inline
