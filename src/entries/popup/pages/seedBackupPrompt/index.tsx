@@ -51,7 +51,7 @@ export function SeedBackupPrompt() {
   }, [navigate]);
 
   const handleSkipClick = React.useCallback(() => {
-    navigate(ROUTES.CREATE_PASSWORD);
+    navigate(ROUTES.CREATE_PASSWORD, { state: { backTo: ROUTES.WELCOME } });
   }, [navigate]);
 
   return (

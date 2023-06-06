@@ -243,6 +243,9 @@ export function Send() {
     (address: Address | typeof ETH_ADDRESS | '', chainId: ChainId) => {
       selectAssetAddressAndChain(address as Address, chainId);
       setIndependentAmount('');
+      setTimeout(() => {
+        valueInputRef?.current?.focus();
+      }, 300);
     },
     [selectAssetAddressAndChain, setIndependentAmount],
   );

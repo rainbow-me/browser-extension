@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
+import hardhwareWalletAvatarImageMask from 'static/assets/hardhwareWalletAvatarImageMask.svg';
 import { i18n } from '~/core/languages';
 import { POPUP_URL, goToNewTab } from '~/core/utils/tabs';
 import {
@@ -11,6 +12,8 @@ import {
   Row,
   Rows,
   Separator,
+  Stack,
+  Symbol,
   Text,
 } from '~/design-system';
 
@@ -20,6 +23,8 @@ import { useAuth } from '../../hooks/useAuth';
 import { useIsFullScreen } from '../../hooks/useIsFullScreen';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
+
+const AVATAR_MARGIN_LEFT = '-2.26px';
 
 const PyramidAvatar = ({ accounts }: { accounts: Address[] }) => {
   let rows: Address[][] = [];
@@ -50,44 +55,46 @@ const PyramidAvatar = ({ accounts }: { accounts: Address[] }) => {
                 {avatars.map((address: Address, index: number) => (
                   <Box
                     key={`avatar_${index}`}
-                    borderWidth="2px"
                     position="relative"
-                    marginLeft="-10px"
                     style={{
                       zIndex: 100 + index,
                       borderRadius: '36px',
-                      borderColor: '#363739', // TODO - use SVG Mask
+                      marginLeft: AVATAR_MARGIN_LEFT,
                     }}
                   >
                     <WalletAvatar
                       address={address}
                       size={36}
                       emojiSize="26pt"
+                      background="transparent"
+                      mask={
+                        avatars.length === index + 1 &&
+                        !(accounts.length > 11 && rowIndex === 1)
+                          ? undefined
+                          : hardhwareWalletAvatarImageMask
+                      }
                     />
                   </Box>
                 ))}
                 {accounts.length > 11 && rowIndex === 1 && (
                   <Box
                     position="relative"
-                    borderWidth="2px"
-                    marginLeft="-10px"
                     style={{
                       zIndex: 112,
                       borderRadius: '36px',
-                      borderColor: '#363739', // TODO - use SVG Mask
+                      marginLeft: AVATAR_MARGIN_LEFT,
                       width: '36px',
                       height: '36px',
                       backgroundColor: '#363739',
                     }}
                   >
-                    <Text
-                      color="label"
-                      size="26pt"
-                      weight="regular"
-                      align="center"
+                    <Inline
+                      alignHorizontal="center"
+                      alignVertical="center"
+                      height="full"
                     >
-                      ...
-                    </Text>
+                      <Symbol symbol="ellipsis" weight="bold" size={16} />
+                    </Inline>
                   </Box>
                 )}
               </Inline>
@@ -103,7 +110,7 @@ export function SuccessHW() {
   const navigate = useRainbowNavigate();
   const isFullScreen = useIsFullScreen();
   const { state } = useLocation();
-  const { accounts } = state;
+  const { accounts, vendor } = state;
 
   const { status } = useAuth();
   // Only for testing purposes, to confirm the pyramid logic works fine.
@@ -136,7 +143,7 @@ export function SuccessHW() {
           url: POPUP_URL + `#${ROUTES.CREATE_PASSWORD}`,
         });
       } else {
-        navigate(ROUTES.CREATE_PASSWORD);
+        navigate(ROUTES.CREATE_PASSWORD, { state: { backTo: ROUTES.WELCOME } });
       }
     } else {
       navigate(ROUTES.HOME);
@@ -149,58 +156,53 @@ export function SuccessHW() {
   return (
     <FullScreenContainer>
       <Box
-        justifyContent={'center'}
         display="flex"
         alignItems="center"
-        paddingBottom="10px"
+        justifyContent="center"
         flexDirection="column"
         style={{ flex: 1 }}
       >
-        <PyramidAvatar accounts={accounts} />
-
-        <Box
-          justifyContent={'center'}
-          display="flex"
-          alignItems="center"
-          paddingBottom="10px"
-          flexDirection="column"
-          style={{ marginTop: '24px' }}
-        >
-          <Text size="16pt" weight="bold" color="label" align="center">
-            {i18n.t('hw.connection_successful_title')}
-          </Text>
-          <Box padding="16px" paddingTop="10px">
-            <Text
-              size="12pt"
-              weight="regular"
-              color="labelTertiary"
-              align="center"
-            >
-              {i18n.t('hw.connection_successful_description')}
-            </Text>
+        <Stack alignHorizontal="center" space="24px">
+          <Box style={{ flex: 1 }}>
+            <PyramidAvatar accounts={accounts} />
           </Box>
-        </Box>
-        <Box width="full" style={{ width: '106px' }}>
-          <Separator color="separatorTertiary" strokeWeight="1px" />
-        </Box>
-        <Box
-          paddingTop="28px"
-          alignItems="center"
-          justifyContent="center"
-          display="flex"
-        >
-          <Button
-            symbol="return.left"
-            symbolSide="left"
-            color="surfaceSecondaryElevated"
-            height="44px"
-            variant="flat"
-            width="full"
-            onClick={goHome}
-          >
-            {i18n.t('hw.done')}
-          </Button>
-        </Box>
+
+          <Box paddingHorizontal="28px">
+            <Stack space="12px">
+              <Text size="16pt" weight="bold" color="label" align="center">
+                {i18n.t('hw.connection_successful_title')}
+              </Text>
+              <Text
+                size="12pt"
+                weight="regular"
+                color="labelTertiary"
+                align="center"
+              >
+                {i18n.t('hw.connection_successful_description', {
+                  vendor:
+                    vendor.substring(0, 1).toUpperCase() + vendor.substring(1),
+                  count: accounts.length,
+                })}
+              </Text>
+            </Stack>
+          </Box>
+          <Box width="full" style={{ width: '106px' }}>
+            <Separator color="separatorTertiary" strokeWeight="1px" />
+          </Box>
+          <Box alignItems="center" justifyContent="center" display="flex">
+            <Button
+              symbol="return.left"
+              symbolSide="left"
+              color="surfaceSecondaryElevated"
+              height="44px"
+              variant="flat"
+              width="full"
+              onClick={goHome}
+            >
+              {i18n.t('hw.done')}
+            </Button>
+          </Box>
+        </Stack>
       </Box>
     </FullScreenContainer>
   );

@@ -28,6 +28,11 @@ import {
   transitions,
 } from '~/design-system/styles/designTokens';
 
+import {
+  getImportWalletSecrets,
+  removeImportWalletSecrets,
+  setImportWalletSecrets,
+} from '../../handlers/importWalletSecrets';
 import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
@@ -45,11 +50,11 @@ const validateSecret = (secret: string) => {
 };
 
 const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
-  const { state } = useLocation();
   const navigate = useRainbowNavigate();
+  const location = useLocation();
   const [isValid, setIsValid] = useState(false);
   const [isAddingWallets, setIsAddingWallets] = useState(false);
-  const [secrets, setSecrets] = useState((state.secrets as string[]) || ['']);
+  const [secrets, setSecrets] = useState<string[]>(['']);
   const { setCurrentAddress } = useCurrentAddressStore();
 
   const [validity, setValidity] = useState<
@@ -89,8 +94,18 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
   }, []);
 
   useEffect(() => {
-    if (state.secrets) {
-      updateValidity(state.secrets);
+    const getSecrets = async () => {
+      const secrets = await getImportWalletSecrets();
+      setSecrets(secrets);
+      updateValidity(secrets);
+    };
+    if (
+      location?.state?.from === ROUTES.NEW_IMPORT_WALLET_SELECTION ||
+      location?.state?.from === ROUTES.IMPORT__SELECT
+    ) {
+      getSecrets();
+    } else {
+      removeImportWalletSecrets();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -101,6 +116,7 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
       newSecrets[index] = e.target.value;
       updateValidity(newSecrets);
       setSecrets(newSecrets);
+      setImportWalletSecrets(newSecrets);
     },
     [secrets, updateValidity],
   );
@@ -117,32 +133,51 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
           )) as Address;
           setCurrentAddress(address);
           setIsAddingWallets(false);
-          onboarding ? navigate(ROUTES.CREATE_PASSWORD) : navigate(ROUTES.HOME);
-          return;
-        } finally {
+          onboarding
+            ? navigate(ROUTES.CREATE_PASSWORD, {
+                state: { backTo: ROUTES.WELCOME },
+              })
+            : navigate(ROUTES.HOME);
           setIsAddingWallets(false);
+          removeImportWalletSecrets();
+          return;
+        } catch (e) {
+          //
         }
       }
     }
 
-    onboarding
-      ? navigate(ROUTES.IMPORT__SELECT, {
-          state: { secrets },
-        })
-      : navigate(ROUTES.NEW_IMPORT_WALLET_SELECTION, {
-          state: { secrets },
-        });
-  }, [isAddingWallets, navigate, onboarding, secrets, setCurrentAddress]);
+    if (isValid) {
+      setIsAddingWallets(false);
+      navigate(
+        onboarding ? ROUTES.IMPORT__SELECT : ROUTES.NEW_IMPORT_WALLET_SELECTION,
+        {
+          state: {
+            backTo: onboarding ? ROUTES.IMPORT : ROUTES.NEW_IMPORT_WALLET,
+          },
+        },
+      );
+    }
+  }, [
+    isAddingWallets,
+    isValid,
+    navigate,
+    onboarding,
+    secrets,
+    setCurrentAddress,
+  ]);
 
   const handleAddAnotherOne = useCallback(() => {
     const newSecrets = [...secrets, ''];
     setSecrets(newSecrets);
+    setImportWalletSecrets(newSecrets);
     updateValidity(newSecrets);
   }, [secrets, updateValidity]);
 
   const handleRemove = useCallback(() => {
     const newSecrets = secrets.slice(0, -1);
     setSecrets(newSecrets);
+    setImportWalletSecrets(newSecrets);
     updateValidity(newSecrets);
   }, [secrets, updateValidity]);
 

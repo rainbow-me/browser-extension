@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import React, { useEffect, useMemo } from 'react';
-import { To, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { useCurrentAddressStore } from '~/core/state';
 import { Box } from '~/design-system';
@@ -26,7 +26,6 @@ import { animatedRouteStyles } from './AnimatedRoute.css';
 
 type AnimatedRouteProps = {
   background?: BackgroundColor;
-  backTo?: To;
   children: React.ReactNode;
   direction: AnimatedRouteDirection;
   navbar?: boolean;
@@ -36,7 +35,6 @@ type AnimatedRouteProps = {
   protectedRoute?: UserStatusResult[] | true;
   rightNavbarComponent?: React.ReactElement;
   accentColor?: boolean;
-  maintainLocationState?: boolean;
 };
 
 export const animatedRouteValues: Record<
@@ -162,7 +160,6 @@ export const AnimatedRoute = React.forwardRef<
 >((props: AnimatedRouteProps, ref) => {
   const {
     background,
-    backTo,
     children,
     direction,
     navbar,
@@ -172,7 +169,6 @@ export const AnimatedRoute = React.forwardRef<
     protectedRoute,
     rightNavbarComponent,
     accentColor = true,
-    maintainLocationState,
   } = props;
   const { initial, end, exit } = animatedRouteValues[direction];
   const transition = animatedRouteTransitionConfig[direction];
@@ -184,21 +180,12 @@ export const AnimatedRoute = React.forwardRef<
 
   const leftNavbarIcon = useMemo(() => {
     if (navbarIcon === 'arrow') {
-      return (
-        <Navbar.BackButton
-          maintainLocationState={maintainLocationState}
-          backTo={backTo}
-        />
-      );
+      return <Navbar.BackButton />;
     } else if (navbarIcon === 'ex') {
-      return (
-        <Navbar.CloseButton
-          maintainLocationState={maintainLocationState}
-          backTo={backTo}
-        />
-      );
+      return <Navbar.CloseButton />;
     } else return undefined;
-  }, [backTo, maintainLocationState, navbarIcon]);
+  }, [navbarIcon]);
+
   useEffect(() => {
     const app = document.getElementById('app');
     setTimeout(() => {

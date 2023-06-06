@@ -6,7 +6,7 @@ import { useEnsAddress } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
-import { createStore } from '~/core/state/internal/createStore';
+import { useSavedEnsNames } from '~/core/state/savedEnsNames';
 import { isENSAddressFormat } from '~/core/utils/ethereum';
 import {
   Box,
@@ -142,27 +142,11 @@ function RecommendedWatchWallets({
   );
 }
 
-type SavedNamesStore = {
-  savedNames: Record<Address, string>;
-  save: (name: string, address: Address) => void;
-};
-const savedNamesStore = createStore<SavedNamesStore>(
-  (set, get) => ({
-    savedNames: {},
-    save(name, address) {
-      const savedNames = get().savedNames;
-      savedNames[address] = name;
-      set({ savedNames });
-    },
-  }),
-  { persist: { name: 'address saved with name' } },
-);
-const getSavedNamesStore = () => savedNamesStore.getState();
-
 const getError = (
   address: string,
   input: string,
   allWallets: AddressAndType[],
+  savedNames: Record<Address, string>,
 ): { message: string; symbol: SymbolName } | undefined => {
   const tld = input.split('.').at(-1);
   if (tld && tld !== input && !isENSAddressFormat(input))
@@ -178,7 +162,8 @@ const getError = (
     };
 
   if (allWallets.some((w) => address === w.address)) {
-    const addedAs = getSavedNamesStore().savedNames[address];
+    const addedAs = savedNames[address];
+
     return {
       message:
         addedAs && addedAs !== input
@@ -195,6 +180,7 @@ const useValidateInput = (input: string) => {
     name: input,
     enabled: isENSAddressFormat(input),
   });
+  const { savedNames } = useSavedEnsNames();
 
   const isLoading = isFetchingEns;
 
@@ -205,7 +191,8 @@ const useValidateInput = (input: string) => {
 
   const debouncedInput = useDebounce(input, 1000);
   const shouldValidate = !isLoading && !!input && debouncedInput === input;
-  const error = shouldValidate && getError(inputAddress, input, allWallets);
+  const error =
+    shouldValidate && getError(inputAddress, input, allWallets, savedNames);
   const isValid = shouldValidate && !error;
 
   return {
@@ -232,32 +219,45 @@ export const WatchWallet = ({
     '',
   );
 
-  const { address, ensName, isLoading, isValid, error } =
-    useValidateInput(input);
+  const {
+    address,
+    ensName,
+    isLoading,
+    isValid: inputIsValid,
+    error,
+  } = useValidateInput(input);
 
   const addressesToImport = useMemo(
     () => [address, ...Object.keys(selectedAddresses)].filter(Boolean),
     [address, selectedAddresses],
   );
 
+  const isValid = input ? inputIsValid : !!addressesToImport.length;
+
   const { setCurrentAddress } = useCurrentAddressStore();
+  const { save } = useSavedEnsNames();
 
   const handleWatchWallet = useCallback(async () => {
     const importedAddresses = await Promise.all(
       addressesToImport.map(wallet.importWithSecret),
     );
-    // we save the ens name saved in localstorage to be able to tell
-    // if the user try to add the same address with a different name later
-    // (already added as foo.eth)
-    if (ensName && address) getSavedNamesStore().save(ensName, address);
-    setCurrentAddress(importedAddresses[0]);
-    onFinishImporting?.();
+    if (importedAddresses.length) {
+      // we save the ens name saved in localstorage to be able to tell
+      // if the user try to add the same address with a different name later
+      // (already added as foo.eth)
+      if (ensName && address) {
+        save(ensName, address);
+      }
+      setCurrentAddress(importedAddresses[0]);
+      onFinishImporting?.();
+    }
   }, [
     addressesToImport,
     ensName,
     address,
-    onFinishImporting,
     setCurrentAddress,
+    onFinishImporting,
+    save,
   ]);
 
   return (

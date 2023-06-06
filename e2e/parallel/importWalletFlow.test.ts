@@ -71,7 +71,7 @@ describe('Import wallet flow', () => {
     });
     await findElementByTestIdAndClick({ id: 'set-password-button', driver });
     await delayTime('long');
-    await findElementByText(driver, 'Your wallets ready');
+    await findElementByText(driver, 'Rainbow is ready to use');
 
     goToPopup(driver, rootURL);
     await delayTime('short');

@@ -25,12 +25,17 @@ const RoutePath = ({ protocols }: SwapRoutesProps) => {
             <Box key={i}>
               {protocol.icon && (
                 <Inline space="5px" alignVertical="center">
-                  <ExternalImage
-                    style={{ borderRadius: '20px' }}
-                    src={protocol.icon}
-                    width="20"
-                    height="20"
-                  />
+                  <Box
+                    borderRadius="20px"
+                    style={{ overflow: 'clip', height: '20px', width: '20px' }}
+                  >
+                    <ExternalImage
+                      style={{ borderRadius: '20px' }}
+                      src={protocol.icon}
+                      width="20"
+                      height="20"
+                    />
+                  </Box>
                   {i !== protocols.length - 1 && (
                     <Bleed horizontal="6px">
                       <Box style={{ rotate: '-90deg' }}>
@@ -70,12 +75,17 @@ const RouteProtocol = ({
   return (
     <Inline space="5px" alignVertical="center">
       {protocol.icon && (
-        <ExternalImage
-          style={{ borderRadius: '20px' }}
-          src={protocol.icon}
-          width="20"
-          height="20"
-        />
+        <Box
+          borderRadius="20px"
+          style={{ overflow: 'clip', height: '20px', width: '20px' }}
+        >
+          <ExternalImage
+            style={{ borderRadius: '20px' }}
+            src={protocol.icon}
+            width="20"
+            height="20"
+          />
+        </Box>
       )}
       <Text color="label" size="14pt" weight="semibold">
         {upperFirst(protocolName)}

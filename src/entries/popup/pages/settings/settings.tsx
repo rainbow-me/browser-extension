@@ -1,11 +1,13 @@
 import React, { useCallback, useState } from 'react';
 
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
 import { supportedCurrencies } from '~/core/references';
 import {
+  RAINBOW_FEEDBACK_URL,
   RAINBOW_LEARN_URL,
-  RAINBOW_SHARE_URL,
   RAINBOW_SUPPORT_URL,
   RAINBOW_TWITTER_URL,
 } from '~/core/references/links';
@@ -26,9 +28,9 @@ import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
 import { SwitchMenu } from '~/entries/popup/components/SwitchMenu/SwitchMenu';
+import { logger } from '~/logger';
 
 import { testSandbox } from '../../handlers/wallet';
-import { useAlert } from '../../hooks/useAlert';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 
@@ -51,6 +53,24 @@ export function Settings() {
     const response = await testSandbox();
 
     alert(response);
+  }, []);
+
+  // Dev only!
+  const generateFCMToken = useCallback(async () => {
+    chrome.gcm.register(
+      [process.env.FIREBASE_SENDER_ID_BX],
+      (registrationId: string) => {
+        logger.info('Token: ', { registrationId });
+        logger.info('Now listening on the popup...');
+
+        chrome.gcm.onMessage.addListener(
+          (message: chrome.gcm.IncomingMessage) => {
+            logger.info('got message', { message });
+            alert('message from FCM: ' + JSON.stringify(message, null, 2));
+          },
+        );
+      },
+    );
   }, []);
 
   const toggleFeatureFlag = useCallback(
@@ -78,17 +98,16 @@ export function Settings() {
 
   const setRainbowAsDefaultWallet = useCallback(
     async (rainbowAsDefault: boolean) => {
+      analytics.track(
+        rainbowAsDefault
+          ? event.settingsRainbowDefaultProviderEnabled
+          : event.settingsRainbowDefaultProviderDisabled,
+      );
       setIsDefaultWallet(rainbowAsDefault);
       messenger.send('rainbow_setDefaultProvider', { rainbowAsDefault });
     },
     [setIsDefaultWallet],
   );
-
-  const { triggerAlert } = useAlert();
-
-  const alertComingSoon = React.useCallback(() => {
-    triggerAlert({ text: i18n.t('alert.coming_soon') });
-  }, [triggerAlert]);
 
   return (
     <Box paddingHorizontal="20px">
@@ -180,7 +199,6 @@ export function Settings() {
           >
             <SwitchMenu
               align="end"
-              controlled
               onClose={() => setThemeDropdownOpen(false)}
               open={themeDropdownOpen}
               renderMenuTrigger={
@@ -247,29 +265,13 @@ export function Settings() {
               }}
             />
           </Lens>
-          <MenuItem
-            last
-            leftComponent={
-              <Symbol
-                symbol="person.text.rectangle.fill"
-                color="blue"
-                size={18}
-                weight="semibold"
-              />
-            }
-            hasRightArrow
-            titleComponent={
-              <MenuItem.Title text={i18n.t('settings.contacts')} />
-            }
-            onClick={alertComingSoon}
-          />
         </Menu>
         <Menu>
           <MenuItem
             first
-            leftComponent={<MenuItem.TextIcon icon="🌈" />}
+            leftComponent={<MenuItem.TextIcon icon="📚" />}
             titleComponent={
-              <MenuItem.Title text={i18n.t('settings.share_rainbow')} />
+              <MenuItem.Title text={i18n.t('settings.guides_and_support')} />
             }
             rightComponent={
               <Symbol
@@ -279,7 +281,7 @@ export function Settings() {
                 weight="semibold"
               />
             }
-            onClick={() => window.open(RAINBOW_SHARE_URL, '_blank')}
+            onClick={() => window.open(RAINBOW_SUPPORT_URL, '_blank')}
           />
           <MenuItem
             leftComponent={<MenuItem.TextIcon icon="🧠" />}
@@ -315,7 +317,7 @@ export function Settings() {
             last
             leftComponent={<MenuItem.TextIcon icon="💬" />}
             titleComponent={
-              <MenuItem.Title text={i18n.t('settings.feedback_and_support')} />
+              <MenuItem.Title text={i18n.t('settings.share_beta_feedback')} />
             }
             rightComponent={
               <Symbol
@@ -325,7 +327,7 @@ export function Settings() {
                 weight="semibold"
               />
             }
-            onClick={() => window.open(RAINBOW_SUPPORT_URL, '_blank')}
+            onClick={() => window.open(RAINBOW_FEEDBACK_URL, '_blank')}
           />
         </Menu>
         {process.env.IS_TESTING === 'true' && (
@@ -383,6 +385,11 @@ export function Settings() {
                 onToggle={() => toggleFeatureFlag(key as FeatureFlagTypes)}
               />
             ))}
+            <MenuItem
+              titleComponent={<MenuItem.Title text="Generate FCM token" />}
+              onClick={generateFCMToken}
+              testId="generate-fcm-token"
+            />
           </Menu>
         )}
         {process.env.IS_TESTING === 'true' && (

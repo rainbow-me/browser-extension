@@ -39,9 +39,9 @@
     "watch_address_description": "Watch a public address or ENS name."
   },
   "create_wallet_prompt": {
-    "title": "Create a new wallet",
+    "title": "Name your wallet",
     "create_wallet": "Create wallet",
-    "create": "Create Wallet",
+    "create": "Create",
     "input_placeholder": "Name"
   },
   "rename_wallet_prompt": {
@@ -65,10 +65,10 @@
     "use_rainbow_as_default_wallet": "Use Rainbow as default wallet",
     "default_wallet_description": "Allow Apps to prioritize Rainbow when looking for an extension to connect with.",
     "contacts": "Contacts",
-    "share_rainbow": "Share Rainbow",
+    "guides_and_support": "Guides & Support",
     "learn_about_ethereum": "Learn about Ethereum",
     "follow_us_on_twitter": "Follow us on Twitter",
-    "feedback_and_support": "Feedback & Support",
+    "share_beta_feedback": "Share Beta Feedback",
     "theme": {
       "title": "Theme",
       "system": "System",
@@ -107,7 +107,7 @@
       },
       "wallets_and_keys": {
         "title": "Wallets & Keys",
-        "new_secret_phrase_and_wallet": "New Secret Phrase & Wallet",
+        "create_a_new_wallet": "Create a new wallet",
         "imported": "Imported",
         "wallet_single": "Wallet",
         "wallet_plural": "Wallets",
@@ -364,7 +364,7 @@
     }
   },
   "custom_gas": {
-    "title": "Gwei Settings",
+    "title": "Gas Settings",
     "current_base_fee": "Current base fee",
     "max_base_fee": "Max base fee",
     "miner_tip": "Miner tip",
@@ -521,6 +521,8 @@
       "settings": "Settings",
       "qr_code": "My QR Code",
       "rainbow_profile": "Rainbow Profile",
+      "guides_and_support": "Guides & Support",
+      "share_feedback": "Share Feedback",
       "lock_rainbow": "Lock Rainbow"
     }
   },
@@ -612,6 +614,7 @@
     "title": "Wallets"
   },
   "common_actions": {
+    "back": "Back",
     "cancel": "Cancel",
     "continue": "Continue",
     "copy_to_clipboard": "Copy to clipboard"
@@ -684,12 +687,13 @@
     "view_on_explorer": "View on Explorer"
   },
   "wallet_ready": {
-    "title": "Your wallets ready",
-    "essentials": "Essentials",
+    "title": "Rainbow is ready to use",
+    "subtitle": "To access your wallet, just click Rainbow from the Extensions drop-down, or use the speedy keyboard shortcut",
+    "open": "Open Rainbow",
     "get_started_with_rainbow": "Get started with Rainbow",
     "get_started_with_rainbow_desc": "Welcome to Rainbow! We're so glad you're here. We’ve created this guide to help with the basics of Rainbow.",
     "discover_shortcuts": "Discover shortcuts",
-    "discover_shortcuts_desc": "Welcome to Rainbow! We're so glad you're here. We’ve created this guide to help with the basics of Rainbow and get you started on your new We... ",
+    "discover_shortcuts_desc": "Looking to discover more shortcuts? Check out this helpful guide we’ve put together for you.",
     "pin_rainbow_to_your_toolbar": "Pin Rainbow to your toolbar:"
   },
   "wallet_header": {
@@ -774,25 +778,41 @@
     "choose_title": "Connect a hardware wallet",
     "ledger_support": "Supports Ledger Nano S, Nano S Plus, Nano X, and Stax devices.",
     "trezor_support": "Supports Model One or Model T devices.",
-    "connect_ledger_title": "Complete your Ledger set up",
+    "connect_ledger_title": "Connect your Ledger",
     "connect_ledger_description": "Connect your Ledger to Rainbow by plugging it into your computer using the USB-C cable.",
+    "unlock_ledger_title": "Unlock Ledger",
+    "unlock_ledger_description": "The Ethereum app needs to be open on your Ledger to proceed with the transaction.",
+    "unlock_ledger_description_2": "Enter your passcode to unlock your Ledger. Once unlocked, open the Ethereum app by pressing both buttons at once.",
+    "needs_app_ledger_title": "Open the ETH app",
+    "needs_app_ledger_description": "The Ethereum app needs to be open on your Ledger to proced with the transaction.",
+    "needs_app_ledger_description_2": "Enter your passcode to unlock your Ledger. Once unlocked, open the Ethereum app by pressing both buttons at once.",
     "connect_trezor_title": "Complete your Trezor set up",
     "connect_trezor_description": "Continue to connect your Trezor to Rainbow through the web interface.",
-    "learn_more": "Learn more",
+    "learn_more": "Learn more.",
     "connect_wallets_title": "Connect your wallets",
-    "connect_wallets_found": "We’ve found wallets on your Ledger with a balance or activity. Select which to connect.",
-    "connect_wallets_not_found": "Some text about how this looks like a new device, so select from empty accounts?",
-    "connect_wallet": "Connect 1 wallet",
+    "connect_wallets_found": "We’ve found %{count} wallets on your %{vendor} with a balance or activity. Select which to connect.",
+    "connect_wallets_not_found": "We didn't find any wallets with activity on this %{vendor} but you can still add these.",
+    "connect_wallet": "Connect wallet",
     "connect_n_wallets": "Connect %{count} wallets",
     "wallets_found": "%{count} wallets found",
     "add_by_index": "Add by index",
+    "index_label": "Index",
     "connection_successful_title": "Connected successful",
-    "connection_successful_description": "Something about how we imported N wallets and they will be labeled with the badge?",
+    "connection_successful_description": "You’ve successfully added %{count} wallets. They’re easy to identify in your wallet list with the %{vendor} badge. You can add more at any time.",
     "done": "Done",
     "add_wallet": "Add wallet",
     "add_by_index_title": "Add a wallet by its index",
     "add_by_index_description": "Enter the derivation path for the wallet you would like to import from your Ledger.",
     "waiting_for_trezor_connect": "Waiting for Trezor Connect",
-    "continue_on_trezor_connect": "Please follow the instructions on the Trezor Connect window"
+    "continue_on_trezor_connect": "Please follow the instructions on the Trezor Connect window",
+    "trezor_success": "Success!",
+    "you_can_close_this_window": "You can close this window"
+  },
+  "choose_wallet_group": {
+    "title": "Choose wallet group",
+    "description": "Choose the wallet group you'd like to create a new wallet within, or create a new one",
+    "wallet_group": "Wallet Group %{number}",
+    "new_wallet_group": "New Wallet Group",
+    "create_recovery_phrase": "Create a new recovery phrase"
   }
 }

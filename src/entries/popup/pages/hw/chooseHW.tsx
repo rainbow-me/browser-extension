@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 
 import ledgerLogo from 'static/assets/hw/ledger-logo.png';
 import trezorLogo from 'static/assets/hw/trezor-logo.png';
@@ -12,12 +13,15 @@ import { useIsFullScreen } from '../../hooks/useIsFullScreen';
 import { ROUTES } from '../../urls';
 
 export function ChooseHW() {
+  const { state } = useLocation();
   const navigate = useRainbowNavigate();
   const isFullScreen = useIsFullScreen();
 
   const handleLedgerChoice = useCallback(() => {
-    navigate(ROUTES.HW_LEDGER);
-  }, [navigate]);
+    navigate(ROUTES.HW_LEDGER, {
+      state: { direction: state?.direction, navbarIcon: state?.navbarIcon },
+    });
+  }, [navigate, state]);
 
   const handleTrezorChoice = useCallback(() => {
     if (!isFullScreen) {
@@ -25,9 +29,11 @@ export function ChooseHW() {
         url: POPUP_URL + `#${ROUTES.HW_TREZOR}`,
       });
     } else {
-      navigate(ROUTES.HW_TREZOR);
+      navigate(ROUTES.HW_TREZOR, {
+        state: { direction: state?.direction, navbarIcon: state?.navbarIcon },
+      });
     }
-  }, [isFullScreen, navigate]);
+  }, [isFullScreen, navigate, state]);
 
   return (
     <Box height="full">

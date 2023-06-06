@@ -16,7 +16,7 @@ import {
 } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
 
-import { exportWallet } from '../../handlers/wallet';
+import { getImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 
 const shuffleArray = (array: { word: string; index: number }[]) => {
@@ -174,13 +174,13 @@ export function SeedVerifyQuiz({
 
   useEffect(() => {
     const init = async () => {
-      const seedPhrase = await exportWallet(address, '');
-      const seedArray = seedPhrase.split(' ');
+      const secrets = await getImportWalletSecrets();
+      const seedArray = secrets[0].split(' ');
       const seedWithIndex = seedArray.map((word, index) => ({
         word,
         index,
       }));
-      setSeed(seedPhrase);
+      setSeed(secrets[0]);
       setRandomSeedWithIndex(shuffleArray(seedWithIndex));
     };
     init();

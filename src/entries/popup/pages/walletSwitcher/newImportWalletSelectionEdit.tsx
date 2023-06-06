@@ -5,7 +5,6 @@ import { Box } from '~/design-system';
 
 import { ImportWalletNavbar } from '../../components/ImportWallet/ImportWalletNavbar';
 import { ImportWalletSelectionEdit } from '../../components/ImportWallet/ImportWalletSelectionEdit';
-import { ROUTES } from '../../urls';
 import { WalletsSortMethod } from '../importWalletSelection/EditImportWalletSelection';
 
 const NewImportWalletSelectionEdit = () => {
@@ -15,7 +14,6 @@ const NewImportWalletSelectionEdit = () => {
   return (
     <>
       <ImportWalletNavbar
-        backTo={ROUTES.IMPORT__SELECT}
         showSortMenu={!isAddingWallets}
         sortMethod={sortMethod}
         setSortMethod={setSortMethod}

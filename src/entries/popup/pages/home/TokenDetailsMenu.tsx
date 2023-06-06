@@ -17,6 +17,7 @@ import { isNativeAsset } from '~/core/utils/chains';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTokenBlockExplorerUrl } from '~/core/utils/transactions';
 import { Box, Inline, Symbol, Text } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/util';
 
 import {
   ContextMenuRadioGroup,
@@ -29,7 +30,7 @@ import {
   DetailsMenuRow,
   DetailsMenuWrapper,
 } from '../../components/DetailsMenu';
-import { useAlert } from '../../hooks/useAlert';
+import { useNavigateToSwaps } from '../../hooks/useNavigateToSwaps';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
@@ -43,11 +44,11 @@ interface TokenDetailsMenuProps {
 export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
   const [closed, setClosed] = useState(false);
   const onOpenChange = () => setClosed(false);
+  const navigateToSwaps = useNavigateToSwaps();
 
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
-  const { triggerAlert } = useAlert();
 
   const navigate = useRainbowNavigate();
 
@@ -70,13 +71,13 @@ export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
 
   const goToSwap = useCallback(() => {
     if (allowSwap) {
-      navigate(ROUTES.SWAP);
+      navigateToSwaps();
     } else {
       triggerAlert({ text: i18n.t('alert.coming_soon') });
       // clear selected token
       setSelectedToken();
     }
-  }, [allowSwap, navigate, setSelectedToken, triggerAlert]);
+  }, [allowSwap, navigateToSwaps, setSelectedToken]);
 
   const onValueChange = useCallback(
     (value: TokenDetailsMenuOption) => {
@@ -85,21 +86,18 @@ export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
           viewOnExplorer();
           break;
         case 'send':
+          setSelectedToken(token);
           navigate(ROUTES.SEND);
           setClosed(true);
           break;
         case 'swap':
+          setSelectedToken(token);
           goToSwap();
           setClosed(true);
           break;
       }
     },
-    [goToSwap, navigate, viewOnExplorer],
-  );
-
-  const onTrigger = useCallback(
-    () => setSelectedToken(token),
-    [setSelectedToken, token],
+    [goToSwap, navigate, setSelectedToken, token, viewOnExplorer],
   );
 
   useEffect(() => {
@@ -110,7 +108,7 @@ export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
 
   return (
     <DetailsMenuWrapper closed={closed} onOpenChange={onOpenChange}>
-      <ContextMenuTrigger onTrigger={onTrigger}>
+      <ContextMenuTrigger>
         <Box position="relative">{children}</Box>
       </ContextMenuTrigger>
       <DetailsMenuContentWrapper closed={closed}>

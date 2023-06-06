@@ -24,15 +24,10 @@ import {
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
 import { KeychainWallet } from '~/core/types/keychainTypes';
-import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { hasPreviousTransactions } from '~/core/utils/ethereum';
 import { estimateGasWithPadding } from '~/core/utils/gas';
 import { toHex } from '~/core/utils/numbers';
-import { POPUP_URL } from '~/core/utils/tabs';
 import { getNextNonce } from '~/core/utils/transactions';
-
-import { ROUTES } from '../urls';
-import { isExternalPopup, isFullScreen } from '../utils/windows';
 
 import {
   sendTransactionFromLedger,
@@ -72,50 +67,10 @@ const signMessageByType = async (
   });
 };
 
-const checkIfNeedsTrezorPopup = async (
-  action: 'signTransaction' | 'signTypedData' | 'signMessage',
-  payload:
-    | TransactionRequest
-    | { message: string; address: string }
-    | { data: string | Bytes; address: string },
-) => {
-  if (!isExternalPopup && !isFullScreen) {
-    // check if we opened a popup before
-    const hwRequestPending = await chrome.storage.session.get(
-      'hwRequestPending',
-    );
-    if (hwRequestPending && hwRequestPending.payload) {
-      return false; // don't open a new popup
-    } else {
-      await chrome.storage.session.set({
-        hwRequestPending: {
-          action,
-          vendor: 'Trezor',
-          payload,
-        },
-      });
-      await chrome.windows.create({
-        url: POPUP_URL + `?tabId=trezor#${ROUTES.HW_TREZOR_LOADING}`,
-        type: 'popup',
-        height: POPUP_DIMENSIONS.height + 25,
-        width: 360,
-        top: 0,
-      });
-      return true;
-    }
-  }
-  return false;
-};
-
 export const signTransactionFromHW = async (
   transactionRequest: TransactionRequest,
   vendor: string,
 ): Promise<string | undefined> => {
-  const needsTrezorPopup =
-    vendor === 'Trezor' &&
-    (await checkIfNeedsTrezorPopup('signTransaction', transactionRequest));
-  if (needsTrezorPopup) return;
-
   const { selectedGas } = gasStore.getState();
   const provider = getProvider({
     chainId: transactionRequest.chainId,
@@ -563,17 +518,20 @@ export const connectLedger = async () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
+    let error = '';
     switch (e?.name) {
-      case 'TransportStatusError':
-        alert(
-          'Please make sure your ledger is unlocked and open the Ethereum app',
-        );
+      case 'TransportWebUSBGestureRequired':
+        error = 'needs_unlock';
         break;
+      case 'TransportStatusError':
+        error = 'needs_app';
+        break;
+      case 'TransportOpenUserCancelled':
       default:
-        alert('Unable to connect to your ledger. Please try again.');
+        error = 'needs_connect';
     }
     transport?.close();
-    return null;
+    return { error };
   }
 };
 

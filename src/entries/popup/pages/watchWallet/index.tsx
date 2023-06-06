@@ -10,7 +10,7 @@ export function WatchWallet() {
   const navigate = useRainbowNavigate();
 
   const onFinishImporting = useCallback(async () => {
-    navigate(ROUTES.CREATE_PASSWORD);
+    navigate(ROUTES.CREATE_PASSWORD, { state: { backTo: ROUTES.WELCOME } });
   }, [navigate]);
 
   return (

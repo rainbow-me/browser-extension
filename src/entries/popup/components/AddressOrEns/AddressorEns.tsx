@@ -26,10 +26,11 @@ export function AddressOrEns({
   address,
   size = '20pt',
   weight = 'heavy',
+  color,
 }: AddressOrEnsProps) {
   if (!address) return null;
   return (
-    <Text color="label" size={size} weight={weight}>
+    <Text color={color || 'label'} size={size} weight={weight}>
       {isENSAddressFormat(address)
         ? address
         : AddressWithENSReverseResolution(address as Address)}

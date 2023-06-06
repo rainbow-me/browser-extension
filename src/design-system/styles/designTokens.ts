@@ -637,6 +637,7 @@ export const linearGradients = {
 export type LinearGradient = keyof typeof linearGradients;
 
 export const space = {
+  '1px': 1,
   '2px': 2,
   '3px': 3,
   '4px': 4,
@@ -650,6 +651,7 @@ export const space = {
   '14px': 14,
   '15px': 15,
   '16px': 16,
+  '18px': 18,
   '19px': 19,
   '20px': 20,
   '22px': 22,
@@ -688,6 +690,7 @@ export const negativeSpace = {
   '-14px': -14,
   '-15px': -15,
   '-16px': -16,
+  '-18px': -18,
   '-19px': -19,
   '-20px': -20,
   '-22px': -22,
@@ -715,6 +718,7 @@ export const spaceToNegativeSpace: Record<
   keyof typeof space,
   keyof typeof negativeSpace
 > = {
+  '1px': '-1px',
   '2px': '-2px',
   '3px': '-3px',
   '4px': '-4px',
@@ -728,6 +732,7 @@ export const spaceToNegativeSpace: Record<
   '14px': '-14px',
   '15px': '-15px',
   '16px': '-16px',
+  '18px': '-18px',
   '19px': '-19px',
   '20px': '-20px',
   '22px': '-22px',
@@ -882,6 +887,9 @@ export const symbolNames = selectSymbolNames(
   'person.crop.circle.badge.xmark',
   'person.crop.circle.badge.checkmark',
   'return.left',
+  'plus',
+  'book.closed.fill',
+  'message.fill',
 );
 export type SymbolName = typeof symbolNames[number];
 
@@ -889,6 +897,7 @@ export const radii = {
   round: 9999,
   '2px': 2,
   '3px': 3,
+  '5px': 5,
   '6px': 6,
   '8px': 8,
   '9px': 9,

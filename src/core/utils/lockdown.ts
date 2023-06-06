@@ -13,5 +13,4 @@
   Boolean.prototype,
 ].forEach(Object.freeze);
 
-console.log('frozen intrinsics!');
 export {};
