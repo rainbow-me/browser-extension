@@ -359,7 +359,7 @@ export function Send() {
       <Navbar
         title={i18n.t('send.title')}
         background={'surfaceSecondary'}
-        leftComponent={<Navbar.CloseButton backTo={ROUTES.HOME} />}
+        leftComponent={<Navbar.CloseButton />}
         rightComponent={
           isMyWallet(toAddress) ? undefined : (
             <NavbarContactButton

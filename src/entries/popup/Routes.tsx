@@ -1,6 +1,6 @@
 import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
-import { matchRoutes, useLocation, useNavigationType } from 'react-router-dom';
+import { matchRoutes, useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -753,7 +753,6 @@ function CurrentRoute(props: { pathname: string }) {
   const { state } = useLocation();
   const element = match?.element;
   const currentDirection = state?.direction ?? element?.props.direction;
-  const navigationType = useNavigationType();
 
   useGlobalShortcuts();
 
@@ -761,10 +760,7 @@ function CurrentRoute(props: { pathname: string }) {
     // error UI here probably
     return null;
   }
-  const isBack = navigationType === 'POP';
-  const direction = isBack
-    ? directionMap[currentDirection as Direction]
-    : currentDirection;
+  const direction = currentDirection;
   const navbarIcon = state?.navbarIcon ?? element?.props.navbarIcon;
 
   return (
@@ -777,15 +773,6 @@ function CurrentRoute(props: { pathname: string }) {
     </AnimatePresence>
   );
 }
-
-type Direction = 'right' | 'left' | 'up' | 'down' | 'base';
-const directionMap = {
-  right: 'left',
-  up: 'down',
-  left: 'right',
-  down: 'up',
-  base: 'base',
-};
 
 const useGlobalShortcuts = () => {
   useKeyboardShortcut({

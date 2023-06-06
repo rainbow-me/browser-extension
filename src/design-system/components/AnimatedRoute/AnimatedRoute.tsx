@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import React, { useEffect, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigationType } from 'react-router-dom';
 
 import { useCurrentAddressStore } from '~/core/state';
 import { Box } from '~/design-system';
@@ -172,8 +172,11 @@ export const AnimatedRoute = React.forwardRef<
   } = props;
   const { initial, end, exit } = animatedRouteValues[direction];
   const transition = animatedRouteTransitionConfig[direction];
+
   const { state } = useLocation();
-  const isBack = state?.isBack;
+  const navigationType = useNavigationType();
+  const isBack =
+    (navigationType === 'POP' && state?.isBack !== false) || state?.isBack;
 
   const { currentAddress } = useCurrentAddressStore();
   const { avatar } = useAvatar({ address: currentAddress });
