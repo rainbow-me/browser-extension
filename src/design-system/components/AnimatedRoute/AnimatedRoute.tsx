@@ -52,13 +52,13 @@ export const animatedRouteValues: Record<
     },
     exit: {
       opacity: 0,
-      y: -20,
+      y: -16,
     },
   },
   right: {
     initial: {
       opacity: 0,
-      x: 20,
+      x: 16,
     },
     end: {
       opacity: 1,
@@ -72,7 +72,7 @@ export const animatedRouteValues: Record<
   left: {
     initial: {
       opacity: 0,
-      x: -20,
+      x: -16,
     },
     end: {
       opacity: 1,
@@ -80,13 +80,13 @@ export const animatedRouteValues: Record<
     },
     exit: {
       opacity: 0,
-      x: 12,
+      x: 16,
     },
   },
   up: {
     initial: {
       opacity: 0,
-      y: 20,
+      y: 16,
     },
     end: {
       opacity: 1,
@@ -117,7 +117,7 @@ export const animatedRouteValues: Record<
   down: {
     initial: {
       opacity: 0,
-      y: -20,
+      y: -16,
     },
     end: {
       opacity: 1,
@@ -125,7 +125,7 @@ export const animatedRouteValues: Record<
     },
     exit: {
       opacity: 0,
-      y: -12,
+      y: 16,
     },
   },
   deceleratedShort: {
