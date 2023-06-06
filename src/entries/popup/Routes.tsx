@@ -147,9 +147,9 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute
         protectedRoute={['NEW', 'READY']}
-        direction="up"
+        direction="right"
         navbar
-        navbarIcon="ex"
+        navbarIcon="arrow"
         title={i18n.t('hw.choose_title')}
         background="surfaceSecondary"
       >
@@ -163,9 +163,9 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute
         protectedRoute={['NEW', 'READY']}
-        direction="up"
+        direction="right"
         navbar
-        navbarIcon="ex"
+        navbarIcon="arrow"
         background="surfaceSecondary"
       >
         <ConnectLedger />
@@ -180,7 +180,6 @@ const ROUTE_DATA = [
         protectedRoute={['NEW', 'READY']}
         direction="up"
         navbar
-        navbarIcon="ex"
         background="surfaceSecondary"
       >
         <ConnectTrezor />
@@ -193,9 +192,9 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute
         protectedRoute={['NEW', 'READY']}
-        direction="up"
+        direction="right"
         navbar
-        navbarIcon="ex"
+        navbarIcon="arrow"
         background="surfaceSecondary"
         accentColor={false}
       >
@@ -209,7 +208,7 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute
         protectedRoute={['NEW', 'READY']}
-        direction="up"
+        direction="upRight"
         background="surfaceSecondary"
       >
         <SuccessHW />
@@ -642,7 +641,7 @@ const ROUTE_DATA = [
     path: ROUTES.CHOOSE_WALLET_GROUP,
     element: (
       <AnimatedRoute
-        direction="down"
+        direction="right"
         navbar
         navbarIcon="arrow"
         protectedRoute
