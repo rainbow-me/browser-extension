@@ -84,7 +84,7 @@ export function parseAsset({
     chainId,
     chainName,
     isNativeAsset: isNativeAsset(address, chainIdFromChainName(chainName)),
-    name: asset?.name,
+    name: asset?.name || 'Unknown Token',
     mainnetAddress,
     native: {
       price: getNativeAssetPrice({
