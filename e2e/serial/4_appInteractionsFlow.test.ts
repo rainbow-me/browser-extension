@@ -13,12 +13,15 @@ import {
   findElementByText,
   getAllWindowHandles,
   getExtensionIdByName,
+  getTextFromText,
   getWindowHandle,
   goToPopup,
   goToTestApp,
   goToWelcome,
   initDriverWithOptions,
   querySelector,
+  shortenAddress,
+  switchWallet,
   typeOnTextInput,
   waitAndClick,
 } from '../helpers';
@@ -55,7 +58,6 @@ const TYPED_MESSAGE = {
   },
 };
 const MESSAGE = 'rainbow rocks 🌈';
-const CONNECTED_ADDRESS = '0x90F79bf6EB2c4f870365E785982E1f101E93b906';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;
@@ -179,6 +181,14 @@ describe('App interactions flow', () => {
     });
   });
 
+  it('should be able to switch to the first pk wallet', async () => {
+    await delayTime('medium');
+    await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
+    await delayTime('very-long');
+    const wallet = await getTextFromText({ id: 'account-name', driver });
+    expect(wallet).toBe(shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS));
+  });
+
   it('should be able to connect to bx test dapp', async () => {
     await delayTime('long');
     await goToTestApp(driver);
@@ -279,7 +289,9 @@ describe('App interactions flow', () => {
 
     expect(isHexString(signature)).toBe(true);
     const recoveredAddress = verifyMessage(MESSAGE, signature);
-    expect(getAddress(recoveredAddress)).eq(getAddress(CONNECTED_ADDRESS));
+    expect(getAddress(recoveredAddress)).eq(
+      getAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS),
+    );
   });
 
   it('should be able to accept a typed data signing request', async () => {
@@ -310,7 +322,9 @@ describe('App interactions flow', () => {
       TYPED_MESSAGE.value,
       signature,
     );
-    expect(getAddress(recoveredAddress)).eq(getAddress(CONNECTED_ADDRESS));
+    expect(getAddress(recoveredAddress)).eq(
+      getAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS),
+    );
   });
 
   it('should be able to accept a transaction request', async () => {
