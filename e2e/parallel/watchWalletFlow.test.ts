@@ -167,7 +167,7 @@ describe('Watch wallet then add more and switch between them', () => {
     });
   });
 
-  it('should be able to add a new wallet via seed', async () => {
+  it('should be able to add a new wallet via pk', async () => {
     await goToPopup(driver, rootURL, '#/home');
     await findElementByIdAndClick({
       id: 'header-account-name-shuffle',
@@ -224,16 +224,16 @@ describe('Watch wallet then add more and switch between them', () => {
       console.log('errororroor e', e);
     }
     // await findElementByTestId({ id: 'add-wallets-not-ready', driver });
-    await findElementByTestIdAndClick({
-      id: 'add-wallets-button',
-      driver,
-    });
-    await delayTime('medium');
+    // await findElementByTestIdAndClick({
+    //   id: 'add-wallets-button',
+    //   driver,
+    // });
+    // await delayTime('medium');
+  });
 
-    it('should display seed account name', async () => {
-      const account = await getTextFromText({ id: 'account-name', driver });
-      expect(account).toBe(shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS));
-    });
+  it('should display seed account name', async () => {
+    const account = await getTextFromText({ id: 'account-name', driver });
+    expect(account).toBe(shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS));
   });
 
   it('should be able to switch to the pk wallet', async () => {
