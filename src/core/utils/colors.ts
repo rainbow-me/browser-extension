@@ -21,7 +21,7 @@ export const handleAssetAccentColor = (
 ) => {
   if (!hex) return undefined;
   const rgb = hexToRgb(hex);
-  if (theme === 'dark' && rgb?.g && rgb?.g < 50) {
+  if (theme === 'dark' && rgb && rgb?.g < 50) {
     // return ETH color
     return '#808088';
   }
