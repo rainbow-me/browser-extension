@@ -140,12 +140,14 @@ export function Activity() {
             return (
               <Box
                 key={index}
+                data-index={virtualItem.index}
+                ref={activityRowVirtualizer.measureElement}
                 style={{
                   position: 'absolute',
                   top: 0,
                   left: 0,
                   width: '100%',
-                  height: virtualItem.size,
+                  height: rowData === 'string' ? 34 : 52,
                   transform: `translateY(${virtualItem.start}px)`,
                 }}
               >
