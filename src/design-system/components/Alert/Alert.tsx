@@ -1,17 +1,17 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { Box, Button, Inline, Stack, Text } from '~/design-system';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
-import { AlertProps, useAlert } from '~/entries/popup/hooks/useAlert';
 import { useKeyboardShortcut } from '~/entries/popup/hooks/useKeyboardShortcut';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
+
+import { AlertProps, listenAlert } from './util';
 
 export const Alert = () => {
   const [visible, setVisible] = useState(false);
   const [text, setText] = useState('');
-  const { listenAlert, clearAlertListener } = useAlert();
   const alertCallback = useRef<() => void>();
 
   listenAlert(async ({ text, callback }: AlertProps) => {
@@ -24,10 +24,6 @@ export const Alert = () => {
     setVisible(false);
     alertCallback.current?.();
   }, []);
-
-  useEffect(() => {
-    return () => clearAlertListener();
-  }, [clearAlertListener]);
 
   useKeyboardShortcut({
     condition: () => visible,

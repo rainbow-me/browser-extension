@@ -26,8 +26,8 @@ export const AppConnection = () => {
 
   React.useEffect(() => {
     chrome?.tabs?.query({ active: true, lastFocusedWindow: true }, (tabs) => {
-      const url = tabs[0].url;
       try {
+        const url = tabs[0].url;
         if (url) {
           const urlObject = new URL(url ?? '');
           if (
