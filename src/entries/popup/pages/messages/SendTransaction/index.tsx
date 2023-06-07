@@ -21,8 +21,8 @@ import {
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Row, Rows } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/util';
 import { useSendAsset } from '~/entries/popup/hooks/send/useSendAsset';
-import { useAlert } from '~/entries/popup/hooks/useAlert';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { useWallets } from '~/entries/popup/hooks/useWallets';
@@ -60,7 +60,6 @@ export function SendTransaction({
   const { connectedToHardhat } = useConnectedToHardhatStore();
   const { asset, selectAssetAddressAndChain } = useSendAsset();
   const { watchedWallets } = useWallets();
-  const { triggerAlert } = useAlert();
   const { featureFlags } = useFeatureFlagsStore();
 
   const onAcceptRequest = useCallback(async () => {
@@ -157,12 +156,7 @@ export function SendTransaction({
         callback: rejectRequest,
       });
     }
-  }, [
-    featureFlags.full_watching_wallets,
-    isWatchingWallet,
-    rejectRequest,
-    triggerAlert,
-  ]);
+  }, [featureFlags.full_watching_wallets, isWatchingWallet, rejectRequest]);
 
   useEffect(() => {
     selectAssetAddressAndChain(
