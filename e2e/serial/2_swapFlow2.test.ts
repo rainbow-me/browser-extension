@@ -47,7 +47,7 @@ beforeAll(async () => {
 
 afterAll(() => driver.quit());
 
-it('should be able import a wallet via seed', async () => {
+it('should be able import a wallet via pk', async () => {
   //  Start from welcome screen
   await goToWelcome(driver, rootURL);
   await findElementByTestIdAndClick({
@@ -60,17 +60,13 @@ it('should be able import a wallet via seed', async () => {
   });
 
   await typeOnTextInput({
-    id: 'secret-textarea',
+    id: 'secret-text-area-0',
     driver,
-    text: 'test test test test test test test test test test test junk',
+    text: TEST_VARIABLES.SEED_WALLET.PK,
   });
 
   await findElementByTestIdAndClick({
     id: 'import-wallets-button',
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: 'add-wallets-button',
     driver,
   });
   await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });

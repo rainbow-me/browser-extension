@@ -50,9 +50,9 @@ describe('Import wallet flow', () => {
     });
 
     await typeOnTextInput({
-      id: 'secret-textarea',
+      id: 'secret-text-area-0',
       driver,
-      text: TEST_VARIABLES.SEED_WALLET.SECRET,
+      text: TEST_VARIABLES.EMPTY_WALLET.SECRET,
     });
 
     await findElementByTestIdAndClick({
@@ -76,6 +76,6 @@ describe('Import wallet flow', () => {
     goToPopup(driver, rootURL);
     await delayTime('short');
     const account = await getTextFromText({ id: 'account-name', driver });
-    expect(account).toBe(shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS));
+    expect(account).toBe(shortenAddress(TEST_VARIABLES.EMPTY_WALLET.ADDRESS));
   });
 });
