@@ -3,10 +3,12 @@ import { HDNode } from '@ethersproject/hdnode';
 import { Wallet } from '@ethersproject/wallet';
 import { Address } from 'wagmi';
 
+import { ahaHttp } from '~/core/network/aha';
 import { KeychainType } from '~/core/types/keychainTypes';
-import { hasPreviousTransactions } from '~/core/utils/ethereum';
 
 import { IKeychain, PrivateKey } from '../IKeychain';
+
+const DESERIALIZE_ACCOUNTS = 10;
 
 export interface SerializedHdKeychain {
   mnemonic: string;
@@ -99,17 +101,34 @@ export class HdKeychain implements IKeychain {
     if (opts?.autodiscover) {
       // Autodiscover accounts
       let empty = false;
+
       while (!empty) {
-        const { address } = privates
-          .get(this)
-          .deriveWallet(privates.get(this).accountsEnabled);
+        const initialIndex = privates.get(this).accountsEnabled;
+        const addresses = Array.from(
+          { length: DESERIALIZE_ACCOUNTS },
+          (_, i) => initialIndex + i + 1,
+        ).map((i) => privates.get(this).deriveWallet(i).address);
+
         // eslint-disable-next-line no-await-in-loop
-        const hasBeenUsed = await hasPreviousTransactions(address as Address);
-        if (hasBeenUsed) {
+        const { data } = await ahaHttp.get(`/?address=${addresses.join(',')}`);
+        const addressesHaveBeenUsed = data as {
+          data: { addresses: { [key: Address]: boolean } };
+        };
+
+        const addressNotUsedIndex = addresses.reduce((prev, address, index) => {
+          return !addressesHaveBeenUsed.data.addresses[address.toLowerCase()] &&
+            prev === -1
+            ? index
+            : prev;
+        }, -1);
+
+        if (addressNotUsedIndex === -1) {
           privates.get(this).accountsEnabled =
-            privates.get(this).accountsEnabled + 1;
+            initialIndex + DESERIALIZE_ACCOUNTS;
         } else {
           empty = true;
+          privates.get(this).accountsEnabled =
+            initialIndex + addressNotUsedIndex + 1;
         }
       }
     }
