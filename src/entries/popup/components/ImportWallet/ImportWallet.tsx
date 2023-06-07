@@ -320,7 +320,12 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
         </Box>
       </Stack>
 
-      <Box width="full" paddingTop="10px" paddingBottom="20px">
+      <Box
+        testId={`box-isValid-${isValid ? 'yeah' : 'nop'}`}
+        width="full"
+        paddingTop="10px"
+        paddingBottom="20px"
+      >
         <Button
           symbol="arrow.uturn.down.circle.fill"
           symbolSide="left"
