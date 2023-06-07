@@ -207,7 +207,7 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
     });
     await delayTime('medium');
-    await findElementByTestId({ id: 'import-wallets-button', driver });
+    await findElementByTestId({ id: 'import-wallet-selection', driver });
     // await findElementByTestId({ id: 'add-wallets-not-ready', driver });
     await findElementByTestIdAndClick({
       id: 'add-wallets-button',
