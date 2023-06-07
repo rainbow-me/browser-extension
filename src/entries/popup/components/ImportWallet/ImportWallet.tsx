@@ -191,7 +191,7 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
   );
 
   return (
-    <>
+    <Box testId="import-wallet-screen">
       <Stack space="24px" alignHorizontal="center">
         <Box alignItems="center">
           <Stack space="12px">
@@ -342,7 +342,7 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
             : i18n.t('import_wallet.import_wallet')}
         </Button>
       </Box>
-    </>
+    </Box>
   );
 };
 

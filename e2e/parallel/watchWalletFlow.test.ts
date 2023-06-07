@@ -207,7 +207,22 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
     });
     await delayTime('medium');
-    await findElementByTestId({ id: 'import-wallet-selection', driver });
+    try {
+      const importwalletselection = await Promise.race([
+        findElementByTestId({ id: 'import-wallet-selection', driver }),
+        // eslint-disable-next-line no-promise-executor-return
+        new Promise((resolve) => setTimeout(() => resolve(false), 1000)),
+      ]);
+      const importwallet = await Promise.race([
+        findElementByTestId({ id: 'import-wallet-screen', driver }),
+        // eslint-disable-next-line no-promise-executor-return
+        new Promise((resolve) => setTimeout(() => resolve(false), 1000)),
+      ]);
+      console.log('importwallet', importwallet);
+      console.log('importwalletselection', importwalletselection);
+    } catch (e) {
+      console.log('errororroor e', e);
+    }
     // await findElementByTestId({ id: 'add-wallets-not-ready', driver });
     await findElementByTestIdAndClick({
       id: 'add-wallets-button',
