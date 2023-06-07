@@ -188,28 +188,32 @@ const ImportWalletSelection = ({
 
             <Box width="full" paddingVertical="20px">
               <Rows alignVertical="top" space="8px">
-                <Button
-                  symbol="arrow.uturn.down.circle.fill"
-                  symbolSide="left"
-                  color={'accent'}
-                  height="44px"
-                  variant={'flat'}
-                  width="full"
-                  onClick={handleAddWallets}
-                  testId="add-wallets-button"
-                >
-                  {i18n.t('import_wallet_selection.add_wallets')}
-                </Button>
-                <Button
-                  color="labelSecondary"
-                  height="44px"
-                  variant="transparent"
-                  width="full"
-                  onClick={handleEditWallets}
-                  testId="edit-wallets-button"
-                >
-                  {i18n.t('import_wallet_selection.edit_wallets')}
-                </Button>
+                <Row>
+                  <Button
+                    symbol="arrow.uturn.down.circle.fill"
+                    symbolSide="left"
+                    color={'accent'}
+                    height="44px"
+                    variant={'flat'}
+                    width="full"
+                    onClick={handleAddWallets}
+                    testId="add-wallets-button"
+                  >
+                    {i18n.t('import_wallet_selection.add_wallets')}
+                  </Button>
+                </Row>
+                <Row>
+                  <Button
+                    color="labelSecondary"
+                    height="44px"
+                    variant="transparent"
+                    width="full"
+                    onClick={handleEditWallets}
+                    testId="edit-wallets-button"
+                  >
+                    {i18n.t('import_wallet_selection.edit_wallets')}
+                  </Button>
+                </Row>
               </Rows>
             </Box>
           </>
