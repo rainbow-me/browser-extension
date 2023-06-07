@@ -63,10 +63,7 @@ it('should be able import a wallet via pk', async () => {
     id: 'import-wallets-button',
     driver,
   });
-  // await findElementByTestIdAndClick({
-  //   id: 'add-wallets-button',
-  //   driver,
-  // });
+
   await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
   await typeOnTextInput({
     id: 'confirm-password-input',

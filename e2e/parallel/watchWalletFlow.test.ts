@@ -8,7 +8,6 @@ import {
   byText,
   delayTime,
   findElementByIdAndClick,
-  findElementByTestId,
   findElementByTestIdAndClick,
   getExtensionIdByName,
   getTextFromText,
@@ -184,51 +183,10 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
       text: TEST_VARIABLES.SEED_WALLET.PK,
     });
-
-    try {
-      const isValid = await Promise.race([
-        findElementByTestId({ id: 'box-isValid-yeah', driver }),
-        // eslint-disable-next-line no-promise-executor-return
-        new Promise((resolve) => setTimeout(() => resolve(false), 1000)),
-      ]);
-      const isNotValid = await Promise.race([
-        findElementByTestId({ id: 'box-isValid-nop', driver }),
-        // eslint-disable-next-line no-promise-executor-return
-        new Promise((resolve) => setTimeout(() => resolve(false), 1000)),
-      ]);
-
-      console.log('isValid', isValid);
-      console.log('isNotValid', isNotValid);
-    } catch (e) {
-      console.log('errororroor e', e);
-    }
     await findElementByTestIdAndClick({
       id: 'import-wallets-button',
       driver,
     });
-    await delayTime('medium');
-    try {
-      const importwalletselection = await Promise.race([
-        findElementByTestId({ id: 'import-wallet-selection', driver }),
-        // eslint-disable-next-line no-promise-executor-return
-        new Promise((resolve) => setTimeout(() => resolve(false), 1000)),
-      ]);
-      const importwallet = await Promise.race([
-        findElementByTestId({ id: 'import-wallet-screen', driver }),
-        // eslint-disable-next-line no-promise-executor-return
-        new Promise((resolve) => setTimeout(() => resolve(false), 1000)),
-      ]);
-      console.log('importwallet', importwallet);
-      console.log('importwalletselection', importwalletselection);
-    } catch (e) {
-      console.log('errororroor e', e);
-    }
-    // await findElementByTestId({ id: 'add-wallets-not-ready', driver });
-    // await findElementByTestIdAndClick({
-    //   id: 'add-wallets-button',
-    //   driver,
-    // });
-    // await delayTime('medium');
   });
 
   it('should display seed account name', async () => {
