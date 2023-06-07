@@ -13,6 +13,7 @@ import {
 } from '~/core/types/assets';
 import { ChainId, ChainName } from '~/core/types/chains';
 
+import { i18n } from '../languages';
 import { SearchAsset } from '../types/search';
 
 import {
@@ -84,7 +85,7 @@ export function parseAsset({
     chainId,
     chainName,
     isNativeAsset: isNativeAsset(address, chainIdFromChainName(chainName)),
-    name: asset?.name || 'Unknown Token',
+    name: asset?.name || i18n.t('tokens_tab.unknown_token'),
     mainnetAddress,
     native: {
       price: getNativeAssetPrice({
