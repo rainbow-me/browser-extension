@@ -181,7 +181,7 @@ describe('Watch wallet then add more and switch between them', () => {
     await typeOnTextInput({
       id: 'secret-textarea',
       driver,
-      text: TEST_VARIABLES.SEED_WALLET.SECRET,
+      text: TEST_VARIABLES.SEED_WALLET.PK,
     });
 
     await findElementByTestIdAndClick({

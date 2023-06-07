@@ -60,7 +60,7 @@ it('should be able import a wallet via seed', async () => {
   await typeOnTextInput({
     id: 'secret-textarea',
     driver,
-    text: 'test test test test test test test test test test test junk',
+    text: TEST_VARIABLES.SEED_WALLET.PK,
   });
 
   await findElementByTestIdAndClick({

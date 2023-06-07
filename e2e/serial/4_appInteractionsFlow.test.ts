@@ -91,7 +91,7 @@ describe('App interactions flow', () => {
     await typeOnTextInput({
       id: 'secret-textarea',
       driver,
-      text: TEST_VARIABLES.SEED_WALLET.SECRET,
+      text: TEST_VARIABLES.SEED_WALLET.PK,
     });
 
     await findElementByTestIdAndClick({
