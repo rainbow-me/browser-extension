@@ -93,6 +93,9 @@ const ImportWalletSelection = ({
   const isReady =
     accountsToImport.length && !isImporting && !walletsSummaryIsLoading;
 
+  console.log('-- isReady accountsToImport', accountsToImport);
+  console.log('-- isReady isImporting', isImporting);
+  console.log('-- isReady walletsSummaryIsLoading', walletsSummaryIsLoading);
   return (
     <Rows space="20px" alignVertical="justify">
       <Row height="content">
