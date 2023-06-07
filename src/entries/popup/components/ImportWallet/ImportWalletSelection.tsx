@@ -138,6 +138,7 @@ const ImportWalletSelection = ({
             justifyContent="center"
             width="full"
             paddingTop="80px"
+            testId="add-wallets-not-ready"
           >
             <Stack space="20px">
               <Text
