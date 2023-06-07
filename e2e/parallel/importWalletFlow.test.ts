@@ -37,7 +37,7 @@ describe('Import wallet flow', () => {
   afterAll(async () => driver.quit());
 
   // Import a wallet
-  it('should be able import a wallet via pk', async () => {
+  it('should be able import a wallet via seed', async () => {
     //  Start from welcome screen
     await goToWelcome(driver, rootURL);
     await findElementByTestIdAndClick({
@@ -52,17 +52,17 @@ describe('Import wallet flow', () => {
     await typeOnTextInput({
       id: 'secret-textarea',
       driver,
-      text: TEST_VARIABLES.SEED_WALLET.PK,
+      text: TEST_VARIABLES.EMPTY_WALLET.SECRET,
     });
 
     await findElementByTestIdAndClick({
       id: 'import-wallets-button',
       driver,
     });
-    // await findElementByTestIdAndClick({
-    //   id: 'add-wallets-button',
-    //   driver,
-    // });
+    await findElementByTestIdAndClick({
+      id: 'add-wallets-button',
+      driver,
+    });
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
     await typeOnTextInput({
       id: 'confirm-password-input',
@@ -76,6 +76,6 @@ describe('Import wallet flow', () => {
     goToPopup(driver, rootURL);
     await delayTime('short');
     const account = await getTextFromText({ id: 'account-name', driver });
-    expect(account).toBe(shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS));
+    expect(account).toBe(shortenAddress(TEST_VARIABLES.EMPTY_WALLET.ADDRESS));
   });
 });
