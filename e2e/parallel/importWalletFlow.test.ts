@@ -50,7 +50,7 @@ describe('Import wallet flow', () => {
     });
 
     await typeOnTextInput({
-      id: 'secret-textarea',
+      id: 'secret-text-area-0',
       driver,
       text: TEST_VARIABLES.EMPTY_WALLET.SECRET,
     });

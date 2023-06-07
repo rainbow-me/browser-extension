@@ -244,7 +244,7 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
                   padding="12px"
                   placeholder={i18n.t('import_wallet.placeholder')}
                   value={secrets[i]}
-                  testId="secret-textarea"
+                  testId={`secret-text-area-${i}`}
                   onKeyDown={handleKeyDown}
                   tabIndex={1}
                   autoFocus

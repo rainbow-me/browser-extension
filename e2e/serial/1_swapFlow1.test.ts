@@ -58,7 +58,7 @@ it('should be able import a wallet via pk', async () => {
   });
 
   await typeOnTextInput({
-    id: 'secret-textarea',
+    id: 'secret-text-area-0',
     driver,
     text: TEST_VARIABLES.SEED_WALLET.PK,
   });
