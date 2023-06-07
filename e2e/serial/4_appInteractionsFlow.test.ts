@@ -8,6 +8,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
   delayTime,
+  findElementByIdAndClick,
   findElementByTestIdAndClick,
   findElementByText,
   getAllWindowHandles,
@@ -132,6 +133,52 @@ describe('App interactions flow', () => {
     });
   });
 
+  it('should be able to add a new wallet via pk 2', async () => {
+    await goToPopup(driver, rootURL, '#/home');
+    await findElementByIdAndClick({
+      id: 'header-account-name-shuffle',
+      driver,
+    });
+    await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
+    await findElementByTestIdAndClick({
+      id: 'import-wallets-button',
+      driver,
+    });
+
+    await typeOnTextInput({
+      id: 'secret-text-area-0',
+      driver,
+      text: TEST_VARIABLES.PRIVATE_KEY_WALLET_2.SECRET,
+    });
+    await findElementByTestIdAndClick({
+      id: 'import-wallets-button',
+      driver,
+    });
+  });
+
+  it('should be able to add a new wallet via pk 3', async () => {
+    await goToPopup(driver, rootURL, '#/home');
+    await findElementByIdAndClick({
+      id: 'header-account-name-shuffle',
+      driver,
+    });
+    await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
+    await findElementByTestIdAndClick({
+      id: 'import-wallets-button',
+      driver,
+    });
+
+    await typeOnTextInput({
+      id: 'secret-text-area-0',
+      driver,
+      text: TEST_VARIABLES.PRIVATE_KEY_WALLET_3.SECRET,
+    });
+    await findElementByTestIdAndClick({
+      id: 'import-wallets-button',
+      driver,
+    });
+  });
+
   it('should be able to connect to bx test dapp', async () => {
     await delayTime('long');
     await goToTestApp(driver);
@@ -159,7 +206,7 @@ describe('App interactions flow', () => {
 
     // switch account
     await findElementByTestIdAndClick({ id: 'switch-wallet-menu', driver });
-    await findElementByTestIdAndClick({ id: 'switch-wallet-item-3', driver });
+    await findElementByTestIdAndClick({ id: 'switch-wallet-item-2', driver });
     // switch network
     await findElementByTestIdAndClick({ id: 'switch-network-menu', driver });
     await findElementByTestIdAndClick({ id: 'switch-network-item-0', driver });
