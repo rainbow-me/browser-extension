@@ -8,6 +8,7 @@ import {
   byText,
   delayTime,
   findElementByIdAndClick,
+  findElementByTestId,
   findElementByTestIdAndClick,
   getExtensionIdByName,
   getTextFromText,
@@ -188,6 +189,7 @@ describe('Watch wallet then add more and switch between them', () => {
       id: 'import-wallets-button',
       driver,
     });
+    await findElementByTestId({ id: 'add-wallets-button-section', driver });
     await findElementByTestIdAndClick({
       id: 'add-wallets-button',
       driver,

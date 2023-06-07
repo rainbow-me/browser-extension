@@ -186,7 +186,11 @@ const ImportWalletSelection = ({
               </Box>
             </Box>
 
-            <Box width="full" paddingVertical="20px">
+            <Box
+              testId="add-wallets-button-section"
+              width="full"
+              paddingVertical="20px"
+            >
               <Rows alignVertical="top" space="8px">
                 <Row>
                   <Button
