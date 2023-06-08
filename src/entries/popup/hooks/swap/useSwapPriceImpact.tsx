@@ -32,10 +32,12 @@ export const useSwapPriceImpact = ({
   assetToSell,
   assetToBuy,
   quote,
+  isWrapOrUnwrapEth,
 }: {
   assetToSell?: ParsedSearchAsset | null;
   assetToBuy?: ParsedSearchAsset | null;
   quote?: Quote | CrosschainQuote;
+  isWrapOrUnwrapEth: boolean;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
   const sellNativeAsset = useNativeAssetForNetwork({
@@ -47,31 +49,57 @@ export const useSwapPriceImpact = ({
   });
 
   const sellNativeAmount = useMemo(() => {
-    return convertRawAmountToNativeDisplay(
-      quote?.sellAmountInEth.toString() || '',
-      sellNativeAsset?.decimals || 18,
-      sellNativeAsset?.price?.value || '0',
-      currentCurrency,
-    ).amount;
+    if (isWrapOrUnwrapEth) {
+      return convertRawAmountToNativeDisplay(
+        quote?.sellAmount?.toString() || '',
+        assetToSell?.decimals || 18,
+        assetToSell?.price?.value || '0',
+        currentCurrency,
+      ).amount;
+    } else {
+      return convertRawAmountToNativeDisplay(
+        quote?.sellAmountInEth.toString() || '',
+        sellNativeAsset?.decimals || 18,
+        sellNativeAsset?.price?.value || '0',
+        currentCurrency,
+      ).amount;
+    }
   }, [
-    currentCurrency,
+    isWrapOrUnwrapEth,
+    quote?.sellAmountInEth,
+    quote?.sellAmount,
     sellNativeAsset?.decimals,
     sellNativeAsset?.price?.value,
-    quote?.sellAmountInEth,
+    currentCurrency,
+    assetToSell?.decimals,
+    assetToSell?.price?.value,
   ]);
 
   const buyNativeAmount = useMemo(() => {
-    return convertRawAmountToNativeDisplay(
-      quote?.buyAmountInEth.toString() || '',
-      buyNativeAsset?.decimals || 18,
-      buyNativeAsset?.price?.value || '0',
-      currentCurrency,
-    ).amount;
+    if (isWrapOrUnwrapEth) {
+      return convertRawAmountToNativeDisplay(
+        quote?.buyAmount?.toString() || '',
+        assetToBuy?.decimals || 18,
+        assetToBuy?.price?.value || '0',
+        currentCurrency,
+      ).amount;
+    } else {
+      return convertRawAmountToNativeDisplay(
+        quote?.buyAmountInEth.toString() || '',
+        buyNativeAsset?.decimals || 18,
+        buyNativeAsset?.price?.value || '0',
+        currentCurrency,
+      ).amount;
+    }
   }, [
-    currentCurrency,
+    isWrapOrUnwrapEth,
+    quote?.buyAmountInEth,
+    quote?.buyAmount,
     buyNativeAsset?.decimals,
     buyNativeAsset?.price?.value,
-    quote?.buyAmountInEth,
+    currentCurrency,
+    assetToBuy?.decimals,
+    assetToBuy?.price?.value,
   ]);
 
   const { impactDisplay, priceImpact } = useMemo(() => {

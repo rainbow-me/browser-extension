@@ -191,7 +191,7 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
   );
 
   return (
-    <>
+    <Box testId="import-wallet-screen">
       <Stack space="24px" alignHorizontal="center">
         <Box alignItems="center">
           <Stack space="12px">
@@ -244,7 +244,7 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
                   padding="12px"
                   placeholder={i18n.t('import_wallet.placeholder')}
                   value={secrets[i]}
-                  testId="secret-textarea"
+                  testId={`secret-text-area-${i}`}
                   onKeyDown={handleKeyDown}
                   tabIndex={1}
                   autoFocus
@@ -320,7 +320,12 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
         </Box>
       </Stack>
 
-      <Box width="full" paddingTop="10px" paddingBottom="20px">
+      <Box
+        testId={`box-isValid-${isValid ? 'yeah' : 'nop'}`}
+        width="full"
+        paddingTop="10px"
+        paddingBottom="20px"
+      >
         <Button
           symbol="arrow.uturn.down.circle.fill"
           symbolSide="left"
@@ -337,7 +342,7 @@ const ImportWallet = ({ onboarding = false }: { onboarding?: boolean }) => {
             : i18n.t('import_wallet.import_wallet')}
         </Button>
       </Box>
-    </>
+    </Box>
   );
 };
 

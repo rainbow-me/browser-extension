@@ -135,18 +135,20 @@ export function Activity() {
           }}
         >
           {activityRowVirtualizer.getVirtualItems().map((virtualItem) => {
-            const { index } = virtualItem;
+            const { index, start } = virtualItem;
             const rowData = listData?.[index];
             return (
               <Box
                 key={index}
+                data-index={index}
+                ref={activityRowVirtualizer.measureElement}
                 style={{
                   position: 'absolute',
                   top: 0,
                   left: 0,
                   width: '100%',
-                  height: virtualItem.size,
-                  transform: `translateY(${virtualItem.start}px)`,
+                  height: rowData === 'string' ? 34 : 52,
+                  transform: `translateY(${start}px)`,
                 }}
               >
                 {typeof rowData === 'string' ? (
