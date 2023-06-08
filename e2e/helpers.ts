@@ -11,10 +11,13 @@ import {
   until,
 } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome';
+import { expect } from 'vitest';
 import { erc20ABI } from 'wagmi';
 
-const waitUntilTime = 20000;
+// consts
 
+const waitUntilTime = 20000;
+const testPassword = 'test1234';
 const BINARY_PATHS = {
   mac: {
     chrome: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
@@ -30,13 +33,54 @@ export const byTestId = (id: string) => By.css(`[data-testid="${id}"]`);
 export const byText = (text: string) =>
   By.xpath(`//*[contains(text(),"${text}")]`);
 
-export async function querySelector(driver, selector) {
-  const el = await driver.wait(
-    until.elementLocated(By.css(selector)),
-    waitUntilTime,
-  );
-  return await driver.wait(until.elementIsVisible(el), waitUntilTime);
+// navigators
+
+export async function goToTestApp(driver) {
+  await driver.get('https://bx-test-dapp.vercel.app/');
+  await delay(1000);
 }
+
+export async function goToPopup(driver, rootURL, route = '') {
+  await driver.get(rootURL + '/popup.html' + route);
+  await delay(5000);
+}
+
+export async function goToWelcome(driver, rootURL) {
+  await driver.get(rootURL + '/popup.html#/welcome');
+  await delay(1000);
+}
+
+export async function getAllWindowHandles({
+  driver,
+  popupHandler,
+  dappHandler,
+}: {
+  driver: WebDriver;
+  popupHandler?: string;
+  dappHandler?: string;
+}) {
+  await delayTime('long');
+  const handlers = await driver.getAllWindowHandles();
+  const popupHandlerFromHandlers =
+    handlers.find((handler) => handler !== dappHandler) || '';
+
+  const dappHandlerFromHandlers =
+    handlers.find((handler) => handler !== popupHandler) || '';
+
+  return {
+    handlers,
+    popupHandler: popupHandler || popupHandlerFromHandlers,
+    dappHandler: dappHandler || dappHandlerFromHandlers,
+  };
+}
+
+export async function getWindowHandle({ driver }) {
+  await delayTime('long');
+  const windowHandle = await driver.getWindowHandle();
+  return windowHandle;
+}
+
+// setup functions
 
 export async function initDriverWithOptions(opts) {
   const args = [
@@ -77,81 +121,31 @@ export async function getExtensionIdByName(driver, extensionName) {
     `);
 }
 
-export function shortenAddress(address) {
-  // if address is 42 in length and starts with 0x, then shorten it
-  // otherwise return the base value. this is so it doesn't break incase an ens, etc is input
-  return address.substring(0, 2) === '0x' && address.length === 42
-    ? `${address.substring(0, 6)}...${address.substring(38, 42)}`
-    : address;
-}
+// search functions
 
-export async function switchWallet(address, rootURL, driver: WebDriver) {
-  // find shortened address, go to popup, find header, click, find wallet you want to switch to and click
-  const shortenedAddress = shortenAddress(address);
-
-  await goToPopup(driver, rootURL, '#/home');
-  await delayTime('medium');
-  await findElementByIdAndClick({
-    id: 'header-account-name-shuffle',
-    driver,
-  });
-  await delayTime('medium');
-
-  await waitUntilElementByTestIdIsPresent({
-    id: `account-item-${shortenedAddress}`,
-    driver,
-  });
-  await findElementByTestIdAndClick({
-    id: `account-item-${shortenedAddress}`,
-    driver,
-  });
-
-  await delayTime('long');
-}
-
-export async function getOnchainBalance(addy, contract) {
-  const provider = ethers.getDefaultProvider('http://127.0.0.1:8545');
-  const testContract = new ethers.Contract(contract, erc20ABI, provider);
-  const balance = await testContract.balanceOf(addy);
-
-  return balance;
-}
-
-export async function transactionStatus() {
-  const provider = ethers.getDefaultProvider('http://127.0.0.1:8545');
-  const blockData = await provider.getBlock('latest');
-  const txn = await provider.getTransaction(blockData.transactions[0]);
-  const txnData = txn.wait();
-
-  // transactionResponse.wait.status returns '1' if the txn was sent successfully and '0' if its a failure
-  const txnStatus = (await txnData).status === 1 ? 'success' : 'failure';
-
-  return txnStatus;
-}
-
-export async function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+export async function querySelector(driver, selector) {
+  const el = await driver.wait(
+    until.elementLocated(By.css(selector)),
+    waitUntilTime,
+  );
+  return await driver.wait(until.elementIsVisible(el), waitUntilTime);
 }
 
 export async function findElementByText(driver, text) {
-  return driver.findElement(By.xpath("//*[contains(text(),'" + text + "')]"));
+  const el = await driver.wait(
+    until.elementLocated(By.xpath("//*[contains(text(),'" + text + "')]")),
+    waitUntilTime,
+  );
+  return await driver.wait(until.elementIsVisible(el), waitUntilTime);
 }
 
 export async function findElementByTextAndClick(driver, text) {
-  const element = await driver.findElement(
-    By.xpath("//*[contains(text(),'" + text + "')]"),
-  );
+  const element = await findElementByText(driver, text);
   await waitAndClick(element, driver);
 }
 
-export async function waitAndClick(element, driver) {
-  await delay(200);
-  await driver.wait(until.elementIsVisible(element), waitUntilTime);
-  return element.click();
-}
-
 export async function findElementAndClick({ id, driver }) {
-  await delay(200);
+  await delayTime('short');
   const element = await driver.findElement({
     id,
   });
@@ -194,6 +188,11 @@ export async function findElementByIdAndClick({ id, driver }) {
   const element = await findElementById({ id, driver });
   await waitAndClick(element, driver);
 }
+export async function waitAndClick(element, driver) {
+  await delayTime('short');
+  await driver.wait(until.elementIsVisible(element), waitUntilTime);
+  return element.click();
+}
 
 export async function typeOnTextInput({ id, text, driver }) {
   const element = await findElementByTestId({ id, driver });
@@ -215,19 +214,155 @@ export async function getTextFromDappText({ id, driver }) {
   return await element.getText();
 }
 
-export async function goToTestApp(driver) {
-  await driver.get('https://bx-test-dapp.vercel.app/');
-  await delay(1000);
+export const untilIsClickable = (locator: Locator) =>
+  new WebElementCondition('until element is clickable', async (driver) => {
+    const element = driver.findElement(locator);
+    const isDisplayed = await element.isDisplayed();
+    const isEnabled = await element.isEnabled();
+    if (isDisplayed && isEnabled) return element;
+    return null;
+  });
+
+// various functions and flows
+
+export function shortenAddress(address) {
+  // if address is 42 in length and starts with 0x, then shorten it
+  // otherwise return the base value. this is so it doesn't break incase an ens, etc is input
+  return address.substring(0, 2) === '0x' && address.length === 42
+    ? `${address.substring(0, 6)}...${address.substring(38, 42)}`
+    : address;
 }
 
-export async function goToPopup(driver, rootURL, route = '') {
-  await driver.get(rootURL + '/popup.html' + route);
-  await delay(5000);
+export async function switchWallet(address, rootURL, driver: WebDriver) {
+  // find shortened address
+  const shortenedAddress = shortenAddress(address);
+
+  // go to popup
+  await goToPopup(driver, rootURL, '#/home');
+  await delayTime('medium');
+
+  // find header and click
+  await findElementByIdAndClick({
+    id: 'header-account-name-shuffle',
+    driver,
+  });
+  await delayTime('medium');
+
+  // find wallet you want to switch to and click
+  await waitUntilElementByTestIdIsPresent({
+    id: `account-item-${shortenedAddress}`,
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `account-item-${shortenedAddress}`,
+    driver,
+  });
+
+  await delayTime('long');
 }
 
-export async function goToWelcome(driver, rootURL) {
-  await driver.get(rootURL + '/popup.html#/welcome');
-  await delay(1000);
+export async function getOnchainBalance(addy, contract) {
+  const provider = ethers.getDefaultProvider('http://127.0.0.1:8545');
+  const testContract = new ethers.Contract(contract, erc20ABI, provider);
+  const balance = await testContract.balanceOf(addy);
+
+  return balance;
+}
+
+export async function transactionStatus() {
+  const provider = ethers.getDefaultProvider('http://127.0.0.1:8545');
+  const blockData = await provider.getBlock('latest');
+  const txn = await provider.getTransaction(blockData.transactions[0]);
+  const txnData = txn.wait();
+
+  // transactionResponse.wait.status returns '1' if txn is successful
+  // it returns '0' if the txn is a failure
+  const txnStatus = (await txnData).status === 1 ? 'success' : 'failure';
+
+  return txnStatus;
+}
+
+export async function importWalletFlow(driver, rootURL, walletSecret) {
+  await goToWelcome(driver, rootURL);
+  await findElementByTestIdAndClick({
+    id: 'import-wallet-button',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: 'import-wallet-option',
+    driver,
+  });
+
+  await typeOnTextInput({
+    id: 'secret-text-area-0',
+    driver,
+    text: walletSecret,
+  });
+
+  await findElementByTestIdAndClick({
+    id: 'import-wallets-button',
+    driver,
+  });
+
+  // button doesn't exist for pkeys. check if pkey, and if so, dont check for this button
+  const isPrivateKey =
+    walletSecret.substr(0, 2) === '0x' && walletSecret.length === 66;
+  if (!isPrivateKey) {
+    await findElementByTestIdAndClick({
+      id: 'add-wallets-button',
+      driver,
+    });
+  }
+
+  await typeOnTextInput({ id: 'password-input', driver, text: testPassword });
+  await typeOnTextInput({
+    id: 'confirm-password-input',
+    driver,
+    text: testPassword,
+  });
+  await findElementByTestIdAndClick({ id: 'set-password-button', driver });
+  await delayTime('long');
+  await findElementByText(driver, 'Rainbow is ready to use');
+}
+
+export async function checkWalletName(driver, rootURL, walletAddress) {
+  goToPopup(driver, rootURL);
+  await delayTime('short');
+  const account = await getTextFromText({ id: 'account-name', driver });
+  expect(account).toBe(shortenAddress(walletAddress));
+}
+
+export async function passSecretQuiz(driver) {
+  const requiredWordsIndexes = [4, 8, 12];
+  const requiredWords: string[] = [];
+
+  for (const index of requiredWordsIndexes) {
+    const wordElement = await querySelector(
+      driver,
+      `[data-testid="seed_word_${index}"]`,
+    );
+    const wordText = await wordElement.getText();
+    requiredWords.push(wordText);
+  }
+
+  await findElementByTestIdAndClick({
+    id: 'saved-these-words-button',
+    driver,
+  });
+
+  await delayTime('long');
+
+  for (const word of requiredWords) {
+    await findElementByTestIdAndClick({ id: `word_${word}`, driver });
+  }
+
+  await delayTime('long');
+}
+
+// delays
+
+export async function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export async function delayTime(
@@ -244,42 +379,3 @@ export async function delayTime(
       return await delay(5000);
   }
 }
-
-export async function getAllWindowHandles({
-  driver,
-  popupHandler,
-  dappHandler,
-}: {
-  driver: WebDriver;
-  popupHandler?: string;
-  dappHandler?: string;
-}) {
-  await delayTime('long');
-  const handlers = await driver.getAllWindowHandles();
-  const popupHandlerFromHandlers =
-    handlers.find((handler) => handler !== dappHandler) || '';
-
-  const dappHandlerFromHandlers =
-    handlers.find((handler) => handler !== popupHandler) || '';
-
-  return {
-    handlers,
-    popupHandler: popupHandler || popupHandlerFromHandlers,
-    dappHandler: dappHandler || dappHandlerFromHandlers,
-  };
-}
-
-export async function getWindowHandle({ driver }) {
-  await delayTime('long');
-  const windowHandle = await driver.getWindowHandle();
-  return windowHandle;
-}
-
-export const untilIsClickable = (locator: Locator) =>
-  new WebElementCondition('until element is clickable', async (driver) => {
-    const element = driver.findElement(locator);
-    const isDisplayed = await element.isDisplayed();
-    const isEnabled = await element.isEnabled();
-    if (isDisplayed && isEnabled) return element;
-    return null;
-  });
