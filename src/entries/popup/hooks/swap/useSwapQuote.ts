@@ -148,7 +148,7 @@ export const useSwapQuote = ({
         ? quote.buyAmount
         : quote.buyAmountInEth,
       sellAmountInEth: isWrapOrUnwrapEth
-        ? quote.buyAmount
+        ? quote.sellAmount
         : quote.sellAmountInEth,
     };
   }, [data, isWrapOrUnwrapEth]);
