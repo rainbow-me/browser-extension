@@ -111,7 +111,7 @@
         "imported": "Imported",
         "wallet_single": "Wallet",
         "wallet_plural": "Wallets",
-        "recovery_phrase_label": "Recovery Phrase",
+        "recovery_phrase_label": "Wallet Group",
         "private_key_label": "Private Key",
         "hardware_wallet_label": "Hardware Wallet",
         "wallet_details": {
