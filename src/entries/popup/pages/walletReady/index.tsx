@@ -3,6 +3,34 @@ import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
 
 import { ReadyShortcut } from './ReadyShortcut';
 
+const isBrave = 'brave' in navigator;
+
+const PinToToolbar = () => (
+  <Box
+    position="fixed"
+    top="0"
+    borderRadius="16px"
+    style={{
+      borderTopLeftRadius: 0,
+      borderTopRightRadius: 0,
+      maxWidth: '152px',
+      right: isBrave ? '144px' : '104px',
+    }}
+    paddingHorizontal="12px"
+    paddingVertical="16px"
+    display="flex"
+    gap="12px"
+    background="surfacePrimaryElevated"
+    borderColor="buttonStrokeSecondary"
+    boxShadow="18px surfacePrimaryElevated"
+  >
+    <Text size="14pt" weight="bold">
+      {i18n.t('wallet_ready.pin_rainbow_to_your_toolbar')}
+    </Text>
+    <Symbol symbol="arrow.up" color="purple" size={18} weight="bold" />
+  </Box>
+);
+
 export function WalletReady() {
   return (
     <Box
@@ -158,6 +186,7 @@ export function WalletReady() {
           </Box>
         </Stack>
       </Box>
+      <PinToToolbar />
     </Box>
   );
 }

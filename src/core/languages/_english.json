@@ -662,7 +662,8 @@
     "coinbase_description": "Buy or transfer from Coinbase",
     "send_from_wallet": "Send from another wallet",
     "send_description_1": "Press",
-    "send_description_2": "to copy your address"
+    "send_description_2": "to copy your address",
+    "unknown_token": "Unknown Token"
   },
   "speed_up_and_cancel": {
     "speed_up": "Speed up",
@@ -696,7 +697,7 @@
     "get_started_with_rainbow_desc": "Welcome to Rainbow! We're so glad you're here. We’ve created this guide to help with the basics of Rainbow.",
     "discover_shortcuts": "Discover shortcuts",
     "discover_shortcuts_desc": "Looking to discover more shortcuts? Check out this helpful guide we’ve put together for you.",
-    "pin_rainbow_to_your_toolbar": "Pin Rainbow to your toolbar:"
+    "pin_rainbow_to_your_toolbar": "Pin Rainbow to your toolbar"
   },
   "wallet_header": {
     "copy": "Copy",
