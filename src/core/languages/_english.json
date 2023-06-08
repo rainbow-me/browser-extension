@@ -111,7 +111,7 @@
         "imported": "Imported",
         "wallet_single": "Wallet",
         "wallet_plural": "Wallets",
-        "recovery_phrase_label": "Recovery Phrase",
+        "recovery_phrase_label": "Wallet Group",
         "private_key_label": "Private Key",
         "hardware_wallet_label": "Hardware Wallet",
         "wallet_details": {
@@ -456,6 +456,7 @@
   "import_wallet_selection": {
     "title": "Your wallets",
     "description": {
+      "zero": "Rainbow detected 1 wallet. You can add more at any time.",
       "one": "Rainbow detected 1 wallet that have been used recently. You can add more at any time.",
       "other": "Rainbow detected %{count} wallets that have been used recently. You can edit or add more at any time."
     },
@@ -463,7 +464,8 @@
     "edit_wallets": "Edit wallets",
     "loading": "Hold tight while we look up all your wallets...",
     "importing": "Importing your wallets...",
-    "account_summary": "Tokens: %{tokensAmount} ‧ Last tx: %{lastTx} ago"
+    "account_summary_tokens": "Tokens: %{tokensAmount}",
+    "account_summary_last_tx": "Last tx: %{lastTx} ago"
   },
   "watch_wallet": {
     "title": "Watch an Ethereum address",

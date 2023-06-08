@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -139,6 +139,14 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
   const isReady =
     !!accountsToImport.length && !isImporting && !walletsSummaryIsLoading;
 
+  const hasRecentlyUsedWallet = useMemo(
+    () =>
+      Object.values(walletsSummary).some(
+        ({ lastTx, balance }) => !!lastTx && balance.amount !== '0',
+      ),
+    [walletsSummary],
+  );
+
   return (
     <Rows space="20px" alignVertical="justify">
       <Row height="content">
@@ -158,7 +166,7 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
                   align="center"
                 >
                   {i18n.t('import_wallet_selection.description', {
-                    count: accountsToImport.length,
+                    count: hasRecentlyUsedWallet ? accountsToImport.length : 0,
                   })}
                 </Text>
               </Box>
@@ -180,6 +188,7 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
             justifyContent="center"
             width="full"
             paddingTop="80px"
+            testId="add-wallets-not-ready"
           >
             <Stack space="20px">
               <Text
@@ -224,7 +233,11 @@ export const ImportWalletSelection = ({ onboarding = false }) => {
               </Box>
             </Box>
 
-            <Box width="full" paddingVertical="20px">
+            <Box
+              testId="add-wallets-button-section"
+              width="full"
+              paddingVertical="20px"
+            >
               <Rows alignVertical="top" space="8px">
                 <Button
                   symbol="arrow.uturn.down.circle.fill"

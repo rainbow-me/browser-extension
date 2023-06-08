@@ -13,11 +13,12 @@ import {
 } from '~/design-system/styles/designTokens';
 
 export type ImportWalletTextareaProps = PropsWithChildren<
-  { error: ReactNode } & ComponentPropsWithoutRef<'textarea'>
+  { error: ReactNode; testId: string } & ComponentPropsWithoutRef<'textarea'>
 >;
 export function ImportWalletTextarea({
   error,
   children,
+  testId,
   ...props
 }: ImportWalletTextareaProps) {
   const borderColor = error
@@ -32,6 +33,7 @@ export function ImportWalletTextarea({
       height="full"
       width="full"
       position="relative"
+      testId={testId}
     >
       <Box
         as="textarea"

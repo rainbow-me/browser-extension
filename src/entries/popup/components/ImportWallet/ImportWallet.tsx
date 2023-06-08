@@ -140,7 +140,7 @@ export const ImportWallet = ({ onboarding = false }) => {
   const onAddAnother = () => setSecrets((secrets) => [...secrets, '']);
 
   return (
-    <>
+    <Box testId="import-wallet-screen">
       <Stack space="24px" alignHorizontal="center">
         <Box alignItems="center">
           <Stack space="12px">
@@ -177,6 +177,7 @@ export const ImportWallet = ({ onboarding = false }) => {
                   autoFocus
                   error={!!errorMsg && <ErrorMessage message={errorMsg} />}
                   placeholder={i18n.t('import_wallet.placeholder')}
+                  testId={`secret-text-area-${i}`}
                   value={secret}
                   onChange={onSecretChange(i)}
                 >
@@ -218,7 +219,12 @@ export const ImportWallet = ({ onboarding = false }) => {
         </Box>
       </Stack>
 
-      <Box width="full" paddingTop="10px" paddingBottom="20px">
+      <Box
+        testId={`box-isValid-${disabled ? 'yeah' : 'nop'}`}
+        width="full"
+        paddingTop="10px"
+        paddingBottom="20px"
+      >
         <Button
           symbol="arrow.uturn.down.circle.fill"
           symbolSide="left"
@@ -234,6 +240,6 @@ export const ImportWallet = ({ onboarding = false }) => {
           {i18n.t('import_wallet.import_wallet', { count: secrets.length })}
         </Button>
       </Box>
-    </>
+    </Box>
   );
 };
