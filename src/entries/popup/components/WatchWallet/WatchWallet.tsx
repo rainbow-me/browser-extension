@@ -61,7 +61,10 @@ const recommendedTopAccounts = [
   'shl0ms.eth',
   'gremplin.eth',
   'chrismartz.eth',
-];
+] // shuffle the list
+  .map((value) => ({ value, sort: Math.random() }))
+  .sort((a, b) => a.sort - b.sort)
+  .map(({ value }) => value);
 
 function RecommendedAccountRow({
   name,
