@@ -39,10 +39,28 @@ import { WalletAvatar } from '../WalletAvatar/WalletAvatar';
 
 const recommendedTopAccounts = [
   'vitalik.eth',
-  'bored.eth',
+  'skillet.eth',
+  'worm.eth',
+  'nickbytes.eth',
+  'gami.eth',
+  'maaria.eth',
   'cdixon.eth',
-  'hublot.eth',
-  'rainbowwallet.eth',
+  'nick.eth',
+  'sassal.eth',
+  'shaq.eth',
+  'simona.eth',
+  'sohrab.eth',
+  'sadaf.eth',
+  'nnnnicholas.eth',
+  'dom.eth',
+  'poap.eth',
+  'dwr.eth',
+  'jacob.eth',
+  'callil.eth',
+  'johnpalmer.eth',
+  'shl0ms.eth',
+  'gremplin.eth',
+  'chrismartz.eth',
 ];
 
 function RecommendedAccountRow({
