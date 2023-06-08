@@ -95,6 +95,7 @@ export function Send() {
 
   const {
     assetAmount,
+    rawMaxAssetBalanceAmount,
     independentAmount,
     independentField,
     independentFieldRef,
@@ -107,6 +108,7 @@ export function Send() {
 
   const {
     currentCurrency,
+    maxAssetBalanceParams,
     chainId,
     data,
     fromAddress,
@@ -116,7 +118,7 @@ export function Send() {
     txToAddress,
     value,
     setToAddressOrName,
-  } = useSendState({ assetAmount, asset });
+  } = useSendState({ assetAmount, rawMaxAssetBalanceAmount, asset });
 
   const {
     buttonLabel,
@@ -133,15 +135,16 @@ export function Send() {
   });
 
   const controls = useAnimationControls();
-  const transactionRequest: TransactionRequest = useMemo(() => {
+  const transactionRequestForGas: TransactionRequest = useMemo(() => {
     return {
       to: txToAddress,
       from: fromAddress,
       value,
       chainId,
       data,
+      ...maxAssetBalanceParams,
     };
-  }, [txToAddress, fromAddress, value, chainId, data]);
+  }, [txToAddress, fromAddress, value, chainId, data, maxAssetBalanceParams]);
 
   const handleToAddressChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -442,7 +445,7 @@ export function Send() {
                     <Row>
                       <TransactionFee
                         chainId={chainId}
-                        transactionRequest={transactionRequest}
+                        transactionRequest={transactionRequestForGas}
                         accentColor={
                           asset?.colors?.primary || asset?.colors?.fallback
                         }
