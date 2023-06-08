@@ -26,23 +26,27 @@ export const useSwapQuoteHandler = ({
   setAssetToSellValue,
 }: SwapQuoteHandlerProps) => {
   const prevQuote = usePrevious(quote);
+
   useEffect(() => {
     if (!(quote as QuoteError)?.error) {
       const { sellAmountDisplay, buyAmountDisplay } = (quote || {}) as
         | Quote
         | CrosschainQuote;
+
       if (independentField === 'sellField' && assetToBuy) {
         setAssetToBuyValue(
           buyAmountDisplay
-            ? convertRawAmountToBalance(buyAmountDisplay.toString(), assetToBuy)
-                .amount
+            ? convertRawAmountToBalance(
+                buyAmountDisplay?.toString(),
+                assetToBuy,
+              ).amount
             : '',
         );
       } else if (independentField === 'buyField' && assetToSell) {
         setAssetToSellValue(
           sellAmountDisplay
             ? convertRawAmountToBalance(
-                sellAmountDisplay.toString(),
+                sellAmountDisplay?.toString(),
                 assetToSell,
               ).amount
             : '',

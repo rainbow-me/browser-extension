@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { i18n } from '~/core/languages';
 import { useCurrentAddressStore } from '~/core/state';
 import { Box, Button, Inline, Text, ThemeProvider } from '~/design-system';
+import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
 import { Row, Rows } from '~/design-system/components/Rows/Rows';
 import { accentColorAsHsl } from '~/design-system/styles/core.css';
 import { RainbowError, logger } from '~/logger';
@@ -60,36 +61,38 @@ export function ImportOrCreateWallet() {
         <Row>
           <Rows space="10px">
             <Row>
-              <Box
-                as={motion.div}
-                initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
-                animate={{ opacity: 1, backdropFilter: 'blur(80px)' }}
-                exit={{ opacity: 1, backdropFilter: 'blur(80px)' }}
-                key="create-button"
-                borderRadius="round"
-              >
-                <Button
-                  color="label"
-                  height="44px"
-                  variant="tinted"
-                  width="full"
-                  symbol="arrow.right"
-                  symbolSide="right"
-                  onClick={handleCreateNewWalletClick}
-                  testId="create-wallet-button"
+              <ButtonOverflow>
+                <Box
+                  as={motion.div}
+                  initial={{ opacity: 0, backdropFilter: 'blur(0px)' }}
+                  animate={{ opacity: 1, backdropFilter: 'blur(80px)' }}
+                  exit={{ opacity: 1, backdropFilter: 'blur(80px)' }}
+                  key="create-button"
+                  borderRadius="round"
                 >
-                  {loading ? (
-                    <Inline space="8px" alignVertical="center">
-                      <Text color="label" size="16pt" weight="bold">
-                        {i18n.t('welcome.create_wallet')}
-                      </Text>
-                      <Spinner size={16} color="label" />
-                    </Inline>
-                  ) : (
-                    i18n.t('welcome.create_wallet')
-                  )}
-                </Button>
-              </Box>
+                  <Button
+                    color="label"
+                    height="44px"
+                    variant="tinted"
+                    width="full"
+                    symbol="arrow.right"
+                    symbolSide="right"
+                    onClick={handleCreateNewWalletClick}
+                    testId="create-wallet-button"
+                  >
+                    {loading ? (
+                      <Inline space="8px" alignVertical="center">
+                        <Text color="label" size="16pt" weight="bold">
+                          {i18n.t('welcome.create_wallet')}
+                        </Text>
+                        <Spinner size={16} color="label" />
+                      </Inline>
+                    ) : (
+                      i18n.t('welcome.create_wallet')
+                    )}
+                  </Button>
+                </Box>
+              </ButtonOverflow>
             </Row>
             <Row>
               <Box

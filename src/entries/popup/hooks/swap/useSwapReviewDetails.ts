@@ -58,7 +58,7 @@ export const useSwapReviewDetails = ({
   const minimumReceived = useMemo(
     () =>
       `${
-        convertRawAmountToBalance(quote.buyAmountDisplay.toString(), {
+        convertRawAmountToBalance(quote.buyAmountDisplay?.toString(), {
           decimals: assetToBuy?.decimals,
         }).display
       } ${assetToBuy.symbol}`,

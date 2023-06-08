@@ -5,7 +5,7 @@ import { TransactionRequest } from '@ethersproject/providers';
 import { toUtf8Bytes } from '@ethersproject/strings';
 import { UnsignedTransaction, serialize } from '@ethersproject/transactions';
 import AppEth, { ledgerService } from '@ledgerhq/hw-app-eth';
-import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
+import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { SignTypedDataVersion, TypedDataUtils } from '@metamask/eth-sig-util';
 import { getProvider } from '@wagmi/core';
 import { ethers } from 'ethers';
@@ -25,7 +25,7 @@ export async function signTransactionFromLedger(
   let transport;
   try {
     const { from: address } = transaction;
-    transport = await TransportWebUSB.create();
+    transport = await TransportWebHID.create();
     const appEth = new AppEth(transport);
     const path = await getPath(address as Address);
 
@@ -110,7 +110,7 @@ export async function signMessageByTypeFromLedger(
   address: Address,
   messageType: string,
 ): Promise<string> {
-  const transport = await TransportWebUSB.create();
+  const transport = await TransportWebHID.create();
   const appEth = new AppEth(transport);
   const path = await getPath(address);
   // Personal sign

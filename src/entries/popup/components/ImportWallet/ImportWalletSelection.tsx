@@ -1,6 +1,6 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-nested-ternary */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -77,21 +77,34 @@ const ImportWalletSelection = ({
   }, [isImporting, navigate, onboarding, setCurrentAddress]);
 
   const handleEditWallets = useCallback(async () => {
-    onboarding
-      ? navigate(ROUTES.IMPORT__EDIT, {
-          state: {
-            accountsToImport,
-          },
-        })
-      : navigate(ROUTES.NEW_IMPORT_WALLET_SELECTION_EDIT, {
-          state: {
-            accountsToImport,
-          },
-        });
+    navigate(
+      onboarding
+        ? ROUTES.IMPORT__EDIT
+        : ROUTES.NEW_IMPORT_WALLET_SELECTION_EDIT,
+      {
+        state: {
+          accountsToImport,
+        },
+      },
+    );
   }, [accountsToImport, navigate, onboarding]);
 
   const isReady =
     accountsToImport.length && !isImporting && !walletsSummaryIsLoading;
+
+  const description = useMemo(() => {
+    const recentUsedWallet = Object.values(walletsSummary).find(
+      (summary) => summary.balance.amount !== '0' && !!summary.lastTx,
+    );
+    if (!recentUsedWallet && accountsToImport.length === 1) {
+      return i18n.t('import_wallet_selection.description_empty');
+    }
+    return accountsToImport.length === 1
+      ? i18n.t('import_wallet_selection.description_singular')
+      : i18n.t('import_wallet_selection.description_plural', {
+          count: accountsToImport.length,
+        });
+  }, [accountsToImport.length, walletsSummary]);
 
   return (
     <Rows space="20px" alignVertical="justify">
@@ -111,11 +124,7 @@ const ImportWalletSelection = ({
                   color="labelTertiary"
                   align="center"
                 >
-                  {accountsToImport.length === 1
-                    ? i18n.t('import_wallet_selection.description_singular')
-                    : i18n.t('import_wallet_selection.description_plural', {
-                        count: accountsToImport.length,
-                      })}
+                  {description}
                 </Text>
               </Box>
             ) : null}
@@ -135,6 +144,7 @@ const ImportWalletSelection = ({
             justifyContent="center"
             width="full"
             paddingTop="80px"
+            testId="add-wallets-not-ready"
           >
             <Stack space="20px">
               <Text
@@ -183,30 +193,38 @@ const ImportWalletSelection = ({
               </Box>
             </Box>
 
-            <Box width="full" paddingVertical="20px">
+            <Box
+              testId="add-wallets-button-section"
+              width="full"
+              paddingVertical="20px"
+            >
               <Rows alignVertical="top" space="8px">
-                <Button
-                  symbol="arrow.uturn.down.circle.fill"
-                  symbolSide="left"
-                  color={'accent'}
-                  height="44px"
-                  variant={'flat'}
-                  width="full"
-                  onClick={handleAddWallets}
-                  testId="add-wallets-button"
-                >
-                  {i18n.t('import_wallet_selection.add_wallets')}
-                </Button>
-                <Button
-                  color="labelSecondary"
-                  height="44px"
-                  variant="transparent"
-                  width="full"
-                  onClick={handleEditWallets}
-                  testId="edit-wallets-button"
-                >
-                  {i18n.t('import_wallet_selection.edit_wallets')}
-                </Button>
+                <Row>
+                  <Button
+                    symbol="arrow.uturn.down.circle.fill"
+                    symbolSide="left"
+                    color={'accent'}
+                    height="44px"
+                    variant={'flat'}
+                    width="full"
+                    onClick={handleAddWallets}
+                    testId="add-wallets-button"
+                  >
+                    {i18n.t('import_wallet_selection.add_wallets')}
+                  </Button>
+                </Row>
+                <Row>
+                  <Button
+                    color="labelSecondary"
+                    height="44px"
+                    variant="transparent"
+                    width="full"
+                    onClick={handleEditWallets}
+                    testId="edit-wallets-button"
+                  >
+                    {i18n.t('import_wallet_selection.edit_wallets')}
+                  </Button>
+                </Row>
               </Rows>
             </Box>
           </>

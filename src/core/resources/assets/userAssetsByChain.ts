@@ -22,6 +22,7 @@ import {
   parseParsedAddressAsset,
 } from '~/core/utils/assets';
 import { greaterThan } from '~/core/utils/numbers';
+import { isLowerCaseMatch } from '~/core/utils/strings';
 import { ETH_MAINNET_ASSET } from '~/test/utils';
 
 const fetchAssetBalanceViaProvider = async ({
@@ -175,7 +176,11 @@ export async function userAssetsByChainQueryFunction({
         );
         resolve(a);
       } else {
-        resolve(parsedUserAssetsByUniqueId);
+        if (isLowerCaseMatch(address, message.meta?.address)) {
+          resolve(parsedUserAssetsByUniqueId);
+        } else {
+          resolve({});
+        }
       }
     };
     refractionAddressWs.once(event, resolver);

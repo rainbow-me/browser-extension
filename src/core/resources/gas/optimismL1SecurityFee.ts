@@ -100,6 +100,9 @@ export function useOptimismL1SecurityFee(
   return useQuery(
     optimismL1SecurityFeeQueryKey({ transactionRequest, chainId }),
     optimismL1SecurityFeeQueryFunction,
-    { keepPreviousData: chainId === ChainId.optimism, ...config },
+    {
+      keepPreviousData: chainId === ChainId.optimism,
+      ...config,
+    },
   );
 }
