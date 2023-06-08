@@ -17,6 +17,7 @@ import { isNativeAsset } from '~/core/utils/chains';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTokenBlockExplorerUrl } from '~/core/utils/transactions';
 import { Box, Inline, Symbol, Text } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/util';
 
 import {
   ContextMenuRadioGroup,
@@ -29,7 +30,6 @@ import {
   DetailsMenuRow,
   DetailsMenuWrapper,
 } from '../../components/DetailsMenu';
-import { useAlert } from '../../hooks/useAlert';
 import { useNavigateToSwaps } from '../../hooks/useNavigateToSwaps';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWallets } from '../../hooks/useWallets';
@@ -49,7 +49,6 @@ export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
   const { isWatchingWallet } = useWallets();
   const { featureFlags } = useFeatureFlagsStore();
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
-  const { triggerAlert } = useAlert();
 
   const navigate = useRainbowNavigate();
 
@@ -78,7 +77,7 @@ export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
       // clear selected token
       setSelectedToken();
     }
-  }, [allowSwap, navigateToSwaps, setSelectedToken, triggerAlert]);
+  }, [allowSwap, navigateToSwaps, setSelectedToken]);
 
   const onValueChange = useCallback(
     (value: TokenDetailsMenuOption) => {
