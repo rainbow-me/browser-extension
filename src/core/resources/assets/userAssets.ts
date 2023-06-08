@@ -44,7 +44,7 @@ const userAssetsQueryKey = ({
   createQueryKey(
     'userAssets',
     { address, currency, connectedToHardhat },
-    { persisterVersion: 1 },
+    { persisterVersion: 2 },
   );
 
 type UserAssetsQueryKey = ReturnType<typeof userAssetsQueryKey>;
