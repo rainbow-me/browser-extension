@@ -336,26 +336,8 @@ export function Swap() {
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.swap.FLIP_ASSETS.key) {
-        const activeElement = document.activeElement;
-        const focusingAssetToSell =
-          activeElement === assetToSellInputRef.current;
-        const focusingAssetToBuy = activeElement === assetToBuyInputRef.current;
-        const focusNewInput = () => {
-          setTimeout(() => {
-            if (focusingAssetToSell) {
-              assetToBuyInputRef.current?.focus();
-            } else if (focusingAssetToBuy) {
-              assetToSellInputRef.current?.focus();
-            }
-          }, 100);
-        };
-        if (focusingAssetToSell && assetToSell) {
-          flipAssets();
-          focusNewInput();
-        } else if (focusingAssetToBuy && assetToBuy) {
-          flipAssets();
-          focusNewInput();
-        }
+        e.preventDefault();
+        flipAssets();
       }
     },
   });
