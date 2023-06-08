@@ -17,6 +17,7 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -24,6 +25,7 @@ import {
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import { handleAssetAccentColor } from '~/core/utils/colors';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Box, Button, Inline, Row, Rows, Symbol, Text } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
@@ -68,6 +70,7 @@ export function Send() {
   }>({ show: false, action: 'save' });
   const [toAddressDropdownOpen, setToAddressDropdownOpen] = useState(false);
 
+  const { currentTheme } = useCurrentThemeStore();
   const navigate = useRainbowNavigate();
 
   const { isContact } = useContactsStore();
@@ -328,6 +331,15 @@ export function Send() {
     },
   });
 
+  const assetAccentColor = useMemo(
+    () =>
+      handleAssetAccentColor(
+        currentTheme,
+        asset?.colors?.primary || asset?.colors?.fallback,
+      ),
+    [asset?.colors?.fallback, asset?.colors?.primary, currentTheme],
+  );
+
   return (
     <>
       <ExplainerSheet
@@ -343,9 +355,7 @@ export function Send() {
         action={contactSaveAction?.action}
         onSaveContactAction={setSaveContactAction}
       />
-      <AccentColorProviderWrapper
-        color={asset?.colors?.primary || asset?.colors?.fallback}
-      >
+      <AccentColorProviderWrapper color={assetAccentColor}>
         <ReviewSheet
           show={showReviewSheet}
           onCancel={closeReviewSheet}
@@ -398,9 +408,7 @@ export function Send() {
             </Row>
 
             <Row height="content">
-              <AccentColorProviderWrapper
-                color={asset?.colors?.primary || asset?.colors?.fallback}
-              >
+              <AccentColorProviderWrapper color={assetAccentColor}>
                 <Box
                   background="surfaceSecondaryElevated"
                   borderRadius="24px"
@@ -437,18 +445,14 @@ export function Send() {
 
           <Row height="content">
             {isValidToAddress && !!asset ? (
-              <AccentColorProviderWrapper
-                color={asset?.colors?.primary || asset?.colors?.fallback}
-              >
+              <AccentColorProviderWrapper color={assetAccentColor}>
                 <Box paddingHorizontal="8px">
                   <Rows space="20px">
                     <Row>
                       <TransactionFee
                         chainId={chainId}
                         transactionRequest={transactionRequestForGas}
-                        accentColor={
-                          asset?.colors?.primary || asset?.colors?.fallback
-                        }
+                        accentColor={assetAccentColor}
                       />
                     </Row>
                     <Row>
