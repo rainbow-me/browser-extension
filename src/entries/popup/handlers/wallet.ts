@@ -6,7 +6,7 @@ import { Bytes } from '@ethersproject/bytes';
 import { HDNode, Mnemonic } from '@ethersproject/hdnode';
 import { keccak256 } from '@ethersproject/keccak256';
 import AppEth from '@ledgerhq/hw-app-eth';
-import TransportWebUSB from '@ledgerhq/hw-transport-webusb';
+import TransportWebHID from '@ledgerhq/hw-transport-webhid';
 import { uuid4 } from '@sentry/utils';
 import { getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
@@ -365,7 +365,7 @@ export const importAccountAtIndex = async (
       }
       break;
     case 'Ledger': {
-      const transport = await TransportWebUSB.create();
+      const transport = await TransportWebHID.create();
       const appEth = new AppEth(transport);
       const result = await appEth.getAddress(
         `${DEFAULT_HD_PATH}/${index}`,
@@ -476,7 +476,7 @@ export const connectLedger = async () => {
   // Connect to the device
   let transport;
   try {
-    transport = await TransportWebUSB.create();
+    transport = await TransportWebHID.create();
     const appEth = new AppEth(transport);
     const result = await appEth.getAddress(
       `${DEFAULT_HD_PATH}/0`,

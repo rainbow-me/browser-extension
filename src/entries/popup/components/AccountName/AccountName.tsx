@@ -1,8 +1,9 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
-import { useAccount, useEnsAvatar } from 'wagmi';
+import { useAccount } from 'wagmi';
 
+import { useENSAvatar } from '~/core/resources/metadata/ensAvatar';
 import { Box, Column, Columns, Symbol, TextOverflow } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { transformScales } from '~/design-system/styles/designTokens';
@@ -33,7 +34,7 @@ export function AccountName({
 }: AccountNameProps) {
   const { address } = useAccount();
   const { displayName } = useWalletName({ address: address || '0x' });
-  const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
+  const { data: ensAvatar } = useENSAvatar({ addressOrName: address });
   const navigate = useRainbowNavigate();
   const [hover, setHover] = useState(false);
 
