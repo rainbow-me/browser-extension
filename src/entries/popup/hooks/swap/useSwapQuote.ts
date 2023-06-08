@@ -144,12 +144,6 @@ export const useSwapQuote = ({
         : quote.sellAmountDisplay,
 
       feeInEth: isWrapOrUnwrapEth ? '0' : quote.feeInEth,
-      buyAmountInEth: isWrapOrUnwrapEth
-        ? quote.buyAmount
-        : quote.buyAmountInEth,
-      sellAmountInEth: isWrapOrUnwrapEth
-        ? quote.sellAmount
-        : quote.sellAmountInEth,
     };
   }, [data, isWrapOrUnwrapEth]);
 
@@ -158,5 +152,6 @@ export const useSwapQuote = ({
     isLoading: isLoading && fetchStatus !== 'idle',
     isError,
     isCrosschainSwap,
+    isWrapOrUnwrapEth,
   };
 };

@@ -233,6 +233,7 @@ export function Swap() {
     data: quote,
     isLoading,
     isCrosschainSwap,
+    isWrapOrUnwrapEth,
   } = useSwapQuote({
     assetToSell,
     assetToBuy,
@@ -246,6 +247,7 @@ export function Swap() {
   const { priceImpact } = useSwapPriceImpact({
     assetToBuy,
     assetToSell,
+    isWrapOrUnwrapEth,
     quote: (quote as QuoteError)?.error
       ? undefined
       : (quote as Quote | CrosschainQuote),
