@@ -8,7 +8,7 @@ import { QueryFunctionArgs, createQueryKey } from '~/core/react-query';
 // Query Types
 
 export type ResolveEnsProfileArgs = {
-  addressOrName: Address | string;
+  addressOrName: Address | string | undefined;
 };
 
 // ///////////////////////////////////////////////
@@ -63,6 +63,7 @@ export async function resolve(name: string) {
 export async function resolveEnsProfileQueryFunction({
   queryKey: [{ addressOrName }],
 }: QueryFunctionArgs<typeof ResolveEnsProfileQueryKey>) {
+  if (!addressOrName) return null;
   return isAddress(addressOrName)
     ? reverseResolve(addressOrName)
     : resolve(addressOrName);
@@ -71,9 +72,7 @@ export async function resolveEnsProfileQueryFunction({
 // ///////////////////////////////////////////////
 // Query Hook
 
-export function useResolveEnsProfileAvatar({
-  addressOrName,
-}: ResolveEnsProfileArgs) {
+export function useENSAvatar({ addressOrName }: ResolveEnsProfileArgs) {
   return useQuery(
     ResolveEnsProfileQueryKey({ addressOrName }),
     resolveEnsProfileQueryFunction,

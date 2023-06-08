@@ -3,11 +3,11 @@ import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
 import { useAccount } from 'wagmi';
 
+import { useENSAvatar } from '~/core/resources/metadata/resolveEnsProfileAvatar';
 import { Box, Column, Columns, Symbol, TextOverflow } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { transformScales } from '~/design-system/styles/designTokens';
 
-import { useENSAvatar } from '../../hooks/useENSAvatar';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWalletName } from '../../hooks/useWalletName';
 import { ROUTES } from '../../urls';
