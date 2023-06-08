@@ -176,6 +176,7 @@ it('should be able to clear to address input on send flow', async () => {
   });
   const input = await findElementByTestId({ id: 'to-address-input', driver });
   await input.sendKeys('rainbowwallet.eth');
+  await delayTime('long');
 });
 
 it('should be able to select token on send flow', async () => {
