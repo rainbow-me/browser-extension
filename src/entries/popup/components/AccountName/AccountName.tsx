@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import React, { useCallback, useState } from 'react';
 import { useAccount } from 'wagmi';
 
-import { useENSAvatar } from '~/core/resources/metadata/resolveEnsProfileAvatar';
+import { useENSAvatar } from '~/core/resources/metadata/ensAvatar';
 import { Box, Column, Columns, Symbol, TextOverflow } from '~/design-system';
 import { Lens } from '~/design-system/components/Lens/Lens';
 import { transformScales } from '~/design-system/styles/designTokens';

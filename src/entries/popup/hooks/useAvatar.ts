@@ -1,4 +1,4 @@
-import { useENSAvatar } from '~/core/resources/metadata/resolveEnsProfileAvatar';
+import { useENSAvatar } from '~/core/resources/metadata/ensAvatar';
 
 import { emojiAvatarForAddress } from '../utils/emojiAvatarForAddress';
 

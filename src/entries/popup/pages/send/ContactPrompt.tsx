@@ -2,7 +2,7 @@ import React, { ChangeEvent, useCallback, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useENSAvatar } from '~/core/resources/metadata/resolveEnsProfileAvatar';
+import { useENSAvatar } from '~/core/resources/metadata/ensAvatar';
 import { useContactsStore } from '~/core/state/contacts';
 import { truncateAddress } from '~/core/utils/address';
 import {
