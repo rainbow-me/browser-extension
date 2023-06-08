@@ -44,7 +44,11 @@ export function Navbar({
       width="full"
       position="relative"
       background={background ?? undefined}
-      style={{ height: NAVBAR_HEIGHT, zIndex: zIndexes.NAVBAR }}
+      style={{
+        height: NAVBAR_HEIGHT,
+        minHeight: NAVBAR_HEIGHT,
+        zIndex: zIndexes.NAVBAR,
+      }}
     >
       {leftComponent && (
         <Box
