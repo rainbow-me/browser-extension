@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import React, { useEffect, useMemo } from 'react';
 
 import { useCurrentAddressStore } from '~/core/state';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 import {
   AnimatedRouteConfig,
@@ -186,6 +187,7 @@ export const AnimatedRoute = React.forwardRef<
           display="flex"
           flexDirection="column"
           height="full"
+          style={{ maxHeight: POPUP_DIMENSIONS.height }}
           initial={initial}
           animate={end}
           exit={exit}
