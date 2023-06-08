@@ -1,15 +1,14 @@
 import 'chromedriver';
 import 'geckodriver';
-import { WebDriver, until } from 'selenium-webdriver';
+import { WebDriver } from 'selenium-webdriver';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
-  byTestId,
-  byText,
   delayTime,
   findElementByIdAndClick,
   findElementByTestId,
   findElementByTestIdAndClick,
+  findElementByText,
   getExtensionIdByName,
   getTextFromText,
   goToPopup,
@@ -65,7 +64,6 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
     });
 
-    await driver.wait(until.elementLocated(byTestId('password-input')));
     const passwordInput = await findElementByTestId({
       id: 'password-input',
       driver,
@@ -78,7 +76,7 @@ describe('Watch wallet then add more and switch between them', () => {
     await confirmPasswordInput.sendKeys('test1234');
     await findElementByTestIdAndClick({ id: 'set-password-button', driver });
 
-    await driver.wait(until.elementLocated(byText('Rainbow is ready to use')));
+    await findElementByText(driver, 'Rainbow is ready to use');
   });
 
   it('should display watched account name', async () => {
