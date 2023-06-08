@@ -105,8 +105,6 @@ export async function switchWallet(address, rootURL, driver: WebDriver) {
     id: `account-item-${shortenedAddress}`,
     driver,
   });
-
-  await delayTime('long');
 }
 
 export async function getOnchainBalance(addy, contract) {
