@@ -5,9 +5,11 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { handleAssetAccentColor } from '~/core/utils/colors';
 import { getQuoteServiceTime } from '~/core/utils/swaps';
 import {
   Box,
@@ -156,6 +158,7 @@ export function Swap() {
   const { selectedGas, clearCustomGasModified } = useGasStore();
 
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
+  const { currentTheme } = useCurrentThemeStore();
 
   const showSwapReviewSheet = useCallback(() => {
     setShowSwapReview(true);
@@ -233,6 +236,7 @@ export function Swap() {
     data: quote,
     isLoading,
     isCrosschainSwap,
+    isWrapOrUnwrapEth,
   } = useSwapQuote({
     assetToSell,
     assetToBuy,
@@ -246,6 +250,7 @@ export function Swap() {
   const { priceImpact } = useSwapPriceImpact({
     assetToBuy,
     assetToSell,
+    isWrapOrUnwrapEth,
     quote: (quote as QuoteError)?.error
       ? undefined
       : (quote as Quote | CrosschainQuote),
@@ -331,29 +336,20 @@ export function Swap() {
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.swap.FLIP_ASSETS.key) {
-        const activeElement = document.activeElement;
-        const focusingAssetToSell =
-          activeElement === assetToSellInputRef.current;
-        const focusingAssetToBuy = activeElement === assetToBuyInputRef.current;
-        const focusNewInput = () => {
-          setTimeout(() => {
-            if (focusingAssetToSell) {
-              assetToBuyInputRef.current?.focus();
-            } else if (focusingAssetToBuy) {
-              assetToSellInputRef.current?.focus();
-            }
-          }, 100);
-        };
-        if (focusingAssetToSell && assetToSell) {
-          flipAssets();
-          focusNewInput();
-        } else if (focusingAssetToBuy && assetToBuy) {
-          flipAssets();
-          focusNewInput();
-        }
+        e.preventDefault();
+        flipAssets();
       }
     },
   });
+
+  const assetToBuyAccentColor = useMemo(
+    () =>
+      handleAssetAccentColor(
+        currentTheme,
+        assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback,
+      ),
+    [assetToBuy?.colors?.fallback, assetToBuy?.colors?.primary, currentTheme],
+  );
 
   return (
     <>
@@ -394,9 +390,7 @@ export function Swap() {
       <SwapSettings
         show={showSwapSettings}
         onDone={() => setShowSwapSettings(false)}
-        accentColor={
-          assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback
-        }
+        accentColor={assetToBuyAccentColor}
         setSettings={setSettings}
         slippage={slippage}
         chainId={assetToSell?.chainId}
@@ -411,9 +405,10 @@ export function Swap() {
           <Row height="content">
             <Stack space="8px">
               <AccentColorProviderWrapper
-                color={
-                  assetToSell?.colors?.primary || assetToSell?.colors?.fallback
-                }
+                color={handleAssetAccentColor(
+                  currentTheme,
+                  assetToSell?.colors?.primary || assetToSell?.colors?.fallback,
+                )}
               >
                 <TokenToSellInput
                   dropdownHeight={toSellInputHeight}
@@ -473,11 +468,7 @@ export function Swap() {
                 </Inline>
               </Box>
 
-              <AccentColorProviderWrapper
-                color={
-                  assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback
-                }
-              >
+              <AccentColorProviderWrapper color={assetToBuyAccentColor}>
                 <TokenToBuyInput
                   dropdownHeight={toBuyInputHeight}
                   assetToBuy={assetToBuy}
@@ -510,11 +501,7 @@ export function Swap() {
           </Row>
           <Row height="content">
             {!!assetToBuy && !!assetToSell ? (
-              <AccentColorProviderWrapper
-                color={
-                  assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback
-                }
-              >
+              <AccentColorProviderWrapper color={assetToBuyAccentColor}>
                 <Box paddingHorizontal="8px">
                   <Rows space="20px">
                     <Row>

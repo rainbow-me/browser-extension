@@ -57,6 +57,11 @@ export function getFetchRequester(config: Config) {
         operationName,
       });
     }
+
+    requestOptions.headers = {
+      Authorization: `Bearer ${process.env.RAINBOW_METADATA_API_TOKEN}`,
+    };
+
     const { data } = await rainbowFetch<{ data: TResponse }>(
       requestUrl,
       requestOptions,
