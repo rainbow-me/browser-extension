@@ -12,7 +12,6 @@ import {
   handleSignificantDecimals,
   multiply,
 } from '~/core/utils/numbers';
-import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 
 import { useNativeAssetForNetwork } from '../useNativeAssetForNetwork';
 
@@ -46,29 +45,6 @@ export const useSwapReviewDetails = ({
   assetToSell: ParsedSearchAsset;
   quote: Quote | CrosschainQuote;
 }) => {
-  const isWrapOrUnwrapEth = useMemo(() => {
-    return (
-      isWrapEth({
-        buyTokenAddress: quote.buyTokenAddress,
-        sellTokenAddress: quote.sellTokenAddress,
-        chainId: assetToSell.chainId,
-      }) ||
-      isUnwrapEth({
-        buyTokenAddress: quote.buyTokenAddress,
-        sellTokenAddress: quote.sellTokenAddress,
-        chainId: assetToSell.chainId,
-      })
-    );
-  }, [assetToSell.chainId, quote.buyTokenAddress, quote.sellTokenAddress]);
-
-  const buyAmountDisplay = isWrapOrUnwrapEth
-    ? quote.buyAmount
-    : quote.buyAmountDisplay;
-  const sellAmountDisplay = isWrapOrUnwrapEth
-    ? quote.sellAmount
-    : quote.sellAmountDisplay;
-  const feeInEth = isWrapOrUnwrapEth ? '0' : quote.feeInEth;
-
   const { currentCurrency } = useCurrentCurrencyStore();
   const nativeAsset = useNativeAssetForNetwork({
     chainId: assetToSell.chainId,
@@ -82,11 +58,11 @@ export const useSwapReviewDetails = ({
   const minimumReceived = useMemo(
     () =>
       `${
-        convertRawAmountToBalance(buyAmountDisplay?.toString(), {
+        convertRawAmountToBalance(quote.buyAmountDisplay?.toString(), {
           decimals: assetToBuy?.decimals,
         }).display
       } ${assetToBuy.symbol}`,
-    [assetToBuy?.decimals, assetToBuy.symbol, buyAmountDisplay],
+    [assetToBuy?.decimals, assetToBuy.symbol, quote.buyAmountDisplay],
   );
 
   const swappingRoute = useMemo(
@@ -109,7 +85,7 @@ export const useSwapReviewDetails = ({
     ).amount;
     return [
       convertRawAmountToNativeDisplay(
-        feeInEth.toString(),
+        quote.feeInEth.toString(),
         nativeAsset?.decimals || 18,
         nativeAsset?.price?.value || '0',
         currentCurrency,
@@ -120,18 +96,18 @@ export const useSwapReviewDetails = ({
     currentCurrency,
     nativeAsset?.decimals,
     nativeAsset?.price?.value,
-    feeInEth,
+    quote.feeInEth,
     quote.feePercentageBasisPoints,
   ]);
 
   const exchangeRate = useMemo(() => {
     const convertedSellAmount = convertRawAmountToDecimalFormat(
-      sellAmountDisplay.toString(),
+      quote.sellAmountDisplay.toString(),
       assetToSell.decimals,
     );
 
     const convertedBuyAmount = convertRawAmountToDecimalFormat(
-      buyAmountDisplay.toString(),
+      quote.buyAmountDisplay.toString(),
       assetToBuy.decimals,
     );
 
@@ -158,8 +134,8 @@ export const useSwapReviewDetails = ({
     assetToBuy.symbol,
     assetToSell.decimals,
     assetToSell.symbol,
-    buyAmountDisplay,
-    sellAmountDisplay,
+    quote.buyAmountDisplay,
+    quote.sellAmountDisplay,
   ]);
 
   return {

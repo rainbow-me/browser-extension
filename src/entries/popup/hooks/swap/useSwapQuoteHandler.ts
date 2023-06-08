@@ -1,10 +1,8 @@
 import { CrosschainQuote, Quote, QuoteError } from '@rainbow-me/swaps';
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 
 import { ParsedSearchAsset } from '~/core/types/assets';
-import { ChainId } from '~/core/types/chains';
 import { convertRawAmountToBalance } from '~/core/utils/numbers';
-import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 
 import usePrevious from '../usePrevious';
 
@@ -29,46 +27,26 @@ export const useSwapQuoteHandler = ({
 }: SwapQuoteHandlerProps) => {
   const prevQuote = usePrevious(quote);
 
-  const isWrapOrUnwrapEth = useMemo(() => {
-    if (!(quote as QuoteError)?.error && quote) {
-      const q = quote as Quote;
-      return (
-        isWrapEth({
-          buyTokenAddress: q.buyTokenAddress,
-          sellTokenAddress: q.sellTokenAddress,
-          chainId: assetToSell?.chainId || ChainId.mainnet,
-        }) ||
-        isUnwrapEth({
-          buyTokenAddress: q.buyTokenAddress,
-          sellTokenAddress: q.sellTokenAddress,
-          chainId: assetToSell?.chainId || ChainId.mainnet,
-        })
-      );
-    }
-  }, [assetToSell?.chainId, quote]);
-
   useEffect(() => {
     if (!(quote as QuoteError)?.error) {
-      const { sellAmountDisplay, buyAmountDisplay, buyAmount, sellAmount } =
-        (quote || {}) as Quote | CrosschainQuote;
-
-      const quoteBuyAmount = isWrapOrUnwrapEth ? buyAmount : buyAmountDisplay;
-      const quoteSellAmount = isWrapOrUnwrapEth
-        ? sellAmount
-        : sellAmountDisplay;
+      const { sellAmountDisplay, buyAmountDisplay } = (quote || {}) as
+        | Quote
+        | CrosschainQuote;
 
       if (independentField === 'sellField' && assetToBuy) {
         setAssetToBuyValue(
-          quoteBuyAmount
-            ? convertRawAmountToBalance(quoteBuyAmount?.toString(), assetToBuy)
-                .amount
+          buyAmountDisplay
+            ? convertRawAmountToBalance(
+                buyAmountDisplay?.toString(),
+                assetToBuy,
+              ).amount
             : '',
         );
       } else if (independentField === 'buyField' && assetToSell) {
         setAssetToSellValue(
-          quoteSellAmount
+          sellAmountDisplay
             ? convertRawAmountToBalance(
-                quoteSellAmount?.toString(),
+                sellAmountDisplay?.toString(),
                 assetToSell,
               ).amount
             : '',
@@ -85,7 +63,6 @@ export const useSwapQuoteHandler = ({
     assetToBuy,
     assetToSell,
     independentField,
-    isWrapOrUnwrapEth,
     prevQuote,
     quote,
     setAssetToBuyValue,
