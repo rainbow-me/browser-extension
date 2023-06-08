@@ -5,9 +5,11 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { handleAssetAccentColor } from '~/core/utils/colors';
 import { getQuoteServiceTime } from '~/core/utils/swaps';
 import {
   Box,
@@ -156,6 +158,7 @@ export function Swap() {
   const { selectedGas, clearCustomGasModified } = useGasStore();
 
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
+  const { currentTheme } = useCurrentThemeStore();
 
   const showSwapReviewSheet = useCallback(() => {
     setShowSwapReview(true);
@@ -357,6 +360,15 @@ export function Swap() {
     },
   });
 
+  const assetToBuyAccentColor = useMemo(
+    () =>
+      handleAssetAccentColor(
+        currentTheme,
+        assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback,
+      ),
+    [assetToBuy?.colors?.fallback, assetToBuy?.colors?.primary, currentTheme],
+  );
+
   return (
     <>
       <Navbar
@@ -396,9 +408,7 @@ export function Swap() {
       <SwapSettings
         show={showSwapSettings}
         onDone={() => setShowSwapSettings(false)}
-        accentColor={
-          assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback
-        }
+        accentColor={assetToBuyAccentColor}
         setSettings={setSettings}
         slippage={slippage}
         chainId={assetToSell?.chainId}
@@ -413,9 +423,10 @@ export function Swap() {
           <Row height="content">
             <Stack space="8px">
               <AccentColorProviderWrapper
-                color={
-                  assetToSell?.colors?.primary || assetToSell?.colors?.fallback
-                }
+                color={handleAssetAccentColor(
+                  currentTheme,
+                  assetToSell?.colors?.primary || assetToSell?.colors?.fallback,
+                )}
               >
                 <TokenToSellInput
                   dropdownHeight={toSellInputHeight}
@@ -475,11 +486,7 @@ export function Swap() {
                 </Inline>
               </Box>
 
-              <AccentColorProviderWrapper
-                color={
-                  assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback
-                }
-              >
+              <AccentColorProviderWrapper color={assetToBuyAccentColor}>
                 <TokenToBuyInput
                   dropdownHeight={toBuyInputHeight}
                   assetToBuy={assetToBuy}
@@ -512,11 +519,7 @@ export function Swap() {
           </Row>
           <Row height="content">
             {!!assetToBuy && !!assetToSell ? (
-              <AccentColorProviderWrapper
-                color={
-                  assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback
-                }
-              >
+              <AccentColorProviderWrapper color={assetToBuyAccentColor}>
                 <Box paddingHorizontal="8px">
                   <Rows space="20px">
                     <Row>
