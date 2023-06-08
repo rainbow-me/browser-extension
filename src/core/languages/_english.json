@@ -111,7 +111,7 @@
         "imported": "Imported",
         "wallet_single": "Wallet",
         "wallet_plural": "Wallets",
-        "recovery_phrase_label": "Recovery Phrase",
+        "recovery_phrase_label": "Wallet Group",
         "private_key_label": "Private Key",
         "hardware_wallet_label": "Hardware Wallet",
         "wallet_details": {
@@ -457,11 +457,13 @@
     "title": "Your wallets",
     "description_plural": "Rainbow detected %{count} wallets that have been used recently. You can edit or add more at any time.",
     "description_singular": "Rainbow detected 1 wallet that have been used recently. You can add more at any time.",
+    "description_empty": "Rainbow detected 1 wallet. You can add more at any time.",
     "add_wallets": "Add wallets",
     "edit_wallets": "Edit wallets",
     "loading": "Hold tight while we look up all your wallets...",
     "importing": "Importing your wallets...",
-    "account_summary": "Tokens: %{tokensAmount} ‧ Last tx: %{lastTx} ago"
+    "account_summary_tokens": "Tokens: %{tokensAmount}",
+    "account_summary_last_tx": "Last tx: %{lastTx} ago"
   },
   "watch_wallet": {
     "title": "Watch an Ethereum address",
@@ -781,7 +783,7 @@
     "connect_ledger_title": "Connect your Ledger",
     "connect_ledger_description": "Connect your Ledger to Rainbow by plugging it into your computer using the USB-C cable.",
     "unlock_ledger_title": "Unlock Ledger",
-    "unlock_ledger_description": "The Ethereum app needs to be open on your Ledger to proceed with the transaction.",
+    "unlock_ledger_description": "The Ethereum app needs to be open on your Ledger to continue.",
     "unlock_ledger_description_2": "Enter your passcode to unlock your Ledger. Once unlocked, open the Ethereum app by pressing both buttons at once.",
     "needs_app_ledger_title": "Open the ETH app",
     "needs_app_ledger_description": "The Ethereum app needs to be open on your Ledger to proced with the transaction.",
