@@ -294,7 +294,7 @@ export async function importWalletFlow(driver, rootURL, walletSecret) {
   });
 
   await typeOnTextInput({
-    id: 'secret-textarea',
+    id: 'secret-text-area-0',
     driver,
     text: walletSecret,
   });
