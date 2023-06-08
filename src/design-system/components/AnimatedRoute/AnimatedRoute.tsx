@@ -3,6 +3,7 @@ import React, { useEffect, useMemo } from 'react';
 import { useLocation, useNavigationType } from 'react-router-dom';
 
 import { useCurrentAddressStore } from '~/core/state';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 import {
   AnimatedRouteConfig,
@@ -210,6 +211,7 @@ export const AnimatedRoute = React.forwardRef<
           flexDirection="column"
           height="full"
           initial={isBack ? exit : initial}
+          style={{ maxHeight: POPUP_DIMENSIONS.height }}          
           animate={end}
           exit={isBack ? initial : exit}
           transition={transition}
