@@ -46,7 +46,7 @@ describe('App interactions flow', () => {
   afterAll(() => driver.quit());
 
   // Import a wallet
-  it('should be able import a wallet via seed', async () => {
+  it('should be able import a wallet via pk', async () => {
     //  Start from welcome screen
     await goToWelcome(driver, rootURL);
     await findElementByTestIdAndClick({
@@ -59,17 +59,13 @@ describe('App interactions flow', () => {
     });
 
     await typeOnTextInput({
-      id: 'secret-textarea',
+      id: 'secret-text-area-0',
       driver,
-      text: TEST_VARIABLES.SEED_WALLET.SECRET,
+      text: TEST_VARIABLES.SEED_WALLET.PK,
     });
 
     await findElementByTestIdAndClick({
       id: 'import-wallets-button',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'add-wallets-button',
       driver,
     });
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });

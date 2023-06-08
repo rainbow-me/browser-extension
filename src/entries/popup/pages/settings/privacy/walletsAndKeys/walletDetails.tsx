@@ -203,7 +203,7 @@ export function WalletDetails() {
         const walletAfterDeletion = await getWallet(otherAccountSameWallet);
         setWallet(walletAfterDeletion);
       } else {
-        navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);
+        navigate(-1);
       }
     } else {
       await wipe();

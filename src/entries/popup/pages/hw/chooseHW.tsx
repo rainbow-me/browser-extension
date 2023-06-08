@@ -18,10 +18,16 @@ export function ChooseHW() {
   const isFullScreen = useIsFullScreen();
 
   const handleLedgerChoice = useCallback(() => {
-    navigate(ROUTES.HW_LEDGER, {
-      state: { direction: state?.direction, navbarIcon: state?.navbarIcon },
-    });
-  }, [navigate, state]);
+    if (!isFullScreen) {
+      goToNewTab({
+        url: POPUP_URL + `#${ROUTES.HW_LEDGER}`,
+      });
+    } else {
+      navigate(ROUTES.HW_LEDGER, {
+        state: { direction: state?.direction, navbarIcon: state?.navbarIcon },
+      });
+    }
+  }, [isFullScreen, navigate, state]);
 
   const handleTrezorChoice = useCallback(() => {
     if (!isFullScreen) {

@@ -1,7 +1,8 @@
 import React, { ChangeEvent, useCallback, useState } from 'react';
-import { Address, useEnsAvatar } from 'wagmi';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useENSAvatar } from '~/core/resources/metadata/ensAvatar';
 import { useContactsStore } from '~/core/state/contacts';
 import { truncateAddress } from '~/core/utils/address';
 import {
@@ -220,7 +221,7 @@ export const ContactPrompt = ({
     }>
   >;
 }) => {
-  const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
+  const { data: ensAvatar } = useENSAvatar({ addressOrName: address });
   const { data: dominantColor } = useDominantColor({
     imageUrl: ensAvatar ?? undefined,
   });

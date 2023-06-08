@@ -299,7 +299,7 @@ export const WatchWallet = ({
                   >
                     <Box
                       as="textarea"
-                      testId="secret-textarea"
+                      testId="secret-text-area-watch"
                       background="surfaceSecondaryElevated"
                       borderRadius="12px"
                       borderWidth="1px"
