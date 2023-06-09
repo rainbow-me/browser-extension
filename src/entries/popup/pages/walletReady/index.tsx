@@ -1,3 +1,6 @@
+import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+
 import { i18n } from '~/core/languages';
 import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
 
@@ -5,31 +8,47 @@ import { ReadyShortcut } from './ReadyShortcut';
 
 const isBrave = 'brave' in navigator;
 
-const PinToToolbar = () => (
-  <Box
-    position="fixed"
-    top="0"
-    borderRadius="16px"
-    style={{
-      borderTopLeftRadius: 0,
-      borderTopRightRadius: 0,
-      maxWidth: '152px',
-      right: isBrave ? '144px' : '104px',
-    }}
-    paddingHorizontal="12px"
-    paddingVertical="16px"
-    display="flex"
-    gap="12px"
-    background="surfacePrimaryElevated"
-    borderColor="buttonStrokeSecondary"
-    boxShadow="18px surfacePrimaryElevated"
-  >
-    <Text size="14pt" weight="bold">
-      {i18n.t('wallet_ready.pin_rainbow_to_your_toolbar')}
-    </Text>
-    <Symbol symbol="arrow.up" color="purple" size={18} weight="bold" />
-  </Box>
-);
+const useChromeUserSettings = () => {
+  const [settings, set] = useState({} as chrome.action.UserSettings);
+  useEffect(() => {
+    chrome.action.getUserSettings(set);
+  }, []);
+  return settings;
+};
+
+const PinToToolbar = () => {
+  const { isOnToolbar } = useChromeUserSettings();
+  if (isOnToolbar) return null;
+  return (
+    <Box
+      as={motion.div}
+      initial={{ top: -50 }}
+      animate={{ top: 0 }}
+      transition={{ delay: 0.2 }}
+      position="fixed"
+      top="0"
+      borderRadius="16px"
+      style={{
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
+        maxWidth: '152px',
+        right: isBrave ? '144px' : '104px',
+      }}
+      paddingHorizontal="12px"
+      paddingVertical="16px"
+      display="flex"
+      gap="12px"
+      background="surfacePrimaryElevated"
+      borderColor="buttonStrokeSecondary"
+      boxShadow="18px surfacePrimaryElevated"
+    >
+      <Text size="14pt" weight="bold">
+        {i18n.t('wallet_ready.pin_rainbow_to_your_toolbar')}
+      </Text>
+      <Symbol symbol="arrow.up" color="purple" size={18} weight="bold" />
+    </Box>
+  );
+};
 
 export function WalletReady() {
   return (
