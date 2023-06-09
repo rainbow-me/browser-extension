@@ -16,12 +16,10 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
-import { useQuickPromoStore } from '~/core/state/quickPromo';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
-import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import {
   AccentColorProvider,
   Box,
@@ -40,7 +38,6 @@ import AccountItem, {
 } from '../../components/AccountItem/AccountItem';
 import { LabelPill } from '../../components/LabelPill/LabelPill';
 import { Link } from '../../components/Link/Link';
-import { MenuContainer } from '../../components/Menu/MenuContainer';
 import {
   MoreInfoButton,
   MoreInfoOption,
@@ -58,8 +55,6 @@ import { ROUTES } from '../../urls';
 
 import { RemoveWalletPrompt } from './removeWalletPrompt';
 import { RenameWalletPrompt } from './renameWalletPrompt';
-
-const { innerHeight: windowHeight } = window;
 
 const reorder = (
   list: Iterable<unknown>,
@@ -144,10 +139,6 @@ const infoButtonOptions = ({
   return isLastWallet ? options : options.concat(removeOption);
 };
 
-const BOTTOM_SPACING = 150 + (process.env.IS_DEV === 'true' ? 40 : 0);
-const TOP_SPACING = 127;
-const TOP_SPACING_NO_PROMO = 73;
-
 const NoWalletsWarning = ({
   symbol,
   text,
@@ -191,25 +182,18 @@ export function WalletSwitcher() {
   const { avatar } = useAvatar({ address: currentAddress });
   const { featureFlags } = useFeatureFlagsStore();
 
-  const isLastWallet = useMemo(
-    () => allWallets?.length === 1,
-    [allWallets?.length],
-  );
+  const isLastWallet = allWallets?.length === 1;
 
   const { deleteWalletName } = useWalletNamesStore();
-  const { seenPromos } = useQuickPromoStore();
-
-  const hasSeenPromo = useMemo(
-    () => seenPromos['wallet_switcher'],
-    [seenPromos],
-  );
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const handleSelectAddress = useCallback(
     (address: Address) => {
       setCurrentAddress(address);
-      navigate(ROUTES.HOME);
+      navigate(ROUTES.HOME, {
+        state: { isBack: true },
+      });
     },
     [navigate, setCurrentAddress],
   );
@@ -276,25 +260,20 @@ export function WalletSwitcher() {
           index={index}
           isDragDisabled={isSearching}
         >
-          {(provided, snapshot) => (
+          {({ innerRef, draggableProps, dragHandleProps }, { isDragging }) => (
             <Box
-              ref={provided.innerRef}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              style={getItemStyle(
-                snapshot.isDragging,
-                provided.draggableProps.style,
-              )}
-              background={snapshot.isDragging ? 'surfaceSecondary' : undefined}
+              ref={innerRef}
+              {...draggableProps}
+              {...dragHandleProps}
+              style={getItemStyle(isDragging, draggableProps.style)}
+              background={isDragging ? 'surfaceSecondary' : undefined}
               borderRadius="12px"
               tabIndex={-1}
             >
               <AccountItem
                 rowHighlight
                 key={account.address}
-                onClick={() => {
-                  handleSelectAddress(account.address);
-                }}
+                onClick={() => handleSelectAddress(account.address)}
                 account={account.address}
                 rightComponent={
                   <Inline alignVertical="center" space="6px">
@@ -371,13 +350,14 @@ export function WalletSwitcher() {
   useSwitchWalletShortcuts();
 
   return (
-    <Box height="full">
+    <Box
+      style={{ minHeight: 0, height: '100vh' }}
+      display="flex"
+      flexDirection="column"
+    >
       <RenameWalletPrompt
-        show={!!renameAccount}
         account={renameAccount}
-        onClose={() => {
-          setRenameAccount(undefined);
-        }}
+        onClose={() => setRenameAccount(undefined)}
       />
       <RemoveWalletPrompt
         show={!!removeAccount}
@@ -388,7 +368,13 @@ export function WalletSwitcher() {
         onRemoveAccount={handleRemoveAccount}
         hide={removeAccount?.type !== KeychainType.ReadOnlyKeychain}
       />
-      <Box paddingHorizontal="16px" paddingBottom="12px">
+      <Box
+        paddingHorizontal="16px"
+        display="flex"
+        flexDirection="column"
+        gap="12px"
+        paddingBottom="8px"
+      >
         <Input
           height="32px"
           variant="bordered"
@@ -398,122 +384,106 @@ export function WalletSwitcher() {
           innerRef={searchInputRef}
           tabIndex={0}
         />
+        <QuickPromo
+          text={i18n.t('wallet_switcher.quick_promo.text')}
+          textBold={i18n.t('wallet_switcher.quick_promo.text_bold')}
+          symbol="sparkle"
+          promoType="wallet_switcher"
+        />
       </Box>
-      {!hasSeenPromo && (
-        <Box paddingHorizontal="16px" paddingBottom="8px">
-          <QuickPromo
-            text={i18n.t('wallet_switcher.quick_promo.text')}
-            textBold={i18n.t('wallet_switcher.quick_promo.text_bold')}
-            symbol="sparkle"
-            promoType="wallet_switcher"
-          />
-        </Box>
-      )}
-      <Box
-        style={{ overflow: 'scroll', height: POPUP_DIMENSIONS.height - 200 }}
-        paddingHorizontal="8px"
-      >
-        <MenuContainer>
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable">
-              {(provided) => (
-                <Box {...provided.droppableProps} ref={provided.innerRef}>
-                  <Box
-                    width="full"
-                    height="full"
-                    style={{
-                      overflow: 'scroll',
-                      height:
-                        windowHeight -
-                        BOTTOM_SPACING -
-                        (hasSeenPromo ? TOP_SPACING_NO_PROMO : TOP_SPACING),
-                    }}
-                  >
-                    <Stack>
-                      {displayedAccounts.length !== 0 && (
-                        <Box
-                          as={motion.div}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                        >
-                          {displayedAccountsComponent}
-                        </Box>
-                      )}
-                    </Stack>
-                    {isSearching && displayedAccounts.length === 0 && (
-                      <NoWalletsWarning
-                        symbol="magnifyingglass.circle.fill"
-                        text={i18n.t('wallet_switcher.no_results')}
-                      />
-                    )}
-                  </Box>
-                  {provided.placeholder}
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="droppable">
+          {({ droppableProps, innerRef, placeholder }) => (
+            <Box
+              {...droppableProps}
+              ref={innerRef}
+              style={{ overflowY: 'scroll' }}
+              paddingHorizontal="8px"
+              paddingVertical="4px"
+            >
+              {displayedAccounts.length !== 0 && (
+                <Box
+                  as={motion.div}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 1111,
+                    damping: 50,
+                    mass: 1,
+                  }}
+                  exit={{ opacity: 0 }}
+                >
+                  {displayedAccountsComponent}
                 </Box>
               )}
-            </Droppable>
-          </DragDropContext>
-        </MenuContainer>
-        <Box
-          style={{
-            zIndex: 2,
-            bottom: '0',
-            position: 'absolute',
-          }}
-          width="full"
-          backdropFilter="opacity(5%)"
-          padding="20px"
-          borderWidth="1px"
-          borderColor="separatorTertiary"
-          background="surfaceSecondary"
-        >
-          <Stack space="8px">
-            <Link to={ROUTES.ADD_WALLET}>
-              <Button
-                color="blue"
-                variant="flat"
-                symbol="plus.circle.fill"
-                symbolSide="left"
-                height="32px"
-                width="full"
-                borderRadius="9px"
-                testId={'add-wallet-button'}
-              >
-                {i18n.t('wallet_switcher.add_another_wallet')}
-              </Button>
-            </Link>
-            {featureFlags.hw_wallets_enabled && (
-              <Link to={ROUTES.HW_CHOOSE}>
-                <Button
-                  color="fillSecondary"
-                  variant="flat"
-                  symbol="doc.text.magnifyingglass"
-                  symbolSide="left"
-                  height="32px"
-                  width="full"
-                  borderRadius="9px"
-                >
-                  {i18n.t('wallet_switcher.connect_hardware_wallet')}
-                </Button>
-              </Link>
-            )}
-            {process.env.IS_DEV === 'true' && (
-              <Link to={ROUTES.WALLETS}>
-                <Button
-                  color="fillSecondary"
-                  variant="flat"
-                  symbol="gearshape.fill"
-                  symbolSide="left"
-                  height="32px"
-                  width="full"
-                  borderRadius="9px"
-                >
-                  Old Wallets UI [DEV]
-                </Button>
-              </Link>
-            )}
-          </Stack>
-        </Box>
+              {isSearching && displayedAccounts.length === 0 && (
+                <NoWalletsWarning
+                  symbol="magnifyingglass.circle.fill"
+                  text={i18n.t('wallet_switcher.no_results')}
+                />
+              )}
+              {placeholder}
+            </Box>
+          )}
+        </Droppable>
+      </DragDropContext>
+      <Box
+        width="full"
+        style={{ marginTop: 'auto' }}
+        backdropFilter="opacity(5%)"
+        padding="20px"
+        borderWidth="1px"
+        borderColor="separatorTertiary"
+        background="surfaceSecondary"
+        display="flex"
+        flexDirection="column"
+        gap="8px"
+      >
+        <Link to={ROUTES.ADD_WALLET}>
+          <Button
+            color="blue"
+            variant="flat"
+            symbol="plus.circle.fill"
+            symbolSide="left"
+            height="32px"
+            width="full"
+            borderRadius="9px"
+            testId={'add-wallet-button'}
+          >
+            {i18n.t('wallet_switcher.add_another_wallet')}
+          </Button>
+        </Link>
+        {featureFlags.hw_wallets_enabled && (
+          <Link to={ROUTES.HW_CHOOSE}>
+            <Button
+              color="fillSecondary"
+              variant="flat"
+              symbol="doc.text.magnifyingglass"
+              symbolSide="left"
+              height="32px"
+              width="full"
+              borderRadius="9px"
+            >
+              {i18n.t('wallet_switcher.connect_hardware_wallet')}
+            </Button>
+          </Link>
+        )}
+        {process.env.IS_DEV === 'true' && (
+          <Link to={ROUTES.WALLETS}>
+            <Button
+              color="fillSecondary"
+              variant="flat"
+              symbol="gearshape.fill"
+              symbolSide="left"
+              height="32px"
+              width="full"
+              borderRadius="9px"
+            >
+              Old Wallets UI [DEV]
+            </Button>
+          </Link>
+        )}
       </Box>
     </Box>
   );

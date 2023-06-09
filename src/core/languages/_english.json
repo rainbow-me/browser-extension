@@ -662,7 +662,8 @@
     "coinbase_description": "Buy or transfer from Coinbase",
     "send_from_wallet": "Send from another wallet",
     "send_description_1": "Press",
-    "send_description_2": "to copy your address"
+    "send_description_2": "to copy your address",
+    "unknown_token": "Unknown Token"
   },
   "speed_up_and_cancel": {
     "speed_up": "Speed up",
@@ -696,7 +697,7 @@
     "get_started_with_rainbow_desc": "Welcome to Rainbow! We're so glad you're here. We’ve created this guide to help with the basics of Rainbow.",
     "discover_shortcuts": "Discover shortcuts",
     "discover_shortcuts_desc": "Looking to discover more shortcuts? Check out this helpful guide we’ve put together for you.",
-    "pin_rainbow_to_your_toolbar": "Pin Rainbow to your toolbar:"
+    "pin_rainbow_to_your_toolbar": "Pin Rainbow to your toolbar"
   },
   "wallet_header": {
     "copy": "Copy",
@@ -783,7 +784,7 @@
     "connect_ledger_title": "Connect your Ledger",
     "connect_ledger_description": "Connect your Ledger to Rainbow by plugging it into your computer using the USB-C cable.",
     "unlock_ledger_title": "Unlock Ledger",
-    "unlock_ledger_description": "The Ethereum app needs to be open on your Ledger to proceed with the transaction.",
+    "unlock_ledger_description": "The Ethereum app needs to be open on your Ledger to continue.",
     "unlock_ledger_description_2": "Enter your passcode to unlock your Ledger. Once unlocked, open the Ethereum app by pressing both buttons at once.",
     "needs_app_ledger_title": "Open the ETH app",
     "needs_app_ledger_description": "The Ethereum app needs to be open on your Ledger to proced with the transaction.",
