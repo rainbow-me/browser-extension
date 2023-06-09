@@ -1,10 +1,4 @@
-import React, {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 
 import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
@@ -22,7 +16,6 @@ import { triggerAlert } from '~/design-system/components/Alert/util';
 import {
   ContextMenuRadioGroup,
   ContextMenuRadioItem,
-  ContextMenuSeparator,
   ContextMenuTrigger,
 } from '../../components/ContextMenu/ContextMenu';
 import {
@@ -106,6 +99,10 @@ export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
     }
   }, [selectedToken, setClosed]);
 
+  const hasExplorerLink = !isNativeAsset(token?.address, token?.chainId);
+
+  if (!hasExplorerLink && isWatchingWallet) return <>{children}</>;
+
   return (
     <DetailsMenuWrapper closed={closed} onOpenChange={onOpenChange}>
       <ContextMenuTrigger>
@@ -117,89 +114,88 @@ export function TokenDetailsMenu({ children, token }: TokenDetailsMenuProps) {
             onValueChange(value as TokenDetailsMenuOption)
           }
         >
-          <ContextMenuRadioItem value={'swap'}>
-            <DetailsMenuRow>
-              <Inline space="8px" alignVertical="center">
-                <Symbol
-                  weight="medium"
-                  size={18}
-                  symbol="arrow.triangle.swap"
-                  color="label"
-                />
-                <Text color="label" size="14pt" weight="semibold">
-                  {`${i18n.t('asset_details_menu.swap')} ${token.symbol}`}
-                </Text>
-              </Inline>
-              <Box
-                background={'fillSecondary'}
-                padding="4px"
-                borderRadius="3px"
-                boxShadow="1px"
-              >
-                <Text size="12pt" color="labelSecondary" weight="semibold">
-                  {shortcuts.tokens.SWAP_ASSET.display}
-                </Text>
-              </Box>
-            </DetailsMenuRow>
-          </ContextMenuRadioItem>
-          <ContextMenuRadioItem value={'send'}>
-            <DetailsMenuRow>
-              <Inline space="8px" alignVertical="center">
-                <Symbol
-                  weight="medium"
-                  size={18}
-                  symbol="paperplane.fill"
-                  color="label"
-                />
-                <Text size="14pt" weight="semibold">
-                  {`${i18n.t('asset_details_menu.send')} ${token.symbol}`}
-                </Text>
-              </Inline>
-              <Box
-                background={'fillSecondary'}
-                padding="4px"
-                borderRadius="3px"
-                boxShadow="1px"
-              >
-                <Text size="12pt" color="labelSecondary" weight="semibold">
-                  {shortcuts.tokens.SEND_ASSET.display}
-                </Text>
-              </Box>
-            </DetailsMenuRow>
-          </ContextMenuRadioItem>
-          {!isNativeAsset(token?.address, token?.chainId) && (
-            <>
-              <Box paddingVertical="4px">
-                <ContextMenuSeparator />
-              </Box>
-              <ContextMenuRadioItem value="view">
-                <DetailsMenuRow>
-                  <Inline space="8px" alignVertical="center">
-                    <Symbol
-                      weight="medium"
-                      size={18}
-                      symbol="binoculars.fill"
-                      color="label"
-                    />
-                    <Text color="label" size="14pt" weight="semibold">
-                      {token?.chainId === ChainId.mainnet
-                        ? i18n.t('asset_details_menu.view_on_etherscan')
-                        : i18n.t('asset_details_menu.view_on_explorer')}
-                    </Text>
-                  </Inline>
-                  <Box
-                    background={'fillSecondary'}
-                    padding="4px"
-                    borderRadius="3px"
-                    boxShadow="1px"
-                  >
-                    <Text size="12pt" color="labelSecondary" weight="semibold">
-                      {shortcuts.tokens.VIEW_ASSET.display}
-                    </Text>
-                  </Box>
-                </DetailsMenuRow>
-              </ContextMenuRadioItem>
-            </>
+          {allowSwap && (
+            <ContextMenuRadioItem value={'swap'}>
+              <DetailsMenuRow>
+                <Inline space="8px" alignVertical="center">
+                  <Symbol
+                    weight="medium"
+                    size={18}
+                    symbol="arrow.triangle.swap"
+                    color="label"
+                  />
+                  <Text color="label" size="14pt" weight="semibold">
+                    {`${i18n.t('asset_details_menu.swap')} ${token.symbol}`}
+                  </Text>
+                </Inline>
+                <Box
+                  background={'fillSecondary'}
+                  padding="4px"
+                  borderRadius="3px"
+                  boxShadow="1px"
+                >
+                  <Text size="12pt" color="labelSecondary" weight="semibold">
+                    {shortcuts.tokens.SWAP_ASSET.display}
+                  </Text>
+                </Box>
+              </DetailsMenuRow>
+            </ContextMenuRadioItem>
+          )}
+          {!isWatchingWallet && (
+            <ContextMenuRadioItem value={'send'}>
+              <DetailsMenuRow>
+                <Inline space="8px" alignVertical="center">
+                  <Symbol
+                    weight="medium"
+                    size={18}
+                    symbol="paperplane.fill"
+                    color="label"
+                  />
+                  <Text size="14pt" weight="semibold">
+                    {`${i18n.t('asset_details_menu.send')} ${token.symbol}`}
+                  </Text>
+                </Inline>
+                <Box
+                  background={'fillSecondary'}
+                  padding="4px"
+                  borderRadius="3px"
+                  boxShadow="1px"
+                >
+                  <Text size="12pt" color="labelSecondary" weight="semibold">
+                    {shortcuts.tokens.SEND_ASSET.display}
+                  </Text>
+                </Box>
+              </DetailsMenuRow>
+            </ContextMenuRadioItem>
+          )}
+          {hasExplorerLink && (
+            <ContextMenuRadioItem value="view">
+              <DetailsMenuRow>
+                <Inline space="8px" alignVertical="center">
+                  <Symbol
+                    weight="medium"
+                    size={18}
+                    symbol="binoculars.fill"
+                    color="label"
+                  />
+                  <Text color="label" size="14pt" weight="semibold">
+                    {token?.chainId === ChainId.mainnet
+                      ? i18n.t('asset_details_menu.view_on_etherscan')
+                      : i18n.t('asset_details_menu.view_on_explorer')}
+                  </Text>
+                </Inline>
+                <Box
+                  background={'fillSecondary'}
+                  padding="4px"
+                  borderRadius="3px"
+                  boxShadow="1px"
+                >
+                  <Text size="12pt" color="labelSecondary" weight="semibold">
+                    {shortcuts.tokens.VIEW_ASSET.display}
+                  </Text>
+                </Box>
+              </DetailsMenuRow>
+            </ContextMenuRadioItem>
           )}
         </ContextMenuRadioGroup>
       </DetailsMenuContentWrapper>

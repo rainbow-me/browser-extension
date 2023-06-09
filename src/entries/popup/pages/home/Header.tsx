@@ -151,7 +151,7 @@ function ActionButtonsSection() {
             tabIndex={-1}
             id="header-link-send"
             to={allowSend ? ROUTES.SEND : '#'}
-            state={{ from: ROUTES.HOME }}
+            state={{ from: ROUTES.HOME, to: ROUTES.SEND }}
             onClick={allowSend ? () => null : alertWatchingWallet}
           >
             <ActionButton

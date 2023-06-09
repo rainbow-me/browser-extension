@@ -1,6 +1,6 @@
 import { AnimatePresence } from 'framer-motion';
 import * as React from 'react';
-import { matchRoutes, useLocation, useNavigationType } from 'react-router-dom';
+import { matchRoutes, useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
@@ -104,7 +104,7 @@ const ROUTE_DATA = [
     path: ROUTES.WELCOME,
     element: (
       <AnimatedRoute
-        direction="base"
+        direction="upRight"
         protectedRoute={['NEW']}
         accentColor={false}
       >
@@ -146,9 +146,9 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute
         protectedRoute={['NEW', 'READY']}
-        direction="up"
+        direction="right"
         navbar
-        navbarIcon="ex"
+        navbarIcon="arrow"
         title={i18n.t('hw.choose_title')}
         background="surfaceSecondary"
       >
@@ -162,9 +162,9 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute
         protectedRoute={['NEW', 'READY']}
-        direction="up"
+        direction="right"
         navbar
-        navbarIcon="ex"
+        navbarIcon="arrow"
         background="surfaceSecondary"
       >
         <ConnectLedger />
@@ -179,7 +179,6 @@ const ROUTE_DATA = [
         protectedRoute={['NEW', 'READY']}
         direction="up"
         navbar
-        navbarIcon="ex"
         background="surfaceSecondary"
       >
         <ConnectTrezor />
@@ -192,9 +191,9 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute
         protectedRoute={['NEW', 'READY']}
-        direction="up"
+        direction="right"
         navbar
-        navbarIcon="ex"
+        navbarIcon="arrow"
         background="surfaceSecondary"
         accentColor={false}
       >
@@ -208,7 +207,7 @@ const ROUTE_DATA = [
     element: (
       <AnimatedRoute
         protectedRoute={['NEW', 'READY']}
-        direction="up"
+        direction="upRight"
         background="surfaceSecondary"
       >
         <SuccessHW />
@@ -359,7 +358,7 @@ const ROUTE_DATA = [
     path: ROUTES.SETTINGS,
     element: (
       <AnimatedRoute
-        direction="up"
+        direction="upRight"
         navbar
         navbarIcon="ex"
         title={i18n.t('settings.title')}
@@ -609,7 +608,7 @@ const ROUTE_DATA = [
     path: ROUTES.WALLET_SWITCHER,
     element: (
       <AnimatedRoute
-        direction="up"
+        direction="upRight"
         navbar
         navbarIcon="ex"
         title={i18n.t('wallets.title')}
@@ -625,9 +624,9 @@ const ROUTE_DATA = [
     path: ROUTES.ADD_WALLET,
     element: (
       <AnimatedRoute
-        direction="down"
+        direction="right"
         navbar
-        navbarIcon="ex"
+        navbarIcon="arrow"
         title={i18n.t('add_wallet.title')}
         protectedRoute
         background="surfaceSecondary"
@@ -641,7 +640,7 @@ const ROUTE_DATA = [
     path: ROUTES.CHOOSE_WALLET_GROUP,
     element: (
       <AnimatedRoute
-        direction="down"
+        direction="right"
         navbar
         navbarIcon="arrow"
         protectedRoute
@@ -752,7 +751,6 @@ function CurrentRoute(props: { pathname: string }) {
   const { state } = useLocation();
   const element = match?.element;
   const currentDirection = state?.direction ?? element?.props.direction;
-  const navigationType = useNavigationType();
 
   useGlobalShortcuts();
 
@@ -760,10 +758,7 @@ function CurrentRoute(props: { pathname: string }) {
     // error UI here probably
     return null;
   }
-  const isBack = navigationType === 'POP';
-  const direction = isBack
-    ? directionMap[currentDirection as Direction]
-    : currentDirection;
+  const direction = currentDirection;
   const navbarIcon = state?.navbarIcon ?? element?.props.navbarIcon;
 
   return (
@@ -776,15 +771,6 @@ function CurrentRoute(props: { pathname: string }) {
     </AnimatePresence>
   );
 }
-
-type Direction = 'right' | 'left' | 'up' | 'down' | 'base';
-const directionMap = {
-  right: 'left',
-  up: 'down',
-  left: 'right',
-  down: 'up',
-  base: 'base',
-};
 
 const useGlobalShortcuts = () => {
   useKeyboardShortcut({
