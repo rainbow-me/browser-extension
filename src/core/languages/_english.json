@@ -443,6 +443,27 @@
     "saved_these_words": "I've saved these words",
     "phrase_copied": "Recovery Phrase Copied"
   },
+  "import_wallet_via_secret": {
+    "title": "Import Wallet",
+    "explanation": "Select an import method you suites you best. You can import addition wallets at any time.",
+    "seed_phrase": "Import from a Secret Recovery Phrase",
+    "seed_phrase_desc": "Add a wallet group using your 12 or 24 word Secret Recovery Phrase",
+    "private_key": "Import from a Private Key",
+    "private_key_desc": "Add a single wallet using your 64-character Private Key"
+  },
+  "import_wallet_via_seed": {
+    "title": "Import Your Wallet",
+    "explanation": "To add a wallet, enter your 12 or 24 word Secret Recovery Phrase.",
+    "24_words": "I'm using 24 words",
+    "12_words": "I'm using 12 words",
+    "import_wallet_group": "Import wallet group"
+  },
+  "import_wallet_via_private_key": {
+    "title": "Import Your Wallet",
+    "explanation": "Enter your 64-character Private Key from Rainbow or any Ethereum wallet.",
+    "placeholder": "Paste your Private Key from another wallet",
+    "import_wallet": "Import wallet"
+  },
   "import_or_connect": {
     "title": "Restore or Connect",
     "explanation": "Anyone with your Secret Recovery Phrase can access your entire wallet! Store it somewhere safe and don't share it with anyone.",

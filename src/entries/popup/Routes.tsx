@@ -9,6 +9,8 @@ import { Box } from '~/design-system';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
+import { ImportWalletViaPrivateKey } from './components/ImportWallet/ImportWalletViaPrivateKey';
+import { ImportWalletViaSeed } from './components/ImportWallet/ImportWalletViaSeed';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
@@ -138,6 +140,51 @@ const ROUTE_DATA = [
         accentColor={false}
       >
         <ImportOrConnect />
+      </AnimatedRoute>
+    ),
+    background: FullScreenBackground,
+  },
+  {
+    path: ROUTES.IMPORT,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW', 'READY']}
+        navbar
+        navbarIcon="arrow"
+        accentColor={false}
+      >
+        <ImportWallet />
+      </AnimatedRoute>
+    ),
+    background: FullScreenBackground,
+  },
+  {
+    path: ROUTES.IMPORT__SEED,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW', 'READY']}
+        navbar
+        navbarIcon="arrow"
+        accentColor={false}
+      >
+        <ImportWalletViaSeed />
+      </AnimatedRoute>
+    ),
+    background: FullScreenBackground,
+  },
+  {
+    path: ROUTES.IMPORT__PRIVATE_KEY,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW', 'READY']}
+        navbar
+        navbarIcon="arrow"
+        accentColor={false}
+      >
+        <ImportWalletViaPrivateKey />
       </AnimatedRoute>
     ),
     background: FullScreenBackground,

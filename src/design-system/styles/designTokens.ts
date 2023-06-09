@@ -890,6 +890,8 @@ export const symbolNames = selectSymbolNames(
   'plus',
   'book.closed.fill',
   'message.fill',
+  'ellipsis.rectangle',
+  'eye.fill',
 );
 export type SymbolName = typeof symbolNames[number];
 
