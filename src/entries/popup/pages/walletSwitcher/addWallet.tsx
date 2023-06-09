@@ -42,6 +42,9 @@ const AddWallet = () => {
             onClick={() =>
               navigate(ROUTES.NEW_IMPORT_WALLET, {
                 state: {
+                  // Force isBack to false because the onBack function otherwise
+                  // causes this to be interpreted as a backward navigation
+                  isBack: false,
                   onBack: () => removeImportWalletSecrets(),
                 },
               })

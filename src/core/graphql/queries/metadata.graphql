@@ -3,3 +3,27 @@ query getContractFunction($chainID: Int!, $hex: String!, $address: String!) {
     text
   }
 }
+
+query resolveENSProfile($chainId: Int!, $name: String!, $fields: [String!]) {
+    resolveENSProfile(chainID: $chainId, name: $name, fields: $fields) {
+        address
+        resolverAddress
+        reverseResolverAddress
+        fields {
+            key
+            value
+        }
+    }
+}
+
+query reverseResolveENSProfile($chainId: Int!, $address: String!, $fields: [String!]) {
+    reverseResolveENSProfile(chainID: $chainId, address: $address, fields: $fields) {
+        name
+        resolverAddress
+        reverseResolverAddress
+        fields {
+            key
+            value
+        }
+    }
+}

@@ -13,6 +13,7 @@ import React, {
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { truncateAddress } from '~/core/utils/address';
@@ -355,6 +356,8 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     const { wallets, watchedWallets, contacts } = useAllFilteredWallets({
       filter: toAddressOrName,
     });
+    const { currentAddress } = useCurrentAddressStore();
+    const selectableWallets = wallets.filter((a) => a !== currentAddress);
 
     useEffect(() => {
       setTimeout(() => {
@@ -431,7 +434,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
           }
           dropdownComponent={
             <DropdownWalletsList
-              wallets={wallets}
+              wallets={selectableWallets}
               watchedWallets={watchedWallets}
               contacts={contacts}
               selectWalletAndCloseDropdown={selectWalletAndCloseDropdown}
