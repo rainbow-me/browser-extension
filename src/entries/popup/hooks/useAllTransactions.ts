@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Address, useNetwork } from 'wagmi';
 
 import { SupportedCurrencyKey } from '~/core/references';
+import { shortcuts } from '~/core/references/shortcuts';
 import { selectTransactionsByDate } from '~/core/resources/_selectors';
 import { useTransactions } from '~/core/resources/transactions/transactions';
 import {
@@ -13,6 +15,8 @@ import { ChainId } from '~/core/types/chains';
 import { RainbowTransaction } from '~/core/types/transactions';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 
+import { useKeyboardShortcut } from './useKeyboardShortcut';
+
 export function useAllTransactions({
   address,
   currency,
@@ -20,10 +24,12 @@ export function useAllTransactions({
   address?: Address;
   currency: SupportedCurrencyKey;
 }) {
+  const [manuallyRefetching, setManuallyRefetching] = useState(false);
   const currentChain = useNetwork();
   const {
     data: confirmedTransactions,
     isInitialLoading: confirmedInitialLoading,
+    refetch: refetchConfirmed,
   } = useTransactions(
     {
       address,
@@ -41,6 +47,7 @@ export function useAllTransactions({
   const {
     data: confirmedArbitrumTransactions,
     isInitialLoading: arbitrumInitialLoading,
+    refetch: refetchArbitrum,
   } = useTransactions(
     {
       address,
@@ -55,6 +62,7 @@ export function useAllTransactions({
   const {
     data: confirmedBscTransactions,
     isInitialLoading: bscInitialLoading,
+    refetch: refetchBsc,
   } = useTransactions(
     {
       address,
@@ -69,6 +77,7 @@ export function useAllTransactions({
   const {
     data: confirmedOptimismTransactions,
     isInitialLoading: optimismInitialLoading,
+    refetch: refetchOptimism,
   } = useTransactions(
     {
       address,
@@ -83,6 +92,7 @@ export function useAllTransactions({
   const {
     data: confirmedPolygonTransactions,
     isInitialLoading: polygonInitialLoading,
+    refetch: refetchPolygon,
   } = useTransactions(
     {
       address,
@@ -94,6 +104,28 @@ export function useAllTransactions({
         watchConfirmedTransactions(transactions, ChainId.polygon),
     },
   );
+
+  const refetchTransactions = async () => {
+    setManuallyRefetching(true);
+    const queries = [
+      refetchArbitrum(),
+      refetchBsc(),
+      refetchConfirmed(),
+      refetchOptimism(),
+      refetchPolygon(),
+    ];
+    await Promise.all(queries);
+    setManuallyRefetching(false);
+  };
+
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.activity.REFRESH_TRANSACTIONS.key) {
+        refetchTransactions();
+      }
+    },
+    condition: () => !manuallyRefetching,
+  });
 
   const { getPendingTransactions } = usePendingTransactionsStore();
   const pendingTransactions: RainbowTransaction[] = getPendingTransactions({
@@ -115,7 +147,8 @@ export function useAllTransactions({
       arbitrumInitialLoading ||
       bscInitialLoading ||
       optimismInitialLoading ||
-      polygonInitialLoading,
+      polygonInitialLoading ||
+      manuallyRefetching,
   };
 }
 
