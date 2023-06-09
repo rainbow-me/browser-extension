@@ -425,7 +425,7 @@ const ImportWalletViaSeed = () => {
           width="full"
           onClick={isValid ? handleImportWallet : () => null}
           testId="import-wallets-button"
-          tabIndex={2}
+          tabIndex={secrets.length + 1}
         >
           {i18n.t('import_wallet_via_seed.import_wallet_group')}
         </Button>
