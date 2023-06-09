@@ -1,6 +1,6 @@
 import { ahaHttp } from '../network/aha';
 
-const AACOUNTS_TO_DESERIALIZE = 10;
+const ACCOUNTS_TO_DESERIALIZE = 10;
 
 export const autoDiscoverAccounts = async ({
   deriveWallet,
@@ -22,7 +22,7 @@ export const autoDiscoverAccounts = async ({
   };
 };
 
-const autoDiscoverAccountsFromIndex = async ({
+export const autoDiscoverAccountsFromIndex = async ({
   initialIndex,
   deriveWallet,
 }: {
@@ -30,7 +30,7 @@ const autoDiscoverAccountsFromIndex = async ({
   deriveWallet: (index: number) => { address: string };
 }): Promise<{ accountsEnabled: number }> => {
   const addresses = Array.from(
-    { length: AACOUNTS_TO_DESERIALIZE },
+    { length: ACCOUNTS_TO_DESERIALIZE },
     (_, i) => initialIndex + i,
   ).map((i) => deriveWallet(i).address);
 
@@ -49,7 +49,7 @@ const autoDiscoverAccountsFromIndex = async ({
   return {
     accountsEnabled:
       firstNotUsedAddressIndex === -1
-        ? AACOUNTS_TO_DESERIALIZE
+        ? ACCOUNTS_TO_DESERIALIZE
         : firstNotUsedAddressIndex,
   };
 };
