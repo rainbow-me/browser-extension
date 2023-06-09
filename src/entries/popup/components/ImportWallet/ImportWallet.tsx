@@ -102,7 +102,7 @@ export const ImportWallet = ({ onboarding = false }) => {
   }, []);
 
   const onImport = () => {
-    const _secrets = [...new Set(secrets)]; // remove duplicates
+    const _secrets = [...new Set(secrets.filter(Boolean))]; // remove duplicates & empty
     if (_secrets.length === 1 && isValidPrivateKey(_secrets[0]))
       return wallet.importWithSecret(_secrets[0]).then((address) => {
         navigate(onboarding ? ROUTES.CREATE_PASSWORD : ROUTES.HOME);
@@ -117,7 +117,7 @@ export const ImportWallet = ({ onboarding = false }) => {
   const debouncedSecrets = useDebounce(secrets, 1000);
 
   const errors = debouncedSecrets.map((dsecret, i) => {
-    if (!secrets[i]) return false;
+    if (i > 0 && !secrets[i]) return false;
     const debouncedValue = dsecret.trim();
     const inputValue = secrets[i].trim();
     const error = validateSecret(inputValue);

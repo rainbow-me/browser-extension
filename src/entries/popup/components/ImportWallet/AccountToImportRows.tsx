@@ -67,14 +67,22 @@ export const AccountToImportRows = ({
                       size="12pt"
                       weight="semibold"
                     >
-                      {i18n.t('import_wallet_selection.account_summary', {
-                        tokensAmount: walletsSummary[address].balance.display,
-                        lastTx: formatDistanceToNowStrict(
-                          new Date(
-                            Number(walletsSummary[address].lastTx) * 1000,
-                          ),
-                        ),
-                      })}
+                      {i18n.t(
+                        'import_wallet_selection.account_summary_tokens',
+                        {
+                          tokensAmount: walletsSummary[address].balance.display,
+                        },
+                      )}
+                      {walletsSummary[address].lastTx
+                        ? ` ‧ ${i18n.t(
+                            'import_wallet_selection.account_summary_last_tx',
+                            {
+                              lastTx: formatDistanceToNowStrict(
+                                Number(walletsSummary[address].lastTx) * 1000,
+                              ),
+                            },
+                          )}`
+                        : ''}
                     </TextOverflow>
                   </Stack>
                 </Column>
