@@ -38,7 +38,7 @@ export function Unlock() {
     try {
       if (await wallet.unlock(password)) {
         new Audio(UnlockSound).play();
-        navigate(ROUTES.HOME, { state: { isBack: true } });
+        navigate(ROUTES.HOME);
       } else {
         setError(i18n.t('passwords.wrong_password'));
         setLoading(false);

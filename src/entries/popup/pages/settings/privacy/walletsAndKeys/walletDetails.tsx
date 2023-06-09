@@ -221,11 +221,8 @@ export function WalletDetails() {
         />
       )}
       <RenameWalletPrompt
-        show={!!renameAccount}
         account={renameAccount}
-        onClose={() => {
-          setRenameAccount(undefined);
-        }}
+        onClose={() => setRenameAccount(undefined)}
       />
       <RemoveWalletPrompt
         show={!!removeAccount}

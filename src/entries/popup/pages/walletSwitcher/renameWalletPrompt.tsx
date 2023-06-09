@@ -1,201 +1,107 @@
-import React, {
-  KeyboardEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { KeyboardEvent, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { truncateAddress } from '~/core/utils/address';
-import {
-  Box,
-  Button,
-  Column,
-  Columns,
-  Inline,
-  Inset,
-  Row,
-  Rows,
-  Separator,
-  Text,
-} from '~/design-system';
+import { Box, Button, Inset, Separator, Stack, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { Prompt } from '~/design-system/components/Prompt/Prompt';
 
 import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 
-export const RenameWalletPrompt = ({
-  show,
+const RenameWallet = ({
   onClose,
   account,
 }: {
-  show: boolean;
   onClose: () => void;
-  account: Address | undefined;
+  account: Address;
 }) => {
   const { walletNames, saveWalletName } = useWalletNamesStore();
-  const oldWalletName = (account && walletNames[account]) || '';
-  const [newWalletName, setNewWalletName] = useState(oldWalletName);
-  const [error, setError] = useState<string | null>(null);
+  const [newName, setNewName] = useState(walletNames[account]);
 
-  const handleValidateWalletName = useCallback(() => {
-    if (account && newWalletName !== '') {
-      saveWalletName({ address: account, name: newWalletName });
-      onClose();
-      return;
-    }
-    setError(i18n.t('errors.no_wallet_name_set'));
-  }, [account, newWalletName, onClose, saveWalletName]);
+  const isValid = newName?.trim().length > 0;
 
-  const handleClose = () => {
-    setNewWalletName(oldWalletName);
+  const saveAndClose = () => {
+    saveWalletName({ address: account, name: newName });
     onClose();
   };
 
-  useEffect(() => {
-    setNewWalletName(oldWalletName);
-    return () => {
-      setNewWalletName(oldWalletName);
-    };
-  }, [oldWalletName]);
-
-  useEffect(() => {
-    setError(null);
-  }, [newWalletName]);
-
-  const onKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        handleValidateWalletName();
-      }
-    },
-    [handleValidateWalletName],
-  );
-
-  const isValid = useMemo(
-    () => newWalletName.length > 0 && newWalletName.trim() !== '',
-    [newWalletName],
-  );
+  const onKeyDown = (e: KeyboardEvent) => e.key === 'Enter' && saveAndClose();
 
   return (
-    <Prompt show={show}>
-      <Box padding="12px">
-        <Rows space="24px">
-          <Row>
-            <Rows space="20px">
-              <Row>
-                <Box paddingTop="12px">
-                  <Text size="16pt" weight="bold" align="center">
-                    {i18n.t('rename_wallet_prompt.rename_wallet')}
-                  </Text>
-                </Box>
-              </Row>
-              <Row>
-                <Inset horizontal="104px">
-                  <Separator color="separatorTertiary" />
-                </Inset>
-              </Row>
-              <Row>
-                <Rows>
-                  <Row>
-                    <Inline alignHorizontal="center">
-                      {account && (
-                        <WalletAvatar
-                          address={account}
-                          size={44}
-                          emojiSize="20pt"
-                        />
-                      )}
-                    </Inline>
-                  </Row>
-                  <Row>
-                    <Rows>
-                      <Row>
-                        <Input
-                          placeholder={i18n.t(
-                            'settings.privacy_and_security.wallets_and_keys.new_wallet.input_placeholder',
-                          )}
-                          value={newWalletName}
-                          onChange={(e) => setNewWalletName(e.target.value)}
-                          height="44px"
-                          variant="transparent"
-                          textAlign="center"
-                          autoFocus
-                          onKeyDown={onKeyDown}
-                          tabIndex={1}
-                        />
-                      </Row>
-                      <Row>
-                        <Inline alignHorizontal="center">
-                          <Text
-                            size="12pt"
-                            weight="medium"
-                            color="labelTertiary"
-                          >
-                            {truncateAddress(account)}
-                          </Text>
-                        </Inline>
-                      </Row>
-                      {error && (
-                        <Row>
-                          <Box paddingTop="8px">
-                            <Text
-                              size="14pt"
-                              weight="semibold"
-                              align="center"
-                              color="red"
-                            >
-                              {error}
-                            </Text>
-                          </Box>
-                        </Row>
-                      )}
-                    </Rows>
-                  </Row>
-                </Rows>
-              </Row>
-            </Rows>
-          </Row>
-          <Row>
-            <Inset horizontal="104px">
-              <Separator color="separatorTertiary" />
-            </Inset>
-          </Row>
-          <Row>
-            <Columns space="8px">
-              <Column>
-                <Button
-                  variant="flat"
-                  height="36px"
-                  color="fillSecondary"
-                  onClick={handleClose}
-                  width="full"
-                  borderRadius="9px"
-                  tabIndex={3}
-                >
-                  {i18n.t('common_actions.cancel')}
-                </Button>
-              </Column>
-              <Column>
-                <Button
-                  color={isValid ? 'accent' : 'labelQuaternary'}
-                  variant={isValid ? 'flat' : 'disabled'}
-                  height="36px"
-                  onClick={isValid ? handleValidateWalletName : undefined}
-                  width="full"
-                  borderRadius="9px"
-                  tabIndex={2}
-                >
-                  {i18n.t('rename_wallet_prompt.done')}
-                </Button>
-              </Column>
-            </Columns>
-          </Row>
-        </Rows>
+    <Box padding="12px" paddingTop="24px">
+      <Stack space="20px">
+        <Text size="16pt" weight="bold" align="center">
+          {i18n.t('rename_wallet_prompt.rename_wallet')}
+        </Text>
+
+        <Inset horizontal="104px">
+          <Separator color="separatorTertiary" />
+        </Inset>
+
+        <Stack alignHorizontal="center">
+          <WalletAvatar address={account} size={44} emojiSize="20pt" />
+          <Input
+            placeholder={i18n.t(
+              'settings.privacy_and_security.wallets_and_keys.new_wallet.input_placeholder',
+            )}
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            height="44px"
+            variant="transparent"
+            textAlign="center"
+            autoFocus
+            onKeyDown={onKeyDown}
+            tabIndex={1}
+          />
+          <Text size="12pt" weight="medium" color="labelTertiary">
+            {truncateAddress(account)}
+          </Text>
+        </Stack>
+      </Stack>
+
+      <Inset horizontal="104px" vertical="24px">
+        <Separator color="separatorTertiary" />
+      </Inset>
+
+      <Box display="flex" gap="8px" alignItems="center">
+        <Button
+          variant="flat"
+          height="36px"
+          color="fillSecondary"
+          onClick={onClose}
+          width="full"
+          borderRadius="9px"
+          tabIndex={3}
+        >
+          {i18n.t('common_actions.cancel')}
+        </Button>
+        <Button
+          color={isValid ? 'accent' : 'labelQuaternary'}
+          variant={isValid ? 'flat' : 'disabled'}
+          height="36px"
+          onClick={saveAndClose}
+          disabled={!isValid}
+          width="full"
+          borderRadius="9px"
+          tabIndex={2}
+        >
+          {i18n.t('rename_wallet_prompt.done')}
+        </Button>
       </Box>
-    </Prompt>
+    </Box>
   );
 };
+
+export const RenameWalletPrompt = ({
+  onClose,
+  account,
+}: {
+  onClose: () => void;
+  account?: Address;
+}) => (
+  <Prompt show={!!account}>
+    {account && <RenameWallet account={account} onClose={onClose} />}
+  </Prompt>
+);
