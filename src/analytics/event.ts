@@ -103,6 +103,14 @@ export const event = {
    */
   settingsAnalyticsTrackingEnabled: 'settings.analytics_tracking.enabled',
   /**
+   * Called when user disables global Flashbots setting in Settings.
+   */
+  settingsFlashbotsDisabled: 'settings.flashbots.disabled',
+  /**
+   * Called when user enables global Flashbots setting in Settings.
+   */
+  settingsFlashbotsEnabled: 'settings.flashbots.enabled',
+  /**
    * Called when user disables Rainbow as default provider in Settings.
    */
   settingsRainbowDefaultProviderDisabled:
