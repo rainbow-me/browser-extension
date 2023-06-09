@@ -10,9 +10,8 @@ const isBrave = 'brave' in navigator;
 
 const userSettingsPlaceholder = {} as chrome.action.UserSettings;
 const useChromeUserSettings = () => {
-  const settings = useQuery(
-    ['chrome.action.getUserSettings'],
-    chrome.action.getUserSettings,
+  const settings = useQuery(['chrome.action.getUserSettings'], () =>
+    chrome.action.getUserSettings(),
   );
   return settings.data || userSettingsPlaceholder;
 };
@@ -25,7 +24,7 @@ const PinToToolbar = () => {
       as={motion.div}
       initial={{ top: -50 }}
       animate={{ top: 0 }}
-      transition={{ delay: 0.2 }}
+      transition={{ duration: 0.1, delay: 0.2 }}
       position="fixed"
       top="0"
       borderRadius="16px"
