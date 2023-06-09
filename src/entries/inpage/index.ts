@@ -127,7 +127,6 @@ if (shouldInjectProvider()) {
   );
 }
 
-console.log('injection complete in window');
 window.dispatchEvent(new Event('ethereum#initialized'));
 
 backgroundMessenger.reply(
