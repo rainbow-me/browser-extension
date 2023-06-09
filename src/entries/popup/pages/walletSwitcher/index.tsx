@@ -191,7 +191,9 @@ export function WalletSwitcher() {
   const handleSelectAddress = useCallback(
     (address: Address) => {
       setCurrentAddress(address);
-      navigate(ROUTES.HOME);
+      navigate(ROUTES.HOME, {
+        state: { isBack: true },
+      });
     },
     [navigate, setCurrentAddress],
   );
@@ -392,7 +394,6 @@ export function WalletSwitcher() {
           promoType="wallet_switcher"
         />
       </Box>
-
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="droppable">
           {({ droppableProps, innerRef, placeholder }) => (
@@ -408,6 +409,12 @@ export function WalletSwitcher() {
                   as={motion.div}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 1111,
+                    damping: 50,
+                    mass: 1,
+                  }}
                   exit={{ opacity: 0 }}
                 >
                   {displayedAccountsComponent}
