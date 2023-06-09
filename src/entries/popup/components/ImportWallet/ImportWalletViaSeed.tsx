@@ -1,5 +1,6 @@
 import { isAddress } from '@ethersproject/address';
 import { isValidMnemonic } from '@ethersproject/hdnode';
+import { wordlists } from 'ethers';
 import { motion } from 'framer-motion';
 import { startsWith } from 'lodash';
 import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
@@ -66,6 +67,9 @@ const WordInput = ({
   handleKeyDown,
   handleSeedChange,
   toggleInputVisibility,
+  wordError,
+  globalError,
+  onBlur,
 }: {
   index: number;
   visibleInput: number | null;
@@ -76,6 +80,9 @@ const WordInput = ({
     index: number,
   ) => void;
   toggleInputVisibility: (index: number) => void;
+  wordError: boolean;
+  globalError: boolean;
+  onBlur: () => void;
 }) => {
   return (
     <Box
@@ -95,7 +102,12 @@ const WordInput = ({
           top: '12px',
         }}
       >
-        <Text size="12pt" weight="regular" color="labelTertiary" align="center">
+        <Text
+          size="12pt"
+          weight="regular"
+          color={globalError ? 'red' : 'labelTertiary'}
+          align="center"
+        >
           {`${index < 10 ? '0' : ''}${index}`}
         </Text>
       </Box>
@@ -106,7 +118,7 @@ const WordInput = ({
         borderRadius="12px"
         borderWidth="1px"
         borderColor={{
-          default: 'buttonStroke',
+          default: wordError ? 'red' : 'buttonStroke',
           focus: 'accent',
         }}
         width="full"
@@ -115,7 +127,8 @@ const WordInput = ({
         testId={`secret-text-area-${index}`}
         onKeyDown={handleKeyDown}
         tabIndex={index}
-        autoFocus
+        autoFocus={index - 1 === 0}
+        onBlur={onBlur}
         onChange={(e) => handleSeedChange(e, index - 1)}
         style={{
           height: '32px',
@@ -158,6 +171,7 @@ const ImportWalletViaSeed = () => {
   const navigate = useRainbowNavigate();
   const location = useLocation();
   const [isValid, setIsValid] = useState(false);
+  const [invalidWords, setInvalidWords] = useState<number[]>([]);
   const [visibleInput, setVisibleInput] = useState<number | null>(null);
   const [secrets, setSecrets] = useState<string[]>(
     Array.from({ length: 12 }).map(() => ''),
@@ -181,8 +195,6 @@ const ImportWalletViaSeed = () => {
     },
     [visibleInput],
   );
-
-  console.log(secrets.join(', '));
 
   const [validity, setValidity] = useState<
     { valid: boolean; too_long: boolean; type: string | undefined }[]
@@ -259,6 +271,23 @@ const ImportWalletViaSeed = () => {
     [handleImportWallet],
   );
 
+  const isValidWord = (word: string) => wordlists['en'].getWordIndex(word) > -1;
+
+  const onBlur = useCallback(
+    (index: number) => {
+      if (secrets[index] !== '' && !isValidWord(secrets[index])) {
+        console.log('invalid word', secrets[index]);
+        setInvalidWords([...invalidWords, index]);
+      } else {
+        console.log('valid word', secrets[index]);
+        setInvalidWords(invalidWords.filter((i) => i !== index));
+      }
+    },
+    [invalidWords, secrets],
+  );
+
+  console.log('invalid words', invalidWords);
+
   return (
     <Box testId="import-wallet-screen" paddingHorizontal="20px">
       <Stack space="24px" alignHorizontal="center">
@@ -318,6 +347,11 @@ const ImportWalletViaSeed = () => {
                             visibleInput={visibleInput}
                             toggleInputVisibility={toggleInputVisibility}
                             key={`seed_${i}`}
+                            onBlur={() => onBlur(getOddWordIndex(i) - 1)}
+                            wordError={invalidWords.includes(
+                              getOddWordIndex(i) - 1,
+                            )}
+                            globalError={false}
                           />
                         ))}
                     </Box>
@@ -346,6 +380,11 @@ const ImportWalletViaSeed = () => {
                             visibleInput={visibleInput}
                             toggleInputVisibility={toggleInputVisibility}
                             key={`seed_${i}`}
+                            onBlur={() => onBlur(getEvenWordIndex(i) - 1)}
+                            wordError={invalidWords.includes(
+                              getEvenWordIndex(i) - 1,
+                            )}
+                            globalError={false}
                           />
                         ))}
                     </Box>
