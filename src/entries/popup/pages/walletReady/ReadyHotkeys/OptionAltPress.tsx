@@ -1,5 +1,3 @@
-import React from 'react';
-
 import OptionInactiveBottomWindows from 'static/assets/onboarding/dark_alt_bottom@2x.png';
 import OptionPressedBottomWindows from 'static/assets/onboarding/dark_alt_pressed_bottom@2x.png';
 import OptionPressedWindows from 'static/assets/onboarding/dark_alt_pressed_top@2x.png';
@@ -19,43 +17,43 @@ import OptionInactiveMacOSLight from 'static/assets/onboarding/light_option_top@
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { Box } from '~/design-system';
 
+import { activeTransitions, inactiveTransitions } from './pressTransitions.css';
+
+const isWindows = navigator.userAgent.indexOf('Win') !== -1;
+const OptionPressed = isWindows ? OptionPressedWindows : OptionPressedMacOS;
+
+const OptionPressedBottom = isWindows
+  ? OptionPressedBottomWindows
+  : OptionPressedBottomMacOS;
+
+const OptionInactive = isWindows ? OptionInactiveWindows : OptionInactiveMacOS;
+
+const OptionInactiveBottom = isWindows
+  ? OptionInactiveBottomWindows
+  : OptionInactiveBottomMacOS;
+
+const OptionPressedLight = isWindows
+  ? OptionPressedWindowsLight
+  : OptionPressedMacOSLight;
+
+const OptionPressedBottomLight = isWindows
+  ? OptionPressedBottomWindowsLight
+  : OptionPressedBottomMacOSLight;
+
+const OptionInactiveLight = isWindows
+  ? OptionInactiveWindowsLight
+  : OptionInactiveMacOSLight;
+
+const OptionInactiveBottomLight = isWindows
+  ? OptionInactiveBottomWindowsLight
+  : OptionInactiveBottomMacOSLight;
+
 export function OptionAltPress({
   isOptionPressed,
 }: {
   isOptionPressed: boolean;
 }) {
   const { currentTheme } = useCurrentThemeStore();
-  const isWindows = navigator.userAgent.indexOf('Win') !== -1;
-  const OptionPressed = isWindows ? OptionPressedWindows : OptionPressedMacOS;
-
-  const OptionPressedBottom = isWindows
-    ? OptionPressedBottomWindows
-    : OptionPressedBottomMacOS;
-
-  const OptionInactive = isWindows
-    ? OptionInactiveWindows
-    : OptionInactiveMacOS;
-
-  const OptionInactiveBottom = isWindows
-    ? OptionInactiveBottomWindows
-    : OptionInactiveBottomMacOS;
-
-  const OptionPressedLight = isWindows
-    ? OptionPressedWindowsLight
-    : OptionPressedMacOSLight;
-
-  const OptionPressedBottomLight = isWindows
-    ? OptionPressedBottomWindowsLight
-    : OptionPressedBottomMacOSLight;
-
-  const OptionInactiveLight = isWindows
-    ? OptionInactiveWindowsLight
-    : OptionInactiveMacOSLight;
-
-  const OptionInactiveBottomLight = isWindows
-    ? OptionInactiveBottomWindowsLight
-    : OptionInactiveBottomMacOSLight;
-
   return (
     <Box paddingHorizontal="5px">
       <Box position="relative" style={{ width: '44px' }}>
@@ -64,15 +62,10 @@ export function OptionAltPress({
             as="img"
             position="absolute"
             src={currentTheme === 'dark' ? OptionPressed : OptionPressedLight}
-            style={{
-              width: '44px',
-              zIndex: 1,
-              top: isOptionPressed ? '2px' : 0,
-              opacity: isOptionPressed ? 1 : 0,
-              transition: 'opacity 0.2s ease-in-out, top 0.2s ease-in-out',
-              transitionProperty: 'top',
-              transitionDelay: '0.17s',
-            }}
+            style={{ width: '44px', zIndex: 1 }}
+            className={
+              activeTransitions[isOptionPressed ? 'pressed' : 'not pressed']
+            }
             alt="Option"
           />
           <Box
@@ -99,12 +92,10 @@ export function OptionAltPress({
             position="absolute"
             top="0"
             src={currentTheme === 'dark' ? OptionInactive : OptionInactiveLight}
-            style={{
-              width: '44px',
-              zIndex: 1,
-              opacity: isOptionPressed ? 0 : 1,
-              transition: 'opacity 0.2s ease-in-out',
-            }}
+            style={{ width: '44px', zIndex: 1 }}
+            className={
+              inactiveTransitions[isOptionPressed ? 'pressed' : 'not pressed']
+            }
             alt="Option"
           />
           <Box
