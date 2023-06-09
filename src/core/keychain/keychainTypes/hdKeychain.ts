@@ -3,12 +3,10 @@ import { HDNode } from '@ethersproject/hdnode';
 import { Wallet } from '@ethersproject/wallet';
 import { Address } from 'wagmi';
 
-import { ahaHttp } from '~/core/network/aha';
 import { KeychainType } from '~/core/types/keychainTypes';
 
 import { IKeychain, PrivateKey } from '../IKeychain';
-
-const DESERIALIZE_ACCOUNTS = 10;
+import { autoDiscoverAccounts } from '../utils';
 
 export interface SerializedHdKeychain {
   mnemonic: string;
@@ -99,38 +97,10 @@ export class HdKeychain implements IKeychain {
 
     // If we didn't explicit add a new account, we need attempt to autodiscover the rest
     if (opts?.autodiscover) {
-      // Autodiscover accounts
-      let empty = false;
-
-      while (!empty) {
-        const initialIndex = privates.get(this).accountsEnabled;
-        const addresses = Array.from(
-          { length: DESERIALIZE_ACCOUNTS },
-          (_, i) => initialIndex + i + 1,
-        ).map((i) => privates.get(this).deriveWallet(i).address);
-
-        // eslint-disable-next-line no-await-in-loop
-        const { data } = await ahaHttp.get(`/?address=${addresses.join(',')}`);
-        const addressesHaveBeenUsed = data as {
-          data: { addresses: { [key: Address]: boolean } };
-        };
-
-        const addressNotUsedIndex = addresses.reduce((prev, address, index) => {
-          return !addressesHaveBeenUsed.data.addresses[address.toLowerCase()] &&
-            prev === -1
-            ? index
-            : prev;
-        }, -1);
-
-        if (addressNotUsedIndex === -1) {
-          privates.get(this).accountsEnabled =
-            initialIndex + DESERIALIZE_ACCOUNTS;
-        } else {
-          empty = true;
-          privates.get(this).accountsEnabled =
-            initialIndex + addressNotUsedIndex + 1;
-        }
-      }
+      const { accountsEnabled } = await autoDiscoverAccounts({
+        deriveWallet: privates.get(this).deriveWallet,
+      });
+      privates.get(this).accountsEnabled = accountsEnabled;
     }
 
     for (let i = 0; i < privates.get(this).accountsEnabled; i++) {
@@ -140,6 +110,7 @@ export class HdKeychain implements IKeychain {
       }
     }
   }
+
   async addNewAccount(): Promise<Array<Wallet>> {
     privates.get(this).addAccount(privates.get(this).accountsEnabled);
     privates.get(this).accountsEnabled += 1;
