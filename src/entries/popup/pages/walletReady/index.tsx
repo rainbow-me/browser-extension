@@ -1,5 +1,5 @@
+import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
@@ -8,12 +8,13 @@ import { ReadyShortcut } from './ReadyShortcut';
 
 const isBrave = 'brave' in navigator;
 
+const userSettingsPlaceholder = {} as chrome.action.UserSettings;
 const useChromeUserSettings = () => {
-  const [settings, set] = useState({} as chrome.action.UserSettings);
-  useEffect(() => {
-    chrome.action.getUserSettings(set);
-  }, []);
-  return settings;
+  const settings = useQuery(
+    ['chrome.action.getUserSettings'],
+    chrome.action.getUserSettings,
+  );
+  return settings.data || userSettingsPlaceholder;
 };
 
 const PinToToolbar = () => {
