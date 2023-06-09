@@ -146,7 +146,7 @@ export function SuccessHW() {
         navigate(ROUTES.CREATE_PASSWORD, { state: { backTo: ROUTES.WELCOME } });
       }
     } else {
-      navigate(ROUTES.HOME);
+      navigate(ROUTES.HOME, { state: { isBack: true } });
       setTimeout(() => {
         navigate(ROUTES.WALLET_SWITCHER);
       }, 300);

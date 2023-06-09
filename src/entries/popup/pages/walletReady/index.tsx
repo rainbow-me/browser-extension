@@ -1,22 +1,37 @@
-import React, { useEffect, useState } from 'react';
-
 import { i18n } from '~/core/languages';
 import { Box, Inline, Separator, Stack, Symbol, Text } from '~/design-system';
 
 import { ReadyShortcut } from './ReadyShortcut';
 
+const isBrave = 'brave' in navigator;
+
+const PinToToolbar = () => (
+  <Box
+    position="fixed"
+    top="0"
+    borderRadius="16px"
+    style={{
+      borderTopLeftRadius: 0,
+      borderTopRightRadius: 0,
+      maxWidth: '152px',
+      right: isBrave ? '144px' : '104px',
+    }}
+    paddingHorizontal="12px"
+    paddingVertical="16px"
+    display="flex"
+    gap="12px"
+    background="surfacePrimaryElevated"
+    borderColor="buttonStrokeSecondary"
+    boxShadow="18px surfacePrimaryElevated"
+  >
+    <Text size="14pt" weight="bold">
+      {i18n.t('wallet_ready.pin_rainbow_to_your_toolbar')}
+    </Text>
+    <Symbol symbol="arrow.up" color="purple" size={18} weight="bold" />
+  </Box>
+);
+
 export function WalletReady() {
-  const [windowLostFocus, setWindowLostFocus] = useState(false);
-  const onWindowBlur = () => setWindowLostFocus(true);
-  const onWindowFocus = () => setWindowLostFocus(false);
-  useEffect(() => {
-    window.addEventListener('blur', onWindowBlur);
-    window.addEventListener('focus', onWindowFocus);
-    return () => {
-      window.removeEventListener('blur', onWindowBlur);
-      window.removeEventListener('focus', onWindowFocus);
-    };
-  }, []);
   return (
     <Box
       display="flex"
@@ -50,7 +65,7 @@ export function WalletReady() {
         <Separator color="separatorTertiary" strokeWeight="1px" />
       </Box>
 
-      <ReadyShortcut highlight={windowLostFocus} />
+      <ReadyShortcut />
 
       <Box paddingHorizontal="20px">
         <Stack space="8px">
@@ -171,6 +186,7 @@ export function WalletReady() {
           </Box>
         </Stack>
       </Box>
+      <PinToToolbar />
     </Box>
   );
 }

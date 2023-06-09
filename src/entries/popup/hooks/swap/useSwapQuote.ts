@@ -14,7 +14,9 @@ import { useMemo } from 'react';
 
 import { useCurrentAddressStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
+import { ChainId } from '~/core/types/chains';
 import { convertAmountToRawAmount } from '~/core/utils/numbers';
+import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 
 import { IndependentField } from './useSwapInputs';
 
@@ -112,10 +114,44 @@ export const useSwapQuote = ({
     cacheTime: CACHE_INTERVAL,
   });
 
+  const isWrapOrUnwrapEth = useMemo(() => {
+    if (!data || (data as QuoteError).error) return false;
+    const quote = data as Quote | CrosschainQuote;
+    return (
+      isWrapEth({
+        buyTokenAddress: quote?.buyTokenAddress,
+        sellTokenAddress: quote?.sellTokenAddress,
+        chainId: assetToSell?.chainId || ChainId.mainnet,
+      }) ||
+      isUnwrapEth({
+        buyTokenAddress: quote?.buyTokenAddress,
+        sellTokenAddress: quote?.sellTokenAddress,
+        chainId: assetToSell?.chainId || ChainId.mainnet,
+      })
+    );
+  }, [assetToSell?.chainId, data]);
+
+  const quote = useMemo(() => {
+    if (!data || (data as QuoteError)?.error) return data;
+    const quote = data as Quote | CrosschainQuote;
+    return {
+      ...quote,
+      buyAmountDisplay: isWrapOrUnwrapEth
+        ? quote.buyAmount
+        : quote.buyAmountDisplay,
+      sellAmountDisplay: isWrapOrUnwrapEth
+        ? quote.sellAmount
+        : quote.sellAmountDisplay,
+
+      feeInEth: isWrapOrUnwrapEth ? '0' : quote.feeInEth,
+    };
+  }, [data, isWrapOrUnwrapEth]);
+
   return {
-    data,
+    data: quote,
     isLoading: isLoading && fetchStatus !== 'idle',
     isError,
     isCrosschainSwap,
+    isWrapOrUnwrapEth,
   };
 };

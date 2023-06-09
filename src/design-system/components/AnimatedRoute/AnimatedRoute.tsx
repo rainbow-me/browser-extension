@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion';
 import React, { useEffect, useMemo } from 'react';
+import { useLocation, useNavigationType } from 'react-router-dom';
 
 import { useCurrentAddressStore } from '~/core/state';
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box } from '~/design-system';
 import {
   AnimatedRouteConfig,
@@ -43,7 +45,7 @@ export const animatedRouteValues: Record<
   base: {
     initial: {
       opacity: 0,
-      y: -20,
+      y: 0,
     },
     end: {
       opacity: 1,
@@ -51,13 +53,13 @@ export const animatedRouteValues: Record<
     },
     exit: {
       opacity: 0,
-      y: -20,
+      y: -16,
     },
   },
   right: {
     initial: {
       opacity: 0,
-      x: 20,
+      x: 16,
     },
     end: {
       opacity: 1,
@@ -65,13 +67,13 @@ export const animatedRouteValues: Record<
     },
     exit: {
       opacity: 0,
-      x: -12,
+      x: -16,
     },
   },
   left: {
     initial: {
       opacity: 0,
-      x: -20,
+      x: -16,
     },
     end: {
       opacity: 1,
@@ -79,13 +81,13 @@ export const animatedRouteValues: Record<
     },
     exit: {
       opacity: 0,
-      x: 12,
+      x: 16,
     },
   },
   up: {
     initial: {
       opacity: 0,
-      y: 20,
+      y: 16,
     },
     end: {
       opacity: 1,
@@ -93,13 +95,30 @@ export const animatedRouteValues: Record<
     },
     exit: {
       opacity: 0,
-      y: 12,
+      y: -16,
+    },
+  },
+  upRight: {
+    initial: {
+      opacity: 0,
+      x: 0,
+      y: 16,
+    },
+    end: {
+      opacity: 1,
+      x: 0,
+      y: 0,
+    },
+    exit: {
+      opacity: 0,
+      x: -16,
+      y: 0,
     },
   },
   down: {
     initial: {
       opacity: 0,
-      y: -20,
+      y: -16,
     },
     end: {
       opacity: 1,
@@ -107,7 +126,7 @@ export const animatedRouteValues: Record<
     },
     exit: {
       opacity: 0,
-      y: -12,
+      y: 16,
     },
   },
   deceleratedShort: {
@@ -155,6 +174,11 @@ export const AnimatedRoute = React.forwardRef<
   const { initial, end, exit } = animatedRouteValues[direction];
   const transition = animatedRouteTransitionConfig[direction];
 
+  const { state } = useLocation();
+  const navigationType = useNavigationType();
+  const isBack =
+    (navigationType === 'POP' && state?.isBack !== false) || state?.isBack;
+
   const { currentAddress } = useCurrentAddressStore();
   const { avatar } = useAvatar({ address: currentAddress });
 
@@ -186,9 +210,10 @@ export const AnimatedRoute = React.forwardRef<
           display="flex"
           flexDirection="column"
           height="full"
-          initial={initial}
+          initial={isBack ? exit : initial}
+          style={{ maxHeight: POPUP_DIMENSIONS.height }}          
           animate={end}
-          exit={exit}
+          exit={isBack ? initial : exit}
           transition={transition}
           background={background}
           className={animatedRouteStyles}
