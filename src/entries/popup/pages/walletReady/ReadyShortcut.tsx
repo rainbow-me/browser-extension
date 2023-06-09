@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Box, Separator } from '~/design-system';
 
@@ -7,18 +7,33 @@ import { OptionAltPress } from './ReadyHotkeys/OptionAltPress';
 import { RPress } from './ReadyHotkeys/RPress';
 import { ShiftPress } from './ReadyHotkeys/ShiftPress';
 
-export function ReadyShortcut({ highlight }: { highlight: boolean }) {
+export function ReadyShortcut() {
   const [isShiftPressed, setIsShiftPressed] = useState(false);
   const [isOptionPressed, setIsOptionPressed] = useState(false);
   const [isRPressed, setIsRPressed] = useState(false);
 
+  const [isHighlighted, setHighlighted] = useState(false);
+
   useEffect(() => {
-    if (highlight) {
+    const onFocus = () => {
       setIsOptionPressed(false);
       setIsRPressed(false);
       setIsShiftPressed(false);
-    }
-  }, [highlight]);
+      setHighlighted(false);
+    };
+    const onBlur = () => {
+      setIsOptionPressed(false);
+      setIsRPressed(false);
+      setIsShiftPressed(false);
+      setHighlighted(!!chrome.extension.getViews({ type: 'popup' }).length);
+    };
+    window.addEventListener('blur', onBlur);
+    window.addEventListener('focus', onFocus);
+    return () => {
+      window.removeEventListener('blur', onBlur);
+      window.removeEventListener('focus', onFocus);
+    };
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -72,14 +87,14 @@ export function ReadyShortcut({ highlight }: { highlight: boolean }) {
         <Box display="flex" justifyContent="center" paddingBottom="15px">
           <OpenText
             isButtonPressed={
-              isShiftPressed || isRPressed || isOptionPressed || highlight
+              isShiftPressed || isRPressed || isOptionPressed || isHighlighted
             }
           />
         </Box>
         <Box display="flex" width="full">
-          <ShiftPress isShiftPressed={isShiftPressed || highlight} />
-          <OptionAltPress isOptionPressed={isOptionPressed || highlight} />
-          <RPress isRPressed={isRPressed || highlight} />
+          <ShiftPress isShiftPressed={isShiftPressed || isHighlighted} />
+          <OptionAltPress isOptionPressed={isOptionPressed || isHighlighted} />
+          <RPress isRPressed={isRPressed || isHighlighted} />
         </Box>
       </Box>
       <Box style={{ width: '106px' }}>
