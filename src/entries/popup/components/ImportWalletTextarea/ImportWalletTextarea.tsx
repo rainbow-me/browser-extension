@@ -33,7 +33,6 @@ export function ImportWalletTextarea({
       height="full"
       width="full"
       position="relative"
-      testId={testId}
     >
       <Box
         as="textarea"
@@ -43,7 +42,7 @@ export function ImportWalletTextarea({
         borderColor={borderColor}
         padding="12px"
         width="full"
-        testId="secret-textarea"
+        testId={testId}
         className={[
           placeholderStyle,
           textStyles({
