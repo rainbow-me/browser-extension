@@ -920,6 +920,7 @@ export type AnimatedRouteDirection =
   | 'right'
   | 'left'
   | 'up'
+  | 'upRight'
   | 'down'
   | 'deceleratedShort'
   | 'emphasizedShort';
@@ -937,24 +938,40 @@ export type AnimatedRouteConfig = Record<
 
 export const animatedRouteTransitionConfig = {
   base: {
-    ease: [0.24, 0, 0, 1],
-    duration: 0.12,
+    type: 'spring',
+    stiffness: 1111,
+    damping: 50,
+    mass: 1,
   },
   right: {
-    ease: [0.05, 0.7, 0.1, 1],
-    duration: 0.26,
+    type: 'spring',
+    stiffness: 1111,
+    damping: 50,
+    mass: 1,
   },
   left: {
-    ease: [0.24, 0, 0, 1],
-    duration: 0.12,
+    type: 'spring',
+    stiffness: 1111,
+    damping: 50,
+    mass: 1,
   },
   up: {
-    ease: [0.05, 0.7, 0.1, 1],
-    duration: 0.26,
+    type: 'spring',
+    stiffness: 1111,
+    damping: 50,
+    mass: 1,
+  },
+  upRight: {
+    type: 'spring',
+    stiffness: 1111,
+    damping: 50,
+    mass: 1,
   },
   down: {
-    ease: [0.24, 0, 0, 1],
-    duration: 0.12,
+    type: 'spring',
+    stiffness: 1111,
+    damping: 50,
+    mass: 1,
   },
   deceleratedShort: {
     ease: [0, 0, 0, 1],
