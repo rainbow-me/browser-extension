@@ -104,7 +104,6 @@ export const executeCrosschainSwap = async ({
     nonce: nonce ? toHex(String(nonce)) : undefined,
     ...gasParams,
   };
-
   return fillCrosschainQuote(quote, transactionParams, wallet);
 };
 
