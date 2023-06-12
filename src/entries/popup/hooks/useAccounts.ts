@@ -31,6 +31,7 @@ export const useAccounts = <TSelect = Account[]>(
               address,
               type: wallet.type,
               walletName: walletNames[address],
+              vendor: wallet.vendor,
             })),
           ],
           [] as Account[],
