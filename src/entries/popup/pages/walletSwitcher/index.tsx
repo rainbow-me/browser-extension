@@ -17,7 +17,7 @@ import { useCurrentAddressStore } from '~/core/state';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletNamesStore } from '~/core/state/walletNames';
-import { saveWalletOrder } from '~/core/state/walletOrder';
+import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { KeychainType } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import {
@@ -55,8 +55,6 @@ import { ROUTES } from '../../urls';
 
 import { RemoveWalletPrompt } from './removeWalletPrompt';
 import { RenameWalletPrompt } from './renameWalletPrompt';
-
-const { innerHeight: windowHeight } = window;
 
 const reorder = <Item,>(
   list: Iterable<Item>,
@@ -329,6 +327,8 @@ export function WalletSwitcher() {
     ),
     [avatar?.color, displayedAccounts],
   );
+
+  const { saveWalletOrder } = useWalletOrderStore();
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source } = result;
