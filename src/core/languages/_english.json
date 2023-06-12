@@ -326,6 +326,7 @@
       "flashbots_on": "On",
       "minimum_received": "Minimum received",
       "swapping_via": "Swapping via",
+      "bridging_via": "Bridging via",
       "included_fee": "Included Rainbow fee",
       "use_flashbots": "Use Flashbots",
       "exchange_rate": "Exchange rate",
