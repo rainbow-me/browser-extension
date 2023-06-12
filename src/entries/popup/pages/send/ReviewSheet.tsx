@@ -544,14 +544,23 @@ export const ReviewSheet = ({
                         />
                       </Column>
                       <Column>
-                        <Text
-                          align="left"
-                          size="12pt"
-                          weight="bold"
-                          color="labelSecondary"
+                        <Box
+                          onClick={() =>
+                            setSendingOnL2Checks([
+                              !sendingOnL2Checks[0],
+                              sendingOnL2Checks[1],
+                            ])
+                          }
                         >
-                          {i18n.t('send.review.sending_on_l2_check_1')}
-                        </Text>
+                          <Text
+                            align="left"
+                            size="12pt"
+                            weight="bold"
+                            color="labelSecondary"
+                          >
+                            {i18n.t('send.review.sending_on_l2_check_1')}
+                          </Text>
+                        </Box>
                       </Column>
                     </Columns>
                     <Columns space="7px">
@@ -573,11 +582,24 @@ export const ReviewSheet = ({
                         />
                       </Column>
                       <Column>
-                        <Text size="12pt" weight="bold" color="labelSecondary">
-                          {i18n.t('send.review.sending_on_l2_check_2', {
-                            chainName,
-                          })}
-                        </Text>
+                        <Box
+                          onClick={() =>
+                            setSendingOnL2Checks([
+                              sendingOnL2Checks[0],
+                              !sendingOnL2Checks[1],
+                            ])
+                          }
+                        >
+                          <Text
+                            size="12pt"
+                            weight="bold"
+                            color="labelSecondary"
+                          >
+                            {i18n.t('send.review.sending_on_l2_check_2', {
+                              chainName,
+                            })}
+                          </Text>
+                        </Box>
                       </Column>
                     </Columns>
                   </Stack>
