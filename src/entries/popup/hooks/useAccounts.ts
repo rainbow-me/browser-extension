@@ -41,8 +41,11 @@ export const useAccounts = <TSelect = Account[]>(
 
         const order = walletOrder;
         return accounts.sort((a, b) => {
-          if (order.indexOf(a.address) > order.indexOf(b.address)) return 1;
-          return -1;
+          const aIndex = order.indexOf(a.address);
+          const bIndex = order.indexOf(b.address);
+          if (aIndex === -1) return bIndex === -1 ? 0 : 1;
+          if (bIndex === -1) return -1;
+          return aIndex - bIndex;
         });
       },
       [walletNames, walletOrder],
