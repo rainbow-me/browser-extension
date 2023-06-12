@@ -1,5 +1,4 @@
-import { formatDistanceStrict } from 'date-fns';
-import React from 'react';
+import { formatDistanceToNowStrict } from 'date-fns';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -7,11 +6,9 @@ import {
   Box,
   Column,
   Columns,
-  Row,
-  Rows,
   Separator,
   Stack,
-  Text,
+  TextOverflow,
 } from '~/design-system';
 
 import { WalletSummary } from '../../hooks/useWalletsSummary';
@@ -41,79 +38,63 @@ export const AccountToImportRows = ({
         </Box>
       }
     >
-      {accountsToImport?.map((address: Address) => (
-        <Box key={`avatar_${address}`}>
-          <Columns alignVertical="center">
+      {accountsToImport?.map((address) => (
+        <Box onClick={() => toggleAccount?.(address)} key={`avatar_${address}`}>
+          <Columns alignVertical="center" space="16px">
             <Column>
-              <Box onClick={() => toggleAccount?.(address)}>
-                <Columns
-                  space="8px"
-                  alignHorizontal="left"
-                  alignVertical="center"
-                >
-                  <Column width="content">
-                    <WalletAvatar
-                      address={address as Address}
-                      size={32}
-                      emojiSize={'16pt'}
+              <Columns
+                space="8px"
+                alignHorizontal="left"
+                alignVertical="center"
+              >
+                <Column width="content">
+                  <WalletAvatar
+                    address={address}
+                    size={36}
+                    emojiSize={'16pt'}
+                  />
+                </Column>
+                <Column>
+                  <Stack space="8px">
+                    <AddressOrEns
+                      size="14pt"
+                      weight="bold"
+                      color="label"
+                      address={address}
                     />
-                  </Column>
-                  <Column>
-                    <Rows space="8px">
-                      <Row>
-                        <AddressOrEns
-                          size="14pt"
-                          weight="bold"
-                          color="label"
-                          address={address as Address}
-                        />
-                      </Row>
-                      <Row>
-                        <Text
-                          color="labelTertiary"
-                          size="12pt"
-                          weight="semibold"
-                        >
-                          {i18n.t(
-                            'import_wallet_selection.account_summary_tokens',
+                    <TextOverflow
+                      color="labelTertiary"
+                      size="12pt"
+                      weight="semibold"
+                    >
+                      {i18n.t(
+                        'import_wallet_selection.account_summary_tokens',
+                        {
+                          tokensAmount: walletsSummary[address].balance.display,
+                        },
+                      )}
+                      {walletsSummary[address].lastTx
+                        ? ` ‧ ${i18n.t(
+                            'import_wallet_selection.account_summary_last_tx',
                             {
-                              tokensAmount:
-                                walletsSummary[address].balance.display,
+                              lastTx: formatDistanceToNowStrict(
+                                Number(walletsSummary[address].lastTx) * 1000,
+                              ),
                             },
-                          )}
-                          {walletsSummary[address].lastTx
-                            ? ` ‧ ${i18n.t(
-                                'import_wallet_selection.account_summary_last_tx',
-                                {
-                                  lastTx: formatDistanceStrict(
-                                    new Date(),
-                                    new Date(
-                                      Number(walletsSummary[address].lastTx) *
-                                        1000,
-                                    ),
-                                  ),
-                                },
-                              )}`
-                            : ''}
-                        </Text>
-                      </Row>
-                    </Rows>
-                  </Column>
-                </Columns>
-              </Box>
+                          )}`
+                        : ''}
+                    </TextOverflow>
+                  </Stack>
+                </Column>
+              </Columns>
             </Column>
-            {showCheckbox ? (
+            {showCheckbox && (
               <Column width="content">
-                <Box
-                  alignItems="center"
-                  justifyContent="flex-end"
-                  width="fit"
-                  onClick={() => toggleAccount?.(address)}
-                >
+                <Box alignItems="center" justifyContent="flex-end" width="fit">
                   <Checkbox selected={!accountsIgnored.includes(address)} />
                 </Box>
               </Column>
-            ) : null}
+            )}
           </Columns>
         </Box>
       ))}
