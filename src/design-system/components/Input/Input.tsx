@@ -169,6 +169,7 @@ export function Input({
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...inputProps}
         as="input"
+        autoComplete="off"
         tabIndex={inputProps.tabIndex ?? undefined}
         ref={innerRef}
         background={background}
