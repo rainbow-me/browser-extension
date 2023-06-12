@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Address, useNetwork } from 'wagmi';
 
 import { SupportedCurrencyKey } from '~/core/references';
@@ -99,24 +100,40 @@ export function useAllTransactions({
   const pendingTransactions: RainbowTransaction[] = getPendingTransactions({
     address,
   });
-  const allTransactions = [
-    ...pendingTransactions,
-    ...(confirmedTransactions || []),
-    ...(confirmedArbitrumTransactions || []),
-    ...(confirmedBscTransactions || []),
-    ...(confirmedOptimismTransactions || []),
-    ...(confirmedPolygonTransactions || []),
-  ];
-  return {
-    allTransactions,
-    allTransactionsByDate: selectTransactionsByDate(allTransactions),
-    isInitialLoading:
-      confirmedInitialLoading ||
-      arbitrumInitialLoading ||
-      bscInitialLoading ||
-      optimismInitialLoading ||
-      polygonInitialLoading,
-  };
+  const allTransactions = useMemo(
+    () => [
+      ...pendingTransactions,
+      ...(confirmedTransactions || []),
+      ...(confirmedArbitrumTransactions || []),
+      ...(confirmedBscTransactions || []),
+      ...(confirmedOptimismTransactions || []),
+      ...(confirmedPolygonTransactions || []),
+    ],
+    [
+      confirmedArbitrumTransactions,
+      confirmedBscTransactions,
+      confirmedOptimismTransactions,
+      confirmedPolygonTransactions,
+      confirmedTransactions,
+      pendingTransactions,
+    ],
+  );
+
+  const isInitialLoading =
+    confirmedInitialLoading ||
+    arbitrumInitialLoading ||
+    bscInitialLoading ||
+    optimismInitialLoading ||
+    polygonInitialLoading;
+
+  return useMemo(
+    () => ({
+      allTransactions,
+      allTransactionsByDate: selectTransactionsByDate(allTransactions),
+      isInitialLoading,
+    }),
+    [allTransactions, isInitialLoading],
+  );
 }
 
 function watchConfirmedTransactions(
