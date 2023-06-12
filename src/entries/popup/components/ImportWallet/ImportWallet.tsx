@@ -61,7 +61,7 @@ export function ImportWallet({ onboarding }: { onboarding?: boolean }) {
         <Box alignItems="center" width="full" style={{ width: '106px' }}>
           <Separator color="separatorTertiary" strokeWeight="1px" />
         </Box>
-        <Box>
+        <Box style={{ width: '320px' }}>
           <OnboardMenu>
             <Lens
               onKeyDown={onImportWalletViaSeed}
