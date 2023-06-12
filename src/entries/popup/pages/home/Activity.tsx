@@ -146,7 +146,7 @@ export function Activity() {
                   top: 0,
                   left: 0,
                   width: '100%',
-                  height: rowData === 'string' ? 34 : 52,
+                  height: typeof rowData === 'string' ? 34 : 52,
                   transform: `translateY(${start}px)`,
                 }}
               >
