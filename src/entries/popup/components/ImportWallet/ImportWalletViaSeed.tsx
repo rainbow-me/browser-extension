@@ -2,7 +2,13 @@
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlists } from 'ethers';
 import { motion } from 'framer-motion';
-import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
+import React, {
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useReducer,
+  useState,
+} from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
@@ -150,6 +156,16 @@ const WordInput = ({
   );
 };
 
+const secretsReducer = (
+  oldSecrets: string[],
+  updater: string[] | ((s: string[]) => string[]),
+) => {
+  const newSecrets =
+    typeof updater === 'function' ? updater(oldSecrets) : updater;
+  setImportWalletSecrets(newSecrets);
+  return newSecrets;
+};
+
 const ImportWalletViaSeed = () => {
   const navigate = useRainbowNavigate();
   const location = useLocation();
@@ -157,7 +173,8 @@ const ImportWalletViaSeed = () => {
   const [globalError, setGlobalError] = useState(false);
   const [invalidWords, setInvalidWords] = useState<number[]>([]);
   const [visibleInput, setVisibleInput] = useState<number | null>(null);
-  const [secrets, setSecrets] = useState<string[]>(
+  const [secrets, setSecrets] = useReducer(
+    secretsReducer,
     Array.from({ length: 12 }).map(() => ''),
   );
 
