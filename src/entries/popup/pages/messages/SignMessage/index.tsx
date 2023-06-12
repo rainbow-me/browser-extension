@@ -8,8 +8,8 @@ import { ChainId } from '~/core/types/chains';
 import { RPCMethod } from '~/core/types/rpcMethods';
 import { getSigningRequestDisplayDetails } from '~/core/utils/signMessages';
 import { Box } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/util';
 import { useVisibleAccounts } from '~/entries/popup/hooks/useAccounts';
-import { useAlert } from '~/entries/popup/hooks/useAlert';
 import { useAppMetadata } from '~/entries/popup/hooks/useAppMetadata';
 import { useAppSession } from '~/entries/popup/hooks/useAppSession';
 import { RainbowError, logger } from '~/logger';
@@ -51,7 +51,6 @@ export function SignMessage({
   });
   const { appSession } = useAppSession({ host: appHost });
   const { watchedAccounts } = useVisibleAccounts();
-  const { triggerAlert } = useAlert();
 
   const selectedChainId = appSession.chainId ?? ChainId.mainnet;
   const selectedWallet = appSession.address;

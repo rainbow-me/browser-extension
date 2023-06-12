@@ -5,11 +5,11 @@ import {
   switchNetworkMenuIsActive,
 } from '../utils/activeElement';
 
-import { useAccounts } from './useAccounts';
+import { useVisibleAccounts } from './useAccounts';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
 
 export function useSwitchWalletShortcuts(disable?: boolean) {
-  const { sortedAccounts } = useAccounts();
+  const { accounts } = useVisibleAccounts();
   const { setCurrentAddress } = useCurrentAddressStore();
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
@@ -17,8 +17,8 @@ export function useSwitchWalletShortcuts(disable?: boolean) {
         const regex = /^[1-9]$/;
         if (regex.test(e.key)) {
           const accountIndex = parseInt(e.key, 10) - 1;
-          if (sortedAccounts[accountIndex]) {
-            setCurrentAddress(sortedAccounts[accountIndex]?.address);
+          if (accounts[accountIndex]) {
+            setCurrentAddress(accounts[accountIndex]?.address);
           }
         }
       }

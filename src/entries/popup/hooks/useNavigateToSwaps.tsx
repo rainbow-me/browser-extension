@@ -3,12 +3,12 @@ import { POPUP_URL, goToNewTab } from '~/core/utils/tabs';
 
 import { ROUTES } from '../urls';
 
-import { useCurrentWalletTypeAndVendor } from './useCurrentWalletType';
+import { useCurrentAccount } from './useAccounts';
 import { useIsFullScreen } from './useIsFullScreen';
 import { useRainbowNavigate } from './useRainbowNavigate';
 
 export const useNavigateToSwaps = () => {
-  const { type } = useCurrentWalletTypeAndVendor();
+  const { type } = useCurrentAccount();
   const isFullScreen = useIsFullScreen();
   const navigate = useRainbowNavigate();
 

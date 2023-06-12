@@ -30,8 +30,9 @@ import {
 } from '~/design-system/styles/designTokens';
 
 import * as wallet from '../../handlers/wallet';
+import { useAccounts } from '../../hooks/useAccounts';
 import { useDebounce } from '../../hooks/useDebounce';
-import { AddressAndType, useWallets } from '../../hooks/useWallets';
+import { AddressAndType } from '../../hooks/useWallets';
 import { AddressOrEns } from '../AddressOrEns/AddressorEns';
 import { Checkbox } from '../Checkbox/Checkbox';
 import { Spinner } from '../Spinner/Spinner';
@@ -187,12 +188,12 @@ const useValidateInput = (input: string) => {
   const inputAddress = addressFromEns || input;
   const address = isAddress(inputAddress) ? inputAddress : undefined;
 
-  const { allWallets } = useWallets();
+  const accounts = useAccounts();
 
   const debouncedInput = useDebounce(input, 1000);
   const shouldValidate = !isLoading && !!input && debouncedInput === input;
   const error =
-    shouldValidate && getError(inputAddress, input, allWallets, savedNames);
+    shouldValidate && getError(inputAddress, input, accounts, savedNames);
   const isValid = shouldValidate && !error;
 
   return {
