@@ -35,6 +35,19 @@ const ACCOUNTS = [
   '0x1e',
 ];
 
+const ACCOUNTS_2 = [
+  '0x101',
+  '0x102',
+  '0x103',
+  '0x104',
+  '0x105',
+  '0x106',
+  '0x107',
+  '0x108',
+  '0x109',
+  '0x10a',
+];
+
 test('[keychain/utils] :: should be able to autodiscover accounts from index', async () => {
   const discoveredAccounts1 = await autoDiscoverAccountsFromIndex({
     initialIndex: 0,
@@ -58,4 +71,11 @@ test('[keychain/utils] :: should be able to autodiscover accounts', async () => 
     deriveWallet: (i) => ({ address: ACCOUNTS[i] }),
   });
   expect(accountsEnabled).toBe(22);
+});
+
+test('[keychain/utils] :: should be able to autodiscover accounts when none have activity', async () => {
+  const { accountsEnabled } = await autoDiscoverAccounts({
+    deriveWallet: (i) => ({ address: ACCOUNTS_2[i] }),
+  });
+  expect(accountsEnabled).toBe(1);
 });
