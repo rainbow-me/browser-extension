@@ -19,7 +19,7 @@ export function RecoveryPhrase() {
     navigate(
       state?.showQuiz
         ? ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_VERIFY
-        : ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS,
+        : -3,
       {
         state: {
           wallet: state?.wallet,
