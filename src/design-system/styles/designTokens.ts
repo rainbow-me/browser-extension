@@ -800,7 +800,6 @@ export const symbolNames = selectSymbolNames(
   'arrow.left',
   'app.badge.checkmark',
   'ellipsis',
-  'exclamationmark.triangle.fill',
   'xmark',
   'checkmark',
   'square.on.square.dashed',

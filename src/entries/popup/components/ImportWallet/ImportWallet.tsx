@@ -14,22 +14,23 @@ import { ROUTES } from '../../urls';
 
 export function ImportWallet({ onboarding }: { onboarding?: boolean }) {
   const navigate = useRainbowNavigate();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
   const navigateTo = useCallback(
     (route: string, options?: NavigateOptions) => {
-      navigate(route, options);
+      navigate(route + (onboarding ? '?onboarding=true' : ''), options);
     },
-    [navigate],
+    [navigate, onboarding],
   );
 
   const onImportWalletViaSeed = useCallback(
-    () => navigateTo(ROUTES.IMPORT__SEED, { state: { onboarding } }),
-    [navigateTo, onboarding],
+    () => navigateTo(ROUTES.IMPORT__SEED),
+    [navigateTo],
   );
 
   const onImportWalletViaPrivateKey = useCallback(
-    () => navigateTo(ROUTES.IMPORT__PRIVATE_KEY, { state: { onboarding } }),
-    [navigateTo, onboarding],
+    () => navigateTo(ROUTES.IMPORT__PRIVATE_KEY),
+    [navigateTo],
   );
 
   useEffect(() => {

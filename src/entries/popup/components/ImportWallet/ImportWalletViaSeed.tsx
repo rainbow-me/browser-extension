@@ -1,15 +1,11 @@
-import { isAddress } from '@ethersproject/address';
+/* eslint-disable no-nested-ternary */
 import { isValidMnemonic } from '@ethersproject/hdnode';
 import { wordlists } from 'ethers';
 import { motion } from 'framer-motion';
-import { startsWith } from 'lodash';
 import React, { KeyboardEvent, useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
-import { useCurrentAddressStore } from '~/core/state';
-import { addHexPrefix, isValidPrivateKey } from '~/core/utils/ethereum';
 import {
   Box,
   Button,
@@ -23,10 +19,7 @@ import {
   Text,
   textStyles,
 } from '~/design-system';
-import {
-  accentSelectionStyle,
-  placeholderStyle,
-} from '~/design-system/components/Input/Input.css';
+import { accentSelectionStyle } from '~/design-system/components/Input/Input.css';
 import {
   transformScales,
   transitions,
@@ -37,21 +30,8 @@ import {
   removeImportWalletSecrets,
   setImportWalletSecrets,
 } from '../../handlers/importWalletSecrets';
-import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
-
-const validateSecret = (secret: string) => {
-  // check if it's a private key
-  const trimmedSecret = secret.trimEnd().trimStart().toLowerCase();
-  if (trimmedSecret.split(' ').length === 1) {
-    const secretToValidate = startsWith(trimmedSecret, '0x')
-      ? trimmedSecret
-      : addHexPrefix(trimmedSecret);
-    return isValidPrivateKey(secretToValidate);
-  }
-  return isValidMnemonic(secret.trimEnd().trimStart());
-};
 
 const getEvenWordIndex = (index: number) => {
   return index * 2 + 2;
@@ -70,6 +50,7 @@ const WordInput = ({
   wordError,
   globalError,
   onBlur,
+  onPaste,
 }: {
   index: number;
   visibleInput: number | null;
@@ -83,6 +64,7 @@ const WordInput = ({
   wordError: boolean;
   globalError: boolean;
   onBlur: () => void;
+  onPaste: (e: React.ClipboardEvent<HTMLInputElement>) => void;
 }) => {
   return (
     <Box
@@ -129,6 +111,7 @@ const WordInput = ({
         tabIndex={index}
         autoFocus={index - 1 === 0}
         onBlur={onBlur}
+        onPaste={onPaste}
         onChange={(e) => handleSeedChange(e, index - 1)}
         style={{
           height: '32px',
@@ -171,6 +154,7 @@ const ImportWalletViaSeed = () => {
   const navigate = useRainbowNavigate();
   const location = useLocation();
   const [isValid, setIsValid] = useState(false);
+  const [globalError, setGlobalError] = useState(false);
   const [invalidWords, setInvalidWords] = useState<number[]>([]);
   const [visibleInput, setVisibleInput] = useState<number | null>(null);
   const [secrets, setSecrets] = useState<string[]>(
@@ -196,71 +180,39 @@ const ImportWalletViaSeed = () => {
     [visibleInput],
   );
 
-  const [validity, setValidity] = useState<
-    { valid: boolean; too_long: boolean; type: string | undefined }[]
-  >([]);
-
-  //   const updateValidity = useCallback((newSecrets: string[]) => {
-  //     const newValidity = newSecrets.map((secret) => {
-  //       let too_long = false;
-  //       let type = undefined;
-  //       const valid = validateSecret(secret);
-  //       if (!valid) {
-  //         if (startsWith(secret.toLowerCase(), '0x')) {
-  //           type = 'pkey';
-  //           if (addHexPrefix(secret).length > 66) {
-  //             too_long = true;
-  //           }
-  //         } else {
-  //           if (secret.split(' ').length > 12) {
-  //             too_long = true;
-  //             type = 'seed';
-  //           }
-  //         }
-  //       }
-  //       return {
-  //         valid,
-  //         too_long,
-  //         type,
-  //       };
-  //     });
-  //     if (newValidity.filter((word) => !word.valid).length === 0) {
-  //       setIsValid(true);
-  //     } else {
-  //       setIsValid(false);
-  //     }
-  //     setValidity(newValidity);
-  //   }, []);
-
-  //   useEffect(() => {
-  //     const getSecrets = async () => {
-  //       const secrets = await getImportWalletSecrets();
-  //       setSecrets(secrets);
-  //       updateValidity(secrets);
-  //     };
-  //     if (
-  //       location?.state?.from === ROUTES.NEW_IMPORT_WALLET_SELECTION ||
-  //       location?.state?.from === ROUTES.IMPORT__SELECT
-  //     ) {
-  //       getSecrets();
-  //     } else {
-  //       removeImportWalletSecrets();
-  //     }
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, []);
+  useEffect(() => {
+    const getSecrets = async () => {
+      const secrets = await getImportWalletSecrets();
+      setSecrets(secrets);
+    };
+    if (
+      location?.state?.from === ROUTES.NEW_IMPORT_WALLET_SELECTION ||
+      location?.state?.from === ROUTES.IMPORT__SELECT
+    ) {
+      getSecrets();
+    } else {
+      removeImportWalletSecrets();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSeedChange = useCallback(
     (e: { target: { value: string } }, index: number) => {
       const newSecrets = [...secrets] as string[];
       newSecrets[index] = e.target.value;
-      // updateValidity(newSecrets);
       setSecrets(newSecrets);
       setImportWalletSecrets(newSecrets);
     },
     [secrets],
   );
 
-  const handleImportWallet = useCallback(async () => {}, []);
+  const handleImportWallet = useCallback(async () => {
+    return navigate(
+      document.location.href.search('onboarding') !== -1
+        ? ROUTES.IMPORT__SELECT
+        : ROUTES.NEW_IMPORT_WALLET_SELECTION,
+    );
+  }, [navigate]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -273,20 +225,46 @@ const ImportWalletViaSeed = () => {
 
   const isValidWord = (word: string) => wordlists['en'].getWordIndex(word) > -1;
 
-  const onBlur = useCallback(
+  const handleBlur = useCallback(
     (index: number) => {
       if (secrets[index] !== '' && !isValidWord(secrets[index])) {
-        console.log('invalid word', secrets[index]);
         setInvalidWords([...invalidWords, index]);
       } else {
-        console.log('valid word', secrets[index]);
         setInvalidWords(invalidWords.filter((i) => i !== index));
       }
     },
     [invalidWords, secrets],
   );
 
-  console.log('invalid words', invalidWords);
+  const handlePaste = useCallback((e: React.ClipboardEvent) => {
+    const dataToBePasted = e.clipboardData.getData('text');
+    e.preventDefault();
+    const words = dataToBePasted.split(' ');
+    if (words.length === 12 || words.length === 24) {
+      setSecrets(words);
+    } else {
+      setGlobalError(true);
+      setSecrets(Array.from({ length: 12 }).map(() => ''));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (secrets.filter((word) => !!word).length > 0 && globalError) {
+      setGlobalError(false);
+    }
+  }, [secrets, globalError]);
+
+  useEffect(() => {
+    const totalWords = secrets.filter((word) => !!word).length;
+    const wordCountValid = totalWords === 12 || totalWords === 24;
+    const noErrors = !globalError && invalidWords.length === 0;
+    const validSeed = isValidMnemonic(secrets.join(' '));
+    if (noErrors && wordCountValid && validSeed) {
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
+  }, [secrets, invalidWords, globalError]);
 
   return (
     <Box testId="import-wallet-screen" paddingHorizontal="20px">
@@ -316,12 +294,49 @@ const ImportWalletViaSeed = () => {
             height: '360px',
           }}
         >
+          <Box alignItems="center" justifyContent="center" display="flex">
+            <Box
+              style={{
+                width: '100%',
+                position: 'absolute',
+                marginTop: '-18px',
+                marginBottom: '8px',
+              }}
+            >
+              {(invalidWords.length > 0 || globalError) && (
+                <Inline
+                  alignHorizontal="center"
+                  alignVertical="center"
+                  space="12px"
+                >
+                  <Symbol
+                    size={16}
+                    color="red"
+                    symbol="exclamationmark.triangle.fill"
+                    weight="regular"
+                  />
+                  <Text color="red" weight="regular" size="12pt">
+                    {globalError
+                      ? i18n.t('import_wallet_via_seed.couldnt_paste')
+                      : invalidWords.length === 1
+                      ? i18n.t('import_wallet_via_seed.1_word_might_be_wrong')
+                      : i18n.t(
+                          'import_wallet_via_seed.n_words_might_be_wrong',
+                          {
+                            n: invalidWords.length,
+                          },
+                        )}
+                  </Text>
+                </Inline>
+              )}
+            </Box>
+          </Box>
           <Box
             width="full"
             style={{
               overflow: 'auto',
               height: secrets.length === 12 ? '320px' : '340px',
-              transition: 'height 1s',
+              transition: 'height .5s',
             }}
           >
             <Stack space="10px">
@@ -347,11 +362,12 @@ const ImportWalletViaSeed = () => {
                             visibleInput={visibleInput}
                             toggleInputVisibility={toggleInputVisibility}
                             key={`seed_${i}`}
-                            onBlur={() => onBlur(getOddWordIndex(i) - 1)}
+                            onBlur={() => handleBlur(getOddWordIndex(i) - 1)}
                             wordError={invalidWords.includes(
                               getOddWordIndex(i) - 1,
                             )}
-                            globalError={false}
+                            globalError={globalError}
+                            onPaste={handlePaste}
                           />
                         ))}
                     </Box>
@@ -380,11 +396,12 @@ const ImportWalletViaSeed = () => {
                             visibleInput={visibleInput}
                             toggleInputVisibility={toggleInputVisibility}
                             key={`seed_${i}`}
-                            onBlur={() => onBlur(getEvenWordIndex(i) - 1)}
+                            onBlur={() => handleBlur(getEvenWordIndex(i) - 1)}
                             wordError={invalidWords.includes(
                               getEvenWordIndex(i) - 1,
                             )}
-                            globalError={false}
+                            globalError={globalError}
+                            onPaste={handlePaste}
                           />
                         ))}
                     </Box>
