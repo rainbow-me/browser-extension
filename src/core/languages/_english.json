@@ -455,9 +455,11 @@
   },
   "import_wallet_selection": {
     "title": "Your wallets",
-    "description_plural": "Rainbow detected %{count} wallets that have been used recently. You can edit or add more at any time.",
-    "description_singular": "Rainbow detected 1 wallet that have been used recently. You can add more at any time.",
-    "description_empty": "Rainbow detected 1 wallet. You can add more at any time.",
+    "description": {
+      "zero": "Rainbow detected 1 wallet. You can add more at any time.",
+      "one": "Rainbow detected 1 wallet that have been used recently. You can add more at any time.",
+      "other": "Rainbow detected %{count} wallets that have been used recently. You can edit or add more at any time."
+    },
     "add_wallets": "Add wallets",
     "edit_wallets": "Edit wallets",
     "loading": "Hold tight while we look up all your wallets...",
@@ -486,15 +488,29 @@
     "add_another": "Add another",
     "remove": "Remove",
     "placeholder": "Paste your Secret Recovery Phrase or a Private Key from another wallet",
-    "import_wallet": "Restore wallet",
-    "import_wallet_plural": "Restore wallets"
+    "invalid_word": "Invalid word: %{word}",
+    "invalid_private_key": "Invalid Private Key",
+    "invalid_recovery_phrase": "Invalid recovery phrase",
+    "missing_words": {
+      "one": "Missing 1 word",
+      "other": "Missing %{count} words"
+    },
+    "import_wallet": {
+      "one": "Restore wallet",
+      "other": "Restore wallets"
+    }
   },
   "edit_import_wallet_selection": {
     "title": "All wallets",
-    "add_n_wallets": "Add %{count} wallets",
-    "add_wallet": "Add wallet",
-    "importing_your_wallet": "Importing your wallet...",
-    "importing_your_wallets": "Importing your wallets...",
+    "add_wallet": {
+      "zero": "Select a wallet",
+      "one": "Add wallet",
+      "other": "Add %{count} wallets"
+    },
+    "importing_your_wallet": {
+      "one": "Importing your wallet...",
+      "other": "Importing your wallets..."
+    },
     "sort": {
       "title": "Sort",
       "default": "Default",
