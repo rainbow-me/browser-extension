@@ -5,6 +5,8 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
   delayTime,
+  fillPrivateKey,
+  fillSeedPhrase,
   findElementByIdAndClick,
   findElementByTestId,
   findElementByTestIdAndClick,
@@ -106,11 +108,7 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
     });
 
-    await typeOnTextInput({
-      id: 'secret-text-area-0',
-      driver,
-      text: TEST_VARIABLES.EMPTY_WALLET.SECRET,
-    });
+    await fillSeedPhrase(driver, TEST_VARIABLES.EMPTY_WALLET.SECRET);
 
     await findElementByTestIdAndClick({
       id: 'import-wallets-button',
@@ -188,11 +186,13 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
     });
 
-    await typeOnTextInput({
-      id: 'secret-text-area-0',
+    await findElementByTestIdAndClick({
+      id: 'import-via-pkey-option',
       driver,
-      text: TEST_VARIABLES.PRIVATE_KEY_WALLET.SECRET,
     });
+
+    await fillPrivateKey(driver, TEST_VARIABLES.PRIVATE_KEY_WALLET.SECRET);
+
     await findElementByTestIdAndClick({
       id: 'import-wallets-button',
       driver,

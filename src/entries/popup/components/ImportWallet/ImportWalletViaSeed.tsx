@@ -112,7 +112,7 @@ const WordInput = ({
         width="full"
         padding="12px"
         value={value}
-        testId={`secret-text-area-${index}`}
+        testId={`secret-input-${index}`}
         onKeyDown={handleKeyDown}
         tabIndex={index}
         autoFocus={index - 1 === 0}
@@ -169,6 +169,7 @@ const secretsReducer = (
 const ImportWalletViaSeed = () => {
   const navigate = useRainbowNavigate();
   const location = useLocation();
+  const onboarding = document.location.href.search('onboarding') !== -1;
   const [isValid, setIsValid] = useState(false);
   const [globalError, setGlobalError] = useState(false);
   const [invalidWords, setInvalidWords] = useState<number[]>([]);
@@ -225,11 +226,9 @@ const ImportWalletViaSeed = () => {
 
   const handleImportWallet = useCallback(async () => {
     return navigate(
-      document.location.href.search('onboarding') !== -1
-        ? ROUTES.IMPORT__SELECT
-        : ROUTES.NEW_IMPORT_WALLET_SELECTION,
+      onboarding ? ROUTES.IMPORT__SELECT : ROUTES.NEW_IMPORT_WALLET_SELECTION,
     );
-  }, [navigate]);
+  }, [navigate, onboarding]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {

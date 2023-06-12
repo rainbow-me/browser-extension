@@ -39,7 +39,7 @@ import { ROUTES } from '../../urls';
 const ImportWalletViaPrivateKey = () => {
   const navigate = useRainbowNavigate();
   const location = useLocation();
-  const onboarding = location?.state?.onboarding;
+  const onboarding = document.location.href.search('onboarding') !== -1;
   const [isValid, setIsValid] = useState(false);
   const [isAddingWallets, setIsAddingWallets] = useState(false);
   const [secrets, setSecrets] = useState<string[]>(['']);
@@ -171,71 +171,69 @@ const ImportWalletViaPrivateKey = () => {
           }}
         >
           <Stack space="10px">
-            {secrets.map((_, i) => (
+            <Box
+              as={motion.div}
+              whileTap={{ scale: transformScales['0.96'] }}
+              transition={transitions.bounce}
+              height="full"
+              width="full"
+              key={`seed_0`}
+              position="relative"
+            >
               <Box
-                as={motion.div}
-                whileTap={{ scale: transformScales['0.96'] }}
-                transition={transitions.bounce}
-                height="full"
+                as="input"
+                type="password"
+                background="surfaceSecondaryElevated"
+                borderRadius="12px"
+                borderWidth="1px"
+                borderColor={{
+                  default: 'buttonStroke',
+                  focus: 'accent',
+                }}
                 width="full"
-                key={`seed_${i}`}
-                position="relative"
-              >
-                <Box
-                  as="input"
-                  type="password"
-                  background="surfaceSecondaryElevated"
-                  borderRadius="12px"
-                  borderWidth="1px"
-                  borderColor={{
-                    default: 'buttonStroke',
-                    focus: 'accent',
-                  }}
-                  width="full"
-                  padding="12px"
-                  placeholder={i18n.t(
-                    'import_wallet_via_private_key.placeholder',
-                  )}
-                  value={secrets[i]}
-                  testId={`secret-text-area-${i}`}
-                  onKeyDown={handleKeyDown}
-                  tabIndex={1}
-                  autoFocus
-                  onChange={(e) => handleSecretChange(e, i)}
-                  className={[
-                    placeholderStyle,
-                    textStyles({
-                      color: 'label',
-                      fontSize: '14pt',
-                      fontWeight: 'regular',
-                      fontFamily: 'rounded',
-                    }),
-                    accentSelectionStyle,
-                  ]}
-                  style={{
-                    height: '48px',
-                    resize: 'none',
-                  }}
-                />
-                {validity[i]?.valid === false && validity[i]?.too_long && (
-                  <Box position="absolute" marginTop="-24px" paddingLeft="12px">
-                    <Inline space="4px" alignVertical="center">
-                      <Symbol
-                        symbol={'exclamationmark.triangle.fill'}
-                        size={11}
-                        color={'orange'}
-                        weight={'bold'}
-                      />
-                      <Text size="11pt" weight="regular" color={'orange'}>
-                        {validity[i].type === 'pkey'
-                          ? i18n.t('import_wallet.too_many_chars')
-                          : i18n.t('import_wallet.too_many_words')}
-                      </Text>
-                    </Inline>
-                  </Box>
+                padding="12px"
+                placeholder={i18n.t(
+                  'import_wallet_via_private_key.placeholder',
                 )}
-              </Box>
-            ))}
+                value={secrets[0]}
+                testId={`private-key-input`}
+                onKeyDown={handleKeyDown}
+                tabIndex={1}
+                autoFocus
+                onChange={(e) => handleSecretChange(e, 0)}
+                className={[
+                  placeholderStyle,
+                  textStyles({
+                    color: 'label',
+                    fontSize: '14pt',
+                    fontWeight: 'regular',
+                    fontFamily: 'rounded',
+                  }),
+                  accentSelectionStyle,
+                ]}
+                style={{
+                  height: '48px',
+                  resize: 'none',
+                }}
+              />
+              {validity[0]?.valid === false && validity[0]?.too_long && (
+                <Box position="absolute" marginTop="-24px" paddingLeft="12px">
+                  <Inline space="4px" alignVertical="center">
+                    <Symbol
+                      symbol={'exclamationmark.triangle.fill'}
+                      size={11}
+                      color={'orange'}
+                      weight={'bold'}
+                    />
+                    <Text size="11pt" weight="regular" color={'orange'}>
+                      {validity[0].type === 'pkey'
+                        ? i18n.t('import_wallet.too_many_chars')
+                        : i18n.t('import_wallet.too_many_words')}
+                    </Text>
+                  </Inline>
+                </Box>
+              )}
+            </Box>
           </Stack>
         </Box>
       </Stack>

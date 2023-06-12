@@ -75,7 +75,7 @@ export function ImportWallet({ onboarding }: { onboarding?: boolean }) {
                 subtitle={i18n.t('import_wallet_via_secret.seed_phrase_desc')}
                 symbol="ellipsis.rectangle"
                 symbolColor="pink"
-                testId="import-wallet-option"
+                testId="import-via-seed-option"
               />
             </Lens>
 
@@ -92,7 +92,7 @@ export function ImportWallet({ onboarding }: { onboarding?: boolean }) {
                 subtitle={i18n.t('import_wallet_via_secret.private_key_desc')}
                 symbol="key.fill"
                 symbolColor="orange"
-                testId="connect-wallet-option"
+                testId="import-via-pkey-option"
               />
             </Lens>
           </OnboardMenu>
