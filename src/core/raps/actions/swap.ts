@@ -20,7 +20,7 @@ import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { isLowerCaseMatch } from '~/core/utils/strings';
 import { isUnwrapEth, isWrapEth } from '~/core/utils/swaps';
 import { addNewTransaction } from '~/core/utils/transactions';
-import { logger } from '~/logger';
+import { RainbowError, logger } from '~/logger';
 
 import { gasUnits } from '../../references';
 import { gasStore } from '../../state';
@@ -216,17 +216,16 @@ export const swap = async ({
       quote,
     });
   } catch (e) {
-    logger.error({
-      name: 'swap: error estimateSwapGasLimit',
-      message: (e as Error).message,
+    logger.error(new RainbowError('swap: error estimateSwapGasLimit'), {
+      message: (e as Error)?.message,
     });
+
     throw e;
   }
 
   let swap;
   try {
     const nonce = baseNonce ? baseNonce + index : undefined;
-
     const swapParams = {
       gasParams,
       chainId,
@@ -238,9 +237,8 @@ export const swap = async ({
     };
     swap = await executeSwap(swapParams);
   } catch (e) {
-    logger.error({
-      name: 'swap: error executeSwap',
-      message: (e as Error).message,
+    logger.error(new RainbowError('swap: error executeSwap'), {
+      message: (e as Error)?.message,
     });
     throw e;
   }

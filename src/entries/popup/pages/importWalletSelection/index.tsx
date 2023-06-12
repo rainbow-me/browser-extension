@@ -1,12 +1,16 @@
 import React from 'react';
 
 import { FullScreenContainer } from '../../components/FullScreen/FullScreenContainer';
+import { ImportWalletNavbar } from '../../components/ImportWallet/ImportWalletNavbar';
 import { ImportWalletSelection as ImportWalletSelectionStep } from '../../components/ImportWallet/ImportWalletSelection';
 
 export function ImportWalletSelection() {
   return (
-    <FullScreenContainer>
-      <ImportWalletSelectionStep onboarding />
-    </FullScreenContainer>
+    <>
+      <ImportWalletNavbar showSortMenu={false} navbarIcon="arrow" />
+      <FullScreenContainer>
+        <ImportWalletSelectionStep onboarding />
+      </FullScreenContainer>
+    </>
   );
 }

@@ -1,15 +1,8 @@
 import { fetchEnsAddress } from '@wagmi/core';
-import React, {
-  Fragment,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { Address, useAccount, useEnsName } from 'wagmi';
 
 import { useCurrentAddressStore } from '~/core/state';
-import { KeychainWallet } from '~/core/types/keychainTypes';
 import { WalletAction } from '~/core/types/walletActions';
 import { EthereumWalletSeed, isENSAddressFormat } from '~/core/utils/ethereum';
 import { Box, Separator, Text } from '~/design-system';
@@ -18,179 +11,6 @@ import * as wallet from '../../handlers/wallet';
 
 const shortAddress = (address: string) => {
   return `${address?.substring(0, 6)}...${address?.substring(38, 42)}`;
-};
-
-const ImportAccountAtIndex = ({
-  onAccountImportedAtIndex,
-}: {
-  onAccountImportedAtIndex: (address: Address) => void;
-}) => {
-  const [silbingAddress, setSilbingAddress] = useState<Address | ''>('');
-  const [keychainWallets, setKeychainWallets] = useState<KeychainWallet[]>();
-  const [index, setIndex] = useState<number>(0);
-  const [type, setType] = useState<string>('');
-
-  useEffect(() => {
-    const init = async () => {
-      const keychainWallets = await wallet.getWallets();
-      setKeychainWallets(keychainWallets);
-    };
-    init();
-  }, []);
-
-  const handleWalletChange = useCallback(
-    ({ target }: { target: HTMLSelectElement }) => {
-      const val = target.value;
-      const [type, address] = val.split('|');
-      setSilbingAddress(address as Address);
-      setType(type);
-    },
-    [],
-  );
-
-  const onImportAccountAtIndex = useCallback(async () => {
-    const res = await wallet.importAccountAtIndex(
-      silbingAddress as unknown as Address,
-      type,
-      index,
-    );
-    if (res) {
-      onAccountImportedAtIndex(res as Address);
-    }
-  }, [index, onAccountImportedAtIndex, silbingAddress, type]);
-
-  const selectOptions = useMemo(() => {
-    return (
-      keychainWallets
-        ?.filter((wallet) => wallet.type === 'HardwareWalletKeychain')
-        .map((wallet) => {
-          return {
-            label: `${wallet.vendor || wallet.type} (${wallet.accounts[0]})`,
-            value: `${wallet.vendor || wallet.type}|${wallet.accounts[0]}`,
-          };
-        }) || []
-    );
-  }, [keychainWallets]);
-
-  // set the first option as default
-  useEffect(() => {
-    if (selectOptions.length > 0 && !silbingAddress) {
-      setSilbingAddress(selectOptions[0].value.split('|')[1] as Address);
-      setType(selectOptions[0].value.split('|')[0]);
-    }
-  }, [selectOptions, silbingAddress]);
-
-  if (selectOptions.length === 0) {
-    return null;
-  }
-
-  return (
-    <>
-      <Separator />
-      <Text as="h1" size="16pt" weight="bold" align="center">
-        Import account at index
-      </Text>
-      <Text as="p" size="12pt" weight="bold" align="left">
-        Select the wallet you want to import from
-      </Text>
-      <select value={silbingAddress} onChange={handleWalletChange}>
-        {selectOptions.map((wallet, i) => (
-          <option key={`w_${i}`} value={wallet.value}>
-            {wallet.label}
-          </option>
-        ))}
-      </select>
-      <Text as="p" size="12pt" weight="bold" align="left">
-        Enter the account index to import
-      </Text>
-      <input
-        type="number"
-        value={index}
-        onChange={({ target }: { target: HTMLInputElement }) =>
-          setIndex(Number(target.value))
-        }
-        onFocus={(e) => e.target.select()}
-      />
-      <Box
-        as="button"
-        background="accent"
-        boxShadow="24px accent"
-        onClick={onImportAccountAtIndex}
-        padding="16px"
-        style={{ borderRadius: 999 }}
-      >
-        <Text color="label" size="14pt" weight="bold">
-          Import
-        </Text>
-      </Box>
-    </>
-  );
-};
-
-const Trezor = ({
-  onTrezorConnected,
-}: {
-  onTrezorConnected: (address: Address) => void;
-}) => {
-  const onTrezorConnect = async () => {
-    const res = await wallet.connectTrezor();
-    if (res) {
-      onTrezorConnected(res as Address);
-    }
-  };
-
-  return (
-    <>
-      <Text as="h1" size="16pt" weight="bold" align="center">
-        Trezor
-      </Text>
-      <Box
-        as="button"
-        background="accent"
-        boxShadow="24px accent"
-        onClick={onTrezorConnect}
-        padding="16px"
-        style={{ borderRadius: 999 }}
-      >
-        <Text color="label" size="14pt" weight="bold">
-          Connect
-        </Text>
-      </Box>
-    </>
-  );
-};
-
-const Ledger = ({
-  onLedgerConnected,
-}: {
-  onLedgerConnected: (address: Address) => void;
-}) => {
-  const onLedgerConnect = async () => {
-    const res = await wallet.connectLedger();
-    if (res) {
-      onLedgerConnected(res as Address);
-    }
-  };
-
-  return (
-    <>
-      <Text as="h1" size="16pt" weight="bold" align="center">
-        Ledger
-      </Text>
-      <Box
-        as="button"
-        background="accent"
-        boxShadow="24px accent"
-        onClick={onLedgerConnect}
-        padding="16px"
-        style={{ borderRadius: 999 }}
-      >
-        <Text color="label" size="14pt" weight="bold">
-          Connect
-        </Text>
-      </Box>
-    </>
-  );
 };
 
 function PasswordForm({
@@ -500,19 +320,6 @@ export function Wallets() {
     [updateState],
   );
 
-  const onLedgerConnected = async (address: Address) => {
-    setCurrentAddress(address);
-    await updateState();
-  };
-  const onTrezorConnected = async (address: Address) => {
-    setCurrentAddress(address);
-    await updateState();
-  };
-  const onAccountImportedAtIndex = async (address: Address) => {
-    setCurrentAddress(address);
-    await updateState();
-  };
-
   const handleSecretChange = useCallback(
     (event: { target: { value: React.SetStateAction<string> } }) => {
       setSecret(event?.target?.value);
@@ -620,12 +427,6 @@ export function Wallets() {
           {isUnlocked && <Wipe onWipe={wipe} />}
 
           <Separator />
-          <Ledger onLedgerConnected={onLedgerConnected} />
-          <Separator />
-          <Trezor onTrezorConnected={onTrezorConnected} />
-          <ImportAccountAtIndex
-            onAccountImportedAtIndex={onAccountImportedAtIndex}
-          />
         </Fragment>
       ) : (
         <PasswordForm

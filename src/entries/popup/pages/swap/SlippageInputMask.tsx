@@ -40,10 +40,6 @@ export const SlippageInputMask = ({
     inputRef?.current?.focus();
   }, [inputRef]);
 
-  const onFocus = useCallback(() => {
-    setIsFocused(true);
-  }, []);
-
   const onBlur = useCallback(() => {
     setIsFocused(false);
   }, []);
@@ -82,7 +78,6 @@ export const SlippageInputMask = ({
 
       <Box backdropFilter="opacity(0%)">
         <Input
-          onFocus={onFocus}
           onBlur={onBlur}
           value={`${value}`}
           placeholder={'0'}

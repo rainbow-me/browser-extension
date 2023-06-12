@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import React, { CSSProperties, RefObject, useCallback, useMemo } from 'react';
 
+import { POPUP_DIMENSIONS } from '~/core/utils/dimensions';
 import { Box, Inline, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
@@ -12,8 +13,6 @@ import {
 
 import { InputHeight } from '../../../../../design-system/components/Input/Input.css';
 import { maskInput } from '../utils';
-
-const { innerWidth: windowWidth } = window;
 
 export const SendInputMask = ({
   borderColor,
@@ -74,7 +73,10 @@ export const SendInputMask = ({
         opacity="0.04"
         borderRadius="14px"
         width="full"
-        style={{ height: 56, width: windowWidth - 64 }}
+        style={{
+          height: 56,
+          width: POPUP_DIMENSIONS.width - 64,
+        }}
       />
 
       {value ? (
@@ -83,9 +85,8 @@ export const SendInputMask = ({
             <Inline alignVertical="center">
               <Box
                 style={{
-                  maxWidth: value
-                    ? windowWidth - 210 - symbolPadding
-                    : windowWidth,
+                  maxWidth:
+                    POPUP_DIMENSIONS.width - (value ? 200 + symbolPadding : 0),
                   marginLeft: 17,
                   marginRight: 4,
                   marginTop: 1,
@@ -121,11 +122,12 @@ export const SendInputMask = ({
           variant={variant}
           innerRef={innerRef}
           style={{
-            paddingRight: value ? 125 + symbolPadding : 0,
+            paddingRight: value ? 118 + symbolPadding : 0,
             caretColor: accentColorAsHsl,
           }}
           enableTapScale={false}
           testId="send-input-mask"
+          tabIndex={0}
         />
       </Box>
     </Box>

@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { motion } from 'framer-motion';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   DragDropContext,
   Draggable,
@@ -12,7 +12,9 @@ import {
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
+import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { useHiddenWalletsStore } from '~/core/state/hiddenWallets';
 import { useWalletNamesStore } from '~/core/state/walletNames';
 import { saveWalletOrder } from '~/core/state/walletOrder';
@@ -36,7 +38,6 @@ import AccountItem, {
 } from '../../components/AccountItem/AccountItem';
 import { LabelPill } from '../../components/LabelPill/LabelPill';
 import { Link } from '../../components/Link/Link';
-import { MenuContainer } from '../../components/Menu/MenuContainer';
 import {
   MoreInfoButton,
   MoreInfoOption,
@@ -46,11 +47,12 @@ import { triggerToast } from '../../components/Toast/Toast';
 import { getWallet, remove, wipe } from '../../handlers/wallet';
 import { Account, useVisibleAccounts } from '../../hooks/useAccounts';
 import { useAvatar } from '../../hooks/useAvatar';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { AddressAndType, refetchWallets } from '../../hooks/useWallets';
 import { ROUTES } from '../../urls';
 
-import { WalletActionsMenu } from './WalletSwitcher.css';
 import { RemoveWalletPrompt } from './removeWalletPrompt';
 import { RenameWalletPrompt } from './renameWalletPrompt';
 
@@ -139,9 +141,6 @@ const infoButtonOptions = ({
   return isLastWallet ? options : options.concat(removeOption);
 };
 
-const bottomSpacing = 150 + (process.env.IS_DEV === 'true' ? 40 : 0);
-const topSpacing = 127;
-
 const NoWalletsWarning = ({
   symbol,
   text,
@@ -189,15 +188,20 @@ export function WalletSwitcher() {
   const navigate = useRainbowNavigate();
   const { accounts } = useVisibleAccounts();
   const { avatar } = useAvatar({ address: currentAddress });
+  const { featureFlags } = useFeatureFlagsStore();
 
   const isLastWallet = accounts?.length === 1;
 
   const { deleteWalletName } = useWalletNamesStore();
 
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
   const handleSelectAddress = useCallback(
     (address: Address) => {
       setCurrentAddress(address);
-      navigate(ROUTES.HOME);
+      navigate(ROUTES.HOME, {
+        state: { isBack: true },
+      });
     },
     [navigate, setCurrentAddress],
   );
@@ -263,29 +267,33 @@ export function WalletSwitcher() {
           index={index}
           isDragDisabled={isSearching}
         >
-          {(provided, snapshot) => (
+          {({ innerRef, draggableProps, dragHandleProps }, { isDragging }) => (
             <Box
-              ref={provided.innerRef}
-              {...provided.draggableProps}
-              {...provided.dragHandleProps}
-              style={getItemStyle(
-                snapshot.isDragging,
-                provided.draggableProps.style,
-              )}
-              background={snapshot.isDragging ? 'surfaceSecondary' : undefined}
+              ref={innerRef}
+              {...draggableProps}
+              {...dragHandleProps}
+              style={getItemStyle(isDragging, draggableProps.style)}
+              background={isDragging ? 'surfaceSecondary' : undefined}
               borderRadius="12px"
+              tabIndex={-1}
             >
               <AccountItem
                 rowHighlight
                 key={account.address}
-                onClick={() => {
-                  handleSelectAddress(account.address);
-                }}
+                onClick={() => handleSelectAddress(account.address)}
                 account={account.address}
                 rightComponent={
                   <Inline alignVertical="center" space="6px">
                     {account.type === KeychainType.ReadOnlyKeychain && (
                       <LabelPill label={i18n.t('wallet_switcher.watching')} />
+                    )}
+                    {account.type === KeychainType.HardwareWalletKeychain && (
+                      <LabelPill
+                        dot
+                        label={i18n.t(
+                          `wallet_switcher.${account.vendor?.toLowerCase()}`,
+                        )}
+                      />
                     )}
                     <MoreInfoButton
                       options={infoButtonOptions({
@@ -330,14 +338,29 @@ export function WalletSwitcher() {
     saveWalletOrder(newOrder.map((a) => a.address));
   };
 
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (
+        e.key === shortcuts.wallet_switcher.SEARCH.key &&
+        document.activeElement !== searchInputRef.current
+      ) {
+        setTimeout(() => searchInputRef.current?.focus(), 0);
+      }
+    },
+  });
+
+  // separate because this is used on other screens
+  useSwitchWalletShortcuts();
+
   return (
-    <Box height="full">
+    <Box
+      style={{ minHeight: 0, height: '100vh' }}
+      display="flex"
+      flexDirection="column"
+    >
       <RenameWalletPrompt
-        show={!!renameAccount}
         account={renameAccount}
-        onClose={() => {
-          setRenameAccount(undefined);
-        }}
+        onClose={() => setRenameAccount(undefined)}
       />
       <RemoveWalletPrompt
         show={!!removeAccount}
@@ -348,16 +371,22 @@ export function WalletSwitcher() {
         onRemoveAccount={handleRemoveAccount}
         hide={removeAccount?.type !== KeychainType.ReadOnlyKeychain}
       />
-      <Box paddingHorizontal="16px" paddingBottom="12px">
+      <Box
+        paddingHorizontal="16px"
+        display="flex"
+        flexDirection="column"
+        gap="12px"
+        paddingBottom="8px"
+      >
         <Input
           height="32px"
           variant="bordered"
           placeholder={i18n.t('wallet_switcher.search_placeholder')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          innerRef={searchInputRef}
+          tabIndex={0}
         />
-      </Box>
-      <Box paddingHorizontal="16px" paddingBottom="8px">
         <QuickPromo
           text={i18n.t('wallet_switcher.quick_promo.text')}
           textBold={i18n.t('wallet_switcher.quick_promo.text_bold')}
@@ -365,98 +394,99 @@ export function WalletSwitcher() {
           promoType="wallet_switcher"
         />
       </Box>
-      <Box style={{ overflow: 'scroll' }} paddingHorizontal="8px">
-        <MenuContainer>
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable">
-              {(provided) => (
-                <Box {...provided.droppableProps} ref={provided.innerRef}>
-                  <Box
-                    width="full"
-                    height="full"
-                    style={{
-                      overflow: 'scroll',
-                      height: windowHeight - bottomSpacing - topSpacing,
-                    }}
-                  >
-                    <Stack>
-                      {displayedAccounts.length !== 0 && (
-                        <Box
-                          as={motion.div}
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          exit={{ opacity: 0 }}
-                        >
-                          {displayedAccountsComponent}
-                        </Box>
-                      )}
-                    </Stack>
-                    {isSearching && displayedAccounts.length === 0 && (
-                      <NoWalletsWarning
-                        symbol="magnifyingglass.circle.fill"
-                        text={i18n.t('wallet_switcher.no_results')}
-                      />
-                    )}
-                  </Box>
-                  {provided.placeholder}
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="droppable">
+          {({ droppableProps, innerRef, placeholder }) => (
+            <Box
+              {...droppableProps}
+              ref={innerRef}
+              style={{ overflowY: 'scroll' }}
+              paddingHorizontal="8px"
+              paddingVertical="4px"
+            >
+              {displayedAccounts.length !== 0 && (
+                <Box
+                  as={motion.div}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 1111,
+                    damping: 50,
+                    mass: 1,
+                  }}
+                  exit={{ opacity: 0 }}
+                >
+                  {displayedAccountsComponent}
                 </Box>
               )}
-            </Droppable>
-          </DragDropContext>
-        </MenuContainer>
-      </Box>
+              {isSearching && displayedAccounts.length === 0 && (
+                <NoWalletsWarning
+                  symbol="magnifyingglass.circle.fill"
+                  text={i18n.t('wallet_switcher.no_results')}
+                />
+              )}
+              {placeholder}
+            </Box>
+          )}
+        </Droppable>
+      </DragDropContext>
       <Box
-        className={WalletActionsMenu}
         width="full"
+        style={{ marginTop: 'auto' }}
         backdropFilter="opacity(5%)"
         padding="20px"
         borderWidth="1px"
         borderColor="separatorTertiary"
         background="surfaceSecondary"
+        display="flex"
+        flexDirection="column"
+        gap="8px"
       >
-        <Stack space="8px">
-          <Link to={ROUTES.ADD_WALLET}>
-            <Button
-              color="blue"
-              variant="flat"
-              symbol="plus.circle.fill"
-              symbolSide="left"
-              height="32px"
-              width="full"
-              borderRadius="9px"
-              testId={'add-wallet-button'}
-            >
-              {i18n.t('wallet_switcher.add_another_wallet')}
-            </Button>
-          </Link>
+        <Link to={ROUTES.ADD_WALLET}>
           <Button
-            onClick={() => alert('Coming soon!')}
-            color="fillSecondary"
+            color="blue"
             variant="flat"
-            symbol="app.connected.to.app.below.fill"
+            symbol="plus.circle.fill"
             symbolSide="left"
             height="32px"
             width="full"
             borderRadius="9px"
+            testId={'add-wallet-button'}
           >
-            {i18n.t('wallet_switcher.connect_hardware_wallet')}
+            {i18n.t('wallet_switcher.add_another_wallet')}
           </Button>
-          {process.env.IS_DEV === 'true' && (
-            <Link to={ROUTES.WALLETS}>
-              <Button
-                color="fillSecondary"
-                variant="flat"
-                symbol="gearshape.fill"
-                symbolSide="left"
-                height="32px"
-                width="full"
-                borderRadius="9px"
-              >
-                Old Wallets UI [DEV]
-              </Button>
-            </Link>
-          )}
-        </Stack>
+        </Link>
+        {featureFlags.hw_wallets_enabled && (
+          <Link to={ROUTES.HW_CHOOSE}>
+            <Button
+              color="fillSecondary"
+              variant="flat"
+              symbol="doc.text.magnifyingglass"
+              symbolSide="left"
+              height="32px"
+              width="full"
+              borderRadius="9px"
+            >
+              {i18n.t('wallet_switcher.connect_hardware_wallet')}
+            </Button>
+          </Link>
+        )}
+        {process.env.IS_DEV === 'true' && (
+          <Link to={ROUTES.WALLETS}>
+            <Button
+              color="fillSecondary"
+              variant="flat"
+              symbol="gearshape.fill"
+              symbolSide="left"
+              height="32px"
+              width="full"
+              borderRadius="9px"
+            >
+              Old Wallets UI [DEV]
+            </Button>
+          </Link>
+        )}
       </Box>
     </Box>
   );

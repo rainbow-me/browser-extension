@@ -5,9 +5,11 @@ import config from '~/core/firebase/remoteConfig';
 import { i18n } from '~/core/languages';
 import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ParsedSearchAsset } from '~/core/types/assets';
 import { ChainId } from '~/core/types/chains';
+import { handleAssetAccentColor } from '~/core/utils/colors';
 import { getQuoteServiceTime } from '~/core/utils/swaps';
 import {
   Box,
@@ -19,6 +21,7 @@ import {
   Stack,
   Symbol,
   Text,
+  TextOverflow,
 } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 import { ButtonOverflow } from '~/design-system/components/Button/ButtonOverflow';
@@ -132,9 +135,9 @@ const SwapWarning = ({
               background="fillSecondary"
               style={{ width: '14px', height: '2px' }}
             />
-            <Text color={warningColor} size="14pt" weight="semibold">
+            <TextOverflow color={warningColor} size="14pt" weight="semibold">
               {warningDescription}
-            </Text>
+            </TextOverflow>
           </Inline>
         </Box>
       </Box>
@@ -155,6 +158,7 @@ export function Swap() {
   const { selectedGas, clearCustomGasModified } = useGasStore();
 
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
+  const { currentTheme } = useCurrentThemeStore();
 
   const showSwapReviewSheet = useCallback(() => {
     setShowSwapReview(true);
@@ -208,7 +212,6 @@ export function Swap() {
     assetToSellMaxValue,
     assetToBuyValue,
     assetToSellValue,
-    assetToBuyDisplay,
     assetToSellDisplay,
     assetToSellDropdownClosed,
     assetToBuyDropdownClosed,
@@ -233,6 +236,7 @@ export function Swap() {
     data: quote,
     isLoading,
     isCrosschainSwap,
+    isWrapOrUnwrapEth,
   } = useSwapQuote({
     assetToSell,
     assetToBuy,
@@ -246,6 +250,7 @@ export function Swap() {
   const { priceImpact } = useSwapPriceImpact({
     assetToBuy,
     assetToSell,
+    isWrapOrUnwrapEth,
     quote: (quote as QuoteError)?.error
       ? undefined
       : (quote as Quote | CrosschainQuote),
@@ -266,6 +271,7 @@ export function Swap() {
     buttonColor,
     timeEstimate,
     buttonAction,
+    status,
   } = useSwapActions({
     quote,
     isLoading,
@@ -330,29 +336,20 @@ export function Swap() {
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.swap.FLIP_ASSETS.key) {
-        const activeElement = document.activeElement;
-        const focusingAssetToSell =
-          activeElement === assetToSellInputRef.current;
-        const focusingAssetToBuy = activeElement === assetToBuyInputRef.current;
-        const focusNewInput = () => {
-          setTimeout(() => {
-            if (focusingAssetToSell) {
-              assetToBuyInputRef.current?.focus();
-            } else if (focusingAssetToBuy) {
-              assetToSellInputRef.current?.focus();
-            }
-          }, 100);
-        };
-        if (focusingAssetToSell && assetToSell) {
-          flipAssets();
-          focusNewInput();
-        } else if (focusingAssetToBuy && assetToBuy) {
-          flipAssets();
-          focusNewInput();
-        }
+        e.preventDefault();
+        flipAssets();
       }
     },
   });
+
+  const assetToBuyAccentColor = useMemo(
+    () =>
+      handleAssetAccentColor(
+        currentTheme,
+        assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback,
+      ),
+    [assetToBuy?.colors?.fallback, assetToBuy?.colors?.primary, currentTheme],
+  );
 
   return (
     <>
@@ -393,9 +390,7 @@ export function Swap() {
       <SwapSettings
         show={showSwapSettings}
         onDone={() => setShowSwapSettings(false)}
-        accentColor={
-          assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback
-        }
+        accentColor={assetToBuyAccentColor}
         setSettings={setSettings}
         slippage={slippage}
         chainId={assetToSell?.chainId}
@@ -410,9 +405,10 @@ export function Swap() {
           <Row height="content">
             <Stack space="8px">
               <AccentColorProviderWrapper
-                color={
-                  assetToSell?.colors?.primary || assetToSell?.colors?.fallback
-                }
+                color={handleAssetAccentColor(
+                  currentTheme,
+                  assetToSell?.colors?.primary || assetToSell?.colors?.fallback,
+                )}
               >
                 <TokenToSellInput
                   dropdownHeight={toSellInputHeight}
@@ -429,7 +425,7 @@ export function Swap() {
                   placeholder={i18n.t('swap.input_token_to_swap_placeholder')}
                   assetToSellMaxValue={assetToSellMaxValue}
                   setAssetToSellMaxValue={setAssetToSellMaxValue}
-                  assetToSellValue={assetToSellDisplay}
+                  assetToSellValue={assetToSellValue}
                   setAssetToSellInputValue={setAssetToSellInputValue}
                   inputRef={assetToSellInputRef}
                   openDropdownOnMount={inputToOpenOnMount === 'sell'}
@@ -472,14 +468,11 @@ export function Swap() {
                 </Inline>
               </Box>
 
-              <AccentColorProviderWrapper
-                color={
-                  assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback
-                }
-              >
+              <AccentColorProviderWrapper color={assetToBuyAccentColor}>
                 <TokenToBuyInput
                   dropdownHeight={toBuyInputHeight}
-                  asset={assetToBuy}
+                  assetToBuy={assetToBuy}
+                  assetToSell={assetToSell}
                   assets={assetsToBuy}
                   selectAsset={setAssetToBuy}
                   onDropdownOpen={onAssetToBuyInputOpen}
@@ -492,7 +485,8 @@ export function Swap() {
                   outputChainId={outputChainId}
                   assetFilter={assetToBuyFilter}
                   setAssetFilter={setAssetToBuyFilter}
-                  assetToBuyValue={assetToBuyDisplay}
+                  assetToBuyValue={assetToBuyValue}
+                  assetToSellValue={assetToSellValue}
                   setAssetToBuyInputValue={setAssetToBuyInputValue}
                   inputRef={assetToBuyInputRef}
                   openDropdownOnMount={inputToOpenOnMount === 'buy'}
@@ -507,11 +501,7 @@ export function Swap() {
           </Row>
           <Row height="content">
             {!!assetToBuy && !!assetToSell ? (
-              <AccentColorProviderWrapper
-                color={
-                  assetToBuy?.colors?.primary || assetToBuy?.colors?.fallback
-                }
-              >
+              <AccentColorProviderWrapper color={assetToBuyAccentColor}>
                 <Box paddingHorizontal="8px">
                   <Rows space="20px">
                     <Row>
@@ -541,11 +531,12 @@ export function Swap() {
                         width="full"
                         testId="swap-review-button"
                         disabled={buttonDisabled}
+                        tabIndex={0}
                       >
                         <Inline space="8px" alignVertical="center">
                           {buttonIcon}
                           <Text
-                            testId="swap-confirmation-button"
+                            testId={`swap-confirmation-button-${status}`}
                             color={buttonLabelColor}
                             size="16pt"
                             weight="bold"

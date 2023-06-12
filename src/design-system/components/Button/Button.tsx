@@ -73,11 +73,10 @@ export function Button({
 
   return (
     // eslint-disable-next-line react/jsx-props-no-spreading
-    <ButtonWrapper height={height} {...props}>
+    <ButtonWrapper height={height} {...props} testId={testId}>
       <Box
         paddingLeft={props.paddingLeft || paddingHorizontal}
         paddingRight={props.paddingRight || paddingHorizontal}
-        testId={testId}
       >
         {typeof children === 'string' ? (
           <Inline alignVertical="center" space={gap}>

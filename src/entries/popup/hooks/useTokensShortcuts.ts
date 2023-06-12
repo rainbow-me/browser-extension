@@ -9,20 +9,21 @@ import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ChainId } from '~/core/types/chains';
 import { goToNewTab } from '~/core/utils/tabs';
 import { getTokenBlockExplorerUrl } from '~/core/utils/transactions';
+import { triggerAlert } from '~/design-system/components/Alert/util';
 
 import { ROUTES } from '../urls';
 
 import { useCurrentAccount } from './useAccounts';
-import { useAlert } from './useAlert';
 import { useKeyboardShortcut } from './useKeyboardShortcut';
+import { useNavigateToSwaps } from './useNavigateToSwaps';
 import { useRainbowNavigate } from './useRainbowNavigate';
 
 export function useTokensShortcuts() {
   const currentAccount = useCurrentAccount();
   const { featureFlags } = useFeatureFlagsStore();
   const { selectedToken, setSelectedToken } = useSelectedTokenStore();
-  const { triggerAlert } = useAlert();
   const navigate = useRainbowNavigate();
+  const navigateToSwaps = useNavigateToSwaps();
 
   const allowSwap = useMemo(
     () =>
@@ -46,7 +47,7 @@ export function useTokensShortcuts() {
       if (selectedToken) {
         if (e.key === shortcuts.tokens.SWAP_ASSET.key) {
           if (allowSwap) {
-            navigate(ROUTES.SWAP);
+            navigateToSwaps();
           } else {
             triggerAlert({ text: i18n.t('alert.coming_soon') });
             // clear selected token
@@ -64,9 +65,9 @@ export function useTokensShortcuts() {
     [
       allowSwap,
       navigate,
+      navigateToSwaps,
       selectedToken,
       setSelectedToken,
-      triggerAlert,
       viewOnExplorer,
     ],
   );

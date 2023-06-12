@@ -12,8 +12,10 @@
     "remove_wallet": "Remove wallet",
     "hide_wallet": "Hide wallet",
     "watching": "Watching",
+    "ledger": "Ledger",
+    "trezor": "Trezor",
     "add_another_wallet": "Add another wallet",
-    "connect_hardware_wallet": "Connect a hardware wallet",
+    "connect_hardware_wallet": "Add from your hardware wallet",
     "search_placeholder": "Search wallets",
     "no_wallets": "No wallets",
     "no_results": "No results",
@@ -37,9 +39,9 @@
     "watch_address_description": "Watch a public address or ENS name."
   },
   "create_wallet_prompt": {
-    "title": "Create a new wallet",
+    "title": "Name your wallet",
     "create_wallet": "Create wallet",
-    "create": "Create Wallet",
+    "create": "Create",
     "input_placeholder": "Name"
   },
   "rename_wallet_prompt": {
@@ -63,10 +65,10 @@
     "use_rainbow_as_default_wallet": "Use Rainbow as default wallet",
     "default_wallet_description": "Allow Apps to prioritize Rainbow when looking for an extension to connect with.",
     "contacts": "Contacts",
-    "share_rainbow": "Share Rainbow",
+    "guides_and_support": "Guides & Support",
     "learn_about_ethereum": "Learn about Ethereum",
     "follow_us_on_twitter": "Follow us on Twitter",
-    "feedback_and_support": "Feedback & Support",
+    "share_beta_feedback": "Share Beta Feedback",
     "theme": {
       "title": "Theme",
       "system": "System",
@@ -105,12 +107,13 @@
       },
       "wallets_and_keys": {
         "title": "Wallets & Keys",
-        "new_secret_phrase_and_wallet": "New Secret Phrase & Wallet",
+        "create_a_new_wallet": "Create a new wallet",
         "imported": "Imported",
         "wallet_single": "Wallet",
         "wallet_plural": "Wallets",
-        "recovery_phrase_label": "Recovery Phrase",
+        "recovery_phrase_label": "Wallet Group",
         "private_key_label": "Private Key",
+        "hardware_wallet_label": "Hardware Wallet",
         "wallet_details": {
           "title": "Wallet Details",
           "view_recovery_phrase": "View Recovery Phrase",
@@ -174,8 +177,8 @@
       "ZAR": "South African Rand"
     },
     "feature_flags": {
-      "swaps": "Swaps",
-      "full_watching_wallets": "Allow full access to watching wallets"
+      "full_watching_wallets": "Allow full access to watching wallets",
+      "hw_wallets_enabled": "Enable Hardware Wallets support"
     }
   },
   "transactions": {
@@ -361,7 +364,7 @@
     }
   },
   "custom_gas": {
-    "title": "Gwei Settings",
+    "title": "Gas Settings",
     "current_base_fee": "Current base fee",
     "max_base_fee": "Max base fee",
     "miner_tip": "Miner tip",
@@ -419,7 +422,12 @@
     "create_wallet": "Create a new wallet",
     "import_wallet": "Import or connect a wallet",
     "disclaimer_tos": "By proceeding, you agree to Rainbow’s",
-    "disclaimer_tos_link": "Terms of Use"
+    "disclaimer_tos_link": "Terms of Use",
+    "invalid_code": "Invalid code",
+    "join": "Join",
+    "invite_code_explanation": "Rainbow is currently in a private beta stage and an invite code is required to gain access. If you need one, you can",
+    "invite_code_explanation_link": "get one here",
+    "enter_code": "Enter your beta code"
   },
   "seed_backup_prompt": {
     "title": "Before you get started, backup your Secret Recovery Phrase",
@@ -447,22 +455,29 @@
   },
   "import_wallet_selection": {
     "title": "Your wallets",
-    "description_plural": "Rainbow detected %{count} wallets that have been used recently. You can edit or add more at any time.",
-    "description_singular": "Rainbow detected 1 wallet that have been used recently. You can add more at any time.",
+    "description": {
+      "zero": "Rainbow detected 1 wallet. You can add more at any time.",
+      "one": "Rainbow detected 1 wallet that have been used recently. You can add more at any time.",
+      "other": "Rainbow detected %{count} wallets that have been used recently. You can edit or add more at any time."
+    },
     "add_wallets": "Add wallets",
     "edit_wallets": "Edit wallets",
     "loading": "Hold tight while we look up all your wallets...",
     "importing": "Importing your wallets...",
-    "account_summary": "Tokens: %{tokensAmount} ‧ Last tx: %{lastTx} ago"
+    "account_summary_tokens": "Tokens: %{tokensAmount}",
+    "account_summary_last_tx": "Last tx: %{lastTx} ago"
   },
   "watch_wallet": {
     "title": "Watch an Ethereum address",
     "description": "Enter any Ethereum address or ENS name. You'll have to import it later to send or sign transactions.",
-    "invalid_address_or_ens_name": "Invalid address",
+    "invalid_address": "Invalid address",
+    "unsupported_tld": "%{tld} is not supported",
+    "address_already_added": "Address already added",
+    "address_already_added_as": "Address already added as %{addedAs}",
     "watch_top_ens_wallets": "Watch top ENS wallets",
     "placeholder": "Ethereum address or ENS name",
-    "watch_wallet": "Watch Wallet",
-    "watch_wallets": "Watch Wallets",
+    "watch_wallet": "Watch wallet",
+    "watch_wallets": "Watch wallets",
     "loading": "Hold tight while we start watching these wallets..."
   },
   "import_wallet": {
@@ -473,15 +488,29 @@
     "add_another": "Add another",
     "remove": "Remove",
     "placeholder": "Paste your Secret Recovery Phrase or a Private Key from another wallet",
-    "import_wallet": "Import Wallet",
-    "import_wallet_plural": "Import Wallets"
+    "invalid_word": "Invalid word: %{word}",
+    "invalid_private_key": "Invalid Private Key",
+    "invalid_recovery_phrase": "Invalid recovery phrase",
+    "missing_words": {
+      "one": "Missing 1 word",
+      "other": "Missing %{count} words"
+    },
+    "import_wallet": {
+      "one": "Restore wallet",
+      "other": "Restore wallets"
+    }
   },
   "edit_import_wallet_selection": {
     "title": "All wallets",
-    "add_n_wallets": "Add %{count} wallets",
-    "add_wallet": "Add wallet",
-    "importing_your_wallet": "Importing your wallet...",
-    "importing_your_wallets": "Importing your wallets...",
+    "add_wallet": {
+      "zero": "Select a wallet",
+      "one": "Add wallet",
+      "other": "Add %{count} wallets"
+    },
+    "importing_your_wallet": {
+      "one": "Importing your wallet...",
+      "other": "Importing your wallets..."
+    },
     "sort": {
       "title": "Sort",
       "default": "Default",
@@ -510,6 +539,8 @@
       "settings": "Settings",
       "qr_code": "My QR Code",
       "rainbow_profile": "Rainbow Profile",
+      "guides_and_support": "Guides & Support",
+      "share_feedback": "Share Feedback",
       "lock_rainbow": "Lock Rainbow"
     }
   },
@@ -601,6 +632,7 @@
     "title": "Wallets"
   },
   "common_actions": {
+    "back": "Back",
     "cancel": "Cancel",
     "continue": "Continue",
     "copy_to_clipboard": "Copy to clipboard"
@@ -620,7 +652,7 @@
     "new_password": "New password",
     "confirm_password": "Confirm password",
     "update_password": "Update Password",
-    "set_password": "Set Password",
+    "set_password": "Set password",
     "too_weak": "Too weak",
     "weak": "Weak",
     "good": "Good",
@@ -646,7 +678,8 @@
     "coinbase_description": "Buy or transfer from Coinbase",
     "send_from_wallet": "Send from another wallet",
     "send_description_1": "Press",
-    "send_description_2": "to copy your address"
+    "send_description_2": "to copy your address",
+    "unknown_token": "Unknown Token"
   },
   "speed_up_and_cancel": {
     "speed_up": "Speed up",
@@ -673,13 +706,14 @@
     "view_on_explorer": "View on Explorer"
   },
   "wallet_ready": {
-    "title": "Your wallets ready",
-    "essentials": "Essentials",
+    "title": "Rainbow is ready to use",
+    "subtitle": "To access your wallet, just click Rainbow from the Extensions drop-down, or use the speedy keyboard shortcut",
+    "open": "Open Rainbow",
     "get_started_with_rainbow": "Get started with Rainbow",
     "get_started_with_rainbow_desc": "Welcome to Rainbow! We're so glad you're here. We’ve created this guide to help with the basics of Rainbow.",
     "discover_shortcuts": "Discover shortcuts",
-    "discover_shortcuts_desc": "Welcome to Rainbow! We're so glad you're here. We’ve created this guide to help with the basics of Rainbow and get you started on your new We... ",
-    "pin_rainbow_to_your_toolbar": "Pin Rainbow to your toolbar:"
+    "discover_shortcuts_desc": "Looking to discover more shortcuts? Check out this helpful guide we’ve put together for you.",
+    "pin_rainbow_to_your_toolbar": "Pin Rainbow to your toolbar"
   },
   "wallet_header": {
     "copy": "Copy",
@@ -758,5 +792,46 @@
     "ok": "Ok",
     "wallet_watching_mode": "This wallet is currently in 'Watching' mode",
     "coming_soon": "Coming Soon!"
+  },
+  "hw": {
+    "choose_title": "Connect a hardware wallet",
+    "ledger_support": "Supports Ledger Nano S, Nano S Plus, Nano X, and Stax devices.",
+    "trezor_support": "Supports Model One or Model T devices.",
+    "connect_ledger_title": "Connect your Ledger",
+    "connect_ledger_description": "Connect your Ledger to Rainbow by plugging it into your computer using the USB-C cable.",
+    "unlock_ledger_title": "Unlock Ledger",
+    "unlock_ledger_description": "The Ethereum app needs to be open on your Ledger to continue.",
+    "unlock_ledger_description_2": "Enter your passcode to unlock your Ledger. Once unlocked, open the Ethereum app by pressing both buttons at once.",
+    "needs_app_ledger_title": "Open the ETH app",
+    "needs_app_ledger_description": "The Ethereum app needs to be open on your Ledger to proced with the transaction.",
+    "needs_app_ledger_description_2": "Enter your passcode to unlock your Ledger. Once unlocked, open the Ethereum app by pressing both buttons at once.",
+    "connect_trezor_title": "Complete your Trezor set up",
+    "connect_trezor_description": "Continue to connect your Trezor to Rainbow through the web interface.",
+    "learn_more": "Learn more.",
+    "connect_wallets_title": "Connect your wallets",
+    "connect_wallets_found": "We’ve found %{count} wallets on your %{vendor} with a balance or activity. Select which to connect.",
+    "connect_wallets_not_found": "We didn't find any wallets with activity on this %{vendor} but you can still add these.",
+    "connect_wallet": "Connect wallet",
+    "connect_n_wallets": "Connect %{count} wallets",
+    "wallets_found": "%{count} wallets found",
+    "add_by_index": "Add by index",
+    "index_label": "Index",
+    "connection_successful_title": "Connected successful",
+    "connection_successful_description": "You’ve successfully added %{count} wallets. They’re easy to identify in your wallet list with the %{vendor} badge. You can add more at any time.",
+    "done": "Done",
+    "add_wallet": "Add wallet",
+    "add_by_index_title": "Add a wallet by its index",
+    "add_by_index_description": "Enter the derivation path for the wallet you would like to import from your Ledger.",
+    "waiting_for_trezor_connect": "Waiting for Trezor Connect",
+    "continue_on_trezor_connect": "Please follow the instructions on the Trezor Connect window",
+    "trezor_success": "Success!",
+    "you_can_close_this_window": "You can close this window"
+  },
+  "choose_wallet_group": {
+    "title": "Choose wallet group",
+    "description": "Choose the wallet group you'd like to create a new wallet within, or create a new one",
+    "wallet_group": "Wallet Group %{number}",
+    "new_wallet_group": "New Wallet Group",
+    "create_recovery_phrase": "Create a new recovery phrase"
   }
 }

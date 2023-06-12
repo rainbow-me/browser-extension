@@ -22,6 +22,7 @@ import {
   Text,
   TextOverflow,
 } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 import { CoinIcon } from '~/entries/popup/components/CoinIcon/CoinIcon';
 import {
@@ -32,6 +33,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '~/entries/popup/components/DropdownMenu/DropdownMenu';
+import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 
 import { RowHighlightWrapper } from './RowHighlightWrapper';
 
@@ -84,6 +86,10 @@ export function TokenToBuyRow({
       switch (value) {
         case 'copy':
           navigator.clipboard.writeText(asset?.address as string);
+          triggerToast({
+            title: i18n.t('wallet_header.copy_toast'),
+            description: truncateAddress(asset?.address),
+          });
           break;
         case 'view':
           viewOnExplorer();
@@ -110,98 +116,116 @@ export function TokenToBuyRow({
     () => (
       <Inline space="8px">
         {!asset?.isNativeAsset ? (
-          <DropdownMenu onOpenChange={onDropdownChange}>
-            <DropdownMenuTrigger asChild>
-              <Box>
-                <ButtonSymbol
-                  symbol="info"
-                  height="24px"
-                  variant="plain"
-                  color="fillHorizontal"
-                  symbolColor="labelSecondary"
-                  testId={`${testId}-info-button`}
-                />
-              </Box>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent marginRight="12px">
-              <Stack space="4px">
-                <Box paddingTop="8px" paddingBottom="12px">
-                  <TextOverflow
-                    align="center"
-                    size="14pt"
-                    weight="bold"
-                    color="label"
-                  >{`${asset?.name} (${asset?.symbol})`}</TextOverflow>
+          <Box onClick={(e) => e.stopPropagation}>
+            <DropdownMenu onOpenChange={onDropdownChange}>
+              <DropdownMenuTrigger asChild>
+                <Box>
+                  <ButtonSymbol
+                    symbol="info"
+                    height="24px"
+                    variant="plain"
+                    color="fillHorizontal"
+                    symbolColor="labelSecondary"
+                    testId={`${testId}-info-button`}
+                  />
                 </Box>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent marginRight="12px">
                 <Stack space="4px">
-                  <DropdownMenuSeparator />
-                  <DropdownMenuRadioGroup onValueChange={onValueChange}>
-                    <DropdownMenuRadioItem value="copy">
-                      <Box testId={`${testId}-info-button-copy`} width="full">
-                        <Inline space="8px" alignVertical="center">
-                          <Inline alignVertical="center">
-                            <Symbol
-                              symbol="doc.on.doc.fill"
-                              weight="semibold"
-                              size={18}
-                            />
-                          </Inline>
-
-                          <Stack space="6px">
-                            <Text weight="semibold" size="14pt" color="label">
-                              {i18n.t('contacts.copy_address')}
-                            </Text>
-                            <Text
-                              weight="regular"
-                              size="11pt"
-                              color="labelTertiary"
-                            >
-                              {truncateAddress(asset?.address)}
-                            </Text>
-                          </Stack>
-                        </Inline>
-                      </Box>
-                    </DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="view">
-                      <Box width="full">
-                        <Inline
-                          alignVertical="center"
-                          alignHorizontal="justify"
+                  <Box paddingTop="8px" paddingBottom="12px">
+                    <TextOverflow
+                      align="center"
+                      size="14pt"
+                      weight="bold"
+                      color="label"
+                    >{`${asset?.name} (${asset?.symbol})`}</TextOverflow>
+                  </Box>
+                  <Stack space="4px">
+                    <DropdownMenuSeparator />
+                    <Box onClick={(e) => e.stopPropagation()}>
+                      <DropdownMenuRadioGroup onValueChange={onValueChange}>
+                        <DropdownMenuRadioItem
+                          onSelect={(e) => e.stopPropagation()}
+                          value="copy"
                         >
-                          <Inline alignVertical="center" space="8px">
-                            <Inline alignVertical="center">
-                              <Symbol
-                                size={18}
-                                symbol="binoculars.fill"
-                                weight="semibold"
-                              />
+                          <Box
+                            testId={`${testId}-info-button-copy`}
+                            // onClick={(e) => e.stopPropagation()}
+                            width="full"
+                          >
+                            <Inline space="8px" alignVertical="center">
+                              <Inline alignVertical="center">
+                                <Symbol
+                                  symbol="doc.on.doc.fill"
+                                  weight="semibold"
+                                  size={18}
+                                />
+                              </Inline>
+
+                              <Stack space="6px">
+                                <Text
+                                  weight="semibold"
+                                  size="14pt"
+                                  color="label"
+                                >
+                                  {i18n.t('contacts.copy_address')}
+                                </Text>
+                                <Text
+                                  weight="regular"
+                                  size="11pt"
+                                  color="labelTertiary"
+                                >
+                                  {truncateAddress(asset?.address)}
+                                </Text>
+                              </Stack>
                             </Inline>
-                            <Text size="14pt" weight="semibold">
-                              {i18n.t(
-                                `contacts.${
-                                  isL2Chain(asset?.chainId || ChainId.mainnet)
-                                    ? 'view_on_explorer'
-                                    : 'view_on_etherscan'
-                                }`,
-                              )}
-                            </Text>
-                          </Inline>
-                          <Bleed vertical="8px">
-                            <Symbol
-                              size={14}
-                              symbol="arrow.up.forward.circle"
-                              weight="semibold"
-                              color="labelTertiary"
-                            />
-                          </Bleed>
-                        </Inline>
-                      </Box>
-                    </DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
+                          </Box>
+                        </DropdownMenuRadioItem>
+
+                        <DropdownMenuRadioItem value="view">
+                          <Box width="full">
+                            <Inline
+                              alignVertical="center"
+                              alignHorizontal="justify"
+                            >
+                              <Inline alignVertical="center" space="8px">
+                                <Inline alignVertical="center">
+                                  <Symbol
+                                    size={18}
+                                    symbol="binoculars.fill"
+                                    weight="semibold"
+                                  />
+                                </Inline>
+                                <Text size="14pt" weight="semibold">
+                                  {i18n.t(
+                                    `contacts.${
+                                      isL2Chain(
+                                        asset?.chainId || ChainId.mainnet,
+                                      )
+                                        ? 'view_on_explorer'
+                                        : 'view_on_etherscan'
+                                    }`,
+                                  )}
+                                </Text>
+                              </Inline>
+                              <Bleed vertical="8px">
+                                <Symbol
+                                  size={14}
+                                  symbol="arrow.up.forward.circle"
+                                  weight="semibold"
+                                  color="labelTertiary"
+                                />
+                              </Bleed>
+                            </Inline>
+                          </Box>
+                        </DropdownMenuRadioItem>
+                      </DropdownMenuRadioGroup>
+                    </Box>
+                  </Stack>
                 </Stack>
-              </Stack>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </Box>
         ) : null}
         <ButtonSymbol
           symbol="star.fill"
@@ -229,26 +253,28 @@ export function TokenToBuyRow({
   );
 
   return (
-    <Box
-      className={rowTransparentAccentHighlight}
-      borderRadius="12px"
-      style={{ height: '52px' }}
-    >
-      <RowHighlightWrapper>
-        <Inset horizontal="12px" vertical="8px">
-          <Rows>
-            <Row>
-              <Columns alignVertical="center" space="8px">
-                <Column width="content">
-                  <CoinIcon asset={asset} />
-                </Column>
-                <Column>{leftColumn}</Column>
-                <Column width="content">{rightColumn}</Column>
-              </Columns>
-            </Row>
-          </Rows>
-        </Inset>
-      </RowHighlightWrapper>
-    </Box>
+    <Lens borderRadius="12px" forceAvatarColor>
+      <Box
+        className={rowTransparentAccentHighlight}
+        borderRadius="12px"
+        style={{ height: '52px' }}
+      >
+        <RowHighlightWrapper>
+          <Inset horizontal="12px" vertical="8px">
+            <Rows>
+              <Row>
+                <Columns alignVertical="center" space="8px">
+                  <Column width="content">
+                    <CoinIcon asset={asset} />
+                  </Column>
+                  <Column>{leftColumn}</Column>
+                  <Column width="content">{rightColumn}</Column>
+                </Columns>
+              </Row>
+            </Rows>
+          </Inset>
+        </RowHighlightWrapper>
+      </Box>
+    </Lens>
   );
 }

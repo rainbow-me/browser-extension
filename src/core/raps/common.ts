@@ -1,6 +1,6 @@
 import { Signer } from '@ethersproject/abstract-signer';
 
-import { logger } from '~/logger';
+import { RainbowError, logger } from '~/logger';
 
 import { swap, unlock } from './actions';
 import { crosschainSwap } from './actions/crosschainSwap';
@@ -104,8 +104,7 @@ async function executeAction<T extends RapActionTypes>({
     nonce = await typeAction<T>(type, actionProps)();
     return { baseNonce: nonce, errorMessage: null };
   } catch (error) {
-    logger.error({
-      name: `rap: ${rapName} - error execute action`,
+    logger.error(new RainbowError(`rap: ${rapName} - error execute action`), {
       message: (error as Error)?.message,
     });
     if (index === 0) {

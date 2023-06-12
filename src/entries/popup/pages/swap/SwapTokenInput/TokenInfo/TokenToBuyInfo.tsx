@@ -1,8 +1,15 @@
 import React, { useMemo } from 'react';
 
 import { i18n } from '~/core/languages';
+import { useCurrentCurrencyStore } from '~/core/state';
 import { ParsedSearchAsset } from '~/core/types/assets';
-import { handleSignificantDecimals } from '~/core/utils/numbers';
+import {
+  convertAmountAndPriceToNativeDisplay,
+  convertAmountToPercentageDisplay,
+  divide,
+  handleSignificantDecimals,
+  subtract,
+} from '~/core/utils/numbers';
 import {
   Box,
   Column,
@@ -13,16 +20,55 @@ import {
 } from '~/design-system';
 
 export const TokenToBuyInfo = ({
-  asset,
+  assetToBuy,
+  assetToSell,
+  assetToBuyValue,
+  assetToSellValue,
 }: {
-  asset: ParsedSearchAsset | null;
+  assetToBuy: ParsedSearchAsset | null;
+  assetToSell: ParsedSearchAsset | null;
+  assetToBuyValue?: string;
+  assetToSellValue?: string;
 }) => {
-  const priceChangeDisplay = useMemo(() => {
-    const priceChange = asset?.native?.price?.change;
-    return priceChange?.length ? priceChange : null;
-  }, [asset?.native?.price?.change]);
+  const { currentCurrency } = useCurrentCurrencyStore();
 
-  if (!asset) return null;
+  const nativeValueDisplay = useMemo(() => {
+    const nativeDisplay = convertAmountAndPriceToNativeDisplay(
+      assetToBuyValue || '0',
+      assetToBuy?.native?.price?.amount || '0',
+      currentCurrency,
+    );
+    return nativeDisplay.display;
+  }, [assetToBuy?.native?.price?.amount, currentCurrency, assetToBuyValue]);
+
+  const nativeValueDifferenceDisplay = useMemo(() => {
+    if (!assetToBuyValue || !assetToSellValue) return null;
+    const assetToBuyNativeValue = convertAmountAndPriceToNativeDisplay(
+      assetToBuyValue || '0',
+      assetToBuy?.native?.price?.amount || '0',
+      currentCurrency,
+    );
+    const assetToSellNativeValue = convertAmountAndPriceToNativeDisplay(
+      assetToSellValue || '0',
+      assetToSell?.native?.price?.amount || '0',
+      currentCurrency,
+    );
+    const nativeDifference = convertAmountToPercentageDisplay(
+      divide(
+        subtract(assetToBuyNativeValue.amount, assetToSellNativeValue.amount),
+        assetToBuyNativeValue.amount,
+      ),
+    );
+    return nativeDifference;
+  }, [
+    assetToBuy?.native?.price?.amount,
+    assetToBuyValue,
+    assetToSell?.native?.price?.amount,
+    assetToSellValue,
+    currentCurrency,
+  ]);
+
+  if (!assetToBuy) return null;
   return (
     <Box>
       <Columns alignHorizontal="justify" space="4px">
@@ -36,13 +82,15 @@ export const TokenToBuyInfo = ({
                 weight="semibold"
                 color="labelTertiary"
               >
-                {asset?.native?.price?.display}
+                {nativeValueDisplay}
               </TextOverflow>
             </Column>
 
             <Column width="content">
               <Text as="p" size="12pt" weight="medium" color="labelQuaternary">
-                {priceChangeDisplay ? `(${priceChangeDisplay})` : ''}
+                {nativeValueDifferenceDisplay
+                  ? `(${nativeValueDifferenceDisplay})`
+                  : ''}
               </Text>
             </Column>
           </Columns>
@@ -65,10 +113,10 @@ export const TokenToBuyInfo = ({
                     weight="medium"
                     color="labelSecondary"
                   >
-                    {asset?.balance?.amount &&
+                    {assetToBuy?.balance?.amount &&
                       handleSignificantDecimals(
-                        asset?.balance?.amount,
-                        asset?.decimals,
+                        assetToBuy?.balance?.amount,
+                        assetToBuy?.decimals,
                       )}
                   </TextOverflow>
                 </Box>

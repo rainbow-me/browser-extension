@@ -7,6 +7,7 @@ import {
   globalStyle,
   style,
 } from '@vanilla-extract/css';
+import type { CSSVarFunction, MapLeafNodes } from '@vanilla-extract/private';
 import { createSprinkles, defineProperties } from '@vanilla-extract/sprinkles';
 import chroma from 'chroma-js';
 import mapValues from 'lodash/mapValues';
@@ -126,16 +127,36 @@ export const accentColorHslVars = createThemeContract({
   lightness: null,
 });
 
-const getAccentColorAsHsl = ({ alpha }: { alpha?: number } = {}) =>
+export const avatarColorHslVars = createThemeContract({
+  hue: null,
+  saturation: null,
+  lightness: null,
+});
+
+export type HslVars = MapLeafNodes<
+  { hue: null; saturation: null; lightness: null },
+  CSSVarFunction
+>;
+
+const getColorAsHsl = ({ alpha, vars }: { alpha?: number; vars: HslVars }) =>
   `hsl(${[
-    accentColorHslVars.hue,
-    accentColorHslVars.saturation,
-    accentColorHslVars.lightness,
+    vars.hue,
+    vars.saturation,
+    vars.lightness,
     ...(alpha !== undefined ? [alpha] : []),
   ].join(', ')})`;
 
-export const accentColorAsHsl = getAccentColorAsHsl();
-export const transparentAccentColorAsHsl = getAccentColorAsHsl({ alpha: 0.1 });
+export const accentColorAsHsl = getColorAsHsl({ vars: accentColorHslVars });
+export const transparentAccentColorAsHsl = getColorAsHsl({
+  alpha: 0.1,
+  vars: accentColorHslVars,
+});
+
+export const avatarColorAsHsl = getColorAsHsl({ vars: avatarColorHslVars });
+export const transparentAvatarColorAsHsl = getColorAsHsl({
+  alpha: 0.1,
+  vars: avatarColorHslVars,
+});
 
 export const semanticColorVars = createThemeContract({
   backgroundColors: mapValues(backgroundColors, () => null),
@@ -171,7 +192,7 @@ function getShadowColor(
   alpha: number,
 ) {
   return color === 'accent'
-    ? getAccentColorAsHsl({ alpha })
+    ? getColorAsHsl({ alpha, vars: accentColorHslVars })
     : chroma(backgroundColors[color][theme].color).alpha(alpha).css();
 }
 
@@ -491,6 +512,9 @@ const textProperties = defineProperties({
     cursor: cursorOpts,
     fontFamily: { rounded: 'SFRounded, system-ui' },
     fontSize: {
+      '7pt': defineType(7, 11, 0.64),
+      '9pt': defineType(9, 11, 0.56),
+      '10pt': defineType(10, 12, 0.6),
       '11pt': defineType(11, 13, 0.56),
       '12pt': defineType(12, 15, 0.52),
       '14pt': defineType(14, 19, 0.48),

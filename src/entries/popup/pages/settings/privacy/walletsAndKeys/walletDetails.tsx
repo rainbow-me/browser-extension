@@ -10,7 +10,6 @@ import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { truncateAddress } from '~/core/utils/address';
 import { getSettingWallets } from '~/core/utils/settings';
 import { Box, Inline, Symbol } from '~/design-system';
-import { Lens } from '~/design-system/components/Lens/Lens';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import AccountItem, {
   LabelOption,
@@ -46,64 +45,71 @@ const InfoButtonOptions = ({
   setRenameAccount: React.Dispatch<React.SetStateAction<Address | undefined>>;
   setRemoveAccount: React.Dispatch<React.SetStateAction<Address | undefined>>;
   unhideWallet: ((address: Address) => void) | undefined;
-}): MoreInfoOption[] => [
-  {
-    onSelect: () => {
-      handleViewPrivateKey(account);
+}): MoreInfoOption[] => {
+  const options = [
+    {
+      onSelect: () => {
+        setRenameAccount(account);
+      },
+      label: i18n.t(
+        'settings.privacy_and_security.wallets_and_keys.wallet_details.rename_wallet',
+      ),
+      symbol: 'person.crop.circle.fill',
     },
-    label: i18n.t(
-      'settings.privacy_and_security.wallets_and_keys.wallet_details.view_private_key',
-    ),
-    symbol: 'key.fill',
-  },
-  {
-    onSelect: () => {
-      setRenameAccount(account);
+    {
+      onSelect: () => {
+        navigator.clipboard.writeText(account as string);
+        triggerToast({
+          title: i18n.t('wallet_header.copy_toast'),
+          description: truncateAddress(account),
+        });
+      },
+      label: i18n.t(
+        'settings.privacy_and_security.wallets_and_keys.wallet_details.copy_address',
+      ),
+      subLabel: truncateAddress(account),
+      symbol: 'doc.on.doc.fill',
+      separator: true,
     },
-    label: i18n.t(
-      'settings.privacy_and_security.wallets_and_keys.wallet_details.rename_wallet',
-    ),
-    symbol: 'person.crop.circle.fill',
-  },
-  {
-    onSelect: () => {
-      navigator.clipboard.writeText(account as string);
-      triggerToast({
-        title: i18n.t('wallet_header.copy_toast'),
-        description: truncateAddress(account),
-      });
-    },
-    label: i18n.t(
-      'settings.privacy_and_security.wallets_and_keys.wallet_details.copy_address',
-    ),
-    subLabel: truncateAddress(account),
-    symbol: 'doc.on.doc.fill',
-    separator: true,
-  },
-  ...(unhideWallet
-    ? [
-        {
-          onSelect: () => {
-            unhideWallet(account);
+    ...(unhideWallet
+      ? [
+          {
+            onSelect: () => {
+              unhideWallet(account);
+            },
+            label: i18n.t(
+              'settings.privacy_and_security.wallets_and_keys.wallet_details.unhide_wallet',
+            ),
+            symbol: 'eye.slash.circle.fill' as SymbolProps['symbol'],
           },
-          label: i18n.t(
-            'settings.privacy_and_security.wallets_and_keys.wallet_details.unhide_wallet',
-          ),
-          symbol: 'eye.slash.circle.fill' as SymbolProps['symbol'],
-        },
-      ]
-    : []),
-  {
-    onSelect: () => {
-      setRemoveAccount(account);
+        ]
+      : []),
+    {
+      onSelect: () => {
+        setRemoveAccount(account);
+      },
+      label: i18n.t(
+        'settings.privacy_and_security.wallets_and_keys.wallet_details.delete_wallet',
+      ),
+      symbol: 'trash.fill',
+      color: 'red',
     },
-    label: i18n.t(
-      'settings.privacy_and_security.wallets_and_keys.wallet_details.delete_wallet',
-    ),
-    symbol: 'trash.fill',
-    color: 'red',
-  },
-];
+  ];
+
+  if (handleViewPrivateKey) {
+    options.unshift({
+      onSelect: () => {
+        handleViewPrivateKey(account);
+      },
+      label: i18n.t(
+        'settings.privacy_and_security.wallets_and_keys.wallet_details.view_private_key',
+      ),
+      symbol: 'key.fill',
+    });
+  }
+
+  return options as MoreInfoOption[];
+};
 
 export function WalletDetails() {
   const navigate = useRainbowNavigate();
@@ -197,7 +203,7 @@ export function WalletDetails() {
         const walletAfterDeletion = await getWallet(otherAccountSameWallet);
         setWallet(walletAfterDeletion);
       } else {
-        navigate(ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS);
+        navigate(-1);
       }
     } else {
       await wipe();
@@ -215,11 +221,8 @@ export function WalletDetails() {
         />
       )}
       <RenameWalletPrompt
-        show={!!renameAccount}
         account={renameAccount}
-        onClose={() => {
-          setRenameAccount(undefined);
-        }}
+        onClose={() => setRenameAccount(undefined)}
       />
       <RemoveWalletPrompt
         show={!!removeAccount}
@@ -231,31 +234,33 @@ export function WalletDetails() {
       />
       <Box paddingHorizontal="20px">
         <MenuContainer testId="settings-menu-container">
-          <Menu>
-            <MenuItem
-              first
-              last
-              titleComponent={
-                <MenuItem.Title
-                  text={i18n.t(
-                    wallet?.type === KeychainType.HdKeychain
-                      ? 'settings.privacy_and_security.wallets_and_keys.wallet_details.view_recovery_phrase'
-                      : 'settings.privacy_and_security.wallets_and_keys.wallet_details.view_private_key',
-                  )}
-                />
-              }
-              leftComponent={
-                <Symbol
-                  symbol="lock.square.fill"
-                  weight="medium"
-                  size={18}
-                  color="labelTertiary"
-                />
-              }
-              hasRightArrow
-              onClick={handleViewSecret}
-            />
-          </Menu>
+          {wallet?.type !== KeychainType.HardwareWalletKeychain && (
+            <Menu>
+              <MenuItem
+                first
+                last
+                titleComponent={
+                  <MenuItem.Title
+                    text={i18n.t(
+                      wallet?.type === KeychainType.HdKeychain
+                        ? 'settings.privacy_and_security.wallets_and_keys.wallet_details.view_recovery_phrase'
+                        : 'settings.privacy_and_security.wallets_and_keys.wallet_details.view_private_key',
+                    )}
+                  />
+                }
+                leftComponent={
+                  <Symbol
+                    symbol="lock.square.fill"
+                    weight="medium"
+                    size={18}
+                    color="labelTertiary"
+                  />
+                }
+                hasRightArrow
+                onClick={handleViewSecret}
+              />
+            </Menu>
+          )}
           <Menu>
             {wallet?.accounts?.map((account: Address) => {
               return (
@@ -267,33 +272,36 @@ export function WalletDetails() {
                   setRenameAccount={setRenameAccount}
                   setRemoveAccount={setRemoveAccount}
                   unhideWallet={unhideWallet}
+                  type={wallet?.type}
                 />
               );
             })}
           </Menu>
-          <Menu>
-            <MenuItem
-              first
-              last
-              leftComponent={
-                <Symbol
-                  size={18}
-                  color="blue"
-                  weight="medium"
-                  symbol="plus.circle.fill"
-                />
-              }
-              titleComponent={
-                <MenuItem.Title
-                  text={i18n.t(
-                    'settings.privacy_and_security.wallets_and_keys.wallet_details.create_new_wallet',
-                  )}
-                  color="blue"
-                />
-              }
-              onClick={handleOpenNewWalletPrompt}
-            />
-          </Menu>
+          {wallet?.type !== KeychainType.HardwareWalletKeychain && (
+            <Menu>
+              <MenuItem
+                first
+                last
+                leftComponent={
+                  <Symbol
+                    size={18}
+                    color="blue"
+                    weight="medium"
+                    symbol="plus.circle.fill"
+                  />
+                }
+                titleComponent={
+                  <MenuItem.Title
+                    text={i18n.t(
+                      'settings.privacy_and_security.wallets_and_keys.wallet_details.create_new_wallet',
+                    )}
+                    color="blue"
+                  />
+                }
+                onClick={handleOpenNewWalletPrompt}
+              />
+            </Menu>
+          )}
         </MenuContainer>
       </Box>
     </Box>
@@ -307,6 +315,7 @@ const WalletRow = ({
   setRenameAccount,
   setRemoveAccount,
   unhideWallet,
+  type,
 }: {
   account: Address;
   hiddenWallets: Record<Address, boolean>;
@@ -314,40 +323,48 @@ const WalletRow = ({
   setRenameAccount: React.Dispatch<React.SetStateAction<Address | undefined>>;
   setRemoveAccount: React.Dispatch<React.SetStateAction<Address | undefined>>;
   unhideWallet: ({ address }: { address: Address }) => void;
+  type: KeychainType;
 }) => {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const opts = {
+    account,
+    setRenameAccount,
+    setRemoveAccount,
+    unhideWallet: hiddenWallets[account]
+      ? (address: Address) => unhideWallet({ address })
+      : undefined,
+    handleViewPrivateKey:
+      type !== KeychainType.HardwareWalletKeychain
+        ? handleViewPrivateKey
+        : undefined,
+  } as unknown as typeof InfoButtonOptions;
+
   return (
-    <Lens style={{ borderRadius: 15 }} onKeyDown={() => setMenuOpen(true)}>
-      <AccountItem
-        key={account}
-        account={account}
-        rightComponent={
-          <Inline alignVertical="center" space="10px">
-            {hiddenWallets[account] && (
-              <LabelPill
-                label={i18n.t(
-                  'settings.privacy_and_security.wallets_and_keys.wallet_details.hidden',
-                )}
-              />
-            )}
-            <MoreInfoButton
-              open={menuOpen}
-              onClose={() => setMenuOpen(false)}
-              onOpen={() => setMenuOpen(true)}
-              options={InfoButtonOptions({
-                account,
-                handleViewPrivateKey,
-                setRenameAccount,
-                setRemoveAccount,
-                unhideWallet: hiddenWallets[account]
-                  ? (address: Address) => unhideWallet({ address })
-                  : undefined,
-              })}
+    <AccountItem
+      onClick={() => setMenuOpen(true)}
+      key={account}
+      account={account}
+      rightComponent={
+        <Inline alignVertical="center" space="10px">
+          {hiddenWallets[account] && (
+            <LabelPill
+              label={i18n.t(
+                'settings.privacy_and_security.wallets_and_keys.wallet_details.hidden',
+              )}
             />
-          </Inline>
-        }
-        labelType={LabelOption.address}
-      />
-    </Lens>
+          )}
+          <MoreInfoButton
+            open={menuOpen}
+            onClose={() => setMenuOpen(false)}
+            onOpen={() => setMenuOpen(true)}
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            options={InfoButtonOptions(opts)}
+          />
+        </Inline>
+      }
+      labelType={LabelOption.address}
+    />
   );
 };

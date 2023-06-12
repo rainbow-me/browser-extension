@@ -13,6 +13,7 @@ import React, {
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useCurrentAddressStore } from '~/core/state';
 import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useWalletOrderStore } from '~/core/state/walletOrder';
 import { truncateAddress } from '~/core/utils/address';
@@ -28,6 +29,7 @@ import {
   Text,
 } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { SymbolName } from '~/design-system/styles/designTokens';
 
@@ -40,7 +42,7 @@ import { WalletAvatar } from '../../components/WalletAvatar/WalletAvatar';
 import { useAllFilteredWallets } from '../../hooks/send/useAllFilteredWallets';
 import { useWalletInfo } from '../../hooks/useWalletInfo';
 
-import { InputActionButon } from './InputActionButton';
+import { InputActionButton } from './InputActionButton';
 import {
   addressToInputHighlightWrapperStyleDark,
   addressToInputHighlightWrapperStyleLight,
@@ -94,16 +96,18 @@ const WalletSection = ({
       <Box>
         {wallets.map((wallet, i) => (
           <Bleed horizontal="12px" key={i}>
-            <RowHighlightWrapper key={i}>
-              <Inset horizontal="12px" key={i}>
-                <WalletRow
-                  onClick={onClickWallet}
-                  key={wallet}
-                  section={section}
-                  wallet={wallet}
-                />
-              </Inset>
-            </RowHighlightWrapper>
+            <Lens borderRadius="12px" onKeyDown={() => onClickWallet(wallet)}>
+              <RowHighlightWrapper key={i}>
+                <Inset horizontal="12px" key={i}>
+                  <WalletRow
+                    onClick={onClickWallet}
+                    key={wallet}
+                    section={section}
+                    wallet={wallet}
+                  />
+                </Inset>
+              </RowHighlightWrapper>
+            </Lens>
           </Bleed>
         ))}
       </Box>
@@ -156,9 +160,13 @@ const WalletRow = ({
 };
 
 const sortWallets = (order: Address[], wallets: Address[]) =>
-  order
-    .map((orderAddress) => wallets.find((address) => address === orderAddress))
-    .filter(Boolean);
+  order.length
+    ? order
+        .map((orderAddress) =>
+          wallets.find((address) => address === orderAddress),
+        )
+        .filter(Boolean)
+    : wallets;
 
 const DropdownWalletsList = ({
   wallets,
@@ -330,9 +338,10 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     }, [dropdownVisible, openDropdown]);
 
     const onActionClose = useCallback(() => {
+      onDropdownAction();
       clearToAddress();
       setTimeout(() => inputRef?.current?.focus(), 500);
-    }, [clearToAddress]);
+    }, [clearToAddress, onDropdownAction]);
 
     useEffect(() => {
       if (!inputVisible) {
@@ -346,6 +355,8 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     });
     const { wallets, watchedWallets, contacts } =
       useAllFilteredWallets(toAddressOrName);
+    const { currentAddress } = useCurrentAddressStore();
+    const selectableWallets = wallets.filter((a) => a !== currentAddress);
 
     useEffect(() => {
       setTimeout(() => {
@@ -375,7 +386,11 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
                 >
                   <AnimatePresence>
                     {inputVisible ? (
-                      <Box as={motion.div} layout="position">
+                      <Box
+                        as={motion.div}
+                        layout="position"
+                        onClick={onDropdownAction}
+                      >
                         <Input
                           testId="to-address-input"
                           value={toAddressOrName}
@@ -387,6 +402,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
                           variant="transparent"
                           style={{ paddingLeft: 0, paddingRight: 0 }}
                           innerRef={inputRef}
+                          tabIndex={0}
                         />
                       </Box>
                     ) : (
@@ -417,18 +433,18 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
           }
           dropdownComponent={
             <DropdownWalletsList
-              wallets={wallets}
+              wallets={selectableWallets}
               watchedWallets={watchedWallets}
               contacts={contacts}
               selectWalletAndCloseDropdown={selectWalletAndCloseDropdown}
             />
           }
           dropdownVisible={dropdownVisible}
-          onDropdownAction={onDropdownAction}
           rightComponent={
-            <InputActionButon
+            <InputActionButton
               showClose={!!toAddress}
               onClose={onActionClose}
+              onDropdownAction={onDropdownAction}
               dropdownVisible={dropdownVisible}
               testId={`input-wrapper-close-to-address-input`}
             />

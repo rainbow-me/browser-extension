@@ -9,6 +9,7 @@ import { getWallets } from '../handlers/wallet';
 export interface AddressAndType {
   address: Address;
   type: KeychainType;
+  vendor: string | undefined;
 }
 
 const walletsQueryKey = ['wallets'];

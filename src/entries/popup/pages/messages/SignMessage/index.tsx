@@ -127,7 +127,7 @@ export function SignMessage({
         callback: rejectRequest,
       });
     }
-  }, [isWatchingWallet, rejectRequest, triggerAlert]);
+  }, [isWatchingWallet, rejectRequest]);
 
   return (
     <Box style={{ overflowY: 'hidden' }} width="full" height="full">

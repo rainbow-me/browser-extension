@@ -17,6 +17,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { rowTransparentAccentHighlight } from '~/design-system/styles/rowTransparentAccentHighlight.css';
 
 import { useNativeAssetForNetwork } from '../../hooks/useNativeAssetForNetwork';
@@ -77,18 +78,22 @@ export default function AccountItem({
   }
 
   return (
-    <Box
+    <Lens
       className={rowHighlight ? rowTransparentAccentHighlight : undefined}
-      onClick={onClick}
+      handleOpenMenu={onClick}
       key={account}
-      paddingHorizontal="12px"
-      paddingVertical="8px"
+      onClick={onClick}
+      paddingHorizontal="14px"
+      paddingVertical="10px"
       borderRadius="12px"
-      width="full"
     >
       <Columns space="8px" alignVertical="center" alignHorizontal="justify">
         <Column width="content">
-          <Box height="fit" position="relative">
+          <Box
+            testId={`account-item-${displayName}`}
+            height="fit"
+            position="relative"
+          >
             {isSelected && (
               <Box
                 style={{
@@ -130,6 +135,6 @@ export default function AccountItem({
           <Box>{rightComponent}</Box>
         </Column>
       </Columns>
-    </Box>
+    </Lens>
   );
 }

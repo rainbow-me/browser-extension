@@ -51,7 +51,7 @@ export const CreateWalletPrompt = ({
         address,
       });
       setCurrentAddress(address);
-      navigate(ROUTES.HOME);
+      navigate(ROUTES.HOME, { state: { isBack: true } });
       return;
     }
     setError(i18n.t('errors.no_wallet_name_set'));
@@ -90,6 +90,13 @@ export const CreateWalletPrompt = ({
         <Rows space="24px">
           <Row>
             <Rows space="20px">
+              <Row>
+                <Box paddingTop="12px">
+                  <Text size="16pt" weight="bold" color="label" align="center">
+                    {i18n.t('create_wallet_prompt.title')}
+                  </Text>
+                </Box>
+              </Row>
               <Row>
                 <Inset horizontal="104px">
                   <Separator color="separatorTertiary" />
@@ -172,6 +179,8 @@ export const CreateWalletPrompt = ({
                   width="full"
                   borderRadius="9px"
                   tabIndex={2}
+                  symbol="return.left"
+                  symbolSide="left"
                 >
                   {i18n.t('create_wallet_prompt.create_wallet')}
                 </Button>
@@ -186,7 +195,7 @@ export const CreateWalletPrompt = ({
                   borderRadius="9px"
                   tabIndex={3}
                 >
-                  {i18n.t('common_actions.cancel')}
+                  {i18n.t('common_actions.back')}
                 </Button>
               </Row>
             </Rows>

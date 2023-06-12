@@ -1,7 +1,8 @@
 import React, { ChangeEvent, useCallback, useState } from 'react';
-import { Address, useEnsAvatar } from 'wagmi';
+import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
+import { useENSAvatar } from '~/core/resources/metadata/ensAvatar';
 import { useContactsStore } from '~/core/state/contacts';
 import { truncateAddress } from '~/core/utils/address';
 import {
@@ -79,6 +80,7 @@ const SaveOrEditContact = ({
                   placeholder="Name"
                   style={{ textAlign: 'center' }}
                   testId="contact-prompt-input"
+                  tabIndex={1}
                 />
               </Box>
 
@@ -99,6 +101,7 @@ const SaveOrEditContact = ({
             variant="flat"
             borderRadius="9px"
             onClick={onSave}
+            tabIndex={2}
             testId="contact-prompt-confirm"
           >
             {i18n.t(
@@ -114,6 +117,7 @@ const SaveOrEditContact = ({
             variant="flat"
             borderRadius="9px"
             onClick={onCancel}
+            tabIndex={3}
           >
             {i18n.t(`contacts.cancel`)}
           </Button>
@@ -217,7 +221,7 @@ export const ContactPrompt = ({
     }>
   >;
 }) => {
-  const { data: ensAvatar } = useEnsAvatar({ addressOrName: address });
+  const { data: ensAvatar } = useENSAvatar({ addressOrName: address });
   const { data: dominantColor } = useDominantColor({
     imageUrl: ensAvatar ?? undefined,
   });

@@ -164,6 +164,7 @@ export type ButtonVariant =
 export const backdropFilter = {
   'blur(12px)': 'blur(12px)',
   'blur(26px)': 'blur(26px)',
+  'blur(80px)': 'blur(80px)',
   'opacity(80%)': 'opacity(80%)',
   'opacity(5%)': 'opacity(5%)',
   'opacity(30%)': 'opacity(30%)',
@@ -636,6 +637,7 @@ export const linearGradients = {
 export type LinearGradient = keyof typeof linearGradients;
 
 export const space = {
+  '1px': 1,
   '2px': 2,
   '3px': 3,
   '4px': 4,
@@ -649,6 +651,7 @@ export const space = {
   '14px': 14,
   '15px': 15,
   '16px': 16,
+  '18px': 18,
   '19px': 19,
   '20px': 20,
   '22px': 22,
@@ -662,6 +665,7 @@ export const space = {
   '36px': 36,
   '40px': 40,
   '44px': 44,
+  '48px': 48,
   '50px': 50,
   '52px': 52,
   '60px': 60,
@@ -686,6 +690,7 @@ export const negativeSpace = {
   '-14px': -14,
   '-15px': -15,
   '-16px': -16,
+  '-18px': -18,
   '-19px': -19,
   '-20px': -20,
   '-22px': -22,
@@ -698,6 +703,7 @@ export const negativeSpace = {
   '-35px': -35,
   '-36px': -36,
   '-40px': -40,
+  '-48px': -48,
   '-44px': -44,
   '-50px': -50,
   '-52px': -52,
@@ -712,6 +718,7 @@ export const spaceToNegativeSpace: Record<
   keyof typeof space,
   keyof typeof negativeSpace
 > = {
+  '1px': '-1px',
   '2px': '-2px',
   '3px': '-3px',
   '4px': '-4px',
@@ -725,6 +732,7 @@ export const spaceToNegativeSpace: Record<
   '14px': '-14px',
   '15px': '-15px',
   '16px': '-16px',
+  '18px': '-18px',
   '19px': '-19px',
   '20px': '-20px',
   '22px': '-22px',
@@ -738,6 +746,7 @@ export const spaceToNegativeSpace: Record<
   '36px': '-36px',
   '40px': '-40px',
   '44px': '-44px',
+  '48px': '-48px',
   '50px': '-50px',
   '52px': '-52px',
   '60px': '-60px',
@@ -749,6 +758,7 @@ export const spaceToNegativeSpace: Record<
 
 export const positionSpace = {
   '0': 0,
+  '16px': '16px',
 } as const;
 
 export type Space = keyof typeof space;
@@ -874,6 +884,12 @@ export const symbolNames = selectSymbolNames(
   'shuffle',
   'chart.bar.xaxis',
   'arrow.2.squarepath',
+  'person.crop.circle.badge.xmark',
+  'person.crop.circle.badge.checkmark',
+  'return.left',
+  'plus',
+  'book.closed.fill',
+  'message.fill',
 );
 export type SymbolName = typeof symbolNames[number];
 
@@ -881,6 +897,7 @@ export const radii = {
   round: 9999,
   '2px': 2,
   '3px': 3,
+  '5px': 5,
   '6px': 6,
   '8px': 8,
   '9px': 9,
@@ -903,6 +920,7 @@ export type AnimatedRouteDirection =
   | 'right'
   | 'left'
   | 'up'
+  | 'upRight'
   | 'down'
   | 'deceleratedShort'
   | 'emphasizedShort';
@@ -920,24 +938,40 @@ export type AnimatedRouteConfig = Record<
 
 export const animatedRouteTransitionConfig = {
   base: {
-    ease: [0.24, 0, 0, 1],
-    duration: 0.12,
+    type: 'spring',
+    stiffness: 1111,
+    damping: 50,
+    mass: 1,
   },
   right: {
-    ease: [0.05, 0.7, 0.1, 1],
-    duration: 0.26,
+    type: 'spring',
+    stiffness: 1111,
+    damping: 50,
+    mass: 1,
   },
   left: {
-    ease: [0.24, 0, 0, 1],
-    duration: 0.12,
+    type: 'spring',
+    stiffness: 1111,
+    damping: 50,
+    mass: 1,
   },
   up: {
-    ease: [0.05, 0.7, 0.1, 1],
-    duration: 0.26,
+    type: 'spring',
+    stiffness: 1111,
+    damping: 50,
+    mass: 1,
+  },
+  upRight: {
+    type: 'spring',
+    stiffness: 1111,
+    damping: 50,
+    mass: 1,
   },
   down: {
-    ease: [0.24, 0, 0, 1],
-    duration: 0.12,
+    type: 'spring',
+    stiffness: 1111,
+    damping: 50,
+    mass: 1,
   },
   deceleratedShort: {
     ease: [0, 0, 0, 1],

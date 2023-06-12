@@ -15,6 +15,7 @@ import { Address } from 'wagmi';
 import { i18n } from '~/core/languages';
 import { ETH_ADDRESS } from '~/core/references';
 import { ParsedAddressAsset } from '~/core/types/assets';
+import { ChainId } from '~/core/types/chains';
 import { handleSignificantDecimals } from '~/core/utils/numbers';
 import { Bleed, Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { Input } from '~/design-system/components/Input/Input';
@@ -36,7 +37,7 @@ import {
 import { SortMethod } from '../../hooks/send/useSendAsset';
 import { AssetRow } from '../home/Tokens';
 
-import { InputActionButon } from './InputActionButton';
+import { InputActionButton } from './InputActionButton';
 
 const TokenSortMenu = ({
   asset,
@@ -128,7 +129,10 @@ interface InputRefAPI {
 interface SendTokenInputProps {
   asset: ParsedAddressAsset | null;
   assets: ParsedAddressAsset[];
-  selectAssetAddress: (address: Address | typeof ETH_ADDRESS | '') => void;
+  selectAssetAddressAndChain: (
+    address: Address | typeof ETH_ADDRESS | '',
+    chainId: ChainId,
+  ) => void;
   dropdownClosed: boolean;
   setSortMethod: (sortMethod: SortMethod) => void;
   sortMethod: SortMethod;
@@ -142,7 +146,7 @@ export const SendTokenInput = React.forwardRef<
   const {
     asset,
     assets,
-    selectAssetAddress,
+    selectAssetAddressAndChain,
     dropdownClosed = false,
     setSortMethod,
     sortMethod,
@@ -170,11 +174,11 @@ export const SendTokenInput = React.forwardRef<
   }, [dropdownVisible, inputRef]);
 
   const onSelectAsset = useCallback(
-    (address: Address | typeof ETH_ADDRESS | '') => {
-      selectAssetAddress(address);
+    (address: Address | typeof ETH_ADDRESS | '', chainId: ChainId) => {
+      selectAssetAddressAndChain(address, chainId);
       setDropdownVisible(false);
     },
-    [selectAssetAddress],
+    [selectAssetAddressAndChain],
   );
 
   const onInputValueChange = useCallback(
@@ -196,15 +200,16 @@ export const SendTokenInput = React.forwardRef<
   }, [assets, inputValue]);
 
   const onCloseDropdown = useCallback(() => {
-    onSelectAsset('');
+    onSelectAsset('', ChainId.mainnet);
     setTimeout(() => {
       inputRef?.current?.focus();
+      onDropdownAction();
     }, 200);
-  }, [inputRef, onSelectAsset]);
+  }, [inputRef, onSelectAsset, onDropdownAction]);
 
   const selectAsset = useCallback(
-    (address: Address | typeof ETH_ADDRESS | '') => {
-      onSelectAsset(address);
+    (address: Address | typeof ETH_ADDRESS | '', chainId: ChainId) => {
+      onSelectAsset(address, chainId);
       setInputValue('');
     },
     [onSelectAsset],
@@ -231,7 +236,7 @@ export const SendTokenInput = React.forwardRef<
       centerComponent={
         <Box width="full">
           {inputVisible ? (
-            <Box as={motion.div} layout="position">
+            <Box as={motion.div} layout="position" onClick={onDropdownAction}>
               <Input
                 testId="token-input"
                 value={inputValue}
@@ -272,9 +277,10 @@ export const SendTokenInput = React.forwardRef<
         </Box>
       }
       rightComponent={
-        <InputActionButon
+        <InputActionButton
           showClose={!!asset}
           onClose={onCloseDropdown}
+          onDropdownAction={onDropdownAction}
           dropdownVisible={dropdownVisible}
           testId={`input-wrapper-close-${'token-input'}`}
         />
@@ -314,7 +320,7 @@ export const SendTokenInput = React.forwardRef<
                 <Box
                   paddingHorizontal="8px"
                   key={`${asset?.uniqueId}-${i}`}
-                  onClick={() => selectAsset(asset.address)}
+                  onClick={() => selectAsset(asset.address, asset.chainId)}
                   testId={`token-input-asset-${asset?.uniqueId}`}
                 >
                   <Box
@@ -355,7 +361,6 @@ export const SendTokenInput = React.forwardRef<
         </Stack>
       }
       dropdownVisible={dropdownVisible}
-      onDropdownAction={onDropdownAction}
       borderVisible={!asset}
     />
   );

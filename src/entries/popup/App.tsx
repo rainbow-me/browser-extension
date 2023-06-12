@@ -1,4 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import * as React from 'react';
 import { HashRouter } from 'react-router-dom';
@@ -21,6 +21,7 @@ import { Box, ThemeProvider } from '~/design-system';
 import { Alert } from '~/design-system/components/Alert/Alert';
 
 import { Routes } from './Routes';
+import { HWRequestListener } from './components/HWRequestListener/HWRequestListener';
 import { IdleTimer } from './components/IdleTimer/IdleTimer';
 import { Toast } from './components/Toast/Toast';
 import { AuthProvider } from './hooks/useAuth';
@@ -67,36 +68,40 @@ export function App() {
   const isFullScreen = useIsFullScreen();
 
   return (
-    <PersistQueryClientProvider
-      client={queryClient}
-      persistOptions={persistOptions}
-    >
-      <WagmiConfig client={wagmiClient}>
-        <ThemeProvider theme={currentTheme}>
-          {playground ? (
-            PlaygroundComponents[playground]
-          ) : (
-            <AuthProvider>
-              <Box
-                id="main"
-                background="surfacePrimaryElevated"
-                style={{
-                  maxWidth: !isFullScreen
-                    ? `${POPUP_DIMENSIONS.width}px`
-                    : undefined,
-                }}
-              >
-                <HashRouter>
-                  <Routes />
-                </HashRouter>
-              </Box>
-              <IdleTimer />
-              <Toast />
-              <Alert />
-            </AuthProvider>
-          )}
-        </ThemeProvider>
-      </WagmiConfig>
-    </PersistQueryClientProvider>
+    <>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={persistOptions}
+      >
+        <WagmiConfig client={wagmiClient}>
+          <ThemeProvider theme={currentTheme}>
+            {playground ? (
+              PlaygroundComponents[playground]
+            ) : (
+              <AuthProvider>
+                <Box
+                  id="main"
+                  background="surfacePrimaryElevated"
+                  style={{
+                    maxWidth: !isFullScreen
+                      ? `${POPUP_DIMENSIONS.width}px`
+                      : undefined,
+                  }}
+                >
+                  <HashRouter>
+                    <Routes>
+                      <Toast />
+                      <Alert />
+                    </Routes>
+                  </HashRouter>
+                </Box>
+                <IdleTimer />
+              </AuthProvider>
+            )}
+          </ThemeProvider>
+        </WagmiConfig>
+      </PersistQueryClientProvider>
+      <HWRequestListener />
+    </>
   );
 }

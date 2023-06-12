@@ -1,9 +1,11 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { Wallet } from '@ethersproject/wallet';
+import { chain, getProvider } from '@wagmi/core';
 import { Address } from 'wagmi';
 
 import { KeychainType } from '~/core/types/keychainTypes';
 
+import { HWSigner } from '../HWSigner';
 import { IKeychain, PrivateKey } from '../IKeychain';
 
 export interface SerializedHardwareWalletKeychain {
@@ -66,7 +68,14 @@ export class HardwareWalletKeychain implements IKeychain {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getSigner(address: Address): Signer {
-    throw new Error('Method not implemented.');
+    const provider = getProvider({ chainId: chain.mainnet.id });
+    return new HWSigner(
+      provider,
+      this.getPath(address),
+      privates.get(this).deviceId,
+      address,
+      this.vendor as string,
+    );
   }
 
   getPath(address: Address): string {

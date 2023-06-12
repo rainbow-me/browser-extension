@@ -12,6 +12,7 @@ import { useAccount } from 'wagmi';
 
 import { analytics } from '~/analytics';
 import { event } from '~/analytics/event';
+import { shortcuts } from '~/core/references/shortcuts';
 import { usePendingRequestStore } from '~/core/state';
 import { AccentColorProvider, Box, Inset, Separator } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
@@ -21,8 +22,10 @@ import { Navbar } from '../../components/Navbar/Navbar';
 import { useAvatar } from '../../hooks/useAvatar';
 import { useCurrentHomeSheet } from '../../hooks/useCurrentHomeSheet';
 import { useHomeShortcuts } from '../../hooks/useHomeShortcuts';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import usePrevious from '../../hooks/usePrevious';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { useSwitchWalletShortcuts } from '../../hooks/useSwitchWalletShortcuts';
 import { MainLayout } from '../../layouts/MainLayout';
 import { StickyHeader } from '../../layouts/StickyHeader';
 import { ROUTES } from '../../urls';
@@ -91,7 +94,19 @@ export function Home() {
     analytics.track(event.walletViewed);
   }, []);
 
+  useKeyboardShortcut({
+    handler: (e) => {
+      if (e.key === shortcuts.global.BACK.key) {
+        onSelectTab('tokens');
+      }
+      if (e.key === shortcuts.global.FORWARD.key) {
+        onSelectTab('activity');
+      }
+    },
+  });
+
   useHomeShortcuts();
+  useSwitchWalletShortcuts();
 
   return (
     <AccentColorProvider color={avatar?.color || globalColors.blue50}>

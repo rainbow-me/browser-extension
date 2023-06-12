@@ -34,7 +34,7 @@ export default function SeedPhraseTable({ seed }: { seed: string }) {
                     paddingRight: '0px',
                   }}
                 >
-                  <Inline alignVertical="center" space="10px">
+                  <Inline alignVertical="bottom" space="10px">
                     <Text
                       size="11pt"
                       weight="medium"
@@ -89,7 +89,7 @@ export default function SeedPhraseTable({ seed }: { seed: string }) {
                     paddingLeft: '0px',
                   }}
                 >
-                  <Inline alignVertical="center" space="10px">
+                  <Inline alignVertical="bottom" space="10px">
                     <Text
                       size="11pt"
                       weight="medium"

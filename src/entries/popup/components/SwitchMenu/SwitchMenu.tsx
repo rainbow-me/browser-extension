@@ -1,19 +1,105 @@
-import React, { ReactNode } from 'react';
+import * as SelectPrimitive from '@radix-ui/react-select';
+import clsx from 'clsx';
+import React, { PropsWithChildren } from 'react';
 
 import { shortcuts } from '~/core/references/shortcuts';
-import { Box } from '~/design-system';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItemIndicator,
-  DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '~/entries/popup/components/DropdownMenu/DropdownMenu';
+import { useCurrentAddressStore } from '~/core/state';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
+import { AccentColorProvider, Box, Text, ThemeProvider } from '~/design-system';
+import { accentMenuFocusVisibleStyle } from '~/design-system/components/Lens/Lens.css';
+import { globalColors } from '~/design-system/styles/designTokens';
 
+import { useAvatar } from '../../hooks/useAvatar';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+
+const SelectItem = ({
+  value,
+  isSelected,
+  children,
+}: { isSelected: boolean } & SelectPrimitive.SelectItemProps) => {
+  return (
+    <SelectPrimitive.Item asChild value={value}>
+      <Box
+        paddingVertical="10px"
+        paddingHorizontal="8px"
+        marginHorizontal="-8px"
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        className={clsx([!isSelected && accentMenuFocusVisibleStyle])}
+        borderRadius="12px"
+        outline="none"
+        background={
+          isSelected
+            ? 'accent'
+            : { default: 'transparent', hover: 'surfaceSecondary' }
+        }
+        borderColor={isSelected ? 'buttonStrokeSecondary' : 'transparent'}
+        borderWidth="1px"
+      >
+        {children}
+      </Box>
+    </SelectPrimitive.Item>
+  );
+};
+
+type SelectContentProps = PropsWithChildren<
+  Pick<SelectPrimitive.SelectContentProps, 'align' | 'onPointerDownOutside'>
+>;
+const SelectContent = React.forwardRef<HTMLDivElement, SelectContentProps>(
+  function SelectContent(
+    { children, align = 'start' }: SelectContentProps,
+    ref,
+  ) {
+    const { currentTheme } = useCurrentThemeStore();
+    const { currentAddress } = useCurrentAddressStore();
+    const { avatar } = useAvatar({ address: currentAddress });
+    return (
+      <SelectPrimitive.Portal>
+        <AccentColorProvider color={avatar?.color || globalColors.blue60}>
+          <ThemeProvider theme={currentTheme}>
+            <SelectPrimitive.Content
+              asChild
+              tabIndex={-1}
+              ref={ref}
+              position="popper"
+              align={align}
+              sideOffset={16}
+              style={{ overflowY: 'scroll', width: '204px' }}
+              hideWhenDetached
+            >
+              <Box
+                alignItems="center"
+                justifyContent="center"
+                display="flex"
+                backdropFilter="blur(26px)"
+                paddingHorizontal="12px"
+                paddingVertical="4px"
+                background="surfaceMenu"
+                borderColor="separatorTertiary"
+                borderWidth="1px"
+                borderRadius="16px"
+              >
+                <SelectPrimitive.Viewport asChild>
+                  <Box
+                    style={{
+                      maxHeight:
+                        'calc(var(--radix-select-content-available-height) - 8px)', // available height minus vertical padding
+                      overflow: 'visible',
+                      width: '100%',
+                    }}
+                  >
+                    {children}
+                  </Box>
+                </SelectPrimitive.Viewport>
+              </Box>
+            </SelectPrimitive.Content>
+          </ThemeProvider>
+        </AccentColorProvider>
+      </SelectPrimitive.Portal>
+    );
+  },
+);
 
 interface SwitchMenuProps {
   title?: string;
@@ -26,7 +112,6 @@ interface SwitchMenuProps {
   align?: 'start' | 'center' | 'end';
   onOpenChange?: (open: boolean) => void;
   open?: boolean;
-  controlled?: boolean;
   onClose?: () => void;
 }
 
@@ -41,83 +126,69 @@ export const SwitchMenu = ({
   align,
   onOpenChange,
   open,
-  controlled,
   onClose,
 }: SwitchMenuProps) => {
   useKeyboardShortcut({
-    condition: () => !!controlled,
+    condition: () => open !== undefined,
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.global.CLOSE.key) {
         e.preventDefault();
+        e.stopPropagation();
         onClose?.();
       }
     },
   });
   return (
-    <SwitchMenuContainer
-      controlled={controlled}
-      onOpenChange={onOpenChange}
+    <SelectPrimitive.Root
+      value={selectedValue}
+      onValueChange={onValueChange}
+      onOpenChange={(open) => {
+        onOpenChange?.(open);
+        if (!open) onClose?.();
+      }}
       open={open}
     >
-      <DropdownMenuTrigger asChild>
+      <SelectPrimitive.Trigger asChild>
         <Box style={{ cursor: 'default' }}>{renderMenuTrigger}</Box>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align={align}
-        onPointerDownOutside={() => {
-          if (controlled) {
-            onClose?.();
-          }
-        }}
-      >
-        {title ? (
-          <>
-            <DropdownMenuLabel>{title}</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-          </>
-        ) : null}
-        <DropdownMenuRadioGroup
-          value={selectedValue}
-          onValueChange={onValueChange}
-        >
-          {menuItems.map((item, i) => {
-            return (
-              <DropdownMenuRadioItem
-                key={i}
+      </SelectPrimitive.Trigger>
+
+      <SelectContent align={align} onPointerDownOutside={onClose}>
+        <SelectPrimitive.Group asChild>
+          <Box width="full" paddingBottom="4px">
+            {title && (
+              <>
+                <Box
+                  as={SelectPrimitive.Label}
+                  paddingTop="8px"
+                  paddingBottom="12px"
+                >
+                  <Text color="label" size="14pt" weight="bold" align="center">
+                    {title}
+                  </Text>
+                </Box>
+                <Box
+                  as={SelectPrimitive.Separator}
+                  style={{ borderRadius: 1 }}
+                  borderWidth="1px"
+                  borderColor="separatorSecondary"
+                />
+              </>
+            )}
+            {menuItems.map((item, i) => (
+              <SelectItem
+                key={item}
                 value={item}
-                selectedValue={selectedValue}
+                isSelected={item === selectedValue}
               >
                 {renderMenuItem(item, i)}
-                <DropdownMenuItemIndicator style={{ marginLeft: 'auto' }}>
+                <SelectPrimitive.ItemIndicator asChild>
                   {menuItemIndicator}
-                </DropdownMenuItemIndicator>
-              </DropdownMenuRadioItem>
-            );
-          })}
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </SwitchMenuContainer>
+                </SelectPrimitive.ItemIndicator>
+              </SelectItem>
+            ))}
+          </Box>
+        </SelectPrimitive.Group>
+      </SelectContent>
+    </SelectPrimitive.Root>
   );
-};
-
-const SwitchMenuContainer = ({
-  controlled,
-  children,
-  onOpenChange,
-  open,
-}: {
-  controlled?: boolean;
-  children: ReactNode;
-  onOpenChange?: (v: boolean) => void;
-  open?: boolean;
-}) => {
-  if (controlled) {
-    return (
-      <DropdownMenu open={open} onOpenChange={onOpenChange}>
-        {children}
-      </DropdownMenu>
-    );
-  }
-
-  return <DropdownMenu onOpenChange={onOpenChange}>{children}</DropdownMenu>;
 };

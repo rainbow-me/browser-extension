@@ -8,6 +8,7 @@ import { i18n } from '~/core/languages';
 import { useFeatureFlagsStore } from '~/core/state/currentSettings/featureFlags';
 import { truncateAddress } from '~/core/utils/address';
 import { Box, ButtonSymbol, Inline, Inset, Stack, Text } from '~/design-system';
+import { triggerAlert } from '~/design-system/components/Alert/util';
 import { SymbolProps } from '~/design-system/components/Symbol/Symbol';
 import { BoxStyles, TextStyles } from '~/design-system/styles/core.css';
 
@@ -16,8 +17,8 @@ import { Avatar } from '../../components/Avatar/Avatar';
 import { Link } from '../../components/Link/Link';
 import { triggerToast } from '../../components/Toast/Toast';
 import { useCurrentAccount } from '../../hooks/useAccounts';
-import { useAlert } from '../../hooks/useAlert';
 import { useAvatar } from '../../hooks/useAvatar';
+import { useNavigateToSwaps } from '../../hooks/useNavigateToSwaps';
 import { ROUTES } from '../../urls';
 import { tabIndexes } from '../../utils/tabIndexes';
 
@@ -90,7 +91,7 @@ function ActionButtonsSection() {
 
   const currentAccount = useCurrentAccount();
   const { featureFlags } = useFeatureFlagsStore();
-  const { triggerAlert } = useAlert();
+  const navigateToSwaps = useNavigateToSwaps();
 
   const handleCopy = React.useCallback(() => {
     navigator.clipboard.writeText(address as string);
@@ -114,11 +115,11 @@ function ActionButtonsSection() {
 
   const alertWatchingWallet = React.useCallback(() => {
     triggerAlert({ text: i18n.t('alert.wallet_watching_mode') });
-  }, [triggerAlert]);
+  }, []);
 
   const alertComingSoon = React.useCallback(() => {
     triggerAlert({ text: i18n.t('alert.coming_soon') });
-  }, [triggerAlert]);
+  }, []);
 
   return (
     <Box style={{ height: 56 }}>
@@ -131,31 +132,26 @@ function ActionButtonsSection() {
             testId="header-link-copy"
             tabIndex={tabIndexes.WALLET_HEADER_COPY_BUTTON}
           />
-          <Link
-            tabIndex={-1}
-            id="header-link-swap"
-            to={allowSwap ? ROUTES.SWAP : '#'}
-            state={{ from: ROUTES.HOME }}
+
+          <ActionButton
+            symbol="arrow.triangle.swap"
+            testId="header-link-swap"
+            text={i18n.t('wallet_header.swap')}
+            tabIndex={tabIndexes.WALLET_HEADER_SWAP_BUTTON}
             onClick={
               allowSwap
-                ? () => null
+                ? () => navigateToSwaps()
                 : currentAccount.isWatched
                 ? alertWatchingWallet
                 : alertComingSoon
             }
-          >
-            <ActionButton
-              symbol="arrow.triangle.swap"
-              text={i18n.t('wallet_header.swap')}
-              tabIndex={tabIndexes.WALLET_HEADER_SWAP_BUTTON}
-            />
-          </Link>
+          />
 
           <Link
             tabIndex={-1}
             id="header-link-send"
             to={allowSend ? ROUTES.SEND : '#'}
-            state={{ from: ROUTES.HOME }}
+            state={{ from: ROUTES.HOME, to: ROUTES.SEND }}
             onClick={allowSend ? () => null : alertWatchingWallet}
           >
             <ActionButton

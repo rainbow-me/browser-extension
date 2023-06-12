@@ -11,7 +11,7 @@ import {
 } from '~/core/types/gas';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
-import { logger } from '~/logger';
+import { RainbowError, logger } from '~/logger';
 
 import { ETH_ADDRESS, gasUnits } from '../../references';
 import { gasStore } from '../../state';
@@ -42,8 +42,7 @@ export const getAssetRawAllowance = async ({
     const allowance = await tokenContract.allowance(owner, spender);
     return allowance.toString();
   } catch (error) {
-    logger.error({
-      name: 'getRawAllowance: error',
+    logger.error(new RainbowError('getRawAllowance: error'), {
       message: (error as Error)?.message,
     });
     return null;
@@ -101,8 +100,7 @@ export const estimateApprove = async ({
     );
     return gasLimit ? gasLimit.toString() : `${gasUnits.basic_approval}`;
   } catch (error) {
-    logger.error({
-      name: 'unlock: error estimateApprove',
+    logger.error(new RainbowError('unlock: error estimateApprove'), {
       message: (error as Error)?.message,
     });
     return `${gasUnits.basic_approval}`;
@@ -155,8 +153,7 @@ export const unlock = async ({
       chainId,
     });
   } catch (e) {
-    logger.error({
-      name: 'unlock: error estimateApprove',
+    logger.error(new RainbowError('unlock: error estimateApprove'), {
       message: (e as Error)?.message,
     });
     throw e;
@@ -182,8 +179,7 @@ export const unlock = async ({
       chainId,
     });
   } catch (e) {
-    logger.error({
-      name: 'unlock: error executeApprove',
+    logger.error(new RainbowError('unlock: error executeApprove'), {
       message: (e as Error)?.message,
     });
     throw e;

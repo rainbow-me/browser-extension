@@ -11,12 +11,12 @@ import {
   Columns,
   Inline,
   Separator,
-  Symbol,
+  Stack,
   Text,
 } from '~/design-system';
 import { globalColors } from '~/design-system/styles/designTokens';
 
-import { exportWallet } from '../../handlers/wallet';
+import { getImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 
 const shuffleArray = (array: { word: string; index: number }[]) => {
@@ -35,6 +35,8 @@ const addLeadingZero = (num: number) => {
   return `0${num}`;
 };
 
+const CHARACTER_WIDTH = 10;
+
 type SeedWord = { word: string; index: number };
 
 const SeedWordRow = ({
@@ -44,6 +46,7 @@ const SeedWordRow = ({
   validated,
   incorrect,
   handleSelect,
+  additionalWidth,
 }: {
   word: string;
   index: number;
@@ -51,6 +54,7 @@ const SeedWordRow = ({
   validated: boolean;
   incorrect: boolean;
   handleSelect: ({ word, index }: SeedWord) => void;
+  additionalWidth: number;
 }) => {
   const selectedWordPosition = useMemo(
     () =>
@@ -87,7 +91,7 @@ const SeedWordRow = ({
       background={backgroundForWord}
       key={`word_${index}`}
       style={{
-        width: '102px',
+        maxWidth: '136px',
         marginBottom: '8px',
         background: wordIsSelected
           ? undefined
@@ -98,20 +102,25 @@ const SeedWordRow = ({
       }}
       testId={`word_${word}`}
     >
-      <Inline wrap={false} alignVertical="center" space="10px">
-        <Text
-          size="11pt"
-          weight="medium"
-          color={wordIsSelected ? 'labelQuaternary' : 'transparent'}
-          align="center"
-        >
-          {wordIsSelected
-            ? addLeadingZero((1 + selectedWordPosition) * 4)
-            : '00'}
-        </Text>
-        <Text size="14pt" weight="bold" color="label" align="center">
-          {word}
-        </Text>
+      <Inline wrap={false} alignVertical="bottom" space="10px">
+        <Box style={{ width: '15px' }}>
+          <Text
+            size="11pt"
+            weight="bold"
+            color={wordIsSelected ? 'label' : 'transparent'}
+            align="center"
+          >
+            {wordIsSelected
+              ? addLeadingZero((1 + selectedWordPosition) * 4)
+              : '00'}
+          </Text>
+        </Box>
+
+        <Box style={{ width: 57 + additionalWidth }}>
+          <Text size="14pt" weight="bold" color="label" align="left">
+            {word}
+          </Text>
+        </Box>
       </Inline>
     </Box>
   );
@@ -165,17 +174,30 @@ export function SeedVerifyQuiz({
 
   useEffect(() => {
     const init = async () => {
-      const seedPhrase = await exportWallet(address, '');
-      const seedArray = seedPhrase.split(' ');
+      const secrets = await getImportWalletSecrets();
+      const seedArray = secrets[0].split(' ');
       const seedWithIndex = seedArray.map((word, index) => ({
         word,
         index,
       }));
-      setSeed(seedPhrase);
+      setSeed(secrets[0]);
       setRandomSeedWithIndex(shuffleArray(seedWithIndex));
     };
     init();
   }, [address, seed]);
+
+  const additionalWordWith = useMemo(() => {
+    const longestWordLength = seed
+      .split(' ')
+      .reduce(
+        (prevLength, word) =>
+          word.length > prevLength ? word.length : prevLength,
+        0,
+      );
+    const adittionalCharacters =
+      longestWordLength - 6 > 0 ? longestWordLength - 6 : 0;
+    return adittionalCharacters * CHARACTER_WIDTH;
+  }, [seed]);
 
   useEffect(() => {
     if (selectedWords.length === 3) {
@@ -208,38 +230,28 @@ export function SeedVerifyQuiz({
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
-      <Box paddingBottom="10px">
-        <Inline
-          wrap={false}
-          alignVertical="center"
-          alignHorizontal="center"
-          space="5px"
-        >
-          <Symbol
-            symbol="doc.plaintext"
-            size={16}
-            color="transparent"
-            weight={'bold'}
-          />
+      <Stack space="24px" alignHorizontal="center">
+        <Stack space="12px">
           <Text size="16pt" weight="bold" color="label" align="center">
             {i18n.t('seed_verify.title')}
           </Text>
-        </Inline>
-        <Box padding="16px" paddingTop="10px">
-          <Text
-            size="12pt"
-            weight="regular"
-            color="labelTertiary"
-            align="center"
-          >
-            {i18n.t('seed_verify.explanation')}
-          </Text>
+          <Box paddingHorizontal="15px">
+            <Text
+              size="12pt"
+              weight="regular"
+              color="labelTertiary"
+              align="center"
+            >
+              {i18n.t('seed_verify.explanation')}
+            </Text>
+          </Box>
+        </Stack>
+        <Box width="full" style={{ width: '106px' }}>
+          <Separator color="separatorTertiary" strokeWeight="1px" />
         </Box>
-      </Box>
-      <Box width="full" style={{ width: '106px' }}>
-        <Separator color="separatorTertiary" strokeWeight="1px" />
-      </Box>
-      <Box paddingTop="28px">
+      </Stack>
+
+      <Box paddingTop="36px">
         <Box
           flexBasis="0"
           width="fit"
@@ -267,6 +279,7 @@ export function SeedVerifyQuiz({
                     incorrect={incorrect}
                     selectedWords={selectedWords}
                     handleSelect={handleSelect}
+                    additionalWidth={additionalWordWith}
                   />
                 ))}
               </Box>
@@ -295,6 +308,7 @@ export function SeedVerifyQuiz({
                     incorrect={incorrect}
                     selectedWords={selectedWords}
                     handleSelect={handleSelect}
+                    additionalWidth={additionalWordWith}
                   />
                 ))}
               </Box>
@@ -303,7 +317,7 @@ export function SeedVerifyQuiz({
         </Box>
       </Box>
 
-      <Box>
+      <Box paddingTop="10px">
         <Button
           color="labelTertiary"
           height="44px"

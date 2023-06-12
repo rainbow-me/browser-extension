@@ -1,19 +1,20 @@
+/* eslint-disable no-nested-ternary */
 import React, { useCallback, useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 
 import { i18n } from '~/core/languages';
 import { KeychainType, KeychainWallet } from '~/core/types/keychainTypes';
 import { setSettingWallets } from '~/core/utils/settings';
 import { Box, Symbol } from '~/design-system';
+import { LedgerIcon } from '~/entries/popup/components/LedgerIcon/LedgerIcon';
 import { Menu } from '~/entries/popup/components/Menu/Menu';
 import { MenuContainer } from '~/entries/popup/components/Menu/MenuContainer';
 import { MenuItem } from '~/entries/popup/components/Menu/MenuItem';
-import { create, getWallets } from '~/entries/popup/handlers/wallet';
+import { TrezorIcon } from '~/entries/popup/components/TrezorIcon/TrezorIcon';
+import { getWallets } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
 
 export function WalletsAndKeys() {
-  const { state } = useLocation();
   const navigate = useRainbowNavigate();
   const [wallets, setWallets] = useState<KeychainWallet[]>([]);
 
@@ -43,29 +44,14 @@ export function WalletsAndKeys() {
     fetchWallets();
   }, []);
 
-  const handleCreateNewRecoveryPhrase = useCallback(async () => {
-    const newWalletAccount = await create();
-    const wallet = {
-      accounts: [newWalletAccount],
-      imported: false,
-      type: KeychainType.HdKeychain,
-    };
-    setSettingWallets(wallet);
-    navigate(
-      ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_WARNING,
-      {
-        state: {
-          wallet,
-          password: state?.password,
-          showQuiz: true,
-        },
-      },
-    );
-  }, [navigate, state?.password]);
+  const handleCreateNewWallet = useCallback(async () => {
+    navigate(ROUTES.CHOOSE_WALLET_GROUP);
+  }, [navigate]);
 
   const walletCountPerType = {
     hd: 0,
     pk: 0,
+    hw: 0,
   };
 
   return (
@@ -94,6 +80,8 @@ export function WalletsAndKeys() {
               walletCountPerType.hd += 1;
             } else if (wallet.type === KeychainType.KeyPairKeychain) {
               walletCountPerType.pk += 1;
+            } else if (wallet.type === KeychainType.HardwareWalletKeychain) {
+              walletCountPerType.hw += 1;
             }
 
             return (
@@ -105,10 +93,14 @@ export function WalletsAndKeys() {
                       text={`${i18n.t(
                         wallet.type === KeychainType.HdKeychain
                           ? 'settings.privacy_and_security.wallets_and_keys.recovery_phrase_label'
+                          : wallet.type === KeychainType.HardwareWalletKeychain
+                          ? 'settings.privacy_and_security.wallets_and_keys.hardware_wallet_label'
                           : 'settings.privacy_and_security.wallets_and_keys.private_key_label',
                       )} ${
                         wallet.type === KeychainType.HdKeychain
                           ? walletCountPerType.hd
+                          : wallet.type === KeychainType.HardwareWalletKeychain
+                          ? walletCountPerType.hw
                           : walletCountPerType.pk
                       }`}
                     />
@@ -116,16 +108,24 @@ export function WalletsAndKeys() {
                   labelComponent={<MenuItem.Label text={label} />}
                   onClick={() => handleViewWallet(wallet)}
                   leftComponent={
-                    <Symbol
-                      symbol={
-                        singleAccount
-                          ? 'lock.square.fill'
-                          : 'lock.square.stack.fill'
-                      }
-                      weight="medium"
-                      size={18}
-                      color="labelTertiary"
-                    />
+                    wallet.type === KeychainType.HardwareWalletKeychain ? (
+                      wallet.vendor === 'Trezor' ? (
+                        <TrezorIcon />
+                      ) : (
+                        <LedgerIcon />
+                      )
+                    ) : (
+                      <Symbol
+                        symbol={
+                          singleAccount
+                            ? 'lock.square.fill'
+                            : 'lock.square.stack.fill'
+                        }
+                        weight="medium"
+                        size={18}
+                        color="labelTertiary"
+                      />
+                    )
                   }
                   hasRightArrow
                 />
@@ -148,12 +148,12 @@ export function WalletsAndKeys() {
               titleComponent={
                 <MenuItem.Title
                   text={i18n.t(
-                    'settings.privacy_and_security.wallets_and_keys.new_secret_phrase_and_wallet',
+                    'settings.privacy_and_security.wallets_and_keys.create_a_new_wallet',
                   )}
                   color="blue"
                 />
               }
-              onClick={handleCreateNewRecoveryPhrase}
+              onClick={handleCreateNewWallet}
             />
           </Menu>
         </MenuContainer>

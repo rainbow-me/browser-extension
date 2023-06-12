@@ -97,6 +97,7 @@ export const GweiInputMask = ({
             textAlign: 'center',
             paddingRight: 50,
           }}
+          tabIndex={0}
         />
       </Box>
     </Box>

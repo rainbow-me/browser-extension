@@ -101,7 +101,6 @@ export const TokenInput = React.forwardRef<
       openDropdown: () => {
         onDropdownOpen(true);
         setDropdownVisible(true);
-        inputRef?.current?.focus();
       },
     }));
 
@@ -119,8 +118,9 @@ export const TokenInput = React.forwardRef<
     }, [inputRef, onDropdownOpen, setAssetFilter]);
 
     const onClose = useCallback(() => {
+      onDropdownAction();
       selectAsset(null);
-    }, [selectAsset]);
+    }, [onDropdownAction, selectAsset]);
 
     const onInputValueChange = useCallback(
       (e: ChangeEvent<HTMLInputElement>) => {
@@ -167,7 +167,7 @@ export const TokenInput = React.forwardRef<
         }
         centerComponent={
           !asset ? (
-            <Box>
+            <Box onClick={onDropdownAction}>
               <Input
                 testId={`${testId}-search-token-input`}
                 value={assetFilter}
@@ -207,6 +207,7 @@ export const TokenInput = React.forwardRef<
           <SwapInputActionButton
             showClose={!!asset}
             onClose={onClose}
+            onDropdownAction={onDropdownAction}
             dropdownVisible={dropdownVisible}
             testId={`${testId}-token-input-remove`}
             asset={asset}
@@ -214,7 +215,6 @@ export const TokenInput = React.forwardRef<
         }
         dropdownComponent={dropdownComponent}
         dropdownVisible={dropdownVisible}
-        onDropdownAction={onDropdownAction}
         borderVisible
       />
     );

@@ -23,6 +23,7 @@ import {
   Symbol,
   Text,
 } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 import { TextOverflow } from '~/design-system/components/TextOverflow/TextOverflow';
 import { Space } from '~/design-system/styles/designTokens';
 
@@ -78,10 +79,12 @@ function Fee({
     [gasFeeParamsBySpeed, selectedSpeed],
   );
   const openCustomGasSheet = useCallback(() => {
-    setShowCustomGasSheet(true);
-    analyticsEvents?.customGasClicked &&
-      analytics.track(analyticsEvents?.customGasClicked);
-  }, [analyticsEvents?.customGasClicked]);
+    if (chainId === ChainId.mainnet) {
+      setShowCustomGasSheet(true);
+      analyticsEvents?.customGasClicked &&
+        analytics.track(analyticsEvents?.customGasClicked);
+    }
+  }, [analyticsEvents?.customGasClicked, chainId]);
 
   const closeCustomGasSheet = useCallback(
     () => setShowCustomGasSheet(false),
@@ -92,8 +95,9 @@ function Fee({
     (speed: GasSpeed) => {
       if (speed === GasSpeed.CUSTOM) {
         openCustomGasSheet();
+      } else {
+        setSelectedSpeed(speed);
       }
-      setSelectedSpeed(speed);
       analyticsEvents?.transactionSpeedSwitched &&
         analytics.track(analyticsEvents?.transactionSpeedSwitched, { speed });
     },
@@ -188,7 +192,7 @@ function Fee({
               ref={switchTransactionSpeedMenuRef}
             />
             {chainId === ChainId.mainnet ? (
-              <Box
+              <Lens
                 borderRadius="round"
                 boxShadow="12px accent"
                 borderWidth="2px"
@@ -204,7 +208,7 @@ function Fee({
                   symbol="slider.horizontal.3"
                   size={12}
                 />
-              </Box>
+              </Lens>
             ) : null}
           </Inline>
         </Column>

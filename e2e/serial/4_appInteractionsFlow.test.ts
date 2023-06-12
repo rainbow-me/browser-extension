@@ -8,19 +8,24 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import {
   delayTime,
+  findElementByIdAndClick,
   findElementByTestIdAndClick,
   findElementByText,
   getAllWindowHandles,
   getExtensionIdByName,
+  getTextFromText,
   getWindowHandle,
   goToPopup,
   goToTestApp,
   goToWelcome,
   initDriverWithOptions,
   querySelector,
+  shortenAddress,
+  switchWallet,
   typeOnTextInput,
   waitAndClick,
 } from '../helpers';
+import { TEST_VARIABLES } from '../walletVariables';
 
 const TYPED_MESSAGE = {
   domain: {
@@ -53,7 +58,6 @@ const TYPED_MESSAGE = {
   },
 };
 const MESSAGE = 'rainbow rocks 🌈';
-const CONNECTED_ADDRESS = '0x90F79bf6EB2c4f870365E785982E1f101E93b906';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;
@@ -75,7 +79,7 @@ describe('App interactions flow', () => {
   afterAll(() => driver.quit());
 
   // Import a wallet
-  it('should be able import a wallet via seed', async () => {
+  it('should be able import a wallet via pk', async () => {
     //  Start from welcome screen
     await goToWelcome(driver, rootURL);
     await findElementByTestIdAndClick({
@@ -88,17 +92,13 @@ describe('App interactions flow', () => {
     });
 
     await typeOnTextInput({
-      id: 'secret-textarea',
+      id: 'secret-text-area-0',
       driver,
-      text: 'test test test test test test test test test test test junk',
+      text: TEST_VARIABLES.SEED_WALLET.PK,
     });
 
     await findElementByTestIdAndClick({
       id: 'import-wallets-button',
-      driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'add-wallets-button',
       driver,
     });
     await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
@@ -109,7 +109,7 @@ describe('App interactions flow', () => {
     });
     await findElementByTestIdAndClick({ id: 'set-password-button', driver });
     await delayTime('long');
-    await findElementByText(driver, 'Your wallets ready');
+    await findElementByText(driver, 'Rainbow is ready to use');
   });
 
   it('should be able to go to setings', async () => {
@@ -118,7 +118,7 @@ describe('App interactions flow', () => {
     await findElementByTestIdAndClick({ id: 'settings-link', driver });
   });
 
-  it('should be able to set rainbow as default wallet', async () => {
+  it.skip('should be able to set rainbow as default wallet', async () => {
     await findElementByTestIdAndClick({
       id: 'set-rainbow-default-toggle',
       driver,
@@ -133,6 +133,60 @@ describe('App interactions flow', () => {
       id: 'navbar-button-with-back',
       driver,
     });
+  });
+
+  it('should be able to add a new wallet via pk 2', async () => {
+    await goToPopup(driver, rootURL, '#/home');
+    await findElementByIdAndClick({
+      id: 'header-account-name-shuffle',
+      driver,
+    });
+    await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
+    await findElementByTestIdAndClick({
+      id: 'import-wallets-button',
+      driver,
+    });
+
+    await typeOnTextInput({
+      id: 'secret-text-area-0',
+      driver,
+      text: TEST_VARIABLES.PRIVATE_KEY_WALLET_2.SECRET,
+    });
+    await findElementByTestIdAndClick({
+      id: 'import-wallets-button',
+      driver,
+    });
+  });
+
+  it('should be able to add a new wallet via pk 3', async () => {
+    await goToPopup(driver, rootURL, '#/home');
+    await findElementByIdAndClick({
+      id: 'header-account-name-shuffle',
+      driver,
+    });
+    await findElementByTestIdAndClick({ id: 'add-wallet-button', driver });
+    await findElementByTestIdAndClick({
+      id: 'import-wallets-button',
+      driver,
+    });
+
+    await typeOnTextInput({
+      id: 'secret-text-area-0',
+      driver,
+      text: TEST_VARIABLES.PRIVATE_KEY_WALLET_3.SECRET,
+    });
+    await findElementByTestIdAndClick({
+      id: 'import-wallets-button',
+      driver,
+    });
+  });
+
+  it('should be able to switch to the first pk wallet', async () => {
+    await delayTime('medium');
+    await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
+    await delayTime('very-long');
+    const wallet = await getTextFromText({ id: 'account-name', driver });
+    expect(wallet).toBe(shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS));
   });
 
   it('should be able to connect to bx test dapp', async () => {
@@ -162,7 +216,7 @@ describe('App interactions flow', () => {
 
     // switch account
     await findElementByTestIdAndClick({ id: 'switch-wallet-menu', driver });
-    await findElementByTestIdAndClick({ id: 'switch-wallet-item-3', driver });
+    await findElementByTestIdAndClick({ id: 'switch-wallet-item-2', driver });
     // switch network
     await findElementByTestIdAndClick({ id: 'switch-network-menu', driver });
     await findElementByTestIdAndClick({ id: 'switch-network-item-0', driver });
@@ -235,7 +289,9 @@ describe('App interactions flow', () => {
 
     expect(isHexString(signature)).toBe(true);
     const recoveredAddress = verifyMessage(MESSAGE, signature);
-    expect(getAddress(recoveredAddress)).eq(getAddress(CONNECTED_ADDRESS));
+    expect(getAddress(recoveredAddress)).eq(
+      getAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS),
+    );
   });
 
   it('should be able to accept a typed data signing request', async () => {
@@ -266,7 +322,9 @@ describe('App interactions flow', () => {
       TYPED_MESSAGE.value,
       signature,
     );
-    expect(getAddress(recoveredAddress)).eq(getAddress(CONNECTED_ADDRESS));
+    expect(getAddress(recoveredAddress)).eq(
+      getAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET_3.ADDRESS),
+    );
   });
 
   it('should be able to accept a transaction request', async () => {

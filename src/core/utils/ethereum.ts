@@ -25,19 +25,12 @@ export const isHexStringIgnorePrefix = (value: string): boolean => {
   return isHexString(updatedValue);
 };
 
+const validTLDs = ['eth', 'xyz', 'luxe', 'kred', 'reverse', 'addr', 'test'];
 export const isENSAddressFormat = (name: string) => {
-  const validTLDs = ['eth', 'xyz', 'luxe', 'kred', 'reverse', 'addr', 'test'];
-  const parts = !!name && name.split('.');
-
-  if (
-    !parts ||
-    parts.length === 1 ||
-    !parts[parts.length - 1] ||
-    !validTLDs.includes(parts[parts.length - 1].toLowerCase())
-  ) {
-    return false;
-  }
-  return true;
+  if (!name) return false;
+  const tld = name.split('.').at(-1);
+  if (!tld || tld === name) return false;
+  return validTLDs.includes(tld.toLowerCase());
 };
 
 /**

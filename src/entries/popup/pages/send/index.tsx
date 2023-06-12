@@ -17,6 +17,7 @@ import { shortcuts } from '~/core/references/shortcuts';
 import { useGasStore } from '~/core/state';
 import { useContactsStore } from '~/core/state/contacts';
 import { useConnectedToHardhatStore } from '~/core/state/currentSettings/connectedToHardhat';
+import { useCurrentThemeStore } from '~/core/state/currentSettings/currentTheme';
 import { useSelectedTokenStore } from '~/core/state/selectedToken';
 import { ChainId } from '~/core/types/chains';
 import {
@@ -24,6 +25,7 @@ import {
   TransactionLegacyGasParams,
 } from '~/core/types/gas';
 import { TransactionStatus, TransactionType } from '~/core/types/transactions';
+import { handleAssetAccentColor } from '~/core/utils/colors';
 import { addNewTransaction } from '~/core/utils/transactions';
 import { Box, Button, Inline, Row, Rows, Symbol, Text } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
@@ -68,6 +70,7 @@ export function Send() {
   }>({ show: false, action: 'save' });
   const [toAddressDropdownOpen, setToAddressDropdownOpen] = useState(false);
 
+  const { currentTheme } = useCurrentThemeStore();
   const navigate = useRainbowNavigate();
 
   const { isContact } = useContactsStore();
@@ -77,8 +80,13 @@ export function Send() {
 
   const { connectedToHardhat } = useConnectedToHardhatStore();
 
-  const { asset, selectAssetAddress, assets, setSortMethod, sortMethod } =
-    useSendAsset();
+  const {
+    asset,
+    selectAssetAddressAndChain,
+    assets,
+    setSortMethod,
+    sortMethod,
+  } = useSendAsset();
 
   const { clearCustomGasModified, selectedGas } = useGasStore();
 
@@ -90,6 +98,7 @@ export function Send() {
 
   const {
     assetAmount,
+    rawMaxAssetBalanceAmount,
     independentAmount,
     independentField,
     independentFieldRef,
@@ -102,6 +111,7 @@ export function Send() {
 
   const {
     currentCurrency,
+    maxAssetBalanceParams,
     chainId,
     data,
     fromAddress,
@@ -111,7 +121,7 @@ export function Send() {
     txToAddress,
     value,
     setToAddressOrName,
-  } = useSendState({ assetAmount, asset });
+  } = useSendState({ assetAmount, rawMaxAssetBalanceAmount, asset });
 
   const {
     buttonLabel,
@@ -128,15 +138,16 @@ export function Send() {
   });
 
   const controls = useAnimationControls();
-  const transactionRequest: TransactionRequest = useMemo(() => {
+  const transactionRequestForGas: TransactionRequest = useMemo(() => {
     return {
       to: txToAddress,
       from: fromAddress,
       value,
       chainId,
       data,
+      ...maxAssetBalanceParams,
     };
-  }, [txToAddress, fromAddress, value, chainId, data]);
+  }, [txToAddress, fromAddress, value, chainId, data, maxAssetBalanceParams]);
 
   const handleToAddressChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -235,11 +246,14 @@ export function Send() {
   );
 
   const selectAsset = useCallback(
-    (address: Address | typeof ETH_ADDRESS | '') => {
-      selectAssetAddress(address as Address);
+    (address: Address | typeof ETH_ADDRESS | '', chainId: ChainId) => {
+      selectAssetAddressAndChain(address as Address, chainId);
       setIndependentAmount('');
+      setTimeout(() => {
+        valueInputRef?.current?.focus();
+      }, 300);
     },
-    [selectAssetAddress, setIndependentAmount],
+    [selectAssetAddressAndChain, setIndependentAmount],
   );
 
   useEffect(() => {
@@ -273,7 +287,7 @@ export function Send() {
   useEffect(() => {
     // navigating from token row
     if (selectedToken) {
-      selectAsset(selectedToken.address);
+      selectAsset(selectedToken.address, selectedToken.chainId);
       // clear selected token
       setSelectedToken();
     }
@@ -317,6 +331,15 @@ export function Send() {
     },
   });
 
+  const assetAccentColor = useMemo(
+    () =>
+      handleAssetAccentColor(
+        currentTheme,
+        asset?.colors?.primary || asset?.colors?.fallback,
+      ),
+    [asset?.colors?.fallback, asset?.colors?.primary, currentTheme],
+  );
+
   return (
     <>
       <ExplainerSheet
@@ -332,9 +355,7 @@ export function Send() {
         action={contactSaveAction?.action}
         onSaveContactAction={setSaveContactAction}
       />
-      <AccentColorProviderWrapper
-        color={asset?.colors?.primary || asset?.colors?.fallback}
-      >
+      <AccentColorProviderWrapper color={assetAccentColor}>
         <ReviewSheet
           show={showReviewSheet}
           onCancel={closeReviewSheet}
@@ -387,9 +408,7 @@ export function Send() {
             </Row>
 
             <Row height="content">
-              <AccentColorProviderWrapper
-                color={asset?.colors?.primary || asset?.colors?.fallback}
-              >
+              <AccentColorProviderWrapper color={assetAccentColor}>
                 <Box
                   background="surfaceSecondaryElevated"
                   borderRadius="24px"
@@ -398,7 +417,7 @@ export function Send() {
                   <SendTokenInput
                     asset={asset}
                     assets={assets}
-                    selectAssetAddress={selectAsset}
+                    selectAssetAddressAndChain={selectAsset}
                     dropdownClosed={toAddressDropdownOpen}
                     setSortMethod={setSortMethod}
                     sortMethod={sortMethod}
@@ -426,18 +445,14 @@ export function Send() {
 
           <Row height="content">
             {isValidToAddress && !!asset ? (
-              <AccentColorProviderWrapper
-                color={asset?.colors?.primary || asset?.colors?.fallback}
-              >
+              <AccentColorProviderWrapper color={assetAccentColor}>
                 <Box paddingHorizontal="8px">
                   <Rows space="20px">
                     <Row>
                       <TransactionFee
                         chainId={chainId}
-                        transactionRequest={transactionRequest}
-                        accentColor={
-                          asset?.colors?.primary || asset?.colors?.fallback
-                        }
+                        transactionRequest={transactionRequestForGas}
+                        accentColor={assetAccentColor}
                       />
                     </Row>
                     <Row>
@@ -448,6 +463,7 @@ export function Send() {
                         color="accent"
                         width="full"
                         testId="send-review-button"
+                        tabIndex={0}
                       >
                         <Inline space="8px" alignVertical="center">
                           {readyForReview && (

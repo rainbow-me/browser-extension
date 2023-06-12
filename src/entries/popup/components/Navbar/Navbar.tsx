@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import * as React from 'react';
-import { To, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 import { shortcuts } from '~/core/references/shortcuts';
 import { Box, Button, ButtonSymbol, Inline, Text } from '~/design-system';
@@ -10,6 +10,8 @@ import { BackgroundColor } from '~/design-system/styles/designTokens';
 import { zIndexes } from '~/entries/popup/utils/zIndexes';
 
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
+import { getInputIsFocused, radixIsActive } from '../../utils/activeElement';
 import {
   NAVBAR_LEFT_COMPONENT_ID,
   NAVBAR_RIGHT_COMPONENT_ID,
@@ -42,14 +44,18 @@ export function Navbar({
       width="full"
       position="relative"
       background={background ?? undefined}
-      style={{ height: NAVBAR_HEIGHT, zIndex: zIndexes.NAVBAR }}
+      style={{
+        height: NAVBAR_HEIGHT,
+        minHeight: NAVBAR_HEIGHT,
+        zIndex: zIndexes.NAVBAR,
+      }}
     >
       {leftComponent && (
         <Box
           as={motion.div}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.45 }}
+          transition={{ type: 'spring', stiffness: 1111, damping: 50, mass: 1 }}
           exit={{ opacity: 0 }}
           position="absolute"
           style={{
@@ -77,7 +83,7 @@ export function Navbar({
           as={motion.div}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.45 }}
+          transition={{ type: 'spring', stiffness: 1111, damping: 50, mass: 1 }}
           exit={{ opacity: 0 }}
           position="absolute"
           style={{
@@ -154,28 +160,27 @@ export function NavbarSymbolButton({
 }
 
 function NavbarButtonWithBack({
-  backTo,
   height,
-  maintainLocationState,
   onClick,
   symbol,
   symbolSize,
   testId,
 }: {
-  backTo?: To;
   height: ButtonSymbolProps['height'];
-  maintainLocationState?: boolean;
   onClick?: () => void;
   symbol: SymbolProps['symbol'];
   symbolSize?: SymbolProps['size'];
   testId?: string;
 }) {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const { state } = useLocation();
+  const navigate = useRainbowNavigate();
 
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
-      if (e.key === shortcuts.global.CLOSE.key) {
+      if (
+        (e.key === shortcuts.global.CLOSE.key && !radixIsActive()) ||
+        (!getInputIsFocused() && e.key === shortcuts.global.BACK.key)
+      ) {
         e.preventDefault();
         e.stopPropagation();
         click();
@@ -186,25 +191,13 @@ function NavbarButtonWithBack({
   const click = React.useCallback(() => {
     if (onClick) {
       onClick();
-    } else if (backTo) {
-      navigate(backTo, {
-        state: {
-          isBack: true,
-          from: location.pathname,
-          ...(maintainLocationState ? location.state : {}),
-        },
-      });
+    } else if (state?.backTo) {
+      navigate(state?.backTo, { replace: true });
     } else {
-      navigate(-1);
+      const popDiff = typeof state?.popTo === 'number' ? state?.popTo : -1;
+      navigate(popDiff);
     }
-  }, [
-    backTo,
-    location.pathname,
-    location.state,
-    maintainLocationState,
-    navigate,
-    onClick,
-  ]);
+  }, [navigate, onClick, state]);
 
   return (
     <Box
@@ -223,21 +216,11 @@ function NavbarButtonWithBack({
   );
 }
 
-export function NavbarBackButton({
-  backTo,
-  maintainLocationState,
-  onClick,
-}: {
-  backTo?: To;
-  maintainLocationState?: boolean;
-  onClick?: () => void;
-}) {
+export function NavbarBackButton({ onClick }: { onClick?: () => void }) {
   return (
     <NavbarButtonWithBack
       onClick={onClick}
-      backTo={backTo}
       height="32px"
-      maintainLocationState={maintainLocationState}
       symbolSize={14}
       symbol="arrow.left"
     />
@@ -245,22 +228,16 @@ export function NavbarBackButton({
 }
 
 export function NavbarCloseButton({
-  backTo,
-  maintainLocationState,
   onClick,
   testId,
 }: {
-  backTo?: To;
-  maintainLocationState?: boolean;
   onClick?: () => void;
   testId?: string;
 }) {
   return (
     <NavbarButtonWithBack
       onClick={onClick}
-      backTo={backTo}
       height="32px"
-      maintainLocationState={maintainLocationState}
       symbolSize={11}
       symbol="xmark"
       testId={testId}

@@ -125,6 +125,7 @@ export const createUnlockAndSwapRap = async (
       chainId,
     });
   }
+
   const allowsPermit =
     !nativeAsset &&
     chainId === ChainId.mainnet &&

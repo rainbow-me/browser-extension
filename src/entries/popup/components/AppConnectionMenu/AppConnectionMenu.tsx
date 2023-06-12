@@ -3,12 +3,14 @@ import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { initializeMessenger } from '~/core/messengers';
+import { shortcuts } from '~/core/references/shortcuts';
 import { useCurrentAddressStore } from '~/core/state';
 import { Box, Inline, Stack, Symbol, Text } from '~/design-system';
 import { AccentColorProviderWrapper } from '~/design-system/components/Box/ColorContext';
 
 import { useAppMetadata } from '../../hooks/useAppMetadata';
 import { useAppSession } from '../../hooks/useAppSession';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
 import {
@@ -96,6 +98,10 @@ export const AppConnectionMenu = ({
     [addSession, appHost, currentAddress, url],
   );
 
+  const toggleSubMenu = useCallback((open: boolean) => {
+    setSubMenuOpen(open);
+  }, []);
+
   const onValueChange = useCallback(
     (value: 'connected-apps' | 'switch-networks') => {
       switch (value) {
@@ -103,18 +109,18 @@ export const AppConnectionMenu = ({
           navigate(ROUTES.CONNECTED);
           break;
         case 'switch-networks':
-          setSubMenuOpen((subMenuOpen) => !subMenuOpen);
+          toggleSubMenu(!subMenuOpen);
           break;
       }
     },
-    [navigate],
+    [navigate, subMenuOpen, toggleSubMenu],
   );
 
   const disconnect = useCallback(() => {
     disconnectAppSession();
-    setSubMenuOpen(false);
+    toggleSubMenu(false);
     setMenuOpen(false);
-  }, [disconnectAppSession]);
+  }, [disconnectAppSession, toggleSubMenu]);
 
   useEffect(() => {
     setTimeout(
@@ -124,6 +130,17 @@ export const AppConnectionMenu = ({
       subMenuOpen ? 0 : 250,
     );
   }, [subMenuOpen]);
+
+  useKeyboardShortcut({
+    handler: (e: KeyboardEvent) => {
+      if (e.key === shortcuts.home.SWITCH_NETWORK.key) {
+        if (!menuOpen) {
+          setMenuOpen(true);
+        }
+        toggleSubMenu(!subMenuOpen);
+      }
+    },
+  });
 
   return (
     <DropdownMenu onOpenChange={setMenuOpen} open={menuOpen}>
@@ -201,7 +218,7 @@ export const AppConnectionMenu = ({
                               selectedValue={`${appSession?.chainId}`}
                               onNetworkSelect={(e) => {
                                 e?.preventDefault();
-                                setSubMenuOpen(false);
+                                toggleSubMenu(false);
                                 setMenuOpen(false);
                               }}
                               onShortcutPress={
@@ -228,7 +245,7 @@ export const AppConnectionMenu = ({
                   const { x, y } =
                     (e.detail.originalEvent as PointerEvent) || {};
                   if (x && y) {
-                    setSubMenuOpen(false);
+                    toggleSubMenu(false);
                     if (isClickingMenuHeader({ x, y })) {
                       setMenuOpen(false);
                     }

@@ -1,29 +1,23 @@
 import 'chromedriver';
 import 'geckodriver';
 import { WebDriver } from 'selenium-webdriver';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, it } from 'vitest';
 
 import {
-  delayTime,
-  findElementByTestIdAndClick,
-  findElementByText,
+  checkWalletName,
   getExtensionIdByName,
-  getTextFromText,
-  goToPopup,
-  goToWelcome,
+  importWalletFlow,
   initDriverWithOptions,
-  shortenAddress,
-  typeOnTextInput,
 } from '../helpers';
+import { TEST_VARIABLES } from '../walletVariables';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;
 
 const browser = process.env.BROWSER || 'chrome';
 const os = process.env.OS || 'mac';
-const wallet = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
 
-describe('Import wallet flow', () => {
+describe('Import wallet with a private key flow', () => {
   beforeAll(async () => {
     driver = await initDriverWithOptions({
       browser,
@@ -33,46 +27,20 @@ describe('Import wallet flow', () => {
     if (!extensionId) throw new Error('Extension not found');
     rootURL += extensionId;
   });
-
   afterAll(async () => driver.quit());
 
-  // Import a wallet
-  it('should be able import a wallet via pkey', async () => {
-    //  Start from welcome screen
-    await goToWelcome(driver, rootURL);
-    await findElementByTestIdAndClick({
-      id: 'import-wallet-button',
+  it('should be able import a wallet via seed', async () => {
+    await importWalletFlow(
       driver,
-    });
-    await findElementByTestIdAndClick({
-      id: 'import-wallet-option',
+      rootURL,
+      TEST_VARIABLES.PRIVATE_KEY_WALLET.SECRET,
+    );
+  });
+  it('should display account name', async () => {
+    await checkWalletName(
       driver,
-    });
-
-    await typeOnTextInput({
-      id: 'secret-textarea',
-      driver,
-      text: '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
-    });
-
-    await findElementByTestIdAndClick({
-      id: 'import-wallets-button',
-      driver,
-    });
-
-    await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
-    await typeOnTextInput({
-      id: 'confirm-password-input',
-      driver,
-      text: 'test1234',
-    });
-    await findElementByTestIdAndClick({ id: 'set-password-button', driver });
-    await delayTime('long');
-    await findElementByText(driver, 'Your wallets ready');
-
-    goToPopup(driver, rootURL);
-    await delayTime('short');
-    const account = await getTextFromText({ id: 'account-name', driver });
-    expect(account).toBe(await shortenAddress(wallet));
+      rootURL,
+      TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS,
+    );
   });
 });

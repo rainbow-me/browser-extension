@@ -242,7 +242,7 @@ export const ReviewSheet = ({
   secondaryAmountDisplay: string;
   waitingForDevice: boolean;
   onCancel: () => void;
-  onSend: () => void;
+  onSend: (callback?: () => void) => Promise<void>;
   onSaveContactAction: React.Dispatch<
     React.SetStateAction<{
       show: boolean;
@@ -253,6 +253,7 @@ export const ReviewSheet = ({
   const { ownedAccounts } = useVisibleAccounts();
   const [sendingOnL2Checks, setSendingOnL2Checks] = useState([false, false]);
   const prevShow = usePrevious(show);
+  const [sending, setSending] = useState(false);
 
   const { displayName: walletDisplayName } = useWalletInfo({
     address: toAddress,
@@ -278,12 +279,17 @@ export const ReviewSheet = ({
     return sendingOnL2Checks[0] && sendingOnL2Checks[1];
   }, [sendingOnL2, sendingOnL2Checks]);
 
-  const handleSend = useCallback(() => {
-    if (sendEnabled) {
-      onSend();
-      new Audio(SendSound).play();
+  const handleSend = useCallback(async () => {
+    if (sendEnabled && !sending) {
+      setSending(true);
+      try {
+        await onSend();
+        new Audio(SendSound).play();
+      } catch (e) {
+        setSending(false);
+      }
     }
-  }, [onSend, sendEnabled]);
+  }, [onSend, sendEnabled, sending]);
 
   const { explainerSheetParams, showExplainerSheet, hideExplainerSheet } =
     useExplainerSheetParams();

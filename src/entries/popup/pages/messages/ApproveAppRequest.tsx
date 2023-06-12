@@ -6,6 +6,7 @@ import { usePendingRequestStore } from '~/core/state/requests';
 
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { ROUTES } from '../../urls';
+import { isExternalPopup } from '../../utils/windows';
 
 import { RequestAccounts } from './RequestAccounts';
 import { SendTransaction } from './SendTransaction';
@@ -16,7 +17,6 @@ const backgroundMessenger = initializeMessenger({ connect: 'background' });
 export const ApproveAppRequest = () => {
   const { pendingRequests, removePendingRequest } = usePendingRequestStore();
   const { notificationWindows } = useNotificationWindowStore();
-  const isExternalPopup = window.location.href.includes('tabId=');
   // If we're on an external popup, we only want to show the request that were sent from that tab
   // otherwise we show all the requests in the extension popup
   const filteredRequests = isExternalPopup
@@ -36,7 +36,7 @@ export const ApproveAppRequest = () => {
     if (pendingRequests.length < 1 && !isExternalPopup) {
       navigate(ROUTES.HOME);
     }
-  }, [pendingRequests.length, navigate, isExternalPopup]);
+  }, [pendingRequests.length, navigate]);
 
   const handleRequestAction = useCallback(() => {
     removePendingRequest(pendingRequest?.id);

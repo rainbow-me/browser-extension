@@ -10,7 +10,7 @@ import {
   TransactionType,
 } from '~/core/types/transactions';
 import { addNewTransaction } from '~/core/utils/transactions';
-import { logger } from '~/logger';
+import { RainbowError, logger } from '~/logger';
 
 import { gasStore } from '../../state';
 import {
@@ -135,10 +135,12 @@ export const crosschainSwap = async ({
       quote,
     });
   } catch (e) {
-    logger.error({
-      name: 'crosschainSwap: error estimateCrosschainSwapGasLimit',
-      message: (e as Error)?.message,
-    });
+    logger.error(
+      new RainbowError('crosschainSwap: error estimateCrosschainSwapGasLimit'),
+      {
+        message: (e as Error)?.message,
+      },
+    );
     throw e;
   }
 
@@ -157,10 +159,12 @@ export const crosschainSwap = async ({
   try {
     swap = await executeCrosschainSwap(swapParams);
   } catch (e) {
-    logger.error({
-      name: 'crosschainSwap: error executeCrosschainSwap',
-      message: (e as Error)?.message,
-    });
+    logger.error(
+      new RainbowError('crosschainSwap: error executeCrosschainSwap'),
+      {
+        message: (e as Error)?.message,
+      },
+    );
     throw e;
   }
 

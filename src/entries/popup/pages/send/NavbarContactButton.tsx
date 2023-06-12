@@ -17,6 +17,7 @@ import {
   Text,
   TextOverflow,
 } from '~/design-system';
+import { Lens } from '~/design-system/components/Lens/Lens';
 
 import {
   DropdownMenu,
@@ -54,7 +55,15 @@ const NavbarSaveContactButton = ({
   }, [onSaveAction]);
 
   return (
-    <Box opacity={enabled ? '1' : '0.2'}>
+    <Lens
+      borderRadius="round"
+      opacity={enabled ? '1' : '0.2'}
+      onKeyDown={(e) => {
+        if (e.key === shortcuts.global.SELECT.key && enabled) {
+          openSavePrompt();
+        }
+      }}
+    >
       <Button
         color="surfaceSecondaryElevated"
         height="28px"
@@ -83,7 +92,7 @@ const NavbarSaveContactButton = ({
           </Text>
         </Inline>
       </Button>
-    </Box>
+    </Lens>
   );
 };
 
@@ -347,7 +356,7 @@ const NavbarEditContactButton = ({
       toAddress={toAddress}
       onEdit={onSaveAction}
     >
-      <Navbar.SymbolButton symbol="ellipsis" variant="flat" />
+      <Navbar.SymbolButton symbol="ellipsis" tabIndex={0} variant="flat" />
     </EditContactDropdown>
   );
 };
@@ -378,6 +387,7 @@ export const NavbarContactButton = ({
           key="save"
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 1111, damping: 50, mass: 1 }}
           exit={{ opacity: 0 }}
         >
           <NavbarSaveContactButton
@@ -393,6 +403,7 @@ export const NavbarContactButton = ({
           key="edit"
           initial={{ opacity: 1 }}
           animate={{ opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 1111, damping: 50, mass: 1 }}
           exit={{ opacity: 0 }}
         >
           <NavbarEditContactButton

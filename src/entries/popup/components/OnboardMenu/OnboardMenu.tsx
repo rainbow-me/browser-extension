@@ -27,16 +27,18 @@ const OnboardMenu = ({ children }: { children: React.ReactNode }) => {
 
 interface OnboardItemProps {
   onClick: () => void;
-  title: string;
+  title?: string;
+  titleImage?: React.ReactNode;
   subtitle: string;
-  symbol: SymbolProps['symbol'];
-  symbolColor: SymbolProps['color'];
+  symbol?: SymbolProps['symbol'];
+  symbolColor?: SymbolProps['color'];
   testId?: string;
 }
 
 const OnboardItem = ({
   onClick,
   title,
+  titleImage,
   subtitle,
   symbol,
   symbolColor,
@@ -46,17 +48,23 @@ const OnboardItem = ({
     <Box width="full" paddingVertical="20px" onClick={onClick} testId={testId}>
       <Columns alignHorizontal="center" alignVertical="center">
         <Column>
-          <Symbol
-            weight="semibold"
-            symbol={symbol}
-            size={20}
-            color={symbolColor}
-          />
+          {titleImage
+            ? titleImage
+            : symbol && (
+                <Symbol
+                  weight="semibold"
+                  symbol={symbol}
+                  size={20}
+                  color={symbolColor}
+                />
+              )}
           <Box paddingTop="12px">
             <Stack space="12px">
-              <Text size="16pt" weight="bold" color="label">
-                {title}
-              </Text>
+              {title && (
+                <Text size="16pt" weight="bold" color="label">
+                  {title}
+                </Text>
+              )}
               <Text size="14pt" weight="regular" color="labelTertiary">
                 {subtitle}
               </Text>

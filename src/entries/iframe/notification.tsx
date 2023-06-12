@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 
 import { i18n } from '~/core/languages';
 import { ChainId, ChainNameDisplay } from '~/core/types/chains';
+import { isDarkColor } from '~/core/utils/colors';
 import { INJECTED_NOTIFICATION_DIMENSIONS } from '~/core/utils/dimensions';
 import {
   Box,
@@ -22,12 +23,6 @@ const ASSET_SOURCE = {
   [ChainId.arbitrum]: 'assets/badges/arbitrumBadge.png',
   [ChainId.polygon]: 'assets/badges/polygonBadge.png',
   [ChainId.bsc]: 'assets/badges/bscBadge.png',
-};
-const isDarkColor = (rgb: string) => {
-  const from = rgb.indexOf('(');
-  const to = rgb.indexOf(')');
-  const [r, g, b] = rgb.substring(from + 1, to).split(',');
-  return !(Number(r) > 40 || Number(g) > 40 || Number(b) > 40);
 };
 
 export const Notification = ({

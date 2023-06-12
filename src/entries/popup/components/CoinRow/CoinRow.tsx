@@ -10,7 +10,7 @@ import { CoinIcon } from '../CoinIcon/CoinIcon';
 function RowHighlightWrapper({ children }: { children: ReactNode }) {
   return (
     <Inset horizontal="8px">
-      <Lens borderRadius="12px">
+      <Lens borderRadius="12px" forceAvatarColor>
         <Box borderRadius="12px" className={rowTransparentAccentHighlight}>
           {children}
         </Box>

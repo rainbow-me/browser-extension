@@ -21,6 +21,7 @@ import {
   typeOnTextInput,
   waitAndClick,
 } from '../helpers';
+import { TEST_VARIABLES } from '../walletVariables';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;
@@ -40,7 +41,7 @@ beforeAll(async () => {
 
 afterAll(() => driver.quit());
 
-it('should be able import a wallet via seed', async () => {
+it('should be able import a wallet via pk', async () => {
   //  Start from welcome screen
   await goToWelcome(driver, rootURL);
   await findElementByTestIdAndClick({
@@ -53,19 +54,16 @@ it('should be able import a wallet via seed', async () => {
   });
 
   await typeOnTextInput({
-    id: 'secret-textarea',
+    id: 'secret-text-area-0',
     driver,
-    text: 'test test test test test test test test test test test junk',
+    text: TEST_VARIABLES.SEED_WALLET.PK,
   });
 
   await findElementByTestIdAndClick({
     id: 'import-wallets-button',
     driver,
   });
-  await findElementByTestIdAndClick({
-    id: 'add-wallets-button',
-    driver,
-  });
+
   await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
   await typeOnTextInput({
     id: 'confirm-password-input',
@@ -74,7 +72,7 @@ it('should be able import a wallet via seed', async () => {
   });
   await findElementByTestIdAndClick({ id: 'set-password-button', driver });
   await delayTime('long');
-  await findElementByText(driver, 'Your wallets ready');
+  await findElementByText(driver, 'Rainbow is ready to use');
 });
 
 it('should be able to go to setings', async () => {
@@ -178,6 +176,7 @@ it('should be able to clear to address input on send flow', async () => {
   });
   const input = await findElementByTestId({ id: 'to-address-input', driver });
   await input.sendKeys('rainbowwallet.eth');
+  await delayTime('long');
 });
 
 it('should be able to select token on send flow', async () => {

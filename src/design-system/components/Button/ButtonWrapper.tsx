@@ -71,6 +71,11 @@ export const stylesForHeight: Record<
     paddingHorizontal: '12px',
     textSize: '14pt',
   },
+  '30px': {
+    gap: '6px',
+    paddingHorizontal: '10px',
+    textSize: '14pt',
+  },
   '28px': {
     gap: '6px',
     paddingHorizontal: '10px',
@@ -123,6 +128,19 @@ export const stylesForHeightAndVariant = ({
     },
   },
   '32px': {
+    raised: { boxShadow: shadowValue('24px', color) },
+    flat: {},
+    plain: {},
+    tinted: {},
+    stroked: {},
+    disabled: {},
+    transparent: {},
+    transparentHover: {},
+    white: {
+      boxShadow: shadowValue('24px', color),
+    },
+  },
+  '30px': {
     raised: { boxShadow: shadowValue('24px', color) },
     flat: {},
     plain: {},
@@ -283,7 +301,8 @@ export function ButtonWrapper({
             tintedStyles[(color as ButtonColor) || 'accent'],
         ]}
         display="flex"
-        onClick={disabled ? () => null : onClick}
+        onClick={onClick}
+        disabled={disabled}
         position="relative"
         justifyContent="center"
         width={width}
