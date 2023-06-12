@@ -9,24 +9,27 @@ export const simulateTab = (forwards: boolean) => {
     const tabbableArray = Array.from(
       target.querySelectorAll('[tabindex]:not([tabindex="-1"])'),
     );
-    const manuallyOrderedArray = tabbableArray
-      .filter((a: Element) =>
-        parseInt(a?.attributes?.getNamedItem('tabIndex')?.value || '0'),
-      )
-      .sort((a: Element, b: Element) => {
-        const foo = parseInt(
-          a?.attributes?.getNamedItem('tabIndex')?.value || '0',
-        );
-        const bar = parseInt(
-          b?.attributes.getNamedItem('tabIndex')?.value || '0',
-        );
-        return foo - bar;
-      });
-    const tabbableNodeList = manuallyOrderedArray.concat(
-      tabbableArray.filter((a: Element) => {
-        return !parseInt(a?.attributes?.getNamedItem('tabIndex')?.value || '0');
-      }),
+    const getTabIndexFromElement = (element: Element) => {
+      return parseInt(
+        element?.attributes?.getNamedItem('tabIndex')?.value || '0',
+      );
+    };
+    const customOrderArray: Element[] = [];
+    const defaultOrderArray: Element[] = [];
+    tabbableArray.forEach((element: Element) => {
+      const tabIndex = getTabIndexFromElement(element);
+      if (tabIndex > 0) {
+        customOrderArray.push(element);
+      } else {
+        defaultOrderArray.push(element);
+      }
+    });
+    const sortedCustomOrderArray = customOrderArray.sort(
+      (elOne: Element, elTwo: Element) => {
+        return getTabIndexFromElement(elOne) - getTabIndexFromElement(elTwo);
+      },
     );
+    const tabbableNodeList = sortedCustomOrderArray.concat(defaultOrderArray);
     const activeIndex = Array.from(tabbableNodeList).indexOf(activeElement);
     const activeElementIsFirst = activeIndex === 0;
     const lastIndex = tabbableNodeList.length - 1;
