@@ -76,7 +76,7 @@ it('should be able import a wallet via pk', async () => {
     text: 'test1234',
   });
   await findElementByTestIdAndClick({ id: 'set-password-button', driver });
-  await delayTime('long');
+  await delayTime('long', driver);
   await findElementByText(driver, 'Rainbow is ready to use');
 });
 
@@ -117,7 +117,7 @@ it('should be able to go to swap settings and check rows are visible', async () 
     id: 'swap-settings-done',
     driver,
   });
-  await delayTime('medium');
+  await delayTime('medium', driver);
 });
 
 it('should be able to go to settings and turn on flashbots', async () => {
@@ -205,7 +205,7 @@ it('should be able to interact with slippage settings', async () => {
     driver,
     text: '\b4',
   });
-  await delayTime('short');
+  await delayTime('short', driver);
   const warning = await findElementByTestId({
     id: 'swap-settings-slippage-warning',
     driver,
@@ -215,7 +215,7 @@ it('should be able to interact with slippage settings', async () => {
     id: 'settings-use-defaults-button',
     driver,
   });
-  await delayTime('short');
+  await delayTime('short', driver);
   await findElementByTestIdAndClick({
     id: 'swap-settings-done',
     driver,
@@ -241,7 +241,7 @@ it.skip('should be able to set default values for settings and go back to swap',
     id: 'swap-settings-done',
     driver,
   });
-  await delayTime('medium');
+  await delayTime('medium', driver);
 });
 
 it('should be able to open token to sell input and select assets', async () => {
@@ -375,7 +375,7 @@ it('should be able to favorite a token and check the info button is present', as
     id: `${SWAP_VARIABLES.ZEROX_MAINNET_ID}-verified-token-to-buy-row-favorite-button`,
     driver,
   });
-  await delayTime('short');
+  await delayTime('short', driver);
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.ZEROX_MAINNET_ID}-favorites-token-to-buy-row-info-button`,
     driver,
@@ -391,7 +391,7 @@ it('should be able to favorite a token and check the info button is present', as
 });
 
 it('should be able to check price and balance of token to buy', async () => {
-  await delayTime('medium');
+  await delayTime('medium', driver);
   const tokenToBuyInfoPrice = await getTextFromText({
     id: 'token-to-buy-info-price',
     driver,
@@ -420,7 +420,7 @@ it('should be able to flip correctly', async () => {
   });
   expect(assetToSellInputText).toBe('1');
 
-  await delayTime('very-long');
+  await delayTime('very-long', driver);
 
   const assetToBuyInputText = await getTextFromTextInput({
     id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-token-to-buy-swap-token-input-swap-input-mask`,
@@ -433,7 +433,7 @@ it('should be able to flip correctly', async () => {
     driver,
   });
 
-  await delayTime('very-long');
+  await delayTime('very-long', driver);
 
   const assetToSellInputTextAfterFlip = await getTextFromTextInput({
     id: `${SWAP_VARIABLES.WBTC_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
@@ -462,13 +462,13 @@ it('should be able to check insufficient native asset for gas', async () => {
     id: 'swap-flip-button',
     driver,
   });
-  await delayTime('short');
+  await delayTime('short', driver);
   await typeOnTextInput({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     text: `\b10000`,
     driver,
   });
-  await delayTime('very-long');
+  await delayTime('very-long', driver);
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button-ready',
     driver,
@@ -503,7 +503,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
     text: 'op',
   });
-  await delayTime('long');
+  await delayTime('long', driver);
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
     driver,
@@ -526,7 +526,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
     text: 'matic',
   });
-  await delayTime('long');
+  await delayTime('long', driver);
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.MATIC_POLYGON_ID}-favorites-token-to-buy-row`,
     driver,
@@ -549,7 +549,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
     text: 'gmx',
   });
-  await delayTime('long');
+  await delayTime('long', driver);
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
     driver,
@@ -572,7 +572,7 @@ it('should be able to filter assets to buy by network', async () => {
     driver,
     text: 'uni',
   });
-  await delayTime('long');
+  await delayTime('long', driver);
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.UNI_BNB_ID}-verified-token-to-buy-row`,
     driver,
@@ -597,7 +597,7 @@ it('should be able to see no route explainer', async () => {
     driver,
     text: 'op',
   });
-  await delayTime('long');
+  await delayTime('long', driver);
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.OP_OPTIMISM_ID}-favorites-token-to-buy-row`,
     driver,
@@ -606,7 +606,7 @@ it('should be able to see no route explainer', async () => {
     id: 'swap-flip-button',
     driver,
   });
-  await delayTime('long');
+  await delayTime('long', driver);
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-buy-token-input-remove`,
     driver,
@@ -624,7 +624,7 @@ it('should be able to see no route explainer', async () => {
     driver,
     text: 'gmx',
   });
-  await delayTime('long');
+  await delayTime('long', driver);
   await findElementByTestIdAndClick({
     id: `${SWAP_VARIABLES.GMX_ARBITRUM_ID}-verified-token-to-buy-row`,
     driver,
@@ -634,7 +634,7 @@ it('should be able to see no route explainer', async () => {
     driver,
     text: 1,
   });
-  await delayTime('long');
+  await delayTime('long', driver);
   const confirmButtonText = await getTextFromText({
     id: 'swap-confirmation-button-error',
     driver,
@@ -683,7 +683,7 @@ it('should be able to find exact match on other networks', async () => {
     driver,
     text: 'optimism',
   });
-  await delayTime('long');
+  await delayTime('long', driver);
 
   const onOtherNetworksSections = await findElementByTestId({
     id: 'other_networks-token-to-buy-section',
@@ -738,7 +738,7 @@ it('should be able to go to review a swap', async () => {
     text: 1,
     driver,
   });
-  await delayTime('very-long');
+  await delayTime('very-long', driver);
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',
     driver,
@@ -865,40 +865,40 @@ it('should be able to see swap information in review sheet', async () => {
 it('should be able to execute swap', async () => {
   const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
   await provider.ready;
-  await delayTime('short');
+  await delayTime('short', driver);
 
   await findElementByTestIdAndClick({
     id: 'navbar-button-with-back-swap-review',
     driver,
   });
-  await delayTime('short');
+  await delayTime('short', driver);
 
   await findElementByTestIdAndClick({
     id: 'swap-settings-navbar-button',
     driver,
   });
-  await delayTime('short');
+  await delayTime('short', driver);
 
   await typeOnTextInput({
     id: 'slippage-input-mask',
     driver,
     text: '\b99',
   });
-  await delayTime('medium');
+  await delayTime('medium', driver);
 
   await findElementByTestIdAndClick({ id: 'swap-settings-done', driver });
 
   const ethBalanceBeforeSwap = await provider.getBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
-  await delayTime('very-long');
+  await delayTime('very-long', driver);
   await findElementByTestIdAndClick({
     id: 'swap-confirmation-button-ready',
     driver,
   });
-  await delayTime('medium');
+  await delayTime('medium', driver);
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
-  await delayTime('very-long');
+  await delayTime('very-long', driver);
   const ethBalanceAfterSwap = await provider.getBalance(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );

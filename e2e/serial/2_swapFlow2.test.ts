@@ -78,7 +78,7 @@ it('should be able import a wallet via pk', async () => {
     text: 'test1234',
   });
   await findElementByTestIdAndClick({ id: 'set-password-button', driver });
-  await delayTime('long');
+  await delayTime('long', driver);
   await findElementByText(driver, 'Rainbow is ready to use');
 });
 
@@ -98,7 +98,7 @@ it('should be able to connect to hardhat', async () => {
 
 it('should be able to go to swap flow', async () => {
   await findElementByTestIdAndClick({ id: 'header-link-swap', driver });
-  await delayTime('long');
+  await delayTime('long', driver);
 });
 
 it('should be able to go to review a unlock and swap', async () => {
@@ -119,13 +119,13 @@ it('should be able to go to review a unlock and swap', async () => {
     text: `\b50`,
     driver,
   });
-  await delayTime('long');
+  await delayTime('long', driver);
 });
 
 it('should be able to execute unlock and swap', async () => {
   const provider = new StaticJsonRpcProvider('http://127.0.0.1:8545');
   await provider.ready;
-  await delayTime('short');
+  await delayTime('short', driver);
   const tokenContract = new Contract(
     SWAP_VARIABLES.DAI_MAINNET_ADDRESS,
     erc20ABI,
@@ -144,9 +144,9 @@ it('should be able to execute unlock and swap', async () => {
     id: 'swap-confirmation-button-ready',
     driver,
   });
-  await delayTime('long');
+  await delayTime('long', driver);
   await findElementByTestIdAndClick({ id: 'swap-review-execute', driver });
-  await delayTime('long');
+  await delayTime('long', driver);
   const daiBalanceAfterSwap = await tokenContract.balanceOf(
     TEST_VARIABLES.SEED_WALLET.ADDRESS,
   );
@@ -164,7 +164,7 @@ it('should be able to execute unlock and swap', async () => {
 
 it('should be able to go to swap flow', async () => {
   await findElementByTestIdAndClick({ id: 'header-link-swap', driver });
-  await delayTime('long');
+  await delayTime('long', driver);
 });
 
 it('should be able to go to review a crosschain swap', async () => {
@@ -172,7 +172,7 @@ it('should be able to go to review a crosschain swap', async () => {
     id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-sell-row`,
     driver,
   });
-  await delayTime('medium');
+  await delayTime('medium', driver);
   const toSellInputDaiSelected = await findElementByTestId({
     id: `${SWAP_VARIABLES.DAI_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
@@ -224,7 +224,7 @@ it('should be able to go to review a crosschain swap', async () => {
     driver,
   });
 
-  await delayTime('long');
+  await delayTime('long', driver);
   const longWaitExplainerFound = await doNotFindElementByTestId({
     id: 'explainer-sheet-swap-long-wait',
     driver,
@@ -239,7 +239,7 @@ it('should be able to go to review a crosschain swap', async () => {
 });
 
 it('should be able to see crosschain swap information in review sheet', async () => {
-  await delayTime('long');
+  await delayTime('long', driver);
   const daiAssetToSellAssetCard = await findElementByTestId({
     id: `DAI-asset-to-sell-swap-asset-card`,
     driver,
@@ -373,7 +373,7 @@ it('should be able to see crosschain swap information in review sheet', async ()
     id: 'navbar-button-with-back-swap-review',
     driver,
   });
-  await delayTime('long');
+  await delayTime('long', driver);
 });
 
 it('should be able to go to review a bridge', async () => {
@@ -385,7 +385,7 @@ it('should be able to go to review a bridge', async () => {
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-row`,
     driver,
   });
-  await delayTime('medium');
+  await delayTime('medium', driver);
   const toSellInputEthSelected = await findElementByTestId({
     id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
     driver,
@@ -445,7 +445,7 @@ it('should be able to go to review a bridge', async () => {
     });
   }
 
-  await delayTime('long');
+  await delayTime('long', driver);
 });
 
 it('should be able to see bridge information in review sheet', async () => {
@@ -555,5 +555,5 @@ it('should be able to see bridge information in review sheet', async () => {
     id: 'navbar-button-with-back-swap-review',
     driver,
   });
-  await delayTime('very-long');
+  await delayTime('very-long', driver);
 });

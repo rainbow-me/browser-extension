@@ -110,7 +110,7 @@ describe('App interactions flow', () => {
       text: 'test1234',
     });
     await findElementByTestIdAndClick({ id: 'set-password-button', driver });
-    await delayTime('long');
+    await delayTime('long', driver);
     await findElementByText(driver, 'Rainbow is ready to use');
   });
 
@@ -188,15 +188,15 @@ describe('App interactions flow', () => {
   });
 
   it('should be able to switch to the first pk wallet', async () => {
-    await delayTime('medium');
+    await delayTime('medium', driver);
     await switchWallet(TEST_VARIABLES.SEED_WALLET.ADDRESS, rootURL, driver);
-    await delayTime('very-long');
+    await delayTime('very-long', driver);
     const wallet = await getTextFromText({ id: 'account-name', driver });
     expect(wallet).toBe(shortenAddress(TEST_VARIABLES.SEED_WALLET.ADDRESS));
   });
 
   it('should be able to connect to bx test dapp', async () => {
-    await delayTime('long');
+    await delayTime('long', driver);
     await goToTestApp(driver);
     const dappHandler = await getWindowHandle({ driver });
 
@@ -227,7 +227,7 @@ describe('App interactions flow', () => {
     await findElementByTestIdAndClick({ id: 'switch-network-menu', driver });
     await findElementByTestIdAndClick({ id: 'switch-network-item-0', driver });
 
-    await delayTime('medium');
+    await delayTime('medium', driver);
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
     await driver.switchTo().window(dappHandler);
@@ -281,10 +281,10 @@ describe('App interactions flow', () => {
 
     await driver.switchTo().window(popupHandler);
 
-    await delayTime('medium');
+    await delayTime('medium', driver);
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
-    await delayTime('medium');
+    await delayTime('medium', driver);
     await driver.switchTo().window(dappHandler);
     const signatureTextSelector = await querySelector(
       driver,
@@ -310,9 +310,9 @@ describe('App interactions flow', () => {
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await driver.switchTo().window(popupHandler);
-    await delayTime('medium');
+    await delayTime('medium', driver);
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('medium');
+    await delayTime('medium', driver);
     await driver.switchTo().window(dappHandler);
     const signatureTextSelector = await querySelector(
       driver,
@@ -334,12 +334,12 @@ describe('App interactions flow', () => {
   });
 
   it('should be able to accept a transaction request', async () => {
-    await delayTime('long');
+    await delayTime('long', driver);
     await goToTestApp(driver);
 
     const dappHandler = await getWindowHandle({ driver });
 
-    await delayTime('long');
+    await delayTime('long', driver);
     const button = await querySelector(driver, '[id="sendTx"]');
 
     expect(button).toBeTruthy();
@@ -348,9 +348,9 @@ describe('App interactions flow', () => {
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
     await driver.switchTo().window(popupHandler);
-    await delayTime('long');
+    await delayTime('long', driver);
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
-    await delayTime('long');
+    await delayTime('long', driver);
     await driver.switchTo().window(dappHandler);
   });
 

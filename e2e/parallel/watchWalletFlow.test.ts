@@ -124,7 +124,7 @@ describe('Watch wallet then add more and switch between them', () => {
       id: 'add-wallets-button',
       driver,
     });
-    await delayTime('medium');
+    await delayTime('medium', driver);
 
     it('should display seed account wallet name', async () => {
       const account = await getTextFromText({ id: 'account-name', driver });
@@ -161,7 +161,7 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
     });
 
-    await delayTime('medium');
+    await delayTime('medium', driver);
 
     it('should display watched account name', async () => {
       await goToPopup(driver, rootURL);
@@ -212,7 +212,7 @@ describe('Watch wallet then add more and switch between them', () => {
   });
 
   it('should be able to switch to the watched wallet', async () => {
-    await delayTime('medium');
+    await delayTime('medium', driver);
     await switchWallet(
       TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
       rootURL,
@@ -233,13 +233,13 @@ describe('Watch wallet then add more and switch between them', () => {
   });
 
   it('should be able to switch to the pk wallet', async () => {
-    await delayTime('medium');
+    await delayTime('medium', driver);
     await switchWallet(
       TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS,
       rootURL,
       driver,
     );
-    await delayTime('very-long');
+    await delayTime('very-long', driver);
     const wallet = await getTextFromText({ id: 'account-name', driver });
     expect(wallet).toBe(
       shortenAddress(TEST_VARIABLES.PRIVATE_KEY_WALLET.ADDRESS),
@@ -247,14 +247,14 @@ describe('Watch wallet then add more and switch between them', () => {
   });
 
   it('should be able to switch to the seed wallet', async () => {
-    await delayTime('medium');
+    await delayTime('medium', driver);
     await switchWallet(TEST_VARIABLES.EMPTY_WALLET.ADDRESS, rootURL, driver);
     const wallet = await getTextFromText({ id: 'account-name', driver });
     expect(wallet).toBe(shortenAddress(TEST_VARIABLES.EMPTY_WALLET.ADDRESS));
   });
 
   it('should be able to switch to the second watched wallet', async () => {
-    await delayTime('medium');
+    await delayTime('medium', driver);
     await switchWallet(
       TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
       rootURL,

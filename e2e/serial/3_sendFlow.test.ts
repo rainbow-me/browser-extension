@@ -66,7 +66,7 @@ it('should be able import a wallet via pk', async () => {
     driver,
   });
 
-  await delayTime('medium');
+  await delayTime('medium', driver);
 
   await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
   await typeOnTextInput({
@@ -75,7 +75,7 @@ it('should be able import a wallet via pk', async () => {
     text: 'test1234',
   });
   await findElementByTestIdAndClick({ id: 'set-password-button', driver });
-  await delayTime('long');
+  await delayTime('long', driver);
   await findElementByText(driver, 'Rainbow is ready to use');
 });
 
@@ -97,7 +97,7 @@ it('should be able to connect to hardhat and go to send flow', async () => {
 it('should be able to save contact on send flow', async () => {
   const input = await querySelector(driver, '[data-testid="to-address-input"]');
   await input.sendKeys('rainbowwallet.eth');
-  await delayTime('long');
+  await delayTime('long', driver);
   const saveButton = await findElementByTestId({
     id: 'navbar-contact-button-save',
     driver,
@@ -128,7 +128,7 @@ it('should be able to edit contact on send flow', async () => {
     id: 'navbar-contact-button-edit-edit',
     driver,
   });
-  await delayTime('medium');
+  await delayTime('medium', driver);
 
   const contactInput = await findElementByTestId({
     id: 'contact-prompt-input',
@@ -180,7 +180,7 @@ it('should be able to clear to address input on send flow', async () => {
   });
   const input = await findElementByTestId({ id: 'to-address-input', driver });
   await input.sendKeys('rainbowwallet.eth');
-  await delayTime('long');
+  await delayTime('long', driver);
 });
 
 it('should be able to select token on send flow', async () => {
