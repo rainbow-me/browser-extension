@@ -282,6 +282,25 @@ export async function transactionStatus() {
   return txnStatus;
 }
 
+export const fillSeedPhrase = async (driver, seedPhrase) => {
+  const words = seedPhrase.split(' ');
+  for (let i = 0; i < 12; i++) {
+    await typeOnTextInput({
+      id: `secret-input-${i + 1}`,
+      driver,
+      text: words[i],
+    });
+  }
+};
+
+export const fillPrivateKey = async (driver, privateKey) => {
+  return typeOnTextInput({
+    id: 'private-key-input',
+    driver,
+    text: privateKey,
+  });
+};
+
 export async function importWalletFlow(driver, rootURL, walletSecret) {
   await goToWelcome(driver, rootURL);
   await findElementByTestIdAndClick({
@@ -293,26 +312,32 @@ export async function importWalletFlow(driver, rootURL, walletSecret) {
     driver,
   });
 
-  await typeOnTextInput({
-    id: 'secret-text-area-0',
+  // button doesn't exist for pkeys. check if pkey, and if so, dont check for this button
+  const isPrivateKey =
+    walletSecret.substr(0, 2) === '0x' && walletSecret.length === 66;
+
+  await findElementByTestIdAndClick({
+    id: isPrivateKey ? 'import-via-pkey-option' : 'import-via-seed-option',
     driver,
-    text: walletSecret,
   });
+
+  isPrivateKey
+    ? await fillPrivateKey(driver, walletSecret)
+    : await fillSeedPhrase(driver, walletSecret);
 
   await findElementByTestIdAndClick({
     id: 'import-wallets-button',
     driver,
   });
 
-  // button doesn't exist for pkeys. check if pkey, and if so, dont check for this button
-  const isPrivateKey =
-    walletSecret.substr(0, 2) === '0x' && walletSecret.length === 66;
   if (!isPrivateKey) {
     await findElementByTestIdAndClick({
       id: 'add-wallets-button',
       driver,
     });
   }
+
+  await delayTime('medium');
 
   await typeOnTextInput({ id: 'password-input', driver, text: testPassword });
   await typeOnTextInput({

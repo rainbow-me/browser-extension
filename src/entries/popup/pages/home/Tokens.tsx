@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import { i18n } from '~/core/languages';
 import { supportedCurrencies } from '~/core/references';
+import { shortcuts } from '~/core/references/shortcuts';
 import { selectUserAssetsList } from '~/core/resources/_selectors';
 import { useUserAssets } from '~/core/resources/assets';
 import { useCurrentAddressStore, useCurrentCurrencyStore } from '~/core/state';
@@ -25,6 +26,7 @@ import { TokensSkeleton } from '../../components/ActivitySkeleton/ActivitySkelet
 import { Asterisks } from '../../components/Asterisks/Asterisks';
 import { CoinbaseIcon } from '../../components/CoinbaseIcon/CoinbaseIcon';
 import { WalletIcon } from '../../components/WalletIcon/WalletIcon';
+import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
 import { useTokensShortcuts } from '../../hooks/useTokensShortcuts';
 import { useVirtualizedAssets } from '../../hooks/useVirtualizedAssets';
 
@@ -34,7 +36,13 @@ export function Tokens() {
   const { currentAddress } = useCurrentAddressStore();
   const { currentCurrency: currency } = useCurrentCurrencyStore();
   const { connectedToHardhat } = useConnectedToHardhatStore();
-  const { data: assets = [], isInitialLoading } = useUserAssets(
+  const [manuallyRefetchingTokens, setManuallyRefetchingTokens] =
+    useState(false);
+  const {
+    data: assets = [],
+    isInitialLoading,
+    refetch: refetchUserAssets,
+  } = useUserAssets(
     { address: currentAddress, currency, connectedToHardhat },
     { select: selectUserAssetsList },
   );
@@ -42,9 +50,20 @@ export function Tokens() {
     assets,
   });
 
+  useKeyboardShortcut({
+    handler: async (e: KeyboardEvent) => {
+      if (e.key === shortcuts.tokens.REFRESH_TOKENS.key) {
+        setManuallyRefetchingTokens(true);
+        await refetchUserAssets();
+        setManuallyRefetchingTokens(false);
+      }
+    },
+    condition: () => !manuallyRefetchingTokens,
+  });
+
   useTokensShortcuts();
 
-  if (isInitialLoading) {
+  if (isInitialLoading || manuallyRefetchingTokens) {
     return <TokensSkeleton />;
   }
 

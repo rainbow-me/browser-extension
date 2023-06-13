@@ -52,14 +52,10 @@ const useDeriveAccountsFromSecrets = (secrets: string[]) => {
 
   useEffect(() => {
     let mounted = true;
-
-    Promise.all(secrets.map(derivedAccountsFromSecret)).then((results) => {
+    if (!secrets.length) return;
+    derivedAccountsFromSecret(secrets.join(' ')).then((results) => {
       if (!mounted) return;
-      const allAccounts = results.reduce(
-        (allAccounts, accounts) => [...allAccounts, ...accounts],
-        [],
-      );
-      setAccounts(allAccounts);
+      setAccounts(results);
     });
 
     return () => {
@@ -83,7 +79,7 @@ export const useImportWalletsFromSecrets = () => {
     setIsImporting(true);
     return (async () => {
       const prevAccounts = await wallet.getAccounts();
-      await Promise.all(secrets.map(wallet.importWithSecret));
+      await wallet.importWithSecret(secrets.join(' '));
 
       if (!accountsIgnored.length) return wallet.getAccounts();
 

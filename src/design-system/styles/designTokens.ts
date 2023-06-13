@@ -800,7 +800,6 @@ export const symbolNames = selectSymbolNames(
   'arrow.left',
   'app.badge.checkmark',
   'ellipsis',
-  'exclamationmark.triangle.fill',
   'xmark',
   'checkmark',
   'square.on.square.dashed',
@@ -890,6 +889,8 @@ export const symbolNames = selectSymbolNames(
   'plus',
   'book.closed.fill',
   'message.fill',
+  'ellipsis.rectangle',
+  'eye.fill',
 );
 export type SymbolName = typeof symbolNames[number];
 

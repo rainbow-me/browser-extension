@@ -457,7 +457,11 @@ const SwapReviewSheetWithQuote = ({
                 {!isWrapOrUnwrapEth && (
                   <DetailsRow testId="swapping-via">
                     <Label
-                      label={i18n.t('swap.review.swapping_via')}
+                      label={
+                        isBridge
+                          ? i18n.t('swap.review.bridging_via')
+                          : i18n.t('swap.review.swapping_via')
+                      }
                       testId="swap-review-swapping-route"
                     />
                     {!!swappingRoute && (
