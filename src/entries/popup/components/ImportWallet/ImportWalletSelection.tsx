@@ -79,7 +79,7 @@ export const useImportWalletsFromSecrets = () => {
     setIsImporting(true);
     return (async () => {
       const prevAccounts = await wallet.getAccounts();
-      await Promise.all(secrets.map(wallet.importWithSecret));
+      await wallet.importWithSecret(secrets.join(' '));
 
       if (!accountsIgnored.length) return wallet.getAccounts();
 
