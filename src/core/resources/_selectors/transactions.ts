@@ -8,8 +8,8 @@ export const selectTransactionsByDate = (
 ) => {
   const sortedTransactions = transactions.sort((tx1, tx2) => {
     if (tx1.pending && tx2.pending) return (tx2.nonce || 0) - (tx1.nonce || 0);
-    if (tx1.pending) return 1;
-    if (tx2.pending) return 1;
+    if (tx1.pending) return -1;
+    if (tx2.pending) return -1;
 
     if (!tx1?.minedAt) return -1;
     if (!tx2?.minedAt) return 1;
