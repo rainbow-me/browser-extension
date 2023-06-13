@@ -185,6 +185,9 @@ const ImportWalletViaSeed = () => {
     } else {
       setSecrets(Array.from({ length: 12 }).map(() => ''));
     }
+    setInvalidWords([]);
+    setGlobalError(false);
+    setIsValid(false);
   }, [secrets.length]);
 
   const toggleInputVisibility = useCallback(
