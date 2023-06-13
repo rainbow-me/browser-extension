@@ -207,7 +207,7 @@ function Content({
   children: React.ReactNode;
   scrollSpring?: MotionValue<number>;
   shouldSpring: boolean;
-  contentVisibility?: 'visible' | 'auto';
+  contentVisibility?: 'visible' | 'hidden' | 'auto';
 }) {
   const y = shouldSpring ? scrollSpring : 0;
   return (
@@ -216,7 +216,7 @@ function Content({
       style={{
         flex: 1,
         position: 'relative',
-        contentVisibility: contentVisibility || 'auto',
+        contentVisibility: contentVisibility ? contentVisibility : 'auto',
       }}
     >
       {/* spring transformY to imitate scroll bounce*/}
