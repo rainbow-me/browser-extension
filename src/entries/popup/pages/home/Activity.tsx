@@ -252,6 +252,7 @@ const ActivityRow = React.memo(function ({
   const receivedViaSwap = status === TransactionStatus.received && isTrade;
   const sent = status === TransactionStatus.sent;
   const approved = status === TransactionStatus.approved;
+  const approving = status === TransactionStatus.approving;
   const sentViaSwap = status === TransactionStatus.swapped && isTrade;
   const failed = status === TransactionStatus.failed;
   const isContractInteraction =
@@ -275,11 +276,11 @@ const ActivityRow = React.memo(function ({
   }, [received, receivedViaSwap]);
 
   const titleColor = useMemo((): TextStyles['color'] => {
-    if (cancelling || sending || speedingUp || swapping) {
+    if (cancelling || sending || speedingUp || swapping || approving) {
       return 'blue';
     }
     return sentViaSwap ? 'purple' : 'labelTertiary';
-  }, [cancelling, sentViaSwap, sending, speedingUp, swapping]);
+  }, [cancelling, sentViaSwap, sending, speedingUp, swapping, approving]);
 
   const titleIconConfig = useMemo(() => {
     let iconSymbol: keyof typeof titleIcons | undefined;
@@ -294,7 +295,7 @@ const ActivityRow = React.memo(function ({
       iconSymbol = 'arrow.triangle.swap';
     } else if (received || receivedViaSwap) {
       iconSymbol = 'arrow.down';
-    } else if (cancelling || sending || speedingUp || swapping) {
+    } else if (cancelling || sending || speedingUp || swapping || approving) {
       iconSymbol = 'spinner';
     } else if (approved) {
       iconSymbol = 'circle.fill';
@@ -330,6 +331,7 @@ const ActivityRow = React.memo(function ({
     speedingUp,
     swapping,
     approved,
+    approving,
   ]);
 
   const topRow = useMemo(
