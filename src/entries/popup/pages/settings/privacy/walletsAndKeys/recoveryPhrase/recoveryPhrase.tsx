@@ -5,6 +5,7 @@ import { i18n } from '~/core/languages';
 import SeedPhraseTable from '~/entries/popup/components/SeedPhraseTable/SeedPhraseTable';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import ViewSecret from '~/entries/popup/components/ViewSecret/ViewSecret';
+import { setImportWalletSecrets } from '~/entries/popup/handlers/importWalletSecrets';
 import { exportWallet } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
@@ -53,6 +54,7 @@ export function RecoveryPhrase() {
       );
       if (recoveryPhrase) {
         setSeed(recoveryPhrase);
+        setImportWalletSecrets([recoveryPhrase]);
       }
     };
     fetchRecoveryPhrase();
