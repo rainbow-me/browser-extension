@@ -37,17 +37,20 @@ export const byText = (text: string) =>
 
 export async function goToTestApp(driver) {
   await driver.get('https://bx-test-dapp.vercel.app/');
-  await delay(1000);
+  const element = await findElementById({ id: 'app', driver });
+  await driver.wait(until.elementIsVisible(element), waitUntilTime);
 }
 
 export async function goToPopup(driver, rootURL, route = '') {
   await driver.get(rootURL + '/popup.html' + route);
-  await delay(5000);
+  const element = await findElementById({ id: 'app', driver });
+  await driver.wait(until.elementIsVisible(element), waitUntilTime);
 }
 
 export async function goToWelcome(driver, rootURL) {
   await driver.get(rootURL + '/popup.html#/welcome');
-  await delay(1000);
+  const element = await findElementById({ id: 'app', driver });
+  await driver.wait(until.elementIsVisible(element), waitUntilTime);
 }
 
 export async function getAllWindowHandles({
@@ -59,7 +62,6 @@ export async function getAllWindowHandles({
   popupHandler?: string;
   dappHandler?: string;
 }) {
-  await delayTime('long');
   const handlers = await driver.getAllWindowHandles();
   const popupHandlerFromHandlers =
     handlers.find((handler) => handler !== dappHandler) || '';
@@ -75,7 +77,6 @@ export async function getAllWindowHandles({
 }
 
 export async function getWindowHandle({ driver }) {
-  await delayTime('long');
   const windowHandle = await driver.getWindowHandle();
   return windowHandle;
 }
@@ -124,11 +125,30 @@ export async function getExtensionIdByName(driver, extensionName) {
 // search functions
 
 export async function querySelector(driver, selector) {
-  const el = await driver.wait(
-    until.elementLocated(By.css(selector)),
-    waitUntilTime,
-  );
-  return await driver.wait(until.elementIsVisible(el), waitUntilTime);
+  const maxRetries = 3;
+  const waitTime = 1000; // milliseconds
+
+  for (let retry = 0; retry < maxRetries; retry++) {
+    try {
+      await driver.wait(until.elementLocated(By.css(selector)), waitTime);
+      const el = await driver.findElement(By.css(selector));
+
+      await driver.wait(async () => {
+        try {
+          const isVisible = await el.isDisplayed();
+          return isVisible;
+        } catch (error) {
+          return false;
+        }
+      }, waitTime);
+
+      return el;
+    } catch (error) {
+      // Element not found or not visible, retry after a short wait
+      await driver.sleep(waitTime);
+    }
+  }
+  throw new Error(`Failed to locate element with selector: ${selector}`);
 }
 
 export async function findElementByText(driver, text) {
@@ -145,19 +165,18 @@ export async function findElementByTextAndClick(driver, text) {
 }
 
 export async function findElementAndClick({ id, driver }) {
-  await delayTime('short');
-  const element = await driver.findElement({
-    id,
-  });
+  const element = await querySelector(driver, `[id="${id}"]`);
   await waitAndClick(element, driver);
 }
 
 export async function findElementByTestId({ id, driver }) {
-  return querySelector(driver, `[data-testid="${id}"]`);
+  const element = await querySelector(driver, `[data-testid="${id}"]`);
+  await driver.wait(until.elementIsVisible(element), waitUntilTime);
+  return element;
 }
 
 export async function findElementById({ id, driver }) {
-  return querySelector(driver, `[id="${id}"]`);
+  return await querySelector(driver, `[id="${id}"]`);
 }
 
 export async function doNotFindElementByTestId({ id, driver }) {
@@ -169,13 +188,24 @@ export async function doNotFindElementByTestId({ id, driver }) {
 }
 
 export async function findElementByTestIdAndClick({ id, driver }) {
-  await delay(200);
-  const element = await findElementByTestId({ id, driver });
-  await waitAndClick(element, driver);
+  try {
+    const element = await findElementByTestId({ id, driver });
+    await waitAndClick(element, driver);
+  } catch (error) {
+    if (isStaleElementError(error)) {
+      console.log('Stale element reference encountered. Retrying...');
+      await findElementByTestIdAndClick({ id, driver }); // Recursive retry
+    } else {
+      throw error; // Throw the error if it's not a stale element error
+    }
+  }
+}
+
+function isStaleElementError(error) {
+  return error.name === 'StaleElementReferenceError';
 }
 
 export async function waitUntilElementByTestIdIsPresent({ id, driver }) {
-  await delay(500);
   const element = await findElementByTestId({ id, driver });
   if (element) {
     return;
@@ -184,14 +214,20 @@ export async function waitUntilElementByTestIdIsPresent({ id, driver }) {
 }
 
 export async function findElementByIdAndClick({ id, driver }) {
-  await delay(200);
   const element = await findElementById({ id, driver });
   await waitAndClick(element, driver);
 }
+
 export async function waitAndClick(element, driver) {
-  await delayTime('short');
-  await driver.wait(until.elementIsVisible(element), waitUntilTime);
-  return element.click();
+  try {
+    await delayTime('short', driver);
+    await driver.wait(until.elementIsEnabled(element), waitUntilTime);
+    return element.click();
+  } catch (error) {
+    // Log the element that caused the stale element reference error
+    console.error('Stale element:', element);
+    throw error;
+  }
 }
 
 export async function typeOnTextInput({ id, text, driver }) {
@@ -214,14 +250,20 @@ export async function getTextFromDappText({ id, driver }) {
   return await element.getText();
 }
 
-export const untilIsClickable = (locator: Locator) =>
-  new WebElementCondition('until element is clickable', async (driver) => {
-    const element = driver.findElement(locator);
-    const isDisplayed = await element.isDisplayed();
-    const isEnabled = await element.isEnabled();
-    if (isDisplayed && isEnabled) return element;
-    return null;
-  });
+export const untilIsClickable = (locator: Locator) => {
+  const convertedLocator =
+    typeof locator === 'string' ? By.css(locator) : locator;
+  return new WebElementCondition(
+    'until element is clickable',
+    async (driver) => {
+      const element = await driver.findElement(convertedLocator);
+      const isDisplayed = await element.isDisplayed();
+      const isEnabled = await element.isEnabled();
+      if (isDisplayed && isEnabled) return element;
+      return null;
+    },
+  );
+};
 
 // various functions and flows
 
@@ -239,14 +281,12 @@ export async function switchWallet(address, rootURL, driver: WebDriver) {
 
   // go to popup
   await goToPopup(driver, rootURL, '#/home');
-  await delayTime('medium');
 
   // find header and click
   await findElementByIdAndClick({
     id: 'header-account-name-shuffle',
     driver,
   });
-  await delayTime('medium');
 
   // find wallet you want to switch to and click
   await waitUntilElementByTestIdIsPresent({
@@ -257,8 +297,6 @@ export async function switchWallet(address, rootURL, driver: WebDriver) {
     id: `account-item-${shortenedAddress}`,
     driver,
   });
-
-  await delayTime('long');
 }
 
 export async function getOnchainBalance(addy, contract) {
@@ -337,8 +375,6 @@ export async function importWalletFlow(driver, rootURL, walletSecret) {
     });
   }
 
-  await delayTime('medium');
-
   await typeOnTextInput({ id: 'password-input', driver, text: testPassword });
   await typeOnTextInput({
     id: 'confirm-password-input',
@@ -346,13 +382,11 @@ export async function importWalletFlow(driver, rootURL, walletSecret) {
     text: testPassword,
   });
   await findElementByTestIdAndClick({ id: 'set-password-button', driver });
-  await delayTime('long');
   await findElementByText(driver, 'Rainbow is ready to use');
 }
 
 export async function checkWalletName(driver, rootURL, walletAddress) {
   goToPopup(driver, rootURL);
-  await delayTime('short');
   const account = await getTextFromText({ id: 'account-name', driver });
   expect(account).toBe(shortenAddress(walletAddress));
 }
@@ -375,32 +409,27 @@ export async function passSecretQuiz(driver) {
     driver,
   });
 
-  await delayTime('long');
-
   for (const word of requiredWords) {
     await findElementByTestIdAndClick({ id: `word_${word}`, driver });
   }
-
-  await delayTime('long');
 }
 
 // delays
 
-export async function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 export async function delayTime(
   time: 'short' | 'medium' | 'long' | 'very-long',
+  driver,
 ) {
   switch (time) {
     case 'short':
-      return await delay(200);
+      return await driver.sleep(200);
     case 'medium':
-      return await delay(500);
+      return await driver.sleep(500);
     case 'long':
-      return await delay(1000);
+      return await driver.sleep(1000);
     case 'very-long':
-      return await delay(5000);
+      return await driver.sleep(5000);
+    default:
+      throw new Error('Invalid time value');
   }
 }
