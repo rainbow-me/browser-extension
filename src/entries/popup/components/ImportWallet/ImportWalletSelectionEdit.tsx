@@ -142,30 +142,25 @@ export function ImportWalletSelectionEdit({ onboarding = false }) {
         ) : (
           <>
             <Box
+              background="surfaceSecondaryElevated"
+              borderRadius="16px"
+              padding="16px"
+              borderColor={'separatorSecondary'}
+              borderWidth={'1px'}
               width="full"
+              position="relative"
               style={{
-                overflow: 'auto',
+                overflow: 'scroll',
                 height: '454px',
               }}
             >
-              <Box
-                background="surfaceSecondaryElevated"
-                borderRadius="16px"
-                padding="16px"
-                borderColor={'separatorSecondary'}
-                borderWidth={'1px'}
-                width="full"
-                position="relative"
-                height="full"
-              >
-                <AccountToImportRows
-                  accountsIgnored={accountsIgnored}
-                  accountsToImport={sortedAccountsToImport}
-                  toggleAccount={toggleAccount}
-                  walletsSummary={walletsSummary}
-                  showCheckbox
-                />
-              </Box>
+              <AccountToImportRows
+                accountsIgnored={accountsIgnored}
+                accountsToImport={sortedAccountsToImport}
+                toggleAccount={toggleAccount}
+                walletsSummary={walletsSummary}
+                showCheckbox
+              />
             </Box>
             <Box width="full" paddingTop="16px">
               <Button
