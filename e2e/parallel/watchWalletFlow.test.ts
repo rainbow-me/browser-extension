@@ -108,6 +108,11 @@ describe('Watch wallet then add more and switch between them', () => {
       driver,
     });
 
+    await findElementByTestIdAndClick({
+      id: 'import-via-seed-option',
+      driver,
+    });
+
     await fillSeedPhrase(driver, TEST_VARIABLES.EMPTY_WALLET.SECRET);
 
     await findElementByTestIdAndClick({
