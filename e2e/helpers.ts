@@ -337,6 +337,8 @@ export async function importWalletFlow(driver, rootURL, walletSecret) {
     });
   }
 
+  await delayTime('medium');
+
   await typeOnTextInput({ id: 'password-input', driver, text: testPassword });
   await typeOnTextInput({
     id: 'confirm-password-input',
