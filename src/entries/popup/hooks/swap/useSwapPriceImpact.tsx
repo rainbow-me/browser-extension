@@ -23,30 +23,33 @@ export interface SwapPriceImpact {
 }
 
 export const useSwapPriceImpact = ({
-  sellNativeAmount,
-  buyNativeAmount,
+  assetToSellNativeValue,
+  assetToBuyNativeValue,
 }: {
-  sellNativeAmount: { amount: string; display: string } | null;
-  buyNativeAmount: { amount: string; display: string } | null;
+  assetToSellNativeValue: { amount: string; display: string } | null;
+  assetToBuyNativeValue: { amount: string; display: string } | null;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
 
   const { impactDisplay, priceImpact } = useMemo(() => {
-    if (!sellNativeAmount?.amount || !buyNativeAmount?.amount)
+    if (!assetToSellNativeValue?.amount || !assetToBuyNativeValue?.amount)
       return { impactDisplay: '', priceImpact: 0 };
 
     const nativeAmountImpact = subtract(
-      sellNativeAmount.amount,
-      buyNativeAmount.amount,
+      assetToSellNativeValue.amount,
+      assetToBuyNativeValue.amount,
     );
-    const priceImpact = divide(nativeAmountImpact, sellNativeAmount.amount);
+    const priceImpact = divide(
+      nativeAmountImpact,
+      assetToSellNativeValue.amount,
+    );
 
     const impactDisplay = convertAmountToNativeDisplay(
       nativeAmountImpact,
       currentCurrency,
     );
     return { impactDisplay, priceImpact };
-  }, [buyNativeAmount, currentCurrency, sellNativeAmount]);
+  }, [assetToBuyNativeValue, currentCurrency, assetToSellNativeValue]);
 
   if (greaterThanOrEqualTo(priceImpact, severePriceImpactThreshold)) {
     return {

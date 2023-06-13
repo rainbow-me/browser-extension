@@ -20,14 +20,14 @@ export const TokenToSellInfo = ({
   asset,
   assetToSellValue,
   assetToSellMaxValue,
-  sellNativeAmount,
+  assetToSellNativeValue,
   setAssetToSellMaxValue,
 }: {
   asset: ParsedSearchAsset | null;
   assetToSellValue: string;
   assetToSellMaxValue: { display: string; amount: string };
   setAssetToSellMaxValue: () => void;
-  sellNativeAmount: { amount: string; display: string } | null;
+  assetToSellNativeValue: { amount: string; display: string } | null;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
 
@@ -44,7 +44,7 @@ export const TokenToSellInfo = ({
               color="labelTertiary"
               testId="token-to-sell-info-fiat-value"
             >
-              {sellNativeAmount?.display ??
+              {assetToSellNativeValue?.display ??
                 convertAmountAndPriceToNativeDisplay(
                   assetToSellValue || 0,
                   asset?.price?.value || 0,

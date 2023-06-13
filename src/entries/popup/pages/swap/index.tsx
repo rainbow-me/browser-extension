@@ -248,18 +248,21 @@ export function Swap() {
     slippage,
   });
 
-  const { sellNativeAmount, buyNativeAmount } = useSwapNativeAmounts({
-    assetToBuy,
-    assetToSell,
-    isWrapOrUnwrapEth,
-    quote: (quote as QuoteError)?.error
-      ? undefined
-      : (quote as Quote | CrosschainQuote),
-  });
+  const { assetToSellNativeValue, assetToBuyNativeValue } =
+    useSwapNativeAmounts({
+      assetToBuy,
+      assetToBuyValue,
+      assetToSell,
+      assetToSellValue,
+      isWrapOrUnwrapEth,
+      quote: (quote as QuoteError)?.error
+        ? undefined
+        : (quote as Quote | CrosschainQuote),
+    });
 
   const { priceImpact } = useSwapPriceImpact({
-    sellNativeAmount,
-    buyNativeAmount,
+    assetToSellNativeValue,
+    assetToBuyNativeValue,
   });
 
   const { buttonLabel: validationButtonLabel, enoughAssetsForSwap } =
@@ -435,7 +438,7 @@ export function Swap() {
                   setAssetToSellInputValue={setAssetToSellInputValue}
                   inputRef={assetToSellInputRef}
                   openDropdownOnMount={inputToOpenOnMount === 'sell'}
-                  sellNativeAmount={sellNativeAmount}
+                  assetToSellNativeValue={assetToSellNativeValue}
                 />
               </AccentColorProviderWrapper>
 
@@ -498,8 +501,8 @@ export function Swap() {
                   inputRef={assetToBuyInputRef}
                   openDropdownOnMount={inputToOpenOnMount === 'buy'}
                   inputDisabled={isCrosschainSwap}
-                  buyNativeAmount={buyNativeAmount}
-                  sellNativeAmount={sellNativeAmount}
+                  assetToBuyNativeValue={assetToBuyNativeValue}
+                  assetToSellNativeValue={assetToSellNativeValue}
                 />
               </AccentColorProviderWrapper>
               <SwapWarning
