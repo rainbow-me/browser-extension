@@ -130,8 +130,6 @@ export const useSwapAssets = () => {
     [assetToBuy, assetsWithPrice],
   );
 
-  console.log('ASSET TO BUY ADDRESS', assetToBuyWithPrice);
-
   const parsedAssetToBuy = useMemo(() => {
     if (!assetToBuy) return null;
     const userAsset = userAssets.find((userAsset) =>
