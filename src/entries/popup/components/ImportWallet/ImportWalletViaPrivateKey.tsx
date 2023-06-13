@@ -217,7 +217,11 @@ const ImportWalletViaPrivateKey = () => {
                 }}
               />
               {validity[0]?.valid === false && validity[0]?.too_long && (
-                <Box position="absolute" marginTop="-24px" paddingLeft="12px">
+                <Box
+                  position="absolute"
+                  paddingLeft="12px"
+                  style={{ marginTop: '14px' }}
+                >
                   <Inline space="4px" alignVertical="center">
                     <Symbol
                       symbol={'exclamationmark.triangle.fill'}
