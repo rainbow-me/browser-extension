@@ -30,8 +30,6 @@ jobs:
           path: tmp
       - name: Copy dotenv
         run: cat tmp/dotenv >> .env && rm -rf tmp
-      - name: Bump the version
-        run: yarn bump
       - name: Fetch the current version number
         run: echo "release_version=$(cat package.json | jq -r .version)" >> $GITHUB_ENV
       - name: Build the extension ready for the stores
