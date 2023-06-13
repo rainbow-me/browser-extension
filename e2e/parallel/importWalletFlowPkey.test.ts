@@ -29,7 +29,7 @@ describe('Import wallet with a private key flow', () => {
   });
   afterAll(async () => driver.quit());
 
-  it('should be able import a wallet via seed', async () => {
+  it('should be able import a wallet via private key', async () => {
     await importWalletFlow(
       driver,
       rootURL,
