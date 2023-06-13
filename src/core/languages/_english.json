@@ -445,7 +445,7 @@
   },
   "import_wallet_via_secret": {
     "title": "Import Wallet",
-    "explanation": "Select an import method you suites you best. You can import addition wallets at any time.",
+    "explanation": "Select an import method that suites you best. You may import additional wallets later at any time.",
     "seed_phrase": "Import from a Secret Recovery Phrase",
     "seed_phrase_desc": "Add a wallet group using your 12 or 24 word Secret Recovery Phrase",
     "private_key": "Import from a Private Key",
