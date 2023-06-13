@@ -126,7 +126,11 @@ export function Home() {
             <Header />
             <TabBar activeTab={activeTab} setActiveTab={onSelectTab} />
             <Separator color="separatorTertiary" strokeWeight="1px" />
-            <Content scrollSpring={scrollYTransform} shouldSpring={scrollAtTop}>
+            <Content
+              scrollSpring={scrollYTransform}
+              shouldSpring={scrollAtTop}
+              contentVisibility={'visible'}
+            >
               {activeTab === 'tokens' && <Tokens />}
               {activeTab === 'activity' && <Activity />}
             </Content>
@@ -198,10 +202,12 @@ function Content({
   children,
   scrollSpring,
   shouldSpring,
+  contentVisibility,
 }: {
   children: React.ReactNode;
   scrollSpring?: MotionValue<number>;
   shouldSpring: boolean;
+  contentVisibility?: 'visible' | 'auto';
 }) {
   const y = shouldSpring ? scrollSpring : 0;
   return (
@@ -210,10 +216,10 @@ function Content({
       style={{
         flex: 1,
         position: 'relative',
-        contentVisibility: 'auto',
+        contentVisibility: contentVisibility || 'auto',
       }}
     >
-      {/** spring transformY to imitate scroll bounce*/}
+      {/* spring transformY to imitate scroll bounce*/}
       <Box height="full" as={motion.div} style={{ y }}>
         <Inset top="20px">{children}</Inset>
       </Box>
