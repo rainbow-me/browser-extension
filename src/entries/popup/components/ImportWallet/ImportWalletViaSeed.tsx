@@ -247,7 +247,8 @@ const ImportWalletViaSeed = () => {
   const handleBlur = useCallback(
     (index: number) => {
       if (secrets[index] !== '' && !isValidWord(secrets[index])) {
-        setInvalidWords([...invalidWords, index]);
+        !invalidWords.includes(index) &&
+          setInvalidWords([...invalidWords, index]);
       } else {
         setInvalidWords(invalidWords.filter((i) => i !== index));
       }
