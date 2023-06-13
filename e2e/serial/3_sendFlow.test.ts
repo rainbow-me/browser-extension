@@ -64,6 +64,8 @@ it('should be able import a wallet via pk', async () => {
     driver,
   });
 
+  await delayTime('medium');
+
   await typeOnTextInput({ id: 'password-input', driver, text: 'test1234' });
   await typeOnTextInput({
     id: 'confirm-password-input',
