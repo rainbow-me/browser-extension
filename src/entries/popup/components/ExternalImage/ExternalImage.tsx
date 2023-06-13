@@ -59,8 +59,9 @@ const ExternalImage = (
           ? {
               maskImage: `url(${props.mask})`,
               WebkitMaskImage: `url(${props.mask})`,
+              objectFit: 'cover',
             }
-          : {}
+          : { objectFit: 'cover' }
       }
       src={signedUrl}
       onError={handleError}
