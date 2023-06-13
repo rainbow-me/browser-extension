@@ -45,6 +45,7 @@ import {
   useSwapValidations,
 } from '../../hooks/swap';
 import { SwapTimeEstimate } from '../../hooks/swap/useSwapActions';
+import { useSwapNativeAmounts } from '../../hooks/swap/useSwapNativeAmounts';
 import {
   SwapPriceImpact,
   SwapPriceImpactType,
@@ -247,13 +248,18 @@ export function Swap() {
     slippage,
   });
 
-  const { priceImpact } = useSwapPriceImpact({
+  const { sellNativeAmount, buyNativeAmount } = useSwapNativeAmounts({
     assetToBuy,
     assetToSell,
     isWrapOrUnwrapEth,
     quote: (quote as QuoteError)?.error
       ? undefined
       : (quote as Quote | CrosschainQuote),
+  });
+
+  const { priceImpact } = useSwapPriceImpact({
+    sellNativeAmount,
+    buyNativeAmount,
   });
 
   const { buttonLabel: validationButtonLabel, enoughAssetsForSwap } =
@@ -429,6 +435,7 @@ export function Swap() {
                   setAssetToSellInputValue={setAssetToSellInputValue}
                   inputRef={assetToSellInputRef}
                   openDropdownOnMount={inputToOpenOnMount === 'sell'}
+                  sellNativeAmount={sellNativeAmount}
                 />
               </AccentColorProviderWrapper>
 
@@ -491,6 +498,8 @@ export function Swap() {
                   inputRef={assetToBuyInputRef}
                   openDropdownOnMount={inputToOpenOnMount === 'buy'}
                   inputDisabled={isCrosschainSwap}
+                  buyNativeAmount={buyNativeAmount}
+                  sellNativeAmount={sellNativeAmount}
                 />
               </AccentColorProviderWrapper>
               <SwapWarning

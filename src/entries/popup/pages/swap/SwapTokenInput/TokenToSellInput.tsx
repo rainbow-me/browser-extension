@@ -22,6 +22,7 @@ interface SwapTokenInputProps {
   zIndex?: number;
   inputRef: React.RefObject<HTMLInputElement>;
   openDropdownOnMount?: boolean;
+  sellNativeAmount: { amount: string; display: string } | null;
   onDropdownOpen: (open: boolean) => void;
   setSortMethod: (sortMethod: SortMethod) => void;
   selectAsset: (asset: ParsedSearchAsset | null) => void;
@@ -43,6 +44,7 @@ export const TokenToSellInput = ({
   assetToSellValue,
   inputRef,
   openDropdownOnMount,
+  sellNativeAmount,
   onDropdownOpen,
   selectAsset,
   setAssetFilter,
@@ -102,6 +104,7 @@ export const TokenToSellInput = ({
       bottomComponent={
         asset ? (
           <TokenToSellInfo
+            sellNativeAmount={sellNativeAmount}
             assetToSellValue={assetToSellValue}
             assetToSellMaxValue={assetToSellMaxValue}
             asset={asset}
