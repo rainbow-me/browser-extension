@@ -142,10 +142,11 @@ export const useSwapQuote = ({
       sellAmountDisplay: isWrapOrUnwrapEth
         ? quote.sellAmount
         : quote.sellAmountDisplay,
-
       feeInEth: isWrapOrUnwrapEth ? '0' : quote.feeInEth,
+      fromChainId: assetToSell?.chainId,
+      toChainId: assetToBuy?.chainId,
     };
-  }, [data, isWrapOrUnwrapEth]);
+  }, [assetToBuy?.chainId, assetToSell?.chainId, data, isWrapOrUnwrapEth]);
 
   return {
     data: quote,
