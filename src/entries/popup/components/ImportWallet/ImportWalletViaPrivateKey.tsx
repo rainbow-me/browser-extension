@@ -106,7 +106,7 @@ const ImportWalletViaPrivateKey = () => {
   const handleImportWallet = useCallback(async () => {
     if (secrets.length === 1 && secrets[0] === '') return;
     if (isAddingWallets) return;
-    // If it's only one private key or address, import it directly and go to wallet screen
+    // If it's only one private key, import it directly and go to wallet screen
     if (secrets.length === 1) {
       if (isValidPrivateKey(secrets[0]) || isAddress(secrets[0])) {
         try {
