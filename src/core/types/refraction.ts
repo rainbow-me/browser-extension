@@ -10,6 +10,7 @@ export interface MessageMeta {
   currency?: string;
   status?: string;
   chain_id?: ChainName; // L2
+  asset_codes?: string;
 }
 
 /**
