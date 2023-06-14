@@ -19,7 +19,7 @@ jobs:
           token: ${{ secrets.REPO_TOKEN }}
       - uses: actions/setup-node@v2
         with:
-          node-version: "18.6.0"
+          node-version: "16.13.2"
           cache: 'yarn'
       - name: Install deps via Yarn
         run: yarn setup
