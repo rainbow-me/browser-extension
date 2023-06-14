@@ -21,9 +21,7 @@ import {
   goToPopup,
   goToWelcome,
   initDriverWithOptions,
-  querySelector,
   typeOnTextInput,
-  waitAndClick,
 } from '../helpers';
 import { convertRawAmountToDecimalFormat, subtract } from '../numbers';
 import { SWAP_VARIABLES, TEST_VARIABLES } from '../walletVariables';
@@ -87,8 +85,7 @@ it('should be able to go to setings', async () => {
 });
 
 it('should be able to connect to hardhat', async () => {
-  const btn = await querySelector(driver, '[data-testid="connect-to-hardhat"]');
-  await waitAndClick(btn, driver);
+  await findElementByTestIdAndClick({ id: 'connect-to-hardhat', driver });
   const button = await findElementByText(driver, 'Disconnect from Hardhat');
   expect(button).toBeTruthy();
   await findElementByTestIdAndClick({ id: 'navbar-button-with-back', driver });
@@ -117,7 +114,6 @@ it('should be able to go to swap settings and check rows are visible', async () 
     id: 'swap-settings-done',
     driver,
   });
-  await delayTime('medium', driver);
 });
 
 it('should be able to go to settings and turn on flashbots', async () => {
@@ -146,6 +142,8 @@ it('should be able to go to swap settings and check flashbots row is visible', a
     driver,
   });
 
+  await delayTime('medium', driver);
+
   const flashbotsRow = await findElementByTestId({
     id: 'swap-settings-flashbots-row',
     driver,
@@ -154,10 +152,12 @@ it('should be able to go to swap settings and check flashbots row is visible', a
 });
 
 it('should be able to interact with route settings', async () => {
+  await delayTime('medium', driver);
   await findElementByTestIdAndClick({
     id: 'swap-settings-route-label',
     driver,
   });
+  await delayTime('medium', driver);
   await findElementByTestIdAndClick({
     id: 'explainer-action-button',
     driver,
@@ -249,6 +249,21 @@ it('should be able to open token to sell input and select assets', async () => {
     id: 'token-to-sell-search-token-input',
     driver,
   });
+
+  await findElementByTestIdAndClick({
+    id: 'token-to-sell-search-token-input',
+    driver,
+  });
+
+  // const tokenInputField = await findFillableElement(
+  //   driver,
+  //   'token-to-sell-search-token-input',
+  // );
+
+  // await waitAndClick(tokenInputField, driver);
+
+  // await delayTime('medium', driver);
+
   await findElementByTestIdAndClick({
     id: 'token-to-sell-sort-trigger',
     driver,

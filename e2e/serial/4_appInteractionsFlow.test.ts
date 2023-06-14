@@ -23,6 +23,7 @@ import {
   querySelector,
   shortenAddress,
   switchWallet,
+  switchWindows,
   typeOnTextInput,
   waitAndClick,
 } from '../helpers';
@@ -218,7 +219,7 @@ describe('App interactions flow', () => {
       dappHandler,
     });
 
-    await driver.switchTo().window(popupHandler);
+    await switchWindows(popupHandler, driver);
 
     // switch account
     await findElementByTestIdAndClick({ id: 'switch-wallet-menu', driver });
@@ -227,10 +228,9 @@ describe('App interactions flow', () => {
     await findElementByTestIdAndClick({ id: 'switch-network-menu', driver });
     await findElementByTestIdAndClick({ id: 'switch-network-item-0', driver });
 
-    await delayTime('medium', driver);
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
-    await driver.switchTo().window(dappHandler);
+    await switchWindows(dappHandler, driver);
     const topButton = await querySelector(
       driver,
       '[data-testid="rk-account-button"]',
@@ -279,13 +279,13 @@ describe('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
+    await switchWindows(popupHandler, driver);
 
     await delayTime('medium', driver);
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
 
     await delayTime('medium', driver);
-    await driver.switchTo().window(dappHandler);
+    await switchWindows(dappHandler, driver);
     const signatureTextSelector = await querySelector(
       driver,
       '[id="signTxSignature"]',
@@ -309,11 +309,11 @@ describe('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
+    await switchWindows(popupHandler, driver);
     await delayTime('medium', driver);
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
     await delayTime('medium', driver);
-    await driver.switchTo().window(dappHandler);
+    await switchWindows(dappHandler, driver);
     const signatureTextSelector = await querySelector(
       driver,
       '[id="signTypedDataSignature"]',
@@ -347,11 +347,11 @@ describe('App interactions flow', () => {
 
     const { popupHandler } = await getAllWindowHandles({ driver, dappHandler });
 
-    await driver.switchTo().window(popupHandler);
+    await switchWindows(popupHandler, driver);
     await delayTime('long', driver);
     await findElementByTestIdAndClick({ id: 'accept-request-button', driver });
     await delayTime('long', driver);
-    await driver.switchTo().window(dappHandler);
+    await switchWindows(dappHandler, driver);
   });
 
   it('should be able to disconnect from connected dapps', async () => {

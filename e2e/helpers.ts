@@ -16,7 +16,7 @@ import { erc20ABI } from 'wagmi';
 
 // consts
 
-const waitUntilTime = 20000;
+export const waitUntilTime = 20000;
 const testPassword = 'test1234';
 const BINARY_PATHS = {
   mac: {
@@ -37,7 +37,7 @@ export const byText = (text: string) =>
 
 export async function goToTestApp(driver) {
   await driver.get('https://bx-test-dapp.vercel.app/');
-  const element = await findElementById({ id: 'app', driver });
+  const element = await findElementById({ id: '__next', driver });
   await driver.wait(until.elementIsVisible(element), waitUntilTime);
 }
 
@@ -52,7 +52,6 @@ export async function goToWelcome(driver, rootURL) {
   const element = await findElementById({ id: 'app', driver });
   await driver.wait(until.elementIsVisible(element), waitUntilTime);
 }
-
 export async function getAllWindowHandles({
   driver,
   popupHandler,
@@ -62,10 +61,12 @@ export async function getAllWindowHandles({
   popupHandler?: string;
   dappHandler?: string;
 }) {
+  await driver.wait(until.elementLocated(By.css('body')), waitUntilTime);
+
   const handlers = await driver.getAllWindowHandles();
+
   const popupHandlerFromHandlers =
     handlers.find((handler) => handler !== dappHandler) || '';
-
   const dappHandlerFromHandlers =
     handlers.find((handler) => handler !== popupHandler) || '';
 
@@ -77,8 +78,37 @@ export async function getAllWindowHandles({
 }
 
 export async function getWindowHandle({ driver }) {
-  const windowHandle = await driver.getWindowHandle();
-  return windowHandle;
+  const retryInterval = 2000;
+  const maxRetries = 5;
+
+  let retries = 0;
+  let windowHandle;
+
+  while (retries < maxRetries) {
+    await driver.wait(until.elementLocated(By.css('body')), waitUntilTime);
+
+    windowHandle = await driver.getWindowHandle();
+
+    if (windowHandle) {
+      return windowHandle;
+    }
+
+    retries += 1;
+    await new Promise((resolve) => setTimeout(resolve, retryInterval));
+  }
+
+  throw new Error(
+    'Failed to retrieve the window handle after multiple attempts.',
+  );
+}
+
+export async function switchWindows(window, driver) {
+  await driver.wait(async () => {
+    const windowHandles = await driver.getAllWindowHandles();
+    return windowHandles.includes(window);
+  }, waitUntilTime);
+
+  await driver.switchTo().window(window);
 }
 
 // setup functions
@@ -126,7 +156,7 @@ export async function getExtensionIdByName(driver, extensionName) {
 
 export async function querySelector(driver, selector) {
   const maxRetries = 3;
-  const waitTime = 1000; // milliseconds
+  const waitTime = 7000;
 
   for (let retry = 0; retry < maxRetries; retry++) {
     try {
@@ -144,11 +174,29 @@ export async function querySelector(driver, selector) {
 
       return el;
     } catch (error) {
-      // Element not found or not visible, retry after a short wait
+      console.error(
+        `Failed attempt ${
+          retry + 1
+        } to locate element with selector ${selector}. Retrying after a short wait.`,
+      );
       await driver.sleep(waitTime);
     }
   }
+
   throw new Error(`Failed to locate element with selector: ${selector}`);
+}
+
+export async function querySelectorInverse(driver, selector) {
+  try {
+    await driver.wait(
+      until.stalenessOf(driver.findElement(By.css(selector))),
+      waitUntilTime,
+    );
+    return true;
+  } catch (error) {
+    console.error(`Found element with selector: ${selector}`);
+    return false;
+  }
 }
 
 export async function findElementByText(driver, text) {
@@ -171,7 +219,6 @@ export async function findElementAndClick({ id, driver }) {
 
 export async function findElementByTestId({ id, driver }) {
   const element = await querySelector(driver, `[data-testid="${id}"]`);
-  await driver.wait(until.elementIsVisible(element), waitUntilTime);
   return element;
 }
 
@@ -181,28 +228,15 @@ export async function findElementById({ id, driver }) {
 
 export async function doNotFindElementByTestId({ id, driver }) {
   const elementFound = await Promise.race([
-    querySelector(driver, `[data-testid="${id}"]`),
+    querySelectorInverse(driver, `[data-testid="${id}"]`),
     new Promise((resolve) => setTimeout(() => resolve(false), 1000)),
   ]);
   return !!elementFound;
 }
 
 export async function findElementByTestIdAndClick({ id, driver }) {
-  try {
-    const element = await findElementByTestId({ id, driver });
-    await waitAndClick(element, driver);
-  } catch (error) {
-    if (isStaleElementError(error)) {
-      console.log('Stale element reference encountered. Retrying...');
-      await findElementByTestIdAndClick({ id, driver }); // Recursive retry
-    } else {
-      throw error; // Throw the error if it's not a stale element error
-    }
-  }
-}
-
-function isStaleElementError(error) {
-  return error.name === 'StaleElementReferenceError';
+  const element = await findElementByTestId({ id, driver });
+  await waitAndClick(element, driver);
 }
 
 export async function waitUntilElementByTestIdIsPresent({ id, driver }) {
@@ -219,15 +253,9 @@ export async function findElementByIdAndClick({ id, driver }) {
 }
 
 export async function waitAndClick(element, driver) {
-  try {
-    await delayTime('short', driver);
-    await driver.wait(until.elementIsEnabled(element), waitUntilTime);
-    return element.click();
-  } catch (error) {
-    // Log the element that caused the stale element reference error
-    console.error('Stale element:', element);
-    throw error;
-  }
+  await driver.wait(until.elementIsEnabled(element), waitUntilTime);
+  await driver.wait(until.elementIsVisible(element), waitUntilTime);
+  return element.click();
 }
 
 export async function typeOnTextInput({ id, text, driver }) {

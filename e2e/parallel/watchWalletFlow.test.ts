@@ -151,11 +151,6 @@ describe('Watch wallet then add more and switch between them', () => {
       text: TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
     });
 
-    await waitUntilElementByTestIdIsPresent({
-      id: 'watch-wallets-button-ready',
-      driver,
-    });
-
     await findElementByTestIdAndClick({
       id: 'watch-wallets-button-ready',
       driver,
