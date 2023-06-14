@@ -95,8 +95,9 @@ function Fee({
     (speed: GasSpeed) => {
       if (speed === GasSpeed.CUSTOM) {
         openCustomGasSheet();
+      } else {
+        setSelectedSpeed(speed);
       }
-      setSelectedSpeed(speed);
       analyticsEvents?.transactionSpeedSwitched &&
         analytics.track(analyticsEvents?.transactionSpeedSwitched, { speed });
     },

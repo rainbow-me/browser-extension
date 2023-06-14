@@ -1,7 +1,7 @@
 {
   "name": "browser-extension",
   "license": "GPL-3.0-only",
-  "version": "1.0.173",
+  "version": "1.0.178",
   "scripts": {
     "//enable dev mode": "",
     "devmode:on": "sed -i'' -e 's/IS_DEV.*/IS_DEV=true/g' .env",
@@ -140,7 +140,7 @@
     "@testing-library/react": "13.4.0",
     "@total-typescript/ts-reset": "0.4.2",
     "@types/chroma-js": "2.1.4",
-    "@types/chrome": "0.0.200",
+    "@types/chrome": "0.0.237",
     "@types/fs-extra": "9.0.13",
     "@types/lodash": "4.14.186",
     "@types/node": "18.11.0",

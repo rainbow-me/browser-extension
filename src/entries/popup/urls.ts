@@ -6,6 +6,8 @@ export const ROUTES = {
   IMPORT_OR_CONNECT: '/import-or-connect', // ImportOrConnect
   WATCH: '/watch', // WatchWallet
   IMPORT: '/import', // ImportWallet
+  IMPORT__SEED: '/import/seed', // ImportWalletViaSeed
+  IMPORT__PRIVATE_KEY: '/import/pkey', // ImportWalletViaPrivateKey
   IMPORT__SELECT: '/import/select', // ImportWalletSelection
   IMPORT__EDIT: '/import/edit', // EditImportWalletSelection
   UNLOCK: '/unlock', // ImportWalletSelection

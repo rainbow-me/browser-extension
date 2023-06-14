@@ -11,6 +11,9 @@ import { Box } from '~/design-system';
 import { AnimatedRoute } from '~/design-system/components/AnimatedRoute/AnimatedRoute';
 
 import { FullScreenBackground } from './components/FullScreen/FullScreenBackground';
+import { ImportWalletSelectionEdit } from './components/ImportWallet/ImportWalletSelectionEdit';
+import { ImportWalletViaPrivateKey } from './components/ImportWallet/ImportWalletViaPrivateKey';
+import { ImportWalletViaSeed } from './components/ImportWallet/ImportWalletViaSeed';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
 import { CreatePassword } from './pages/createPassword';
 import { Home } from './pages/home';
@@ -23,7 +26,6 @@ import { WalletListHW } from './pages/hw/walletList';
 import { ImportOrConnect } from './pages/importOrConnect';
 import { ImportWallet } from './pages/importWallet';
 import { ImportWalletSelection } from './pages/importWalletSelection';
-import { EditImportWalletSelection } from './pages/importWalletSelection/EditImportWalletSelection';
 import { ApproveAppRequest } from './pages/messages/ApproveAppRequest';
 import { QRCodePage } from './pages/qrcode';
 import { RootHandler } from './pages/rootHandler/RootHandler';
@@ -53,7 +55,6 @@ import { AddWallet } from './pages/walletSwitcher/addWallet';
 import { ChooseWalletGroup } from './pages/walletSwitcher/chooseWalletGroup';
 import { NewImportWallet } from './pages/walletSwitcher/newImportWallet';
 import { NewImportWalletSelection } from './pages/walletSwitcher/newImportWalletSelection';
-import { NewImportWalletSelectionEdit } from './pages/walletSwitcher/newImportWalletSelectionEdit';
 import { NewWatchWallet } from './pages/walletSwitcher/newWatchWallet';
 import { Wallets } from './pages/wallets';
 import { WatchWallet } from './pages/watchWallet';
@@ -140,6 +141,51 @@ const ROUTE_DATA = [
         accentColor={false}
       >
         <ImportOrConnect />
+      </AnimatedRoute>
+    ),
+    background: FullScreenBackground,
+  },
+  {
+    path: ROUTES.IMPORT,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW', 'READY']}
+        navbar
+        navbarIcon="arrow"
+        accentColor={false}
+      >
+        <ImportWallet />
+      </AnimatedRoute>
+    ),
+    background: FullScreenBackground,
+  },
+  {
+    path: ROUTES.IMPORT__SEED,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW', 'READY']}
+        navbar
+        navbarIcon="arrow"
+        accentColor={false}
+      >
+        <ImportWalletViaSeed />
+      </AnimatedRoute>
+    ),
+    background: FullScreenBackground,
+  },
+  {
+    path: ROUTES.IMPORT__PRIVATE_KEY,
+    element: (
+      <AnimatedRoute
+        direction="right"
+        protectedRoute={['NEW', 'READY']}
+        navbar
+        navbarIcon="arrow"
+        accentColor={false}
+      >
+        <ImportWalletViaPrivateKey />
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
@@ -270,7 +316,7 @@ const ROUTE_DATA = [
         protectedRoute={['NEW']}
         accentColor={false}
       >
-        <EditImportWalletSelection />
+        <ImportWalletSelectionEdit onboarding />
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
@@ -707,7 +753,7 @@ const ROUTE_DATA = [
         protectedRoute
         background="surfaceSecondary"
       >
-        <NewImportWalletSelectionEdit />
+        <ImportWalletSelectionEdit />
       </AnimatedRoute>
     ),
     background: FullScreenBackground,
