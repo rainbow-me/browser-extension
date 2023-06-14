@@ -4,6 +4,8 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import SendSound from 'static/assets/audio/woosh.mp3';
+import { analytics } from '~/analytics';
+import { event } from '~/analytics/event';
 import { i18n } from '~/core/languages';
 import { QuoteTypeMap } from '~/core/raps/references';
 import { useGasStore } from '~/core/state';
@@ -273,6 +275,20 @@ const SwapReviewSheetWithQuote = ({
           assetToSell.chainId === ChainId.mainnet ? flashbotsEnabled : false,
       },
       type,
+    });
+    analytics.track(event.swapSubmitted, {
+      inputAssetSymbol: assetToSell.symbol,
+      inputAssetName: assetToSell.name,
+      inputAssetAddress: assetToSell.address,
+      inputAssetChainId: assetToSell.chainId,
+      inputAssetAmount: q.sellAmount as number,
+      outputAssetSymbol: assetToBuy.symbol,
+      outputAssetName: assetToBuy.name,
+      outputAssetAddress: assetToBuy.address,
+      outputAssetChainId: assetToBuy.chainId,
+      outputAssetAmount: q.buyAmount as number,
+      flashbots:
+        assetToSell.chainId === ChainId.mainnet ? flashbotsEnabled : false,
     });
     if (nonce) {
       navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
