@@ -90,7 +90,7 @@ describe('Watch wallet then add more and switch between them', () => {
 
     const actual = await label.getText();
     const expected = [
-      '0x70c1...43C4',
+      shortenAddress(TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS_ETH),
       TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
     ];
     expect(expected.includes(actual)).toEqual(true);
@@ -167,7 +167,7 @@ describe('Watch wallet then add more and switch between them', () => {
 
       const actual = await label.getText();
       const expected = [
-        '0x089b...be9E',
+        shortenAddress(TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS_ETH),
         TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
       ];
       expect(expected.includes(actual)).toEqual(true);
@@ -209,9 +209,10 @@ describe('Watch wallet then add more and switch between them', () => {
   it('should be able to switch to the watched wallet', async () => {
     await delayTime('medium', driver);
     await switchWallet(
-      TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
+      TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS_ETH,
       rootURL,
       driver,
+      TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
     );
 
     const label = await querySelector(
@@ -221,7 +222,7 @@ describe('Watch wallet then add more and switch between them', () => {
 
     const actual = await label.getText();
     const expected = [
-      '0x70c1...43C4',
+      shortenAddress(TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS_ETH),
       TEST_VARIABLES.WATCHED_WALLET.PRIMARY_ADDRESS,
     ];
     expect(expected.includes(actual)).toEqual(true);
@@ -251,9 +252,10 @@ describe('Watch wallet then add more and switch between them', () => {
   it('should be able to switch to the second watched wallet', async () => {
     await delayTime('medium', driver);
     await switchWallet(
-      TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
+      TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS_ETH,
       rootURL,
       driver,
+      TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
     );
 
     const label = await querySelector(
@@ -263,7 +265,7 @@ describe('Watch wallet then add more and switch between them', () => {
 
     const actual = await label.getText();
     const expected = [
-      '0x089b...be9E',
+      shortenAddress(TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS_ETH),
       TEST_VARIABLES.WATCHED_WALLET.SECONDARY_ADDRESS,
     ];
     expect(expected.includes(actual)).toEqual(true);

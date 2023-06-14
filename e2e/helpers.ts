@@ -295,7 +295,7 @@ export const untilIsClickable = (locator: Locator) => {
 
 // various functions and flows
 
-export function shortenAddress(address) {
+export function shortenAddress(address: string): string {
   // if address is 42 in length and starts with 0x, then shorten it
   // otherwise return the base value. this is so it doesn't break incase an ens, etc is input
   return address.substring(0, 2) === '0x' && address.length === 42
@@ -303,7 +303,43 @@ export function shortenAddress(address) {
     : address;
 }
 
-export async function switchWallet(address, rootURL, driver: WebDriver) {
+export async function checkEnsResolution(
+  address: string,
+  driver: WebDriver,
+  ens?,
+): Promise<string> {
+  let hasError = false;
+
+  try {
+    await findElementByTestId({
+      id: `account-item-${ens}`,
+      driver,
+    });
+  } catch (error) {
+    hasError = true;
+    throw new Error(
+      `ENS name "${ens}" not resolved. Switching to ETH address if available.`,
+    );
+  }
+
+  if (!hasError) {
+    return ens; // Return the ens value when no error occurred
+  }
+  return address; // Return the address value when an error occurred
+}
+
+export async function switchWallet(
+  Ethaddress: string,
+  rootURL: string | WebDriver,
+  driver: WebDriver,
+  ens?: string,
+) {
+  let address = '';
+  if (ens) {
+    address = await checkEnsResolution(Ethaddress, driver, ens);
+  } else {
+    address = Ethaddress;
+  }
   // find shortened address
   const shortenedAddress = shortenAddress(address);
 
