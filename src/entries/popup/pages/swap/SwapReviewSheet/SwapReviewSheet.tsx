@@ -262,6 +262,8 @@ const SwapReviewSheetWithQuote = ({
     const type =
       assetToSell.chainId !== assetToBuy.chainId ? 'crosschainSwap' : 'swap';
     const q = quote as QuoteTypeMap[typeof type];
+    const flashbots =
+      assetToSell.chainId === ChainId.mainnet ? flashbotsEnabled : false;
     setSendingSwap(true);
     const { nonce } = await wallet.executeRap<typeof type>({
       rapActionParameters: {
@@ -271,30 +273,47 @@ const SwapReviewSheetWithQuote = ({
         assetToSell: assetToSell,
         assetToBuy: assetToBuy,
         quote: q,
-        flashbots:
-          assetToSell.chainId === ChainId.mainnet ? flashbotsEnabled : false,
+        flashbots,
       },
       type,
-    });
-    analytics.track(event.swapSubmitted, {
-      inputAssetSymbol: assetToSell.symbol,
-      inputAssetName: assetToSell.name,
-      inputAssetAddress: assetToSell.address,
-      inputAssetChainId: assetToSell.chainId,
-      inputAssetAmount: q.sellAmount as number,
-      outputAssetSymbol: assetToBuy.symbol,
-      outputAssetName: assetToBuy.name,
-      outputAssetAddress: assetToBuy.address,
-      outputAssetChainId: assetToBuy.chainId,
-      outputAssetAmount: q.buyAmount as number,
-      flashbots:
-        assetToSell.chainId === ChainId.mainnet ? flashbotsEnabled : false,
     });
     if (nonce) {
       navigate(ROUTES.HOME, { state: { activeTab: 'activity' } });
     } else {
       setSendingSwap(false);
     }
+    isBridge
+      ? analytics.track(event.bridgeSubmitted, {
+          inputAssetSymbol: assetToSell.symbol,
+          inputAssetName: assetToSell.name,
+          inputAssetAddress: assetToSell.address,
+          inputAssetChainId: assetToSell.chainId,
+          inputAssetAmount: q.sellAmount as number,
+          outputAssetSymbol: assetToBuy.symbol,
+          outputAssetName: assetToBuy.name,
+          outputAssetAddress: assetToBuy.address,
+          outputAssetChainId: assetToBuy.chainId,
+          outputAssetAmount: q.buyAmount as number,
+          mainnetAddress:
+            assetToBuy?.chainId === ChainId.mainnet
+              ? 'address'
+              : 'mainnetAddress',
+          flashbots,
+        })
+      : analytics.track(event.swapSubmitted, {
+          inputAssetSymbol: assetToSell.symbol,
+          inputAssetName: assetToSell.name,
+          inputAssetAddress: assetToSell.address,
+          inputAssetChainId: assetToSell.chainId,
+          inputAssetAmount: q.sellAmount as number,
+          outputAssetSymbol: assetToBuy.symbol,
+          outputAssetName: assetToBuy.name,
+          outputAssetAddress: assetToBuy.address,
+          outputAssetChainId: assetToBuy.chainId,
+          outputAssetAmount: q.buyAmount as number,
+          crosschain: assetToSell.chainId !== assetToBuy.chainId,
+          flashbots,
+        });
   }, [
     assetToBuy,
     assetToSell,
@@ -303,6 +322,7 @@ const SwapReviewSheetWithQuote = ({
     flashbotsEnabled,
     navigate,
     quote,
+    isBridge,
   ]);
 
   const handleSwap = useCallback(() => {
