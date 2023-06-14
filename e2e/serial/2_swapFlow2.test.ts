@@ -13,6 +13,7 @@ import { erc20ABI } from 'wagmi';
 import {
   delayTime,
   doNotFindElementByTestId,
+  fillPrivateKey,
   findElementByTestId,
   findElementByTestIdAndClick,
   findElementByText,
@@ -59,11 +60,12 @@ it('should be able import a wallet via pk', async () => {
     driver,
   });
 
-  await typeOnTextInput({
-    id: 'secret-text-area-0',
+  await findElementByTestIdAndClick({
+    id: 'import-via-pkey-option',
     driver,
-    text: TEST_VARIABLES.SEED_WALLET.PK,
   });
+
+  await fillPrivateKey(driver, TEST_VARIABLES.SEED_WALLET.PK);
 
   await findElementByTestIdAndClick({
     id: 'import-wallets-button',

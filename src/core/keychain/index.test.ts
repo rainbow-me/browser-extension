@@ -92,11 +92,10 @@ test('[keychain/index] :: should be able to remove empty keychains', async () =>
 });
 
 test('[keychain/index] :: should be able to import a wallet using a seed phrase', async () => {
-  let accounts = await getAccounts();
   await importWallet(
     'edge caught toy sniff enemy upon genre van tunnel make disorder home',
   );
-  accounts = await getAccounts();
+  const accounts = await getAccounts();
   expect(accounts.length).toBe(1);
   expect(isAddress(accounts[0])).toBe(true);
 });
@@ -128,7 +127,7 @@ test('[keychain/index] :: should be able to autodiscover accounts when importing
   );
 
   accounts = await getAccounts();
-  expect(accounts.length).toBeGreaterThan(2);
+  expect(accounts.length).toBe(9);
   expect(accounts[1]).equal('0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266');
   expect(accounts[2]).toBe('0x70997970C51812dc3A010C7d01b50e0d17dc79C8');
 

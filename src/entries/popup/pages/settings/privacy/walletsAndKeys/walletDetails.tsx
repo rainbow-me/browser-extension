@@ -277,7 +277,7 @@ export function WalletDetails() {
               );
             })}
           </Menu>
-          {wallet?.type !== KeychainType.HardwareWalletKeychain && (
+          {wallet?.type === KeychainType.HdKeychain && (
             <Menu>
               <MenuItem
                 first
