@@ -162,6 +162,7 @@ export type EventProperties = {
     inputAssetAmount: number;
     /**
      * The estimated USD value of the input asset being swapped.
+     * TODO: implement USD estimates in the Swap/Bridge flow.
      */
     inputAssetAmountUSD?: number;
     /**
@@ -186,6 +187,7 @@ export type EventProperties = {
     outputAssetAmount: number;
     /**
      * The estimated USD value of the destination asset.
+     * TODO: implement USD estimates in the Swap/Bridge flow.
      */
     outputAssetAmountUSD?: number;
     /**
@@ -409,6 +411,7 @@ export type EventProperties = {
     inputAssetAmount: number;
     /**
      * The estimated USD value of the input asset being swapped.
+     * TODO: implement USD estimates in the Swap/Bridge flow.
      */
     inputAssetAmountUSD?: number;
     /**
@@ -433,6 +436,7 @@ export type EventProperties = {
     outputAssetAmount: number;
     /**
      * The estimated USD value of the destination asset.
+     * TODO: implement USD estimates in the Swap/Bridge flow.
      */
     outputAssetAmountUSD?: number;
     /**
