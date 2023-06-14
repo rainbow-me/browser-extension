@@ -622,6 +622,7 @@ const SwapReviewSheetWithQuote = ({
                     height="44px"
                     variant="flat"
                     color={buttonColor}
+                    disabled={sendingSwap}
                     width="full"
                     testId="swap-review-execute"
                   >
