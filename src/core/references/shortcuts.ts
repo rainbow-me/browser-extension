@@ -16,6 +16,10 @@ export const shortcuts = {
       display: 'V',
       key: 'v',
     },
+    REFRESH_TRANSACTIONS: {
+      display: 'R',
+      key: 'r',
+    },
   },
   contact_menu: {
     COPY_CONTACT_ADDRESS: {
@@ -186,6 +190,10 @@ export const shortcuts = {
     VIEW_ASSET: {
       display: 'V',
       key: 'v',
+    },
+    REFRESH_TOKENS: {
+      display: 'R',
+      key: 'r',
     },
   },
   transaction_request: {

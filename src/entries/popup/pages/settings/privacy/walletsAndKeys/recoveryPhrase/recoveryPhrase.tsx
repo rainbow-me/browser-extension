@@ -5,6 +5,7 @@ import { i18n } from '~/core/languages';
 import SeedPhraseTable from '~/entries/popup/components/SeedPhraseTable/SeedPhraseTable';
 import { triggerToast } from '~/entries/popup/components/Toast/Toast';
 import ViewSecret from '~/entries/popup/components/ViewSecret/ViewSecret';
+import { setImportWalletSecrets } from '~/entries/popup/handlers/importWalletSecrets';
 import { exportWallet } from '~/entries/popup/handlers/wallet';
 import { useRainbowNavigate } from '~/entries/popup/hooks/useRainbowNavigate';
 import { ROUTES } from '~/entries/popup/urls';
@@ -19,7 +20,7 @@ export function RecoveryPhrase() {
     navigate(
       state?.showQuiz
         ? ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS__RECOVERY_PHRASE_VERIFY
-        : ROUTES.SETTINGS__PRIVACY__WALLETS_AND_KEYS__WALLET_DETAILS,
+        : -3,
       {
         state: {
           wallet: state?.wallet,
@@ -53,6 +54,7 @@ export function RecoveryPhrase() {
       );
       if (recoveryPhrase) {
         setSeed(recoveryPhrase);
+        setImportWalletSecrets([recoveryPhrase]);
       }
     };
     fetchRecoveryPhrase();

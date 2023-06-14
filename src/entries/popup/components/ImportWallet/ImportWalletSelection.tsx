@@ -1,6 +1,4 @@
-/* eslint-disable no-await-in-loop */
-/* eslint-disable no-nested-ternary */
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Address } from 'wagmi';
 
 import { i18n } from '~/core/languages';
@@ -16,95 +14,134 @@ import {
   Text,
 } from '~/design-system';
 
-import {
-  getImportWalletSecrets,
-  removeImportWalletSecrets,
-} from '../../handlers/importWalletSecrets';
-import { deriveAccountsFromSecret } from '../../handlers/wallet';
+import { removeImportWalletSecrets } from '../../handlers/importWalletSecrets';
 import * as wallet from '../../handlers/wallet';
+import { deriveAccountsFromSecret } from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
 import { useWalletsSummary } from '../../hooks/useWalletsSummary';
 import { ROUTES } from '../../urls';
 import { Spinner } from '../Spinner/Spinner';
 
 import { AccountToImportRows } from './AccountToImportRows';
+import { useImportWalletSessionSecrets } from './useImportWalletSessionSecrets';
 
-const ImportWalletSelection = ({
-  onboarding = false,
-}: {
-  onboarding?: boolean;
-}) => {
-  const navigate = useRainbowNavigate();
+const derivedAccountsStore = {
+  get: () =>
+    chrome.storage.session
+      .get({ derivedAccountsFromSecrets: {} })
+      .then((r) => r.derivedAccountsFromSecrets) as Promise<
+      Record<string, Address[]>
+    >,
+  set: async (derivedAccountsFromSecrets: Record<string, Address[]>) =>
+    chrome.storage.session.set({ derivedAccountsFromSecrets }),
+  clear: () => chrome.storage.session.set({ derivedAccountsFromSecrets: {} }),
+};
+
+const derivedAccountsFromSecret = async (secret: string) => {
+  const current = await derivedAccountsStore.get();
+  if (current[secret]) return current[secret];
+
+  const accounts = await deriveAccountsFromSecret(secret);
+  derivedAccountsStore.set({ ...current, [secret]: accounts });
+
+  return accounts;
+};
+
+const useDeriveAccountsFromSecrets = (secrets: string[]) => {
+  const [accounts, setAccounts] = useState<Address[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    if (!secrets.length) return;
+    derivedAccountsFromSecret(secrets.join(' ')).then((results) => {
+      if (!mounted) return;
+      setAccounts(results);
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, [secrets]);
+
+  return accounts;
+};
+
+export const useImportWalletsFromSecrets = () => {
   const [isImporting, setIsImporting] = useState(false);
+
+  const importSecrets = async ({
+    secrets,
+    accountsIgnored = [],
+  }: {
+    secrets: string[];
+    accountsIgnored?: Address[];
+  }) => {
+    setIsImporting(true);
+    return (async () => {
+      const prevAccounts = await wallet.getAccounts();
+      await wallet.importWithSecret(secrets.join(' '));
+
+      if (!accountsIgnored.length) return wallet.getAccounts();
+
+      // when importing another account from a seed that was already imported earlier
+      // don't remove accounts that where already in the keychain before importing these secrets
+      const accountsToRemove = accountsIgnored.filter(
+        (address) => !prevAccounts.includes(address),
+      );
+
+      await Promise.all(accountsToRemove.map(wallet.remove));
+
+      return wallet.getAccounts();
+    })().finally(() => {
+      setIsImporting(false);
+      derivedAccountsStore.clear();
+      removeImportWalletSecrets();
+    });
+  };
+
+  return { importSecrets, isImporting };
+};
+
+export const ImportWalletSelection = ({ onboarding = false }) => {
+  const navigate = useRainbowNavigate();
   const { setCurrentAddress } = useCurrentAddressStore();
-  const [accountsToImport, setAccountsToImport] = useState<Address[]>([]);
+
+  const secrets = useImportWalletSessionSecrets();
+
+  const accountsToImport = useDeriveAccountsFromSecrets(secrets);
+  const { importSecrets, isImporting } = useImportWalletsFromSecrets();
 
   const { isLoading: walletsSummaryIsLoading, walletsSummary } =
     useWalletsSummary({
       addresses: accountsToImport,
     });
 
-  useEffect(() => {
-    const init = async () => {
-      let addresses: Address[] = [];
-      const secrets = await getImportWalletSecrets();
-      for (const secret of secrets) {
-        const derivedAddresses = await deriveAccountsFromSecret(secret);
-        addresses = [...addresses, ...derivedAddresses];
-      }
-      setAccountsToImport(addresses);
-    };
-    init();
-  }, []);
-
-  const handleAddWallets = useCallback(async () => {
-    if (isImporting) return;
-    setIsImporting(true);
-    // Import all the secrets
-    const secrets = await getImportWalletSecrets();
-    for (let i = 0; i < secrets.length; i++) {
-      const address = (await wallet.importWithSecret(secrets[i])) as Address;
-      // Select the first wallet
-      if (i === 0) {
-        setCurrentAddress(address);
-      }
-    }
-    setIsImporting(false);
-    removeImportWalletSecrets();
-    onboarding
-      ? navigate(ROUTES.CREATE_PASSWORD, { state: { backTo: ROUTES.WELCOME } })
-      : navigate(ROUTES.HOME);
-  }, [isImporting, navigate, onboarding, setCurrentAddress]);
-
-  const handleEditWallets = useCallback(async () => {
+  const handleEditWallets = () => {
     navigate(
       onboarding
         ? ROUTES.IMPORT__EDIT
         : ROUTES.NEW_IMPORT_WALLET_SELECTION_EDIT,
-      {
-        state: {
-          accountsToImport,
-        },
-      },
+      { state: { accountsToImport } },
     );
-  }, [accountsToImport, navigate, onboarding]);
+  };
+
+  const onImport = () =>
+    importSecrets({ secrets }).then(() => {
+      setCurrentAddress(accountsToImport[0]);
+      if (onboarding) navigate(ROUTES.CREATE_PASSWORD);
+      else navigate(ROUTES.HOME);
+    });
 
   const isReady =
-    accountsToImport.length && !isImporting && !walletsSummaryIsLoading;
+    !!accountsToImport.length && !isImporting && !walletsSummaryIsLoading;
 
-  const description = useMemo(() => {
-    const recentUsedWallet = Object.values(walletsSummary).find(
-      (summary) => summary.balance.amount !== '0' && !!summary.lastTx,
-    );
-    if (!recentUsedWallet && accountsToImport.length === 1) {
-      return i18n.t('import_wallet_selection.description_empty');
-    }
-    return accountsToImport.length === 1
-      ? i18n.t('import_wallet_selection.description_singular')
-      : i18n.t('import_wallet_selection.description_plural', {
-          count: accountsToImport.length,
-        });
-  }, [accountsToImport.length, walletsSummary]);
+  const hasRecentlyUsedWallet = useMemo(
+    () =>
+      Object.values(walletsSummary).some(
+        ({ lastTx, balance }) => !!lastTx && balance.amount !== '0',
+      ),
+    [walletsSummary],
+  );
 
   return (
     <Rows space="20px" alignVertical="justify">
@@ -116,7 +153,7 @@ const ImportWalletSelection = ({
                 {i18n.t('import_wallet_selection.title')}
               </Text>
             </Inline>
-            {isReady ? (
+            {isReady && (
               <Box paddingHorizontal="28px">
                 <Text
                   size="12pt"
@@ -124,16 +161,19 @@ const ImportWalletSelection = ({
                   color="labelTertiary"
                   align="center"
                 >
-                  {description}
+                  {i18n.t('import_wallet_selection.description', {
+                    count: hasRecentlyUsedWallet ? accountsToImport.length : 0,
+                  })}
                 </Text>
               </Box>
-            ) : null}
+            )}
           </Stack>
-          {isReady ? (
+
+          {isReady && (
             <Box width="full" style={{ width: '106px' }}>
               <Separator color="separatorTertiary" strokeWeight="1px" />
             </Box>
-          ) : null}
+          )}
         </Stack>
       </Row>
 
@@ -172,21 +212,17 @@ const ImportWalletSelection = ({
             <Box
               width="full"
               background="surfaceSecondary"
-              style={{
-                overflow: 'auto',
-                height: '291px',
-              }}
+              style={{ overflow: 'auto', height: '292px' }}
             >
               <Box
                 background="surfaceSecondaryElevated"
                 borderRadius="16px"
-                padding="12px"
+                paddingHorizontal="12px"
                 paddingTop={accountsToImport.length > 1 ? '16px' : '10px'}
                 paddingBottom="10px"
                 boxShadow="12px surfaceSecondaryElevated"
               >
                 <AccountToImportRows
-                  accountsIgnored={[]}
                   accountsToImport={accountsToImport}
                   walletsSummary={walletsSummary}
                 />
@@ -199,32 +235,28 @@ const ImportWalletSelection = ({
               paddingVertical="20px"
             >
               <Rows alignVertical="top" space="8px">
-                <Row>
-                  <Button
-                    symbol="arrow.uturn.down.circle.fill"
-                    symbolSide="left"
-                    color={'accent'}
-                    height="44px"
-                    variant={'flat'}
-                    width="full"
-                    onClick={handleAddWallets}
-                    testId="add-wallets-button"
-                  >
-                    {i18n.t('import_wallet_selection.add_wallets')}
-                  </Button>
-                </Row>
-                <Row>
-                  <Button
-                    color="labelSecondary"
-                    height="44px"
-                    variant="transparent"
-                    width="full"
-                    onClick={handleEditWallets}
-                    testId="edit-wallets-button"
-                  >
-                    {i18n.t('import_wallet_selection.edit_wallets')}
-                  </Button>
-                </Row>
+                <Button
+                  symbol="arrow.uturn.down.circle.fill"
+                  symbolSide="left"
+                  color={'accent'}
+                  height="44px"
+                  variant="raised"
+                  width="full"
+                  onClick={onImport}
+                  testId="add-wallets-button"
+                >
+                  {i18n.t('import_wallet_selection.add_wallets')}
+                </Button>
+                <Button
+                  color="labelSecondary"
+                  height="44px"
+                  variant="transparent"
+                  width="full"
+                  onClick={handleEditWallets}
+                  testId="edit-wallets-button"
+                >
+                  {i18n.t('import_wallet_selection.edit_wallets')}
+                </Button>
               </Rows>
             </Box>
           </>
@@ -233,5 +265,3 @@ const ImportWalletSelection = ({
     </Rows>
   );
 };
-
-export { ImportWalletSelection };

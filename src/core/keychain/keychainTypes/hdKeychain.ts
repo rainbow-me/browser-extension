@@ -4,9 +4,9 @@ import { Wallet } from '@ethersproject/wallet';
 import { Address } from 'wagmi';
 
 import { KeychainType } from '~/core/types/keychainTypes';
-import { hasPreviousTransactions } from '~/core/utils/ethereum';
 
 import { IKeychain, PrivateKey } from '../IKeychain';
+import { autoDiscoverAccounts } from '../utils';
 
 export interface SerializedHdKeychain {
   mnemonic: string;
@@ -97,21 +97,10 @@ export class HdKeychain implements IKeychain {
 
     // If we didn't explicit add a new account, we need attempt to autodiscover the rest
     if (opts?.autodiscover) {
-      // Autodiscover accounts
-      let empty = false;
-      while (!empty) {
-        const { address } = privates
-          .get(this)
-          .deriveWallet(privates.get(this).accountsEnabled);
-        // eslint-disable-next-line no-await-in-loop
-        const hasBeenUsed = await hasPreviousTransactions(address as Address);
-        if (hasBeenUsed) {
-          privates.get(this).accountsEnabled =
-            privates.get(this).accountsEnabled + 1;
-        } else {
-          empty = true;
-        }
-      }
+      const { accountsEnabled } = await autoDiscoverAccounts({
+        deriveWallet: privates.get(this).deriveWallet,
+      });
+      privates.get(this).accountsEnabled = accountsEnabled;
     }
 
     for (let i = 0; i < privates.get(this).accountsEnabled; i++) {
@@ -121,6 +110,7 @@ export class HdKeychain implements IKeychain {
       }
     }
   }
+
   async addNewAccount(): Promise<Array<Wallet>> {
     privates.get(this).addAccount(privates.get(this).accountsEnabled);
     privates.get(this).accountsEnabled += 1;

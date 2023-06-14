@@ -1,5 +1,4 @@
-/* eslint-disable no-await-in-loop */
-import React, { useCallback, useMemo, useState } from 'react';
+import { useMemo, useReducer, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Address } from 'wagmi';
 
@@ -9,190 +8,183 @@ import { minus } from '~/core/utils/numbers';
 import { Box, Button, Stack, Text } from '~/design-system';
 
 import { Spinner } from '../../components/Spinner/Spinner';
-import {
-  getImportWalletSecrets,
-  removeImportWalletSecrets,
-} from '../../handlers/importWalletSecrets';
-import * as wallet from '../../handlers/wallet';
 import { useRainbowNavigate } from '../../hooks/useRainbowNavigate';
-import { useWalletsSummary } from '../../hooks/useWalletsSummary';
-import { WalletsSortMethod } from '../../pages/importWalletSelection/EditImportWalletSelection';
+import {
+  WalletSummary,
+  useWalletsSummary,
+} from '../../hooks/useWalletsSummary';
 import { ROUTES } from '../../urls';
 
 import { AccountToImportRows } from './AccountToImportRows';
+import { ImportWalletNavbar } from './ImportWalletNavbar';
+import { useImportWalletsFromSecrets } from './ImportWalletSelection';
+import { useImportWalletSessionSecrets } from './useImportWalletSessionSecrets';
 
-export function ImportWalletSelectionEdit({
-  isAddingWallets,
-  onboarding = false,
-  sortMethod,
-  setIsAddingWallets,
-}: {
-  isAddingWallets: boolean;
-  onboarding?: boolean;
-  sortMethod?: WalletsSortMethod;
-  setIsAddingWallets: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+export type WalletsSortMethod =
+  | 'default'
+  | 'token-balance'
+  | 'last-transaction';
+
+const sortAccounts = (
+  sortBy: WalletsSortMethod,
+  accounts: Address[],
+  summaries: Record<Address, WalletSummary>,
+) => {
+  switch (sortBy) {
+    case 'token-balance': {
+      const accountsInfo = Object.values(summaries);
+      const sortedAccounts = accountsInfo.sort((a, b) =>
+        Number(minus(b.balance.amount, a.balance.amount)),
+      );
+      return sortedAccounts.map((account) => account.address);
+    }
+    case 'last-transaction': {
+      const accountsInfo = Object.values(summaries);
+      const sortedAccounts = accountsInfo.sort((a, b) =>
+        Number(minus(b.lastTx || 0, a.lastTx || 0)),
+      );
+      return sortedAccounts.map((account) => account.address);
+    }
+    case 'default':
+    default:
+      return accounts;
+  }
+};
+
+const addOrRemoveAddy = (addresses: Address[], address: Address) => {
+  if (addresses.includes(address))
+    return addresses.filter((a) => a !== address);
+  return [address, ...addresses];
+};
+
+const emptyArray: unknown[] = [];
+export function ImportWalletSelectionEdit({ onboarding = false }) {
   const navigate = useRainbowNavigate();
-  const { state } = useLocation();
-  const [accountsIgnored, setAccountsIgnored] = useState<Address[]>([]);
   const { setCurrentAddress } = useCurrentAddressStore();
+
+  const { state } = useLocation();
+  const accountsToImport: Address[] = state.accountsToImport || emptyArray;
+
+  const secrets = useImportWalletSessionSecrets();
+
   const { isLoading: walletsSummaryisAddingWallets, walletsSummary } =
-    useWalletsSummary({
-      addresses: state.accountsToImport,
+    useWalletsSummary({ addresses: accountsToImport });
+
+  const [accountsIgnored, toggleAccount] = useReducer(addOrRemoveAddy, []);
+  const amountOfAddressesBeingAdded =
+    accountsToImport.length - accountsIgnored.length;
+  const isButtonDisabled = amountOfAddressesBeingAdded === 0;
+
+  const [sortMethod, setSortMethod] = useState<WalletsSortMethod>('default');
+  const sortedAccountsToImport = useMemo(
+    () => sortAccounts(sortMethod, accountsToImport, walletsSummary),
+    [sortMethod, accountsToImport, walletsSummary],
+  );
+
+  const { importSecrets, isImporting } = useImportWalletsFromSecrets();
+
+  const onImport = () =>
+    importSecrets({ secrets, accountsIgnored }).then(() => {
+      const importedAccounts = sortedAccountsToImport.filter(
+        (a) => !accountsIgnored.includes(a),
+      );
+      setCurrentAddress(importedAccounts[0]);
+      if (onboarding) navigate(ROUTES.CREATE_PASSWORD);
+      else navigate(ROUTES.HOME);
     });
 
-  const sortedAccountsToImport = useMemo(() => {
-    switch (sortMethod) {
-      case 'token-balance': {
-        const accountsInfo = Object.values(walletsSummary);
-        const sortedAccounts = accountsInfo.sort((a, b) =>
-          Number(minus(b.balance.amount, a.balance.amount)),
-        );
-        return sortedAccounts.map((account) => account.address);
-      }
-      case 'last-transaction': {
-        const accountsInfo = Object.values(walletsSummary);
-        const sortedAccounts = accountsInfo.sort((a, b) =>
-          Number(minus(b.lastTx || 0, a.lastTx || 0)),
-        );
-        return sortedAccounts.map((account) => account.address);
-      }
-      case 'default':
-      default:
-        return state.accountsToImport;
-    }
-  }, [sortMethod, state.accountsToImport, walletsSummary]);
-
-  const selectedAccounts = useMemo(
-    () => state.accountsToImport.length - accountsIgnored.length,
-    [accountsIgnored, state.accountsToImport.length],
-  );
-
-  const handleAddWallets = useCallback(async () => {
-    if (isAddingWallets) return;
-    if (selectedAccounts === 0) return;
-    setIsAddingWallets(true);
-    let defaultAccountChosen = false;
-    // Import all the secrets
-    const secrets = await getImportWalletSecrets();
-    for (let i = 0; i < secrets.length; i++) {
-      const address = (await wallet.importWithSecret(secrets[i])) as Address;
-      // Select the first wallet
-      if (!defaultAccountChosen && !accountsIgnored.includes(address)) {
-        defaultAccountChosen = true;
-        setCurrentAddress(address);
-      }
-    }
-
-    // Exclude address that were not selected
-    for (let i = 0; i < accountsIgnored.length; i++) {
-      await wallet.remove(accountsIgnored[i] as Address);
-    }
-
-    setIsAddingWallets(false);
-    removeImportWalletSecrets();
-    onboarding
-      ? navigate(ROUTES.CREATE_PASSWORD, { state: { backTo: ROUTES.WELCOME } })
-      : navigate(ROUTES.HOME);
-  }, [
-    isAddingWallets,
-    selectedAccounts,
-    setIsAddingWallets,
-    onboarding,
-    navigate,
-    accountsIgnored,
-    setCurrentAddress,
-  ]);
-
-  const toggleAccount = useCallback(
-    (address: Address) => {
-      if (isAddingWallets) return;
-      if (accountsIgnored.includes(address)) {
-        setAccountsIgnored(accountsIgnored.filter((a) => a !== address));
-      } else {
-        setAccountsIgnored([...accountsIgnored, address]);
-      }
-    },
-    [accountsIgnored, isAddingWallets],
-  );
-
   return (
-    <Box alignItems="center" width="full">
-      {isAddingWallets || walletsSummaryisAddingWallets ? (
-        <Box
-          alignItems="center"
-          justifyContent="center"
-          width="full"
-          paddingTop="80px"
-        >
-          <Stack space="20px">
-            <Text
-              size="14pt"
-              weight="regular"
-              color="labelSecondary"
-              align="center"
-            >
-              {selectedAccounts === 1
-                ? i18n.t('edit_import_wallet_selection.importing_your_wallet')
-                : i18n.t('edit_import_wallet_selection.importing_your_wallets')}
-            </Text>
-            <Box
-              width="fit"
-              alignItems="center"
-              justifyContent="center"
-              style={{ margin: 'auto' }}
-            >
-              <Spinner size={32} />
-            </Box>
-          </Stack>
-        </Box>
-      ) : (
-        <Box
-          width="full"
-          style={{
-            overflow: 'auto',
-            height: '454px',
-          }}
-        >
+    <>
+      <ImportWalletNavbar
+        navbarIcon="arrow"
+        showSortMenu={!isImporting}
+        sortMethod={sortMethod}
+        setSortMethod={setSortMethod}
+        title={i18n.t('edit_import_wallet_selection.title')}
+      />
+      <Box
+        height="full"
+        paddingHorizontal="16px"
+        background="surfaceSecondary"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        width="full"
+      >
+        {isImporting || walletsSummaryisAddingWallets ? (
           <Box
-            background="surfaceSecondaryElevated"
-            borderRadius="16px"
-            padding="16px"
-            borderColor={'separatorSecondary'}
-            borderWidth={'1px'}
+            alignItems="center"
+            justifyContent="center"
             width="full"
-            position="relative"
-            height="full"
+            paddingTop="80px"
           >
-            <AccountToImportRows
-              accountsIgnored={accountsIgnored}
-              accountsToImport={sortedAccountsToImport}
-              toggleAccount={toggleAccount}
-              walletsSummary={walletsSummary}
-              showCheckbox
-            />
+            <Stack space="20px">
+              <Text
+                size="14pt"
+                weight="regular"
+                color="labelSecondary"
+                align="center"
+              >
+                {i18n.t('edit_import_wallet_selection.importing_your_wallet', {
+                  count: amountOfAddressesBeingAdded,
+                })}
+              </Text>
+              <Box
+                width="fit"
+                alignItems="center"
+                justifyContent="center"
+                style={{ margin: 'auto' }}
+              >
+                <Spinner size={32} />
+              </Box>
+            </Stack>
           </Box>
-        </Box>
-      )}
-      {!isAddingWallets && (
-        <Box width="full" paddingTop="16px">
-          <Button
-            symbol="arrow.uturn.down.circle.fill"
-            symbolSide="left"
-            color={'accent'}
-            height="44px"
-            variant={'flat'}
-            width="full"
-            onClick={handleAddWallets}
-          >
-            {selectedAccounts > 1
-              ? i18n.t('edit_import_wallet_selection.add_n_wallets', {
-                  count: selectedAccounts,
-                })
-              : i18n.t('edit_import_wallet_selection.add_wallet')}
-          </Button>
-        </Box>
-      )}
-    </Box>
+        ) : (
+          <>
+            <Box
+              style={{
+                overflow: 'scroll',
+                height: '454px',
+              }}
+            >
+              <Box
+                background="surfaceSecondaryElevated"
+                borderRadius="16px"
+                padding="16px"
+                borderColor={'separatorSecondary'}
+                borderWidth={'1px'}
+                width="full"
+                position="relative"
+              >
+                <AccountToImportRows
+                  accountsIgnored={accountsIgnored}
+                  accountsToImport={sortedAccountsToImport}
+                  toggleAccount={toggleAccount}
+                  walletsSummary={walletsSummary}
+                  showCheckbox
+                />
+              </Box>
+            </Box>
+
+            <Box width="full" paddingTop="16px">
+              <Button
+                symbol="arrow.uturn.down.circle.fill"
+                symbolSide="left"
+                color={isButtonDisabled ? 'labelQuaternary' : 'accent'}
+                height="44px"
+                variant={isButtonDisabled ? 'disabled' : 'raised'}
+                width="full"
+                disabled={isButtonDisabled}
+                onClick={onImport}
+              >
+                {i18n.t('edit_import_wallet_selection.add_wallet', {
+                  count: amountOfAddressesBeingAdded,
+                })}
+              </Button>
+            </Box>
+          </>
+        )}
+      </Box>
+    </>
   );
 }
