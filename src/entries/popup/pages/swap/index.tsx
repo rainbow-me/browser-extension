@@ -32,6 +32,7 @@ import {
   ExplainerSheet,
   useExplainerSheetParams,
 } from '../../components/ExplainerSheet/ExplainerSheet';
+import { SWAP_INPUT_MASK_ID } from '../../components/InputMask/SwapInputMask/SwapInputMask';
 import { Navbar } from '../../components/Navbar/Navbar';
 import { SwapFee } from '../../components/TransactionFee/TransactionFee';
 import {
@@ -52,6 +53,7 @@ import {
   useSwapPriceImpact,
 } from '../../hooks/swap/useSwapPriceImpact';
 import { useKeyboardShortcut } from '../../hooks/useKeyboardShortcut';
+import { getActiveElement, getInputIsFocused } from '../../utils/activeElement';
 
 import { SwapReviewSheet } from './SwapReviewSheet/SwapReviewSheet';
 import { SwapSettings } from './SwapSettings/SwapSettings';
@@ -345,8 +347,23 @@ export function Swap() {
   useKeyboardShortcut({
     handler: (e: KeyboardEvent) => {
       if (e.key === shortcuts.swap.FLIP_ASSETS.key) {
-        e.preventDefault();
-        flipAssets();
+        const flippingAfterSearch =
+          getInputIsFocused() && getActiveElement()?.id === SWAP_INPUT_MASK_ID;
+        if (flippingAfterSearch || !getInputIsFocused()) {
+          e.preventDefault();
+          flipAssets();
+        }
+      }
+      if (e.key === shortcuts.swap.SET_MAX_AMOUNT.key) {
+        if (assetToSell) {
+          const maxxingAfterSearch =
+            getInputIsFocused() &&
+            getActiveElement()?.id === SWAP_INPUT_MASK_ID;
+          if (maxxingAfterSearch || !getInputIsFocused()) {
+            e.preventDefault();
+            setAssetToSellMaxValue();
+          }
+        }
       }
     },
   });
