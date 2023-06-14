@@ -155,6 +155,12 @@ export const TokenInput = React.forwardRef<
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [openDropdownOnMount]);
 
+    const onFocusTokenInput = useCallback(() => {
+      if (!dropdownVisible) {
+        onDropdownAction();
+      }
+    }, [dropdownVisible, onDropdownAction]);
+
     return (
       <DropdownInputWrapper
         zIndex={zIndex || 1}
@@ -167,18 +173,18 @@ export const TokenInput = React.forwardRef<
         }
         centerComponent={
           !asset ? (
-            <Box onClick={onDropdownAction}>
-              <Input
-                testId={`${testId}-search-token-input`}
-                value={assetFilter}
-                placeholder={placeholder}
-                onChange={onInputValueChange}
-                height="32px"
-                variant="transparent"
-                style={{ paddingLeft: 0, paddingRight: 0 }}
-                innerRef={inputRef}
-              />
-            </Box>
+            <Input
+              testId={`${testId}-search-token-input`}
+              value={assetFilter}
+              placeholder={placeholder}
+              onChange={onInputValueChange}
+              height="32px"
+              variant="transparent"
+              style={{ paddingLeft: 0, paddingRight: 0 }}
+              innerRef={inputRef}
+              onFocus={onFocusTokenInput}
+              tabIndex={0}
+            />
           ) : (
             <Box>
               <SwapInputMaskWrapper inputDisabled={inputDisabled}>
