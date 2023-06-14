@@ -59,7 +59,7 @@ describe('New wallet flow', () => {
     });
 
     await findElementByTestIdAndClick({ id: 'set-password-button', driver });
-    await delayTime('long', driver);
+    await delayTime('long');
     await findElementByText(driver, 'Rainbow is ready to use');
   });
 
@@ -108,7 +108,7 @@ describe('New wallet flow', () => {
       '[data-testid="test-sandbox-background"]',
     );
     await waitAndClick(btn, driver);
-    await delayTime('long', driver);
+    await delayTime('long');
     const text = await driver.switchTo().alert().getText();
     expect(text).toBe('Background sandboxed!');
     await driver.switchTo().alert().accept();

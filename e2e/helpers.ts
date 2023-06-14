@@ -480,20 +480,21 @@ export async function passSecretQuiz(driver) {
 
 // delays
 
+export async function delay(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export async function delayTime(
   time: 'short' | 'medium' | 'long' | 'very-long',
-  driver,
 ) {
   switch (time) {
     case 'short':
-      return await driver.sleep(200);
+      return await delay(200);
     case 'medium':
-      return await driver.sleep(500);
+      return await delay(500);
     case 'long':
-      return await driver.sleep(1000);
+      return await delay(1000);
     case 'very-long':
-      return await driver.sleep(5000);
-    default:
-      throw new Error('Invalid time value');
+      return await delay(5000);
   }
 }
