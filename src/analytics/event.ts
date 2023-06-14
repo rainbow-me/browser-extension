@@ -117,6 +117,10 @@ export const event = {
   settingsRainbowDefaultProviderEnabled:
     'settings.rainbow_default_provider.enabled',
   /**
+   * Called when the user completes a Swap flow and submits the transaction.
+   */
+  swapSubmitted: 'swap.submitted',
+  /**
    * Called when the core wallet Tokens & Activity
    * screen is viewed or opened in the extension popup.
    */
@@ -285,6 +289,7 @@ export type EventProperties = {
     chainId: number;
   };
   [event.popupOpened]: undefined;
+  [event.settingsAnalyticsTrackingDisabled]: undefined;
   [event.sendSubmitted]: {
     /**
      * Native amount of the asset being sent.
@@ -312,9 +317,62 @@ export type EventProperties = {
      */
     chainId: number;
   };
-  [event.settingsAnalyticsTrackingDisabled]: undefined;
   [event.settingsAnalyticsTrackingEnabled]: undefined;
   [event.settingsRainbowDefaultProviderDisabled]: undefined;
   [event.settingsRainbowDefaultProviderEnabled]: undefined;
+  [event.swapSubmitted]: {
+    /**
+     * Symbol of the input asset being swapped.
+     */
+    inputAssetSymbol: string;
+    /**
+     * Human readable name of the input asset being swapped.
+     */
+    inputAssetName: string;
+    /**
+     * Contract address of the input asset being swapped.
+     */
+    inputAssetAddress: string;
+    /**
+     * `chainId` of the input asset being swapped.
+     */
+    inputAssetChainId: number;
+    /**
+     * Native amount quote of input asset being swapped.
+     */
+    inputAssetAmount: number;
+    /**
+     * The estimated USD value of the input asset being swapped.
+     */
+    inputAssetAmountUSD?: number;
+    /**
+     * Symbol of the destination asset.
+     */
+    outputAssetSymbol: string;
+    /**
+     * Human readbale name of the destination asset.
+     */
+    outputAssetName: string;
+    /**
+     * Contract address of the destination asset.
+     */
+    outputAssetAddress: string;
+    /**
+     * `chainId` of the destination asset.
+     */
+    outputAssetChainId: number;
+    /**
+     * Native amount quote of destination asset.
+     */
+    outputAssetAmount: number;
+    /**
+     * The estimated USD value of the destination asset.
+     */
+    outputAssetAmountUSD?: number;
+    /**
+     * Whether Flashbots was used for the swap.
+     */
+    flashbots: boolean;
+  };
   [event.walletViewed]: undefined;
 };
