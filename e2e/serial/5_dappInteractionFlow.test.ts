@@ -17,6 +17,7 @@ import {
   getTextFromDappText,
   getWindowHandle,
   goToPopup,
+  goToTestApp,
   goToWelcome,
   initDriverWithOptions,
   shortenAddress,
@@ -26,7 +27,7 @@ import {
   waitAndClick,
   waitUntilTime,
 } from '../helpers';
-import { TEST_VARIABLES } from '../walletVariables';
+import { TEST_VARIABLES, URLS } from '../walletVariables';
 
 let rootURL = 'chrome-extension://';
 let driver: WebDriver;
@@ -108,7 +109,7 @@ describe('App interactions flow', () => {
 
   it('should be able to connect to mm dapp', async () => {
     await delayTime('long');
-    await driver.get('https://bx-e2e-dapp.vercel.app/');
+    await goToTestApp(URLS.MM_TEST_APP, 'container-fluid', driver);
     const dappHandler = await getWindowHandle({ driver });
 
     const button = await findElementById({ id: 'connectButton', driver });
@@ -259,7 +260,7 @@ describe('App interactions flow', () => {
     await findElementByTextAndClick(driver, 'bx-e2e-dapp.vercel.app');
     await findElementByTestIdAndClick({ id: 'switch-network-item-5', driver });
 
-    await driver.get('https://bx-e2e-dapp.vercel.app/');
+    await goToTestApp(URLS.MM_TEST_APP, 'container-fluid', driver);
     const dappHandler = await getWindowHandle({ driver });
     await delayTime('medium');
 

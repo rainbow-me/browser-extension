@@ -50,3 +50,8 @@ export const SWAP_VARIABLES = {
   WBTC_MAINNET_ID: '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599_1',
   ZEROX_MAINNET_ID: '0xe41d2489571d322189246dafa5ebde1f4699f498_1',
 };
+
+export const URLS = {
+  RK_TEST_APP: 'https://bx-test-dapp.vercel.app/',
+  MM_TEST_APP: 'https://bx-e2e-dapp.vercel.app/',
+};

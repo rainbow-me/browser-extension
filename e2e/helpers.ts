@@ -35,9 +35,9 @@ export const byText = (text: string) =>
 
 // navigators
 
-export async function goToTestApp(driver) {
-  await driver.get('https://bx-test-dapp.vercel.app/');
-  const element = await findElementById({ id: '__next', driver });
+export async function goToTestApp(url, selector, driver) {
+  await driver.get(url);
+  const element = await findElementById({ id: selector, driver });
   await driver.wait(until.elementIsVisible(element), waitUntilTime);
 }
 
