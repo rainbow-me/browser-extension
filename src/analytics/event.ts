@@ -320,6 +320,9 @@ export type EventProperties = {
      */
     chainId: number;
   };
+  [event.settingsAnalyticsTrackingEnabled]: undefined;
+  [event.settingsRainbowDefaultProviderDisabled]: undefined;
+  [event.settingsRainbowDefaultProviderEnabled]: undefined;
   [event.swapSubmitted]: {
     /**
      * Symbol of the input asset being swapped.
@@ -374,7 +377,4 @@ export type EventProperties = {
      */
     flashbots: boolean;
   };
-  [event.settingsAnalyticsTrackingEnabled]: undefined;
-  [event.settingsRainbowDefaultProviderDisabled]: undefined;
-  [event.settingsRainbowDefaultProviderEnabled]: undefined;
 };
