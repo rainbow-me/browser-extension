@@ -98,8 +98,8 @@ export const useSwapAssets = () => {
       )
       .flat();
 
-    const assetToBuyAddress = (assetToBuy?.address ||
-      prevAssetToBuy?.address) as Address;
+    const assetToBuyAddress = (assetToBuy?.mainnetAddress ||
+      prevAssetToBuy?.mainnetAddress) as Address;
     if (
       assetToBuyAddress &&
       !assetAddressesFromSearch.includes(assetToBuyAddress)

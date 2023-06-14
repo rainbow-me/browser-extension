@@ -21,14 +21,16 @@ import {
 
 export const TokenToBuyInfo = ({
   assetToBuy,
-  assetToSell,
   assetToBuyValue,
-  assetToSellValue,
+  assetToBuyNativeValue,
+  assetToSellNativeValue,
 }: {
   assetToBuy: ParsedSearchAsset | null;
   assetToSell: ParsedSearchAsset | null;
   assetToBuyValue?: string;
   assetToSellValue?: string;
+  assetToBuyNativeValue: { amount: string; display: string } | null;
+  assetToSellNativeValue: { amount: string; display: string } | null;
 }) => {
   const { currentCurrency } = useCurrentCurrencyStore();
 
@@ -42,17 +44,8 @@ export const TokenToBuyInfo = ({
   }, [assetToBuy?.native?.price?.amount, currentCurrency, assetToBuyValue]);
 
   const nativeValueDifferenceDisplay = useMemo(() => {
-    if (!assetToBuyValue || !assetToSellValue) return null;
-    const assetToBuyNativeValue = convertAmountAndPriceToNativeDisplay(
-      assetToBuyValue || '0',
-      assetToBuy?.native?.price?.amount || '0',
-      currentCurrency,
-    );
-    const assetToSellNativeValue = convertAmountAndPriceToNativeDisplay(
-      assetToSellValue || '0',
-      assetToSell?.native?.price?.amount || '0',
-      currentCurrency,
-    );
+    if (!assetToSellNativeValue?.amount || !assetToBuyNativeValue?.amount)
+      return null;
     const nativeDifference = convertAmountToPercentageDisplay(
       divide(
         subtract(assetToBuyNativeValue.amount, assetToSellNativeValue.amount),
@@ -60,13 +53,7 @@ export const TokenToBuyInfo = ({
       ),
     );
     return nativeDifference;
-  }, [
-    assetToBuy?.native?.price?.amount,
-    assetToBuyValue,
-    assetToSell?.native?.price?.amount,
-    assetToSellValue,
-    currentCurrency,
-  ]);
+  }, [assetToBuyNativeValue?.amount, assetToSellNativeValue?.amount]);
 
   if (!assetToBuy) return null;
   return (
@@ -82,7 +69,7 @@ export const TokenToBuyInfo = ({
                 weight="semibold"
                 color="labelTertiary"
               >
-                {nativeValueDisplay}
+                {assetToBuyNativeValue?.display ?? nativeValueDisplay}
               </TextOverflow>
             </Column>
 
