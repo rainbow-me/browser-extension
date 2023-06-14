@@ -95,6 +95,10 @@ export const event = {
    */
   popupOpened: 'popup.opened',
   /**
+   * Called when the user completes a Send flow and submits the transaction.
+   */
+  sendSubmitted: 'send.submitted',
+  /**
    * Called when user disables tracking in Settings.
    */
   settingsAnalyticsTrackingDisabled: 'settings.analytics_tracking.disabled',
@@ -281,6 +285,33 @@ export type EventProperties = {
     chainId: number;
   };
   [event.popupOpened]: undefined;
+  [event.sendSubmitted]: {
+    /**
+     * Native amount of the asset being sent.
+     */
+    assetAmount: string;
+    /**
+     * The estimated USD value of the asset being sent.
+     * TODO: implement USD estimates in the Send flow.
+     */
+    assetAmountUSD?: string;
+    /**
+     * Symbol of the asset being sent.
+     */
+    assetSymbol?: string;
+    /**
+     * Human readable name of the asset being sent.
+     */
+    assetName?: string;
+    /**
+     * Contract address of the asset being sent.
+     */
+    assetAddress?: string;
+    /**
+     * `chainId` of the send transaction.
+     */
+    chainId: number;
+  };
   [event.settingsAnalyticsTrackingDisabled]: undefined;
   [event.settingsAnalyticsTrackingEnabled]: undefined;
   [event.settingsRainbowDefaultProviderDisabled]: undefined;
