@@ -28,17 +28,21 @@ export const useSwapInputs = ({
   setAssetToSell,
   setAssetToBuy,
   selectedGas,
+  inputToOpenOnMount,
 }: {
   assetToSell: ParsedSearchAsset | null;
   assetToBuy: ParsedSearchAsset | null;
   setAssetToSell: (asset: ParsedSearchAsset | null) => void;
   setAssetToBuy: (asset: ParsedSearchAsset | null) => void;
   selectedGas: GasFeeParams | GasFeeLegacyParams;
+  inputToOpenOnMount: 'sell' | 'buy' | null;
 }) => {
-  const [assetToSellDropdownClosed, setAssetToSellDropdownClosed] =
-    useState(false);
-  const [assetToBuyDropdownClosed, setAssetToBuyDropdownClosed] =
-    useState(true);
+  const [assetToSellDropdownClosed, setAssetToSellDropdownClosed] = useState(
+    inputToOpenOnMount !== 'sell',
+  );
+  const [assetToBuyDropdownClosed, setAssetToBuyDropdownClosed] = useState(
+    inputToOpenOnMount !== 'buy',
+  );
   const [assetToSellValue, setAssetToSellValue] = useState('');
   const [assetToBuyValue, setAssetToBuyValue] = useState('');
 

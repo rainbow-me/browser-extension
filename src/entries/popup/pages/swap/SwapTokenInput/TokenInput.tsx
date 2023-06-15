@@ -94,7 +94,7 @@ export const TokenInput = React.forwardRef<
     }: TokenInputProps,
     forwardedRef,
   ) => {
-    const [dropdownVisible, setDropdownVisible] = useState(false);
+    const [dropdownVisible, setDropdownVisible] = useState(!dropdownClosed);
     const prevDropdownVisible = usePrevious(dropdownVisible);
 
     useImperativeHandle(forwardedRef, () => ({
@@ -130,8 +130,8 @@ export const TokenInput = React.forwardRef<
     );
 
     useEffect(() => {
-      if (!dropdownClosed) {
-        setDropdownVisible(true);
+      if (dropdownClosed) {
+        setDropdownVisible(false);
       }
     }, [dropdownClosed]);
 
@@ -146,11 +146,9 @@ export const TokenInput = React.forwardRef<
     }, [onSelectAsset, setOnSelectAsset]);
 
     useEffect(() => {
-      setTimeout(() => {
-        if (openDropdownOnMount) {
-          onDropdownAction();
-        }
-      }, 0);
+      if (openDropdownOnMount) {
+        onDropdownAction();
+      }
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [openDropdownOnMount]);
 

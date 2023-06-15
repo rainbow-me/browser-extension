@@ -233,6 +233,7 @@ export function Swap() {
     selectedGas,
     setAssetToSell,
     setAssetToBuy,
+    inputToOpenOnMount,
   });
 
   const {

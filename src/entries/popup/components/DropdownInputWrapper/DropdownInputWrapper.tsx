@@ -62,7 +62,6 @@ export const DropdownInputWrapper = ({
   testId,
   borderVisible = true,
 }: DropdownInputWrapperProps) => {
-  console.log('--- dropdownVisible', dropdownVisible);
   return (
     <Box style={{ height: bottomComponent ? 92 : 68 }}>
       <Box width="full" position="relative" style={{ zIndex: zIndex ?? 1 }}>

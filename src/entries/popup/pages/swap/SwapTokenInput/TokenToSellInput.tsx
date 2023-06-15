@@ -84,8 +84,6 @@ export const TokenToSellInput = ({
     },
   });
 
-  console.log('dropdownClosed', dropdownClosed);
-
   return (
     <TokenInput
       testId={`${asset ? `${asset.uniqueId}-` : ''}token-to-sell`}

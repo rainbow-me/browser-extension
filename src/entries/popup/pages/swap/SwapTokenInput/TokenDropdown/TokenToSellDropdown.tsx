@@ -128,7 +128,7 @@ export const TokenToSellDropdown = ({
       <Box
         as={motion.div}
         variants={dropdownContainerVariant}
-        initial="hidden"
+        initial="show"
         animate="show"
         ref={containerRef}
       >
