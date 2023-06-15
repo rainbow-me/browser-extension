@@ -281,10 +281,42 @@ it('should be able to open token to sell input and select assets', async () => {
     driver,
   });
   expect(toBuyInputEthSelected).toBeTruthy();
+});
+
+it('should be able to select same asset than asset to buy as asset to sell and remove the asset to buy', async () => {
   await findElementByTestIdAndClick({
-    id: 'swap-flip-button',
+    id: 'token-to-sell-search-token-input',
     driver,
   });
+  await findElementByTestIdAndClick({
+    id: 'token-to-sell-sort-trigger',
+    driver,
+  });
+
+  const sortByBalance = await findElementByTestId({
+    id: 'token-to-sell-sort-balance',
+    driver,
+  });
+  expect(sortByBalance).toBeTruthy();
+  await findElementByTestIdAndClick({
+    id: 'token-to-sell-sort-network',
+    driver,
+  });
+  await findElementByTestIdAndClick({
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-row`,
+    driver,
+  });
+  const toSellInputEthSelected = await findElementByTestId({
+    id: `${SWAP_VARIABLES.ETH_MAINNET_ID}-token-to-sell-swap-token-input-swap-input-mask`,
+    driver,
+  });
+  expect(toSellInputEthSelected).toBeTruthy();
+
+  const toBuyInputNoneSelected = await findElementByTestId({
+    id: `token-to-buy-search-token-input`,
+    driver,
+  });
+  expect(toBuyInputNoneSelected).toBeTruthy();
 });
 
 it('should be able to open press max on token to sell input', async () => {
