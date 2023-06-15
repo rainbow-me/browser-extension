@@ -173,6 +173,10 @@ export const shortcuts = {
       key: 'ArrowUp',
       modifier: 'altKey',
     },
+    SET_MAX_AMOUNT: {
+      display: 'M',
+      key: 'm',
+    },
     OPEN_NETWORK_MENU: {
       display: 'N',
       key: 'n',

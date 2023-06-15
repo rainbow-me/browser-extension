@@ -143,8 +143,7 @@ export const TokenInput = React.forwardRef<
 
     useEffect(() => {
       setOnSelectAsset(onSelectAsset);
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [onSelectAsset, setOnSelectAsset]);
 
     useEffect(() => {
       setTimeout(() => {

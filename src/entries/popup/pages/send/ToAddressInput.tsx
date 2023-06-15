@@ -299,6 +299,7 @@ export const ToAddressInput = React.forwardRef<InputRefAPI, ToAddressProps>(
     useImperativeHandle(forwardedRef, () => ({
       blur: () => closeDropdown(),
       focus: () => openDropdown(),
+      isFocused: () => inputRef.current === document.activeElement,
     }));
 
     const onDropdownAction = useCallback(() => {
